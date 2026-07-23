@@ -5,6 +5,7 @@
 
 import { Eye, X } from '@/components/ui/icons'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'
 
@@ -13,15 +14,16 @@ interface MobilePreviewFABProps {
 }
 
 export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  
+
   return (
     <>
       {/* FAB Button - positioned above navigation buttons */}
       <button
         onClick={() => setIsOpen(true)}
         className="lg:hidden fixed bottom-24 right-4 z-40 w-14 h-14 bg-[var(--c-solid)] text-white rounded-full shadow-lg hover:bg-[var(--c-text)] active:scale-95 transition-all flex items-center justify-center"
-        aria-label="Förhandsgranska CV"
+        aria-label={t('cv.previewCvAria', 'Förhandsgranska CV')}
       >
         <Eye className="w-6 h-6" />
       </button>
@@ -36,7 +38,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
               <button 
                 onClick={() => setIsOpen(false)}
                 className="p-2 hover:bg-stone-100 rounded-full transition-colors"
-                aria-label="Stäng"
+                aria-label={t('common.close', 'Stäng')}
               >
                 <X className="w-6 h-6 text-stone-600" />
               </button>

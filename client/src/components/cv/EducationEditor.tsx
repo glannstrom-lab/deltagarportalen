@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   GraduationCap, School, MapPin, Calendar,
   ChevronDown, ChevronUp, GripVertical, Trash2,
@@ -28,6 +29,7 @@ const educationLevels = [
 ]
 
 export function EducationEditor({ education, onChange }: EducationEditorProps) {
+  const { t } = useTranslation()
   const [expandedId, setExpandedId] = useState<string | null>(
     education.length === 1 ? education[0].id : null
   )
@@ -128,7 +130,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
         </div>
       ) : (
         <>
-          <div className="space-y-3" role="list" aria-label="Utbildningar">
+          <div className="space-y-3" role="list" aria-label={t('cv.educationsListAria', 'Utbildningar')}>
             {education.map((ed, index) => {
               const isExpanded = expandedId === ed.id
               const status = getCompletionStatus(ed)

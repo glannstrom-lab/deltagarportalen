@@ -232,7 +232,7 @@ function DiaryInner() {
             className="w-16 h-16 flex-shrink-0 select-none"
           />
           <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-            Samla tankar, humör, mål och tacksamhet på ett ställe — i din egen takt.
+            {t('diary.editorialSpot')}
           </p>
         </div>
 

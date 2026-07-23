@@ -47,6 +47,7 @@ function ApplicationCard({
     changeStatus: string
     delete: string
     view: string
+    actionsAria: string
   }
 }) {
   const [showMenu, setShowMenu] = useState(false)
@@ -73,7 +74,7 @@ function ApplicationCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            aria-label="Åtgärder för ansökan"
+            aria-label={labels.actionsAria}
             aria-haspopup="menu"
             aria-expanded={showMenu}
             className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
@@ -243,7 +244,8 @@ export function ApplicationsTab() {
     unknownCompany: t('common.employerNotSpecified'),
     changeStatus: t('jobs.applications.changeStatus'),
     delete: t('common.delete'),
-    view: t('common.view')
+    view: t('common.view'),
+    actionsAria: t('jobs.applications.actionsAria')
   }
 
   const statsLabels = {

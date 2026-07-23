@@ -493,7 +493,7 @@ export default function PlanTab() {
         <div
           className="mb-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
           role="region"
-          aria-label="Övergripande framsteg för karriärplan"
+          aria-label={t('career.plan.overallProgressAria', 'Övergripande framsteg för karriärplan')}
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
@@ -578,7 +578,7 @@ export default function PlanTab() {
         )}
 
         {/* Timeline */}
-        <div className="mb-6" role="region" aria-label="Tidslinje för karriärplan">
+        <div className="mb-6" role="region" aria-label={t('career.plan.timelineAria', 'Tidslinje för karriärplan')}>
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
             Tidslinje för karriärplan
@@ -591,7 +591,7 @@ export default function PlanTab() {
             </div>
           )}
 
-          <div className="relative pl-6" role="list" aria-label="Milstolpar">
+          <div className="relative pl-6" role="list" aria-label={t('career.plan.milestonesAria', 'Milstolpar')}>
             {milestones.length === 0 ? (
               <EmptyState
                 compact

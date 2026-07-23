@@ -76,7 +76,11 @@
     "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag.",
     "select": "Välj...",
     "copied": "Kopierat!",
-    "saving": "Sparar..."
+    "saving": "Sparar...",
+    "loadingStatus": "Laddar",
+    "clear": "Rensa",
+    "resetToSystemTheme": "Återställ till systeminställning",
+    "goBack": "Gå tillbaka"
   },
   "riasec": {
     "realistic": "Realistisk",
@@ -978,10 +982,13 @@
     "personalInfo": "Personuppgifter",
     "experience": "Arbetslivserfarenhet",
     "education": "Utbildning",
+    "educationsListAria": "Utbildningar",
     "skills": "Kompetenser",
     "languages": "Språk",
     "download": "Ladda ner CV",
     "preview": "Förhandsgranska",
+    "previewCvAria": "Förhandsgranska CV",
+    "formattingToolbarAria": "Formateringsverktyg",
     "createCV": "Skapa CV",
     "chooseTemplate": "Välj en mall",
     "templateDescription": "Moderna designer med förvalda färger och typsnitt — välj den som känns rätt för dig.",
@@ -1006,6 +1013,7 @@
     "myCvs": {
       "title": "Dina sparade CV",
       "loading": "Laddar dina CV:n...",
+      "actionsAria": "Åtgärder för CV",
       "savedCount": "Du har {{count}} CV sparade",
       "createNew": "Skapa nytt CV",
       "createFirstCV": "Skapa ditt första CV",
@@ -1760,6 +1768,7 @@
       "statistics": "Din statistik"
     },
     "write": {
+      "stepsNavAria": "Brevskrivningssteg",
       "copyText": "Kopiera text",
       "downloadPDF": "Ladda ner PDF",
       "downloading": "Laddar ner...",
@@ -1775,6 +1784,9 @@
       },
       "untitledLetter": "Namnlöst brev",
       "saved": "Brev sparat!"
+    },
+    "templates": {
+      "selectAria": "Välj brevmall"
     }
   },
   "jobSearch": {
@@ -2133,6 +2145,7 @@
       },
       "unknownPosition": "Okänd tjänst",
       "changeStatus": "Ändra status",
+      "actionsAria": "Åtgärder för ansökan",
       "confirmDelete": "Är du säker på att du vill ta bort denna ansökan?",
       "searchJobs": "Sök jobb",
       "noJobsHere": "Inga jobb här",
@@ -2629,6 +2642,7 @@
     "changeFilter": "Ändra filter för att se andra företag."
   },
   "career": {
+    "editorialSpot": "Utforska arbetsmarknaden och bygg din plan steg för steg.",
     "title": "Karriär",
     "subtitle": "Planera din karriärväg",
     "description": "Utforska yrken och planera din framtid",
@@ -2955,7 +2969,10 @@
       "to": "Till",
       "progress": "Framsteg",
       "xOfYMilestones": "{{completed}} av {{total}} delmål",
-      "updatePlan": "Uppdatera plan"
+      "updatePlan": "Uppdatera plan",
+      "overallProgressAria": "Övergripande framsteg för karriärplan",
+      "timelineAria": "Tidslinje för karriärplan",
+      "milestonesAria": "Milstolpar"
     },
     "skills": {
       "skillsGapAnalysis": "Kompetensgap-analys",
@@ -3257,6 +3274,10 @@
     "completeTestToSeeResults": "Du behöver genomföra intressetestet för att se dina resultat.",
     "couldNotLoadResults": "Kunde inte ladda resultaten",
     "couldNotRestartTest": "Kunde inte starta om testet",
+    "charts": {
+      "bigFiveAria": "Big Five personlighetsdrag",
+      "riasecTableAria": "RIASEC resultat i tabellform"
+    },
     "tabs": {
       "test": "Testet",
       "results": "Resultat",
@@ -3353,6 +3374,7 @@
     }
   },
   "international": {
+    "editorialSpot": "Visum, integration och språk — det du behöver för att jobba i ett nytt land.",
     "integration": {
       "title": "Integrationschecklista",
       "description": "Steg-för-steg guide för att etablera dig i Sverige. Markera punkter som klara för att spara din progress.",
@@ -3386,6 +3408,7 @@
     }
   },
   "personalBrand": {
+    "editorialSpot": "Bygg ett tydligt personligt varumärke som visar vad du kan.",
     "pageTitle": "Personligt Varumärke",
     "pageDescription": "Bygg och stärk ditt professionella varumärke",
     "tabs": {
@@ -3597,6 +3620,7 @@
     "couldNotClear": "Kunde inte rensa dina svar"
   },
   "diary": {
+    "editorialSpot": "Samla tankar, humör, mål och tacksamhet på ett ställe — i din egen takt.",
     "title": "Dagbok",
     "subtitle": "Reflektera över din jobbsökarresa",
     "description": "Din personliga dagbok och kalender",
@@ -4032,6 +4056,7 @@
     "subtitle": "Artiklar och guider för jobbsökare",
     "description": "Artiklar och guider för ditt jobbsökande",
     "intro": "Artiklar, guider och verktyg för din jobbsökarresa. Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.",
+    "searchAria": "Sök i kunskapsbanken",
     "tabs": {
       "forYou": "För dig",
       "gettingStarted": "Komma igång",
@@ -5985,6 +6010,8 @@
     "companyLabel": "Företag (valfritt)",
     "companyPlaceholder": "t.ex. Volvo, Spotify...",
     "startInterview": "Starta intervjun",
+    "ratingAria": "Betygsättning",
+    "currentQuestionAria": "Nuvarande fråga",
     "interview": "Intervju:",
     "genericPractice": "Generisk övning",
     "end": "Avsluta",
@@ -6178,7 +6205,8 @@
     "imageUpload": {
       "selectImageFile": "Välj en bildfil",
       "maxSize": "Max 5MB",
-      "changeImage": "Byt bild"
+      "changeImage": "Byt bild",
+      "uploadAria": "Ladda upp profilbild"
     },
     "settingsSection": {
       "shareProfile": "Dela din profil",
@@ -7164,6 +7192,8 @@
   "skillsGapAnalysis": {
     "title": "Kompetensgap-analys",
     "description": "Jämför ditt nuvarande CV med ditt drömjobb och få en konkret plan för vad du behöver utveckla.",
+    "regionAria": "Kompetensanalys",
+    "skillsListAria": "Lista över kompetenser",
     "currentProfile": {
       "title": "Din nuvarande profil",
       "placeholder": "Klistra in ditt CV här (eller skriv en kort sammanfattning av din bakgrund, erfarenhet och kompetenser)...",
@@ -8512,6 +8542,7 @@
     }
   },
   "salary": {
+    "editorialSpot": "Räkna på din lön, förbered förhandlingen och se vad marknaden betalar.",
     "negotiation": {
       "title": "Löneförhandlingsguide",
       "description": "Steg-för-steg guide för att förhandla lön i svensk arbetskultur. Förberedd förhandling ger bättre resultat.",
@@ -9316,6 +9347,68 @@
         "description": "Kontakta din arbetskonsulent och se anteckningar.",
         "notAssigned": "Inte tilldelad"
       }
+    }
+  },
+  "sta": {
+    "aria": {
+      "removeAbsence": "Ta bort anmälan",
+      "close": "Stäng",
+      "closeIntro": "Stäng introduktionen",
+      "editActivityScope": "Ändra aktivitetsomfattning",
+      "adjustStartDate": "Justera startdatum"
+    }
+  },
+  "coachWidget": {
+    "aria": {
+      "closeTips": "Stäng coachtips"
+    }
+  },
+  "notificationBell": {
+    "aria": {
+      "unread": "Oläst",
+      "markAsRead": "Markera som läst",
+      "deleteNotification": "Ta bort notifikation",
+      "notifications": "Notifikationer",
+      "close": "Stäng"
+    }
+  },
+  "occupation": {
+    "aria": {
+      "desiredJobsListAria": "Önskade yrken i prioriteringsordning",
+      "suggestionsAria": "Yrkesförslag"
+    }
+  },
+  "samlingar": {
+    "aria": {
+      "open": "Öppna mina samlingar",
+      "closePanel": "Stäng mina samlingar",
+      "close": "Stäng"
+    }
+  },
+  "skipLinks": {
+    "nav": "Snabblänkar",
+    "mainContent": "Huvudinnehåll",
+    "mainNavigation": "Huvudnavigation"
+  },
+  "toast": {
+    "aria": {
+      "closeMessage": "Stäng meddelande"
+    }
+  },
+  "inlineTip": {
+    "aria": {
+      "close": "Stäng tips"
+    }
+  },
+  "videoCall": {
+    "aria": {
+      "closeCall": "Stäng samtal",
+      "hangUp": "Lägg på"
+    }
+  },
+  "autoSave": {
+    "aria": {
+      "restoreData": "Återställ tidigare sparad data"
     }
   }
 }

@@ -76,7 +76,7 @@ export default function CareerPage() {
             className="w-16 h-16 flex-shrink-0 select-none"
           />
           <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-            Utforska arbetsmarknaden och bygg din plan steg för steg.
+            {t('career.editorialSpot')}
           </p>
         </div>
 

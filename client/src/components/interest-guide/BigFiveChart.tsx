@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { bigFiveNames, type BigFiveScores } from '@/services/interestGuideData'
 
 interface BigFiveChartProps {
@@ -5,8 +6,9 @@ interface BigFiveChartProps {
 }
 
 export function BigFiveChart({ scores }: BigFiveChartProps) {
+  const { t } = useTranslation()
   const entries = Object.entries(scores) as [keyof BigFiveScores, number][]
-  
+
   const getBarColor = (score: number) => {
     if (score >= 70) return 'bg-emerald-500'
     if (score >= 40) return 'bg-amber-500'
@@ -14,7 +16,7 @@ export function BigFiveChart({ scores }: BigFiveChartProps) {
   }
 
   return (
-    <div className="space-y-4" role="list" aria-label="Big Five personlighetsdrag">
+    <div className="space-y-4" role="list" aria-label={t('interestGuide.charts.bigFiveAria', 'Big Five personlighetsdrag')}>
       {entries.map(([key, score]) => {
         const info = bigFiveNames[key]
         const barColor = getBarColor(score)

@@ -15,6 +15,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { CloseButton } from '@/components/ui/Button'
@@ -119,6 +120,7 @@ export function StaOnboardingModal({
   onComplete,
   readOnly = false,
 }: OnboardingModalProps) {
+  const { t } = useTranslation()
   const [step, setStep] = useState<Step>('welcome')
   const [weeklyHours, setWeeklyHours] = useState(initialWeeklyHours)
   const [startedAt, setStartedAt] = useState(initialStartedAt)
@@ -180,7 +182,7 @@ export function StaOnboardingModal({
               <div className="text-xs text-stone-500">Steg {stepIdx + 1} av {totalSteps}</div>
             </div>
           </div>
-          <CloseButton onClick={onClose} aria-label="Stäng introduktionen" />
+          <CloseButton onClick={onClose} aria-label={t('sta.aria.closeIntro', 'Stäng introduktionen')} />
         </div>
 
         {/* Progress bar */}

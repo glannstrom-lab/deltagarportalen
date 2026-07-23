@@ -4,6 +4,7 @@
  * Uses brand colors + allowed semantic colors (amber for warning, red for destructive)
  */
 
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 type BadgeVariant =
@@ -74,6 +75,7 @@ export function Badge({
   dot = false,
   className,
 }: BadgeProps) {
+  const { t } = useTranslation()
   return (
     <span
       className={cn(
@@ -105,7 +107,7 @@ export function Badge({
             'ml-0.5 -mr-0.5 rounded-full p-0.5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900'
           )}
-          aria-label="Ta bort"
+          aria-label={t('common.remove', 'Ta bort')}
         >
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

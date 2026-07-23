@@ -9,6 +9,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   ChevronUp,
   ChevronDown,
@@ -35,6 +36,7 @@ export function DesiredJobsList({
   maxJobs = 10,
   className,
 }: DesiredJobsListProps) {
+  const { t } = useTranslation()
   const [adding, setAdding] = useState(false)
 
   // Sortera defensivt efter priority
@@ -85,7 +87,7 @@ export function DesiredJobsList({
     <div className={cn('w-full', className)}>
       {/* Lista med numrerade rader */}
       {ordered.length > 0 ? (
-        <ol className="space-y-2 mb-3" aria-label="Önskade yrken i prioriteringsordning">
+        <ol className="space-y-2 mb-3" aria-label={t('occupation.aria.desiredJobsListAria', 'Önskade yrken i prioriteringsordning')}>
           {ordered.map((job, idx) => (
             <li
               key={`${job.conceptId ?? 'free'}-${job.label}-${idx}`}

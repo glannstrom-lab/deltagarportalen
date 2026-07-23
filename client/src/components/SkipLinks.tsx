@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface SkipLink {
   id: string;
@@ -23,9 +24,10 @@ interface SkipLinksProps {
 }
 
 export function SkipLinks({ links = defaultLinks, className = '' }: SkipLinksProps) {
+  const { t } = useTranslation();
   return (
     <nav
-      aria-label="Snabblänkar"
+      aria-label={t('skipLinks.nav', 'Snabblänkar')}
       className={`skip-links ${className}`}
     >
       <ul className="list-none m-0 p-0">
@@ -62,17 +64,18 @@ interface MainContentProps {
   id?: string;
 }
 
-export function MainContent({ 
-  children, 
-  className = '', 
-  id = 'main-content' 
+export function MainContent({
+  children,
+  className = '',
+  id = 'main-content'
 }: MainContentProps) {
+  const { t } = useTranslation();
   return (
     <main
       id={id}
       tabIndex={-1}
       className={`outline-none ${className}`}
-      aria-label="Huvudinnehåll"
+      aria-label={t('skipLinks.mainContent', 'Huvudinnehåll')}
     >
       {children}
     </main>
@@ -87,17 +90,18 @@ interface NavigationLandmarkProps {
   label?: string;
 }
 
-export function NavigationLandmark({ 
-  children, 
-  className = '', 
+export function NavigationLandmark({
+  children,
+  className = '',
   id = 'main-navigation',
-  label = 'Huvudnavigation'
+  label
 }: NavigationLandmarkProps) {
+  const { t } = useTranslation();
   return (
     <nav
       id={id}
       className={className}
-      aria-label={label}
+      aria-label={label ?? t('skipLinks.mainNavigation', 'Huvudnavigation')}
     >
       {children}
     </nav>

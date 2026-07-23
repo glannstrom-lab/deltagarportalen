@@ -24,6 +24,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X } from '@/components/ui/icons'
 import type { LucideIcon } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -59,6 +60,7 @@ export function InlineTip({
   action,
   className,
 }: InlineTipProps) {
+  const { t } = useTranslation()
   const [isDismissed, setIsDismissed] = useState(true) // default true så vi inte flashar
 
   // Kolla localStorage on mount för att avgöra om vi redan dismissades
@@ -116,7 +118,7 @@ export function InlineTip({
 
       <button
         onClick={handleDismiss}
-        aria-label="Stäng tips"
+        aria-label={t('inlineTip.aria.close', 'Stäng tips')}
         className="flex-shrink-0 w-7 h-7 rounded-md flex items-center justify-center text-[var(--c-text)]/60 hover:text-[var(--c-text)] hover:bg-white/60 transition-colors"
       >
         <X className="w-3.5 h-3.5" />

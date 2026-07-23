@@ -11,6 +11,7 @@
  */
 
 import { useState, useRef, useEffect, useId, useCallback, KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Search, X, Loader2, AlertTriangle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { autocompleteOccupations, type AutocompleteSuggestion } from '@/services/afTaxonomyApi'
@@ -58,6 +59,7 @@ export function OccupationPicker({
   className,
   disabled,
 }: OccupationPickerProps) {
+  const { t } = useTranslation()
   const inputId = useId()
   const listboxId = `${inputId}-listbox`
 
@@ -222,7 +224,7 @@ export function OccupationPicker({
               setSuggestions([])
               inputRef.current?.focus()
             }}
-            aria-label="Rensa"
+            aria-label={t('common.clear', 'Rensa')}
             className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-400 hover:text-stone-600"
           >
             <X size={14} />
@@ -242,7 +244,7 @@ export function OccupationPicker({
         <ul
           id={listboxId}
           role="listbox"
-          aria-label="Yrkesförslag"
+          aria-label={t('occupation.aria.suggestionsAria', 'Yrkesförslag')}
           className="absolute z-20 left-0 right-0 mt-1 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-lg shadow-lg max-h-72 overflow-y-auto py-1"
         >
           {error && (

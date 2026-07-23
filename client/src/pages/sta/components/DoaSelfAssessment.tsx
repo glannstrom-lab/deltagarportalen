@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, ChevronRight, ChevronLeft, CheckCircle2, Save, AlertTriangle, Info } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -229,6 +230,7 @@ function Header({
   lastSavedAt: Date | null
   participantDone: boolean
 }) {
+  const { t } = useTranslation()
   const stepLabel =
     step === 'intro'
       ? 'Om självskattningen'
@@ -276,7 +278,7 @@ function Header({
       <button
         type="button"
         onClick={onClose}
-        aria-label="Stäng"
+        aria-label={t('sta.aria.close', 'Stäng')}
         className="flex-shrink-0 p-1.5 rounded-full hover:bg-white/60 transition-colors"
       >
         <X size={18} className="text-stone-600" />
@@ -657,6 +659,7 @@ function Footer({
 // ===========================================================================
 
 function ModalShell({ children, onClose }: { children: React.ReactNode; onClose: () => void }) {
+  const { t } = useTranslation()
   // ESC stänger
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -672,7 +675,7 @@ function ModalShell({ children, onClose }: { children: React.ReactNode; onClose:
         type="button"
         className="absolute inset-0 bg-stone-900/40"
         onClick={onClose}
-        aria-label="Stäng"
+        aria-label={t('sta.aria.close', 'Stäng')}
       />
       <div
         className="relative w-full sm:max-w-3xl bg-white sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-screen sm:max-h-[90vh]"

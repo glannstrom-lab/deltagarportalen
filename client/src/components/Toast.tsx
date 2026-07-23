@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { useState, useEffect, useCallback } from 'react'
-import { 
+import { useTranslation } from 'react-i18next'
+import {
   CheckCircle, 
   XCircle, 
   AlertCircle, 
@@ -29,6 +30,7 @@ interface ToastItemProps {
 }
 
 function ToastItem({ toast, onRemove }: ToastItemProps) {
+  const { t } = useTranslation()
   const [isExiting, setIsExiting] = useState(false)
   const [progress, setProgress] = useState(100)
 
@@ -119,7 +121,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       {/* Close button */}
       <button
         onClick={handleRemove}
-        aria-label="Stäng meddelande"
+        aria-label={t('toast.aria.closeMessage', 'Stäng meddelande')}
         className="flex-shrink-0 p-1 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded transition-colors"
       >
         <X className="w-4 h-4" aria-hidden="true" />

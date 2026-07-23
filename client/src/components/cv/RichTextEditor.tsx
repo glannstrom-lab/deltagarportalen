@@ -5,6 +5,7 @@
  */
 
 import { useState, useRef, useCallback, useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Bold, Italic, List, ListOrdered, Quote,
   Link, Undo, Redo,
@@ -32,6 +33,7 @@ export function RichTextEditor({
   helpText,
   id: providedId
 }: RichTextEditorProps) {
+  const { t } = useTranslation()
   const generatedId = useId()
   const editorId = providedId || `rich-text-${generatedId}`
   const helpTextId = `${editorId}-help`
@@ -159,7 +161,7 @@ export function RichTextEditor({
         <div
           id={`${editorId}-toolbar`}
           role="toolbar"
-          aria-label="Formateringsverktyg"
+          aria-label={t('cv.formattingToolbarAria', 'Formateringsverktyg')}
           aria-controls={editorId}
           className="flex flex-wrap items-center gap-1 p-2 bg-stone-50 border border-stone-200 rounded-t-lg"
         >

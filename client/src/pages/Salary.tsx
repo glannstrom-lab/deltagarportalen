@@ -59,7 +59,7 @@ export default function SalaryPage() {
           className="w-16 h-16 flex-shrink-0 select-none"
         />
         <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-          Räkna på din lön, förbered förhandlingen och se vad marknaden betalar.
+          {t('salary.editorialSpot')}
         </p>
       </div>
 

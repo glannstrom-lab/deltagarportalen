@@ -4,6 +4,7 @@
  * UPPDATERAD: Använder ThemeContext
  */
 
+import { useTranslation } from 'react-i18next'
 import { Moon, Sun, Monitor } from '@/components/ui/icons'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ export function DarkModeToggle({
   showSystem = true,
   className
 }: DarkModeToggleProps) {
+  const { t } = useTranslation()
   const { theme, setTheme, isDark } = useTheme()
 
   const sizeClasses = {
@@ -149,7 +151,7 @@ export function DarkModeToggle({
         <button
           onClick={() => setTheme('system')}
           className="text-xs text-stone-600 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 underline"
-          aria-label="Återställ till systeminställning"
+          aria-label={t('common.resetToSystemTheme', 'Återställ till systeminställning')}
         >
           System
         </button>

@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
@@ -14,6 +15,7 @@ import { navHubs } from './layout/navigation'
 const HUB_ROOT_PATHS = new Set<string>(['/', ...navHubs.map(h => h.path)])
 
 export function MobileBackButton() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const { isMobile } = useMobileOptimizer()
@@ -53,8 +55,8 @@ export function MobileBackButton() {
         top: 'max(12px, env(safe-area-inset-top))',
         left: '12px'
       }}
-      aria-label="Gå tillbaka"
-      title="Gå tillbaka"
+      aria-label={t('common.goBack', 'Gå tillbaka')}
+      title={t('common.goBack', 'Gå tillbaka')}
     >
       <ArrowLeft className="w-5 h-5 text-stone-700" />
     </button>

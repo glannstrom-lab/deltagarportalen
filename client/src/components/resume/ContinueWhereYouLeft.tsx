@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   RotateCcw,
@@ -53,6 +54,7 @@ interface CVData {
 }
 
 export function ContinueWhereYouLeft() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [activities, setActivities] = useState<InProgressActivity[]>([])
   const [isVisible, setIsVisible] = useState(true)
@@ -205,7 +207,7 @@ export function ContinueWhereYouLeft() {
         <button
           onClick={() => setIsVisible(false)}
           className="p-1.5 text-stone-600 hover:text-stone-600 hover:bg-white/50 rounded-lg transition-colors"
-          aria-label="Dölj"
+          aria-label={t('common.hide', 'Dölj')}
         >
           <X className="w-4 h-4" />
         </button>

@@ -11,6 +11,7 @@
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Upload, X, User, Loader2, Camera, Clipboard } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/Button'
@@ -35,6 +36,7 @@ export function ImageUpload({
   maxSizeMB = DEFAULT_MAX_SIZE,
   acceptedTypes = DEFAULT_ACCEPTED_TYPES,
 }: ImageUploadProps) {
+  const { t } = useTranslation()
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -183,7 +185,7 @@ export function ImageUpload({
           accept={acceptedTypes.join(',')}
           onChange={handleInputChange}
           className="hidden"
-          aria-label="Ladda upp profilbild"
+          aria-label={t('profile.imageUpload.uploadAria', 'Ladda upp profilbild')}
         />
 
         {/* Preview State */}

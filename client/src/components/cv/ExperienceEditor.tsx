@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Briefcase, Building2, MapPin, Calendar,
   ChevronDown, ChevronUp, Trash2,
@@ -26,6 +27,7 @@ interface ValidationErrors {
 }
 
 export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProps) {
+  const { t } = useTranslation()
   const [expandedId, setExpandedId] = useState<string | null>(
     experiences.length === 1 ? experiences[0].id : null
   )
@@ -177,7 +179,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
       ) : (
         <>
           {/* Experience List */}
-          <div className="space-y-3" role="list" aria-label="Arbetslivserfarenhet">
+          <div className="space-y-3" role="list" aria-label={t('cv.experience', 'Arbetslivserfarenhet')}>
             {experiences.map((exp, index) => {
               const isExpanded = expandedId === exp.id
               const status = getCompletionStatus(exp)

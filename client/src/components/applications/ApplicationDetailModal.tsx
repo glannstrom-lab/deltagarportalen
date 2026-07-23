@@ -679,7 +679,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label={t('common.loadingStatus', 'Laddar')} />
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-stone-700">
@@ -728,7 +728,7 @@ export function ApplicationDetailModal({
               )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label={t('common.loadingStatus', 'Laddar')} />
                 </div>
               ) : contacts.length === 0 ? (
                 !showContactForm && (
@@ -787,7 +787,7 @@ export function ApplicationDetailModal({
               )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label={t('common.loadingStatus', 'Laddar')} />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 !showReminderForm && (

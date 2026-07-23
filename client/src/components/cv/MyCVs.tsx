@@ -461,7 +461,7 @@ export function MyCVs() {
                     <button
                       onClick={() => setActionMenuOpen(actionMenuOpen === cv.id ? null : cv.id)}
                       disabled={duplicatingId === cv.id || deletingId === cv.id}
-                      aria-label="Åtgärder för CV"
+                      aria-label={t('cv.myCvs.actionsAria', 'Åtgärder för CV')}
                       aria-haspopup="menu"
                       aria-expanded={actionMenuOpen === cv.id}
                       className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors disabled:opacity-50"

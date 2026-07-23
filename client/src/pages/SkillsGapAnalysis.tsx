@@ -529,12 +529,12 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
         {/* Skills Gap */}
         {skills.length > 0 && (
-          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Kompetensanalys">
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label={t('skillsGapAnalysis.regionAria', 'Kompetensanalys')}>
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
               {t('skillsGapAnalysis.skillsComparison')}
             </h3>
-            <div className="space-y-4" role="list" aria-label="Lista över kompetenser">
+            <div className="space-y-4" role="list" aria-label={t('skillsGapAnalysis.skillsListAria', 'Lista över kompetenser')}>
               {skills.map((skill, idx) => (
                 <div key={idx} className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700">
                   <div className="flex items-center justify-between mb-2">

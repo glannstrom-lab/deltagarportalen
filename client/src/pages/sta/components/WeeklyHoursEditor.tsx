@@ -7,6 +7,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import { Clock, CheckCircle2, AlertCircle, Loader2 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export function WeeklyHoursEditor({ currentHours, onSave, readOnly = false }: Props) {
+  const { t } = useTranslation()
   const [draft, setDraft] = useState(currentHours)
   const [editing, setEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -70,7 +72,7 @@ export function WeeklyHoursEditor({ currentHours, onSave, readOnly = false }: Pr
             setEditing(true)
           }}
           className="text-xs text-stone-500 hover:text-stone-700 hover:underline"
-          aria-label="Ändra aktivitetsomfattning"
+          aria-label={t('sta.aria.editActivityScope', 'Ändra aktivitetsomfattning')}
         >
           Ändra
         </button>

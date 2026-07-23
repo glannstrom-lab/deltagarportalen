@@ -262,7 +262,7 @@ export function KompetenskartlaggningForm({ enrollmentId, existing, onClose, onS
               </div>
             </div>
           </div>
-          <CloseButton onClick={onClose} aria-label="Stäng" />
+          <CloseButton onClick={onClose} />
         </div>
 
         {/* Progress */}

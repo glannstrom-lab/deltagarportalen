@@ -187,7 +187,7 @@ async function generateCoverLetterWithAI(data: {
 }
 
 export function CoverLetterWrite() {
-  useTranslation()
+  const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { user } = useAuthStore()
@@ -498,7 +498,7 @@ export function CoverLetterWrite() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Step indicator */}
-      <nav aria-label="Brevskrivningssteg" className="bg-white dark:bg-stone-900 rounded-xl p-4 border border-stone-200 dark:border-stone-700/50 mb-6">
+      <nav aria-label={t('coverLetter.write.stepsNavAria', 'Brevskrivningssteg')} className="bg-white dark:bg-stone-900 rounded-xl p-4 border border-stone-200 dark:border-stone-700/50 mb-6">
         <ol className="flex items-center justify-between" role="list">
           {steps.map((step, index) => {
             const Icon = step.icon

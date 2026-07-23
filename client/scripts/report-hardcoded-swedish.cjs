@@ -31,16 +31,25 @@ function* walk(dir) {
   }
 }
 
+// F9 (2026-07-23): literala aria-label-värden är osynliga för både visuell
+// QA och å/ä/ö-heuristiken (t.ex. "Laddar", "Rensa") men läses upp av
+// skärmläsare på fel språk i engelskt UI. Flagga ALLA literala värden —
+// ett aria-label ska gå genom t() precis som synlig text.
+const ARIA_LITERAL = /aria-label=["'][^"'{]/
+
 const results = []
+const ariaResults = []
 for (const file of walk(SRC)) {
   const lines = fs.readFileSync(file, 'utf8').split('\n')
   let count = 0
+  let ariaCount = 0
   let inBlockComment = false
   for (const raw of lines) {
     const line = raw.trim()
     if (inBlockComment) { if (line.includes('*/')) inBlockComment = false; continue }
     if (line.startsWith('//') || line.startsWith('*')) continue
     if (line.startsWith('/*') || line.startsWith('{/*')) { if (!line.includes('*/')) inBlockComment = true; continue }
+    if (ARIA_LITERAL.test(line)) ariaCount++
     if (!SWEDISH.test(line) || !LITERAL.test(line)) continue
     // Legitima mönster: t()-fallback, labelSv/-En-datafält, console/logger, sv-SE-locale
     if (/\bt\(/.test(line)) continue
@@ -50,6 +59,7 @@ for (const file of walk(SRC)) {
     count++
   }
   if (count > 0) results.push({ file: path.relative(SRC, file), count })
+  if (ariaCount > 0) ariaResults.push({ file: path.relative(SRC, file), count: ariaCount })
 }
 
 results.sort((a, b) => b.count - a.count)
@@ -61,4 +71,13 @@ for (const r of results.slice(0, top)) {
   console.log(String(r.count).padStart(5) + '  ' + r.file)
 }
 if (results.length > top) console.log(`  ... och ${results.length - top} filer till`)
+
+ariaResults.sort((a, b) => b.count - a.count)
+const ariaTotal = ariaResults.reduce((a, r) => a + r.count, 0)
+console.log(`\nLiterala aria-label (borde gå genom t()): ${ariaTotal} rader i ${ariaResults.length} filer\n`)
+for (const r of ariaResults.slice(0, top)) {
+  console.log(String(r.count).padStart(5) + '  ' + r.file)
+}
+if (ariaResults.length > top) console.log(`  ... och ${ariaResults.length - top} filer till`)
+
 console.log('\nOBS: heuristik — verifiera manuellt. Konsulent-/adminvyer får ha svensk ton (DESIGN.md §2).')

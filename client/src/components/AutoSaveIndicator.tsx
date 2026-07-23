@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Check, Save, AlertCircle, RotateCcw } from '@/components/ui/icons'
 
 export type SaveStatus = 'saved' | 'saving' | 'unsaved' | 'error'
@@ -18,6 +19,7 @@ export function AutoSaveIndicator({
   onRestore,
   compact = false
 }: AutoSaveIndicatorProps) {
+  const { t } = useTranslation()
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
 
   const formatLastSaved = (date: Date) => {
@@ -67,7 +69,7 @@ export function AutoSaveIndicator({
           <button
             onClick={() => setShowRestoreConfirm(true)}
             className="text-xs text-[var(--c-text)] hover:text-[var(--c-text)] flex items-center gap-1"
-            aria-label="Återställ tidigare sparad data"
+            aria-label={t('autoSave.aria.restoreData', 'Återställ tidigare sparad data')}
           >
             <RotateCcw className="w-3 h-3" />
             Återställ

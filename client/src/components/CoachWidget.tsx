@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useId, useRef, useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { X, ChevronDown, ChevronUp, MessageCircle, Lightbulb, ExternalLink } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -195,6 +196,7 @@ function CoachPanel({
   titleId: string
   onKeyDown: (e: React.KeyboardEvent) => void
 }) {
+  const { t } = useTranslation()
   const coach = COACHES[activeCoach]
   const coachContent = content.byCoach[activeCoach]
 
@@ -212,7 +214,7 @@ function CoachPanel({
       <button
         type="button"
         onClick={onClose}
-        aria-label="Stäng coachtips"
+        aria-label={t('coachWidget.aria.closeTips', 'Stäng coachtips')}
         className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm cursor-default"
       />
 
@@ -250,7 +252,7 @@ function CoachPanel({
             ref={closeBtnRef}
             type="button"
             onClick={onClose}
-            aria-label="Stäng"
+            aria-label={t('common.close', 'Stäng')}
             className="flex-shrink-0 p-1.5 rounded-full hover:bg-white/60 dark:hover:bg-stone-800 transition-colors"
           >
             <X className="w-4 h-4 text-stone-600 dark:text-stone-300" aria-hidden="true" />

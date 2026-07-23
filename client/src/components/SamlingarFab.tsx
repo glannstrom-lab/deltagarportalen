@@ -17,6 +17,7 @@
  */
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Bookmark,
@@ -80,6 +81,7 @@ const DESTINATIONS: Destination[] = [
 ]
 
 export function SamlingarFab() {
+  const { t } = useTranslation()
   const profile = useAuthStore(s => s.profile)
   const [isOpen, setIsOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
@@ -145,7 +147,7 @@ export function SamlingarFab() {
         <button
           type="button"
           onClick={() => setIsOpen(true)}
-          aria-label="Öppna mina samlingar"
+          aria-label={t('samlingar.aria.open', 'Öppna mina samlingar')}
           aria-expanded={false}
           className={cn(
             'group fixed z-40',
@@ -189,7 +191,7 @@ export function SamlingarFab() {
           <button
             type="button"
             onClick={() => setIsOpen(false)}
-            aria-label="Stäng mina samlingar"
+            aria-label={t('samlingar.aria.closePanel', 'Stäng mina samlingar')}
             className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm cursor-default"
           />
 
@@ -233,7 +235,7 @@ export function SamlingarFab() {
                 ref={closeBtnRef}
                 type="button"
                 onClick={() => setIsOpen(false)}
-                aria-label="Stäng"
+                aria-label={t('samlingar.aria.close', 'Stäng')}
                 className="flex-shrink-0 p-1.5 rounded-full hover:bg-white/60 dark:hover:bg-stone-800 transition-colors"
               >
                 <X className="w-4 h-4 text-stone-600 dark:text-stone-300" aria-hidden="true" />

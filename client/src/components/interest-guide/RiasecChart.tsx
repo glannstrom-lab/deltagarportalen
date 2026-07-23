@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { riasecColors, riasecNames, type RiasecScores } from '@/services/interestGuideData'
 
 interface RiasecChartProps {
@@ -6,6 +7,7 @@ interface RiasecChartProps {
 }
 
 export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
+  const { t } = useTranslation()
   const center = size / 2
   const radius = (size / 2) - 40
   const keys: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
@@ -114,7 +116,7 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
   return (
     <div className="relative">
       {/* Screen reader accessible data table */}
-      <table className="sr-only" aria-label="RIASEC resultat i tabellform">
+      <table className="sr-only" aria-label={t('interestGuide.charts.riasecTableAria', 'RIASEC resultat i tabellform')}>
         <caption>Dina RIASEC-resultat visar dina arbetsintressen på en skala 1-5</caption>
         <thead>
           <tr>

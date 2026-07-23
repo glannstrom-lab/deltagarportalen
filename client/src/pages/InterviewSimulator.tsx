@@ -500,7 +500,7 @@ TIPS FÖR FÖRBÄTTRING:
               className="w-full bg-[var(--c-solid)] hover:brightness-[1.08] text-white font-medium py-3 rounded-xl shadow-md transition-all"
               aria-busy={isLoading}
             >
-              {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" aria-label="Laddar" /> : t('interviewSimulator.startInterview')}
+              {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" aria-label={t('common.loadingStatus', 'Laddar')} /> : t('interviewSimulator.startInterview')}
             </Button>
           </div>
         </Card>
@@ -680,7 +680,7 @@ TIPS FÖR FÖRBÄTTRING:
                     <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
                       {fs.rating ? t('interviewSimulator.session.aiRating') : t('interviewSimulator.session.rateThisAnswer')}
                     </p>
-                    <div className="flex gap-1" role="group" aria-label="Betygsättning">
+                    <div className="flex gap-1" role="group" aria-label={t('interviewSimulator.ratingAria', 'Betygsättning')}>
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
@@ -736,7 +736,7 @@ TIPS FÖR FÖRBÄTTRING:
       )}
 
       {/* Nuvarande fråga - with aria-live for AI questions */}
-      <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50 shadow-sm" role="region" aria-label="Nuvarande fråga">
+      <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50 shadow-sm" role="region" aria-label={t('interviewSimulator.currentQuestionAria', 'Nuvarande fråga')}>
         <div className="flex gap-4" aria-live="polite">
           <div className="w-12 h-12 rounded-xl bg-[var(--c-solid)] flex items-center justify-center flex-shrink-0 shadow-md">
             <User className="w-6 h-6 text-white" aria-hidden="true" />

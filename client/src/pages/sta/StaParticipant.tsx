@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
@@ -736,6 +737,7 @@ function STaHero({
   /** Mänsklig etikett för när en låst del öppnas — visas under framtida delar. */
   unlockLabelFor?: (part: StaPart) => string
 }) {
+  const { t } = useTranslation()
   const partLabel = STA_PARTS.find((p) => p.id === mock.currentPart)?.shortLabel ?? ''
   const progressPct = Math.round((mock.currentDay / mock.totalDays) * 100)
   const canEditDate = !!onUpdateStartDate
@@ -803,7 +805,7 @@ function STaHero({
                       setEditing(true)
                     }}
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
-                    aria-label="Justera startdatum"
+                    aria-label={t('sta.aria.adjustStartDate', 'Justera startdatum')}
                   >
                     <PencilLine size={11} />
                     Justera

@@ -76,7 +76,11 @@
     "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions.",
     "select": "Select...",
     "copied": "Copied!",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "loadingStatus": "Loading",
+    "clear": "Clear",
+    "resetToSystemTheme": "Reset to system setting",
+    "goBack": "Go back"
   },
   "riasec": {
     "realistic": "Realistic",
@@ -971,10 +975,13 @@
     "personalInfo": "Personal information",
     "experience": "Work experience",
     "education": "Education",
+    "educationsListAria": "Educations",
     "skills": "Skills",
     "languages": "Languages",
     "download": "Download CV",
     "preview": "Preview",
+    "previewCvAria": "Preview CV",
+    "formattingToolbarAria": "Formatting tools",
     "createCV": "Create CV",
     "chooseTemplate": "Choose a template",
     "templateDescription": "Modern designs with preset colors and fonts — pick the one that feels right for you.",
@@ -999,6 +1006,7 @@
     "myCvs": {
       "title": "My saved CVs",
       "loading": "Loading your CVs...",
+      "actionsAria": "CV actions",
       "savedCount": "You have {{count}} CVs saved",
       "createNew": "Create new CV",
       "createFirstCV": "Create your first CV",
@@ -1753,6 +1761,7 @@
       "statistics": "Your statistics"
     },
     "write": {
+      "stepsNavAria": "Letter-writing steps",
       "copyText": "Copy text",
       "downloadPDF": "Download PDF",
       "downloading": "Downloading...",
@@ -1768,6 +1777,9 @@
       },
       "untitledLetter": "Untitled letter",
       "saved": "Letter saved!"
+    },
+    "templates": {
+      "selectAria": "Choose letter template"
     }
   },
   "jobSearch": {
@@ -2126,6 +2138,7 @@
       },
       "unknownPosition": "Unknown position",
       "changeStatus": "Change status",
+      "actionsAria": "Application actions",
       "confirmDelete": "Are you sure you want to delete this application?",
       "searchJobs": "Search jobs",
       "noJobsHere": "No jobs here",
@@ -2622,6 +2635,7 @@
     "changeFilter": "Change filter to see other companies."
   },
   "career": {
+    "editorialSpot": "Explore the job market and build your plan step by step.",
     "title": "Career",
     "subtitle": "Plan your career path",
     "description": "Explore occupations and plan your future",
@@ -2948,7 +2962,10 @@
       "to": "To",
       "progress": "Progress",
       "xOfYMilestones": "{{completed}} of {{total}} milestones",
-      "updatePlan": "Update plan"
+      "updatePlan": "Update plan",
+      "overallProgressAria": "Overall career plan progress",
+      "timelineAria": "Career plan timeline",
+      "milestonesAria": "Milestones"
     },
     "skills": {
       "skillsGapAnalysis": "Skills Gap Analysis",
@@ -3299,6 +3316,10 @@
     "completeTestToSeeResults": "You need to complete the interest test to see your results.",
     "couldNotLoadResults": "Could not load results",
     "couldNotRestartTest": "Could not restart the test",
+    "charts": {
+      "bigFiveAria": "Big Five personality traits",
+      "riasecTableAria": "RIASEC results in table form"
+    },
     "explore": {
       "badge": "Explore occupations",
       "title": "All occupations",
@@ -3346,6 +3367,7 @@
     }
   },
   "international": {
+    "editorialSpot": "Visas, integration and language — what you need to work in a new country.",
     "integration": {
       "title": "Integration Checklist",
       "description": "Step-by-step guide to establishing yourself in Sweden. Mark items as complete to save your progress.",
@@ -3379,6 +3401,7 @@
     }
   },
   "personalBrand": {
+    "editorialSpot": "Build a clear personal brand that shows what you can do.",
     "pageTitle": "Personal Brand",
     "pageDescription": "Build and strengthen your professional brand",
     "tabs": {
@@ -3590,6 +3613,7 @@
     "couldNotClear": "Could not clear your answers"
   },
   "diary": {
+    "editorialSpot": "Collect thoughts, moods, goals and gratitude in one place — at your own pace.",
     "title": "Diary",
     "subtitle": "Reflect on your job search journey",
     "description": "Your personal diary and calendar",
@@ -4025,6 +4049,7 @@
     "subtitle": "Articles and guides for job seekers",
     "description": "Articles and guides for your job search",
     "intro": "Articles, guides and tools for your job search journey. Whether you're a beginner or experienced, you'll find something to help you move forward.",
+    "searchAria": "Search the knowledge base",
     "tabs": {
       "forYou": "For you",
       "gettingStarted": "Getting Started",
@@ -5978,6 +6003,8 @@
     "companyLabel": "Company (optional)",
     "companyPlaceholder": "e.g. Google, Microsoft...",
     "startInterview": "Start interview",
+    "ratingAria": "Rating",
+    "currentQuestionAria": "Current question",
     "interview": "Interview:",
     "genericPractice": "Generic practice",
     "end": "End",
@@ -6171,7 +6198,8 @@
     "imageUpload": {
       "selectImageFile": "Please select an image file",
       "maxSize": "Max 5MB",
-      "changeImage": "Change image"
+      "changeImage": "Change image",
+      "uploadAria": "Upload profile picture"
     },
     "settingsSection": {
       "shareProfile": "Share your profile",
@@ -7157,6 +7185,8 @@
   "skillsGapAnalysis": {
     "title": "Skills Gap Analysis",
     "description": "Compare your current CV with your dream job and get a concrete plan for what you need to develop.",
+    "regionAria": "Skills analysis",
+    "skillsListAria": "List of skills",
     "currentProfile": {
       "title": "Your current profile",
       "placeholder": "Paste your CV here (or write a short summary of your background, experience and skills)...",
@@ -8505,6 +8535,7 @@
     "tryAsking": "Try asking about:"
   },
   "salary": {
+    "editorialSpot": "Calculate your salary, prepare for the negotiation and see what the market pays.",
     "negotiation": {
       "title": "Salary Negotiation Guide",
       "description": "Step-by-step guide for negotiating salary in Swedish work culture. Prepared negotiation gives better results.",
@@ -9309,6 +9340,68 @@
         "description": "Contact your employment consultant and see notes.",
         "notAssigned": "Not assigned yet"
       }
+    }
+  },
+  "sta": {
+    "aria": {
+      "removeAbsence": "Remove report",
+      "close": "Close",
+      "closeIntro": "Close introduction",
+      "editActivityScope": "Change activity scope",
+      "adjustStartDate": "Adjust start date"
+    }
+  },
+  "coachWidget": {
+    "aria": {
+      "closeTips": "Close coach tips"
+    }
+  },
+  "notificationBell": {
+    "aria": {
+      "unread": "Unread",
+      "markAsRead": "Mark as read",
+      "deleteNotification": "Delete notification",
+      "notifications": "Notifications",
+      "close": "Close"
+    }
+  },
+  "occupation": {
+    "aria": {
+      "desiredJobsListAria": "Desired occupations in priority order",
+      "suggestionsAria": "Occupation suggestions"
+    }
+  },
+  "samlingar": {
+    "aria": {
+      "open": "Open my collections",
+      "closePanel": "Close my collections",
+      "close": "Close"
+    }
+  },
+  "skipLinks": {
+    "nav": "Skip links",
+    "mainContent": "Main content",
+    "mainNavigation": "Main navigation"
+  },
+  "toast": {
+    "aria": {
+      "closeMessage": "Close message"
+    }
+  },
+  "inlineTip": {
+    "aria": {
+      "close": "Close tip"
+    }
+  },
+  "videoCall": {
+    "aria": {
+      "closeCall": "Close call",
+      "hangUp": "Hang up"
+    }
+  },
+  "autoSave": {
+    "aria": {
+      "restoreData": "Restore previously saved data"
     }
   }
 }

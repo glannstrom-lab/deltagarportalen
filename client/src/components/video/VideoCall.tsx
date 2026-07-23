@@ -2,6 +2,7 @@
  * Video Call - Inbäddade videosamtal
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { Video, PhoneOff, Mic, MicOff, VideoOff, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ interface VideoCallProps {
 }
 
 export function VideoCall({ isOpen, onClose, participantName, isIncoming = false }: VideoCallProps) {
+  const { t } = useTranslation()
   const [isConnected] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [isVideoOff, setIsVideoOff] = useState(false)
@@ -39,7 +41,7 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
           <h3 className="text-white font-semibold">{participantName}</h3>
           {isConnected && <p className="text-stone-600 text-sm">{formatDuration(callDuration)}</p>}
         </div>
-        <button onClick={onClose} aria-label="Stäng samtal" className="text-white/60 hover:text-white"><X size={24} /></button>
+        <button onClick={onClose} aria-label={t('videoCall.aria.closeCall', 'Stäng samtal')} className="text-white/60 hover:text-white"><X size={24} /></button>
       </div>
 
       <div className="flex-1 relative bg-stone-950 flex items-center justify-center">
@@ -67,7 +69,7 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
         </button>
         <button
           onClick={onClose}
-          aria-label="Lägg på"
+          aria-label={t('videoCall.aria.hangUp', 'Lägg på')}
           className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center"
         >
           <PhoneOff size={28} />

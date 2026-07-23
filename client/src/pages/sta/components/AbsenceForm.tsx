@@ -7,6 +7,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import {
@@ -55,6 +56,7 @@ interface Props {
 }
 
 export function AbsenceForm({ recentAbsences, onReport, onRemove, readOnly = false }: Props) {
+  const { t } = useTranslation()
   const today = isoDate(new Date())
   const [open, setOpen] = useState(false)
   const [date, setDate] = useState(today)
@@ -228,7 +230,7 @@ export function AbsenceForm({ recentAbsences, onReport, onRemove, readOnly = fal
                     type="button"
                     onClick={() => onRemove(a.id)}
                     className="text-xs text-stone-400 hover:text-rose-600"
-                    aria-label="Ta bort anmälan"
+                    aria-label={t('sta.aria.removeAbsence', 'Ta bort anmälan')}
                   >
                     Ta bort
                   </button>

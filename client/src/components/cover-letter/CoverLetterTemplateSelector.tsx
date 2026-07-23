@@ -3,6 +3,7 @@
  * Visual grid for selecting cover letter templates
  */
 
+import { useTranslation } from 'react-i18next'
 import { FileText, Sparkles, Minus, Briefcase, Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { COVER_LETTER_TEMPLATES } from './templates'
@@ -28,6 +29,7 @@ export function CoverLetterTemplateSelector({
   showDescription = true,
   columns = 2
 }: CoverLetterTemplateSelectorProps) {
+  const { t } = useTranslation()
   return (
     <div
       className={cn(
@@ -35,7 +37,7 @@ export function CoverLetterTemplateSelector({
         columns === 4 ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'
       )}
       role="listbox"
-      aria-label="Välj brevmall"
+      aria-label={t('coverLetter.templates.selectAria', 'Välj brevmall')}
     >
       {COVER_LETTER_TEMPLATES.map((template) => {
         const Icon = ICON_MAP[template.icon] || FileText
@@ -126,8 +128,9 @@ export function CoverLetterTemplateSelectorCompact({
   selectedTemplate: string
   onSelect: (templateId: string) => void
 }) {
+  const { t } = useTranslation()
   return (
-    <div className="flex flex-wrap gap-2" role="listbox" aria-label="Välj brevmall">
+    <div className="flex flex-wrap gap-2" role="listbox" aria-label={t('coverLetter.templates.selectAria', 'Välj brevmall')}>
       {COVER_LETTER_TEMPLATES.map((template) => {
         const isSelected = selectedTemplate === template.id
 

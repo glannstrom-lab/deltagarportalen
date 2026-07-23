@@ -9,8 +9,10 @@
 
 import { X } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 export function UpdateNotification() {
+  const { t } = useTranslation()
   const [isOffline, setIsOffline] = useState(!navigator.onLine)
   const [isDismissed, setIsDismissed] = useState(false)
 
@@ -42,7 +44,7 @@ export function UpdateNotification() {
       <button
         onClick={() => setIsDismissed(true)}
         className="p-1 hover:bg-stone-700 rounded"
-        aria-label="Stäng"
+        aria-label={t('common.close', 'Stäng')}
       >
         <X className="w-4 h-4" />
       </button>

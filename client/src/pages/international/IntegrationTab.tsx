@@ -432,7 +432,7 @@ export default function IntegrationTab() {
                         }}
                         className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
                         aria-expanded={isExpanded}
-                        aria-label="Visa mer"
+                        aria-label={t('common.showMore', 'Visa mer')}
                       >
                         {isExpanded ? (
                           <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />

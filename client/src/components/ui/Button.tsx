@@ -4,6 +4,7 @@
  * UPPDATERAD: "Calm & Capable" färgpalett (Violet + Warm Stone)
  */
 
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { buttonVariants, touch, animations } from '@/styles/design-system'
 import { Loader2 } from '@/components/ui/icons'
@@ -182,6 +183,7 @@ interface CloseButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>
 }
 
 export function CloseButton({ size = 'md', className, ...props }: CloseButtonProps) {
+  const { t } = useTranslation()
   return (
     <IconButton
       icon={
@@ -189,7 +191,7 @@ export function CloseButton({ size = 'md', className, ...props }: CloseButtonPro
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       }
-      label="Stäng"
+      label={t('common.close', 'Stäng')}
       variant="ghost"
       size={size}
       className={className}

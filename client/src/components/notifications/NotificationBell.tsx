@@ -77,6 +77,7 @@ function NotificationItem({
   onClick,
   locale,
 }: NotificationItemProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const config = notificationConfig[notification.type]
 
@@ -127,7 +128,7 @@ function NotificationItem({
             {notification.title}
           </p>
           {!notification.read && (
-            <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-label="Oläst" />
+            <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-label={t('notificationBell.aria.unread', 'Oläst')} />
           )}
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5 line-clamp-2">
@@ -147,8 +148,8 @@ function NotificationItem({
           <button
             onClick={() => onMarkAsRead(notification.id)}
             className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-stone-100 dark:hover:bg-stone-600 transition-colors"
-            title="Markera som läst"
-            aria-label="Markera som läst"
+            title={t('notificationBell.aria.markAsRead', 'Markera som läst')}
+            aria-label={t('notificationBell.aria.markAsRead', 'Markera som läst')}
           >
             <Check className="w-3 h-3 text-green-600" />
           </button>
@@ -156,8 +157,8 @@ function NotificationItem({
         <button
           onClick={() => onDelete(notification.id)}
           className="p-1.5 rounded-lg bg-white dark:bg-stone-700 shadow-sm hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
-          title="Ta bort"
-          aria-label="Ta bort notifikation"
+          title={t('common.remove', 'Ta bort')}
+          aria-label={t('notificationBell.aria.deleteNotification', 'Ta bort notifikation')}
         >
           <Trash2 className="w-3 h-3 text-red-500" />
         </button>
@@ -211,7 +212,7 @@ function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
 // ============================================
 
 export function NotificationBell({ className }: NotificationBellProps) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all')
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -314,7 +315,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
             ref={dropdownRef}
             id={labelId}
             role="dialog"
-            aria-label="Notifikationer"
+            aria-label={t('notificationBell.aria.notifications', 'Notifikationer')}
             className={cn(
               'absolute right-0 top-full mt-2 z-50',
               'w-80 sm:w-96 max-h-[80vh]',
@@ -340,7 +341,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
                 <button
                   onClick={handleClose}
                   className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
-                  aria-label="Stäng"
+                  aria-label={t('notificationBell.aria.close', 'Stäng')}
                 >
                   <X className="w-4 h-4 text-stone-600" />
                 </button>

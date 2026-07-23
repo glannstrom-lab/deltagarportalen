@@ -59,7 +59,7 @@ export default function InternationalPage() {
           className="w-16 h-16 flex-shrink-0 select-none"
         />
         <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-          Visum, integration och språk — det du behöver för att jobba i ett nytt land.
+          {t('international.editorialSpot')}
         </p>
       </div>
 
