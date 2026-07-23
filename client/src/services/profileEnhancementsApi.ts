@@ -482,82 +482,19 @@ export const profileShareApi = {
     profile: Record<string, unknown>
     share: ProfileShare
   } | null> {
-    const { data: share, error: shareError } = await supabase
-      .from('profile_shares')
-      .select('*')
-      .eq('share_code', shareCode)
-      .single()
+    // A7 (2026-07-23): hela uppslaget går via SECURITY DEFINER-RPC:n
+    // get_shared_profile — tabellens öppna SELECT-policy är borttagen
+    // eftersom den lät anon enumerera alla delningar. RPC:n validerar
+    // utgång/max_views, räknar upp view_count (fungerade tidigare inte
+    // för anonyma besökare) och bygger den filtrerade profilen server-side.
+    const { data, error } = await supabase
+      .rpc('get_shared_profile', { p_share_code: shareCode })
 
-    if (shareError || !share) return null
+    if (error || !data) return null
 
-    // Check expiry and max views
-    if (share.expires_at && new Date(share.expires_at) < new Date()) return null
-    if (share.max_views && share.view_count >= share.max_views) return null
-
-    // Increment view count
-    await supabase
-      .from('profile_shares')
-      .update({
-        view_count: share.view_count + 1,
-        last_viewed_at: new Date().toISOString()
-      })
-      .eq('id', share.id)
-
-    // Get profile based on visibility settings
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', share.user_id)
-      .single()
-
-    if (!profile) return null
-
-    // Filter based on share settings
-    const filteredProfile: Record<string, unknown> = {
-      first_name: profile.first_name,
-      last_name: profile.last_name,
-      profile_image_url: profile.profile_image_url
-    }
-
-    if (share.show_contact) {
-      filteredProfile.email = profile.email
-      filteredProfile.phone = profile.phone
-      filteredProfile.location = profile.location
-    }
-
-    if (share.show_summary) {
-      filteredProfile.ai_summary = profile.ai_summary
-    }
-
-    // Get additional data based on settings
-    if (share.show_skills) {
-      const { data: skills } = await supabase
-        .from('profile_skills')
-        .select('*')
-        .eq('user_id', share.user_id)
-      filteredProfile.skills = skills
-    }
-
-    if (share.show_experience || share.show_education) {
-      const { data: cv } = await supabase
-        .from('cvs')
-        .select('work_experience, education')
-        .eq('user_id', share.user_id)
-        .single()
-
-      if (share.show_experience) filteredProfile.work_experience = cv?.work_experience
-      if (share.show_education) filteredProfile.education = cv?.education
-    }
-
-    if (share.show_documents) {
-      const { data: docs } = await supabase
-        .from('profile_documents')
-        .select('*')
-        .eq('user_id', share.user_id)
-      filteredProfile.documents = docs
-    }
-
-    return { profile: filteredProfile, share }
+    const result = data as { profile: Record<string, unknown>; share: ProfileShare }
+    if (!result.profile || !result.share) return null
+    return result
   },
 
   getShareUrl(shareCode: string): string {

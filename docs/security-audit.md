@@ -23,7 +23,9 @@ Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma v
 - ✅ **A14 helt stängd:** `@vercel/blob` 0.27→2.6.1 (drar undici 6.27.0) med `addRandomSuffix: true` explicit i upload-image.js (1.0+-defaulten hade annars fått andra-gångens uppladdning att kasta fel). `npm audit --omit=dev` = **0 sårbarheter**; CI:s audit-steg är nu en skarp gate utan `continue-on-error` (scopat `--omit=dev` — @vercel/node pinnar en gammal undici i dev-ledet som Vercel måste släppa fix för).
 - ✅ **A15:** `REVOKE ALL ON cvs, user_preferences FROM anon` (migration `20260723100000`; samma blankogrant-klass som möjliggjorde A10), bolagsverkets catch-block läcker inte längre råa fel (gamla MEDIUM-007 stängd), job-alerts.js fick metod-allowlist + 8s timeout på AF-anropet, och deployens API-hälsokontroll är lagad (health kräver anon-JWT — kontrollen kunde aldrig larma förut).
 
-Kvar öppet i spår A är därmed enbart Mikael-beroende punkter (A1 nyckelrotation, A2 jurist, A4–A6 dashboard/signering) + A7 (profile_shares-RPC, Claude).
+- ✅ **A7: `profile_shares`-enumerationen stängd (LOW-2605-03)** — öppna `USING(true)`-policyn + `GRANT SELECT TO anon` borttagna; RPC `get_shared_profile` (SECURITY DEFINER) validerar koden, räknar view_count och bygger den filtrerade profilen server-side utan att exponera `password_hash` eller `user_id`. Verifierat mot prod: anon-listning = permission denied. Migration `20260723110000_fix_profile_shares_rls.sql`.
+
+**Kvar öppet i spår A är därmed enbart Mikael-beroende punkter:** A1 nyckelrotation, A2 jurist, A4 DPIA/Art 30-signering, A5 DPA-verifiering, A6 pg_cron + dashboard-verifieringarna från A9.
 
 ---
 
