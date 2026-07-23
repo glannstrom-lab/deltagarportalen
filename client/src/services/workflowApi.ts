@@ -5,7 +5,8 @@
 
 import { supabase } from '@/lib/supabase'
 import { savedJobsApi, jobApplicationsApi } from './cloudStorage'
-import { applicationService } from './applicationService'
+import { applicationsApi } from './applicationsApi'
+import type { ApplicationStatus, ManualJobData } from '@/types/application.types'
 
 // ============================================
 // TYPES
@@ -104,33 +105,49 @@ export const workflowApi = {
     }
 
     try {
-      // Step 1: Spara jobbet (om inte redan sparad)
-      const existingJobs = await savedJobsApi.getAll()
-      const existingJob = existingJobs.find(j => j.job_id === jobData.jobId)
-      
-      if (!existingJob) {
-        const savedJob = await savedJobsApi.add({
-          job_id: jobData.jobId,
-          job_data: {
-            headline: jobData.headline,
-            employer: { name: jobData.employer },
-            description: { text: jobData.description },
-            application_details: { url: jobData.url },
-            workplace_address: { municipality: jobData.location },
-            employment_type: { label: jobData.employmentType }
-          },
-          status: workflow.step3_tracker.status,
-          notes: workflow.step3_tracker.notes
-        })
-        results.savedJobId = savedJob.id
-      } else {
-        results.savedJobId = existingJob.id
-        // Uppdatera status om jobbet redan finns
-        await savedJobsApi.update(existingJob.id, {
-          status: workflow.step3_tracker.status,
-          notes: workflow.step3_tracker.notes
-        })
+      // E12-migreringsspår (2026-07-23, UX2-fix): "Skapa ansökan" skrev
+      // tidigare via cloudStorage.savedJobsApi.update(...) — en metod som
+      // inte finns på den API-varianten (TypeError: be.update is not a
+      // function), plus en parallell job_applications-insert
+      // (applicationService.createApplication) med kolumner som inte finns
+      // i schemat (employer/cover_letter/contact_person/follow_up_date/
+      // application_date) → tyst degraderad till localStorage-fallback.
+      //
+      // Nu går allt genom applicationsApi (samma saved_jobs-rad med
+      // status/priority/source m.m.) som Ansökningar-Kanban (useApplications)
+      // redan läser och skriver — en enda sanning för samma jobb-ansökan.
+      const jobRecord: ManualJobData = {
+        headline: jobData.headline,
+        employer: { name: jobData.employer },
+        description: { text: jobData.description },
+        ...(jobData.location ? { workplace_address: { municipality: jobData.location } } : {}),
+        ...(jobData.url ? { application_details: { url: jobData.url } } : {}),
       }
+
+      // step3_tracker.status kommer i versaler (SAVED/APPLIED/INTERVIEW) från
+      // modalen — applicationsApi/saved_jobs använder gemener.
+      const status = workflow.step3_tracker.status.toLowerCase() as ApplicationStatus
+      const applicationDate = status === 'applied' ? new Date().toISOString() : undefined
+
+      const existing = await applicationsApi.getByJobId(jobData.jobId)
+
+      const application = existing
+        ? await applicationsApi.update(existing.id, {
+            status,
+            notes: workflow.step3_tracker.notes || undefined,
+            applicationDate,
+          })
+        : await applicationsApi.create({
+            jobId: jobData.jobId,
+            jobData: jobRecord,
+            status,
+            source: 'job_search',
+            notes: workflow.step3_tracker.notes || undefined,
+            applicationDate,
+          })
+
+      results.savedJobId = application.id
+      results.trackerEntryId = application.id
 
       // Step 2: Skapa personligt brev (om valt)
       if (workflow.step2_letter.generateAI) {
@@ -146,23 +163,12 @@ export const workflowApi = {
           })
           .select()
           .single()
-        
+
         if (coverLetter) {
           results.coverLetterId = coverLetter.id
+          // Länka brevet till ansökan (best-effort — får inte stoppa flödet)
+          await applicationsApi.update(application.id, { coverLetterId: coverLetter.id }).catch(() => {})
         }
-      }
-
-      // Step 3: Skapa ansökning i tracker (om status är APPLIED)
-      if (workflow.step3_tracker.status === 'APPLIED') {
-        const application = await applicationService.createApplication({
-          jobId: jobData.jobId,
-          jobTitle: jobData.headline,
-          employer: jobData.employer,
-          status: 'sent',
-          notes: workflow.step3_tracker.notes,
-          coverLetter: workflow.step2_letter.content
-        })
-        results.trackerEntryId = application.id
       }
 
       return {
