@@ -107,73 +107,12 @@ export async function generateCoverLetter(data: {
   return callAI<string>('personligt-brev', data)
 }
 
-export async function optimizeCV(data: {
-  cvText: string
-  yrke?: string
-}) {
-  return callAI<string>('cv-optimering', data)
-}
-
-export async function generateCVText(data: {
-  yrke: string
-  erfarenhet?: string
-  utbildning?: string
-  styrkor?: string
-}) {
-  return callAI<string>('generera-cv-text', data)
-}
-
-export async function prepareInterview(data: {
-  jobbTitel?: string
-  foretag?: string
-  erfarenhet?: string
-  egenskaper?: string
-}) {
-  return callAI<string>('intervju-forberedelser', data)
-}
-
-export async function getJobTips(data: {
-  intressen?: string
-  tidigareErfarenhet?: string
-  hinder?: string
-  mal?: string
-}) {
-  return callAI<string>('jobbtips', data)
-}
-
-export async function prepareSalaryNegotiation(data: {
-  roll: string
-  erfarenhetAr?: number
-  nuvarandeLon?: number
-  foretagsStorlek?: string
-  ort?: string
-}) {
-  return callAI<string>('loneforhandling', data)
-}
-
-export async function createCareerPlan(data: {
-  currentOccupation: string
-  targetOccupation: string
-  experienceYears: number
-  currentSalary?: number
-  targetSalary?: number
-  demand?: 'high' | 'medium' | 'low'
-  jobCount?: number
-}) {
-  return callAI<{
-    steps: Array<{
-      order: number
-      title: string
-      description: string
-      timeframe: string
-      actions: string[]
-      education: string[]
-    }>
-    analysis: string
-    keySkills: string[]
-    challenges: string[]
-  }>('karriarplan', data)
-}
+// C12 (2026-07-23): convenience-wrappers för de 8 orphanade ai.js-funktionerna
+// raderade tillsammans med funktionerna (cv-optimering, generera-cv-text,
+// intervju-forberedelser, jobbtips, loneforhandling, natverkande,
+// ansokningscoach, mentalt-stod) — noll anropare. Återskapas från git-
+// historiken om G10-personaliseringen vill koppla in någon av dem.
+// karriarplan lever (anropas direkt via callAI i PlanTab, B7).
 
 export async function chatWithAI(data: {
   meddelande: string
@@ -224,12 +163,6 @@ export async function generateDoaSummary(data: {
 export default {
   callAI,
   generateCoverLetter,
-  optimizeCV,
-  generateCVText,
-  prepareInterview,
-  getJobTips,
-  prepareSalaryNegotiation,
-  createCareerPlan,
   chatWithAI,
   generateProfileSummary
 }

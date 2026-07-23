@@ -77,22 +77,14 @@ const DEFAULT_PERSONALITY = 'professional';
 // Rate limits per AI function (requests per 15 minutes)
 const RATE_LIMITS = {
   'personligt-brev': { limit: 10, windowMinutes: 15 },
-  'cv-optimering': { limit: 15, windowMinutes: 15 },
   'cv-writing': { limit: 20, windowMinutes: 15 },
-  'generera-cv-text': { limit: 20, windowMinutes: 15 },
-  'intervju-forberedelser': { limit: 10, windowMinutes: 15 },
   'intervju-simulator': { limit: 20, windowMinutes: 15 },
-  'jobbtips': { limit: 20, windowMinutes: 15 },
-  'loneforhandling': { limit: 10, windowMinutes: 15 },
   'karriarplan': { limit: 5, windowMinutes: 15 },
   'kompetensgap': { limit: 10, windowMinutes: 15 },
   'adaptation-recommendations': { limit: 10, windowMinutes: 15 },
   'adaptation-conversation': { limit: 10, windowMinutes: 15 },
   'cv-jobbmatchning': { limit: 10, windowMinutes: 15 },
   'linkedin-optimering': { limit: 15, windowMinutes: 15 },
-  'mentalt-stod': { limit: 20, windowMinutes: 15 },
-  'natverkande': { limit: 15, windowMinutes: 15 },
-  'ansokningscoach': { limit: 15, windowMinutes: 15 },
   'profile-summary': { limit: 10, windowMinutes: 15 },
   'chatbot': { limit: 30, windowMinutes: 15 },
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
@@ -330,36 +322,6 @@ VIKTIGT:
       responseKey: 'brev'
     };
   },
-  'cv-optimering': (data) => ({
-    system: 'Du är en expert på CV-skrivning. Ge konstruktiv feedback på svenska.',
-    user: `Ge feedback på detta CV för yrket "${data?.yrke || 'ospecificerat'}":\n\n${data?.cvText || ''}\n\nGe: 1. BEDÖMNING 2. FÖRBÄTTRINGSFÖRSLAG 3. SAKNAD INFO 4. REFLEKTIONSFRÅGOR`,
-    maxTokens: 1500,
-    responseKey: 'result'
-  }),
-  'generera-cv-text': (data) => ({
-    system: 'Du är en CV-expert. Skriv professionella CV-texter på svenska.',
-    user: `Skriv en CV-sammanfattning (3-4 meningar) för:\nYrke: ${data?.yrke}\nErfarenhet: ${data?.erfarenhet || 'Varierad'}\nUtbildning: ${data?.utbildning || 'Ej specificerad'}\nStyrkor: ${data?.styrkor || 'Pålitlig, positiv'}`,
-    maxTokens: 500,
-    responseKey: 'result'
-  }),
-  'intervju-forberedelser': (data) => ({
-    system: 'Du är en erfaren jobbcoach. Ge konkreta råd på svenska.',
-    user: `Hjälp mig förbereda för intervju som ${data?.jobbTitel || 'kandidat'}${data?.foretag ? ' på ' + data.foretag : ''}.\nBakgrund: ${data?.erfarenhet || 'Varierad'}\nStyrkor: ${data?.egenskaper || 'Pålitlig'}\n\nGe: 1. 5 INTERVJUFRÅGOR 2. SVAR MED STAR-METODEN 3. FRÅGOR ATT STÄLLA 4. TIPS`,
-    maxTokens: 2000,
-    responseKey: 'result'
-  }),
-  'jobbtips': (data) => ({
-    system: 'Du är en empatisk jobbcoach. Ge uppmuntrande råd på svenska.',
-    user: `Ge jobbsökartips:\nIntressen: ${data?.intressen || 'Ej angivet'}\nErfarenhet: ${data?.tidigareErfarenhet || 'Ej angivet'}\nHinder: ${data?.hinder || 'Ej angivet'}\nMål: ${data?.mal || 'Hitta arbete'}\n\nGe: 1. UPPMUNTRAN 2. NÄSTA STEG 3. YRKEN 4. BEMÖTA HINDER`,
-    maxTokens: 1200,
-    responseKey: 'result'
-  }),
-  'loneforhandling': (data) => ({
-    system: 'Du är en löneexpert. Ge konkreta råd på svenska.',
-    user: `Löneförhandling:\nRoll: ${data?.roll}\nErfarenhet: ${data?.erfarenhetAr || 0} år\nLön: ${data?.nuvarandeLon ? data.nuvarandeLon + ' kr/mån' : 'Ej anställd'}\nOrt: ${data?.ort || 'Stockholm'}\n\nGe: 1. LÖNESPANN 2. FÖRBEREDELSE 3. ARGUMENT 4. FÖRMÅNER 5. DIALOG`,
-    maxTokens: 1500,
-    responseKey: 'result'
-  }),
   'karriarplan': (data) => ({
     system: `Du är en varm och konkret karriärcoach. Skapa en personlig karriärplan utifrån personens faktiska situation och mål. Svara ENDAST med JSON i detta format:
 {"steps":[{"order":1,"title":"Kort rubrik","description":"Vad steget innebär och varför","timeframe":"Månad 1-2","actions":["Konkret handling"]}],"analysis":"2-3 meningar om vägen till målet","keySkills":["Kompetens att utveckla"]}
@@ -443,23 +405,6 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
       }
     }
   },
-  'mentalt-stod': (data) => ({
-    system: 'Du är en empatisk coach. Ge stöd på svenska.',
-    user: `Situation: ${data?.situation || 'Jobbsökning'}\nKänsla: ${data?.kansla || 'Osäker'}\n\nGe emotionellt stöd och tips.`,
-    maxTokens: 800,
-    responseKey: 'result'
-  }),
-  'natverkande': (data) => {
-    const typ = data?.typ || 'kontakt';
-    const typText = typ === 'kontakt' ? 'kontaktmeddelande' : typ === 'foljupp' ? 'uppföljning' : typ === 'tack' ? 'tackmeddelande' : 'informational interview';
-    return { system: 'Du är nätverksexpert. Skriv på svenska.', user: `Skriv ${typText}:\n${JSON.stringify(data?.data || data)}`, maxTokens: 600, responseKey: 'result' };
-  },
-  'ansokningscoach': (data) => ({
-    system: 'Du är ansökningscoach. Ge feedback på svenska.',
-    user: `${data?.typ === 'feedback' ? 'Feedback på' : data?.typ === 'forbattra' ? 'Förbättra' : 'Kontrollera'}:\n${data?.text}\n\nJobbannons: ${data?.jobbannons || 'Ej angiven'}`,
-    maxTokens: 1000,
-    responseKey: 'result'
-  }),
   'profile-summary': (data) => {
     // Build experience text
     let experienceText = '';

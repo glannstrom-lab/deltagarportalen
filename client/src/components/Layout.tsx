@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle
@@ -19,10 +19,12 @@ import { OptimizedImage } from './ui/OptimizedImage'
 import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
-import { CoachWidget } from './CoachWidget'
 import { SamlingarFab } from './SamlingarFab'
-import { getPageKeyForPath } from '@/data/coaches'
 import { useSettingsStore } from '@/stores/settingsStore'
+
+// E10 (2026-07-23): CoachWidget + data/coaches.ts (~36 kB) lazy-laddas —
+// tidigare i entry för alla, även med widgeten avstängd
+const GlobalCoachWidgetContent = lazy(() => import('./GlobalCoachWidgetContent'))
 
 /**
  * Wrapper som läser route + toggle-state och renderar CoachWidget om passande.
@@ -32,9 +34,11 @@ function GlobalCoachWidget() {
   const location = useLocation()
   const show = useSettingsStore((s) => s.showCoachWidget)
   if (!show) return null
-  const pageKey = getPageKeyForPath(location.pathname)
-  if (!pageKey) return null
-  return <CoachWidget pageKey={pageKey} />
+  return (
+    <Suspense fallback={null}>
+      <GlobalCoachWidgetContent pathname={location.pathname} />
+    </Suspense>
+  )
 }
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'

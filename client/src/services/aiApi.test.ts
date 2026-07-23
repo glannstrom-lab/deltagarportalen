@@ -45,7 +45,7 @@ describe('callAI', () => {
       json: async () => ({ success: true }),
     })
 
-    await callAI('cv-optimering', { cvText: 'min CV' })
+    await callAI('cv-writing', { cvText: 'min CV' })
 
     expect(mockFetch).toHaveBeenCalledWith(
       '/api/ai',
@@ -60,7 +60,7 @@ describe('callAI', () => {
 
     const body = JSON.parse(mockFetch.mock.calls[0][1].body)
     expect(body).toEqual({
-      function: 'cv-optimering',
+      function: 'cv-writing',
       data: { cvText: 'min CV' },
     })
   })

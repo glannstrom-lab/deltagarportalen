@@ -6,9 +6,12 @@ import { Loader2 } from '@/components/ui/icons'
 
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Landing from './pages/Landing'
+// E10 (2026-07-23): Landing/Login/Register lazy-laddas som alla andra sidor —
+// de var de enda 3 av ~50 som låg kvar i entry (~33 kB gzip), och inloggade
+// återkommande användare (majoriteten) renderar dem aldrig
+const Login = lazy(() => import('./pages/Login'))
+const Register = lazy(() => import('./pages/Register'))
+const Landing = lazy(() => import('./pages/Landing'))
 // Statiska info-sidor lazy-laddas (E6, 2026-07-10) — låg trafik, ~90 kB ur entry
 const Privacy = lazy(() => import('./pages/Privacy'))
 const Terms = lazy(() => import('./pages/Terms'))
@@ -152,7 +155,15 @@ function RootRoute() {
   }
 
   if (!isAuthenticated) {
-    return <Landing />
+    return (
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-[var(--c-solid)]">
+          <Loader2 className="animate-spin text-white" size={48} />
+        </div>
+      }>
+        <Landing />
+      </Suspense>
+    )
   }
 
   // Authenticated users see the dashboard inside the layout
@@ -185,12 +196,12 @@ function App() {
         {/* Auth routes - redirect if already logged in */}
         <Route path="/login" element={
           <PublicRoute redirectTo="/">
-            <Login />
+            <LazyRoute><Login /></LazyRoute>
           </PublicRoute>
         } />
         <Route path="/register" element={
           <PublicRoute redirectTo="/">
-            <Register />
+            <LazyRoute><Register /></LazyRoute>
           </PublicRoute>
         } />
         <Route path="/invite/:code" element={

@@ -14,10 +14,6 @@
       "maxDuration": 60,
       "regions": ["fra1"]
     },
-    "api/ai-stream.js": {
-      "maxDuration": 60,
-      "regions": ["fra1"]
-    },
     "api/upload-image.js": {
       "regions": ["fra1"]
     },

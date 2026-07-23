@@ -86,14 +86,6 @@ export {
 } from './EmptyState'
 
 export {
-  BottomSheet,
-  BottomSheetItem,
-  BottomSheetDivider,
-  FilterSheet,
-  ActionSheet,
-} from './BottomSheet'
-
-export {
   ConfirmDialogProvider,
   useConfirmDialog,
   confirmDialog,

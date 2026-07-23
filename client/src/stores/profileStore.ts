@@ -483,12 +483,9 @@ export const useProfileStore = create<ProfileState>()(
 export const useProfileData = () => useProfileStore(s => s.profile)
 export const useProfilePreferences = () => useProfileStore(s => s.preferences)
 export const useProfileCompletion = () => useProfileStore(s => s.completion)
-export const useProfileLoading = () => useProfileStore(s => ({ loading: s.loading, initialLoading: s.initialLoading }))
-export const useProfileSyncStatus = () => useProfileStore(s => ({
-  syncing: s.cloudSyncing,
-  synced: s.cloudSynced,
-  error: s.lastSyncError
-}))
+// C13 (2026-07-23): useProfileLoading/useProfileSyncStatus raderade — noll
+// anropare, och de returnerade nya objektliteraler utan useShallow (Zustand
+// v5-fälla som hade gett re-render vid varje store-ändring om de tagits i bruk)
 export const useActiveTab = () => useProfileStore(s => s.activeTab)
 export const useSetActiveTab = () => useProfileStore(s => s.setActiveTab)
 

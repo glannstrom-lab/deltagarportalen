@@ -20,7 +20,6 @@ import {
   staWorkplacesApi,
   staWorkplaceFollowupsApi,
   staProfileApi,
-  fetchEnrollmentBundle,
   type StaEnrollment,
   type StaActivity,
   type StaAssessment,
@@ -32,10 +31,8 @@ import {
   type StaWorkplaceFollowup,
   type AbsenceKind,
   type StaConsultantProfile,
-  type EnrollmentBundle,
   type StaPart,
   type Mood,
-  type AssessmentInstrument,
 } from '@/services/staApi'
 
 export interface StaDataState {
@@ -136,31 +133,9 @@ export function useStaConsultantProfile(enrollmentId: string | null | undefined)
   return { profile, loading }
 }
 
-// =============================================================================
-// useConsultantEnrollments — för konsulent-sidan
-// =============================================================================
-export function useConsultantEnrollments() {
-  const [enrollments, setEnrollments] = useState<StaEnrollment[]>([])
-  const [state, setState] = useState<StaDataState>({ loading: true, error: null, isMock: false })
-
-  const reload = useCallback(async () => {
-    setState({ loading: true, error: null, isMock: false })
-    try {
-      const list = await staEnrollmentsApi.listForConsultant()
-      setEnrollments(list)
-      setState({ loading: false, error: null, isMock: list.length === 0 })
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Okänt fel'
-      setState({ loading: false, error: message, isMock: true })
-    }
-  }, [])
-
-  useEffect(() => {
-    reload()
-  }, [reload])
-
-  return { enrollments, reload, ...state }
-}
+// C13 (2026-07-23): useConsultantEnrollments, useEnrollmentBundle och
+// useStaAssessment raderade — noll anropare (~112 rader; ersatta av
+// useConsultantStats respektive direkta staApi-anrop).
 
 // =============================================================================
 // useConsultantStats — alla konsulentens deltagare med beräknade stats
@@ -222,35 +197,6 @@ export function useConsultantStats() {
   return { stats, reload, ...state }
 }
 
-// =============================================================================
-// useEnrollmentBundle — full data om en deltagare (för konsulent-drawer)
-// =============================================================================
-export function useEnrollmentBundle(enrollmentId: string | null) {
-  const [bundle, setBundle] = useState<EnrollmentBundle | null>(null)
-  const [state, setState] = useState<StaDataState>({ loading: false, error: null, isMock: false })
-
-  const reload = useCallback(async () => {
-    if (!enrollmentId) {
-      setBundle(null)
-      return
-    }
-    setState({ loading: true, error: null, isMock: false })
-    try {
-      const b = await fetchEnrollmentBundle(enrollmentId)
-      setBundle(b)
-      setState({ loading: false, error: null, isMock: !b })
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Okänt fel'
-      setState({ loading: false, error: message, isMock: true })
-    }
-  }, [enrollmentId])
-
-  useEffect(() => {
-    reload()
-  }, [reload])
-
-  return { bundle, reload, ...state }
-}
 
 // =============================================================================
 // useStaActivities — aktivitetslogg för en deltagare i en del
@@ -415,65 +361,6 @@ export function useStaQuickNotes(enrollmentId: string | null) {
   return { notes, loading, reload, createNote, deleteNote }
 }
 
-// =============================================================================
-// useStaAssessment — för skattningsformulär
-// =============================================================================
-export function useStaAssessment(
-  enrollmentId: string | null,
-  part: StaPart | null,
-  instrument: AssessmentInstrument | null,
-) {
-  const [assessment, setAssessment] = useState<StaAssessment | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
-
-  useEffect(() => {
-    if (!enrollmentId || !part || !instrument) {
-      setAssessment(null)
-      return
-    }
-    let cancelled = false
-    setLoading(true)
-    staAssessmentsApi
-      .getOrCreate(enrollmentId, part, instrument)
-      .then((a) => {
-        if (!cancelled) setAssessment(a)
-      })
-      .catch(() => {
-        if (!cancelled) setAssessment(null)
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
-    return () => {
-      cancelled = true
-    }
-  }, [enrollmentId, part, instrument])
-
-  const saveScores = useCallback(
-    async (scores: Record<string, unknown>, summary?: string) => {
-      if (!assessment) return null
-      setSaving(true)
-      try {
-        const updated = await staAssessmentsApi.saveScores(assessment.id, scores, summary)
-        setAssessment(updated)
-        return updated
-      } finally {
-        setSaving(false)
-      }
-    },
-    [assessment],
-  )
-
-  const markComplete = useCallback(async () => {
-    if (!assessment) return null
-    const updated = await staAssessmentsApi.markComplete(assessment.id)
-    setAssessment(updated)
-    return updated
-  }, [assessment])
-
-  return { assessment, loading, saving, saveScores, markComplete }
-}
 
 // =============================================================================
 // useParticipantDoaAssessment — deltagarens egen DOA Del 1

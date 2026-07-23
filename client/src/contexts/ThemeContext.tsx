@@ -5,7 +5,7 @@
  * Spara preferenser i localStorage och respektera systeminställningar
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react'
 
 export type Theme = 'light' | 'dark' | 'system'
 
@@ -87,13 +87,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [theme, isDark, setTheme])
 
-  const value: ThemeContextType = {
+  // C13 (2026-07-23): memoiserat så konsumenter inte re-rendrar när
+  // providern råkar rendera om utan att temat ändrats
+  const value: ThemeContextType = useMemo(() => ({
     theme,
     setTheme,
     isDark,
     toggleDarkMode,
     systemPreference,
-  }
+  }), [theme, setTheme, isDark, toggleDarkMode, systemPreference])
 
   return (
     <ThemeContext.Provider value={value}>

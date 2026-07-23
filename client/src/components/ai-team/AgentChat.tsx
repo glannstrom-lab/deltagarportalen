@@ -244,7 +244,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
               try {
                 const parsed = JSON.parse(data)
                 // Föredrar { content } men accepterar { token } för bakåtkompatibilitet.
-                // Standardprotokollet är { content } per aiStreamService.ts (2026-05-09).
+                // Standardprotokollet är { content } per SSE-grenen i client/api/ai.js.
                 const chunk = parsed.content ?? parsed.token
                 if (chunk) {
                   fullContent += chunk
