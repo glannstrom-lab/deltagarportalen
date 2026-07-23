@@ -487,12 +487,28 @@ export default function CVBuilder() {
     } catch { showToast.error(t('cvBuilder.messages.couldNotRestore')) }
   }
 
-  // Handler för QuickCVMode - fyll i data och byt till full mode
-  const handleQuickComplete = (quickData: Partial<CVData>) => {
-    setData(prev => ({ ...prev, ...quickData }))
+  // Handler för QuickCVMode - fyll i data OCH spara som en riktig CV-version
+  // (2026-07: Snabb-CV visade tidigare "Ditt CV är skapat!" utan att spara
+  // något — "Dina CV" fortsatte visa 0 CV. Nu skapas en faktisk cv_versions-rad
+  // direkt så toasten stämmer och CV:t syns i listan. Autosaven (useCVAutoSave)
+  // fortsätter separat spara arbetskopian i `cvs`-tabellen som vanligt.)
+  const handleQuickComplete = async (quickData: Partial<CVData>) => {
+    const merged = { ...data, ...quickData }
+    setData(merged)
     setShowQuickMode(false)
     setStep(2) // Gå till "Om dig" för att kunna redigera vidare
-    showToast.success(t('cv.quickMode.success', 'Ditt CV är skapat! Du kan nu redigera och lägga till mer information.'))
+
+    try {
+      const versionName = `${t('cv.quickMode.versionLabel', 'Snabb-CV')} – ${new Date().toLocaleDateString('sv-SE')}`
+      await cvApi.saveVersion(versionName, merged)
+      await loadVersions()
+      showToast.success(t('cv.quickMode.success', 'Ditt CV är skapat! Du kan nu redigera och lägga till mer information.'))
+    } catch (e) {
+      console.error('Kunde inte spara snabb-CV som version:', e)
+      // Ärlig ton: vi vet att sparningen misslyckades, så vi lovar inte att
+      // CV:t redan finns sparat — bara att uppgifterna är ifyllda.
+      showToast.error(t('cv.quickMode.saveFailedHint', 'Vi har fyllt i dina uppgifter men kunde inte spara ditt CV just nu. Fortsätt nedan och spara igen i Granska-steget.'))
+    }
   }
 
   // Handler för JobAdaptPanel - lägg till skill

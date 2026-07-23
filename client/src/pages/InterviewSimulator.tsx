@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save } from '@/components/ui/icons'
+import { Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save, CheckCircle2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -11,6 +11,8 @@ import { useAudioRecorder } from '@/hooks/useAudioRecorder'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusInterviewWizard } from '@/components/focus/pages/FocusInterviewWizard'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { saveSimulatorSession } from '@/services/interviewService'
 
 interface FragaSvar {
   fraga: string
@@ -157,7 +159,9 @@ function InterviewSimulatorInner() {
   const [speechSupported, setSpeechSupported] = useState(false)
   const [supportPhrase, setSupportPhrase] = useState<string | null>(null)
   const [isLoadingSupportPhrase, setIsLoadingSupportPhrase] = useState(false)
+  const [visarSammanfattning, setVisarSammanfattning] = useState(false)
   const { trackInterviewCompleted } = useAchievementTracker()
+  const { confirm } = useConfirmDialog()
 
   // Audio recording for full session capture
   const {
@@ -204,6 +208,21 @@ function InterviewSimulatorInner() {
       if (interval) clearInterval(interval)
     }
   }, [isTimerRunning])
+
+  // Varna vid sidladdning/stängning mitt i en intervju så man inte tappar
+  // svar man redan lagt ner möda på (UX3 — tidigare försvann allt tyst).
+  useEffect(() => {
+    if (!harStartat) return
+    const harOsparatFramsteg = historik.length > 0 || anvandarSvar.trim().length > 0
+    if (!harOsparatFramsteg) return
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [harStartat, historik.length, anvandarSvar])
 
   // Speech recognition with proper cleanup
   const toggleRecording = useCallback(() => {
@@ -380,7 +399,40 @@ function InterviewSimulatorInner() {
     setIsTimerRunning(false)
     setSupportPhrase(null)
     setIsRecording(false)
+    setVisarSammanfattning(false)
   }, [antalFragor, trackInterviewCompleted])
+
+  // Bekräfta innan avslut om något skulle gå förlorat, spara sessionen
+  // (svar + betyg + AI-feedback) och visa en sammanfattning innan man lämnar
+  // — istället för att tyst nollställa allt (UX3-fixet).
+  const handleAvslutaKlick = useCallback(async () => {
+    const harNagotAttForlora = historik.length > 0 || anvandarSvar.trim().length > 0
+
+    if (harNagotAttForlora) {
+      const confirmed = await confirm({
+        title: t('interviewSimulator.session.endConfirmTitle', 'Vill du avsluta intervjun?'),
+        message: t('interviewSimulator.session.endConfirmMessage', 'Din övning sparas så du kan se den igen. Ett obesparat svar i textrutan går förlorat om du avslutar nu.'),
+        confirmText: t('interviewSimulator.session.endConfirmCta', 'Ja, avsluta'),
+        cancelText: t('common.cancel'),
+        variant: 'warning',
+      })
+      if (!confirmed) return
+    }
+
+    if (historik.length > 0) {
+      const avgRatingValue = historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length
+      saveSimulatorSession({
+        roll,
+        foretag,
+        historik,
+        antalFragor,
+        avgRating: Number(avgRatingValue.toFixed(1)),
+      })
+      setVisarSammanfattning(true)
+    } else {
+      avslutaIntervju()
+    }
+  }, [historik, anvandarSvar, confirm, t, roll, foretag, antalFragor, avslutaIntervju])
 
   const downloadSessionSummary = useCallback(() => {
     const avgRatingValue = historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 'N/A'
@@ -580,6 +632,92 @@ TIPS FÖR FÖRBÄTTRING:
     )
   }
 
+  if (visarSammanfattning) {
+    return (
+      <PageLayout
+        title={t('interviewSimulator.title')}
+        subtitle={`${roll}${foretag ? ' — ' + foretag : ''}`}
+        domain="activity"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+        contentClassName="space-y-6"
+      >
+        <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm" role="status" aria-live="polite">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+                {t('interviewSimulator.summary.title', 'Bra jobbat!')}
+              </h1>
+              <p className="text-stone-600 dark:text-stone-400 mt-1">
+                {t('interviewSimulator.summary.subtitle', 'Din övning är sparad så du kan titta på den igen. Här är en snabb sammanfattning.')}
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="bg-stone-50 dark:bg-stone-700/50 p-4 rounded-xl border border-stone-200 dark:border-stone-600">
+              <p className="text-xs text-stone-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.questionsAnswered')}</p>
+              <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{antalFragor}</p>
+            </div>
+            <div className="bg-stone-50 dark:bg-stone-700/50 p-4 rounded-xl border border-stone-200 dark:border-stone-600">
+              <p className="text-xs text-stone-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.averageRating')}</p>
+              <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={avslutaIntervju}
+              className="flex-1 bg-[var(--c-solid)] hover:brightness-[1.08] text-white font-medium py-3 rounded-xl shadow-md transition-all"
+            >
+              {t('interviewSimulator.startInterview')}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={downloadSessionSummary}
+              className="flex-1 rounded-xl"
+            >
+              <Download className="w-4 h-4 mr-2" aria-hidden="true" />
+              {t('interviewSimulator.download.downloadSummary')}
+            </Button>
+          </div>
+        </Card>
+
+        {historik.length > 0 && (
+          <div className="space-y-4" role="log" aria-label={t('interviewSimulator.session.previousAnswers')}>
+            <h2 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
+              {t('interviewSimulator.session.previousAnswers')}
+            </h2>
+            {historik.map((fs, index) => (
+              <Card key={index} className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] mb-1">{t('interviewSimulator.session.question')}</p>
+                    <p className="text-stone-800 dark:text-stone-200">{fs.fraga}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-1">{t('interviewSimulator.session.yourAnswer')}</p>
+                    <p className="text-stone-800 dark:text-stone-200">{fs.svar}</p>
+                  </div>
+                  {fs.feedback && (
+                    <div data-ai-generated="true" className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 p-3 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
+                      <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
+                      <AIGeneratedWatermark contentType="omdöme" />
+                    </div>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </PageLayout>
+    )
+  }
+
   return (
     <PageLayout
       title={t('interviewSimulator.title')}
@@ -597,7 +735,7 @@ TIPS FÖR FÖRBÄTTRING:
             <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100">{t('interviewSimulator.interview')} {roll}</h1>
             <p className="text-sm text-stone-600 dark:text-stone-400">{foretag || t('interviewSimulator.genericPractice')}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={avslutaIntervju} aria-label={t('interviewSimulator.session.endInterviewAria')}>
+          <Button variant="outline" size="sm" onClick={handleAvslutaKlick} aria-label={t('interviewSimulator.session.endInterviewAria')}>
             {t('interviewSimulator.session.endInterview')}
           </Button>
         </div>

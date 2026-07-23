@@ -435,6 +435,71 @@ export async function getInterviewSessions(): Promise<InterviewSession[]> {
   }
 }
 
+// ============================================
+// FRI INTERVJUSIMULATOR (UX3)
+// ============================================
+// InterviewSimulator.tsx kör ett fritt AI-genererat fråga/svar-flöde som
+// saknar en referens till någon av MOCK_INTERVIEWS ovan (ingen mockInterviewId
+// eller questionId att koppla mot). Det gör att InterviewSession/
+// saveInterviewSession (som förväntar sig confidence per fråge-id) inte passar.
+// Vi sparar därför denna variant separat, lokalt, under en egen nyckel — så en
+// avslutad/avbruten session inte tappar svar, betyg och AI-feedback.
+export interface SimulatorQA {
+  fraga: string;
+  svar: string;
+  rating?: number;
+  feedback?: string;
+}
+
+export interface SimulatorSession {
+  id: string;
+  roll: string;
+  foretag: string;
+  historik: SimulatorQA[];
+  antalFragor: number;
+  avgRating: number;
+  endedAt: string;
+}
+
+const SIMULATOR_SESSIONS_KEY = 'interview_simulator_sessions';
+const MAX_STORED_SIMULATOR_SESSIONS = 20;
+
+/**
+ * Spara en avslutad (eller i förtid avbruten) fri intervjusession lokalt.
+ * Nyast först, äldre sessioner utöver MAX_STORED_SIMULATOR_SESSIONS tas bort.
+ */
+export function saveSimulatorSession(session: {
+  roll: string;
+  foretag: string;
+  historik: SimulatorQA[];
+  antalFragor: number;
+  avgRating: number;
+}): SimulatorSession {
+  const record: SimulatorSession = {
+    id: `sim-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    endedAt: new Date().toISOString(),
+    ...session,
+  };
+  try {
+    const existing = getSimulatorSessions();
+    const updated = [record, ...existing].slice(0, MAX_STORED_SIMULATOR_SESSIONS);
+    localStorage.setItem(SIMULATOR_SESSIONS_KEY, JSON.stringify(updated));
+  } catch (error) {
+    console.error('Fel vid sparande av intervjusimulator-session:', error);
+  }
+  return record;
+}
+
+/** Hämta tidigare fria intervjusimulator-sessioner (lokalt lagrade). */
+export function getSimulatorSessions(): SimulatorSession[] {
+  try {
+    const stored = localStorage.getItem(SIMULATOR_SESSIONS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+}
+
 /**
  * Beräkna framsteg över tid
  */
