@@ -158,9 +158,11 @@ function handleStorageError(error: unknown, context: string): void {
 // ============================================
 export const articleBookmarksApi = {
   async getAll() {
+    // E11 (2026-07-23): explicit kolumn — enda konsumenten (this.getBookmarks
+    // nedan) läser bara article_id.
     const { data, error } = await supabase
       .from('article_bookmarks')
-      .select('*')
+      .select('article_id')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -308,9 +310,11 @@ export const articleProgressApi = {
     const user = await getCurrentUser()
     if (!user) return null
 
+    // E11 (2026-07-23): explicit kolumn — enda konsumenten (ReadingProgress.tsx)
+    // läser bara progress_percent.
     const { data, error } = await supabase
       .from('article_reading_progress')
-      .select('*')
+      .select('progress_percent')
       .eq('article_id', articleId)
       .eq('user_id', user.id)
       .limit(1)
@@ -726,9 +730,12 @@ export const interestGuideApi = {
       return null
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — alla konsumenter (QuestionCard,
+    // TestTab, HistoryTab, OccupationsTab, ResultsTab, DailyJobTab,
+    // ContinueWhereYouLeft, useInterestProfile) läser bara dessa tre fält.
     const { data, error } = await supabase
       .from('interest_guide_progress')
-      .select('*')
+      .select('answers, current_step, is_completed')
       .eq('user_id', user.id)
       .maybeSingle()
 
@@ -817,9 +824,11 @@ export const interestGuideApi = {
       return []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt InterestGuideHistoryEntry
+    // (returtypen konsumenterna typas mot).
     const { data, error } = await supabase
       .from('interest_guide_history')
-      .select('*')
+      .select('id, user_id, answers, riasec_profile, bigfive_profile, icf_profile, strong_interest, top_occupations, completed_at, created_at')
       .eq('user_id', user.id)
       .order('completed_at', { ascending: false })
       .limit(limit)
@@ -835,9 +844,10 @@ export const interestGuideApi = {
     const user = await getCurrentUser()
     if (!user) return null
 
+    // E11 (2026-07-23): explicit kolumnlista — samma som getHistory ovan.
     const { data, error } = await supabase
       .from('interest_guide_history')
-      .select('*')
+      .select('id, user_id, answers, riasec_profile, bigfive_profile, icf_profile, strong_interest, top_occupations, completed_at, created_at')
       .eq('id', id)
       .eq('user_id', user.id)
       .maybeSingle()
@@ -871,11 +881,13 @@ export const interestGuideApi = {
 // ============================================
 export const notificationsApi = {
   async getAll() {
+    // E11 (2026-07-23): explicit kolumnlista — samma 10 kolumner som
+    // useNotifications.ts (den faktiska produktionsvägen) redan låser.
     const { data, error } = await supabase
       .from('notifications')
-      .select('*')
+      .select('id, user_id, type, title, message, read, read_at, action_url, data, created_at')
       .order('created_at', { ascending: false })
-    
+
     if (error) {
       handleStorageError(error, 'hämta notifikationer')
       return []
@@ -884,9 +896,10 @@ export const notificationsApi = {
   },
 
   async getUnread() {
+    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
       .from('notifications')
-      .select('*')
+      .select('id, user_id, type, title, message, read, read_at, action_url, data, created_at')
       .eq('read', false)
       .order('created_at', { ascending: false })
     
@@ -1072,9 +1085,15 @@ export const draftsApi = {
 // ============================================
 export const jobApplicationsApi = {
   async getAll() {
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt tabellschemat i
+    // senaste migrationen (20260306130000_fix_all_rls_policies.sql). OBS:
+    // konsumenten applicationService.ts läser även employer/cover_letter/
+    // contact_person/follow_up_date/application_date, men dessa kolumner
+    // finns inte i schemat (redan undefined idag med select('*')) — se E11-
+    // rapportens dubbelvägs-kartläggning för detaljer.
     const { data, error } = await supabase
       .from('job_applications')
-      .select('*')
+      .select('id, user_id, job_id, job_title, company, location, description, url, source, status, applied_at, notes, created_at, updated_at')
       .order('created_at', { ascending: false })
     
     if (error) {
@@ -1205,9 +1224,14 @@ export const interviewSessionsApi = {
 // ============================================
 export const savedJobsApi = {
   async getAll() {
+    // E11 (2026-07-23): explicit kolumnlista — täcker fälten alla konsumenter
+    // faktiskt läser (useSavedJobs, workflowApi, Resources, GettingStartedTab/
+    // MyJourneyTab läser bara längden). Tabellen har fler kolumner (delas med
+    // det rikare applicationsApi.ts-spåret, se E11-rapporten) men de läses
+    // inte här.
     const { data, error } = await supabase
       .from('saved_jobs')
-      .select('*')
+      .select('id, job_id, job_data, status, notes, created_at')
       .order('created_at', { ascending: false })
     
     if (error) {
@@ -1353,9 +1377,11 @@ export const platsbankenApi = {
       storageLogger.warn('Platsbanken-migration triggade fel:', e)
     )
 
+    // E11 (2026-07-23): explicit kolumn — raden mappas direkt till job_data
+    // (rad nedan), inget annat fält används.
     const { data, error } = await supabase
       .from('platsbanken_saved_jobs')
-      .select('*')
+      .select('job_data')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
 
@@ -1907,9 +1933,10 @@ export const personalBrandApi = {
       return saved ? JSON.parse(saved) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt PortfolioItem-interfacet.
     const { data, error } = await supabase
       .from('portfolio_items')
-      .select('*')
+      .select('id, title, description, item_type, url, image_url, tags, start_date, end_date, is_featured, sort_order')
       .eq('user_id', user.id)
       .order('sort_order', { ascending: true })
 
@@ -1999,9 +2026,10 @@ export const personalBrandApi = {
       return saved ? JSON.parse(saved) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt ElevatorPitch-interfacet.
     const { data, error } = await supabase
       .from('elevator_pitches')
-      .select('*')
+      .select('id, title, content, duration_seconds, pitch_type, target_audience, key_points, is_favorite, practice_count, last_practiced_at')
       .eq('user_id', user.id)
       .order('updated_at', { ascending: false })
 
@@ -2127,9 +2155,10 @@ export const personalBrandApi = {
       return saved ? JSON.parse(saved) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt VisibilityProgressItem-interfacet.
     const { data, error } = await supabase
       .from('visibility_progress')
-      .select('*')
+      .select('strategy_id, status, started_at, completed_at, notes')
       .eq('user_id', user.id)
 
     if (error) {
@@ -2177,9 +2206,10 @@ export const personalBrandApi = {
       return saved ? JSON.parse(saved) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt ContentCalendarItem-interfacet.
     let query = supabase
       .from('content_calendar')
-      .select('*')
+      .select('id, title, content, platform, scheduled_date, scheduled_time, status, tags')
       .eq('user_id', user.id)
       .order('scheduled_date', { ascending: true })
 
@@ -2540,9 +2570,10 @@ export const calendarApi = {
       return cached ? JSON.parse(cached) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt transformen nedan.
     const { data, error } = await supabase
       .from('calendar_goals')
-      .select('*')
+      .select('id, type, target, period, start_date')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -2609,9 +2640,10 @@ export const calendarApi = {
       return cached ? JSON.parse(cached) : []
     }
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt transformen nedan.
     const { data, error } = await supabase
       .from('calendar_mood_entries')
-      .select('*')
+      .select('date, level, note, energy_level, stress_level')
       .order('date', { ascending: false })
       .limit(30)
 

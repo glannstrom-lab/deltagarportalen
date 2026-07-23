@@ -157,9 +157,10 @@ export const careerPathApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedCareerPath-interfacet.
     const { data, error } = await supabase
       .from('career_paths')
-      .select('*')
+      .select('id, user_id, current_occupation, target_occupation, experience_years, current_salary, target_salary, salary_increase, timeline_months, demand_level, job_count, steps, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -202,9 +203,10 @@ export const salaryApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedSalarySearch-interfacet.
     const { data, error } = await supabase
       .from('salary_searches')
-      .select('*')
+      .select('id, user_id, occupation, median_salary, percentile_25, percentile_75, region_data, experience_data, trends, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -247,9 +249,10 @@ export const skillsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserSkill-interfacet.
     const { data, error } = await supabase
       .from('user_skills')
-      .select('*')
+      .select('id, user_id, skill_name, category, frequency, target_occupation, status, priority, created_at, updated_at')
       .eq('user_id', user.id)
       .order('priority', { ascending: true });
 
@@ -261,9 +264,10 @@ export const skillsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
       .from('user_skills')
-      .select('*')
+      .select('id, user_id, skill_name, category, frequency, target_occupation, status, priority, created_at, updated_at')
       .eq('user_id', user.id)
       .eq('target_occupation', occupation)
       .order('priority', { ascending: true });
@@ -323,9 +327,10 @@ export const educationApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt SavedEducation-interfacet.
     const { data, error } = await supabase
       .from('saved_educations')
-      .select('*')
+      .select('id, user_id, education_code, title, type, description, duration_months, location, url, provider, target_occupation, status, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -337,9 +342,10 @@ export const educationApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
       .from('saved_educations')
-      .select('*')
+      .select('id, user_id, education_code, title, type, description, duration_months, location, url, provider, target_occupation, status, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .eq('status', status)
       .order('created_at', { ascending: false });
@@ -406,9 +412,10 @@ export const networkApi = {
     }
 
     try {
+      // E11 (2026-07-23): explicit kolumnlista — matchar exakt NetworkContact-interfacet.
       const { data, error } = await supabase
         .from('network_contacts')
-        .select('*')
+        .select('id, user_id, name, company, role, email, linkedin_url, relationship, last_contact_date, next_contact_date, notes, status, tags, created_at, updated_at')
         .eq('user_id', user.id)
         .order('last_contact_date', { ascending: false, nullsFirst: false });
 
@@ -432,9 +439,10 @@ export const networkApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
       .from('network_contacts')
-      .select('*')
+      .select('id, user_id, name, company, role, email, linkedin_url, relationship, last_contact_date, next_contact_date, notes, status, tags, created_at, updated_at')
       .eq('user_id', user.id)
       .eq('status', status)
       .order('last_contact_date', { ascending: false, nullsFirst: false });
@@ -652,9 +660,10 @@ export const milestonesApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt CareerMilestone-interfacet.
     const { data, error } = await supabase
       .from('career_milestones')
-      .select('*')
+      .select('id, plan_id, user_id, title, description, timeframe, target_date, steps, progress, is_completed, sort_order, created_at, updated_at')
       .eq('plan_id', planId)
       .eq('user_id', user.id)
       .order('sort_order', { ascending: true });
@@ -796,9 +805,10 @@ export const networkingEventsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt NetworkingEvent-interfacet.
     const { data, error } = await supabase
       .from('networking_events')
-      .select('*')
+      .select('id, user_id, title, description, event_date, event_time, location, event_url, expected_attendees, is_attending, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .order('event_date', { ascending: true });
 
@@ -812,9 +822,10 @@ export const networkingEventsApi = {
 
     const today = new Date().toISOString().split('T')[0];
 
+    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
       .from('networking_events')
-      .select('*')
+      .select('id, user_id, title, description, event_date, event_time, location, event_url, expected_attendees, is_attending, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .gte('event_date', today)
       .order('event_date', { ascending: true });
@@ -941,9 +952,10 @@ export const skillsAnalysisApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt SkillsAnalysis-interfacet.
     const { data, error } = await supabase
       .from('skills_analyses')
-      .select('*')
+      .select('id, user_id, dream_job, cv_text, match_percentage, analysis_result, skills_comparison, recommended_courses, action_plan, created_at, updated_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -962,9 +974,10 @@ export const skillsAnalysisApi = {
     }
 
     try {
+      // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
       const { data, error } = await supabase
         .from('skills_analyses')
-        .select('*')
+        .select('id, user_id, dream_job, cv_text, match_percentage, analysis_result, skills_comparison, recommended_courses, action_plan, created_at, updated_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(1)
@@ -1058,9 +1071,10 @@ export const favoriteOccupationsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt FavoriteOccupation-interfacet.
     const { data, error } = await supabase
       .from('favorite_occupations')
-      .select('*')
+      .select('id, user_id, occupation_id, occupation_title, occupation_category, salary_range, demand_level, education_required, match_percentage, notes, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -1175,9 +1189,10 @@ export const adaptationsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserAdaptations-interfacet.
     const { data, error } = await supabase
       .from('user_adaptations')
-      .select('*')
+      .select('id, user_id, physical_adaptations, cognitive_adaptations, organizational_adaptations, social_adaptations, technical_adaptations, communication_adaptations, environmental_adaptations, adaptation_details, notes, summary, created_at, updated_at')
       .eq('user_id', user.id)
       .maybeSingle();
 
@@ -1234,9 +1249,10 @@ export const credentialsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt UserCredential-interfacet.
     const { data, error } = await supabase
       .from('user_credentials')
-      .select('*')
+      .select('id, user_id, name, issuer, type, status, target_date, completed_date, url, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
@@ -1316,9 +1332,10 @@ export const relocationApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
+    // E11 (2026-07-23): explicit kolumnlista — matchar exakt RelocationPreferences-interfacet.
     const { data, error } = await supabase
       .from('relocation_preferences')
-      .select('*')
+      .select('id, user_id, target_regions, current_region, max_rent_budget, expected_salary, checklist_completed, notes, created_at, updated_at')
       .eq('user_id', user.id)
       .maybeSingle();
 
