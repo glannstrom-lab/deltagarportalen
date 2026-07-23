@@ -2945,6 +2945,7 @@
       "whereWantToGo": "Vart vill du?",
       "goalPlaceholder": "Beskriv ditt mål (t.ex. 'Bli projektledare inom IT med fokus på agila metoder')",
       "generatePlan": "Skapa karriärplan",
+      "aiSuggestionsFailed": "Vi kunde inte ta fram AI-förslag på milstolpar just nu. Din plan är sparad — du kan lägga till egna milstolpar, eller försöka igen senare.",
       "whyCareerPlan": "Varför en karriärplan?",
       "reason1": "Ger struktur och riktning i ditt jobbsökande",
       "reason2": "Hjälper dig att bryta ner stora mål till hanterbara steg",

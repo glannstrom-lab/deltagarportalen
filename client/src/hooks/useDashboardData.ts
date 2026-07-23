@@ -560,7 +560,12 @@ export const QUERY_STALE_TIMES = {
   interest: 60 * 60 * 1000,   // 1 timme - intresseresultat ändras sällan
 } as const
 
-// Legacy hook för bakåtkompatibilitet
+/**
+ * @deprecated Använd `useDashboardDataQuery` (React Query, delad cache).
+ * Denna variant gör 15 parallella anrop per konsument utan cache — sista
+ * prod-konsumenten (AIAssistant) migrerades 2026-07-23 (E9). Kvarvarande
+ * importörer är det arkiverade widget-systemets komponenter.
+ */
 export function useDashboardData(): UseDashboardDataReturn {
   const [data, setData] = useState<DashboardWidgetData | null>(null)
   const [loading, setLoading] = useState(true)

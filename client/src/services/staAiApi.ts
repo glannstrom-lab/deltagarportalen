@@ -5,6 +5,7 @@
  */
 
 import { callAI } from './aiApi'
+import { safeParseAiResponse, StaDocumentDraftSchema } from './aiSchemas'
 import { fetchEnrollmentBundle, type DocumentType, type StaPart } from './staApi'
 
 export interface DocumentDraftSections {
@@ -34,7 +35,16 @@ export async function generateDocumentDraft(
     throw new Error(response.error ?? 'Kunde inte generera utkast')
   }
 
-  return response.sections as DocumentDraftSections
+  // B8 (2026-07-23): validera mot schema i stället för ovaliderad cast —
+  // tidigare kunde en rå JSON-sträng (eller trasigt AI-svar) sättas rakt
+  // in som "sections" och ge tomt/trasigt UI utan felsignal (H8-klassen).
+  const parsed = safeParseAiResponse(StaDocumentDraftSchema, response.sections)
+  if (!parsed.success || !parsed.data || Object.keys(parsed.data).length === 0) {
+    console.error('sta-document-draft: AI-svaret gick inte att validera:', parsed.error)
+    throw new Error('AI-utkastet gick inte att tolka. Inget har sparats — försök igen.')
+  }
+
+  return parsed.data
 }
 
 /**

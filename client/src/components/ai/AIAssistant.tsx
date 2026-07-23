@@ -20,7 +20,7 @@ import {
   Heart
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useAuthStore } from '@/stores/authStore'
 
 // ML-analys resultat
@@ -149,7 +149,10 @@ export function AIAssistant() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'actions'>('overview')
-  const { data } = useDashboardData()
+  // E9 (2026-07-23): React Query-varianten — komponenten renderas ×2 på
+  // Övningar-sidan och legacy-hooken körde då hela 15-anrops-hämtningen
+  // dubbelt utan cache
+  const { data } = useDashboardDataQuery()
   const { user } = useAuthStore()
 
   // Simulated activity data - in production from API

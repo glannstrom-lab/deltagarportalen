@@ -15,19 +15,21 @@ import { z } from 'zod'
 
 // --------------------------------------------------------------
 // karriarplan (career-plan)
+// Matchar ai.js:s faktiska svarsform (B7, 2026-07-23) — den tidigare
+// varianten (rubrik/beskrivning/steg) motsvarade inget verkligt svar.
 // --------------------------------------------------------------
 export const KarriarPlanStepSchema = z.object({
-  rubrik: z.string(),
-  beskrivning: z.string(),
-  tidsram: z.string().optional(),
-  prioritet: z.enum(['hög', 'medel', 'låg']).optional(),
+  order: z.number().optional(),
+  title: z.string(),
+  description: z.string().optional(),
+  timeframe: z.string().optional(),
+  actions: z.array(z.string()).optional(),
 })
 
 export const KarriarPlanSchema = z.object({
-  sammanfattning: z.string().optional(),
-  steg: z.array(KarriarPlanStepSchema).min(1),
-  hinder: z.array(z.string()).optional(),
-  resurser: z.array(z.string()).optional(),
+  steps: z.array(KarriarPlanStepSchema).min(1),
+  analysis: z.string().optional(),
+  keySkills: z.array(z.string()).optional(),
 })
 
 export type KarriarPlan = z.infer<typeof KarriarPlanSchema>
@@ -89,18 +91,26 @@ export type IntervjuResult = z.infer<typeof IntervjuSimulatorResultSchema>
 
 // --------------------------------------------------------------
 // sta-document-draft (rapportautomatisering Steg-till-arbete)
+// Verklig svarsform (B8, 2026-07-23): sections är ett OBJEKT keyat på
+// sektionsnyckel — { sections: { section_key: { title, content } } }.
+// Det gamla schemat (array + metadata) motsvarade inget verkligt svar
+// och hade alltid failat om det kopplats in.
 // --------------------------------------------------------------
 export const StaDocumentSectionSchema = z.object({
   title: z.string(),
   content: z.string(),
-  bullets: z.array(z.string()).optional(),
 })
 
-export const StaDocumentDraftSchema = z.object({
-  title: z.string().optional(),
-  sections: z.array(StaDocumentSectionSchema).min(1),
-  metadata: z.record(z.string(), z.unknown()).optional(),
-})
+export const StaDocumentSectionsSchema = z.record(z.string(), StaDocumentSectionSchema)
+
+/** Accepterar både wrappern { sections: {...} } (promptens format) och en
+ *  bar sektions-record; normaliserar alltid till Record<key, {title,content}>. */
+export const StaDocumentDraftSchema = z.union([
+  z
+    .object({ sections: StaDocumentSectionsSchema })
+    .transform((d) => d.sections),
+  StaDocumentSectionsSchema,
+])
 
 export type StaDocumentDraft = z.infer<typeof StaDocumentDraftSchema>
 

@@ -2938,6 +2938,7 @@
       "whereWantToGo": "Where do you want to go?",
       "goalPlaceholder": "Describe your goal (e.g. 'Become a project manager in IT with focus on agile methods')",
       "generatePlan": "Generate career plan",
+      "aiSuggestionsFailed": "We couldn't generate AI milestone suggestions right now. Your plan is saved — you can add your own milestones, or try again later.",
       "whyCareerPlan": "Why a career plan?",
       "reason1": "Gives structure and direction in your job search",
       "reason2": "Helps you break down big goals into manageable steps",

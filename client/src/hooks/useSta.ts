@@ -188,19 +188,25 @@ export function useConsultantStats() {
         setState({ loading: false, error: null, isMock: true })
         return
       }
-      // Hämta alla relaterade tabeller parallellt per enrollment
-      const results = await Promise.all(
-        enrollments.map(async (enrollment) => {
-          const [activities, assessments, documents, quickNotes, workplaces] = await Promise.all([
-            staActivitiesApi.list(enrollment.id),
-            staAssessmentsApi.list(enrollment.id),
-            staDocumentsApi.list(enrollment.id),
-            staQuickNotesApi.list(enrollment.id, 20),
-            staWorkplacesApi.list(enrollment.id),
-          ])
-          return { enrollment, activities, assessments, documents, quickNotes, workplaces }
-        }),
-      )
+      // E8 (2026-07-23): 5 batchade queries (.in på enrollment_id) i stället
+      // för 5 × N — tidigare orsakade en caseload på 30 deltagare ~150
+      // parallella anrop vid varje sidladdning och efter varje mutation
+      const ids = enrollments.map((e) => e.id)
+      const [activities, assessments, documents, quickNotes, workplaces] = await Promise.all([
+        staActivitiesApi.listForEnrollments(ids),
+        staAssessmentsApi.listForEnrollments(ids),
+        staDocumentsApi.listForEnrollments(ids),
+        staQuickNotesApi.listForEnrollments(ids, 20),
+        staWorkplacesApi.listForEnrollments(ids),
+      ])
+      const results = enrollments.map((enrollment) => ({
+        enrollment,
+        activities: activities[enrollment.id] ?? [],
+        assessments: assessments[enrollment.id] ?? [],
+        documents: documents[enrollment.id] ?? [],
+        quickNotes: quickNotes[enrollment.id] ?? [],
+        workplaces: workplaces[enrollment.id] ?? [],
+      }))
       setStats(results)
       setState({ loading: false, error: null, isMock: false })
     } catch (err) {

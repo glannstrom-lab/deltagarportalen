@@ -13,6 +13,9 @@ import { cn } from '@/lib/utils'
 import { careerPlanApi, milestonesApi, favoriteOccupationsApi, type CareerPlan, type CareerMilestone, type FavoriteOccupation } from '@/services/careerApi'
 import { CalendarSync } from '@/components/calendar/CalendarSync'
 import { useProfileStore } from '@/stores/profileStore'
+import { callAI } from '@/services/aiApi'
+import { safeParseAiResponse, KarriarPlanSchema } from '@/services/aiSchemas'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
@@ -32,6 +35,11 @@ export default function PlanTab() {
     target_date: '',
     steps: ''
   })
+  // B7 (2026-07-23): milstolparna AI-genereras nu på riktigt.
+  // aiGenerated styr Art 50-märkningen; aiNotice visar ärligt när
+  // AI-förslagen inte gick att hämta (planen skapas ändå, utan förslag).
+  const [aiGenerated, setAiGenerated] = useState(false)
+  const [aiNotice, setAiNotice] = useState<string | null>(null)
 
   // Profile and CV data for auto-fill
   const { profile, cvData, preferences, loadAll: loadProfileData } = useProfileStore()
@@ -148,6 +156,7 @@ export default function PlanTab() {
   const generatePlan = async () => {
     if (!currentSituation.trim() || !goal.trim()) return
     setIsSaving(true)
+    setAiNotice(null)
     try {
       const newPlan = await careerPlanApi.create({
         current_situation: currentSituation,
@@ -157,41 +166,44 @@ export default function PlanTab() {
       setPlan(newPlan)
       setMilestones([])
 
-      // Create default milestones
-      const defaultMilestones = [
-        {
-          plan_id: newPlan.id,
-          title: i18n.language === 'en' ? 'Update CV and LinkedIn' : 'Uppdatera CV och LinkedIn',
-          timeframe: i18n.language === 'en' ? 'Month 1-2' : 'Månad 1-2',
-          steps: i18n.language === 'en'
-            ? ['Add recent experiences', 'Optimize keywords', 'Update profile picture']
-            : ['Lägg till senaste erfarenheter', 'Optimera nyckelord', 'Uppdatera profilbild'],
-          sort_order: 0
-        },
-        {
-          plan_id: newPlan.id,
-          title: i18n.language === 'en' ? 'Identify target companies' : 'Identifiera målföretag',
-          timeframe: i18n.language === 'en' ? 'Month 2-3' : 'Månad 2-3',
-          steps: i18n.language === 'en'
-            ? ['List 10 dream employers', 'Follow them on LinkedIn', 'Contact people within the companies']
-            : ['Lista 10 drömarbetsgivare', 'Följ dem på LinkedIn', 'Kontakta personer inom företagen'],
-          sort_order: 1
-        },
-        {
-          plan_id: newPlan.id,
-          title: i18n.language === 'en' ? 'Send applications' : 'Skicka ansökningar',
-          timeframe: i18n.language === 'en' ? 'Month 3-6' : 'Månad 3-6',
-          steps: i18n.language === 'en'
-            ? ['Tailor CV for each role', 'Write cover letters', 'Follow up applications']
-            : ['Skräddarsy CV för varje roll', 'Skriv personliga brev', 'Följa upp ansökningar'],
-          sort_order: 2
+      // B7 (2026-07-23): riktig AI-generering av milstolpar utifrån
+      // användarens situation/mål. Tidigare skapades tre hårdkodade
+      // generiska milstolpar här oavsett input — presenterat som en
+      // "genererad plan". Om AI:n inte kan leverera skapas planen utan
+      // förslag och användaren får veta det ärligt (egna milstolpar
+      // kan alltid läggas till manuellt).
+      try {
+        const response = await callAI('karriarplan', {
+          currentSituation,
+          goal,
+          timeframe: timeframe || undefined
+        })
+        const parsed = safeParseAiResponse(KarriarPlanSchema, response?.plan)
+        if (!parsed.success || !parsed.data) {
+          throw new Error(parsed.error || 'AI-svaret gick inte att validera')
         }
-      ]
 
-      const createdMilestones = await Promise.all(
-        defaultMilestones.map(m => milestonesApi.create(m))
-      )
-      setMilestones(createdMilestones)
+        const aiMilestones = parsed.data.steps
+          .slice(0, 6)
+          .map((step, idx) => ({
+            plan_id: newPlan.id,
+            title: step.title,
+            description: step.description || undefined,
+            timeframe: step.timeframe || undefined,
+            steps: (step.actions ?? []).filter(a => a.trim()),
+            sort_order: step.order ?? idx
+          }))
+
+        const createdMilestones = []
+        for (const m of aiMilestones) {
+          createdMilestones.push(await milestonesApi.create(m))
+        }
+        setMilestones(createdMilestones)
+        setAiGenerated(true)
+      } catch (aiErr) {
+        console.error('Karriärplan: AI-förslagen kunde inte genereras:', aiErr)
+        setAiNotice(t('career.plan.aiSuggestionsFailed'))
+      }
     } catch (err) {
       console.error('Failed to create career plan:', err)
     } finally {
@@ -572,6 +584,13 @@ export default function PlanTab() {
             Tidslinje för karriärplan
           </h4>
 
+          {aiNotice && (
+            <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800" role="status">
+              <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="text-sm text-amber-800 dark:text-amber-200">{aiNotice}</p>
+            </div>
+          )}
+
           <div className="relative pl-6" role="list" aria-label="Milstolpar">
             {milestones.length === 0 ? (
               <EmptyState
@@ -700,6 +719,11 @@ export default function PlanTab() {
               </div>
             ))}
           </div>
+
+          {/* Art 50: milstolparna genererades av AI i denna session */}
+          {aiGenerated && milestones.length > 0 && (
+            <AIGeneratedWatermark contentType="karriärplan" />
+          )}
         </div>
 
         <Button

@@ -354,8 +354,10 @@ const PROMPTS = {
     responseKey: 'result'
   }),
   'karriarplan': (data) => ({
-    system: 'Du är karriärexpert. Svara i JSON: {"steps":[{"order":1,"title":"","description":"","timeframe":"","actions":[]}],"analysis":"","keySkills":[]}',
-    user: `Karriärplan:\nNuvarande: ${data?.currentOccupation}\nMål: ${data?.targetOccupation}\nErfarenhet: ${data?.experienceYears} år\n\nSkapa 4-5 steg. Svara ENDAST JSON.`,
+    system: `Du är en varm och konkret karriärcoach. Skapa en personlig karriärplan utifrån personens faktiska situation och mål. Svara ENDAST med JSON i detta format:
+{"steps":[{"order":1,"title":"Kort rubrik","description":"Vad steget innebär och varför","timeframe":"Månad 1-2","actions":["Konkret handling"]}],"analysis":"2-3 meningar om vägen till målet","keySkills":["Kompetens att utveckla"]}
+Regler: 4-5 steg i kronologisk ordning, anpassade till personens NUVARANDE situation (inte generiska mallar). 2-4 actions per steg, konkreta och genomförbara. timeframe relativt (t.ex. "Månad 1-2") och anpassat till angiven tidsram. Uppmuntrande men realistisk ton, aldrig pressande. Allt på svenska.`,
+    user: `Skapa en karriärplan:\n\nNuvarande situation: ${data?.currentSituation || data?.currentOccupation || 'Ej angivet'}\nMål: ${data?.goal || data?.targetOccupation || 'Ej angivet'}\nÖnskad tidsram: ${data?.timeframe || 'Flexibel'}\n\nSvara ENDAST med JSON.`,
     maxTokens: 2500,
     responseKey: 'plan',
     parseJson: true
@@ -782,6 +784,10 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
         `5. Inga rubriker eller markdown i content-fältet — bara löpande text.\n`,
       maxTokens: 1800,
       responseKey: 'sections',
+      // B8 (2026-07-23): utan parseJson returnerades sections som RÅ JSON-
+      // sträng — klienten castade den ovaliderat till objekt (tyst trasigt).
+      // Klienten Zod-validerar nu dessutom svaret (staAiApi + aiSchemas).
+      parseJson: true,
     };
   },
 

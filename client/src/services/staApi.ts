@@ -228,6 +228,21 @@ export interface StaWeeklyCheckin {
 }
 
 // =============================================================================
+// Batch-hjälpare (E8, 2026-07-23)
+// =============================================================================
+// Konsulentvyn hämtade tidigare 5 tabeller × N deltagare = O(5N) queries vid
+// varje sidladdning. listForEnrollments-varianterna hämtar EN query per
+// tabell (.in på enrollment_id) och grupperar client-side — samma data,
+// samma ordning inom varje enrollment, konstant antal queries.
+function groupByEnrollment<T extends { enrollment_id: string }>(rows: T[]): Record<string, T[]> {
+  const grouped: Record<string, T[]> = {}
+  for (const row of rows) {
+    ;(grouped[row.enrollment_id] ??= []).push(row)
+  }
+  return grouped
+}
+
+// =============================================================================
 // ENROLLMENTS
 // =============================================================================
 
@@ -568,6 +583,17 @@ export const staActivitiesApi = {
     return (data ?? []) as StaActivity[]
   },
 
+  async listForEnrollments(enrollmentIds: string[]): Promise<Record<string, StaActivity[]>> {
+    if (enrollmentIds.length === 0) return {}
+    const { data, error } = await supabase
+      .from('sta_activities')
+      .select('*')
+      .in('enrollment_id', enrollmentIds)
+      .order('scheduled_for', { ascending: true })
+    if (error) handleError(error)
+    return groupByEnrollment((data ?? []) as StaActivity[])
+  },
+
   async upsert(activity: Partial<StaActivity> & { enrollment_id: string; part: StaPart; activity_type: ActivityType }): Promise<StaActivity> {
     if (activity.id) {
       const { data, error } = await supabase
@@ -670,6 +696,17 @@ export const staAssessmentsApi = {
     const { data, error } = await query
     if (error) handleError(error)
     return (data ?? []) as StaAssessment[]
+  },
+
+  async listForEnrollments(enrollmentIds: string[]): Promise<Record<string, StaAssessment[]>> {
+    if (enrollmentIds.length === 0) return {}
+    const { data, error } = await supabase
+      .from('sta_assessments')
+      .select('*')
+      .in('enrollment_id', enrollmentIds)
+      .order('created_at', { ascending: false })
+    if (error) handleError(error)
+    return groupByEnrollment((data ?? []) as StaAssessment[])
   },
 
   async getOrCreate(
@@ -781,6 +818,17 @@ export const staWorkplacesApi = {
       .order('created_at', { ascending: false })
     if (error) handleError(error)
     return (data ?? []) as StaWorkplace[]
+  },
+
+  async listForEnrollments(enrollmentIds: string[]): Promise<Record<string, StaWorkplace[]>> {
+    if (enrollmentIds.length === 0) return {}
+    const { data, error } = await supabase
+      .from('sta_workplaces')
+      .select('*')
+      .in('enrollment_id', enrollmentIds)
+      .order('created_at', { ascending: false })
+    if (error) handleError(error)
+    return groupByEnrollment((data ?? []) as StaWorkplace[])
   },
 
   async create(input: Partial<StaWorkplace> & { enrollment_id: string; company_name: string }): Promise<StaWorkplace> {
@@ -906,6 +954,17 @@ export const staDocumentsApi = {
     return (data ?? []) as StaDocument[]
   },
 
+  async listForEnrollments(enrollmentIds: string[]): Promise<Record<string, StaDocument[]>> {
+    if (enrollmentIds.length === 0) return {}
+    const { data, error } = await supabase
+      .from('sta_documents')
+      .select('*')
+      .in('enrollment_id', enrollmentIds)
+      .order('created_at', { ascending: false })
+    if (error) handleError(error)
+    return groupByEnrollment((data ?? []) as StaDocument[])
+  },
+
   async getOrCreate(enrollmentId: string, docType: DocumentType, part: StaPart | null): Promise<StaDocument> {
     const { data: existing } = await supabase
       .from('sta_documents')
@@ -964,6 +1023,28 @@ export const staQuickNotesApi = {
       .limit(limit)
     if (error) handleError(error)
     return (data ?? []) as StaQuickNote[]
+  },
+
+  async listForEnrollments(
+    enrollmentIds: string[],
+    limitPerEnrollment = 20,
+  ): Promise<Record<string, StaQuickNote[]>> {
+    if (enrollmentIds.length === 0) return {}
+    // Per-grupp-limit går inte i en enkel query — hämta (globalt takat) och
+    // klipp per enrollment client-side. created_at desc gör att klippet
+    // behåller de senaste anteckningarna per deltagare.
+    const { data, error } = await supabase
+      .from('sta_quick_notes')
+      .select('*')
+      .in('enrollment_id', enrollmentIds)
+      .order('created_at', { ascending: false })
+      .limit(2000)
+    if (error) handleError(error)
+    const grouped = groupByEnrollment((data ?? []) as StaQuickNote[])
+    for (const key of Object.keys(grouped)) {
+      grouped[key] = grouped[key].slice(0, limitPerEnrollment)
+    }
+    return grouped
   },
 
   async create(input: {
