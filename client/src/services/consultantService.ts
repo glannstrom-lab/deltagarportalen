@@ -268,6 +268,12 @@ class ConsultantService {
    * Update a meeting
    */
   async updateMeeting(meetingId: string, updates: Partial<Meeting>): Promise<Meeting> {
+    // D11 (2026-07-23): tidigare saknade denna metod auth-guard helt, till
+    // skillnad från systermetoderna i filen — RLS var enda skyddet. Samma
+    // mönster som övriga metoder tillagt för konsekvens + tydligare fel.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { data, error } = await supabase
       .from('consultant_meetings')
       .update(updates)
@@ -283,6 +289,10 @@ class ConsultantService {
    * Cancel a meeting
    */
   async cancelMeeting(meetingId: string): Promise<void> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { error } = await supabase
       .from('consultant_meetings')
       .update({ status: 'cancelled' })
@@ -335,6 +345,10 @@ class ConsultantService {
    * Update a goal
    */
   async updateGoal(goalId: string, updates: Partial<ConsultantGoal>): Promise<ConsultantGoal> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { data, error } = await supabase
       .from('consultant_goals')
       .update(updates)
@@ -350,6 +364,10 @@ class ConsultantService {
    * Complete a goal
    */
   async completeGoal(goalId: string): Promise<void> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { error } = await supabase
       .from('consultant_goals')
       .update({
@@ -366,6 +384,10 @@ class ConsultantService {
    * Delete a goal
    */
   async deleteGoal(goalId: string): Promise<void> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { error } = await supabase
       .from('consultant_goals')
       .delete()
@@ -424,6 +446,10 @@ class ConsultantService {
    * Delete a journal entry
    */
   async deleteJournalEntry(entryId: string): Promise<void> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { error } = await supabase
       .from('consultant_journal')
       .delete()
@@ -462,6 +488,10 @@ class ConsultantService {
     field: 'followup_3m' | 'followup_6m',
     value: boolean
   ): Promise<void> {
+    // D11 (2026-07-23): auth-guard tillagd, se updateMeeting ovan.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
     const { error } = await supabase
       .from('consultant_placements')
       .update({ [field]: value })
@@ -480,29 +510,25 @@ class ConsultantService {
     if (!user) throw new Error('Not authenticated')
 
     // Fetch participants
-    const { data: participants } = await supabase
+    // D11 (2026-07-23): tidigare kollades bara `!participants` — ett riktigt
+    // DB-/RLS-fel (data=null, error satt) såg då identiskt ut som "konsulenten
+    // har noll deltagare" och returnerades tyst som all-noll-statistik. En
+    // äkta tom lista kommer alltid som `[]`, aldrig `null`, så `error` måste
+    // kontrolleras explicit och kastas vidare i stället för att gissas bort.
+    const { data: participants, error: participantsError } = await supabase
       .from('consultant_dashboard_participants')
       .select('*')
       .eq('consultant_id', user.id)
 
-    if (!participants) {
-      return {
-        totalParticipants: 0,
-        activeParticipants: 0,
-        completedParticipants: 0,
-        cvCompletionRate: 0,
-        averageAtsScore: 0,
-        goalsCompletedThisMonth: 0,
-        placementsThisMonth: 0,
-      }
-    }
+    if (participantsError) throw participantsError
 
-    const total = participants.length
-    const active = participants.filter(p => p.status === 'ACTIVE').length
-    const completed = participants.filter(p => p.status === 'COMPLETED').length
-    const withCV = participants.filter(p => p.has_cv).length
+    const participantList = participants || []
+    const total = participantList.length
+    const active = participantList.filter(p => p.status === 'ACTIVE').length
+    const completed = participantList.filter(p => p.status === 'COMPLETED').length
+    const withCV = participantList.filter(p => p.has_cv).length
     const avgAts = Math.round(
-      participants.reduce((sum, p) => sum + (p.ats_score || 0), 0) / Math.max(total, 1)
+      participantList.reduce((sum, p) => sum + (p.ats_score || 0), 0) / Math.max(total, 1)
     )
 
     // Beräkna goals + placements för innevarande månad. Tidigare returnerade
@@ -513,7 +539,7 @@ class ConsultantService {
     startOfMonth.setDate(1)
     startOfMonth.setHours(0, 0, 0, 0)
     const startIso = startOfMonth.toISOString()
-    const participantIds = participants.map(p => p.user_id).filter(Boolean)
+    const participantIds = participantList.map(p => p.user_id).filter(Boolean)
 
     let goalsCompletedThisMonth = 0
     let placementsThisMonth = 0

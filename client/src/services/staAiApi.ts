@@ -60,7 +60,17 @@ export async function generateWeekSummary(enrollmentId: string): Promise<string 
     throw new Error(response.error ?? 'Kunde inte generera sammanställning')
   }
 
-  return response.summary as string
+  // D11 (2026-07-23): tidigare castades response.summary rakt till string utan
+  // någon runtime-kontroll — ett trasigt/oväntat AI-svar (t.ex. ett objekt)
+  // passerade tyst rakt igenom och kunde rendera trasigt UI, till skillnad
+  // från generateDocumentDraft som redan är Zod-validerad (B8). Minsta
+  // möjliga skydd: kräv en icke-tom sträng, kasta ärligt fel annars.
+  if (typeof response.summary !== 'string' || response.summary.trim().length === 0) {
+    console.error('sta-week-summary: AI-svaret var inte en giltig sträng:', response.summary)
+    throw new Error('Veckosammanställningen gick inte att tolka. Försök igen.')
+  }
+
+  return response.summary
 }
 
 /**

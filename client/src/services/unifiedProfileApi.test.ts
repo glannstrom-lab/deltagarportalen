@@ -1,9 +1,13 @@
 /**
  * Tester för unifiedProfileApi — aggregerar profil/cv/intresseresultat.
- * Fokus: KÄLLKODSOBSERVATIONER kring felsväljning (getProfile/syncFromCV/
- * syncToCV fångar ALLA fel tyst och returnerar default/void i stället för
- * att låta anroparen få reda på det), samt kolumn-/statusmappning i
- * updateCore/updateCareer. Mockar Supabase + Toast.
+ *
+ * D11 (2026-07-23): getProfile/syncFromCV/syncToCV kastade tidigare ALLA
+ * fel tyst (inkl. "inte inloggad" och äkta RLS-/nätverksfel) och returnerade
+ * default/void — omöjligt att skilja från en ny användare utan data. Nu
+ * kastas äkta fel vidare; PGRST116 ("no rows" från .single()) räknas som
+ * legitimt "ingen data än"-läge och ger fortsatt tomma defaults/no-op.
+ * updateCore loggar numera även fel i sin bakåtkompat-skrivning till
+ * `profiles` (kontrollerades tidigare aldrig). Mockar Supabase + Toast.
  */
 /* eslint-disable @typescript-eslint/no-explicit-any -- supabase-builder-mock kräver any-typad chainable */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
@@ -80,15 +84,9 @@ function loggedOut() {
 }
 
 describe('unifiedProfileApi.getProfile', () => {
-  it('KÄLLKODSOBSERVATION: sväljer "Inte inloggad"-felet — returnerar tom default-profil i stället för att kasta', async () => {
+  it('D11: kastar "Inte inloggad" i stället för att svälja felet och returnera default-profil', async () => {
     loggedOut()
-    const result = await unifiedProfileApi.getProfile()
-    expect(result).toEqual({
-      core: { firstName: '', lastName: '', email: '', phone: '', location: '', summary: '' },
-      professional: { skills: [], languages: [], workExperience: [], education: [] },
-      career: { preferredRoles: [] },
-      usage: { coverLettersCount: 0, applicationsCount: 0 },
-    })
+    await expect(unifiedProfileApi.getProfile()).rejects.toThrow('Inte inloggad')
   })
 
   it('aggregerar profil, cv, intresseresultat och unified_profiles-override', async () => {
@@ -133,17 +131,39 @@ describe('unifiedProfileApi.getProfile', () => {
     expect(result.usage?.applicationsCount).toBe(5)
   })
 
-  it('KÄLLKODSOBSERVATION: om en delfråga kraschar sväljs HELA felet — returnerar tom default utan signal om vilken query som föll', async () => {
+  it('D11: PGRST116 ("no rows") på profiles-frågan är legitimt — ny användare utan rad ger tomma defaults, kastar INTE', async () => {
     loggedIn()
-    mockFromBuilder.single.mockRejectedValueOnce(new Error('profiles-tabellen otillgänglig'))
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: null,
+      error: { code: 'PGRST116', message: 'no rows' },
+    }) // profiles: ny användare, ingen rad än
     mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
     queueResult({ count: 0, error: null })
     queueResult({ count: 0, error: null })
 
     const result = await unifiedProfileApi.getProfile()
-    expect(result.core?.firstName).toBe('') // default, inte ett kastat fel
+    expect(result.core?.firstName).toBe('')
+    expect(result.usage?.coverLettersCount).toBe(0)
+  })
+
+  it('D11: kastar vidare äkta DB-fel på en delfråga (t.ex. cv-läsning) i stället för att svälja allt', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: { first_name: 'Anna' },
+      error: null,
+    }) // profiles OK
+    mockFromBuilder.maybeSingle
+      .mockResolvedValueOnce({
+        data: null,
+        error: new Error('cvs-tabellen otillgänglig'),
+      }) // cvs kraschar
+      .mockResolvedValueOnce({ data: null, error: null }) // interest_results
+      .mockResolvedValueOnce({ data: null, error: null }) // unified_profiles
+    queueResult({ count: 0, error: null })
+    queueResult({ count: 0, error: null })
+    await expect(unifiedProfileApi.getProfile()).rejects.toThrow('cvs-tabellen otillgänglig')
     expect(console.error).toHaveBeenCalledWith(
-      'Fel vid hämtning av unified profile:',
+      'Fel vid hämtning av unified profile (cvs):',
       expect.any(Error)
     )
   })
@@ -180,12 +200,16 @@ describe('unifiedProfileApi.updateCore', () => {
     expect(mockToastError).toHaveBeenCalledWith('Kunde inte spara profilen')
   })
 
-  it('KÄLLKODSOBSERVATION: bakåtkompat-skrivningen till profiles kontrollerar aldrig sitt error-fält — ett fel där syns aldrig', async () => {
+  it('D11: loggar (men kastar inte) fel i bakåtkompat-skrivningen till profiles — primärskrivningen lyckades redan', async () => {
     loggedIn()
     queueResult({ data: null, error: null }) // unified_profiles upsert OK
-    queueResult({ data: null, error: new Error('profiles-update-fel, aldrig kollad') }) // ignoreras helt
+    queueResult({ data: null, error: new Error('profiles-update-fel') }) // backcompat-fel
     await expect(unifiedProfileApi.updateCore({ firstName: 'X' })).resolves.toBeUndefined()
     expect(mockToastSuccess).toHaveBeenCalledWith('Profilen sparad')
+    expect(console.error).toHaveBeenCalledWith(
+      'Fel vid bakåtkompat-uppdatering av profiles (updateCore):',
+      expect.any(Error)
+    )
   })
 })
 
@@ -249,9 +273,9 @@ describe('unifiedProfileApi.updateCareer', () => {
 })
 
 describe('unifiedProfileApi.syncFromCV / syncToCV', () => {
-  it('syncFromCV KÄLLKODSOBSERVATION: sväljer fel helt — inget kastas, ingen toast', async () => {
-    loggedOut() // getUser-felet fångas tyst
-    await expect(unifiedProfileApi.syncFromCV()).resolves.toBeUndefined()
+  it('D11: syncFromCV kastar "Inte inloggad" i stället för att svälja felet', async () => {
+    loggedOut()
+    await expect(unifiedProfileApi.syncFromCV()).rejects.toThrow('Inte inloggad')
     expect(mockToastError).not.toHaveBeenCalled()
   })
 
@@ -266,16 +290,22 @@ describe('unifiedProfileApi.syncFromCV / syncToCV', () => {
     )
   })
 
-  it('syncFromCV gör ingenting om inget cv finns', async () => {
+  it('syncFromCV gör ingenting om inget cv finns (legitimt no-op, ingen error)', async () => {
     loggedIn()
     mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
-    await unifiedProfileApi.syncFromCV()
+    await expect(unifiedProfileApi.syncFromCV()).resolves.toBeUndefined()
     expect(mockFromBuilder.upsert).not.toHaveBeenCalled()
   })
 
-  it('syncToCV KÄLLKODSOBSERVATION: sväljer fel helt — inget kastas', async () => {
+  it('D11: syncFromCV kastar vidare ett äkta läsfel på cvs i stället för att svälja det', async () => {
+    loggedIn()
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: new Error('cvs-läsfel') })
+    await expect(unifiedProfileApi.syncFromCV()).rejects.toThrow('cvs-läsfel')
+  })
+
+  it('D11: syncToCV kastar "Inte inloggad" i stället för att svälja felet', async () => {
     loggedOut()
-    await expect(unifiedProfileApi.syncToCV()).resolves.toBeUndefined()
+    await expect(unifiedProfileApi.syncToCV()).rejects.toThrow('Inte inloggad')
   })
 
   it('syncToCV kopierar unified_profiles.summary tillbaka till cvs', async () => {
@@ -287,6 +317,22 @@ describe('unifiedProfileApi.syncFromCV / syncToCV', () => {
     expect(mockFromBuilder.update).toHaveBeenCalledWith(
       expect.objectContaining({ summary: 'Ny sammanfattning' })
     )
+  })
+
+  it('D11: syncToCV gör ingenting om ingen unified profile finns än (PGRST116, legitimt no-op)', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST116', message: 'no rows' },
+    })
+    await expect(unifiedProfileApi.syncToCV()).resolves.toBeUndefined()
+    expect(mockFromBuilder.update).not.toHaveBeenCalled()
+  })
+
+  it('D11: syncToCV kastar vidare ett äkta läsfel på unified_profiles', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({ data: null, error: new Error('unified-profiles-läsfel') })
+    await expect(unifiedProfileApi.syncToCV()).rejects.toThrow('unified-profiles-läsfel')
   })
 })
 

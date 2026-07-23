@@ -3,6 +3,12 @@
  * (tyst prod-bugg: tidigare skrevs mot obefintlig `participant_consultants`
  * i stället för `consultant_participants`). Verifierar auth-guards,
  * felpropagering/-svaljning och kolumnmappning. Mockar Supabase.
+ *
+ * D11 (2026-07-23): getAnalytics kastar nu vidare DB-fel i participants-
+ * queryn (kastade tidigare tysta nollor), och 7 mutationsmetoder
+ * (updateMeeting, cancelMeeting, updateGoal, completeGoal, deleteGoal,
+ * deleteJournalEntry, updatePlacementFollowup) har fått auth-guards
+ * tillagda för konsekvens med övriga metoder i filen.
  */
 /* eslint-disable @typescript-eslint/no-explicit-any -- supabase-builder-mock kräver any-typad chainable */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
@@ -295,8 +301,15 @@ describe('consultantService.createMeeting', () => {
 })
 
 describe('consultantService.updateMeeting / cancelMeeting', () => {
-  it('KÄLLKODSOBSERVATION: updateMeeting saknar auth-guard — kör igenom utan inloggad user', async () => {
+  it('D11: updateMeeting kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
     loggedOut()
+    await expect(
+      consultantService.updateMeeting('meet-1', { notes: 'uppdaterad' })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('updateMeeting uppdaterar mötet när inloggad', async () => {
+    loggedIn()
     mockFromBuilder.single.mockResolvedValue({ data: { id: 'meet-1' }, error: null })
     const result = await consultantService.updateMeeting('meet-1', { notes: 'uppdaterad' })
     expect(mockFrom).toHaveBeenCalledWith('consultant_meetings')
@@ -304,7 +317,13 @@ describe('consultantService.updateMeeting / cancelMeeting', () => {
     expect(result).toEqual({ id: 'meet-1' })
   })
 
+  it('D11: cancelMeeting kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
+    loggedOut()
+    await expect(consultantService.cancelMeeting('meet-1')).rejects.toThrow('Not authenticated')
+  })
+
   it('cancelMeeting sätter status=cancelled', async () => {
+    loggedIn()
     queueResult({ data: null, error: null })
     await consultantService.cancelMeeting('meet-1')
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ status: 'cancelled' })
@@ -312,6 +331,7 @@ describe('consultantService.updateMeeting / cancelMeeting', () => {
   })
 
   it('cancelMeeting kastar vidare supabase-fel', async () => {
+    loggedIn()
     queueResult({ data: null, error: new Error('cancel-fel') })
     await expect(consultantService.cancelMeeting('meet-1')).rejects.toThrow('cancel-fel')
   })
@@ -361,9 +381,31 @@ describe('consultantService.createGoal', () => {
   })
 })
 
-describe('consultantService.completeGoal', () => {
-  it('KÄLLKODSOBSERVATION: saknar auth-guard — sätter status/progress/completed_at direkt', async () => {
+describe('consultantService.updateGoal', () => {
+  it('D11: kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
     loggedOut()
+    await expect(
+      consultantService.updateGoal('goal-1', { progress: 50 })
+    ).rejects.toThrow('Not authenticated')
+  })
+
+  it('uppdaterar målet när inloggad', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({ data: { id: 'goal-1', progress: 50 }, error: null })
+    const result = await consultantService.updateGoal('goal-1', { progress: 50 })
+    expect(mockFromBuilder.update).toHaveBeenCalledWith({ progress: 50 })
+    expect(result).toEqual({ id: 'goal-1', progress: 50 })
+  })
+})
+
+describe('consultantService.completeGoal', () => {
+  it('D11: kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
+    loggedOut()
+    await expect(consultantService.completeGoal('goal-1')).rejects.toThrow('Not authenticated')
+  })
+
+  it('sätter status/progress/completed_at när inloggad', async () => {
+    loggedIn()
     queueResult({ data: null, error: null })
     await consultantService.completeGoal('goal-1')
     expect(mockFromBuilder.update).toHaveBeenCalledWith(
@@ -373,7 +415,13 @@ describe('consultantService.completeGoal', () => {
 })
 
 describe('consultantService.deleteGoal', () => {
-  it('anropar delete().eq(id) på consultant_goals (ingen auth-guard)', async () => {
+  it('D11: kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
+    loggedOut()
+    await expect(consultantService.deleteGoal('goal-1')).rejects.toThrow('Not authenticated')
+  })
+
+  it('anropar delete().eq(id) på consultant_goals', async () => {
+    loggedIn()
     queueResult({ data: null, error: null })
     await consultantService.deleteGoal('goal-1')
     expect(mockFrom).toHaveBeenCalledWith('consultant_goals')
@@ -382,6 +430,7 @@ describe('consultantService.deleteGoal', () => {
   })
 
   it('kastar vidare supabase-fel', async () => {
+    loggedIn()
     queueResult({ data: null, error: new Error('delete-fel') })
     await expect(consultantService.deleteGoal('goal-1')).rejects.toThrow('delete-fel')
   })
@@ -417,7 +466,13 @@ describe('consultantService.getJournalEntries / addJournalEntry / deleteJournalE
     )
   })
 
+  it('D11: deleteJournalEntry kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
+    loggedOut()
+    await expect(consultantService.deleteJournalEntry('j1')).rejects.toThrow('Not authenticated')
+  })
+
   it('deleteJournalEntry anropar delete().eq(id)', async () => {
+    loggedIn()
     queueResult({ data: null, error: null })
     await consultantService.deleteJournalEntry('j1')
     expect(mockFrom).toHaveBeenCalledWith('consultant_journal')
@@ -457,7 +512,15 @@ describe('consultantService.recordPlacement / updatePlacementFollowup', () => {
     )
   })
 
+  it('D11: updatePlacementFollowup kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
+    loggedOut()
+    await expect(
+      consultantService.updatePlacementFollowup('pl1', 'followup_3m', true)
+    ).rejects.toThrow('Not authenticated')
+  })
+
   it('updatePlacementFollowup skriver dynamiskt fält (followup_3m/6m)', async () => {
+    loggedIn()
     queueResult({ data: null, error: null })
     await consultantService.updatePlacementFollowup('pl1', 'followup_3m', true)
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ followup_3m: true })
@@ -473,21 +536,12 @@ describe('consultantService.getAnalytics', () => {
     await expect(consultantService.getAnalytics()).rejects.toThrow('Not authenticated')
   })
 
-  it('KÄLLKODSOBSERVATION: returnerar tysta nollor om participants-queryn faller (data=null), utan att ytligt visa felet', async () => {
+  it('D11: kastar vidare DB-fel i participants-queryn i stället för att returnera tysta nollor', async () => {
     loggedIn()
-    // participants-queryn: data null + error satt — koden kollar bara `!participants`
-    // och ignorerar `error` helt, så ett riktigt DB-fel ser identiskt ut som "inga deltagare".
+    // participants-queryn: data null + error satt. Ett riktigt DB-fel (RLS,
+    // nätverk) ska nu synas som ett kastat fel — inte tolkas som "inga deltagare".
     queueResult({ data: null, error: new Error('rls-fel') })
-    const result = await consultantService.getAnalytics()
-    expect(result).toEqual({
-      totalParticipants: 0,
-      activeParticipants: 0,
-      completedParticipants: 0,
-      cvCompletionRate: 0,
-      averageAtsScore: 0,
-      goalsCompletedThisMonth: 0,
-      placementsThisMonth: 0,
-    })
+    await expect(consultantService.getAnalytics()).rejects.toThrow('rls-fel')
   })
 
   it('beräknar aggregat från deltagarlistan och hoppar över goals/placements-queries när tom', async () => {

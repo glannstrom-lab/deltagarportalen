@@ -1,6 +1,6 @@
 /**
  * Unified Profile API - Fas 2 Integration
- * 
+ *
  * Centraliserad hantering av all profilinformation.
  * Single source of truth för data som används i CV, brev, ansökningar, etc.
  */
@@ -89,6 +89,16 @@ export interface UnifiedProfileData {
   }
 }
 
+/**
+ * PGRST116 = PostgREST "no rows returned" (från `.single()`). Det är ett
+ * LEGITIMT "ingen data än"-läge (t.ex. en ny användare utan `profiles`-rad)
+ * — inte ett fel som ska propageras. Alla andra fel är äkta DB-/RLS-/
+ * nätverksfel och ska kastas vidare (D11, 2026-07-23).
+ */
+function isNoRowsError(err: unknown): boolean {
+  return !!err && typeof err === 'object' && 'code' in err && (err as { code?: string }).code === 'PGRST116'
+}
+
 // ============================================
 // API
 // ============================================
@@ -99,105 +109,125 @@ export const unifiedProfileApi = {
    * Aggreggerar data från flera källor (profile, cv, interest_result, etc.)
    */
   async getProfile(): Promise<Partial<UnifiedProfileData>> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Inte inloggad')
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Inte inloggad')
 
-      // Parallella hämtningar för bättre prestanda
-      const [
-        { data: profile },
-        { data: cv },
-        { data: interestResult },
-        { data: unifiedProfile },
-        { count: coverLettersCount },
-        { count: applicationsCount }
-      ] = await Promise.all([
-        // 1. Grundprofil från profiles
-        supabase
-          .from('profiles')
-          .select('first_name, last_name, email, phone, location, avatar_url, employment_status, career_goals')
-          .eq('id', user.id)
-          .single(),
-        
-        // 2. CV-data
-        supabase
-          .from('cvs')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle(),
-        
-        // 3. Intresseguideresultat
-        supabase
-          .from('interest_results')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('completed_at', { ascending: false })
-          .limit(1)
-          .maybeSingle(),
-        
-        // 4. Unified profile (om finns)
-        supabase
-          .from('unified_profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle(),
-        
-        // 5. Räkna cover letters
-        supabase
-          .from('cover_letters')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id),
-        
-        // 6. Räkna applications
-        supabase
-          .from('job_applications')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', user.id)
-      ])
+    // Parallella hämtningar för bättre prestanda
+    const [
+      { data: profile, error: profileError },
+      { data: cv, error: cvError },
+      { data: interestResult, error: interestError },
+      { data: unifiedProfile, error: unifiedProfileError },
+      { count: coverLettersCount, error: coverLettersError },
+      { count: applicationsCount, error: applicationsError }
+    ] = await Promise.all([
+      // 1. Grundprofil från profiles
+      supabase
+        .from('profiles')
+        .select('first_name, last_name, email, phone, location, avatar_url, employment_status, career_goals')
+        .eq('id', user.id)
+        .single(),
 
-      // Sammansätt profilen
-      const result: Partial<UnifiedProfileData> = {
-        core: {
-          firstName: unifiedProfile?.first_name || profile?.first_name || '',
-          lastName: unifiedProfile?.last_name || profile?.last_name || '',
-          email: profile?.email || user.email || '',
-          phone: unifiedProfile?.phone || profile?.phone || '',
-          location: unifiedProfile?.location || '',
-          summary: unifiedProfile?.summary || cv?.summary || '',
-          profileImageUrl: unifiedProfile?.profile_image_url || profile?.avatar_url || null
-        },
-        professional: {
-          skills: cv?.skills || [],
-          languages: cv?.languages || [],
-          workExperience: cv?.work_experience || [],
-          education: cv?.education || []
-        },
-        career: {
-          employmentStatus: profile?.employment_status || undefined,
-          riasecScores: interestResult?.riasec_scores || undefined,
-          topOccupations: interestResult?.top_occupations || [],
-          careerGoals: profile?.career_goals || unifiedProfile?.career_goals || { shortTerm: '', longTerm: '' },
-          preferredRoles: profile?.career_goals?.preferredRoles || unifiedProfile?.preferred_roles || [],
-          targetIndustries: profile?.career_goals?.targetIndustries || []
-        },
-        usage: {
-          cvLastUpdated: cv?.updated_at,
-          coverLettersCount: coverLettersCount || 0,
-          applicationsCount: applicationsCount || 0
-        }
-      }
+      // 2. CV-data
+      supabase
+        .from('cvs')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle(),
 
-      return result
-    } catch (error) {
-      console.error('Fel vid hämtning av unified profile:', error)
-      // Returnera tom profil vid fel
-      return {
-        core: { firstName: '', lastName: '', email: '', phone: '', location: '', summary: '' },
-        professional: { skills: [], languages: [], workExperience: [], education: [] },
-        career: { preferredRoles: [] },
-        usage: { coverLettersCount: 0, applicationsCount: 0 }
+      // 3. Intresseguideresultat
+      supabase
+        .from('interest_results')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('completed_at', { ascending: false })
+        .limit(1)
+        .maybeSingle(),
+
+      // 4. Unified profile (om finns)
+      supabase
+        .from('unified_profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle(),
+
+      // 5. Räkna cover letters
+      supabase
+        .from('cover_letters')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id),
+
+      // 6. Räkna applications
+      supabase
+        .from('job_applications')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+    ])
+
+    // D11 (2026-07-23): tidigare fångade ett blankt try/catch ALLA fel
+    // (inkl. äkta RLS-/nätverksfel) och returnerade tyst en tom default-
+    // profil — omöjligt att skilja från en ny användare utan data. Nu
+    // kontrolleras varje delfrågas `error` explicit: PGRST116 på `profiles`
+    // (ny användare, ingen rad än) är OK och ger bara tomma defaults för
+    // core/career, men alla andra fel kastas vidare med vilken källa som föll.
+    if (profileError && !isNoRowsError(profileError)) {
+      console.error('Fel vid hämtning av unified profile (profiles):', profileError)
+      throw profileError
+    }
+    if (cvError) {
+      console.error('Fel vid hämtning av unified profile (cvs):', cvError)
+      throw cvError
+    }
+    if (interestError) {
+      console.error('Fel vid hämtning av unified profile (interest_results):', interestError)
+      throw interestError
+    }
+    if (unifiedProfileError) {
+      console.error('Fel vid hämtning av unified profile (unified_profiles):', unifiedProfileError)
+      throw unifiedProfileError
+    }
+    if (coverLettersError) {
+      console.error('Fel vid hämtning av unified profile (cover_letters count):', coverLettersError)
+      throw coverLettersError
+    }
+    if (applicationsError) {
+      console.error('Fel vid hämtning av unified profile (job_applications count):', applicationsError)
+      throw applicationsError
+    }
+
+    // Sammansätt profilen
+    const result: Partial<UnifiedProfileData> = {
+      core: {
+        firstName: unifiedProfile?.first_name || profile?.first_name || '',
+        lastName: unifiedProfile?.last_name || profile?.last_name || '',
+        email: profile?.email || user.email || '',
+        phone: unifiedProfile?.phone || profile?.phone || '',
+        location: unifiedProfile?.location || '',
+        summary: unifiedProfile?.summary || cv?.summary || '',
+        profileImageUrl: unifiedProfile?.profile_image_url || profile?.avatar_url || null
+      },
+      professional: {
+        skills: cv?.skills || [],
+        languages: cv?.languages || [],
+        workExperience: cv?.work_experience || [],
+        education: cv?.education || []
+      },
+      career: {
+        employmentStatus: profile?.employment_status || undefined,
+        riasecScores: interestResult?.riasec_scores || undefined,
+        topOccupations: interestResult?.top_occupations || [],
+        careerGoals: profile?.career_goals || unifiedProfile?.career_goals || { shortTerm: '', longTerm: '' },
+        preferredRoles: profile?.career_goals?.preferredRoles || unifiedProfile?.preferred_roles || [],
+        targetIndustries: profile?.career_goals?.targetIndustries || []
+      },
+      usage: {
+        cvLastUpdated: cv?.updated_at,
+        coverLettersCount: coverLettersCount || 0,
+        applicationsCount: applicationsCount || 0
       }
     }
+
+    return result
   },
 
   /**
@@ -226,8 +256,13 @@ export const unifiedProfileApi = {
 
       if (error) throw error
 
-      // Uppdatera även profiles-tabellen för bakåtkompatibilitet
-      await supabase
+      // Uppdatera även profiles-tabellen för bakåtkompatibilitet.
+      // D11 (2026-07-23): tidigare kollades aldrig `error` här — ett fel på
+      // denna sekundära skrivning försvann helt tyst. Nu loggas det minst;
+      // primärskrivningen (unified_profiles) lyckades redan så vi kastar
+      // inte vidare (skulle visa "kunde inte spara" trots att det viktigaste
+      // faktiskt sparades), men felet är nu synligt för felsökning.
+      const { error: backcompatError } = await supabase
         .from('profiles')
         .update({
           first_name: data.firstName,
@@ -236,6 +271,10 @@ export const unifiedProfileApi = {
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id)
+
+      if (backcompatError) {
+        console.error('Fel vid bakåtkompat-uppdatering av profiles (updateCore):', backcompatError)
+      }
 
       showToast.success('Profilen sparad')
     } catch (error) {
@@ -332,31 +371,41 @@ export const unifiedProfileApi = {
    * Används när CV uppdateras
    */
   async syncFromCV(): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Inte inloggad')
+    // D11 (2026-07-23): tidigare fångade ett blankt try/catch ALLA fel
+    // (inkl. "inte inloggad" och riktiga skriv-/läsfel) tyst utan att kasta
+    // vidare. "Inget CV finns än" är ett legitimt no-op-läge (maybeSingle
+    // ger null utan error) — men äkta fel ska synas hos anroparen.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Inte inloggad')
 
-      // Hämta CV-data
-      const { data: cv } = await supabase
-        .from('cvs')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle()
+    // Hämta CV-data
+    const { data: cv, error: cvError } = await supabase
+      .from('cvs')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle()
 
-      if (!cv) return
+    if (cvError) {
+      console.error('Fel vid synk från CV (läsning):', cvError)
+      throw cvError
+    }
 
-      // Uppdatera unified profile med CV-data
-      await supabase
-        .from('unified_profiles')
-        .upsert({
-          user_id: user.id,
-          summary: cv.summary,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
-    } catch (error) {
-      console.error('Fel vid synk från CV:', error)
+    if (!cv) return // Legitimt: användaren har inget CV än
+
+    // Uppdatera unified profile med CV-data
+    const { error: upsertError } = await supabase
+      .from('unified_profiles')
+      .upsert({
+        user_id: user.id,
+        summary: cv.summary,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+
+    if (upsertError) {
+      console.error('Fel vid synk från CV (skrivning):', upsertError)
+      throw upsertError
     }
   },
 
@@ -365,29 +414,39 @@ export const unifiedProfileApi = {
    * Används när profilen uppdateras och CV ska uppdateras
    */
   async syncToCV(): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) throw new Error('Inte inloggad')
+    // D11 (2026-07-23): samma mönster som syncFromCV — "ingen unified profile
+    // än" (PGRST116 från .single()) är ett legitimt no-op, men äkta fel ska
+    // kastas vidare i stället för att sväljas tyst.
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Inte inloggad')
 
-      // Hämta unified profile
-      const { data: unifiedProfile } = await supabase
-        .from('unified_profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single()
+    // Hämta unified profile
+    const { data: unifiedProfile, error: readError } = await supabase
+      .from('unified_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single()
 
-      if (!unifiedProfile) return
+    if (readError) {
+      if (isNoRowsError(readError)) return // Legitimt: ingen unified profile än
+      console.error('Fel vid synk till CV (läsning):', readError)
+      throw readError
+    }
 
-      // Uppdatera CV med profildata
-      await supabase
-        .from('cvs')
-        .update({
-          summary: unifiedProfile.summary,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id)
-    } catch (error) {
-      console.error('Fel vid synk till CV:', error)
+    if (!unifiedProfile) return
+
+    // Uppdatera CV med profildata
+    const { error: updateError } = await supabase
+      .from('cvs')
+      .update({
+        summary: unifiedProfile.summary,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', user.id)
+
+    if (updateError) {
+      console.error('Fel vid synk till CV (skrivning):', updateError)
+      throw updateError
     }
   },
 

@@ -2,7 +2,9 @@
  * Tester för staAiApi — mockar './aiApi' (callAI) och './staApi'
  * (fetchEnrollmentBundle). Fokus: B8-valideringsvägen i generateDocumentDraft
  * (giltigt svar / rå JSON-sträng / trasigt svar → kastar ärligt fel i stället
- * för att tyst rendera trasigt UI) samt generateWeekSummary.
+ * för att tyst rendera trasigt UI) samt generateWeekSummary, som sedan D11
+ * (2026-07-23) har en minsta runtime-kontroll (icke-tom sträng) i stället
+ * för en ovaliderad cast.
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { generateDocumentDraft, generateWeekSummary, DOC_TYPE_META } from './staAiApi'
@@ -175,11 +177,18 @@ describe('generateWeekSummary', () => {
     await expect(generateWeekSummary('enr-1')).rejects.toThrow('Kunde inte generera sammanställning')
   })
 
-  it('KÄLLKODSOBSERVATION: summary valideras inte mot något schema (rå cast till string) — till skillnad från generateDocumentDraft finns inget Zod-skydd här', async () => {
+  it('D11: kastar ärligt fel om summary inte är en sträng (t.ex. ett objekt) i stället för att casta rått', async () => {
     mockCallAI.mockResolvedValue({ success: true, summary: { unexpected: 'object-shape' } })
-    const result = await generateWeekSummary('enr-1')
-    // Ingen validering sker — objektet passerar rakt igenom trots att typsignaturen lovar string
-    expect(result).toEqual({ unexpected: 'object-shape' })
+    await expect(generateWeekSummary('enr-1')).rejects.toThrow(
+      'Veckosammanställningen gick inte att tolka. Försök igen.'
+    )
+  })
+
+  it('D11: kastar ärligt fel om summary är en tom sträng', async () => {
+    mockCallAI.mockResolvedValue({ success: true, summary: '   ' })
+    await expect(generateWeekSummary('enr-1')).rejects.toThrow(
+      'Veckosammanställningen gick inte att tolka. Försök igen.'
+    )
   })
 })
 
