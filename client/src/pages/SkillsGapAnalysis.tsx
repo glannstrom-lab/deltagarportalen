@@ -233,8 +233,10 @@ export default function SkillsGapAnalysis() {
       setCurrentAnalysis(saved)
       setPreviousAnalyses(prev => [saved, ...prev])
     } catch (err) {
+      // Visa alltid ett vänligt, översatt felmeddelande — aldrig rå err.message
+      // (t.ex. "Failed to fetch" vid nätverksfel ska inte nå användaren oöversatt)
       console.error('Failed to run skills gap analysis:', err)
-      setAnalysisError(err instanceof Error ? err.message : t('skillsGapAnalysis.analysisFailed'))
+      setAnalysisError(t('skillsGapAnalysis.analysisFailed'))
     } finally {
       setIsAnalyzing(false)
     }
