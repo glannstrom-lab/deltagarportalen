@@ -10,6 +10,7 @@ import { Smile } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusWellnessWizard } from '@/components/focus/pages/FocusWellnessWizard'
+import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
@@ -52,7 +53,7 @@ export default function WellnessPage() {
         className="max-w-7xl mx-auto space-y-6"
       >
         <Routes>
-          <Route path="/" element={<HealthTab />} />
+          <Route path="/" element={<WellnessConsentGate><HealthTab /></WellnessConsentGate>} />
           <Route path="/routines" element={<RoutinesTab />} />
           <Route path="/cognitive" element={<CognitiveTab />} />
           <Route path="/crisis" element={<CrisisTab />} />

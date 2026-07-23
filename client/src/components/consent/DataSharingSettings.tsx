@@ -13,8 +13,8 @@ import { supabase } from '@/lib/supabase'
 import { cn } from '@/lib/utils'
 
 interface DataSharingPreferences {
-  share_health_data_with_consultant: boolean
-  share_wellness_data_with_consultant: boolean
+  share_health_data: boolean
+  share_wellness_data: boolean
 }
 
 /**
@@ -28,8 +28,8 @@ export function DataSharingSettings() {
   const [saveError, setSaveError] = useState<string | null>(null)
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [preferences, setPreferences] = useState<DataSharingPreferences>({
-    share_health_data_with_consultant: false,
-    share_wellness_data_with_consultant: false,
+    share_health_data: false,
+    share_wellness_data: false,
   })
   const [consultantName, setConsultantName] = useState<string | null>(null)
 
@@ -40,23 +40,29 @@ export function DataSharingSettings() {
         setIsLoading(true)
         setSaveError(null)
 
-        // Get current sharing preferences
-        const { data: sharingData, error: sharingError } = await supabase
-          .from('participant_data_sharing')
-          .select('share_health_data_with_consultant, share_wellness_data_with_consultant')
-          .eq('participant_id', profile?.id)
-          .single()
+        // Get current sharing preferences. The table's real unique key is
+        // (participant_id, consultant_id) together (see
+        // 20260328100000_health_data_consent.sql) — a row only exists once a
+        // consultant is assigned, and consultant_id is NOT NULL there.
+        if (profile?.consultant_id) {
+          const { data: sharingData, error: sharingError } = await supabase
+            .from('participant_data_sharing')
+            .select('share_health_data, share_wellness_data')
+            .eq('participant_id', profile.id)
+            .eq('consultant_id', profile.consultant_id)
+            .single()
 
-        if (sharingError && sharingError.code !== 'PGRST116') {
-          // PGRST116 = row not found, which is fine
-          console.error('Error loading sharing preferences:', sharingError)
-        }
+          if (sharingError && sharingError.code !== 'PGRST116') {
+            // PGRST116 = row not found, which is fine
+            console.error('Error loading sharing preferences:', sharingError)
+          }
 
-        if (sharingData) {
-          setPreferences({
-            share_health_data_with_consultant: sharingData.share_health_data_with_consultant || false,
-            share_wellness_data_with_consultant: sharingData.share_wellness_data_with_consultant || false,
-          })
+          if (sharingData) {
+            setPreferences({
+              share_health_data: sharingData.share_health_data || false,
+              share_wellness_data: sharingData.share_wellness_data || false,
+            })
+          }
         }
 
         // Get consultant info if assigned
@@ -106,16 +112,24 @@ export function DataSharingSettings() {
         throw new Error('Inte inloggad')
       }
 
-      // Upsert (insert or update) the sharing preferences
+      if (!profile.consultant_id) {
+        // Tabellen kräver consultant_id (NOT NULL) — inget att spara mot förrän
+        // en konsulent är tilldelad.
+        throw new Error(t('datasharing.noConsultantDesc') || 'Du har ingen tilldelad konsulent än.')
+      }
+
+      // Upsert (insert or update) the sharing preferences. Konfliktnyckeln
+      // matchar tabellens riktiga UNIQUE(participant_id, consultant_id).
       const { error } = await supabase
         .from('participant_data_sharing')
         .upsert({
           participant_id: profile.id,
-          share_health_data_with_consultant: preferences.share_health_data_with_consultant,
-          share_wellness_data_with_consultant: preferences.share_wellness_data_with_consultant,
+          consultant_id: profile.consultant_id,
+          share_health_data: preferences.share_health_data,
+          share_wellness_data: preferences.share_wellness_data,
           updated_at: new Date().toISOString(),
         }, {
-          onConflict: 'participant_id',
+          onConflict: 'participant_id,consultant_id',
         })
 
       if (error) {
@@ -195,7 +209,7 @@ export function DataSharingSettings() {
               <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
                 {t('datasharing.health.description') || 'Tillåt din konsulent att se din ICF-data (kognitiv, motor, sensorisk, etc.)'}
               </p>
-              {preferences.share_health_data_with_consultant && (
+              {preferences.share_health_data && (
                 <div className="text-xs text-amber-700 dark:text-amber-300 p-2 bg-amber-50 dark:bg-amber-900/20 rounded flex gap-2 items-start">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{t('datasharing.warningShared') || 'Din konsulent kan nu se denna data'}</span>
@@ -203,14 +217,14 @@ export function DataSharingSettings() {
               )}
             </div>
             <button
-              onClick={() => handleToggle('share_health_data_with_consultant')}
+              onClick={() => handleToggle('share_health_data')}
               className={cn(
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
-                preferences.share_health_data_with_consultant
+                preferences.share_health_data
                   ? 'bg-green-500 justify-end'
                   : 'bg-stone-300 dark:bg-stone-600 justify-start'
               )}
-              title={preferences.share_health_data_with_consultant ? 'På' : 'Av'}
+              title={preferences.share_health_data ? 'På' : 'Av'}
             >
               <div className="w-5 h-5 bg-white rounded-full shadow" />
             </button>
@@ -229,7 +243,7 @@ export function DataSharingSettings() {
               <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
                 {t('datasharing.wellness.description') || 'Tillåt din konsulent att se din dagbok, humör och väl mål information'}
               </p>
-              {preferences.share_wellness_data_with_consultant && (
+              {preferences.share_wellness_data && (
                 <div className="text-xs text-amber-700 dark:text-amber-300 p-2 bg-amber-50 dark:bg-amber-900/20 rounded flex gap-2 items-start">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
                   <span>{t('datasharing.warningShared') || 'Din konsulent kan nu se denna data'}</span>
@@ -237,14 +251,14 @@ export function DataSharingSettings() {
               )}
             </div>
             <button
-              onClick={() => handleToggle('share_wellness_data_with_consultant')}
+              onClick={() => handleToggle('share_wellness_data')}
               className={cn(
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
-                preferences.share_wellness_data_with_consultant
+                preferences.share_wellness_data
                   ? 'bg-green-500 justify-end'
                   : 'bg-stone-300 dark:bg-stone-600 justify-start'
               )}
-              title={preferences.share_wellness_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
+              title={preferences.share_wellness_data ? 'Aktiverad' : 'Inaktiverad'}
             >
               <div className="w-5 h-5 bg-white rounded-full shadow" />
             </button>
@@ -290,7 +304,7 @@ export function DataSharingSettings() {
       <div className="flex gap-3">
         <button
           onClick={handleSave}
-          disabled={isSaving}
+          disabled={isSaving || !profile?.consultant_id}
           className={cn(
             "px-6 py-2.5 font-medium rounded-lg transition-colors",
             "bg-indigo-600 text-white hover:bg-indigo-700",

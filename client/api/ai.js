@@ -315,8 +315,8 @@ const PROMPTS = {
 
 VIKTIGT:
 - Använd ALDRIG platshållare som [Förnamn Efternamn], [Telefonnummer], [Mailadress] eller liknande.
-- Om kandidatens namn framgår av CV:t: avsluta med "Med vänliga hälsningar" följt av namnet. Annars: bara "Med vänliga hälsningar" utan namn.
-- Hitta ALDRIG på erfarenheter eller meriter som inte finns i underlaget.`,
+- Skriv ENDAST brödtexten. Avsluta ALDRIG brevet med en hälsningsfras, avslutningsord eller signatur (t.ex. "Med vänliga hälsningar", namn, telefon, e-post) — mallen lägger till detta automatiskt med korrekta uppgifter. Låt sista stycket avsluta naturligt i sak, utan avslutningsfras.
+- Hitta ALDRIG på erfarenheter, meriter, verktyg, kompetenser, titlar eller siffror (t.ex. antal år, antal projekt, resultat) som inte uttryckligen stöds av CV:t eller användarens egen input. Är du osäker på om något stämmer — utelämna det helt. Skriv bara sådant som går att verifiera mot underlaget.`,
       user: `Skriv ett personligt brev för:\n\nFÖRETAG: ${data.companyName || 'Ej angivet'}\nJOBBTITEL: ${data.jobTitle || 'Ej angiven'}\n\nJOBBANNONS:\n${jobbAnnons.substring(0, 3000)}\n\nKANDIDATENS CV:${cvContext}\n${data.erfarenhet ? 'Erfarenhet: ' + data.erfarenhet : ''}\n${data.motivering ? 'Motivering: ' + data.motivering : ''}\n${data.extraKeywords ? 'Nyckelord: ' + data.extraKeywords : ''}\n\nSkriv brevet:`,
       maxTokens: 1500,
       responseKey: 'brev'
