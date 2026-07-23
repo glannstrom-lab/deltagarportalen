@@ -2962,7 +2962,7 @@
       "to": "To",
       "progress": "Progress",
       "xOfYMilestones": "{{completed}} of {{total}} milestones",
-      "updatePlan": "Update plan",
+      "updatePlan": "Start over with a new plan",
       "overallProgressAria": "Overall career plan progress",
       "timelineAria": "Career plan timeline",
       "milestonesAria": "Milestones"

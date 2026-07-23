@@ -148,13 +148,28 @@ export function useZodForm<T extends Record<string, unknown>>({
   const handleBlur = useCallback((
     e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target
+    const { name, value, type } = e.target
     const field = name as keyof T
-    
+
+    // KRITISK FIX (2026-07-23, UX-test): samma typparsning som handleChange.
+    // För checkboxar är e.target.value ALLTID strängen "on" — den skickades
+    // till z.boolean()-scheman som då gav "Invalid input" på redan ikryssade
+    // rutor. Feltexten sköt layouten ~32px nedåt mitt i klicksekvensen på
+    // nästa kryssruta → registreringen gick inte att slutföra i normal
+    // klicktakt (Registrera-knappen förblev låst).
+    let parsedValue: T[keyof T]
+    if (type === 'checkbox') {
+      parsedValue = (e.target as HTMLInputElement).checked as T[keyof T]
+    } else if (type === 'number') {
+      parsedValue = (value === '' ? '' : Number(value)) as T[keyof T]
+    } else {
+      parsedValue = value as T[keyof T]
+    }
+
     setTouched((prev) => ({ ...prev, [field]: true }))
-    
+
     // Validera fältet
-    const error = validateField(field, value as T[keyof T])
+    const error = validateField(field, parsedValue)
     setErrors((prev) => ({ ...prev, [field]: error }))
   }, [validateField])
 

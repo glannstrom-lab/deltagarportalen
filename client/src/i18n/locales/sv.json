@@ -2969,7 +2969,7 @@
       "to": "Till",
       "progress": "Framsteg",
       "xOfYMilestones": "{{completed}} av {{total}} delmål",
-      "updatePlan": "Uppdatera plan",
+      "updatePlan": "Börja om med en ny plan",
       "overallProgressAria": "Övergripande framsteg för karriärplan",
       "timelineAria": "Tidslinje för karriärplan",
       "milestonesAria": "Milstolpar"
