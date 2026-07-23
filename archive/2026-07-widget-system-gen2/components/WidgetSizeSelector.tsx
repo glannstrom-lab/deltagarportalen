@@ -1,0 +1,95 @@
+import { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { LayoutGrid, LayoutTemplate, Maximize2, X } from '@/components/ui/icons'
+import { cn } from '@/lib/utils'
+
+export type WidgetSize = 'small' | 'medium' | 'large'
+
+interface WidgetSizeSelectorProps {
+  currentSize: WidgetSize
+  onSizeChange: (size: WidgetSize) => void
+  onClose?: () => void
+}
+
+const sizeOptions: { value: WidgetSize; label: string; icon: typeof LayoutGrid; gridClass: string }[] = [
+  { 
+    value: 'small', 
+    label: 'Liten', 
+    icon: LayoutGrid,
+    gridClass: 'col-span-1'
+  },
+  { 
+    value: 'medium', 
+    label: 'Medel', 
+    icon: LayoutTemplate,
+    gridClass: 'col-span-1 md:col-span-2'
+  },
+  { 
+    value: 'large', 
+    label: 'Stor', 
+    icon: Maximize2,
+    gridClass: 'col-span-1 md:col-span-2 lg:col-span-4'
+  },
+]
+
+export const WidgetSizeSelector = memo(function WidgetSizeSelector({
+  currentSize,
+  onSizeChange,
+  onClose,
+}: WidgetSizeSelectorProps) {
+  const { t } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+
+  if (!isOpen) {
+    return (
+      <button
+        onClick={() => setIsOpen(true)}
+        className="p-1.5 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
+        title={t('dashboard.widgetSize.changeSize', 'Ändra storlek')}
+        aria-label={t('dashboard.widgetSize.changeSizeAria', 'Ändra widget-storlek')}
+      >
+        <LayoutGrid size={14} />
+      </button>
+    )
+  }
+
+  return (
+    <div className="absolute top-2 right-2 z-10 bg-white rounded-lg shadow-lg border border-stone-200 p-2 min-w-[140px]">
+      <div className="flex items-center justify-between mb-2 pb-1 border-b border-stone-100">
+        <span className="text-xs font-medium text-stone-600">{t('dashboard.widgetSize.size', 'Storlek')}</span>
+        <button
+          onClick={() => {
+            setIsOpen(false)
+            onClose?.()
+          }}
+          className="p-0.5 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded transition-colors"
+        >
+          <X size={12} />
+        </button>
+      </div>
+      <div className="space-y-1">
+        {sizeOptions.map((option) => {
+          const Icon = option.icon
+          return (
+            <button
+              key={option.value}
+              onClick={() => {
+                onSizeChange(option.value)
+                setIsOpen(false)
+              }}
+              className={cn(
+                'w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded transition-colors',
+                currentSize === option.value
+                  ? 'bg-indigo-50 text-indigo-700 font-medium'
+                  : 'text-stone-600 hover:bg-stone-50'
+              )}
+            >
+              <Icon size={14} />
+              <span>{t(`dashboard.widgetSize.${option.value}`, option.label)}</span>
+            </button>
+          )
+        })}
+      </div>
+    </div>
+  )
+})

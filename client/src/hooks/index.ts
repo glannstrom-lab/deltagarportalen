@@ -4,7 +4,7 @@
 
 // Auth & User
 export { useAuthInit } from './useAuthInit'
-export { useSupabase } from './useSupabase'
+export { useAuth, useCV } from './useSupabase'
 export { useAiConsent } from './useAiConsent'
 
 // Data & State
@@ -14,7 +14,6 @@ export { useSavedJobs } from './useSavedJobs'
 export { useDocuments } from './useDocuments'
 export { useDiaryEntries, useMoodLogs, useWeeklyGoals, useGratitude, useDiaryStreaks } from './useDiary'
 export { useNotifications } from './useNotifications'
-export { useJourney } from './useJourney'
 export { useSpontaneousCompanies } from './useSpontaneousCompanies'
 
 // CV & Career
@@ -26,8 +25,8 @@ export { useJobAlerts } from './useJobAlerts'
 export { useInsights } from './useInsights'
 export { useNextStep } from './useNextStep'
 
-// Gamification
-export { useGamification } from './useGamification'
+// Gamification (journey/gamification-systemet arkiverat 2026-07-23, C9 —
+// useAchievementTracker/-Chains är det levande systemet)
 export { useAchievementTracker } from './useAchievementTracker'
 export { useAchievementChains } from './useAchievementChains'
 export { useUnifiedProgress } from './useUnifiedProgress'

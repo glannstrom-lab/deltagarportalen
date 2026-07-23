@@ -317,7 +317,14 @@ const PROMPTS = {
     }
     const jobbAnnons = data.jobbAnnons || data.jobDescription || '';
     return {
-      system: `Du är en expert på personliga brev för jobbansökningar på svenska. Skriv med en ${tonText} ton. Brevet ska vara 250-350 ord.`,
+      // No-platshållare-reglerna portade från ai-cover-letter-edgen (C11,
+      // 2026-07-23) innan klientdubbletterna raderades
+      system: `Du är en expert på personliga brev för jobbansökningar på svenska. Skriv med en ${tonText} ton. Brevet ska vara 250-350 ord.
+
+VIKTIGT:
+- Använd ALDRIG platshållare som [Förnamn Efternamn], [Telefonnummer], [Mailadress] eller liknande.
+- Om kandidatens namn framgår av CV:t: avsluta med "Med vänliga hälsningar" följt av namnet. Annars: bara "Med vänliga hälsningar" utan namn.
+- Hitta ALDRIG på erfarenheter eller meriter som inte finns i underlaget.`,
       user: `Skriv ett personligt brev för:\n\nFÖRETAG: ${data.companyName || 'Ej angivet'}\nJOBBTITEL: ${data.jobTitle || 'Ej angiven'}\n\nJOBBANNONS:\n${jobbAnnons.substring(0, 3000)}\n\nKANDIDATENS CV:${cvContext}\n${data.erfarenhet ? 'Erfarenhet: ' + data.erfarenhet : ''}\n${data.motivering ? 'Motivering: ' + data.motivering : ''}\n${data.extraKeywords ? 'Nyckelord: ' + data.extraKeywords : ''}\n\nSkriv brevet:`,
       maxTokens: 1500,
       responseKey: 'brev'

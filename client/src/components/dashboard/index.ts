@@ -1,27 +1,7 @@
-export { DashboardGrid, getWidgetGridClasses } from './DashboardGrid'
-export { DashboardWidget } from './DashboardWidget'
-export { WidgetFilter, availableWidgets } from './WidgetFilter'
-export { WidgetSizeSelector } from './WidgetSizeSelector'
-export { CompactWidgetFilter } from './CompactWidgetFilter'
-
-// Types
-export type { WidgetType, WidgetFilterItem } from './WidgetFilter'
-export type { WidgetSize } from './WidgetSizeSelector'
-
-// Widgets
-export { CVWidget } from './widgets/CVWidget'
-export { JobSearchWidget } from './widgets/JobSearchWidget'
-export { ApplicationsWidget } from './widgets/ApplicationsWidget'
-export { InterestWidget } from './widgets/InterestWidget'
-export { CoverLetterWidget } from './widgets/CoverLetterWidget'
-export { ActivityWidget } from './widgets/ActivityWidget'
-export { CareerWidget } from './widgets/CareerWidget'
-export { ExercisesWidget } from './widgets/ExercisesWidget'
-export { KnowledgeWidget } from './widgets/KnowledgeWidget'
-export { DiaryWidget } from './widgets/DiaryWidget'
-export { WellnessWidget } from './widgets/WellnessWidget'
-export { QuestsWidget } from './widgets/QuestsWidget'
-export { NextStepWidget } from './widgets/NextStepWidget'
+// Widget-grid-systemet (gen 2) arkiverat 2026-07-23 (C10) →
+// archive/2026-07-widget-system-gen2/. Det hängde enbart på orutade
+// pages/Dashboard.tsx och importerades aldrig i prod. Kvarvarande
+// exporter här är levande dashboard-komponenter (importeras i regel
+// via direkta sökvägar — barrelen behålls för bekvämlighet).
 export { WeeklySummary } from './WeeklySummary'
-export { RemindersWidget } from './widgets/RemindersWidget'
 export { WhyItMattersInline, WhyItMattersTooltip, WhyItMattersExpandable, whyItMattersContent } from './WhyItMatters'

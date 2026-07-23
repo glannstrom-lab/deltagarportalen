@@ -280,71 +280,9 @@ export async function createCoverLetter(letter: Partial<Tables['cover_letters']>
   return { data, error }
 }
 
-// Edge Functions helpers
-export async function generateCoverLetterWithAI(requestData: {
-  cvData: Partial<CV>
-  jobDescription: string
-  companyName: string
-  jobTitle: string
-  tone?: 'formal' | 'friendly' | 'enthusiastic'
-  focus?: 'experience' | 'skills' | 'motivation'
-}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  if (!session) {
-    throw new Error('Not authenticated')
-  }
-
-  const response = await fetch(
-    `${supabaseUrl}/functions/v1/ai-cover-letter`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    }
-  )
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.error || 'Failed to generate cover letter')
-  }
-
-  return response.json()
-}
-
-export async function analyzeCVWithAI(requestData: {
-  cvData: Partial<CV>
-  jobDescription: string
-  jobRequirements?: string[]
-}) {
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  if (!session) {
-    throw new Error('Not authenticated')
-  }
-
-  const response = await fetch(
-    `${supabaseUrl}/functions/v1/cv-analysis`,
-    {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestData)
-    }
-  )
-
-  if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.error || 'Failed to analyze CV')
-  }
-
-  return response.json()
-}
+// C11 (2026-07-23): generateCoverLetterWithAI/analyzeCVWithAI raderade —
+// callerlösa dubbletter mot ai-cover-letter/cv-analysis-edgarna. Det
+// levande brevflödet går via callAI('personligt-brev') i CoverLetterWrite.
 
 // Realtime subscriptions
 export function subscribeToCVUpdates(userId: string, callback: (payload: RealtimePayload<CV>) => void) {

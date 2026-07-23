@@ -6,7 +6,7 @@
 
 import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
-import type { CVData, CoverLetter } from './supabaseApi'
+import type { CoverLetter } from './supabaseApi'
 
 export const coverLetterApi = {
   async getAll(): Promise<CoverLetter[]> {
@@ -89,46 +89,9 @@ export const coverLetterApi = {
 
     if (error) handleError(error)
     return true
-  },
-
-  async generate(params: {
-    cvData: CVData
-    jobDescription: string
-    companyName: string
-    jobTitle: string
-    tone?: 'formal' | 'friendly' | 'enthusiastic'
-    focus?: 'experience' | 'skills' | 'motivation'
-  }) {
-    // Försök hämta session, om den saknas försök refresha
-    let { data: { session } } = await supabase.auth.getSession()
-
-    if (!session) {
-      // Försök refresha sessionen
-      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
-      if (refreshError || !refreshData.session) {
-        throw new APIError('Du har blivit utloggad. Vänligen logga in igen.', 'UNAUTHORIZED', 401)
-      }
-      session = refreshData.session
-    }
-
-    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-    const response = await fetch(
-      `${supabaseUrl}/functions/v1/ai-cover-letter`,
-      {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(params)
-      }
-    )
-
-    if (!response.ok) {
-      const err = await response.json()
-      throw new APIError(err.error || 'Kunde inte generera brev', 'GENERATION_ERROR')
-    }
-
-    return response.json()
   }
+
+  // C11 (2026-07-23): generate() raderad — callerlös dubblett mot
+  // ai-cover-letter-edgen. Det levande flödet är callAI('personligt-brev')
+  // i CoverLetterWrite (edgens no-platshållare-regler portade till ai.js).
 }
