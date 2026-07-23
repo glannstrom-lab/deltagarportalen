@@ -8,6 +8,7 @@
 import { useEffect, useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import {
   Bot,
   Save,
@@ -15,11 +16,49 @@ import {
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
+  Send,
+  Undo,
+  FileCheck,
 } from '@/components/ui/icons'
 import { VoiceInput } from './VoiceInput'
 import { generateDocumentDraft, type DocumentDraftSections, DOC_TYPE_META } from '@/services/staAiApi'
 import { downloadStaDocumentPdf } from '@/services/staPdfExport'
-import { staDocumentsApi, type DocumentType, type StaDocument, type StaPart } from '@/services/staApi'
+import { staDocumentsApi, type DocumentType, type StaDocument, type DocumentStatus, type StaPart } from '@/services/staApi'
+import { useAuthStore } from '@/stores/authStore'
+
+/** Samma statusetiketter/toner som konsulentens dokumentlista (StaConsultant.tsx). */
+function statusMeta(status: DocumentStatus): { label: string; tone: 'stone' | 'amber' | 'emerald' | 'sky' } {
+  switch (status) {
+    case 'draft':
+      return { label: 'Utkast', tone: 'stone' }
+    case 'consultant_review':
+      return { label: 'Pågående granskning', tone: 'amber' }
+    case 'approved':
+      return { label: 'Godkänd', tone: 'emerald' }
+    case 'submitted':
+      return { label: 'Inskickad till AF', tone: 'sky' }
+    default:
+      return { label: status, tone: 'stone' }
+  }
+}
+
+const STATUS_TONE_CLASS: Record<'stone' | 'amber' | 'emerald' | 'sky', string> = {
+  stone: 'bg-stone-100 text-stone-700',
+  amber: 'bg-amber-50 text-amber-800',
+  emerald: 'bg-emerald-50 text-emerald-700',
+  sky: 'bg-sky-50 text-sky-800',
+}
+
+function StatusBadge({ status }: { status: DocumentStatus }) {
+  const { label, tone } = statusMeta(status)
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${STATUS_TONE_CLASS[tone]}`}
+    >
+      {label}
+    </span>
+  )
+}
 
 interface DocumentDraftPanelProps {
   enrollmentId: string
@@ -35,6 +74,8 @@ export function DocumentDraftPanel({
   organizationName,
 }: DocumentDraftPanelProps) {
   const meta = DOC_TYPE_META[docType]
+  const { user } = useAuthStore()
+  const { confirm } = useConfirmDialog()
   const [document, setDocument] = useState<StaDocument | null>(null)
   const [sections, setSections] = useState<DocumentDraftSections>({})
   const [generating, setGenerating] = useState(false)
@@ -42,6 +83,7 @@ export function DocumentDraftPanel({
   const [error, setError] = useState<string | null>(null)
   const [downloading, setDownloading] = useState(false)
   const [savedAt, setSavedAt] = useState<Date | null>(null)
+  const [statusUpdating, setStatusUpdating] = useState(false)
 
   // Ladda existerande dokument
   useEffect(() => {
@@ -105,7 +147,26 @@ export function DocumentDraftPanel({
     }
   }
 
+  // Konsekvenscheck: sektioner utan innehåll — blockerar inte, varnar bara
+  const emptySectionTitles = Object.values(sections)
+    .filter((section) => !section.content || section.content.trim().length === 0)
+    .map((section) => section.title)
+
+  const confirmDespiteEmptySections = async (actionLabel: string): Promise<boolean> => {
+    if (emptySectionTitles.length === 0) return true
+    const count = emptySectionTitles.length
+    return confirm({
+      title: count === 1 ? 'En sektion är tom' : `${count} sektioner är tomma`,
+      message: `${emptySectionTitles.join(', ')}. Vill du ${actionLabel} ändå, eller fylla i mer först?`,
+      confirmText: `Ja, ${actionLabel}`,
+      cancelText: 'Fyll i mer först',
+      variant: 'warning',
+    })
+  }
+
   const handleDownload = async () => {
+    const proceed = await confirmDespiteEmptySections('ladda ner PDF:en')
+    if (!proceed) return
     setDownloading(true)
     setError(null)
     try {
@@ -120,6 +181,64 @@ export function DocumentDraftPanel({
       setError(err instanceof Error ? err.message : 'Kunde inte ladda ner')
     } finally {
       setDownloading(false)
+    }
+  }
+
+  const handleSendForReview = async () => {
+    if (!document) return
+    const proceed = await confirmDespiteEmptySections('skicka till granskning')
+    if (!proceed) return
+    setStatusUpdating(true)
+    setError(null)
+    try {
+      const updated = await staDocumentsApi.submitForReview(document.id)
+      setDocument(updated)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte skicka till granskning')
+    } finally {
+      setStatusUpdating(false)
+    }
+  }
+
+  const handleRevertToDraft = async () => {
+    if (!document) return
+    setStatusUpdating(true)
+    setError(null)
+    try {
+      const updated = await staDocumentsApi.revertToDraft(document.id)
+      setDocument(updated)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte gå tillbaka till utkast')
+    } finally {
+      setStatusUpdating(false)
+    }
+  }
+
+  const handleApprove = async () => {
+    if (!document || !user) return
+    setStatusUpdating(true)
+    setError(null)
+    try {
+      const updated = await staDocumentsApi.approve(document.id, user.id)
+      setDocument(updated)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte godkänna')
+    } finally {
+      setStatusUpdating(false)
+    }
+  }
+
+  const handleMarkSubmitted = async () => {
+    if (!document || !user) return
+    setStatusUpdating(true)
+    setError(null)
+    try {
+      const updated = await staDocumentsApi.markSubmitted(document.id, user.id)
+      setDocument(updated)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte markera som inskickad')
+    } finally {
+      setStatusUpdating(false)
     }
   }
 
@@ -139,6 +258,7 @@ export function DocumentDraftPanel({
                   {meta.afBlankett}
                 </span>
               )}
+              {document && <StatusBadge status={document.status} />}
             </div>
             <p className="text-sm text-stone-700">
               AI-utkast baseras på all data om deltagaren. Granska alltid innan inskick till AF.
@@ -164,6 +284,65 @@ export function DocumentDraftPanel({
             </Button>
           </div>
         </div>
+
+        {document && hasContent && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {document.status === 'draft' && (
+              <Button
+                variant="secondary"
+                size="sm"
+                leftIcon={<Send size={14} />}
+                onClick={handleSendForReview}
+                isLoading={statusUpdating}
+              >
+                Skicka till granskning
+              </Button>
+            )}
+            {document.status === 'consultant_review' && (
+              <>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  leftIcon={<CheckCircle2 size={14} />}
+                  onClick={handleApprove}
+                  isLoading={statusUpdating}
+                >
+                  Godkänn
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  leftIcon={<Undo size={14} />}
+                  onClick={handleRevertToDraft}
+                  isLoading={statusUpdating}
+                >
+                  Tillbaka till utkast
+                </Button>
+              </>
+            )}
+            {document.status === 'approved' && (
+              <Button
+                variant="primary"
+                size="sm"
+                leftIcon={<FileCheck size={14} />}
+                onClick={handleMarkSubmitted}
+                isLoading={statusUpdating}
+              >
+                Markera som inskickad till AF
+              </Button>
+            )}
+            {document.status === 'submitted' && (
+              <span className="text-xs text-stone-500">
+                Inskickad{' '}
+                {document.submitted_at
+                  ? new Date(document.submitted_at).toLocaleDateString('sv-SE')
+                  : ''}{' '}
+                — klart för AF:s bekräftelse.
+              </span>
+            )}
+          </div>
+        )}
+
         {document?.ai_drafted && (
           <div className="mt-3 text-[11px] text-stone-600 flex items-center gap-2">
             <span

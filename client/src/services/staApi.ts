@@ -996,6 +996,16 @@ export const staDocumentsApi = {
     return data as StaDocument
   },
 
+  /** Skicka utkastet till konsulentens granskning (draft → consultant_review). */
+  async submitForReview(id: string): Promise<StaDocument> {
+    return this.update(id, { status: 'consultant_review' })
+  },
+
+  /** Backa från granskning till utkast igen (consultant_review → draft). */
+  async revertToDraft(id: string): Promise<StaDocument> {
+    return this.update(id, { status: 'draft' })
+  },
+
   async approve(id: string, userId: string): Promise<StaDocument> {
     return this.update(id, { status: 'approved', submitted_by: userId })
   },
