@@ -278,6 +278,36 @@
       "description": "Tillåt din konsulent att se din ICF-data (kognitiv, motorisk, sensorisk osv.)"
     },
     "wellness": {
+    "consent": {
+      "grantError": "Kunde inte spara samtycke",
+      "requiredTitle": "Samtycke krävs",
+      "requiredDesc": "Du måste ge samtycke för att kunna använda den här funktionen",
+      "grantNow": "Ge samtycke",
+      "manageInSettings": "Hantera",
+      "fullTitle": "Samtycke för välmåendedata",
+      "fullDesc": "För att kunna stödja din personliga utveckling och ditt välmående behöver vi ditt samtycke att samla in data om ditt humör och din energi.",
+      "whatWeCollect": "Vilken data samlar vi in?",
+      "item": {
+        "mood": "Dagligt humör och emotionellt tillstånd",
+        "energy": "Energi- och stressnivåer",
+        "sleep": "Sömnkvalitet och mönster",
+        "diary": "Dagboksanteckningar och reflektioner",
+        "gratitude": "Tacksamhetsanteckningar och positiva reflektioner"
+      },
+      "whyWeCollect": "Varför samlar vi in datan?",
+      "whyDesc": "För att stödja din personliga utveckling och självkänsla, och för att ge dig insikter om ditt välmående över tid.",
+      "whoHasAccess": "Vem har åtkomst?",
+      "whoAccessDesc": "Du är den enda som kan se datan, om du inte aktiverar delning med din tilldelade konsulent.",
+      "dataProtection": "Ditt välmåendedata är helt privat och behandlas enligt GDPR.",
+      "canWithdraw": "Du kan när som helst:",
+      "withdrawDetail1": "Dra tillbaka ditt samtycke i Inställningar",
+      "withdrawDetail2": "Få all din välmåendedata raderad",
+      "withdrawDetail3": "Kontakta oss för mer information",
+      "grantConsent": "Jag samtycker",
+      "goToSettings": "Gå till Inställningar",
+      "privacyLink": "Läs mer i vår",
+      "privacyPolicy": "integritetspolicy"
+    },
       "title": "Dela välmåendedata",
       "description": "Tillåt din konsulent att se din dagbok, ditt humör och din välmåendeinformation"
     },
@@ -290,6 +320,39 @@
     "privacyPolicy": "Läs vår",
     "privacyPolicyLink": "integritetspolicy",
     "privacyPolicyEnd": " för mer information om hur vi behandlar dina data."
+  },
+  "health": {
+    "consent": {
+      "requiredTitle": "Samtycke krävs",
+      "requiredDesc": "Du måste ge samtycke för att kunna använda denna funktion",
+      "grantNow": "Ge samtycke",
+      "manageInSettings": "Hantera",
+      "grantError": "Kunde inte spara samtycke",
+      "fullTitle": "Samtycke för hälsodata",
+      "fullDesc": "För att kunna ge dig personliga rekommendationer behöver vi ditt samtycke att samla in och analysera data om dina funktionsförutsättningar.",
+      "whatWeCollect": "Vilken data samlar vi in?",
+      "dimension": {
+        "cognitive": "Kognitiv funktion (tänkande, planering, minne)",
+        "communication": "Kommunikation (tal, lyssnande, samarbete)",
+        "concentration": "Koncentration (fokusering, uppmärksamhet)",
+        "motor": "Motorik (rörelse, stadiga händer, fysik)",
+        "sensory": "Sensorisk (ljud, ljus, sinnesintryck)",
+        "energy": "Energi (uthållighet, ork, återhämtning)"
+      },
+      "whyWeCollect": "Varför samlar vi in denna data?",
+      "whyDesc": "För att kunna ge dig personliga rekommendationer som är anpassade till dina behov och förutsättningar.",
+      "whoHasAccess": "Vem har åtkomst?",
+      "whoAccessDesc": "Du och din tilldelade konsulent (endast om du aktiverar delning) kan se denna data.",
+      "gdprWarning": "Denna data klassificeras som \"känsliga personuppgifter\" enligt GDPR artikel 9.",
+      "canWithdraw": "Du kan när som helst:",
+      "withdrawDetail1": "Dra tillbaka ditt samtycke i Inställningar",
+      "withdrawDetail2": "Få all din hälsodata raderad",
+      "withdrawDetail3": "Kontakta oss för mer information",
+      "grantConsent": "Jag samtycker",
+      "goToSettings": "Gå till Inställningar",
+      "privacyLink": "Läs mer i vår",
+      "privacyPolicy": "integritetspolicy"
+    }
   },
   "nav": {
     "dashboard": "Översikt",
@@ -1544,6 +1607,8 @@
       }
     },
     "quickMode": {
+      "versionLabel": "Snabb-CV",
+      "saveFailedHint": "Vi har fyllt i dina uppgifter men kunde inte spara ditt CV just nu. Fortsätt nedan och spara igen i Granska-steget.",
       "title": "Snabb-CV",
       "subtitle": "Skapa ett grundläggande CV på 30 sekunder",
       "step": "Steg",
@@ -6083,6 +6148,9 @@
     "session": {
       "endInterview": "Avsluta",
       "endInterviewAria": "Avsluta intervjun",
+      "endConfirmTitle": "Vill du avsluta intervjun?",
+      "endConfirmMessage": "Din övning sparas så du kan se den igen. Ett obesparat svar i textrutan går förlorat om du avslutar nu.",
+      "endConfirmCta": "Ja, avsluta",
       "questionsAnswered": "Frågor besvarade",
       "averageRating": "Genomsnittligt betyg",
       "previousAnswers": "Tidigare svar",
@@ -6097,6 +6165,10 @@
       "questionNumber": "Fråga {{number}}"
     },
     "input": {
+    "summary": {
+      "title": "Bra jobbat!",
+      "subtitle": "Din övning är sparad så du kan titta på den igen. Här är en snabb sammanfattning."
+    },
       "giveStart": "Ge mig en start",
       "yourAnswerLabel": "Ditt svar",
       "stopRecording": "Stoppa inspelning",

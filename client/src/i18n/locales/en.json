@@ -278,6 +278,36 @@
       "description": "Allow your consultant to see your ICF data (cognitive, motor, sensory, etc.)"
     },
     "wellness": {
+    "consent": {
+      "grantError": "Could not save consent",
+      "requiredTitle": "Consent required",
+      "requiredDesc": "You must give consent to use this feature",
+      "grantNow": "Give consent",
+      "manageInSettings": "Manage",
+      "fullTitle": "Consent for wellbeing data",
+      "fullDesc": "To support your personal development and wellbeing, we need your consent to collect data about your mood and energy.",
+      "whatWeCollect": "What data do we collect?",
+      "item": {
+        "mood": "Daily mood and emotional state",
+        "energy": "Energy and stress levels",
+        "sleep": "Sleep quality and patterns",
+        "diary": "Diary entries and reflections",
+        "gratitude": "Gratitude notes and positive reflections"
+      },
+      "whyWeCollect": "Why do we collect this data?",
+      "whyDesc": "To support your personal development and self-esteem, and to give you insights into your wellbeing over time.",
+      "whoHasAccess": "Who has access?",
+      "whoAccessDesc": "You are the only one who can see this data, unless you enable sharing with your assigned advisor.",
+      "dataProtection": "Your wellbeing data is fully private and processed in accordance with GDPR.",
+      "canWithdraw": "You can at any time:",
+      "withdrawDetail1": "Withdraw your consent in Settings",
+      "withdrawDetail2": "Have all your wellbeing data deleted",
+      "withdrawDetail3": "Contact us for more information",
+      "grantConsent": "I consent",
+      "goToSettings": "Go to Settings",
+      "privacyLink": "Read more in our",
+      "privacyPolicy": "privacy policy"
+    },
       "title": "Share wellbeing data",
       "description": "Allow your consultant to see your diary, mood and wellbeing information"
     },
@@ -290,6 +320,39 @@
     "privacyPolicy": "Read our",
     "privacyPolicyLink": "privacy policy",
     "privacyPolicyEnd": " for more information about how we process your data."
+  },
+  "health": {
+    "consent": {
+      "requiredTitle": "Consent required",
+      "requiredDesc": "You need to give consent to use this feature",
+      "grantNow": "Give consent",
+      "manageInSettings": "Manage",
+      "grantError": "Couldn't save consent",
+      "fullTitle": "Consent for health data",
+      "fullDesc": "To give you personalized recommendations, we need your consent to collect and analyze data about your functional capabilities.",
+      "whatWeCollect": "What data do we collect?",
+      "dimension": {
+        "cognitive": "Cognitive function (thinking, planning, memory)",
+        "communication": "Communication (speaking, listening, collaboration)",
+        "concentration": "Concentration (focus, attention)",
+        "motor": "Motor skills (movement, steady hands, physical ability)",
+        "sensory": "Sensory (sound, light, sensory impressions)",
+        "energy": "Energy (stamina, endurance, recovery)"
+      },
+      "whyWeCollect": "Why do we collect this data?",
+      "whyDesc": "To give you personalized recommendations tailored to your needs and circumstances.",
+      "whoHasAccess": "Who has access?",
+      "whoAccessDesc": "You and your assigned consultant (only if you enable sharing) can see this data.",
+      "gdprWarning": "This data is classified as \"special category personal data\" under GDPR Article 9.",
+      "canWithdraw": "You can at any time:",
+      "withdrawDetail1": "Withdraw your consent in Settings",
+      "withdrawDetail2": "Have all your health data deleted",
+      "withdrawDetail3": "Contact us for more information",
+      "grantConsent": "I consent",
+      "goToSettings": "Go to Settings",
+      "privacyLink": "Read more in our",
+      "privacyPolicy": "privacy policy"
+    }
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -327,6 +390,13 @@
     "interviewSimulator": "Interview Practice",
     "aiTeam": "My AI Team",
     "help": "Help",
+    "hubs": {
+      "oversikt": "Overview",
+      "jobb": "Job Search",
+      "karriar": "Career",
+      "resurser": "Resources",
+      "min-vardag": "Everyday Life"
+    },
     "groups": {
       "overview": "Overview",
       "jobSearch": "Job Search",
@@ -1537,6 +1607,8 @@
       }
     },
     "quickMode": {
+      "versionLabel": "Quick CV",
+      "saveFailedHint": "We have filled in your details but could not save your CV right now. Continue below and save again in the Review step.",
       "title": "Quick CV",
       "subtitle": "Create a basic CV in 30 seconds",
       "step": "Step",
@@ -6076,6 +6148,9 @@
     "session": {
       "endInterview": "End",
       "endInterviewAria": "End interview",
+      "endConfirmTitle": "Do you want to end the interview?",
+      "endConfirmMessage": "Your practice will be saved so you can look at it again. An unsaved answer in the text box will be lost if you end now.",
+      "endConfirmCta": "Yes, end it",
       "questionsAnswered": "Questions answered",
       "averageRating": "Average rating",
       "previousAnswers": "Previous answers",
@@ -6090,6 +6165,10 @@
       "questionNumber": "Question {{number}}"
     },
     "input": {
+    "summary": {
+      "title": "Great job!",
+      "subtitle": "Your practice is saved so you can look at it again. Here is a quick summary."
+    },
       "giveStart": "Give me a start",
       "yourAnswerLabel": "Your answer",
       "stopRecording": "Stop recording",
