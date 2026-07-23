@@ -315,15 +315,22 @@ async function searchJobs(params) {
   if (params.publishedAfter) searchParams.append('published-after', params.publishedAfter);
   searchParams.append('limit', params.limit || '20');
 
+  // A15 (2026-07-23): 8s timeout så en hängande AF-anslutning inte kan
+  // hålla serverless-instansen till Vercels maxDuration (jfr af-jobsearch-edgen)
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
   try {
     const response = await fetch(`${AF_API_URL}?${searchParams.toString()}`, {
-      headers: { 'Accept': 'application/json' }
+      headers: { 'Accept': 'application/json' },
+      signal: controller.signal
     });
     if (!response.ok) throw new Error(`AF API error: ${response.status}`);
     return await response.json();
   } catch (error) {
     console.error('Error searching jobs:', error);
     return { hits: [] };
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -545,6 +552,13 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  // A15 (2026-07-23): explicit metod-allowlist — samma mönster som
+  // ai.js/cv-pdf.js/upload-image.js. Auth per action fanns redan, men
+  // GET/PUT/DELETE ska avvisas på metodnivå.
+  if (req.method !== 'POST' && req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const action = req.query.action || req.body?.action;

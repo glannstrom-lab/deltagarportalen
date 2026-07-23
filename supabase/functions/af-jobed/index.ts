@@ -2,19 +2,20 @@
 // URL: https://<project>.supabase.co/functions/v1/af-jobed
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 
 const JOBED_API_BASE = 'https://jobed-connect-api.jobtechdev.se';
 
 serve(async (req) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  };
+  // A13 (2026-07-23): allowlistad CORS + per-IP-rate-limit i stället för öppen proxy
+  const corsHeaders = buildProxyCorsHeaders(req.headers.get('origin'));
 
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+
+  const limited = await enforceIpRateLimit(req, 'af-jobed');
+  if (limited) return limited;
 
   try {
     const url = new URL(req.url);

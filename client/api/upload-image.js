@@ -193,9 +193,13 @@ module.exports = async function handler(req, res) {
     // Inkludera user.id i blob-path så uppladdningar är spårbara per user
     const blobPath = `user-${user.id}/${filename}`;
 
+    // addRandomSuffix explicit: @vercel/blob ≥1.0 defaultar till false och
+    // kastar då fel när samma path laddas upp igen — 0.x-beteendet (unik
+    // URL per uppladdning) är vad profilbildsflödet förväntar sig
     const blob = await put(blobPath, buffer, {
       access: 'public',
       contentType: detectedType,
+      addRandomSuffix: true,
     });
 
     return res.status(200).json({ url: blob.url });

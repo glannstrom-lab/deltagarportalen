@@ -290,15 +290,13 @@ jobs:
         working-directory: client
         run: npm ci
 
-      # continue-on-error är MEDVETET (dokumenterat 2026-07-23, D8/A14):
-      # en kvarvarande known-issue finns — undici@5.28.4 via @vercel/blob@0.27
-      # (fix kräver major-uppgradering av @vercel/blob, egen uppgift). Utan
-      # continue-on-error skulle den fälla varje CI-körning tills dess.
-      # Ta bort flaggan när @vercel/blob uppgraderats och audit är ren.
-      - name: Run npm audit
+      # Riktig gate sedan 2026-07-23 (A14 klar: @vercel/blob@2.6.1 → 0 prod-
+      # sårbarheter). --omit=dev är medvetet: dev-beroenden skeppas inte
+      # (@vercel/node pinnar t.ex. fortfarande en gammal undici som Vercel
+      # måste släppa fix för — den ska inte fälla CI).
+      - name: Run npm audit (production dependencies)
         working-directory: client
-        run: npm audit --audit-level=high
-        continue-on-error: true
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Check for secrets
         uses: trufflesecurity/trufflehog@main

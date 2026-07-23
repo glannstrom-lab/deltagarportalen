@@ -8,6 +8,8 @@
  * - GET /complete - Autocomplete för sökning
  */
 
+import { enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+
 // Tillåtna origins — matchar Vercel-lagrets allowlist. Wildcard '*' var en
 // öppen-proxy-risk (kvotutbrytning). 2026-05-09: stängt.
 const ALLOWED_ORIGINS = new Set([
@@ -60,6 +62,11 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+
+  // A13 (2026-07-23): per-IP-rate-limit — funktionen är publik men ska inte
+  // kunna användas som obegränsad open proxy mot Jobtech
+  const limited = await enforceIpRateLimit(req, 'af-jobsearch');
+  if (limited) return limited;
 
   try {
     const url = new URL(req.url);

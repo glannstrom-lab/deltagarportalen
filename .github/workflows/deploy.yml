@@ -90,12 +90,17 @@ jobs:
           fi
           echo "Health check passed"
 
+      # A15 (2026-07-23): health-funktionen kräver anon-JWT (verifierat: 401
+      # utan, 200 med) — curlen skickade ingen, därför var steget satt till
+      # continue-on-error och kunde aldrig larma. Nu skarp kontroll.
       - name: API health check
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" ${{ secrets.SUPABASE_URL }}/functions/v1/health)
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
+            ${{ secrets.SUPABASE_URL }}/functions/v1/health)
           if [ "$response" != "200" ]; then
             echo "API health check failed with status: $response"
             exit 1
           fi
           echo "API health check passed"
-        continue-on-error: true

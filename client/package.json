@@ -26,7 +26,7 @@
     "@sparticuz/chromium": "^148.0.0",
     "@supabase/supabase-js": "^2.97.0",
     "@tanstack/react-query": "^5.90.21",
-    "@vercel/blob": "^0.27.1",
+    "@vercel/blob": "^2.6.1",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",

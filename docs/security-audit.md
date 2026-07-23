@@ -18,7 +18,12 @@ Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma v
 - ✅ **A12 (MED): dygnstokentaket (50k/dygn/user) infört i `ai-stream.js`** — streaming-vägen kunde tidigare kringgå kostnadsskyddet C4 helt. Kollas före SSE-headers så 429 kan skickas som JSON.
 - ✅ **A14 (MED/HIGH): beroendeuppgraderingar** — dompurify 3.3.3→3.4.12 (sanerings-bypass-CVE:er i själva XSS-skyddsmotorn), react-router-dom 7.13.0→7.18.1 (bl.a. turbo-stream-RCE), ws 8.20.0→8.21.1. 710 tester + build gröna efteråt. **Kvarvarande known-issue:** undici@5.28.4 via `@vercel/blob@0.27` — fix kräver major-uppgradering av @vercel/blob (egen uppgift, A14-rest i ROADMAP); tills dess behåller CI:s npm-audit-steg `continue-on-error` (dokumenterat i ci.yml).
 
-Övriga fynd från 2026-07-22-granskningen (A13 proxy-rate-limits, A15 småfix) är öppna i ROADMAP spår A.
+**Senare samma dag (A13/A15 + A14-resten):**
+- ✅ **A13: alla 7 publika proxy-edge-funktioner skyddade** (`af-jobsearch/-taxonomy/-trends/-enrichments/-historical/-jobed`, `education-search`) — per-IP-rate-limit (30–60/min) via distribuerade `check_rate_limit` genom nya `_shared/proxyGuard.ts`; de fem med `Access-Control-Allow-Origin: '*'` fick allowlistad CORS. Omdeployade.
+- ✅ **A14 helt stängd:** `@vercel/blob` 0.27→2.6.1 (drar undici 6.27.0) med `addRandomSuffix: true` explicit i upload-image.js (1.0+-defaulten hade annars fått andra-gångens uppladdning att kasta fel). `npm audit --omit=dev` = **0 sårbarheter**; CI:s audit-steg är nu en skarp gate utan `continue-on-error` (scopat `--omit=dev` — @vercel/node pinnar en gammal undici i dev-ledet som Vercel måste släppa fix för).
+- ✅ **A15:** `REVOKE ALL ON cvs, user_preferences FROM anon` (migration `20260723100000`; samma blankogrant-klass som möjliggjorde A10), bolagsverkets catch-block läcker inte längre råa fel (gamla MEDIUM-007 stängd), job-alerts.js fick metod-allowlist + 8s timeout på AF-anropet, och deployens API-hälsokontroll är lagad (health kräver anon-JWT — kontrollen kunde aldrig larma förut).
+
+Kvar öppet i spår A är därmed enbart Mikael-beroende punkter (A1 nyckelrotation, A2 jurist, A4–A6 dashboard/signering) + A7 (profile_shares-RPC, Claude).
 
 ---
 

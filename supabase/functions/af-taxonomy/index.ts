@@ -2,6 +2,7 @@
 // ANONYM TILLGÅNG - ingen auth krävs
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 
 const TAXONOMY_API_BASE = 'https://taxonomy.api.jobtechdev.se/v1/taxonomy';
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
@@ -163,16 +164,15 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
 }
 
 serve(async (req) => {
-  // CORS - tillåt alla
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  };
+  // A13 (2026-07-23): allowlistad CORS + per-IP-rate-limit i stället för öppen proxy
+  const corsHeaders = buildProxyCorsHeaders(req.headers.get('origin'));
 
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+
+  const limited = await enforceIpRateLimit(req, 'af-taxonomy');
+  if (limited) return limited;
 
   try {
     const url = new URL(req.url);

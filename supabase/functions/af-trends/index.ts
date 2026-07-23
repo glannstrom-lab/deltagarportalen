@@ -2,6 +2,7 @@
 // Bygger marknadsstatistik från aggregerad jobbdata
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
@@ -34,6 +35,10 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
+
+  // A13 (2026-07-23): per-IP-rate-limit — publik funktion, men ingen open proxy
+  const limited = await enforceIpRateLimit(req, 'af-trends');
+  if (limited) return limited;
 
   try {
     const url = new URL(req.url);

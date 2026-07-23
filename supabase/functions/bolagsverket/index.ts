@@ -459,19 +459,9 @@ Deno.serve(async (req) => {
     );
 
   } catch (error) {
-    console.error('[bolagsverket] Error:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-
-    // Return detailed error for debugging (temporarily)
-    const headers = {
-      'Access-Control-Allow-Origin': origin || '*',
-      'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-      'Content-Type': 'application/json',
-    };
-
-    return new Response(
-      JSON.stringify({ error: errorMessage, success: false }),
-      { status: 500, headers }
-    );
+    // A15 (2026-07-23): var en "temporarily" detaljerad felhanterare med
+    // CORS-fallback '*' som läckte råa felmeddelanden i prod (gamla
+    // MEDIUM-007). Nu samma sanerade svar som övriga funktioner.
+    return createErrorResponse(error, origin, 'Något gick fel vid hämtningen från Bolagsverket.');
   }
 });

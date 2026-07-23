@@ -31,6 +31,13 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
   'learning-analyze-gap': { limit: 5, windowMs: 60 * 1000 },
   'af-jobsearch': { limit: 60, windowMs: 60 * 1000 },
+  // A13 (2026-07-23): per-IP-limits för de publika proxyfunktionerna
+  'af-taxonomy': { limit: 60, windowMs: 60 * 1000 },
+  'af-trends': { limit: 30, windowMs: 60 * 1000 },
+  'af-enrichments': { limit: 30, windowMs: 60 * 1000 },
+  'af-historical': { limit: 30, windowMs: 60 * 1000 },
+  'af-jobed': { limit: 30, windowMs: 60 * 1000 },
+  'education-search': { limit: 30, windowMs: 60 * 1000 },
   'ai-career-assistant': { limit: 20, windowMs: 60 * 1000 },
   'ai-company-analysis': { limit: 5, windowMs: 60 * 1000 },
   'ai-company-search': { limit: 10, windowMs: 60 * 1000 },
