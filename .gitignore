@@ -111,3 +111,6 @@ design-source/
 # STA källmaterial (~800 MB arbetsdokument) — hålls utanför repot
 sta/Del */
 sta/*.docx
+
+# Exporterade CSV-rapporter i projektroten (Diagram/Metadata/problemlistor)
+/*.csv
