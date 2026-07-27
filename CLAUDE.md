@@ -114,6 +114,16 @@ npx supabase db query --linked "SELECT column_name, data_type FROM information_s
 
 Migrationsfiler skapas fortfarande i `supabase/migrations/` för dokumentation, men körs manuellt med `db query --linked`.
 
+#### Efter varje körd migration: uppdatera schema-snapshoten
+
+```bash
+cd client && npm run schema:refresh   # skriver supabase/schema-snapshot.json
+```
+
+Committa snapshoten i **samma commit** som migrationen. `npm run lint:schema` (CI-grind sedan 2026-07-27) jämför varje `.from()`, `.rpc()`, `.storage.from()` och kolumnreferens i koden mot snapshoten och failar bygget vid drift. Utan uppdaterad snapshot blir grinden falskt röd; utan grinden återkommer fantomtabellerna (se lärdomen 2026-07-27 nedan).
+
+Grinden kontrollerar **båda riktningarna av det som går att kontrollera automatiskt** — kod som pekar på objekt som inte finns. Motsatsen (tabeller i prod som ingen kod rör) kräver manuell genomgång; senaste inventeringen finns i `docs/portal-review-2026-07-27.md` §2.4.
+
 ---
 
 ## Felsökningsprotokoll
@@ -310,6 +320,18 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 **Problem:** `components/widgets/` (registry, HubGrid, JobsokLayoutContext, ~24 *Widget-komponenter, ~6 000 rader inkl. tester) importeras inte från någon sida — hubbarna byggs med `HubPage`-funktionskort i `pages/hubs/*.tsx`.
 **Lärdom:** Ändringar som ska synas på en hubb görs i hubbsidans `features[]`, inte i widgets. Arkivering av widget-systemet är planerad (ROADMAP C1).
 
+### 2026-07-27: Migrationsfiler ≠ prod-schema (verifiera mot databasen)
+**Problem:** Koden skriver till 11 tabeller som inte finns i produktionsdatabasen — och läser 2 kolumner på `user_preferences` som inte finns. Jobbevakningen har därför varit ur funktion sedan 12 april utan att något test, typfel eller loggfynd avslöjade det.
+**Orsak:** Den manuella migrationsrutinen (`db query --linked`, se ovan) har ingen grind. Tre migrationsfiler skrevs men kördes aldrig; åtta tabeller hade aldrig någon migration alls. Felen maskeras av `if (error) { console.error(...); return [] }`-mönstret — ett saknat schema ser ut som tom data.
+**Lärdom:** Att en migrationsfil finns i `supabase/migrations/` är **inget bevis** för att tabellen finns i prod. Samma buggklass har nu träffat tre gånger: `participant_consultants` (B3), kolumnnamnen i `participant_data_sharing` (UX7), och de här elva.
+**Kontroll — gör detta innan du tror på en kodväg som rör databasen:**
+```bash
+npx supabase db query --linked "SELECT column_name FROM information_schema.columns WHERE table_name='<tabell>';" --output table
+```
+**Åtgärd — nu på plats:** `npm run lint:schema` (H1) failar bygget vid drift, och `npm run schema:refresh` uppdaterar snapshoten. Grinden hittade **fyra buggar som den manuella granskningen missade**: profilbildsuppladdning mot en bucket som inte finns (`user-content`), `mood_logs.mood`/`notes` som heter `mood_level`/`note` (måenderekommendationerna kunde aldrig visas), `journey_goals` i konsulentens analytics, och `consultant_placements.placement_date` som heter `start_date`. Detaljer: `docs/portal-review-2026-07-27.md`.
+
+**Notera fällan i testerna:** `consultantService.test.ts` hade ett test som *asserterade* `journey_goals` — mot en mockad klient går ett tabellnamn som inte finns alltid igenom. Enhetstester kan inte ersätta den här grinden.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
@@ -320,8 +342,9 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 
 | Dokument | Innehåll |
 |----------|----------|
-| `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-10) — spår A–G, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
-| `docs/portal-review-2026-07-22.md` | Senaste granskning (7 parallella analyser: kod, säkerhet, UX, prestanda, produkt, AI, dokumentation/test) |
+| `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-27) — spår A–I, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
+| `docs/portal-review-2026-07-27.md` | **Senaste granskning** — kod vs. **prod-schema**. Grund för spår H (schemaintegritet) och I (kvalitetsgrindar/prestanda) |
+| `docs/portal-review-2026-07-22.md` | Granskning 2026-07-22 (7 parallella analyser: kod, säkerhet, UX, prestanda, produkt, AI, dokumentation/test) |
 | `docs/portal-review-2026-07.md` | Helhetsgranskning 2026-07-10 (grund för roadmapens spårstruktur) |
 | `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
 | `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — CI-guardad (`npm run lint:design`) |

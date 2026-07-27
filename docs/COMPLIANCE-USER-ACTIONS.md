@@ -1,7 +1,30 @@
 # Compliance — vad DU behöver göra
 
-**Datum:** 2026-05-15 (uppdaterad efter implementation)
+**Datum:** 2026-07-27 (Art 30 + retention reviderade mot verkligt schema; föregående 2026-05-15)
 **Bakgrund:** Se `docs/COMPLIANCE-AUDIT-2026-05-15.md` för full audit.
+
+## Uppdatering 2026-07-27 (ROADMAP H7) — sex beslut kvar före signering
+
+`GDPR-ART30-REGISTER.md` och `RETENTION-POLICY.md` är nu avstämda mot produktionsdatabasen
+(**150 tabeller**; registret dokumenterade tidigare 23). Nio nya behandlingar (B13–B21) och en
+verifierbar bilaga A är tillagda. **Det som återstår är beslut, inte skrivande:**
+
+1. **AI-juristen (A2)** — posterna märkta `[bekräftas]`, främst STA:s rättsliga grund (utgör
+   bedömning av arbetsförmåga hälsouppgifter enligt Art 9?) och vilken gallringstid
+   Arbetsförmedlingens dokumentationskrav medför.
+2. **`pg_cron` (A6)** — utan den sker **ingen automatisk gallring alls**. Största Art 5.1.e-risken.
+3. **Resend** — DPA och region måste vara klara **innan** jobbaviseringarnas cron slås på; efter
+   H2 fungerar kedjan tekniskt, så utskicken börjar gå på riktigt när cronen aktiveras.
+4. **`network_contacts`** — deltagaren lagrar tredje personers namn, e-post och telefon. De
+   personerna har GDPR-rättigheter men kan inte utöva dem i portalen. Kräver informationstext
+   eller begränsade fält.
+5. ~~**H3** — 15 döda tabeller~~ ✅ **Klart 2026-07-27.** Raderade efter godkännande; databasen gick
+   från 150 till 135 tabeller. Registret omfattar därmed 135. De publika `anon`-läsrättigheterna på
+   `community_topics`/`_replies`/`_likes` försvann samtidigt.
+6. **Org-uppgifter + signatur (A4)** — personuppgiftsansvarig och DPO är fortfarande platshållare.
+
+**Noterat på vägen:** LinkedIn Inc. stod som personuppgiftsbiträde och `linkedin_profiles` som
+tabell. Ingen LinkedIn-import finns implementerad — båda utgår ur registret.
 
 ## Status — vad är klart i kod
 
