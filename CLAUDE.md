@@ -373,6 +373,21 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 
 **Notera fällan i testerna:** `consultantService.test.ts` hade ett test som *asserterade* `journey_goals` — mot en mockad klient går ett tabellnamn som inte finns alltid igenom. Enhetstester kan inte ersätta den här grinden.
 
+### 2026-07-27: Delad React Query-nyckel med två olika former (prod-persona-testet)
+
+**Problem:** Ett besök på `/#/jobb` fick alla ansökningar att försvinna från `/#/applications`, och räknaren att visa den råa i18n-nyckeln `applications.pipeline.active`. Öppnade man `/#/applications` direkt fungerade allt.
+
+**Orsak:** Två features skriver till samma cache-nyckel `['application-stats']` med **olika former**. `useApplications` lägger dit `applicationsApi.getStats()` (platt: `total/active/applied/…`, från `saved_jobs`). `useJobsokHubSummary` gör `queryClient.setQueryData(['application-stats'], …)` med `{ total, byStatus, segments }` — hämtat från den **döda tabellen `job_applications`** (0 rader i prod). Hubben skriver alltså noll över verkligheten, `stats.total = 0` gömmer hela pipelinen och `stats.active = undefined` får i18next att missa pluralformen.
+
+**Varför inget fångade det:**
+- `lint:schema` är grön — `job_applications` *finns* i prod, den är bara tom.
+- TypeScript är grönt — `setQueryData` är otypad mot nyckeln.
+- Enhetstestet är grönt — `useJobsokHubSummary.test.ts` **asserterar den trasiga formen**. Samma fälla som `journey_goals` ovan, men på cache-nivå i stället för schemanivå.
+
+**Kontroll:** När en bugg bara uppträder på *en väg* till en sida men inte på direktnavigering — misstänk delad cache, inte data. `grep -rn "setQueryData"` och jämför formen mot den hook som äger nyckeln. En nyckel = en form = en ägare.
+
+**Lärdom:** En delad cache-nyckel är ett kontrakt utan typ. Skriver två ställen till samma nyckel måste de dela form — annars förgiftar det ena det andra, tyst.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
