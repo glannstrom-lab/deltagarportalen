@@ -126,6 +126,30 @@ Grinden kontrollerar **båda riktningarna av det som går att kontrollera automa
 
 ---
 
+## Premissgranskning — obligatorisk före varje roadmap-punkt
+
+**Regel:** Innan du bygger något från `docs/ROADMAP.md` ska punktens premiss verifieras mot verkligheten. Roadmapen beskriver vad någon trodde när raden skrevs — inte vad som är sant idag.
+
+**Så gör du, i ordning:**
+
+1. **Läs den faktiska koden.** Öppna filerna raden pekar på. Inte bara sök — läs.
+2. **Spåra konsumenter själv.** Finns komponenten/hooken/funktionen ens monterad? Vem importerar den? Noll importörer = punkten handlar om dödkod, inte om en funktion som ska förbättras.
+3. **Kolla schemat mot databasen**, inte mot migrationsfilerna:
+   ```bash
+   npx supabase db query --linked "SELECT column_name FROM information_schema.columns WHERE table_name='<tabell>';" --output table
+   ```
+4. **Mät i stället för att lita på siffror i planen.** Storlek = brotli över nätet, inte rå `dist/`. Radantal = `SELECT count(*)`, inte `reltuples`. Regelfördelning = kör linten, inte minnesbilden.
+5. **Rapportera premissen innan du bygger:** *"Premissen håller / håller inte — så här ser verkligheten ut."* Föreslå därefter: **bygg**, **omscopa** eller **avskriv**.
+6. **Bygg sedan** — och skriv in rättelsen i roadmapen (under "Rättelser mot förra versionen"), inte bara i commit-meddelandet.
+
+**Rapporten ska bära bevis, inte intryck:** radantal, importspår, brotli-tal, prod-repro. "Jag kollade" räcker inte.
+
+**Varför regeln finns:** vid körningen 2026-07-27 visade sig sex punkter ha fel premiss — G3 (CV hade redan fokusläge), G9 (poängen hade noll läsare, inte bara ingen vy), G10 (chatboten var dödkod), I1 (1 510 kB var rå storlek; 383 kB brotli → avskriven), I3 (`no-console` var 25 av 154, inte dominerande) och H6 (`email_queue` behövde kanonisk form från producent+konsument, inte påhittad). Att bygga rakt på raden hade gett fel arbete i samtliga fall.
+
+**Undantag:** ingen. Även en punkt som ser trivial ut ska premissgranskas — G3 och G13 såg ut som "bygg en ny vy" och var i själva verket "vyn finns men ljuger".
+
+---
+
 ## Felsökningsprotokoll
 
 När något inte fungerar, följ denna ordning:
