@@ -4,7 +4,8 @@
  * Uses their public API when available, with fallback to curated data
  */
 
-import { supabase } from '@/lib/supabase'
+// supabase-importen borttagen 2026-07-27 (H5): den enda databasanvändningen
+// var logSalaryLookup, som skrev till en tabell som inte finns.
 
 export interface SalaryData {
   occupation: string
@@ -270,22 +271,13 @@ class SCBSalaryService {
     }
   }
 
-  /**
-   * Log salary lookup for analytics
-   */
-  async logSalaryLookup(occupation: string, userId?: string): Promise<void> {
-    if (!userId) return
-
-    try {
-      await supabase.from('salary_lookups').insert({
-        user_id: userId,
-        occupation,
-        timestamp: new Date().toISOString(),
-      })
-    } catch (error) {
-      console.error('[SCBSalary] Failed to log lookup:', error)
-    }
-  }
+  // logSalaryLookup RADERAD 2026-07-27 (H5). Skrev till tabellen
+  // `salary_lookups` som inte finns — insert:en failade tyst i sitt catch vid
+  // varje lönesökning. Den fanns för analytics, inte för deltagarnytta, och
+  // ingen analysvy har någonsin läst den. Att skapa tabellen hade betytt att
+  // börja logga vilka yrken varje deltagare tittar på, alltså mer persondata
+  // för ingen nytta — fel väg strax före Art 30-genomgången (H7).
+  // Anropare fanns redan inte. Finns i git-historiken.
 }
 
 export const scbSalaryService = new SCBSalaryService()

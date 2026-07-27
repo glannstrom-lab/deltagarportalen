@@ -519,15 +519,16 @@ async function fetchTodaysMood(userId?: string): Promise<number | null> {
   if (!userId) return null
   try {
     const today = new Date().toISOString().split('T')[0]
+    // `mood` → `mood_level` (H1, 2026-07-27) — se useMoodRecommendations
     const { data } = await supabase
       .from('mood_logs')
-      .select('mood')
+      .select('mood_level')
       .eq('user_id', userId)
       .gte('created_at', today)
       .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle()
-    return data?.mood || null
+    return data?.mood_level || null
   } catch {
     return null
   }

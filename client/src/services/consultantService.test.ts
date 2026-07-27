@@ -563,7 +563,7 @@ describe('consultantService.getAnalytics', () => {
       ],
       error: null,
     })
-    queueResult({ count: 3, error: null }) // journey_goals
+    queueResult({ count: 3, error: null }) // consultant_goals
     queueResult({ count: 1, error: null }) // consultant_placements
     const result = await consultantService.getAnalytics()
     expect(result.totalParticipants).toBe(2)
@@ -573,7 +573,12 @@ describe('consultantService.getAnalytics', () => {
     expect(result.averageAtsScore).toBe(70)
     expect(result.goalsCompletedThisMonth).toBe(3)
     expect(result.placementsThisMonth).toBe(1)
-    expect(mockFrom).toHaveBeenCalledWith('journey_goals')
+    // H5 (2026-07-27): testet låste tidigare fast `journey_goals` — en tabell
+    // som aldrig funnits (journey-systemet arkiverades i C9), så räkningen var
+    // alltid 0 i prod. Testet gick igenom eftersom klienten är mockad: en
+    // mockad `.from()` bryr sig inte om att tabellen inte existerar. Det är
+    // just den luckan schemadriftgrinden (H1) täcker.
+    expect(mockFrom).toHaveBeenCalledWith('consultant_goals')
     expect(mockFrom).toHaveBeenCalledWith('consultant_placements')
   })
 

@@ -452,6 +452,12 @@ export const unifiedProfileApi = {
 
   /**
    * Ladda upp profilbild
+   *
+   * BUCKET RÄTTAD 2026-07-27 (H1): laddade upp till `user-content`, en bucket
+   * som inte finns i projektet — de enda som finns är `profile-images` (publik)
+   * och `profile-documents` (privat). Uppladdningen kunde alltså aldrig lyckas.
+   * `profile-images` är rätt val eftersom funktionen använder `getPublicUrl`.
+   * Hittat av schemadriftgrinden, inte av tester eller typkontroll.
    */
   async uploadProfileImage(file: File): Promise<string> {
     try {
@@ -464,7 +470,7 @@ export const unifiedProfileApi = {
 
       // Ladda upp till storage
       const { error: uploadError } = await supabase.storage
-        .from('user-content')
+        .from('profile-images')
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: true
@@ -474,7 +480,7 @@ export const unifiedProfileApi = {
 
       // Hämta public URL
       const { data: { publicUrl } } = supabase.storage
-        .from('user-content')
+        .from('profile-images')
         .getPublicUrl(filePath)
 
       // Uppdatera profilen med ny bild-URL

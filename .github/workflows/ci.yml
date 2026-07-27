@@ -44,6 +44,15 @@ jobs:
         working-directory: client
         run: npm run lint:design
 
+      # Schemadrift (H1, 2026-07-27): failar när koden refererar tabeller,
+      # kolumner, RPC eller storage-buckets som inte finns i produktions-
+      # schemat. Jämför mot supabase/schema-snapshot.json — ingen DB-åtkomst
+      # och därmed inga hemligheter i CI. Snapshoten uppdateras manuellt med
+      # `npm run schema:refresh` efter varje körd migration.
+      - name: Schema drift — kod vs. produktionsschema
+        working-directory: client
+        run: npm run lint:schema
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest

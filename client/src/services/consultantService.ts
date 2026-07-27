@@ -545,24 +545,31 @@ class ConsultantService {
     let placementsThisMonth = 0
 
     if (participantIds.length > 0) {
+      // H5 (2026-07-27): läste `journey_goals` — en tabell som aldrig funnits
+      // (journey-systemet arkiverades i C9). Konsulentens "avklarade mål denna
+      // månad" var därför alltid 0. Rätt tabell är `consultant_goals`, som
+      // dessutom är den enda målkälla konsulentvyn skriver till: den har
+      // `participant_id`, `status` och `completed_at`.
       try {
         const { count: goalsCount } = await supabase
-          .from('journey_goals')
+          .from('consultant_goals')
           .select('id', { count: 'exact', head: true })
-          .in('user_id', participantIds)
-          .eq('is_completed', true)
+          .in('participant_id', participantIds)
+          .eq('status', 'completed')
           .gte('completed_at', startIso)
         goalsCompletedThisMonth = goalsCount ?? 0
       } catch (err) {
         console.warn('[consultantService] goalsCompletedThisMonth query failed:', err)
       }
 
+      // H5: kolumnen heter `start_date`, inte `placement_date` → räkningen var
+      // också alltid 0.
       try {
         const { count: placementsCount } = await supabase
           .from('consultant_placements')
           .select('id', { count: 'exact', head: true })
           .eq('consultant_id', user.id)
-          .gte('placement_date', startIso)
+          .gte('start_date', startIso)
         placementsThisMonth = placementsCount ?? 0
       } catch (err) {
         console.warn('[consultantService] placementsThisMonth query failed:', err)

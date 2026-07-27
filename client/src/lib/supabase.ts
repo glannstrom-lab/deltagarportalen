@@ -317,37 +317,9 @@ export function subscribeToConsultantNotes(participantId: string, callback: (pay
     .subscribe()
 }
 
-// Storage helpers
-export async function uploadProfileImage(userId: string, file: File) {
-  const fileExt = file.name.split('.').pop()
-  const fileName = `${userId}-${Date.now()}.${fileExt}`
-  
-  const { error } = await supabase.storage
-    .from('profile_images')
-    .upload(fileName, file, {
-      cacheControl: '3600',
-      upsert: true
-    })
-  
-  if (error) throw error
-  
-  const { data: { publicUrl } } = supabase.storage
-    .from('profile_images')
-    .getPublicUrl(fileName)
-  
-  return publicUrl
-}
-
-export async function uploadCVFile(userId: string, file: File) {
-  const fileName = `${userId}/cv-${Date.now()}.pdf`
-  
-  const { data, error } = await supabase.storage
-    .from('cv_files')
-    .upload(fileName, file, {
-      cacheControl: '3600',
-      upsert: true
-    })
-  
-  if (error) throw error
-  return data.path
-}
+// Storage helpers RADERADE 2026-07-27 (H5): uploadProfileImage och
+// uploadCVFile hade noll anropare och pekade dessutom på buckets som inte
+// finns — `profile_images` och `cv_files` med UNDERSTRECK, medan den enda
+// bildbucketen heter `profile-images` med BINDESTRECK. Den levande vägen är
+// `unifiedProfileApi.uploadProfileImage` (vars bucketnamn också var fel och
+// rättades samtidigt). Finns i git-historiken.

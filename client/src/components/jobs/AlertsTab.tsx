@@ -201,6 +201,7 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
   const [frequency, setFrequency] = useState<'instant' | 'daily' | 'weekly' | 'none'>('daily')
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   useEffect(() => {
     getNotificationPreferences().then(prefs => {
@@ -210,10 +211,20 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
     })
   }, [])
 
+  // H2 (2026-07-27): returvärdet kastades och modalen stängdes oavsett utfall.
+  // Kolumnerna `job_alert_email_enabled`/`job_alert_frequency` fanns inte i
+  // `user_preferences`, så varje sparning misslyckades — men deltagaren såg
+  // modalen stängas som om inställningen tagits emot (samma falsk-framgång som
+  // UX5). Kolumnerna finns nu; felvägen är ändå kvar och visas ärligt.
   const handleSave = async () => {
     setIsSaving(true)
-    await updateNotificationPreferences({ emailEnabled, frequency })
+    setSaveError(null)
+    const ok = await updateNotificationPreferences({ emailEnabled, frequency })
     setIsSaving(false)
+    if (!ok) {
+      setSaveError(t('jobSearch.alertsTab.saveFailed', 'Inställningen kunde inte sparas. Försök igen om en stund.'))
+      return
+    }
     onClose()
   }
 
@@ -293,6 +304,12 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
               ))}
             </div>
           </div>
+        )}
+
+        {saveError && (
+          <p role="status" className="text-sm text-amber-700 dark:text-amber-300">
+            {saveError}
+          </p>
         )}
 
         <div className="flex justify-end gap-3 pt-2">

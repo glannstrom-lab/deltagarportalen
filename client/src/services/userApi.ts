@@ -210,36 +210,9 @@ export const userApi = {
     return (data?.onboarding_progress || {}) as OnboardingProgress
   },
 
-  async updateSettings(settings: {
-    calmMode?: boolean
-    highContrast?: boolean
-    largeText?: boolean
-    reduceMotion?: boolean
-    emailNotifications?: boolean
-    jobAlerts?: boolean
-    preferredLanguage?: string
-  }) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const { data, error } = await supabase
-      .from('user_settings')
-      .upsert({
-        user_id: user.id,
-        calm_mode: settings.calmMode,
-        high_contrast: settings.highContrast,
-        large_text: settings.largeText,
-        reduce_motion: settings.reduceMotion,
-        email_notifications: settings.emailNotifications,
-        job_alerts: settings.jobAlerts,
-        preferred_language: settings.preferredLanguage,
-      }, {
-        onConflict: 'user_id'
-      })
-      .select()
-      .single()
-
-    if (error) handleError(error)
-    return data
-  }
+  // updateSettings RADERAD 2026-07-27 (H5). Noll anropare, och den skrev till
+  // tabellen `user_settings` som inte finns — varje anrop hade kastat. Den
+  // levande vägen för tillgänglighetsinställningar är `settingsStore`, som
+  // skriver till `user_preferences` (kolumnerna finns och verifierades).
+  // Finns i git-historiken.
 }

@@ -262,9 +262,13 @@ async function fetchTodaysMood(): Promise<MoodData | null> {
   const today = new Date().toISOString().split('T')[0]
 
   try {
+    // KOLUMNNAMN RÄTTADE 2026-07-27 (H1): läste `mood` och `notes`, men
+    // mood_logs har `mood_level` och `note`. Frågan gav alltid fel, fångades av
+    // try/catch och returnerade null → måenderekommendationerna kunde aldrig
+    // visas. Hittat av schemadriftgrinden.
     const { data } = await supabase
       .from('mood_logs')
-      .select('mood, created_at, notes')
+      .select('mood_level, created_at, note')
       .eq('user_id', user.id)
       .gte('created_at', today)
       .order('created_at', { ascending: false })
@@ -274,9 +278,9 @@ async function fetchTodaysMood(): Promise<MoodData | null> {
     if (!data) return null
 
     return {
-      mood: data.mood as MoodLevel,
+      mood: data.mood_level as MoodLevel,
       createdAt: data.created_at,
-      notes: data.notes || undefined
+      notes: data.note || undefined
     }
   } catch {
     return null

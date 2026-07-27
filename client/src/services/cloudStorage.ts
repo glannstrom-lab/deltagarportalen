@@ -1466,43 +1466,11 @@ export const platsbankenApi = {
 // ============================================
 // DARK MODE INSTÄLLNINGAR
 // ============================================
-export const darkModeApi = {
-  async get() {
-    const { data, error } = await supabase
-      .from('user_preferences')
-      .select('dark_mode')
-      .limit(1)
-    
-    if (error) {
-      handleStorageError(error, 'hämta dark mode')
-      return localStorage.getItem('darkMode') === 'true'
-    }
-    return data?.[0]?.dark_mode ?? false
-  },
-
-  async set(isDark: boolean) {
-    const user = await getCurrentUser()
-    if (!user) {
-      localStorage.setItem('darkMode', isDark.toString())
-      return
-    }
-
-    const { error } = await supabase
-      .from('user_preferences')
-      .upsert({
-        user_id: user.id,
-        dark_mode: isDark,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      })
-    
-    if (error) {
-      handleStorageError(error, 'spara dark mode')
-      localStorage.setItem('darkMode', isDark.toString())
-    }
-  }
-}
+// darkModeApi RADERAD 2026-07-27 (H5). Noll anropare, och den läste/skrev
+// `user_preferences.dark_mode` — kolumnen heter `theme` (text: light/dark/
+// system) och hanteras av ThemeContext. Värt att notera inför F1-beslutet
+// (dark mode i scope eller ej): det fanns alltså två parallella lager för
+// temat, varav detta aldrig kunde fungera. Finns i git-historiken.
 
 // ============================================
 // MOOD LOGGING (Humör)
@@ -2213,57 +2181,12 @@ export const personalBrandApi = {
 // ============================================
 // ONBOARDING PROGRESS
 // ============================================
-export const onboardingApi = {
-  async getProgress() {
-    const { data, error } = await supabase
-      .from('user_preferences')
-      .select('onboarding_progress, onboarding_completed, onboarding_skipped')
-      .limit(1)
-    
-    if (error) {
-      handleStorageError(error, 'hämta onboarding progress')
-      return {
-        progress: parseInt(localStorage.getItem('onboarding-progress-v2') || '0'),
-        completed: localStorage.getItem('has-seen-onboarding-v2') === 'true',
-        skipped: localStorage.getItem('onboarding-skipped-v2') === 'true'
-      }
-    }
-    return {
-      progress: data?.[0]?.onboarding_progress || 0,
-      completed: data?.[0]?.onboarding_completed || false,
-      skipped: data?.[0]?.onboarding_skipped || false
-    }
-  },
-
-  async saveProgress(progress: number, completed: boolean, skipped: boolean = false) {
-    const user = await getCurrentUser()
-    if (!user) {
-      localStorage.setItem('onboarding-progress-v2', progress.toString())
-      localStorage.setItem('has-seen-onboarding-v2', completed.toString())
-      localStorage.setItem('onboarding-skipped-v2', skipped.toString())
-      return
-    }
-
-    const { error } = await supabase
-      .from('user_preferences')
-      .upsert({
-        user_id: user.id,
-        onboarding_progress: progress,
-        onboarding_completed: completed,
-        onboarding_skipped: skipped,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      })
-    
-    if (error) {
-      handleStorageError(error, 'spara onboarding progress')
-      localStorage.setItem('onboarding-progress-v2', progress.toString())
-      localStorage.setItem('has-seen-onboarding-v2', completed.toString())
-      localStorage.setItem('onboarding-skipped-v2', skipped.toString())
-    }
-  }
-}
+// onboardingApi RADERAD 2026-07-27 (H5). Noll anropare, och den läste/skrev
+// `onboarding_progress`/`onboarding_completed`/`onboarding_skipped` på
+// `user_preferences` — kolumner som inte finns där. De två första finns på
+// `profiles`, vilket är vad den levande `userApi.getOnboardingProgress`
+// använder. Den här var alltså en trasig dubblett som alltid föll tillbaka
+// på localStorage. Finns i git-historiken.
 
 // ============================================
 // CALENDAR API

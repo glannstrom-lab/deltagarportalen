@@ -18,6 +18,8 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "typecheck:critical": "node scripts/typecheck-critical.cjs",
     "lint:design": "node scripts/check-design-debt.cjs",
+    "lint:schema": "node scripts/check-schema-drift.cjs",
+    "schema:refresh": "node scripts/refresh-schema-snapshot.cjs",
     "report:i18n": "node scripts/report-hardcoded-swedish.cjs"
   },
   "dependencies": {

@@ -25,10 +25,12 @@ export { useJobAlerts } from './useJobAlerts'
 export { useInsights } from './useInsights'
 export { useNextStep } from './useNextStep'
 
-// Gamification (journey/gamification-systemet arkiverat 2026-07-23, C9 —
-// useAchievementTracker/-Chains är det levande systemet)
+// Aktivitetsloggning (journey/gamification-systemet arkiverat 2026-07-23, C9).
+// useAchievementChains arkiverades 2026-07-27 (H5): noll konsumenter, och den
+// läste `cv_data`/`interest_guide_results` samt skrev `user_achievement_chains`
+// och RPC:n `add_user_points` — inget av det finns i databasen. CV-poängen var
+// därför alltid 0 och RIASEC aldrig "klar". Se archive/2026-07-doda-ai-dubbletter/.
 export { useAchievementTracker } from './useAchievementTracker'
-export { useAchievementChains } from './useAchievementChains'
 export { useUnifiedProgress } from './useUnifiedProgress'
 export { useLearning } from './useLearning'
 

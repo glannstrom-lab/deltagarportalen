@@ -4,7 +4,8 @@
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { supabase } from '@/lib/supabase'
+// supabase-importen borttagen 2026-07-27 (H5): hooken rör inte längre
+// databasen — inspelningen laddas ner lokalt, inget lagras i molnet.
 
 interface RecordingSegment {
   blob: Blob
@@ -24,7 +25,6 @@ interface UseAudioRecorderReturn {
   pauseRecording: () => void
   resumeRecording: () => void
   downloadRecording: (filename?: string) => void
-  saveRecording: (sessionId: string, metadata?: Record<string, unknown>) => Promise<string | null>
   clearRecording: () => void
   getRecordingBlob: () => Blob | null
 }
@@ -205,67 +205,25 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     console.log('[AudioRecorder] Recording downloaded')
   }, [getRecordingBlob])
 
-  const saveRecording = useCallback(async (
-    sessionId: string,
-    metadata?: Record<string, unknown>
-  ): Promise<string | null> => {
-    const blob = getRecordingBlob()
-    if (!blob) {
-      console.warn('[AudioRecorder] No recording to save')
-      return null
-    }
-
-    try {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        console.error('[AudioRecorder] User not authenticated')
-        return null
-      }
-
-      const fileName = `interview-recordings/${user.id}/${sessionId}.webm`
-
-      // Upload to Supabase storage
-      const { data, error } = await supabase.storage
-        .from('user-files')
-        .upload(fileName, blob, {
-          contentType: blob.type,
-          upsert: true
-        })
-
-      if (error) {
-        console.error('[AudioRecorder] Upload failed:', error)
-        return null
-      }
-
-      // Save metadata to database
-      const { error: metaError } = await supabase
-        .from('interview_recordings')
-        .insert({
-          user_id: user.id,
-          session_id: sessionId,
-          file_path: data.path,
-          duration: recordingTime,
-          segments: segments.map(s => ({
-            timestamp: s.timestamp,
-            duration: s.duration,
-            question: s.question
-          })),
-          metadata,
-          created_at: new Date().toISOString()
-        })
-
-      if (metaError) {
-        console.error('[AudioRecorder] Metadata save failed:', metaError)
-        // Don't fail completely, file is uploaded
-      }
-
-      console.log('[AudioRecorder] Recording saved to:', data.path)
-      return data.path
-    } catch (error) {
-      console.error('[AudioRecorder] Save failed:', error)
-      return null
-    }
-  }, [getRecordingBlob, recordingTime, segments])
+  // saveRecording RADERAD 2026-07-27 (H5).
+  //
+  // Laddade upp intervjuljudet till bucketen `user-files` och skrev metadata
+  // till tabellen `interview_recordings` — varken bucketen eller tabellen finns.
+  // Migrationen `20260412120000_interview_recordings.sql` kördes aldrig, och
+  // dess egen kommentar sa "bucket 'user-files' should already exist" (den
+  // gjorde inte det).
+  //
+  // Funktionen hade dessutom noll anropare: InterviewSimulator använder
+  // `downloadRecording`, som sparar .webm-filen lokalt på deltagarens enhet.
+  //
+  // Den togs bort i stället för att kompletteras med migration + bucket, för
+  // att molnlagring av deltagares röstinspelningar är en utökning av
+  // personuppgiftsbehandlingen som kräver DPIA, retention och samtycke — ett
+  // beslut för Mikael, inte en sidoeffekt av en schemastädning. Lokal
+  // nedladdning ger dessutom deltagaren funktionen utan att portalen lagrar
+  // rösten alls. Se ROADMAP H10 om det ska tas upp.
+  //
+  // Finns i git-historiken.
 
   const clearRecording = useCallback(() => {
     chunksRef.current = []
