@@ -8785,6 +8785,18 @@
     }
   },
   "focus": {
+    "sta": {
+      "exerciseTitle": "Dagens övning",
+      "dayOf": "Dag {{day}} av {{total}}",
+      "duration": "Cirka {{min}} minuter",
+      "reflectionLabel": "Vill du skriva något om dagen?",
+      "reflectionPlaceholder": "Det är helt okej att lämna tomt.",
+      "alreadyDone": "Den här dagen har du redan gjort. Fint.",
+      "pulseTitle": "Hur känns dagen?",
+      "pulseHint": "Bara du och din konsulent ser det här.",
+      "finish": "Klar för idag",
+      "noEnrollment": "Du är inte inskriven i någon arbetsprövning just nu. Här dyker din dag upp när du är det."
+    },
     "ai": {
       "agentTitle": "Vem vill du prata med?",
       "doneText": "Bra! Öppna AI-team i normalläge för att fortsätta samtalet.",

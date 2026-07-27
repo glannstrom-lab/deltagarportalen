@@ -3,6 +3,10 @@ import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusStaWizard } from '@/components/focus/pages/FocusStaWizard'
+import { Footprints } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import {
@@ -213,7 +217,34 @@ const TABS: Array<{ id: TabId; label: string; partIndex?: StaPart }> = [
   { id: 'del-4', label: 'Del 4 — Hitta arbetsplats', partIndex: 4 },
 ]
 
+/**
+ * G3b (2026-07-27): STA var en av två sidor utan fokusläge (G3 tog CV).
+ * Deltagarvyn är tät — hero, tidslinje, fem flikar, dagsslinga, obligatoriska
+ * aktiviteter, pulskoll, frånvaro — alltså precis vad fokusläget finns för att
+ * skala bort. Wrappern ligger utanför huvudkomponenten så att den tunga
+ * datahämtningen nedan inte körs i onödan när fokusläget är på.
+ */
 export default function StaParticipant() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('sta.title', 'Steg till arbete')}
+        icon={Footprints}
+        domain="action"
+        onExit={toggleFocusMode}
+      >
+        <FocusStaWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <StaParticipantInner />
+}
+
+function StaParticipantInner() {
   const { profile } = useAuthStore()
   const firstName = profile?.first_name || ''
   const [tab, setTab] = useState<TabId>('oversikt')

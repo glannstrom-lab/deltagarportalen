@@ -8785,6 +8785,18 @@
     }
   },
   "focus": {
+    "sta": {
+      "exerciseTitle": "Today's exercise",
+      "dayOf": "Day {{day}} of {{total}}",
+      "duration": "About {{min}} minutes",
+      "reflectionLabel": "Would you like to write something about today?",
+      "reflectionPlaceholder": "It's completely fine to leave this empty.",
+      "alreadyDone": "You've already done this day. Nice.",
+      "pulseTitle": "How does today feel?",
+      "pulseHint": "Only you and your consultant can see this.",
+      "finish": "Done for today",
+      "noEnrollment": "You're not enrolled in a work trial right now. Your day will show up here when you are."
+    },
     "ai": {
       "agentTitle": "Who would you like to talk to?",
       "doneText": "Great! Open AI team in normal mode to continue the conversation.",
