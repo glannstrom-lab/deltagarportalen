@@ -3,7 +3,8 @@
  * Supports single and multiple selection with proper ARIA
  */
 
-import { useId, useCallback, KeyboardEvent } from 'react'
+import { useId, useCallback } from 'react'
+import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 

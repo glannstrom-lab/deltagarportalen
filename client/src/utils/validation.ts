@@ -81,8 +81,26 @@ export function validateCVData(data: unknown): { valid: true; data: CVData } | {
   }
 }
 
+/**
+ * Läs okänd data som en uppslagsbar post.
+ *
+ * `typeof x === 'object' && x !== null` smalnar av till `object` i TypeScript,
+ * och `object` har inga egenskaper — därför gav varje fältläsning i
+ * `repairCVData` ett typfel (43 st i den här filen). Hjälparen gör
+ * avsmalningen explicit i stället. `null`/primitiver blir `{}`, vilket ger
+ * samma `undefined` som `item?.field` gav tidigare — beteendet är oförändrat.
+ */
+const asRecord = (value: unknown): Record<string, unknown> =>
+  (typeof value === 'object' && value !== null ? value : {}) as Record<string, unknown>
+
+const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'] as const
+type SkillLevel = (typeof SKILL_LEVELS)[number]
+
+const isSkillLevel = (value: unknown): value is SkillLevel =>
+  typeof value === 'string' && (SKILL_LEVELS as readonly string[]).includes(value)
+
 // Hämta default CV-data
-export function getDefaultCVData() {
+export function getDefaultCVData(): CVData {
   return {
     firstName: '',
     lastName: '',
@@ -94,8 +112,8 @@ export function getDefaultCVData() {
     workExperience: [],
     education: [],
     skills: [],
-    template: 'modern',
-    colorScheme: 'indigo',
+    template: 'modern' as const,
+    colorScheme: 'indigo' as const,
     updatedAt: new Date().toISOString(),
   }
 }
@@ -105,51 +123,61 @@ function repairCVData(data: unknown): CVData {
   const repaired = { ...getDefaultCVData() }
   
   if (typeof data === 'object' && data !== null) {
+    const src = asRecord(data)
+
     // Kopiera över giltliga fält
-    if (typeof data.firstName === 'string') repaired.firstName = data.firstName.substring(0, 100)
-    if (typeof data.lastName === 'string') repaired.lastName = data.lastName.substring(0, 100)
-    if (typeof data.email === 'string') repaired.email = data.email.substring(0, 255)
-    if (typeof data.phone === 'string') repaired.phone = data.phone.substring(0, 50)
-    if (typeof data.title === 'string') repaired.title = data.title.substring(0, 200)
-    if (typeof data.summary === 'string') repaired.summary = data.summary.substring(0, 5000)
-    if (typeof data.location === 'string') repaired.location = data.location.substring(0, 200)
-    
+    if (typeof src.firstName === 'string') repaired.firstName = src.firstName.substring(0, 100)
+    if (typeof src.lastName === 'string') repaired.lastName = src.lastName.substring(0, 100)
+    if (typeof src.email === 'string') repaired.email = src.email.substring(0, 255)
+    if (typeof src.phone === 'string') repaired.phone = src.phone.substring(0, 50)
+    if (typeof src.title === 'string') repaired.title = src.title.substring(0, 200)
+    if (typeof src.summary === 'string') repaired.summary = src.summary.substring(0, 5000)
+    if (typeof src.location === 'string') repaired.location = src.location.substring(0, 200)
+
     // Hantera arrays
-    if (Array.isArray(data.workExperience)) {
-      repaired.workExperience = data.workExperience.slice(0, 20).map((item: unknown) => ({
-        id: String(item?.id || Date.now()),
-        title: String(item?.title || '').substring(0, 200),
-        company: String(item?.company || '').substring(0, 200),
-        location: String(item?.location || '').substring(0, 200),
-        startDate: String(item?.startDate || ''),
-        endDate: String(item?.endDate || ''),
-        current: Boolean(item?.current),
-        description: String(item?.description || '').substring(0, 2000),
-      }))
+    if (Array.isArray(src.workExperience)) {
+      repaired.workExperience = src.workExperience.slice(0, 20).map((raw: unknown) => {
+        const item = asRecord(raw)
+        return {
+          id: String(item.id || Date.now()),
+          title: String(item.title || '').substring(0, 200),
+          company: String(item.company || '').substring(0, 200),
+          location: String(item.location || '').substring(0, 200),
+          startDate: String(item.startDate || ''),
+          endDate: String(item.endDate || ''),
+          current: Boolean(item.current),
+          description: String(item.description || '').substring(0, 2000),
+        }
+      })
     }
-    
-    if (Array.isArray(data.education)) {
-      repaired.education = data.education.slice(0, 10).map((item: unknown) => ({
-        id: String(item?.id || Date.now()),
-        degree: String(item?.degree || '').substring(0, 200),
-        field: String(item?.field || '').substring(0, 200),
-        school: String(item?.school || '').substring(0, 200),
-        location: String(item?.location || '').substring(0, 200),
-        startDate: String(item?.startDate || ''),
-        endDate: String(item?.endDate || ''),
-        current: Boolean(item?.current),
-        description: String(item?.description || '').substring(0, 1000),
-      }))
+
+    if (Array.isArray(src.education)) {
+      repaired.education = src.education.slice(0, 10).map((raw: unknown) => {
+        const item = asRecord(raw)
+        return {
+          id: String(item.id || Date.now()),
+          degree: String(item.degree || '').substring(0, 200),
+          field: String(item.field || '').substring(0, 200),
+          school: String(item.school || '').substring(0, 200),
+          location: String(item.location || '').substring(0, 200),
+          startDate: String(item.startDate || ''),
+          endDate: String(item.endDate || ''),
+          current: Boolean(item.current),
+          description: String(item.description || '').substring(0, 1000),
+        }
+      })
     }
-    
-    if (Array.isArray(data.skills)) {
-      repaired.skills = data.skills.slice(0, 30).map((item: unknown) => ({
-        id: String(item?.id || Date.now()),
-        name: String(item?.name || '').substring(0, 100),
-        level: ['beginner', 'intermediate', 'advanced', 'expert'].includes(item?.level) 
-          ? item.level 
-          : 'intermediate',
-      }))
+
+    if (Array.isArray(src.skills)) {
+      repaired.skills = src.skills.slice(0, 30).map((raw: unknown) => {
+        const item = asRecord(raw)
+        const level = item.level
+        return {
+          id: String(item.id || Date.now()),
+          name: String(item.name || '').substring(0, 100),
+          level: isSkillLevel(level) ? level : ('intermediate' as const),
+        }
+      })
     }
   }
   

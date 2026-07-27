@@ -4,7 +4,8 @@
  * Explains data collection for self-reflection and personal development
  */
 
-import { ReactNode, useState } from 'react'
+import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Heart, Shield, Settings, Loader2, AlertCircle } from '@/components/ui/icons'

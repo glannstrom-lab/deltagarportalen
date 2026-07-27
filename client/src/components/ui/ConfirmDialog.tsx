@@ -4,7 +4,8 @@
  * Provides better UX with custom styling and animations
  */
 
-import { useState, useCallback, createContext, useContext, ReactNode } from 'react'
+import { useState, useCallback, createContext, useContext } from 'react'
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'

@@ -5,7 +5,8 @@
  * Prevents the entire app from crashing and shows a user-friendly error message
  */
 
-import React, { Component, ErrorInfo, ReactNode } from 'react';
+import React, { Component } from 'react';
+import type { ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Home } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 

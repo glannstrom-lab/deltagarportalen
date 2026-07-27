@@ -8,12 +8,12 @@ import { Inbox, CheckCircle, XCircle, Eye, MessageSquare, ExternalLink, X } from
 import {
   getIncomingSharedJobs,
   updateSharedJobStatus,
-  SharedJob,
   formatRelativeTime,
   getStatusLabel,
   getStatusColor,
   getSharedJobsStats,
 } from '@/services/jobSharingService';
+import type { SharedJob } from '@/services/jobSharingService';
 import { SkeletonList } from '@/components/ui/LoadingState';
 
 interface IncomingSharedJobsProps {

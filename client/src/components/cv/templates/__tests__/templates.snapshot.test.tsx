@@ -21,9 +21,9 @@ import {
   ManhattanTemplate,
   BerlinTemplate,
 } from '../index'
-import type { CVData } from '@/services/supabaseApi'
+import type { TemplateCVData } from '../types'
 
-const sampleCV: CVData = {
+const sampleCV: TemplateCVData = {
   firstName: 'Anna',
   lastName: 'Andersson',
   title: 'Frontend Developer',
@@ -63,18 +63,18 @@ const sampleCV: CVData = {
     },
   ],
   skills: [
-    { id: '1', name: 'React', level: 5 },
-    { id: '2', name: 'TypeScript', level: 5 },
-    { id: '3', name: 'CSS', level: 4 },
-    { id: '4', name: 'Accessibility', level: 4 },
+    { id: '1', name: 'React', level: 5, category: 'technical' },
+    { id: '2', name: 'TypeScript', level: 5, category: 'technical' },
+    { id: '3', name: 'CSS', level: 4, category: 'technical' },
+    { id: '4', name: 'Accessibility', level: 4, category: 'soft' },
   ],
   languages: [
-    { id: '1', name: 'Svenska', level: 'native' },
-    { id: '2', name: 'Engelska', level: 'fluent' },
+    { id: '1', language: 'Svenska', level: 'Modersmål' },
+    { id: '2', language: 'Engelska', level: 'Flytande' },
   ],
   certificates: [],
   links: [
-    { id: '1', label: 'LinkedIn', url: 'https://linkedin.com/in/anna' },
+    { id: '1', type: 'linkedin', label: 'LinkedIn', url: 'https://linkedin.com/in/anna' },
   ],
   references: [],
   template: 'minimal',

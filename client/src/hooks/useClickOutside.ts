@@ -1,4 +1,5 @@
-import { useEffect, useRef, useLayoutEffect, RefObject } from 'react'
+import { useEffect, useRef, useLayoutEffect } from 'react'
+import type { RefObject } from 'react'
 
 /**
  * Hook that handles clicking outside of a specified element

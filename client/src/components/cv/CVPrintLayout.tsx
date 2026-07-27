@@ -41,7 +41,9 @@ import {
   MinimalTemplate, ExecutiveTemplate, ModernTemplate, CreativeTemplate,
   NordicTemplate, CenteredTemplate, BudapestTemplate, RotterdamTemplate,
   ChicagoTemplate, AtelierTemplate, ManhattanTemplate, BerlinTemplate,
+  sanitizeForTemplate,
 } from './templates'
+import type { TemplateCVData } from './templates'
 
 interface PrintLayoutProps {
   data: CVData
@@ -92,29 +94,7 @@ function buildBgImage(cfg: NonNullable<SidebarConfig>): string {
   return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} ${w}, #FFFFFF ${w}, #FFFFFF 100%)`
 }
 
-function sanitize(data: CVData): CVData {
-  return {
-    ...data,
-    workExperience: (data.workExperience || []).filter(
-      (e) => (e?.title?.trim() || e?.company?.trim()),
-    ),
-    education: (data.education || []).filter(
-      (e) => (e?.degree?.trim() || e?.school?.trim()),
-    ),
-    skills: (data.skills || []).filter((s) => {
-      const name = typeof s === 'string' ? s : s?.name
-      return !!name?.trim()
-    }),
-    languages: (data.languages || []).filter((l) => {
-      const name = (l as { language?: string; name?: string })?.language || (l as { name?: string })?.name
-      return !!name?.trim()
-    }),
-    certificates: (data.certificates || []).filter((c) => c?.name?.trim()),
-    links: (data.links || []).filter((l) => l?.url?.trim()),
-  }
-}
-
-function renderTemplate(data: CVData, fullName: string) {
+function renderTemplate(data: TemplateCVData, fullName: string) {
   switch (data.template) {
     case 'minimal': return <MinimalTemplate data={data} fullName={fullName} />
     case 'executive': return <ExecutiveTemplate data={data} fullName={fullName} />
@@ -133,7 +113,7 @@ function renderTemplate(data: CVData, fullName: string) {
 }
 
 export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
-  const data = sanitize(rawData)
+  const data = sanitizeForTemplate(rawData)
   const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'CV'
   const cfg = SIDEBAR_CONFIG[data.template || 'sidebar']
   const hasSidebar = cfg !== null && cfg !== undefined

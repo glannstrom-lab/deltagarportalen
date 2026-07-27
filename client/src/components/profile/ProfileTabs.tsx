@@ -2,7 +2,8 @@
  * ProfileTabs - Clean minimal tab navigation
  */
 
-import { useCallback, KeyboardEvent, useRef } from 'react'
+import { useCallback, useRef } from 'react'
+import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   User, Briefcase, Star, Heart, Settings

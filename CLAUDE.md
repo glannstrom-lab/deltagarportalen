@@ -177,14 +177,14 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 cd client
 npm run lint:ci            # eslint: 0 errors, max 129 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (687)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (471)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run test:run           # 865 tester
 npm run build
 ```
 
-De tre **frysta taken** (129 warnings, 687 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (129 warnings, 471 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

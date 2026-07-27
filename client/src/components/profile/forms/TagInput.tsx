@@ -2,7 +2,8 @@
  * TagInput - Accessible tag input with autocomplete and improved UX
  */
 
-import { useState, useRef, useId, useCallback, useEffect, KeyboardEvent } from 'react'
+import { useState, useRef, useId, useCallback, useEffect } from 'react'
+import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, Plus } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'

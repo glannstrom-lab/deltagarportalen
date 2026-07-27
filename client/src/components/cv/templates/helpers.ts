@@ -2,6 +2,37 @@
  * CV Template Helpers - Shared utility functions for CV templates
  */
 
+import type { CVData } from '@/services/supabaseApi'
+import type { TemplateCVData } from './types'
+
+/**
+ * Filtrera bort halvtomma entries så preview matchar PDF — annars syns
+ * "• -" eller bara datum för en oifylld erfarenhet.
+ *
+ * Låg här i stället för i tre identiska kopior (CVPreview, CVPrintLayout,
+ * PagedCVPrint). Returtypen är `TemplateCVData`: efter det här anropet är de
+ * sex listorna garanterat arrayer, vilket är precis vad mallarna förutsätter.
+ */
+export const sanitizeForTemplate = (data: CVData): TemplateCVData => ({
+  ...data,
+  workExperience: (data.workExperience || []).filter(
+    (e) => (e?.title?.trim() || e?.company?.trim()),
+  ),
+  education: (data.education || []).filter(
+    (e) => (e?.degree?.trim() || e?.school?.trim()),
+  ),
+  skills: (data.skills || []).filter((s) => {
+    const name = typeof s === 'string' ? s : s?.name
+    return !!name?.trim()
+  }),
+  languages: (data.languages || []).filter((l) => {
+    const name = (l as { language?: string; name?: string })?.language || (l as { name?: string })?.name
+    return !!name?.trim()
+  }),
+  certificates: (data.certificates || []).filter((c) => c?.name?.trim()),
+  links: (data.links || []).filter((l) => l?.url?.trim()),
+})
+
 export const getLanguageLevelDisplay = (level: string): string => {
   const levelMap: Record<string, string> = {
     'basic': 'Grundläggande',

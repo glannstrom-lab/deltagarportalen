@@ -27,8 +27,12 @@
 const { execSync } = require('node:child_process')
 const path = require('node:path')
 
-/** Frozen 2026-07-27 (ROADMAP I2). Sänk aldrig utan att ha kört skriptet. */
-const CEILING = 687
+/**
+ * Frozen 2026-07-27 (ROADMAP I2), sänkt 687 → 471 samma dag (I5, tre
+ * rotorsaker: CV-mallarnas TemplateCVData, validation.ts asRecord,
+ * type-only imports). Sänk aldrig utan att ha kört skriptet.
+ */
+const CEILING = 471
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

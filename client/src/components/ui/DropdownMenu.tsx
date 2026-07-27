@@ -2,7 +2,8 @@
  * Simple Dropdown Menu Component
  * A lightweight dropdown menu without external dependencies
  */
-import React, { useState, useRef, useEffect, createContext, useContext, ReactNode } from 'react'
+import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
+import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 // Context for dropdown state

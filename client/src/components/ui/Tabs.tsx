@@ -4,7 +4,8 @@
  * Follows DESIGN.md: brand colors, rounded-lg, no shadows
  */
 
-import { useCallback, useRef, KeyboardEvent } from 'react'
+import { useCallback, useRef } from 'react'
+import type { KeyboardEvent } from 'react'
 import { cn } from '@/lib/utils'
 
 export interface Tab {

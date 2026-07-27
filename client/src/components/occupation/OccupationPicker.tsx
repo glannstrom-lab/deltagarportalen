@@ -10,7 +10,8 @@
  *   - CV / CoverLetter / SpontaneousApplication (framöver)
  */
 
-import { useState, useRef, useEffect, useId, useCallback, KeyboardEvent } from 'react'
+import { useState, useRef, useEffect, useId, useCallback } from 'react'
+import type { KeyboardEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Search, X, Loader2, AlertTriangle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'

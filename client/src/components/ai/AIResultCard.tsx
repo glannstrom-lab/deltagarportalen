@@ -4,7 +4,8 @@
  * Features gradient header, loading states, collapsible sections, source citations
  */
 
-import { useState, ReactNode } from 'react'
+import { useState } from 'react'
+import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {

@@ -25,7 +25,9 @@ import {
   MinimalTemplate, ExecutiveTemplate, ModernTemplate, CreativeTemplate,
   NordicTemplate, CenteredTemplate, BudapestTemplate, RotterdamTemplate,
   ChicagoTemplate, AtelierTemplate, ManhattanTemplate, BerlinTemplate,
+  sanitizeForTemplate,
 } from './templates'
+import type { TemplateCVData } from './templates'
 
 interface PagedCVPrintProps {
   data: CVData
@@ -37,29 +39,7 @@ interface PagedCVPrintProps {
 // per sida — lite mindre än 297mm för att lämna utrymme för template-padding.
 const PAGE_CONTENT_PX = 1080
 
-function sanitize(data: CVData): CVData {
-  return {
-    ...data,
-    workExperience: (data.workExperience || []).filter(
-      (e) => (e?.title?.trim() || e?.company?.trim()),
-    ),
-    education: (data.education || []).filter(
-      (e) => (e?.degree?.trim() || e?.school?.trim()),
-    ),
-    skills: (data.skills || []).filter((s) => {
-      const name = typeof s === 'string' ? s : s?.name
-      return !!name?.trim()
-    }),
-    languages: (data.languages || []).filter((l) => {
-      const name = (l as { language?: string; name?: string })?.language || (l as { name?: string })?.name
-      return !!name?.trim()
-    }),
-    certificates: (data.certificates || []).filter((c) => c?.name?.trim()),
-    links: (data.links || []).filter((l) => l?.url?.trim()),
-  }
-}
-
-function renderTemplate(data: CVData, fullName: string) {
+function renderTemplate(data: TemplateCVData, fullName: string) {
   switch (data.template) {
     case 'minimal': return <MinimalTemplate data={data} fullName={fullName} />
     case 'executive': return <ExecutiveTemplate data={data} fullName={fullName} />
@@ -80,7 +60,7 @@ function renderTemplate(data: CVData, fullName: string) {
 // Producerar tom version av aside-content. Används på sida 2+ så aside
 // visar bara design (bg + initialer + ev. accent-element) utan att
 // repetera kontakt/kompetenser/språk.
-function withEmptyAside(data: CVData): CVData {
+function withEmptyAside(data: TemplateCVData): TemplateCVData {
   return {
     ...data,
     summary: '',
@@ -106,8 +86,8 @@ function withEmptyAside(data: CVData): CVData {
  *
  * Detta ger optimal pagination utan hardcoded item-thresholds.
  */
-function usePaginatedCV(data: CVData): CVData[] {
-  const [pages, setPages] = useState<CVData[]>([data])
+function usePaginatedCV(data: TemplateCVData): TemplateCVData[] {
+  const [pages, setPages] = useState<TemplateCVData[]>([data])
 
   useEffect(() => {
     const measure = () => {
@@ -151,7 +131,7 @@ function usePaginatedCV(data: CVData): CVData[] {
       // Eftersom templates renderar Erfarenhet sektion FÖRE Utbildning,
       // de första `workExperience.length` cv-entry är jobs, resten är edus.
 
-      const jobCount = data.workExperience?.length || 0
+      const jobCount = data.workExperience.length
       const allItemEntries = entries.filter(el => el.classList.contains('cv-entry'))
 
       // Splitta items i pages baserat på offset
@@ -176,7 +156,7 @@ function usePaginatedCV(data: CVData): CVData[] {
       })
 
       // För varje page-break, hitta sista item som passar på sidan
-      const pageData: CVData[] = []
+      const pageData: TemplateCVData[] = []
       let cursor = 0
       for (let p = 0; p < pageBreaks.length; p++) {
         const pageEnd = p < pageBreaks.length - 1 ? pageBreaks[p + 1] : Infinity
@@ -200,8 +180,8 @@ function usePaginatedCV(data: CVData): CVData[] {
         const base = isFirstPage ? data : withEmptyAside(data)
         pageData.push({
           ...base,
-          workExperience: pageJobs.map(i => data.workExperience![i]).filter(Boolean),
-          education: pageEdus.map(i => data.education![i]).filter(Boolean),
+          workExperience: pageJobs.map(i => data.workExperience[i]).filter(Boolean),
+          education: pageEdus.map(i => data.education[i]).filter(Boolean),
         })
       }
 
@@ -225,7 +205,7 @@ function usePaginatedCV(data: CVData): CVData[] {
 }
 
 export function PagedCVPrint({ data: rawData }: PagedCVPrintProps) {
-  const data = sanitize(rawData)
+  const data = sanitizeForTemplate(rawData)
   const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'CV'
   const pages = usePaginatedCV(data)
 

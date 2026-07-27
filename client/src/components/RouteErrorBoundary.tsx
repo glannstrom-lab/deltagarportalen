@@ -6,7 +6,8 @@
  * Handles chunk loading failures with automatic retry and user-friendly messaging.
  */
 
-import React, { Component, ErrorInfo, ReactNode, Suspense } from 'react'
+import { Component, Suspense } from 'react'
+import type { ErrorInfo, ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AlertTriangle, RefreshCw, Home, WifiOff, Loader2 } from '@/components/ui/icons'
 
