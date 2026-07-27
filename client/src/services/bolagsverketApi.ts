@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '../lib/supabase'
+import { apiLogger } from '../lib/logger'
 
 // Response types from Bolagsverket API
 export interface BolagsverketCompany {
@@ -87,11 +88,11 @@ export async function getCompanyInfo(orgNumber: string): Promise<BolagsverketCom
   // Check cache first
   const cached = companyCache.get(normalized)
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    console.log('[bolagsverket] Cache hit for', normalized)
+    apiLogger.debug('[bolagsverket] Cache hit for', normalized)
     return cached.data
   }
 
-  console.log('[bolagsverket] Fetching company info for', normalized)
+  apiLogger.debug('[bolagsverket] Fetching company info for', normalized)
 
   try {
     // Get auth session for the request
@@ -148,7 +149,7 @@ export async function getCompanyDocuments(orgNumber: string): Promise<Bolagsverk
     throw new Error('Ogiltigt organisationsnummer. Ange 10 siffror.')
   }
 
-  console.log('[bolagsverket] Fetching documents for', normalized)
+  apiLogger.debug('[bolagsverket] Fetching documents for', normalized)
 
   try {
     const { data: { session } } = await supabase.auth.getSession()

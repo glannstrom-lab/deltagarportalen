@@ -11,6 +11,11 @@
  * for analytics/error tracking. See CookieConsent component.
  */
 
+/* eslint-disable no-console -- Tre diagnostikrader om huruvida Sentry
+   initierades eller inte. De kan inte gå via logger.ts: loggern rapporterar
+   warn/error vidare TILL Sentry, så att logga Sentrys egen uppstart genom den
+   ger en cirkel. Rå console är rätt här. (I3, 2026-07-27) */
+
 import * as Sentry from '@sentry/react';
 
 // Cookie consent check

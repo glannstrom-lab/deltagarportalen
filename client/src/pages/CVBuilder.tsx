@@ -344,9 +344,16 @@ export default function CVBuilder() {
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
     // Visa onboarding om användaren inte sett den tidigare
-    if (shouldShowOnboarding()) {
-      setTimeout(() => setShowOnboarding(true), 500)
-    }
+    if (!shouldShowOnboarding()) return
+
+    // Timern MÅSTE rensas vid unmount (2026-07-27): utan cleanup levde den
+    // vidare efter att komponenten lämnats och anropade setState på en
+    // avmonterad komponent. I testsviten gav det en ohanterad
+    // "ReferenceError: window is not defined" efter teardown, vilket ibland —
+    // men inte alltid — fällde hela körningen. En grind som failar slumpvis
+    // är värre än ingen grind, och i webbläsaren var det en läckt timer.
+    const timer = setTimeout(() => setShowOnboarding(true), 500)
+    return () => clearTimeout(timer)
   }, [])
   
   // Rensa gammal draft vid mount för att undvika konflikter. Säkerställ

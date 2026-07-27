@@ -5,6 +5,7 @@
 
 import { useEffect, useRef } from 'react'
 import { validatedStorage } from '@/lib/validatedStorage'
+import { storageLogger } from '@/lib/logger'
 
 /**
  * Validates all localStorage data on first mount
@@ -23,7 +24,7 @@ export function useStorageValidation() {
 
       if (process.env.NODE_ENV === 'development') {
         if (valid.length > 0) {
-          console.log('[Storage] Valid entries:', valid)
+          storageLogger.debug('Valid entries:', valid)
         }
         if (invalid.length > 0) {
           console.warn('[Storage] Removed invalid entries:', invalid)

@@ -60,9 +60,16 @@ vi.mock('@/lib/supabase', () => ({
       getSession: vi.fn(() => Promise.resolve({ data: { session: null }, error: null })),
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
     },
+    // `order` och `limit` tillagda 2026-07-27: MyCVs → cvApi.getVersions kedjar
+    // .select().eq().order(), och en mock utan `order` kastade
+    // "order is not a function" EFTER att testet redan gått klart. Det blev en
+    // ohanterad rejection som ibland — men inte alltid — gav sviten exit 1.
+    // En grind som failar slumpvis är värre än ingen grind.
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
+      order: vi.fn(() => Promise.resolve({ data: [], error: null })),
+      limit: vi.fn(() => Promise.resolve({ data: [], error: null })),
       single: vi.fn(),
       maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null })),
       insert: vi.fn().mockReturnThis(),

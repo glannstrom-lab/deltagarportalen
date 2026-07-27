@@ -741,5 +741,3 @@ describe('Edge Cases', () => {
     expect(result.score).toBeGreaterThan(70)
   })
 })
-
-console.log('All tests defined. Run with: npm test')

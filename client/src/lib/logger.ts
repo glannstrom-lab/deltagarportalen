@@ -1,3 +1,7 @@
+/* eslint-disable no-console -- Detta ÄR abstraktionen över console.
+   Regeln finns för att tvinga övrig kod hit; här är rå console själva
+   implementationen. Undantaget är avsiktligt och ska inte tas bort. */
+
 /**
  * Logger utility for the application
  * - Development: Logs to console with timestamps and prefixes

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { cvApi } from '@/services/cvApi'
+import { logger } from '@/lib/logger'
 
 interface InProgressActivity {
   id: string
@@ -127,7 +128,7 @@ export function ContinueWhereYouLeft() {
         }
       } catch (cvFetchError) {
         // Ej inloggad eller nätverksfel — tyst skip
-        console.debug('Could not fetch CV data:', cvFetchError)
+        logger.debug('Could not fetch CV data', { error: cvFetchError })
       }
 
       // Intresseguide-progress (from Supabase)
@@ -175,7 +176,7 @@ export function ContinueWhereYouLeft() {
           })
         } catch (diaryParseError) {
           // Ignore diary draft parse errors
-          console.debug('Could not parse diary draft:', diaryParseError)
+          logger.debug('Could not parse diary draft', { error: diaryParseError })
         }
       }
 

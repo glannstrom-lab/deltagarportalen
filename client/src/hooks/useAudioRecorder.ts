@@ -4,8 +4,14 @@
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react'
+import { createLogger } from '@/lib/logger'
 // supabase-importen borttagen 2026-07-27 (H5): hooken rör inte längre
 // databasen — inspelningen laddas ner lokalt, inget lagras i molnet.
+
+// I3 (2026-07-27): sex `console.log` ersatta. Loggern tystar debug/info i
+// produktion och skickar warn/error vidare till Sentry — rå console gjorde
+// varken det ena eller det andra.
+const audioLogger = createLogger({ prefix: 'AudioRecorder' })
 
 interface RecordingSegment {
   blob: Blob
@@ -71,7 +77,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
   const startRecording = useCallback(async (): Promise<boolean> => {
     if (!audioSupported) {
-      console.error('[AudioRecorder] Audio recording not supported')
+      audioLogger.error('Audio recording not supported')
       return false
     }
 
@@ -109,10 +115,10 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
       setRecordingTime(0)
       segmentStartTimeRef.current = Date.now()
 
-      console.log('[AudioRecorder] Recording started with', mimeType)
+      audioLogger.debug('Recording started', { mimeType })
       return true
     } catch (error) {
-      console.error('[AudioRecorder] Failed to start recording:', error)
+      audioLogger.error('Failed to start recording', { error })
       return false
     }
   }, [audioSupported])
@@ -145,7 +151,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
         setIsRecording(false)
         setIsPaused(false)
-        console.log('[AudioRecorder] Recording stopped, blob size:', blob.size)
+        audioLogger.debug('Recording stopped', { blobSize: blob.size })
         resolve(blob)
       }
 
@@ -157,7 +163,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
       mediaRecorderRef.current.pause()
       setIsPaused(true)
-      console.log('[AudioRecorder] Recording paused')
+      audioLogger.debug('Recording paused')
     }
   }, [])
 
@@ -165,7 +171,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'paused') {
       mediaRecorderRef.current.resume()
       setIsPaused(false)
-      console.log('[AudioRecorder] Recording resumed')
+      audioLogger.debug('Recording resumed')
     }
   }, [])
 
@@ -189,7 +195,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   const downloadRecording = useCallback((filename?: string) => {
     const blob = getRecordingBlob()
     if (!blob) {
-      console.warn('[AudioRecorder] No recording to download')
+      audioLogger.warn('No recording to download')
       return
     }
 
@@ -202,7 +208,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
 
-    console.log('[AudioRecorder] Recording downloaded')
+    audioLogger.debug('Recording downloaded')
   }, [getRecordingBlob])
 
   // saveRecording RADERAD 2026-07-27 (H5).
@@ -230,7 +236,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     setSegments([])
     setRecordingTime(0)
     currentQuestionRef.current = ''
-    console.log('[AudioRecorder] Recording cleared')
+    audioLogger.debug('Recording cleared')
   }, [])
 
   // Cleanup on unmount
@@ -259,7 +265,6 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     pauseRecording,
     resumeRecording,
     downloadRecording,
-    saveRecording,
     clearRecording,
     getRecordingBlob
   }

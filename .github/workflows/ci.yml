@@ -32,13 +32,29 @@ jobs:
         working-directory: client
         run: npm ci
 
-      - name: Run ESLint
+      # I3 (2026-07-27): spärr uppåt på warnings, inte bara på errors.
+      # Taket är 129 = läget efter att no-console-skulden betalats. Resten är
+      # react-hooks-regler (exhaustive-deps, set-state-in-effect m.fl.) som inte
+      # går att fixa mekaniskt — att lägga till en dependency eller flytta ett
+      # setState ändrar beteende. Grinden stoppar därför nytillskott medan den
+      # befintliga skulden betas av per rörd fil. Sänk talet när du sänker skulden.
+      - name: Run ESLint (0 errors, max 129 warnings)
         working-directory: client
-        run: npm run lint
+        run: npm run lint:ci
 
       - name: Type check (crash-class)
         working-directory: client
         run: npm run typecheck:critical
+
+      # I2 (2026-07-27): spärr uppåt på hela strict-skulden, inte bara
+      # krasch-klassen. Taket är 687 = laget vid infrandet. Nya typfel gor
+      # bygget rott; skulden kan bara minska. Sank talet i scriptet nar du
+      # betalar av. Fangade omedelbart 7 fel som testerna och
+      # typecheck:critical bada slapp igenom — bl.a. en hook som returnerade
+      # en raderad funktion (ReferenceError i korning).
+      - name: Type check (strict-tak 687)
+        working-directory: client
+        run: npm run typecheck:ceiling
 
       - name: Design debt — gradient regression guard
         working-directory: client

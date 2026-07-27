@@ -147,6 +147,23 @@ Det finns två parallella AI-vägar — välj rätt:
 
 När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissar Claude.
 
+### CI-grindarna (sju st, alla körbara lokalt)
+
+```bash
+cd client
+npm run lint:ci            # eslint: 0 errors, max 129 warnings (fryst tak)
+npm run typecheck:critical # krasch-klassade typfel
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (687)
+npm run lint:design        # gradient-baseline (52)
+npm run lint:schema        # schemadrift kod vs prod-schema
+npm run test:run           # 865 tester
+npm run build
+```
+
+De tre **frysta taken** (129 warnings, 687 typfel, 52 gradienter) finns för att skulden ska kunna
+minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
+takskript skriver ut det nya talet när skulden minskat.
+
 ### Verifiera alltid själv
 Be inte Mikael köra build/test/Playwright. Kör det själv och rapportera resultat. Om du inte kan testa något (t.ex. UI-flöde) — säg det explicit, claima inte success.
 

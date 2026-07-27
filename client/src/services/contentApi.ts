@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { apiLogger } from '@/lib/logger'
 
 /** Returns true if the string is a canonical UUID (8-4-4-4-12 hex). */
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -204,7 +205,7 @@ export const contentArticleApi = {
       }
 
       if (!data || data.length === 0) {
-        console.debug('No articles in database, using mock data')
+        apiLogger.debug('No articles in database, using mock data')
         return mockArticlesData
       }
 
@@ -388,7 +389,7 @@ export const contentExerciseApi = {
       ])
 
       if (exercisesRes.error || !exercisesRes.data || exercisesRes.data.length === 0) {
-        console.debug('No exercises in database, using mock data')
+        apiLogger.debug('No exercises in database, using mock data')
         return mockExercises
       }
 
