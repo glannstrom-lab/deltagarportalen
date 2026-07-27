@@ -79,6 +79,7 @@ const RATE_LIMITS = {
   'personligt-brev': { limit: 10, windowMinutes: 15 },
   'cv-writing': { limit: 20, windowMinutes: 15 },
   'intervju-simulator': { limit: 20, windowMinutes: 15 },
+  'intervju-sammanfattning': { limit: 10, windowMinutes: 15 },
   'karriarplan': { limit: 5, windowMinutes: 15 },
   'kompetensgap': { limit: 10, windowMinutes: 15 },
   'adaptation-recommendations': { limit: 10, windowMinutes: 15 },
@@ -90,6 +91,7 @@ const RATE_LIMITS = {
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
   'sta-document-draft': { limit: 10, windowMinutes: 15 },
   'sta-week-summary': { limit: 20, windowMinutes: 15 },
+  'vecko-reflektion': { limit: 5, windowMinutes: 60 },
   'sta-doa-sammanfattning': { limit: 15, windowMinutes: 15 },
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
@@ -323,10 +325,14 @@ VIKTIGT:
     };
   },
   'karriarplan': (data) => ({
+    // G10 (2026-07-27): `riasec` skickas med av PlanTab när intresseguiden är
+    // gjord. Det är ett PREFERENSsignal — vad personen dras till — och får
+    // aldrig tolkas som kompetens eller övertrumfa personens eget mål.
     system: `Du är en varm och konkret karriärcoach. Skapa en personlig karriärplan utifrån personens faktiska situation och mål. Svara ENDAST med JSON i detta format:
 {"steps":[{"order":1,"title":"Kort rubrik","description":"Vad steget innebär och varför","timeframe":"Månad 1-2","actions":["Konkret handling"]}],"analysis":"2-3 meningar om vägen till målet","keySkills":["Kompetens att utveckla"]}
-Regler: 4-5 steg i kronologisk ordning, anpassade till personens NUVARANDE situation (inte generiska mallar). 2-4 actions per steg, konkreta och genomförbara. timeframe relativt (t.ex. "Månad 1-2") och anpassat till angiven tidsram. Uppmuntrande men realistisk ton, aldrig pressande. Allt på svenska.`,
-    user: `Skapa en karriärplan:\n\nNuvarande situation: ${data?.currentSituation || data?.currentOccupation || 'Ej angivet'}\nMål: ${data?.goal || data?.targetOccupation || 'Ej angivet'}\nÖnskad tidsram: ${data?.timeframe || 'Flexibel'}\n\nSvara ENDAST med JSON.`,
+Regler: 4-5 steg i kronologisk ordning, anpassade till personens NUVARANDE situation (inte generiska mallar). 2-4 actions per steg, konkreta och genomförbara. timeframe relativt (t.ex. "Månad 1-2") och anpassat till angiven tidsram. Uppmuntrande men realistisk ton, aldrig pressande. Allt på svenska.
+Om en intresseprofil (RIASEC) anges: använd den för att välja HUR stegen utformas — t.ex. praktiska steg för en realistisk profil, undersökande för en analytisk. Den beskriver vad personen dras till, INTE vad personen kan. Ändra aldrig personens mål utifrån profilen och nämn aldrig bokstavskoden i texten.`,
+    user: `Skapa en karriärplan:\n\nNuvarande situation: ${data?.currentSituation || data?.currentOccupation || 'Ej angivet'}\nMål: ${data?.goal || data?.targetOccupation || 'Ej angivet'}\nÖnskad tidsram: ${data?.timeframe || 'Flexibel'}${data?.riasec ? `\nIntresseprofil: ${data.riasec}` : ''}\n\nSvara ENDAST med JSON.`,
     maxTokens: 2500,
     responseKey: 'plan',
     parseJson: true
@@ -334,8 +340,9 @@ Regler: 4-5 steg i kronologisk ordning, anpassade till personens NUVARANDE situa
   'kompetensgap': (data) => ({
     system: `Du är en varm och konkret karriärcoach. Analysera gapet mellan personens CV och drömjobbet. Svara ENDAST med JSON i detta format:
 {"matchPercentage":65,"skills":[{"name":"Kompetens","current":3,"target":5,"gap":"medium"}],"courses":[{"title":"Kursnamn","provider":"Arrangör","duration":"4 veckor","type":"online","cost":"Gratis"}],"actionPlan":[{"order":1,"title":"Kort steg","description":"Konkret beskrivning"}]}
-Regler: matchPercentage 0-100 utifrån hur väl CV:t täcker drömjobbets krav. skills = 3-6 viktigaste kompetenserna för drömjobbet; current och target är heltal 1-5 (current utifrån CV:t, target vad drömjobbet kräver); gap = "none" om current>=target, "small" vid 1 stegs skillnad, "medium" vid 2, "large" vid 3+. courses = max 3 verkliga svenska/kända kursförslag (hitta ALDRIG på leverantörer som inte finns; osäker → utelämna kursen). actionPlan = 3-4 konkreta steg i prioritetsordning. Basera allt på det faktiska CV:t — generiska exempel är förbjudna. Allt på svenska.`,
-    user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nSvara ENDAST med JSON.`,
+Regler: matchPercentage 0-100 utifrån hur väl CV:t täcker drömjobbets krav. skills = 3-6 viktigaste kompetenserna för drömjobbet; current och target är heltal 1-5 (current utifrån CV:t, target vad drömjobbet kräver); gap = "none" om current>=target, "small" vid 1 stegs skillnad, "medium" vid 2, "large" vid 3+. courses = max 3 verkliga svenska/kända kursförslag (hitta ALDRIG på leverantörer som inte finns; osäker → utelämna kursen). actionPlan = 3-4 konkreta steg i prioritetsordning. Basera allt på det faktiska CV:t — generiska exempel är förbjudna. Allt på svenska.
+Om en intresseprofil (RIASEC) anges: låt den styra VILKA kurser och steg du föreslår (format och inriktning som passar personen), aldrig matchPercentage eller current-nivåerna — de ska enbart bygga på CV:t. Profilen beskriver vad personen dras till, inte vad personen kan. Nämn aldrig bokstavskoden i texten.`,
+    user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}${data?.riasec ? `\nIntresseprofil: ${data.riasec}` : ''}\n\nSvara ENDAST med JSON.`,
     maxTokens: 1500,
     responseKey: 'analys',
     parseJson: true
@@ -404,6 +411,24 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
         responseKey: 'resultat'
       }
     }
+  },
+  // G11 (2026-07-27): helhetsbedömning efter en avslutad simulatorsession.
+  // Tidigare fanns bara betyg per svar — ingen sammanvägd bild. Svarsformen
+  // matchar IntervjuSimulatorResultSchema i client/src/services/aiSchemas.ts.
+  'intervju-sammanfattning': (data) => {
+    const historik = Array.isArray(data?.historik) ? data.historik.slice(0, 20) : [];
+    const qaText = historik
+      .map((h, i) => `${i + 1}. FRÅGA: ${h?.fraga || ''}\n   SVAR: ${h?.svar || '(inget svar)'}${typeof h?.rating === 'number' && h.rating > 0 ? `\n   Deltagarens eget betyg: ${h.rating}/5` : ''}`)
+      .join('\n\n');
+    return {
+      system: `Du är en erfaren och varm intervjucoach som sammanfattar en övningsintervju för en arbetssökande. Målgruppen är arbetssökande som kan ha varit utan jobb länge — tonen ska vara uppmuntrande och konkret, aldrig nedslående eller dömande. Svara ENDAST med JSON i detta format:
+{"overall_score":7,"strengths":["Konkret styrka du SER i svaren"],"improvements":["Konkret sak att öva på, formulerad som ett vänligt förslag"],"summary":"2-3 meningar som sammanfattar övningen"}
+Regler: overall_score är ett heltal 0-10 för hela sessionen. strengths = 2-4 punkter, improvements = 2-3 punkter. Basera ALLT på de faktiska svaren nedan — hitta aldrig på erfarenheter, exempel eller egenskaper som inte framgår. Om ett svar är kort eller tomt: säg det vänligt i improvements i stället för att gissa vad personen menade. Skriv improvements som förslag ("Testa att ...") och aldrig som kritik. Allt på svenska.`,
+      user: `Övningsintervju för rollen ${data?.roll || 'ej angiven'}${data?.foretag ? ' på ' + data.foretag : ''}.\nAntal besvarade frågor: ${historik.length}\n\n${qaText || 'Inga svar registrerade.'}\n\nSammanfatta hela övningen. Svara ENDAST med JSON.`,
+      maxTokens: 900,
+      responseKey: 'sammanfattning',
+      parseJson: true
+    };
   },
   'profile-summary': (data) => {
     // Build experience text
@@ -786,6 +811,52 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
         `Returnera JSON: { "summary": "..." }`,
       maxTokens: 500,
       responseKey: 'summary',
+    };
+  },
+
+  // ===========================================================================
+  // Veckoreflektion för deltagare UTANFÖR Steg till arbete (G12, 2026-07-27)
+  // ===========================================================================
+  // Samma mönster som `sta-week-summary`, men vänd till DELTAGAREN i stället
+  // för konsulenten. Två skillnader som spelar roll:
+  //
+  //  - Tilltal: andra person ("du"), inte tredje. Det här är inte en rapport
+  //    om någon, det är en spegel till personen själv.
+  //  - Underlaget är känsligt (dagbok + mående, GDPR art. 9). Prompten får
+  //    därför inte tolka, diagnostisera eller moralisera — och en tunn vecka
+  //    ska aldrig beskrivas som ett misslyckande. Målgruppen kan ha veckor
+  //    där ingenting hände, och det är inte något att kommentera.
+  //
+  // Klienten skickar bara data från de senaste 7 dagarna och Zod-validerar
+  // svaret mot `VeckoReflektionSchema`.
+  'vecko-reflektion': (data) => {
+    const diary = Array.isArray(data?.diary) ? data.diary.slice(0, 14) : [];
+    const moods = Array.isArray(data?.moods) ? data.moods.slice(0, 7) : [];
+
+    const diaryText = diary
+      .map((d) => `- [${d?.date || 'okänt datum'}]${d?.tags?.length ? ` (${d.tags.join(', ')})` : ''} ${String(d?.content || '').slice(0, 400)}`)
+      .join('\n');
+    const moodText = moods
+      .map((m) => `- ${m?.date || '?'}: mående ${m?.mood ?? '–'}/5, energi ${m?.energy ?? '–'}/5${m?.note ? ` — ${String(m.note).slice(0, 120)}` : ''}`)
+      .join('\n');
+
+    return {
+      system: `Du skriver en kort, varm veckoreflektion till en arbetssökande utifrån personens egna dagboksanteckningar och måendeloggar. Svara ENDAST med JSON i detta format:
+{"summary":"2-4 meningar om veckan, i andra person","noticed":["Något konkret du ser i underlaget"],"gentleSuggestion":"En mjuk idé till nästa vecka"}
+
+ABSOLUTA REGLER:
+- Skriv till personen som "du". Aldrig tredje person, aldrig "deltagaren".
+- Använd ENDAST det som står i underlaget. Hitta aldrig på händelser, känslor eller framsteg.
+- Tolka eller diagnostisera aldrig mående. Du är inte behandlare. Skriv "du skrev att du kände dig trött", aldrig "du verkar deprimerad".
+- Moralisera aldrig och skuldbelägg aldrig. Inga "du borde", inget om att personen gjort för lite.
+- En tunn vecka är helt okej. Om underlaget är litet: säg det lugnt och utan att antyda misslyckande ("Det här är allt jag har från veckan — det räcker gott").
+- noticed: 1-3 punkter, konkreta och hämtade ur texten.
+- gentleSuggestion: EN mening, formulerad som en möjlighet ("Om du vill kan du ..."), aldrig som en uppgift. Utelämna fältet helt om underlaget inte ger stöd för något förslag.
+- Allt på svenska.`,
+      user: `DAGBOKSANTECKNINGAR (senaste 7 dagarna):\n${diaryText || 'Inga anteckningar.'}\n\nMÅENDELOGGAR (senaste 7 dagarna):\n${moodText || 'Inga loggar.'}\n\nSkriv veckoreflektionen. Svara ENDAST med JSON.`,
+      maxTokens: 700,
+      responseKey: 'reflektion',
+      parseJson: true
     };
   },
 

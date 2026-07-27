@@ -1,4 +1,26 @@
 {
+  "weeklyReflection": {
+    "heading": "Your week",
+    "prompt": "Would you like a short look back at your week, based on what you've written yourself?",
+    "cta": "Show my week",
+    "loading": "Reading your week …",
+    "empty": "A look back at your week will appear here once you've written in your diary or logged how you feel.",
+    "failed": "We couldn't create a reflection right now. Your notes are untouched."
+  },
+  "celebration": {
+    "applicationSent": {
+      "title": "Your application is sent",
+      "message": "That's done. You don't need to do anything more with it now."
+    },
+    "exerciseDone": {
+      "title": "Exercise complete",
+      "message": "Good that you took the time."
+    },
+    "cvComplete": {
+      "title": "Your CV is complete",
+      "message": "It's ready to send whenever you find something that fits."
+    }
+  },
   "common": {
     "export": "Export",
     "save": "Save",
@@ -1986,6 +2008,7 @@
     },
     "alertsTab": {
       "title": "Your job alerts",
+      "saveFailed": "The setting couldn't be saved. Please try again in a moment.",
       "newCount": "{{count}} new",
       "emptySubtitle": "Create alerts to get notified about new jobs",
       "activeCount": "{{active}} active of {{total}} alerts",
@@ -3267,6 +3290,13 @@
         "inPerson": "In-person meeting"
       }
     },
+    "sharedInfoTitle": "What your consultant can see",
+    "sharedInfoDesc": "An overview of what is visible to your consultant — and what only you can see.",
+    "legend": {
+      "shared": "Your consultant can see this",
+      "notShared": "Only you can see this",
+      "changeSharing": "Change what you share"
+    },
     "sharedInfo": {
       "title": "Shared information",
       "description": "Information shared with your consultant",
@@ -3284,6 +3314,8 @@
       "energyLevel": "Energy level",
       "latestMood": "Latest mood",
       "notLogged": "Not logged",
+      "lastLogged": "Last logged",
+      "couldNotRead": "Couldn't be read",
       "categories": {
         "progress": "Activity",
         "cv": "CV & Profile",
@@ -6164,11 +6196,17 @@
       "starTip": "Try structuring your answers with the STAR method (Situation, Task, Action, Result).",
       "questionNumber": "Question {{number}}"
     },
-    "input": {
     "summary": {
       "title": "Great job!",
-      "subtitle": "Your practice is saved so you can look at it again. Here is a quick summary."
+      "subtitle": "Your practice is saved so you can look at it again. Here is a quick summary.",
+      "aiTitle": "Overall assessment",
+      "aiLoading": "We're looking through the whole practice session …",
+      "aiFailed": "We couldn't create an overall assessment right now. Your answers and ratings are still below.",
+      "aiScore": "Overall rating: {{score}}/10",
+      "aiStrengths": "This went well",
+      "aiImprovements": "What to practise next"
     },
+    "input": {
       "giveStart": "Give me a start",
       "yourAnswerLabel": "Your answer",
       "stopRecording": "Stop recording",
@@ -9207,6 +9245,7 @@
     "goodEvening": "Good evening",
     "hello": "Hi",
     "visitProfile": "Visit your profile",
+    "seeHistory": "See everything you've done",
     "question": "What would you like to do today?",
     "chooseHub": "Choose a hub",
     "noEvents": "Nothing here yet — start exploring",
@@ -9382,6 +9421,11 @@
       "network": {
         "title": "Network",
         "description": "Build and keep in touch with your network."
+      },
+      "help": {
+        "title": "Help and support",
+        "description": "Common questions and how to get in touch if something goes wrong.",
+        "status": "If you get stuck"
       }
     }
   },
@@ -9418,6 +9462,12 @@
         "title": "My consultant",
         "description": "Contact your employment consultant and see notes.",
         "notAssigned": "Not assigned yet"
+      },
+      "profile": {
+        "title": "Your profile",
+        "description": "Your details and what you want to work with.",
+        "filled": "Filled in",
+        "fillIn": "Fill in when you have the energy"
       }
     }
   },

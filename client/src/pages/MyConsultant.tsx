@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/ui/EmptyState'
 import {
@@ -39,6 +40,7 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusMyConsultantWizard } from '@/components/focus/pages/FocusMyConsultantWizard'
 import { supabase } from '@/lib/supabase'
+import { applicationsApi } from '@/services/applicationsApi'
 import { useAuthStore } from '@/stores/authStore'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -278,12 +280,16 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2">
           <Eye className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+          {/* G13: `t('myConsultant.sharedInfo')` pekade på ett OBJEKT (nyckeln
+              har underliggande barn) → i18next returnerade den råa nyckeln, så
+              kortets rubrik läste "myConsultant.sharedInfo" i produktion.
+              `sharedInfoDesc` fanns inte alls. Båda finns nu som egna nycklar. */}
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('myConsultant.sharedInfo')}
+            {t('myConsultant.sharedInfoTitle', 'Det här ser din konsulent')}
           </h2>
         </div>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          {t('myConsultant.sharedInfoDesc')}
+          {t('myConsultant.sharedInfoDesc', 'En översikt över vad som är synligt för din konsulent — och vad bara du ser.')}
         </p>
       </div>
 
@@ -327,10 +333,12 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                     {category.items.map((item, index) => (
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
+                          {/* Nycklarna låg under sharedInfo, inte direkt under
+                              myConsultant — aria-labeln var tom före 2026-07-27. */}
                           {item.isShared ? (
-                            <Eye className="w-4 h-4 text-[var(--c-solid)]" aria-label={t('myConsultant.sharedWithConsultant')} />
+                            <Eye className="w-4 h-4 text-[var(--c-solid)]" aria-label={t('myConsultant.sharedInfo.shared', 'Delas')} />
                           ) : (
-                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label={t('myConsultant.notShared')} />
+                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label={t('myConsultant.sharedInfo.notShared', 'Delas ej')} />
                           )}
                           <span className="text-sm text-stone-600 dark:text-stone-400">
                             {item.label}
@@ -347,6 +355,30 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
             </div>
           )
         })}
+      </div>
+
+      {/* G13 (2026-07-27): förklara ikonerna och gör transparensen handlingsbar.
+          Utan teckenförklaring är öppet/stängt öga en gissningslek, och utan
+          länken är insikten "måendet delas inte" en död ände. */}
+      <div className="p-4 border-t border-stone-200 dark:border-stone-700 space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-5">
+          <span className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-400">
+            <Eye className="w-3.5 h-3.5 text-[var(--c-solid)]" aria-hidden="true" />
+            {t('myConsultant.legend.shared', 'Din konsulent kan se det här')}
+          </span>
+          <span className="flex items-center gap-1.5 text-xs text-stone-600 dark:text-stone-400">
+            <EyeOff className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" aria-hidden="true" />
+            {t('myConsultant.legend.notShared', 'Bara du kan se det här')}
+          </span>
+        </div>
+
+        <Link
+          to="/settings?section=privacy"
+          className="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
+        >
+          {t('myConsultant.legend.changeSharing', 'Ändra vad du delar')}
+          <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </Card>
   )
@@ -760,7 +792,7 @@ function MyConsultantInner() {
       }
 
       // Build shared info based on user data
-      await buildSharedInfo()
+      await buildSharedInfo(consultantId)
     } catch (error) {
       console.error('Error fetching consultant data:', error)
     } finally {
@@ -768,34 +800,78 @@ function MyConsultantInner() {
     }
   }
 
-  const buildSharedInfo = async () => {
-    // Fetch CV data
+  /**
+   * H4 + G13 (2026-07-27) — tre fel rättade i den här funktionen.
+   *
+   * 1. **`wellness_entries` finns inte i produktionsdatabasen.** Måendet
+   *    hämtades från en fantomtabell → sektionen visade alltid "Inte loggat",
+   *    oavsett hur mycket deltagaren hade loggat. Rätt tabell är `mood_logs`
+   *    (`mood_level`, `energy_level`, `log_date`).
+   * 2. **`job_applications` är utfasad** (E12) → "Skickade ansökningar" var
+   *    alltid 0. Räkningen går nu via `applicationsApi.getStats()`, samma väg
+   *    som Kanban-vyn. Samtidigt rättat: "Sparade jobb" räknade tidigare ALLA
+   *    rader i `saved_jobs` — men den tabellen bär hela pipelinen, så
+   *    ansökningar räknades som sparade jobb. Nu `stats.saved + interested`.
+   * 3. **Ögonikonen ljög.** Varje post var hårdkodad `isShared: true`. Måendet
+   *    delas i verkligheten bara om deltagaren har gett samtycke i
+   *    `participant_data_sharing` (UX7). En transparenssida som påstår att
+   *    konsulenten ser mer än hen gör är värre än ingen sida alls — det är
+   *    hela G13:s poäng. Samtycket läses nu och styr ikonen.
+   *
+   * Fel sväljs inte tyst: misslyckas en hämtning visas "Kunde inte läsas"
+   * i stället för ett nollvärde som ser ut som ett faktum.
+   */
+  const buildSharedInfo = async (consultantId: string) => {
+    const UNKNOWN = t('myConsultant.sharedInfo.couldNotRead', 'Kunde inte läsas')
+
+    // CV — maybeSingle: .single() gav PGRST116 när användaren saknar CV
     const { data: cvData } = await supabase
       .from('cvs')
       .select('ats_score, updated_at')
       .eq('user_id', user?.id)
-      .single()
-
-    // Fetch saved jobs count
-    const { count: jobsCount } = await supabase
-      .from('saved_jobs')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user?.id)
-
-    // Fetch applications count
-    const { count: applicationsCount } = await supabase
-      .from('job_applications')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user?.id)
-
-    // Fetch wellness data
-    const { data: wellnessData } = await supabase
-      .from('wellness_entries')
-      .select('energy_level, mood')
-      .eq('user_id', user?.id)
-      .order('created_at', { ascending: false })
+      .order('updated_at', { ascending: false })
       .limit(1)
-      .single()
+      .maybeSingle()
+
+    // Ansökningar + sparade jobb via samma API som Kanban-vyn
+    let savedCount: number | null = null
+    let sentCount: number | null = null
+    try {
+      const stats = await applicationsApi.getStats()
+      savedCount = (stats.saved || 0) + (stats.interested || 0)
+      // "Skickad" = allt som passerat sparad/intresserad
+      sentCount = Math.max(0, (stats.total || 0) - savedCount)
+    } catch (err) {
+      console.error('MyConsultant: kunde inte läsa ansökningsstatistik', err)
+    }
+
+    // Mående — senaste loggen ur mood_logs
+    const { data: moodData, error: moodError } = await supabase
+      .from('mood_logs')
+      .select('mood_level, energy_level, log_date')
+      .eq('user_id', user?.id)
+      .order('log_date', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (moodError) {
+      console.error('MyConsultant: kunde inte läsa mående', moodError)
+    }
+
+    // G13 — delas måendet faktiskt med den här konsulenten?
+    let wellnessIsShared = false
+    const { data: sharing, error: sharingError } = await supabase
+      .from('participant_data_sharing')
+      .select('share_health_data, share_wellness_data')
+      .eq('participant_id', user?.id)
+      .eq('consultant_id', consultantId)
+      .maybeSingle()
+
+    if (sharingError) {
+      console.error('MyConsultant: kunde inte läsa delningssamtycke', sharingError)
+    } else {
+      wellnessIsShared = !!(sharing?.share_wellness_data || sharing?.share_health_data)
+    }
 
     const dateLocale = i18n.language === 'sv' ? 'sv-SE' : 'en-US'
 
@@ -813,14 +889,14 @@ function MyConsultantInner() {
           },
           {
             label: t('myConsultant.sharedInfo.savedJobs'),
-            value: t('myConsultant.sharedInfo.countUnit', { count: jobsCount || 0 }),
-            status: (jobsCount || 0) > 0 ? 'good' : 'neutral',
+            value: savedCount === null ? UNKNOWN : t('myConsultant.sharedInfo.countUnit', { count: savedCount }),
+            status: savedCount === null ? 'neutral' : savedCount > 0 ? 'good' : 'neutral',
             isShared: true,
           },
           {
             label: t('myConsultant.sharedInfo.sentApplications'),
-            value: t('myConsultant.sharedInfo.countUnit', { count: applicationsCount || 0 }),
-            status: (applicationsCount || 0) > 0 ? 'good' : 'neutral',
+            value: sentCount === null ? UNKNOWN : t('myConsultant.sharedInfo.countUnit', { count: sentCount }),
+            status: sentCount === null ? 'neutral' : sentCount > 0 ? 'good' : 'neutral',
             isShared: true,
           },
         ],
@@ -855,17 +931,28 @@ function MyConsultantInner() {
         items: [
           {
             label: t('myConsultant.sharedInfo.energyLevel'),
-            value: wellnessData?.energy_level
-              ? `${wellnessData.energy_level}/5`
+            value: moodData?.energy_level
+              ? `${moodData.energy_level}/5`
               : t('myConsultant.sharedInfo.notLogged'),
-            status: wellnessData?.energy_level && wellnessData.energy_level >= 3 ? 'good' : wellnessData?.energy_level ? 'attention' : 'neutral',
-            isShared: true,
+            status: moodData?.energy_level && moodData.energy_level >= 3 ? 'good' : moodData?.energy_level ? 'attention' : 'neutral',
+            // G13: ikonen speglar det faktiska samtycket, inte en förhoppning
+            isShared: wellnessIsShared,
           },
           {
             label: t('myConsultant.sharedInfo.latestMood'),
-            value: wellnessData?.mood || t('myConsultant.sharedInfo.notLogged'),
+            value: moodData?.mood_level
+              ? `${moodData.mood_level}/5`
+              : t('myConsultant.sharedInfo.notLogged'),
             status: 'neutral',
-            isShared: true,
+            isShared: wellnessIsShared,
+          },
+          {
+            label: t('myConsultant.sharedInfo.lastLogged'),
+            value: moodData?.log_date
+              ? new Date(moodData.log_date).toLocaleDateString(dateLocale)
+              : t('myConsultant.sharedInfo.notLogged'),
+            status: 'neutral',
+            isShared: wellnessIsShared,
           },
         ],
       },

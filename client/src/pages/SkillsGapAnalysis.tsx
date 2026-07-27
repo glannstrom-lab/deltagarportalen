@@ -24,6 +24,7 @@ import type { CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 import { callAI } from '@/services/aiApi'
 import { safeParseAiResponse, KompetensgapSchema } from '@/services/aiSchemas'
+import { useInterestProfile, formatRiasecForPrompt } from '@/hooks/useInterestProfile'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import {
   skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi,
@@ -118,6 +119,9 @@ export default function SkillsGapAnalysis() {
   const { t, i18n } = useTranslation()
   const { profile } = useAuthStore()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
+  // G10: intresseprofilen är React Query-cachad (5 min) och delas med andra
+  // ytor — kortet kostar ingen extra rundtur i praktiken.
+  const { profile: interestProfile } = useInterestProfile()
 
   // Hooks MÅSTE deklareras före conditional returns (rules-of-hooks).
   // Tidigare låg useState efter `if (isFocusMode) return` vilket gav 13
@@ -193,9 +197,15 @@ export default function SkillsGapAnalysis() {
     setAddedToPlan(false)
 
     try {
+      // G10: skicka med intresseprofilen när den finns. RIASEC är ett
+      // preferenssignal (vad personen dras till), inte ett kompetenspåstående
+      // — prompten i ai.js får den avgränsningen explicit.
+      const riasec = formatRiasecForPrompt(interestProfile.dominantTypes)
+
       const response = await callAI('kompetensgap', {
         cvText: profileSummary,
-        dromjobb: dreamJob
+        dromjobb: dreamJob,
+        ...(riasec ? { riasec } : {})
       })
 
       const parsed = safeParseAiResponse(KompetensgapSchema, response?.analys)

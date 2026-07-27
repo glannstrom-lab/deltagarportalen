@@ -11,6 +11,7 @@ import {
   User,
   LayoutDashboard,
   BookOpen,
+  CalendarDays,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
@@ -332,6 +333,21 @@ function HubOverviewInner() {
           description={t('hubOverview.cards.minVardag.description', 'Mående, dagbok, kalender och möten med din konsulent.')}
           activity={hubActivity.minVardag}
         />
+      </section>
+
+      {/* 3. Väg in till hela historiken (G9, 2026-07-27).
+          `/oversikt/historik` var routad men olänkad — sidan gick bara att nå
+          via direktlänk. Medvetet lågmäld: en textlänk, ingen poängställning
+          och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar). */}
+      <section className="flex justify-center">
+        <Link
+          to="/oversikt/historik"
+          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
+        >
+          <CalendarDays size={14} aria-hidden="true" />
+          {t('hubOverview.seeHistory', 'Se allt du har gjort')}
+          <span aria-hidden="true">→</span>
+        </Link>
       </section>
     </PageLayout>
   )

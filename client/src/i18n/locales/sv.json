@@ -1,4 +1,26 @@
 {
+  "weeklyReflection": {
+    "heading": "Din vecka",
+    "prompt": "Vill du se en kort tillbakablick på veckan, utifrån det du själv har skrivit?",
+    "cta": "Visa min vecka",
+    "loading": "Läser din vecka …",
+    "empty": "Här samlas en tillbakablick på din vecka när du har skrivit i dagboken eller loggat ditt mående.",
+    "failed": "Vi kunde inte skapa en reflektion just nu. Dina anteckningar är orörda."
+  },
+  "celebration": {
+    "applicationSent": {
+      "title": "Ansökan är skickad",
+      "message": "Det är gjort. Du behöver inte göra något mer med den nu."
+    },
+    "exerciseDone": {
+      "title": "Övningen är klar",
+      "message": "Bra att du tog dig tid."
+    },
+    "cvComplete": {
+      "title": "Ditt CV är komplett",
+      "message": "Nu finns det att skicka med när du hittar något som passar."
+    }
+  },
   "common": {
     "export": "Exportera",
     "save": "Spara",
@@ -1986,6 +2008,7 @@
     },
     "alertsTab": {
       "title": "Dina bevakningar",
+      "saveFailed": "Inställningen kunde inte sparas. Försök igen om en stund.",
       "newCount": "{{count}} nya",
       "emptySubtitle": "Skapa bevakningar för att få notiser om nya jobb",
       "activeCount": "{{active}} aktiva av {{total}} bevakningar",
@@ -3267,6 +3290,13 @@
         "inPerson": "Fysiskt möte"
       }
     },
+    "sharedInfoTitle": "Det här ser din konsulent",
+    "sharedInfoDesc": "En översikt över vad som är synligt för din konsulent — och vad bara du ser.",
+    "legend": {
+      "shared": "Din konsulent kan se det här",
+      "notShared": "Bara du kan se det här",
+      "changeSharing": "Ändra vad du delar"
+    },
     "sharedInfo": {
       "title": "Delad information",
       "description": "Information som delas med din konsulent",
@@ -3284,6 +3314,8 @@
       "energyLevel": "Energinivå",
       "latestMood": "Senaste humör",
       "notLogged": "Ej loggat",
+      "lastLogged": "Senast loggat",
+      "couldNotRead": "Kunde inte läsas",
       "categories": {
         "progress": "Aktivitet",
         "cv": "CV & Profil",
@@ -6164,11 +6196,17 @@
       "starTip": "Försök strukturera dina svar med STAR-metoden (Situation, Task, Action, Result).",
       "questionNumber": "Fråga {{number}}"
     },
-    "input": {
     "summary": {
       "title": "Bra jobbat!",
-      "subtitle": "Din övning är sparad så du kan titta på den igen. Här är en snabb sammanfattning."
+      "subtitle": "Din övning är sparad så du kan titta på den igen. Här är en snabb sammanfattning.",
+      "aiTitle": "Helhetsbedömning",
+      "aiLoading": "Vi tittar igenom hela övningen …",
+      "aiFailed": "Vi kunde inte skapa en helhetsbedömning just nu. Dina svar och betyg finns kvar nedan.",
+      "aiScore": "Sammanvägt omdöme: {{score}}/10",
+      "aiStrengths": "Det här gjorde du bra",
+      "aiImprovements": "Att öva vidare på"
     },
+    "input": {
       "giveStart": "Ge mig en start",
       "yourAnswerLabel": "Ditt svar",
       "stopRecording": "Stoppa inspelning",
@@ -9207,6 +9245,7 @@
     "goodEvening": "God kväll",
     "hello": "Hej",
     "visitProfile": "Besök din profil",
+    "seeHistory": "Se allt du har gjort",
     "question": "Vad vill du göra idag?",
     "chooseHub": "Välj en hub",
     "noEvents": "Inga händelser än — börja utforska",
@@ -9382,6 +9421,11 @@
       "network": {
         "title": "Nätverk",
         "description": "Bygg och håll kontakt med ditt nätverk."
+      },
+      "help": {
+        "title": "Hjälp och support",
+        "description": "Vanliga frågor och hur du får kontakt om något krånglar.",
+        "status": "Om du kör fast"
       }
     }
   },
@@ -9418,6 +9462,12 @@
         "title": "Min konsulent",
         "description": "Kontakta din arbetskonsulent och se anteckningar.",
         "notAssigned": "Inte tilldelad"
+      },
+      "profile": {
+        "title": "Din profil",
+        "description": "Dina uppgifter och vad du vill jobba med.",
+        "filled": "Ifylld",
+        "fillIn": "Fyll i när du orkar"
       }
     }
   },

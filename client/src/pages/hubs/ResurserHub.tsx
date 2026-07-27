@@ -6,6 +6,7 @@ import {
   ExternalLink,
   Bot,
   Users,
+  LifeBuoy,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useResurserHubSummary } from '@/hooks/useResurserHubSummary'
@@ -51,6 +52,7 @@ export default function ResurserHub() {
             { id: 'ext', path: '/externa-resurser', label: t('nav.externalResources', 'Externa länkar'), icon: ExternalLink },
             { id: 'ai', path: '/ai-team', label: t('nav.aiTeam', 'AI-team'), icon: Bot },
             { id: 'network', path: '/nätverk', label: t('nav.network', 'Nätverk'), icon: Users },
+            { id: 'help', path: '/help', label: t('nav.help', 'Hjälp'), icon: LifeBuoy },
           ]}
         />
       </PageFocusShell>
@@ -133,6 +135,14 @@ function ResurserHubInner() {
         description: t('resurserHub.features.network.description', 'Bygg och håll kontakt med ditt nätverk.'),
         status: t('hubs.explore', 'Utforska'),
         href: '/nätverk',
+      },
+      {
+        key: 'help',
+        icon: LifeBuoy,
+        title: t('resurserHub.features.help.title', 'Hjälp och support'),
+        description: t('resurserHub.features.help.description', 'Vanliga frågor och hur du får kontakt om något krånglar.'),
+        status: t('resurserHub.features.help.status', 'Om du kör fast'),
+        href: '/help',
       },
     ]
   }, [data, t])

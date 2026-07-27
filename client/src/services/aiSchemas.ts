@@ -90,6 +90,22 @@ export const IntervjuSimulatorResultSchema = z.object({
 export type IntervjuResult = z.infer<typeof IntervjuSimulatorResultSchema>
 
 // --------------------------------------------------------------
+// vecko-reflektion (G12, 2026-07-27)
+// Veckoreflektion till deltagaren själv, byggd på dagbok + mående.
+// `summary` är obligatorisk — en reflektion utan text är inget att visa.
+// `gentleSuggestion` är valfri med flit: prompten säger uttryckligen att
+// fältet ska utelämnas när underlaget inte ger stöd för ett förslag, i
+// stället för att hitta på ett.
+// --------------------------------------------------------------
+export const VeckoReflektionSchema = z.object({
+  summary: z.string().min(1),
+  noticed: z.array(z.string()).optional(),
+  gentleSuggestion: z.string().optional(),
+})
+
+export type VeckoReflektion = z.infer<typeof VeckoReflektionSchema>
+
+// --------------------------------------------------------------
 // sta-document-draft (rapportautomatisering Steg-till-arbete)
 // Verklig svarsform (B8, 2026-07-23): sections är ett OBJEKT keyat på
 // sektionsnyckel — { sections: { section_key: { title, content } } }.

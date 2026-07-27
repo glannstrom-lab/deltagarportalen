@@ -6,6 +6,7 @@ import {
   Calendar,
   Dumbbell,
   UserCheck,
+  User,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
@@ -17,6 +18,7 @@ import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
+import { WeeklyReflectionCard } from '@/components/wellness/WeeklyReflectionCard'
 
 function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
@@ -51,6 +53,7 @@ export default function MinVardagHub() {
             { id: 'calendar', path: '/calendar', label: t('nav.calendar', 'Kalender'), icon: Calendar },
             { id: 'exercises', path: '/exercises', label: t('nav.exercises', 'Övningar'), icon: Dumbbell },
             { id: 'consultant', path: '/my-consultant', label: t('nav.myConsultant', 'Min konsulent'), icon: UserCheck },
+            { id: 'profile', path: '/profile', label: t('nav.profile', 'Profil'), icon: User },
           ]}
         />
       </PageFocusShell>
@@ -64,7 +67,17 @@ function MinVardagHubInner() {
   const { t } = useTranslation()
   useOnboardedHubsTracking('min-vardag')
   const { data } = useMinVardagHubSummary()
-  const firstName = useAuthStore(s => s.profile?.first_name)
+  const profile = useAuthStore(s => s.profile)
+  const firstName = profile?.first_name
+
+  // Profilkortets status läses ur authStore — profilen är redan laddad vid
+  // inloggning, så kortet kostar ingen extra fetch. Fyra fält räcker som
+  // signal; den fulla 12-fältsberäkningen bor i useProfileStatus.
+  const profileFilled = !!(
+    profile?.first_name &&
+    profile?.last_name &&
+    (profile?.location || profile?.phone)
+  )
 
   const features = useMemo<HubFeature[]>(() => {
     const moodLogs = data?.recentMoodLogs ?? []
@@ -127,10 +140,21 @@ function MinVardagHubInner() {
         isActive: !!consultant?.full_name,
         href: '/my-consultant',
       },
+      {
+        key: 'profile',
+        icon: User,
+        title: t('minVardagHub.features.profile.title', 'Din profil'),
+        description: t('minVardagHub.features.profile.description', 'Dina uppgifter och vad du vill jobba med.'),
+        status: profileFilled
+          ? t('minVardagHub.features.profile.filled', 'Ifylld')
+          : t('minVardagHub.features.profile.fillIn', 'Fyll i när du orkar'),
+        isActive: profileFilled,
+        href: '/profile',
+      },
       // Nätverk hör till Resurser-hubben (DESIGN.md §3 — en sida = en hub).
       // Tidigare dubblerad här; fixat 2026-05-10 i Fas 3.4.
     ]
-  }, [data, t])
+  }, [data, t, profileFilled])
 
   return (
     <HubPage
@@ -142,6 +166,10 @@ function MinVardagHubInner() {
       domain="wellbeing"
       features={features}
       firstName={firstName}
+      // G12: veckoreflektionen bor i Min vardag — samma hubb som dagboken och
+      // måendet den bygger på. Komponenten renderar ingenting förrän
+      // underlaget är läst, och erbjuder ingen knapp när veckan är tom.
+      footerSection={<WeeklyReflectionCard />}
     />
   )
 }

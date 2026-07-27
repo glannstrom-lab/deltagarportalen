@@ -13,6 +13,7 @@ import {
   KompetensgapSchema,
   IntervjuSimulatorResultSchema,
   StaDocumentDraftSchema,
+  VeckoReflektionSchema,
   safeParseAiResponse,
 } from './aiSchemas'
 
@@ -99,6 +100,29 @@ describe('safeParseAiResponse', () => {
     const r = safeParseAiResponse(StaDocumentDraftSchema, input)
     expect(r.success).toBe(true)
     expect(r.data?.sammanfattning.content).toBe('Text')
+  })
+
+  // G12 — veckoreflektion
+  it('parsar en veckoreflektion med alla fält', () => {
+    const input = {
+      summary: 'Du skrev tre gånger den här veckan.',
+      noticed: ['Du nämnde att promenaderna hjälpte'],
+      gentleSuggestion: 'Om du vill kan du skriva en rad på söndagen.',
+    }
+    const r = safeParseAiResponse(VeckoReflektionSchema, input)
+    expect(r.success).toBe(true)
+    expect(r.data?.noticed).toHaveLength(1)
+  })
+
+  it('godtar en veckoreflektion utan förslag — prompten ska utelämna fältet vid tunt underlag', () => {
+    const r = safeParseAiResponse(VeckoReflektionSchema, { summary: 'Det här är allt jag har från veckan.' })
+    expect(r.success).toBe(true)
+    expect(r.data?.gentleSuggestion).toBeUndefined()
+  })
+
+  it('avvisar en veckoreflektion med tom summary — en reflektion utan text är inget att visa', () => {
+    const r = safeParseAiResponse(VeckoReflektionSchema, { summary: '', noticed: ['x'] })
+    expect(r.success).toBe(false)
   })
 
   it('failar STA-document-draft vid trasig sektionsform', () => {

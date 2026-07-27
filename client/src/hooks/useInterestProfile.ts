@@ -184,6 +184,32 @@ export function getPersonalizedCategories(dominantTypes: Array<{ code: keyof Ria
 }
 
 /**
+ * Kompakt RIASEC-rad för AI-prompter (G10, 2026-07-27).
+ *
+ * Intresseguidens resultat användes tidigare bara i AI-team-chatten — RIASEC
+ * förekom i noll prompts. Den här raden är avsiktligt kort (en rad) så att den
+ * kan skickas med i kompetensgap/karriarplan utan att äta tokenbudget.
+ *
+ * Returnerar `null` när det inte finns något resultat, så anropande kod kan
+ * utelämna fältet helt i stället för att skicka en tom sträng.
+ */
+export function formatRiasecForPrompt(
+  dominantTypes: Array<{ code: keyof RiasecScores; score?: number }>
+): string | null {
+  if (!dominantTypes || dominantTypes.length === 0) return null
+  const names = dominantTypes
+    .slice(0, 3)
+    .map(({ code }) => RIASEC_TYPES[code]?.nameSv)
+    .filter(Boolean)
+  if (names.length === 0) return null
+  const code = dominantTypes
+    .slice(0, 3)
+    .map(({ code }) => code.charAt(0).toUpperCase())
+    .join('')
+  return `${names.join(', ')} (RIASEC: ${code})`
+}
+
+/**
  * Get exercise types that match user's interests
  */
 export function getMatchingExerciseTypes(dominantTypes: Array<{ code: keyof RiasecScores }>): string[] {
@@ -224,18 +250,14 @@ export function useInterestProfile() {
         const history = await interestGuideApi.getHistory(1)
         const latestResult = history?.[0]
 
-        console.log('[useInterestProfile] Progress:', progress)
-        console.log('[useInterestProfile] History:', history)
-        console.log('[useInterestProfile] Latest result:', latestResult)
-
+        // Debug-loggarna här (8 st) togs bort 2026-07-27: de skrev ut
+        // användarens råa intresseguidesvar och beräknade profil i
+        // webbläsarkonsolen på varje anrop.
         if (!latestResult) {
           // Completed but no history - calculate RIASEC directly from progress.answers
-          console.log('[useInterestProfile] No history, calculating from answers:', progress.answers)
-
           if (progress.answers && Object.keys(progress.answers).length > 0) {
             try {
               const calculated = calculateUserProfile(progress.answers as Record<string, number>)
-              console.log('[useInterestProfile] Calculated profile:', calculated)
 
               if (calculated.riasec) {
                 // Scale from 0-5 to 0-100 (multiply by 20)
@@ -247,7 +269,6 @@ export function useInterestProfile() {
                   enterprising: Math.round((calculated.riasec.E ?? 0) * 20),
                   conventional: Math.round((calculated.riasec.C ?? 0) * 20)
                 }
-                console.log('[useInterestProfile] Calculated riasecScores:', riasecScores)
 
                 const dominantTypes = getDominantTypes(riasecScores)
 
@@ -278,8 +299,6 @@ export function useInterestProfile() {
 
         // Check riasec_profile object format
         // Database stores with short keys: R, I, A, S, E, C
-        console.log('[useInterestProfile] riasec_profile:', latestResult.riasec_profile)
-
         if (latestResult.riasec_profile) {
           const rp = latestResult.riasec_profile as Record<string, number>
 
@@ -292,7 +311,6 @@ export function useInterestProfile() {
             enterprising: rp.E ?? rp.enterprising ?? 0,
             conventional: rp.C ?? rp.conventional ?? 0
           }
-          console.log('[useInterestProfile] Mapped riasecScores:', riasecScores)
         }
 
         const dominantTypes = riasecScores ? getDominantTypes(riasecScores) : []

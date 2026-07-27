@@ -15,6 +15,7 @@ import {
   type LearningCategory,
   type DailyTip
 } from '@/services/learningService'
+import { useCelebration } from './useCelebration'
 
 interface UseLearningReturn {
   progress: LearningProgress | null
@@ -34,6 +35,7 @@ interface UseLearningReturn {
 }
 
 export function useLearning(): UseLearningReturn {
+  const { celebrate } = useCelebration()
   const [progress, setProgress] = useState<LearningProgress | null>(null)
   const [recommendedArticles, setRecommendedArticles] = useState<ArticleWithProgress[]>([])
   const [inProgressArticles, setInProgressArticles] = useState<ArticleWithProgress[]>([])
@@ -85,9 +87,12 @@ export function useLearning(): UseLearningReturn {
     const success = await markExerciseComplete(exerciseId)
     if (success) {
       await loadData()
+      // G5: firas bara när sparningen faktiskt gick igenom — ett firande på
+      // ett misslyckat sparande är samma falsk-framgång-mönster som UX5.
+      celebrate('exerciseDone')
     }
     return success
-  }, [loadData])
+  }, [loadData, celebrate])
 
   const loadCategoryArticles = useCallback(async (categoryId: string) => {
     return await getArticlesByCategory(categoryId)

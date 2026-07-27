@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useSettingsStore } from '../stores/settingsStore'
 import { useAuthStore } from '../stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -64,7 +64,15 @@ export default function Settings() {
 
 function SettingsInner() {
   const { t } = useTranslation()
-  const [activeSection, setActiveSection] = useState('profile')
+  // Djuplänkning via `?section=` (2026-07-27, G13): transparensvyn i
+  // "Min konsulent" pekar hit med `?section=privacy` så deltagaren kan gå
+  // direkt från "det här ser din konsulent" till att ändra vad som delas.
+  // Okänt eller saknat värde faller tillbaka på 'profile' som förut.
+  const [searchParams] = useSearchParams()
+  const [activeSection, setActiveSection] = useState(() => {
+    const requested = searchParams.get('section')
+    return sectionDefs.some(s => s.id === requested) ? (requested as string) : 'profile'
+  })
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSaving, setIsSaving] = useState(false)

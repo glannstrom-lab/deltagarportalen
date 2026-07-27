@@ -13,6 +13,7 @@ import {
   applicationHistoryApi
 } from '@/services/applicationsApi'
 import { useAchievementTracker } from './useAchievementTracker'
+import { useCelebration } from './useCelebration'
 import type {
   Application,
   ApplicationStatus,
@@ -54,6 +55,7 @@ export function useApplications(
 ) {
   const queryClient = useQueryClient()
   const { trackJobSaved, trackJobApplied, trackInterviewScheduled, trackOfferReceived, trackJobAccepted } = useAchievementTracker()
+  const { celebrate } = useCelebration()
 
   // Main applications query
   const {
@@ -145,6 +147,10 @@ export function useApplications(
       switch (status) {
         case 'applied':
           trackJobApplied(title, company)
+          // G5: firande i nyckelögonblick. Bara vid statusövergången till
+          // "skickad" — inte vid create nedan, för då hade en importerad
+          // redan-skickad ansökan också triggat firande.
+          celebrate('applicationSent')
           break
         case 'interview':
         case 'phone':

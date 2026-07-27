@@ -65,6 +65,14 @@ export interface HubPageProps {
   /** Onboarding-tracking-hook anropas av parent (jobb/karriar/resurser/min-vardag) */
   trackingChild?: ReactNode
   /**
+   * Valfritt innehåll UNDER funktionsgriden (G12, 2026-07-27).
+   * Hubblandningen är läge A i DESIGN.md §3 — hero + funktioner. En hubb som
+   * behöver en egen lugn yta (t.ex. veckoreflektionen i Min vardag) lägger
+   * den här i stället för att bygga en egen sidlayout och riskera att de två
+   * lägena blandas. Håll det till EN yta per hubb.
+   */
+  footerSection?: ReactNode
+  /**
    * Användarens förnamn för personalisering enligt DESIGN.md §2.
    * När satt visas "Hej {firstName}" som liten överrad till hub-titeln.
    * När inte satt visas ingen greeting (vi spammar inte tomma fall).
@@ -95,6 +103,7 @@ export default function HubPage({
   domain,
   features,
   trackingChild,
+  footerSection,
   firstName,
 }: HubPageProps) {
   const { t } = useTranslation()
@@ -164,6 +173,8 @@ export default function HubPage({
           ))}
         </div>
       </motion.section>
+
+      {footerSection}
     </PageLayout>
   )
 }

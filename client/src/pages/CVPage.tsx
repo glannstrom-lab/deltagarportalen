@@ -16,6 +16,8 @@ import { SaveIndicator } from '@/components/cv/SaveIndicator'
 import { FocusCVBuilder } from '@/components/cv/FocusCVBuilder'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FileText } from '@/components/ui/icons'
 
 export default function CVPage() {
   const location = useLocation()
@@ -29,18 +31,31 @@ export default function CVPage() {
 
   const isBuilderPage = location.pathname === '/cv' || location.pathname === '/cv/'
 
-  // Focus mode: simplified layout utan tabs/full PageHeader
-  if (isFocusMode && isBuilderPage) {
+  // G3 (2026-07-27): CV hade redan en NPF-wizard (FocusCVBuilder) men låg i
+  // PageLayout — alltså full sidhuvud och bred kolumn, till skillnad från de
+  // 34 sidor som använder PageFocusShell. Två konsekvenser är rättade här:
+  //
+  //  1. Shell:en är nu den delade PageFocusShell (smal centrerad kolumn,
+  //     hub-färgad header, "Avsluta fokusläge"-knapp på samma plats som
+  //     överallt annars). Kontraktet står i PageFocusShell-headern.
+  //  2. Fokusläget gäller nu HELA /cv/* — inte bara byggaren. Tidigare kunde
+  //     en användare slå på fokusläget på t.ex. /cv/ats och ingenting hände,
+  //     vilket är precis den sortens tysta icke-respons som fokusläget finns
+  //     för att undvika. Wizarden ÄR fokusvyn för hela CV-flödet.
+  if (isFocusMode) {
     return (
-      <PageLayout
+      <PageFocusShell
         title={t('cv.title')}
-        subtitle={t('focusCV.subtitle', 'Steg-för-steg')}
+        icon={FileText}
         domain="activity"
-        showTabs={false}
-        className="max-w-7xl mx-auto"
+        onExit={toggleFocusMode}
       >
-        <FocusCVBuilder onExitFocusMode={toggleFocusMode} />
-      </PageLayout>
+        {/* onExitFocusMode utelämnat medvetet: PageFocusShell har redan
+            "Avsluta fokusläge" i headern. Två utgångar med olika text
+            ("Byt till vanligt läge") är precis den sortens dubblerade val
+            som fokuslägets kontrakt (punkt 6 och 9) ska undvika. */}
+        <FocusCVBuilder />
+      </PageFocusShell>
     )
   }
 

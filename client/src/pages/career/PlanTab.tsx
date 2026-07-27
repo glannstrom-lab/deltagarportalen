@@ -16,9 +16,11 @@ import { useProfileStore } from '@/stores/profileStore'
 import { callAI } from '@/services/aiApi'
 import { safeParseAiResponse, KarriarPlanSchema } from '@/services/aiSchemas'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
+import { useInterestProfile, formatRiasecForPrompt } from '@/hooks/useInterestProfile'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
+  const { profile: interestProfile } = useInterestProfile()
   const [currentSituation, setCurrentSituation] = useState('')
   const [goal, setGoal] = useState('')
   const [timeframe, setTimeframe] = useState('')
@@ -173,10 +175,15 @@ export default function PlanTab() {
       // förslag och användaren får veta det ärligt (egna milstolpar
       // kan alltid läggas till manuellt).
       try {
+        // G10: intresseprofilen med när den finns — en karriärplan som går
+        // på tvärs mot vad personen dras till håller sällan.
+        const riasec = formatRiasecForPrompt(interestProfile.dominantTypes)
+
         const response = await callAI('karriarplan', {
           currentSituation,
           goal,
-          timeframe: timeframe || undefined
+          timeframe: timeframe || undefined,
+          ...(riasec ? { riasec } : {})
         })
         const parsed = safeParseAiResponse(KarriarPlanSchema, response?.plan)
         if (!parsed.success || !parsed.data) {

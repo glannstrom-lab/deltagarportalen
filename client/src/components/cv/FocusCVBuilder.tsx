@@ -15,6 +15,7 @@ import { cvApi } from '@/services/cvApi'
 import type { CVData, WorkExperience, Education, Skill } from '@/services/supabaseApi'
 import { cn } from '@/lib/utils'
 import { showToast } from '@/components/Toast'
+import { useCelebration } from '@/hooks/useCelebration'
 import {
   User, Briefcase, GraduationCap, Sparkles, Check,
   ChevronLeft, ChevronRight, Save, Eye, Loader2, Plus, X
@@ -38,6 +39,7 @@ interface FocusCVBuilderProps {
 export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const { celebrate } = useCelebration()
   const [currentStep, setCurrentStep] = useState(0)
   const [cvData, setCvData] = useState<CVData>({
     firstName: '',
@@ -71,20 +73,34 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
   }, [existingCV])
 
   // Save mutation
+  //
+  // BUGG LAGAD 2026-07-27 (G3): raderna nedan anropade `showToast(text, 'success')`
+  // — men `showToast` exporteras som ett OBJEKT med metoder (`.success`/`.error`),
+  // inte som en funktion. Varje sparning i fokusläget kastade alltså
+  // "showToast is not a function" inne i React Querys callback. Eftersom
+  // fokusläget är ett tillgänglighetskrav för NPF-användare (och `goNext`
+  // autosparar vid VARJE "Nästa") träffade felet den grupp som har minst
+  // marginal för det. `typecheck:critical` fångar inte klassen.
   const saveMutation = useMutation({
     mutationFn: cvApi.updateCV,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cv'] })
-      showToast(t('focusCV.saved', 'CV sparat!'), 'success')
+      showToast.success(t('focusCV.saved', 'CV sparat!'))
     },
     onError: () => {
-      showToast(t('focusCV.saveError', 'Kunde inte spara CV'), 'error')
+      showToast.error(t('focusCV.saveError', 'Kunde inte spara CV'))
     },
   })
 
-  const handleSave = useCallback(() => {
-    saveMutation.mutate(cvData)
-  }, [cvData, saveMutation])
+  /** `isFinal` skiljer autosparningen vid "Nästa" från användarens avsiktliga
+   *  "Spara CV" på sista steget — bara den senare firas (G5). */
+  const handleSave = useCallback((isFinal = false) => {
+    saveMutation.mutate(cvData, {
+      onSuccess: () => {
+        if (isFinal) celebrate('cvComplete')
+      },
+    })
+  }, [cvData, saveMutation, celebrate])
 
   const currentStepData = FOCUS_STEPS[currentStep]
   const isFirstStep = currentStep === 0
@@ -185,7 +201,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
           <SkillsStep cvData={cvData} setCvData={setCvData} />
         )}
         {currentStepData.id === 'preview' && (
-          <PreviewStep cvData={cvData} onSave={handleSave} isSaving={saveMutation.isPending} />
+          <PreviewStep cvData={cvData} onSave={() => handleSave(true)} isSaving={saveMutation.isPending} />
         )}
       </div>
 
@@ -207,7 +223,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
 
         {isLastStep ? (
           <button
-            onClick={handleSave}
+            onClick={() => handleSave(true)}
             disabled={saveMutation.isPending}
             className={cn(
               'flex items-center gap-2 px-8 py-3 rounded-xl font-semibold transition-colors',

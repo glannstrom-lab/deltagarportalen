@@ -1,6 +1,36 @@
 /**
  * Achievement Tracker Hook
- * Use this hook to track user actions and automatically update milestones
+ *
+ * Loggar användarens aktiviteter till `user_activity_log` via RPC:n
+ * `log_user_activity`. Anropas från 6 ytor (CV, sparade jobb, ansökningar,
+ * artiklar, mående, intervjusimulator).
+ *
+ * ## G9-beslutet (2026-07-27): milstolps- och poängmaskineriet borttaget
+ *
+ * Roadmapens G9 var "gör intjänade poäng synliga — eller sluta logga".
+ * Importspårning visade att INGET i klienten läser `user_gamification`,
+ * `user_milestones` eller `milestones` — kedjan var helt skrivriktad. Den
+ * enda läsaren av `user_activity_log` var hookens egen `getActivityCount`,
+ * som räknade fram milstolpar som ingen vy visade. Cirkulärt.
+ *
+ * Valet blev "sluta logga det osynliga", av tre skäl:
+ *  1. Deltagarens framsteg syns redan på Översikt — varje hubbkort visar sin
+ *     senaste händelse ur `useOversiktHubSummary` ("Du sparade ett jobb —
+ *     2 dagar sen"), byggt på riktig domändata. Den fulla listan finns i
+ *     `/oversikt/historik` (som G9-arbetet dessutom länkade in — sidan var
+ *     routad men olänkad).
+ *  2. Poäng och märken är Gamification 2.0 — förbjuden riktning enligt
+ *     ROADMAP §6, och prestationsmätning strider mot DESIGN.md §1.
+ *  3. Maskineriet kostade upp till 5 extra DB-anrop per spårad handling på
+ *     heta vägar (spara jobb, uppdatera CV) — för ingenting.
+ *
+ * `log_user_activity` behålls medvetet: den är billig (ett anrop) och är
+ * underlaget som G12 (veckoreflektion för icke-STA-deltagare) behöver.
+ * Punkterna i `p_points` är en kolumn i loggen, inte en synlig poängställning.
+ *
+ * Raderat samtidigt: `updateMilestonesForActivity`, `getActivityCount`,
+ * `updateMoodStreak` (~120 rader). `getActivityCount` läste dessutom den
+ * utfasade tabellen `job_applications` (E12/H4). Finns i git-historiken.
  */
 
 import { useCallback } from 'react'
@@ -61,12 +91,11 @@ export function useAchievementTracker() {
         return
       }
 
-      // Update relevant milestones based on activity type
-      await updateMilestonesForActivity(user.id, activityType)
-
-      // Invalidate gamification queries to refresh UI
-      queryClient.invalidateQueries({ queryKey: ['gamification'] })
+      // Översiktens aktivitetsfeed bygger på domändata (sparade jobb, dagbok
+      // m.m.) — invalidera den så handlingen syns direkt. 'gamification'-nyckeln
+      // togs bort med G9: ingen vy läste den.
       queryClient.invalidateQueries({ queryKey: ['dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['hub'] })
     } catch (err) {
       console.error('Error tracking activity:', err)
     }
@@ -253,178 +282,5 @@ function getDefaultPoints(activityType: ActivityType): number {
   return pointsMap[activityType] || 5
 }
 
-/**
- * Update milestones based on activity type
- */
-async function updateMilestonesForActivity(userId: string, activityType: ActivityType) {
-  // Get current counts to update milestones
-  const milestonesToUpdate: { key: string; countQuery: string }[] = []
-
-  switch (activityType) {
-    case 'job_saved':
-      milestonesToUpdate.push({ key: 'job_hunter', countQuery: 'saved_jobs' })
-      milestonesToUpdate.push({ key: 'job_organizer', countQuery: 'saved_jobs' })
-      break
-    case 'job_applied':
-      milestonesToUpdate.push({ key: 'application_pro', countQuery: 'job_applications' })
-      break
-    case 'article_read':
-      milestonesToUpdate.push({ key: 'knowledge_seeker', countQuery: 'articles_read' })
-      milestonesToUpdate.push({ key: 'bookworm', countQuery: 'articles_read' })
-      break
-    case 'article_saved':
-      milestonesToUpdate.push({ key: 'saver', countQuery: 'articles_saved' })
-      break
-    case 'interview_completed':
-      milestonesToUpdate.push({ key: 'interview_starter', countQuery: 'interviews' })
-      milestonesToUpdate.push({ key: 'interview_pro', countQuery: 'interviews' })
-      break
-    case 'mood_logged':
-      // For mood tracking, we need to count consecutive days
-      await updateMoodStreak(userId)
-      break
-    case 'diary_entry':
-      milestonesToUpdate.push({ key: 'reflection_pro', countQuery: 'diary_entries' })
-      break
-  }
-
-  // Update each milestone
-  for (const milestone of milestonesToUpdate) {
-    const count = await getActivityCount(userId, milestone.countQuery)
-    if (count > 0) {
-      await supabase.rpc('update_milestone_progress', {
-        p_user_id: userId,
-        p_milestone_key: milestone.key,
-        p_new_progress: count
-      })
-    }
-  }
-}
-
-/**
- * Get count of activities for milestone tracking
- */
-async function getActivityCount(userId: string, countType: string): Promise<number> {
-  let count = 0
-
-  try {
-    switch (countType) {
-      case 'saved_jobs': {
-        const { count: jobCount } = await supabase
-          .from('saved_jobs')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-        count = jobCount || 0
-        break
-      }
-      case 'job_applications': {
-        const { count: appCount } = await supabase
-          .from('job_applications')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-        count = appCount || 0
-        break
-      }
-      case 'articles_read': {
-        const { count: readCount } = await supabase
-          .from('user_activity_log')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .eq('activity_type', 'article_read')
-        count = readCount || 0
-        break
-      }
-      case 'articles_saved': {
-        const { count: savedCount } = await supabase
-          .from('user_activity_log')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .eq('activity_type', 'article_saved')
-        count = savedCount || 0
-        break
-      }
-      case 'interviews': {
-        const { count: interviewCount } = await supabase
-          .from('user_activity_log')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .eq('activity_type', 'interview_completed')
-        count = interviewCount || 0
-        break
-      }
-      case 'diary_entries': {
-        const { count: diaryCount } = await supabase
-          .from('user_activity_log')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .eq('activity_type', 'diary_entry')
-        count = diaryCount || 0
-        break
-      }
-    }
-  } catch (err) {
-    console.error('Error getting activity count:', err)
-  }
-
-  return count
-}
-
-/**
- * Update mood tracking streak milestone
- */
-async function updateMoodStreak(userId: string) {
-  try {
-    // Get mood logs for the last 30 days
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const { data: moodLogs } = await supabase
-      .from('mood_logs')
-      .select('created_at')
-      .eq('user_id', userId)
-      .gte('created_at', thirtyDaysAgo.toISOString())
-      .order('created_at', { ascending: false })
-
-    if (!moodLogs || moodLogs.length === 0) return
-
-    // Calculate streak
-    let streak = 0
-    const currentDate = new Date()
-    currentDate.setHours(0, 0, 0, 0)
-
-    const logDates = moodLogs.map(log => {
-      const d = new Date(log.created_at)
-      d.setHours(0, 0, 0, 0)
-      return d.getTime()
-    })
-
-    const uniqueDates = [...new Set(logDates)]
-
-    for (let i = 0; i < 30; i++) {
-      if (uniqueDates.includes(currentDate.getTime())) {
-        streak++
-        currentDate.setDate(currentDate.getDate() - 1)
-      } else {
-        break
-      }
-    }
-
-    // Update milestones
-    if (streak > 0) {
-      await supabase.rpc('update_milestone_progress', {
-        p_user_id: userId,
-        p_milestone_key: 'mood_tracker',
-        p_new_progress: streak
-      })
-      await supabase.rpc('update_milestone_progress', {
-        p_user_id: userId,
-        p_milestone_key: 'wellness_streak',
-        p_new_progress: streak
-      })
-    }
-  } catch (err) {
-    console.error('Error updating mood streak:', err)
-  }
-}
 
 export default useAchievementTracker

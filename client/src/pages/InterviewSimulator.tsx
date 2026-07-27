@@ -13,6 +13,7 @@ import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusInterviewWizard } from '@/components/focus/pages/FocusInterviewWizard'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { saveSimulatorSession } from '@/services/interviewService'
+import { IntervjuSimulatorResultSchema, safeParseAiResponse, type IntervjuResult } from '@/services/aiSchemas'
 
 interface FragaSvar {
   fraga: string
@@ -160,6 +161,10 @@ function InterviewSimulatorInner() {
   const [supportPhrase, setSupportPhrase] = useState<string | null>(null)
   const [isLoadingSupportPhrase, setIsLoadingSupportPhrase] = useState(false)
   const [visarSammanfattning, setVisarSammanfattning] = useState(false)
+  // G11: AI-helhetsbedömning av hela sessionen. `null` = inte hämtad/ej möjlig.
+  const [aiSammanfattning, setAiSammanfattning] = useState<IntervjuResult | null>(null)
+  const [sammanfattningLoading, setSammanfattningLoading] = useState(false)
+  const [sammanfattningFel, setSammanfattningFel] = useState<string | null>(null)
   const { trackInterviewCompleted } = useAchievementTracker()
   const { confirm } = useConfirmDialog()
 
@@ -400,7 +405,37 @@ function InterviewSimulatorInner() {
     setSupportPhrase(null)
     setIsRecording(false)
     setVisarSammanfattning(false)
+    setAiSammanfattning(null)
+    setSammanfattningFel(null)
   }, [antalFragor, trackInterviewCompleted])
+
+  // G11: hämta AI:ns helhetsbedömning av sessionen. Vid fel visas ett ärligt
+  // meddelande — sammanfattningsskärmens egna siffror (antal svar, snittbetyg)
+  // står kvar och är oberoende av AI:n.
+  const hamtaAiSammanfattning = useCallback(async (session: FragaSvar[]) => {
+    setSammanfattningLoading(true)
+    setSammanfattningFel(null)
+    try {
+      const response = await callAI<unknown>('intervju-sammanfattning', {
+        roll,
+        foretag,
+        historik: session.map(h => ({ fraga: h.fraga, svar: h.svar, rating: h.rating })),
+      })
+      const parsed = safeParseAiResponse(
+        IntervjuSimulatorResultSchema,
+        (response as { sammanfattning?: unknown }).sammanfattning
+      )
+      if (!parsed.success || !parsed.data) {
+        setSammanfattningFel(t('interviewSimulator.summary.aiFailed', 'Vi kunde inte skapa en helhetsbedömning just nu. Dina svar och betyg finns kvar nedan.'))
+        return
+      }
+      setAiSammanfattning(parsed.data)
+    } catch {
+      setSammanfattningFel(t('interviewSimulator.summary.aiFailed', 'Vi kunde inte skapa en helhetsbedömning just nu. Dina svar och betyg finns kvar nedan.'))
+    } finally {
+      setSammanfattningLoading(false)
+    }
+  }, [roll, foretag, t])
 
   // Bekräfta innan avslut om något skulle gå förlorat, spara sessionen
   // (svar + betyg + AI-feedback) och visa en sammanfattning innan man lämnar
@@ -429,10 +464,11 @@ function InterviewSimulatorInner() {
         avgRating: Number(avgRatingValue.toFixed(1)),
       })
       setVisarSammanfattning(true)
+      void hamtaAiSammanfattning(historik)
     } else {
       avslutaIntervju()
     }
-  }, [historik, anvandarSvar, confirm, t, roll, foretag, antalFragor, avslutaIntervju])
+  }, [historik, anvandarSvar, confirm, t, roll, foretag, antalFragor, avslutaIntervju, hamtaAiSammanfattning])
 
   const downloadSessionSummary = useCallback(() => {
     const avgRatingValue = historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 'N/A'
@@ -457,14 +493,23 @@ TIPS FÖR FÖRBÄTTRING:
 - Praktisera högljudd för att förbättra uttal och tempo
 - Förbered konkreta exempel från din erfarenhet`
 
-    const blob = new Blob([summary], { type: 'text/plain' })
+    // G11: lägg AI:ns helhetsbedömning sist när den finns. Märkt som
+    // AI-genererad även i textfilen (AI Act art. 50).
+    const aiDel = aiSammanfattning
+      ? `
+
+HELHETSBEDÖMNING (AI-genererad)
+${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSammanfattning.overall_score === 'number' ? `Sammanvägt omdöme: ${aiSammanfattning.overall_score}/10\n` : ''}${aiSammanfattning.strengths?.length ? `\nDina styrkor:\n${aiSammanfattning.strengths.map(s => `- ${s}`).join('\n')}\n` : ''}${aiSammanfattning.improvements?.length ? `\nAtt öva vidare på:\n${aiSammanfattning.improvements.map(s => `- ${s}`).join('\n')}\n` : ''}`
+      : ''
+
+    const blob = new Blob([summary + aiDel], { type: 'text/plain' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
     a.download = `intervju-session-${new Date().toISOString().split('T')[0]}.txt`
     a.click()
     window.URL.revokeObjectURL(url) // Clean up blob URL
-  }, [roll, foretag, antalFragor, historik])
+  }, [roll, foretag, antalFragor, historik, aiSammanfattning])
 
   // Memoized average rating calculation
   const avgRating = useMemo(() => {
@@ -667,6 +712,70 @@ TIPS FÖR FÖRBÄTTRING:
               <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
             </div>
           </div>
+
+          {/* G11: AI:ns helhetsbedömning av hela sessionen */}
+          {sammanfattningLoading && (
+            <div className="mb-6 p-4 rounded-xl bg-stone-50 dark:bg-stone-700/50 border border-stone-200 dark:border-stone-600">
+              <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 animate-spin" aria-hidden="true" />
+                {t('interviewSimulator.summary.aiLoading', 'Vi tittar igenom hela övningen …')}
+              </p>
+            </div>
+          )}
+
+          {sammanfattningFel && !sammanfattningLoading && (
+            <div className="mb-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
+              <p className="text-sm text-amber-800 dark:text-amber-200">{sammanfattningFel}</p>
+            </div>
+          )}
+
+          {aiSammanfattning && !sammanfattningLoading && (
+            <div
+              data-ai-generated="true"
+              className="mb-6 p-5 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
+            >
+              <h2 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-accent)] mb-2">
+                {t('interviewSimulator.summary.aiTitle', 'Helhetsbedömning')}
+              </h2>
+
+              {aiSammanfattning.summary && (
+                <p className="text-stone-800 dark:text-stone-200 mb-4">{aiSammanfattning.summary}</p>
+              )}
+
+              {typeof aiSammanfattning.overall_score === 'number' && (
+                <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
+                  {t('interviewSimulator.summary.aiScore', {
+                    defaultValue: 'Sammanvägt omdöme: {{score}}/10',
+                    score: aiSammanfattning.overall_score,
+                  })}
+                </p>
+              )}
+
+              {!!aiSammanfattning.strengths?.length && (
+                <div className="mb-4">
+                  <h3 className="text-sm font-medium text-emerald-700 dark:text-emerald-400 mb-1">
+                    {t('interviewSimulator.summary.aiStrengths', 'Det här gjorde du bra')}
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-stone-800 dark:text-stone-200">
+                    {aiSammanfattning.strengths.map((s, i) => <li key={i}>{s}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              {!!aiSammanfattning.improvements?.length && (
+                <div className="mb-2">
+                  <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    {t('interviewSimulator.summary.aiImprovements', 'Att öva vidare på')}
+                  </h3>
+                  <ul className="list-disc list-inside space-y-1 text-sm text-stone-800 dark:text-stone-200">
+                    {aiSammanfattning.improvements.map((s, i) => <li key={i}>{s}</li>)}
+                  </ul>
+                </div>
+              )}
+
+              <AIGeneratedWatermark contentType="omdöme" />
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
