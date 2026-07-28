@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
 import type { ResurserSummary } from './hubSummaryTypes'
@@ -9,7 +9,6 @@ export const RESURSER_HUB_KEY = (userId: string) => ['hub', 'resurser', userId] 
 export function useResurserHubSummary() {
   const { user } = useAuth()
   const userId = user?.id ?? ''
-  const queryClient = useQueryClient()
 
   return useQuery<ResurserSummary>({
     queryKey: RESURSER_HUB_KEY(userId),
@@ -61,10 +60,11 @@ export function useResurserHubSummary() {
         aiTeamSessionCount: aiSessions.length,
       }
 
-      // Deep-link cache sync — write the EXACT keys JobsokHub uses, so deep-link routes
-      // (/cv, /cover-letters) read from the same cache without a second fetch.
-      queryClient.setQueryData(['cv-versions'], summary.cv ? [summary.cv] : [])
-      queryClient.setQueryData(['cover-letters'], summary.coverLetters)
+      // Cache-syncen borttagen (UX8, 2026-07-27). Den skrev hubbens egna former till
+      // nycklar som ägs av useDocuments: ['cv-versions'] väntar hela CVVersion[] men fick
+      // en stubbe med {id, updated_at}, och ['cover-letters'] väntar alla brev men fick
+      // hubbens tre senaste. Samma buggklass som förgiftade Ansökningar-sidan.
+      // En nyckel = en form = en ägare.
 
       return summary
     },

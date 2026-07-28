@@ -505,10 +505,12 @@ async function fetchExercisesCompletedCount(userId?: string): Promise<number> {
 async function fetchApplicationsCount(userId?: string): Promise<number> {
   if (!userId) return 0
   try {
+    // saved_jobs — INTE utfasade job_applications (UX8, 2026-07-27)
     const { count } = await supabase
-      .from('job_applications')
+      .from('saved_jobs')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId)
+      .is('archived_at', null)
     return count || 0
   } catch {
     return 0

@@ -81,8 +81,22 @@ export function CookieConsent() {
   if (!show) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6">
-      <div className="max-w-2xl mx-auto bg-white dark:bg-stone-800 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+    /* UX10 (2026-07-27): wrappern låg som `fixed bottom-0 … z-50 p-4` rakt över
+       HubBottomNav (`z-30`, 64 px) och gjorde ALLA FEM hubbar otappbara på mobil
+       vid första besöket — hit-test gav 5/5 blockerade knappar på 390×844 och
+       360×640. Två ändringar löser det:
+         1. `pointer-events-none` på wrappern + `pointer-events-auto` på kortet,
+            så den osynliga paddingytan inte längre äter tappar.
+         2. Bottenpadding = 1rem + `--bottom-nav-h`, som HubBottomNav sätter när
+            det är monterat. Där navet finns lämnar kortet plats åt det; på
+            publika sidor (login, registrering) är variabeln 0 och kortet ligger
+            kvar exakt där det låg — annars hade fixen skjutit upp kortet över
+            inloggningsknappen på mobil. */
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 pointer-events-none"
+      style={{ paddingBottom: 'calc(1rem + var(--bottom-nav-h, 0px))' }}
+    >
+      <div className="max-w-2xl mx-auto bg-white dark:bg-stone-800 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden pointer-events-auto">
         {/* Main Banner */}
         <div className="p-6">
           <div className="flex items-start gap-4">

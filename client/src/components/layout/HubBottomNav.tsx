@@ -9,6 +9,7 @@
  * Each tab meets WCAG 2.1 AA SC 2.5.5 Target Size (min 44x44px).
  */
 
+import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { navHubs, getActiveHub } from './navigation'
@@ -19,6 +20,18 @@ export function HubBottomNav() {
   const { t } = useTranslation()
 
   const activeHub = getActiveHub(location.pathname)
+
+  // UX10 (2026-07-27): annat fixerat innehåll måste veta att navet finns, annars
+  // lägger det sig ovanpå. Cookiebannern gjorde exakt det och blockerade alla fem
+  // hubbar vid första besöket. Variabeln sätts bara när navet är monterat — på
+  // publika sidor (login/registrering) är den 0, så bannern ligger kvar där den låg.
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty('--bottom-nav-h', '64px')
+    return () => {
+      root.style.removeProperty('--bottom-nav-h')
+    }
+  }, [])
 
   return (
     <nav

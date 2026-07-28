@@ -46,8 +46,15 @@ describe('useJobsokHubSummary', () => {
         return makeBuilder([{ id: 'cl1', title: 'Klarna', created_at: '2026-04-26' }])
       if (table === 'interview_sessions')
         return makeBuilder([{ id: 's1', score: 84, created_at: '2026-04-27' }])
-      if (table === 'job_applications')
-        return makeBuilder([{ status: 'saved' }, { status: 'applied' }, { status: 'rejected' }])
+      // saved_jobs — den levande tabellen (UX8). Sista raden är arkiverad och
+      // ska INTE räknas, så filtret i buildApplicationStats verifieras.
+      if (table === 'saved_jobs')
+        return makeBuilder([
+          { status: 'saved', archived_at: null },
+          { status: 'applied', archived_at: null },
+          { status: 'rejected', archived_at: null },
+          { status: 'saved', archived_at: '2026-07-01T00:00:00Z' },
+        ])
       if (table === 'spontaneous_companies')
         return makeBuilder([{ id: 'c1' }, { id: 'c2' }])
       return makeBuilder([])
@@ -61,28 +68,32 @@ describe('useJobsokHubSummary', () => {
     expect(fromMock).toHaveBeenCalledWith('cvs')
     expect(fromMock).toHaveBeenCalledWith('cover_letters')
     expect(fromMock).toHaveBeenCalledWith('interview_sessions')
-    expect(fromMock).toHaveBeenCalledWith('job_applications')
+    expect(fromMock).toHaveBeenCalledWith('saved_jobs')
     expect(fromMock).toHaveBeenCalledWith('spontaneous_companies')
     expect(fromMock).toHaveBeenCalledTimes(5)
   })
 
-  it('populates [application-stats] cache key after loader resolves (HUB-01 cache-sync)', async () => {
+  it('räknar ansökningar ur saved_jobs och hoppar över arkiverade', async () => {
     const { useJobsokHubSummary } = await import('./useJobsokHubSummary')
     const { result } = renderHook(() => useJobsokHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    const stats = _qc.getQueryData(['application-stats']) as { byStatus: Record<string, number> } | undefined
-    expect(stats).toBeDefined()
-    expect(stats).toHaveProperty('byStatus')
-    expect(stats!.byStatus).toMatchObject({ saved: 1, applied: 1, rejected: 1 })
+    const stats = result.current.data!.applicationStats
+    expect(stats.total).toBe(3) // 4 rader, 1 arkiverad
+    expect(stats.byStatus).toMatchObject({ saved: 1, applied: 1, rejected: 1 })
   })
 
-  it('populates [cv-versions] and [cover-letters] cache keys after loader resolves', async () => {
+  // Regressionsvakt för UX8 (2026-07-27): hubben skrev sina EGNA former till
+  // cache-nycklar som ägs av andra hooks. ['application-stats'] ägs av
+  // useApplications (platt {total,active,…} ur saved_jobs), ['cv-versions'] och
+  // ['cover-letters'] av useDocuments (hela objekt). Hubbens former är andra, så
+  // skrivningen fick Ansökningar-sidan att visa "Du har inte börjat söka jobb än"
+  // trots 24 rader i prod. En nyckel = en form = en ägare.
+  it('skriver INTE till cache-nycklar som ägs av andra hooks (UX8)', async () => {
     const { useJobsokHubSummary } = await import('./useJobsokHubSummary')
     const { result } = renderHook(() => useJobsokHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    const cvs = _qc.getQueryData(['cv-versions'])
-    const letters = _qc.getQueryData(['cover-letters'])
-    expect(Array.isArray(cvs)).toBe(true)
-    expect(Array.isArray(letters)).toBe(true)
+    expect(_qc.getQueryData(['application-stats'])).toBeUndefined()
+    expect(_qc.getQueryData(['cv-versions'])).toBeUndefined()
+    expect(_qc.getQueryData(['cover-letters'])).toBeUndefined()
   })
 })

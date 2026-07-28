@@ -157,11 +157,12 @@ export const unifiedProfileApi = {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id),
 
-      // 6. Räkna applications
+      // 6. Räkna applications — saved_jobs, INTE utfasade job_applications (UX8)
       supabase
-        .from('job_applications')
+        .from('saved_jobs')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
+        .is('archived_at', null)
     ])
 
     // D11 (2026-07-23): tidigare fångade ett blankt try/catch ALLA fel

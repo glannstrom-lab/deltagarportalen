@@ -56,6 +56,7 @@ beforeEach(() => {
   mockFromBuilder.update = vi.fn(() => mockFromBuilder)
   mockFromBuilder.upsert = vi.fn(() => mockFromBuilder)
   mockFromBuilder.eq = vi.fn(() => mockFromBuilder)
+  mockFromBuilder.is = vi.fn(() => mockFromBuilder)
   mockFromBuilder.order = vi.fn(() => mockFromBuilder)
   mockFromBuilder.limit = vi.fn(() => mockFromBuilder)
   mockFromBuilder.single = vi.fn()
@@ -117,7 +118,7 @@ describe('unifiedProfileApi.getProfile', () => {
         error: null,
       }) // unified_profiles
     queueResult({ count: 2, error: null }) // cover_letters count
-    queueResult({ count: 5, error: null }) // job_applications count
+    queueResult({ count: 5, error: null }) // saved_jobs count (UX8: var job_applications)
 
     const result = await unifiedProfileApi.getProfile()
 

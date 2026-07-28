@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
 import type { JobsokSummary } from './hubSummaryTypes'
@@ -6,7 +6,7 @@ import type { JobsokSummary } from './hubSummaryTypes'
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
 
-type AppRow = { status: string }
+type AppRow = { status: string; archived_at: string | null }
 type SponRow = { id: string; followup_date: string | null; status: string }
 
 // Statusar där uppföljning inte längre är aktuell (speglar useSpontaneousCompanies)
@@ -22,7 +22,9 @@ function buildSpontaneousFollowups(rows: SponRow[]) {
   return { count: upcoming.length, nextDate: upcoming[0]?.followup_date ?? null }
 }
 
-function buildApplicationStats(rows: AppRow[]) {
+function buildApplicationStats(allRows: AppRow[]) {
+  // Arkiverade räknas inte — hubbkortet ska spegla det Ansökningar-sidan visar.
+  const rows = allRows.filter(r => !r.archived_at)
   const byStatus: Record<string, number> = {}
   for (const r of rows) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1
   // segments mirror Phase 2 ApplicationsWidget MOCK shape (anti-shaming: closed segment de-emphasized)
@@ -38,7 +40,6 @@ function buildApplicationStats(rows: AppRow[]) {
 export function useJobsokHubSummary() {
   const { user } = useAuth()
   const userId = user?.id ?? ''
-  const queryClient = useQueryClient()
 
   return useQuery<JobsokSummary>({
     queryKey: JOBSOK_HUB_KEY(userId),
@@ -54,7 +55,9 @@ export function useJobsokHubSummary() {
         supabase.from('cvs').select('id, updated_at').eq('user_id', userId).maybeSingle(),
         supabase.from('cover_letters').select('id, title, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
         supabase.from('interview_sessions').select('id, score, created_at').eq('user_id', userId).not('completed_at', 'is', null).order('created_at', { ascending: false }).limit(8),
-        supabase.from('job_applications').select('status').eq('user_id', userId),
+        // saved_jobs — INTE job_applications. Den tabellen är utfasad (E12) och har
+        // noll rader i prod; hubbkortet visade därför alltid "Inga än" (UX8).
+        supabase.from('saved_jobs').select('status, archived_at').eq('user_id', userId),
         supabase.from('spontaneous_companies').select('id, followup_date, status').eq('user_id', userId),
       ])
 
@@ -68,10 +71,16 @@ export function useJobsokHubSummary() {
         spontaneousFollowups: buildSpontaneousFollowups(sponRows),
       }
 
-      // Deep-link cache sync — write to EXACT keys used by useDocuments + useApplications
-      queryClient.setQueryData(['application-stats'], summary.applicationStats)
-      queryClient.setQueryData(['cv-versions'], summary.cv ? [summary.cv] : [])
-      queryClient.setQueryData(['cover-letters'], summary.coverLetters)
+      // INGEN cache-sync till andra hooks nycklar. Den fanns här som
+      // "deep-link cache sync", men skrev FEL FORM till nycklar som ägs av
+      // andra hooks (UX8, 2026-07-27):
+      //   ['application-stats'] ägs av useApplications  → platt {total,active,applied,…}
+      //   ['cv-versions']       ägs av useDocuments     → hela CVVersion[]
+      //   ['cover-letters']     ägs av useDocuments     → hela CoverLetter[]
+      // Hubbens former är andra (byStatus/segments, en stubbe med två fält, max 3 brev),
+      // så skrivningen förgiftade sidorna: Ansökningar visade "Du har inte börjat söka
+      // jobb än" trots 24 rader i saved_jobs. En nyckel = en form = en ägare.
+      // Sidorna hämtar sin egen data — det är korrekt och kostar en extra fetch.
 
       return summary
     },

@@ -90,17 +90,16 @@ describe('useResurserHubSummary', () => {
     expect(data.aiTeamSessionCount).toBe(1)
   })
 
-  it('writes cv-versions and cover-letters cache keys (deep-link cache shared with JobsokHub)', async () => {
+  // Regressionsvakt för UX8 (2026-07-27): hubben skrev sina egna former till
+  // nycklar som ägs av useDocuments — ['cv-versions'] väntar hela CVVersion[] men
+  // fick en stubbe med {id, updated_at}, ['cover-letters'] väntar alla brev men
+  // fick hubbens tre senaste. Samma buggklass som tömde Ansökningar-sidan.
+  it('skriver INTE till cache-nycklar som ägs av useDocuments (UX8)', async () => {
     const { useResurserHubSummary } = await import('./useResurserHubSummary')
     const { result } = renderHook(() => useResurserHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    // The query client used inside the hook is the one provided by `wrapper`, which is captured in `_qc`.
-    const cvCache = _qc.getQueryData(['cv-versions'])
-    const lettersCache = _qc.getQueryData(['cover-letters'])
-    expect(cvCache).toEqual([{ id: 'cv-r', updated_at: '2026-04-25' }])
-    expect(lettersCache).toEqual([
-      { id: 'cl-r', title: 'Spotify', created_at: '2026-04-26' },
-    ])
+    expect(_qc.getQueryData(['cv-versions'])).toBeUndefined()
+    expect(_qc.getQueryData(['cover-letters'])).toBeUndefined()
   })
 
   it('articleCompletedCount counts only is_completed=true rows', async () => {
