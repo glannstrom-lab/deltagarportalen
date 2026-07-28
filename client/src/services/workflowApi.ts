@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import { savedJobsApi } from './cloudStorage'
+import { savedJobsApi } from './jobsApi'
 import { applicationsApi } from './applicationsApi'
 import type { ApplicationStatus, ManualJobData } from '@/types/application.types'
 
@@ -364,16 +364,18 @@ export const nextStepApi = {
       // Hämta första jobbet utan ansökan
       const savedJobs = await savedJobsApi.getAll()
       const firstUnapplied = savedJobs.find(j => j.status === 'SAVED')
+      // job_data är en lös post i radformen — läs rubriken defensivt (E12)
+      const firstHeadline = (firstUnapplied?.job_data?.headline as string | undefined) ?? ''
       
       return {
         type: 'CREATE_APPLICATION',
         message: `Du har ${progress.savedJobsWithoutApplication} sparade jobb utan ansökan`,
         submessage: firstUnapplied 
-          ? `Börja med "${firstUnapplied.job_data?.headline?.substring(0, 40)}..."`
+          ? `Börja med "${firstHeadline.substring(0, 40)}..."`
           : 'Skicka din första ansökan idag!',
         action: { 
           label: firstUnapplied 
-            ? `Skapa ansökan för ${firstUnapplied.job_data?.headline?.substring(0, 30)}...`
+            ? `Skapa ansökan för ${firstHeadline.substring(0, 30)}...`
             : 'Skapa ansökan',
           link: firstUnapplied 
             ? `/dashboard/job-search?createApplication=${firstUnapplied.job_id}`

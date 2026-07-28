@@ -9,7 +9,11 @@ vi.mock('@/hooks/useSupabase', () => ({
 
 const fromMock = vi.fn()
 vi.mock('@/lib/supabase', () => ({
-  supabase: { from: (...args: unknown[]) => fromMock(...args) },
+  supabase: {
+    from: (...args: unknown[]) => fromMock(...args),
+    // applicationsApi äger saved_jobs sedan E12 och autentiserar själv
+    auth: { getUser: async () => ({ data: { user: { id: 'test-user-id' } } }) },
+  },
 }))
 
 function makeBuilder(data: unknown) {

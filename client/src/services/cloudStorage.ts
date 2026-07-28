@@ -66,13 +66,6 @@ interface InterviewSessionUpdate {
   [key: string]: unknown
 }
 
-interface SavedJob {
-  id: string
-  title?: string
-  company?: string
-  [key: string]: unknown
-}
-
 interface SavedSearch {
   id?: string
   name: string
@@ -1124,108 +1117,14 @@ export const interviewSessionsApi = {
 // ============================================
 // SPARADE JOBB (för CoverLetterGenerator)
 // ============================================
-export const savedJobsApi = {
-  async getAll() {
-    // E11 (2026-07-23): explicit kolumnlista — täcker fälten alla konsumenter
-    // faktiskt läser (useSavedJobs, workflowApi, Resources, GettingStartedTab/
-    // MyJourneyTab läser bara längden). Tabellen har fler kolumner (delas med
-    // det rikare applicationsApi.ts-spåret, se E11-rapporten) men de läses
-    // inte här.
-    // D7-not: saknar explicit user_id-filter men RLS scopar queryn till
-    // inloggad användare — defense-in-depth-guard uteblev då den bryter
-    // hot-path-testerna för marginell vinst (RLS är säkerhetsgränsen).
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .select('id, job_id, job_data, status, notes, created_at')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      handleStorageError(error, 'hämta sparade jobb')
-      // Fallback till localStorage
-      return JSON.parse(localStorage.getItem('savedJobs') || '[]')
-    }
-    return data || []
-  },
-
-  async add(job: SavedJob) {
-    const user = await getCurrentUser()
-    if (!user) {
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      saved.push(job)
-      localStorage.setItem('savedJobs', JSON.stringify(saved))
-      return job
-    }
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .insert({
-        user_id: user.id,
-        job_id: job.id,
-        job_data: job
-      })
-      .select()
-      .single()
-
-    if (error) {
-      handleStorageError(error, 'spara jobb')
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      saved.push(job)
-      localStorage.setItem('savedJobs', JSON.stringify(saved))
-      return job
-    }
-    return data
-  },
-
-  async remove(jobId: string) {
-    const user = await getCurrentUser()
-    if (!user) {
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      const filtered = saved.filter((j: SavedJob) => j.id !== jobId)
-      localStorage.setItem('savedJobs', JSON.stringify(filtered))
-      return
-    }
-
-    const { error } = await supabase
-      .from('saved_jobs')
-      .delete()
-      .eq('job_id', jobId)
-      .eq('user_id', user.id)
-
-    if (error) {
-      handleStorageError(error, 'ta bort sparat jobb')
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      const filtered = saved.filter((j: SavedJob) => j.id !== jobId)
-      localStorage.setItem('savedJobs', JSON.stringify(filtered))
-    }
-  },
-
-  // Alias for remove (backwards compatibility)
-  async delete(jobId: string) {
-    return this.remove(jobId)
-  },
-
-  async isSaved(jobId: string) {
-    const user = await getCurrentUser()
-    if (!user) {
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      return saved.some((j: SavedJob) => j.id === jobId)
-    }
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .select('id')
-      .eq('job_id', jobId)
-      .eq('user_id', user.id)
-      .limit(1)
-
-    if (error) {
-      handleStorageError(error, 'kolla om jobb är sparat')
-      const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      return saved.some((j: SavedJob) => j.id === jobId)
-    }
-    return data && data.length > 0
-  }
-}
+// savedJobsApi flyttad (E12-konsolideringen, 2026-07-28).
+//
+// Den här modulen hade ett EGET `savedJobsApi` med samma namn som det i
+// jobsApi.ts — två objekt, samma namn, samma tabell, olika kolumnurval och
+// olika felhantering. Vilket man fick berodde på vilken import man råkade
+// skriva. All åtkomst till `saved_jobs` ligger nu i applicationsApi.ts;
+// jobbsökningens radform exponeras av `savedJobsApi` i jobsApi.ts.
+// Importera därifrån: `import { savedJobsApi } from '@/services/jobsApi'`.
 
 // ============================================
 // PLATSBANKEN (sparade jobb och sökningar)

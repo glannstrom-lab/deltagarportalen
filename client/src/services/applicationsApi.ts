@@ -416,6 +416,131 @@ export const applicationsApi = {
 
     if (error) handleError(error)
     return (data || []).map(transformApplication)
+  },
+
+  // ==========================================================================
+  // E12-konsolideringen (2026-07-28): primitiver som tidigare låg i jobsApi och
+  // cloudStorage. Båda hade egna `.from('saved_jobs')` mot samma tabell, med
+  // olika skiftlägeshantering — `saved_jobs.status` lagras i VERSALER i prod
+  // (SAVED/INTERESTED/APPLIED) medan appen arbetar i gemener. Nu äger den här
+  // modulen ALL åtkomst till tabellen och normaliserar på ett ställe.
+  // ==========================================================================
+
+  /**
+   * Spara ett jobb från jobbsökningen. Upsert på (user_id, job_id) så att samma
+   * annons inte kan sparas två gånger — samma beteende som jobsApi.saveJob hade.
+   */
+  async saveJob(jobId: string, jobData: Record<string, unknown>, status: ApplicationStatus = 'saved'): Promise<Application> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    // jobData kommer som en lös post från jobbsökningen — läs de härledda
+    // kolumnerna defensivt i stället för att casta till PlatsbankenJob.
+    const employer = jobData?.employer as { name?: string } | undefined
+    const address = jobData?.workplace_address as { municipality?: string } | undefined
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .upsert({
+        user_id: user.id,
+        job_id: jobId,
+        job_data: jobData,
+        status: status.toUpperCase(),
+        company_name: employer?.name,
+        job_title: jobData?.headline as string | undefined,
+        location: address?.municipality,
+        job_url: (jobData?.webpage_url ?? jobData?.url) as string | undefined,
+      }, { onConflict: 'user_id,job_id' })
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return transformApplication(data)
+  },
+
+  /** Är annonsen redan sparad? */
+  async isSaved(jobId: string): Promise<boolean> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('job_id', jobId)
+      .maybeSingle()
+
+    if (error) handleError(error)
+    return !!data
+  },
+
+  /**
+   * Hämta per status. Anropas med appens gemener — versaliseringen sker här, så
+   * ingen anropare behöver känna till lagringsformatet.
+   */
+  async getByStatus(statuses: ApplicationStatus[]): Promise<Application[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .select('*')
+      .eq('user_id', user.id)
+      .in('status', statuses.map(s => s.toUpperCase()))
+      .order('created_at', { ascending: false })
+
+    if (error) handleError(error)
+    return (data || []).map(transformApplication)
+  },
+
+  /** Uppdatera via annonsens job_id i stället för radens id (jobbsökningens vy). */
+  async updateByJobId(jobId: string, updates: UpdateApplicationInput): Promise<Application> {
+    const existing = await this.getByJobId(jobId)
+    if (!existing) throw new Error('Jobb inte hittat')
+    return this.update(existing.id, updates)
+  },
+
+  /** Radera via annonsens job_id. Tyst no-op om raden inte finns (som tidigare). */
+  async deleteByJobId(jobId: string): Promise<void> {
+    const existing = await this.getByJobId(jobId)
+    if (!existing) return
+    return this.delete(existing.id)
+  },
+
+  /**
+   * Råa statusrader för räkning/summering (hubbar, progress, profilaggregat).
+   * Finns för att de tidigare gjorde egna `.from('saved_jobs')` runt servicelagret.
+   * Returnerar status i GEMENER — anroparen ska aldrig behöva veta hur det lagras.
+   */
+  async getStatusRows(): Promise<Array<{ status: ApplicationStatus; archivedAt: string | null }>> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .select('status, archived_at')
+      .eq('user_id', user.id)
+
+    if (error) handleError(error)
+    return (data || []).map(r => ({
+      status: ((r.status as string) || 'saved').toLowerCase() as ApplicationStatus,
+      archivedAt: (r.archived_at as string | null) ?? null,
+    }))
+  },
+
+  /** Antal icke-arkiverade ansökningar. Ersätter fyra spridda count-frågor. */
+  async getActiveCount(): Promise<number> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { count, error } = await supabase
+      .from('saved_jobs')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .is('archived_at', null)
+
+    if (error) handleError(error)
+    return count || 0
   }
 }
 

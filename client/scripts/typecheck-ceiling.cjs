@@ -32,7 +32,7 @@ const path = require('node:path')
  * rotorsaker: CV-mallarnas TemplateCVData, validation.ts asRecord,
  * type-only imports). Sänk aldrig utan att ha kört skriptet.
  */
-const CEILING = 471
+const CEILING = 470
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

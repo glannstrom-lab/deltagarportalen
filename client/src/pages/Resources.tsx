@@ -41,7 +41,8 @@ import {
   Phone,
   MapPinned
 } from '@/components/ui/icons'
-import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
+import { articleBookmarksApi } from '@/services/cloudStorage'
+import { savedJobsApi } from '@/services/jobsApi'
 import { cvApi } from '@/services/cvApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
 import { interestApi } from '@/services/interestApi'
@@ -472,7 +473,7 @@ function ResourcesInner() {
         interestApi.getResult(), // Fixed: was getResults()
       ])
 
-      setSavedJobs(jobs || [])
+      setSavedJobs((jobs || []) as unknown as SavedJob[])
       setBookmarkedArticles(bookmarks || [])
       setCoverLetters(letters || [])
       setCvData(cv)

@@ -1,12 +1,13 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
+import { applicationsApi } from '@/services/applicationsApi'
 import type { JobsokSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
 
-type AppRow = { status: string; archived_at: string | null }
+type AppRow = { status: string; archivedAt: string | null }
 type SponRow = { id: string; followup_date: string | null; status: string }
 
 // Statusar där uppföljning inte längre är aktuell (speglar useSpontaneousCompanies)
@@ -24,8 +25,12 @@ function buildSpontaneousFollowups(rows: SponRow[]) {
 
 function buildApplicationStats(allRows: AppRow[]) {
   // Arkiverade räknas inte — hubbkortet ska spegla det Ansökningar-sidan visar.
-  const rows = allRows.filter(r => !r.archived_at)
+  const rows = allRows.filter(r => !r.archivedAt)
   const byStatus: Record<string, number> = {}
+  // Status kommer redan i gemener från applicationsApi.getStatusRows().
+  // Tidigare lästes tabellen direkt här, och nycklarna nedan jämfördes mot
+  // VERSALER från databasen — alla segment blev noll. Bara `total` stämde, och
+  // eftersom hubbkortet bara läser `total` syntes felet aldrig.
   for (const r of rows) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1
   // segments mirror Phase 2 ApplicationsWidget MOCK shape (anti-shaming: closed segment de-emphasized)
   const segments = [
@@ -55,9 +60,9 @@ export function useJobsokHubSummary() {
         supabase.from('cvs').select('id, updated_at').eq('user_id', userId).maybeSingle(),
         supabase.from('cover_letters').select('id, title, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
         supabase.from('interview_sessions').select('id, score, created_at').eq('user_id', userId).not('completed_at', 'is', null).order('created_at', { ascending: false }).limit(8),
-        // saved_jobs — INTE job_applications. Den tabellen är utfasad (E12) och har
-        // noll rader i prod; hubbkortet visade därför alltid "Inga än" (UX8).
-        supabase.from('saved_jobs').select('status, archived_at').eq('user_id', userId),
+        // Via applicationsApi — enda ägaren av saved_jobs (E12). Returnerar
+        // status i gemener, så ingen skiftlägeskunskap behövs här.
+        applicationsApi.getStatusRows(),
         supabase.from('spontaneous_companies').select('id, followup_date, status').eq('user_id', userId),
       ])
 
@@ -66,7 +71,7 @@ export function useJobsokHubSummary() {
         cv: cvR.data ?? null,
         coverLetters: lettersR.data ?? [],
         interviewSessions: sessionsR.data ?? [],
-        applicationStats: buildApplicationStats((appsR.data as AppRow[] | null) ?? []),
+        applicationStats: buildApplicationStats(appsR ?? []),
         spontaneousCount: sponRows.length,
         spontaneousFollowups: buildSpontaneousFollowups(sponRows),
       }

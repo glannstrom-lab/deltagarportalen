@@ -12,7 +12,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import {
   interestGuideApi,
-  savedJobsApi,
   moodApi,
   personalBrandApi,
   calendarApi,
@@ -201,92 +200,11 @@ describe('interestGuideApi historik', () => {
 // ============================================
 // SPARADE JOBB
 // ============================================
-describe('savedJobsApi.getAll', () => {
-  it('hämtar saved_jobs sorterade på created_at fallande', async () => {
-    const rows = [{ id: '1', job_id: 'j1' }]
-    setResult({ data: rows, error: null })
-    const result = await savedJobsApi.getAll()
-    expect(mockFrom).toHaveBeenCalledWith('saved_jobs')
-    expect(mockFromBuilder.order).toHaveBeenCalledWith('created_at', { ascending: false })
-    expect(result).toEqual(rows)
-  })
+// savedJobsApi-testerna flyttade till jobsApi.savedJobs.test.ts (E12, 2026-07-28).
+// Implementationen ligger inte längre här: applicationsApi äger saved_jobs och
+// jobsApi exponerar radformen. De gamla testerna asserterade dessutom exakta
+// frågeformer (kolumnlista, delete-by-job_id) i stället för beteende.
 
-  it('faller tillbaka på localStorage vid databasfel', async () => {
-    setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
-    vi.mocked(window.localStorage.getItem).mockReturnValue('[{"id":"local-1"}]')
-    const result = await savedJobsApi.getAll()
-    expect(window.localStorage.getItem).toHaveBeenCalledWith('savedJobs')
-    expect(result).toEqual([{ id: 'local-1' }])
-  })
-})
-
-describe('savedJobsApi.add', () => {
-  it('sparar till localStorage och returnerar jobbet utan inloggad användare', async () => {
-    loggedOut()
-    vi.mocked(window.localStorage.getItem).mockReturnValue('[]')
-    const job = { id: 'j1', title: 'Utvecklare' }
-    const result = await savedJobsApi.add(job)
-    expect(mockFrom).not.toHaveBeenCalled()
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(
-      'savedJobs',
-      JSON.stringify([job])
-    )
-    expect(result).toEqual(job)
-  })
-
-  it('insertar user_id, job_id och job_data för inloggad användare', async () => {
-    loggedIn('user-42')
-    const job = { id: 'j1', title: 'Utvecklare' }
-    setResult({ data: { id: 'row-1', job_id: 'j1' }, error: null })
-    const result = await savedJobsApi.add(job)
-    expect(mockFrom).toHaveBeenCalledWith('saved_jobs')
-    expect(mockFromBuilder.insert).toHaveBeenCalledWith({
-      user_id: 'user-42',
-      job_id: 'j1',
-      job_data: job,
-    })
-    expect(result).toMatchObject({ id: 'row-1' })
-  })
-})
-
-describe('savedJobsApi.remove', () => {
-  it('raderar via job_id och user_id', async () => {
-    loggedIn('user-42')
-    setResult({ error: null })
-    await savedJobsApi.remove('j1')
-    expect(mockFrom).toHaveBeenCalledWith('saved_jobs')
-    expect(mockFromBuilder.delete).toHaveBeenCalled()
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('job_id', 'j1')
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('user_id', 'user-42')
-  })
-
-  it('delete är alias för remove', async () => {
-    loggedIn('user-42')
-    setResult({ error: null })
-    await savedJobsApi.delete('j1')
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('job_id', 'j1')
-  })
-})
-
-describe('savedJobsApi.isSaved', () => {
-  it('returnerar true när jobbet finns sparat', async () => {
-    loggedIn()
-    setResult({ data: [{ id: 'row-1' }], error: null })
-    await expect(savedJobsApi.isSaved('j1')).resolves.toBe(true)
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('job_id', 'j1')
-    expect(mockFromBuilder.limit).toHaveBeenCalledWith(1)
-  })
-
-  it('returnerar false när jobbet inte finns', async () => {
-    loggedIn()
-    setResult({ data: [], error: null })
-    await expect(savedJobsApi.isSaved('j1')).resolves.toBe(false)
-  })
-})
-
-// ============================================
-// HUMÖR (mood_logs)
-// ============================================
 describe('moodApi.getTodaysMood', () => {
   it('returnerar null utan inloggad användare', async () => {
     loggedOut()

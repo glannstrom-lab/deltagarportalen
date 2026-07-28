@@ -37,6 +37,7 @@ import { Button } from '@/components/ui/Button'
 import { CoverLetterTemplateSelector } from './CoverLetterTemplateSelector'
 import { CoverLetterPreview } from './CoverLetterPreview'
 import { cn } from '@/lib/utils'
+import { savedJobsApi } from '@/services/jobsApi'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
@@ -299,14 +300,8 @@ export function CoverLetterWrite() {
         return
       }
       try {
-        const { data, error } = await supabase
-          .from('saved_jobs')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-        if (!error && data) {
-          setSavedJobs(data)
-        }
+        // Via savedJobsApi (E12, 2026-07-28) — applicationsApi äger tabellen.
+        setSavedJobs(await savedJobsApi.getAll())
       } catch (err) {
         console.error('Exception vid sparade-jobb-hämtning:', err)
       } finally {

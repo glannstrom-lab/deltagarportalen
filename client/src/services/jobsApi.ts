@@ -9,7 +9,29 @@
 
 import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
+import { applicationsApi } from './applicationsApi'
+import type { Application, ApplicationStatus } from '@/types/application.types'
 import type { CVData, SavedJob, Skill, WorkExperience } from './supabaseApi'
+
+/**
+ * Application (domänform, gemen status) -> SavedJob (rå radform, VERSAL status).
+ *
+ * E12 (2026-07-28): jobbsökningens konsumenter arbetar med radformen. I stället
+ * för att låta dem läsa tabellen själva översätts domänobjektet här, så
+ * databasåtkomsten kan ligga samlad i applicationsApi.
+ */
+function toSavedJobRow(a: Application): SavedJob {
+  return {
+    id: a.id,
+    user_id: a.userId,
+    job_id: a.jobId,
+    job_data: a.jobData as unknown as Record<string, unknown>,
+    status: a.status.toUpperCase() as SavedJob['status'],
+    notes: a.notes ?? null,
+    applied_at: a.applicationDate ?? null,
+    created_at: a.createdAt,
+  }
+}
 
 // ============================================
 // JOBS API (Arbetsförmedlingen)
@@ -59,10 +81,6 @@ export const jobsApi = {
   },
 
   async saveJob(jobId: string, status: string = 'SAVED', jobData?: Record<string, unknown>) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    // Get job data if not provided
     let dataToSave = jobData
     if (!dataToSave) {
       try {
@@ -71,36 +89,12 @@ export const jobsApi = {
         dataToSave = { id: jobId }
       }
     }
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .upsert({
-        user_id: user.id,
-        job_id: jobId,
-        job_data: dataToSave,
-        status: status
-      }, {
-        onConflict: 'user_id,job_id'
-      })
-      .select()
-      .single()
-
-    if (error) handleError(error)
-    return data
+    const app = await applicationsApi.saveJob(jobId, dataToSave ?? { id: jobId }, status.toLowerCase() as ApplicationStatus)
+    return toSavedJobRow(app)
   },
 
   async getSavedJobs(): Promise<SavedJob[]> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-
-    if (error) handleError(error)
-    return data || []
+    return (await applicationsApi.getAll()).map(toSavedJobRow)
   },
 
   async getApplications(): Promise<SavedJob[]> {
@@ -108,36 +102,15 @@ export const jobsApi = {
   },
 
   async updateApplication(id: string, updates: { status?: string, notes?: string }) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const dbUpdates: Record<string, unknown> = {}
-    if (updates.status) dbUpdates.status = updates.status.toUpperCase()
-    if (updates.notes !== undefined) dbUpdates.notes = updates.notes
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .update(dbUpdates)
-      .eq('id', id)
-      .eq('user_id', user.id)
-      .select()
-      .single()
-
-    if (error) handleError(error)
-    return data
+    const app = await applicationsApi.update(id, {
+      ...(updates.status ? { status: updates.status.toLowerCase() as ApplicationStatus } : {}),
+      ...(updates.notes !== undefined ? { notes: updates.notes } : {}),
+    })
+    return toSavedJobRow(app)
   },
 
   async deleteApplication(id: string) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const { error } = await supabase
-      .from('saved_jobs')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (error) handleError(error)
+    await applicationsApi.delete(id)
     return true
   },
 
@@ -190,9 +163,42 @@ export const jobsApi = {
 // ============================================
 // SAVED JOBS API (Alias för kompatibilitet)
 // ============================================
+/**
+ * savedJobsApi — jobbsökningens vy på saved_jobs.
+ *
+ * E12-konsolideringen (2026-07-28): all databasåtkomst ligger nu i
+ * applicationsApi. Det här objektet är kvar som API-yta för jobbsöks-
+ * konsumenterna (useSavedJobs, useDashboardData, Resources m.fl.) som arbetar
+ * med rå radform (`job_id`/`job_data`/VERSAL status) i stället för domäntypen
+ * `Application`. Det översätter alltså form — det pratar inte med databasen.
+ *
+ * Skiftläget hanteras numera på ETT ställe: applicationsApi versaliserar mot
+ * databasen och gemenar vid läsning. Tidigare gjorde de tre lagren det olika,
+ * mot samma kolumn.
+ */
+/**
+ * Offline-lagret som följde med från cloudStorage-varianten (E12, 2026-07-28).
+ * Det är INTE felmaskering i D11:s mening — det är en medveten affordans så att
+ * jobb kan sparas innan man loggat in och överleva ett tillfälligt tapp. Behålls
+ * ordagrant så konsolideringen inte tyst tar bort en funktion.
+ */
+const offline = {
+  read(): SavedJob[] {
+    try { return JSON.parse(localStorage.getItem('savedJobs') || '[]') } catch { return [] }
+  },
+  write(jobs: unknown[]) {
+    localStorage.setItem('savedJobs', JSON.stringify(jobs))
+  },
+}
+
 export const savedJobsApi = {
   async getAll(): Promise<SavedJob[]> {
-    return jobsApi.getSavedJobs()
+    try {
+      return await jobsApi.getSavedJobs()
+    } catch (err) {
+      console.error('Kunde inte hämta sparade jobb:', err)
+      return offline.read()
+    }
   },
 
   async save(jobId: string, jobData: Record<string, unknown>) {
@@ -200,79 +206,68 @@ export const savedJobsApi = {
   },
 
   async updateStatus(jobId: string, status: string) {
-    const saved = await jobsApi.getSavedJobs()
-    const job = saved.find(j => j.job_id === jobId)
-    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
-    return jobsApi.updateApplication(job.id, { status })
+    return toSavedJobRow(
+      await applicationsApi.updateByJobId(jobId, { status: status.toLowerCase() as ApplicationStatus })
+    )
   },
 
   async delete(jobId: string) {
-    const saved = await jobsApi.getSavedJobs()
-    const job = saved.find(j => j.job_id === jobId)
-    if (!job) return true
-    return jobsApi.deleteApplication(job.id)
+    await applicationsApi.deleteByJobId(jobId)
+    return true
   },
 
   async updateNotes(jobId: string, notes: string) {
-    const saved = await jobsApi.getSavedJobs()
-    const job = saved.find(j => j.job_id === jobId)
-    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
-    return jobsApi.updateApplication(job.id, { notes })
+    return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { notes }))
   },
 
   async updateFollowUpDate(jobId: string, date: string | null) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const saved = await jobsApi.getSavedJobs()
-    const job = saved.find(j => j.job_id === jobId)
-    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .update({ follow_up_date: date, updated_at: new Date().toISOString() })
-      .eq('id', job.id)
-      .eq('user_id', user.id)
-      .select()
-      .single()
-
-    if (error) handleError(error)
-    return data
+    return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { followUpDate: date ?? undefined }))
   },
 
   async updatePriority(jobId: string, priority: 'low' | 'medium' | 'high') {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { priority }))
+  },
 
-    const saved = await jobsApi.getSavedJobs()
-    const job = saved.find(j => j.job_id === jobId)
-    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
+  /**
+   * add/remove/isSaved fanns tidigare bara i cloudStorage-varianten av
+   * savedJobsApi. Ytan här är nu en superset av båda, så den konsoliderade
+   * modulen kan ersätta bägge utan att någon konsument tappar en metod.
+   */
+  async add(job: { id: string; [key: string]: unknown }) {
+    try {
+      return await jobsApi.saveJob(job.id, 'SAVED', job)
+    } catch (err) {
+      console.error('Kunde inte spara jobb i molnet, sparar lokalt:', err)
+      const saved = offline.read()
+      saved.push(job as unknown as SavedJob)
+      offline.write(saved)
+      return job as unknown as SavedJob
+    }
+  },
 
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .update({ priority, updated_at: new Date().toISOString() })
-      .eq('id', job.id)
-      .eq('user_id', user.id)
-      .select()
-      .single()
+  async remove(jobId: string) {
+    try {
+      await applicationsApi.deleteByJobId(jobId)
+    } catch (err) {
+      console.error('Kunde inte ta bort sparat jobb i molnet, tar bort lokalt:', err)
+      offline.write(offline.read().filter(j => j.id !== jobId && j.job_id !== jobId))
+    }
+    return true
+  },
 
-    if (error) handleError(error)
-    return data
+  async isSaved(jobId: string): Promise<boolean> {
+    try {
+      return await applicationsApi.isSaved(jobId)
+    } catch {
+      return offline.read().some(j => j.id === jobId || j.job_id === jobId)
+    }
   },
 
   async getByStatus(statuses: string[]): Promise<SavedJob[]> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .select('*')
-      .eq('user_id', user.id)
-      .in('status', statuses)
-      .order('created_at', { ascending: false })
-
-    if (error) handleError(error)
-    return data || []
+    const apps = await applicationsApi.getByStatus(
+      statuses.map(s => s.toLowerCase() as ApplicationStatus)
+    )
+    return apps.map(toSavedJobRow)
   },
 
   async getApplications(): Promise<SavedJob[]> {

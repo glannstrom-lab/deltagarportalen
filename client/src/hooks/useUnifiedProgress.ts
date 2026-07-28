@@ -9,6 +9,7 @@ import { supabase } from '@/lib/supabase'
 import { cvApi } from '@/services/cvApi'
 import { interestApi } from '@/services/interestApi'
 import { savedJobsApi } from '@/services/jobsApi'
+import { applicationsApi } from '@/services/applicationsApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
 import { RIASEC_TYPES, type RiasecScores } from './useInterestProfile'
 
@@ -505,13 +506,8 @@ async function fetchExercisesCompletedCount(userId?: string): Promise<number> {
 async function fetchApplicationsCount(userId?: string): Promise<number> {
   if (!userId) return 0
   try {
-    // saved_jobs — INTE utfasade job_applications (UX8, 2026-07-27)
-    const { count } = await supabase
-      .from('saved_jobs')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', userId)
-      .is('archived_at', null)
-    return count || 0
+    // Via applicationsApi — enda ägaren av saved_jobs (E12, 2026-07-28)
+    return await applicationsApi.getActiveCount()
   } catch {
     return 0
   }

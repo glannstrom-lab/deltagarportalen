@@ -5,6 +5,7 @@
  * Single source of truth för data som används i CV, brev, ansökningar, etc.
  */
 
+import { applicationsApi } from './applicationsApi'
 import { supabase } from '@/lib/supabase'
 import { showToast } from '@/components/Toast'
 
@@ -157,12 +158,11 @@ export const unifiedProfileApi = {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id),
 
-      // 6. Räkna applications — saved_jobs, INTE utfasade job_applications (UX8)
-      supabase
-        .from('saved_jobs')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-        .is('archived_at', null)
+      // 6. Räkna applications via applicationsApi — enda ägaren av saved_jobs
+      // (E12, 2026-07-28). Formen `{ count, error }` behålls så D11:s
+      // per-delfråga-felkontroll nedan fungerar oförändrat; getActiveCount
+      // kastar vid fel, vilket Promise.all propagerar — samma avsikt.
+      applicationsApi.getActiveCount().then(count => ({ count, error: null })),
     ])
 
     // D11 (2026-07-23): tidigare fångade ett blankt try/catch ALLA fel
@@ -192,7 +192,7 @@ export const unifiedProfileApi = {
       throw coverLettersError
     }
     if (applicationsError) {
-      console.error('Fel vid hämtning av unified profile (job_applications count):', applicationsError)
+      console.error('Fel vid hämtning av unified profile (saved_jobs count):', applicationsError)
       throw applicationsError
     }
 
