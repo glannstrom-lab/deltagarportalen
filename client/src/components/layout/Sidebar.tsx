@@ -22,7 +22,8 @@ import {
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { getProgram } from '@/lib/programs'
-import { ChevronLeft, ChevronRight, LogOut, Settings, Briefcase, UserCheck } from '@/components/ui/icons'
+import { MODULES } from '@/config/features'
+import { ChevronLeft, ChevronRight, LogOut, Settings, Briefcase } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -182,19 +183,21 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
 
         {/* Project Section — Steg till arbete (STA)
          *
-         * Konsulenter ser alltid Konsulent-vy-länken (de behöver inte aktivera
-         * något i settings).
-         * Deltagare ser Min resa-länken endast om de aktiverat programmet i
-         * settings (profile.program === 'steg_till_arbete'). */}
-        {(() => {
+         * Modulen är avaktiverad 2026-08-03 (MODULES.STA) — hela sektionen
+         * uteblir tills VITE_STA_ENABLED=true. Deltagare ser Min resa-länken
+         * först när de dessutom valt programmet i settings
+         * (profile.program === 'steg_till_arbete').
+         *
+         * Konsulent-vy-länken är BORTTAGEN, inte flaggad: portalen har en
+         * konsulentvy (/consultant). Se MODULES.STA i config/features.ts. */}
+        {MODULES.STA && (() => {
           const programSelected = profile?.program === 'steg_till_arbete'
           const program = getProgram(profile?.program ?? null) ?? getProgram('steg_till_arbete')
           if (!program) return null
           // STA-paths är hårdkodade för nu eftersom det är enda projektet med sidor.
           // När fler projekt får sidor flyttas detta till programs.ts.
           const participantPath = programSelected ? '/steg-till-arbete' : null
-          const consultantPath = isConsultant ? '/konsulent/steg-till-arbete' : null
-          if (!participantPath && !consultantPath) return null
+          if (!participantPath) return null
 
           return (
             <div
@@ -216,22 +219,12 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                 <div className="mx-2 mb-2 border-t border-stone-100 dark:border-stone-800" />
               )}
               <div className="space-y-0.5">
-                {participantPath && (
-                  <NavLink
-                    to={participantPath}
-                    icon={Briefcase}
-                    label="Min resa"
-                    isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
-                  />
-                )}
-                {consultantPath && (
-                  <NavLink
-                    to={consultantPath}
-                    icon={UserCheck}
-                    label="Konsulent-vy"
-                    isActive={location.pathname === consultantPath || location.pathname.startsWith(consultantPath + '/')}
-                  />
-                )}
+                <NavLink
+                  to={participantPath}
+                  icon={Briefcase}
+                  label="Min resa"
+                  isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
+                />
               </div>
             </div>
           )

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/supabaseApi'
 import { PROGRAMS, type ProgramSlug } from '@/lib/programs'
+import { MODULES } from '@/config/features'
 import { cn } from '@/lib/utils'
 import { Briefcase, CheckCircle2, AlertCircle, Loader2, ExternalLink } from '@/components/ui/icons'
 
@@ -22,10 +23,6 @@ export function ProgramSelector() {
     const current = (profile?.program as ProgramSlug | null) ?? null
     setSelected(current)
   }, [profile?.program])
-
-  // Är användaren konsulent (eller högre)? Då länkar vi till konsulent-vyn istället.
-  const isConsultant =
-    !!profile?.roles?.some((r) => r === 'CONSULTANT' || r === 'ADMIN' || r === 'SUPERADMIN')
 
   const handleSelect = async (next: ProgramSlug | null) => {
     if (next === selected) return
@@ -135,7 +132,7 @@ export function ProgramSelector() {
             <span>Kunde inte spara. Försök igen.</span>
           </div>
         )}
-        {!isSaving && !feedback && selected === 'steg_till_arbete' && (
+        {!isSaving && !feedback && selected === 'steg_till_arbete' && MODULES.STA && (
           <div className="flex items-center gap-2 flex-wrap text-xs">
             <span className="text-stone-500 dark:text-stone-400">Sidan finns nu på</span>
             <Link
@@ -145,18 +142,9 @@ export function ProgramSelector() {
               /steg-till-arbete
               <ExternalLink className="w-3 h-3" />
             </Link>
-            {isConsultant && (
-              <Link
-                to="/konsulent/steg-till-arbete"
-                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:border-stone-300 transition-colors"
-              >
-                /konsulent/steg-till-arbete
-                <ExternalLink className="w-3 h-3" />
-              </Link>
-            )}
           </div>
         )}
-        {!isSaving && !feedback && selected !== 'steg_till_arbete' && (
+        {!isSaving && !feedback && (selected !== 'steg_till_arbete' || !MODULES.STA) && (
           <p className="text-xs text-stone-500 dark:text-stone-400">
             Sidor för projektet kommer i en kommande uppdatering.
           </p>

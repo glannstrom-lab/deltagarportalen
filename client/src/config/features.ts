@@ -5,6 +5,32 @@
  * All features default to enabled. Set env vars to 'false' to disable.
  */
 
+/**
+ * Modulflaggor — hela funktionsområden som kan stängas av utan att koden tas bort.
+ *
+ * Till skillnad från AI_FEATURES nedan är dessa **avstängda som default**: de
+ * kräver ett uttryckligt `=true` för att monteras. En modul som inte är påslagen
+ * ska inte finnas i navigationen, inte ha routes och inte hämta data.
+ */
+export const MODULES = {
+  /**
+   * STA / Steg till arbete — deltagarens arbetsprövningsresa (`pages/sta/`).
+   *
+   * Avaktiverad 2026-08-03 (beslut Mikael). Koden är kvar men modulen monteras
+   * inte: sätt `VITE_STA_ENABLED=true` för att slå på deltagarvyn igen.
+   *
+   * Observera: **konsulentvyn för STA är borttagen ur appen**, inte flaggad.
+   * Portalen har en konsulentvy — `/consultant`. Filerna under
+   * `pages/sta/StaConsultant.tsx`, `pages/sta/consultant/` och
+   * `pages/sta/StaDocumentWorkspace.tsx` ligger kvar orörda för framtida bruk
+   * men har varken route eller navlänk.
+   */
+  STA: import.meta.env.VITE_STA_ENABLED === 'true',
+} as const
+
+/** Är STA-modulen påslagen? */
+export const isStaEnabled = (): boolean => MODULES.STA
+
 export const AI_FEATURES = {
   /** Deep company analysis with news, culture, and trends */
   COMPANY_ANALYSIS: import.meta.env.VITE_AI_COMPANY_ANALYSIS !== 'false',

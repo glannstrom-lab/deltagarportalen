@@ -5,13 +5,12 @@
  * e2e-täckning innan detta. Livstecken-nivå precis som golden-path — muterar
  * ingen data (inga formulär skickas, inga knappar som skapar/ändrar rader
  * klickas). Riktiga routes hämtade ur client/src/App.tsx:
- *   /#/steg-till-arbete                        — deltagarvy (StaParticipant)
- *   /#/konsulent/steg-till-arbete               — konsulentvy (StaConsultant,
- *                                                  roller CONSULTANT/ADMIN/
- *                                                  SUPERADMIN/ARBETSTERAPEUT)
- *   /#/konsulent/steg-till-arbete/dokument/:id/:docType — dokumentarbetsyta,
- *     kräver riktiga enrollment-id:n från DB — täcks inte här (ingen
- *     mutationsfri väg att hitta ett giltigt par utan att skapa data).
+ *   /#/steg-till-arbete — deltagarvy (StaParticipant). **Monteras bara när
+ *     VITE_STA_ENABLED=true** — modulen avaktiverades 2026-08-03.
+ *
+ * Konsulentvyn (/#/konsulent/steg-till-arbete + dokumentarbetsytan) togs bort
+ * 2026-08-03 och har ingen route längre. Den täcks nu av en regressionsvakt
+ * längst ned i filen i stället för av ett livstecken.
  *
  * Deltagarvyn visar antingen ett fliksystem (aktiv STA-koppling) eller ett
  * tomtillstånd ("När din arbetskonsulent har kopplat dig...") om testkontot
@@ -31,6 +30,10 @@ async function expectPageAlive(page: Page) {
 }
 
 test.describe('STA/Arbetsprövning — deltagarflöde', () => {
+  // Modulen är avaktiverad 2026-08-03 (MODULES.STA i client/src/config/features.ts).
+  // Deltagarvyn har ingen route när flaggan är av → testerna skippas tills
+  // miljön kör med STA påslaget (sätt E2E_STA_ENABLED=true).
+  test.skip(process.env.E2E_STA_ENABLED !== 'true', 'STA-modulen är avaktiverad (VITE_STA_ENABLED)')
   test.skip(!process.env.TEST_USER_EMAIL, 'Test credentials not configured')
 
   test('login → /steg-till-arbete laddar utan route-fel', async ({ page, auth }) => {
@@ -71,10 +74,16 @@ test.describe('STA/Arbetsprövning — deltagarflöde', () => {
   })
 })
 
-test.describe('STA/Arbetsprövning — konsulentvy smoke', () => {
+/**
+ * Regressionsvakt för borttagningen 2026-08-03: STA-konsulentvyn ska INTE gå
+ * att nå. Portalen har en konsulentvy — /consultant. Testet körs oavsett om
+ * STA-modulen är påslagen igen, eftersom borttagningen är permanent och inte
+ * flaggstyrd.
+ */
+test.describe('STA/Arbetsprövning — konsulentvyn är borttagen', () => {
   test.skip(!process.env.TEST_CONSULTANT_EMAIL, 'Consultant credentials not configured')
 
-  test('login → /konsulent/steg-till-arbete laddar med fliksystem', async ({ page }) => {
+  test('/konsulent/steg-till-arbete finns inte — faller på catch-all', async ({ page }) => {
     const auth = new AuthHelper(page)
     await auth.login(TEST_CONSULTANT.email, TEST_CONSULTANT.password)
 
@@ -82,10 +91,12 @@ test.describe('STA/Arbetsprövning — konsulentvy smoke', () => {
     await waitForAppReady(page)
     await expectPageAlive(page)
 
-    const tablist = page.getByRole('tablist').first()
-    await expect(tablist).toBeVisible({ timeout: 10000 })
-    for (const tabName of [/Översikt/i, /Deltagare/i, /Skattningar/i, /Arbetsplatser/i, /Dokument/i]) {
-      await expect(tablist.getByRole('tab', { name: tabName })).toBeVisible()
-    }
+    // Catch-all i App.tsx navigerar till "/" när ingen route matchar
+    await expect(page).not.toHaveURL(/konsulent\/steg-till-arbete/)
+    // Och konsulentens riktiga vy ska fortfarande fungera
+    await page.goto('/#/consultant')
+    await waitForAppReady(page)
+    await expectPageAlive(page)
+    await expect(page.getByRole('tablist').first()).toBeVisible({ timeout: 10000 })
   })
 })

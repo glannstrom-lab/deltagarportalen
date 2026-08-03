@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { Loader2 } from '@/components/ui/icons'
+import { MODULES } from '@/config/features'
 
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
@@ -69,10 +70,12 @@ const KarriarHub = lazy(() => import('./pages/hubs/KarriarHub'))
 const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
 const MinVardagHub = lazy(() => import('./pages/hubs/MinVardagHub'))
 
-// STA (Steg till arbete) — visas när profile.program === 'steg_till_arbete'
+// STA (Steg till arbete) — modulen är avaktiverad 2026-08-03 (MODULES.STA).
+// Deltagarvyn monteras bara när VITE_STA_ENABLED=true. Konsulentvyn
+// (StaConsultant + StaDocumentWorkspace) har ingen route längre — portalen har
+// EN konsulentvy, /consultant. Filerna finns kvar men importeras inte, så de
+// hamnar inte i bundlen (jfr lärdomen "lazy-import utan route = dödkod").
 const StaParticipant = lazy(() => import('./pages/sta/StaParticipant'))
-const StaConsultant = lazy(() => import('./pages/sta/StaConsultant'))
-const StaDocumentWorkspace = lazy(() => import('./pages/sta/StaDocumentWorkspace'))
 
 /**
  * Lazy route wrapper with error boundary
@@ -269,18 +272,12 @@ function App() {
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />
-          {/* STA — Steg till arbete (visas när profile.program === 'steg_till_arbete') */}
-          <Route path="steg-till-arbete" element={<LazyRoute><RouteErrorBoundary><StaParticipant /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="konsulent/steg-till-arbete" element={
-            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN', 'ARBETSTERAPEUT']}>
-              <LazyRoute><RouteErrorBoundary><StaConsultant /></RouteErrorBoundary></LazyRoute>
-            </PrivateRoute>
-          } />
-          <Route path="konsulent/steg-till-arbete/dokument/:enrollmentId/:docType" element={
-            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN', 'ARBETSTERAPEUT']}>
-              <LazyRoute><RouteErrorBoundary><StaDocumentWorkspace /></RouteErrorBoundary></LazyRoute>
-            </PrivateRoute>
-          } />
+          {/* STA — Steg till arbete. Avaktiverad modul: deltagarvyn monteras bara
+              med VITE_STA_ENABLED=true, konsulentvyn är borttagen helt. Utan
+              route faller /steg-till-arbete på catch-all → tillbaka till start. */}
+          {MODULES.STA && (
+            <Route path="steg-till-arbete" element={<LazyRoute><RouteErrorBoundary><StaParticipant /></RouteErrorBoundary></LazyRoute>} />
+          )}
           <Route path="admin" element={
             <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><SuperAdminPanel /></RouteErrorBoundary></LazyRoute>
