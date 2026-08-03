@@ -24,6 +24,7 @@
  *   action:      { label: "Lägg till första kontakten" } (konkret nästa steg)
  */
 
+import { useNavigate, type NavigateFunction } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Button } from './Button'
 import type { LucideIcon } from '@/components/ui/icons'
@@ -176,16 +177,37 @@ interface EmptyListProps extends Omit<EmptyStateProps, 'compact'> {
   onCreate?: () => void
 }
 
+/**
+ * UX15 (2026-08-04): appen kör HashRouter (main.tsx). `window.location.href =
+ * '/nagot'` laddar därför om HELA appen mot en bas-path som inte finns —
+ * URL:en blir `jobin.se/nagot#/oversikt` och den felaktiga bas-pathen ligger
+ * kvar resten av sessionen. Rapporten pekade ut två ställen; tre av fem satt
+ * här, i den DELADE tomtillstånds-komponenten, alltså i varje tomtillstånd i
+ * portalen.
+ *
+ * Externa mål (http(s), mailto:, tel:) är fortsatt äkta window.location-fall —
+ * dem ska routern inte röra.
+ */
+const EXTERNAL = /^(https?:|mailto:|tel:)/i
+function goTo(navigate: NavigateFunction, href: string) {
+  if (EXTERNAL.test(href)) {
+    window.location.href = href
+    return
+  }
+  navigate(href)
+}
+
 export function EmptyList({
   itemName,
   createHref,
   onCreate,
   ...props
 }: EmptyListProps) {
+  const navigate = useNavigate()
   const action = onCreate || createHref
     ? {
         label: `Skapa ${itemName.toLowerCase()}`,
-        onClick: onCreate || (() => window.location.href = createHref!),
+        onClick: onCreate || (() => goTo(navigate, createHref!)),
         variant: 'primary' as const,
       }
     : undefined
@@ -280,11 +302,12 @@ export function EmptyWidget({
   action,
   className,
 }: EmptyWidgetProps) {
+  const navigate = useNavigate()
   const handleClick = () => {
     if (action?.onClick) {
       action.onClick()
     } else if (action?.href) {
-      window.location.href = action.href
+      goTo(navigate, action.href)
     }
   }
 

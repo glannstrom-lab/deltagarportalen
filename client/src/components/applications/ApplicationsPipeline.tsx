@@ -5,6 +5,7 @@
 
 import { useState, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import {
   Plus, Filter, ChevronDown, AlertCircle, Archive, CheckCircle,
   Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy, Search
@@ -220,6 +221,9 @@ export function ApplicationsPipeline({
   onEditApplication
 }: ApplicationsPipelineProps) {
   const { t, i18n } = useTranslation()
+  // UX15: HashRouter — window.location.href hade laddat om appen mot en
+  // bas-path som inte finns och lämnat URL:en trasig resten av sessionen.
+  const navigate = useNavigate()
   const {
     applicationsByStatus,
     archivedApplications,
@@ -588,7 +592,7 @@ export function ApplicationsPipeline({
               <Plus className="w-4 h-4 mr-1" />
               {t('applications.empty.addCta', 'Lägg till ansökan')}
             </Button>
-            <Button variant="outline" onClick={() => window.location.href = '/job-search'}>
+            <Button variant="outline" onClick={() => navigate('/job-search')}>
               {t('applications.empty.searchCta', 'Sök jobb')}
             </Button>
           </div>

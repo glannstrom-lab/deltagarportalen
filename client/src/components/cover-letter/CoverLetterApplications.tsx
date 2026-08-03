@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Send, 
   Eye, 
@@ -94,6 +95,8 @@ const mockApplications: Application[] = [
 ]
 
 export function CoverLetterApplications() {
+  // UX15: HashRouter — se ApplicationsPipeline.
+  const navigate = useNavigate()
   const [applications, setApplications] = useState<Application[]>(mockApplications)
   const [draggedApp, setDraggedApp] = useState<Application | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -151,7 +154,7 @@ export function CoverLetterApplications() {
         description="När du skickar ett personligt brev till en arbetsgivare sparas det här – så har du koll på vilka jobb du sökt och när."
         action={{
           label: 'Börja skriva ett brev',
-          onClick: () => window.location.href = '/cover-letter',
+          onClick: () => navigate('/cover-letter'),
         }}
       />
     )
