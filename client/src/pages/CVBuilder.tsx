@@ -1081,7 +1081,12 @@ export default function CVBuilder() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div
+      className="max-w-7xl mx-auto"
+      /* UX16: plats för den fixerade knappraden PLUS mobilnavet under den.
+         På desktop (lg) finns ingen rad och --bottom-nav-h är 0. */
+      style={{ paddingBottom: 'calc(var(--bottom-nav-h, 0px) + 5rem)' }}
+    >
       {/* Action buttons bar — auto-save sköter molnet, ingen manuell spara-knapp.
           CVShare borttaget 2026-05-11: route /cv/shared/:code saknas i App.tsx
           så delningslänkar gick ingenstans. Returneras när delningsflödet är
@@ -1299,7 +1304,16 @@ export default function CVBuilder() {
       )}
       
       {/* Mobile Fixed Navigation Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb">
+      {/* UX16 (2026-08-04): raden låg på `bottom-0` med `z-40` medan
+          HubBottomNav ligger på `z-30` — den täckte alltså hela mobilnavet, och
+          man satt fast i CV-byggaren (enda vägen ut var hamburgermenyn). Den
+          ligger nu OVANFÖR navet via `--bottom-nav-h`, samma variabel som
+          cookiebannern fick i UX10. Variabeln sätts bara när navet är monterat,
+          så på sidor utan nav hamnar raden längst ned precis som förut. */}
+      <div
+        style={{ bottom: 'var(--bottom-nav-h, 0px)' }}
+        className="lg:hidden fixed left-0 right-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb"
+      >
         <button
           onClick={() => setStep(Math.max(1, step - 1))}
           disabled={step === 1}
