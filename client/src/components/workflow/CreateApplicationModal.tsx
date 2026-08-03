@@ -41,6 +41,8 @@ export function CreateApplicationModal({
   const [currentStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [cvMatchScore, setCvMatchScore] = useState<number | null>(null)
+  /** UX14: matchningen gick inte att beräkna — säg det, gissa inte. */
+  const [matchFailed, setMatchFailed] = useState(false)
   const [cvAnalysis, setCvAnalysis] = useState<CVOptimizationResult | null>(null)
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -66,6 +68,7 @@ export function CreateApplicationModal({
   }, [isOpen, job])
 
   const checkCVMatch = async () => {
+    setMatchFailed(false)
     try {
       const jobData: JobData = {
         jobId: job.id,
@@ -87,23 +90,38 @@ export function CreateApplicationModal({
         // Använd avancerad analys
         const analysis = analyzeCVForJob(cv, `${job.headline} ${job.description.text}`)
         setCvAnalysis(analysis)
-        setCvMatchScore(analysis.matchScore)
-        setWorkflow(prev => ({
-          ...prev,
-          step1_cv: { ...prev.step1_cv, matchScore: analysis.matchScore }
-        }))
+        if (analysis.matchScore === null) {
+          // Annonsen gav inga sökbara nyckelord alls — då finns ingen siffra
+          // att visa. Tidigare blev det NaN% (UX14).
+          setMatchFailed(true)
+        } else {
+          setCvMatchScore(analysis.matchScore)
+          setWorkflow(prev => ({
+            ...prev,
+            step1_cv: { ...prev.step1_cv, matchScore: analysis.matchScore as number }
+          }))
+        }
       } else {
-        // Fallback till enkel matchning
+        // Fallback till enkel matchning. null = gick inte att räkna ut (UX14).
         const score = await workflowApi.getCVMatchScore(jobData)
-        setCvMatchScore(score)
-        setWorkflow(prev => ({
-          ...prev,
-          step1_cv: { ...prev.step1_cv, matchScore: score }
-        }))
+        if (score === null) {
+          setMatchFailed(true)
+        } else {
+          setCvMatchScore(score)
+          setWorkflow(prev => ({
+            ...prev,
+            step1_cv: { ...prev.step1_cv, matchScore: score }
+          }))
+        }
       }
     } catch (error) {
+      // UX14: hit hamnade ALLA analyser (extractKeywords kastade på 'c++'),
+      // och 50 % presenterades som "Din matchning — God match, kan förbättras".
+      // En påhittad siffra får folk att söka utan att förbättra sitt CV. Nu
+      // säger vi att den inte gick att räkna ut.
       console.error('Fel vid CV-matchning:', error)
-      setCvMatchScore(50)
+      setCvMatchScore(null)
+      setMatchFailed(true)
     }
   }
 
@@ -318,6 +336,16 @@ export function CreateApplicationModal({
                     </div>
                   )}
                 </>
+              ) : matchFailed ? (
+                /* UX14: ärligt besked i stället för en siffra vi inte har.
+                   Steget är inte blockerat — man kan söka jobbet ändå. */
+                <div className="text-sm text-stone-700">
+                  <p className="font-medium text-stone-900">Vi kunde inte räkna ut din matchning</p>
+                  <p className="mt-0.5 text-stone-600">
+                    Det säger inget om hur väl du passar för jobbet — bara att uträkningen
+                    inte gick igenom. Du kan söka ändå.
+                  </p>
+                </div>
               ) : (
                 <div className="flex items-center gap-2 text-stone-700">
                   <Loader2 size={18} className="animate-spin" />
@@ -330,7 +358,7 @@ export function CreateApplicationModal({
                 className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
               >
                 <Sparkles size={16} />
-                {cvAnalysis && cvAnalysis.matchScore < 60 
+                {cvAnalysis && cvAnalysis.matchScore !== null && cvAnalysis.matchScore < 60
                   ? 'Förbättra CV för bättre matchning'
                   : 'Optimera CV för detta jobb'
                 }

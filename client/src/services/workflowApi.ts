@@ -198,9 +198,16 @@ Med vänliga hälsningar,
   },
 
   /**
-   * Hämta CV-matchning för ett jobb
+   * Hämta CV-matchning för ett jobb.
+   *
+   * @returns poängen, eller `null` när den inte gick att räkna ut.
+   *
+   * UX14 (2026-08-03): returnerade tidigare `50` vid fel — "Default score".
+   * Anroparen kunde inte skilja det från en verklig 50-procentig matchning och
+   * visade "God match, kan förbättras". Ett tal vi inte har får inte se ut som
+   * ett tal vi har (samma klass som D11:s felmaskering).
    */
-  async getCVMatchScore(jobData: JobData): Promise<number> {
+  async getCVMatchScore(jobData: JobData): Promise<number | null> {
     try {
       const { data: cv } = await supabase
         .from('cvs')
@@ -229,7 +236,7 @@ Med vänliga hälsningar,
       return score
     } catch (error) {
       console.error('Fel vid CV-matchning:', error)
-      return 50 // Default score
+      return null
     }
   }
 }

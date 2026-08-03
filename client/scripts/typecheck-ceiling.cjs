@@ -32,7 +32,10 @@ const path = require('node:path')
  * rotorsaker: CV-mallarnas TemplateCVData, validation.ts asRecord,
  * type-only imports). Sänk aldrig utan att ha kört skriptet.
  */
-const CEILING = 470
+// 470 → 469 (2026-08-03, UX14): `Property 'toLowerCase' does not exist on type
+// 'Skill'` var inte typskuld utan en skarp bugg — cv.skills är objekt i prod,
+// så anropet kastade TypeError för alla 16 CV:n med ifyllda kompetenser.
+const CEILING = 469
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

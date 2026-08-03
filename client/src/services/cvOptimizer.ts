@@ -28,7 +28,8 @@ export interface CVSuggestion {
 }
 
 export interface CVOptimizationResult {
-  matchScore: number
+  /** Matchning 0–100, eller `null` när den inte går att räkna ut (UX14). */
+  matchScore: number | null
   totalKeywords: number
   matchedKeywords: number
   missingKeywords: KeywordMatch[]
@@ -44,6 +45,42 @@ export interface CVOptimizationResult {
 // ============================================
 // KEYWORD EXTRACTION
 // ============================================
+
+/**
+ * Escapar regex-metatecken så att en term alltid går att söka på bokstavligt.
+ *
+ * UX14 (2026-08-03): `new RegExp('\\b' + term + '\\b')` byggdes av råa termer.
+ * Termlistan innehåller `'c++'` → `/\bc++\b/` är ett **ogiltigt uttryck**
+ * ("Nothing to repeat") och konstruktorn kastar. Eftersom loopen går igenom
+ * ALLA termer oavsett annonsens innehåll kastade `extractKeywords` på term
+ * nr 6 vid **varje** analys — inte bara för användare med C++ i sitt CV, som
+ * felrapporten antog. Hela ATS-matchningen har därför aldrig fungerat, och
+ * varje anrop föll ned i anroparnas hårdkodade 50 %.
+ */
+function escapeRegex(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Bygger ett ordgräns-uttryck för en term. Returnerar `null` om uttrycket ändå
+ * inte går att bygga — en term som inte kan sökas ska hoppas över, aldrig få
+ * hela analysen att kasta.
+ *
+ * `\b` sätts bara där det betyder något: `\b` kräver ett ordtecken på insidan,
+ * så `/\bc#\b/` kan aldrig matcha "c#" (`#` är inget ordtecken) — därför
+ * utelämnas gränsen i den änden när termen börjar/slutar på ett icke-ordtecken.
+ */
+function buildTermRegex(term: string): RegExp | null {
+  const escaped = escapeRegex(term)
+  const startsWithWord = /^\w/.test(term)
+  const endsWithWord = /\w$/.test(term)
+  const pattern = `${startsWithWord ? '\\b' : ''}${escaped}${endsWithWord ? '\\b' : ''}`
+  try {
+    return new RegExp(pattern, 'gi')
+  } catch {
+    return null
+  }
+}
 
 /**
  * Extrahera potentiella keywords från jobbannons
@@ -129,8 +166,8 @@ function extractKeywords(jobDescription: string): Map<string, number> {
   ]
   
   for (const { term, weight } of allTerms) {
-    const regex = new RegExp(`\\b${term}\\b`, 'gi')
-    const matches = cleanText.match(regex)
+    const regex = buildTermRegex(term)
+    const matches = regex ? cleanText.match(regex) : null
     if (matches) {
       keywords.set(term, (matches.length * weight) + (keywords.get(term) || 0))
     }
@@ -160,6 +197,45 @@ function extractKeywords(jobDescription: string): Map<string, number> {
 // ============================================
 
 /**
+ * Räknar bokstavliga förekomster av `needle` i `haystack`.
+ * Ingen regex — inget att escapa, inget som kan kasta (UX14).
+ */
+function countOccurrences(haystack: string, needle: string): number {
+  if (!needle) return 0
+  let count = 0
+  let from = 0
+  for (;;) {
+    const i = haystack.indexOf(needle, from)
+    if (i === -1) return count
+    count++
+    from = i + needle.length
+  }
+}
+
+/**
+ * Läser ut sökbar text ur en kompetenspost, i gemener.
+ *
+ * FYND 2026-08-03 (under UX14-arbetet, verifierat mot prod): `cv.skills` är
+ * **objekt** — `{ id, name, level, category }` — i 16 av 16 CV:n som har
+ * kompetenser. Koden gjorde `s.toLowerCase()` rakt på posten, vilket kastar
+ * `TypeError: s.toLowerCase is not a function`. Alltså: även efter att
+ * regex-kraschen var lagad hade analysen fortsatt att falla för alla som
+ * faktiskt fyllt i sina kompetenser — den grupp som har mest att vinna på
+ * matchningen. Typfelet syntes i strict-listan (`Property 'toLowerCase' does
+ * not exist on type 'Skill'`) men hade avfärdats som "bara typskuld".
+ *
+ * Båda formerna hanteras: äldre lokal data kan vara rena strängar.
+ */
+function skillText(skill: unknown): string {
+  if (typeof skill === 'string') return skill.toLowerCase()
+  if (skill && typeof skill === 'object') {
+    const name = (skill as { name?: unknown }).name
+    if (typeof name === 'string') return name.toLowerCase()
+  }
+  return ''
+}
+
+/**
  * Sök efter keyword i CV
  */
 function findKeywordInCV(
@@ -170,13 +246,14 @@ function findKeywordInCV(
   let occurrences = 0
   
   // Kolla skills
-  if (cv.skills?.some(s => s.toLowerCase().includes(lowerKeyword))) {
+  if (cv.skills?.some(s => skillText(s).includes(lowerKeyword))) {
     return { foundIn: 'skills', occurrences: 1 }
   }
   
-  // Kolla summary
+  // Kolla summary. UX14: escapa — nyckelorden kommer från annonsen och
+  // termlistan, och en punkt eller ett plustecken får inte bli ett mönster.
   if (cv.summary?.toLowerCase().includes(lowerKeyword)) {
-    occurrences = (cv.summary.toLowerCase().match(new RegExp(lowerKeyword, 'g')) || []).length
+    occurrences = countOccurrences(cv.summary.toLowerCase(), lowerKeyword)
     return { foundIn: 'summary', occurrences }
   }
   
@@ -185,7 +262,7 @@ function findKeywordInCV(
     for (const exp of cv.work_experience) {
       const text = `${exp.title || ''} ${exp.description || ''}`.toLowerCase()
       if (text.includes(lowerKeyword)) {
-        occurrences = (text.match(new RegExp(lowerKeyword, 'g')) || []).length
+        occurrences = countOccurrences(text, lowerKeyword)
         return { foundIn: 'experience', occurrences }
       }
     }
@@ -343,10 +420,19 @@ export function analyzeCVForJob(
   // Beräkna section scores
   const sectionScores = calculateSectionScores(cv, matchedKeywords)
   
-  // Beräkna total match score
+  // Beräkna total match score.
+  //
+  // UX14-fynd: när annonsen inte ger EN ENDA träff i termlistan blev nämnaren
+  // noll och `matchScore` blev **NaN** — som renderades som "NaN%" och föll
+  // igenom alla trösklar till "Lägg till mer relevant erfarenhet". Det finns
+  // ingen siffra att visa i det läget, så vi säger `null` i stället för att
+  // hitta på en. (En annons om t.ex. lokalvård träffar inga tekniktermer alls.)
+  const totalKeywords = matchedKeywords.size + missingKeywords.length
   const sectionAvg = Object.values(sectionScores).reduce((a, b) => a + b, 0) / 4
-  const keywordRatio = matchedKeywords.size / (matchedKeywords.size + missingKeywords.length)
-  const matchScore = Math.round((sectionAvg * 0.6) + (keywordRatio * 100 * 0.4))
+  const matchScore =
+    totalKeywords === 0
+      ? null
+      : Math.round((sectionAvg * 0.6) + ((matchedKeywords.size / totalKeywords) * 100 * 0.4))
   
   // Generera förslag
   const suggestions = generateSuggestions(cv, missingKeywords, sectionScores)
@@ -373,7 +459,7 @@ export function calculateQuickMatchScore(
   cv: CVData,
   jobTitle: string,
   jobDescription: string
-): number {
+): number | null {
   const analysis = analyzeCVForJob(cv, `${jobTitle} ${jobDescription}`)
   return analysis.matchScore
 }
