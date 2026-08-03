@@ -3272,6 +3272,8 @@
     "noConsultant": "You don't have a consultant assigned yet",
     "noConsultantDesc": "You haven't been connected to a career consultant yet. Contact us if you need help.",
     "noConsultantFullDesc": "When you're assigned a career consultant, you'll be able to stay in touch here — book meetings, share documents, ask questions. Until then, we're happy to help directly.",
+    "loadErrorTitle": "We couldn't load your consultant right now",
+    "loadErrorDesc": "This is a temporary problem on our side — not something you did. Please reload the page in a moment.",
     "contactSupport": "Contact support",
     "consultant": {
       "yourConsultant": "Your career consultant",
@@ -8785,6 +8787,7 @@
     }
   },
   "focus": {
+    "showWholePage": "Show the whole page instead",
     "sta": {
       "exerciseTitle": "Today's exercise",
       "dayOf": "Day {{day}} of {{total}}",

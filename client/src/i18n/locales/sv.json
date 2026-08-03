@@ -3272,6 +3272,8 @@
     "noConsultant": "Du har ingen konsulent tilldelad ännu",
     "noConsultantDesc": "Du har ännu inte kopplats till en arbetskonsulent. Kontakta oss om du behöver hjälp.",
     "noConsultantFullDesc": "När du tilldelas en arbetskonsulent kan ni hålla kontakt här — boka möten, dela dokument och ställa frågor. Tills dess hjälper vi dig gärna direkt.",
+    "loadErrorTitle": "Vi kunde inte hämta din konsulent just nu",
+    "loadErrorDesc": "Det är ett tillfälligt fel hos oss — inte något du har gjort. Ladda om sidan om en stund.",
     "contactSupport": "Kontakta support",
     "consultant": {
       "yourConsultant": "Din arbetskonsulent",
@@ -8785,6 +8787,7 @@
     }
   },
   "focus": {
+    "showWholePage": "Visa hela sidan i stället",
     "sta": {
       "exerciseTitle": "Dagens övning",
       "dayOf": "Dag {{day}} av {{total}}",

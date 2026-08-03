@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom'
 import { Loader2, AlertCircle, Share2, Lock } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
+import { getMyConsultantName } from '@/services/myConsultantApi'
 import { cn } from '@/lib/utils'
 
 interface DataSharingPreferences {
@@ -65,20 +66,13 @@ export function DataSharingSettings() {
           }
         }
 
-        // Get consultant info if assigned
+        // UX12: namnet hämtas via RPC. Den tidigare direktläsningen mot
+        // `profiles` blockerades av RLS och felet swaldes av `!consultantError`
+        // — deltagaren ombads alltså godkänna datadelning med en person som
+        // portalen vägrade namnge.
         if (profile?.consultant_id) {
-          const { data: consultantData, error: consultantError } = await supabase
-            .from('profiles')
-            .select('first_name, last_name')
-            .eq('id', profile.consultant_id)
-            .single()
-
-          if (!consultantError && consultantData) {
-            const fullName = [consultantData.first_name, consultantData.last_name]
-              .filter(Boolean)
-              .join(' ')
-            setConsultantName(fullName || 'Din konsulent')
-          }
+          const fullName = await getMyConsultantName()
+          if (fullName) setConsultantName(fullName)
         }
       } catch (error) {
         console.error('Error loading data sharing settings:', error)

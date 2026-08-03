@@ -35,12 +35,14 @@ import {
   EyeOff,
   Sparkles,
   UserCheck,
+  AlertCircle,
 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusMyConsultantWizard } from '@/components/focus/pages/FocusMyConsultantWizard'
 import { supabase } from '@/lib/supabase'
 import { applicationsApi } from '@/services/applicationsApi'
+import { getMyConsultant } from '@/services/myConsultantApi'
 import { useAuthStore } from '@/stores/authStore'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -684,7 +686,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
 // Main Page Component
 export default function MyConsultant() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -693,7 +695,7 @@ export default function MyConsultant() {
         icon={UserCheck}
         domain="wellbeing"
       >
-        <FocusMyConsultantWizard onExit={toggleFocusMode} />
+        <FocusMyConsultantWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }
@@ -711,6 +713,8 @@ function MyConsultantInner() {
   const [goals, setGoals] = useState<Goal[]>([])
   const [messagesLoading, setMessagesLoading] = useState(true)
   const [sharedInfo, setSharedInfo] = useState<SharedInfo[]>([])
+  /** UX12: skiljer "ingen konsulent tilldelad" från "hämtningen gick fel". */
+  const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
     if (user) {
@@ -721,6 +725,7 @@ function MyConsultantInner() {
   const fetchConsultantData = async () => {
     try {
       setLoading(true)
+      setLoadError(false)
 
       // Get user's consultant_id from profile
       const consultantId = profile?.consultant_id
@@ -730,16 +735,21 @@ function MyConsultantInner() {
         return
       }
 
-      // Fetch consultant profile
-      const { data: consultantData } = await supabase
-        .from('profiles')
-        .select('id, first_name, last_name, email, phone, avatar_url')
-        .eq('id', consultantId)
-        .single()
+      // UX12: går via RPC, inte via profiles. Deltagaren har ingen SELECT-rätt
+      // på sin konsulents rad — den här läsningen gav 406 PGRST116 och sidan
+      // visade "Ingen konsulent tilldelad ännu" för alla 31 kopplade deltagare.
+      const consultantData = await getMyConsultant()
 
       if (consultantData) {
         setConsultant({
-          ...consultantData,
+          id: consultantData.id,
+          // RPC:n ger nullable fält (profilen kan vara ofullständig). Vyn vill
+          // ha strängar — tomt är bättre än "null" i gränssnittet.
+          first_name: consultantData.first_name ?? '',
+          last_name: consultantData.last_name ?? '',
+          email: consultantData.email ?? '',
+          phone: consultantData.phone ?? undefined,
+          avatar_url: consultantData.avatar_url ?? undefined,
           title: t('myConsultant.consultant.yourConsultant'),
         })
       }
@@ -795,6 +805,7 @@ function MyConsultantInner() {
       await buildSharedInfo(consultantId)
     } catch (error) {
       console.error('Error fetching consultant data:', error)
+      setLoadError(true)
     } finally {
       setLoading(false)
     }
@@ -1026,8 +1037,25 @@ function MyConsultantInner() {
       className="max-w-7xl mx-auto"
     >
 
+      {/* UX12: "ingen konsulent" och "vi kunde inte hämta" är två olika
+          besked. Att visa det första när det andra är sant är precis vad som
+          dolde den saknade RLS-policyn — sidan såg lugn och korrekt ut. */}
+      {!consultant && loadError && (
+        <Card className="p-8 text-center">
+          <div className="w-20 h-20 rounded-full bg-amber-50 dark:bg-amber-900/20 mx-auto mb-6 flex items-center justify-center">
+            <AlertCircle className="w-10 h-10 text-amber-600 dark:text-amber-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
+            {t('myConsultant.loadErrorTitle', 'Vi kunde inte hämta din konsulent just nu')}
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto">
+            {t('myConsultant.loadErrorDesc', 'Det är ett tillfälligt fel hos oss — inte något du har gjort. Ladda om sidan om en stund.')}
+          </p>
+        </Card>
+      )}
+
       {/* No consultant message */}
-      {!consultant && (
+      {!consultant && !loadError && (
         <Card className="p-8 text-center">
           <div className="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 mx-auto mb-6 flex items-center justify-center">
             <User className="w-10 h-10 text-stone-400 dark:text-stone-500" />
