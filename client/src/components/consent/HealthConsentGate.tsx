@@ -236,8 +236,12 @@ export function HealthConsentGate({
             {t('health.consent.grantConsent') || 'Jag samtycker'}
           </button>
 
+          {/* UX18: grinden hade bara "Jag samtycker" och en länk till
+              Inställningar (som inte hade något samtycke att ändra). Att inte
+              vilja lämna ifrån sig sin hälsodata var inget vägval — nu finns
+              en väg härifrån som inte kräver ett ja. */}
           <Link
-            to="/settings"
+            to="/karriar"
             className={cn(
               "w-full sm:w-auto px-5 py-2.5 font-medium rounded-xl transition-colors",
               "border border-indigo-300 dark:border-indigo-700",
@@ -246,8 +250,7 @@ export function HealthConsentGate({
               "flex items-center justify-center gap-2"
             )}
           >
-            <Settings className="w-4 h-4" />
-            {t('health.consent.goToSettings') || 'Gå till Inställningar'}
+            {t('health.consent.decline', 'Nej tack')}
           </Link>
         </div>
 

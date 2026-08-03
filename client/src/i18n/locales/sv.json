@@ -371,6 +371,7 @@
       "withdrawDetail2": "Få all din hälsodata raderad",
       "withdrawDetail3": "Kontakta oss för mer information",
       "grantConsent": "Jag samtycker",
+      "decline": "Nej tack",
       "goToSettings": "Gå till Inställningar",
       "privacyLink": "Läs mer i vår",
       "privacyPolicy": "integritetspolicy"
@@ -4075,13 +4076,14 @@
       "whyWeCollect": "Varför vi samlar in detta",
       "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
       "whoHasAccess": "Vem har tillgång",
-      "whoAccessDesc": "Endast du och din handledare (om du har en) kan se din hälsodata. Datan delas aldrig med arbetsgivare eller tredje parter.",
+      "whoAccessDesc": "Bara du ser det du skriver här. Din konsulent ser det först om du själv slår på delning under Inställningar > Sekretess — den är avstängd tills du gör det. Datan delas aldrig med arbetsgivare eller tredje parter.",
       "dataProtection": "Din data skyddas enligt GDPR och lagras säkert i EU. Du kan när som helst exportera eller radera all din data.",
       "canWithdraw": "Du kan när som helst återkalla ditt samtycke",
       "withdrawDetail1": "Gå till Inställningar > Sekretess",
       "withdrawDetail2": "All din hälsodata kan raderas på begäran",
       "withdrawDetail3": "Återkallat samtycke påverkar inte tidigare lagrad data",
       "grantConsent": "Jag samtycker",
+      "decline": "Nej tack",
       "goToSettings": "Ändra i inställningar",
       "privacyLink": "Läs mer i vår ",
       "privacyPolicy": "integritetspolicy"
@@ -4507,6 +4509,11 @@
         "notAccepted": "Ej godkänt",
         "grant": "Godkänn",
         "withdraw": "Återkalla",
+        "wellness": "Dagbok och mående",
+        "wellnessDesc": "Låter dig skriva dagbok och logga hur du mår. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan skrivit ligger kvar tills du raderar det.",
+        "health": "Funktionsförutsättningar",
+        "healthDesc": "Används för anpassade rekommendationer utifrån dina förutsättningar. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan fyllt i ligger kvar tills du raderar det.",
+        "sharingStopFailed": "Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under \"Datadelning med konsulent\" nedan, eller hör av dig till oss.",
         "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare."
       }
     },

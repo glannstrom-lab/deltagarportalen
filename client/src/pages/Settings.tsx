@@ -5,11 +5,12 @@ import { useSettingsStore } from '../stores/settingsStore'
 import { useAuthStore } from '../stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
 import { userApi } from '../services/supabaseApi'
+import { supabase } from '@/lib/supabase'
 import {
   Bell, Lock, User, Palette, Shield,
   ChevronRight, Save,
   Accessibility, X, Menu,
-  Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink, Bot
+  Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink, Bot, Heart, Activity
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
@@ -92,8 +93,15 @@ function SettingsInner() {
     privacyAcceptedAt: null as string | null,
     aiConsentAt: null as string | null,
     marketingConsentAt: null as string | null,
+    // UX18: art. 9-samtyckena var enkelriktade — de gick att ge från
+    // grindarna men fanns inte här, trots att grinden lovar tre gånger att
+    // de kan återkallas "i Inställningar > Sekretess".
+    wellnessConsentAt: null as string | null,
+    healthConsentAt: null as string | null,
     aiEnabled: true,
   })
+  /** UX18: sant när återkallandet lyckades men delningen inte gick att stänga av. */
+  const [sharingStopFailed, setSharingStopFailed] = useState(false)
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
   const [isTogglingAi, setIsTogglingAi] = useState(false)
 
@@ -143,6 +151,8 @@ function SettingsInner() {
             privacyAcceptedAt: profileData.privacy_accepted_at || null,
             aiConsentAt: profileData.ai_consent_at || null,
             marketingConsentAt: profileData.marketing_consent_at || null,
+            wellnessConsentAt: profileData.wellness_consent_at || null,
+            healthConsentAt: profileData.health_consent_at || null,
             aiEnabled: profileData.ai_enabled !== false,
           })
         }
@@ -172,23 +182,39 @@ function SettingsInner() {
   }
 
   // Handle consent toggle
-  const handleConsentToggle = async (consentType: 'ai' | 'marketing', currentValue: string | null) => {
+  const handleConsentToggle = async (
+    consentType: 'ai' | 'marketing' | 'wellness' | 'health',
+    currentValue: string | null
+  ) => {
     const columnMap = {
       ai: 'ai_consent_at',
       marketing: 'marketing_consent_at',
+      wellness: 'wellness_consent_at',
+      health: 'health_consent_at',
     }
     const stateMap = {
       ai: 'aiConsentAt',
       marketing: 'marketingConsentAt',
+      wellness: 'wellnessConsentAt',
+      health: 'healthConsentAt',
     }
 
     try {
       setIsUpdatingConsent(consentType)
+      setSharingStopFailed(false)
       const newValue = currentValue ? null : new Date().toISOString()
 
       await userApi.updateProfile({
         [columnMap[consentType]]: newValue,
       })
+
+      // UX18: ett återkallat art. 9-samtycke måste också stoppa delningen med
+      // konsulenten. Annars fortsätter hen se det som redan samlats in, och
+      // "återkallat" blir ett ord utan verkan.
+      if (!newValue && (consentType === 'wellness' || consentType === 'health')) {
+        const stopped = await stopSharingFor(consentType)
+        if (!stopped) setSharingStopFailed(true)
+      }
 
       setConsentData(prev => ({
         ...prev,
@@ -198,6 +224,30 @@ function SettingsInner() {
       console.error('Error updating consent:', error)
     } finally {
       setIsUpdatingConsent(null)
+    }
+  }
+
+  /**
+   * Stänger av delningen av motsvarande datatyp med konsulenten.
+   * Returnerar false om det INTE gick — anroparen ska säga det rakt ut i
+   * stället för att låta återkallandet se helt genomfört ut.
+   */
+  const stopSharingFor = async (consentType: 'wellness' | 'health'): Promise<boolean> => {
+    if (!user?.id) return false
+    const column = consentType === 'wellness' ? 'share_wellness_data' : 'share_health_data'
+    try {
+      const { error } = await supabase
+        .from('participant_data_sharing')
+        .update({ [column]: false })
+        .eq('participant_id', user.id)
+      if (error) {
+        console.error('[UX18] kunde inte stänga av delningen:', error.message)
+        return false
+      }
+      return true
+    } catch (err) {
+      console.error('[UX18] kunde inte stänga av delningen:', err)
+      return false
     }
   }
 
@@ -644,6 +694,94 @@ function SettingsInner() {
                     </Button>
                   </div>
                 </Card>
+
+                {/* UX18: hälsa och mående (GDPR art. 9). Samtyckena gavs i
+                    grindarna på Dagbok/Hälsa, som lovar att de kan återkallas
+                    "i Inställningar > Sekretess" — men de fanns inte här.
+                    Visas bara när de faktiskt är givna: ett samtycke man aldrig
+                    lämnat behöver inget kort att inte återkalla. */}
+                {consentData.wellnessConsentAt && (
+                  <Card variant="flat" padding="sm">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2 rounded-lg flex-shrink-0 bg-green-100 dark:bg-green-900/30">
+                        <Heart size={20} className="text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                            {t('settings.privacy.consent.wellness', 'Dagbok och mående')}
+                          </h4>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
+                            {t('settings.privacy.consent.optional')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                          {t('settings.privacy.consent.wellnessDesc', 'Låter dig skriva dagbok och logga hur du mår. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan skrivit ligger kvar tills du raderar det.')}
+                        </p>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.wellnessConsentAt) })}
+                        </p>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleConsentToggle('wellness', consentData.wellnessConsentAt)}
+                        isLoading={isUpdatingConsent === 'wellness'}
+                        className="flex-shrink-0"
+                      >
+                        {t('settings.privacy.consent.withdraw')}
+                      </Button>
+                    </div>
+                  </Card>
+                )}
+
+                {consentData.healthConsentAt && (
+                  <Card variant="flat" padding="sm">
+                    <div className="flex items-start gap-4">
+                      <div className="p-2 rounded-lg flex-shrink-0 bg-green-100 dark:bg-green-900/30">
+                        <Activity size={20} className="text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                            {t('settings.privacy.consent.health', 'Funktionsförutsättningar')}
+                          </h4>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
+                            {t('settings.privacy.consent.optional')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                          {t('settings.privacy.consent.healthDesc', 'Används för anpassade rekommendationer utifrån dina förutsättningar. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan fyllt i ligger kvar tills du raderar det.')}
+                        </p>
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.healthConsentAt) })}
+                        </p>
+                      </div>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => handleConsentToggle('health', consentData.healthConsentAt)}
+                        isLoading={isUpdatingConsent === 'health'}
+                        className="flex-shrink-0"
+                      >
+                        {t('settings.privacy.consent.withdraw')}
+                      </Button>
+                    </div>
+                  </Card>
+                )}
+
+                {sharingStopFailed && (
+                  <InfoCard variant="warning" icon={<AlertTriangle size={20} />}>
+                    <p className="text-sm">
+                      {t(
+                        'settings.privacy.consent.sharingStopFailed',
+                        'Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under "Datadelning med konsulent" nedan, eller hör av dig till oss.'
+                      )}
+                    </p>
+                  </InfoCard>
+                )}
               </div>
             </CardSection>
 
