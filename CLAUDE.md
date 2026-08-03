@@ -22,12 +22,23 @@
 | LinkedIn-optimerare | Förbättra LinkedIn-profil | ✅ |
 | AI-team | Personlig AI-coach/agentchatt | ✅ |
 | Spontanansökan | Hitta företag och skicka spontana ansökningar | ✅ |
-| STA/Arbetsprövning | 4-delars arbetsprövningsresa: deltagarflöde, DOA-självskattning, konsulentvy, AI-utkast för AF-blanketter (`pages/sta/`) | ✅ |
+| ~~STA/Arbetsprövning~~ | ⏸ **Avaktiverad 2026-08-03.** Koden är kvar i `pages/sta/` men modulen monteras inte — se "Avaktiverade moduler" nedan | ✅ |
 | Jobbsökning | Hitta och spara jobb | - |
 | Dagbok | Reflektera och dokumentera | - |
 | Hälsa/Wellness | Följ mående och energi | - |
 | Fokusläge | Guidat fokusflöde (i18n-namespace `focus.*`) | - |
-| Konsultvy | Hantera deltagare, GDPR-logg | - |
+| Konsultvy | Hantera deltagare, GDPR-logg (`/consultant` — **portalens enda konsulentvy**) | - |
+
+### Avaktiverade moduler (koden är kvar — bygg inte vidare på dem utan beslut)
+
+**STA / Steg till arbete — avaktiverad 2026-08-03** (beslut Mikael). Modulflagga `MODULES.STA` i `client/src/config/features.ts`, styrd av `VITE_STA_ENABLED` och **av som default**.
+
+- Deltagarvyn `/steg-till-arbete` monteras bara med flaggan på. Sidomenyns STA-sektion likaså.
+- **STA-konsulentvyn är borttagen ur appen, inte flaggad.** Routerna `konsulent/steg-till-arbete` (+ dokumentarbetsytan) och navlänken "Konsulent-vy" är raderade. Portalen har **en** konsulentvy: `/consultant`. Filerna `pages/sta/StaConsultant.tsx`, `pages/sta/consultant/` och `pages/sta/StaDocumentWorkspace.tsx` ligger kvar orörda men har varken route eller importör — slår du på flaggan kommer de **inte** tillbaka. Att återinföra en konsulentyta för STA är ett eget beslut (flikar i `/consultant` vs. separat vy).
+- Ingenting är raderat: `services/staApi.ts`, `staAiApi.ts`, `hooks/useSta.ts`, `FocusStaWizard`, STA-edge-funktionerna och de 10 STA-tabellerna i prod är orörda.
+- e2e: `e2e/sta.spec.ts` skippar deltagartesterna tills `E2E_STA_ENABLED=true`; konsulentdelen är omskriven till en **regressionsvakt** som kräver att vyn inte går att nå.
+
+**EU-utlysningsspåret (26-001 / 26-002 / 26-010) — pausat 2026-08-03.** Specarna ligger kvar i `docs/` som bilagor, men inget arbete drivs av dem. Det låser också ROADMAP C4 (de sex callerlösa `learning-*`-edge-funktionerna) i vänteläge — de behålls orörda.
 
 ---
 
@@ -177,14 +188,14 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 cd client
 npm run lint:ci            # eslint: 0 errors, max 129 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (471)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (469)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 865 tester
+npm run test:run           # 909 tester
 npm run build
 ```
 
-De tre **frysta taken** (129 warnings, 471 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (129 warnings, 469 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
@@ -388,6 +399,26 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 
 **Lärdom:** En delad cache-nyckel är ett kontrakt utan typ. Skriver två ställen till samma nyckel måste de dela form — annars förgiftar det ena det andra, tyst.
 
+### 2026-08-03: Strict-typfel kan vara skarpa buggar, inte "typskuld"
+
+**Problem:** `Property 'toLowerCase' does not exist on type 'Skill'` (`cvOptimizer.ts`) låg i I2:s frysta lista och hade avfärdats som typskuld. Verifiering mot prod visade att `cvs.skills` är **objekt** (`{id,name,level,category}`) i 16 av 16 CV:n med kompetenser — anropet kastade alltså `TypeError` i drift, varje gång, för just de användare som fyllt i mest.
+
+**Lärdom:** taket på 469 är en skuldlista, inte en lista över harmlösa fel. Ett `Property X does not exist`-fel betyder att koden läser något som inte finns — kontrollera mot verklig data innan du antar att det bara är typer som gnäller.
+
+**Kontroll:** `npx supabase db query --linked "SELECT jsonb_typeof(kolumn->0) FROM tabell LIMIT 5;"` avgör formen på sekunder.
+
+### 2026-08-03: Testfixturer ska spegla prod-formen, inte den bekväma
+
+**Problem:** en fixtur med `skills: ['React', 'Docker']` gjorde CV-matchningstesterna gröna. Prod har `skills: [{id,name,level,category}]`. Testerna bevisade alltså att koden fungerar på data som inte existerar — samma familj som `journey_goals`-fällan (mockad klient) och `useJobsokHubSummary.test.ts` (asserterade den trasiga formen).
+
+**Lärdom:** när du skriver en fixtur för något som kommer ur databasen, hämta formen från databasen. Tre buggar i rad har gömt sig bakom fixturer som var snällare än verkligheten.
+
+### 2026-08-03: Fail closed vs. fail open — välj efter vad felet kostar
+
+**Problem:** `checkDailyTokenCap` släpper igenom vid uppslagsfel ("loggning är best-effort"). Samma mönster kopierat till art. 9-samtyckesgrinden hade betytt att hälsodata skickas till USA när databasen strular.
+
+**Lärdom:** grindar ska ha uttrycklig policy. Kostar felet pengar → fail open kan vara rätt. Kostar felet en olaglig överföring eller en rättighet → fail closed, och skriv ut varför i koden så nästa läsare inte "harmoniserar" dem.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
@@ -409,11 +440,11 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 | `docs/AI-ACT-CLASSIFICATION.md`, `docs/DPIA-PORTAL.md`, `docs/GDPR-ART30-REGISTER.md` | Compliance-dokument under färdigställande (se ROADMAP §1) |
 | `docs/AI_MODEL_LOCKING.md` | Modell-låsning `openai/gpt-oss-120b` — alla AI-vägar |
 | `docs/AI_ARCHITECTURE_OVERVIEW.md` | Översikt över AI-stack (Vercel + Supabase edge) |
-| `docs/STA-FORBATTRINGSFORSLAG.md`, `docs/sta-automation-roadmap.md`, `docs/sta-*` | STA-modulens detaljspecar (prioriteras från ROADMAP §3b) |
+| `docs/STA-FORBATTRINGSFORSLAG.md`, `docs/sta-automation-roadmap.md`, `docs/sta-*` | STA-modulens detaljspecar — ⏸ **vilande** sedan modulen avaktiverades 2026-08-03 |
 | `docs/api/services-overview.md` | Översikt över services-lagret i `client/src/services/` |
 | `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet |
 | `docs/GRAFIK-PLAN.md` | Grafikpipeline-manual (chroma-key-standard, optimering, asset-status) |
-| `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer (beslut aug 2026, se ROADMAP §3c/§7) |
+| `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer — ⏸ **pausade 2026-08-03**, inget arbete drivs av dem |
 | `.planning/PROJECT.md`, `MILESTONES.md` | GSD-milestone-historik (hub-nav v1.0, klar 2026-04-29); STATE/ROADMAP/REQUIREMENTS arkiverade i `archive/2026-07-dokarkiv/` |
 | `.planning/AF-API-INTEGRATION-ROADMAP.md` | AF-API-idébank (~60 förslag, status per förslag) |
 | `.planning/research/PITFALLS.md` | Kända fallgropar i hub-systemet och dashboard |
