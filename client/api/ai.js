@@ -195,6 +195,62 @@ async function checkDailyTokenCap(serviceClient, userId) {
 }
 
 // ============================================
+// Art. 9-samtyckesgrind (UX13, 2026-08-03)
+// ============================================
+// Funktioner som tar emot SÄRSKILDA KATEGORIER av personuppgifter (GDPR art. 9)
+// — hälsa, mående, funktionsnedsättning, behov av arbetsplatsanpassning.
+// För dem finns ingen laglig grund utan UTTRYCKLIGT samtycke (art. 9.2.a), och
+// data går vidare till OpenRouter i USA. Klientens AiConsentGate räcker inte:
+// den går att kringgå med ett direkt POST mot /api/ai.
+//
+// Medvetet UTANFÖR listan:
+//  - Konsulentfunktionerna (`konsulent-rapportutkast`, `sta-*`) behandlar en
+//    ANNAN persons uppgifter än den inloggade. Att grinda dem på konsulentens
+//    eget `ai_consent_at` vore fel person och falsk trygghet — deras rättsliga
+//    grund är en egen fråga för AI-juristen (ROADMAP A2).
+//  - Övriga funktioner (CV, brev, intervju, kompetensgap …) är art. 6-data.
+//    Att grinda ALL AI på samtycket är ett produktbeslut för Mikael — 75 av 92
+//    profiler saknar `ai_consent_at` (mätt i prod 2026-08-03), så det skulle
+//    släcka AI för 82 % av användarna. Ligger i ROADMAP:s beslutslogg.
+const ART9_FUNCTIONS = new Set([
+  'vecko-reflektion',            // dagboksanteckningar + måendeloggar
+  'adaptation-recommendations',  // behov av arbetsplatsanpassning
+  'adaptation-conversation',     // samma behov, formulerade till arbetsgivaren
+]);
+
+/**
+ * Kontrollerar art. 9-samtycke för den inloggade användaren.
+ *
+ * **Fail closed.** Går uppslaget inte att göra vet vi inte om samtycke finns,
+ * och då får särskilda kategorier inte lämna portalen. Det är motsatt policy
+ * mot token-taket ovan (som släpper igenom vid fel) — där är risken en kostnad,
+ * här är risken en olaglig överföring.
+ *
+ * @param {object} supabase - klient med användarens egen token (RLS: egen profil)
+ * @param {string} userId
+ */
+async function checkArt9Consent(supabase, userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('ai_consent_at, ai_enabled')
+      .eq('id', userId)
+      .single();
+    if (error || !data) {
+      console.warn('[Art9Consent] uppslag misslyckades (blockerar):', error?.message);
+      return { allowed: false, reason: 'lookup_failed' };
+    }
+    if (!data.ai_consent_at) return { allowed: false, reason: 'no_consent' };
+    // ai_enabled är default TRUE; bara explicit FALSE är en art. 21-invändning
+    if (data.ai_enabled === false) return { allowed: false, reason: 'opted_out' };
+    return { allowed: true };
+  } catch (err) {
+    console.warn('[Art9Consent] kastade (blockerar):', err.message);
+    return { allowed: false, reason: 'lookup_failed' };
+  }
+}
+
+// ============================================
 // Retry-helper för OpenRouter (C6)
 // ============================================
 // Retrierar 5xx + 429 från OpenRouter med exponential backoff.
@@ -958,6 +1014,26 @@ module.exports = async (req, res) => {
     // Add rate limit headers
     res.setHeader('X-RateLimit-Remaining', String(rateLimit.remaining));
 
+    // UX13: art. 9-data får inte lämna portalen utan uttryckligt samtycke.
+    // Ligger efter rate limit så att en flod av blockerade anrop ändå bromsas,
+    // men före token-taket och före att prompten byggs — vi vill inte ens
+    // konstruera en prompt av hälsodata vi saknar grund för att behandla.
+    if (ART9_FUNCTIONS.has(fn)) {
+      const consent = await checkArt9Consent(supabase, user.id);
+      if (!consent.allowed) {
+        return res.status(403).json({
+          error:
+            consent.reason === 'opted_out'
+              ? 'Du har stängt av AI-behandling av dina uppgifter. Slå på det i Inställningar om du vill använda den här funktionen.'
+              : consent.reason === 'no_consent'
+                ? 'Den här funktionen läser dina anteckningar om hälsa och mående. Den kräver att du först godkänner AI-behandling i Inställningar.'
+                : 'Vi kunde inte kontrollera ditt samtycke just nu, och skickar därför inte dina uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_CONSENT_REQUIRED',
+          reason: consent.reason,
+        });
+      }
+    }
+
     // C4: Daily token cap — kostnadsskydd. Skipas om service-key saknas
     // (loggning är best-effort, vi blockerar inte AI om vi inte kan räkna).
     const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -1153,3 +1229,9 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// Exponerat enbart för test — Vercel anropar bara default-exporten ovan.
+// Art. 9-grinden är den enda kontroll som inte går att kringgå från klienten,
+// så dess fail-closed-beteende ska vara testat, inte antaget (UX13).
+module.exports.ART9_FUNCTIONS = ART9_FUNCTIONS;
+module.exports.checkArt9Consent = checkArt9Consent;

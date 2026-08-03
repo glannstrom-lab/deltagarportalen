@@ -26,7 +26,8 @@ import { Sparkles, RefreshCw, NotebookPen } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
-import { callAI } from '@/services/aiApi'
+import { AiConsentGate } from '@/components/ai/AiConsentGate'
+import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { safeParseAiResponse, VeckoReflektionSchema, type VeckoReflektion } from '@/services/aiSchemas'
 import { diaryEntriesApi, moodLogsApi } from '@/services/diaryApi'
 
@@ -90,8 +91,13 @@ export function WeeklyReflectionCard() {
         return
       }
       setReflection(parsed.data)
-    } catch {
-      setError(t('weeklyReflection.failed', 'Vi kunde inte skapa en reflektion just nu. Dina anteckningar är orörda.'))
+    } catch (err) {
+      // Samtyckesfel har ett eget, sant besked — inte "vi kunde inte just nu".
+      setError(
+        err instanceof AiConsentRequiredError
+          ? err.message
+          : t('weeklyReflection.failed', 'Vi kunde inte skapa en reflektion just nu. Dina anteckningar är orörda.')
+      )
     } finally {
       setLoading(false)
     }
@@ -149,26 +155,32 @@ export function WeeklyReflectionCard() {
             <AIGeneratedWatermark contentType="innehåll" />
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-4">
             <p className="text-[14px] text-[var(--stone-600)] leading-relaxed m-0">
               {t(
                 'weeklyReflection.prompt',
                 'Vill du se en kort tillbakablick på veckan, utifrån det du själv har skrivit?'
               )}
             </p>
-            <Button onClick={generate} disabled={loading} className="flex-shrink-0">
-              {loading ? (
-                <>
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
-                  {t('weeklyReflection.loading', 'Läser din vecka …')}
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {t('weeklyReflection.cta', 'Visa min vecka')}
-                </>
-              )}
-            </Button>
+            {/* UX13: dagbok och mående är art. 9-data. Utan AI-samtycke visas
+                grinden i stället för knappen — och anropet görs aldrig. */}
+            <AiConsentGate compact featureName={t('weeklyReflection.heading', 'Din vecka')}>
+              <div className="flex sm:justify-end">
+                <Button onClick={generate} disabled={loading} className="flex-shrink-0">
+                  {loading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
+                      {t('weeklyReflection.loading', 'Läser din vecka …')}
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
+                      {t('weeklyReflection.cta', 'Visa min vecka')}
+                    </>
+                  )}
+                </Button>
+              </div>
+            </AiConsentGate>
           </div>
         )}
 

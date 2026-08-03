@@ -15,8 +15,9 @@ import {
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { adaptationsApi, type AdaptationItem } from '@/services/careerApi'
-import { callAI } from '@/services/aiApi'
+import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
+import { AiConsentGate } from '@/components/ai/AiConsentGate'
 import { showToast } from '@/components/Toast'
 
 // ===== CATEGORY DEFINITIONS =====
@@ -457,7 +458,7 @@ export default function AdaptationTab() {
     } catch (err) {
       console.error('AI error:', err)
       setAiRecommendations(null)
-      showToast.error(err instanceof Error && err.message.includes('många')
+      showToast.error(err instanceof AiConsentRequiredError || (err instanceof Error && err.message.includes('många'))
         ? err.message
         : (isEn ? 'Could not generate recommendations right now. Please try again.' : 'Kunde inte generera rekommendationer just nu. Försök igen.'))
     } finally {
@@ -482,7 +483,7 @@ export default function AdaptationTab() {
     } catch (err) {
       console.error('AI error:', err)
       setAiConversation(null)
-      showToast.error(err instanceof Error && err.message.includes('många')
+      showToast.error(err instanceof AiConsentRequiredError || (err instanceof Error && err.message.includes('många'))
         ? err.message
         : (isEn ? 'Could not generate a script right now. Please try again.' : 'Kunde inte generera samtalsmanus just nu. Försök igen.'))
     } finally {
@@ -719,6 +720,10 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
               {isEn ? 'AI Assistant' : 'AI-assistent'}
             </h3>
           </div>
+          {/* UX13: valda anpassningsbehov beskriver funktionsnedsättning —
+              art. 9-data. Utan AI-samtycke visas grinden i stället för
+              knapparna, och ingenting skickas till AI-leverantören. */}
+          <AiConsentGate compact featureName={isEn ? 'Adaptation assistant' : 'AI-assistenten för anpassningar'}>
           <div className="grid gap-4 md:grid-cols-2">
             <div>
               <Button
@@ -762,6 +767,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
               )}
             </div>
           </div>
+          </AiConsentGate>
         </Card>
       )}
 

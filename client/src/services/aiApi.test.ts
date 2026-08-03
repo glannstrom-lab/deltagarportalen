@@ -1,13 +1,14 @@
 /**
  * Tester för aiApi — central client för alla AI-anrop. Verifierar:
  * - Auth-token läggs till i request
- * - Korrekta error-meddelanden för 401/429/övrigt
+ * - Korrekta error-meddelanden för 401/429/403/övrigt
+ * - Art. 9-grinden (UX13): hälsodata lämnar aldrig webbläsaren utan samtycke
  * - generateCoverLetter routar till rätt function-namn
  *
- * Mockar fetch + supabase.auth.getSession.
+ * Mockar fetch + supabase.auth.getSession + authStore-profilen.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { callAI, generateCoverLetter } from './aiApi'
+import { callAI, generateCoverLetter, AiConsentRequiredError } from './aiApi'
 
 const mockGetSession = vi.fn()
 vi.mock('@/lib/supabase', () => ({
@@ -18,12 +19,19 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+let mockProfile: { ai_consent_at: string | null; ai_enabled?: boolean } | null = null
+vi.mock('@/stores/authStore', () => ({
+  useAuthStore: { getState: () => ({ profile: mockProfile }) },
+}))
+
 const mockFetch = vi.fn()
 
 beforeEach(() => {
   mockGetSession.mockReset()
   mockFetch.mockReset()
   global.fetch = mockFetch
+  // Default: samtycke finns — art. 9-grinden testas explicit nedan
+  mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: true }
 })
 
 describe('callAI', () => {
@@ -94,6 +102,86 @@ describe('callAI', () => {
     mockFetch.mockResolvedValue({ ok: false, status: 500 })
 
     await expect(callAI('test', {})).rejects.toThrow(
+      'Ett fel uppstod vid kommunikation med AI-tjänsten.'
+    )
+  })
+})
+
+/**
+ * UX13 — art. 9-grinden. Buggen var att `vecko-reflektion` skickade
+ * dagboksanteckningar och måendesiffror till OpenRouter (USA) medan
+ * inställningarna visade "AI-behandling och profilering — Ej godkänt".
+ *
+ * Kravet dessa tester låser: **fetch får aldrig anropas** för en art. 9-funktion
+ * utan samtycke. Att bara kontrollera felmeddelandet räcker inte — det som är
+ * olagligt är att uppgifterna lämnar webbläsaren, inte att svaret visas.
+ */
+describe('callAI — art. 9-samtycke (UX13)', () => {
+  const ART9 = ['vecko-reflektion', 'adaptation-recommendations', 'adaptation-conversation']
+
+  beforeEach(() => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+  })
+
+  it.each(ART9)('skickar INTE %s när ai_consent_at saknas', async (fn) => {
+    mockProfile = { ai_consent_at: null }
+
+    await expect(callAI(fn, { diary: [{ content: 'Jag mådde dåligt i tisdags' }] }))
+      .rejects.toBeInstanceOf(AiConsentRequiredError)
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('skickar INTE när användaren invänt mot AI (art. 21, ai_enabled=false)', async () => {
+    mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }
+
+    await expect(callAI('vecko-reflektion', { moods: [{ mood: 2 }] }))
+      .rejects.toThrow('Du har stängt av AI-behandling')
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('skickar INTE när profilen inte är laddad alls', async () => {
+    mockProfile = null
+
+    await expect(callAI('vecko-reflektion', {})).rejects.toBeInstanceOf(AiConsentRequiredError)
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('släpper igenom art. 9-anrop när samtycke finns', async () => {
+    mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: true }
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+
+    await callAI('vecko-reflektion', { moods: [] })
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+    expect(JSON.parse(mockFetch.mock.calls[0][1].body).function).toBe('vecko-reflektion')
+  })
+
+  it('grindar INTE vanliga art. 6-funktioner (CV/brev fortsätter fungera utan AI-samtycke)', async () => {
+    mockProfile = { ai_consent_at: null }
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+
+    await callAI('cv-writing', { cvText: 'min CV' })
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('översätter serverns 403 AI_CONSENT_REQUIRED till AiConsentRequiredError', async () => {
+    // Servern är den bindande grinden: även om klientens profil ser OK ut
+    // (t.ex. inaktuell cache) ska dess besked nå användaren ordagrant.
+    mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: true }
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 403,
+      json: async () => ({ error: 'Serverns text', code: 'AI_CONSENT_REQUIRED', reason: 'no_consent' }),
+    })
+
+    await expect(callAI('vecko-reflektion', {})).rejects.toThrow('Serverns text')
+  })
+
+  it('mappar 403 utan samtyckeskod till det generiska felet', async () => {
+    mockFetch.mockResolvedValue({ ok: false, status: 403, json: async () => ({ error: 'nåt annat' }) })
+
+    await expect(callAI('vecko-reflektion', {})).rejects.toThrow(
       'Ett fel uppstod vid kommunikation med AI-tjänsten.'
     )
   })

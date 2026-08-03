@@ -11,6 +11,31 @@
 import { supabase } from '@/lib/supabase'
 import { sanitizeObjectForAi } from '@/lib/piiSanitizer'
 import { apiLogger } from '@/lib/logger'
+import { useAuthStore } from '@/stores/authStore'
+
+/**
+ * Art. 9-funktioner: tar emot särskilda kategorier av personuppgifter (hälsa,
+ * mående, funktionsnedsättning). Kräver uttryckligt samtycke (art. 9.2.a).
+ *
+ * **Måste hållas i synk med `ART9_FUNCTIONS` i `client/api/ai.js`**, som är den
+ * bindande grinden — den här listan finns för att ge användaren ett begripligt
+ * fel i stället för en 403, och för att fånga nya ytor som glömmer
+ * `AiConsentGate` (UX13 uppstod precis så).
+ */
+const ART9_FUNCTIONS = new Set([
+  'vecko-reflektion',
+  'adaptation-recommendations',
+  'adaptation-conversation',
+])
+
+/** Kastas när ett art. 9-anrop stoppas för att samtycke saknas. */
+export class AiConsentRequiredError extends Error {
+  readonly code = 'AI_CONSENT_REQUIRED'
+  constructor(message: string) {
+    super(message)
+    this.name = 'AiConsentRequiredError'
+  }
+}
 
 interface AIApiResponse<T = unknown> {
   success: boolean
@@ -42,6 +67,23 @@ export async function callAI<T = unknown>(
 
   if (!token) {
     throw new Error('Du måste vara inloggad för att använda AI-funktioner.')
+  }
+
+  // UX13: stoppa art. 9-data redan här när samtycket saknas — då lämnar den
+  // aldrig webbläsaren. Servern gör om kontrollen; den här är för användarens
+  // skull, inte för säkerhetens.
+  if (ART9_FUNCTIONS.has(functionName)) {
+    const profile = useAuthStore.getState().profile
+    if (!profile?.ai_consent_at) {
+      throw new AiConsentRequiredError(
+        'Den här funktionen läser dina anteckningar om hälsa och mående. Godkänn AI-behandling i Inställningar först.'
+      )
+    }
+    if (profile.ai_enabled === false) {
+      throw new AiConsentRequiredError(
+        'Du har stängt av AI-behandling av dina uppgifter. Slå på det i Inställningar om du vill använda den här funktionen.'
+      )
+    }
   }
 
   // GDPR: sanitera prompten innan vi skickar persondata till AI-leverantören.
@@ -83,6 +125,16 @@ export async function callAI<T = unknown>(
     }
     if (response.status === 429) {
       throw new Error('För många förfrågningar. Försök igen om en stund.')
+    }
+    if (response.status === 403) {
+      // Serverns art. 9-grind. Läs dess text — den skiljer på "inget samtycke",
+      // "avstängt" och "kunde inte kontrolleras".
+      const body = await response.json().catch(() => null) as { error?: string; code?: string } | null
+      if (body?.code === 'AI_CONSENT_REQUIRED') {
+        throw new AiConsentRequiredError(
+          body.error ?? 'Funktionen kräver att du godkänner AI-behandling i Inställningar.'
+        )
+      }
     }
     throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
   }
