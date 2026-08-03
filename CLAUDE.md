@@ -188,14 +188,14 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 cd client
 npm run lint:ci            # eslint: 0 errors, max 129 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (469)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (468)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 909 tester
+npm run test:run           # 933 tester
 npm run build
 ```
 
-De tre **frysta taken** (129 warnings, 469 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (129 warnings, 468 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
@@ -406,6 +406,16 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 **Lärdom:** taket på 469 är en skuldlista, inte en lista över harmlösa fel. Ett `Property X does not exist`-fel betyder att koden läser något som inte finns — kontrollera mot verklig data innan du antar att det bara är typer som gnäller.
 
 **Kontroll:** `npx supabase db query --linked "SELECT jsonb_typeof(kolumn->0) FROM tabell LIMIT 5;"` avgör formen på sekunder.
+
+### 2026-08-04: Testuppsättningens mockar kan vara lika lögnaktiga som fixturerna
+
+**Problem:** `localStorage`-mocken i `client/src/test/setup.ts` var fyra `vi.fn()` utan backing store — `getItem` returnerade alltid undefined, hur mycket ett test än skrev med `setItem`. Ett test som ville verifiera "modalen visas inte för den som redan sett den" fick därför alltid se modalen. `sessionStorage` fick en in-memory-store 2026-05-09; localStorage blev kvar.
+
+**Lärdom:** samma familj som fixturer snällare än verkligheten, men ett steg längre bort — den här ljuger för *alla* tester samtidigt, tyst. Ett test som "passerar" mot en tom mock kontrollerar ingenting.
+
+**Kontroll:** när ett test som borde falla ändå går grönt — läs `setup.ts` innan du misstänker komponenten.
+
+**Bonusfälla i jsdom:** `offsetParent` är alltid `null`, och `useFocusTrap` filtrerar bort element med `offsetParent === null` som dolda. Utan en shim ser fokusfällan noll fokuserbara element — och fokustester går grönt även när fokushanteringen är trasig.
 
 ### 2026-08-03: Testfixturer ska spegla prod-formen, inte den bekväma
 
