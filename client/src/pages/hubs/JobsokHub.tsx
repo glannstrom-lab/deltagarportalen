@@ -32,7 +32,7 @@ function shortDate(iso: string | null | undefined, t: TFunction): string | null 
 
 export default function JobsokHub() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -42,7 +42,7 @@ export default function JobsokHub() {
         domain="activity"
       >
         <FocusHubWizard
-          onExit={toggleFocusMode}
+          onExit={leaveWizard}
           pageKey="jobsokHub"
           question={t('focus.jobsokHub.question', 'Vad i jobbsökandet vill du göra?')}
           tools={[

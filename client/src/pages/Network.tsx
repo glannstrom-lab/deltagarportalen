@@ -12,7 +12,7 @@ import { FocusNetworkWizard } from '@/components/focus/pages/FocusNetworkWizard'
 
 export default function NetworkPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -21,7 +21,7 @@ export default function NetworkPage() {
         icon={Users}
         domain="action"
       >
-        <FocusNetworkWizard onExit={toggleFocusMode} />
+        <FocusNetworkWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

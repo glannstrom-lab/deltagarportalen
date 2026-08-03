@@ -89,7 +89,7 @@ function TabLoader({ message }: { message?: string }) {
 
 export default function KnowledgeBase() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -98,7 +98,7 @@ export default function KnowledgeBase() {
         icon={BookOpen}
         domain="info"
       >
-        <FocusKnowledgeBaseWizard onExit={toggleFocusMode} />
+        <FocusKnowledgeBaseWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

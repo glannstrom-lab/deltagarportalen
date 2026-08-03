@@ -55,7 +55,7 @@ function PipelineWrapper({
 
 export default function Applications() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -64,7 +64,7 @@ export default function Applications() {
         icon={ClipboardList}
         domain="activity"
       >
-        <FocusApplicationsWizard onExit={toggleFocusMode} />
+        <FocusApplicationsWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

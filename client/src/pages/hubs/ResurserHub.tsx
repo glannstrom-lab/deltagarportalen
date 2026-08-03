@@ -32,7 +32,7 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function ResurserHub() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -42,7 +42,7 @@ export default function ResurserHub() {
         domain="info"
       >
         <FocusHubWizard
-          onExit={toggleFocusMode}
+          onExit={leaveWizard}
           pageKey="resurserHub"
           question={t('focus.resurserHub.question', 'Vad behöver du läsa eller hitta?')}
           tools={[

@@ -125,7 +125,7 @@ const exampleAnswers: Record<string, string> = {
 
 export default function InterviewSimulator() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -134,7 +134,7 @@ export default function InterviewSimulator() {
         icon={Mic}
         domain="activity"
       >
-        <FocusInterviewWizard onExit={toggleFocusMode} />
+        <FocusInterviewWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

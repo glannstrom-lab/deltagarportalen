@@ -422,7 +422,7 @@ async function generateCVWord(cvData: CVData) {
 // Main Component
 export default function Resources() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -431,7 +431,7 @@ export default function Resources() {
         icon={Bookmark}
         domain="info"
       >
-        <FocusResourcesWizard onExit={toggleFocusMode} />
+        <FocusResourcesWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

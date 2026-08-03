@@ -13,9 +13,12 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 
 export function FocusExitButton() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  // Den globala inställningen, inte sidans guide: knappen ska finnas kvar även
+  // när användaren valt att se hela sidan — annars finns ingen väg ut ur läget
+  // från den sidan (UX11).
+  const { isFocusModeEnabled, toggleFocusMode } = useFocusMode()
 
-  if (!isFocusMode) return null
+  if (!isFocusModeEnabled) return null
 
   return (
     <button

@@ -19,7 +19,7 @@ import VisibilityTab from './personal-brand/VisibilityTab'
 
 export default function PersonalBrandPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   const brandTabs: Tab[] = [
     { id: 'audit', label: t('personalBrand.tabs.audit.label'), path: '/personal-brand', icon: ClipboardCheck, description: t('personalBrand.tabs.audit.description') },
@@ -35,7 +35,7 @@ export default function PersonalBrandPage() {
         icon={Star}
         domain="coaching"
       >
-        <FocusPersonalBrandWizard onExit={toggleFocusMode} />
+        <FocusPersonalBrandWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

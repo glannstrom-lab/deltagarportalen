@@ -229,7 +229,7 @@ function QuickSearchCard({
 
 export default function Education() {
   const { t } = useTranslation();
-  const { isFocusMode, toggleFocusMode } = useFocusMode();
+  const { isFocusMode, leaveWizard } = useFocusMode();
 
   if (isFocusMode) {
     return (
@@ -238,7 +238,7 @@ export default function Education() {
         icon={GraduationCap}
         domain="coaching"
       >
-        <FocusEducationWizard onExit={toggleFocusMode} />
+        <FocusEducationWizard onExit={leaveWizard} />
       </PageFocusShell>
     );
   }

@@ -17,7 +17,7 @@ import { FocusCalendarWizard } from '@/components/focus/pages/FocusCalendarWizar
 
 export default function Calendar() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -26,7 +26,7 @@ export default function Calendar() {
         icon={CalendarIcon}
         domain="wellbeing"
       >
-        <FocusCalendarWizard onExit={toggleFocusMode} />
+        <FocusCalendarWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

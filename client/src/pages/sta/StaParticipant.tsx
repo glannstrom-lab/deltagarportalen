@@ -226,7 +226,7 @@ const TABS: Array<{ id: TabId; label: string; partIndex?: StaPart }> = [
  */
 export default function StaParticipant() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -234,9 +234,9 @@ export default function StaParticipant() {
         title={t('sta.title', 'Steg till arbete')}
         icon={Footprints}
         domain="action"
-        onExit={toggleFocusMode}
+        onExit={leaveWizard}
       >
-        <FocusStaWizard onExit={toggleFocusMode} />
+        <FocusStaWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

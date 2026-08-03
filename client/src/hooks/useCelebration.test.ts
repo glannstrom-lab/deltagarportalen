@@ -29,7 +29,14 @@ vi.mock('@/stores/settingsStore', () => ({
 
 let isFocusMode = false
 vi.mock('@/components/FocusModeProvider', () => ({
-  useFocusMode: () => ({ isFocusMode, toggleFocusMode: vi.fn() }),
+  // UX11: hooken har två flaggor. Firandet ska vara dämpat så länge det
+  // GLOBALA läget är på — även om användaren lämnat guiden på just den sidan.
+  useFocusMode: () => ({
+    isFocusMode,
+    isFocusModeEnabled: isFocusMode,
+    leaveWizard: vi.fn(),
+    toggleFocusMode: vi.fn(),
+  }),
 }))
 
 import { useCelebration } from './useCelebration'

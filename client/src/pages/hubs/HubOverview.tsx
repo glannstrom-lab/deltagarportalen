@@ -81,7 +81,7 @@ const heroVariants = {
 
 export default function HubOverview() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -91,7 +91,7 @@ export default function HubOverview() {
         domain="action"
       >
         <FocusHubWizard
-          onExit={toggleFocusMode}
+          onExit={leaveWizard}
           pageKey="hubOverview"
           question={t('focus.hubOverview.question', 'Vad vill du fokusera på idag?')}
           tools={[

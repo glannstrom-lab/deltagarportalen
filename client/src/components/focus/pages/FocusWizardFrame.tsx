@@ -48,6 +48,11 @@ interface FocusWizardFrameProps {
   current: number
   onNext: () => void | Promise<void>
   onBack?: () => void
+  /**
+   * Lämna guiden på den här sidan — **inte** stänga av fokusläget (UX11).
+   * Sidor ska skicka in `leaveWizard` från `useFocusMode()`, aldrig
+   * `toggleFocusMode`.
+   */
   onExit: () => void
   /** Disable "Nästa" if validation fails on current step. */
   canNext?: boolean
@@ -188,13 +193,18 @@ export function FocusWizardFrame({
           </button>
         )}
 
+        {/* UX11: knappen hette "Hoppa över" men stängde av hela fokusläget —
+            permanent, på alla sidor. Den lämnar nu bara guiden på den här
+            sidan (`leaveWizard`); fokusläget står kvar. Etiketten säger nu vad
+            som faktiskt händer. Vägen HELT ut ur läget är headerns
+            "Avsluta fokusläge". */}
         <button
           type="button"
           onClick={onExit}
           className="flex items-center justify-center gap-2 py-3 text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200"
         >
           <SkipForward className="w-4 h-4" />
-          {t('focus.skip', 'Hoppa över')}
+          {t('focus.showWholePage', 'Visa hela sidan i stället')}
         </button>
       </div>
     </div>

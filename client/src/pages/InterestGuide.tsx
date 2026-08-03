@@ -30,7 +30,7 @@ function TabLoading() {
 
 export default function InterestGuide() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -39,7 +39,7 @@ export default function InterestGuide() {
         icon={Compass}
         domain="coaching"
       >
-        <FocusInterestGuideWizard onExit={toggleFocusMode} />
+        <FocusInterestGuideWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

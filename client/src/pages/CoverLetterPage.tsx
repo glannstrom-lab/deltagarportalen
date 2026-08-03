@@ -21,7 +21,7 @@ import { FocusCoverLetter } from '@/components/focus/steps/FocusCoverLetter'
 
 export default function CoverLetterPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -31,9 +31,9 @@ export default function CoverLetterPage() {
         domain="activity"
       >
         <FocusCoverLetter
-          onComplete={toggleFocusMode}
-          onSkip={toggleFocusMode}
-          onBack={toggleFocusMode}
+          onComplete={leaveWizard}
+          onSkip={leaveWizard}
+          onBack={leaveWizard}
         />
       </PageFocusShell>
     )

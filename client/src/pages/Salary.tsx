@@ -18,7 +18,7 @@ import MarketDataTab from './salary/MarketDataTab'
 
 export default function SalaryPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   const salaryTabs: Tab[] = [
     { id: 'calculator', label: t('salary.tabs.calculator.label'), path: '/salary', icon: Calculator, description: t('salary.tabs.calculator.description') },
@@ -33,7 +33,7 @@ export default function SalaryPage() {
         icon={Wallet}
         domain="activity"
       >
-        <FocusSalaryWizard onExit={toggleFocusMode} />
+        <FocusSalaryWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

@@ -34,7 +34,7 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function MinVardagHub() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -44,7 +44,7 @@ export default function MinVardagHub() {
         domain="wellbeing"
       >
         <FocusHubWizard
-          onExit={toggleFocusMode}
+          onExit={leaveWizard}
           pageKey="minVardagHub"
           question={t('focus.minVardagHub.question', 'Vad känns viktigt i din vardag just nu?')}
           tools={[

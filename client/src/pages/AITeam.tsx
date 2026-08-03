@@ -23,7 +23,7 @@ import { FocusAITeamWizard } from '@/components/focus/pages/FocusAITeamWizard'
 
 export default function AITeam() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -32,7 +32,7 @@ export default function AITeam() {
         icon={Bot}
         domain="action"
       >
-        <FocusAITeamWizard onExit={toggleFocusMode} />
+        <FocusAITeamWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

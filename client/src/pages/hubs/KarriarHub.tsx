@@ -32,7 +32,7 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function KarriarHub() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -42,7 +42,7 @@ export default function KarriarHub() {
         domain="coaching"
       >
         <FocusHubWizard
-          onExit={toggleFocusMode}
+          onExit={leaveWizard}
           pageKey="karriarHub"
           question={t('focus.karriarHub.question', 'Vad i karriären vill du jobba med?')}
           tools={[

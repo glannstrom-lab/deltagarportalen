@@ -36,7 +36,8 @@ interface UserProfile {
 export function TopBar() {
   const { t, i18n } = useTranslation()
   const { isDark, toggleDarkMode } = useTheme()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  // Knappen speglar den globala inställningen (UX11)
+  const { isFocusModeEnabled: isFocusMode, toggleFocusMode } = useFocusMode()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const navigate = useNavigate()

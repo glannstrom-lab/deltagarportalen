@@ -147,7 +147,7 @@ function AchievementBanner() {
 
 export default function Diary() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -156,7 +156,7 @@ export default function Diary() {
         icon={NotebookPen}
         domain="wellbeing"
       >
-        <FocusDiaryWizard onExit={toggleFocusMode} />
+        <FocusDiaryWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

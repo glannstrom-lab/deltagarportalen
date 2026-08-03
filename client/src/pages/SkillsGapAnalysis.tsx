@@ -118,7 +118,7 @@ function formatProfileSummary(cvData: CVData | null, profile: { first_name?: str
 export default function SkillsGapAnalysis() {
   const { t, i18n } = useTranslation()
   const { profile } = useAuthStore()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
   // G10: intresseprofilen är React Query-cachad (5 min) och delas med andra
   // ytor — kortet kostar ingen extra rundtur i praktiken.
   const { profile: interestProfile } = useInterestProfile()
@@ -398,7 +398,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         icon={TrendingUp}
         domain="coaching"
       >
-        <FocusSkillsGapWizard onExit={toggleFocusMode} />
+        <FocusSkillsGapWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

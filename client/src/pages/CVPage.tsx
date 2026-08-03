@@ -22,7 +22,7 @@ import { FileText } from '@/components/ui/icons'
 export default function CVPage() {
   const location = useLocation()
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   const cvTabs = cvTabDefs.map((tab) => ({
     ...tab,
@@ -48,7 +48,7 @@ export default function CVPage() {
         title={t('cv.title')}
         icon={FileText}
         domain="activity"
-        onExit={toggleFocusMode}
+        onExit={leaveWizard}
       >
         {/* onExitFocusMode utelämnat medvetet: PageFocusShell har redan
             "Avsluta fokusläge" i headern. Två utgångar med olika text

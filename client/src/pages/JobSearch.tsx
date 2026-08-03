@@ -1229,7 +1229,7 @@ function SavedJobsTab() {
 export default function JobSearch() {
   const { t } = useTranslation();
   const { savedJobs } = useSavedJobs();
-  const { isFocusMode, toggleFocusMode } = useFocusMode();
+  const { isFocusMode, leaveWizard } = useFocusMode();
 
   if (isFocusMode) {
     return (
@@ -1238,7 +1238,7 @@ export default function JobSearch() {
         icon={Search}
         domain="activity"
       >
-        <FocusJobSearchWizard onExit={toggleFocusMode} />
+        <FocusJobSearchWizard onExit={leaveWizard} />
       </PageFocusShell>
     );
   }

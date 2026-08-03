@@ -84,7 +84,7 @@ const quickLinkDefs: QuickLink[] = [
 
 export default function Help() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -93,7 +93,7 @@ export default function Help() {
         icon={HelpCircle}
         domain="info"
       >
-        <FocusHelpWizard onExit={toggleFocusMode} />
+        <FocusHelpWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

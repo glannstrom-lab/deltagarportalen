@@ -67,7 +67,7 @@ function domainBgClass(d: Domain): string {
 
 export default function HubOverviewHistory() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -76,7 +76,7 @@ export default function HubOverviewHistory() {
         icon={CalendarDays}
         domain="action"
       >
-        <HubHistoryFocus onExit={toggleFocusMode} />
+        <HubHistoryFocus onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

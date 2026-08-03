@@ -18,7 +18,7 @@ import LanguageTab from './international/LanguageTab'
 
 export default function InternationalPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   const internationalTabs: Tab[] = [
     { id: 'visa', label: t('international.tabs.visa.label'), path: '/international', icon: FileCheck, description: t('international.tabs.visa.description') },
@@ -33,7 +33,7 @@ export default function InternationalPage() {
         icon={Globe}
         domain="activity"
       >
-        <FocusInternationalWizard onExit={toggleFocusMode} />
+        <FocusInternationalWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

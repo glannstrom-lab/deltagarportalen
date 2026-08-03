@@ -3384,7 +3384,7 @@ function CollapsibleCategory({
 
 export default function ExternalResources() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -3393,7 +3393,7 @@ export default function ExternalResources() {
         icon={ExternalLink}
         domain="info"
       >
-        <FocusExternalResourcesWizard onExit={toggleFocusMode} />
+        <FocusExternalResourcesWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

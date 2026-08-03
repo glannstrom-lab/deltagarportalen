@@ -68,7 +68,7 @@ interface ExerciseAnswer {
 
 export default function Exercises() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -77,7 +77,7 @@ export default function Exercises() {
         icon={Dumbbell}
         domain="wellbeing"
       >
-        <FocusExercisesWizard onExit={toggleFocusMode} />
+        <FocusExercisesWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

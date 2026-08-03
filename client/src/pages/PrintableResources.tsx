@@ -42,7 +42,7 @@ const localizeCategory = (slug: string): string =>
 
 export default function PrintableResources() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -51,7 +51,7 @@ export default function PrintableResources() {
         icon={Printer}
         domain="info"
       >
-        <FocusPrintWizard onExit={toggleFocusMode} />
+        <FocusPrintWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

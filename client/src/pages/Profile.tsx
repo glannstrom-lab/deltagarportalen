@@ -131,7 +131,7 @@ function InitialLoader() {
 export default function Profile() {
   const { t, i18n } = useTranslation()
   const { activeTab, initialLoading, loadAll } = useProfileStore()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   // Load all profile data on mount
   useEffect(() => {
@@ -145,7 +145,7 @@ export default function Profile() {
         icon={User}
         domain="action"
       >
-        <FocusProfileWizard onExit={toggleFocusMode} />
+        <FocusProfileWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

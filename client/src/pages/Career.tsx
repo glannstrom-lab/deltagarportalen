@@ -24,7 +24,7 @@ import RelocationTab from './career/RelocationTab'
 
 export default function CareerPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   // Mark career page as visited for onboarding tracking (cloud + localStorage fallback)
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function CareerPage() {
         icon={Target}
         domain="coaching"
       >
-        <FocusCareerWizard onExit={toggleFocusMode} />
+        <FocusCareerWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

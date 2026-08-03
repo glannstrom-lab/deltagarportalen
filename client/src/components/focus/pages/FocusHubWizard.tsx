@@ -92,9 +92,13 @@ export function FocusHubWizard({ onExit, pageKey: _pageKey, question, tools }: P
           <p className="text-stone-600 dark:text-stone-300">
             {t('focus.hub.doneText', 'Öppna verktyget när du är redo:')}
           </p>
+          {/* UX11: INGEN onClick här. Länken hade `onClick={onExit}`, vilket
+              stängde av fokusläget i samma ögonblick som användaren gick in i
+              verktyget — man valde "CV" i guiden och landade i den vanliga,
+              täta CV-vyn. Verktyget har en egen fokusguide; att bara navigera
+              är hela poängen. */}
           <Link
             to={picked.path}
-            onClick={onExit}
             className="flex items-center justify-between gap-2 w-full px-4 py-4 rounded-xl border-2 border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20"
           >
             <span className="text-base font-medium text-stone-800 dark:text-stone-100">{picked.label}</span>

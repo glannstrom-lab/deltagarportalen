@@ -21,7 +21,7 @@ interface SectionAudit {
 
 export default function LinkedInOptimizer() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -30,7 +30,7 @@ export default function LinkedInOptimizer() {
         icon={Linkedin}
         domain="activity"
       >
-        <FocusLinkedInWizard onExit={toggleFocusMode} />
+        <FocusLinkedInWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

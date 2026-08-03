@@ -52,7 +52,7 @@ function renderInline(text: string): React.ReactNode {
 
 export default function Article() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -61,7 +61,7 @@ export default function Article() {
         icon={BookOpen}
         domain="info"
       >
-        <ArticleFocusReader onExit={toggleFocusMode} />
+        <ArticleFocusReader onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

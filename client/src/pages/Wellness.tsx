@@ -20,7 +20,7 @@ import CrisisTab from './wellness/CrisisTab'
 
 export default function WellnessPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   if (isFocusMode) {
     return (
@@ -29,7 +29,7 @@ export default function WellnessPage() {
         icon={Smile}
         domain="wellbeing"
       >
-        <FocusWellnessWizard onExit={toggleFocusMode} />
+        <FocusWellnessWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }

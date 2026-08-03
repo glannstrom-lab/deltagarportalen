@@ -84,7 +84,9 @@ async function burst() {
 export function useCelebration() {
   const { t } = useTranslation()
   const calmMode = useSettingsStore(s => s.calmMode)
-  const { isFocusMode } = useFocusMode()
+  // Global inställning: rörelsen ska vara dämpad även när användaren
+  // lämnat guiden på en enskild sida (UX11)
+  const { isFocusModeEnabled: isFocusMode } = useFocusMode()
 
   const celebrate = useCallback((moment: CelebrationMoment) => {
     const copy = MOMENT_COPY[moment]

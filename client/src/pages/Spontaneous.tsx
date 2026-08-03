@@ -20,7 +20,7 @@ import StatsTab from './spontaneous/StatsTab'
 
 export default function SpontaneousPage() {
   const { t } = useTranslation()
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode, leaveWizard } = useFocusMode()
 
   // Mark page as visited for onboarding tracking
   useEffect(() => {
@@ -44,7 +44,7 @@ export default function SpontaneousPage() {
         icon={Building2}
         domain="activity"
       >
-        <FocusSpontaneousWizard onExit={toggleFocusMode} />
+        <FocusSpontaneousWizard onExit={leaveWizard} />
       </PageFocusShell>
     )
   }
