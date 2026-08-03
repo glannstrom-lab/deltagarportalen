@@ -32,10 +32,12 @@ const path = require('node:path')
  * rotorsaker: CV-mallarnas TemplateCVData, validation.ts asRecord,
  * type-only imports). Sänk aldrig utan att ha kört skriptet.
  */
+// 469 → 468 (2026-08-04, UX19): trasig referens till borttagna useFocusTrap i
+// useAccessibility-barrelns default-export — kastade ReferenceError vid import.
 // 470 → 469 (2026-08-03, UX14): `Property 'toLowerCase' does not exist on type
 // 'Skill'` var inte typskuld utan en skarp bugg — cv.skills är objekt i prod,
 // så anropet kastade TypeError för alla 16 CV:n med ifyllda kompetenser.
-const CEILING = 469
+const CEILING = 468
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

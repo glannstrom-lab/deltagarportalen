@@ -10,8 +10,20 @@ import {
   FileText, User, Briefcase, Award, Eye
 } from '@/components/ui/icons'
 import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 const ONBOARDING_OWNER_ID = 'cv-builder' as const
+
+/** Har användaren svarat på cookiebannern? Nyckeln ägs av CookieConsent. */
+function hasAnsweredCookieBanner(): boolean {
+  try {
+    return localStorage.getItem('jobin_cookie_consent') !== null
+  } catch {
+    // Blockerad storage: banner och guide beter sig som om svaret finns, så
+    // guiden inte blir onåbar för den som kör med hårda integritetsinställningar.
+    return true
+  }
+}
 
 interface OnboardingStep {
   id: string
@@ -90,10 +102,44 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false) // start dold, claim:a session först
 
+  const handleSkip = () => {
+    localStorage.setItem('cv-onboarding-completed', 'true')
+    setIsVisible(false)
+    onSkip()
+  }
+
+  /**
+   * UX19 (2026-08-04): modalen var ingen dialog. Escape stängde inte, klick
+   * utanför stängde inte, role/aria-modal saknades, fokus flyttades aldrig in
+   * (activeElement = BODY) och de 14 första tabbstoppen låg UTANFÖR modalen på
+   * den mörklagda sidan bakom. Enda utvägen var X-ikonen, som saknade
+   * tillgängligt namn. Portalen hade redan rätt lösning — `useFocusTrap`
+   * används av 13 andra modaler; den här hade bara aldrig kopplats in.
+   */
+  const modalRef = useFocusTrap<HTMLDivElement>(isVisible, { onEscape: handleSkip })
+
   // Check if user has seen onboarding before + claim session (DESIGN.md §12)
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('cv-onboarding-completed')
     if (hasSeenOnboarding) return
+
+    /**
+     * UX16-bonus (2026-08-04): vid förstagångsbesök låg cookiekortet (z-50,
+     * fixerat i botten) ovanpå den här modalen (också z-50) så att guidens egna
+     * knappar inte gick att trycka. Två saker som båda kräver ett svar kan inte
+     * ligga på varandra — cookiebeslutet kommer först, guiden när det är taget.
+     */
+    if (!hasAnsweredCookieBanner()) {
+      const onAnswered = () => {
+        if (claimOnboardingSession(ONBOARDING_OWNER_ID)) setIsVisible(true)
+      }
+      window.addEventListener('cookie-consent-updated', onAnswered)
+      return () => {
+        window.removeEventListener('cookie-consent-updated', onAnswered)
+        releaseOnboardingSession(ONBOARDING_OWNER_ID)
+      }
+    }
+
     // Frequency-cap: släpp endast EN onboarding per session
     if (!claimOnboardingSession(ONBOARDING_OWNER_ID)) return
     setIsVisible(true)
@@ -125,15 +171,19 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
     onComplete()
   }
 
-  const handleSkip = () => {
-    localStorage.setItem('cv-onboarding-completed', 'true')
-    setIsVisible(false)
-    onSkip()
-  }
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+      onClick={handleSkip}
+    >
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cv-onboarding-title"
+        onClick={(e) => e.stopPropagation()}
+        className="relative w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+      >
         {/* Header with progress */}
         <div className="bg-[var(--c-solid)] p-6 text-white">
           <div className="flex items-center justify-between mb-4">
@@ -147,9 +197,10 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
             </div>
             <button
               onClick={handleSkip}
+              aria-label="Stäng guiden"
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
           
@@ -164,7 +215,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
         {/* Content */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
+          <h2 id="cv-onboarding-title" className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
             {step.title}
           </h2>
           <p className="text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
@@ -228,10 +279,12 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
         {/* Step indicators */}
         <div className="flex justify-center gap-1.5 pb-4">
-          {ONBOARDING_STEPS.map((_, idx) => (
+          {ONBOARDING_STEPS.map((s, idx) => (
             <button
               key={idx}
               onClick={() => setCurrentStep(idx)}
+              aria-label={`Gå till steg ${idx + 1} av ${ONBOARDING_STEPS.length}: ${s.title}`}
+              aria-current={idx === currentStep ? 'step' : undefined}
               className={`
                 w-2 h-2 rounded-full transition-colors
                 ${idx === currentStep ? 'bg-[var(--c-solid)]' :

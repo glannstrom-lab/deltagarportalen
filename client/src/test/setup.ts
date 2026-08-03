@@ -19,12 +19,20 @@ Object.defineProperty(window, 'matchMedia', {
   })),
 })
 
-// Mock localStorage
+// Mock localStorage.
+//
+// UX19 (2026-08-04): mocken hade INGEN backing store — getItem returnerade
+// alltid undefined, hur mycket ett test än skrev med setItem. Ett test som
+// ville verifiera "modalen visas inte för den som redan sett den" fick därför
+// alltid se modalen, och ett test som trodde sig kontrollera persistens
+// kontrollerade ingenting. sessionStorage nedan fick sin store 2026-05-09;
+// localStorage blev kvar. Samma familj som fixturer snällare än verkligheten.
+const localStorageStore = new Map<string, string>()
 const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
+  getItem: vi.fn((key: string) => localStorageStore.get(key) ?? null),
+  setItem: vi.fn((key: string, value: string) => { localStorageStore.set(key, String(value)) }),
+  removeItem: vi.fn((key: string) => { localStorageStore.delete(key) }),
+  clear: vi.fn(() => { localStorageStore.clear() }),
 }
 Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,

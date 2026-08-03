@@ -274,7 +274,11 @@ export function useHighContrast(): boolean {
 export default {
   useReducedMotion,
   useAccessibleTransition,
-  useFocusTrap,
+  // useFocusTrap togs bort 2026-05-15 (D7) men låg kvar här — objektet
+  // refererade ett namn som inte finns, vilket kastar ReferenceError när
+  // modulen evalueras. Ingen importerar barreln i dag, så det har aldrig
+  // synts; det hade smällt för den som gjorde det först. Importera
+  // `@/hooks/useFocusTrap` direkt (UX19, 2026-08-04).
   useKeyboardNavigation,
   useAnnounce,
   useEscapeKey,
