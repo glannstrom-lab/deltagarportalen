@@ -54,25 +54,34 @@ export function useMinVardagHubSummary() {
           .from('network_contacts')
           .select('id', { count: 'exact', head: true })
           .eq('user_id', userId),
-        // Min konsulent — join. Column is `participant_id` per 05-DB-DISCOVERY.md.
-        supabase
-          .from('consultant_participants')
-          .select('consultant_id, profiles:consultant_id(id, full_name, avatar_url)')
-          .eq('participant_id', userId)
-          .maybeSingle(),
+        // Min konsulent — UX25: gick tidigare via embed
+        // `consultant_participants → profiles:consultant_id(...)`. Den vägen
+        // returnerar ALLTID null: `profiles` har med flit ingen SELECT-policy
+        // som låter en deltagare läsa sin konsulents rad (se UX12), så RLS
+        // filtrerar bort den inbäddade profilen och hubben visade
+        // "Inte tilldelad" för alla 31 deltagare som HAR en konsulent.
+        // `get_my_consultant()` är SECURITY DEFINER, utgår från auth.uid() och
+        // lämnar ut exakt sex kontaktfält. Samma väg som /my-consultant.
+        supabase.rpc('get_my_consultant'),
       ])
 
-      const consultantRaw =
-        consultantR.data && (consultantR.data as { profiles?: unknown }).profiles
-      const profilesObj = consultantRaw as
-        | { id: string; full_name?: string | null; avatar_url?: string | null }
+      const rpcRow = consultantR.data as
+        | {
+            id: string
+            first_name?: string | null
+            last_name?: string | null
+            avatar_url?: string | null
+          }
         | null
         | undefined
-      const consultant = profilesObj
+
+      // RPC:n returnerar för- och efternamn var för sig; hubben visar ett namn.
+      const consultant = rpcRow
         ? {
-            id: profilesObj.id,
-            full_name: profilesObj.full_name ?? null,
-            avatar_url: profilesObj.avatar_url ?? null,
+            id: rpcRow.id,
+            full_name:
+              [rpcRow.first_name, rpcRow.last_name].filter(Boolean).join(' ') || null,
+            avatar_url: rpcRow.avatar_url ?? null,
           }
         : null
 

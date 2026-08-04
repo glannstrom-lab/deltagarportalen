@@ -3276,6 +3276,7 @@
     "loadErrorTitle": "We couldn't load your consultant right now",
     "loadErrorDesc": "This is a temporary problem on our side — not something you did. Please reload the page in a moment.",
     "contactSupport": "Contact support",
+    "contactInfo": "How to reach them",
     "consultant": {
       "yourConsultant": "Your career consultant",
       "availableToday": "Available today",
@@ -3287,6 +3288,7 @@
       "title": "Next meeting",
       "noMeetings": "No scheduled meetings",
       "bookMeeting": "Book meeting",
+      "joinMeeting": "Join the meeting",
       "meetingTypes": {
         "video": "Video meeting",
         "phone": "Phone meeting",
@@ -3334,7 +3336,12 @@
       "placeholder": "Write a message...",
       "send": "Send",
       "you": "You",
-      "unread": "Unread"
+      "unread": "Unread",
+      "writeTo": "Write to {{name}}",
+      "history": "Message history",
+      "writeMessage": "Write a message",
+      "sendMessage": "Send message",
+      "pressEnterToSend": "Press Enter to send"
     },
     "goals": {
       "title": "Goals",
@@ -3343,15 +3350,20 @@
       "completed": "Completed",
       "inProgress": "In progress",
       "notStarted": "Not started",
-      "goalsCompleted": "{{count}} goals completed",
-      "keepGoing": "Keep going!"
+      "goalsCompleted": "{{completed}} of {{total}} goals completed",
+      "keepGoing": "Keep going!",
+      "agreedGoals": "Goals you agreed on",
+      "deadline": "Due by",
+      "greatJob": "Nice work — you've completed {{count}} of your goals."
     },
     "quickActions": {
       "title": "Quick actions",
       "sendMessage": "Send message",
       "bookMeeting": "Book meeting",
       "shareCV": "Share CV",
-      "viewGoals": "View goals"
+      "viewGoals": "View goals",
+      "sendEmail": "Send email",
+      "call": "Call"
     },
     "email": {
       "bookingSubject": "Meeting request",

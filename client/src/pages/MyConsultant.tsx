@@ -123,9 +123,9 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
   }
 
   const meetingTypeLabels = {
-    video: t('myConsultant.meetingTypes.video'),
-    phone: t('myConsultant.meetingTypes.phone'),
-    in_person: t('myConsultant.meetingTypes.inPerson'),
+    video: t('myConsultant.nextMeeting.meetingTypes.video'),
+    phone: t('myConsultant.nextMeeting.meetingTypes.phone'),
+    in_person: t('myConsultant.nextMeeting.meetingTypes.inPerson'),
   }
 
   return (
@@ -151,7 +151,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
             {consultant.title && (
               <p className="text-white text-sm">{consultant.title}</p>
             )}
-            <p className="text-white text-sm mt-1">{t('myConsultant.yourConsultant')}</p>
+            <p className="text-white text-sm mt-1">{t('myConsultant.consultant.yourConsultant')}</p>
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
       {/* Next meeting */}
       <div className="p-4">
         <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-          {t('myConsultant.nextMeeting')}
+          {t('myConsultant.nextMeeting.title')}
         </h3>
         {nextMeeting ? (
           <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl p-4">
@@ -225,7 +225,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
                     className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline mt-2"
                   >
                     <Video className="w-4 h-4" />
-                    {t('myConsultant.joinMeeting')}
+                    {t('myConsultant.nextMeeting.joinMeeting')}
                   </a>
                 )}
               </div>
@@ -234,7 +234,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
         ) : (
           <div className="text-center py-4 text-stone-500 dark:text-stone-400">
             <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">{t('myConsultant.noMeetingScheduled')}</p>
+            <p className="text-sm">{t('myConsultant.nextMeeting.noMeetings')}</p>
           </div>
         )}
       </div>
@@ -255,20 +255,20 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
     )
   }
 
+  // UX24: bara tre kategorier produceras någonsin av datan nedan
+  // (`progress`, `cv`, `wellbeing` — se sharedInfoItems). `goals` och
+  // `activity` var döda grenar vars etiketter aldrig kunde renderas, och
+  // `activity` krockade dessutom med `progress`, som redan heter "Aktivitet".
   const categoryIcons: Record<string, React.ElementType> = {
     progress: TrendingUp,
     cv: FileText,
-    goals: Target,
-    activity: Activity,
     wellbeing: Heart,
   }
 
   const categoryLabels: Record<string, string> = {
-    progress: t('myConsultant.categories.progress'),
-    cv: t('myConsultant.categories.cv'),
-    goals: t('myConsultant.categories.goals'),
-    activity: t('myConsultant.categories.activity'),
-    wellbeing: t('myConsultant.categories.wellbeing'),
+    progress: t('myConsultant.sharedInfo.categories.progress'),
+    cv: t('myConsultant.sharedInfo.categories.cv'),
+    wellbeing: t('myConsultant.sharedInfo.categories.wellbeing'),
   }
 
   const statusColors = {
@@ -436,11 +436,11 @@ function MessagesSection({
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('myConsultant.messages')}
+            {t('myConsultant.messages.title')}
           </h2>
         </div>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          {t('myConsultant.writeTo', { name: consultant.first_name })}
+          {t('myConsultant.messages.writeTo', { name: consultant.first_name })}
         </p>
       </div>
 
@@ -449,7 +449,7 @@ function MessagesSection({
         className="flex-1 overflow-y-auto p-4 space-y-4"
         role="log"
         aria-live="polite"
-        aria-label={t('myConsultant.messageHistory')}
+        aria-label={t('myConsultant.messages.history')}
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
@@ -459,8 +459,8 @@ function MessagesSection({
           <div className="flex items-center justify-center h-full">
             <EmptyState
               illustration="vardag"
-              title={t('myConsultant.noMessagesYet')}
-              description={t('myConsultant.sendToStart')}
+              title={t('myConsultant.messages.noMessages')}
+              description={t('myConsultant.messages.startConversation')}
             />
           </div>
         ) : (
@@ -505,14 +505,14 @@ function MessagesSection({
       <div className="p-4 border-t border-stone-200 dark:border-stone-700">
         <div className="flex gap-2">
           <label htmlFor="message-input" className="sr-only">
-            {t('myConsultant.writeMessage')}
+            {t('myConsultant.messages.writeMessage')}
           </label>
           <textarea
             id="message-input"
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={t('myConsultant.messagePlaceholder')}
+            placeholder={t('myConsultant.messages.placeholder')}
             rows={1}
             className={cn(
               'flex-1 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
@@ -526,13 +526,13 @@ function MessagesSection({
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
             className="px-4"
-            aria-label={t('myConsultant.sendMessage')}
+            aria-label={t('myConsultant.messages.sendMessage')}
           >
             <Send className="w-5 h-5" />
           </Button>
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-          {t('myConsultant.pressEnterToSend')}
+          {t('myConsultant.messages.pressEnterToSend')}
         </p>
       </div>
     </Card>
@@ -549,17 +549,17 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
 
   const statusConfig = {
     NOT_STARTED: {
-      label: t('myConsultant.goalStatus.notStarted'),
+      label: t('myConsultant.goals.notStarted'),
       color: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400',
       icon: Clock,
     },
     IN_PROGRESS: {
-      label: t('myConsultant.goalStatus.inProgress'),
+      label: t('myConsultant.goals.inProgress'),
       color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
       icon: Activity,
     },
     COMPLETED: {
-      label: t('myConsultant.goalStatus.completed'),
+      label: t('myConsultant.goals.completed'),
       color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]',
       icon: CheckCircle,
     },
@@ -574,12 +574,12 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('myConsultant.agreedGoals')}
+              {t('myConsultant.goals.agreedGoals')}
             </h2>
           </div>
           <div role="status" aria-live="polite">
             <span className="text-sm text-stone-500 dark:text-stone-400">
-              {t('myConsultant.goalsCompleted', { completed: completedCount, total: goals.length })}
+              {t('myConsultant.goals.goalsCompleted', { completed: completedCount, total: goals.length })}
             </span>
           </div>
         </div>
@@ -604,7 +604,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
                 </p>
                 {goal.deadline && (
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    {t('myConsultant.deadline')}: {new Date(goal.deadline).toLocaleDateString()}
+                    {t('myConsultant.goals.deadline')}: {new Date(goal.deadline).toLocaleDateString()}
                   </p>
                 )}
               </div>
@@ -622,7 +622,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
           <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl p-4 flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
             <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
-              {t('myConsultant.greatJob', { count: completedCount })}
+              {t('myConsultant.goals.greatJob', { count: completedCount })}
             </p>
           </div>
         </div>
@@ -640,7 +640,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
   return (
     <Card className="p-4">
       <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
-        {t('myConsultant.quickActions')}
+        {t('myConsultant.quickActions.title')}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <a
@@ -652,7 +652,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           )}
         >
           <Mail className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          <span className="font-medium">{t('myConsultant.sendEmail')}</span>
+          <span className="font-medium">{t('myConsultant.quickActions.sendEmail')}</span>
         </a>
         {consultant.phone && (
           <a
@@ -664,7 +664,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
             )}
           >
             <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <span className="font-medium">{t('myConsultant.call')}</span>
+            <span className="font-medium">{t('myConsultant.quickActions.call')}</span>
           </a>
         )}
         <button
@@ -676,7 +676,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           )}
         >
           <Calendar className="w-5 h-5" />
-          <span className="font-medium">{t('myConsultant.bookMeeting')}</span>
+          <span className="font-medium">{t('myConsultant.quickActions.bookMeeting')}</span>
         </button>
       </div>
     </Card>

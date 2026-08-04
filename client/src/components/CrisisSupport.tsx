@@ -130,9 +130,24 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
     }
   }, [isOpen])
 
-  // Återställ fokus när modal stängs
+  // UX30: återställ fokus när modalen STÄNGS — men inte vid montering.
+  //
+  // Effekten körde tidigare även på mount, eftersom `isOpen` redan är `false`
+  // då. Komponenten monteras i TopBar, BottomBar och Layout, alltså på varje
+  // sida — så varje sidladdning flyttade fokus till krisstödsknappen.
+  // Följderna, uppmätta 2026-08-04: skip-länkarna hamnade bakom fokuspunkten
+  // (tabbstopp 22–24 av 25) och blev i praktiken onåbara, och skärmläsare läste
+  // upp "för dig som mår dåligt…" oombedd vid varje navigering.
+  //
+  // `harVaritOppen` gör skillnad på "aldrig öppnad" och "just stängd".
+  const harVaritOppen = useRef(false)
   useEffect(() => {
-    if (!isOpen) {
+    if (isOpen) {
+      harVaritOppen.current = true
+      return
+    }
+    if (harVaritOppen.current) {
+      harVaritOppen.current = false
       openButtonRef.current?.focus()
     }
   }, [isOpen])

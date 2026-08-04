@@ -3276,6 +3276,7 @@
     "loadErrorTitle": "Vi kunde inte hämta din konsulent just nu",
     "loadErrorDesc": "Det är ett tillfälligt fel hos oss — inte något du har gjort. Ladda om sidan om en stund.",
     "contactSupport": "Kontakta support",
+    "contactInfo": "Så når du hen",
     "consultant": {
       "yourConsultant": "Din arbetskonsulent",
       "availableToday": "Tillgänglig idag",
@@ -3287,6 +3288,7 @@
       "title": "Nästa möte",
       "noMeetings": "Inga planerade möten",
       "bookMeeting": "Boka möte",
+      "joinMeeting": "Anslut till mötet",
       "meetingTypes": {
         "video": "Videomöte",
         "phone": "Telefonmöte",
@@ -3334,7 +3336,12 @@
       "placeholder": "Skriv ett meddelande...",
       "send": "Skicka",
       "you": "Du",
-      "unread": "Oläst"
+      "unread": "Oläst",
+      "writeTo": "Skriv till {{name}}",
+      "history": "Meddelandehistorik",
+      "writeMessage": "Skriv ett meddelande",
+      "sendMessage": "Skicka meddelande",
+      "pressEnterToSend": "Tryck Enter för att skicka"
     },
     "goals": {
       "title": "Mål",
@@ -3343,15 +3350,20 @@
       "completed": "Avklarade",
       "inProgress": "Pågående",
       "notStarted": "Ej påbörjat",
-      "goalsCompleted": "{{count}} mål avklarade",
-      "keepGoing": "Fortsätt så!"
+      "goalsCompleted": "{{completed}} av {{total}} mål avklarade",
+      "keepGoing": "Fortsätt så!",
+      "agreedGoals": "Era överenskomna mål",
+      "deadline": "Klart senast",
+      "greatJob": "Bra jobbat — du har klarat {{count}} av era mål."
     },
     "quickActions": {
       "title": "Snabbåtgärder",
       "sendMessage": "Skicka meddelande",
       "bookMeeting": "Boka möte",
       "shareCV": "Dela CV",
-      "viewGoals": "Visa mål"
+      "viewGoals": "Visa mål",
+      "sendEmail": "Skicka e-post",
+      "call": "Ring"
     },
     "email": {
       "bookingSubject": "Bokningsförfrågan",

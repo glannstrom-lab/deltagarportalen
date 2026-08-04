@@ -3,10 +3,15 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement, type ReactNode } from 'react'
 
-// Source of truth for the consultant_participants column name:
-// .planning/phases/05-full-hub-coverage-oversikt/05-DB-DISCOVERY.md §consultant_participants
-const CONSULTANT_PARTICIPANT_COL = 'participant_id'
-
+// UX25: hubben hämtade tidigare konsulenten med en embed
+// (`consultant_participants → profiles:consultant_id(...)`). Den vägen ger
+// ALLTID null i drift — `profiles` har med flit ingen SELECT-policy som låter
+// en deltagare läsa sin konsulents rad (UX12) — så hubben visade
+// "Inte tilldelad" för alla 31 deltagare som faktiskt har en konsulent.
+// Mot en mockad klient går embedden däremot alltid igenom, och det gamla testet
+// asserterade den. Samma fälla som `journey_goals` och `useJobsokHubSummary`.
+// Testerna nedan är därför omskrivna till regressionsvakter: hubben SKA gå via
+// `get_my_consultant()` och INTE röra `consultant_participants`.
 vi.mock('@/hooks/useSupabase', () => ({
   useAuth: () => ({
     user: { id: 'test-user-id' },
@@ -17,8 +22,12 @@ vi.mock('@/hooks/useSupabase', () => ({
 }))
 
 const fromMock = vi.fn()
+const rpcMock = vi.fn()
 vi.mock('@/lib/supabase', () => ({
-  supabase: { from: (...args: unknown[]) => fromMock(...args) },
+  supabase: {
+    from: (...args: unknown[]) => fromMock(...args),
+    rpc: (...args: unknown[]) => rpcMock(...args),
+  },
 }))
 
 /**
@@ -64,6 +73,11 @@ describe('useMinVardagHubSummary', () => {
 
   beforeEach(() => {
     fromMock.mockReset()
+    rpcMock.mockReset()
+    rpcMock.mockResolvedValue({
+      data: { id: 'c1', first_name: 'Anna', last_name: 'Karlsson', avatar_url: null },
+      error: null,
+    })
     for (const k of Object.keys(builders)) delete builders[k]
     fromMock.mockImplementation((table: string) => {
       let b: ReturnType<typeof makeBuilder>
@@ -91,11 +105,6 @@ describe('useMinVardagHubSummary', () => {
         ])
       } else if (table === 'network_contacts') {
         b = makeBuilder(null, 8)
-      } else if (table === 'consultant_participants') {
-        b = makeBuilder({
-          consultant_id: 'c1',
-          profiles: { id: 'c1', full_name: 'Anna Karlsson', avatar_url: null },
-        })
       } else {
         b = makeBuilder(null)
       }
@@ -104,7 +113,7 @@ describe('useMinVardagHubSummary', () => {
     })
   })
 
-  it('fires Promise.all of 6 supabase calls (mood, diary count, diary latest, calendar, network count, consultant join)', async () => {
+  it('fires Promise.all of 6 calls (mood, diary count, diary latest, calendar, network count, consultant RPC)', async () => {
     const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
     const { result } = renderHook(() => useMinVardagHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
@@ -112,10 +121,25 @@ describe('useMinVardagHubSummary', () => {
     expect(fromMock).toHaveBeenCalledWith('diary_entries')
     expect(fromMock).toHaveBeenCalledWith('calendar_events')
     expect(fromMock).toHaveBeenCalledWith('network_contacts')
-    expect(fromMock).toHaveBeenCalledWith('consultant_participants')
-    // diary_entries is called twice (count + latest); total = 6
-    expect(fromMock).toHaveBeenCalledTimes(6)
+    // diary_entries anropas två gånger (count + latest) → 5 tabellanrop
+    expect(fromMock).toHaveBeenCalledTimes(5)
     expect(builders.diary_entries).toHaveLength(2)
+    // …och konsulenten hämtas med RPC:n, inte som ett sjätte tabellanrop
+    expect(rpcMock).toHaveBeenCalledWith('get_my_consultant')
+  })
+
+  it('UX25-vakt: rör ALDRIG consultant_participants och läser aldrig profiles direkt', async () => {
+    // Embedden `consultant_participants → profiles:consultant_id(...)` går alltid
+    // igenom mot en mock men returnerar alltid null i drift (RLS). Ett test som
+    // asserterar den grönmarkerar buggen — det gjorde det gamla testet här.
+    const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
+    const { result } = renderHook(() => useMinVardagHubSummary(), { wrapper })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    const tabeller = fromMock.mock.calls.map((c) => c[0])
+    expect(tabeller).not.toContain('consultant_participants')
+    expect(tabeller).not.toContain('profiles')
+    expect(rpcMock).toHaveBeenCalledWith('get_my_consultant')
   })
 
   it('returns MinVardagSummary shape with all 6 slices populated from fixture', async () => {
@@ -134,6 +158,7 @@ describe('useMinVardagHubSummary', () => {
     expect(data.latestDiaryEntry).toMatchObject({ id: 'd1', created_at: '2026-04-25' })
     expect(data.upcomingEvents).toHaveLength(1)
     expect(data.networkContactsCount).toBe(8)
+    // RPC:n lämnar för- och efternamn var för sig; hubben visar ett namn.
     expect(data.consultant).toMatchObject({
       id: 'c1',
       full_name: 'Anna Karlsson',
@@ -148,7 +173,6 @@ describe('useMinVardagHubSummary', () => {
       if (table === 'diary_entries') return makeBuilder(null, 0)
       if (table === 'calendar_events') return makeBuilder([])
       if (table === 'network_contacts') return makeBuilder(null, 0)
-      if (table === 'consultant_participants') return makeBuilder(null)
       return makeBuilder(null)
     })
     const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
@@ -159,29 +183,22 @@ describe('useMinVardagHubSummary', () => {
     expect(result.current.data!.recentMoodLogs).not.toBeUndefined()
   })
 
-  it('summary.consultant is null when consultant_participants returns null', async () => {
-    fromMock.mockReset()
-    fromMock.mockImplementation((table: string) => {
-      if (table === 'mood_logs') return makeBuilder([])
-      if (table === 'diary_entries') return makeBuilder(null, 0)
-      if (table === 'calendar_events') return makeBuilder([])
-      if (table === 'network_contacts') return makeBuilder(null, 0)
-      if (table === 'consultant_participants') return makeBuilder(null)
-      return makeBuilder(null)
-    })
+  it('summary.consultant is null when get_my_consultant returns null (ingen tilldelad)', async () => {
+    rpcMock.mockResolvedValue({ data: null, error: null })
     const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
     const { result } = renderHook(() => useMinVardagHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
     expect(result.current.data!.consultant).toBeNull()
   })
 
-  it('consultant_participants query filters by the column recorded in 05-DB-DISCOVERY.md', async () => {
+  it('bygger full_name av för- och efternamn, och tål att efternamnet saknas', async () => {
+    rpcMock.mockResolvedValue({
+      data: { id: 'c2', first_name: 'Anna', last_name: null, avatar_url: null },
+      error: null,
+    })
     const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
     const { result } = renderHook(() => useMinVardagHubSummary(), { wrapper })
     await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    const consultantBuilder = builders.consultant_participants?.[0]
-    expect(consultantBuilder).toBeDefined()
-    const eqCalls = (consultantBuilder as { __eqCalls: Array<[string, unknown]> }).__eqCalls
-    expect(eqCalls).toEqual([[CONSULTANT_PARTICIPANT_COL, 'test-user-id']])
+    expect(result.current.data!.consultant).toMatchObject({ id: 'c2', full_name: 'Anna' })
   })
 })
