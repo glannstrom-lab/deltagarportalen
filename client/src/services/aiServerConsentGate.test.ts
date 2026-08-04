@@ -119,3 +119,46 @@ describe('checkArt9Consent', () => {
     })
   })
 })
+
+/**
+ * A19 — kopplingsvakt.
+ *
+ * Testerna ovan stubbar Supabase-klienten och kan därför per definition inte se
+ * VILKEN klient handlern skickar in. Precis den luckan gömde en bugg i drift:
+ * `auth.getUser(token)` validerar token men sätter ingen session, så en klient
+ * byggd på enbart anon-nyckeln gick som `anon`, RLS gav 0 rader, `.single()`
+ * blev PGRST116 och den fail closed-grindade kontrollen nekade ALLA — även de
+ * 17 användare som faktiskt hade lämnat samtycke. Alla tester var gröna.
+ *
+ * Vakten läser källan i stället för att köra den. Det är trubbigt, men det är
+ * det enda som fångar ett kopplingsfel som mockarna är blinda för.
+ */
+describe('A19: art. 9-uppslaget måste göras med användarens token', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const fs = require('fs') as typeof import('fs')
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const path = require('path') as typeof import('path')
+  const source: string = fs.readFileSync(path.join(__dirname, '../../api/ai.js'), 'utf8')
+
+  it('bygger en tokenbärande klient för uppslaget', () => {
+    expect(source).toMatch(/global:\s*\{\s*headers:\s*\{\s*Authorization:\s*`Bearer \$\{token\}`/)
+  })
+
+  it('skickar den tokenbärande klienten till checkArt9Consent — inte den oautentiserade', () => {
+    // `await` skiljer anropet från funktionsdeklarationen längre upp i filen.
+    const call = source.match(/await\s+checkArt9Consent\(\s*([A-Za-z_$][\w$]*)\s*,/)
+    expect(call, 'checkArt9Consent anropas inte alls i ai.js').not.toBeNull()
+
+    const klientnamn = call![1]
+    expect(
+      klientnamn,
+      'checkArt9Consent fick den oautentiserade klienten — då går uppslaget som anon och grinden nekar alla'
+    ).not.toBe('supabase')
+
+    // Den klient som skickas in ska vara den som konstrueras med Authorization-headern.
+    const deklaration = new RegExp(
+      `const ${klientnamn} = createClient\\([\\s\\S]{0,400}?Authorization`
+    )
+    expect(source).toMatch(deklaration)
+  })
+})

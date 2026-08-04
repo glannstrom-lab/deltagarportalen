@@ -13,6 +13,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { verifyCronSecret } from '../_shared/cronAuth.ts'
 
 const getInactivityWarningTemplate = (data: {
   firstName: string
@@ -84,6 +85,14 @@ serve(async (req) => {
 
   if (req.method !== 'POST') {
     return createCorsResponse({ error: 'Method not allowed' }, 405, origin)
+  }
+
+  // A18: den här funktionen skickar mejl med service role. Utan grind är den en
+  // oautentiserad utskickstrigger så fort `email_queue` börjar fyllas (A6).
+  // Fail closed: saknas CRON_SECRET nekas anropet.
+  const cronAuth = verifyCronSecret(req)
+  if (!cronAuth.ok) {
+    return createCorsResponse({ error: cronAuth.error }, cronAuth.status, origin)
   }
 
   try {

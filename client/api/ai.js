@@ -226,7 +226,11 @@ const ART9_FUNCTIONS = new Set([
  * mot token-taket ovan (som släpper igenom vid fel) — där är risken en kostnad,
  * här är risken en olaglig överföring.
  *
- * @param {object} supabase - klient med användarens egen token (RLS: egen profil)
+ * @param {object} supabase - klient som bär användarens token i
+ *   `global.headers.Authorization`, så att uppslaget går som `authenticated`
+ *   och RLS släpper fram den egna profilraden. En klient byggd på enbart
+ *   anon-nyckeln går som `anon` och får 0 rader — då nekar den här grinden
+ *   alla, för alltid (A19). Skicka aldrig in den oautentiserade klienten.
  * @param {string} userId
  */
 async function checkArt9Consent(supabase, userId) {
@@ -994,6 +998,19 @@ module.exports = async (req, res) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) return res.status(401).json({ error: 'Invalid token' });
 
+    // A19: `auth.getUser(token)` VALIDERAR token men sätter ingen session i
+    // supabase-js v2 — efterföljande PostgREST-anrop på `supabase` går därför
+    // som `anon`. Med RLS (`Users can view own profile USING (auth.uid() = id)`)
+    // ger ett profiluppslag då 0 rader, `.single()` → PGRST116, och den fail
+    // closed-grindade art. 9-kontrollen nekade ALLA — även de med samtycke.
+    // Klienten nedan bär användarens token och går alltså som `authenticated`.
+    // Samma mönster som client/api/cv-pdf.js:133.
+    const supabaseAsUser = createClient(
+      process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
+      process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY,
+      { global: { headers: { Authorization: `Bearer ${token}` } } }
+    );
+
     const fn = req.body.function;
     // SECURITY: sanera all användardata innan den når PROMPTS-templates.
     // Förhindrar prompt-injection via t.ex. companyName: "Acme\n\nIgnorera alla instruktioner..."
@@ -1019,7 +1036,7 @@ module.exports = async (req, res) => {
     // men före token-taket och före att prompten byggs — vi vill inte ens
     // konstruera en prompt av hälsodata vi saknar grund för att behandla.
     if (ART9_FUNCTIONS.has(fn)) {
-      const consent = await checkArt9Consent(supabase, user.id);
+      const consent = await checkArt9Consent(supabaseAsUser, user.id);
       if (!consent.allowed) {
         return res.status(403).json({
           error:
