@@ -1,0 +1,33 @@
+-- SEC-01: rättighetseskalering via permissiv dubblettpolicy på `profiles`
+--
+-- Granskning 2026-08-04. `profiles` har tre PERMISSIVA UPDATE-policyer:
+--
+--   1. "Admins can update profiles with restrictions"
+--        USING is_admin_or_superadmin()
+--        WITH CHECK check_role_change_allowed(id, role, roles, active_role)
+--   2. "Users can update own profile safely"
+--        USING (auth.uid() = id)
+--        WITH CHECK check_role_change_allowed(id, role, roles, active_role)
+--   3. "Users can update own active_role"            <-- problemet
+--        USING (auth.uid() = id)
+--        WITH CHECK (auth.uid() = id)                <-- INGEN rollkontroll
+--
+-- Permissiva policyer OR:as. Policy 3 räcker alltså ensam för att godkänna
+-- en UPDATE på den egna raden — inklusive `role = 'SUPERADMIN'` — och
+-- upphäver därmed grinden i policy 1 och 2 helt tyst.
+--
+-- Policy 3 ger ingen förmåga som inte redan finns: `check_role_change_allowed`
+-- tillåter uttryckligen byte av `active_role` för den egna profilen så länge
+-- det nya värdet finns i `roles`-arrayen (se funktionsdefinitionen). Policyn
+-- är alltså ren dubblett — men utan grinden.
+--
+-- Åtgärd: droppa policy 3. Ingen legitim funktion påverkas.
+--
+-- Kör med:
+--   npx supabase db query --linked -f supabase/migrations/PENDING_20260804_fix_profiles_role_escalation.sql
+--
+-- Verifiera efteråt (ska ge exakt två UPDATE-policyer, båda med check_role_change_allowed):
+--   select policyname, with_check from pg_policies
+--   where tablename = 'profiles' and cmd = 'UPDATE';
+
+DROP POLICY IF EXISTS "Users can update own active_role" ON public.profiles;
