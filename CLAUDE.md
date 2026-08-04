@@ -60,8 +60,7 @@ Monitoring:   Sentry
 deltagarportal/
 ├── client/                  # React frontend (Vercel rootDirectory)
 │   ├── api/                 # Vercel serverless functions
-│   │   ├── ai.js            # Huvud-AI-endpoint (24 funktioner, samlad)
-│   │   ├── ai-stream.js     # SSE-streaming för AI-svar
+│   │   ├── ai.js            # Huvud-AI-endpoint (18 funktioner, samlad)
 │   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
 │   │   ├── upload-image.js  # Profilbild → Vercel Blob
@@ -175,7 +174,7 @@ När något inte fungerar, följ denna ordning:
 
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
-- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 24 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
+- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **18 funktioner** samlade (verifierat 2026-08-04; siffran 24 var fel sedan C12). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** **Det finns ingen streaming-väg** — `client/api/ai-stream.js` och `useAIStream` är borta sedan streaming-lagret arkiverades; skriv inte kod som antar dem.
 - **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
 
 > **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
@@ -198,6 +197,12 @@ npm run build
 De tre **frysta taken** (129 warnings, 468 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
+
+> **⚠️ De sju räcker inte — CI kör ett åttonde steg som inte finns i listan.** `ci.yml` kör
+> `npm run test:coverage` (inte `test:run`), och den **fäller bygget** i dag: functions 23,62 %
+> mot tröskeln 30 %. Eftersom `build` har `needs: [lint-and-typecheck, test]` har build,
+> lighthouse och båda e2e-jobben inte kört. Kör `npm run test:coverage` innan du tror att CI
+> blir grön. Se ROADMAP D13.
 
 ### Verifiera alltid själv
 Be inte Mikael köra build/test/Playwright. Kör det själv och rapportera resultat. Om du inte kan testa något (t.ex. UI-flöde) — säg det explicit, claima inte success.
@@ -304,22 +309,19 @@ Sök i `client/src/components/ui/` och `client/src/components/dashboard/`. Om n�
 Originalsidor och molndata rörs inte. Nya lager (hubbar/widgets) är **alltid additiva** — gamla flöden måste fortsätta fungera.
 
 ### Komponentkatalog (urval)
+
+> **Rättad 2026-08-04.** Den gamla katalogen listade tolv komponenter i `components/dashboard/` och fyra `ui/`-primitiver som levande — **hela `components/dashboard/` (17 av 17 filer, 3 182 rader) nås inte från `main.tsx`**, och `Tabs`, `Badge`, `Avatar`, `LanguageSelector` är också döda. Kopiera aldrig ett mönster därifrån och bygg aldrig vidare på dem utan att först kontrollera nåbarheten från `main.tsx`. Se `docs/review-2026-08-04/arkitektur.md`.
+
 ```
 client/src/components/
   ui/
-    Card, Button, Input, Badge, Avatar, Tabs, Logo
-    Progress, ProgressBars, StatCard, EmptyState, LoadingState, Skeleton
+    Card, Button, Input, Logo
+    Progress, ProgressBars, StatCard, EmptyState, LoadingState
     BarChart, LineChart, CircleChart, CalendarWidget
     DropdownMenu, BottomSheet, ConfirmDialog, SearchBar, QuickActions
-    Image, OptimizedImage, PageCard, LanguageSelector
-  dashboard/
-    KpiCard, NextStepCard, OnboardingStep
-    DashboardWidget, DashboardGrid, DashboardSection, DashboardSkeleton
-    WidgetFilter, WidgetSizeSelector
-    QuickActions, QuickActionButton
-    CareerReadinessScore, MatchingScoreWidget, ProfileStatusWidget,
-    WeeklySummary, WellnessQuickCard, WhyItMatters, DashboardRiasecChart
-    widgets/                                      # Lazy-laddade widget-moduler
+    Image, OptimizedImage, PageCard
+    ── döda (nås ej från main.tsx): Badge, Avatar, Tabs, LanguageSelector, Skeleton
+  dashboard/                                      # ⛔ HELA KATALOGEN ÄR DÖD
   layout/
     Sidebar, TopBar, BottomBar, Header, PageHeader, PageLayout, PageTabs
     HubBottomNav                                  # Bottennav för 5-hub-systemet
@@ -354,9 +356,9 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 **Orsak:** Routes saknades i `App.tsx` trots att imports fanns.
 **Kontroll:** Jämför `navigation.ts` paths med `App.tsx` routes.
 
-### 2026-04-27: Lazy-import utan route = dödkod
-**Problem:** Sidor som `CoverLetterGenerator`, `UnifiedProfile` är `lazy()`-importerade i `App.tsx` men har ingen `<Route>`. De byggs in i bundlen utan att vara nåbara.
-**Kontroll:** Sök efter sidonamnet i `<Route` — saknas det ska importen tas bort.
+### 2026-04-27: Lazy-import utan route = dödkod — ✅ **STÄNGD 2026-08-04**
+**Problem:** Sidor som `CoverLetterGenerator`, `UnifiedProfile` var `lazy()`-importerade i `App.tsx` utan `<Route>`.
+**Status:** Verifierat 2026-08-04 — **alla 49 `lazy()` i `App.tsx` har route.** Den här läckan är tätad. Dödkoden gömmer sig numera bakom barrel-filer i stället, se lärdomen 2026-08-04 nedan.
 **Aktiva entry-points 2026-04-27:** Se `archive/2026-06-dokkonsolidering/portal-review-2026-04.md` § 1.
 
 ### 2026-04-29: Hub-aktivering kräver URL-prefix-fri matchning
@@ -429,6 +431,56 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 
 **Lärdom:** grindar ska ha uttrycklig policy. Kostar felet pengar → fail open kan vara rätt. Kostar felet en olaglig överföring eller en rättighet → fail closed, och skriv ut varför i koden så nästa läsare inte "harmoniserar" dem.
 
+### 2026-08-04: Barrel-filer gör dödkod osynlig för importsökning
+
+**Problem:** 175 filer / 41 878 rader (18 % av `client/src`) nås inte från `main.tsx`. Bara 9 587 av dem är den pausade STA-modulen — resten stod odokumenterad genom fyra granskningar. Hela `components/dashboard/` är dött, och `CLAUDE.md` listade tolv av filerna som levande komponenter.
+
+**Orsak:** 20 döda barrel-filer (`hooks/index.ts` ensam håller 2 651 rader vid liv). En vanlig `grep` efter importörer hittar barreln och rapporterar "har importör" — fast ingen importerar barreln.
+
+**Vad det kostade:** tre stycken *betalt* arbete landade i filer som ingen kör — UX8 styrde om `useUnifiedProgress.ts:509`, I5 betalade 43 typfel i `utils/validation.ts`, och `accountApi.ts` + 11 tester dubblerar en kontoradering som ligger någon annanstans.
+
+**Kontroll:** en importsökning räcker inte. Kör nåbarhetsanalys från `main.tsx` — det är den enda sökningen som ser sanningen. Skriptet ligger i `docs/review-2026-08-04/arkitektur.md`; grinden är planerad som D16.
+
+### 2026-08-04: Permissiva dubblettpolicyer neutraliserar de guardade — tyst
+
+**Problem:** `profiles` hade tre permissiva UPDATE-policyer. Två kontrollerade rollbyte via `check_role_change_allowed`; den tredje, `Users can update own active_role`, hade bara `WITH CHECK (auth.uid() = id)`. Permissiva policyer **OR:as** — så vilken inloggad deltagare som helst kunde sätta `role = 'SUPERADMIN'` på sig själv. Samma mönster fanns på `mood_logs` (wellness-samtyckets grind) och `storage.objects`.
+
+**Lärdom:** att grinden finns är inget bevis för att den gäller. En extra policy som ser harmlös ut ("får byta sin egen aktiva roll") kan upphäva den strängare policyn bredvid, och `pg_policies` visar det bara om man läser alla policyer på tabellen tillsammans.
+
+**Kontroll — läs hela uppsättningen, inte den du just skrev:**
+```bash
+npx supabase db query --linked "select policyname, cmd, permissive, qual, with_check from pg_policies where tablename='<tabell>' order by cmd;" --output table
+```
+Fråga för varje par: *finns det en policy här som ensam räcker för att godkänna operationen?* Om ja är den svagaste policyn den som gäller.
+
+### 2026-08-04: `REVOKE … FROM anon` gör ingenting när PUBLIC har EXECUTE
+
+**Problem:** A17 revokade EXECUTE från `anon` på 18 `SECURITY DEFINER`-funktioner. Migrationen gick igenom utan fel — och `has_function_privilege('anon', …)` var fortfarande `true`. Anon kunde alltjämt läsa andras data.
+
+**Orsak:** Postgres ger som default EXECUTE till **PUBLIC** på nya funktioner. I `proacl` syns det som `=X/postgres` (tom roll före `=` betyder PUBLIC). `anon` är medlem i PUBLIC, så ett REVOKE mot just `anon` tar bort ett grant som aldrig fanns — och lyckas tyst.
+
+**Lärdom:** ett REVOKE som "gick bra" är inget bevis för att rättigheten är borta. Samma familj som lärdomen om permissiva dubblettpolicyer ovan: det räcker inte att den strängare regeln finns.
+
+**Kontroll — mät utfallet, inte kommandot:**
+```bash
+npx supabase db query --linked "select proname, proacl::text, has_function_privilege('anon', oid, 'EXECUTE') as anon_exec from pg_proc where proname = '<funktion>';" --output table
+```
+Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` följt av explicita `GRANT` till de roller som ska ha den.
+
+### 2026-08-04: Lokalt gröna grindar ≠ grön CI
+
+**Problem:** alla sju lokala grindar var gröna medan CI hade varit rött. `npm run test:coverage` (som `ci.yml` kör, men som inte ingår i de sju) ger exit 1 på coverage-tröskeln, och `build` har `needs: [..., test]` — så build, lighthouse och båda e2e-jobben hade inte kört.
+
+**Två fällor under den:** (1) `exclude`-listan i `vitest.config.ts` **ersätter** vitests defaults, så 238 filer i `client/dist/assets` räknades som 0 % coverage och sänkte branch-siffran artificiellt. (2) `e2e-authenticated` skippar 74 av 94 tester tyst utan secrets och rapporterar grönt.
+
+**Lärdom:** kör det kommando CI kör, inte det som liknar det. Ett jobb som skippar tyst och ett tak som mäter fel filer ser båda ut som "godkänt".
+
+### 2026-08-04: En geometrisk fix behöver en geometrisk regression
+
+**Problem:** UX16 flyttade CV-knappraden 64 px upp för att sluta täcka bottennavet — rakt in under CoachWidget-knappen, som ingen tänkte på. 58 % av "Nästa" blockerades och en riktig `tap()` timeoutade. Verifieringen kontrollerade det som lagades, inte det som flyttades.
+
+**Lärdom:** fixar som flyttar fixerade element ska verifieras med hit-test över *alla* fixerade lager på sidan, inte bara mot det element buggen handlade om. Okulär besiktning duger inte — element med `opacity: 0` respektive `pointer-events: none` ger både falska positiva och falska negativa.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
@@ -440,7 +492,9 @@ npx supabase db query --linked "SELECT column_name FROM information_schema.colum
 | Dokument | Innehåll |
 |----------|----------|
 | `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-27) — spår A–I, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
-| `docs/portal-review-2026-07-27.md` | **Senaste granskning** — kod vs. **prod-schema**. Grund för spår H (schemaintegritet) och I (kvalitetsgrindar/prestanda) |
+| `docs/portal-review-2026-08-04.md` | ★ **Senaste granskning** — tio agenter, kod + webbläsare (Playwright). Grund för A16–A21, B10–B18, C16–C20, D13–D16, E13–E16, F12–F17, H11–H17, UX24–UX35. **Innehåller en kritisk säkerhetspunkt (A16) som väntar på beslut** |
+| `docs/review-2026-08-04/` | De tio fullständiga agentrapporterna med allt bevismaterial (~4 900 rader) |
+| `docs/portal-review-2026-07-27.md` | Granskning kod vs. **prod-schema**. Grund för spår H (schemaintegritet) och I (kvalitetsgrindar/prestanda) |
 | `docs/portal-review-2026-07-22.md` | Granskning 2026-07-22 (7 parallella analyser: kod, säkerhet, UX, prestanda, produkt, AI, dokumentation/test) |
 | `docs/portal-review-2026-07.md` | Helhetsgranskning 2026-07-10 (grund för roadmapens spårstruktur) |
 | `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
