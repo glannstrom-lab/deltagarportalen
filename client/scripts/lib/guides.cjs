@@ -170,6 +170,15 @@ function getPublishedArticles() {
   return lista.published.map((slug) => bySlug.get(slug))
 }
 
+/**
+ * Lättläst svenska (K5). Nischen där varken Arbetsförmedlingen eller
+ * CV-sajterna konkurrerar på allvar, och som ligger närmast portalens
+ * uppdrag. Märkningen sitter på tre ställen i datat — difficulty, kategori
+ * och slug-prefix — därför testas alla tre.
+ */
+const arLattlast = (a) =>
+  a.difficulty === 'easy-swedish' || a.category_key === 'easy-swedish' || /^latt/.test(a.slug)
+
 /** Verktygsförslag för en artikel — dess egna först, annars kategorins. */
 function verktygFor(article) {
   const egna = (article.related_tools || [])
@@ -209,6 +218,7 @@ module.exports = {
   loadSnapshot,
   loadPublishList,
   getPublishedArticles,
+  arLattlast,
   verktygFor,
   validateRoutes,
   guideUrl: (slug) => `${GUIDE_BASE}/${slug}/`,

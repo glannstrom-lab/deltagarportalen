@@ -14,8 +14,14 @@
 const fs = require('node:fs')
 const path = require('node:path')
 
-const { getPublishedArticles, loadSnapshot, validateRoutes, guideUrl } = require('./lib/guides.cjs')
-const { renderGuide, renderIndex } = require('./lib/guide-template.cjs')
+const {
+  getPublishedArticles,
+  loadSnapshot,
+  validateRoutes,
+  guideUrl,
+  arLattlast,
+} = require('./lib/guides.cjs')
+const { renderGuide, renderIndex, renderLattlast } = require('./lib/guide-template.cjs')
 
 const CLIENT = path.join(__dirname, '..')
 const DIST = path.join(CLIENT, 'dist')
@@ -34,6 +40,17 @@ const publicerade = getPublishedArticles()
 if (publicerade.length === 0) {
   console.log('prerender-guides: publish-list.json är tom — inga guidesidor genererade.')
   process.exit(0)
+}
+
+// /guider/lattlast/ är en genererad ingångssida. En artikel med den sluggen
+// hade skrivits över tyst — hellre trasigt bygge än en sida som försvinner.
+const RESERVERADE = new Set(['lattlast', 'index'])
+const krock = publicerade.filter((a) => RESERVERADE.has(a.slug))
+if (krock.length) {
+  console.error(
+    `prerender-guides: slug(s) krockar med genererade sidor: ${krock.map((a) => a.slug).join(', ')}`
+  )
+  process.exit(1)
 }
 
 const snapshot = loadSnapshot()
@@ -62,6 +79,14 @@ for (const artikel of publicerade) {
 }
 
 fs.writeFileSync(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
+
+// K5: egen ingång för lättläst svenska.
+const lattlast = publicerade.filter(arLattlast)
+if (lattlast.length) {
+  const dir = path.join(DIST, 'guider', 'lattlast')
+  fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(path.join(dir, 'index.html'), renderLattlast(lattlast), 'utf8')
+}
 
 const totalKb = Math.round(
   publicerade.reduce(

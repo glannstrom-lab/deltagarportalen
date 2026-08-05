@@ -27,10 +27,13 @@ const urls = [{ loc: '/', changefreq: 'weekly', priority: '1.0' }]
 // att sitemap och genererade sidor aldrig kan gå isär — en URL i sitemapen
 // som inte finns är en mjuk 404 i Search Console.
 try {
-  const { getPublishedArticles, guideUrl } = require('./lib/guides.cjs')
+  const { getPublishedArticles, guideUrl, arLattlast } = require('./lib/guides.cjs')
   const guider = getPublishedArticles()
   if (guider.length) {
     urls.push({ loc: '/guider/', changefreq: 'weekly', priority: '0.9' })
+    if (guider.some(arLattlast)) {
+      urls.push({ loc: '/guider/lattlast/', changefreq: 'weekly', priority: '0.8' })
+    }
     urls.push(
       ...guider.map((a) => ({
         loc: guideUrl(a.slug),

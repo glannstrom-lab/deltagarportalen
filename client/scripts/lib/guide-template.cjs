@@ -343,4 +343,95 @@ function renderIndex(artiklar) {
 `
 }
 
-module.exports = { renderGuide, renderIndex }
+/**
+ * /guider/lattlast/ — egen ingång för lättläst svenska.  (spår K5)
+ *
+ * Texten på den här sidan är själv skriven på lättläst: korta meningar, en
+ * tanke per rad, inga inskjutna bisatser. Det vore motsägelsefullt att
+ * beskriva lättläst material i krånglig text.
+ */
+function renderLattlast(artiklar) {
+  const url = `${SITE}/guider/lattlast/`
+
+  const lista = artiklar
+    .map(
+      (a) =>
+        `<li><a href="${guideUrl(a.slug)}">${escapeHtml(a.title)}</a>${
+          a.reading_time ? ` <span style="color:var(--muted)">(${a.reading_time} min)</span>` : ''
+        }</li>`
+    )
+    .join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Söka jobb — på lätt svenska',
+    inLanguage: 'sv-SE',
+    url,
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Söka jobb på lätt svenska — Jobin</title>
+<meta name="description" content="Guider om CV, jobb och intervju på lätt svenska. Korta texter med enkla ord. Gratis att läsa.">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="Söka jobb på lätt svenska — Jobin">
+<meta property="og:description" content="Guider om CV, jobb och intervju på lätt svenska. Korta texter med enkla ord.">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor">
+      <a href="/">Jobin</a> › <a href="/guider/">Guider</a> › Lätt svenska
+    </nav>
+    <h1>Söka jobb — på lätt svenska</h1>
+    <p class="lead">Här är texter med enkla ord och korta meningar.
+    De handlar om CV, jobb och intervju. Allt är gratis.</p>
+    <a class="btn" href="${appUrl('/cv')}">Börja med ditt CV</a>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <h2>Texter på lätt svenska</h2>
+    <ul>${lista}</ul>
+
+    <section class="cta">
+      <h2>Du kan få hjälp</h2>
+      <p>I Jobin gör du ditt CV steg för steg.
+      Du får hjälp med orden. Det kostar ingenting.</p>
+      <div class="tools">${verktygskort(['/cv', '/interview-simulator'])}</div>
+    </section>
+
+    <p><a href="/guider/">Se alla guider</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — hjälp för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna Jobin</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+module.exports = { renderGuide, renderIndex, renderLattlast }
