@@ -76,6 +76,12 @@ jobs:
     name: Smoke Test
     runs-on: ubuntu-latest
     needs: [deploy-frontend, deploy-supabase]
+    # K1 (2026-08-05): `environment: production` saknades här medan båda
+    # deploy-jobben hade den. Hemligheter som ligger på produktionsmiljön är
+    # då TOMMA i det här jobbet — därav att "API health check" fallit varje
+    # deploy sedan minst 2026-08-03 medan funktionen själv svarar 200 healthy
+    # (verifierat med anon-nyckeln ur client/.env).
+    environment: production
 
     steps:
       - name: Wait for deployment
@@ -135,6 +141,21 @@ jobs:
       # A15 (2026-07-23): health-funktionen kräver anon-JWT (verifierat: 401
       # utan, 200 med) — curlen skickade ingen, därför var steget satt till
       # continue-on-error och kunde aldrig larma. Nu skarp kontroll.
+      # Utan den här kontrollen blir en saknad hemlighet ett obegripligt
+      # "API health check failed with status: 000" — vilket är precis vad som
+      # dolde miljöbuggen ovan i två dygn.
+      - name: Kontrollera att hemligheterna finns
+        run: |
+          saknas=""
+          [ -z "${{ secrets.SUPABASE_URL }}" ] && saknas="$saknas SUPABASE_URL"
+          [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ] && saknas="$saknas VITE_SUPABASE_ANON_KEY"
+          if [ -n "$saknas" ]; then
+            echo "Saknade hemligheter i miljön 'production':$saknas"
+            echo "Lägg till dem under Settings → Environments → production."
+            exit 1
+          fi
+          echo "Hemligheter OK"
+
       - name: API health check
         run: |
           response=$(curl -s -o /dev/null -w "%{http_code}" \

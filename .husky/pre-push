@@ -1,0 +1,42 @@
+# Pre-push-gate (K1, 2026-08-05).
+#
+# Varför den finns: 2026-08-05 gick en push till main som fällde deployen på
+# `vercel build` efter 35 sekunder. Alla sju lokala grindar var gröna — de
+# kontrollerade bara aldrig den fil som ändrats (client/vercel.json). Samma
+# klass som lärdomen 2026-08-04: "kör det kommando CI kör, inte det som
+# liknar det."
+#
+# Designen är medvetet tvådelad, så att grinden är snabb i normalfallet:
+#   ALLTID   — sekundsnabba kontroller som fångar de fel som faktiskt nått prod
+#   VILLKORAT— fullt bygge, men bara när bygg-/deploy-påverkande filer ändrats
+#
+# `npm run test:coverage` ingår INTE: den är röd sedan tidigare (ROADMAP D13)
+# och skulle blockera varje push. Lägg in den när D13 är löst.
+#
+# Nödutgång: git push --no-verify
+
+set -e
+cd client
+
+echo "pre-push: snabba grindar …"
+npm run --silent lint:vercel
+npm run --silent lint:schema
+npm run --silent typecheck:critical
+npm run --silent lint:ci
+npm run --silent lint:design
+
+# Vilka filer skiljer mot det som redan ligger på origin/main?
+RANGE="origin/main...HEAD"
+if ! git rev-parse --verify --quiet origin/main >/dev/null; then
+  RANGE="HEAD"
+fi
+CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || git diff --name-only HEAD)
+
+if echo "$CHANGED" | grep -qE '^client/(vercel\.json|package\.json|package-lock\.json|vite\.config|index\.html|tsconfig|scripts/)|^\.github/workflows/'; then
+  echo "pre-push: bygg-/deploy-påverkande filer ändrade — kör fullt bygge (samma kommando som Vercel)."
+  npm run build
+else
+  echo "pre-push: inga bygg-/deploy-påverkande filer — hoppar över fullt bygge."
+fi
+
+echo "pre-push: OK"

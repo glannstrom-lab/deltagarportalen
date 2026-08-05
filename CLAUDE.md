@@ -107,6 +107,50 @@ npx playwright test
 npx tsc --noEmit
 ```
 
+---
+
+## Släpp: commit, push, deploy — EN procedur, hitta aldrig på en ny
+
+När Mikael säger **"commit"**, **"push"** eller **"deploy"** gäller det här. Fråga inte, uppfinn inte, improvisera inte.
+
+**Grundfakta om det här projektet:**
+- Allt går direkt på `main`. Inga feature-grenar.
+- **`push` till `main` ÄR deployen.** `.github/workflows/deploy.yml` triggar på push → `vercel build` → `vercel deploy --prod` → Supabase edge functions → smoke-test. Det finns inget separat deploy-kommando, och inget att klicka i Vercel.
+- Det betyder att en push är en produktionsändring. Behandla den därefter.
+
+**Proceduren:**
+
+```bash
+# 1. Grindarna. Pre-push-hooken kör dem automatiskt, men kör dem själv först
+#    så du ser felen innan git gör det.
+cd client && npm run verify            # se nedan
+
+# 2. Commit — beskriv VAD och VARFÖR, inte bara vad.
+git add <filer> && git commit -F - <<'EOF'
+<typ>(<scope>): <rubrik>
+...
+EOF
+
+# 3. Push = deploy.
+git push origin main
+
+# 4. VERIFIERA UTFALLET. En push är inte klar förrän deployen är grön.
+#    gh CLI saknas på den här maskinen — använd GitHub-API:t (repot är publikt):
+curl -sS "https://api.github.com/repos/glannstrom-lab/deltagarportalen/actions/runs?per_page=1&branch=main"
+#    Failar den: hämta jobbstegen och åtgärda. Rapportera aldrig "pushad" som
+#    om det vore "levererat".
+```
+
+**`npm run verify` (i `client/`) kör hela grinduppsättningen.** Pre-push-hooken (`.husky/pre-push`) kör den automatiskt och gör dessutom ett **fullt bygge** när bygg-/deploy-påverkande filer ändrats (`vercel.json`, `package.json`, `vite.config`, `index.html`, `tsconfig`, `scripts/`, `.github/workflows/`).
+
+**Varför hooken finns:** 2026-08-05 fälldes en deploy av `vercel build` efter 35 sekunder medan alla sju lokala grindar var gröna — de kontrollerade aldrig filen som ändrats. Prod stod kvar på gammal kod utan att något larmade. Grinden ersätter uppmärksamhet med mekanik.
+
+**Undantag som kräver Mikaels ja innan push:** ändringar i `client/vercel.json`, `.github/workflows/`, RLS-policyer, eller migrationer mot prod. Allt annat följer proceduren rakt av.
+
+> `git push --no-verify` finns som nödutgång. Använd den inte för att komma runt en röd grind — laga grinden eller fråga.
+
+---
+
 ### Supabase-migrationer
 
 **VIKTIGT:** Använd INTE `npx supabase db push` — det försöker köra ALLA migrationer och failar på konflikter.
