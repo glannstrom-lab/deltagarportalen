@@ -169,26 +169,49 @@ jobs:
       # Utan den här kontrollen blir en saknad hemlighet ett obegripligt
       # "API health check failed with status: 000" — vilket är precis vad som
       # dolde miljöbuggen ovan i två dygn.
-      - name: Kontrollera att hemligheterna finns
-        run: |
-          saknas=""
-          [ -z "${{ secrets.SUPABASE_URL }}" ] && saknas="$saknas SUPABASE_URL"
-          [ -z "${{ secrets.VITE_SUPABASE_ANON_KEY }}" ] && saknas="$saknas VITE_SUPABASE_ANON_KEY"
-          if [ -n "$saknas" ]; then
-            echo "Saknade hemligheter i miljön 'production':$saknas"
-            echo "Lägg till dem under Settings → Environments → production."
-            exit 1
-          fi
-          echo "Hemligheter OK"
-
+      # Omskrivet 2026-08-05: steget krävde `SUPABASE_URL` och
+      # `VITE_SUPABASE_ANON_KEY` som GitHub-hemligheter. De finns inte — bara
+      # SUPABASE_PROJECT_REF och SUPABASE_ACCESS_TOKEN gör det (deploy-jobbet
+      # ovan använder dem). Därför har steget fällt VARJE deploy sedan minst
+      # 2026-08-03 utan att någon funktion varit trasig.
+      #
+      # Grundkontrollen behöver ingen hemlighet alls. Uppmätt mot prod:
+      #   /functions/v1/health          → 401  (deployad och skyddad)
+      #   /functions/v1/finns-inte-alls → 404  (saknas)
+      # 401 skiljer alltså "funktionen finns och kräver auth" från "borta",
+      # vilket är exakt vad en deploy-kontroll ska bevisa.
+      #
+      # Finns anon-nyckeln ändå görs den skarpa 200-kontrollen också. Den
+      # hoppas aldrig över tyst — loggen säger vilket läge som kördes.
       - name: API health check
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" \
-            -H "apikey: ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            ${{ secrets.SUPABASE_URL }}/functions/v1/health)
-          if [ "$response" != "200" ]; then
-            echo "API health check failed with status: $response"
+          set -e
+          ref="${{ secrets.SUPABASE_PROJECT_REF }}"
+          if [ -z "$ref" ]; then
+            echo "SUPABASE_PROJECT_REF saknas — kan inte nå edge-funktionerna."
             exit 1
           fi
-          echo "API health check passed"
+          url="https://$ref.supabase.co/functions/v1/health"
+
+          anon=$(curl -sS -o /dev/null -w "%{http_code}" "$url")
+          case "$anon" in
+            401) echo "health: 401 utan auth — deployad och skyddad. OK" ;;
+            404) echo "health: 404 — funktionen är INTE deployad."; exit 1 ;;
+            *)   echo "health: oväntad status $anon utan auth."; exit 1 ;;
+          esac
+
+          key="${{ secrets.VITE_SUPABASE_ANON_KEY }}"
+          if [ -z "$key" ]; then
+            echo "VITE_SUPABASE_ANON_KEY saknas som hemlighet — hoppar över den"
+            echo "skarpa 200-kontrollen. Lägg till den under Settings →"
+            echo "Environments → production för att aktivera den."
+            exit 0
+          fi
+
+          auth=$(curl -sS -o /dev/null -w "%{http_code}" \
+            -H "apikey: $key" -H "Authorization: Bearer $key" "$url")
+          if [ "$auth" != "200" ]; then
+            echo "health med auth gav $auth — förväntade 200."
+            exit 1
+          fi
+          echo "health: 200 med auth. OK"
