@@ -4,7 +4,6 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "regions": ["fra1"],
-  "_kommentar_cleanUrls": "cleanUrls ÄR MEDVETET AVSTÄNGD (K2, 2026-08-05). Med den på 308-redirectar /index.html till /, vilket gör att SPA-rewriten inte kan servera sitt mål — varje okänd sökväg föll då till 404.html i stället för appen. Guidesidorna behöver den inte: /guider/<slug>/index.html serveras som /guider/<slug>/ via vanlig katalogupplösning.",
   "functions": {
     "api/cv-pdf.js": {
       "memory": 1024,

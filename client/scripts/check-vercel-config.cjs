@@ -34,6 +34,27 @@ try {
 const config = JSON.parse(fs.readFileSync(CONFIG, 'utf8'))
 const fel = []
 
+// --- 0. Inga okända toppnycklar --------------------------------------------
+// JSON har inga kommentarer, så det är frestande att lägga in en förklarande
+// `_kommentar`-nyckel. Vercel avvisar okända egenskaper — och gör det i
+// DEPLOY-steget, inte i `vercel build`. En sådan nyckel kostade en
+// misslyckad deploy 2026-08-05 och lämnade en trasig fallback i prod en
+// timme extra. Förklaringar hör hemma här i grinden, inte i konfigen.
+const TILLATNA = new Set([
+  'version', 'name', 'alias', 'scope', 'env', 'build', 'builds', 'routes',
+  'cleanUrls', 'trailingSlash', 'redirects', 'rewrites', 'headers', 'functions',
+  'regions', 'public', 'github', 'images', 'framework', 'buildCommand',
+  'devCommand', 'installCommand', 'ignoreCommand', 'outputDirectory',
+  'rootDirectory', 'crons', 'git', 'functionFailoverRegions',
+])
+const okanda = Object.keys(config).filter((k) => !TILLATNA.has(k))
+if (okanda.length) {
+  fel.push(
+    `Okänd(a) toppnyckel/nycklar: ${okanda.map((k) => `\`${k}\``).join(', ')}. ` +
+      'Vercel avvisar dem vid deploy (inte vid build) — kommentarer går inte att ha i vercel.json.'
+  )
+}
+
 // --- 1. Legacy `routes` får inte blandas med modern routing -----------------
 const MODERNA = ['headers', 'rewrites', 'redirects', 'cleanUrls', 'trailingSlash']
 if (config.routes) {
