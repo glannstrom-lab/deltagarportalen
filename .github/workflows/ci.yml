@@ -69,6 +69,15 @@ jobs:
         working-directory: client
         run: npm run lint:schema
 
+      # Vercel-konfig (K1, 2026-08-05): två skarpa fel har gått till prod på
+      # client/vercel.json — `routes` som tyst dödade headers-blocket, och en
+      # capture-grupp i en header-source som fällde `vercel build` på 35 s.
+      # Grinden validerar mot path-to-regexp ur @vercel/node, alltså exakt
+      # den parser Vercel kör. Billigare här än i en misslyckad deploy.
+      - name: Vercel-konfig — routing och headers
+        working-directory: client
+        run: npm run lint:vercel
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest

@@ -23,6 +23,7 @@
     "typecheck:ceiling": "node scripts/typecheck-ceiling.cjs",
     "lint:design": "node scripts/check-design-debt.cjs",
     "lint:schema": "node scripts/check-schema-drift.cjs",
+    "lint:vercel": "node scripts/check-vercel-config.cjs",
     "schema:refresh": "node scripts/refresh-schema-snapshot.cjs",
     "report:i18n": "node scripts/report-hardcoded-swedish.cjs"
   },
