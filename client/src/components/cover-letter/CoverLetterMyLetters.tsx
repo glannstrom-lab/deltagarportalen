@@ -135,7 +135,10 @@ export function CoverLetterMyLetters() {
   )
 
   const handleEdit = (id: string) => {
-    navigate(`/dashboard/cover-letter?edit=${id}`)
+    // UX35 (2026-08-05): pekade på /dashboard/cover-letter, som App.tsx
+    // omdirigerar till Översikt — knappen lämnade alltså sidan helt.
+    // Rätt route är /cover-letter (App.tsx:234, tabben "Skriv").
+    navigate(`/cover-letter?edit=${id}`)
   }
 
   const handleDuplicate = async (letter: Letter) => {
@@ -290,11 +293,12 @@ export function CoverLetterMyLetters() {
         description="Ett personligt brev är din chans att visa vem du är – bortom vad som står i CV:t. Skriv, spara och återanvänd brev för olika ansökningar."
         action={{
           label: 'Skriv ditt första brev',
-          onClick: () => navigate('/dashboard/cover-letter'),
+          // UX35: var /dashboard/cover-letter → omdirigerades till Översikt.
+          onClick: () => navigate('/cover-letter'),
         }}
         secondaryAction={{
           label: 'Få hjälp av AI',
-          onClick: () => navigate('/dashboard/cover-letter'),
+          onClick: () => navigate('/cover-letter'),
         }}
       />
     )

@@ -22,6 +22,10 @@ import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
 import { FocusModeProvider } from './components/FocusModeProvider'
 import { FocusExitButton } from './components/focus/shell/FocusExitButton'
+// UX34 (2026-08-05): sätter <title> per rutt och annonserar ruttbyten i en
+// visuellt dold aria-live-region. Ligger utanför <Routes> så den täcker
+// samtliga rutter — även login/register/landning.
+import { RouteAnnouncer } from './components/layout/RouteAnnouncer'
 
 // Lazy-loaded sidor
 const CVPage = lazy(() => import('./pages/CVPage'))
@@ -195,6 +199,7 @@ function App() {
   // Full routing restored
   return (
     <>
+      <RouteAnnouncer />
       <Routes>
         {/* Auth routes - redirect if already logged in */}
         <Route path="/login" element={

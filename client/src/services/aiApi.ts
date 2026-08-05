@@ -6,10 +6,16 @@
  * det skickas till backend (som sedan vidarebefordrar till OpenRouter USA).
  * Personnummer, kreditkort, bankkonton stryks helt. Email/telefon flaggas.
  * Se client/src/lib/piiSanitizer.ts.
+ *
+ * B15 (2026-08-05): saneringen görs nu på **alla** nivåer i nyttolasten, inte
+ * bara toppnivåns strängar, och `callAIStream` finns för strömmande svar så
+ * inget UI behöver gå förbi lagret med ett eget `fetch`. Varje ny väg ut till
+ * `/api/ai` ska gå via `prepareAiRequest` — annars kringgås både PII-saneringen
+ * och art. 9-grinden, tyst.
  */
 
 import { supabase } from '@/lib/supabase'
-import { sanitizeObjectForAi } from '@/lib/piiSanitizer'
+import { sanitizeForAi } from '@/lib/piiSanitizer'
 import { apiLogger } from '@/lib/logger'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -57,12 +63,80 @@ async function getAuthToken(): Promise<string | null> {
 const AI_TIMEOUT_MS = 60_000
 
 /**
- * Make an authenticated request to the AI API
+ * Saniterar strängar på **alla** nivåer i nyttolasten.
+ *
+ * `sanitizeObjectForAi` tittar bara på toppnivåns strängfält. Det räcker för
+ * `{ jobbAnnons }` men inte för `{ historik: [{ innehall }] }` eller
+ * `{ cvData: { workExperience: [...] } }` — och chatthistoriken är just där ett
+ * personnummer som skrivits i chatten hamnar. Med bara toppnivå hade samma text
+ * strippats i sitt första anrop och sedan följt med osaniterad i varje
+ * efterföljande `historik` (B15, 2026-08-05).
  */
-export async function callAI<T = unknown>(
+function sanitizeDeep<T>(
+  value: T,
+  strippedAcc: Record<string, number>,
+  warnAcc: Record<string, number>
+): T {
+  if (typeof value === 'string') {
+    const result = sanitizeForAi(value)
+    for (const [k, v] of Object.entries(result.stripped)) {
+      strippedAcc[k] = (strippedAcc[k] || 0) + v
+    }
+    for (const w of result.warnings) {
+      warnAcc[w.type] = (warnAcc[w.type] || 0) + w.count
+    }
+    return result.sanitized as unknown as T
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => sanitizeDeep(item, strippedAcc, warnAcc)) as unknown as T
+  }
+
+  if (value !== null && typeof value === 'object') {
+    // Bara vanliga objektliteraler traverseras. Date/File/Map m.fl. lämnas
+    // orörda — att bygga om dem till `{}` hade tyst tappat data.
+    const proto = Object.getPrototypeOf(value)
+    if (proto !== Object.prototype && proto !== null) return value
+
+    const out: Record<string, unknown> = {}
+    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
+      out[k] = sanitizeDeep(v, strippedAcc, warnAcc)
+    }
+    return out as unknown as T
+  }
+
+  return value
+}
+
+/**
+ * GDPR: sanera nyttolasten innan persondata skickas till AI-leverantören (USA).
+ * Exporterad så tester kan verifiera den utan att gå via nätverkslagret.
+ */
+export function sanitizeAiPayload<T extends Record<string, unknown>>(data: T): {
+  sanitized: T
+  stripped: Record<string, number>
+  warnings: Array<{ type: string; count: number }>
+} {
+  const stripped: Record<string, number> = {}
+  const warnAcc: Record<string, number> = {}
+  const sanitized = sanitizeDeep(data, stripped, warnAcc)
+  const warnings = Object.entries(warnAcc).map(([type, count]) => ({ type, count }))
+  return { sanitized, stripped, warnings }
+}
+
+/**
+ * Gemensam förberedelse för **alla** vägar ut till `/api/ai` — både den
+ * vanliga och den strömmande.
+ *
+ * B15 (2026-08-05): `AgentChat` gjorde ett eget `fetch` förbi det här lagret,
+ * så varken art. 9-grinden eller PII-saneringen kördes på portalens mest
+ * använda AI-yta. Lägg aldrig till en ny väg till `/api/ai` som inte går
+ * genom den här funktionen.
+ */
+async function prepareAiRequest(
   functionName: string,
   data: Record<string, unknown>
-): Promise<AIApiResponse<T>> {
+): Promise<{ token: string; sanitized: Record<string, unknown> }> {
   const token = await getAuthToken()
 
   if (!token) {
@@ -86,8 +160,7 @@ export async function callAI<T = unknown>(
     }
   }
 
-  // GDPR: sanitera prompten innan vi skickar persondata till AI-leverantören.
-  const { sanitized, stripped, warnings } = sanitizeObjectForAi(data)
+  const { sanitized, stripped, warnings } = sanitizeAiPayload(data)
   const strippedCount = Object.values(stripped).reduce((a, b) => a + b, 0)
   if (strippedCount > 0) {
     apiLogger.warn('[callAI] PII strippad innan AI-anrop:', { functionName, stripped })
@@ -95,6 +168,39 @@ export async function callAI<T = unknown>(
   if (warnings.length > 0) {
     apiLogger.debug('[callAI] PII-warning (behållen, krävs för AI-output):', { functionName, warnings })
   }
+
+  return { token, sanitized }
+}
+
+/** Översätter ett icke-OK HTTP-svar till portalens felmeddelanden. Kastar alltid. */
+async function throwAiHttpError(response: Response): Promise<never> {
+  if (response.status === 401) {
+    throw new Error('Din session har gått ut. Vänligen logga in igen.')
+  }
+  if (response.status === 429) {
+    throw new Error('För många förfrågningar. Försök igen om en stund.')
+  }
+  if (response.status === 403) {
+    // Serverns art. 9-grind. Läs dess text — den skiljer på "inget samtycke",
+    // "avstängt" och "kunde inte kontrolleras".
+    const body = await response.json().catch(() => null) as { error?: string; code?: string } | null
+    if (body?.code === 'AI_CONSENT_REQUIRED') {
+      throw new AiConsentRequiredError(
+        body.error ?? 'Funktionen kräver att du godkänner AI-behandling i Inställningar.'
+      )
+    }
+  }
+  throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
+}
+
+/**
+ * Make an authenticated request to the AI API
+ */
+export async function callAI<T = unknown>(
+  functionName: string,
+  data: Record<string, unknown>
+): Promise<AIApiResponse<T>> {
+  const { token, sanitized } = await prepareAiRequest(functionName, data)
 
   const controller = new AbortController()
   const timeoutId = setTimeout(() => controller.abort(), AI_TIMEOUT_MS)
@@ -120,26 +226,135 @@ export async function callAI<T = unknown>(
   }
 
   if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error('Din session har gått ut. Vänligen logga in igen.')
-    }
-    if (response.status === 429) {
-      throw new Error('För många förfrågningar. Försök igen om en stund.')
-    }
-    if (response.status === 403) {
-      // Serverns art. 9-grind. Läs dess text — den skiljer på "inget samtycke",
-      // "avstängt" och "kunde inte kontrolleras".
-      const body = await response.json().catch(() => null) as { error?: string; code?: string } | null
-      if (body?.code === 'AI_CONSENT_REQUIRED') {
-        throw new AiConsentRequiredError(
-          body.error ?? 'Funktionen kräver att du godkänner AI-behandling i Inställningar.'
-        )
-      }
-    }
-    throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
+    await throwAiHttpError(response)
   }
 
   return response.json()
+}
+
+export interface AiStreamHandlers {
+  /** Anropas per token. `full` är allt som strömmats hittills. */
+  onChunk?: (chunk: string, full: string) => void
+  /** Följdfrågor som servern skickar sist i strömmen. */
+  onSuggestions?: (suggestions: string[]) => void
+  /** Anroparens avbrytssignal (t.ex. byte av agent eller unmount). */
+  signal?: AbortSignal
+}
+
+/**
+ * Strömmande AI-anrop (SSE) — samma grindar och samma PII-sanering som `callAI`.
+ *
+ * `callAI` går inte att använda rakt av för strömmande svar: den läser hela
+ * kroppen som JSON och sätter en 60 s-timeout över hela anropet. Därför finns
+ * den här varianten — men den **delar prelude** med `callAI` (`prepareAiRequest`)
+ * så saneringen inte går att missa. Timeouten gäller bara tills svarshuvudena
+ * kommit; själva strömmen får ta den tid modellen behöver.
+ *
+ * Kastar `DOMException` med namnet `AbortError` när anroparens signal avbryter,
+ * så anroparen kan skilja avbrott från riktiga fel.
+ *
+ * @returns hela det strömmade svaret som text.
+ */
+export async function callAIStream(
+  functionName: string,
+  data: Record<string, unknown>,
+  handlers: AiStreamHandlers = {}
+): Promise<string> {
+  const { token, sanitized } = await prepareAiRequest(functionName, data)
+
+  const controller = new AbortController()
+  const abortFromCaller = () => controller.abort()
+  const callerSignal = handlers.signal
+  if (callerSignal) {
+    if (callerSignal.aborted) abortFromCaller()
+    else callerSignal.addEventListener('abort', abortFromCaller, { once: true })
+  }
+
+  let connectTimedOut = false
+  const timeoutId = setTimeout(() => {
+    connectTimedOut = true
+    controller.abort()
+  }, AI_TIMEOUT_MS)
+
+  try {
+    let response: Response
+    try {
+      response = await fetch('/api/ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ function: functionName, stream: true, data: sanitized }),
+        signal: controller.signal
+      })
+    } catch (err) {
+      if (connectTimedOut) {
+        throw new Error('AI-tjänsten svarade inte i tid. Försök igen om en stund.')
+      }
+      throw err
+    } finally {
+      clearTimeout(timeoutId)
+    }
+
+    if (!response.ok) {
+      await throwAiHttpError(response)
+    }
+
+    const reader = response.body?.getReader()
+    if (!reader) {
+      throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
+    }
+
+    const decoder = new TextDecoder()
+    let full = ''
+    let buffer = ''
+
+    /** Hanterar en SSE-rad. JSON-parsning och hantering hålls isär: annars
+     *  fångas serverns `{ error }` av samma catch som "trasig JSON" och
+     *  försvinner tyst — så gjorde AgentChat före B15. */
+    const handleLine = (line: string) => {
+      if (!line.startsWith('data: ')) return
+      const payload = line.slice(6).trim()
+      if (!payload || payload === '[DONE]') return
+
+      let parsed: { content?: string; token?: string; suggestions?: unknown; error?: string }
+      try {
+        parsed = JSON.parse(payload)
+      } catch {
+        return // trasig JSON — hoppa över raden
+      }
+
+      if (parsed.error) throw new Error(parsed.error)
+
+      // Föredrar { content }; { token } är legacy-fältet från ai.js SSE-grenen.
+      const chunk = parsed.content ?? parsed.token
+      if (chunk) {
+        full += chunk
+        handlers.onChunk?.(chunk, full)
+      }
+      if (Array.isArray(parsed.suggestions)) {
+        handlers.onSuggestions?.(parsed.suggestions.filter((s): s is string => typeof s === 'string'))
+      }
+    }
+
+    for (;;) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop() ?? ''
+      for (const line of lines) handleLine(line)
+    }
+
+    buffer += decoder.decode()
+    if (buffer.trim()) handleLine(buffer.trim())
+
+    return full
+  } finally {
+    clearTimeout(timeoutId)
+    callerSignal?.removeEventListener('abort', abortFromCaller)
+  }
 }
 
 /**
@@ -214,6 +429,7 @@ export async function generateDoaSummary(data: {
 
 export default {
   callAI,
+  callAIStream,
   generateCoverLetter,
   chatWithAI,
   generateProfileSummary

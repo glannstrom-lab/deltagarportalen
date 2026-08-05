@@ -76,8 +76,11 @@ interface QuickLink {
 }
 
 const quickLinkDefs: QuickLink[] = [
-  { titleKey: 'nav.knowledgeBase', descKey: 'helpPage.quickLinks.articlesGuides', icon: BookOpen, link: '/dashboard/knowledge-base' },
-  { titleKey: 'nav.interestGuide', descKey: 'helpPage.quickLinks.findCareer', icon: Compass, link: '/dashboard/interest-guide' },
+  // UX35 (2026-08-05): de två första pekade på /dashboard/*, som App.tsx
+  // omdirigerar till Översikt — snabblänkarna tog alltså användaren härifrån
+  // utan att landa där texten lovade. Rätt routes: App.tsx:236 och :235.
+  { titleKey: 'nav.knowledgeBase', descKey: 'helpPage.quickLinks.articlesGuides', icon: BookOpen, link: '/knowledge-base' },
+  { titleKey: 'nav.interestGuide', descKey: 'helpPage.quickLinks.findCareer', icon: Compass, link: '/interest-guide' },
   { titleKey: 'cv.createCV', descKey: 'helpPage.quickLinks.buildCV', icon: FileText, link: '/cv' },
   { titleKey: 'nav.jobSearch', descKey: 'helpPage.quickLinks.findJobs', icon: Briefcase, link: '/job-search' },
 ]

@@ -19,7 +19,51 @@ interface FragaSvar {
   fraga: string
   svar: string
   rating?: number
+  /**
+   * Varifrån betyget kommer. B12 (2026-08-05): tidigare gick det inte att
+   * skilja AI:ns betyg från deltagarens eget — historiken bar bara en siffra,
+   * och gränssnittet kallade varje siffra "AI-betyg". Nu märks källan, och
+   * saknas den finns inget betyg alls.
+   */
+  ratingSource?: 'ai' | 'user'
   feedback?: string
+}
+
+/**
+ * AI:n instrueras (client/api/ai.js, 'intervju-simulator') att svara med
+ * {"rating":1-5,...}. Allt utanför det intervallet — eller något som inte är
+ * ett tal — är inget betyg, och då sätts inget betyg.
+ */
+function parseAiRating(value: unknown): number | undefined {
+  if (typeof value !== 'number' || !Number.isFinite(value)) return undefined
+  const rounded = Math.round(value)
+  if (rounded < 1 || rounded > 5) return undefined
+  return rounded
+}
+
+/**
+ * Svar som faktiskt har ett betyg — underlaget för varje snitt vi visar.
+ *
+ * Inte exporterad: react-refresh/only-export-components tillåter bara
+ * komponentexporter ur den här filen. Beteendet täcks av
+ * InterviewSimulator.rating.test.tsx via renderad komponent i stället.
+ */
+function betygsattaSvar(historik: FragaSvar[]): FragaSvar[] {
+  return historik.filter(h => typeof h.rating === 'number' && h.rating > 0)
+}
+
+/**
+ * Snittbetyg räknat på de svar som *har* ett betyg, eller null.
+ *
+ * B12 (2026-08-05): tidigare `historik.reduce((s, h) => s + (h.rating || 0), 0)
+ * / historik.length` — obetygsatta svar räknades som nollor och drog ned
+ * snittet. Ett femstjärnigt svar bland tre obedömda visades som "1.3/5".
+ * Null betyder "inget att visa", inte "noll".
+ */
+function beraknaSnittbetyg(historik: FragaSvar[]): string | null {
+  const rated = betygsattaSvar(historik)
+  if (rated.length === 0) return null
+  return (rated.reduce((sum, h) => sum + (h.rating as number), 0) / rated.length).toFixed(1)
 }
 
 // Isolated Timer Component with color-coding and pause functionality
@@ -323,10 +367,10 @@ function InterviewSimulatorInner() {
     setIsLoading(true)
     setIsTimerRunning(false)
     setSupportPhrase(null)
+    // Inget betyg innan någon faktiskt satt ett — varken AI eller deltagare.
     const nyFragaSvar: FragaSvar = {
       fraga: nuvarandeFraga,
-      svar: anvandarSvar,
-      rating: 0
+      svar: anvandarSvar
     }
 
     try {
@@ -340,19 +384,30 @@ function InterviewSimulatorInner() {
       const resultat = (data as { resultat?: { rating: number; feedback: string; nastaFraga: string } | string }).resultat
 
       if (resultat && typeof resultat === 'object') {
-        // AI returnerade JSON med betyg och feedback
+        // AI returnerade JSON med betyg och feedback.
+        //
+        // B12 (2026-08-05): här stod `rating: resultat.rating || 3` och
+        // `feedback: resultat.feedback || 'Bra svar!'`. Saknade AI:n betyg fick
+        // deltagaren en trea — märkt "AI-betyg" i historiken och inräknad i
+        // snittbetyget — och ett beröm som ingen bedömning låg bakom.
+        // Nu: finns inget betyg sätts inget betyg, och deltagaren får i stället
+        // stjärnraden att sätta sitt eget. Saknas feedback visas ingen feedback.
+        const aiRating = parseAiRating(resultat.rating)
+        const aiFeedback = typeof resultat.feedback === 'string' && resultat.feedback.trim()
+          ? resultat.feedback.trim()
+          : undefined
+
         setHistorik([...historik, {
           ...nyFragaSvar,
-          rating: resultat.rating || 3,
-          feedback: resultat.feedback || 'Bra svar!'
+          rating: aiRating,
+          ratingSource: aiRating !== undefined ? 'ai' : undefined,
+          feedback: aiFeedback
         }])
         setNuvarandeFraga(resultat.nastaFraga || 'Vad är dina framtidsplaner?')
       } else {
-        // Fallback om AI bara returnerade en sträng
-        setHistorik([...historik, {
-          ...nyFragaSvar,
-          feedback: 'Bra svar!'
-        }])
+        // Fallback om AI bara returnerade en sträng — då finns varken betyg
+        // eller feedback att visa. Svaret sparas utan båda.
+        setHistorik([...historik, nyFragaSvar])
         setNuvarandeFraga(String(resultat) || 'Vad är dina framtidsplaner?')
       }
 
@@ -377,7 +432,8 @@ function InterviewSimulatorInner() {
   const handleSetRating = useCallback((index: number, rating: number) => {
     setHistorik(prev => {
       const updated = [...prev]
-      updated[index] = { ...updated[index], rating }
+      // Sätter deltagaren om betyget är det deltagarens, inte AI:ns.
+      updated[index] = { ...updated[index], rating, ratingSource: 'user' }
       return updated
     })
   }, [])
@@ -416,10 +472,17 @@ function InterviewSimulatorInner() {
     setSammanfattningLoading(true)
     setSammanfattningFel(null)
     try {
+      // Prompten i client/api/ai.js kallar `rating` för "Deltagarens eget
+      // betyg". Skicka därför bara betyg som deltagaren faktiskt satt — AI:ns
+      // egna betyg får den inte tillbaka som om det vore deltagarens.
       const response = await callAI<unknown>('intervju-sammanfattning', {
         roll,
         foretag,
-        historik: session.map(h => ({ fraga: h.fraga, svar: h.svar, rating: h.rating })),
+        historik: session.map(h => ({
+          fraga: h.fraga,
+          svar: h.svar,
+          rating: h.ratingSource === 'user' ? h.rating : undefined,
+        })),
       })
       const parsed = safeParseAiResponse(
         IntervjuSimulatorResultSchema,
@@ -455,13 +518,16 @@ function InterviewSimulatorInner() {
     }
 
     if (historik.length > 0) {
-      const avgRatingValue = historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length
+      // Snittet räknas bara på betygsatta svar. 0 sparas när inget svar har
+      // betyg — fältet läses inte av något gränssnitt i dag, och ett snitt
+      // över noll bedömningar finns inte.
+      const snitt = beraknaSnittbetyg(historik)
       saveSimulatorSession({
         roll,
         foretag,
         historik,
         antalFragor,
-        avgRating: Number(avgRatingValue.toFixed(1)),
+        avgRating: snitt !== null ? Number(snitt) : 0,
       })
       setVisarSammanfattning(true)
       void hamtaAiSammanfattning(historik)
@@ -471,7 +537,14 @@ function InterviewSimulatorInner() {
   }, [historik, anvandarSvar, confirm, t, roll, foretag, antalFragor, avslutaIntervju, hamtaAiSammanfattning])
 
   const downloadSessionSummary = useCallback(() => {
-    const avgRatingValue = historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 'N/A'
+    // B12: texten skrev tidigare ut ett snitt över alla svar (obetygsatta som
+    // nollor) och "BETYG: 0 / 5" för svar som ingen bedömt. Nu står det bara
+    // ett betyg där det finns ett, och källan anges.
+    const snitt = beraknaSnittbetyg(historik)
+    const antalBetygsatta = betygsattaSvar(historik).length
+    const snittRad = snitt !== null
+      ? `- Genomsnittligt betyg: ${snitt} / 5 (av ${antalBetygsatta} betygsatta svar)`
+      : '- Genomsnittligt betyg: inget svar är betygsatt än'
     const summary = `INTERVJUPRAKTIK SAMMANFATTNING
 Datum: ${new Date().toLocaleDateString('sv-SE')}
 Roll: ${roll}
@@ -479,13 +552,14 @@ Företag: ${foretag || 'Inte angiven'}
 
 SESSIONÖVERSIKT:
 - Totalt frågor: ${antalFragor}
-- Genomsnittliga klassificering: ${avgRatingValue} / 5
+${snittRad}
 
 FRÅGOR OCH SVAR:
 ${historik.map((h, idx) => `
 ${idx + 1}. FRÅGA: ${h.fraga}
-   SVAR: ${h.svar}
-   BETYG: ${h.rating || 0} / 5
+   SVAR: ${h.svar}${typeof h.rating === 'number' && h.rating > 0
+     ? `\n   BETYG: ${h.rating} / 5 (${h.ratingSource === 'ai' ? 'AI:s bedömning' : 'ditt eget betyg'})`
+     : '\n   BETYG: inte satt'}
 `).join('')}
 
 TIPS FÖR FÖRBÄTTRING:
@@ -511,11 +585,9 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
     window.URL.revokeObjectURL(url) // Clean up blob URL
   }, [roll, foretag, antalFragor, historik, aiSammanfattning])
 
-  // Memoized average rating calculation
-  const avgRating = useMemo(() => {
-    if (historik.length === 0) return '0'
-    return (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1)
-  }, [historik])
+  // Snittbetyg och underlag — se beraknaSnittbetyg() överst i filen.
+  const avgRating = useMemo(() => beraknaSnittbetyg(historik), [historik])
+  const ratedCount = useMemo(() => betygsattaSvar(historik).length, [historik])
 
   // Related exercises and articles
   const relatedContent = useMemo(() => ({
@@ -709,7 +781,21 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
             </div>
             <div className="bg-stone-50 dark:bg-stone-700/50 p-4 rounded-xl border border-stone-200 dark:border-stone-600">
               <p className="text-xs text-stone-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.averageRating')}</p>
-              <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
+              {avgRating !== null ? (
+                <>
+                  <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
+                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                    {t('interviewSimulator.session.ratedCount', {
+                      count: ratedCount,
+                      defaultValue: 'Baserat på {{count}} betygsatta svar',
+                    })}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+                  {t('interviewSimulator.session.noRatingsYet', 'Inget svar är betygsatt än')}
+                </p>
+              )}
             </div>
           </div>
 
@@ -857,7 +943,13 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
           </div>
           <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50 shadow-sm">
             <p className="text-xs text-stone-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.averageRating')}</p>
-            <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
+            {avgRating !== null ? (
+              <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{avgRating}/5</p>
+            ) : (
+              <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
+                {t('interviewSimulator.session.noRatingsYet', 'Inget svar är betygsatt än')}
+              </p>
+            )}
           </div>
           <div className="col-span-2 md:col-span-1 bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50 shadow-sm">
             <p className="text-xs text-stone-600 dark:text-stone-400 mb-1">{t('interviewSimulator.timer.timeForAnswer')}</p>
@@ -925,7 +1017,16 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
                 <div className="bg-stone-50 dark:bg-stone-700/50 p-4 rounded-xl border border-stone-200 dark:border-stone-600">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                      {fs.rating ? t('interviewSimulator.session.aiRating') : t('interviewSimulator.session.rateThisAnswer')}
+                      {/*
+                        B12: etiketten sa "AI-betyg" så fort en siffra fanns —
+                        även när siffran var fallback-trean eller deltagarens
+                        eget betyg. Nu styr ratingSource vad som påstås.
+                      */}
+                      {fs.ratingSource === 'ai'
+                        ? t('interviewSimulator.session.aiRating')
+                        : fs.ratingSource === 'user'
+                          ? t('interviewSimulator.session.yourRating', 'Ditt betyg (klicka för att ändra):')
+                          : t('interviewSimulator.session.rateThisAnswer')}
                     </p>
                     <div className="flex gap-1" role="group" aria-label={t('interviewSimulator.ratingAria', 'Betygsättning')}>
                       {[1, 2, 3, 4, 5].map((star) => (

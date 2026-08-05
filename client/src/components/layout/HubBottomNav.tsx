@@ -37,8 +37,13 @@ export function HubBottomNav() {
     <nav
       role="navigation"
       aria-label={t('hubBottomNav.label', 'Hubnavigering')}
+      // UX32: mobilens synliga huvudnavigation. Sidebarens <nav> äger id:t
+      // "main-navigation" (den är display:none under lg), så vi märker upp
+      // den här som alternativt mål i stället för att dubblera id:t.
+      data-skip-target="main-navigation"
+      tabIndex={-1}
       className={cn(
-        'fixed bottom-0 left-0 right-0 z-30 lg:hidden',
+        'fixed bottom-0 left-0 right-0 z-30 lg:hidden outline-none',
         'bg-white dark:bg-stone-900',
         'border-t border-stone-200 dark:border-stone-700',
         'pb-safe'

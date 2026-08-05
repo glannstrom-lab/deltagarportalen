@@ -138,11 +138,19 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
       'h-full flex flex-col bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 transition-all duration-200',
       isCollapsed ? 'w-14' : 'w-[220px]'
     )}>
-      {/* Navigation */}
-      <nav className={cn(
-        'flex-1 overflow-y-auto py-3',
-        isCollapsed ? 'px-1.5' : 'px-2'
-      )}>
+      {/* Navigation.
+          id + tabIndex: målet för skip-länken "Hoppa till navigation"
+          (UX32, 2026-08-05). Låg tidigare bara i den döda hjälparen
+          NavigationLandmark, så länken pekade på ett id som inte fanns. */}
+      <nav
+        id="main-navigation"
+        tabIndex={-1}
+        aria-label={t('skipLinks.mainNavigation', 'Huvudnavigation')}
+        className={cn(
+          'flex-1 overflow-y-auto py-3 outline-none',
+          isCollapsed ? 'px-1.5' : 'px-2'
+        )}
+      >
         {/* 5 hub links with active sub-item expansion */}
         <div className="space-y-0.5">
             {navHubs.map((hub) => {

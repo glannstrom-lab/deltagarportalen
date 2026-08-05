@@ -8,7 +8,7 @@
  * Mockar fetch + supabase.auth.getSession + authStore-profilen.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { callAI, generateCoverLetter, AiConsentRequiredError } from './aiApi'
+import { callAI, callAIStream, sanitizeAiPayload, generateCoverLetter, AiConsentRequiredError } from './aiApi'
 
 const mockGetSession = vi.fn()
 vi.mock('@/lib/supabase', () => ({
@@ -184,6 +184,194 @@ describe('callAI — art. 9-samtycke (UX13)', () => {
     await expect(callAI('vecko-reflektion', {})).rejects.toThrow(
       'Ett fel uppstod vid kommunikation med AI-tjänsten.'
     )
+  })
+})
+
+/**
+ * B15 (2026-08-05) — strömmande anrop måste gå genom samma grindar.
+ *
+ * `AgentChat` gjorde ett eget `fetch` för att `callAI` inte klarar SSE. Därför
+ * finns `callAIStream`, och därför testas den mot **samma** krav: art. 9-grind,
+ * PII-sanering på alla nivåer, och samma HTTP-felöversättning.
+ */
+function sseResponse(lines: string[], init: { ok?: boolean; status?: number } = {}) {
+  const encoder = new TextEncoder()
+  let i = 0
+  return {
+    ok: init.ok ?? true,
+    status: init.status ?? 200,
+    body: {
+      getReader: () => ({
+        read: async () =>
+          i < lines.length
+            ? { done: false, value: encoder.encode(lines[i++]) }
+            : { done: true, value: undefined },
+      }),
+    },
+  }
+}
+
+describe('callAIStream', () => {
+  beforeEach(() => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+  })
+
+  it('sätter stream: true och skickar Authorization-header', async () => {
+    mockFetch.mockResolvedValue(sseResponse(['data: {"content":"hej"}\n\n', 'data: [DONE]\n\n']))
+
+    const full = await callAIStream('ai-team-chat', { meddelande: 'hej' })
+
+    expect(full).toBe('hej')
+    const [url, init] = mockFetch.mock.calls[0]
+    expect(url).toBe('/api/ai')
+    expect(init.headers).toMatchObject({ Authorization: 'Bearer tok' })
+    expect(JSON.parse(init.body)).toMatchObject({
+      function: 'ai-team-chat',
+      stream: true,
+      data: { meddelande: 'hej' },
+    })
+  })
+
+  it('saniterar nyttolasten på alla nivåer innan den lämnar webbläsaren', async () => {
+    mockFetch.mockResolvedValue(sseResponse(['data: [DONE]\n\n']))
+
+    await callAIStream('ai-team-chat', {
+      meddelande: 'Jag är 19850101-1234',
+      historik: [{ roll: 'användare', innehall: 'Tidigare skrev jag 19850101-1234' }],
+    })
+
+    const body = mockFetch.mock.calls[0][1].body as string
+    expect(body).not.toContain('19850101-1234')
+    expect(body.match(/BORTTAGET-PERSONNUMMER/g)).toHaveLength(2)
+  })
+
+  it('sätter ihop chunkar och rapporterar dem löpande', async () => {
+    mockFetch.mockResolvedValue(
+      sseResponse(['data: {"content":"Hej "}\n\n', 'data: {"content":"Anna"}\n\n', 'data: [DONE]\n\n'])
+    )
+    const chunks: string[] = []
+
+    const full = await callAIStream('ai-team-chat', {}, { onChunk: (c) => chunks.push(c) })
+
+    expect(chunks).toEqual(['Hej ', 'Anna'])
+    expect(full).toBe('Hej Anna')
+  })
+
+  it('accepterar legacy-fältet { token } lika väl som { content }', async () => {
+    mockFetch.mockResolvedValue(sseResponse(['data: {"token":"abc"}\n\n', 'data: [DONE]\n\n']))
+    await expect(callAIStream('ai-team-chat', {})).resolves.toBe('abc')
+  })
+
+  it('läser chunkar som delas mitt i en SSE-rad', async () => {
+    mockFetch.mockResolvedValue(
+      sseResponse(['data: {"cont', 'ent":"delad"}\n\n', 'data: [DONE]\n\n'])
+    )
+    await expect(callAIStream('ai-team-chat', {})).resolves.toBe('delad')
+  })
+
+  it('tar med sista raden även utan avslutande radbrytning', async () => {
+    mockFetch.mockResolvedValue(sseResponse(['data: {"content":"sist"}']))
+    await expect(callAIStream('ai-team-chat', {})).resolves.toBe('sist')
+  })
+
+  it('rapporterar följdfrågor', async () => {
+    mockFetch.mockResolvedValue(
+      sseResponse(['data: {"suggestions":["A?","B?",3]}\n\n', 'data: [DONE]\n\n'])
+    )
+    const onSuggestions = vi.fn()
+
+    await callAIStream('ai-team-chat', {}, { onSuggestions })
+
+    expect(onSuggestions).toHaveBeenCalledWith(['A?', 'B?'])
+  })
+
+  it('kastar serverns fel i strömmen i stället för att svälja det', async () => {
+    // Gamla AgentChat-koden hade `throw` inuti samma try som fångade trasig
+    // JSON — serverfel försvann tyst och användaren fick ett tomt svar.
+    mockFetch.mockResolvedValue(sseResponse(['data: {"error":"AI request failed"}\n\n']))
+
+    await expect(callAIStream('ai-team-chat', {})).rejects.toThrow('AI request failed')
+  })
+
+  it('hoppar över trasig JSON utan att avbryta strömmen', async () => {
+    mockFetch.mockResolvedValue(
+      sseResponse(['data: {inte json}\n\n', 'data: {"content":"ok"}\n\n', 'data: [DONE]\n\n'])
+    )
+    await expect(callAIStream('ai-team-chat', {})).resolves.toBe('ok')
+  })
+
+  it('mappar HTTP-fel som callAI (401)', async () => {
+    mockFetch.mockResolvedValue({ ok: false, status: 401 })
+    await expect(callAIStream('ai-team-chat', {})).rejects.toThrow('Din session har gått ut')
+  })
+
+  it('översätter serverns 403 AI_CONSENT_REQUIRED', async () => {
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 403,
+      json: async () => ({ error: 'Serverns text', code: 'AI_CONSENT_REQUIRED' }),
+    })
+    await expect(callAIStream('ai-team-chat', {})).rejects.toBeInstanceOf(AiConsentRequiredError)
+  })
+
+  it('kräver inloggning', async () => {
+    mockGetSession.mockResolvedValue({ data: { session: null } })
+    await expect(callAIStream('ai-team-chat', {})).rejects.toThrow('Du måste vara inloggad')
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('respekterar art. 9-grinden — data lämnar inte webbläsaren utan samtycke', async () => {
+    mockProfile = { ai_consent_at: null }
+    await expect(callAIStream('vecko-reflektion', { note: 'mådde dåligt' }))
+      .rejects.toBeInstanceOf(AiConsentRequiredError)
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('avbryter när anroparens signal aborterar, och släpper igenom AbortError', async () => {
+    const controller = new AbortController()
+    // Som riktig fetch: avvisar direkt om signalen redan är aborterad,
+    // annars när den aborteras.
+    mockFetch.mockImplementation((_url: string, init: RequestInit) =>
+      new Promise((_resolve, reject) => {
+        const fail = () => reject(new DOMException('Aborted', 'AbortError'))
+        if (init.signal?.aborted) fail()
+        else init.signal?.addEventListener('abort', fail)
+      })
+    )
+
+    const promise = callAIStream('ai-team-chat', {}, { signal: controller.signal })
+    controller.abort()
+
+    await expect(promise).rejects.toMatchObject({ name: 'AbortError' })
+  })
+})
+
+describe('sanitizeAiPayload', () => {
+  it('saniterar strängar i nästlade objekt och arrayer', () => {
+    const { sanitized, stripped } = sanitizeAiPayload({
+      cvData: {
+        workExperience: [{ description: 'Kontonr 12345 678 901 2 för lönen' }],
+      },
+      titel: 'Utvecklare',
+    })
+
+    const cv = sanitized.cvData as { workExperience: Array<{ description: string }> }
+    expect(cv.workExperience[0].description).toContain('[BORTTAGET-BANKKONTO]')
+    expect(sanitized.titel).toBe('Utvecklare')
+    expect(stripped.bankAccount).toBe(1)
+  })
+
+  it('muterar inte indatan', () => {
+    const input = { historik: [{ innehall: '19850101-1234' }] }
+    sanitizeAiPayload(input)
+    expect(input.historik[0].innehall).toBe('19850101-1234')
+  })
+
+  it('lämnar icke-strängvärden och specialobjekt orörda', () => {
+    const date = new Date('2026-08-05T00:00:00Z')
+    const { sanitized } = sanitizeAiPayload({ n: 5, b: true, nil: null, date })
+    expect(sanitized).toMatchObject({ n: 5, b: true, nil: null })
+    expect(sanitized.date).toBe(date)
   })
 })
 

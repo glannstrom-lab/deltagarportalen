@@ -546,10 +546,15 @@ Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
     if (cvData.firstName || cvData.lastName) cvContext += `Namn: ${cvData.firstName || ''} ${cvData.lastName || ''}\n`;
 
     if (cvData.workExperience?.length) {
-      const totalYears = cvData.workExperience.length > 0 ? cvData.workExperience.length * 2 : 0; // Rough estimate
+      // B14: datumen skickas med så att "antal års erfarenhet" kan RÄKNAS ur
+      // underlaget i stället för att gissas. Den tidigare `totalYears`-raden
+      // (`workExperience.length * 2 // Rough estimate`) var en påhittad siffra
+      // och är borttagen.
       cvContext += `Arbetslivserfarenhet (${cvData.workExperience.length} tjänster):\n`;
       cvData.workExperience.slice(0, 3).forEach(exp => {
         cvContext += `- ${exp.title || 'Titel ej angiven'} på ${exp.company || 'Företag ej angivet'}`;
+        const period = [exp.startDate, exp.current ? 'pågående' : exp.endDate].filter(Boolean).join('–');
+        if (period) cvContext += ` (${period})`;
         if (exp.description) cvContext += `: ${exp.description.substring(0, 150)}`;
         cvContext += '\n';
       });
@@ -573,10 +578,31 @@ Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
         experience: `Förbättra denna arbetserfarenhetsbeskrivning. Gör den mer resultatfokuserad med aktiva verb. Lyft fram prestationer och ansvar tydligt.`,
         skills: `Förbättra denna kompetensbeskrivning. Gör den mer specifik och professionell.`
       },
+      // B14 (2026-08-05): den gamla lydelsen ("Föreslå rimliga siffror baserat
+      // på personens bakgrund") bad uttryckligen modellen att uppfinna tal, och
+      // texten hamnar i användarens CV som skickas till arbetsgivare. Nu får
+      // modellen bara lyfta fram siffror som HAR TÄCKNING i underlaget, och
+      // uttrycklig order att utelämna siffran när täckning saknas.
       quantify: {
-        summary: `Lägg till kvantifierbara resultat och mätbara prestationer i denna sammanfattning. Föreslå rimliga siffror baserat på personens bakgrund (t.ex. antal års erfarenhet, teamstorlek, procentuella förbättringar).`,
-        experience: `Lägg till kvantifierbara resultat i denna arbetsbeskrivning. Föreslå rimliga siffror och mätvärden baserat på rollens karaktär.`,
-        skills: `Lägg till konkreta exempel och nivåer för dessa kompetenser.`
+        summary: `Lyft fram de kvantifierbara resultat som redan har täckning i underlaget nedan — t.ex. antal år i yrket (räknat ur de angivna anställningsperioderna), antal tjänster, teamstorlek, antal kunder eller mätbara förbättringar som står i texten.
+
+ABSOLUTA REGLER FÖR SIFFROR:
+- Skriv aldrig ett tal som inte står i underlaget eller går att räkna ut direkt ur det.
+- Uppskatta, avrunda uppåt eller "exemplifiera" aldrig med påhittade tal. Inga procentsatser, belopp eller antal som inte finns i underlaget.
+- Saknas täckning för en siffra: skriv meningen konkret UTAN siffra i stället. Utelämna hellre än att gissa.
+- Använd aldrig platshållare som [X år], [antal] eller "ca X %".
+- Finns inget kvantifierbart alls i underlaget: returnera en förbättrad text helt utan siffror. Det är ett korrekt svar, inte ett misslyckande.`,
+        experience: `Lyft fram de kvantifierbara resultaten i denna arbetsbeskrivning — men bara de som redan framgår av beskrivningen eller av CV-datan nedan (t.ex. antal medarbetare, antal kunder, volymer, tidsperioder, mätbara resultat som nämns).
+
+ABSOLUTA REGLER FÖR SIFFROR:
+- Skriv aldrig ett tal som inte står i underlaget eller går att räkna ut direkt ur det.
+- Härled aldrig siffror ur "rollens karaktär" eller vad som är vanligt i yrket — det är gissningar, och de hamnar i personens CV.
+- Saknas täckning för en siffra: gör meningen konkret med vad personen faktiskt gjorde, utan siffra.
+- Använd aldrig platshållare som [X] eller ungefärliga tal ("ca", "omkring", "uppskattningsvis").
+- Finns inget kvantifierbart i underlaget: returnera en skärpt beskrivning helt utan siffror.`,
+        skills: `Gör dessa kompetenser mer konkreta med exempel som har täckning i underlaget nedan.
+
+ABSOLUTA REGLER: hitta aldrig på nivåer, antal år, certifieringar eller projekt som inte framgår av underlaget. Saknas underlag för en nivåangivelse — utelämna den. Inga påhittade siffror, inga platshållare som [X år].`
       },
       translate: {
         summary: `Översätt denna CV-sammanfattning till engelska. Behåll den professionella tonen och anpassa till internationella CV-standarder.`,
@@ -596,7 +622,17 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
       }
     };
 
-    const systemPrompt = 'Du är en expert på CV-skrivning. Ge konkreta, professionella förslag på svenska (om inte översättning efterfrågas). Svara ENDAST med den färdiga texten, ingen inledning, förklaring eller platshållare som [X]. Skriv fullständiga meningar med konkret information.';
+    // B14/B9: sanningskravet ligger i systemprompten så att det gäller ALLA
+    // features, inte bara quantify. Ett CV med påhittade siffror eller
+    // erfarenheter kan kosta någon jobbet — utelämna hellre än att gissa.
+    const systemPrompt = [
+      'Du är en expert på CV-skrivning. Ge konkreta, professionella förslag på svenska (om inte översättning efterfrågas).',
+      'Svara ENDAST med den färdiga texten, ingen inledning, förklaring eller platshållare som [X]. Skriv fullständiga meningar med konkret information.',
+      'SANNINGSKRAV: texten hamnar i en riktig persons CV och skickas till arbetsgivare.',
+      'Du får aldrig hitta på erfarenheter, arbetsgivare, titlar, utbildningar, verktyg, certifieringar eller siffror.',
+      'Varje siffra du skriver måste stå i underlaget eller gå att räkna ut direkt ur det. Uppskatta aldrig, avrunda aldrig uppåt, exemplifiera aldrig med påhittade tal.',
+      'Är du osäker på om något har täckning i underlaget: utelämna det. En kortare, sann text är alltid bättre än en längre med gissningar.'
+    ].join(' ');
 
     let userPrompt = featurePrompts[feature]?.[type] || featurePrompts.improve.summary;
 
@@ -1252,3 +1288,7 @@ module.exports = async (req, res) => {
 // så dess fail-closed-beteende ska vara testat, inte antaget (UX13).
 module.exports.ART9_FUNCTIONS = ART9_FUNCTIONS;
 module.exports.checkArt9Consent = checkArt9Consent;
+// B14: prompt-mallarna exponeras så att sanningskraven i CV-prompten kan
+// testas. En prompt som ber modellen "föreslå rimliga siffror" syns inte i
+// något annat test — den syns bara i användarens färdiga CV.
+module.exports.PROMPTS = PROMPTS;

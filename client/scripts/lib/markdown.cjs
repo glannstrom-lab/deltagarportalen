@@ -6,10 +6,15 @@
  *
  *   ## rubrik      133 artiklar      | tabell         23
  *   ### rubrik     121               | checkbox-lista 24
- *   - lista        132               | # rubrik       13
+ *   - lista        132               | # rubrik        1
  *   1. lista        89               | > citat         9
  *   **fet**        123               | kodblock        4
  *   [länk](url)      1               | rå HTML         0
+ *
+ * (`# rubrik` var 13 vid mätningen; 12 av dem var ordagranna dubbletter av
+ * artikelns `title` och togs bort ur prod 2026-08-05 — se
+ * scripts/apply-article-corrections.cjs. Kvar är `latt-svenska-avslag`, där
+ * `#`-raden är en riktig sektionsrubrik.)
  *
  * Notera: `Article.tsx` i appen hanterar VARKEN tabeller eller `# `-rubriker.
  * De 23 artiklarna med tabeller visar rå pipe-text i portalen i dag. De här
@@ -93,8 +98,8 @@ function markdownToHtml(content) {
 
   /**
    * Basnivån beror på artikeln, inte på vad som råkar stå före den i mallen.
-   * Mätt i korpusen: 120 artiklar har bara `##`, 13 har både `#` och `##`,
-   * 0 har bara `#`.
+   * Mätt i korpusen (2026-08-05, efter rubrikrättningen): 132 artiklar har
+   * bara `##`, 1 har både `#` och `##`, 0 har bara `#`.
    *   - Har artikeln `#` är det dess supersektion → `#`→h2, `##`→h3, `###`→h4
    *   - Annars är `##` artikelns toppnivå        → `##`→h2, `###`→h3
    * h1 är alltid reserverad för sidrubriken, så brödtexten börjar på h2 och

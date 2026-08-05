@@ -19,6 +19,7 @@ import { RefreshCw, Trash2, Share2, Check, Download } from '@/components/ui/icon
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { diaryEntriesApi } from '@/services/diaryApi'
+import { callAIStream } from '@/services/aiApi'
 import { useVoiceInput } from '@/hooks/useVoiceInput'
 import { useVoiceOutput } from '@/hooks/useVoiceOutput'
 import { MessageBubble } from './MessageBubble'
@@ -181,108 +182,36 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         // och personlighet är hårdkodade serverside (security 2026-05-09).
         const userDataContext = formatAITeamContext(userContext, selectedAgent)
 
-        // Get auth token
-        const { data: { session } } = await supabase.auth.getSession()
-        if (!session?.access_token) {
-          throw new Error('Not authenticated')
-        }
-
         // Create abort controller for cancellation
         abortControllerRef.current = new AbortController()
 
-        const response = await fetch('/api/ai', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session.access_token}`,
+        // B15 (2026-08-05): den här komponenten gjorde tidigare ett eget rått
+        // anrop till AI-endpointen och gick därmed förbi PII-saneringen i
+        // aiApi — personnummer i chatten och i `historik` skickades osaniterade
+        // till OpenRouter (USA). All trafik ut till AI-endpointen ska gå via
+        // aiApi-lagret. Lägg aldrig tillbaka ett eget fetch här; en källvakt i
+        // AgentChat.pii.test.tsx fäller det.
+        const fullContent = await callAIStream(
+          'ai-team-chat',
+          {
+            meddelande: text,
+            agentTyp: selectedAgent,
+            personlighet: selectedPersonality,
+            responsLage: responseMode,
+            // Skicka bara DATA om användaren — agent + personlighet
+            // material:as serverside (security 2026-05-09).
+            userDataContext,
+            historik: messages.slice(-10).map((m) => ({
+              roll: m.role === 'user' ? 'användare' : 'assistent',
+              innehall: m.content,
+            })),
           },
-          body: JSON.stringify({
-            function: 'ai-team-chat',
-            stream: true,
-            data: {
-              meddelande: text,
-              agentTyp: selectedAgent,
-              personlighet: selectedPersonality,
-              responsLage: responseMode,
-              // Skicka bara DATA om användaren — agent + personlighet
-              // material:as serverside (security 2026-05-09).
-              userDataContext,
-              historik: messages.slice(-10).map((m) => ({
-                roll: m.role === 'user' ? 'användare' : 'assistent',
-                innehall: m.content,
-              })),
-            },
-          }),
-          signal: abortControllerRef.current.signal,
-        })
-
-        if (!response.ok) {
-          throw new Error('Failed to get response')
-        }
-
-        // Read streaming response
-        const reader = response.body?.getReader()
-        if (!reader) throw new Error('No response body')
-
-        const decoder = new TextDecoder()
-        let fullContent = ''
-        let buffer = ''
-
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done) break
-
-          buffer += decoder.decode(value, { stream: true })
-          const lines = buffer.split('\n')
-          buffer = lines.pop() || ''
-
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6).trim()
-              if (data === '[DONE]') continue
-
-              try {
-                const parsed = JSON.parse(data)
-                // Föredrar { content } men accepterar { token } för bakåtkompatibilitet.
-                // Standardprotokollet är { content } per SSE-grenen i client/api/ai.js.
-                const chunk = parsed.content ?? parsed.token
-                if (chunk) {
-                  fullContent += chunk
-                  setStreamingContent(fullContent)
-                }
-                if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
-                  setSuggestions(parsed.suggestions)
-                }
-                if (parsed.error) {
-                  throw new Error(parsed.error)
-                }
-              } catch {
-                // Skip malformed JSON
-              }
-            }
+          {
+            onChunk: (_chunk, full) => setStreamingContent(full),
+            onSuggestions: setSuggestions,
+            signal: abortControllerRef.current.signal,
           }
-        }
-
-        // Process any remaining buffer content after stream ends
-        if (buffer.trim()) {
-          if (buffer.startsWith('data: ')) {
-            const data = buffer.slice(6).trim()
-            if (data !== '[DONE]') {
-              try {
-                const parsed = JSON.parse(data)
-                const chunk = parsed.content ?? parsed.token
-                if (chunk) {
-                  fullContent += chunk
-                }
-                if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
-                  setSuggestions(parsed.suggestions)
-                }
-              } catch {
-                // Skip malformed JSON
-              }
-            }
-          }
-        }
+        )
 
         // Add final message
         if (fullContent) {
