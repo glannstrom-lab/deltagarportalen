@@ -434,4 +434,208 @@ function renderLattlast(artiklar) {
 `
 }
 
-module.exports = { renderGuide, renderIndex, renderLattlast }
+/**
+ * /verktyg/<slug>/ — publik landningssida för ett verktyg.  (spår K6)
+ *
+ * Skillnaden mot en guidesida: den här ska konvertera. Strukturen är
+ * hero → så funkar det → vad du får → för vem → FAQ → relaterade guider →
+ * avslutande CTA, med FAQPage-JSON-LD eftersom frågorna är verkliga frågor
+ * och inte utfyllnad.
+ *
+ * Vad den INTE gör: hittar på social bevisning. Inga användarsiffror, inga
+ * omdömen, inga betyg. Varje påstående om vad verktyget kan är kontrollerat
+ * mot koden — se kommentaren i content/tools.json.
+ */
+function renderTool(t, guider) {
+  const url = `${SITE}/verktyg/${t.slug}/`
+  const appLank = appUrl(t.route)
+
+  const steg = t.steg
+    .map(
+      ([rubrik, text], i) =>
+        `<h2><span aria-hidden="true">${i + 1}. </span>${escapeHtml(rubrik)}</h2><p>${escapeHtml(text)}</p>`
+    )
+    .join('')
+
+  const punkter = t.punkter.map((p) => `<li>${escapeHtml(p)}</li>`).join('')
+
+  const faq = t.faq
+    .map(([f, s]) => `<h3>${escapeHtml(f)}</h3><p>${escapeHtml(s)}</p>`)
+    .join('')
+
+  const relaterade = guider.length
+    ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs mer först</h2><ul>${guider
+        .map((g) => `<li><a href="${guideUrl(g.slug)}">${escapeHtml(g.title)}</a></li>`)
+        .join('')}</ul></nav>`
+    : ''
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebApplication',
+        name: `Jobin — ${t.h1}`,
+        applicationCategory: 'BusinessApplication',
+        operatingSystem: 'Web',
+        inLanguage: 'sv-SE',
+        url,
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'SEK' },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: t.faq.map(([f, s]) => ({
+          '@type': 'Question',
+          name: f,
+          acceptedAnswer: { '@type': 'Answer', text: s },
+        })),
+      },
+    ],
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(t.title)} — Jobin</title>
+<meta name="description" content="${escapeHtml(t.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(t.title)}">
+<meta property="og:description" content="${escapeHtml(t.description)}">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appLank}">Öppna verktyget</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor">
+      <a href="/">Jobin</a> › <a href="/verktyg/">Verktyg</a>
+    </nav>
+    <h1>${escapeHtml(t.h1)}</h1>
+    <p class="lead">${escapeHtml(t.lead)}</p>
+    <div class="facts">
+      <span class="chip">Gratis</span>
+      <span class="chip">På svenska</span>
+      <span class="chip">Inget att installera</span>
+    </div>
+    <a class="btn" href="${appLank}">Kom igång</a>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    ${steg}
+
+    <section class="cta">
+      <h2>Det här ingår</h2>
+      <ul>${punkter}</ul>
+      <a class="btn" href="${appLank}">Öppna verktyget</a>
+    </section>
+
+    <h2>Vem passar det för?</h2>
+    <p>${escapeHtml(t.for)}</p>
+
+    <h2>Vanliga frågor</h2>
+    ${faq}
+
+    ${relaterade}
+
+    <section class="cta">
+      <h2>Redo att börja?</h2>
+      <p>Jobin är kostnadsfritt. Du skapar ett konto med din e-post och kommer igång direkt — allt du gör sparas så att du kan fortsätta när du orkar.</p>
+      <a class="btn" href="${appLank}">Kom igång nu</a>
+      <a class="btn btn-ghost" href="${appUrl('/oversikt')}">Se allt som ingår</a>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+/** /verktyg/ — samlingssida. */
+function renderToolIndex(verktyg) {
+  const url = `${SITE}/verktyg/`
+  const kort = verktyg
+    .map(
+      (t) =>
+        `<a class="tool" href="/verktyg/${t.slug}/"><strong>${escapeHtml(t.h1)}</strong><span>${escapeHtml(t.description)}</span></a>`
+    )
+    .join('')
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gratis verktyg för dig som söker jobb — Jobin</title>
+<meta name="description" content="CV-byggare, personligt brev, intervjuträning och kompetensanalys. Kostnadsfritt, på svenska, utan att du behöver installera något.">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="Gratis verktyg för dig som söker jobb — Jobin">
+<meta property="og:description" content="CV-byggare, personligt brev, intervjuträning och kompetensanalys. Kostnadsfritt och på svenska.">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Verktyg för dig som söker jobb</h1>
+    <p class="lead">Allt är kostnadsfritt och på svenska. Du behöver inte installera något — och du kan spara och fortsätta när du orkar.</p>
+    <a class="btn" href="${appUrl('/oversikt')}">Kom igång</a>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="tools">${kort}</div>
+    <p style="margin-top:2rem"><a href="/guider/">Se även våra guider</a> — konkret hjälp om CV, intervju och att orka söka.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna portalen</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+module.exports = { renderGuide, renderIndex, renderLattlast, renderTool, renderToolIndex }

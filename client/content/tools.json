@@ -1,0 +1,112 @@
+{
+  "_kommentar": "Innehåll för de publika verktygssidorna under /verktyg/ (spår K6, 2026-08-05). VARJE PÅSTÅENDE HÄR ÄR KONTROLLERAT MOT KODEN — 13 CV-mallar i src/components/cv/templates/, PDF via api/cv-pdf.js (headless Chromium), tal-till-text via SpeechRecognition i InterviewSimulator.tsx, AI-funktionerna cv-writing/cv-jobbmatchning/personligt-brev/intervju-simulator/kompetensgap/linkedin-optimering i api/ai.js. Lägg inte till ett påstående här utan att först verifiera det i koden. Inga användarsiffror, inga omdömen, inga betyg — vi hittar inte på social bevisning.",
+  "verktyg": [
+    {
+      "slug": "cv",
+      "route": "/cv",
+      "h1": "Gör ett CV som håller — gratis",
+      "title": "Gratis CV-mall och CV-byggare på svenska",
+      "description": "Bygg ditt CV steg för steg, välj bland 13 mallar och ladda ner som PDF. Gratis, på svenska, utan att du behöver kunna layout.",
+      "lead": "Du fyller i dina uppgifter en gång. Sedan väljer du hur det ska se ut och laddar ner en färdig PDF. Ingen layout att pilla med, inget Word som hoppar.",
+      "steg": [
+        ["Fyll i det du har", "Kontaktuppgifter, jobb, utbildning och det du kan. Du kan spara och fortsätta senare — allt ligger kvar."],
+        ["Välj en mall", "13 mallar att välja mellan, från strikt och traditionell till mer personlig. Du kan byta när som helst utan att skriva om något."],
+        ["Ladda ner som PDF", "Färdig fil att bifoga i ansökan. Svenska tecken och avstavning blir rätt, och flersidiga CV:n bryts där de ska."]
+      ],
+      "punkter": [
+        "13 mallar, byt fritt mellan dem",
+        "PDF-export som ser likadan ut hos mottagaren",
+        "Hjälp att formulera dina arbetsuppgifter när orden inte kommer",
+        "Matchning mot en jobbannons — se vad som saknas innan du skickar"
+      ],
+      "for": "Dig som ska skriva ditt första CV, dig som varit borta från arbetslivet ett tag, och dig som har ett CV men vet att det inte gör dig rättvisa.",
+      "faq": [
+        ["Kostar det något?", "Nej. Alla verktyg i Jobin är kostnadsfria. Du skapar ett konto med e-post, och sedan är allt öppet."],
+        ["Måste jag kunna dator?", "Du behöver kunna fylla i ett formulär. Resten sköter portalen — layout, typsnitt och sidbrytningar sätts automatiskt."],
+        ["Vad händer med mina uppgifter?", "De sparas på ditt konto så att du kan fortsätta senare. Du kan när som helst ladda ner allt du lagt in eller radera ditt konto."],
+        ["Kan jag ha flera olika CV:n?", "Ja. Många har ett grund-CV och anpassar det per ansökan. Du kan spara flera versioner."]
+      ],
+      "guider": ["cv-grunder", "cv-utan-erfarenhet", "cv-mallar-exempel", "checklista-innan-ansokan"]
+    },
+    {
+      "slug": "personligt-brev",
+      "route": "/cover-letter",
+      "h1": "Personligt brev — få igång skrivandet",
+      "title": "Skriv personligt brev — gratis hjälp på svenska",
+      "description": "Fastnar du på första meningen? Få ett utkast anpassat efter annonsen, som du sedan gör till ditt eget. Gratis och på svenska.",
+      "lead": "Det svåraste med ett personligt brev är att komma igång. Här får du ett utkast utifrån annonsen och din bakgrund — sedan skriver du om det så att det låter som du.",
+      "steg": [
+        ["Klistra in annonsen", "Portalen läser vad tjänsten kräver, så att brevet handlar om det jobbet och inte om jobb i allmänhet."],
+        ["Få ett utkast", "Ett förslag byggt på dina uppgifter i portalen. Det är en startpunkt, inte ett färdigt brev."],
+        ["Gör det till ditt", "Ändra, stryk och lägg till. Ett brev som låter som en mall känns igen direkt — det är dina egna formuleringar som gör skillnad."]
+      ],
+      "punkter": [
+        "Utkast anpassat efter den specifika annonsen",
+        "Bygger på det du redan fyllt i, så du slipper skriva samma sak två gånger",
+        "Export till PDF",
+        "Fungerar lika bra för spontanansökningar"
+      ],
+      "for": "Dig som vet vad du vill säga men inte hur du ska formulera det, och dig som skrivit tjugo brev och tappat orken.",
+      "faq": [
+        ["Blir alla brev likadana?", "Utkastet utgår från din bakgrund och den annons du klistrar in, så det skiljer sig åt. Men skriv om det med egna ord — det är då det blir bra."],
+        ["Märker arbetsgivaren att jag fått hjälp?", "Inte om du gör om texten till din egen. Använd utkastet som en start, inte som ett färdigt brev."],
+        ["Hur långt ska ett personligt brev vara?", "Håll det på en A4. Rekryteraren läser oftast snabbt, och det du säger först är det som räknas."],
+        ["Kostar det något?", "Nej, verktyget är kostnadsfritt."]
+      ],
+      "guider": ["personligt-brev", "cv-grunder", "checklista-innan-ansokan"]
+    },
+    {
+      "slug": "intervjutraning",
+      "route": "/interview-simulator",
+      "h1": "Öva inför intervjun — utan att någon tittar på",
+      "title": "Intervjuträning online — öva gratis på svenska",
+      "description": "Träna på vanliga intervjufrågor i din egen takt. Du svarar med rösten och får feedback. Gratis, på svenska, ingen som ser dig.",
+      "lead": "Det som gör intervjuer svåra är sällan frågorna — det är att man aldrig får öva. Här kan du svara högt, hur många gånger du vill, utan att någon bedömer dig.",
+      "steg": [
+        ["Välj vad du vill träna på", "Vanliga frågor, eller frågor som passar den typ av jobb du söker."],
+        ["Svara högt", "Du pratar och portalen skriver ner vad du sagt. Att säga svaret högt är hela poängen — det är något helt annat än att tänka det."],
+        ["Läs igenom och gör om", "Du får återkoppling på dina svar och en sammanfattning. Sedan tar du om samma fråga tills den sitter."]
+      ],
+      "punkter": [
+        "Du svarar med rösten — portalen omvandlar tal till text",
+        "Återkoppling på hur svaret hänger ihop",
+        "Sammanfattning efter passet",
+        "Ingen tidsgräns, inga åskådare, obegränsat antal försök"
+      ],
+      "for": "Dig som blir nervös, dig som inte varit på intervju på flera år, och dig som kommer till intervju men aldrig vidare.",
+      "faq": [
+        ["Behöver jag mikrofon?", "En vanlig mobil eller dator med mikrofon räcker. Du kan också skriva svaren om du hellre vill det."],
+        ["Spelas mina svar in och sparas?", "Dina svar hanteras i portalen på ditt konto. Du kan radera dem, och du kan ladda ner allt som finns om dig."],
+        ["Är frågorna verkliga?", "De bygger på frågor som är vanliga i svenska anställningsintervjuer. Ingen kan lova exakt vilka frågor som kommer — poängen är att du ska ha tänkt igenom svaren."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["intervju-fragor", "intervju-forberedelser", "digital-intervju"]
+    },
+    {
+      "slug": "kompetensanalys",
+      "route": "/skills-gap-analysis",
+      "h1": "Vad saknas mellan dig och jobbet du vill ha?",
+      "title": "Kompetensanalys — se vad som saknas till drömjobbet",
+      "description": "Jämför det du kan mot det ett jobb kräver, och se vad som skiljer. Gratis verktyg på svenska för dig som söker jobb eller vill byta bana.",
+      "lead": "Ibland är avståndet till ett jobb mindre än det känns — och ibland är det en kurs bort. Det här verktyget visar vilket.",
+      "steg": [
+        ["Beskriv vad du kan", "Utgår från det du redan fyllt i om utbildning och erfarenhet."],
+        ["Välj ett jobb eller en roll", "Ett konkret jobb du vill ha, eller en yrkesroll du funderar på."],
+        ["Se skillnaden", "Vad du redan uppfyller, vad som saknas, och vilket av det som går att göra något åt närmast i tid."]
+      ],
+      "punkter": [
+        "Jämförelse mot en riktig roll, inte allmänna råd",
+        "Skiljer på det som går att lära sig snabbt och det som tar längre tid",
+        "Kopplar vidare till utbildningsvägar",
+        "Går att göra om när din situation ändras"
+      ],
+      "for": "Dig som funderar på att byta bransch, dig som får avslag utan att förstå varför, och dig som vill veta om en utbildning är värd tiden.",
+      "faq": [
+        ["Är det ett test?", "Nej, och det finns inget resultat som är rätt eller fel. Det är en jämförelse mellan två beskrivningar."],
+        ["Vad gör jag med resultatet?", "Använd det för att prioritera. Allt behöver sällan åtgärdas — ofta räcker det att kunna förklara hur du täcker en lucka."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["kompetensinventering-guide", "karriarplanering-guide", "upptack-dina-styrkor"]
+    }
+  ]
+}

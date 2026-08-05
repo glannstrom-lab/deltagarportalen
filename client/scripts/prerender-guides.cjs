@@ -21,7 +21,13 @@ const {
   guideUrl,
   arLattlast,
 } = require('./lib/guides.cjs')
-const { renderGuide, renderIndex, renderLattlast } = require('./lib/guide-template.cjs')
+const {
+  renderGuide,
+  renderIndex,
+  renderLattlast,
+  renderTool,
+  renderToolIndex,
+} = require('./lib/guide-template.cjs')
 
 const CLIENT = path.join(__dirname, '..')
 const DIST = path.join(CLIENT, 'dist')
@@ -88,6 +94,43 @@ if (lattlast.length) {
   fs.writeFileSync(path.join(dir, 'index.html'), renderLattlast(lattlast), 'utf8')
 }
 
+// K6: publika landningssidor för verktygen.
+const TOOLS_FILE = path.join(CLIENT, 'content', 'tools.json')
+let antalVerktyg = 0
+if (fs.existsSync(TOOLS_FILE)) {
+  const { verktyg } = JSON.parse(fs.readFileSync(TOOLS_FILE, 'utf8'))
+  const appRoutes = new Set(
+    [...fs.readFileSync(APP_TSX, 'utf8').matchAll(/<Route\s+path="([^"]+)"/g)].map(
+      (m) => '/' + m[1].replace(/^\//, '').replace(/\/\*$/, '')
+    )
+  )
+
+  for (const t of verktyg) {
+    // En CTA som pekar på en route som inte finns skickar besökaren till
+    // startsidan — hellre trasigt bygge än tyst trasig knapp.
+    if (!appRoutes.has(t.route)) {
+      console.error(`prerender-guides: verktyget "${t.slug}" pekar på ${t.route} som saknar route i App.tsx.`)
+      process.exit(1)
+    }
+    // Länkade guider måste vara publicerade, annars blir det en död länk.
+    const saknade = (t.guider || []).filter((s) => !publiceradeSlugs.has(s))
+    if (saknade.length) {
+      console.error(
+        `prerender-guides: verktyget "${t.slug}" länkar till opublicerade guider: ${saknade.join(', ')}`
+      )
+      process.exit(1)
+    }
+
+    const dir = path.join(DIST, 'verktyg', t.slug)
+    fs.mkdirSync(dir, { recursive: true })
+    const guider = (t.guider || []).map((s) => bySlug.get(s))
+    fs.writeFileSync(path.join(dir, 'index.html'), renderTool(t, guider), 'utf8')
+    antalVerktyg++
+  }
+
+  fs.writeFileSync(path.join(DIST, 'verktyg', 'index.html'), renderToolIndex(verktyg), 'utf8')
+}
+
 const totalKb = Math.round(
   publicerade.reduce(
     (n, a) => n + fs.statSync(path.join(DIST, 'guider', a.slug, 'index.html')).size,
@@ -96,7 +139,8 @@ const totalKb = Math.round(
 )
 
 console.log(
-  `prerender-guides: ${skrivna} guidesidor + /guider/ skrivna (${totalKb} kB), ` +
-    `${antalRoutes} routes validerade, ${snapshot.count - skrivna} artiklar ännu opublicerade.`
+  `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalVerktyg} verktygssidor skrivna ` +
+    `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
+    `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )
 console.log(`   Exempel: ${guideUrl(publicerade[0].slug)}`)

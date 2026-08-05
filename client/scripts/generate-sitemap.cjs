@@ -48,6 +48,19 @@ try {
   process.exit(1)
 }
 
+// K6: verktygens landningssidor. De är de kommersiellt viktigaste sidorna,
+// därför högre priority än guiderna.
+const TOOLS = path.join(__dirname, '..', 'content', 'tools.json')
+if (fs.existsSync(TOOLS)) {
+  const { verktyg } = JSON.parse(fs.readFileSync(TOOLS, 'utf8'))
+  if (verktyg?.length) {
+    urls.push({ loc: '/verktyg/', changefreq: 'monthly', priority: '0.9' })
+    urls.push(
+      ...verktyg.map((t) => ({ loc: `/verktyg/${t.slug}/`, changefreq: 'monthly', priority: '0.8' }))
+    )
+  }
+}
+
 const today = new Date().toISOString().slice(0, 10)
 
 const body = urls
