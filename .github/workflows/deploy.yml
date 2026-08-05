@@ -90,6 +90,48 @@ jobs:
           fi
           echo "Health check passed"
 
+      # K1 (2026-08-05): robots.txt och sitemap.xml fanns inte, och
+      # SPA-catch-allen svarade då med index.html och status 200. En 200 som är
+      # HTML ser ut som "filen finns" i varje ytlig kontroll — därför mäts
+      # Content-Type här, inte statuskoden.
+      - name: SEO baseline (robots.txt + sitemap.xml)
+        run: |
+          set -e
+          robots_type=$(curl -sSI https://www.jobin.se/robots.txt | tr -d '\r' \
+            | awk -F': ' 'tolower($1)=="content-type"{print tolower($2)}')
+          case "$robots_type" in
+            text/plain*) echo "robots.txt: $robots_type OK" ;;
+            *) echo "robots.txt levereras som '$robots_type' — förväntade text/plain. SPA-fallbacken har troligen fångat den igen."; exit 1 ;;
+          esac
+
+          sitemap_type=$(curl -sSI https://www.jobin.se/sitemap.xml | tr -d '\r' \
+            | awk -F': ' 'tolower($1)=="content-type"{print tolower($2)}')
+          case "$sitemap_type" in
+            application/xml*|text/xml*) echo "sitemap.xml: $sitemap_type OK" ;;
+            *) echo "sitemap.xml levereras som '$sitemap_type' — förväntade application/xml."; exit 1 ;;
+          esac
+
+          curl -sS https://www.jobin.se/sitemap.xml | grep -q '<urlset' \
+            || { echo "sitemap.xml saknar <urlset> — inte en giltig sitemap."; exit 1; }
+          echo "SEO baseline OK"
+
+      # K1 (2026-08-05): headers-blocket i client/vercel.json var inaktivt i
+      # prod (Vercel tillåter inte `routes` + `headers` i samma fil; `routes`
+      # vann tyst). Deployen gick igenom utan varning, så bara ett utfallsmått
+      # fångar en regression här.
+      - name: Security headers
+        run: |
+          set -e
+          headers=$(curl -sSI https://www.jobin.se/ | tr -d '\r' | tr 'A-Z' 'a-z')
+          for h in content-security-policy x-frame-options x-content-type-options referrer-policy; do
+            echo "$headers" | grep -q "^$h:" || { echo "Saknad header: $h"; exit 1; }
+          done
+          echo "$headers" | grep -q "frame-ancestors 'none'" \
+            || { echo "CSP saknar frame-ancestors 'none'."; exit 1; }
+          echo "$headers" | grep -q "includesubdomains" \
+            || { echo "HSTS saknar includeSubDomains — Vercels default gäller, inte vår konfig."; exit 1; }
+          echo "Security headers OK"
+
       # A15 (2026-07-23): health-funktionen kräver anon-JWT (verifierat: 401
       # utan, 200 med) — curlen skickade ingen, därför var steget satt till
       # continue-on-error och kunde aldrig larma. Nu skarp kontroll.

@@ -7,18 +7,51 @@
     <meta name="apple-mobile-web-app-title" content="Jobin" />
     <meta name="application-name" content="Jobin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Deltagarportalen - Stöd för arbetssökande med verktyg för CV, jobbsök och karriärutveckling">
+    <meta name="description" content="Jobin hjälper dig som söker jobb: skriv CV och personligt brev, öva inför intervjun och håll koll på dina ansökningar — med stöd hela vägen.">
     <meta name="theme-color" content="#4f46e5">
+
+    <!-- K1 (2026-08-05): kanonisk URL. Nödvändig här eftersom SPA-fallbacken
+         svarar 200 med den här filen för VARJE sökväg — utan canonical kan
+         sökmotorn indexera /vad-som-helst som separata dubbletter.
+         jobin.se 307:ar till www.jobin.se, så www är den kanoniska värden. -->
+    <link rel="canonical" href="https://www.jobin.se/">
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Jobin">
+    <meta property="og:locale" content="sv_SE">
+    <meta property="og:url" content="https://www.jobin.se/">
+    <meta property="og:title" content="Jobin — verktyg och stöd för dig som söker jobb">
+    <meta property="og:description" content="Skriv CV och personligt brev, öva inför intervjun och håll koll på dina ansökningar — med stöd hela vägen.">
+    <meta property="og:image" content="https://www.jobin.se/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Jobin — din väg till jobbet">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Jobin — verktyg och stöd för dig som söker jobb">
+    <meta name="twitter:description" content="Skriv CV och personligt brev, öva inför intervjun och håll koll på dina ansökningar — med stöd hela vägen.">
+    <meta name="twitter:image" content="https://www.jobin.se/og-image.png">
     
-    <!-- Security Headers (Note: frame-ancestors and X-Frame-Options must be set via HTTP headers, not meta tags) -->
-    <!-- CSP: 'wasm-unsafe-eval' krävs av @react-pdf/renderer (yoga-layout kompilerar WASM).
-         data: i connect-src krävs av samma — WASM:en hämtas som data: URL.
-         frame-ancestors flyttat till HTTP-header (vercel.json) eftersom <meta> ignorerar det. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://translate.google.com https://*.googleapis.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://*.public.blob.vercel-storage.com https://www.google.com https://translate.google.com https://*.gstatic.com; connect-src 'self' data: https://*.supabase.co https://*.arbetsformedlingen.se https://jobsearch.api.jobtechdev.se wss://*.supabase.co https://*.public.blob.vercel-storage.com https://*.googleapis.com; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests;">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-XSS-Protection" content="0">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()">
+    <!-- Säkerhetsheaders: ALLA sätts som HTTP-headers i client/vercel.json.
+         De låg tidigare som <meta http-equiv> här, vilket var enda anledningen
+         till att CSP:n gällde alls — headers-blocket i vercel.json var
+         inaktivt, eftersom Vercel inte tillåter `routes` och `headers` i samma
+         fil och `routes` vann tyst (K1, 2026-08-05).
+
+         De togs bort härifrån av två skäl:
+         1. <meta http-equiv> fungerar inte för X-Content-Type-Options,
+            Referrer-Policy, Permissions-Policy eller X-XSS-Protection — de
+            raderna gjorde ingenting.
+         2. Två CSP:er (meta + header) skärs ihop till SNITTET av båda. Kvar
+            med bägge hade den effektiva policyn blivit strängare än någon av
+            dem var avsedd att vara.
+
+         CSP:n i vercel.json är en ren SUPERMÄNGD av den meta-policy som
+         gällde här före K1 — inget som fungerade då kan sluta fungera.
+         'wasm-unsafe-eval' krävs av @react-pdf/renderer (yoga-layout
+         kompilerar WASM); `data:` i connect-src krävs av samma, eftersom
+         WASM:en hämtas som data:-URL. -->
+    <meta name="robots" content="index, follow">
     
     <!-- Cache Control - Force refresh on new deployments -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -26,7 +59,7 @@
     <meta http-equiv="Expires" content="0">
     <meta name="build-timestamp" content="2026-04-09">
     
-    <title>Deltagarportalen - Stöd för arbetssökande</title>
+    <title>Jobin — verktyg och stöd för dig som söker jobb</title>
     
     <!-- Preconnect to critical domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -1,0 +1,24 @@
+# Jobin — https://www.jobin.se
+#
+# Spår K1 (2026-08-05). Innan den här filen fanns svarade /robots.txt med
+# index.html och status 200 (SPA-catch-allen i vercel.json fångade allt som
+# inte fanns på disk). Det är sämre än 404: sitemap-inlämning i Search
+# Console går inte att genomföra mot en HTML-sida.
+#
+# OBS: filen måste serveras som text/plain. Deploy-workflowets smoke-test
+# kontrollerar det — se .github/workflows/deploy.yml.
+
+User-agent: *
+Allow: /
+
+# Serverlösa endpoints — inget att indexera, och crawl kostar exekvering.
+Disallow: /api/
+
+# Föräldralös statisk landningssida utan inlänkning. Ligger kvar tills den
+# ersatts av de riktiga landningssidorna i K6. Båda formerna anges: cleanUrls
+# i vercel.json 308:ar /landing.html till /landing, så det är /landing som
+# blir den kanoniska sökvägen.
+Disallow: /landing.html
+Disallow: /landing
+
+Sitemap: https://www.jobin.se/sitemap.xml
