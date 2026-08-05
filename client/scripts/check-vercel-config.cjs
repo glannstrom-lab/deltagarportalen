@@ -73,6 +73,21 @@ if (!harFallback) {
   fel.push('Ingen rewrite till /index.html — SPA:n svarar 404 på direktnavigering.')
 }
 
+// --- 4. cleanUrls saboterar en rewrite till en .html-fil --------------------
+// Med cleanUrls 308-redirectar Vercel /index.html → /, så rewriten kan inte
+// leverera sitt mål och varje okänd sökväg faller till 404 i stället för
+// appen. Kostade en timmes trasig direktnavigering i prod 2026-08-05.
+if (config.cleanUrls) {
+  const htmlMal = (config.rewrites || []).filter((r) => String(r.destination).endsWith('.html'))
+  if (htmlMal.length) {
+    fel.push(
+      `\`cleanUrls: true\` tillsammans med rewrite till ${htmlMal[0].destination} — ` +
+        'Vercel 308:ar .html-sökvägen, rewriten bryts och okända sökvägar blir 404. ' +
+        'Stäng av cleanUrls eller peka rewriten på en extensionslös destination.'
+    )
+  }
+}
+
 if (fel.length) {
   console.error(`check-vercel-config: ${fel.length} fel i client/vercel.json\n`)
   fel.forEach((f) => console.error(`  • ${f}\n`))

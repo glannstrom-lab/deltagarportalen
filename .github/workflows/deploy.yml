@@ -121,6 +121,31 @@ jobs:
             || { echo "sitemap.xml saknar <urlset> — inte en giltig sitemap."; exit 1; }
           echo "SEO baseline OK"
 
+      # K2 (2026-08-05): SPA-fallbacken. `cleanUrls: true` fick Vercel att
+      # 308:a /index.html → /, så rewriten kunde inte leverera sitt mål och
+      # VARJE okänd sökväg blev 404 i stället för appen. Statuskoden på "/"
+      # såg hela tiden frisk ut — bara en okänd sökväg avslöjar felet.
+      - name: SPA-fallback (direktnavigering)
+        run: |
+          set -e
+          code=$(curl -sS -o /tmp/spa.html -w "%{http_code}" https://www.jobin.se/en-sokvag-som-inte-finns)
+          if [ "$code" != "200" ]; then
+            echo "Okänd sökväg gav $code — SPA-fallbacken är trasig (rewrite/cleanUrls)."
+            exit 1
+          fi
+          grep -q 'id="root"' /tmp/spa.html \
+            || { echo "Fallbacken svarade 200 men innehållet är inte appen (404.html?)."; exit 1; }
+          echo "SPA-fallback OK"
+
+          guider=$(curl -sS -o /tmp/g.html -w "%{http_code}" https://www.jobin.se/guider/)
+          if [ "$guider" = "200" ]; then
+            grep -q "Guider för dig som söker jobb" /tmp/g.html \
+              || { echo "/guider/ svarade 200 men är inte guideindexet."; exit 1; }
+            echo "Guideindex OK"
+          else
+            echo "/guider/ gav $guider — inga guidesidor publicerade än (K4)."
+          fi
+
       # K1 (2026-08-05): headers-blocket i client/vercel.json var inaktivt i
       # prod (Vercel tillåter inte `routes` + `headers` i samma fil; `routes`
       # vann tyst). Deployen gick igenom utan varning, så bara ett utfallsmått

@@ -15,10 +15,7 @@ Allow: /
 Disallow: /api/
 
 # Föräldralös statisk landningssida utan inlänkning. Ligger kvar tills den
-# ersatts av de riktiga landningssidorna i K6. Båda formerna anges: cleanUrls
-# i vercel.json 308:ar /landing.html till /landing, så det är /landing som
-# blir den kanoniska sökvägen.
+# ersatts av de riktiga landningssidorna i K6.
 Disallow: /landing.html
-Disallow: /landing
 
 Sitemap: https://www.jobin.se/sitemap.xml
