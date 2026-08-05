@@ -114,3 +114,6 @@ sta/*.docx
 
 # Exporterade CSV-rapporter i projektroten (Diagram/Metadata/problemlistor)
 /*.csv
+
+# Temporära verifieringsskript (K2, 2026-08-05)
+tmp-*

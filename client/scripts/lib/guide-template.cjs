@@ -1,0 +1,346 @@
+/**
+ * HTML-mallen för guidesidorna.  (spår K2, 2026-08-05)
+ *
+ * Sidorna är INGÅNGSPORTAR till Jobin, inte artikelkopior (beslut Mikael
+ * 2026-08-05). Strukturen är därför byggd för att leda vidare:
+ *   topbar-CTA → hero med löfte → tidig verktygsruta → innehållet →
+ *   verktygskort → avslutande CTA → relaterade guider
+ *
+ * Två saker den medvetet INTE gör:
+ *   - Ingen påhittad statistik, inga uppdiktade omdömen. Innehållet vänder
+ *     sig till människor i utsatt läge; falska siffror vore både fel och en
+ *     Helpful-Content-risk.
+ *   - Ingen skrikig reklamröst. DESIGN.md §2 slår fast "lugn vän", aldrig
+ *     prestationsspråk mot deltagare. Säljande STRUKTUR, portalens RÖST.
+ *
+ * Tekniskt: självbärande HTML, ingen JS, inga externa anrop (CSP:n tillåter
+ * dem inte ändå). Ljust och mörkt läge via prefers-color-scheme, tokens
+ * hämtade ur src/styles/tokens.css (info/sky = Resurser-hubben).
+ */
+
+const { markdownToHtml, markdownToPlain, escapeHtml } = require('./markdown.cjs')
+const { SITE, TOOLS, KATEGORI_NAMN, appUrl, verktygFor, guideUrl } = require('./guides.cjs')
+
+const CSS = `
+:root{
+  --bg:#fff;--fg:#2C2C2A;--muted:#6A6864;--line:#DDD9D0;--soft:#F5F4F0;
+  --c-bg:#ECF4FA;--c-accent:#C8DEEF;--c-solid:#266DA0;--c-text:#1F5985;
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#1a1917;--fg:#EDEBE6;--muted:#A9A69F;--line:#3A3833;--soft:#232220;
+    --c-bg:#112536;--c-accent:#2A4F70;--c-solid:#6EB1E0;--c-text:#B5D8F0;}
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);
+  font:400 1.0625rem/1.7 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+.wrap{max-width:44rem;margin:0 auto;padding:0 1.25rem}
+a{color:var(--c-solid)}
+img{max-width:100%;height:auto}
+
+.topbar{border-bottom:1px solid var(--line);background:var(--bg);position:sticky;top:0;z-index:5}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-block:.75rem}
+.brand{font-weight:700;font-size:1.1rem;color:var(--fg);text-decoration:none;letter-spacing:-.01em}
+.btn{display:inline-block;background:var(--c-solid);color:#fff;text-decoration:none;
+  padding:.7rem 1.15rem;border-radius:.6rem;font-weight:600;font-size:.95rem;line-height:1.2;
+  border:2px solid transparent}
+.btn:hover{filter:brightness(1.08)}
+.btn:focus-visible,a:focus-visible{outline:3px solid var(--c-solid);outline-offset:2px}
+.btn-ghost{background:transparent;color:var(--c-solid);border-color:var(--c-accent)}
+.btn-sm{padding:.5rem .9rem;font-size:.875rem}
+
+.hero{background:var(--c-bg);border-bottom:1px solid var(--c-accent);padding:2.5rem 0 2.25rem}
+.crumb{font-size:.85rem;color:var(--c-text);margin-bottom:.9rem}
+.crumb a{color:var(--c-text)}
+h1{font-size:clamp(1.75rem,5vw,2.4rem);line-height:1.2;margin:0 0 .75rem;letter-spacing:-.02em}
+.lead{font-size:1.15rem;color:var(--fg);margin:0 0 1.25rem;opacity:.9}
+.facts{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem;font-size:.85rem}
+.chip{background:var(--bg);border:1px solid var(--c-accent);color:var(--c-text);
+  padding:.25rem .7rem;border-radius:999px}
+
+main{padding:2.25rem 0 1rem}
+h2{font-size:1.45rem;line-height:1.3;margin:2.25rem 0 .75rem;letter-spacing:-.01em}
+h3{font-size:1.15rem;margin:1.75rem 0 .5rem}
+h4{font-size:1.02rem;margin:1.25rem 0 .5rem}
+p{margin:0 0 1.1rem}
+ul,ol{margin:0 0 1.2rem;padding-left:1.4rem}
+li{margin-bottom:.45rem}
+blockquote{margin:1.5rem 0;padding:.25rem 0 .25rem 1.1rem;border-left:4px solid var(--c-solid);
+  color:var(--muted);font-style:italic}
+code{background:var(--soft);padding:.1rem .35rem;border-radius:.25rem;font-size:.9em}
+pre{background:var(--soft);padding:1rem;border-radius:.6rem;overflow-x:auto}
+pre code{background:none;padding:0}
+.table-wrap{overflow-x:auto;margin:0 0 1.4rem;border:1px solid var(--line);border-radius:.6rem}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{padding:.6rem .8rem;text-align:left;border-bottom:1px solid var(--line)}
+th{background:var(--soft);font-weight:600}
+tr:last-child td{border-bottom:none}
+
+.cta{background:var(--c-bg);border:1px solid var(--c-accent);border-radius:.9rem;
+  padding:1.4rem 1.35rem;margin:2rem 0}
+.cta h2,.cta h3{margin-top:0}
+.cta p{margin-bottom:1rem;color:var(--fg)}
+.cta-early{margin:0 0 2rem}
+.tools{display:grid;gap:.85rem;margin:1.25rem 0 0}
+@media(min-width:34rem){.tools{grid-template-columns:1fr 1fr}}
+.tool{display:block;background:var(--bg);border:1px solid var(--c-accent);border-radius:.7rem;
+  padding:1rem 1.1rem;text-decoration:none;color:var(--fg)}
+.tool:hover{border-color:var(--c-solid)}
+.tool strong{display:block;color:var(--c-solid);margin-bottom:.25rem;font-size:1rem}
+.tool span{font-size:.9rem;color:var(--muted);line-height:1.5}
+
+.checklist{list-style:none;padding:0}
+.checklist li{padding-left:1.9rem;position:relative}
+.checklist li::before{content:"";position:absolute;left:0;top:.45rem;width:1.05rem;height:1.05rem;
+  border:2px solid var(--c-solid);border-radius:.25rem}
+
+.related{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.75rem}
+.related ul{list-style:none;padding:0}
+.related li{margin-bottom:.6rem}
+
+footer{border-top:1px solid var(--line);margin-top:3rem;padding:1.75rem 0 2.5rem;
+  font-size:.9rem;color:var(--muted)}
+footer a{color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+`
+
+const SVARIGHET = {
+  'easy-swedish': 'Lätt svenska',
+  easy: 'Lätt att läsa',
+  medium: 'Normal',
+  detailed: 'Fördjupning',
+}
+
+function verktygskort(routes) {
+  return routes
+    .map((r) => {
+      const t = TOOLS[r]
+      return `<a class="tool" href="${appUrl(r)}"><strong>${escapeHtml(t.namn)}</strong><span>${escapeHtml(t.text)}</span></a>`
+    })
+    .join('')
+}
+
+/**
+ * @param {object} a artikel ur snapshoten
+ * @param {object[]} relaterade artiklar som också är publicerade
+ */
+function renderGuide(a, relaterade) {
+  const url = `${SITE}${guideUrl(a.slug)}`
+  const kategori = KATEGORI_NAMN[a.category_key] || 'Guide'
+  const verktyg = verktygFor(a)
+  const primart = verktyg[0]
+  const body = markdownToHtml(a.content)
+
+  // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
+  const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
+
+  const checklista =
+    Array.isArray(a.checklist) && a.checklist.length
+      ? `<h2>Checklista</h2><ul class="checklist">${a.checklist
+          .map((c) => `<li>${escapeHtml(typeof c === 'string' ? c : c.text || '')}</li>`)
+          .join('')}</ul>`
+      : ''
+
+  const relateradeHtml = relaterade.length
+    ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs vidare</h2><ul>${relaterade
+        .map((r) => `<li><a href="${guideUrl(r.slug)}">${escapeHtml(r.title)}</a></li>`)
+        .join('')}</ul></nav>`
+    : ''
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: a.title,
+        description: beskrivning,
+        inLanguage: 'sv-SE',
+        mainEntityOfPage: url,
+        datePublished: (a.updated_at || '').slice(0, 10) || undefined,
+        dateModified: (a.updated_at || '').slice(0, 10) || undefined,
+        author: { '@type': 'Organization', name: 'Jobin' },
+        publisher: { '@type': 'Organization', name: 'Jobin', url: SITE },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Jobin', item: SITE },
+          { '@type': 'ListItem', position: 2, name: 'Guider', item: `${SITE}/guider/` },
+          { '@type': 'ListItem', position: 3, name: a.title, item: url },
+        ],
+      },
+    ],
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(a.title)} — Jobin</title>
+<meta name="description" content="${escapeHtml(beskrivning)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(a.title)}">
+<meta property="og:description" content="${escapeHtml(beskrivning)}">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor">
+      <a href="/">Jobin</a> › <a href="/guider/">Guider</a> › ${escapeHtml(kategori)}
+    </nav>
+    <h1>${escapeHtml(a.title)}</h1>
+    ${a.summary ? `<p class="lead">${escapeHtml(a.summary)}</p>` : ''}
+    <div class="facts">
+      ${a.reading_time ? `<span class="chip">${a.reading_time} min läsning</span>` : ''}
+      ${a.difficulty && SVARIGHET[a.difficulty] ? `<span class="chip">${SVARIGHET[a.difficulty]}</span>` : ''}
+      <span class="chip">Gratis</span>
+    </div>
+    <a class="btn" href="${appUrl(primart)}">${escapeHtml(TOOLS[primart].namn)} — kom igång</a>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+
+    <aside class="cta cta-early">
+      <h2>Du behöver inte göra det här ensam</h2>
+      <p>Jobin är en kostnadsfri portal där du får hjälp hela vägen — från att sätta ord på vad du kan, till att skicka ansökan. Läs guiden här, och gör det skarpt i portalen.</p>
+      <a class="btn" href="${appUrl(primart)}">${escapeHtml(TOOLS[primart].namn)}</a>
+      <a class="btn btn-ghost" href="${appUrl('/oversikt')}">Se allt som ingår</a>
+    </aside>
+
+    ${body}
+
+    ${checklista}
+
+    <section class="cta">
+      <h2>Gör det här i Jobin</h2>
+      <p>Verktygen nedan hör ihop med den här guiden. De är gratis och du kommer igång direkt.</p>
+      <div class="tools">${verktygskort(verktyg.length > 1 ? verktyg : [primart, '/knowledge-base'].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 2))}</div>
+    </section>
+
+    ${relateradeHtml}
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="${appUrl('/oversikt')}">Öppna portalen</a> · <a href="/guider/">Alla guider</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+/** Ingångssidan /guider/ — samlar guiderna och ger crawlern en väg in. */
+function renderIndex(artiklar) {
+  const url = `${SITE}/guider/`
+  const grupper = {}
+  artiklar.forEach((a) => {
+    const k = KATEGORI_NAMN[a.category_key] || 'Övrigt'
+    ;(grupper[k] = grupper[k] || []).push(a)
+  })
+
+  const sektioner = Object.entries(grupper)
+    .sort((a, b) => b[1].length - a[1].length)
+    .map(
+      ([namn, list]) =>
+        `<h2>${escapeHtml(namn)}</h2><ul>${list
+          .map(
+            (a) =>
+              `<li><a href="${guideUrl(a.slug)}">${escapeHtml(a.title)}</a>${
+                a.summary ? ` — <span style="color:var(--muted)">${escapeHtml(a.summary.slice(0, 110))}</span>` : ''
+              }</li>`
+          )
+          .join('')}</ul>`
+    )
+    .join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Guider för dig som söker jobb',
+    inLanguage: 'sv-SE',
+    url,
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guider för dig som söker jobb — Jobin</title>
+<meta name="description" content="Konkreta guider om CV, personligt brev, intervju och att orka söka jobb. Gratis, på svenska — flera även i lätt svenska.">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="Guider för dig som söker jobb — Jobin">
+<meta property="og:description" content="Konkreta guider om CV, personligt brev, intervju och att orka söka jobb.">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <h1>Guider för dig som söker jobb</h1>
+    <p class="lead">Konkret hjälp, skriven för att vara lätt att ta till sig — även en dag när orken är låg. Allt är gratis.</p>
+    <a class="btn" href="${appUrl('/oversikt')}">Kom igång i Jobin</a>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    ${sektioner}
+    <section class="cta">
+      <h2>Vill du göra det på riktigt?</h2>
+      <p>I Jobin bygger du CV, skriver personligt brev och övar inför intervjun — med stöd hela vägen.</p>
+      <div class="tools">${verktygskort(['/cv', '/cover-letter'])}</div>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna portalen</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+module.exports = { renderGuide, renderIndex }

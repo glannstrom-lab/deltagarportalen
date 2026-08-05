@@ -23,13 +23,27 @@ const OUT = path.join(__dirname, '..', 'dist', 'sitemap.xml')
 /** @type {{loc:string,changefreq?:string,priority?:string,lastmod?:string}[]} */
 const urls = [{ loc: '/', changefreq: 'weekly', priority: '1.0' }]
 
-// K2 hakar in här:
-//   urls.push(...articles.map(a => ({
-//     loc: `/guider/${a.slug}/`,
-//     lastmod: a.updatedAt.slice(0, 10),
-//     changefreq: 'monthly',
-//     priority: '0.7',
-//   })))
+// K2: guidesidorna. Läser samma publish-list som prerender-guides.cjs, så
+// att sitemap och genererade sidor aldrig kan gå isär — en URL i sitemapen
+// som inte finns är en mjuk 404 i Search Console.
+try {
+  const { getPublishedArticles, guideUrl } = require('./lib/guides.cjs')
+  const guider = getPublishedArticles()
+  if (guider.length) {
+    urls.push({ loc: '/guider/', changefreq: 'weekly', priority: '0.9' })
+    urls.push(
+      ...guider.map((a) => ({
+        loc: guideUrl(a.slug),
+        lastmod: (a.updated_at || '').slice(0, 10) || undefined,
+        changefreq: 'monthly',
+        priority: '0.7',
+      }))
+    )
+  }
+} catch (err) {
+  console.error(`generate-sitemap: kunde inte läsa guiderna — ${err.message}`)
+  process.exit(1)
+}
 
 const today = new Date().toISOString().slice(0, 10)
 
