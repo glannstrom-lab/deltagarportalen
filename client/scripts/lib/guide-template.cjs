@@ -95,8 +95,11 @@ tr:last-child td{border-bottom:none}
   border:2px solid var(--c-solid);border-radius:.25rem}
 
 .related{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.75rem}
-.related ul{list-style:none;padding:0}
-.related li{margin-bottom:.6rem}
+.related ul{list-style:none;padding:0;margin:0}
+.related li{margin-bottom:1rem}
+.related a{font-weight:600;text-decoration-thickness:1px;text-underline-offset:2px}
+.related .meta{display:block;color:var(--muted);font-size:.9rem;line-height:1.5;margin-top:.15rem}
+.related .intro{color:var(--muted);font-size:.95rem;margin:-.25rem 0 1.1rem}
 
 footer{border-top:1px solid var(--line);margin-top:3rem;padding:1.75rem 0 2.5rem;
   font-size:.9rem;color:var(--muted)}
@@ -121,6 +124,37 @@ function verktygskort(routes) {
     .join('')
 }
 
+/** Kortar en text vid ordgräns, så att raden inte slutar mitt i ett ord. */
+function korta(text, max) {
+  const t = String(text || '').trim()
+  if (t.length <= max) return t
+  const kap = t.slice(0, max)
+  const brytpunkt = kap.lastIndexOf(' ')
+  return `${(brytpunkt > max * 0.6 ? kap.slice(0, brytpunkt) : kap).replace(/[\s,.;:–—-]+$/, '')}…`
+}
+
+/**
+ * En post under "Läs vidare".
+ *
+ * Länktexten är ALLTID artikelns titel — aldrig "läs mer". Dels för att en
+ * skärmläsare läser upp länklistan utan omgivande text, dels för att titeln är
+ * den enda information som säger om det är värt orken att klicka. Sammanfattning
+ * och lästid ligger utanför länken: de hjälper valet, men ska inte läsas upp som
+ * en del av länknamnet.
+ */
+function relateradPost(r) {
+  const detaljer = [
+    r.summary ? escapeHtml(korta(r.summary, 105)) : '',
+    r.reading_time ? `${r.reading_time} min` : '',
+  ].filter(Boolean)
+
+  return (
+    `<li><a href="${guideUrl(r.slug)}">${escapeHtml(r.title)}</a>` +
+    (detaljer.length ? `<span class="meta">${detaljer.join(' · ')}</span>` : '') +
+    `</li>`
+  )
+}
+
 /**
  * @param {object} a artikel ur snapshoten
  * @param {object[]} relaterade artiklar som också är publicerade
@@ -143,9 +177,9 @@ function renderGuide(a, relaterade) {
       : ''
 
   const relateradeHtml = relaterade.length
-    ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs vidare</h2><ul>${relaterade
-        .map((r) => `<li><a href="${guideUrl(r.slug)}">${escapeHtml(r.title)}</a></li>`)
-        .join('')}</ul></nav>`
+    ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs vidare</h2>` +
+      `<p class="intro">Guider som hör ihop med den här — välj den som känns närmast där du är nu.</p>` +
+      `<ul>${relaterade.map(relateradPost).join('')}</ul></nav>`
     : ''
 
   const jsonLd = {
@@ -465,7 +499,7 @@ function renderTool(t, guider) {
 
   const relaterade = guider.length
     ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs mer först</h2><ul>${guider
-        .map((g) => `<li><a href="${guideUrl(g.slug)}">${escapeHtml(g.title)}</a></li>`)
+        .map(relateradPost)
         .join('')}</ul></nav>`
     : ''
 

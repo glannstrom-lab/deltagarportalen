@@ -28,6 +28,7 @@ const {
   renderTool,
   renderToolIndex,
 } = require('./lib/guide-template.cjs')
+const { byggRelaterade, validateRelaterade } = require('./lib/related.cjs')
 
 const CLIENT = path.join(__dirname, '..')
 const DIST = path.join(CLIENT, 'dist')
@@ -63,24 +64,30 @@ const snapshot = loadSnapshot()
 const publiceradeSlugs = new Set(publicerade.map((a) => a.slug))
 const bySlug = new Map(snapshot.articles.map((a) => [a.slug, a]))
 
-/** Relaterade guider — bara sådana som faktiskt är publicerade. */
-function relateradeFor(a) {
-  const egna = (a.related_article_slugs || [])
-    .filter((s) => publiceradeSlugs.has(s) && s !== a.slug)
-    .map((s) => bySlug.get(s))
-  if (egna.length >= 3) return egna.slice(0, 4)
+// Den interna länkningen. Rangordnas på relevans och lagas så att ingen guide
+// blir en återvändsgränd — se lib/related.cjs för hur poängen sätts.
+const { karta: relaterade, statistik: lankstat } = byggRelaterade(publicerade)
 
-  const sammaKategori = publicerade.filter(
-    (x) => x.category_key === a.category_key && x.slug !== a.slug && !egna.some((e) => e.slug === x.slug)
-  )
-  return [...egna, ...sammaKategori].slice(0, 4)
+// Grind: en länk till en opublicerad slug är en 404 för läsaren och en mjuk
+// 404 i Search Console. Samma princip som verktygssidornas kontroll nedan.
+// Grinden fångar också guider utan inkommande länkar — sidor som bara går att
+// nå via /guider/ hittas i praktiken inte alls.
+const lankfel = validateRelaterade(relaterade, publiceradeSlugs)
+if (lankfel.length) {
+  console.error('prerender-guides: den interna länkningen håller inte:')
+  lankfel.forEach((f) => console.error(`  - ${f}`))
+  process.exit(1)
 }
 
 let skrivna = 0
 for (const artikel of publicerade) {
   const dir = path.join(DIST, 'guider', artikel.slug)
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(path.join(dir, 'index.html'), renderGuide(artikel, relateradeFor(artikel)), 'utf8')
+  fs.writeFileSync(
+    path.join(dir, 'index.html'),
+    renderGuide(artikel, relaterade.get(artikel.slug) || []),
+    'utf8'
+  )
   skrivna++
 }
 
@@ -143,4 +150,14 @@ console.log(
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )
+console.log(
+  `   Intern länkning: ${lankstat.antalLankar} länkar (${lankstat.snittPerSida.toFixed(1)}/sida), ` +
+    `${lankstat.utanInlankarFore.length} guide(r) utan inlänkar efter rangordningen ` +
+    `→ ${lankstat.reparerade} lagade → ${lankstat.utanInlankarEfter.length} kvar.`
+)
+if (lankstat.svagaReparationer.length) {
+  console.log(
+    `   ⚠ svag koppling (bäst tillgängliga värd): ${lankstat.svagaReparationer.join(', ')}`
+  )
+}
 console.log(`   Exempel: ${guideUrl(publicerade[0].slug)}`)

@@ -7,6 +7,7 @@ export { default as ReadingTime } from './ReadingTime'
 export { default as TextToSpeech } from './TextToSpeech'
 export { default as ArticleChecklist } from './ArticleChecklist'
 export { CantReadButton } from './CantReadButton'
+export { default as ArticleContent } from './ArticleContent'
 
 // Tabs
 export { default as ForYouTab } from './tabs/ForYouTab'

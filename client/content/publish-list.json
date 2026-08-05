@@ -2,7 +2,7 @@
   "_kommentar": "Vilka guider som publiceras publikt under /guider/. Genererad av `npm run content:triage -- --skriv` — redigera hellre reglerna i scripts/triage-articles.cjs än den här listan för hand.",
   "_regler": "lättläst >= 120 ord, övriga >= 350 ord (checklistor inräknade); ej portalspecifika; ej onboarding; ej passerade årtal",
   "genereradAt": "2026-08-05",
-  "antal": 128,
+  "antal": 131,
   "published": [
     "ai-jobbsokning-guide",
     "anpassningar-arbetsplats",
@@ -17,6 +17,7 @@
     "ats-system-tips",
     "befordran-guide",
     "bemanningsforetag-guide",
+    "branscher-brist",
     "branschguide-it-tech",
     "branschguide-vard-omsorg",
     "bygg-ditt-personliga-varumarke",
@@ -65,6 +66,7 @@
     "konflikthantering-arbetsplats",
     "kreativ-jobbsokning",
     "las-anstallningsavtal",
+    "lasa-arbetsmarknaden",
     "latt-svenska-avslag",
     "latt-svenska-cv",
     "latt-svenska-intervju",
@@ -94,6 +96,7 @@
     "natverk-underhall",
     "natverka-for-jobb",
     "natverksbyggande-guide",
+    "nystartsjobb-guide",
     "ordlista-jobbsokning",
     "personlig-ekonomi-jobbsokning",
     "personlighetstyper-arbete",
@@ -134,10 +137,7 @@
     "work-life-balance-guide"
   ],
   "_uteslutna": {
-    "arbetsmarknadstrender-2024": "för kort: 312 ord (gräns 350); årtalsmärkt (2024) och passerat",
-    "branscher-brist": "för kort: 172 ord (gräns 350); årtalsmärkt (2024) och passerat",
     "forsta-veckan-checklista": "onboarding, inte innehåll",
-    "komma-igang-intro": "för kort: 267 ord (gräns 350); portalspecifik titel; onboarding, inte innehåll",
-    "nystartsjobb-guide": "för kort: 306 ord (gräns 350)"
+    "komma-igang-intro": "för kort: 267 ord (gräns 350); portalspecifik titel; onboarding, inte innehåll"
   }
 }
