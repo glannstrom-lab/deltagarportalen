@@ -9,7 +9,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Linkedin, FileText, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -91,6 +91,7 @@ export function FocusLinkedInWizard({ onExit }: Props) {
 
       {current.id === 'text' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={8}

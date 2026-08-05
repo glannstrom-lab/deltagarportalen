@@ -3473,8 +3473,10 @@ function ExternalResourcesInner() {
     >
       {/* Search bar */}
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+        <label htmlFor="external-resources-search" className="sr-only">Sök bland resurser</label>
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" aria-hidden="true" />
         <input
+          id="external-resources-search"
           type="text"
           placeholder="Sök bland resurser..."
           value={searchQuery}
@@ -3484,6 +3486,7 @@ function ExternalResourcesInner() {
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
+            aria-label="Rensa sökningen"
             className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

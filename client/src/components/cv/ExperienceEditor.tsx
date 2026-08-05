@@ -272,12 +272,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                       <div className="pt-4 space-y-4">
                         {/* Job Title */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`exp-title-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Jobbtitel *
                           </label>
                           <div className="relative">
                             <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`exp-title-${exp.id}`}
                               type="text"
                               value={exp.title}
                               onChange={(e) => updateExperience(exp.id, 'title', e.target.value)}
@@ -308,12 +309,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
 
                         {/* Company */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`exp-company-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Företag *
                           </label>
                           <div className="relative">
                             <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`exp-company-${exp.id}`}
                               type="text"
                               value={exp.company}
                               onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
@@ -344,12 +346,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
 
                         {/* Location */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`exp-location-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Plats
                           </label>
                           <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`exp-location-${exp.id}`}
                               type="text"
                               value={exp.location}
                               onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
@@ -362,12 +365,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-stone-700 mb-1">
+                            <label htmlFor={`exp-startDate-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                               Startdatum *
                             </label>
                             <div className="relative">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
+                                id={`exp-startDate-${exp.id}`}
                                 type="month"
                                 value={exp.startDate}
                                 onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
@@ -395,12 +399,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-stone-700 mb-1">
+                            <label htmlFor={`exp-endDate-${exp.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                               Slutdatum
                             </label>
                             <div className="relative">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
+                                id={`exp-endDate-${exp.id}`}
                                 type="month"
                                 value={exp.endDate}
                                 onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}

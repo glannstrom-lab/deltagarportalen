@@ -431,6 +431,7 @@ export function CompanyCard({
             {isEditingNotes ? (
               <div className="space-y-2">
                 <textarea
+                  aria-label={t('spontaneous.addNotesPlaceholder')}
                   value={notesValue}
                   onChange={(e) => setNotesValue(e.target.value)}
                   className="w-full text-sm p-2 border rounded-md bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-stone-900 dark:text-stone-100"

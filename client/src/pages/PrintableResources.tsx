@@ -268,29 +268,47 @@ function PrintableResourcesInner() {
           </div>
 
           {/* Sök och filter */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('printable.search', 'Sök...')}
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
-              />
+          <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
+            <div className="flex-1">
+              <label
+                htmlFor="printable-search"
+                className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
+              >
+                {t('printable.searchLabel', 'Sök bland materialet')}
+              </label>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" aria-hidden="true" />
+                <input
+                  id="printable-search"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('printable.search', 'Sök...')}
+                  className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+                />
+              </div>
             </div>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
-            >
-              <option value="all">{t('printable.allCategories', 'Alla kategorier')}</option>
-              {categories.map(cat => (
-                <option key={cat} value={cat}>
-                  {resourceType === 'articles' ? localizeCategory(cat) : cat}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label
+                htmlFor="printable-category"
+                className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
+              >
+                {t('printable.categoryLabel', 'Kategori')}
+              </label>
+              <select
+                id="printable-category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+              >
+                <option value="all">{t('printable.allCategories', 'Alla kategorier')}</option>
+                {categories.map(cat => (
+                  <option key={cat} value={cat}>
+                    {resourceType === 'articles' ? localizeCategory(cat) : cat}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
         </div>
 

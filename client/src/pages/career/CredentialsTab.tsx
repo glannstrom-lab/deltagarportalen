@@ -175,8 +175,9 @@ export default function CredentialsTab() {
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.addCredential')}</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.name')} *</label>
+              <label htmlFor="credentialstab-f1" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.name')} *</label>
               <input
+                id="credentialstab-f1"
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -186,8 +187,9 @@ export default function CredentialsTab() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.issuer')}</label>
+                <label htmlFor="credentialstab-f2" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.issuer')}</label>
                 <input
+                  id="credentialstab-f2"
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
@@ -196,8 +198,9 @@ export default function CredentialsTab() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.type')}</label>
+                <label htmlFor="credentialstab-f3" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.type')}</label>
                 <select
+                  id="credentialstab-f3"
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CredentialType }))}
                   className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
@@ -210,8 +213,9 @@ export default function CredentialsTab() {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.targetDate')}</label>
+              <label htmlFor="credentialstab-f4" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.targetDate')}</label>
               <input
+                id="credentialstab-f4"
                 type="date"
                 value={formData.targetDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetDate: e.target.value }))}

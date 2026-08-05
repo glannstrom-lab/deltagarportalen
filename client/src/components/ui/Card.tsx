@@ -136,20 +136,26 @@ interface CardSectionProps {
   title?: string
   description?: string
   className?: string
+  /**
+   * UX31: id på rubriken, så att ett ensamt fält i sektionen kan peka på den
+   * med `aria-labelledby` i stället för att dubblera texten i en egen label.
+   */
+  titleId?: string
 }
 
-export function CardSection({ 
-  children, 
+export function CardSection({
+  children,
   title,
   description,
-  className 
+  className,
+  titleId
 }: CardSectionProps) {
   return (
     <div className={cn('space-y-3', className)}>
       {(title || description) && (
         <div>
           {title && (
-            <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-100">{title}</h4>
+            <h4 id={titleId} className="text-sm font-semibold text-stone-800 dark:text-stone-100">{title}</h4>
           )}
           {description && (
             <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{description}</p>

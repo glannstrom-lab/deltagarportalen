@@ -352,6 +352,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                 {sortedRegions.length} regioner med jobb
               </span>
               <select
+                aria-label="Sortera regionlistan"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'jobs' | 'name')}
                 className="text-sm border border-stone-200 rounded-lg px-2 py-1"

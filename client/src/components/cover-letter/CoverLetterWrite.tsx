@@ -1002,12 +1002,13 @@ function Step2Write({
       {editedLetter && (
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
+            <label htmlFor="coverletterwrite-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
               Ditt brev
             </label>
             <span className="text-xs text-stone-500">{editedLetter.split(/\s+/).filter(Boolean).length} ord</span>
           </div>
           <textarea
+            id="coverletterwrite-f1"
             value={editedLetter}
             onChange={(e) => setEditedLetter(e.target.value)}
             className="w-full px-4 py-3 min-h-[300px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
@@ -1096,12 +1097,13 @@ function Step3ReviewSave({
       {/* Editor */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-stone-700 dark:text-stone-300">
+          <label htmlFor="coverletterwrite-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
             Redigera brev
           </label>
           <span className="text-xs text-stone-500">{editedLetter.split(/\s+/).filter(Boolean).length} ord</span>
         </div>
         <textarea
+          id="coverletterwrite-f2"
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
           className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"

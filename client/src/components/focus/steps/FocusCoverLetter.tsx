@@ -514,6 +514,7 @@ ${name} ${lastName}`.trim()
             <div className="flex gap-2 mt-4">
               <input
                 type="text"
+                aria-label={t('focusGuide.letter.customMotivationLabel', 'Egen motivering')}
                 value={customMotivation}
                 onChange={(e) => setCustomMotivation(e.target.value)}
                 onKeyDown={(e) => {
@@ -566,6 +567,7 @@ ${name} ${lastName}`.trim()
                 {/* Letter content */}
                 <div className="relative">
                   <textarea
+                    aria-label={t('focusGuide.letter.letterContentLabel', 'Ditt personliga brev')}
                     value={generatedLetter}
                     onChange={(e) => setGeneratedLetter(e.target.value)}
                     rows={10}

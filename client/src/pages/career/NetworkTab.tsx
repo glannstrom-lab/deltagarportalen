@@ -465,6 +465,7 @@ export default function NetworkTab() {
                 />
               </div>
               <textarea
+                aria-label={t('career.networkTab.notesOptional')}
                 placeholder={t('career.networkTab.notesOptional')}
                 value={newContact.notes}
                 onChange={(e) => setNewContact(prev => ({ ...prev, notes: e.target.value }))}

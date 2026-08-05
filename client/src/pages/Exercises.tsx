@@ -776,10 +776,11 @@ function ExercisesInner() {
         <div className="space-y-6">
           {currentStepData.questions.map((question) => (
             <div key={question.id} className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+              <label htmlFor={`exercise-q-${question.id}`} className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 {question.text}
               </label>
               <textarea
+                id={`exercise-q-${question.id}`}
                 value={currentAnswers[question.id] || ''}
                 onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                 placeholder={question.placeholder}

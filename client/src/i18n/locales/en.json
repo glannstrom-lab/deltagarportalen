@@ -1108,6 +1108,7 @@
       "deleted": "CV deleted",
       "setAsDefault": "Set as default CV",
       "default": "Default",
+      "searchLabel": "Search your CVs",
       "searchPlaceholder": "Search your CVs...",
       "filterByTemplate": "Filter by template",
       "experiences": "{{count}} experiences",
@@ -2556,6 +2557,8 @@
       "orgNumber": "Org. number",
       "aiDescription": "Describe what companies you're looking for, e.g., \"IT consultants in Stockholm\" or \"law firms specializing in employment law\"",
       "orgNumberDescription": "Enter an organization number to fetch information. Find org. numbers at",
+      "aiSearchLabel": "Describe the companies you are looking for",
+      "orgSearchLabel": "Organization number",
       "aiPlaceholder": "E.g. 'Ad agencies in Gothenburg with 10-50 employees'",
       "enterOrgNumber": "Enter an organization number"
     },
@@ -4359,6 +4362,7 @@
   },
   "resources": {
     "title": "My Resources",
+    "searchLabel": "Search your resources",
     "subtitle": "Useful tools and links",
     "description": "All your saved documents, jobs, and resources in one place",
     "stats": {
@@ -6420,6 +6424,7 @@
       "desiredJobsPlaceholder": "E.g. Project Manager",
       "desiredJobsHint": "Add the jobs you are interested in",
       "interests": "Interests",
+      "interestsInputLabel": "Add an interest",
       "interestsPlaceholder": "E.g. Technology",
       "interestsHint": "What interests you in your work life?",
       "interestProfile": "Interest Profile (RIASEC)",
@@ -7161,6 +7166,8 @@
     "headline": {
       "title": "Create Headline",
       "description": "Your headline appears right below your name. Make it descriptive and catchy!",
+      "jobTitleLabel": "Your job title",
+      "specializationLabel": "Your specialization",
       "jobTitlePlaceholder": "Your job title (e.g. Project Manager)",
       "specializationPlaceholder": "Specialization (e.g. Digital Transformations)",
       "tipLabel": "Tip",
@@ -7169,6 +7176,9 @@
     "about": {
       "title": "Write About Section",
       "description": "Tell who you are and what you do. Max 2000 characters.",
+      "backgroundLabel": "Your background and experience",
+      "strengthsLabel": "Your strengths",
+      "goalsLabel": "Your career goals",
       "backgroundPlaceholder": "Your background and experience...",
       "strengthsPlaceholder": "Your strengths and passions...",
       "goalsPlaceholder": "Your career goals..."
@@ -7176,6 +7186,8 @@
     "post": {
       "title": "Create LinkedIn Post",
       "description": "Engaging posts increase your visibility. Max 1300 characters.",
+      "topicLabel": "What do you want to write about?",
+      "toneLabel": "Tone of the post",
       "topicPlaceholder": "What do you want to write about? (e.g. 'Lessons from my latest project')",
       "tones": {
         "professional": "Professional",
@@ -7187,6 +7199,9 @@
     "connection": {
       "title": "Network - Connection Message",
       "description": "A personal message increases the chance of being accepted.",
+      "nameLabel": "Person's name",
+      "roleLabel": "Person's role",
+      "purposeLabel": "Why do you want to connect?",
       "namePlaceholder": "Person's name",
       "rolePlaceholder": "Person's role (e.g. HR Manager at Volvo)",
       "purposePlaceholder": "Why do you want to connect? (e.g. 'I admire your work in...')"
@@ -7336,6 +7351,7 @@
     },
     "dreamJob": {
       "title": "Your dream job",
+      "label": "Job ad or description of the role",
       "placeholder": "Paste a job posting for your dream job, or describe the role...\n\nExample:\nWe are looking for an experienced Project Manager with...",
       "tip": "Use a real job posting for best results!"
     },
@@ -9189,6 +9205,8 @@
       "companyPlaceholder": "Company name",
       "selectTemplate": "Choose a style for your letter:",
       "selectMotivations": "Select what applies to you:",
+      "customMotivationLabel": "Your own motivation",
+      "letterContentLabel": "Your cover letter",
       "customMotivation": "Write your own motivation...",
       "letterTitle": "Letter name",
       "letterTitlePlaceholder": "e.g. Sales Application - IKEA",
@@ -9535,6 +9553,7 @@
   "occupation": {
     "aria": {
       "desiredJobsListAria": "Desired occupations in priority order",
+      "searchLabel": "Search occupation",
       "suggestionsAria": "Occupation suggestions"
     }
   },

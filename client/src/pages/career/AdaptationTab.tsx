@@ -919,6 +919,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                               </div>
                               <div className="flex items-center gap-2">
                                 <select
+                                  aria-label={`Status: ${isEn ? option?.labelEn : option?.labelSv}`}
                                   value={detail.status}
                                   onChange={(e) => updateAdaptationStatus(category.id, optKey, e.target.value as AdaptationItem['status'])}
                                   className="text-xs px-2 py-1 rounded border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-800"

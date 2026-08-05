@@ -54,10 +54,11 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
 
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-stone-700 dark:text-stone-300">
+            <label htmlFor="travelplanner-f1" className="text-sm font-medium text-stone-700 dark:text-stone-300">
               {t('calendar.travel.destination')}
             </label>
             <input
+              id="travelplanner-f1"
               type="text"
               value={travel?.destination || ''}
               onChange={(e) => onTravelChange({ ...travel, destination: e.target.value })}
@@ -68,10 +69,11 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              <label htmlFor="travelplanner-f2" className="text-sm font-medium text-stone-700 dark:text-stone-300">
                 {t('calendar.travel.duration')}
               </label>
               <input
+                id="travelplanner-f2"
                 type="number"
                 value={travel?.duration || ''}
                 onChange={(e) => onTravelChange({ ...travel, duration: parseInt(e.target.value) || 0 })}
@@ -80,10 +82,11 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              <label htmlFor="travelplanner-f3" className="text-sm font-medium text-stone-700 dark:text-stone-300">
                 {t('calendar.travel.cost')}
               </label>
               <input
+                id="travelplanner-f3"
                 type="number"
                 value={travel?.cost || ''}
                 onChange={(e) => onTravelChange({ ...travel, cost: parseInt(e.target.value) || 0 })}

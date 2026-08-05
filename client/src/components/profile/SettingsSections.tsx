@@ -162,9 +162,10 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Bell className="w-4 h-4 text-[var(--c-solid)]" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.frequency')}</h4>
+          <h4 id="profile-digest-frequency-label" className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.frequency')}</h4>
         </div>
         <select
+          aria-labelledby="profile-digest-frequency-label"
           value={settings.digest_frequency}
           onChange={(e) => handleChange('digest_frequency', e.target.value)}
           className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"

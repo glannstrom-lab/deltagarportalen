@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Calendar, Target, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -55,6 +55,7 @@ export function FocusCalendarWizard({ onExit }: Props) {
     >
       {current.id === 'today' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={todays}
           onChange={(e) => setTodays(e.target.value)}
           rows={5}
@@ -65,6 +66,7 @@ export function FocusCalendarWizard({ onExit }: Props) {
       )}
       {current.id === 'focus' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={focus}
           onChange={(e) => setFocus(e.target.value)}

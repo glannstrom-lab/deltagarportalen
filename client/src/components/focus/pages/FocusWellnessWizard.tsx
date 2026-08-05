@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { Smile, BatteryMedium, MessageSquare, ArrowRight, CheckCircle2 } from '@/components/ui/icons'
 import { moodLogsApi } from '@/services/diaryApi'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -106,6 +106,7 @@ export function FocusWellnessWizard({ onExit }: Props) {
 
       {current.id === 'reason' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={reason}
           onChange={(e) => setReason(e.target.value)}
           rows={4}
@@ -117,6 +118,7 @@ export function FocusWellnessWizard({ onExit }: Props) {
 
       {current.id === 'next' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={nextStep}
           onChange={(e) => setNextStep(e.target.value)}

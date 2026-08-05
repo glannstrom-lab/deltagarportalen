@@ -152,7 +152,7 @@ export function Autocomplete({
   return (
     <div ref={containerRef} className={`relative ${className}`}>
       {label && (
-        <label className="block text-sm font-medium text-stone-700 mb-1">
+        <label htmlFor="autocomplete-f1" className="block text-sm font-medium text-stone-700 mb-1">
           {label}
         </label>
       )}
@@ -163,6 +163,8 @@ export function Autocomplete({
         </div>
         
         <input
+        
+          id="autocomplete-f1"
           ref={inputRef}
           type="text"
           value={inputValue}

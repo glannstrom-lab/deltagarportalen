@@ -235,8 +235,9 @@ export function CRMTab() {
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Företag *</label>
+                <label htmlFor="crmtab-f1" className="block text-sm font-medium text-stone-700 mb-1">Företag *</label>
                 <input
+                  id="crmtab-f1"
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
@@ -245,8 +246,9 @@ export function CRMTab() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Position *</label>
+                <label htmlFor="crmtab-f2" className="block text-sm font-medium text-stone-700 mb-1">Position *</label>
                 <input
+                  id="crmtab-f2"
                   type="text"
                   value={formData.position}
                   onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
@@ -257,8 +259,9 @@ export function CRMTab() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">Länk till annons</label>
+              <label htmlFor="crmtab-f3" className="block text-sm font-medium text-stone-700 mb-1">Länk till annons</label>
               <input
+                id="crmtab-f3"
                 type="url"
                 value={formData.url}
                 onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
@@ -269,8 +272,9 @@ export function CRMTab() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">Kontaktperson</label>
+                <label htmlFor="crmtab-f4" className="block text-sm font-medium text-stone-700 mb-1">Kontaktperson</label>
                 <input
+                  id="crmtab-f4"
                   type="text"
                   value={formData.contactName}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
@@ -279,8 +283,9 @@ export function CRMTab() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
+                <label htmlFor="crmtab-f5" className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
                 <input
+                  id="crmtab-f5"
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactEmail: e.target.value }))}
@@ -291,8 +296,9 @@ export function CRMTab() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
+              <label htmlFor="crmtab-f6" className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
               <textarea
+                id="crmtab-f6"
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                 className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] min-h-[80px]"

@@ -208,8 +208,9 @@ export default function PortfolioTab() {
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Titel *</label>
+                  <label htmlFor="portfoliotab-f1" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Titel *</label>
                   <input
+                    id="portfoliotab-f1"
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
@@ -247,8 +248,9 @@ export default function PortfolioTab() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Beskrivning</label>
+                  <label htmlFor="portfoliotab-f2" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Beskrivning</label>
                   <textarea
+                    id="portfoliotab-f2"
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                     className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] min-h-[100px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -258,10 +260,11 @@ export default function PortfolioTab() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <label htmlFor="portfoliotab-f3" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                       Startdatum (valfritt)
                     </label>
                     <input
+                      id="portfoliotab-f3"
                       type="month"
                       value={formData.start_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
@@ -269,10 +272,11 @@ export default function PortfolioTab() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                    <label htmlFor="portfoliotab-f4" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                       Slutdatum (valfritt)
                     </label>
                     <input
+                      id="portfoliotab-f4"
                       type="month"
                       value={formData.end_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
@@ -282,11 +286,12 @@ export default function PortfolioTab() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                  <label htmlFor="portfoliotab-f5" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                     <LinkIcon className="w-4 h-4 inline mr-1" />
                     Länk (valfritt)
                   </label>
                   <input
+                    id="portfoliotab-f5"
                     type="url"
                     value={formData.url}
                     onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
@@ -296,10 +301,11 @@ export default function PortfolioTab() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                  <label htmlFor="portfoliotab-f6" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                     Taggar (kommaseparerade)
                   </label>
                   <input
+                    id="portfoliotab-f6"
                     type="text"
                     value={formData.tags}
                     onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}

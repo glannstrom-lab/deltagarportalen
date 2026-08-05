@@ -318,8 +318,8 @@ export default function PlanTab() {
 
           <div className="space-y-4">
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+              <label htmlFor="plan-current-situation" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 {t('career.plan.whereAreYou')}
               </label>
 
@@ -352,6 +352,7 @@ export default function PlanTab() {
               )}
 
               <textarea
+                id="plan-current-situation"
                 value={currentSituation}
                 onChange={(e) => setCurrentSituation(e.target.value)}
                 placeholder={t('career.plan.currentPlaceholder')}
@@ -361,8 +362,8 @@ export default function PlanTab() {
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <Flag className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-text)]" />
+              <label htmlFor="plan-goal" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Flag className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-text)]" aria-hidden="true" />
                 {t('career.plan.whereWantToGo')}
               </label>
 
@@ -391,6 +392,7 @@ export default function PlanTab() {
               )}
 
               <textarea
+                id="plan-goal"
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder={t('career.plan.goalPlaceholder')}
@@ -400,11 +402,12 @@ export default function PlanTab() {
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label htmlFor="plantab-f1" className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 Tidsram (valfritt)
               </label>
               <input
+                id="plantab-f1"
                 type="text"
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
@@ -547,6 +550,7 @@ export default function PlanTab() {
             <div className="grid gap-3">
               <input
                 type="text"
+                aria-label="Milstolpens titel"
                 placeholder="Milstolpens titel"
                 value={newMilestone.title}
                 onChange={(e) => setNewMilestone(prev => ({ ...prev, title: e.target.value }))}
@@ -555,6 +559,7 @@ export default function PlanTab() {
               <div className="grid grid-cols-2 gap-3">
                 <input
                   type="text"
+                  aria-label="Tidsram för milstolpen"
                   placeholder="Tidsram (t.ex. Månad 1-2)"
                   value={newMilestone.timeframe}
                   onChange={(e) => setNewMilestone(prev => ({ ...prev, timeframe: e.target.value }))}
@@ -562,12 +567,14 @@ export default function PlanTab() {
                 />
                 <input
                   type="date"
+                  aria-label="Måldatum för milstolpen"
                   value={newMilestone.target_date}
                   onChange={(e) => setNewMilestone(prev => ({ ...prev, target_date: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
                 />
               </div>
               <textarea
+                aria-label="Steg (ett per rad)"
                 placeholder="Steg (ett per rad)"
                 value={newMilestone.steps}
                 onChange={(e) => setNewMilestone(prev => ({ ...prev, steps: e.target.value }))}

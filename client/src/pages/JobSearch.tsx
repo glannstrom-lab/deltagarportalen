@@ -598,7 +598,8 @@ function SearchTab() {
                 <OccupationPicker
                   onSelect={addOccupationFilter}
                   excludeConceptIds={filters.occupations.map((o) => o.conceptId)}
-                  placeholder="Lägg till yrke — t.ex. lagerarbetare, sjuksköterska"
+                  label="Lägg till yrke"
+                  placeholder="T.ex. lagerarbetare, sjuksköterska"
                 />
               )}
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
@@ -1134,6 +1135,7 @@ function SavedJobsTab() {
         </div>
         <div className="flex items-center gap-2">
           <select
+            aria-label="Sortera sparade jobb"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'date' | 'company' | 'status')}
             className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"

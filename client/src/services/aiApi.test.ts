@@ -8,7 +8,15 @@
  * Mockar fetch + supabase.auth.getSession + authStore-profilen.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { callAI, callAIStream, sanitizeAiPayload, generateCoverLetter, AiConsentRequiredError } from './aiApi'
+import {
+  callAI,
+  callAIStream,
+  sanitizeAiPayload,
+  generateCoverLetter,
+  generateProfileSummary,
+  generateDoaSummary,
+  AiConsentRequiredError,
+} from './aiApi'
 
 const mockGetSession = vi.fn()
 vi.mock('@/lib/supabase', () => ({
@@ -117,7 +125,15 @@ describe('callAI', () => {
  * olagligt är att uppgifterna lämnar webbläsaren, inte att svaret visas.
  */
 describe('callAI — art. 9-samtycke (UX13)', () => {
-  const ART9 = ['vecko-reflektion', 'adaptation-recommendations', 'adaptation-conversation']
+  const ART9 = [
+    'vecko-reflektion',
+    'adaptation-recommendations',
+    'adaptation-conversation',
+    // B16 (2026-08-05): AI-teamets arbetsterapeut- och motivationscoach-agenter
+    // får energinivå och `supportGoals.challenges` inbakade i prompten av
+    // `useAITeamContext`. Chatten låg utanför grinden fram till nu.
+    'ai-team-chat',
+  ]
 
   beforeEach(() => {
     mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
@@ -184,6 +200,16 @@ describe('callAI — art. 9-samtycke (UX13)', () => {
     await expect(callAI('vecko-reflektion', {})).rejects.toThrow(
       'Ett fel uppstod vid kommunikation med AI-tjänsten.'
     )
+  })
+
+  // B16: AI-teamet är portalens mest använda AI-yta. Ett fel som talar om
+  // dagboksanteckningar när användaren står i en chatt gör det svårare, inte
+  // lättare, att förstå vad som behöver göras.
+  it('förklarar art. 9-stoppet i AI-teamets termer, inte dagbokens', async () => {
+    mockProfile = { ai_consent_at: null }
+
+    await expect(callAI('ai-team-chat', { meddelande: 'Hej' })).rejects.toThrow(/AI-teamet/)
+    await expect(callAI('vecko-reflektion', {})).rejects.toThrow(/anteckningar om hälsa/)
   })
 })
 
@@ -327,6 +353,31 @@ describe('callAIStream', () => {
     expect(mockFetch).not.toHaveBeenCalled()
   })
 
+  // B16: den här är den som räknas i praktiken. AI-teamet är den ENDA ytan som
+  // går via `callAIStream`, och det är den vägen energinivån och stödmålen tar
+  // ut ur webbläsaren. Testet ovan (`vecko-reflektion`) körs aldrig strömmande
+  // i drift — det skulle alltså vara grönt även med grinden avstängd för
+  // AI-teamet.
+  it('stoppar AI-team-chatten utan samtycke — energinivå och stödmål lämnar inte webbläsaren', async () => {
+    mockProfile = { ai_consent_at: null }
+
+    await expect(
+      callAIStream('ai-team-chat', {
+        agentTyp: 'arbetsterapeut',
+        userDataContext: '[ENERGINIVÅ]\nLåg energi - ge kortare svar',
+      })
+    ).rejects.toBeInstanceOf(AiConsentRequiredError)
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
+  it('stoppar AI-team-chatten när användaren invänt mot AI (ai_enabled=false)', async () => {
+    mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }
+
+    await expect(callAIStream('ai-team-chat', { meddelande: 'hej' }))
+      .rejects.toThrow('Du har stängt av AI-behandling')
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
+
   it('avbryter när anroparens signal aborterar, och släpper igenom AbortError', async () => {
     const controller = new AbortController()
     // Som riktig fetch: avvisar direkt om signalen redan är aborterad,
@@ -372,6 +423,127 @@ describe('sanitizeAiPayload', () => {
     const { sanitized } = sanitizeAiPayload({ n: 5, b: true, nil: null, date })
     expect(sanitized).toMatchObject({ n: 5, b: true, nil: null })
     expect(sanitized.date).toBe(date)
+  })
+})
+
+/**
+ * B17 (2026-08-05) — ovaliderad modelloutput.
+ *
+ * Två wrappers castade AI-svaret rakt av. Konsekvensen var inte en krasch utan
+ * något tystare: `profile-summary` kunde skriva **tomma strängen** till
+ * `profiles.ai_summary` (anroparens `|| ''`-kedja), och
+ * `sta-doa-sammanfattning` kunde lägga fel typ i en ruta i AF:s blankett.
+ */
+describe('generateProfileSummary — B17', () => {
+  beforeEach(() => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+  })
+
+  it('returnerar den trimmade sammanfattningen när svaret är giltigt', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, summary: '  Erfaren snickare med …  ' }),
+    })
+
+    const result = await generateProfileSummary({ name: 'Anna' })
+
+    expect(result.summary).toBe('Erfaren snickare med …')
+  })
+
+  it('kastar i stället för att låta tomma strängen sparas som sammanfattning', async () => {
+    // `profileEnhancementsApi` skriver resultatet till profiles.ai_summary utan
+    // egen kontroll. Kastar vi inte här sparas '' och användaren får en tom ruta
+    // som ser genererad ut — med ai_summary_updated_at satt.
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ success: true, summary: '   ' }) })
+
+    await expect(generateProfileSummary({ name: 'Anna' })).rejects.toThrow(
+      'AI-tjänsten gav ingen sammanfattning'
+    )
+  })
+
+  it('kastar när svaret har oväntad form', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, summary: { text: 'fel form' } }),
+    })
+
+    await expect(generateProfileSummary({ name: 'Anna' })).rejects.toThrow(
+      'AI-tjänsten gav ingen sammanfattning'
+    )
+  })
+})
+
+describe('generateDoaSummary — B17', () => {
+  const giltig = {
+    malPlanering: 'Deltagaren fortsätter mot arbetsprövning.',
+    kategorier: [{ title: 'Fysisk förmåga', resurserBegransningar: 'God rörlighet.' }],
+  }
+
+  beforeEach(() => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+  })
+
+  it('returnerar den validerade sammanfattningen', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, sammanfattning: giltig }),
+    })
+
+    const result = await generateDoaSummary({ categories: [] })
+
+    expect(result.sammanfattning).toEqual(giltig)
+  })
+
+  it('kastar när kategorierna saknar text — tom ruta i AF-blanketten är inget svar', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        success: true,
+        sammanfattning: { malPlanering: 'x', kategorier: [{ title: 'Fysisk förmåga' }] },
+      }),
+    })
+
+    await expect(generateDoaSummary({ categories: [] })).rejects.toThrow('oväntat format')
+  })
+
+  it('kastar när svaret är en sträng i stället för ett objekt', async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, sammanfattning: 'Deltagaren har god rörlighet.' }),
+    })
+
+    await expect(generateDoaSummary({ categories: [] })).rejects.toThrow('oväntat format')
+  })
+})
+
+describe('callAI — serverns formkontroll (502 AI_INVALID_RESPONSE)', () => {
+  it('visar serverns förklaring i stället för det generiska kommunikationsfelet', async () => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 502,
+      json: async () => ({
+        error: 'AI-svaret hade inte det format som behövdes. Försök igen om en stund.',
+        code: 'AI_INVALID_RESPONSE',
+      }),
+    })
+
+    await expect(callAI('intervju-simulator', {})).rejects.toThrow(
+      'AI-svaret hade inte det format som behövdes'
+    )
+  })
+
+  it('faller tillbaka på det generiska felet för andra 502:or', async () => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+    mockFetch.mockResolvedValue({
+      ok: false,
+      status: 502,
+      json: async () => ({ error: 'AI request failed' }),
+    })
+
+    await expect(callAI('personligt-brev', {})).rejects.toThrow(
+      'Ett fel uppstod vid kommunikation med AI-tjänsten.'
+    )
   })
 })
 

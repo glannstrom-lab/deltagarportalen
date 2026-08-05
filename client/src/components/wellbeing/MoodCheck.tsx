@@ -248,6 +248,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
       {showDetails && (
         <div className="animate-in slide-in-from-top-2 duration-200">
           <textarea
+            aria-label="Anteckning om hur du mår (frivilligt)"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Vill du skriva något om hur du mår? (frivilligt)"

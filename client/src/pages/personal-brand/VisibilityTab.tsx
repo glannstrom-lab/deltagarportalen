@@ -357,6 +357,7 @@ export default function VisibilityTab() {
               <div className="space-y-3">
                 <input
                   type="text"
+                  aria-label="Vad ska du posta?"
                   value={calendarForm.title}
                   onChange={(e) => setCalendarForm(prev => ({ ...prev, title: e.target.value }))}
                   className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -364,6 +365,7 @@ export default function VisibilityTab() {
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <select
+                    aria-label="Plattform"
                     value={calendarForm.platform}
                     onChange={(e) => setCalendarForm(prev => ({ ...prev, platform: e.target.value as ContentCalendarItem['platform'] }))}
                     className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -375,6 +377,7 @@ export default function VisibilityTab() {
                   </select>
                   <input
                     type="date"
+                    aria-label="Datum för inlägget"
                     value={calendarForm.scheduled_date}
                     onChange={(e) => setCalendarForm(prev => ({ ...prev, scheduled_date: e.target.value }))}
                     className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"

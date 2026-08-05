@@ -1108,6 +1108,7 @@
       "deleted": "CV borttaget",
       "setAsDefault": "Satt som standard-CV",
       "default": "Standard",
+      "searchLabel": "Sök bland dina CV",
       "searchPlaceholder": "Sök bland dina CV...",
       "filterByTemplate": "Filtrera efter mall",
       "experiences": "{{count}} erfarenheter",
@@ -2556,6 +2557,8 @@
       "orgNumber": "Org.nummer",
       "aiDescription": "Beskriv vilka företag du söker, t.ex. \"IT-konsulter i Stockholm\" eller \"advokatbyråer som arbetar med arbetsrätt\"",
       "orgNumberDescription": "Ange ett organisationsnummer för att hämta information. Hitta org.nr på",
+      "aiSearchLabel": "Beskriv företagen du söker",
+      "orgSearchLabel": "Organisationsnummer",
       "aiPlaceholder": "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'",
       "enterOrgNumber": "Ange ett organisationsnummer"
     },
@@ -4359,6 +4362,7 @@
   },
   "resources": {
     "title": "Dina sparade resurser",
+    "searchLabel": "Sök bland dina resurser",
     "subtitle": "Användbara verktyg och länkar",
     "description": "Alla dina sparade dokument, jobb och resurser på ett ställe",
     "stats": {
@@ -6420,6 +6424,7 @@
       "desiredJobsPlaceholder": "T.ex. Projektledare",
       "desiredJobsHint": "Lägg till de jobb du är intresserad av",
       "interests": "Intressen",
+      "interestsInputLabel": "Lägg till ett intresse",
       "interestsPlaceholder": "T.ex. Teknik",
       "interestsHint": "Vad intresserar dig i arbetslivet?",
       "interestProfile": "Intresseprofil (RIASEC)",
@@ -7161,6 +7166,8 @@
     "headline": {
       "title": "Skapa Headline",
       "description": "Din headline syns direkt under ditt namn. Gör den beskrivande och catchy!",
+      "jobTitleLabel": "Din yrkestitel",
+      "specializationLabel": "Din specialisering",
       "jobTitlePlaceholder": "Din yrkestitel (t.ex. Projektledare)",
       "specializationPlaceholder": "Specialisering (t.ex. Digitala transformationer)",
       "tipLabel": "Tips",
@@ -7169,6 +7176,9 @@
     "about": {
       "title": "Skriv About-sektion",
       "description": "Berätta vem du är och vad du gör. Max 2000 tecken.",
+      "backgroundLabel": "Din bakgrund och erfarenhet",
+      "strengthsLabel": "Dina styrkor",
+      "goalsLabel": "Dina karriärmål",
       "backgroundPlaceholder": "Din bakgrund och erfarenhet...",
       "strengthsPlaceholder": "Dina styrkor och vad du brinner för...",
       "goalsPlaceholder": "Dina karriärmål..."
@@ -7176,6 +7186,8 @@
     "post": {
       "title": "Skapa LinkedIn-inlägg",
       "description": "Engagerande inlägg ökar din synlighet. Max 1300 tecken.",
+      "topicLabel": "Vad vill du skriva om?",
+      "toneLabel": "Ton i inlägget",
       "topicPlaceholder": "Vad vill du skriva om? (t.ex. 'Erfarenheter från mitt senaste projekt')",
       "tones": {
         "professional": "Professionell",
@@ -7187,6 +7199,9 @@
     "connection": {
       "title": "Nätverka - Kontaktmeddelande",
       "description": "Ett personligt meddelande ökar chansen att bli accepterad.",
+      "nameLabel": "Personens namn",
+      "roleLabel": "Personens roll",
+      "purposeLabel": "Varför vill du connecta?",
       "namePlaceholder": "Personens namn",
       "rolePlaceholder": "Personens roll (t.ex. HR-chef på Volvo)",
       "purposePlaceholder": "Varför vill du connecta? (t.ex. 'Jag beundrar ditt arbete inom...')"
@@ -7336,6 +7351,7 @@
     },
     "dreamJob": {
       "title": "Ditt drömjobb",
+      "label": "Jobbannons eller beskrivning av rollen",
       "placeholder": "Klistra in en jobbannons för ditt drömjobb, eller beskriv rollen...\n\nExempel:\nVi söker en erfaren Projektledare med...",
       "tip": "Använd en riktig jobbannons för bästa resultat!"
     },
@@ -9189,6 +9205,8 @@
       "companyPlaceholder": "Företagsnamn",
       "selectTemplate": "Välj en stil för ditt brev:",
       "selectMotivations": "Välj det som passar dig:",
+      "customMotivationLabel": "Egen motivering",
+      "letterContentLabel": "Ditt personliga brev",
       "customMotivation": "Skriv egen motivation...",
       "letterTitle": "Namn på brevet",
       "letterTitlePlaceholder": "t.ex. Ansökan Säljare - IKEA",
@@ -9535,6 +9553,7 @@
   "occupation": {
     "aria": {
       "desiredJobsListAria": "Önskade yrken i prioriteringsordning",
+      "searchLabel": "Sök yrke",
       "suggestionsAria": "Yrkesförslag"
     }
   },

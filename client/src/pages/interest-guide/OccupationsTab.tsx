@@ -258,6 +258,7 @@ export default function OccupationsTab() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
+                aria-label={t('common.search') || 'Sök yrken...'}
                 placeholder={t('common.search') || 'Sök yrken...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -268,6 +269,7 @@ export default function OccupationsTab() {
             {/* Sort Dropdown */}
             <div className="relative">
               <select
+                aria-label="Sortera yrkeslistan"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'match' | 'name' | 'salary')}
                 className="px-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 appearance-none cursor-pointer text-gray-900 dark:text-gray-100"

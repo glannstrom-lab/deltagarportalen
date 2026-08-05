@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Star, MessageSquare, FileText, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -75,6 +75,7 @@ export function FocusPersonalBrandWizard({ onExit }: Props) {
     >
       {current.id === 'adjectives' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={adjectives}
           onChange={(e) => setAdjectives(e.target.value)}
@@ -86,6 +87,7 @@ export function FocusPersonalBrandWizard({ onExit }: Props) {
 
       {current.id === 'tagline' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={tagline}
           onChange={(e) => setTagline(e.target.value)}
           rows={3}
@@ -97,6 +99,7 @@ export function FocusPersonalBrandWizard({ onExit }: Props) {
 
       {current.id === 'about' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={about}
           onChange={(e) => setAbout(e.target.value)}
           rows={8}

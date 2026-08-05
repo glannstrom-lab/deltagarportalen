@@ -280,10 +280,11 @@ export default function RelocationTab() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="relocationtab-f1" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {isEn ? 'Expected monthly salary (SEK)' : 'Förväntad månadslön (kr)'}
             </label>
             <input
+              id="relocationtab-f1"
               type="number"
               value={salary}
               onChange={(e) => { setSalary(e.target.value); setHasUnsavedChanges(true); }}
@@ -292,10 +293,11 @@ export default function RelocationTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label htmlFor="relocationtab-f2" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               {isEn ? 'Current region' : 'Nuvarande region'}
             </label>
             <select
+              id="relocationtab-f2"
               value={currentRegion}
               onChange={(e) => { setCurrentRegion(e.target.value); setHasUnsavedChanges(true); }}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"

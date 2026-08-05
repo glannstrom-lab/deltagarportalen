@@ -208,20 +208,28 @@ function LinkedInOptimizerInner() {
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.headline.title')}</h2>
                 <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.headline.description')}</p>
-                <input
-                  type="text"
-                  placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
-                  value={formData.headline.yrke}
-                  onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <input
-                  type="text"
-                  placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
-                  value={formData.headline.erfarenhet}
-                  onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
+                <div>
+                  <label htmlFor="li-headline-jobtitle" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.headline.jobTitleLabel')}</label>
+                  <input
+                    id="li-headline-jobtitle"
+                    type="text"
+                    placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
+                    value={formData.headline.yrke}
+                    onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-headline-spec" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.headline.specializationLabel')}</label>
+                  <input
+                    id="li-headline-spec"
+                    type="text"
+                    placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
+                    value={formData.headline.erfarenhet}
+                    onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
                 <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-4 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
                   <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
                 </div>
@@ -232,27 +240,39 @@ function LinkedInOptimizerInner() {
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.about.title')}</h2>
                 <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.about.description')}</p>
-                <textarea
-                  placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
-                  value={formData.about.bakgrund}
-                  onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <textarea
-                  placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
-                  value={formData.about.styrkor}
-                  onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <input
-                  type="text"
-                  placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
-                  value={formData.about.mal}
-                  onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
+                <div>
+                  <label htmlFor="li-about-background" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.backgroundLabel')}</label>
+                  <textarea
+                    id="li-about-background"
+                    placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
+                    value={formData.about.bakgrund}
+                    onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-about-strengths" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.strengthsLabel')}</label>
+                  <textarea
+                    id="li-about-strengths"
+                    placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
+                    value={formData.about.styrkor}
+                    onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-about-goals" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.goalsLabel')}</label>
+                  <input
+                    id="li-about-goals"
+                    type="text"
+                    placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
+                    value={formData.about.mal}
+                    onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
               </div>
             )}
 
@@ -260,23 +280,31 @@ function LinkedInOptimizerInner() {
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.post.title')}</h2>
                 <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.post.description')}</p>
-                <textarea
-                  placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
-                  value={formData.post.amne}
-                  onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
-                  rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <select
-                  value={formData.post.ton}
-                  onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                >
-                  <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
-                  <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
-                  <option value="entusiastisk">{t('linkedInOptimizer.post.tones.enthusiastic')}</option>
-                  <option value="formell">{t('linkedInOptimizer.post.tones.formal')}</option>
-                </select>
+                <div>
+                  <label htmlFor="li-post-topic" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.post.topicLabel')}</label>
+                  <textarea
+                    id="li-post-topic"
+                    placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
+                    value={formData.post.amne}
+                    onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
+                    rows={4}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-post-tone" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.post.toneLabel')}</label>
+                  <select
+                    id="li-post-tone"
+                    value={formData.post.ton}
+                    onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  >
+                    <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
+                    <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
+                    <option value="entusiastisk">{t('linkedInOptimizer.post.tones.enthusiastic')}</option>
+                    <option value="formell">{t('linkedInOptimizer.post.tones.formal')}</option>
+                  </select>
+                </div>
               </div>
             )}
 
@@ -284,27 +312,39 @@ function LinkedInOptimizerInner() {
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.connection.title')}</h2>
                 <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.connection.description')}</p>
-                <input
-                  type="text"
-                  placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
-                  value={formData.connection.namn}
-                  onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <input
-                  type="text"
-                  placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
-                  value={formData.connection.roll}
-                  onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
-                <textarea
-                  placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
-                  value={formData.connection.syfte}
-                  onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
-                  rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-                />
+                <div>
+                  <label htmlFor="li-conn-name" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.nameLabel')}</label>
+                  <input
+                    id="li-conn-name"
+                    type="text"
+                    placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
+                    value={formData.connection.namn}
+                    onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-conn-role" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.roleLabel')}</label>
+                  <input
+                    id="li-conn-role"
+                    type="text"
+                    placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
+                    value={formData.connection.roll}
+                    onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="li-conn-purpose" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.purposeLabel')}</label>
+                  <textarea
+                    id="li-conn-purpose"
+                    placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
+                    value={formData.connection.syfte}
+                    onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
+                    rows={3}
+                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                  />
+                </div>
               </div>
             )}
 

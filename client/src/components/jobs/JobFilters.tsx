@@ -182,6 +182,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 dark:text-stone-400" />
           <input
             type="text"
+            aria-label={t('jobs.filters.search')}
             placeholder={t('jobs.filters.searchPlaceholder')}
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
@@ -198,6 +199,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 dark:text-stone-400" />
             <input
               type="text"
+              aria-label={t('jobs.filters.location')}
               placeholder={t('jobs.filters.locationPlaceholder')}
               value={filters.location}
               onChange={(e) => updateFilter('location', e.target.value)}
@@ -208,10 +210,11 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           {/* Avstånd */}
           {filters.location && (
             <div className="bg-[var(--c-bg)] p-3 rounded-xl">
-              <label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
+              <label htmlFor="jobfilters-f1" className="text-sm font-medium text-[var(--c-text)] mb-2 block">
                 {t('jobs.filters.distance', { km: filters.distanceKm })}
               </label>
               <input
+                id="jobfilters-f1"
                 type="range"
                 min="5"
                 max="200"
@@ -230,6 +233,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
 
           {/* Län */}
           <select
+            aria-label={t('jobs.filters.allRegions')}
             value={filters.region}
             onChange={(e) => updateFilter('region', e.target.value)}
             className="w-full px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
@@ -337,6 +341,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           <div className="flex items-center gap-2">
             <input
               type="number"
+              aria-label={t('jobs.filters.salaryMin')}
               placeholder={t('jobs.filters.salaryMin')}
               value={filters.salaryMin || ''}
               onChange={(e) => updateFilter('salaryMin', parseInt(e.target.value) || 0)}
@@ -345,6 +350,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             <span className="text-stone-600 dark:text-stone-400">-</span>
             <input
               type="number"
+              aria-label={t('jobs.filters.salaryMax')}
               placeholder={t('jobs.filters.salaryMax')}
               value={filters.salaryMax || ''}
               onChange={(e) => updateFilter('salaryMax', parseInt(e.target.value) || 0)}
@@ -393,10 +399,11 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       {/* Match percentage */}
       <FilterSection title={t('jobs.filters.cvMatch')} section="match" icon={Sliders}>
         <div className="bg-[var(--c-bg)] p-4 rounded-xl">
-          <label className="text-sm font-medium text-[var(--c-text)] mb-3 block">
+          <label htmlFor="jobfilters-f2" className="text-sm font-medium text-[var(--c-text)] mb-3 block">
             {t('jobs.filters.minMatch', { percent: filters.minMatchPercentage })}
           </label>
           <input
+            id="jobfilters-f2"
             type="range"
             min="0"
             max="100"

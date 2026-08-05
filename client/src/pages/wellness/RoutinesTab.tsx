@@ -272,6 +272,7 @@ export default function RoutinesTab() {
             <div className="flex gap-3">
               <input
                 type="text"
+                aria-label={t('wellness.routines.routineNamePlaceholder')}
                 value={newRoutine.title}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, title: e.target.value }))}
                 placeholder={t('wellness.routines.routineNamePlaceholder')}
@@ -279,6 +280,7 @@ export default function RoutinesTab() {
               />
               <input
                 type="time"
+                aria-label={t('wellness.routines.timeLabel', 'Tid')}
                 value={newRoutine.time}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, time: e.target.value }))}
                 className="px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 text-gray-800 dark:text-gray-100"

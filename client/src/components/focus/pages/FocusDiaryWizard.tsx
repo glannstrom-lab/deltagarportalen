@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { NotebookPen, Heart, Sun, CheckCircle2 } from '@/components/ui/icons'
 import { diaryEntriesApi } from '@/services/diaryApi'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -91,6 +91,7 @@ export function FocusDiaryWizard({ onExit }: Props) {
     >
       {current.id === 'happened' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={happened}
           onChange={(e) => setHappened(e.target.value)}
           rows={5}
@@ -101,6 +102,7 @@ export function FocusDiaryWizard({ onExit }: Props) {
       )}
       {current.id === 'feeling' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={feeling}
           onChange={(e) => setFeeling(e.target.value)}
           rows={5}
@@ -111,6 +113,7 @@ export function FocusDiaryWizard({ onExit }: Props) {
       )}
       {current.id === 'tomorrow' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={tomorrow}
           onChange={(e) => setTomorrow(e.target.value)}

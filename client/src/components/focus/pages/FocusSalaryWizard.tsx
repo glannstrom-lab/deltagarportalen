@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Wallet, MapPin, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -57,6 +57,7 @@ export function FocusSalaryWizard({ onExit }: Props) {
     >
       {current.id === 'role' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -68,6 +69,7 @@ export function FocusSalaryWizard({ onExit }: Props) {
 
       {current.id === 'city' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={city}
           onChange={(e) => setCity(e.target.value)}

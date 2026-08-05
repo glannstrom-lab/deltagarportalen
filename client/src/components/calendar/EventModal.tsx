@@ -169,8 +169,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             <>
               {/* Title */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.title')}</label>
+                <label htmlFor="eventmodal-f1" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.title')}</label>
                 <input
+                  id="eventmodal-f1"
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -202,8 +203,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Date & Time */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.date')}</label>
+                  <label htmlFor="eventmodal-f2" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.date')}</label>
                   <input
+                    id="eventmodal-f2"
                     type="date"
                     value={formData.date || ''}
                     onChange={(e) => {
@@ -214,8 +216,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.startTime')}</label>
+                  <label htmlFor="eventmodal-f3" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.startTime')}</label>
                   <input
+                    id="eventmodal-f3"
                     type="time"
                     value={formData.time || ''}
                     onChange={(e) => {
@@ -226,8 +229,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.endTime')}</label>
+                  <label htmlFor="eventmodal-f4" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.endTime')}</label>
                   <input
+                    id="eventmodal-f4"
                     type="time"
                     value={formData.endTime || ''}
                     onChange={(e) => {
@@ -255,11 +259,12 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* Location */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300 flex items-center gap-1">
+                <label htmlFor="eventmodal-f5" className="text-sm font-medium text-stone-700 dark:text-stone-300 flex items-center gap-1">
                   <MapPin size={14} />
                   {t('calendar.modal.locationOptional')}
                 </label>
                 <input
+                  id="eventmodal-f5"
                   type="text"
                   value={formData.location || ''}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
@@ -296,8 +301,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* With */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.withOptional')}</label>
+                <label htmlFor="eventmodal-f6" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.withOptional')}</label>
                 <input
+                  id="eventmodal-f6"
                   type="text"
                   value={formData.with || ''}
                   onChange={(e) => setFormData({ ...formData, with: e.target.value })}
@@ -308,8 +314,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* Description */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.description')}</label>
+                <label htmlFor="eventmodal-f7" className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.description')}</label>
                 <textarea
+                  id="eventmodal-f7"
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder={t('calendar.modal.descriptionPlaceholder')}

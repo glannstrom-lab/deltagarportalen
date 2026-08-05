@@ -169,10 +169,11 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
 
               {/* Meddelande */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="sharejobdialog-f1" className="block text-sm font-medium text-gray-700 mb-1">
                   Personligt meddelande (valfritt)
                 </label>
                 <textarea
+                  id="sharejobdialog-f1"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="T.ex. 'Detta jobb verkar perfekt för mig! Vad tycker du?'"

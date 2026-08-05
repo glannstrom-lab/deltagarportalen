@@ -412,10 +412,11 @@ export function CreateApplicationModal({
           >
             <div className="space-y-3">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1.5">
+                <label htmlFor="createapplicationmodal-f1" className="block text-sm font-medium text-stone-700 mb-1.5">
                   Status
                 </label>
                 <select
+                  id="createapplicationmodal-f1"
                   value={workflow.step3_tracker.status}
                   onChange={(e) => setWorkflow(prev => ({
                     ...prev,
@@ -430,10 +431,11 @@ export function CreateApplicationModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1.5">
+                <label htmlFor="createapplicationmodal-f2" className="block text-sm font-medium text-stone-700 mb-1.5">
                   Anteckningar (valfritt)
                 </label>
                 <textarea
+                  id="createapplicationmodal-f2"
                   value={workflow.step3_tracker.notes}
                   onChange={(e) => setWorkflow(prev => ({
                     ...prev,

@@ -120,6 +120,7 @@ export function OverviewSection() {
           onAdd={addInterest}
           onRemove={removeInterest}
           suggestions={SUGGESTED_INTERESTS}
+          label={t('profile.overview.interestsInputLabel')}
           placeholder={t('profile.overview.interestsPlaceholder')}
           maxTags={5}
           colorScheme="amber"

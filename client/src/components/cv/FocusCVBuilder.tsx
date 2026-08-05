@@ -8,7 +8,7 @@
  * - Enkla knappar för att navigera
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
@@ -323,10 +323,11 @@ function SummaryStep({ cvData, setCvData }: StepProps) {
         autoFocus
       />
       <div>
-        <label className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
+        <label htmlFor="focuscv-summary" className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
           {t('focusCV.fields.summary', 'Kort presentation')}
         </label>
         <textarea
+          id="focuscv-summary"
           value={cvData.summary || ''}
           onChange={(e) => setCvData(prev => ({ ...prev, summary: e.target.value }))}
           placeholder={t('focusCV.placeholders.summary', 'Beskriv dig själv i 2-3 meningar. Vad är du bra på? Vad vill du jobba med?')}
@@ -434,10 +435,11 @@ function WorkStep({ cvData, setCvData }: StepProps) {
           />
         </div>
         <div>
-          <label className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
+          <label htmlFor="focuscv-work-description" className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
             {t('focusCV.fields.workDescription', 'Vad gjorde du?')}
           </label>
           <textarea
+            id="focuscv-work-description"
             value={exp.description || ''}
             onChange={(e) => updateExperience(editingIndex, { description: e.target.value })}
             placeholder={t('focusCV.placeholders.workDescription', 'Beskriv dina viktigaste arbetsuppgifter och vad du åstadkom.')}
@@ -686,11 +688,12 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <label className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
+        <label htmlFor="focuscv-add-skill" className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
           {t('focusCV.fields.addSkill', 'Lägg till kompetens')}
         </label>
         <div className="flex gap-3">
           <input
+            id="focuscv-add-skill"
             type="text"
             value={newSkill}
             onChange={(e) => setNewSkill(e.target.value)}
@@ -805,12 +808,20 @@ interface FocusInputProps {
 }
 
 function FocusInput({ label, value, onChange, placeholder, type = 'text', autoFocus }: FocusInputProps) {
+  // UX31: labeln låg som syskon till inputen utan htmlFor/id — alla 14 fält i
+  // wizarden saknade därför tillgängligt namn. Skärmläsaren läste "redigera,
+  // tomt" och placeholdern försvann så fort man började skriva.
+  const inputId = useId()
   return (
     <div>
-      <label className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2">
+      <label
+        htmlFor={inputId}
+        className="block text-base font-medium text-stone-700 dark:text-stone-300 mb-2"
+      >
         {label}
       </label>
       <input
+        id={inputId}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}

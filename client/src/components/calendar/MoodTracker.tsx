@@ -165,10 +165,11 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
 
           {/* Note */}
           <div>
-            <label className="text-sm font-medium text-stone-700 mb-2 block">
+            <label htmlFor="moodtracker-f1" className="text-sm font-medium text-stone-700 mb-2 block">
               Anteckning (valfritt)
             </label>
             <textarea
+              id="moodtracker-f1"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Hur känns det idag? Vad påverkar ditt mående?"

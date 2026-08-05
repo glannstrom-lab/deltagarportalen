@@ -158,6 +158,7 @@ export default function NotificationsCenter() {
                     <div className="flex gap-2">
                       <input
                         type="text"
+                        aria-label="Sökord för bevakningen"
                         value={newAlertQuery}
                         onChange={(e) => setNewAlertQuery(e.target.value)}
                         placeholder="T.ex. 'utvecklare', 'sjuksköterska', 'lärare'..."

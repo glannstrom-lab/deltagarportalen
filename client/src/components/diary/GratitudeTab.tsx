@@ -88,6 +88,7 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
+              aria-label="Tacksam för, nr 1"
               value={item1}
               onChange={(e) => setItem1(e.target.value)}
               placeholder="Jag är tacksam för..."
@@ -101,6 +102,7 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
+              aria-label="Tacksam för, nr 2"
               value={item2}
               onChange={(e) => setItem2(e.target.value)}
               placeholder="Jag är tacksam för... (valfritt)"
@@ -114,6 +116,7 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
+              aria-label="Tacksam för, nr 3"
               value={item3}
               onChange={(e) => setItem3(e.target.value)}
               placeholder="Jag är tacksam för... (valfritt)"
@@ -123,10 +126,11 @@ function TodayGratitude() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-rose-700 mb-2">
+          <label htmlFor="gratitudetab-f1" className="block text-sm font-medium text-rose-700 mb-2">
             Reflektion (valfritt)
           </label>
           <textarea
+            id="gratitudetab-f1"
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
             placeholder="Varför är dessa saker viktiga för dig?"

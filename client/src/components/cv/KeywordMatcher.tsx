@@ -150,6 +150,7 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
       {/* Job Description Input */}
       <div className="mb-4">
         <textarea
+          aria-label="Jobbannonsen du vill matcha mot"
           value={jobText}
           onChange={(e) => {
             setJobText(e.target.value)

@@ -123,6 +123,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           {/* Title */}
           <input
             type="text"
+            aria-label="Titel på inlägget (valfritt)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Titel (valfritt)"
@@ -157,6 +158,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           <div>
             <textarea
               ref={contentRef}
+              aria-label="Dina tankar"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Skriv dina tankar..."
@@ -186,6 +188,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
             <div className="flex gap-2">
               <input
                 type="text"
+                aria-label="Lägg till tagg"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
@@ -313,8 +316,12 @@ export function JournalTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
+            {/* UX31: förstoringsglaset är den synliga ledtråden, etiketten
+                finns för skärmläsare och taligenkänning. */}
+            <label htmlFor="diary-search" className="sr-only">Sök i dagboken</label>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" aria-hidden="true" />
             <input
+              id="diary-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}

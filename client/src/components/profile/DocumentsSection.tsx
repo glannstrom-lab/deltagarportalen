@@ -227,10 +227,11 @@ export function DocumentsSection({ className }: Props) {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                <label htmlFor="documentssection-f1" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                   {t('profile.documents.name')} *
                 </label>
                 <input
+                  id="documentssection-f1"
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -240,10 +241,11 @@ export function DocumentsSection({ className }: Props) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                <label htmlFor="documentssection-f2" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                   {t('profile.documents.type')}
                 </label>
                 <select
+                  id="documentssection-f2"
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProfileDocument['type'] }))}
                   className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
@@ -255,10 +257,11 @@ export function DocumentsSection({ className }: Props) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                <label htmlFor="documentssection-f3" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                   {t('profile.documents.issuer')}
                 </label>
                 <input
+                  id="documentssection-f3"
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
@@ -269,10 +272,11 @@ export function DocumentsSection({ className }: Props) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                  <label htmlFor="documentssection-f4" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                     {t('profile.documents.issuedDate')}
                   </label>
                   <input
+                    id="documentssection-f4"
                     type="date"
                     value={formData.issue_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, issue_date: e.target.value }))}
@@ -280,10 +284,11 @@ export function DocumentsSection({ className }: Props) {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                  <label htmlFor="documentssection-f5" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                     {t('profile.documents.validUntil')}
                   </label>
                   <input
+                    id="documentssection-f5"
                     type="date"
                     value={formData.expiry_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, expiry_date: e.target.value }))}
@@ -293,10 +298,11 @@ export function DocumentsSection({ className }: Props) {
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+                <label htmlFor="documentssection-f6" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                   {t('profile.documents.description')}
                 </label>
                 <textarea
+                  id="documentssection-f6"
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder={t('profile.documents.descriptionPlaceholder')}

@@ -16,16 +16,20 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
   let lastThis: unknown = null
   let result: unknown
   let lastCallTime: number | undefined
-  let lastInvokeTime = 0
+  // `lastInvokeTime` fanns här och skrevs på tre ställen, men lästes bara av
+  // maxWait-klausulen i shouldInvoke — den som visade sig vara fel och togs
+  // bort 2026-08-05. Utan läsare är den bara skräp som ser ut att betyda något.
 
   const { leading = false, trailing = true } = options
 
-  const invokeFunc = (time: number) => {
+  // Tog tidigare emot `time` enbart för att sätta `lastInvokeTime`. Den
+  // variabeln har ingen läsare längre (se kommentaren ovan), så parametern
+  // är borta i stället för att stå kvar oanvänd.
+  const invokeFunc = () => {
     const args = lastArgs!
     const thisArg = lastThis
 
     lastArgs = lastThis = null
-    lastInvokeTime = time
     result = func.apply(thisArg, args as Parameters<T>)
     return result
   }
@@ -41,18 +45,24 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     }
   }
 
-  const leadingEdge = (time: number) => {
-    lastInvokeTime = time
+  const leadingEdge = () => {
+    // Timern MÅSTE startas här, annars finns ingen trailing edge att landa på.
+    // Raden saknades och gjorde att det FÖRSTA anropet efter en tyst period
+    // försvann tyst: `debounced()` satte lastArgs, men utan timer kallades
+    // trailingEdge aldrig. Enda konsumenten är profileStore._debouncedSave-
+    // Preferences (800 ms) — en deltagare som bockade i EN inställning och
+    // lämnade sidan fick den aldrig sparad. (Hittad 2026-08-05 under D13.)
+    startTimer(timerExpired, wait)
     if (leading) {
-      return invokeFunc(time)
+      return invokeFunc()
     }
     return result
   }
 
-  const trailingEdge = (time: number) => {
+  const trailingEdge = () => {
     timeout = null
     if (trailing && lastArgs) {
-      return invokeFunc(time)
+      return invokeFunc()
     }
     lastArgs = lastThis = null
     return result
@@ -60,20 +70,21 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 
   const shouldInvoke = (time: number) => {
     const timeSinceLastCall = lastCallTime === undefined ? 0 : time - lastCallTime
-    const timeSinceLastInvoke = time - lastInvokeTime
 
-    return (
-      lastCallTime === undefined ||
-      timeSinceLastCall >= wait ||
-      timeSinceLastCall < 0 ||
-      timeSinceLastInvoke >= wait
-    )
+    // `timeSinceLastInvoke >= wait` fanns här tidigare. Det är lodash
+    // maxWait-gren, och den här implementationen har ingen maxWait-option —
+    // klausulen kördes alltså med `wait` och ankrade fönstret till FÖRSTA
+    // anropet i skuren i stället för det sista. Följden var throttle-beteende
+    // i en funktion som heter debounce: `debounced('a')` vid t=0 och
+    // `debounced('b')` vid t=50 anropade func redan vid t=100, trots att bara
+    // 50 ms gått sedan 'b'. (Hittad 2026-08-05 ihop med den saknade timern.)
+    return lastCallTime === undefined || timeSinceLastCall >= wait || timeSinceLastCall < 0
   }
 
   const timerExpired = () => {
     const time = Date.now()
     if (shouldInvoke(time)) {
-      return trailingEdge(time)
+      return trailingEdge()
     }
     const timeSinceLastCall = lastCallTime ? time - lastCallTime : 0
     const timeWaiting = wait - timeSinceLastCall
@@ -91,7 +102,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 
     if (isInvoking) {
       if (!timeout) {
-        return leadingEdge(lastCallTime)
+        return leadingEdge()
       }
     }
 
@@ -104,13 +115,12 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
 
   debounced.cancel = () => {
     cancelTimer()
-    lastInvokeTime = 0
     timeout = lastArgs = lastCallTime = lastThis = null
   }
 
   debounced.flush = () => {
     if (!timeout) return result
-    return trailingEdge(Date.now())
+    return trailingEdge()
   }
 
   return debounced

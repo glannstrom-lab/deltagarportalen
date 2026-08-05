@@ -18,6 +18,7 @@ const aiHandler = require('../../api/ai.js') as {
     supabase: unknown,
     userId: string
   ) => Promise<{ allowed: boolean; reason?: string }>
+  PROMPTS: Record<string, (data: Record<string, unknown>) => { system: string; user: string }>
 }
 
 /** Minimal Supabase-stub: from().select().eq().single() */
@@ -37,12 +38,29 @@ function stubSupabase(result: { data?: unknown; error?: unknown } | Error) {
 }
 
 describe('ART9_FUNCTIONS', () => {
-  it('täcker de tre funktioner som tar emot särskilda kategorier', () => {
+  it('täcker de funktioner som tar emot särskilda kategorier', () => {
     expect([...aiHandler.ART9_FUNCTIONS].sort()).toEqual([
       'adaptation-conversation',
       'adaptation-recommendations',
+      'ai-team-chat',
       'vecko-reflektion',
     ])
+  })
+
+  // B16 (2026-08-05): `ai-team-chat` låg utanför grinden trots att prompten
+  // aktivt bygger in energinivå och användarens egna beskrivna hinder. Den
+  // egna assertionen finns för att raden ska vara svår att ta bort av misstag
+  // — listtestet ovan går att "fixa" genom att bara stryka namnet.
+  it('grindar AI-team-chatten — energinivå och stödmål är art. 9-data om användaren själv', () => {
+    expect(aiHandler.ART9_FUNCTIONS.has('ai-team-chat')).toBe(true)
+  })
+
+  // Vakt mot att grinden "harmoniseras" bort: prompten för arbetsterapeuten
+  // säger uttryckligen att agenten har användarens energinivå. Ändras det
+  // ska någon aktivt ta ställning till om grinden fortfarande behövs.
+  it('arbetsterapeut-prompten bär fortfarande hälsokontext (motiverar grinden)', () => {
+    const prompt = aiHandler.PROMPTS['ai-team-chat']({ agentTyp: 'arbetsterapeut' })
+    expect(prompt.system.toLowerCase()).toContain('energinivå')
   })
 
   it('grindar INTE konsulentfunktionerna — där är den registrerade en annan person', () => {

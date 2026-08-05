@@ -847,7 +847,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           </div>
         )}
 
+        <label
+          htmlFor="skillsgap-dreamjob"
+          className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
+        >
+          {t('skillsGapAnalysis.dreamJob.label')}
+        </label>
         <textarea
+          id="skillsgap-dreamjob"
           value={dreamJob}
           onChange={(e) => setDreamJob(e.target.value)}
           placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}

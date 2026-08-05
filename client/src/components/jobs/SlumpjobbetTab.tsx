@@ -412,6 +412,7 @@ export function SlumpjobbetTab() {
       <form onSubmit={handleSearch} className="flex gap-2">
         <input
           type="text"
+          aria-label={t('jobSearch.slumpjobbet.searchPlaceholder')}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder={t('jobSearch.slumpjobbet.searchPlaceholder')}

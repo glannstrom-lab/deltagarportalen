@@ -91,6 +91,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
           <div className="flex gap-2 mt-4">
             <input
               type="text"
+              aria-label={t('calendar.tasks.addTask')}
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addTask()}

@@ -166,8 +166,10 @@ export function CoverLetterApplications() {
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
         <div className="flex gap-2 flex-1 w-full sm:max-w-lg">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500 dark:text-stone-400" />
+            <label htmlFor="coverletter-applications-search" className="sr-only">Sök bland dina brev</label>
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
             <input
+              id="coverletter-applications-search"
               type="text"
               placeholder="Sök..."
               value={searchQuery}

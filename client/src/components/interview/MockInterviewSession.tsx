@@ -145,10 +145,11 @@ export const MockInterviewSession: React.FC<MockInterviewSessionProps> = ({
 
         {/* Answer area */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label htmlFor="mockinterviewsession-f1" className="block text-sm font-medium text-gray-700 mb-2">
             Ditt svar (skriv nyckelord för att öva)
           </label>
           <textarea
+            id="mockinterviewsession-f1"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             placeholder="Skriv ditt svar här för att få feedback..."

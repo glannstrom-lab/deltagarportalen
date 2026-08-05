@@ -35,6 +35,17 @@ import { ArrowRight, Check, SkipForward, Loader2 } from '@/components/ui/icons'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+/**
+ * UX31: stegets rubrik ÄR frågan till fältet ("Vilken roll vill du veta lön
+ * för?"). Fälten i wizarderna hade inget tillgängligt namn alls — de pekar nu
+ * hit med `aria-labelledby`, så namnet kommer från synlig text i stället för
+ * från en placeholder som försvinner så fort man skriver.
+ *
+ * Ett konstant id räcker: NPF-kontraktet (punkt 1) ger exakt EN fråga per
+ * skärm, så det finns aldrig två rubriker samtidigt.
+ */
+export const FOCUS_WIZARD_TITLE_ID = 'focus-wizard-step-title'
+
 export interface FocusWizardStep {
   id: string
   icon: LucideIcon
@@ -138,7 +149,7 @@ export function FocusWizardFrame({
             <StepIcon className="w-6 h-6 text-[var(--c-solid)]" />
           </div>
           <div className="min-w-0">
-            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+            <h2 id={FOCUS_WIZARD_TITLE_ID} className="text-lg font-semibold text-stone-800 dark:text-stone-100">
               {step.title}
             </h2>
             {step.hint && (

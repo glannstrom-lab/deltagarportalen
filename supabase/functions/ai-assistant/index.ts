@@ -90,10 +90,18 @@ serve(async (req) => {
       )
     }
 
-    // Default model — 2026-05-15: matchar Vercel modell-låsning (gpt-oss-120b).
-    // Rollback: sätt AI_MODEL=anthropic/claude-3.5-sonnet i Supabase env.
-    const defaultModel = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'
-    const model = overrideModel || defaultModel
+    // Modell-låsning — 2026-05-15: matchar Vercel (gpt-oss-120b).
+    // Rollback: sätt AI_MODEL i Supabase env.
+    //
+    // B18 (2026-08-05): raden här under löd `overrideModel || defaultModel`,
+    // där `overrideModel` kom rakt ur request-body utan allowlist. En inloggad
+    // användare kunde alltså begära vilken modell som helst — t.ex.
+    // `anthropic/claude-opus-4` — på Mikaels OpenRouter-konto, 20 anrop/minut.
+    // En låsning som klienten kan skriva över är ingen låsning.
+    if (overrideModel && overrideModel !== (Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b')) {
+      console.warn('[ai-assistant] Ignorerar klientvald modell:', overrideModel)
+    }
+    const model = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'
 
     // Build prompt based on function with sanitized inputs
     let systemPrompt = 'Du är en hjälpsam assistent på svenska.'

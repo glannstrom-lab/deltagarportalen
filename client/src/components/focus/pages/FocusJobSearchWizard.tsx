@@ -11,7 +11,7 @@ import { Search, MapPin, ListChecks, Briefcase, ExternalLink, Loader2, Heart } f
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { cn } from '@/lib/utils'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -93,6 +93,7 @@ export function FocusJobSearchWizard({ onExit }: Props) {
     >
       {current.id === 'query' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -104,6 +105,7 @@ export function FocusJobSearchWizard({ onExit }: Props) {
 
       {current.id === 'city' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={city}
           onChange={(e) => setCity(e.target.value)}

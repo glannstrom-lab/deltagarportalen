@@ -73,6 +73,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
       {!analysis ? (
         <div className="space-y-4">
           <textarea
+            aria-label="Jobbannonsen du vill jämföra ditt CV med"
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Klistra in jobbannonsen här..."

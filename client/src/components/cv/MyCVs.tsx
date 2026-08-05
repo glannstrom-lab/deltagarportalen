@@ -300,8 +300,10 @@ export function MyCVs() {
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400" />
+          <label htmlFor="mycvs-search" className="sr-only">{t('cv.myCvs.searchLabel')}</label>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
           <input
+            id="mycvs-search"
             type="text"
             placeholder={t('cv.myCvs.searchPlaceholder')}
             value={searchQuery}

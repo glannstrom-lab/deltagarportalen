@@ -174,11 +174,12 @@ export default function SalaryCalculatorTab() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Occupation */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <Briefcase className="w-4 h-4 inline mr-1" />
+            <label htmlFor="salary-occupation" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <Briefcase className="w-4 h-4 inline mr-1" aria-hidden="true" />
               {t('salary.calculator.occupation')}
             </label>
             <select
+              id="salary-occupation"
               value={occupation}
               onChange={(e) => setOccupation(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] text-gray-800 dark:text-gray-100"
@@ -192,11 +193,12 @@ export default function SalaryCalculatorTab() {
 
           {/* Region */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <MapPin className="w-4 h-4 inline mr-1" />
+            <label htmlFor="salary-region" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <MapPin className="w-4 h-4 inline mr-1" aria-hidden="true" />
               {t('salary.calculator.region')}
             </label>
             <select
+              id="salary-region"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] text-gray-800 dark:text-gray-100"
@@ -210,11 +212,12 @@ export default function SalaryCalculatorTab() {
 
           {/* Experience */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              <TrendingUp className="w-4 h-4 inline mr-1" />
+            <label htmlFor="salary-experience" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <TrendingUp className="w-4 h-4 inline mr-1" aria-hidden="true" />
               {t('salary.calculator.experience')}
             </label>
             <select
+              id="salary-experience"
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] text-gray-800 dark:text-gray-100"

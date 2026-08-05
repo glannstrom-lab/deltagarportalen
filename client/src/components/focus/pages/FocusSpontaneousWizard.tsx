@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Building2, Search, MessageSquare, Smile } from '@/components/ui/icons'
 import { saveSpontaneousFocusDraft } from '@/lib/spontaneousFocusDraft'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -81,6 +81,7 @@ export function FocusSpontaneousWizard({ onExit }: Props) {
     >
       {current.id === 'industry' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={industry}
           onChange={(e) => setIndustry(e.target.value)}
@@ -92,6 +93,7 @@ export function FocusSpontaneousWizard({ onExit }: Props) {
 
       {current.id === 'company' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={company}
           onChange={(e) => setCompany(e.target.value)}
@@ -103,6 +105,7 @@ export function FocusSpontaneousWizard({ onExit }: Props) {
 
       {current.id === 'message' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           rows={7}

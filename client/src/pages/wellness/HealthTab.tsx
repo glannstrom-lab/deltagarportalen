@@ -300,6 +300,7 @@ export default function HealthTab() {
         {showNoteInput && (
           <div className="mt-3">
             <textarea
+              aria-label={t('wellness.health.notePlaceholder')}
               value={moodNote}
               onChange={(e) => setMoodNote(e.target.value)}
               placeholder={t('wellness.health.notePlaceholder')}
@@ -412,10 +413,14 @@ export default function HealthTab() {
       {/* Reflection */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <PenLine className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.health.dailyReflection')}</h3>
+          <PenLine className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+          <h3 id="wellness-reflection-label" className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.health.dailyReflection')}</h3>
         </div>
+        {/* UX31: rubriken ovanför är fältets synliga namn — knyt ihop dem i
+            stället för att dubblera texten i en egen <label>. */}
         <textarea
+          id="wellness-reflection"
+          aria-labelledby="wellness-reflection-label"
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
           placeholder={t('wellness.health.reflectionPlaceholder')}

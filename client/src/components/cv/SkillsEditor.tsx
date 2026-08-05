@@ -139,6 +139,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
           <div className="flex-1">
             <input
               type="text"
+              aria-label="Kompetens att lägga till"
               value={newSkillName}
               onChange={(e) => setNewSkillName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addSkill()}
@@ -147,6 +148,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
             />
           </div>
           <select
+            aria-label="Kategori för kompetensen"
             value={newSkillCategory}
             onChange={(e) => setNewSkillCategory(e.target.value as SkillCategory)}
             className="px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"

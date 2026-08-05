@@ -12,7 +12,7 @@ import { useMutation } from '@tanstack/react-query'
 import { User, Phone, Smile } from '@/components/ui/icons'
 import { userApi } from '@/services/userApi'
 import { useAuthStore } from '@/stores/authStore'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -98,6 +98,7 @@ export function FocusProfileWizard({ onExit }: Props) {
     >
       {current.id === 'firstName' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={firstName}
           onChange={(e) => setFirstName(e.target.value)}
@@ -109,6 +110,7 @@ export function FocusProfileWizard({ onExit }: Props) {
 
       {current.id === 'lastName' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={lastName}
           onChange={(e) => setLastName(e.target.value)}
@@ -120,6 +122,7 @@ export function FocusProfileWizard({ onExit }: Props) {
 
       {current.id === 'phone' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="tel"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}

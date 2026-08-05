@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bot, MessageSquare, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -63,6 +63,7 @@ export function FocusAITeamWizard({ onExit }: Props) {
       )}
       {current.id === 'question' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           rows={5}

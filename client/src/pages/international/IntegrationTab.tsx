@@ -469,13 +469,14 @@ export default function IntegrationTab() {
 
                           {/* Notes */}
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                              <MessageSquare className="w-3 h-3 inline mr-1" />
+                            <label htmlFor={`integration-notes-${item.id}`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                              <MessageSquare className="w-3 h-3 inline mr-1" aria-hidden="true" />
                               Anteckningar
                             </label>
                             {editingNotes === item.id ? (
                               <div className="space-y-2">
                                 <textarea
+                                  id={`integration-notes-${item.id}`}
                                   value={tempNotes}
                                   onChange={(e) => setTempNotes(e.target.value)}
                                   placeholder="Lägg till anteckningar..."

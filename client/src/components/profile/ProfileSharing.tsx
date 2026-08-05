@@ -167,10 +167,11 @@ export function ProfileSharing({ className }: Props) {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+            <label htmlFor="profilesharing-f1" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
               {t('profile.sharing.nameOptional')}
             </label>
             <input
+              id="profilesharing-f1"
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -207,10 +208,11 @@ export function ProfileSharing({ className }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+              <label htmlFor="profilesharing-f2" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                 {t('profile.sharing.validFor')}
               </label>
               <select
+                id="profilesharing-f2"
                 value={formData.expires_in_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, expires_in_days: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
@@ -223,10 +225,11 @@ export function ProfileSharing({ className }: Props) {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+              <label htmlFor="profilesharing-f3" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
                 {t('profile.sharing.maxViews')}
               </label>
               <select
+                id="profilesharing-f3"
                 value={formData.max_views}
                 onChange={(e) => setFormData(prev => ({ ...prev, max_views: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"

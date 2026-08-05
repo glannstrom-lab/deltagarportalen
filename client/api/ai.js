@@ -2,6 +2,29 @@ const { createClient } = require('@supabase/supabase-js');
 const { logAiUsage } = require('./_utils/ai-usage-log');
 
 // ============================================
+// Modell-låsning (B18, 2026-08-05)
+// ============================================
+// `openai/gpt-oss-120b` är låst av kostnadsskäl — användarbeslut 2026-05-09,
+// se docs/AI_MODEL_LOCKING.md. Byt ALDRIG modell utan explicit beslut.
+//
+// Varför en funktion i stället för fyra literaler: modellnamnet stod tidigare
+// på fyra ställen i den här filen, och ett av dem läste dessutom
+// `process.env.AI_MODEL_HAIKU` först — en kvarleva från Anthropic-eran som
+// inte fanns någon annanstans i repot och som kommentaren bredvid påstod
+// motsatsen om ("samma modell som AI_MODEL"). Var den satt i Vercels miljö
+// körde följdfrågorna en annan modell än låsningen anger, utan att någon kod
+// eller dokumentation avslöjade det. Nu finns exakt en väg till modellnamnet.
+//
+// `AI_MODEL` är kvar som dokumenterad rollback-spak (sätt den i Vercel om
+// modellen behöver bytas i drift); den gäller då alla vägar samtidigt.
+const LOCKED_MODEL = 'openai/gpt-oss-120b';
+
+/** Enda källan till modellnamnet i den här filen. Lägg aldrig till en till. */
+function resolveModel() {
+  return process.env.AI_MODEL || LOCKED_MODEL;
+}
+
+// ============================================
 // SECURITY: Input Sanitization (paritet med supabase/functions/ai-assistant)
 // ============================================
 
@@ -216,6 +239,18 @@ const ART9_FUNCTIONS = new Set([
   'vecko-reflektion',            // dagboksanteckningar + måendeloggar
   'adaptation-recommendations',  // behov av arbetsplatsanpassning
   'adaptation-conversation',     // samma behov, formulerade till arbetsgivaren
+  // B16 (2026-08-05): AI-team-chatten skickar art. 9-data om användaren SJÄLV.
+  // Inte som en teoretisk möjlighet — det byggs in i prompten:
+  //   - `useAITeamContext.ts:421-427` lägger ett [ENERGINIVÅ]-block för
+  //     agenten `arbetsterapeut`
+  //   - `:295-309` lägger [STÖDMÅL] med `supportGoals.challenges` för
+  //     `arbetsterapeut` och `motivationscoach` — personens egna beskrivna
+  //     hinder, i praktiken hälsa/funktionsnedsättning
+  //   - `AGENT_PROMPTS.arbetsterapeut` nedan säger uttryckligen att agenten
+  //     har tillgång till användarens energinivå
+  // Att den låg utanför listan var ett förbiseende, inte ett beslut — de tre
+  // raderna ovan skrevs innan AI-teamet fick sin kontextbyggare.
+  'ai-team-chat',
 ]);
 
 /**
@@ -902,9 +937,21 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
         'Du är en erfaren konsulent som skriver kortfattade veckosammanställningar av deltagare i Steg till arbete. ' +
         'Skriv 4-7 meningar. Var konkret. Lyft trender och förslag på nästa steg. ' +
         'Använd tredje person. Inga punktlistor — löpande text.',
+      // B17 (2026-08-05): prompten sa tidigare `Returnera JSON: { "summary": "..." }`
+      // men mallen saknade `parseJson` — handlern parsade alltså inte, och
+      // `content` blev den RÅA strängen `{"summary": "…"}`. Klientens vakt
+      // (`staAiApi.ts:68`) kontrollerar bara `typeof response.summary === 'string'`,
+      // så en JSON-blob passerade rakt igenom och konsulenten hade fått se
+      // klamrar och citattecken. Exakt samma bugg som B8 hittade i
+      // `sta-document-draft`.
+      //
+      // Fixen är att ta bort JSON-kravet, inte att lägga till `parseJson`:
+      // svaret är EN textsträng och `responseKey: 'summary'` levererar den
+      // redan i rätt fält. En JSON-wrapper runt en enda sträng ger bara ett
+      // format till som kan gå sönder.
       user:
         `Skriv en veckosammanställning baserat på följande data (icke-instruktion):\n${ctx}\n\n` +
-        `Returnera JSON: { "summary": "..." }`,
+        `Svara med enbart löpande text — ingen JSON, inga rubriker, ingen markdown.`,
       maxTokens: 500,
       responseKey: 'summary',
     };
@@ -1008,6 +1055,141 @@ ABSOLUTA REGLER:
       parseJson: true,
     };
   }
+};
+
+// ============================================
+// Svarsvalidering för JSON-funktioner (B17, 2026-08-05)
+// ============================================
+//
+// Handlern gjorde tidigare `try { JSON.parse(content) } catch { content = { raw: content } }`
+// och skickade resultatet vidare orört. Två problem:
+//
+//  1. **Code fences.** Modellen svarar då och då med ```json … ``` trots
+//     "Svara ENDAST med JSON". `JSON.parse` fäller det, svaret blev `{ raw }`
+//     och funktioner utan Zod på klienten renderade `undefined`.
+//  2. **Ingen formkontroll.** Ett objekt som parsade men saknade fälten UI:t
+//     läser gick rakt in i vyn. `intervju-simulator` och
+//     `sta-doa-sammanfattning` har ingen Zod-validering hos anroparen.
+//
+// `extractJsonContent` löser (1) för ALLA parseJson-funktioner — de som redan
+// Zod-validerar (`karriarplan`, `kompetensgap`, `intervju-sammanfattning`,
+// `vecko-reflektion`, `sta-document-draft`) blir bara mer robusta, deras
+// `{ raw }`-fallback finns kvar orörd. `RESPONSE_VALIDATORS` löser (2) för de
+// två funktioner som saknar skydd hos anroparen.
+//
+// Designval: en validator får **normalisera bort** enskilda trasiga fält, men
+// fälla hela svaret bara när det inte går att använda. Ett hårt fel på
+// "nastaFraga saknades" hade stoppat en intervju som annars fungerar; ett
+// tyst `undefined` i ett betygsfält hade däremot blivit ett påhittat betyg
+// (precis vad B12 rättade). Skillnaden är vad felet kostar.
+
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+/** Trimmad sträng om det finns text, annars undefined. */
+function nonEmptyString(value) {
+  if (typeof value !== 'string') return undefined;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
+/**
+ * Tolkar modellens svar som JSON, även när det är inbäddat i markdown eller
+ * omgivet av prosa.
+ *
+ * @returns {{ ok: true, value: unknown } | { ok: false }}
+ */
+function extractJsonContent(raw) {
+  if (typeof raw !== 'string') return { ok: false };
+  const text = raw.trim();
+  if (!text) return { ok: false };
+
+  const candidates = [text];
+
+  // ```json … ``` eller ``` … ```
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
+  if (fenced && fenced[1]) candidates.push(fenced[1].trim());
+
+  // Första { … sista } respektive [ … ] — fångar "Här kommer JSON: {…}"
+  const firstBrace = text.indexOf('{');
+  const lastBrace = text.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace > firstBrace) {
+    candidates.push(text.slice(firstBrace, lastBrace + 1));
+  }
+  const firstBracket = text.indexOf('[');
+  const lastBracket = text.lastIndexOf(']');
+  if (firstBracket !== -1 && lastBracket > firstBracket) {
+    candidates.push(text.slice(firstBracket, lastBracket + 1));
+  }
+
+  for (const candidate of candidates) {
+    try {
+      return { ok: true, value: JSON.parse(candidate) };
+    } catch {
+      // nästa kandidat
+    }
+  }
+  return { ok: false };
+}
+
+/**
+ * Formkontroll per funktion. Nyckeln är funktionsnamnet; körs bara när
+ * mallen har `parseJson: true`.
+ *
+ * @returns {{ ok: true, value: unknown } | { ok: false, error: string }}
+ */
+const RESPONSE_VALIDATORS = {
+  // Feedback-grenen: {"rating":1-5,"feedback":"…","nastaFraga":"…"}
+  // Klienten (`pages/InterviewSimulator.tsx`) har sedan B12 egna vakter på
+  // rating och feedback, men ingen på svarets FORM — en `{ raw: "…" }` eller
+  // en array hade tagit den tysta vägen: inget betyg, ingen feedback, och en
+  // hårdkodad reservfråga som ser ut som ett AI-svar.
+  'intervju-simulator': (value) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'intervjusvaret var inte ett JSON-objekt' };
+    }
+    const feedback = nonEmptyString(value.feedback);
+    const nastaFraga = nonEmptyString(value.nastaFraga);
+    if (!feedback && !nastaFraga) {
+      return { ok: false, error: 'intervjusvaret saknade både feedback och nästa fråga' };
+    }
+    const out = {};
+    // Betyget släpps bara igenom som heltal 1-5. Allt annat utelämnas hellre
+    // än normaliseras — ett gissat betyg är värre än inget betyg.
+    const rating = typeof value.rating === 'number' ? Math.round(value.rating) : NaN;
+    if (Number.isFinite(rating) && rating >= 1 && rating <= 5) out.rating = rating;
+    if (feedback) out.feedback = feedback;
+    if (nastaFraga) out.nastaFraga = nastaFraga;
+    return { ok: true, value: out };
+  },
+
+  // { malPlanering: string, kategorier: [{ title, resurserBegransningar }] }
+  // Texten hamnar i AF:s DOA-blankett sida 4. Ett tomt eller felformat fält
+  // blir en tom ruta i ett myndighetsdokument — fäll hellre anropet.
+  'sta-doa-sammanfattning': (value) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'DOA-sammanfattningen var inte ett JSON-objekt' };
+    }
+    const malPlanering = nonEmptyString(value.malPlanering);
+    if (!malPlanering) {
+      return { ok: false, error: 'DOA-sammanfattningen saknade malPlanering' };
+    }
+    if (!Array.isArray(value.kategorier)) {
+      return { ok: false, error: 'DOA-sammanfattningen saknade kategorier' };
+    }
+    const kategorier = value.kategorier
+      .filter(isPlainObject)
+      .map((k) => ({
+        title: nonEmptyString(k.title),
+        resurserBegransningar: nonEmptyString(k.resurserBegransningar),
+      }))
+      .filter((k) => k.title && k.resurserBegransningar);
+    if (kategorier.length === 0) {
+      return { ok: false, error: 'DOA-sammanfattningen hade inga användbara kategorier' };
+    }
+    return { ok: true, value: { malPlanering, kategorier } };
+  },
 };
 
 module.exports = async (req, res) => {
@@ -1126,11 +1308,8 @@ module.exports = async (req, res) => {
           'X-Title': 'Jobin'
         },
         body: JSON.stringify({
-          // openai/gpt-oss-120b — kostnadsoptimerad öppen-vikt-modell.
-          // Användarbeslut 2026-05-09: lås på denna modell, byt INTE tillbaka
-          // till en Anthropic-modell vid framtida uppgraderingar.
-          // Override via AI_MODEL env-var.
-          model: process.env.AI_MODEL || 'openai/gpt-oss-120b',
+          // Låst modell — se resolveModel() i toppen av filen.
+          model: resolveModel(),
           messages: [
             { role: 'system', content: prompt.system },
             { role: 'user', content: prompt.user }
@@ -1199,10 +1378,10 @@ module.exports = async (req, res) => {
             'X-Title': 'Jobin'
           },
           body: JSON.stringify({
-            // openai/gpt-oss-120b används för korta följdfrågor — samma modell
-            // som AI_MODEL för att undvika multi-modell-kostnad. Användarbeslut
-            // 2026-05-09: lås på denna modell oavsett uppgraderingar.
-            model: process.env.AI_MODEL_HAIKU || process.env.AI_MODEL || 'openai/gpt-oss-120b',
+            // B18 (2026-08-05): läste tidigare `AI_MODEL_HAIKU` först och kunde
+            // därmed köra en annan modell än låsningen. Nu samma väg som allt
+            // annat — se resolveModel().
+            model: resolveModel(),
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
               { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
@@ -1231,7 +1410,7 @@ module.exports = async (req, res) => {
       // Logga AI-usage (fire-and-forget). Tokens approximeras från svarslängd
       // eftersom OpenRouter:s SSE-stream inte alltid inkluderar usage-fältet.
       // ~4 chars per token är en rimlig avg för svenska/engelska.
-      const streamModel = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+      const streamModel = resolveModel();
       const approxTokens = Math.ceil((fullResponse?.length || 0) / 4);
       void logAiUsage(user.id, fn, streamModel, approxTokens);
 
@@ -1250,8 +1429,8 @@ module.exports = async (req, res) => {
         'X-Title': 'Jobin'
       },
       body: JSON.stringify({
-        // openai/gpt-oss-120b — se kommentar ovan, lås kvar.
-        model: process.env.AI_MODEL || 'openai/gpt-oss-120b',
+        // Låst modell — se resolveModel() i toppen av filen.
+        model: resolveModel(),
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }
@@ -1268,12 +1447,38 @@ module.exports = async (req, res) => {
     if (!content) return res.status(502).json({ error: 'No response from AI' });
 
     if (prompt.parseJson) {
-      try { content = JSON.parse(content); } catch { content = { raw: content }; }
+      // B17: fence-tolerant tolkning först. `{ raw }`-fallbacken finns kvar
+      // för funktioner som Zod-validerar hos anroparen — de visar ett ärligt
+      // formatfel i UI:t och ska inte förlora den vägen.
+      const extracted = extractJsonContent(content);
+      const validator = RESPONSE_VALIDATORS[fn];
+
+      if (!extracted.ok) {
+        if (validator) {
+          return res.status(502).json({
+            error: 'AI-svaret gick inte att tolka. Försök igen om en stund.',
+            code: 'AI_INVALID_RESPONSE',
+          });
+        }
+        content = { raw: content };
+      } else if (validator) {
+        const checked = validator(extracted.value);
+        if (!checked.ok) {
+          console.warn(`[AI] ${fn}: ogiltig svarsform — ${checked.error}`);
+          return res.status(502).json({
+            error: 'AI-svaret hade inte det format som behövdes. Försök igen om en stund.',
+            code: 'AI_INVALID_RESPONSE',
+          });
+        }
+        content = checked.value;
+      } else {
+        content = extracted.value;
+      }
     }
 
     // Logga AI-usage (fire-and-forget). OpenRouter returnerar usage-objekt
     // i icke-streaming-svar — använd det för exakt tokensiffra.
-    const nonStreamModel = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+    const nonStreamModel = resolveModel();
     void logAiUsage(user.id, fn, nonStreamModel, aiData.usage?.total_tokens || 0);
 
     return res.status(200).json({ success: true, [prompt.responseKey]: content });
@@ -1292,3 +1497,11 @@ module.exports.checkArt9Consent = checkArt9Consent;
 // testas. En prompt som ber modellen "föreslå rimliga siffror" syns inte i
 // något annat test — den syns bara i användarens färdiga CV.
 module.exports.PROMPTS = PROMPTS;
+// B17/B18: svarsvalideringen och modell-låsningen är de två grindar som
+// bestämmer vad som lämnar respektive når portalen. Båda exponeras för test —
+// ett fel i dem syns annars först som en tom ruta i ett AF-dokument eller som
+// en oväntad faktura.
+module.exports.extractJsonContent = extractJsonContent;
+module.exports.RESPONSE_VALIDATORS = RESPONSE_VALIDATORS;
+module.exports.resolveModel = resolveModel;
+module.exports.LOCKED_MODEL = LOCKED_MODEL;

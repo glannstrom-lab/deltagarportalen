@@ -223,10 +223,11 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                       <div className="pt-4 space-y-4">
                         {/* Education Level */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`edu-level-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Utbildningsnivå
                           </label>
                           <select
+                            id={`edu-level-${ed.id}`}
                             value={ed.level || ''}
                             onChange={(e) => updateEducation(ed.id, 'level', e.target.value)}
                             className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"
@@ -242,12 +243,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
 
                         {/* Degree/Program */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`edu-degree-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Examen/Program *
                           </label>
                           <div className="relative">
                             <Award className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`edu-degree-${ed.id}`}
                               type="text"
                               value={ed.degree}
                               onChange={(e) => updateEducation(ed.id, 'degree', e.target.value)}
@@ -259,10 +261,11 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
 
                         {/* Field of Study */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`edu-field-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Ämnesområde
                           </label>
                           <input
+                            id={`edu-field-${ed.id}`}
                             type="text"
                             value={ed.field}
                             onChange={(e) => updateEducation(ed.id, 'field', e.target.value)}
@@ -273,12 +276,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
 
                         {/* School */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`edu-school-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Skola/Universitet *
                           </label>
                           <div className="relative">
                             <School className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`edu-school-${ed.id}`}
                               type="text"
                               value={ed.school}
                               onChange={(e) => updateEducation(ed.id, 'school', e.target.value)}
@@ -290,12 +294,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
 
                         {/* Location */}
                         <div>
-                          <label className="block text-sm font-medium text-stone-700 mb-1">
+                          <label htmlFor={`edu-location-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                             Ort
                           </label>
                           <div className="relative">
                             <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
+                              id={`edu-location-${ed.id}`}
                               type="text"
                               value={ed.location}
                               onChange={(e) => updateEducation(ed.id, 'location', e.target.value)}
@@ -308,12 +313,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-stone-700 mb-1">
+                            <label htmlFor={`edu-startDate-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                               Startdatum *
                             </label>
                             <div className="relative">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
+                                id={`edu-startDate-${ed.id}`}
                                 type="month"
                                 value={ed.startDate}
                                 onChange={(e) => updateEducation(ed.id, 'startDate', e.target.value)}
@@ -323,12 +329,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                           </div>
                           
                           <div>
-                            <label className="block text-sm font-medium text-stone-700 mb-1">
+                            <label htmlFor={`edu-endDate-${ed.id}`} className="block text-sm font-medium text-stone-700 mb-1">
                               Slutdatum
                             </label>
                             <div className="relative">
                               <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
+                                id={`edu-endDate-${ed.id}`}
                                 type="month"
                                 value={ed.endDate}
                                 onChange={(e) => updateEducation(ed.id, 'endDate', e.target.value)}

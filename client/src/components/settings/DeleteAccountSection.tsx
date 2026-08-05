@@ -424,10 +424,11 @@ export function DeleteAccountSection() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label htmlFor="deleteaccountsection-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                   {t('settings.deleteAccount.reasonLabel')}
                 </label>
                 <textarea
+                  id="deleteaccountsection-f1"
                   value={deleteReason}
                   onChange={(e) => setDeleteReason(e.target.value)}
                   placeholder={t('settings.deleteAccount.reasonPlaceholder')}
@@ -489,10 +490,11 @@ export function DeleteAccountSection() {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                <label htmlFor="deleteaccountsection-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                   {t('settings.deleteAccount.typeToConfirm')}
                 </label>
                 <input
+                  id="deleteaccountsection-f2"
                   type="text"
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}

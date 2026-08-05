@@ -194,6 +194,7 @@ export default function EnergyTab() {
 
         {/* Notes */}
         <textarea
+          aria-label={t('wellness.energy.notesPlaceholder')}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={t('wellness.energy.notesPlaceholder')}

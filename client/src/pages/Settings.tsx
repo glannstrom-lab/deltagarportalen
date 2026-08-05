@@ -340,8 +340,10 @@ function SettingsInner() {
                   </div>
                 </CardSection>
 
-                <CardSection title={t('settings.profile.aboutMe')}>
+                <CardSection title={t('settings.profile.aboutMe')} titleId="settings-about-me-label">
                   <textarea
+                    id="settings-about-me"
+                    aria-labelledby="settings-about-me-label"
                     rows={3}
                     value={profileData.bio}
                     onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
@@ -805,7 +807,7 @@ function SettingsInner() {
 
                 <Card variant="flat">
                   <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.profileVisibilityDesc')}</p>
-                  <select className={cn(
+                  <select aria-label={t('settings.privacy.profileVisibility')} className={cn(
                     "w-full px-4 py-2 border rounded-lg transition-theme",
                     "bg-white dark:bg-stone-800",
                     "border-stone-200 dark:border-stone-700",

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { Target, Footprints, Smile, CheckCircle2 } from '@/components/ui/icons'
 import { careerPlanApi } from '@/services/careerApi'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -79,6 +79,7 @@ export function FocusCareerWizard({ onExit }: Props) {
     >
       {current.id === 'vision' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={vision}
           onChange={(e) => setVision(e.target.value)}
           rows={4}
@@ -89,6 +90,7 @@ export function FocusCareerWizard({ onExit }: Props) {
       )}
       {current.id === 'first' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={firstStep}
           onChange={(e) => setFirstStep(e.target.value)}
           rows={4}

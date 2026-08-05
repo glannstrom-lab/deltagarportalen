@@ -65,6 +65,7 @@ export function LocationSelector({
             <div className="p-3 border-b border-stone-100 dark:border-stone-700">
               <input
                 type="text"
+                aria-label={labels.searchLocation}
                 placeholder={labels.searchLocation}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}

@@ -657,8 +657,10 @@ function ResourcesInner() {
           {/* Search */}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={16} />
+              <label htmlFor="resources-search" className="sr-only">{t('resources.searchLabel')}</label>
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={16} aria-hidden="true" />
               <input
+                id="resources-search"
                 type="text"
                 placeholder={t('resources.search')}
                 value={searchQuery}

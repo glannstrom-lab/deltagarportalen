@@ -40,6 +40,16 @@ export interface OccupationPickerProps {
   onFreeText?: (label: string) => void
   /** Existerande conceptIds som ska markeras som "redan tillagd". */
   excludeConceptIds?: string[]
+  /**
+   * Synlig etikett ovanför fältet. UX31: utan den fick fältet sitt namn ur
+   * placeholdern, som försvinner så fort användaren börjar skriva.
+   */
+  label?: string
+  /**
+   * Tillgängligt namn när en synlig etikett inte får plats (t.ex. i en
+   * filterpanel där en legend redan förklarar gruppen). Andrahandsval.
+   */
+  ariaLabel?: string
   placeholder?: string
   /** Auto-fokus vid mount. */
   autoFocus?: boolean
@@ -54,6 +64,8 @@ export function OccupationPicker({
   onSelect,
   onFreeText,
   excludeConceptIds = [],
+  label,
+  ariaLabel,
   placeholder = 'Sök yrke — t.ex. lager, sjuksköterska, kock',
   autoFocus = false,
   allowFreeText = false,
@@ -184,6 +196,14 @@ export function OccupationPicker({
 
   return (
     <div className={cn('relative w-full', className)}>
+      {label && (
+        <label
+          htmlFor={inputId}
+          className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
+        >
+          {label}
+        </label>
+      )}
       <div className="relative">
         <Search
           size={16}
@@ -195,6 +215,7 @@ export function OccupationPicker({
           id={inputId}
           type="text"
           role="combobox"
+          aria-label={label ? undefined : (ariaLabel ?? t('occupation.aria.searchLabel', 'Sök yrke'))}
           aria-expanded={showDropdown}
           aria-controls={listboxId}
           aria-autocomplete="list"

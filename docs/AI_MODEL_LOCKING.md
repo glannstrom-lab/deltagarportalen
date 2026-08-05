@@ -1,19 +1,26 @@
 # AI-modell-låsning — policy och status
 
-**Senast uppdaterad:** 2026-05-15
+**Senast uppdaterad:** 2026-08-05 (B18)
 **Princip:** All AI-generering ska gå till **`openai/gpt-oss-120b`** av kostnadsskäl. Modellbyten kräver explicit beslut.
+
+**Grind sedan 2026-08-05:** `client/src/services/aiServerResponses.test.ts` läser
+`client/api/**` och `supabase/functions/**` på disk och fäller bygget om en
+modellsträng utanför allowlisten (`openai/gpt-oss-120b`, `perplexity/sonar`)
+dyker upp, eller om någon fil anropar `api.openai.com` direkt. Tabellerna nedan
+är alltså inte längre det enda som håller låsningen på plats.
 
 ---
 
-## Status efter Fas A (2026-05-15)
+## Status efter Fas A (2026-05-15), reviderad 2026-08-05
 
 | Endpoint | Modell-default | Status |
 |----------|---------------|--------|
-| `client/api/ai.js` (Vercel, 18 funktioner) | `process.env.AI_MODEL || 'openai/gpt-oss-120b'` | ✅ Låst |
-| `client/api/ai-stream.js` (Vercel, 13 funktioner) | `process.env.AI_MODEL || 'openai/gpt-oss-120b'` | ✅ Låst |
+| `client/api/ai.js` (Vercel, 18 funktioner) | `resolveModel()` → `process.env.AI_MODEL \|\| 'openai/gpt-oss-120b'` | ✅ Låst. **B18:** modellnamnet stod på fyra ställen; ett av dem läste `AI_MODEL_HAIKU` först. Nu en enda funktion |
+| ~~`client/api/ai-stream.js` (Vercel, 13 funktioner)~~ | — | ⛔ **Filen finns inte** — streaming-lagret arkiverades. Raden var fel sedan dess |
 | `supabase/functions/ai-cover-letter` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |
 | `supabase/functions/ai-cv-writing` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |
-| `supabase/functions/ai-assistant` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |
+| `supabase/functions/ai-assistant` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst. **B18:** `body.model` från klienten användes tidigare som override utan allowlist — en inloggad användare kunde beställa vilken modell som helst. Ignoreras nu (loggas) |
+| `supabase/functions/cv-analysis` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-08-05 (B18). Flyttad från OpenAI direkt — se nedan |
 | `supabase/functions/learning-analyze-gap` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |
 
 ## Medvetna undantag
@@ -27,7 +34,7 @@ Följande edge-funktioner använder **andra modeller** medvetet — de kräver c
 | `ai-company-analysis` | `perplexity/sonar` (hårdkodad) | Företagsanalys mot aktuell web-data. | Samma. |
 | `ai-company-search` | `perplexity/sonar` (hårdkodad) | Företagssökning + Bolagsverket-verifiering. | Samma. |
 | `ai-industry-radar` | `perplexity/sonar` (hårdkodad) | Branschtrender från web. | Samma. |
-| `cv-analysis` | `gpt-4` (OpenAI direkt, hårdkodad) | Använder `OPENAI_API_KEY`, inte OpenRouter. Separat faktura. | **Bör flyttas till OpenRouter + gpt-oss-120b**. Föreslås i Fas C av roadmapen. |
+| ~~`cv-analysis`~~ | ~~`gpt-4` (OpenAI direkt)~~ | — | ✅ **Åtgärdad 2026-08-05 (B18).** Gick förbi OpenRouter helt: `OPENAI_API_KEY`, hårdkodad `gpt-4`, separat faktura, inget kostnadstak och ingen rate limit — trots `verify_jwt = true`, så vem som helst med ett giltigt konto kunde köra gpt-4 obegränsat. Nu OpenRouter + låst modell. **Deploya om:** `npx supabase functions deploy cv-analysis`. Funktionen har noll klientanropare (ROADMAP AI-14 föreslår borttagning — eget beslut) |
 
 ---
 

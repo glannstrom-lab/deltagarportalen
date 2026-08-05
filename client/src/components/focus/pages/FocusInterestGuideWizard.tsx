@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Heart, Star, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -59,6 +59,7 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
     >
       {current.id === 'interests' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={interests}
           onChange={(e) => setInterests(e.target.value)}
           rows={5}
@@ -69,6 +70,7 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
       )}
       {current.id === 'strengths' && (
         <textarea
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           value={strengths}
           onChange={(e) => setStrengths(e.target.value)}
           rows={5}

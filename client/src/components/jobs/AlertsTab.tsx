@@ -108,10 +108,11 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f1" className="block text-sm font-medium text-stone-700 mb-1">
               {t('jobSearch.alertsTab.nameLabel')}
             </label>
             <input
+              id="alertstab-f1"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -122,10 +123,11 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f2" className="block text-sm font-medium text-stone-700 mb-1">
               {t('jobSearch.alertsTab.queryLabel')}
             </label>
             <input
+              id="alertstab-f2"
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -135,10 +137,11 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f3" className="block text-sm font-medium text-stone-700 mb-1">
               {t('jobSearch.alertsTab.regionLabel')}
             </label>
             <select
+              id="alertstab-f3"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"

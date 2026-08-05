@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Globe, MapPin, Lightbulb } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -63,6 +63,7 @@ export function FocusInternationalWizard({ onExit }: Props) {
     >
       {current.id === 'language' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
@@ -74,6 +75,7 @@ export function FocusInternationalWizard({ onExit }: Props) {
 
       {current.id === 'country' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={country}
           onChange={(e) => setCountry(e.target.value)}

@@ -2,7 +2,7 @@
  * MoodTab - Mood tracking and analytics
  */
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import {
   Smile, Sun, Moon, Battery, Brain,
   TrendingUp, TrendingDown, Minus, Calendar, Check,
@@ -87,20 +87,25 @@ function LevelSlider({
   lowLabel: string
   highLabel: string
 }) {
+  // UX31: reglaget hade bara en <span> som etikett — inget htmlFor, inget id.
+  // Skärmläsaren läste "reglage, 3" utan att säga vad som reglerades.
+  const sliderId = useId()
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Icon className="w-4 h-4 text-stone-700" />
+        <label htmlFor={sliderId} className="flex items-center gap-2">
+          <Icon className="w-4 h-4 text-stone-700" aria-hidden="true" />
           <span className="text-sm font-medium text-stone-700">{label}</span>
-        </div>
-        <span className="text-sm text-stone-700">{value}/5</span>
+        </label>
+        <span className="text-sm text-stone-700" aria-hidden="true">{value}/5</span>
       </div>
       <input
+        id={sliderId}
         type="range"
         min={1}
         max={5}
         value={value}
+        aria-valuetext={`${value} av 5`}
         onChange={(e) => onChange(parseInt(e.target.value))}
         className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-[var(--c-solid)]"
       />
@@ -173,10 +178,10 @@ function TodayLogger() {
 
       <div className="space-y-6">
         {/* Mood */}
-        <div>
-          <label className="block text-sm font-medium text-stone-700 mb-3">
+        <div role="group" aria-labelledby="mood-overall-label">
+          <span id="mood-overall-label" className="block text-sm font-medium text-stone-700 mb-3">
             Allmänt humör
-          </label>
+          </span>
           <MoodSelector value={mood} onChange={setMood} />
         </div>
 
@@ -209,10 +214,10 @@ function TodayLogger() {
         </div>
 
         {/* Activities */}
-        <div>
-          <label className="block text-sm font-medium text-stone-700 mb-3">
+        <div role="group" aria-labelledby="mood-activities-label">
+          <span id="mood-activities-label" className="block text-sm font-medium text-stone-700 mb-3">
             Vad har du gjort idag?
-          </label>
+          </span>
           <div className="flex flex-wrap gap-2">
             {ACTIVITIES.map((activity) => (
               <button
@@ -234,10 +239,11 @@ function TodayLogger() {
 
         {/* Note */}
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">
+          <label htmlFor="mood-note" className="block text-sm font-medium text-stone-700 mb-2">
             Anteckning (valfritt)
           </label>
           <textarea
+            id="mood-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Något speciellt som påverkade din dag?"

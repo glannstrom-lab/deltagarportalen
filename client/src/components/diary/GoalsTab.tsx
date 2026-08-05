@@ -56,10 +56,11 @@ function AddGoalForm({
     <Card className="p-5">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-stone-700 mb-2">
+          <label htmlFor="goalstab-f1" className="block text-sm font-medium text-stone-700 mb-2">
             Vad vill du uppnå denna vecka?
           </label>
           <input
+            id="goalstab-f1"
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
@@ -215,6 +216,7 @@ function GoalCard({
           {showReflection && (
             <div className="mt-3 space-y-2">
               <textarea
+                aria-label="Din reflektion om målet"
                 value={reflection}
                 onChange={(e) => setReflection(e.target.value)}
                 placeholder="Hur gick det? Vad lärde du dig?"

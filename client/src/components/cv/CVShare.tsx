@@ -100,11 +100,12 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
             <div className="space-y-4">
               {/* Share URL */}
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-2">
+                <label htmlFor="cvshare-f1" className="block text-sm font-medium text-stone-700 mb-2">
                   Delningslänk
                 </label>
                 <div className="flex gap-2">
                   <input
+                    id="cvshare-f1"
                     type="text"
                     value={shareData.shareUrl}
                     readOnly

@@ -9,7 +9,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Briefcase, HeartPulse, MessageSquare, PencilLine, Smile } from '@/components/ui/icons'
-import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
@@ -98,6 +98,7 @@ export function FocusInterviewWizard({ onExit }: Props) {
     >
       {current.id === 'role' && (
         <input
+          aria-labelledby={FOCUS_WIZARD_TITLE_ID}
           type="text"
           value={role}
           onChange={(e) => setRole(e.target.value)}
@@ -130,6 +131,7 @@ export function FocusInterviewWizard({ onExit }: Props) {
         <>
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-2">{currentQuestion}</p>
           <textarea
+            aria-labelledby={FOCUS_WIZARD_TITLE_ID}
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             rows={8}

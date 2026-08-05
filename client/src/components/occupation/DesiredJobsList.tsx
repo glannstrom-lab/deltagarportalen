@@ -199,7 +199,8 @@ export function DesiredJobsList({
                 excludeConceptIds={ordered
                   .map((j) => j.conceptId)
                   .filter((id): id is string => Boolean(id))}
-                placeholder={`Sök yrke (#${ordered.length + 1} prio) — t.ex. lager, kock…`}
+                label={`Yrke nr ${ordered.length + 1} i din prioritering`}
+                placeholder="T.ex. lager, kock…"
               />
               <div className="flex justify-end mt-2">
                 <button

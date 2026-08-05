@@ -98,7 +98,7 @@ export function AISummary({ className }: Props) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-amber-500" />
-          <h3 className="font-semibold text-stone-800 dark:text-stone-200">
+          <h3 id="profile-ai-summary-label" className="font-semibold text-stone-800 dark:text-stone-200">
             AI-sammanfattning
           </h3>
         </div>
@@ -151,6 +151,7 @@ export function AISummary({ className }: Props) {
       {editing ? (
         <div className="space-y-3">
           <textarea
+            aria-labelledby="profile-ai-summary-label"
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             rows={6}

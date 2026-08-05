@@ -72,11 +72,12 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
       <div className="p-6">
         {/* Input */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-stone-700 mb-2">
+          <label htmlFor="cvoptimizer-f1" className="block text-sm font-medium text-stone-700 mb-2">
             Vilket jobb siktar du på?
           </label>
           <div className="flex gap-2">
             <input
+              id="cvoptimizer-f1"
               type="text"
               value={targetJob}
               onChange={(e) => setTargetJob(e.target.value)}

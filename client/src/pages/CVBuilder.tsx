@@ -276,8 +276,9 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{label}</label>
+      <label htmlFor="cvbuilder-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{label}</label>
       <input
+        id="cvbuilder-f1"
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -859,7 +860,7 @@ export default function CVBuilder() {
           <div className="space-y-2">
             {data.certificates.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
-                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="text" id={`cv-cert-${cert.id}`} aria-label={t('cvBuilder.sections.certificates')} value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -876,8 +877,8 @@ export default function CVBuilder() {
           <div className="space-y-2">
             {data.links.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
-                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
-                <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="text" id={`cv-link-label-${link.id}`} aria-label={t('cvBuilder.sections.links')} value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="url" id={`cv-link-url-${link.id}`} aria-label="Webbadress" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -1250,6 +1251,7 @@ export default function CVBuilder() {
               <div className="space-y-2 mb-3">
                 <input
                   type="text"
+                  aria-label={t('cvBuilder.versions.versionNamePlaceholder')}
                   value={versionName}
                   onChange={(e) => setVersionName(e.target.value)}
                   placeholder={t('cvBuilder.versions.versionNamePlaceholder')}

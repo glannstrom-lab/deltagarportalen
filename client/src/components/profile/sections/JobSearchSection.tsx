@@ -218,11 +218,12 @@ export function JobSearchSection() {
             </label>
           </div>
           <div>
-            <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-2">
+            <label htmlFor="jobsearchsection-f1" className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-2">
               {t('profile.jobSearch.maxCommute', { minutes: preferences.mobility?.maxCommuteMinutes || 45 })}
             </label>
             <div className="relative">
               <input
+                id="jobsearchsection-f1"
                 type="range"
                 min={15}
                 max={120}

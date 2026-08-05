@@ -81,6 +81,7 @@ export function JobCard({
           {showCompare && (
             <input
               type="checkbox"
+              aria-label={`Välj ${occupation.name} för jämförelse`}
               checked={isSelected}
               onChange={(e) => onSelect?.(e.target.checked)}
               className="mt-1 w-5 h-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"

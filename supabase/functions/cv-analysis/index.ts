@@ -75,8 +75,15 @@ serve(async (req) => {
       return createCorsResponse({ error: 'Missing job description' }, 400, origin)
     }
 
-    // Hämta OpenAI API key
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
+    // B18 (2026-08-05): den här funktionen anropade tidigare api.openai.com
+    // direkt med `OPENAI_API_KEY` och hårdkodad `model: 'gpt-4'` — utanför
+    // OpenRouter, utanför `AI_MODEL`-låsningen och på en separat faktura utan
+    // tak. Den har noll klientanropare men är deployad med `verify_jwt = true`,
+    // så vem som helst med ett giltigt konto kunde köra gpt-4 obegränsat.
+    // Nu samma väg och samma låsta modell som alla andra AI-funktioner.
+    // Rollback: sätt AI_MODEL i Supabase env (gäller då alla funktioner).
+    const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
+    const model = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'
 
     // Förbered CV-text med sanitering
     const cvText = `
@@ -95,16 +102,17 @@ Språk: ${cvData.languages?.map(l => sanitizeText(l, 30)).join(', ') || ''}
 
     let analysisResult: AnalysisResult
 
-    if (openAIApiKey) {
-      // Använd OpenAI för avancerad analys
-      const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    if (openRouterKey) {
+      const openAIResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${openAIApiKey}`,
+          'Authorization': `Bearer ${openRouterKey}`,
           'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://jobin.se',
+          'X-Title': 'Jobin',
         },
         body: JSON.stringify({
-          model: 'gpt-4',
+          model,
           messages: [
             {
               role: 'system',
@@ -133,7 +141,7 @@ Var ärlig men konstruktiv. Fokusera på konkreta, handlingsbara råd.`
       })
 
       const openAIData = await openAIResponse.json()
-      const aiResponse = openAIData.choices[0]?.message?.content
+      const aiResponse = openAIData.choices?.[0]?.message?.content
 
       try {
         analysisResult = JSON.parse(aiResponse)

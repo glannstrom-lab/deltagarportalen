@@ -277,10 +277,11 @@ export const InviteHandler: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Förnamn *</label>
+              <label htmlFor="invitehandler-f1" className="block text-sm font-medium text-gray-700 mb-1">Förnamn *</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
+                  id="invitehandler-f1"
                   type="text"
                   required
                   value={formData.firstName}
@@ -291,8 +292,9 @@ export const InviteHandler: React.FC = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Efternamn *</label>
+              <label htmlFor="invitehandler-f2" className="block text-sm font-medium text-gray-700 mb-1">Efternamn *</label>
               <input
+                id="invitehandler-f2"
                 type="text"
                 required
                 value={formData.lastName}
@@ -304,10 +306,11 @@ export const InviteHandler: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Lösenord *</label>
+            <label htmlFor="invitehandler-f3" className="block text-sm font-medium text-gray-700 mb-1">Lösenord *</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
+                id="invitehandler-f3"
                 type="password"
                 required
                 value={formData.password}
@@ -337,10 +340,11 @@ export const InviteHandler: React.FC = () => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bekräfta lösenord *</label>
+            <label htmlFor="invitehandler-f4" className="block text-sm font-medium text-gray-700 mb-1">Bekräfta lösenord *</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
+                id="invitehandler-f4"
                 type="password"
                 required
                 value={formData.confirmPassword}

@@ -18,6 +18,7 @@ import { supabase } from '@/lib/supabase'
 import { sanitizeForAi } from '@/lib/piiSanitizer'
 import { apiLogger } from '@/lib/logger'
 import { useAuthStore } from '@/stores/authStore'
+import { DoaSummarySchema, safeParseAiResponse } from './aiSchemas'
 
 /**
  * Art. 9-funktioner: tar emot särskilda kategorier av personuppgifter (hälsa,
@@ -32,7 +33,28 @@ const ART9_FUNCTIONS = new Set([
   'vecko-reflektion',
   'adaptation-recommendations',
   'adaptation-conversation',
+  // B16 (2026-08-05): AI-teamets agenter `arbetsterapeut` och
+  // `motivationscoach` får energinivå och `supportGoals.challenges` inbakade i
+  // prompten av `useAITeamContext`. Se motsvarande kommentar i client/api/ai.js.
+  'ai-team-chat',
 ])
+
+/**
+ * Förklaringen användaren får när grinden stoppar ett anrop.
+ *
+ * Standardtexten ("dina anteckningar om hälsa och mående") beskriver
+ * dagbok/mående och stämmer inte för AI-teamet — där handlar det om att
+ * chatten bär med sig energinivå och egna beskrivna hinder. Ett fel som
+ * beskriver fel sak är svårare att åtgärda än inget fel alls, särskilt för
+ * målgruppen.
+ */
+const ART9_CONSENT_MESSAGES: Record<string, string> = {
+  'ai-team-chat':
+    'AI-teamet får med sig hur du mår och vad du beskrivit som svårt, så att coacherna kan anpassa sina svar. Godkänn AI-behandling i Inställningar för att använda chatten.',
+}
+
+const ART9_DEFAULT_MESSAGE =
+  'Den här funktionen läser dina anteckningar om hälsa och mående. Godkänn AI-behandling i Inställningar först.'
 
 /** Kastas när ett art. 9-anrop stoppas för att samtycke saknas. */
 export class AiConsentRequiredError extends Error {
@@ -150,7 +172,7 @@ async function prepareAiRequest(
     const profile = useAuthStore.getState().profile
     if (!profile?.ai_consent_at) {
       throw new AiConsentRequiredError(
-        'Den här funktionen läser dina anteckningar om hälsa och mående. Godkänn AI-behandling i Inställningar först.'
+        ART9_CONSENT_MESSAGES[functionName] ?? ART9_DEFAULT_MESSAGE
       )
     }
     if (profile.ai_enabled === false) {
@@ -188,6 +210,15 @@ async function throwAiHttpError(response: Response): Promise<never> {
       throw new AiConsentRequiredError(
         body.error ?? 'Funktionen kräver att du godkänner AI-behandling i Inställningar.'
       )
+    }
+  }
+  if (response.status === 502) {
+    // B17: serverns formkontroll fällde svaret. Meddelandet är skrivet för
+    // användaren och säger vad som gick fel — generisk "kommunikationsfel"
+    // skulle göra det omöjligt att veta att ett nytt försök är rimligt.
+    const body = await response.json().catch(() => null) as { error?: string; code?: string } | null
+    if (body?.code === 'AI_INVALID_RESPONSE' && body.error) {
+      throw new Error(body.error)
     }
   }
   throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
@@ -388,6 +419,18 @@ export async function chatWithAI(data: {
   return callAI<string>('chatbot', data)
 }
 
+/**
+ * Profilsammanfattning till `profiles.ai_summary`.
+ *
+ * B17 (2026-08-05): svaret castades tidigare rakt av. Anroparen
+ * (`profileEnhancementsApi.ts:722-735`) plockade `.summary || .content ||
+ * (typeof result === 'string' ? result : '')` — och skrev sedan resultatet
+ * till databasen **utan att kontrollera att det blev något**. Vid oväntad
+ * svarsform sparades alltså tomma strängen som användarens sammanfattning,
+ * `ai_summary_updated_at` sattes, och UI:t visade en tom ruta som såg
+ * genererad ut. Att kasta här är enda sättet att stoppa skrivningen utan att
+ * röra anroparen: fel ska synas som fel, inte som en tom sammanfattning.
+ */
 export async function generateProfileSummary(data: {
   name?: string
   title?: string
@@ -398,7 +441,12 @@ export async function generateProfileSummary(data: {
   desiredJobs?: string[]
   interests?: string[]
 }) {
-  return callAI<string>('profile-summary', data)
+  const result = await callAI<string>('profile-summary', data)
+  const summary = (result as { summary?: unknown }).summary
+  if (typeof summary !== 'string' || summary.trim().length === 0) {
+    throw new Error('AI-tjänsten gav ingen sammanfattning. Försök igen om en stund.')
+  }
+  return { ...result, summary: summary.trim() }
 }
 
 /**
@@ -424,7 +472,24 @@ export async function generateDoaSummary(data: {
   }>
 }) {
   const result = await callAI<DoaSummaryResult>('sta-doa-sammanfattning', data as unknown as Record<string, unknown>)
-  return result
+
+  // B17 (2026-08-05): tidigare returnerades `result` orört och anroparen
+  // (`pages/sta/components/AssessmentEditor.tsx:326`) läste `.malPlanering`
+  // och `.kategorier[i].resurserBegransningar` direkt ur det castade svaret.
+  // Texten skrivs till `scores._ai_summary` och exporteras till AF:s blankett
+  // — ett fält med fel typ blir "[object Object]" i ett myndighetsdokument.
+  // Servern formkontrollerar numera också (RESPONSE_VALIDATORS i ai.js); den
+  // här grinden finns för att en klient aldrig ska lita på att servern gjorde
+  // det, och för att ge ett begripligt fel i stället för en 502.
+  const parsed = safeParseAiResponse(
+    DoaSummarySchema,
+    (result as { sammanfattning?: unknown }).sammanfattning
+  )
+  if (!parsed.success) {
+    throw new Error('AI-sammanfattningen hade oväntat format. Försök igen om en stund.')
+  }
+
+  return { ...result, sammanfattning: parsed.data as DoaSummaryResult }
 }
 
 export default {

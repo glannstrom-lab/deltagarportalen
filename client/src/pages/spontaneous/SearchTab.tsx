@@ -413,6 +413,10 @@ export default function SearchTab() {
                 ? t('spontaneous.search.aiPlaceholder')
                 : t('spontaneous.search.placeholder')
               }
+              aria-label={searchMode === 'ai'
+                ? t('spontaneous.search.aiSearchLabel')
+                : t('spontaneous.search.orgSearchLabel')
+              }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}

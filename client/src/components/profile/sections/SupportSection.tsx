@@ -327,6 +327,7 @@ export function SupportSection() {
           <div className="flex gap-2 pt-2">
             <input
               type="text"
+              aria-label={t('profile.support.newActivity')}
               placeholder={t('profile.support.newActivity')}
               className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
               onKeyDown={(e) => {

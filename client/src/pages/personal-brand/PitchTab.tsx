@@ -461,10 +461,11 @@ export default function PitchTab() {
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                      <label htmlFor="pitchtab-f1" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {t('personalBrand.pitch.form.titleLabel', 'Titel')}
                       </label>
                       <input
+                        id="pitchtab-f1"
                         type="text"
                         value={formData.title}
                         onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
@@ -475,10 +476,11 @@ export default function PitchTab() {
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                        <label htmlFor="pitchtab-f2" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                           {t('personalBrand.pitch.form.typeLabel', 'Typ')}
                         </label>
                         <select
+                          id="pitchtab-f2"
                           value={formData.pitch_type}
                           onChange={(e) => setFormData(prev => ({ ...prev, pitch_type: e.target.value as ElevatorPitch['pitch_type'] }))}
                           className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -489,10 +491,11 @@ export default function PitchTab() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                        <label htmlFor="pitchtab-f3" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                           {t('personalBrand.pitch.form.durationLabel', 'Mållängd (sek)')}
                         </label>
                         <select
+                          id="pitchtab-f3"
                           value={formData.duration_seconds}
                           onChange={(e) => setFormData(prev => ({ ...prev, duration_seconds: parseInt(e.target.value) }))}
                           className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -507,10 +510,11 @@ export default function PitchTab() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                      <label htmlFor="pitchtab-f4" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {t('personalBrand.pitch.form.audienceLabel', 'Målgrupp (valfritt)')}
                       </label>
                       <input
+                        id="pitchtab-f4"
                         type="text"
                         value={formData.target_audience || ''}
                         onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
@@ -520,10 +524,11 @@ export default function PitchTab() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                      <label htmlFor="pitchtab-f5" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {t('personalBrand.pitch.form.contentLabel', 'Din pitch')}
                       </label>
                       <textarea
+                        id="pitchtab-f5"
                         value={formData.content}
                         onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                         className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] min-h-[150px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
@@ -539,11 +544,12 @@ export default function PitchTab() {
 
                     {/* Key points */}
                     <div>
-                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
+                      <label htmlFor="pitchtab-f6" className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         {t('personalBrand.pitch.form.keyPointsLabel', 'Nyckelpoänger att komma ihåg')}
                       </label>
                       <div className="flex gap-2 mb-2">
                         <input
+                          id="pitchtab-f6"
                           type="text"
                           value={newKeyPoint}
                           onChange={(e) => setNewKeyPoint(e.target.value)}

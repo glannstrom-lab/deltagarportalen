@@ -204,12 +204,13 @@ export function AddApplicationModal({
 
           {/* Company Name */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="addapplicationmodal-f1" className="block text-sm font-medium text-stone-700 mb-1">
               {t('applications.form.company', 'Företag')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
+                id="addapplicationmodal-f1"
                 type="text"
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
@@ -222,12 +223,13 @@ export function AddApplicationModal({
 
           {/* Job Title */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="addapplicationmodal-f2" className="block text-sm font-medium text-stone-700 mb-1">
               {t('applications.form.jobTitle', 'Tjänst')} <span className="text-red-500">*</span>
             </label>
             <div className="relative">
               <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
+                id="addapplicationmodal-f2"
                 type="text"
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
@@ -240,10 +242,11 @@ export function AddApplicationModal({
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.location', 'Plats')}</label>
+            <label htmlFor="addapplicationmodal-f3" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.location', 'Plats')}</label>
             <div className="relative">
               <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
+                id="addapplicationmodal-f3"
                 type="text"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
@@ -255,10 +258,11 @@ export function AddApplicationModal({
 
           {/* Job URL */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.jobUrl', 'Länk till annons')}</label>
+            <label htmlFor="addapplicationmodal-f4" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.jobUrl', 'Länk till annons')}</label>
             <div className="relative">
               <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
+                id="addapplicationmodal-f4"
                 type="url"
                 value={formData.jobUrl}
                 onChange={(e) => setFormData({ ...formData, jobUrl: e.target.value })}
@@ -271,8 +275,9 @@ export function AddApplicationModal({
           {/* Source & Application Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.source', 'Källa')}</label>
+              <label htmlFor="addapplicationmodal-f5" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.source', 'Källa')}</label>
               <select
+                id="addapplicationmodal-f5"
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value as ApplicationSource })}
                 className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
@@ -283,10 +288,11 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.applicationDate', 'Ansökningsdatum')}</label>
+              <label htmlFor="addapplicationmodal-f6" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.applicationDate', 'Ansökningsdatum')}</label>
               <div className="relative">
                 <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
                 <input
+                  id="addapplicationmodal-f6"
                   type="date"
                   value={formData.applicationDate}
                   onChange={(e) => setFormData({ ...formData, applicationDate: e.target.value })}
@@ -299,8 +305,9 @@ export function AddApplicationModal({
           {/* Status & Priority */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.status', 'Status')}</label>
+              <label htmlFor="addapplicationmodal-f7" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.status', 'Status')}</label>
               <select
+                id="addapplicationmodal-f7"
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ApplicationStatus })}
                 className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
@@ -313,8 +320,9 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.priorityLabel', 'Prioritet')}</label>
+              <label htmlFor="addapplicationmodal-f8" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.priorityLabel', 'Prioritet')}</label>
               <select
+                id="addapplicationmodal-f8"
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as ApplicationPriority })}
                 className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
@@ -328,8 +336,9 @@ export function AddApplicationModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.notes', 'Anteckningar')}</label>
+            <label htmlFor="addapplicationmodal-f9" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.form.notes', 'Anteckningar')}</label>
             <textarea
+              id="addapplicationmodal-f9"
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder={t('applications.form.notesPlaceholder', 'Anteckningar om ansökan...')}
