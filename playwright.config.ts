@@ -31,8 +31,14 @@ export default defineConfig({
 
   // Shared settings for all projects
   use: {
-    // Base URL for the application
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:5173',
+    // Base URL for the application.
+    //
+    // D17-följd (2026-08-09): stod 5173 (Vites default) men `client/vite.config.ts:152`
+    // sätter `port: 3000`. Webservern nedan blev därför aldrig redo, och BÅDA
+    // e2e-jobben i CI dog på webServer-timeout med exit 1. Det syntes aldrig
+    // förrän CI blev grön nog att ens nå e2e-stegen — jobben hade aldrig kört.
+    // Ändrar du porten i vite.config.ts måste du ändra den här också.
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
 
     // Collect trace when retrying a failed test
     trace: 'on-first-retry',
@@ -79,7 +85,7 @@ export default defineConfig({
   // Run local dev server before starting the tests (skip if PLAYWRIGHT_BASE_URL is set)
   webServer: process.env.PLAYWRIGHT_BASE_URL ? undefined : {
     command: 'npm run dev:client',
-    url: 'http://localhost:5173',
+    url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 120000,
   },

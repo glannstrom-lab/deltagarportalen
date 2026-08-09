@@ -57,6 +57,20 @@ Alla åtta grindar gröna efter passet (`npm run verify` exit 0, `npm run build`
 | **G17** ✅ | Togs i samma prompt: kvoter ("sök minst X jobb i veckan") är nu uttryckligen förbjudna, liksom prestationsspråk. Modellen ska föreslå *nästa minsta steg* | — |
 | **A24** 🟡 | Alla åtta falska strängar rättade i **båda** språken: "Ingen data lämnar EES" → sanningen, och **sju** felaktiga "OpenAI"-omnämnanden → OpenRouter. Fyndet var större än rapporten sa — policyn påstod även "GPT-4" (fel modell) och "enligt vårt avtal med OpenAI" (inget sådant avtal finns) | `grep -c "OpenAI\|GPT-4"` → **0** i båda locale-filerna, JSON validerad, 7 249 nycklar i vardera |
 
+### Arbetspass 3 (2026-08-09) — första gröna CI-körningen någonsin, och vad den avslöjade
+
+Efter D17–D21 gick CI från **0 av 9 jobb** till **6 av 9**. `Build` körde för första gången i projektets historia och var grön — GitHub-secreten finns alltså. Deploy är grön och **verifierad på innehåll** i prod (skip-länkens `:focus`-regel live på guidesidorna, det falska EES-påståendet borta från startsidan).
+
+De tre jobb som faller är exakt de som aldrig exekverats tidigare. Det de visar är därför nytt, inte regressioner:
+
+| ID | Fynd | Status |
+|----|------|--------|
+| **D17b** | **Playwrights webServer pekade på fel port.** `playwright.config.ts` väntade på `http://localhost:5173` (Vites default) medan `client/vite.config.ts:152` sätter `port: 3000`. Servern blev aldrig redo → webServer-timeout → exit 1 i **båda** e2e-jobben. Hela Playwright-sviten *kunde* aldrig ha kört i CI, oavsett secrets | ✅ **Lagad och verifierad** — `e2e-smoke` kör nu 11/11 grönt lokalt med exakt CI:s kommando |
+| **D28** | **24 av 94 autentiserade e2e-tester är föråldrade.** Med portfixen och riktiga inloggningsuppgifter: 68 passerar, 2 skippas, **24 failar** — och det är specarna, inte appen. De letar efter `getByRole('link', {name: /cv\|resume/i})` och `getByRole('tablist')`, alltså den platta navigationen och en flikuppsättning som försvann när hub-navigationen infördes **2026-04-29**. Specarna har varit döda i drygt tre månader utan att något larmat, eftersom jobbet aldrig kört. Berör `cv`, `cover-letter`, `dashboard`, `job-search`, `auth`, `axe-a11y` och `sta` | ⬜ **Öppen** — M. Skriv om mot dagens UI. Gör dem inte gröna genom att sänka assertionerna; flera av dem (t.ex. axe-svepet på CV och Profil) är de enda automatiska vakterna för ytor granskningen underkände |
+| **D29** | **Lighthouse CI failar.** Annotationen säger bara `exit code 1` + "No files were found with the provided path: .lighthouseci", vilket tyder på att körningen dog i collect-steget snarare än på en assertion. Orsaken är **inte fastställd** — jobbloggarna kräver admin och jag har inte kört `lhci` lokalt | ⬜ **Öppen** — S att utreda. Kör `lhci autorun` lokalt med samma flaggor mot `client/dist` |
+
+**Notera vad det här säger om skyddsnätet:** e2e-sviten har funnits, växt och citerats som täckning i tre granskningar — utan att en enda av dess autentiserade tester någonsin exekverats i CI. Två oberoende fel (saknad Supabase-env i `test`, fel port i webServer) höll den nere, och båda var osynliga lokalt. Samma familj som lärdomen "lokalt gröna grindar ≠ grön CI", men ett lager djupare: här var jobbet inte ens *rött* på rätt grund — det nåddes aldrig.
+
 ### Arbetspass 2 (2026-08-09) — tillgänglighet och räknare
 
 Alla åtta grindar gröna efter passet. Fortfarande **inte pushat**.
@@ -484,6 +498,8 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **D24** | När D17–D19 är gröna: gör CI *required* på main. Så länge push = deploy och CI är permanent röd finns ingen mekanism mellan trasig commit och prod | S |
 | **D25** | **Tautologi-lint med fryst tak** — samma ratchet-mekanik som warnings/typfel/gradienter, applicerad på testsignal. Sviten växte 933 → 1 304 (+40 %) utan att fyra av sex mutationer fångades | M |
 | **D26** | **Process:** gör mutationsstickprov till standardsteg vid granskning. Sex mutationer tog under tio minuter och gav hårdare bevis än all läsning tillsammans. Fråga aldrig "finns det ett test?", fråga "vad händer om jag går sönder koden?" | — |
+| **D28** | **24 av 94 autentiserade e2e-tester är föråldrade** — skrivna mot den platta navigationen som ersattes 2026-04-29. Se arbetspass 3. Skriv om mot dagens UI; sänk inte assertionerna för att bli grön | M |
+| **D29** | **Lighthouse CI failar av okänd orsak** — dog troligen i collect-steget (`.lighthouseci` saknades). Reproducera lokalt med samma flaggor mot `client/dist` | S |
 | **D27** | Skriv kända defekter som `it.fails` (`profileStore.test.ts:476` visar formen) i stället för att cementera dem i vanliga tester. `Image.test.tsx:98` asserterar motsatsen till sitt namn och låser fast en LCP-bugg | S |
 
 ---
