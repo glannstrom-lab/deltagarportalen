@@ -1,16 +1,105 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-04** (tioagentersgranskning — se avsnittet direkt nedan), byggd på version 2026-07-27, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
 > ID:n i parentes (J1, R5, P2 …) behålls från tidigare versioner för spårbarhet.
+>
+> **Nytt 2026-08-09 — ärlighet är inte ett spår, det är felklassen.** Andra tioagentersgranskningen hittade 20 kritiska fynd, och nästan alla är samma fel: ett påhittat värde har föredragits framför ett tomt fält. Startsidan påstår 5 000 användare där det finns 92, personligt brev-verktyget märker ett mallbrev "genererat med AI-stöd", konsulentvyn skickar `QNaN NaN` till uppdragsgivarens PDF, och mönstret har nu spridit sig till retention-policyn, tillgänglighetsredogörelsen och den här planen. Se avsnittet direkt nedan.
 >
 > **Nytt 2026-08-05 — spår K (Synlighet).** Portalen har 141 färdigskrivna artiklar (~90 000 ord) i `articleData.ts` och **noll indexerbara sidor** — `HashRouter` gör hela jobin.se till en enda URL, och `robots.txt`/`sitemap.xml` returnerar `index.html` med status 200. Innehållet är alltså redan producerat; det som saknas är publicering. Se spår K nedan.
 
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Granskning 2026-08-09 — tio agenter, andra omgången
+
+**Underlag:** `docs/portal-review-2026-08-09.md` (syntes) + `docs/review-2026-08-09/` (tio rapporter, 6 569 rader, 110 skärmdumpar). Fem läste kod och prod-databasen, fem körde portalen skarpt i Playwright — **mot prod**, sedan det visat sig att dev-servern inte har någon AI-backend alls (`vite.config.ts:73-78` svarar 501). ~247 fynd, **20 kritiska**.
+
+### Ramen som saknades i alla tidigare granskningar
+
+Portalen har **92 konton, 7 aktiva senaste 30 dygnen, 2 191 rader data och 50 AI-anrop sedan april.** Fem månader i drift. Nästan ingen har sett något av det som granskas här. Det gör ärlighetsfynden brådskande — de ska lagas *innan* någon marknadsför portalen — och det gör skalningsarbete mindre brådskande än planen antar. Den obesvarade frågan är inte teknisk: **varför använder ingen portalen?**
+
+### Nu-listan — elva punkter före allt annat
+
+| # | Fynd | Bevis | Storlek |
+|---|------|-------|---------|
+| **B19** | Startsidan påstår 5 000+ användare, femstjärnigt betyg, 30+ kommuner. Prod har 92 konton / 7 aktiva. Faktor 54 | `Landing.tsx:412`, `:426` | S |
+| **B20** | Tre påhittade personer under "Verkliga historier från människor som hittat sin väg tillbaka till arbetslivet". Fallbacken säger själv "hämtade från användarintervjuer 2026" — de intervjuerna står som *planerade* i §4 | `Landing.tsx:832` | S |
+| **A22** | 35 `SECURITY DEFINER`-funktioner fortfarande anropbara av `anon`. A17 tog 18 av 53 och generaliserade aldrig PUBLIC-fällan den själv dokumenterade. Två av dem raderar rader | `rpc/check_health_consent` → **HTTP 200** med publik anon-nyckel | M |
+| **B21** ✅ *(klar 2026-08-09, arbetspass 1)* | Misslyckad AI-generering ger påhittat brev märkt "genererat med AI-stöd". Funktionen heter `mockGenerateLetter`; rutan bär `AIGeneratedWatermark` vars docstring åberopar AI Act art. 50.2 | `CoverLetterWrite.tsx:396-407`, `:1137-1155` | S |
+| **B22** ✅ *(klar 2026-08-09, arbetspass 1)* | Karriärcoachen hittar på svenska bidragsregler ("minst 4 jobb per vecka" för a-kassa; aktivitetsstöd "78 % av prisbasbeloppet, upp till 100 dagar" — fel på båda punkter). Prompten är sju ord utan sanningsregel | `ai.js:692` | S |
+| **A23** | **Perplexity är ett oredovisat underbiträde.** **Fem** edge-funktioner kör `perplexity/sonar` **via OpenRouter** (`ai-career-assistant`, `ai-commute-planner`, `ai-company-analysis`, `ai-company-search`, `ai-industry-radar`); `ai-commute-planner` skickar användarens hemadress. Saknas i integritetspolicy, Art. 30 och DPIA — och bryter modellåsningen | `grep -rln sonar supabase/functions` → 5 filer | S + beslut |
+| **A24** 🟡 *(delvis 2026-08-09 — se arbetspass 1)* | "Servrar i EU. Ingen data lämnar EES" är falskt enligt eget `HOSTING-REGIONS.md:14`. FAQ + registreringens samtyckestext namnger fel biträde ("OpenAI") | prod | S |
+| **D17** ✅ *(klar 2026-08-09, arbetspass 1)* | **CI har aldrig varit grön** — 687 körningar sedan 2 april, noll lyckade. Orsaken är **inte** coverage: sju testfiler kraschar på `supabaseUrl is required` eftersom `test`-jobbet aldrig får `VITE_SUPABASE_URL` | `ci.yml:100-104` | S |
+| **B23** | Konsulentvyns nyckeltal ljuger om verkliga personer: "Loggade in" = `profiles.updated_at` (27/31 avviker, max 74 dygn) · `last_contact_at` skrivs aldrig (0/31) så "Kräver uppmärksamhet" flaggar 100 % för alltid · "CV-kvalitet" 0 % på en flik, 100 % på en annan · **`QNaN NaN` följer med in i uppdragsgivarens PDF** | vy-def i prod · `AnalyticsTab.tsx:523` | M |
+| **H18** | **Ingen schemaläggare finns någonstans.** pg_cron = 0, `vercel.json` saknar `crons`, inga `schedule:` i workflows. Jobbevakning, gallring och inaktivitetsmejl saknar producent på tre nivåer. A6 löser en tredjedel | tre kontroller | S + M |
+| **A25** | `CRON_SECRET` sattes aldrig → `send-inactivity-warning` svarar **503** för alla. Vakten är rätt byggd men har aldrig kört skarpt. Blockerar A6 | skarpt anrop | S (Mikael) |
+
+**Fyra av elva är storlek S och kan tas samma dag** (B19, B20, A24, D17) — de tar bort tre av fyra kritiska fynd på publika ytan och gör CI till en grind i stället för en lampa.
+
+### Arbetspass 1 (2026-08-09, samma dag) — sju punkter tagna
+
+Alla åtta grindar gröna efter passet (`npm run verify` exit 0, `npm run build` exit 0). **Inte pushat** — `.github/workflows/` kräver Mikaels ja enligt CLAUDE.md.
+
+| ID | Vad som gjordes | Bevis |
+|----|-----------------|-------|
+| **D17** ✅ | Fixen lades i `client/vitest.config.ts` (`test.env`) i stället för i workflowen — en enhetssvit ska aldrig behöva riktiga credentials, och beroendet på gitignorerade `client/.env` var själva orsaken till att felet var osynligt lokalt | **Negativ kontroll körd:** utan fix och utan `.env` failar exakt **7 filer / 1 262 av 1 304 tester** — precis de 42 som aldrig kört i CI. Med fix: **1 304/1 304** |
+| **D18** ✅ | `test` och `coverage` är nu två jobb. `test` kör `test:run` och gatar `build`; `coverage` kör `test:coverage` och har **noll nedströmsberoenden**. Coveragesammanfattningen skrivs nu alltid, inte bara för pull requests (projektet arbetar direkt på main, så ingen har någonsin sett CI:s siffra) | Jobbgraf verifierad: `coverage needs: null` |
+| **D19** ✅ | `npm audit fix` (icke-brytande) — react-router CSRF, ip-address SSRF ×3, nanoid, dompurify, undici | `npm audit --omit=dev --audit-level=high` → **0 sårbarheter, exit 0** (var 4 high) |
+| **D21** ✅ | Trufflehog scannade en tom diff (`base: main` + `head: HEAD` vid push till main). base/head borttagna → filsystemsscanning som inte kan bli tom. Actionen **pinnad till v3.96.0** i stället för `@main` | — |
+| **B21** ✅ | `mockGenerateLetter` **raderad**. Vid AI-fel visas nu ett ärligt felläge med "Försök igen" i stället för ett påhittat mallbrev märkt `data-ai-generated="true"` + `AIGeneratedWatermark`. Tomt eller oväntat svar räknas också som fel | Betalade dessutom **2 strict-typfel** (svaret smalnas av i stället för att formen tas för given) — taket sänkt 468 → **466** |
+| **B22** ✅ | Chatbotens sjuordsprompt ersatt med en som förbjuder påhittade regelverksuppgifter (a-kassa, aktivitetsstöd, lönebidrag, försörjningsstöd …) och i stället hänvisar till AF, a-kassan, Försäkringskassan och kommunen. `maxTokens` 800 → 1 200 eftersom svar kapades mitt i en siffra | `client/api/ai.js` |
+| **G17** ✅ | Togs i samma prompt: kvoter ("sök minst X jobb i veckan") är nu uttryckligen förbjudna, liksom prestationsspråk. Modellen ska föreslå *nästa minsta steg* | — |
+| **A24** 🟡 | Alla åtta falska strängar rättade i **båda** språken: "Ingen data lämnar EES" → sanningen, och **sju** felaktiga "OpenAI"-omnämnanden → OpenRouter. Fyndet var större än rapporten sa — policyn påstod även "GPT-4" (fel modell) och "enligt vårt avtal med OpenAI" (inget sådant avtal finns) | `grep -c "OpenAI\|GPT-4"` → **0** i båda locale-filerna, JSON validerad, 7 249 nycklar i vardera |
+
+### Arbetspass 2 (2026-08-09) — tillgänglighet och räknare
+
+Alla åtta grindar gröna efter passet. Fortfarande **inte pushat**.
+
+| ID | Vad som gjordes | Bevis |
+|----|-----------------|-------|
+| **F18** ✅ | **Skip-länken blir synlig vid fokus igen.** Den lokala `.sr-only` i `accessibility.css:112` togs bort — den låg utanför Tailwinds `@layer utilities` (CSS-`@import` efter `@import "tailwindcss"`) och slog därför `focus:not-sr-only`. Tailwind 4 levererar båda utilityn själv. `.sr-only-focusable` togs bort samtidigt: noll användningar i hela `client/src` | Uppmätt på det fokuserade elementet efter Tab: `clip: auto`, 143×72 px inom viewporten, `elementFromPoint` träffar länken själv, kontrast **5,50:1** |
+| **F18b** ✅ | **Samma bugg fanns en andra gång — i den prerenderade mallen.** `guide-template.cjs` hade en egen `.sr-only` **utan `:focus`-regel**, så skip-länken var permanent osynlig på alla 131 guidesidor och verktygssidorna. Dessutom saknade tre av fem malltyper länken helt (bl.a. `/guider/` och lättläst-ingången) | Efter ombyggnad: alla fyra sidtyper visar länken vid Tab — `clip: auto`, 197×53 px, kontrast **5,56:1**. Mätt mot byggd HTML, inte mot dev-SPA:n |
+| **F18c** ✅ | Två konkurrerande implementationer av skip-länken slogs ihop till en. Utility-klasserna på elementet (`sr-only focus:not-sr-only focus:top-4 …`) var död vikt — CSS-filen vann alltid. Hårdkodad lila `#7c3aed` (en färg som inte finns i designsystemet) bytt mot `var(--c-solid)` i båda implementationerna | — |
+| **B33** ✅ | **Räknarna räknade i sina egna kapade listor.** `articleCompletedCount` räknade `is_completed` inom en `.limit(3)`-lista, så åtta avklarade artiklar kunde aldrig visas som mer än 3; `aiTeamSessionCount` gjorde samma sak på `.limit(5)`. Båda hämtas nu med egna `count: 'exact', head: true`-frågor | **Muterad kontroll:** med räkningen återinförd i listan failar testet (`expected 1 to be 8`). Fixturen ger medvetet 2 rader men count 8, så testet kan skilja lagad kod från trasig |
+| **B33b** ✅ | Testmocken kunde inte skilja en listfråga från en count-fråga — den returnerade `{data, error}` för allt. Nu speglar den supabase-js: `head: true` ger `{data: null, count}`, annars `{data, count: null}` | Samma familj som lärdomen om fixturer snällare än verkligheten |
+
+**Sidoeffekt:** F18b hittades bara för att jag kontrollerade den byggda HTML:en i stället för att lita på dev-servern — `/guider/cv-grunder/` i dev är SPA-fallbacken, inte den prerenderade filen. En mätning där hade felaktigt friat alla 131 sidorna.
+
+**A24 är gul, inte grön, av två skäl:** (1) Perplexity är fortfarande inte redovisat i policyn — det hänger på A23-beslutet (redovisa eller avveckla), och att lägga in ett underbiträde i publik text medan avvecklingsalternativet står öppet vore att föregripa ditt beslut. (2) Överföringsgrunden till USA är inte fastställd (**A5**), så den gamla texten "under EU-US Data Privacy Framework" togs bort i stället för att ersättas — ett påstående om skyddsmekanism ska inte stå där förrän A5 är avgjord. i18n-nycklarna heter fortfarande `openai`/`openaiDesc`; att döpa om dem kräver kodändring och gjordes inte nu.
+
+### Mönstret bakom nästan allt: ett påhittat värde slår ett tomt fält
+
+Tjugo belagda instanser i varje lager — marknadsföring, AI-utdata, deltagar-UI, konsulent-UI **och dokumentationen**. Rotorsaken är samma kodmönster överallt (`?? 0`, `|| 0`, `if (error) return []`): en saknad rad och ett fel ser likadana ut, och båda renderas som ett tal.
+
+**Regeln som ersätter tjugo fixar:** *ett värde utan underlag visar "—" och en rad om varför — aldrig 0, aldrig 100 %, aldrig ett påhittat exempel.* Konsulentvyn har redan förebilden i sin egen text ("För litet underlag för en meningsfull jämförelse…").
+
+### Grindar som inte grindar
+
+CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och inga tester, trots att CLAUDE.md påstår `npm run verify` · `lint:schema` läser inte `insert`-kolumnnycklar (fyra skarpa buggar gömda där) eller vydefinitioner (fyra konsulent-fel) · trufflehog scannar **tom diff** på main, och repot är publikt · `nav-smoke`: `/cv`-routen borttagen → 33/33 gröna · art. 9-testerna: fel tabell **och** fel kolumn → 14/14 gröna · `client/api/*.js` har varken eslint, typecheck eller schemakontroll.
+
+**Fyra av sex mutationer överlevde.** Sviten växte 933 → 1 304 tester (+40 %) utan att signalen förbättrades. Antalet tester är projektets mest missvisande tal.
+
+### Premisser som föll den här gången
+
+- **D13 ("coverage fäller CI") är död.** Coverage passerar lokalt på alla fyra mått (23,19/63,96/34,66/23,19 mot 18/60/30/18); `exclude`-fällan är lagad. Beslutet i §7 behöver inte fattas — det är fyra rader i `ci.yml`.
+- **`lint:schema` täcker edge-funktionerna** (722 filer) — luckan sitter i `insert`-nycklar och vydefinitioner.
+- **Dev-servern duger inte för AI-granskning** — `501` för allt utom STA-mocken. Granska AI mot prod eller mät en attrapp.
+- **Konsulentvyn skalar** — `EXPLAIN ANALYZE` mot den riktiga konsulenten med 30 deltagare: 22,5 ms. Det som inte skalar är omdömet, inte tekniken.
+- **"Spara jobb är inte nåbart med tangentbord" (08-04)** — avskrivet, a11y-trädet visar `ignored: false`.
+- **"LCP har regredierat"** — mätartefakt (längre observationsfönster). `/oversikt` TBT@4× **har** däremot regredierat 322 → 522 ms.
+- **A19 är verifierat grön i drift** (HTTP 200) — punkten kan stängas.
+
+### Dödkoden växer och blockerar nu sig själv
+
+182 filer / **42 851 rader** (08-04: 175 / 41 878). Exkl. STA 32 799 mot 32 291. Ingenting av C16 är utfört. WCAG-svepet 5 augusti skrev 58 rader aria-labels i **15 onåbara filer**, vilket utlöste dödkodsskriptets färskhetsgrind och flyttade 8 076 rader från RADERA till UTRED — **fönstret öppnar tidigast 2026-08-12**, och varje nytt svep över "hela src/" skjuter det sju dygn till. Sjätte gången samma klass träffar.
+
+**Eslint-taket har 1 varnings marginal** (128 av 129). Nästa normala feature-commit kan fälla `lint:ci`. Passet ger 32 varningars luft, typfel 468 → 363, gradienter 52 → 7.
 
 ---
 
@@ -150,6 +239,30 @@
 | A20 | **Dataexporten saknar dagbok, mående och hälsodata** | ✅ **KLAR 2026-08-04 — körd och verifierad mot prod.** Migration `20260804140000_complete_data_export.sql`. **Rotorsaken var handpåläggningen, inte de saknade raderna:** den gamla `export_user_data()` räknade upp sju källor för hand — och en av dem (`user_activities`) har 0 rader i prod medan den faktiska aktivitetsloggen (`user_activity_log`, 736 rader) aldrig exporterades. Nya versionen **härleder** tabellistan ur `information_schema` vid varje anrop: varje `public`-tabell med uuid-kolumnen `user_id`, varje med `participant_id` (datadelning, konsulentkoppling, samtyckets auditlogg) samt `profiles` via `id`. Nya tabeller kommer med automatiskt. Tomma tabeller redovisas som `[]` med flit — en export som utelämnar dem går inte att skilja från en som glömt dem. Tak 5 000 rader/tabell med `truncated_tables` i svaret. `REVOKE … FROM PUBLIC` + grant till authenticated/service_role. **Verifierat som riktig inloggad deltagare (rollad transaktion): 7 → 103 nycklar**, med `diary_entries`, `mood_logs`, `user_adaptations`, `participant_data_sharing` och `user_activity_log` på plats. (Var: **HÖG (GDPR art. 15.3).** Registerutdraget är ofullständigt för exakt de kategorier som är känsligast | Claude |
 | A21 | **Två fler permissiva dubblettpolicyer neutraliserar guardade grindar** | ✅ **KLAR 2026-08-04 — körd och verifierad mot prod.** Migration `20260804130000_fix_permissive_duplicate_policies.sql`. **(a) `mood_logs`:** den ogrindade `"Users can create own mood logs"` droppad, så `check_wellness_consent` nu faktiskt gäller. **Kontrollerat innan** — annars hade måendeloggningen brutits: alla levande skrivvägar (`MoodTab` via Diary, `HealthTab` via Wellness) ligger bakom `WellnessConsentGate`, och `components/calendar/MoodTracker.tsx` skriver inte mood_logs och har dessutom noll importörer. **(b) `storage.objects`:** blanket-INSERT `"Allow uploads h83o5u_0"` (`CHECK true`, alla authenticated) droppad — de tre systerpolicyerna för SELECT/UPDATE/DELETE kontrollerades och begränsar korrekt på `foldername(name)[1] = auth.uid()`, så bara INSERT var hålet. Storage hade 0 objekt. **(c) Bonus:** båda bucketarna hade `file_size_limit = NULL` och `allowed_mime_types = NULL` — en publik bucket utan gränser är en gratis filvärd. Nu 5 MB/bilder och 10 MB/dokument med mime-allowlist. **Verifierat:** exakt en INSERT-policy på `mood_logs` (med samtyckeskontrollen), exakt två på `storage.objects` (båda bucket- och ägarbegränsade), inga NULL kvar på bucketarna. (Var: **HÖG.** Wellness-samtyckets DB-grind på `mood_logs` är upphävd av en dubblettpolicy; `storage.objects` har en blanket-INSERT. Samma klass som A16, A7 och A10 — de gångerna städades bara de granskade tabellerna. **Åtgärd bör vara generell:** inventera alla permissiva policypar där den ena saknar den andras kontroll | Claude |
 
+### Nya i spår A från granskningen 2026-08-09
+
+> Säkerhetspaketet A16–A21 **håller, verifierat mot prod** — inte mot den här planen. Rolleskaleringen är stängd, de 18 IDOR-funktionerna ger `42501`, art. 9-grinden svarar 200 i drift, exporten härleder tabellistan ur schemat, `mood_logs` och `storage.objects` är städade. RLS är på i 131 av 131 tabeller och **alla 53 definer-funktioner har pinnad `search_path`**. Det som följer är vad den granskningen inte såg.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **A22** | **35 definer-funktioner anropbara av `anon`** (Nu-listan). A17 tog 18 av 53. Åtgärd: `REVOKE EXECUTE … FROM PUBLIC` + explicita grants — och **mät utfallet** med `has_function_privilege`, revoke mot `anon` är verkningslöst | M |
+| **A23** | **Perplexity oredovisat underbiträde** (Nu-listan). Fem funktioner via OpenRouter, hemadress i en av dem. Beslut: redovisa i policy/Art. 30/DPIA, eller avveckla | S + beslut |
+| **A24** 🟡 *(delvis 2026-08-09 — se arbetspass 1)* | "Ingen data lämnar EES" + fel biträde ("OpenAI") i FAQ och registreringens samtyckestext | S |
+| **A25** | `CRON_SECRET` aldrig satt → 503 för alla (Nu-listan) | S (Mikael) |
+| **A26** | `interest_results`: en `ALL`-policy med `with_check = NULL` upphäver hälsosamtyckets grind. **Femte gången** dubblettpolicy-mönstret träffar (`profiles`, `mood_logs`, `storage.objects`, `invitations`, `profile_shares`) | S |
+| **A27** | Art. 9-grinden gäller **bara Vercel-vägen** — nio edge-AI-funktioner har ingen samtyckeskontroll alls | M |
+| **A28** | Rate-limit-identiteten tas ur första `X-Forwarded-For` (klientstyrt) på sju publika AF-proxyer → i praktiken öppna | S |
+| **A29** | CORS-kontrollen i edge-lagret sker **efter** arbetet — `send-invite-email` hinner skicka mejlet före sin 403 | S |
+| **A30** | Samtyckesregistret har **noll rader** för hälsa och wellness (art. 7.1 bevisbörda) | M |
+| **A31** | CV och personligt brev ligger kvar i `localStorage` efter utloggning. Delade datorer är normalfallet för målgruppen | S |
+| **A32** | Vercel-preview-CORS bevisat förfalskningsbar mot prod (`…-evilteam.vercel.app` reflekteras med `Allow-Credentials: true`) | S |
+| **A33** | Repot är publikt och ett prod-konsulentkontos lösenord har legat i klartext i historiken (rullat; kontot lever). Trufflehog scannar tom diff — se D21 | S + beslut |
+| **A34** | Google Translate injiceras utan egen samtyckeskategori, automatiskt vid återbesök — dagbokstext går till Google | S |
+| **A35** | `javascript:`-href i AI-genererad markdown (`MarkdownRenderer.tsx:413`, egen parser utanför DOMPurify). Oförändrat sedan maj | S |
+| **A36** | **Process:** `npm run lint:grants` — en grind som läser `has_function_privilege` per definer-funktion och `relrowsecurity` per tabell, och failar utanför en allowlist. Samma insikt som födde `lint:schema` 27 juli | S |
+
+---
+
 ## Spår B — Ärlighet i produkten (nya fynd 2026-07-10)
 
 | # | Uppgift | Detaljer |
@@ -179,6 +292,31 @@
 | B16 | **`ART9_FUNCTIONS` saknar `ai-team-chat` + åtta ytor utan art. 50-märkning** | 🔶 **Art. 9-halvan KLAR 2026-08-05 — premissen höll.** `ai-team-chat` är nu i `ART9_FUNCTIONS` på **båda** sidor (`client/api/ai.js`, `services/aiApi.ts`). Verifierat före bygget: vägen är levande (`main.tsx` → `App.tsx:263` `ai-team` → `AITeam.tsx:182` → `AgentChat` → `callAIStream`), och art. 9-datat byggs in aktivt, inte hypotetiskt — `useAITeamContext.ts:421-427` lägger `[ENERGINIVÅ]` för `arbetsterapeut`, `:295-309` lägger `[STÖDMÅL]` med `supportGoals.challenges` för `arbetsterapeut`+`motivationscoach`. Klientfelet är skrivet för chatten i stället för dagboken (standardtexten talade om "anteckningar om hälsa och mående"). Nytt test kör **hela Vercel-handlern** med nätverket stubbat och visar att 403 kommer *före* OpenRouter-anropet. ⚠️ **KONSEKVENS SOM KRÄVER DITT BESLUT:** 75 av 92 profiler saknade `ai_consent_at` (mätt 2026-08-03) — de får nu ett samtyckesfel i stället för chatt tills de godkänner i Inställningar. Granskningen föreslog ett alternativ (b): grinda bara agenterna `arbetsterapeut`/`motivationscoach` och sluta skicka `[ENERGINIVÅ]`/`[STÖDMÅL]` till övriga. Vill du dit är `agentTyp` redan tillgängligt i `req.body.data`. **Kvar: art. 50-märkningen.** Alla åtta ytor ligger i `pages/`+`components/` — mekanisk `<AIGeneratedWatermark>`-insättning, se `docs/review-2026-08-04/ai-lager.md` AI-09 |
 | B17 | **Tre JSON-funktioner utan Zod-validering + en utan `parseJson`** | ✅ **KLAR 2026-08-05 — premissen håller delvis, två rättelser.** **Rättelse 1:** `profile-summary` är ingen JSON-funktion — den saknar `parseJson` och returnerar text. Den verkliga skadan låg i anroparen: `profileEnhancementsApi.ts:722-735` gjorde `.summary \|\| .content \|\| ''` och skrev sedan resultatet till `profiles.ai_summary` **utan att kontrollera att det blev något** — vid oväntad svarsform sparades tomma strängen med `ai_summary_updated_at` satt. Åtgärdat i `generateProfileSummary` (kastar i stället), utan att röra anroparen. **Rättelse 2:** `intervju-simulator` hade redan fått sina vakter av B12 samma vecka (`parseAiRating`, ingen `\|\| 3`, ingen påhittad "Bra svar!") — granskningens AI-02/AI-11-text var inaktuell. Kvar var formen: `{ raw: … }` eller en array hade gett tyst degradering (hårdkodad reservfråga som ser ut som AI-svar). **Byggt:** (a) `extractJsonContent` i `ai.js` tolkar nu ```json-fence och JSON omgivet av prosa — gäller alla 7 `parseJson`-funktioner och räddar svar som tidigare blev `{ raw }`; (b) `RESPONSE_VALIDATORS` formkontrollerar `intervju-simulator` och `sta-doa-sammanfattning` (de två utan Zod hos anroparen) → 502 `AI_INVALID_RESPONSE` i stället för skräp i UI; `{ raw }`-fallbacken är kvar orörd för de fem som Zod-validerar, så deras ärliga formatfel finns kvar; (c) `DoaSummarySchema` + validering i `generateDoaSummary`; (d) `sta-week-summary` — prompten bad om JSON utan `parseJson`, nu ren text (svaret ÄR en sträng; `responseKey: 'summary'` levererar den redan). Ny generell vakt fäller varje prompt som kräver JSON utan `parseJson` — samma bugg har nu uppstått två gånger (B8, B17) |
 | B18 | **Modell-låsningen läcker på två ställen** | ✅ **KLAR 2026-08-05 — premissen håller, men det var TRE ställen.** Båda i raden bekräftade: `cv-analysis/index.ts:107` hårdkodade `gpt-4` mot `api.openai.com` (separat faktura, inget tak, ingen rate limit trots `verify_jwt = true`), och `ai.js` läste `AI_MODEL_HAIKU` före `AI_MODEL` i följdfrågorna efter en strömmad AI-team-chatt — med en kommentar bredvid som påstod motsatsen. **Tredje läckan, inte i raden:** `ai-assistant/index.ts:43` tog `model` rakt ur request-body och använde det som override utan allowlist (granskningens AI-12) — en låsning klienten kan skriva över är ingen låsning. Alla tre stängda. `ai.js` har nu en enda `resolveModel()` i stället för fyra literaler; `AI_MODEL` är kvar som dokumenterad rollback-spak. **Ny CI-grind:** ett test läser `client/api/**` + `supabase/functions/**` på disk och fäller bygget vid en modellsträng utanför allowlisten (`openai/gpt-oss-120b`, `perplexity/sonar`) eller ett direktanrop mot `api.openai.com` — enhetstest av `resolveModel()` hade inte fångat en ny fil som skriver sin egen sträng. `AI_MODEL_LOCKING.md` rättad (den listade också `ai-stream.js`, som inte finns). ⚠️ **Kräver deploy:** `npx supabase functions deploy cv-analysis ai-assistant` — edge-funktioner deployar inte med git push |
+
+### Nya i spår B från granskningen 2026-08-09 — mönstret, inte fynden
+
+> **Spår B är inte längre ett spår bland nio.** Tjugo belagda instanser av samma fel, i marknadsföringen, i AI-utdatan, i deltagar-UI:t, i konsulent-UI:t och i dokumentationen. Ta **B31 först** — regeln gör de övriga till en genomgång i stället för tjugo separata beslut.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **B31** | **Regeln:** ett värde utan underlag visar `—` och en rad om varför. Aldrig 0, aldrig 100 %, aldrig ett påhittat exempel, aldrig en mall märkt som AI. Skriv in den i DESIGN.md §2 och i AI-promptmallen, så nästa läsare inte "harmoniserar" tillbaka fallbackarna | S (regel) + M (genomgång) |
+| **B19** | Startsidans falska nyckeltal (Nu-listan) | S |
+| **B20** | Tre fiktiva omdömen som "verkliga historier" (Nu-listan). En andra, oanvänd uppsättning fiktiva omdömen ligger dessutom i `sv.json` | S |
+| **B21** ✅ *(klar 2026-08-09, arbetspass 1)* | `mockGenerateLetter` märkt "genererat med AI-stöd" (Nu-listan). Samma designbeslut i intervjusimulatorns rollblinda fallback och i LinkedIn-fallbacken, som samtidigt säger "AI ej tillgänglig" **och** "genererat med AI-stöd" | S |
+| **B22** ✅ *(klar 2026-08-09, arbetspass 1)* | Chatboten hittar på bidragsregler (Nu-listan) | S |
+| **B23** | Konsulentvyns fyra ljugande nyckeltal + `QNaN NaN` i uppdragsgivarens PDF (Nu-listan) | M |
+| **B24** | "Exempeldata" i CV-byggaren skriver över deltagarens **riktiga CV** med "Anna Andersson, Projektledare", autosparar mot molnet, ingen ångra. Det var den texten som hamnade i det falska brevet i B21 | S |
+| **B25** | `ai-cover-letter`-edgen fick aldrig sanningsregeln som `personligt-brev` fick i C11 — fabricerar truckkort, ledaransvar och "minskat felprocenten med mer än 15 %". Callerlös men **deployad och nåbar** | S |
+| **B26** | `profile-summary` saknar sanningsregel och skriver påhittad persona **till databasen** | S |
+| **B27** | `kompetensgap` uppfinner "Nuvarande nivå" för kompetenser CV:t inte nämner, och ger 25 % resp. 22 % på identisk indata — talet står i hjälteposition. Åtgärd: en tredje kolumn *"Står i ditt CV" / "Framgår inte"*, och ta bort procenttalet helt | M |
+| **B28** | **"AI av" stoppar bara 4 av 18 funktioner** — bevisat live: `ai_enabled = false` ger HTTP 200 för `personligt-brev` och `chatbot` | S |
+| **B29** | PII-saneringen finns **bara i webbläsaren**; direkt POST med personnummer och bankkonto gick till OpenRouter. Servern strippar bara `<>` | S |
+| **B30** | `AIAssistant` (påhittad intervjuprognos) och `AICoachAssistant` (fyra fiktiva deltagare, **noll AI-anrop**) — märkta "åtgärda idag" den 4 augusti, noll rader ändrade sedan dess | S (radera) / L (bygga) |
+| **B32** | `/resources` räknar skickade ansökningar som sparade jobb — H4-buggen rättad i `MyConsultant.tsx` men kvar här. "Sparade jobb" har idag **tre** värden i portalen | S |
+| **B33** ✅ *(klar 2026-08-09, arbetspass 2)* | Avklarade artiklar räknas på en `.limit(3)`-skiva → användaren med 8 avklarade kan aldrig se mer än 3. Samma misstag en gång till i samma fil (`.limit(5)` för AI-team-sessioner) | S |
+| **B34** | **Dokumentationen ljuger också:** `RETENTION-POLICY.md:47` ✅ på gallring som aldrig kört · tillgänglighetsredogörelsen · `AI-ACT-CLASSIFICATION.md` (mänsklig granskning utan knapp) · migrationsliggaren · CLAUDE.md om pre-push · den här planens D13 | S per dokument |
+
+---
 
 ## Spår B-buggar från UX-testet 2026-07-23 (prod-verifierade, ej ärlighet men användarblockerande)
 
@@ -280,6 +418,21 @@
 | C19 | **Två färdigbyggda funktioner är helt onåbara** | ⬜ **Beslut, inte städning.** Jobbdelning deltagare↔konsulent (792 rader) och energifunktionen (1 351 rader). Montera eller radera — se §7 |
 | C20 | **Konsulentmodulen går förbi sitt eget servicelager i 64 direkta `.from()`-anrop** | ⬜ **MEDEL.** Över 14 filer. Följden är att D11:s auth-guards och felhantering täcker ungefär en tredjedel av vyn. `CVBuilder.tsx` och `Profile.tsx` står dessutom utanför `PageLayout` — UX16 var exakt den buggen |
 
+### Nya i spår C från granskningen 2026-08-09
+
+> **Dödkoden har växt** (182 filer / 42 851 rader mot 175 / 41 878), **ingenting av C16 är utfört**, och passet blockerar nu sig självt till **2026-08-12** eftersom WCAG-svepet 5 augusti skrev 58 rader i 15 onåbara filer. Eslint-taket har **1 varnings marginal**.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **C21** | **Kör `node scripts/dead-code.cjs --skriv --steg=barrels` först.** 21 döda barrels, ~2 800 rader, noll risk, ligger **inte** i UTRED — går att ta i dag. Efteråt hittar en vanlig `grep` det fyra granskningar i rad missat. Billigaste raden i hela granskningen | S (1 h) |
+| **C22** | **Andra lagret dödkod som filnivåanalys inte ser:** 287 oanvända exporter i 92 *levande* filer. `interviewService.ts` 11 av 12 (~450 av 539 rader), `afTaxonomyApi.ts` 13, `lib/validators.ts` 11. Kör **efter** passet | M |
+| **C23** | 40 länkar till toppnivåer utan route sväljs tyst av catch-allen. Fyra är skarpa i levande UI: `/jobs` (`CareerRecommendationsPanel.tsx:312`), `/jobs?tab=saved` (`MyJourneyTab.tsx:284`), `/cv-builder` (`CareerTimeline.tsx:249` — tomtillståndets enda CTA), `/spontaneous` (`data/coaches.ts:360`) | S |
+| **C24** | Fem npm-paket utan levande användare. `autoprefixer` (Tailwind 4 prefixar själv) och `svgo` stod inte i C18 | S |
+| **C25** | Två parallella auth-implementationer: `authStore` (Zustand, 63 filer) och `useAuth` i `useSupabase.ts` med egen `onAuthStateChange` — som hela hub-sammanfattningslagret använder. Sammanslagning löser även E21 | M |
+| **C26** | **Process:** ge svepverktygen en nåbarhetsfilter-flagga innan nästa mekaniska uppdrag startar, annars skjuter nästa svep raderingsfönstret sju dygn till. Sjätte gången den här klassen träffar | S |
+
+---
+
 ## Spår D — Skyddsnät & kvalitet
 
 | # | Uppgift | Detaljer |
@@ -315,6 +468,26 @@
 
 **Objektnod-klassen är helt utrotad** — UX24:s tre var de sista i kodbasen. Av de 94 råa nycklarna ligger **19 i `components/dashboard/NextStepCard.tsx`, som är dödkod** (C16), så den levande skulden är ~75. Värst bland levande filer: `SettingsSections.tsx` (16), `WellnessConsentGate.tsx` (5), `CVBuilder.tsx` (5), `HubOverview.tsx` (5). En grind med tak 94 (eller 75 efter C16) hindrar att skulden växer och gör UX17 etapp 2 mätbar. **Noterat:** `client/api/*.js` — inklusive art. 9-grinden — får varken eslint eller typecheck, vilket är där A19 kunde gömma sig |
 
+### Nya i spår D från granskningen 2026-08-09
+
+> **D13 avskrivs — premissen är död.** Coverage passerar lokalt på alla fyra mått och `exclude`-fällan är lagad. CI är rött av en annan orsak, och har varit rött i **687 körningar sedan 2 april — noll gröna någonsin**.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **D17** ✅ *(klar 2026-08-09, arbetspass 1)* | Sju filer kraschade vid import på `supabaseUrl is required`; 42 tester hade aldrig kört i CI, och gitignorerade `client/.env` gjorde felet omöjligt att reproducera lokalt. **Löstes inte som raden ursprungligen föreslog** (env i `test`-jobbet) utan i `vitest.config.ts` (`test.env` med icke-funktionella värden): en enhetssvit ska aldrig behöva riktiga credentials, och att lägga dem i workflowen hade lämnat kvar beroendet på en fil som inte finns i CI. Sätt dem inte tillbaka i `ci.yml` | S |
+| **D18** ✅ *(klar 2026-08-09, arbetspass 1)* | Koppla loss coverage från `needs:` så build, Lighthouse och e2e får köra. En trendmätare ska inte kunna stänga av grinden som mäter om koden bygger | S |
+| **D19** ✅ *(klar 2026-08-09, arbetspass 1)* | `Security Scan` rött: fyra high i prod-beroenden (react-router CSRF). Faller oberoende av D17 | S |
+| **D20** | Gör `nav-smoke` fallbar (borttagen `/cv`-route ger 33/33 gröna) och assertera tabell + kolumn i art. 9-grindens tester (fel tabell **och** fel kolumn ger 14/14 gröna — med fail closed betyder ett stavfel att AI tyst blockeras för alla) | S |
+| **D21** ✅ *(klar 2026-08-09, arbetspass 1)* | Trufflehog scannar tom diff på push till main. Pinna till SHA, scanna historiken en gång, kör `--since-commit HEAD~1` löpande. Repot är publikt och ett prod-lösenord har faktiskt committats (A33) | S |
+| **D22** | Ge `client/api/*.js` eslint + typecheck + schemakontroll. Förhöjda rättigheter, art. 9-grinden, noll grindar, tre av fyra filer noll coverage — det var där A19 kunde gömma sig i en månad | S |
+| **D23** | **Rätta pre-push-hooken eller CLAUDE.md.** Den kör fem av åtta grindar och **inga tester**, medan dokumentationen påstår `npm run verify` | S |
+| **D24** | När D17–D19 är gröna: gör CI *required* på main. Så länge push = deploy och CI är permanent röd finns ingen mekanism mellan trasig commit och prod | S |
+| **D25** | **Tautologi-lint med fryst tak** — samma ratchet-mekanik som warnings/typfel/gradienter, applicerad på testsignal. Sviten växte 933 → 1 304 (+40 %) utan att fyra av sex mutationer fångades | M |
+| **D26** | **Process:** gör mutationsstickprov till standardsteg vid granskning. Sex mutationer tog under tio minuter och gav hårdare bevis än all läsning tillsammans. Fråga aldrig "finns det ett test?", fråga "vad händer om jag går sönder koden?" | — |
+| **D27** | Skriv kända defekter som `it.fails` (`profileStore.test.ts:476` visar formen) i stället för att cementera dem i vanliga tester. `Image.test.tsx:98` asserterar motsatsen till sitt namn och låser fast en LCP-bugg | S |
+
+---
+
 ## Spår E — Prestanda
 
 | # | Uppgift | Detaljer |
@@ -346,6 +519,24 @@
 | E16 | **Skelett finns i repot men används ingenstans** | ⬜ **MEDEL.** `DashboardSkeleton` och `ui/Skeleton` har noll importörer utanför sina testfiler — se UX29 för den uppmätta effekten (10 s splash + 4,5 s spinner utan framdrift) |
 | — | **Bygg INTE:** virtualisering | ⛔ **Premissen håller inte.** Ingen sida passerar 3 000 DOM-noder; största React-listan är 119 element (283-listan är en native `<select>`). Av de misstänkta tunga biblioteken är bara `jspdf` eager — `xlsx` finns inte i bygget alls, och `html2canvas`/`docx`/`framer-motion`/`@react-pdf` är korrekt lazy |
 
+### Nya i spår E från granskningen 2026-08-09
+
+> **P1, P2 och P3 från 08-04 är alla oåtgärdade.** E17–E19 är tillsammans **−178 kB brotli före LCP på varje sida** plus −800 kB på CV-sidan — ca 3,6 s snabbare på 400 kb/s, för mindre än en dags arbete. **Bygg inte virtualisering** (ingen sida över 3 000 DOM-noder).
+
+| ID | Punkt | Vinst | Storlek |
+|----|-------|-------|---------|
+| **E17** | **P1** — `__vitePreload` ur jsPDF-chunken | −107,1 kB brotli på **varje** kall sidladdning (−30 % eager JS) | S |
+| **E18** | **P3** — mallminiatyrer i 512×724 WebP. På slow 3G **är** en mallminiatyr LCP-elementet på `/cv` (30,4 s) | −800 kB; tar bort LCP-elementet helt | S |
+| **E19** | **P7 (nytt)** — Sentry hämtas på varje sida före LCP. Syns inte i den statiska eager-grafen som 08-04 mätte | −71,0 kB brotli före LCP | S |
+| **E20** | **Grind: fryst tak för vad som hämtas före LCP** — inte bara statisk graf. Hindrar att E17 och E19 kommer tillbaka | — | S |
+| **E21** | **P2** — låt `useAuth` läsa `authStore` (se C25). Översikt gör fortfarande 43 Supabase-anrop varav 21 dubbletter | −21 requests (−49 %), kedjan 3 led → 1 | M |
+| **E22** | `/oversikt` TBT@4× har regredierat 322 → 522 ms; `/ai-team` är nu tyngst för svag hårdvara (806 ms) — rotorsaka | okänd tills mätt | M |
+| **E23** | CLS: `/exercises` nytt på listan, `/job-search` 0,095 på mobil. `width`/`height` på mallminiatyrer tas ihop med E18 | 0,079 → ~0 | S |
+
+**Metodnotering:** LCP-talen i 08-09-rapporten ser sämre ut än 08-04:s, men det är ett artefakt av längre observationsfönster. Det jämförbara måttet "h1 synlig" är oförändrat (15,4 / 19,1 / 20,3 s). Läs inte skillnaden som en regression.
+
+---
+
 ## Spår F — Design/UX-skuld
 
 | # | Uppgift | Detaljer |
@@ -375,6 +566,28 @@
 | F16 | **DESIGN.md och koden säger olika om `/profile`** | ⬜ **Beslut.** Koden ger mint (Översikt/action); DESIGN.md §3 placerar sidan i Min vardag (lavendel). Båda är "sanning" i dag — endera ska rättas, se §7 |
 | F17 | **Kontrastproblemet är ett tokenproblem, inte 38 separata misstag** | ⬜ **MEDEL.** Se UX33: mönstret är Tailwind `-500`/`-600` på egna `-50`/`-100`-bakgrunder. Åtgärda i tokens/`DESIGN.md §5` så slutar det återkomma |
 
+### Nya i spår F från granskningen 2026-08-09
+
+> Mycket är verkligt lagat sedan 08-04: fokusstölden borta (22/22 sidor), 0 av 35 formulärfält utan namn, unika `<title>` per rutt, **noll axe-överträdelser på alla 12 publika sidor × 2 breddpunkter**, `prefers-reduced-motion` respekteras, 0 px spill vid 200/400 % zoom. Det som följer är kvarstående och nytt.
+
+| ID | Punkt | WCAG | Storlek |
+|----|-------|------|---------|
+| **F18** ✅ *(klar 2026-08-09, arbetspass 2)* | **Skip-länken blir aldrig synlig när den får fokus** — första tabbtrycket på *varje* sida, inloggad och på prod. Tre konkurrerande regeluppsättningar: egen `.sr-only` i `accessibility.css:112` som via CSS-`@import` hamnar utanför Tailwinds `@layer utilities` och därmed slår `focus:not-sr-only`; `min-height/width: 48px` i `mobile.css:18-19` blåser upp lådan utan att ta bort clip | 2.4.7, 2.4.1 | S |
+| **F19** | **45 av 68 fokuserbara element utanför skärmen** på mobil (390 px) och vid 400 % zoom — två off-canvas-lådor renderas stängda utan `inert`/`aria-hidden`. Man tabbar genom 36 osynliga stopp innan sidans innehåll. Har vuxit till 50–55 per sida i Min vardag-området | 2.4.3, 2.4.7 | M |
+| **F20** | **Tillgänglighetsredogörelsen påstår mätbart falska saker** (bl.a. "Knappar är `<button>`, inte klickbara `<div>`" mot 46 axe-noder) och saknar utvärderingsmetod + bedömningsdatum — formkrav enligt lag 2023:254 | lag | S |
+| **F21** | Åtta namnlösa ikonknappar på desktop (en raderar dagboksinlägg) — **tredje granskningen i rad**. Plus fyra dagboksflikar och två CV-knappar som tappar namn under `sm` (etiketten i `span.hidden xs:inline`) | 4.1.2 | S |
+| **F22** | Registreringens valideringsfel når inte hjälpmedel: 0/8 `aria-invalid`, 0/8 `aria-describedby`, inget `role="alert"`. Verifierat på prod — första sidan en ny deltagare möter | 3.3.1, 4.1.3 | S |
+| **F23** 🟡 *(delvis 2026-08-09, arbetspass 2)* | 29 kontrastbrott i samma tre familjer som i juli · 46 nästlade interaktiva noder · rubriknivåhopp på 9 av 11 sidor (profilen har `h2` före `h1`) · `<main>` saknas på publika SPA-sidor · ~~133 guidesidor saknar skip-länk~~ ✅ **åtgärdat** — länken fanns men var permanent osynlig (ingen `:focus`-regel i mallen), och tre av fem malltyper saknade den helt. Resten av raden kvarstår | 1.4.3, 4.1.2, 1.3.1 | M |
+| **F24** | **Engelskt läge: menyn översatt, sidinnehållet svenskt på 11 av 21 sidor.** Två hederliga alternativ — översätt UI-chrome (~150 strängar) + skriv ut "Content available in Swedish only", eller ta bort engelska ur väljaren tills innehållet finns. Nuläget är sämst av tre | — | M + beslut |
+| **F25** | Två flytande widgets täcker innehåll på **17 av 19 verktygssidor**, inklusive GDPR-kontrollerna. Slå ihop till ett piller med två val — löser även F26:s syskonfynd i fokusläget | — | S |
+| **F26** | `/jobb`-hubben saknar två av nio verktyg (`/linkedin-optimizer`, `/international`) — på mobil bara nåbara via direkt-URL. **Mobilmenyn kör dessutom den gamla platta `navGroups`-modellen** (ÖVERSIKT/REFLEKTION/UTÅTRIKTAT) parallellt med bottennavets 5 hubbar, med CV under "REFLEKTION" | — | M |
+| **F27** | Modaler monteras utanför `data-domain` och får fel hub-färg (`nearestDomain: null`) | — | S |
+| **F28** | **LIX-tak som CI-grind.** Hubbarna ligger rätt (35–37), men `/skills-gap-analysis` 62, `/job-search` 59, `/guider/cv-grunder/` 51. Sätt tak 40 för UI och 45 för guider, mät som gradient-baseline. Lättläst-guiden (LIX 23) bevisar att det går | — | M |
+| **F29** | **Lyft de ~15 etikettrubrikerna med fokuslägets ordlista.** Fokusläget skriver "Vad känns viktigt i din vardag just nu?" där normalläget skriver "Övningar" — 13 färdiga rubriker att utgå från. En dag | — | S |
+| **F30** | Kognitivt, utan att vara WCAG-krav: felmeddelanden som säger vad man ska göra ("Lösenordet behöver minst 12 tecken — du har skrivit 3") · "Sparat"-kvittens som `aria-live` från steg 1 i CV-byggaren i stället för på steg 6 av 6 · inaktiverade knappar som förklarar sig · en Lättläst-växel **inne** i portalen, inte bara publikt | — | S–M |
+
+---
+
 ## Spår G — Produktutveckling
 
 > **Körning 2026-07-27:** G3, G4, G5, G9, G10, G11 avklarade i en session (846 → 852 tester, alla gröna; 0 ESLint-errors; gradienter på baseline; bygge grönt). Tre av punkterna visade sig ha **fel premiss** när koden faktiskt lästes — G3 (CV hade redan fokusläge), G9 (poängen har noll läsare, inte bara ingen vy) och G10 (chatboten var död kod). Det som stod i roadmapen byggde på granskningsrapporter, inte på importspårning. Detaljerna står per rad.
@@ -401,6 +614,27 @@
 | G11 | Intervjusimulator: sessionssammanfattning | ✅ **Klar 2026-07-27** — ny ai.js-funktion `intervju-sammanfattning` (rate limit 10/15 min) som tar hela sessionen och svarar i `IntervjuSimulatorResultSchema`-format; prompten förbjuder påhittade erfarenheter och kräver att korta/tomma svar sägs vänligt i `improvements` i stället för att gissa. Klienten Zod-validerar via `safeParseAiResponse`, visar styrkor/förbättringar/omdöme på sammanfattningsskärmen med Art 50-vattenmärke, och lägger den i textnedladdningen. Vid fel: ärligt meddelande — sessionens egna siffror står kvar. **Bonusfynd — i18n-strukturbugg från UX3:** hela `summary`-blocket låg felnästat **inuti** `interviewSimulator.input`, så sammanfattningsskärmens nycklar aldrig löste ut (engelska användare fick svensk fallback-text). Lyft till rätt nivå i sv+en; verifierat att båda filerna nu har identisk struktur (8 254 nyckelvägar var) |
 | G12 | Veckoreflektion för icke-STA-deltagare | ✅ **Klar 2026-07-27** — ny ai.js-funktion `vecko-reflektion` (rate limit 5/timme — dyrare anrop, art. 9-data) som vänder `sta-week-summary`-mönstret från konsulenten till **deltagaren**: andra person, inte tredje. Prompten förbjuder tolkning/diagnos av mående ("du skrev att du kände dig trött", aldrig "du verkar deprimerad"), förbjuder moralisering, och kräver att en tunn vecka beskrivs lugnt utan att antyda misslyckande. Nytt `VeckoReflektionSchema` (+3 tester) där `gentleSuggestion` är valfri med flit — prompten ska utelämna fältet i stället för att hitta på ett förslag. Ny `WeeklyReflectionCard` på Min vardag-hubben via ny `footerSection`-prop i `HubPage`. **Genereras aldrig automatiskt** — deltagaren trycker själv (att skicka dagbok + mående till USA oombedd vore fel), och knappen visas inte alls när veckan är tom. Art 50-märkt |
 | G13 | Konsulent-transparenssida ("Det här ser din konsulent") | ✅ **Klar 2026-07-27** — vyn fanns redan i `MyConsultant` men var **osann på tre sätt**. (1) Varje post var hårdkodad `isShared: true`; i verkligheten delas måendet bara om deltagaren gett samtycke i `participant_data_sharing` (UX7). Samtycket läses nu och styr ögonikonen — en transparenssida som påstår att konsulenten ser mer än hen gör är värre än ingen sida. (2) Rubriken `t('myConsultant.sharedInfo')` pekade på ett **objekt** → i18next returnerade den råa nyckeln, så kortet läste "myConsultant.sharedInfo" i prod; `sharedInfoDesc` fanns inte alls. Nya nycklar `sharedInfoTitle`/`sharedInfoDesc`. (3) Ögonikonernas aria-labels var **tomma strängar** (nycklarna låg under `sharedInfo`, inte direkt under `myConsultant`). Tillagt: teckenförklaring för de två ikonerna + länk "Ändra vad du delar" → `/settings?section=privacy` (Settings fick djuplänkning via `useSearchParams`, saknades helt) |
+
+### Nya i spår G från granskningen 2026-08-09 — vad portalen borde kunna men inte kan
+
+> Det här är inte buggar. Det är den utveckling granskningen pekar på när man frågar vad som skulle betyda något för en långtidsarbetslös och för en konsulent med 30 deltagare. Rangordnat efter nytta, inte efter teknisk elegans.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **G14** | **Låt verktygen provas utan konto.** Publik CV-byggare: tre fält → riktig PDF-förhandsvisning → *då* be om konto för att spara. Starkaste konverteringen för målgruppen är ett resultat, inte ett löfte. Löser K11 på köpet; `api/cv-pdf.js` är redan rate-limitad | M–L |
+| **G15** | **Ge AI:n de svenska stödsystemen.** Den skarpa karriärplanen för en person med tre års arbetslöshet och ryggbesvär rekommenderade "en bra kontorsstol" och "en onlinekurs på Coursera" — ingenting om arbetshjälpmedel via AF (som betalar stolen), lönebidrag, arbetsträning, Komvux eller yrkesvux. AI:n ger amerikanska medelklassråd till någon utan inkomst. Tre systemprompter | S (1 dag) |
+| **G16** | **Redaktionellt granskad faktabank för regelfrågor.** Trettio granskade frågor om a-kassa, aktivitetsstöd, lönebidrag, nystartsjobb och arbetshjälpmedel, injicerade i prompten med källänk i varje svar. Löser B22 vid roten. Vid 50 anrop sedan april är tokenkostnaden noll | M |
+| **G17** ✅ *(klar 2026-08-09, arbetspass 1)* | **Sluta räkna i ansökningar per vecka.** Karriärplanen sa "minst 5 jobb per vecka", ett annat svar 10. För någon som skriver att hen knappt orkar är en kvot sämsta möjliga första steg — och det bryter mot DESIGN.md §2. Förbjud kvoter i prompten; be om *nästa minsta steg* | S |
+| **G18** | **Kalibrera efter energi, inte bara yrke.** `useAITeamContext` skickar redan energinivå till arbetsterapeuten; ingen annan funktion använder den. Konkret form: ett tredje val i AI-teamets sidopanel — "Ett steg i taget" / "Några förslag" / "Ge mig hela bilden", med det första som default. **Datan finns; kopplingen saknas** | M |
+| **G19** | **Ett kontaktregister som stämmer — störst effekt av allt för konsulenten.** En "Jag har haft kontakt"-knapp (telefon/möte/mejl + fritext) som skriver `last_contact_at` och en journalrad gör hela triagelagret (KPI, Min dag, filter, detaljvy) fungerande på en gång. Utan den kan verktyget aldrig svara på frågan varje konsulent ställer sig varje morgon. Kräver B23/K2 löst först | M |
+| **G20** | **Kedja ihop deltagarspåret.** Sparat jobb → skriv brev (jobbet förifyllt) → anpassa CV mot annonsen → öva intervjun för rollen → lägg i pipen. Delarna finns; länkarna saknas. `/cover-letter` gör det rätt — ingen annan gör det | M |
+| **G21** | **Visa vad i AI-utdatan som har täckning och vad som är gissat.** Färgmarkering av vilka påståenden som kommer ur användarens egna uppgifter. Mest konkreta sättet att uppfylla AI Act art. 50 på riktigt — en märkning som visar *var* AI:n fyllt i, inte bara att den varit inblandad | M |
+| **G22** | **Låt konsulenten vara den mänskliga granskningen på riktigt.** `AI-ACT-CLASSIFICATION.md` hävdar att den finns eftersom "konsulent kan granska" — det finns ingen knapp. "Be min konsulent titta på det här" gör påståendet sant. `get_my_consultant`-RPC finns sedan UX12 | S (1 dag) |
+| **G23** | **Kuratera Övningar i stället för att lista dem.** 119 kort och 40 000 px är ett produktproblem, inte ett designproblem: sidan har inget centrum. DESIGN.md §8 föreskriver redan lösningen ("För dig idag: 3 övningar"); RIASEC-profilen och måendeloggen finns som signal | M |
+| **G24** | **Mät om AI:n hjälper.** 50 anrop på fyra månader betyder att ingen vet. En rad i `ai_usage_logs` för "behöll / kastade utdatan" ger första riktiga kvalitetssignalen — och underlag för bias-testet AI-ACT-dokumentet kräver men som aldrig gjorts | S |
+| **G25** | **Konsulentens övriga luckor:** veckovy i stället för dagvy · sökbara, tidsstämplade anteckningar · rapport per deltagare (bygg på `ReportDraftDialog`, inte portföljrapporten) · överlämning mellan konsulenter (blockerar drift bortom en handfull) · bevakning som hör av sig utan inloggning (inställningarna finns redan i K6, de gör bara ingenting) | M–L |
+
+---
 
 ## Spår H — Schemaintegritet (nytt 2026-07-27, högst prio efter A)
 
@@ -441,6 +675,30 @@
 | H16 | **96 tysta fel gör saknad data oskiljaktig från fel** | ⬜ **MEDEL.** 63 × `if (error) → return []` och 33 × `catch → return []` i `client/src`. Värst: onboardingchecklistan (`GettingStartedTab.tsx:19`, `MyJourneyTab.tsx:34`) säger "du har inget CV" vid nätverksfel. Fortsättning på D7/D11-mönstret |
 | H17 | **Två nya React Query-fynd** | ⬜ **LÅG–MEDEL.** UX8-fixen håller (verifierat: inga `setQueryData` skriver längre fel form). Men `['coverLetters']` i `FocusCoverLetter.tsx:189` är en **föräldralös invalidering** (rätt nyckel är `['cover-letters']`), och **fem nycklar hämtar samma CV** medan bara `['cv']` invalideras vid autospar → jobbmatchningen kör på upp till fem minuter gammalt CV |
 | H8b | **H8:s sista oavgjorda par kan avgöras gratis** | ⬜ **S.** `personal_brand_audit` och `personal_brand_audits` är **båda tomma** — ingen datamigrering krävs. Välj ett namn, droppa det andra |
+
+### Nya i spår H från granskningen 2026-08-09
+
+> **Grinden håller vad den lovar, men inte vad man tror att den lovar.** `lint:schema` är grön över 722 filer, snapshoten är exakt aktuell (135 objekt, 0 kolumndiff), och den **täcker** edge-funktionerna. Luckorna sitter i `insert`-nycklar och i vydefinitioner — och där gömde sig fyra skarpa buggar respektive fyra ljugande nyckeltal.
+>
+> Kontext: **77 av 132 tabeller är tomma**, hela databasen är 2 191 rader / 29 MB.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **H18** | **Ingen schemaläggare finns någonstans** (Nu-listan). pg_cron = 0 **och** `vercel.json` saknar `crons` **och** inga `schedule:` i workflows. A6 löser en tredjedel | S + M |
+| **H19** | **Utöka `check-schema-drift.cjs` med `insert/update/upsert`-nycklar.** Den enda lucka som bevisligen släppt igenom skarpa buggar — fyra på en eftermiddag. Balanserad `{}`-parsning, hoppa över spread och beräknade nycklar | S |
+| **H20** | AI-teamets "skapa uppgift i kalendern" (`AgentChat.tsx:323`) skickar fem obefintliga kolumner och utelämnar NOT NULL-fältet `date`. **Kan strukturellt aldrig lyckas**; felet sväljs av `if (!error)` — deltagaren klickar och inget händer | S |
+| **H21** | Låt grinden läsa vydefinitioner (`pg_get_viewdef` i snapshoten). B23:s fyra fel sitter alla i `consultant_dashboard_participants` — giltig SQL mot existerande objekt, därför osynlig för en referenskontroll | M |
+| **H22** | **"Räknar-på-en-limit"-lint:** `.limit(n)` följt av `.length` som presenteras som ett antal. Två instanser i samma fil (B33). ESLint-regel eller grep-skript i CI | S |
+| **H23** | **Migrationsliggaren i prod är osann:** 57 poster mot 132 filer, stannar 2026-04-16 — och två *registrerade* migrationer saknar sina objekt (`interview_recordings` finns inte; `job_notifications` fick skapas om 3,5 månader senare). Det är förklaringen till varför `db push` är förbjuden, och den står ingenstans. Varken sann eller uttalat övergiven är sämst av tre | S + beslut |
+| **H24** | `RETENTION-POLICY.md:47` markerar rate-limit-gallringen ✅ — 475 av 485 rader är äldre än ett dygn, äldsta 107 dagar, och `check_rate_limit` innehåller ingen DELETE | S |
+| **H25** | G9 tog bort poängmaskineriet i klienten — RPC:n `log_user_activity` skriver fortfarande till `user_gamification`, senast under granskningsdygnet. Tabellens enda omnämnande i koden är en kommentar om att ingen läser den | S |
+| **H26** | 91 av 92 profiler har `ai_enabled = true` men bara 18 har `ai_consent_at`, och samtyckesloggen har slutat skrivas. Hör ihop med A30 och med det öppna beslutet om vad `ai_consent_at` ska grinda | M |
+| **H27** | Tre FK-regler kan blockera kontoradering och en revisionstabell saknar FK helt. 15 FK-kolumner med data saknar index; 246 av 457 index har noll scans | M |
+| **H28** | **Process:** kör `schema:refresh` i CI en gång i veckan mot prod och öppna ärende vid diff. Snapshoten var exakt aktuell i dag — men det berodde på disciplin, inte på mekanik | S |
+
+**Datamodellens riktning** (se `portal-review-2026-08-09.md` §Utvecklingsförslag 13): en sanning per begrepp, och den ska vara en **händelselogg**. `user_activity_log` (738 rader, den enda tabellen som fyllts kontinuerligt sedan mars) är den enda strukturen som bär "vad har hänt" — låt hubbarnas senaste-händelse och konsulentens aktivitetsbild läsa **en** logg. Skapa tillståndsrader vid signup, så att "ingen rad" betyder ett riktigt fel i stället för både "inte börjat" och "gick fel". Avgör de fyra tomma spåren (karriär 9 tabeller, personal brand 6, aviseringar 4, övningar 4) innan modellen utvidgas åt något håll.
+
+---
 
 ## Spår I — Kvalitetsgrindar & prestanda (nytt 2026-07-27)
 
@@ -495,6 +753,28 @@
 | K10 | **Lästiderna var fel på 128 av 133 artiklar** | ✅ **Klar 2026-08-05 — hittades under K9.** Medianen var **3,7× för hög**, värsta fallet 22× (`intervju-fragor`: 22 min angivet för 189 ord). **Det här är inte kosmetika i den här portalen.** Lästiden visas som beslutsunderlag — "orkar jag det här nu?" — för användare som ofta har begränsad ork. En uppblåst siffra får någon att hoppa över en text som tagit en minut, alltså precis motsatsen till vad energianpassningen ska göra. Rättat med `scripts/fix-reading-time.cjs` (200 ord/min, checklistor inräknade, markdown och tabeller exkluderade): **125 artiklar uppdaterade i prod**, 124 sänkta och 1 höjd, med backup och `--rollback`. Gäller både appen och guidesidorna eftersom båda läser samma kolumn. |
 | K8 | **Mätning** | Search Console + egen enkel loggning. **Ingen Google Analytics utan samtyckeshantering** — varken CSP:n eller GDPR-läget (spår A) tål det som det ser ut nu. Fail closed, jfr lärdomen 2026-08-03 |
 
+### Nya i spår K från granskningen 2026-08-09
+
+> **Den prerenderade motorn håller.** 139/139 sitemap-URL:er svarar 200, canonical stämmer på varenda en, JSON-LD validerar, **noll axe-överträdelser** på 7 sidor × 2 breddpunkter, LCP 436–708 ms på strypt Slow 4G, inga sourcemaps, bara anon-nyckeln i bundlen, K10:s lästider verifierade (132/133 rätt). K1–K6, K9 och K10 är levererade som utlovat.
+>
+> Problemet är inte tekniken. Det är vad ytan säger och vart den leder.
+
+| ID | Punkt | Storlek |
+|----|-------|---------|
+| **K11** | **Varje CTA på de 138 prerenderade sidorna leder till en skyddad route.** `App.tsx:116` gör `<Navigate to="/">` utan `returnTo` → gästen dumpas tyst på B2B-säljsidan. Reproducerat i webbläsare. Byggrinden `validateRoutes()` kollar att routen *finns*, inte att en gäst kan nå den — utöka den | S |
+| **K12** | Startsidan länkar **inte** till någon av de 137 prerenderade sidorna — de är föräldralösa från rot. `<title>`/description/OG säljer B2C medan sidan är B2B ("Stärk dina deltagare mot jobb") | S |
+| **K13** | Startsidan är **enda sidan som failar CWV**: LCP 4 368 ms, noll serverrenderat innehåll. Cookierutan täcker primär-CTA på mobil (hit-test: `blocked: true`). "Boka 30 min demo" och "Se konsulentvyn" skrollar bara | M |
+| **K14** | Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
+| **K15** | Guideindexet använder inte `category_key`/`difficulty` som redan finns i datat. 13 statiska kategorisidor = bättre navigering **och** 13 nya indexerbara sidor | M |
+| **K16** | **B2B-ytan finns inte för Google.** En kommun eller Rusta-och-matcha-leverantör som söker "digital plattform arbetsmarknadsenhet" hittar ingenting. En prerenderad `/for-arbetsmarknadsenheter/` med ärligt beskrivet GDPR-läge och en riktig demoknapp är sannolikt sajtens mest värdefulla sida per besökare — och den ska bära det som A24/B19 tar bort, i sann form | M |
+| **K17** | Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
+| **K18** | En "vad är detta"-rad överst på guidesidorna. En besökare landar mitt i en ATS-guide utan att veta vad Jobin är — femsekundersfrågan ställs där, inte på startsidan | S |
+| **K19** | `/landing.html` (40 kB föräldralös marknadsföringssida) ligger fortfarande live · `/404.html` från GitHub Pages är kvar · identisk `lastmod` på alla 139 URL:er | S |
+
+**Blockerande för nästa innehållsomgång:** K8 (Search Console) står öppen. Utan indexeringsdata går det inte att avgöra vilken sida i varje kannibaliseringspar som ska vinna — och K4 säger uttryckligen "ingen batch utan mätning från den föregående". Billigaste åtgärden på hela listan, och den som låser upp flest andra.
+
+---
+
 ## 4. Q4 2026 — Konsolidera & mäta
 
 Performance-budget i CI · A11y-audit (Lighthouse + skärmläsare, 5 sidor) · i18n-granskning av AI-output · användarintervjuer (5 deltagare + 3 konsulenter) · feature-sunset (< 5 % användning → avvecklingskandidat).
@@ -512,6 +792,14 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | Beslut | Punkter | Behövs till |
 |--------|---------|-------------|
 | **Prioritera spåren B–I** (A ligger fast; H rekommenderas näst) | hela planen | nu |
+| **Startsidans siffror — ta bort eller ersätt med sanna?** "5 000+ användare", femstjärnigt betyg och "30+ kommuner" mot 92 konton och 7 aktiva. Tre alternativ: radera hela sektionen (S), ersätt med sanna men små tal, eller ersätt med kvalitativa påståenden som går att styrka. **Så länge de står kvar är det ett marknadsföringspåstående utan täckning, inte en designdetalj** | B19 | **nu** |
+| **De tre fiktiva omdömena — radera eller skaffa riktiga?** Rubriken lovar "verkliga historier". Radera är S. Att skaffa riktiga kräver de användarintervjuer som står som planerade i §4 — vilket är värt att göra ändå, av andra skäl | B20 | **nu** |
+| **Perplexity — redovisa eller avveckla?** Fem edge-funktioner kör `perplexity/sonar` via OpenRouter, utanför modellåsningen, och en skickar användarens hemadress. Redovisa = uppdatera integritetspolicy, Art. 30, DPIA + kontrollera att OpenRouters biträdesavtal täcker underbiträdet. Avveckla = byt till gpt-oss eller ta bort funktionerna. **Mellanläget är det som gäller i dag och det är inte försvarbart** | A23 | **nu** |
+| **Ska "AI av" stänga av all AI?** `ai_enabled = false` stoppar i dag 4 av 18 funktioner. Antingen gäller spaken allt (då stängs mer än användaren tror i dag), eller så ska den heta något annat. Hör ihop med det öppna beslutet om `ai_consent_at` nedan | B28 | **nu** |
+| **`interviewService`, jobbdelning och energifunktionen — montera eller radera?** C19-frågan står kvar och har fått sällskap: 287 oanvända exporter i levande filer, varav `interviewService.ts` 11 av 12. Produktbeslut, inte städning | C19, C22 | före C16 |
+| **Migrationsliggarens status.** 57 poster mot 132 filer. Antingen synkas den mot verkligheten, eller förklaras uttryckligen övergiven i CLAUDE.md med `db query --linked` som enda sanning | H23 | med H-spåret |
+| **Engelskt läge: översätt chrome eller ta bort språket?** Menyn är översatt, innehållet svenskt på 11 av 21 sidor. Nuläget lovar något portalen inte levererar | F24, UX17 | med F-spåret |
+| **Repot är publikt — avsiktligt?** Ett prod-konsulentlösenord har legat i klartext i historiken (rullat, kontot lever). Om det ska förbli publikt behöver hemlighetsscanningen faktiskt scanna (D21) och historiken gås igenom en gång | A33 | **nu** |
 | ~~DROP av `community_*` + `articles_backup` + `user_widget_layouts`~~ | H3 | ✅ Godkänt och kört 2026-07-27 (150 → 135 tabeller) |
 | **Röstinspelningar i molnet — ja eller nej?** Intervjusimulatorns molnlagring av ljud togs bort i H6 (koden var död och tabell/bucket saknades). Att införa den kräver DPIA, retention och samtycke. Lokal nedladdning fungerar idag | H6/H10 | när STA/DPIA-arbetet tas |
 | **DROP av `job_applications`** — destruktivt. **Migrationen ligger färdig och väntar bara på ditt ja:** `supabase/migrations/PENDING_20260728_drop_job_applications.sql` (PENDING_-prefix så den inte plockas av en batchkörning; har en inbyggd spärr som avbryter om tabellen mot förmodan innehåller rader). Förutsättningarna är verifierade mot prod 2026-07-28: **0 rader**, och **noll kodreferenser** kvar — alla kvarvarande träffar på namnet är kommentarer | E12, H4, UX8 | **väntar på ditt ja** |
@@ -519,9 +807,9 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | **Ska ALLT AI grindas på `ai_consent_at`, eller bara art. 9?** UX13 grindade art. 9-funktionerna (hälsa/mående/anpassningsbehov) — där finns ingen laglig grund utan uttryckligt samtycke. Inställningarna säger dock "AI-behandling **och profilering**", vilket rimligen täcker CV, brev och kompetensgap också. **Mätt i prod 2026-08-03: 17 av 92 profiler har samtycke.** Att grinda allt släcker AI för 82 % av användarna — en produktförändring, inte en buggfix | UX13, A2 | **väntar på ditt ja** |
 | ~~Kör A16-migrationen mot prod?~~ | A16 | ✅ **Godkänt och kört 2026-08-04.** Verifierat: eskalering ger `42501`, legitim uppdatering fungerar |
 | **Sätt `CRON_SECRET` i Supabase edge-secrets + deploya `send-inactivity-warning`.** Utan den svarar funktionen 503 (fail closed by design) — och utan deploy är den fortfarande oautentiserad i drift. **Måste vara på plats innan A6/pg_cron aktiveras** | A18, A6 | **Mikael, före A6** |
-| **Deploya `client/api/ai.js`** så A19-fixen börjar gälla. Tills dess svarar de tre art. 9-funktionerna 403 för alla | A19 | vid nästa deploy |
+| ~~**Deploya `client/api/ai.js`** så A19-fixen börjar gälla~~ | A19 | ✅ **Verifierat i drift 2026-08-09** — `POST /api/ai {"function":"vecko-reflektion"}` med giltig token ger **HTTP 200**. Punkten kan stängas |
 | **`AICoachAssistant` — radera eller bygga på riktigt?** Konsulentvyns "AI-insikter" är fyra påhittade deltagare med prioritetsfärger. Radera är S; bygga är M–L och kräver att man bestämmer vilka insikter som är försvarbara att ge om en människa | B10 | denna vecka |
-| **Coverage-tröskeln: sänk till verklig nivå eller skriv ikapp?** CI är rött nu och build/e2e/lighthouse kör inte. Sänkning till ~25 % gör CI ärlig i dag; att skriva ikapp behåller ambitionen men tar tid | D13 | nu (CI är blind under tiden) |
+| ~~**Coverage-tröskeln: sänk eller skriv ikapp?**~~ | D13 | ❌ **Beslutet utgår 2026-08-09 — premissen är död.** Coverage passerar lokalt på alla fyra mått och `exclude`-fällan är lagad. CI failar på saknad Supabase-env i `test`-jobbet. Ingen avvägning behövs; se **D17** (fyra rader i `ci.yml`) |
 | **Jobbdelning (792 rader) och energifunktionen (1 351 rader) — montera eller radera?** Färdigbyggda, helt onåbara. Produktbeslut, inte städning | C19 | före C16:s raderingspass |
 | **Notifikationsklockan — bygg eller ta bort?** Monterad på varje sida, läser en tom tabell, `createNotification` har noll anropare | H12 | med C16 |
 | **i18n etapp 5: innehållsdatan (5 355 rader)** — översätta allt, kuratera ett urval, eller märka ut vad som bara finns på svenska? Kostnaden skiljer en storleksordning | UX17 | när etapp 1–4 är klara |
@@ -540,7 +828,9 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 
 | Dokument | Roll |
 |----------|------|
-| `docs/portal-review-2026-08-04.md` | **Senaste granskning — tio agenter, kod + webbläsare. Grund för A16–A21, B10–B18, C16–C20, D13–D16, E13–E16, F12–F17, H11–H17, UX24–UX35** |
+| `docs/portal-review-2026-08-09.md` | ★ **Senaste granskning — tio agenter, andra omgången. Grund för A22–A36, B19–B34, C21–C26, D17–D27, E17–E23, F18–F30, G14–G25, H18–H28, K11–K19.** Innehåller Nu-listan, de fem genomgående mönstren och de premisser som föll |
+| `docs/review-2026-08-09/` | De tio fullständiga rapporterna (6 569 rader) + 110 skärmdumpar i `bilder/`: `publik-yta`, `visuell-jobbsok`, `visuell-karriar-vardag`, `tillganglighet`, `konsulent-prestanda`, `arkitektur`, `sakerhet-gdpr`, `schema-data`, `ai-lager`, `test-ci` |
+| `docs/portal-review-2026-08-04.md` | Granskning 2026-08-04 — tio agenter, kod + webbläsare. Grund för A16–A21, B10–B18, C16–C20, D13–D16, E13–E16, F12–F17, H11–H17, UX24–UX35 |
 | `docs/review-2026-08-04/` | De tio fullständiga agentrapporterna (~4 900 rader bevis): `sec-gdpr`, `schema-data`, `arkitektur`, `ai-lager`, `test-kvalitet`, `visuell-desktop`, `visuell-mobil`, `a11y`, `i18n-sprak`, `prestanda` |
 | `docs/portal-review-2026-07-27.md` | Granskning kod vs. prod-schema. Grund för spår H och I. Innehåller exakta mätvärden (846 tester, 687 typfel, 164 warnings, chunkstorlekar) och den fullständiga fantom-/orphan-tabellistan |
 | `docs/portal-review-2026-07-22.md` | Granskning 2026-07-22 (7-agenters uppföljning) — grund för A10+, B5+, C9+, D8+, E8+, F8+, G9+ |

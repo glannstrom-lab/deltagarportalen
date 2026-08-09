@@ -8,6 +8,25 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    // D17 (2026-08-09): CI hade aldrig varit grön på main — 687 körningar,
+    // noll lyckade. Sju testfiler kraschade vid IMPORT med
+    // `Error: supabaseUrl is required`, eftersom `src/lib/supabase.ts:15`
+    // anropar `createClient(url || '', key || '')` och supabase-js kastar på
+    // tom sträng. `test`-jobbet i ci.yml får bara `CI: true`; Supabase-env
+    // sätts enbart i build- och e2e-jobben.
+    //
+    // Felet var strukturellt osynligt lokalt: `client/.env` är gitignorerad,
+    // så varje utvecklarmaskin hade värdena och ingen lokal grind kunde
+    // reproducera kraschen. Samma sak i en färsk klon.
+    //
+    // Fixen sitter här i stället för i workflowen med flit: en enhetssvit ska
+    // aldrig behöva riktiga credentials eller nå ett riktigt backend. Värdena
+    // nedan är avsiktligt icke-funktionella. Tester som behöver ett specifikt
+    // värde stubbar det själva (`vi.stubEnv`), vilket tar över i runtime.
+    env: {
+      VITE_SUPABASE_URL: 'http://localhost:54321',
+      VITE_SUPABASE_ANON_KEY: 'test-anon-key-not-a-real-credential',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'json-summary', 'html'],

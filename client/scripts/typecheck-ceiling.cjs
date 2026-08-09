@@ -37,7 +37,7 @@ const path = require('node:path')
 // 470 → 469 (2026-08-03, UX14): `Property 'toLowerCase' does not exist on type
 // 'Skill'` var inte typskuld utan en skarp bugg — cv.skills är objekt i prod,
 // så anropet kastade TypeError för alla 16 CV:n med ifyllda kompetenser.
-const CEILING = 468
+const CEILING = 466
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

@@ -92,12 +92,18 @@ export function SkipLinks({ links = defaultLinks, className = '' }: SkipLinksPro
       <ul className="list-none m-0 p-0">
         {links.map((link) => (
           <li key={link.id} className="inline">
+            {/*
+              F18 (2026-08-09): utseendet ägs av `.skip-links a` i
+              accessibility.css — inte av utility-klasser här.
+              Tidigare fanns TVÅ implementationer samtidigt: CSS-filens
+              (`top: -100px` → `top: 0` vid fokus) och en uppsättning
+              `sr-only focus:not-sr-only focus:top-4 …` på det här elementet.
+              De konkurrerade, och eftersom accessibility.css ligger utanför
+              Tailwinds lager vann filen alltid — utility-klasserna var död
+              vikt som såg ut att styra något. Lägg inte tillbaka dem.
+            */}
             <a
               href={`#${link.id}`}
-              className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4
-                         focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--c-solid)] focus:text-white
-                         focus:rounded-lg focus:font-medium focus:shadow-lg
-                         focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2"
               onClick={(e) => {
                 e.preventDefault();
                 const element = resolveSkipTarget(link.id);

@@ -89,7 +89,7 @@ deltagarportal/
 ## Utvecklingskommandon
 
 ```bash
-# Starta utvecklingsserver
+# Starta utvecklingsserver — lyssnar på :3000 (INTE :5173 som playwright.config.ts defaultar till)
 cd client && npm run dev
 
 # Bygg för produktion
@@ -141,7 +141,17 @@ curl -sS "https://api.github.com/repos/glannstrom-lab/deltagarportalen/actions/r
 #    om det vore "levererat".
 ```
 
-**`npm run verify` (i `client/`) kör hela grinduppsättningen.** Pre-push-hooken (`.husky/pre-push`) kör den automatiskt och gör dessutom ett **fullt bygge** när bygg-/deploy-påverkande filer ändrats (`vercel.json`, `package.json`, `vite.config`, `index.html`, `tsconfig`, `scripts/`, `.github/workflows/`).
+**`npm run verify` (i `client/`) kör hela grinduppsättningen — men pre-push-hooken gör det inte.**
+
+> **Rättat 2026-08-09 (verifierat i `.husky/pre-push`):** hooken kör **fem** grindar —
+> `lint:vercel`, `lint:schema`, `typecheck:critical`, `lint:ci`, `lint:design` — plus ett **fullt
+> bygge** när bygg-/deploy-påverkande filer ändrats (`vercel.json`, `package.json`, `vite.config`,
+> `index.html`, `tsconfig`, `scripts/`, `.github/workflows/`). Den kör **inte** `typecheck:ceiling`
+> och **inga tester alls**. Hookens egen kommentar motiverar undantaget med att coverage "är röd
+> sedan tidigare (ROADMAP D13)" — den premissen är död sedan 2026-08-09: coverage passerar lokalt
+> på alla fyra mått. Undantaget bör omprövas (ROADMAP D23).
+>
+> **Kör `npm run verify` själv före push.** Hooken är inte det skyddsnät den ser ut att vara.
 
 **Varför hooken finns:** 2026-08-05 fälldes en deploy av `vercel build` efter 35 sekunder medan alla sju lokala grindar var gröna — de kontrollerade aldrig filen som ändrats. Prod stod kvar på gammal kod utan att något larmade. Grinden ersätter uppmärksamhet med mekanik.
 
@@ -225,6 +235,20 @@ Det finns två parallella AI-vägar — välj rätt:
 
 När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissar Claude.
 
+> **⚠️ Dev-servern har ingen AI-backend.** `client/vite.config.ts:73-78` svarar
+> `501 "AI-funktion X är inte mockad i dev"` för allt utom STA-mocken, och det finns ingen proxy
+> till `/api/ai`. **All granskning och alla tester av AI-utdata måste köras mot prod
+> (`https://www.jobin.se`)** — annars mäter du en attrapp. Två granskare gick i den fällan
+> 2026-08-09 innan de upptäckte den.
+>
+> **⚠️ Modellåsningen är bruten på fem ställen.** Fem edge-funktioner kör `perplexity/sonar` via
+> OpenRouter — `ai-career-assistant`, `ai-commute-planner`, `ai-company-analysis`,
+> `ai-company-search`, `ai-industry-radar` — alltså utanför `openai/gpt-oss-120b`, och utan att
+> Perplexity finns som underbiträde i integritetspolicyn, Art. 30-registret eller DPIA:n.
+> `ai-commute-planner` skickar dessutom användarens hemadress. Se ROADMAP A23. Kontrollera med
+> `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u` innan du litar på att
+> låsningen håller.
+
 ### CI-grindarna (sju st, alla körbara lokalt)
 
 ```bash
@@ -243,10 +267,22 @@ minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du 
 takskript skriver ut det nya talet när skulden minskat.
 
 > **⚠️ De sju räcker inte — CI kör ett åttonde steg som inte finns i listan.** `ci.yml` kör
-> `npm run test:coverage` (inte `test:run`), och den **fäller bygget** i dag: functions 23,62 %
-> mot tröskeln 30 %. Eftersom `build` har `needs: [lint-and-typecheck, test]` har build,
-> lighthouse och båda e2e-jobben inte kört. Kör `npm run test:coverage` innan du tror att CI
-> blir grön. Se ROADMAP D13.
+> `npm run test:coverage` (inte `test:run`). Kör den innan du tror att CI blir grön.
+>
+> **⚠️ Men lokalt gröna grindar bevisar fortfarande ingenting om CI — och orsaken är inte den
+> som stod här tidigare.** Uppmätt 2026-08-09: **CI har aldrig varit grön på `main`** — 687
+> körningar sedan 2 april, noll lyckade. Coverage-tröskeln (som den här rutan pekade ut fram
+> till 2026-08-09) är **inte** orsaken längre: den passerar lokalt på alla fyra mått
+> (23,19/63,96/34,66/23,19 mot 18/60/30/18) och `exclude`-fällan är lagad. Det verkliga felet
+> är att sju testfiler kraschar vid import i CI med `Error: supabaseUrl is required`, eftersom
+> `test`-jobbet (`ci.yml:100-104`) bara får `CI: true` medan `VITE_SUPABASE_URL` sätts enbart i
+> build- och e2e-jobben. **Lokalt döljs det av gitignorerade `client/.env` — ingen lokal grind
+> kan reproducera felet.** Dessutom failar `Security Scan` på fyra high-sårbarheter. Se ROADMAP
+> D17–D19; D13 är avskriven.
+>
+> **⚠️ Pre-push-hooken kör INTE `npm run verify`** trots vad avsnittet om släpprocessen ovan
+> säger. Uppmätt 2026-08-09: den kör fem av åtta grindar och **inga tester alls**. Kör
+> `npm run verify` själv innan push — hooken är inte skyddsnätet du tror.
 
 ### Verifiera alltid själv
 Be inte Mikael köra build/test/Playwright. Kör det själv och rapportera resultat. Om du inte kan testa något (t.ex. UI-flöde) — säg det explicit, claima inte success.
@@ -525,6 +561,46 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 
 **Lärdom:** fixar som flyttar fixerade element ska verifieras med hit-test över *alla* fixerade lager på sidan, inte bara mot det element buggen handlade om. Okulär besiktning duger inte — element med `opacity: 0` respektive `pointer-events: none` ger både falska positiva och falska negativa.
 
+### 2026-08-09: Ett påhittat värde har alltid föredragits framför ett tomt fält
+
+**Problem:** tjugo belagda instanser av samma fel, i varje lager. Startsidan påstår 5 000+ användare (prod: 92 konton, 7 aktiva). Personligt brev-verktyget levererar `mockGenerateLetter`-utdata märkt "genererat med AI-stöd" med `AIGeneratedWatermark`, vars docstring åberopar AI Act art. 50.2. Konsulentvyn säger "senast inloggad" om `profiles.updated_at`, flaggar 100 % av deltagarna för alltid eftersom `last_contact_at` aldrig skrivs, visar samma etikett som 0 % på en flik och 100 % på en annan, och skickar `QNaN NaN` vidare till uppdragsgivarens PDF. Chatboten hittar på a-kassevillkor. `RETENTION-POLICY.md` har ✅ bredvid en gallring som aldrig kört.
+
+**Rotorsak:** samma kodmönster överallt — `?? 0`, `|| 0`, `if (error) { console.error(...); return [] }`. En saknad rad och ett fel ser likadana ut, och båda renderas som ett tal.
+
+**Lärdom:** det är inte tjugo buggar utan en vana. Fixa vanan, inte instanserna.
+
+**Regeln (skriv in den i det du bygger):** *ett värde utan underlag visar `—` och en rad om varför — aldrig 0, aldrig 100 %, aldrig ett påhittat exempel, aldrig en mall märkt som AI.* Konsulentvyn har redan förebilden i sin egen text: "För litet underlag för en meningsfull jämförelse…".
+
+### 2026-08-09: Mutationsstickprov slår kodläsning — fyra av sex överlevde
+
+**Problem:** sviten hade vuxit 933 → 1 304 tester (+40 %) på fem dagar. Sex riktade mutationer tog under tio minuter och visade att signalen inte följt med: `/cv`-routen borttagen ur `App.tsx` → **33/33 nav-smoke gröna**; art. 9-samtyckesgrinden fick läsa fel tabell **och** fel kolumn → **14/14 gröna** båda gångerna; `enabled: !!userId` → `enabled: true` → 4/4 gröna i testet som heter "disabled when userId is empty". Positiv kontroll (fail closed → fail open) fällde 3 tester, så harnessen var giltig.
+
+**Lärdom:** antalet tester är projektets mest missvisande tal. Ett test som passerar bevisar ingenting förrän man vet att det kan falla.
+
+**Kontroll:** fråga aldrig "finns det ett test?". Fråga "vad händer om jag går sönder koden?" — och gör det till standardsteget vid granskning. Skriv kända defekter som `it.fails` (`profileStore.test.ts:476` visar formen) i stället för att cementera dem i ett vanligt test.
+
+### 2026-08-09: Ett svep över "hela src/" kan låsa raderingspasset i en vecka
+
+**Problem:** WCAG-svepet 5 augusti skrev aria-labels i **15 onåbara filer** — 58 rader betalt arbete rakt in i dödkod, t.ex. `SwedenMap.tsx:355` i en komponent med noll referenser. Det utlöste dödkodsskriptets färskhetsgrind och flyttade **8 076 rader** från RADERA till UTRED. Raderingsfönstret sköts till tidigast 2026-08-12, och varje nytt svep skjuter det sju dygn till.
+
+**Lärdom:** mekaniska svep måste filtrera på nåbarhet **innan** de börjar, annars betalar man för kod ingen kör och blockerar dessutom städningen av den. Sjätte gången samma klass träffar.
+
+**Kontroll:** kör nåbarhetsanalysen (`node scripts/dead-code.cjs`) och begränsa svepet till den nåbara mängden. Billigaste förstasteget i städningen är `--skriv --steg=barrels` — 21 döda barrels, ~2 800 rader, noll risk, och efteråt hittar vanlig `grep` det fyra granskningar i rad missat.
+
+### 2026-08-09: Grinden täckte mer än man trodde — och mindre där det räknades
+
+**Problem:** premissen "`lint:schema` når inte edge-funktionerna" var fel; den läser 722 filer inklusive `supabase/functions`. Den verkliga luckan står i skriptets eget huvud: **kolumnnycklar i `.insert()/.update()/.upsert()` kontrolleras inte.** En egen kontroll av just det gav fyra skarpa buggar på en eftermiddag — bl.a. att AI-teamets "skapa uppgift i kalendern" skickar fem obefintliga kolumner och utelämnar NOT NULL-fältet `date`, så insertet strukturellt aldrig kan lyckas. Felet sväljs av `if (!error)`: deltagaren klickar och inget händer. En andra lucka: **vydefinitioner** är giltig SQL mot existerande objekt och därför osynliga för en referenskontroll — fyra ljugande nyckeltal i konsulentvyn gömde sig där.
+
+**Lärdom:** läs vad grinden faktiskt kontrollerar, inte vad den heter. En grön grind avgränsar risken; den avskaffar den inte.
+
+### 2026-08-09: "Koden är klar" är inte "det gäller i drift"
+
+**Problem:** A18:s vakt är korrekt byggd, deployad och fail closed — och svarar **HTTP 503 för alla**, eftersom `CRON_SECRET` aldrig sattes. Planen kallade den "🟡 kod klar", vilket var sant och samtidigt vilseledande. Samma klass: A17 stängde 18 av 53 definer-funktioner (35 är fortfarande anropbara av `anon`), A21 städade `mood_logs` men inte `interest_results`, H4 rättades i `MyConsultant.tsx` men inte i `Resources.tsx`, och pg_cron saknas på **tre** nivåer samtidigt (ingen pg_cron, inga `crons` i `vercel.json`, inga `schedule:` i workflows).
+
+**Lärdom:** en fix som inte är verifierad i drift är en avsikt, inte en åtgärd. Och en tabell som städades är inget bevis för att mönstret är utrotat.
+
+**Kontroll:** varje punkt som kräver en dashboardåtgärd får en verifieringsrad med kommando och **förväntat svar** (`→ HTTP 200`, inte `→ HTTP 503`), och den raden körs innan punkten stängs.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
@@ -536,7 +612,9 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 | Dokument | Innehåll |
 |----------|----------|
 | `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-27) — spår A–I, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
-| `docs/portal-review-2026-08-04.md` | ★ **Senaste granskning** — tio agenter, kod + webbläsare (Playwright). Grund för A16–A21, B10–B18, C16–C20, D13–D16, E13–E16, F12–F17, H11–H17, UX24–UX35. **Innehåller en kritisk säkerhetspunkt (A16) som väntar på beslut** |
+| `docs/portal-review-2026-08-09.md` | ★ **Senaste granskning** — tio agenter, andra omgången (kod + prod i Playwright). ~247 fynd, 20 kritiska. Grund för A22–A36, B19–B34, C21–C26, D17–D27, E17–E23, F18–F30, G14–G25, H18–H28, K11–K19. **Läs "Domen" och Nu-listan innan du tar en punkt någonstans i planen** |
+| `docs/review-2026-08-09/` | De tio fullständiga rapporterna (6 569 rader) + 110 skärmdumpar |
+| `docs/portal-review-2026-08-04.md` | Granskning 2026-08-04 — tio agenter, kod + webbläsare. Grund för A16–A21, B10–B18, C16–C20, D13–D16, E13–E16, F12–F17, H11–H17, UX24–UX35 |
 | `docs/review-2026-08-04/` | De tio fullständiga agentrapporterna med allt bevismaterial (~4 900 rader) |
 | `docs/portal-review-2026-07-27.md` | Granskning kod vs. **prod-schema**. Grund för spår H (schemaintegritet) och I (kvalitetsgrindar/prestanda) |
 | `docs/portal-review-2026-07-22.md` | Granskning 2026-07-22 (7 parallella analyser: kod, säkerhet, UX, prestanda, produkt, AI, dokumentation/test) |

@@ -702,7 +702,10 @@ export default function Landing() {
             <TrustChip
               icon={Lock}
               title={t('landing.trust.eu', 'EU-data')}
-              description={t('landing.trust.euDesc', 'Servrar i EU. Ingen data lämnar EES.')}
+              // A24 (2026-08-09): påstod "Ingen data lämnar EES", vilket motsägs av
+              // projektets eget docs/HOSTING-REGIONS.md:14 — OpenRouter (all AI) är
+              // USA. Hela portalen utom AI-vägen ligger i EU; säg det i stället.
+              description={t('landing.trust.euDesc', 'Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.')}
             />
             <TrustChip
               icon={Zap}

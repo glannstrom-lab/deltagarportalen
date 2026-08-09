@@ -4649,7 +4649,7 @@
       "acceptPrivacy": "I have read and accept the",
       "privacyLink": "privacy policy",
       "acceptAi": "I consent to AI processing of my data",
-      "aiDescription": "We use AI to help you write CVs and cover letters. Your data may be processed by third parties (OpenAI). This consent is optional but required for AI features."
+      "aiDescription": "We use AI to help you write CVs and cover letters. Your data is then processed by our AI provider OpenRouter, whose servers are in the USA. This consent is optional but required for AI features."
     }
   },
   "ai": {
@@ -4664,7 +4664,7 @@
       "fullDesc": "AI features help you write better CVs and cover letters. To use them, you need to grant consent.",
       "fullDescWithFeature": "{{feature}} uses AI to help you. To use this feature, you need to grant consent.",
       "whatThisMeans": "What does this mean?",
-      "point1": "Your texts are sent to OpenAI to generate suggestions and improvements",
+      "point1": "Your texts are sent to our AI provider OpenRouter (USA) to generate suggestions and improvements",
       "point2": "Your data is processed securely and used only to help you",
       "point3": "You can withdraw consent at any time in settings",
       "grantConsent": "Grant AI consent",
@@ -5547,7 +5547,7 @@
       "gdpr": "GDPR-compliant",
       "gdprDesc": "All data handled per EU's data-protection regulation",
       "eu": "EU data",
-      "euDesc": "Servers in the EU. No data leaves the EEA.",
+      "euDesc": "Your database, account and files are stored in the EU. If you use the AI features, that text is processed in the USA.",
       "af": "AF integration",
       "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
     },
@@ -5783,7 +5783,7 @@
       "q3": "I don't even know what I want to work with. Where should I start?",
       "a3": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery. Many users have discovered new career paths they never thought of before.",
       "q4": "Is my personal information safe?",
-      "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption on servers in the EU and is never shared with third parties without your consent. If you choose to use AI features, your texts are sent to OpenAI for processing — you explicitly consent to this the first time. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security.",
+      "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption on servers in the EU and is never shared with third parties without your consent. If you choose to use AI features, your texts are sent to our AI provider OpenRouter for processing, which takes place in the USA — you explicitly consent to this the first time, and you can use the portal without AI. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security.",
       "q5": "How does the AI help in the CV generator work?",
       "a5": "Our AI analyzes your experience and suggests improvements in text, structure, and keywords. It helps you formulate your strengths in a way that both recruiters and automated systems (ATS) appreciate. You always have full control and can edit everything.",
       "q6": "Can I use Jobin on my phone?",
@@ -5899,7 +5899,7 @@
       "hosting": "Cloud services:",
       "hostingDesc": "Supabase (database and authentication) - data is stored within EU/EEA",
       "ai": "AI providers:",
-      "aiDesc": "OpenAI (only if you consent to AI processing) - data may be processed in the USA under the EU-US Data Privacy Framework",
+      "aiDesc": "OpenRouter (only if you consent to AI processing) - your texts are processed in the USA",
       "analytics": "Error tracking:",
       "analyticsDesc": "Sentry (only if you accept cookies) - to identify and fix technical issues",
       "none": "We never sell your personal data to third parties."
@@ -6045,8 +6045,8 @@
     "models": {
       "title": "AI Models We Use",
       "intro": "Jobin uses the following AI services:",
-      "openai": "OpenAI GPT-4",
-      "openaiDesc": "Used to generate CV texts, cover letters, and provide writing suggestions. GPT-4 is a large language model trained by OpenAI.",
+      "openai": "OpenRouter (model: gpt-oss-120b)",
+      "openaiDesc": "Used to generate CV texts, cover letters, and provide writing suggestions. We use OpenRouter, which in turn runs the gpt-oss-120b language model. Processing takes place in the USA.",
       "provider": "Provider:",
       "purpose": "Purpose:",
       "location": "Data processing:"
@@ -6082,7 +6082,7 @@
       "intro": "We take security seriously:",
       "encryption": "All communication with AI providers is over encrypted connections (TLS)",
       "minimize": "We only send necessary information - never more than needed",
-      "noTraining": "Your data is not used to train AI models (per our agreement with OpenAI)",
+      "noTraining": "We request that your data is not used to train AI models",
       "logs": "AI requests are not logged with personally identifiable information"
     },
     "compliance": {

@@ -30,7 +30,8 @@ import {
   Heart,
   User,
   Eye,
-  EyeOff
+  EyeOff,
+  RefreshCw
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -199,6 +200,9 @@ export function CoverLetterWrite() {
   // States
   const [currentStep, setCurrentStep] = useState(1)
   const [isGenerating, setIsGenerating] = useState(false)
+  // B21: sätts när AI-genereringen misslyckas, så steg 3 kan visa ett ärligt
+  // felläge i stället för ett påhittat brev märkt som AI-genererat.
+  const [generationError, setGenerationError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [generatedLetter, setGeneratedLetter] = useState<string>('')
   const [editedLetter, setEditedLetter] = useState<string>('')
@@ -375,8 +379,21 @@ export function CoverLetterWrite() {
     }
   }
 
+  // B21 (2026-08-09): FAIL VISIBLE — inte fail silent-med-mall.
+  //
+  // Tidigare låg här ett anrop till `mockGenerateLetter` när AI-anropet
+  // fallerade. Resultatet blev ett påhittat mallbrev med trasig svenska och
+  // kvarvarande platshållare — som renderades i samma textarea med
+  // `data-ai-generated="true"` och `<AIGeneratedWatermark>`, alltså uttryckligen
+  // märkt som AI-genererat innehåll. Reproducerat på prod. Watermark-komponentens
+  // egen docstring åberopar AI Act art. 50.2, så märkningen var inte en slarvig
+  // etikett utan ett efterlevnadspåstående om en mall ingen modell hade skrivit.
+  //
+  // Principen härefter: hellre ingenting än något falskt. Användaren får veta
+  // att det inte gick och en väg att försöka igen. Se ROADMAP B31.
   const generateLetter = async () => {
     setIsGenerating(true)
+    setGenerationError(null)
     try {
       const result = await generateCoverLetterWithAI({
         cvData,
@@ -391,19 +408,26 @@ export function CoverLetterWrite() {
         extraMotivation: formData.motivation,
       })
 
-      setGeneratedLetter(result.brev || result.result || '')
-      setEditedLetter(result.brev || result.result || '')
+      // `callAI` är löst typad, så svaret smalnas av här i stället för att
+      // formen tas för given. Allt som inte är en icke-tom sträng räknas som
+      // ett misslyckande och går till felläget nedan — samma princip som B21:
+      // hellre ett ärligt tomt läge än något som ser ut som ett brev.
+      const payload = result as { brev?: unknown; result?: unknown }
+      const raw = payload.brev ?? payload.result
+      const brev = typeof raw === 'string' ? raw.trim() : ''
+      if (!brev) {
+        throw new Error('Tomt eller oväntat svar från AI-tjänsten')
+      }
+      setGeneratedLetter(brev)
+      setEditedLetter(brev)
     } catch (error) {
       console.error('Fel vid generering:', error)
+      setGeneratedLetter('')
+      setEditedLetter('')
+      setGenerationError(
+        'Vi kunde inte skriva brevet just nu. Dina uppgifter finns kvar — försök igen om en stund.'
+      )
       showToast.error('Kunde inte generera brev. Försök igen.')
-      // Fallback
-      const fallback = await mockGenerateLetter({
-        ...formData,
-        background: cvData?.summary || '',
-        skills: cvData?.skills?.map(s => typeof s === 'string' ? s : s.name).join(', ') || '',
-      })
-      setGeneratedLetter(fallback.content)
-      setEditedLetter(fallback.content)
     } finally {
       setIsGenerating(false)
     }
@@ -608,6 +632,9 @@ export function CoverLetterWrite() {
                 onDownload={handleDownloadPDF}
                 isSaving={isSaving}
                 senderInfo={senderInfo}
+                generationError={generationError}
+                isGenerating={isGenerating}
+                onRetry={generateLetter}
               />
             )}
           </Card>
@@ -1035,6 +1062,9 @@ function Step3ReviewSave({
   onDownload,
   isSaving,
   senderInfo,
+  generationError,
+  isGenerating,
+  onRetry,
 }: {
   editedLetter: string
   setEditedLetter: (text: string) => void
@@ -1044,6 +1074,9 @@ function Step3ReviewSave({
   onDownload: () => void
   isSaving: boolean
   senderInfo: { name: string; email?: string; phone?: string; location?: string }
+  generationError: string | null
+  isGenerating: boolean
+  onRetry: () => void
 }) {
   const [isCopied, setIsCopied] = useState(false)
 
@@ -1051,6 +1084,38 @@ function Step3ReviewSave({
     await navigator.clipboard.writeText(editedLetter)
     setIsCopied(true)
     setTimeout(() => setIsCopied(false), 2000)
+  }
+
+  // B21: när genereringen misslyckats finns inget brev att granska. Visa det
+  // rakt ut i stället för att rendera en tom eller påhittad textarea under en
+  // AI-märkning. Ett ärligt tomt läge är bättre än ett falskt ifyllt.
+  if (generationError && !editedLetter.trim()) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-start gap-4">
+          <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-lg flex items-center justify-center shrink-0">
+            <RefreshCw className="w-5 h-5 text-stone-500 dark:text-stone-400" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+              Brevet blev inte klart
+            </h2>
+            <p className="text-sm text-stone-600 dark:text-stone-400">{generationError}</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3">
+          <Button onClick={onRetry} disabled={isGenerating} className="gap-2">
+            <RefreshCw size={16} className={isGenerating ? 'animate-spin' : undefined} />
+            {isGenerating ? 'Skriver …' : 'Försök igen'}
+          </Button>
+        </div>
+
+        <p className="text-sm text-stone-500 dark:text-stone-400">
+          Du kan också gå tillbaka och skriva brevet själv — allt du fyllt i finns kvar.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -1134,21 +1199,12 @@ function Step3ReviewSave({
   )
 }
 
-// Mock AI fallback
-const mockGenerateLetter = async (data: { jobTitle: string; company: string; background?: string; skills?: string; motivation?: string }) => {
-  await new Promise(resolve => setTimeout(resolve, 1500))
-  return {
-    content: `Hej,
-
-Jag söker med stort intresse rollen som ${data.jobTitle} hos ${data.company}. Med min bakgrund inom ${data.background || 'relevanta områden'} och passion för ${data.motivation || 'att utvecklas'}, tror jag att jag skulle passa väl in i ert team.
-
-Under min tidigare erfarenhet har jag utvecklat starka färdigheter inom ${data.skills || 'relevanta kompetenser'}. Jag ser fram emot möjligheten att bidra med min erfarenhet och samtidigt växa tillsammans med er organisation.
-
-Jag ser fram emot att få diskutera hur jag kan bidra till ert team.
-
-Med vänliga hälsningar,
-[ Ditt namn ]`
-  }
-}
+// B21 (2026-08-09): `mockGenerateLetter` är borttagen med flit.
+//
+// Den producerade ett mallbrev med kvarvarande platshållare (`[ Ditt namn ]`)
+// och insplitsad CV-text mitt i meningar, som visades märkt som AI-genererat när
+// AI-anropet fallerade. Återinför den inte som "bättre än ingenting" — ett brev
+// användaren tror är skrivet åt hen, men som är en mall, är sämre än ett tomt
+// läge med en återförsöksknapp. Se `generateLetter` ovan och ROADMAP B21/B31.
 
 export default CoverLetterWrite

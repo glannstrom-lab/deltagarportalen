@@ -21,7 +21,14 @@ export function useResurserHubSummary() {
       //   3. article_reading_progress — Kunskapsbank "recent" + completed-count
       //   4. ai_team_sessions — AI-team "recent agent" + total session count
       // Externa resurser, Utskriftsmaterial, Övningar are STATIC widgets — no DB read.
-      const [cvR, lettersR, articlesR, aiTeamR] = await Promise.all([
+      // B33 (2026-08-09): antalen hämtas med egna count-frågor, INTE genom att
+      // räkna i listorna nedan. Tidigare stod det
+      //   articleCompletedCount = articles.filter(a => a.is_completed).length
+      // på en lista med `.limit(3)`, så en användare med åtta avklarade artiklar
+      // kunde aldrig se mer än 3. Samma fel en gång till på `.limit(5)` för
+      // AI-team-sessionerna. `head: true` hämtar bara räknaren, inga rader.
+      // Räkna aldrig i en avhuggen lista och presentera det som ett antal.
+      const [cvR, lettersR, articlesR, aiTeamR, articlesCountR, aiTeamCountR] = await Promise.all([
         supabase
           .from('cvs')
           .select('id, updated_at')
@@ -45,11 +52,24 @@ export function useResurserHubSummary() {
           .eq('user_id', userId)
           .order('updated_at', { ascending: false })
           .limit(5),
+        supabase
+          .from('article_reading_progress')
+          .select('article_id', { count: 'exact', head: true })
+          .eq('user_id', userId)
+          .eq('is_completed', true),
+        supabase
+          .from('ai_team_sessions')
+          .select('agent_id', { count: 'exact', head: true })
+          .eq('user_id', userId),
       ])
 
       const articles = articlesR.data ?? []
-      const articleCompletedCount = articles.filter(a => a.is_completed).length
       const aiSessions = aiTeamR.data ?? []
+      // Faller count bort (äldre klient, fel i svaret) är det ärligare att visa
+      // listans längd än en nolla — men det är ett golv, inte sanningen.
+      const articleCompletedCount =
+        articlesCountR.count ?? articles.filter(a => a.is_completed).length
+      const aiTeamSessionCount = aiTeamCountR.count ?? aiSessions.length
 
       const summary: ResurserSummary = {
         cv: cvR.data ?? null,
@@ -57,7 +77,7 @@ export function useResurserHubSummary() {
         recentArticles: articles,
         articleCompletedCount,
         aiTeamSessions: aiSessions,
-        aiTeamSessionCount: aiSessions.length,
+        aiTeamSessionCount,
       }
 
       // Cache-syncen borttagen (UX8, 2026-07-27). Den skrev hubbens egna former till

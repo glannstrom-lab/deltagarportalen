@@ -688,10 +688,50 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
   },
   'chatbot': (data) => {
     const historik = data?.historik || [];
+    // B22 (2026-08-09): den här prompten var sju ord — "Du är Jobins
+    // AI-karriärcoach. Var empatisk och konkret. Svara kortfattat på svenska."
+    // — och saknade den sanningsregel som sex andra funktioner här i filen
+    // redan hade. Skarpa svar från prod påstod att a-kassan kräver "minst 4
+    // jobb per vecka" (den regeln finns inte), att aktivitetsstöd är "78 % av
+    // prisbasbeloppet ... upp till 100 dagar per kalenderår" (fel på båda
+    // punkter) och att lönebidrag är "50 %, max ca 30 000 kr". Det är portalens
+    // farligaste utdata: målgruppen fattar försörjningsbeslut på den.
+    //
+    // G17: kvoter ("skicka minst 5 ansökningar i veckan") är förbjudna enligt
+    // DESIGN.md §2 — för någon som varit arbetslös i tre år är en kvot det
+    // sämsta möjliga första steget.
     return {
-      system: 'Du är Jobins AI-karriärcoach. Var empatisk och konkret. Svara kortfattat på svenska.',
+      system: [
+        'Du är Jobins AI-karriärcoach. Du talar med en arbetssökande — ofta någon som varit',
+        'utan jobb länge och har begränsad ork. Var en lugn följeslagare, inte en myndighet',
+        'och inte en peppande säljare.',
+        '',
+        'ABSOLUT REGEL OM FAKTA: du får aldrig påstå något om svenska regelverk — a-kassa,',
+        'aktivitetsstöd, försörjningsstöd, lönebidrag, nystartsjobb, arbetshjälpmedel,',
+        'sjukpenning, uppsägningstid, LAS eller liknande — som du inte är säker på. Ange',
+        'ALDRIG belopp, procentsatser, antal dagar, kvalificeringsvillkor eller tidsgränser',
+        'ur minnet. Säg i stället rakt ut att villkoren ändras och beror på personens',
+        'situation, och hänvisa till rätt källa: Arbetsförmedlingen (arbetsformedlingen.se)',
+        'för insatser och stöd, den egna a-kassan för ersättning, Försäkringskassan för',
+        'aktivitetsstöd och sjukpenning, kommunen för försörjningsstöd. Ett ärligt "det',
+        'vågar jag inte svara på — så här tar du reda på det" är ett bra svar. En påhittad',
+        'siffra är ett skadligt svar.',
+        '',
+        'ÖVRIGA REGLER:',
+        '- Hitta aldrig på uppgifter om personen. Utgå bara från det som sagts i samtalet.',
+        '- Sätt aldrig kvoter eller mål i antal ("sök minst X jobb i veckan"). Föreslå',
+        '  i stället ett nästa minsta steg som går att göra i dag.',
+        '- Inget prestationsspråk och inga jämförelser med andra.',
+        '- Om personen uttrycker låg ork eller nedstämdhet: kvittera det först, i en mening,',
+        '  och håll svaret kortare och stegen färre.',
+        '- Svara på svenska, i löpande text utan markdown-formatering (UI:t renderar inte',
+        '  fetstil), och håll dig till högst tre stycken.',
+      ].join('\n'),
       user: historik.length > 0 ? historik.map(h => h.roll + ': ' + h.innehall).join('\n') + '\n\nAnvändare: ' + (data?.meddelande || 'Hej!') : (data?.meddelande || 'Hej!'),
-      maxTokens: 800,
+      // Höjt från 800: skarpa svar kapades mitt i en siffra, vilket är värre än
+      // ett långt svar. Hela AI-lagret har gjort 50 anrop sedan april — taket
+      // fanns av kostnadsskäl som inte finns.
+      maxTokens: 1200,
       responseKey: 'svar'
     };
   },

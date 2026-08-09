@@ -106,6 +106,14 @@ footer{border-top:1px solid var(--line);margin-top:3rem;padding:1.75rem 0 2.5rem
 footer a{color:var(--muted)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
   clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* F18 (2026-08-09): skip-länken fanns men blev ALDRIG synlig — .sr-only saknade
+   :focus-regel, så clip:rect(0 0 0 0) satt kvar även med fokus. Samma bugg som i
+   appens accessibility.css, andra instansen. WCAG 2.4.1 kräver att bypass-länken
+   går att se när den fokuseras; en osynlig skip-länk hjälper bara skärmläsare. */
+.sr-only:focus{position:fixed;top:0;left:0;z-index:9999;width:auto;height:auto;
+  margin:0;padding:12px 20px;overflow:visible;clip:auto;white-space:normal;
+  background:var(--c-solid,#266DA0);color:#fff;font-weight:600;
+  border-radius:0 0 8px 0;outline:2px solid #fff;outline-offset:-4px}
 `
 
 const SVARIGHET = {
@@ -341,6 +349,7 @@ function renderIndex(artiklar) {
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="/">Jobin</a>
@@ -423,6 +432,7 @@ function renderLattlast(artiklar) {
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="/">Jobin</a>
@@ -640,6 +650,7 @@ function renderToolIndex(verktyg) {
 <style>${CSS}</style>
 </head>
 <body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
 <header class="topbar">
   <div class="wrap">
     <a class="brand" href="/">Jobin</a>
