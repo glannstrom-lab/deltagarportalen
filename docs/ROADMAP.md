@@ -66,6 +66,7 @@ De tre jobb som faller är exakt de som aldrig exekverats tidigare. Det de visar
 | ID | Fynd | Status |
 |----|------|--------|
 | **D17b** | **Playwrights webServer pekade på fel port.** `playwright.config.ts` väntade på `http://localhost:5173` (Vites default) medan `client/vite.config.ts:152` sätter `port: 3000`. Servern blev aldrig redo → webServer-timeout → exit 1 i **båda** e2e-jobben. Hela Playwright-sviten *kunde* aldrig ha kört i CI, oavsett secrets | ✅ **Lagad och verifierad** — `e2e-smoke` kör nu 11/11 grönt lokalt med exakt CI:s kommando |
+| **D30** | **`E2E Authenticated` rapporterar GRÖNT genom att skippa.** Efter portfixen är jobbet "success" — men steget tog **81 s** medan `playwright.config.ts` kör CI med `workers: 1` och `retries: 2`. 94 tester seriellt på 81 s är 0,86 s per test, vilket är omöjligt om 24 av dem failar med 10-sekunders timeouts i tre försök var. Testerna självskippar alltså när `TEST_USER_EMAIL` saknas, precis som `ci.yml`-kommentaren varnar för. **Konsekvens: D1 (lägg in E2E-secrets, "10 min") och D28 är kopplade — lägger du in secreten först blir CI omedelbart röd på de 24 föråldrade specarna.** Ta D28 före D1, eller gör det medvetet i den ordningen | ⬜ **Öppen** — S (beslut om ordning) |
 | **D28** | **24 av 94 autentiserade e2e-tester är föråldrade.** Med portfixen och riktiga inloggningsuppgifter: 68 passerar, 2 skippas, **24 failar** — och det är specarna, inte appen. De letar efter `getByRole('link', {name: /cv\|resume/i})` och `getByRole('tablist')`, alltså den platta navigationen och en flikuppsättning som försvann när hub-navigationen infördes **2026-04-29**. Specarna har varit döda i drygt tre månader utan att något larmat, eftersom jobbet aldrig kört. Berör `cv`, `cover-letter`, `dashboard`, `job-search`, `auth`, `axe-a11y` och `sta` | ⬜ **Öppen** — M. Skriv om mot dagens UI. Gör dem inte gröna genom att sänka assertionerna; flera av dem (t.ex. axe-svepet på CV och Profil) är de enda automatiska vakterna för ytor granskningen underkände |
 | **D29** | **Lighthouse CI failar.** Annotationen säger bara `exit code 1` + "No files were found with the provided path: .lighthouseci", vilket tyder på att körningen dog i collect-steget snarare än på en assertion. Orsaken är **inte fastställd** — jobbloggarna kräver admin och jag har inte kört `lhci` lokalt | ⬜ **Öppen** — S att utreda. Kör `lhci autorun` lokalt med samma flaggor mot `client/dist` |
 
@@ -832,7 +833,7 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | **`/profile`: mint eller lavendel?** DESIGN.md §3 och koden säger olika, och båda är "sanning" i dag | F16 | när F-spåret tas |
 | Rotera OpenRouter-nyckeln | A1 | omedelbart |
 | Boka AI-jurist | A2 | denna vecka |
-| GitHub Secrets för E2E | D1 | 10 min |
+| **GitHub Secrets för E2E — men ta D28 först.** Verifierat 2026-08-09: jobbet är grönt bara för att testerna självskippar utan secreten (81 s seriellt kan inte rymma 94 tester med 24 timeouts). Lägger du in den innan specarna är omskrivna blir CI röd samma minut | D1, D28, D30 | 10 min, men **efter** D28 |
 | pg_cron i Supabase-dashboarden | A6 | snarast |
 | Dark mode i scope eller ej | F1 | var v. 26, försenad |
 | `design-source/`-hemvist (36 MB, persondata?) | C7 | v. 29 |
