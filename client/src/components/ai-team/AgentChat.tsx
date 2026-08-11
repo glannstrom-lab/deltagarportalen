@@ -19,6 +19,7 @@ import { RefreshCw, Trash2, Share2, Check, Download } from '@/components/ui/icon
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { diaryEntriesApi } from '@/services/diaryApi'
+import { showToast } from '@/components/Toast'
 import { callAIStream } from '@/services/aiApi'
 import { useVoiceInput } from '@/hooks/useVoiceInput'
 import { useVoiceOutput } from '@/hooks/useVoiceOutput'
@@ -319,31 +320,41 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         // Extract a task title from the first line or first 50 chars
         const title = content.split('\n')[0].slice(0, 50) + (content.length > 50 ? '...' : '')
 
+        // H20 (2026-08-12): kolumnerna nedan rättade mot prod-schemat
+        // (information_schema.columns för calendar_events). Insertet
+        // skickade tidigare event_type/start_time/status/is_all_day/metadata
+        // — inga av dem finns i tabellen — och saknade det NOT NULL-fältet
+        // `date`. Insertet kunde alltså strukturellt aldrig lyckas; felet
+        // svaldes tyst av `if (!error)`.
         const { error } = await supabase
           .from('calendar_events')
           .insert({
             user_id: user?.id,
             title: `AI Team: ${title}`,
             description: content,
-            event_type: 'task',
-            start_time: new Date().toISOString(),
-            end_time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
-            status: 'pending',
-            is_all_day: false,
-            metadata: {
-              source: 'ai-team',
-              agent: selectedAgent,
-            },
+            date: new Date().toISOString().split('T')[0],
+            type: 'task',
           })
 
-        if (!error) {
-          setTaskSuccess(content.slice(0, 20))
-          setTimeout(() => setTaskSuccess(null), 3000)
+        if (error) {
+          console.error('Failed to create task:', error)
+          showToast.error(
+            t('aiTeam.chat.taskCreateErrorTitle', 'Kunde inte skapa uppgiften'),
+            t('aiTeam.chat.taskCreateErrorMessage', 'Uppgiften kunde inte sparas i kalendern. Försök igen.')
+          )
+          return
         }
+
+        setTaskSuccess(content.slice(0, 20))
+        setTimeout(() => setTaskSuccess(null), 3000)
       } catch (err) {
         console.error('Failed to create task:', err)
+        showToast.error(
+          t('aiTeam.chat.taskCreateErrorTitle', 'Kunde inte skapa uppgiften'),
+          t('aiTeam.chat.taskCreateErrorMessage', 'Uppgiften kunde inte sparas i kalendern. Försök igen.')
+        )
       }
-    }, [user?.id, selectedAgent])
+    }, [user?.id, t])
 
     // Export conversation to PDF
     const handleExportPDF = useCallback(async () => {

@@ -13,7 +13,6 @@ import {
   ChevronRight,
   Mail,
   Search,
-  Star,
   X,
   LayoutDashboard,
   Compass,
@@ -21,7 +20,6 @@ import {
   Shield,
   Lock,
   Zap,
-  Quote,
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
@@ -75,39 +73,6 @@ function TrustChip({
         <p className="text-xs text-stone-600 dark:text-stone-400 leading-snug">
           {description}
         </p>
-      </div>
-    </div>
-  )
-}
-
-// Testimonial card med hub-färg som accent
-function TestimonialCard({
-  quote,
-  author,
-  role,
-  accentVar,
-}: {
-  quote: string
-  author: string
-  role: string
-  accentVar: 'activity' | 'coaching' | 'info'
-}) {
-  return (
-    <div
-      className="rounded-2xl p-6 sm:p-7 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex flex-col"
-      style={{ borderLeftWidth: '4px', borderLeftColor: `var(--${accentVar}-solid)` }}
-    >
-      <Quote
-        className="w-8 h-8 mb-3"
-        style={{ color: `var(--${accentVar}-accent)` }}
-        aria-hidden="true"
-      />
-      <p className="text-base text-stone-700 dark:text-stone-300 leading-relaxed mb-5 flex-1 italic">
-        "{quote}"
-      </p>
-      <div>
-        <p className="font-semibold text-stone-900 dark:text-stone-100">{author}</p>
-        <p className="text-sm text-stone-500 dark:text-stone-400">{role}</p>
       </div>
     </div>
   )
@@ -404,29 +369,13 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-12 sm:py-16 bg-stone-50 dark:bg-stone-800/50">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 sm:flex sm:flex-row sm:items-center sm:justify-center gap-6 sm:gap-12 text-center">
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white">5 000+</p>
-              <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-base mt-1">{t('landing.socialProof.users')}</p>
-            </div>
-            <div className="hidden sm:block w-px h-12 bg-stone-200 dark:bg-stone-700" />
-            <div>
-              <div className="flex justify-center gap-0.5 sm:gap-1 mb-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 sm:w-5 sm:h-5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
-              <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-base">{t('landing.socialProof.rating')}</p>
-            </div>
-            <div className="hidden sm:block w-px h-12 bg-stone-200 dark:bg-stone-700" />
-            <div>
-              <p className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white">30+</p>
-              <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-base mt-1">{t('landing.trust.municipalities')}</p>
-            </div>
-          </div>
+      {/* Mission-rad — ersätter påhittade siffror (5 000+ användare / betyg / 30+ kommuner).
+          B19 (roadmap 2026-08-09): prod har 92 konton, inget underlag för dessa tal. */}
+      <section className="py-10 sm:py-14 bg-stone-50 dark:bg-stone-800/50">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 text-center">
+          <p className="text-stone-700 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+            {t('landing.mission.text', 'Allt du behöver för att ta nästa steg — CV, personligt brev, intervjuträning och jobbsökning, samlat på ett ställe.')}
+          </p>
         </div>
       </section>
 
@@ -821,43 +770,9 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-16 sm:py-24 dark:bg-stone-900">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
-              {t('landing.testimonials.sectionLabel', 'RÖSTER')}
-            </p>
-            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
-              {t('landing.testimonials.title', 'Vad andra säger')}
-            </h2>
-            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
-              {t('landing.testimonials.description', 'Citaten nedan är hämtade från användarintervjuer 2026.')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-            <TestimonialCard
-              quote={t('landing.testimonials.t1Quote', 'Jobin gjorde att jag kunde komma tillbaka i min takt.')}
-              author={t('landing.testimonials.t1Author', 'Anna, 47')}
-              role={t('landing.testimonials.t1Role', 'Deltagare, Stockholm')}
-              accentVar="activity"
-            />
-            <TestimonialCard
-              quote={t('landing.testimonials.t2Quote', 'Jag har 22 deltagare och ser deras framsteg på en skärm.')}
-              author={t('landing.testimonials.t2Author', 'Lars')}
-              role={t('landing.testimonials.t2Role', 'Arbetskonsulent, Göteborg')}
-              accentVar="coaching"
-            />
-            <TestimonialCard
-              quote={t('landing.testimonials.t3Quote', 'Vi går från 60 till 200 deltagare nästa kvartal.')}
-              author={t('landing.testimonials.t3Author', 'Maria')}
-              role={t('landing.testimonials.t3Role', 'VD, jobbcoachföretag')}
-              accentVar="info"
-            />
-          </div>
-        </div>
-      </section>
+      {/* B20 (roadmap 2026-08-09): Testimonials-sektionen togs bort — tre påhittade
+          personer under en rubrik som påstod "verkliga historier" / intervjuer som
+          aldrig genomförts. Se docs/ROADMAP.md B20 och B31 (aldrig ett påhittat exempel). */}
 
       {/* FAQ Section */}
       <section id="faq" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">

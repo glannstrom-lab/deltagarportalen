@@ -56,6 +56,47 @@ const LANGUAGE_LEVELS = [
   { value: 'native', labelKey: 'cvBuilder.languageLevels.native' },
 ] as const
 
+// ============================================
+// EXEMPELDATA (B24) — "Fyll i exempeldata"-knappen skrev tidigare över
+// deltagarens RIKTIGA CV utan varning eller ångra, autosparat mot molnet
+// på 800ms. Den texten hamnade sedan i ett skarpt AI-brev (B21).
+//
+// Nu: loadDemoData() fyller ENDAST fält som är helt tomma — redan ifyllt
+// innehåll i `data` rörs aldrig. DEMO_CV_DATA/DEMO_FIELD_RESET/
+// DEMO_FIELD_LABELS ligger på modulnivå så både loadDemoData, clearDemoData
+// och useEffect:en som spårar bortredigerade demo-fält kan dela samma källa.
+const DEMO_CV_DATA: Partial<CVData> = {
+  firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
+  email: 'anna@example.com', phone: '070-123 45 67', location: 'Stockholm',
+  summary: 'Erfaren projektledare med passion för att skapa effektiva team.',
+  skills: [
+    { id: 'demo-1', name: 'Projektledning', level: 5, category: 'technical' },
+    { id: 'demo-2', name: 'Agila metoder', level: 4, category: 'technical' },
+    { id: 'demo-3', name: 'Kommunikation', level: 5, category: 'soft' },
+  ],
+  workExperience: [
+    { id: 'demo-1', company: 'Tech AB', title: 'Projektledare', location: 'Stockholm', startDate: '2021-01', endDate: '', current: true, description: 'Leder utvecklingsteam' },
+  ],
+  education: [
+    { id: 'demo-1', school: 'Stockholms Universitet', degree: 'Kandidatexamen', field: 'Informatik', location: 'Stockholm', startDate: '2015-08', endDate: '2018-05', description: '' },
+  ],
+}
+
+// Vad ett demo-fyllt fält återgår till om deltagaren klickar
+// "Ta bort exempeldata" i varningsbanderollen.
+const DEMO_FIELD_RESET: Partial<CVData> = {
+  firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
+  summary: '', skills: [], workExperience: [], education: [],
+}
+
+// Svenska etiketter för banderollen som listar vilka fält som fortfarande
+// är exempeldata (inte deltagarens egna uppgifter).
+const DEMO_FIELD_LABELS: Record<string, string> = {
+  firstName: 'Förnamn', lastName: 'Efternamn', title: 'Titel/yrkesroll',
+  email: 'E-post', phone: 'Telefon', location: 'Ort', summary: 'Sammanfattning',
+  skills: 'Kompetenser', workExperience: 'Arbetslivserfarenhet', education: 'Utbildning',
+}
+
 // Moderna CV-mallar 2025 — thumbnail-bilder genereras via
 // `node e2e/cv-template-snapshots.cjs` och bor i client/public/templates/.
 const TEMPLATES = [
@@ -302,6 +343,9 @@ export default function CVBuilder() {
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [showQuickMode, setShowQuickMode] = useState(false)
   const [hasLoadedCV, setHasLoadedCV] = useState(false)
+  // B24: vilka toppnivåfält som just nu innehåller oredigerad exempeldata
+  // (fylldes av loadDemoData eftersom de var tomma). Styr varningsbanderollen.
+  const [demoFields, setDemoFields] = useState<Set<string>>(new Set())
 
   const [data, setData] = useState<CVData>({
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
@@ -341,7 +385,33 @@ export default function CVBuilder() {
     cvLogger.debug('CVBuilder: data changed, triggering auto-save')
     triggerSaveRef.current(data)
   }, [data, hasLoadedCV])
-  
+
+  // B24: håller varningsbanderollen ärlig. Så fort ett fält som fylldes med
+  // exempeldata redigeras bort från sitt exempelvärde plockas det bort ur
+  // demoFields — annars skulle banderollen fortsätta hävda att t.ex.
+  // förnamnet är "exempeldata" efter att deltagaren skrivit sitt eget namn.
+  // demoFields är avsiktligt inte med i deps (bara `data` triggar) för att
+  // undvika en loop: setDemoFields nedan returnerar samma referens (`prev`)
+  // när inget ändrats, så effekten är trygg utan den.
+  useEffect(() => {
+    if (demoFields.size === 0) return
+    setDemoFields(prev => {
+      if (prev.size === 0) return prev
+      let changed = false
+      const next = new Set(prev)
+      prev.forEach(key => {
+        const demoVal = DEMO_CV_DATA[key as keyof CVData]
+        const curVal = data[key as keyof CVData]
+        if (JSON.stringify(curVal) !== JSON.stringify(demoVal)) {
+          next.delete(key)
+          changed = true
+        }
+      })
+      return changed ? next : prev
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- demoFields avsiktligt utelämnad, se kommentar ovan
+  }, [data])
+
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
     // Visa onboarding om användaren inte sett den tidigare
@@ -540,33 +610,89 @@ export default function CVBuilder() {
     showToast.success(t('cv.jobAdapt.summaryUpdated', 'Sammanfattning uppdaterad'))
   }
 
+  // B24 — se kommentaren vid DEMO_CV_DATA. Fyller ENDAST tomma fält och
+  // sparar en säkerhetskopia av det befintliga CV:t innan något ändras.
   const loadDemoData = async () => {
     const confirmed = await confirm({
       title: t('cvBuilder.messages.demoDataTitle', 'Fyll i exempeldata'),
       message: t('cvBuilder.messages.fillDemoData'),
       confirmText: t('cvBuilder.actions.fill', 'Fyll i'),
-      cancelText: t('cvBuilder.actions.cancel'),
+      cancelText: t('cvBuilder.actions.cancel', 'Avbryt'),
       variant: 'info'
     })
     if (!confirmed) return
-    setData(prev => ({
-      ...prev,
-      firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
-      email: 'anna@example.com', phone: '070-123 45 67', location: 'Stockholm',
-      profileImage: null,
-      summary: 'Erfaren projektledare med passion för att skapa effektiva team.',
-      skills: [
-        { id: '1', name: 'Projektledning', level: 5, category: 'technical' },
-        { id: '2', name: 'Agila metoder', level: 4, category: 'technical' },
-        { id: '3', name: 'Kommunikation', level: 5, category: 'soft' },
-      ],
-      workExperience: [
-        { id: '1', company: 'Tech AB', title: 'Projektledare', location: 'Stockholm', startDate: '2021-01', endDate: '', current: true, description: 'Leder utvecklingsteam' },
-      ],
-      education: [
-        { id: '1', school: 'Stockholms Universitet', degree: 'Kandidatexamen', field: 'Informatik', location: 'Stockholm', startDate: '2015-08', endDate: '2018-05', description: '' },
-      ],
-    }))
+
+    const isEmptyValue = (v: unknown) =>
+      v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0)
+
+    // Bara fält som är helt tomma tas med i patchen — redan ifyllt innehåll
+    // (t.ex. ett förnamn deltagaren redan skrivit) rörs aldrig.
+    const filledKeys: (keyof CVData)[] = []
+    const patch: Partial<CVData> = {}
+    ;(Object.keys(DEMO_CV_DATA) as (keyof CVData)[]).forEach((key) => {
+      if (isEmptyValue(data[key])) {
+        patch[key] = DEMO_CV_DATA[key] as never
+        filledKeys.push(key)
+      }
+    })
+
+    if (filledKeys.length === 0) {
+      // Alla fält som exempeldata skulle fyllt i är redan ifyllda — inget att göra.
+      showToast.info(t('cvBuilder.messages.demoDataAlreadyFilled', 'Ditt CV är redan ifyllt — det finns inga tomma fält att fylla i med exempeldata.'))
+      return
+    }
+
+    // Om deltagaren redan hade fyllt i NÅGOT (dvs. inte alla demo-fält var
+    // tomma) sparar vi en säkerhetskopia av hela CV:t innan patchen läggs
+    // på — det är den enda ångra-vägen för `cvs`-raden (autosaven skriver
+    // över samma rad, ingen historik där). Rent tomma CV:n ger ingen
+    // meningsfull säkerhetskopia, så vi hoppar över det fallet.
+    const hadExistingContent = filledKeys.length < Object.keys(DEMO_CV_DATA).length
+    if (hadExistingContent) {
+      try {
+        const backupName = `${t('cvBuilder.versions.beforeDemoData', 'Säkerhetskopia innan exempeldata')} – ${new Date().toLocaleString('sv-SE')}`
+        await cvApi.saveVersion(backupName, data)
+        await loadVersions()
+      } catch (e) {
+        console.error('Kunde inte spara säkerhetskopia innan exempeldata:', e)
+        // Fortsätt ändå — deltagarens befintliga fält skrivs inte över av
+        // patchen oavsett, så det värsta som händer är att det saknas en
+        // extra återställningspunkt för just den här körningen.
+      }
+    }
+
+    setData(prev => ({ ...prev, ...patch }))
+    setDemoFields(prev => {
+      const next = new Set(prev)
+      filledKeys.forEach(k => next.add(k as string))
+      return next
+    })
+    showToast.success(t('cvBuilder.messages.demoDataFilled', 'Exempeldata ifylld i de tomma fälten. Ersätt gärna med dina egna uppgifter innan du sparar eller skickar CV:t vidare.'))
+  }
+
+  // Tar bort exempeldata igen — bara de fält som listas i demoFields (dvs.
+  // fortfarande har sitt oredigerade exempelvärde) återställs till tomt.
+  const clearDemoData = () => {
+    if (demoFields.size === 0) return
+    setData(prev => {
+      const next = { ...prev }
+      // Nycklarna kommer ur demoFields (strängar) och värdena ur
+      // DEMO_FIELD_RESET. TypeScript kan inte knyta ihop dem per nyckel i en
+      // loop — `next[k] = RESET[k]` kollapsar till en omöjlig typ. Vi går
+      // därför via Record här. Säkerheten ligger i `key in DEMO_FIELD_RESET`:
+      // bara fält som finns i resetlistan skrivs, och de har rätt tomvärde
+      // per konstruktion (samma objektlitteral som typas mot Partial<CVData>).
+      const resetValues = DEMO_FIELD_RESET as Record<string, unknown>
+      const target = next as unknown as Record<string, unknown>
+      demoFields.forEach((key) => {
+        if (key in resetValues) {
+          target[key] = resetValues[key]
+        }
+      })
+      return next
+    })
+    setDemoFields(new Set())
+    showToast.success(t('cvBuilder.messages.demoDataCleared', 'Exempeldata borttagen.'))
   }
 
   // Funktionella set-anrop — undviker stale-closure när användaren skriver
@@ -1129,6 +1255,40 @@ export default function CVBuilder() {
             className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-lg font-medium"
           >
             Ladda om
+          </button>
+        </div>
+      )}
+
+      {/* B24: exempeldata-banderoll. Håller det synligt tydligt att ett
+          fält inte är deltagarens eget innehåll ännu — annars kan tomma
+          fält som fylldes med exempeldata av misstag matas vidare till en
+          AI-funktion (t.ex. personligt brev) som om de vore riktiga meriter,
+          precis vad som hände i B21. Försvinner fält för fält när
+          deltagaren redigerar bort exempelvärdet (se useEffect ovan), eller
+          allt på en gång via "Ta bort exempeldata". */}
+      {demoFields.size > 0 && (
+        <div
+          role="status"
+          className="mb-4 p-4 bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-xl flex items-start gap-3"
+        >
+          <Sparkles className="w-5 h-5 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-sky-900 dark:text-sky-100">
+              {t('cvBuilder.messages.demoDataBannerTitle', 'Exempeldata ifylld')}
+            </p>
+            <p className="text-sm text-sky-700 dark:text-sky-200 mt-1">
+              {t(
+                'cvBuilder.messages.demoDataBannerBody',
+                'Det här är fortfarande exempeltext, inte dina egna uppgifter: {{fields}}. Ersätt det innan du sparar eller skickar CV:t vidare.',
+                { fields: Array.from(demoFields).map(k => DEMO_FIELD_LABELS[k] || k).join(', ') }
+              )}
+            </p>
+          </div>
+          <button
+            onClick={clearDemoData}
+            className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-sm rounded-lg font-medium flex-shrink-0"
+          >
+            {t('cvBuilder.actions.clearDemoData', 'Ta bort exempeldata')}
           </button>
         </div>
       )}

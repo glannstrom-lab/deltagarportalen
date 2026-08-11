@@ -510,14 +510,33 @@ function ResourcesInner() {
     }
   }
 
+  /**
+   * B32 (2026-08-12) — samma sanning som H4 (MyConsultant.tsx).
+   *
+   * `savedJobsApi.getAll()` läser hela `saved_jobs`-tabellen, som bär HELA
+   * ansökningspipelinen (status: SAVED/INTERESTED/APPLIED/INTERVIEW/…), inte
+   * bara jobb som fortfarande är "sparade". Att räkna `savedJobs.length` och
+   * kalla det "Sparade jobb" räknade alltså skickade ansökningar som sparade.
+   * `stillSavedJobs` är den delmängd som faktiskt inte gått vidare än sparad/
+   * intresserad — exakt samma definition som H4 använder
+   * (`stats.saved + stats.interested`). Den fulla listan (`savedJobs`) an-
+   * vänds fortfarande där etiketten bara säger "Jobb", inte "Sparade jobb"
+   * (fliken och totalItems nedan) — bara platser som påstår "sparat" har
+   * rättats.
+   */
+  const stillSavedJobs = useMemo(
+    () => savedJobs.filter(job => job.status === 'SAVED' || (job.status as string) === 'INTERESTED'),
+    [savedJobs]
+  )
+
   // Filtered data
   const filteredJobs = useMemo(() => {
-    if (!searchQuery) return savedJobs
-    return savedJobs.filter(job => 
+    if (!searchQuery) return stillSavedJobs
+    return stillSavedJobs.filter(job =>
       job.job_data?.headline?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.job_data?.employer?.name?.toLowerCase().includes(searchQuery.toLowerCase())
     )
-  }, [savedJobs, searchQuery])
+  }, [stillSavedJobs, searchQuery])
 
   const totalItems = savedJobs.length + bookmarkedArticles.length + coverLetters.length + uploadedFiles.length + (hasCV ? 1 : 0)
 
@@ -586,7 +605,7 @@ function ResourcesInner() {
                 <BriefcaseIcon className="w-5 h-5 text-[var(--c-text)]" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-stone-900">{savedJobs.length}</p>
+                <p className="text-2xl font-bold text-stone-900">{stillSavedJobs.length}</p>
                 <p className="text-xs text-stone-600">{t('resources.stats.savedJobs')}</p>
               </div>
             </div>
@@ -923,7 +942,7 @@ function ResourcesInner() {
         )}
 
         {/* Saved Jobs - Compact */}
-        {(activeTab === 'all' || activeTab === 'jobs') && savedJobs.length > 0 && (
+        {(activeTab === 'all' || activeTab === 'jobs') && stillSavedJobs.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">

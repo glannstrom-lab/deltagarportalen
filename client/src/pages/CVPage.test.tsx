@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/config'
@@ -11,6 +11,7 @@ vi.mock('@/services/api', () => ({
     getCV: vi.fn(() => Promise.resolve(null)),
     updateCV: vi.fn(() => Promise.resolve({})),
     getVersions: vi.fn(() => Promise.resolve([])),
+    saveVersion: vi.fn(() => Promise.resolve({})),
   },
 }))
 
@@ -21,6 +22,7 @@ vi.mock('@/services/supabaseApi', () => ({
     updateCV: vi.fn(() => Promise.resolve({})),
     getVersions: vi.fn(() => Promise.resolve([])),
     getATSAnalysis: vi.fn(() => Promise.resolve({ score: 0, feedback: [] })),
+    saveVersion: vi.fn(() => Promise.resolve({})),
   },
 }))
 
@@ -85,11 +87,21 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 // Mock hooks
+// B24: shapen måste matcha den riktiga hooken (hasUnsavedChanges/triggerSave/
+// hasRemoteChanges) — CVBuilder.tsx anropar `triggerSaveRef.current(data)`
+// när `data` ändras efter första laddningen, och ett odefinierat triggerSave
+// kastar "not a function" så fort ett test faktiskt ändrar CV-data (t.ex.
+// exempeldata-testerna nedan). Den gamla mocken (save/isSaving/lastSaved)
+// matchade ett annat hook-kontrakt och gömde det tills nu.
 vi.mock('@/hooks/useCVAutoSave', () => ({
   useCVAutoSave: vi.fn(() => ({
-    save: vi.fn(),
-    isSaving: false,
-    lastSaved: null,
+    saveStatus: 'idle',
+    lastSavedAt: null,
+    hasUnsavedChanges: false,
+    triggerSave: vi.fn(),
+    pendingCount: 0,
+    isOnline: true,
+    hasRemoteChanges: false,
   })),
   useCVDraft: vi.fn(() => ({
     draft: null,
@@ -135,6 +147,7 @@ const mockCvApi = cvApi as {
   getCV: ReturnType<typeof vi.fn>
   updateCV: ReturnType<typeof vi.fn>
   getVersions: ReturnType<typeof vi.fn>
+  saveVersion: ReturnType<typeof vi.fn>
 }
 
 function renderWithRouter(initialRoute = '/cv') {
@@ -276,6 +289,76 @@ describe('CVBuilder', () => {
         const buttons = screen.queryAllByRole('button')
         expect(buttons.length).toBeGreaterThan(0)
       })
+    })
+  })
+
+  // B24: "Exempeldata" skrev tidigare över deltagarens RIKTIGA CV utan
+  // varning eller ångra, autosparat mot molnet — den texten hamnade sedan i
+  // ett skarpt AI-brev (B21). loadDemoData() ska nu bara fylla tomma fält
+  // och alltid säkerhetskopiera det befintliga CV:t först.
+  describe('Exempeldata skriver inte över ifyllda fält (B24)', () => {
+    const filledCV = {
+      id: 'cv1',
+      firstName: 'Erik',
+      lastName: 'Svensson',
+      title: '',
+      email: '',
+      phone: '',
+      location: '',
+      summary: '',
+      // Prod-formen: cvs.skills är objekt, inte strängar (lärdomen 2026-08-03).
+      skills: [{ id: 's1', name: 'Excel', level: 3, category: 'technical' }],
+      workExperience: [],
+      education: [],
+      template: 'sidebar',
+    }
+
+    it('rör aldrig ett fält som redan har innehåll, fyller bara tomma fält', async () => {
+      mockCvApi.getCV.mockResolvedValue(filledCV)
+      mockCvApi.getVersions.mockResolvedValue([])
+
+      renderCVBuilder()
+
+      const demoButton = await screen.findByRole('button', { name: /Exempeldata/i })
+      fireEvent.click(demoButton)
+
+      // Bekräftelsedialogen är riktig (ConfirmDialogProvider, ej mockad).
+      const confirmButton = await screen.findByRole('button', { name: 'Fyll i' })
+      fireEvent.click(confirmButton)
+
+      // Navigera till "Om dig" (steg 2) för att se de ifyllda fälten.
+      const step2Button = await screen.findByRole('button', { name: 'Gå till steg 2: Om dig' })
+      fireEvent.click(step2Button)
+
+      // Redan ifyllt innehåll ska INTE bytas ut mot exempeldata.
+      await waitFor(() => {
+        expect(screen.getByDisplayValue('Erik')).toBeInTheDocument()
+        expect(screen.getByDisplayValue('Svensson')).toBeInTheDocument()
+      })
+      expect(screen.queryByDisplayValue('Anna')).not.toBeInTheDocument()
+      expect(screen.queryByDisplayValue('Andersson')).not.toBeInTheDocument()
+
+      // Tomma fält (t.ex. e-post) ska fyllas i med exempeldata.
+      expect(screen.getByDisplayValue('anna@example.com')).toBeInTheDocument()
+    })
+
+    it('sparar en säkerhetskopia av det riktiga CV:t innan exempeldata läggs till', async () => {
+      mockCvApi.getCV.mockResolvedValue(filledCV)
+      mockCvApi.getVersions.mockResolvedValue([])
+
+      renderCVBuilder()
+
+      const demoButton = await screen.findByRole('button', { name: /Exempeldata/i })
+      fireEvent.click(demoButton)
+      const confirmButton = await screen.findByRole('button', { name: 'Fyll i' })
+      fireEvent.click(confirmButton)
+
+      await waitFor(() => {
+        expect(mockCvApi.saveVersion).toHaveBeenCalledTimes(1)
+      })
+      // Säkerhetskopian ska innehålla det RIKTIGA innehållet, inte demo-datan.
+      const [, backedUpData] = mockCvApi.saveVersion.mock.calls[0]
+      expect(backedUpData.firstName).toBe('Erik')
     })
   })
 })

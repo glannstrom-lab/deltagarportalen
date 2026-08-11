@@ -5551,20 +5551,6 @@
       "af": "AF integration",
       "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
     },
-    "testimonials": {
-      "sectionLabel": "VOICES",
-      "title": "What others say",
-      "description": "The quotes below are from user interviews in 2026.",
-      "t1Quote": "Jobin let me come back at my own pace. The CV builder explained what should actually go in there.",
-      "t1Author": "Anna, 47",
-      "t1Role": "Participant, Stockholm",
-      "t2Quote": "I have 22 participants and see their progress on one screen. I used to spend Mondays in Excel.",
-      "t2Author": "Lars",
-      "t2Role": "Career consultant, Gothenburg",
-      "t3Quote": "We're going from 60 to 200 participants next quarter. The platform scales without hiring more admins.",
-      "t3Author": "Maria",
-      "t3Role": "CEO, job-coaching company"
-    },
     "hero": {
       "badge": "Complete platform for employment services",
       "titleStart": "Empower your",
@@ -5588,11 +5574,12 @@
       "cvApproved": "CV approved by ATS!",
       "newJobMatches": "3 new job matches"
     },
+    "mission": {
+      "text": "Everything you need to take the next step — CV, cover letters, interview practice, and job search, all in one place."
+    },
     "socialProof": {
-      "users": "active users",
       "growing": "Growing every day",
       "everyDay": "New users registering",
-      "rating": "rating from users",
       "quote": "Users and job consultants love being able to focus on what matters and easily customize the planning and execution of labor market training.",
       "quoteSource": "Users & job consultants across Sweden"
     },
@@ -5600,7 +5587,6 @@
       "partnersTitle": "Trusted by organizations across Sweden",
       "arbetsformedlingen": "Employment Agency",
       "platsbanken": "Platsbanken",
-      "municipalities": "Municipalities",
       "unions": "Trade Unions",
       "jobCoaches": "Job Coaches",
       "companies": "Companies"
@@ -5754,23 +5740,6 @@
         "title": "Career coach",
         "description": "Get personalized advice on salary development, skill building, and how to navigate your career forward."
       }
-    },
-    "testimonials": {
-      "sectionLabel": "Reviews",
-      "title": "What our users say",
-      "description": "Real stories from people who found their way back to working life.",
-      "quote1": "After 8 months of searching, I finally got structure in my CV. Two weeks later I had my first interview in a long time.",
-      "name1": "Anna, 34",
-      "role1": "Found a job as a customer service representative",
-      "quote2": "The personality test gave me words for things I had always felt but couldn't articulate. It opened completely new doors for me.",
-      "name2": "Marcus, 41",
-      "role2": "Changed career to UX design",
-      "quote3": "As an employment consultant, I use Jobin daily with my participants. It saves time and gives them tools they can actually use themselves.",
-      "name3": "Sofia",
-      "role3": "Employment consultant in Stockholm",
-      "quote4": "I never thought I would dare to go to an interview again. The interview training gave me the courage to actually apply for that job.",
-      "name4": "Erik, 52",
-      "role4": "Back to work after sick leave"
     },
     "faq": {
       "sectionLabel": "FAQ",
@@ -7617,7 +7586,9 @@
       "import": "Import",
       "exampleData": "Example data",
       "preview": "Preview",
-      "restore": "Restore"
+      "restore": "Restore",
+      "cancel": "Cancel",
+      "clearDemoData": "Remove example data"
     },
     "versions": {
       "title": "Versions",
@@ -7625,7 +7596,8 @@
       "versionNamePlaceholder": "Version name...",
       "noVersions": "No saved versions",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "beforeDemoData": "Backup before example data"
     },
     "help": {
       "title": "Need help?",
@@ -7643,7 +7615,13 @@
       "couldNotRestore": "Could not restore",
       "replaceConfirm": "This will replace your current CV. Continue?",
       "fillDemoData": "Fill in with example data?",
-      "loadedCVVersion": "Loaded saved CV version"
+      "loadedCVVersion": "Loaded saved CV version",
+      "restoreTitle": "Restore version",
+      "demoDataAlreadyFilled": "Your CV is already filled in — there are no empty fields left for example data.",
+      "demoDataFilled": "Example data added to the empty fields. Replace it with your own details before you save or send your CV.",
+      "demoDataCleared": "Example data removed.",
+      "demoDataBannerTitle": "Example data added",
+      "demoDataBannerBody": "This is still example text, not your own details: {{fields}}. Replace it before you save or send your CV."
     }
   },
   "consultant": {
