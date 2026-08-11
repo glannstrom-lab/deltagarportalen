@@ -300,9 +300,10 @@ export function JournalTab() {
               <button
                 onClick={() => getNewPrompt()}
                 disabled={promptLoading}
+                aria-label="Nytt skrivtips"
                 className="p-2 hover:bg-amber-100 rounded-lg text-amber-600 transition-colors"
               >
-                <RefreshCw className={cn("w-5 h-5", promptLoading && "animate-spin")} />
+                <RefreshCw className={cn("w-5 h-5", promptLoading && "animate-spin")} aria-hidden="true" />
               </button>
               <Button size="sm" onClick={handleUsePrompt}>
                 Använd
@@ -331,6 +332,8 @@ export function JournalTab() {
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
+            aria-label="Filtrera efter tagg"
+            aria-pressed={showFilters}
             className={cn(
               "p-2 rounded-lg border transition-colors",
               showFilters || filterTag
@@ -338,7 +341,7 @@ export function JournalTab() {
                 : "border-stone-200 text-stone-700 hover:bg-stone-50"
             )}
           >
-            <Filter className="w-5 h-5" />
+            <Filter className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -462,6 +465,8 @@ export function JournalTab() {
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(entry.id) }}
+                    aria-label={entry.is_favorite ? `Ta bort "${entry.title || 'Utan titel'}" som favorit` : `Markera "${entry.title || 'Utan titel'}" som favorit`}
+                    aria-pressed={entry.is_favorite}
                     className={cn(
                       "p-2 rounded-lg transition-colors",
                       entry.is_favorite
@@ -469,7 +474,7 @@ export function JournalTab() {
                         : "text-stone-600 hover:bg-stone-100"
                     )}
                   >
-                    <Star className={cn("w-4 h-4", entry.is_favorite && "fill-current")} />
+                    <Star className={cn("w-4 h-4", entry.is_favorite && "fill-current")} aria-hidden="true" />
                   </button>
                   <button
                     onClick={(e) => {
@@ -478,9 +483,10 @@ export function JournalTab() {
                         deleteEntry(entry.id)
                       }
                     }}
+                    aria-label={`Radera dagboksinlägget "${entry.title || 'Utan titel'}"`}
                     className="p-2 rounded-lg text-stone-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>

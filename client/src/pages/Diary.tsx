@@ -54,6 +54,8 @@ function TabNavigation({
             <button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
+              aria-label={t(tab.labelKey)}
+              aria-current={isActive ? 'true' : undefined}
               className={cn(
                 "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-lg",
                 "font-medium text-xs sm:text-sm transition-all whitespace-nowrap",
@@ -69,8 +71,8 @@ function TabNavigation({
                 isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
                 isActive && tab.color === 'blue' && "text-blue-900 dark:text-blue-400",
                 isActive && tab.color === 'rose' && "text-pink-900 dark:text-pink-400"
-              )} />
-              <span className="hidden xs:inline sm:inline">{t(tab.labelKey)}</span>
+              )} aria-hidden="true" />
+              <span className="hidden xs:inline sm:inline" aria-hidden="true">{t(tab.labelKey)}</span>
             </button>
           )
         })}

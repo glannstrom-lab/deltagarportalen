@@ -294,18 +294,20 @@ function MoodCalendar() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('prev')}
+            aria-label="Föregående månad"
             className="p-1 hover:bg-stone-100 rounded"
           >
-            <ChevronLeft className="w-5 h-5 text-stone-700" />
+            <ChevronLeft className="w-5 h-5 text-stone-700" aria-hidden="true" />
           </button>
           <span className="text-sm font-medium text-stone-700 min-w-[120px] text-center">
             {currentMonth.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' })}
           </span>
           <button
             onClick={() => navigate('next')}
+            aria-label="Nästa månad"
             className="p-1 hover:bg-stone-100 rounded"
           >
-            <ChevronRight className="w-5 h-5 text-stone-700" />
+            <ChevronRight className="w-5 h-5 text-stone-700" aria-hidden="true" />
           </button>
         </div>
       </div>

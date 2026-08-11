@@ -200,6 +200,8 @@ export default function Register() {
                     value={values.firstName}
                     onChange={handleChange}
                     onBlur={handleBlur}
+                    aria-invalid={touched.firstName && !!errors.firstName}
+                    aria-describedby={touched.firstName && errors.firstName ? 'firstName-error' : undefined}
                     className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                       touched.firstName && errors.firstName
                         ? 'border-red-300 dark:border-red-700 focus:border-red-500'
@@ -210,7 +212,7 @@ export default function Register() {
                   />
                 </div>
                 {touched.firstName && errors.firstName && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
+                  <p id="firstName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
                 )}
               </div>
               <div>
@@ -227,6 +229,8 @@ export default function Register() {
                   value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.lastName && !!errors.lastName}
+                  aria-describedby={touched.lastName && errors.lastName ? 'lastName-error' : undefined}
                   className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.lastName && errors.lastName
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
@@ -236,7 +240,7 @@ export default function Register() {
                   autoComplete="family-name"
                 />
                 {touched.lastName && errors.lastName && (
-                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
+                  <p id="lastName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -262,6 +266,8 @@ export default function Register() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.email && !!errors.email}
+                  aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.email && errors.email
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
@@ -272,7 +278,7 @@ export default function Register() {
                 />
               </div>
               {touched.email && errors.email && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                <p id="email-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
               )}
             </div>
 
@@ -297,6 +303,8 @@ export default function Register() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.password && !!errors.password}
+                  aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.password && errors.password
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
@@ -315,7 +323,7 @@ export default function Register() {
                 </button>
               </div>
               {touched.password && errors.password && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+                <p id="password-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
               )}
 
               {/* Password Strength Indicator */}
@@ -374,6 +382,8 @@ export default function Register() {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.confirmPassword && !!errors.confirmPassword}
+                  aria-describedby={touched.confirmPassword && errors.confirmPassword ? 'confirmPassword-error' : undefined}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.confirmPassword && errors.confirmPassword
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
@@ -384,7 +394,7 @@ export default function Register() {
                 />
               </div>
               {touched.confirmPassword && errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
+                <p id="confirmPassword-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
               )}
               {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
                 <p className="mt-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] flex items-center gap-1">
@@ -407,6 +417,8 @@ export default function Register() {
                   checked={values.acceptTerms}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.acceptTerms && !!errors.acceptTerms}
+                  aria-describedby={touched.acceptTerms && errors.acceptTerms ? 'acceptTerms-error' : undefined}
                   className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-gray-600 dark:text-gray-300">
@@ -418,7 +430,7 @@ export default function Register() {
                 </label>
               </div>
               {touched.acceptTerms && errors.acceptTerms && (
-                <p className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptTerms}</p>
+                <p id="acceptTerms-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptTerms}</p>
               )}
 
               {/* Privacy Checkbox */}
@@ -430,6 +442,8 @@ export default function Register() {
                   checked={values.acceptPrivacy}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.acceptPrivacy && !!errors.acceptPrivacy}
+                  aria-describedby={touched.acceptPrivacy && errors.acceptPrivacy ? 'acceptPrivacy-error' : undefined}
                   className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
                 />
                 <label htmlFor="acceptPrivacy" className="text-sm text-gray-600 dark:text-gray-300">
@@ -441,7 +455,7 @@ export default function Register() {
                 </label>
               </div>
               {touched.acceptPrivacy && errors.acceptPrivacy && (
-                <p className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptPrivacy}</p>
+                <p id="acceptPrivacy-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptPrivacy}</p>
               )}
 
               {/* AI Processing Checkbox (optional) */}
