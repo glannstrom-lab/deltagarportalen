@@ -10,7 +10,7 @@
  * OAuth2 Client Credentials Grant för autentisering
  */
 
-import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, getCorsHeaders } from '../_shared/cors.ts';
+import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, getCorsHeaders, validateOriginOrReject } from '../_shared/cors.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 // Per-user rate-limit: 30 anrop / 15 min. Bolagsverket-quota delas
@@ -284,6 +284,10 @@ Deno.serve(async (req) => {
   }
 
   const origin = req.headers.get('Origin');
+
+  // A29: origin-kontroll FÖRE allt arbete — se send-invite-email/index.ts
+  const originRejection = validateOriginOrReject(req);
+  if (originRejection) return originRejection;
 
   // ---------- AUTH + per-user rate-limit ----------
   // Audit M7 (2026-05-14): Tidigare ingen explicit user-JWT-check och

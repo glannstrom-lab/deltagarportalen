@@ -1,7 +1,7 @@
 // Edge Function: AI Assistant - Universal AI proxy via OpenRouter
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts'
 import { checkRateLimit } from '../_shared/rateLimit.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
@@ -21,6 +21,10 @@ serve(async (req) => {
   if (preflightResponse) return preflightResponse
 
   const origin = req.headers.get('Origin')
+
+  // A29: origin-kontroll FÖRE allt arbete — se send-invite-email/index.ts
+  const originRejection = validateOriginOrReject(req)
+  if (originRejection) return originRejection
 
   if (req.method !== 'POST') {
     return createCorsResponse({ error: 'Method not allowed' }, 405, origin)

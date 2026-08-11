@@ -1,7 +1,7 @@
 // Edge Function: AI-generering av personligt brev
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse } from '../_shared/cors.ts'
+import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse, validateOriginOrReject } from '../_shared/cors.ts'
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
@@ -20,6 +20,10 @@ serve(async (req) => {
   if (preflightResponse) return preflightResponse
 
   const origin = req.headers.get('Origin')
+
+  // A29: origin-kontroll FÖRE allt arbete — se send-invite-email/index.ts
+  const originRejection = validateOriginOrReject(req)
+  if (originRejection) return originRejection
 
   try {
     console.log('Cover letter request started')

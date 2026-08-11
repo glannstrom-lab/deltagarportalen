@@ -281,6 +281,64 @@ describe('authStore', () => {
       expect(state.profile).toBeNull()
       expect(state.session).toBeNull()
     })
+
+    /**
+     * A31 (docs/review-2026-08-09/sakerhet-gdpr.md #10): CV, personligt brev
+     * och annat deltagarinnehåll blev tidigare kvar i localStorage efter
+     * utloggning eftersom signOut() bara nollade zustand-state. Målgruppen
+     * sitter ofta på delade datorer, så det här är normalfallet — inte ett
+     * kantfall. Testet gäller den faktiska nyckellistan i
+     * utils/safeStorage.ts (USER_SCOPED_STORAGE_KEYS), inte bara ett urval,
+     * så en ny innehållsbärande nyckel som glöms bort i listan INTE ger ett
+     * falskt grönt test.
+     */
+    it('rensar allt deltagarinnehåll ur localStorage vid utloggning', async () => {
+      const { USER_SCOPED_STORAGE_KEYS } = await import('@/utils/safeStorage')
+      mockSignOut.mockResolvedValue({ error: null })
+
+      for (const key of USER_SCOPED_STORAGE_KEYS) {
+        localStorage.setItem(key, 'hemligt-innehall')
+      }
+
+      await useAuthStore.getState().signOut()
+
+      for (const key of USER_SCOPED_STORAGE_KEYS) {
+        // 'auth-storage' är undantaget: zustands persist-middleware skriver
+        // OM den nyckeln på varje set() — ett lyckat signOut() persisterar
+        // därför { profile: null, isAuthenticated: false } dit igen (se
+        // authStore.ts partialize). Nyckeln finns alltså kvar, men utan PII —
+        // kontrollera det uttryckligen i stället för att kräva att nyckeln
+        // är helt borta.
+        if (key === 'auth-storage') {
+          expect(localStorage.getItem(key)).not.toContain('hemligt-innehall')
+          continue
+        }
+        expect(localStorage.getItem(key)).toBeNull()
+      }
+    })
+
+    it('rör INTE språkval, temaval eller cookie-samtycke vid utloggning', async () => {
+      mockSignOut.mockResolvedValue({ error: null })
+
+      localStorage.setItem('language', 'sv')
+      localStorage.setItem('theme', 'dark')
+      localStorage.setItem('jobin_cookie_consent', 'true')
+
+      await useAuthStore.getState().signOut()
+
+      expect(localStorage.getItem('language')).toBe('sv')
+      expect(localStorage.getItem('theme')).toBe('dark')
+      expect(localStorage.getItem('jobin_cookie_consent')).toBe('true')
+    })
+
+    it('rensar deltagarinnehåll även om Supabase-anropet misslyckas (fail closed på lokal data)', async () => {
+      mockSignOut.mockResolvedValue({ error: { message: 'Network error' } })
+      localStorage.setItem('cv-edit-version', 'hemligt-cv')
+
+      await useAuthStore.getState().signOut()
+
+      expect(localStorage.getItem('cv-edit-version')).toBeNull()
+    })
   })
 
   describe('updateProfile', () => {

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
+import { clearUserScopedStorage } from '@/utils/safeStorage'
 import type { User, Session } from '@supabase/supabase-js'
 
 // E9: lazy-import Sentry istället för statisk — håller @sentry/react SDK
@@ -393,6 +394,12 @@ export const useAuthStore = create<AuthState>()(
       signOut: async () => {
         try {
           set({ isSigningOut: true })
+
+          // A31: rensa deltagarens CV/personliga brev/verktygsinnehåll ur
+          // localStorage FÖRST — oavsett om Supabase-anropet nedan lyckas.
+          // Målgruppen sitter ofta på delade datorer; innehållet ska inte
+          // överleva utloggningen bara för att API-anropet failar.
+          clearUserScopedStorage()
 
           const { error } = await supabase.auth.signOut()
 

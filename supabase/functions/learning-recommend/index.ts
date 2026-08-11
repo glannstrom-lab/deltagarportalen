@@ -3,7 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { getCorsHeaders, handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts';
+import { getCorsHeaders, handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts';
 
 interface RecommendationFilters {
   maxDuration?: number;
@@ -245,6 +245,10 @@ serve(async (req) => {
 
   const origin = req.headers.get('Origin');
   const corsHeaders = getCorsHeaders(origin);
+
+  // A29: origin-kontroll FÖRE allt arbete — se send-invite-email/index.ts
+  const originRejection = validateOriginOrReject(req);
+  if (originRejection) return originRejection;
 
   try {
     const { 

@@ -158,3 +158,85 @@ export const safeLocalStorage = {
   removeItem: safeStorage.removeItem.bind(safeStorage),
   clear: safeStorage.clear.bind(safeStorage),
 }
+
+/**
+ * A31 (docs/review-2026-08-09/sakerhet-gdpr.md #10): deltagarens CV, personliga
+ * brev och annat verktygsinnehåll skrivs på flera ställen direkt till
+ * `localStorage` (utanför `safeStorage`s `dp_`-prefix) — som molnsync-fallback
+ * eller som utkast. `signOut()` nollade tidigare bara zustand-state; de här
+ * nycklarna blev kvar på disk. Målgruppen sitter ofta på delade datorer
+ * (bibliotek, jobbcentrum), så det är ett normalfall, inte ett kantfall.
+ *
+ * Detta är en EXPLICIT ALLOWLIST av nycklar att rensa — inte `localStorage.clear()`.
+ * Språkval, temaval och cookie-samtycke ska överleva utloggning; de är inte
+ * persondata. Håll listan i synk med grep-svepet i CLAUDE.md-uppdraget A31
+ * (`grep -rn "localStorage" client/src`) när nya innehållsbärande nycklar
+ * tillkommer.
+ */
+export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
+  // stores/authStore.ts zustand-persist ('partialize' skriver { profile, isAuthenticated }
+  // hit på VARJE state-ändring). Profilen innehåller namn, telefon, bio, ort,
+  // önskade yrken m.m. — trots kommentaren "only non-sensitive state" i koden.
+  // signOut() nollar profile i state EFTER ett lyckat Supabase-anrop, vilket
+  // skriver om denna nyckel med profile:null — men om anropet kastar innan dess
+  // (catch-grenen) hade nyckeln annars blivit kvar med hela profilen. Rensas
+  // därför explicit här också, innan Supabase-anropet ens görs.
+  'auth-storage',
+  // CV (services/cloudStorage.ts, components/cv/MyCVs.tsx, hooks/useCVAutoSave.ts)
+  'cv-edit-version',
+  'cv-draft',
+  'cv-last-saved',
+  'cv-data',
+  'default_cv_id',
+  // Personligt brev (hooks/useAutoSave.ts nyckel satt av CoverLetterWrite.tsx)
+  'cover-letter-write-draft',
+  // Spontanansökan (lib/spontaneousFocusDraft.ts)
+  'spontaneous-focus-draft',
+  // Jobbsökning / ansökningar
+  'job-applications-crm',
+  'platsbanken_saved_jobs',
+  'platsbanken_saved_searches',
+  // Intresseguide
+  'interest-guide-share',
+  'interest-result',
+  // Wellness / dagbok / kalender
+  'wellness_data',
+  'dailyTaskDate',
+  'dailyTaskIndex',
+  'dailyTaskCompleted',
+  'energy-level',
+  'calendar_events',
+  'calendar_goals',
+  'calendar_mood_entries',
+  'content-calendar',
+  // Personligt varumärke
+  'brand-audit-answers',
+  'portfolio-items',
+  'elevator-pitches',
+  'visibility-progress',
+  // Övriga verktygssvar/checklistor med deltagarinnehåll
+  'article_bookmarks',
+  'article-bookmarks',
+  'article_checklists',
+  'integration-checklist',
+  'negotiationChecklist',
+  'culture-preferences',
+  'dashboard_preferences',
+  'user_preferences',
+] as const
+
+/**
+ * Rensar allt deltagarinnehåll ur localStorage vid utloggning. Anropas från
+ * `authStore.signOut()` — portalens enda logout-väg (Sidebar + TopBar går
+ * båda via `useAuthStore().signOut()`). Rör INTE `dp_`-prefixade nycklar
+ * (redan hanterade av `safeStorage`), språkval, temaval eller cookie-samtycke.
+ */
+export function clearUserScopedStorage(): void {
+  for (const key of USER_SCOPED_STORAGE_KEYS) {
+    try {
+      localStorage.removeItem(key)
+    } catch {
+      // localStorage kan vara otillgängligt (privat läge) — best effort
+    }
+  }
+}

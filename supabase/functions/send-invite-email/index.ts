@@ -11,7 +11,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts'
 
 // =============================================================================
 // E-MAIL-TEMPLATES
@@ -352,6 +352,13 @@ serve(async (req) => {
   if (preflightResponse) return preflightResponse
 
   const origin = req.headers.get('Origin')
+
+  // A29: origin måste avvisas HÄR — innan mejlet skickas eller databasen
+  // skrivs. `createCorsResponse` gör samma kontroll, men bara när svaret
+  // byggs, dvs efter att sidoeffekterna (Resend-anrop, invitations-update)
+  // redan hunnit ske. En kontroll efter arbetet är ingen kontroll.
+  const originRejection = validateOriginOrReject(req)
+  if (originRejection) return originRejection
 
   try {
     const authHeader = req.headers.get('Authorization')

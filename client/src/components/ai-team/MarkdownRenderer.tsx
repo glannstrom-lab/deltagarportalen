@@ -5,6 +5,7 @@
 
 import { cn } from '@/lib/utils'
 import { CheckCircle, Lightbulb, ArrowRight, Star, Sparkles } from '@/components/ui/icons'
+import { sanitizeHref } from '@/utils/sanitize'
 
 interface MarkdownRendererProps {
   content: string
@@ -411,25 +412,35 @@ function InlineMarkdown({ text }: { text: string }) {
       if (linkMatch[1]) {
         parts.push(linkMatch[1])
       }
-      parts.push(
-        <a
-          key={`link-${keyIndex++}`}
-          href={linkMatch[3]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={cn(
-            'inline-flex items-center gap-0.5',
-            'text-[var(--c-text)] dark:text-[var(--c-solid)]',
-            'hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]',
-            'underline decoration-[var(--c-accent)] dark:decoration-[var(--c-solid)]',
-            'underline-offset-2 hover:decoration-[var(--c-solid)]',
-            'transition-colors'
-          )}
-        >
-          {linkMatch[2]}
-          <ArrowRight className="w-3 h-3" />
-        </a>
-      )
+      // A35: AI-genererad markdown parsas här utanför DOMPurify och byggs
+      // direkt som JSX — React sanitiserar INTE href mot javascript:-URLer.
+      // Ett osäkert schema (javascript:, data:, vbscript:, obfuskerade
+      // varianter) gör länken till oformaterad text i stället för en klickbar
+      // <a> — texten tappas aldrig, bara klickbarheten på den farliga URL:en.
+      const safeHref = sanitizeHref(linkMatch[3])
+      if (safeHref === null) {
+        parts.push(linkMatch[2])
+      } else {
+        parts.push(
+          <a
+            key={`link-${keyIndex++}`}
+            href={safeHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              'inline-flex items-center gap-0.5',
+              'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+              'hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]',
+              'underline decoration-[var(--c-accent)] dark:decoration-[var(--c-solid)]',
+              'underline-offset-2 hover:decoration-[var(--c-solid)]',
+              'transition-colors'
+            )}
+          >
+            {linkMatch[2]}
+            <ArrowRight className="w-3 h-3" />
+          </a>
+        )
+      }
       remaining = remaining.slice(linkMatch[0].length)
       continue
     }

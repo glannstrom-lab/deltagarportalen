@@ -18,6 +18,11 @@ const aiHandler = require('../../api/ai.js') as {
     supabase: unknown,
     userId: string
   ) => Promise<{ allowed: boolean; reason?: string }>
+  AI_ENABLED_EXEMPT_FUNCTIONS: Set<string>
+  checkAiEnabled: (
+    supabase: unknown,
+    userId: string
+  ) => Promise<{ allowed: boolean; reason?: string }>
   PROMPTS: Record<string, (data: Record<string, unknown>) => { system: string; user: string }>
 }
 
@@ -139,6 +144,76 @@ describe('checkArt9Consent', () => {
 })
 
 /**
+ * B28 (2026-08-12) — den allmänna AI-av-grinden i `client/api/ai.js`.
+ *
+ * `checkArt9Consent` ovan kollar `ai_enabled` bara för de fyra ART9-
+ * funktionerna. `checkAiEnabled` är den motsvarande grinden för de andra 14
+ * — samma profil-uppslag, samma fail-closed-policy, men bara `ai_enabled`
+ * (art. 9-funktionerna kräver DESSUTOM `ai_consent_at`, vilket hör hemma i
+ * `checkArt9Consent`, inte här).
+ */
+describe('AI_ENABLED_EXEMPT_FUNCTIONS', () => {
+  it('undantar exakt de fyra konsulentfunktionerna — inte fler, inte färre', () => {
+    expect([...aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS].sort()).toEqual([
+      'konsulent-rapportutkast',
+      'sta-doa-sammanfattning',
+      'sta-document-draft',
+      'sta-week-summary',
+    ])
+  })
+
+  it('undantar INTE art. 6-funktionerna — där är läckan B28 hittade', () => {
+    expect(aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS.has('personligt-brev')).toBe(false)
+    expect(aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS.has('chatbot')).toBe(false)
+    expect(aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS.has('cv-writing')).toBe(false)
+  })
+})
+
+describe('checkAiEnabled', () => {
+  it('tillåter när ai_enabled är true', async () => {
+    const supabase = stubSupabase({ data: { ai_enabled: true }, error: null })
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({ allowed: true })
+  })
+
+  it('tillåter när ai_enabled är null/odefinierat (default TRUE)', async () => {
+    const supabase = stubSupabase({ data: { ai_enabled: null }, error: null })
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({ allowed: true })
+  })
+
+  it('blockerar när användaren stängt av AI (ai_enabled = false) — själva B28-buggen', async () => {
+    const supabase = stubSupabase({ data: { ai_enabled: false }, error: null })
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({
+      allowed: false,
+      reason: 'opted_out',
+    })
+  })
+
+  it('FAIL CLOSED: blockerar när uppslaget ger fel', async () => {
+    const supabase = stubSupabase({ data: null, error: { message: 'RLS denied' } })
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({
+      allowed: false,
+      reason: 'lookup_failed',
+    })
+  })
+
+  it('FAIL CLOSED: blockerar när uppslaget kastar', async () => {
+    const supabase = stubSupabase(new Error('nätverket dog'))
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({
+      allowed: false,
+      reason: 'lookup_failed',
+    })
+  })
+
+  it('FAIL CLOSED: blockerar när profilraden saknas helt', async () => {
+    const supabase = stubSupabase({ data: null, error: null })
+    await expect(aiHandler.checkAiEnabled(supabase, 'u1')).resolves.toEqual({
+      allowed: false,
+      reason: 'lookup_failed',
+    })
+  })
+})
+
+/**
  * A19 — kopplingsvakt.
  *
  * Testerna ovan stubbar Supabase-klienten och kan därför per definition inte se
@@ -174,6 +249,25 @@ describe('A19: art. 9-uppslaget måste göras med användarens token', () => {
     ).not.toBe('supabase')
 
     // Den klient som skickas in ska vara den som konstrueras med Authorization-headern.
+    const deklaration = new RegExp(
+      `const ${klientnamn} = createClient\\([\\s\\S]{0,400}?Authorization`
+    )
+    expect(source).toMatch(deklaration)
+  })
+
+  // B28: samma kopplingsfälla gäller den nya allmänna grinden — en framtida
+  // refaktorering som råkar skicka `supabase` (anon) i stället för
+  // `supabaseAsUser` skulle neka ALLA 14 funktioner permanent, tyst.
+  it('skickar den tokenbärande klienten till checkAiEnabled — inte den oautentiserade', () => {
+    const call = source.match(/await\s+checkAiEnabled\(\s*([A-Za-z_$][\w$]*)\s*,/)
+    expect(call, 'checkAiEnabled anropas inte alls i ai.js').not.toBeNull()
+
+    const klientnamn = call![1]
+    expect(
+      klientnamn,
+      'checkAiEnabled fick den oautentiserade klienten — då går uppslaget som anon och grinden nekar alla'
+    ).not.toBe('supabase')
+
     const deklaration = new RegExp(
       `const ${klientnamn} = createClient\\([\\s\\S]{0,400}?Authorization`
     )

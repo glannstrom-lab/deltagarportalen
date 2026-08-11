@@ -135,6 +135,15 @@ export function checkRateLimitSync(identifier, maxRequests = 10, windowMs = 6000
 
 /**
  * Get client IP from request headers
+ *
+ * A28 (2026-08-12): den här funktionen har idag noll importörer i repot
+ * (verifierat med en repo-vid sökning efter "rate-limiter" — dödkod), men
+ * hade samma bugg som supabase/functions/_shared/proxyGuard.ts: den läste
+ * FÖRSTA värdet i x-forwarded-for, vilket är klientstyrt och går att rotera
+ * per anrop för att kringgå en per-IP-rate-limit. Rättad för konsistens och
+ * så att koden inte blir en mall att kopiera från nästa gång funktionen
+ * kopplas in. Se proxyGuard.ts:getTrustedClientIp för den fullständiga
+ * motiveringen (sista, inte första, hoppet).
  * @param {Request} req - The incoming request
  * @returns {string} - Client IP address
  */
@@ -147,19 +156,20 @@ export function getClientIP(req) {
     return req.headers?.[name] || req.headers?.[name.toLowerCase()]
   }
 
-  // Vercel/Cloudflare headers
-  const forwarded = getHeader('x-forwarded-for')
-  if (forwarded) {
-    return forwarded.split(',')[0].trim()
-  }
-
-  // Cloudflare
+  // Cloudflare — satt av CF:s egen edge, inte av klienten
   const cfConnecting = getHeader('cf-connecting-ip')
   if (cfConnecting) return cfConnecting
 
   // Vercel
   const realIP = getHeader('x-real-ip')
   if (realIP) return realIP
+
+  // Vercel/Cloudflare-kedja: ta SISTA hoppet, inte första — se motivering ovan.
+  const forwarded = getHeader('x-forwarded-for')
+  if (forwarded) {
+    const hops = forwarded.split(',').map((h) => h.trim()).filter(Boolean)
+    if (hops.length > 0) return hops[hops.length - 1]
+  }
 
   return 'unknown'
 }

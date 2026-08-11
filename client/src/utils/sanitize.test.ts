@@ -4,6 +4,7 @@ import {
   sanitizeHTMLWithLineBreaks,
   stripHTML,
   containsDangerousHTML,
+  sanitizeHref,
 } from './sanitize'
 
 /**
@@ -123,6 +124,82 @@ describe('stripHTML', () => {
     expect(stripHTML(null)).toBe('')
     expect(stripHTML(undefined)).toBe('')
     expect(stripHTML('')).toBe('')
+  })
+})
+
+/**
+ * A35: MarkdownRenderer.tsx bygger `<a href={...}>` direkt i JSX från
+ * AI-genererad markdown — utanför DOMPurify, som bara skyddar
+ * dangerouslySetInnerHTML-vägen ovan. sanitizeHref() är den enda spärren
+ * mellan modellens/en prompt-injektions text och en klickbar javascript:-URL.
+ */
+describe('sanitizeHref', () => {
+  it('avvisar javascript:-URLer', () => {
+    expect(sanitizeHref('javascript:alert(1)')).toBeNull()
+  })
+
+  it('avvisar javascript: oavsett skiftläge', () => {
+    expect(sanitizeHref('JavaScript:alert(1)')).toBeNull()
+    expect(sanitizeHref('JAVASCRIPT:alert(1)')).toBeNull()
+  })
+
+  it('avvisar javascript: med inbäddat tab-tecken (java\\tscript:)', () => {
+    expect(sanitizeHref('java\tscript:alert(1)')).toBeNull()
+  })
+
+  it('avvisar javascript: med inbäddad radbrytning (java\\nscript:)', () => {
+    expect(sanitizeHref('java\nscript:alert(1)')).toBeNull()
+  })
+
+  it('avvisar javascript: obfuskerad med HTML-entiteter (&#106;avascript:)', () => {
+    expect(sanitizeHref('&#106;avascript:alert(1)')).toBeNull()
+  })
+
+  it('avvisar javascript: obfuskerad med hex-HTML-entiteter (&#x6A;avascript:)', () => {
+    expect(sanitizeHref('&#x6A;avascript:alert(1)')).toBeNull()
+  })
+
+  it('avvisar data:-URLer', () => {
+    expect(sanitizeHref('data:text/html,<script>alert(1)</script>')).toBeNull()
+  })
+
+  it('avvisar vbscript:-URLer', () => {
+    expect(sanitizeHref('vbscript:msgbox(1)')).toBeNull()
+  })
+
+  it('avvisar file:-URLer', () => {
+    expect(sanitizeHref('file:///etc/passwd')).toBeNull()
+  })
+
+  it('släpper igenom https-länkar', () => {
+    expect(sanitizeHref('https://arbetsformedlingen.se/jobb')).toBe('https://arbetsformedlingen.se/jobb')
+  })
+
+  it('släpper igenom http-länkar', () => {
+    expect(sanitizeHref('http://example.com')).toBe('http://example.com')
+  })
+
+  it('släpper igenom mailto-länkar', () => {
+    expect(sanitizeHref('mailto:test@example.com')).toBe('mailto:test@example.com')
+  })
+
+  it('släpper igenom tel-länkar', () => {
+    expect(sanitizeHref('tel:+46701234567')).toBe('tel:+46701234567')
+  })
+
+  it('släpper igenom relativa länkar', () => {
+    expect(sanitizeHref('/jobb/123')).toBe('/jobb/123')
+  })
+
+  it('släpper igenom ankarlänkar', () => {
+    expect(sanitizeHref('#sektion')).toBe('#sektion')
+  })
+
+  it('returnerar null för tomt/null/undefined', () => {
+    expect(sanitizeHref('')).toBeNull()
+    expect(sanitizeHref(null)).toBeNull()
+    expect(sanitizeHref(undefined)).toBeNull()
+    expect(sanitizeHref('   ')).toBeNull()
   })
 })
 

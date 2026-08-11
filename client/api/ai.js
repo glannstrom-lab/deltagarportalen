@@ -28,17 +28,105 @@ function resolveModel() {
 // SECURITY: Input Sanitization (paritet med supabase/functions/ai-assistant)
 // ============================================
 
+// ============================================
+// SECURITY: Server-side PII-sanering (B29, 2026-08-12)
+// ============================================
+// Servern saniterade tidigare BARA `[<>]` ovan — prompt-injection-skydd, INTE
+// PII-sanering. Klientens `sanitizeForAi` (client/src/lib/piiSanitizer.ts) gör
+// den riktiga PII-strippningen, men den körs bara i webbläsaren. En direkt
+// POST mot /api/ai (curl, devtools, en framtida integration) gick alltså
+// igenom med personnummer och bankkontonummer intakta ända till OpenRouter —
+// bevisat live. Klientsaneringen är ingen sanering; den är en artighet som
+// går att kringgå. Servern måste sanera OBEROENDE av vad klienten gjorde.
+//
+// Mönstren är PORTERADE (inte importerade) från piiSanitizer.ts: den filen är
+// ESM/TypeScript som Vite bygger för webbläsaren, den här filen är en
+// CommonJS Vercel-funktion — samma klient/server-gräns som redan finns för
+// ART9_FUNCTIONS (se synk-kommentaren i aiApi.ts). HÅLL MÖNSTREN I SYNK MED
+// piiSanitizer.ts MANUELLT — ändras ett regex där, ändra det här också.
+//
+// Strategi: MASKERA, avvisa inte. Ett regexbaserat personnummer-/bankkonto-
+// mönster ger då och då falska positiva (långa referensnummer, vissa datum-
+// kombinationer) — att avvisa hela anropet på en falsk positiv gör
+// funktionen oanvändbar för ett legitimt ärende. Ingen av mallarna i PROMPTS
+// nedan behöver en riktig e-post/telefon/personnummer/bankkonto i själva
+// PROMPTEN för att generera sitt svar (enda undantaget är `data.name` i
+// `profile-summary`, som är ett namn, inte en kontrolluppgift) — så en
+// maskerad platshållare kostar ingen funktionalitet.
+//
+// E-post och telefon MASKERAS här (till skillnad från klienten, som bara
+// VARNAR och behåller dem obrutna) — uppdraget (B29) kräver dem uttryckligen,
+// och ingen prompt-mall behöver dem för att fungera.
+
+/** Luhn-algoritmen — identisk med piiSanitizer.ts. */
+function luhnCheck(digits) {
+  let sum = 0;
+  let shouldDouble = false;
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let d = parseInt(digits[i], 10);
+    if (shouldDouble) {
+      d *= 2;
+      if (d > 9) d -= 9;
+    }
+    sum += d;
+    shouldDouble = !shouldDouble;
+  }
+  return sum % 10 === 0;
+}
+
+/**
+ * Maskerar PII i en sträng innan den kan nå en AI-prompt. Ordningen är
+ * medveten: IBAN före bankkonto (siffrorna överlappar annars).
+ */
+function stripPii(text) {
+  if (typeof text !== 'string' || !text) return text;
+  let out = text;
+
+  // Svenska personnummer/samordningsnummer: YYYYMMDD-XXXX, YYMMDD-XXXX,
+  // YYMMDD+XXXX, YYYYMMDDXXXX — med och utan sekel, med och utan bindestreck.
+  out = out.replace(
+    /\b(?:19|20)?\d{2}(?:0[1-9]|1[0-2])(?:[0-2][0-9]|3[01]|[6-8][0-9]|9[01])\s*[-+]?\s*\d{4}\b/g,
+    '[BORTTAGET-PERSONNUMMER]'
+  );
+
+  // Kreditkortsnummer (Luhn-verifierat) — grov match, sedan checksumma.
+  out = out.replace(/\b(?:\d[ -]?){12,18}\d\b/g, (match) => {
+    const digits = match.replace(/\D/g, '');
+    return digits.length >= 13 && digits.length <= 19 && luhnCheck(digits)
+      ? '[BORTTAGET-KORTNUMMER]'
+      : match;
+  });
+
+  // IBAN — svensk: SE + 22 tecken. Måste köras FÖRE bankRegex.
+  out = out.replace(
+    /\bSE\d{2}\s?\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\s?\d{4}\b/gi,
+    '[BORTTAGET-IBAN]'
+  );
+
+  // Svenska bankkonto (clearing + nummer), PlusGiro, BankGiro.
+  out = out.replace(/\b\d{4,5}[\s-]\d{3,4}[\s-]\d{3,4}(?:[\s-]\d{1,4})?\b/g, (match) => {
+    const digits = match.replace(/\D/g, '');
+    return digits.length >= 10 && digits.length <= 16 ? '[BORTTAGET-BANKKONTO]' : match;
+  });
+
+  // E-post.
+  out = out.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/g, '[BORTTAGET-EPOST]');
+
+  // Svenska telefonnummer: 070-XXX XX XX, +46 70 XXX XX XX, 08-XX XX XX, etc.
+  out = out.replace(/\b(?:\+46[-\s]?|0)(?:\d[-\s]?){8,11}\b/g, '[BORTTAGET-TELEFON]');
+
+  return out;
+}
+
 /**
  * Sanera en sträng innan den interpoleras i en AI-prompt.
- * Tar bort potentiella HTML/XML-taggar och kapar längd för att förhindra
- * prompt-injection och token-overflow.
+ * Tar bort potentiella HTML/XML-taggar, maskerar PII (B29) och kapar längd
+ * för att förhindra prompt-injection och token-overflow.
  */
 function sanitizeInput(input, maxLength = 5000) {
   if (input == null) return '';
-  return String(input)
-    .slice(0, maxLength)
-    .replace(/[<>]/g, '')
-    .trim();
+  const withoutTags = String(input).slice(0, maxLength).replace(/[<>]/g, '');
+  return stripPii(withoutTags).trim();
 }
 
 /**
@@ -285,6 +373,76 @@ async function checkArt9Consent(supabase, userId) {
     return { allowed: true };
   } catch (err) {
     console.warn('[Art9Consent] kastade (blockerar):', err.message);
+    return { allowed: false, reason: 'lookup_failed' };
+  }
+}
+
+// ============================================
+// Allmän AI-av-grind (B28, 2026-08-12)
+// ============================================
+// `profiles.ai_enabled` är användarens GENERELLA på/av-brytare för AI (GDPR
+// art. 21 — invändning mot profilering, se useAiConsent.ts). Inställnings-
+// sidans knapp heter "Pausa AI" och texten lovar "AI-funktioner är pausade"
+// — inte "art. 9-funktionerna är pausade". Innan den här ändringen kollades
+// `ai_enabled` bara INUTI `checkArt9Consent`, dvs för de 4 funktionerna i
+// ART9_FUNCTIONS. Bevisat live: med `ai_enabled = false` svarade både
+// `personligt-brev` och `chatbot` HTTP 200 — 14 av 18 funktioner skickade
+// alltså användarens uppgifter till OpenRouter trots att personen stängt av
+// AI i Inställningar.
+//
+// Samma policy som art. 9-grinden ovan: FAIL CLOSED. Går uppslaget fel vet vi
+// inte om personen har stängt av AI, och kostnaden för att gissa fel är en
+// överföring personen uttryckligen invänt mot — inte en kostnad i kronor.
+// Det är den MOTSATTA policyn mot `checkDailyTokenCap` nedan (som failar
+// open, för att dess fel bara kostar pengar). Harmonisera dem ALDRIG till
+// samma beteende — se CLAUDE.md, lärdomen "Fail closed vs. fail open".
+//
+// Medvetet UNDANTAGNA — namngivna, inte tyst utelämnade (samma resonemang
+// som ART9_FUNCTIONS ovan): de fyra konsulentfunktionerna behandlar en ANNAN
+// persons uppgifter (deltagarens) på uppdrag av den inloggade konsulenten.
+// Konsulentens EGEN "Pausa AI"-brytare är fel kontroll för deltagarens data
+// — deltagarens rätt att invända mot att konsulenten kör AI på deras
+// journal-/aktivitetsdata är en öppen fråga för AI-juristen (ROADMAP A2),
+// inte löst här. Art. 6-funktionerna (CV, brev, intervju, kompetensgap …)
+// är INTE undantagna — de är precis den läcka B28 hittade.
+const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
+  'konsulent-rapportutkast',
+  'sta-document-draft',
+  'sta-week-summary',
+  'sta-doa-sammanfattning',
+]);
+
+/**
+ * Kontrollerar den inloggade användarens `profiles.ai_enabled` — den
+ * allmänna AI-av-brytaren. Skild från `checkArt9Consent` ovan (som redan
+ * kontrollerar `ai_enabled` OCH `ai_consent_at` för ART9_FUNCTIONS); den här
+ * funktionen anropas för alla ÖVRIGA funktioner utom
+ * `AI_ENABLED_EXEMPT_FUNCTIONS`.
+ *
+ * **Fail closed** — se motivering ovan.
+ *
+ * @param {object} supabase - måste vara den RLS-medvetna, tokenbärande
+ *   klienten (`supabaseAsUser`), ALDRIG den oautentiserade — se A19-
+ *   kommentaren vid `supabaseAsUser` i handlern. En anon-klient ger 0 rader
+ *   och den här grinden nekar då alla, för alltid.
+ * @param {string} userId
+ */
+async function checkAiEnabled(supabase, userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('ai_enabled')
+      .eq('id', userId)
+      .single();
+    if (error || !data) {
+      console.warn('[AiEnabledGate] uppslag misslyckades (blockerar):', error?.message);
+      return { allowed: false, reason: 'lookup_failed' };
+    }
+    // ai_enabled är default TRUE; bara explicit FALSE är en art. 21-invändning
+    if (data.ai_enabled === false) return { allowed: false, reason: 'opted_out' };
+    return { allowed: true };
+  } catch (err) {
+    console.warn('[AiEnabledGate] kastade (blockerar):', err.message);
     return { allowed: false, reason: 'lookup_failed' };
   }
 }
@@ -1307,6 +1465,20 @@ module.exports = async (req, res) => {
           reason: consent.reason,
         });
       }
+    } else if (!AI_ENABLED_EXEMPT_FUNCTIONS.has(fn)) {
+      // B28: den allmänna AI-av-grinden för de 14 funktioner som inte redan
+      // täcks av art. 9-kontrollen ovan (som kollar `ai_enabled` för sina 4).
+      const aiGate = await checkAiEnabled(supabaseAsUser, user.id);
+      if (!aiGate.allowed) {
+        return res.status(403).json({
+          error:
+            aiGate.reason === 'opted_out'
+              ? 'Du har stängt av AI-behandling av dina uppgifter. Slå på det i Inställningar om du vill använda den här funktionen.'
+              : 'Vi kunde inte kontrollera din AI-inställning just nu, och skickar därför inte dina uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_CONSENT_REQUIRED',
+          reason: aiGate.reason,
+        });
+      }
     }
 
     // C4: Daily token cap — kostnadsskydd. Skipas om service-key saknas
@@ -1533,6 +1705,15 @@ module.exports = async (req, res) => {
 // så dess fail-closed-beteende ska vara testat, inte antaget (UX13).
 module.exports.ART9_FUNCTIONS = ART9_FUNCTIONS;
 module.exports.checkArt9Consent = checkArt9Consent;
+// B28: den allmänna AI-av-grinden och dess namngivna undantagslista — samma
+// motivering som ovan, testat är bättre än antaget för en fail-closed-grind.
+module.exports.AI_ENABLED_EXEMPT_FUNCTIONS = AI_ENABLED_EXEMPT_FUNCTIONS;
+module.exports.checkAiEnabled = checkAiEnabled;
+// B29: PII-maskeringen. Exponerad så att servermaskering kan testas oberoende
+// av OpenRouter-anropet — annars syns ett trasigt regex bara som ett
+// personnummer i en riktig leverantörs loggar.
+module.exports.stripPii = stripPii;
+module.exports.sanitizeInput = sanitizeInput;
 // B14: prompt-mallarna exponeras så att sanningskraven i CV-prompten kan
 // testas. En prompt som ber modellen "föreslå rimliga siffror" syns inte i
 // något annat test — den syns bara i användarens färdiga CV.

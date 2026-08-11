@@ -40,6 +40,26 @@ const ART9_FUNCTIONS = new Set([
 ])
 
 /**
+ * B28 (2026-08-12): den allmänna "Pausa AI"-brytaren (`profiles.ai_enabled`,
+ * GDPR art. 21) gällde tidigare bara de fyra ART9-funktionerna ovan — 14 av
+ * 18 funktioner skickade uppgifter till OpenRouter trots att personen stängt
+ * av AI. Servern (`client/api/ai.js`, `checkAiEnabled` + `AI_ENABLED_EXEMPT_FUNCTIONS`)
+ * är den BINDANDE grinden — den här listan finns bara för att ge ett
+ * begripligt fel direkt i webbläsaren i stället för en väntan på en 403.
+ *
+ * **Måste hållas i synk med `AI_ENABLED_EXEMPT_FUNCTIONS` i `client/api/ai.js`.**
+ * Undantagen är namngivna av samma skäl som ART9_FUNCTIONS ovan gör undantag
+ * för konsulentfunktionerna: den inloggades egen brytare är fel kontroll för
+ * en ANNAN persons (deltagarens) uppgifter.
+ */
+const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
+  'konsulent-rapportutkast',
+  'sta-document-draft',
+  'sta-week-summary',
+  'sta-doa-sammanfattning',
+])
+
+/**
  * Förklaringen användaren får när grinden stoppar ett anrop.
  *
  * Standardtexten ("dina anteckningar om hälsa och mående") beskriver
@@ -176,6 +196,16 @@ async function prepareAiRequest(
       )
     }
     if (profile.ai_enabled === false) {
+      throw new AiConsentRequiredError(
+        'Du har stängt av AI-behandling av dina uppgifter. Slå på det i Inställningar om du vill använda den här funktionen.'
+      )
+    }
+  } else if (!AI_ENABLED_EXEMPT_FUNCTIONS.has(functionName)) {
+    // B28: samma "Pausa AI"-brytare, men för de 14 funktioner som inte redan
+    // täcks av art. 9-blocket ovan. Servern (`checkAiEnabled` i ai.js) nekar
+    // ändå — den här kontrollen sparar bara en tur-och-retur.
+    const profile = useAuthStore.getState().profile
+    if (profile?.ai_enabled === false) {
       throw new AiConsentRequiredError(
         'Du har stängt av AI-behandling av dina uppgifter. Slå på det i Inställningar om du vill använda den här funktionen.'
       )

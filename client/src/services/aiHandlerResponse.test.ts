@@ -237,6 +237,165 @@ describe('handlerns art. 9-grind gäller AI-team-chatten (B16)', () => {
   })
 })
 
+describe('handlerns allmänna AI-av-grind (B28)', () => {
+  it('svarar 403 för personligt-brev när ai_enabled=false — och OpenRouter anropas aldrig', async () => {
+    // Innan B28 kollades ai_enabled bara för de 4 ART9-funktionerna.
+    // personligt-brev (art. 6) svarade 200 trots avstängd AI — bevisat live.
+    const { openRouterCalls } = stubNetwork('borde aldrig anropas', {
+      ai_consent_at: '2026-08-01T10:00:00Z',
+      ai_enabled: false,
+    })
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('personligt-brev', { jobTitle: 'Snickare' }), res)
+
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ code: 'AI_CONSENT_REQUIRED', reason: 'opted_out' })
+    expect(openRouterCalls).toEqual([])
+  })
+
+  it('svarar 403 för chatbot när ai_enabled=false', async () => {
+    const { openRouterCalls } = stubNetwork('borde aldrig anropas', {
+      ai_consent_at: null,
+      ai_enabled: false,
+    })
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('chatbot', { meddelande: 'hej' }), res)
+
+    expect(captured.status).toBe(403)
+    expect(openRouterCalls).toEqual([])
+  })
+
+  it('FAIL CLOSED: svarar 403 för cv-writing när profiluppslaget failar', async () => {
+    const openRouterCalls: string[] = []
+    global.fetch = vi.fn(async (input: unknown) => {
+      const url = String(typeof input === 'string' ? input : (input as { url: string }).url)
+      if (url.includes('openrouter.ai')) {
+        openRouterCalls.push(url)
+        return jsonResponse({ choices: [{ message: { content: 'x' } }], usage: {} })
+      }
+      if (url.includes('/auth/v1/user')) return jsonResponse({ id: 'u1', user: { id: 'u1' } })
+      if (url.includes('/rest/v1/rpc/check_rate_limit')) return jsonResponse([])
+      if (url.includes('/rest/v1/profiles')) {
+        // Simulerar ett RLS-avslag: PostgREST svarar med ett fel-objekt.
+        return new Response(JSON.stringify({ message: 'RLS denied', code: 'PGRST301' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+      throw new Error(`Oväntat nätverksanrop: ${url}`)
+    }) as unknown as typeof fetch
+
+    const { res, captured } = makeRes()
+    await handler(makeReq('cv-writing', { content: 'text' }), res)
+
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ code: 'AI_CONSENT_REQUIRED', reason: 'lookup_failed' })
+    expect(openRouterCalls).toEqual([])
+  })
+
+  it('släpper igenom personligt-brev när AI är på', async () => {
+    const { openRouterCalls } = stubNetwork('Ett personligt brev.')
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('personligt-brev', { jobTitle: 'Snickare' }), res)
+
+    expect(captured.status).toBe(200)
+    expect(openRouterCalls).toHaveLength(1)
+  })
+
+  it('släpper igenom de undantagna konsulentfunktionerna trots ai_enabled=false — annan persons data', async () => {
+    const { openRouterCalls } = stubNetwork('{"summary":"Sammanfattning"}', {
+      ai_consent_at: null,
+      ai_enabled: false,
+    })
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('sta-week-summary', { bundle: {} }), res)
+
+    expect(captured.status).toBe(200)
+    expect(openRouterCalls).toHaveLength(1)
+  })
+})
+
+describe('handlerns PII-maskering (B29) — servern måste sanera oberoende av klienten', () => {
+  // Simulerar exakt det B29 bevisade live: ett direkt POST förbi klienten
+  // (curl, devtools) — klientens `sanitizeForAi` körs aldrig, bara `sanitizeAll`
+  // i ai.js. Före fixen strippade den ENDAST `[<>]`, inte PII.
+  it('maskerar ett svenskt personnummer innan OpenRouter ser det', async () => {
+    const { fetchStub } = stubNetwork('Ett svar.')
+    const { res, captured } = makeRes()
+
+    await handler(
+      makeReq('personligt-brev', { motivering: 'Mitt personnummer är 19850101-1234, kontakta mig.' }),
+      res
+    )
+
+    expect(captured.status).toBe(200)
+    const openRouterCall = fetchStub.mock.calls.find((c) => String(c[0]).includes('openrouter.ai'))
+    const body = JSON.parse(openRouterCall![1]?.body ?? '{}')
+    const fullPrompt = JSON.stringify(body.messages)
+    expect(fullPrompt).not.toContain('19850101-1234')
+    expect(fullPrompt).toContain('[BORTTAGET-PERSONNUMMER]')
+  })
+
+  it('maskerar ett svenskt bankkontonummer', async () => {
+    const { fetchStub } = stubNetwork('Ett svar.')
+    const { res } = makeRes()
+
+    await handler(
+      makeReq('personligt-brev', { motivering: 'Sätt in lönen på 12345-123 456 7 tack.' }),
+      res
+    )
+
+    const openRouterCall = fetchStub.mock.calls.find((c) => String(c[0]).includes('openrouter.ai'))
+    const body = JSON.parse(openRouterCall![1]?.body ?? '{}')
+    const fullPrompt = JSON.stringify(body.messages)
+    expect(fullPrompt).not.toContain('12345-123 456 7')
+    expect(fullPrompt).toContain('[BORTTAGET-BANKKONTO]')
+  })
+
+  it('maskerar e-post och telefonnummer', async () => {
+    const { fetchStub } = stubNetwork('Ett svar.')
+    const { res } = makeRes()
+
+    await handler(
+      makeReq('personligt-brev', { motivering: 'Nå mig på anna.andersson@example.com eller 070-123 45 67.' }),
+      res
+    )
+
+    const openRouterCall = fetchStub.mock.calls.find((c) => String(c[0]).includes('openrouter.ai'))
+    const body = JSON.parse(openRouterCall![1]?.body ?? '{}')
+    const fullPrompt = JSON.stringify(body.messages)
+    expect(fullPrompt).not.toContain('anna.andersson@example.com')
+    expect(fullPrompt).toContain('[BORTTAGET-EPOST]')
+    expect(fullPrompt).not.toContain('070-123 45 67')
+    expect(fullPrompt).toContain('[BORTTAGET-TELEFON]')
+  })
+
+  it('maskerar PII i nästlade fält (samma väg som konsulentens journalanteckningar)', async () => {
+    const { fetchStub } = stubNetwork('{"utkast":"ok"}', {
+      ai_consent_at: null,
+      ai_enabled: true,
+    })
+    const { res } = makeRes()
+
+    await handler(
+      makeReq('konsulent-rapportutkast', {
+        entries: [{ date: '2026-08-01', category: 'GENERAL', content: 'Deltagarens personnummer 19850101-1234 noterat av misstag.' }],
+        goals: [],
+      }),
+      res
+    )
+
+    const openRouterCall = fetchStub.mock.calls.find((c) => String(c[0]).includes('openrouter.ai'))
+    const body = JSON.parse(openRouterCall![1]?.body ?? '{}')
+    const fullPrompt = JSON.stringify(body.messages)
+    expect(fullPrompt).not.toContain('19850101-1234')
+  })
+})
+
 describe('modell-låsningen gäller i det faktiska anropet (B18)', () => {
   it('skickar den låsta modellen till OpenRouter — även med AI_MODEL_HAIKU satt', async () => {
     const savedHaiku = process.env.AI_MODEL_HAIKU

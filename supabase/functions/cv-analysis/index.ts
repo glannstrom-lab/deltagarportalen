@@ -3,7 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts'
 
 interface CVAnalysisRequest {
   cvData: {
@@ -48,6 +48,11 @@ serve(async (req) => {
   if (preflightResponse) return preflightResponse
 
   const origin = req.headers.get('Origin')
+
+  // A29: origin-kontroll FÖRE allt arbete (funktionen skrev tidigare till
+  // cv_analyses innan en okänd origin avvisades) — se send-invite-email/index.ts
+  const originRejection = validateOriginOrReject(req)
+  if (originRejection) return originRejection
 
   try {
     const authHeader = req.headers.get('Authorization')

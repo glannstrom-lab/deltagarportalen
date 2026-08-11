@@ -214,6 +214,55 @@ describe('callAI — art. 9-samtycke (UX13)', () => {
 })
 
 /**
+ * B28 (2026-08-12) — den allmänna "Pausa AI"-brytaren.
+ *
+ * Före den här ändringen kollades `ai_enabled` bara för de fyra ART9-
+ * funktionerna ovan. 14 av 18 funktioner — bl.a. `personligt-brev` och
+ * `chatbot` — skickade uppgifter till OpenRouter trots att användaren stängt
+ * av AI i Inställningar. Kravet är detsamma som för art. 9: **fetch får
+ * aldrig anropas** när `ai_enabled === false`, oavsett vilken av de 14
+ * funktionerna det gäller. De fyra namngivna konsulentfunktionerna (en ANNAN
+ * persons data) är medvetet undantagna och ska fortsätta fungera.
+ */
+describe('callAI — allmän AI-av-grind (B28)', () => {
+  beforeEach(() => {
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+  })
+
+  it.each(['personligt-brev', 'chatbot', 'cv-writing', 'karriarplan', 'kompetensgap', 'linkedin-optimering'])(
+    'stoppar %s när användaren stängt av AI (ai_enabled=false)',
+    async (fn) => {
+      mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }
+
+      await expect(callAI(fn, {})).rejects.toBeInstanceOf(AiConsentRequiredError)
+      await expect(callAI(fn, {})).rejects.toThrow('Du har stängt av AI-behandling')
+      expect(mockFetch).not.toHaveBeenCalled()
+    }
+  )
+
+  it('släpper igenom när ai_enabled är true (eller odefinierad/default)', async () => {
+    mockProfile = { ai_consent_at: null, ai_enabled: true }
+    mockFetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+
+    await callAI('personligt-brev', { jobTitle: 'Snickare' })
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+  })
+
+  it.each(['konsulent-rapportutkast', 'sta-document-draft', 'sta-week-summary', 'sta-doa-sammanfattning'])(
+    'grindar INTE %s — den bär en ANNAN persons (deltagarens) data, inte den inloggades',
+    async (fn) => {
+      mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }
+      mockFetch.mockResolvedValue({ ok: true, json: async () => ({ success: true }) })
+
+      await callAI(fn, {})
+
+      expect(mockFetch).toHaveBeenCalledTimes(1)
+    }
+  )
+})
+
+/**
  * B15 (2026-08-05) — strömmande anrop måste gå genom samma grindar.
  *
  * `AgentChat` gjorde ett eget `fetch` för att `callAI` inte klarar SSE. Därför
