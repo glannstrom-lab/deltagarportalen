@@ -7,6 +7,9 @@ node_modules/
 dist/
 build/
 
+# Lighthouse CI local run output (D29 — reports, never commit)
+.lighthouseci/
+
 # Environment variables - NEVER commit secrets
 .env
 .env.*

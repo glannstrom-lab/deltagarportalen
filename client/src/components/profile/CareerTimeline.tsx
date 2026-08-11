@@ -246,7 +246,7 @@ export function CareerTimeline({ className }: Props) {
             {t('profile.careerTimeline.emptyState')}
           </p>
           <Link
-            to="/cv-builder"
+            to="/cv"
             className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -257,7 +257,7 @@ export function CareerTimeline({ className }: Props) {
 
       {items.length > 0 && (
         <Link
-          to="/cv-builder"
+          to="/cv"
           className="flex items-center justify-center gap-2 p-3 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 rounded-xl transition-colors"
         >
           {t('profile.careerTimeline.editInCVBuilder')}

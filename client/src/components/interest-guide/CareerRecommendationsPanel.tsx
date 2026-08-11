@@ -309,7 +309,7 @@ export function CareerRecommendationsPanel({
                         Sök utbildningar
                       </Button>
                     </Link>
-                    <Link to="/jobs">
+                    <Link to="/job-search">
                       <Button size="sm" variant="outline" className="gap-2">
                         <Briefcase className="w-4 h-4" />
                         Se lediga jobb

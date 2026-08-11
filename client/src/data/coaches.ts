@@ -357,7 +357,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
           },
         ],
         links: [
-          { label: 'Spontanansökan', href: '/spontaneous' },
+          { label: 'Spontanansökan', href: '/spontanansökan' },
           aiTeam('jobbcoach'),
         ],
       },

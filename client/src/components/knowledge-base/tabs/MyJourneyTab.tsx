@@ -281,7 +281,7 @@ export default function MyJourneyTab() {
               {t('knowledgeBase.myJourney.recentSavedJobs')}
             </h3>
             <Link
-              to="/jobs?tab=saved"
+              to="/job-search/saved"
               className="text-blue-600 hover:text-blue-700 text-sm font-medium"
             >
               {t('knowledgeBase.myJourney.viewAll')}
