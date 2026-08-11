@@ -128,7 +128,13 @@ Om någon av dessa villkor inte är uppfyllda → HÖGRISK och alla Art 9-15-kra
 2. **Möjlighet att invända:** Användaren ska kunna säga "stäng av AI-rekommendationer" utan att radera kontot (Art 21 GDPR).
 3. **Loggning** för audit (vem körde funktionen, när, vilket resultat — pseudonymiserat).
 4. **Bias-test** vid varje modelländring + årligen. Dokumenterat.
-5. **Mänsklig granskning** finns: konsulent kan hjälpa deltagaren tolka resultatet.
+5. **Mänsklig granskning finns inte i portalen — kontrollerat 2026-08-12.** Det finns ingen knapp,
+   yta eller flöde där en konsulent ser eller granskar en deltagares AI-resultat (RIASEC,
+   kompetensgap, CV-analys). `client/src/pages/consultant/` innehåller inga träffar på
+   RIASEC, career_plan eller ai_usage_logs — konsulentvyn visar deltagardata i allmänhet, men
+   inget AI-utdatagranskningsflöde. Detta krav är **inte uppfyllt**, inte "uppfyllt via
+   konsulenten". Om mänsklig granskning ska vara kravsvaret måste den byggas: en yta där
+   konsulenten ser samma AI-resultat som deltagaren och kan markera dem granskade.
 6. **Förbud i ToS:** Arbetsgivare/rekryterare får inte använda portalen för att utvärdera externa kandidater.
 
 ---
@@ -144,7 +150,7 @@ Vid bekräftad HÖGRISK gäller AI Act kap III (Art 8-15):
 | 11 | Teknisk dokumentation enligt Annex IV | ❌ Behöver skapas |
 | 12 | Loggning som möjliggör spårbarhet | ✅ `ai_usage_logs`-tabell finns |
 | 13 | Transparens till användare ("Hur fungerar systemet") | 🟡 AiPolicy.tsx finns, behöver utökas |
-| 14 | Mänsklig övervakning möjlig | ✅ Konsulenter kan granska |
+| 14 | Mänsklig övervakning möjlig | ❌ **Inte byggt, kontrollerat 2026-08-12.** Ingen konsulentyta visar eller granskar AI-resultat — se punkt 5 ovan. Tidigare "✅ Konsulenter kan granska" var en outförd premiss, inte en verifierad funktion |
 | 15 | Noggrannhet, robusthet, cybersäkerhet | 🟡 Rate-limit + auth finns, ingen accuracy-mätning |
 | 27 | FRIA om vi är offentlig leverantör (AF/kommun) | ❌ Beror på upphandling |
 | 50 | Transparens-märkning AI-genererat innehåll | ❌ Måste implementeras före 2 aug 2026 |

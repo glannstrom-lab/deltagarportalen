@@ -43,8 +43,8 @@ Vi sparar bara persondata så länge det behövs för det ändamål de samlats i
 | **CV-PDF:er** | Tills användaren raderar versionen | Manuell | ✅ |
 | **Mood/dagbok** | Tills användaren raderar | Manuell | ✅ |
 | **Hälsodata-konsentdragning** | Omedelbart vid återkallelse | Användaren via Settings | ✅ |
-| **OAuth-tokens** (LinkedIn, Google) | Tills användaren kopplar ner | Settings → Integrations | ✅ |
-| **Rate-limit-records** | 24h rolling window | Auto-rensa via Supabase RPC | ✅ |
+| **OAuth-tokens** (LinkedIn, Google) | — | — | — Raden är fel på två sätt: ingen LinkedIn-integration finns (se revisionsnot punkt 3 ovan — borde ha tagits bort då), och Google finns bara som `signInWithOAuth({provider:'google'})` för inloggning (`authStore.ts`) — tokens hanteras av Supabase Auth, inte av en "Settings → Integrations"-sida som inte finns i `Settings.tsx`. Kontrollerat 2026-08-12 |
+| **Rate-limit-records** | 24h rolling window | — Inte körd | ❌ **Inte körd, verifierat 2026-08-12.** `cleanup_rate_limits()` finns (`20260402100000_rate_limits.sql`) men anropas ingenstans i kodbasen och ingen cron kör den — samma `pg_cron`-blockad som allt annat här. Bevis: `rate_limits` hade 673 rader från **2026-04-25** till idag när tabellen mättes, trots att funktionen ska radera allt äldre än 1 timme. `check_rate_limit()` (den funktion som faktiskt anropas, i `api/_utils/rate-limiter.js`) räknar bara inom fönstret — den städar ingenting. Krävs för att starta: `pg_cron` (A6) + ett `cron.schedule`-anrop till `cleanup_rate_limits()`, eller ett anrop från funktionen själv |
 | **AF/Bolagsverket cache** | 24h | TTL-cache | ✅ |
 
 ### Nya kategorier 2026-07-27 (H7)
@@ -131,7 +131,7 @@ SELECT cron.schedule(
 
 - [x] Skapa migration `20260515_retention_cron.sql` med ovan — **filen finns men kördes aldrig**
 - [x] `email_queue` skapad i databasen (2026-07-27, H6 — i den form migrationen och edge-funktionen förutsätter)
-- [ ] **Aktivera `pg_cron`-extension i Supabase** (`CREATE EXTENSION pg_cron;`) — **A6, Mikael. Blockerar allt nedan.** Utan detta sker ingen automatisk gallring alls
+- [ ] **Aktivera `pg_cron`-extension i Supabase** (`CREATE EXTENSION pg_cron;`) — **A6, Mikael. Blockerar allt nedan.** Utan detta sker ingen automatisk gallring alls. **Senast kontrollerat 2026-08-12:** `SELECT extname FROM pg_extension;` mot prod listar `pg_stat_statements, pgcrypto, plpgsql, supabase_vault, uuid-ossp` — `pg_cron` finns inte i listan. Ingen `cron.job`-tabell existerar heller att fråga
 - [ ] Kör `20260515_retention_cron.sql` när pg_cron är på (den innehåller både tabellen och schemaläggningen)
 - [ ] Utöka cron med de nya kategorierna ovan (STA, journal, aktivitetslogg, e-postloggar, inbjudningar, inloggningsförsök)
 - [ ] Verifiera att `delete-account` edge function tar bort Vercel Blob-filer (cascade)

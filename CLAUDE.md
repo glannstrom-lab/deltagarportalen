@@ -121,8 +121,9 @@ När Mikael säger **"commit"**, **"push"** eller **"deploy"** gäller det här.
 **Proceduren:**
 
 ```bash
-# 1. Grindarna. Pre-push-hooken kör dem automatiskt, men kör dem själv först
-#    så du ser felen innan git gör det.
+# 1. Grindarna. Pre-push-hooken kör BARA fem av åtta (ingen typecheck:ceiling,
+#    inga tester) — den är inte "npm run verify" och har aldrig varit det.
+#    Kör hela uppsättningen själv så du ser felen innan git gör det.
 cd client && npm run verify            # se nedan
 
 # 2. Commit — beskriv VAD och VARFÖR, inte bara vad.
@@ -143,13 +144,26 @@ curl -sS "https://api.github.com/repos/glannstrom-lab/deltagarportalen/actions/r
 
 **`npm run verify` (i `client/`) kör hela grinduppsättningen — men pre-push-hooken gör det inte.**
 
-> **Rättat 2026-08-09 (verifierat i `.husky/pre-push`):** hooken kör **fem** grindar —
-> `lint:vercel`, `lint:schema`, `typecheck:critical`, `lint:ci`, `lint:design` — plus ett **fullt
-> bygge** när bygg-/deploy-påverkande filer ändrats (`vercel.json`, `package.json`, `vite.config`,
-> `index.html`, `tsconfig`, `scripts/`, `.github/workflows/`). Den kör **inte** `typecheck:ceiling`
-> och **inga tester alls**. Hookens egen kommentar motiverar undantaget med att coverage "är röd
-> sedan tidigare (ROADMAP D13)" — den premissen är död sedan 2026-08-09: coverage passerar lokalt
-> på alla fyra mått. Undantaget bör omprövas (ROADMAP D23).
+> **Rättat 2026-08-09 (verifierat i `.husky/pre-push`), mätt igen 2026-08-12 (D23):** hooken kör
+> **fem** grindar — `lint:vercel`, `lint:schema`, `typecheck:critical`, `lint:ci`, `lint:design` —
+> plus ett **fullt bygge** när bygg-/deploy-påverkande filer ändrats (`vercel.json`, `package.json`,
+> `vite.config`, `index.html`, `tsconfig`, `scripts/`, `.github/workflows/`). Den kör **inte**
+> `typecheck:ceiling` och **inga tester alls**. Hookens egen kommentar motiverade undantaget med att
+> coverage "är röd sedan tidigare (ROADMAP D13)" — den premissen är död sedan 2026-08-09.
+>
+> **Mätt fristående 2026-08-12** (inte som del av `npm run verify`, för att tidsätta grindarna
+> var för sig): `npm run test:coverage` gick grönt på **42 sekunder** (99 testfiler, 1395 tester,
+> 0 fel) — den gamla ursäkten håller alltså inte tidsmässigt heller. `npm run typecheck:ceiling`
+> tog 45 sekunder men **fällde**: 470 fel mot taket 466 (+4 nya). Mätningen gjordes i ett träd med
+> pågående okommitterade ändringar från andra parallella agentpass (`git status` visade ~35
+> ändrade filer), så det går inte att avgöra om de fyra nya felen är riktig skuld på `main` eller
+> en artefakt av det smutsiga trädet — en mätning mot en ren `main`-checkout krävs innan man vet.
+> **Beslut för den här passeringen:** hookens grindlista lämnas orörd — att ändra delad
+> push-infrastruktur på grundval av en mätning som kan vara kontaminerad är fel håll att felsäkra.
+> Det som rättas är i stället dokumentationen: steg 1 ovan och den här rutan påstod tidigare att
+> hooken kör `npm run verify`, vilket den aldrig har gjort. Nästa steg (kvarstår i D23): kör
+> `typecheck:ceiling` mot en ren `main`, och lägg in `test:coverage` i hooken om 42 sekunder håller
+> där också.
 >
 > **Kör `npm run verify` själv före push.** Hooken är inte det skyddsnät den ser ut att vara.
 
@@ -280,9 +294,11 @@ takskript skriver ut det nya talet när skulden minskat.
 > kan reproducera felet.** Dessutom failar `Security Scan` på fyra high-sårbarheter. Se ROADMAP
 > D17–D19; D13 är avskriven.
 >
-> **⚠️ Pre-push-hooken kör INTE `npm run verify`** trots vad avsnittet om släpprocessen ovan
-> säger. Uppmätt 2026-08-09: den kör fem av åtta grindar och **inga tester alls**. Kör
-> `npm run verify` själv innan push — hooken är inte skyddsnätet du tror.
+> **⚠️ Pre-push-hooken kör INTE `npm run verify`** — det avsnittet om släpprocessen sa det
+> tidigare felaktigt, rättat 2026-08-12. Uppmätt 2026-08-09, mätt igen 2026-08-12: den kör fem av
+> åtta grindar och **inga tester alls**. Se D23-rutan i släppavsnittet ovan för tidsmätningarna
+> som visar att det gamla skälet (coverage rött) inte längre håller. Kör `npm run verify` själv
+> innan push — hooken är inte skyddsnätet du tror.
 
 ### Verifiera alltid själv
 Be inte Mikael köra build/test/Playwright. Kör det själv och rapportera resultat. Om du inte kan testa något (t.ex. UI-flöde) — säg det explicit, claima inte success.

@@ -10,8 +10,13 @@
 #   ALLTID   — sekundsnabba kontroller som fångar de fel som faktiskt nått prod
 #   VILLKORAT— fullt bygge, men bara när bygg-/deploy-påverkande filer ändrats
 #
-# `npm run test:coverage` ingår INTE: den är röd sedan tidigare (ROADMAP D13)
-# och skulle blockera varje push. Lägg in den när D13 är löst.
+# `npm run test:coverage` ingår INTE. Skälet ovan ("röd sedan tidigare, ROADMAP D13") är dött
+# sedan 2026-08-09 — coverage passerar lokalt på alla fyra mått. Mätt 2026-08-12: test:coverage
+# tar 42s och går grönt (99 filer, 1395 tester). `typecheck:ceiling` ingår heller INTE — mätt
+# samma dag tog den 45s men FÄLLDE (470 fel mot tak 466), i ett träd med pågående parallellt
+# agentarbete, så talet kan inte tas som sant för main utan en ren mätning. Se ROADMAP D23 för
+# nästa steg innan någon av de två läggs in här. CLAUDE.md är rättad så den inte längre påstår
+# att den här hooken kör `npm run verify` — det har den aldrig gjort.
 #
 # Nödutgång: git push --no-verify
 
