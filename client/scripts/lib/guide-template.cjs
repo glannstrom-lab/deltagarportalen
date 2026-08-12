@@ -50,6 +50,16 @@ img{max-width:100%;height:auto}
 .btn-ghost{background:transparent;color:var(--c-solid);border-color:var(--c-accent)}
 .btn-sm{padding:.5rem .9rem;font-size:.875rem}
 
+/* K18: femsekundersfrågan. Dämpad — den ska svara, inte konkurrera med h1. */
+.vadardethar{background:var(--soft);border-bottom:1px solid var(--line)}
+.vadardethar p{margin:0;padding-block:.7rem;font-size:.9rem;color:var(--muted);line-height:1.55}
+.vadardethar a{color:var(--c-solid);white-space:nowrap}
+
+/* K17: uppläsning. Ligger hidden tills skriptet sett att API:et finns. */
+.lyssna{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:0 0 1.75rem}
+.lyssna-status{margin:0;font-size:.875rem;color:var(--muted);flex-basis:100%}
+.lyssna-status:empty{display:none}
+
 .hero{background:var(--c-bg);border-bottom:1px solid var(--c-accent);padding:2.5rem 0 2.25rem}
 .crumb{font-size:.85rem;color:var(--c-text);margin-bottom:.9rem}
 .crumb a{color:var(--c-text)}
@@ -131,6 +141,64 @@ function verktygskort(routes) {
       return `<a class="tool" href="${appUrl(r)}"><strong>${escapeHtml(t.namn)}</strong><span>${escapeHtml(t.text)}</span></a>`
     })
     .join('')
+}
+
+/**
+ * "Vad är det här?" överst på guidesidorna.  (spår K18, 2026-08-12)
+ *
+ * En besökare landar mitt i en ATS-guide från en sökning och vet inte vad
+ * Jobin är. Sidhuvudet säger "Jobin" men aldrig vad det betyder — och
+ * femsekundersfrågan ställs här, inte på startsidan hon aldrig ser.
+ *
+ * Varje påstående är kontrollerat: verktygen är kostnadsfria (content/tools.json,
+ * verifierat mot koden i K6), registreringen är öppen utan inbjudningskod
+ * (Register.tsx), och guiderna går att läsa utan konto (de här sidorna är
+ * statiska och publika). Inga användarsiffror, inga omdömen.
+ */
+function vadArDetHar({ lattlast = false } = {}) {
+  // På en lättläst sida måste ÄVEN den här raden vara lättläst — annars
+  // motsäger banderollen texten den sitter ovanför. Korta meningar, en tanke
+  // per mening, inga inskjutna bisatser.
+  const text = lattlast
+    ? `Det här är <strong>Jobin</strong>. Jobin är en gratis sida för dig som söker jobb.
+    Du kan läsa alla texter utan att skapa konto. <a href="/verktyg/">Se vad du kan göra här</a>`
+    : // Formuleras så att den stämmer på ALLA sidtyper. "Det här är en guide
+      // från Jobin" var fel på ämnessidorna, som inte är guider.
+      `<strong>Jobin</strong> är en kostnadsfri portal för dig som söker jobb i Sverige.
+    Du kan läsa alla guider utan konto. <a href="/verktyg/">Se vad portalen gör</a>`
+
+  return `<div class="vadardethar">
+  <div class="wrap">
+    <p>${text}</p>
+  </div>
+</div>`
+}
+
+/**
+ * Uppläsningsknapp.  (spår K17, 2026-08-12)
+ *
+ * För lättläst-nischen är uppläsning inte en extrafunktion utan poängen, och
+ * `SpeechSynthesis` finns i webbläsaren — noll bandbredd, noll beroenden, och
+ * inget som bryter mot sidornas "fungerar utan externa resurser".
+ *
+ * Progressiv förbättring: knappen ligger `hidden` i HTML:en och visas först
+ * när skriptet konstaterat att API:et finns. Utan JS ser besökaren inte en
+ * knapp som ändå inte hade gjort något.
+ *
+ * Skriptet är inline. Det fungerar eftersom CSP:n innehåller 'unsafe-inline'
+ * (kontrollerat i prod-headern 2026-08-12) — hade den haft nonce eller hash
+ * krävts, hade knappen varit död utan att något larmat.
+ *
+ * Röstinställningarna matchar appens egen uppläsning (TextToSpeech.tsx):
+ * sv-SE, rate 0.9.
+ */
+function lyssnaKnapp() {
+  return `<div class="lyssna" id="lyssna" hidden>
+  <button type="button" id="lyssna-knapp" class="btn btn-sm">Lyssna på texten</button>
+  <button type="button" id="lyssna-stopp" class="btn btn-sm btn-ghost" hidden>Stoppa</button>
+  <p class="lyssna-status" role="status" aria-live="polite"></p>
+</div>
+<script src="/guider/lyssna.js" defer></script>`
 }
 
 /** Kortar en text vid ordgräns, så att raden inte slutar mitt i ett ord. */
@@ -247,6 +315,8 @@ function renderGuide(a, relaterade) {
   </div>
 </header>
 
+${vadArDetHar({ lattlast: a.difficulty === 'easy-swedish' || a.category_key === 'easy-swedish' })}
+
 <div class="hero">
   <div class="wrap">
     <nav class="crumb" aria-label="Brödsmulor">
@@ -273,7 +343,11 @@ function renderGuide(a, relaterade) {
       <a class="btn btn-ghost" href="${appUrl('/oversikt')}">Se allt som ingår</a>
     </aside>
 
-    ${body}
+    ${lyssnaKnapp()}
+
+    <div id="artikeltext">
+${body}
+    </div>
 
     ${checklista}
 
@@ -461,6 +535,8 @@ function renderLattlast(artiklar) {
   </div>
 </header>
 
+${vadArDetHar({ lattlast: true })}
+
 <div class="hero">
   <div class="wrap">
     <nav class="crumb" aria-label="Brödsmulor">
@@ -593,6 +669,8 @@ function renderKategori(kat, artiklar, syskon) {
     <a class="btn btn-sm" href="/verktyg/">Se verktygen</a>
   </div>
 </header>
+
+${vadArDetHar()}
 
 <div class="hero">
   <div class="wrap">

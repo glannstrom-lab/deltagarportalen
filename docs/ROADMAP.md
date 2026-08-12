@@ -827,8 +827,8 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **K14** | Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
 | **K15** | ✅ **Klar 2026-08-12 — 11 sidor, inte 13.** Se K12/K15-avsnittet nedan. Guideindexet använder inte `category_key`/`difficulty` som redan finns i datat. 13 statiska kategorisidor = bättre navigering **och** 13 nya indexerbara sidor | M |
 | **K16** | **B2B-ytan finns inte för Google.** En kommun eller Rusta-och-matcha-leverantör som söker "digital plattform arbetsmarknadsenhet" hittar ingenting. En prerenderad `/for-arbetsmarknadsenheter/` med ärligt beskrivet GDPR-läge och en riktig demoknapp är sannolikt sajtens mest värdefulla sida per besökare — och den ska bära det som A24/B19 tar bort, i sann form | M |
-| **K17** | Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
-| **K18** | En "vad är detta"-rad överst på guidesidorna. En besökare landar mitt i en ATS-guide utan att veta vad Jobin är — femsekundersfrågan ställs där, inte på startsidan | S |
+| **K17** | ✅ **Klar 2026-08-12 — men premissens "CTA:n lovar det redan" var fel.** Se K17/K18-avsnittet nedan. Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
+| **K18** | ✅ **Klar 2026-08-12.** Se K17/K18-avsnittet nedan. En "vad är detta"-rad överst på guidesidorna. En besökare landar mitt i en ATS-guide utan att veta vad Jobin är — femsekundersfrågan ställs där, inte på startsidan | S |
 | **K19** | ✅ **Klar 2026-08-12.** Se K11/K19-avsnittet nedan. `/landing.html` (40 kB föräldralös marknadsföringssida) ligger fortfarande live · `/404.html` från GitHub Pages är kvar · identisk `lastmod` på alla 139 URL:er | S |
 
 **Blockerande för nästa innehållsomgång:** K8 (Search Console) står öppen. Utan indexeringsdata går det inte att avgöra vilken sida i varje kannibaliseringspar som ska vinna — och K4 säger uttryckligen "ingen batch utan mätning från den föregående". Billigaste åtgärden på hela listan, och den som låser upp flest andra.
@@ -911,6 +911,26 @@ Regressionstestet läser `useLocation()` i stället för sidans innehåll. Skäl
 **Om D29:** raderingen av `404.html` är det steg D29 pekade ut som nästa. Jag kör medvetet **inte** lhci lokalt för att hävda att det är löst — D29 dokumenterar att lokalt grönt inte bevisade något om CI förra gången. Om det räckte syns i nästa CI-körning, ingen annanstans.
 
 **`lastmod` behövde ingen åtgärd.** Raden sa "identisk lastmod på alla 139". Mätt i prod: **två** värden, 131 på 2026-08-05 och 49 på 2026-08-12. Det är sanningsenligt — artiklarna uppdaterades de datumen. Att konstruera spridning hade varit att hitta på data.
+
+> **Utfall i CI (körning på `2a648028`):** Deploy grön. `Lighthouse CI` **failar fortfarande** trots att `404.html` är borta — D29:s rotorsak är alltså inte (bara) autodiscovery-fällan, och den delen kan inte längre skyllas på filen. `E2E Authenticated` failade också; orsaken står i K17/K18-avsnittet nedan (ett e2e-test hade skrivit in K11-buggen som förväntat beteende).
+
+### K17 + K18 — sidorna förklarar sig själva och kan läsas upp (2026-08-12)
+
+**K18: femsekundersfrågan besvaras nu där den ställs.** En besökare landar mitt i en ATS-guide från en sökning; sidhuvudet sa "Jobin" men aldrig vad det betyder. En dämpad rad överst på alla 161 guidesidor, de 11 ämnessidorna och lättläst-ingången. Varje påstående kontrollerat: verktygen är kostnadsfria (`content/tools.json`, verifierat mot koden i K6), registreringen är öppen utan inbjudningskod (`Register.tsx`), guiderna går att läsa utan konto. Inga användarsiffror, inga omdömen.
+
+**Raden finns i två språkversioner.** På en lättläst sida är även banderollen skriven på lättläst — korta meningar, en tanke per mening. En krånglig rad ovanför en lättläst text motsäger texten under den. Formuleringen rättades dessutom under browserverifieringen: "Det här är en **guide** från Jobin" var fel på ämnessidorna, som inte är guider.
+
+**K17: premissen var fel på en punkt.** Raden sa att CTA:n lovar uppläsning men att sidorna inte har den. Sanningen: texten "Alla guider samlade, med ljuduppläsning" beskriver **appens** kunskapsbank, och den har uppläsning (`TextToSpeech.tsx`, `useVoiceOutput.ts`). Löftet var alltså inte falskt. Värdeargumentet står kvar oförändrat — för lättläst-nischen är uppläsning poängen, inte en extrafunktion.
+
+Levererat: en "Lyssna på texten"-knapp med paus, fortsätt och stopp, `role="status"`-återkoppling, och röstinställningar som matchar appens egna (sv-SE, rate 0.9). Progressiv förbättring — knappen ligger `hidden` och visas först när skriptet konstaterat att `SpeechSynthesis` finns, så ingen ser en knapp som ändå inte gör något. Yttrandet skapas vid klick, inte vid sidladdning: rösterna laddas asynkront i flera webbläsare och en tidig `utterance` blir tyst. Uppläsningen avbryts på `pagehide`, annars fortsätter den när man lämnar sidan.
+
+**Skriptet ligger som egen fil, inte inline.** Första versionen var inline och kostade **488 kB** över bygget (2 677 → 3 165 kB) för 2,3 kB identisk kod × 161 sidor. Som `/guider/lyssna.js` hämtas den en gång och cachas — och beroendet av CSP:ns `'unsafe-inline'` försvinner. Slutlig storlek 2 872 kB; det som återstår är K18-raden och knappmarkeringen, alltså riktigt innehåll per sida.
+
+**Browserverifierat på fyra sidtyper i 390 px:** knappen syns, `speechSynthesis.speaking` blir `true` vid klick, knappen växlar till "Pausa", statusraden annonserar, stoppknappen dyker upp — och **noll axe-överträdelser** (wcag2a + wcag2aa), noll konsolfel, ingen horisontell scroll.
+
+**Fyndet på vägen: e2e-sviten hade skrivit in K11-buggen som ett krav.** `e2e/auth.spec.ts` hade ett test med namnet "should show landing page when not authenticated" som gick till `/#/cv`, `/#/job-search` och `/#/profile` som gäst och **krävde att B2B-säljsidans rubrik syntes**. Det var inte ett test av rätt beteende — det var buggen, inskriven som ett kontrakt, och därför föll `E2E Authenticated` på K11-fixen. Samma familj som `journey_goals`-testet (asserterade en tabell som inte fanns) och `useJobsokHubSummary.test.ts` (asserterade den trasiga formen). Testet är omskrivet till att kräva omdirigering till inloggningen med bevarad `returnTo`, plus ett separat test som håller kvar att landningssidan fortfarande visas på `/`. Båda verifierade lokalt mot byggd kod.
+
+> **Ärlighet om vad jag inte kunde läsa:** jobbloggarna kräver autentisering (403 mot API:t, och `gh` saknas på maskinen). Att `auth.spec.ts` var den **enda** orsaken är en slutsats av att alla övriga specar i jobbet är kontogrindade och att bara det testet asserterade det gamla beteendet — inte något jag kunnat läsa ur loggen. Nästa CI-körning avgör.
 
 ---
 

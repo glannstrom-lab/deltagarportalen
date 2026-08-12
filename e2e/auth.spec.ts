@@ -186,19 +186,41 @@ test.describe('Authentication', () => {
 })
 
 test.describe('Protected Routes', () => {
-  test('should show landing page when not authenticated', async ({ page }) => {
-    // Try to access protected routes
-    const protectedRoutes = [
-      '/#/cv',
-      '/#/job-search',
-      '/#/profile',
-    ]
+  /*
+   * Det här testet asserterade fram till 2026-08-12 att en gäst på /#/cv fick
+   * se B2B-säljsidans rubrik ("Stärk dina deltagare mot jobb"). Det var inte
+   * ett test av rätt beteende — det var buggen K11, inskriven som ett krav.
+   *
+   * Samma familj som `journey_goals`-testet (asserterade en tabell som inte
+   * fanns) och `useJobsokHubSummary.test.ts` (asserterade den trasiga formen):
+   * ett test kan lika gärna cementera ett fel som skydda mot det.
+   *
+   * Rätt beteende: gästen skickas till inloggningen, och sökvägen hon var på
+   * väg till följer med som `returnTo` så hon landar rätt efteråt.
+   */
+  test('gäst på en skyddad sida skickas till inloggningen med returnTo', async ({ page }) => {
+    const fall = [
+      ['/#/cv', '%2Fcv'],
+      ['/#/job-search', '%2Fjob-search'],
+      ['/#/profile', '%2Fprofile'],
+    ] as const
 
-    for (const route of protectedRoutes) {
+    for (const [route, kodadSokvag] of fall) {
       await page.goto(route)
       await waitForAppReady(page)
-      // Should show landing page content (not the protected content)
-      await expect(page.getByText(/stärk dina deltagare/i)).toBeVisible()
+
+      // Hamnar på inloggningen …
+      await expect(page).toHaveURL(new RegExp(`#/login\\?returnTo=${kodadSokvag}$`))
+      // … och det är faktiskt inloggningsformuläret, inte bara rätt URL.
+      await expect(page.locator('input#email')).toBeVisible({ timeout: 10000 })
+      // Säljsidan ska INTE vara det gästen möts av.
+      await expect(page.getByText(/stärk dina deltagare/i)).toHaveCount(0)
     }
+  })
+
+  test('startsidan visar fortfarande landningssidan för en gäst', async ({ page }) => {
+    await page.goto('/')
+    await waitForAppReady(page)
+    await expect(page.getByText(/stärk dina deltagare/i)).toBeVisible()
   })
 })

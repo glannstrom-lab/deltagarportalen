@@ -96,6 +96,14 @@ for (const artikel of publicerade) {
 
 fs.writeFileSync(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
 
+// K17: uppläsningsskriptet som egen fil. Identiskt på 161 sidor — inline
+// kostade ~490 kB över bygget och krävde CSP:ns unsafe-inline. Som fil hämtas
+// den en gång och cachas.
+fs.copyFileSync(
+  path.join(__dirname, 'lib', 'lyssna.client.js'),
+  path.join(DIST, 'guider', 'lyssna.js')
+)
+
 // K15: ämnessidor under /guider/kategori/<slug>/.
 //
 // Grinden: en kategori i KATEGORIER som inte har någon publicerad artikel
