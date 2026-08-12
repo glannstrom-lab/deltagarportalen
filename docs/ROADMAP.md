@@ -980,6 +980,17 @@ Rättelsen väljer **ingen vinnare**. Den får varje titel att beskriva sin egen
 
 **Kvar i K14:** soft-404:orna (varje URL som inte finns svarar 200 med indexerbar SPA-shell) kräver `client/vercel.json`, alltså **Mikaels ja** enligt släppreglerna. `/guider/lattlast/` var föräldralös från guideindexet — det är åtgärdat i K15.
 
+### ⚠️ Bygg inte mer på `FAQPage` — rikresultatet finns inte längre (kontrollerat 2026-08-12)
+
+**31 av de 161 publicerade guiderna har ett riktigt "Vanliga frågor"-avsnitt**, och den självklara SEO-åtgärden hade varit att lägga `FAQPage`-JSON-LD på dem. **Gör inte det.** Kontrollerat mot Googles egen dokumentation: FAQ-rikresultat slutade visas i sökresultaten i **maj 2026**, stödet togs bort ur Rich Results Test i **juni 2026**, och ur Search Console-API:t i **augusti 2026**. Uppmärkningen ger noll synlig effekt.
+
+Två följder för planen:
+
+1. **K6-raden beskriver `FAQPage`-JSON-LD på de fyra verktygssidorna som en levererad fördel.** Det stämde när det byggdes 2026-08-05, men gäller inte längre. Markeringen ligger kvar och behöver inte tas bort — Google säger uttryckligen att oanvänd strukturerad data inte skadar — men den ska inte räknas som en tillgång och inte kopieras till fler sidor.
+2. **Frågeavsnitten är ändå värda att behålla.** De skrevs för att svara på verkliga följdfrågor, och det värdet ligger i texten, inte i uppmärkningen. Det som försvann var rikresultatet, inte nyttan för läsaren.
+
+Källor: [Changes to HowTo and FAQ rich results](https://developers.google.com/search/blog/2023/08/howto-faq-changes) · [Google to no longer support FAQ rich results](https://searchengineland.com/google-to-no-longer-support-faq-rich-results-476957)
+
 ---
 
 ## 4. Q4 2026 — Konsolidera & mäta
