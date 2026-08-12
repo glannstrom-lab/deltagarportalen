@@ -484,7 +484,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **C24** | Fem npm-paket utan levande användare. `autoprefixer` (Tailwind 4 prefixar själv) och `svgo` stod inte i C18 | S |
 | **C25** | Två parallella auth-implementationer: `authStore` (Zustand, 63 filer) och `useAuth` i `useSupabase.ts` med egen `onAuthStateChange` — som hela hub-sammanfattningslagret använder. Sammanslagning löser även E21 | M |
 | **C26** | **Process:** ge svepverktygen en nåbarhetsfilter-flagga innan nästa mekaniska uppdrag startar, annars skjuter nästa svep raderingsfönstret sju dygn till. Sjätte gången den här klassen träffar | S |
-| **C27** | **Tre rester ur C23-passet (2026-08-12):** (a) `client/public/404.html` är en GitHub Pages-kvarleva utan referens i `vercel.json` — den fällde Lighthouse i fyra månader (D29) och står redan i K19; radera den. (b) `articleData.ts` har **35** döda länkar (`/cv-builder`, `/knowledge/<slug>`, fem `/exercises/<slug>`) — det är offline-fallbacken som bara används när Supabase är nere, så prod-artiklarna (rättade 2026-08-05) är opåverkade, men kopian har drivit isär. (c) `npm run lint:links` finns men är **medvetet inte inkopplad** i verify/CI — koppla in den när (a) och (b) är tagna, annars är den röd från dag ett | S |
+| **C27** | ✅ **Klar 2026-08-12 — alla tre. Se C27-avsnittet efter tabellen.** **Tre rester ur C23-passet (2026-08-12):** (a) `client/public/404.html` är en GitHub Pages-kvarleva utan referens i `vercel.json` — den fällde Lighthouse i fyra månader (D29) och står redan i K19; radera den. (b) `articleData.ts` har **35** döda länkar (`/cv-builder`, `/knowledge/<slug>`, fem `/exercises/<slug>`) — det är offline-fallbacken som bara används när Supabase är nere, så prod-artiklarna (rättade 2026-08-05) är opåverkade, men kopian har drivit isär. (c) `npm run lint:links` finns men är **medvetet inte inkopplad** i verify/CI — koppla in den när (a) och (b) är tagna, annars är den röd från dag ett | S |
 
 ---
 
@@ -990,6 +990,26 @@ Två följder för planen:
 2. **Frågeavsnitten är ändå värda att behålla.** De skrevs för att svara på verkliga följdfrågor, och det värdet ligger i texten, inte i uppmärkningen. Det som försvann var rikresultatet, inte nyttan för läsaren.
 
 Källor: [Changes to HowTo and FAQ rich results](https://developers.google.com/search/blog/2023/08/howto-faq-changes) · [Google to no longer support FAQ rich results](https://searchengineland.com/google-to-no-longer-support-faq-rich-results-476957)
+
+---
+
+## C27 — länkgrinden är inkopplad (2026-08-12)
+
+**(a) `client/public/404.html`** raderad — gjordes i K19-passet samma dag.
+
+**(b) `articleData.ts`: 35 döda länkar → 0.** Offline-fallbacken hade drivit isär från prod, som rättades 2026-08-05. Kodmoden speglar **exakt** prods policy i stället för att uppfinna en egen mappning: `/cv-builder` → `/cv` (14 förekomster), `/knowledge/<slug>` → `/knowledge-base/article/<slug>` (23 — alla 15 unika slugs kontrollerade mot prod, noll saknades), och de 8 `/exercises/<slug>`-actionerna **borttagna** eftersom sökvägen inte är någon route och övningarna varken finns i prod eller i mockdatat.
+
+> **Grinden i kodmoden fångade något jag hade fått fel annars.** Den vägrade skriva när `forsta-90-dagarna` skulle bli kvar med tom `actions`-array. Kontroll mot prod visade att prod **själv** har `actions: []` på just den artikeln — korrigeringen 2026-08-05 tog bort båda av samma skäl. Min grind var alltså strängare än verkligheten; den skrevs om till att jämföra mot prod i stället för att förbjuda formen. Utan den hade jag antingen hittat på en ersättningsknapp eller inte upptäckt fallet alls.
+
+**(c) `npm run lint:links` är inkopplad i `npm run verify`.** Den kunde inte kopplas in tidigare, och skälet visade sig vara ett annat än raden antog — **linten kände inte till den publika ytan**. Den matchar bara `<Route>` i `App.tsx`, så K12:s länkar från startsidan till `/guider/`, ämnessidorna och verktygssidorna rapporterades som döda: **14 falska träffar i korrekt kod**. Linten läser nu de prerenderade sidorna ur samma källor som bygger dem (publish-list, `KATEGORIER`, `tools.json`), så listan kan inte drifta — och en länk till en **opublicerad** guide rapporteras fortfarande, vilket är rätt: den är en mjuk 404.
+
+**Träffar i kod som inte körs fäller inte längre bygget.** 8 återstår, alla dokumenterade: 4 i filer som är onåbara från `main.tsx` (härlett ur `dead-code.cjs`) och 4 i döda exporter — `dashboardTabDefs`/`dashboardTabs` har **noll** konsumenter, och `JobSearch.tsx:46` definierar en egen lokal `jobSearchTabDefs` som skuggar den i `data/pageTabs.ts`. Sökvägarna `/quests` och `/job-tracker` renderas alltså aldrig för någon. Att peka om dem hade varit betalt arbete i dödkod — samma fälla som WCAG-svepet i augusti. Rätt åtgärd är radering, vilket hör till spår C.
+
+**Utfall:** 58 → **0 träffar i levande kod**, 617 länkmål granskade, 179 prerenderade sidor kända. Grinden är verifierad med **två planterade fel** — en påhittad sökväg och en länk till en opublicerad guide — båda gav exit 1. Kostnad: 1 sekund.
+
+**En riktig bugg föll ut på vägen:** `pages/sta/components/Del4PortalIntegration.tsx:53` länkade till `/personligt-brev`, som aldrig funnits som route (den heter `/cover-letter`). Filen är nåbar; att STA är avstängd via flagga är det enda som hindrat att någon klickat.
+
+> **Kvar hos Mikael:** grinden ligger i `npm run verify`, **inte** i `.github/workflows/ci.yml` — den filen kräver ditt ja enligt släppreglerna. Pre-push-hooken kör fem grindar och inte `verify`, så tills vidare fångas en död länk bara av den som kör `npm run verify` själv före push.
 
 ---
 

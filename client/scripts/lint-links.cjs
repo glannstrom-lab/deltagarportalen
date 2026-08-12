@@ -31,7 +31,13 @@
  *   node scripts/lint-links.cjs            # rapport, exit 1 om träffar
  *   node scripts/lint-links.cjs --json     # maskinläsbart
  *
- * INTE inkopplat i `npm run verify` eller CI — eget beslut (ROADMAP C23).
+ * INKOPPLAT i `npm run verify` sedan 2026-08-12 (ROADMAP C27c). Det gick först
+ * när tre saker var på plats: de prerenderade sidorna blev kända för linten
+ * (annars 14 falska träffar i `Landing.tsx`), `articleData.ts` rättades (35
+ * träffar), och träffar i kod som inte körs slutade fälla bygget.
+ *
+ * INTE i `.github/workflows/ci.yml` — den filen kräver Mikaels ja enligt
+ * släppreglerna i CLAUDE.md. Kör `npm run verify` före push tills dess.
  */
 
 const fs = require('fs')
@@ -102,9 +108,102 @@ const UNDANTAGNA_FILER = new Set([
   'hooks/usePageTitle.ts', // prefix-tabell för dokumenttitel, se filens egen kommentar
 ])
 
+/**
+ * Exporter som ser ut som navigation men inte konsumeras av någon.  (C27c)
+ *
+ * Spårat 2026-08-12: `dashboardTabDefs`/`dashboardTabs` har **noll**
+ * konsumenter, och `JobSearch.tsx:46` definierar en EGEN lokal
+ * `jobSearchTabDefs` som skuggar den i `data/pageTabs.ts`. Sökvägarna
+ * `/quests` och `/job-tracker` renderas alltså aldrig för någon användare.
+ *
+ * De står här i stället för att "rättas": att peka om en död export är att
+ * betala för kod ingen kör. Rätt åtgärd är att radera exporterna, vilket hör
+ * till dödkodsstädningen i spår C — inte till en länkgrind.
+ */
+const DODA_EXPORTER = new Map([
+  ['data/dashboardTabs.ts', 'dashboardTabDefs/dashboardTabs har noll konsumenter (spårat 2026-08-12)'],
+  ['data/pageTabs.ts', 'jobSearchTabDefs skuggas av en lokal definition i JobSearch.tsx:46'],
+])
+
+/**
+ * Filer som inte är nåbara från `main.tsx`.
+ *
+ * En död länk i kod som ingen kör är inte en bugg för någon användare, och att
+ * laga den är precis det slöseri lärdomen om mekaniska svep varnar för (ett
+ * WCAG-svep skrev 58 rader i 15 onåbara filer i augusti). De rapporteras, men
+ * de fäller inte grinden — annars kan `lint:links` aldrig kopplas in i CI utan
+ * att först städa 42 000 rader dödkod.
+ *
+ * Listan härleds ur `scripts/dead-code.cjs` när den går att köra; misslyckas
+ * det behandlas alla filer som nåbara (strängare, aldrig tystare).
+ */
+function byggOnabara() {
+  try {
+    const { execSync } = require('child_process')
+    const ut = execSync('node scripts/dead-code.cjs --json', {
+      cwd: CLIENT,
+      encoding: 'utf8',
+      maxBuffer: 32 * 1024 * 1024,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    const j = JSON.parse(ut)
+    return new Set((j.poster || []).map((p) => String(p.fil).replace(/^src\//, '')))
+  } catch (err) {
+    console.warn(`lint-links: kunde inte avgöra nåbarhet (${err.message.split('\n')[0]}) — alla filer behandlas som nåbara.`)
+    return new Set()
+  }
+}
+
+const ONABARA = byggOnabara()
+
 // Statiska resurser — inte SPA-routes.
 const RESURS_EXT = /\.(woff2?|ttf|eot|png|jpe?g|svg|webp|ico|pdf|txt|xml|zip|csv|mp3|mp4)$/i
 const RESURS_PREFIX = /^\/(fonts|images|icons|sta)\//
+
+/**
+ * De PRERENDERADE sidorna under /guider/ och /verktyg/.  (K12, 2026-08-12)
+ *
+ * De är statiska filer utanför React-appen och har därför ingen <Route> i
+ * App.tsx — men de är fullt giltiga länkmål. Utan den här listan rapporterade
+ * linten 14 falska träffar i `Landing.tsx` (K12:s länkar till guideindexet,
+ * ämnessidorna och verktygssidorna) och kunde alltså aldrig kopplas in i CI.
+ *
+ * Listan HÄRLEDS ur samma källor som prerender-guides.cjs bygger sidorna av —
+ * publish-list, KATEGORIER och tools.json. En hårdkodad lista hade drivit isär
+ * från vad som faktiskt genereras, vilket är samma fälla som den här linten
+ * finns för att fånga. Följden är att en länk till en opublicerad guide
+ * fortfarande rapporteras, vilket är rätt: den blir en mjuk 404.
+ */
+function byggPrerenderade() {
+  const sidor = new Set()
+  try {
+    const { KATEGORIER, kategoriUrl, getPublishedArticles, guideUrl } = require('./lib/guides.cjs')
+    const publicerade = getPublishedArticles()
+    if (publicerade.length) {
+      sidor.add('/guider/')
+      sidor.add('/guider/lattlast/')
+      for (const a of publicerade) sidor.add(guideUrl(a.slug))
+      for (const k of KATEGORIER) {
+        if (publicerade.some((a) => a.category_key === k.key)) sidor.add(kategoriUrl(k.slug))
+      }
+    }
+    const toolsFil = path.join(CLIENT, 'content', 'tools.json')
+    if (fs.existsSync(toolsFil)) {
+      const { verktyg } = JSON.parse(fs.readFileSync(toolsFil, 'utf8'))
+      if (verktyg?.length) {
+        sidor.add('/verktyg/')
+        for (const t of verktyg) sidor.add(`/verktyg/${t.slug}/`)
+      }
+    }
+  } catch (err) {
+    // Saknas snapshoten går linten vidare utan de här sidorna hellre än att
+    // krascha — men säg det, annars ser tystnaden ut som att allt är grönt.
+    console.warn(`lint-links: kunde inte läsa de prerenderade sidorna — ${err.message}`)
+  }
+  return sidor
+}
+
+const PRERENDERADE = byggPrerenderade()
 
 const LANK_MONSTER = [
   /\bto=["']([^"'{}]+)["']/g,
@@ -145,24 +244,63 @@ const unika = traffar.filter((t) => {
   return true
 })
 
-const doda = unika.filter((t) => !rutter.matchar(t.href)).sort((a, b) => a.fil.localeCompare(b.fil) || a.rad - b.rad)
+// En länk är levande om den matchar en <Route> i App.tsx ELLER är en av de
+// prerenderade statiska sidorna. Frågetecken/ankare skalas bort först — de
+// tillhör sidan, inte sökvägen.
+const arLevande = (href) => {
+  if (rutter.matchar(href)) return true
+  const utanQuery = href.split(/[?#]/)[0]
+  return PRERENDERADE.has(utanQuery) || PRERENDERADE.has(`${utanQuery}/`)
+}
+
+const doda = unika.filter((t) => !arLevande(t.href)).sort((a, b) => a.fil.localeCompare(b.fil) || a.rad - b.rad)
+
+// Träffarna delas i två högar. Bara den första fäller bygget: en död länk i
+// kod som ingen kör är inte en bugg för någon användare, och att laga den är
+// betalt arbete i dödkod. Den andra högen rapporteras ändå — den ska minska
+// när spår C:s städning körs, inte glömmas bort.
+const orsakOnabar = (t) =>
+  ONABARA.has(t.fil) ? 'onåbar från main.tsx' : DODA_EXPORTER.get(t.fil) || null
+
+const levandeKod = doda.filter((t) => !orsakOnabar(t))
+const dodKod = doda.filter((t) => orsakOnabar(t))
 
 if (process.argv.includes('--json')) {
-  console.log(JSON.stringify({ routes: rutter.antal, granskade: unika.length, doda }, null, 2))
+  console.log(
+    JSON.stringify(
+      {
+        routes: rutter.antal,
+        prerenderade: PRERENDERADE.size,
+        granskade: unika.length,
+        doda: levandeKod,
+        dodaIDodKod: dodKod.map((t) => ({ ...t, orsak: orsakOnabar(t) })),
+      },
+      null,
+      2
+    )
+  )
 } else {
   console.log(`Routes lästa ur App.tsx: ${rutter.antal}`)
+  console.log(`Prerenderade sidor kända: ${PRERENDERADE.size}`)
   console.log(`Interna länkmål granskade: ${unika.length}`)
-  if (!doda.length) {
-    console.log('\nInga döda länkmål hittade.')
+
+  if (!levandeKod.length) {
+    console.log('\nInga döda länkmål i levande kod.')
   } else {
-    console.log(`\n${doda.length} länkmål matchar ingen route:\n`)
-    for (const d of doda) console.log(`  ${d.fil}:${d.rad}  ${d.href}`)
+    console.log(`\n${levandeKod.length} länkmål matchar varken route eller prerenderad sida:\n`)
+    for (const d of levandeKod) console.log(`  ${d.fil}:${d.rad}  ${d.href}`)
     console.log(
-      '\nOBS: en träff bevisar bara att strängen inte matchar en route i App.tsx — inte att den ' +
-        'renderas för en riktig användare (feature-flaggor, skuggade lokala tabbar, o.s.v.). Läs ' +
-        'träffen i sitt sammanhang innan du ändrar den.'
+      '\nOBS: en träff bevisar bara att strängen inte matchar en route — inte att den renderas ' +
+        'för en riktig användare (feature-flaggor, skuggade lokala tabbar, o.s.v.). Läs träffen ' +
+        'i sitt sammanhang innan du ändrar den.'
     )
+  }
+
+  if (dodKod.length) {
+    console.log(`\n${dodKod.length} träffar i kod som inte körs (fäller inte bygget):`)
+    for (const d of dodKod) console.log(`  ${d.fil}:${d.rad}  ${d.href}  — ${orsakOnabar(d)}`)
+    console.log('  Rätt åtgärd är att radera koden (spår C), inte att peka om länken.')
   }
 }
 
-process.exit(doda.length ? 1 : 0)
+process.exit(levandeKod.length ? 1 : 0)

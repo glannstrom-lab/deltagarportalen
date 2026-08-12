@@ -50,7 +50,9 @@ export function Del4PortalIntegration({ focusOccupation }: Props) {
       title: 'Personligt brev',
       description: 'Generera brev anpassat efter jobbet',
       icon: <Mail size={18} />,
-      href: '/personligt-brev',
+      // Routen heter /cover-letter i App.tsx. '/personligt-brev' fanns aldrig
+      // och föll på catch-all, alltså tillbaka till startsidan utan felmeddelande.
+      href: '/cover-letter',
     },
     {
       title: 'LinkedIn-optimerare',
