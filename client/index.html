@@ -66,24 +66,28 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     <!--
-      Startsidans LCP-element.  (spår K13, 2026-08-12)
+      INGEN preload av startsidans hjältebild. Det är ett mätt beslut, inte en
+      glömska — skriv inte tillbaka den utan att mäta om.  (K13, 2026-08-12)
 
-      Mätt i prod på strypt mobil (1,6 Mbit, 4x CPU): LCP 4 180 ms, och
-      LCP-elementet är den här bilden. Resten av sidan är snabb — TTFB 56 ms,
-      FCP 852 ms, domInteractive 465 ms. Filen är bara 45 kB och immutable
-      cachad, så överföringen är inte problemet: bilden UPPTÄCKS för sent.
-      Den renderas av en lazy-laddad chunk, alltså först efter att elva skript
-      hunnit köra.
+      Resonemanget var rimligt: LCP-elementet är `hero-landing.webp`, den
+      upptäcks först efter att elva skript kört (den renderas av en lazy-laddad
+      chunk), och en preload flyttar upptäckten till noll.
 
-      Preloaden flyttar upptäckten till noll. `loading="eager"` på elementet
-      kunde inte göra det — attributet styr bara vad som händer när elementet
-      väl finns.
+      A/B mot prod, fyra körningar per sida, strypt mobil (1,6 Mbit, 4x CPU),
+      identisk sida där enda skillnaden var taggen:
 
-      Kostnaden: en inloggad användare som aldrig ser startsidan hämtar 45 kB
-      i onödan vid första besöket (därefter cachad ett år). Startsidan är
-      ingången för all organisk trafik, så avvägningen är medveten.
+          med preload   LCP median 4520 ms (4484-4568)   FCP median 1020 ms
+          utan preload  LCP median 4148 ms (4080-4236)   FCP median  712 ms
+
+      Preloaden gjorde det ~370 ms SÄMRE, med icke-överlappande intervall.
+      Orsaken: på ett bandbreddsstrypt nät stjäl bilden bandbredd från den
+      renderblockerande JS:en. Ingenting kan målas innan JS kört, så FCP
+      försenas — och LCP kan inte inträffa före första målningen.
+
+      Den verkliga flaskhalsen är alltså inte bilden utan att startsidan är
+      helt klientrenderad. Rätt åtgärd är prerendering av startsidan, samma
+      klass av beslut som K2. Se ROADMAP K13.
     -->
-    <link rel="preload" as="image" href="/hero-landing.webp" type="image/webp" fetchpriority="high">
 
     <!-- CV-mall fonter (Atelier, Manhattan, Executive) — laddas en gång globalt
          så att både preview och print ser likadant ut. -->

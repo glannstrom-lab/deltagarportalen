@@ -938,7 +938,16 @@ Raden bar tre påståenden. **Två höll, ett reproducerade inte.**
 
 **1. LCP — håller, och orsaken är precis lokaliserad.** Mätt mot prod på strypt mobil (390 px, 1,6 Mbit, 4× CPU): **LCP 4 180 ms**. Men resten av sidan är snabb — TTFB 56 ms, FCP 852 ms, `domInteractive` 465 ms. LCP-elementet är `hero-landing.webp`: 45 kB, 1376×768, `immutable` cachad. Överföringen är alltså inte problemet — **bilden upptäcks för sent**. Den renderas av en lazy-laddad chunk, så webbläsaren hittar den först efter att elva skript hunnit köra. `loading="eager"` fanns redan och kunde inte hjälpa: attributet styr vad som händer när elementet finns, inte hur tidigt det hittas.
 
-Åtgärd: `<link rel="preload" as="image" fetchpriority="high">` i `index.html` (flyttar upptäckten till noll) plus `fetchPriority`-stöd i `OptimizedImage`. Kostnaden är medveten och utskriven i koden: en inloggad användare som aldrig ser startsidan hämtar 45 kB i onödan vid första besöket. Startsidan är ingången för all organisk trafik.
+**Den föreskrivna åtgärden var fel — mätt, och borttagen igen.** Jag lade in `<link rel="preload" as="image" fetchpriority="high">`, deployade, och mätte utfallet mot prod med samma skript och samma strypning som baslinjen. A/B i samma körning, fyra mätningar per sida, där enda skillnaden var att taggen strippades bort via route-interception:
+
+| | LCP median | intervall | FCP median |
+|---|---|---|---|
+| **Med** preload | 4 520 ms | 4 484–4 568 | 1 020 ms |
+| **Utan** preload | **4 148 ms** | 4 080–4 236 | **712 ms** |
+
+Preloaden gjorde det **~370 ms sämre**, med icke-överlappande intervall. Orsaken: på ett bandbreddsstrypt nät stjäl bilden bandbredd från den renderblockerande JS:en. Ingenting kan målas innan JS kört, så FCP försenades 308 ms — och LCP kan inte inträffa före första målningen. Taggen är borttagen, och `index.html` bär nu en kommentar med mätningen så att nästa läsare inte skriver tillbaka den. `fetchPriority`-stödet i `OptimizedImage` är kvar: det kostar ingenting och sätter rätt prioritet när bilden väl upptäckts.
+
+**Slutsatsen är att flaskhalsen inte är bilden.** Den är att startsidan är helt klientrenderad — LCP domineras av att elva skript ska hämtas och köras innan något målas. Rätt åtgärd är prerendering av startsidan, samma klass av beslut som K2, och det är inte något jag tar på eget bevåg. Det sammanfaller med raden om "noll serverrenderat innehåll", som alltså är den verkliga punkten och inte en sidoanmärkning.
 
 **2. Två knappar lovade saker de inte gjorde — håller.** Hjältens "Boka 30 min demo" var en `<button>` som körde `scrollToSection('audience')`; den skrollade 920 px. Två andra instanser av **samma etikett** på samma sida öppnade en riktig mejlbokning — nu gör alla tre det. "Se konsulentvyn" körde `scrollToSection('faq')` och hoppade 9 071 px till vanliga frågor. Den etiketten gick inte att hålla hur knappen än kopplades, eftersom det inte finns någon konsulentvy att visa en gäst. Den heter nu "Boka en visning av konsulentvyn" (sv + en) och leder till en riktig bokning. Det här är samma felklass som lärdomen 2026-08-09 handlar om: en utfästelse utan täckning.
 
@@ -946,7 +955,9 @@ Raden bar tre påståenden. **Två höll, ett reproducerade inte.**
 
 > **Tre mätfel på raken innan siffran blev pålitlig, värt att skriva ner.** (a) `boundingBox()` ger sidkoordinater medan `elementFromPoint` vill ha viewport-koordinater — blandar man dem "blockeras" allt. (b) `index.css:92` sätter `scroll-behavior: smooth`, så en rect som läses direkt efter `scrollIntoView()` mäter mitt i animationen och punkten hamnar utanför viewporten; `elementFromPoint` returnerar `null` och det ser ut som blockering. (c) Ett filter utan `pointer-events`/opacitet hittar element som finns i DOM men inte kan blockera något. **Rätt verktyg är Playwrights `click({ trial: true })`** — den gör actionability-kontrollen korrekt, inklusive "receives events", och namnger dessutom det element som ligger i vägen.
 
-**Kvar av K13:** "noll serverrenderat innehåll" är fortfarande sant för startsidan och åtgärdas inte av en preload — det kräver prerendering av startsidan, vilket är ett eget beslut i klass med K2. LCP-utfallet efter preloaden mäts mot prod efter deploy; siffran i den här rutan är baslinjen, inte resultatet.
+**Kvar av K13:** LCP är oförändrat ~4 150 ms och kräver att startsidan prerenderas — **ett beslut för Mikael**, i klass med K2. De två ljugande knapparna är åtgärdade. Cookierutepåståendet är avskrivet som icke-reproducerbart.
+
+> **Lärdomen värd att behålla:** en föreskriven fix är ett obevisat påstående tills utfallet är mätt. Diagnosen stämde (bilden ÄR LCP-elementet och upptäcks sent), åtgärden följde logiskt — och gjorde ändå mätbart skada. Det som avslöjade det var ett A/B i samma körning, inte en jämförelse mot en timme gammal siffra.
 
 ---
 
