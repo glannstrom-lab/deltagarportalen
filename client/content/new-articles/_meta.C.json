@@ -1,0 +1,177 @@
+{
+  "arbetspsykologiska-tester": {
+    "title": "Arbetspsykologiska tester – vad de faktiskt mäter",
+    "summary": "Skillnaden mellan begåvningstest, personlighetstest och arbetsprov, vad de mäter och hur du förbereder dig utan att gissa rätt svar.",
+    "category_key": "interview",
+    "subcategory": "tester",
+    "tags": [
+      "personlighetstest",
+      "begåvningstest",
+      "arbetsprov",
+      "rekrytering"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "referenssamtal-guide",
+      "intervju-forberedelser",
+      "styrkor-svagheter",
+      "rekryteringsprocessen-steg-for-steg"
+    ],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva inför nästa steg i processen",
+        "type": "primary"
+      }
+    ]
+  },
+  "rekryteringsprocessen-steg-for-steg": {
+    "title": "Rekryteringsprocessen steg för steg",
+    "summary": "Gallring, urval, intervjuer, test, referenser och erbjudande – vad som avgör i varje steg och varför tystnaden emellan sällan betyder nej.",
+    "category_key": "job-search",
+    "subcategory": "rekrytering",
+    "tags": [
+      "rekryteringsprocess",
+      "ansökan",
+      "urval",
+      "intervju"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "referenssamtal-guide",
+      "intervju-forberedelser",
+      "arbetspsykologiska-tester",
+      "folja-upp-din-ansokan"
+    ],
+    "related_tools": [
+      "/applications"
+    ],
+    "checklist": [
+      "Notera datumet du skickade varje ansökan",
+      "Spara annonstexten så du kan gå tillbaka till den inför intervjun",
+      "Fråga efter nästa steg och ungefärlig tidsram efter varje intervju",
+      "Håll koll på vilka ansökningar som väntar på svar och vilka som gått vidare"
+    ],
+    "actions": [
+      {
+        "href": "/applications",
+        "label": "Håll koll på var du sökt",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/folja-upp-din-ansokan",
+        "label": "Läs hur du följer upp utan att bli påstridig",
+        "type": "secondary"
+      }
+    ]
+  },
+  "bakgrundskontroll-och-belastningsregistret": {
+    "title": "Bakgrundskontroll – vad en arbetsgivare får kolla",
+    "summary": "Vad en bakgrundskontroll får omfatta, hur registerutdrag går till, och hur du tar upp en prick i registret själv – i rätt läge.",
+    "category_key": "employment-law",
+    "subcategory": "rekrytering",
+    "tags": [
+      "bakgrundskontroll",
+      "belastningsregister",
+      "registerutdrag",
+      "GDPR"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "rekryteringsprocessen-steg-for-steg",
+      "referenssamtal-guide",
+      "diskriminering-jobbsokning"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Beställ registerutdraget i god tid från Polismyndigheten om tjänsten kräver det",
+      "Läs igenom ditt eget utdrag innan du visar upp det",
+      "Förbered en kort, rak formulering om du har en anteckning som kan bli relevant",
+      "Ta upp det själv innan det efterfrågas, inte efter"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på hur du tar upp det",
+        "type": "primary"
+      }
+    ]
+  },
+  "folja-upp-din-ansokan": {
+    "title": "Följa upp din ansökan – vad du säger, och när det är läge",
+    "summary": "Hur du skriver ett uppföljningsmejl som får svar, frågar om tidsplanen i stället för beslutet, och tolkar tystnaden emellan.",
+    "category_key": "job-search",
+    "subcategory": "rekrytering",
+    "tags": [
+      "uppföljning",
+      "ansökan",
+      "mejl",
+      "rekrytering"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "rekryteringsprocessen-steg-for-steg",
+      "ansokningsstrategi",
+      "feedback-efter-avslag"
+    ],
+    "related_tools": [
+      "/applications"
+    ],
+    "checklist": [
+      "Vänta tills en nämnd tidsram har passerat innan du hör av dig",
+      "Skriv kort – vem du är, tjänsten, att du är intresserad, en konkret fråga",
+      "Fråga om tidsplanen, inte om beslutet",
+      "Låt det gå längre tid mellan varje uppföljning, inte kortare"
+    ],
+    "actions": [
+      {
+        "href": "/applications",
+        "label": "Håll koll på var du sökt",
+        "type": "primary"
+      }
+    ]
+  },
+  "arbetsprov-och-case": {
+    "title": "Arbetsprov och case – vad de bedömer, och var gränsen går",
+    "summary": "Varför fler arbetsgivare använder arbetsprov, vad som faktiskt bedöms, frågorna att ställa innan du börjar och var gratisarbete börjar.",
+    "category_key": "interview",
+    "subcategory": "tester",
+    "tags": [
+      "arbetsprov",
+      "case",
+      "rekrytering",
+      "gratisarbete"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "rekryteringsprocessen-steg-for-steg",
+      "intervju-forberedelser",
+      "referenssamtal-guide"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Läs igenom uppgiften en gång och notera vad som är oklart",
+      "Fråga om tidsram, bedömningsgrunder och inlämningsformat innan du börjar",
+      "Motivera din lösning, inte bara leverera den",
+      "Säg ifrån om uppgiften är skarp produktion, inte ett bedömningsunderlag"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på att presentera din lösning",
+        "type": "primary"
+      }
+    ]
+  }
+}

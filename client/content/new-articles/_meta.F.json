@@ -1,0 +1,202 @@
+{
+  "lattsvenska-a-kassa": {
+    "title": "Vad är a-kassa?",
+    "summary": "Vad a-kassa betyder, varför du bör bli medlem innan du blir arbetslös, och hur du gör för att gå med.",
+    "category_key": "easy-swedish",
+    "subcategory": "ersattning",
+    "tags": [
+      "a-kassa",
+      "arbetslöshetskassa",
+      "medlemskap",
+      "fack"
+    ],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lattsvenska-arbetsformedlingen",
+      "lattsvenska-rapportera-till-arbetsformedlingen",
+      "personlig-ekonomi-jobbsokning"
+    ],
+    "related_tools": [],
+    "checklist": [
+      "Hitta en a-kassa som passar ditt yrke",
+      "Bli medlem så snart du får ett jobb",
+      "Betala din avgift varje månad",
+      "Spara papper om din anställning",
+      "Kontakta a-kassan samma dag du blir arbetslös"
+    ],
+    "actions": [
+      {
+        "href": "/resources",
+        "label": "Hitta fler resurser och stöd",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/lattsvenska-rapportera-till-arbetsformedlingen",
+        "label": "Läs om aktivitetsrapporten",
+        "type": "secondary"
+      }
+    ]
+  },
+  "lattsvenska-rapportera-till-arbetsformedlingen": {
+    "title": "Rapportera till Arbetsförmedlingen varje månad",
+    "summary": "Vad en aktivitetsrapport är, vad som ska stå i den, när den ska in och vad som händer om du glömmer.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": [
+      "aktivitetsrapport",
+      "Arbetsförmedlingen",
+      "handläggare"
+    ],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lattsvenska-arbetsformedlingen",
+      "lattsvenska-a-kassa",
+      "struktur-jobbsokning"
+    ],
+    "related_tools": [
+      "/applications"
+    ],
+    "checklist": [
+      "Skriv ner varje jobb du söker samma dag",
+      "Logga in på Mina sidor hos Arbetsförmedlingen",
+      "Fyll i vad du gjort i aktivitetsrapporten",
+      "Skicka in rapporten i början av månaden",
+      "Kontakta Arbetsförmedlingen om du missar"
+    ],
+    "actions": [
+      {
+        "href": "/applications",
+        "label": "Håll koll på dina ansökningar",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/lattsvenska-a-kassa",
+        "label": "Läs om a-kassa",
+        "type": "secondary"
+      }
+    ]
+  },
+  "lattsvenska-anstallningsavtal": {
+    "title": "Vad står i ett anställningsavtal?",
+    "summary": "Vad ett anställningsavtal är, vad du ska leta efter innan du skriver under, och varför du ska be om en kopia.",
+    "category_key": "easy-swedish",
+    "subcategory": "avtal",
+    "tags": [
+      "anställningsavtal",
+      "provanställning",
+      "lön"
+    ],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "las-anstallningsavtal",
+      "anstallningsformer-guide",
+      "provanstallning-guide"
+    ],
+    "related_tools": [
+      "/salary"
+    ],
+    "checklist": [
+      "Läs igenom hela avtalet i lugn och ro",
+      "Kontrollera vilket jobb du ska göra",
+      "Kontrollera hur mycket du ska jobba",
+      "Kontrollera vad du får i lön",
+      "Kontrollera om jobbet är fast eller på prov",
+      "Fråga om något är oklart",
+      "Be om en kopia av avtalet"
+    ],
+    "actions": [
+      {
+        "href": "/salary",
+        "label": "Se löneläget i din bransch",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/las-anstallningsavtal",
+        "label": "Läs mer om anställningsavtal, klausul för klausul",
+        "type": "secondary"
+      }
+    ]
+  },
+  "lattsvenska-lon-och-skatt": {
+    "title": "Lön och skatt – vad är brutto och netto?",
+    "summary": "Skillnaden mellan bruttolön och nettolön, vad ett lönebesked visar, och vad du gör om lönen blir fel.",
+    "category_key": "easy-swedish",
+    "subcategory": "lon",
+    "tags": [
+      "lön",
+      "skatt",
+      "lönebesked"
+    ],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lon-och-formaner-guide",
+      "personlig-ekonomi-jobbsokning",
+      "lattsvenska-anstallningsavtal"
+    ],
+    "related_tools": [
+      "/salary"
+    ],
+    "checklist": [
+      "Spara varje lönebesked du får",
+      "Kolla att antalet timmar stämmer",
+      "Jämför bruttolön och nettolön",
+      "Kontakta din chef om något är fel"
+    ],
+    "actions": [
+      {
+        "href": "/salary",
+        "label": "Jämför löner i din bransch",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/lon-och-formaner-guide",
+        "label": "Läs mer om lön och förmåner",
+        "type": "secondary"
+      }
+    ]
+  },
+  "lattsvenska-praktik": {
+    "title": "Vad är praktik?",
+    "summary": "Vad praktik betyder, om du får lön, vem som bestämmer, och hur praktik ibland kan leda till jobb.",
+    "category_key": "easy-swedish",
+    "subcategory": "praktik",
+    "tags": [
+      "praktik",
+      "arbetsplats",
+      "Arbetsförmedlingen"
+    ],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "praktik-som-vag-in",
+      "lattsvenska-arbetsformedlingen",
+      "nystartsjobb-guide"
+    ],
+    "related_tools": [
+      "/job-search"
+    ],
+    "checklist": [
+      "Prata med din handläggare om praktik",
+      "Kom i tid varje dag på praktiken",
+      "Fråga när du är osäker",
+      "Visa att du vill lära dig",
+      "Berätta att du är intresserad av jobb där"
+    ],
+    "actions": [
+      {
+        "href": "/job-search",
+        "label": "Sök jobb och praktikplatser",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/praktik-som-vag-in",
+        "label": "Läs mer om praktik som väg in i jobb",
+        "type": "secondary"
+      }
+    ]
+  }
+}

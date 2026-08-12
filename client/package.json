@@ -8,6 +8,7 @@
     "build": "vite build && node scripts/prerender-guides.cjs && node scripts/generate-sitemap.cjs",
     "content:refresh": "node scripts/content-snapshot.cjs",
     "content:triage": "node scripts/triage-articles.cjs",
+    "content:new": "node scripts/apply-new-articles.cjs",
     "guides": "node scripts/prerender-guides.cjs && node scripts/generate-sitemap.cjs",
     "build:only": "vite build",
     "sitemap": "node scripts/generate-sitemap.cjs",

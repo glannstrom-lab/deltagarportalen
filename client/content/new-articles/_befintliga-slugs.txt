@@ -1,0 +1,138 @@
+De 133 artiklar som redan finns. Din nya slug får INTE krocka med någon av dem,
+OCH ditt ämne får inte vara en omskrivning av någon av dem. Använd listan för att
+välja related_article_slugs — bara slugs härifrån är giltiga.
+
+kategori             slug                                   titel
+accessibility        anpassningar-arbetsplats               Anpassningar på arbetsplatsen – vad du kan be om
+accessibility        anpassningar-arbetsplatsen             Anpassningar på arbetsplatsen - dina möjligheter
+accessibility        funktionsnedsattning-jobbsokning       Jobbsökning med funktionsnedsättning – rättigheter och strategier
+accessibility        jobbsokning-funktionsnedsattning       Jobbsökning med funktionsnedsättning – rättigheter och stöd
+accessibility        nystartsjobb-guide                     Nystartsjobb – ditt extra stöd in i arbetslivet
+accessibility        rattigheter-stod                       Dina rättigheter som arbetssökande med stödbehov
+career-development   befordran-guide                        Så får du befordran – strategier som fungerar
+career-development   distansarbete-guide                    Så lyckas du med distansarbete
+career-development   dromjobbsanalys                        Drömjobbsanalys – från vision till handling
+career-development   forsta-90-dagarna                      Dina första 90 dagar på nya jobbet
+career-development   forsta-dagen-nytt-jobb                 Första dagen på nya jobbet – gör succé från start
+career-development   forsta-jobbet-efter-studier            Första jobbet efter studier – din guide till arbetslivet
+career-development   karriarbyte-guide                      Byta karriär – en komplett guide
+career-development   karriarplanering-guide                 Karriärplanering – från vision till verklighet
+career-development   karriarvaxling-guide                   Karriärväxling – så byter du bana
+career-development   kompetensutveckling-guide              Kompetensutveckling – investera i dig själv
+career-development   kompetensutveckling-plan               Planera din kompetensutveckling strategiskt
+career-development   konflikthantering-arbetsplats          Hantera konflikter på arbetsplatsen
+career-development   professionell-kommunikation            Professionell kommunikation på arbetsplatsen
+career-development   starta-eget-guide                      Starta eget – är det för dig?
+digital-presence     ai-jobbsokning-guide                   AI i jobbsökningen – så använder du det smart
+digital-presence     bygg-ditt-personliga-varumarke         Bygg ditt personliga varumärke online
+digital-presence     digital-narvaro-rensning               Rensa och förbättra din digitala närvaro
+digital-presence     googla-dig-sjalv                       Googla dig själv – vad ser arbetsgivare?
+digital-presence     linkedin-optimering                    Komplett guide till LinkedIn-optimering
+digital-presence     linkedin-profil-optimering             LinkedIn-profil – från basic till outstanding
+digital-presence     personligt-varumarke                   Bygg ditt personliga varumärke
+digital-presence     portfolio-guide                        Så bygger du en professionell portfolio
+digital-presence     sociala-medier-jobbsokning             Sociala medier i jobbsökningen - mer än bara LinkedIn
+digital-presence     sociala-medier-jobsokning              Sociala medier i jobbsökningen – mer än LinkedIn
+easy-swedish         lattsvenska-arbetsformedlingen         Arbetsförmedlingen – hur fungerar det?
+easy-swedish         lattsvenska-avslag                     När du får nej på en jobbansökan
+easy-swedish         lattsvenska-cv                         Så skriver du ett CV
+easy-swedish         lattsvenska-forsta-jobbet              Ditt första jobb i Sverige
+easy-swedish         lattsvenska-fragor-intervju            Vanliga frågor på intervju
+easy-swedish         lattsvenska-intervju                   Så klarar du jobbintervjun
+easy-swedish         lattsvenska-nar-du-blir-sjuk           När du blir sjuk på jobbet
+easy-swedish         lattsvenska-skriva-mail                Skriva bra jobbmail
+easy-swedish         lattsvenska-tips-bra-cv                10 tips för ett bra CV
+easy-swedish         lattsvenska-vad-ar-cv                  Vad är ett CV?
+employment-law       anstallningsformer-guide               Anställningsformer – vad är skillnaden?
+employment-law       diskriminering-jobbsokning             Diskriminering vid jobbsökning – dina rättigheter
+employment-law       las-anstallningsavtal                  Så läser du ett anställningsavtal – klausul för klausul
+employment-law       lon-och-formaner-guide                 Lön och förmåner – mer än bara kontant lön
+employment-law       personlig-ekonomi-jobbsokning          Personlig ekonomi under jobbsökning
+employment-law       provanstallning-guide                  Så fungerar provanställning – allt du behöver veta
+getting-started      forsta-veckan-checklista               Komma igång – checklista i sju steg
+getting-started      komma-igang-intro                      Komma igång – så funkar portalen
+interview            digital-intervju                       Digital intervju – så lyckas du på Zoom/Teams
+interview            grupperintervju-guide                  Gruppintervju – så sticker du ut positivt
+interview            intervju-forberedelser                 Förbered dig inför intervjun – den ultimata guiden
+interview            intervju-fragor                        Vanliga intervjufrågor och hur du svarar
+interview            latt-svenska-intervju                  Vad händer på en intervju?
+interview            loneforhandling-guide                  Löneförhandling – så får du den lön du förtjänar
+interview            loneforhandling-komplett               Löneförhandling – den kompletta guiden
+interview            loneforhandling-tips                   Masterclass: Förhandla din lön
+interview            referenssamtal-guide                   Referenssamtal – vad händer och hur förbereder du dig
+interview            tackbrev-intervju                      Skriv ett tackbrev efter intervjun
+interview            telefonintervju-tips                   Telefonintervju – så lyckas du
+interview            under-intervjun-tips                   Under intervjun: Tekniker som gör skillnad
+interview            videointervju-tips                     Videointervju – så lyckas du framför kameran
+job-market           arbetsmarknadstrender-nu               Arbetsmarknadstrender - vad händer just nu?
+job-market           arbetsmiljo-guide                      Förstå din framtida arbetsmiljö
+job-market           arbetsmiljo-kultur-guide               Arbetsmiljö och kultur – hitta rätt företag för dig
+job-market           branscher-brist                        Var finns jobben — och för vem?
+job-market           branschguide-it-tech                   Branschguide: IT och tech
+job-market           branschguide-vard-omsorg               Branschguide: Vård och omsorg
+job-market           dolda-jobbmarknaden                    Den dolda jobbmarknaden – så hittar du jobb som aldrig annonseras
+job-market           framtidens-jobb                        Framtidens jobb – vilka yrken växer och krymper?
+job-market           gig-ekonomin                           Gig-ekonomin – frihet eller fälla?
+job-market           lasa-arbetsmarknaden                   Att läsa arbetsmarknaden
+job-market           praktik-som-vag-in                     Praktik som väg in i arbetslivet
+job-search           ansokningsstrategi                     Effektiv ansökningsstrategi – kvalitet före kvantitet
+job-search           ats-optimering                         ATS-optimering – få ditt CV förbi datorn
+job-search           ats-system-guide                       ATS-system – så tar sig ditt CV förbi robotarna
+job-search           ats-system-tips                        ATS-system: Så tar du dig förbi robotarna
+job-search           bemanningsforetag-guide                Bemanningsföretag – din genväg till arbetsmarknaden
+job-search           cv-grunder                             Så skriver du ett CV som får resultat
+job-search           cv-utan-erfarenhet                     Skriva CV utan formell erfarenhet
+job-search           feedback-efter-avslag                  Hur du ber om feedback efter ett avslag
+job-search           jobbsokning-50-plus                    Jobbsökning efter 50 – erfarenhet som styrka
+job-search           kompetensportfolj                      Bygg en kompetensportfölj som imponerar
+job-search           kreativ-jobbsokning                    Kreativa metoder för jobbsökning
+job-search           latt-svenska-cv                        Vad är ett CV?
+job-search           latt-svenska-personligt-brev           Vad är ett personligt brev?
+job-search           latt-svenska-soka-jobb                 Hur söker man jobb?
+job-search           personligt-brev                        Personligt brev – din chans att sticka ut
+job-search           personligt-brev-mall                   Personligt brev – mallar och exempel
+job-search           referenser-guide                       Referenser – så väljer och förbereder du dem
+job-search           sasongsjobb-guide                      Hitta och lyckas med säsongsjobb
+networking           bygga-natverk-introverta               Nätverka som introvert – strategier som fungerar
+networking           informationsintervju-guide             Informationsintervju – din hemliga jobbsökarstrategi
+networking           natverk-underhall                      Underhåll ditt nätverk – utan att känna dig falsk
+networking           natverka-for-jobb                      Nätverkande – din dolda jobbmarknad
+networking           natverksbyggande-guide                 Bygg ditt professionella nätverk från grunden
+networking           underhall-kontakter                    Underhåll ditt nätverk – långsiktiga relationer
+self-awareness       hitta-dina-varderingar                 Hitta dina värderingar – nyckeln till rätt jobb
+self-awareness       hitta-ditt-drommjobb                   Hitta ditt drömjobb – en reflektionsguide
+self-awareness       kompetensinventering-guide             Kompetensinventering – kartlägg allt du kan
+self-awareness       kompetensutvardering                   Kompetensinventering: Kartlägg dina färdigheter
+self-awareness       personlighetstyper-arbete              Personlighetstyper och arbetsstilar
+self-awareness       personlighetstyper-i-arbetslivet       Personlighetstyper i arbetslivet – hitta din profil
+self-awareness       personlighetstyper-jobb                Personlighetstyper och karriärval
+self-awareness       styrkor-svagheter                      Identifiera och kommunicera dina styrkor
+self-awareness       styrkor-svagheter-intervju             Så pratar du om styrkor och svagheter på intervju
+self-awareness       upptack-dina-styrkor                   Upptäck och använd dina styrkor
+self-awareness       varderingar-i-arbetslivet              Hitta dina värderingar – nyckeln till rätt jobb
+self-awareness       varderingar-karriarval                 Dina värderingar och karriärval
+tools                checklista-ansoka-jobb                 Checklista: Innan du söker ett jobb
+tools                checklista-fore-intervju               Checklista: Dagen före intervjun
+tools                checklista-innan-ansokan               Checklista: Innan du skickar ansökan
+tools                cv-mallar-exempel                      CV-mallar och exempel för olika situationer
+tools                jobbsokar-ordlista                     Jobbsökarens ordlista - viktiga begrepp
+tools                ordlista-jobbsokning                   Ordlista: Vanliga termer i jobbsökning
+wellness             hantera-avslag                         När du fått avslag – så hanterar du det
+wellness             hantera-avslag-motivation              Hantera avslag utan att tappa motivationen
+wellness             imposter-syndrome                      Imposter syndrome – när du känner dig som en bluff
+wellness             jobbsokning-depression                 När jobbsökning påverkar din mentala hälsa
+wellness             latt-svenska-avslag                    Du fick inte jobbet - vad gör du nu?
+wellness             mental-halsa-guide                     Mental hälsa under jobbsökningen
+wellness             mental-halsa-jobbsokning               Mental hälsa under jobbsökning
+wellness             mindfulness-stresshantering-jobbsokare Mindfulness och stresshantering för jobbsökare
+wellness             motivation-jobbsokning                 Behåll motivationen under en lång jobbsökning
+wellness             motivation-langsiktig                  Behåll motivationen under långtidssökande
+wellness             sta-fem-faktorer                       Fem faktorer för hållbar aktivitet
+wellness             sta-hard-talk                          Hard Talk — så för du svåra samtal
+wellness             sta-saga-nej                           Att säga nej — gränssättning utan dåligt samvete
+wellness             sta-somn-ostrukturerad                 Sömn när livet är ostrukturerat
+wellness             sta-utmattning-recovery                Återhämtning från utmattning — vägen tillbaka
+wellness             stresshantering                        Stresshantering för arbetssökande
+wellness             stresshantering-jobbsokning            Hantera stress under jobbsökningen
+wellness             struktur-jobbsokning                   Skapa struktur i jobbsökningen
+wellness             work-life-balance-guide                Skapa balans mellan arbete och privatliv

@@ -833,6 +833,28 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 
 **Blockerande för nästa innehållsomgång:** K8 (Search Console) står öppen. Utan indexeringsdata går det inte att avgöra vilken sida i varje kannibaliseringspar som ska vinna — och K4 säger uttryckligen "ingen batch utan mätning från den föregående". Billigaste åtgärden på hela listan, och den som låser upp flest andra.
 
+### K20 — Innehållsomgång 3: 30 nya guider i otäckta ämnen (2026-08-12)
+
+| ID | Punkt | Status |
+|----|-------|--------|
+| **K20** | **30 nya artiklar skrivna och publicerade. 131 → 161 sidor, sitemap 139 → 169.** | ✅ **Klar 2026-08-12** |
+
+**Premissen som fälldes först:** `apply-expansions.cjs` kan bara göra UPDATE och avbryter på en slug som inte finns i snapshoten — det fanns alltså **ingen väg in för en ny artikel** i hela pipelinen. K2/K9 byggde bara om det som redan låg i prod. Nytt: `scripts/apply-new-articles.cjs` (`npm run content:new`), torrläge som default, `--rollback --skriv`, och en validering som samlar **alla** fel innan den avbryter (en halvpublicerad omgång är värre än en som inte gick). Den kontrollerar slugkrock mot **prod** och inte bara mot snapshoten, kategori mot de 12 som finns, varje CTA mot `App.tsx`, `summary` ≤ 155 tecken, triagens ordgränser och att ingen `# H1` smugit in.
+
+**Varför de här 30 ämnena.** Korpusen på 133 var tung på CV/intervju/motivation och hade **noll** om det arbetssökande faktiskt googlar mest: ersättning och myndigheter. Sex kluster, alla i luckor: ersättning/myndigheter (a-kassa, aktivitetsrapport, Rusta och matcha, inskrivning, aktivitetsstöd), stöd vid nedsatt arbetsförmåga (lönebidrag, SIUS, arbetsträning, åter efter sjukskrivning, skyddat arbete), rekryteringsprocessen (tester, processen steg för steg, bakgrundskontroll, uppföljning, arbetsprov), papper och lön (arbetsgivarintyg, skatt, facket, sjuklön/vab, sommarjobb), ny i Sverige (validering av utbildning, utländsk erfarenhet i CV, SFI, svenska på jobbet, etableringsprogrammet) och fem **lättlästa om pengar och myndigheter** — de tio befintliga lättlästa handlade alla om CV och intervju, alltså saknades formatet just där det behövs mest.
+
+**Ärlighetsregeln som styrde skrivandet, och som är den egentliga leveransen:** *ingen siffra som är en regel.* Inga belopp, procentsatser, dagantal, åldersgränser eller inkomsttak — mekanismen beskrivs, beslutsfattaren namnges, och det exakta hänvisas till myndigheten. Skälet är lärdomen 2026-08-09: en läsare fattar beslut om sin försörjning utifrån det här, och en föråldrad siffra är värre än ingen. Verifierat med grep över alla 30 filer: **noll träffar** på tal kopplade till %/kr/dagar/månader/år, noll obelagda generaliseringar ("forskning visar", "de flesta rekryterare"), noll påståenden om Jobin.
+
+**Två fynd i granskningen av agenternas texter** (de rapporterade själva att allt var rent — det stämde inte helt): (a) `lonebidrag-sa-fungerar-det` påstod "den [frågan] som portalen oftast får frågor om" — ett påhittat faktum om Jobin, och triagens `PORTALSPECIFIK`-filter tittar **bara på titeln**, så det hade gått rakt igenom. (b) `utlandsk-erfarenhet-i-cv` påstod vad "de flesta rekryterare" föredrar. Båda omskrivna. Lärdomen är den vanliga: en agents egenrapporterade "verifierat rent" ersätter inte en egen mätning.
+
+**Titlarna fick kortas.** Agenterna skrev dubbelklausul-titlar på 62–83 tecken; de befintliga 133 har median **40** och bara 2 % över 60. 19 av 30 kortades med sökordet kvar först — median 51, noll över 60, ingen klipps längre i Google.
+
+**Verifierat mot byggd HTML, inte mot dev-servern** (jfr F18b): alla 30 sidorna har en `h1`, rätt canonical, `<title>` som matchar metadatan, JSON-LD som parsar, ingen rå markdown som läckt igenom och en rad i sitemapen. Internlänkningen ger 802 länkar över 161 sidor (5,0/sida) och **noll föräldralösa**. Alla åtta grindar gröna, 1 395 tester.
+
+**Medvetet avsteg från K4** (samma sorts avsteg som redan står dokumenterat på K4-raden, och beslutat av Mikael 2026-08-12): omgången släpptes utan att K8:s mätning fanns. Skälet är att risken skalar med kvalitet snarare än antal, att triagen silar med körbara regler, och att de 30 ligger i ämnen som inte kannibaliserar något befintligt. **Det kvarstående kravet gäller fortfarande:** mät i Search Console innan omgång 4, och K8 är alltjämt den billigaste åtgärden som låser upp flest andra.
+
+**Kvar efter den här omgången:** K12 (startsidan länkar inte till någon guidesida — de 161 är föräldralösa från rot, vilket direkt begränsar vad omgången kan ge) och K15 (13 kategorisidor ur `category_key`) är nu de två som ger mest per krona, eftersom de gör de 161 sidorna hittbara i stället för att lägga till en 162:a.
+
 ---
 
 ## 4. Q4 2026 — Konsolidera & mäta

@@ -1,9 +1,73 @@
 {
   "_generated": "npm run content:refresh — redigera inte för hand",
   "_source": "public.articles where is_active (prod)",
-  "generatedAt": "2026-08-05",
-  "count": 133,
+  "generatedAt": "2026-08-12",
+  "count": 163,
   "articles": [
+    {
+      "actions": [
+        {
+          "href": "/calendar",
+          "label": "Sätt påminnelser för viktiga datum",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/aktivitetsrapport-guide",
+          "label": "Läs om aktivitetsrapporten",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Kontrollera om du redan är medlem i en a-kassa"
+        },
+        {
+          "id": "2",
+          "text": "Gå med i en a-kassa innan du blir arbetslös, inte efter"
+        },
+        {
+          "id": "3",
+          "text": "Spara underlag som visar din anställningstid"
+        },
+        {
+          "id": "4",
+          "text": "Skriv in dig hos Arbetsförmedlingen din första dag utan jobb"
+        },
+        {
+          "id": "5",
+          "text": "Kontakta din a-kassa för att få veta vad som gäller just dig"
+        }
+      ],
+      "content": "Vill du förstå hur a-kassan fungerar innan du behöver den? Bra tajming, för det är precis då det går att göra något åt det. Den här texten går igenom vad som skiljer a-kassa från facket, vad som prövas när du ansöker, och vad som gäller om du inte är medlem.\n\n## A-kassa och fackförbund är inte samma sak\n\nLätt att blanda ihop, för de hänger ofta ihop i praktiken. Fackförbundet företräder dig gentemot arbetsgivaren: förhandlar löner, bevakar anställningsvillkor, ger juridiskt stöd i en tvist. A-kassan är en försäkring, en förening du betalar avgift till, som i sin tur kan betala ut ersättning till dig om du blir arbetslös och uppfyller villkoren. Du kan vara medlem i en a-kassa utan att vara med i facket, och tvärtom. De flesta a-kassor är yrkes- eller branschkopplade, men det finns även a-kassor öppna för alla oavsett yrke.\n\n## Varför medlemskapet måste finnas innan du blir arbetslös\n\nDet här är den vanligaste missuppfattningen, och den dyraste. A-kassan är en försäkring, och som de flesta försäkringar går det inte att teckna den efter att skadan redan skett. Du kan inte gå med i en a-kassa dagen du blir uppsagd och förvänta dig ersättning som om du varit medlem länge. Det krävs en sammanhängande medlemstid innan arbetslösheten, och den tiden måste dessutom vara kombinerad med att du faktiskt arbetat under den. Har du inte hunnit bygga upp den tiden när du blir arbetslös kvalificerar du dig inte för den ersättning som bygger på din tidigare inkomst, oavsett hur länge du senare blir kvar i kassan.\n\nÄr du osäker på om du är medlem, eller sedan när, står det på din a-kassas medlemssidor när du loggar in med BankID.\n\n## Två saker prövas: arbetsvillkoret och medlemsvillkoret\n\nNär du ansöker om ersättning prövar a-kassan två separata saker, och båda måste vara uppfyllda.\n\n- **Medlemsvillkoret** – hur länge du varit medlem, sammanhängande, fram till att du blev arbetslös.\n- **Arbetsvillkoret** – om du har arbetat tillräckligt mycket, tillräckligt nyligen, för att räknas som etablerad på arbetsmarknaden. Det är det här villkoret som avgör om du får ersättning som bygger på inkomst eller inte, och det prövas oavsett om du är medlem eller inte.\n\nNivån och längden på det du kan få räknas sedan fram utifrån din tidigare inkomst under en period före arbetslösheten. Exakt hur den beräkningen görs, och vilka belopp och tidsgränser som gäller just nu, ändras då och då genom politiska beslut. Kolla alltid den aktuella regeln hos din a-kassa i stället för att lita på något du läst för ett år sedan.\n\n## Vem beslutar, och vem du vänder dig till\n\nDet är din a-kassa som fattar beslutet om din ersättning, inte Arbetsförmedlingen. Arbetsförmedlingen intygar att du är inskriven och aktivt söker arbete, ett underlag a-kassan behöver, men själva prövningen och utbetalningen sköts av kassan du är medlem i (eller Alfa-kassan, se nedan). Är du missnöjd med ett beslut kan du begära omprövning hos din a-kassa. Hjälper inte det finns Inspektionen för arbetslöshetsförsäkringen (IAF) som tillsynsmyndighet.\n\n## Om du inte är medlem: grundersättningen finns ändå\n\nÄr du inte medlem i någon a-kassa när du blir arbetslös står du inte helt utan skydd. Det finns en grundersättning som hanteras av Alfa-kassan, öppen för alla som uppfyller arbetsvillkoret, oavsett medlemskap. Den bygger inte på din tidigare inkomst utan ligger på en fast, lägre nivå. Det är alltså arbetsvillkoret, inte medlemskapet, som avgör om du får något alls. Medlemskapet avgör i stället om ersättningen speglar din tidigare lön eller inte.\n\n## Så kontrollerar du vad som gäller dig\n\nDen här texten beskriver mekanismen, inte det aktuella beloppet, antal dagar eller procentsatsen, för de ändras, och en föråldrad siffra kan göra mer skada än ingen alls. För det som gäller just dig, just nu:\n\n- Logga in hos din a-kassa och läs villkoren för din situation.\n- Vet du inte vilken a-kassa du tillhör, eller ska välja en: [Alfa-kassan](https://alfakassan.se) tar emot alla som inte hör hemma i en yrkeskassa.\n- Är du osäker på ett beslut, be din handläggare på a-kassan förklara vad som prövats, inte bara vad resultatet blev.\n- Skriv in dig hos [Arbetsförmedlingen](https://arbetsformedlingen.se) om du inte redan gjort det, för det är en del av underlaget din a-kassa behöver.\n\n## Vad gör jag nu\n\nÄr du fortfarande anställd: kontrollera att du är medlem i en a-kassa redan i dag, inte den dagen du blir uppsagd. Är du redan arbetslös: skriv in dig hos Arbetsförmedlingen din första dag utan jobb och kontakta din a-kassa samma vecka för att få reda på exakt vad som krävs i din situation.\n\n## Vanliga frågor\n\n### Måste jag vara med i facket för att få a-kassa?\nNej. A-kassa och fackligt medlemskap är två separata medlemskap. Du kan vara med i en a-kassa utan att vara fackligt ansluten.\n\n### Kan jag byta a-kassa om jag byter yrke?\nJa, det går att gå med i en annan a-kassa. Fråga den nya kassan hur en eventuell tidigare medlemstid räknas med, reglerna för det skiljer sig åt beroende på situation.\n\n### Vad händer om jag blir arbetslös samma dag jag går med?\nDå har du inte hunnit bygga upp den medlemstid som krävs för inkomstbaserad ersättning. Uppfyller du arbetsvillkoret kan du ändå ha rätt till grundersättning via Alfa-kassan.",
+      "difficulty": "medium",
+      "energy_level": "low",
+      "reading_time": 5,
+      "related_article_slugs": [
+        "personlig-ekonomi-jobbsokning",
+        "lattsvenska-arbetsformedlingen",
+        "aktivitetsrapport-guide",
+        "skriva-in-dig-arbetsformedlingen"
+      ],
+      "related_tools": [
+        "/calendar"
+      ],
+      "slug": "a-kassa-sa-fungerar-det",
+      "sort_order": 0,
+      "subcategory": "a-kassa",
+      "summary": "Skillnaden mellan a-kassa och fack, varför medlemskapet måste finnas innan du blir arbetslös, och vad som prövas när du ansöker.",
+      "tags": [
+        "a-kassa",
+        "arbetslöshetsförsäkring",
+        "medlemskap",
+        "ersättning"
+      ],
+      "title": "Så fungerar a-kassan – medlemskap och villkor",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
     {
       "actions": [],
       "author": "Johan Andersson",
@@ -33,6 +97,68 @@
       ],
       "title": "AI i jobbsökningen – så använder du det smart",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/applications",
+          "label": "Håll koll på dina ansökningar",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
+          "label": "Förstå hur a-kassan fungerar",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner varje sökt jobb samma dag du söker det"
+        },
+        {
+          "id": "2",
+          "text": "Anteckna företag, tjänst och datum för varje aktivitet"
+        },
+        {
+          "id": "3",
+          "text": "Kolla ditt rapporteringsfönster på Mina sidor"
+        },
+        {
+          "id": "4",
+          "text": "Lämna rapporten inom fönstret, varje månad"
+        },
+        {
+          "id": "5",
+          "text": "Hör av dig till Arbetsförmedlingen i förväg om du inte hinner"
+        }
+      ],
+      "content": "Aktivitetsrapporten är dokumentet som håller din ersättning igång månad för månad, och det är lätt att göra fel utan att märka det förrän det är för sent. Här går vi igenom vad som räknas, hur du beskriver det, och vad som händer om du missar.\n\n## Vad aktivitetsrapporten faktiskt är\n\nAktivitetsrapporten är din egen redovisning till Arbetsförmedlingen av vad du gjort för att ta dig närmare ett jobb under den senaste perioden. Den är inte en formalitet du fyller i för sakens skull. Den är underlaget som Arbetsförmedlingen skickar vidare till din a-kassa, eller till Försäkringskassan om du får aktivitetsstöd, och det är det underlaget som avgör om utbetalningen fortsätter. Ingen rapport, inget underlag, ingen automatisk utbetalning.\n\n## Vad räknas som en aktivitet\n\nAktivitetsrapporten handlar om det du faktiskt gjort, inte om vad du planerar att göra. Det som normalt räknas:\n\n- Jobb du sökt, med företag, tjänst och datum.\n- Kontakter du tagit med arbetsgivare, även spontant.\n- Möten med rekryterare, bemanningsföretag eller nätverk.\n- Utbildning, kurser eller praktik som är en del av din plan.\n- Aktiviteter du kommit överens om med din handläggare i din handlingsplan.\n\nDet som inte räknas är vaga formuleringar som \"sökt jobb hela veckan\" utan att kunna visa vad. Handläggaren ska kunna se en konkret handling, inte en avsikt.\n\n## Så beskriver du en aktivitet så den duger\n\nSkriv som om någon annan ska kunna följa vad du gjort utan att fråga dig. Det betyder:\n\n- **Vad** du gjorde: sökte en tjänst, gick på ett möte, gjorde en kurs.\n- **Var**: vilket företag, vilken utbildning, vilken plattform.\n- **När**: vilket datum.\n\nTre rader per aktivitet räcker gott. Det är bättre med flera tydliga rader än en lång sammanfattning som inte går att verifiera.\n\n## När den ska lämnas, och varför fönstret är viktigt\n\nAktivitetsrapporten lämnas en gång i månaden, inom ett bestämt fönster som Arbetsförmedlingen anger för just dig och som du ser på Mina sidor. Fönstret är inte en rekommendation. Lämnar du in för sent, eller inte alls, räknas det som att du inte fullgjort din skyldighet, även om du faktiskt sökt jobb den månaden. Systemet ser bara rapporten, inte det du faktiskt gjorde om det inte står där.\n\n## Vad händer om du missar den\n\nAtt missa en aktivitetsrapport, eller lämna in en som är för tunn, sätter i gång en konsekvenskedja hos Arbetsförmedlingen som i sin tur kan påverka din ersättning. Precis hur den kedjan ser ut, och hur allvarlig den första missen bedöms vara, är något som ändras då och då genom regelbeslut, så vi anger inte stegen här. Det du behöver veta är principen: ju fler missar, desto allvarligare blir konsekvensen, och till slut kan ersättningen utebli helt tills du uppfyller villkoren igen.\n\nHar du ett giltigt skäl, sjukdom, teknikstrul, en akut familjehändelse, hör av dig till Arbetsförmedlingen så fort du kan. Ett skäl du flaggat i tid väger tyngre än ett som kommer i efterhand utan förklaring.\n\n## Knepet: anteckna löpande, rekonstruera aldrig\n\nDet som gör aktivitetsrapporten stressig är nästan alltid samma sak: den skjuts upp till sista dagen, och då ska en hel månad plötsligt minnas. Gör i stället en vana av att skriva ner varje sökt jobb, varje kontakt, samma dag som du gör det, i en anteckningsapp, ett kalenderblock eller en dagbok. När rapporten ska in är jobbet redan gjort, du kopierar bara in det. Det sparar tid, och det gör rapporten mer trovärdig eftersom detaljerna är färska i stället för gissade.\n\n## Vad gör jag nu\n\nSkapa en enkel rutin: varje gång du söker ett jobb eller tar en kontakt, skriv ner det direkt, med företag, tjänst och datum. Kolla ditt rapporteringsfönster på Mina sidor hos Arbetsförmedlingen så du vet exakt när det öppnar och stänger. Och gör något som gör att du inte kan lämna i tid, hör av dig innan fristen, inte efter.\n\n## Vanliga frågor\n\n### Räcker det att jag sökt jobb, utan att skriva vad?\nNej. Handläggaren ska kunna se konkret vad du gjort. En rad per sökt jobb med företag och datum räcker gott.\n\n### Vad gör jag om jag glömt att anteckna under månaden?\nGå igenom din mejlkorg, dina skickade ansökningar och din kalender så gott det går, och var ärlig om du inte kommer ihåg allt. Det är bättre att lämna en ofullständig men sann rapport än att hitta på.\n\n### Måste jag lämna aktivitetsrapport även om jag fått ett jobberbjudande?\nJa, fram tills du faktiskt är avregistrerad som arbetssökande. Meddela Arbetsförmedlingen om din situation ändras så de kan uppdatera din status.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "ansokningsstrategi",
+        "struktur-jobbsokning",
+        "skriva-in-dig-arbetsformedlingen"
+      ],
+      "related_tools": [
+        "/applications"
+      ],
+      "slug": "aktivitetsrapport-guide",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Vad som ska stå i aktivitetsrapporten, när den ska in och vad som händer om du missar den.",
+      "tags": [
+        "aktivitetsrapport",
+        "Arbetsförmedlingen",
+        "ersättning"
+      ],
+      "title": "Aktivitetsrapport till Arbetsförmedlingen – så gör du",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -157,6 +283,73 @@
       "updated_at": "2026-08-05 11:27:56.896649+00"
     },
     {
+      "actions": [
+        {
+          "href": "/job-search",
+          "label": "Sök vidare medan du väntar på intyget",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/las-anstallningsavtal",
+          "label": "Läs vad som står i ditt anställningsavtal",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Begär arbetsgivarintyg redan din sista arbetsdag"
+        },
+        {
+          "id": "2",
+          "text": "Be om tjänstgöringsbetyg i samma samtal om du vill ha det"
+        },
+        {
+          "id": "3",
+          "text": "Spara namn och kontaktuppgifter till någon som kan vara referens"
+        },
+        {
+          "id": "4",
+          "text": "Skicka begäran skriftligt om du inte får svar inom rimlig tid"
+        },
+        {
+          "id": "5",
+          "text": "Spara kopior av lönespecifikationer och anställningsavtal som backup"
+        },
+        {
+          "id": "6",
+          "text": "Kontakta facket om du är medlem och arbetsgivaren inte svarar"
+        }
+      ],
+      "content": "Arbetsgivarintyget är pappret a-kassan vill se innan du kan få ersättning, och tjänstgöringsbetyget är det du tar med dig till nästa arbetsgivare. De blandas ofta ihop, men de gör olika saker – och du får inte automatiskt något av dem bara för att du slutar.\n\n## Vad är ett arbetsgivarintyg, egentligen\n\nArbetsgivarintyget är a-kassans underlag för att räkna ut om du har rätt till ersättning, och i så fall hur mycket. Det ska innehålla sådant som anställningstid, arbetstid, anställningsform, lön och anledningen till att anställningen tog slut. Det är inte en bedömning av dig som person eller anställd – bara fakta om anställningen.\n\n**Din tidigare arbetsgivare är skyldig enligt lag att lämna ett arbetsgivarintyg**, oavsett om du sa upp dig själv, blev uppsagd eller jobbade ut ett vikariat. Skyldigheten gäller alltid, inte bara när du \"förtjänat\" den.\n\n## Tjänstgöringsbetyg och referens – två andra papper, andra syften\n\nHär är var sak för sig, eftersom de tre lätt blandas ihop:\n\n| Dokument | Vad det visar | Vem har rätt att kräva det |\n|---|---|---|\n| Arbetsgivarintyg | Anställningstid, arbetstid, anställningsform, lön | Alla, lagstadgad rätt |\n| Tjänstgöringsbetyg | En bedömning av hur du skötte jobbet | Starkast rätt om arbetsplatsen har kollektivavtal, annars ingen given rätt i lag |\n| Referens | En person som kan svara på frågor om dig muntligt | Ingen rättighet – bygger på att någon går med på att ställa upp |\n\nEtt tjänstgöringsbetyg är alltså något du kan **begära**, inte något som automatiskt skrivs. Vill du ha ett, säg det innan du slutar, medan din chef fortfarande minns vad du gjorde.\n\nEn referens är i sin tur inget dokument alls, utan ett namn och ett telefonnummer till någon som är villig att svara när en framtida arbetsgivare ringer. Fråga personen i förväg – att bli uppringd utan förvarning är obehagligt för de flesta.\n\n## Så begär du intyget\n\nDu kan gå tre vägar, och de går att kombinera:\n\n1. **Fråga direkt på din sista arbetsdag eller i ett avslutningssamtal.** Det är det enklaste läget – ni pratas ändå vid, och det är färskt i minnet.\n2. **Använd a-kassans digitala tjänst.** De flesta a-kassor har en funktion för att begära arbetsgivarintyg elektroniskt, ofta kopplad till en gemensam tjänst som arbetsgivaren fyller i.\n3. **Skriftligt, om du inte får svar.** Ladda ner blanketten, fyll i det du kan och skicka en tydlig begäran med posten eller mejl, så det finns svart på vitt att du frågat.\n\n## När arbetsgivaren inte svarar\n\nDet händer att förfrågningar hamnar mellan stolarna, särskilt på mindre arbetsplatser utan någon dedikerad HR-funktion. Gör så här i tur och ordning:\n\n- **Följ upp skriftligt**, även om första kontakten var muntlig. Ett mejl ger dig ett spår att peka på senare.\n- **Sätt en rimlig påminnelse**, till exempel en vecka senare, och håll dig till fakta i tonen.\n- **Ta hjälp av facket** om du är medlem – förhandlingsstöd är precis den typen av situation medlemskapet är till för.\n- **Kontakta a-kassan** och berätta att du väntar. De har sett problemet förut och kan ibland peka på alternativ dokumentation medan du väntar.\n\n## Om företaget har gått i konkurs\n\nGår inte att fråga arbetsgivaren längre eftersom bolaget inte finns kvar, är det inte kört. En konkursförvaltare tar över en del av arbetsgivarens skyldigheter under konkursen, och kan i många fall hjälpa till med underlag. Har du sparat lönespecifikationer och anställningsavtal fungerar de som stöd i väntan på ett formellt intyg – hör med a-kassan vad de kan acceptera i det läget. Det är precis den typen av situation där det lönar sig att redan ha kopiorna sparade, se nästa avsnitt.\n\n## Varför du ska begära det när du slutar, inte när du behöver det\n\nDet stora misstaget är att vänta. Ett halvår eller ett år senare kan din kontaktperson ha bytt jobb, bolaget ha bytt ägare, eller e-postadressen du hade sluta fungera. Medan du fortfarande är anställd eller precis har slutat är allt lättillgängligt: systemen är samma, personerna är samma, och det är ingens intresse att krångla. Begär arbetsgivarintyget och (om du vill ha det) tjänstgöringsbetyget samtidigt som du lämnar in nycklarna eller loggar ut sista gången.\n\n## Vad gör du nu\n\nHar du nyligen slutat ett jobb utan att ha begärt något av detta – gör det idag, inte när du väl behöver skicka in det till a-kassan. Spara kopior digitalt så du slipper leta fram dem igen. Och skriv ner namn och kontaktuppgifter till någon som kan vara referens medan du fortfarande har dem lätt tillgängliga.\n\n## Vanliga frågor\n\n### Måste jag ha ett arbetsgivarintyg för att söka nytt jobb?\nNej. Det behövs för att söka ersättning från a-kassan, inte för en vanlig jobbansökan. Men det är smart att ha det liggande ändå – du vet aldrig när du behöver styrka en tidigare anställning.\n\n### Kan jag få arbetsgivarintyg om jag blev uppsagd eller sa upp mig själv?\nJa. Skyldigheten att lämna intyget gäller oavsett anledning till att anställningen upphörde.\n\n### Vad gör jag om jag saknar tjänstgöringsbetyg från ett gammalt jobb?\nKontakta arbetsgivaren och fråga, även om det gått en tid. Utan kollektivavtal finns ingen lagstadgad rätt, men många arbetsgivare skriver det ändå om du frågar konkret och artigt.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "las-anstallningsavtal",
+        "referenser-guide",
+        "skatt-pa-lon-forsta-jobbet"
+      ],
+      "related_tools": [
+        "/job-search"
+      ],
+      "slug": "arbetsgivarintyg-och-betyg",
+      "sort_order": 0,
+      "subcategory": "dokument-och-intyg",
+      "summary": "Vad arbetsgivarintyget och tjänstgöringsbetyget är till för, hur du begär dem, och vad du gör om en tidigare arbetsgivare inte svarar.",
+      "tags": [
+        "arbetsgivarintyg",
+        "tjänstgöringsbetyg",
+        "a-kassa",
+        "referenser"
+      ],
+      "title": "Arbetsgivarintyg och tjänstgöringsbetyg – så får du dem",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
       "actions": [],
       "author": "Karl Svensson",
       "author_title": "Arbetsmarknadsanalytiker",
@@ -243,6 +436,165 @@
       ],
       "title": "Arbetsmiljö och kultur – hitta rätt företag för dig",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva på att presentera din lösning",
+          "type": "primary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "interview",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Läs igenom uppgiften en gång och notera vad som är oklart"
+        },
+        {
+          "id": "2",
+          "text": "Fråga om tidsram, bedömningsgrunder och inlämningsformat innan du börjar"
+        },
+        {
+          "id": "3",
+          "text": "Motivera din lösning, inte bara leverera den"
+        },
+        {
+          "id": "4",
+          "text": "Säg ifrån om uppgiften är skarp produktion, inte ett bedömningsunderlag"
+        }
+      ],
+      "content": "Ett arbetsprov eller case kan kännas som ett extra hinder sent i en process du redan lagt mycket tid på. Oftast är det tvärtom ditt bästa tillfälle att visa något en intervju aldrig kan fånga – hur du faktiskt löser en uppgift. Här är vad de bedömer, hur du frågar om ramarna, och var gränsen går mot att bara jobba gratis.\n\n## Varför fler arbetsgivare använder arbetsprov och case\n\nEn intervju visar hur du pratar om ditt arbete. Ett arbetsprov visar hur du faktiskt utför det. För roller där arbetssättet är svårt att beskriva i ord – hur du strukturerar en analys, prioriterar under tidspress, eller löser ett tekniskt problem – ger en praktisk uppgift arbetsgivaren något en intervju inte kan: ett konkret exempel att bedöma i stället för en beskrivning av ett exempel.\n\nDet gynnar också kandidater som är bättre på att göra än på att beskriva vad de gör, vilket gäller fler än man tror. Ett arbetsprov är alltså inte bara ett extra hinder – det kan vara den del av processen där du har störst chans att sticka ut, särskilt om intervjuer inte är din starkaste sida.\n\n## Vad som faktiskt bedöms – sällan \"rätt svar\"\n\nDet vanligaste missförståndet är att tro att uppgiften har ett facit och att jobbet är att hitta det. I de flesta seriösa arbetsprov är det tvärtom: bedömningen handlar om **hur du tänker**, inte om du landar exakt där bedömaren själv skulle ha landat.\n\nDet som oftast vägs in:\n\n- Hur du bryter ner ett otydligt problem till något hanterbart.\n- Vilka antaganden du gör, och om du är tydlig med att du gör dem.\n- Hur du prioriterar när uppgiften är större än tiden du fått.\n- Om du kan resonera kring din egen lösning – varför du valde som du gjorde, vad du skulle gjort annorlunda med mer tid.\n\nDet sista är värt att komma ihåg särskilt: en uppgift som lämnas in utan någon förklaring av resonemanget ger bedömaren mindre att gå på än en något svagare lösning som är väl motiverad.\n\n## Vanliga format\n\n| Format | Vad det brukar innebära |\n|---|---|\n| Hemuppgift | Du får en uppgift och en tidsram, löser den själv och lämnar in |\n| Live-case | Du löser en uppgift på plats, ofta med möjlighet att tänka högt |\n| Teknisk uppgift | Kodning, analys eller annat fackspecifikt, ofta med ett verktyg du redan känner till |\n| Gruppövning | Flera kandidater löser en uppgift tillsammans, bedöms på samarbete lika mycket som lösning |\n\nFormatet säger en del om vad som bedöms – ett live-case värderar ofta hur du resonerar högt lika mycket som svaret, medan en hemuppgift oftare bedöms på den färdiga leveransen.\n\n## Frågorna att ställa innan du börjar\n\nFråga om det som är oklart innan du sätter i gång, inte efteråt när du redan lagt tid på fel sak:\n\n- **Hur lång tid är rimligt att lägga?** En tydlig tidsram skyddar dig från att lägga för mycket – eller för lite.\n- **Vad tittar ni särskilt på?** Många rekryterare svarar gärna rakt på den frågan, och svaret hjälper dig prioritera rätt.\n- **I vilket format ska jag lämna in det?** Ett dokument, en presentation, ett kort samtal om lösningen – att veta det i förväg sparar tid som annars går åt till fel sorts polering.\n- **Får jag fråga om jag fastnar?** Vissa arbetsgivare vill se hur du hanterar att vara fast, andra ser gärna att du hör av dig. Bättre att veta vilket.\n\nAtt ställa de här frågorna är inte ett tecken på osäkerhet. Det är ett tecken på att du tar uppgiften på allvar och vill lägga tiden rätt.\n\n## Var gränsen går mot gratisarbete\n\nEtt arbetsprov ska vara konstruerat för att bedöma dig – inte för att lösa ett faktiskt problem åt företaget. Skillnaden är ofta tydlig om du frågar dig: **skulle resultatet av det här kunna användas i skarp drift, som det är?**\n\nVarningstecken att ta på allvar:\n\n- Uppgiften är att lösa ett specifikt, aktuellt problem företaget har just nu, snarare än ett generellt exempel.\n- Du ombeds leverera något färdigt att publicera, sälja eller sätta i produktion – en färdig kampanj, en färdig kodmodul som ska in i systemet, en färdig strategi för ett namngivet, verkligt case hos företaget.\n- Omfattningen är stor nog att den skulle tagit en anställd flera dagars arbete att göra på riktigt.\n- Flera kandidater ombeds lösa samma skarpa uppgift parallellt, och företaget väljer fritt vilken lösning de använder.\n\nÄr du osäker, fråga rakt ut: \"Kommer den här lösningen att användas av er oavsett om jag går vidare i processen?\" Ett ärligt nej är ett gott tecken. Ett svävande svar, eller ett ja, är skäl att säga ifrån – att tacka nej till just den delen av uppgiften, eller be om en avgränsad, generisk variant i stället. Ett seriöst företag respekterar den gränsen. Ett företag som inte gör det säger något om hur de kommer behandla dig som anställd också.\n\n## Vad gör jag nu\n\nFår du ett arbetsprov – läs igenom uppgiften en gång, notera vad som är oklart, och ställ dina frågor om ramarna innan du börjar arbeta. Lägg extra tid på att kunna motivera din lösning, inte bara leverera den. Känns uppgiften som skarp produktion snarare än ett bedömningsunderlag, säg det, artigt och tydligt, innan du lägger ner arbetet.\n\n## Vanliga frågor\n\n### Ska jag ta betalt för ett arbetsprov?\nFör en rimligt avgränsad bedömningsuppgift är obetald tid vanligt förekommande praxis. Är omfattningen stor, eller ligger uppgiften nära skarpt arbete, är det rimligt att föra upp frågan om ersättning eller en mindre uppgift i stället.\n\n### Vad gör jag om jag inte hinner klart i tid?\nLämna in det du hunnit med en kort kommentar om vad du skulle gjort med mer tid. Det säger mer om din prioriteringsförmåga än ett hafsigt färdigställt resultat gör.\n\n### Får jag använda AI-verktyg när jag löser ett arbetsprov?\nFråga. Praxis skiljer sig mycket åt mellan arbetsgivare och branscher just nu, och ett ärligt svar från dig om hur du arbetat är bättre än att gissa fel.\n\n### Vad om jag inte går vidare efter arbetsprovet – får jag veta varför?\nDu kan alltid fråga om återkoppling. Många ger en kort motivering om du ber om det, särskilt om du lagt ner faktisk tid på uppgiften.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 5,
+      "related_article_slugs": [
+        "rekryteringsprocessen-steg-for-steg",
+        "intervju-forberedelser",
+        "referenssamtal-guide"
+      ],
+      "related_tools": [
+        "/interview-simulator"
+      ],
+      "slug": "arbetsprov-och-case",
+      "sort_order": 0,
+      "subcategory": "tester",
+      "summary": "Varför fler arbetsgivare använder arbetsprov, vad som faktiskt bedöms, frågorna att ställa innan du börjar och var gratisarbete börjar.",
+      "tags": [
+        "arbetsprov",
+        "case",
+        "rekrytering",
+        "gratisarbete"
+      ],
+      "title": "Arbetsprov och case – vad de bedömer, och var gränsen går",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva inför nästa steg i processen",
+          "type": "primary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "interview",
+      "checklist": [],
+      "content": "Många rekryteringsprocesser innehåller ett test – ibland ett begåvningstest, ibland ett personlighetstest, ibland båda. Här är skillnaden mellan dem, vad de faktiskt mäter, och hur du förbereder dig utan att försöka lista ut vad som är \"rätt\" svar.\n\n## Tre sorters tester – och vad var och en försöker svara på\n\nDe blandas ofta ihop, men de mäter olika saker och ska bedömas olika:\n\n| Testtyp | Vad det mäter | Vad \"bra\" betyder |\n|---|---|---|\n| Begåvningstest | Hur du löser nya problem – logik, siffror, ord, mönster | Fler rätt på kortare tid, inte förkunskap |\n| Personlighetstest | Hur du brukar agera i olika situationer – samarbete, noggrannhet, initiativ | Det finns inget rätt svar, bara en profil |\n| Arbetsprov | Hur du faktiskt löser en uppgift som liknar jobbet | Hur du tänker, inte bara slutresultatet |\n\nDe används ofta tillsammans, sent i processen, när arbetsgivaren redan är intresserad av dig. Ett test är sällan det som avgör allt själv – det är ett underlag bland flera, ihop med intervjuerna och referenserna.\n\n## Vad ett personlighetstest egentligen mäter\n\nEtt personlighetstest frågar hur du brukar bete dig – hur du fattar beslut, hur du reagerar på stress, hur du samarbetar. Det finns inget facit. Frågan är aldrig \"gör du rätt sak\" utan \"stämmer det här överens med hur du är\".\n\nJust därför är det lockande att svara som man tror att arbetsgivaren vill se. Det slår nästan alltid tillbaka. De flesta seriösa personlighetstester har **kontrollfrågor** – samma påstående formulerat på olika sätt flera gånger i testet. Svarar du inkonsekvent, eller svarar du genomgående \"socialt önskvärt\" i stället för sanningsenligt, syns det som ett eget mått i resultatet. Den som tolkar testet ser inte att du är en bra kandidat – den ser att svaren inte går att lita på, vilket är sämre än en profil som bara inte matchar rollen perfekt.\n\nDet enklaste rådet håller därför: svara utifrån hur du faktiskt brukar agera, inte hur du önskar att du var eller tror att tjänsten kräver. En profil som inte passar en specifik roll är inte ett misslyckande – det är information, till dig också.\n\n## Hur du förbereder dig för ett begåvningstest – rimligt, inte panikartat\n\nEtt begåvningstest är inte en kunskapskontroll. Du kan inte plugga in \"rätt svar\" kvällen innan. Det som faktiskt hjälper:\n\n- **Bli bekant med formatet.** Många testleverantörer har övningsuppgifter på sin webbplats som visar hur frågorna ser ut och hur tiden är upplagd. Att veta vad som väntar tar bort en del av nervositeten som annars äter av tiden.\n- **Öva under tidspress**, inte bara utan. Testerna är ofta snålt tilltagna med tid med flit – det är en del av vad som mäts.\n- **Läs instruktionerna i lugn takt** innan du börjar, även om klockan redan tickar. Att missförstå frågetypen kostar mer tid än de extra sekunderna det tar att läsa ordentligt.\n- **Sov och ät som vanligt.** Ett trött huvud presterar sämre på uppgifter som kräver koncentration, oavsett hur mycket du kan.\n- **Gör inte om det till en prestation du måste klara perfekt.** De flesta test är byggda så att nästan ingen svarar rätt på allt inom tidsramen – det är själva poängen med att sätta en tidsgräns.\n\n## Vad du har rätt att fråga om\n\nInnan eller under processen kan du alltid be om att få veta:\n\n- **Vad testet mäter** och varför just den egenskapen eller förmågan är relevant för tjänsten.\n- **Hur resultatet används** – är det avgörande, eller ett av flera underlag?\n- **Återkoppling på ditt resultat**, oavsett hur processen slutar. Det är en rimlig fråga att ställa, inte en känslig sådan.\n- **Hur uppgifterna hanteras** – hur länge de sparas och vem som ser dem.\n\nIngen seriös rekryterare blir avskräckt av att du frågar. Tvärtom signalerar frågorna att du tar processen på allvar.\n\n## Om testsituationen inte passar dig\n\nHar du till exempel dyslexi, adhd eller hög provångest kan testsituationen i sig göra att resultatet inte visar din faktiska förmåga. Det är rimligt att höra av dig till rekryteraren i förväg och fråga om anpassningar – längre tid, ett annat format, eller möjlighet att göra testet i en lugnare miljö. Fråga hellre en gång för mycket än att gå in i ett test du vet kommer mäta fel sak.\n\n## Vad gör jag nu\n\nHar du ett test inbokat: ta reda på vilken typ det är, kolla om leverantören har övningsuppgifter, och boka in själva testtillfället när du faktiskt är utsövd – inte precis efter en lång arbetsdag om du kan välja. Efteråt, oavsett utfall, be om återkoppling. Den säger dig mer om vad rollen faktiskt krävde än du kan gissa dig till själv.\n\n## Vanliga frågor\n\n### Kan jag tacka nej till ett test?\nDu kan alltid fråga varför testet används och vad som händer om du väljer bort det. Svaret varierar mellan arbetsgivare och roller – för vissa tjänster är testet en självklar del av processen, för andra ett tillval. Fråga rekryteraren direkt.\n\n### Sparas mina testresultat?\nJa, oftast under en period efter processen. Du har rätt att få veta hur länge och varför – fråga om det inte står i informationen du fått.\n\n### Vad gör jag om jag har läs- och skrivsvårigheter eller en diagnos som påverkar hur jag presterar på tester?\nHör av dig innan testet och fråga om anpassningar. Det är vanligare än man tror att testleverantörer har alternativa format.\n\n### Betyder ett dåligt resultat att jag inte platsar på arbetsmarknaden?\nNej. Det betyder att just den här profilen inte matchade just den här rollen. Ett test mäter en ögonblicksbild i en specifik situation, inte din förmåga i stort.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "referenssamtal-guide",
+        "intervju-forberedelser",
+        "styrkor-svagheter",
+        "rekryteringsprocessen-steg-for-steg"
+      ],
+      "related_tools": [],
+      "slug": "arbetspsykologiska-tester",
+      "sort_order": 0,
+      "subcategory": "tester",
+      "summary": "Skillnaden mellan begåvningstest, personlighetstest och arbetsprov, vad de mäter och hur du förbereder dig utan att gissa rätt svar.",
+      "tags": [
+        "personlighetstest",
+        "begåvningstest",
+        "arbetsprov",
+        "rekrytering"
+      ],
+      "title": "Arbetspsykologiska tester – vad de faktiskt mäter",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/diary",
+          "label": "Följ hur arbetsträningen går, vecka för vecka",
+          "type": "primary"
+        },
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Se vad som skiljer dig från nästa jobb",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Fråga rakt ut om arbetsträningen är kopplad till en möjlig anställning"
+        },
+        {
+          "id": "2",
+          "text": "Be om en tydlig kontaktperson på arbetsplatsen"
+        },
+        {
+          "id": "3",
+          "text": "Kräv en genomgång av vad som förväntas innan du börjar en ny uppgift"
+        },
+        {
+          "id": "4",
+          "text": "Skriv ner hur passen känns, vecka för vecka"
+        },
+        {
+          "id": "5",
+          "text": "Ta upp det direkt med din handläggare om belastningen är för hög"
+        },
+        {
+          "id": "6",
+          "text": "Säg ifrån tidigt om en föreslagen plats inte känns rätt"
+        }
+      ],
+      "content": "Arbetsträning är att du under en period vistas på en arbetsplats och tränar på arbetsuppgifter och arbetsdagen som helhet, utan att det är en anställning och utan att du får lön för det. Syftet är att bygga upp arbetstid, ork och uthållighet i en takt som går att bära – inte att prestera fullt ut från start.\n\n## Vad arbetsträning faktiskt är\n\nDu kommer till en arbetsplats, ofta ett fåtal timmar eller dagar i veckan till att börja med, och gör arbetsuppgifter tillsammans med eller under handledning av någon som redan arbetar där. Det finns inget prestationskrav på samma sätt som i en vanlig anställning – poängen är att du får testa hur det känns att vara där, i det tempot, med de här uppgifterna.\n\nArbetsträning planeras av arbetsgivaren eller Arbetsförmedlingen tillsammans med Försäkringskassan, som bedömer om det är en lämplig form av rehabilitering för just din situation.\n\n## Det är inte en anställning\n\nDet här är viktigt att ha klart för sig, för det påverkar allt annat:\n\n| | Arbetsträning | Anställning |\n|---|---|---|\n| Lön | Nej – annan ersättning kan gälla | Ja |\n| Anställningsavtal | Nej | Ja |\n| Krav på prestation | Anpassat, inget fast krav | Ja, enligt rollen |\n| Uppsägningstid | Finns inte i samma mening | Ja |\n| Syfte | Testa och bygga upp förmåga | Utföra ett arbete |\n\nAtt det inte är en anställning betyder inte att det är mindre värt. Det betyder att tiden har ett annat syfte – att ta reda på vad som fungerar, innan någon förväntar sig att det redan gör det.\n\n## Syftet: att bygga upp det som bär\n\nArbetsträning riktar sig ofta till dig som varit borta från arbetslivet en längre tid, eller som saknar erfarenhet av hur en vanlig arbetsdag känns i kroppen. Det handlar om att gradvis öka arbetstid och belastning, och samtidigt se vilka moment som går bra och vilka som kräver mer stöd eller andra lösningar.\n\nDet är också ett tillfälle att testa saker i verkligheten som är svåra att veta i förväg: hur mycket ett arbetspass tar av dig, om en viss typ av uppgifter passar, om arbetsplatsens tempo går att hantera.\n\n## Vad du kan kräva av handledningen\n\nArbetsträning utan fungerande handledning är bara att stå och vänta på en arbetsplats. Du har rätt att förvänta dig:\n\n- **En tydlig kontaktperson** på arbetsplatsen som du kan vända dig till, inte bara \"någon i teamet\".\n- **Genomgång av vad som förväntas** innan du börjar en uppgift, inte i efterhand när något blivit fel.\n- **Avstämningar under vägen** om hur det går – inte bara ett samtal i början och ett i slutet.\n- **Att belastningen faktiskt anpassas** om du säger att den är för hög, inte bara att det noteras.\n\nFungerar inget av det här, är det något att ta upp med den som planerat arbetsträningen – handläggaren på Försäkringskassan eller Arbetsförmedlingen, inte bara arbetsplatsen själv.\n\n## Leder det till jobb? Den ärliga frågan\n\nAlla som arbetstränar ställer sig den här frågan, och det ärliga svaret är: det beror på varför platsen valdes. En arbetsträning som är kopplad till en verklig möjlighet till anställning – där arbetsgivaren har ett behov och ser dig som en tänkbar kandidat – har en helt annan riktning än en plats som bara finns för att fylla schemat.\n\nDet du kan påverka:\n\n- **Fråga rakt ut, tidigt**, om det finns en anställningsmöjlighet i botten, eller om platsen är vald av andra skäl.\n- **Be om att arbetsträningen läggs där behovet faktiskt finns** – hos en arbetsgivare som skulle kunna tänka sig att anställa, inte hos den som råkar ha en ledig plats.\n- **Var tydlig med vad du vill ha ut av det**, till din handläggare, så att nästa steg planeras med det i sikte i stället för att bara bli nästa åtgärd i raden.\n\nArbetsträning i sig är ingen garanti för jobb. Men vald rätt, och med ett tydligt samtal om syftet från början, är den ett av de mer konkreta sätten att komma närmare en anställning – inte bara en aktivitet att checka av.\n\n## Vem beslutar\n\nFörsäkringskassan utreder om arbetsträning är en lämplig åtgärd för dig, ofta i samordning med Arbetsförmedlingen och den arbetsplats som är aktuell. Beslutet grundas på din arbetsförmåga och vad som skulle behövas för att den ska öka – inte på en diagnos.\n\n## Vanliga frågor\n\n### Får jag någon ersättning under arbetsträningen?\n\nDet finns former av ersättning kopplade till rehabilitering, men de exakta villkoren och beloppen ändras – fråga din handläggare på Försäkringskassan om vad som gäller för dig.\n\n### Kan jag tacka nej till en arbetsträningsplats?\n\nJa, och det är bättre att säga det tydligt än att gå igenom en plats du redan vet inte passar. Berätta varför, så kan nästa förslag bli bättre riktat.\n\n### Hur länge håller en arbetsträning på?\n\nDet varierar och bestäms utifrån ditt behov, inte efter en fast mall. Fråga din handläggare vad som gäller i ditt fall.\n\n## Vad gör du nu\n\nBe din handläggare på Försäkringskassan eller Arbetsförmedlingen beskriva varför just den arbetsplatsen föreslås, och fråga rakt ut om det finns en anställning i botten. Skriv gärna ner hur passen känns vecka för vecka – det gör det lättare att se om belastningen faktiskt går uppåt, och det är underlag du kan ta med till nästa avstämning.\n\nLäs mer om formerna för arbetslivsinriktad rehabilitering på [forsakringskassan.se](https://www.forsakringskassan.se) och om arbetsträning via Arbetsförmedlingen på [arbetsformedlingen.se](https://arbetsformedlingen.se).",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "praktik-som-vag-in",
+        "rattigheter-stod",
+        "tillbaka-till-jobb-efter-sjukskrivning",
+        "stresshantering"
+      ],
+      "related_tools": [
+        "/diary",
+        "/skills-gap-analysis"
+      ],
+      "slug": "arbetstraning-vad-innebar-det",
+      "sort_order": 0,
+      "subcategory": "atergang-arbete",
+      "summary": "Arbetsträning är ingen anställning och ger ingen lön, men kan bygga upp arbetstid och ork. Så avgör du om platsen faktiskt kan leda vidare.",
+      "tags": [
+        "arbetsträning",
+        "Försäkringskassan",
+        "rehabilitering",
+        "arbetsförmåga"
+      ],
+      "title": "Arbetsträning – vad det är, och om det leder till jobb",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -400,6 +752,60 @@
       ],
       "title": "ATS-system: Så tar du dig förbi robotarna",
       "updated_at": "2026-08-05 13:04:32.444078+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva på hur du tar upp det",
+          "type": "primary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Beställ registerutdraget i god tid från Polismyndigheten om tjänsten kräver det"
+        },
+        {
+          "id": "2",
+          "text": "Läs igenom ditt eget utdrag innan du visar upp det"
+        },
+        {
+          "id": "3",
+          "text": "Förbered en kort, rak formulering om du har en anteckning som kan bli relevant"
+        },
+        {
+          "id": "4",
+          "text": "Ta upp det själv innan det efterfrågas, inte efter"
+        }
+      ],
+      "content": "En bakgrundskontroll väcker ofta mer oro än den förtjänar – och för vissa jobb, framför allt inom skola och omsorg, är ett utdrag ur belastningsregistret en helt vanlig del av processen. Här är vad en arbetsgivare faktiskt får kolla, hur registerutdraget går till, och hur du hanterar det om det finns en prick där.\n\n## Vad en arbetsgivare får kontrollera – och vad som kräver ditt samtycke\n\nEn bakgrundskontroll får bara omfatta det som faktiskt är relevant för tjänsten. En arbetsgivare kan höra av sig till referenser du själv angett, verifiera examina eller anställningsintyg, och i vissa roller göra en kreditupplysning eller begära utdrag ur belastningsregistret. Det som inte är relevant för rollen ska inte samlas in bara för att det går – ju känsligare uppgift, desto tydligare behöver kopplingen till tjänsten vara.\n\nDu har rätt att få veta vilka uppgifter som samlas in, varför, och hur de kommer att användas. Känns en kontroll omotiverad i förhållande till tjänsten – fråga rakt ut varför den görs. Det är en rimlig fråga, inte en misstänksam.\n\nAtt en rekryterare googlar ditt namn eller kikar på din offentliga LinkedIn-profil är svårt att stoppa och förekommer i praktiken ofta. Mer systematisk granskning av sociala medier, särskilt sådant som inte är offentligt eller inte har med yrkeslivet att göra, rör sig i en juridisk gråzon som Diskrimineringsombudsmannen och Integritetsskyddsmyndigheten har synpunkter på.\n\n## Utdrag ur belastningsregistret – vem kräver det, och hur du beställer det\n\nI vissa branscher är utdrag ur belastningsregistret ett krav, inte ett val från arbetsgivarens sida – tydligast inom skola och förskola, men det förekommer även inom andra delar av vård och omsorg. Reglerna för exakt vilka brott som syns och hur länge ett utdrag är giltigt förändras då och då, så det du ska lita på är Polismyndighetens egen information, inte ett minne av hur det fungerade förra gången du sökte jobb.\n\nMekaniken är densamma oavsett bransch: **du beställer själv ditt utdrag från Polismyndigheten**, inte arbetsgivaren. Det är du som har rätt att se vad som står i det. Arbetsgivaren får titta på utdraget, anteckna att det har visats upp – men inte behålla det, kopiera det eller skriva ner vad som stod i det.\n\n## Måste jag lämna det oöppnat?\n\nMånga arbetsgivare ber om att få se utdraget i ett oöppnat kuvert, men det är en vanlig rutin snarare än ett lagkrav – du har rätt att öppna och läsa ditt eget utdrag innan du visar upp det, och för vissa yrkesområden, bland annat skola, förskola och delar av LSS- och HVB-verksamhet, har du alltid den rätten uttryckligen. Är du osäker på vad som gäller för just din situation, är Polismyndighetens egen sida om registerutdrag den som har rätt svar, inte den här texten.\n\n## Har du en prick i registret – så hanterar du det\n\nDet finns inget att skämmas över i att fråga sig hur en tidigare dom påverkar en jobbansökan. Så här tänker du kring det, utan att moralisera över dig själv:\n\n### När den faktiskt spelar roll\n\nEn anteckning i belastningsregistret spelar roll när den har en tydlig koppling till tjänsten – ett ekonomiskt brott och en roll med kassaansvar, ett brott mot person och en roll som innebär ensamarbete med barn eller utsatta vuxna. En gammal anteckning utan koppling till rollens innehåll väger annorlunda, och för många yrken syns den överhuvudtaget inte i det utdrag som begärs, eftersom olika utdragstyper visar olika saker beroende på vad de är avsedda för.\n\n### Att ta upp det själv, i rätt läge\n\nDyker en prick upp i ett registerutdrag utan att du sagt något om den innan, blir frågan i rummet plötsligt \"varför berättade du inte\" i stället för \"vad hände\". Det är nästan alltid en sämre position att förhandla från.\n\nRätt läge att ta upp det själv är när processen har kommit tillräckligt långt för att kännas seriös – inte i det första mejlet, men gärna innan ett registerutdrag begärs, om du vet att branschen kräver ett. Håll det kort: vad som hände, ungefär när, och vad som är annorlunda nu. Du behöver inte redogöra för hela händelseförloppet eller försvara dig i detalj. En kort, rak mening väger tyngre än en lång förklaring som låter repeterad.\n\nDet du vinner på att ta initiativet är att du styr när och hur samtalet förs. Väntar du på att arbetsgivaren ska hitta det själv, styr du ingenting.\n\n## Vad gör jag nu\n\nVet du att en tjänst du söker kräver registerutdrag – beställ det i god tid från Polismyndigheten så att du inte blir stående utan det när det efterfrågas. Har du en anteckning som kan bli relevant, förbered en kort, rak formulering i förväg i stället för att improvisera i stunden. Är du osäker på om en kontroll en arbetsgivare vill göra är rimlig – fråga varför, det är alltid en legitim fråga.\n\n## Vanliga frågor\n\n### Kan en arbetsgivare kräva utdrag ur belastningsregistret för vilket jobb som helst?\nNej, det ska finnas en tydlig koppling till tjänsten – lagstadgad för vissa yrken, motiverad av rollens innehåll för andra. Känns kravet omotiverat, fråga varför det ställs.\n\n### Får en arbetsgivare spara mitt registerutdrag?\nNej. Arbetsgivaren får se det och notera att det visats upp, men inte kopiera, skanna eller behålla det.\n\n### Syns allt i belastningsregistret i alla utdrag?\nNej. Olika typer av utdrag – till exempel för skola respektive andra branscher – visar olika sorters uppgifter beroende på vad utdraget är avsett för. Polismyndighetens sida förklarar vilken typ som gäller för din situation.\n\n### Vad händer om jag inte säger något och det kommer fram ändå?\nDet stärker sällan din sak jämfört med att ha berättat själv. Det betyder inte att allt är kört – men samtalet blir ett annat, och du har mindre kontroll över hur det ramas in.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 5,
+      "related_article_slugs": [
+        "rekryteringsprocessen-steg-for-steg",
+        "referenssamtal-guide",
+        "diskriminering-jobbsokning"
+      ],
+      "related_tools": [
+        "/interview-simulator"
+      ],
+      "slug": "bakgrundskontroll-och-belastningsregistret",
+      "sort_order": 0,
+      "subcategory": "rekrytering",
+      "summary": "Vad en bakgrundskontroll får omfatta, hur registerutdrag går till, och hur du tar upp en prick i registret själv – i rätt läge.",
+      "tags": [
+        "bakgrundskontroll",
+        "belastningsregister",
+        "registerutdrag",
+        "GDPR"
+      ],
+      "title": "Bakgrundskontroll – vad en arbetsgivare får kolla",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -1194,6 +1600,198 @@
     {
       "actions": [
         {
+          "href": "/calendar",
+          "label": "Sätt påminnelser för rapportering",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
+          "label": "Förstå hur a-kassan fungerar",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Ansök om ersättning hos Försäkringskassan, inte bara Arbetsförmedlingen"
+        },
+        {
+          "id": "2",
+          "text": "Ta reda på om du ska ha aktivitetsstöd eller utvecklingsersättning"
+        },
+        {
+          "id": "3",
+          "text": "Rapportera din närvaro till Försäkringskassan enligt deras rutin"
+        },
+        {
+          "id": "4",
+          "text": "Sätt en påminnelse så du inte missar rapporteringen"
+        },
+        {
+          "id": "5",
+          "text": "Logga in hos Försäkringskassan och kolla status om utbetalningen uteblir"
+        }
+      ],
+      "content": "Deltar du i ett program via Arbetsförmedlingen är det inte Arbetsförmedlingen som betalar ut din ersättning, det är Försäkringskassan, och du måste rapportera dit själv. Här reder vi ut vem som gör vad, och var den vanligaste missen sker.\n\n## Två myndigheter, en insats\n\nNär du deltar i ett program som Arbetsförmedlingen anvisat, en arbetsmarknadsutbildning, Rusta och matcha, eller något annat, är det lätt att tro att en och samma myndighet sköter hela kedjan. Så är det inte. Arbetsförmedlingen och Försäkringskassan gör olika delar av samma sak, och båda kräver att du håller reda på dem var för sig.\n\n## Arbetsförmedlingen beslutar om programmet\n\nDet är Arbetsförmedlingen som bedömer om du ska få delta i ett program, vilket program som passar, och hur länge det ska pågå. De sätter också ramarna: vilken omfattning insatsen har och vad som förväntas av dig under tiden. Det är alltså Arbetsförmedlingen du pratar med om själva innehållet i programmet, och det är dit du vänder dig om du vill ändra eller avbryta det.\n\n## Försäkringskassan betalar ersättningen\n\nSjälva pengarna, aktivitetsstöd eller utvecklingsersättning beroende på din situation, betalas inte ut av Arbetsförmedlingen utan av Försäkringskassan. Vilken av de två ersättningsformerna som blir aktuell för dig beror bland annat på din ålder och om du har rätt till a-kassa, men det är Försäkringskassan som gör den bedömningen och sköter utbetalningen. Arbetsförmedlingen skickar bara ett underlag om att du deltar. De betalar inte ut något själva.\n\n## Varför du måste rapportera själv, till Försäkringskassan\n\nDet räcker inte att Arbetsförmedlingen vet att du deltar. Försäkringskassan behöver ett eget underlag från dig för att kunna betala ut ersättningen, och det underlaget lämnar du inte automatiskt bara för att du dyker upp på programmet. Du ansöker om ersättningen hos Försäkringskassan, och du rapporterar sedan löpande din närvaro enligt det sätt Försäkringskassan begär. Missar du det steget uteblir utbetalningen, även om du varit på plats varje dag och gjort allt rätt gentemot Arbetsförmedlingen.\n\n## Den vanligaste förvirringen: två inloggningar, två rapporter\n\nDet som ställer till det mest är att det känns som ett och samma ärende, men kräver två separata inloggningar och två separata rapporter, hos två olika myndigheter, ofta med olika rytm. Du kan ha gjort allt rätt hos Arbetsförmedlingen, lämnat din aktivitetsrapport i tid, och ändå inte fått någon utbetalning, för att du missat att rapportera till Försäkringskassan. De två systemen pratar inte alltid ihop sig så snabbt som man kan tro.\n\n| Fråga | Vem svarar |\n|---|---|\n| Får jag delta i programmet, och hur länge? | Arbetsförmedlingen |\n| Vad ska jag göra under programmet? | Arbetsförmedlingen |\n| Får jag ersättning, och hur mycket? | Försäkringskassan |\n| Hur rapporterar jag min närvaro för utbetalning? | Försäkringskassan |\n| Vart vänder jag mig om utbetalningen uteblir? | Försäkringskassan |\n\n## Om du redan hade a-kassa när programmet började\n\nHar du sedan tidigare rätt till ersättning från din a-kassa, byts den normalt ut mot aktivitetsstöd eller utvecklingsersättning från Försäkringskassan under tiden du deltar i programmet. Din a-kassa betalar alltså inte parallellt med Försäkringskassan för samma period. När programmet är slut, och du fortfarande är arbetslös, går ärendet tillbaka till din a-kassa. Håll koll på övergångarna själv. Det är lätt att anta att den ena myndigheten meddelar den andra automatiskt, och ibland tar det längre tid än man tror.\n\n## Vad gör jag nu\n\nHar du blivit anvisad ett program, se till att du utöver kontakten med Arbetsförmedlingen faktiskt ansöker om ersättning hos Försäkringskassan och förstår hur du ska rapportera din närvaro där. Är du redan igång men osäker på om du missat något: logga in hos Försäkringskassan och kolla status på din ansökan, i stället för att anta att allt sköts automatiskt.\n\n## Vanliga frågor\n\n### Kan jag få ersättning från både a-kassan och Försäkringskassan samtidigt?\nNej, det är antingen eller, beroende på din situation och vilken typ av insats du deltar i. Är du osäker, fråga din a-kassa vad som gäller när du börjar ett program.\n\n### Vad händer om jag är sjuk under programmet?\nMeddela både Arbetsförmedlingen och Försäkringskassan. Sjukdom hanteras av dem separat och påverkar båda underlagen.\n\n### Måste jag rapportera även de dagar jag inte gör något inom programmet?\nFölj det rapporteringssätt Försäkringskassan anger för din insats. Vissa program kräver rapport för hela perioden, andra bara avvikelser. Kontrollera vad som gäller för just din insats.",
+      "difficulty": "medium",
+      "energy_level": "low",
+      "reading_time": 3,
+      "related_article_slugs": [
+        "personlig-ekonomi-jobbsokning",
+        "a-kassa-sa-fungerar-det",
+        "rusta-och-matcha"
+      ],
+      "related_tools": [
+        "/calendar"
+      ],
+      "slug": "ersattning-under-program",
+      "sort_order": 0,
+      "subcategory": "forsakringskassan",
+      "summary": "Arbetsförmedlingen beslutar om programmet, Försäkringskassan betalar ersättningen. Så håller du isär de två.",
+      "tags": [
+        "aktivitetsstöd",
+        "utvecklingsersättning",
+        "Försäkringskassan",
+        "program"
+      ],
+      "title": "Aktivitetsstöd – vem betalar under ett program?",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/calendar",
+          "label": "Håll koll på insatser och möten",
+          "type": "primary"
+        },
+        {
+          "href": "/education",
+          "label": "Se hur studier och praktik hänger ihop",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Fråga din handläggare vad som ingår i just din plan"
+        },
+        {
+          "id": "2",
+          "text": "Be om en kartläggning av din utbildning och erfarenhet tidigt"
+        },
+        {
+          "id": "3",
+          "text": "Fråga specifikt om praktik inom ditt yrkesområde"
+        },
+        {
+          "id": "4",
+          "text": "Ta upp vad som händer efter programmet i god tid"
+        },
+        {
+          "id": "5",
+          "text": "Håll kontakt med din handläggare mellan de inbokade mötena"
+        }
+      ],
+      "content": "Etableringsprogrammet är Arbetsförmedlingens samlade insats för dig som är ny i Sverige och ska hitta en väg in i både arbetslivet och samhället. Här är vad som faktiskt ingår, vem som bestämmer vad, och vad som händer när programmet tar slut.\n\n## Vem programmet gäller för\n\nEtableringsprogrammet riktar sig till vissa nyanlända som fått uppehållstillstånd och är folkbokförda i en kommun. Exakt vilka som omfattas avgörs av regler som kan ändras, så fråga din handläggare på Arbetsförmedlingen om du är osäker på om du hör till målgruppen – det är den säkraste vägen till ett korrekt svar för just din situation.\n\n## Vad som ingår\n\nProgrammet sätts ihop individuellt, men byggstenarna är desamma för de flesta:\n\n- **Svenskstudier (SFI).** Undervisning i svenska, anpassad efter din tidigare utbildning och din studietakt.\n- **Samhällsorientering.** Kurser som förklarar hur svenska samhället fungerar – allt från arbetsmarknad och skola till sjukvård och rättigheter. Ofta på ditt modersmål eller ett språk du behärskar väl, för att innehållet ska gå fram även innan svenskan sitter.\n- **Arbetsförberedande insatser.** Det kan handla om praktik, vägledning, kartläggning av din tidigare utbildning och erfarenhet, eller kurser kopplade till en specifik bransch.\n\nInsatserna är tänkta att gå parallellt, inte efter varandra. Du läser alltså inte färdigt SFI innan samhällsorienteringen börjar, eller tvärtom – de vävs samman i din individuella plan.\n\n## Vem som beslutar vad\n\nFlera aktörer delar på ansvaret, och det är bra att veta vem som gör vad:\n\n| Vem | Ansvarar för |\n|---|---|\n| Arbetsförmedlingen | Din etableringsplan i stort, arbetsförberedande insatser, samordning |\n| Kommunen | SFI-undervisning och samhällsorientering |\n| Du själv | Att delta aktivt, komma till möten och insatser, och föra fram vad du vill uppnå |\n\nDin etableringsplan skrivs tillsammans med din handläggare på Arbetsförmedlingen, men innehållet i till exempel SFI-undervisningen bestäms av kommunens vuxenutbildning utifrån din nivå och dina behov.\n\n## Vad som händer när tiden i programmet tar slut\n\nProgrammet är inte tänkt att pågå för alltid – det är en start, inte ett permanent tillstånd. När din tid i etableringsprogrammet närmar sig sitt slut ska du och din handläggare ha en plan för vad som kommer härnäst: ett arbete, fortsatta studier inom det ordinarie utbildningssystemet, eller ett annat program hos Arbetsförmedlingen om du fortfarande behöver stöd för att komma vidare.\n\nVänta inte med den här frågan till sista veckan. Ta upp den med din handläggare i god tid, så att övergången till nästa steg är förberedd snarare än akut.\n\n## Vad du bör se till att få ut av tiden\n\nProgrammet ger dig tillgång till mer än bara SFI-lektioner. Se till att faktiskt använda det som finns:\n\n- Be om en tydlig kartläggning av din tidigare utbildning och arbetslivserfarenhet tidigt i programmet – den blir grunden för resten av planen.\n- Fråga specifikt om praktik inom det yrkesområde du siktar på, i stället för att ta emot den första praktikplats som erbjuds utan att fråga om alternativ.\n- Använd samhällsorienteringen aktivt – ställ frågor om sådant som är oklart i stället för att bara sitta av kurstillfällena.\n- Håll kontakt med din handläggare mellan de inbokade mötena om något ändras i din situation, i stället för att vänta till nästa schemalagda tillfälle.\n- Om du har en utländsk utbildning: ta reda på tidigt om den behöver bedömas eller om ditt yrke är reglerat, så att den processen kan pågå parallellt med resten av programmet i stället för att bli ett extra steg efteråt.\n\n## Vanliga frågor\n\n### Måste jag vara med i hela programmet för att det ska räknas?\nDin etableringsplan är individuell och kan justeras om din situation förändras – till exempel om du får ett arbete tidigare än planerat. Prata med din handläggare om vad som gäller för dig.\n\n### Kan jag tacka nej till en insats jag inte tycker passar?\nTa upp det med din handläggare. Planen ska vara anpassad efter dig, och om en insats känns fel för din situation är det något att lyfta, inte något att bara hoppa över.\n\n### Vad gör jag om jag redan kan svenska relativt bra?\nSäg det till din handläggare och till SFI-läraren. Nivån på undervisningen ska anpassas efter var du faktiskt befinner dig, inte efter en standardnivå.\n\n## Vad du gör nu\n\nBoka ett möte med din handläggare om du inte redan vet vad som ingår i just din etableringsplan. Fråga specifikt om kartläggningen av din utbildning och erfarenhet är gjord, och om praktiken du erbjuds faktiskt ligger i linje med vad du vill jobba med. Ju tidigare planen är konkret, desto mer får du ut av tiden.\n\nLäs mer på [Arbetsförmedlingens webbplats](https://arbetsformedlingen.se).",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "sfi-och-jobbsokande-samtidigt",
+        "validera-utlandsk-utbildning",
+        "lattsvenska-arbetsformedlingen",
+        "struktur-jobbsokning"
+      ],
+      "related_tools": [
+        "/calendar",
+        "/education"
+      ],
+      "slug": "etableringsprogrammet",
+      "sort_order": 0,
+      "subcategory": "etableringsprogrammet",
+      "summary": "Vem etableringsprogrammet gäller för, vad SFI, samhällsorientering och arbetsförberedande insatser innebär, och vad du bör få ut av tiden.",
+      "tags": [
+        "etableringsprogrammet",
+        "Arbetsförmedlingen",
+        "SFI",
+        "samhällsorientering"
+      ],
+      "title": "Etableringsprogrammet – vad som ingår",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/career",
+          "label": "Fortsätt planera nästa steg i din karriär",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/las-anstallningsavtal",
+          "label": "Läs vad som står i ditt anställningsavtal",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Ta reda på vilket förbund som organiserar din bransch"
+        },
+        {
+          "id": "2",
+          "text": "Jämför vad medlemskapet ger utöver a-kassan"
+        },
+        {
+          "id": "3",
+          "text": "Kontrollera om arbetsplatsen har kollektivavtal"
+        },
+        {
+          "id": "4",
+          "text": "Fråga om avgiften och vad som ingår innan du bestämmer dig"
+        },
+        {
+          "id": "5",
+          "text": "Ansök om medlemskap i facket och a-kassan separat om du vill ha båda"
+        }
+      ],
+      "content": "Facket och a-kassan låter som samma sak men är två olika medlemskap med olika syften. Här är vad vardera ger dig, vad det kan kosta i praktiken, och hur du hittar rätt förbund för din bransch.\n\n## Två olika saker som ofta blandas ihop\n\nEtt **fackförbund** är en organisation för dig som arbetar inom en viss bransch eller ett visst yrke. Facket förhandlar villkor med arbetsgivare och stöttar sina medlemmar i frågor som rör anställningen.\n\nEn **a-kassa** är en försäkring mot arbetslöshet. Är du medlem och blir av med jobbet kan du under vissa förutsättningar få ersättning från a-kassan medan du söker nytt.\n\nDe hänger ihop historiskt och samarbetar ofta tätt, men **du blir inte automatiskt medlem i det ena för att du gått med i det andra**. Det är två separata ansökningar, och du kan i de flesta fall välja att bara vara med i ett av dem.\n\n## Vad ett fackligt medlemskap ger dig\n\nDet som brukar ingå:\n\n- **Stöd vid tvist** – blir det problem med din arbetsgivare, till exempel kring en uppsägning eller arbetsvillkor, kan facket företräda dig i stället för att du står ensam.\n- **Förhandlingsstöd** – både i enskilda frågor (din egen lön eller dina villkor) och i de kollektiva förhandlingar som sätter ramarna för hela arbetsplatsen.\n- **Rådgivning** – juridisk rådgivning, frågor om arbetsmiljö, och praktisk vägledning i sådant du inte stött på förut.\n- **Ibland extra försäkringar**, som en inkomstförsäkring utöver det a-kassan täcker – vad som ingår varierar mellan förbund.\n\nVärdet av det här märks mest **när något går fel**. Är allt lugnt på jobbet känns det abstrakt; är det däremot bråk om en uppsägning eller otydliga villkor är det just då stödet gör skillnad.\n\n## Vad a-kassan ger dig\n\nA-kassans enda uppgift är att försäkra din inkomst om du blir arbetslös. Blir du av med jobbet och uppfyller kraven (bland annat hur länge du varit medlem och hur mycket du arbetat) kan du få ersättning under tiden du söker nytt. Det finns en a-kassa för de flesta branscher, och en gemensam kassa för dig som inte hör hemma i någon bransch-specifik.\n\n## Facket eller a-kassan – eller båda?\n\n| | Fackförbund | A-kassa |\n|---|---|---|\n| Syfte | Stöd och förhandling kring din anställning | Försäkring mot arbetslöshet |\n| Medlemskap | Eget, kopplat till bransch eller yrke | Eget, ofta men inte alltid kopplat till samma bransch |\n| Ger ersättning vid arbetslöshet? | Nej, men kan ha en kompletterande försäkring | Ja, det är hela poängen |\n| Ger stöd vid konflikt på jobbet? | Ja | Nej |\n\nVill du ha allt som finns att få behöver du båda medlemskapen. Vill du bara ha den ekonomiska tryggheten räcker a-kassan. Det är ditt val, inte ett måste.\n\n## Hur du hittar rätt förbund\n\nUtgå från din bransch eller ditt yrke, inte från vad en kompis råkar vara med i. De flesta förbund riktar in sig mot specifika yrkesgrupper eller branscher, och deras hemsidor brukar ha en tydlig beskrivning av vem de organiserar. Fråga gärna kollegor på en ny arbetsplats vilket förbund som är vanligast där – det säger ofta något om vilket som passar bäst.\n\nKontrollera också om din arbetsplats har **kollektivavtal**. Det är ett separat avtal mellan arbetsgivaren och facket som sätter gemensamma spelregler (till exempel kring sådant som tjänstgöringsbetyg, se vår guide om [arbetsgivarintyg och tjänstgöringsbetyg](/knowledge-base/article/arbetsgivarintyg-och-betyg)) – och det påverkar vad du faktiskt har rätt till, oavsett om du själv är fackligt ansluten eller inte.\n\n## Vad kostar det, ärligt talat\n\nMedlemskap i facket kostar en löpande avgift, och den varierar mellan förbund – ibland en fast summa, ibland kopplad till din inkomst. Många förbund har lägre avgift under en inledande period, som student, eller när du är arbetslös. Det finns ingen anledning att gissa: varje förbunds hemsida anger vad avgiften faktiskt är för just dig, så kolla där innan du bestämmer dig.\n\nVäg kostnaden mot vad du får. Är arbetsplatsen din första, är branschen ny för dig, eller känns tryggheten kring en eventuell tvist viktig – det är då stödet väger tyngst. Vi tar inte ställning för dig här. Det är ditt beslut, och det finns inget rätt svar som gäller alla.\n\n## Vad gör du nu\n\nTa reda på vilket förbund som organiserar din bransch och läs vad just deras medlemskap ger. Bestäm sedan separat om du vill vara med i en a-kassa, och i så fall vilken – den behöver inte vara samma organisation som facket. Ansök om det du väljer direkt hos respektive organisation.\n\n## Vanliga frågor\n\n### Måste jag vara med i facket för att få a-kassa?\nNej. Du kan vara medlem i en a-kassa utan att vara med i något fackförbund.\n\n### Är jag automatiskt med i a-kassan om jag går med i facket?\nNej, det är två separata ansökningar även om de ofta går att göra i nära anslutning till varandra.\n\n### Kan jag byta förbund om jag byter bransch?\nJa. Byter du yrke eller bransch kan du gå ur ett förbund och ansöka om medlemskap i ett annat som passar din nya situation bättre.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "las-anstallningsavtal",
+        "provanstallning-guide",
+        "personlig-ekonomi-jobbsokning",
+        "arbetsgivarintyg-och-betyg"
+      ],
+      "related_tools": [
+        "/career"
+      ],
+      "slug": "facket-ska-jag-ga-med",
+      "sort_order": 0,
+      "subcategory": "fackligt-medlemskap",
+      "summary": "Vad ett fackligt medlemskap ger dig jämfört med a-kassan, hur du hittar rätt förbund, och vad det kostar i praktiken.",
+      "tags": [
+        "fackförbund",
+        "a-kassa",
+        "medlemskap",
+        "rättigheter"
+      ],
+      "title": "Ska jag gå med i facket? Facket och a-kassan är olika",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
           "href": "/knowledge-base/article/hantera-avslag",
           "label": "Hantera avslag",
           "type": "secondary"
@@ -1250,6 +1848,60 @@
       ],
       "title": "Hur du ber om feedback efter ett avslag",
       "updated_at": "2026-08-05 13:04:32.444078+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/applications",
+          "label": "Håll koll på var du sökt",
+          "type": "primary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Vänta tills en nämnd tidsram har passerat innan du hör av dig"
+        },
+        {
+          "id": "2",
+          "text": "Skriv kort – vem du är, tjänsten, att du är intresserad, en konkret fråga"
+        },
+        {
+          "id": "3",
+          "text": "Fråga om tidsplanen, inte om beslutet"
+        },
+        {
+          "id": "4",
+          "text": "Låt det gå längre tid mellan varje uppföljning, inte kortare"
+        }
+      ],
+      "content": "Det är lätt att vänta i det oändliga av rädsla för att verka påstridig, och lika lätt att skicka ett mejl för snabbt av ren otålighet. Här är hur du följer upp en ansökan så att det stärker ditt intryck i stället för att skada det.\n\n## När det är läge att höra av sig – och när det inte är\n\nRätt tillfälle att följa upp är när en tidsram som redan nämnts har passerat – ansökningstiden i annonsen har gått ut, eller rekryteraren sa \"vi hör av oss i nästa vecka\" och den veckan har kommit och gått. Då är en uppföljning naturlig, inte påstridig.\n\nFel tillfälle är dagen efter att du skickat in ansökan, eller timmarna efter en intervju du själv tycker gick bra. Det första ger intryck av otålighet innan processen ens kommit igång. Det andra läses lätt som att du inte litar på att processen sköts, snarare än som engagemang.\n\nHar ingen tidsram alls nämnts – vare sig i annonsen eller vid kontakt – är det rimligt att vänta tills du med gott samvete kan säga att en rimlig tid har gått sedan du sökte, innan du hör av dig en första gång.\n\n## Vad du faktiskt skriver i ett uppföljningsmejl\n\nEtt bra uppföljningsmejl är kort, konkret och gör det lätt för mottagaren att svara med en enda mening. Det behöver inte, och bör inte, upprepa hela din motivation från det personliga brevet.\n\nEn fungerande struktur:\n\n1. Vem du är och vilken tjänst det gäller.\n2. Att du fortfarande är intresserad.\n3. En konkret fråga om var processen befinner sig.\n4. Ett tack, kort.\n\nEtt exempel:\n\n> Hej [namn],\n>\n> Jag sökte tjänsten som [titel] och ville höra hur processen ser ut just nu. Jag är fortfarande väldigt intresserad av rollen.\n>\n> Finns det en ungefärlig tidsplan för när ni räknar med att återkomma till kandidaterna?\n>\n> Tack på förhand,\n> [ditt namn]\n\nDet som gör mejlet bra är inte artigheten i sig – det är att det är lätt att svara på. En rekryterare som har fem minuter mellan möten kan besvara den här typen av mejl på tjugo sekunder. Ett längre mejl som ber om ett resonemang riskerar att hamna längst ner i högen.\n\n## Vad du säger i ett uppföljningssamtal\n\nEtt telefonsamtal fungerar när du redan har en etablerad kontakt – ni har talats vid förut, eller du har fått ett direktnummer. Ring inte kallt till växeln och be att bli kopplad, det sätter mottagaren i en oförberedd situation som sällan gynnar dig.\n\nHåll samtalet lika kort som mejlet skulle varit. Presentera dig, nämn tjänsten, fråga om tidsplanen. Om personen inte har tid att prata just då – fråga om det passar bättre att återkomma senare samma dag eller om ett mejl är enklare för dem. Att visa att du respekterar deras tid väger tyngre än att få svar i just den sekunden.\n\n## Fråga om tidsplanen, inte om beslutet\n\nDet här är den viktigaste förskjutningen i hela uppföljningen. \"Har ni bestämt er?\" sätter mottagaren i en position där de antingen måste ge dig ett besked de kanske inte är redo att ge, eller känna sig påtvingade att avfärda dig. \"Vet ni ungefär när ni räknar med att återkomma?\" är en helt annan fråga – den går att svara på även mitt i en process som inte är klar, och den signalerar att du förstår att rekrytering tar tid utan att du för den skull har slutat vara intresserad.\n\nSamma logik gäller om du har fått ett annat erbjudande och behöver ett snabbare svar: fråga om det finns möjlighet att påskynda just din del av processen, i stället för att fråga om du fått jobbet.\n\n## Hur du tolkar olika sorters tystnad\n\n| Vad som händer | Vad det oftast betyder |\n|---|---|\n| Inget svar alls på ett första uppföljningsmejl inom några dagar | Rekryteraren har inte hunnit än – vanligast av allt |\n| Ett kort, artigt svar utan ny information (\"vi återkommer så snart vi kan\") | Processen pågår som den ska, ingen anledning till oro |\n| Ett svar med en ny, konkret tidsram | Ett bra tecken – de tar sig tid att uppdatera dig |\n| Fullständig tystnad efter flera uppföljningar | Läge att dra slutsatsen att den här specifika processen inte längre är aktuell för dig, och rikta energin mot andra ansökningar |\n\nSkillnaden mellan den första och den sista raden i tabellen handlar om hur många gånger och hur länge, inte om en enskild obesvarad signal.\n\n## Vad gör jag nu\n\nHar du en ansökan där tidsramen redan passerat – skriv ett kort mejl enligt strukturen ovan i dag, i stället för att fortsätta vänta. Har du flera ansökningar ute samtidigt, håll koll på vilka som har passerat sin tidsram i vår ansökningsöversikt så att du vet vilka som faktiskt är läge att följa upp.\n\n## Vanliga frågor\n\n### Kan jag följa upp mer än en gång?\nJa, men låt det gå tydligt längre tid mellan varje gång, och gör varje uppföljning kortare än den förra. Fler mejl i tätare takt läses som press, inte som intresse.\n\n### Ska jag följa upp via mejl, telefon eller LinkedIn?\nMejl fungerar nästan alltid. Telefon kräver en etablerad kontakt. LinkedIn kan fungera om du redan har en koppling till personen där, annars riskerar det att kännas påträngande på ett annat sätt än ett mejl.\n\n### Är det dåligt att fråga om lön eller villkor i en uppföljning?\nHåll uppföljningen till processen och tidsplanen. Frågor om lön och villkor hör hemma senare, när ett erbjudande faktiskt är på bordet.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "rekryteringsprocessen-steg-for-steg",
+        "ansokningsstrategi",
+        "feedback-efter-avslag"
+      ],
+      "related_tools": [
+        "/applications"
+      ],
+      "slug": "folja-upp-din-ansokan",
+      "sort_order": 0,
+      "subcategory": "rekrytering",
+      "summary": "Hur du skriver ett uppföljningsmejl som får svar, frågar om tidsplanen i stället för beslutet, och tolkar tystnaden emellan.",
+      "tags": [
+        "uppföljning",
+        "ansökan",
+        "mejl",
+        "rekrytering"
+      ],
+      "title": "Följa upp din ansökan – vad du säger, och när det är läge",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -2684,6 +3336,137 @@
       "updated_at": "2026-08-05 13:04:32.444078+00"
     },
     {
+      "actions": [
+        {
+          "href": "/resources",
+          "label": "Hitta fler resurser och stöd",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/lattsvenska-rapportera-till-arbetsformedlingen",
+          "label": "Läs om aktivitetsrapporten",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Hitta en a-kassa som passar ditt yrke"
+        },
+        {
+          "id": "2",
+          "text": "Bli medlem så snart du får ett jobb"
+        },
+        {
+          "id": "3",
+          "text": "Betala din avgift varje månad"
+        },
+        {
+          "id": "4",
+          "text": "Spara papper om din anställning"
+        },
+        {
+          "id": "5",
+          "text": "Kontakta a-kassan samma dag du blir arbetslös"
+        }
+      ],
+      "content": "A-kassa betyder arbetslöshetskassa. Det är en förening som kan betala pengar till dig om du blir utan jobb. Här förklarar vi hur det fungerar.\n\n## Vad är a-kassa?\n\nA-kassa är kort för arbetslöshetskassa.\n\nEn a-kassa är en förening. Föreningen kan betala pengar till dig om du blir arbetslös.\n\nDet finns många olika a-kassor. De flesta hör till en bransch eller ett yrke.\n\n## Är a-kassa och fack samma sak?\n\nNej. A-kassa och fack är två olika saker.\n\n**Facket** jobbar för bättre villkor på jobbet. Till exempel lön och rättigheter.\n\n**A-kassan** är en försäkring mot arbetslöshet. Den kan betala pengar när du inte har jobb.\n\nDu kan vara med i facket utan att vara med i a-kassan. Du kan vara med i a-kassan utan att vara med i facket.\n\n## Varför ska jag gå med innan jag blir arbetslös?\n\nÄr du medlem i en a-kassa en tid innan du blir arbetslös kan du få mer pengar.\n\nVäntar du med att gå med kan du få mindre pengar, eller ingenting från just den kassan.\n\nDärför är det bra att gå med så fort du får ett jobb. Vänta inte.\n\n## Måste jag vara medlem för att få pengar alls?\n\nNej. Det finns en kassa som heter Alfa-kassan. Den är öppen för alla, även om du inte har varit medlem någonstans tidigare.\n\nHar du inte varit medlem kan du ändå söka pengar där. Men beloppet blir ofta lägre än om du varit medlem en tid.\n\nFråga alltid a-kassan vad som gäller just dig.\n\n## Hur blir jag medlem?\n\n- Hitta en a-kassa som passar ditt yrke. Osäker på vilken? Alfa-kassan tar emot alla.\n- Gå till a-kassans hemsida.\n- Ansök om medlemskap.\n- Betala din avgift varje månad.\n\n## Vad gör jag nu?\n\nLeta upp en a-kassa som passar dig och bli medlem så snart du kan. Vänta inte tills du blir av med jobbet.\n\nÄr du redan arbetslös? Kontakta en a-kassa ändå. Fråga vad som gäller för dig.\n\n## Vanliga frågor\n\n### Kostar det att vara med i en a-kassa?\n\nJa, du betalar en avgift varje månad. Fråga din a-kassa hur mycket det kostar.\n\n### Kan jag byta a-kassa?\n\nJa. Byter du yrke kan du behöva byta a-kassa. Fråga a-kassan hur du gör.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "lattsvenska-arbetsformedlingen",
+        "lattsvenska-rapportera-till-arbetsformedlingen",
+        "personlig-ekonomi-jobbsokning"
+      ],
+      "related_tools": [],
+      "slug": "lattsvenska-a-kassa",
+      "sort_order": 0,
+      "subcategory": "ersattning",
+      "summary": "Vad a-kassa betyder, varför du bör bli medlem innan du blir arbetslös, och hur du gör för att gå med.",
+      "tags": [
+        "a-kassa",
+        "arbetslöshetskassa",
+        "medlemskap",
+        "fack"
+      ],
+      "title": "Vad är a-kassa?",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/salary",
+          "label": "Se löneläget i din bransch",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/las-anstallningsavtal",
+          "label": "Läs mer om anställningsavtal, klausul för klausul",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Läs igenom hela avtalet i lugn och ro"
+        },
+        {
+          "id": "2",
+          "text": "Kontrollera vilket jobb du ska göra"
+        },
+        {
+          "id": "3",
+          "text": "Kontrollera hur mycket du ska jobba"
+        },
+        {
+          "id": "4",
+          "text": "Kontrollera vad du får i lön"
+        },
+        {
+          "id": "5",
+          "text": "Kontrollera om jobbet är fast eller på prov"
+        },
+        {
+          "id": "6",
+          "text": "Fråga om något är oklart"
+        },
+        {
+          "id": "7",
+          "text": "Be om en kopia av avtalet"
+        }
+      ],
+      "content": "Ett anställningsavtal är ett papper som visar vad du och din arbetsgivare kommit överens om. Här förklarar vi vad du ska titta på innan du skriver under.\n\n## Vad är ett anställningsavtal?\n\nEtt anställningsavtal är ett papper, eller ett dokument på datorn.\n\nDet visar vad du och arbetsgivaren har kommit överens om.\n\nBåda skriver under. Då gäller det som står i avtalet.\n\n## Vad ska stå i avtalet?\n\nEtt bra avtal ska visa:\n\n- **Vilket jobb** du ska göra. Din titel och dina uppgifter.\n- **Hur mycket du ska jobba.** Heltid eller deltid. Vilka dagar och tider.\n- **Vad du får i lön.** Beloppet, och när du får det.\n- **När du börjar jobba.** Ditt första datum.\n- **Vilken sorts anställning** det är. Fast jobb, eller en tid på prov.\n\n## Vad betyder \"på prov\"?\n\nEn anställning på prov kallas **provanställning**.\n\nDet betyder att du och arbetsgivaren testar varandra en tid. Efter den tiden kan anställningen bli fast, eller ta slut.\n\nDet ska stå tydligt i avtalet om jobbet är på prov eller fast.\n\n## Måste jag skriva under direkt?\n\nNej. Du får läsa avtalet i lugn och ro innan du skriver under.\n\nKänns något oklart? Fråga arbetsgivaren. Du kan också ta hem avtalet och läsa det en gång till.\n\nÄr du med i facket kan de titta på avtalet innan du skriver under.\n\n## Vad gör jag om något är fel eller oklart?\n\nFråga arbetsgivaren direkt. Det är bättre att fråga en gång för mycket än att undra i efterhand.\n\nSkriv inte under om du inte förstår vad som står.\n\n## Får jag en egen kopia?\n\nJa. Be alltid om en kopia av avtalet när du har skrivit under.\n\nSpara kopian. Du kan behöva den senare, till exempel om något blir fel med lönen.\n\n## Vad gör jag nu?\n\nLäs igenom hela avtalet innan du skriver under. Kolla jobb, arbetstid, lön, startdatum och om det är fast eller på prov. Be om en kopia.\n\n## Vanliga frågor\n\n### Måste avtalet vara skriftligt?\n\nArbetsgivaren ska ge dig skriftlig information om jobbet. Ett skriftligt avtal är tryggast för dig.\n\n### Kan jag ångra mig efter jag skrivit under?\n\nDet är svårt. Läs därför noga innan du skriver under. Är du osäker, fråga någon du litar på först.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "las-anstallningsavtal",
+        "anstallningsformer-guide",
+        "provanstallning-guide"
+      ],
+      "related_tools": [
+        "/salary"
+      ],
+      "slug": "lattsvenska-anstallningsavtal",
+      "sort_order": 0,
+      "subcategory": "avtal",
+      "summary": "Vad ett anställningsavtal är, vad du ska leta efter innan du skriver under, och varför du ska be om en kopia.",
+      "tags": [
+        "anställningsavtal",
+        "provanställning",
+        "lön"
+      ],
+      "title": "Vad står i ett anställningsavtal?",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
       "actions": [],
       "author": "Maria Lindqvist",
       "author_title": "Arbetskonsulent",
@@ -2852,6 +3635,64 @@
       "updated_at": "2026-08-05 11:27:56.896649+00"
     },
     {
+      "actions": [
+        {
+          "href": "/salary",
+          "label": "Jämför löner i din bransch",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/lon-och-formaner-guide",
+          "label": "Läs mer om lön och förmåner",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Spara varje lönebesked du får"
+        },
+        {
+          "id": "2",
+          "text": "Kolla att antalet timmar stämmer"
+        },
+        {
+          "id": "3",
+          "text": "Jämför bruttolön och nettolön"
+        },
+        {
+          "id": "4",
+          "text": "Kontakta din chef om något är fel"
+        }
+      ],
+      "content": "Lönen du hör talas om i en jobbannons är inte samma summa som kommer till ditt konto. Här förklarar vi varför, och vad du gör om lönen blir fel.\n\n## Vad är lön?\n\nLön är pengarna du får för att jobba.\n\nLönen står ofta i ditt anställningsavtal.\n\n## Vad är skillnaden på brutto och netto?\n\n**Bruttolön** är lönen innan skatten är borttagen. Det är den summan du oftast hör om, till exempel i en jobbannons.\n\n**Nettolön** är det som blir kvar när skatten är borttagen. Det är den summan som kommer till ditt bankkonto.\n\nNettolönen är alltid lägre än bruttolönen.\n\n## Vad är skatt?\n\nSkatt är pengar som går till staten och kommunen.\n\nPengarna används till sådant som skolor, sjukvård och vägar.\n\nDin arbetsgivare drar av skatten från din lön innan du får pengarna. Du behöver inte betala skatten själv.\n\n## Vad är ett lönebesked?\n\nEtt lönebesked är ett papper eller ett dokument du får varje gång du får lön.\n\nDär kan du se:\n\n- Hur mycket du har jobbat\n- Din bruttolön\n- Hur mycket skatt som dragits\n- Din nettolön, det du får på kontot\n\n## När kommer lönen?\n\nDe flesta får lön en gång i månaden.\n\nDatumet står ofta i ditt anställningsavtal. Fråga din arbetsgivare om du är osäker.\n\n## Vad gör jag om lönen är fel?\n\nKontrollera först ditt lönebesked. Stämmer antalet timmar? Stämmer beloppet?\n\nÄr något fel, kontakta din chef eller den som sköter lönerna. Gör det så fort du märker felet.\n\nÄr du med i facket kan de också hjälpa dig.\n\n## Vad gör jag nu?\n\nSpara alla dina lönebesked. Kolla varje gång att timmar och belopp stämmer. Hör av dig direkt om något är fel.\n\n## Vanliga frågor\n\n### Måste jag betala skatt själv?\n\nNej. Din arbetsgivare drar av skatten och skickar den vidare åt dig.\n\n### Var kan jag få svar på frågor om skatt?\n\nSkatteverket kan svara på frågor om skatt. Din arbetsgivare vet vilken skattetabell som gäller för dig.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "lon-och-formaner-guide",
+        "personlig-ekonomi-jobbsokning",
+        "lattsvenska-anstallningsavtal"
+      ],
+      "related_tools": [
+        "/salary"
+      ],
+      "slug": "lattsvenska-lon-och-skatt",
+      "sort_order": 0,
+      "subcategory": "lon",
+      "summary": "Skillnaden mellan bruttolön och nettolön, vad ett lönebesked visar, och vad du gör om lönen blir fel.",
+      "tags": [
+        "lön",
+        "skatt",
+        "lönebesked"
+      ],
+      "title": "Lön och skatt – vad är brutto och netto?",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
       "actions": [],
       "author": "Maria Lindqvist",
       "author_title": "Arbetskonsulent",
@@ -2879,6 +3720,130 @@
       ],
       "title": "När du blir sjuk på jobbet",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/job-search",
+          "label": "Sök jobb och praktikplatser",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/praktik-som-vag-in",
+          "label": "Läs mer om praktik som väg in i jobb",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Prata med din handläggare om praktik"
+        },
+        {
+          "id": "2",
+          "text": "Kom i tid varje dag på praktiken"
+        },
+        {
+          "id": "3",
+          "text": "Fråga när du är osäker"
+        },
+        {
+          "id": "4",
+          "text": "Visa att du vill lära dig"
+        },
+        {
+          "id": "5",
+          "text": "Berätta att du är intresserad av jobb där"
+        }
+      ],
+      "content": "Praktik betyder att du är på en arbetsplats för att lära dig ett jobb. Här förklarar vi hur det fungerar och hur praktik ibland kan leda vidare.\n\n## Vad är praktik?\n\nPraktik betyder att du är på en arbetsplats en tid.\n\nDu lär dig hur jobbet fungerar genom att vara med och göra uppgifter.\n\n## Får jag lön för praktiken?\n\nOftast inte. De flesta praktikplatser ger ingen lön från arbetsgivaren.\n\nHar du praktik genom Arbetsförmedlingen kan du i stället få pengar från Försäkringskassan under tiden. Fråga din handläggare vad som gäller för dig.\n\n## Vem bestämmer om jag får praktik?\n\nHar du praktik genom Arbetsförmedlingen är det Arbetsförmedlingen som bestämmer om du får göra den.\n\nDu, din handläggare och arbetsgivaren pratar tillsammans om hur praktiken ska läggas upp.\n\n## Vad kan jag lära mig på en praktik?\n\nPå en praktik kan du lära dig:\n\n- Hur ett jobb fungerar i verkligheten\n- Nya kunskaper och färdigheter\n- Hur en arbetsplats i Sverige fungerar\n- Att prata svenska i vardagen, om du övar det\n\n## Kan praktik leda till jobb?\n\nJa, ibland. Vissa får jobb på samma plats efter praktiken.\n\nDet är inget som är säkert. Men du kan göra mycket själv för att öka chansen.\n\n## Hur ökar jag chansen att få jobb efter praktiken?\n\n- Kom i tid varje dag.\n- Fråga om du är osäker på en uppgift.\n- Visa att du vill lära dig.\n- Berätta för de anställda att du är intresserad av jobb där.\n- Gör ditt bästa, även med enkla uppgifter.\n\n## Vad gör jag nu?\n\nPrata med din handläggare om praktik kan vara något för dig. Under praktiken: kom i tid, fråga när du undrar över något, och visa att du vill lära dig.\n\n## Vanliga frågor\n\n### Måste jag ta emot en praktikplats jag blir erbjuden?\n\nPrata med din handläggare om du är tveksam. Ni pratar igenom vad som passar dig.\n\n### Är jag försäkrad under praktiken?\n\nJa, du är försäkrad om en olycka skulle hända. Fråga din handläggare vad som gäller.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "praktik-som-vag-in",
+        "lattsvenska-arbetsformedlingen",
+        "nystartsjobb-guide"
+      ],
+      "related_tools": [
+        "/job-search"
+      ],
+      "slug": "lattsvenska-praktik",
+      "sort_order": 0,
+      "subcategory": "praktik",
+      "summary": "Vad praktik betyder, om du får lön, vem som bestämmer, och hur praktik ibland kan leda till jobb.",
+      "tags": [
+        "praktik",
+        "arbetsplats",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Vad är praktik?",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/applications",
+          "label": "Håll koll på dina ansökningar",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/lattsvenska-a-kassa",
+          "label": "Läs om a-kassa",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner varje jobb du söker samma dag"
+        },
+        {
+          "id": "2",
+          "text": "Logga in på Mina sidor hos Arbetsförmedlingen"
+        },
+        {
+          "id": "3",
+          "text": "Fyll i vad du gjort i aktivitetsrapporten"
+        },
+        {
+          "id": "4",
+          "text": "Skicka in rapporten i början av månaden"
+        },
+        {
+          "id": "5",
+          "text": "Kontakta Arbetsförmedlingen om du missar"
+        }
+      ],
+      "content": "Är du inskriven hos Arbetsförmedlingen ska du berätta vad du gjort för att söka jobb. Det kallas aktivitetsrapport. Här förklarar vi hur det fungerar.\n\n## Vad är en aktivitetsrapport?\n\nEn aktivitetsrapport är ett formulär.\n\nI formuläret skriver du vad du har gjort för att söka jobb.\n\nDu fyller i det på Arbetsförmedlingens hemsida, under \"Mina sidor\".\n\n## Vem måste rapportera?\n\nDu som är inskriven hos Arbetsförmedlingen och får pengar ska rapportera. Till exempel a-kassa eller aktivitetsstöd.\n\n**Aktivitetsstöd** är pengar du kan få när du är med i ett program hos Arbetsförmedlingen.\n\nÄr du osäker om det gäller dig? Fråga din handläggare. En handläggare är personen på Arbetsförmedlingen som hjälper just dig.\n\n## Hur ofta ska jag rapportera?\n\nDu ska rapportera en gång i månaden.\n\nRapporten ska skickas in i början av varje månad, för månaden innan.\n\nExakt sista dag kan skilja. Kolla alltid datumet på \"Mina sidor\" så du inte missar det.\n\n## Vad skriver jag i rapporten?\n\nDu skriver vad du har gjort för att söka jobb den senaste månaden. Till exempel:\n\n- Vilka jobb du har sökt\n- Vilka företag du har kontaktat\n- Om du har varit på en intervju\n- Om du har gått en kurs eller praktik\n\nSkriv gärna ner det du gör direkt. Då blir det lättare att fylla i rapporten senare.\n\n## Vad händer om jag glömmer?\n\nMissar du att skicka in rapporten i tid kan du bli av med pengar en tid.\n\nFörsta gången du missar kan du få en varning. Missar du igen kan det påverka pengarna du får.\n\nGlömmer du helt kan Arbetsförmedlingen höra av sig och fråga vad som hänt.\n\n## Vad gör jag om jag inte hann?\n\nKontakta Arbetsförmedlingen så fort du kan. Berätta vad som hände.\n\nIbland kan du förklara varför du missade, till exempel om du var sjuk. Berätta det för din handläggare.\n\n## Vad gör jag nu?\n\nSkriv ner varje jobb du söker, samma dag du söker det. Då blir det lättare att fylla i aktivitetsrapporten varje månad.\n\n## Vanliga frågor\n\n### Var fyller jag i rapporten?\n\nPå arbetsformedlingen.se, under \"Mina sidor\". Du loggar in med BankID eller andra uppgifter.\n\n### Kan någon hjälpa mig?\n\nJa. Din handläggare kan hjälpa dig. Du kan också be om tolk om du behöver det.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "lattsvenska-arbetsformedlingen",
+        "lattsvenska-a-kassa",
+        "struktur-jobbsokning"
+      ],
+      "related_tools": [
+        "/applications"
+      ],
+      "slug": "lattsvenska-rapportera-till-arbetsformedlingen",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Vad en aktivitetsrapport är, vad som ska stå i den, när den ska in och vad som händer om du glömmer.",
+      "tags": [
+        "aktivitetsrapport",
+        "Arbetsförmedlingen",
+        "handläggare"
+      ],
+      "title": "Rapportera till Arbetsförmedlingen varje månad",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -3139,6 +4104,75 @@
       ],
       "title": "Lön och förmåner – mer än bara kontant lön",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva hur du tar upp det i en intervju",
+          "type": "primary"
+        },
+        {
+          "href": "/job-search",
+          "label": "Sök jobb hos arbetsgivare som passar dig",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Beskriv för din handläggare vilka arbetsuppgifter som är svårast, inte vilken diagnos du har"
+        },
+        {
+          "id": "2",
+          "text": "Vänta med att ta upp lönebidrag tills arbetsgivaren visat intresse för dig som person"
+        },
+        {
+          "id": "3",
+          "text": "Formulera anpassningen konkret, till exempel skriftliga instruktioner eller flexibla tider"
+        },
+        {
+          "id": "4",
+          "text": "Fråga om din handläggare kan vara med i samtalet med arbetsgivaren"
+        },
+        {
+          "id": "5",
+          "text": "Öva formuleringen innan du säger den i en riktig intervju"
+        },
+        {
+          "id": "6",
+          "text": "Följ upp om bidraget efter en tid, i stället för att anta att det gäller för alltid"
+        }
+      ],
+      "content": "Lönebidrag är ett stöd som gör att en arbetsgivare kan anställa dig även om din arbetsförmåga är nedsatt i förhållande till just de arbetsuppgifterna. Stödet betalas till arbetsgivaren, inte till dig, och beslutet fattas av Arbetsförmedlingen efter en bedömning av vad du behöver på just den arbetsplatsen.\n\n## Vem bidraget är till för\n\nLönebidrag finns för dig vars arbetsförmåga är nedsatt i relation till ett specifikt arbete – inte för en diagnos i sig. Det är skillnaden som avgör allt: Arbetsförmedlingen tittar inte på vad du har, utan på vad just den här rollen kräver och vad du behöver för att klara den. Samma person kan behöva stödet för ett jobb och inte för ett annat.\n\nBedömningen görs individuellt, av en handläggare, oftast efter samtal med dig och ibland i dialog med arbetsgivaren om vilka anpassningar som skulle behövas.\n\n## Pengarna går till arbetsgivaren, inte till dig\n\nDet här missförstås ofta, och det är värt att vara tydlig med: lönebidraget är ett bidrag till arbetsgivarens lönekostnad. Du får din lön som vanligt, med samma villkor och kollektivavtal som andra anställda. Det du eventuellt märker av är att arbetsgivaren har fått ett ekonomiskt skäl till att just din anställning blir möjlig, trots att arbetsuppgifterna behöver anpassas.\n\nDet betyder också att bidraget är knutet till anställningen och arbetsplatsen – inte till dig som person för alltid. Byter du jobb måste en ny bedömning göras för den nya rollen.\n\n## Vem beslutar och vad som prövas\n\nArbetsförmedlingen fattar beslutet, och det som prövas är två saker: om din arbetsförmåga är nedsatt i relation till arbetet, och om arbetsplatsen och arbetsuppgifterna är lämpliga för det. Beslutet ska finnas på plats innan anställningen börjar – det går alltså inte att söka bidraget i efterhand för ett jobb du redan har.\n\nI praktiken är det ofta arbetsgivaren som skickar in ansökan, men det är du och din handläggare på Arbetsförmedlingen som lägger grunden genom att beskriva vad du behöver.\n\n## Så tar du upp det med en arbetsgivare\n\nDet här är den svåra delen. Du vill inte att lönebidraget blir det första en arbetsgivare hör om dig – innan hon har hunnit bilda sig en uppfattning om vad du faktiskt kan.\n\nNågra sätt att tänka:\n\n- **Vänta inte till sista sekund, men skynda inte heller före.** Ta upp det när samtalet ändå handlar om anställningsvillkor – till exempel efter att arbetsgivaren visat intresse, men innan avtal skrivs.\n- **Beskriv anpassningen, inte diagnosen.** \"Jag behöver tydliga instruktioner skriftligt\" säger mer än en diagnosetikett, och det är också allt arbetsgivaren behöver veta för att fatta rätt beslut.\n- **Berätta vad bidraget gör för henne.** Många arbetsgivare vet inte att lönebidrag finns, eller tror att det är krångligt. Att du redan vet hur processen går till, och att Arbetsförmedlingen sköter bedömningen, tar bort en del av osäkerheten.\n- **Låt din handläggare vara med i samtalet om du vill.** Du behöver inte förklara allt själv. Handläggaren kan ta kontakt med arbetsgivaren och beskriva processen rent praktiskt.\n- **Öva formuleringen innan du säger den högt.** Det är lättare att hitta rätt ton i förväg än mitt i en intervju.\n\n## Om läget ändras\n\nEtt lönebidrag är inget livslångt beslut. Det omprövas, och om din arbetsförmåga förändras – åt något håll – kan bedömningen ändras med den. Det är inte ett misslyckande om bidraget minskar eller upphör; det är samma mekanism som gav dig det från början, som nu prövar ett nytt läge.\n\n## Vanliga frågor\n\n### Måste jag berätta om min diagnos för arbetsgivaren?\n\nNej. Det som är relevant för arbetsgivaren är vilka anpassningar du behöver, inte vad de beror på. Diagnosen är din sak.\n\n### Kan jag själv ansöka om lönebidrag?\n\nAnsökan görs av arbetsgivaren, men du är den som beskriver ditt behov till Arbetsförmedlingen först. Det är därför ett samtal med din handläggare är rätt startpunkt.\n\n### Påverkar lönebidraget min lön eller mina villkor?\n\nNej. Du har samma rättigheter, samma kollektivavtal och samma lön som du skulle förhandlat fram ändå. Bidraget rör bara vad arbetsgivaren betalar, inte vad du får.\n\n## Vad gör du nu\n\nBoka tid med din handläggare på Arbetsförmedlingen och beskriv konkret vad som gör vissa arbetsuppgifter svårare för dig – det är underlaget hela bedömningen bygger på. Vill du öva på hur samtalet med en arbetsgivare kan låta innan du står i det, är det ett bra tillfälle att göra det i lugn och ro, inte i stunden.\n\nLäs mer om exakta villkor och aktuella belopp på [arbetsformedlingen.se](https://arbetsformedlingen.se).",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "rattigheter-stod",
+        "anpassningar-arbetsplats",
+        "sius-stod-vid-introduktion",
+        "provanstallning-guide"
+      ],
+      "related_tools": [
+        "/interview-simulator",
+        "/job-search"
+      ],
+      "slug": "lonebidrag-sa-fungerar-det",
+      "sort_order": 0,
+      "subcategory": "stod-vid-anstallning",
+      "summary": "Lönebidrag går till arbetsgivaren, inte till dig. Så fungerar bedömningen, och så tar du upp det utan att det blir det första hon hör om dig.",
+      "tags": [
+        "lönebidrag",
+        "Arbetsförmedlingen",
+        "anställning",
+        "funktionsnedsättning"
+      ],
+      "title": "Lönebidrag – så fungerar stödet, och så tar du upp det",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -4277,6 +5311,129 @@
       "updated_at": "2026-08-05 11:27:56.896649+00"
     },
     {
+      "actions": [
+        {
+          "href": "/applications",
+          "label": "Håll koll på var du sökt",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/folja-upp-din-ansokan",
+          "label": "Läs hur du följer upp utan att bli påstridig",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Notera datumet du skickade varje ansökan"
+        },
+        {
+          "id": "2",
+          "text": "Spara annonstexten så du kan gå tillbaka till den inför intervjun"
+        },
+        {
+          "id": "3",
+          "text": "Fråga efter nästa steg och ungefärlig tidsram efter varje intervju"
+        },
+        {
+          "id": "4",
+          "text": "Håll koll på vilka ansökningar som väntar på svar och vilka som gått vidare"
+        }
+      ],
+      "content": "Du har skickat in ansökan. Sen händer ingenting synligt – och det är lätt att tro att det betyder nej. Oftast betyder det bara att du inte ser processen som pågår bakom kulisserna. Här är stegen, vad som avgör i varje ett, och varför tystnaden sällan är svaret du fruktar.\n\n## Steg 1: Gallringen – innan en människa läser din ansökan\n\nMånga rekryteringsprocesser, särskilt hos större arbetsgivare eller via rekryteringsföretag, börjar med en automatisk gallring. Ett system läser igenom ansökningarna och sorterar utifrån de krav som är inlagda – ofta grundkrav som utbildning, språk eller erfarenhetsår snarare än en nyanserad bedömning. Det är därför formuleringar från annonsen är värda att använda i din ansökan: systemet letar efter matchning i text, inte efter din bästa formulering av samma sak.\n\nDet som stoppas här stoppas ofta av tekniska skäl – fel filformat, en nyckelkompetens som saknas i texten fast du faktiskt har den, eller ett CV som är svårt att tolka strukturellt. Det säger sällan något om dig som person.\n\n## Steg 2: Urvalet – vem som läser vidare, och varför\n\nDe ansökningar som klarar gallringen läses av en människa – rekryterande chef, HR eller en konsult. Här handlar det om helhet: matchar erfarenheten, känns det personliga brevet genomtänkt, finns det något som sticker ut positivt. Det är också här referenser till specifika resultat eller ansvarsområden gör skillnad, för det är svårt att sålla på annat än det som faktiskt står där.\n\n## Steg 3: Första kontakten\n\nOfta ett kortare telefonsamtal, ibland ett mejl med några frågor. Syftet är sällan att testa dig – det är att bekräfta grundläggande saker: är du fortfarande intresserad, stämmer löneförväntan ungefär, när kan du börja. Svara ärligt och kort. Det här är inte intervjun, även om det kan kännas som ett förhör i miniatyr.\n\n## Steg 4: Intervjuomgångarna\n\nDe flesta processer har mellan en och tre intervjuomgångar. Vad de bedömer skiljer sig åt:\n\n- **Första intervjun** brukar handla om grundmatchning – erfarenhet, motivation, hur du kommunicerar.\n- **Andra intervjun** går ofta djupare, ibland med en annan person i rummet – en blivande kollega eller chefens chef. Här testas hur du tänker kring konkreta situationer, inte bara vad du gjort tidigare.\n- **En eventuell tredje omgång** handlar oftare om att stämma av detaljer och känsla – då är det redan mellan ett fåtal kandidater.\n\n## Steg 5: Test eller arbetsprov\n\nInte alla processer har det här steget, men fler har det numera. Det kan vara ett begåvningstest, ett personlighetstest eller en praktisk uppgift. Läs mer om vad de olika testerna mäter och hur du förbereder dig i vår guide om arbetspsykologiska tester.\n\n## Steg 6: Referenstagning\n\nReferenser tas oftast sent, när arbetsgivaren redan har bestämt sig för att du är den de vill gå vidare med – det är ett bekräftande steg, inte ett sållande. Det är därför referenstagning ofta känns som ett gott tecken, och det är det oftast också.\n\n## Steg 7: Erbjudandet\n\nSist kommer det konkreta erbjudandet – roll, villkor, startdatum. Här är det rimligt att ställa frågor och be om betänketid innan du svarar. Ett erbjudande som ges muntligt bör du alltid be att få skriftligt innan du tackar ja på riktigt.\n\n## Varför tystnaden mellan stegen sällan betyder nej\n\nDet är den vanligaste källan till onödig oro i hela processen. Mellan varje steg ovan väntar interna moment du aldrig ser: chefen är på semester, budgeten ska godkännas internt, en annan kandidat ska intervjuas färdigt först, HR har fler processer i gång samtidigt än den där du är kandidat. Inget av det har med din prestation att göra.\n\nEtt faktiskt nej kommer nästan alltid som ett besked – ett mejl eller samtal, om än ibland ett kort sådant. Tystnad är i praktiken oftast bara att processen tar längre tid än du hade väntat dig, inte att den är över. Det gör inte väntan lättare, men det är värt att komma ihåg innan du drar en slutsats du inte har underlag för.\n\n## Vad gör jag nu\n\nHar du väntat länge utan besked är nästa steg inte att gissa – det är att fråga. Läs vår guide om att följa upp din ansökan för hur du gör det utan att verka påstridig. Håll koll på var i processen varje ansökan befinner sig så att du vet när det faktiskt är läge att höra av dig.\n\n## Vanliga frågor\n\n### Hur vet jag vilket steg jag är på om ingen har sagt det?\nFråga rekryteraren direkt efter en intervju: \"Vad är nästa steg, och ungefär när kan jag höra något?\" De flesta svarar gärna – det är en naturlig fråga att avsluta samtalet med.\n\n### Betyder det något extra om referenstagning tar lång tid?\nInte nödvändigtvis. Referenspersoner är svåra att få tag på, är på resa eller behöver flera påminnelser. Det säger mer om deras kalender än om ditt kandidatskap.\n\n### Kan jag hoppa över ett steg om jag redan har gjort liknande tidigare, till exempel ett arbetsprov hos en annan arbetsgivare?\nFråga, men räkna med nej. Varje arbetsgivare bedömer utifrån sin egen process och sina egna kriterier, även om uppgiften ser lik ut på ytan.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "referenssamtal-guide",
+        "intervju-forberedelser",
+        "arbetspsykologiska-tester",
+        "folja-upp-din-ansokan"
+      ],
+      "related_tools": [
+        "/applications"
+      ],
+      "slug": "rekryteringsprocessen-steg-for-steg",
+      "sort_order": 0,
+      "subcategory": "rekrytering",
+      "summary": "Gallring, urval, intervjuer, test, referenser och erbjudande – vad som avgör i varje steg och varför tystnaden emellan sällan betyder nej.",
+      "tags": [
+        "rekryteringsprocess",
+        "ansökan",
+        "urval",
+        "intervju"
+      ],
+      "title": "Rekryteringsprocessen steg för steg",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Kartlägg vad du behöver utveckla",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/skriva-in-dig-arbetsformedlingen",
+          "label": "Läs om inskrivningen",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Jämför minst två leverantörer i ditt område"
+        },
+        {
+          "id": "2",
+          "text": "Fråga hur ofta ni träffas och på vilket sätt"
+        },
+        {
+          "id": "3",
+          "text": "Fråga vilken erfarenhet leverantören har av din situation"
+        },
+        {
+          "id": "4",
+          "text": "Skriv ner vad som inte fungerar om du överväger att byta"
+        },
+        {
+          "id": "5",
+          "text": "Kontakta din handläggare för att begära byte vid behov"
+        }
+      ],
+      "content": "Rusta och matcha är den vanligaste vägen till extra stöd i jobbsökandet, men få vet att de faktiskt väljer vem som ger det stödet, och kan byta om det inte fungerar. Här är vad tjänsten är, hur du väljer, och vad du gör om det skaver.\n\n## Vad Rusta och matcha är\n\nRusta och matcha är en tjänst som Arbetsförmedlingen kan erbjuda dig som behöver extra stöd för att komma vidare mot jobb eller studier. I stället för att Arbetsförmedlingen själv coachar dig kopplas du till en fristående leverantör, ett företag som är godkänt av Arbetsförmedlingen för att leverera just den här tjänsten. Insatsen är tidsbegränsad och kan förlängas om det finns skäl för det utifrån din situation på arbetsmarknaden.\n\n## Du väljer leverantör själv, och du kan byta\n\nDet här är den del flest missar: du väljer själv vilken leverantör du vill ha, ungefär som du väljer vårdcentral. Arbetsförmedlingen visar upp de leverantörer som finns i ditt område, men beslutet är ditt. Passar det inte, för att kemin inte stämmer, för att leverantören inte levererar det du behöver, eller av något annat skäl, har du rätt att byta till en annan leverantör. Du behöver inget skäl som håller juridiskt. Det räcker att stödet inte fungerar för dig.\n\n## Vad en leverantör faktiskt ska leverera\n\nEn leverantör inom Rusta och matcha ska ge dig individuellt anpassat stöd mot jobb eller studier, inte en generisk kurs alla får samma version av. I praktiken innebär det oftast:\n\n- Ett inledande möte där ni går igenom din situation, dina mål och vad du behöver hjälp med.\n- Regelbundna avstämningar under insatsens gång.\n- Konkret stöd i jobbsökandet, som CV, ansökningar och kontakter med arbetsgivare, anpassat efter vad just du behöver.\n- Ett avslut där ni tillsammans går igenom vad som hänt och vad som är nästa steg.\n\nVad leverantören ska leverera i detalj finns beskrivet i Arbetsförmedlingens uppdrag till leverantörerna. Be leverantören visa vad som ingår om du är osäker.\n\n## Frågor att ställa innan du väljer\n\nInnan du bestämmer dig, fråga leverantören:\n\n- Hur ofta träffas vi, och är det fysiskt, digitalt eller bådadera?\n- Vilken erfarenhet har ni av min bransch eller situation?\n- Vad händer om jag inte är nöjd, finns det ett sätt att lyfta det innan jag byter?\n- Vem är min kontaktperson, och vad gör jag om den personen är borta?\n\nEtt bra svar är konkret. Ett svagt svar är allmänt hållet och undviker detaljer.\n\n## När samarbetet inte fungerar\n\nMärker du efter ett tag att det inte ger dig något, möten som känns tomma, ingen framdrift, dålig kontakt, behöver du inte stå ut till insatsen är slut. Kontakta din handläggare på Arbetsförmedlingen och be om att byta leverantör. Var konkret med vad som inte fungerat. Det gör bytet enklare och hjälper Arbetsförmedlingen hålla koll på vilka leverantörer som håller måttet.\n\n## Vem beslutar vad, och var du kontrollerar det gällande\n\nArbetsförmedlingen beslutar om du har rätt till Rusta och matcha och vilka leverantörer som är godkända i ditt område. Leverantören beslutar inte om din ersättning eller din status som arbetssökande, det ligger kvar hos Arbetsförmedlingen och, i förekommande fall, din a-kassa eller Försäkringskassan. Vilka leverantörer som finns just där du bor, och hur du byter, ser du inloggad på [Arbetsförmedlingens](https://arbetsformedlingen.se) Mina sidor.\n\n## Rusta och matcha ersätter inte din aktivitetsrapport\n\nÄven om du har en leverantör som stöttar dig varje vecka, fortsätter du att vara arbetssökande hos Arbetsförmedlingen med allt vad det innebär. Du ska fortfarande lämna din aktivitetsrapport i tid, och du ska fortfarande sköta din kontakt med a-kassan eller Försäkringskassan om du har ersättning som bygger på det. Leverantören kan hjälpa dig hålla koll på vad du gjort, men ansvaret för att rapportera ligger kvar hos dig. Blanda inte ihop mötena med leverantören med de skyldigheter du har direkt mot Arbetsförmedlingen.\n\n## Vad gör jag nu\n\nHar du blivit erbjuden Rusta och matcha, jämför ett par leverantörer i ditt område innan du väljer, och fråga frågorna ovan. Sitter du redan hos en leverantör som inte fungerar: kontakta din handläggare på Arbetsförmedlingen och begär byte. Du behöver inget godkänt skäl.\n\n## Vanliga frågor\n\n### Kostar det något att byta leverantör?\nNej, det är kostnadsfritt för dig som arbetssökande. Leverantörerna får ersättning från Arbetsförmedlingen, inte från dig.\n\n### Kan jag tacka nej till Rusta och matcha helt?\nDet beror på din situation och vad som står i din handlingsplan. Prata med din handläggare om vad som gäller för dig.\n\n### Påverkar ett byte av leverantör min ersättning?\nEtt byte i sig påverkar inte din ersättning. Det som kan påverka är om du inte medverkar i insatsen alls, oavsett leverantör.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "bemanningsforetag-guide",
+        "kompetensutveckling-guide",
+        "skriva-in-dig-arbetsformedlingen"
+      ],
+      "related_tools": [
+        "/skills-gap-analysis"
+      ],
+      "slug": "rusta-och-matcha",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Vad Rusta och matcha är, att du väljer leverantör själv, vilka frågor du bör ställa och vad du gör när det inte fungerar.",
+      "tags": [
+        "Rusta och matcha",
+        "Arbetsförmedlingen",
+        "leverantör",
+        "stöd"
+      ],
+      "title": "Rusta och matcha – så väljer du leverantör, och så byter du",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
       "actions": [],
       "author": "Sara Blom",
       "author_title": "Karriärrådgivare",
@@ -4306,6 +5463,386 @@
       ],
       "title": "Hitta och lyckas med säsongsjobb",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/job-search",
+          "label": "Sök jobb som passar din språknivå",
+          "type": "primary"
+        },
+        {
+          "href": "/calendar",
+          "label": "Få struktur på studier och sökande",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv i ansökan vilken språknivå du faktiskt ligger på"
+        },
+        {
+          "id": "2",
+          "text": "Fråga din SFI-lärare eller handläggare om kombinationsutbildning finns"
+        },
+        {
+          "id": "3",
+          "text": "Sök jobb där du möter svenska varje dag"
+        },
+        {
+          "id": "4",
+          "text": "Lägg studietider och jobbsökande i samma kalender"
+        }
+      ],
+      "content": "Du behöver inte kunna svenska flytande innan du börjar söka jobb. Att läsa SFI och att söka jobb är två saker som kan pågå samtidigt – och för många fungerar de faktiskt bättre tillsammans än var för sig.\n\n## Det ena behöver inte vänta på det andra\n\nDet är lätt att tänka att jobbsökandet börjar \"på riktigt\" den dag språket sitter. Men arbetsmarknaden har plats för olika språknivåer, och ju tidigare du kommer in i ett sammanhang där svenska talas, desto snabbare går språket framåt. Att vänta på ett visst kunskapsläge innan du söker jobb kostar dig tid åt båda hållen.\n\nMånga kommuner erbjuder dessutom kombinationsutbildningar där SFI läses parallellt med en yrkesutbildning eller praktik. Fråga din SFI-lärare eller din handläggare på Arbetsförmedlingen om det finns en sådan väg för din bransch – den kombinerar just språk och arbetsliv i stället för att ställa dem mot varandra.\n\n## Beskriv din språknivå ärligt\n\nÖverdriv aldrig din svenska i en ansökan – det upptäcks snabbt på plats och skapar en svårare situation än om du varit tydlig från början. Men underdriv den inte heller. Beskriv var du faktiskt befinner dig, och vad du kan göra med språket:\n\n- \"Jag läser svenska på SFI och kan föra enkla arbetsrelaterade samtal. Jag lär mig snabbt i praktiska sammanhang.\"\n- \"Jag förstår svenska bra i skrift men behöver fortfarande öva på att prata i snabbt tempo.\"\n- \"Jag talar engelska flytande och svenska på grundläggande nivå, och tar gärna en roll där jag får öva svenskan i vardagen.\"\n\nDet här är information en arbetsgivare vill ha, inte något att dölja. En ärlig beskrivning gör att du hamnar rätt från början, i stället för i ett jobb där språkkravet visar sig vara högre än du klarar just nu.\n\n## Jobb som fungerar tidigt i språkinlärningen\n\nVissa arbetsplatser är bättre än andra att börja på medan svenskan fortfarande är under uppbyggnad:\n\n- Arbeten där uppgifterna är tydliga och visuella, och där du kan lära dig rutinerna genom att se dem utföras.\n- Arbetsplatser med flera språk i bruk, där kollegor är vana vid att förklara på olika sätt.\n- Roller där du arbetar nära en eller ett fåtal personer i stället för att möta många nya människor varje dag – det gör det lättare att växa in i språket i din egen takt.\n- Praktikplatser och arbetsträning, där syftet uttryckligen är att lära dig medan du arbetar.\n\nFråga gärna på intervjun hur arbetsplatsen brukar göra med medarbetare som fortfarande lär sig svenska. Svaret säger mycket om hur väl du kommer trivas där.\n\n## Få ihop schemat\n\nAtt kombinera studier och jobbsökning – och senare studier och arbete – kräver planering, men det går att lösa:\n\n- Prata med din SFI-lärare om vilka tider på dagen som är mest flexibla, och om det går att byta grupp om ett jobb kräver det.\n- Var tydlig mot en arbetsgivare redan vid intervjun om vilka tider du har lektioner, i stället för att upptäcka en krock senare.\n- Använd en kalender för att hålla studietider, jobbsökaraktiviteter och eventuella möten med Arbetsförmedlingen samlade på ett ställe, så att inget krockar i sista minuten.\n- Fråga om deltid eller flexibla arbetstider är möjligt i början, med sikte på att öka när både språk och rutin sitter bättre.\n\n## Använd jobbet som språkträning\n\nEtt arbete är ett av de snabbaste sätten att lära sig vardagssvenska, eftersom språket där är kopplat till verkliga situationer i stället för övningar. Du hör samma fraser upprepas, du måste svara i stunden, och misstag rättas naturligt i samtalet i stället för på ett prov.\n\n- Lyssna på hur kollegor formulerar samma sak på olika sätt, och testa själv.\n- Skriv ner ord och uttryck du hör på jobbet och som du inte förstår, och fråga om dem senare – på jobbet eller på SFI-lektionen.\n- Se varje arbetsdag som en språklektion utöver att vara ett jobb, det sänker pressen på att prestera perfekt svenska från dag ett.\n\n## Vad du gör nu\n\nFortsätt läsa SFI i den takt som passar dig, men börja söka jobb parallellt redan nu – vänta inte på ett visst kunskapsläge. Skriv en ärlig mening om din språknivå i nästa ansökan, och prata med din lärare eller handläggare om det finns en kombinationsutbildning som passar dig. Lägg studietider och jobbsökaraktiviteter i samma kalender så att du ser helheten.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "svenska-pa-jobbet",
+        "etableringsprogrammet",
+        "struktur-jobbsokning",
+        "latt-svenska-soka-jobb"
+      ],
+      "related_tools": [
+        "/job-search",
+        "/calendar"
+      ],
+      "slug": "sfi-och-jobbsokande-samtidigt",
+      "sort_order": 0,
+      "subcategory": "sfi",
+      "summary": "Hur du kombinerar SFI-studier med jobbsökning, beskriver din språknivå ärligt och använder jobbet som språkträning.",
+      "tags": [
+        "SFI",
+        "svenska",
+        "jobbsökning",
+        "kombinationsutbildning"
+      ],
+      "title": "Söka jobb medan du läser SFI – varför du inte behöver vänta",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/calendar",
+          "label": "Håll koll på avstämningarna med din konsulent",
+          "type": "primary"
+        },
+        {
+          "href": "/diary",
+          "label": "Skriv ner hur introduktionen går",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Ta upp behovet av SIUS med din handläggare innan en anställning börjar"
+        },
+        {
+          "id": "2",
+          "text": "Beskriv konkret vilka moment som brukar vara svåra i en ny arbetsmiljö"
+        },
+        {
+          "id": "3",
+          "text": "Fråga om konsulenten kan följa med på anställningsintervjun"
+        },
+        {
+          "id": "4",
+          "text": "Kom överens med konsulenten om vad som ska förklaras för arbetsgivaren"
+        },
+        {
+          "id": "5",
+          "text": "Boka in avstämningar under uppföljningsperioden, inte bara i introduktionen"
+        }
+      ],
+      "content": "SIUS står för särskilt introduktions- och uppföljningsstöd, och är en person – en SIUS-konsulent – som hjälper dig komma in i ett nytt jobb och stannar kvar som stöd en tid efter att du börjat. Stödet finns alltså både före och efter att anställningen inleds, inte bara vid ett enskilt tillfälle.\n\n## Vad en SIUS-konsulent gör\n\nEn SIUS-konsulent har utbildning i introduktionsmetodik och arbetar konkret, ofta ute på arbetsplatsen tillsammans med dig. Det handlar inte om samtal på ett kontor, utan om att vara med där jobbet faktiskt görs.\n\nI praktiken kan det se ut så här:\n\n- Konsulenten lär sig arbetsuppgifterna tillsammans med dig, ibland genom att göra dem parallellt en period.\n- Konsulenten bryter ner moment som är otydliga till steg som går att lära in.\n- Konsulenten finns med som en länk mellan dig och chefen, särskilt i början när ingen riktigt vet hur mycket som behöver förklaras.\n- Konsulenten trappar ner sin närvaro i takt med att du blir tryggare i rollen, i stället för att försvinna på en gång.\n\n## Stödet sträcker sig över hela övergången\n\nMånga tror att SIUS bara handlar om de första dagarna på ett jobb. Så är det inte. Stödet är uppdelat i två delar som hänger ihop:\n\n**Introduktionsstödet** ligger i början – konsulenten är med och lär in arbetsuppgifterna tillsammans med dig, ofta tätt de första veckorna.\n\n**Uppföljningsstödet** kommer efteråt, när du redan är anställd. Konsulenten hör av sig, stämmer av hur det går och finns tillgänglig om något behöver redas ut – med dig eller med arbetsgivaren.\n\nAtt stödet fortsätter efter anställningsstart är den del som oftast kommer som en överraskning, och den del som gör skillnad när ett nytt jobb känns skört de första månaderna.\n\n## Hur du blir aktuell för SIUS\n\nDu behöver vara inskriven som arbetssökande hos Arbetsförmedlingen och ha ett behov av särskilt stöd för att komma in på en arbetsplats – ett behov som din handläggare bedömer tillsammans med dig. Det är inte något du beställer själv i förväg; det växer fram ur samtalet om vad som skulle krävas för att ett jobb ska funka för dig.\n\nBra tillfällen att ta upp det:\n\n- När du och handläggaren pratar om varför tidigare jobb eller praktik inte fungerat.\n- När en arbetsgivare visat intresse men är osäker på vad anställningen skulle kräva av dem.\n- När du själv känner att det inte är själva arbetsuppgifterna som är svåra, utan allt runt omkring – att förstå vad som förväntas, hitta rutiner, våga fråga.\n\n## Vad du kan be konsulenten om, konkret\n\nDet är lätt att tro att stödet är vagt eller allmänt hållet. Det är det inte. Du kan be om saker som:\n\n- **Att följa med på en anställningsintervju**, som stöd eller för att förklara vilket stöd som finns tillgängligt för arbetsgivaren.\n- **Att förklara ett specifikt arbetsmoment** på ett sätt som funkar för dig, om den vanliga introduktionen går för fort eller är otydlig.\n- **Att prata med chefen** om vad som är svårt just nu, om du själv inte hittar orden i stunden.\n- **Att vara med de första dagarna**, om det är själva nyheten i allt – ny plats, nya människor, nya rutiner – som är det tunga.\n\nJu tydligare du kan beskriva vad som brukar krångla, desto lättare är det för konsulenten att sätta in rätt stöd i rätt ögonblick.\n\n## Vanliga frågor\n\n### Kostar SIUS mig något?\n\nNej. Stödet är kostnadsfritt för dig och organiseras genom Arbetsförmedlingen.\n\n### Får arbetsgivaren veta varför jag har en SIUS-konsulent?\n\nDet du väljer att berätta är din sak. Konsulenten och du kommer överens om hur mycket som behöver förklaras för arbetsgivaren – ofta räcker det att säga vilka anpassningar som behövs, inte varför.\n\n### Vad händer om det inte fungerar med den arbetsplatsen ändå?\n\nDå är det något du och konsulenten pratar igenom tillsammans. Att en plats inte blev rätt är inte ett misslyckande i sig – det är information som tas med in i nästa försök.\n\n## Vad gör du nu\n\nTa upp SIUS med din handläggare på Arbetsförmedlingen, gärna innan en anställning börjar snarare än efter att det redan känns tungt. Beskriv så konkret du kan vad som brukar vara svårt i övergången till ett nytt jobb – det är underlaget för vilket stöd du erbjuds.\n\nMer om hur du blir aktuell finns på [arbetsformedlingen.se](https://arbetsformedlingen.se).",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "rattigheter-stod",
+        "funktionsnedsattning-jobbsokning",
+        "lonebidrag-sa-fungerar-det",
+        "praktik-som-vag-in"
+      ],
+      "related_tools": [
+        "/calendar",
+        "/diary"
+      ],
+      "slug": "sius-stod-vid-introduktion",
+      "sort_order": 0,
+      "subcategory": "stod-vid-introduktion",
+      "summary": "En SIUS-konsulent hjälper dig komma in i ett nytt jobb, både innan och efter att du börjat. Så blir du aktuell, och så här kan du använda stödet konkret.",
+      "tags": [
+        "SIUS",
+        "Arbetsförmedlingen",
+        "introduktion",
+        "funktionsnedsättning"
+      ],
+      "title": "SIUS – stöd när du ska introduceras i ett nytt jobb",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/wellness",
+          "label": "Håll koll på ditt mående",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/lon-och-formaner-guide",
+          "label": "Läs om lön och förmåner",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Sjukanmäl dig till din arbetsgivare samma dag, inte till Försäkringskassan"
+        },
+        {
+          "id": "2",
+          "text": "Ta reda på vad som gäller för läkarintyg på din arbetsplats"
+        },
+        {
+          "id": "3",
+          "text": "Anmäl vab till Försäkringskassan, inte till arbetsgivaren"
+        },
+        {
+          "id": "4",
+          "text": "Meddela ändå arbetsgivaren att du är borta när du vabbar"
+        },
+        {
+          "id": "5",
+          "text": "Spara intyg om du behöver styrka något senare"
+        }
+      ],
+      "content": "Att bli sjuk eller behöva stanna hemma med ett sjukt barn känns extra osäkert när du precis har börjat ett nytt jobb. Här är vem som betalar, i vilken ordning, och vem du faktiskt ska ringa.\n\n## Steg ett: du sjukanmäler dig till arbetsgivaren, inte till en myndighet\n\nBlir du sjuk är första steget alltid att meddela din arbetsgivare, så snart du kan, enligt de rutiner som gäller på just din arbetsplats. Det är inte Försäkringskassan du kontaktar i det här läget – de kommer in senare, om sjukperioden drar ut på tiden.\n\n## Vem betalar när du är sjuk, och i vilken ordning\n\nAnsvaret flyttas i två steg:\n\n| Vem | Vad som gäller |\n|---|---|\n| Din arbetsgivare | Betalar sjuklön under en inledande period av sjukfrånvaron, med ett karensavdrag i början av perioden |\n| Försäkringskassan | Tar över och betalar sjukpenning om sjukperioden fortsätter längre än den period arbetsgivaren ansvarar för |\n\nDu behöver inte själv hålla reda på exakt när ansvaret flyttas över – det sköts mellan arbetsgivaren och Försäkringskassan. Din uppgift är att sjukanmäla dig i tid och lämna de intyg som efterfrågas när sjukperioden pågår ett tag.\n\nÄr du timanställd eller saknar rätt till sjuklön från en arbetsgivare av andra skäl är det i stället Försäkringskassan som sköter hela beräkningen, karensavdrag inräknat, från första dagen.\n\n## Vad är karensavdrag, och varför finns det\n\nKarensavdraget är en del av sjuklönen som dras bort i början av en sjukperiod, oavsett vilken tid på dagen du blir sjuk eller hur ditt schema ser ut. Tanken bakom det är att sjukfrånvaro ska ha en liten egen kostnad för den anställde också, inte bara för arbetsgivaren – det är en konstruktion i lagen, inte något din arbetsgivare hittar på själv.\n\n**En sak är värd att känna till:** blir du sjuk igen kort efter att ha varit tillbaka på jobbet räknas det ofta som en fortsättning på samma sjukperiod i stället för en ny, och då görs inget nytt karensavdrag. Var gränsen går kan skilja sig beroende på om arbetsplatsen har kollektivavtal – fråga din arbetsgivare eller ditt fack om du är osäker i en konkret situation.\n\n## När krävs läkarintyg\n\nDe första dagarna av en sjukperiod räcker det normalt att du själv anmäler att du är sjuk, utan intyg. Fortsätter sjukperioden krävs ett läkarintyg, både för att arbetsgivaren ska fortsätta betala sjuklön och senare för att Försäkringskassan ska betala sjukpenning. Exakt när intyget krävs kan skilja sig åt beroende på om arbetsplatsen har kollektivavtal som ändrar den vanliga gränsen – fråga din chef eller HR om du är osäker, i stället för att gissa.\n\n## Vab – vård av barn\n\nVab, vård av barn, är den ersättning du kan söka när du behöver stanna hemma för att ta hand om ett sjukt barn i stället för att gå till jobbet. Den kallas tillfällig föräldrapenning och betalas av Försäkringskassan, inte av din arbetsgivare.\n\nTvå saker att hålla isär:\n\n- **Du anmäler vab till Försäkringskassan** – det är dit ansökan om ersättning går.\n- **Du meddelar din arbetsgivare separat** att du är frånvarande, precis som vid egen sjukdom, så de vet att du inte kommer in.\n\nPågår vab-perioden en tid kan Försäkringskassan begära ett intyg för att styrka att barnet fortfarande behöver vård, på samma sätt som vid egen sjukdom.\n\n## Vem ringer du, och när\n\nEn snabb minnesregel:\n\n- **Sjuk själv, i början av perioden** → meddela arbetsgivaren.\n- **Sjuk själv, om det drar ut på tiden** → Försäkringskassan tar över, ofta med automatik från arbetsgivarens anmälan, men håll koll på att du lämnat de intyg som krävs.\n- **Barnet är sjukt** → ansök om vab hos Försäkringskassan, och meddela arbetsgivaren att du är borta.\n- **Osäker på karensavdrag, intygsgränser eller vad som gäller just din anställning** → fråga arbetsgivaren, Försäkringskassan eller ditt fack. Ingen förväntar sig att du ska kunna det här utantill när du är ny.\n\n[forsakringskassan.se](https://www.forsakringskassan.se)\n\n## Vad gör du nu\n\nTa reda på vad som gäller för sjukanmälan på just din arbetsplats redan innan du behöver använda det – vem du ringer, och om det finns en app eller ett system för det. Spara Försäkringskassans kontaktuppgifter någonstans lättillgängligt. Och känn dig inte konstig över att fråga chefen rakt ut hur det fungerar med karensavdrag eller läkarintyg – det är en fråga alla nya på ett jobb har.\n\n## Vanliga frågor\n\n### Måste jag ha jobbat en viss tid innan jag får sjuklön?\nSjuklön är kopplad till att du är anställd, inte i första hand till hur länge du hunnit jobba. Det finns undantag för väldigt kortvariga anställningar – är du osäker, fråga din arbetsgivare eller ditt fack om just din situation.\n\n### Vad händer om jag blir sjuk under min provanställning?\nSamma regler gäller som för andra anställningar – att du är på prov ändrar inte rätten till sjuklön.\n\n### Kan jag vabba för andra barn än mina egna?\nI vissa fall, till exempel om du är den som faktiskt vårdar barnet i vardagen även om du inte är vårdnadshavare. Är din situation inte den självklara familjebilden, kontrollera med Försäkringskassan vad som gäller just dig.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "lon-och-formaner-guide",
+        "forsta-90-dagarna",
+        "personlig-ekonomi-jobbsokning"
+      ],
+      "related_tools": [
+        "/wellness"
+      ],
+      "slug": "sjuklon-karens-och-vab",
+      "sort_order": 0,
+      "subcategory": "sjukdom-och-vab",
+      "summary": "Vem som betalar när du blir sjuk eller vabbar, vad karensavdrag är, när läkarintyg krävs, och vem du ska ringa.",
+      "tags": [
+        "sjuklön",
+        "karensavdrag",
+        "vab",
+        "sjukskrivning"
+      ],
+      "title": "Sjuklön, karensavdrag och vab – när du är ny på jobbet",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/salary",
+          "label": "Se löneläget för ditt yrke",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/lon-och-formaner-guide",
+          "label": "Läs om lön och förmåner",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "employment-law",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Läs igenom hela lönebeskedet, inte bara nettobeloppet"
+        },
+        {
+          "id": "2",
+          "text": "Kontrollera att rätt skatteuppgift är registrerad hos arbetsgivaren"
+        },
+        {
+          "id": "3",
+          "text": "Logga in hos Skatteverket och se din egen skatteuppgift"
+        },
+        {
+          "id": "4",
+          "text": "Räkna med jämkning om du har flera arbetsgivare samtidigt"
+        },
+        {
+          "id": "5",
+          "text": "Spara lönebeskeden om du behöver jämföra dem senare"
+        }
+      ],
+      "content": "Ditt första lönebesked ser ut som en sifferröra tills du vet vad varje rad betyder. Här är mekaniken bakom bruttolön, preliminärskatt och varför den kan bli fel om du har flera jobb samtidigt.\n\n## Bruttolön, skatteavdrag och nettolön – vad raderna betyder\n\nEtt lönebesked bygger på tre grundbegrepp som bygger på varandra:\n\n- **Bruttolön** – hela lönen innan något dras av. Det är den siffra som står i ditt anställningsavtal.\n- **Preliminärskatt** – det din arbetsgivare drar av och betalar in till Skatteverket åt dig, i förskott, innan du ens sett pengarna.\n- **Nettolön** – det som faktiskt landar på ditt konto: bruttolön minus preliminärskatt minus eventuella andra avdrag.\n\nOrdet \"preliminär\" är nyckeln. Det är en uppskattning som görs varje månad, inte den slutgiltiga uträkningen av vad du faktiskt ska betala i skatt för hela året. Den slutgiltiga uträkningen kommer senare, i ditt slutskattebesked.\n\n## Skattetabellen – en grov uppskattning, inte ett facit\n\nNär du börjar ett jobb fyller arbetsgivaren i din skatteinformation och drar sedan skatt enligt en skattetabell. Tabellen är byggd på ett antagande: att det här är din **enda** inkomst under hela året, jämnt fördelad månad för månad. Så länge det stämmer blir det oftast rätt, eller nära nog rätt.\n\nProblemet är att tabellen inte vet om dig – den vet bara vad just den här arbetsgivaren betalar ut. Har du bara ett jobb, ett helt år, är det sällan några konstigheter.\n\n## När det blir fel: flera arbetsgivare samma år\n\nHar du två jobb samtidigt, eller bytt jobb mitt i året, drar **varje** arbetsgivare skatt som om just deras lön var din enda inkomst. Ingen av dem vet om den andra. Resultatet är att den sammanlagda skatten som dragits under året kan hamna fel jämfört med vad du faktiskt ska betala totalt – i endera riktningen, beroende på hur inkomsterna är fördelade. Det är inte ett fel någon gjort, utan en konsekvens av att systemet är byggt per arbetsgivare, inte per person.\n\nDet är precis den situationen jämkning finns till för.\n\n## Vad är jämkning, och när ska du använda det\n\nJämkning innebär att du ber Skatteverket räkna ut ett skatteavdrag som är anpassat efter din verkliga, samlade situation – inte efter antagandet om en enda arbetsgivare hela året. Du ansöker hos Skatteverket och beskriver dina förväntade inkomster. De räknar fram ett beslut om avdrag, och det beslutet lämnar du sedan till din arbetsgivare, som är skyldig att följa det i stället för standardtabellen.\n\nDet är särskilt värt att fundera på om:\n- du har **flera arbetsgivare samtidigt**,\n- du bara jobbar **en del av året**,\n- eller din inkomst **varierar mycket** mellan månaderna.\n\nPoängen med att jämka är att slippa överraskningar senare – antingen att behöva betala in mer skatt i efterhand, eller att ha fått för lite i handen varje månad i onödan.\n\n## Om du bara jobbat del av året\n\nBörjar du ditt första jobb mitt i året påverkar det hur den sammanlagda bilden ser ut, av samma anledning som ovan: skattetabellen är byggd för en jämn inkomst över tolv månader. Har du bara inkomst under en del av året kan din totala skatt för året se annorlunda ut än vad den löpande preliminärskatten antydde. Det rättar till sig i slutskattebeskedet, men om du vill ha koll löpande i stället för att vänta är jämkning vägen dit.\n\n## Var du kontrollerar din egen skatt\n\nGissa inte – kontrollera. Skatteverket har all information om din preliminära skatt, dina inbetalningar och senare ditt slutskattebesked samlat digitalt. Det är också dit du vänder dig för att ansöka om jämkning, och för att se exakt vilken skattetabell eller vilket avdrag som gäller just dig.\n\n[skatteverket.se](https://www.skatteverket.se)\n\n## Vad gör du nu\n\nLäs igenom ditt första lönebesked rad för rad i stället för att bara titta på nettobeloppet. Har du eller kommer du att ha mer än en arbetsgivare under samma år – lägg fem minuter på att titta på jämkning innan skatteåret är slut, inte efter. Och spara lönebeskeden. De är enkla att jämföra mot varandra om något känns fel, och du slipper leta i efterhand.\n\n## Vanliga frågor\n\n### Varför skiljer sig skatten mellan mina lönebesked, fast lönen är ungefär densamma?\nOfta beror det på att skattetabellen räknar lite olika beroende på var i året du är, eller att något engångsbelopp (till exempel semesterersättning) räknats in en viss månad. Känns det konstigt, gå in på Skatteverkets sida och jämför mot din egen uppgift.\n\n### Måste jag göra något om jag bara har ett extrajobb vid sidan av studier?\nInte nödvändigtvis – men har du flera källor till inkomst samtidigt, kolla ändå om jämkning är värt det. Det kostar inget att kontrollera.\n\n### Vad händer om för lite skatt har dragits under året?\nDet synas i slutskattebeskedet, och du får då betala mellanskillnaden i efterhand. Jämkning i god tid är sättet att undvika att bli överraskad av det.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "lon-och-formaner-guide",
+        "personlig-ekonomi-jobbsokning",
+        "arbetsgivarintyg-och-betyg"
+      ],
+      "related_tools": [
+        "/salary"
+      ],
+      "slug": "skatt-pa-lon-forsta-jobbet",
+      "sort_order": 0,
+      "subcategory": "skatt-och-lonebesked",
+      "summary": "Brutto, netto och preliminärskatt förklarat, och varför skatten kan bli fel med flera arbetsgivare – och vad jämkning gör åt det.",
+      "tags": [
+        "skatt",
+        "lönebesked",
+        "jämkning",
+        "första jobbet"
+      ],
+      "title": "Skatt på lönen – så läser du ditt första lönebesked",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/cv",
+          "label": "Bygg ditt CV innan mötet",
+          "type": "primary"
+        },
+        {
+          "href": "/knowledge-base/article/rusta-och-matcha",
+          "label": "Läs om Rusta och matcha",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv in dig samma dag som du blir arbetslös"
+        },
+        {
+          "id": "2",
+          "text": "Ha ett CV-utkast redo, det behöver inte vara klart"
+        },
+        {
+          "id": "3",
+          "text": "Lista din utbildning och tidigare anställningar"
+        },
+        {
+          "id": "4",
+          "text": "Tänk igenom vad du vill jobba med, eller vilka branscher som lockar"
+        },
+        {
+          "id": "5",
+          "text": "Skriv ner frågor du vill ställa på planeringssamtalet"
+        }
+      ],
+      "content": "Att skriva in sig på Arbetsförmedlingen är det första praktiska steget när du blir arbetssökande, och tajmingen spelar roll. Här är när det ska ske, vad som händer vid inskrivningen, och hur du förbereder dig inför första mötet.\n\n## Varför just första dagen\n\nSkriv in dig hos Arbetsförmedlingen din första dag utan arbete, inte veckan efter, inte när du \"hunnit tänka igenom det\". Anledningen är att flera saker som hänger ihop med din ersättning räknas från inskrivningsdatumet, inte från dagen du faktiskt blev arbetslös. Väntar du, väntar även allt annat som bygger på att du är inskriven: din kontakt med en handläggare, din handlingsplan, och underlaget din a-kassa eller Försäkringskassan behöver för att pröva din ersättning.\n\n## Så går inskrivningen till\n\nInskrivningen sker digitalt, inloggad med e-legitimation på Arbetsförmedlingens webbplats. Du fyller i uppgifter om din utbildning, din arbetslivserfarenhet, dina kompetenser och vad för slags jobb du söker. I slutet av processen bokar du en tid för ditt första samtal med en handläggare. Har du inte e-legitimation, eller behöver hjälp med tekniken, går det att få stöd. Kontakta Arbetsförmedlingen för att höra hur det löses i din situation.\n\n## Planeringssamtalet, vad det är\n\nPlaneringssamtalet är ditt första riktiga möte med en handläggare, antingen digitalt eller på plats beroende på vad som erbjuds där du bor. Ni går igenom din bakgrund, vad du siktar på, och vilket stöd som kan vara aktuellt för dig. Resultatet blir en individuell handlingsplan: ett dokument som beskriver dina mål, vad du ska göra för att nå dem, och hur ofta du ska rapportera din aktivitet. Handlingsplanen är inte statisk, den uppdateras när din situation förändras, så säg till om något inte längre stämmer.\n\n## Inskriven är inte samma sak som att delta i ett program\n\nDet här missförstås ofta. Att vara inskriven som arbetssökande betyder att du finns registrerad hos Arbetsförmedlingen och har en handlingsplan, det är en grundläggande status. Att delta i ett program, till exempel Rusta och matcha eller en arbetsmarknadsutbildning, är ett extra beslut ovanpå det, som Arbetsförmedlingen fattar utifrån vad du behöver. Du kan alltså vara inskriven utan att delta i något program, men du kan inte delta i ett program utan att först vara inskriven.\n\n## Så förbereder du dig inför första mötet\n\nHa koll på det här innan samtalet, så går det snabbare och du får ut mer av det:\n\n- **Ditt CV**, även om det inte är klart, ett utkast räcker.\n- En lista över **din utbildning och tidigare anställningar**, med ungefärliga tidsperioder.\n- Vad du **vill jobba med**, eller vilka branscher du är öppen för, om du inte är säker.\n- Om du har en **funktionsnedsättning eller ett hälsotillstånd** som påverkar vilket stöd du behöver, det är bra att nämna redan här, för det styr vilket stöd du kan erbjudas.\n- Frågor du redan har, skrivna ner så du inte glömmer dem i stunden.\n\n## Vad händer efter inskrivningen\n\nInskrivningen är inte ett engångssteg utan en status du håller vid liv. Så fort du är inskriven börjar Arbetsförmedlingens rutiner löpa: du ska lämna en aktivitetsrapport regelbundet, du kan bli anvisad program eller stöd som Rusta och matcha om din handläggare bedömer att du behöver det, och din handlingsplan ska följas upp och uppdateras när något förändras i din situation. Får du ersättning från din a-kassa eller aktivitetsstöd via Försäkringskassan bygger den fortsatta utbetalningen på att du sköter de här delarna, inte bara på att du en gång skrev in dig. Ändras din situation, ett nytt jobb, sjukdom, flytt, meddela Arbetsförmedlingen så din status stämmer.\n\n## Vad gör jag nu\n\nÄr du arbetslös i dag och inte inskriven: gör det nu, inte i morgon, på [Arbetsförmedlingens](https://arbetsformedlingen.se) webbplats. Har du redan ett inbokat planeringssamtal: samla ihop punkterna i listan ovan innan du går in i mötet, det gör att ni kommer längre på kortare tid.\n\n## Vanliga frågor\n\n### Måste jag skriva in mig även om jag snart ska börja ett nytt jobb?\nVet du att du inte kommer behöva stöd kan du välja att avregistrera dig igen inom en kort period efter inskrivningen, och du behöver då inget planeringssamtal. Är du osäker, skriv in dig ändå. Det kostar dig ingenting att ha statusen om du inte behöver den.\n\n### Vad händer om jag missar mitt planeringssamtal?\nHör av dig till Arbetsförmedlingen så fort som möjligt för att boka om. Ett missat möte utan förklaring kan påverka hur din situation bedöms längre fram.\n\n### Kan jag byta handläggare om det inte känns rätt?\nJa, det går att be om att byta. Kontakta Arbetsförmedlingens kundtjänst eller din nuvarande handläggare och förklara varför.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "lattsvenska-arbetsformedlingen",
+        "forsta-veckan-checklista",
+        "a-kassa-sa-fungerar-det",
+        "rusta-och-matcha"
+      ],
+      "related_tools": [
+        "/cv"
+      ],
+      "slug": "skriva-in-dig-arbetsformedlingen",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "När du ska skriva in dig, vad som händer vid inskrivningen, vad planeringssamtalet är och hur du förbereder dig.",
+      "tags": [
+        "Arbetsförmedlingen",
+        "inskrivning",
+        "planeringssamtal"
+      ],
+      "title": "Skriva in dig på Arbetsförmedlingen – så går det till",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/career",
+          "label": "Fundera igenom vad som passar dig",
+          "type": "primary"
+        },
+        {
+          "href": "/job-search",
+          "label": "Sök vidare medan du väntar på besked",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Ta upp skyddat arbete med din handläggare om andra vägar inte har fungerat"
+        },
+        {
+          "id": "2",
+          "text": "Fråga specifikt vad en utredning skulle innebära och vad som prövas"
+        },
+        {
+          "id": "3",
+          "text": "Be om ett besök eller en introduktion innan du bestämmer dig"
+        },
+        {
+          "id": "4",
+          "text": "Säg tydligt om övergång till en annan arbetsgivare är ett mål för dig"
+        },
+        {
+          "id": "5",
+          "text": "Håll samtalet om att stanna eller gå vidare öppet, inte bestämt i förväg"
+        }
+      ],
+      "content": "Skyddat arbete hos Samhall är en anställningsform för dig vars arbetsförmåga är så nedsatt att du har svårt att få jobb med annat stöd på den vanliga arbetsmarknaden. Du söker inte platsen själv – det är Arbetsförmedlingen som bedömer och avgör om Samhall är rätt väg för dig.\n\n## Vad skyddat arbete faktiskt är\n\nDet är en riktig anställning, med lön, kollektivavtal och de rättigheter som följer med det – men arbetet är organiserat och anpassat på ett sätt som en vanlig arbetsplats sällan är. Tempo, arbetsuppgifter och stöd är byggda utifrån att arbetsförmågan varierar, inte utifrån att alla ska prestera lika.\n\nSkillnaden mot lönebidrag och arbetsträning är att skyddat arbete inte är ett tillfälligt stöd till en anställning någon annanstans – det är själva anställningen, hos Samhall som arbetsgivare.\n\n## Vem det är till för\n\nSkyddat arbete riktar sig till dig vars arbetsförmåga är nedsatt på ett sätt som gör att du har svårt att få och behålla ett jobb på den öppna arbetsmarknaden, även med andra stöd som lönebidrag. Det är alltså inte en första åtgärd – oftast har andra vägar redan prövats eller bedömts inte räcka till.\n\nBedömningen handlar om vad du behöver för att kunna arbeta, inte om en diagnos i sig.\n\n## Hur du blir aktuell\n\nDu kan inte söka en tjänst hos Samhall på samma sätt som ett vanligt jobb. Vägen dit går genom Arbetsförmedlingen:\n\n1. Du och din handläggare pratar igenom din situation och vad tidigare försök att komma ut i arbete visat.\n2. Arbetsförmedlingen utreder om din arbetsförmåga är nedsatt på ett sätt som gör skyddat arbete relevant.\n3. Om bedömningen pekar dit, förs en dialog med Samhall om vilken typ av uppgifter och arbetsplats som skulle passa.\n4. Ett besök eller en introduktion kan ordnas innan en anställning blir aktuell, så att du får se hur det faktiskt fungerar innan du bestämmer dig.\n\nVill du undersöka om det här är något för dig, är rätt startpunkt ett samtal med din handläggare – inte en ansökan till Samhall direkt.\n\n## Vad anställningen ger – och vad den inte ger\n\nDet är värt att vara ärlig här, åt båda hållen.\n\n| Det här ger skyddat arbete | Det här ger det inte automatiskt |\n|---|---|\n| En riktig anställning med lön och trygghet | En genväg till den öppna arbetsmarknaden |\n| Arbetsuppgifter och tempo anpassade efter din förmåga | Samma typ av karriärutveckling som ett vanligt jobb |\n| Kontinuitet och stabilitet i vardagen | Garanti om att övergång till en annan arbetsgivare sker |\n| Struktur och kollegor i en arbetsmiljö byggd för variation | Samma lönenivå som du skulle haft i alla yrken |\n\nSkyddat arbete är inte en tröstpris och inte heller ett provisorium i väntan på \"riktigt\" jobb – för många är det den arbetsplats som faktiskt håller, år efter år. Men det är heller inte automatiskt ett steg mot något annat. Vad det blir beror på vad du och din handläggare bygger in i planen från början.\n\n## Övergång till en vanlig arbetsgivare\n\nFör dig som vill vidare finns möjligheten att gå från Samhall till en anställning hos en annan arbetsgivare, ofta med stöd under övergången – till exempel i form av en period med extra uppföljning på den nya platsen. Men det sker inte av sig själv. Det kräver att du säger att det är målet, och att planen läggs upp med det i sikte, snarare än att anställningen hos Samhall bara fortsätter av tröghet.\n\nOm du är osäker på om du vill stanna eller gå vidare, är det ett rimligt samtal att ha öppet – med din chef på Samhall eller med Arbetsförmedlingen – snarare än något du behöver bestämma i förväg.\n\n## Vanliga frågor\n\n### Kan jag söka jobb hos Samhall direkt, som vilken arbetsgivare som helst?\n\nNej. Vägen in går via en bedömning hos Arbetsförmedlingen, inte via en vanlig jobbansökan.\n\n### Är skyddat arbete tidsbegränsat?\n\nFormerna varierar och beror på din situation – fråga din handläggare vad som gäller för dig.\n\n### Kan jag tacka nej om jag blir erbjuden en plats?\n\nJa. Det är din anställning, och du väljer om den passar dig.\n\n## Vad gör du nu\n\nTa upp skyddat arbete med din handläggare på Arbetsförmedlingen om du känner att andra vägar in på arbetsmarknaden inte har fungerat, trots stöd. Fråga specifikt vad en utredning skulle innebära och vad som skulle prövas – det ger dig ett tydligare underlag än att gissa dig till om det är rätt för dig.\n\nLäs mer om skyddat arbete och Samhall på [arbetsformedlingen.se](https://arbetsformedlingen.se).",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "rattigheter-stod",
+        "jobbsokning-funktionsnedsattning",
+        "arbetstraning-vad-innebar-det",
+        "nystartsjobb-guide"
+      ],
+      "related_tools": [
+        "/job-search",
+        "/career"
+      ],
+      "slug": "skyddat-arbete-och-samhall",
+      "sort_order": 0,
+      "subcategory": "skyddat-arbete",
+      "summary": "Skyddat arbete är en riktig anställning hos Samhall, men du söker den inte själv. Vad den ger, vad den inte ger, och hur du blir aktuell.",
+      "tags": [
+        "Samhall",
+        "skyddat arbete",
+        "Arbetsförmedlingen",
+        "funktionsnedsättning"
+      ],
+      "title": "Skyddat arbete och Samhall – vad det innebär",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -4367,6 +5904,75 @@
       ],
       "title": "Sociala medier i jobbsökningen – mer än LinkedIn",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/job-search",
+          "label": "Sök sommarjobb och extrajobb",
+          "type": "primary"
+        },
+        {
+          "href": "/cv",
+          "label": "Bygg ett CV utan tidigare erfarenhet",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Börja söka god tid innan säsongen du vill jobba"
+        },
+        {
+          "id": "2",
+          "text": "Sök brett: kommun, bemanning, handel och vård tar ofta in extra personal"
+        },
+        {
+          "id": "3",
+          "text": "Skriv ett kort CV även utan tidigare erfarenhet"
+        },
+        {
+          "id": "4",
+          "text": "Läs igenom vad timanställning innebär innan du tackar ja"
+        },
+        {
+          "id": "5",
+          "text": "Var tydlig med din tillgänglighet när du söker"
+        },
+        {
+          "id": "6",
+          "text": "Sköt ett extrajobb som om det vore riktigt – det kan bli det"
+        }
+      ],
+      "content": "Sommarjobb och extrajobb är ofta det enklaste sättet att komma in på arbetsmarknaden, men bara om du söker i rätt tid och på rätt ställen. Här är var jobben faktiskt finns och hur en timanställning skiljer sig från en fast tjänst.\n\n## Sök mycket tidigare än du tror\n\nDet vanligaste misstaget är att börja söka när säsongen redan är här. Många kommuner och större arbetsgivare planerar sin sommarbemanning långt i förväg, ofta redan under vintern eller tidig vår för jobb som ska börja på sommaren. Väntar du till maj med att söka ett sommarjobb har många av platserna redan gått till dem som sökte tidigare.\n\nExtrajobb under terminstid fungerar annorlunda – där är personalomsättningen ofta hög och nya behov dyker upp löpande, så det lönar sig att söka kontinuerligt i stället för vid en enda tidpunkt.\n\n## Var jobben faktiskt finns\n\nFyra ställen där det oftast finns extra platser att söka, oavsett om du har erfarenhet sedan tidigare eller inte:\n\n- **Kommunen** – parkskötsel, fritidsverksamhet, äldreomsorg och skolans lovverksamhet tar ofta in extra personal säsongsvis. Många kommuner har särskilda sommar- eller feriejobb riktade till unga, sök på kommunens egen webbplats.\n- **Bemanningsföretag** – de förmedlar korttidsuppdrag inom många olika branscher och är ofta ett snabbare sätt in än att söka direkt hos varje arbetsgivare.\n- **Handel** – butiker tar in extra personal kring helger, kampanjer och semestertider.\n- **Vård och omsorg** – extra personal behövs kontinuerligt, ofta som timanställning, och det är en bransch där viljan att jobba väger tungt.\n\n## Att söka utan tidigare erfarenhet\n\nSommar- och extrajobb är ofta det ställe där arbetsgivare är mest villiga att anställa någon utan tidigare arbetslivserfarenhet, så länge du kan visa att du är pålitlig och flexibel. Lyft fram det du faktiskt har: skolarbete, föreningsliv, idrott eller andra sammanhang där du visat att du dyker upp och sköter dig. Ett kort, ärligt CV räcker långt – se vår guide om att [skriva CV utan formell erfarenhet](/knowledge-base/article/cv-utan-erfarenhet).\n\nTveka inte att höra av dig direkt till en arbetsgivare även om det inte finns en annons ute. Många av de här jobben tillsätts genom att någon frågade i rätt ögonblick.\n\n## Timanställning jämfört med fast anställning\n\nDet är viktigt att förstå skillnaden innan du tackar ja, så att du vet vad du går in i:\n\n| | Timanställning | Fast anställning |\n|---|---|---|\n| Lön | Du får betalt för de timmar du faktiskt arbetar | Du får en fast månadslön oavsett arbetad tid |\n| Schema | Kan variera vecka till vecka, ibland med kort varsel | I regel förutsägbart och avtalat i förväg |\n| Mellan uppdrag | Ingen lön de dagar du inte har schemalagd tid | Lön löper som vanligt |\n| Trygghet | Mer osäker, men ofta lättare att komma in i | Mer förutsägbar, men vanligen kräver en process innan du anställs |\n\nEn vanlig form för extrajobb är det som kallas allmän visstidsanställning – en tidsbegränsad anställning utan krav på särskilt skäl. Läs igenom vad som faktiskt står i erbjudandet innan du tackar ja: vilken anställningsform det är, om schemat är garanterat eller inte, och vad som gäller om du vill sluta. Vår guide om att [läsa ett anställningsavtal](/knowledge-base/article/las-anstallningsavtal) går igenom klausulerna mer i detalj.\n\n## Så kan ett extrajobb bli ett riktigt jobb\n\nEtt extrajobb är sällan bara ett extrajobb om du sköter det bra. Var pålitlig med dina tider, säg ja när du faktiskt kan ta fler pass, och visa intresse för att lära dig mer än det absolut nödvändiga. Många arbetsgivare erbjuder fler timmar eller en fastare roll till dem som redan visat sig fungera i verksamheten – det är billigare och tryggare för dem än att anställa någon helt ny.\n\nÄr du intresserad av att stanna längre, säg det rakt ut till din chef i stället för att bara hoppas att det märks. Lagen ger dessutom under vissa förutsättningar en väg från upprepade tidsbegränsade anställningar till en fast tjänst – hör med facket eller din arbetsgivare vad som gäller i din situation om det blir aktuellt.\n\n## Vad gör du nu\n\nBörja söka nu, oavsett vilken säsong det är – extrajobb dyker upp löpande. Sök brett hos kommunen, bemanningsföretag, handel och vård samtidigt i stället för att lägga allt på ett enda spår. Skriv ett kort CV även om du känner att du inte har mycket att skriva, och var tydlig med när du faktiskt kan jobba när du söker.\n\n## Vanliga frågor\n\n### Behöver jag tidigare erfarenhet för att få sommarjobb?\nNej, det är en av de vanligaste ingångarna till arbetsmarknaden utan tidigare erfarenhet. Det som väger tyngst är att du visar dig pålitlig och tillgänglig.\n\n### Vad är skillnaden mellan sommarjobb och feriejobb?\nFeriejobb är oftast ett begrepp för kommunala sommarjobb riktade särskilt till unga, medan sommarjobb är ett bredare ord för säsongsanställning hos vilken arbetsgivare som helst. Kolla din kommuns webbplats för att se om de har en särskild feriejobbssatsning.\n\n### Kan jag söka a-kassa mellan extrajobb?\nDet beror på din situation och om du uppfyller kraven för medlemskap och arbetsvillkor. Läs vår guide om [facket och a-kassan](/knowledge-base/article/facket-ska-jag-ga-med) för att förstå hur medlemskapet fungerar, och kontakta en a-kassa för att få svar på din specifika situation.",
+      "difficulty": "easy",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "sasongsjobb-guide",
+        "cv-utan-erfarenhet",
+        "anstallningsformer-guide",
+        "forsta-jobbet-efter-studier"
+      ],
+      "related_tools": [
+        "/job-search",
+        "/cv"
+      ],
+      "slug": "sommarjobb-och-extrajobb",
+      "sort_order": 0,
+      "subcategory": "sommarjobb-och-extrajobb",
+      "summary": "När du bör söka, var jobben faktiskt finns, och hur en timanställning skiljer sig från en fast tjänst.",
+      "tags": [
+        "sommarjobb",
+        "extrajobb",
+        "timanställning",
+        "första jobbet"
+      ],
+      "title": "Sommarjobb och extrajobb – vägen in när du saknar erfarenhet",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],
@@ -4763,6 +6369,50 @@
       "updated_at": "2026-08-05 11:27:56.896649+00"
     },
     {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva samtal innan du börjar",
+          "type": "primary"
+        },
+        {
+          "href": "/exercises",
+          "label": "Öva på situationer i din egen takt",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "career-development",
+      "checklist": [],
+      "content": "Att klara ett språktest och att klara fikarummet är två olika saker. Du kan vara duktig på svenska grammatik och ändå känna dig osäker när tre kollegor pratar i munnen på varandra om något som hände i helgen. Det är helt normalt, och det går att bli bättre på – utan att det behöver kännas pinsamt.\n\n## Testet och verkligheten är inte samma sak\n\nEtt språktest mäter ordförråd och grammatik under kontrollerade former. Fikarummet, arbetsplatsens skämt och snabba instruktioner mitt i en stressig stund är något annat: talspråk, dialekter, avbrutna meningar och referenser till saker du inte varit med om. Ingen förväntar sig att du ska klara det direkt, oavsett vilket betyg du fick på ett test.\n\nSkillnaden är värd att komma ihåg när det känns tungt. Du saknar inte kompetens i svenska – du saknar erfarenhet av just den här sortens svenska, och den erfarenheten byggs bara genom att vara i sammanhanget.\n\n## Vad som faktiskt krävs varierar med jobbet\n\nKraven på svenska ser mycket olika ut beroende på vad jobbet innebär:\n\n- I en roll där du arbetar mest själv, med tydliga och återkommande uppgifter, räcker det ofta att förstå enkla instruktioner och kunna fråga om hjälp.\n- I en roll med mycket kundkontakt eller där säkerhet är inblandad krävs oftast en säkrare svenska, eftersom missförstånd får större konsekvenser.\n- I en roll med mycket skriftligt arbete – rapporter, journaler, mejl till kunder – väger skriftlig svenska tyngre än den muntliga.\n\nFråga gärna direkt vid en anställningsintervju vad som faktiskt krävs i vardagen, i stället för att gissa utifrån platsannonsen. Många arbetsgivare är mer flexibla än annonsen låter ana, särskilt om du visar att du är på väg framåt.\n\n## Att fråga om hjälp utan att det känns pinsamt\n\nDet svåraste är ofta inte att fråga, utan känslan innan du gör det. Några sätt att göra det enklare:\n\n- Säg det rakt ut en gång, till exempel: \"Jag lär mig svenska fortfarande, så säg gärna till om jag missförstår något.\" De flesta kollegor uppskattar att veta det, i stället för att undra varför du ser förvirrad ut.\n- Fråga om en sak i taget i stället för att låta bli att fråga alls. En kort fråga stör mindre än ett misstag som måste rättas till efteråt.\n- Välj rätt tillfälle. Fråga hellre en kollega enskilt än att avbryta ett möte, om situationen tillåter det.\n- Kom ihåg att den som frågar visar att hen bryr sig om att göra rätt – det är sällan så det uppfattas av andra, även om det känns så inifrån.\n\n## Att be någon upprepa\n\nAtt be om en repris är en färdighet i sig, inte ett misslyckande. Några fraser som fungerar i de flesta lägen:\n\n- \"Kan du säga det en gång till, lite långsammare?\"\n- \"Jag är inte säker på att jag förstod rätt – menade du att jag ska göra X?\"\n- \"Kan du skriva det, så jag är säker på att jag fått med allt?\"\n\nAtt be om en skriftlig sammanfattning av en muntlig instruktion är ett bra knep rent generellt, inte bara för den som lär sig svenska – det minskar missförstånd för alla.\n\n## Konkreta sätt att bli bättre under tiden du jobbar\n\n- Lyssna aktivt på hur kollegor formulerar samma budskap på olika sätt, och testa formuleringarna själv nästa gång.\n- Läs skyltar, instruktioner och interna mejl på jobbet extra noga – de är skrivna för just din arbetsplats och lär dig ordförråd du faktiskt kommer använda.\n- Be en kollega du känner dig trygg med att rätta dig när du säger fel, i stället för att aldrig få veta.\n- Öva på återkommande samtal du vet kommer upp – att svara i telefon, hälsa på nya kunder, rapportera ett problem – tills de sitter.\n- Fortsätt läsa svenska vid sidan av jobbet om du kan. Jobbet ger dig sammanhanget, undervisningen ger dig strukturen. Tillsammans går det snabbare än var för sig.\n\n## Vad du gör nu\n\nBestäm en enkel mening du kan säga när du inte förstår, och använd den nästa gång det händer i stället för att låtsas förstå. Fråga en kollega du litar på om hen kan rätta dig då och då. Och påminn dig själv om att fikarummets svenska är sin egen färdighet – den som du övar på genom att vara där, inte genom att kunna alla orden i förväg.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "sfi-och-jobbsokande-samtidigt",
+        "professionell-kommunikation",
+        "forsta-dagen-nytt-jobb",
+        "mental-halsa-jobbsokning"
+      ],
+      "related_tools": [
+        "/interview-simulator",
+        "/exercises"
+      ],
+      "slug": "svenska-pa-jobbet",
+      "sort_order": 0,
+      "subcategory": "sprak-pa-jobbet",
+      "summary": "Vad som faktiskt krävs i olika jobb, hur du frågar om hjälp utan att det känns pinsamt, och hur du blir bättre under tiden du jobbar.",
+      "tags": [
+        "svenska",
+        "arbetsplats",
+        "kommunikation",
+        "språkinlärning"
+      ],
+      "title": "Svenska på jobbet – vad som faktiskt krävs",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
       "actions": [],
       "author": "Sara Ekström",
       "author_title": "Rekryterare",
@@ -4841,6 +6491,71 @@
       ],
       "title": "Telefonintervju – så lyckas du",
       "updated_at": "2026-08-05 11:27:56.896649+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/wellness",
+          "label": "Följ din energi under upptrappningen",
+          "type": "primary"
+        },
+        {
+          "href": "/job-search",
+          "label": "Sök nytt om vägen tillbaka inte är rätt för dig",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Be om ett möte som klargör var i rehabiliteringskedjan du befinner dig"
+        },
+        {
+          "id": "2",
+          "text": "Fråga vem som äger upptrappningsplanen och vad som händer om ett steg inte går bra"
+        },
+        {
+          "id": "3",
+          "text": "Bestäm i förväg vad du berättar för en ny arbetsgivare och vad du inte behöver berätta"
+        },
+        {
+          "id": "4",
+          "text": "Skriv ner sömn, humör och energi under upptrappningen"
+        },
+        {
+          "id": "5",
+          "text": "Säg ifrån direkt om takten känns för hög, i stället för att vänta ut det"
+        }
+      ],
+      "content": "Vägen tillbaka till jobb efter en lång sjukskrivning styrs av vad Försäkringskassan kallar rehabiliteringskedjan – en ordning som gradvis prövar din arbetsförmåga mot allt bredare krav. Vad den ordningen betyder för dig beror på om du är på väg tillbaka till en arbetsgivare du redan har, eller ska söka nytt.\n\n## Rehabiliteringskedjan i korthet\n\nRehabiliteringskedjan är inte en tidsplan i sig, utan en princip: ju längre en sjukskrivning pågår, desto bredare blir det som prövas. I början handlar bedömningen om huruvida du klarar dina vanliga arbetsuppgifter, eller andra tillfälliga uppgifter hos samma arbetsgivare. Längre fram vidgas frågan till om du klarar något arbete alls hos din arbetsgivare. Och i ett senare skede prövas arbetsförmågan mot arbetsmarknaden i stort, inte bara mot din nuvarande arbetsplats.\n\nDet viktiga att förstå är **vad** som prövas i varje steg, inte exakt när gränserna går – de förändras, och den aktuella ordningen finns alltid beskriven hos Försäkringskassan. Det som är stabilt är mekanismen: bedömningen blir bredare ju längre tiden går, och du har rätt att förstå var i den ordningen du befinner dig just nu. Fråga din handläggare rakt ut om det är otydligt.\n\n## Tillbaka till samma arbetsgivare, eller söka nytt\n\nDe två vägarna ser olika ut, och det är lätt att blanda ihop vad som gäller för vilken.\n\n| | Tillbaka till samma arbetsgivare | Söka nytt jobb |\n|---|---|---|\n| Vem känner din historik | Arbetsgivaren, ofta väl | Ingen – du väljer vad du berättar |\n| Anpassningar | Kan byggas på det som redan finns | Måste tas upp från början |\n| Rehabiliteringsansvar | Ligger delvis kvar hos arbetsgivaren | Ligger hos dig och Försäkringskassan |\n| Trygghet i relationen | Ofta högre – ni känner varandra | Måste byggas upp från noll |\n| Risk | Att gamla mönster på arbetsplatsen återkommer | Att ingen vet vad du behöver |\n\nIngen av vägarna är den \"rätta\". Att gå tillbaka till samma ställe kan kännas tryggt, men bara om det som gjorde dig sjuk faktiskt har hanterats – inte bara att tiden har gått. Att söka nytt ger dig en nystart, men kräver att du själv bär informationen om vad du behöver.\n\n## Att trappa upp arbetstiden\n\nÅtergång sker sällan i ett enda steg. Vanligast är att arbetstiden byggs upp gradvis, i den takt som din arbetsförmåga faktiskt bär – inte i den takt som schemat \"borde\" gå.\n\nNågra saker att ha koll på under upptrappningen:\n\n- **Vem som äger planen.** Är det du, arbetsgivaren, Försäkringskassan eller vården som bestämt takten? Om ingen riktigt vet, är det värt att fråga.\n- **Vad som händer om ett steg inte går bra.** En bra plan har en väg tillbaka om en ökning visar sig för snabb, inte bara en väg framåt.\n- **Att avstämningarna faktiskt sker.** Upptrappning utan uppföljning tenderar att antingen stanna av eller gå för fort, för att ingen håller i den.\n\n## Vad du berättar för en ny arbetsgivare – och vad du inte behöver\n\nDu är inte skyldig att berätta varför du varit sjukskriven. Det som är relevant för en arbetsgivare är vad du behöver för att klara jobbet – inte diagnosen eller historiken bakom den.\n\nDet du kan behöva berätta:\n\n- Om du behöver anpassad arbetstid eller arbetsbelastning, åtminstone till att börja med.\n- Om det finns moment du vill undvika eller göra på ett annat sätt.\n- Om du har kontakt med en handläggare eller vårdgivare som arbetsgivaren kan behöva samordna med, till exempel kring upptrappning.\n\nDet du inte behöver berätta: diagnosen, vad som orsakade sjukskrivningen, eller hur länge den pågick. Det är din historia, inte ett anställningsvillkor.\n\n## Hur du känner igen att du går för fort fram\n\nDet är lätt att vilja bevisa – för dig själv eller andra – att du är tillbaka \"på riktigt\". Några tecken på att takten är för hög:\n\n- Du är utmattad redan efter arbetsdagen, inte bara ibland utan som mönster.\n- Du börjar ta med jobbet hem på ett sätt du inte gjorde tidigare i återgången.\n- Sömnen eller humöret försämras samtidigt som arbetstiden ökar, snarare än att stabiliseras.\n- Du undviker att säga att det är tungt, för att inte \"sätta tillbaka\" processen.\n\nIngen av de här är ett misslyckande. De är information om att takten behöver justeras – och en upptrappningsplan som inte tål att justeras var aldrig en bra plan.\n\n## Vanliga frågor\n\n### Måste jag gå tillbaka till samma arbetsgivare?\n\nNej. Vilken väg som är rätt beror på din situation, inte på en regel. Prata med din handläggare om vad som passar dig.\n\n### Kan jag be om en långsammare upptrappning?\n\nJa, och det är rimligt att göra om takten inte fungerar. Ta upp det direkt, med arbetsgivaren och med den som håller i planen.\n\n### Vad händer om jag inte klarar återgången alls?\n\nDet finns fler steg i processen om en återgång inte fungerar. Vänta inte för länge med att säga det – ju tidigare det är tydligt, desto tidigare kan planen ändras.\n\n## Vad gör du nu\n\nBe om ett möte där du går igenom var i rehabiliteringskedjan du befinner dig just nu, och vad som konkret prövas i nästa steg. Skriv ner hur veckorna känns under upptrappningen – det är lättare att se ett mönster i efterhand än i stunden, och det ger dig något konkret att ta med till nästa avstämning.\n\nLäs om rehabiliteringskedjan i sin helhet på [forsakringskassan.se](https://www.forsakringskassan.se).",
+      "difficulty": "detailed",
+      "energy_level": "high",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "arbetstraning-vad-innebar-det",
+        "mental-halsa-guide",
+        "lattsvenska-nar-du-blir-sjuk",
+        "work-life-balance-guide"
+      ],
+      "related_tools": [
+        "/wellness",
+        "/calendar"
+      ],
+      "slug": "tillbaka-till-jobb-efter-sjukskrivning",
+      "sort_order": 0,
+      "subcategory": "atergang-arbete",
+      "summary": "Rehabiliteringskedjan prövar din arbetsförmåga i steg. Skillnaden mellan att gå tillbaka och att söka nytt, och hur du märker att takten är för hög.",
+      "tags": [
+        "sjukskrivning",
+        "rehabiliteringskedjan",
+        "Försäkringskassan",
+        "återgång i arbete"
+      ],
+      "title": "Tillbaka till jobb efter lång sjukskrivning",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [
@@ -4982,6 +6697,140 @@
       ],
       "title": "Upptäck och använd dina styrkor",
       "updated_at": "2026-08-05 13:04:32.444078+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/cv",
+          "label": "Bygg ditt CV med mallar anpassade för svenska rekryterare",
+          "type": "primary"
+        },
+        {
+          "href": "/linkedin-optimizer",
+          "label": "Uppdatera din profil med samma tydliga beskrivningar",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "job-search",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Beskriv vad du gjorde i varje roll, inte bara titeln"
+        },
+        {
+          "id": "2",
+          "text": "Skriv en mening om vad okända arbetsgivare gör"
+        },
+        {
+          "id": "3",
+          "text": "Ta bort foto, civilstånd och andra personuppgifter du är osäker på"
+        },
+        {
+          "id": "4",
+          "text": "Fråga referenser vilket språk de kan svara på"
+        },
+        {
+          "id": "5",
+          "text": "Låt någon utan kunskap om din bakgrund läsa igenom CV:t"
+        }
+      ],
+      "content": "Din yrkeserfarenhet är lika värdefull oavsett vilket land den kommer från. Problemet är sällan kompetensen – det är att en svensk rekryterare inte förstår titeln, företaget eller sammanhanget du skriver om. Ett CV som översätter det åt henne läses helt annorlunda.\n\n## Beskriv arbetsuppgiften, inte bara titeln\n\nEn titel betyder olika saker i olika länder. \"Chef\" på en arbetsplats med tre anställda är inte samma roll som \"chef\" på en arbetsplats med hundra. En rekryterare i Sverige kan inte gissa sig till skillnaden – hon läser bara ordet.\n\nSkriv därför alltid ut vad du faktiskt gjorde, inte bara vad du hette på jobbet:\n\n- Fel: \"Koordinator, ABC Company (2018–2022)\"\n- Bättre: \"Planerade och samordnade leveranser för ett team på tolv personer, med ansvar för budget och kontakt med tre underleverantörer.\"\n\nGör det här för varje tidigare roll. Tänk dig att läsaren aldrig sett ditt yrke utövas och behöver förstå vad du gjorde varje dag, inte vad det kallades.\n\n## Vad som ska med – och vad som är onödigt\n\nEtt svenskt CV är kortfattat och konkret. Det som stärker din ansökan ska in, resten kan strykas.\n\n| Ta med | Överväg att stryka |\n|---|---|\n| Konkreta arbetsuppgifter och ansvar | Långa listor med kurser som inte rör tjänsten |\n| Verktyg, system och metoder du använt | Detaljerad militärtjänst om den inte är relevant |\n| Språk du talar, och på vilken nivå | Personnummer, civilstånd, antal barn |\n| Utbildning – gärna med vad UHR:s bedömning motsvarar, om du har en | Foto, om du är osäker på om det hjälper eller stjälper |\n\nSvenska CV:n är sällan mer än några sidor. Skriv hellre färre rader som säger något konkret än många rader som bara radar upp titlar.\n\n## En arbetsgivare ingen känner till\n\nEtt företag som är välkänt i ditt hemland kan vara helt okänt i Sverige. Skriv då en kort mening om vad företaget gör och hur stort det var: \"Ett logistikföretag med omkring 200 anställda, verksamt inom e-handel.\" Det ger rekryteraren ett sammanhang hon annars saknar helt.\n\nSamma sak gäller branschord och förkortningar som är självklara där du kommer ifrån men obegripliga i Sverige. Skriv ut dem i klartext första gången du använder dem.\n\n## Referenser som befinner sig utomlands\n\nReferenser i ett annat land är fortfarande giltiga referenser. Så gör du dem lätta att använda:\n\n- Skriv vilket språk referenspersonen kan svara på – engelska fungerar oftast bra, men säg det ändå.\n- Skriv tidszonen om den skiljer sig mycket från svensk tid, så att en rekryterare vet när hon rimligen kan nå personen.\n- Fråga referensen i förväg om hen är bekväm med att bli kontaktad, och förbered hen på att frågorna kan komma på engelska eller svenska.\n- Har du ingen kvar att fråga i hemlandet: en referens från praktik, volontärarbete eller studier i Sverige väger också.\n\n## Foto och personuppgifter – annorlunda här\n\nI många länder är det vanligt, ibland förväntat, att bifoga foto, ålder, civilstånd och till och med bild på familjen i ett CV. I Sverige är normen den motsatta. Många arbetsgivare vill helst inte ha den informationen alls, delvis för att undvika att den påverkar bedömningen medvetet eller omedvetet.\n\nTa bort foto om du är osäker, och skriv inte ut civilstånd, antal barn eller religion. Ålder behöver du inte ange – födelseår i CV:t är i praktiken det enda som avslöjar den, och det går utmärkt att lämna bort helt.\n\n## Hantera hela ditt CV som en översättning\n\nTänk på hela dokumentet som en översättning, inte bara av språk utan av sammanhang. Varje rad ska kunna läsas av någon som aldrig varit i landet du kommer från och ändå förstå exakt vad du bidrog med. Fråga gärna någon som inte känner till din bakgrund att läsa igenom CV:t och peka på ställen där hen måste gissa.\n\n## Vanliga frågor\n\n### Ska jag skriva mitt CV på svenska eller engelska?\nSkriv på svenska om du kan, även om det inte blir perfekt – det visar att du är på väg in i språket. Söker du ett jobb där arbetsspråket är svenska är ett enkelt CV på svenska oftast ett bättre val än ett polerat på engelska, eftersom det säger något om hur du klarar arbetsdagen. Är du osäker på formuleringarna, be någon läsa igenom innan du skickar in det.\n\n### Måste jag översätta mina betyg och intyg?\nDet beror på arbetsgivaren och rollen. En kort sammanfattning på svenska i CV:t räcker oftast för att komma till en intervju. Efterfrågas originaldokument eller översatta betyg längre fram i processen, fråga arbetsgivaren vilken typ av översättning som gäller – kraven skiljer sig åt.\n\n### Ska jag skriva att jag är ny i Sverige?\nDu behöver inte förklara eller ursäkta din bakgrund. Fokusera CV:t på vad du kan bidra med. Har frågan om hur länge du varit i Sverige betydelse för tjänsten kommer den ändå upp naturligt i en intervju.\n\n## Vad du gör nu\n\nGå igenom varje tidigare roll i ditt CV och lägg till en mening om vad du faktiskt gjorde, inte bara titeln. Skriv en kort förklaring vid arbetsgivare som knappast är kända i Sverige. Ta bort foto, civilstånd och andra personuppgifter du är osäker på, och förbered dina referenser på att bli kontaktade på ett nytt språk.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "validera-utlandsk-utbildning",
+        "cv-grunder",
+        "referenser-guide",
+        "ats-optimering"
+      ],
+      "related_tools": [
+        "/cv",
+        "/linkedin-optimizer"
+      ],
+      "slug": "utlandsk-erfarenhet-i-cv",
+      "sort_order": 0,
+      "subcategory": "cv",
+      "summary": "Hur du översätter en utländsk yrkestitel, vad som ska med i ett svenskt CV, och hur du hanterar referenser och foto.",
+      "tags": [
+        "CV",
+        "utländsk erfarenhet",
+        "referenser",
+        "jobbsökning"
+      ],
+      "title": "CV med utländsk arbetslivserfarenhet – så skriver du",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/cv",
+          "label": "Bygg ett CV som visar vad du kan",
+          "type": "primary"
+        },
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Se vad som skiljer dig från drömjobbet",
+          "type": "secondary"
+        }
+      ],
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "category_key": "career-development",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Samla in dina utbildningsbevis i original"
+        },
+        {
+          "id": "2",
+          "text": "Sök i UHR:s digitala bedömningstjänst för en snabb uppskattning"
+        },
+        {
+          "id": "3",
+          "text": "Ta reda på om ditt yrke är reglerat innan du går vidare"
+        },
+        {
+          "id": "4",
+          "text": "Skicka in en ansökan om utlåtande om du behöver ett skriftligt dokument"
+        },
+        {
+          "id": "5",
+          "text": "Bygg ett CV som beskriver vad du kan, inte bara utbildningens titel"
+        },
+        {
+          "id": "6",
+          "text": "Fortsätt söka jobb medan du väntar på svar"
+        }
+      ],
+      "content": "Har du läst till något i ett annat land undrar du kanske vad utbildningen är värd i Sverige. Universitets- och högskolerådet (UHR) kan ge dig ett utlåtande om det – men ett utlåtande är inte en svensk examen, och för vissa yrken räcker det inte ensamt.\n\n## Vad en bedömning faktiskt är\n\nUHR jämför din utländska utbildning med svensk utbildning på samma nivå: gymnasium, eftergymnasial yrkesutbildning eller högskola. Resultatet blir ett dokument som beskriver ungefär vad utbildningen motsvarar i det svenska systemet – till exempel att en viss examen motsvarar en svensk kandidatexamen inom ett visst område.\n\nDet här dokumentet är till för att göra din utbildning **begriplig** för en arbetsgivare, en utbildningsanordnare eller en handläggare som inte känner till utbildningssystemet i landet du studerat i. Det är inte ett betyg på dig som person, och det säger ingenting om hur bra du var på din utbildning – bara vad den motsvarar i nivå och inriktning.\n\n## Ett utlåtande, inte en svensk examen\n\nDet här är den viktigaste skillnaden att förstå. UHR:s utlåtande gör dig inte till innehavare av en svensk examen. Du blir inte retroaktivt utexaminerad från ett svenskt lärosäte. Vad du får är ett **jämförande underlag** – något du kan visa upp, bifoga till en ansökan eller använda som stöd när du pratar med en arbetsgivare om vad du kan.\n\nMånga arbetsgivare vet inte hur de ska värdera en utländsk examen på egen hand. Utlåtandet gör det arbetet åt dem. Men det är fortfarande arbetsgivaren, inte UHR, som avgör om din bakgrund passar för en viss tjänst.\n\nUHR har också en digital tjänst där du själv kan söka fram ditt utbildningsland och din utbildning för att se en snabb uppskattning av vad den motsvarar, utan att skicka in en formell ansökan. Det är ett bra första steg om du bara vill få en känsla för läget innan du bestämmer dig för att gå vidare.\n\n## Reglerade yrken går en annan väg\n\nVård, lärare, juridik och flera andra yrken är **reglerade**. Det betyder att det inte räcker med UHR:s utlåtande för att få jobba i yrket – du behöver **legitimation eller behörighet** från den myndighet som ansvarar för just det yrket.\n\n- Vårdyrken som läkare, sjuksköterska och tandläkare hanteras av Socialstyrelsen.\n- Läraryrken hanteras av Skolverket.\n- Juridiska yrken har egna vägar beroende på inriktning.\n\nDen här processen är separat från UHR:s bedömning, även om UHR:s utlåtande ibland används som en del av underlaget. Handlar det om ett reglerat yrke: kontakta rätt myndighet direkt i stället för att bara gå via UHR och tro att du är klar när du fått ditt utlåtande. Var i utbildningen du studerade, och om den skiljer sig mycket från den svenska motsvarigheten, avgör om du behöver komplettera med mer utbildning eller praktik innan du kan bli legitimerad.\n\n## Vad processen kräver av dig\n\nFör en formell ansökan om utlåtande behöver du i regel:\n\n- Skanna in dina utbildningsbevis i original – examensbevis, betyg, kursförteckningar.\n- Vara beredd på att dokumenten kan behöva vara på ett språk UHR kan läsa, eller översatta.\n- Fylla i en ansökan med uppgifter om var och när du studerade.\n- Ha rätt att vistas eller arbeta i Sverige, eller vara medborgare i ett EU/EES-land – kontrollera de exakta villkoren på UHR:s sida, de kan ändras.\n\nHandläggningen tar tid. Hur lång tid varierar och är inget du kan planera exakt kring, så räkna med att det är en process som pågår i bakgrunden medan du gör annat.\n\n## Vad du gör medan du väntar\n\nDet finns inget skäl att pausa jobbsökandet i väntan på ett utlåtande, om yrket du siktar på inte är reglerat.\n\n- **Beskriv din utbildning i eget CV redan nu.** Skriv vad du faktiskt läste och kunde efter utbildningen, inte bara den exakta titeln – den kanske inte betyder något för en svensk läsare ändå.\n- **Använd den digitala bedömningstjänsten** för en snabb uppskattning du kan referera till redan innan det formella utlåtandet är klart.\n- **Sök jobb där kompetensen, inte examensbeviset, är det som avgör.** Många arbetsgivare är mer intresserade av vad du kan göra än av vilket papper du har.\n- **Ta reda på om yrket är reglerat** så tidigt som möjligt, så att du vet om du väntar på ett utlåtande eller på en legitimationsprocess – det är olika köer med olika krav.\n\n## Vanliga frågor\n\n### Måste jag ha en bedömning för att söka jobb?\nNej, inte för de flesta yrken. En bedömning är ett stöd för att göra din utbildning begriplig, men många arbetsgivare anställer utifrån erfarenhet och kompetens utan att kräva ett formellt utlåtande.\n\n### Vad händer om utlåtandet visar mindre än jag hoppats?\nDet är fortfarande information, inte ett slutgiltigt omdöme om dig. Ett utlåtande som visar att utbildningen motsvarar en lägre nivå än väntat kan vara en signal om att du behöver komplettera med kurser i Sverige – inte ett bevis på att kompetensen saknas.\n\n### Kan jag få hjälp att förstå utlåtandet?\nJa. Vägledare på Arbetsförmedlingen och kommunens vuxenutbildning möter den här frågan ofta och kan hjälpa dig tolka vad dokumentet betyder för just din situation.\n\n## Vad du gör nu\n\nBörja med den digitala bedömningstjänsten på UHR:s webbplats för en snabb uppskattning. Ta sedan reda på om ditt yrke är reglerat – då vet du om nästa steg är en legitimationsansökan hos en annan myndighet. Under tiden: bygg ett CV som beskriver vad du faktiskt kan göra, och sök jobb där det är det som räknas.\n\nLäs mer på [UHR:s webbplats](https://www.uhr.se).",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 5,
+      "related_article_slugs": [
+        "utlandsk-erfarenhet-i-cv",
+        "etableringsprogrammet",
+        "kompetensinventering-guide",
+        "cv-utan-erfarenhet"
+      ],
+      "related_tools": [
+        "/cv",
+        "/skills-gap-analysis"
+      ],
+      "slug": "validera-utlandsk-utbildning",
+      "sort_order": 0,
+      "subcategory": "utlandsk-utbildning",
+      "summary": "Så fungerar UHR:s bedömning av utländsk utbildning, varför vård, lärare och juridik går en annan väg, och vad du gör medan du väntar.",
+      "tags": [
+        "utländsk utbildning",
+        "UHR",
+        "reglerade yrken",
+        "validering"
+      ],
+      "title": "Bedömning av utländsk utbildning – så går det till",
+      "updated_at": "2026-08-12 08:39:56.613581+00"
     },
     {
       "actions": [],

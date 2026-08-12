@@ -1,0 +1,207 @@
+{
+  "a-kassa-sa-fungerar-det": {
+    "title": "Så fungerar a-kassan – medlemskap och villkor",
+    "summary": "Skillnaden mellan a-kassa och fack, varför medlemskapet måste finnas innan du blir arbetslös, och vad som prövas när du ansöker.",
+    "category_key": "employment-law",
+    "subcategory": "a-kassa",
+    "tags": [
+      "a-kassa",
+      "arbetslöshetsförsäkring",
+      "medlemskap",
+      "ersättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "personlig-ekonomi-jobbsokning",
+      "lattsvenska-arbetsformedlingen",
+      "aktivitetsrapport-guide",
+      "skriva-in-dig-arbetsformedlingen"
+    ],
+    "related_tools": [
+      "/calendar"
+    ],
+    "checklist": [
+      "Kontrollera om du redan är medlem i en a-kassa",
+      "Gå med i en a-kassa innan du blir arbetslös, inte efter",
+      "Spara underlag som visar din anställningstid",
+      "Skriv in dig hos Arbetsförmedlingen din första dag utan jobb",
+      "Kontakta din a-kassa för att få veta vad som gäller just dig"
+    ],
+    "actions": [
+      {
+        "href": "/calendar",
+        "label": "Sätt påminnelser för viktiga datum",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/aktivitetsrapport-guide",
+        "label": "Läs om aktivitetsrapporten",
+        "type": "secondary"
+      }
+    ]
+  },
+  "aktivitetsrapport-guide": {
+    "title": "Aktivitetsrapport till Arbetsförmedlingen – så gör du",
+    "summary": "Vad som ska stå i aktivitetsrapporten, när den ska in och vad som händer om du missar den.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": [
+      "aktivitetsrapport",
+      "Arbetsförmedlingen",
+      "ersättning"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "ansokningsstrategi",
+      "struktur-jobbsokning",
+      "skriva-in-dig-arbetsformedlingen"
+    ],
+    "related_tools": [
+      "/applications"
+    ],
+    "checklist": [
+      "Skriv ner varje sökt jobb samma dag du söker det",
+      "Anteckna företag, tjänst och datum för varje aktivitet",
+      "Kolla ditt rapporteringsfönster på Mina sidor",
+      "Lämna rapporten inom fönstret, varje månad",
+      "Hör av dig till Arbetsförmedlingen i förväg om du inte hinner"
+    ],
+    "actions": [
+      {
+        "href": "/applications",
+        "label": "Håll koll på dina ansökningar",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
+        "label": "Förstå hur a-kassan fungerar",
+        "type": "secondary"
+      }
+    ]
+  },
+  "rusta-och-matcha": {
+    "title": "Rusta och matcha – så väljer du leverantör, och så byter du",
+    "summary": "Vad Rusta och matcha är, att du väljer leverantör själv, vilka frågor du bör ställa och vad du gör när det inte fungerar.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": [
+      "Rusta och matcha",
+      "Arbetsförmedlingen",
+      "leverantör",
+      "stöd"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bemanningsforetag-guide",
+      "kompetensutveckling-guide",
+      "skriva-in-dig-arbetsformedlingen"
+    ],
+    "related_tools": [
+      "/skills-gap-analysis"
+    ],
+    "checklist": [
+      "Jämför minst två leverantörer i ditt område",
+      "Fråga hur ofta ni träffas och på vilket sätt",
+      "Fråga vilken erfarenhet leverantören har av din situation",
+      "Skriv ner vad som inte fungerar om du överväger att byta",
+      "Kontakta din handläggare för att begära byte vid behov"
+    ],
+    "actions": [
+      {
+        "href": "/skills-gap-analysis",
+        "label": "Kartlägg vad du behöver utveckla",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/skriva-in-dig-arbetsformedlingen",
+        "label": "Läs om inskrivningen",
+        "type": "secondary"
+      }
+    ]
+  },
+  "skriva-in-dig-arbetsformedlingen": {
+    "title": "Skriva in dig på Arbetsförmedlingen – så går det till",
+    "summary": "När du ska skriva in dig, vad som händer vid inskrivningen, vad planeringssamtalet är och hur du förbereder dig.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": [
+      "Arbetsförmedlingen",
+      "inskrivning",
+      "planeringssamtal"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lattsvenska-arbetsformedlingen",
+      "forsta-veckan-checklista",
+      "a-kassa-sa-fungerar-det",
+      "rusta-och-matcha"
+    ],
+    "related_tools": [
+      "/cv"
+    ],
+    "checklist": [
+      "Skriv in dig samma dag som du blir arbetslös",
+      "Ha ett CV-utkast redo, det behöver inte vara klart",
+      "Lista din utbildning och tidigare anställningar",
+      "Tänk igenom vad du vill jobba med, eller vilka branscher som lockar",
+      "Skriv ner frågor du vill ställa på planeringssamtalet"
+    ],
+    "actions": [
+      {
+        "href": "/cv",
+        "label": "Bygg ditt CV innan mötet",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/rusta-och-matcha",
+        "label": "Läs om Rusta och matcha",
+        "type": "secondary"
+      }
+    ]
+  },
+  "ersattning-under-program": {
+    "title": "Aktivitetsstöd – vem betalar under ett program?",
+    "summary": "Arbetsförmedlingen beslutar om programmet, Försäkringskassan betalar ersättningen. Så håller du isär de två.",
+    "category_key": "employment-law",
+    "subcategory": "forsakringskassan",
+    "tags": [
+      "aktivitetsstöd",
+      "utvecklingsersättning",
+      "Försäkringskassan",
+      "program"
+    ],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "personlig-ekonomi-jobbsokning",
+      "a-kassa-sa-fungerar-det",
+      "rusta-och-matcha"
+    ],
+    "related_tools": [
+      "/calendar"
+    ],
+    "checklist": [
+      "Ansök om ersättning hos Försäkringskassan, inte bara Arbetsförmedlingen",
+      "Ta reda på om du ska ha aktivitetsstöd eller utvecklingsersättning",
+      "Rapportera din närvaro till Försäkringskassan enligt deras rutin",
+      "Sätt en påminnelse så du inte missar rapporteringen",
+      "Logga in hos Försäkringskassan och kolla status om utbetalningen uteblir"
+    ],
+    "actions": [
+      {
+        "href": "/calendar",
+        "label": "Sätt påminnelser för rapportering",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
+        "label": "Förstå hur a-kassan fungerar",
+        "type": "secondary"
+      }
+    ]
+  }
+}
