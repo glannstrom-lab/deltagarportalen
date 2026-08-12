@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
+import { safeReturnTo, medReturnTo } from '../lib/returnTo'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
@@ -22,6 +23,7 @@ function GoogleIcon({ className }: { className?: string }) {
 export default function Register() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { signUp, signInWithGoogle } = useAuthStore()
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
@@ -81,8 +83,11 @@ export default function Register() {
           throw new Error(signUpError)
         }
 
-        // Navigera till dashboard
-        navigate('/')
+        // K11: dit hon var på väg innan registreringen, om det finns en säker
+        // sökväg. En gäst som klickade "Bygg ditt CV" på en guidesida ska
+        // landa i CV-byggaren — inte på översikten, där hon får leta rätt på
+        // det hon redan hade bestämt sig för. Annars översikten som förut.
+        navigate(safeReturnTo(searchParams.get('returnTo')) || '/')
       } catch (err) {
         setSubmitError(err instanceof Error ? err.message : t('auth.errors.createFailed'))
       }
@@ -504,7 +509,7 @@ export default function Register() {
             <p className="text-gray-600 dark:text-gray-300">
               {t('auth.hasAccount')}{' '}
               <Link
-                to="/login"
+                to={medReturnTo('/login', searchParams.get('returnTo'))}
                 className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold inline-flex items-center min-h-[44px] px-2"
               >
                 {t('auth.loginHere')}

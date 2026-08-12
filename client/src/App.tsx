@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
+import { medReturnTo, safeReturnTo } from './lib/returnTo'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { Loader2 } from '@/components/ui/icons'
 import { MODULES } from '@/config/features'
@@ -104,7 +105,8 @@ function PrivateRoute({
   allowedRoles?: string[] 
 }) {
   const { isAuthenticated, profile, isLoading } = useAuthStore()
-  
+  const location = useLocation()
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[var(--c-solid)]">
@@ -112,11 +114,14 @@ function PrivateRoute({
       </div>
     )
   }
-  
+
+  // K11: skicka till inloggningen med minne av vart hon skulle, i stället för
+  // att tyst dumpa henne på startsidan. Gäller consultant/admin — de publika
+  // verktygsrouterna fångas av RootRoute längre ner, inte här.
   if (!isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to={medReturnTo('/login', location.pathname + location.search)} replace />
   }
-  
+
   // Check both activeRole (current) and roles array for multi-role users
   if (allowedRoles && profile) {
     const hasAccess = allowedRoles.some(role =>
@@ -133,6 +138,7 @@ function PrivateRoute({
 // Public route - only show content for unauthenticated users
 function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode, redirectTo?: string }) {
   const { isAuthenticated, isLoading } = useAuthStore()
+  const location = useLocation()
 
   if (isLoading) {
     return (
@@ -143,7 +149,10 @@ function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode
   }
 
   if (isAuthenticated) {
-    return <Navigate to={redirectTo} replace />
+    // Redan inloggad och landar på /login?returnTo=/cv — t.ex. via en gammal
+    // flik eller en delad länk. Då ska hon till /cv, inte till startsidan.
+    const returnTo = safeReturnTo(new URLSearchParams(location.search).get('returnTo'))
+    return <Navigate to={returnTo || redirectTo} replace />
   }
 
   return <>{children}</>
@@ -152,6 +161,7 @@ function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode
 // Root route - shows Landing for guests, Layout with Dashboard for authenticated users
 function RootRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
+  const location = useLocation()
 
   if (isLoading) {
     return (
@@ -162,6 +172,22 @@ function RootRoute() {
   }
 
   if (!isAuthenticated) {
+    /*
+     * K11: en gäst som klickade "Bygg ditt CV" på en guidesida fick TIDIGARE
+     * B2B-säljsidan renderad här — medan adressfältet fortfarande sa `/#/cv`.
+     * Ingen omdirigering, ingen förklaring, ingen väg tillbaka till det hon
+     * ville göra. Reproducerat i prod 2026-08-12 på fyra verktygsrouter.
+     *
+     * Observera att `ProtectedRoute` inte var inblandad: den här komponenten
+     * renderar aldrig <Outlet/> för gäster, så vakten längre upp i filen
+     * kördes aldrig för verktygsrouterna. Den vaktar bara consultant/admin.
+     *
+     * Landningssidan är rätt svar för `/` — men bara för `/`.
+     */
+    if (location.pathname !== '/') {
+      return <Navigate to={medReturnTo('/login', location.pathname + location.search)} replace />
+    }
+
     return (
       <Suspense fallback={
         <div className="min-h-screen flex items-center justify-center bg-[var(--c-solid)]">

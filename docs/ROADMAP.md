@@ -821,7 +821,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 
 | ID | Punkt | Storlek |
 |----|-------|---------|
-| **K11** | **Varje CTA på de 138 prerenderade sidorna leder till en skyddad route.** `App.tsx:116` gör `<Navigate to="/">` utan `returnTo` → gästen dumpas tyst på B2B-säljsidan. Reproducerat i webbläsare. Byggrinden `validateRoutes()` kollar att routen *finns*, inte att en gäst kan nå den — utöka den | S |
+| **K11** | ✅ **Klar 2026-08-12 — men mekanismen var en annan än raden sa.** Se K11/K19-avsnittet nedan. **Varje CTA på de 138 prerenderade sidorna leder till en skyddad route.** `App.tsx:116` gör `<Navigate to="/">` utan `returnTo` → gästen dumpas tyst på B2B-säljsidan. Reproducerat i webbläsare. Byggrinden `validateRoutes()` kollar att routen *finns*, inte att en gäst kan nå den — utöka den | S |
 | **K12** | ✅ **Klar 2026-08-12.** Se K12/K15-avsnittet nedan. Startsidan länkar **inte** till någon av de 137 prerenderade sidorna — de är föräldralösa från rot. `<title>`/description/OG säljer B2C medan sidan är B2B ("Stärk dina deltagare mot jobb") | S |
 | **K13** | Startsidan är **enda sidan som failar CWV**: LCP 4 368 ms, noll serverrenderat innehåll. Cookierutan täcker primär-CTA på mobil (hit-test: `blocked: true`). "Boka 30 min demo" och "Se konsulentvyn" skrollar bara | M |
 | **K14** | Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
@@ -829,7 +829,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **K16** | **B2B-ytan finns inte för Google.** En kommun eller Rusta-och-matcha-leverantör som söker "digital plattform arbetsmarknadsenhet" hittar ingenting. En prerenderad `/for-arbetsmarknadsenheter/` med ärligt beskrivet GDPR-läge och en riktig demoknapp är sannolikt sajtens mest värdefulla sida per besökare — och den ska bära det som A24/B19 tar bort, i sann form | M |
 | **K17** | Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
 | **K18** | En "vad är detta"-rad överst på guidesidorna. En besökare landar mitt i en ATS-guide utan att veta vad Jobin är — femsekundersfrågan ställs där, inte på startsidan | S |
-| **K19** | `/landing.html` (40 kB föräldralös marknadsföringssida) ligger fortfarande live · `/404.html` från GitHub Pages är kvar · identisk `lastmod` på alla 139 URL:er | S |
+| **K19** | ✅ **Klar 2026-08-12.** Se K11/K19-avsnittet nedan. `/landing.html` (40 kB föräldralös marknadsföringssida) ligger fortfarande live · `/404.html` från GitHub Pages är kvar · identisk `lastmod` på alla 139 URL:er | S |
 
 **Blockerande för nästa innehållsomgång:** K8 (Search Console) står öppen. Utan indexeringsdata går det inte att avgöra vilken sida i varje kannibaliseringspar som ska vinna — och K4 säger uttryckligen "ingen batch utan mätning från den föregående". Billigaste åtgärden på hela listan, och den som låser upp flest andra.
 
@@ -879,7 +879,38 @@ Grind 4 fällde först på **sin egen dokumentation** — kommentaren som förkl
 
 **Browserverifierat mot byggd kod, inte dev-servern:** 18 publika länkar i renderat DOM, alla synliga, noll konsolfel, ingen horisontell scroll på 390 px, hit-test på "Alla guider" träffar länken och inte ett överliggande lager, och en navigering till `/guider/kategori/soka-jobb/` landar rätt (`h1 = "Söka jobb"`) i stället för att fastna i SPA:n. **Mätfälla på vägen:** `waitUntil: 'networkidle'` inträffar medan auth-spinnern står kvar — första mätningen rapporterade 0 länkar på desktop medan mobilen hittade dem. Utan explicit `waitForSelector` hade jag mätt tomrummet och trott att sektionen saknades.
 
-**Kvar i spår K efter det här:** K11 (gäst-CTA:er → skyddade routes, nu den enda som blockerar konverteringen från 180 publika sidor), K13 (startsidans CWV), K14:s andra halva (dubbla lättläst-slugfamiljer, soft-404), K16 (B2B-ytan), K17–K19. Och K8 (Search Console) som fortfarande låser upp flest andra.
+**Kvar i spår K efter det här:** K11 (gäst-CTA:er → skyddade routes, nu den enda som blockerar konverteringen från 180 publika sidor), K13 (startsidans CWV), K14:s andra halva (dubbla lättläst-slugfamiljer, soft-404), K16 (B2B-ytan), K17–K19. Och K8 (Search Console) som fortfarande låser upp flest andra. — **K11 och K19 tagna 2026-08-12, se nästa avsnitt.**
+
+### K11 + K19 — gästen tappas inte längre bort (2026-08-12)
+
+**K11: premissen pekade ut fel kodrad.** Raden sa att `App.tsx:116` (`ProtectedRoute`) gör `<Navigate to="/">` utan `returnTo`. Det stämmer att raden såg ut så — men **`ProtectedRoute` kördes aldrig för verktygsrouterna**. `RootRoute` renderar `<Landing />` för gäster och renderar aldrig `<Outlet/>`, så vakten längre upp i filen nås bara av `consultant/*` och `admin`. Att laga rad 116 hade inte påverkat en enda guide-CTA.
+
+**Och beteendet var värre än beskrivet.** Reproducerat i prod som gäst på fyra verktygsrouter: det sker **ingen omdirigering alls**. B2B-säljsidan renderas medan adressfältet fortfarande säger `/#/cv` — `h1 = "Stärk dina deltagare mot jobb"` på `/#/cv`, `/#/interview-simulator`, `/#/skills-gap-analysis` och `/#/job-search`. Adressfältet ljuger, bakåtknappen hjälper inte, och det finns noll signal om vad som hänt.
+
+Levererat: `lib/returnTo.ts` med `safeReturnTo()` och `medReturnTo()`, inkopplat på fem ställen — `RootRoute` (verktygsrouterna), `ProtectedRoute` (konsulent/admin), `PublicRoute` (redan inloggad med `returnTo`), samt `Login` och `Register` som båda hårdkodade `navigate('/')` och alltså hade ignorerat parametern. Korslänkarna mellan inloggning och registrering bär den vidare — det är det steg där en ny besökare oftast byter sida.
+
+**`returnTo` är användarstyrd indata och behandlas därefter.** Tillåtlista på formen, inte blocklista på det farliga: bara en enkel intern sökväg släpps igenom. Nekar absoluta URL:er, protokollrelativa (`//ond.se`), backslash-varianten som vissa webbläsare normaliserar till `//`, `..`-segment, kontrolltecken (svarsdelning) och trasig procentkodning. Avkodar upprepat så att `%252F%252Fondsajt.se` inte slinker förbi. Utan det hade parametern varit en öppen vidarebefordran med jobin.se i historiken.
+
+**39 nya tester (1 395 → 1 434), och de är mutationstestade** — ett test som passerar bevisar ingenting förrän man vet att det kan falla:
+
+| Muterat bort | Utfall |
+|---|---|
+| `//`-skyddet | 8 av 29 föll |
+| backslash-skyddet | 4 av 29 föll |
+| kontrollteckenskyddet | 1 av 29 föll |
+| `RootRoute`-omdirigeringen (buggen tillbaka) | **9 av 10 föll** |
+
+Regressionstestet läser `useLocation()` i stället för sidans innehåll. Skälet står i testfilen: `nav-smoke.test.tsx` bredvid asserterar bara "inte tomt, ingen error boundary", och en tyst omdirigering till landningssidan passerar det utan att blinka — det var precis så här buggen kunde leva i månader.
+
+**Kvar av K11:** raden ville också att byggrinden `validateRoutes()` skulle kontrollera att en *gäst* kan nå routen, inte bara att den finns. Det är en körtidsegenskap som en statisk grind inte kan mäta; regressionstestet ovan är den kontroll som faktiskt kan falla på rätt sak.
+
+**K19: två föräldralösa filer raderade.** `client/public/404.html` var en GitHub Pages-kvarleva som klientredirectar till `/deltagarportalen/?/…` — en sökväg som inte finns på Vercel. `client/public/landing.html` var 41,9 kB marknadsföringssida utan inlänkning; `robots.txt` sa att den låg kvar "tills den ersatts av de riktiga landningssidorna i K6", och K6 är klar sedan 2026-08-05, alltså är villkoret uppfyllt. Disallow-raden togs bort i samma svep. **Texten finns kvar i git-historiken** om B2C-hjälten ska återanvändas i K16.
+
+`.lighthouserc.js` pekade på `landing.html` som en av fyra URL:er — att bara radera filen hade brutit konfigurationen. Den pekar nu på en ämnessida i stället, så de fyra täcker sajtens fyra malltyper: appskalet, guideindexet, en ämnessida och verktygsindexet.
+
+**Om D29:** raderingen av `404.html` är det steg D29 pekade ut som nästa. Jag kör medvetet **inte** lhci lokalt för att hävda att det är löst — D29 dokumenterar att lokalt grönt inte bevisade något om CI förra gången. Om det räckte syns i nästa CI-körning, ingen annanstans.
+
+**`lastmod` behövde ingen åtgärd.** Raden sa "identisk lastmod på alla 139". Mätt i prod: **två** värden, 131 på 2026-08-05 och 49 på 2026-08-12. Det är sanningsenligt — artiklarna uppdaterades de datumen. Att konstruera spridning hade varit att hitta på data.
 
 ---
 

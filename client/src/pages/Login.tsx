@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
 import { loginSchema } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from '@/components/ui/icons'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
+import { safeReturnTo, medReturnTo } from '../lib/returnTo'
 
 // Google Logo SVG component
 function GoogleIcon({ className }: { className?: string }) {
@@ -22,6 +23,7 @@ function GoogleIcon({ className }: { className?: string }) {
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { signIn, signInWithGoogle, isAuthenticated, isLoading: authLoading, error: authError } = useAuthStore()
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
@@ -51,12 +53,16 @@ export default function Login() {
 
   const [showPassword, setShowPassword] = useState(false)
 
-  // Redirect if already authenticated
+  // Redirect if already authenticated.
+  // K11: `returnTo` bär vart hon var på väg innan inloggningen — en gäst som
+  // klickade "Bygg ditt CV" på en guidesida ska landa i CV-byggaren, inte på
+  // startsidan. safeReturnTo() nekar allt som inte är en enkel intern sökväg,
+  // så parametern inte kan användas som öppen vidarebefordran.
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/')
+      navigate(safeReturnTo(searchParams.get('returnTo')) || '/')
     }
-  }, [isAuthenticated, navigate])
+  }, [isAuthenticated, navigate, searchParams])
 
   // Sync auth error from store
   useEffect(() => {
@@ -241,7 +247,9 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-gray-300">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold inline-flex items-center min-h-[44px] px-2">
+              {/* returnTo följer med — annars tappas avsikten i just det steg
+                  där en ny besökare oftast byter sida (K11). */}
+              <Link to={medReturnTo('/register', searchParams.get('returnTo'))} className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold inline-flex items-center min-h-[44px] px-2">
                 {t('auth.createAccountLink')}
               </Link>
             </p>

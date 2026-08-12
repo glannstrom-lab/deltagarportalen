@@ -14,8 +14,8 @@ Allow: /
 # Serverlösa endpoints — inget att indexera, och crawl kostar exekvering.
 Disallow: /api/
 
-# Föräldralös statisk landningssida utan inlänkning. Ligger kvar tills den
-# ersatts av de riktiga landningssidorna i K6.
-Disallow: /landing.html
+# (Raden `Disallow: /landing.html` togs bort 2026-08-12, K19. Villkoret den
+# beskrev är uppfyllt: K6:s riktiga landningssidor finns under /verktyg/, och
+# filen är raderad. En Disallow-rad för något som inte finns är brus.)
 
 Sitemap: https://www.jobin.se/sitemap.xml
