@@ -10,6 +10,17 @@ interface OptimizedImageProps {
   width?: number
   height?: number
   loading?: 'lazy' | 'eager'
+  /**
+   * `high` för den bild som är sidans LCP-element. (K13, 2026-08-12)
+   *
+   * `loading="eager"` räcker inte: attributet påverkar bara om bilden hämtas
+   * direkt när elementet finns — inte hur tidigt webbläsaren hittar det. På
+   * startsidan renderas hjältebilden av en lazy-laddad chunk, så bilden
+   * upptäcktes först efter att elva skript hunnit köra. `fetchpriority` styr
+   * köordningen när den väl är upptäckt; preload-taggen i index.html är det
+   * som flyttar själva upptäckten.
+   */
+  fetchPriority?: 'high' | 'low' | 'auto'
 }
 
 /**
@@ -23,6 +34,7 @@ export function OptimizedImage({
   width,
   height,
   loading = 'lazy',
+  fetchPriority,
 }: OptimizedImageProps) {
   // Convert .png to .webp for the optimized source
   const webpSrc = src.replace(/\.png$/i, '.webp')
@@ -38,6 +50,7 @@ export function OptimizedImage({
         width={width}
         height={height}
         loading={loading}
+        fetchPriority={fetchPriority}
       />
     )
   }
@@ -52,6 +65,7 @@ export function OptimizedImage({
         width={width}
         height={height}
         loading={loading}
+        fetchPriority={fetchPriority}
       />
     </picture>
   )

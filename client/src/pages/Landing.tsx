@@ -306,11 +306,13 @@ export default function Landing() {
         <div className="absolute inset-0">
           {/* Mjuk pastell-bas under bilden så texten är läsbar oavsett bildens del */}
           <div className="absolute inset-0 bg-gradient-to-br from-[var(--c-bg)] via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800" />
+          {/* Sidans LCP-element — preloadas i index.html, se kommentaren där. */}
           <OptimizedImage
             src="/hero-landing.webp"
             alt=""
             className="absolute inset-0 w-full h-full object-cover object-right dark:opacity-60"
             loading="eager"
+            fetchPriority="high"
           />
           {/* Fade overlay — starkare och bottom-up på mobil så texten ovanpå alltid är läsbar,
               starkare till vänster på desktop så vänsterspaltens text dominerar. */}
@@ -343,12 +345,21 @@ export default function Landing() {
                 {t('landing.hero.ctaPrimary', 'Skapa konto gratis')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button
-                onClick={() => scrollToSection('audience')}
+              {/*
+                K13: knappen hette "Boka 30 min demo" och gjorde
+                `scrollToSection('audience')` — den skrollade en bit ner på
+                sidan. Etiketten lovade en bokning, klicket gav en skroll.
+                Två andra instanser av samma etikett på den här sidan öppnar
+                en riktig mejlbokning; nu gör alla tre det. En knapp som säger
+                vad den gör är inte en detalj i en portal vars återkommande
+                felklass är påhittade utfästelser.
+              */}
+              <a
+                href="mailto:demo@jobin.se?subject=Boka%20demo"
                 className="text-stone-700 dark:text-stone-200 hover:text-stone-900 dark:hover:text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 transition-all bg-white dark:bg-stone-800"
               >
                 {t('landing.hero.ctaSecondary', 'Boka 30 min demo')}
-              </button>
+              </a>
             </div>
 
             <div className="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2 sm:gap-6 text-sm text-stone-600 dark:text-stone-300">
@@ -466,13 +477,21 @@ export default function Landing() {
                   {t('landing.audience.consultant.bullet3', 'Rapporter till uppdragsgivare')}
                 </li>
               </ul>
-              <button
-                onClick={() => scrollToSection('faq')}
+              {/*
+                K13: knappen hette "Se konsulentvyn" och gjorde
+                `scrollToSection('faq')` — den hoppade till vanliga frågor.
+                Det finns ingen konsulentvy att visa en gäst, så etiketten
+                kunde inte hållas hur knappen än kopplades. Nu erbjuder den
+                det vi faktiskt kan ge: en visning. Samma väg som VD-kortets
+                demoknapp, med ett ämne som säger vad det gäller.
+              */}
+              <a
+                href="mailto:demo@jobin.se?subject=Visning%20av%20konsulentvyn"
                 className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
               >
-                {t('landing.audience.consultant.cta', 'Se konsulentvyn')}
+                {t('landing.audience.consultant.cta', 'Boka en visning av konsulentvyn')}
                 <ArrowRight className="w-4 h-4" />
-              </button>
+              </a>
             </div>
 
             {/* VD — info-färg (sky) */}

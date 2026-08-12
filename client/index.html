@@ -65,6 +65,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
+    <!--
+      Startsidans LCP-element.  (spår K13, 2026-08-12)
+
+      Mätt i prod på strypt mobil (1,6 Mbit, 4x CPU): LCP 4 180 ms, och
+      LCP-elementet är den här bilden. Resten av sidan är snabb — TTFB 56 ms,
+      FCP 852 ms, domInteractive 465 ms. Filen är bara 45 kB och immutable
+      cachad, så överföringen är inte problemet: bilden UPPTÄCKS för sent.
+      Den renderas av en lazy-laddad chunk, alltså först efter att elva skript
+      hunnit köra.
+
+      Preloaden flyttar upptäckten till noll. `loading="eager"` på elementet
+      kunde inte göra det — attributet styr bara vad som händer när elementet
+      väl finns.
+
+      Kostnaden: en inloggad användare som aldrig ser startsidan hämtar 45 kB
+      i onödan vid första besöket (därefter cachad ett år). Startsidan är
+      ingången för all organisk trafik, så avvägningen är medveten.
+    -->
+    <link rel="preload" as="image" href="/hero-landing.webp" type="image/webp" fetchpriority="high">
+
     <!-- CV-mall fonter (Atelier, Manhattan, Executive) — laddas en gång globalt
          så att både preview och print ser likadant ut. -->
     <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700;800&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
