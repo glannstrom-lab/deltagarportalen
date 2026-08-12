@@ -20,10 +20,12 @@ const {
   validateRoutes,
   guideUrl,
   arLattlast,
+  KATEGORIER,
 } = require('./lib/guides.cjs')
 const {
   renderGuide,
   renderIndex,
+  renderKategori,
   renderLattlast,
   renderTool,
   renderToolIndex,
@@ -49,9 +51,10 @@ if (publicerade.length === 0) {
   process.exit(0)
 }
 
-// /guider/lattlast/ är en genererad ingångssida. En artikel med den sluggen
-// hade skrivits över tyst — hellre trasigt bygge än en sida som försvinner.
-const RESERVERADE = new Set(['lattlast', 'index'])
+// /guider/lattlast/ och /guider/kategori/ är genererade ingångssidor. En
+// artikel med någon av de sluggarna hade skrivits över tyst — hellre trasigt
+// bygge än en sida som försvinner.
+const RESERVERADE = new Set(['lattlast', 'index', 'kategori'])
 const krock = publicerade.filter((a) => RESERVERADE.has(a.slug))
 if (krock.length) {
   console.error(
@@ -92,6 +95,49 @@ for (const artikel of publicerade) {
 }
 
 fs.writeFileSync(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
+
+// K15: ämnessidor under /guider/kategori/<slug>/.
+//
+// Grinden: en kategori i KATEGORIER som inte har någon publicerad artikel
+// skulle bli en tom sida — alltså en mjuk 404 som vi själva länkar till.
+// Hellre trasigt bygge än en tom sida i sitemapen.
+let antalKategorier = 0
+const tommaKategorier = []
+for (const kat of KATEGORIER) {
+  const iKat = publicerade.filter((a) => a.category_key === kat.key)
+  if (!iKat.length) {
+    tommaKategorier.push(kat.slug)
+    continue
+  }
+  const dir = path.join(DIST, 'guider', 'kategori', kat.slug)
+  fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(path.join(dir, 'index.html'), renderKategori(kat, iKat, KATEGORIER), 'utf8')
+  antalKategorier++
+}
+if (tommaKategorier.length) {
+  console.error(
+    `prerender-guides: kategorisidor utan publicerade artiklar: ${tommaKategorier.join(', ')}`
+  )
+  process.exit(1)
+}
+
+// Grinden åt andra hållet: en publicerad artikel vars kategori saknar
+// ämnessida syns bara i den långa listan på /guider/. `easy-swedish` är det
+// enda tillåtna undantaget — den har /guider/lattlast/ sedan K5.
+const utanAmnessida = [
+  ...new Set(
+    publicerade
+      .filter((a) => !KATEGORIER.some((k) => k.key === a.category_key))
+      .map((a) => a.category_key)
+  ),
+].filter((k) => k !== 'easy-swedish')
+if (utanAmnessida.length) {
+  console.error(
+    `prerender-guides: publicerade artiklar i kategorier utan ämnessida: ${utanAmnessida.join(', ')}. ` +
+      'Lägg till dem i KATEGORIER i lib/guides.cjs.'
+  )
+  process.exit(1)
+}
 
 // K5: egen ingång för lättläst svenska.
 const lattlast = publicerade.filter(arLattlast)
@@ -145,8 +191,55 @@ const totalKb = Math.round(
   ) / 1024
 )
 
+// K12: startsidan länkar numera till de publika sidorna. En sådan länk kan
+// ruttna tyst — sluggen byter namn, kategorin tas bort — och resultatet blir
+// en mjuk 404 som vi själva pekar besökaren mot. Grinden kontrollerar att
+// varje /guider/- och /verktyg/-länk i Landing.tsx motsvarar en sida som just
+// genererats. Den läser dist/, inte källkoden, så den mäter utfallet.
+const LANDING = path.join(CLIENT, 'src', 'pages', 'Landing.tsx')
+if (fs.existsSync(LANDING)) {
+  // Kommentarerna strippas först. Utan det matchade grinden sin egen
+  // dokumentation — kommentaren som förklarar varför <Link to="/guider/"> är
+  // fel innehåller ju strängen. En vakt som inte skiljer omnämnande från
+  // förekomst larmar på texten som beskriver den.
+  const landingSrc = fs
+    .readFileSync(LANDING, 'utf8')
+    .replace(/\/\*[^]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '')
+  const publikaLankar = [
+    ...new Set(
+      [...landingSrc.matchAll(/href="(\/(?:guider|verktyg)[^"]*)"/g)].map((m) => m[1])
+    ),
+  ]
+  const doda = publikaLankar.filter(
+    (l) => !fs.existsSync(path.join(DIST, l.replace(/^\//, ''), 'index.html'))
+  )
+  if (doda.length) {
+    console.error(
+      `prerender-guides: Landing.tsx länkar till sidor som inte genererats: ${doda.join(', ')}`
+    )
+    process.exit(1)
+  }
+  // En <Link to="/guider/…"> hade blivit #/guider/… under HashRouter och
+  // skickat besökaren till startsidan. Den formen får inte smyga in igen.
+  const felaktigaLink = [...landingSrc.matchAll(/<Link\s+to="(\/(?:guider|verktyg)[^"]*)"/g)].map(
+    (m) => m[1]
+  )
+  if (felaktigaLink.length) {
+    console.error(
+      `prerender-guides: Landing.tsx använder <Link to=…> för prerenderade sidor ` +
+        `(${felaktigaLink.join(', ')}) — HashRouter gör dem till #-länkar. Använd <a href>.`
+    )
+    process.exit(1)
+  }
+  console.log(
+    `   Startsidan: ${publikaLankar.length} publika länkar, alla motsvarar genererade sidor.`
+  )
+}
+
 console.log(
-  `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalVerktyg} verktygssidor skrivna ` +
+  `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalKategorier} ämnessidor + ` +
+    `${antalVerktyg} verktygssidor skrivna ` +
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )

@@ -19,7 +19,8 @@
  */
 
 const { markdownToHtml, markdownToPlain, escapeHtml } = require('./markdown.cjs')
-const { SITE, TOOLS, KATEGORI_NAMN, appUrl, verktygFor, guideUrl } = require('./guides.cjs')
+const { SITE, TOOLS, KATEGORI_NAMN, KATEGORIER, kategoriUrl, appUrl, verktygFor, guideUrl } =
+  require('./guides.cjs')
 
 const CSS = `
 :root{
@@ -307,19 +308,38 @@ function renderIndex(artiklar) {
     ;(grupper[k] = grupper[k] || []).push(a)
   })
 
-  const sektioner = Object.entries(grupper)
-    .sort((a, b) => b[1].length - a[1].length)
-    .map(
-      ([namn, list]) =>
-        `<h2>${escapeHtml(namn)}</h2><ul>${list
-          .map(
-            (a) =>
-              `<li><a href="${guideUrl(a.slug)}">${escapeHtml(a.title)}</a>${
-                a.summary ? ` — <span style="color:var(--muted)">${escapeHtml(a.summary.slice(0, 110))}</span>` : ''
-              }</li>`
-          )
-          .join('')}</ul>`
-    )
+  // Rubriken länkar till ämnessidan (K15). Ordningen följer KATEGORIER så att
+  // index och ämnessidor presenterar samma värld i samma följd; kategorier
+  // utan egen sida (lättläst har /guider/lattlast/) hamnar sist utan länk.
+  const kategoriPerNamn = new Map(KATEGORIER.map((k) => [KATEGORI_NAMN[k.key] || k.rubrik, k]))
+  const ordnade = [
+    ...KATEGORIER.map((k) => KATEGORI_NAMN[k.key] || k.rubrik).filter((n) => grupper[n]),
+    ...Object.keys(grupper).filter((n) => !kategoriPerNamn.has(n)),
+  ]
+
+  const amnesnav =
+    `<nav aria-label="Ämnen"><p>Hoppa till ett ämne: ` +
+    KATEGORIER.filter((k) => grupper[KATEGORI_NAMN[k.key] || k.rubrik])
+      .map((k) => `<a href="${kategoriUrl(k.slug)}">${escapeHtml(k.rubrik)}</a>`)
+      .join(' · ') +
+    ` · <a href="/guider/lattlast/">Lätt svenska</a></p></nav>`
+
+  const sektioner = ordnade
+    .map((namn) => {
+      const list = grupper[namn]
+      const kat = kategoriPerNamn.get(namn)
+      const rubrik = kat
+        ? `<h2><a href="${kategoriUrl(kat.slug)}">${escapeHtml(kat.rubrik)}</a></h2>`
+        : `<h2>${escapeHtml(namn)}</h2>`
+      return `${rubrik}<ul>${list
+        .map(
+          (a) =>
+            `<li><a href="${guideUrl(a.slug)}">${escapeHtml(a.title)}</a>${
+              a.summary ? ` — <span style="color:var(--muted)">${escapeHtml(a.summary.slice(0, 110))}</span>` : ''
+            }</li>`
+        )
+        .join('')}</ul>`
+    })
     .join('')
 
   const jsonLd = {
@@ -367,6 +387,7 @@ function renderIndex(artiklar) {
 
 <main>
   <div class="wrap">
+    ${amnesnav}
     ${sektioner}
     <section class="cta">
       <h2>Vill du göra det på riktigt?</h2>
@@ -465,6 +486,136 @@ function renderLattlast(artiklar) {
     </section>
 
     <p><a href="/guider/">Se alla guider</a></p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — hjälp för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna Jobin</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+/**
+ * /guider/kategori/<slug>/ — ämnessida.  (spår K15, 2026-08-12)
+ *
+ * Varför de finns: guideindexet var en enda lista på 161 rader. Den som söker
+ * på ett ämne fick skrolla igenom allt annat, och Google fick en enda sida att
+ * förstå ett helt ämnesområde ifrån. Elva ämnessidor ger både navigering och
+ * elva nya indexerbara sidor — datat (`category_key`) fanns redan.
+ *
+ * Två saker den medvetet INTE gör:
+ *   - Ingen sida för `easy-swedish`. Den har /guider/lattlast/ sedan K5, och
+ *     en andra sida över samma artiklar hade konkurrerat med den (K14).
+ *   - Ingen primär CTA in i appen. Appens routes är skyddade och en gäst
+ *     dumpas tyst på startsidan (K11), så vägen vidare går till en publik
+ *     /verktyg/-sida i stället.
+ *
+ * Sorteringen sätter längre texter först inom varje svårighetsnivå — den som
+ * landar på ämnessidan vill oftast ha genomgången, inte checklistan.
+ */
+function renderKategori(kat, artiklar, syskon) {
+  const url = `${SITE}${kategoriUrl(kat.slug)}`
+
+  const ordning = { detailed: 0, medium: 1, easy: 2, 'easy-swedish': 3 }
+  const sorterade = [...artiklar].sort(
+    (a, b) =>
+      (ordning[a.difficulty] ?? 9) - (ordning[b.difficulty] ?? 9) ||
+      (b.content || '').length - (a.content || '').length
+  )
+
+  const lista = sorterade
+    .map(
+      (a) =>
+        `<li><a href="${guideUrl(a.slug)}">${escapeHtml(a.title)}</a>${
+          a.reading_time ? ` <span style="color:var(--muted)">(${a.reading_time} min)</span>` : ''
+        }${a.summary ? `<br><span style="color:var(--muted)">${escapeHtml(korta(a.summary, 120))}</span>` : ''}</li>`
+    )
+    .join('')
+
+  const andraAmnen = syskon
+    .filter((k) => k.slug !== kat.slug)
+    .map((k) => `<li><a href="${kategoriUrl(k.slug)}">${escapeHtml(k.rubrik)}</a></li>`)
+    .join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: kat.rubrik,
+    description: kat.lead,
+    inLanguage: 'sv-SE',
+    url,
+    hasPart: sorterade.map((a) => ({
+      '@type': 'Article',
+      headline: a.title,
+      url: `${SITE}${guideUrl(a.slug)}`,
+    })),
+  }
+  const brodsmula = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Jobin', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: 'Guider', item: `${SITE}/guider/` },
+      { '@type': 'ListItem', position: 3, name: kat.rubrik, item: url },
+    ],
+  }
+
+  const beskrivning = korta(`${kat.lead} ${artiklar.length} guider, gratis att läsa.`, 155)
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(kat.rubrik)} — guider — Jobin</title>
+<meta name="description" content="${escapeHtml(beskrivning)}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(kat.rubrik)} — guider — Jobin">
+<meta property="og:description" content="${escapeHtml(beskrivning)}">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+<script type="application/ld+json">${JSON.stringify(brodsmula)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="/verktyg/">Se verktygen</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor">
+      <a href="/">Jobin</a> › <a href="/guider/">Guider</a> › ${escapeHtml(kat.rubrik)}
+    </nav>
+    <h1>${escapeHtml(kat.rubrik)}</h1>
+    <p class="lead">${escapeHtml(kat.lead)}</p>
+    <a class="btn" href="${kat.verktygssida}">Se vad du kan få hjälp med</a>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    <h2>${artiklar.length} guider om ${escapeHtml(kat.rubrik.toLowerCase())}</h2>
+    <ul>${lista}</ul>
+
+    <h2>Andra ämnen</h2>
+    <ul>${andraAmnen}
+      <li><a href="/guider/lattlast/">Lätt svenska</a></li>
+    </ul>
+
+    <p><a href="/guider/">Alla guider</a></p>
   </div>
 </main>
 
@@ -683,4 +834,11 @@ function renderToolIndex(verktyg) {
 `
 }
 
-module.exports = { renderGuide, renderIndex, renderLattlast, renderTool, renderToolIndex }
+module.exports = {
+  renderGuide,
+  renderIndex,
+  renderKategori,
+  renderLattlast,
+  renderTool,
+  renderToolIndex,
+}

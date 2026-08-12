@@ -122,6 +122,104 @@ const KATEGORI_NAMN = {
   'getting-started': 'Kom igång',
 }
 
+/**
+ * Kategorisidorna under /guider/kategori/<slug>/.  (spår K15, 2026-08-12)
+ *
+ * `easy-swedish` står MED VILJA inte här. Den har redan en egen ingång på
+ * /guider/lattlast/ (K5), och en andra sida över samma 20 artiklar hade blivit
+ * exakt den kannibalisering K14 varnar för — två URL:er som slåss om samma
+ * sökning. Kategoriindexet länkar dit i stället.
+ *
+ * `getting-started` står inte här heller: dess två artiklar är onboarding och
+ * publiceras aldrig (triagens regel 3), så sidan hade varit tom.
+ *
+ * `verktygssida` pekar på en PUBLIK sida under /verktyg/, inte in i appen.
+ * Skälet är K11: appens routes är skyddade, och en gäst som klickar dumpas
+ * tyst på startsidan. Tills K11 är löst ska en publik sida aldrig ha en
+ * skyddad route som primär väg vidare.
+ */
+const KATEGORIER = [
+  {
+    key: 'job-search',
+    slug: 'soka-jobb',
+    rubrik: 'Söka jobb',
+    lead: 'Ansökan, CV, personligt brev och sättet att lägga upp sökandet så att det går att hålla i över tid.',
+    verktygssida: '/verktyg/cv/',
+  },
+  {
+    key: 'interview',
+    slug: 'intervju',
+    rubrik: 'Intervju',
+    lead: 'Förberedelser, vanliga frågor, digitala intervjuer och det som händer efteråt.',
+    verktygssida: '/verktyg/intervjutraning/',
+  },
+  {
+    key: 'wellness',
+    slug: 'orka-och-ma-bra',
+    rubrik: 'Orka och må bra',
+    lead: 'Att söka jobb tar på krafterna. Här handlar det om stress, avslag, motivation och att hitta en takt som håller.',
+    verktygssida: '/verktyg/',
+  },
+  {
+    key: 'career-development',
+    slug: 'karriar',
+    rubrik: 'Karriär och utveckling',
+    lead: 'Byta bana, växa i rollen du har, eller ta reda på vad nästa steg skulle kunna vara.',
+    verktygssida: '/verktyg/kompetensanalys/',
+  },
+  {
+    key: 'employment-law',
+    slug: 'dina-rattigheter',
+    rubrik: 'Dina rättigheter',
+    lead: 'Anställningsformer, avtal, lön och vad som gäller när något inte står rätt till. Vi beskriver hur reglerna fungerar — de exakta beloppen och gränserna hämtar du hos myndigheten.',
+    verktygssida: '/verktyg/',
+  },
+  {
+    key: 'self-awareness',
+    slug: 'sjalvkannedom',
+    rubrik: 'Vad du kan och vill',
+    lead: 'Styrkor, värderingar och kompetenser — underlaget du behöver för att kunna beskriva dig själv för någon annan.',
+    verktygssida: '/verktyg/kompetensanalys/',
+  },
+  {
+    key: 'accessibility',
+    slug: 'stod-och-anpassningar',
+    rubrik: 'Stöd och anpassningar',
+    lead: 'Vilka stöd som finns när arbetsförmågan är nedsatt, hur de beslutas, och hur du tar upp dem med en arbetsgivare.',
+    verktygssida: '/verktyg/',
+  },
+  {
+    key: 'job-market',
+    slug: 'arbetsmarknaden',
+    rubrik: 'Arbetsmarknaden',
+    lead: 'Var jobben finns, hur branscher skiljer sig åt och hur du läser läget utan att fastna i siffror.',
+    verktygssida: '/verktyg/',
+  },
+  {
+    key: 'digital-presence',
+    slug: 'digital-narvaro',
+    rubrik: 'Din digitala närvaro',
+    lead: 'LinkedIn, portfolio och det en arbetsgivare hittar när hon söker på ditt namn.',
+    verktygssida: '/verktyg/cv/',
+  },
+  {
+    key: 'networking',
+    slug: 'natverk',
+    rubrik: 'Nätverk',
+    lead: 'Hur kontakter faktiskt leder till jobb — också för dig som tycker att nätverkande känns obekvämt.',
+    verktygssida: '/verktyg/',
+  },
+  {
+    key: 'tools',
+    slug: 'checklistor-och-ordlistor',
+    rubrik: 'Checklistor och ordlistor',
+    lead: 'Att bocka av innan du skickar, och att slå upp ord som dyker upp i annonser och avtal.',
+    verktygssida: '/verktyg/cv/',
+  },
+]
+
+const kategoriUrl = (slug) => `${GUIDE_BASE}/kategori/${slug}/`
+
 function normaliseraHref(href) {
   if (!href || typeof href !== 'string') return null
   let h = href.trim()
@@ -213,6 +311,8 @@ module.exports = {
   GUIDE_BASE,
   TOOLS,
   KATEGORI_NAMN,
+  KATEGORIER,
+  kategoriUrl,
   appUrl,
   normaliseraHref,
   loadSnapshot,

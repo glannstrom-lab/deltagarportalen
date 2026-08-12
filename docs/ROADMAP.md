@@ -822,10 +822,10 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | ID | Punkt | Storlek |
 |----|-------|---------|
 | **K11** | **Varje CTA på de 138 prerenderade sidorna leder till en skyddad route.** `App.tsx:116` gör `<Navigate to="/">` utan `returnTo` → gästen dumpas tyst på B2B-säljsidan. Reproducerat i webbläsare. Byggrinden `validateRoutes()` kollar att routen *finns*, inte att en gäst kan nå den — utöka den | S |
-| **K12** | Startsidan länkar **inte** till någon av de 137 prerenderade sidorna — de är föräldralösa från rot. `<title>`/description/OG säljer B2C medan sidan är B2B ("Stärk dina deltagare mot jobb") | S |
+| **K12** | ✅ **Klar 2026-08-12.** Se K12/K15-avsnittet nedan. Startsidan länkar **inte** till någon av de 137 prerenderade sidorna — de är föräldralösa från rot. `<title>`/description/OG säljer B2C medan sidan är B2B ("Stärk dina deltagare mot jobb") | S |
 | **K13** | Startsidan är **enda sidan som failar CWV**: LCP 4 368 ms, noll serverrenderat innehåll. Cookierutan täcker primär-CTA på mobil (hit-test: `blocked: true`). "Boka 30 min demo" och "Se konsulentvyn" skrollar bara | M |
 | **K14** | Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
-| **K15** | Guideindexet använder inte `category_key`/`difficulty` som redan finns i datat. 13 statiska kategorisidor = bättre navigering **och** 13 nya indexerbara sidor | M |
+| **K15** | ✅ **Klar 2026-08-12 — 11 sidor, inte 13.** Se K12/K15-avsnittet nedan. Guideindexet använder inte `category_key`/`difficulty` som redan finns i datat. 13 statiska kategorisidor = bättre navigering **och** 13 nya indexerbara sidor | M |
 | **K16** | **B2B-ytan finns inte för Google.** En kommun eller Rusta-och-matcha-leverantör som söker "digital plattform arbetsmarknadsenhet" hittar ingenting. En prerenderad `/for-arbetsmarknadsenheter/` med ärligt beskrivet GDPR-läge och en riktig demoknapp är sannolikt sajtens mest värdefulla sida per besökare — och den ska bära det som A24/B19 tar bort, i sann form | M |
 | **K17** | Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
 | **K18** | En "vad är detta"-rad överst på guidesidorna. En besökare landar mitt i en ATS-guide utan att veta vad Jobin är — femsekundersfrågan ställs där, inte på startsidan | S |
@@ -853,7 +853,33 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 
 **Medvetet avsteg från K4** (samma sorts avsteg som redan står dokumenterat på K4-raden, och beslutat av Mikael 2026-08-12): omgången släpptes utan att K8:s mätning fanns. Skälet är att risken skalar med kvalitet snarare än antal, att triagen silar med körbara regler, och att de 30 ligger i ämnen som inte kannibaliserar något befintligt. **Det kvarstående kravet gäller fortfarande:** mät i Search Console innan omgång 4, och K8 är alltjämt den billigaste åtgärden som låser upp flest andra.
 
-**Kvar efter den här omgången:** K12 (startsidan länkar inte till någon guidesida — de 161 är föräldralösa från rot, vilket direkt begränsar vad omgången kan ge) och K15 (13 kategorisidor ur `category_key`) är nu de två som ger mest per krona, eftersom de gör de 161 sidorna hittbara i stället för att lägga till en 162:a.
+**Kvar efter den här omgången:** K12 (startsidan länkar inte till någon guidesida — de 161 är föräldralösa från rot, vilket direkt begränsar vad omgången kan ge) och K15 (13 kategorisidor ur `category_key`) är nu de två som ger mest per krona, eftersom de gör de 161 sidorna hittbara i stället för att lägga till en 162:a. — **Båda tagna 2026-08-12, se nästa avsnitt.**
+
+### K12 + K15 — sidorna går att hitta (2026-08-12)
+
+**K15: elva ämnessidor, inte tretton.** Premissen sa 13. De 161 publicerade artiklarna spänner över **12** kategorier (`getting-started` publiceras aldrig — triagens onboarding-regel), och `easy-swedish` fick medvetet ingen egen ämnessida: den har `/guider/lattlast/` sedan K5, och en andra sida över samma 20 artiklar hade blivit exakt den kannibalisering K14 varnar för. Utfall: **11 nya sidor** under `/guider/kategori/<slug>/` plus den befintliga lättläst-ingången. Sitemap 169 → **180**.
+
+Sidorna sorterar längre texter först inom varje svårighetsnivå (den som landar på en ämnessida vill oftast ha genomgången, inte checklistan), bär `CollectionPage`- och `BreadcrumbList`-JSON-LD, och länkar till varandra så att varje ämne är en väg vidare snarare än en återvändsgränd. **Primär-CTA går till en publik `/verktyg/`-sida, aldrig in i appen** — K11 är fortfarande öppen, och en gäst som klickar på en skyddad route dumpas tyst på startsidan. Elva nya instanser av den buggen var inte rätt sätt att fira elva nya sidor.
+
+Guideindexet blev samtidigt en riktig hubb: ämnesnavigering överst, kategorirubriker som länkar till respektive ämnessida, och **länk till `/guider/lattlast/`** — den var föräldralös från indexet, vilket är halva K14.
+
+**K12: startsidan länkar nu till 18 publika sidor.** Premissen höll: `Landing.tsx` (892 rader) hade noll länkar till `/guider/` eller `/verktyg/`. Andra halvan av raden var däremot **inverterad** — K1 gjorde `<title>`/description/OG B2C redan 2026-08-05. Det är sidans *text* som är B2B ("Stärk dina deltagare mot jobb — plattform för jobbcoacher"), alltså tvärtom mot vad raden påstod. **Den obalansen är kvar och är Mikaels beslut**, inte en bugg att fixa i förbifarten: en sökare som klickar ett B2C-utdrag landar på en B2B-sida. Rätt hem för B2B-budskapet är K16:s egna `/for-arbetsmarknadsenheter/`.
+
+Levererat: en guidesektion före slut-CTA:n (sex ämnen + "Alla guider"), en "läs guiderna först — utan konto"-länk i arbetssökandekortet, och en omgjord sidfot. Sidfotens "Funktioner"-kolumn pekade tidigare på `/register` — en gäst som ville veta vad verktyget *är* möttes av en registreringsvägg; nu går den till de publika verktygssidorna. Ny "Guider"-kolumn.
+
+**Fällan som styrde implementationen:** appen kör `HashRouter`. Ett `<Link to="/guider/">` blir `#/guider/`, fångas av catch-allen och skickar besökaren tillbaka till startsidan — alltså en länk som ser rätt ut i koden och är död i drift. Alla länkar till prerenderade sidor är därför vanliga `<a href>`.
+
+**Fyra nya byggrindar, alla verifierade med planterat fel** (en grind som aldrig fallit är oprövad):
+1. Kategori i `KATEGORIER` utan publicerade artiklar → tom sida vi själva länkar till. *Planterat fel → exit 1.*
+2. Publicerad artikel i en kategori utan ämnessida → syns bara i den långa listan. `easy-swedish` är enda tillåtna undantaget. *Planterat fel → exit 1.*
+3. `/guider/`- eller `/verktyg/`-länk i `Landing.tsx` som inte motsvarar en genererad sida → mjuk 404 vi pekar besökaren mot. Grinden läser `dist/`, alltså utfallet. *Planterat fel → exit 1.*
+4. `<Link to="/guider/…">` i `Landing.tsx` → HashRouter-fällan ovan. *Planterat fel → exit 1.*
+
+Grind 4 fällde först på **sin egen dokumentation** — kommentaren som förklarar varför formen är förbjuden innehåller ju strängen. Kommentarer strippas nu före sökningen. Samma familj som `sentinel-guard-cannot-tell-mention-from-marker`.
+
+**Browserverifierat mot byggd kod, inte dev-servern:** 18 publika länkar i renderat DOM, alla synliga, noll konsolfel, ingen horisontell scroll på 390 px, hit-test på "Alla guider" träffar länken och inte ett överliggande lager, och en navigering till `/guider/kategori/soka-jobb/` landar rätt (`h1 = "Söka jobb"`) i stället för att fastna i SPA:n. **Mätfälla på vägen:** `waitUntil: 'networkidle'` inträffar medan auth-spinnern står kvar — första mätningen rapporterade 0 länkar på desktop medan mobilen hittade dem. Utan explicit `waitForSelector` hade jag mätt tomrummet och trott att sektionen saknades.
+
+**Kvar i spår K efter det här:** K11 (gäst-CTA:er → skyddade routes, nu den enda som blockerar konverteringen från 180 publika sidor), K13 (startsidans CWV), K14:s andra halva (dubbla lättläst-slugfamiljer, soft-404), K16 (B2B-ytan), K17–K19. Och K8 (Search Console) som fortfarande låser upp flest andra.
 
 ---
 

@@ -427,6 +427,18 @@ export default function Landing() {
                 {t('landing.audience.jobseeker.cta', 'Skapa konto gratis')}
                 <ArrowRight className="w-4 h-4" />
               </Link>
+              {/*
+                Vanlig <a>, inte <Link> — /guider/ är en prerenderad statisk sida
+                utanför appen. Appen kör HashRouter, så ett <Link to="/guider/">
+                hade blivit #/guider/, fångats av catch-allen och skickat
+                besökaren tillbaka hit. Se ROADMAP K12.
+              */}
+              <a
+                href="/guider/"
+                className="mt-3 text-sm text-[var(--activity-text)] underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
+              >
+                {t('landing.audience.jobseeker.guides', 'Eller läs guiderna först — utan konto')}
+              </a>
             </div>
 
             {/* Konsulent — coaching-färg (rosa) */}
@@ -799,6 +811,69 @@ export default function Landing() {
         </div>
       </section>
 
+      {/*
+        Guider — spår K12.
+
+        Fram till 2026-08-12 länkade den här sidan inte till en enda av de 161
+        prerenderade guidesidorna. De var föräldralösa från roten: en sökmotor
+        nådde dem bara via sitemapen, och en besökare aldrig.
+
+        Alla länkar här är vanliga <a>, aldrig <Link>. Appen kör HashRouter, så
+        ett <Link to="/guider/"> hade blivit #/guider/ och fångats av
+        catch-allen. Sökvägarna motsvarar genererade sidor och kontrolleras av
+        en byggrind i scripts/prerender-guides.cjs — en död länk härifrån är en
+        mjuk 404 i Search Console, inte ett skönhetsfel.
+      */}
+      <section className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
+        <div className="max-w-5xl mx-auto px-5 sm:px-6">
+          <div className="text-center mb-10 sm:mb-12">
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
+              {t('landing.guides.title', 'Läs innan du bestämmer dig')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-lg leading-relaxed max-w-2xl mx-auto">
+              {t(
+                'landing.guides.description',
+                'Guider om att söka jobb, klara intervjun, förstå dina rättigheter och orka hela vägen. Gratis att läsa, utan konto.'
+              )}
+            </p>
+          </div>
+
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+            {[
+              ['/guider/kategori/soka-jobb/', t('landing.guides.jobSearch', 'Söka jobb')],
+              ['/guider/kategori/intervju/', t('landing.guides.interview', 'Intervju')],
+              ['/guider/kategori/dina-rattigheter/', t('landing.guides.rights', 'Dina rättigheter')],
+              [
+                '/guider/kategori/stod-och-anpassningar/',
+                t('landing.guides.support', 'Stöd och anpassningar'),
+              ],
+              ['/guider/kategori/orka-och-ma-bra/', t('landing.guides.wellbeing', 'Orka och må bra')],
+              ['/guider/lattlast/', t('landing.guides.easySwedish', 'Lätt svenska')],
+            ].map(([href, label]) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  className="flex items-center justify-between gap-2 min-h-[44px] px-5 py-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] text-stone-800 dark:text-stone-100 font-medium transition-colors"
+                >
+                  {label}
+                  <ArrowRight className="w-4 h-4 flex-shrink-0 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <div className="text-center">
+            <a
+              href="/guider/"
+              className="inline-flex items-center gap-2 min-h-[44px] text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold underline underline-offset-4 hover:no-underline"
+            >
+              {t('landing.guides.all', 'Alla guider')}
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16 sm:py-24 dark:bg-stone-900">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 text-center">
@@ -832,7 +907,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="bg-stone-900 text-stone-300">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-12 sm:mb-12">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-5 gap-8 sm:gap-10 mb-12 sm:mb-12">
             {/* Brand */}
             <div className="col-span-2 sm:col-span-2 md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
@@ -851,10 +926,29 @@ export default function Landing() {
             {/* Links */}
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.featuresTitle')}</h4>
+              {/*
+                Pekade tidigare på /register — en gäst som ville veta vad
+                verktyget ÄR möttes av en registreringsvägg. De publika
+                verktygssidorna (K6) beskriver dem utan konto. Vanliga <a>,
+                se kommentaren vid guidesektionen ovan. ROADMAP K12.
+              */}
               <ul className="space-y-3 text-sm">
-                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.cvGenerator')}</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.interestGuide')}</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.jobSearch')}</Link></li>
+                <li><a href="/verktyg/cv/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.cvGenerator')}</a></li>
+                <li><a href="/verktyg/personligt-brev/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.coverLetter', 'Personligt brev')}</a></li>
+                <li><a href="/verktyg/intervjutraning/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.interviewTraining')}</a></li>
+                <li><a href="/verktyg/kompetensanalys/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.skillsAnalysis', 'Kompetensanalys')}</a></li>
+                <li><a href="/verktyg/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.allTools', 'Alla verktyg')}</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.guidesTitle', 'Guider')}</h4>
+              <ul className="space-y-3 text-sm">
+                <li><a href="/guider/kategori/soka-jobb/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.jobSearch', 'Söka jobb')}</a></li>
+                <li><a href="/guider/kategori/intervju/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.interview', 'Intervju')}</a></li>
+                <li><a href="/guider/kategori/dina-rattigheter/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.rights', 'Dina rättigheter')}</a></li>
+                <li><a href="/guider/lattlast/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.easySwedish', 'Lätt svenska')}</a></li>
+                <li><a href="/guider/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.all', 'Alla guider')}</a></li>
               </ul>
             </div>
 
