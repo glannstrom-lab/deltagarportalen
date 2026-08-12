@@ -2283,7 +2283,7 @@
       "slug": "hitta-dina-varderingar",
       "sort_order": 910,
       "subcategory": "interests",
-      "summary": "Dina värderingar styr vad du trivs med. Lär dig identifiera dem för att hitta en arbetsplats där du verkligen passar in.",
+      "summary": "Två konkreta övningar som hjälper dig sätta ord på vad som betyder mest för dig i ett jobb.",
       "tags": [
         "värderingar",
         "självkännedom",
@@ -2291,8 +2291,8 @@
         "motivation",
         "arbetskultur"
       ],
-      "title": "Hitta dina värderingar – nyckeln till rätt jobb",
-      "updated_at": "2026-08-05 11:27:56.896649+00"
+      "title": "Hitta dina värderingar – två övningar som ger svar",
+      "updated_at": "2026-08-12 16:07:12.479933+00"
     },
     {
       "actions": [],
@@ -3244,15 +3244,15 @@
       "slug": "latt-svenska-cv",
       "sort_order": 590,
       "subcategory": "cv-writing",
-      "summary": "En enkel guide om vad ett CV är och varför du behöver ett.",
+      "summary": "En enkel guide om vad du skriver i ditt CV. På lätt svenska.",
       "tags": [
         "lätt svenska",
         "cv",
         "nybörjare",
         "enkel guide"
       ],
-      "title": "Vad är ett CV?",
-      "updated_at": "2026-08-05 13:04:32.444078+00"
+      "title": "Vad ska stå i ett CV?",
+      "updated_at": "2026-08-12 16:07:12.479933+00"
     },
     {
       "actions": [],
@@ -6851,7 +6851,7 @@
       "slug": "varderingar-i-arbetslivet",
       "sort_order": 250,
       "subcategory": "interests",
-      "summary": "Lär dig identifiera dina kärnvärderingar och hur de påverkar din trivsel i arbetslivet.",
+      "summary": "Ekonomiska, sociala och utvecklingsinriktade värderingar — vad de innebär och hur de skiljer sig från intressen.",
       "tags": [
         "värderingar",
         "självkännedom",
@@ -6859,8 +6859,8 @@
         "trivsel",
         "rätt jobb"
       ],
-      "title": "Hitta dina värderingar – nyckeln till rätt jobb",
-      "updated_at": "2026-08-05 11:27:56.896649+00"
+      "title": "Vanliga arbetsvärderingar – och vad de betyder",
+      "updated_at": "2026-08-12 16:07:12.479933+00"
     },
     {
       "actions": [],

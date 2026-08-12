@@ -1,0 +1,21 @@
+{
+  "_kommentar": "Titlar och sammanfattningar FÖRE rättelsen (K14, 2026-08-12). Återställ med `node scripts/apply-title-fixes.cjs --rollback --skriv`.",
+  "skrivet": "2026-08-12",
+  "artiklar": [
+    {
+      "slug": "hitta-dina-varderingar",
+      "title": "Hitta dina värderingar – nyckeln till rätt jobb",
+      "summary": "Dina värderingar styr vad du trivs med. Lär dig identifiera dem för att hitta en arbetsplats där du verkligen passar in."
+    },
+    {
+      "slug": "varderingar-i-arbetslivet",
+      "title": "Hitta dina värderingar – nyckeln till rätt jobb",
+      "summary": "Lär dig identifiera dina kärnvärderingar och hur de påverkar din trivsel i arbetslivet."
+    },
+    {
+      "slug": "latt-svenska-cv",
+      "title": "Vad är ett CV?",
+      "summary": "En enkel guide om vad ett CV är och varför du behöver ett."
+    }
+  ]
+}

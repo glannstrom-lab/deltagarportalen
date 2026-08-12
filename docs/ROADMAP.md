@@ -824,7 +824,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **K11** | ✅ **Klar 2026-08-12 — men mekanismen var en annan än raden sa.** Se K11/K19-avsnittet nedan. **Varje CTA på de 138 prerenderade sidorna leder till en skyddad route.** `App.tsx:116` gör `<Navigate to="/">` utan `returnTo` → gästen dumpas tyst på B2B-säljsidan. Reproducerat i webbläsare. Byggrinden `validateRoutes()` kollar att routen *finns*, inte att en gäst kan nå den — utöka den | S |
 | **K12** | ✅ **Klar 2026-08-12.** Se K12/K15-avsnittet nedan. Startsidan länkar **inte** till någon av de 137 prerenderade sidorna — de är föräldralösa från rot. `<title>`/description/OG säljer B2C medan sidan är B2B ("Stärk dina deltagare mot jobb") | S |
 | **K13** | 🟡 **Delvis 2026-08-12 — ett av tre påståenden reproducerade inte.** Se K13-avsnittet nedan. Startsidan är **enda sidan som failar CWV**: LCP 4 368 ms, noll serverrenderat innehåll. Cookierutan täcker primär-CTA på mobil (hit-test: `blocked: true`). "Boka 30 min demo" och "Se konsulentvyn" skrollar bara | M |
-| **K14** | Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
+| **K14** | 🟡 **Delvis 2026-08-12 — titlarna rättade, sammanslagningarna kvar hos K8.** Se K14-avsnittet nedan. Kannibalisering: två parallella lättläst-slugfamiljer och två identiska `<title>`. Varje URL som inte finns svarar **200 med indexerbar SPA-shell** (soft-404). `/guider/lattlast/` är föräldralös från guideindexet | S |
 | **K15** | ✅ **Klar 2026-08-12 — 11 sidor, inte 13.** Se K12/K15-avsnittet nedan. Guideindexet använder inte `category_key`/`difficulty` som redan finns i datat. 13 statiska kategorisidor = bättre navigering **och** 13 nya indexerbara sidor | M |
 | **K16** | **B2B-ytan finns inte för Google.** En kommun eller Rusta-och-matcha-leverantör som söker "digital plattform arbetsmarknadsenhet" hittar ingenting. En prerenderad `/for-arbetsmarknadsenheter/` med ärligt beskrivet GDPR-läge och en riktig demoknapp är sannolikt sajtens mest värdefulla sida per besökare — och den ska bära det som A24/B19 tar bort, i sann form | M |
 | **K17** | ✅ **Klar 2026-08-12 — men premissens "CTA:n lovar det redan" var fel.** Se K17/K18-avsnittet nedan. Ljuduppläsning på guidesidorna. CTA:n lovar det redan ("Alla guider samlade, med ljuduppläsning") men de publika sidorna har det inte. För lättläst-nischen är uppläsning inte en extrafunktion utan poängen. `SpeechSynthesis` räcker och kostar noll bandbredd | S |
@@ -958,6 +958,27 @@ Preloaden gjorde det **~370 ms sämre**, med icke-överlappande intervall. Orsak
 **Kvar av K13:** LCP är oförändrat ~4 150 ms och kräver att startsidan prerenderas — **ett beslut för Mikael**, i klass med K2. De två ljugande knapparna är åtgärdade. Cookierutepåståendet är avskrivet som icke-reproducerbart.
 
 > **Lärdomen värd att behålla:** en föreskriven fix är ett obevisat påstående tills utfallet är mätt. Diagnosen stämde (bilden ÄR LCP-elementet och upptäcks sent), åtgärden följde logiskt — och gjorde ändå mätbart skada. Det som avslöjade det var ett A/B i samma körning, inte en jämförelse mot en timme gammal siffra.
+
+### K14 — de identiska titlarna rättade, sammanslagningarna kvar (2026-08-12)
+
+**Två artikelpar hade ordagrant samma titel**, och det är ett fel oberoende av vilken sida som på sikt ska vinna sökningen: två rader med identisk rubrik i `/guider/` och på `/guider/lattlast/` går inte att skilja åt för en läsare, och i ett sökresultat konkurrerar de med sig själva.
+
+| Slug | Före | Efter |
+|---|---|---|
+| `hitta-dina-varderingar` | Hitta dina värderingar – nyckeln till rätt jobb | Hitta dina värderingar – **två övningar som ger svar** |
+| `varderingar-i-arbetslivet` | Hitta dina värderingar – nyckeln till rätt jobb | **Vanliga arbetsvärderingar** – och vad de betyder |
+| `latt-svenska-cv` | Vad är ett CV? | **Vad ska stå i ett CV?** |
+| `lattsvenska-vad-ar-cv` | Vad är ett CV? | *(oförändrad — den förklarar begreppet)* |
+
+Rättelsen väljer **ingen vinnare**. Den får varje titel att beskriva sin egen artikel: värderingsparet visade sig vara en övningsbok och en katalog över värderingstyper — två olika texter som råkat få samma rubrik. Innehållet är orört. Skriptet är `scripts/apply-title-fixes.cjs` (torrläge, backup, `--rollback`), och det har en grind som failar om det efter rättelsen finns kvar två publicerade artiklar med samma titel — **verifierad med planterat fel**. Utfall: **0 dubblerade titlar bland de 161 publicerade**.
+
+**Vad som INTE gjordes, och varför.** Sex par är närliggande i ämne (`ats-system-guide`/`ats-system-tips`/`ats-optimering`, `bygg-ditt-personliga-varumarke`/`personligt-varumarke`, `sociala-medier-jobbsokning`/`sociala-medier-jobsokning`, `funktionsnedsattning-jobbsokning`/`jobbsokning-funktionsnedsattning`, `mental-halsa-guide`/`mental-halsa-jobbsokning`). Att slå ihop eller avpublicera en av varje **är** vinnarbeslutet som K4/K8 säger kräver indexeringsdata, och det står orört.
+
+> **Mina egna mätningar dög inte till att avgöra det, och det är värt att skriva ner.** Två automatiska likhetsmått gav motstridiga svar. 4-gram-överlapp på brödtexten gav 0,5–3,9 % och pekade på "olika artiklar" — men parafraser besegrar shingling, så måttet är för bokstavligt. Rubriknyckelord gav 12–27 % och verkade bekräfta det — tills jag såg att mitt filter `w.length > 3` kastade bort **"ATS"**, alltså precis nyckelordet. Vid läsning är `ats-system-guide` och `ats-system-tips` uppenbart samma genomgång med olika ord. **Slutsats: när två automatiska mått motsäger varandra ska man sluta mäta och läsa** — och när beslutet ändå kräver data man inte har, är rätt svar att inte fatta det.
+
+**Sidofynd:** `sociala-medier-jobsokning` har ett **stavfel i sluggen** (saknar `b` i "jobbsokning"). Den ligger i sitemapen och är indexerbar som den är. Att byta slug bryter länkar och är också ett K8-beslut — men paret bör avgöras tillsammans med stavfelet, inte var för sig.
+
+**Kvar i K14:** soft-404:orna (varje URL som inte finns svarar 200 med indexerbar SPA-shell) kräver `client/vercel.json`, alltså **Mikaels ja** enligt släppreglerna. `/guider/lattlast/` var föräldralös från guideindexet — det är åtgärdat i K15.
 
 ---
 
