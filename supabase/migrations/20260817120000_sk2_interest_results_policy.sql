@@ -1,0 +1,71 @@
+-- SK2 (genomgången 2026-08-17): permissiv dubblettpolicy upphäver
+-- hälsosamtyckets grind på `interest_results`.
+--
+-- ============================================================================
+-- KRÄVER MIKAELS JA FÖRE KÖRNING — rör RLS-policyer (se CLAUDE.md § Släpp).
+-- Kör med:  npx supabase db query --linked -f <den här filen>
+-- ============================================================================
+--
+-- FYNDET
+-- ------
+-- Tabellen har fem policyer. Fyra är avgränsade per operation, en är `ALL`:
+--
+--   ALL     Users can CRUD own interest results        qual: auth.uid() = user_id
+--                                                      with_check: NULL          <-- problemet
+--   INSERT  Users can insert … with health consent     with_check: auth.uid() = user_id
+--                                                                  AND check_health_consent(auth.uid())
+--   SELECT  Users can read own interest results        qual: auth.uid() = user_id
+--   UPDATE  Users can update own interest results      qual/with_check: auth.uid() = user_id
+--   DELETE  Users can delete own interest results      qual: auth.uid() = user_id
+--
+-- Permissiva policyer OR:as. `ALL` täcker även INSERT och kräver bara att raden
+-- tillhör den inloggade — alltså räcker den ensam för att godkänna insert, och
+-- samtyckeskontrollen i den strängare policyn gäller aldrig. En användare kan
+-- skriva intresseresultat (RIASEC-profil, hälsonära) utan att ha samtyckt.
+--
+-- Det här är FEMTE gången mönstret träffar i det här projektet: `profiles`
+-- (rollökning), `mood_logs`, `storage.objects`, `invitations`, `profile_shares`.
+-- Se lärdomen i CLAUDE.md 2026-08-04.
+--
+-- ÅTGÄRDEN
+-- --------
+-- Granskningen föreslog "droppa ALL-policyn och ersätt med separata
+-- SELECT/UPDATE/DELETE". Kontrollerat mot prod 2026-08-17: **de finns redan**,
+-- med exakt samma villkor (`auth.uid() = user_id`). `ALL`-policyn är alltså
+-- helt redundant utom just för att den kringgår samtyckesgrinden.
+--
+-- Den ska därför bara bort. Ingen ersättning behövs, och att skapa en hade
+-- lagt tillbaka en andra policy på samma operationer — precis det som orsakade
+-- felet från början.
+
+BEGIN;
+
+DROP POLICY IF EXISTS "Users can CRUD own interest results" ON public.interest_results;
+
+COMMIT;
+
+-- ============================================================================
+-- VERIFIERA UTFALLET — kör detta efteråt, och läs svaret.
+-- Att kommandot "gick bra" är inget bevis (jfr lärdomen om REVOKE 2026-08-04).
+-- ============================================================================
+--
+-- 1) Ingen ALL-policy ska finnas kvar, och INSERT ska ha samtyckesvillkoret:
+--
+--    select policyname, cmd, with_check
+--    from pg_policies where tablename = 'interest_results' order by cmd;
+--
+--    FÖRVÄNTAT: fyra rader. Ingen med cmd = 'ALL'.
+--               INSERT-radens with_check innehåller check_health_consent.
+--
+-- 2) Varje operation ska fortfarande vara täckt — annars har vi låst ute
+--    riktiga användare i stället för att stänga ett hål:
+--
+--    select cmd, count(*) from pg_policies
+--    where tablename = 'interest_results' group by cmd order by cmd;
+--
+--    FÖRVÄNTAT: DELETE 1, INSERT 1, SELECT 3, UPDATE 1.
+--    (SELECT 3 = användaren själv + två konsulentvägar. Oförändrat.)
+--
+-- 3) Skarp kontroll, om du vill vara helt säker: logga in som ett testkonto
+--    UTAN hälsosamtycke och försök spara ett intresseresultat. Ska nekas.
+--    Med samtycke ska det gå. Före den här migrationen gick båda.
