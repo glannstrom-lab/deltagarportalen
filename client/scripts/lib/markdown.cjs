@@ -43,6 +43,62 @@ function safeHref(url) {
  * Inline-formatering. Körs ALLTID på redan escapad text — ordningen är
  * säkerhetskritisk, inte kosmetisk.
  */
+/**
+ * TG2 (2026-08-17): ✅ och ❌ i brödtexten lästes upp som emojinamn.
+ *
+ * Korpusen använder dem som betydelsebärande markörer i gör/gör-inte-listor:
+ *
+ *   ❌ Låta AI ljuga om din bakgrund
+ *   ✅ Beskriv vad du behöver, inte din diagnos
+ *
+ * Uppmätt före fixen: **190 `❌` på 37 av 162 guidesidor** (värst nio på en
+ * sida) och **64 `✅`**, alla som bar text. NVDA/JAWS/VoiceOver annonserar då
+ * "kryssmarkering" respektive "vit tung bock" före varje rad — åtta gånger i
+ * rad på `cv-grunder`. K17:s uppläsningsfunktion läser samma brus, och den
+ * byggdes just för lättläst-målgruppen.
+ *
+ * **Varför de inte bara tas bort:** tecknet bär hela innebörden. Utan det blir
+ * "❌ Låta AI ljuga om din bakgrund" en rad som läser som ett råd att göra det.
+ * Att stryka emojin hade alltså vänt betydelsen för den som inte ser den —
+ * värre än bruset.
+ *
+ * Lösningen ger båda grupperna rätt sak: emojin döljs för uppläsning
+ * (`aria-hidden`) och ersätts av ett ord som säger samma sak. Sighted läsare
+ * ser exakt vad de såg förut.
+ *
+ * Fixen ligger i renderaren, inte i innehållet: 254 förekomster i
+ * `articles`-tabellen behöver då inte skrivas om, och nästa artikel som
+ * använder mönstret får rätt märkning gratis.
+ */
+const STATUS_EMOJI = [
+  ['❌', 'Undvik:'], // ❌ kryssmarkering
+  ['✅', 'Gör så här:'], // ✅ vit tung bock
+]
+
+function statusEmoji(html) {
+  let out = html
+  for (const [tecken, ord] of STATUS_EMOJI) {
+    // Varje förekomst, inte bara vid radbörjan.
+    //
+    // Första försöket band regeln till `(^|\n)` eftersom tecknet "borde" vara
+    // en markör bara där. Det fångade 139 av 254 — resten satt i stycken där
+    // renderaren slagit ihop flera markörrader till ett `<p>`, så bara den
+    // första låg vid en radbrytning.
+    //
+    // Korpusen mättes då i stället för att gissas: **248 av 254 står vid
+    // radbörjan och 6 är `### ❌ Rubrik`. Noll står mitt i löpande text.**
+    // Alla är alltså markörer, och regeln kan gälla överallt utan att göra
+    // våld på någon mening. Skulle en framtida artikel använda tecknet som
+    // vanlig text får den en sr-only-etikett för mycket — billigare fel än
+    // en gör-inte-lista som läses upp som en gör-lista.
+    out = out.replace(
+      new RegExp(`${tecken}\\s*`, 'g'),
+      `<span aria-hidden="true">${tecken}</span><span class="sr-only">${ord} </span>`
+    )
+  }
+  return out
+}
+
 function renderInline(raw) {
   let out = escapeHtml(raw)
 
@@ -68,6 +124,8 @@ function renderInline(raw) {
 
   out = out.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>')
   out = out.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, '$1<em>$2</em>')
+
+  out = statusEmoji(out)
 
   // Kod-spans tillbaka, orörda av formateringen ovan.
   out = out.replace(

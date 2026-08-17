@@ -121,3 +121,54 @@ describe('markdownToPlain', () => {
     expect(md.markdownToPlain('Text\n\n| a | b |\n| --- | --- |\n\n```\nkod\n```')).toBe('Text')
   })
 })
+
+/**
+ * TG2 (genomgången 2026-08-17): ✅ och ❌ lästes upp som emojinamn.
+ *
+ * Korpusen använder dem som betydelsebärande markörer i gör/gör-inte-listor.
+ * Uppmätt före fixen: 190 `❌` på 37 av 162 guidesidor (nio på den värsta) och
+ * 64 `✅` — alla som bar text, noll inslagna. Skärmläsaren annonserade
+ * "kryssmarkering" åtta gånger i rad, och K17:s uppläsning läste samma brus.
+ *
+ * Att bara stryka tecknen var inte möjligt: utan markören blir
+ * "❌ Låta AI ljuga om din bakgrund" en rad som läser som ett råd att göra det.
+ */
+describe('TG2: statusemoji får textekvivalent', () => {
+  it('slår in ❌ i aria-hidden och lägger till ett ord som säger samma sak', () => {
+    const html = md.markdownToHtml('❌ Låta AI ljuga om din bakgrund')
+    expect(html).toContain('<span aria-hidden="true">❌</span>')
+    expect(html).toContain('<span class="sr-only">Undvik: </span>')
+    expect(html).toContain('Låta AI ljuga om din bakgrund')
+  })
+
+  it('slår in ✅ likadant med sitt eget ord', () => {
+    const html = md.markdownToHtml('✅ Beskriv vad du behöver')
+    expect(html).toContain('<span aria-hidden="true">✅</span>')
+    expect(html).toContain('<span class="sr-only">Gör så här: </span>')
+  })
+
+  it('betydelsen vänds inte — markören försvinner aldrig helt', () => {
+    // Regressionsskydd mot den "enkla" fixen (stryk emojin). Den hade gjort
+    // gör-inte-listan till en gör-lista för alla som inte ser tecknet.
+    const html = md.markdownToHtml('❌ Kopiera AI-text rakt av')
+    expect(html).toMatch(/Undvik:/)
+  })
+
+  it('täcker ALLA markörer i ett hopslaget stycke, inte bara den första', () => {
+    // Det här var buggen i mitt första försök: regeln band vid radbörjan, men
+    // renderaren slår ihop löpande rader till ett <p>. 139 av 254 fångades.
+    const html = md.markdownToHtml('✅ Ett\n✅ Två\n✅ Tre')
+    expect(html.match(/aria-hidden="true">✅<\/span>/g)).toHaveLength(3)
+    expect(html.match(/sr-only">Gör så här: <\/span>/g)).toHaveLength(3)
+  })
+
+  it('fungerar i rubriker (### ❌ Dominera) — sex sådana finns i korpusen', () => {
+    const html = md.markdownToHtml('### ❌ Dominera')
+    expect(html).toContain('<span aria-hidden="true">❌</span>')
+    expect(html).toMatch(/<h3>/)
+  })
+
+  it('rör inte annan text', () => {
+    expect(md.markdownToHtml('Vanlig rad')).toBe('<p>Vanlig rad</p>')
+  })
+})

@@ -32,11 +32,39 @@
     satt('Lyssna på texten', false, '')
   }
 
+  /**
+   * TG2 (2026-08-17): `innerText` läste upp emojinamnen.
+   *
+   * Guiderna använder ✅ och ❌ som markörer i gör/gör-inte-listor — 254
+   * förekomster i korpusen. `innerText` bryr sig varken om `aria-hidden` eller
+   * om `.sr-only`, så uppläsningen sa "kryssmarkering" före varje rad, åtta
+   * gånger i rad på den värsta sidan.
+   *
+   * Efter att renderaren börjat slå in tecknen i `aria-hidden` hade `innerText`
+   * dessutom läst BÅDA — "kryssmarkering Undvik:" — alltså sämre än förut.
+   * Därför måste den här funktionen följa samma regel som skärmläsaren:
+   * hoppa över `aria-hidden`, behåll `.sr-only`.
+   *
+   * Just den här funktionen är poängen med hela K17: uppläsningen byggdes för
+   * lättläst-målgruppen, och det är de som drabbas hårdast av bruset.
+   */
+  function upplasningstext(rot) {
+    var klon = rot.cloneNode(true)
+    var dolda = klon.querySelectorAll('[aria-hidden="true"]')
+    for (var i = 0; i < dolda.length; i++) {
+      dolda[i].parentNode.removeChild(dolda[i])
+    }
+    // `textContent` i stället för `innerText`: klonen sitter inte i dokumentet
+    // och har därför ingen layout, så `innerText` hade gett tom sträng i vissa
+    // webbläsare. `.sr-only`-texten ska med — det är den som bär betydelsen.
+    return klon.textContent.replace(/\s+/g, ' ').trim()
+  }
+
   knapp.addEventListener('click', function () {
     if (!talar) {
       // Skapa yttrandet vid klick, inte vid sidladdning: rösterna laddas
       // asynkront i flera webbläsare och en tidig utterance blir tyst.
-      var u = new SpeechSynthesisUtterance(text.innerText)
+      var u = new SpeechSynthesisUtterance(upplasningstext(text))
       u.lang = 'sv-SE'
       u.rate = 0.9
       u.onend = nollstall
