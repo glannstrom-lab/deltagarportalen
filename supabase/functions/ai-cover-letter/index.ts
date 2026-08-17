@@ -149,7 +149,9 @@ serve(async (req) => {
 VIKTIGT:
 - Använd ALDRIG platshållare som [Förnamn Efternamn], [Telefonnummer], [Mailadress] eller liknande.
 - Avsluta brevet med den faktiska underskriften som anges nedan.
-- Om inget namn anges, skriv bara "Med vänliga hälsningar" utan namn.`
+- Om inget namn anges, skriv bara "Med vänliga hälsningar" utan namn.
+- Hitta ALDRIG på erfarenheter, meriter, verktyg, kompetenser, certifikat, titlar eller siffror (antal år, antal projekt, resultat, procentsatser) som inte uttryckligen stöds av underlaget nedan. Är du osäker på om något stämmer — utelämna det helt.
+- Har du för lite underlag för 300 ord: skriv ett kortare brev. Ett kort sant brev är bättre än ett långt påhittat — det är personen själv som ska stå för innehållet i en intervju.`
             },
             {
               role: 'user',

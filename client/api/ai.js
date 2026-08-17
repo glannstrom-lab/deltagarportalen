@@ -161,7 +161,11 @@ function sanitizeAll(obj, depth = 0) {
 // ============================================
 
 const AGENT_PROMPTS = {
-  arbetskonsulent: 'Du är en erfaren arbetskonsulent. Du har tillgång till användarens faktiska CV-data och profilinformation i kontextblocket nedan. När du ger feedback MÅSTE du basera den på dessa specifika uppgifter — hitta inte på eller anta saker. Om du ombeds granska ett CV, referera till de faktiska titlar, arbetsgivare och kompetenser som finns i kontexten. Var stöttande men professionell.',
+  // AR4 (2026-08-17): rollen hade redan "hitta inte på eller anta saker" om
+  // CV-uppgifter, men saknade regelverksskyddet som `chatbot` fick i B22 —
+  // och en arbetskonsulent är precis den man frågar om a-kassa. Samma regel,
+  // samma skäl: den som läser svaret fattar beslut om sin försörjning.
+  arbetskonsulent: 'Du är en erfaren arbetskonsulent. Du har tillgång till användarens faktiska CV-data och profilinformation i kontextblocket nedan. När du ger feedback MÅSTE du basera den på dessa specifika uppgifter — hitta inte på eller anta saker. Om du ombeds granska ett CV, referera till de faktiska titlar, arbetsgivare och kompetenser som finns i kontexten. Var stöttande men professionell.\n\nABSOLUT REGEL OM REGELVERK: påstå aldrig något om a-kassa, aktivitetsstöd, försörjningsstöd, lönebidrag, nystartsjobb, arbetshjälpmedel, sjukpenning, uppsägningstid eller LAS som du inte är säker på. Ange ALDRIG belopp, procentsatser, antal dagar eller kvalificeringsvillkor ur minnet. Säg att villkoren ändras och beror på personens situation, och hänvisa till rätt källa: Arbetsförmedlingen för insatser, den egna a-kassan för ersättning, Försäkringskassan för aktivitetsstöd och sjukpenning, kommunen för försörjningsstöd.',
   arbetsterapeut: 'Du är en arbetsterapeut som hjälper personer med funktionsvariationer och hälsoutmaningar. Du har tillgång till användarens energinivå och profil i kontextblocket nedan — anpassa dina svar efter dessa uppgifter. Ge råd om arbetsanpassningar, energihantering och att hitta rätt balans i arbetslivet.',
   studievagledare: 'Du är en studievägledare som hjälper till med utbildningsval och karriärplanering. Du har tillgång till användarens CV, erfarenhet och intresseprofil i kontextblocket nedan — basera dina rekommendationer på dessa faktiska uppgifter. Du vet mycket om validering, vidareutbildning och hur man bygger på sin kompetens.',
   motivationscoach: 'Du är en motivationscoach som hjälper människor att hitta sin inre drivkraft. Du har tillgång till användarens profil och jobbsökningsstatus i kontextblocket nedan — använd dessa för att ge personlig uppmuntran. Ge stöd vid motgångar, hjälp med målsättning och fira framsteg baserat på deras faktiska situation.',
@@ -529,6 +533,16 @@ function getCorsHeaders(requestOrigin) {
   };
 }
 
+/**
+ * DR5 (2026-08-17): svarsformen från OpenRouter, avsmalnad i stället för
+ * tagen för given. `await res.json()` ger `unknown`, och typkontrollen av
+ * `client/api/` (som kördes för första gången i dag) fällde på tre läsningar
+ * av `.choices` och `.usage`. Samma grepp som B21: beskriv formen en gång, så
+ * blir det synligt den dag leverantören ändrar den.
+ *
+ * @typedef {{ choices?: Array<{ message?: { content?: string } }>, usage?: { total_tokens?: number } }} OpenRouterSvar
+ */
+
 const PROMPTS = {
   // Konsulent: rapportutkast från journalanteckningar + måldata.
   // Klienten skickar ALDRIG deltagarens namn — personen refereras som
@@ -584,7 +598,16 @@ VIKTIGT:
     system: `Du är en varm och konkret karriärcoach. Skapa en personlig karriärplan utifrån personens faktiska situation och mål. Svara ENDAST med JSON i detta format:
 {"steps":[{"order":1,"title":"Kort rubrik","description":"Vad steget innebär och varför","timeframe":"Månad 1-2","actions":["Konkret handling"]}],"analysis":"2-3 meningar om vägen till målet","keySkills":["Kompetens att utveckla"]}
 Regler: 4-5 steg i kronologisk ordning, anpassade till personens NUVARANDE situation (inte generiska mallar). 2-4 actions per steg, konkreta och genomförbara. timeframe relativt (t.ex. "Månad 1-2") och anpassat till angiven tidsram. Uppmuntrande men realistisk ton, aldrig pressande. Allt på svenska.
-Om en intresseprofil (RIASEC) anges: använd den för att välja HUR stegen utformas — t.ex. praktiska steg för en realistisk profil, undersökande för en analytisk. Den beskriver vad personen dras till, INTE vad personen kan. Ändra aldrig personens mål utifrån profilen och nämn aldrig bokstavskoden i texten.`,
+Om en intresseprofil (RIASEC) anges: använd den för att välja HUR stegen utformas — t.ex. praktiska steg för en realistisk profil, undersökande för en analytisk. Den beskriver vad personen dras till, INTE vad personen kan. Ändra aldrig personens mål utifrån profilen och nämn aldrig bokstavskoden i texten.
+
+SVENSKA STÖDSYSTEM (G15): personen söker jobb i Sverige och har ofta ingen inkomst. Föreslå aldrig lösningar som förutsätter att man kan betala själv — en betald onlinekurs eller en inköpt kontorsstol är fel svar till någon som lever på ersättning. Väg i stället in det som faktiskt finns, när det är relevant för personens situation:
+- Arbetshjälpmedel och anpassning av arbetsplats — söks via Arbetsförmedlingen, kan gälla utrustning vid funktionsnedsättning.
+- Lönebidrag, nystartsjobb och andra anställningsstöd — arbetsgivaren söker, men det är ett argument personen kan lyfta.
+- Arbetsträning, praktik och SIUS (stöd av en särskild handledare) — vägar in när steget till en anställning är för långt.
+- Komvux, yrkesvux, folkhögskola och YH — studier som är avgiftsfria eller studiemedelsberättigade.
+- Rusta och matcha — om personen är inskriven hos Arbetsförmedlingen.
+
+SANNINGSREGEL: hitta ALDRIG på siffror som är regler. Inga belopp, procentsatser, dagantal, åldersgränser eller inkomsttak — de ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, a-kassan, Försäkringskassan eller kommunen. Hitta heller aldrig på erfarenheter, kompetenser eller meriter som personen inte uppgett. Är du osäker — utelämna det.`,
     user: `Skapa en karriärplan:\n\nNuvarande situation: ${data?.currentSituation || data?.currentOccupation || 'Ej angivet'}\nMål: ${data?.goal || data?.targetOccupation || 'Ej angivet'}\nÖnskad tidsram: ${data?.timeframe || 'Flexibel'}${data?.riasec ? `\nIntresseprofil: ${data.riasec}` : ''}\n\nSvara ENDAST med JSON.`,
     maxTokens: 2500,
     responseKey: 'plan',
@@ -614,7 +637,7 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
     return {
       system: en
         ? 'You are an occupational therapist and expert on workplace accommodations in Sweden (Arbetsförmedlingen, Försäkringskassan, the Discrimination Act). Give concrete, warm, practical advice in English.'
-        : 'Du är arbetsterapeut och expert på arbetsplatsanpassningar i Sverige (Arbetsförmedlingen, Försäkringskassan, Diskrimineringslagen). Ge konkreta, varma och praktiska råd på svenska.',
+        : 'Du är arbetsterapeut och expert på arbetsplatsanpassningar i Sverige (Arbetsförmedlingen, Försäkringskassan, Diskrimineringslagen). Ge konkreta, varma och praktiska råd på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.',
       user: en
         ? `A job seeker has identified these workplace accommodation needs:\n\n${data?.selectedAdaptations || ''}\n\nGive 3-5 concrete recommendations: complementary accommodations worth considering, how to prioritize them, and what support (Försäkringskassan/Arbetsförmedlingen) can be applied for. Keep it short and practical.`
         : `En arbetssökande har identifierat följande behov av arbetsplatsanpassningar:\n\n${data?.selectedAdaptations || ''}\n\nGe 3-5 konkreta rekommendationer: kompletterande anpassningar värda att överväga, hur de bör prioriteras, och vilket stöd (Försäkringskassan/Arbetsförmedlingen) som kan sökas. Kort och praktiskt.`,
@@ -627,7 +650,7 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
     return {
       system: en
         ? 'You are a coach who helps job seekers prepare conversations with employers about workplace accommodations. Write a personal, respectful conversation script in English.'
-        : 'Du är en coach som hjälper arbetssökande att förbereda samtal med arbetsgivare om arbetsplatsanpassningar. Skriv ett personligt, respektfullt samtalsmanus på svenska.',
+        : 'Du är en coach som hjälper arbetssökande att förbereda samtal med arbetsgivare om arbetsplatsanpassningar. Skriv ett personligt, respektfullt samtalsmanus på svenska. Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser ändras och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, Försäkringskassan eller kommunen. Hitta heller aldrig på diagnoser, begränsningar eller behov som personen inte själv uppgett.',
       user: en
         ? `Write a short conversation script (max ~200 words) the person can use with their employer to request these accommodations:\n\n${data?.selectedAdaptations || ''}\n\nInclude: a respectful opening, the concrete needs, a mention that Försäkringskassan/Arbetsförmedlingen can subsidize costs, and an inviting closing question.`
         : `Skriv ett kort samtalsmanus (max ~200 ord) som personen kan använda med sin arbetsgivare för att be om dessa anpassningar:\n\n${data?.selectedAdaptations || ''}\n\nInkludera: en respektfull inledning, de konkreta behoven, att Försäkringskassan/Arbetsförmedlingen kan ge bidrag för kostnader, och en inbjudande avslutande fråga.`,
@@ -643,7 +666,7 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
       post: `Skriv LinkedIn-inlägg om: ${JSON.stringify(data?.data)}`,
       connection: `Skriv kontaktförfrågan för: ${JSON.stringify(data?.data)}`
     };
-    return { system: 'Du är LinkedIn-expert. Skriv på svenska.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'text' };
+    return { system: 'Du är LinkedIn-expert. Skriv på svenska. SANNINGSREGEL: bygg endast på personens egna uppgifter. Hitta aldrig på titlar, arbetsgivare, utbildningar, kompetenser, certifikat eller siffror (antal år, antal projekt, resultat). Profilen ska personen kunna stå för i en intervju. Är underlaget tunt — skriv kortare, inte mer.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'text' };
   },
   'intervju-simulator': (data) => {
     if (data?.anvandarSvar) {
@@ -703,7 +726,18 @@ Regler: overall_score är ett heltal 0-10 för hela sessionen. strengths = 2-4 p
     }
 
     return {
-      system: `Du är en expert på att skriva professionella profilsammanfattningar på svenska. Skriv en engagerande och professionell sammanfattning (3-5 meningar) som lyfter fram personens styrkor, erfarenhet och mål. Använd ett varmt men professionellt tonläge som passar en jobbsökande.`,
+      // AR4/B26 (2026-08-17): sanningsregeln saknades här, till skillnad från
+      // grannfunktionen `intervju-sammanfattning` några rader ner. Det är
+      // allvarligare i just den här: resultatet sparas till `profiles.ai_summary`
+      // (se profileEnhancementsApi.ts), alltså landar en påhittad persona i
+      // databasen och visas sedan som deltagarens egen profiltext.
+      //
+      // Notera att fälten ofta är tomma ("Ej angivet" nedan) — en modell som
+      // ombeds skriva "engagerande" om ingenting fyller i luckorna själv.
+      system: `Du är en expert på att skriva professionella profilsammanfattningar på svenska. Skriv en sammanfattning (3-5 meningar) som lyfter fram personens styrkor, erfarenhet och mål. Använd ett varmt men professionellt tonläge som passar en jobbsökande.
+
+SANNINGSREGEL: bygg ENDAST på uppgifterna nedan. Hitta aldrig på yrkestitlar, arbetsgivare, utbildningar, kompetenser, personlighetsdrag, ambitioner eller siffror (antal år, antal projekt, resultat) som inte står där. Står ett fält som "Ej angivet" ska du inte fylla i det — utelämna det i stället.
+Om underlaget är för tunt för 3-5 meningar: skriv en kortare och ärligare sammanfattning. En kort sann text är alltid bättre än en längre påhittad — texten sparas på personens profil och kan följa med till en arbetsgivare.`,
       user: `Skriv en professionell profilsammanfattning för denna person:
 
 NAMN: ${data?.name || 'Ej angivet'}
@@ -1569,7 +1603,7 @@ module.exports = async (req, res) => {
                   // tas bort när AgentChat är migrerad till useAIStream.
                   res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
                 }
-              } catch (e) {
+              } catch {
                 // Skip malformed JSON
               }
             }
@@ -1604,18 +1638,18 @@ module.exports = async (req, res) => {
         });
 
         if (suggestionsResponse.ok) {
-          const suggestionsData = await suggestionsResponse.json();
+          const suggestionsData = /** @type {OpenRouterSvar} */ (await suggestionsResponse.json());
           const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
           try {
             const suggestions = JSON.parse(suggestionsText);
             if (Array.isArray(suggestions) && suggestions.length > 0) {
               res.write(`data: ${JSON.stringify({ suggestions: suggestions.slice(0, 3) })}\n\n`);
             }
-          } catch (e) {
+          } catch {
             // Couldn't parse suggestions, skip
           }
         }
-      } catch (suggestError) {
+      } catch {
         // Suggestions failed, continue without them
       }
 
@@ -1654,7 +1688,17 @@ module.exports = async (req, res) => {
 
     if (!aiResponse.ok) return res.status(502).json({ error: 'AI request failed' });
 
-    const aiData = await aiResponse.json();
+    const aiData = /** @type {OpenRouterSvar} */ (await aiResponse.json());
+    // DR5 (2026-08-17): `content` bär tre olika former beroende på väg, och
+    // inferensen från raden nedan (string) stämde bara på den första:
+    //   1. rå text från modellen (de flesta funktioner)
+    //   2. `{ raw: string }` när JSON-tolkningen misslyckas men svaret ändå
+    //      ska nå klienten (B17:s fence-toleranta fallback)
+    //   3. det validerade objektet när prompten har en `validator`
+    // Typkontrollen av api/ (första körningen någonsin) fällde på 2 och 3.
+    // Formen skrivs ut i stället för att döljas — den som lägger till en fjärde
+    // väg ska se att det finns tre.
+    /** @type {string | { raw: string } | unknown} */
     let content = aiData.choices?.[0]?.message?.content;
     if (!content) return res.status(502).json({ error: 'No response from AI' });
 
@@ -1713,6 +1757,14 @@ module.exports.checkAiEnabled = checkAiEnabled;
 // av OpenRouter-anropet — annars syns ett trasigt regex bara som ett
 // personnummer i en riktig leverantörs loggar.
 module.exports.stripPii = stripPii;
+// AR4 (2026-08-17): promptbiblioteket. Exponerat så att sanningsregeln kan
+// kontrolleras maskinellt i stället för att upptäckas i en granskning var
+// tredje vecka. `personligt-brev` fick regeln i C11, `ai-cover-letter` fick
+// den aldrig, `profile-summary` skrev påhittad persona till databasen och
+// `karriarplan` gav amerikanska medelklassråd till någon utan inkomst — fyra
+// prompter, samma lucka, upptäckt en i taget. Testet gör luckan omöjlig att
+// införa tyst i en femte.
+module.exports.PROMPTS = PROMPTS;
 module.exports.sanitizeInput = sanitizeInput;
 // B14: prompt-mallarna exponeras så att sanningskraven i CV-prompten kan
 // testas. En prompt som ber modellen "föreslå rimliga siffror" syns inte i
