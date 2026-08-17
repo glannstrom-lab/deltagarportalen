@@ -64,7 +64,13 @@ async function getChromium() {
     return {
       args: chromium.args,
       executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
+      // DR5 (2026-08-17): raden löd tidigare `headless: chromium.headless`.
+      // Den egenskapen finns inte i @sparticuz/chromium 148 — uppmätt:
+      // `import('@sparticuz/chromium')).default.headless` → `undefined`.
+      // Puppeteer tolkade alltså "ej angivet" och körde headless ändå, så
+      // inget var trasigt; men raden läste som konfiguration utan att vara
+      // det. Hittad av typkontrollen första gången den kördes mot api/.
+      headless: true,
     };
   }
   // Lokal dev: använd systemets Chrome. Sätt CHROME_PATH om automatisk

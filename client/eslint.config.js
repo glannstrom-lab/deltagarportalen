@@ -50,6 +50,41 @@ const DESIGN_RULES = {
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    // DR5 (2026-08-17): `client/api/*.js` lintades ALDRIG.
+    //
+    // Den enda regeluppsättningen matchade `**/*.{ts,tsx}`, så trots att
+    // `npm run lint:ci` kör `eslint .` från `client/` föll de fyra
+    // serverless-filerna igenom utan att någon regel gällde dem. De
+    // typkontrollerades inte heller — `tsconfig.app.json` har
+    // `"include": ["src"]`.
+    //
+    // Det är just de filerna som har service-role-nyckeln, CORS- och
+    // rate-limit-logiken, art. 9-samtyckesgrinden och hela promptbiblioteket.
+    // A19 (art. 9-grinden trasig i drift, 403 för alla) kunde ligga oupptäckt
+    // i en månad delvis därför att ingenting läste koden maskinellt.
+    //
+    // Reglerna är avsiktligt få: målet är att fånga krascher (odefinierade
+    // namn, oanvända variabler som avslöjar en halvfärdig omskrivning), inte
+    // att införa stilkrav på 1 700 rader befintlig kod. Warnings, inte errors,
+    // eftersom taket i `lint:ci` är det som håller skulden stilla.
+    files: ['api/**/*.js'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'commonjs',
+      globals: { ...globals.node },
+    },
+    rules: {
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      'no-undef': 'error',
+      // Krasch-klass: `await` utanför async, oåtkomlig kod efter return,
+      // dubbletter av nycklar i ett objekt (tyst överskrivning av en prompt).
+      'no-unreachable': 'error',
+      'no-dupe-keys': 'error',
+      'no-const-assign': 'error',
+    },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,

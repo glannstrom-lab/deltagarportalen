@@ -82,7 +82,7 @@ function sanitizeFilename(name) {
   return String(name)
     .replace(/[/\\]/g, '_')              // path separators
     .replace(/\.\./g, '_')               // parent-dir
-    .replace(/[^\w.\-]/g, '_')           // bara ord-tecken, punkt, bindestreck
+    .replace(/[^\w.-]/g, '_')           // bara ord-tecken, punkt, bindestreck
     .slice(0, 200);                      // max 200 tecken
 }
 

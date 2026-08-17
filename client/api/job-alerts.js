@@ -180,7 +180,7 @@ const AF_API_URL = 'https://jobsearch.api.jobtechdev.se/search';
 
 // Email templates
 const templates = {
-  newJobsAlert: (alertName, jobs, userEmail) => ({
+  newJobsAlert: (alertName, jobs, _userEmail) => ({
     subject: `🔔 ${jobs.length} nya jobb matchar "${alertName}"`,
     html: `
 <!DOCTYPE html>
@@ -244,7 +244,7 @@ const templates = {
     ).join('\n')}\n\nSe alla matchningar: ${process.env.VITE_APP_URL || 'https://deltagarportalen.se'}/job-search`
   }),
 
-  dailyDigest: (alerts, userEmail) => {
+  dailyDigest: (alerts, _userEmail) => {
     const totalJobs = alerts.reduce((sum, a) => sum + a.newJobs.length, 0);
     return {
       subject: `📊 Din dagliga jobbsammanfattning - ${totalJobs} nya jobb`,
@@ -432,7 +432,14 @@ async function checkUserAlerts(userId) {
       limit: 50
     });
 
-    const newJobs = result.hits || [];
+    // DR5 (2026-08-17): `result` kommer ur ett otypat JSON-svar från AF:s
+    // platsbanks-API. Formen nedan är de fält koden faktiskt läser — inte en
+    // fullständig beskrivning av API:et. Avsmalnad i stället för tagen för
+    // given, så att en ändrad fältstruktur syns här i stället för som en tom
+    // avisering hos en användare.
+    /** @typedef {{ id?: string, headline?: string, employer?: { name?: string },
+     *   workplace_address?: { municipality?: string }, publication_date?: string }} AfJobb */
+    const newJobs = /** @type {{ hits?: AfJobb[] }} */ (result).hits || [];
 
     if (newJobs.length > 0) {
       totalNewJobs += newJobs.length;
