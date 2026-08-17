@@ -377,6 +377,17 @@
       "privacyPolicy": "integritetspolicy"
     }
   },
+  "palette": {
+    "title": "Sök och hoppa till",
+    "placeholder": "Sök efter en sida eller ett verktyg",
+    "empty": "Ingenting matchade det du skrev.",
+    "emptyHint": "Prova ett kortare ord — till exempel “cv” eller “brev”.",
+    "resultCount_one": "{{count}} träff",
+    "resultCount_other": "{{count}} träffar",
+    "hintMove": "bläddra",
+    "hintOpen": "öppna",
+    "hintClose": "stäng"
+  },
   "nav": {
     "dashboard": "Översikt",
     "profile": "Min profil",

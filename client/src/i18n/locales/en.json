@@ -377,6 +377,17 @@
       "privacyPolicy": "privacy policy"
     }
   },
+  "palette": {
+    "title": "Search and jump to",
+    "placeholder": "Search for a page or a tool",
+    "empty": "Nothing matched what you typed.",
+    "emptyHint": "Try a shorter word — for example “cv” or “letter”.",
+    "resultCount_one": "{{count}} result",
+    "resultCount_other": "{{count}} results",
+    "hintMove": "browse",
+    "hintOpen": "open",
+    "hintClose": "close"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "profile": "My Profile",

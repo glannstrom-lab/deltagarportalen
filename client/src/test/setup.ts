@@ -64,6 +64,19 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: IntersectionObserverMock,
 })
 
+// scrollIntoView finns inte i jsdom (2026-08-17).
+//
+// Utan den kastar varje komponent som rullar en markerad post i sikte —
+// kommandopaletten, listboxar, långa formulär. Det är en lucka i testmiljön,
+// inte i produkten: alla webbläsare sedan IE6 har metoden. Därför shimmas den
+// här i stället för att kläs in i `?.()` i komponenterna, vilket hade dolt en
+// verklig krasch den dagen någon anropar den på fel sorts objekt.
+Object.defineProperty(Element.prototype, 'scrollIntoView', {
+  writable: true,
+  configurable: true,
+  value: vi.fn(),
+})
+
 // Mock HTMLCanvasElement for Image component
 class MockCanvas {
   width = 0

@@ -20,6 +20,10 @@ import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from '.
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { SamlingarFab } from './SamlingarFab'
+// Steg 1 i navigationsomläggningen (2026-08-17): Ctrl/⌘ K når alla 25
+// undersidor utan att man behöver veta vilken hub de ligger i. Fristående —
+// rör ingen layout, och fungerar lika bra före som efter toppnaven.
+import CommandPalette from './CommandPalette'
 // TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
 // bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
 // Hooken finns sedan tidigare och gör allt tre; den behövde bara kopplas in.
@@ -142,6 +146,10 @@ export default function Layout() {
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
         <ToastContainer />
+
+        {/* Kommandopaletten. Renderar ingenting förrän Ctrl/⌘ K trycks, så den
+            kostar inget för den som aldrig använder den. */}
+        <CommandPalette />
 
         {/* Coach-widget — sidkontextuella tips (kan slås av i Inställningar) */}
         <GlobalCoachWidget />
