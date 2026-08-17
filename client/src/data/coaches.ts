@@ -141,12 +141,12 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         tips: [
           'Börja varje dag med en konkret aktivitet — sök ett jobb, uppdatera CV:t, eller hör av dig till en kontakt.',
           'Du behöver inte göra allt på en gång. Tre små steg om dagen är bättre än en stor som aldrig blir av.',
-          'Använd "Kom igång"-rutorna som en checklista — bocka av i din takt.',
+          'Högst upp ser du en snabböversikt: ansökningar, CV, brev, intervjuövning och nästa händelse. Klicka på en ruta för att gå direkt dit.',
         ],
         faqs: [
           {
             question: 'Var börjar jag om jag är helt ny?',
-            answer: 'Börja med profilen — ju mer du fyller i där, desto bättre jobbförslag får du. Sen gör Intresseguiden (10 min), sen bygg/importera ditt CV. Allt det här bygger upp underlaget för matchningen i Sök jobb.',
+            answer: 'Börja med profilen — ju mer du fyller i där, desto bättre jobbförslag får du. Sen gör Intresseguiden (10 min), sen bygg ditt CV med mallarna. Allt det här bygger upp underlaget för matchningen i Sök jobb.',
           },
         ],
         links: [
@@ -204,16 +204,25 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       digitalcoach: {
         tips: [
           'Allt sparas automatiskt — du behöver inte trycka på en spara-knapp. Grön bock = sparat i molnet.',
-          // Rättat 2026-08-17. Rådet löd tidigare: "Importera CV från fil för
-          // att snabbt fylla i profilen — vi extraherar fält automatiskt."
-          // Den funktionen finns inte. `DocumentsSection.tsx` laddar upp och
-          // lagrar filen (accept=".pdf,.doc,.docx,…"), men ingenting läser
-          // innehållet, och `/cv` — dit länken nedan pekade — har ingen
-          // importknapp alls. Deltagaren följde rådet, hittade inget och fick
-          // anta att hen gjort fel. Att bygga importen är ett eget beslut
-          // (önskad av Mikael 2026-08-17); tills dess ska rådet beskriva det
-          // som faktiskt går att göra.
-          'Har du ett gammalt CV i en fil kan du lägga upp det under Dokument, så har du det nära till hands när du fyller i. Fälten får du skriva in själv.',
+          // Rättat 2026-08-17, i två steg — det andra värt att läsa.
+          //
+          // Rådet löd: "Importera CV från fil för att snabbt fylla i profilen —
+          // vi extraherar fält automatiskt." Import FRÅN FIL finns inte:
+          // `DocumentsSection.tsx:189` laddar upp och lagrar filen, men
+          // ingenting läser innehållet.
+          //
+          // Första rättelsen sa därför bara "lägg upp filen under Dokument" —
+          // och blev för snäv. En skärmbild av sidan visade en knapp
+          // "Importera CV" som jag inte hade sett i koden:
+          // `ProfileHeader.tsx:197` → `importToProfile()`
+          // (`profileEnhancementsApi.ts:773`), som läser ur `cvs`-tabellen och
+          // fyller profilen från CV:t du redan byggt här. Den är äkta och
+          // fungerar — det är bara vägen från en uppladdad fil som saknas.
+          //
+          // Lärdomen: att ta bort ett falskt påstående är halva jobbet. Den
+          // andra halvan är att kontrollera vad som FAKTISKT finns, annars
+          // byter man en överdrift mot en underdrift.
+          'Har du byggt ditt CV här kan du fylla profilen från det med knappen "Importera CV". Den hämtar från ditt Jobin-CV — en fil du laddar upp under Dokument läses inte automatiskt.',
           'Profilstatus-mätaren visar vad som saknas — klicka på "Nästa steg" för att gå direkt dit.',
         ],
         faqs: [
@@ -228,8 +237,9 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         ],
         links: [
           // Hette "Importera CV-fil" och pekade på /cv, som inte har någon
-          // sådan funktion. Pekar nu dit filen faktiskt kan läggas.
-          { label: 'Lägg upp en CV-fil', href: '/profile' },
+          // sådan knapp. Knappen "Importera CV" sitter på profilsidan och
+          // hämtar från Jobin-CV:t, inte från en fil — etiketten säger nu det.
+          { label: 'Fyll profilen från ditt CV', href: '/profile' },
           aiTeam('digitalcoach'),
         ],
       },
@@ -576,7 +586,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
     byCoach: {
       digitalcoach: {
         tips: [
-          'Profil-bilden är viktigast — 14x fler vyer med bra bild. Tydligt ansikte, ljus bakgrund, leende.',
+          'Profilbilden gör mest skillnad av allt — LinkedIn själva säger att en profil med bild får klart fler visningar. Tydligt ansikte, ljus bakgrund, leende.',
           'Headline-fältet ska INTE bara vara din jobbtitel — skriv "Lagerarbetare som söker nästa steg" eller "Söker arbetsterapeut-roll i Stockholm".',
           'Be om rekommendationer från tidigare kollegor och chefer — 3-5 räcker långt.',
         ],
@@ -779,7 +789,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       mentalcoach: {
         tips: [
           'En övning gjord slår tre planerade. Börja smått.',
-          'Spara dina favoritövningar — så hittar du tillbaka.',
+          'Har du börjat på en övning hittar du tillbaka via filtret "Påbörjade" högst upp.',
           'Vissa övningar känns konstiga första gången — ge dem 2-3 försök innan du dömer.',
         ],
       },
@@ -839,8 +849,8 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
     byCoach: {
       digitalcoach: {
         tips: [
-          'Resurser är externa länkar och dokument — alla går till andra sidor.',
-          'Spara länkar du använder ofta som favoriter (hjärta-knappen).',
+          'Här ligger det du sparat i Jobin: CV, brev, jobb, artiklar och filer. Länkar till AF, Försäkringskassan och andra hittar du under Externa resurser.',
+          'Bokmärk en artikel med bokmärkesikonen uppe till höger, så hittar du tillbaka till den här.',
         ],
       },
       studievagledare: {

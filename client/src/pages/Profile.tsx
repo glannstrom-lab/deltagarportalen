@@ -130,7 +130,7 @@ function InitialLoader() {
 
 export default function Profile() {
   const { t, i18n } = useTranslation()
-  const { activeTab, setActiveTab, initialLoading, loadAll } = useProfileStore()
+  const { activeTab, setActiveTab, initialLoading, loadAll, completion } = useProfileStore()
   const { isFocusMode, leaveWizard } = useFocusMode()
 
   // Load all profile data on mount
@@ -159,8 +159,19 @@ export default function Profile() {
     <PageLayout
       className="max-w-7xl mx-auto"
       showTabs={false}
+      // `markering` ersätter den amber-prick `ProfileTabs` satte på fliken med
+      // nästa lucka. Pricken var en naken <span> utan text och utan aria — den
+      // fanns alltså inte för den som använder skärmläsare. Nu står det vad den
+      // betyder, och `completion.nextStep` är samma källa som förut.
       sidoflikar={{
-        poster: TABS.map((tab) => ({ id: tab.id, etikett: t(tab.labelKey) })),
+        poster: TABS.map((tab) => ({
+          id: tab.id,
+          etikett: t(tab.labelKey),
+          markering:
+            completion.nextStep?.tab === tab.id
+              ? t('profile.tabs.nextStep', 'Att fylla i')
+              : undefined,
+        })),
         aktiv: activeTab,
         vidVal: (id) => setActiveTab(id as TabId),
       }}

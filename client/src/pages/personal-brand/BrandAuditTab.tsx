@@ -42,13 +42,13 @@ const AUDIT_QUESTIONS: AuditQuestion[] = [
     category: 'online',
     actionLink: '/linkedin-optimizer',
     actionLabel: 'Optimera LinkedIn',
-    tip: 'En komplett LinkedIn-profil är 40x mer sannolikt att få jobbförfrågningar'
+    tip: 'En komplett profil hittas oftare av rekryterare än en halvfärdig — fyll i rubrik, om-text och erfarenhet'
   },
   {
     id: 'linkedin-photo',
     question: 'Har du ett professionellt profilfoto?',
     category: 'online',
-    tip: 'Profiler med foto får 21x fler visningar och 9x fler kontaktförfrågningar'
+    tip: 'LinkedIn själva säger att en profil med foto får klart fler visningar — ett tydligt ansikte räcker'
   },
   {
     id: 'linkedin-headline',
@@ -62,7 +62,7 @@ const AUDIT_QUESTIONS: AuditQuestion[] = [
     id: 'google-search',
     question: 'Har du googlat ditt namn nyligen?',
     category: 'online',
-    tip: '75% av rekryterare söker kandidater online - kontrollera vad de hittar'
+    tip: 'Många rekryterare googlar den de ska träffa — kontrollera vad som kommer upp på ditt namn'
   },
   {
     id: 'personal-website',

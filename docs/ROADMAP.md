@@ -90,6 +90,21 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 **CI: två röda jobb.**
 
 - [ ] **DR7** **`Security Scan` failar på `npm audit --omit=dev --audit-level=high` — nytt sedan 12 augusti.** `extract-zip` har en symlink-path-traversal (GHSA-jmr9-qjv8-65gv, high, publicerad 2026-06-26) som når `puppeteer-core ^24.43.0` via `@puppeteer/browsers`. **`puppeteer-core` är en prod-dependency** och driver CV-PDF-genereringen i `api/cv-pdf.js`. **Inte orsakat av den här omgången:** `git diff 9b1bfb28..HEAD -- client/package.json` visar bara `scripts`-rader, och lockfilen är orörd. Varför jobbet var grönt 12 augusti och rött nu är **inte fastställt** — rådgivningen är äldre än båda körningarna, så antingen har det påverkade versionsintervallet vidgats eller så löste CI:s `npm install` en annan 24.x då. Reproducerat lokalt: `npm audit --omit=dev --audit-level=high` → exit 1. **Åtgärden är ett brytande majorlyft** (`puppeteer-core@25.8.0`) som rör CV-PDF:en — eget beslut, inte något som smygs in i en deployverifiering · S att lyfta, M att verifiera PDF-utfallet
+
+  > **Mätt 2026-08-17 — allvaret är lägre än talet antyder, men grinden är rätt röd.**
+  > Sårbarheten sitter i `extract-zip`, som `@puppeteer/browsers` använder när
+  > puppeteer **laddar ner** en webbläsare och packar upp arkivet. `cv-pdf.js`
+  > laddar aldrig ner något: den skickar alltid en explicit `executablePath`
+  > (`@sparticuz/chromium` i prod, `CHROME_PATH`/upptäckt Chrome lokalt), och
+  > `grep` efter `@puppeteer/browsers`, `downloadBrowser` och `install(` i
+  > `client/api/` och `api/` ger noll träffar. Den exploaterbara vägen körs
+  > alltså inte i den här applikationen.
+  >
+  > **Gränsen för beviset:** det är en statisk kontroll av *vår* kod. Ett
+  > transitivt anrop inifrån puppeteer vid någon oväntad felväg är inte
+  > uteslutet utan körningsspårning. Sänk därför inte garden — men det här är
+  > ett schemalagt lyft med PDF-regression, inte en brand. Hela 24.x är
+  > drabbat (`19.8.4 - 24.43.1`), så en patchversion finns inte att ta.
 - **D29/DR4** Lighthouse failar som väntat. Rotorsaken är fastställd (`ci.yml:238` skickar `--collect.staticDistDir` som CLI-flagga och kringgår `.lighthouserc.js`), men fixen rör `.github/workflows/` och kräver Mikaels ja
 
 ### Designomläggningen 2026-08-17 — fyra fel som gömde sig bakom hjälten
@@ -169,6 +184,44 @@ fel som ingen linsen letade efter. Alla fyra är åtgärdade och verifierade i d
   `radgivarDubblett.test.tsx` vaktar både dubbletten och loopen; mutationsprövad —
   kopplar man bort filtreringen faller den med de två elementen utskrivna · 2026-08-17
 
+- [x] **DS8** **Rådgivartexten genomgången i sin helhet — 20 falska påståenden.** Texten
+  låg tidigare bakom en ring i hörnet; sedan i dag ligger den i en kolumn på varje sida
+  och infogad mitt i arbetet, alltså läst. Två omgångar täcker filens 25 sidnycklar.
+
+  **De två tyngsta rör integritet.** Fältet där deltagaren skriver vad hen behöver för
+  att klara ett jobb — kortare pass, tysta rum, bildstöd — beskrevs som "underlag för
+  konsulent-stöd och rapporter till AF". Mätt mot **prod**: `user_preferences` har fyra
+  policyer, alla `auth.uid() = user_id`; konsulentvyn refererar aldrig `therapist_data`;
+  ingen AF-rapporteringskod finns i repot. Ingen läser fältet. Skadan går åt båda håll —
+  hen skriver mindre ärligt av rädsla, eller tar inte upp behovet på mötet för att hen
+  tror konsulenten redan vet. Det andra är värre. Dagbokens "bara du" **stämmer**
+  (ägar-RLS i prod), men texten erbjöd delning via Quick Notes, som bara finns i den
+  avstängda STA-modulen.
+
+  De övriga: raderingsfristen 14 dagar, inte 30, och under en flik som inte öppnas som
+  standard · ingen Google/Outlook-synk · läsförloppet ligger `fixed top-0`, inte längst
+  ned · ingen PDF-export i kunskapsbanken · sektionen heter "Utseende" · språkvalet
+  sitter i toppmenyn · "AI-uppföljning" är en manuell påminnelse · fältet heter
+  "Jobbannons" · företagsstorlek "10-200 / 50 = sweet spot" utan källa · "Kom
+  igång"-rutorna togs bort samma dag som rådet skrevs om · ingen import på CV-sidan ·
+  inga favoritövningar · `/resources` är deltagarens **egna** sparade material, inte
+  externa länkar · ingen hjärtknapp (bokmärket är en flikikon) · "14x fler vyer" utan
+  källa, och samma osourcade siffror i `BrandAuditTab.tsx` (40x, 21x, 9x, 75 %) · 2026-08-17
+
+  **En rättelse blev för snäv och rättades igen.** Första fixen av CV-importen sa bara
+  "lägg upp filen under Dokument" — men en skärmbild visade en knapp "Importera CV"
+  som jag inte sett i koden (`ProfileHeader.tsx:197` → `importToProfile()`), som fyller
+  profilen från Jobin-CV:t och fungerar. Att ta bort ett falskt påstående är halva
+  jobbet; den andra halvan är att kontrollera vad som faktiskt finns, annars byts en
+  överdrift mot en underdrift.
+
+- [x] **DS9** **Ledtråden som försvann med profilens flikar är tillbaka — och läsbar.**
+  `ProfileTabs` satte en amber-prick på den sektion som saknade uppgifter. Skenan hade
+  ingen plats för den. Pricken var dock en naken `<span>` utan text och utan aria — den
+  fanns aldrig för den som använder skärmläsare. `Sidoflikar` har nu `markering`, en kort
+  text ("Att fylla i") som både syns och läses upp, från samma `completion.nextStep` ·
+  2026-08-17
+
 **Rättade påståenden i den här omgången:** `RadgivarPanel`s docstring hävdade att noll
 rutter saknar rådgivarinnehåll — uppmätt mot `memberPaths` saknar tre det (`/`, `/help`,
 `/nätverk`). `HubPage`s docstring beskrev en hjälte som inte finns längre. Och min egen
@@ -184,6 +237,8 @@ faller på `expected '4' to be '2'` när räkningen bryts.
 
 | Hypotes | Hur den prövades | Utfall |
 |---|---|---|
+| Konsulentpanelen på /min-konsulent påstår delning som inte sker | `isShared: true` är hårdkodat för senast inloggad, sparade jobb och skickade ansökningar (`MyConsultant.tsx:900-913`) — misstanke om spegelbilden av anpassningsfältets bugg. Kontrollerat mot prod: `select policyname, cmd from pg_policies where tablename in ('saved_jobs','cvs','profiles') and qual ilike '%consultant%'` | **Föll** — tre policyer finns: *Consultants can view participant saved jobs*, *…assigned participant CVs*, *…assigned participant profiles*. Konsulenten ser det som panelen säger. Panelen talar sanning |
+| `npm audit`-fyndet (DR7) är akut i drift | Läst hur chromium startas: `cv-pdf.js` skickar alltid explicit `executablePath` (`@sparticuz/chromium` i prod). `grep` efter `@puppeteer/browsers`, `downloadBrowser`, `install(` i `client/api/` och `api/` | **Nedgraderat, inte avfärdat** — sårbarheten sitter i uppackning vid webbläsar-*nedladdning*, en väg vår kod aldrig går. Rådgivningen är äkta och grinden rätt röd, men det är ett schemalagt lyft med PDF-regression, inte en brand. Gränsen: statisk kontroll av vår kod, inte körningsspårning |
 | Prods SPA-fallback bryter chunkladdning efter deploy | `/(.*)` → `/index.html` ger 200 + HTML för **vilket** `/assets/*.js` som helst (påhittat filnamn testat). Hypotesen: `RouteErrorBoundary.isChunkLoadError` matchar inte MIME-felet. Mätt med `import()` mot prod | **Föll** — Chromium ger ändå `Failed to fetch dynamically imported module`, som vakten matchar. Slarvigt men inte användarbrytande. *Bieffekt: metoden att verifiera en deploy genom att curla ett chunknamn är värdelös här — allt svarar 200* |
 | Sitemapen har döda eller saknade URL:er | Alla 180 `<loc>` + hela guidelistan curlad | **Friskförklarad** — 200 rakt igenom, noll föräldralösa |
 | Något nytt bygger på `FAQPage` efter `511febdc` | JSON-LD extraherad ur alla byggda sidor | **Nej** — bara `Article`, `BreadcrumbList`, `Organization`, `CollectionPage` |

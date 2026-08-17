@@ -44,7 +44,20 @@ import { arAktivFlik } from './flikMatchning'
  * inte, så att påstå det för en skärmläsare hade varit fel.
  */
 export interface Sidoflikar {
-  poster: Array<{ id: string; etikett: string }>
+  poster: Array<{
+    id: string
+    etikett: string
+    /**
+     * Kort markering på fliken — t.ex. "Att fylla i" på den profilsektion som
+     * saknar uppgifter.
+     *
+     * Ersätter `ProfileTabs` amber-prick, som var en naken `<span>` utan text
+     * och utan aria: en skärmläsaranvändare fick aldrig ledtråden alls. Här är
+     * markeringen text, så den både syns och läses upp. Håll den kort — den
+     * ska rymmas bredvid etiketten i en 186 px skena.
+     */
+    markering?: string
+  }>
   aktiv: string
   vidVal: (id: string) => void
 }
@@ -149,6 +162,11 @@ export default function SidRail({ title, description, tabs, sidoflikar, children
                       )}
                     />
                     <span className="min-w-0 truncate">{p.etikett}</span>
+                    {p.markering && (
+                      <span className="ml-auto shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                        {p.markering}
+                      </span>
+                    )}
                   </button>
                 </li>
               )
@@ -186,6 +204,11 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
                 )}
               >
                 {p.etikett}
+                {p.markering && (
+                  <span className="ml-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                    {p.markering}
+                  </span>
+                )}
               </button>
             </li>
           )
