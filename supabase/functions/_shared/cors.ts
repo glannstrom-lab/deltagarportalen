@@ -30,6 +30,42 @@ const DEV_ORIGINS = [
 ];
 
 /**
+ * DR1 (2026-08-17): en saknad `Origin`-header är inte ett angrepp.
+ *
+ * Bakgrund: `send-inactivity-warning` svarade **403 "Origin not allowed"** för
+ * varje verklig anropare. Cron-vakten (`cronAuth.ts`) var korrekt byggd och
+ * fail closed — men den fick aldrig avgöra saken, eftersom svaret gick genom
+ * `createCorsResponse`, som anropar `getCorsHeaders(null)` och därmed 403:ade
+ * innan cron-autentiseringen syntes utåt. Reproducerat:
+ *
+ *   utan Origin (pg_cron, GitHub Actions, curl) → 403 "Origin not allowed"
+ *   med  Origin: https://www.jobin.se           → 503 "Cron authentication not configured"
+ *
+ * Planen (A25) trodde att felet enbart var att `CRON_SECRET` aldrig sattes.
+ * Det stämde, men att sätta den hade inte hjälpt: ingen server-till-server-
+ * anropare skickar `Origin` — den headern sätts av webbläsare.
+ *
+ * **CORS är inte en autentiseringsmekanism.** Den instruerar en webbläsare om
+ * den får läsa svaret; en curl-klient struntar i den helt. Att neka en request
+ * *utan* Origin ger därför noll säkerhet och bryter alla maskinanropare. Alla
+ * åtta funktioner som använder `validateOriginOrReject` har dessutom en egen,
+ * verifierad auth-grind (kontrollerat 2026-08-17: `getUser(token)` eller
+ * `verifyCronSecret`) — origin-kontrollen var aldrig säkerhetsgränsen.
+ *
+ * Skillnaden som fortfarande upprätthålls:
+ *   - `Origin` saknas helt   → maskinanrop. Släpps igenom, får inga CORS-headers.
+ *   - `Origin: "null"`       → sandlådad webbläsarkontext (iframe, data:). NEKAS.
+ *   - okänd origin-sträng    → NEKAS, som tidigare.
+ *
+ * `client/api/job-alerts.js` löste samma sak genom att degradera till en
+ * default-origin. Att utelämna headrarna är mer korrekt: en anropare utan
+ * Origin har ingen nytta av dem.
+ */
+export function arServerAnrop(origin: string | null): boolean {
+  return origin === null;
+}
+
+/**
  * Check if origin is allowed
  */
 export function isOriginAllowed(origin: string | null): boolean {
@@ -48,6 +84,13 @@ export function isOriginAllowed(origin: string | null): boolean {
  * Returns null if origin is not allowed
  */
 export function getCorsHeaders(requestOrigin: string | null): Record<string, string> | null {
+  // Maskinanrop: inga CORS-headers behövs, och inget skäl att neka.
+  // Tomt objekt (inte null) så att anropare som gör `if (!headers) → 403`
+  // släpper igenom. Se arServerAnrop ovan.
+  if (arServerAnrop(requestOrigin)) {
+    return {};
+  }
+
   if (!isOriginAllowed(requestOrigin)) {
     // In production, strictly reject unknown origins
     const isDevMode = Deno.env.get('ENVIRONMENT') === 'development';
@@ -111,6 +154,13 @@ export function handleCorsPreflightOrNull(req: Request): Response | null {
 export function validateOriginOrReject(req: Request): Response | null {
   const origin = req.headers.get('Origin');
   const isDevMode = Deno.env.get('ENVIRONMENT') === 'development';
+
+  // Maskinanrop passerar hit — funktionens EGEN auth-grind är säkerhetsgränsen,
+  // inte den här. Samtliga åtta anropare verifierar användartoken eller
+  // cron-hemlighet direkt efter det här anropet (kontrollerat 2026-08-17).
+  if (arServerAnrop(origin)) {
+    return null;
+  }
 
   // In production, strictly enforce origin
   if (!isDevMode && !isOriginAllowed(origin)) {
@@ -204,4 +254,5 @@ export default {
   createCorsRejectionResponse,
   createErrorResponse,
   isOriginAllowed,
+  arServerAnrop,
 };
