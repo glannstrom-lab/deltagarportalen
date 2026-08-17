@@ -687,18 +687,27 @@ function ResourcesInner() {
                 className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full md:w-48"
               />
             </div>
+            {/* F31 (2026-08-17): de här två knapparna hade inget tillgängligt
+                namn på NÅGON brytpunkt — bara en ikon, ingen text att falla
+                tillbaka på. En skärmläsare läste "knapp, knapp". `aria-pressed`
+                säger dessutom vilken av dem som är vald, vilket ikonens färg
+                gjorde enbart visuellt. WCAG 4.1.2. */}
             <div className="flex bg-stone-100 dark:bg-stone-700 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
+                aria-label={t('resources.view.grid', 'Visa som rutnät')}
+                aria-pressed={viewMode === 'grid'}
                 className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
-                <Grid3X3 size={16} />
+                <Grid3X3 size={16} aria-hidden="true" />
               </button>
               <button
                 onClick={() => setViewMode('list')}
+                aria-label={t('resources.view.list', 'Visa som lista')}
+                aria-pressed={viewMode === 'list'}
                 className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
-                <List size={16} />
+                <List size={16} aria-hidden="true" />
               </button>
             </div>
           </div>

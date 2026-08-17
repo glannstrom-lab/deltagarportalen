@@ -1219,8 +1219,17 @@ export default function CVBuilder() {
           så delningslänkar gick ingenstans. Returneras när delningsflödet är
           komplett (cv_shares-tabellen behöver också cv_id-kolumn). */}
       <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
-        <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors">
-          <Sparkles className="w-4 h-4" />
+        {/* F31 (2026-08-17): knappens enda text låg i `hidden sm:inline`, så
+            under `sm` — mobil, alltså målgruppens vanligaste läge — hade den
+            noll tillgängligt namn och lästes upp som "knapp". `aria-label`
+            gäller på alla brytpunkter; ikonen döljs för uppläsning eftersom
+            etiketten nu bär betydelsen. WCAG 4.1.2. */}
+        <button
+          onClick={loadDemoData}
+          aria-label={t('cvBuilder.actions.exampleData')}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
+        >
+          <Sparkles className="w-4 h-4" aria-hidden="true" />
           <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
         </button>
         <PDFExportButton
