@@ -29,6 +29,10 @@ import CommandPalette from './CommandPalette'
 // den atomära ändringen reversibel med en miljövariabel i stället för en revert.
 import { SubNav } from './layout/TopNav'
 import { oppnaPalett } from '@/lib/palettEvent'
+// Steg 4 (2026-08-17): rådgivarna som kolumn i stället för flytande cirkel.
+// FAB:en täckte innehåll på 17 av 19 verktygssidor, inklusive
+// GDPR-kontrollerna i Inställningar (fynd F25).
+const RadgivarPanel = lazy(() => import('./radgivare/RadgivarPanel'))
 import { isTopNavEnabled } from '@/config/features'
 // TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
 // bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
@@ -36,24 +40,7 @@ import { isTopNavEnabled } from '@/config/features'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { useSettingsStore } from '@/stores/settingsStore'
 
-// E10 (2026-07-23): CoachWidget + data/coaches.ts (~36 kB) lazy-laddas —
-// tidigare i entry för alla, även med widgeten avstängd
-const GlobalCoachWidgetContent = lazy(() => import('./GlobalCoachWidgetContent'))
 
-/**
- * Wrapper som läser route + toggle-state och renderar CoachWidget om passande.
- * Lyder under Layout.tsx så widgeten finns oavsett om sidan använder PageLayout.
- */
-function GlobalCoachWidget() {
-  const location = useLocation()
-  const show = useSettingsStore((s) => s.showCoachWidget)
-  if (!show) return null
-  return (
-    <Suspense fallback={null}>
-      <GlobalCoachWidgetContent pathname={location.pathname} />
-    </Suspense>
-  )
-}
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
 
@@ -90,6 +77,19 @@ export default function Layout() {
   // Steg 2 (2026-08-17). Läses en gång här i stället för i varje gren nedan,
   // så att det går att se på ett ställe vad flaggan styr.
   const topNav = isTopNavEnabled()
+
+  // Samma inställning som styrde coach-FAB:en. Den som stängt av rådgivaren
+  // ska inte få tillbaka den av en omdesign.
+  const radgivareAv = !useSettingsStore((st) => st.showCoachWidget)
+
+  // Sidor som redan har en egen högerkolumn renderar rådgivaren SJÄLVA, där
+  // den hör hemma bredvid innehållet. CV-byggaren har rail + formulär +
+  // förhandsvisning; en fjärde kolumn från Layout hade gjort raden obrukbar.
+  const EGEN_RADGIVARE = ['/cv']
+  const sidanHarEgen = EGEN_RADGIVARE.some(
+    (pfx) => location.pathname === pfx || location.pathname.startsWith(pfx + '/')
+  )
+  const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen
 
   return (
     <>
@@ -147,7 +147,22 @@ export default function Layout() {
                 'mx-auto min-w-0',
                 isMobile ? 'max-w-full' : 'max-w-7xl'
               )}>
-                <Outlet />
+                {/* Rådgivaren till höger på breda skärmar. Under xl finns
+                    inte plats för en tredje kolumn — där renderas panelen
+                    sist i flödet i stället, alltså efter sidans innehåll,
+                    aldrig ovanpå det. */}
+                <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
+                  <div className="min-w-0">
+                    <Outlet />
+                  </div>
+                  {visaRadgivare && (
+                    <div className="mt-6 xl:mt-0" data-focus-chrome="radgivare">
+                      <Suspense fallback={null}>
+                        <RadgivarPanel pathname={location.pathname} />
+                      </Suspense>
+                    </div>
+                  )}
+                </div>
               </div>
             </main>
           </div>
@@ -173,11 +188,17 @@ export default function Layout() {
             kostar inget för den som aldrig använder den. */}
         <CommandPalette />
 
-        {/* Coach-widget — sidkontextuella tips (kan slås av i Inställningar) */}
-        <GlobalCoachWidget />
+        {/* Steg 4 (2026-08-17): coach-FAB:en är borttagen. Rådgivarna ligger
+            numera i en kolumn till höger, i dokumentflödet — se ovan.
+            GlobalCoachWidgetContent och CoachWidget är kvar orörda i koden
+            tills panelen fått gå ett tag i drift. */}
 
-        {/* Mina samlingar — global snabbväg till sparade resurser, stackad ovanför Coach */}
-        <SamlingarFab />
+        {/* Steg 4: "Mina samlingar" var den andra flytande widgeten (F25) och
+            gick till skillnad från coach-FAB:en INTE att stänga av. Den täckte
+            innehåll på 17 av 19 verktygssidor. Kvar bara på mobil, där det inte
+            finns någon toppnav att lägga den i — på desktop når man samlingarna
+            via Resurser i rad 1 och via Ctrl/⌘ K. */}
+        {isMobile && <SamlingarFab />}
 
         {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false */}
         <OnboardingFlow />

@@ -23,6 +23,17 @@ const bredd = Number(process.argv[3] || 1440)
   await p.goto(`http://localhost:3000/#${route}`, { waitUntil: 'networkidle' })
   await p.waitForTimeout(1500)
 
+  // Avfärda onboardingmodaler så de inte skymmer sidan i skärmbilden.
+  for (const etikett of ['Hoppa över', 'Stäng', 'Skip']) {
+    const knapp = p.getByRole('button', { name: new RegExp(etikett, 'i') }).first()
+    if (await knapp.count().catch(() => 0)) {
+      await knapp.click({ timeout: 1500 }).catch(() => {})
+      await p.waitForTimeout(600)
+    }
+  }
+  await p.keyboard.press('Escape').catch(() => {})
+  await p.waitForTimeout(600)
+
   const m = await p.evaluate(() => {
     const r = (el) => (el ? Math.round(el.getBoundingClientRect().height) : null)
     const header = document.querySelector('header')

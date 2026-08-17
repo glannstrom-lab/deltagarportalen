@@ -18,6 +18,9 @@ import { CompactImageUpload } from '@/components/ImageUpload'
 import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
+// Steg 4 (2026-08-17): rådgivaren bredvid förhandsvisningen, och ett
+// kontextuellt råd inne i formuläret — inte en ring i hörnet.
+import RadgivarPanel, { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
@@ -336,6 +339,10 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 export default function CVBuilder() {
   const { t, i18n } = useTranslation()
   const [step, setStep] = useState(1)
+  // Steg 4 (2026-08-17): förhandsvisning och rådgivare delar högerkolumn som
+  // flikar — inte staplade. En tredje kolumn för rådgivaren hade gjort raden
+  // obrukbar, och att stapla dem hade tryckt ner förhandsvisningen ur bild.
+  const [hogerFlik, setHogerFlik] = useState<'forhandsvisning' | 'rad'>('forhandsvisning')
   const [showPreview, setShowPreview] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
@@ -1303,7 +1310,13 @@ export default function CVBuilder() {
       )}
 
       {/* Steg-indikator */}
-      <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
+      {/* Stegindikatorn visar samma sak som innehållsskenan till vänster.
+          Två navigationer för samma sex steg är en för mycket — skenan vinner
+          på desktop eftersom den är kompakt och alltid synlig medan man
+          skriver. På mobil finns ingen skena, så indikatorn är kvar där. */}
+      <div className="lg:hidden">
+        <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
+      </div>
 
       {/* Mobile Preview Modal */}
       {showPreview && (
@@ -1328,13 +1341,64 @@ export default function CVBuilder() {
           kolumn) — det såg dåligt ut och förvirrade användaren. */}
       <div className={cn(
         'grid grid-cols-1 gap-6',
-        step < STEPS.length && 'lg:grid-cols-[1fr_320px]',
+        /* Steg 4: innehållsöversikt till vänster (CV B). Skenan visar HELA
+           CV:t och vad som är klart — tidigare såg man en sjättedel åt
+           gången och kunde aldrig överblicka vad som saknades. */
+        step < STEPS.length && 'lg:grid-cols-[190px_1fr_320px]',
         step === STEPS.length && 'max-w-4xl mx-auto'
       )}>
+        {/* Innehållsöversikt */}
+        {step < STEPS.length && (
+          <nav
+            aria-label={t('cvBuilder.contentOverview', 'Innehåll i ditt CV')}
+            className="hidden lg:block"
+          >
+            <p className="px-3 pb-2 text-[10px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              {t('cvBuilder.contentOverview', 'Innehåll i ditt CV')}
+            </p>
+            <ul className="m-0 p-0 list-none space-y-0.5">
+              {STEPS.map((st) => {
+                const klar = completedSteps.includes(st.id)
+                const aktiv = step === st.id
+                return (
+                  <li key={st.id}>
+                    <button
+                      type="button"
+                      onClick={() => setStep(st.id)}
+                      aria-current={aktiv ? 'step' : undefined}
+                      className={cn(
+                        'w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-left text-[13px]',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
+                        aktiv
+                          ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
+                          : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
+                      )}
+                    >
+                      <span
+                        aria-hidden="true"
+                        className={cn(
+                          'w-2 h-2 rounded-full shrink-0',
+                          klar ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
+                        )}
+                      />
+                      <span className="min-w-0 flex-1 truncate">{st.title}</span>
+                      <span className="text-[10px] font-mono text-stone-400 dark:text-stone-500 shrink-0">
+                        {klar ? '✓' : `${st.minutes}m`}
+                      </span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </nav>
+        )}
+
         {/* Left: Editor */}
-        <div>
+        <div className="min-w-0">
           <div className="min-h-[400px]">
             {renderContent()}
+            {/* Ett råd, där arbetet sker */}
+            <RadgivarTips pathname="/cv" index={step - 1} />
           </div>
 
           {/* Desktop Navigation */}
@@ -1372,6 +1436,37 @@ export default function CVBuilder() {
             hela vyn. */}
         {step < STEPS.length && (
           <div className="hidden lg:block">
+            {/* Flikarna. `role=tablist` med piltangenter vore rätt för en
+                riktig flikuppsättning, men här byter de innehållet i en
+                sidopanel — två knappar med aria-pressed beskriver det
+                ärligare än ett tablist som inte beter sig som ett. */}
+            <div className="flex gap-1 mb-3 border-b border-stone-200 dark:border-stone-700">
+              {([
+                ['forhandsvisning', t('cvBuilder.tabs.preview', 'Förhandsvisning')],
+                ['rad', t('cvBuilder.tabs.advice', 'Råd')],
+              ] as const).map(([id, etikett]) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setHogerFlik(id)}
+                  aria-pressed={hogerFlik === id}
+                  className={cn(
+                    'px-3 py-2 text-[13px] -mb-px border-b-2',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded-t',
+                    hogerFlik === id
+                      ? 'border-[var(--c-solid)] font-semibold text-stone-900 dark:text-stone-100'
+                      : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
+                  )}
+                >
+                  {etikett}
+                </button>
+              ))}
+            </div>
+
+            {hogerFlik === 'rad' ? (
+              <RadgivarPanel pathname="/cv" />
+            ) : (
+            <>
             <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
@@ -1460,7 +1555,8 @@ export default function CVBuilder() {
               )}
             </div>
           </div>
-
+            </>
+            )}
           </div>
         )}
       </div>
