@@ -8,6 +8,8 @@ import {
   Mail,
   Mic,
   Wallet,
+  Linkedin,
+  Globe,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useJobsokHubSummary } from '@/hooks/useJobsokHubSummary'
@@ -148,8 +150,29 @@ function JobsokHubInner() {
         icon: Wallet,
         title: t('jobsokHub.features.salary.title', 'Lön & förhandling'),
         description: t('jobsokHub.features.salary.description', 'Förbered dig på lönesamtal och förhandlingar.'),
-        status: t('hubs.explore', 'Utforska'),
         href: '/salary',
+      },
+      // De två nedan saknades fram till 2026-08-17. Båda verktygen är färdiga
+      // och ligger i hubbens memberPaths — men utan kort gick de inte att nå
+      // från den sida deltagaren skickas till. Nu vaktar
+      // __tests__/hubbkort-mot-navigation.test.ts att listorna hålls ihop.
+      //
+      // Ingen `status`: useJobsokHubSummary hämtar ingenting om LinkedIn eller
+      // utlandsarbete. Ett kort utan uppgift ska inte bära en bricka som ser
+      // ut som en uppgift (regel B31).
+      {
+        key: 'linkedin',
+        icon: Linkedin,
+        title: t('jobsokHub.features.linkedin.title', 'LinkedIn-optimering'),
+        description: t('jobsokHub.features.linkedin.description', 'Få din LinkedIn-profil att synas för rekryterare.'),
+        href: '/linkedin-optimizer',
+      },
+      {
+        key: 'international',
+        icon: Globe,
+        title: t('jobsokHub.features.international.title', 'Jobba utomlands'),
+        description: t('jobsokHub.features.international.description', 'Så söker du jobb i ett annat land.'),
+        href: '/international',
       },
     ]
   }, [data, t])

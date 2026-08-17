@@ -128,7 +128,6 @@ function MinVardagHubInner() {
         icon: Dumbbell,
         title: t('minVardagHub.features.exercises.title', 'Övningar'),
         description: t('minVardagHub.features.exercises.description', 'Träna intervjuer, presentationer och mer.'),
-        status: t('hubs.explore', 'Utforska'),
         href: '/exercises',
       },
       {

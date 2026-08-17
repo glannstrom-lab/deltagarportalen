@@ -10,8 +10,28 @@ const { chromium } = require('@playwright/test')
 const path = require('path')
 
 const ROOT = path.join(__dirname, '..')
-const route = process.argv[2] || '/applications'
+let route = process.argv[2] || '/applications'
 const bredd = Number(process.argv[3] || 1440)
+
+/**
+ * Git Bash på Windows (MSYS) gör om ett argument som börjar med `/` till en
+ * Windows-sökväg: `/jobb` blir `C:/Program Files/Git/jobb`. Skriptet mätte då
+ * catch-all-rutten och rapporterade tal som såg fullt rimliga ut — det syns i
+ * `e2e/screenshots/C-ProgramFiles-Git-oversikt.png`, som någon tagit utan att
+ * märka det. Ett tyst fel som ger fel svar är värre än ett som stannar.
+ */
+if (/^[A-Za-z]:[\\/]/.test(route)) {
+  const svans = route.replace(/\\/g, '/').split('/').pop()
+  console.error(
+    `\nRUTTEN MANGLADES AV GIT BASH: "${route}"\n` +
+      `Skriptet hade mätt fel sida utan att säga till.\n\n` +
+      `Kör i stället något av:\n` +
+      `  MSYS_NO_PATHCONV=1 node e2e/mat-nav.cjs /${svans} ${bredd}\n` +
+      `  node e2e/mat-nav.cjs ${svans} ${bredd}      (utan inledande snedstreck)\n`
+  )
+  process.exit(1)
+}
+if (!route.startsWith('/')) route = `/${route}`
 
 ;(async () => {
   const b = await chromium.launch()
@@ -53,6 +73,9 @@ const bredd = Number(process.argv[3] || 1440)
     }
   })
   console.log(JSON.stringify(m, null, 2))
-  await p.screenshot({ path: path.join(ROOT, `e2e/screenshots/nav-${bredd}.png`) })
+  // Namnet bär rutten: flera granskare kör skriptet samtidigt, och ett fast
+  // filnamn hade låtit dem skriva över varandras bild utan att någon märkte det.
+  const namn = route.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'rot'
+  await p.screenshot({ path: path.join(ROOT, `e2e/screenshots/sida-${namn}-${bredd}.png`), fullPage: true })
   await b.close()
 })()

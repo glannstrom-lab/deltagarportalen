@@ -50,6 +50,7 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Types
 interface ConsultantInfo {
@@ -1076,6 +1077,7 @@ function MyConsultantInner() {
           <div className="space-y-6">
             <ConsultantCard consultant={consultant} nextMeeting={nextMeeting} />
             <GoalsSection goals={goals} />
+            <RadgivarTips pathname="/my-consultant" index={0} />
           </div>
 
           {/* Middle column - Messages */}
@@ -1104,7 +1106,7 @@ function MyConsultantInner() {
 
       {/* Säg upp kopplingen - längst ner, dämpad */}
       {consultant && (
-        <div className="mt-8 max-w-3xl mx-auto">
+        <div className="mt-6 max-w-3xl mx-auto">
           <RevokeConsultantLinkSection
             consultantId={consultant.id}
             consultantName={`${consultant.first_name} ${consultant.last_name}`.trim()}

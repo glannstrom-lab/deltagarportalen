@@ -16,6 +16,8 @@
  * (vanliga frågor) + relaterade länkar i appen.
  */
 
+import { avkodaSokvag } from '@/lib/sokvag'
+
 export type CoachId = 'jobbcoach' | 'arbetsterapeut' | 'studievagledare' | 'mentalcoach' | 'digitalcoach'
 
 export interface Coach {
@@ -905,10 +907,14 @@ const ROUTE_TO_PAGE_KEY: Array<[string, string]> = [
 
 export function getPageKeyForPath(pathname: string): string | undefined {
   if (!pathname) return undefined
+  // Avkoda först: `/spontanansökan` når hit som `/spontanans%C3%B6kan` och
+  // matchade aldrig raden i tabellen, så rådgivaren försvann på just de två
+  // rutter som har svenska tecken. Se lib/sokvag.ts.
+  const sokvag = avkodaSokvag(pathname)
   // Längsta-match-vinner
   let best: [string, string] | null = null
   for (const entry of ROUTE_TO_PAGE_KEY) {
-    if (pathname === entry[0] || pathname.startsWith(entry[0] + '/')) {
+    if (sokvag === entry[0] || sokvag.startsWith(entry[0] + '/')) {
       if (!best || entry[0].length > best[0].length) best = entry
     }
   }

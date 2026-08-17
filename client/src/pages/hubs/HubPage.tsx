@@ -4,23 +4,23 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { PageHero } from '@/components/layout/PageHero'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from '@/components/layout/hubIcons'
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
  *
- * Struktur:
- *   1. Hero — hub-ikon + titel + datum-disc + beskrivning (samma DNA som Översikt)
- *   2. Funktioner — grid av feature-cards (sub-pages) med kvalitativ status per kort
+ * Struktur (omlagd 2026-08-17, hjälten borttagen):
+ *   1. Rubrikrad — liten hub-ikon + hälsning + titel + en rad beskrivning
+ *   2. Funktioner — tät grid av kort till hubbens undersidor, med status per kort
  *
- * Varje hub passar in via props: hubId, title, description, icon, domain, features.
- * Status per feature beräknas i hub-komponenten från loader-data.
+ * Varje hub passar in via props: title, hubTitle, hubDescription, icon, domain,
+ * features. Status per feature beräknas i hub-komponenten från loader-data.
+ *
+ * **Kortlistan måste matcha hubbens `memberPaths` i navigation.ts.** De två
+ * gled isär i båda riktningarna innan 2026-08-17 — Söka jobb visade 7 kort mot
+ * 9 länkar, Min vardag 6 kort mot 5 länkar. `__tests__/hubbkort-mot-navigation`
+ * vaktar det numera.
  */
-
-const SWEDISH_DAYS_SHORT = [
-  'sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör',
-] as const
 
 export type HubDomain = 'activity' | 'coaching' | 'info' | 'wellbeing'
 
@@ -33,9 +33,25 @@ export interface HubFeature {
   title: string
   /** 1-2 line description */
   description: string
-  /** Kvalitativ status — empatisk framing, inga bare zeros */
-  status: string
-  /** True när användaren har gjort något inom feature (visuellt mer-grön) */
+  /**
+   * Vad användaren har gjort här — "5 aktiva", "Senast 27 juli", "Inte testad".
+   *
+   * **Utelämna den när hubben inte hämtar någon uppgift om verktyget.** Sju
+   * kort bar tidigare `t('hubs.explore', 'Utforska')`, vilket såg ut som en
+   * status men var en uppmaning utan underlag. Effekten blev att korten med
+   * riktiga tal drunknade bland dem som inte hade något att säga (regel B31 —
+   * ett värde utan underlag ska inte se ut som ett värde).
+   */
+  status?: string
+  /**
+   * True när användaren har gjort något här.
+   *
+   * Styr också hur `status` läses: när den är true kommer texten ur data och
+   * visas som bricka i hubbfärgen; annars är den ett tomtillstånd ("Inga än",
+   * "Skapa CV") och sätts som dämpad text utan bricka. Villkoret är detsamma
+   * som hubbkomponenterna redan använder för att välja statustexten, så de två
+   * kan inte glida isär.
+   */
   isActive?: boolean
   /** Route */
   href: string
@@ -56,7 +72,7 @@ export interface HubPageProps {
   hubTitle: string
   /** En rad beskrivning */
   hubDescription: string
-  /** Hub-ikon (lucide) — visas i 80×80 cirkel vänster */
+  /** Hub-ikon (lucide). Reserv för domäner utan bildikon i HUB_ICON_SRC. */
   hubIcon: LucideIcon
   /** Domänfärg (bestämmer --c-* tokens via PageLayout) */
   domain: HubDomain
@@ -85,13 +101,10 @@ const heroVariants = {
   visible: { opacity: 1, y: 0 },
 }
 
-// Dekorativ hub-illustration per domän (DESIGN.md §3 — hub-landning).
-const HUB_ILLUSTRATIONS: Partial<Record<HubDomain, string>> = {
-  activity: '/illustrations/hero-jobb.webp',
-  coaching: '/illustrations/hero-karriar.webp',
-  info: '/illustrations/hero-resurser.webp',
-  wellbeing: '/illustrations/hero-vardag.webp',
-}
+// De fyra hjälteillustrationerna (public/illustrations/hero-*.webp, 164 kB
+// tillsammans) laddades av hjälten och har ingen annan användare i src/.
+// Filerna ligger kvar orörda — att radera bilder ur public/ är ett eget
+// beslut, inte en följd av en layoutändring.
 
 export default function HubPage({
   titleKey: _titleKey,
@@ -107,7 +120,6 @@ export default function HubPage({
   firstName,
 }: HubPageProps) {
   const { t } = useTranslation()
-  const today = new Date()
   const trimmedFirstName = firstName?.trim() || null
 
   return (
@@ -116,62 +128,63 @@ export default function HubPage({
       domain={domain}
       showHeader={false}
       showTabs={false}
-      contentClassName="space-y-7"
+      contentClassName="space-y-5"
     >
       {trackingChild}
 
-      {/* HERO via gemensam PageHero (DESIGN.md §3 läge A) */}
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={heroVariants}
-        transition={{ duration: 0.35 }}
-      >
-        <PageHero
-          mode="hub"
-          title={hubTitle}
-          description={hubDescription}
-          greeting={trimmedFirstName ? t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName }) : undefined}
-          icon={HubIcon}
-          iconSrc={HUB_ICON_SRC[domain]}
-          heroIllustration={HUB_ILLUSTRATIONS[domain]}
-          rightDecoration={
-            <div
-              aria-hidden="true"
-              className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] shadow-sm"
-            >
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
-                {t(`hubs.daysShort.${today.getDay()}`, SWEDISH_DAYS_SHORT[today.getDay()])}
-              </span>
-              <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
-                {today.getDate()}
-              </span>
-            </div>
-          }
-        />
-      </motion.div>
+      {/*
+        Rubrikrad i stället för hjälte (2026-08-17, beslut Mikael: "jag vill
+        inte längre ha någon hero som tar plats på sidorna").
 
-      {/* FUNKTIONER */}
+        Hjälten tog ~240 px på 1440 px bredd och sa två saker: hubbens namn,
+        som redan står markerat i navigationens första rad, och en
+        beskrivningsrad som upprepade namnet med andra ord. Datumdiscen var
+        dekor — vilken dag det är hjälper ingen att söka jobb.
+
+        Kvar är det hjälten faktiskt bidrog med: hälsningen med förnamn
+        (DESIGN.md §2) och en rubrik att hitta med skärmläsare. Ikonen står
+        kvar liten, som igenkänning av hubbfärgen.
+      */}
+      <div className="flex items-center gap-3">
+        <span
+          aria-hidden="true"
+          className="hidden sm:flex w-10 h-10 rounded-[10px] items-center justify-center shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
+        >
+          {HUB_ICON_SRC[domain] ? (
+            <img src={HUB_ICON_SRC[domain]} alt="" className="w-7 h-7 object-contain" />
+          ) : (
+            <HubIcon className="w-5 h-5" strokeWidth={2} />
+          )}
+        </span>
+        <div className="min-w-0">
+          <h1 className="text-[19px] font-semibold tracking-tight text-[var(--stone-900)] m-0 leading-tight">
+            {trimmedFirstName && (
+              <span className="font-normal text-[var(--stone-500)]">
+                {t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName })}
+                {' · '}
+              </span>
+            )}
+            {hubTitle}
+          </h1>
+          <p className="m-0 text-[13px] text-[var(--stone-600)] leading-snug">{hubDescription}</p>
+        </div>
+      </div>
+
+      {/*
+        Funktionerna behöver ingen egen rubrik längre. Den sa "FUNKTIONER" över
+        en grid av funktioner — en etikett på något som redan syns.
+      */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={heroVariants}
-        transition={{ duration: 0.35, delay: 0.08 }}
+        transition={{ duration: 0.3 }}
         aria-label={t('hubs.featuresHeading', 'Funktioner')}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3"
       >
-        <div className="flex items-center gap-2.5 mb-3.5">
-          <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)] flex-shrink-0" />
-          <h2 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--c-text)] m-0">
-            {t('hubs.featuresHeading', 'Funktioner')}
-          </h2>
-          <div className="flex-1 h-px bg-[var(--c-accent)] opacity-60" />
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {features.map((f) => (
-            <FeatureCard key={f.key} feature={f} />
-          ))}
-        </div>
+        {features.map((f) => (
+          <FeatureCard key={f.key} feature={f} />
+        ))}
       </motion.section>
 
       {footerSection}
@@ -188,47 +201,55 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
 
   return (
     <Link to={href} className="block no-underline">
+      {/*
+        Kortet var 170 px högt med `min-h` fastän innehållet är en rubrik, två
+        rader text och en statusbricka. Reserverad höjd för text som aldrig
+        kom — precis den "för mycket space, för lite innehåll" omläggningen
+        handlar om. Höjden följer nu innehållet.
+
+        Statusbrickan flyttar upp bredvid titeln: det är kortets enda riktiga
+        uppgift, den siffra navigationens länk inte kan visa ("5 aktiva",
+        "Senast 27 juli"). Nederst, bakom en avdelare, konkurrerade den med
+        pilen om uppmärksamhet.
+      */}
       <motion.div
-        whileHover={{ y: -2 }}
+        whileHover={{ y: -1 }}
         transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-[14px] p-4 sm:p-[22px_24px] hover:border-[var(--c-solid)] hover:shadow-md transition-[border-color,box-shadow] flex flex-col gap-2 sm:gap-2.5 min-h-[140px] sm:min-h-[170px]"
+        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-xl px-3.5 py-3 hover:border-[var(--c-solid)] hover:shadow-sm transition-[border-color,box-shadow] h-full flex flex-col gap-1.5"
       >
-        {/* Header: ikon + titel */}
-        <div className="flex items-center gap-3 mb-0.5 sm:mb-1">
+        <div className="flex items-start gap-2.5">
           <span
             aria-hidden="true"
-            className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
+            className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
           >
             {TOOL_ICON_SRC[href] ? (
-              <img src={TOOL_ICON_SRC[href]} alt="" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
+              <img src={TOOL_ICON_SRC[href]} alt="" className="w-[22px] h-[22px] object-contain" />
             ) : (
-              <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={2} />
+              <Icon className="w-4 h-4" strokeWidth={2} />
             )}
           </span>
-          <span className="text-[14px] sm:text-[15px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
-            {title}
+          <span className="min-w-0 flex-1">
+            <span className="block text-[14px] font-semibold text-[var(--stone-900)] tracking-tight leading-tight">
+              {title}
+            </span>
+            {status && (
+              <span
+                className={[
+                  'inline-block mt-1 text-[11px] max-w-full truncate',
+                  isActive
+                    ? 'font-medium px-1.5 py-0.5 rounded bg-[var(--c-bg)] text-[var(--c-text)]'
+                    : 'text-[var(--stone-500)]',
+                ].join(' ')}
+              >
+                {status}
+              </span>
+            )}
           </span>
         </div>
 
-        {/* Beskrivning */}
-        <p className="text-[13px] text-[var(--stone-600)] leading-[1.5] m-0 flex-1">
+        <p className="text-[12.5px] text-[var(--stone-600)] leading-snug m-0">
           {description}
         </p>
-
-        {/* Status + arrow */}
-        <div className="flex items-center justify-between gap-2 pt-2.5 sm:pt-3 border-t border-[var(--stone-100)]">
-          <span
-            className={[
-              'inline-flex items-center gap-1.5 text-[11px] sm:text-[12px] font-semibold px-2 sm:px-2.5 py-1 rounded-full max-w-full truncate',
-              isActive
-                ? 'bg-[var(--c-bg)] text-[var(--c-text)]'
-                : 'bg-[var(--stone-100)] text-[var(--stone-700)]',
-            ].join(' ')}
-          >
-            {status}
-          </span>
-          <span aria-hidden="true" className="text-[14px] text-[var(--stone-400)] flex-shrink-0">→</span>
-        </div>
       </motion.div>
     </Link>
   )

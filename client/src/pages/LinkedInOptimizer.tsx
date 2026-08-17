@@ -10,10 +10,28 @@ import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusLinkedInWizard } from '@/components/focus/pages/FocusLinkedInWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
+/**
+ * En del av LinkedIn-profilen, med checklista, exempel och nyckelord.
+ *
+ * **Ingen `score`.** Fram till 2026-08-17 bar varje del ett fast betyg (85, 72,
+ * 68, 45 %), sidan visade "Profilhälsa" med bokstavsbetyg och "Profil ifylld
+ * 67 %", och kryssrutorna kom förikryssade — som om portalen läst användarens
+ * LinkedIn-profil. Det hade den aldrig gjort. Talen var hårdkodade och
+ * identiska för alla; en deltagare fick veta att hen låg på 45 % i
+ * rekommendationer utan att något kontrollerats.
+ *
+ * Det är samma felklass som granskningen 2026-08-09 kallade projektets
+ * kärnproblem, men i dess värsta form: inte ett påhittat tal utan påhittade
+ * råd *om användaren*. Checklistan och exemplen är däremot bra och är kvar —
+ * de påstår ingenting om just din profil.
+ *
+ * Numera kryssar användaren själv, och det enda talet på sidan räknas ur de
+ * kryssen. Det är alltså hens egen uppgift, inte portalens gissning.
+ */
 interface SectionAudit {
   name: string
-  score: number
   checklist: { item: string; completed: boolean }[]
   examples: { before: string; after: string }
   keywords: string[]
@@ -50,7 +68,6 @@ function LinkedInOptimizerInner() {
   const [resultat, setResultat] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [profileCompleteness, setProfileCompleteness] = useState(0)
   const [auditSections, setAuditSections] = useState<SectionAudit[]>([])
   const [expandedSection, setExpandedSection] = useState<string | null>(null)
   const [showKeywords, setShowKeywords] = useState(false)
@@ -93,12 +110,11 @@ function LinkedInOptimizerInner() {
     const sections: SectionAudit[] = [
       {
         name: 'Rubrik (Headline)',
-        score: 85,
         checklist: [
-          { item: 'Innehåller jobbroll', completed: true },
+          { item: 'Innehåller jobbroll', completed: false },
           { item: 'Innehåller nyckelkompetenser', completed: false },
-          { item: 'Använder relevanta nyckelord', completed: true },
-          { item: 'Under 220 tecken', completed: true }
+          { item: 'Använder relevanta nyckelord', completed: false },
+          { item: 'Under 220 tecken', completed: false }
         ],
         examples: {
           before: 'Senior Developer',
@@ -108,12 +124,11 @@ function LinkedInOptimizerInner() {
       },
       {
         name: 'Om mig (About Section)',
-        score: 72,
         checklist: [
           { item: 'Startar med en hook/engagament', completed: false },
-          { item: 'Visar unika värderingar', completed: true },
+          { item: 'Visar unika värderingar', completed: false },
           { item: 'Inkluderar call-to-action', completed: false },
-          { item: 'Personlig men professionell ton', completed: true }
+          { item: 'Personlig men professionell ton', completed: false }
         ],
         examples: {
           before: 'Developer with 5 years experience',
@@ -123,11 +138,10 @@ function LinkedInOptimizerInner() {
       },
       {
         name: 'Erfarenhet (Experience)',
-        score: 68,
         checklist: [
           { item: 'Använder STAR-metoden i beskrivningar', completed: false },
-          { item: 'Visar mätbara resultat', completed: true },
-          { item: 'Inkluderar relevanta nyckelord', completed: true },
+          { item: 'Visar mätbara resultat', completed: false },
+          { item: 'Inkluderar relevanta nyckelord', completed: false },
           { item: 'Länkat till projekt/portfolio', completed: false }
         ],
         examples: {
@@ -138,11 +152,10 @@ function LinkedInOptimizerInner() {
       },
       {
         name: 'Rekommendationer & Endorsements',
-        score: 45,
         checklist: [
           { item: 'Minst 3 rekommendationer', completed: false },
           { item: 'Diverse rekommendatörer', completed: false },
-          { item: 'Relevanta färdigheter endorsade', completed: true }
+          { item: 'Relevanta färdigheter endorsade', completed: false }
         ],
         examples: {
           before: 'No recommendations',
@@ -153,9 +166,17 @@ function LinkedInOptimizerInner() {
     ]
 
     setAuditSections(sections)
-    setProfileCompleteness(67)
     setAktivTab('audit')
   }
+
+  // Räknas ur användarens egna kryss. Enda talet på sidan som har underlag.
+  const kryssade = auditSections.reduce(
+    (n, s) => n + s.checklist.filter((i) => i.completed).length,
+    0
+  )
+  const totaltAntalPunkter = auditSections.reduce((n, s) => n + s.checklist.length, 0)
+  const profileCompleteness =
+    totaltAntalPunkter === 0 ? 0 : Math.round((kryssade / totaltAntalPunkter) * 100)
 
   const kopiera = () => {
     navigator.clipboard.writeText(resultat)
@@ -171,7 +192,9 @@ function LinkedInOptimizerInner() {
     { id: 'audit', label: t('linkedInOptimizer.tabs.audit.label'), icon: Shield, beskrivning: t('linkedInOptimizer.tabs.audit.description') }
   ]
 
-  const auditGrade = profileCompleteness >= 80 ? 'A' : profileCompleteness >= 70 ? 'B' : profileCompleteness >= 60 ? 'C' : 'D'
+  // Bokstavsbetyget (A–D) är borttaget 2026-08-17. Det räknades ur ett
+  // hårdkodat tal och satte ett omdöme på en människa utan att ha mätt något.
+  // DESIGN.md §2: aldrig prestationsspråk i deltagarvyer.
 
   return (
     <PageLayout
@@ -199,6 +222,8 @@ function LinkedInOptimizerInner() {
           </button>
         ))}
       </div>
+
+      <RadgivarTips pathname="/linkedin-optimizer" index={0} />
 
       {/* Form or Audit */}
       {aktivTab !== 'audit' ? (
@@ -392,25 +417,39 @@ function LinkedInOptimizerInner() {
         <div className="space-y-6">
           {/* Completeness Overview */}
           <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-                {t('linkedInOptimizer.audit.profileHealth')}
+            <div className="flex items-center gap-2 mb-3">
+              <Shield className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0" />
+              <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 m-0">
+                {t('linkedInOptimizer.audit.checklistHeading', 'Checklista för din LinkedIn-profil')}
               </h2>
-              <div className="text-right">
-                <p className="text-4xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{auditGrade}</p>
-                <p className="text-xs text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.grade')}</p>
-              </div>
             </div>
 
-            <div className="space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('linkedInOptimizer.audit.profileCompleted')}</span>
-                <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{profileCompleteness}%</span>
+            {/*
+              Ersätter "Profilhälsa: Betyg C, Profil ifylld 67 %". Portalen kan
+              inte läsa din LinkedIn-profil, så den kan inte betygsätta den.
+              Att säga det rakt ut är både sannare och mer användbart än ett
+              tal — nu vet användaren varför hen ska kryssa själv.
+            */}
+            <p className="text-sm text-stone-700 dark:text-stone-300 m-0 mb-3">
+              {t(
+                'linkedInOptimizer.audit.intro',
+                'Jobin kan inte läsa din LinkedIn-profil. Gå igenom listan med profilen öppen bredvid och kryssa i det du redan har — då ser du själv vad som återstår.'
+              )}
+            </p>
+
+            {kryssade > 0 && (
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+                    {t('linkedInOptimizer.audit.yourTicks', 'Du har kryssat i')}
+                  </span>
+                  <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
+                    {kryssade} / {totaltAntalPunkter}
+                  </span>
+                </div>
+                <Progress value={profileCompleteness} className="h-3" />
               </div>
-              <Progress value={profileCompleteness} className="h-4" />
-              <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">{t('linkedInOptimizer.audit.recommendation')}</p>
-            </div>
+            )}
           </Card>
 
           {/* Audit Sections */}
@@ -424,13 +463,21 @@ function LinkedInOptimizerInner() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
                       <h3 className="font-semibold text-stone-800 dark:text-stone-100">{section.name}</h3>
-                      <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                        section.score >= 80 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
-                        section.score >= 70 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
-                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
-                      }`}>
-                        {section.score}%
-                      </span>
+                      {/*
+                        Var ett fast procentbetyg i rött/gult/grönt (85, 72, 68,
+                        45) som ingen räknat fram. Visar nu användarens egna
+                        kryss, och bara när hen börjat kryssa — en nolla i rött
+                        vid första besöket är ett omdöme, inte en uppgift.
+                      */}
+                      {section.checklist.some((i) => i.completed) && (
+                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--c-bg)] text-[var(--c-text)]">
+                          {t('linkedInOptimizer.audit.sectionTicks', {
+                            defaultValue: '{{klara}} av {{totalt}}',
+                            klara: section.checklist.filter((i) => i.completed).length,
+                            totalt: section.checklist.length,
+                          })}
+                        </span>
+                      )}
                     </div>
                   </div>
                   {expandedSection === section.name ? (
@@ -507,27 +554,31 @@ function LinkedInOptimizerInner() {
             ))}
           </div>
 
-          {/* Action Items */}
+          {/* Kvar att göra — döljs helt när allt är ikryssat. */}
+          {kryssade < totaltAntalPunkter && (
           <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
             <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              {t('linkedInOptimizer.audit.priorityActions')}
+              {t('linkedInOptimizer.audit.remaining', 'Kvar att göra')}
             </h3>
-            <ol className="space-y-2">
-              <li className="text-sm text-stone-700 dark:text-stone-300">
-                <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action1')}
-              </li>
-              <li className="text-sm text-stone-700 dark:text-stone-300">
-                <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action2')}
-              </li>
-              <li className="text-sm text-stone-700 dark:text-stone-300">
-                <strong className="text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action3')}
-              </li>
-              <li className="text-sm text-stone-700 dark:text-stone-300">
-                <strong className="text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action4')}
-              </li>
+            {/*
+              Var fyra fasta rader ("Lägg till minst 3 rekommendationer") som
+              varje användare fick, oavsett vad hen redan hade gjort — och som
+              stod kvar oförändrade även efter att hen kryssat i punkten.
+              Listan byggs nu av det användaren faktiskt lämnat okryssat.
+            */}
+            <ol className="space-y-1.5 m-0 pl-5 list-decimal">
+              {auditSections
+                .flatMap((s) => s.checklist.filter((i) => !i.completed).map((i) => ({ s, i })))
+                .slice(0, 4)
+                .map(({ s, i }) => (
+                  <li key={`${s.name}-${i.item}`} className="text-sm text-stone-700 dark:text-stone-300">
+                    <span className="text-stone-500 dark:text-stone-400">{s.name}:</span> {i.item}
+                  </li>
+                ))}
             </ol>
           </Card>
+          )}
         </div>
       )}
 

@@ -25,6 +25,7 @@ import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
 import { Link, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Dumbbell } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -438,6 +439,8 @@ function ExercisesInner() {
           </Card>
         </div>
 
+        <RadgivarTips pathname="/exercises" index={0} />
+
         {/* Filter */}
         <div className="flex flex-wrap gap-2 justify-center">
           <button
@@ -621,7 +624,7 @@ function ExercisesInner() {
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
             <Trophy className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Bra jobbat!</h1>
+          <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Bra jobbat!</h2>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Du har genomfört övningen "{selectedExercise.title}"
           </p>
@@ -706,7 +709,7 @@ function ExercisesInner() {
             <selectedExercise.icon className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{selectedExercise.title}</h1>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{selectedExercise.title}</h2>
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className={`px-2 py-0.5 rounded-full text-xs ${categoryColors[selectedExercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
                 {selectedExercise.category}

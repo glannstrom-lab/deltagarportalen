@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { navHubs, getActiveHub, getVisitedFeatures } from './navigation'
 import { cn } from '@/lib/utils'
+import { avkodaSokvag } from '@/lib/sokvag'
 
 /** Sidor som föreslås för den som inte hunnit använda något än. */
 const BORJA_HAR = ['/cv', '/job-search', '/interest-guide'] as const
@@ -104,7 +105,10 @@ export function SubNav() {
         </span>
       )}
       {poster.map((p) => {
-        const aktiv = location.pathname === p.path
+        // Avkoda: `/spontanansökan` och `/nätverk` når hit procentkodade och
+        // matchade aldrig sin egen post, så undersidesraden markerade ingen
+        // aktiv sida på just de två rutterna. Uppmätt 2026-08-17.
+        const aktiv = avkodaSokvag(location.pathname) === p.path
         return (
           <Link
             key={p.path}

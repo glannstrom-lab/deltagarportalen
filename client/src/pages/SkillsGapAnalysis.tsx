@@ -35,6 +35,7 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSkillsGapWizard } from '@/components/focus/pages/FocusSkillsGapWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Skill categories with colors
 const skillColors: Record<string, string> = {
@@ -811,6 +812,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           </div>
         )}
       </Card>
+
+      <RadgivarTips pathname="/skills-gap-analysis" index={0} />
 
       {/* Dream Job Input */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">

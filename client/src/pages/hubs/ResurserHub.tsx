@@ -114,7 +114,6 @@ function ResurserHubInner() {
         icon: ExternalLink,
         title: t('resurserHub.features.externalResources.title', 'Externa resurser'),
         description: t('resurserHub.features.externalResources.description', 'Länkar till Arbetsförmedlingen och andra.'),
-        status: t('hubs.explore', 'Utforska'),
         href: '/externa-resurser',
       },
       {
@@ -133,7 +132,6 @@ function ResurserHubInner() {
         icon: Users,
         title: t('resurserHub.features.network.title', 'Nätverk'),
         description: t('resurserHub.features.network.description', 'Bygg och håll kontakt med ditt nätverk.'),
-        status: t('hubs.explore', 'Utforska'),
         href: '/nätverk',
       },
       {

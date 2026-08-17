@@ -110,7 +110,7 @@ export default function Help() {
     >
     <div className="max-w-4xl mx-auto">
       {/* Quick Links */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {quickLinkDefs.map((item) => {
           const Icon = item.icon
           return (
@@ -130,7 +130,7 @@ export default function Help() {
       </div>
 
       {/* FAQ Sections */}
-      <div className="space-y-8">
+      <div className="space-y-6">
         {faqCategoryDefs.map((category) => {
           const Icon = category.icon
           return (
@@ -162,7 +162,7 @@ export default function Help() {
       </div>
 
       {/* Contact Section */}
-      <section className="mt-10 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)] p-6">
+      <section className="mt-6 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)] p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
@@ -195,7 +195,7 @@ export default function Help() {
       </section>
 
       {/* Version Info */}
-      <div className="mt-10 text-center text-sm text-gray-600 dark:text-gray-300">
+      <div className="mt-6 text-center text-sm text-gray-600 dark:text-gray-300">
         <p>{t('helpPage.version')}</p>
       </div>
     </div>

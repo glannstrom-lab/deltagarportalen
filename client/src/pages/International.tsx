@@ -10,6 +10,7 @@ import type { Tab } from '@/components/layout/PageTabs'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusInternationalWizard } from '@/components/focus/pages/FocusInternationalWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import VisaGuideTab from './international/VisaGuideTab'
@@ -64,7 +65,7 @@ export default function InternationalPage() {
       </div>
 
       <Routes>
-        <Route path="/" element={<VisaGuideTab />} />
+        <Route path="/" element={<><VisaGuideTab /><RadgivarTips pathname="/international" index={0} /></>} />
         <Route path="/integration" element={<IntegrationTab />} />
         <Route path="/language" element={<LanguageTab />} />
         <Route path="*" element={<Navigate to="/international" replace />} />

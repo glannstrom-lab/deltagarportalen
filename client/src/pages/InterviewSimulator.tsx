@@ -14,6 +14,7 @@ import { FocusInterviewWizard } from '@/components/focus/pages/FocusInterviewWiz
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { saveSimulatorSession } from '@/services/interviewService'
 import { IntervjuSimulatorResultSchema, safeParseAiResponse, type IntervjuResult } from '@/services/aiSchemas'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 interface FragaSvar {
   fraga: string
@@ -674,6 +675,8 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
           </div>
         </Card>
 
+        <RadgivarTips pathname="/interview-simulator" index={1} />
+
         {/* Tips Section */}
         <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50">
           <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
@@ -765,9 +768,9 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
               <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+              <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
                 {t('interviewSimulator.summary.title', 'Bra jobbat!')}
-              </h1>
+              </h2>
               <p className="text-stone-600 dark:text-stone-400 mt-1">
                 {t('interviewSimulator.summary.subtitle', 'Din övning är sparad så du kan titta på den igen. Här är en snabb sammanfattning.')}
               </p>
@@ -927,7 +930,7 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
 
         <div className="relative flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100">{t('interviewSimulator.interview')} {roll}</h1>
+            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">{t('interviewSimulator.interview')} {roll}</h2>
             <p className="text-sm text-stone-600 dark:text-stone-400">{foretag || t('interviewSimulator.genericPractice')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={handleAvslutaKlick} aria-label={t('interviewSimulator.session.endInterviewAria')}>

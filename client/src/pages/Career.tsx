@@ -14,6 +14,7 @@ import { Target } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusCareerWizard } from '@/components/focus/pages/FocusCareerWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import LaborMarketTab from './career/LaborMarketTab'
@@ -79,6 +80,8 @@ export default function CareerPage() {
             {t('career.editorialSpot')}
           </p>
         </div>
+
+        <RadgivarTips pathname="/career" index={0} />
 
         <Routes>
           <Route path="/" element={<LaborMarketTab />} />

@@ -36,6 +36,7 @@ import {
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusKnowledgeBaseWizard } from '@/components/focus/pages/FocusKnowledgeBaseWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 const TopicsTab = lazy(() => import('@/components/knowledge-base/tabs/TopicsTab'))
 
@@ -172,13 +173,13 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
   const firstName = profile?.first_name
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-8">
       {/* HERO */}
       <section>
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2 tracking-tight">
           {firstName ? `Hej ${firstName}` : 'Kunskapsbank'}
         </h1>
-        <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-7 max-w-2xl">
+        <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-5 max-w-2xl">
           Hitta artiklar, guider och svar på vanliga frågor om jobbsökning. Allt som finns i portalen, sökbart.
         </p>
 
@@ -215,6 +216,8 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
           ))}
         </div>
       </section>
+
+      <RadgivarTips pathname="/knowledge-base" index={0} />
 
       {/* KATEGORI-GRID */}
       <section>

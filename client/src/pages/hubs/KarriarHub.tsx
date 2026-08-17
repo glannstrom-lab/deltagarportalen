@@ -118,7 +118,6 @@ function KarriarHubInner() {
         icon: GraduationCap,
         title: t('karriarHub.features.education.title', 'Utbildning'),
         description: t('karriarHub.features.education.description', 'Hitta utbildningar som tar dig dit du vill.'),
-        status: t('hubs.explore', 'Utforska'),
         href: '/education',
       },
     ]

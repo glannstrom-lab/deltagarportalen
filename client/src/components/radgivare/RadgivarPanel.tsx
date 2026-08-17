@@ -3,10 +3,17 @@
  *
  * Före: `CoachWidget` låg som en FAB längst ner till höger och täckte innehåll
  * på 17 av 19 verktygssidor, inklusive GDPR-kontrollerna i Inställningar
- * (fynd F25). Innehållet bakom den är inte magert — **25 sidnycklar har
- * rådgivarinnehåll, mappade från 29 routes, noll routes saknar det**: fem
- * rådgivare med tips, vanliga frågor och länkar per sida. Mycket att gömma
- * bakom en ring.
+ * (fynd F25). Innehållet bakom den är inte magert — **25 sidnycklar med
+ * rådgivarinnehåll, mappade från 29 rutter**: fem rådgivare med tips, vanliga
+ * frågor och länkar per sida. Mycket att gömma bakom en ring.
+ *
+ * Rättat 2026-08-17: den här raden påstod tidigare att *noll* rutter saknar
+ * innehåll. Uppmätt mot `navHubs[].memberPaths` saknar **tre** det — `/`,
+ * `/help` och `/nätverk`. På dem renderar panelen null, vilket är rätt
+ * beteende men värt att veta innan man felsöker en tom högerkolumn.
+ *
+ * `/nätverk` var dessutom dubbelt drabbad: den nåddes procentkodad och kunde
+ * inte matcha sin literal ens om innehållet hade funnits. Se `lib/sokvag.ts`.
  *
  * Efter: en kolumn till höger på breda skärmar, i dokumentflödet. Den täcker
  * ingenting och försvinner inte när man skrollar förbi.
@@ -88,14 +95,29 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
   )
 }
 
-/** Rådgivarkolumnen. Renderar null när sidan saknar innehåll. */
-export default function RadgivarPanel({ pathname }: { pathname: string }) {
+/**
+ * Rådgivarkolumnen. Renderar null när sidan saknar innehåll.
+ *
+ * `iKolumn` skiljer de två platserna panelen kan hamna på:
+ *
+ *   true  — egen kolumn till höger (xl+). Första rådgivaren är utfälld: med
+ *           båda kollapsade ser kolumnen tom ut, och råden är hela poängen.
+ *   false — sist i flödet, under sidans innehåll (under xl). Här är allt
+ *           kollapsat, eftersom sidan då oftast redan visat samma rådgivares
+ *           första tips infogat via `RadgivarTips`. Uppmätt på /resources vid
+ *           390 px: Daniels råd stod ordagrant två gånger på samma sida.
+ */
+export default function RadgivarPanel({
+  pathname,
+  iKolumn = true,
+}: {
+  pathname: string
+  iKolumn?: boolean
+}) {
   const { t } = useTranslation()
   const innehall = radgivareForPath(pathname)
-  // Första rådgivaren är utfälld från början. Med båda kollapsade ser panelen
-  // tom ut — man möts av två namn utan innehåll, och råden är hela poängen.
   const [oppenCoach, setOppenCoach] = useState<CoachId | null>(
-    innehall?.coachIds?.[0] ?? null
+    iKolumn ? innehall?.coachIds?.[0] ?? null : null
   )
 
   if (!innehall || innehall.coachIds.length === 0) return null
@@ -109,7 +131,11 @@ export default function RadgivarPanel({ pathname }: { pathname: string }) {
         const coach = COACHES[id]
         const c = innehall.byCoach[id]
         if (!c) return null
-        const utfalld = oppenCoach === id || innehall.coachIds.length === 1
+        // I kolumnen med bara en rådgivare finns inget att växla mellan — då
+        // står den öppen. Sist i flödet ska den däremot alltid gå att fälla
+        // ihop, även om den är ensam, annars upprepar den det infogade rådet.
+        const kanFallas = innehall.coachIds.length > 1 || !iKolumn
+        const utfalld = oppenCoach === id || !kanFallas
 
         return (
           <section
@@ -119,7 +145,7 @@ export default function RadgivarPanel({ pathname }: { pathname: string }) {
           >
             <button
               type="button"
-              onClick={() => setOppenCoach(utfalld && innehall.coachIds.length > 1 ? null : id)}
+              onClick={() => setOppenCoach(utfalld && kanFallas ? null : id)}
               aria-expanded={utfalld}
               className="w-full flex items-center gap-2.5 px-3.5 py-3 text-left hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-solid)]"
             >
@@ -132,7 +158,7 @@ export default function RadgivarPanel({ pathname }: { pathname: string }) {
                   {coach.role}
                 </span>
               </span>
-              {innehall.coachIds.length > 1 && (
+              {kanFallas && (
                 <ChevronDown
                   aria-hidden="true"
                   className={cn(

@@ -10,6 +10,7 @@ import type { Tab } from '@/components/layout/PageTabs'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusPersonalBrandWizard } from '@/components/focus/pages/FocusPersonalBrandWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab components
 import BrandAuditTab from './personal-brand/BrandAuditTab'
@@ -64,6 +65,8 @@ export default function PersonalBrandPage() {
           {t('personalBrand.editorialSpot')}
         </p>
       </div>
+
+      <RadgivarTips pathname="/personal-brand" index={0} />
 
       <Routes>
         <Route path="/" element={<BrandAuditTab />} />

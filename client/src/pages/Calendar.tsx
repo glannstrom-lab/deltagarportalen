@@ -10,6 +10,7 @@ import type { CalendarEvent, CalendarView } from '@/services/calendarData'
 import { eventTypeConfig, formatTime } from '@/services/calendarData'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Calendar as CalendarIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -390,6 +391,8 @@ function CalendarInner() {
 
           {!loading && !error && (
             <>
+              <RadgivarTips pathname="/calendar" index={0} />
+
               <CalendarHeader
                 currentDate={currentDate}
                 view={view}

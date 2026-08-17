@@ -46,6 +46,7 @@ import { useEducationSearch } from '@/hooks/useEducationSearch';
 import { useFocusMode } from '@/components/FocusModeProvider';
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell';
 import { FocusEducationWizard } from '@/components/focus/pages/FocusEducationWizard';
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
 // ============== CONSTANTS ==============
 
@@ -482,6 +483,8 @@ function EducationInner() {
           )}
         </div>
       </PageSection>
+
+      <RadgivarTips pathname="/education" index={0} />
 
       {/* Quick Actions (shown when no search) */}
       {!hasSearched && (

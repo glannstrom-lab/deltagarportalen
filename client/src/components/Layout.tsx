@@ -12,6 +12,7 @@ import { ToastContainer } from './Toast'
 import { SkipLinks } from './SkipLinks'
 import CrisisSupport from './CrisisSupport'
 import { cn } from '@/lib/utils'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
@@ -90,6 +91,9 @@ export default function Layout() {
     (pfx) => location.pathname === pfx || location.pathname.startsWith(pfx + '/')
   )
   const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen
+  // 1280 px = Tailwinds `xl`, samma brytpunkt som griden nedan använder.
+  // Hålls de två isär hamnar panelen i kolumnen men får flödets utgångsläge.
+  const radgivarKolumn = useMediaQuery('(min-width: 1280px)')
 
   return (
     <>
@@ -150,7 +154,15 @@ export default function Layout() {
                 {/* Rådgivaren till höger på breda skärmar. Under xl finns
                     inte plats för en tredje kolumn — där renderas panelen
                     sist i flödet i stället, alltså efter sidans innehåll,
-                    aldrig ovanpå det. */}
+                    aldrig ovanpå det.
+
+                    `iKolumn` säger vilken av de två platserna det blev. I
+                    kolumnen står första rådgivaren utfälld; sist i flödet är
+                    allt hopfällt, eftersom sidan då redan visat samma
+                    rådgivares första tips infogat. Utan skillnaden stod
+                    Daniels råd ordagrant två gånger på /resources vid 390 px.
+                    CSS räcker inte — det är komponentens utgångsläge som
+                    skiljer, inte dess utseende. */}
                 <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
                   <div className="min-w-0">
                     <Outlet />
@@ -158,7 +170,7 @@ export default function Layout() {
                   {visaRadgivare && (
                     <div className="mt-6 xl:mt-0" data-focus-chrome="radgivare">
                       <Suspense fallback={null}>
-                        <RadgivarPanel pathname={location.pathname} />
+                        <RadgivarPanel pathname={location.pathname} iKolumn={radgivarKolumn} />
                       </Suspense>
                     </div>
                   )}

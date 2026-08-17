@@ -11,6 +11,7 @@ import { Compass } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusInterestGuideWizard } from '@/components/focus/pages/FocusInterestGuideWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Lazy load tab components
 const TestTab = lazy(() => import('./interest-guide/TestTab'))
@@ -60,6 +61,8 @@ export default function InterestGuide() {
         domain="coaching"
         className="max-w-7xl mx-auto"
 >
+        <RadgivarTips pathname="/interest-guide" index={0} />
+
         <Suspense fallback={<TabLoading />}>
           <Routes>
             <Route index element={<TestTab />} />

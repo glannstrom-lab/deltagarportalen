@@ -9,6 +9,7 @@ import { type Tab, type PageStat } from './PageTabs'
 // Steg 5 (2026-08-17): hjälten ersatt av en sidoskena. Se SidRail.tsx för
 // skälet — hjälten tog ~180 px överst på 37 sidor, ovanpå navigationens 82.
 import SidRail, { FlikRad } from './SidRail'
+import SidRailStats from './SidRailStats'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
@@ -100,18 +101,7 @@ export function PageLayout({
               {(actions || (stats && stats.length > 0)) && (
                 <div className="space-y-3">
                   {stats && stats.length > 0 && (
-                    <dl className="m-0 space-y-1.5 px-3">
-                      {stats.map((st) => (
-                        <div key={st.label} className="flex items-baseline gap-2">
-                          <dt className="text-[11px] text-stone-500 dark:text-stone-400 m-0">
-                            {st.label}
-                          </dt>
-                          <dd className="ml-auto text-[13px] font-semibold tabular-nums text-stone-900 dark:text-stone-100 m-0">
-                            {st.value}
-                          </dd>
-                        </div>
-                      ))}
-                    </dl>
+                    <SidRailStats stats={stats} layout="rail" />
                   )}
                   {actions}
                 </div>
@@ -124,17 +114,35 @@ export function PageLayout({
           {/* Mobil: flikarna som scrollande rad, precis som förut. */}
           {visaSkena && <FlikRad tabs={shouldShowTabs ? tabs : undefined} />}
 
-          {/* Mobil: rubriken behöver fortfarande stå någonstans. */}
-          {visaSkena && title && (
+          {/* Mobil: rubriken behöver fortfarande stå någonstans.
+
+              Och `actions`/`stats` med den. Skenan är `hidden lg:block`, så
+              en första version av steg 5 renderade dem bara på desktop —
+              PageHero visade dem på alla bredder, så fem sidors knappar
+              (Resurser, Kalender, Ansökningar, CV, hubbhistoriken) slutade
+              tyst att finnas på telefon. Upptäckt vid genomgången samma dag,
+              innan något nådde prod. En knapp som försvinner under en
+              brytpunkt är inte en layoutdetalj — den är en funktion som
+              saknas för den som bara har en telefon, vilket är många i den
+              här målgruppen. */}
+          {visaSkena && (title || actions || (stats && stats.length > 0)) && (
             <div className="lg:hidden mb-3">
-              <h1 className="text-[20px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
-                {title}
-              </h1>
-              {(subtitle || description) && (
+              {title && (
+                <h1 className="text-[20px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
+                  {title}
+                </h1>
+              )}
+              {title && (subtitle || description) && (
                 <p className="mt-0.5 text-[13px] text-stone-600 dark:text-stone-400 m-0">
                   {subtitle || description}
                 </p>
               )}
+              {stats && stats.length > 0 && (
+                <div className="mt-2 -mx-2">
+                  <SidRailStats stats={stats} layout="rad" />
+                </div>
+              )}
+              {actions && <div className="mt-2">{actions}</div>}
             </div>
           )}
 

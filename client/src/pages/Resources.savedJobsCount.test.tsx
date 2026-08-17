@@ -48,8 +48,35 @@ vi.mock('@/components/FocusModeProvider', () => ({
   useFocusMode: () => ({ isFocusMode: false, leaveWizard: vi.fn() }),
 }))
 
+/**
+ * Mocken renderar `stats`, inte bara `children`.
+ *
+ * 2026-08-17 flyttade nyckeltalen från ett kort i sidans innehåll till
+ * PageLayouts `stats`-prop (hjälten ersattes av en sidoskena). Mocken kastade
+ * propen, så B32-vakten slutade se siffran den vaktar och föll med "Unable to
+ * find an element with the text: Sparade jobb".
+ *
+ * Att lätta på assertionen hade gjort testet grönt och tandlöst. Mocken speglar
+ * i stället propen, så vakten mäter samma sak som förut — vilket tal sidan
+ * skickar som "Sparade jobb" — oberoende av var layouten väljer att rita det.
+ */
 vi.mock('@/components/layout/index', () => ({
-  PageLayout: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  PageLayout: ({
+    children,
+    stats,
+  }: {
+    children?: React.ReactNode
+    stats?: Array<{ label: string; value: string | number }>
+  }) => (
+    <div>
+      {stats?.map((st) => (
+        <div key={st.label} data-testid={`stat-${st.label}`}>
+          {st.value}
+        </div>
+      ))}
+      {children}
+    </div>
+  ),
 }))
 
 vi.mock('@/components/pdf/PDFExportButton', () => ({
@@ -84,13 +111,24 @@ describe('B32: /resources räknar bara faktiskt sparade jobb som "Sparade jobb"'
 
     await waitFor(() => expect(getAllMock).toHaveBeenCalled())
 
-    // Skalar in på KPI-kortets egen siffra i stället för att leta efter "2"/"4"
-    // i hela dokumentet — andra kort (t.ex. dokument-räknaren) kan råka visa
+    // Skalar in på just det nyckeltalet i stället för att leta efter "2"/"4"
+    // i hela dokumentet — andra tal (t.ex. dokumenträknaren) kan råka visa
     // samma siffra.
-    const label = await screen.findByText('Sparade jobb')
-    const value = label.previousElementSibling as HTMLElement
+    const value = await screen.findByTestId('stat-Sparade jobb')
     expect(value).toHaveTextContent('2')
     expect(value).not.toHaveTextContent('4')
+  })
+
+  it('negativ kontroll: vakten fäller om räkningen tar hela pipelinen', async () => {
+    // Utan den här skulle testet ovan gå grönt även om `stats` slutade skickas
+    // och elementet försvann — `findByTestId` hade då kastat, men en framtida
+    // uppmjukning ("finns elementet, hoppa över") hade inte märkts. Här står
+    // det uttryckligen vad fixturen innehåller och vad som INTE får räknas.
+    renderPage()
+    const value = await screen.findByTestId('stat-Sparade jobb')
+    expect(fixture).toHaveLength(4)
+    expect(fixture.filter((r) => ['SAVED', 'INTERESTED'].includes(r.status))).toHaveLength(2)
+    expect(value.textContent).toBe('2')
   })
 
   it('listar bara de faktiskt sparade jobben, inte skickade ansökningar', async () => {

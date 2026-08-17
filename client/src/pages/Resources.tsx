@@ -47,10 +47,12 @@ import { cvApi } from '@/services/cvApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
 import { interestApi } from '@/services/interestApi'
 import { PageLayout } from '@/components/layout/index'
+import type { PageStat } from '@/components/layout/PageTabs'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusResourcesWizard } from '@/components/focus/pages/FocusResourcesWizard'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 // NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size
 
 // Types
@@ -556,6 +558,27 @@ function ResourcesInner() {
     'ACCEPTED': { label: t('resources.status.accepted'), color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: Award },
   }
 
+  // Sidövergripande nyckeltal och knapp — går till skenans `stats`/`actions`.
+  // PageLayout renderar dem lodrätt i skenan på lg+ och som en rad ovanför
+  // innehållet på mobil, så inget behöver dubbleras här.
+  //
+  // `to` gör talen tryckbara: SidRailStats länkar vidare när fältet finns.
+  const resourceStats: PageStat[] = [
+    { label: t('resources.stats.savedJobs'), value: stillSavedJobs.length, icon: BriefcaseIcon, to: '/job-search' },
+    { label: t('resources.stats.documents'), value: cvVersions.length + coverLetters.length, icon: DocumentText },
+    { label: t('resources.stats.bookmarks'), value: bookmarkedArticles.length, icon: BookOpen, to: '/knowledge-base' },
+    { label: t('resources.stats.files'), value: uploadedFiles.length, icon: Folder },
+  ]
+  const resourceActions = (
+    <Link
+      to="/cv"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-solid)] hover:brightness-110 text-white rounded-lg text-[13px] font-medium transition-colors"
+    >
+      <Plus size={16} />
+      {t('resources.createDocument', 'Skapa nytt dokument')}
+    </Link>
+  )
+
   if (loading) {
     return (
       <PageLayout
@@ -585,66 +608,14 @@ function ResourcesInner() {
       showTabs={false}
       domain="info"
       className="max-w-7xl mx-auto"
+      actions={resourceActions}
+      stats={resourceStats}
 >
-      {/* Stats Overview — sky-pastell enligt DESIGN.md §4 (en-färg-per-sida) */}
-      <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl p-6 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <p className="text-[var(--c-text)] text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
-          <Link
-            to="/cv"
-            className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] hover:brightness-110 text-white rounded-xl font-medium transition-colors"
-          >
-            <Plus size={18} />
-            Skapa nytt dokument
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to="/job-search" className="bg-white hover:bg-stone-50 rounded-xl p-4 transition-colors border border-stone-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
-                <BriefcaseIcon className="w-5 h-5 text-[var(--c-text)]" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-stone-900">{stillSavedJobs.length}</p>
-                <p className="text-xs text-stone-600">{t('resources.stats.savedJobs')}</p>
-              </div>
-            </div>
-          </Link>
-          <div className="bg-white rounded-xl p-4 border border-stone-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
-                <DocumentText className="w-5 h-5 text-[var(--c-text)]" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-stone-900">{cvVersions.length + coverLetters.length}</p>
-                <p className="text-xs text-stone-600">{t('resources.stats.documents')}</p>
-              </div>
-            </div>
-          </div>
-          <Link to="/knowledge-base" className="bg-white hover:bg-stone-50 rounded-xl p-4 transition-colors border border-stone-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-[var(--c-text)]" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-stone-900">{bookmarkedArticles.length}</p>
-                <p className="text-xs text-stone-600">{t('resources.stats.bookmarks')}</p>
-              </div>
-            </div>
-          </Link>
-          <div className="bg-white rounded-xl p-4 border border-stone-200">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
-                <Folder className="w-5 h-5 text-[var(--c-text)]" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-stone-900">{uploadedFiles.length}</p>
-                <p className="text-xs text-stone-600">{t('resources.stats.files')}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Nyckeltalen och knappen ligger i skenans stats/actions och renderas
+          av PageLayout på alla bredder. Här stod en lg:hidden-kopia av samma
+          fyra siffror som fyllde luckan när skenan bara syntes på desktop.
+          Luckan är lagad i PageLayout, så kopian är borta i stället för att
+          stå kvar och visa samma siffror två gånger på telefon. */}
 
       {/* Tabs & Search - Modern */}
       <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 mb-6 shadow-sm">
@@ -713,6 +684,8 @@ function ResourcesInner() {
           </div>
         </div>
       </div>
+
+      <RadgivarTips pathname="/resources" index={0} />
 
       {/* Content */}
       <div className="space-y-6">

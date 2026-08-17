@@ -10,6 +10,7 @@ import {
   BookHeart, Smile, Target, Heart, Award, Flame
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab } from '@/components/diary'
 import { useDiaryStreaks } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
@@ -247,6 +248,8 @@ function DiaryInner() {
           onTabChange={handleTabChange}
           streak={currentStreak}
         />
+
+        <RadgivarTips pathname="/diary" index={0} />
 
         {/* Tab Content */}
         <div className="min-h-[400px]">

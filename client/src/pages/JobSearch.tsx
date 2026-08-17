@@ -34,6 +34,7 @@ import { MotionList } from '@/components/ui/MotionList';
 import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
 // Import tab components
 import { AlertsTab } from '@/components/jobs/AlertsTab';
@@ -708,6 +709,8 @@ function SearchTab() {
           </div>
         )}
       </div>
+
+      <RadgivarTips pathname="/job-search" index={0} />
 
       {/* Results */}
       <div>

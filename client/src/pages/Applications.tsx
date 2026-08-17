@@ -24,6 +24,7 @@ import { ApplicationsAnalytics } from '@/components/applications/ApplicationsAna
 import { AddApplicationModal } from '@/components/applications/AddApplicationModal'
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal'
 import type { Application } from '@/types/application.types'
+import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 
 // Tab definitions with i18n keys
 const applicationTabDefs = [
@@ -45,11 +46,14 @@ function PipelineWrapper({
   onEditApplication: (app: Application) => void
 }) {
   return (
-    <ApplicationsPipeline
-      onAddApplication={onAddApplication}
-      onViewApplication={onViewApplication}
-      onEditApplication={onEditApplication}
-    />
+    <>
+      <ApplicationsPipeline
+        onAddApplication={onAddApplication}
+        onViewApplication={onViewApplication}
+        onEditApplication={onEditApplication}
+      />
+      <RadgivarTips pathname="/applications" index={0} />
+    </>
   )
 }
 

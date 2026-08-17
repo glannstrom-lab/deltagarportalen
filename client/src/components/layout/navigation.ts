@@ -295,6 +295,15 @@ export const navHubs: NavHub[] = [
       '/calendar',
       '/exercises',
       '/my-consultant',
+      // Tillagd 2026-08-17. `/profile` låg i navGroups men i ingen hub, så
+      // `pageToHub` mappade den inte: uppmätt i webbläsaren markerades ingen
+      // huvudkategori som aktiv på /profile, och undersidesraden föll från
+      // hubbens 5 länkar till 3. Deltagaren klickade sig in via kortet "Din
+      // profil" på Min vardag och navigationen tappade bort var hen var.
+      // Kortet i MinVardagHub.tsx har pekat hit hela tiden — det var
+      // memberPaths som saknade sidan, precis som CLAUDE.md:s hub-tabell
+      // redan säger (Min vardag innehåller Profile). Fallgrop 2.
+      '/profile',
     ],
     items: [
       { path: '/wellness', labelKey: 'nav.wellness', icon: Smile },
@@ -302,6 +311,7 @@ export const navHubs: NavHub[] = [
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
       { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
+      { path: '/profile', labelKey: 'nav.profile', icon: Users },
     ],
   },
 ]
