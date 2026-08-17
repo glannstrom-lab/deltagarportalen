@@ -113,8 +113,17 @@ export const COACHES: Record<CoachId, Coach> = {
 // ===========================================================================
 // HJÄLP-LÄNKAR
 // ===========================================================================
-// AI-team-länken kan ta en `coach`-parameter för att förvälja motsvarande agent
-// — Jobin har redan AI-team-funktionen och vi vill inte bygga två parallella.
+// AI-team-länken bär en `coach`-parameter — men **den gör ingenting** (verifierat
+// 2026-08-17). `pages/AITeam.tsx` anropar aldrig `useSearchParams()`, och
+// `useSuggestedAgent` väljer agent utifrån senast besökta rutt i stället.
+// Även om parametern lästes skulle den inte matcha: `CoachId` här är
+// 'jobbcoach' | 'mentalcoach' | … medan `AgentId` i AgentSelector.tsx är
+// 'arbetskonsulent' | 'motivationscoach' | … — två av fem id:n saknar motpart.
+//
+// Länken tar dig alltså rätt, men löftet att du fortsätter med SAMMA rådgivare
+// infrias inte: klickar du från Mona kan du landa hos någon annan utan
+// förklaring. Kommentaren beskrev tidigare avsikten som om den vore byggd.
+// Att koppla ihop id:na är ett eget beslut — se ROADMAP DS8.
 function aiTeam(coach: CoachId): CoachLink {
   return { label: 'Fråga djupare i AI-team', href: `/ai-team?coach=${coach}` }
 }
@@ -183,8 +192,8 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
             answer: '2-5 är lagom. Lägg det yrke du helst vill ha överst (prio 1). Bonus om du väljer från listan (med grön bock) — då matchas yrket exakt i AF:s system. Fritext fungerar också men är mindre precis.',
           },
           {
-            question: 'Vad gör fältet "anpassningar"?',
-            answer: 'Information du och din konsulent har om vad du behöver för att jobb ska funka — kortare pass, tysta rum, bildstöd osv. Detta delas inte med arbetsgivare automatiskt, men det är underlag för konsulent-stöd och rapporter till AF.',
+            question: 'Vad gör sektionen "Hur Jag Jobbar Bäst"?',
+            answer: 'Det heter "Hur Jag Jobbar Bäst" i din profil — vad du behöver för att ett jobb ska funka: kortare pass, tysta rum, bildstöd osv. Just nu är det bara du som ser det. Varken arbetsgivare, din konsulent eller AF får det automatiskt. Vill du att din konsulent ska känna till något av det, berätta det direkt för dem.',
           },
         ],
         links: [
@@ -195,7 +204,16 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       digitalcoach: {
         tips: [
           'Allt sparas automatiskt — du behöver inte trycka på en spara-knapp. Grön bock = sparat i molnet.',
-          'Importera CV från fil för att snabbt fylla i profilen — vi extraherar fält automatiskt.',
+          // Rättat 2026-08-17. Rådet löd tidigare: "Importera CV från fil för
+          // att snabbt fylla i profilen — vi extraherar fält automatiskt."
+          // Den funktionen finns inte. `DocumentsSection.tsx` laddar upp och
+          // lagrar filen (accept=".pdf,.doc,.docx,…"), men ingenting läser
+          // innehållet, och `/cv` — dit länken nedan pekade — har ingen
+          // importknapp alls. Deltagaren följde rådet, hittade inget och fick
+          // anta att hen gjort fel. Att bygga importen är ett eget beslut
+          // (önskad av Mikael 2026-08-17); tills dess ska rådet beskriva det
+          // som faktiskt går att göra.
+          'Har du ett gammalt CV i en fil kan du lägga upp det under Dokument, så har du det nära till hands när du fyller i. Fälten får du skriva in själv.',
           'Profilstatus-mätaren visar vad som saknas — klicka på "Nästa steg" för att gå direkt dit.',
         ],
         faqs: [
@@ -209,7 +227,9 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
           },
         ],
         links: [
-          { label: 'Importera CV-fil', href: '/cv' },
+          // Hette "Importera CV-fil" och pekade på /cv, som inte har någon
+          // sådan funktion. Pekar nu dit filen faktiskt kan läggas.
+          { label: 'Lägg upp en CV-fil', href: '/profile' },
           aiTeam('digitalcoach'),
         ],
       },
@@ -329,7 +349,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
           },
         ],
         links: [
-          { label: 'AI-uppföljning', href: '/applications' },
+          { label: 'Mina uppföljningar', href: '/applications' },
           aiTeam('jobbcoach'),
         ],
       },
@@ -366,7 +386,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       digitalcoach: {
         tips: [
           'AI-assistenten kan generera ett första utkast — sen redigerar du så det låter som dig.',
-          'Klistra in jobbannonsen i fältet "Annons" — då anpassas AI:n efter den specifika rollen.',
+          'Klistra in jobbannonsen i fältet "Jobbannons" — då anpassas AI:n efter den specifika rollen.',
           'Spara olika versioner för olika branscher — du behöver inte börja om varje gång.',
         ],
         faqs: [
@@ -393,7 +413,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         faqs: [
           {
             question: 'Vilka företag ska jag rikta in mig på?',
-            answer: 'Företag i din pendlingsräckvidd som har 10-200 anställda växer mest och har lättast att anställa "fel" person de senare formar. Stora företag har strikta processer; små företag har inget HR. 50 medarbetare = bra sweet spot.',
+            answer: 'Företag i din pendlingsräckvidd som varken är jättestora eller allra minst är oftast lättast att nå: de största har stela processer, de minsta har ingen som tar hand om ansökningar. Någon exakt bästa storlek har vi inte — men det är där du har störst chans att nå en människa.',
           },
         ],
         links: [aiTeam('jobbcoach')],
@@ -646,16 +666,16 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         tips: [
           'Tema-byte (ljust/mörkt) är personligt — välj det som inte stressar ögonen.',
           'Notiser kan du stänga av per kategori — du missar inte något viktigt om du stänger marknadsföring.',
-          'Sätt språket först — det styr hur AI:n svarar dig.',
+          'Språkvalet sitter uppe i toppmenyn, inte på den här sidan — byt där om du vill att appen och AI:n ska svara på ett annat språk.',
         ],
         faqs: [
           {
             question: 'Var slår jag av/på coach-tipsen?',
-            answer: 'I sektionen "Gränssnitt och visning" på den här sidan finns toggle "Visa coach-tips". Du kan slå av om du upplever det som visuellt brus — alla tips finns kvar i AI-team om du vill nå dem manuellt.',
+            answer: 'I sektionen "Utseende" på den här sidan finns toggle "Visa coach-tips". Du kan slå av om du upplever det som visuellt brus — alla tips finns kvar i AI-team om du vill nå dem manuellt.',
           },
           {
             question: 'Hur tar jag bort mitt konto?',
-            answer: 'Längst ned på Settings-sidan finns "Radera konto". Vi raderar all din data inom 30 dagar (GDPR). Vill du bara pausa — logga ut och slå av notiser så ligger kontot vilande.',
+            answer: 'Under fliken Integritet, längst ned, finns "Radera konto". Raderingen sker 14 dagar senare — så länge hinner du ångra dig, sen är allt borta permanent. Vill du bara pausa — logga ut och slå av notiser så ligger kontot vilande.',
           },
         ],
         links: [aiTeam('digitalcoach')],
@@ -676,7 +696,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         faqs: [
           {
             question: 'Vem ser min dagbok?',
-            answer: 'Bara du. Inte din konsulent, inte AF, inte Jobin. Dagboken är 100% privat och krypterad. Du KAN välja att dela enskilda anteckningar med din konsulent (via Quick Notes-funktionen) men det är aktivt val.',
+            answer: 'Bara du. Inte din konsulent, inte AF, inte Jobin. Dagboken lämnar aldrig ditt konto, oavsett vad du skriver här. Vill du berätta något härifrån för din konsulent får du göra det själv — i ett möte eller ett meddelande. Det finns ingen knapp som delar.',
           },
         ],
         links: [
@@ -746,7 +766,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       jobbcoach: {
         tips: [
           'Boka in dedikerad "jobbsöks-tid" 2-3 gånger/vecka. Om det inte står i kalendern händer det inte.',
-          'Sync med Google/Outlook gör att möten dyker upp överallt — slipper du dubbel-bokningar.',
+          'Kalendern här står för sig själv — den synkar inte mot Google eller Outlook. Har du dina möten där också får du lägga in dem på båda ställena.',
         ],
       },
     },
@@ -806,8 +826,8 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       },
       digitalcoach: {
         tips: [
-          'Läsförloppet längst ned visar hur långt du kommit.',
-          'Du kan exportera vissa artiklar som PDF för utskrift.',
+          'Den tunna linjen högst upp fylls i medan du läser, så du ser hur långt du kommit.',
+          'Vill du ha en artikel på papper använder du webbläsarens utskrift (Ctrl+P) — vi har ingen egen exportknapp.',
         ],
       },
     },

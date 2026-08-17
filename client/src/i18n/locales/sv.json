@@ -7146,8 +7146,8 @@
         "description": "Nätverka smart"
       },
       "audit": {
-        "label": "Profilgranskning",
-        "description": "Granska din profil"
+        "label": "Checklista",
+        "description": "Gå igenom din profil punkt för punkt"
       }
     },
     "headline": {
@@ -7221,7 +7221,12 @@
       "action2": "Skriv om din About-sektion med en engagerande hook",
       "action3": "Uppdatera erfarenhetsbeskrivningar med mätbara resultat",
       "action4": "Lägg till nyckelkompetenser i din headline",
-      "startAudit": "Starta profilgranskning"
+      "startAudit": "Öppna checklistan",
+          "checklistHeading": "Checklista för din LinkedIn-profil",
+          "intro": "Jobin kan inte läsa din LinkedIn-profil. Gå igenom listan med profilen öppen bredvid och kryssa i det du redan har — då ser du själv vad som återstår.",
+          "yourTicks": "Du har kryssat i",
+          "sectionTicks": "{{klara}} av {{totalt}}",
+          "remaining": "Kvar att göra"
     }
   },
   "careerPlan": {

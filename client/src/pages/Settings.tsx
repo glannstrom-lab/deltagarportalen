@@ -1128,7 +1128,10 @@ function AppearanceSettings() {
         <Card variant="flat" padding="sm">
           <Toggle
             label="Visa coach-tips"
-            description="En cirkel längst ner till höger där relevanta coacher (jobbcoach, mental coach, arbetsterapeut, m.fl.) ger sidkontextuella tips och vanliga frågor. Stäng av om du vill ha en renare vy."
+            // Beskrev till 2026-08-17 den flytande cirkeln i nedre hörnet, som
+            // togs bort samma dag. Inställningen är densamma — det är platsen
+            // rådgivarna visas på som är ny.
+            description="Råd från jobbcoach, mental coach, arbetsterapeut och de andra — i en kolumn till höger och infogade där de hör hemma på sidan. Stäng av om du vill ha en renare vy."
             checked={showCoachWidget}
             onChange={toggleCoachWidget}
           />

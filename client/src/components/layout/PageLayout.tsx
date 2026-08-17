@@ -8,7 +8,7 @@ import { useLocation } from 'react-router-dom'
 import { type Tab, type PageStat } from './PageTabs'
 // Steg 5 (2026-08-17): hjälten ersatt av en sidoskena. Se SidRail.tsx för
 // skälet — hjälten tog ~180 px överst på 37 sidor, ovanpå navigationens 82.
-import SidRail, { FlikRad } from './SidRail'
+import SidRail, { FlikRad, SidoflikRad, type Sidoflikar } from './SidRail'
 import SidRailStats from './SidRailStats'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
@@ -41,6 +41,20 @@ interface PageLayoutProps {
   icon?: React.ComponentType<{ className?: string }>
   /** Optional inline stat chips rendered in the header (right side) */
   stats?: PageStat[]
+  /**
+   * Flikar som lever i sidans eget tillstånd i stället för i rutten.
+   *
+   * `tabs` bygger `<Link>`; fem sidor växlar i stället avsnitt utan att rutten
+   * ändras — LinkedIn-optimeraren, Dagboken, Externa resurser och Profilen via
+   * `useState`, Resurser via `?tab=`. (Löneläget, Internationell guide och
+   * Personligt varumärke stod med i en tidigare version av den här listan men
+   * har riktiga `<Route>` och behöver den inte.) Utan den här
+   * propen blev deras flikar kvar som en vågrät rad mitt i innehållet — alltså
+   * två flikrader på samma sida, vilket är precis det omläggningen skulle bort
+   * från. Renderas identiskt med ruttflikarna, i skenan på desktop och som en
+   * scrollande rad på mobil.
+   */
+  sidoflikar?: Sidoflikar
 }
 
 export function PageLayout({
@@ -60,6 +74,7 @@ export function PageLayout({
   contentClassName,
   domain,
   stats,
+  sidoflikar,
 }: PageLayoutProps) {
   const location = useLocation()
   // Support both "tabs" and "customTabs" props for flexibility
@@ -74,7 +89,8 @@ export function PageLayout({
 
   // Skenan ritas bara när den har något att visa. En sida utan rubrik och
   // utan flikar ska inte få en tom 186px-kolumn.
-  const visaSkena = showHeader && (!!title || shouldShowTabs || !!actions || !!stats)
+  const visaSkena =
+    showHeader && (!!title || shouldShowTabs || !!actions || !!stats || !!sidoflikar)
 
   return (
     <div className={cn(
@@ -97,6 +113,7 @@ export function PageLayout({
               title={title}
               description={subtitle || description}
               tabs={shouldShowTabs ? tabs : undefined}
+              sidoflikar={sidoflikar}
             >
               {(actions || (stats && stats.length > 0)) && (
                 <div className="space-y-3">
@@ -113,6 +130,7 @@ export function PageLayout({
         <div className="min-w-0">
           {/* Mobil: flikarna som scrollande rad, precis som förut. */}
           {visaSkena && <FlikRad tabs={shouldShowTabs ? tabs : undefined} />}
+          {visaSkena && <SidoflikRad sidoflikar={sidoflikar} />}
 
           {/* Mobil: rubriken behöver fortfarande stå någonstans.
 

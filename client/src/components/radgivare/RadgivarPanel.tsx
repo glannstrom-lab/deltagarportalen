@@ -34,13 +34,14 @@
  * Ingen text är omskriven, ingen är påhittad.
  */
 
-import { useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { COACHES, type CoachId } from '@/data/coaches'
 import { radgivareForPath } from './radgivarData'
+import { useRadgivarTipsApi, useVisadeTips } from './radgivarKontext'
 
 function Avatar({ id, stor = false }: { id: CoachId; stor?: boolean }) {
   const c = COACHES[id]
@@ -68,6 +69,20 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
   const coachId = innehall?.coachIds?.[0]
   const tips = coachId ? innehall?.byCoach?.[coachId]?.tips ?? [] : []
   const rad = tips[index]
+
+  // Tala om för kolumnen att det här rådet redan är sagt, så att den inte
+  // upprepar det. Hooken ligger före den tidiga returen nedan — hookordningen
+  // måste vara densamma varje rendering.
+  //
+  // Beroendelistan är avsiktligt bara stabila värden. Ett tidigare utkast
+  // hade hela kontextobjektet här och loopade sönder sidan; se radgivarKontext.ts.
+  const tipsApi = useRadgivarTipsApi()
+  useLayoutEffect(() => {
+    if (!rad || !tipsApi) return
+    tipsApi.registrera(rad)
+    return () => tipsApi.avregistrera(rad)
+  }, [rad, tipsApi])
+
   if (!coachId || !rad) return null
 
   const coach = COACHES[coachId]
@@ -116,6 +131,7 @@ export default function RadgivarPanel({
 }) {
   const { t } = useTranslation()
   const innehall = radgivareForPath(pathname)
+  const visadeRad = useVisadeTips()
   const [oppenCoach, setOppenCoach] = useState<CoachId | null>(
     iKolumn ? innehall?.coachIds?.[0] ?? null : null
   )
@@ -131,6 +147,9 @@ export default function RadgivarPanel({
         const coach = COACHES[id]
         const c = innehall.byCoach[id]
         if (!c) return null
+        // Hoppa över råd som redan står infogade i sidans flöde — annars
+        // säger de två ytorna samma sak inom samma vy.
+        const kvarvarandeTips = c.tips.filter((tip) => !visadeRad.has(tip))
         // I kolumnen med bara en rådgivare finns inget att växla mellan — då
         // står den öppen. Sist i flödet ska den däremot alltid gå att fälla
         // ihop, även om den är ensam, annars upprepar den det infogade rådet.
@@ -171,8 +190,9 @@ export default function RadgivarPanel({
 
             {utfalld && (
               <div className="px-3.5 pb-3.5 space-y-3">
+                {kvarvarandeTips.length > 0 && (
                 <ul className="space-y-2 m-0 p-0 list-none">
-                  {c.tips.map((tip, i) => (
+                  {kvarvarandeTips.map((tip, i) => (
                     <li
                       key={i}
                       className="text-[12.5px] leading-relaxed text-stone-700 dark:text-stone-300"
@@ -181,6 +201,7 @@ export default function RadgivarPanel({
                     </li>
                   ))}
                 </ul>
+                )}
 
                 {c.faqs && c.faqs.length > 0 && (
                   <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700">

@@ -92,10 +92,99 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 - [ ] **DR7** **`Security Scan` failar på `npm audit --omit=dev --audit-level=high` — nytt sedan 12 augusti.** `extract-zip` har en symlink-path-traversal (GHSA-jmr9-qjv8-65gv, high, publicerad 2026-06-26) som når `puppeteer-core ^24.43.0` via `@puppeteer/browsers`. **`puppeteer-core` är en prod-dependency** och driver CV-PDF-genereringen i `api/cv-pdf.js`. **Inte orsakat av den här omgången:** `git diff 9b1bfb28..HEAD -- client/package.json` visar bara `scripts`-rader, och lockfilen är orörd. Varför jobbet var grönt 12 augusti och rött nu är **inte fastställt** — rådgivningen är äldre än båda körningarna, så antingen har det påverkade versionsintervallet vidgats eller så löste CI:s `npm install` en annan 24.x då. Reproducerat lokalt: `npm audit --omit=dev --audit-level=high` → exit 1. **Åtgärden är ett brytande majorlyft** (`puppeteer-core@25.8.0`) som rör CV-PDF:en — eget beslut, inte något som smygs in i en deployverifiering · S att lyfta, M att verifiera PDF-utfallet
 - **D29/DR4** Lighthouse failar som väntat. Rotorsaken är fastställd (`ci.yml:238` skickar `--collect.staticDistDir` som CLI-flagga och kringgår `.lighthouserc.js`), men fixen rör `.github/workflows/` och kräver Mikaels ja
 
+### Designomläggningen 2026-08-17 — fyra fel som gömde sig bakom hjälten
+
+Omläggningen (skiss → toppnav → Översikt A → rådgivarkolumn → hjälten bort) beskrivs
+i commit-historiken. Det som hör hemma **här** är att svepet av sidorna hittade fyra
+fel som ingen linsen letade efter. Alla fyra är åtgärdade och verifierade i drift
+(`f380dd74`).
+
+- [x] **DS1** **Hubbkorten och navigationen var oense — åt båda håll.** Söka jobb hade
+  9 länkar i naven men 7 kort: `/linkedin-optimizer` och `/international` var färdiga
+  verktyg som inte gick att nå från den hubb deltagaren skickas till. Min vardag hade
+  6 kort men 5 memberPaths: `/profile` saknades, så `pageToHub` mappade den inte —
+  uppmätt i webbläsaren markerades **ingen** huvudkategori som aktiv på /profile och
+  undersidesraden föll från 6 länkar till 3. Man klickade sig in via kortet och
+  navigationen tappade bort var man var (fallgrop 2). Båda instanserna lagade, och
+  mekanismen med dem: `pages/hubs/__tests__/hubbkort-mot-navigation.test.ts` jämför
+  listorna åt båda håll och namnger den felande sidan · 2026-08-17
+- [x] **DS2** **Svenska tecken i en sökväg slog ut både navigation och rådgivare.**
+  `/spontanansökan` och `/nätverk` når koden procentkodade (`/spontanans%C3%B6kan`)
+  medan varje jämförelse är skriven med `ö`. Uppmätt före rättningen:
+
+  | Rutt | aktivUnderside | radgivarpanel |
+  |---|---|---|
+  | `/spontanansökan` | `null` | `false` |
+  | `/nätverk` | `null` | `false` |
+  | `/salary` (kontroll) | `"Lön & Förhandling"` | `true` |
+
+  Två av tjugofem sidor tappade alltså aktiv markering **och** hela rådgivarkolumnen,
+  tyst. Samma familj som fantomtabellerna: en sökväg som inte matchar ser exakt
+  likadan ut som en sida utan innehåll. `lib/sokvag.ts` + `sokvag.test.ts` · 2026-08-17
+- [x] **DS3** **LinkedIn-granskningen var helt påhittad — värsta instansen av B31 hittills.**
+  "Profilhälsa" gav ett bokstavsbetyg A–D, "Profil ifylld 67 %", fyra delbetyg
+  (85/72/68/45) och **förikryssade rutor som påstod saker om användarens profil**
+  ("Innehåller jobbroll ✓", "Minst 3 rekommendationer ✗"). Allt hårdkodat, identiskt
+  för varje användare, ingenting mätt — sidan kan inte läsa någons LinkedIn-profil.
+  Därtill fyra fasta "prioriterade åtgärder" som stod kvar oförändrade även efter att
+  man kryssat i punkten. Skillnaden mot de tjugo instanserna från 9 augusti: det här
+  är inte ett påhittat **tal** utan påhittade **råd om användaren**, riktade till
+  människor som är här för att de behöver hjälp. Checklistan och exemplen är kvar och
+  är bra — de påstår ingenting om just din profil. Betyg, delbetyg och förikryssning
+  borta; användaren kryssar själv, det enda talet räknas ur de kryssen, och "Kvar att
+  göra" byggs av det som faktiskt står okryssat · 2026-08-17
+- [x] **DS4** **`actions` och `stats` försvann på mobil — infört och åtgärdat samma dag.**
+  Skenan som ersatte hjälten är `hidden lg:block`, så fem sidors knappar (Resurser,
+  Kalender, Ansökningar, CV, hubbhistoriken) slutade tyst att finnas på telefon;
+  PageHero visade dem på alla bredder. Två av sidsvepets agenter byggde var sin omväg
+  runt symptomet innan roten lagades — vilket är signalen värd att minnas: *när två
+  oberoende agenter kompenserar för samma sak är det skalet som är trasigt, inte
+  sidorna.* `SidRailStats` renderar båda lägena och hedrar dessutom `to`, som legat i
+  `PageStat` hela tiden utan läsare — nyckeltalen är länkar nu · 2026-08-17
+
+- [x] **DS5** **Rådgivaren lovade en funktion som inte finns.** Daniel sa på profilsidan:
+  *"Importera CV från fil för att snabbt fylla i profilen — vi extraherar fält
+  automatiskt."* `components/profile/DocumentsSection.tsx:189` laddar upp och **lagrar**
+  filen (`accept=".pdf,.doc,.docx,…"`) men läser aldrig innehållet, och `/cv` — dit
+  länken "Importera CV-fil" pekade — har ingen importknapp alls. Deltagaren följer
+  rådet, hittar inget och antar att hen gjort fel. Rådet beskriver nu det som faktiskt
+  går att göra och länken pekar dit filen kan läggas. **Kontrollerat att det inte är en
+  bredare klass:** alla 14 rådgivarlänkar pekar på rutter som finns (matchade mot
+  `App.tsx` med parametrar som jokrar, inte med `Set.has` — se lärdomen om
+  artikellänkarna). Det var texten som ljög, inte länkmålet · 2026-08-17
+- [x] **DS6** **Fliken hette "Profilgranskning" efter att granskningen tagits bort.**
+  Etiketten och knappen ("Starta profilgranskning") lovade fortfarande den mätning DS3
+  visade var påhittad. Heter nu "Checklista" respektive "Öppna checklistan", i båda
+  språkfilerna. De fem nya texterna lades samtidigt in i `sv.json` och `en.json` i
+  stället för att ligga kvar som svensk inline-fallback, vilket hade gett engelska
+  användare svensk text · 2026-08-17
+- [x] **DS7** **Rådgivaren sa samma sak två gånger på samma skärm.** Med kolumnen på
+  varje sida *och* infogade råd i innehållet renderade 17 av 20 sidor kortet med
+  `index={0}` — exakt det råd kolumnen leder med. Uppmätt på /linkedin-optimizer vid
+  1440 px stod Daniels profilbildsråd ordagrant två gånger. Båda ytorna ska finnas (det
+  var beställningen), men de ska säga olika saker: kortet registrerar sitt råd, kolumnen
+  hoppar över det. **Första försöket kraschade sidan** — hela kontextobjektet låg i
+  registreringseffektens beroendelista och gav en oändlig loop, som felgränsen fångade
+  som "Något gick fel". Uppdelat i ett stabilt API och en föränderlig mängd.
+  `radgivarDubblett.test.tsx` vaktar både dubbletten och loopen; mutationsprövad —
+  kopplar man bort filtreringen faller den med de två elementen utskrivna · 2026-08-17
+
+**Rättade påståenden i den här omgången:** `RadgivarPanel`s docstring hävdade att noll
+rutter saknar rådgivarinnehåll — uppmätt mot `memberPaths` saknar tre det (`/`, `/help`,
+`/nätverk`). `HubPage`s docstring beskrev en hjälte som inte finns längre. Och min egen
+lista över "åtta sidor med lokala flikar" var fel: tre av dem (Löneläget, Internationell
+guide, Personligt varumärke) har riktiga `<Route>` och låg redan rätt. Listan kom ur en
+grov `grep` på `activeTab|setAktivTab|PageTabs` i stället för att filerna lästes — samma
+misstag som premissregeln i CLAUDE.md finns till för att förhindra. Rätt tal är fem. Och B32-vakten
+på /resources föll när siffran flyttade in i `stats`, eftersom testets mock kastade
+propen; mocken speglar den nu i stället för att assertionen mjukas upp — mutationsprövad,
+faller på `expected '4' to be '2'` när räkningen bryts.
+
 ### Prövat och avfärdat
 
 | Hypotes | Hur den prövades | Utfall |
 |---|---|---|
+| Prods SPA-fallback bryter chunkladdning efter deploy | `/(.*)` → `/index.html` ger 200 + HTML för **vilket** `/assets/*.js` som helst (påhittat filnamn testat). Hypotesen: `RouteErrorBoundary.isChunkLoadError` matchar inte MIME-felet. Mätt med `import()` mot prod | **Föll** — Chromium ger ändå `Failed to fetch dynamically imported module`, som vakten matchar. Slarvigt men inte användarbrytande. *Bieffekt: metoden att verifiera en deploy genom att curla ett chunknamn är värdelös här — allt svarar 200* |
 | Sitemapen har döda eller saknade URL:er | Alla 180 `<loc>` + hela guidelistan curlad | **Friskförklarad** — 200 rakt igenom, noll föräldralösa |
 | Något nytt bygger på `FAQPage` efter `511febdc` | JSON-LD extraherad ur alla byggda sidor | **Nej** — bara `Article`, `BreadcrumbList`, `Organization`, `CollectionPage` |
 | De påhittade bylinesen syns för Google | `grep` i `dist/guider/` + läst `guide-template.cjs:273` | **Nej** — mallen sätter `Organization "Jobin"`. Skadan är i portalen, inte publikt |

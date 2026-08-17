@@ -192,6 +192,11 @@ function LinkedInOptimizerInner() {
     { id: 'audit', label: t('linkedInOptimizer.tabs.audit.label'), icon: Shield, beskrivning: t('linkedInOptimizer.tabs.audit.description') }
   ]
 
+  const bytTab = (id: string) => {
+    setAktivTab(id as 'headline' | 'about' | 'post' | 'connection' | 'audit')
+    setResultat('')
+  }
+
   // Bokstavsbetyget (A–D) är borttaget 2026-08-17. Det räknades ur ett
   // hårdkodat tal och satte ett omdöme på en människa utan att ha mätt något.
   // DESIGN.md §2: aldrig prestationsspråk i deltagarvyer.
@@ -202,27 +207,14 @@ function LinkedInOptimizerInner() {
       subtitle={t('linkedInOptimizer.description')}
       domain="activity"
       showTabs={false}
+      sidoflikar={{
+        poster: tabs.map((tab) => ({ id: tab.id, etikett: tab.label })),
+        aktiv: aktivTab,
+        vidVal: bytTab,
+      }}
       className="max-w-7xl mx-auto"
       contentClassName="space-y-6"
     >
-      {/* Tabs */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => { setAktivTab(tab.id as 'headline' | 'about' | 'post' | 'connection' | 'audit'); setResultat(''); }}
-            className={`p-3 rounded-xl border-2 text-left transition-all text-sm ${
-              aktivTab === tab.id
-                ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
-                : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60 bg-white dark:bg-stone-800'
-            }`}
-          >
-            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'text-stone-600 dark:text-stone-400'}`} />
-            <div className="font-medium text-stone-800 dark:text-stone-200 text-xs">{tab.label}</div>
-          </button>
-        ))}
-      </div>
-
       <RadgivarTips pathname="/linkedin-optimizer" index={0} />
 
       {/* Form or Audit */}

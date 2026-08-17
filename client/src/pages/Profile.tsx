@@ -9,14 +9,14 @@ import i18n from '@/i18n/config'
 import { Loader2, User } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { Toaster } from 'react-hot-toast'
-import type { TabId } from '@/components/profile/constants'
+import { TABS, type TabId } from '@/components/profile/constants'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusProfileWizard } from '@/components/focus/pages/FocusProfileWizard'
+import { PageLayout } from '@/components/layout/index'
 
 // Eager load critical components
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { ProfileTabs } from '@/components/profile/ProfileTabs'
 import { OnboardingModal } from '@/components/profile/OnboardingModal'
 
 // Lazy load tab sections for better initial load performance
@@ -130,7 +130,7 @@ function InitialLoader() {
 
 export default function Profile() {
   const { t, i18n } = useTranslation()
-  const { activeTab, initialLoading, loadAll } = useProfileStore()
+  const { activeTab, setActiveTab, initialLoading, loadAll } = useProfileStore()
   const { isFocusMode, leaveWizard } = useFocusMode()
 
   // Load all profile data on mount
@@ -156,42 +156,50 @@ export default function Profile() {
   }
 
   return (
-    <div key={i18n.language} className="pb-8 max-w-7xl mx-auto">
-      {/* Toast notifications */}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4000,
-          style: {
-            background: 'var(--toast-bg, #fff)',
-            color: 'var(--toast-color, #1c1917)',
-            borderRadius: '12px',
-            padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            border: '1px solid var(--toast-border, #e7e5e4)'
-          },
-          success: {
-            iconTheme: { primary: '#14b8a6', secondary: '#fff' }
-          },
-          error: {
-            iconTheme: { primary: '#ef4444', secondary: '#fff' }
-          }
-        }}
-      />
+    <PageLayout
+      className="max-w-7xl mx-auto"
+      showTabs={false}
+      sidoflikar={{
+        poster: TABS.map((tab) => ({ id: tab.id, etikett: t(tab.labelKey) })),
+        aktiv: activeTab,
+        vidVal: (id) => setActiveTab(id as TabId),
+      }}
+    >
+      <div key={i18n.language} className="pb-8">
+        {/* Toast notifications */}
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: 'var(--toast-bg, #fff)',
+              color: 'var(--toast-color, #1c1917)',
+              borderRadius: '12px',
+              padding: '12px 16px',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+              border: '1px solid var(--toast-border, #e7e5e4)'
+            },
+            success: {
+              iconTheme: { primary: '#14b8a6', secondary: '#fff' }
+            },
+            error: {
+              iconTheme: { primary: '#ef4444', secondary: '#fff' }
+            }
+          }}
+        />
 
-      {/* Onboarding modal for new users */}
-      <OnboardingModal />
+        {/* Onboarding modal for new users */}
+        <OnboardingModal />
 
-      {/* Profile header with avatar and progress */}
-      <ProfileHeader />
+        {/* Profile header with avatar and progress */}
+        <ProfileHeader />
 
-      {/* Tab navigation */}
-      <ProfileTabs />
-
-      {/* Tab content */}
-      <div className="mt-5">
-        <TabContent activeTab={activeTab} />
+        {/* Tab content — flikväljaren själv (ProfileTabs) flyttade in i
+            sidoskenan (steg 5, 2026-08-17). */}
+        <div className="mt-5">
+          <TabContent activeTab={activeTab} />
+        </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

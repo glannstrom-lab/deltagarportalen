@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useState, lazy, Suspense } from 'react'
+import { useState, useCallback, useMemo, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search
@@ -13,6 +13,7 @@ import { SkipLinks } from './SkipLinks'
 import CrisisSupport from './CrisisSupport'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { RadgivarTipsApiContext, VisadeTipsContext } from './radgivare/radgivarKontext'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
@@ -95,6 +96,26 @@ export default function Layout() {
   // Hålls de två isär hamnar panelen i kolumnen men får flödets utgångsläge.
   const radgivarKolumn = useMediaQuery('(min-width: 1280px)')
 
+  // Vilka råd står redan infogade i sidan? Kortet registrerar sitt råd,
+  // kolumnen hoppar över det. Utan detta säger de två ytorna samma mening
+  // inom samma vy — 17 av 20 sidor renderar det infogade kortet med index 0,
+  // alltså exakt det råd kolumnen leder med. Se radgivarKontext.ts.
+  const [visadeRad, setVisadeRad] = useState<ReadonlySet<string>>(() => new Set())
+  const registrera = useCallback((rad: string) => {
+    setVisadeRad((f) => (f.has(rad) ? f : new Set(f).add(rad)))
+  }, [])
+  const avregistrera = useCallback((rad: string) => {
+    setVisadeRad((f) => {
+      if (!f.has(rad)) return f
+      const n = new Set(f)
+      n.delete(rad)
+      return n
+    })
+  }, [])
+  // Måste vara stabil: den ligger i registreringseffektens beroendelista, och
+  // ett objekt som byter identitet gav en oändlig loop som kraschade sidan.
+  const tipsApi = useMemo(() => ({ registrera, avregistrera }), [registrera, avregistrera])
+
   return (
     <>
       <SkipLinks />
@@ -163,18 +184,22 @@ export default function Layout() {
                     Daniels råd ordagrant två gånger på /resources vid 390 px.
                     CSS räcker inte — det är komponentens utgångsläge som
                     skiljer, inte dess utseende. */}
-                <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
-                  <div className="min-w-0">
-                    <Outlet />
-                  </div>
-                  {visaRadgivare && (
-                    <div className="mt-6 xl:mt-0" data-focus-chrome="radgivare">
-                      <Suspense fallback={null}>
-                        <RadgivarPanel pathname={location.pathname} iKolumn={radgivarKolumn} />
-                      </Suspense>
+                <RadgivarTipsApiContext.Provider value={tipsApi}>
+                <VisadeTipsContext.Provider value={visadeRad}>
+                  <div className={cn(visaRadgivare && 'xl:grid xl:grid-cols-[minmax(0,1fr)_300px] xl:gap-6')}>
+                    <div className="min-w-0">
+                      <Outlet />
                     </div>
-                  )}
-                </div>
+                    {visaRadgivare && (
+                      <div className="mt-6 xl:mt-0" data-focus-chrome="radgivare">
+                        <Suspense fallback={null}>
+                          <RadgivarPanel pathname={location.pathname} iKolumn={radgivarKolumn} />
+                        </Suspense>
+                      </div>
+                    )}
+                  </div>
+                </VisadeTipsContext.Provider>
+                </RadgivarTipsApiContext.Provider>
               </div>
             </main>
           </div>

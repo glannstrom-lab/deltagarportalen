@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
-  BookHeart, Smile, Target, Heart, Award, Flame
+  Award, Flame
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
@@ -21,75 +21,16 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusDiaryWizard } from '@/components/focus/pages/FocusDiaryWizard'
 
-// Tab configuration - coaching domain uses purple
+// Tab configuration — flikarna själva flyttade in i sidoskenan (steg 5,
+// 2026-08-17). Etiketterna kommer fortfarande härifrån.
 const TAB_DEFS = [
-  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'purple' },
-  { id: 'mood', labelKey: 'diary.tabs.mood', icon: Smile, color: 'amber' },
-  { id: 'goals', labelKey: 'diary.tabs.goals', icon: Target, color: 'blue' },
-  { id: 'gratitude', labelKey: 'diary.tabs.gratitude', icon: Heart, color: 'rose' },
+  { id: 'journal', labelKey: 'diary.tabs.journal' },
+  { id: 'mood', labelKey: 'diary.tabs.mood' },
+  { id: 'goals', labelKey: 'diary.tabs.goals' },
+  { id: 'gratitude', labelKey: 'diary.tabs.gratitude' },
 ] as const
 
 type TabId = typeof TAB_DEFS[number]['id']
-
-function TabNavigation({
-  activeTab,
-  onTabChange,
-  streak
-}: {
-  activeTab: TabId
-  onTabChange: (tab: TabId) => void
-  streak: number
-}) {
-  const { t } = useTranslation()
-
-  return (
-    <div className="flex items-center justify-between gap-4">
-      <div className={cn(
-        "flex gap-1 p-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
-      )}>
-        {TAB_DEFS.map((tab) => {
-          const Icon = tab.icon
-          const isActive = activeTab === tab.id
-
-          return (
-            <button
-              key={tab.id}
-              onClick={() => onTabChange(tab.id)}
-              aria-label={t(tab.labelKey)}
-              aria-current={isActive ? 'true' : undefined}
-              className={cn(
-                "flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2.5 rounded-lg",
-                "font-medium text-xs sm:text-sm transition-all whitespace-nowrap",
-                "min-h-[44px]",
-                isActive
-                  ? "bg-white dark:bg-stone-800 text-gray-800 dark:text-gray-100 shadow-sm"
-                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-stone-700/50"
-              )}
-            >
-              <Icon className={cn(
-                "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'purple' && "text-purple-900 dark:text-[var(--c-solid)]",
-                isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
-                isActive && tab.color === 'blue' && "text-blue-900 dark:text-blue-400",
-                isActive && tab.color === 'rose' && "text-pink-900 dark:text-pink-400"
-              )} aria-hidden="true" />
-              <span className="hidden xs:inline sm:inline" aria-hidden="true">{t(tab.labelKey)}</span>
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Compact streak indicator */}
-      {streak > 0 && (
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]">
-          <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
-          <span className="font-bold text-orange-600 dark:text-orange-400">{streak}</span>
-          <span className="text-xs text-orange-500 dark:text-orange-400 hidden sm:inline">{t('diary.streak.days')}</span>
-        </div>
-      )}
-    </div>
-  )
-}
 
 function AchievementBanner() {
   const { t } = useTranslation()
@@ -222,6 +163,11 @@ function DiaryInner() {
       showTabs={false}
       domain="wellbeing"
       className="max-w-7xl mx-auto"
+      sidoflikar={{
+        poster: TAB_DEFS.map((tab) => ({ id: tab.id, etikett: t(tab.labelKey) })),
+        aktiv: activeTab,
+        vidVal: (id) => handleTabChange(id as TabId),
+      }}
 >
       <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
@@ -242,12 +188,15 @@ function DiaryInner() {
         {/* Achievement Banner (only for significant milestones) */}
         <AchievementBanner />
 
-        {/* Tab Navigation with streak */}
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          streak={currentStreak}
-        />
+        {/* Streak — flikarna ligger numera i sidoskenan (steg 5), den här
+            badgen är inte en flik och blir kvar i innehållet. */}
+        {currentStreak > 0 && (
+          <div className="flex items-center gap-1.5 px-3 py-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)] w-fit">
+            <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" aria-hidden="true" />
+            <span className="font-bold text-orange-600 dark:text-orange-400">{currentStreak}</span>
+            <span className="text-xs text-orange-500 dark:text-orange-400">{t('diary.streak.days')}</span>
+          </div>
+        )}
 
         <RadgivarTips pathname="/diary" index={0} />
 

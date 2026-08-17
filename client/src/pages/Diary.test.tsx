@@ -1,20 +1,53 @@
 /**
  * Diary — F21 (WCAG 4.1.2): de fyra flikknapparna (Dagbok/Mående/Mål/Tacksamhet)
- * har sin etikett i ett `<span class="hidden xs:inline sm:inline">`, som är
- * osynligt under `xs`-brytpunkten. Utan `aria-label` på själva knappen har
- * fliken inget tillgängligt namn alls på mobil (docs/portal-review-2026-08-09.md
- * fynd 4 / ROADMAP F21). jsdom har ingen viewport, så testet verifierar att
- * namnet finns i DOM-attributet — inte det visuella utfallet vid en brytpunkt.
+ * hade sin etikett i ett `<span class="hidden xs:inline sm:inline">`, osynligt
+ * under `xs`-brytpunkten. Sedan steg 5 (2026-08-17, sidoskenan ersatte hjälten)
+ * ligger flikarna i `PageLayout`s `sidoflikar`-prop i stället för i en egen
+ * flikrad i sidans innehåll — samma `SidRail`-knappar (`aria-current="true"`,
+ * inget `hidden`-span) som resten av portalen. jsdom har ingen viewport, så
+ * testet verifierar att namnet finns i DOM-attributet — inte det visuella
+ * utfallet vid en brytpunkt.
  *
- * Tunga beroenden (PageLayout, WellnessConsentGate, FocusModeProvider,
- * flikinnehållet) mockas bort — testet gäller bara flikbytarens namngivning.
+ * Tunga beroenden (WellnessConsentGate, FocusModeProvider, flikinnehållet)
+ * mockas bort. `PageLayout` mockas till att rendera `sidoflikar.poster` som
+ * riktiga knappar — annars ser testet ingen flik alls, bara en tom `<div>`,
+ * samma fälla som B32 (Resources.savedJobsCount.test.tsx) redan dokumenterar.
  */
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 
 vi.mock('@/components/layout/index', () => ({
-  PageLayout: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  PageLayout: ({
+    children,
+    sidoflikar,
+  }: {
+    children?: React.ReactNode
+    sidoflikar?: {
+      poster: Array<{ id: string; etikett: string }>
+      aktiv: string
+      vidVal: (id: string) => void
+    }
+  }) => (
+    <div>
+      {sidoflikar && (
+        <nav aria-label="Avsnitt">
+          {sidoflikar.poster.map((p) => (
+            <button
+              key={p.id}
+              type="button"
+              aria-label={p.etikett}
+              aria-current={p.id === sidoflikar.aktiv ? 'true' : undefined}
+              onClick={() => sidoflikar.vidVal(p.id)}
+            >
+              {p.etikett}
+            </button>
+          ))}
+        </nav>
+      )}
+      {children}
+    </div>
+  ),
 }))
 
 vi.mock('@/components/consent/WellnessConsentGate', () => ({

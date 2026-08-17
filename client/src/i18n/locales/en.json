@@ -7146,8 +7146,8 @@
         "description": "Network smart"
       },
       "audit": {
-        "label": "Profile Audit",
-        "description": "Review your profile"
+        "label": "Checklist",
+        "description": "Go through your profile point by point"
       }
     },
     "headline": {
@@ -7221,7 +7221,12 @@
       "action2": "Rewrite your About section with an engaging hook",
       "action3": "Update experience descriptions with measurable results",
       "action4": "Add key skills to your headline",
-      "startAudit": "Start profile audit"
+      "startAudit": "Open the checklist",
+          "checklistHeading": "Checklist for your LinkedIn profile",
+          "intro": "Jobin can't read your LinkedIn profile. Go through the list with your profile open beside it and tick what you already have — then you can see for yourself what's left.",
+          "yourTicks": "You've ticked",
+          "sectionTicks": "{{klara}} of {{totalt}}",
+          "remaining": "Left to do"
     }
   },
   "careerPlan": {

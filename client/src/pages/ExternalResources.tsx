@@ -3470,6 +3470,18 @@ function ExternalResourcesInner() {
       icon={ExternalLink}
       domain="info"
       className="max-w-7xl mx-auto space-y-6"
+      sidoflikar={
+        isSearching
+          ? undefined
+          : {
+              poster: [
+                { id: 'alla', etikett: 'Alla' },
+                ...Object.entries(mainTabs).map(([key, { label }]) => ({ id: key, etikett: label })),
+              ],
+              aktiv: activeTab ?? 'alla',
+              vidVal: (id) => setActiveTab(id === 'alla' ? null : id),
+            }
+      }
     >
       {/* Search bar */}
       <div className="relative">
@@ -3526,34 +3538,6 @@ function ExternalResourcesInner() {
               ))}
             </div>
           </section>
-
-          {/* Main tabs */}
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setActiveTab(null)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                activeTab === null
-                  ? 'bg-[var(--c-solid)] text-white'
-                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
-              }`}
-            >
-              Alla
-            </button>
-            {Object.entries(mainTabs).map(([key, { label, icon: TabIcon }]) => (
-              <button
-                key={key}
-                onClick={() => setActiveTab(key)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  activeTab === key
-                    ? 'bg-[var(--c-solid)] text-white'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
-                }`}
-              >
-                <TabIcon className="w-4 h-4" />
-                {label}
-              </button>
-            ))}
-          </div>
 
           {/* Expand/collapse controls */}
           <div className="flex items-center gap-4 text-sm">

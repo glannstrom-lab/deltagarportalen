@@ -610,6 +610,14 @@ function ResourcesInner() {
       className="max-w-7xl mx-auto"
       actions={resourceActions}
       stats={resourceStats}
+      sidoflikar={{
+        poster: tabs.map((tab) => ({
+          id: tab.id,
+          etikett: tab.count > 0 ? `${tab.label} (${tab.count})` : tab.label,
+        })),
+        aktiv: activeTab,
+        vidVal: (id) => setSearchParams({ tab: id }),
+      }}
 >
       {/* Nyckeltalen och knappen ligger i skenans stats/actions och renderas
           av PageLayout på alla bredder. Här stod en lg:hidden-kopia av samma
@@ -617,33 +625,9 @@ function ResourcesInner() {
           Luckan är lagad i PageLayout, så kopian är borta i stället för att
           stå kvar och visa samma siffror två gånger på telefon. */}
 
-      {/* Tabs & Search - Modern */}
+      {/* Search - flikarna som låg här flyttade in i sidoskenan (steg 5) */}
       <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 mb-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-          {/* Tabs */}
-          <div className="flex flex-wrap gap-1.5">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setSearchParams({ tab: tab.id })}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-[var(--c-solid)] text-white shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-700'
-                }`}
-              >
-                {tab.label}
-                {tab.count > 0 && (
-                  <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
-                  }`}>
-                    {tab.count}
-                  </span>
-                )}
-              </button>
-            ))}
-          </div>
-
+        <div className="flex items-center justify-end gap-3">
           {/* Search */}
           <div className="flex items-center gap-2">
             <div className="relative">
