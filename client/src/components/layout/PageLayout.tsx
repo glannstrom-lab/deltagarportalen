@@ -6,7 +6,9 @@
 
 import { useLocation } from 'react-router-dom'
 import { type Tab, type PageStat } from './PageTabs'
-import { PageHero } from './PageHero'
+// Steg 5 (2026-08-17): hjälten ersatt av en sidoskena. Se SidRail.tsx för
+// skälet — hjälten tog ~180 px överst på 37 sidor, ovanpå navigationens 82.
+import SidRail, { FlikRad } from './SidRail'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
@@ -48,7 +50,9 @@ export function PageLayout({
   actions,
   tabs: tabsProp,
   customTabs,
-  tabVariant = 'glass',
+  // tabVariant styrde hjältens flikutseende. Skenan har ett utseende, så
+  // propen är kvar för anropande sidor men används inte längre.
+  tabVariant: _tabVariant = 'glass',
   showTabs = true,
   showHeader = true,
   className,
@@ -67,6 +71,10 @@ export function PageLayout({
   // tokens.css mappar [data-domain] → CSS-variabler som driver --c-* per sida.
   const resolvedDomain = domain ?? getDomainForPath(location.pathname)
 
+  // Skenan ritas bara när den har något att visa. En sida utan rubrik och
+  // utan flikar ska inte få en tom 186px-kolumn.
+  const visaSkena = showHeader && (!!title || shouldShowTabs || !!actions || !!stats)
+
   return (
     <div className={cn(
       // Removed min-h-screen — Layout.tsx already provides the scrolling <main> container.
@@ -75,22 +83,65 @@ export function PageLayout({
       'page-transition',
       className
     )} data-domain={resolvedDomain}>
-      {/* Page Header — verktygssida (DESIGN.md §3 läge B) via PageHero */}
-      {showHeader && (title || shouldShowTabs) && (
-        <PageHero
-          mode="tool"
-          title={title || ''}
-          description={subtitle || description}
-          tabs={shouldShowTabs ? tabs : undefined}
-          tabVariant={tabVariant}
-          actions={actions}
-          stats={stats}
-        />
-      )}
+      {/* Steg 5: rubrik och flikar ligger i en skena till vänster i stället
+          för i en hjälte överst. PageHero är kvar i koden men anropas inte
+          härifrån längre — några sidor renderar den själva.
 
-      {/* Page Content */}
-      <div className={contentClassName}>
-        {children}
+          `actions` och `stats` låg i hjälten. De flyttar in i skenan under
+          flikarna: de hör till sidan som helhet, inte till en enskild flik. */}
+      <div className={cn(visaSkena && 'lg:grid lg:grid-cols-[186px_minmax(0,1fr)] lg:gap-6')}>
+        {visaSkena && (
+          <div className="hidden lg:block">
+            <SidRail
+              title={title}
+              description={subtitle || description}
+              tabs={shouldShowTabs ? tabs : undefined}
+            >
+              {(actions || (stats && stats.length > 0)) && (
+                <div className="space-y-3">
+                  {stats && stats.length > 0 && (
+                    <dl className="m-0 space-y-1.5 px-3">
+                      {stats.map((st) => (
+                        <div key={st.label} className="flex items-baseline gap-2">
+                          <dt className="text-[11px] text-stone-500 dark:text-stone-400 m-0">
+                            {st.label}
+                          </dt>
+                          <dd className="ml-auto text-[13px] font-semibold tabular-nums text-stone-900 dark:text-stone-100 m-0">
+                            {st.value}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  )}
+                  {actions}
+                </div>
+              )}
+            </SidRail>
+          </div>
+        )}
+
+        <div className="min-w-0">
+          {/* Mobil: flikarna som scrollande rad, precis som förut. */}
+          {visaSkena && <FlikRad tabs={shouldShowTabs ? tabs : undefined} />}
+
+          {/* Mobil: rubriken behöver fortfarande stå någonstans. */}
+          {visaSkena && title && (
+            <div className="lg:hidden mb-3">
+              <h1 className="text-[20px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
+                {title}
+              </h1>
+              {(subtitle || description) && (
+                <p className="mt-0.5 text-[13px] text-stone-600 dark:text-stone-400 m-0">
+                  {subtitle || description}
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className={contentClassName}>
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   )
