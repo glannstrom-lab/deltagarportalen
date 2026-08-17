@@ -95,7 +95,8 @@ export function SubNav() {
   return (
     <nav
       aria-label={t('nav.topnav.subPages', 'Undersidor')}
-      className="flex items-center gap-1 px-3 sm:px-4 bg-stone-100 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-700 overflow-x-auto"
+      data-nav-tat=""
+      className="flex items-center gap-1 px-3 sm:px-4 bg-stone-100 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-700 overflow-x-auto scrollbar-none"
     >
       {oversikt && (
         <span className="shrink-0 pr-2 text-[10px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
@@ -111,7 +112,7 @@ export function SubNav() {
             data-domain={p.domain}
             aria-current={aktiv ? 'page' : undefined}
             className={cn(
-              'shrink-0 flex items-center gap-1.5 px-2.5 py-1.5 my-1 rounded-md text-[13px] whitespace-nowrap',
+              'shrink-0 flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-md text-[12.5px] leading-5 whitespace-nowrap',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
                 ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-semibold shadow-sm'
@@ -151,6 +152,7 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
   return (
     <nav
       aria-label={t('nav.topnav.categories', 'Huvudkategorier')}
+      data-nav-tat=""
       className={cn(
         'flex items-center gap-1 overflow-x-auto',
         inline
@@ -169,7 +171,7 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
             className={cn(
               'shrink-0 whitespace-nowrap',
               inline
-                ? 'px-2.5 py-1.5 text-[13.5px] rounded-lg'
+                ? 'px-2.5 py-1 text-[13.5px] leading-5 rounded-lg'
                 : 'px-3 py-2.5 text-[14px] border-b-2 -mb-px',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv

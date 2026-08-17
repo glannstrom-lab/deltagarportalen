@@ -82,7 +82,7 @@ export function TopBar() {
   // Visuell ikon-yta är liten (8x8 desktop) men hela klickytan är 44x44 mobil.
   const iconButtonClass = cn(
     'min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0',
-    'w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg',
+    'w-11 h-11 sm:w-8 sm:h-8 lg:w-7 lg:h-7 flex items-center justify-center rounded-lg',
     'text-stone-500 dark:text-stone-400',
     'hover:bg-stone-100 dark:hover:bg-stone-800',
     'active:bg-stone-200 dark:active:bg-stone-700',
@@ -90,15 +90,18 @@ export function TopBar() {
   )
 
   return (
-    <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 sm:px-4 py-1.5 lg:py-1 sticky top-0 z-40">
-      <div className="flex items-center justify-between">
+    <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 sm:px-4 py-1.5 lg:py-0.5 sticky top-0 z-40">
+      {/* data-nav-tat: se undantaget i styles/mobile.css. Den globala
+          48px-touchregeln saknar @media och blåste upp logga, sökruta och
+          varje ikonknapp även med mus. */}
+      <div className="flex items-center justify-between" data-nav-tat="">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <OptimizedImage
             src="/logo-icon.svg"
             alt="Jobin"
             loading="eager"
-            className="h-6 sm:h-8 lg:h-7 w-auto object-contain"
+            className="h-6 sm:h-8 lg:h-6 w-auto object-contain"
           />
           <div className="hidden sm:block">
             <span className="text-lg font-semibold text-stone-800 dark:text-stone-100">

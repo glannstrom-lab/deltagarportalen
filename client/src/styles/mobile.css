@@ -19,6 +19,25 @@ input[type="button"],
   min-width: 48px;
 }
 
+/* Toppnavigationen med mus: 48px-regeln ovan är GLOBAL — den saknar
+   @media-villkor och gäller alltså även på desktop. Det gjorde varje
+   navlänk 48px hög oavsett padding, och de två raderna tillsammans åt
+   114px av skärmen innan något innehåll syntes (uppmätt 2026-08-17).
+
+   Undantaget gäller BARA `pointer: fine`, alltså mus och styrplatta.
+   Touch behåller 48px. 32px ligger med god marginal över WCAG 2.2 SC 2.5.8,
+   som kräver 24×24 CSS-pixlar för pekdon.
+
+   Notera att den globala regeln fortfarande blåser upp resten av appen på
+   desktop — det är ett eget fynd, inte något det här undantaget löser. */
+@media (pointer: fine) {
+  [data-nav-tat] a,
+  [data-nav-tat] button {
+    min-height: 32px;
+    min-width: 0;
+  }
+}
+
 /* CV-mallarna är dokument, inte UI — touch-target-regeln ovan får inte
    blåsa upp länkar i CV-renderingen (48px min-height gör t.ex. e-post-
    raden i Nordic 3 rader hög, i både preview och PDF-export). */
