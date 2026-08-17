@@ -20,6 +20,10 @@ import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from '.
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { SamlingarFab } from './SamlingarFab'
+// TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
+// bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
+// Hooken finns sedan tidigare och gör allt tre; den behövde bara kopplas in.
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { useSettingsStore } from '@/stores/settingsStore'
 
 // E10 (2026-07-23): CoachWidget + data/coaches.ts (~36 kB) lazy-laddas —
@@ -160,6 +164,10 @@ function MobileTopBar() {
   const { user, signOut } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
+  // TG1: fokusfälla + Escape + fokusåterställning för profilpanelen.
+  const profilPanelRef = useFocusTrap<HTMLDivElement>(isProfileOpen, {
+    onEscape: () => setIsProfileOpen(false),
+  })
 
   // På sidor som visar MobileBackButton (icke-hub-rot) måste loggan ge plats
   // för den 44px floatande knappen i övre vänstra hörnet.
@@ -242,8 +250,21 @@ function MobileTopBar() {
         />
       )}
 
-      {/* Profil-meny (vänster) */}
+      {/* Profil-meny (vänster).
+
+          TG1: panelen renderas ALLTID och flyttas bara ut ur bild med
+          `-translate-x-full`. Utanför skärmen är den fortfarande fokuserbar,
+          så tangentbordsanvändare tabbade genom fyra osynliga stopp här (och
+          ~32 till i huvudmenyn) innan de nådde sidans innehåll. `inert` tar
+          bort hela trädet ur fokusordningen OCH ur tillgänglighetsträdet när
+          den är stängd — en enda attributrad gör det villkorlig rendering
+          hade gjort, utan att tappa utglidningsanimationen. WCAG 2.4.3. */}
       <div
+        ref={profilPanelRef}
+        inert={!isProfileOpen}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('nav.profile')}
         className={cn(
           'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
@@ -314,7 +335,15 @@ function MobileTopBar() {
  * MobileMainMenu - Fullständig navigation med alla sidor grupperade
  * Synkad med Desktop Sidebar via navGroups
  */
-function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+/**
+ * Mobilens huvudmeny.
+ *
+ * Exporterad sedan TG1 (2026-08-17) enbart för att kunna testas. Panelen håller
+ * ~32 fokuserbara element och låg alltid i DOM utan `inert`; att den inte gick
+ * att rendera isolerat var en del av varför det aldrig fångades. Använd den
+ * inte utanför `Layout` — den förutsätter Layouts router- och authkontext.
+ */
+export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const { t } = useTranslation()
   const location = useLocation()
   const { profile, signOut } = useAuthStore()
@@ -336,8 +365,24 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
     )
   }
 
+  // TG1: fokusfälla + Escape + fokusåterställning. Hooken är projektets
+  // etablerade mönster (13 modaler använder den) — ingen ny mekanik införs här.
+  const menyPanelRef = useFocusTrap<HTMLDivElement>(isOpen, { onEscape: onClose })
+
   return (
     <div
+      ref={menyPanelRef}
+      /* TG1: se kommentaren vid profilpanelen. Här väger den tyngst — de tre
+         navgrupperna startar utfällda (medvetet, se `expandedGroups` ovan), så
+         panelen håller ~32 fokuserbara element. Utan `inert` var de alla
+         tabbstopp på VARJE sida i appen, inte bara i Min vardag-området som
+         planen antog.
+
+         Panelen hade redan `role="dialog" aria-modal="true"` men ingen
+         fokusfälla och ingen Escape-hantering — en dialog som utger sig för
+         att vara modal men inte är det är sämre än ingen märkning alls, för
+         skärmläsaren lovar användaren något appen inte höll. */
+      inert={!isOpen}
       className={cn(
         'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
         'transform transition-transform duration-300 ease-out',
