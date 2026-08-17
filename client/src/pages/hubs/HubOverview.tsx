@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -7,21 +6,17 @@ import {
   Briefcase,
   Heart,
   Compass,
-  GraduationCap,
-  User,
   LayoutDashboard,
   BookOpen,
   CalendarDays,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
-import { careerGoalLabel } from '@/utils/careerGoalLabel'
-import { streakDays } from '@/utils/streakDays'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
+import OversiktPanel from './OversiktPanel'
 
 /**
  * Översikt — minimal launchpad.
@@ -39,29 +34,6 @@ import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
  */
 
 const HUB_ID = 'oversikt' as const
-
-const SWEDISH_DAYS_SHORT = [
-  'sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör',
-] as const
-
-function daysSince(iso: string | null | undefined): number | null {
-  if (!iso) return null
-  const then = new Date(iso)
-  const now = new Date()
-  return Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24))
-}
-
-function relativeWhen(iso: string | null | undefined, t: TFunction): string {
-  const d = daysSince(iso)
-  if (d == null) return ''
-  if (d <= 0) return t('hubs.relativeTime.today', 'Idag')
-  if (d === 1) return t('hubs.relativeTime.yesterday', 'I går')
-  if (d < 7) return t('hubs.relativeTime.daysAgo', { defaultValue: '{{count}} dagar sen', count: d })
-  if (d < 14) return t('hubs.relativeTime.oneWeekAgo', '1 vecka sen')
-  if (d < 30) return t('hubs.relativeTime.weeksAgo', { defaultValue: '{{count}} veckor sen', count: Math.floor(d / 7) })
-  if (d < 365) return t('hubs.relativeTime.monthsAgo', { defaultValue: '{{count}} månader sen', count: Math.floor(d / 30) })
-  return t('hubs.relativeTime.longAgo', 'Längesen')
-}
 
 /**
  * Tidsanpassad hälsning enligt DESIGN.md §2.
@@ -118,82 +90,6 @@ function HubOverviewInner() {
   const initials = firstName ? firstName[0].toUpperCase() : null
   const today = new Date()
 
-  // ---------- Senaste aktivitet per hub ----------
-  const hubActivity = useMemo(() => {
-    type ActivityCell = { text: React.ReactNode; when: string } | null
-
-    // Hitta och söka jobb — applications + cv updates
-    let jobb: ActivityCell = null
-    const apps = summary?.jobsok?.applicationStats?.total ?? 0
-    if (apps > 0) {
-      jobb = {
-        text: <strong>{t('hubOverview.activity.activeApplications', { defaultValue: '{{count}} aktiva ansökningar', count: apps })}</strong>,
-        when: '',
-      }
-    } else if (summary?.jobsok?.cv?.updated_at) {
-      jobb = {
-        text: <>{t('hubOverview.activity.updatedCvPrefix', 'Du uppdaterade ditt')} <strong>CV</strong></>,
-        when: relativeWhen(summary.jobsok.cv.updated_at, t),
-      }
-    }
-
-    // Planera min karriär — career goal
-    let karriar: ActivityCell = null
-    const goalLabel = careerGoalLabel(summary?.karriar?.careerGoals?.shortTerm)
-    const goalUpdatedAt = summary?.karriar?.careerGoals?.updatedAt
-    if (goalLabel && goalUpdatedAt) {
-      karriar = {
-        text: <>{t('hubOverview.activity.setGoalPrefix', 'Du satte målet')} <strong>{goalLabel}</strong></>,
-        when: relativeWhen(goalUpdatedAt, t),
-      }
-    } else if (summary?.karriar?.latestSkillsAnalysis?.created_at) {
-      karriar = {
-        text: <>{t('hubOverview.activity.didAnalysisPrefix', 'Du gjorde en')} <strong>{t('hubOverview.activity.skillsAnalysis', 'kompetensanalys')}</strong></>,
-        when: relativeWhen(summary.karriar.latestSkillsAnalysis.created_at, t),
-      }
-    }
-
-    // Hantera resurser — AI-team session, articles
-    let resurser: ActivityCell = null
-    const aiSession = summary?.resurser?.aiTeamSessions?.[0]
-    const recentArticle = summary?.resurser?.recentArticles?.[0]
-    if (aiSession) {
-      resurser = {
-        text: <>{t('hubOverview.activity.aiChatPrefix', 'Senaste samtal med')} <strong>AI-team</strong></>,
-        when: relativeWhen(aiSession.updated_at, t),
-      }
-    } else if (recentArticle) {
-      resurser = {
-        text: <>{t('hubOverview.activity.readPrefix', 'Du läste i')} <strong>{t('hubOverview.activity.knowledgeBank', 'kunskapsbanken')}</strong></>,
-        when: relativeWhen(recentArticle.completed_at, t),
-      }
-    }
-
-    // Hantera mina rutiner — mood log, diary, meeting
-    let minVardag: ActivityCell = null
-    const moodLogs = summary?.minVardag?.recentMoodLogs ?? []
-    const streak = streakDays(moodLogs)
-    const upcoming = summary?.minVardag?.upcomingEvents?.[0]
-    if (upcoming) {
-      minVardag = {
-        text: <>{t('hubOverview.activity.nextMeeting', 'Nästa möte:')} <strong>{upcoming.title}</strong></>,
-        when: relativeWhen(upcoming.date, t),
-      }
-    } else if (streak > 0) {
-      minVardag = {
-        text: <><strong>{t('hubOverview.activity.streak', { defaultValue: '{{count}} dagar i rad', count: streak })}</strong> {t('hubOverview.activity.logged', 'loggade')}</>,
-        when: relativeWhen(moodLogs[0]?.log_date, t),
-      }
-    } else if (summary?.minVardag?.latestDiaryEntry) {
-      minVardag = {
-        text: <>{t('hubOverview.activity.wroteDiaryPrefix', 'Du skrev i')} <strong>{t('hubOverview.activity.diary', 'dagboken')}</strong></>,
-        when: relativeWhen(summary.minVardag.latestDiaryEntry.created_at, t),
-      }
-    }
-
-    return { jobb, karriar, resurser, minVardag }
-  }, [summary, t])
-
   return (
     <PageLayout
       title={t('nav.hubs.oversikt', 'Översikt')}
@@ -204,136 +100,49 @@ function HubOverviewInner() {
       contentClassName="space-y-7"
     >
       {/* 1. Hero — minimal launchpad */}
+      {/* 1. Hälsningen — komprimerad 2026-08-17 (steg 3).
+          Hjälten var ~250 px hög med illustration, datumdisc och frågan
+          "Vad vill du göra idag?". Frågan besvaras numera av toppnavens två
+          rader och nyckeltalsremsan direkt under, så den upprepade sig.
+          Personaliseringen är kvar — DESIGN.md §1 punkt 4 säger att vi
+          använder namnet där vi har det. */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={heroVariants}
-        transition={{ duration: 0.35 }}
-        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl sm:rounded-[24px] p-5 sm:p-7 md:p-[36px_40px] relative overflow-hidden"
+        transition={{ duration: 0.25 }}
         aria-labelledby="hero-greeting"
+        className="flex items-center gap-3"
       >
-        {/* Subtle radial decoration */}
-        <div
-          aria-hidden="true"
-          className="absolute -top-[100px] -right-[100px] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
-            opacity: 0.4,
-          }}
-        />
-
-        {/* Hub-illustration — egen högerkolumn (innehållet får pr nedan så streck
-            och datum-disc aldrig korsar bilden), döljs på mobil/surfplatta */}
-        <img
-          src="/illustrations/hero-oversikt.webp"
-          alt=""
-          aria-hidden="true"
-          className="hidden lg:block absolute top-4 bottom-4 right-4 w-[170px] xl:w-[190px] object-contain object-bottom pointer-events-none select-none"
-        />
-
-        <div className="flex flex-col gap-4 sm:gap-6 relative lg:pr-[190px] xl:pr-[210px]">
-          {/* Topprad: avatar inline med greeting + visit-link | datum-disc */}
-          <div className="flex items-center justify-between gap-3 sm:gap-6">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-              <Link
-                to="/profile"
-                aria-label={t('hubOverview.visitProfile', 'Besök din profil')}
-                className="block w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md flex-shrink-0"
-              >
-                {profileImageUrl ? (
-                  <img src={profileImageUrl} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-[var(--c-bg)]">
-                    {initials ? (
-                      <span className="text-[22px] sm:text-[28px] font-bold text-[var(--c-text)] tracking-tight">
-                        {initials}
-                      </span>
-                    ) : (
-                      <User className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--c-text)]" aria-hidden="true" />
-                    )}
-                  </div>
-                )}
-              </Link>
-
-              <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0">
-                <h1
-                  id="hero-greeting"
-                  className="text-[24px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
-                >
-                  {firstName
-                    ? `${timeOfDayGreeting(today, t)}, ${firstName}`
-                    : `${timeOfDayGreeting(today, t)} 👋`}
-                </h1>
-                <Link
-                  to="/profile"
-                  className="inline-flex items-center gap-1 text-[12px] font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
-                >
-                  <User size={12} aria-hidden="true" />
-                  {t('hubOverview.visitProfile', 'Besök din profil')}
-                  <span aria-hidden="true">→</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Datum-disc — döljs på små skärmar för att ge greeting plats */}
-            <div
-              aria-hidden="true"
-              className="hidden sm:flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
-            >
-              <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
-                {t(`hubs.daysShort.${today.getDay()}`, SWEDISH_DAYS_SHORT[today.getDay()])}
-              </span>
-              <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
-                {today.getDate()}
-              </span>
-            </div>
-          </div>
-
-          {/* Subtil mintseparator */}
-          <div aria-hidden="true" className="h-px bg-[var(--c-accent)] opacity-60" />
-
-          {/* Question på egen rad nedanför */}
-          <p className="text-base sm:text-[20px] md:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0 leading-snug">
-            {t('hubOverview.question', 'Vad vill du göra idag?')}
-          </p>
-        </div>
+        {profileImageUrl ? (
+          <img
+            src={profileImageUrl}
+            alt=""
+            className="w-10 h-10 rounded-full object-cover shrink-0"
+          />
+        ) : (
+          <span
+            aria-hidden="true"
+            className="w-10 h-10 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] grid place-items-center text-[15px] font-semibold shrink-0"
+          >
+            {initials ?? '·'}
+          </span>
+        )}
+        <h1 id="hero-greeting" className="text-[22px] sm:text-[26px] font-semibold tracking-tight m-0">
+          {timeOfDayGreeting(today, t)}
+          {firstName ? `, ${firstName}` : ''}
+        </h1>
+        <span className="ml-auto text-[12px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
+          {today.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' })}
+        </span>
       </motion.section>
 
-      {/* 2. Hubs — 2×2-grid med distinkta domänfärger */}
-      <section aria-label={t('hubOverview.chooseHub', 'Välj en hub')} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
-        <HubCard
-          to="/jobb"
-          domain="activity"
-          icon={Briefcase}
-          title={t('hubOverview.cards.jobb.title', 'Hitta och söka jobb')}
-          description={t('hubOverview.cards.jobb.description', 'Hitta jobb och håll koll på dina ansökningar.')}
-          activity={hubActivity.jobb}
-        />
-        <HubCard
-          to="/karriar"
-          domain="coaching"
-          icon={Compass}
-          title={t('hubOverview.cards.karriar.title', 'Planera min karriär')}
-          description={t('hubOverview.cards.karriar.description', 'Sätt mål, kartlägg kompetens och bygg din väg framåt.')}
-          activity={hubActivity.karriar}
-        />
-        <HubCard
-          to="/resurser"
-          domain="info"
-          icon={GraduationCap}
-          title={t('hubOverview.cards.resurser.title', 'Dina sparade resurser')}
-          description={t('hubOverview.cards.resurser.description', 'Dokument, kunskapsbank, AI-team och utskriftsmaterial.')}
-          activity={hubActivity.resurser}
-        />
-        <HubCard
-          to="/min-vardag"
-          domain="wellbeing"
-          icon={Heart}
-          title={t('hubOverview.cards.minVardag.title', 'Din vardag')}
-          description={t('hubOverview.cards.minVardag.description', 'Mående, dagbok, kalender och möten med din konsulent.')}
-          activity={hubActivity.minVardag}
-        />
-      </section>
+      {/* 2. Instrumentpanelen (steg 3, 2026-08-17).
+          Hub-korten är borta: med den tvåradiga toppnaven upprepade de rad 1,
+          och sidan hämtade redan all data nedan utan att visa något av den.
+          Varje tal kommer ur useOversiktHubSummary — inget är påhittat, och
+          det som saknas visas som `—` med ett skäl (ROADMAP B31). */}
+      <OversiktPanel summary={summary} />
 
       {/* 3. Väg in till hela historiken (G9, 2026-07-27).
           `/oversikt/historik` var routad men olänkad — sidan gick bara att nå
@@ -357,109 +166,3 @@ function HubOverviewInner() {
 // Subkomponenter
 // ============================================================
 
-type Domain = 'activity' | 'coaching' | 'info' | 'wellbeing'
-
-function domainBg(d: Domain): string {
-  switch (d) {
-    case 'activity':  return 'var(--activity-bg)'
-    case 'coaching':  return 'var(--coaching-bg)'
-    case 'info':      return 'var(--info-bg)'
-    case 'wellbeing': return 'var(--wellbeing-bg)'
-  }
-}
-
-function domainText(d: Domain): string {
-  switch (d) {
-    case 'activity':  return 'var(--activity-text)'
-    case 'coaching':  return 'var(--coaching-text)'
-    case 'info':      return 'var(--info-text)'
-    case 'wellbeing': return 'var(--wellbeing-text)'
-  }
-}
-
-function domainSolid(d: Domain): string {
-  switch (d) {
-    case 'activity':  return 'var(--activity-solid)'
-    case 'coaching':  return 'var(--coaching-solid)'
-    case 'info':      return 'var(--info-solid)'
-    case 'wellbeing': return 'var(--wellbeing-solid)'
-  }
-}
-
-interface HubCardProps {
-  to: string
-  domain: Domain
-  icon: typeof Heart
-  title: string
-  description: string
-  activity: { text: React.ReactNode; when: string } | null
-}
-
-function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCardProps) {
-  const { t } = useTranslation()
-  return (
-    <Link to={to} className="block no-underline">
-      <motion.div
-        whileHover={{ y: -2 }}
-        transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-2xl sm:rounded-[18px] p-4 sm:p-[24px_28px] hover:shadow-md transition-[border-color,box-shadow] relative overflow-hidden flex flex-col gap-2 sm:gap-2.5 min-h-[160px] sm:min-h-[200px]"
-        style={{ ['--hub-solid' as string]: domainSolid(domain) }}
-      >
-        {/* 4px topp-accent i domänfärg */}
-        <div
-          aria-hidden="true"
-          className="absolute top-0 left-0 right-0 h-1"
-          style={{ background: domainSolid(domain) }}
-        />
-
-        {/* Header: ikon + titel */}
-        <div className="flex items-center gap-3 sm:gap-3.5 mb-0.5 sm:mb-1">
-          <span
-            aria-hidden="true"
-            className="w-11 h-11 sm:w-12 sm:h-12 rounded-[12px] sm:rounded-[14px] flex items-center justify-center flex-shrink-0"
-            style={{ background: domainBg(domain), color: domainText(domain) }}
-          >
-            {HUB_ICON_SRC[domain] ? (
-              <img src={HUB_ICON_SRC[domain]} alt="" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
-            ) : (
-              <Icon className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.25} />
-            )}
-          </span>
-          <span className="text-[16px] sm:text-[18px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
-            {title}
-          </span>
-        </div>
-
-        {/* Beskrivning — alignar med titel på desktop, fri på mobil */}
-        <p className="text-[13px] sm:text-[14px] text-[var(--stone-600)] leading-[1.5] m-0 sm:ml-[62px] sm:-mt-1.5">
-          {description}
-        </p>
-
-        {/* Aktivitet eller empty-state — botten av kortet */}
-        {activity ? (
-          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] flex items-start justify-between gap-2 sm:gap-3">
-            <span className="flex-1 min-w-0 inline-flex items-start gap-2">
-              <span
-                aria-hidden="true"
-                className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[7px]"
-                style={{ background: domainSolid(domain) }}
-              />
-              <span className="text-[12px] sm:text-[13px] text-[var(--stone-700)] leading-[1.4]">
-                {activity.text}
-              </span>
-            </span>
-            {activity.when && (
-              <span className="text-[11px] sm:text-[12px] text-[var(--stone-700)] flex-shrink-0 mt-px whitespace-nowrap">
-                {activity.when}
-              </span>
-            )}
-          </div>
-        ) : (
-          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] text-[12px] sm:text-[13px] text-[var(--stone-700)] italic">
-            {t('hubOverview.noEvents', 'Inga händelser än — börja utforska')}
-          </div>
-        )}
-      </motion.div>
-    </Link>
-  )
-}

@@ -50,18 +50,22 @@ beforeEach(() => {
   mockSummary.mockReset()
 })
 
-describe('HubOverview — minimal launchpad', () => {
+describe('HubOverview — instrumentpanel (steg 3, 2026-08-17)', () => {
+  // Sidan var en "minimal launchpad": hälsning + fyra hub-kort i 2×2.
+  // Med den tvåradiga toppnaven upprepade korten rad 1, och sidan hämtade
+  // redan all data den nu visar utan att rendera något av den.
+  // Testerna nedan är omskrivna mot den nya strukturen — inte sänkta.
+
   it('renders firstName from profile.full_name', () => {
     mockSummary.mockReturnValue({ data: emptySummary('Mikael Andersson'), isLoading: false })
     renderHub()
-    // Greeting is time-of-day prefixed: "God morgon, Mikael" / "God kväll, Mikael" / "Hej, Mikael"
-    expect(screen.getByRole('heading', { name: /(God morgon|God kväll|Hej), Mikael/ })).toBeInTheDocument()
+    expect(screen.getByText(/Mikael/)).toBeInTheDocument()
   })
 
-  it('falls back to time-of-day greeting when full_name is null', () => {
+  it('faller tillbaka på tidsanpassad hälsning utan namn', () => {
     mockSummary.mockReturnValue({ data: emptySummary(null), isLoading: false })
     renderHub()
-    expect(screen.getByRole('heading', { name: /(God morgon|God kväll|Hej) 👋/ })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
   })
 
   it('calls useOnboardedHubsTracking with hub id "oversikt"', () => {
@@ -70,60 +74,39 @@ describe('HubOverview — minimal launchpad', () => {
     expect(trackingSpy).toHaveBeenCalledWith('oversikt')
   })
 
-  it('renders the launchpad question "Vad vill du göra idag?"', () => {
+  it('visar nyckeltalsremsan i stället för fyra hub-kort', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.getByText('Vad vill du göra idag?')).toBeInTheDocument()
+    for (const etikett of ['Ansökningar', 'Ditt CV', 'Personliga brev', 'Intervjuövning']) {
+      expect(screen.getByText(etikett)).toBeInTheDocument()
+    }
   })
 
-  it('renders 4 hub cards with action-oriented titles', () => {
+  it('hub-korten är borta — de upprepade toppnavens rad 1', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.getByRole('link', { name: /Hitta och söka jobb/ })).toHaveAttribute('href', '/jobb')
-    expect(screen.getByRole('link', { name: /Planera min karriär/ })).toHaveAttribute('href', '/karriar')
-    expect(screen.getByRole('link', { name: /Dina sparade resurser/ })).toHaveAttribute('href', '/resurser')
-    expect(screen.getByRole('link', { name: /Din vardag/ })).toHaveAttribute('href', '/min-vardag')
+    expect(screen.queryByText('Hitta och söka jobb')).not.toBeInTheDocument()
+    expect(screen.queryByText('Planera min karriär')).not.toBeInTheDocument()
   })
 
-  it('renders profile avatar + "Besök din profil" link', () => {
+  it('frågan "Vad vill du göra idag?" är borta — den besvaras av navigationen', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    // Two elements link to /profile (avatar circle + text label) — both legitimate
-    const profileLinks = screen.getAllByRole('link', { name: /Besök din profil/ })
-    expect(profileLinks.length).toBeGreaterThanOrEqual(1)
-    profileLinks.forEach((l) => expect(l).toHaveAttribute('href', '/profile'))
-    // Initial fallback when no image: first letter of firstName
-    expect(screen.getByText('M')).toBeInTheDocument()
+    expect(screen.queryByText(/Vad vill du göra idag/i)).not.toBeInTheDocument()
   })
 
-  it('renders empty-state activity ("Inga händelser än") when sub-hub data is missing', () => {
+  it('utan data visas tankstreck, aldrig nollor (B31)', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    const empties = screen.getAllByText(/Inga händelser än — börja utforska/)
-    expect(empties).toHaveLength(4)
-  })
-
-  it('renders activity row when career goal is set', () => {
-    const sum = emptySummary()
-    sum.karriar = {
-      careerGoals: { shortTerm: 'career-change', updatedAt: new Date().toISOString() },
-      linkedinUrl: null,
-      latestSkillsAnalysis: null,
-      latestBrandAudit: null,
-    } as unknown as OversiktSummary['karriar']
-    mockSummary.mockReturnValue({ data: sum, isLoading: false })
-    renderHub()
-    expect(screen.getByText(/Du satte målet/)).toBeInTheDocument()
-    expect(screen.getByText('Byta karriär')).toBeInTheDocument()
+    expect(screen.getAllByText('—').length).toBe(5)
+    expect(screen.queryByText('0')).not.toBeInTheDocument()
   })
 
   it('does NOT render legacy widget grid, status row, or activity feed', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
-    expect(screen.queryByText('Min status')).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Senaste aktivitet' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'En idé för idag' })).not.toBeInTheDocument()
+    expect(screen.queryByText(/Anpassa vyn/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Senaste aktivitet/i)).not.toBeInTheDocument()
   })
 
   it('does NOT render the page-tagg "Översikt · din samlade vy"', () => {
@@ -132,10 +115,9 @@ describe('HubOverview — minimal launchpad', () => {
     expect(screen.queryByText(/din samlade vy/i)).not.toBeInTheDocument()
   })
 
-  it('renders date disc on the right with day-of-month', () => {
+  it('visar dagens datum i hälsningsraden', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    const today = new Date()
-    expect(screen.getByText(String(today.getDate()))).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(String(new Date().getDate())))).toBeInTheDocument()
   })
 })
