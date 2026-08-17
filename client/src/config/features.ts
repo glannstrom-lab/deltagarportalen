@@ -26,10 +26,29 @@ export const MODULES = {
    * men har varken route eller navlänk.
    */
   STA: import.meta.env.VITE_STA_ENABLED === 'true',
+
+  /**
+   * Tvåradig toppnav — huvudkategorier överst, undersidor på raden under.
+   * (Steg 2 i navigationsomläggningen, beslut Mikael 2026-08-17.)
+   *
+   * Ersätter `TopBar` + `Sidebar` på desktop och lägger en undersidesrad under
+   * `MobileTopBar` på mobil. `HubBottomNav` är redan rad 1 på mobil och rörs
+   * inte.
+   *
+   * **Av som default.** Navigationen är chrome: den ritas på varje skärm, så
+   * ändringen träffar alla 25 sidor samtidigt — det går inte att göra sida för
+   * sida. Flaggan gör den atomära ändringen reversibel med en miljövariabel i
+   * stället för en revert. Samma grepp som `VITE_HUB_NAV_ENABLED` vid
+   * hub-migreringen i april.
+   */
+  TOPNAV: import.meta.env.VITE_TOPNAV_ENABLED === 'true',
 } as const
 
 /** Är STA-modulen påslagen? */
 export const isStaEnabled = (): boolean => MODULES.STA
+
+/** Är den tvåradiga toppnaven påslagen? */
+export const isTopNavEnabled = (): boolean => MODULES.TOPNAV
 
 export const AI_FEATURES = {
   /** Deep company analysis with news, culture, and trends */

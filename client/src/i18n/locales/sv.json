@@ -389,6 +389,12 @@
     "hintClose": "stäng"
   },
   "nav": {
+    "topnav": {
+      "categories": "Huvudkategorier",
+      "subPages": "Undersidor",
+      "used": "Du har använt",
+      "startHere": "Börja här"
+    },
     "dashboard": "Översikt",
     "profile": "Min profil",
     "journey": "Min Jobbresa",

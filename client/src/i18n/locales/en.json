@@ -389,6 +389,12 @@
     "hintClose": "close"
   },
   "nav": {
+    "topnav": {
+      "categories": "Main categories",
+      "subPages": "Sub-pages",
+      "used": "You have used",
+      "startHere": "Start here"
+    },
     "dashboard": "Dashboard",
     "profile": "My Profile",
     "journey": "My Job Journey",

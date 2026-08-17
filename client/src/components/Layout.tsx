@@ -24,6 +24,11 @@ import { SamlingarFab } from './SamlingarFab'
 // undersidor utan att man behöver veta vilken hub de ligger i. Fristående —
 // rör ingen layout, och fungerar lika bra före som efter toppnaven.
 import CommandPalette from './CommandPalette'
+// Steg 2: tvåradig toppnav bakom VITE_TOPNAV_ENABLED. Av som default —
+// navigationen är chrome och träffar alla 25 sidor samtidigt, så flaggan gör
+// den atomära ändringen reversibel med en miljövariabel i stället för en revert.
+import TopNav, { SubNav } from './layout/TopNav'
+import { isTopNavEnabled } from '@/config/features'
 // TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
 // bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
 // Hooken finns sedan tidigare och gör allt tre; den behövde bara kopplas in.
@@ -81,6 +86,10 @@ export default function Layout() {
   // HubBottomNav renders on mobile (hub-nav är permanent sedan 2026-07-10, C3).
   const showHubBottomNav = isMobile && showBars
 
+  // Steg 2 (2026-08-17). Läses en gång här i stället för i varje gren nedan,
+  // så att det går att se på ett ställe vad flaggan styr.
+  const topNav = isTopNavEnabled()
+
   return (
     <>
       <SkipLinks />
@@ -96,15 +105,26 @@ export default function Layout() {
         {/* Mobil TopBar med meny och profil */}
         {showBars && isMobile && <MobileTopBar />}
 
+        {/* Steg 2 — tvåradig navigation.
+            Desktop får båda raderna. Mobilen får bara rad 2: HubBottomNav ÄR
+            redan rad 1 där, så mobilanvändaren möter en mindre förändring än
+            desktopanvändaren. */}
+        {showBars && topNav && (isMobile ? <SubNav /> : <TopNav />)}
+
         {/* Main area with sidebar and content */}
         <div className="flex-1 flex">
-          {/* Desktop Sidebar — döljs i fokusläge via [data-focus-chrome] */}
-          <div className="hidden lg:block relative" data-focus-chrome="sidebar">
-            <Sidebar
-              isCollapsed={sidebarCollapsed}
-              onToggleCollapse={toggleSidebarCollapse}
-            />
-          </div>
+          {/* Desktop Sidebar — döljs i fokusläge via [data-focus-chrome].
+              Steg 2: med toppnaven på flyttar navigationen upp, och sidomenyn
+              skulle bara upprepa den. Den ligger kvar i koden bakom flaggan så
+              att en revert är en miljövariabel. */}
+          {!topNav && (
+            <div className="hidden lg:block relative" data-focus-chrome="sidebar">
+              <Sidebar
+                isCollapsed={sidebarCollapsed}
+                onToggleCollapse={toggleSidebarCollapse}
+              />
+            </div>
+          )}
 
           {/* Huvudinnehåll */}
           {/* min-w-0 + min-h-0 är kritiskt: utan dem expanderar flex-itemet
