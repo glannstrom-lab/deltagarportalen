@@ -113,7 +113,7 @@ function ApplicationsInner() {
         tabs={applicationTabs}
         tabVariant="glass"
         domain="activity"
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         actions={
           <Button onClick={() => setShowAddModal(true)} className="hidden sm:flex">
             <Plus className="w-4 h-4 mr-1" />

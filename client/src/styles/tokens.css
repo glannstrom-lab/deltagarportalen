@@ -192,3 +192,38 @@
   --header-text:      #FAFAF6;
   --header-muted:     #B5B3AB;
 }
+
+/* ===========================================================================
+   SIDANS ARBETSBREDD
+   ===========================================================================
+   Beslut Mikael 2026-08-17: "menyerna alltid fästa till vänster och höger, och
+   innehållet i mitten det som ändras vid ändringar av bredden".
+
+   Före: taket var `max-w-7xl` (1280 px) och satt fast oavsett skärm. Uppmätt i
+   webbläsaren med #main-content som referens:
+
+     1440 px skärm  →  1280 px innehåll,  160 px oanvänt  (11 %)
+     1920 px skärm  →  1280 px innehåll,  640 px oanvänt  (33 %)
+
+   En tredjedel av en bred skärm stod tom, och skenan flöt in mot mitten i
+   stället för att ligga vid kanten.
+
+   Nu: ingen begränsning på vanliga skärmar. Skenan ligger till vänster,
+   rådgivarkolumnen till höger, och mittenkolumnen är den som växer.
+
+   Taket vid 2000 px finns kvar av ett skäl som inte är estetiskt: portalen
+   används av personer med lässvårigheter, och en textrad som är 2500 px bred
+   är svår att följa tillbaka till nästa radbörjan. Ultrabreda skärmar får
+   därför en gräns — men först långt bortom den bredd någon faktiskt sitter
+   och arbetar vid. */
+.sidbredd {
+  max-width: none;
+}
+
+@media (min-width: 2000px) {
+  .sidbredd {
+    max-width: 120rem;   /* 1920 */
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

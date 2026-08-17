@@ -157,7 +157,7 @@ export default function Profile() {
 
   return (
     <PageLayout
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       showTabs={false}
       // `markering` ersätter den amber-prick `ProfileTabs` satte på fliken med
       // nästa lucka. Pricken var en naken <span> utan text och utan aria — den

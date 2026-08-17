@@ -4,11 +4,13 @@
  * Supports semantic color domains from DESIGN.md
  */
 
+import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { type Tab, type PageStat } from './PageTabs'
 // Steg 5 (2026-08-17): hjälten ersatt av en sidoskena. Se SidRail.tsx för
 // skälet — hjälten tog ~180 px överst på 37 sidor, ovanpå navigationens 82.
 import SidRail, { FlikRad, SidoflikRad, type Sidoflikar } from './SidRail'
+import { SkenSlotContext } from './skenSlot'
 import SidRailStats from './SidRailStats'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
@@ -55,6 +57,12 @@ interface PageLayoutProps {
    * scrollande rad på mobil.
    */
   sidoflikar?: Sidoflikar
+  /**
+   * Etikett över fliklistan i skenan. Sätts när en undersida också fyller
+   * skenans slot, så de två listorna går att skilja åt — CV-sidan har
+   * "Ditt CV" (stegen, ur sloten) och "CV-verktyg" (flikarna).
+   */
+  tabsEtikett?: string
 }
 
 export function PageLayout({
@@ -75,8 +83,12 @@ export function PageLayout({
   domain,
   stats,
   sidoflikar,
+  tabsEtikett,
 }: PageLayoutProps) {
   const location = useLocation()
+  // Noden en undersida kan portalera skeninnehåll till. Se skenSlot.ts —
+  // CV-byggaren är ett ruttbarn och kan inte skicka innehåll uppåt via props.
+  const [skenSlot, setSkenSlot] = useState<HTMLElement | null>(null)
   // Support both "tabs" and "customTabs" props for flexibility
   const tabs = tabsProp || customTabs || (showTabs ? getTabsForPath(location.pathname) : [])
 
@@ -114,6 +126,8 @@ export function PageLayout({
               description={subtitle || description}
               tabs={shouldShowTabs ? tabs : undefined}
               sidoflikar={sidoflikar}
+              slotRef={setSkenSlot}
+              tabsEtikett={tabsEtikett}
             >
               {(actions || (stats && stats.length > 0)) && (
                 <div className="space-y-3">
@@ -165,7 +179,9 @@ export function PageLayout({
           )}
 
           <div className={contentClassName}>
-            {children}
+            <SkenSlotContext.Provider value={skenSlot}>
+              {children}
+            </SkenSlotContext.Provider>
           </div>
         </div>
       </div>

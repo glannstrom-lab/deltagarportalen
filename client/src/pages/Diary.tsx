@@ -162,7 +162,7 @@ function DiaryInner() {
       description={t('diary.description')}
       showTabs={false}
       domain="wellbeing"
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       sidoflikar={{
         poster: TAB_DEFS.map((tab) => ({ id: tab.id, etikett: t(tab.labelKey) })),
         aktiv: activeTab,

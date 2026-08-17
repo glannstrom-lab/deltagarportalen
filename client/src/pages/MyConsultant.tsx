@@ -1020,7 +1020,7 @@ function MyConsultantInner() {
         title={t('myConsultant.title')}
         domain="wellbeing"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
       >
         <LoadingState type="dashboard" />
       </PageLayout>
@@ -1035,7 +1035,7 @@ function MyConsultantInner() {
         : t('myConsultant.subtitleNoConsultant')}
       domain="wellbeing"
       showTabs={false}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
     >
 
       {/* UX12: "ingen konsulent" och "vi kunde inte hämta" är två olika

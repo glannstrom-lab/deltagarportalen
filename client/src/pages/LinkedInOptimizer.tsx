@@ -212,7 +212,7 @@ function LinkedInOptimizerInner() {
         aktiv: aktivTab,
         vidVal: bytTab,
       }}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       contentClassName="space-y-6"
     >
       <RadgivarTips pathname="/linkedin-optimizer" index={0} />

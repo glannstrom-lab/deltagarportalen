@@ -127,7 +127,7 @@ function KnowledgeBaseInner() {
   // Filtrerad vy om URL har category eller q — återanvänd TopicsTab
   if (categoryFilter || queryFilter) {
     return (
-      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info" className="max-w-7xl mx-auto">
+      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info" className="sidbredd">
         <Suspense fallback={<TabLoader />}>
           <TopicsTab articles={articles || []} />
         </Suspense>

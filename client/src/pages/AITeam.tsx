@@ -66,7 +66,7 @@ function AITeamInner() {
       subtitle={t('aiTeam.description')}
       domain="info"
       showTabs={false}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
     >
       {/* Skip link for accessibility */}
       <a

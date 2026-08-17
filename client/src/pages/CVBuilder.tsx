@@ -1,3 +1,5 @@
+import { createPortal } from 'react-dom'
+import { useSkenSlot } from '@/components/layout/skenSlot'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/supabaseApi'
@@ -337,6 +339,9 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 // HUVUDKOMPONENT
 // ============================================
 export default function CVBuilder() {
+  // Platsen i sidoskenan att rita stegöversikten i. Null på mobil, där ingen
+  // skena finns — då renderas den inte alls, precis som förut (`hidden lg:block`).
+  const skenSlot = useSkenSlot()
   const { t, i18n } = useTranslation()
   const [step, setStep] = useState(1)
   // Steg 4 (2026-08-17): förhandsvisning och rådgivare delar högerkolumn som
@@ -1216,38 +1221,11 @@ export default function CVBuilder() {
 
   return (
     <div
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       /* UX16: plats för den fixerade knappraden PLUS mobilnavet under den.
          På desktop (lg) finns ingen rad och --bottom-nav-h är 0. */
       style={{ paddingBottom: 'calc(var(--bottom-nav-h, 0px) + 5rem)' }}
     >
-      {/* Action buttons bar — auto-save sköter molnet, ingen manuell spara-knapp.
-          CVShare borttaget 2026-05-11: route /cv/shared/:code saknas i App.tsx
-          så delningslänkar gick ingenstans. Returneras när delningsflödet är
-          komplett (cv_shares-tabellen behöver också cv_id-kolumn). */}
-      <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
-        {/* F31 (2026-08-17): knappens enda text låg i `hidden sm:inline`, så
-            under `sm` — mobil, alltså målgruppens vanligaste läge — hade den
-            noll tillgängligt namn och lästes upp som "knapp". `aria-label`
-            gäller på alla brytpunkter; ikonen döljs för uppläsning eftersom
-            etiketten nu bär betydelsen. WCAG 4.1.2. */}
-        <button
-          onClick={loadDemoData}
-          aria-label={t('cvBuilder.actions.exampleData')}
-          className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
-        >
-          <Sparkles className="w-4 h-4" aria-hidden="true" />
-          <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
-        </button>
-        <PDFExportButton
-          type="cv"
-          data={data}
-          variant="outline"
-          size="sm"
-          showPreview={false}
-        />
-      </div>
-
       {/* Cross-tab konflikt-varning. Visas när en annan flik sparat efter
           oss — då skulle våra ändringar skriva över deras vid nästa save.
           Klick på "Ladda om" hämtar in den nya versionen. */}
@@ -1341,20 +1319,22 @@ export default function CVBuilder() {
           kolumn) — det såg dåligt ut och förvirrade användaren. */}
       <div className={cn(
         'grid grid-cols-1 gap-6',
-        /* Steg 4: innehållsöversikt till vänster (CV B). Skenan visar HELA
-           CV:t och vad som är klart — tidigare såg man en sjättedel åt
-           gången och kunde aldrig överblicka vad som saknades. */
-        step < STEPS.length && 'lg:grid-cols-[190px_1fr_320px]',
+        /* Två zoner (förslag B, beslut Mikael 2026-08-17): vit arbetsyta och
+           en persikafärgad hjälpkolumn. Stegöversikten låg tidigare i en EGEN
+           vänsterkolumn här — tillsammans med sidlayoutens skena blev det två
+           vänsterkolumner och ~330 px innan innehållet började. Den
+           portaleras numera in i skenan i stället; se skenSlot.ts. */
+        step < STEPS.length && 'lg:grid-cols-[minmax(0,1fr)_300px] 2xl:grid-cols-[minmax(0,1fr)_360px]',
         step === STEPS.length && 'max-w-4xl mx-auto'
       )}>
-        {/* Innehållsöversikt */}
-        {step < STEPS.length && (
-          <nav
-            aria-label={t('cvBuilder.contentOverview', 'Innehåll i ditt CV')}
-            className="hidden lg:block"
-          >
-            <p className="px-3 pb-2 text-[10px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
-              {t('cvBuilder.contentOverview', 'Innehåll i ditt CV')}
+        {/* Innehållsöversikt — portaleras in i sidoskenan (skenSlot.ts).
+            React-trädet är oförändrat, så `setStep` och `completedSteps`
+            fungerar precis som när listan stod här. Bara den fysiska platsen
+            flyttar, så sidan slipper sin andra vänsterkolumn. */}
+        {step < STEPS.length && skenSlot && createPortal(
+          <nav aria-label={t('cvBuilder.contentOverview', 'Innehåll i ditt CV')} className="mb-3">
+            <p className="m-0 mb-1.5 px-3 text-[9.5px] font-mono uppercase tracking-[0.1em] text-stone-500 dark:text-stone-400">
+              {t('cvBuilder.yourCv', 'Ditt CV')}
             </p>
             <ul className="m-0 p-0 list-none space-y-0.5">
               {STEPS.map((st) => {
@@ -1390,11 +1370,49 @@ export default function CVBuilder() {
                 )
               })}
             </ul>
-          </nav>
+          </nav>,
+          skenSlot
         )}
 
-        {/* Left: Editor */}
-        <div className="min-w-0">
+        {/* ── Zon 1: arbetsytan ────────────────────────────────────────
+            Vit och lugn. Färgen skiljer den från hjälpkolumnen bredvid, så
+            man ser var man skriver och var man får råd utan att läsa en
+            rubrik — det var hela poängen med förslag B. Tidigare låg båda på
+            samma varmgrå botten och skildes bara av en tunn ram. */}
+        <div className="min-w-0 lg:bg-[var(--surface)] lg:dark:bg-stone-900 lg:rounded-xl lg:border lg:border-stone-200 lg:dark:border-stone-700 lg:p-6">
+          {/* Exempeldata och Exportera PDF hör till arbetsytan, inte till
+              hjälpkolumnen (beslut Mikael 2026-08-17). De låg i en rad ovanför
+              HELA griden, vilket på breda skärmar placerade dem längst till
+              höger — alltså ovanför rådgivarkolumnen, som de inte har med att
+              göra. Båda gör något med CV:t man redigerar. */}
+          {/* Åtgärder för CV:t nedanför — auto-save sköter molnet, ingen manuell spara-knapp.
+              CVShare borttaget 2026-05-11: route /cv/shared/:code saknas i App.tsx
+              så delningslänkar gick ingenstans. Returneras när delningsflödet är
+              komplett (cv_shares-tabellen behöver också cv_id-kolumn). */}
+          <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
+            {/* F31 (2026-08-17): knappens enda text låg i `hidden sm:inline`, så
+                under `sm` — mobil, alltså målgruppens vanligaste läge — hade den
+                noll tillgängligt namn och lästes upp som "knapp". `aria-label`
+                gäller på alla brytpunkter; ikonen döljs för uppläsning eftersom
+                etiketten nu bär betydelsen. WCAG 4.1.2. */}
+            <button
+              onClick={loadDemoData}
+              aria-label={t('cvBuilder.actions.exampleData')}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
+            >
+              <Sparkles className="w-4 h-4" aria-hidden="true" />
+              <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
+            </button>
+            <PDFExportButton
+              type="cv"
+              data={data}
+              variant="outline"
+              size="sm"
+              showPreview={false}
+            />
+          </div>
+
+
           <div className="min-h-[400px]">
             {renderContent()}
             {/* Ett råd, där arbetet sker */}
@@ -1435,12 +1453,12 @@ export default function CVBuilder() {
             På steg 6 (granska) finns ingen sidokolumn — A4-previewen är
             hela vyn. */}
         {step < STEPS.length && (
-          <div className="hidden lg:block">
+          <div className="hidden lg:block bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/25 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40 rounded-xl p-2.5 self-start">
             {/* Flikarna. `role=tablist` med piltangenter vore rätt för en
                 riktig flikuppsättning, men här byter de innehållet i en
                 sidopanel — två knappar med aria-pressed beskriver det
                 ärligare än ett tablist som inte beter sig som ett. */}
-            <div className="flex gap-1 mb-3 border-b border-stone-200 dark:border-stone-700">
+            <div className="flex gap-1 mb-3">
               {([
                 ['forhandsvisning', t('cvBuilder.tabs.preview', 'Förhandsvisning')],
                 ['rad', t('cvBuilder.tabs.advice', 'Råd')],
@@ -1451,11 +1469,11 @@ export default function CVBuilder() {
                   onClick={() => setHogerFlik(id)}
                   aria-pressed={hogerFlik === id}
                   className={cn(
-                    'px-3 py-2 text-[13px] -mb-px border-b-2',
-                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded-t',
+                    'px-2.5 py-1 text-[12px] rounded-md font-semibold',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                     hogerFlik === id
-                      ? 'border-[var(--c-solid)] font-semibold text-stone-900 dark:text-stone-100'
-                      : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
+                      ? 'bg-[var(--surface)] dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-sm'
+                      : 'text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-white/50 dark:hover:bg-stone-800/40'
                   )}
                 >
                   {etikett}
@@ -1467,6 +1485,46 @@ export default function CVBuilder() {
               <RadgivarPanel pathname="/cv" />
             ) : (
             <>
+            {/* Så här långt (förslag B). Talen kommer ur `completedSteps` och
+                `STEPS[].minutes` — inget är uppskattat och inget avrundas till
+                något snällare. Är ingenting klart står det inte "0 av 6", som
+                läser som ett underkänt, utan vad man kan göra i stället. */}
+            <div className="bg-[var(--surface)] dark:bg-stone-800 border border-[var(--c-accent)] dark:border-stone-700 rounded-lg px-3.5 py-3 mb-3">
+              {completedSteps.length > 0 ? (
+                <>
+                  <p className="m-0 text-[12.5px] font-semibold text-stone-900 dark:text-stone-100">
+                    {t('cvBuilder.progress.done', {
+                      defaultValue: '{{klara}} av {{totalt}} delar klara',
+                      klara: completedSteps.length,
+                      totalt: STEPS.length,
+                    })}
+                  </p>
+                  <div
+                    className="h-1 rounded-full bg-stone-200 dark:bg-stone-700 mt-2 mb-2 overflow-hidden"
+                    role="progressbar"
+                    aria-valuenow={completedSteps.length}
+                    aria-valuemin={0}
+                    aria-valuemax={STEPS.length}
+                  >
+                    <span
+                      className="block h-full bg-[var(--c-solid)]"
+                      style={{ width: `${(completedSteps.length / STEPS.length) * 100}%` }}
+                    />
+                  </div>
+                  <p className="m-0 text-[11.5px] text-stone-600 dark:text-stone-400">
+                    {t('cvBuilder.progress.left', {
+                      defaultValue: 'Ungefär {{min}} minuter kvar',
+                      min: STEPS.filter((st) => !completedSteps.includes(st.id))
+                        .reduce((n, st) => n + st.minutes, 0),
+                    })}
+                  </p>
+                </>
+              ) : (
+                <p className="m-0 text-[12px] leading-relaxed text-stone-600 dark:text-stone-400">
+                  {t('cvBuilder.progress.notStarted', 'Du har inte börjat än. Första delen tar ett par minuter — du kan avbryta när du vill, allt sparas.')}
+                </p>
+              )}
+            </div>
             <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}

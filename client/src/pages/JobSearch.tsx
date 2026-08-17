@@ -1288,7 +1288,7 @@ export default function JobSearch() {
         subtitle={t('jobSearch.subtitle')}
         tabs={jobSearchTabs}
         tabVariant="glass"
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         domain="activity"
         stats={headerStats.length > 0 ? headerStats : undefined}
       >

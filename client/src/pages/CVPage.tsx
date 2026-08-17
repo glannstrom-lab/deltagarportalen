@@ -64,10 +64,15 @@ export default function CVPage() {
       title={t('cv.title')}
       subtitle={t('cv.subtitle', 'Skapa och optimera ditt CV')}
       customTabs={cvTabs}
+      // Skenan har två listor: stegen i CV:t (portaleras in av CVBuilder under
+      // rubriken "Ditt CV") och sidans egna flikar. Utan etikett läste de som
+      // en enda lista på elva rader där de sex första var något annat än de fem
+      // sista.
+      tabsEtikett={t('cv.railTools', 'CV-verktyg')}
       tabVariant="glass"
       domain="activity"
       actions={isBuilderPage ? <SaveIndicator /> : undefined}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
     >
       <Routes>
         <Route path="/" element={<CVBuilder />} />

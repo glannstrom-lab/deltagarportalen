@@ -351,7 +351,7 @@ function ExercisesInner() {
         title={t('exercises.title')}
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
 >
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 dark:border-emerald-400"></div>
@@ -381,7 +381,7 @@ function ExercisesInner() {
         title={t('exercises.title')}
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
 >
       <div className="space-y-6">
         {/* Status indicators */}
@@ -608,7 +608,7 @@ function ExercisesInner() {
         title="Övningar"
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
 >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Back button */}
@@ -690,7 +690,7 @@ function ExercisesInner() {
       title="Övningar"
       description="Praktiska övningar för att utveckla dina jobbsökar-skills"
       showTabs={false}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
 >
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back button */}

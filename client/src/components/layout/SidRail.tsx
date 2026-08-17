@@ -67,18 +67,46 @@ interface SidRailProps {
   description?: string
   tabs?: Tab[]
   sidoflikar?: Sidoflikar
-  /** Renderas under flikarna — t.ex. CV-byggarens sektionsöversikt. */
+  /**
+   * Plats för innehåll som en UNDERSIDA vill lägga i skenan — CV-byggarens
+   * stegöversikt portaleras hit. Ligger ovanför flikarna, eftersom stegen är
+   * det man arbetar i och flikarna är vägar därifrån.
+   *
+   * Renderas alltid, även tom: portalen behöver en nod att skjuta in i, och en
+   * tom `<div>` kostar ingenting.
+   */
+  slotRef?: (nod: HTMLDivElement | null) => void
+  /** Rubrik över `tabs` när skenan har både slot-innehåll och flikar. */
+  tabsEtikett?: string
+  /** Renderas under allt annat — nyckeltal och knappar. */
   children?: React.ReactNode
 }
 
-export default function SidRail({ title, description, tabs, sidoflikar, children }: SidRailProps) {
+/** Liten gruppetikett i skenan. */
+function Grupp({ text }: { text: string }) {
+  return (
+    <p className="m-0 mb-1.5 px-3 text-[9.5px] font-mono uppercase tracking-[0.1em] text-stone-500 dark:text-stone-400">
+      {text}
+    </p>
+  )
+}
+
+export default function SidRail({
+  title,
+  description,
+  tabs,
+  sidoflikar,
+  slotRef,
+  tabsEtikett,
+  children,
+}: SidRailProps) {
   const location = useLocation()
   const [sok] = useSearchParams()
   const harFlikar = !!tabs && tabs.length > 1
   const harSidoflikar = !!sidoflikar && sidoflikar.poster.length > 1
   const nagonFlik = harFlikar || harSidoflikar
 
-  if (!title && !nagonFlik && !children) return null
+  if (!title && !nagonFlik && !children && !slotRef) return null
 
   // Sticky utan offset: navigationen är redan sticky ovanför, och en
   // top-offset här sköt ner skenan ~85 px så att den inte längre stod i linje
@@ -98,8 +126,11 @@ export default function SidRail({ title, description, tabs, sidoflikar, children
         </div>
       )}
 
+      {slotRef && <div ref={slotRef} />}
+
       {harFlikar && (
         <nav aria-label={title ? `${title} — avsnitt` : 'Avsnitt'}>
+          {tabsEtikett && <Grupp text={tabsEtikett} />}
           <ul className="m-0 p-0 list-none space-y-0.5">
             {tabs!.map((tab) => {
               const aktiv = arAktivFlik(tab, location.pathname, sok)

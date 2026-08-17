@@ -412,7 +412,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         subtitle={t('skillsGapAnalysis.description')}
         domain="coaching"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         contentClassName="pb-20"
       >
         <div className="flex items-center justify-center py-20">
@@ -435,7 +435,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         subtitle={t('skillsGapAnalysis.description')}
         domain="coaching"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         contentClassName="space-y-6 pb-20"
       >
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
@@ -467,7 +467,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         subtitle={t('skillsGapAnalysis.description')}
         domain="coaching"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         contentClassName="space-y-6 pb-20"
       >
         {/* Slutförande-hälsning (Fas 5 — success-spot) */}
@@ -723,7 +723,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
       subtitle={t('skillsGapAnalysis.description')}
       domain="coaching"
       showTabs={false}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       contentClassName="space-y-6 pb-20"
     >
       {/* Previous Analyses */}

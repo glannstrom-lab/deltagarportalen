@@ -59,7 +59,7 @@ export default function InterestGuide() {
         tabs={interestGuideTabs}
         tabVariant="glass"
         domain="coaching"
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
 >
         <RadgivarTips pathname="/interest-guide" index={0} />
 

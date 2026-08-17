@@ -52,7 +52,7 @@ export default function CoverLetterPage() {
       customTabs={coverLetterTabs}
       tabVariant="glass"
       domain="activity"
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
     >
       <Routes>
         <Route path="/" element={<><CoverLetterWrite /><RadgivarTips pathname="/cover-letter" index={0} /></>} />

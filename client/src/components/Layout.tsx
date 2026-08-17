@@ -170,7 +170,7 @@ export default function Layout() {
             >
               <div className={cn(
                 'mx-auto min-w-0',
-                isMobile ? 'max-w-full' : 'max-w-7xl'
+                isMobile ? 'max-w-full' : 'sidbredd'
               )}>
                 {/* Rådgivaren till höger på breda skärmar. Under xl finns
                     inte plats för en tredje kolumn — där renderas panelen

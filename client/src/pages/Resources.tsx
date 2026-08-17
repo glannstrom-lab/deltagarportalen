@@ -586,7 +586,7 @@ function ResourcesInner() {
         description={t('resources.description')}
         showTabs={false}
         domain="info"
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
       >
         <div
           className="flex items-center justify-center py-20"
@@ -607,7 +607,7 @@ function ResourcesInner() {
       description={t('resources.description')}
       showTabs={false}
       domain="info"
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       actions={resourceActions}
       stats={resourceStats}
       sidoflikar={{

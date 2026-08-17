@@ -341,7 +341,7 @@ function EducationInner() {
       description={t('education.description')}
       showTabs={false}
       domain="coaching"
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
 >
       {/* Search Section */}
       <PageSection>

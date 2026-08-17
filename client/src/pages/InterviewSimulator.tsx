@@ -611,7 +611,7 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
         subtitle={t('interviewSimulator.description')}
         domain="activity"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         contentClassName="space-y-6"
       >
         {/* Setup Form */}
@@ -759,7 +759,7 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
         subtitle={`${roll}${foretag ? ' — ' + foretag : ''}`}
         domain="activity"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         contentClassName="space-y-6"
       >
         <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm" role="status" aria-live="polite">
@@ -922,7 +922,7 @@ ${aiSammanfattning.summary ? aiSammanfattning.summary + '\n' : ''}${typeof aiSam
       subtitle={`${roll}${foretag ? ' — ' + foretag : ''}`}
       domain="activity"
       showTabs={false}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       contentClassName="space-y-6"
     >
       {/* Progress-card — neutralt vitt kort med persika-progress */}

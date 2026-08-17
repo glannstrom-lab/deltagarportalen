@@ -338,7 +338,7 @@ function CalendarInner() {
         subtitle={t('calendar.subtitle', 'Planera dina aktiviteter och möten')}
         domain="wellbeing"
         showTabs={false}
-        className="max-w-7xl mx-auto"
+        className="sidbredd"
         actions={
           <button
             onClick={handleCreateEvent}

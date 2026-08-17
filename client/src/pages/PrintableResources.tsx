@@ -220,7 +220,7 @@ function PrintableResourcesInner() {
     <PageLayout
       title={t('printable.title', 'Skriv ut resurser')}
       description={t('printable.description', 'Välj artiklar och övningar att skriva ut eller spara som PDF')}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
 >
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Verktygsrad */}

@@ -30,7 +30,7 @@ export default function NetworkPage() {
     <PageLayout
       title={t('network.title', 'Nätverk')}
       description={t('network.description', 'Bygg och underhåll ditt professionella kontaktnät')}
-      className="max-w-7xl mx-auto"
+      className="sidbredd"
       domain="info"
     >
       <NetworkTab />
