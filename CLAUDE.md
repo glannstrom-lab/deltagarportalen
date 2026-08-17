@@ -273,7 +273,7 @@ npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inge
 npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (463)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 1 545 tester i 113 filer (~30 s)
+npm run test:run           # 1 630 tester i 116 filer (~40 s, mätt 2026-08-17)
 npm run build
 ```
 
@@ -388,10 +388,33 @@ Streaming via `useAIStream`-hooken (anropar `/api/ai-stream`).
 Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
 
 - **Manifestet styr alla val.** Jobin är inte en jobbportal — det är en följeslagare. Tonen är "lugn vän", inte "myndighet" eller "tools-app". Inga prestationsmätningar i hjälteposition, inga gradient-knappar, inga "Aktivera"-knappar. Se DESIGN.md §1.
-- **Två lägen, inga kompromisser:**
-  - **Hub-landning** (`/oversikt`, `/jobb`, `/karriar`, `/resurser`, `/min-vardag`) = full pastell-hero i hub-färgen.
-  - **Verktygssida** (allt annat under hubbarna) = neutral grå hero (`--header-bg`) med 4px vänsterkant i hub-färgen.
-  - Dessa lägen blandas aldrig på samma sida. Se DESIGN.md §3.
+- **⚠️ Två-läges-systemet med hjältar är BORTTAGET 2026-08-17 (beslut Mikael).**
+  DESIGN.md §3 beskriver fortfarande "hub-landning = full pastell-hero" och
+  "verktygssida = neutral grå hero". **Ingen av dem finns kvar i koden.** Läs §3 som
+  historik tills dokumentet är uppdaterat; det som gäller står här:
+
+  | | Före | Nu |
+  |---|---|---|
+  | Verktygssida | `PageHero`, ~180 px överst | **Sidoskena till vänster** (`SidRail.tsx`) med rubrik, flikar, `actions` och `stats` |
+  | Hub-landning | Pastell-hjälte, 80 px ikon, datumdisc | Rubrikrad på en våning + tät kortgrid (`HubPage.tsx`) |
+  | Sidbredd | `max-w-7xl` (1280 px), centrerad | Full bredd; menyer vid kanterna, mitten flexar. Klassen `.sidbredd` i `tokens.css` är enda stället att justera |
+
+  `PageHero.tsx` ligger kvar i koden men anropas inte från `PageLayout`. **Bygg inte
+  nya sidor med den.** Mobilen är oförändrad: där finns ingen skena, flikarna renderas
+  som en scrollande rad ovanför innehållet precis som förut.
+
+  Tre saker skenan kan, som inte syns om man bara läser `PageLayout`:
+  - **`sidoflikar`** — för de fem sidor vars flikar lever i eget tillstånd i stället för
+    i rutten (LinkedIn, Dagbok, Externa resurser, Profil, Resurser via `?tab=`).
+  - **`markering`** — kort text på en flik ("Att fylla i"). Ersätter prickar; en prick
+    utan text finns inte för skärmläsare.
+  - **`skenSlot.ts`** — en portal så ett *ruttbarn* kan lägga innehåll i skenan.
+    CV-byggarens stegöversikt använder den. Ett barn kan inte skicka innehåll uppåt
+    via props, och två skenor bredvid varandra var precis felet som skulle bort.
+- **Rådgivarna ligger i en kolumn till höger** (`components/radgivare/`), inte i en
+  flytande ring i hörnet. Under `xl` faller panelen sist i flödet och är då hopfälld.
+  `RadgivarTips` visar ETT råd infogat i arbetet — och registrerar det, så kolumnen
+  inte upprepar samma mening. Se `radgivarKontext.ts`.
 - **En sida = en hub-färg.** Alla pastell-element på en sida (KPI-kort, sektioner, ikon-tiles) använder samma hub-färg. Variation kommer från intensitet (50/200/700) och ikon — aldrig från olika hubars pasteller på samma sida. *Undantag: Översikt med 4 hubbar samtidigt.* Se DESIGN.md §4.
 - **5 hubbar:** Översikt (mint/`action`), Söka jobb (persika/`activity`), Karriär (rosa/`coaching`), Resurser (sky/`info`), Min vardag (lavendel/`wellbeing`). Aktiveras via `<div data-domain="...">` (sätts av `PageLayout`).
 - **Bakåtkompatibilitet:** `reflection` → wellbeing, `outbound` → activity (CSS-aliaser). Använd inte i ny kod.
@@ -439,11 +462,26 @@ client/src/components/
     ── döda (nås ej från main.tsx): Badge, Avatar, Tabs, LanguageSelector, Skeleton
   dashboard/                                      # ⛔ HELA KATALOGEN ÄR DÖD
   layout/
-    Sidebar, TopBar, BottomBar, Header, PageHeader, PageLayout, PageTabs
-    HubBottomNav                                  # Bottennav för 5-hub-systemet
+    PageLayout                                    # Skalet. Skena + innehåll + props
+    SidRail, SidRailStats, flikMatchning.ts       # Skenan (ersatte PageHero 2026-08-17)
+    skenSlot.ts                                   # Portal: ruttbarn → skenan
+    TopNav                                        # Tvåradig toppnav (HubNav + SubNav)
+    HubBottomNav                                  # Bottennav på mobil
+    Sidebar, TopBar, BottomBar, Header, PageHeader, PageTabs
     AnimatedSection, GoogleTranslate, LanguageSwitcher
-    navigation.ts                                 # navGroups + navHubs (sanning)
+    navigation.ts                                 # navGroups + navHubs (SANNING)
+    ── PageHero: finns kvar men anropas INTE av PageLayout. Bygg inte nytt på den
+  radgivare/
+    RadgivarPanel                                 # Kolumnen + RadgivarTips (infogat råd)
+    radgivarData.ts, radgivarKontext.ts           # Uppslag + dubblettskydd
 ```
+
+> **Var sanningen bor efter omläggningen 2026-08-17.** Sidbredd → `.sidbredd` i
+> `styles/tokens.css` (en plats, inte `max-w-*` på sidor). Hubbmedlemskap →
+> `navigation.ts`, vaktat mot hubbkorten av
+> `pages/hubs/__tests__/hubbkort-mot-navigation.test.ts`. Sökvägsjämförelser →
+> `lib/sokvag.ts` (`/spontanansökan` och `/nätverk` når koden **procentkodade**; en
+> rå strängjämförelse missar dem tyst).
 
 ### Hub-arkitektur (v1.0)
 Portalen har **5 domän-hubbar** som ersätter den platta 27-items-navigationen. Featureflagga: `VITE_HUB_NAV_ENABLED`.

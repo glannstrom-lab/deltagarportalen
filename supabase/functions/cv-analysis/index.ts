@@ -1,5 +1,34 @@
 // Edge Function: AI-analys av CV mot jobbannons
 // Ger matchningsprocent och förslag på förbättringar
+//
+// ┌──────────────────────────────────────────────────────────────────────────┐
+// │ LÄS INNAN DU KOPPLAR IN DEN HÄR (granskad 2026-08-17)                    │
+// │                                                                          │
+// │ Funktionen har NOLL anropare i dag. Ingen skadas alltså just nu. Men     │
+// │ `generateFallbackAnalysis()` längst ned hittar på ett omdöme om          │
+// │ användarens CV, och den körs så fort AI-svaret inte går att tolka —      │
+// │ alltså utan att någon märker det:                                        │
+// │                                                                          │
+// │   • `strengths` är TRE FASTA MENINGAR som varje användare får, oavsett   │
+// │     innehåll. Ett tomt CV får "Strukturen är tydlig".                    │
+// │   • `atsScore` börjar på 70 poäng och justeras ±5 efter om vissa ord     │
+// │     förekommer. Ett påhittat tal med ett namn som låter objektivt.       │
+// │   • `matchPercentage` är ordöverlappning, taklagd på 95.                 │
+// │                                                                          │
+// │ Det är samma felklass som granskningen 2026-08-09 kallade projektets     │
+// │ kärnproblem, och samma som LinkedIn-"granskningen" som revs samma dag    │
+// │ (ROADMAP DS3): inte ett påhittat tal utan ett påhittat OMDÖME OM         │
+// │ ANVÄNDAREN — riktat till människor som är här för att de behöver hjälp.  │
+// │                                                                          │
+// │ Ska funktionen användas måste reservsvaret först göras ärligt: inget     │
+// │ betyg utan underlag, `—` i stället för ett tal, och en rad som säger att │
+// │ AI-analysen uteblev och varför. Se ROADMAP DS10.                         │
+// │                                                                          │
+// │ Fixen är MEDVETET inte gjord här: funktionen är dödkod, och projektets   │
+// │ egen lärdom (2026-08-09) är att betalt arbete i onåbar kod är bortkastat │
+// │ och dessutom blockerar städningen. Varningen är billig; ombyggnaden hör  │
+// │ ihop med beslutet att faktiskt bygga CV-granskningen.                    │
+// └──────────────────────────────────────────────────────────────────────────┘
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'

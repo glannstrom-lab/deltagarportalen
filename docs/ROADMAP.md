@@ -222,6 +222,45 @@ fel som ingen linsen letade efter. Alla fyra är åtgärdade och verifierade i d
   text ("Att fylla i") som både syns och läses upp, från samma `completion.nextStep` ·
   2026-08-17
 
+- [x] **DS10-a** **CV-sidan lades om enligt förslag B** (beslut Mikael 2026-08-17, efter
+  tre HTML-skisser). Sidan hade **två vänsterkolumner** — sidlayoutens skena och
+  CV-byggarens egen, ~330 px innan innehållet började. Ingen kunde bara tas bort: CV:s
+  flikar finns inte i navigationens andra rad, och stegöversikten är sidans
+  arbetsstruktur. De delar nu kolumn under var sin rubrik. Mekaniken är en **portal**
+  (`components/layout/skenSlot.ts`), inte en prop: `CVPage` renderar `PageLayout` och
+  `CVBuilder` är ett *ruttbarn* som inte kan skicka innehåll uppåt. Zonerna är vit
+  arbetsyta mot persikafärgad hjälpkolumn — färgen gör det gråa ramar gjorde förut ·
+  2026-08-17
+- [x] **DS10-b** **Sidan använde bara två tredjedelar av en bred skärm.** Uppmätt med
+  `#main-content` som referens, före ändringen:
+
+  | Skärm | Innehåll | Oanvänt |
+  |---|---|---|
+  | 1440 px | 1280 px | 160 px (11 %) |
+  | 1920 px | 1280 px | **640 px (33 %)** |
+
+  Taket satt på två ställen: `Layout.tsx` och 30 egna `max-w-7xl mx-auto` i 20 sidfiler.
+  Mikaels iakttagelse att det "kanske är över en viss sidbredd" stämde — förlusten växer
+  med skärmen eftersom taket är fast. Formen avgjordes av hans Vercel-jämförelse:
+  *menyerna fästa vid kanterna, mitten flexar*. Taket är därför **borta**, inte höjt, och
+  styrs från en klass (`.sidbredd` i `tokens.css`). Kvar finns en gräns vid 2000 px av
+  ett skäl som inte är estetiskt: målgruppen har lässvårigheter och en textrad på 2500 px
+  är svår att hitta tillbaka från. **Ändringen träffar alla 34 sidor** — bara CV är
+  visuellt granskad · 2026-08-17
+
+- [ ] **DS10** **`cv-analysis`-edgefunktionen är en laddad fälla — läs innan du bygger
+  CV-granskningen.** Mikael har bett om att Jobin ska kunna granska ett befintligt CV
+  (uppladdat som PDF/DOCX). Backenden ser 80 % färdig ut: `supabase/functions/cv-analysis`
+  finns, är deployad, kör låst modell sedan B18 — och har **noll anropare**.
+  `generateFallbackAnalysis()` hittar dock på ett omdöme om användarens CV och körs så
+  fort AI-svaret inte går att tolka: `strengths` är tre fasta meningar som alla får
+  (ett tomt CV får "Strukturen är tydlig"), `atsScore` börjar på 70 poäng och justeras
+  ±5 efter substrängar, `matchPercentage` är ordöverlappning taklagd på 95. Samma
+  felklass som DS3, i en funktion som är **en anropare från** att nå deltagare.
+  Varningen står nu i funktionens huvud; ombyggnaden hör ihop med beslutet att bygga
+  funktionen. **Import från fil finns inte alls** — `DocumentsSection.tsx:189` lagrar
+  filen men läser aldrig innehållet · M för importen, S för att göra reservsvaret ärligt
+
 **Rättade påståenden i den här omgången:** `RadgivarPanel`s docstring hävdade att noll
 rutter saknar rådgivarinnehåll — uppmätt mot `memberPaths` saknar tre det (`/`, `/help`,
 `/nätverk`). `HubPage`s docstring beskrev en hjälte som inte finns längre. Och min egen
