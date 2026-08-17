@@ -33,6 +33,9 @@ import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
 import type { ReportData } from '@/services/pdfReportGenerator'
+// AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
+// att testa härifrån, och det var därför `QNaN NaN` kunde nå en skarp PDF.
+import { calculateCohorts, type CohortData } from './cohorts'
 
 interface AnalyticsData {
   totalParticipants: number
@@ -47,14 +50,6 @@ interface AnalyticsData {
   monthlyProgress: Array<{ month: string; value: number }>
   statusDistribution: Array<{ label: string; value: number; color: string }>
   topGoalCategories: Array<{ category: string; count: number }>
-}
-
-interface CohortData {
-  cohort: string
-  participants: number
-  cvComplete: number
-  placed: number
-  avgTime: number
 }
 
 interface TrendData {
@@ -509,86 +504,6 @@ export function AnalyticsTab() {
     return buckets
   }
 
-  // Helper function to calculate cohorts from participant data
-  const calculateCohorts = (participants: Array<Record<string, unknown>>, placements: Array<Record<string, unknown>>): CohortData[] => {
-    if (!participants || participants.length === 0) return []
-
-    // Group participants by quarter based on created_at (start date)
-    const quarters: Record<string, {
-      participants: Array<Record<string, unknown>>
-      placements: Array<Record<string, unknown>>
-    }> = {}
-
-    participants.forEach(p => {
-      const date = new Date(p.created_at)
-      const year = date.getFullYear()
-      const quarter = Math.floor(date.getMonth() / 3) + 1
-      const key = `Q${quarter} ${year}`
-
-      if (!quarters[key]) {
-        quarters[key] = { participants: [], placements: [] }
-      }
-      quarters[key].participants.push(p)
-    })
-
-    // Add placements to their respective quarters
-    placements?.forEach(placement => {
-      const participantId = placement.participant_id
-      // Find which quarter this participant belongs to
-      for (const key of Object.keys(quarters)) {
-        const found = quarters[key].participants.find(p => p.id === participantId || p.user_id === participantId)
-        if (found) {
-          quarters[key].placements.push(placement)
-          break
-        }
-      }
-    })
-
-    // Calculate metrics for each cohort
-    const cohortList: CohortData[] = Object.entries(quarters)
-      .map(([cohort, data]) => {
-        const total = data.participants.length
-        const withCV = data.participants.filter(p => p.has_cv).length
-        const placed = data.placements.length
-
-        // Calculate average time to placement
-        let avgTime = 0
-        if (data.placements.length > 0) {
-          const totalDays = data.placements.reduce((sum, placement) => {
-            const participant = data.participants.find(
-              p => p.id === placement.participant_id || p.user_id === placement.participant_id
-            )
-            if (participant) {
-              const startDate = new Date(participant.created_at)
-              const placementDate = new Date(placement.start_date || placement.created_at)
-              const days = Math.floor((placementDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
-              return sum + Math.max(1, days)
-            }
-            return sum
-          }, 0)
-          avgTime = Math.round(totalDays / data.placements.length)
-        }
-
-        return {
-          cohort,
-          participants: total,
-          cvComplete: total > 0 ? Math.round((withCV / total) * 100) : 0,
-          placed: total > 0 ? Math.round((placed / total) * 100) : 0,
-          avgTime: avgTime || 0,
-        }
-      })
-      // Sort by year and quarter descending (most recent first)
-      .sort((a, b) => {
-        const [aQ, aY] = a.cohort.split(' ')
-        const [bQ, bY] = b.cohort.split(' ')
-        const yearDiff = parseInt(bY) - parseInt(aY)
-        if (yearDiff !== 0) return yearDiff
-        return parseInt(bQ.replace('Q', '')) - parseInt(aQ.replace('Q', ''))
-      })
-      .slice(0, 6) // Keep last 6 quarters
-
-    return cohortList
-  }
 
   // Helper function to calculate trends (compare current period to previous)
   const calculateTrends = (
