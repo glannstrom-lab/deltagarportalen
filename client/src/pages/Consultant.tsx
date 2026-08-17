@@ -20,7 +20,6 @@ const CommunicationTab = lazy(() => import('./consultant/CommunicationTab').then
 const ResourcesTab = lazy(() => import('./consultant/ResourcesTab').then(m => ({ default: m.ResourcesTab })))
 const SettingsTab = lazy(() => import('./consultant/SettingsTab').then(m => ({ default: m.SettingsTab })))
 const ParticipantDetailPage = lazy(() => import('./consultant/ParticipantDetailPage').then(m => ({ default: m.ParticipantDetailPage })))
-const AICoachAssistant = lazy(() => import('@/components/consultant/AICoachAssistant').then(m => ({ default: m.AICoachAssistant })))
 
 export default function Consultant() {
   const { t } = useTranslation()
@@ -47,10 +46,21 @@ export default function Consultant() {
         </Suspense>
       </PageLayout>
 
-      {/* AI Coach Assistant - Floating on all consultant pages */}
-      <Suspense fallback={null}>
-        <AICoachAssistant context="overview" />
-      </Suspense>
+      {/*
+        AR3 (2026-08-17): den flytande "AI Coach Assistant" är borttagen.
+
+        Den anropade varken AI eller databasen — komponentens egen kommentar
+        löd "Mock AI responses" — och visade fyra påhittade deltagare som
+        insikter till en riktig konsulent: "Maria Lindberg har inte loggat in
+        på 12 dagar" som röd högprioritetsvarning, plus tre till med
+        uppdiktade CV-poäng och jobbmatchningar. Konsulenten har 31 verkliga
+        deltagare; ingen av de fyra är en av dem.
+
+        Fyndet var märkt "åtgärda idag" den 4 augusti och stod orört i tretton
+        dagar. Att bygga funktionen på riktigt är ett eget beslut och en helt
+        annan storlek — se ROADMAP G19 (kontaktregistret), som är det som
+        faktiskt saknas för att en sådan här yta ska kunna säga något sant.
+      */}
     </div>
   )
 }
