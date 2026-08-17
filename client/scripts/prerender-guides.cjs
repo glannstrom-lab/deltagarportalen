@@ -29,6 +29,8 @@ const {
   renderLattlast,
   renderTool,
   renderToolIndex,
+  titelForLang,
+  TITEL_MAX,
 } = require('./lib/guide-template.cjs')
 const { byggRelaterade, validateRelaterade } = require('./lib/related.cjs')
 
@@ -251,6 +253,37 @@ console.log(
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )
+
+// SE3 (2026-08-17): titellängd.
+//
+// Mallen la tidigare på " — Jobin" utan längdkontroll; 48 av 162 titlar
+// passerade 60 tecken och kapades i sökresultatet — ofta just det ord som
+// skiljer artikeln från sitt syskon. `sidtitel()` släpper nu suffixet när det
+// inte får plats, vilket löser fallet automatiskt.
+//
+// Kvar är de titlar som är för långa ÄVEN utan varumärke. Dem kan bara en
+// människa korta, så bygget rapporterar dem i stället för att tysta dem —
+// och fäller inte, eftersom en redaktionell omskrivning inte ska blockera en
+// deploy. Går listan mot noll kan det här bli en grind.
+{
+  const langa = publicerade
+    .filter((a) => titelForLang(a.title))
+    .map((a) => ({ slug: a.slug, langd: a.title.trim().length }))
+    .sort((x, y) => y.langd - x.langd)
+
+  if (langa.length === 0) {
+    console.log(`   Titlar: alla ≤ ${TITEL_MAX} tecken med varumärke.`)
+  } else {
+    console.log(
+      `   Titlar: ${langa.length} av ${publicerade.length} är längre än ${TITEL_MAX} tecken även utan " — Jobin" ` +
+        `och kapas i Google. Korta dem redaktionellt, sökordet först:`
+    )
+    for (const l of langa.slice(0, 8)) {
+      console.log(`     ${String(l.langd).padStart(3)} tecken  /guider/${l.slug}/`)
+    }
+    if (langa.length > 8) console.log(`     … och ${langa.length - 8} till.`)
+  }
+}
 console.log(
   `   Intern länkning: ${lankstat.antalLankar} länkar (${lankstat.snittPerSida.toFixed(1)}/sida), ` +
     `${lankstat.utanInlankarFore.length} guide(r) utan inlänkar efter rangordningen ` +
