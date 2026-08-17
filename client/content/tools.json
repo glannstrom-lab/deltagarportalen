@@ -1,20 +1,20 @@
 {
-  "_kommentar": "Innehåll för de publika verktygssidorna under /verktyg/ (spår K6, 2026-08-05). VARJE PÅSTÅENDE HÄR ÄR KONTROLLERAT MOT KODEN — 13 CV-mallar i src/components/cv/templates/, PDF via api/cv-pdf.js (headless Chromium), tal-till-text via SpeechRecognition i InterviewSimulator.tsx, AI-funktionerna cv-writing/cv-jobbmatchning/personligt-brev/intervju-simulator/kompetensgap/linkedin-optimering i api/ai.js. Lägg inte till ett påstående här utan att först verifiera det i koden. Inga användarsiffror, inga omdömen, inga betyg — vi hittar inte på social bevisning.",
+  "_kommentar": "Innehåll för de publika verktygssidorna under /verktyg/ (spår K6, 2026-08-05). VARJE PÅSTÅENDE HÄR SKA VERIFIERAS MOT KODEN INNAN DET SKRIVS — och den här raden påstod själv tretton CV-mallar i tolv dagar medan koden hade tolv (rättat 2026-08-17, BF/KO1). Räkna, skriv inte av. Källan för mallarna är TEMPLATES i src/pages/CVBuilder.tsx, alltså det användaren faktiskt kan välja — inte antalet filer i src/components/cv/templates/. 12 CV-mallar, PDF via api/cv-pdf.js (headless Chromium), tal-till-text via SpeechRecognition i InterviewSimulator.tsx, AI-funktionerna cv-writing/cv-jobbmatchning/personligt-brev/intervju-simulator/kompetensgap/linkedin-optimering i api/ai.js. Lägg inte till ett påstående här utan att först verifiera det i koden. Inga användarsiffror, inga omdömen, inga betyg — vi hittar inte på social bevisning.",
   "verktyg": [
     {
       "slug": "cv",
       "route": "/cv",
       "h1": "Gör ett CV som håller — gratis",
       "title": "Gratis CV-mall och CV-byggare på svenska",
-      "description": "Bygg ditt CV steg för steg, välj bland 13 mallar och ladda ner som PDF. Gratis, på svenska, utan att du behöver kunna layout.",
+      "description": "Bygg ditt CV steg för steg, välj bland 12 mallar och ladda ner som PDF. Gratis, på svenska, utan att du behöver kunna layout.",
       "lead": "Du fyller i dina uppgifter en gång. Sedan väljer du hur det ska se ut och laddar ner en färdig PDF. Ingen layout att pilla med, inget Word som hoppar.",
       "steg": [
         ["Fyll i det du har", "Kontaktuppgifter, jobb, utbildning och det du kan. Du kan spara och fortsätta senare — allt ligger kvar."],
-        ["Välj en mall", "13 mallar att välja mellan, från strikt och traditionell till mer personlig. Du kan byta när som helst utan att skriva om något."],
+        ["Välj en mall", "12 mallar att välja mellan, från strikt och traditionell till mer personlig. Du kan byta när som helst utan att skriva om något."],
         ["Ladda ner som PDF", "Färdig fil att bifoga i ansökan. Svenska tecken och avstavning blir rätt, och flersidiga CV:n bryts där de ska."]
       ],
       "punkter": [
-        "13 mallar, byt fritt mellan dem",
+        "12 mallar, byt fritt mellan dem",
         "PDF-export som ser likadan ut hos mottagaren",
         "Hjälp att formulera dina arbetsuppgifter när orden inte kommer",
         "Matchning mot en jobbannons — se vad som saknas innan du skickar"
