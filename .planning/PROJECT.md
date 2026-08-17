@@ -35,7 +35,24 @@ Hjälp utsatta arbetssökande att komma framåt — med empati, tillgänglighet 
 
 Se "Current Milestone" nedan för full lista (24 requirements i v1.0).
 
-## Current Milestone: v1.0 Hub-Navigation
+## Current Milestone: inga aktiva GSD-milstolpar
+
+> **BF4 (genomgången 2026-08-17).** Den här filen stod som "Current Milestone:
+> v1.0 Hub-Navigation" fram till i dag. Den milstolpen är **klar sedan
+> 2026-04-29** — fyra månader tidigare. GSD-skillsen är avstängda i den här
+> miljön (`gsd.disabled:*`), så risken var teoretisk; slås de på igen hade en
+> agent "återupptagit" färdigt arbete.
+>
+> **Projektets enda gällande plan är `docs/ROADMAP.md`.** Allt öppet arbete
+> ligger där, i spår A–K. Den här filen är historik.
+>
+> Två korrigeringar till den arkiverade beskrivningen nedan, för den som läser
+> den som karta: **widget-systemet monteras aldrig i prod** — hubbarna byggs med
+> `HubPage`-funktionskort i `pages/hubs/*.tsx`, och `components/widgets/` har
+> noll importörer (se lärdomen 2026-07-10). Och navigationens sanning är
+> `navHubs[]` i `components/layout/navigation.ts`.
+
+### Arkiverat: v1.0 Hub-Navigation (klar 2026-04-29)
 
 **Goal:** Ersätt platta 27-sidors-navigationen med 5 domän-orienterade hubbar + smart widget-system. Drag/resize deferrad till v1.1.
 

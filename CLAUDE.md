@@ -67,17 +67,17 @@ deltagarportal/
 │   │   └── test.js, package.json
 │   └── src/
 │       ├── components/      # ui/, dashboard/, layout/, ai-team/, ...
-│       ├── pages/           # ~120 sidfiler: verktygssidor, pages/hubs/, pages/sta/
+│       ├── pages/           # 133 sidfiler: verktygssidor, pages/hubs/, pages/sta/
 │       ├── stores/          # Zustand stores
 │       ├── services/        # API-anrop (aiApi.ts m.fl.)
 │       ├── hooks/           # 30+ custom hooks
 │       └── lib/             # supabase, sentry, validators, ...
 ├── api/                     # Repo-root Vercel-katalog
 │   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
-├── supabase/                # Migrations (118 filer) + 24 edge functions
+├── supabase/                # Migrations (133 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester (8 spec + 10 verktygsskript; 82 ad-hoc i e2e/archive/)
+├── e2e/                     # Playwright-tester (10 spec + 10 verktygsskript; 82 ad-hoc i e2e/archive/)
 ├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
 ├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
 ├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
@@ -263,36 +263,56 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 > `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u` innan du litar på att
 > låsningen håller.
 
-### CI-grindarna (sju st, alla körbara lokalt)
+### CI-grindarna (åtta st, alla körbara lokalt)
 
 ```bash
 cd client
-npm run lint:ci            # eslint: 0 errors, max 129 warnings (fryst tak)
+npm run lint:ci            # eslint: 0 errors, max 128 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (468)
+npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (463)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 933 tester
+npm run test:run           # 1 545 tester i 113 filer (~30 s)
 npm run build
 ```
 
-De tre **frysta taken** (129 warnings, 468 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (128 warnings, 463 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
-> **⚠️ De sju räcker inte — CI kör ett åttonde steg som inte finns i listan.** `ci.yml` kör
+> **`typecheck:api` är ny 2026-08-17 (DR5) och har inget tak — den ska vara noll.** Fram till
+> dess lintades och typkontrollerades `client/api/*.js` **aldrig**: eslint-configens enda
+> regeluppsättning matchade `**/*.{ts,tsx}`, och `tsconfig.app.json` har `"include": ["src"]`.
+> Det är just de filerna som har service-role-nyckeln, CORS- och rate-limit-logiken,
+> art. 9-samtyckesgrinden och hela promptbiblioteket — och det är delvis därför A19 kunde ligga
+> trasig i drift i en månad. Första körningen hittade 1 eslint-fel, 5 warnings och 7 typfel,
+> bland dem att `chromium.headless` inte finns i @sparticuz/chromium 148 (`headless: undefined`
+> skickades till puppeteer) och att `content` i `ai.js` bär tre olika former där inferensen bara
+> såg en. Allt är betalt; grinden startar därför på noll.
+
+> **⚠️ De åtta räcker inte — CI kör ett nionde steg som inte finns i listan.** `ci.yml` kör
 > `npm run test:coverage` (inte `test:run`). Kör den innan du tror att CI blir grön.
 >
-> **⚠️ Men lokalt gröna grindar bevisar fortfarande ingenting om CI — och orsaken är inte den
-> som stod här tidigare.** Uppmätt 2026-08-09: **CI har aldrig varit grön på `main`** — 687
-> körningar sedan 2 april, noll lyckade. Coverage-tröskeln (som den här rutan pekade ut fram
-> till 2026-08-09) är **inte** orsaken längre: den passerar lokalt på alla fyra mått
-> (23,19/63,96/34,66/23,19 mot 18/60/30/18) och `exclude`-fällan är lagad. Det verkliga felet
-> är att sju testfiler kraschar vid import i CI med `Error: supabaseUrl is required`, eftersom
-> `test`-jobbet (`ci.yml:100-104`) bara får `CI: true` medan `VITE_SUPABASE_URL` sätts enbart i
-> build- och e2e-jobben. **Lokalt döljs det av gitignorerade `client/.env` — ingen lokal grind
-> kan reproducera felet.** Dessutom failar `Security Scan` på fyra high-sårbarheter. Se ROADMAP
-> D17–D19; D13 är avskriven.
+> **⚠️ Men lokalt gröna grindar bevisar fortfarande ingenting om CI.** Uppmätt 2026-08-17
+> (körning `31619914202`, commit `9b1bfb28`): **8 av 9 jobb gröna** — `Security Scan`,
+> `Lint & Type Check`, `Coverage`, `Run Tests`, `Build`, båda e2e-jobben. Kvar rött är
+> **`Lighthouse CI`**, steg "Run Lighthouse CI". Rotorsaken är fastställd och är inte den som
+> stod här: `ci.yml:238-239` skickar `--collect.staticDistDir` som **CLI-flagga**, vilket får
+> lhci att ignorera `.lighthouserc.js:22`s `url:`-lista helt och bara auditera `index.html`.
+> Fixen från 12 augusti kunde därför aldrig verka, oavsett vilka filer som ligger i `dist/`.
+> Se ROADMAP DR4.
+>
+> Historiken bakom rutan, för sammanhang: fram till 2026-08-09 hade CI **aldrig** varit grön på
+> `main` — 687 körningar sedan 2 april, noll lyckade. Felet var att sju testfiler kraschade vid
+> import med `Error: supabaseUrl is required`, eftersom `test`-jobbet bara fick `CI: true` medan
+> `VITE_SUPABASE_URL` sattes enbart i build- och e2e-jobben — **lokalt dolt av gitignorerade
+> `client/.env`, alltså omöjligt att reproducera med någon lokal grind.** Fixen lades i
+> `vitest.config.ts` (`test.env`), inte i workflowen. D13 är avskriven; D17–D19 är stängda.
+>
+> **⚠️ Grön CI är fortfarande ingen spärr.** `main` saknar branch protection
+> (`"protected": false`, mätt 2026-08-17) och push till `main` **är** deployen — det finns
+> mekaniskt ingenting mellan en trasig commit och prod. Se ROADMAP D24/DR3.
 >
 > **⚠️ Pre-push-hooken kör INTE `npm run verify`** — det avsnittet om släpprocessen sa det
 > tidigare felaktigt, rättat 2026-08-12. Uppmätt 2026-08-09, mätt igen 2026-08-12: den kör fem av
