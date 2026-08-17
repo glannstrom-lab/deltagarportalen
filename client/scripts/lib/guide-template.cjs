@@ -55,6 +55,17 @@ img{max-width:100%;height:auto}
 .vadardethar p{margin:0;padding-block:.7rem;font-size:.9rem;color:var(--muted);line-height:1.55}
 .vadardethar a{color:var(--c-solid);white-space:nowrap}
 
+/* BF1: krisstöd. Dämpat med flit — de allra flesta som läser en CV-guide är
+   inte i kris, och en larmande röd banderoll på 165 sidor hade varit fel ton
+   enligt DESIGN.md §2. Men numren står ALLTID synliga, aldrig bakom en
+   utfällning: den som behöver dem ska inte behöva klicka. */
+.krisstod{border-top:1px solid var(--line);background:var(--soft)}
+.krisstod .wrap{padding-block:1.1rem}
+.krisstod p{margin:0;font-size:.9rem;line-height:1.7;color:var(--muted)}
+.krisstod strong{color:var(--fg)}
+.krisstod a{color:var(--c-solid);white-space:nowrap;font-weight:600}
+.krisstod .num{font-variant-numeric:tabular-nums}
+
 /* K17: uppläsning. Ligger hidden tills skriptet sett att API:et finns. */
 .lyssna{display:flex;flex-wrap:wrap;align-items:center;gap:.6rem;margin:0 0 1.75rem}
 .lyssna-status{margin:0;font-size:.875rem;color:var(--muted);flex-basis:100%}
@@ -175,6 +186,57 @@ function vadArDetHar({ lattlast = false } = {}) {
 }
 
 /**
+ * Krisstöd.  (BF1, genomgången 2026-08-17)
+ *
+ * Portalen visar `CrisisSupport` i TopBar, BottomBar och Layout — alltså på
+ * varje inloggad sida — och kommentaren där säger uttryckligen att den behålls
+ * i fokusläge när allt annat döljs, "för tillgänglighet". De 165 publika
+ * sidorna hade den inte: 10 av 162 nämnde ett kristelefonnummer, och bara för
+ * att just den artikelns brödtext råkade göra det.
+ *
+ * Det är fel väg runt. De publika sidorna är de som en person i djup
+ * arbetslöshetsstress hittar via Google *innan* hon någonsin loggar in — alltså
+ * innan komponenten ovan har laddats en enda gång.
+ *
+ * Tre val värda att motivera:
+ *
+ * 1. **Numren står synliga, inte bakom en `<details>`.** En utfällning hade
+ *    varit prydligare, men den som behöver numret ska inte behöva klicka. Det
+ *    kostar en rad på 165 sidor; det är billigt.
+ * 2. **Tonen är dämpad, inte larmande.** De allra flesta som läser en CV-guide
+ *    är inte i kris. En röd banderoll överst hade brutit mot DESIGN.md §2 och
+ *    gjort att den som *är* i kris slutar se den. Den ligger sist på sidan,
+ *    i fotens grå, som en självklarhet snarare än ett larm.
+ * 3. **Källan är `CrisisSupport.tsx`.** Numren nedan är samma som komponentens
+ *    `crisisResourceDefs` (901 01 urgent, 1177 vård, 112 akut). De kan glida
+ *    isär — därför står det utskrivet här var förlagan finns, och `guides.test`
+ *    asserterar att blocket finns på varje sidtyp.
+ *
+ * Lättläst-varianten följer samma regel som `vadArDetHar`: en tanke per mening,
+ * inga inskjutna bisatser. Att beskriva krishjälp i krånglig text vore en
+ * motsägelse just för den grupp som behöver den mest.
+ */
+function krisstod({ lattlast = false } = {}) {
+  const text = lattlast
+    ? `<strong>Mår du dåligt?</strong> Du kan alltid ringa och prata med någon.
+    Det är gratis. Du behöver inte säga vem du är.
+    Självmordslinjen: <a class="num" href="tel:90101">901 01</a>, dygnet runt.
+    Sjukvården: <a class="num" href="tel:1177">1177</a>.
+    Vid fara: ring <a class="num" href="tel:112">112</a>.`
+    : `<strong>Mår du dåligt?</strong> Du behöver inte vara i akut kris för att ringa,
+    och du kan vara anonym.
+    Självmordslinjen <a class="num" href="tel:90101">901 01</a> svarar dygnet runt.
+    Sjukvårdsrådgivningen når du på <a class="num" href="tel:1177">1177</a>.
+    Är det fara för liv — ring <a class="num" href="tel:112">112</a>.`
+
+  return `<aside class="krisstod" aria-label="Stöd om du mår dåligt">
+  <div class="wrap">
+    <p>${text}</p>
+  </div>
+</aside>`
+}
+
+/**
  * Uppläsningsknapp.  (spår K17, 2026-08-12)
  *
  * För lättläst-nischen är uppläsning inte en extrafunktion utan poängen, och
@@ -199,6 +261,41 @@ function lyssnaKnapp() {
   <p class="lyssna-status" role="status" aria-live="polite"></p>
 </div>
 <script src="/guider/lyssna.js" defer></script>`
+}
+
+/**
+ * Sidtitel med varumärkessuffix — men bara när det får plats.  (SE3, 2026-08-17)
+ *
+ * Mätt före fixen: **48 av 162 guidetitlar passerade 60 tecken**, längst 80
+ * ("Jobbsökning med funktionsnedsättning – rättigheter och strategier — Jobin").
+ * Mallen la på `" — Jobin"` utan någon längdkontroll.
+ *
+ * Google klipper SERP-titeln runt den bredden. Det som föll bort var alltså
+ * slutet — ofta just det ord som skiljer artikeln från sitt syskon (se SE1 och
+ * SE2, där två sidor skiljs åt av "strategier" mot "stöd") — plus varumärket.
+ * Resultatet blev det sämsta av två: sidan tappade både sin särskiljande del
+ * OCH sitt namn.
+ *
+ * **Varför inte trunkera med `korta()`.** En titel som slutar på "…" ser trasig
+ * ut i sökresultatet och hjälper ingen. Suffixet är i stället det som får stryka
+ * på foten: "Jobin" är den minst informativa delen av titeln för någon som
+ * söker på "a-kassa villkor", och en 62-teckenstitel utan varumärke slår en
+ * 70-teckens som kapas mitt i ordet.
+ *
+ * Titlar som är för långa **även utan suffix** kan bara lösas redaktionellt.
+ * Dem rapporterar bygget i stället för att tysta — se `prerender-guides.cjs`.
+ */
+const TITEL_MAX = 60
+const VARUMARKE = ' — Jobin'
+
+function sidtitel(titel) {
+  const t = String(titel || '').trim()
+  return t.length + VARUMARKE.length <= TITEL_MAX ? `${t}${VARUMARKE}` : t
+}
+
+/** Sant när titeln är för lång även utan varumärkessuffix — kräver omskrivning. */
+function titelForLang(titel) {
+  return String(titel || '').trim().length > TITEL_MAX
 }
 
 /** Kortar en text vid ordgräns, så att raden inte slutar mitt i ett ord. */
@@ -245,6 +342,9 @@ function renderGuide(a, relaterade) {
 
   // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
   const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
+  // Används av både vadArDetHar och krisstod — samma sida ska inte kunna få
+  // lättläst banderoll och krånglig krisrad, eller tvärtom.
+  const arLattlastSida = a.difficulty === 'easy-swedish' || a.category_key === 'easy-swedish'
 
   const checklista =
     Array.isArray(a.checklist) && a.checklist.length
@@ -289,7 +389,7 @@ function renderGuide(a, relaterade) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(a.title)} — Jobin</title>
+<title>${escapeHtml(sidtitel(a.title))}</title>
 <meta name="description" content="${escapeHtml(beskrivning)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="index, follow">
@@ -315,7 +415,7 @@ function renderGuide(a, relaterade) {
   </div>
 </header>
 
-${vadArDetHar({ lattlast: a.difficulty === 'easy-swedish' || a.category_key === 'easy-swedish' })}
+${vadArDetHar({ lattlast: arLattlastSida })}
 
 <div class="hero">
   <div class="wrap">
@@ -360,6 +460,8 @@ ${body}
     ${relateradeHtml}
   </div>
 </main>
+
+${krisstod({ lattlast: arLattlastSida })}
 
 <footer>
   <div class="wrap">
@@ -429,7 +531,7 @@ function renderIndex(artiklar) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Guider för dig som söker jobb — Jobin</title>
+<title>${escapeHtml(sidtitel("Guider för dig som söker jobb"))}</title>
 <meta name="description" content="Konkreta guider om CV, personligt brev, intervju och att orka söka jobb. Gratis, på svenska — flera även i lätt svenska.">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website">
@@ -470,6 +572,8 @@ function renderIndex(artiklar) {
     </section>
   </div>
 </main>
+
+${krisstod()}
 
 <footer>
   <div class="wrap">
@@ -513,7 +617,7 @@ function renderLattlast(artiklar) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Söka jobb på lätt svenska — Jobin</title>
+<title>${escapeHtml(sidtitel("Söka jobb på lätt svenska"))}</title>
 <meta name="description" content="Guider om CV, jobb och intervju på lätt svenska. Korta texter med enkla ord. Gratis att läsa.">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website">
@@ -564,6 +668,8 @@ ${vadArDetHar({ lattlast: true })}
     <p><a href="/guider/">Se alla guider</a></p>
   </div>
 </main>
+
+${krisstod({ lattlast: true })}
 
 <footer>
   <div class="wrap">
@@ -647,7 +753,7 @@ function renderKategori(kat, artiklar, syskon) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(kat.rubrik)} — guider — Jobin</title>
+<title>${escapeHtml(sidtitel(`${kat.rubrik} — guider`))}</title>
 <meta name="description" content="${escapeHtml(beskrivning)}">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website">
@@ -696,6 +802,8 @@ ${vadArDetHar()}
     <p><a href="/guider/">Alla guider</a></p>
   </div>
 </main>
+
+${krisstod()}
 
 <footer>
   <div class="wrap">
@@ -770,7 +878,7 @@ function renderTool(t, guider) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${escapeHtml(t.title)} — Jobin</title>
+<title>${escapeHtml(sidtitel(t.title))}</title>
 <meta name="description" content="${escapeHtml(t.description)}">
 <link rel="canonical" href="${url}">
 <meta name="robots" content="index, follow">
@@ -839,6 +947,8 @@ function renderTool(t, guider) {
   </div>
 </main>
 
+${krisstod()}
+
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
@@ -866,7 +976,7 @@ function renderToolIndex(verktyg) {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gratis verktyg för dig som söker jobb — Jobin</title>
+<title>${escapeHtml(sidtitel("Gratis verktyg för dig som söker jobb"))}</title>
 <meta name="description" content="CV-byggare, personligt brev, intervjuträning och kompetensanalys. Kostnadsfritt, på svenska, utan att du behöver installera något.">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website">
@@ -902,6 +1012,8 @@ function renderToolIndex(verktyg) {
   </div>
 </main>
 
+${krisstod()}
+
 <footer>
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb. <a href="${appUrl('/oversikt')}">Öppna portalen</a></p>
@@ -919,4 +1031,9 @@ module.exports = {
   renderLattlast,
   renderTool,
   renderToolIndex,
+  // SE3: exporteras för byggrapporten och testerna.
+  sidtitel,
+  titelForLang,
+  krisstod,
+  TITEL_MAX,
 }
