@@ -67,20 +67,37 @@ describe('flaggan av — dagens navigation är orörd', () => {
     expect(screen.queryByTestId('toppnav')).toBeNull()
   })
 
-  it('den riktiga flaggan är av utan miljövariabel', async () => {
-    // Den faktiska modulen, inte mocken. Det här är egenskapen som gör att
-    // ombyggnaden kan committas och pushas utan att nå en enda användare.
-    const faktisk = await vi.importActual<typeof import('@/config/features')>('@/config/features')
-    expect(faktisk.isTopNavEnabled()).toBe(false)
-    expect(faktisk.MODULES.TOPNAV).toBe(false)
+  it('VITE_TOPNAV_ENABLED=false stänger av den på riktigt', async () => {
+    // Flaggan slogs PÅ som default 2026-08-17 (beslut Mikael: 6 aktiva
+    // användare, han granskar alltid mot produktion). Kvar av skyddet är att
+    // AVSTÄNGNINGEN fungerar — annars är "reversibel med en miljövariabel" ett
+    // tomt löfte, och det enda sättet tillbaka är en revert.
+    //
+    // features.ts läser import.meta.env vid modulladdning, så miljön måste
+    // sättas FÖRE importen och modulcachen nollställas emellan.
+    vi.resetModules()
+    vi.stubEnv('VITE_TOPNAV_ENABLED', 'false')
+    const av = await vi.importActual<typeof import('@/config/features')>('@/config/features')
+    expect(av.isTopNavEnabled()).toBe(false)
+
+    vi.resetModules()
+    vi.stubEnv('VITE_TOPNAV_ENABLED', '')
+    const pa = await vi.importActual<typeof import('@/config/features')>('@/config/features')
+    expect(pa.isTopNavEnabled()).toBe(true)
+
+    vi.unstubAllEnvs()
+    vi.resetModules()
   })
 })
 
 describe('flaggan på — navigationen flyttar upp', () => {
-  it('renderar toppnaven', () => {
+  it('renderar undersidesraden', () => {
+    // Kategorierna (rad 1) ligger inuti TopBar sedan sammanslagningen — tre
+    // staplade barer på desktop åt för mycket höjd. Layout äger därför bara
+    // rad 2.
     flaggan.pa = true
     rendera()
-    expect(screen.getByTestId('toppnav')).toBeTruthy()
+    expect(screen.getByTestId('undersidesrad')).toBeTruthy()
   })
 
   it('döljer sidomenyn, som annars bara upprepar den', () => {
@@ -101,6 +118,7 @@ describe('negativ kontroll — testet kan falla', () => {
     // Utan den här raden vore testerna ovan gröna även om Layout ignorerade
     // flaggan och alltid renderade samma sak.
     rendera()
+    expect(screen.queryByTestId('undersidesrad')).toBeNull()
     const avHarSidomeny = !!screen.queryByTestId('sidomeny')
     cleanup()
     flaggan.pa = true

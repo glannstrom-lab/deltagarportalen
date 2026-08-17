@@ -2,7 +2,7 @@ import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle
+  Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
@@ -27,7 +27,8 @@ import CommandPalette from './CommandPalette'
 // Steg 2: tvåradig toppnav bakom VITE_TOPNAV_ENABLED. Av som default —
 // navigationen är chrome och träffar alla 25 sidor samtidigt, så flaggan gör
 // den atomära ändringen reversibel med en miljövariabel i stället för en revert.
-import TopNav, { SubNav } from './layout/TopNav'
+import { SubNav } from './layout/TopNav'
+import { oppnaPalett } from '@/lib/palettEvent'
 import { isTopNavEnabled } from '@/config/features'
 // TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
 // bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
@@ -105,11 +106,12 @@ export default function Layout() {
         {/* Mobil TopBar med meny och profil */}
         {showBars && isMobile && <MobileTopBar />}
 
-        {/* Steg 2 — tvåradig navigation.
-            Desktop får båda raderna. Mobilen får bara rad 2: HubBottomNav ÄR
-            redan rad 1 där, så mobilanvändaren möter en mindre förändring än
-            desktopanvändaren. */}
-        {showBars && topNav && (isMobile ? <SubNav /> : <TopNav />)}
+        {/* Steg 2 — undersidesraden.
+            Kategorierna (rad 1) ligger inuti TopBar, i samma rad som logga,
+            sök och profil — annars blir det tre staplade barer på desktop.
+            På mobil ÄR HubBottomNav redan rad 1, så mobilanvändaren möter en
+            mindre förändring än desktopanvändaren. */}
+        {showBars && topNav && <SubNav />}
 
         {/* Main area with sidebar and content */}
         <div className="flex-1 flex">
@@ -232,6 +234,17 @@ function MobileTopBar() {
               Notifikationer + Meny döljs i fokusläge (en sak i taget);
               CrisisSupport och Profil behålls för tillgänglighet. */}
           <div className="flex items-center gap-0.5">
+            {/* Sök — mobilens enda väg in i kommandopaletten. Det finns inget
+                tangentbord att trycka Ctrl+K på här, så utan den här knappen
+                är paletten helt onåbar på den enhet målgruppen använder mest. */}
+            <button
+              type="button"
+              onClick={oppnaPalett}
+              aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+            >
+              <Search className="w-[18px] h-[18px]" aria-hidden="true" />
+            </button>
             <CrisisSupport variant="inline" />
             <div data-focus-chrome="topbar-extras">
               <NotificationBell variant="compact" />

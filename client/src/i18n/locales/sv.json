@@ -378,6 +378,7 @@
     }
   },
   "palette": {
+    "trigger": "Sök …",
     "title": "Sök och hoppa till",
     "placeholder": "Sök efter en sida eller ett verktyg",
     "empty": "Ingenting matchade det du skrev.",

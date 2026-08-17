@@ -38,6 +38,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { navHubs, adminNavItems, consultantNavItems } from '@/components/layout/navigation'
 import { cn } from '@/lib/utils'
 import { matchar, poang, type PalettMal } from '@/lib/palettMatchning'
+import { PALETT_OPPNA } from '@/lib/palettEvent'
 
 export default function CommandPalette() {
   const { t } = useTranslation()
@@ -133,8 +134,21 @@ export default function CommandPalette() {
         })
       }
     }
+    // Samma nollställning när paletten öppnas från sökrutan i TopBar.
+    // Utan en synlig utlösare nådde paletten bara den som redan kände till
+    // genvägen — se lib/palettEvent.ts.
+    const oppnaHandler = () => {
+      setQ('')
+      setAktiv(0)
+      setOpen(true)
+    }
+
     document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
+    document.addEventListener(PALETT_OPPNA, oppnaHandler)
+    return () => {
+      document.removeEventListener('keydown', handler)
+      document.removeEventListener(PALETT_OPPNA, oppnaHandler)
+    }
   }, [])
 
   // Fokus i fältet när panelen finns i DOM. Ingen setState här, så regeln

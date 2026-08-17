@@ -138,15 +138,25 @@ export function SubNav() {
  * behålls ovanför. Att flytta dem hade gjort steg 2 till en ombyggnad av tre
  * komponenter i stället för ett tillägg av en.
  */
-export function HubNav() {
+export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {}) {
   const { t } = useTranslation()
   const location = useLocation()
   const aktivHub = getActiveHub(location.pathname)
 
+  // `inline` = kategorierna ligger i TopBars rad, bredvid logga och sök.
+  // Det är förlagan från skissen: två rader totalt, inte tre. `bar` finns kvar
+  // för det fristående läget och för testerna.
+  const inline = variant === 'inline'
+
   return (
     <nav
       aria-label={t('nav.topnav.categories', 'Huvudkategorier')}
-      className="flex items-center gap-1 px-3 sm:px-4 border-b border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 overflow-x-auto"
+      className={cn(
+        'flex items-center gap-1 overflow-x-auto',
+        inline
+          ? ''
+          : 'px-3 sm:px-4 border-b border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900'
+      )}
     >
       {navHubs.map((hub) => {
         const aktiv = aktivHub?.id === hub.id
@@ -157,11 +167,18 @@ export function HubNav() {
             data-domain={hub.domain}
             aria-current={aktiv ? 'page' : undefined}
             className={cn(
-              'shrink-0 px-3 py-2.5 text-[14px] whitespace-nowrap border-b-2 -mb-px',
+              'shrink-0 whitespace-nowrap',
+              inline
+                ? 'px-2.5 py-1.5 text-[13.5px] rounded-lg'
+                : 'px-3 py-2.5 text-[14px] border-b-2 -mb-px',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
-                ? 'text-stone-900 dark:text-stone-100 font-semibold border-[var(--c-solid)]'
-                : 'text-stone-600 dark:text-stone-300 border-transparent hover:text-stone-900 dark:hover:text-stone-100'
+                ? inline
+                  ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-semibold'
+                  : 'text-stone-900 dark:text-stone-100 font-semibold border-[var(--c-solid)]'
+                : inline
+                  ? 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/60'
+                  : 'text-stone-600 dark:text-stone-300 border-transparent hover:text-stone-900 dark:hover:text-stone-100'
             )}
           >
             {t(hub.labelKey, hub.fallbackLabel)}

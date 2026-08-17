@@ -26,6 +26,10 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 import { GoogleTranslate } from './GoogleTranslate'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import CrisisSupport from '@/components/CrisisSupport'
+import { oppnaPalett } from '@/lib/palettEvent'
+import { HubNav } from './TopNav'
+import { isTopNavEnabled } from '@/config/features'
+import { Search } from '@/components/ui/icons'
 
 interface UserProfile {
   first_name: string
@@ -86,7 +90,7 @@ export function TopBar() {
   )
 
   return (
-    <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 sm:px-4 py-1.5 sm:py-2 sticky top-0 z-40">
+    <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 sm:px-4 py-1.5 lg:py-1 sticky top-0 z-40">
       <div className="flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
@@ -94,7 +98,7 @@ export function TopBar() {
             src="/logo-icon.svg"
             alt="Jobin"
             loading="eager"
-            className="h-6 sm:h-8 w-auto object-contain"
+            className="h-6 sm:h-8 lg:h-7 w-auto object-contain"
           />
           <div className="hidden sm:block">
             <span className="text-lg font-semibold text-stone-800 dark:text-stone-100">
@@ -103,8 +107,49 @@ export function TopBar() {
           </div>
         </Link>
 
+        {/* Steg 2: huvudkategorierna ligger i SAMMA rad som logga, sök och
+            profil — inte i en egen rad under. Tre staplade barer på desktop
+            (TopBar + kategorier + undersidor) åt oproportionerligt mycket
+            höjd, och skissen visade två. Undersidesraden renderas av Layout. */}
+        {isTopNavEnabled() && (
+          <div className="hidden lg:block shrink-0 ml-3" data-focus-chrome="topnav">
+            <HubNav variant="inline" />
+          </div>
+        )}
+
+        {/* Sök — den SYNLIGA vägen in i kommandopaletten.
+            Paletten skickades först med enbart Ctrl/⌘ K och ingen affordans:
+            en funktion som ska lösa "svårt att hitta saker", omöjlig att hitta.
+            För målgruppen är en tangentgenväg inte en väg in.
+
+            På desktop en ruta som ser sökbar ut och visar genvägen; på mobil
+            en ikonknapp, eftersom det inte finns något tangentbord att trycka
+            Ctrl+K på. Mobilen är alltså den som behöver den här mest. */}
+        <button
+          type="button"
+          onClick={oppnaPalett}
+          aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
+          className="hidden xl:flex items-center gap-2 mx-3 flex-1 max-w-[220px] px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:border-stone-300 dark:hover:border-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+        >
+          <Search className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+          <span className="text-[13px] truncate">{t('palette.trigger', 'Sök …')}</span>
+          <kbd className="ml-auto text-[10px] font-mono border border-stone-200 dark:border-stone-700 rounded px-1 py-px shrink-0">
+            Ctrl K
+          </kbd>
+        </button>
+
         {/* Actions */}
         <div className="flex items-center gap-0.5 sm:gap-1">
+          {/* Sök på mobil — ikon, eftersom rutan ovan inte får plats */}
+          <button
+            type="button"
+            onClick={oppnaPalett}
+            aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
+            className="xl:hidden w-11 h-11 lg:w-9 lg:h-9 flex items-center justify-center rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+          >
+            <Search className="w-5 h-5" aria-hidden="true" />
+          </button>
+
           {/* Language Switcher - hidden on mobile, döljs i fokusläge */}
           <div className="hidden sm:block" data-focus-chrome="topbar-extras">
             <LanguageSwitcher />

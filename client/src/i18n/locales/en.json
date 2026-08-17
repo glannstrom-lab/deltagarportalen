@@ -378,6 +378,7 @@
     }
   },
   "palette": {
+    "trigger": "Search …",
     "title": "Search and jump to",
     "placeholder": "Search for a page or a tool",
     "empty": "Nothing matched what you typed.",
