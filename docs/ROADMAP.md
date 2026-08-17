@@ -75,6 +75,23 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 - [ ] **BF3** **Process:** planens prioritetsordning styr inte vad som byggs. A1 (rotera OpenRouter-nyckeln, **5 minuter i en dashboard**) är öppen sedan 28 maj — 82 dagar — medan hela K-spåret byggdes och publicerades. Det görbara går före det blockerade, varje gång. Konkret: rotera A1 nu, och skriv in ett villkor att inget nytt spår startas medan A1/A6 är öppna · S
 - [x] **BF4** ✅ *(klar 2026-08-17)* `.planning/PROJECT.md` hade "Current Milestone: v1.0 Hub-Navigation" som aktiv — klar sedan 2026-04-29. GSD-skillsen är avstängda så risken är teoretisk i dag · ~10 min · **Gjort:** "Current Milestone" är nu "inga aktiva GSD-milstolpar", med den gamla beskrivningen kvar som arkiv. Två sakfel i den arkiverade texten utskrivna för den som läser den som karta: widget-systemet monteras aldrig i prod (hubbarna byggs med `HubPage`-kort), och navigationens sanning är `navHubs[]`.
 
+### Efter deployen 2026-08-17 — verifierat utfall och ett nytt fynd
+
+**Deploy: grön.** Tolv commits pushade (`9b1bfb28..ec5fa681`). Verifierat i drift, inte antaget:
+
+| Fynd | Kontroll mot prod | Utfall |
+|---|---|---|
+| **BF1** | `curl` mot tre guidesidor, inkl. en lättläst | `class="krisstod"` på alla tre |
+| **KO1** | `/verktyg/cv/` | "12 mallar" ×4 (var "13 mallar" ×4) |
+| **TG2** | `/guider/cv-grunder/` | 8 emoji inslagna i `aria-hidden` (var 0) |
+| **SE3** | `/guider/funktionsnedsattning-jobbsokning/` | 65 tecken, utan varumärkessuffix — kapas inte längre |
+| **DR1** | `send-inactivity-warning` utan `Origin` | **403 → 503.** Cron-vakten avgör nu, och svarar att `CRON_SECRET` saknas (A25). Okänd origin nekas fortfarande med 403 — inget öppnades upp |
+
+**CI: två röda jobb.**
+
+- [ ] **DR7** **`Security Scan` failar på `npm audit --omit=dev --audit-level=high` — nytt sedan 12 augusti.** `extract-zip` har en symlink-path-traversal (GHSA-jmr9-qjv8-65gv, high, publicerad 2026-06-26) som når `puppeteer-core ^24.43.0` via `@puppeteer/browsers`. **`puppeteer-core` är en prod-dependency** och driver CV-PDF-genereringen i `api/cv-pdf.js`. **Inte orsakat av den här omgången:** `git diff 9b1bfb28..HEAD -- client/package.json` visar bara `scripts`-rader, och lockfilen är orörd. Varför jobbet var grönt 12 augusti och rött nu är **inte fastställt** — rådgivningen är äldre än båda körningarna, så antingen har det påverkade versionsintervallet vidgats eller så löste CI:s `npm install` en annan 24.x då. Reproducerat lokalt: `npm audit --omit=dev --audit-level=high` → exit 1. **Åtgärden är ett brytande majorlyft** (`puppeteer-core@25.8.0`) som rör CV-PDF:en — eget beslut, inte något som smygs in i en deployverifiering · S att lyfta, M att verifiera PDF-utfallet
+- **D29/DR4** Lighthouse failar som väntat. Rotorsaken är fastställd (`ci.yml:238` skickar `--collect.staticDistDir` som CLI-flagga och kringgår `.lighthouserc.js`), men fixen rör `.github/workflows/` och kräver Mikaels ja
+
 ### Prövat och avfärdat
 
 | Hypotes | Hur den prövades | Utfall |
