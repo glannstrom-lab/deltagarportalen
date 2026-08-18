@@ -177,6 +177,16 @@ export function useSavedJobs() {
     addNotes,
     isSaved,
     getSavedJob,
-    getStats
+    getStats,
+    /**
+     * Hämta om listan från servern.
+     *
+     * `getStats()` är en ren selektor över cachen — den hämtar ingenting. Den
+     * anropades ändå som `onSuccess={() => getStats()}` när en ansökan skapats,
+     * alltså ett anrop vars returvärde kastades bort och vars enda syfte var en
+     * uppdatering den inte utför. Sparade jobb låg kvar oförändrade tills något
+     * annat råkade invalidera nyckeln. (2026-08-18)
+     */
+    refresh: () => queryClient.invalidateQueries({ queryKey: SAVED_JOBS_KEY }),
   }
 }

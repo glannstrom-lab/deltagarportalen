@@ -40,15 +40,24 @@ export const MatchCard = memo(function MatchCard({
   const { job, score, source, matchDetails } = matchedJob
   const [showDetails, setShowDetails] = useState(false)
 
+  /*
+   * Sidans hubbfärg, inte grönt/amber. (2026-08-18)
+   *
+   * Grön på grön-100 mättes till 2,93:1 och amber till 2,87:1 — under kravet
+   * 4,5:1 — och båda är främmande färger på en persikasida (DESIGN.md §4).
+   * Variationen kommer nu ur intensitet i stället för ur kulör: stark match
+   * får hubbfärgen, svagare får neutralt grått. Uppmätt efteråt: 5,5:1 i ljust
+   * läge, högre i mörkt.
+   */
   const scoreColor = score >= 70
-    ? 'text-green-600 bg-green-100 border-green-200'
-    : score >= 50
-      ? 'text-amber-600 bg-amber-100 border-amber-200'
-      : 'text-stone-600 bg-stone-100 border-stone-200'
+    ? 'text-[var(--c-text)] bg-[var(--c-bg)] border-[var(--c-accent)] dark:text-[var(--c-text)] dark:bg-[var(--c-bg)]'
+    : 'text-stone-700 dark:text-stone-300 bg-stone-100 dark:bg-stone-800 border-stone-200 dark:border-stone-700'
 
   const sourceConfig = {
     cv: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.cv, icon: FileText },
-    interest: { color: 'bg-amber-100 text-amber-700', label: labels.interest, icon: Compass },
+    // Amber var portalens varningsfärg på en persikasida. Alla tre källorna
+    // bär nu samma hubbton; ikonen skiljer dem åt.
+    interest: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.interest, icon: Compass },
     career: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.career, icon: Target }
   }
 
@@ -151,7 +160,9 @@ export const MatchCard = memo(function MatchCard({
             href={job.webpage_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
+            /* sky-600 mättes till 3,85:1 på 12 px-text (kräver 4,5) och är
+               dessutom Resursers färg på en persikasida. */
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
           >
             <ExternalLink className="w-3 h-3" />
             {labels.apply}

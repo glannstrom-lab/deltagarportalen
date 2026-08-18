@@ -20,10 +20,11 @@
  * ingen förändring alls.
  */
 
+import { useEffect, useRef } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import type { Tab } from './PageTabs'
-import { arAktivFlik } from './flikMatchning'
+import { aktivFlikId } from './flikMatchning'
 
 /**
  * Flikar som lever i sidans eget tillstånd i stället för i rutten.
@@ -105,6 +106,8 @@ export default function SidRail({
   const harFlikar = !!tabs && tabs.length > 1
   const harSidoflikar = !!sidoflikar && sidoflikar.poster.length > 1
   const nagonFlik = harFlikar || harSidoflikar
+  // Bara EN flik kan vara aktiv — se aktivFlikId i flikMatchning.ts.
+  const aktivId = aktivFlikId(tabs ?? [], location.pathname, sok)
 
   if (!title && !nagonFlik && !children && !slotRef) return null
 
@@ -138,7 +141,7 @@ export default function SidRail({
           {tabsEtikett && <Grupp text={tabsEtikett} />}
           <ul className="m-0 p-0 list-none space-y-0.5">
             {tabs!.map((tab) => {
-              const aktiv = arAktivFlik(tab, location.pathname, sok)
+              const aktiv = tab.id === aktivId
               return (
                 <li key={tab.id}>
                   <Link
@@ -235,7 +238,10 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
                   'block px-3 py-2 rounded-lg text-[13px] whitespace-nowrap',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                   aktiv
-                    ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
+                    /* Vitt kort på vit sida är ingen markering. Skenan på desktop har
+                       dessutom en prick bredvid den aktiva fliken; mobilraden har det
+                       inte, så den behöver färgen för att synas alls. */
+                    ? 'bg-[var(--c-bg)] font-semibold text-[var(--c-text)] ring-1 ring-[var(--c-accent)]'
                     : 'text-stone-600 dark:text-stone-300'
                 )}
               >
@@ -258,13 +264,31 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
 export function FlikRad({ tabs }: { tabs?: Tab[] }) {
   const location = useLocation()
   const [sok] = useSearchParams()
+  const radRef = useRef<HTMLElement>(null)
+
+  /*
+   * Rulla den aktiva fliken in i bild. (2026-08-18)
+   *
+   * Raden är `overflow-x-auto` med `w-max`, så på en 390 px-skärm ryms tre av
+   * Söka jobbs sex flikar. Gick man till Matchningar eller Bevakningar låg den
+   * aktiva fliken utanför skärmen — sidan såg ut att stå kvar på "Sök" tills
+   * man råkade dra i raden. Ingen markering i världen hjälper mot en flik man
+   * inte ser.
+   */
+  useEffect(() => {
+    const aktivt = radRef.current?.querySelector('[aria-current="page"]')
+    aktivt?.scrollIntoView({ inline: 'center', block: 'nearest' })
+  }, [location.pathname, sok])
+
+  const aktivId = aktivFlikId(tabs ?? [], location.pathname, sok)
+
   if (!tabs || tabs.length < 2) return null
 
   return (
-    <nav aria-label="Avsnitt" className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
+    <nav ref={radRef} aria-label="Avsnitt" className="lg:hidden -mx-4 px-4 mb-4 overflow-x-auto">
       <ul className="m-0 p-0 list-none flex gap-1 w-max">
         {tabs.map((tab) => {
-          const aktiv = arAktivFlik(tab, location.pathname, sok)
+          const aktiv = tab.id === aktivId
           return (
             <li key={tab.id}>
               <Link
@@ -274,7 +298,10 @@ export function FlikRad({ tabs }: { tabs?: Tab[] }) {
                   'block px-3 py-2 rounded-lg text-[13px] whitespace-nowrap',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                   aktiv
-                    ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
+                    /* Vitt kort på vit sida är ingen markering. Skenan på desktop har
+                       dessutom en prick bredvid den aktiva fliken; mobilraden har det
+                       inte, så den behöver färgen för att synas alls. */
+                    ? 'bg-[var(--c-bg)] font-semibold text-[var(--c-text)] ring-1 ring-[var(--c-accent)]'
                     : 'text-stone-600 dark:text-stone-300'
                 )}
               >

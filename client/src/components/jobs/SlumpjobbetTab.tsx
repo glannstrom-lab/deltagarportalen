@@ -79,7 +79,7 @@ function WinnerPanel({ job, saved, onSave, onSpinAgain, onCreateApplication }: W
   return (
     <Card className="p-6 border-2 border-orange-300 dark:border-orange-700 bg-orange-50 dark:bg-orange-950/30">
       <div className="flex items-start gap-3 mb-4">
-        <div className="w-12 h-12 rounded-full bg-orange-500 text-white flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 rounded-full bg-[var(--c-solid)] text-[var(--c-on-solid)] flex items-center justify-center flex-shrink-0">
           <Trophy className="w-6 h-6" />
         </div>
         <div className="flex-1 min-w-0">
@@ -121,7 +121,7 @@ function WinnerPanel({ job, saved, onSave, onSpinAgain, onCreateApplication }: W
           href={applyUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium text-sm transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] hover:brightness-110 text-[var(--c-on-solid)] rounded-lg font-medium text-sm transition-colors"
         >
           <ExternalLink className="w-4 h-4" />
           {t('jobSearch.slumpjobbet.openAd')}
@@ -394,7 +394,7 @@ export function SlumpjobbetTab() {
       {/* Intro */}
       <Card className="p-5 bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-800/50">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-orange-500 text-white flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[var(--c-solid)] text-[var(--c-on-solid)] flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-5 h-5" />
           </div>
           <div>
@@ -428,7 +428,7 @@ export function SlumpjobbetTab() {
       {/* Status */}
       {loading && (
         <Card className="p-12 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)] mx-auto mb-3" />
           <p className="text-stone-700 dark:text-stone-300">{t('jobSearch.slumpjobbet.loadingJobs')}</p>
         </Card>
       )}
@@ -449,11 +449,17 @@ export function SlumpjobbetTab() {
               type="button"
               onClick={handleSpin}
               disabled={spinning || jobs.length === 0}
+              /*
+                Hubbfärg i stället för hårdkodad orange, och ingen knappskugga.
+                Vit text på orange-500 mättes till 2,89:1 (kravet är 4,5), och
+                DESIGN.md §6 förbjuder skuggor på knappar. `--c-on-solid` är den
+                textfärg som fungerar i BÅDA lägena — se tokens.css.
+              */
               className={cn(
-                'px-10 py-4 rounded-full font-bold text-lg shadow-lg transition-all',
+                'px-10 py-4 rounded-full font-bold text-lg transition-all',
                 spinning
-                  ? 'bg-stone-300 text-stone-500 cursor-not-allowed'
-                  : 'bg-orange-500 hover:bg-orange-600 active:scale-95 text-white shadow-orange-500/30',
+                  ? 'bg-stone-300 dark:bg-stone-700 text-stone-500 dark:text-stone-400 cursor-not-allowed'
+                  : 'bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-110 active:scale-95',
               )}
             >
               {spinning ? t('jobSearch.slumpjobbet.spinningButton') : t('jobSearch.slumpjobbet.spinButton')}

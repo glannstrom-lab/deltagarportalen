@@ -124,12 +124,21 @@ function SearchTab() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   // Infinite scroll: hämta första 20, ladda 20 till när användaren scrollar nära slutet
   const [hasMore, setHasMore] = useState(true);
+  /*
+   * Länsfiltret körs lokalt på AF:s svar, så antalet jobb vi visar är mindre än
+   * antalet vi hämtat. Nästa sidas `offset` måste räknas på det HÄMTADE talet —
+   * annars hoppar sidladdningen tillbaka och hämtar samma jobb igen. Och när
+   * filtreringen skett går AF:s totalsumma inte att använda som nämnare.
+   * (2026-08-18)
+   */
+  const hamtadeRef = useRef(0);
+  const [okantTotal, setOkantTotal] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isListening, setIsListening] = useState(false);
 
-  // Saved jobs hook (savedJobs läses inte direkt — bara via getStats/isSaved)
-  const { saveJob, removeJob, isSaved, getStats } = useSavedJobs()
+  // Saved jobs hook (savedJobs läses inte direkt — bara via isSaved/refresh)
+  const { saveJob, removeJob, isSaved, refresh: refreshSavedJobs } = useSavedJobs()
 
   // Create Application Modal state
   const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
@@ -213,7 +222,9 @@ function SearchTab() {
 
       setJobs(dedupeJobsById(result.hits));
       setTotalJobs(result.total.value);
-      setHasMore(result.hits.length >= JOBS_PER_PAGE);
+      setOkantTotal(!!result.filtreratLokalt);
+      hamtadeRef.current = result.rawCount ?? result.hits.length;
+      setHasMore((result.rawCount ?? result.hits.length) >= JOBS_PER_PAGE);
     } catch (err) {
       console.error('Search error:', err);
       setError(t('jobSearch.couldNotSearch'));
@@ -236,18 +247,19 @@ function SearchTab() {
         publishedWithin: filters.publishedWithin,
         occupationConceptIds: filters.occupations.map((o) => o.conceptId),
         limit: JOBS_PER_PAGE,
-        offset: jobs.length,
+        offset: hamtadeRef.current,
         sort: 'pubdate-desc',
       });
       setJobs(prev => dedupeJobsById([...prev, ...result.hits]));
-      setHasMore(result.hits.length >= JOBS_PER_PAGE);
+      hamtadeRef.current += result.rawCount ?? result.hits.length;
+      setHasMore((result.rawCount ?? result.hits.length) >= JOBS_PER_PAGE);
     } catch (err) {
       console.error('Load more error:', err);
       // Tysta inläsningsfel — användaren kan scrolla igen för retry
     } finally {
       setLoadingMore(false);
     }
-  }, [loadingMore, hasMore, jobs.length, filters]);
+  }, [loadingMore, hasMore, filters]);
 
   // IntersectionObserver — auto-laddar nästa batch när sentinel:en blir synlig
   useEffect(() => {
@@ -726,27 +738,39 @@ function SearchTab() {
           <div className="space-y-3 sm:space-y-4">
             {/* Results count - announced to screen readers */}
             <p className="text-sm text-stone-700 dark:text-stone-400" role="status" aria-live="polite" aria-atomic="true">
-              {t('jobSearch.showingXofY', { shown: jobs.length, total: totalJobs })}
+              {okantTotal
+                ? t('jobSearch.showingX', { shown: jobs.length })
+                : t('jobSearch.showingXofY', { shown: jobs.length, total: totalJobs })}
             </p>
 
             {jobs.map((job) => (
-              <div
+              /*
+               * Kortet var `role="button"` med tre knappar inuti (Spara, Skriv
+               * brev, Ansök). Det är axe-regeln `nested-interactive`, allvarlig:
+               * en skärmläsare annonserar en knapp vars namn är rubriken, och
+               * de tre riktiga knapparna göms i den. `aria-label` på ytterhöljet
+               * dolde dessutom ort, anställningsform och datum helt.
+               *
+               * Nu är kortet ett `<article>`. Musklicket på ytan finns kvar som
+               * genväg, men den tangentbords- och skärmläsarbara vägen in i
+               * jobbet är rubriken, som är en riktig knapp. (2026-08-18)
+               */
+              <article
                 key={job.id}
-                role="button"
-                tabIndex={0}
                 onClick={() => handleJobClick(job.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleJobClick(job.id)
-                  }
-                }}
-                aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-2xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-2xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] cursor-pointer focus-within:ring-2 focus-within:ring-[var(--c-solid)] focus-within:ring-offset-2 dark:focus-within:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base sm:text-lg font-semibold text-stone-900 dark:text-stone-100 mb-1 line-clamp-2">{job.headline}</h3>
+                    <h3 className="text-base sm:text-lg font-semibold text-stone-900 dark:text-stone-100 mb-1">
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); handleJobClick(job.id) }}
+                        className="text-left line-clamp-2 hover:underline focus:outline-none rounded"
+                      >
+                        {job.headline}
+                      </button>
+                    </h3>
                     <p className="text-stone-600 dark:text-stone-400 text-sm font-medium flex items-center gap-2">
                       <Building2 size={16} className="text-stone-600 dark:text-stone-400 flex-shrink-0" />
                       <span className="truncate">{job.employer?.name || t('common.employerNotSpecified')}</span>
@@ -769,9 +793,15 @@ function SearchTab() {
                       </span>
                     </div>
 
-                    <p className="text-stone-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm hidden sm:block">
-                      {job.description?.text?.substring(0, 200)}...
-                    </p>
+                    {/* Saknades beskrivningen renderades bara "..." — tre
+                        punkter utan text. Nu utelämnas stycket, och punkterna
+                        sätts bara dit när texten faktiskt är avklippt. */}
+                    {job.description?.text?.trim() && (
+                      <p className="text-stone-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm hidden sm:block">
+                        {job.description.text.slice(0, 200)}
+                        {job.description.text.length > 200 ? '…' : ''}
+                      </p>
+                    )}
 
                     <div className="flex items-center gap-2 mt-3">
                       <button
@@ -808,7 +838,7 @@ function SearchTab() {
                           e.stopPropagation()
                           setApplicationModalJob(job)
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]/90 dark:hover:bg-[var(--c-solid)] transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-110 dark:hover:bg-[var(--c-solid)] transition-colors"
                       >
                         <Send size={16} />
                         {t('jobSearch.apply')}
@@ -816,7 +846,7 @@ function SearchTab() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </article>
             ))}
 
             {/* Infinite scroll sentinel — IntersectionObserver triggar loadMoreJobs() */}
@@ -1062,7 +1092,7 @@ function SearchTab() {
           job={applicationModalJob}
           isOpen={!!applicationModalJob}
           onClose={() => setApplicationModalJob(null)}
-          onSuccess={() => getStats()}
+          onSuccess={refreshSavedJobs}
         />
       )}
     </div>
@@ -1177,7 +1207,7 @@ function SavedJobsTab() {
                   )}
 
                   {/* Saved date */}
-                  <p className="text-xs text-stone-600 dark:text-stone-500 mt-2 flex items-center gap-1">
+                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     Sparad {new Date(job.savedAt).toLocaleDateString('sv-SE')}
                   </p>

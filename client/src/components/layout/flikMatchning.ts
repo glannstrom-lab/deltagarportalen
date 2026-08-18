@@ -27,3 +27,29 @@ export function arAktivFlik(tab: Tab, pathname: string, sok: URLSearchParams): b
   if (harAktivSyskonQuery && pathname === tabPath) return false
   return pathname === tabPath || pathname.startsWith(`${tabPath}/`)
 }
+
+/**
+ * Vilken av flikarna är aktiv — givet att bara EN kan vara det.
+ *
+ * `arAktivFlik` svarar per flik, och undersökvägsregeln gör att en förälder
+ * matchar sina barn: `/job-search` är prefix till `/job-search/matches`. På
+ * Söka jobb betydde det att "Sök" var markerad samtidigt som "Matchningar",
+ * och eftersom "Sök" står först var det den mobilraden rullade fram och den
+ * skärmläsaren läste som `aria-current="page"`. Sidan sa alltså "du står på
+ * Sök" medan innehållet var Matchningar. Uppmätt 2026-08-18 på /job-search/
+ * matches och /job-search/alerts.
+ *
+ * Regeln: den mest specifika träffen vinner — längst `path` bland dem som
+ * matchar. Exakt match slår därmed alltid prefixmatch.
+ */
+export function aktivFlikId(
+  tabs: Tab[],
+  pathname: string,
+  sok: URLSearchParams,
+): string | null {
+  const traffar = tabs.filter((t) => arAktivFlik(t, pathname, sok))
+  if (traffar.length === 0) return null
+  return traffar.reduce((bast, t) =>
+    t.path.split('?')[0].length > bast.path.split('?')[0].length ? t : bast,
+  ).id
+}

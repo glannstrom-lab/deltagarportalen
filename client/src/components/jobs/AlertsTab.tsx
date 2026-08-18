@@ -83,7 +83,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
       <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div
         ref={dialogRef}
-        className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
+        className="relative bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-md w-full p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="create-alert-title"
@@ -91,24 +91,24 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
         <button
           onClick={onClose}
           aria-label={t('jobSearch.alertsTab.closeDialog')}
-          className="absolute top-4 right-4 p-2 hover:bg-stone-100 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="absolute top-4 right-4 p-2 hover:bg-stone-100 dark:bg-stone-800 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
-          <X className="w-5 h-5 text-stone-600" aria-hidden="true" />
+          <X className="w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
         </button>
 
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-            <Bell className="w-6 h-6 text-indigo-600" aria-hidden="true" />
+          <div className="w-12 h-12 bg-[var(--c-bg)] rounded-xl flex items-center justify-center">
+            <Bell className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
           </div>
           <div>
-            <h2 id="create-alert-title" className="text-xl font-bold text-stone-900">{t('jobSearch.alertsTab.createAlert')}</h2>
-            <p className="text-sm text-stone-700">{t('jobSearch.alertsTab.createSubtitle')}</p>
+            <h2 id="create-alert-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">{t('jobSearch.alertsTab.createAlert')}</h2>
+            <p className="text-sm text-stone-700 dark:text-stone-300">{t('jobSearch.alertsTab.createSubtitle')}</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="alertstab-f1" className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('jobSearch.alertsTab.nameLabel')}
             </label>
             <input
@@ -117,13 +117,13 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={t('jobSearch.alertsTab.namePlaceholder')}
-              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="alertstab-f2" className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('jobSearch.alertsTab.queryLabel')}
             </label>
             <input
@@ -132,19 +132,19 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t('jobSearch.alertsTab.queryPlaceholder')}
-              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             />
           </div>
 
           <div>
-            <label htmlFor="alertstab-f3" className="block text-sm font-medium text-stone-700 mb-1">
+            <label htmlFor="alertstab-f3" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
               {t('jobSearch.alertsTab.regionLabel')}
             </label>
             <select
               id="alertstab-f3"
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             >
               <option value="">{t('jobSearch.alertsTab.allOfSweden')}</option>
               {AF_REGIONS.map((r) => (
@@ -158,9 +158,9 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               type="checkbox"
               checked={remote}
               onChange={(e) => setRemote(e.target.checked)}
-              className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
+              className="w-5 h-5 rounded border-stone-300 text-[var(--c-text)] dark:text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
             />
-            <span className="text-sm text-stone-700">{t('jobSearch.alertsTab.remoteOnly')}</span>
+            <span className="text-sm text-stone-700 dark:text-stone-300">{t('jobSearch.alertsTab.remoteOnly')}</span>
           </label>
 
           <div className="flex gap-3 pt-4">
@@ -233,7 +233,7 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
 
   if (isLoading) {
     return (
-      <div className="bg-stone-50 rounded-xl p-6 mb-6">
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-6 mb-6">
         <div className="animate-pulse flex items-center gap-3">
           <div className="w-10 h-10 bg-stone-200 rounded-lg" />
           <div className="h-4 bg-stone-200 rounded w-32" />
@@ -243,24 +243,36 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 mb-6 border border-indigo-100">
+    <div className="bg-[var(--c-bg)] rounded-xl p-6 mb-6 border border-[var(--c-accent)]">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-            <Mail className="w-5 h-5 text-indigo-600" />
+          <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+            <Mail className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-900">{t('jobSearch.alertsTab.emailNotifications')}</h3>
-            <p className="text-sm text-stone-600">{t('jobSearch.alertsTab.emailSubtitle')}</p>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.alertsTab.emailNotifications')}</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-400">{t('jobSearch.alertsTab.emailSubtitle')}</p>
           </div>
         </div>
         <button
           onClick={onClose}
           className="p-1 hover:bg-white/50 rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-stone-500" />
+          <X className="w-5 h-5 text-stone-500 dark:text-stone-400" />
         </button>
       </div>
+
+      {/*
+        Panelen erbjöd "Direkt / Daglig / Veckovis" utan att något utskick sker:
+        `checkUserAlerts` i jobAlertEmailService har noll anropare, och det finns
+        ingen schemaläggning som kallar /api/job-alerts (inga `crons` i
+        vercel.json, inga `schedule:` i workflows, ingen pg_cron). Valet får stå
+        kvar — det sparas och gäller den dag utskicken slås på — men det ska inte
+        se ut som ett löfte som redan hålls. (2026-08-18)
+      */}
+      <p className="mt-4 mb-0 text-sm text-stone-700 dark:text-stone-300 bg-white/60 dark:bg-stone-900/40 rounded-lg px-3 py-2">
+        {t('jobSearch.alertsTab.emailNotDelivered')}
+      </p>
 
       <div className="mt-4 space-y-4">
         <label className="flex items-center gap-3 cursor-pointer">
@@ -268,14 +280,14 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
             type="checkbox"
             checked={emailEnabled}
             onChange={(e) => setEmailEnabled(e.target.checked)}
-            className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
+            className="w-5 h-5 rounded border-stone-300 text-[var(--c-text)] dark:text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
           />
-          <span className="text-sm text-stone-700">{t('jobSearch.alertsTab.enableEmail')}</span>
+          <span className="text-sm text-stone-700 dark:text-stone-300">{t('jobSearch.alertsTab.enableEmail')}</span>
         </label>
 
         {emailEnabled && (
           <div className="ml-8">
-            <label className="block text-sm font-medium text-stone-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
               {t('jobSearch.alertsTab.frequency')}
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -290,8 +302,8 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
                   className={cn(
                     "flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors",
                     frequency === option.value
-                      ? "bg-indigo-50 border-indigo-300"
-                      : "bg-white border-stone-200 hover:border-indigo-200"
+                      ? "bg-[var(--c-bg)] border-[var(--c-solid)]"
+                      : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]"
                   )}
                 >
                   <input
@@ -300,9 +312,9 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
                     value={option.value}
                     checked={frequency === option.value}
                     onChange={(e) => setFrequency(e.target.value as typeof frequency)}
-                    className="text-indigo-600 focus:ring-indigo-500"
+                    className="text-[var(--c-text)] dark:text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
                   />
-                  <span className="text-sm text-stone-700">{option.label}</span>
+                  <span className="text-sm text-stone-700 dark:text-stone-300">{option.label}</span>
                 </label>
               ))}
             </div>
@@ -353,15 +365,15 @@ function AlertCard({
 
   return (
     <div className={cn(
-      "bg-white rounded-xl border p-5 transition-all",
-      alert.is_active ? "border-stone-200 shadow-sm" : "border-stone-100 opacity-60"
+      "bg-white dark:bg-stone-900 rounded-xl border p-5 transition-all",
+      alert.is_active ? "border-stone-200 dark:border-stone-700 shadow-sm" : "border-stone-100 dark:border-stone-800 opacity-60"
     )}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-stone-900">{alert.name}</h3>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{alert.name}</h3>
             {alert.new_jobs_count > 0 && alert.is_active && (
-              <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+              <span className="px-2 py-0.5 bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)] text-xs font-medium rounded-full">
                 {t('jobSearch.alertsTab.newCount', { count: alert.new_jobs_count })}
               </span>
             )}
@@ -370,13 +382,13 @@ function AlertCard({
           {/* Criteria */}
           <div className="flex flex-wrap gap-2 mt-2">
             {alert.query && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-xs rounded-lg">
                 <Search className="w-3 h-3" />
                 {alert.query}
               </span>
             )}
             {alert.region && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-xs rounded-lg">
                 <MapPin className="w-3 h-3" />
                 {getAfRegionName(alert.region)}
               </span>
@@ -390,7 +402,7 @@ function AlertCard({
 
           {/* Last checked */}
           {alert.last_checked_at && (
-            <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               {t('jobSearch.alertsTab.lastChecked', { date: new Date(alert.last_checked_at).toLocaleDateString('sv-SE') })}
             </p>
@@ -401,13 +413,13 @@ function AlertCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onToggle(alert.id, !alert.is_active)}
-            className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-stone-100 dark:bg-stone-800 rounded-lg transition-colors"
             title={alert.is_active ? t('jobSearch.alertsTab.pauseAlert') : t('jobSearch.alertsTab.activateAlert')}
           >
             {alert.is_active ? (
               <ToggleRight className="w-6 h-6 text-green-600" />
             ) : (
-              <ToggleLeft className="w-6 h-6 text-stone-600" />
+              <ToggleLeft className="w-6 h-6 text-stone-600 dark:text-stone-400" />
             )}
           </button>
 
@@ -417,7 +429,7 @@ function AlertCard({
                 onDelete(alert.id)
               }
             }}
-            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
+            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 dark:text-stone-400 hover:text-red-600"
             title={t('jobSearch.alertsTab.delete')}
           >
             <Trash2 className="w-5 h-5" />
@@ -432,8 +444,8 @@ function AlertCard({
         className={cn(
           "w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors",
           alert.is_active
-            ? "bg-indigo-600 text-white hover:bg-indigo-700"
-            : "bg-stone-100 text-stone-600 cursor-not-allowed"
+            ? "bg-[var(--c-solid)] text-white hover:brightness-110"
+            : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 cursor-not-allowed"
         )}
       >
         {isChecking ? (
@@ -492,7 +504,7 @@ export function AlertsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)]" />
       </div>
     )
   }
@@ -503,14 +515,14 @@ export function AlertsTab() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-stone-900">{t('jobSearch.alertsTab.title')}</h2>
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.alertsTab.title')}</h2>
             {unreadCount > 0 && (
               <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
                 {t('jobSearch.alertsTab.newCount', { count: unreadCount })}
               </span>
             )}
           </div>
-          <p className="text-sm text-stone-700">
+          <p className="text-sm text-stone-700 dark:text-stone-300">
             {alerts.length === 0
               ? t('jobSearch.alertsTab.emptySubtitle')
               : t('jobSearch.alertsTab.activeCount', { active: alerts.filter(a => a.is_active).length, total: alerts.length })}
@@ -521,7 +533,7 @@ export function AlertsTab() {
             onClick={() => setShowEmailSettings(!showEmailSettings)}
             className={cn(
               "p-2 rounded-lg transition-colors",
-              showEmailSettings ? "bg-indigo-100 text-indigo-600" : "hover:bg-stone-100 text-stone-600"
+              showEmailSettings ? "bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)]" : "hover:bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400"
             )}
             title={t('jobSearch.alertsTab.emailSettingsTitle')}
           >
@@ -542,13 +554,13 @@ export function AlertsTab() {
       {/* Alerts list */}
       {alerts.length === 0 ? (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Bell className="w-8 h-8 text-amber-600" />
+          <div className="w-16 h-16 bg-[var(--c-bg)] rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Bell className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           </div>
-          <h3 className="text-xl font-semibold text-stone-700 mb-2">
+          <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
             {t('jobSearch.alertsTab.noAlerts')}
           </h3>
-          <p className="text-stone-700 mb-6 max-w-md mx-auto">
+          <p className="text-stone-700 dark:text-stone-300 mb-6 max-w-md mx-auto">
             {t('jobSearch.alertsTab.noAlertsText')}
           </p>
           <Button onClick={() => setShowCreateModal(true)}>

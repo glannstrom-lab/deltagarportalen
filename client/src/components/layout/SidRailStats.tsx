@@ -17,6 +17,14 @@
  *
  * Ett nyckeltal utan underlag ska visas som `—` av sidan som äger datat, inte
  * som en nolla här (regel B31). Komponenten renderar det den får.
+ *
+ * Rättat 2026-08-18: markeringen var `<dl><a><dt>…<dd></a></dl>`. HTML tillåter
+ * bara `<dt>`, `<dd>`, `<div>`, `<script>` och `<template>` direkt i en `<dl>` —
+ * ett `<a>` däremellan bryter kopplingen term/värde, och axe flaggar det som
+ * `definition-list` + `dlitem` (allvarlig) på var och en av de sidor som skickar
+ * `stats`. Nu är det en lista i stället, och varje länk får ett komplett
+ * tillgängligt namn ("Sparade jobb: 12") så ordningen inte beror på var värdet
+ * råkar hamna visuellt.
  */
 
 import { Link } from 'react-router-dom'
@@ -34,9 +42,9 @@ export default function SidRailStats({ stats, layout }: Props) {
   const rail = layout === 'rail'
 
   return (
-    <dl
+    <ul
       className={cn(
-        'm-0',
+        'm-0 list-none p-0',
         rail ? 'space-y-0.5 px-1' : 'flex flex-wrap gap-x-1 gap-y-1'
       )}
     >
@@ -47,17 +55,17 @@ export default function SidRailStats({ stats, layout }: Props) {
             {Ikon && (
               <Ikon className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500 shrink-0" />
             )}
-            <dt className="text-[11px] text-stone-500 dark:text-stone-400 m-0 min-w-0 truncate">
+            <span className="text-[11px] text-stone-500 dark:text-stone-400 min-w-0 truncate">
               {st.label}
-            </dt>
-            <dd
+            </span>
+            <span
               className={cn(
-                'text-[13px] font-semibold tabular-nums text-stone-900 dark:text-stone-100 m-0',
+                'text-[13px] font-semibold tabular-nums text-stone-900 dark:text-stone-100',
                 rail && 'ml-auto'
               )}
             >
               {st.value}
-            </dd>
+            </span>
           </>
         )
 
@@ -67,16 +75,22 @@ export default function SidRailStats({ stats, layout }: Props) {
             'hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]'
         )
 
-        return st.to ? (
-          <Link key={st.label} to={st.to} className={cn(klass, 'no-underline')}>
-            {innehall}
-          </Link>
-        ) : (
-          <div key={st.label} className={klass}>
-            {innehall}
-          </div>
+        return (
+          <li key={st.label} className="m-0">
+            {st.to ? (
+              <Link
+                to={st.to}
+                aria-label={`${st.label}: ${st.value}`}
+                className={cn(klass, 'no-underline')}
+              >
+                {innehall}
+              </Link>
+            ) : (
+              <div className={klass}>{innehall}</div>
+            )}
+          </li>
         )
       })}
-    </dl>
+    </ul>
   )
 }

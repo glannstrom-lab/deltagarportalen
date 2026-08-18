@@ -41,7 +41,13 @@ const path = require('node:path')
 // fyra kolumner som inte finns (`company_name`, `position`, `interview_date`,
 // `notes`) och hade `[key: string]: unknown`, så inget insert-anrop kunde
 // typkontrolleras. Tabellen stod tom i hela prod. Typerna följer nu schemat.
-const CEILING = 460
+// 460 → 437 (2026-08-18): åtta onåbara filer under `components/jobs/` plus
+// `types/jobs.ts` raderade (2 917 rader). De var aldrig monterade — JobCard,
+// JobDetailModal, JobFilters, CRMTab, CultureTab, ApplicationsTab och
+// JobMatchAnalyzer nåddes inte från main.tsx, och barreln `jobs/index.ts` var
+// det som gjorde dem osynliga för en vanlig importsökning. De 23 typfelen
+// försvann med filerna; ingen av dem satt i kod som kördes.
+const CEILING = 437
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

@@ -258,7 +258,7 @@ export const buttonVariants = {
 // Card varianter - UPPDATERADE med stone
 export const cardVariants = {
   default: cn(
-    'bg-white',
+    'bg-white dark:bg-stone-800',
     radius.card,
     shadows.card,
     colors.neutral.border,
@@ -266,7 +266,7 @@ export const cardVariants = {
     spacing.card
   ),
   hover: cn(
-    'bg-white',
+    'bg-white dark:bg-stone-800',
     radius.card,
     shadows.card,
     colors.neutral.border,
@@ -285,7 +285,7 @@ export const cardVariants = {
     spacing.card
   ),
   flat: cn(
-    'bg-white',
+    'bg-white dark:bg-stone-800',
     radius.card,
     colors.neutral.border,
     'border',

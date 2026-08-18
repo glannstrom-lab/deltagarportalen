@@ -1,6 +1,6 @@
-# Designskuld — kända överträdelser mot DESIGN.md v3.0
+# Designskuld — kända överträdelser mot DESIGN.md v3.2
 
-> **Senast uppdaterad:** 2026-07-10 (F6: ResultsView gradient-fri, baseline sänkt 65 → 52)
+> **Senast uppdaterad:** 2026-08-18 (fyra en-färg-överträdelser hittade och rättade; gradientbaselinen orörd på 52)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
 > **Status nu:** ✅ ESLint-reglerna på `error`-nivå. **0 design-errors, 0 design-warnings** i kodbasen.
 > Stale `eslint-disable next-line no-restricted-syntax`-kommentarer rensade — fil-nivå whitelist i `eslint.config.js` täcker dem redan.
@@ -19,7 +19,31 @@
 | **2026-05-14 session** | 2026-05-14 | **68** (-241 totalt, -78%) | 0 | inga |
 | **ESLint höjd → error** | 2026-05-14 | 68 men 0 errors (whitelistade) | 0 | inga |
 | **Granskning 2026-06-22** | 2026-06-22 | **65** (baseline låst) | 0 | inga |
-| **F6-städning** | 2026-07-10 | **52** (-13: ResultsView solid-ersatt, ESLint-whitelist krympt; kvar = medvetna undantag CVTemplates/Landing/WellnessQuickCard/design-system.ts) | 0 | inga |
+| **F6-städning** | 2026-07-10 | **52** (-13: ResultsView solid-ersatt, ESLint-whitelist krympt; kvar = medvetna undantag CVTemplates/Landing/WellnessQuickCard/design-system.ts) | 0 | *ej mätt* |
+| **Sidsvep 2026-08-18** | 2026-08-18 | **52** (oförändrad) | 0 | **4 rättade, fler kvar** |
+
+### 2026-08-18 — kolumnen "en-färg-violation" har aldrig varit maskinmätt
+
+Tabellen ovan sa "inga" från 2026-05-14 och framåt. Det var inte en mätning utan
+en förhoppning: `lint:design` räknar **gradienter**, inte hubbfärger, och ingen
+grind kontrollerar en-färg-regeln. Ett manuellt svep över alla sidor 18 augusti
+hittade fyra överträdelser på sidor som stått orörda sedan dess:
+
+| Sida | Vad | Åtgärd |
+|---|---|---|
+| Övningar | Fyra nyckeltalskort i mint, grön, amber och lavendel på en lavendelsida; aktiv filterpill grön | Alla följer nu `--c-*` |
+| Kompetensanalys | Lila cirkel, lila progress och lila ramar på en rosa sida. `skillColors` hade sju poster men bara `default` slogs någonsin upp — färgen kodade alltså ingenting | Domänfärg; den döda tabellen borttagen |
+| Dina resurser | CV-kortets tre knappar i gul kantlinje, grön och blå | PDF-knappen primär, övriga sekundära |
+| Dagbok | "Dagens skrivtips" i amber — portalens varningsfärg — på en lavendelsida | Domänfärg |
+
+**Kvar, ej rättade** (medvetet, kräver eget beslut): Kunskapsbankens
+kategoriikoner och Övningarnas korticoner använder olika hubbfärger som
+*kategorikodning*. Det kan försvaras som informationsbärande — men det är ett
+val som bör göras uttryckligen, inte ärvas.
+
+Så länge regeln inte är maskinmätt ska den här kolumnen skriva *ej mätt*, inte
+*inga*. Att skriva "inga" om något ingen kontrollerat är samma felklass som
+resten av planen handlar om.
 
 ### 2026-05-14-sessionen — sammanfattning
 

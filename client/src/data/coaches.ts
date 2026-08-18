@@ -505,7 +505,9 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
           'Sätt yrkesfiltret innan ortsfiltret — det ger bredare och mer relevanta resultat.',
           'Klicka "Hämta från profil" om du redan lagt önskade yrken där, så slipper du upprepa.',
           'Spara intressanta jobb med bokmärket — så hittar du dem snabbt under Sparade.',
-          'Sätt jobbevakningar (Aviseringar) för dina favorit-yrken — då får du mejl när nya jobb kommer.',
+          // Löftet om mejl togs bort 2026-08-18: utskicken är inte igång (se
+          // kommentaren i AlertsTab). Tipset beskriver nu vad bevakningen gör.
+          'Spara dina favoritsökningar som bevakningar — nästa gång du öppnar sidan står det hur många nya jobb som tillkommit sedan sist.',
         ],
         faqs: [
           {

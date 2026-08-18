@@ -41,6 +41,16 @@ import {
 const DAILY_JOB_KEY = 'jobin_daily_job';
 const DAILY_JOB_DATE_KEY = 'jobin_daily_job_date';
 const DAILY_JOB_FILTER_KEY = 'jobin_daily_job_filter';
+/*
+ * Jobben som redan visats idag. (2026-08-18)
+ *
+ * "Visa ett annat jobb" tömde cachen och laddade om sidan — varpå exakt samma
+ * sökning kördes igen och `selectBestJob` plockade samma högst rankade jobb.
+ * Knappen har alltså aldrig kunnat visa ett annat jobb. Listan här gör att
+ * urvalet hoppar över det man redan sett, och nollställs när dagen tar slut
+ * eller när poolen är slut.
+ */
+const DAILY_JOB_SEEN_KEY = 'jobin_daily_job_seen';
 
 interface DailyJobData {
   job: PlatsbankenJob;
@@ -64,6 +74,14 @@ export function DailyJobTab() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [dailyJob, setDailyJob] = useState<DailyJobData | null>(null);
+  /*
+   * Skilj "Platsbanken svarade inte" från "vi hittade inget åt dig". (2026-08-18)
+   * Förut blev båda samma tomläge: "Vi kunde inte hitta ett jobb åt dig idag" —
+   * ett omdöme om användarens profil när felet i själva verket låg hos AF.
+   */
+  const [fel, setFel] = useState<string | null>(null);
+  /* Räknare som "Visa ett annat jobb" stegar. Se kommentaren vid handleRefresh. */
+  const [omladdning, setOmladdning] = useState(0);
   const [showDetails, setShowDetails] = useState(false);
   const [hasActioned, setHasActioned] = useState(false);
 
@@ -92,7 +110,11 @@ export function DailyJobTab() {
           typeof l === 'string' ? l : (l.name || l.language)
         ).filter(Boolean) || [];
         profile.skills = [...new Set([...skills, ...certificates, ...languages])];
-        profile.workTitles = cv.work_experience?.map((e: { title?: string }) => e.title).filter(Boolean) || [];
+        // `cvApi.getCV()` plockar ut `work_experience` ur raden och returnerar
+        // den som `workExperience` (cvApi.ts:34-37). Den gamla raden läste
+        // därför alltid undefined — yrkestitlarna ur CV:t har aldrig påverkat
+        // dagens jobb. Fältet är otypat, så varken tsc eller lint såg det.
+        profile.workTitles = cv.workExperience?.map((e: { title?: string }) => e.title).filter(Boolean) || [];
       }
 
       // Load interest guide results
@@ -137,6 +159,7 @@ export function DailyJobTab() {
 
     const loadDailyJob = async () => {
       setIsLoading(true);
+      setFel(null);
 
       try {
         const filterKey = jobSearchFiltersKey(filters);
@@ -174,7 +197,7 @@ export function DailyJobTab() {
             employmentType: filters.employmentType || undefined,
             publishedWithin: filters.publishedWithin,
             limit: 50,
-          }).catch(() => ({ hits: [] }));
+          });
           allJobs = result.hits;
         } else {
           // No active filter — fall back to profile-driven search (existing logic).
@@ -196,16 +219,21 @@ export function DailyJobTab() {
 
           if (searchQueries.length > 0) {
             const uniqueQueries = [...new Set(searchQueries)].slice(0, 3);
+            // En av tre frågor som failar är inget att larma om — men om alla
+            // tre faller är det ett avbrott, inte ett tomt resultat. Därför
+            // sparas det första felet och kastas vidare när inget kom in.
+            let forstaFelet: unknown = null;
             const searchPromises = uniqueQueries.map(query =>
               searchJobs({
                 query,
                 municipality: userProfile.location || undefined,
                 limit: 30,
                 publishedWithin: 'week'
-              }).catch(() => ({ hits: [] }))
+              }).catch((e) => { forstaFelet = forstaFelet ?? e; return { hits: [] as PlatsbankenJob[] }; })
             );
 
             const results = await Promise.all(searchPromises);
+            if (results.every(r => r.hits.length === 0) && forstaFelet) throw forstaFelet;
             const seenIds = new Set<string>();
 
             results.forEach(result => {
@@ -243,7 +271,24 @@ export function DailyJobTab() {
           return;
         }
 
-        const selectedJob = selectBestJob(allJobs, userProfile);
+        // Hoppa över det som redan visats idag. Är poolen slut börjar vi om
+        // på hela listan i stället för att svara "inga jobb".
+        let sedda: string[] = [];
+        try {
+          const rå = localStorage.getItem(DAILY_JOB_SEEN_KEY);
+          const tolkad = rå ? JSON.parse(rå) : null;
+          if (tolkad && tolkad.datum === getTodayKey() && Array.isArray(tolkad.ids)) sedda = tolkad.ids;
+        } catch { /* trasig cache = inga sedda */ }
+
+        const kvar = allJobs.filter(j => !sedda.includes(j.id));
+        const pool = kvar.length > 0 ? kvar : allJobs;
+        if (kvar.length === 0) sedda = [];
+
+        const selectedJob = selectBestJob(pool, userProfile);
+        localStorage.setItem(
+          DAILY_JOB_SEEN_KEY,
+          JSON.stringify({ datum: getTodayKey(), ids: [...sedda, selectedJob.job.id] }),
+        );
 
         // Cache with filter signature so a filter change forces a fresh pick
         localStorage.setItem(DAILY_JOB_DATE_KEY, getTodayKey());
@@ -255,6 +300,7 @@ export function DailyJobTab() {
         }
       } catch (error) {
         console.error('Failed to load daily job:', error);
+        if (isMounted) setFel(t('jobSearch.dailyTab.serviceError'));
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -269,7 +315,7 @@ export function DailyJobTab() {
     };
     // Re-run when filter signature changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filtersLoaded, jobSearchFiltersKey(filters)]);
+  }, [filtersLoaded, jobSearchFiltersKey(filters), omladdning]);
 
   // Select the best job based on user profile and various criteria
   const selectBestJob = (jobs: PlatsbankenJob[], userProfile: UserProfileData): DailyJobData => {
@@ -413,15 +459,21 @@ export function DailyJobTab() {
     };
   };
 
-  // Handle refresh (get new job)
+  /*
+   * Hämta ett nytt jobb utan att ladda om sidan. (2026-08-18)
+   *
+   * `window.location.reload()` slängde bort scrollposition, öppna paneler och
+   * hela React-trädet för att åstadkomma något en tillståndsändring gör — och
+   * gav dessutom samma jobb tillbaka, se DAILY_JOB_SEEN_KEY ovan. Effekten
+   * lyssnar nu på `omladdning`, så en stegning räcker.
+   */
   const handleRefresh = () => {
     localStorage.removeItem(DAILY_JOB_KEY);
     localStorage.removeItem(DAILY_JOB_DATE_KEY);
     setDailyJob(null);
     setShowDetails(false);
     setHasActioned(false);
-    // Reload will trigger useEffect
-    window.location.reload();
+    setOmladdning(n => n + 1);
   };
 
   if (isLoading) {
@@ -434,6 +486,22 @@ export function DailyJobTab() {
           {t('jobSearch.dailyTab.loading')}
         </p>
       </div>
+    );
+  }
+
+  if (fel) {
+    return (
+      <Card className="p-8 text-center">
+        <RefreshCw className="w-12 h-12 text-stone-400 mx-auto mb-4" aria-hidden="true" />
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
+          {t('jobSearch.dailyTab.serviceErrorTitle')}
+        </h3>
+        <p className="text-stone-600 dark:text-stone-400 mb-4">{fel}</p>
+        <Button onClick={handleRefresh}>
+          <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+          {t('jobSearch.dailyTab.tryAgain')}
+        </Button>
+      </Card>
     );
   }
 

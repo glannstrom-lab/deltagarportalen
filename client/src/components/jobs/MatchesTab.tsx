@@ -14,7 +14,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Sparkles, Target, AlertCircle, FileText,
-  Briefcase, Loader2, RefreshCw, TrendingUp, Award, Compass,
+  Loader2, RefreshCw, Compass,
   Settings2, Car
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
@@ -780,30 +780,32 @@ export function MatchesTab() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-3">
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 border border-green-100">
-          <div className="flex items-center gap-2 mb-1">
-            <Award className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium text-green-700">{t('jobs.matches.stats.goodMatch')}</span>
-          </div>
-          <p className="text-2xl font-bold text-green-700">{stats.high}</p>
-        </div>
-        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-100">
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingUp className="w-4 h-4 text-amber-600" />
-            <span className="text-sm font-medium text-amber-700">{t('jobs.matches.stats.possible')}</span>
-          </div>
-          <p className="text-2xl font-bold text-amber-700">{stats.medium}</p>
-        </div>
-        <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 border border-stone-100 dark:border-stone-700">
-          <div className="flex items-center gap-2 mb-1">
-            <Briefcase className="w-4 h-4 text-stone-600 dark:text-stone-400" />
-            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('jobs.matches.stats.total')}</span>
-          </div>
-          <p className="text-2xl font-bold text-stone-700 dark:text-stone-200">{stats.total}</p>
-        </div>
-      </div>
+      {/*
+        En mening i stället för tre mätarkort. (2026-08-18)
+
+        Korten hette "Bra match / Möjliga / Totalt" i emerald, amber och stone
+        — tre främmande färger på en persikasida (DESIGN.md §4), 13 uppmätta
+        kontrastfel, och "Tot…" avklippt vid 390 px.
+
+        Värre var orden: KPI:ns "Bra match" räknade score >= 70, vilket är
+        exakt det korten kallar "STARK match". KPI:ns "Möjliga" var 50–69 =
+        kortens "Bra match". Samma två ord, två betydelser, på samma skärm.
+
+        Och "Totalt" var inget totaltal: varje källa klipper vid `slice(0, 50)`,
+        så siffran är ett tak. Meningen säger därför "vi visar", inte "vi hittade".
+      */}
+      <p className="m-0 text-[13.5px] text-stone-700 dark:text-stone-300">
+        {stats.high > 0
+          ? t('jobs.matches.stats.sentence', {
+              defaultValue: 'Vi visar {{total}} jobb här. {{high}} av dem ser ut som starka matchningar.',
+              total: stats.total,
+              high: stats.high,
+            })
+          : t('jobs.matches.stats.sentenceNoStrong', {
+              defaultValue: 'Vi visar {{total}} jobb här, sorterade efter hur väl de liknar det du fyllt i.',
+              total: stats.total,
+            })}
+      </p>
 
       {/* Profile preferences info */}
       {sourceData?.preferences && (

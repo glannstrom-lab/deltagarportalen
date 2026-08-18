@@ -13,7 +13,7 @@
     "build:only": "vite build",
     "sitemap": "node scripts/generate-sitemap.cjs",
     "lint": "eslint .",
-    "lint:ci": "eslint . --max-warnings 128",
+    "lint:ci": "eslint . --max-warnings 122",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",

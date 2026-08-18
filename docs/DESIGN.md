@@ -1,6 +1,11 @@
 # Designprinciper för jobin.se
 
-> **Status:** Aktiv från 2026-05-10. Ersätter 2026-04-30-versionen.
+> **Status:** Aktiv från 2026-08-18 (v3.2). Ersätter 3.0 (2026-05-10).
+>
+> **3.1 (2026-08-17)** tog bort hjältarna och införde sidoskenan. **3.2 (2026-08-18)**
+> gjorde om Översikt till fyra kategorier och gav rådgivarkolumnen regler.
+> Manifestet (§1) och Voice & Tone (§2) är oförändrade sedan 3.0 — det är skelettet
+> som bytts, inte hållningen.
 > **Filosofi:** Ton först, system därefter. Ingen designregel överskrider Manifestet.
 > **Hur dokumentet läses:** Avsnitt 1–3 är obligatorisk läsning innan du designar något. Avsnitt 4–9 är referens när du implementerar. Avsnitt 10 är legacy och bakåtkompatibilitet.
 
@@ -106,64 +111,135 @@ Tomma listor och nyligen anslutna sidor följer samma copywriting-mall:
 
 ---
 
-## 3. De två lägena
+## 3. Sidans skelett
 
-Portalen designas i två klart åtskilda lägen. **All annan designregel följer av detta.**
+> **Ändrat i 3.1 och 3.2.** Fram till 2026-08-17 stod här ett två-läges-system:
+> full pastell-hjälte på hubbarna, neutralt grå hjälte på verktygssidorna.
+> **Båda hjältarna är borta.** Skälet var mätt: hjälten tog ~180 px överst på 37
+> sidor, ovanpå navigationens 82, och sa oftast bara det som redan stod i
+> navigationen. `PageHero.tsx` ligger kvar i koden men anropas inte av
+> `PageLayout` — bygg inget nytt på den.
 
-### Läge A — Hub-landning *(ankomstet)*
+Portalen har tre sorters sidor och två ytor runt dem. Allt annat följer av det.
 
-Sidor: `/oversikt`, `/jobb`, `/karriar`, `/resurser`, `/min-vardag`.
+### Verktygssidor — skena till vänster
 
-Detta är hubbens *hej-läge*. Användaren har precis ankommit till en zon. Hjältesektionen får använda hub-färgen som **full pastell-bakgrund** med stor titel, varm subtitel och eventuellt en dekorativ gradient-glow. Detta är inbjudan till en hel zon.
+Sidor: `/cv`, `/job-search`, `/wellness`, `/career` … (~25 st).
 
-```
-┌──────────────────────────────────────────────┐
-│                                              │
-│   👋 Hej Anna                                │
-│   Här söker du jobb och håller koll          │
-│   på dina ansökningar.                       │
-│                                              │
-└──────────────────────────────────────────────┘
-   bg = --c-bg (hub-pastell, full)
-   border-radius = 24px
-   subtil radial-gradient i --c-accent (top-right) tillåten
-```
-
-### Läge B — Verktygssida *(arbetet i zonen)*
-
-Sidor: allt under hub-landningen — `/cv`, `/job-search`, `/wellness`, `/career` osv. (~25 sidor).
-
-Detta är *fokus-läge*. Användaren arbetar med ett verktyg. Hjältesektionen är **neutralt grå** med en 4 px vänsterkant i hub-färgen så användaren ser vilken zon hon är i, men sidans uppmärksamhet ska gå till innehållet.
+Rubrik, beskrivning, flikar, knappar och nyckeltal ligger i en **186 px smal
+skena till vänster** (`SidRail.tsx`), inte i en hjälte överst. Innehållet börjar
+direkt. Flikarna blir en lodrät lista, vilket rymmer längre etiketter utan att
+klippas.
 
 ```
-┌──────────────────────────────────────────────┐
-│▌ Skapa ditt CV                               │
-│  Bygg ett CV som öppnar dörrar.              │
-│  ┌────────────────────────────────────┐      │
-│  │ Skapa  Mina CV  Anpassa  ATS  Tips │      │
-│  └────────────────────────────────────┘      │
-└──────────────────────────────────────────────┘
-   bg = --header-bg (varm grå)
-   border-left = 4px var(--c-solid)
+┌────────────┬──────────────────────────────┬──────────────┐
+│ Ditt CV    │                              │  Rådgivare   │
+│ Skapa och  │   innehållet börjar här,      │  (300 px)    │
+│ hantera    │   direkt under navigationen   │              │
+│            │                              │              │
+│ ▸ Design   │                              │              │
+│   Om dig   │                              │              │
+│   Profil   │                              │              │
+└────────────┴──────────────────────────────┴──────────────┘
+   186 px        flexar                       xl och uppåt
 ```
+
+Tre saker skenan kan som inte syns om man bara läser `PageLayout`:
+
+- **`sidoflikar`** — för de fem sidor vars flikar lever i eget tillstånd i
+  stället för i rutten (LinkedIn, Dagbok, Externa resurser, Profil, Resurser).
+- **`markering`** — kort text på en flik ("Att fylla i"). Ersätter prickar; en
+  prick utan text finns inte för en skärmläsare.
+- **`skenSlot.ts`** — en portal så ett *ruttbarn* kan lägga innehåll i skenan.
+  CV-byggarens stegöversikt använder den. Ett barn kan inte skicka innehåll
+  uppåt via props, och två skenor bredvid varandra var precis felet som skulle bort.
+
+**På mobil finns ingen skena.** Där renderas flikarna som en scrollande rad
+ovanför innehållet, och rubrik, knappar och nyckeltal står överst i flödet.
+
+### Hubbsidor — rubrikrad och kortgrid
+
+Sidor: `/jobb`, `/karriar`, `/resurser`, `/min-vardag`.
+
+En rad med hubbikon, hälsning och en beskrivningsrad — sedan en tät grid av kort
+till hubbens verktyg (`HubPage.tsx`). Fyra kolumner från 1280 px, tre vid 1024,
+en på telefon.
+
+Kortets `status` är den enda plats där kortet säger något om *dig* ("5 aktiva",
+"Senast 27 juli"). **Utelämna den när hubben inte hämtar någon uppgift om
+verktyget.** En text som "Utforska" eller "Inte testad" i statusposition ser ut
+som ett besked men är antingen en uppmaning utan underlag eller ett påstående
+som aldrig kan bli sant igen. Sju sådana togs bort 2026-08-17, fyra till
+2026-08-18.
+
+### Översikt — fyra kategorier
+
+Sidan är portalens startpunkt; `/` skickar hit. Den har varken skena eller
+hjälte, utan hälsning + **fyra kategorier i ett rutnät med delad hårlinje**:
+Söka jobb, Karriär, Resurser, Din vardag. Fyra rader var, plus en fot till
+hubben där resten finns.
+
+Tre regler gäller varje rad (`OversiktPanel.tsx`):
+
+1. **En rad utan underlag visar en invit** — "skriv ditt första" — aldrig `0`,
+   aldrig ett tankstreck. Nollan är värst av de tre: den ser ut som ett resultat.
+2. **Färgad strimma = ett faktum om dig. Grå = en väg in.** Utan skillnaden läses
+   fyra rader som fyra ogjorda uppgifter.
+3. **Laddning och fel är inte tomhet.** Innan svaret är inne får ingen rad påstå
+   något om användaren. Se `PanelTillstand`.
+
+### Rådgivarkolumnen — till höger
+
+En 300 px kolumn på skärmar från 1280 px, i dokumentflödet (`RadgivarPanel.tsx`).
+Under `xl` faller den sist på sidan och är då hopfälld, eftersom sidan oftast
+redan visat samma råd infogat via `RadgivarTips`.
+
+**Kolumnen ritas bara på sidor som har rådgivarinnehåll** (`harRadgivarinnehall`
+i `data/radgivarRutter.ts`). Sidor utan innehåll ska inte reservera 300 px + gap
+— en tom kolumn ser exakt likadan ut som marginal, vilket är varför den kunde
+stå tom på fyra hubbar i månader utan att någon såg det.
+
+Under rådgivarna ligger **Lugnare läge** (`LugnarePanel.tsx`): fokusläge och
+pauspåminnelse, hopfällt, med en rad om vad varje inställning faktiskt gör.
+
+### Sidbredd
+
+Full bredd. Menyerna ligger vid kanterna och mitten flexar.
+**`.sidbredd` i `tokens.css` är enda stället att justera det** — inte `max-w-*`
+på enskilda sidor. Över 2000 px sätts ett tak på 120rem så radlängderna inte blir
+oläsbara.
 
 ### Vad som ALDRIG händer
 
-- Hub-färgad full hero på en verktygssida (det skapar tutti-frutti-känsla).
-- Neutral grå hero på en hub-landning (då tappar zonen sin identitet).
-- Olika hero-stil mellan två sidor i samma hub (det förvirrar tillhörigheten).
+- En hjälte som upprepar det navigationen redan säger.
+- `max-w-*` på en enskild sida — då blir två grannsidor olika breda. Sju sidor
+  bar kvar `max-w-7xl` till 2026-08-18 och renderade 1280 px där grannarna hade
+  1548.
+- En reserverad kolumn utan innehåll.
+- En statusrad, ett tal eller en etikett som inte vilar på hämtad data.
 
 ### Hub-tillhörighetstabellen
 
 | Hub | Path | Färg | Soft-bg | Accent | Solid (CTA) | Text |
 |-----|------|------|---------|--------|-------------|------|
-| **Översikt** | `/oversikt` | Mint | `#ECF7F1` | `#C5E5D4` | `#1F8A66` | `#155F47` |
-| **Söka jobb** | `/jobb` | Persika | `#FCF1E6` | `#F5D3B5` | `#C97A2E` | `#8B5418` |
+| **Översikt** | `/oversikt` | Mint | `#ECF7F1` | `#C5E5D4` | `#1A7757` | `#155F47` |
+| **Söka jobb** | `/jobb` | Persika | `#FCF1E6` | `#F5D3B5` | `#A85D24` | `#8B5418` |
 | **Karriär** | `/karriar` | Rosa/Coral | `#FBEEEF` | `#F2C8CD` | `#B85363` | `#843845` |
-| **Resurser** | `/resurser` | Sky | `#ECF4FA` | `#C8DEEF` | `#2F7DB5` | `#1F5985` |
+| **Resurser** | `/resurser` | Sky | `#ECF4FA` | `#C8DEEF` | `#266DA0` | `#1F5985` |
 | **Min vardag** | `/min-vardag` | Lavendel | `#F2EDF8` | `#D4C5EB` | `#7058A8` | `#4F3D7C` |
 
-Sanning: `client/src/components/layout/navigation.ts::navHubs[].memberPaths`. **En sida tillhör exakt en hub.** Sidor utanför hubbarna (Help, Settings, Login) använder neutral grå utan hub-accent.
+> **Tre solid-färger ändrades efter 3.0 för att de föll WCAG AA mot vitt.**
+> Översikt `#1F8A66` → `#1A7757` (4,29 → 5,61), Söka jobb `#C97A2E` → `#A85D24`
+> (3,32 → 4,91), Resurser `#2F7DB5` → `#266DA0` (4,44 → 5,77). Tabellen ovan
+> visade de gamla värdena fram till 2026-08-18 — den som kopierade därifrån
+> återinförde alltså ett kontrastfel. **Sanningen är `tokens.css`**, inte den
+> här tabellen; den finns här för att gå att läsa, inte för att kopieras.
+
+Sanning för medlemskap: `client/src/components/layout/navigation.ts::navHubs[].memberPaths`.
+**En sida tillhör exakt en hub.** Sidor utanför hubbarna (Help, Settings, Login)
+använder neutral grå utan hub-accent. Hubbkorten vaktas mot navigationen av
+`pages/hubs/__tests__/hubbkort-mot-navigation.test.ts` — de två gled isär åt
+båda håll före 2026-08-17.
 
 | Hub | Undersidor (verktygssidor som ärver hub-färgen) |
 |-----|----------------|
@@ -235,8 +311,8 @@ Om du ser mer än 10 % solid-färg per skärm är det för intensivt. Om du ser 
 
 | Roll | Storlek | Vikt | Användning |
 |------|---------|------|------------|
-| Hero-titel | 32-40 px | 700 | Hub-landningens stora rubrik |
-| Sidotitel | 22-28 px | 700 | Verktygssidans header-titel |
+| Sidhälsning | 22-26 px | 600-700 | Översiktens "God kväll, Anna" — enda stora rubriken kvar |
+| Skenans titel | 17 px | 600 | Verktygssidans rubrik i sidoskenan |
 | Sektionsrubrik | 16-18 px | 600 | "Dagens aktiviteter" |
 | Body | 14-16 px | 400 | Normaltext |
 | Caption / muted | 12-13 px | 400-500 | Etiketter, hjälptext |
@@ -277,7 +353,7 @@ Komponenter staplas med **gap-tokens**, aldrig med marginaler.
 
 - **Default** — `bg-white`, `border-stone-150`, `radius-12`. Ingen skugga. Hover: subtil elevation `0 4px 8px rgb(0 0 0 / 0.04)`.
 - **Tinted** — `bg-[--c-bg]`, `border-[--c-accent]`. Används när kortet hör tematiskt till sidans hub.
-- **HubCard (Översikt)** — vitt kort, hub-accent BARA på 4 px topp-strecket, ikon-tile och aktivitets-prick. Inte tintat. Skapar lugn yta där 4 hub-färger samexisterar.
+- **Kategorikolumn (Översikt)** — vit yta i ett rutnät med delad hårlinje (`gap-px` på `stone-200`). Hubbfärgen sitter BARA i kolumnhuvudet och i radernas 3 px strimma. Det är så fyra hubbfärger kan samexistera utan att bli konfetti. Färgen sätts med `data-domain` på kolumnen, aldrig hårdkodat.
 
 ### KPI-kort
 
@@ -532,10 +608,17 @@ Komponenter konsumerar **alltid** `--c-bg` / `--c-accent` / `--c-solid` / `--c-t
 - Tokens: `client/src/styles/tokens.css`
 - Hub→`data-domain`-mappning: `client/src/lib/domains.ts`
 - Hub-definitioner: `client/src/components/layout/navigation.ts::navHubs`
-- PageHeader (verktygssida): `client/src/components/layout/PageTabs.tsx::PageHeader`
+- Sidoskena (verktygssida): `client/src/components/layout/SidRail.tsx`
+- Sidbredd: `.sidbredd` i `client/src/styles/tokens.css` — enda stället
 - Hub-landning (mall): `client/src/pages/hubs/HubPage.tsx`
-- Översikt-hero: `client/src/pages/hubs/HubOverview.tsx`
-- Sidebar: `client/src/components/layout/Sidebar.tsx`
+- Översiktens kategorier: `client/src/pages/hubs/OversiktPanel.tsx`
+- Rådgivarkolumn: `client/src/components/radgivare/RadgivarPanel.tsx`
+- Vilka sidor har rådgivare: `client/src/data/radgivarRutter.ts`
+- Toppnav (två rader): `client/src/components/layout/TopNav.tsx`
+- Sidebar: `client/src/components/layout/Sidebar.tsx` — **renderas inte**
+  när toppnaven är på, vilket den är som default. Lägg aldrig något som
+  bara finns där (det har hänt tre gånger: besökshistoriken, skip-länken
+  till navigationen, och konsulentens väg till sin egen vy).
 
 ### Maskinella regler (eslint / lint-staged)
 
@@ -557,10 +640,13 @@ Använd den här som PR-review:
 - [ ] Ingen prestationsmätning ("0 av 5") i hjälte-position
 - [ ] Användarens namn används där det går
 
-**Lägen (avsnitt 3)**
-- [ ] Hub-landningssida har full pastell-hero
-- [ ] Verktygssida har neutral grå hero med 4 px hub-vänsterkant
-- [ ] Inga blandade lägen på samma sida
+**Skelett (avsnitt 3)**
+- [ ] Verktygssida använder skenan — ingen ny hjälte
+- [ ] Ingen `max-w-*` på sidan (bredd sätts av `.sidbredd`)
+- [ ] `actions` och `stats` syns även på mobil, inte bara i skenan
+- [ ] Ingen reserverad kolumn utan innehåll
+- [ ] Ingen status eller siffra utan hämtad data bakom sig
+- [ ] Laddning och fel går att skilja från tomt
 
 **Färg (avsnitt 4)**
 - [ ] En hub-färg på sidan (utom Översikt)
@@ -594,21 +680,30 @@ Använd den här som PR-review:
 
 | Version | Datum | Förändring |
 |---------|-------|------------|
+| **3.2** | 2026-08-18 | *Översikt blev fyra kategorier med innehåll* — nyckeltalsremsa, "Fortsätt där du var", pipelinekort, "Framöver", måendekurva och konsulentkort sorterade under Söka jobb / Karriär / Resurser / Din vardag. Rådgivarkolumnen fick regler: ritas bara där det finns innehåll, öppnar sidans egen första rådgivare, och bär "Lugnare läge" under sig. Invit i stället för nolla eller tankestreck. Tre lägen: laddar / fel / klart. |
+| **3.1** | 2026-08-17 | *Hjältarna borta.* Sidoskena till vänster på 37 verktygssidor, rubrikrad + kortgrid på hubbarna, full sidbredd via `.sidbredd`, tvåradig toppnav, rådgivarna ur hörnet och in i en kolumn. Beslut Mikael: "för mycket space och för lite innehåll, svårt att hitta saker". |
 | **3.0** | 2026-05-10 | *Manifest + Voice & Tone först.* Två-läges-arkitektur (hub-landning vs verktygssida) tydliggjord. En-färg-per-sida-regel införd. Empty-state-komponenten kontraktualiserad. Onboarding-konsolidering. Personalisering. Logo-konsolidering. Lint-regler föreslagna. |
 | 2.0 | 2026-04-30 | 5 hub-färgscheman (Översikt + 4 hubbar). Hubbar är organiseringsprincipen. Undersidor ärver moderhubbens färg. |
 | 1.5 | 2026-04-29 | 5 abstrakta domäner (action/info/activity/wellbeing/coaching). Bytt namn — koncept lever kvar som CSS-tokens. |
 | 1.0 | 2026-04-28 | Action/Reflektion/Utåtriktat (3-domän). **Borttaget koncept.** CSS-aliaser kvar för rollback. |
 
-### Vad som är klart efter 3.0-passet
+### Vad som är klart
 
-- ✅ Hub-arkitektur med 5 hubbar och tydlig medlemskaps-mappning
-- ✅ Translokerade ton- och språkregler
-- ✅ Två-läges-system tydliggjort
+- ✅ Hub-arkitektur med 5 hubbar och tydlig medlemskaps-mappning (3.0)
+- ✅ Ton- och språkregler (3.0)
+- ✅ Hjältarna borta, skena införd på alla verktygssidor (3.1)
+- ✅ Full sidbredd på ett ställe (`.sidbredd`) (3.1, sju eftersläntrare 3.2)
+- ✅ Empty-state-komponenten kontraktualiserad
+- ✅ Lint-regler maskinella: `lint:design` (gradienter, tak 52), `lint:ci`,
+     `lint:schema` — de tre "bör införas" nedan är alltså införda
+- ✅ Personalisering ("Hej {namn}") på Översikt och hubbarna
+- ✅ Översikt: fyra kategorier med innehåll, invit i stället för nolla (3.2)
 
 ### Vad som återstår *(följs upp i implementation)*
 
-- ⏳ Hub-landningssidor: implementera "Hej {namn}"-personalisering
-- ⏳ Verktygssidor (~25 st): färgrevision så endast en hub-färg används per sida
+- ⏳ Verktygssidor: färgrevision så endast en hub-färg används per sida —
+     Övningar, Kompetensanalys, Dagbok och Dina resurser rättade 2026-08-18,
+     resten oreviderade
 - ⏳ Empty-state-komponent: konsolidera 5 nuvarande mönster till 1
 - ⏳ Onboarding-konsolidering: ersätt 4+ separata onboardings med en
 - ⏳ Career, Övningar: redesign till "max 5-7 saker synliga utan val"
@@ -628,4 +723,7 @@ Om du undrar varför något är som det är: läs avsnitt 16.
 
 Det här dokumentet är inte sanning för evigt. Det är **sanningen idag** och uppdateras när vi lär oss något nytt om vår målgrupp.
 
-*Senast uppdaterad: 2026-05-10*
+*Senast uppdaterad: 2026-08-18 (v3.2). Vid konflikt mellan det här dokumentet
+och koden gäller koden — och då ska dokumentet rättas samma dag. §3 stod fel
+i tre månader efter att hjältarna togs bort, och hubbtabellens hex-värden
+pekade under tiden på tre färger som bytts ut för att de föll WCAG AA.*

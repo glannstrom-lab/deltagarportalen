@@ -27,7 +27,9 @@ export function SourceToggle({
 }) {
   const colors = {
     cv: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]',
-    interest: 'bg-amber-100 text-amber-700 border-amber-300',
+    // Amber var en varningsfärg på en persikasida (DESIGN.md §4). Alla tre
+    // källorna bär samma hubbton; ikonen skiljer dem åt, precis som på korten.
+    interest: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]',
     career: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]'
   }
 
@@ -47,7 +49,10 @@ export function SourceToggle({
       {available && count > 0 && (
         <span className={cn(
           "text-xs px-2 py-0.5 rounded-full",
-          active ? "bg-white/50" : "bg-stone-100"
+          /* `bg-white/50` var ljust även i mörkt läge — brickans siffra mättes
+             till 2,16:1. En neutral intensitetsskillnad i stället för en egen
+             färg: texten ärver knappens färg, som redan är mätt. */
+          active ? "bg-black/5 dark:bg-white/10" : "bg-stone-100 dark:bg-stone-800"
         )}>
           {count}
         </span>

@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-18** (Översikt under lupp — se sektionen direkt nedan), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,176 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-18 — Översikt under lupp, sex linser
+
+**Rapport:** https://claude.ai/code/artifact/a8594b96-c606-49ce-bcd1-d72eed8735a1
+**Designförslag:** https://claude.ai/code/artifact/1d604fce-9b52-4216-a729-43eceb6c8050
+
+En sida, sex linser: kod & arkitektur, data & ärlighet, form, tillgänglighet,
+deltagarnytta, prestanda. Valet av *en* sida i stället för hela portalen gjordes
+för att `/` skickar dit — Översikt är första renderingen i praktiskt taget varje
+session, och den hade aldrig granskats på djupet.
+
+Tre fynd kom fram oberoende i fem av sex rapporter: sidan påstod att du inte
+gjort något medan den laddade, två räknare om samma ansökningar motsade varandra
+på samma skärm, och sidan hade inget centrum. Alla tre är åtgärdade.
+
+### Åtgärdat samma dag (commit `418e6fb3` och `00120576`)
+
+| Fynd | Vad det var | Bevis |
+|---|---|---|
+| Laddningstillståndet ljög | `isLoading` fanns och användes aldrig | 1 369 → 2 069 ms på bredband, 13,8 → 21,2 s på 3G. Efteråt: noll mätpunkter påstod något utan data |
+| Två räknare gick isär | `buildApplicationStats` hinkade 5 statusnycklar av 11, varav `closed` inte finns i typen | Två av sex användare med ansökningar såg en total som inte gick ihop. Nu vaktat av ett test som itererar hela `ApplicationStatus` |
+| Fyra nollor till 86 av 92 konton | Pipelinekortet villkorades på `segments.length > 0`, som alltid är 4 | Kortet gate:as nu på `total` |
+| `interview_sessions` tom i hela prod | Simulatorn skrev bara till localStorage; DB-vägen skickade fyra kolumnnamn som inte finns + utelämnade NOT NULL `job_title` | Nyttolasten verifierad mot prod-schemat i en rollbackad transaktion |
+| Engelska fick svensk sida | 37 `hubOverview.panel.*`-nycklar saknades i BÅDA språkfilerna | Efteråt: APPLICATIONS · saved and sent · 3 weeks ago · TUESDAY 18 AUGUST |
+| `onboarded_hubs` nollställdes | Mutationen läste tom cache vid mount och skrev över servern | Prod-fördelningen (59/15/14/2/2) var förenlig med "senaste sessionen" |
+| Mörkt läge oläsbart i **hela portalen** | `accessibility.css` satte `.text-stone-400/500` med `!important` utan mörkt-läges-villkor | 2,29:1 → 6,93:1 över 29 noder; ljust oförändrat |
+| Skip-länk till navigationen död på desktop | Id:t bor i `Sidebar`, som inte renderas med toppnaven på | Fokus landar nu på "Huvudkategorier" |
+| Horisontell scroll vid 320/390 px | `truncate`-rubrik med 434 tecken jobbannons sköt ut griden **inne i `<main>`** | 548 → 390. Dokumentet var 390, så ett vanligt overflow-test såg inget |
+| Rådgivarkolumnen öppnade fel person | Panelen monteras inte om vid klientnavigering | /resurser och /min-vardag stod helt hopfällda |
+| Fyra hubbkort med status utan underlag | "Inte testad" hade varken villkor eller datakälla | Stod kvar även för den som gjort Intresseguiden |
+
+Dessutom: Översikt lades om till **fyra kategorier med innehåll** (förslag A),
+de fyra hubbarna fick **rådgivare**, fokusläget fick en synlig ingång
+("Lugnare läge"), och konsulent/admin fick en väg tillbaka till sin arbetsyta
+från deltagarvyn. DESIGN.md skrevs om till v3.2 — §3 hade beskrivit ett system
+som inte funnits sedan 17 augusti, och dess hubbtabell pekade på tre färger som
+bytts ut för att de föll WCAG AA.
+
+## Genomgång 2026-08-18 (kväll) — Söka jobb, sex flikar
+
+Fem agenter gick igenom `/job-search` och dess sex flikar i kod och i
+webbläsaren (ljust och mörkt läge, 1440 px och 390 px). Rapporterna pekade åt
+samma håll som Översikt gjorde: färgen var lånad från andra hubbar, och flera
+värden var påhittade snarare än hämtade.
+
+### Åtgärdat
+
+| Fynd | Vad det var | Bevis |
+|---|---|---|
+| 21 kontrastfel över de sex flikarna | Vit text på ljus pastell i mörkt läge (1,73:1), AlertsTab skriven helt utan `dark:`-klasser, grön/amber-badge på 2,9:1 | 21 → 0, uppmätt med `e2e/mat-kontrast.cjs` i båda lägena |
+| AF-avbrott såg ut som "inga jobb" | `searchJobs` svalde varje fel och svarade `{total: 0, hits: []}` | Kastar nu vidare. Alla nio anropsställen hade redan try/catch — felet blir synligt där felläget finns |
+| Bevakningarnas badge nollades av ett AF-avbrott | `checkForNewJobs` skrev `new_jobs_count = 0` + ny `last_checked_at`, så jobben under avbrottet aldrig kunde räknas som nya | Följer av ovan: kastet hoppar över skrivningen |
+| CV:ts yrkestitlar påverkade aldrig Dagens jobb | `cv.work_experience` — `getCV()` returnerar `workExperience` (cvApi.ts:34-37) | Otypat fält, så varken tsc eller lint såg det |
+| "Visa ett annat jobb" gav samma jobb | `window.location.reload()` + deterministiskt urval ur samma sökning | Fyra klick ger nu fyra olika jobb, noll sidomladdningar |
+| Två flikar markerade samtidigt, i hela portalen | `arAktivFlik` prefixmatchar, så `/job-search` var aktiv på alla underflikar — och stod först | `aria-current="page"` satt på "Sök" när man stod på Matchningar. Vaktat av `flikMatchning.test.ts`, mutationstestat |
+| Aktiv flik utanför skärmen på 390 px | Ingen `scrollIntoView`, och aktiv pill var vit på vit | Rullas nu in i mitten; aktiv pill bär sidans hubbfärg |
+| `<dl>` med `<a>` som barn på ~25 sidor | `SidRailStats` la `<dt>/<dd>` inuti en länk — axe `definition-list` + `dlitem`, allvarlig | Listmarkering i stället, med komplett tillgängligt namn per länk |
+| Kortet var en knapp som innehöll tre knappar | axe `nested-interactive`; `aria-label` dolde ort, anställningsform och datum | `<article>` med rubriken som riktig knapp. Uppmätt efteråt: 0 `role="button"` |
+| "Visar 3 av 4 512" | Länsfiltret körs lokalt på svaret; nämnaren var AF:s totalsumma för hela sökningen | Räknaren säger nu bara "Visar X jobb" när lokal filtrering skett |
+| Sidladdningen stannade efter en sida med länsfilter | `hasMore` och nästa `offset` räknades på filtrerade träffar, inte hämtade | `rawCount` skickas nu med i svaret |
+| Löfte om mejl som aldrig skickas | `checkUserAlerts` har noll anropare och ingen schemaläggning (inga `crons`, inga `schedule:`, ingen pg_cron) | Rådgivartipset omskrivet; panelen säger rakt ut att utskicken inte är igång |
+| `onSuccess={() => getStats()}` | Ren selektor vars returvärde kastades — sparade jobb uppdaterades aldrig efter en skapad ansökan | Ersatt med `invalidateQueries` |
+| Tre saknade i18n-nycklar lästes upp som knappnamn | `jobSearch.voiceSearch` / `listening` / `suggestions` fanns i koden men i ingen språkfil | Tillagda i sv och en |
+| "..." utan text | `description?.text?.substring(0,200)` renderade tre punkter när beskrivningen saknades | Stycket utelämnas; punkterna sätts bara när texten är avklippt |
+| `--stone-500` som textfärg föll AA | #9A9892 gav 2,76:1 och 2,88:1 på alla fem hubbar | #726F6C. Alla tre användningarna är text — ingen kant, ingen ikon |
+| 2 917 rader dödkod under `components/jobs/` | Åtta filer + barreln + `types/jobs.ts`, noll importörer, osynliga bakom `jobs/index.ts` | Raderade. Typtaket **460 → 437**, eslint-taket **128 → 122** |
+
+`e2e/mat-kontrast.cjs` är kvar som verktyg: `node e2e/mat-kontrast.cjs /rutt …`
+mäter WCAG-kontrast med alfa-komposition av hela bakgrundsstacken. Den första
+versionen läste `backgroundColor` rakt av och rapporterade sju fel på Dagens
+jobb som inte fanns — varje `bg-[var(--c-bg)]/30` blev falskt röd.
+
+### Kvar på Söka jobb
+
+- **F37 — `ShareJobDialog.tsx` (228 rader) är färdigbyggd men omonterad.**
+  Jobbdelning deltagare↔konsulent. Antingen montera den eller arkivera; den är
+  klassad UTRED, inte RADERA, just för att funktionen verkar önskad.
+- **F38 — Slumpjobbets hjul har ingen tangentbordsväg.** Snurra går via knapp,
+  men resultatet annonseras inte och hjulet självt är dekorativt.
+- **F39 — `INTERESTED` finns i prod men inte i `SavedJob['status']`.** Tre rader.
+  Statusen lowercase:as till `interested`, som ingen gren hanterar — jobbet visas
+  då som "saved".
+
+### Öppet efter genomgången (Översikt)
+
+**Prestanda — startsidan gör 46 Supabase-anrop, ~10 behövs**
+
+- **E24 — `useAuth()` är en cachelös auth-lösning parallell med `authStore`.** Sex
+  hookar anropar den samtidigt på Översikt: 13 × `profiles?select=*` + 8 ×
+  `auth/v1/user` = 24,5 kB dubbletter, seriellt köade bakom gotrues lås
+  (≈455 ms innan sidans egna frågor får starta). Klientnavigering tillbaka:
+  18 anrop, noll nytta. **Störst vinst per rad kod i hela planen just nu.**
+- **E25 — `vendor-jspdf` (134 kB) är statisk dependency av entry, av misstag.**
+  Vites `__vitePreload`-hjälpare hamnade i den chunken, så varje sidladdning i
+  hela portalen hämtar jsPDF för en hjälpfunktion på några hundra byte. Verifiera
+  med `grep 'from"./vendor-jspdf' dist/assets/index-*.js`. Slå på `modulePreload`
+  igen efteråt. −2,8 s på 3G.
+- **E26 — framer-motion (43,6 kB) laddas för en intoning på 250 ms.**
+  `HubOverview.tsx` är enda importören i grafen. −2,6 s på 3G.
+- **E27 — Sentry (~87 kB) laddas vid modulevaluering**, inte efter `load`.
+- **E28 — `staleTime: 60_000` i de fem hub-hookarna** sänker den globala
+  5-minutersgränsen. 21 nya frågor per återbesök efter en minut.
+- **E29 — rådgivarnas avatarer är 512 px och renderas i 40.** `avatarSm` (128 px,
+  3 kB) finns redan i `public/coaches/`. Samma sak för hubbikonerna i Översiktens
+  kategorihuvuden. −38 kB.
+- **E30 — 146 `.br`-filer byggs och deployas men används inte.** Vercel
+  komprimerar om själv på lägre nivå: entryt går över nätet som 186,7 kB i
+  stället för byggets 151,4. ~96 kB (17 %) förlorat per laddning. Fixen ligger i
+  `client/vercel.json` → **kräver Mikaels ja.** Alternativet är att slänga
+  plugin:et och sluta betala byggtid för filer ingen läser.
+
+**Ärlighet**
+
+- **B35 — `/oversikt/historik` hittar på tidsstämplar.** Två poster får
+  `new Date().toISOString()` och sorteras därför alltid överst, märkta "Idag" —
+  tillstånd förklädda till händelser, i den vy som ska vara underlag för ett
+  konsulentsamtal.
+- **B36 — "Du har N aktiva ansökningar"** i samma vy räknar `total`, som
+  innehåller `rejected` och `withdrawn`. Fjärde instansen av samma feletikett
+  (jfr H4, B32, H29).
+
+**Produkt**
+
+- **G26 — "Framöver" läser bara `calendar_events`.** Portalen vet redan om tre
+  andra sorters framtid: `consultant_meetings`, `saved_jobs.interview_date` /
+  `follow_up_date`, och `spontaneousFollowups` (redan uträknad och hämtad på
+  Översikt, men bara renderad på `/jobb`). **En deltagare med bokat möte ser
+  "inget inbokat".** Det är också det enda innehåll som ändrar sig av sig självt,
+  alltså det starkaste återbesöksskälet som inte är prestationsmätning.
+- **G27 — aktivitetsloggen har noll läsare.** `log_user_activity` anropas från
+  sex ytor med titel och tidsstämpel; ingen vy i deltagardelen läser den. Under
+  tiden rekonstruerar historiksidan en sämre egen version. G9 behöll loggen med
+  motiveringen att G12 skulle behöva den; G12 byggdes och använder den inte.
+  **Läs loggen, eller sluta skriva den — nuläget är inte försvarbart.**
+- **G28 — en ingång för dagen som är dålig.** Fokusläget finns byggt och är bra;
+  det har nu en synlig ingång. Nästa steg vore att låta sidan svara på låg energi.
+  **Haken:** `consent_history` har noll rader för hälsa, så en måendefråga på
+  startsidan är fel ordning. Besläktad med G18.
+
+**Kod och grindar**
+
+- **C27 — `profiles.onboarded_hubs` har noll läsare.** Kolumnen skrivs vid varje
+  hubbmount (nu korrekt), men ingen vy läser den, och motivet i docstringen pekar
+  på en komponent i `archive/`. Hooken är lagad, inte försvarad.
+- **D32 — `lint:schema` kontrollerar inte kolumnnycklar i `.insert()`.** Tredje
+  gången samma lucka bär en skarp bugg (AI-teamets kalenderuppgift 2026-08-09,
+  jobbevakningen, nu `interview_sessions`). Grinden läser 742 filer och fångar
+  tabell- och kolumnREFERENSER — men en insert med påhittade fältnamn går rakt
+  igenom.
+
+**Form**
+
+- **F32 — elva typsteg på Översikt** (10, 11, 11.5, 12, 12.5, 13, 13.5, 15, 17,
+  22, 26 px), varav 40 av 46 textnoder under 14 px. DESIGN.md §5 tillåter fyra.
+  Gäller fler sidor än Översikt.
+- **F33 — mörkt läge är ärvt, inte byggt.** Kort och skal har samma färg i mörkt
+  läge (kontrast 1,00); enda avgränsningen är en ram på 1,70:1. Systersidan
+  Historik använder tokens, panelen använder Tailwind-stone — två neutralsystem
+  ett klick isär.
+- **F34 — sex odefinierade CSS-variabler.** `HubOverviewHistory.tsx` använder
+  `var(--stone-600)` och `--stone-800`; `tokens.css` har 50/100/150/200/500/700/900.
+  Färgen faller tillbaka på full textsvärta, så den dämpade hierarkin finns bara
+  i koden.
+- **F35 — profilknappen heter "C"** på desktop (initialen som tillgängligt namn).
+  På mobil är samma knapp korrekt märkt.
+- **F36 — `prefers-reduced-motion` når inte framer-motion**, som animerar med JS.
+  Portalen lovar respekt för inställningen på sin egen tillgänglighetssida.
+  `<MotionConfig reducedMotion="user">` i roten löser det.
 
 ---
 

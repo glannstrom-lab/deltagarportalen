@@ -267,17 +267,17 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 
 ```bash
 cd client
-npm run lint:ci            # eslint: 0 errors, max 128 warnings (fryst tak)
+npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (463)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (437)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run test:run           # 1 630 tester i 116 filer (~40 s, mätt 2026-08-17)
 npm run build
 ```
 
-De tre **frysta taken** (128 warnings, 463 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (122 warnings, 437 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
@@ -384,19 +384,19 @@ Streaming via `useAIStream`-hooken (anropar `/api/ai-stream`).
 2. **Designreferenser i rotmappen:** `ny1.png`–`ny5.png` (senaste designiterationer)
 3. **Sök i `client/src/components/ui/`** om komponenten redan finns — återanvänd alltid, kopiera aldrig
 
-### Designsystemet (DESIGN.md v3.0, aktivt från 2026-05-10)
+### Designsystemet (DESIGN.md v3.2, aktivt från 2026-08-18)
 Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
 
 - **Manifestet styr alla val.** Jobin är inte en jobbportal — det är en följeslagare. Tonen är "lugn vän", inte "myndighet" eller "tools-app". Inga prestationsmätningar i hjälteposition, inga gradient-knappar, inga "Aktivera"-knappar. Se DESIGN.md §1.
-- **⚠️ Två-läges-systemet med hjältar är BORTTAGET 2026-08-17 (beslut Mikael).**
-  DESIGN.md §3 beskriver fortfarande "hub-landning = full pastell-hero" och
-  "verktygssida = neutral grå hero". **Ingen av dem finns kvar i koden.** Läs §3 som
-  historik tills dokumentet är uppdaterat; det som gäller står här:
+- **Två-läges-systemet med hjältar är borttaget (2026-08-17, beslut Mikael).**
+  DESIGN.md §3 är omskrivet och beskriver nu det som finns — läs det, det är sanningen.
+  Kortversionen:
 
   | | Före | Nu |
   |---|---|---|
   | Verktygssida | `PageHero`, ~180 px överst | **Sidoskena till vänster** (`SidRail.tsx`) med rubrik, flikar, `actions` och `stats` |
-  | Hub-landning | Pastell-hjälte, 80 px ikon, datumdisc | Rubrikrad på en våning + tät kortgrid (`HubPage.tsx`) |
+  | Hubbsida | Pastell-hjälte, 80 px ikon, datumdisc | Rubrikrad på en våning + tät kortgrid (`HubPage.tsx`) |
+  | Översikt | Fyra hub-kort, sedan instrumentpanel | **Fyra kategorier med innehåll** (`OversiktPanel.tsx`) — Söka jobb, Karriär, Resurser, Din vardag |
   | Sidbredd | `max-w-7xl` (1280 px), centrerad | Full bredd; menyer vid kanterna, mitten flexar. Klassen `.sidbredd` i `tokens.css` är enda stället att justera |
 
   `PageHero.tsx` ligger kvar i koden men anropas inte från `PageLayout`. **Bygg inte
@@ -415,11 +415,36 @@ Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
   flytande ring i hörnet. Under `xl` faller panelen sist i flödet och är då hopfälld.
   `RadgivarTips` visar ETT råd infogat i arbetet — och registrerar det, så kolumnen
   inte upprepar samma mening. Se `radgivarKontext.ts`.
+
+  Tre regler som kostat buggar att lära sig:
+  - **Kolumnen ritas bara där det finns rådgivarinnehåll** — `harRadgivarinnehall()`
+    i `data/radgivarRutter.ts`. Sidor utan innehåll reserverade tidigare 324 px tomt
+    (300 + gap), vilket ser exakt ut som marginal och därför stod okommenterat i
+    månader. Egen modul just för att `coaches.ts` är 43 kB och lazy-laddas.
+  - **Panelen monteras inte om vid klientnavigering.** Bara `pathname`-propen ändras,
+    så tillstånd som "vilken rådgivare är utfälld" måste nollställas explicit —
+    annars pekar det på någon som inte finns på den nya sidan, och hela kolumnen står
+    hopfälld. Vaktat av `radgivarSidbyte.test.tsx`, som **byter sida** i stället för
+    att montera om; direktladdning såg nämligen rätt ut.
+  - **Varje påstående ska gå att belägga.** Rådgivarna lovade 2026-08-17 tjugo saker
+    portalen inte gjorde. Två av dagens texter rör integritet och är därför verifierade
+    i två lager: att dagboken är privat gäller både i UI och i RLS, och att personnummer
+    maskeras är vaktat av B29-testet. Skriv inget du inte kan visa.
+
+  Under rådgivarna ligger **Lugnare läge** (`LugnarePanel.tsx`) — fokusläge och
+  pauspåminnelse. Fokusläget nåddes tidigare bara via en textlös ikon i toppnaven.
 - **En sida = en hub-färg.** Alla pastell-element på en sida (KPI-kort, sektioner, ikon-tiles) använder samma hub-färg. Variation kommer från intensitet (50/200/700) och ikon — aldrig från olika hubars pasteller på samma sida. *Undantag: Översikt med 4 hubbar samtidigt.* Se DESIGN.md §4.
 - **5 hubbar:** Översikt (mint/`action`), Söka jobb (persika/`activity`), Karriär (rosa/`coaching`), Resurser (sky/`info`), Min vardag (lavendel/`wellbeing`). Aktiveras via `<div data-domain="...">` (sätts av `PageLayout`).
 - **Bakåtkompatibilitet:** `reflection` → wellbeing, `outbound` → activity (CSS-aliaser). Använd inte i ny kod.
 - **Inga gradients** i KPI-kort, sektionsheaders, knappar, modaler. Förbjudet enligt DESIGN.md §6.
 - **Personalisering:** Använd användarens förnamn när det finns ("Hej Anna", inte "Välkommen tillbaka"). Se DESIGN.md §2.
+- **Ett tomt fält är inte en nolla, och laddning är inte tomhet.** En rad utan
+  underlag visar en **invit** ("skriv ditt första"), aldrig `0` och aldrig ett
+  tankstreck. Och innan svaret är inne får ingenting påstå något om användaren —
+  Översikt sa "Du har inte börjat söka jobb än" i 1,4 s på bredband och 7,4 s på 3G
+  till en användare med fem ansökningar. Tre lägen krävs: laddar / fel / klart.
+  `isLoading === false` räcker inte som "klart": en fråga med `enabled: false` är
+  `pending` men inte `fetching`. Härled ur `isLoading || !data`.
 
 ### Voice & Tone (sammanfattning av DESIGN.md §2)
 - **Rubriker är inviter, inte etiketter.** "Hantera resurser" → "Dina sparade resurser".

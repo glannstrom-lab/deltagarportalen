@@ -65,6 +65,24 @@ export interface PlatsbankenJob {
 export interface JobSearchResponse {
   total: { value: number };
   hits: PlatsbankenJob[];
+  /**
+   * Antal träffar AF svarade med INNAN den lokala filtreringen. (2026-08-18)
+   *
+   * Länsfiltret finns inte i anropet till AF — det körs på svaret här nere, med
+   * en namntabell. Följden var två fel som såg ut som varandra:
+   *
+   *   · "Visar 3 av 4 512" — nämnaren var AF:s totalsumma för hela sökningen,
+   *     täljaren de tre som överlevde länsfiltret.
+   *   · Sidladdningen stannade efter första sidan, eftersom `hasMore` jämförde
+   *     de filtrerade träffarna mot sidstorleken (3 >= 20 är falskt), och
+   *     nästa `offset` räknades på filtrerade träffar i stället för hämtade.
+   *
+   * Anroparen behöver alltså båda talen. `filtreratLokalt` säger att `total`
+   * inte går att lita på som totalsumma — då ska sidan säga hur många den
+   * visar, inte hitta på en nämnare.
+   */
+  rawCount?: number;
+  filtreratLokalt?: boolean;
 }
 
 // Alias for backwards compatibility
@@ -269,11 +287,14 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     const data = await fetchFromAF<JobSearchResponse>(url);
     
     let hits = data.hits || [];
-    
+    const rawCount = hits.length;
+    let filtreratLokalt = false;
+
     // LOKAL FILTRERING - detta är nyckeln till att allt fungerar!
     
     // Filtrera på län om angivet
     if (params.region && hits.length > 0) {
+      filtreratLokalt = true;
       const regionNames = getRegionNames(params.region);
       hits = hits.filter((job: PlatsbankenJob) => {
         const jobRegion = job.workplace_address?.region || '';
@@ -305,6 +326,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       params.employmentType &&
       !(params.employmentType === 'Heltid' || params.employmentType === 'Deltid')
     ) {
+      filtreratLokalt = true;
       hits = hits.filter((job: PlatsbankenJob) =>
         job.employment_type?.label?.toLowerCase().includes(params.employmentType!.toLowerCase())
       );
@@ -313,17 +335,33 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     jobLogger.debug(`Found ${hits.length} jobs after filtering`);
 
     return {
-      // Behåll AF:s totala antal träffar (data.total) i stället för att skriva
-      // över med post-filter hits.length — annars går "Visar X av Y" sönder
-      // och infinite scroll tror att det inte finns fler jobb när första sidan
-      // är klar.
+      // AF:s totalsumma gäller bara när ingen lokal filtrering skett. Har den
+      // skett är talet en nämnare för en annan mängd än den vi visar — se
+      // kommentaren vid `rawCount` i JobSearchResponse.
       total: { value: data.total?.value ?? hits.length },
       hits: hits,
+      rawCount,
+      filtreratLokalt,
     };
     
   } catch (error) {
+    /*
+     * Kasta vidare i stället för att svara "noll jobb". (2026-08-18)
+     *
+     * Den gamla raden gjorde ett AF-avbrott omöjligt att skilja från en sökning
+     * utan träffar: användaren fick "Inga jobb hittades", och bevakningarnas
+     * `checkForNewJobs` skrev `new_jobs_count = 0` + ny `last_checked_at` —
+     * alltså nollades badgen och tidsfönstret hoppade fram, så jobben som
+     * fanns under avbrottet aldrig räknades som nya. Samma vana som beskrivs i
+     * CLAUDE.md 2026-08-09: ett påhittat värde föredrogs framför ett tomt fält.
+     *
+     * Alla nio anropsställen har egen try/catch eller `.catch(...)`, så det här
+     * ändrar ingen sidas kraschbeteende — men det gör felet synligt där det
+     * redan finns ett feltillstånd att visa (JobSearch `couldNotSearch`,
+     * Slumpjobbet, Dagens jobb).
+     */
     jobLogger.error('Search error:', error);
-    return { total: { value: 0 }, hits: [] };
+    throw error instanceof Error ? error : new Error(String(error));
   }
 }
 
