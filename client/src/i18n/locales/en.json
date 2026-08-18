@@ -9527,7 +9527,7 @@
       "skillsGap": {
         "title": "Skills analysis",
         "description": "Map your skills against a dream job.",
-        "building": "Building your profile"
+        "start": "Compare against a dream job"
       },
       "personalBrand": {
         "title": "Personal brand",
@@ -9614,7 +9614,7 @@
       "myConsultant": {
         "title": "My consultant",
         "description": "Contact your employment consultant and see notes.",
-        "notAssigned": "Not assigned yet"
+        "notAssigned": "None linked yet"
       },
       "profile": {
         "title": "Your profile",

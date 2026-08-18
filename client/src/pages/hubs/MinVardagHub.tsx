@@ -135,7 +135,11 @@ function MinVardagHubInner() {
         icon: UserCheck,
         title: t('minVardagHub.features.myConsultant.title', 'Min konsulent'),
         description: t('minVardagHub.features.myConsultant.description', 'Kontakta din arbetskonsulent och se anteckningar.'),
-        status: consultant?.full_name ? consultant.full_name : t('minVardagHub.features.myConsultant.notAssigned', 'Inte tilldelad'),
+        // "Inte tilldelad" är myndighetsspråk om något användaren inte råder
+        // över. Samma formulering som Översikt använder sedan 2026-08-18.
+        status: consultant?.full_name
+          ? consultant.full_name
+          : t('minVardagHub.features.myConsultant.notAssigned', 'Ingen kopplad än'),
         isActive: !!consultant?.full_name,
         href: '/my-consultant',
       },

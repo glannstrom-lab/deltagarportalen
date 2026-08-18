@@ -9527,7 +9527,7 @@
       "skillsGap": {
         "title": "Kompetensanalys",
         "description": "Kartlägg dina kompetenser mot ett drömjobb.",
-        "building": "Bygger upp profilen"
+        "start": "Jämför mot ett drömjobb"
       },
       "personalBrand": {
         "title": "Personligt varumärke",
@@ -9614,7 +9614,7 @@
       "myConsultant": {
         "title": "Min konsulent",
         "description": "Kontakta din arbetskonsulent och se anteckningar.",
-        "notAssigned": "Inte tilldelad"
+        "notAssigned": "Ingen kopplad än"
       },
       "profile": {
         "title": "Din profil",

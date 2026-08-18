@@ -132,9 +132,36 @@ export default function RadgivarPanel({
   const { t } = useTranslation()
   const innehall = radgivareForPath(pathname)
   const visadeRad = useVisadeTips()
-  const [oppenCoach, setOppenCoach] = useState<CoachId | null>(
-    iKolumn ? innehall?.coachIds?.[0] ?? null : null
-  )
+  const forstaCoach = innehall?.coachIds?.[0] ?? null
+  const [oppenCoach, setOppenCoach] = useState<CoachId | null>(iKolumn ? forstaCoach : null)
+
+  /**
+   * Nollställ vid sidbyte.
+   *
+   * Panelen monteras inte om vid klientnavigering — bara `pathname`-propen
+   * ändras. `oppenCoach` låg därför kvar från förra sidan, och eftersom
+   * varje sida har sin egen uppsättning rådgivare pekade den ofta på någon
+   * som inte finns här. Uppmätt 2026-08-18 med en navigering /jobb → /karriar
+   * → /resurser → /min-vardag:
+   *
+   *   /jobb        Andreas utfälld     (råkade vara först)
+   *   /karriar     ANDRA posten utfälld — 'jobbcoach' låg kvar
+   *   /resurser    ingen utfälld       — 'jobbcoach' finns inte här
+   *   /min-vardag  ingen utfälld
+   *
+   * En helt hopfälld kolumn är samma fel som den tomma kolumnen: 324 px som
+   * ser ut som marginal. Direktladdning av samma sida såg däremot rätt ut, så
+   * felet fanns bara på den väg riktiga användare tar.
+   *
+   * Justering under render i stället för `useEffect` — React dokumenterar det
+   * som rätt mönster när tillstånd ska följa en prop, och det slipper en extra
+   * rendering med fel innehåll.
+   */
+  const [senastePath, setSenastePath] = useState(pathname)
+  if (pathname !== senastePath) {
+    setSenastePath(pathname)
+    setOppenCoach(iKolumn ? forstaCoach : null)
+  }
 
   if (!innehall || innehall.coachIds.length === 0) return null
 

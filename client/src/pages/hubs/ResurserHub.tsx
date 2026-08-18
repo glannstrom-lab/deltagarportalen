@@ -106,7 +106,7 @@ function ResurserHubInner() {
         icon: Printer,
         title: t('resurserHub.features.printResources.title', 'Utskriftsmaterial'),
         description: t('resurserHub.features.printResources.description', 'Mallar och checklistor du kan skriva ut.'),
-        status: t('resurserHub.features.printResources.browse', 'Bläddra'),
+        // Ingen status — hubben vet inget om utskrifter.
         href: '/print-resources',
       },
       {
@@ -139,7 +139,7 @@ function ResurserHubInner() {
         icon: LifeBuoy,
         title: t('resurserHub.features.help.title', 'Hjälp och support'),
         description: t('resurserHub.features.help.description', 'Vanliga frågor och hur du får kontakt om något krånglar.'),
-        status: t('resurserHub.features.help.status', 'Om du kör fast'),
+        // Ingen status — hubben vet inget om hjälpsidan.
         href: '/help',
       },
     ]

@@ -179,6 +179,204 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
     },
   },
 
+  // ------------------------------------------------------- HUBBARNA (2026-08-18)
+  //
+  // De fyra hubbsidorna saknade rådgivarinnehåll helt, vilket var skälet till
+  // att `Layout` slutade reservera högerkolumnen på dem (324 px tomt vid 1440).
+  // Nu har de innehåll, så kolumnen kommer tillbaka — den här gången med något i.
+  //
+  // Varje tips nedan är kontrollerat mot vad portalen faktiskt gör. Det som inte
+  // gick att belägga står inte här. Två påståenden är verifierade i två lager:
+  //   · "dagboken ser bara du" — ingen konsulentvy läser `diary_entries`, och
+  //     tabellens enda SELECT-policy är `user_id = auth.uid()` (mätt 2026-08-18).
+  //   · "personnummer plockas bort" — servern maskerar innan anropet lämnar
+  //     portalen, vaktat av `aiHandlerResponse.test.ts` (B29).
+  // Se lärdomen 2026-08-17: rådgivarna lovade tjugo saker portalen inte gjorde.
+
+  jobbHub: {
+    coachIds: ['jobbcoach', 'mentalcoach'],
+    byCoach: {
+      jobbcoach: {
+        tips: [
+          'Börja med CV:t om du är ny här. Både brevgeneratorn och jobbmatchningen läser det, så det du fyller i en gång kommer till användning på flera ställen.',
+          'Spontanansökan letar företag, inte annonser. Uppgifterna kommer ur Bolagsverkets register, så adress och organisationsnummer stämmer.',
+          'Har du sökt ett jobb någon annanstans: lägg in det under Ansökningar ändå. Det är där du ser vad som väntar på svar.',
+        ],
+        faqs: [
+          {
+            question: 'Vilket verktyg ska jag börja med?',
+            answer: 'CV först, brev sen, sök jobb efter det. Brevet hämtar uppgifter ur CV:t, och jobbsökningen matchar mot vad du fyllt i. Gör du det i omvänd ordning får du göra samma jobb två gånger.',
+          },
+          {
+            question: 'Söker portalen jobben för mig?',
+            answer: 'Nej. Portalen hittar annonser, skriver utkast och håller ordning på vad du sökt — men du skickar in ansökan själv, hos arbetsgivaren. Det finns ingen knapp här som skickar något till ett företag.',
+          },
+        ],
+        links: [
+          { label: 'Sök jobb', href: '/job-search' },
+          { label: 'Mina ansökningar', href: '/applications' },
+          aiTeam('jobbcoach'),
+        ],
+      },
+      mentalcoach: {
+        tips: [
+          'Bestäm i förväg hur många jobb du söker den här veckan. Ett tal du klarar slår ett ambitiöst du inte gör.',
+          'Ett avslag säger ingenting om dig som person. De flesta söker många innan det klickar.',
+          'Orkar du inte söka idag? Gör en intervjuövning i stället — den kräver ingen ansökan och du kan avbryta när du vill.',
+        ],
+        faqs: [
+          {
+            question: 'Jag har sökt länge utan svar. Vad gör jag?',
+            answer: 'Byt en sak, inte allt. Prova spontanansökan i en vecka — att höra av dig till företag som inte annonserat ger ofta fler svar, för då konkurrerar du inte med hundra andra. Och ta upp mönstret med din konsulent; det kan sitta i något litet i CV:t.',
+          },
+        ],
+        links: [
+          { label: 'Intervjuträning', href: '/interview-simulator' },
+          { label: 'Skriv i dagboken', href: '/diary' },
+          aiTeam('mentalcoach'),
+        ],
+      },
+    },
+  },
+
+  karriarHub: {
+    coachIds: ['studievagledare', 'jobbcoach'],
+    byCoach: {
+      studievagledare: {
+        tips: [
+          'Intresseguiden bygger på hur du svarar, inte på ditt CV. Den kan därför föreslå yrken du aldrig tänkt på — fyra korta delar att besvara.',
+          'Kompetensanalysen jämför ditt CV mot ett jobb du väljer själv. Klistra in en riktig annons, då blir gapet konkret i stället för allmänt.',
+          'Siffrorna under Arbetsmarknad kommer direkt från Arbetsförmedlingen och ändras dagligen.',
+        ],
+        faqs: [
+          {
+            question: 'Måste jag veta vad jag vill innan jag börjar?',
+            answer: 'Nej — det är hela poängen med Intresseguiden. Den ställer frågor om vad du tycker om att göra och föreslår yrken utifrån svaren. Du kan göra om den senare; svaren är inte huggna i sten.',
+          },
+          {
+            question: 'Visar portalen vad en utbildning kostar?',
+            answer: 'Nej. Utbildningssökningen visar vad som finns och var, men inte studiemedel eller avgifter. Det avgörs av CSN och av skolan — fråga dem innan du tackar nej till något.',
+          },
+        ],
+        links: [
+          { label: 'Gör Intresseguiden', href: '/interest-guide' },
+          { label: 'Sök utbildningar', href: '/education' },
+          aiTeam('studievagledare'),
+        ],
+      },
+      jobbcoach: {
+        tips: [
+          'Ett mål som går att göra i morgon är mer värt än ett som beskriver 2030. Sätt det korta först.',
+          'Personligt varumärke är inte en reklamtext. Det är att kunna säga vad du är bra på i två meningar, utan att tveka.',
+          'En kompetens du håller på att lära dig är värd att skriva upp. "Pågående: Excel-grund" visar riktning.',
+        ],
+        faqs: [
+          {
+            question: 'Är det för sent att byta bana?',
+            answer: 'Kartlägg först vad du redan har — kompetensanalysen visar ofta att avståndet till ett nytt yrke är mindre än man trodde. Många byten kräver ingen ny examen, bara att man kan sätta ord på det man redan kan.',
+          },
+        ],
+        links: [
+          { label: 'Kompetensanalys', href: '/skills-gap-analysis' },
+          { label: 'Karriärplan', href: '/career' },
+          aiTeam('jobbcoach'),
+        ],
+      },
+    },
+  },
+
+  resurserHub: {
+    coachIds: ['digitalcoach', 'studievagledare'],
+    byCoach: {
+      digitalcoach: {
+        tips: [
+          'Kunskapsbanken är sökbar. Skriv det du undrar över med egna ord i stället för att bläddra bland kategorierna.',
+          'Externa resurser är länkar ut ur portalen — Arbetsförmedlingen, Försäkringskassan och andra. De öppnas i en ny flik, så du tappar inte det du håller på med.',
+          'Skriv ut resurser gör en PDF av det du kryssar i. Bra om du hellre läser på papper eller vill ta med något till ett möte.',
+          'AI-teamet är fem inriktningar av samma AI. Får du ett svar som inte passar — byt agent och fråga igen.',
+        ],
+        faqs: [
+          {
+            question: 'Sparas mina AI-samtal?',
+            answer: 'Ja, på ditt konto, så du kan läsa dem igen. Du kan också exportera ett samtal som PDF eller rensa chatten helt, från knapparna längst upp i AI-teamet.',
+          },
+          {
+            question: 'Vart går det jag skriver till AI:n?',
+            answer: 'Till en AI-tjänst utanför portalen — det är den som formulerar svaret. Personnummer och kontonummer plockas bort innan texten skickas dit. Resten står i integritetspolicyn, och den är värd att läsa innan du klistrar in något känsligt.',
+          },
+        ],
+        links: [
+          { label: 'Sök i Kunskapsbanken', href: '/knowledge-base' },
+          { label: 'Integritetspolicy', href: '/privacy' },
+          aiTeam('digitalcoach'),
+        ],
+      },
+      studievagledare: {
+        tips: [
+          'Läs en artikel i taget och gör det den föreslår innan du läser nästa. Tio lästa artiklar utan handling ger mindre än en genomförd.',
+          'Bokmärk det du vill komma tillbaka till — bokmärkena samlas under Dina dokument.',
+        ],
+        faqs: [
+          {
+            question: 'Var hittar jag mina egna saker?',
+            answer: 'Under Dina dokument. Där ligger ditt CV, dina personliga brev, bokmärkta artiklar och filer du laddat upp — allt på ett ställe.',
+          },
+        ],
+        links: [
+          { label: 'Dina dokument', href: '/resources' },
+          { label: 'Skriv ut material', href: '/print-resources' },
+          aiTeam('studievagledare'),
+        ],
+      },
+    },
+  },
+
+  vardagHub: {
+    coachIds: ['arbetsterapeut', 'mentalcoach'],
+    byCoach: {
+      arbetsterapeut: {
+        tips: [
+          'Kalendern här står för sig själv — den synkar inte mot Google eller Outlook. Har du dina möten där också får du lägga in dem på båda ställena.',
+          'Övningarna sparas på ditt konto. Du kan börja på en, stänga datorn, och fortsätta en annan dag.',
+          'Att logga hur du mår kräver ett samtycke, eftersom det räknas som en hälsouppgift. Du kan ta tillbaka samtycket när du vill.',
+        ],
+        faqs: [
+          {
+            question: 'Måste jag logga mitt mående varje dag?',
+            answer: 'Nej. Poängen är att se mönster över tid, inte att fylla i en rad. Loggar du några gånger i veckan syns kurvan ändå — och hoppar du en månad händer ingenting.',
+          },
+          {
+            question: 'Hur planerar jag en dag med lite energi?',
+            answer: 'Lägg det som kräver mest tankearbete där du historiskt haft mest energi, och lägg bara EN sådan sak per dag. Resten får vara enkla saker. Ser du i måendekurvan att eftermiddagarna är tunga — boka ingenting där.',
+          },
+        ],
+        links: [
+          { label: 'Öppna kalendern', href: '/calendar' },
+          { label: 'Övningar', href: '/exercises' },
+          aiTeam('arbetsterapeut'),
+        ],
+      },
+      mentalcoach: {
+        tips: [
+          'Dagboken ser bara du. Din konsulent har ingen väg in i den — skriv därför som du faktiskt känner, inte som du tror att någon vill läsa.',
+          'Skriv kort. Tre meningar räcker: vad hände, vad kände jag, vad gör jag i morgon.',
+          'En dålig dag är information, inte ett misslyckande. Den säger något om vad som tar energi.',
+        ],
+        faqs: [
+          {
+            question: 'Vad ser min konsulent av det här?',
+            answer: 'Bara det du har delat. Under Min konsulent finns en lista över exakt vilka delar som är synliga och vilka bara du ser, och du ändrar det där. Dagboken finns inte med — den är alltid din.',
+          },
+        ],
+        links: [
+          { label: 'Skriv i dagboken', href: '/diary' },
+          { label: 'Vad din konsulent ser', href: '/my-consultant' },
+          aiTeam('mentalcoach'),
+        ],
+      },
+    },
+  },
+
   // ------------------------------------------------------- PROFIL
   profile: {
     coachIds: ['jobbcoach', 'digitalcoach'],

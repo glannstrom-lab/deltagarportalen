@@ -88,7 +88,10 @@ function KarriarHubInner() {
         icon: Compass,
         title: t('karriarHub.features.interestGuide.title', 'Intresseguide'),
         description: t('karriarHub.features.interestGuide.description', 'Utforska vilka yrken som matchar dina intressen.'),
-        status: t('karriarHub.features.interestGuide.notTested', 'Inte testad'),
+        // Ingen status: hubben hämtar inget om Intresseguiden. Här stod
+        // "Inte testad" — utan villkor och utan datakälla, alltså kvar även
+        // för den som gjort guiden. Ett påstående om användaren som aldrig
+        // kunde bli sant igen. HubPage.tsx: utelämna hellre.
         href: '/interest-guide',
       },
       {
@@ -98,7 +101,9 @@ function KarriarHubInner() {
         description: t('karriarHub.features.skillsGap.description', 'Kartlägg dina kompetenser mot ett drömjobb.'),
         status: skillsAt
           ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: relativeShort(skillsAt, t) })
-          : t('karriarHub.features.skillsGap.building', 'Bygger upp profilen'),
+          // "Bygger upp profilen" påstod att systemet höll på med något.
+          // Ingenting byggs; analysen görs när användaren startar den.
+          : t('karriarHub.features.skillsGap.start', 'Jämför mot ett drömjobb'),
         isActive: !!skillsAt,
         href: '/skills-gap-analysis',
       },

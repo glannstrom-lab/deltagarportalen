@@ -22,8 +22,14 @@ import { avkodaSokvag } from '@/lib/sokvag'
  * mer specifik pageKey senare.
  */
 export const ROUTE_TO_PAGE_KEY: Array<[string, string]> = [
-  // Hubs
+  // Hubbarna. De fyra kategorierna fick rådgivarinnehåll 2026-08-18 — fram till
+  // dess saknade de det, och högerkolumnen renderades därför inte alls på dem
+  // (se `harRadgivarinnehall` och Layout.tsx).
   ['/oversikt', 'dashboard'],
+  ['/jobb', 'jobbHub'],
+  ['/karriar', 'karriarHub'],
+  ['/resurser', 'resurserHub'],
+  ['/min-vardag', 'vardagHub'],
   // Verktygssidor — ordnade alfabetiskt
   ['/ai-team', 'aiTeam'],
   ['/applications', 'applications'],

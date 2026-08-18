@@ -89,7 +89,9 @@ function JobsokHubInner() {
         icon: Search,
         title: t('jobsokHub.features.jobSearch.title', 'Sök jobb'),
         description: t('jobsokHub.features.jobSearch.description', 'Hitta jobb från Platsbanken som matchar din profil.'),
-        status: t('jobsokHub.features.jobSearch.status', 'Hitta nya jobb'),
+        // Ingen status: hubben hämtar inget om sökningen. "Hitta nya jobb"
+        // var en uppmaning i statusposition — beskrivningen under säger redan
+        // samma sak.
         href: '/job-search',
       },
       {
