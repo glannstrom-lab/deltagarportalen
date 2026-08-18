@@ -37,7 +37,11 @@ const path = require('node:path')
 // 470 → 469 (2026-08-03, UX14): `Property 'toLowerCase' does not exist on type
 // 'Skill'` var inte typskuld utan en skarp bugg — cv.skills är objekt i prod,
 // så anropet kastade TypeError för alla 16 CV:n med ifyllda kompetenser.
-const CEILING = 463
+// 463 → 460 (2026-08-18): `interview_sessions`-typerna i cloudStorage beskrev
+// fyra kolumner som inte finns (`company_name`, `position`, `interview_date`,
+// `notes`) och hade `[key: string]: unknown`, så inget insert-anrop kunde
+// typkontrolleras. Tabellen stod tom i hela prod. Typerna följer nu schemat.
+const CEILING = 460
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

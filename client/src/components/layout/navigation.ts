@@ -1,4 +1,8 @@
 import type { LegacyColorDomain } from '@/lib/domains'
+// `/spontanansökan` och `/nätverk` når koden procentkodade. Utan avkodning
+// matchar de aldrig sina literaler och skulle tyst falla ur besökshistoriken —
+// samma fälla som slog ut aktiv navigationsmarkering på just de två rutterna.
+import { avkodaSokvag } from '@/lib/sokvag'
 import {
   LayoutDashboard,
   Briefcase,
@@ -154,6 +158,92 @@ export function markFeatureVisited(path: string): void {
     }
   } catch {
     // Ignore localStorage errors
+  }
+}
+
+// ============================================
+// SENAST BESÖKTA SIDOR
+// ============================================
+/**
+ * Tidsordnad besökshistorik — separat från `VISITED_FEATURES_KEY`.
+ *
+ * `getVisitedFeatures()` ovan är en **mängd i förstabesöksordning utan
+ * tidsstämplar**. Den duger till "Ny!"-brickan (har jag sett den här sidan
+ * någon gång?) men kan inte svara på "vad gjorde jag senast?" — försöker man
+ * ändå får man en lista i den ordning användaren upptäckte portalen, vilket
+ * är nästan omvänd sanning för den som varit inne länge.
+ *
+ * Därför en egen nyckel med `{ path, ts }`. Den skrivs från `Layout.tsx` vid
+ * varje ruttbyte, alltså oavsett om sidomenyn eller toppnaven är på.
+ *
+ * **Varför det behövdes:** fram till 2026-08-18 anropades `markFeatureVisited`
+ * bara från `Sidebar.tsx` — och sidomenyn renderas inte när toppnaven är på,
+ * vilket den är som default sedan `c7c11ca2`. Ingen besökshistorik skrevs
+ * alltså någonsin i drift, och Översiktens rad 2 fastnade för alltid på
+ * fallbacken "Börja här". Buggen syntes inte i testerna, som sätter
+ * localStorage själva i stället för att navigera.
+ */
+const SENASTE_SIDOR_KEY = 'jobin_senaste_sidor'
+
+/** Hur många besök som sparas. Raden visar högst åtta; resten är historik. */
+const SENASTE_TAK = 20
+
+export interface SenastBesokt {
+  path: string
+  /** Millisekunder sedan epoch. */
+  ts: number
+}
+
+/**
+ * Sökvägar som får hamna i historiken.
+ *
+ * Unionen av båda navigationsmodellerna: `navHubs` är sanningen för hubbarna
+ * (se CLAUDE.md) medan `navGroups`/`navItems` fortfarande driver mobilens
+ * hamburgermeny. Att bara läsa den ena hade tappat sidor som finns i den andra.
+ * `navHubs` deklareras längre ner i filen — det går bra, funktionen körs långt
+ * efter att modulen initierats.
+ */
+function kandaSidor(): Set<string> {
+  return new Set([
+    ...navItems.map((i) => i.path),
+    ...navHubs.flatMap((h) => h.items.map((i) => i.path)),
+  ])
+}
+
+export function senasteBesok(): SenastBesokt[] {
+  try {
+    const rått = localStorage.getItem(SENASTE_SIDOR_KEY)
+    if (!rått) return []
+    const tolkat: unknown = JSON.parse(rått)
+    if (!Array.isArray(tolkat)) return []
+    // Filtrera bort skräp: en post utan giltig `ts` kan inte sorteras, och en
+    // sökväg som inte längre finns i navigationen ska inte länkas till.
+    const giltigaPaths = kandaSidor()
+    return (tolkat as SenastBesokt[])
+      .filter((p) => p && typeof p.path === 'string' && typeof p.ts === 'number' && giltigaPaths.has(p.path))
+      .sort((a, b) => b.ts - a.ts)
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Registrera ett besök. Anropas vid varje ruttbyte.
+ *
+ * Bara sökvägar som finns i navigationen sparas — annars hade hubbrötter,
+ * djuplänkar och 404:or hamnat i listan, och raden hade pekat på sidor som
+ * inte är verktyg.
+ */
+export function registreraBesok(path: string): void {
+  try {
+    const sokvag = avkodaSokvag(path)
+    if (!kandaSidor().has(sokvag)) return
+    const utan = senasteBesok().filter((p) => p.path !== sokvag)
+    const nästa = [{ path: sokvag, ts: Date.now() }, ...utan].slice(0, SENASTE_TAK)
+    localStorage.setItem(SENASTE_SIDOR_KEY, JSON.stringify(nästa))
+  } catch {
+    // localStorage kan vara blockerad (privat läge, hårda kakinställningar).
+    // Historiken är en bekvämlighet, inte en funktion — fail open.
   }
 }
 

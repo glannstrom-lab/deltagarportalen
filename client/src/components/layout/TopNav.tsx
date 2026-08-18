@@ -29,7 +29,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
-import { navHubs, getActiveHub, getVisitedFeatures } from './navigation'
+import { navHubs, getActiveHub, senasteBesok } from './navigation'
 import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
 
@@ -39,16 +39,27 @@ const BORJA_HAR = ['/cv', '/job-search', '/interest-guide'] as const
 /**
  * Vad rad 2 ska innehålla på Översikt, som saknar egna undersidor.
  *
- * Skissen föreslog "Senast" och "Väntar". `getVisitedFeatures()` finns redan
- * och lagras i localStorage — men den är en **mängd**, inte en tidsordnad
- * lista: den pushar i förstabesöksordning och har inga tidsstämplar. Att kalla
- * den "Senast" hade varit ett påhittat värde av precis det slag ROADMAP B31
- * förbjuder, så etiketten säger det den faktiskt vet: *Du har använt*.
+ * **Senast besökt**, tidsordnat, från `senasteBesok()` i navigation.ts.
+ *
+ * Fram till 2026-08-18 stod här `getVisitedFeatures()` — en mängd i
+ * förstabesöksordning utan tidsstämplar. Etiketten sa därför "Du har använt"
+ * i stället för "Senast", eftersom datan inte kunde bära det starkare
+ * påståendet. Två fel med samma yta:
+ *
+ *   1. Ordningen var upptäcktsordning, alltså nästan omvänd sanning för den
+ *      som använt portalen ett tag.
+ *   2. Mängden fylldes aldrig i drift. `markFeatureVisited` anropades bara
+ *      från `Sidebar.tsx`, och sidomenyn renderas inte när toppnaven är på —
+ *      vilket den är som default. Raden visade alltså fallbacken "Börja här"
+ *      för alla användare, för alltid, oavsett hur mycket de gjort.
+ *
+ * Nu skrivs historiken från `Layout.tsx` vid varje ruttbyte, med tidsstämpel.
+ * Etiketten kan därmed säga det den faktiskt vet: *Senast besökt*.
  *
  * "Väntar" (kommande möten, uppföljningar) kräver data som inte finns i
- * navigationslagret. Den delen av skissen hör till Översikt A, steg 3.
+ * navigationslagret och hör hemma i Översiktens instrumentpanel, inte här.
  *
- * Har man inte använt något än visas tre startpunkter i stället för en tom
+ * Har man inte varit någonstans än visas tre startpunkter i stället för en tom
  * rad. Urvalet är redaktionellt, inte uträknat — därför heter det "Börja här"
  * och inte "Populärast".
  */
@@ -57,13 +68,24 @@ function oversiktRad2(t: TFunction): {
   poster: Array<{ path: string; label: string; domain: string }>
 } {
   const alla = navHubs.flatMap((h) => h.items.map((i) => ({ item: i, hub: h })))
-  const besokta = new Set(getVisitedFeatures())
+  const slaUpp = (path: string) => alla.find(({ item }) => item.path === path)
 
-  const traffar = alla.filter(({ item }) => besokta.has(item.path))
-  const valda = traffar.length > 0 ? traffar : alla.filter(({ item }) => (BORJA_HAR as readonly string[]).includes(item.path))
+  // Sorterad nyast först av `senasteBesok()`. Ordningen får inte gå förlorad
+  // här — det är hela poängen med raden.
+  const traffar = senasteBesok()
+    .map((b) => slaUpp(b.path))
+    .filter((x): x is NonNullable<typeof x> => !!x)
+
+  const valda =
+    traffar.length > 0
+      ? traffar
+      : alla.filter(({ item }) => (BORJA_HAR as readonly string[]).includes(item.path))
 
   return {
-    etikett: traffar.length > 0 ? t('nav.topnav.used', 'Du har använt') : t('nav.topnav.startHere', 'Börja här'),
+    etikett:
+      traffar.length > 0
+        ? t('nav.topnav.recent', 'Senast besökt')
+        : t('nav.topnav.startHere', 'Börja här'),
     poster: valda.slice(0, 8).map(({ item, hub }) => ({
       path: item.path,
       label: t(item.labelKey),
@@ -156,6 +178,12 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
   return (
     <nav
       aria-label={t('nav.topnav.categories', 'Huvudkategorier')}
+      /* Skip-länken "Hoppa till navigation" pekade på `#main-navigation`, ett
+         id som bara finns i `Sidebar.tsx` — och sidomenyn renderas inte när
+         toppnaven är på. På desktop landade fokus därför kvar på `body`
+         (WCAG 2.4.1). Mobilen fungerade, för `HubBottomNav` bär redan samma
+         attribut. Uppmätt 2026-08-18. */
+      data-skip-target="main-navigation"
       data-nav-tat=""
       className={cn(
         'flex items-center gap-1 overflow-x-auto',

@@ -1,130 +1,199 @@
 /**
- * Instrumentpanelen ljuger inte. (Steg 3, 2026-08-17)
+ * De fyra kategorierna ljuger inte. (Förslag A, 2026-08-18)
  *
- * Panelen visar fem tal i hjälteposition på portalens startsida. Det är exakt
- * den plats där felklassen från granskningen 2026-08-09 gör mest skada: *ett
- * påhittat värde har alltid föredragits framför ett tomt fält*. Startsidan
- * påstod 5 000 användare där det fanns 92; konsulentvyn flaggade 100 % av
- * deltagarna för alltid eftersom fältet aldrig skrevs.
+ * Panelen är portalens startsida. Det är exakt den plats där felklassen från
+ * granskningen 2026-08-09 gör mest skada: *ett påhittat värde har alltid
+ * föredragits framför ett tomt fält*. Startsidan påstod 5 000 användare där det
+ * fanns 92; konsulentvyn flaggade 100 % av deltagarna för alltid eftersom
+ * fältet aldrig skrevs.
  *
- * Regeln (ROADMAP B31): ett värde utan underlag visar `—` och en rad om
- * varför. Aldrig 0, aldrig 100 %, aldrig ett påhittat exempel.
+ * Regeln (ROADMAP B31), i den form kategorierna kräver: en rad utan underlag
+ * visar en INVIT — aldrig `0`, aldrig ett tankstreck, aldrig ett påhittat
+ * exempel. Nollan är det värsta av de tre, för den ser ut som ett resultat.
  *
- * De här testerna finns för att göra just den regeln körbar. Ett nytt konto —
- * vilket de allra flesta av portalens 92 konton i praktiken är — ska aldrig
- * mötas av nollor som ser ut som resultat.
+ * Två av testerna nedan finns för fel som faktiskt stod i drift:
+ *   · "ANSÖKNINGAR 5" över "2 + 1 + 0 + 0" — talet och uppräkningen kom ur
+ *     olika beräkningar (fixat 2026-08-18).
+ *   · "Du har inte börjat söka jobb än" visades medan datan hämtades, till en
+ *     användare med fem ansökningar.
  */
 
 import { describe, it, expect, afterEach } from 'vitest'
 import { render, screen, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import OversiktPanel from './OversiktPanel'
+import OversiktPanel, { type PanelTillstand } from './OversiktPanel'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 
 afterEach(cleanup)
 
-function rendera(summary?: Partial<OversiktSummary>) {
+function rendera(summary?: Partial<OversiktSummary>, tillstand: PanelTillstand = 'klart') {
   return render(
     <MemoryRouter>
-      <OversiktPanel summary={summary as OversiktSummary | undefined} />
+      <OversiktPanel summary={summary as OversiktSummary | undefined} tillstand={tillstand} />
     </MemoryRouter>
   )
 }
 
-describe('nytt konto möts inte av nollor', () => {
-  it('visar tankstreck, inte 0, när ingenting finns', () => {
+const TOMT_VARDAG = {
+  recentMoodLogs: [],
+  diaryEntryCount: 0,
+  latestDiaryEntry: null,
+  upcomingEvents: [],
+  networkContactsCount: 0,
+  consultant: null,
+}
+
+describe('de fyra kategorierna finns', () => {
+  it('renderar alla fyra, i ordning, med en väg vidare till varje hubb', () => {
     rendera(undefined)
-    const streck = screen.getAllByText('—')
-    expect(streck.length).toBe(5)
-    // Det avgörande: ingen ruta visar en nolla som ser ut som ett resultat.
-    expect(screen.queryByText('0')).toBeNull()
+    const rubriker = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent)
+    expect(rubriker).toEqual(['Söka jobb', 'Karriär', 'Resurser', 'Din vardag'])
+
+    const hubbar = screen
+      .getAllByRole('link')
+      .map((a) => a.getAttribute('href'))
+      .filter((h): h is string => !!h)
+    for (const h of ['/jobb', '/karriar', '/resurser', '/min-vardag']) {
+      expect(hubbar, `fot till ${h}`).toContain(h)
+    }
   })
 
-  it('varje tomt tal förklarar sig i stället för att bara vara tomt', () => {
-    rendera(undefined)
-    expect(screen.getByText(/inte börjat söka jobb/i)).toBeTruthy()
-    expect(screen.getByText(/Inte påbörjat än/i)).toBeTruthy()
-    expect(screen.getByText(/Inget skrivet än/i)).toBeTruthy()
-    expect(screen.getByText(/Inte provat än/i)).toBeTruthy()
-    // 'Inget inbokat' finns både i nyckeltalet och i Framöver-kortet.
-    expect(screen.getAllByText(/Inget inbokat/i).length).toBeGreaterThan(0)
-  })
-
-  it('tomma "Fortsätt där du var" skuldbelägger inte', () => {
-    // DESIGN.md §2: aldrig prestationsspråk mot deltagare. Ett tomt tillstånd
-    // ska vara en öppen dörr, inte en tillrättavisning.
-    rendera(undefined)
-    expect(screen.getByText(/helt okej/i)).toBeTruthy()
+  it('varje kategori bär sin egen hubbfärg via data-domain', () => {
+    // DESIGN.md §4: färgen kommer ur --c-* som data-domain sätter, aldrig ur en
+    // hårdkodad hub-token. Grinden lint:design fäller det senare.
+    const { container } = rendera(undefined)
+    const domaner = [...container.querySelectorAll('[data-domain]')].map((e) => e.getAttribute('data-domain'))
+    expect(domaner).toEqual(['activity', 'coaching', 'info', 'wellbeing'])
   })
 })
 
-describe('riktiga tal visas som de är', () => {
+describe('ett nytt konto möts inte av nollor', () => {
+  it('visar ingen nolla någonstans — varje tom rad har en invit i stället', () => {
+    rendera({ jobsok: undefined, karriar: undefined, resurser: undefined, minVardag: undefined })
+    expect(screen.queryByText('0')).toBeNull()
+    expect(screen.getByText(/hitta ditt första jobb/i)).toBeTruthy()
+    expect(screen.getByText(/skapa ditt CV/i)).toBeTruthy()
+    expect(screen.getByText(/skriv ditt första/i)).toBeTruthy()
+    expect(screen.getByText(/öva när du orkar/i)).toBeTruthy()
+  })
+
+  it('visar ingen statusbricka när det inte finns något att säga', () => {
+    const { container } = rendera(undefined)
+    // Brickorna är de enda mono-elementen i kolumnhuvudena.
+    expect(container.querySelectorAll('h2 ~ span.font-mono').length).toBe(0)
+  })
+
+  it('skuldbelägger inte i tomtillståndet', () => {
+    // DESIGN.md §2: aldrig prestationsspråk mot deltagare. Inviterna ska vara
+    // öppna dörrar, inte tillrättavisningar — inga "du har inte", inga "måste".
+    rendera(undefined)
+    const text = document.body.textContent ?? ''
+    expect(text).not.toMatch(/du måste|du borde|du har inte gjort/i)
+  })
+})
+
+describe('talet och uppräkningen kan inte säga emot varandra', () => {
+  it('underraden byggs ur samma segment som talet', () => {
+    rendera({
+      jobsok: {
+        cv: null,
+        coverLetters: [],
+        interviewSessions: [],
+        applicationStats: {
+          total: 5,
+          byStatus: {},
+          segments: [
+            { key: 'saved', count: 4 },
+            { key: 'awaiting', count: 1 },
+            { key: 'interview', count: 0 },
+          ],
+        },
+        spontaneousCount: 0,
+      },
+    })
+    expect(screen.getByText('5')).toBeTruthy()
+    // Nollsegmentet nämns inte — en nolla i en uppräkning är brus.
+    const under = screen.getByText('Dina ansökningar').parentElement!.querySelectorAll('span')[1]
+    expect(under.textContent).toBe('4 sparade, 1 väntar på svar')
+    expect(under.textContent).not.toMatch(/intervju/i)
+  })
+
+  it('uppräkningen summerar till talet', () => {
+    rendera({
+      jobsok: {
+        cv: null, coverLetters: [], interviewSessions: [],
+        applicationStats: {
+          total: 3, byStatus: {},
+          segments: [{ key: 'saved', count: 2 }, { key: 'closed', count: 1 }],
+        },
+        spontaneousCount: 0,
+      },
+    })
+    const mening =
+      screen.getByText('Dina ansökningar').parentElement!.querySelectorAll('span')[1].textContent ?? ''
+    const summa = [...mening.matchAll(/(\d+)/g)].reduce((n, m) => n + Number(m[1]), 0)
+    expect(summa).toBe(3)
+    expect(screen.getByText('3')).toBeTruthy()
+  })
+})
+
+describe('riktiga värden visas som de är', () => {
   const medData: Partial<OversiktSummary> = {
     jobsok: {
       cv: { id: '1', updated_at: new Date(Date.now() - 3 * 86_400_000).toISOString() },
       coverLetters: [{ id: 'a', title: 'Brev till Rusta', created_at: new Date().toISOString() }],
       interviewSessions: [{ id: 's', score: 4, created_at: new Date().toISOString() }],
-      applicationStats: { total: 5, byStatus: {}, segments: [{ label: 'aktiva', count: 2 }] },
+      applicationStats: { total: 5, byStatus: {}, segments: [{ key: 'saved', count: 5 }] },
       spontaneousCount: 0,
     },
+    minVardag: { ...TOMT_VARDAG, consultant: { id: 'k', full_name: 'Sara Handledare', avatar_url: null } },
   }
-
-  it('visar antalet ansökningar', () => {
-    rendera(medData)
-    expect(screen.getByText('5')).toBeTruthy()
-  })
 
   it('visar när CV:t senast ändrades — inte en påhittad färdighetsprocent', () => {
     // Skissen visade "CV klart 72 %". Den siffran FINNS INTE:
-    // useJobsokHubSummary hämtar bara `id, updated_at` ur cvs. Att räkna fram
-    // en procent hade varit att uppfinna den.
+    // useJobsokHubSummary hämtar bara `id, updated_at` ur cvs.
     rendera(medData)
-    // Står både i CV-nyckeltalet och i Fortsätt-listan.
-    expect(screen.getAllByText(/3 dagar sedan/i).length).toBeGreaterThan(0)
+    expect(screen.getByText(/3 dagar sedan/i)).toBeTruthy()
     expect(screen.queryByText(/%/)).toBeNull()
   })
 
-  it('listar bara saker som faktiskt finns i "Fortsätt där du var"', () => {
+  it('konsulentens namn står i brickan när det finns en konsulent', () => {
     rendera(medData)
-    expect(screen.getByText('Brev till Rusta')).toBeTruthy()
-    expect(screen.getAllByText('Ditt CV').length).toBeGreaterThan(0)
-    // Ingen dagbok i datat ⇒ ingen dagboksrad.
-    expect(screen.queryByText('Din dagbok')).toBeNull()
+    expect(screen.getAllByText('Sara Handledare').length).toBeGreaterThan(0)
+  })
+
+  it('säger "ingen kopplad än" i stället för att låtsas ha en konsulent', () => {
+    rendera({ minVardag: TOMT_VARDAG })
+    expect(screen.getByText(/ingen kopplad än/i)).toBeTruthy()
   })
 })
 
-describe('måendekurvan ritas inte av en enda punkt', () => {
-  const medMood = (antal: number): Partial<OversiktSummary> => ({
-    minVardag: {
-      recentMoodLogs: Array.from({ length: antal }, (_, i) => ({
-        mood_level: 3,
-        energy_level: 3,
-        log_date: new Date(Date.now() - i * 86_400_000).toISOString(),
-      })),
-      diaryEntryCount: 0,
-      latestDiaryEntry: null,
-      upcomingEvents: [],
-      networkContactsCount: 0,
-      consultant: null,
-    },
+describe('laddning och fel är inte tomhet', () => {
+  it('påstår ingenting om användaren medan datan hämtas', () => {
+    rendera(undefined, 'laddar')
+    expect(screen.queryByText(/hitta ditt första jobb/i)).toBeNull()
+    expect(screen.getAllByText(/hämtar/i).length).toBeGreaterThan(0)
   })
 
-  it('döljs vid färre än tre loggningar — en stapel är ingen kurva', () => {
-    rendera(medMood(1))
-    expect(screen.queryByText(/Hur du mått/i)).toBeNull()
+  it('markerar sig som upptagen för hjälpmedel under hämtning', () => {
+    const { container } = rendera(undefined, 'laddar')
+    expect(container.querySelector('[aria-busy="true"]')).not.toBeNull()
+    expect(container.querySelector('[role="status"][aria-live="polite"]')).not.toBeNull()
   })
 
-  it('visas vid tre eller fler', () => {
-    rendera(medMood(3))
-    expect(screen.getByText(/Hur du mått/i)).toBeTruthy()
+  it('vid fel skyller den på portalen, inte på användaren', () => {
+    rendera(undefined, 'fel')
+    expect(screen.getByText(/inget du har gjort/i)).toBeTruthy()
+    expect(screen.queryByText(/hitta ditt första jobb/i)).toBeNull()
   })
 })
 
 describe('fritext spränger inte layouten', () => {
   it('kortar drömjobbet — i prod innehåller fältet ibland en hel jobbannons', () => {
-    // Sett i prod 2026-08-17: dream_job var 300+ tecken med arbetsuppgifter
-    // och kravprofil, och raden bredde ut sig utanför kortet.
-    const lang = 'Vi söker en lagermedarbetare till vårt distributionscenter i Göteborg. Arbetsuppgifter: plockning och packning av order, truckkörning, inventering.'
+    // Sett i prod 2026-08-17: dream_job var 434 tecken med arbetsuppgifter och
+    // kravprofil, och raden bredde ut sig utanför kortet.
+    const lang =
+      'Vi söker en lagermedarbetare till vårt distributionscenter i Göteborg. Arbetsuppgifter: plockning och packning av order, truckkörning, inventering.'
     rendera({
       karriar: {
         careerGoals: null,
@@ -144,21 +213,22 @@ describe('fritext spränger inte layouten', () => {
   })
 })
 
-describe('negativ kontroll — testet kan falla', () => {
+describe('negativ kontroll — testerna kan falla', () => {
   it('panelen renderar olika för tomt och fyllt', () => {
     rendera(undefined)
-    const tomtAntal = screen.getAllByText('—').length
+    const tomtAntalInviter = screen.getAllByText(/ditt första|inte påbörjat|inget sparat|ingen kopplad/i).length
     cleanup()
     rendera({
       jobsok: {
-        cv: null,
-        coverLetters: [],
-        interviewSessions: [],
-        applicationStats: { total: 7, byStatus: {}, segments: [] },
+        cv: { id: '1', updated_at: new Date().toISOString() },
+        coverLetters: [{ id: 'a', created_at: new Date().toISOString() }],
+        interviewSessions: [{ id: 's', score: null, created_at: new Date().toISOString() }],
+        applicationStats: { total: 7, byStatus: {}, segments: [{ key: 'saved', count: 7 }] },
         spontaneousCount: 0,
       },
     })
-    expect(screen.getAllByText('—').length).toBeLessThan(tomtAntal)
+    expect(screen.getAllByText(/ditt första|inte påbörjat|inget sparat|ingen kopplad/i).length)
+      .toBeLessThan(tomtAntalInviter)
     expect(screen.getByText('7')).toBeTruthy()
   })
 })

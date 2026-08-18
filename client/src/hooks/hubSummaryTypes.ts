@@ -15,7 +15,12 @@ export interface JobsokSummary {
   applicationStats: {
     total: number
     byStatus: Record<string, number>
-    segments: Array<{ label: string; count: number; deEmphasized?: boolean }>
+    /**
+     * `key`, inte färdig text: etiketten översätts av vyn
+     * (`hubOverview.panel.segment.<key>`). Låg tidigare som svenska strängar
+     * här i datalagret och kunde därför aldrig översättas.
+     */
+    segments: Array<{ key: string; count: number; deEmphasized?: boolean }>
   }
   spontaneousCount: number
   /** Kommande uppföljningar för spontanansökningar (30 dagar framåt) */

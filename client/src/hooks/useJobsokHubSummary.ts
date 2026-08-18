@@ -3,6 +3,7 @@ import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
 import { applicationsApi } from '@/services/applicationsApi'
 import type { JobsokSummary } from './hubSummaryTypes'
+import type { ApplicationStatus } from '@/types/application.types'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
@@ -23,6 +24,42 @@ function buildSpontaneousFollowups(rows: SponRow[]) {
   return { count: upcoming.length, nextDate: upcoming[0]?.followup_date ?? null }
 }
 
+/**
+ * Segmenten måste täcka VARJE status i `ApplicationStatus` — annars visar
+ * Översikt ett totaltal som inte går ihop med raden under det.
+ *
+ * Så var det fram till 2026-08-18: fyra segment slog upp fem nycklar
+ * (`saved`, `applied`, `interview`, `rejected`, `closed`) av elva. `closed`
+ * finns dessutom inte i typen och kunde aldrig matcha. Sju statusar föll ur —
+ * `interested`, `screening`, `phone`, `assessment`, `offer`, `accepted`,
+ * `withdrawn` — men räknades i `total`. Uppmätt i prod: två av sex användare
+ * med ansökningar såg "ANSÖKNINGAR 5" över "2 + 1 + 0 + 0". Fick man jobbet
+ * (`accepted`) försvann ansökan ur pipelinen.
+ *
+ * Grupperingen följer vad användaren väntar på, inte vad systemet heter:
+ *
+ *   sparade      interested, saved        — inte skickad än
+ *   svar         applied, screening       — bollen ligger hos arbetsgivaren
+ *   intervju     phone, interview, assessment
+ *   erbjudande   offer, accepted
+ *   avslutade    rejected, withdrawn      — dämpad, aldrig röd
+ *
+ * `key` i stället för färdig svensk text: etiketterna renderas av vyn via
+ * `t()`. Tidigare låg strängarna 'aktiva' / 'svar inväntas' här i datalagret
+ * och kunde därför aldrig översättas — en engelskspråkig användare fick dem
+ * på svenska oavsett språkval.
+ *
+ * Vaktas av `useJobsokHubSummary.test.ts`: summan av segmenten måste vara lika
+ * med `total` för varje status i `ApplicationStatus`.
+ */
+const SEGMENTGRUPPER: Array<{ key: string; statusar: ApplicationStatus[]; deEmphasized?: boolean }> = [
+  { key: 'saved', statusar: ['interested', 'saved'] },
+  { key: 'awaiting', statusar: ['applied', 'screening'] },
+  { key: 'interview', statusar: ['phone', 'interview', 'assessment'] },
+  { key: 'offer', statusar: ['offer', 'accepted'] },
+  { key: 'closed', statusar: ['rejected', 'withdrawn'], deEmphasized: true },
+]
+
 function buildApplicationStats(allRows: AppRow[]) {
   // Arkiverade räknas inte — hubbkortet ska spegla det Ansökningar-sidan visar.
   const rows = allRows.filter(r => !r.archivedAt)
@@ -32,13 +69,21 @@ function buildApplicationStats(allRows: AppRow[]) {
   // VERSALER från databasen — alla segment blev noll. Bara `total` stämde, och
   // eftersom hubbkortet bara läser `total` syntes felet aldrig.
   for (const r of rows) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1
-  // segments mirror Phase 2 ApplicationsWidget MOCK shape (anti-shaming: closed segment de-emphasized)
-  const segments = [
-    { label: 'aktiva',        count: byStatus['saved']     ?? 0 },
-    { label: 'svar inväntas', count: byStatus['applied']   ?? 0 },
-    { label: 'intervju',      count: byStatus['interview'] ?? 0 },
-    { label: 'avslutade',     count: (byStatus['rejected'] ?? 0) + (byStatus['closed'] ?? 0), deEmphasized: true },
-  ]
+
+  const segments = SEGMENTGRUPPER.map(g => ({
+    key: g.key,
+    count: g.statusar.reduce((n, st) => n + (byStatus[st] ?? 0), 0),
+    ...(g.deEmphasized ? { deEmphasized: true } : {}),
+  }))
+
+  // En status som inte finns i någon grupp skulle tyst försvinna igen. Hellre
+  // en synlig restpost än ett tal som inte går ihop.
+  const täckta = new Set(SEGMENTGRUPPER.flatMap(g => g.statusar as string[]))
+  const övriga = Object.entries(byStatus)
+    .filter(([st]) => !täckta.has(st))
+    .reduce((n, [, c]) => n + c, 0)
+  if (övriga > 0) segments.push({ key: 'other', count: övriga })
+
   return { total: rows.length, byStatus, segments }
 }
 
@@ -65,6 +110,19 @@ export function useJobsokHubSummary() {
         applicationsApi.getStatusRows(),
         supabase.from('spontaneous_companies').select('id, followup_date, status').eq('user_id', userId),
       ])
+
+      // Kasta vid fel i stället för att låta `?? []` göra om ett avslag till
+      // tom data. `applicationsApi.getStatusRows()` kastar redan; de fyra
+      // direkta selecten gjorde det inte, så ett RLS-fel på `cvs` renderades
+      // som "Inte påbörjat än". Se lärdomen 2026-08-09.
+      for (const [namn, r] of [
+        ['cvs', cvR],
+        ['cover_letters', lettersR],
+        ['interview_sessions', sessionsR],
+        ['spontaneous_companies', sponR],
+      ] as const) {
+        if (r.error) throw Object.assign(new Error(`${namn}: ${r.error.message}`), { cause: r.error })
+      }
 
       const sponRows = (sponR.data as SponRow[] | null) ?? []
       const summary: JobsokSummary = {

@@ -72,12 +72,18 @@ input[type="radio"]:focus-visible {
   left: 0;
   background: var(--c-solid, #1a7757);
   color: white;
+  /* Mörkt läge gör --c-solid ljus (#3BC79D). Vit text på den ger 2,13:1 —
+     mörk text ger 9,5:1. Uppmätt 2026-08-18. */
   padding: 12px 20px;
   text-decoration: none;
   font-weight: 600;
   border-radius: 0 0 8px 0;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: top 0.2s ease;
+}
+
+html.dark .skip-links a {
+  color: #0c0a09;
 }
 
 .skip-links a:focus {
@@ -144,22 +150,59 @@ input[type="radio"]:focus-visible {
  * slate-600 (#475569) has 4.62:1 contrast ratio on white - PASSES WCAG AA
  */
 
-/* Global override: Make text-slate-400 and text-slate-500 accessible */
-.text-slate-400 {
+/*
+ * ⚠️ MÖRKT LÄGE MÅSTE UNDANTAS. Rättat 2026-08-18.
+ *
+ * Reglerna nedan var villkorslösa och `!important`. De slog därför ut varje
+ * `dark:text-stone-400` / `dark:text-stone-500` i hela portalen — mörkervarianten
+ * kunde aldrig verka. Uppmätt på Översikt i mörkt läge före rättelsen:
+ * `rgb(87,83,78)` på `rgb(28,25,23)` = **2,29:1** mot kravet 4,5:1, och axe
+ * fällde 23 noder vid 1440 px och 28 vid 390 px. Nästan all sekundärtext på
+ * sidan: nyckeltalsetiketterna, alla underrader, datumet, tidsstämplarna.
+ *
+ * Ironin är att filen heter accessibility.css och att överskrivningen lades in
+ * för att HÖJA kontrasten — vilket den gör, i ljust läge (text-stone-400 går
+ * från 3,1:1 till 4,8:1). Därför scopas den till ljust läge i stället för att
+ * tas bort, och mörkt läge får egna, ljusare värden.
+ *
+ * `html:not(.dark)` matchar även systemets mörka läge om användaren inte valt
+ * något — därför prefers-color-scheme-blocket längst ner.
+ */
+html:not(.dark) .text-slate-400 {
   color: #64748b !important; /* Bump to slate-500 equivalent but darker */
 }
 
-.text-slate-500 {
+html:not(.dark) .text-slate-500 {
   color: #475569 !important; /* Bump to slate-600 */
 }
 
 /* Same for stone colors (used in this app) */
-.text-stone-400 {
+html:not(.dark) .text-stone-400 {
   color: #78716c !important; /* stone-500 */
 }
 
-.text-stone-500 {
+html:not(.dark) .text-stone-500 {
   color: #57534e !important; /* stone-600 */
+}
+
+/* Mörkt läge: samma avsikt, motsatt riktning. #A8A29E ger 6,9:1 mot #1C1917. */
+html.dark .text-slate-400,
+html.dark .text-stone-400 {
+  color: #a8a29e !important;
+}
+
+html.dark .text-slate-500,
+html.dark .text-stone-500 {
+  color: #a8a29e !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .text-slate-400,
+  html:not(.light) .text-stone-400,
+  html:not(.light) .text-slate-500,
+  html:not(.light) .text-stone-500 {
+    color: #a8a29e !important;
+  }
 }
 
 /* Ensure text has sufficient contrast */

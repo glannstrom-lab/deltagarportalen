@@ -50,6 +50,8 @@ export const OVERSIKT_HUB_KEY = (userId: string) => ['hub', 'oversikt', userId] 
 export function useOversiktHubSummary(): {
   data: OversiktSummary | undefined
   isLoading: boolean
+  isError: boolean
+  refetch: () => void
 } {
   const { user } = useAuth()
   const userId = user?.id ?? ''
@@ -65,6 +67,16 @@ export function useOversiktHubSummary(): {
         .select('onboarded_hubs, full_name, profile_image_url')
         .eq('id', userId)
         .maybeSingle()
+      /**
+       * Kasta vid fel. Utan den här raden kunde frågan aldrig falla: ett
+       * RLS-avslag, en 400 eller ett nätverksfel gav `data: null`, och
+       * `row?.x ?? null` gjorde om det till ett tomt men fullt giltigt
+       * profilobjekt. Sidan renderade då "Du har inte börjat söka jobb än" —
+       * ett påstående om PERSONEN när felet satt i systemet. Se lärdomen
+       * 2026-08-09: `if (error) { return [] }` gör ett fel omöjligt att skilja
+       * från tom data.
+       */
+      if (r.error) throw r.error
       const row = r.data as {
         onboarded_hubs?: string[] | null
         full_name?: string | null
@@ -93,6 +105,18 @@ export function useOversiktHubSummary(): {
     resurserQ.isLoading ||
     minVardagQ.isLoading
 
+  /**
+   * Ett fel någonstans räcker. Panelens rutor läser fyra av de fem skivorna,
+   * och en halv panel som tiger om resten är samma lögn som en tom panel:
+   * användaren kan inte se skillnad på "du har inget" och "vi vet inte".
+   */
+  const isError =
+    profileQ.isError ||
+    jobsokQ.isError ||
+    karriarQ.isError ||
+    resurserQ.isError ||
+    minVardagQ.isError
+
   const data: OversiktSummary | undefined = profileQ.data
     ? {
         profile: profileQ.data,
@@ -103,5 +127,13 @@ export function useOversiktHubSummary(): {
       }
     : undefined
 
-  return { data, isLoading }
+  const refetch = () => {
+    void profileQ.refetch()
+    void jobsokQ.refetch()
+    void karriarQ.refetch()
+    void resurserQ.refetch()
+    void minVardagQ.refetch()
+  }
+
+  return { data, isLoading, isError, refetch }
 }

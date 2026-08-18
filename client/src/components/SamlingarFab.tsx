@@ -151,8 +151,20 @@ export function SamlingarFab() {
           aria-expanded={false}
           className={cn(
             'group fixed z-40',
-            // Stackad ovanför CoachWidget (bottom-20 sm:bottom-6, höjd ~48px)
-            'bottom-36 right-4 sm:bottom-[88px] sm:right-6',
+            /*
+             * Placeringen gäller inte längre CoachWidget — den ersattes av
+             * rådgivarkolumnen 2026-08-17 och finns inte kvar att stacka
+             * ovanpå. `bottom-36` (144 px) lämnade knappen svävande **79 px
+             * ovanför bottennavet, mitt i innehållet**. Uppmätt 2026-08-18 vid
+             * 390 px: `elementFromPoint` returnerade knappens ikon ovanpå
+             * första raden i en länklista på Översikt.
+             *
+             * Nu strax ovanför navet (56 px + säker area + 12 px luft), så den
+             * ligger i chrome-zonen i stället för i texten. Samma familj som
+             * UX16-lärdomen: fixerade lager ska hit-testas mot allt som ligger
+             * under dem, inte bara mot det man råkar tänka på.
+             */
+            'bottom-[calc(env(safe-area-inset-bottom)+68px)] right-4 sm:bottom-6 sm:right-6',
             // Ikon-only på mobil, etikett-pill på desktop
             'flex items-center gap-0 sm:gap-2 p-1.5 sm:pl-2 sm:pr-3',
             'rounded-full bg-white dark:bg-stone-800 shadow-lg hover:shadow-xl',

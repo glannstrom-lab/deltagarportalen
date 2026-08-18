@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useState, useCallback, useMemo, lazy, Suspense } from 'react'
+import { useState, useCallback, useMemo, useEffect, lazy, Suspense } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search
@@ -18,7 +18,7 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
+import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { SamlingarFab } from './SamlingarFab'
@@ -35,6 +35,10 @@ import { oppnaPalett } from '@/lib/palettEvent'
 // FAB:en täckte innehåll på 17 av 19 verktygssidor, inklusive
 // GDPR-kontrollerna i Inställningar (fynd F25).
 const RadgivarPanel = lazy(() => import('./radgivare/RadgivarPanel'))
+// Fokusläget som fällbar panel under rådgivarna. Lazy av samma skäl som
+// panelen ovan: den syns bara på breda skärmar och behöver inte ligga i
+// entry-bundlen.
+const LugnarePanel = lazy(() => import('./radgivare/LugnarePanel'))
 import { isTopNavEnabled } from '@/config/features'
 // Frågas innan kolumnen reserveras — se `harRadgivare` nedan. Egen liten modul
 // just för att slippa dra in rådgivartexten (43 kB) i entry-bundlen.
@@ -52,6 +56,21 @@ const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
   const location = useLocation()
+
+  /**
+   * Besökshistoriken skrivs här, inte i `Sidebar`.
+   *
+   * Fram till 2026-08-18 låg anropet bara i `Sidebar.tsx` — och sidomenyn
+   * renderas inte när toppnaven är på, vilket den är som default sedan
+   * `c7c11ca2`. Följden: ingen historik skrevs någonsin i drift, Översiktens
+   * rad 2 fastnade permanent på fallbacken "Börja här", och "Ny!"-brickan
+   * kunde aldrig sluta visas. `Layout` renderas på varje inloggad sida i båda
+   * navigationslägena, så det är den enda platsen där anropet säkert körs.
+   */
+  useEffect(() => {
+    registreraBesok(location.pathname)
+    markFeatureVisited(location.pathname)
+  }, [location.pathname])
 
   // Sidebar collapsed state with localStorage persistence
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
@@ -200,9 +219,18 @@ export default function Layout() {
                       <Outlet />
                     </div>
                     {visaRadgivare && (
-                      <div className="mt-6 xl:mt-0" data-focus-chrome="radgivare">
+                      <div className="mt-6 xl:mt-0 space-y-3" data-focus-chrome="radgivare">
                         <Suspense fallback={null}>
                           <RadgivarPanel pathname={location.pathname} iKolumn={radgivarKolumn} />
+                        </Suspense>
+                        {/* Fokusläget under rådgivarna (2026-08-18, beslut
+                            Mikael). Enda vägen in var tidigare en textlös ikon
+                            i toppnaven. Panelen ligger utanför Suspense-gränsen
+                            ovan: den är liten, den ska inte vänta på
+                            rådgivartexten, och den ska finnas kvar även om
+                            rådgivaren failar att laddas. */}
+                        <Suspense fallback={null}>
+                          <LugnarePanel />
                         </Suspense>
                       </div>
                     )}

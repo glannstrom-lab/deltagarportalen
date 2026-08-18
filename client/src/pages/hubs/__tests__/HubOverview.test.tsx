@@ -50,11 +50,15 @@ beforeEach(() => {
   mockSummary.mockReset()
 })
 
-describe('HubOverview — instrumentpanel (steg 3, 2026-08-17)', () => {
-  // Sidan var en "minimal launchpad": hälsning + fyra hub-kort i 2×2.
-  // Med den tvåradiga toppnaven upprepade korten rad 1, och sidan hämtade
-  // redan all data den nu visar utan att rendera något av den.
-  // Testerna nedan är omskrivna mot den nya strukturen — inte sänkta.
+describe('HubOverview — fyra kategorier (förslag A, 2026-08-18)', () => {
+  // Sidans tre skepnader, i ordning:
+  //   1. "minimal launchpad" — hälsning + fyra hub-kort i 2×2 (till 2026-08-17)
+  //   2. instrumentpanel — nyckeltalsremsa + sex ytor (2026-08-17)
+  //   3. fyra kategorier med innehåll i varje (2026-08-18, beslut Mikael)
+  //
+  // Kategorierna är tillbaka, men inte som korten i (1): de bär nu innehåll —
+  // vad du gjort under varje rubrik — i stället för att upprepa toppnavens
+  // rad 1. Testerna nedan är omskrivna mot den strukturen, inte sänkta.
 
   it('renders firstName from profile.full_name', () => {
     mockSummary.mockReturnValue({ data: emptySummary('Mikael Andersson'), isLoading: false })
@@ -74,15 +78,21 @@ describe('HubOverview — instrumentpanel (steg 3, 2026-08-17)', () => {
     expect(trackingSpy).toHaveBeenCalledWith('oversikt')
   })
 
-  it('visar nyckeltalsremsan i stället för fyra hub-kort', () => {
+  it('visar de fyra kategorierna med innehåll under varje', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    for (const etikett of ['Ansökningar', 'Ditt CV', 'Personliga brev', 'Intervjuövning']) {
-      expect(screen.getByText(etikett)).toBeInTheDocument()
+    for (const rubrik of ['Söka jobb', 'Karriär', 'Resurser', 'Din vardag']) {
+      expect(screen.getByRole('heading', { level: 2, name: rubrik })).toBeInTheDocument()
+    }
+    // Innehåll, inte bara rubriker: raderna pekar på verktygen.
+    for (const rad of ['Dina ansökningar', 'Ditt CV', 'Din dagbok', 'Kunskapsbank']) {
+      expect(screen.getByText(rad)).toBeInTheDocument()
     }
   })
 
-  it('hub-korten är borta — de upprepade toppnavens rad 1', () => {
+  it('kategorierna upprepar inte toppnavens hubbrubriker ordagrant', () => {
+    // De gamla hub-korten hette "Hitta och söka jobb" / "Planera min karriär"
+    // och sa samma sak som navigationens rad 1 med fler ord.
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
     expect(screen.queryByText('Hitta och söka jobb')).not.toBeInTheDocument()
@@ -95,11 +105,15 @@ describe('HubOverview — instrumentpanel (steg 3, 2026-08-17)', () => {
     expect(screen.queryByText(/Vad vill du göra idag/i)).not.toBeInTheDocument()
   })
 
-  it('utan data visas tankstreck, aldrig nollor (B31)', () => {
+  it('utan data visas inviter, aldrig nollor (B31)', () => {
+    // Regeln är densamma som för nyckeltalsremsan, i den form kategorierna
+    // kräver: en rad utan underlag visar en invit — aldrig en nolla, och inte
+    // heller ett tankstreck, eftersom raden har plats för en hel mening.
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.getAllByText('—').length).toBe(5)
     expect(screen.queryByText('0')).not.toBeInTheDocument()
+    expect(screen.getByText(/hitta ditt första jobb/i)).toBeInTheDocument()
+    expect(screen.getByText(/skapa ditt CV/i)).toBeInTheDocument()
   })
 
   it('does NOT render legacy widget grid, status row, or activity feed', () => {

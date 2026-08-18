@@ -48,22 +48,46 @@ interface NotificationPreferences {
 
 // E12 (2026-07-23): JobApplication*-typerna borttagna med jobApplicationsApi.
 
-interface InterviewSession {
-  company_name: string
-  position: string
-  interview_date?: string
-  questions?: string[]
-  notes?: string
-  [key: string]: unknown
+/**
+ * En rad i `interview_sessions`, som tabellen faktiskt ser ut i prod
+ * (verifierat mot information_schema 2026-08-18).
+ *
+ * Typen beskrev tidigare `company_name`, `position`, `interview_date` och
+ * `notes` — **inga av dem är kolumner**. Med `[key: string]: unknown` gick
+ * vilken nyckel som helst igenom, så TypeScript kunde inte fånga att
+ * `interviewService` skickade fem påhittade fältnamn och utelämnade det enda
+ * NOT NULL-fältet. Insertet kunde aldrig lyckas, och tabellen stod tom i hela
+ * prod. Index-signaturen är därför borttagen: nya fält ska läggas till här,
+ * mot schemat, inte smygas in vid anropet.
+ */
+interface InterviewSessionInsert {
+  /** NOT NULL utan default — utelämnas den avvisas hela raden. */
+  job_title: string
+  company?: string | null
+  type?: string
+  status?: string
+  questions?: unknown
+  answers?: unknown
+  feedback?: unknown
+  started_at?: string
+  completed_at?: string | null
+  score?: number
+  score_breakdown?: unknown
 }
 
 interface InterviewSessionUpdate {
-  company_name?: string
-  position?: string
-  interview_date?: string
-  questions?: string[]
-  notes?: string
-  [key: string]: unknown
+  job_title?: string
+  company?: string | null
+  type?: string
+  status?: string
+  questions?: unknown
+  answers?: unknown
+  feedback?: unknown
+  current_question_index?: number
+  started_at?: string
+  completed_at?: string | null
+  score?: number | null
+  score_breakdown?: unknown
 }
 
 interface SavedSearch {
@@ -1079,7 +1103,7 @@ export const interviewSessionsApi = {
     return data || []
   },
 
-  async create(session: InterviewSession) {
+  async create(session: InterviewSessionInsert) {
     const user = await getCurrentUser()
     if (!user) {
       throw new Error('Användaren måste vara inloggad för att skapa intervjusession')

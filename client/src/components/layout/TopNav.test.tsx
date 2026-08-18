@@ -22,7 +22,12 @@ import TopNav, { HubNav, SubNav } from './TopNav'
 import { navHubs } from './navigation'
 
 /** Samma nyckel som navigation.ts använder — läst ur källan, inte gissad. */
-const BESOKTA_NYCKEL = 'jobin_visited_features'
+const SENASTE_NYCKEL = 'jobin_senaste_sidor'
+
+/** Skriver besökshistorik i den form `senasteBesok()` läser. */
+function sattHistorik(poster: Array<{ path: string; ts: number }>) {
+  localStorage.setItem(SENASTE_NYCKEL, JSON.stringify(poster))
+}
 
 afterEach(cleanup)
 beforeEach(() => localStorage.clear())
@@ -112,22 +117,47 @@ describe('Översikt — hubben som inte har några undersidor', () => {
     expect(hrefs).toContain('/cv')
   })
 
-  it('med besökshistorik byter etiketten till "Du har använt"', () => {
-    // Etiketten måste säga vad datan ÄR. getVisitedFeatures() är en mängd utan
-    // tidsstämplar — att kalla den "Senast" hade varit ett påhittat värde av
-    // precis det slag ROADMAP B31 förbjuder.
-    localStorage.setItem(BESOKTA_NYCKEL, JSON.stringify(['/diary', '/wellness']))
+  it('med besökshistorik byter etiketten till "Senast besökt"', () => {
+    sattHistorik([
+      { path: '/diary', ts: 2000 },
+      { path: '/wellness', ts: 1000 },
+    ])
     rendera('/oversikt', SubNav)
-    expect(screen.getByText(/Du har använt/i)).toBeTruthy()
+    expect(screen.getByText(/Senast besökt/i)).toBeTruthy()
     const hrefs = screen.getAllByRole('link').map((l) => l.getAttribute('href'))
     expect(hrefs).toContain('/diary')
     expect(hrefs).toContain('/wellness')
   })
 
+  it('ordnar nyast först — det är hela poängen med raden', () => {
+    // Utan det här testet hade "Senast besökt" kunnat visa vilken ordning som
+    // helst och ändå gått grönt. Etiketten lovar tidsordning; testet kräver den.
+    sattHistorik([
+      { path: '/wellness', ts: 100 },
+      { path: '/diary', ts: 900 },
+      { path: '/cv', ts: 500 },
+    ])
+    rendera('/oversikt', SubNav)
+    const hrefs = screen.getAllByRole('link').map((l) => l.getAttribute('href'))
+    expect(hrefs.slice(0, 3)).toEqual(['/diary', '/cv', '/wellness'])
+  })
+
+  it('struntar i poster som inte längre finns i navigationen', () => {
+    // En sökväg som tagits bort ur portalen ska inte länkas till från en
+    // historik som ligger kvar i användarens webbläsare.
+    sattHistorik([
+      { path: '/en-sida-som-togs-bort', ts: 3000 },
+      { path: '/diary', ts: 2000 },
+    ])
+    rendera('/oversikt', SubNav)
+    const hrefs = screen.getAllByRole('link').map((l) => l.getAttribute('href'))
+    expect(hrefs).not.toContain('/en-sida-som-togs-bort')
+    expect(hrefs).toContain('/diary')
+  })
+
   it('visar inte fler än åtta poster — raden ska inte bli oändlig', () => {
-    localStorage.setItem(
-      BESOKTA_NYCKEL,
-      JSON.stringify(navHubs.flatMap((h) => h.items.map((i) => i.path)))
+    sattHistorik(
+      navHubs.flatMap((h) => h.items).map((i, idx) => ({ path: i.path, ts: 10_000 - idx }))
     )
     rendera('/oversikt', SubNav)
     expect(screen.getAllByRole('link').length).toBeLessThanOrEqual(8)

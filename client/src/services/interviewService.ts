@@ -48,6 +48,14 @@ export interface InterviewSession {
     confidence: number; // 1-5
   }>;
   completed: boolean;
+  /**
+   * Rolltiteln. `interview_sessions.job_title` är NOT NULL utan default, så
+   * raden avvisas utan den — `tillDbRad` faller tillbaka på en generisk text
+   * hellre än att låta insertet dö.
+   */
+  jobTitle?: string;
+  company?: string | null;
+  questions?: unknown;
 }
 
 // Vanliga intervjufrågor baserat på forskning
@@ -351,13 +359,7 @@ export function createInterviewPlan(
  */
 export async function saveInterviewSession(session: InterviewSession): Promise<void> {
   try {
-    await interviewSessionsApi.create({
-      mock_interview_id: session.mockInterviewId,
-      start_time: session.startTime,
-      end_time: session.endTime,
-      answers: session.answers,
-      completed: session.completed,
-    });
+    await interviewSessionsApi.create(tillDbRad(session));
   } catch (error) {
     console.error('Fel vid sparande av intervjusession:', error);
     // Fallback till localStorage
@@ -365,6 +367,41 @@ export async function saveInterviewSession(session: InterviewSession): Promise<v
     sessions.push(session);
     localStorage.setItem('interview_sessions', JSON.stringify(sessions));
   }
+}
+
+/**
+ * Översätter en session till en rad `interview_sessions` faktiskt tar emot.
+ *
+ * ── Varför funktionen finns (rättat 2026-08-18) ────────────────────────────
+ *
+ * Anropet skickade tidigare `mock_interview_id`, `start_time`, `end_time` och
+ * `completed`. **Fyra av fem kolumnnamn finns inte i tabellen**, och det enda
+ * NOT NULL-fält utan default — `job_title` — utelämnades. Insertet kunde
+ * strukturellt aldrig lyckas. Felet fångades av catch-blocket ovan, som tyst
+ * skrev till localStorage i stället, så ingenting larmade.
+ *
+ * Följden syntes på Översikt: nyckeltalet "Intervjuövning" läser
+ * `interview_sessions` med `completed_at IS NOT NULL` och visade därför
+ * "Inte provat än" för alla, alltid. Uppmätt 2026-08-18:
+ * `SELECT count(*) FROM interview_sessions` → **0 rader i hela prod**, 92 konton.
+ *
+ * `lint:schema` fångade det inte: grinden kontrollerar tabell- och
+ * kolumnREFERENSER, inte kolumnNYCKLAR i `.insert()`. Tredje gången samma
+ * lucka bär en skarp bugg — se AI-teamets kalenderuppgift 2026-08-09.
+ */
+function tillDbRad(session: InterviewSession) {
+  return {
+    // NOT NULL utan default. Utan den här raden avvisas hela insertet.
+    job_title: session.jobTitle?.trim() || 'Intervjuövning',
+    company: session.company ?? null,
+    answers: session.answers ?? [],
+    questions: session.questions ?? [],
+    started_at: session.startTime ?? new Date().toISOString(),
+    // Kolumnen heter completed_at och är en tidsstämpel, inte en boolean.
+    // Det är också fältet Översiktens nyckeltal filtrerar på.
+    completed_at: session.completed ? (session.endTime ?? new Date().toISOString()) : null,
+    status: session.completed ? 'completed' : 'in_progress',
+  };
 }
 
 /**
@@ -381,13 +418,7 @@ export async function saveInterviewSessionWithScore(
   breakdown?: Record<string, unknown>
 ): Promise<void> {
   try {
-    const created = await interviewSessionsApi.create({
-      mock_interview_id: session.mockInterviewId,
-      start_time: session.startTime,
-      end_time: session.endTime,
-      answers: session.answers,
-      completed: session.completed,
-    } as Parameters<typeof interviewSessionsApi.create>[0])
+    const created = await interviewSessionsApi.create(tillDbRad(session))
     // Only persist the score if one was provided — preserves null-default semantics
     if (score !== null && created?.id) {
       await interviewSessionsApi.update(created.id, {
@@ -405,27 +436,34 @@ export async function saveInterviewSessionWithScore(
 /**
  * Hämta alla intervjusessioner (från molnet!)
  */
+/**
+ * Raden som kommer TILLBAKA ur `interview_sessions`. Fälten speglar prod-
+ * schemat; den tidigare versionen läste `mock_interview_id`, `start_time`,
+ * `end_time` och `completed`, som inte är kolumner — varje läst session blev
+ * ett objekt med bara `undefined` i sig.
+ */
 interface InterviewSessionDB {
-  mock_interview_id: string;
-  start_time: string;
-  end_time?: string;
-  answers: Array<{
-    questionId: string;
-    notes: string;
-    confidence: number;
-  }>;
-  completed: boolean;
+  id: string;
+  job_title: string;
+  company: string | null;
+  answers: InterviewSession['answers'];
+  questions: unknown;
+  started_at: string | null;
+  completed_at: string | null;
 }
 
 export async function getInterviewSessions(): Promise<InterviewSession[]> {
   try {
     const data = await interviewSessionsApi.getAll();
     return data.map((s: InterviewSessionDB) => ({
-      mockInterviewId: s.mock_interview_id,
-      startTime: s.start_time,
-      endTime: s.end_time,
-      answers: s.answers,
-      completed: s.completed,
+      mockInterviewId: s.id,
+      jobTitle: s.job_title,
+      company: s.company,
+      questions: s.questions,
+      startTime: s.started_at ?? '',
+      endTime: s.completed_at ?? undefined,
+      answers: s.answers ?? [],
+      completed: s.completed_at !== null,
     }));
   } catch (error) {
     console.error('Fel vid hämtning av intervjusessioner:', error);
@@ -444,6 +482,11 @@ export async function getInterviewSessions(): Promise<InterviewSession[]> {
 // saveInterviewSession (som förväntar sig confidence per fråge-id) inte passar.
 // Vi sparar därför denna variant separat, lokalt, under en egen nyckel — så en
 // avslutad/avbruten session inte tappar svar, betyg och AI-feedback.
+//
+// Sedan 2026-08-18 speglas den DESSUTOM till `interview_sessions`, eftersom
+// Översiktens nyckeltal läser den tabellen. Lokalt är fortfarande källan för
+// sidans egen historik; molnraden finns för att portalen ska kunna säga sant
+// om att du har övat. Se sparaSimulatorSessionIMolnet.
 export interface SimulatorQA {
   fraga: string;
   svar: string;
@@ -487,7 +530,57 @@ export function saveSimulatorSession(session: {
   } catch (error) {
     console.error('Fel vid sparande av intervjusimulator-session:', error);
   }
+  // Skriv också till molnet. Se sparaSimulatorSessionIMolnet nedan för varför.
+  void sparaSimulatorSessionIMolnet(record);
   return record;
+}
+
+/**
+ * Speglar en avslutad simulatorövning till `interview_sessions`.
+ *
+ * ── Varför (2026-08-18) ────────────────────────────────────────────────────
+ *
+ * `/interview-simulator` är den enda levande intervjuövningen i portalen, och
+ * den sparade **bara i localStorage**. Den andra vägen —
+ * `saveInterviewSession` via `MockInterviewSession` — går genom `InterviewPrep`,
+ * som ingen sida importerar; den är alltså dödkod, och dess insert var
+ * dessutom strukturellt trasig (se `tillDbRad`).
+ *
+ * Resultatet: `SELECT count(*) FROM interview_sessions` gav **0 rader i hela
+ * prod** med 92 konton, medan Översiktens nyckeltal läser just den tabellen.
+ * Rutan sa "Inte provat än" till alla, för alltid — även till någon som just
+ * kört fem övningar. Ett falskt påstående om användarens egen aktivitet.
+ *
+ * Skrivningen är avsiktligt **best-effort och icke-blockerande**: localStorage
+ * är kvar som källa för sidans egen historik, och en deltagare mitt i en övning
+ * ska aldrig få ett felmeddelande för att en spegling misslyckades. Går den
+ * fel stannar nyckeltalet på `—`, vilket är sant.
+ */
+async function sparaSimulatorSessionIMolnet(record: SimulatorSession): Promise<void> {
+  try {
+    const betygsatta = record.historik.filter(
+      (q): q is SimulatorQA & { rating: number } => typeof q.rating === 'number'
+    );
+    // Inget betyg satt → ingen poäng. Ett snitt över noll bedömningar finns
+    // inte, och 0 hade lästs som "underkänt" (B31).
+    const snitt =
+      betygsatta.length > 0
+        ? Number((betygsatta.reduce((n, q) => n + q.rating, 0) / betygsatta.length).toFixed(1))
+        : null;
+
+    await interviewSessionsApi.create({
+      job_title: record.roll?.trim() || 'Intervjuövning',
+      company: record.foretag?.trim() || null,
+      questions: record.historik.map((q) => q.fraga),
+      answers: record.historik,
+      status: 'completed',
+      completed_at: record.endedAt,
+      ...(snitt !== null ? { score: snitt } : {}),
+    });
+  } catch (error) {
+    // Tyst. Övningen är redan sparad lokalt och användaren är mitt i ett flöde.
+    console.error('Kunde inte spegla intervjuövningen till molnet:', error);
+  }
 }
 
 /** Hämta tidigare fria intervjusimulator-sessioner (lokalt lagrade). */

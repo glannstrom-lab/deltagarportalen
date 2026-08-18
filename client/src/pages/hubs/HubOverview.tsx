@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { datumSprak } from '@/lib/datumsprak'
 import type { TFunction } from 'i18next'
 import { motion } from 'framer-motion'
 import {
@@ -16,7 +17,8 @@ import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
-import OversiktPanel from './OversiktPanel'
+import OversiktPanel, { type PanelTillstand } from './OversiktPanel'
+import RollGenvag from './RollGenvag'
 
 /**
  * Översikt — minimal launchpad.
@@ -81,9 +83,27 @@ export default function HubOverview() {
 }
 
 function HubOverviewInner() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   useOnboardedHubsTracking(HUB_ID)
-  const { data: summary } = useOversiktHubSummary()
+  /**
+   * `isLoading` och `isError` användes inte fram till 2026-08-18 — bara `data`
+   * plockades ut. Följden var att sidan renderade sina tomtexter ("Du har inte
+   * börjat söka jobb än") medan svaret fortfarande var på väg, och likadant
+   * när det aldrig kom. Se PanelTillstand i OversiktPanel.tsx.
+   */
+  const { data: summary, isLoading, isError, refetch } = useOversiktHubSummary()
+  /**
+   * `!summary` räknas som laddning, inte som "klart".
+   *
+   * Skälet är en lucka i React Query: alla fem hubbfrågorna har
+   * `enabled: !!userId`, och en avstängd fråga är `pending` men inte
+   * `fetching` — alltså är `isLoading` **false** medan autentiseringen
+   * fortfarande löser sig. Uppmätt 2026-08-18 (fördröjda REST-svar): exakt en
+   * mätpunkt hann visa "Du har inte börjat söka jobb än" utan att någon siffra
+   * fanns, just i det fönstret. Utan data vet panelen ingenting, och då ska den
+   * inte påstå något.
+   */
+  const tillstand: PanelTillstand = isError ? 'fel' : isLoading || !summary ? 'laddar' : 'klart'
 
   const firstName = summary?.profile?.full_name?.trim().split(/\s+/)[0] ?? null
   const profileImageUrl = summary?.profile?.profile_image_url ?? null
@@ -99,6 +119,13 @@ function HubOverviewInner() {
       showTabs={false}
       contentClassName="space-y-7"
     >
+      {/* 0. Konsulent/admin: vägen till arbetsytan.
+          Renderar null för vanliga deltagare. Ligger först eftersom den som
+          har en annan roll ska se det innan hen börjar läsa deltagarvyn — och
+          eftersom den enda andra vägen dit på desktop är kommandopaletten,
+          som man måste veta finns. Se RollGenvag.tsx. */}
+      <RollGenvag />
+
       {/* 1. Hero — minimal launchpad */}
       {/* 1. Hälsningen — komprimerad 2026-08-17 (steg 3).
           Hjälten var ~250 px hög med illustration, datumdisc och frågan
@@ -133,7 +160,7 @@ function HubOverviewInner() {
           {firstName ? `, ${firstName}` : ''}
         </h1>
         <span className="ml-auto text-[12px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
-          {today.toLocaleDateString('sv-SE', { weekday: 'long', day: 'numeric', month: 'long' })}
+          {today.toLocaleDateString(datumSprak(i18n.language), { weekday: 'long', day: 'numeric', month: 'long' })}
         </span>
       </motion.section>
 
@@ -142,7 +169,7 @@ function HubOverviewInner() {
           och sidan hämtade redan all data nedan utan att visa något av den.
           Varje tal kommer ur useOversiktHubSummary — inget är påhittat, och
           det som saknas visas som `—` med ett skäl (ROADMAP B31). */}
-      <OversiktPanel summary={summary} />
+      <OversiktPanel summary={summary} tillstand={tillstand} vidForsokIgen={refetch} />
 
       {/* 3. Väg in till hela historiken (G9, 2026-07-27).
           `/oversikt/historik` var routad men olänkad — sidan gick bara att nå

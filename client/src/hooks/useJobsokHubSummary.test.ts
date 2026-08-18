@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createElement, type ReactNode } from 'react'
+import type { ApplicationStatus } from '@/types/application.types'
 
 vi.mock('@/hooks/useSupabase', () => ({
   useAuth: () => ({ user: { id: 'test-user-id' }, profile: null, loading: false, isAuthenticated: true }),
@@ -99,5 +100,77 @@ describe('useJobsokHubSummary', () => {
     expect(_qc.getQueryData(['application-stats'])).toBeUndefined()
     expect(_qc.getQueryData(['cv-versions'])).toBeUndefined()
     expect(_qc.getQueryData(['cover-letters'])).toBeUndefined()
+  })
+
+  /**
+   * Vakten för buggen som fanns fram till 2026-08-18: fyra segment slog upp
+   * fem statusnycklar av elva, varav en (`closed`) inte ens finns i typen.
+   * Sju statusar räknades i `total` men i inget segment, så Översikt visade
+   * "ANSÖKNINGAR 5" över "2 + 1 + 0 + 0".
+   *
+   * Testet itererar över HELA `ApplicationStatus` — läggs en status till i
+   * typen utan att få en grupp, faller det här.
+   */
+  it('summan av segmenten är alltid lika med total — för varje status i typen', async () => {
+    const ALLA: ApplicationStatus[] = [
+      'interested', 'saved', 'applied', 'screening', 'phone',
+      'interview', 'assessment', 'offer', 'accepted', 'rejected', 'withdrawn',
+    ]
+    fromMock.mockImplementation((table: string) => {
+      if (table === 'saved_jobs')
+        return makeBuilder(ALLA.map((status) => ({ status, archived_at: null })))
+      return makeBuilder([])
+    })
+
+    const { useJobsokHubSummary } = await import('./useJobsokHubSummary')
+    const { result } = renderHook(() => useJobsokHubSummary(), { wrapper })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+
+    const stats = result.current.data!.applicationStats
+    const summa = stats.segments.reduce((n, seg) => n + seg.count, 0)
+    expect(stats.total).toBe(ALLA.length)
+    expect(summa).toBe(stats.total)
+
+    // Summan stämmer även om en grupp glöms bort, eftersom restposten `other`
+    // fångar upp det. Restposten är ett skyddsnät, inte ett svar: en status
+    // som hamnar där saknar etikett i vyn. Kräv därför att varje känd status
+    // har en EGEN grupp — annars fäller den här raden, inte summan.
+    const restpost = stats.segments.find((seg) => seg.key === 'other')
+    expect(restpost, 'en status i ApplicationStatus saknar segmentgrupp').toBeUndefined()
+  })
+
+  it('segmenten bär nycklar, inte färdig svensk text', async () => {
+    // Etiketterna låg tidigare som strängar ('aktiva', 'svar inväntas') här i
+    // datalagret och kunde därför aldrig översättas — en engelskspråkig
+    // användare fick dem på svenska oavsett språkval.
+    const { useJobsokHubSummary } = await import('./useJobsokHubSummary')
+    const { result } = renderHook(() => useJobsokHubSummary(), { wrapper })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    for (const seg of result.current.data!.applicationStats.segments) {
+      expect(seg.key).toMatch(/^[a-z]+$/)
+      expect(seg).not.toHaveProperty('label')
+    }
+  })
+
+  it('kastar när en av tabellerna svarar med fel — ett fel är inte tom data', async () => {
+    // `?? []` gjorde tidigare om ett RLS-avslag till en tom lista, och
+    // Översikt renderade "Inte påbörjat än" — ett påstående om personen när
+    // felet satt i systemet.
+    fromMock.mockImplementation((table: string) => {
+      if (table === 'cvs') {
+        const b: Record<string, unknown> = {}
+        b.select = vi.fn(() => b)
+        b.eq = vi.fn(() => b)
+        b.maybeSingle = vi.fn(() =>
+          Promise.resolve({ data: null, error: { message: 'permission denied' } })
+        )
+        return b
+      }
+      return makeBuilder([])
+    })
+
+    const { useJobsokHubSummary } = await import('./useJobsokHubSummary')
+    const { result } = renderHook(() => useJobsokHubSummary(), { wrapper })
+    await waitFor(() => expect(result.current.isError).toBe(true))
   })
 })

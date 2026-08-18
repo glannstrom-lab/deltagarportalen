@@ -140,7 +140,11 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         tips: [
           'Börja varje dag med en konkret aktivitet — sök ett jobb, uppdatera CV:t, eller hör av dig till en kontakt.',
           'Du behöver inte göra allt på en gång. Tre små steg om dagen är bättre än en stor som aldrig blir av.',
-          'Högst upp ser du en snabböversikt: ansökningar, CV, brev, intervjuövning och nästa händelse. Klicka på en ruta för att gå direkt dit.',
+          // Rättad 2026-08-18 i samma commit som layouten ändrades. Meningen
+          // beskrev nyckeltalsremsan — fem rutor som inte finns kvar. Ett råd
+          // som beskriver ett gränssnitt måste följa gränssnittet, annars blir
+          // rådgivaren den som ljuger.
+          'Sidan är delad i fyra: söka jobb, karriär, resurser och din vardag. Under varje rubrik står det du redan har gjort där — klicka på en rad för att fortsätta.',
         ],
         faqs: [
           {
