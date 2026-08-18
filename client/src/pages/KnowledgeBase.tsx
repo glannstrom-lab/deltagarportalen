@@ -13,7 +13,6 @@ import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
-import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
 import {
   BookOpen,
@@ -118,7 +117,7 @@ function KnowledgeBaseInner() {
 
   if (isLoading) {
     return (
-      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info" className="max-w-5xl mx-auto">
+      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info">
         <TabLoader message={t('knowledgeBase.loadingContent', 'Laddar...')} />
       </PageLayout>
     )
@@ -127,7 +126,7 @@ function KnowledgeBaseInner() {
   // Filtrerad vy om URL har category eller q — återanvänd TopicsTab
   if (categoryFilter || queryFilter) {
     return (
-      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info" className="sidbredd">
+      <PageLayout title={t('knowledgeBase.title', 'Kunskapsbank')} domain="info">
         <Suspense fallback={<TabLoader />}>
           <TopicsTab articles={articles || []} />
         </Suspense>
@@ -135,9 +134,17 @@ function KnowledgeBaseInner() {
     )
   }
 
-  // Ingen title — landing-vyn har egen H1 i hero
+  // Rubriken bor i skenan som på portalens övriga sidor. Fram till 2026-08-18
+  // skickade landningen `title=""` för att slippa dubbel rubrik — följden var
+  // att kunskapsbanken blev enda sidan utan skena, med en egen 40 px-hjälte
+  // och en greeting ("Hej Claude") som hör hemma på en hubb, inte på ett
+  // uppslagsverk. Den såg ut som en sida från förra designen, för det var den.
   return (
-    <PageLayout title="" domain="info" className="max-w-5xl mx-auto">
+    <PageLayout
+      title={t('knowledgeBase.title', 'Kunskapsbank')}
+      subtitle={t('knowledgeBase.subtitle', 'Artiklar och guider för jobbsökare')}
+      domain="info"
+    >
       <KnowledgeBaseLanding articles={articles || []} />
     </PageLayout>
   )
@@ -151,7 +158,6 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
-  const { profile } = useAuthStore()
 
   // Räkna artiklar per huvud-kategori (matchar både category och subcategory)
   const counts = useMemo(() => {
@@ -170,19 +176,11 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
     if (q) navigate(`/knowledge-base?q=${encodeURIComponent(q)}`)
   }
 
-  const firstName = profile?.first_name
-
   return (
     <div className="space-y-8">
-      {/* HERO */}
+      {/* Sökrutan är sidans arbete och står därför först. Rubriken och raden
+          som förklarade sidan ligger i skenan sedan 2026-08-18. */}
       <section>
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-gray-50 mb-2 tracking-tight">
-          {firstName ? `Hej ${firstName}` : 'Kunskapsbank'}
-        </h1>
-        <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 mb-5 max-w-2xl">
-          Hitta artiklar, guider och svar på vanliga frågor om jobbsökning. Allt som finns i portalen, sökbart.
-        </p>
-
         <form onSubmit={handleSearch} className="flex items-center gap-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl pl-4 pr-2 py-2 shadow-sm focus-within:border-[var(--c-solid)] focus-within:shadow-md transition-all">
           <Search className="text-stone-400 dark:text-stone-500 flex-shrink-0" size={20} aria-hidden="true" />
           <input

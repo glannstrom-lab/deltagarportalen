@@ -3318,11 +3318,11 @@ function FeaturedResourceCard({ resource }: { resource: ExternalResource }) {
           <IconComponent className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
         </div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]">
+          <div className="flex items-start gap-2">
+            <h3 className="min-w-0 flex-1 font-semibold text-stone-900 dark:text-stone-100 break-words group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]">
               {resource.name}
             </h3>
-            <ExternalLink className="w-4 h-4 text-stone-400" />
+            <ExternalLink className="w-4 h-4 shrink-0 mt-0.5 text-stone-400" />
           </div>
           <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
             {resource.description}
@@ -3469,7 +3469,7 @@ function ExternalResourcesInner() {
       description={`${externalResources.length} användbara länkar för jobbsökande`}
       icon={ExternalLink}
       domain="info"
-      className="max-w-7xl mx-auto space-y-6"
+      className="space-y-6"
       sidoflikar={
         isSearching
           ? undefined
@@ -3532,7 +3532,7 @@ function ExternalResourcesInner() {
               </div>
               <h2 className="font-semibold text-stone-900 dark:text-stone-100">Populära resurser</h2>
             </div>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
               {featuredResources.map(resource => (
                 <FeaturedResourceCard key={resource.id} resource={resource} />
               ))}

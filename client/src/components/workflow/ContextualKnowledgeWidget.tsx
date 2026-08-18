@@ -381,37 +381,37 @@ export function ContextualKnowledgeWidget({
   // Full variant
   return (
     <div className={cn(
-      "bg-white rounded-xl shadow-sm border border-stone-200 p-6",
+      "bg-white rounded-xl shadow-sm border border-stone-200 p-4",
       className
     )}>
-      <div className="flex items-center gap-3 mb-4">
-        <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-          <Icon size={20} className="text-amber-600" />
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="w-9 h-9 shrink-0 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+          <Icon size={18} className="text-[var(--c-text)]" />
         </div>
-        <div>
-          <h3 className="font-semibold text-stone-900">{getContextTitle(currentContext)}</h3>
-          <p className="text-sm text-stone-700">Artiklar valda för där du är nu</p>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-stone-900 text-sm">{getContextTitle(currentContext)}</h3>
+          <p className="text-xs text-stone-600">Artiklar valda för där du är nu</p>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-1">
         {articles.map((article) => (
           <Link
             key={article.id}
             to={`/knowledge-base/article/${article.id}`}
-            className="flex items-start gap-4 p-4 rounded-xl hover:bg-stone-50 transition-colors group"
+            className="flex items-start gap-3 p-3 rounded-xl hover:bg-stone-50 transition-colors group"
           >
-            <div className="w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
-              <article.icon size={20} className="text-stone-600 group-hover:text-amber-600" />
+            <div className="w-9 h-9 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--c-bg)] transition-colors">
+              <article.icon size={16} className="text-stone-600 group-hover:text-[var(--c-text)]" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-stone-900 group-hover:text-[var(--c-text)] transition-colors">
+              <h4 className="font-medium text-stone-900 text-[13px] leading-snug group-hover:text-[var(--c-text)] transition-colors">
                 {article.title}
               </h4>
-              <p className="text-sm text-stone-700 mt-1 line-clamp-2">
+              <p className="text-xs text-stone-700 mt-1 line-clamp-2">
                 {article.excerpt}
               </p>
-              <div className="flex items-center gap-3 mt-2 text-xs text-stone-600">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-[11px] text-stone-600">
                 <span>{article.readTime} min läsning</span>
                 <span className={cn(
                   article.difficulty === 'beginner' ? "text-green-700" :
@@ -423,7 +423,7 @@ export function ContextualKnowledgeWidget({
                 </span>
               </div>
             </div>
-            <ChevronRight size={20} className="text-stone-300 group-hover:text-[var(--c-solid)] flex-shrink-0 mt-1" />
+            <ChevronRight size={16} className="text-stone-300 group-hover:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
           </Link>
         ))}
       </div>

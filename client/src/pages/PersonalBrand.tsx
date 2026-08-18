@@ -49,23 +49,9 @@ export default function PersonalBrandPage() {
       customTabs={brandTabs}
       tabVariant="glass"
       showTabs={true}
-      className="max-w-7xl mx-auto space-y-6"
+      className="space-y-6"
       domain="coaching"
     >
-      {/* Editorial-spot (Fas 6) */}
-      <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)]/50">
-        <img
-          src="/illustrations/spot-varumarke.webp"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          className="w-16 h-16 flex-shrink-0 select-none"
-        />
-        <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-          {t('personalBrand.editorialSpot')}
-        </p>
-      </div>
-
       <RadgivarTips pathname="/personal-brand" index={0} />
 
       <Routes>

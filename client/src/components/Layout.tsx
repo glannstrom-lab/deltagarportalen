@@ -36,6 +36,9 @@ import { oppnaPalett } from '@/lib/palettEvent'
 // GDPR-kontrollerna i Inställningar (fynd F25).
 const RadgivarPanel = lazy(() => import('./radgivare/RadgivarPanel'))
 import { isTopNavEnabled } from '@/config/features'
+// Frågas innan kolumnen reserveras — se `harRadgivare` nedan. Egen liten modul
+// just för att slippa dra in rådgivartexten (43 kB) i entry-bundlen.
+import { harRadgivarinnehall } from '@/data/radgivarRutter'
 // TG1 (2026-08-17): båda off-canvas-panelerna låg alltid i DOM och flyttades
 // bara med `translate-x-full` — utan `inert`, utan fokusfälla, utan Escape.
 // Hooken finns sedan tidigare och gör allt tre; den behövde bara kopplas in.
@@ -91,7 +94,13 @@ export default function Layout() {
   const sidanHarEgen = EGEN_RADGIVARE.some(
     (pfx) => location.pathname === pfx || location.pathname.startsWith(pfx + '/')
   )
-  const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen
+  // Sex sidor har ingen rådgivare alls: de fyra hubbarna, /nätverk och /help.
+  // Fram till 2026-08-18 reserverade griden ändå 300 px + 24 px gap åt dem —
+  // uppmätt 324 av 1440 px, alltså 22 % av skärmen, tomt, på just de sidor som
+  // är ingångar. En tom kolumn ser exakt ut som marginal, vilket är varför den
+  // överlevde både omläggningen och genomgången efter den.
+  const harRadgivare = harRadgivarinnehall(location.pathname)
+  const visaRadgivare = showBars && !radgivareAv && !sidanHarEgen && harRadgivare
   // 1280 px = Tailwinds `xl`, samma brytpunkt som griden nedan använder.
   // Hålls de två isär hamnar panelen i kolumnen men får flödets utgångsläge.
   const radgivarKolumn = useMediaQuery('(min-width: 1280px)')
@@ -283,9 +292,16 @@ function MobileTopBar() {
               loading="eager"
               className="h-7 w-7 object-contain"
             />
-            <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
-              jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
-            </span>
+            {/* Ordbilden får inte plats bredvid tillbakaknappen. Headern gör
+                redan plats med `pl-[60px]`, men de fem ikonerna till höger
+                tar sitt — kvar blev 34 px till "jobin.se", som därför
+                klipptes mitt i ordet på varje undersida. Symbolen räcker som
+                identitet; länken har namn via bildens alt. */}
+            {!showsBackButton && (
+              <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+                jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
+              </span>
+            )}
           </Link>
 
           {/* Höger: Krishjälp + Notifikationer + Profil + Meny.

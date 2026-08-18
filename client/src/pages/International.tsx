@@ -48,22 +48,8 @@ export default function InternationalPage() {
       tabVariant="glass"
       showTabs={true}
       domain="activity"
-      className="max-w-7xl mx-auto space-y-6"
+      className="space-y-6"
     >
-      {/* Editorial-spot (Fas 6) */}
-      <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)]/50">
-        <img
-          src="/illustrations/spot-internationellt.webp"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          className="w-16 h-16 flex-shrink-0 select-none"
-        />
-        <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
-          {t('international.editorialSpot')}
-        </p>
-      </div>
-
       <Routes>
         <Route path="/" element={<><VisaGuideTab /><RadgivarTips pathname="/international" index={0} /></>} />
         <Route path="/integration" element={<IntegrationTab />} />

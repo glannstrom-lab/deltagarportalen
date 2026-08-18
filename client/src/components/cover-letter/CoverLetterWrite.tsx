@@ -515,7 +515,7 @@ export function CoverLetterWrite() {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div>
       {/* Step indicator */}
       <nav aria-label={t('coverLetter.write.stepsNavAria', 'Brevskrivningssteg')} className="bg-white dark:bg-stone-900 rounded-xl p-4 border border-stone-200 dark:border-stone-700/50 mb-6">
         <ol className="flex items-center justify-between" role="list">
@@ -525,8 +525,12 @@ export function CoverLetterWrite() {
             const isCompleted = step.id < currentStep
 
             return (
-              <li key={step.id} className="flex items-center" aria-current={isActive ? 'step' : undefined}>
-                <div className={cn('flex flex-col items-center', index < steps.length - 1 && 'flex-1')}>
+              <li
+                key={step.id}
+                className={cn('flex items-start', index < steps.length - 1 && 'flex-1')}
+                aria-current={isActive ? 'step' : undefined}
+              >
+                <div className="flex flex-col items-center shrink-0">
                   <div
                     className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
@@ -539,7 +543,7 @@ export function CoverLetterWrite() {
                     {isCompleted ? <Check size={20} /> : <Icon size={20} />}
                   </div>
                   <span className={cn(
-                    'text-xs mt-2 font-medium hidden sm:block',
+                    'text-xs mt-2 font-medium hidden sm:block whitespace-nowrap',
                     isActive && 'text-[var(--c-text)] dark:text-[var(--c-text)]',
                     isCompleted && 'text-emerald-600 dark:text-emerald-400',
                     !isActive && !isCompleted && 'text-stone-600 dark:text-stone-400'
@@ -549,7 +553,7 @@ export function CoverLetterWrite() {
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={cn('w-full h-0.5 mx-2', isCompleted ? 'bg-emerald-500' : 'bg-stone-200 dark:bg-stone-700')}
+                    className={cn('flex-1 h-0.5 mx-3 mt-5', isCompleted ? 'bg-emerald-500' : 'bg-stone-200 dark:bg-stone-700')}
                     aria-hidden="true"
                   />
                 )}

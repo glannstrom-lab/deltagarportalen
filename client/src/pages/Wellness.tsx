@@ -50,7 +50,7 @@ export default function WellnessPage() {
         tabVariant="glass"
         showTabs={true}
         domain="wellbeing"
-        className="max-w-7xl mx-auto space-y-6"
+        className="space-y-6"
       >
         <Routes>
           <Route path="/" element={<WellnessConsentGate><HealthTab /></WellnessConsentGate>} />

@@ -1,4 +1,4 @@
-import { Search, Brain, Activity, Sparkles, Clock, CheckCircle2, ArrowRight, UserCircle } from '@/components/ui/icons'
+import { Search, Brain, Activity, Clock, CheckCircle2, ArrowRight, UserCircle } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 
 interface IntroScreenProps {
@@ -45,18 +45,12 @@ const sections = [
 export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScreenProps) {
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500 shadow-lg shadow-indigo-200 mb-5">
-          <Sparkles className="w-8 h-8 text-white" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Intresseguide
-        </h1>
-        <p className="text-gray-500">
-          Upptäck vilka yrken som passar just din profil
-        </p>
-      </div>
+      {/* Rubriken låg här som en egen hjälte — lila ikonruta, "Intresseguide"
+          i 30 px och en rad som ordagrant upprepade skenans beskrivning
+          ("Upptäck vilka yrken som passar just din profil"). Efter
+          layoutomläggningen står samma två saker 200 px till vänster, i
+          skenan. Två rubriker för samma sida är en för mycket, och den lila
+          var dessutom fel färg på en rosa sida. */}
 
       {/* What's included */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">

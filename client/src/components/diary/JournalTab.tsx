@@ -285,23 +285,26 @@ export function JournalTab() {
 
   return (
     <div className="space-y-5">
-      {/* Writing Prompt */}
+      {/* Writing Prompt.
+          Kortet var amber på en lavendelsida — DESIGN.md §4 säger en hubbfärg
+          per sida, och amber är dessutom portalens varningsfärg. Ett
+          skrivtips är varken varning eller fel. */}
       {prompt && (
-        <Card className="p-5 bg-amber-50 dark:bg-amber-900/20 border-amber-200">
+        <Card className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]">
           <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-5 h-5 text-amber-600" />
-                <h3 className="font-semibold text-amber-900">Dagens skrivtips</h3>
+                <Sparkles className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+                <h3 className="font-semibold text-[var(--c-text)]">Dagens skrivtips</h3>
               </div>
-              <p className="text-amber-800 leading-relaxed">{prompt.prompt_text}</p>
+              <p className="text-stone-700 dark:text-stone-200 leading-relaxed">{prompt.prompt_text}</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 shrink-0">
               <button
                 onClick={() => getNewPrompt()}
                 disabled={promptLoading}
                 aria-label="Nytt skrivtips"
-                className="p-2 hover:bg-amber-100 rounded-lg text-amber-600 transition-colors"
+                className="p-2 hover:bg-[var(--c-bg)] rounded-lg text-[var(--c-solid)] transition-colors"
               >
                 <RefreshCw className={cn("w-5 h-5", promptLoading && "animate-spin")} aria-hidden="true" />
               </button>

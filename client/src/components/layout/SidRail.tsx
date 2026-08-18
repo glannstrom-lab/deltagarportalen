@@ -111,8 +111,13 @@ export default function SidRail({
   // Sticky utan offset: navigationen är redan sticky ovanför, och en
   // top-offset här sköt ner skenan ~85 px så att den inte längre stod i linje
   // med innehållet den hör till.
+  // `data-skena` finns för att gå att mäta utifrån. Skenans bredd och
+  // innehållsytans bredd är tal, inte smaksaker, och `e2e/mat-kolumner.cjs`
+  // läser dem per sida — det var så den tomma rådgivarkolumnen på hubbarna
+  // hittades. En attributkrok kostar noll och gör mätningen möjlig utan att
+  // haka i klassnamn som ändras.
   return (
-    <div className="lg:sticky lg:top-0">
+    <div data-skena className="lg:sticky lg:top-0">
       {title && (
         <div className="mb-3">
           <h1 className="text-[17px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">

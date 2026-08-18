@@ -413,23 +413,23 @@ function ExercisesInner() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4 text-center bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800">
-            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{exercises.length}</p>
-            <p className="text-sm text-emerald-600 dark:text-emerald-400">{t('exercises.stats.totalExercises')}</p>
+          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{exercises.length}</p>
+            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.totalExercises')}</p>
           </Card>
-          <Card className="p-4 text-center bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800">
-            <p className="text-2xl font-bold text-green-700 dark:text-green-400">
+          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
               {Object.keys(answers).length}
             </p>
-            <p className="text-sm text-green-600 dark:text-green-400">{t('exercises.stats.started')}</p>
+            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.started')}</p>
           </Card>
-          <Card className="p-4 text-center bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800">
-            <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">
+          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
               {Object.entries(answers).filter(([_, ans]) =>
                 Object.values(ans).filter(v => v && v.trim()).length > 0
               ).length}
             </p>
-            <p className="text-sm text-amber-600 dark:text-amber-400">{t('exercises.stats.active')}</p>
+            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.active')}</p>
           </Card>
           <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
             <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
@@ -447,7 +447,7 @@ function ExercisesInner() {
             onClick={() => setFilter('alla')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'alla'
-                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                ? 'bg-[var(--c-solid)] text-white'
                 : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
@@ -457,7 +457,7 @@ function ExercisesInner() {
             onClick={() => setFilter('påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'påbörjade'
-                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                ? 'bg-[var(--c-solid)] text-white'
                 : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
@@ -467,7 +467,7 @@ function ExercisesInner() {
             onClick={() => setFilter('ej-påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'ej-påbörjade'
-                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                ? 'bg-[var(--c-solid)] text-white'
                 : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
@@ -479,7 +479,7 @@ function ExercisesInner() {
               onClick={() => setFilter(cat)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === cat
-                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                  ? 'bg-[var(--c-solid)] text-white'
                   : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
               }`}
             >

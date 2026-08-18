@@ -16,7 +16,6 @@
  * (vanliga frågor) + relaterade länkar i appen.
  */
 
-import { avkodaSokvag } from '@/lib/sokvag'
 
 export type CoachId = 'jobbcoach' | 'arbetsterapeut' | 'studievagledare' | 'mentalcoach' | 'digitalcoach'
 
@@ -896,57 +895,9 @@ export function getCoach(id: CoachId): Coach {
   return COACHES[id]
 }
 
-/**
- * Mappar URL-pathname → pageKey i `PAGE_COACH_CONTENT`. Längsta match vinner,
- * så att t.ex. /career/credentials matchar `career` även om /career har en
- * mer specifik pageKey senare.
- */
-const ROUTE_TO_PAGE_KEY: Array<[string, string]> = [
-  // Hubs
-  ['/oversikt', 'dashboard'],
-  // Verktygssidor — ordnade alfabetiskt
-  ['/ai-team', 'aiTeam'],
-  ['/applications', 'applications'],
-  ['/calendar', 'calendar'],
-  ['/career', 'career'],
-  ['/cover-letter', 'coverLetter'],
-  ['/cv', 'cv'],
-  ['/diary', 'diary'],
-  ['/education', 'education'],
-  ['/exercises', 'exercises'],
-  ['/external-resources', 'resources'],
-  ['/externa-resurser', 'resources'],
-  ['/interest-guide', 'interestGuide'],
-  ['/international', 'international'],
-  ['/interview-simulator', 'interviewSimulator'],
-  ['/job-search', 'jobSearch'],
-  ['/knowledge-base', 'knowledgeBase'],
-  ['/linkedin-optimizer', 'linkedinOptimizer'],
-  ['/my-consultant', 'myConsultant'],
-  ['/personal-brand', 'personalBrand'],
-  ['/print-resources', 'resources'],
-  ['/profile', 'profile'],
-  ['/resources', 'resources'],
-  ['/salary', 'salary'],
-  ['/settings', 'settings'],
-  ['/skills-gap-analysis', 'skillsGapAnalysis'],
-  ['/spontanansökan', 'spontaneous'],
-  ['/spontaneous', 'spontaneous'],
-  ['/wellness', 'wellness'],
-]
-
-export function getPageKeyForPath(pathname: string): string | undefined {
-  if (!pathname) return undefined
-  // Avkoda först: `/spontanansökan` når hit som `/spontanans%C3%B6kan` och
-  // matchade aldrig raden i tabellen, så rådgivaren försvann på just de två
-  // rutter som har svenska tecken. Se lib/sokvag.ts.
-  const sokvag = avkodaSokvag(pathname)
-  // Längsta-match-vinner
-  let best: [string, string] | null = null
-  for (const entry of ROUTE_TO_PAGE_KEY) {
-    if (sokvag === entry[0] || sokvag.startsWith(entry[0] + '/')) {
-      if (!best || entry[0].length > best[0].length) best = entry
-    }
-  }
-  return best?.[1]
-}
+// Rutt→pageKey-tabellen bor i `radgivarRutter.ts` sedan 2026-08-18. Skälet är
+// bundlestorlek: Layout behöver veta OM en sida har en rådgivare för att inte
+// reservera en tom 300 px-kolumn, och den frågan ska inte dra in 43 kB
+// rådgivartext i entry-bundlen. Re-exporten står kvar så befintliga
+// importörer (GlobalCoachWidgetContent, radgivarData, sokvag.test) är orörda.
+export { getPageKeyForPath, harRadgivarinnehall } from './radgivarRutter'

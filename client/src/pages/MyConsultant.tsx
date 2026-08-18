@@ -141,18 +141,17 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
               className="w-16 h-16 rounded-full border-2 border-white/30"
             />
           ) : (
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+            <div className="w-16 h-16 shrink-0 rounded-full bg-white/20 flex items-center justify-center">
               <User className="w-8 h-8 text-white" />
             </div>
           )}
-          <div>
-            <h2 className="text-xl font-semibold">
+          <div className="min-w-0">
+            <h2 className="text-lg font-semibold break-words">
               {consultant.first_name} {consultant.last_name}
             </h2>
-            {consultant.title && (
-              <p className="text-white text-sm">{consultant.title}</p>
-            )}
-            <p className="text-white text-sm mt-1">{t('myConsultant.consultant.yourConsultant')}</p>
+            <p className="text-white text-sm">
+              {consultant.title || t('myConsultant.consultant.yourConsultant')}
+            </p>
           </div>
         </div>
       </div>
@@ -516,7 +515,7 @@ function MessagesSection({
             placeholder={t('myConsultant.messages.placeholder')}
             rows={1}
             className={cn(
-              'flex-1 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
+              'flex-1 min-w-0 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
               'bg-white dark:bg-stone-800 px-4 py-3',
               'text-stone-900 dark:text-stone-100 placeholder-stone-500',
               'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent',
@@ -1072,7 +1071,7 @@ function MyConsultantInner() {
 
       {/* Main content grid */}
       {consultant && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
           {/* Left column - Consultant info */}
           <div className="space-y-6">
             <ConsultantCard consultant={consultant} nextMeeting={nextMeeting} />

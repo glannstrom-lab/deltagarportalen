@@ -21,7 +21,6 @@ import {
   Sparkles,
   ChevronRight,
   RefreshCw,
-  Info,
   Lightbulb,
   Globe,
 } from '@/components/ui/icons';
@@ -489,22 +488,16 @@ function EducationInner() {
       {/* Quick Actions (shown when no search) */}
       {!hasSearched && (
         <div className="mt-6 space-y-6">
-          {/* Info Banner */}
-          <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-            <div className="p-4 sm:p-5 flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
-                <Info className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-                  {t('education.infoBanner.title')}
-                </h3>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                  {t('education.infoBanner.description')}
-                </p>
-              </div>
-            </div>
-          </Card>
+          {/*
+            Rubriken "Hitta rätt utbildning för dig" sa samma sak som skenans
+            "Sök och utforska utbildningar från hela Sverige", 200 px till
+            vänster, och panelen runt den tog ~120 px. Kvar står den enda
+            uppgift raden faktiskt bar: vilka källor sökningen täcker. Den hör
+            till sökrutan ovanför, inte till en egen yta.
+          */}
+          <p className="-mt-2 text-sm text-stone-600 dark:text-stone-400 max-w-3xl">
+            {t('education.infoBanner.description')}
+          </p>
 
           {/* Quick Search Options */}
           <div>

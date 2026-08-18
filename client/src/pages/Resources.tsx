@@ -565,7 +565,7 @@ function ResourcesInner() {
   // `to` gör talen tryckbara: SidRailStats länkar vidare när fältet finns.
   const resourceStats: PageStat[] = [
     { label: t('resources.stats.savedJobs'), value: stillSavedJobs.length, icon: BriefcaseIcon, to: '/job-search' },
-    { label: t('resources.stats.documents'), value: cvVersions.length + coverLetters.length, icon: DocumentText },
+    { label: t('resources.stats.documents'), value: coverLetters.length + (hasCV ? 1 : 0), icon: DocumentText },
     { label: t('resources.stats.bookmarks'), value: bookmarkedArticles.length, icon: BookOpen, to: '/knowledge-base' },
     { label: t('resources.stats.files'), value: uploadedFiles.length, icon: Folder },
   ]
@@ -626,7 +626,7 @@ function ResourcesInner() {
           stå kvar och visa samma siffror två gånger på telefon. */}
 
       {/* Search - flikarna som låg här flyttade in i sidoskenan (steg 5) */}
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 mb-6 shadow-sm">
+      <div className="mb-4">
         <div className="flex items-center justify-end gap-3">
           {/* Search */}
           <div className="flex items-center gap-2">
@@ -778,7 +778,7 @@ function ResourcesInner() {
                 <div>
                   <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100">{cvData.firstName} {cvData.lastName}</h2>
                   <p className="text-sm text-stone-600 dark:text-stone-400">{cvData.title || t('resources.myCV')}</p>
-                  <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 flex items-center gap-1">
                     <Sparkles size={12} />
                     Spara en version på CV-sidan för att hantera flera versioner
                   </p>
@@ -787,7 +787,7 @@ function ResourcesInner() {
               <div className="flex items-center gap-2 flex-wrap">
                 <Link
                   to="/cv"
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-white dark:bg-stone-800 text-amber-700 dark:text-amber-400 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-amber-200 dark:border-amber-700 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-white dark:bg-stone-800 text-[var(--c-text)] rounded-lg font-medium hover:bg-[var(--c-bg)] border border-[var(--c-accent)] transition-colors shadow-sm"
                 >
                   <Edit2 className="w-4 h-4" />
                   Redigera
@@ -802,7 +802,7 @@ function ResourcesInner() {
                 />
                 <button
                   onClick={() => generateCVWord(cvData)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-600 transition-colors shadow-sm"
                 >
                   <FileDown className="w-4 h-4" />
                   Word

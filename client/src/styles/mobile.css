@@ -364,7 +364,15 @@ input[type="button"],
    8. FORMULÄR PÅ MOBIL
    ============================================ */
 
-.mobile-device form {
+/*
+ * Stapla formulärfält på mobil — men bara formulär som inte redan har en egen
+ * layout. Regeln var tidigare `.mobile-device form` rakt av, och en elementväljare
+ * med klass slår varje Tailwind-utility: ett formulär skrivet `flex items-center`
+ * blev kolumn ändå. Kunskapsbankens sökruta träffades av det — ikon, fält och
+ * knapp låg på var sin rad, och platshållaren klipptes mitt i meningen.
+ * Uppmätt 2026-08-18: computed flex-direction var `column` trots klassen `flex`.
+ */
+.mobile-device form:not([class*="flex"]):not([class*="grid"]) {
   display: flex;
   flex-direction: column;
   gap: 16px;
