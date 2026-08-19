@@ -547,7 +547,11 @@ function getCorsHeaders(requestOrigin) {
  * av `.choices` och `.usage`. Samma grepp som B21: beskriv formen en gång, så
  * blir det synligt den dag leverantören ändrar den.
  *
- * @typedef {{ choices?: Array<{ message?: { content?: string } }>, usage?: { total_tokens?: number } }} OpenRouterSvar
+ * `finish_reason` och `usage.completion_tokens_details.reasoning_tokens`
+ * tillkom 2026-08-19: när `content` är tomt är de enda sättet att se om
+ * budgeten tog slut under modellens tänkande eller om något annat hände.
+ *
+ * @typedef {{ choices?: Array<{ message?: { content?: string }, finish_reason?: string }>, usage?: { total_tokens?: number, completion_tokens?: number, completion_tokens_details?: { reasoning_tokens?: number } } }} OpenRouterSvar
  */
 
 const PROMPTS = {
@@ -1965,7 +1969,28 @@ module.exports = async (req, res) => {
     // väg ska se att det finns tre.
     /** @type {string | { raw: string } | unknown} */
     let content = aiData.choices?.[0]?.message?.content;
-    if (!content) return res.status(502).json({ error: 'No response from AI' });
+    if (!content) {
+      // "No response from AI" har varit ett återvändsgränd-fel: svaret var
+      // 200 OK, men `content` tomt, och loggen sa ingenting om varför.
+      //
+      // Den låsta modellen är RESONERANDE — den tänker först och svarar
+      // sedan, och båda delarna ryms inom `max_tokens`. Räcker budgeten inte
+      // till efter tänkandet kommer `content` tillbaka tomt. `finish_reason`
+      // och `usage` avgör saken: 'length' + reasoning_tokens nära taket
+      // betyder budget, allt annat betyder något annat. Utan de här två
+      // fälten går det bara att gissa — och det har kostat tre deployer.
+      const val = aiData.choices?.[0] ?? {};
+      console.error(
+        `[AI] ${fn}: tomt content trots 200. finish_reason=${val.finish_reason ?? '?'} ` +
+        `usage=${JSON.stringify(aiData.usage ?? {})} maxTokens=${prompt.maxTokens}`
+      );
+      return res.status(502).json({
+        error: 'No response from AI',
+        code: 'AI_EMPTY_RESPONSE',
+        finishReason: val.finish_reason ?? null,
+        usage: aiData.usage ?? null,
+      });
+    }
 
     if (prompt.parseJson) {
       // B17: fence-tolerant tolkning först. `{ raw }`-fallbacken finns kvar
