@@ -47,7 +47,14 @@ const path = require('node:path')
 // JobMatchAnalyzer nåddes inte från main.tsx, och barreln `jobs/index.ts` var
 // det som gjorde dem osynliga för en vanlig importsökning. De 23 typfelen
 // försvann med filerna; ingen av dem satt i kod som kördes.
-const CEILING = 422
+// 422 → 412 (2026-08-19): `components/interview/` arkiverad — InterviewPrep,
+// MockInterviewSession och StarMethodGuide, 617 rader med noll importörer
+// (nåbarhetsanalys från main.tsx, bekräftad med sökväg-grep). Sju av felen kom
+// från att `calculateProgress()` blev async 2026-03-06 medan
+// `InterviewPrep.tsx:23` fortsatte anropa den utan `await` — skuld som räknats
+// i taket i fem månader, i kod ingen användare nått. Se
+// archive/2026-08-doda-intervjukomponenter/README.md.
+const CEILING = 412
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

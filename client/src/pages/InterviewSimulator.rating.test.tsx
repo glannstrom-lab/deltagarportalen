@@ -14,14 +14,26 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const callAIMock = vi.fn()
 vi.mock('@/services/aiApi', () => ({
   callAI: (fn: string, params: unknown) => callAIMock(fn, params),
 }))
 
+const saveSimulatorSessionMock = vi.fn()
 vi.mock('@/services/interviewService', () => ({
-  saveSimulatorSession: vi.fn(),
+  saveSimulatorSession: (...a: unknown[]) => saveSimulatorSessionMock(...a),
+  getSimulatorSessions: () => [],
+  sparaSimulatorUtkast: vi.fn(),
+  lasSimulatorUtkast: () => null,
+  rensaSimulatorUtkast: vi.fn(),
+}))
+
+// Vidare läsning hämtas ur kunskapsbanken. Tom lista här — avsnittet döljs då,
+// vilket är rätt beteende och håller testet fokuserat på betygen.
+vi.mock('@/hooks/knowledge-base/useArticles', () => ({
+  useArticles: () => ({ data: [], isLoading: false }),
 }))
 
 // Fokusläget har en egen guide-vy — vi testar den vanliga sidan.
@@ -59,12 +71,18 @@ vi.mock('@/components/ui/ConfirmDialog', () => ({
 
 import InterviewSimulator from './InterviewSimulator'
 
-const renderPage = () =>
-  render(
-    <MemoryRouter>
-      <InterviewSimulator />
-    </MemoryRouter>
+const renderPage = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return render(
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <InterviewSimulator />
+      </MemoryRouter>
+    </QueryClientProvider>
   )
+}
 
 /** Fälla ut feedback-panelen för svar nr `index` (den är hopfälld som default). */
 async function visaFeedback(index = 0) {
@@ -135,7 +153,13 @@ describe('InterviewSimulator — betyg utan bedömning', () => {
       expect(container.textContent).toMatch(/AI-betyg/)
     })
 
-    // 'Bra svar!' var den hårdkodade fallbacken — den fanns bara i koden.
+    // Utan den här raden kunde testet inte falla.
+    //
+    // Feedbackpanelen är hopfälld som default, så `not.toContain('Bra svar!')`
+    // var sant av layoutskäl — texten fanns inte i DOM:en oavsett vad koden
+    // gjorde. Mutationen `feedback: aiFeedback || 'Bra svar!'`, alltså exakt
+    // den bugg B12 tog bort, överlevde hela sviten på 1 746 tester i 125 filer.
+    await visaFeedback()
     expect(container.textContent).not.toContain('Bra svar!')
   })
 

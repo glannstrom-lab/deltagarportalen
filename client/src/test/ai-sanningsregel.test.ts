@@ -49,10 +49,6 @@ const SANNINGSMARKORER = [
  * Att lägga till en rad här ska kosta en motivering — det är hela poängen.
  */
 const UTAN_KRAV: Record<string, string> = {
-  'intervju-simulator':
-    'Ställer intervjufrågor, påstår ingenting om användaren. Den fabricerar inte ' +
-    'meriter — den ber personen berätta om sina. Skulle den börja sammanfatta ' +
-    'svaren hör den hemma i kravlistan igen.',
   'sta-week-summary':
     'STA-modulen är avaktiverad sedan 2026-08-03 (MODULES.STA, av som default). ' +
     'Prompten når ingen användare. Slås modulen på ska den här raden bort och ' +
@@ -67,6 +63,52 @@ const UTAN_KRAV: Record<string, string> = {
 
 const funktioner = Object.keys(PROMPTS).filter((n) => n !== 'default')
 
+/**
+ * Många prompter är GRENADE — de returnerar olika systemprompt beroende på
+ * vad anroparen skickar. `intervju-simulator` är arketypen: utan data ställer
+ * den bara en öppningsfråga, men med `anvandarSvar` skriver den 500 tokens
+ * fri text om en människas svar och sätter ett betyg på henne.
+ *
+ * Fram till 2026-08-19 anropade det här testet varje prompt med `{}` — alltså
+ * ALLTID den ofarliga grenen. Prompten som bedömer människan låg i `UTAN_KRAV`
+ * med motiveringen "påstår ingenting om användaren", och grinden kunde inte
+ * se att motiveringens egen utlösare ("skulle den börja sammanfatta svaren")
+ * redan var uppfylld.
+ *
+ * Därför anropas nu varje prompt med ett underlag som är tänkt att träffa den
+ * gren som SKRIVER OM PERSONEN, och regeln krävs i varje gren som svarar.
+ * Fälten är medvetet många: en prompt som inte känner igen dem faller tillbaka
+ * på sin grundgren, vilket bara betyder att den kontrolleras som förut.
+ */
+const UNDERLAG: Record<string, unknown> = {
+  // Fritext om personen
+  anvandarSvar: 'Jag har jobbat på lager i två år.',
+  meddelande: 'Vad ska jag tänka på?',
+  text: 'Jag har jobbat på lager i två år.',
+  cvText: 'Anna Andersson, lagerarbetare.',
+  // Vanliga formvarianter i biblioteket
+  typ: 'about',
+  data: { namn: 'Anna' },
+  roll: 'Lagerarbetare',
+  historik: [{ fraga: 'Berätta om dig', svar: 'Jag har jobbat på lager.' }],
+  experience: [{ title: 'Lagerarbetare', company: 'ICA' }],
+  cv: { workExperience: [{ title: 'Lagerarbetare', company: 'ICA' }] },
+}
+
+/** Alla systemprompter en funktion kan producera — båda grenarna. */
+function allaSystemprompter(namn: string): string[] {
+  const ut: string[] = []
+  for (const underlag of [{}, UNDERLAG]) {
+    try {
+      const s = PROMPTS[namn](underlag)?.system
+      if (typeof s === 'string' && s && !ut.includes(s)) ut.push(s)
+    } catch {
+      // En prompt som kastar på oväntad form är inte den här grindens sak.
+    }
+  }
+  return ut
+}
+
 describe('sanningsregeln finns i varje prompt som beskriver en människa', () => {
   it('promptbiblioteket går att läsa och är inte tomt', () => {
     // Positiv kontroll: utan den här blir alla it.each nedan gröna genom att
@@ -76,7 +118,6 @@ describe('sanningsregeln finns i varje prompt som beskriver en människa', () =>
 
   it.each(funktioner)('%s', (namn) => {
     const skal = UTAN_KRAV[namn]
-    const system = PROMPTS[namn]({})?.system ?? ''
 
     if (skal) {
       // Undantagen får inte bli en glömd skräplåda: skälet måste vara skrivet.
@@ -84,12 +125,14 @@ describe('sanningsregeln finns i varje prompt som beskriver en människa', () =>
       return
     }
 
-    const harRegel = SANNINGSMARKORER.some((r) => r.test(system))
+    const grenar = allaSystemprompter(namn)
+    const utanRegel = grenar.filter((g) => !SANNINGSMARKORER.some((r) => r.test(g)))
     expect(
-      harRegel,
-      `Prompten "${namn}" saknar sanningsregel. Lägg till en — eller skriv in ` +
-        `den i UTAN_KRAV med ett skäl. Se AR4 i docs/ROADMAP.md.`
-    ).toBe(true)
+      utanRegel.map((g) => g.slice(0, 160)),
+      `Prompten "${namn}" saknar sanningsregel i ${utanRegel.length} av ` +
+        `${grenar.length} grenar. Lägg till en — eller skriv in den i UTAN_KRAV ` +
+        `med ett skäl. Se AR4 i docs/ROADMAP.md.`
+    ).toEqual([])
   })
 })
 

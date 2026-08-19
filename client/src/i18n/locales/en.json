@@ -6574,6 +6574,32 @@
     "privacyPolicy": "privacy policy"
   },
   "interviewSimulator": {
+    "draft": {
+      "title": "You have a practice session you did not finish",
+      "body_one": "{{roll}} — {{count}} answered question. Do you want to continue where you were?",
+      "body_other": "{{roll}} — {{count}} answered questions. Do you want to continue where you were?",
+      "resume": "Continue",
+      "discard": "Start over"
+    },
+    "errors": {
+      "noStartPhrase": "The AI had no opening phrase right now. Try starting with a concrete situation you have been in.",
+      "emptyQuestion": "The AI did not answer this time. You can practise on a common interview question in the meantime."
+    },
+    "history": {
+      "title": "Your previous practice sessions",
+      "answers_one": "{{count}} answered question",
+      "answers_other": "{{count}} answered questions",
+      "aiRating": "AI's assessment: {{rating}} of 5",
+      "ownRating": "Your own rating: {{rating}} of 5"
+    },
+    "milestone": {
+      "title_one": "You have answered {{count}} question",
+      "title_other": "You have answered {{count}} questions",
+      "body": "Every practice makes you more confident before the real interview. Keep going as long as you like, or download your summary."
+    },
+    "ratingStarAria": "Rating {{star}} of 5",
+    "readingTime_one": "{{count}} min",
+    "readingTime_other": "{{count}} min",
     "title": "Interview Simulator",
     "description": "Practice interviews with AI. Get feedback on your answers and become better prepared.",
     "roleLabel": "What role are you interviewing for?",
@@ -6630,6 +6656,14 @@
       "randomQuestions": "Random questions"
     },
     "star": {
+      "mistakesTitle": "Five mistakes that are easy to make",
+      "mistakes": [
+        "Being too general — give a concrete example instead of describing what you \"usually\" do.",
+        "Saying \"we\" when you mean \"I\". The listener wants to know what YOU did.",
+        "Forgetting the ending. Always finish with what it led to.",
+        "Talking for too long. Two to three minutes is enough for one answer.",
+        "Choosing an example that went badly without saying what you took away from it."
+      ],
       "title": "STAR method for better answers",
       "situation": "Describe the context",
       "task": "Explain what needed to be done",
@@ -6652,6 +6686,10 @@
       "questionsForEmployer": "Questions to ask the employer"
     },
     "session": {
+      "noAnswersYet": "Your first question is waiting below",
+      "questionLoading": "Preparing your first question …",
+      "fallbackQuestion": "This question comes from our own list, not from the AI.",
+      "practiceAgain": "Practise again",
       "endInterview": "End",
       "endInterviewAria": "End interview",
       "endConfirmTitle": "Do you want to end the interview?",
@@ -6685,6 +6723,9 @@
       "aiImprovements": "What to practise next"
     },
     "input": {
+      "micDenied": "Your browser did not allow the microphone. You can allow it in the address bar — or type your answer in the box below, that works just as well.",
+      "micNoSpeech": "We did not hear anything. Try again, or type your answer in the box.",
+      "micFailed": "The microphone stopped working. You can type your answer in the box below instead.",
       "giveStart": "Give me a start",
       "yourAnswerLabel": "Your answer",
       "stopRecording": "Stop recording",
@@ -6703,6 +6744,10 @@
       "recorded": "{{time}} recorded"
     },
     "download": {
+      "aiSection": "OVERALL ASSESSMENT (AI-generated)",
+      "ratingByAi": "AI's assessment",
+      "ratingByYou": "your own rating",
+      "ratingNotSet": "not set",
       "downloadSummary": "Download summary",
       "title": "INTERVIEW PRACTICE SUMMARY",
       "date": "Date",
@@ -6718,7 +6763,7 @@
       "ratingLabel": "RATING",
       "tipsForImprovement": "TIPS FOR IMPROVEMENT",
       "tip1": "Use the STAR method for better structured answers",
-      "tip2": "Practice out loud to improve pronunciation and pace",
+      "tip2": "Practise out loud — it makes pace and pronunciation easier",
       "tip3": "Prepare concrete examples from your experience"
     },
     "example": {
@@ -6731,11 +6776,10 @@
       "tip3": "End with the result and the lesson learned"
     },
     "progress": {
+      "encouragement": "You decide for yourself how many questions you want to practise.",
       "title": "Your progress",
       "answered": "Answered",
-      "questionsUnit": "questions",
-      "questionsLeft": "{{count}} questions left to achievement",
-      "goalAchieved": "You've reached the goal!"
+      "questionsUnit": "questions"
     }
   },
   "profile": {

@@ -6574,6 +6574,32 @@
     "privacyPolicy": "integritetspolicy"
   },
   "interviewSimulator": {
+    "draft": {
+      "title": "Du har en övning som inte blev klar",
+      "body_one": "{{roll}} — {{count}} besvarad fråga. Vill du fortsätta där du var?",
+      "body_other": "{{roll}} — {{count}} besvarade frågor. Vill du fortsätta där du var?",
+      "resume": "Fortsätt",
+      "discard": "Börja om"
+    },
+    "errors": {
+      "noStartPhrase": "AI:n hade ingen startfras just nu. Börja gärna med en konkret situation du varit med om.",
+      "emptyQuestion": "AI:n svarade inte den här gången. Du kan öva på en vanlig intervjufråga så länge."
+    },
+    "history": {
+      "title": "Dina tidigare övningar",
+      "answers_one": "{{count}} besvarad fråga",
+      "answers_other": "{{count}} besvarade frågor",
+      "aiRating": "AI:s bedömning: {{rating}} av 5",
+      "ownRating": "Ditt eget betyg: {{rating}} av 5"
+    },
+    "milestone": {
+      "title_one": "Du har svarat på {{count}} fråga",
+      "title_other": "Du har svarat på {{count}} frågor",
+      "body": "Varje övning gör dig tryggare inför den riktiga intervjun. Fortsätt så länge du vill, eller ladda ner din sammanfattning."
+    },
+    "ratingStarAria": "Betyg {{star}} av 5",
+    "readingTime_one": "{{count}} min",
+    "readingTime_other": "{{count}} min",
     "title": "Intervju-simulator",
     "description": "Öva på intervjuer med AI. Få feedback på dina svar och bli bättre förberedd.",
     "roleLabel": "Vilken roll ska du intervjua för?",
@@ -6630,6 +6656,14 @@
       "randomQuestions": "Slumpmässiga frågor"
     },
     "star": {
+      "mistakesTitle": "Fem misstag som är lätta att göra",
+      "mistakes": [
+        "Att vara för allmän — ge ett konkret exempel i stället för att beskriva hur du \"brukar\" göra.",
+        "Att säga \"vi\" när du menar \"jag\". Den som lyssnar vill veta vad DU gjorde.",
+        "Att glömma slutet. Avsluta alltid med vad det ledde till.",
+        "Att prata för länge. Två till tre minuter räcker för ett svar.",
+        "Att välja ett exempel där det gick dåligt utan att berätta vad du tog med dig."
+      ],
       "title": "STAR-metoden för bättre svar",
       "situation": "Beskriv sammanhanget",
       "task": "Förklara vad som behövde göras",
@@ -6652,6 +6686,10 @@
       "questionsForEmployer": "Frågor att ställa till arbetsgivaren"
     },
     "session": {
+      "noAnswersYet": "Din första fråga väntar nedan",
+      "questionLoading": "Förbereder din första fråga …",
+      "fallbackQuestion": "Den här frågan kommer ur vår egen lista, inte från AI:n.",
+      "practiceAgain": "Öva en gång till",
       "endInterview": "Avsluta",
       "endInterviewAria": "Avsluta intervjun",
       "endConfirmTitle": "Vill du avsluta intervjun?",
@@ -6685,6 +6723,9 @@
       "aiImprovements": "Att öva vidare på"
     },
     "input": {
+      "micDenied": "Webbläsaren släppte inte fram mikrofonen. Du kan tillåta den i adressfältet — eller skriva ditt svar i rutan nedan, det fungerar lika bra.",
+      "micNoSpeech": "Vi hörde inget. Prova igen, eller skriv svaret i rutan.",
+      "micFailed": "Mikrofonen slutade fungera. Du kan skriva ditt svar i rutan nedan i stället.",
       "giveStart": "Ge mig en start",
       "yourAnswerLabel": "Ditt svar",
       "stopRecording": "Stoppa inspelning",
@@ -6703,6 +6744,10 @@
       "recorded": "{{time}} inspelad"
     },
     "download": {
+      "aiSection": "HELHETSBEDÖMNING (AI-genererad)",
+      "ratingByAi": "AI:s bedömning",
+      "ratingByYou": "ditt eget betyg",
+      "ratingNotSet": "inte satt",
       "downloadSummary": "Ladda ner sammanfattning",
       "title": "INTERVJUPRAKTIK SAMMANFATTNING",
       "date": "Datum",
@@ -6718,7 +6763,7 @@
       "ratingLabel": "BETYG",
       "tipsForImprovement": "TIPS FÖR FÖRBÄTTRING",
       "tip1": "Använd STAR-metoden för bättre strukturerade svar",
-      "tip2": "Praktisera högljudd för att förbättra uttal och tempo",
+      "tip2": "Öva högt för dig själv — det gör tempot och uttalet lättare",
       "tip3": "Förbered konkreta exempel från din erfarenhet"
     },
     "example": {
@@ -6731,11 +6776,10 @@
       "tip3": "Avsluta med resultatet och lärdomen"
     },
     "progress": {
+      "encouragement": "Du bestämmer själv hur många frågor du vill öva på.",
       "title": "Din progress",
       "answered": "Besvarat",
-      "questionsUnit": "frågor",
-      "questionsLeft": "{{count}} frågor kvar till utmärkelse",
-      "goalAchieved": "Du har klarat målet!"
+      "questionsUnit": "frågor"
     }
   },
   "profile": {

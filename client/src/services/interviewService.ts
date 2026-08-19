@@ -491,6 +491,14 @@ export interface SimulatorQA {
   fraga: string;
   svar: string;
   rating?: number;
+  /**
+   * Varifrån betyget kommer. Fältet fanns i sidans eget tillstånd (B12) men
+   * inte här, så det gick förlorat vid sparning — och en historikvy hade
+   * därför inte kunnat säga om trean var AI:ns bedömning eller deltagarens
+   * egen. Samma påstående som B12 tog bort ur gränssnittet hade återuppstått
+   * i den sparade posten.
+   */
+  ratingSource?: 'ai' | 'user';
   feedback?: string;
 }
 
@@ -580,6 +588,81 @@ async function sparaSimulatorSessionIMolnet(record: SimulatorSession): Promise<v
   } catch (error) {
     // Tyst. Övningen är redan sparad lokalt och användaren är mitt i ett flöde.
     console.error('Kunde inte spegla intervjuövningen till molnet:', error);
+  }
+}
+
+/* ── Utkast: en PÅGÅENDE övning ─────────────────────────────────────────────
+ *
+ * Uppmätt 2026-08-19, i prod, med Playwright: ett klick på "Karriär" i
+ * toppnaven mitt i en intervju — 1 besvarad fråga och ett halvskrivet svar —
+ * gav `/#/karriar` utan dialog, och bakåtknappen kom tillbaka till ett tomt
+ * formulär. Samma sak vid omladdning: 3 svar med AI-feedback borta.
+ *
+ * `beforeunload`-vakten som fanns täckte bara riktig sidladdning. Klient-
+ * navigering, HashRouterns bakåtknapp och fokuslägesväxeln passerade den alla,
+ * och `grep useBlocker|usePrompt` ger noll träffar i hela client/src.
+ *
+ * En spärrdialog hade dessutom varit fel medicin för den här målgruppen — den
+ * hindrar en från att gå men räddar ingenting. Utkastet gör i stället att
+ * övningen finns kvar när man kommer tillbaka, oavsett hur man lämnade.
+ */
+
+const SIMULATOR_UTKAST_KEY = 'interview_simulator_utkast';
+
+export interface SimulatorUtkast {
+  roll: string;
+  foretag: string;
+  kategori: string;
+  historik: SimulatorQA[];
+  nuvarandeFraga: string;
+  anvandarSvar: string;
+  antalFragor: number;
+  sparatVid: string;
+}
+
+/** Skriv över utkastet för den pågående övningen. */
+export function sparaSimulatorUtkast(utkast: Omit<SimulatorUtkast, 'sparatVid'>): void {
+  try {
+    localStorage.setItem(
+      SIMULATOR_UTKAST_KEY,
+      JSON.stringify({ ...utkast, sparatVid: new Date().toISOString() })
+    );
+  } catch {
+    // Full disk eller privat läge. Övningen fungerar ändå — bara utan
+    // återställning. Det är inte värt ett felmeddelande mitt i ett flöde.
+  }
+}
+
+/**
+ * Läs utkastet, om det finns och är färskt.
+ *
+ * Ett dygn är gränsen: äldre än så och man minns inte längre vad man höll på
+ * med, och att möta ett halvfärdigt svar från förra veckan är förvirrande
+ * snarare än hjälpsamt.
+ */
+export function lasSimulatorUtkast(): SimulatorUtkast | null {
+  try {
+    const rå = localStorage.getItem(SIMULATOR_UTKAST_KEY);
+    if (!rå) return null;
+    const utkast = JSON.parse(rå) as SimulatorUtkast;
+    if (!utkast?.roll) return null;
+    const alder = Date.now() - new Date(utkast.sparatVid).getTime();
+    if (!Number.isFinite(alder) || alder > 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(SIMULATOR_UTKAST_KEY);
+      return null;
+    }
+    return utkast;
+  } catch {
+    return null;
+  }
+}
+
+/** Ta bort utkastet — övningen är avslutad eller medvetet förkastad. */
+export function rensaSimulatorUtkast(): void {
+  try {
+    localStorage.removeItem(SIMULATOR_UTKAST_KEY);
+  } catch {
+    // Se sparaSimulatorUtkast.
   }
 }
 
