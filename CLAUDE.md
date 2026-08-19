@@ -285,14 +285,14 @@ cd client
 npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (437)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (412)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 1 630 tester i 116 filer (~40 s, mätt 2026-08-17)
+npm run test:run           # 1 760 tester i 127 filer (~45 s, mätt 2026-08-19)
 npm run build
 ```
 
-De tre **frysta taken** (122 warnings, 437 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (122 warnings, 412 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
@@ -309,14 +309,32 @@ takskript skriver ut det nya talet när skulden minskat.
 > **⚠️ De åtta räcker inte — CI kör ett nionde steg som inte finns i listan.** `ci.yml` kör
 > `npm run test:coverage` (inte `test:run`). Kör den innan du tror att CI blir grön.
 >
-> **⚠️ Men lokalt gröna grindar bevisar fortfarande ingenting om CI.** Uppmätt 2026-08-17
-> (körning `31619914202`, commit `9b1bfb28`): **8 av 9 jobb gröna** — `Security Scan`,
-> `Lint & Type Check`, `Coverage`, `Run Tests`, `Build`, båda e2e-jobben. Kvar rött är
-> **`Lighthouse CI`**, steg "Run Lighthouse CI". Rotorsaken är fastställd och är inte den som
-> stod här: `ci.yml:238-239` skickar `--collect.staticDistDir` som **CLI-flagga**, vilket får
-> lhci att ignorera `.lighthouserc.js:22`s `url:`-lista helt och bara auditera `index.html`.
-> Fixen från 12 augusti kunde därför aldrig verka, oavsett vilka filer som ligger i `dist/`.
-> Se ROADMAP DR4.
+> **⚠️ Men lokalt gröna grindar bevisar fortfarande ingenting om CI.** Uppmätt 2026-08-19
+> (commit `b93be382`): **6 av 8 jobb gröna** — `Lint & Type Check`, `Coverage`, `Run Tests`,
+> `Build`, båda e2e-jobben. **Två röda:**
+>
+> · **`Lighthouse CI`**, steg "Run Lighthouse CI". Rotorsaken är fastställd och är inte den som
+>   stod här: `ci.yml:238-239` skickar `--collect.staticDistDir` som **CLI-flagga**, vilket får
+>   lhci att ignorera `.lighthouserc.js:22`s `url:`-lista helt och bara auditera `index.html`.
+>   Fixen från 12 augusti kunde därför aldrig verka, oavsett vilka filer som ligger i `dist/`.
+>   Se ROADMAP DR4.
+>
+> · **`Security Scan`**, steg "Run npm audit (production dependencies)" — **rättat 2026-08-19.**
+>   Rutan sa tidigare att jobbet var grönt och räknade upp det bland de gröna. Det stämmer inte:
+>   det har fällt i **minst åtta körningar i rad**, alltså även vid mätningen 17 augusti som
+>   påståendet byggde på. Kontrollera själv med
+>   `curl -sS ".../actions/workflows/<id>/runs?branch=main"` och slå upp jobbet per körning —
+>   en enskild körnings sammanfattning räcker inte, jobbnamnen måste läsas ut.
+>
+>   Orsaken är tre högallvarliga sårbarheter i `extract-zip` → `@puppeteer/browsers` →
+>   `puppeteer-core` (GHSA-jmr9-qjv8-65gv, symlänk-traversering). **Det finns ingen lagad
+>   version av `extract-zip`** — 2.0.1 är både senaste och den flaggade — så enda vägen är
+>   `puppeteer-core` 24 → 25, en brytande uppgradering av CV-PDF-renderaren.
+>
+>   Praktiskt är kodvägen sannolikt inte nåbar: `client/api/cv-pdf.js` skickar **alltid** en
+>   explicit `executablePath` (`@sparticuz/chromium` i prod, detekterad lokal Chrome i dev), så
+>   `@puppeteer/browsers`' nedladdare — den enda anroparen av `extract-zip` — körs aldrig.
+>   Grinden kan inte veta det. Beslutet är Mikaels; se ROADMAP DR6.
 >
 > Historiken bakom rutan, för sammanhang: fram till 2026-08-09 hade CI **aldrig** varit grön på
 > `main` — 687 körningar sedan 2 april, noll lyckade. Felet var att sju testfiler kraschade vid

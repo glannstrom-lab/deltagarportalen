@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-18** (Översikt under lupp — se sektionen direkt nedan), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar — se sektionerna direkt nedan), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,237 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-19 (natt) — Intervjusimulatorn, fem granskare (klar, deployad)
+
+Kod + inloggad prod. **Åtgärdat och pushat** (commit `b93be382`, deploy grön,
+17 av 18 mätpunkter verifierade i drift). Avsnittet står kvar för premisserna
+som inte höll, för det som kräver beslut, och för de två lärdomarna.
+
+### Det allvarligaste: en tillgänglighetsfunktion raderade deltagarens arbete
+
+Hela tillståndet — frågor, svar, betyg, AI-feedback — bor i
+`InterviewSimulatorInner`. `if (isFocusMode)` låg i den **yttre** komponenten,
+så när fokusläget slog om byttes `Inner` ut mot `FocusInterviewWizard`,
+avmonterades, och allt försvann. Utan bekräftelse, utan sparning.
+
+Växeln sitter på två ställen som båda syns på just den rutten: toppnavens
+alltid synliga knapp (`TopBar.tsx:166`) och "Lugnare läge"-panelen
+(`LugnarePanel.tsx:136`, monterad via `radgivarRutter.ts:47`). Funktionen finns
+för den som behöver lugn — och den orsakade portalens dyraste dataförlust.
+
+Uppmätt i prod gällde detsamma vanlig klientnavigering: ett klick på "Karriär"
+med en besvarad fråga och ett halvskrivet svar gav `/#/karriar` utan dialog, och
+bakåtknappen kom tillbaka till ett tomt formulär. `beforeunload`-vakten täckte
+bara riktig sidladdning; `grep useBlocker|usePrompt` ger **noll** träffar i hela
+`client/src`.
+
+**Åtgärdat:** grenen ligger inuti `Inner`, så komponenten förblir monterad och
+att växla fram och tillbaka lämnar övningen orörd. Övningen autosparas dessutom
+som utkast (`sparaSimulatorUtkast` m.fl. i `interviewService.ts`, nyckel
+`interview_simulator_utkast`, ett dygns hållbarhet) — kommer man tillbaka får
+man välja att fortsätta eller börja om. **Ingen spärrdialog:** den hindrar en
+från att gå men räddar ingenting.
+
+### Grinden som inte kunde se den farliga grenen
+
+Systemprompten i feedbackgrenen av `intervju-simulator` var i sin helhet:
+*"Du är rekryterare. Svara ENDAST med JSON: {rating…}"*. 500 tokens fri text om
+en människas svar, plus ett betyg på henne, utan ett ord om att inte hitta på. I
+prod gav svaret "vet inte" betyget 1/5 och omdömet *"Svaret visar ingen kunskap
+om prioriteringsmetoder, vilket är kritiskt för rollen"* — ur två ord.
+
+`ai-sanningsregel.test.ts` (AR4) missade det av **två** skäl, båda rättade:
+
+- Prompten låg i `UTAN_KRAV` med motiveringen *"påstår ingenting om användaren …
+  skulle den börja sammanfatta svaren hör den hemma i kravlistan igen"*.
+  Utlösaren var redan uppfylld.
+- Testet var **grenblint** — det anropade `PROMPTS[namn]({})`, vilket alltid ger
+  den ofarliga öppningsgrenen. Den gren som skriver om personen nåddes aldrig.
+
+Grinden anropar nu varje prompt med ett underlag som träffar den skrivande
+grenen och kräver regeln i **varje** gren som svarar. Den fällde omedelbart även
+öppningsgrenen, som kunde formulera en fråga som förutsätter något om personen.
+Systerprompten `intervju-sammanfattning` i samma fil har haft regeln sedan G11 —
+den kopierades aldrig till grannen. Lärdom nedskriven globalt:
+`grind-som-anropar-med-tom-indata-ser-en-gren`.
+
+### Premisser som INTE höll
+
+- *"Sammanfattning visas efter ≥3 frågor"* — fel. Den visas efter **ett** svar
+  (`if (historik.length > 0)`); tröskeln 3 gäller bara utmärkelsen.
+- *"Snittbetyget kraschar när inget svar är betygsatt"* — fel. B12-fixet är
+  korrekt och vaktat av sex tester; `beraknaSnittbetyg` returnerar `null` och
+  båda vyerna visar "Inget svar är betygsatt än".
+- *"`components/interview/` är oinkopplat"* — underskattat. Filerna är
+  **avmonterade**: `InterviewPrep` satt som flik i `pages/JobSearch.tsx` från
+  `158ed7d2` (2026-02-27) och försvann i `3013187d` (2026-03-06), en commit som
+  heter *"Fix Arbetsförmedlingen API"* och skriver om filen med 999 rader.
+  Fliken togs bort som sidoeffekt, inte som beslut.
+
+### Ärlighetsfynden (samma vana som 2026-08-09, sjätte ytan)
+
+- Tre nakna `catch {}` gjorde att en reservfråga ur en hårdkodad lista
+  presenterades i AI:ns kort, med rubriken "Fråga 1", som om en rekryterare
+  ställt den. `aiApi.ts` producerar fyra distinkta svenska meddelanden — och
+  inget nådde skärmen. **Den som stängt av AI (art. 21) fick en full "intervju"
+  av reservfrågor utan att någonsin få veta varför.** Verifierat i drift efter
+  fixen: banderollen säger nu *"Du har stängt av AI-behandling av dina
+  uppgifter"*, och reservfrågan är märkt som portalens egen.
+- Två AI-fel i rad gav **samma fråga igen** — `antalFragor` lästes före ökningen.
+- Kategorimenyn var en attrapp: `selectedCategory` sattes, nollställdes, lästes
+  aldrig. Menyn lovade "Tekniska frågor" och gjorde ingenting.
+- `IntervjuSimulatorResultSchema` har alla fält `.optional()`, så `{}` var ett
+  giltigt svar — renderat blev det rubriken "Helhetsbedömning" plus AI Act-
+  vattenstämpeln med ingenting emellan. Exakt brevsidans fel (B21).
+- *"Din övning är sparad så du kan titta på den igen"* var falskt:
+  `getSimulatorSessions()` hade **noll läsare** i hela repot. Läsaren finns nu,
+  och `SimulatorQA` bär `ratingSource` — utan det gick B12:s hela poäng förlorad
+  vid sparning.
+- "Exempel på bra svar" visade en webbutvecklares svar ("5 års erfarenhet",
+  "specialiserad på React") till alla oavsett roll. Uppmätt i prod fick en
+  blivande vaktmästare React-svaret.
+
+### Testet som inte kunde falla
+
+Testet mot påhittat beröm asserterade `not.toContain('Bra svar!')` **utan att
+fälla ut feedbackpanelen** — påståendet var sant av layoutskäl. Mutationen
+`feedback: aiFeedback || 'Bra svar!'`, alltså exakt den bugg B12 tog bort,
+överlevde hela sviten på 1 746 tester i 125 filer. En rad räckte.
+
+Nio nya tester i `InterviewSimulator.arlighet.test.tsx`. Alla sju mutationer
+faller nu; den sjunde överlevde först eftersom testet jämförde hela frågekortet,
+som också innehåller "Fråga 1" respektive "Fråga 2" — sant av fel skäl.
+
+### Tillgänglighet, mätt mot verkliga tokenvärden
+
+- Betygsstjärnorna: fylld 1,47:1, tom 1,43:1 — och **båda tillstånden ritade
+  samma glyf**, så färg var enda skillnaden mellan satt och osatt betyg
+  (SC 1.4.1 + 1.4.11). Nu ★ mot ☆, 4,81:1 / 8,17:1, tryckyta ≥ 44 px.
+- Fokusringen var `ring-yellow-400` — osynlig av samma skäl, och hårdkodad mot
+  DESIGN.md §6.
+- AI:ns bedömning i mörkt läge: `dark:text-[var(--c-accent)]` = #6B3D1A på mörk
+  botten = **1,70:1**. Nu `--c-text` = 11,20:1. Tre ställen.
+- Vit ikon på ljus pastell, 1,73:1 — bryggregeln `tokens.css:139` kräver båda
+  klasserna på **samma** element, och här låg bakgrunden på föräldern.
+  *Troligen fler instanser i portalen; ingen har letat.*
+- Fem klasser `dark:border-[var(--c-accent)]/50/50` kompilerade till ingenting.
+- Fokus dumpades till `<body>` efter varje svar (knappen blir `disabled` medan
+  den har fokus).
+- Nekad mikrofon var helt tyst. **Roten satt i typdeklarationen:** `onerror` var
+  typad som ett vanligt `Event` i `global.d.ts`, så felkoden gick inte att läsa.
+- Talet från fråga 1 kröp in i fråga 2 (igenkänningen stoppades aldrig,
+  `event.results` växte) och skrev **över** det man skrivit för hand.
+- Mikrofonen fortsatte spela in efter avslutad intervju, och ljudkontrollerna
+  renderas bara i intervjuvyn — på sammanfattningen låg den på utan avstängning.
+
+### Ton och språk
+
+- Nedladdningen var helt hårdkodad svenska trots **17 färdiga** `download.*`-
+  nycklar i båda språkfilerna. En av dem, "Praktisera högljudd", är inte svenska.
+- "{{count}} frågor kvar till **utmärkelse**" — utmärkelsen finns inte någonstans
+  i koden.
+- Stor fet `0` i hjälteposition (DESIGN.md §7).
+- Timern gick grön → gul → orange → röd på 90 sekunder utan att någon tidsgräns
+  fanns. Gult läge mätte 2,84:1.
+- Sammanfattningen visade **två** betygsskalor: "2,3/5" och "Sammanvägt omdöme:
+  5/10", under rubriken "Bra jobbat!".
+- Knappen "Starta intervjun" nollställde allt och gick till startskärmen.
+- Robotikonen satt på deltagarens svar, människoikonen på AI:ns fråga.
+- Tre attrappkort med `cursor-pointer` utan `onClick`, och tre "artiklar" med
+  påhittade titlar, påhittade lästider och `href="#"` — ett klick kastade ut
+  deltagaren till `/#/oversikt`. Kunskapsbanken har **tio** riktiga
+  intervjuartiklar i prod; nu visas de.
+
+### Städat
+
+`components/interview/` arkiverad till
+`archive/2026-08-doda-intervjukomponenter/` — 617 rader, noll importörer
+(nåbarhetsanalys från `main.tsx` **plus** sökväg-grep; en av dem räcker inte, se
+lärdomen om barrel-filer 2026-08-04). Sju av felen i typtaket kom från att
+`calculateProgress()` blev async 2026-03-06 medan `InterviewPrep.tsx:23`
+fortsatte anropa den utan `await` — skuld som räknats i fem månader i kod ingen
+kört. **Typtaket sänkt 422 → 412.**
+
+Fem punkter om vanliga misstag i STAR-svar räddades ur den döda guiden till den
+levande sidan (`interviewSimulator.star.mistakes`); de fanns ingen annanstans.
+Guidens helexempel — en projektledare som ökar en beställning med 30 % — följde
+**inte** med, av samma skäl som React-svaret ovan.
+
+### Kvarstår
+
+- **`interviewService.ts` har nu EN export som levande kod når**
+  (`saveSimulatorSession`). `MOCK_INTERVIEWS`, `analyzeStarAnswer`,
+  `getInterviewTips`, `saveInterviewSession` och `calculateProgress` nåddes bara
+  från de arkiverade filerna; `getQuestionsForOccupation` och
+  `createInterviewPlan` nås inte alls. ~500 rader konsumentlösa. **Skärper C22.**
+  `analyzeStarAnswer` bör inte återupplivas som den är: den sätter "Poäng:
+  X/100" via fyra regex, och "Jag löste det genom att…" ger 0 för Action — ett
+  påhittat omdöme om användarens svar, samma familj som B12.
+- **`interview_sessions` har fortfarande 0 rader i prod** efter H13-fixen
+  2026-08-18. Koden är deployad men vägen är inte verifierad i drift — och
+  Översiktens nyckeltal läser just den tabellen. Molnskrivningen sker dessutom
+  bara i `handleAvslutaKlick`, så nyckeltalet kommer att underskatta
+  systematiskt när någon lämnar utan att avsluta.
+- Två `aria-live`-regioner samtidigt läser upp hela historikkortet före den nya
+  frågan.
+- `aria-controls` på feedbackknappen pekar på ett id som bara finns när panelen
+  är öppen.
+
+---
+
+## Genomgång 2026-08-19 — Personligt brev, sex granskare (klar, deployad)
+
+Fördes aldrig in när arbetet gjordes. Åtgärdat i `44c5d5f3`, `7c4d5435` och
+`d2d1baf9`.
+
+### Brevet ljög om deltagaren — och prompten kunde inte lagas
+
+Med bara en jobbannons som underlag skrev modellen ändå *"Dessutom har jag goda
+kunskaper i svenska, både i tal och skrift"* och *"är van vid skiftarbete"* om
+någon den inte visste något om. Tre mätningar mot prod, och fixen fick
+eskalera i tre steg:
+
+1. **Utvidgad förbudslista** — brevet kortades från 250–350 till ~130 ord, men
+   påhitten fanns kvar, bara andra.
+2. **Utkastläge med luckor** — 3–4 luckor kom, men bredvid dem stod fortfarande
+   *"Jag har goda kunskaper i svenska och är van vid skiftarbete"*.
+3. **Handskriven mall** (`client/src/data/brevmall.ts`) — beslut Mikael.
+
+**Slutsatsen är värd att behålla:** man kan inte be en modell skriva ett
+personligt brev i första person om en person den inte vet något om och samtidigt
+få ett sant svar. Uppgiften *kräver* påståenden; fler förbud flyttar bara vilka
+den väljer. Därför skrivs texten för hand när underlaget är tomt — då kan ingen
+modell hitta på.
+
+Mallen är **inte** B21:s förbjudna `mockGenerateLetter`: den visas när anropet
+lyckas men inte kan ge ett sant svar (inte som tröst vid fel), den säger vad den
+är, den är aldrig AI-märkt, den sparas med `ai_generated: false`, och varje
+mening om personen är en lucka. Skillnaderna står i filens modulhuvud.
+
+### Tre kontraktsbuggar i `personligt-brev`
+
+- Prompten läste bara `cv.work_experience`. Prod har `workExperience` i **17 av
+  26** CV:n — deras erfarenhet nådde alltså aldrig modellen.
+- Tonvalet accepterade bara svenska värden; klienten skickar
+  `'enthusiastic'`/`'formal'`.
+- `extraContext` lästes inte alls, trots att fältet fylls i.
+
+### Övrigt åtgärdat
+
+- Ett fel under generering **raderade brevet man redan skrivit**.
+- 963 rader dödkod bort, bland dem `CoverLetterStatistics.tsx` som renderade
+  `{Math.floor(Math.random() * 10)}%` med en grön uppåtpil som ett trendmått om
+  deltagarens jobbsökande.
+- PDF:en hade platshållaren "Ditt Namn" och en rå ISO-tidsstämpel.
+- Modern-mallens sida 2 hade 0,4 mm marginal utanför papperet.
+
+### Kvarstår
+
+- `?edit=<id>` konsumeras fortfarande inte av `CoverLetterWrite` (se UX35) —
+  "Redigera" öppnar skrivvyn tom.
 
 ---
 
@@ -439,6 +670,23 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 - [ ] **SK4** Nio edge-AI-funktioner har **noll** samtyckeskontroll (`grep -rln consent supabase/functions` → 0 av 24). Art. 9-grinden sitter bara på Vercel-vägen · ~1 dag
 - [ ] **SK5** Perplexity oredovisat underbiträde i fem funktioner; `ai-commute-planner/index.ts:50` skickar `HEMADRESS:` rakt in i prompten · S + beslut
 - [ ] **SK6** `consent_history` har rader för `privacy` (18), `terms` (18), `ai_processing` (16), `marketing` (1) — **noll** för hälsa/wellness. `check_health_consent()` läser i stället en muterbar kolumn utan versionering. Art. 7.1-bevisbördan är obesvarad · ~halvdag
+- [ ] **DR6** **`Security Scan` i CI är röd — och har varit det i minst åtta körningar i rad.** *(kräver Mikaels beslut — brytande uppgradering av en levande funktion)*
+
+  Upptäckt 2026-08-19 vid verifiering av en helt annan deploy. `CLAUDE.md` och den här planen har hittills påstått att **bara** Lighthouse var röd; det stämde inte ens vid mätningen 17 augusti som påståendet byggde på. Felet var mätmetoden: en körnings sammanfattning räcker inte, jobbnamnen måste läsas ut per körning.
+
+  **Vad grinden säger.** `npm audit --omit=dev --audit-level=high` i `client/` ger tre högallvarliga fynd i samma kedja: `extract-zip` → `@puppeteer/browsers` → `puppeteer-core` (GHSA-jmr9-qjv8-65gv, ovaliderad symlänk-traversering vid uppackning).
+
+  **Varför det inte går att lappa.** `extract-zip@2.0.1` är **både senaste och den flaggade** versionen — det finns ingen lagad utgåva att `override`:a till. Vägen bort går via `@puppeteer/browsers` 3.x, som inte längre använder `extract-zip`, och den kräver `puppeteer-core` 25. Vi ligger på `^24.43.0`. Alltså en **major** på CV-PDF-renderaren.
+
+  **Varför brådskan sannolikt är låg.** `client/api/cv-pdf.js` skickar **alltid** en explicit `executablePath` — `@sparticuz/chromium` i prod (rad 63–66), detekterad lokal Chrome i dev (rad 80). `@puppeteer/browsers`' nedladdare, den enda anroparen av `extract-zip`, körs därför aldrig i någon miljö vi driftar. Paketet finns i trädet men koden nås inte. Grinden kan inte veta det.
+
+  **Tre vägar, i den ordning jag skulle överväga dem:**
+  1. **Uppgradera `puppeteer-core` 24 → 25** och regressionstesta CV-PDF ordentligt. Renderaren är känslig — per-sida-marginaler, `box-decoration-break: clone`, kant-till-kant-bakgrund, kravet på Chromium ≥130 (se lärdomen 2026-07-03). Verktyget finns: `node e2e/cv-pdf-visual-audit.cjs` ger PDF + PNG per mall och variant.
+  2. **Dokumenterat undantag** i `ci.yml` för just den här advisoryn, med motiveringen ovan och ett datum då den ska omprövas. Rör `.github/workflows/` — kräver ditt ja oavsett.
+  3. **Låt den vara röd.** Det är dagens läge, och det sämsta av tre: en säkerhetsgrind som alltid är röd slutar betyda något, och nästa verkliga fynd drunknar i den.
+
+  Jag rörde ingenting. En brytande uppgradering av en levande PDF-väg är ditt beslut, inte en sidoeffekt av en granskning av en annan sida.
+
 - [x] **DR5** ✅ *(klar 2026-08-17)* `client/api/*.js` lintades och typkontrollerades aldrig — `eslint.config.js` matchar bara `**/*.{ts,tsx}`, `tsconfig.app.json` har `"include": ["src"]`. Just de filerna har service-role och art. 9-grinden · ~30–45 min · **Gjort:** eslint-block för `api/**/*.js` (krasch-klass, inte stilkrav — warnings så taket håller skulden stilla) och nytt `tsconfig.api.json` med `checkJs`, inkopplat som `npm run typecheck:api` i `verify`. **Grinden har inget tak — den ska vara noll**, och startar där eftersom allt är betalt. **Första körningen någonsin hittade 1 eslint-fel, 5 warnings och 7 typfel**, bland dem två som var värda något: `chromium.headless` finns inte i @sparticuz/chromium 148, så `headless: undefined` skickades till puppeteer (ofarligt — puppeteer defaultar till headless — men raden *läste* som konfiguration), och `content` i `ai.js` bär **tre** olika former (rå text, `{raw}`, validerat objekt) där inferensen bara såg en. Alla sex lintfynd lagades i stället för att taket höjdes. Grindarna är nu **åtta**, uppdaterat i `CLAUDE.md`.
 - [x] **AR4** ✅ *(klar 2026-08-17)* Sanningsregeln saknades i tre prompter: `ai-cover-letter/index.ts:146-152` (deployad och nåbar, callerlös), `profile-summary` (skriver påhittad persona **till** `profiles.ai_summary`), och `karriarplan` (`ai.js:580-591`, noll referenser till AF, arbetshjälpmedel, lönebidrag, Komvux — G15:s eget exempel) · S · **Fyndet var större: 7 av 18 prompter saknade regeln, inte 3.** Åtgärdat i `karriarplan` (+ G15: arbetshjälpmedel, lönebidrag, arbetsträning, SIUS, Komvux/yrkesvux, Rusta och matcha — med förbud mot påhittade belopp, eftersom regler ändras och personen fattar beslut om sin försörjning), `profile-summary` (skriver till databasen — får nu skriva kortare hellre än längre och påhittat), `ai-cover-letter`-edgen, `adaptation-recommendations`, `adaptation-conversation`, `linkedin-optimering`, och regelverksskyddet från B22 till `ai-team-chat` (en arbetskonsulent är precis den man frågar om a-kassa). **Vakten är det egentliga arbetet:** `ai-sanningsregel.test.ts` kräver regeln av *varje* prompt och tvingar den som vill undanta en att skriva ett läsbart skäl. **Två saker testet självt avslöjade:** min första detektor missade `ai-team-chat`, som skriver "hitta inte på" — formuleringarna varierar med flit — och första körningen hittade `sta-document-draft`, som jag missat i min egen genomgång. STA-prompterna är undantagna med skäl (modulen är avaktiverad). 32 tester, mutationstestad.
 - [ ] **KO2** Login/Register säger inte varför man hamnade där. `returnTo` fungerar tekniskt (K11), men sidan säger "Välkommen tillbaka" till någon som just klickade "Bygg ditt CV" på en guide · `Login.tsx:89-107`, `Register.tsx:111-129` · ~2 h
