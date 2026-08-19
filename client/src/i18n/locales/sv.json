@@ -2104,6 +2104,8 @@
       "labelJobAd": "Annonstexten (om du har den)",
       "placeholderJobAd": "Klistra in texten från annonsen — då blir brevet mer träffsäkert.",
       "thinResultNote": "Brevet är kort med flit. Vi hade bara annonsen att gå på, så det säger ingenting om din bakgrund — vi vill hellre skriva lite och sant än mycket och påhittat. Med ett CV eller några egna rader blir nästa utkast både längre och mer ditt.",
+      "templateTitle": "Det här är en mall, inte ett färdigt brev",
+      "templateBody": "Vi vet inget om dig ännu, så vi lät inte AI:n skriva — den hade behövt gissa. I stället får du en stomme med {{count}} luckor att fylla i med dina egna ord. Fyll i ditt CV, så skriver vi ett riktigt utkast åt dig nästa gång.",
       "toneProfessional": "Professionell",
       "toneProfessionalDesc": "Balanserad",
       "toneEnthusiastic": "Entusiastisk",

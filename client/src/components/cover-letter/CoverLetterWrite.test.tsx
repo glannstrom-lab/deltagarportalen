@@ -92,11 +92,17 @@ vi.mock('./CoverLetterPreview', () => ({
 import { CoverLetterWrite } from './CoverLetterWrite'
 import { AiConsentRequiredError } from '@/services/aiApi'
 
-/** Autosaven är vägen in i wizarden: den återställer steg, formulär och text. */
+/** Autosaven är vägen in i wizarden: den återställer steg, formulär och text.
+ *
+ * `motivation` är ifylld som standard, och det är avsiktligt: utan CV och
+ * utan egna rader anropas ingen AI alls — då levereras den handskrivna
+ * mallen (se `data/brevmall.ts`). Testerna nedan handlar om AI-vägen, och
+ * den kräver att vi vet något om personen. Mallvägen har ett eget test. */
 function saUtkastet(utkast: {
   currentStep: number
   editedLetter: string
   generatedLetter: string
+  motivation?: string
 }) {
   window.localStorage.setItem(
     'cover-letter-write-draft',
@@ -106,13 +112,15 @@ function saUtkastet(utkast: {
           company: 'Acme AB',
           jobTitle: 'Snickare',
           jobAd: '',
-          motivation: '',
+          motivation: utkast.motivation ?? 'Jag har jobbat i lager i två år och vill fortsätta med det.',
           selectedTemplate: 'professional',
           tone: 'professional',
           selectedJobId: '',
           useManualInput: true,
         },
-        ...utkast,
+        currentStep: utkast.currentStep,
+        editedLetter: utkast.editedLetter,
+        generatedLetter: utkast.generatedLetter,
       },
       timestamp: Date.now(),
     })
@@ -213,5 +221,40 @@ describe('CoverLetterWrite — användarens text', () => {
     fireEvent.click(screen.getByRole('button', { name: /Spara brevet/ }))
     await waitFor(() => expect(createMock).toHaveBeenCalled())
     expect(createMock.mock.calls[0][0].ai_generated).toBe(false)
+  })
+})
+
+describe('CoverLetterWrite — utan underlag anropas ingen AI', () => {
+  // Uppmätt tre gånger mot prod: en modell som inte vet något om personen
+  // skriver ändå påståenden om henne ("Jag har goda kunskaper i svenska och
+  // är van vid skiftarbete"). Varken utvidgad förbudslista eller ett
+  // utkastläge med luckor stoppade det. Utan CV och utan egna rader levereras
+  // därför en handskriven mall — och då får AI:n inte anropas alls.
+  it('kallar inte AI:n och märker inte texten som AI-genererad', async () => {
+    saUtkastet({ currentStep: 2, editedLetter: '', generatedLetter: '', motivation: '' })
+    rita()
+
+    const knapp = await screen.findByRole('button', { name: /utkast/i })
+    fireEvent.click(knapp)
+
+    // Ingen modell inblandad.
+    await waitFor(() => expect(screen.getByText(/mall, inte ett färdigt brev/i)).toBeInTheDocument())
+    expect(callAIMock).not.toHaveBeenCalled()
+
+    // Och därmed ingen AI-märkning — det var precis det B21 förbjöd.
+    expect(screen.queryByText(/AI-genererat/i)).not.toBeInTheDocument()
+    expect(document.querySelector('[data-ai-generated="true"]')).toBeNull()
+  })
+
+  it('lägger luckor i texten i stället för påståenden', async () => {
+    saUtkastet({ currentStep: 2, editedLetter: '', generatedLetter: '', motivation: '' })
+    rita()
+    fireEvent.click(await screen.findByRole('button', { name: /utkast/i }))
+
+    const textarea = await screen.findByRole('textbox', { name: /brev/i }) as HTMLTextAreaElement
+    await waitFor(() => expect(textarea.value).toContain('___'))
+    // Ingen av fraserna modellen hittade på i drift.
+    expect(textarea.value).not.toMatch(/goda kunskaper i svenska/i)
+    expect(textarea.value).not.toMatch(/är van vid/i)
   })
 })

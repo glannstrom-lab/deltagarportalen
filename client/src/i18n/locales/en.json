@@ -2104,6 +2104,8 @@
       "labelJobAd": "The ad text (if you have it)",
       "placeholderJobAd": "Paste the text from the ad — it makes the letter more precise.",
       "thinResultNote": "The letter is deliberately short. We only had the ad to go on, so it says nothing about your background — we would rather write a little and true than a lot and made up. With a CV or a few lines of your own, the next draft will be both longer and more yours.",
+      "templateTitle": "This is a template, not a finished letter",
+      "templateBody": "We don't know anything about you yet, so we didn't let the AI write — it would have had to guess. Instead you get a skeleton with {{count}} blanks to fill in with your own words. Fill in your CV and we'll write a real draft for you next time.",
       "toneProfessional": "Professional",
       "toneProfessionalDesc": "Balanced",
       "toneEnthusiastic": "Enthusiastic",

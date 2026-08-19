@@ -59,6 +59,7 @@ import { userApi } from '@/services/userApi'
 import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
+import { byggBrevmall, raknaLuckor } from '@/data/brevmall'
 
 // Sparat jobb interface
 interface SavedJob {
@@ -507,6 +508,27 @@ export function CoverLetterWrite() {
   // `generatedLetter` och `editedLetter` — så ett nätverksglapp åt upp texten
   // personen just skrivit, och autosaven cementerade förlusten en sekund senare.
   const generateLetter = async () => {
+    // Utan CV och utan egna rader anropas ingen AI alls.
+    //
+    // Mätt mot prod tre gånger: modellen skriver påståenden om personen även
+    // när den inte vet något om henne ("Jag har goda kunskaper i svenska och
+    // är van vid skiftarbete"), och varken en utvidgad förbudslista eller ett
+    // utkastläge med luckor stoppade det. Uppgiften i sig kräver påståenden.
+    //
+    // Mallen är handskriven, säger vad den är, och märks ALDRIG som
+    // AI-genererad — se `data/brevmall.ts` för varför det inte är B21:s
+    // förbjudna `mockGenerateLetter` återuppstånden.
+    if (tunntUnderlag) {
+      const mall = byggBrevmall({ foretag: formData.company, titel: formData.jobTitle })
+      setGeneratedLetter('')      // det finns inget AI-original att gå tillbaka till
+      setEditedLetter(mall)
+      setArMall(true)
+      setGenereratPaTunntUnderlag(true)
+      setGenerationError(null)
+      return
+    }
+
+    setArMall(false)
     setIsGenerating(true)
     setGenerationError(null)
     try {
@@ -588,6 +610,9 @@ export function CoverLetterWrite() {
    * saknas — och då ska det sägas, före och efter.
    */
   const tunntUnderlag = !loadingCV && !cvData && !formData.motivation.trim()
+  // Sant när texten i editorn är den handskrivna mallen och inte AI-text.
+  // Styr både AI-märkningen och `ai_generated` vid sparning.
+  const [arMall, setArMall] = useState(false)
 
   const handleSave = async () => {
     if (!editedLetter.trim()) {
@@ -878,6 +903,7 @@ export function CoverLetterWrite() {
                 arOrordAiText={arOrordAiText}
                 tunntUnderlag={tunntUnderlag}
                 genereratPaTunntUnderlag={genereratPaTunntUnderlag}
+                arMall={arMall}
               />
             )}
             {currentStep === 3 && (
@@ -895,6 +921,7 @@ export function CoverLetterWrite() {
                 onBack={handleBack}
                 arOrordAiText={arOrordAiText}
                 genereratPaTunntUnderlag={genereratPaTunntUnderlag}
+                arMall={arMall}
               />
             )}
           </Card>
@@ -1337,6 +1364,31 @@ function Step1JobAndTemplate({
  * här verktyget vet att det inte vet något, och det ska stå i klartext bredvid
  * resultatet i stället för att läsaren ska gissa varför brevet är kort.
  */
+/**
+ * Noten för den handskrivna mallen.
+ *
+ * Skild från `TunntUnderlagNot` med flit: den handlar om ett AI-brev som blev
+ * kort, den här om en text ingen modell skrivit. Att blanda ihop dem vore att
+ * upprepa B21 — se `data/brevmall.ts`.
+ */
+function MallNot({ antalLuckor }: { antalLuckor: number }) {
+  const { t } = useTranslation()
+  return (
+    <div className="mt-3 rounded-lg border border-[var(--c-accent)] bg-[var(--c-bg)] p-3">
+      <p className="text-sm font-medium text-[var(--c-text)]">
+        {t('coverLetter.write.templateTitle', 'Det här är en mall, inte ett färdigt brev')}
+      </p>
+      <p className="mt-1 text-sm text-[var(--c-text)]">
+        {t(
+          'coverLetter.write.templateBody',
+          'Vi vet inget om dig ännu, så vi lät inte AI:n skriva — den hade behövt gissa. I stället får du en stomme med {{count}} luckor att fylla i med dina egna ord. Fyll i ditt CV, så skriver vi ett riktigt utkast åt dig nästa gång.',
+          { count: antalLuckor }
+        )}
+      </p>
+    </div>
+  )
+}
+
 function TunntUnderlagNot() {
   const { t } = useTranslation()
   return (
@@ -1365,6 +1417,7 @@ function Step2Write({
   arOrordAiText,
   tunntUnderlag,
   genereratPaTunntUnderlag,
+  arMall,
 }: {
   formData: FormData
   setFormData: (data: FormData) => void
@@ -1380,6 +1433,7 @@ function Step2Write({
   arOrordAiText: boolean
   tunntUnderlag: boolean
   genereratPaTunntUnderlag: boolean
+  arMall: boolean
 }) {
   const { t } = useTranslation()
   const motivationRef = useRef<HTMLTextAreaElement>(null)
@@ -1561,7 +1615,8 @@ function Step2Write({
         {/* Märkningen hör hemma där AI-texten först visas — och bara så länge
             den är AI:ns. Har personen skrivit om den är det hennes text. */}
         {arOrordAiText && <AIGeneratedWatermark contentType={t('coverLetter.write.contentTypeLetter', 'brev')} />}
-        {genereratPaTunntUnderlag && arOrordAiText && <TunntUnderlagNot />}
+        {arMall && <MallNot antalLuckor={raknaLuckor(editedLetter)} />}
+        {genereratPaTunntUnderlag && !arMall && arOrordAiText && <TunntUnderlagNot />}
 
         {editedLetter && (
           <div className="flex gap-2 mt-3">
@@ -1591,6 +1646,7 @@ function Step3ReviewSave({
   onBack,
   arOrordAiText,
   genereratPaTunntUnderlag,
+  arMall,
 }: {
   editedLetter: string
   setEditedLetter: (text: string) => void
@@ -1605,6 +1661,7 @@ function Step3ReviewSave({
   onBack: () => void
   arOrordAiText: boolean
   genereratPaTunntUnderlag: boolean
+  arMall: boolean
 }) {
   const { t } = useTranslation()
   const [isCopied, setIsCopied] = useState(false)
@@ -1747,7 +1804,8 @@ function Step3ReviewSave({
             </p>
           )
         )}
-        {genereratPaTunntUnderlag && arOrordAiText && <TunntUnderlagNot />}
+        {arMall && <MallNot antalLuckor={raknaLuckor(editedLetter)} />}
+        {genereratPaTunntUnderlag && !arMall && arOrordAiText && <TunntUnderlagNot />}
       </div>
 
       {/* Saknas namnet blir underskriften tom — sagt innan personen klickar,
