@@ -680,7 +680,10 @@ ABSOLUTA REGLER:
 ${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 900,
+    maxTokens: 1800,
+    // Uppgiften är ren formatering — det finns inget att resonera om, och
+    // varje tänkt token äts ur samma budget som svaret.
+    reasoningEffort: 'low',
     responseKey: 'cv',
     parseJson: true
   }),
@@ -709,7 +712,8 @@ ABSOLUTA REGLER:
 ${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 1100,
+    maxTokens: 2200,
+    reasoningEffort: 'low',
     responseKey: 'cv',
     parseJson: true
   }),
@@ -1835,11 +1839,31 @@ module.exports = async (req, res) => {
           { role: 'user', content: prompt.user }
         ],
         max_tokens: prompt.maxTokens,
-        temperature: 0.7
+        temperature: 0.7,
+        // `openai/gpt-oss-120b` är en RESONERANDE modell: den tänker först och
+        // svarar sedan, och båda delarna ryms inom `max_tokens`. Räcker inte
+        // budgeten till efter tänkandet kommer `content` tillbaka TOMT — och
+        // servern svarar då "No response from AI", vilket ser ut som ett
+        // nätverksfel men är en budgetfråga. Uppmätt 2026-08-19: CV-importens
+        // erfarenhetsdel föll 3/3 på ett CV med tio tjänster, på 6–34 s (alltså
+        // inte en timeout), medan samma anrop klarade ett kort CV 3/3.
+        //
+        // `reasoning.effort` sätts bara för de prompts som uttryckligen ber om
+        // det, så inget befintligt anrop ändrar beteende. Skickas fältet inte
+        // alls är begäran identisk med tidigare.
+        ...(prompt.reasoningEffort ? { reasoning: { effort: prompt.reasoningEffort } } : {})
       })
     });
 
-    if (!aiResponse.ok) return res.status(502).json({ error: 'AI request failed' });
+    if (!aiResponse.ok) {
+      // Statuskoden från OpenRouter fördes tidigare inte vidare någonstans, så
+      // ett 400 (t.ex. ett fält modellen inte stöder) såg likadant ut som ett
+      // överbelastat API. Den som felsöker nästa gång ska slippa gissa.
+      let detalj = '';
+      try { detalj = (await aiResponse.text()).slice(0, 300); } catch { /* strunt samma */ }
+      console.error(`[AI] ${fn}: OpenRouter svarade ${aiResponse.status} — ${detalj}`);
+      return res.status(502).json({ error: 'AI request failed' });
+    }
 
     const aiData = /** @type {OpenRouterSvar} */ (await aiResponse.json());
     // DR5 (2026-08-17): `content` bär tre olika former beroende på väg, och
