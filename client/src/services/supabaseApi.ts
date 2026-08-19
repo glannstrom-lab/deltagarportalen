@@ -100,7 +100,13 @@ export interface CVVersion {
   id: string
   name: string
   data: CVData
-  createdAt: string
+  // Kolumnnamnet i `cv_versions` är snake_case och getVersions() mappar inte
+  // om raden. Typen sa `createdAt` fram till 2026-08-19, vilket gjorde att
+  // versionslistan i CV-byggaren renderade "Invalid Date" utan att TypeScript
+  // sa något. Verifierat mot prod: id, user_id, name, data, created_at,
+  // updated_at.
+  created_at: string
+  updated_at?: string
 }
 
 // Huvud-CVData interface som används i hela applikationen

@@ -63,6 +63,31 @@ export type ApplicationPriority = 'high' | 'medium' | 'low'
 // STATUS CONFIGURATION
 // ============================================
 
+/**
+ * Färgerna följer EN hub-färg (activity/persika), inte elva olika.
+ *
+ * Till 2026-08-19 hade varje status sin egen palett — lila, skiffer, blå,
+ * cyan, teal, sky, amber, grön, röd, grå — och alla ritades samtidigt i
+ * tavlans kolumnhuvuden, på korten, i statusfördelningen och i detaljmodalen.
+ * Åtta hubfärger på en sida som enligt DESIGN.md §4 ska ha en; sidans egen
+ * persika syntes knappt.
+ *
+ * Nu bär färgen i stället tre INTENSITETER som säger något sant om var i
+ * processen ansökan är, medan ikonen och etiketten skiljer de enskilda
+ * statusarna åt (färg får aldrig vara enda informationsbäraren):
+ *
+ *   /8  — ännu inte sökt (intresserad, sparad)
+ *   /15 — skickad, väntar (ansökt, första gallringen)
+ *   /22 — dialog med arbetsgivaren (telefon, intervju, arbetsprov, erbjudande)
+ *
+ * De tre TERMINALA statusarna behåller semantisk färg: grönt, rött och
+ * neutralt betyder något annat än "längre fram i tratten", och DESIGN.md §4
+ * gör undantag för semantiska färger.
+ *
+ * Kontrasten är uppmätt mot `--activity-text` (#8B5418) på vit botten:
+ * /8 → 5,60:1 · /15 → 5,11:1 · /22 → 4,62:1 — alla över WCAG AA:s 4,5:1.
+ * Höj inte intensiteten utan att mäta om: /25 landar på 4,44 och faller.
+ */
 export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   label: string
   labelEn: string
@@ -76,9 +101,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   interested: {
     label: 'Intresserad',
     labelEn: 'Interested',
-    color: 'text-purple-700',
-    bgColor: 'bg-purple-100',
-    borderColor: 'border-purple-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/8',
+    borderColor: 'border-[var(--c-solid)]/20',
     icon: 'Sparkles',
     order: 0,
     isTerminal: false
@@ -86,9 +111,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   saved: {
     label: 'Sparad',
     labelEn: 'Saved',
-    color: 'text-slate-700',
-    bgColor: 'bg-slate-100',
-    borderColor: 'border-slate-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/8',
+    borderColor: 'border-[var(--c-solid)]/20',
     icon: 'Bookmark',
     order: 1,
     isTerminal: false
@@ -96,9 +121,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   applied: {
     label: 'Ansökt',
     labelEn: 'Applied',
-    color: 'text-blue-700',
-    bgColor: 'bg-blue-100',
-    borderColor: 'border-blue-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/15',
+    borderColor: 'border-[var(--c-solid)]/30',
     icon: 'Send',
     order: 2,
     isTerminal: false
@@ -106,9 +131,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   screening: {
     label: 'Granskning',
     labelEn: 'Screening',
-    color: 'text-cyan-700',
-    bgColor: 'bg-cyan-100',
-    borderColor: 'border-cyan-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/15',
+    borderColor: 'border-[var(--c-solid)]/30',
     icon: 'Eye',
     order: 3,
     isTerminal: false
@@ -116,9 +141,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   phone: {
     label: 'Telefonintervju',
     labelEn: 'Phone Screen',
-    color: 'text-teal-700',
-    bgColor: 'bg-teal-100',
-    borderColor: 'border-teal-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/22',
+    borderColor: 'border-[var(--c-solid)]/40',
     icon: 'Phone',
     order: 4,
     isTerminal: false
@@ -126,9 +151,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   interview: {
     label: 'Intervju',
     labelEn: 'Interview',
-    color: 'text-teal-700',
-    bgColor: 'bg-teal-100',
-    borderColor: 'border-teal-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/22',
+    borderColor: 'border-[var(--c-solid)]/40',
     icon: 'Users',
     order: 5,
     isTerminal: false
@@ -136,9 +161,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   assessment: {
     label: 'Arbetsprov',
     labelEn: 'Assessment',
-    color: 'text-sky-700',
-    bgColor: 'bg-sky-100',
-    borderColor: 'border-sky-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/22',
+    borderColor: 'border-[var(--c-solid)]/40',
     icon: 'FileCheck',
     order: 6,
     isTerminal: false
@@ -146,9 +171,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   offer: {
     label: 'Erbjudande',
     labelEn: 'Offer',
-    color: 'text-amber-700',
-    bgColor: 'bg-amber-100',
-    borderColor: 'border-amber-300',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-solid)]/22',
+    borderColor: 'border-[var(--c-solid)]/40',
     icon: 'Trophy',
     order: 7,
     isTerminal: false
@@ -156,9 +181,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   accepted: {
     label: 'Accepterad',
     labelEn: 'Accepted',
-    color: 'text-green-700',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-300',
+    color: 'text-green-800 dark:text-green-300',
+    bgColor: 'bg-green-100 dark:bg-green-900/30',
+    borderColor: 'border-green-300 dark:border-green-800',
     icon: 'CheckCircle',
     order: 8,
     isTerminal: true
@@ -166,9 +191,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   rejected: {
     label: 'Avslag',
     labelEn: 'Rejected',
-    color: 'text-red-700',
-    bgColor: 'bg-red-100',
-    borderColor: 'border-red-300',
+    color: 'text-red-800 dark:text-red-300',
+    bgColor: 'bg-red-100 dark:bg-red-900/30',
+    borderColor: 'border-red-300 dark:border-red-800',
     icon: 'XCircle',
     order: 9,
     isTerminal: true
@@ -176,9 +201,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   withdrawn: {
     label: 'Dragen',
     labelEn: 'Withdrawn',
-    color: 'text-gray-700',
-    bgColor: 'bg-gray-100',
-    borderColor: 'border-gray-300',
+    color: 'text-stone-700 dark:text-stone-300',
+    bgColor: 'bg-stone-100 dark:bg-stone-800',
+    borderColor: 'border-stone-300 dark:border-stone-600',
     icon: 'MinusCircle',
     order: 10,
     isTerminal: true

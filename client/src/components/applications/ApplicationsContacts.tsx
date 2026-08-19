@@ -1,50 +1,81 @@
 /**
- * ApplicationsContacts Component
- * CRM-style view for managing recruiter contacts
+ * ApplicationsContacts — människorna i din jobbsökning
+ *
+ * Fliken var en återvändsgränd fram till 2026-08-19: den kunde visa och
+ * redigera kontakter, men inte skapa en. Enda vägen in var Pipeline → öppna
+ * ett kort → fliken Kontakter → "Lägg till kontakt", och tomtillståndet sa
+ * "Lägg till kontakter från dina ansökningar" utan knapp eller länk. Nu finns
+ * ett eget skapa-flöde här, med en väljare för vilken ansökan kontakten hör
+ * till (`application_contacts.application_id` är NOT NULL).
  */
 
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import {
-  User, Mail, Phone, Linkedin, MoreVertical,
+  User, Mail, Phone, Linkedin, MoreVertical, Plus,
   Edit2, Trash2, MessageSquare, Clock, X, Briefcase
 } from '@/components/ui/icons'
-import { Button, Card, useConfirmDialog } from '@/components/ui'
+import { Button, Card, EmptyState, ErrorState, SkeletonList, useConfirmDialog } from '@/components/ui'
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
 } from '@/components/ui/DropdownMenu'
+import { showToast } from '@/components/Toast'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
-import { useApplications } from '@/hooks/useApplications'
+import { useApplicationLookup } from '@/hooks/useApplications'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { ApplicationContact, CreateContactInput } from '@/types/application.types'
+import type { Application, ApplicationContact, CreateContactInput } from '@/types/application.types'
 
 const editInputClass = 'w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white'
 
-function ContactEditModal({
+/** "Tjänst · Företag" för en ansökan. */
+function ansokansetikett(ansokan: Application): string {
+  const jobData = ansokan.jobData as { employer?: { name?: string }; headline?: string } | undefined
+  const titel = ansokan.jobTitle || jobData?.headline
+  const foretag = ansokan.companyName || jobData?.employer?.name
+  return [titel, foretag].filter(Boolean).join(' · ')
+}
+
+// ============================================
+// FORMULÄR — samma modal skapar och redigerar
+// ============================================
+
+function ContactFormModal({
   contact,
+  applications,
   onSave,
   onClose,
   isSaving
 }: {
-  contact: ApplicationContact
-  onSave: (id: string, input: Partial<CreateContactInput>) => Promise<void>
+  /** null = ny kontakt */
+  contact: ApplicationContact | null
+  applications: Application[]
+  onSave: (input: CreateContactInput) => Promise<void>
   onClose: () => void
   isSaving: boolean
 }) {
   const { t } = useTranslation()
+  const arNy = contact === null
+
   const [formData, setFormData] = useState({
-    name: contact.name,
-    title: contact.title || '',
-    email: contact.email || '',
-    phone: contact.phone || '',
-    linkedinUrl: contact.linkedinUrl || '',
-    notes: contact.notes || '',
+    applicationId: contact?.applicationId || applications[0]?.id || '',
+    name: contact?.name || '',
+    title: contact?.title || '',
+    email: contact?.email || '',
+    phone: contact?.phone || '',
+    linkedinUrl: contact?.linkedinUrl || '',
+    notes: contact?.notes || '',
   })
   const [error, setError] = useState<string | null>(null)
 
   // Fokusfälla + Escape/utanförklick stänger (WCAG 2.1.2)
   const modalRef = useFocusTrap<HTMLDivElement>(true, { onEscape: onClose })
+
+  const kopplingsetikett = useMemo(() => {
+    const ansokan = applications.find(a => a.id === formData.applicationId)
+    return ansokan ? ansokansetikett(ansokan) : null
+  }, [applications, formData.applicationId])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -52,18 +83,23 @@ function ContactEditModal({
       setError(t('applications.contacts.nameRequired', 'Namn måste fyllas i'))
       return
     }
+    if (!formData.applicationId) {
+      setError(t('applications.contacts.applicationRequired', 'Välj vilken ansökan kontakten hör till'))
+      return
+    }
     setError(null)
     try {
       // Tomma strängar skickas medvetet — undefined-nycklar stryks i API-lagret
       // och skulle göra det omöjligt att rensa ett fält.
-      await onSave(contact.id, {
+      await onSave({
+        applicationId: formData.applicationId,
         name: formData.name.trim(),
         title: formData.title.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
         linkedinUrl: formData.linkedinUrl.trim(),
         notes: formData.notes.trim(),
-        isPrimary: contact.isPrimary,
+        isPrimary: contact?.isPrimary ?? false,
       })
       onClose()
     } catch {
@@ -80,7 +116,11 @@ function ContactEditModal({
     >
       <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
-          <h2 id="edit-contact-title-heading" className="text-lg font-semibold text-stone-900">{t('applications.contacts.editTitle', 'Redigera kontakt')}</h2>
+          <h2 id="edit-contact-title-heading" className="text-lg font-semibold text-stone-900">
+            {arNy
+              ? t('applications.detail.newContact', 'Ny kontakt')
+              : t('applications.contacts.editTitle', 'Redigera kontakt')}
+          </h2>
           <button
             onClick={onClose}
             aria-label={t('applications.common.close', 'Stäng')}
@@ -91,7 +131,36 @@ function ContactEditModal({
         </div>
 
         <form onSubmit={handleSubmit} className="p-4 space-y-3">
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-red-600" role="alert">{error}</p>}
+
+          {/* application_id är NOT NULL. Vid redigering går den inte att byta —
+              `applicationContactsApi.update` rör inte kolumnen. */}
+          {arNy ? (
+            <div>
+              <label htmlFor="new-contact-application" className="block text-sm font-medium text-stone-700 mb-1">
+                {t('applications.contacts.application', 'Vilken ansökan gäller det?')} <span className="text-red-500">*</span>
+              </label>
+              <select
+                id="new-contact-application"
+                value={formData.applicationId}
+                onChange={(e) => setFormData({ ...formData, applicationId: e.target.value })}
+                className={editInputClass}
+                required
+              >
+                {applications.map(ansokan => (
+                  <option key={ansokan.id} value={ansokan.id}>
+                    {ansokansetikett(ansokan) || t('applications.common.unknownTitle', 'Okänd tjänst')}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : kopplingsetikett && (
+            <p className="text-sm text-stone-700 flex items-center gap-1">
+              <Briefcase className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+              <span className="truncate">{kopplingsetikett}</span>
+            </p>
+          )}
+
           <div>
             <label htmlFor="edit-contact-name" className="block text-sm font-medium text-stone-700 mb-1">
               {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
@@ -101,6 +170,7 @@ function ContactEditModal({
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              placeholder={t('applications.detail.contactNamePlaceholder', 'T.ex. Anna Andersson')}
               className={editInputClass}
               required
             />
@@ -112,6 +182,7 @@ function ContactEditModal({
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              placeholder={t('applications.detail.contactTitlePlaceholder', 'T.ex. Rekryterare')}
               className={editInputClass}
             />
           </div>
@@ -172,6 +243,10 @@ function ContactEditModal({
   )
 }
 
+// ============================================
+// KORT
+// ============================================
+
 function ContactCard({
   contact,
   applicationLabel,
@@ -183,20 +258,22 @@ function ContactCard({
   /** "Tjänst · Företag" för ansökan kontakten hör till */
   applicationLabel?: string
   onEdit: (contact: ApplicationContact) => void
-  onDelete: (id: string) => void
-  onMarkContacted: (id: string) => void
+  onDelete: (contact: ApplicationContact) => void
+  onMarkContacted: (contact: ApplicationContact) => void
 }) {
   const { t } = useTranslation()
 
+  // `Math.max(0, …)`: en klocka som gått fel, eller ett `last_contacted_at`
+  // några sekunder in i framtiden, gav tidigare "-1 dagar sedan".
   const daysSinceContact = contact.lastContactedAt
-    ? Math.floor((Date.now() - new Date(contact.lastContactedAt).getTime()) / (1000 * 60 * 60 * 24))
+    ? Math.max(0, Math.floor((Date.now() - new Date(contact.lastContactedAt).getTime()) / (1000 * 60 * 60 * 24)))
     : null
 
   return (
     <Card className="p-4 hover:shadow-md transition-shadow group">
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 bg-stone-100 dark:bg-stone-700 rounded-xl flex items-center justify-center flex-shrink-0">
-          <User className="w-6 h-6 text-stone-600" />
+        <div className="w-12 h-12 bg-[var(--c-bg)] rounded-xl flex items-center justify-center flex-shrink-0">
+          <User className="w-6 h-6 text-[var(--c-text)]" aria-hidden="true" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -234,7 +311,7 @@ function ContactCard({
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="min-w-[150px]">
-                  <DropdownMenuItem onClick={() => onMarkContacted(contact.id)}>
+                  <DropdownMenuItem onClick={() => onMarkContacted(contact)}>
                     <MessageSquare className="w-4 h-4" />
                     {t('applications.contacts.markContacted', 'Markera kontaktad')}
                   </DropdownMenuItem>
@@ -242,7 +319,7 @@ function ContactCard({
                     <Edit2 className="w-4 h-4" />
                     {t('applications.common.edit', 'Redigera')}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onDelete(contact.id)} className="text-red-600 hover:bg-red-50">
+                  <DropdownMenuItem onClick={() => onDelete(contact)} className="text-red-600 hover:bg-red-50">
                     <Trash2 className="w-4 h-4" />
                     {t('applications.common.delete', 'Ta bort')}
                   </DropdownMenuItem>
@@ -256,18 +333,18 @@ function ContactCard({
             {contact.email && (
               <a
                 href={`mailto:${contact.email}`}
-                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-[var(--c-text)]"
               >
-                <Mail className="w-4 h-4" />
+                <Mail className="w-4 h-4" aria-hidden="true" />
                 {contact.email}
               </a>
             )}
             {contact.phone && (
               <a
                 href={`tel:${contact.phone}`}
-                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-[var(--c-text)]"
               >
-                <Phone className="w-4 h-4" />
+                <Phone className="w-4 h-4" aria-hidden="true" />
                 {contact.phone}
               </a>
             )}
@@ -276,9 +353,9 @@ function ContactCard({
                 href={contact.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-[var(--c-text)]"
               >
-                <Linkedin className="w-4 h-4" />
+                <Linkedin className="w-4 h-4" aria-hidden="true" />
                 LinkedIn
               </a>
             )}
@@ -286,17 +363,17 @@ function ContactCard({
 
           {/* Notes */}
           {contact.notes && (
-            <p className="text-sm text-stone-700 mt-2 italic">"{contact.notes}"</p>
+            <p className="text-sm text-stone-700 mt-2 italic">&quot;{contact.notes}&quot;</p>
           )}
 
           {/* Last contacted */}
-          {contact.lastContactedAt && (
+          {daysSinceContact !== null && (
             <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
-              <Clock className="w-3 h-3" />
+              <Clock className="w-3 h-3" aria-hidden="true" />
               {t('applications.contacts.lastContacted', 'Senast kontaktad:')}{' '}
               {daysSinceContact === 0
                 ? t('applications.common.today', 'Idag')
-                : t('applications.common.daysAgo', { count: daysSinceContact ?? 0 })}
+                : t('applications.common.daysAgo', { count: daysSinceContact })}
             </p>
           )}
         </div>
@@ -305,70 +382,90 @@ function ContactCard({
   )
 }
 
+// ============================================
+// FLIKEN
+// ============================================
+
 export function ApplicationsContacts() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const queryClient = useQueryClient()
-  const [editContact, setEditContact] = useState<ApplicationContact | null>(null)
 
-  const { data: contacts = [], isLoading } = useQuery({
+  /** null = stängd, 'ny' = skapa, annars den kontakt som redigeras */
+  const [formular, setFormular] = useState<'ny' | ApplicationContact | null>(null)
+
+  const kontakter = useQuery({
     queryKey: ['application-contacts-all'],
     queryFn: () => applicationContactsApi.getAll(),
     staleTime: 60 * 1000
   })
 
-  // Koppling kontakt -> ansökan ("Tjänst · Företag") — utan den säger
-  // kontaktlistan inget om vilken process kontakten hör till
-  const { applications } = useApplications()
+  const contacts = useMemo(() => kontakter.data ?? [], [kontakter.data])
+
+  // Koppling kontakt → ansökan ("Tjänst · Företag"). Bara uppslagningen:
+  // `useApplications()` hade dragit igång fem queries för det här.
+  const {
+    applications,
+    isLoading: laddarAnsokningar,
+    isError: felAnsokningar,
+    refetch: hamtaAnsokningarIgen
+  } = useApplicationLookup()
+
   const applicationLabelById = useMemo(() => {
     const map = new Map<string, string>()
     for (const app of applications) {
-      const jobData = app.jobData as { employer?: { name?: string }; headline?: string } | undefined
-      const title = app.jobTitle || jobData?.headline
-      const company = app.companyName || jobData?.employer?.name
-      const label = [title, company].filter(Boolean).join(' · ')
+      const label = ansokansetikett(app)
       if (label) map.set(app.id, label)
     }
     return map
   }, [applications])
 
+  const valbaraAnsokningar = useMemo(
+    () => applications.filter(app => !app.archivedAt),
+    [applications]
+  )
+
+  const invalidera = () => {
+    queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
+  }
+
+  const createMutation = useMutation({
+    mutationFn: (input: CreateContactInput) => applicationContactsApi.create(input),
+    onSuccess: invalidera
+  })
+
   const markContactedMutation = useMutation({
     mutationFn: (id: string) => applicationContactsApi.markContacted(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
-    },
-    onError: (error) => {
-      console.error('Failed to mark contact as contacted:', error)
-    }
+    onSuccess: invalidera
   })
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => applicationContactsApi.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
-    },
-    onError: (error) => {
-      console.error('Failed to delete contact:', error)
-    }
+    onSuccess: invalidera
   })
 
   const updateMutation = useMutation({
     mutationFn: ({ id, input }: { id: string; input: Partial<CreateContactInput> }) =>
       applicationContactsApi.update(id, input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
-    }
+    onSuccess: invalidera
   })
 
-  const handleEdit = (contact: ApplicationContact) => {
-    setEditContact(contact)
+  const handleSave = async (input: CreateContactInput) => {
+    if (formular === 'ny') {
+      await createMutation.mutateAsync(input)
+      showToast.success(t('applications.contacts.createdToast', 'Kontakten är sparad'))
+      return
+    }
+    if (formular) {
+      await updateMutation.mutateAsync({ id: formular.id, input })
+    }
   }
 
-  const handleSaveEdit = async (id: string, input: Partial<CreateContactInput>) => {
-    await updateMutation.mutateAsync({ id, input })
-  }
-
-  const handleDelete = async (id: string) => {
+  // Tidigare: `await deleteMutation.mutateAsync(id)` rakt i en onClick. Kastade
+  // anropet blev det en obehandlad promise-rejektion och deltagaren såg
+  // ingenting alls hända.
+  const handleDelete = async (contact: ApplicationContact) => {
     const ok = await confirm({
       title: t('applications.common.delete', 'Ta bort'),
       message: t('applications.contacts.deleteConfirm', 'Ta bort denna kontakt?'),
@@ -376,44 +473,104 @@ export function ApplicationsContacts() {
       cancelText: t('applications.common.cancel', 'Avbryt'),
       variant: 'danger',
     })
-    if (ok) {
-      await deleteMutation.mutateAsync(id)
+    if (!ok) return
+    try {
+      await deleteMutation.mutateAsync(contact.id)
+      showToast.success(t('applications.contacts.deletedToast', 'Kontakten är borttagen'))
+    } catch {
+      showToast.error(
+        t('applications.contacts.deleteErrorTitle', 'Kontakten kunde inte tas bort'),
+        t('applications.common.tryAgainLater', 'Kolla din uppkoppling och försök igen om en stund.')
+      )
     }
   }
 
-  const handleMarkContacted = async (id: string) => {
-    await markContactedMutation.mutateAsync(id)
+  const handleMarkContacted = async (contact: ApplicationContact) => {
+    try {
+      await markContactedMutation.mutateAsync(contact.id)
+      showToast.success(t('applications.contacts.markedToast', 'Noterat — du kontaktade {{name}} idag', { name: contact.name }))
+    } catch {
+      showToast.error(
+        t('applications.contacts.markErrorTitle', 'Kunde inte notera kontakten'),
+        t('applications.common.tryAgainLater', 'Kolla din uppkoppling och försök igen om en stund.')
+      )
+    }
   }
 
-  if (isLoading) {
+  // Tre uttryckliga lägen. Tidigare fanns bara två, och ett trasigt anrop
+  // ritades som "Inga kontakter än".
+  if (kontakter.isPending || laddarAnsokningar) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" role="status" aria-label={t('common.loadingStatus', 'Laddar')} />
+      <div className="space-y-6 pb-24">
+        <SkeletonList count={4} />
       </div>
     )
   }
 
+  if (kontakter.isError || felAnsokningar) {
+    return (
+      <div className="pb-24">
+        <ErrorState
+          title={t('applications.contacts.errorTitle', 'Kontakterna kunde inte hämtas')}
+          message={t('applications.contacts.errorMessage', 'Vi når inte dina kontakter just nu. Det är inget du gjort fel — försök igen om en stund.')}
+          onRetry={() => {
+            void kontakter.refetch()
+            void hamtaAnsokningarIgen()
+          }}
+        />
+      </div>
+    )
+  }
+
+  // pb-24: den fixerade "Öppna mina samlingar"-knappen (z-40) ligger annars
+  // ovanpå sista kortet.
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 pb-24">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-stone-900">{t('applications.contacts.title', 'Kontakter')}</h2>
-          <p className="text-sm text-stone-700">
-            {t('applications.contacts.savedCount', { count: contacts.length })}
-          </p>
+          <h2 className="text-lg font-semibold text-stone-900">
+            {t('applications.contacts.heading', 'Dina kontakter')}
+          </h2>
+          {/* Räknaren stod förut kvar som "0 kontakter sparade" ovanför
+              tomtillståndet — två fel DESIGN.md §7 namnger i samma rad. */}
+          {contacts.length > 0 && (
+            <p className="text-sm text-stone-700">
+              {t('applications.contacts.savedCount', { count: contacts.length })}
+            </p>
+          )}
         </div>
+        {contacts.length > 0 && valbaraAnsokningar.length > 0 && (
+          <Button onClick={() => setFormular('ny')}>
+            <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
+            {t('applications.detail.addContact', 'Lägg till kontakt')}
+          </Button>
+        )}
       </div>
 
       {contacts.length === 0 ? (
-        <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-stone-600" />
-          </div>
-          <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('applications.contacts.emptyTitle', 'Inga kontakter än')}</h3>
-          <p className="text-stone-700 mb-4 max-w-md mx-auto">
-            {t('applications.contacts.emptyDescription', 'Lägg till kontakter från dina ansökningar för att hålla koll på rekryterare och kontaktpersoner.')}
-          </p>
-        </Card>
+        valbaraAnsokningar.length === 0 ? (
+          // En kontakt måste höra till en ansökan (NOT NULL). Utan ansökningar
+          // vore "Lägg till kontakt" en knapp som inte kan leda någonstans.
+          <EmptyState
+            icon={User}
+            title={t('applications.contacts.noApplicationsHeading', 'Kontakter hör ihop med en ansökan')}
+            description={t('applications.contacts.noApplicationsLead', 'När du sparat ett jobb kan du lägga till personerna du haft kontakt med om det — rekryteraren, chefen, den du pratade med i telefon.')}
+            action={{
+              label: t('applications.contacts.noApplicationsAction', 'Öppna dina ansökningar'),
+              onClick: () => navigate('/applications')
+            }}
+          />
+        ) : (
+          <EmptyState
+            icon={User}
+            title={t('applications.contacts.emptyHeading', 'Här samlar du människorna du pratat med')}
+            description={t('applications.contacts.emptyLead', 'Rekryterare, chefer och kontaktpersoner — namn, nummer och vad ni sa, kopplat till rätt ansökan.')}
+            action={{
+              label: t('applications.contacts.emptyAction', 'Lägg till din första kontakt'),
+              onClick: () => setFormular('ny')
+            }}
+          />
+        )
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {contacts.map(contact => (
@@ -421,7 +578,7 @@ export function ApplicationsContacts() {
               key={contact.id}
               contact={contact}
               applicationLabel={applicationLabelById.get(contact.applicationId)}
-              onEdit={handleEdit}
+              onEdit={setFormular}
               onDelete={handleDelete}
               onMarkContacted={handleMarkContacted}
             />
@@ -429,12 +586,13 @@ export function ApplicationsContacts() {
         </div>
       )}
 
-      {editContact && (
-        <ContactEditModal
-          contact={editContact}
-          onSave={handleSaveEdit}
-          onClose={() => setEditContact(null)}
-          isSaving={updateMutation.isPending}
+      {formular && (
+        <ContactFormModal
+          contact={formular === 'ny' ? null : formular}
+          applications={valbaraAnsokningar}
+          onSave={handleSave}
+          onClose={() => setFormular(null)}
+          isSaving={updateMutation.isPending || createMutation.isPending}
         />
       )}
     </div>

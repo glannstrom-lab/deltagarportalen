@@ -69,8 +69,22 @@ export function useApplications(
     staleTime: 30 * 1000, // 30 seconds
   })
 
-  // Stats query
-  const { data: stats } = useQuery({
+  // Stats query.
+  //
+  // 2026-08-19: `data` var det ENDA som plockades ut här, och returen nedan
+  // fyllde i en nollstubbe (`stats || { total: 0, … }`) när svaret saknades.
+  // Effekten var att "svaret är inte inne" och "ett fel inträffade" blev
+  // omöjliga att skilja från "du har noll ansökningar" — och eftersom
+  // main.tsx kör `retry: 1` + `refetchOnWindowFocus: false` var felläget
+  // permanent: någon med tjugo ansökningar fick "Du har inte börjat söka
+  // jobb än" tills sidan laddades om. Samma felklass som Översikt hade.
+  // Nu exponeras tillståndet i stället för att döljas, och `stats` är `null`
+  // tills det finns ett riktigt svar.
+  const {
+    data: stats,
+    isLoading: statsLoading,
+    error: statsError,
+  } = useQuery({
     queryKey: QUERY_KEYS.stats,
     queryFn: () => applicationsApi.getStats(),
     staleTime: 60 * 1000, // 1 minute
@@ -101,12 +115,45 @@ export function useApplications(
   // MUTATIONS
   // ============================================
 
+  /**
+   * Invaliderar varje cache som läser `saved_jobs`.
+   *
+   * Tre luckor låg här till 2026-08-19, alla samma familj:
+   *
+   * 1. **Historiken.** `application_history` skrivs av DATABASTRIGGRAR vid
+   *    varje status-, antecknings- och arkivändring — inte av API:t. Ingen
+   *    mutation invaliderade historiknycklarna, så Historik-fliken låg
+   *    permanent en händelse efter tills sidan laddades om.
+   * 2. **Sparade jobb och hubbarna.** `['saved-jobs']` (sex komponenter),
+   *    hubbsammanfattningen och `['unifiedProgress']` läser samma tabell som
+   *    `['applications']` men hörde aldrig av sig till varandra. Flyttade man
+   *    ett kort på Tavlan visade Söka jobb-hubben gamla siffror.
+   * 3. **Inaktuella ansökningar.** `applications-stale` invaliderades bara av
+   *    `updateStatus`, trots att arkivering och radering också ändrar mängden.
+   *
+   * Prefix-matchning används där nyckeln är parametriserad (`stale(days)`,
+   * hubben per användare) så att alla varianter träffas, inte bara den med
+   * just de argument som råkar stå här.
+   */
+  const invalideraAnsokningsvyer = useCallback((applicationId?: string) => {
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+    queryClient.invalidateQueries({ queryKey: ['applications-stale'] })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.recentHistory })
+    queryClient.invalidateQueries({ queryKey: ['saved-jobs'] })
+    queryClient.invalidateQueries({ queryKey: ['hub', 'jobsok'] })
+    queryClient.invalidateQueries({ queryKey: ['unifiedProgress'] })
+    if (applicationId) {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.application(applicationId) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(applicationId) })
+    }
+  }, [queryClient])
+
   // Create application
   const createMutation = useMutation({
     mutationFn: (input: CreateApplicationInput) => applicationsApi.create(input),
     onSuccess: (app) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+      invalideraAnsokningsvyer(app.id)
 
       // Track achievements
       const jobData = app.jobData as PlatsbankenJob
@@ -123,9 +170,7 @@ export function useApplications(
     mutationFn: ({ id, input }: { id: string; input: UpdateApplicationInput }) =>
       applicationsApi.update(id, input),
     onSuccess: (app) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.application(app.id) })
+      invalideraAnsokningsvyer(app.id)
     }
   })
 
@@ -134,10 +179,7 @@ export function useApplications(
     mutationFn: ({ id, status }: { id: string; status: ApplicationStatus }) =>
       applicationsApi.updateStatus(id, status),
     onSuccess: (app, { status }) => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.application(app.id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stale(7) })
+      invalideraAnsokningsvyer(app.id)
 
       // Track achievements for status changes
       const jobData = app.jobData as PlatsbankenJob
@@ -169,27 +211,33 @@ export function useApplications(
   // Archive application
   const archiveMutation = useMutation({
     mutationFn: (id: string) => applicationsApi.archive(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+    onSuccess: (_data, id) => {
+      invalideraAnsokningsvyer(id)
     }
   })
 
   // Unarchive application
   const unarchiveMutation = useMutation({
     mutationFn: (id: string) => applicationsApi.unarchive(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+    onSuccess: (_data, id) => {
+      invalideraAnsokningsvyer(id)
     }
   })
 
   // Delete application
   const deleteMutation = useMutation({
     mutationFn: (id: string) => applicationsApi.delete(id),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+    onSuccess: (_data, id) => {
+      invalideraAnsokningsvyer(id)
+      // Raderingen kaskadar i databasen (ON DELETE CASCADE på alla tre
+      // barntabellerna). Barnens cachar måste städas här, annars ligger
+      // kontakter och påminnelser för en borttagen ansökan kvar i minnet.
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.contacts(id) })
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.reminders(id) })
+      queryClient.removeQueries({ queryKey: QUERY_KEYS.history(id) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.allContacts })
+      queryClient.invalidateQueries({ queryKey: ['application-reminders-upcoming'] })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.todayReminders })
     }
   })
 
@@ -317,12 +365,11 @@ export function useApplications(
     activeApplications,
     archivedApplications,
     staleApplications,
-    stats: stats || {
-      total: 0, interested: 0, saved: 0, applied: 0, screening: 0,
-      phone: 0, interview: 0, assessment: 0, offer: 0,
-      accepted: 0, rejected: 0, withdrawn: 0, active: 0,
-      thisWeek: 0, thisMonth: 0
-    },
+    // `null` betyder "vi vet inte än" — inte "noll". Anroparen ska visa
+    // laddning eller fel, aldrig en siffra vi inte har underlag för.
+    stats: stats ?? null,
+    statsLoading,
+    statsError: statsError instanceof Error ? statsError.message : null,
     todayReminders,
     upcomingReminders,
 
@@ -398,28 +445,35 @@ export function useApplication(id: string) {
   })
 
   // Contact mutations
+  //
+  // Kontakterna finns i TVÅ cachar: en per ansökan (`contacts(id)`, som
+  // detaljmodalen läser) och en samlad (`allContacts`, som Kontakter-fliken
+  // läser). De invaliderade aldrig varandra åt något håll till 2026-08-19 —
+  // lade man till en kontakt i modalen stod fliken kvar på gamla listan, och
+  // tog man bort en i fliken låg den kvar i modalen. Samma tabell, två vyer,
+  // en sanning: alla tre mutationerna rör båda nycklarna.
+  const invalideraKontakter = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.contacts(id) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.allContacts })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(id) })
+    queryClient.invalidateQueries({ queryKey: QUERY_KEYS.recentHistory })
+  }, [queryClient, id])
+
   const addContactMutation = useMutation({
     mutationFn: (input: Omit<CreateContactInput, 'applicationId'>) =>
       applicationContactsApi.create({ ...input, applicationId: id }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.contacts(id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(id) })
-    }
+    onSuccess: invalideraKontakter
   })
 
   const updateContactMutation = useMutation({
     mutationFn: ({ contactId, input }: { contactId: string; input: Partial<CreateContactInput> }) =>
       applicationContactsApi.update(contactId, input),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.contacts(id) })
-    }
+    onSuccess: invalideraKontakter
   })
 
   const deleteContactMutation = useMutation({
     mutationFn: (contactId: string) => applicationContactsApi.delete(contactId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.contacts(id) })
-    }
+    onSuccess: invalideraKontakter
   })
 
   // Reminder mutations
@@ -485,22 +539,24 @@ export function useApplication(id: string) {
 // REMINDERS HOOK
 // ============================================
 
+/**
+ * Alla ej avklarade påminnelser fram till 30 dagar framåt — inklusive de som
+ * redan passerat.
+ *
+ * Hooken hämtade tidigare TVÅ mängder: `getToday()` (exakt dagens datum) och
+ * `getUpcoming(30)`. Det var både redundant och skadligt. `getUpcoming` har
+ * ingen undre gräns, så den innehåller redan dagens påminnelser — och
+ * dessutom de försenade, som `getToday` per definition aldrig kan returnera.
+ * Kalendern delade sedan upp mängderna själv och tappade bort allt som låg
+ * före idag: en påminnelse från i går fanns i datan men ritades aldrig.
+ * Dagens påminnelser ritades i stället två gånger.
+ *
+ * En mängd, en ägare. Anroparen delar upp på LOKALA dygnsgränser.
+ */
 export function useApplicationReminders() {
   const queryClient = useQueryClient()
 
-  const {
-    data: todayReminders = [],
-    isLoading: isLoadingToday
-  } = useQuery({
-    queryKey: QUERY_KEYS.todayReminders,
-    queryFn: () => applicationRemindersApi.getToday(),
-    staleTime: 60 * 1000
-  })
-
-  const {
-    data: upcomingReminders = [],
-    isLoading: isLoadingUpcoming
-  } = useQuery({
+  const remindersQuery = useQuery({
     queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS),
     queryFn: () => applicationRemindersApi.getUpcoming(UPCOMING_REMINDER_DAYS),
     staleTime: 5 * 60 * 1000
@@ -515,10 +571,62 @@ export function useApplicationReminders() {
   })
 
   return {
-    todayReminders,
-    upcomingReminders,
-    isLoading: isLoadingToday || isLoadingUpcoming,
+    reminders: remindersQuery.data ?? [],
+
+    // `isPending`, inte `isLoading`. Under React Querys retry-backoff är
+    // `isFetching` falskt en stund, och `isLoading` (= isPending && isFetching)
+    // blir då falskt medan `data` fortfarande är undefined. Komponenten hade
+    // ritat "inga påminnelser" mitt i ett pågående försök.
+    isLoading: remindersQuery.isPending,
+
+    // Utan de här två KAN kalendern inte skilja ett trasigt anrop från en tom
+    // lista, och sa "Allt klart för idag!" när hämtningen gått sönder.
+    isError: remindersQuery.isError,
+    error: remindersQuery.error instanceof Error ? remindersQuery.error.message : null,
+    refetch: remindersQuery.refetch,
+
     completeReminder: completeMutation.mutateAsync
+  }
+}
+
+// ============================================
+// UPPSLAGNING id → ansökan
+// ============================================
+
+/**
+ * Bara ansökningarna, för vyer som ska sätta ett namn på en händelse.
+ *
+ * Tidslinjen och Kontakter kallade `useApplications()` enbart för den här
+ * uppslagningen och drog då igång FEM queries (ansökningar, statistik, gamla
+ * ansökningar, dagens påminnelser, kommande påminnelser) för att kunna skriva
+ * ut en jobbtitel.
+ *
+ * Nyckeln är avsiktligt identisk med den `useApplications()` bygger utan
+ * filter och sortering — samma queryFn, samma form, ett cachekontrakt med en
+ * ägare. Ändra den inte utan att ändra `useApplications` i samma andetag.
+ */
+export function useApplicationLookup() {
+  const query = useQuery({
+    queryKey: [...QUERY_KEYS.applications, undefined, undefined],
+    queryFn: () => applicationsApi.getAll(),
+    staleTime: 30 * 1000
+  })
+
+  const applications = useMemo(() => query.data ?? [], [query.data])
+
+  const byId = useMemo(() => {
+    const map = new Map<string, Application>()
+    for (const app of applications) map.set(app.id, app)
+    return map
+  }, [applications])
+
+  return {
+    applications,
+    byId,
+    isLoading: query.isPending,
+    isError: query.isError,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: query.refetch
   }
 }
 

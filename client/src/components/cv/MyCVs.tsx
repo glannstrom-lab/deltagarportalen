@@ -24,7 +24,8 @@ import {
   Briefcase,
   GraduationCap,
   Award,
-  X
+  X,
+  Upload
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { cvApi } from '@/services/cvApi'
@@ -34,6 +35,8 @@ import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'
 import { showToast } from '@/components/Toast'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { CVUploadModal } from './CVUploadModal'
+import { CVJobMatchPanel } from './CVJobMatchPanel'
 
 interface CVVersion {
   id: string
@@ -67,6 +70,7 @@ export function MyCVs() {
   const [searchQuery, setSearchQuery] = useState('')
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null)
   const [previewCV, setPreviewCV] = useState<CVVersion | null>(null)
+  const [visaUppladdning, setVisaUppladdning] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
@@ -264,13 +268,25 @@ export function MyCVs() {
               {t('cv.myCvs.savedCount', { count: cvs.length })}
             </p>
           </div>
-          <Link
-            to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] transition-colors shadow-lg"
-          >
-            <Plus className="w-5 h-5" />
-            {t('cv.myCvs.createNew')}
-          </Link>
+          {/* Två vägar in: bygga ett nytt CV, eller ta med det man redan har.
+              Uppladdningen står bredvid — inte gömd i en meny — eftersom den
+              som redan HAR ett CV annars börjar om från noll i byggaren. */}
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setVisaUppladdning(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-200 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+            >
+              <Upload className="w-5 h-5" aria-hidden="true" />
+              {t('cv.myCvs.uploadOwn', 'Ladda upp ditt CV')}
+            </button>
+            <Link
+              to="/cv"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] transition-colors shadow-lg"
+            >
+              <Plus className="w-5 h-5" aria-hidden="true" />
+              {t('cv.myCvs.createNew')}
+            </Link>
+          </div>
         </div>
 
         {/* Quick stats */}
@@ -295,6 +311,13 @@ export function MyCVs() {
           </div>
         )}
       </div>
+
+      {/* Jämför CV:na mot en annons. Ritas bara när det finns minst två —
+          med ett enda CV finns ingen rangordning att göra, och panelen hade
+          bara varit en tom låda. Det enskilda CV:t matchas i CV-byggaren. */}
+      {cvs.length >= 2 && (
+        <CVJobMatchPanel cvs={cvs.map(cv => ({ id: cv.id, name: cv.name, data: cv.data }))} />
+      )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4">
@@ -533,6 +556,13 @@ export function MyCVs() {
           </div>
         </div>
       </div>
+
+      {/* Ladda upp befintligt CV (PDF/.docx) */}
+      <CVUploadModal
+        isOpen={visaUppladdning}
+        onClose={() => setVisaUppladdning(false)}
+        onSaved={() => { void loadCVs() }}
+      />
 
       {/* Preview Modal */}
       {previewCV && (

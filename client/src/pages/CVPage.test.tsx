@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { ConfirmDialogProvider } from '@/components/ui'
 
@@ -150,30 +151,41 @@ const mockCvApi = cvApi as {
   saveVersion: ReturnType<typeof vi.fn>
 }
 
-function renderWithRouter(initialRoute = '/cv') {
-  return render(
-    <MemoryRouter initialEntries={[initialRoute]}>
-      <I18nextProvider i18n={i18n}>
-        <ConfirmDialogProvider>
-          <Routes>
-            <Route path="/cv/*" element={<CVPage />} />
-          </Routes>
-        </ConfirmDialogProvider>
-      </I18nextProvider>
+// CV-sidan ligger i appen alltid inuti QueryClientProvider (main.tsx).
+// Harnessen saknade den, vilket inte märktes förrän CVBuilder började
+// invalidera den delade nyckeln ['cv-versions'] efter en sparning — en
+// saknad provider i testet är inte samma sak som ett fel i komponenten.
+// `retry: false` så ett misslyckat anrop inte drar ut på testet.
+function medProviders(barn: React.ReactNode, initialRoute?: string) {
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
+  return (
+    <MemoryRouter initialEntries={initialRoute ? [initialRoute] : undefined}>
+      <QueryClientProvider client={queryClient}>
+        <I18nextProvider i18n={i18n}>
+          <ConfirmDialogProvider>
+            {barn}
+          </ConfirmDialogProvider>
+        </I18nextProvider>
+      </QueryClientProvider>
     </MemoryRouter>
   )
 }
 
-function renderCVBuilder() {
+function renderWithRouter(initialRoute = '/cv') {
   return render(
-    <MemoryRouter>
-      <I18nextProvider i18n={i18n}>
-        <ConfirmDialogProvider>
-          <CVBuilder />
-        </ConfirmDialogProvider>
-      </I18nextProvider>
-    </MemoryRouter>
+    medProviders(
+      <Routes>
+        <Route path="/cv/*" element={<CVPage />} />
+      </Routes>,
+      initialRoute
+    )
   )
+}
+
+function renderCVBuilder() {
+  return render(medProviders(<CVBuilder />))
 }
 
 describe('CVPage', () => {

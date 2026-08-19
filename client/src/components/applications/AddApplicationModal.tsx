@@ -18,8 +18,10 @@ import {
   type Application,
   type ApplicationStatus,
   type ApplicationPriority,
-  type ApplicationSource
+  type ApplicationSource,
+  type ManualJobData
 } from '@/types/application.types'
+import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
 interface AddApplicationModalProps {
   isOpen: boolean
@@ -31,7 +33,11 @@ interface AddApplicationModalProps {
     jobTitle?: string
     location?: string
     jobUrl?: string
-    jobData?: unknown
+    // Var `unknown` till 2026-08-19, vilket gjorde att unionen med
+    // formulärets egna objekt kollapsade till `{}` och `createApplication`
+    // fick ett typfel som stod kvar i takskulden. Formen är känd — det är
+    // samma två den skickas vidare som.
+    jobData?: PlatsbankenJob | ManualJobData
   }
 }
 
@@ -215,7 +221,7 @@ export function AddApplicationModal({
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                 placeholder={t('applications.form.companyPlaceholder', 'T.ex. Spotify')}
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 required
               />
             </div>
@@ -234,7 +240,7 @@ export function AddApplicationModal({
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                 placeholder={t('applications.form.jobTitlePlaceholder', 'T.ex. Frontend Developer')}
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 required
               />
             </div>
@@ -251,7 +257,7 @@ export function AddApplicationModal({
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 placeholder={t('applications.form.locationPlaceholder', 'T.ex. Stockholm')}
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
             </div>
           </div>
@@ -267,7 +273,7 @@ export function AddApplicationModal({
                 value={formData.jobUrl}
                 onChange={(e) => setFormData({ ...formData, jobUrl: e.target.value })}
                 placeholder="https://..."
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
             </div>
           </div>
@@ -280,7 +286,7 @@ export function AddApplicationModal({
                 id="addapplicationmodal-f5"
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value as ApplicationSource })}
-                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               >
                 {SOURCE_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{t(`applications.form.sources.${opt.value}`, opt.label)}</option>
@@ -296,7 +302,7 @@ export function AddApplicationModal({
                   type="date"
                   value={formData.applicationDate}
                   onChange={(e) => setFormData({ ...formData, applicationDate: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 />
               </div>
             </div>
@@ -310,7 +316,7 @@ export function AddApplicationModal({
                 id="addapplicationmodal-f7"
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ApplicationStatus })}
-                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               >
                 {Object.keys(APPLICATION_STATUS_CONFIG).map(status => (
                   <option key={status} value={status}>
@@ -325,7 +331,7 @@ export function AddApplicationModal({
                 id="addapplicationmodal-f8"
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as ApplicationPriority })}
-                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               >
                 {PRIORITY_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{t(`applications.priority.${opt.value}`, opt.label)}</option>
@@ -343,7 +349,7 @@ export function AddApplicationModal({
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder={t('applications.form.notesPlaceholder', 'Anteckningar om ansökan...')}
               rows={3}
-              className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              className="w-full px-4 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
             />
           </div>
         </form>

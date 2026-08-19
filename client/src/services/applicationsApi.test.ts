@@ -367,6 +367,62 @@ describe('applicationContactsApi.create', () => {
       applicationContactsApi.create({ applicationId: 'app-1', name: 'X' })
     ).rejects.toThrow('Not authenticated')
   })
+
+  // REGRESSION 2026-08-19. `applicationHistoryApi.log()` avslutade tidigare
+  // kedjan med `.catch(...)`. PostgrestBuilder implementerar bara `then`
+  // (PromiseLike), så `.catch` var `undefined` och raden kastade TypeError —
+  // efter att kontakten redan skrivits. Deltagaren fick "Kunde inte spara
+  // kontakten" trots att den låg i databasen, och ett nytt försök gav en
+  // dubblett.
+  //
+  // Det gamla testet ovan gick grönt genom hela buggens livstid, eftersom
+  // mocken lät `.single()` returnera en RIKTIG Promise (som har `.catch`).
+  // Här härmar vi det verkliga beteendet: en thenable UTAN `.catch`.
+  it('sparar kontakten även när svarsobjektet saknar .catch (som PostgrestBuilder)', async () => {
+    inloggad()
+    const kontaktrad = {
+      id: 'contact-2',
+      application_id: 'app-1',
+      user_id: 'user-1',
+      name: 'Nils Chef',
+      is_primary: false,
+      created_at: '2026-01-01T00:00:00Z',
+      updated_at: '2026-01-01T00:00:00Z',
+    }
+    // Thenable utan catch — exakt den form supabase-js faktiskt returnerar.
+    mockFromBuilder.single = vi.fn(() => ({
+      then: (resolve: (v: unknown) => unknown) =>
+        Promise.resolve({ data: kontaktrad, error: null }).then(resolve),
+    }))
+
+    await expect(
+      applicationContactsApi.create({ applicationId: 'app-1', name: 'Nils Chef' })
+    ).resolves.toMatchObject({ id: 'contact-2', name: 'Nils Chef' })
+  })
+
+  // Historikloggen är best effort. Går den fel ska sparningen ändå räknas
+  // som lyckad — annars ser en bonusfunktion ut som ett fel i huvudflödet.
+  it('returnerar kontakten även när historikloggningen misslyckas', async () => {
+    inloggad()
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: {
+        id: 'contact-3',
+        application_id: 'app-1',
+        user_id: 'user-1',
+        name: 'Ada Rekryterare',
+        is_primary: false,
+        created_at: '2026-01-01T00:00:00Z',
+        updated_at: '2026-01-01T00:00:00Z',
+      },
+      error: null,
+    })
+    // Historik-insertet awaitas direkt på buildern och får alltså awaitedResult.
+    awaitedResult = { data: null, error: { message: 'permission denied' } }
+
+    await expect(
+      applicationContactsApi.create({ applicationId: 'app-1', name: 'Ada Rekryterare' })
+    ).resolves.toMatchObject({ id: 'contact-3' })
+  })
 })
 
 describe('applicationRemindersApi.create', () => {

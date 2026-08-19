@@ -355,8 +355,11 @@ export const applicationsApi = {
       .rpc('get_application_stats', { p_user_id: user.id })
 
     if (error) {
-      // Fallback if function doesn't exist
-      console.warn('get_application_stats function not available, using fallback')
+      // RPC:n FINNS i prod (verifierad 2026-08-19) — kommentaren här sa till
+      // 2026-08-19 att den saknades, vilket fick varje RPC-fel att se ut som
+      // en förväntad konfiguration i stället för ett fel att undersöka.
+      // Fallbacken behålls som robusthet, men felet skrivs ut som det är.
+      console.warn('get_application_stats misslyckades — räknar om i klienten i stället:', error)
       const apps = await this.getAll()
       return {
         total: apps.length,
@@ -411,8 +414,12 @@ export const applicationsApi = {
       .eq('user_id', user.id)
       .is('archived_at', null)
       .in('status', ['APPLIED', 'SCREENING', 'PHONE', 'INTERVIEW', 'ASSESSMENT'])
-      .lt('updated_at', cutoffDate)
-      .order('updated_at', { ascending: true })
+      // `updated_at` är nullable. En rad med NULL är per definition orörd och
+      // alltså den mest inaktuella av alla — men `.lt()` matchar aldrig NULL i
+      // SQL, så den föll tyst ur listan. 0 sådana rader i prod i dag; villkoret
+      // finns för att det inte ska bero på tur.
+      .or(`updated_at.is.null,updated_at.lt.${cutoffDate}`)
+      .order('updated_at', { ascending: true, nullsFirst: true })
 
     if (error) handleError(error)
     return (data || []).map(transformApplication)
@@ -876,20 +883,32 @@ export const applicationHistoryApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return // Silently fail if not authenticated
 
-    await supabase
-      .from('application_history')
-      .insert({
-        application_id: applicationId,
-        user_id: user.id,
-        event_type: eventType,
-        old_value: data?.oldValue,
-        new_value: data?.newValue,
-        note: data?.note,
-        metadata: data?.metadata || {}
-      })
-      .select()
-      .single()
-      .catch(err => console.warn('Failed to log history:', err))
+    // `.catch()` fanns här fram till 2026-08-19 och gjorde tvärtemot vad den
+    // såg ut att göra: PostgrestBuilder implementerar bara `then` (PromiseLike),
+    // så `.catch` var `undefined` och raden kastade `TypeError` — INNAN
+    // loggningen ens hann misslyckas. Eftersom de tre anroparna `await`:ar
+    // log() EFTER en lyckad skrivning fick deltagaren "Kunde inte spara
+    // kontakten" trots att kontakten låg i databasen, och ett nytt försök gav
+    // dubbletter. Testet var grönt för att mocken returnerade en riktig Promise.
+    //
+    // Loggningen är best effort: historiken är en bonus, inte det som ska
+    // fälla en sparning som redan gått igenom. Därför try/catch, inte kast.
+    try {
+      const { error } = await supabase
+        .from('application_history')
+        .insert({
+          application_id: applicationId,
+          user_id: user.id,
+          event_type: eventType,
+          old_value: data?.oldValue,
+          new_value: data?.newValue,
+          note: data?.note,
+          metadata: data?.metadata || {}
+        })
+      if (error) console.warn('Kunde inte logga historikhändelse:', error)
+    } catch (err) {
+      console.warn('Kunde inte logga historikhändelse:', err)
+    }
   }
 }
 

@@ -2,11 +2,12 @@ import { createPortal } from 'react-dom'
 import { useSkenSlot } from '@/components/layout/skenSlot'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2, AlertCircle, Folder, FileText
+  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -343,6 +344,7 @@ export default function CVBuilder() {
   // skena finns — då renderas den inte alls, precis som förut (`hidden lg:block`).
   const skenSlot = useSkenSlot()
   const { t, i18n } = useTranslation()
+  const queryClient = useQueryClient()
   const [step, setStep] = useState(1)
   // Steg 4 (2026-08-17): förhandsvisning och rådgivare delar högerkolumn som
   // flikar — inte staplade. En tredje kolumn för rådgivaren hade gjort raden
@@ -352,6 +354,7 @@ export default function CVBuilder() {
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
+  const [sparAvCv, setSparAvCv] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [showQuickMode, setShowQuickMode] = useState(false)
   const [hasLoadedCV, setHasLoadedCV] = useState(false)
@@ -559,6 +562,34 @@ export default function CVBuilder() {
       setShowSaveVersion(false)
       showToast.success(t('cvBuilder.messages.versionSaved'))
     } catch { showToast.error(t('cvBuilder.messages.couldNotSaveVersion')) }
+  }
+
+  // "Spara CV" i knappraden ovanför arbetsytan (beslut Mikael 2026-08-19).
+  // Autosaven skriver arbetskopian till `cvs`, men den blir aldrig ett CV i
+  // "Dina CV" — den listan läser `cv_versions`. Utan den här knappen var enda
+  // vägen dit "Spara version" i högerkolumnen (dold på mobil) eller i sista
+  // steget, vilket gjorde att deltagare kunde arbeta klart och ändå ha noll
+  // sparade CV. Ett klick, namnet härleds ur yrkestiteln, ingen dialog.
+  const sparaCvSomVersion = async () => {
+    if (sparAvCv) return
+    setSparAvCv(true)
+    try {
+      const datum = new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', {
+        day: 'numeric', month: 'short', year: 'numeric'
+      })
+      const bas = data.title?.trim() || t('cvBuilder.versions.defaultName', 'Mitt CV')
+      const namn = `${bas} – ${datum}`
+      await cvApi.saveVersion(namn, data)
+      await loadVersions()
+      // Samma delade nyckel som dokumentväljaren i ansökningsmodalen läser.
+      await queryClient.invalidateQueries({ queryKey: ['cv-versions'] })
+      showToast.success(t('cvBuilder.messages.cvSavedToMyCvs', 'Sparat i Dina CV som "{{namn}}"', { namn }))
+    } catch (e) {
+      console.error('Kunde inte spara CV som version:', e)
+      showToast.error(t('cvBuilder.messages.couldNotSaveVersion'))
+    } finally {
+      setSparAvCv(false)
+    }
   }
 
   const restoreVersion = async (versionId: string) => {
@@ -1403,6 +1434,22 @@ export default function CVBuilder() {
               <Sparkles className="w-4 h-4" aria-hidden="true" />
               <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
             </button>
+            {/* Spara CV → en rad i cv_versions, dvs. det som "Dina CV" visar.
+                Etiketten syns på alla bredder: knappen är en huvudåtgärd och
+                en ensam diskettikon på mobil säger inte vad som sparas vart. */}
+            <button
+              onClick={sparaCvSomVersion}
+              disabled={sparAvCv}
+              aria-label={t('cvBuilder.actions.saveCv', 'Spara CV')}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors disabled:opacity-60"
+            >
+              {sparAvCv
+                ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                : <Save className="w-4 h-4" aria-hidden="true" />}
+              <span>{sparAvCv
+                ? t('cvBuilder.actions.saving', 'Sparar...')
+                : t('cvBuilder.actions.saveCv', 'Spara CV')}</span>
+            </button>
             <PDFExportButton
               type="cv"
               data={data}
@@ -1600,7 +1647,7 @@ export default function CVBuilder() {
                   <div key={v.id} className="flex items-center justify-between p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
                     <div>
                       <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{v.name}</p>
-                      <p className="text-xs text-stone-700 dark:text-stone-300">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
+                      <p className="text-xs text-stone-700 dark:text-stone-300">{new Date(v.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
                     </div>
                     <button
                       onClick={() => restoreVersion(v.id)}

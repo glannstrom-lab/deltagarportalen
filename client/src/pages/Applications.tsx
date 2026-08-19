@@ -115,7 +115,13 @@ function ApplicationsInner() {
         domain="activity"
         className="sidbredd"
         actions={
-          <Button onClick={() => setShowAddModal(true)} className="hidden sm:flex">
+          // `hidden sm:flex` låg här till 2026-08-19 och var kvar sedan
+          // hjälte-tiden, då `actions` bara ritades på breda skärmar. Efter
+          // omläggningen renderar PageLayout `actions` på ALLA bredder — så
+          // klassen gjorde numera bara att den som är under 640 px inte kunde
+          // skapa en ansökan från fyra av fem flikar. Pipeline-fliken hade en
+          // egen knapp; de andra hade ingenting.
+          <Button onClick={() => setShowAddModal(true)}>
             <Plus className="w-4 h-4 mr-1" />
             {t('applications.addApplication', 'Ny ansökan')}
           </Button>
@@ -140,14 +146,20 @@ function ApplicationsInner() {
         </Routes>
       </PageLayout>
 
-      {/* Add/Edit Application Modal */}
-      <AddApplicationModal
-        isOpen={showAddModal}
-        onClose={handleCloseAddModal}
-        editApplication={editApplication}
-      />
+      {/* `data-domain` sätts av PageLayout på sitt EGET yttre element, och
+          modalerna nedan är syskon till det — inte barn. Utan den här
+          wrappern faller alltså `--c-solid` tillbaka på rotens standardvärde
+          (mint, Översiktens färg), och mätning i drift 2026-08-19 visade
+          precis det: sidans knapp rgb(168,93,36) mot modalens rgb(26,119,87).
+          En sida = en hub-färg gäller även det som ritas ovanpå sidan. */}
+      <div data-domain="activity" className="contents">
 
-      {/* Application Detail Modal */}
+      {/* Detaljmodalen renderas FÖRE redigeringsmodalen.
+          Båda är `fixed z-50` i samma stackningskontext, så den som ritas sist
+          hamnar överst. I omvänd ordning (till 2026-08-19) öppnade "Redigera"
+          en dialog BAKOM detaljvyn: fokus hoppade in i något osynligt, och
+          fokusfällan stängde den vid första klick. `suspended` gjorde rätt sak
+          hela tiden — den byggde bara på fel antagande om målningsordningen. */}
       {selectedApplication && (
         <ApplicationDetailModal
           application={selectedApplication}
@@ -158,6 +170,14 @@ function ApplicationsInner() {
         />
       )}
 
+      {/* Skapa/redigera ansökan */}
+      <AddApplicationModal
+        isOpen={showAddModal}
+        onClose={handleCloseAddModal}
+        editApplication={editApplication}
+      />
+
+      </div>
     </>
   )
 }

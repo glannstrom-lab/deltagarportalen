@@ -402,6 +402,13 @@ export function ApplicationDetailModal({
       role="dialog"
       aria-modal="true"
       aria-labelledby="application-detail-title"
+      // `suspended` sätts när redigeringsmodalen öppnats ovanpå den här.
+      // Fokusfällan var redan avstängd då (rad 287), men dialogen låg kvar i
+      // tillgänglighetsträdet och kunde nås med både mus och skärmläsare
+      // bakom den aktiva dialogen. `inert` tar bort hela grenen ur både
+      // fokusordningen och uppläsningen, vilket är precis vad ett suspenderat
+      // lager ska vara.
+      inert={suspended || undefined}
     >
       <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}

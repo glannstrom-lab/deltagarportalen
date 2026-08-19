@@ -17,6 +17,15 @@ const CACHE_TTL = 2 * 60 * 1000; // 2 minuter
 export interface PlatsbankenJob {
   id: string;
   headline: string;
+  /**
+   * Länk till annonsen hos arbetsgivaren eller Platsbanken.
+   *
+   * Saknades i typen till 2026-08-19 trots att fältet läses på fem ställen i
+   * UI:t (JobSearch, MatchCard, DailyJobTab, Resources ×2) och finns i 21 av
+   * 26 `saved_jobs.job_data` i prod. Frånvaron stod som fyra fel i
+   * typtakskulden och gjorde varje ny läsare tvungen att casta.
+   */
+  webpage_url?: string;
   description: {
     text: string;
     text_formatted: string;
