@@ -689,7 +689,11 @@ ABSOLUTA REGLER:
 ${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 1800,
+    // Samma resonemang som för erfarenhetsdelen nedan: budgeten ska rymma
+    // modellens tänkande OCH svaret. Rubrikdelen lyckas i dag, men med okänd
+    // marginal — och ett tomt svar syns som "No response from AI", inte som
+    // ett kortare svar.
+    maxTokens: 2400,
     // Uppgiften är ren formatering — det finns inget att resonera om, och
     // varje tänkt token äts ur samma budget som svaret.
     reasoningEffort: 'low',
@@ -746,7 +750,22 @@ ABSOLUTA REGLER:
 ${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 1600,
+    // Budgeten rymmer TÄNKANDET plus svaret, inte bara svaret.
+    //
+    // Uppmätt mot prod 2026-08-19 med `finish_reason` och `usage` i loggen:
+    // vid maxTokens 1600 blev `completion_tokens` exakt 1600, `finish_reason`
+    // "length" — och `reasoning_tokens` **1691**. Modellen tänkte alltså
+    // längre än hela budgeten och hade noll kvar till svaret, vilket kom
+    // tillbaka som tomt `content` och "No response from AI".
+    //
+    // Svaret självt är litet (~250 tokens i kompakt form). Det som kostar är
+    // resonemanget, och `reasoning: { effort: 'low' }` räckte inte för att få
+    // ner det. 2600 ger 1700 för tänkandet, 250 för svaret och marginal.
+    // Tiden håller: den lyckade körningen tog 29,8 s av 60 tillgängliga.
+    //
+    // Sänk inte taket för att "spara tokens" — det som händer då är att
+    // svaret försvinner helt, inte att det blir kortare.
+    maxTokens: 2600,
     reasoningEffort: 'low',
     responseKey: 'cv',
     parseJson: true
