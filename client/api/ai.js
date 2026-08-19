@@ -200,8 +200,13 @@ const RATE_LIMITS = {
   'adaptation-recommendations': { limit: 10, windowMinutes: 15 },
   'adaptation-conversation': { limit: 10, windowMinutes: 15 },
   'cv-jobbmatchning': { limit: 10, windowMinutes: 15 },
-  // cv-import läser ett helt uppladdat CV — dyrare prompt, sällsyntare behov.
-  'cv-import': { limit: 5, windowMinutes: 60 },
+  // CV-importen är TVÅ anrop som körs parallellt (rubrikdelen och
+  // erfarenhetsdelen). Uppmätt mot prod 2026-08-19: den låsta modellen ger
+  // ~9 tokens/s, och Vercel-funktionen dör vid 60 s. Ett odelat anrop som
+  // skulle återge ett helt CV krävde 800–1200 tokens ut och timade ut med
+  // 504 för varje CV av normal längd. Två mindre svar hinner klart.
+  'cv-import': { limit: 10, windowMinutes: 60 },
+  'cv-import-erfarenhet': { limit: 10, windowMinutes: 60 },
   'linkedin-optimering': { limit: 15, windowMinutes: 15 },
   'profile-summary': { limit: 10, windowMinutes: 15 },
   'chatbot': { limit: 30, windowMinutes: 15 },
@@ -639,29 +644,76 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
   // står i filen. Ett "förbättrat" eller påhittat CV vore ett påstående om
   // personens liv som den inte gjort själv — samma felklass som portalen
   // rensade bort 2026-08-09. Tomt fält utelämnas hellre än gissas.
+  // ── CV-import: TVÅ prompts, avsiktligt ───────────────────────────────
+  //
+  // Importen var ett enda anrop till 2026-08-19 och timade ut med 504 för
+  // varje CV av normal längd. Uppmätt mot prod: den låsta modellen levererar
+  // ~9 tokens/s (275 tokens tog 29 s), och Vercel-funktionen dödas vid 60 s.
+  // Ett helt CV kräver 800–1200 tokens ut — alltså 90–130 s. Det gick inte
+  // att lösa med ett högre `maxTokens`; taket styr inte hastigheten.
+  //
+  // Lösningen är att dela arbetet i två svar som klienten hämtar PARALLELLT.
+  // Varje svar landar på 150–300 tokens, alltså 20–35 s med marginal.
+  // Slår du ihop dem igen får du tillbaka timeouten.
+  //
+  // Båda delar samma sanningsregel: modellen är en FORMATERARE. Den flyttar
+  // text som redan står i filen och får inte skriva om, förbättra eller hitta
+  // på — ett "förbättrat" CV vore ett påstående om personens liv som hen inte
+  // gjort själv.
+
+  // Del 1: kontaktuppgifter, profiltext, kompetenser, språk, certifikat.
   'cv-import': (data) => ({
     system: `Du strukturerar en befintlig CV-text till JSON. Du är en FORMATERARE, inte en skribent.
 
 Svara ENDAST med JSON i detta format:
-{"firstName":"","lastName":"","title":"","email":"","phone":"","location":"","summary":"","workExperience":[{"title":"","company":"","location":"","startDate":"","endDate":"","current":false,"description":""}],"education":[{"school":"","degree":"","field":"","startDate":"","endDate":""}],"skills":[""],"languages":[{"language":"","level":""}],"certificates":[{"name":"","issuer":"","date":""}]}
+{"firstName":"","lastName":"","title":"","email":"","phone":"","location":"","summary":"","skills":[""],"languages":[{"language":"","level":""}],"certificates":[{"name":"","issuer":"","date":""}]}
 
 ABSOLUTA REGLER:
-- Skriv ALDRIG något som inte står i texten. Hitta inte på arbetsgivare, datum, titlar, kompetenser eller formuleringar.
-- Förbättra INTE språket och skriv inte om meningar. Kopiera texten som den står, bara städad från radbrytningar och sidnummer.
-- Saknas ett fält: utelämna det eller lämna tom sträng. Gissa aldrig.
-- Datum skrivs som de står i CV:t (t.ex. "2019-03", "mars 2019", "2019"). Räkna inte om och fyll inte i saknade delar.
-- current: true ENDAST om texten uttryckligen säger pågående/nuvarande/"–" utan slutdatum.
-- summary: bara om CV:t har en egen profiltext/sammanfattning. Skriv aldrig en ny.
-- skills: korta ord/fraser som faktiskt listas som kompetenser. Max 25.
-- Personnummer, kön, hälsa, medborgarskap och foto ska ALDRIG med.`,
+- Skriv ALDRIG något som inte står i texten. Hitta inte på kompetenser, orter eller formuleringar.
+- Förbättra INTE språket. Kopiera texten som den står, bara städad från radbrytningar och sidnummer.
+- Saknas ett fält: lämna tom sträng eller tom lista. Gissa aldrig.
+- summary: bara om CV:t har en egen profiltext. Skriv aldrig en ny. Max 400 tecken, ordagrant.
+- skills: korta ord/fraser som faktiskt listas som kompetenser. Max 20.
+- Personnummer, kön, hälsa, medborgarskap och foto ska ALDRIG med.
+- Ta INTE med arbetslivserfarenhet eller utbildning här. De hämtas separat.`,
     user: `CV-TEXT (utläst ur uppladdad fil):
-${(data?.cvText || '').substring(0, 12000)}
+${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 2600,
+    maxTokens: 900,
     responseKey: 'cv',
     parseJson: true
   }),
+
+  // Del 2: arbetslivserfarenhet och utbildning.
+  //
+  // `description` utelämnas med flit. Beskrivningarna är den överlägset
+  // största delen av utdatan — att återge dem ordagrant var det som sprängde
+  // tidsbudgeten. Personen har kvar sin egen fil och skriver in det som
+  // behövs; UI:t säger uttryckligen att beskrivningarna inte följer med, så
+  // ingen tror att de försvunnit.
+  'cv-import-erfarenhet': (data) => ({
+    system: `Du strukturerar en befintlig CV-text till JSON. Du är en FORMATERARE, inte en skribent.
+
+Svara ENDAST med JSON i detta format:
+{"workExperience":[{"title":"","company":"","location":"","startDate":"","endDate":"","current":false}],"education":[{"school":"","degree":"","field":"","startDate":"","endDate":""}]}
+
+ABSOLUTA REGLER:
+- Skriv ALDRIG något som inte står i texten. Hitta inte på arbetsgivare, titlar eller datum.
+- Ta med de 8 SENASTE tjänsterna och de 5 senaste utbildningarna, nyast först.
+- Skriv INGA beskrivningar. Fältet finns inte i formatet — ta inte med det.
+- Datum skrivs exakt som de står ("2019-03", "mars 2019", "2019"). Räkna inte om, fyll inte i saknade delar.
+- current: true ENDAST om texten uttryckligen säger pågående/nuvarande, eller om slutdatum saknas efter ett tankstreck.
+- Saknas ett fält: lämna tom sträng. Gissa aldrig.`,
+    user: `CV-TEXT (utläst ur uppladdad fil):
+${(data?.cvText || '').substring(0, 10000)}
+
+Svara ENDAST med JSON.`,
+    maxTokens: 1100,
+    responseKey: 'cv',
+    parseJson: true
+  }),
+
   'adaptation-recommendations': (data) => {
     const en = data?.language === 'en';
     return {
@@ -1458,15 +1510,22 @@ const RESPONSE_VALIDATORS = {
   // anropet: klienten visar "vi kunde inte läsa filen" och erbjuder att
   // fylla i för hand. Fälten passeras oförändrade; validatorn skalar bort
   // former som inte går att rendera, den skriver aldrig om innehåll.
+  // Ett uppladdat CV som tolkas fel blir ett TOMT CV i byggaren — och den som
+  // laddat upp sin fil tror då att portalen läst den. Fäll hellre anropet:
+  // klienten visar "vi kunde inte läsa filen" och erbjuder att fylla i för
+  // hand. Validatorerna skalar bort former som inte går att rendera; de
+  // skriver aldrig om innehåll.
+  //
+  // Två validatorer eftersom importen är två anrop — se kommentaren vid
+  // prompterna. Den som slår ihop dem igen får tillbaka 504:an.
   'cv-import': (value) => {
     if (!isPlainObject(value)) {
       return { ok: false, error: 'CV-importen var inte ett JSON-objekt' };
     }
     const str = (v) => (typeof v === 'string' ? v.trim() : '');
-    const objArray = (v, falt) => (Array.isArray(v) ? v.filter(isPlainObject).slice(0, 30).map((rad) => {
+    const objArray = (v, falt, tak) => (Array.isArray(v) ? v.filter(isPlainObject).slice(0, tak).map((rad) => {
       const ut = {};
       falt.forEach((f) => { const t = str(rad[f]); if (t) ut[f] = t; });
-      if (typeof rad.current === 'boolean') ut.current = rad.current;
       return ut;
     }).filter((rad) => Object.keys(rad).length > 0) : []);
 
@@ -1477,27 +1536,45 @@ const RESPONSE_VALIDATORS = {
       email: str(value.email),
       phone: str(value.phone),
       location: str(value.location),
-      summary: str(value.summary),
-      workExperience: objArray(value.workExperience, ['title', 'company', 'location', 'startDate', 'endDate', 'description']),
-      education: objArray(value.education, ['school', 'degree', 'field', 'startDate', 'endDate']),
-      skills: Array.isArray(value.skills)
-        ? value.skills.map(str).filter(Boolean).slice(0, 25)
-        : [],
-      languages: objArray(value.languages, ['language', 'level']),
-      certificates: objArray(value.certificates, ['name', 'issuer', 'date']),
+      summary: str(value.summary).substring(0, 400),
+      skills: Array.isArray(value.skills) ? value.skills.map(str).filter(Boolean).slice(0, 20) : [],
+      languages: objArray(value.languages, ['language', 'level'], 10),
+      certificates: objArray(value.certificates, ['name', 'issuer', 'date'], 10),
     };
 
-    // Ett svar utan ett enda användbart fält är inte ett CV. Att spara det
-    // hade gett en tom rad i "Dina CV" som ser ut som ett lyckat resultat.
     const harInnehall = Boolean(
-      ut.firstName || ut.lastName || ut.title || ut.summary ||
-      ut.workExperience.length || ut.education.length || ut.skills.length
+      ut.firstName || ut.lastName || ut.title || ut.summary || ut.skills.length
     );
     if (!harInnehall) {
       return { ok: false, error: 'CV-importen innehöll inga läsbara fält' };
     }
     return { ok: true, value: ut };
   },
+
+  'cv-import-erfarenhet': (value) => {
+    if (!isPlainObject(value)) {
+      return { ok: false, error: 'erfarenhetsimporten var inte ett JSON-objekt' };
+    }
+    const str = (v) => (typeof v === 'string' ? v.trim() : '');
+    const rader = (v, falt, tak) => (Array.isArray(v) ? v.filter(isPlainObject).slice(0, tak).map((rad) => {
+      const ut = {};
+      falt.forEach((f) => { const t = str(rad[f]); if (t) ut[f] = t; });
+      if (rad.current === true) ut.current = true;
+      return ut;
+    }).filter((rad) => rad.title || rad.company || rad.school || rad.degree) : []);
+
+    const ut = {
+      workExperience: rader(value.workExperience, ['title', 'company', 'location', 'startDate', 'endDate'], 8),
+      education: rader(value.education, ['school', 'degree', 'field', 'startDate', 'endDate'], 5),
+    };
+
+    // Här är tomt ett giltigt svar: alla CV har inte utbildning listad, och
+    // ett förstagångssökande CV kan sakna arbetslivserfarenhet. Att fälla
+    // anropet då hade gjort ett sant svar till ett fel. Rubrikdelen bär
+    // kravet på innehåll.
+    return { ok: true, value: ut };
+  },
+
 };
 
 module.exports = async (req, res) => {

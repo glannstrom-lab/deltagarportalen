@@ -1099,6 +1099,55 @@
     }
   },
   "cv": {
+    "fileUpload": {
+      "title": "Ladda upp ett CV du redan har",
+      "subtitle": "Sparas precis som den är",
+      "dropHere": "Dra hit ditt CV, eller välj det från datorn.",
+      "aboutTitle": "Vad som händer med filen",
+      "about1": "Filen sparas oförändrad och bara du kommer åt den.",
+      "about2": "Ingen AI läser den. Ingenting tolkas eller skrivs om.",
+      "about3": "Du kan ladda ner den igen i original, eller ta bort den när du vill.",
+      "orImport": "Vill du i stället att vi fyller i CV-byggarens fält från filen?",
+      "orImportLink": "Importera den under Skapa CV",
+      "nameLabel": "Vad ska CV:t heta i portalen?",
+      "nameHint": "Bara för att du ska känna igen det i listan. Filen döps inte om.",
+      "saving": "Sparar ditt CV…",
+      "save": "Spara bland mina CV",
+      "saved": "CV:t är sparat. Du hittar det bland dina sparade CV.",
+      "sectionTitle": "CV du laddat upp",
+      "sectionLead": "Sparade precis som du gjorde dem. Ladda ner när du vill.",
+      "loading": "Hämtar dina uppladdade CV…",
+      "loadError": "Vi kunde inte hämta dina uppladdade CV just nu. De ligger kvar — det är hämtningen som strular.",
+      "open": "Öppna",
+      "openAria": "Öppna {{namn}}",
+      "openFailed": "Filen gick inte att öppna just nu. Försök igen om en stund.",
+      "deleteAria": "Ta bort {{namn}}",
+      "deleteTitle": "Ta bort det uppladdade CV:t?",
+      "deleteMessage": "Filen tas bort från portalen. Din egen kopia på datorn påverkas inte.",
+      "deleteConfirm": "Ta bort",
+      "deleted": "CV:t är borttaget.",
+      "deleteFailed": "CV:t kunde inte tas bort just nu. Försök igen om en stund.",
+      "errors": {
+        "tooLarge": "Filen är större än 10 MB. Spara om den i mindre storlek och försök igen.",
+        "oldWord": "Formatet .doc är gammalt och alla arbetsgivare kan inte öppna det. Öppna filen i Word och välj \"Spara som\" och sedan PDF, så är du säker.",
+        "format": "Vi tar emot PDF och Word (.docx). Spara om filen i något av de formaten.",
+        "saveFailed": "Filen gick inte att spara just nu. Kontrollera din uppkoppling och försök igen om en stund."
+      }
+    },
+    "import": {
+      "title": "Importera ett CV du redan har",
+      "subtitle": "Vi fyller i fälten åt dig — PDF eller Word (.docx)",
+      "dropHere": "Dra hit ditt CV, eller välj det från datorn.",
+      "privacyDescriptions": "Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.",
+      "orKeepFile": "Vill du hellre spara filen som den är, utan att göra om den till fält?",
+      "orKeepFileLink": "Ladda upp den under Dina sparade CV",
+      "wait": "Det tar ungefär en halv minut. Stäng inte fönstret.",
+      "reviewHint": "Sorterat med AI-stöd ur din fil. Läs igenom att det stämmer — allt går att ändra i byggaren efteråt.",
+      "experienceFailed": "Vi fick med dina uppgifter och kompetenser, men inte arbetslivserfarenheten den här gången. Du kan lägga till tjänsterna för hand, eller stänga och försöka igen.",
+      "noDescriptions": "Beskrivningarna av vad du gjorde följer inte med — dem skriver du in själv i byggaren.",
+      "saveFileInstead": "Spara filen som den är i stället",
+      "use": "Fyll i mitt CV med det här"
+    },
     "title": "CV",
     "subtitle": "Skapa och hantera ditt CV",
     "description": "Skapa, hantera och optimera ditt CV för att öka chanserna till drömjobbet",
@@ -7798,6 +7847,7 @@
       "native": "Modersmål"
     },
     "actions": {
+      "importCv": "Importera CV",
       "add": "Lägg till",
       "previous": "Föregående",
       "next": "Nästa",
@@ -7814,6 +7864,7 @@
       "clearDemoData": "Ta bort exempeldata"
     },
     "versions": {
+      "beforeImport": "Säkerhetskopia innan import",
       "title": "Versioner",
       "saveCurrentVersion": "+ Spara nuvarande version",
       "defaultName": "Mitt CV",
@@ -7831,6 +7882,8 @@
       "aiWritingDesc": "Få hjälp att förbättra din sammanfattning"
     },
     "messages": {
+      "imported": "Ditt CV är inläst. Gå igenom stegen och fyll på med det som saknas.",
+      "importBackupFailed": "Vi kunde inte spara en säkerhetskopia av ditt nuvarande CV, så vi avbröt importen. Försök igen om en stund.",
       "cvSaved": "CV sparat!",
       "couldNotSave": "Kunde inte spara",
       "versionSaved": "Version sparad!",

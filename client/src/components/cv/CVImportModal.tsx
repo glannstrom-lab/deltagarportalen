@@ -1,48 +1,53 @@
 /**
- * "Ladda upp ditt CV" — tar emot en PDF eller ett .docx, läser ut texten i
- * WEBBLÄSAREN, låter AI:n sortera innehållet i CV-byggarens fält och sparar
- * resultatet som ett CV i "Dina CV" (`cv_versions`).
+ * "Importera CV" — läser ett befintligt CV (PDF eller .docx) och fyller
+ * CV-byggarens fält med innehållet.
  *
- * Tre saker som är avsiktliga, inte tillfälligheter:
+ * Ligger på **Skapa CV**, inte på Dina sparade CV. Skillnaden är avsiktlig:
+ * här görs filen om till redigerbara fält, medan `CVFileUploadModal` på
+ * Dina sparade CV lägger undan filen precis som den är. Den som redan har ett
+ * färdigt CV ska inte tvingas genom byggaren bara för att få in det i portalen.
+ *
+ * Fyra saker som är avsiktliga, inte tillfälligheter:
  *
  * 1. **Filen lämnar aldrig enheten.** Utläsningen sker lokalt (se
  *    `services/cvFileImport.ts`). Bara den utlästa texten går till /api/ai,
  *    och den passerar PII-saneringen där personnummer stryks helt.
- * 2. **AI:n formaterar, den skriver inte.** Prompten `cv-import` i
- *    `client/api/ai.js` förbjuder uttryckligen omskrivningar och påhitt, och
- *    serverns validator fäller ett svar utan läsbara fält i stället för att
- *    spara ett tomt CV som ser lyckat ut.
- * 3. **Inget sparas förrän personen sett vad vi hittade.** Granskningssteget
- *    visar antal och innehåll innan spara-knappen finns.
+ * 2. **AI:n formaterar, den skriver inte.** Prompterna i `client/api/ai.js`
+ *    förbjuder omskrivningar och påhitt, och servervalidatorn fäller ett svar
+ *    utan läsbara fält hellre än att fylla byggaren med tomhet.
+ * 3. **Två anrop, parallellt.** Uppmätt mot prod 2026-08-19: modellen ger
+ *    ~9 tokens/s och Vercel-funktionen dör vid 60 s. Ett odelat anrop som
+ *    skulle återge ett helt CV krävde 800–1200 tokens och gav 504 för varje
+ *    CV av normal längd. Slår du ihop dem igen är timeouten tillbaka.
+ * 4. **Halvt resultat är bättre än inget.** Går erfarenhetsdelen fel men
+ *    rubrikdelen igenom får personen det som kom fram, med besked om vad som
+ *    saknas — i stället för ett tomt felmeddelande efter en minuts väntan.
  */
 
 import { useState, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { useQueryClient } from '@tanstack/react-query'
 import {
   Upload, FileText, Loader2, X, Check, AlertCircle, Sparkles, RefreshCw
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
-import { cvApi } from '@/services/cvApi'
 import { callAI, AiConsentRequiredError } from '@/services/aiApi'
-import { showToast } from '@/components/Toast'
 import {
   lasTextUrCvFil, CvImportError, ACCEPTERADE_FILTYPER,
   type ImportFel
 } from '@/services/cvFileImport'
 import type { CVData, Language, Skill } from '@/services/supabaseApi'
 
-interface CVUploadModalProps {
+interface CVImportModalProps {
   isOpen: boolean
   onClose: () => void
-  /** Anropas när ett CV sparats, så listan kan laddas om. */
-  onSaved: () => void
+  /** Tar emot de fält som lästes ur filen. Byggaren avgör hur de vävs in. */
+  onImported: (fält: Partial<CVData>) => void
 }
 
-/** Formen AI:n svarar med — samma fält som prompten i client/api/ai.js listar. */
-interface ImporteratCv {
+/** Del 1 av AI-svaret: rubrik, profiltext, kompetenser, språk, certifikat. */
+interface ImporteradRubrik {
   firstName?: string
   lastName?: string
   title?: string
@@ -50,17 +55,21 @@ interface ImporteratCv {
   phone?: string
   location?: string
   summary?: string
+  skills?: string[]
+  languages?: Array<{ language?: string; level?: string }>
+  certificates?: Array<{ name?: string; issuer?: string; date?: string }>
+}
+
+/** Del 2 av AI-svaret: erfarenhet och utbildning. Utan beskrivningar. */
+interface ImporteradErfarenhet {
   workExperience?: Array<{
     title?: string; company?: string; location?: string
-    startDate?: string; endDate?: string; current?: boolean; description?: string
+    startDate?: string; endDate?: string; current?: boolean
   }>
   education?: Array<{
     school?: string; degree?: string; field?: string
     startDate?: string; endDate?: string
   }>
-  skills?: string[]
-  languages?: Array<{ language?: string; level?: string }>
-  certificates?: Array<{ name?: string; issuer?: string; date?: string }>
 }
 
 type Steg = 'val' | 'laser' | 'strukturerar' | 'granska' | 'fel'
@@ -86,17 +95,47 @@ function tolkaSprakniva(ratext: string | undefined): string {
 let raknare = 0
 const nyttId = () => `imp-${Date.now()}-${raknare++}`
 
-/** Gör AI-svaret till CVData. Ingenting fylls i som inte kom med i svaret. */
-function tillCvData(importerat: ImporteratCv): CVData {
-  return {
-    firstName: importerat.firstName || '',
-    lastName: importerat.lastName || '',
-    title: importerat.title || '',
-    email: importerat.email || '',
-    phone: importerat.phone || '',
-    location: importerat.location || '',
-    summary: importerat.summary || '',
-    workExperience: (importerat.workExperience || []).map((w) => ({
+/** Gör AI-svaren till CVData-fält. Ingenting fylls i som inte kom med. */
+function tillCvFalt(rubrik: ImporteradRubrik | null, erfarenhet: ImporteradErfarenhet | null): Partial<CVData> {
+  const ut: Partial<CVData> = {}
+
+  if (rubrik) {
+    if (rubrik.firstName) ut.firstName = rubrik.firstName
+    if (rubrik.lastName) ut.lastName = rubrik.lastName
+    if (rubrik.title) ut.title = rubrik.title
+    if (rubrik.email) ut.email = rubrik.email
+    if (rubrik.phone) ut.phone = rubrik.phone
+    if (rubrik.location) ut.location = rubrik.location
+    if (rubrik.summary) ut.summary = rubrik.summary
+    if (rubrik.skills?.length) {
+      ut.skills = rubrik.skills.map((namn) => ({
+        id: nyttId(),
+        name: namn,
+        // 3 av 5 är byggarens eget standardvärde för en ny kompetens — vi
+        // påstår alltså inget utöver vad verktyget självt gör.
+        level: 3,
+        category: 'other',
+      })) as Skill[]
+    }
+    if (rubrik.languages?.length) {
+      ut.languages = rubrik.languages.map((s) => ({
+        id: nyttId(),
+        language: s.language || '',
+        level: tolkaSprakniva(s.level),
+      })) as unknown as Language[]
+    }
+    if (rubrik.certificates?.length) {
+      ut.certificates = rubrik.certificates.map((c) => ({
+        id: nyttId(),
+        name: c.name || '',
+        issuer: c.issuer || '',
+        date: c.date || '',
+      }))
+    }
+  }
+
+  if (erfarenhet?.workExperience?.length) {
+    ut.workExperience = erfarenhet.workExperience.map((w) => ({
       id: nyttId(),
       title: w.title || '',
       company: w.company || '',
@@ -104,59 +143,38 @@ function tillCvData(importerat: ImporteratCv): CVData {
       startDate: w.startDate || '',
       endDate: w.endDate || '',
       current: w.current === true,
-      description: w.description || '',
-    })),
-    education: (importerat.education || []).map((e) => ({
+      // Beskrivningen följer med flit inte med — se prompten i ai.js.
+      description: '',
+    }))
+  }
+  if (erfarenhet?.education?.length) {
+    ut.education = erfarenhet.education.map((e) => ({
       id: nyttId(),
       school: e.school || '',
       degree: e.degree || '',
       field: e.field || '',
       startDate: e.startDate || '',
       endDate: e.endDate || '',
-    })),
-    skills: (importerat.skills || []).map((namn) => ({
-      id: nyttId(),
-      name: namn,
-      // Nivån står sällan i ett CV. 3 av 5 är byggarens eget standardvärde för
-      // en nyskapad kompetens — vi påstår alltså inget utöver det verktyget
-      // självt gör, och personen justerar i byggaren.
-      level: 3,
-      category: 'other',
-    })) as Skill[],
-    languages: (importerat.languages || []).map((s) => ({
-      id: nyttId(),
-      language: s.language || '',
-      level: tolkaSprakniva(s.level),
-    })) as unknown as Language[],
-    certificates: (importerat.certificates || []).map((c) => ({
-      id: nyttId(),
-      name: c.name || '',
-      issuer: c.issuer || '',
-      date: c.date || '',
-    })),
-    links: [],
-    references: [],
-    template: 'sidebar',
+    }))
   }
+
+  return ut
 }
 
-export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) {
+export function CVImportModal({ isOpen, onClose, onImported }: CVImportModalProps) {
   const { t } = useTranslation()
-  const queryClient = useQueryClient()
   const [steg, setSteg] = useState<Steg>('val')
   const [felkod, setFelkod] = useState<UtokatFel | null>(null)
   const [filnamn, setFilnamn] = useState('')
-  const [resultat, setResultat] = useState<CVData | null>(null)
-  const [namn, setNamn] = useState('')
-  const [sparar, setSparar] = useState(false)
+  const [resultat, setResultat] = useState<Partial<CVData> | null>(null)
+  const [erfarenhetSaknas, setErfarenhetSaknas] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const stang = useCallback(() => {
-    if (sparar) return
-    setSteg('val'); setFelkod(null); setFilnamn(''); setResultat(null); setNamn('')
+    setSteg('val'); setFelkod(null); setFilnamn(''); setResultat(null); setErfarenhetSaknas(false)
     onClose()
-  }, [onClose, sparar])
+  }, [onClose])
 
   const containerRef = useFocusTrap<HTMLDivElement>(isOpen, {
     onEscape: stang,
@@ -167,6 +185,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
   const hanteraFil = async (file: File) => {
     setFilnamn(file.name)
     setFelkod(null)
+    setErfarenhetSaknas(false)
     setSteg('laser')
 
     let text: string
@@ -179,51 +198,45 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
     }
 
     setSteg('strukturerar')
-    try {
-      // `callAI` returnerar hela svarskuvertet ({ success, [responseKey]: … }),
-      // så nyckeln plockas ut som i JobAdaptPanel.
-      const svar = await callAI<ImporteratCv>('cv-import', { cvText: text })
-      const importerat = (svar as { cv?: ImporteratCv }).cv
-      if (!importerat || typeof importerat !== 'object') {
-        throw new Error('Tomt AI-svar')
-      }
-      const cvData = tillCvData(importerat)
-      setResultat(cvData)
-      // Förslag på namn: yrkestiteln om den finns, annars filnamnet utan ändelse.
-      const bas = cvData.title?.trim() || file.name.replace(/\.[^.]+$/, '')
-      setNamn(bas.slice(0, 60))
-      setSteg('granska')
-    } catch (e) {
-      console.error('CV-import misslyckades:', e)
+
+    // Parallellt, inte i följd: två svar på 20–35 s vardera ryms i
+    // funktionens 60 s när de körs samtidigt, men inte efter varandra.
+    const [rubrikSvar, erfarenhetSvar] = await Promise.allSettled([
+      callAI<ImporteradRubrik>('cv-import', { cvText: text }),
+      callAI<ImporteradErfarenhet>('cv-import-erfarenhet', { cvText: text }),
+    ])
+
+    const rubrik = rubrikSvar.status === 'fulfilled'
+      ? (rubrikSvar.value as { cv?: ImporteradRubrik }).cv ?? null
+      : null
+    const erfarenhet = erfarenhetSvar.status === 'fulfilled'
+      ? (erfarenhetSvar.value as { cv?: ImporteradErfarenhet }).cv ?? null
+      : null
+
+    if (!rubrik && !erfarenhet) {
+      const fel = rubrikSvar.status === 'rejected' ? rubrikSvar.reason : undefined
+      console.error('CV-import misslyckades:', fel)
       // Har personen stängt av AI-behandling (GDPR art. 21-brytaren) är det
-      // inte ett tillfälligt fel — det är ett val hen gjort, och "försök igen
-      // om en stund" hade varit ett råd som aldrig kan funka. Uppmätt i drift
-      // 2026-08-19: testkontot hade AI av, och modalen svarade ändå
-      // "försök igen om en stund".
-      setFelkod(e instanceof AiConsentRequiredError ? 'ai-avstangd' : 'ai')
+      // inte ett tillfälligt fel utan ett val hen gjort — "försök igen om en
+      // stund" hade varit ett råd som aldrig kan funka.
+      setFelkod(fel instanceof AiConsentRequiredError ? 'ai-avstangd' : 'ai')
       setSteg('fel')
+      return
     }
+
+    if (erfarenhetSvar.status === 'rejected') {
+      console.error('Erfarenhetsdelen av importen misslyckades:', erfarenhetSvar.reason)
+      setErfarenhetSaknas(true)
+    }
+
+    setResultat(tillCvFalt(rubrik, erfarenhet))
+    setSteg('granska')
   }
 
-  const spara = async () => {
-    if (!resultat || !namn.trim() || sparar) return
-    setSparar(true)
-    try {
-      await cvApi.saveVersion(namn.trim(), resultat)
-      // `useDocuments` (dokumentväljaren i ansökningsmodalen) läser samma CV
-      // ur React Query-nyckeln ['cv-versions'] med fem minuters staleTime.
-      // Utan den här raden fanns det nyss uppladdade CV:t inte att välja när
-      // man registrerade ansökan man laddade upp det för.
-      await queryClient.invalidateQueries({ queryKey: ['cv-versions'] })
-      showToast.success(t('cv.upload.saved', 'CV:t är sparat i Dina CV.'))
-      onSaved()
-      setSparar(false)
-      stang()
-    } catch (e) {
-      console.error('Kunde inte spara importerat CV:', e)
-      showToast.error(t('cv.upload.saveFailed', 'Kunde inte spara CV:t just nu. Försök igen om en stund.'))
-      setSparar(false)
-    }
+  const anvand = () => {
+    if (!resultat) return
+    onImported(resultat)
+    stang()
   }
 
   if (!isOpen) return null
@@ -231,7 +244,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
   const felmeddelanden: Record<UtokatFel, string> = {
     'for-stor': t('cv.upload.errors.tooLarge', 'Filen är större än 10 MB. Spara om den i mindre storlek och försök igen.'),
     'okant-format': t('cv.upload.errors.format', 'Vi kan läsa PDF och Word (.docx). Spara om filen i något av de formaten.'),
-    'gammalt-word': t('cv.upload.errors.oldWord', 'Formatet .doc är för gammalt. Öppna filen i Word och välj "Spara som" → .docx eller PDF.'),
+    'gammalt-word': t('cv.upload.errors.oldWord', 'Formatet .doc är för gammalt. Öppna filen i Word och välj "Spara som" och sedan .docx eller PDF.'),
     'tom-text': t('cv.upload.errors.noText', 'Vi hittade nästan ingen text i filen. Är den inskannad som bild? Då behöver du fylla i CV:t för hand.'),
     'kunde-inte-lasa': t('cv.upload.errors.unreadable', 'Filen gick inte att öppna. Kontrollera att den inte är lösenordsskyddad.'),
     ai: t('cv.upload.errors.ai', 'Vi kunde läsa filen men inte sortera innehållet just nu. Försök igen om en stund.'),
@@ -253,7 +266,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
         ref={containerRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby="cv-upload-rubrik"
+        aria-labelledby="cv-import-rubrik"
         className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col"
       >
         {/* Rubrikrad */}
@@ -263,18 +276,17 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
               <Upload className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
             </div>
             <div className="min-w-0">
-              <h2 id="cv-upload-rubrik" className="font-semibold text-stone-900 dark:text-stone-100">
-                {t('cv.upload.title', 'Ladda upp ditt CV')}
+              <h2 id="cv-import-rubrik" className="font-semibold text-stone-900 dark:text-stone-100">
+                {t('cv.import.title', 'Importera ett CV du redan har')}
               </h2>
               <p className="text-sm text-stone-600 dark:text-stone-400 truncate">
-                {filnamn || t('cv.upload.subtitle', 'PDF eller Word (.docx)')}
+                {filnamn || t('cv.import.subtitle', 'Vi fyller i fälten åt dig — PDF eller Word (.docx)')}
               </p>
             </div>
           </div>
           <button
             onClick={stang}
-            disabled={sparar}
-            className="p-2 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg disabled:opacity-50"
+            className="p-2 text-stone-500 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
             aria-label={t('common.close', 'Stäng')}
           >
             <X className="w-5 h-5" aria-hidden="true" />
@@ -303,7 +315,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
               >
                 <FileText className="w-10 h-10 mx-auto text-stone-400 mb-3" aria-hidden="true" />
                 <p className="text-stone-700 dark:text-stone-300 mb-1">
-                  {t('cv.upload.dropHere', 'Dra hit din CV-fil, eller välj den från datorn.')}
+                  {t('cv.import.dropHere', 'Dra hit ditt CV, eller välj det från datorn.')}
                 </p>
                 <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
                   {t('cv.upload.formats', 'PDF eller Word (.docx), max 10 MB.')}
@@ -338,9 +350,17 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                   <li>{t('cv.upload.privacy1', 'Filen läses i din webbläsare och laddas aldrig upp någonstans.')}</li>
                   <li>{t('cv.upload.privacy2', 'Texten skickas till AI:n som sorterar den i rätt fält. Personnummer tas bort automatiskt först.')}</li>
                   <li>{t('cv.upload.privacy3', 'AI:n får inte skriva om eller lägga till något — bara flytta det som står i filen.')}</li>
+                  <li>{t('cv.import.privacyDescriptions', 'Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.')}</li>
                   <li>{t('cv.upload.privacy4', 'Du ser resultatet och godkänner det innan något sparas.')}</li>
                 </ul>
               </div>
+
+              <p className="text-sm text-stone-600 dark:text-stone-400">
+                {t('cv.import.orKeepFile', 'Vill du hellre spara filen som den är, utan att göra om den till fält?')}{' '}
+                <Link to="/cv/my-cvs" onClick={stang} className="text-[var(--c-text)] font-medium hover:underline">
+                  {t('cv.import.orKeepFileLink', 'Ladda upp den under Dina sparade CV')}
+                </Link>
+              </p>
             </div>
           )}
 
@@ -354,7 +374,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                   : t('cv.upload.structuring', 'Sorterar innehållet i rätt fält…')}
               </p>
               <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                {t('cv.upload.wait', 'Det tar oftast under en minut.')}
+                {t('cv.import.wait', 'Det tar ungefär en halv minut. Stäng inte fönstret.')}
               </p>
             </div>
           )}
@@ -369,8 +389,6 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                 {felmeddelanden[felkod]}
               </p>
               <div className="flex items-center justify-center gap-3 flex-wrap">
-                {/* En annan fil hjälper inte den som stängt av AI — då är
-                    vägen framåt inställningarna, eller att fylla i för hand. */}
                 {felkod === 'ai-avstangd' ? (
                   <>
                     <Link
@@ -381,35 +399,53 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                       {t('cv.upload.openSettings', 'Öppna Inställningar')}
                     </Link>
                     <Link
-                      to="/cv"
+                      to="/cv/my-cvs"
                       onClick={stang}
                       className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800"
                     >
-                      {t('cv.upload.fillByHand', 'Fyll i för hand i stället')}
+                      {t('cv.import.saveFileInstead', 'Spara filen som den är i stället')}
                     </Link>
                   </>
                 ) : (
-                  <button
-                    onClick={() => { setSteg('val'); setFelkod(null); setFilnamn('') }}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800"
-                  >
-                    <RefreshCw className="w-4 h-4" aria-hidden="true" />
-                    {t('cv.upload.tryAgain', 'Försök med en annan fil')}
-                  </button>
+                  <>
+                    <button
+                      onClick={() => { setSteg('val'); setFelkod(null); setFilnamn('') }}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800"
+                    >
+                      <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                      {t('cv.upload.tryAgain', 'Försök med en annan fil')}
+                    </button>
+                    <Link
+                      to="/cv/my-cvs"
+                      onClick={stang}
+                      className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800"
+                    >
+                      {t('cv.import.saveFileInstead', 'Spara filen som den är i stället')}
+                    </Link>
+                  </>
                 )}
               </div>
             </div>
           )}
 
-          {/* Granska innan sparning */}
+          {/* Granska innan fälten fylls i */}
           {steg === 'granska' && resultat && antal && (
             <div className="space-y-5">
               <div className="flex items-start gap-3 rounded-xl bg-[var(--c-bg)] border border-[var(--c-solid)]/30 p-4">
                 <Sparkles className="w-5 h-5 text-[var(--c-text)] flex-shrink-0 mt-0.5" aria-hidden="true" />
                 <p className="text-sm text-[var(--c-text)]">
-                  {t('cv.upload.reviewHint', 'Sorterat med AI-stöd ur din fil. Läs igenom att det stämmer — du kan ändra allt i CV-byggaren efteråt.')}
+                  {t('cv.import.reviewHint', 'Sorterat med AI-stöd ur din fil. Läs igenom att det stämmer — allt går att ändra i byggaren efteråt.')}
                 </p>
               </div>
+
+              {erfarenhetSaknas && (
+                <div className="flex items-start gap-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 p-4">
+                  <AlertCircle className="w-5 h-5 text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="text-sm text-amber-900 dark:text-amber-200">
+                    {t('cv.import.experienceFailed', 'Vi fick med dina uppgifter och kompetenser, men inte arbetslivserfarenheten den här gången. Du kan lägga till tjänsterna för hand, eller stänga och försöka igen.')}
+                  </p>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
@@ -451,7 +487,7 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                     {t('cv.upload.fields.experience', 'Erfarenheter vi hittade')}
                   </h3>
                   <ul className="space-y-1.5">
-                    {resultat.workExperience.slice(0, 6).map((w) => (
+                    {resultat.workExperience.map((w) => (
                       <li key={w.id} className="text-sm text-stone-700 dark:text-stone-300 flex gap-2">
                         <Check className="w-4 h-4 text-[var(--c-solid)] flex-shrink-0 mt-0.5" aria-hidden="true" />
                         <span>
@@ -462,22 +498,11 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
                       </li>
                     ))}
                   </ul>
+                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+                    {t('cv.import.noDescriptions', 'Beskrivningarna av vad du gjorde följer inte med — dem skriver du in själv i byggaren.')}
+                  </p>
                 </div>
               )}
-
-              <div>
-                <label htmlFor="cv-upload-namn" className="block text-sm font-medium text-stone-800 dark:text-stone-200 mb-1.5">
-                  {t('cv.upload.nameLabel', 'Vad ska CV:t heta?')}
-                </label>
-                <input
-                  id="cv-upload-namn"
-                  type="text"
-                  value={namn}
-                  maxLength={60}
-                  onChange={(e) => setNamn(e.target.value)}
-                  className="w-full px-3 py-2.5 border border-stone-300 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                />
-              </div>
             </div>
           )}
         </div>
@@ -487,20 +512,16 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
           <div className="flex items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700">
             <button
               onClick={() => { setSteg('val'); setResultat(null); setFilnamn('') }}
-              disabled={sparar}
-              className="px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800 disabled:opacity-50"
+              className="px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800"
             >
               {t('cv.upload.chooseOther', 'Välj en annan fil')}
             </button>
             <button
-              onClick={spara}
-              disabled={sparar || !namn.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:brightness-110 disabled:opacity-50"
+              onClick={anvand}
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:brightness-110"
             >
-              {sparar
-                ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-                : <Check className="w-4 h-4" aria-hidden="true" />}
-              {t('cv.upload.save', 'Spara i Dina CV')}
+              <Check className="w-4 h-4" aria-hidden="true" />
+              {t('cv.import.use', 'Fyll i mitt CV med det här')}
             </button>
           </div>
         )}
@@ -509,4 +530,4 @@ export function CVUploadModal({ isOpen, onClose, onSaved }: CVUploadModalProps) 
   )
 }
 
-export default CVUploadModal
+export default CVImportModal

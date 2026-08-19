@@ -1099,6 +1099,55 @@
     }
   },
   "cv": {
+    "fileUpload": {
+      "title": "Upload a CV you already have",
+      "subtitle": "Saved exactly as it is",
+      "dropHere": "Drag your CV here, or choose it from your computer.",
+      "aboutTitle": "What happens to the file",
+      "about1": "The file is saved unchanged and only you can reach it.",
+      "about2": "No AI reads it. Nothing is interpreted or rewritten.",
+      "about3": "You can download it again in the original, or remove it whenever you like.",
+      "orImport": "Would you rather we filled in the CV builder's fields from the file?",
+      "orImportLink": "Import it under Create CV",
+      "nameLabel": "What should the CV be called in the portal?",
+      "nameHint": "Just so you recognise it in the list. The file itself isn't renamed.",
+      "saving": "Saving your CV…",
+      "save": "Save among my CVs",
+      "saved": "Your CV is saved. You'll find it among your saved CVs.",
+      "sectionTitle": "CVs you have uploaded",
+      "sectionLead": "Saved exactly as you made them. Download whenever you like.",
+      "loading": "Fetching your uploaded CVs…",
+      "loadError": "We couldn't fetch your uploaded CVs right now. They're still there — it's the fetching that's failing.",
+      "open": "Open",
+      "openAria": "Open {{namn}}",
+      "openFailed": "The file couldn't be opened right now. Please try again shortly.",
+      "deleteAria": "Remove {{namn}}",
+      "deleteTitle": "Remove the uploaded CV?",
+      "deleteMessage": "The file is removed from the portal. Your own copy on your computer is not affected.",
+      "deleteConfirm": "Remove",
+      "deleted": "The CV has been removed.",
+      "deleteFailed": "The CV couldn't be removed right now. Please try again shortly.",
+      "errors": {
+        "tooLarge": "The file is larger than 10 MB. Save it in a smaller size and try again.",
+        "oldWord": "The .doc format is old and not every employer can open it. Open the file in Word and choose \"Save as\" and then PDF, to be safe.",
+        "format": "We accept PDF and Word (.docx). Save the file in one of those formats.",
+        "saveFailed": "The file couldn't be saved right now. Check your connection and try again shortly."
+      }
+    },
+    "import": {
+      "title": "Import a CV you already have",
+      "subtitle": "We fill in the fields for you — PDF or Word (.docx)",
+      "dropHere": "Drag your CV here, or choose it from your computer.",
+      "privacyDescriptions": "Your own descriptions of each role don't come along — you write those yourself, so they turn out exactly as you want them.",
+      "orKeepFile": "Would you rather keep the file as it is, without turning it into fields?",
+      "orKeepFileLink": "Upload it under Your saved CVs",
+      "wait": "It takes about half a minute. Don't close the window.",
+      "reviewHint": "Sorted with AI support from your file. Read it through — everything can be changed in the builder afterwards.",
+      "experienceFailed": "We got your details and skills, but not your work experience this time. You can add the roles by hand, or close and try again.",
+      "noDescriptions": "The descriptions of what you did don't come along — you write those yourself in the builder.",
+      "saveFileInstead": "Keep the file as it is instead",
+      "use": "Fill in my CV with this"
+    },
     "title": "CV",
     "subtitle": "Create and manage your CV",
     "description": "Create, manage and optimize your CV to increase your chances of getting your dream job",
@@ -7798,6 +7847,7 @@
       "native": "Native"
     },
     "actions": {
+      "importCv": "Import CV",
       "add": "Add",
       "previous": "Previous",
       "next": "Next",
@@ -7814,6 +7864,7 @@
       "clearDemoData": "Remove example data"
     },
     "versions": {
+      "beforeImport": "Backup before import",
       "title": "Versions",
       "saveCurrentVersion": "+ Save current version",
       "defaultName": "My CV",
@@ -7831,6 +7882,8 @@
       "aiWritingDesc": "Get help improving your summary"
     },
     "messages": {
+      "imported": "Your CV has been read in. Go through the steps and fill in what's missing.",
+      "importBackupFailed": "We couldn't save a backup of your current CV, so we cancelled the import. Please try again shortly.",
       "cvSaved": "CV saved!",
       "couldNotSave": "Could not save",
       "versionSaved": "Version saved!",

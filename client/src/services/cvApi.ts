@@ -231,3 +231,132 @@ export const cvApi = {
     return data
   }
 }
+
+/**
+ * Uppladdade CV-FILER — personens eget färdiga CV, sparat som det är.
+ *
+ * Skiljer sig från `cv_versions`, som är CV byggda i portalen och lagras som
+ * strukturerad JSON. Det här är filen: en PDF eller ett Word-dokument som
+ * ligger orört i lagringen och kan laddas ner igen precis som den kom in.
+ * Många har redan ett CV de är nöjda med, och att tvinga dem genom byggaren
+ * för att få det in i portalen vore att be dem göra om jobbet.
+ *
+ * Återanvänder `profile_documents` + bucketen `profile-documents` (privat,
+ * 10 MB, tillåter PDF/Word) — båda fanns redan och är verifierade mot prod
+ * 2026-08-19. `type = 'cv'` avgränsar dem från profilens intyg och betyg.
+ * Ingen ny tabell, ingen migration.
+ */
+const CV_BUCKET = 'profile-documents'
+
+export interface UppladdatCv {
+  id: string
+  name: string
+  file_url: string
+  file_size?: number | null
+  mime_type?: string | null
+  created_at: string
+  /** Sökvägen i bucketen. Behövs för att kunna radera filen, inte bara raden. */
+  description?: string | null
+}
+
+export const cvFilerApi = {
+  async getAll(): Promise<UppladdatCv[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('profile_documents')
+      .select('id, name, file_url, file_size, mime_type, created_at, description')
+      .eq('user_id', user.id)
+      .eq('type', 'cv')
+      .order('created_at', { ascending: false })
+
+    // Fel kastas vidare i stället för att bli en tom lista. Ett hämtningsfel
+    // som ser ut som "du har inga CV" är portalens vanligaste lögn.
+    if (error) handleError(error)
+    return (data || []) as UppladdatCv[]
+  },
+
+  async upload(file: File, namn: string): Promise<UppladdatCv> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    // Bucketens eget tak är 10 MB; kontrollen här ger ett begripligt fel i
+    // stället för ett rått lagringsfel.
+    if (file.size > 10 * 1024 * 1024) {
+      throw new APIError('Filen är större än 10 MB', 'FILE_TOO_LARGE', 413)
+    }
+
+    // Filnamnet saneras: bucketens nycklar tål inte alla tecken, och ett
+    // svenskt filnamn med mellanslag och å/ä/ö är regel snarare än undantag.
+    const rentNamn = file.name
+      .replace(/[^\w.\- ]+/g, '_')
+      .replace(/\s+/g, '_')
+      .slice(-80)
+    const sokvag = `${user.id}/cv/${Date.now()}_${rentNamn}`
+
+    const { error: uploadError } = await supabase.storage
+      .from(CV_BUCKET)
+      .upload(sokvag, file, { contentType: file.type || undefined, upsert: false })
+    if (uploadError) throw new APIError(uploadError.message, 'UPLOAD_FAILED', 500)
+
+    const { data: signerad } = await supabase.storage
+      .from(CV_BUCKET)
+      .createSignedUrl(sokvag, 60 * 60 * 24 * 365)
+
+    const { data, error } = await supabase
+      .from('profile_documents')
+      .insert({
+        user_id: user.id,
+        name: namn.trim() || file.name,
+        type: 'cv',
+        // `description` bär lagringssökvägen. Fult men ärligt: tabellen har
+        // ingen egen kolumn för den, och utan sökvägen kan en radering ta
+        // bort raden men lämna filen kvar i lagringen för alltid.
+        description: sokvag,
+        file_url: signerad?.signedUrl || '',
+        file_size: file.size,
+        mime_type: file.type || null,
+      })
+      .select('id, name, file_url, file_size, mime_type, created_at, description')
+      .single()
+
+    if (error) {
+      // Raden gick inte in — städa bort filen, annars ligger den kvar utan
+      // att någonsin kunna nås eller raderas via UI:t.
+      await supabase.storage.from(CV_BUCKET).remove([sokvag])
+      handleError(error)
+    }
+    return data as UppladdatCv
+  },
+
+  /** Färska länkar: den sparade signerade URL:en går ut efter ett år. */
+  async signeradLank(sokvag: string): Promise<string | null> {
+    const { data, error } = await supabase.storage
+      .from(CV_BUCKET)
+      .createSignedUrl(sokvag, 60 * 10)
+    if (error) return null
+    return data?.signedUrl || null
+  },
+
+  async delete(id: string, sokvag?: string | null): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { error } = await supabase
+      .from('profile_documents')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .eq('type', 'cv')
+
+    if (error) handleError(error)
+
+    // Filen tas bort efter raden. Misslyckas den blir det en föräldralös fil,
+    // inte en rad som pekar på ingenting — den ordningen är mindre skadlig.
+    if (sokvag) {
+      const { error: filFel } = await supabase.storage.from(CV_BUCKET).remove([sokvag])
+      if (filFel) console.warn('Raden är borta men filen ligger kvar i lagringen:', filFel)
+    }
+  },
+}

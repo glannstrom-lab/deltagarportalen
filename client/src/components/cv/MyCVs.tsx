@@ -25,7 +25,9 @@ import {
   GraduationCap,
   Award,
   X,
-  Upload
+  Upload,
+  Download,
+  AlertCircle
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { cvApi } from '@/services/cvApi'
@@ -35,8 +37,9 @@ import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'
 import { showToast } from '@/components/Toast'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
-import { CVUploadModal } from './CVUploadModal'
+import { CVFileUploadModal } from './CVFileUploadModal'
 import { CVJobMatchPanel } from './CVJobMatchPanel'
+import { cvFilerApi, type UppladdatCv } from '@/services/cvApi'
 
 interface CVVersion {
   id: string
@@ -71,12 +74,68 @@ export function MyCVs() {
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null)
   const [previewCV, setPreviewCV] = useState<CVVersion | null>(null)
   const [visaUppladdning, setVisaUppladdning] = useState(false)
+  // Uppladdade CV-FILER — personens egna färdiga CV, sparade som de är.
+  // Hålls skilda från de byggda: en PDF går inte att redigera i byggaren,
+  // och att blanda dem i samma lista hade lovat något vi inte kan hålla.
+  const [uppladdade, setUppladdade] = useState<UppladdatCv[]>([])
+  const [laddarUppladdade, setLaddarUppladdade] = useState(true)
+  const [felUppladdade, setFelUppladdade] = useState(false)
+  const [raderarFil, setRaderarFil] = useState<string | null>(null)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
   useEffect(() => {
     loadCVs()
+    void laddaUppladdade()
   }, [])
+
+  const laddaUppladdade = async () => {
+    setLaddarUppladdade(true)
+    setFelUppladdade(false)
+    try {
+      setUppladdade(await cvFilerApi.getAll())
+    } catch (e) {
+      // Ett hämtningsfel får inte se ut som "du har inga uppladdade CV".
+      console.error('Kunde inte hämta uppladdade CV:', e)
+      setFelUppladdade(true)
+    } finally {
+      setLaddarUppladdade(false)
+    }
+  }
+
+  const raderaUppladdat = async (cv: UppladdatCv) => {
+    const bekraftat = await confirm({
+      title: t('cv.fileUpload.deleteTitle', 'Ta bort det uppladdade CV:t?'),
+      message: t('cv.fileUpload.deleteMessage', 'Filen tas bort från portalen. Din egen kopia på datorn påverkas inte.'),
+      confirmText: t('cv.fileUpload.deleteConfirm', 'Ta bort'),
+      cancelText: t('common.cancel', 'Avbryt'),
+      variant: 'warning',
+    })
+    if (!bekraftat) return
+    setRaderarFil(cv.id)
+    try {
+      await cvFilerApi.delete(cv.id, cv.description)
+      setUppladdade(prev => prev.filter(x => x.id !== cv.id))
+      showToast.success(t('cv.fileUpload.deleted', 'CV:t är borttaget.'))
+    } catch (e) {
+      console.error('Kunde inte ta bort uppladdat CV:', e)
+      showToast.error(t('cv.fileUpload.deleteFailed', 'CV:t kunde inte tas bort just nu. Försök igen om en stund.'))
+    } finally {
+      setRaderarFil(null)
+    }
+  }
+
+  /** Signerade länkar går ut. Hämta en färsk vid klick i stället för att
+   *  lita på den som sparades vid uppladdningen. */
+  const oppnaFil = async (cv: UppladdatCv) => {
+    const lank = cv.description ? await cvFilerApi.signeradLank(cv.description) : null
+    const url = lank || cv.file_url
+    if (!url) {
+      showToast.error(t('cv.fileUpload.openFailed', 'Filen gick inte att öppna just nu. Försök igen om en stund.'))
+      return
+    }
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }
 
   const loadCVs = async () => {
     try {
@@ -312,6 +371,86 @@ export function MyCVs() {
         )}
       </div>
 
+      {/* ── CV du laddat upp ────────────────────────────────────────────
+          Egen sektion, inte inblandad bland de byggda. En uppladdad PDF går
+          inte att redigera i byggaren eller exportera om — att lägga den i
+          samma lista hade lovat åtgärder som inte finns. */}
+      {(laddarUppladdade || felUppladdade || uppladdade.length > 0) && (
+        <section className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
+          <div className="flex items-center justify-between gap-4 mb-4">
+            <div>
+              <h2 className="font-semibold text-stone-900 dark:text-stone-100">
+                {t('cv.fileUpload.sectionTitle', 'CV du laddat upp')}
+              </h2>
+              <p className="text-sm text-stone-600 dark:text-stone-400">
+                {t('cv.fileUpload.sectionLead', 'Sparade precis som du gjorde dem. Ladda ner när du vill.')}
+              </p>
+            </div>
+          </div>
+
+          {laddarUppladdade ? (
+            <div className="space-y-2" role="status" aria-live="polite">
+              <span className="sr-only">{t('cv.fileUpload.loading', 'Hämtar dina uppladdade CV…')}</span>
+              <div className="h-16 rounded-xl bg-stone-100 dark:bg-stone-800 animate-pulse" />
+            </div>
+          ) : felUppladdade ? (
+            <div className="flex items-start gap-3 p-4 rounded-xl border border-amber-200 dark:border-amber-800/50 bg-amber-50 dark:bg-amber-900/20">
+              <AlertCircle className="w-5 h-5 text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+              <div>
+                <p className="text-sm text-amber-900 dark:text-amber-200">
+                  {t('cv.fileUpload.loadError', 'Vi kunde inte hämta dina uppladdade CV just nu. De ligger kvar — det är hämtningen som strular.')}
+                </p>
+                <button
+                  onClick={() => { void laddaUppladdade() }}
+                  className="mt-2 text-sm font-medium text-amber-900 dark:text-amber-200 underline"
+                >
+                  {t('common.tryAgain', 'Försök igen')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <ul className="space-y-2">
+              {uppladdade.map(cv => (
+                <li
+                  key={cv.id}
+                  className="flex items-center gap-3 p-3 rounded-xl border border-stone-200 dark:border-stone-700"
+                >
+                  <div className="w-11 h-11 rounded-xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-stone-900 dark:text-stone-100 truncate">{cv.name}</p>
+                    <p className="text-xs text-stone-600 dark:text-stone-400">
+                      {formatDate(cv.created_at)}
+                      {cv.file_size ? ` · ${Math.max(1, Math.round(cv.file_size / 1024))} kB` : ''}
+                      {cv.mime_type?.includes('pdf') ? ' · PDF' : cv.mime_type?.includes('word') ? ' · Word' : ''}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => { void oppnaFil(cv) }}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800"
+                  >
+                    <Download className="w-4 h-4" aria-hidden="true" />
+                    <span className="hidden sm:inline">{t('cv.fileUpload.open', 'Öppna')}</span>
+                    <span className="sr-only sm:hidden">{t('cv.fileUpload.openAria', 'Öppna {{namn}}', { namn: cv.name })}</span>
+                  </button>
+                  <button
+                    onClick={() => { void raderaUppladdat(cv) }}
+                    disabled={raderarFil === cv.id}
+                    aria-label={t('cv.fileUpload.deleteAria', 'Ta bort {{namn}}', { namn: cv.name })}
+                    className="p-2 text-stone-500 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg disabled:opacity-50"
+                  >
+                    {raderarFil === cv.id
+                      ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                      : <Trash2 className="w-4 h-4" aria-hidden="true" />}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
       {/* Jämför CV:na mot en annons. Ritas bara när det finns minst två —
           med ett enda CV finns ingen rangordning att göra, och panelen hade
           bara varit en tom låda. Det enskilda CV:t matchas i CV-byggaren. */}
@@ -362,13 +501,25 @@ export function MyCVs() {
               ? t('cv.myCvs.empty.tryOtherSearch')
               : t('cv.myCvs.empty.createFirst')}
           </p>
-          <Link
-            to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
-          >
-            <Plus className="w-5 h-5" />
-            {t('cv.myCvs.createFirstCV')}
-          </Link>
+          {/* Två vägar även här. Tomtillståndet är ofta det första en person
+              ser, och den som redan HAR ett CV ska inte behöva gissa att
+              uppladdning finns längst upp på sidan. */}
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              to="/cv"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
+            >
+              <Plus className="w-5 h-5" aria-hidden="true" />
+              {t('cv.myCvs.createFirstCV')}
+            </Link>
+            <button
+              onClick={() => setVisaUppladdning(true)}
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-200 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+            >
+              <Upload className="w-5 h-5" aria-hidden="true" />
+              {t('cv.myCvs.uploadOwn', 'Ladda upp ditt CV')}
+            </button>
+          </div>
         </div>
       ) : (
         <div className="space-y-4">
@@ -557,11 +708,11 @@ export function MyCVs() {
         </div>
       </div>
 
-      {/* Ladda upp befintligt CV (PDF/.docx) */}
-      <CVUploadModal
+      {/* Ladda upp ett färdigt CV (PDF/.docx) — sparas som det är, ingen AI */}
+      <CVFileUploadModal
         isOpen={visaUppladdning}
         onClose={() => setVisaUppladdning(false)}
-        onSaved={() => { void loadCVs() }}
+        onSaved={() => { void laddaUppladdade() }}
       />
 
       {/* Preview Modal */}

@@ -7,7 +7,7 @@ import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save
+  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save, Upload
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -40,6 +40,7 @@ import { ContextualHelp } from '@/components/cv/ContextualHelp'
 import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
 import { ContextualKnowledgeWidget } from '@/components/workflow'
 import { QuickCVMode } from '@/components/cv/QuickCVMode'
+import { CVImportModal } from '@/components/cv/CVImportModal'
 import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 
 // ============================================
@@ -355,6 +356,7 @@ export default function CVBuilder() {
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
   const [sparAvCv, setSparAvCv] = useState(false)
+  const [visaImport, setVisaImport] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [showQuickMode, setShowQuickMode] = useState(false)
   const [hasLoadedCV, setHasLoadedCV] = useState(false)
@@ -651,6 +653,38 @@ export default function CVBuilder() {
   const handleUpdateSummaryFromJob = (summary: string) => {
     setData(prev => ({ ...prev, summary }))
     showToast.success(t('cv.jobAdapt.summaryUpdated', 'Sammanfattning uppdaterad'))
+  }
+
+  // Tar emot fälten ur ett importerat CV (CVImportModal, "Importera CV").
+  //
+  // Till skillnad från exempeldata SKA importen skriva över — det är hela
+  // poängen att få in sitt riktiga CV. Men den skriver bara över de fält
+  // filen faktiskt innehöll, och sparar först en säkerhetskopia, eftersom
+  // autosaven skriver över samma `cvs`-rad och det annars inte finns någon
+  // väg tillbaka.
+  const hanteraImport = async (falt: Partial<CVData>) => {
+    const harInnehall = Boolean(
+      data.firstName || data.lastName || data.title || data.summary ||
+      data.workExperience?.length || data.education?.length || data.skills?.length
+    )
+
+    if (harInnehall) {
+      try {
+        const backupName = `${t('cvBuilder.versions.beforeImport', 'Säkerhetskopia innan import')} – ${new Date().toLocaleString('sv-SE')}`
+        await cvApi.saveVersion(backupName, data)
+        await loadVersions()
+      } catch (e) {
+        console.error('Kunde inte spara säkerhetskopia innan import:', e)
+        // Sparningen är personens ångra-väg. Går den inte att skapa ska vi
+        // inte skriva över utan att säga det — då blir ändringen oåterkallelig.
+        showToast.error(t('cvBuilder.messages.importBackupFailed', 'Vi kunde inte spara en säkerhetskopia av ditt nuvarande CV, så vi avbröt importen. Försök igen om en stund.'))
+        return
+      }
+    }
+
+    setData(prev => ({ ...prev, ...falt }))
+    setStep(2)
+    showToast.success(t('cvBuilder.messages.imported', 'Ditt CV är inläst. Gå igenom stegen och fyll på med det som saknas.'))
   }
 
   // B24 — se kommentaren vid DEMO_CV_DATA. Fyller ENDAST tomma fält och
@@ -1434,6 +1468,16 @@ export default function CVBuilder() {
               <Sparkles className="w-4 h-4" aria-hidden="true" />
               <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
             </button>
+            {/* Importera ett befintligt CV. Ligger först: den som redan har
+                ett CV ska se vägen in innan hen börjar fylla i för hand. */}
+            <button
+              onClick={() => setVisaImport(true)}
+              aria-label={t('cvBuilder.actions.importCv', 'Importera CV')}
+              className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
+            >
+              <Upload className="w-4 h-4" aria-hidden="true" />
+              <span>{t('cvBuilder.actions.importCv', 'Importera CV')}</span>
+            </button>
             {/* Spara CV → en rad i cv_versions, dvs. det som "Dina CV" visar.
                 Etiketten syns på alla bredder: knappen är en huvudåtgärd och
                 en ensam diskettikon på mobil säger inte vad som sparas vart. */}
@@ -1666,6 +1710,13 @@ export default function CVBuilder() {
         )}
       </div>
 
+
+      {/* Importera ett befintligt CV till byggarens fält */}
+      <CVImportModal
+        isOpen={visaImport}
+        onClose={() => setVisaImport(false)}
+        onImported={(falt) => { void hanteraImport(falt) }}
+      />
 
       {/* Onboarding */}
       {showOnboarding && (
