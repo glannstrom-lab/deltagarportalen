@@ -16,6 +16,111 @@
 
 ---
 
+## Genomgång 2026-08-19 — Ansökningar, sex granskare (klar, deployad)
+
+Fem kodgranskare plus en som körde prod inloggad i Playwright gick igenom
+`/applications` och alla fem flikar. **Allt nedan är åtgärdat och pushat**
+(commit `55b1911d`); avsnittet står kvar som rättelse mot vad planen och
+koden trodde innan.
+
+### Premisser som INTE höll
+
+- **"Schemadrift är den troliga roten."** Fel. Varje kolumn i varje
+  `.insert()/.update()` finns i prod, båda CHECK-villkoren matchar TS-unionerna
+  exakt, RLS saknar permissiva dubbletter, och `handleError` kastar i stället
+  för att returnera `[]`. Servicelagret var det bäst byggda i hela ytan.
+  Felen låg i **presentationen** av datan, inte i datan.
+- **"UX8-cacheförgiftningen kan vara tillbaka."** Nej — inget `setQueryData`
+  i `client/src` skriver längre till en ansökningsnyckel, och
+  `useJobsokHubSummary.test.ts:100` vaktar det med ett test som kan falla.
+- **"Testerna täcker mappen."** Noll komponenttester fanns. Och det enda
+  test som fanns för kontaktskapandet var grönt genom hela livstiden på en
+  bugg som gjorde funktionen omöjlig att använda (se nedan).
+
+### Den dyraste buggen — och varför inget fångade den
+
+`applicationHistoryApi.log()` avslutade kedjan med `.catch()`.
+`PostgrestBuilder` implementerar bara `then` (PromiseLike), så `.catch` var
+`undefined` och raden kastade `TypeError` **innan** loggningen ens hann
+misslyckas. Tre anropare `await`:ar `log()` EFTER en lyckad skrivning — så
+deltagaren fick "Kunde inte spara kontakten" trots att kontakten låg i
+databasen, och ett nytt försök gav en dubblett.
+
+Testet var grönt hela tiden eftersom mocken lät `.single()` returnera en
+**riktig Promise**, som har `.catch`. Samma familj som `journey_goals`
+(mockad klient), `useJobsokHubSummary` (asserterade den trasiga formen) och
+localStorage-mocken utan backing store: *en mock som är snällare än
+verkligheten bevisar ingenting*. Regressionstestet härmar nu den verkliga
+formen — en thenable utan `.catch` — och är mutationskontrollerat.
+
+### Ärlighetsfynden (samma vana som 2026-08-09, ny yta)
+
+- Statistikfliken räknade **bokmärken som ansökningar**: `get_application_stats`
+  gör `COUNT(*) FROM saved_jobs` utan statusfilter. En användare med 8 sparade
+  och 0 sökta såg "Totalt ansökningar: 8" — samtidigt som samma skärm skrev
+  "Skickade ansökningar: 0". Talen räknas nu i klienten; **RPC:n är orörd**
+  (ett schemaingrepp kräver ditt ja).
+- Nollstubben `stats || { total: 0, … }` gjorde fel omöjligt att skilja från
+  noll ansökningar. Med `retry: 1` + `refetchOnWindowFocus: false` var
+  felläget **permanent**: någon med tjugo ansökningar kunde få "Du har inte
+  börjat söka jobb än" tills sidan laddades om.
+- "Genomsnitt i pipeline" mätte från när jobbet **bokmärktes**, inte när det
+  söktes, och visade "0 dagar" när underlaget var tomt.
+- "Svarsfrekvens" mätte inte svar — ingen kolumn i `saved_jobs` registrerar
+  ett arbetsgivarsvar. Rubriken säger nu vad talet faktiskt är.
+
+### Tillgänglighet
+
+Korten var `div` med `onClick`, och drag & drop var **enda** sättet att flytta
+en ansökan — otillgängligt med både tangentbord och touch (WCAG 2.1.1 nivå A).
+Compact-varianten returnerade dessutom före `showActions`, så de fyra
+hanterare pipelinen skickade in var **döda props** på varje kanban-kort.
+
+"Ny ansökan" saknades helt på fyra av fem flikar under 640 px — `hidden
+sm:flex` kvar sedan hjälte-tiden, trots att `PageLayout` numera renderar
+`actions` på alla bredder. Samma klass som de kvarglömda hjältarna i
+putsrundan 2026-08-18: en omläggning lämnar spår som ser avsiktliga ut.
+
+Statistikfliken öppnades **138 px sidoskrollad** på mobil. `documentElement.
+scrollWidth` var 390 medan `main.scrollWidth` var 596 — därför såg
+dokumentnivån frisk ut och ingen grind fångade det. Roten: en grid-kolumn utan
+`min-w-0` runt trunkerad text. **Mät `main`, inte bara dokumentet.**
+
+### Design
+
+Elva statusar hade elva paletter (lila, skiffer, blå, cyan, teal, sky, amber,
+grönt, rött, grått) som ritades samtidigt — åtta hubfärger på en sida som
+enligt DESIGN.md §4 ska ha en. Nu tre **intensiteter** av persikan som säger
+något sant om var i processen ansökan är, med ikon och etikett som skiljer de
+enskilda statusarna åt. Kontrastmätt: 5,60 / 5,11 / 4,62 mot AA:s 4,5. Höj
+inte intensiteten utan att mäta om — /25 landar på 4,44 och faller.
+
+### Kvarstår (eget beslut, inte gjort)
+
+- **AN1 — FAB:en "Mina samlingar" ligger ovanpå innehåll på tre flikar.**
+  Hit-test bekräftar ett innehållskort under den. Komponenten är global och
+  flyttades medvetet 2026-08-18; flikarna har fått `pb-24` som lindring, men
+  var FAB:en ska bo är en fråga för hela portalen, inte för den här sidan.
+- **AN2 — AI-steget i CV-importen är oprövat i drift.** Dev-servern svarar
+  501 på `/api/ai`, så bara filutläsningen är bevisad (mot en riktig PDF).
+  Verifiera `cv-import` mot `https://www.jobin.se` efter deploy.
+- **AN3 — testkontot har `[PERSONA-A]`-skräp i prod-datan.** Syns i
+  Senaste aktivitet. Städa raderna, inte koden.
+
+### Nytt på CV-sidorna (beslut Mikael, samma pass)
+
+"Spara CV" i byggarens knapprad, "Ladda upp ditt CV" (PDF/.docx, läses i
+webbläsaren — filen lämnar aldrig enheten) och "Se vilket CV som passar ett
+jobb bäst" (kör `cv-jobbmatchning` mot varje sparat CV). Ny AI-funktion
+`cv-import` i `client/api/ai.js`, vars prompt förbjuder omskrivning och vars
+servervalidator fäller ett svar utan läsbara fält hellre än att spara ett tomt
+CV. Rättade samtidigt att versionslistan visade "Invalid Date": typen sa
+`createdAt`, kolumnen heter `created_at`.
+
+**Typtaket sänkt 437 → 427.**
+
+---
+
 ## Genomgång 2026-08-18 — Översikt under lupp, sex linser
 
 **Rapport:** https://claude.ai/code/artifact/a8594b96-c606-49ce-bcd1-d72eed8735a1
