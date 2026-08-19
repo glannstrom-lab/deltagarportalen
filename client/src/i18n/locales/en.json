@@ -743,7 +743,6 @@
       }
     },
     "readyForJob": "Ready for work",
-    "nextStep": "Next step",
     "next": "Next",
     "toDo": "To do",
     "remaining": "left",
@@ -2104,8 +2103,8 @@
       "labelJobAd": "The ad text (if you have it)",
       "placeholderJobAd": "Paste the text from the ad — it makes the letter more precise.",
       "thinResultNote": "The letter is deliberately short. We only had the ad to go on, so it says nothing about your background — we would rather write a little and true than a lot and made up. With a CV or a few lines of your own, the next draft will be both longer and more yours.",
-      "templateTitle": "This is a template, not a finished letter",
-      "templateBody": "We don't know anything about you yet, so we didn't let the AI write — it would have had to guess. Instead you get a skeleton with {{count}} blanks to fill in with your own words. Fill in your CV and we'll write a real draft for you next time.",
+      "blankTemplateTitle": "This is a template, not a finished letter",
+      "blankTemplateBody": "We don't know anything about you yet, so we didn't let the AI write — it would have had to guess. Instead you get a skeleton with {{count}} blanks to fill in with your own words. Fill in your CV and we'll write a real draft for you next time.",
       "toneProfessional": "Professional",
       "toneProfessionalDesc": "Balanced",
       "toneEnthusiastic": "Enthusiastic",
@@ -6032,7 +6031,13 @@
       "eu": "EU data",
       "euDesc": "Your database, account and files are stored in the EU. If you use the AI features, that text is processed in the USA.",
       "af": "AF integration",
-      "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
+      "afDesc": "Direct connection to Arbetsförmedlingen's APIs",
+      "partnersTitle": "Trusted by organizations across Sweden",
+      "arbetsformedlingen": "Employment Agency",
+      "platsbanken": "Platsbanken",
+      "unions": "Trade Unions",
+      "jobCoaches": "Job Coaches",
+      "companies": "Companies"
     },
     "hero": {
       "badge": "Complete platform for employment services",
@@ -6065,14 +6070,6 @@
       "everyDay": "New users registering",
       "quote": "Users and job consultants love being able to focus on what matters and easily customize the planning and execution of labor market training.",
       "quoteSource": "Users & job consultants across Sweden"
-    },
-    "trust": {
-      "partnersTitle": "Trusted by organizations across Sweden",
-      "arbetsformedlingen": "Employment Agency",
-      "platsbanken": "Platsbanken",
-      "unions": "Trade Unions",
-      "jobCoaches": "Job Coaches",
-      "companies": "Companies"
     },
     "steps": {
       "sectionLabel": "The process",
@@ -8267,7 +8264,6 @@
     },
     "settings": {
       "unsavedChanges": "You have unsaved changes",
-      "notifications": "Notifications",
       "manageNotifications": "Manage how and when you want to be notified",
       "notificationsTitle": "Notifications",
       "preferences": "Preferences",
@@ -8590,7 +8586,7 @@
       "writePlaceholder": "Write a note about the participant...",
       "saveNote": "Save note",
       "newGoal": "New goal",
-      "markComplete": "Mark complete",
+      "markComplete": "Mark as complete",
       "notStarted": "Not started",
       "inProgress": "In progress",
       "complete": "Complete",
@@ -8600,7 +8596,34 @@
       "lowPriority": "Low",
       "progress": "Progress",
       "deadline": "Deadline",
-      "addNote": "Add"
+      "addNote": "Add",
+      "notFound": "Participant not found",
+      "tabs": {
+        "overview": "Overview",
+        "goals": "Goals",
+        "journal": "Journal",
+        "timeline": "Timeline"
+      },
+      "goalStatus": {
+        "notStarted": "Not started",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "blocked": "Blocked"
+      },
+      "priority": {
+        "high": "High priority",
+        "medium": "Medium priority",
+        "low": "Low priority"
+      },
+      "markInProgress": "Mark as in progress",
+      "markNotStarted": "Reset to not started",
+      "goalActions": "Goal actions",
+      "timelineComingTitle": "Activity history is coming",
+      "timelineComingDesc": "We track the participant's activities (CV updates, saved jobs, goals) but need to grant consultants read access first — coming in a later version.",
+      "notePlaceholder": "Write a note about the participant...",
+      "activeGoalsCount": "{{count}} active goals",
+      "writeNote": "Write note",
+      "reportDraft": "Report draft (AI)"
     },
     "analytics": {
       "dateRange": {
@@ -8818,45 +8841,6 @@
         "relevant": "R - Relevant",
         "timeBound": "T - Time-bound"
       }
-    },
-    "participantDetail": {
-      "notFound": "Participant not found",
-      "backToParticipants": "Back to participants",
-      "cvScore": "CV score",
-      "savedJobs": "Saved jobs",
-      "activeGoals": "Active goals",
-      "lastContact": "Last contact",
-      "tabs": {
-        "overview": "Overview",
-        "goals": "Goals",
-        "journal": "Journal",
-        "timeline": "Timeline"
-      },
-      "goalStatus": {
-        "notStarted": "Not started",
-        "inProgress": "In progress",
-        "completed": "Completed",
-        "blocked": "Blocked"
-      },
-      "priority": {
-        "high": "High priority",
-        "medium": "Medium priority",
-        "low": "Low priority"
-      },
-      "deadline": "Deadline",
-      "markComplete": "Mark as complete",
-      "markInProgress": "Mark as in progress",
-      "markNotStarted": "Reset to not started",
-      "goalActions": "Goal actions",
-      "timelineComingTitle": "Activity history is coming",
-      "timelineComingDesc": "We track the participant's activities (CV updates, saved jobs, goals) but need to grant consultants read access first — coming in a later version.",
-      "quickNote": "Quick note",
-      "notePlaceholder": "Write a note about the participant...",
-      "saveNote": "Save note",
-      "activeGoalsCount": "{{count}} active goals",
-      "newGoal": "New goal",
-      "writeNote": "Write note",
-      "reportDraft": "Report draft (AI)"
     },
     "participantAnalytics": {
       "title": "Participant Analytics",

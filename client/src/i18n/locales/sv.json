@@ -743,7 +743,6 @@
       }
     },
     "readyForJob": "Redo för jobb",
-    "nextStep": "Nästa steg",
     "next": "Nästa",
     "toDo": "Att göra",
     "remaining": "kvar",
@@ -2104,8 +2103,8 @@
       "labelJobAd": "Annonstexten (om du har den)",
       "placeholderJobAd": "Klistra in texten från annonsen — då blir brevet mer träffsäkert.",
       "thinResultNote": "Brevet är kort med flit. Vi hade bara annonsen att gå på, så det säger ingenting om din bakgrund — vi vill hellre skriva lite och sant än mycket och påhittat. Med ett CV eller några egna rader blir nästa utkast både längre och mer ditt.",
-      "templateTitle": "Det här är en mall, inte ett färdigt brev",
-      "templateBody": "Vi vet inget om dig ännu, så vi lät inte AI:n skriva — den hade behövt gissa. I stället får du en stomme med {{count}} luckor att fylla i med dina egna ord. Fyll i ditt CV, så skriver vi ett riktigt utkast åt dig nästa gång.",
+      "blankTemplateTitle": "Det här är en mall, inte ett färdigt brev",
+      "blankTemplateBody": "Vi vet inget om dig ännu, så vi lät inte AI:n skriva — den hade behövt gissa. I stället får du en stomme med {{count}} luckor att fylla i med dina egna ord. Fyll i ditt CV, så skriver vi ett riktigt utkast åt dig nästa gång.",
       "toneProfessional": "Professionell",
       "toneProfessionalDesc": "Balanserad",
       "toneEnthusiastic": "Entusiastisk",
@@ -6032,7 +6031,13 @@
       "eu": "EU-data",
       "euDesc": "Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.",
       "af": "AF-integration",
-      "afDesc": "Direkt koppling till Arbetsförmedlingens API:er"
+      "afDesc": "Direkt koppling till Arbetsförmedlingens API:er",
+      "partnersTitle": "Betrodda av organisationer över hela Sverige",
+      "arbetsformedlingen": "Arbetsförmedlingen",
+      "platsbanken": "Platsbanken",
+      "unions": "Fackförbund",
+      "jobCoaches": "Jobbcoacher",
+      "companies": "Företag"
     },
     "hero": {
       "badge": "Komplett plattform för arbetsmarknadstjänster",
@@ -6065,14 +6070,6 @@
       "everyDay": "Nya användare registreras",
       "quote": "Användare och arbetskonsulenter älskar att kunna fokusera på det som är viktigt och enkelt anpassa planering och genomförande av arbetsmarknadskunskap.",
       "quoteSource": "Användare & arbetskonsulenter över hela Sverige"
-    },
-    "trust": {
-      "partnersTitle": "Betrodda av organisationer över hela Sverige",
-      "arbetsformedlingen": "Arbetsförmedlingen",
-      "platsbanken": "Platsbanken",
-      "unions": "Fackförbund",
-      "jobCoaches": "Jobbcoacher",
-      "companies": "Företag"
     },
     "steps": {
       "sectionLabel": "Processen",
@@ -8271,7 +8268,7 @@
       "cvScore": "CV-poäng",
       "savedJobs": "Sparade jobb",
       "activeGoals": "Aktiva mål",
-      "lastContact": "Senast kontakt",
+      "lastContact": "Senaste kontakt",
       "daysAgo": "{{count}} dagar sedan",
       "overview": "Översikt",
       "goals": "Mål",
@@ -8281,7 +8278,7 @@
       "writePlaceholder": "Skriv en anteckning om deltagaren...",
       "saveNote": "Spara anteckning",
       "newGoal": "Nytt mål",
-      "markComplete": "Markera klar",
+      "markComplete": "Markera som klar",
       "notStarted": "Ej påbörjad",
       "inProgress": "Pågår",
       "complete": "Klar",
@@ -8291,7 +8288,34 @@
       "lowPriority": "Låg",
       "progress": "Framsteg",
       "deadline": "Deadline",
-      "addNote": "Lägg till"
+      "addNote": "Lägg till",
+      "notFound": "Deltagare hittades inte",
+      "tabs": {
+        "overview": "Översikt",
+        "goals": "Mål",
+        "journal": "Dagbok",
+        "timeline": "Tidslinje"
+      },
+      "goalStatus": {
+        "notStarted": "Ej påbörjad",
+        "inProgress": "Pågående",
+        "completed": "Avklarad",
+        "blocked": "Blockerad"
+      },
+      "priority": {
+        "high": "Hög prioritet",
+        "medium": "Medel prioritet",
+        "low": "Låg prioritet"
+      },
+      "markInProgress": "Markera som pågående",
+      "markNotStarted": "Återställ till ej påbörjad",
+      "goalActions": "Åtgärder för mål",
+      "timelineComingTitle": "Aktivitetshistorik kommer",
+      "timelineComingDesc": "Vi spårar deltagarens aktiviteter (CV-uppdateringar, sparade jobb, mål) men måste först ge konsulenter läsrättighet — kommer i en senare version.",
+      "notePlaceholder": "Skriv en anteckning om deltagaren...",
+      "activeGoalsCount": "{{count}} aktiva mål",
+      "writeNote": "Skriv anteckning",
+      "reportDraft": "Rapportutkast (AI)"
     },
     "analytics": {
       "dateRange": {
@@ -8510,50 +8534,10 @@
         "timeBound": "T - Tidsbestämt"
       }
     },
-    "participantDetail": {
-      "notFound": "Deltagare hittades inte",
-      "backToParticipants": "Tillbaka till deltagare",
-      "cvScore": "CV-poäng",
-      "savedJobs": "Sparade jobb",
-      "activeGoals": "Aktiva mål",
-      "lastContact": "Senaste kontakt",
-      "tabs": {
-        "overview": "Översikt",
-        "goals": "Mål",
-        "journal": "Dagbok",
-        "timeline": "Tidslinje"
-      },
-      "goalStatus": {
-        "notStarted": "Ej påbörjad",
-        "inProgress": "Pågående",
-        "completed": "Avklarad",
-        "blocked": "Blockerad"
-      },
-      "priority": {
-        "high": "Hög prioritet",
-        "medium": "Medel prioritet",
-        "low": "Låg prioritet"
-      },
-      "deadline": "Deadline",
-      "markComplete": "Markera som klar",
-      "markInProgress": "Markera som pågående",
-      "markNotStarted": "Återställ till ej påbörjad",
-      "goalActions": "Åtgärder för mål",
-      "timelineComingTitle": "Aktivitetshistorik kommer",
-      "timelineComingDesc": "Vi spårar deltagarens aktiviteter (CV-uppdateringar, sparade jobb, mål) men måste först ge konsulenter läsrättighet — kommer i en senare version.",
-      "quickNote": "Snabbanteckning",
-      "notePlaceholder": "Skriv en anteckning om deltagaren...",
-      "saveNote": "Spara anteckning",
-      "activeGoalsCount": "{{count}} aktiva mål",
-      "newGoal": "Nytt mål",
-      "writeNote": "Skriv anteckning",
-      "reportDraft": "Rapportutkast (AI)"
-    },
     "settings": {
       "unsavedChanges": "Du har osparade ändringar",
       "undo": "Ångra",
       "save": "Spara",
-      "notifications": "Notifikationer",
       "manageNotifications": "Hantera hur och när du vill bli notifierad",
       "notificationsTitle": "Notiser",
       "newParticipantAssigned": "Ny deltagare tilldelad",
