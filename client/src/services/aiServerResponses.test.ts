@@ -290,3 +290,71 @@ describe('modell-låsning', () => {
     expect(traffar.map((f) => f.slice(REPO_ROOT.length + 1))).toEqual([])
   })
 })
+
+describe('RESPONSE_VALIDATORS["cv-import-erfarenhet"]', () => {
+  const validera = () =>
+    aiHandler.RESPONSE_VALIDATORS['cv-import-erfarenhet'] as (
+      v: unknown,
+    ) => { ok: boolean; value?: unknown; error?: string }
+
+  // Prompten ber om POSITIONELLA arrayer, inte objekt med nyckelnamn.
+  // Uppmätt mot prod 2026-08-19: nyckelnamnen var merparten av utdatan och
+  // fick svaret att spränga funktionens 60-sekunderstak — tio tjänster i
+  // objektform krävde 800–1200 tokens och gav 504 varje gång. Kompakt form
+  // kostar ~25 tokens per tjänst i stället för ~70.
+  //
+  // Testet finns för att expansionen inte ska gå sönder tyst: klientens
+  // kontrakt är objektform, och byter någon tillbaka prompten till objekt
+  // ska det åtminstone synas här.
+  it('expanderar kompakta arrayer till objektform', () => {
+    const r = validera()({
+      w: [
+        ['Undersköterska', 'Attendo', '2019-03', '2024-08', 0],
+        ['Vårdbiträde', 'Kommunen', '2016-01', '', 1],
+      ],
+      e: [['Burgården', 'Undersköterska', 'Vård', '2004', '2007']],
+    })
+    expect(r.ok).toBe(true)
+    const v = r.value as { workExperience: Array<Record<string, unknown>>; education: Array<Record<string, unknown>> }
+    expect(v.workExperience).toHaveLength(2)
+    expect(v.workExperience[0]).toMatchObject({
+      title: 'Undersköterska', company: 'Attendo', startDate: '2019-03', endDate: '2024-08',
+    })
+    // Pågående kommer som 1, inte true, och slutdatum är tomt.
+    expect(v.workExperience[1]).toMatchObject({ title: 'Vårdbiträde', current: true })
+    expect(v.workExperience[1].endDate).toBeUndefined()
+    expect(v.education[0]).toMatchObject({ school: 'Burgården', field: 'Vård' })
+  })
+
+  it('tar emot objektform också — modellen faller ibland tillbaka på den', () => {
+    const r = validera()({
+      workExperience: [{ title: 'X', company: 'Y', startDate: '2020' }],
+      education: [],
+    })
+    expect(r.ok).toBe(true)
+    expect((r.value as { workExperience: unknown[] }).workExperience).toHaveLength(1)
+  })
+
+  it('skriver aldrig in en beskrivning — formatet har ingen plats för den', () => {
+    const r = validera()({ w: [['Titel', 'Företag', '2020', '2021', 0, 'en beskrivning som smugit sig in']] })
+    const rad = (r.value as { workExperience: Array<Record<string, unknown>> }).workExperience[0]
+    expect(rad.description).toBeUndefined()
+  })
+
+  it('tomt svar är giltigt — alla CV har inte utbildning eller erfarenhet', () => {
+    const r = validera()({ w: [], e: [] })
+    expect(r.ok).toBe(true)
+  })
+
+  it('fäller det som inte är ett objekt alls', () => {
+    expect(validera()('nej').ok).toBe(false)
+    expect(validera()(null).ok).toBe(false)
+  })
+
+  it('släpper igenom skräp i listan som tomt i stället för att kasta', () => {
+    const r = validera()({ w: 'inte en array', e: [['Skola']] })
+    expect(r.ok).toBe(true)
+    expect((r.value as { workExperience: unknown[] }).workExperience).toEqual([])
+    expect((r.value as { education: unknown[] }).education).toHaveLength(1)
+  })
+})

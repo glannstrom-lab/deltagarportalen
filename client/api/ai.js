@@ -700,24 +700,49 @@ Svara ENDAST med JSON.`,
   // tidsbudgeten. Personen har kvar sin egen fil och skriver in det som
   // behövs; UI:t säger uttryckligen att beskrivningarna inte följer med, så
   // ingen tror att de försvunnit.
+  // Del 2: arbetslivserfarenhet och utbildning.
+  //
+  // KOMPAKT FORMAT, och det är hela poängen. Uppmätt mot prod 2026-08-19:
+  // modellen ger ~9 tokens/s och funktionen dör vid 60 s, alltså ~500 tokens
+  // utdata i praktiken. Med vanlig JSON kostar en tjänst ~70 tokens — och
+  // merparten av dem är NYCKELNAMNEN, som upprepas för varje rad. Tio
+  // tjänster blev 800–1200 tokens och timade ut med 504, även efter att
+  // resonemangsnivån sänkts.
+  //
+  // Positionella arrayer kostar ~25 tokens per tjänst i stället för ~70. Tio
+  // tjänster landar då runt 250 tokens, med marginal. Klienten ser ingen
+  // skillnad: validatorn nedan expanderar tillbaka till objektform.
+  //
+  // Lägg inte tillbaka nyckelnamnen "för läsbarhetens skull" — det är precis
+  // det som sprängde tidsbudgeten.
+  //
+  // `description` utelämnas med flit. Beskrivningarna var den överlägset
+  // största delen av utdatan, och det är också texten personen helst
+  // formulerar själv. UI:t säger uttryckligen att de inte följer med.
   'cv-import-erfarenhet': (data) => ({
-    system: `Du strukturerar en befintlig CV-text till JSON. Du är en FORMATERARE, inte en skribent.
+    system: `Du strukturerar en befintlig CV-text till kompakt JSON. Du är en FORMATERARE, inte en skribent.
 
-Svara ENDAST med JSON i detta format:
-{"workExperience":[{"title":"","company":"","location":"","startDate":"","endDate":"","current":false}],"education":[{"school":"","degree":"","field":"","startDate":"","endDate":""}]}
+Svara ENDAST med JSON i EXAKT detta format:
+{"w":[["titel","företag","startdatum","slutdatum",0]],"e":[["skola","examen","inriktning","startår","slutår"]]}
+
+"w" = arbetslivserfarenhet, en array per tjänst i ordningen:
+  [titel, företag, startdatum, slutdatum, pågående]
+  pågående är 1 om tjänsten pågår, annars 0. Är den pågående: sätt slutdatum till "".
+"e" = utbildning, en array per utbildning i ordningen:
+  [skola, examen, inriktning, startår, slutår]
 
 ABSOLUTA REGLER:
 - Skriv ALDRIG något som inte står i texten. Hitta inte på arbetsgivare, titlar eller datum.
-- Ta med de 8 SENASTE tjänsterna och de 5 senaste utbildningarna, nyast först.
-- Skriv INGA beskrivningar. Fältet finns inte i formatet — ta inte med det.
+- Ta med de 10 SENASTE tjänsterna och de 5 senaste utbildningarna, nyast först.
+- Skriv INGA beskrivningar. Formatet har ingen plats för dem.
 - Datum skrivs exakt som de står ("2019-03", "mars 2019", "2019"). Räkna inte om, fyll inte i saknade delar.
-- current: true ENDAST om texten uttryckligen säger pågående/nuvarande, eller om slutdatum saknas efter ett tankstreck.
-- Saknas ett fält: lämna tom sträng. Gissa aldrig.`,
+- Saknas ett värde: skriv tom sträng "" på dess plats. Hoppa aldrig över en plats i arrayen.
+- Inga nyckelnamn, inga radbrytningar inuti arrayerna, ingen förklarande text.`,
     user: `CV-TEXT (utläst ur uppladdad fil):
 ${(data?.cvText || '').substring(0, 10000)}
 
 Svara ENDAST med JSON.`,
-    maxTokens: 2200,
+    maxTokens: 1600,
     reasoningEffort: 'low',
     responseKey: 'cv',
     parseJson: true
@@ -1560,21 +1585,79 @@ const RESPONSE_VALIDATORS = {
     return { ok: true, value: ut };
   },
 
+  // Expanderar det KOMPAKTA svaret till den objektform klienten väntar sig.
+  //
+  // Prompten ber om positionella arrayer — `[titel, företag, start, slut,
+  // pågående]` — eftersom nyckelnamnen annars är merparten av utdatan och
+  // sprängde 60-sekunderstaket (se kommentaren vid prompten). Expansionen
+  // hör hemma här och inte i klienten: formatet är en förhandling mellan
+  // prompt och modell, och klienten ska inte behöva veta om den.
+  //
+  // Objektform accepteras fortfarande som fallback. Modellen faller ibland
+  // tillbaka på den, och ett svar vi kan läsa ska inte fällas för att det kom
+  // i fel skepnad.
   'cv-import-erfarenhet': (value) => {
     if (!isPlainObject(value)) {
       return { ok: false, error: 'erfarenhetsimporten var inte ett JSON-objekt' };
     }
     const str = (v) => (typeof v === 'string' ? v.trim() : '');
-    const rader = (v, falt, tak) => (Array.isArray(v) ? v.filter(isPlainObject).slice(0, tak).map((rad) => {
+
+    /** [titel, företag, start, slut, pågående] → { title, company, ... } */
+    const franArray = (rad) => {
+      if (!Array.isArray(rad)) return null;
+      const ut = {};
+      const title = str(rad[0]); if (title) ut.title = title;
+      const company = str(rad[1]); if (company) ut.company = company;
+      const startDate = str(rad[2]); if (startDate) ut.startDate = startDate;
+      const endDate = str(rad[3]); if (endDate) ut.endDate = endDate;
+      // Pågående kommer som 1/0, men true/"1"/"ja" har setts i praktiken.
+      const p = rad[4];
+      if (p === 1 || p === true || p === '1' || (typeof p === 'string' && /^(ja|yes|true)$/i.test(p))) {
+        ut.current = true;
+      }
+      return Object.keys(ut).length > 0 ? ut : null;
+    };
+
+    /** [skola, examen, inriktning, startår, slutår] → { school, degree, ... } */
+    const franUtbildningsArray = (rad) => {
+      if (!Array.isArray(rad)) return null;
+      const ut = {};
+      const school = str(rad[0]); if (school) ut.school = school;
+      const degree = str(rad[1]); if (degree) ut.degree = degree;
+      const field = str(rad[2]); if (field) ut.field = field;
+      const startDate = str(rad[3]); if (startDate) ut.startDate = startDate;
+      const endDate = str(rad[4]); if (endDate) ut.endDate = endDate;
+      return Object.keys(ut).length > 0 ? ut : null;
+    };
+
+    /** Fallback: objektform, som prompten hade tidigare. */
+    const franObjekt = (rad, falt) => {
+      if (!isPlainObject(rad)) return null;
       const ut = {};
       falt.forEach((f) => { const t = str(rad[f]); if (t) ut[f] = t; });
       if (rad.current === true) ut.current = true;
-      return ut;
-    }).filter((rad) => rad.title || rad.company || rad.school || rad.degree) : []);
+      return Object.keys(ut).length > 0 ? ut : null;
+    };
+
+    const lasLista = (v, franKompakt, falt, tak) => (Array.isArray(v)
+      ? v.slice(0, tak)
+          .map((rad) => (Array.isArray(rad) ? franKompakt(rad) : franObjekt(rad, falt)))
+          .filter(Boolean)
+      : []);
 
     const ut = {
-      workExperience: rader(value.workExperience, ['title', 'company', 'location', 'startDate', 'endDate'], 8),
-      education: rader(value.education, ['school', 'degree', 'field', 'startDate', 'endDate'], 5),
+      workExperience: lasLista(
+        value.w ?? value.workExperience,
+        franArray,
+        ['title', 'company', 'location', 'startDate', 'endDate'],
+        10,
+      ).filter((rad) => rad.title || rad.company),
+      education: lasLista(
+        value.e ?? value.education,
+        franUtbildningsArray,
+        ['school', 'degree', 'field', 'startDate', 'endDate'],
+        5,
+      ).filter((rad) => rad.school || rad.degree),
     };
 
     // Här är tomt ett giltigt svar: alla CV har inte utbildning listad, och
