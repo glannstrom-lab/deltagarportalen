@@ -358,3 +358,89 @@ describe('RESPONSE_VALIDATORS["cv-import-erfarenhet"]', () => {
     expect((r.value as { education: unknown[] }).education).toHaveLength(1)
   })
 })
+
+describe('PROMPTS["personligt-brev"] — underlaget måste nå modellen', () => {
+  const bygg = (data: Record<string, unknown>) =>
+    (aiHandler.PROMPTS['personligt-brev'] as (d: Record<string, unknown>) => { system: string; user: string })(data)
+
+  // Tre kontraktsfel hittades 2026-08-19: prompten läste fältnamn som klienten
+  // aldrig skickade, och brevet skrevs därför på en fjärdedel av underlaget.
+  // Eftersom prompten samtidigt FÖRBJUDER modellen att hitta på erfarenheter
+  // blev brevet med nödvändighet vagt — utan att något såg trasigt ut.
+  //
+  // Testerna finns för att glappet ska bli rött i stället för tyst.
+
+  it('läser arbetslivserfarenhet både som workExperience och work_experience', () => {
+    // `cvs`-raden i prod använder snake_case. 17 av 26 CV:n hade erfarenhet
+    // som aldrig nådde modellen.
+    const snake = bygg({ cvData: { work_experience: [{ title: 'Undersköterska', company: 'Attendo' }] } })
+    expect(snake.user).toContain('Undersköterska på Attendo')
+
+    const camel = bygg({ cvData: { workExperience: [{ title: 'Snickare', company: 'Byggbolaget' }] } })
+    expect(camel.user).toContain('Snickare på Byggbolaget')
+  })
+
+  it('böjer tonen efter både svenska och engelska värden', () => {
+    // Klienten skickar 'enthusiastic'/'formal'; prompten jämförde mot
+    // svenska ord, så alla tre tonknappar gav samma prompt.
+    expect(bygg({ tone: 'enthusiastic' }).system).toContain('entusiastisk')
+    expect(bygg({ ton: 'entusiastisk' }).system).toContain('entusiastisk')
+    expect(bygg({ tone: 'formal' }).system).toContain('formell')
+    expect(bygg({ ton: 'formell' }).system).toContain('formell')
+    expect(bygg({ tone: 'professional' }).system).toContain('professionell och balanserad')
+  })
+
+  it('tar med användarens egen text, oavsett vilket fält den kommer i', () => {
+    // Klienten samlar allt i `extraContext`; äldre anropare skickar tre fält.
+    expect(bygg({ extraContext: 'Har körkort, kan börja omgående' }).user)
+      .toContain('Har körkort, kan börja omgående')
+    expect(bygg({ motivering: 'Jag brinner för vård' }).user).toContain('Jag brinner för vård')
+    expect(bygg({ erfarenhet: 'Tio år i yrket' }).user).toContain('Tio år i yrket')
+  })
+
+  it('klarar kompetenser både som objekt och som strängar', () => {
+    // Lärdomen 2026-08-03: `cvs.skills` bär objekt i prod men strängar i
+    // äldre rader. `.map(s => s.name)` gav "undefined" för strängarna.
+    const u = bygg({ cvData: { skills: [{ name: 'omvårdnad' }, 'HLR'] } }).user
+    expect(u).toContain('omvårdnad')
+    expect(u).toContain('HLR')
+    expect(u).not.toContain('undefined')
+  })
+
+  it('skriver aldrig ut tomma etiketter för fält som saknas', () => {
+    const u = bygg({ cvData: { title: 'Snickare' } }).user
+    expect(u).not.toContain('Erfarenhet:')
+    expect(u).not.toContain('Kompetenser:')
+    expect(u).not.toContain('undefined')
+  })
+
+  it('behåller förbudet mot påhittade meriter och mot signatur', () => {
+    // Två regler som skyddar deltagaren mot ett brev som ljuger i hennes namn.
+    const s = bygg({}).system
+    expect(s).toContain('Hitta ALDRIG på erfarenheter')
+    expect(s).toMatch(/signatur|hälsningsfras/i)
+  })
+
+  it('förbjuder påhittade EGENSKAPER, inte bara påhittade meriter', () => {
+    // Uppmätt i drift 2026-08-19 med ett konto UTAN CV: modellen skrev i
+    // första person att personen är "van vid att arbeta i skiftade
+    // arbetsscheman" och har "goda kunskaper i svenska, både i tal och
+    // skrift". Den följde den gamla regeln — den påstod aldrig ett truckkort
+    // — men egenskaper stod inte i förbudslistan, och det är egenskaperna som
+    // gör brevet trovärdigt.
+    const s = bygg({}).system
+    expect(s).toMatch(/EGENSKAPER/)
+    expect(s).toMatch(/är van vid/)
+    expect(s).toMatch(/behärskar ett språk|språk/)
+    // Arbetsgivaren tillskrevs också påhittade värderingar.
+    expect(s).toMatch(/ARBETSGIVAREN/)
+  })
+
+  it('säger åt modellen att skriva KORT när underlaget är tomt', () => {
+    // Utan den här regeln tvingas modellen hitta på: med bara en annons som
+    // underlag finns inget annat att fylla 250-350 ord med.
+    const s = bygg({}).system
+    expect(s).toMatch(/TUNT ELLER TOMT/)
+    expect(s).toContain('120-180 ord')
+  })
+})

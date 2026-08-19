@@ -120,38 +120,4 @@ export function CoverLetterTemplateSelector({
   )
 }
 
-// Compact variant for inline selection
-export function CoverLetterTemplateSelectorCompact({
-  selectedTemplate,
-  onSelect
-}: {
-  selectedTemplate: string
-  onSelect: (templateId: string) => void
-}) {
-  const { t } = useTranslation()
-  return (
-    <div className="flex flex-wrap gap-2" role="listbox" aria-label={t('coverLetter.templates.selectAria', 'Välj brevmall')}>
-      {COVER_LETTER_TEMPLATES.map((template) => {
-        const isSelected = selectedTemplate === template.id
-
-        return (
-          <button
-            key={template.id}
-            role="option"
-            aria-selected={isSelected}
-            onClick={() => onSelect(template.id)}
-            className={cn(
-              'px-3 py-2 rounded-lg border transition-all',
-              'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]',
-              isSelected
-                ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 text-[var(--c-text)] dark:text-[var(--c-accent)]'
-                : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 text-stone-700 dark:text-stone-300'
-            )}
-          >
-            <span className="text-sm font-medium">{template.name}</span>
-          </button>
-        )
-      })}
-    </div>
-  )
-}
+// CoverLetterTemplateSelectorCompact raderad 2026-08-19: noll importörer.

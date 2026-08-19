@@ -1,0 +1,44 @@
+-- Tar bort konsulentpolicyerna på `cover_letters` och `cvs`.
+--
+-- Beslut Mikael 2026-08-19, efter mätning.
+--
+-- BAKGRUND
+-- Båda tabellerna hade en OGRINDAD SELECT-policy som lät en konsulent läsa
+-- alla sina deltagares personliga brev respektive CV:n:
+--
+--   cover_letters: "Consultants can view participant cover letters"
+--   cvs:           "Consultants can view assigned participant CVs"
+--
+-- Ordet "konsulent" finns varken i `privacy.sharing.*` eller i `Privacy.tsx`,
+-- så åtkomsten var oredovisad för deltagaren. Ett personligt brev kan
+-- innehålla mycket privat — skäl att söka nytt jobb, hälsa, familjesituation.
+--
+-- VARFÖR BORTTAGNING OCH INTE SAMTYCKESGRIND
+-- Mätt 2026-08-19: **konsulentvyn läser varken breven eller CV:na någonstans**
+-- (grep över `pages/consultant/` och `consultantService.ts` → noll träffar).
+-- Policyerna gav alltså åtkomst som ingen funktion använder. Att i stället
+-- lägga till ett `share_documents`-samtycke hade betytt ett fält som ingen
+-- någonsin sätter, för en funktion som inte finns.
+--
+-- Byggs en konsulentvy för breven i framtiden läggs policyn tillbaka DÅ —
+-- med grind från början, som `interest_results` och `mood_logs` redan har.
+--
+-- SAMMANHANG som inte åtgärdas här: ~28 tabeller har ogrindade
+-- konsulentpolicyer (saved_jobs, profiles, alla STA-tabeller) medan bara två
+-- är samtyckesgrindade. Det är portalens samtyckesmodell och en egen fråga —
+-- se ROADMAP spår A.
+
+DROP POLICY IF EXISTS "Consultants can view participant cover letters" ON public.cover_letters;
+DROP POLICY IF EXISTS "Consultants can view assigned participant CVs" ON public.cvs;
+
+-- Verifiering (kör efter migrationen — punkten får inte stängas utan den här raden):
+--
+--   npx supabase db query --linked "select tablename, policyname, cmd from pg_policies where tablename in ('cover_letters','cvs') order by tablename, cmd;" --output table
+--
+-- FÖRVÄNTAT: ingen policy med "Consultants" i namnet på någon av tabellerna,
+-- och kvar står deltagarens egna fyra (ALL/SELECT/INSERT/UPDATE/DELETE mot
+-- `auth.uid() = user_id`).
+--
+-- NEGATIV KONTROLL, lika viktig: en deltagare ska fortfarande kunna läsa,
+-- skapa, ändra och radera sina EGNA brev och CV. Går det förlorat har vi bytt
+-- en oredovisad åtkomst mot ett funktionsbortfall.

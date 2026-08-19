@@ -47,7 +47,7 @@ const path = require('node:path')
 // JobMatchAnalyzer nåddes inte från main.tsx, och barreln `jobs/index.ts` var
 // det som gjorde dem osynliga för en vanlig importsökning. De 23 typfelen
 // försvann med filerna; ingen av dem satt i kod som kördes.
-const CEILING = 425
+const CEILING = 422
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

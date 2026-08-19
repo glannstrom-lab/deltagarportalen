@@ -1587,7 +1587,11 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
     date: letter.createdAt,
     templateId: letter.template,
     sender: {
-      name: [letter.firstName, letter.lastName].filter(Boolean).join(' ') || 'Ditt Namn',
+      // INGEN platshållare. Saknas namnet utelämnar CoverLetterPDF raden helt.
+      // 28 av 92 profiler i prod saknar förnamn, och profileStore persistar
+      // inte profilen — den är null vid varje sidladdning medan PDF-knappen
+      // redan går att klicka. "Ditt Namn" hamnade därför hos arbetsgivaren.
+      name: [letter.firstName, letter.lastName].map(n => n?.trim()).filter(Boolean).join(' ') || undefined,
       email: letter.email,
       phone: letter.phone,
       location: letter.location,
@@ -1602,7 +1606,7 @@ export async function generateCoverLetterPDFViaReactPdf(data: {
   date?: string
   templateId?: string
   sender: {
-    name: string
+    name?: string
     email?: string
     phone?: string
     location?: string

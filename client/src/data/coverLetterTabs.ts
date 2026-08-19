@@ -3,7 +3,6 @@
  * 2 tabs: Skriv brev, Mina brev
  */
 
-import type { Tab } from '@/components/layout/PageTabs'
 import {
   FileEdit,
   Folder,
@@ -15,8 +14,8 @@ export const coverLetterTabDefs = [
   { id: 'my-letters', labelKey: 'coverLetter.tabs.myLetters', path: '/cover-letter/my-letters', icon: Folder },
 ]
 
-// For backwards compatibility - static tabs (Swedish)
-export const coverLetterTabs: Tab[] = [
-  { id: 'write', label: 'Skriv brev', path: '/cover-letter', icon: FileEdit },
-  { id: 'my-letters', label: 'Mina brev', path: '/cover-letter/my-letters', icon: Folder },
-]
+// Den hårdkodade svenska dubbletten som stod här ("For backwards
+// compatibility") hade noll konsumenter och togs bort 2026-08-19. Den var
+// dessutom svår att upptäcka: `CoverLetterPage.tsx` deklarerar en LOKAL const
+// med exakt samma namn, så en namnsökning såg använd ut.
+// Reservvägen för sidor utan `customTabs` bor i `data/pageTabs.ts`.

@@ -95,71 +95,10 @@ export function CoverLetterPreview({
   )
 }
 
-// Thumbnail preview for template selection
-export function CoverLetterPreviewThumbnail({
-  templateId,
-  selected = false,
-  onClick
-}: {
-  templateId: string
-  selected?: boolean
-  onClick?: () => void
-}) {
-  const template = getTemplateById(templateId) || getDefaultTemplate()
-
-  // Sample content for thumbnail
-  const sampleContent = `Hej,
-
-Jag söker tjänsten med stort intresse. Min bakgrund och erfarenhet gör mig till en stark kandidat.
-
-Jag ser fram emot att få höra från er.`
-
-  const sampleSender = {
-    name: 'Anna Andersson',
-    email: 'anna@example.com',
-    phone: '070-123 45 67'
-  }
-
-  return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'relative w-full aspect-[210/297] rounded-lg border-2 overflow-hidden transition-all',
-        'hover:ring-2 hover:ring-[var(--c-solid)]/30',
-        'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]',
-        selected
-          ? 'border-[var(--c-solid)] ring-2 ring-[var(--c-solid)]/30'
-          : 'border-stone-200 dark:border-stone-700'
-      )}
-      aria-pressed={selected}
-      aria-label={`Välj ${template.name}-mall`}
-    >
-      {/* Scaled preview */}
-      <div
-        className="absolute inset-0 origin-top-left"
-        style={{ transform: 'scale(0.25)', width: '400%', height: '400%' }}
-      >
-        <CoverLetterPreview
-          content={sampleContent}
-          company="Exempelföretag AB"
-          jobTitle="Projektledare"
-          templateId={templateId}
-          sender={sampleSender}
-          className="h-full"
-        />
-      </div>
-
-      {/* Selection indicator */}
-      {selected && (
-        <div className="absolute top-2 right-2 w-6 h-6 bg-[var(--c-solid)] rounded-full flex items-center justify-center">
-          <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
-      )}
-    </button>
-  )
-}
+// CoverLetterPreviewThumbnail raderad 2026-08-19: noll importörer sedan
+// mallväljaren gick över till CoverLetterTemplateSelector. Den bar dessutom
+// exempeldata ("Anna Andersson", "Exempelföretag AB") som såg ut som riktigt
+// innehåll — precis den sortens påhittade värde som ska bort ur portalen.
 
 export { COVER_LETTER_TEMPLATES, getTemplateById, getDefaultTemplate }
 export type { CoverLetterTemplateConfig }

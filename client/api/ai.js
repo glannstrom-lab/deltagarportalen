@@ -574,20 +574,69 @@ const PROMPTS = {
       responseKey: 'utkast'
     };
   },
+  // Personligt brev.
+  //
+  // TRE KONTRAKTSFEL rättade 2026-08-19, alla i samma glapp mellan vad
+  // klienten skickar och vad prompten läste. Följden var att brevet skrevs på
+  // en fjärdedel av underlaget — och prompten förbjuder samtidigt modellen att
+  // hitta på erfarenheter, så brevet MÅSTE bli vagt. Inget felmeddelande,
+  // inget som såg trasigt ut; bara ett sämre brev än personen förtjänade.
+  //
+  //  1. `cv.workExperience` lästes, men prod-kolumnen heter `work_experience`
+  //     och klienten skickar raden omappad. 17 av 26 CV:n i prod har alltså
+  //     erfarenhet som aldrig nådde modellen.
+  //  2. Tonen jämfördes mot 'entusiastisk'/'formell', men klienten skickar
+  //     'enthusiastic'/'formal'. Alla tre tonknappar gav samma prompt.
+  //  3. `data.erfarenhet` / `motivering` / `extraKeywords` lästes, men klienten
+  //     skickar allt i `extraContext` — textarean "Extra motivation" och hela
+  //     profilkontexten (körkort, kan börja omgående, värderingar) kastades bort.
+  //
+  // Båda formerna läses i stället för att klienten ändras: fältnamnen kommer
+  // från två håll (CV-byggarens camelCase och databasens snake_case), och den
+  // som lägger till en tredje anropare ska inte behöva veta vilken som gäller.
   'personligt-brev': (data) => {
     const ton = data.ton || data.tone || 'professionell';
-    const tonText = ton === 'entusiastisk' ? 'entusiastisk och energisk'
-                  : ton === 'formell' ? 'formell och traditionell'
+    const tonText = (ton === 'entusiastisk' || ton === 'enthusiastic') ? 'entusiastisk och energisk'
+                  : (ton === 'formell' || ton === 'formal') ? 'formell och traditionell'
                   : 'professionell och balanserad';
     let cvContext = '';
     if (data.cvData) {
       const cv = data.cvData;
       cvContext = `\nTitel: ${cv.title || 'Ej angiven'}`;
       cvContext += `\nSammanfattning: ${cv.summary || 'Ej angiven'}`;
-      if (cv.workExperience?.length) cvContext += `\nErfarenhet: ${cv.workExperience.map(e => e.title + ' på ' + e.company).join(', ')}`;
-      if (cv.skills?.length) cvContext += `\nKompetenser: ${cv.skills.map(s => s.name).join(', ')}`;
+      // camelCase från CV-byggaren, snake_case direkt ur `cvs`-raden.
+      const erfarenhet = cv.workExperience || cv.work_experience;
+      if (erfarenhet?.length) {
+        cvContext += `\nErfarenhet: ${erfarenhet
+          .map(e => [e.title, e.company].filter(Boolean).join(' på '))
+          .filter(Boolean)
+          .join(', ')}`;
+      }
+      if (cv.skills?.length) {
+        // `skills` bär objekt i prod ({id,name,level,category}) men har varit
+        // rena strängar i äldre rader. Lärdomen 2026-08-03 handlade om exakt
+        // den skillnaden: `.map(s => s.name)` gav "undefined" för strängarna.
+        cvContext += `\nKompetenser: ${cv.skills
+          .map(s => (typeof s === 'string' ? s : s && s.name))
+          .filter(Boolean)
+          .join(', ')}`;
+      }
+      if (cv.education?.length) {
+        cvContext += `\nUtbildning: ${cv.education
+          .map(u => [u.degree, u.school].filter(Boolean).join(', '))
+          .filter(Boolean)
+          .join('; ')}`;
+      }
     }
     const jobbAnnons = data.jobbAnnons || data.jobDescription || '';
+    // Klienten samlar allt fritt underlag i `extraContext`; äldre anropare
+    // skickar de tre separata fälten. Båda tas emot.
+    const extraDelar = [
+      data.erfarenhet ? `Erfarenhet: ${data.erfarenhet}` : '',
+      data.motivering ? `Motivering: ${data.motivering}` : '',
+      data.extraKeywords ? `Nyckelord: ${data.extraKeywords}` : '',
+      data.extraContext ? String(data.extraContext) : '',
+    ].filter(Boolean).join('\n');
     return {
       // No-platshållare-reglerna portade från ai-cover-letter-edgen (C11,
       // 2026-07-23) innan klientdubbletterna raderades
@@ -596,8 +645,12 @@ const PROMPTS = {
 VIKTIGT:
 - Använd ALDRIG platshållare som [Förnamn Efternamn], [Telefonnummer], [Mailadress] eller liknande.
 - Skriv ENDAST brödtexten. Avsluta ALDRIG brevet med en hälsningsfras, avslutningsord eller signatur (t.ex. "Med vänliga hälsningar", namn, telefon, e-post) — mallen lägger till detta automatiskt med korrekta uppgifter. Låt sista stycket avsluta naturligt i sak, utan avslutningsfras.
-- Hitta ALDRIG på erfarenheter, meriter, verktyg, kompetenser, titlar eller siffror (t.ex. antal år, antal projekt, resultat) som inte uttryckligen stöds av CV:t eller användarens egen input. Är du osäker på om något stämmer — utelämna det helt. Skriv bara sådant som går att verifiera mot underlaget.`,
-      user: `Skriv ett personligt brev för:\n\nFÖRETAG: ${data.companyName || 'Ej angivet'}\nJOBBTITEL: ${data.jobTitle || 'Ej angiven'}\n\nJOBBANNONS:\n${jobbAnnons.substring(0, 3000)}\n\nKANDIDATENS CV:${cvContext}\n${data.erfarenhet ? 'Erfarenhet: ' + data.erfarenhet : ''}\n${data.motivering ? 'Motivering: ' + data.motivering : ''}\n${data.extraKeywords ? 'Nyckelord: ' + data.extraKeywords : ''}\n\nSkriv brevet:`,
+- Hitta ALDRIG på erfarenheter, meriter, verktyg, kompetenser, titlar eller siffror (t.ex. antal år, antal projekt, resultat) som inte uttryckligen stöds av CV:t eller användarens egen input. Är du osäker på om något stämmer — utelämna det helt. Skriv bara sådant som går att verifiera mot underlaget.
+- Förbudet gäller LIKA MYCKET personliga EGENSKAPER, VANOR och FÖRMÅGOR. Skriv aldrig att personen "är van vid" något, "trivs med" något, "är noggrann", "arbetar bra i team", "har lätt för att lära", behärskar ett språk, kan arbeta skift, har körkort eller liknande — om det inte uttryckligen står i underlaget. Det är just sådana meningar som gör ett brev trovärdigt, och de är lika osanna som en påhittad titel om personen aldrig sagt dem.
+- Tillskriv inte heller ARBETSGIVAREN värderingar, kultur eller egenskaper som inte står i annonsen.
+- ÄR UNDERLAGET TUNT ELLER TOMT (inget CV, ingen egen text): skriv då ett KORTARE brev — 120-180 ord — som bara handlar om intresset för tjänsten och om varför annonsen tilltalar, formulerat så att inga påståenden görs om personens bakgrund eller egenskaper. Ett kort och sant brev är oändligt mycket bättre än ett långt och påhittat: personen ska kunna skicka det som det är utan att ljuga för en arbetsgivare.
+- Skriv korrekt svenska. Kontrollera särskilt genus (en/ett) och kongruens — mottagaren kan inte alltid granska språket själv.`,
+      user: `Skriv ett personligt brev för:\n\nFÖRETAG: ${data.companyName || 'Ej angivet'}\nJOBBTITEL: ${data.jobTitle || 'Ej angiven'}\n\nJOBBANNONS:\n${jobbAnnons.substring(0, 3000)}\n\nKANDIDATENS CV:${cvContext}\n${extraDelar}\n\nSkriv brevet:`,
       maxTokens: 1500,
       responseKey: 'brev'
     };

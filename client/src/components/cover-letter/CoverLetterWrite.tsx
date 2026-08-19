@@ -1,15 +1,22 @@
 /**
- * Cover Letter Write Tab - Omdesignad med mallsystem
+ * Skriv brev — steg 1–3 i personligt brev-verktyget.
  *
- * Funktioner:
- * - Visuella mallar att välja mellan
- * - Live-förhandsgranskning i sidopanel
- * - AI-genererade personliga brev
- * - Professionell PDF-export
+ * Tre regler bär den här filen, och alla tre finns för att något gått fel förut:
+ *
+ * 1. **Användarens text är helig.** Ingenting i den här filen får radera eller
+ *    skriva över `editedLetter` utan att personen bett om det. Ett AI-fel
+ *    raderar inte, "Nästa" regenererar inte över en text som finns, och
+ *    "Skriv ett nytt utkast" frågar först när texten är personens egen.
+ * 2. **Ingenting påstås som inte går att belägga.** Inga påhittade företagsnamn
+ *    i prompten, ingen platshållarsignatur i PDF:en, inga nollor där ett värde
+ *    saknas — och AI-märkningen följer verkligheten åt båda hållen (se
+ *    `arOrordAiText` nedan).
+ * 3. **Tre lägen, alltid.** Laddar / fel / klart. `isLoading === false` är inte
+ *    "klart", och en tom textarea är inte ett färdigt brev.
  */
 
-import { useState, useEffect } from 'react'
-import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams, useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   FileText,
@@ -31,10 +38,12 @@ import {
   User,
   Eye,
   EyeOff,
-  RefreshCw
+  RefreshCw,
+  AlertCircle
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { CoverLetterTemplateSelector } from './CoverLetterTemplateSelector'
 import { CoverLetterPreview } from './CoverLetterPreview'
 import { cn } from '@/lib/utils'
@@ -43,9 +52,9 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
 import { showToast } from '@/components/Toast'
-import { callAI } from '@/services/aiApi'
+import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
-import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
+import { AIGeneratedWatermark, AIBadge } from '@/components/ai/AIBadge'
 import { userApi } from '@/services/userApi'
 import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
@@ -83,6 +92,42 @@ interface FormData {
   tone: 'professional' | 'enthusiastic' | 'formal'
   selectedJobId: string
   useManualInput: boolean
+}
+
+/**
+ * Vad som gick fel när brevet skulle skrivas.
+ *
+ * Sorten finns för att "Försök igen" är fel råd i tre fall av fyra. Den som
+ * stängt av AI-behandling (GDPR art. 21) får en knapp som **aldrig** kan
+ * lyckas, eftersom grinden ligger i `prepareAiRequest` före nätverket — det
+ * var precis vad som hände före den här uppdelningen.
+ */
+type AiFelSort = 'ai-avstangd' | 'inloggning' | 'for-manga' | 'ai'
+
+interface AiFel {
+  sort: AiFelSort
+  /** Sätts bara för 'ai-avstangd': texten kommer från `aiApi` och är redan
+   *  skriven för användaren — den beskriver personens egen inställning. */
+  detalj?: string
+}
+
+/**
+ * Skiljer felen åt så användaren får rätt väg framåt.
+ *
+ * `callAI` kastar `AiConsentRequiredError` för samtyckesgrinden men platta
+ * `Error` med svensk text för 401/429/502/timeout — koderna följer inte med.
+ * Därför matchning på meddelandet, samma mönster som `AdaptationTab.tsx`.
+ * Servern skickar `retryAfter` vid 429, men `throwAiHttpError` i `aiApi.ts`
+ * kastar den, så vi kan inte säga hur länge. Vi låtsas inte veta.
+ */
+function tolkaAiFel(error: unknown): AiFel {
+  if (error instanceof AiConsentRequiredError) {
+    return { sort: 'ai-avstangd', detalj: error.message }
+  }
+  const text = error instanceof Error ? error.message : ''
+  if (/inloggad|logga in|session/i.test(text)) return { sort: 'inloggning' }
+  if (/många förfrågningar/i.test(text)) return { sort: 'for-manga' }
+  return { sort: 'ai' }
 }
 
 // AI API-anrop för personligt brev
@@ -192,6 +237,7 @@ export function CoverLetterWrite() {
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
+  const { confirm } = useConfirmDialog()
   const { user } = useAuthStore()
   const { profile, loadProfile } = useProfileStore()
   const templateId = searchParams.get('template')
@@ -200,13 +246,20 @@ export function CoverLetterWrite() {
   // States
   const [currentStep, setCurrentStep] = useState(1)
   const [isGenerating, setIsGenerating] = useState(false)
-  // B21: sätts när AI-genereringen misslyckas, så steg 3 kan visa ett ärligt
-  // felläge i stället för ett påhittat brev märkt som AI-genererat.
-  const [generationError, setGenerationError] = useState<string | null>(null)
+  // Sätts när AI-genereringen misslyckas, så stegen kan visa ett ärligt felläge
+  // i stället för ett tomt fält som ser färdigt ut. Sorten avgör vägen framåt.
+  const [generationError, setGenerationError] = useState<AiFel | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  // Exakt det AI:n skrev. Används till två saker: att kunna gå tillbaka till
+  // utkastet, och att avgöra om texten fortfarande ÄR AI:ns (se arOrordAiText).
   const [generatedLetter, setGeneratedLetter] = useState<string>('')
   const [editedLetter, setEditedLetter] = useState<string>('')
   const [showPreview, setShowPreview] = useState(true)
+  const [formFel, setFormFel] = useState<string | null>(null)
+  // Sant när det brev som ligger i rutan skrevs UTAN att vi visste något om
+  // personen. Sätts vid genereringen, inte vid renderingen — annars hade noten
+  // försvunnit i samma sekund som personen råkade skriva en rad i motiveringen.
+  const [genereratPaTunntUnderlag, setGenereratPaTunntUnderlag] = useState(false)
 
   // Data states
   const [cvData, setCvData] = useState<CVData | null>(null)
@@ -215,6 +268,11 @@ export function CoverLetterWrite() {
   const [loadingCV, setLoadingCV] = useState(true)
   const [, setLoadingProfile] = useState(true)
   const [loadingJobs, setLoadingJobs] = useState(true)
+  // Ett hämtningsfel är inte tomhet. Utan de här tre hade "Inget CV hittades"
+  // stått där sanningen var "vi kunde inte fråga".
+  const [cvFel, setCvFel] = useState(false)
+  const [profilFel, setProfilFel] = useState(false)
+  const [jobbFel, setJobbFel] = useState(false)
 
   // Form data
   const [formData, setFormData] = useState<FormData>({
@@ -228,10 +286,16 @@ export function CoverLetterWrite() {
     useManualInput: false,
   })
 
-  // Auto-save
+  // Ett återställt utkast som personen inte blivit tillsagd om kan vara skrivet
+  // för ett helt annat jobb. Vi säger till, och erbjuder att börja om.
+  const [aterstalltUtkast, setAterstalltUtkast] = useState<{ company: string; jobTitle: string } | null>(null)
+
+  // Auto-save. `generatedLetter` ligger med: utan den nollade "Gå tillbaka till
+  // utkastet" brevet efter varje sidladdning i stället för att återställa det.
   const autoSaveData = {
     formData,
     editedLetter,
+    generatedLetter,
     currentStep
   }
 
@@ -241,7 +305,14 @@ export function CoverLetterWrite() {
     onRestore: (saved) => {
       if (saved.formData) setFormData(saved.formData)
       if (saved.editedLetter) setEditedLetter(saved.editedLetter)
+      if (saved.generatedLetter) setGeneratedLetter(saved.generatedLetter)
       if (saved.currentStep) setCurrentStep(saved.currentStep)
+      if (saved.editedLetter || saved.formData?.company || saved.formData?.jobTitle) {
+        setAterstalltUtkast({
+          company: saved.formData?.company || '',
+          jobTitle: saved.formData?.jobTitle || '',
+        })
+      }
     }
   })
 
@@ -253,67 +324,75 @@ export function CoverLetterWrite() {
   }, [profile, loadProfile])
 
   // Hämta CV-data
-  useEffect(() => {
-    const fetchCVData = async () => {
-      if (!user) {
-        setLoadingCV(false)
-        return
-      }
-      try {
-        const { data, error } = await supabase
-          .from('cvs')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle()
-        if (!error && data) {
-          setCvData(data)
-        }
-      } catch (err) {
-        console.error('Exception vid CV-hämtning:', err)
-      } finally {
-        setLoadingCV(false)
-      }
+  const hamtaCv = useCallback(async () => {
+    if (!user) {
+      setLoadingCV(false)
+      return
     }
-    fetchCVData()
+    setLoadingCV(true)
+    setCvFel(false)
+    try {
+      const { data, error } = await supabase
+        .from('cvs')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      if (error) {
+        console.error('Fel vid CV-hämtning:', error)
+        setCvFel(true)
+      } else {
+        setCvData(data)
+      }
+    } catch (err) {
+      console.error('Exception vid CV-hämtning:', err)
+      setCvFel(true)
+    } finally {
+      setLoadingCV(false)
+    }
   }, [user])
+
+  useEffect(() => { hamtaCv() }, [hamtaCv])
 
   // Hämta profildata
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      if (!user) {
-        setLoadingProfile(false)
-        return
-      }
-      try {
-        const prefs = await userApi.getPreferences()
-        setProfileData(prefs)
-      } catch (err) {
-        console.error('Fel vid hämtning av profildata:', err)
-      } finally {
-        setLoadingProfile(false)
-      }
+  const hamtaProfil = useCallback(async () => {
+    if (!user) {
+      setLoadingProfile(false)
+      return
     }
-    fetchProfileData()
+    setProfilFel(false)
+    try {
+      const prefs = await userApi.getPreferences()
+      setProfileData(prefs)
+    } catch (err) {
+      console.error('Fel vid hämtning av profildata:', err)
+      setProfilFel(true)
+    } finally {
+      setLoadingProfile(false)
+    }
   }, [user])
 
+  useEffect(() => { hamtaProfil() }, [hamtaProfil])
+
   // Hämta sparade jobb
-  useEffect(() => {
-    const fetchSavedJobs = async () => {
-      if (!user) {
-        setLoadingJobs(false)
-        return
-      }
-      try {
-        // Via savedJobsApi (E12, 2026-07-28) — applicationsApi äger tabellen.
-        setSavedJobs(await savedJobsApi.getAll())
-      } catch (err) {
-        console.error('Exception vid sparade-jobb-hämtning:', err)
-      } finally {
-        setLoadingJobs(false)
-      }
+  const hamtaJobb = useCallback(async () => {
+    if (!user) {
+      setLoadingJobs(false)
+      return
     }
-    fetchSavedJobs()
+    setLoadingJobs(true)
+    setJobbFel(false)
+    try {
+      // Via savedJobsApi (E12, 2026-07-28) — applicationsApi äger tabellen.
+      setSavedJobs(await savedJobsApi.getAll())
+    } catch (err) {
+      console.error('Exception vid sparade-jobb-hämtning:', err)
+      setJobbFel(true)
+    } finally {
+      setLoadingJobs(false)
+    }
   }, [user])
+
+  useEffect(() => { hamtaJobb() }, [hamtaJobb])
 
   // Ladda jobbdata från query params
   useEffect(() => {
@@ -335,10 +414,14 @@ export function CoverLetterWrite() {
     }
   }, [searchParams])
 
-  // Välj ett sparat jobb
+  // Välj ett sparat jobb.
+  //
+  // Tomt är tomt: 'Okänt företag' skickades tidigare rakt in i AI-prompten och
+  // blev brevets tilltal. Prompten i `client/api/ai.js` hanterar ett tomt fält
+  // själv — ett påhittat värde gör den bara sämre.
   const selectSavedJob = (job: SavedJob) => {
-    const title = job.job_data?.headline || 'Okänd titel'
-    const company = job.job_data?.employer?.name || 'Okänt företag'
+    const title = job.job_data?.headline?.trim() || ''
+    const company = job.job_data?.employer?.name?.trim() || ''
     const description = job.job_data?.description?.text || ''
 
     setFormData(prev => ({
@@ -349,28 +432,52 @@ export function CoverLetterWrite() {
       jobAd: description,
       useManualInput: false,
     }))
-    showToast.success(`Valde: ${title} på ${company}`)
+    setFormFel(null)
+    const namn = [title, company].filter(Boolean).join(' — ')
+    showToast.success(
+      namn
+        ? `${t('coverLetter.write.jobPicked', 'Valt:')} ${namn}`
+        : t('coverLetter.write.jobPickedBlank', 'Jobbet är valt. Fyll i företag och titel nedan.')
+    )
   }
 
-  // Byt till manuell inmatning
+  // Byt till att fylla i själv.
+  //
+  // Tidigare tömdes alla fält vid varje klick — även när personen redan skrivit
+  // i dem. Nu behålls det som står; det enda som släpper är kopplingen till det
+  // sparade jobbet.
   const switchToManual = () => {
     setFormData(prev => ({
       ...prev,
       selectedJobId: '',
-      company: '',
-      jobTitle: '',
-      jobAd: '',
       useManualInput: true,
     }))
   }
 
   const handleNext = () => {
-    if (currentStep < 3) {
-      if (currentStep === 2) {
-        generateLetter()
+    if (currentStep >= 3) return
+
+    if (currentStep === 1) {
+      const saknas: string[] = []
+      if (!formData.company.trim()) saknas.push(t('coverLetter.write.fieldCompany', 'företag'))
+      if (!formData.jobTitle.trim()) saknas.push(t('coverLetter.write.fieldJobTitle', 'jobbtitel'))
+      if (saknas.length > 0) {
+        setFormFel(
+          `${t('coverLetter.write.needBeforeNext', 'För att brevet ska bli rätt behöver vi')} ${saknas.join(' ' + t('common.and', 'och') + ' ')}.`
+        )
+        setFormData(prev => ({ ...prev, useManualInput: true }))
+        return
       }
-      setCurrentStep(currentStep + 1)
+      setFormFel(null)
     }
+
+    // Steg 2 → 3: generera BARA när det inte finns någon text. Den här raden
+    // regenererade tidigare villkorslöst och skrev över allt personen skrivit.
+    if (currentStep === 2 && !editedLetter.trim() && !isGenerating) {
+      generateLetter()
+    }
+
+    setCurrentStep(currentStep + 1)
   }
 
   const handleBack = () => {
@@ -391,6 +498,10 @@ export function CoverLetterWrite() {
   //
   // Principen härefter: hellre ingenting än något falskt. Användaren får veta
   // att det inte gick och en väg att försöka igen. Se ROADMAP B31.
+  //
+  // Tillägg: ett fel får inte heller RADERA. Catchen nollade tidigare både
+  // `generatedLetter` och `editedLetter` — så ett nätverksglapp åt upp texten
+  // personen just skrivit, och autosaven cementerade förlusten en sekund senare.
   const generateLetter = async () => {
     setIsGenerating(true)
     setGenerationError(null)
@@ -420,51 +531,120 @@ export function CoverLetterWrite() {
       }
       setGeneratedLetter(brev)
       setEditedLetter(brev)
+      setGenereratPaTunntUnderlag(!cvData && !formData.motivation.trim())
     } catch (error) {
       console.error('Fel vid generering:', error)
-      setGeneratedLetter('')
-      setEditedLetter('')
-      setGenerationError(
-        'Vi kunde inte skriva brevet just nu. Dina uppgifter finns kvar — försök igen om en stund.'
-      )
-      showToast.error('Kunde inte generera brev. Försök igen.')
+      // Ingen setEditedLetter('') här. Aldrig.
+      setGenerationError(tolkaAiFel(error))
     } finally {
       setIsGenerating(false)
     }
   }
 
+  /**
+   * "Skriv ett nytt utkast" ersätter texten. Är texten personens egen frågar vi
+   * först — annars är knappen en radergummiknapp som ser ut som en hjälpknapp.
+   */
+  const begarNyttUtkast = async () => {
+    const harEgenText =
+      editedLetter.trim().length > 0 && editedLetter.trim() !== generatedLetter.trim()
+
+    if (harEgenText) {
+      const ok = await confirm({
+        title: t('coverLetter.write.replaceTitle', 'Vill du att jag skriver ett nytt utkast?'),
+        message: t(
+          'coverLetter.write.replaceBody',
+          'Texten du har nu ersätts av det nya utkastet, och går inte att få tillbaka. Du kan lika gärna behålla den du har och ändra i den.'
+        ),
+        confirmText: t('coverLetter.write.replaceConfirm', 'Skriv ett nytt utkast'),
+        cancelText: t('coverLetter.write.replaceCancel', 'Behåll det jag har'),
+      })
+      if (!ok) return
+    }
+    await generateLetter()
+  }
+
+  /**
+   * Märkningen ska följa verkligheten åt BÅDA håll: den ska finnas där texten
+   * är AI:ns, och försvinna när personen skrivit om den. Vi kan inte mäta
+   * "hur mycket" som är omskrivet, så vi märker bara så länge texten är
+   * oförändrad sedan genereringen — det påståendet går att belägga.
+   */
+  const arOrordAiText =
+    generatedLetter.trim().length > 0 && editedLetter.trim() === generatedLetter.trim()
+
+  /**
+   * Vi vet ingenting om personen: inget CV och inga egna rader. Annonstexten
+   * räknas inte — den beskriver arbetsgivaren, inte den som söker.
+   *
+   * Att be en modell skriva 250–350 ord om någon man inte vet något om är att
+   * beställa en lögn. Uppmätt på prod 2026-08-19: ett konto utan CV fick ett
+   * brev som påstod skiftvana och "goda kunskaper i svenska, både i tal och
+   * skrift". Prompten är åtstramad, men det är HÄR vi vet att underlaget
+   * saknas — och då ska det sägas, före och efter.
+   */
+  const tunntUnderlag = !loadingCV && !cvData && !formData.motivation.trim()
+
   const handleSave = async () => {
     if (!editedLetter.trim()) {
-      showToast.error('Brevet kan inte vara tomt')
+      showToast.error(t('coverLetter.write.nothingToSave', 'Det finns inget att spara ännu — skriv några rader först.'))
       return
     }
 
     setIsSaving(true)
     try {
-      const title = `${formData.company} - ${formData.jobTitle}`.trim() || 'Namnlöst brev'
+      const delar = [formData.company.trim(), formData.jobTitle.trim()].filter(Boolean)
+      const title = delar.length > 0
+        ? delar.join(' – ')
+        : t('coverLetter.write.untitled', 'Personligt brev')
 
       await coverLetterApi.create({
         title,
         content: editedLetter,
-        company: formData.company || undefined,
-        job_title: formData.jobTitle || undefined,
+        company: formData.company.trim() || undefined,
+        job_title: formData.jobTitle.trim() || undefined,
         job_ad: formData.jobAd || undefined,
         template: formData.selectedTemplate,
-        ai_generated: true
+        // Följer texten, inte funktionen. Har personen skrivit om brevet är det
+        // hennes — att spara det som AI-genererat vore samma sorts osanning som
+        // den gamla mallen, fast spegelvänd.
+        ai_generated: arOrordAiText
       })
 
       clearSavedData()
-      showToast.success('Brev sparat!')
+      showToast.success(t('coverLetter.write.savedShort', 'Sparat'))
       navigate('/cover-letter/my-letters')
     } catch (error) {
       console.error('Failed to save letter:', error)
-      showToast.error('Kunde inte spara brevet. Försök igen.')
+      showToast.error(t('coverLetter.write.saveFailed', 'Brevet kunde inte sparas just nu. Texten finns kvar — försök igen om en stund.'))
     } finally {
       setIsSaving(false)
     }
   }
 
+  // Sender info for preview.
+  //
+  // Ingen 'Ditt Namn'-fallback: den platshållaren följde med ut i PDF:en som
+  // deltagarens underskrift. Prompten i ai.js förbjuder uttryckligen modellen
+  // att signera — signaturen kommer från mallen, alltså härifrån.
+  const senderInfo = {
+    name: [profile?.first_name || cvData?.first_name, profile?.last_name || cvData?.last_name]
+      .filter(Boolean)
+      .join(' '),
+    email: profile?.email || cvData?.email || undefined,
+    phone: profile?.phone || cvData?.phone || undefined,
+    location: profile?.location || cvData?.location || undefined,
+  }
+
+  const harAvsandarnamn = senderInfo.name.trim().length > 0
+
   const handleDownloadPDF = async () => {
+    if (!harAvsandarnamn) {
+      showToast.error(
+        t('coverLetter.write.needNameForPdf', 'Vi vet inte vad du heter än, och då blir underskriften tom. Fyll i ditt namn i profilen först.')
+      )
+      return
+    }
     try {
       const pdfBlob = await generateCoverLetterPDFViaReactPdf({
         content: editedLetter || '',
@@ -483,35 +663,34 @@ export function CoverLetterWrite() {
       downloadPDF(pdfBlob, fileName)
     } catch (err) {
       console.error('Failed to download PDF:', err)
-      showToast.error('Kunde inte ladda ner PDF')
+      showToast.error(t('coverLetter.write.pdfFailed', 'PDF:en gick inte att göra just nu. Försök igen om en stund.'))
     }
   }
 
-  const canProceed = () => {
-    switch (currentStep) {
-      case 1:
-        return formData.company && formData.jobTitle && formData.selectedTemplate
-      case 2:
-        return true
-      case 3:
-        return editedLetter.length > 50
-      default:
-        return true
-    }
-  }
-
-  // Sender info for preview
-  const senderInfo = {
-    name: [profile?.first_name || cvData?.first_name, profile?.last_name || cvData?.last_name].filter(Boolean).join(' ') || 'Ditt Namn',
-    email: profile?.email || cvData?.email,
-    phone: profile?.phone || cvData?.phone,
-    location: profile?.location || cvData?.location,
+  const borjaOm = () => {
+    clearSavedData()
+    setAterstalltUtkast(null)
+    setEditedLetter('')
+    setGeneratedLetter('')
+    setGenerationError(null)
+    setGenereratPaTunntUnderlag(false)
+    setCurrentStep(1)
+    setFormData({
+      company: '',
+      jobTitle: '',
+      jobAd: '',
+      motivation: '',
+      selectedTemplate: templateId || 'professional',
+      tone: 'professional',
+      selectedJobId: '',
+      useManualInput: false,
+    })
   }
 
   const steps = [
-    { id: 1, title: 'Jobb & Mall', icon: FileText },
-    { id: 2, title: 'Skriv brev', icon: Edit3 },
-    { id: 3, title: 'Granska & Spara', icon: Check },
+    { id: 1, title: t('coverLetter.write.step1', 'Jobb och utseende'), icon: FileText },
+    { id: 2, title: t('coverLetter.write.step2', 'Skriv brevet'), icon: Edit3 },
+    { id: 3, title: t('coverLetter.write.step3', 'Läs igenom och spara'), icon: Check },
   ]
 
   return (
@@ -534,26 +713,36 @@ export function CoverLetterWrite() {
                   <div
                     className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
-                      isActive && 'bg-[var(--c-solid)] text-white',
-                      isCompleted && 'bg-emerald-500 text-white',
-                      !isActive && !isCompleted && 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
+                      (isActive || isCompleted) && 'bg-[var(--c-solid)] text-[var(--c-on-solid)]',
+                      !isActive && !isCompleted && 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
                     )}
                     aria-hidden="true"
                   >
                     {isCompleted ? <Check size={20} /> : <Icon size={20} />}
                   </div>
+                  {/* Namnet doldes tidigare helt under 640 px — och cirkeln är
+                      aria-hidden, så steget fanns inte för skärmläsare heller.
+                      Nu syns alltid det aktiva stegets namn, och alla tre finns
+                      i tillgänglighetsträdet. */}
                   <span className={cn(
-                    'text-xs mt-2 font-medium hidden sm:block whitespace-nowrap',
-                    isActive && 'text-[var(--c-text)] dark:text-[var(--c-text)]',
-                    isCompleted && 'text-emerald-600 dark:text-emerald-400',
-                    !isActive && !isCompleted && 'text-stone-600 dark:text-stone-400'
+                    'text-xs mt-2 font-medium whitespace-nowrap',
+                    !isActive && 'hidden sm:block',
+                    isActive && 'text-[var(--c-text)]',
+                    isCompleted && 'text-[var(--c-text)]',
+                    !isActive && !isCompleted && 'text-stone-600 dark:text-stone-300'
                   )}>
+                    <span className="sr-only">
+                      {t('coverLetter.write.stepCounter', 'Steg {{nummer}} av {{totalt}}: ', { nummer: step.id, totalt: steps.length })}
+                    </span>
                     {step.title}
+                    {isCompleted && (
+                      <span className="sr-only"> {t('coverLetter.write.stepDone', '(klart)')}</span>
+                    )}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div
-                    className={cn('flex-1 h-0.5 mx-3 mt-5', isCompleted ? 'bg-emerald-500' : 'bg-stone-200 dark:bg-stone-700')}
+                    className={cn('flex-1 h-0.5 mx-3 mt-5', isCompleted ? 'bg-[var(--c-solid)]' : 'bg-stone-200 dark:bg-stone-700')}
                     aria-hidden="true"
                   />
                 )}
@@ -567,37 +756,87 @@ export function CoverLetterWrite() {
       <div className={cn('grid gap-6', currentStep >= 2 && showPreview ? 'lg:grid-cols-[1fr,400px]' : '')}>
         {/* Form area */}
         <div className="space-y-6">
-          {/* CV Status Banner */}
+          {/* Återställt utkast — sagt rakt ut, inte i tysthet */}
+          {aterstalltUtkast && (
+            <div
+              className="p-4 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-xl"
+              role="status"
+              aria-live="polite"
+            >
+              <h4 className="font-medium text-[var(--c-text)]">
+                {t('coverLetter.write.draftRestoredTitle', 'Du har ett påbörjat brev här')}
+              </h4>
+              <p className="text-sm text-[var(--c-text)] mt-1">
+                {[aterstalltUtkast.jobTitle, aterstalltUtkast.company].filter(Boolean).join(' — ') ||
+                  t('coverLetter.write.draftRestoredNoJob', 'Utan jobb ifyllt ännu')}
+                {'. '}
+                {t('coverLetter.write.draftRestoredBody', 'Vi tog fram det åt dig. Gäller det ett annat jobb kan du börja om.')}
+              </p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <Button size="sm" onClick={() => setAterstalltUtkast(null)}>
+                  {t('coverLetter.write.draftKeep', 'Fortsätt på det')}
+                </Button>
+                <Button variant="outline" size="sm" onClick={borjaOm}>
+                  {t('coverLetter.write.draftStartOver', 'Börja om')}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* CV-status: tre lägen — hämtat, kunde inte hämtas, finns inte ännu */}
           {cvData && (
-            <div className="p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
+            <div className="p-3 sm:p-4 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-xl">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center">
-                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg flex items-center justify-center">
+                  <User className="w-4 h-4 sm:w-5 sm:h-5 text-[var(--c-text)]" aria-hidden="true" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-medium text-emerald-800 dark:text-emerald-200 text-sm sm:text-base">
-                    CV-data hämtad
+                  <h4 className="font-medium text-[var(--c-text)] text-sm sm:text-base">
+                    {t('coverLetter.write.cvFoundTitle', 'Ditt CV är med')}
                   </h4>
-                  <p className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300">
-                    {senderInfo.name} • AI använder ditt CV
+                  <p className="text-xs sm:text-sm text-[var(--c-text)]">
+                    {harAvsandarnamn
+                      ? t('coverLetter.write.cvFoundNamed', 'Vi utgår från det när brevet skrivs.')
+                      : t('coverLetter.write.cvFoundNoName', 'Vi utgår från det när brevet skrivs. Ditt namn saknas dock — fyll i det i profilen så blir underskriften rätt.')}
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          {!cvData && !loadingCV && (
-            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl">
+          {cvFel && (
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-800 rounded-xl" role="alert">
               <div className="flex items-center gap-3">
-                <User className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <AlertCircle className="w-5 h-5 text-amber-800 dark:text-amber-200 shrink-0" aria-hidden="true" />
                 <div className="flex-1">
-                  <h4 className="font-medium text-amber-800 dark:text-amber-200">Inget CV hittades</h4>
-                  <p className="text-sm text-amber-700 dark:text-amber-300">
-                    Skapa ett CV för bästa resultat.
+                  <h4 className="font-medium text-amber-800 dark:text-amber-200">
+                    {t('coverLetter.write.cvErrorTitle', 'Vi kunde inte hämta ditt CV just nu')}
+                  </h4>
+                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                    {t('coverLetter.write.cvErrorBody', 'Det betyder inte att det är borta. Brevet går att skriva ändå, men blir mindre personligt.')}
                   </p>
                 </div>
-                <Button variant="outline" onClick={() => navigate('/cv')} className="text-amber-700">
-                  Skapa CV
+                <Button variant="outline" onClick={hamtaCv}>
+                  {t('common.tryAgain', 'Försök igen')}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {!cvData && !loadingCV && !cvFel && (
+            <div className="p-4 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-xl">
+              <div className="flex items-center gap-3">
+                <User className="w-5 h-5 text-[var(--c-text)] shrink-0" aria-hidden="true" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-[var(--c-text)]">
+                    {t('coverLetter.write.noCvTitle', 'Du har inget CV här ännu')}
+                  </h4>
+                  <p className="text-sm text-[var(--c-text)]">
+                    {t('coverLetter.write.noCvBody', 'Brevet går att skriva ändå. Med ett CV blir det mer personligt.')}
+                  </p>
+                </div>
+                <Button variant="outline" onClick={() => navigate('/cv')}>
+                  {t('coverLetter.write.createCv', 'Skapa ditt CV')}
                 </Button>
               </div>
             </div>
@@ -609,10 +848,14 @@ export function CoverLetterWrite() {
               <Step1JobAndTemplate
                 savedJobs={savedJobs}
                 loadingJobs={loadingJobs}
+                jobbFel={jobbFel}
+                onRetryJobs={hamtaJobb}
                 formData={formData}
                 setFormData={setFormData}
                 onSelectJob={selectSavedJob}
                 onManual={switchToManual}
+                onContinue={handleNext}
+                formFel={formFel}
               />
             )}
             {currentStep === 2 && (
@@ -620,10 +863,17 @@ export function CoverLetterWrite() {
                 formData={formData}
                 setFormData={setFormData}
                 cvData={cvData}
+                avsandarnamn={senderInfo.name}
+                profilFel={profilFel}
                 isGenerating={isGenerating}
                 editedLetter={editedLetter}
                 setEditedLetter={setEditedLetter}
                 onGenerate={generateLetter}
+                onNyttUtkast={begarNyttUtkast}
+                generationError={generationError}
+                arOrordAiText={arOrordAiText}
+                tunntUnderlag={tunntUnderlag}
+                genereratPaTunntUnderlag={genereratPaTunntUnderlag}
               />
             )}
             {currentStep === 3 && (
@@ -632,13 +882,15 @@ export function CoverLetterWrite() {
                 setEditedLetter={setEditedLetter}
                 generatedLetter={generatedLetter}
                 formData={formData}
-                onSave={handleSave}
                 onDownload={handleDownloadPDF}
-                isSaving={isSaving}
+                harAvsandarnamn={harAvsandarnamn}
                 senderInfo={senderInfo}
                 generationError={generationError}
                 isGenerating={isGenerating}
                 onRetry={generateLetter}
+                onBack={handleBack}
+                arOrordAiText={arOrordAiText}
+                genereratPaTunntUnderlag={genereratPaTunntUnderlag}
               />
             )}
           </Card>
@@ -650,9 +902,10 @@ export function CoverLetterWrite() {
               onClick={handleBack}
               disabled={currentStep === 1}
               className="gap-2"
+              aria-label={t('common.back', 'Tillbaka')}
             >
-              <ChevronLeft size={18} />
-              <span className="hidden sm:inline">Tillbaka</span>
+              <ChevronLeft size={18} aria-hidden="true" />
+              <span className="hidden sm:inline">{t('common.back', 'Tillbaka')}</span>
             </Button>
 
             <div className="flex gap-3">
@@ -661,39 +914,29 @@ export function CoverLetterWrite() {
                 <Button
                   variant="ghost"
                   onClick={() => setShowPreview(!showPreview)}
+                  aria-pressed={showPreview}
                   className="gap-2 hidden lg:flex"
                 >
-                  {showPreview ? <EyeOff size={18} /> : <Eye size={18} />}
-                  {showPreview ? 'Dölj förhandsgranskning' : 'Visa förhandsgranskning'}
+                  {showPreview ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
+                  {showPreview
+                    ? t('coverLetter.write.hidePreview', 'Dölj förhandsvisning')
+                    : t('coverLetter.write.showPreview', 'Visa förhandsvisning')}
                 </Button>
               )}
 
               {currentStep < 3 ? (
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed() || isGenerating}
-                  className="gap-2"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 size={18} className="animate-spin" />
-                      Skapar...
-                    </>
-                  ) : (
-                    <>
-                      Nästa
-                      <ChevronRight size={18} />
-                    </>
-                  )}
+                <Button onClick={handleNext} className="gap-2">
+                  {t('common.next', 'Nästa')}
+                  <ChevronRight size={18} aria-hidden="true" />
                 </Button>
               ) : (
                 <Button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+                  className="gap-2"
                 >
-                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
-                  Spara brev
+                  {isSaving ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Save size={18} aria-hidden="true" />}
+                  {t('coverLetter.write.save', 'Spara brevet')}
                 </Button>
               )}
             </div>
@@ -704,13 +947,18 @@ export function CoverLetterWrite() {
         {currentStep >= 2 && showPreview && (
           <div className="hidden lg:block sticky top-4">
             <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-4">
-              <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3 flex items-center gap-2">
-                <Eye size={16} />
-                Förhandsgranskning
-              </h3>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <h3 className="text-sm font-medium text-stone-700 dark:text-stone-100 flex items-center gap-2">
+                  <Eye size={16} aria-hidden="true" />
+                  {t('coverLetter.write.previewHeading', 'Så här ser det ut')}
+                </h3>
+                {/* Märkningen hör hemma där AI-texten först visas, inte bara i
+                    steg 3 — och den försvinner när personen skrivit om texten. */}
+                {arOrordAiText && <AIBadge variant="block" label={t('coverLetter.write.aiDraftLabel', 'AI-utkast')} />}
+              </div>
               <div className="aspect-[210/297] max-h-[600px]">
                 <CoverLetterPreview
-                  content={editedLetter || 'Ditt brev visas här...'}
+                  content={editedLetter || t('coverLetter.write.previewEmpty', 'Här visas brevet när du börjat skriva.')}
                   company={formData.company}
                   jobTitle={formData.jobTitle}
                   templateId={formData.selectedTemplate}
@@ -727,38 +975,136 @@ export function CoverLetterWrite() {
   )
 }
 
+/**
+ * Felpanel för AI-genereringen. En sort = en väg framåt.
+ *
+ * "Försök igen" visas bara där ett nytt försök faktiskt kan lyckas. Den som
+ * stängt av AI-behandlingen får en länk till inställningarna i stället, och
+ * alltid vägen att skriva själv — det löftet måste hålla.
+ */
+function AiFelPanel({
+  fel,
+  isGenerating,
+  onRetry,
+  onSkrivSjalv,
+  kompakt = false,
+}: {
+  fel: AiFel
+  isGenerating: boolean
+  onRetry: () => void
+  onSkrivSjalv?: () => void
+  kompakt?: boolean
+}) {
+  const { t } = useTranslation()
+
+  const rubriker: Record<AiFelSort, string> = {
+    'ai-avstangd': t('coverLetter.write.errOffTitle', 'AI-hjälpen är avstängd i dina inställningar'),
+    'inloggning': t('coverLetter.write.errAuthTitle', 'Du behöver logga in igen'),
+    'for-manga': t('coverLetter.write.errRateTitle', 'Vi behöver pausa en liten stund'),
+    'ai': t('coverLetter.write.errAiTitle', 'Brevet blev inte skrivet'),
+  }
+
+  const texter: Record<AiFelSort, string> = {
+    'ai-avstangd': fel.detalj || t('coverLetter.write.errOffBody', 'Du har valt att dina uppgifter inte ska behandlas av AI. Det valet gäller — vill du ändra det görs det i Inställningar.'),
+    'inloggning': t('coverLetter.write.errAuthBody', 'Din inloggning har gått ut. Allt du skrivit finns kvar här när du kommer tillbaka.'),
+    'for-manga': t('coverLetter.write.errRateBody', 'Det har gjorts många förfrågningar på kort tid. Vänta någon minut och försök igen — vi vet tyvärr inte exakt hur länge.'),
+    'ai': t('coverLetter.write.errAiBody', 'Något gick fel på vår sida, inte på din. Det du fyllt i och skrivit finns kvar.'),
+  }
+
+  return (
+    <div
+      role="alert"
+      className={cn(
+        'bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-800 rounded-xl',
+        kompakt ? 'p-3' : 'p-4'
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <AlertCircle className="w-5 h-5 text-amber-800 dark:text-amber-200 shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="flex-1">
+          <h3 className="font-medium text-amber-800 dark:text-amber-200">{rubriker[fel.sort]}</h3>
+          <p className="text-sm text-amber-800 dark:text-amber-200 mt-1">{texter[fel.sort]}</p>
+
+          <div className="flex flex-wrap gap-2 mt-3">
+            {fel.sort === 'ai-avstangd' && (
+              <Link
+                to="/profile?tab=installningar"
+                className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-xl font-medium hover:brightness-95"
+              >
+                {t('coverLetter.write.openSettings', 'Öppna Inställningar')}
+              </Link>
+            )}
+            {fel.sort === 'inloggning' && (
+              <Link
+                to="/login"
+                className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-xl font-medium hover:brightness-95"
+              >
+                {t('coverLetter.write.goLogin', 'Logga in igen')}
+              </Link>
+            )}
+            {(fel.sort === 'ai' || fel.sort === 'for-manga') && (
+              <Button onClick={onRetry} disabled={isGenerating} className="gap-2">
+                <RefreshCw size={16} className={isGenerating ? 'animate-spin' : undefined} aria-hidden="true" />
+                {isGenerating
+                  ? t('coverLetter.write.writing', 'Skriver …')
+                  : t('common.tryAgain', 'Försök igen')}
+              </Button>
+            )}
+            {onSkrivSjalv && (
+              <Button variant="outline" onClick={onSkrivSjalv}>
+                {t('coverLetter.write.writeMyself', 'Jag skriver själv')}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Steg 1: Välj jobb & mall
 function Step1JobAndTemplate({
   savedJobs,
   loadingJobs,
+  jobbFel,
+  onRetryJobs,
   formData,
   setFormData,
   onSelectJob,
   onManual,
+  onContinue,
+  formFel,
 }: {
   savedJobs: SavedJob[]
   loadingJobs: boolean
+  jobbFel: boolean
+  onRetryJobs: () => void
   formData: FormData
   setFormData: (data: FormData) => void
   onSelectJob: (job: SavedJob) => void
   onManual: () => void
+  onContinue: () => void
+  formFel: string | null
 }) {
+  const { t } = useTranslation()
   const hasSelectedJob = formData.selectedJobId || (formData.company && formData.jobTitle)
+  const saknarForetag = Boolean(formFel) && !formData.company.trim()
+  const saknarTitel = Boolean(formFel) && !formData.jobTitle.trim()
 
   return (
     <div className="space-y-8">
       {/* Template selection */}
       <div>
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
-            <FileText className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+          <div className="w-10 h-10 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg flex items-center justify-center shrink-0">
+            <FileText className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-              Välj en mall
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+              {t('coverLetter.write.templateHeading', 'Välj hur brevet ska se ut')}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Mallen påverkar hur ditt brev ser ut vid förhandsgranskning och PDF-export.
+              {t('coverLetter.write.templateBody', 'Utseendet syns i förhandsvisningen och i PDF:en. Du kan byta när som helst.')}
             </p>
           </div>
         </div>
@@ -774,15 +1120,15 @@ function Step1JobAndTemplate({
       {/* Job selection */}
       <div>
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
-            <Building2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+          <div className="w-10 h-10 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg flex items-center justify-center shrink-0">
+            <Building2 className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-              Välj jobb för brevet
+            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+              {t('coverLetter.write.jobHeading', 'Vilket jobb gäller brevet?')}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Välj ett sparat jobb eller fyll i information manuellt.
+              {t('coverLetter.write.jobBody', 'Välj ett du sparat, eller fyll i själv.')}
             </p>
           </div>
         </div>
@@ -790,124 +1136,184 @@ function Step1JobAndTemplate({
         {/* Sparade jobb */}
         {savedJobs.length > 0 && (
           <div className="space-y-3 mb-4">
-            <h3 className="font-medium text-stone-700 dark:text-stone-300 flex items-center gap-2 text-sm">
-              <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
-              Dina sparade jobb ({savedJobs.length})
+            <h3 className="font-medium text-stone-700 dark:text-stone-200 flex items-center gap-2 text-sm">
+              <Heart className="w-4 h-4 text-[var(--c-text)]" aria-hidden="true" />
+              {t('coverLetter.write.savedJobsHeading', 'Dina sparade jobb')}
             </h3>
-            <div className="grid gap-2 max-h-48 overflow-y-auto">
+            <div className="grid gap-2">
               {savedJobs.slice(0, 5).map((job) => {
-                const title = job.job_data?.headline || 'Okänd titel'
-                const company = job.job_data?.employer?.name || 'Okänt företag'
+                const title = job.job_data?.headline?.trim() || ''
+                const company = job.job_data?.employer?.name?.trim() || ''
                 const location = job.job_data?.workplace_address?.municipality
+                const vald = formData.selectedJobId === job.job_id
 
                 return (
                   <button
                     key={job.id}
+                    type="button"
                     onClick={() => onSelectJob(job)}
+                    aria-pressed={vald}
                     className={cn(
                       'p-3 rounded-lg border text-left transition-all',
-                      formData.selectedJobId === job.job_id
-                        ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
-                        : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
+                      vald
+                        ? 'border-[var(--c-solid)] bg-[var(--c-bg)]'
+                        : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-solid)]'
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <Briefcase size={16} className="text-stone-500 shrink-0" />
+                      <Briefcase size={16} className="text-stone-600 dark:text-stone-300 shrink-0" aria-hidden="true" />
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium text-stone-800 dark:text-stone-100 text-sm truncate">{title}</div>
-                        <div className="text-xs text-stone-600 dark:text-stone-400 truncate">
-                          {company}{location && ` • ${location}`}
+                        <div className="font-medium text-stone-900 dark:text-stone-100 text-sm truncate">
+                          {title || t('coverLetter.write.jobNoTitle', 'Titel saknas i annonsen')}
+                        </div>
+                        <div className="text-xs text-stone-600 dark:text-stone-300 truncate">
+                          {company || t('coverLetter.write.jobNoCompany', 'Företag saknas i annonsen')}
+                          {location && ` • ${location}`}
                         </div>
                       </div>
-                      {formData.selectedJobId === job.job_id && (
-                        <Check size={16} className="text-[var(--c-text)] shrink-0" />
+                      {vald && (
+                        <Check size={16} className="text-[var(--c-text)] shrink-0" aria-hidden="true" />
                       )}
                     </div>
                   </button>
                 )
               })}
             </div>
+            {savedJobs.length > 5 && (
+              <p className="text-xs text-stone-600 dark:text-stone-400">
+                {t('coverLetter.write.savedJobsMore', 'Här visas de fem senaste. Resten finns under Sparade jobb.')}
+              </p>
+            )}
           </div>
         )}
 
         {loadingJobs && (
-          <div className="text-center py-4 text-stone-500 dark:text-stone-400 text-sm">
-            <Loader2 className="w-5 h-5 animate-spin inline-block mr-2" />
-            Laddar sparade jobb...
+          <div className="text-center py-4 text-stone-600 dark:text-stone-300 text-sm" role="status" aria-live="polite">
+            <Loader2 className="w-5 h-5 animate-spin inline-block mr-2" aria-hidden="true" />
+            {t('coverLetter.write.loadingJobs', 'Hämtar dina sparade jobb …')}
           </div>
         )}
 
-        {/* Manuell inmatning toggle */}
+        {jobbFel && (
+          <div className="p-3 mb-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-800 rounded-lg" role="alert">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-800 dark:text-amber-200 shrink-0" aria-hidden="true" />
+              <p className="flex-1 text-sm text-amber-800 dark:text-amber-200">
+                {t('coverLetter.write.jobsErrorBody', 'Dina sparade jobb gick inte att hämta just nu. De ligger kvar — du kan fylla i jobbet för hand så länge.')}
+              </p>
+              <Button variant="outline" size="sm" onClick={onRetryJobs}>
+                {t('common.tryAgain', 'Försök igen')}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Fyll i själv */}
         <button
+          type="button"
           onClick={onManual}
+          aria-expanded={formData.useManualInput}
+          aria-controls="cl-manual-fields"
           className={cn(
             'w-full p-3 rounded-lg border transition-all text-left',
             formData.useManualInput
-              ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
-              : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
+              ? 'border-[var(--c-solid)] bg-[var(--c-bg)]'
+              : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-solid)]'
           )}
         >
           <div className="flex items-center gap-3">
-            <Edit3 size={16} className="text-stone-500 shrink-0" />
+            <Edit3 size={16} className="text-stone-600 dark:text-stone-300 shrink-0" aria-hidden="true" />
             <div className="flex-1">
-              <div className="font-medium text-stone-800 dark:text-stone-100 text-sm">Fyll i manuellt</div>
-              <div className="text-xs text-stone-600 dark:text-stone-400">Skriv företag och jobbinformation själv</div>
+              <div className="font-medium text-stone-900 dark:text-stone-100 text-sm">
+                {t('coverLetter.write.manualToggle', 'Jag fyller i själv')}
+              </div>
+              <div className="text-xs text-stone-600 dark:text-stone-300">
+                {t('coverLetter.write.manualToggleBody', 'Skriv in företag och jobb för hand')}
+              </div>
             </div>
           </div>
         </button>
 
-        {/* Manuell form */}
-        {formData.useManualInput && (
-          <div className="space-y-4 mt-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-lg">
-            <div>
-              <label htmlFor="cl-company" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                Företag *
-              </label>
-              <input
-                id="cl-company"
-                type="text"
-                value={formData.company}
-                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                placeholder="t.ex. Acme AB"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="cl-jobtitle" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                Jobbtitel *
-              </label>
-              <input
-                id="cl-jobtitle"
-                type="text"
-                value={formData.jobTitle}
-                onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
-                placeholder="t.ex. Projektledare"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="cl-jobad" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                Jobbannons (valfritt)
-              </label>
-              <textarea
-                id="cl-jobad"
-                value={formData.jobAd}
-                onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
-                placeholder="Klistra in texten från jobbannonsen..."
-                rows={3}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
-              />
-            </div>
+        {/* Fälten ligger alltid i DOM:en. Annars pekar aria-controls ovan på ett
+            id som inte finns i utgångsläget — alltså i det läge en skärmläsare
+            möter först.
+
+            Döljningen sker med inline `display`, inte med `hidden`-attributet
+            eller klassen `hidden`: `.mobile-device form:not([class*="flex"])` i
+            `styles/mobile.css` sätter `display: flex` med högre specificitet än
+            båda, så fälten hade legat öppna på mobil hur mycket vi än stängt
+            dem. Samma fälla som slog ut Kunskapsbankens sökruta 2026-08-18. */}
+        <form
+          id="cl-manual-fields"
+          style={formData.useManualInput ? undefined : { display: 'none' }}
+          onSubmit={(e) => { e.preventDefault(); onContinue() }}
+          className="space-y-4 mt-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-lg"
+        >
+          <div>
+            <label htmlFor="cl-company" className="block text-sm font-medium text-stone-700 dark:text-stone-200 mb-1">
+              {t('coverLetter.write.labelCompany', 'Företag')}
+            </label>
+            <input
+              id="cl-company"
+              type="text"
+              value={formData.company}
+              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              placeholder={t('coverLetter.write.placeholderCompany', 't.ex. Acme AB')}
+              aria-required="true"
+              aria-invalid={saknarForetag || undefined}
+              aria-describedby={saknarForetag ? 'cl-form-fel' : undefined}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
+            />
           </div>
+          <div>
+            <label htmlFor="cl-jobtitle" className="block text-sm font-medium text-stone-700 dark:text-stone-200 mb-1">
+              {t('coverLetter.write.labelJobTitle', 'Vad heter tjänsten?')}
+            </label>
+            <input
+              id="cl-jobtitle"
+              type="text"
+              value={formData.jobTitle}
+              onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
+              placeholder={t('coverLetter.write.placeholderJobTitle', 't.ex. Projektledare')}
+              aria-required="true"
+              aria-invalid={saknarTitel || undefined}
+              aria-describedby={saknarTitel ? 'cl-form-fel' : undefined}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
+            />
+          </div>
+          <div>
+            <label htmlFor="cl-jobad" className="block text-sm font-medium text-stone-700 dark:text-stone-200 mb-1">
+              {t('coverLetter.write.labelJobAd', 'Annonstexten (om du har den)')}
+            </label>
+            <textarea
+              id="cl-jobad"
+              value={formData.jobAd}
+              onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
+              placeholder={t('coverLetter.write.placeholderJobAd', 'Klistra in texten från annonsen — då blir brevet mer träffsäkert.')}
+              rows={3}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
+            />
+          </div>
+        </form>
+
+        {/* Validering — sagt vänligt, med koppling till fälten */}
+        {formFel && (
+          <p
+            id="cl-form-fel"
+            role="alert"
+            className="mt-3 text-sm text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-800 rounded-lg p-3"
+          >
+            {formFel}
+          </p>
         )}
 
         {/* Selected job summary */}
         {hasSelectedJob && !formData.useManualInput && (
-          <div className="mt-4 p-3 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg">
+          <div className="mt-4 p-3 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg">
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-              <span className="font-medium text-emerald-800 dark:text-emerald-200 text-sm">
-                {formData.jobTitle} på {formData.company}
+              <Check className="w-4 h-4 text-[var(--c-text)]" aria-hidden="true" />
+              <span className="font-medium text-[var(--c-text)] text-sm">
+                {[formData.jobTitle, formData.company].filter(Boolean).join(' — ')}
               </span>
             </div>
           </div>
@@ -917,240 +1323,383 @@ function Step1JobAndTemplate({
   )
 }
 
+/**
+ * Noten som följer med ett brev skrivet utan underlag.
+ *
+ * Uppmätt på prod 2026-08-19: ett konto utan CV fick ett brev i första person
+ * som påstod skiftvana, dokumentationsvana och "goda kunskaper i svenska, både
+ * i tal och skrift". Ingenting av det fanns i underlaget. Prompten i
+ * `client/api/ai.js` är åtstramad, men den kan bara begränsa skadan — det är
+ * här verktyget vet att det inte vet något, och det ska stå i klartext bredvid
+ * resultatet i stället för att läsaren ska gissa varför brevet är kort.
+ */
+function TunntUnderlagNot() {
+  const { t } = useTranslation()
+  return (
+    <p className="mt-3 text-sm text-stone-600 dark:text-stone-400">
+      {t(
+        'coverLetter.write.thinResultNote',
+        'Brevet är kort med flit. Vi hade bara annonsen att gå på, så det säger ingenting om din bakgrund — vi vill hellre skriva lite och sant än mycket och påhittat. Med ett CV eller några egna rader blir nästa utkast både längre och mer ditt.'
+      )}
+    </p>
+  )
+}
+
 // Steg 2: Skriv brev
 function Step2Write({
   formData,
   setFormData,
   cvData,
+  avsandarnamn,
+  profilFel,
   isGenerating,
   editedLetter,
   setEditedLetter,
   onGenerate,
+  onNyttUtkast,
+  generationError,
+  arOrordAiText,
+  tunntUnderlag,
+  genereratPaTunntUnderlag,
 }: {
   formData: FormData
   setFormData: (data: FormData) => void
   cvData: CVData | null
+  avsandarnamn: string
+  profilFel: boolean
   isGenerating: boolean
   editedLetter: string
   setEditedLetter: (text: string) => void
   onGenerate: () => void
+  onNyttUtkast: () => void
+  generationError: AiFel | null
+  arOrordAiText: boolean
+  tunntUnderlag: boolean
+  genereratPaTunntUnderlag: boolean
 }) {
+  const { t } = useTranslation()
+  const motivationRef = useRef<HTMLTextAreaElement>(null)
+  const antalOrd = editedLetter.split(/\s+/).filter(Boolean).length
+  const antalKompetenser = cvData?.skills?.length ?? 0
+
+  const toner = [
+    { id: 'professional', label: t('coverLetter.write.toneProfessional', 'Professionell'), desc: t('coverLetter.write.toneProfessionalDesc', 'Balanserad') },
+    { id: 'enthusiastic', label: t('coverLetter.write.toneEnthusiastic', 'Entusiastisk'), desc: t('coverLetter.write.toneEnthusiasticDesc', 'Energisk') },
+    { id: 'formal', label: t('coverLetter.write.toneFormal', 'Formell'), desc: t('coverLetter.write.toneFormalDesc', 'Traditionell') },
+  ]
+
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
-          <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+        <div className="w-10 h-10 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg flex items-center justify-center shrink-0">
+          <Target className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-            Skapa ditt brev
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {t('coverLetter.write.writeHeading', 'Nu skriver vi brevet')}
           </h2>
           <p className="text-sm text-stone-600 dark:text-stone-400">
-            Välj ton, lägg till extra motivation, och låt AI hjälpa dig.
+            {t('coverLetter.write.writeBody', 'Välj hur det ska låta, lägg till något eget om du vill — och skriv själv eller be om ett utkast.')}
           </p>
         </div>
       </div>
 
-      {/* CV info */}
+      {/* Vad vi tar med — bara det vi faktiskt har.
+          Namnet kommer från `senderInfo`, samma källa som brevet och
+          förhandsvisningen. Tidigare läste den här rutan `cvData.first_name`
+          medan förhandsvisningen läste profilen, så samma person kunde stå med
+          två olika namn på samma skärm. */}
       {cvData && (
-        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-lg p-3">
-          <h4 className="font-medium text-emerald-800 dark:text-emerald-200 mb-1 flex items-center gap-2 text-sm">
-            <Award className="w-4 h-4" />
-            AI kommer använda:
-          </h4>
-          <p className="text-xs text-emerald-700 dark:text-emerald-300">
-            {cvData.first_name} {cvData.last_name} • {cvData.title || 'Profil'} • {cvData.skills?.length || 0} kompetenser
+        <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg p-3">
+          <h3 className="font-medium text-[var(--c-text)] mb-1 flex items-center gap-2 text-sm">
+            <Award className="w-4 h-4" aria-hidden="true" />
+            {t('coverLetter.write.cvUsedHeading', 'Det här tar vi med')}
+          </h3>
+          <p className="text-xs text-[var(--c-text)]">
+            {[
+              avsandarnamn,
+              cvData.title,
+              antalKompetenser > 0
+                ? `${antalKompetenser} ${t('coverLetter.write.skillsSuffix', 'kompetenser')}`
+                : '',
+            ].filter(Boolean).join(' • ')}
           </p>
+          {profilFel && (
+            <p className="text-xs text-[var(--c-text)] mt-1">
+              {t('coverLetter.write.prefsError', 'Dina övriga inställningar gick inte att läsa just nu, så brevet bygger bara på CV:t.')}
+            </p>
+          )}
         </div>
       )}
 
-      {/* Tone selection */}
+      {/* Tonval */}
       <fieldset>
-        <legend className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-          Välj tonläge
+        <legend className="block text-sm font-medium text-stone-700 dark:text-stone-200 mb-2">
+          {t('coverLetter.write.toneHeading', 'Hur ska brevet låta?')}
         </legend>
         <div className="grid grid-cols-3 gap-2">
-          {[
-            { id: 'professional', label: 'Professionell', desc: 'Balanserad' },
-            { id: 'enthusiastic', label: 'Entusiastisk', desc: 'Energisk' },
-            { id: 'formal', label: 'Formell', desc: 'Traditionell' },
-          ].map((tone) => (
+          {toner.map((tone) => (
             <button
               key={tone.id}
               type="button"
               onClick={() => setFormData({ ...formData, tone: tone.id as FormData['tone'] })}
+              aria-pressed={formData.tone === tone.id}
               className={cn(
                 'p-3 rounded-lg border text-left transition-all',
                 formData.tone === tone.id
-                  ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
-                  : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
+                  ? 'border-[var(--c-solid)] bg-[var(--c-bg)]'
+                  : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-solid)]'
               )}
             >
-              <div className="font-medium text-stone-800 dark:text-stone-100 text-sm">{tone.label}</div>
-              <div className="text-xs text-stone-600 dark:text-stone-400">{tone.desc}</div>
+              <div className="font-medium text-stone-900 dark:text-stone-100 text-sm">{tone.label}</div>
+              <div className="text-xs text-stone-600 dark:text-stone-300">{tone.desc}</div>
             </button>
           ))}
         </div>
       </fieldset>
 
-      {/* Extra motivation */}
+      {/* Något eget */}
       <div>
-        <label htmlFor="cl-motivation" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-          Extra motivation (valfritt)
+        <label htmlFor="cl-motivation" className="block text-sm font-medium text-stone-700 dark:text-stone-200 mb-1">
+          {t('coverLetter.write.motivationLabel', 'Något du vill ha med? (frivilligt)')}
         </label>
         <textarea
           id="cl-motivation"
+          ref={motivationRef}
           value={formData.motivation}
           onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
-          placeholder="t.ex. Jag är särskilt intresserad av er satsning på hållbarhet..."
+          placeholder={t('coverLetter.write.motivationPlaceholder', 't.ex. Jag är särskilt intresserad av er satsning på hållbarhet …')}
           rows={3}
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
         />
       </div>
 
-      {/* Generate button */}
-      {!editedLetter && (
-        <Button
-          onClick={onGenerate}
-          disabled={isGenerating}
-          className="w-full gap-2"
-        >
+      {/* Fel — med rätt väg framåt för sin sort */}
+      {generationError && (
+        <AiFelPanel fel={generationError} isGenerating={isGenerating} onRetry={onGenerate} />
+      )}
+
+      {/* Sagt INNAN knappen trycks, inte efteråt.
+          Verktyget vet att det inte vet något om personen — då ska det stå,
+          med två vägar ur det. Genereringen spärras inte: valet är hennes. */}
+      {tunntUnderlag && !editedLetter && (
+        <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg p-4">
+          <h3 className="font-medium text-[var(--c-text)]">
+            {t('coverLetter.write.thinTitle', 'Vi vet inte så mycket om dig än')}
+          </h3>
+          <p className="text-sm text-[var(--c-text)] mt-1">
+            {t(
+              'coverLetter.write.thinBody',
+              'Utan CV och utan några egna rader har vi bara annonsen att gå på. Då håller vi brevet kort och låter det handla om varför tjänsten lockar — vi hittar hellre inte på saker om dig.'
+            )}
+          </p>
+          <div className="flex flex-wrap gap-2 mt-3">
+            <Link
+              to="/cv"
+              className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-xl font-medium hover:brightness-95"
+            >
+              {t('coverLetter.write.thinFillCv', 'Fyll i ditt CV först')}
+            </Link>
+            <Button variant="outline" onClick={() => motivationRef.current?.focus()}>
+              {t('coverLetter.write.thinWriteAbout', 'Skriv några rader om dig själv')}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Be om ett utkast — bara när det inte finns någon text att förlora, och
+          bara när ett nytt försök över huvud taget kan lyckas. En knapp som är
+          spärrad av personens eget val, eller av en utgången inloggning, är en
+          knapp som lovar något den inte kan hålla. */}
+      {!editedLetter && generationError?.sort !== 'ai-avstangd' && generationError?.sort !== 'inloggning' && (
+        <Button onClick={onGenerate} disabled={isGenerating} className="w-full gap-2">
           {isGenerating ? (
             <>
-              <Loader2 size={18} className="animate-spin" />
-              AI skapar ditt brev...
+              <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+              {t('coverLetter.write.writingDraft', 'Skriver ett utkast åt dig …')}
             </>
           ) : (
             <>
-              <Sparkles size={18} />
-              Generera brev med AI
+              <Sparkles size={18} aria-hidden="true" />
+              {t('coverLetter.write.askForDraft', 'Skriv ett utkast åt mig')}
             </>
           )}
         </Button>
       )}
 
-      {/* Editor */}
-      {editedLetter && (
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="coverletterwrite-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
-              Ditt brev
-            </label>
-            <span className="text-xs text-stone-500">{editedLetter.split(/\s+/).filter(Boolean).length} ord</span>
-          </div>
-          <textarea
-            id="coverletterwrite-f1"
-            value={editedLetter}
-            onChange={(e) => setEditedLetter(e.target.value)}
-            className="w-full px-4 py-3 min-h-[300px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
-          />
-          <div className="flex gap-2 mt-2">
-            <Button variant="outline" size="sm" onClick={onGenerate} disabled={isGenerating} className="gap-1">
-              <Sparkles size={14} />
-              Regenerera
+      {isGenerating && (
+        <p className="text-sm text-stone-600 dark:text-stone-300" role="status" aria-live="polite">
+          {t('coverLetter.write.writingWait', 'Det kan ta upp till en minut. Du kan börja skriva själv nedan under tiden — utkastet ersätter inte det du redan skrivit.')}
+        </p>
+      )}
+
+      {/* Editorn finns ALLTID. Löftet "du kan skriva brevet själv" måste hålla,
+          och den här textarean var tidigare villkorad på att AI lyckats. */}
+      <div>
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <label htmlFor="coverletterwrite-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-200">
+            {t('coverLetter.write.yourLetter', 'Ditt brev')}
+          </label>
+          {antalOrd > 0 && (
+            <span className="text-xs text-stone-600 dark:text-stone-300">
+              {antalOrd} {t('coverLetter.write.words', 'ord')}
+            </span>
+          )}
+        </div>
+        <textarea
+          id="coverletterwrite-f1"
+          value={editedLetter}
+          onChange={(e) => setEditedLetter(e.target.value)}
+          placeholder={t('coverLetter.write.editorPlaceholder', 'Skriv ditt brev här — eller be om ett utkast ovan och ändra i det.')}
+          className="w-full px-4 py-3 min-h-[300px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
+          {...(arOrordAiText ? { 'data-ai-generated': 'true' } : {})}
+        />
+        {/* Märkningen hör hemma där AI-texten först visas — och bara så länge
+            den är AI:ns. Har personen skrivit om den är det hennes text. */}
+        {arOrordAiText && <AIGeneratedWatermark contentType={t('coverLetter.write.contentTypeLetter', 'brev')} />}
+        {genereratPaTunntUnderlag && arOrordAiText && <TunntUnderlagNot />}
+
+        {editedLetter && (
+          <div className="flex gap-2 mt-3">
+            <Button variant="outline" size="sm" onClick={onNyttUtkast} disabled={isGenerating} className="gap-1">
+              <Sparkles size={14} aria-hidden="true" />
+              {t('coverLetter.write.newDraft', 'Skriv ett nytt utkast')}
             </Button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
 
-// Steg 3: Granska & Spara
+// Steg 3: Läs igenom och spara
 function Step3ReviewSave({
   editedLetter,
   setEditedLetter,
   generatedLetter,
   formData,
-  onSave,
   onDownload,
-  isSaving,
+  harAvsandarnamn,
   senderInfo,
   generationError,
   isGenerating,
   onRetry,
+  onBack,
+  arOrordAiText,
+  genereratPaTunntUnderlag,
 }: {
   editedLetter: string
   setEditedLetter: (text: string) => void
   generatedLetter: string
   formData: FormData
-  onSave: () => void
   onDownload: () => void
-  isSaving: boolean
+  harAvsandarnamn: boolean
   senderInfo: { name: string; email?: string; phone?: string; location?: string }
-  generationError: string | null
+  generationError: AiFel | null
   isGenerating: boolean
   onRetry: () => void
+  onBack: () => void
+  arOrordAiText: boolean
+  genereratPaTunntUnderlag: boolean
 }) {
+  const { t } = useTranslation()
   const [isCopied, setIsCopied] = useState(false)
+  const antalOrd = editedLetter.split(/\s+/).filter(Boolean).length
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(editedLetter)
-    setIsCopied(true)
-    setTimeout(() => setIsCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(editedLetter)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000)
+    } catch (err) {
+      console.error('Kunde inte kopiera:', err)
+      showToast.error(t('coverLetter.write.copyFailed', 'Kopieringen gick inte. Markera texten och kopiera för hand.'))
+    }
   }
 
-  // B21: när genereringen misslyckats finns inget brev att granska. Visa det
-  // rakt ut i stället för att rendera en tom eller påhittad textarea under en
-  // AI-märkning. Ett ärligt tomt läge är bättre än ett falskt ifyllt.
+  // LÄGE 1 — genereringen pågår och det finns ingen text.
+  // Utan det här läget renderades en tom textarea, "0 ord" och en AI-märkning
+  // som ett färdigt resultat.
+  if (isGenerating && !editedLetter.trim()) {
+    return (
+      <div className="space-y-6 py-6 text-center" role="status" aria-live="polite">
+        <Loader2 className="w-10 h-10 mx-auto text-[var(--c-text)] animate-spin" aria-hidden="true" />
+        <div>
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {t('coverLetter.write.busyTitle', 'Skriver ditt utkast')}
+          </h2>
+          <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+            {t('coverLetter.write.busyBody', 'Det kan ta upp till en minut. Stanna kvar på sidan så länge.')}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // LÄGE 2 — det gick inte, och det finns ingen text att granska.
   if (generationError && !editedLetter.trim()) {
     return (
-      <div className="space-y-6">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 bg-stone-100 dark:bg-stone-800 rounded-lg flex items-center justify-center shrink-0">
-            <RefreshCw className="w-5 h-5 text-stone-500 dark:text-stone-400" />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-              Brevet blev inte klart
-            </h2>
-            <p className="text-sm text-stone-600 dark:text-stone-400">{generationError}</p>
-          </div>
-        </div>
-
-        <div className="flex flex-wrap gap-3">
-          <Button onClick={onRetry} disabled={isGenerating} className="gap-2">
-            <RefreshCw size={16} className={isGenerating ? 'animate-spin' : undefined} />
-            {isGenerating ? 'Skriver …' : 'Försök igen'}
-          </Button>
-        </div>
-
-        <p className="text-sm text-stone-500 dark:text-stone-400">
-          Du kan också gå tillbaka och skriva brevet själv — allt du fyllt i finns kvar.
+      <div className="space-y-4">
+        <AiFelPanel
+          fel={generationError}
+          isGenerating={isGenerating}
+          onRetry={onRetry}
+          onSkrivSjalv={onBack}
+        />
+        <p className="text-sm text-stone-600 dark:text-stone-400">
+          {t('coverLetter.write.errFooter', 'Allt du fyllt i finns kvar. Går du tillbaka kan du skriva brevet själv i rutan där.')}
         </p>
       </div>
     )
   }
 
+  // LÄGE 3 — klart.
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg flex items-center justify-center shrink-0">
-          <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+        <div className="w-10 h-10 bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg flex items-center justify-center shrink-0">
+          <Check className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-            Granska och spara
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {t('coverLetter.write.reviewHeading', 'Läs igenom och spara')}
           </h2>
           <p className="text-sm text-stone-600 dark:text-stone-400">
-            Se över brevet, gör ändringar, och spara eller ladda ner som PDF.
+            {t('coverLetter.write.reviewBody', 'Ändra det du vill. Sedan sparar du brevet eller laddar ner det som PDF.')}
           </p>
         </div>
       </div>
 
+      {/* Ett fel som inträffade medan det fanns text kvar — texten står kvar,
+          felet visas bredvid. */}
+      {generationError && (
+        <AiFelPanel fel={generationError} isGenerating={isGenerating} onRetry={onRetry} kompakt />
+      )}
+
+      {isGenerating && (
+        <p className="text-sm text-stone-600 dark:text-stone-300" role="status" aria-live="polite">
+          {t('coverLetter.write.busyReplacing', 'Skriver ett nytt utkast …')}
+        </p>
+      )}
+
       {/* Tips */}
-      <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg p-3">
+      <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-lg p-3">
         <div className="flex items-start gap-2">
-          <Lightbulb className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5" />
-          <div className="text-sm text-amber-700 dark:text-amber-300">
-            <strong>Tips:</strong> Lägg till något personligt om varför just detta företag lockar dig.
+          <Lightbulb className="w-4 h-4 text-[var(--c-text)] mt-0.5 shrink-0" aria-hidden="true" />
+          <div className="text-sm text-[var(--c-text)]">
+            {t('coverLetter.write.tip', 'Ett tips: en mening om varför just det här företaget lockar dig gör mer skillnad än allt annat i brevet.')}
           </div>
         </div>
       </div>
 
       {/* Mobile preview */}
       <div className="lg:hidden">
-        <h3 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">Förhandsgranskning</h3>
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <h3 className="text-sm font-medium text-stone-700 dark:text-stone-200">
+            {t('coverLetter.write.previewHeading', 'Så här ser det ut')}
+          </h3>
+          {arOrordAiText && <AIBadge variant="block" label={t('coverLetter.write.aiDraftLabel', 'AI-utkast')} />}
+        </div>
         <div className="aspect-[210/297] max-h-[400px]">
           <CoverLetterPreview
             content={editedLetter}
@@ -1165,40 +1714,79 @@ function Step3ReviewSave({
 
       {/* Editor */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <label htmlFor="coverletterwrite-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300">
-            Redigera brev
+        <div className="flex items-center justify-between mb-2 gap-2">
+          <label htmlFor="coverletterwrite-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-200">
+            {t('coverLetter.write.editHeading', 'Ändra i brevet')}
           </label>
-          <span className="text-xs text-stone-500">{editedLetter.split(/\s+/).filter(Boolean).length} ord</span>
+          {antalOrd > 0 && (
+            <span className="text-xs text-stone-600 dark:text-stone-300">
+              {antalOrd} {t('coverLetter.write.words', 'ord')}
+            </span>
+          )}
         </div>
         <textarea
           id="coverletterwrite-f2"
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
-          className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
-          data-ai-generated="true"
+          placeholder={t('coverLetter.write.editorPlaceholder', 'Skriv ditt brev här — eller be om ett utkast ovan och ändra i det.')}
+          className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
+          {...(arOrordAiText ? { 'data-ai-generated': 'true' } : {})}
         />
-        <AIGeneratedWatermark contentType="brev" />
+        {arOrordAiText ? (
+          <AIGeneratedWatermark contentType={t('coverLetter.write.contentTypeLetter', 'brev')} />
+        ) : (
+          editedLetter.trim().length > 0 && (
+            <p className="mt-3 text-sm text-stone-600 dark:text-stone-400">
+              {generatedLetter
+                ? t('coverLetter.write.yoursNow', 'Du har ändrat i utkastet, så det är dina ord nu. Därför står det inte längre att brevet är skrivet med AI.')
+                : t('coverLetter.write.yoursAllAlong', 'Det här är dina egna ord.')}
+            </p>
+          )
+        )}
+        {genereratPaTunntUnderlag && arOrordAiText && <TunntUnderlagNot />}
       </div>
+
+      {/* Saknas namnet blir underskriften tom — sagt innan personen klickar,
+          inte efteråt. */}
+      {!harAvsandarnamn && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-800 rounded-lg p-3" role="status">
+          <p className="text-sm text-amber-800 dark:text-amber-200">
+            {t('coverLetter.write.missingNameNotice', 'Vi vet inte vad du heter än, så underskriften blir tom i PDF:en.')}{' '}
+            <Link to="/profile" className="font-medium underline">
+              {t('coverLetter.write.missingNameLink', 'Fyll i ditt namn i profilen')}
+            </Link>
+          </p>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" className="gap-2" onClick={handleCopy}>
-          {isCopied ? <Check size={16} /> : <Copy size={16} />}
-          {isCopied ? 'Kopierat!' : 'Kopiera'}
+          {isCopied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+          {isCopied ? t('coverLetter.write.copied', 'Kopierat') : t('coverLetter.write.copy', 'Kopiera texten')}
         </Button>
         <Button variant="outline" className="gap-2" onClick={onDownload}>
-          <Download size={16} />
-          Ladda ner PDF
+          <Download size={16} aria-hidden="true" />
+          {t('coverLetter.write.downloadAsPdf', 'Ladda ner som PDF')}
         </Button>
-        <Button variant="outline" onClick={() => setEditedLetter(generatedLetter)} className="gap-2">
-          Återställ original
-        </Button>
-        <Button onClick={onSave} disabled={isSaving} className="gap-2 ml-auto bg-emerald-600 hover:bg-emerald-700">
-          {isSaving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-          Spara brev
-        </Button>
+        {/* Knappen visas bara när det FINNS ett utkast att gå tillbaka till, och
+            texten skiljer sig från det. Tidigare nollade den brevet efter varje
+            sidladdning, eftersom originalet inte sparades. */}
+        {generatedLetter.trim().length > 0 && !arOrordAiText && (
+          <Button variant="outline" onClick={() => setEditedLetter(generatedLetter)} className="gap-2">
+            <RefreshCw size={16} aria-hidden="true" />
+            {t('coverLetter.write.restoreDraft', 'Gå tillbaka till utkastet')}
+          </Button>
+        )}
       </div>
+      {/* Ingen andra "Spara brevet" här. Sidan hade två identiska primärknappar
+          — en i den här raden och en i stegnavigationen — vilket bryter mot
+          "ett centrum per skärm" (DESIGN.md §1.5) och gör det oklart vilken som
+          är nästa steg. Sparandet hör till wizardens rytm: Nästa → Spara. */}
+
+      <p className="sr-only" role="status" aria-live="polite">
+        {isCopied ? t('coverLetter.write.copiedAria', 'Brevet är kopierat.') : ''}
+      </p>
     </div>
   )
 }

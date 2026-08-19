@@ -699,7 +699,7 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 
 **Lärdom:** mekaniska svep måste filtrera på nåbarhet **innan** de börjar, annars betalar man för kod ingen kör och blockerar dessutom städningen av den. Sjätte gången samma klass träffar.
 
-**Kontroll:** kör nåbarhetsanalysen (`node scripts/dead-code.cjs`) och begränsa svepet till den nåbara mängden. Billigaste förstasteget i städningen är `--skriv --steg=barrels` — 21 döda barrels, ~2 800 rader, noll risk, och efteråt hittar vanlig `grep` det fyra granskningar i rad missat.
+**Kontroll:** kör nåbarhetsanalysen (`node client/scripts/dead-code.cjs` — sökvägen stod som `scripts/` här till 2026-08-19, och filen finns inte där) och begränsa svepet till den nåbara mängden. Billigaste förstasteget i städningen är `--skriv --steg=barrels` — 21 döda barrels, ~2 800 rader, noll risk, och efteråt hittar vanlig `grep` det fyra granskningar i rad missat.
 
 ### 2026-08-09: Grinden täckte mer än man trodde — och mindre där det räknades
 

@@ -1,0 +1,42 @@
+-- Tar bort den OGRINDADE konsulentpolicyn på `interest_results`.
+--
+-- Bakgrund (granskning 2026-08-19, beslut Mikael samma dag):
+-- tabellen hade TVÅ permissiva SELECT-policyer för konsulenter:
+--
+--   1. "Consultants can read shared interest results"
+--        EXISTS (... participant_data_sharing ... share_health_data = true)
+--      — den samtyckesgrindade.
+--
+--   2. "Consultants can view participant interest results"
+--        EXISTS (... profiles WHERE profiles.consultant_id = auth.uid())
+--      — ingen samtyckeskontroll alls.
+--
+-- Permissiva policyer OR:as. Policy 2 räckte alltså ensam, och grinden i
+-- policy 1 var utan verkan. Exakt lärdomen från 2026-08-04
+-- ("Permissiva dubblettpolicyer neutraliserar de guardade — tyst"), den här
+-- gången på RIASEC-resultat, som är en profilering av personens intressen
+-- och läggning.
+--
+-- Omfattning vid upptäckten, mätt i prod: 31 deltagare har konsulent, men
+-- tabellen innehöll 1 rad och 0 rader var läsbara utan samtycke. Hålet var
+-- alltså latent, inte en pågående läcka — men nästa deltagare som gör
+-- intressetestet och har en konsulent hade omfattats.
+--
+-- Efter den här migrationen gäller det som policyn, integritetspolicyn och
+-- samtyckesdialogen redan påstår: en konsulent ser en deltagares
+-- intresseprofil ENDAST om deltagaren delat med sig.
+
+DROP POLICY IF EXISTS "Consultants can view participant interest results" ON public.interest_results;
+
+-- Verifiering (kör efter migrationen — punkten får inte stängas utan den här raden):
+--
+--   npx supabase db query --linked "select policyname, cmd, permissive, qual from pg_policies where tablename='interest_results' and cmd='SELECT' order by policyname;" --output table
+--
+-- FÖRVÄNTAT: tre SELECT-policyer kvar —
+--   "Consultants can read shared interest results"  (med share_health_data-villkoret)
+--   "Users can read own interest results"           (auth.uid() = user_id)
+--   "Users can CRUD own interest results"           (ALL, auth.uid() = user_id)
+-- och INGEN policy vars qual bara kontrollerar profiles.consultant_id.
+--
+-- Negativ kontroll — lika viktig: en deltagare ska fortfarande kunna läsa sitt
+-- EGET resultat. Går den förlorad har vi bytt en läcka mot ett funktionsbortfall.

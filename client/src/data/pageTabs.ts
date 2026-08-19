@@ -18,6 +18,8 @@ import {
   Settings,
   User,
   Sparkles,
+  FileEdit,
+  Folder,
 } from '@/components/ui/icons'
 
 // Import new tab configurations
@@ -97,10 +99,21 @@ export const cvBuilderTabs: Tab[] = [
   { id: 'preview', label: 'Förhandsgranska', path: '/cv/preview', icon: User },
 ]
 
-// Cover Letter tabs - backwards compatibility
+// Cover Letter tabs.
+//
+// Rättade 2026-08-19: raden pekade på `/cover-letter/saved`, en route som
+// ALDRIG har funnits — den heter `/cover-letter/my-letters`. Etiketterna
+// ("Generator", "Sparade brev") stämde inte heller med sidans egna
+// ("Skriv brev", "Mina brev").
+//
+// Det syntes inte, eftersom `CoverLetterPage` alltid skickar `customTabs` och
+// `PageLayout.tsx:93` bara faller tillbaka hit när den propen saknas. En sida
+// som glömmer propen hade alltså fått en flik som leder ingenstans. Sanningen
+// om flikarna bor i `data/coverLetterTabs.ts`; det här är reservvägen och ska
+// säga samma sak.
 export const coverLetterTabs: Tab[] = [
-  { id: 'generator', label: 'Generator', path: '/cover-letter', icon: Sparkles },
-  { id: 'saved', label: 'Sparade brev', path: '/cover-letter/saved', icon: Bookmark },
+  { id: 'write', label: 'Skriv brev', path: '/cover-letter', icon: FileEdit },
+  { id: 'my-letters', label: 'Mina brev', path: '/cover-letter/my-letters', icon: Folder },
 ]
 
 // Job Search tabs (main navigation) - backwards compatibility
