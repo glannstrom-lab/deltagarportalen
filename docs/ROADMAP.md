@@ -16,6 +16,109 @@
 
 ---
 
+## Genomgång 2026-08-19 (kväll) — Spontanansökan, sex granskare
+
+Kod + inloggad prod, alla tre flikar. **Åtgärdat och pushat** (commit
+`9a2704e3`). Avsnittet står kvar för det som INTE gick att stänga och för de
+premisser som visade sig fel.
+
+### Det allvarligaste: en grind som inte gällde
+
+Portalens AI-brytare (`profiles.ai_enabled`, GDPR art. 21) kontrollerades
+**bara i `client/api/ai.js`**. `grep "ai_enabled" supabase/functions` gav noll
+träffar, och ett konto med AI avstängt fick HTTP 200 med fullt AI-svar från
+både `ai-company-search` och `ai-company-analysis` — verifierat i drift.
+Samma vägar gick förbi PII-saneringen och hade inget dagligt tokentak.
+
+Lärdomen är generell och står nu i den globala lärdomsbanken: **en grind
+skyddar en kodväg, inte en funktion.** Så snart det finns två backends måste
+frånvaron av grind på den ena räknas som en arkitekturlucka, inte som en
+implementationsdetalj — och den syns inte där man letar, för man läser filen
+där grinden ligger.
+
+Åtgärdat med `supabase/functions/_shared/aiGate.ts` (fail closed, egna
+felkoder). Klienten skiljer nu `AI_DISABLED` — personens eget val — från
+tjänstefel, och skickar henne till Inställningar i stället för att säga
+"försök igen om en stund".
+
+### A23 — kvarstår, kräver beslut
+
+**Tre grannfunktioner har samma hål:** `ai-career-assistant`,
+`ai-commute-planner` och `ai-industry-radar` saknar brytargrind och tokentak.
+`ai-commute-planner` skickar användarens **hemadress**. `aiGate.ts` är skriven
+för att kunna återanvändas där; arbetet är inte gjort.
+
+**Perplexity saknas fortfarande i efterlevnadsdokumenten** — integritetspolicy,
+art. 30-register, DPIA. Grinden gör behandlingen samtyckesstyrd, inte
+dokumenterad. Sonar gör dessutom en **webbsökning** på användarens fritext,
+ett led som är helt obeskrivet. Detta är dokumentarbete, inte kodarbete.
+
+### Premisser som INTE höll
+
+- **"Modellåsningen är bruten på fem ställen"** — fel, och CLAUDE.md-rutan är
+  omskriven. `docs/AI_MODEL_LOCKING.md:8` har en allowlist med två modeller
+  (`openai/gpt-oss-120b`, `perplexity/sonar`), grinden `aiServerResponses.test.ts`
+  läser den, och samma dokument listar alla fem funktionerna som **medvetna
+  undantag** med motivering och migrationsplan. **Byt inte modell** för att
+  "laga" något. Det verkliga problemet är underbiträdet, se ovan.
+- **"Schemadrift är den troliga roten"** — fel igen, andra gången samma dag.
+  `spontaneous_companies` matchar typen kolumn för kolumn, alla insert-nycklar
+  finns, RLS är en enda policy utan slapp dubblett.
+- **"`className="space-y-6"` gör sidan smalare än syskonsidorna"** — nej.
+  `.sidbredd` är `max-width: none` under 2000 px och `Layout.tsx` lägger redan
+  klassen på behållaren; `space-y-6` var dessutom helt verkningslös (PageLayout
+  lägger klassen på en rotdiv med exakt ett barn). Bytt ändå, för konventionen.
+
+### Fyndet som bara syntes vid användning
+
+En sökning på "bagerier" gav *"8 företag hittade, 0 verifierade"* där
+**samtliga åtta** saknade organisationsnummer — och utan nummer går företaget
+varken att verifiera eller spara. Deltagaren fick åtta rader hon inte kunde
+göra något med; sidans hela syfte föll. Fem kodgranskare läste samma filer
+utan att se det. **Kör sidan, läs inte bara filerna.**
+
+Åtgärdat i tre lager (fler kandidater från AI:n, användbara träffar sorteras
+först innan listan kapas, och manuell inmatning av org.nr per träff), men
+grundorsaken sitter i AI-svaret: Perplexity utelämnar numret även för företag
+som uppenbart har ett. Följ upp med mätning i drift.
+
+### Cacheläckan — gäller HELA portalen, inte bara den här sidan
+
+`authStore.signOut()` rensade localStorage (A31) men aldrig React
+Query-cachen, och utloggningen navigerar bara — ingen omladdning tömmer den.
+Nycklar utan användar-id matchade nästa inloggade i samma flik, och med
+`gcTime: 10 min` hann ingen refetch ske. A31:s egen motivering var att
+målgruppen sitter på delade datorer; den täckte alltså halva problemet.
+
+Klienten bor nu i `lib/queryClient.ts` med `rensaAllCache()`. **Lägg inte
+tillbaka den i `main.tsx`** — då går den inte att nå utanför React-trädet
+igen. Övriga icke-scopade nycklar skyddas av tömningen; att scopa dem är ett
+eget, mindre brådskande arbete.
+
+### Kvarstår i övrigt
+
+- `components/ui/DropdownMenu.tsx` exponerar inget öppet-tillstånd och sätter
+  ingen ARIA. Sidans enda väg till tretton åtgärder saknar därför
+  `aria-expanded`, `role="menu"` och `role="menuitem"`. Fixen hör hemma i den
+  delade komponenten och skulle laga varje dropdown i portalen på en gång.
+- `_shared/cors.ts:createCorsResponse` stryper alla fält utom `error` på svar
+  ≥ 400, så `retryAfter` aldrig når klienten. Åtgärdat i de två funktionerna
+  genom att gå förbi helpern; åtta andra funktioner har kvar beteendet.
+- `ai-company-search` kan inte skilja "kunde inte kontrolleras" från "finns
+  inte" — `verified` är en boolean för båda. Behöver
+  `verificationStatus: 'confirmed' | 'not_found' | 'unavailable'`.
+- Ett ogiltigt men välformat org.nr ger HTTP 500 i stället för 404 från
+  `supabase/functions/bolagsverket`.
+- `ErrorState` i `components/ui/LoadingState.tsx` saknar mörkt läge — träffar
+  varje anropare.
+- `spontaneous_companies.updated_at` skrivs aldrig (ingen trigger, ingen kod).
+  Noll läsare i dag, men det är exakt kolumnen konsulentvyn missbrukade
+  2026-08-09.
+
+**Typtaket sänkt 427 → 425.**
+
+---
+
 ## Genomgång 2026-08-19 — Ansökningar, sex granskare (klar, deployad)
 
 Fem kodgranskare plus en som körde prod inloggad i Playwright gick igenom
