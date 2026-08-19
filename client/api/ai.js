@@ -637,6 +637,33 @@ const PROMPTS = {
       data.extraKeywords ? `Nyckelord: ${data.extraKeywords}` : '',
       data.extraContext ? String(data.extraContext) : '',
     ].filter(Boolean).join('\n');
+
+    // Tomt underlag = byt uppgift, inte bara längd.
+    //
+    // Mätt mot prod 2026-08-19, TVÅ gånger: med bara en annons att gå på
+    // skriver modellen ändå "Dessutom har jag goda kunskaper i svenska, både
+    // i tal och skrift" — ordagrant den lögn granskningen hittade. Att korta
+    // brevet hjälpte (250-350 → ~130 ord) men stoppade inte påhitten.
+    //
+    // Man kan inte be om ett personligt brev i första person om en person man
+    // inte vet något om och samtidigt få ett sant svar; uppgiften kräver
+    // påståenden. Alltså ändras uppgiften: ett utkast med tydliga luckor som
+    // personen fyller i själv. Omöjligt att ljuga med, och mer användbart för
+    // någon som inte vet hur ett brev ska se ut.
+    //
+    // Klienten sätter flaggan när det varken finns CV eller egen text.
+    const harUnderlag = Boolean(cvContext.trim() || extraDelar.trim());
+    const utkastlage = (data.tomtUnderlag === true || !harUnderlag)
+      ? `
+
+SÄRSKILT LÄGE — INGET UNDERLAG OM PERSONEN:
+Du vet ingenting om den som söker. Skriv därför INTE ett färdigt brev i första person, utan ett UTKAST ATT FYLLA I:
+- Skriv de meningar som går att skriva sant utifrån annonsen (intresset för tjänsten, vad i annonsen som lockar, vad rollen innebär).
+- Där ett påstående om personen behövs, skriv i stället en lucka: "___" följt av en kort ledtråd inom parentes på samma rad, t.ex. "Jag har ___ (skriv vad du gjort som liknar det här)".
+- Gör 3-5 sådana luckor, inte fler. Placera dem där de gör mest nytta.
+- Påstå ALDRIG något om personens språk, erfarenhet, egenskaper, körkort eller tillgänglighet — inte ens som exempel inuti en lucka.
+- Längd: 120-180 ord inklusive luckorna.`
+      : '';
     return {
       // No-platshållare-reglerna portade från ai-cover-letter-edgen (C11,
       // 2026-07-23) innan klientdubbletterna raderades
@@ -649,7 +676,7 @@ VIKTIGT:
 - Förbudet gäller LIKA MYCKET personliga EGENSKAPER, VANOR och FÖRMÅGOR. Skriv aldrig att personen "är van vid" något, "trivs med" något, "är noggrann", "arbetar bra i team", "har lätt för att lära", behärskar ett språk, kan arbeta skift, har körkort eller liknande — om det inte uttryckligen står i underlaget. Det är just sådana meningar som gör ett brev trovärdigt, och de är lika osanna som en påhittad titel om personen aldrig sagt dem.
 - Tillskriv inte heller ARBETSGIVAREN värderingar, kultur eller egenskaper som inte står i annonsen.
 - ÄR UNDERLAGET TUNT ELLER TOMT (inget CV, ingen egen text): skriv då ett KORTARE brev — 120-180 ord — som bara handlar om intresset för tjänsten och om varför annonsen tilltalar, formulerat så att inga påståenden görs om personens bakgrund eller egenskaper. Ett kort och sant brev är oändligt mycket bättre än ett långt och påhittat: personen ska kunna skicka det som det är utan att ljuga för en arbetsgivare.
-- Skriv korrekt svenska. Kontrollera särskilt genus (en/ett) och kongruens — mottagaren kan inte alltid granska språket själv.`,
+- Skriv korrekt svenska. Kontrollera särskilt genus (en/ett) och kongruens — mottagaren kan inte alltid granska språket själv.${utkastlage}`,
       user: `Skriv ett personligt brev för:\n\nFÖRETAG: ${data.companyName || 'Ej angivet'}\nJOBBTITEL: ${data.jobTitle || 'Ej angiven'}\n\nJOBBANNONS:\n${jobbAnnons.substring(0, 3000)}\n\nKANDIDATENS CV:${cvContext}\n${extraDelar}\n\nSkriv brevet:`,
       maxTokens: 1500,
       responseKey: 'brev'

@@ -229,7 +229,11 @@ async function generateCoverLetterWithAI(data: {
     jobTitle: data.jobData.jobTitle,
     jobDescription: data.jobData.jobAd,
     tone: data.tone,
-    extraContext: fullContext || undefined
+    extraContext: fullContext || undefined,
+    // Servern kan härleda det ur kontexten, men klienten VET det säkert —
+    // och skillnaden avgör om brevet blir färdig prosa eller ett utkast med
+    // luckor att fylla i. Se `personligt-brev` i client/api/ai.js.
+    tomtUnderlag: !data.cvData && !fullContext
   })
 }
 

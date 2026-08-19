@@ -436,6 +436,33 @@ describe('PROMPTS["personligt-brev"] — underlaget måste nå modellen', () => 
     expect(s).toMatch(/ARBETSGIVAREN/)
   })
 
+  it('byter till utkastläge när det inte finns något underlag om personen', () => {
+    // Mätt mot prod TVÅ gånger: enbart en kortare-brev-regel räckte inte.
+    // Modellen skrev fortfarande "Dessutom har jag goda kunskaper i svenska,
+    // både i tal och skrift" när den inte visste något om personen. Uppgiften
+    // i sig kräver påståenden — alltså ändras uppgiften till ett utkast med
+    // luckor som personen fyller i själv.
+    const tomt = bygg({ companyName: 'X', jobTitle: 'Y', jobDescription: 'Z' })
+    expect(tomt.system).toContain('SÄRSKILT LÄGE')
+    expect(tomt.system).toContain('UTKAST ATT FYLLA I')
+    expect(tomt.system).toMatch(/___/)
+  })
+
+  it('använder INTE utkastläget när det finns ett CV att gå på', () => {
+    // Har vi underlag ska brevet skrivas färdigt — luckor vore ett sämre
+    // resultat för den som redan fyllt i sitt CV.
+    const med = bygg({
+      companyName: 'X', jobTitle: 'Y', jobDescription: 'Z',
+      cvData: { title: 'Snickare', work_experience: [{ title: 'Snickare', company: 'Bygg AB' }] },
+    })
+    expect(med.system).not.toContain('SÄRSKILT LÄGE')
+  })
+
+  it('utkastläget slår även på egen text, inte bara på CV', () => {
+    const medText = bygg({ companyName: 'X', jobTitle: 'Y', extraContext: 'Jag har jobbat i lager i två år' })
+    expect(medText.system).not.toContain('SÄRSKILT LÄGE')
+  })
+
   it('säger åt modellen att skriva KORT när underlaget är tomt', () => {
     // Utan den här regeln tvingas modellen hitta på: med bara en annons som
     // underlag finns inget annat att fylla 250-350 ord med.
