@@ -371,6 +371,13 @@ export interface OnboardingProgress {
   career?: boolean
   jobSearch?: boolean
   coverLetter?: boolean
+  /**
+   * Saknades i typen till 2026-08-19 trots att `Spontaneous.tsx` skriver den
+   * vid varje sidbesök. Kolumnen är jsonb, så skrivningen har fungerat hela
+   * tiden — men anropet stod som ett typfel i den frysta takskulden, och
+   * varje läsare som räknar färdiga steg utifrån typen har missat det här.
+   */
+  spontaneous?: boolean
 }
 
 /**

@@ -4,6 +4,7 @@ import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import { clearUserScopedStorage } from '@/utils/safeStorage'
 import type { User, Session } from '@supabase/supabase-js'
+import { rensaAllCache } from '@/lib/queryClient'
 
 // E9: lazy-import Sentry istället för statisk — håller @sentry/react SDK
 // (~80KB) ute ur entry-bundlen tills cookie-consent finns.
@@ -400,6 +401,14 @@ export const useAuthStore = create<AuthState>()(
           // Målgruppen sitter ofta på delade datorer; innehållet ska inte
           // överleva utloggningen bara för att API-anropet failar.
           clearUserScopedStorage()
+
+          // ...och samma sak för React Query-cachen. A31 rensade localStorage
+          // men lämnade cachen orörd, och utloggningen navigerar bara
+          // (`navigate('/login')`) — ingen omladdning tömmer den åt oss.
+          // Cachenycklar utan användar-id matchar nästa inloggade person i
+          // samma flik, och med `gcTime: 10 min` hinner ingen refetch ske
+          // innan hon ser föregående deltagares uppgifter.
+          await rensaAllCache()
 
           const { error } = await supabase.auth.signOut()
 

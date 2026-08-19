@@ -1139,6 +1139,7 @@
       "subtitle": "Vi fyller i fälten åt dig — PDF eller Word (.docx)",
       "dropHere": "Dra hit ditt CV, eller välj det från datorn.",
       "privacyDescriptions": "Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.",
+      "privacyContact": "E-post och telefonnummer stryks innan texten skickas, så de fylls inte i automatiskt. Det är din integritet det handlar om — skriv in dem själv i byggaren.",
       "orKeepFile": "Vill du hellre spara filen som den är, utan att göra om den till fält?",
       "orKeepFileLink": "Ladda upp den under Dina sparade CV",
       "wait": "Det tar ungefär en halv minut. Stäng inte fönstret.",
@@ -2786,16 +2787,16 @@
       "tip4": "Fokusera på aktiviteter, inte resultat"
     }
   },
-  "spontaneous": {
+    "spontaneous": {
     "title": "Spontanansökan",
     "description": "Hitta och kontakta företag som passar dig",
     "tabs": {
       "search": "Hitta företag att kontakta",
-      "searchDesc": "Sök efter företag med organisationsnummer",
+      "searchDesc": "Beskriv vad du söker, så letar vi upp företag",
       "companies": "Dina sparade företag",
       "companiesDesc": "Företag du sparat",
-      "stats": "Statistik",
-      "statsDesc": "Följ din framgång"
+      "stats": "Din överblick",
+      "statsDesc": "Se var dina kontakter står"
     },
     "status": {
       "saved": "Sparad",
@@ -2826,7 +2827,9 @@
       "aiSearchLabel": "Beskriv företagen du söker",
       "orgSearchLabel": "Organisationsnummer",
       "aiPlaceholder": "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'",
-      "enterOrgNumber": "Ange ett organisationsnummer"
+      "enterOrgNumber": "Ange ett organisationsnummer",
+      "searching": "Söker …",
+      "foundAnnouncement": "{{name}} hittades."
     },
     "company": {
       "address": "Adress",
@@ -2848,7 +2851,24 @@
       "statusDistribution": "Statusfördelning",
       "emptyTitle": "Här samlas din överblick",
       "emptyDescription": "När du sparar och kontaktar företag ser du hur det går här — i din egen takt.",
-      "emptyCta": "Hitta företag att kontakta"
+      "emptyCta": "Hitta företag att kontakta",
+      "errorTitle": "Statistiken kunde inte hämtas",
+      "errorDescription": "Vi når inte dina sparade företag just nu. Siffrorna skulle bli fel, så vi visar dem inte.",
+      "reachedOut": "Företag du hört av dig till",
+      "reachedOutNone": "Du har inte hört av dig till något företag än",
+      "responsesNone": "Inget svar har kommit än",
+      "waitingNone": "Du väntar inte på något svar just nu",
+      "noContactYetTitle": "Här ser du hur företagen svarar",
+      "noContactYetCta": "Se dina sparade företag",
+      "tooFewForRates": "Procentsiffror visas när du hört av dig till minst fem företag — ett litet underlag ger missvisande siffror.",
+      "reachedOutCount_one": "Du har hört av dig till {{count}} företag",
+      "reachedOutCount_other": "Du har hört av dig till {{count}} företag",
+      "responsesCount_one": "{{count}} av dem har svarat",
+      "responsesCount_other": "{{count}} av dem har svarat",
+      "positiveRateNoBasis": "Inget av dina svar har kvar sitt utfall, så andelen positiva går inte att räkna ut.",
+      "archivedResponsesExcluded_one": "Du har {{count}} arkiverat svar. Utfallet sparas inte när du arkiverar, så andelen positiva skulle bli missvisande.",
+      "archivedResponsesExcluded_other": "Du har {{count}} arkiverade svar. Utfallet sparas inte när du arkiverar, så andelen positiva skulle bli missvisande.",
+      "selfReportedHint": "Siffrorna bygger på de statusar du själv sätter — portalen får inga svar från företagen."
     },
     "followups": {
       "title": "Kommande uppföljningar",
@@ -2856,7 +2876,11 @@
       "today": "Idag",
       "tomorrow": "Imorgon",
       "overdue": "Försenad",
-      "daysLeft": "Om {{days}} dagar"
+      "daysLeft": "Om {{days}} dagar",
+      "emptyTitle": "Här håller du koll på dina uppföljningar",
+      "emptyCta": "Planera en uppföljning",
+      "overdueGroup": "Försenade",
+      "upcomingGroup": "Kommande"
     },
     "followup": {
       "plan": "Planera uppföljning",
@@ -2893,12 +2917,13 @@
       "updated": "Företaget har uppdaterats",
       "updateError": "Kunde inte uppdatera företaget",
       "statusChanged": "Status ändrad till \"{{status}}\"",
-      "statusChangedBulk": "{{count}} företag ändrade till \"{{status}}\"",
       "statusError": "Kunde inte uppdatera status",
       "removed": "Företaget har tagits bort",
       "removeError": "Kunde inte ta bort företaget",
       "addedToApplications": "{{name}} har lagts till i Ansökningar",
-      "addToApplicationsError": "Kunde inte lägga till i Ansökningar"
+      "addToApplicationsError": "Kunde inte lägga till i Ansökningar",
+      "statusChangedBulk_one": "{{count}} företag ändrat till \"{{status}}\"",
+      "statusChangedBulk_other": "{{count}} företag ändrade till \"{{status}}\""
     },
     "csv": {
       "companyName": "Företagsnamn",
@@ -2912,14 +2937,14 @@
       "notes": "Anteckningar"
     },
     "companyActions": "Åtgärder för företag",
-    "resultsAnnouncement": "{{count}} företag visas",
     "selectCompany": "Välj {{name}}",
     "batch": {
       "selectMode": "Välj flera",
       "cancel": "Avbryt val",
-      "selected": "{{count}} valda",
       "changeStatusTo": "Ändra status till",
-      "archiveSelected": "Arkivera valda"
+      "archiveSelected": "Arkivera valda",
+      "selected_one": "{{count}} vald",
+      "selected_other": "{{count}} valda"
     },
     "listSearchPlaceholder": "Sök på namn, ort eller bransch...",
     "sort": {
@@ -2936,7 +2961,8 @@
     "nextSteps": {
       "title": "Grattis till svaret! Nästa steg:",
       "addToApplications": "Lägg till i Ansökningar",
-      "practiceInterview": "Öva inför intervju"
+      "practiceInterview": "Öva inför intervju",
+      "alreadyInApplications": "Det här företaget finns redan bland dina ansökningar."
     },
     "citySearchLabel": "Ort (valfritt)",
     "cityPlaceholder": "t.ex. Göteborg",
@@ -2949,17 +2975,18 @@
     },
     "tips": {
       "title": "Tips för spontanansökningar",
-      "tip1": "Sikta på att kontakta 5-10 nya företag per vecka",
+      "tip1": "Några få företag i taget räcker – hellre genomtänkt än många",
       "tip2": "Välj företag som matchar din kompetens",
       "tip3": "Researcha företaget innan du kontaktar dem",
       "tip4": "Följ upp om du inte hört något inom 1-2 veckor",
       "aiTip1": "Var specifik i din sökning: bransch, ort, storlek",
       "aiTip2": "Exempel: \"Arkitektkontor i Malmö\", \"Startup inom fintech\"",
-      "aiTip3": "Verifierade företag har bekräftade uppgifter från Bolagsverket",
+      "aiTip3": "Grön bricka = namn, bolagsform och adress är hämtade från Bolagsverket",
       "aiTip4": "Spara flera företag samtidigt med kryssrutorna",
       "orgTip1": "Hitta org.nr på",
-      "tip3Stat": "En svarsfrekvens på 10-20% är normalt för spontanansökningar",
-      "tip4Stat": "Kvalitet går före kvantitet – anpassa varje ansökan"
+      "tip3Stat": "De flesta svarar inte alls – det säger inget om dig",
+      "tip4Stat": "Kvalitet går före kvantitet – anpassa varje ansökan",
+      "responseRateNoBenchmark": "Svarsfrekvensen säger mer om läget hos arbetsgivarna än om dig — jämför hellre med hur det gick för dig förra månaden än med en siffra."
     },
     "companyStatus": {
       "active": "Aktivt",
@@ -2971,7 +2998,22 @@
       "minChars": "Ange minst 3 tecken för AI-sökning",
       "noResults": "Inga företag hittades. Prova en annan sökterm.",
       "failed": "Sökningen misslyckades",
-      "resultsFound": "{{total}} företag hittade, {{verified}} verifierade mot Bolagsverket"
+      "resultsFound": "{{total}} företag hittade, {{verified}} verifierade mot Bolagsverket",
+      "nothingToShow": "Vi fick inget att visa den här gången. Prova gärna en annan sökterm — eller sök igen om en stund.",
+      "openSettings": "Öppna Inställningar",
+      "useOrgNumberInstead": "Sök på organisationsnummer i stället",
+      "errors": {
+        "aiOff": "Du har stängt av AI-behandling av dina uppgifter, så AI-sökningen kan inte köras. Du kan slå på den i Inställningar — eller söka på organisationsnummer, som fungerar helt utan AI.",
+        "checkFailed": "Vi kunde inte läsa dina AI-inställningar just nu, och skickade därför ingenting vidare. Det är vårt fel — prova gärna igen om en stund.",
+        "dailyLimit": "Du har använt dagens AI-sökningar. De börjar om i morgon — till dess går det bra att söka på organisationsnummer.",
+        "rateLimitedMinutes_one": "Det har blivit många sökningar på kort tid. Prova igen om ungefär {{count}} minut.",
+        "rateLimitedMinutes_other": "Det har blivit många sökningar på kort tid. Prova igen om ungefär {{count}} minuter.",
+        "rateLimited": "Det har blivit många sökningar på kort tid. Prova igen om en liten stund.",
+        "unauthorized": "Din inloggning verkar ha gått ut. Logga in igen så fortsätter vi där du var.",
+        "invalidInput": "Söktexten gick inte att använda. Prova att skriva om den — till exempel \"bagerier i Malmö\".",
+        "upstream": "AI-tjänsten svarade inte som den skulle. Det är vårt fel, inte din sökning — prova igen om en stund.",
+        "internal": "Något gick fel hos oss. Din sökning är oskyldig — prova igen om en stund."
+      }
     },
     "annualReports": "Årsredovisningar",
     "noAnnualReports": "Inga årsredovisningar tillgängliga.",
@@ -2997,7 +3039,37 @@
     "noSavedCompanies": "Inga sparade företag",
     "noCompaniesWithStatus": "Inga företag med status \"{{status}}\"",
     "searchAndSaveCompanies": "Sök efter företag och spara de du är intresserad av.",
-    "changeFilter": "Ändra filter för att se andra företag."
+    "changeFilter": "Ändra filter för att se andra företag.",
+    "saveBatch": {
+      "stoppedEarly_one": "Vi stannade efter att registret slutat svara. {{count}} företag är inte sparat — prova det igen om en stund.",
+      "stoppedEarly_other": "Vi stannade efter att registret slutat svara. {{count}} företag är inte sparade — prova dem igen om en stund.",
+      "someFailed_one": "{{count}} företag gick inte att spara. Prova det igen om en stund.",
+      "someFailed_other": "{{count}} företag gick inte att spara. Prova dem igen om en stund.",
+      "noneSaved": "Inget företag kunde sparas",
+      "noneSavedHelp": "Företagsregistret svarade inte. Ingenting har lagts till i din lista — prova igen om en stund."
+    },
+    "manualOrgNumber": {
+      "label": "Sökningen fick inget organisationsnummer för det här företaget. Fyll i det så kontrollerar vi mot Bolagsverket och sparar.",
+      "lookup": "Slå upp numret på allabolag.se"
+    },
+    "listErrorTitle": "Företagen kunde inte hämtas",
+    "listErrorDescription": "Vi når inte dina sparade företag just nu. En tom lista hade sett ut som att du inte sparat något, så vi visar den inte.",
+    "myCompaniesEmptyTitle": "Här samlas företagen du vill kontakta",
+    "findCompaniesCta": "Hitta företag att kontakta",
+    "noSearchMatches": "Inga företag matchar \"{{query}}\"",
+    "showAllCompanies": "Visa alla dina företag",
+    "annualReportsUnavailable": "Vi kunde inte hämta årsredovisningarna just nu. Det säger inget om företaget — försök igen om en stund.",
+    "verificationScope": "Namn, organisationsnummer, bolagsform och adress är hämtade från Bolagsverket. Beskrivning och bransch kommer från AI-sökningen och är inte kontrollerade — läs dem som ett tips, inte som fakta.",
+    "verifiedInRegistry": "Finns i registret",
+    "notConfirmed": "Inte bekräftad",
+    "aiIndustryLabel": "Bransch föreslagen av AI",
+    "aiDescriptionLabel": "Beskrivning genererad av AI",
+    "analyzeCompany": "Analysera {{name}}",
+    "hideAnalysis": "Dölj analysen av {{name}}",
+    "saveCompanyLabel": "Spara {{name}} i din lista",
+    "aiWatermarkType": "företagsförslag",
+    "resultsAnnouncement_one": "{{count}} företag visas",
+    "resultsAnnouncement_other": "{{count}} företag visas"
   },
   "career": {
     "editorialSpot": "Utforska arbetsmarknaden och bygg din plan steg för steg.",

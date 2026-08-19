@@ -34,7 +34,7 @@ export default function SpontaneousPage() {
   // Build tabs with translated labels (fallback to Swedish)
   const tabs = spontaneousTabDefs.map((tab) => ({
     ...tab,
-    label: t(tab.labelKey, tab.labelKey.split('.').pop()),
+    label: t(tab.labelKey, tab.fallback),
     description: tab.descriptionKey ? t(tab.descriptionKey, '') : undefined,
   }))
 
@@ -58,7 +58,11 @@ export default function SpontaneousPage() {
       tabVariant="glass"
       showTabs={true}
       domain="activity"
-      className="space-y-6"
+      // `space-y-6` stod här till 2026-08-19 och gjorde ingenting:
+      // PageLayout lägger klassen på en rotdiv som har exakt ett barn, och
+      // `space-y-*` verkar bara mellan syskon. `sidbredd` är konventionen
+      // sedan omläggningen 2026-08-17 — enda stället sidbredden ska sättas.
+      className="sidbredd"
     >
       <Routes>
         <Route path="/" element={<><SearchTab /><RadgivarTips pathname="/spontanansökan" index={0} /></>} />

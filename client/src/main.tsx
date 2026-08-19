@@ -1,7 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/lib/queryClient'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { MobileOptimizer } from './components/MobileOptimizer'
@@ -66,20 +67,10 @@ window.addEventListener('unhandledrejection', (event) => {
   }
 })
 
-// Create Query Client with optimized settings
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-      staleTime: 5 * 60 * 1000,
-      gcTime: 10 * 60 * 1000,
-    },
-    mutations: {
-      retry: 1,
-    },
-  },
-})
+// Query-klienten bor i `lib/queryClient.ts` sedan 2026-08-19, så att
+// utloggningen kan tömma cachen utifrån React-trädet. Se modulens huvud för
+// varför det spelar roll (fel persons uppgifter kunde annars ligga kvar i
+// cachen efter en utloggning på en delad dator).
 
 // SW-avregistrering sker i index.html (en gång, före app-laddning) —
 // dubbletten här borttagen 2026-07-10 (C2)

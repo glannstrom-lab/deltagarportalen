@@ -95,18 +95,46 @@ function tolkaSprakniva(ratext: string | undefined): string {
 let raknare = 0
 const nyttId = () => `imp-${Date.now()}-${raknare++}`
 
+/**
+ * Serverns PII-strykning (`stripPii` i client/api/ai.js) ersätter e-post,
+ * telefon, personnummer och kontonummer med platshållare INNAN texten når
+ * modellen. Modellen kan alltså svara med `[BORTTAGET-EPOST]` som e-postadress
+ * — och utan den här vakten hade den strängen hamnat i deltagarens CV och
+ * följt med ut till en arbetsgivare.
+ *
+ * Uppmätt mot prod 2026-08-19: exakt det hände. Fältet ska vara tomt i stället,
+ * så att personen ser att det är hennes tur att fylla i.
+ */
+const ÄR_PLATSHÅLLARE = /^\s*\[BORTTAGET-[A-ZÅÄÖ]+\]\s*$/
+const utanPlatshallare = (v: string | undefined): string => {
+  const t = (v || '').trim()
+  if (!t || ÄR_PLATSHÅLLARE.test(t)) return ''
+  // Även inbäddad platshållare i en längre sträng ska bort — en profiltext som
+  // innehåller "kontakta mig på [BORTTAGET-EPOST]" ska inte visa det.
+  return t.replace(/\[BORTTAGET-[A-ZÅÄÖ]+\]/g, '').replace(/\s{2,}/g, ' ').trim()
+}
+
 /** Gör AI-svaren till CVData-fält. Ingenting fylls i som inte kom med. */
 function tillCvFalt(rubrik: ImporteradRubrik | null, erfarenhet: ImporteradErfarenhet | null): Partial<CVData> {
   const ut: Partial<CVData> = {}
 
   if (rubrik) {
-    if (rubrik.firstName) ut.firstName = rubrik.firstName
-    if (rubrik.lastName) ut.lastName = rubrik.lastName
-    if (rubrik.title) ut.title = rubrik.title
-    if (rubrik.email) ut.email = rubrik.email
-    if (rubrik.phone) ut.phone = rubrik.phone
-    if (rubrik.location) ut.location = rubrik.location
-    if (rubrik.summary) ut.summary = rubrik.summary
+    const rent = {
+      firstName: utanPlatshallare(rubrik.firstName),
+      lastName: utanPlatshallare(rubrik.lastName),
+      title: utanPlatshallare(rubrik.title),
+      email: utanPlatshallare(rubrik.email),
+      phone: utanPlatshallare(rubrik.phone),
+      location: utanPlatshallare(rubrik.location),
+      summary: utanPlatshallare(rubrik.summary),
+    }
+    if (rent.firstName) ut.firstName = rent.firstName
+    if (rent.lastName) ut.lastName = rent.lastName
+    if (rent.title) ut.title = rent.title
+    if (rent.email) ut.email = rent.email
+    if (rent.phone) ut.phone = rent.phone
+    if (rent.location) ut.location = rent.location
+    if (rent.summary) ut.summary = rent.summary
     if (rubrik.skills?.length) {
       ut.skills = rubrik.skills.map((namn) => ({
         id: nyttId(),
@@ -351,6 +379,7 @@ export function CVImportModal({ isOpen, onClose, onImported }: CVImportModalProp
                   <li>{t('cv.upload.privacy2', 'Texten skickas till AI:n som sorterar den i rätt fält. Personnummer tas bort automatiskt först.')}</li>
                   <li>{t('cv.upload.privacy3', 'AI:n får inte skriva om eller lägga till något — bara flytta det som står i filen.')}</li>
                   <li>{t('cv.import.privacyDescriptions', 'Dina egna beskrivningar av tjänsterna följer inte med — dem skriver du in själv, så att de blir precis som du vill ha dem.')}</li>
+                  <li>{t('cv.import.privacyContact', 'E-post och telefonnummer stryks innan texten skickas, så de fylls inte i automatiskt. Det är din integritet det handlar om — skriv in dem själv i byggaren.')}</li>
                   <li>{t('cv.upload.privacy4', 'Du ser resultatet och godkänner det innan något sparas.')}</li>
                 </ul>
               </div>

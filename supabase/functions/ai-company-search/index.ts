@@ -7,6 +7,25 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { checkRateLimit } from '../_shared/rateLimit.ts'
+import {
+  AI_GATE_CODES,
+  checkAiEnabled,
+  checkDailyTokenCap,
+  clampInt,
+  createAiErrorResponse,
+  createGateDenialResponse,
+  createTokenCapResponse,
+  sanitizeForPrompt,
+} from '../_shared/aiGate.ts'
+
+// Indatagränser. `MAX_RESULTS_*` klampar `maxResults` innan det interpoleras
+// in i systemprompten och innan det styr `slice()` + antalet
+// Bolagsverket-uppslag. 25 är taket för vad ett sökresultat rimligen ska
+// kosta i tredjepartsanrop; klienten skickar 10.
+const MAX_RESULTS_MIN = 1
+const MAX_RESULTS_MAX = 25
+const MAX_RESULTS_DEFAULT = 10
+const MAX_QUERY_LENGTH = 300
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const BOLAGSVERKET_API_BASE = 'https://gw.api.bolagsverket.se/vardefulla-datamangder/v1'
@@ -240,16 +259,41 @@ Deno.serve(async (req) => {
   try {
     // Parse request
     const body = await req.json()
-    const { query, maxResults = 10 } = body
+    const { query, maxResults } = body
 
-    if (!query || typeof query !== 'string' || query.trim().length < 3) {
-      return createCorsResponse({ error: 'Söktermen måste vara minst 3 tecken' }, 400, origin)
+    // All användarstyrd indata saneras INNAN den når prompten. `query` gick
+    // tidigare orörd in i användarprompten och `maxResults` otypkontrollerat
+    // in i SYSTEMprompten (`Max ${maxResults} företag`) — en sträng därifrån
+    // blev ordagrant en instruktion till modellen.
+    const sokterm = sanitizeForPrompt(query, MAX_QUERY_LENGTH)
+    const antalTraffar = clampInt(maxResults, MAX_RESULTS_MIN, MAX_RESULTS_MAX, MAX_RESULTS_DEFAULT)
+
+    // Vi ber om FLER kandidater än vi ska visa.
+    //
+    // Uppmätt i drift 2026-08-19: en sökning på "bagerier" gav åtta träffar
+    // där SAMTLIGA saknade organisationsnummer — och utan org.nr går företaget
+    // varken att verifiera mot Bolagsverket eller att spara, så deltagaren fick
+    // åtta rader hon inte kunde göra något med. Sidans hela syfte föll.
+    //
+    // Prompten krävde redan org.nr i versaler; att skärpa språket mer hjälper
+    // inte. Det som hjälper är att ge modellen råd att slänga de kandidater den
+    // inte kan belägga och ta nya i stället. Överskottet kostar ett par hundra
+    // tokens och är oberoende av hur många som till slut visas.
+    const antalKandidater = Math.min(MAX_RESULTS_MAX * 2, antalTraffar * 2 + 4)
+
+    if (sokterm.length < 3) {
+      return createAiErrorResponse(
+        AI_GATE_CODES.INVALID_INPUT,
+        'Söktermen måste vara minst 3 tecken',
+        400,
+        origin,
+      )
     }
 
     // Auth check
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return createCorsResponse({ error: 'Unauthorized' }, 401, origin)
+      return createAiErrorResponse(AI_GATE_CODES.UNAUTHORIZED, 'Unauthorized', 401, origin)
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
@@ -257,7 +301,12 @@ Deno.serve(async (req) => {
     const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
 
     if (!supabaseUrl || !serviceRoleKey || !openRouterKey) {
-      return createCorsResponse({ error: 'Server configuration error' }, 500, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.SERVER_MISCONFIGURED,
+        'Server configuration error',
+        500,
+        origin,
+      )
     }
 
     // Verify user
@@ -269,23 +318,55 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
     if (authError || !user) {
-      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+      return createAiErrorResponse(AI_GATE_CODES.UNAUTHORIZED, 'Invalid token', 401, origin)
     }
 
-    // Per-user rate limit (distribuerad via Supabase, in-memory fallback)
+    // ── Grindar, i ordning: flödesskydd → rättighet → kostnad ──────────────
+    //
+    // 1. RATE LIMIT (per användare). POLICY: FAIL OPEN, medvetet ärvd från
+    //    `_shared/rateLimit.ts` — vid RPC-fel degraderar den till en
+    //    in-memory-fallback som filens eget huvud kallar trasig på serverless
+    //    (räknaren nollas vid cold start, isolat delar inte state). Den
+    //    skyddar en PROJEKT-GLOBAL tredjepartskvot (OpenRouter/Perplexity),
+    //    alltså pengar — inte en rättighet — och att neka alla sökningar när
+    //    rate-limit-RPC:n hickar vore fel växel. Kompensationen ligger i steg
+    //    3: tokentaket nedan failar CLOSED just för att den här failar open,
+    //    så det aldrig blir noll kostnadsskydd samtidigt. Filen delas av åtta
+    //    andra funktioner och ändras inte härifrån.
     const rateCheck = await checkRateLimit(user.id, 'ai-company-search')
     if (!rateCheck.allowed) {
-      return createCorsResponse(
-        {
-          error: 'För många sökningar. Vänta en stund och försök igen.',
-          retryAfter: rateCheck.retryAfter,
-        },
+      return createAiErrorResponse(
+        AI_GATE_CODES.RATE_LIMITED,
+        'För många sökningar. Vänta en stund och försök igen.',
         429,
         origin,
+        { retryAfter: rateCheck.retryAfter ?? 60 },
       )
     }
 
-    console.log(`[ai-company-search] User ${user.id} searching: "${query}"`)
+    // 2. AI-BRYTAREN (`profiles.ai_enabled`). POLICY: FAIL CLOSED.
+    //    Fram till 2026-08-19 fanns den inte här alls: ett konto med
+    //    `ai_enabled = false` fick HTTP 200 med fullt AI-svar, vilket gjorde
+    //    portalens löfte om att AI-behandling kan stängas av osant i drift.
+    //    Klienten skickas service-role-klienten med avsikt: den går förbi RLS
+    //    och når därför användarens profilrad oavsett hur policyerna på
+    //    `profiles` ändras. Skickas en klient med bara anon-nyckeln in här
+    //    läser den som `anon`, får 0 rader och nekar ALLA (A19). Se aiGate.ts.
+    const aiGate = await checkAiEnabled(supabase, user.id)
+    if (!aiGate.allowed) {
+      console.warn(`[ai-company-search] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`)
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin)
+    }
+
+    // 3. DAGLIGT TOKENTAK. POLICY: FAIL CLOSED — se motiveringen i aiGate.ts.
+    //    Delar budget med `client/api/ai.js` (samma `ai_usage_logs`).
+    const tokenCap = await checkDailyTokenCap(supabase, user.id)
+    if (!tokenCap.allowed) {
+      console.warn(`[ai-company-search] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`)
+      return createTokenCapResponse(tokenCap, origin)
+    }
+
+    console.log(`[ai-company-search] User ${user.id} searching (${sokterm.length} tecken)`)
 
     // Build prompt for Perplexity - optimized for finding org numbers
     const systemPrompt = `Du är expert på att hitta svenska företag med deras organisationsnummer.
@@ -310,15 +391,18 @@ RETURNERA exakt detta JSON-format (inget annat):
 ]
 
 REGLER:
-- Max ${maxResults} företag
+- Returnera upp till ${antalKandidater} företag — vi visar ${antalTraffar} av dem
 - Endast AKTIVA företag (ej konkurs/likvidation)
-- orgNumber MÅSTE vara exakt 10 siffror eller null
+- orgNumber MÅSTE vara exakt 10 siffror
+- UTELÄMNA företag vars org.nr du inte kunnat hitta, och ta med ett annat i stället.
+  Ett företag utan org.nr går inte att använda i vår tjänst — det är bättre att
+  returnera färre företag än att fylla listan med sådana som inte går att spara.
 - Sök ALLTID på allabolag.se för att hitta org.nr
 - Svara ENDAST med JSON-array`
 
-    const userPrompt = `Sök efter svenska företag: "${query.trim()}"
+    const userPrompt = `Sök efter svenska företag: "${sokterm}"
 
-För varje företag du hittar, gå till allabolag.se och hämta organisationsnumret. Det är kritiskt viktigt att inkludera org.nr.`
+För varje företag du hittar, gå till allabolag.se och hämta organisationsnumret. Hittar du inte numret — hoppa över företaget och ta ett annat i stället.`
 
     // Call Perplexity via OpenRouter
     const aiResponse = await fetch(OPENROUTER_API_URL, {
@@ -343,14 +427,19 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
       console.error('[ai-company-search] OpenRouter error:', aiResponse.status, errorText)
-      return createCorsResponse({ error: 'AI-tjänsten är inte tillgänglig' }, 502, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.AI_UPSTREAM_ERROR,
+        'AI-tjänsten är inte tillgänglig',
+        502,
+        origin,
+      )
     }
 
     const aiData = await aiResponse.json()
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
-      return createCorsResponse({ error: 'Inget svar från AI' }, 502, origin)
+      return createAiErrorResponse(AI_GATE_CODES.AI_UPSTREAM_ERROR, 'Inget svar från AI', 502, origin)
     }
 
     console.log('[ai-company-search] AI response received, parsing...')
@@ -430,14 +519,35 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
       }
     }
 
+    // Sortera de användbara först, INNAN vi kapar listan.
+    //
+    // Vi hämtar numera fler kandidater än vi visar (se `antalKandidater`), men
+    // en rak `slice(0, n)` hade kunnat kapa bort just de träffar som HAR
+    // organisationsnummer och behålla dem som saknar det. Ett företag utan
+    // org.nr går varken att verifiera eller spara, så det hör sist — annars
+    // fyller det en plats som en användbar träff kunde haft.
+    //
+    // `sort` är stabil i ES2019+, så inbördes ordning inom varje grupp är
+    // AI:ns egen relevansordning.
+    const harOrgnummer = (c: CompanySearchResult) =>
+      !!c.orgNumber && /^\d{10}$/.test(c.orgNumber.replace(/[-\s]/g, ''))
+    companies.sort((a, b) => Number(harOrgnummer(b)) - Number(harOrgnummer(a)))
+
     // Verify each company against Bolagsverket (in parallel)
-    const verificationPromises = companies.slice(0, maxResults).map(async (company) => {
+    const verificationPromises = companies.slice(0, antalTraffar).map(async (company) => {
       if (company.orgNumber) {
         const verified = await verifyCompany(company.orgNumber)
         if (verified) {
+          // `verified` är Record<string, unknown> — `verified.name || company.name`
+          // gav typen `{}` och fällde `deno check` (fanns före 2026-08-19, inte
+          // ett nytt fel). Samma beteende som förut: tomt namn faller tillbaka
+          // på det AI:n hittade.
+          const verifieratNamn = typeof verified.name === 'string' && verified.name.length > 0
+            ? verified.name
+            : company.name
           return {
             ...company,
-            name: verified.name || company.name,
+            name: verifieratNamn,
             verified: true,
             verifiedData: verified,
           }
@@ -472,7 +582,7 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
 
     return createCorsResponse({
       success: true,
-      query: query.trim(),
+      query: sokterm,
       companies,
       totalFound: companies.length,
       verified: companies.filter(c => c.verified).length,
@@ -480,6 +590,6 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
 
   } catch (err) {
     console.error('[ai-company-search] Error:', err)
-    return createCorsResponse({ error: 'Ett fel uppstod' }, 500, origin)
+    return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
   }
 })

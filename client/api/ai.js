@@ -674,6 +674,11 @@ ABSOLUTA REGLER:
 - Saknas ett fält: lämna tom sträng eller tom lista. Gissa aldrig.
 - summary: bara om CV:t har en egen profiltext. Skriv aldrig en ny. Max 400 tecken, ordagrant.
 - skills: korta ord/fraser som faktiskt listas som kompetenser. Max 20.
+- email och phone kommer ALDRIG fram till dig: serverns PII-strykning ersätter dem
+  med [BORTTAGET-EPOST] och [BORTTAGET-TELEFON] innan texten når hit. Skriv aldrig av en sådan
+  platshållare som om den vore ett värde — lämna fälten tomma. Personen fyller i dem själv.
+- location står ofta på samma rad som de överstrukna kontaktuppgifterna, nära toppen. Den går
+  bra att ta med.
 - Personnummer, kön, hälsa, medborgarskap och foto ska ALDRIG med.
 - Ta INTE med arbetslivserfarenhet eller utbildning här. De hämtas separat.`,
     user: `CV-TEXT (utläst ur uppladdad fil):

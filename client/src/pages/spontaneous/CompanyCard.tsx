@@ -130,9 +130,25 @@ export function CompanyCard({
   }
 
   // Positivt svar → skapa post på Ansökningar-sidan (pipeline, kontakter, påminnelser)
+  //
+  // Dubblettspärr: `job_id` blir `manual-<timestamp>` och är alltså unikt vid
+  // varje klick, så databasens UNIQUE-villkor fångar ingenting. Det lokala
+  // `addedToApplications` dör vid omladdning. Därför slår vi upp befintliga
+  // manuella ansökningar för samma företag INNAN vi skapar en ny — det är den
+  // enda spärr som överlever en sidomladdning utan att röra databasen.
   const handleAddToApplications = async () => {
     setIsAddingToApplications(true)
     try {
+      const existing = await applicationsApi.getAll({ source: ['manual'] })
+      const alreadyThere = existing.some(a =>
+        (a.companyName || '').trim().toLowerCase() === company.company_name.trim().toLowerCase()
+      )
+      if (alreadyThere) {
+        setAddedToApplications(true)
+        showToast.info(t('spontaneous.nextSteps.alreadyInApplications', 'Det här företaget finns redan bland dina ansökningar.'))
+        return
+      }
+
       await applicationsApi.create({
         jobData: {
           headline: t('spontaneous.title'),
@@ -163,7 +179,7 @@ export function CompanyCard({
             checked={selected}
             onChange={onToggleSelect}
             aria-label={t('spontaneous.selectCompany', { name: company.company_name })}
-            className="mt-1 w-4 h-4 flex-shrink-0 text-primary-500 rounded border-stone-300 focus:ring-primary-500"
+            className="mt-1 w-4 h-4 flex-shrink-0 rounded border-stone-300 accent-[var(--c-solid)] focus:ring-[var(--c-solid)]"
           />
         )}
         <div className="flex-1 min-w-0">
@@ -179,8 +195,12 @@ export function CompanyCard({
 
           <div className="flex flex-wrap gap-2 mb-3">
             <StatusBadge status={company.status} />
+            {/* Hubbfärg, inte röd: hög prioritet är deltagarens egen markering,
+                inte en varning. Röd är enligt DESIGN.md §4 reserverad för
+                destruktivt. Uppmätt: 4,93:1 ljust, 10,11:1 mörkt. */}
             {company.priority === 'high' && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-[var(--c-solid)] text-[var(--c-on-solid)]">
+                <Star className="w-3.5 h-3.5" aria-hidden="true" />
                 {t('spontaneous.highPriority')}
               </span>
             )}
@@ -241,7 +261,8 @@ export function CompanyCard({
               )}
             </div>
           ) : company.followup_date ? (
-            <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
+            /* amber-600 gav 3,19:1 mot vitt kort — under AA. amber-700 = 5,02:1. */
+            <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
               <Clock className="w-3 h-3" aria-hidden="true" />
               {t('spontaneous.followUp')}: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
               <button
@@ -466,11 +487,19 @@ export function CompanyCard({
         {/* Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" aria-label={t('spontaneous.companyActions')} className="h-8 w-8 p-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              aria-label={t('spontaneous.companyActions')}
+              aria-haspopup="menu"
+              className="h-11 w-11 sm:h-8 sm:w-8 p-0"
+            >
               <MoreVertical className="w-4 h-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
+          {/* Tolv val i en 900 px hög vy sköt "Arkivera" och "Ta bort" utanför
+              skärmen utan att något gick att scrolla. Nu scrollar menyn själv. */}
+          <DropdownMenuContent align="end" className="w-56 max-h-[70vh] overflow-y-auto">
             <DropdownMenuItem onClick={openCoverLetter}>
               <Mail className="w-4 h-4 mr-2" />
               {t('spontaneous.writeCoverLetter')}

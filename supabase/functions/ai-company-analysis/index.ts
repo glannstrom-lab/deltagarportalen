@@ -5,9 +5,23 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
-import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
+import { checkRateLimit } from '../_shared/rateLimit.ts'
+import {
+  AI_GATE_CODES,
+  checkAiEnabled,
+  checkDailyTokenCap,
+  createAiErrorResponse,
+  createGateDenialResponse,
+  createTokenCapResponse,
+  sanitizeForPrompt,
+} from '../_shared/aiGate.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
+// Indatagränser — allt användarstyrt interpoleras in i prompten och saneras
+// därför först (längd, vinkelparenteser, styrtecken).
+const MAX_COMPANY_NAME_LENGTH = 120
+const MAX_INDUSTRY_LENGTH = 80
 
 interface CompanyAnalysisRequest {
   companyName: string
@@ -129,14 +143,23 @@ Deno.serve(async (req) => {
     const body = await req.json() as CompanyAnalysisRequest
     const { companyName, orgNumber, industry } = body
 
-    if (!companyName || companyName.trim().length < 2) {
-      return createCorsResponse({ error: 'Företagsnamn krävs' }, 400, origin)
+    // Sanering före prompt. `orgNumber` normaliseras till exakt 10 siffror
+    // eller utelämnas helt — det är det enda formatet Bolagsverket och
+    // allabolag använder, och därmed enda formen som är meningsfull att be
+    // modellen om.
+    const foretagsnamn = sanitizeForPrompt(companyName, MAX_COMPANY_NAME_LENGTH)
+    const bransch = sanitizeForPrompt(industry, MAX_INDUSTRY_LENGTH)
+    const orgnrRent = String(orgNumber ?? '').replace(/[-\s]/g, '').trim()
+    const orgnr = /^\d{10}$/.test(orgnrRent) ? orgnrRent : undefined
+
+    if (foretagsnamn.length < 2) {
+      return createAiErrorResponse(AI_GATE_CODES.INVALID_INPUT, 'Företagsnamn krävs', 400, origin)
     }
 
     // Auth check
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return createCorsResponse({ error: 'Unauthorized' }, 401, origin)
+      return createAiErrorResponse(AI_GATE_CODES.UNAUTHORIZED, 'Unauthorized', 401, origin)
     }
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
@@ -144,7 +167,12 @@ Deno.serve(async (req) => {
     const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
 
     if (!supabaseUrl || !serviceRoleKey || !openRouterKey) {
-      return createCorsResponse({ error: 'Server configuration error' }, 500, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.SERVER_MISCONFIGURED,
+        'Server configuration error',
+        500,
+        origin,
+      )
     }
 
     // Verify user
@@ -156,19 +184,62 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
     if (authError || !user) {
-      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+      return createAiErrorResponse(AI_GATE_CODES.UNAUTHORIZED, 'Invalid token', 401, origin)
     }
 
-    // Rate limiting
+    // ── Grindar, i ordning: flödesskydd → rättighet → kostnad ──────────────
+    //
+    // 1. RATE LIMIT (per användare). POLICY: FAIL OPEN, medvetet ärvd från
+    //    `_shared/rateLimit.ts` — vid RPC-fel degraderar den till en
+    //    in-memory-fallback som filens eget huvud kallar trasig på serverless
+    //    (räknaren nollas vid cold start, isolat delar inte state). Den
+    //    skyddar en PROJEKT-GLOBAL tredjepartskvot (OpenRouter/Perplexity),
+    //    alltså pengar — inte en rättighet — och att neka alla analyser när
+    //    rate-limit-RPC:n hickar vore fel växel. Kompensationen ligger i steg
+    //    3: tokentaket nedan failar CLOSED just för att den här failar open,
+    //    så det aldrig blir noll kostnadsskydd samtidigt. Filen delas av åtta
+    //    andra funktioner och ändras inte härifrån.
     const rateCheck = await checkRateLimit(user.id, 'ai-company-analysis')
     if (!rateCheck.allowed) {
-      return createRateLimitResponse(rateCheck.retryAfter!, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.RATE_LIMITED,
+        'För många förfrågningar. Vänta en stund och försök igen.',
+        429,
+        origin,
+        { retryAfter: rateCheck.retryAfter ?? 60 },
+      )
     }
 
-    console.log(`[ai-company-analysis] User ${user.id} analyzing: ${companyName}`)
+    // 2. AI-BRYTAREN (`profiles.ai_enabled`). POLICY: FAIL CLOSED.
+    //    Fram till 2026-08-19 fanns den inte här alls: ett konto med
+    //    `ai_enabled = false` fick HTTP 200 med fullt AI-svar, vilket gjorde
+    //    portalens löfte om att AI-behandling kan stängas av osant i drift.
+    //    Klienten skickas service-role-klienten med avsikt: den går förbi RLS
+    //    och når därför användarens profilrad oavsett hur policyerna på
+    //    `profiles` ändras. Skickas en klient med bara anon-nyckeln in här
+    //    läser den som `anon`, får 0 rader och nekar ALLA (A19). Se aiGate.ts.
+    const aiGate = await checkAiEnabled(supabase, user.id)
+    if (!aiGate.allowed) {
+      console.warn(`[ai-company-analysis] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`)
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin)
+    }
+
+    // 3. DAGLIGT TOKENTAK. POLICY: FAIL CLOSED — se motiveringen i aiGate.ts.
+    //    Delar budget med `client/api/ai.js` (samma `ai_usage_logs`).
+    const tokenCap = await checkDailyTokenCap(supabase, user.id)
+    if (!tokenCap.allowed) {
+      console.warn(`[ai-company-analysis] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`)
+      return createTokenCapResponse(tokenCap, origin)
+    }
+
+    console.log(`[ai-company-analysis] User ${user.id} analyzing: ${foretagsnamn}`)
 
     // Build prompt
-    const prompt = buildCompanyAnalysisPrompt({ companyName, orgNumber, industry })
+    const prompt = buildCompanyAnalysisPrompt({
+      companyName: foretagsnamn,
+      orgNumber: orgnr,
+      industry: bransch || undefined,
+    })
 
     // Call Perplexity Sonar
     const aiResponse = await fetch(OPENROUTER_API_URL, {
@@ -190,21 +261,31 @@ Deno.serve(async (req) => {
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
       console.error('[ai-company-analysis] OpenRouter error:', aiResponse.status, errorText)
-      return createCorsResponse({ error: 'AI-tjänsten är inte tillgänglig' }, 502, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.AI_UPSTREAM_ERROR,
+        'AI-tjänsten är inte tillgänglig',
+        502,
+        origin,
+      )
     }
 
     const aiData = await aiResponse.json()
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
-      return createCorsResponse({ error: 'Inget svar från AI' }, 502, origin)
+      return createAiErrorResponse(AI_GATE_CODES.AI_UPSTREAM_ERROR, 'Inget svar från AI', 502, origin)
     }
 
     const result = parseResponse(content)
 
     if (!result) {
       console.error('[ai-company-analysis] Failed to parse:', content.substring(0, 500))
-      return createCorsResponse({ error: 'Kunde inte tolka AI-svaret' }, 500, origin)
+      return createAiErrorResponse(
+        AI_GATE_CODES.AI_PARSE_ERROR,
+        'Kunde inte tolka AI-svaret',
+        502,
+        origin,
+      )
     }
 
     // Log usage
@@ -231,6 +312,6 @@ Deno.serve(async (req) => {
 
   } catch (err) {
     console.error('[ai-company-analysis] Error:', err)
-    return createCorsResponse({ error: 'Ett fel uppstod' }, 500, origin)
+    return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
   }
 })

@@ -255,13 +255,28 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 > (`https://www.jobin.se`)** — annars mäter du en attrapp. Två granskare gick i den fällan
 > 2026-08-09 innan de upptäckte den.
 >
-> **⚠️ Modellåsningen är bruten på fem ställen.** Fem edge-funktioner kör `perplexity/sonar` via
-> OpenRouter — `ai-career-assistant`, `ai-commute-planner`, `ai-company-analysis`,
-> `ai-company-search`, `ai-industry-radar` — alltså utanför `openai/gpt-oss-120b`, och utan att
-> Perplexity finns som underbiträde i integritetspolicyn, Art. 30-registret eller DPIA:n.
-> `ai-commute-planner` skickar dessutom användarens hemadress. Se ROADMAP A23. Kontrollera med
-> `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u` innan du litar på att
-> låsningen håller.
+> **⚠️ Perplexity är ett oredovisat underbiträde i fem edge-funktioner.**
+>
+> *Rättat 2026-08-19.* Rutan påstod tidigare att modellåsningen var "bruten". Det stämmer inte:
+> `docs/AI_MODEL_LOCKING.md:8` har en **allowlist med två modeller** (`openai/gpt-oss-120b` och
+> `perplexity/sonar`), grinden `aiServerResponses.test.ts` läser den, och samma dokument listar
+> alla fem funktionerna som **medvetna undantag** med motivering och migrationsplan. Modellvalet
+> är alltså ett beslut, inte en brytning — byt inte modell för att "laga" något.
+>
+> Det som däremot är sant, och som är den verkliga risken: `ai-career-assistant`,
+> `ai-commute-planner`, `ai-company-analysis`, `ai-company-search` och `ai-industry-radar`
+> skickar användardata till **Perplexity, som inte finns i integritetspolicyn, Art. 30-registret
+> eller DPIA:n**. Sonar gör dessutom en **webbsökning** på användarens fritext — ett led som är
+> helt obeskrivet i dokumenten. `ai-commute-planner` skickar användarens hemadress.
+>
+> Verifierat i drift 2026-08-19: `ai-company-search` och `ai-company-analysis` gick **förbi
+> `prepareAiRequest`**, alltså utan PII-sanering och utan tokentak, och struntade i användarens
+> `ai_enabled`-brytare (art. 21) — ett konto med AI avstängt fick fullt AI-svar. Klientsidans
+> sanering är åtgärdad; grinden i edge-funktionerna likaså. Se ROADMAP A23.
+>
+> Kontrollera modellsträngarna med
+> `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u`, och jämför mot
+> allowlisten — inte mot en enda modell.
 
 ### CI-grindarna (åtta st, alla körbara lokalt)
 

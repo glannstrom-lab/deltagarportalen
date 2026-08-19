@@ -17,8 +17,24 @@ import {
 } from '@/services/supabaseApi'
 import { getCompanyInfo, type BolagsverketCompany } from '@/services/bolagsverketApi'
 import { showToast } from '@/components/Toast'
+import { useAuthStore } from '@/stores/authStore'
 
-export const SPONTANEOUS_COMPANIES_KEY = ['spontaneous-companies'] as const
+/**
+ * Cachenyckeln bär användarens id.
+ *
+ * Den var en konstant till 2026-08-19, vilket betydde att nästa person som
+ * loggade in i samma flik matchade samma nyckel. Med `gcTime: 10 min` och
+ * `staleTime: 60 s` hann ingen ny hämtning ske innan hon fick se föregående
+ * deltagares sparade företag. A31 löste samma problem för localStorage med
+ * motiveringen att målgruppen ofta sitter på delade datorer.
+ *
+ * Utloggningen tömmer numera hela cachen (`lib/queryClient.ts`), vilket är den
+ * systemiska fixen. Den här nyckeln är bältet till de hängslena: den skyddar
+ * även när utloggningen aldrig hann köras — stängd flik, kraschad session,
+ * eller ett byte av konto som sker via `onAuthStateChange` utan signOut.
+ */
+export const SPONTANEOUS_COMPANIES_KEY = (userId: string | undefined) =>
+  ['spontaneous-companies', userId ?? 'anonym'] as const
 
 const EMPTY_STATS: Record<SpontaneousStatus, number> = {
   saved: 0,
@@ -77,11 +93,16 @@ function buildStatusUpdates(company: SpontaneousCompany, status: SpontaneousStat
 export function useSpontaneousCompanies(): UseSpontaneousCompaniesResult {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const userId = useAuthStore((s) => s.user?.id)
+  const nyckel = useMemo(() => SPONTANEOUS_COMPANIES_KEY(userId), [userId])
 
   const query = useQuery({
-    queryKey: SPONTANEOUS_COMPANIES_KEY,
+    queryKey: nyckel,
     queryFn: () => spontaneousCompaniesApi.getAll(),
     staleTime: 60_000,
+    // Utan inloggad användare finns inget att hämta — och en fråga som ändå
+    // kördes hade skrivit ett tomt svar under nyckeln 'anonym'.
+    enabled: !!userId,
   })
 
   const companies = useMemo(() => query.data ?? [], [query.data])
@@ -118,12 +139,12 @@ export function useSpontaneousCompanies(): UseSpontaneousCompaniesResult {
   }, [companies])
 
   const setCompanies = useCallback((updater: (prev: SpontaneousCompany[]) => SpontaneousCompany[]) => {
-    queryClient.setQueryData<SpontaneousCompany[]>(SPONTANEOUS_COMPANIES_KEY, (prev) => updater(prev ?? []))
-  }, [queryClient])
+    queryClient.setQueryData<SpontaneousCompany[]>(nyckel, (prev) => updater(prev ?? []))
+  }, [queryClient, nyckel])
 
   const refreshCompanies = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: SPONTANEOUS_COMPANIES_KEY })
-  }, [queryClient])
+    await queryClient.invalidateQueries({ queryKey: nyckel })
+  }, [queryClient, nyckel])
 
   // Lookup company from Bolagsverket
   const lookupCompany = useCallback(async (orgNumber: string): Promise<BolagsverketCompany | null> => {

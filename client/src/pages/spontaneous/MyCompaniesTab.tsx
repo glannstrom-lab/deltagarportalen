@@ -5,7 +5,9 @@
  */
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { EmptyState } from '@/components/ui/EmptyState'
+import { ErrorState } from '@/components/ui/LoadingState'
 import {
   Building2,
   Filter,
@@ -89,13 +91,32 @@ function exportToCSV(companies: SpontaneousCompany[], t: Translate) {
 
 export default function MyCompaniesTab() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const [filter, setFilter] = useState<SpontaneousStatus | 'all'>('all')
   const [searchText, setSearchText] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('newest')
   const [selectMode, setSelectMode] = useState(false)
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
-  const { companies, isLoading, updateStatus, updateStatusBulk, removeCompany, updateCompany } = useSpontaneousCompanies()
+  const {
+    companies,
+    isLoading,
+    isLoaded,
+    error,
+    refreshCompanies,
+    updateStatus,
+    updateStatusBulk,
+    removeCompany,
+    updateCompany,
+  } = useSpontaneousCompanies()
+
+  /**
+   * "Klart" härleds ur `isLoading || !isLoaded`, inte ur `isLoading === false`.
+   * Frågan har `enabled: !!userId` och är då `pending` utan att vara
+   * `fetching` — React Query rapporterar `isLoading: false` innan något
+   * hämtats, och listan hade visat "inga sparade företag" i det glappet.
+   */
+  const laddar = isLoading || (!isLoaded && !error)
 
   const filteredCompanies = useMemo(() => {
     let list = filter === 'all' ? companies : companies.filter(c => c.status === filter)
@@ -124,6 +145,51 @@ export default function MyCompaniesTab() {
     // 'newest' — API:t levererar redan created_at desc
     return list
   }, [companies, filter, searchText, sortKey])
+
+  /** Sökning eller statusfilter är aktivt — tomtillståndet ska då erbjuda att släppa det */
+  const harAvgransning = filter !== 'all' || !!searchText.trim()
+
+  const antalPerStatus = useMemo(() => {
+    const antal = new Map<SpontaneousStatus, number>()
+    for (const c of companies) {
+      antal.set(c.status, (antal.get(c.status) ?? 0) + 1)
+    }
+    return antal
+  }, [companies])
+
+  /**
+   * Bara statusar som faktiskt förekommer får ett filterchip.
+   *
+   * Alla åtta ritades tidigare alltid, vilket gav åtta "(0)"-chips ovanför ett
+   * tomtillstånd — en rad nollor som inte leder någonstans — och en chip-rad
+   * som var bredare än skärmen (uppmätt 1087 px mot 858 px) med en 0 px hög
+   * scrollbar, så "Inget svar" och "Arkiverad" bara nåddes med svep.
+   *
+   * Det aktiva filtret står kvar även när det tömts, annars försvinner vägen
+   * tillbaka i samma ögonblick som listan blir tom.
+   */
+  const synligaFilter = useMemo(
+    () => filterOptions.filter(o => o === 'all' || o === filter || (antalPerStatus.get(o) ?? 0) > 0),
+    [antalPerStatus, filter]
+  )
+
+  /**
+   * Markeringar får inte överleva ett filterbyte.
+   *
+   * Kryssen låg kvar i `selectedIds` när filtret eller sökningen ändrades, så
+   * "Ändra status till…" kunde träffa företag som inte längre syntes på
+   * skärmen — en bulkändring utan synligt underlag.
+   *
+   * Urvalet *härleds* i stället för att synkas: det som räknas är snittet
+   * mellan markeringarna och det som faktiskt visas. En effekt som trimmar
+   * `selectedIds` hade gjort samma sak, men med en extra renderomgång och en
+   * `set-state-in-effect`-varning — och framför allt hade det gjort två
+   * källor av en.
+   */
+  const valdaSynliga = useMemo(() => {
+    const synliga = new Set(filteredCompanies.map(c => c.id))
+    return [...selectedIds].filter(id => synliga.has(id))
+  }, [filteredCompanies, selectedIds])
 
   const handleUpdateStatus = async (id: string, status: SpontaneousStatus) => {
     await updateStatus(id, status)
@@ -170,20 +236,42 @@ export default function MyCompaniesTab() {
   }
 
   const handleBulkStatus = async (status: SpontaneousStatus) => {
-    await updateStatusBulk([...selectedIds], status)
+    await updateStatusBulk(valdaSynliga, status)
     exitSelectMode()
   }
 
-  if (isLoading) {
+  // Tre uttryckliga lägen: laddar / fel / klart.
+  if (laddar) {
     return (
       <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+        <div
+          className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)]"
+          role="status"
+          aria-label={t('common.loadingStatus', 'Laddar')}
+        />
       </div>
     )
   }
 
+  // Ett hämtningsfel är inte ett tomt konto. Utan det här läget fick
+  // användaren "Inga sparade företag" — ett besked om att hon inte gjort
+  // något — när portalen inte kunde svara. Toasten är flyktig och
+  // `refetchOnWindowFocus: false` + `staleTime` gör felläget bestående, så
+  // vägen tillbaka måste finnas här.
+  if (error) {
+    return (
+      <ErrorState
+        title={t('spontaneous.listErrorTitle', 'Företagen kunde inte hämtas')}
+        message={t('spontaneous.listErrorDescription', 'Vi når inte dina sparade företag just nu. En tom lista hade sett ut som att du inte sparat något, så vi visar den inte.')}
+        onRetry={() => { void refreshCompanies() }}
+      />
+    )
+  }
+
   return (
-    <div className="space-y-4">
+    /* pb-24 pa mobil: SamlingarFab ligger fixed i hornet och tackte
+       tomtillstandets text. */
+    <div className="space-y-4 pb-24 sm:pb-0">
       {/* Sök + sortering + åtgärder */}
       {companies.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
@@ -234,12 +322,14 @@ export default function MyCompaniesTab() {
       {/* Batchåtgärdsrad */}
       {selectMode && (
         <div className="flex flex-wrap items-center gap-3 p-3 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-          <span className="text-sm font-medium text-stone-800 dark:text-stone-100">
-            {t('spontaneous.batch.selected', { count: selectedIds.size })}
+          {/* aria-live: urvalet kan trimmas av ett filterbyte (se effekten
+              ovan), och den ändringen måste höras, inte bara synas. */}
+          <span className="text-sm font-medium text-stone-800 dark:text-stone-100" role="status" aria-live="polite">
+            {t('spontaneous.batch.selected', { count: valdaSynliga.length })}
           </span>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button size="sm" disabled={selectedIds.size === 0} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]">
+              <Button size="sm" disabled={valdaSynliga.length === 0} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]">
                 {t('spontaneous.batch.changeStatusTo')}...
               </Button>
             </DropdownMenuTrigger>
@@ -248,7 +338,7 @@ export default function MyCompaniesTab() {
                 const Icon = statusConfig[status].icon
                 return (
                   <DropdownMenuItem key={status} onClick={() => handleBulkStatus(status)}>
-                    <Icon className="w-4 h-4 mr-2" />
+                    <Icon className="w-4 h-4 mr-2" aria-hidden="true" />
                     {t(`spontaneous.status.${status}`)}
                   </DropdownMenuItem>
                 )
@@ -259,9 +349,13 @@ export default function MyCompaniesTab() {
       )}
 
       {/* Statusfilter — knappar på desktop, select på mobil */}
-      <div className="hidden md:flex items-center gap-2 overflow-x-auto pb-2">
+      {/* flex-wrap i stallet for overflow-x-auto: raden var bredare an skarmen
+          (1087 px mot 858 px) med en 0 px hog scrollbar, sa de tva sista
+          statusarna sag ut som ett avklippt chip i stallet for nagot man kan
+          scrolla till. Raden bryter nu till nasta rad i stallet. */}
+      <div className="hidden md:flex flex-wrap items-center gap-2">
         <Filter className="w-4 h-4 text-stone-600 dark:text-stone-400 flex-shrink-0" aria-hidden="true" />
-        {filterOptions.map((option) => (
+        {synligaFilter.map((option) => (
           <Button
             key={option}
             variant={filter === option ? 'default' : 'outline'}
@@ -272,8 +366,12 @@ export default function MyCompaniesTab() {
           >
             {option === 'all' ? t('common.all') : t(`spontaneous.status.${option}`)}
             {option !== 'all' && (
-              <span className="ml-1.5 text-xs opacity-70">
-                ({companies.filter(c => c.status === option).length})
+              /* `opacity-70` mätte 3,17:1 på den ovalda knappen och 3,26:1 på
+                 den valda (krav 4,5:1 för liten text). Utan opacitet ärver
+                 räknaren knappens egen textfärg: 5,95:1 respektive 4,93:1 i
+                 ljust läge, 10,11:1 i mörkt. */
+              <span className="ml-1.5 text-xs font-normal">
+                ({antalPerStatus.get(option) ?? 0})
               </span>
             )}
           </Button>
@@ -288,11 +386,11 @@ export default function MyCompaniesTab() {
           onChange={(e) => setFilter(e.target.value as SpontaneousStatus | 'all')}
           className="flex-1 text-sm px-2 py-2 rounded-lg border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-stone-900 dark:text-stone-100"
         >
-          {filterOptions.map((option) => (
+          {synligaFilter.map((option) => (
             <option key={option} value={option}>
               {option === 'all'
                 ? t('common.all')
-                : `${t(`spontaneous.status.${option}`)} (${companies.filter(c => c.status === option).length})`}
+                : `${t(`spontaneous.status.${option}`)} (${antalPerStatus.get(option) ?? 0})`}
             </option>
           ))}
         </select>
@@ -307,14 +405,41 @@ export default function MyCompaniesTab() {
 
       {/* Companies List */}
       {filteredCompanies.length === 0 ? (
-        <EmptyState
-          illustration={filter === 'all' && !searchText ? 'jobb' : undefined}
-          icon={filter === 'all' && !searchText ? undefined : Building2}
-          title={filter === 'all' && !searchText
-            ? t('spontaneous.noSavedCompanies')
-            : t('spontaneous.noCompaniesWithStatus', { status: searchText ? `"${searchText}"` : t(`spontaneous.status.${filter}`) })}
-          description={filter === 'all' && !searchText ? t('spontaneous.searchAndSaveCompanies') : t('spontaneous.changeFilter')}
-        />
+        harAvgransning ? (
+          /*
+            Sökning eller filter gav inget. EN väg vidare: släpp avgränsningen.
+            Titeln kom tidigare från `noCompaniesWithStatus`, vars text redan
+            har citattecken runt {{status}} — söktermen skickades dessutom in
+            med egna citattecken och blev `Inga företag med status ""abc""`.
+            Söktermen har nu en egen nyckel utan dubbla citat.
+          */
+          <EmptyState
+            icon={Building2}
+            title={searchText.trim()
+              ? t('spontaneous.noSearchMatches', 'Inga företag matchar "{{query}}"', { query: searchText.trim() })
+              : t('spontaneous.noCompaniesWithStatus', { status: t(`spontaneous.status.${filter}`) })}
+            description={t('spontaneous.changeFilter')}
+            action={{
+              label: t('spontaneous.showAllCompanies', 'Visa alla dina företag'),
+              onClick: () => {
+                setFilter('all')
+                setSearchText('')
+              },
+            }}
+          />
+        ) : (
+          /* Inga företag alls — rubriken säger vad sidan ÄR, inte vad som
+             saknas (DESIGN.md §7), och CTA:n leder till sökfliken. */
+          <EmptyState
+            illustration="jobb"
+            title={t('spontaneous.myCompaniesEmptyTitle', 'Här samlas företagen du vill kontakta')}
+            description={t('spontaneous.searchAndSaveCompanies')}
+            action={{
+              label: t('spontaneous.findCompaniesCta', 'Hitta företag att kontakta'),
+              onClick: () => navigate('/spontanansökan'),
+            }}
+          />
+        )
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredCompanies.map((company) => (

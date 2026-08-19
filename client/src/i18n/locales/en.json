@@ -1139,6 +1139,7 @@
       "subtitle": "We fill in the fields for you — PDF or Word (.docx)",
       "dropHere": "Drag your CV here, or choose it from your computer.",
       "privacyDescriptions": "Your own descriptions of each role don't come along — you write those yourself, so they turn out exactly as you want them.",
+      "privacyContact": "Email and phone number are stripped before the text is sent, so they are not filled in automatically. That is about your privacy — enter them yourself in the builder.",
       "orKeepFile": "Would you rather keep the file as it is, without turning it into fields?",
       "orKeepFileLink": "Upload it under Your saved CVs",
       "wait": "It takes about half a minute. Don't close the window.",
@@ -2786,16 +2787,16 @@
       "tip4": "Focus on activities, not results"
     }
   },
-  "spontaneous": {
+    "spontaneous": {
     "title": "Spontaneous Application",
     "description": "Find and contact companies that match your profile",
     "tabs": {
-      "search": "Search companies",
-      "searchDesc": "Look up companies by organization number",
-      "companies": "My companies",
+      "search": "Find companies to contact",
+      "searchDesc": "Describe what you are looking for and we will find companies",
+      "companies": "Your saved companies",
       "companiesDesc": "Companies you've saved",
-      "stats": "Statistics",
-      "statsDesc": "Track your success"
+      "stats": "Your overview",
+      "statsDesc": "See where your contacts stand"
     },
     "status": {
       "saved": "Saved",
@@ -2826,7 +2827,9 @@
       "aiSearchLabel": "Describe the companies you are looking for",
       "orgSearchLabel": "Organization number",
       "aiPlaceholder": "E.g. 'Ad agencies in Gothenburg with 10-50 employees'",
-      "enterOrgNumber": "Enter an organization number"
+      "enterOrgNumber": "Enter an organization number",
+      "searching": "Searching …",
+      "foundAnnouncement": "{{name}} was found."
     },
     "company": {
       "address": "Address",
@@ -2848,7 +2851,24 @@
       "statusDistribution": "Status distribution",
       "emptyTitle": "Your overview lives here",
       "emptyDescription": "As you save and contact companies, you'll see how things are going here — at your own pace.",
-      "emptyCta": "Find companies to contact"
+      "emptyCta": "Find companies to contact",
+      "errorTitle": "We couldn't load your statistics",
+      "errorDescription": "We can't reach your saved companies right now. The numbers would be wrong, so we're not showing them.",
+      "reachedOut": "Companies you've reached out to",
+      "reachedOutNone": "You haven't reached out to any company yet",
+      "responsesNone": "No responses have arrived yet",
+      "waitingNone": "You're not waiting on any response right now",
+      "noContactYetTitle": "Here you'll see how companies respond",
+      "noContactYetCta": "See your saved companies",
+      "tooFewForRates": "Percentages appear once you've reached out to at least five companies — small numbers give misleading figures.",
+      "reachedOutCount_one": "You've reached out to {{count}} company",
+      "reachedOutCount_other": "You've reached out to {{count}} companies",
+      "responsesCount_one": "{{count}} of them has replied",
+      "responsesCount_other": "{{count}} of them have replied",
+      "positiveRateNoBasis": "None of your responses still carry their outcome, so the positive share can't be calculated.",
+      "archivedResponsesExcluded_one": "You have {{count}} archived response. The outcome isn't kept when you archive, so the positive share would be misleading.",
+      "archivedResponsesExcluded_other": "You have {{count}} archived responses. The outcome isn't kept when you archive, so the positive share would be misleading.",
+      "selfReportedHint": "The numbers are based on the statuses you set yourself — the portal receives no replies from companies."
     },
     "followups": {
       "title": "Upcoming follow-ups",
@@ -2856,7 +2876,11 @@
       "today": "Today",
       "tomorrow": "Tomorrow",
       "overdue": "Overdue",
-      "daysLeft": "In {{days}} days"
+      "daysLeft": "In {{days}} days",
+      "emptyTitle": "This is where you keep track of your follow-ups",
+      "emptyCta": "Plan a follow-up",
+      "overdueGroup": "Overdue",
+      "upcomingGroup": "Upcoming"
     },
     "followup": {
       "plan": "Plan follow-up",
@@ -2893,12 +2917,13 @@
       "updated": "The company has been updated",
       "updateError": "Could not update the company",
       "statusChanged": "Status changed to \"{{status}}\"",
-      "statusChangedBulk": "{{count}} companies changed to \"{{status}}\"",
       "statusError": "Could not update the status",
       "removed": "The company has been removed",
       "removeError": "Could not remove the company",
       "addedToApplications": "{{name}} has been added to Applications",
-      "addToApplicationsError": "Could not add to Applications"
+      "addToApplicationsError": "Could not add to Applications",
+      "statusChangedBulk_one": "{{count}} company changed to \"{{status}}\"",
+      "statusChangedBulk_other": "{{count}} companies changed to \"{{status}}\""
     },
     "csv": {
       "companyName": "Company name",
@@ -2912,14 +2937,14 @@
       "notes": "Notes"
     },
     "companyActions": "Company actions",
-    "resultsAnnouncement": "{{count}} companies shown",
     "selectCompany": "Select {{name}}",
     "batch": {
       "selectMode": "Select multiple",
       "cancel": "Cancel selection",
-      "selected": "{{count}} selected",
       "changeStatusTo": "Change status to",
-      "archiveSelected": "Archive selected"
+      "archiveSelected": "Archive selected",
+      "selected_one": "{{count}} selected",
+      "selected_other": "{{count}} selected"
     },
     "listSearchPlaceholder": "Search by name, city or industry...",
     "sort": {
@@ -2936,7 +2961,8 @@
     "nextSteps": {
       "title": "Congratulations on the response! Next steps:",
       "addToApplications": "Add to Applications",
-      "practiceInterview": "Practice for the interview"
+      "practiceInterview": "Practice for the interview",
+      "alreadyInApplications": "This company is already among your applications."
     },
     "citySearchLabel": "City (optional)",
     "cityPlaceholder": "e.g. Gothenburg",
@@ -2949,17 +2975,18 @@
     },
     "tips": {
       "title": "Tips for spontaneous applications",
-      "tip1": "Aim to contact 5-10 new companies per week",
+      "tip1": "A few companies at a time is plenty — thoughtful beats many",
       "tip2": "Choose companies that match your competence",
       "tip3": "Research the company before you contact them",
       "tip4": "Follow up if you haven't heard back within 1-2 weeks",
       "aiTip1": "Be specific in your search: industry, location, size",
       "aiTip2": "Example: \"Architecture firms in Malmö\", \"Fintech startup\"",
-      "aiTip3": "Verified companies have confirmed data from the Swedish Companies Registry",
+      "aiTip3": "Green badge = name, legal form and address come from Bolagsverket",
       "aiTip4": "Save multiple companies at once using the checkboxes",
       "orgTip1": "Find org. numbers at",
-      "tip3Stat": "A response rate of 10-20% is normal for spontaneous applications",
-      "tip4Stat": "Quality over quantity – customize each application"
+      "tip3Stat": "Most companies never reply — that says nothing about you",
+      "tip4Stat": "Quality over quantity – customize each application",
+      "responseRateNoBenchmark": "Your response rate says more about the employers' situation than about you — compare with how last month went for you rather than with a figure."
     },
     "companyStatus": {
       "active": "Active",
@@ -2971,7 +2998,22 @@
       "minChars": "Enter at least 3 characters for AI search",
       "noResults": "No companies found. Try a different search term.",
       "failed": "Search failed",
-      "resultsFound": "{{total}} companies found, {{verified}} verified against the Swedish Companies Registry"
+      "resultsFound": "{{total}} companies found, {{verified}} verified against the Swedish Companies Registry",
+      "nothingToShow": "We got nothing to show this time. Try a different search term — or search again in a little while.",
+      "openSettings": "Open Settings",
+      "useOrgNumberInstead": "Search by registration number instead",
+      "errors": {
+        "aiOff": "You've turned off AI processing of your data, so the AI search can't run. You can turn it on in Settings — or search by registration number, which works entirely without AI.",
+        "checkFailed": "We couldn't read your AI settings right now, so we didn't send anything on. That's on us — please try again in a little while.",
+        "dailyLimit": "You've used today's AI searches. They reset tomorrow — until then you can search by registration number.",
+        "rateLimitedMinutes_one": "That's a lot of searches in a short time. Try again in about {{count}} minute.",
+        "rateLimitedMinutes_other": "That's a lot of searches in a short time. Try again in about {{count}} minutes.",
+        "rateLimited": "That's a lot of searches in a short time. Try again in a little while.",
+        "unauthorized": "Your session seems to have expired. Log in again and we'll pick up where you left off.",
+        "invalidInput": "We couldn't use that search text. Try rewording it — for example \"bakeries in Malmö\".",
+        "upstream": "The AI service didn't respond as it should. That's on us, not your search — try again in a little while.",
+        "internal": "Something went wrong on our side. Your search isn't to blame — try again in a little while."
+      }
     },
     "annualReports": "Annual reports",
     "noAnnualReports": "No annual reports available.",
@@ -2997,7 +3039,37 @@
     "noSavedCompanies": "No saved companies",
     "noCompaniesWithStatus": "No companies with status \"{{status}}\"",
     "searchAndSaveCompanies": "Search for companies and save the ones you're interested in.",
-    "changeFilter": "Change filter to see other companies."
+    "changeFilter": "Change filter to see other companies.",
+    "saveBatch": {
+      "stoppedEarly_one": "We stopped after the registry stopped responding. {{count}} company wasn't saved — try it again in a little while.",
+      "stoppedEarly_other": "We stopped after the registry stopped responding. {{count}} companies weren't saved — try them again in a little while.",
+      "someFailed_one": "{{count}} company couldn't be saved. Try it again in a little while.",
+      "someFailed_other": "{{count}} companies couldn't be saved. Try them again in a little while.",
+      "noneSaved": "No company could be saved",
+      "noneSavedHelp": "The company registry didn't respond. Nothing was added to your list — try again in a little while."
+    },
+    "manualOrgNumber": {
+      "label": "The search didn't return a registration number for this company. Enter it and we'll check it against Bolagsverket and save it.",
+      "lookup": "Look the number up on allabolag.se"
+    },
+    "listErrorTitle": "We couldn't load your companies",
+    "listErrorDescription": "We can't reach your saved companies right now. An empty list would look like you hadn't saved anything, so we're not showing it.",
+    "myCompaniesEmptyTitle": "This is where the companies you want to contact live",
+    "findCompaniesCta": "Find companies to contact",
+    "noSearchMatches": "No companies match \"{{query}}\"",
+    "showAllCompanies": "Show all your companies",
+    "annualReportsUnavailable": "We couldn't fetch the annual reports right now. That says nothing about the company — try again in a little while.",
+    "verificationScope": "Name, registration number, legal form and address come from Bolagsverket. The description and industry come from the AI search and are not checked — read them as a hint, not as fact.",
+    "verifiedInRegistry": "In the registry",
+    "notConfirmed": "Not confirmed",
+    "aiIndustryLabel": "Industry suggested by AI",
+    "aiDescriptionLabel": "Description generated by AI",
+    "analyzeCompany": "Analyse {{name}}",
+    "hideAnalysis": "Hide the analysis of {{name}}",
+    "saveCompanyLabel": "Save {{name}} to your list",
+    "aiWatermarkType": "company suggestion",
+    "resultsAnnouncement_one": "{{count}} company shown",
+    "resultsAnnouncement_other": "{{count}} companies shown"
   },
   "career": {
     "editorialSpot": "Explore the job market and build your plan step by step.",
