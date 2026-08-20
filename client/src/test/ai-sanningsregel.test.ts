@@ -168,6 +168,32 @@ describe('edge-vägen har samma regel som Vercel-vägen', () => {
     expect(kalla).toMatch(/Hitta ALDRIG på erfarenheter/)
     expect(kalla).toMatch(/utelämna det helt/)
   })
+
+  // 2026-08-20: lönekompassen på /salary. Prompten bad om exakta kronbelopp i
+  // en JSON-mall utan ett ord om att inte hitta på, och fick dessutom in
+  // kalkylatorns egen uppskattning märkt "NUVARANDE LÖN" — ett tal personen
+  // aldrig angett. Modellen är `perplexity/sonar`, som söker på webben.
+  it('ai-career-assistant förbjuder påhittade lönesiffror och påståenden om personen', () => {
+    const kalla = readFileSync(
+      resolve(__dirname, '../../../supabase/functions/ai-career-assistant/index.ts'),
+      'utf8'
+    )
+    expect(kalla).toMatch(/Hitta ALDRIG på lönesiffror/)
+    expect(kalla).toMatch(/Påstå aldrig något om personen/)
+    // Fältet får inte smyga tillbaka: det var kalkylatorns gissning, inte
+    // användarens uppgift.
+    expect(kalla).not.toMatch(/NUVARANDE LÖN/)
+  })
+
+  // Art. 21: AI-brytaren ska gälla även den här vägen, inte bara i UI:t.
+  it('ai-career-assistant kontrollerar användarens AI-brytare', () => {
+    const kalla = readFileSync(
+      resolve(__dirname, '../../../supabase/functions/ai-career-assistant/index.ts'),
+      'utf8'
+    )
+    expect(kalla).toMatch(/checkAiEnabled/)
+    expect(kalla).toMatch(/createGateDenialResponse/)
+  })
 })
 
 describe('G15: karriärplanen känner till svenska stödsystem', () => {

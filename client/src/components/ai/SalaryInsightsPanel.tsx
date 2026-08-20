@@ -1,9 +1,21 @@
 /**
- * Salary Insights Panel
- * AI-powered salary market data and negotiation insights
+ * AI-lönekompassen.
+ *
+ * Tre fel som rättades 2026-08-20:
+ *
+ * · Panelen tog emot `currentSalary` från kalkylatorn och skickade det till
+ *   modellen som "NUVARANDE LÖN". Användaren hade aldrig angett någon lön —
+ *   talet var kalkylatorns egen uppskattning. Propen finns inte längre.
+ * · "Källor" under svaret var `result.sources`, alltså det modellen själv
+ *   skrivit in i sin JSON. De riktiga citationerna från Perplexity fanns i
+ *   svarets `citations` och kastades bort. Nu visas de riktiga, eller inga.
+ * · Yrke, region och erfarenhet kopierades till eget tillstånd vid montering,
+ *   då kalkylatorns fält alltid är tomma. Valen syntes därför aldrig här.
+ *   Nu läses propsen tills användaren själv ändrar fältet.
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   TrendingUp,
   DollarSign,
@@ -33,7 +45,6 @@ interface SalaryInsightsPanelProps {
   occupation?: string
   region?: string
   experienceYears?: number
-  currentSalary?: number
   skills?: string[]
   className?: string
 }
@@ -42,18 +53,23 @@ export function SalaryInsightsPanel({
   occupation: initialOccupation,
   region: initialRegion,
   experienceYears: initialExperience,
-  currentSalary: initialSalary,
   skills: initialSkills,
   className,
 }: SalaryInsightsPanelProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<SalaryCompassResult | null>(null)
+  const [citations, setCitations] = useState<string[]>([])
 
-  // Form state
-  const [occupation, setOccupation] = useState(initialOccupation || '')
-  const [region, setRegion] = useState(initialRegion || '')
-  const [experience, setExperience] = useState(initialExperience?.toString() || '')
+  // Egna ändringar vinner över propsen, men bara när användaren gjort någon.
+  const [egetYrke, setEgetYrke] = useState<string | null>(null)
+  const [egenRegion, setEgenRegion] = useState<string | null>(null)
+  const [egenErfarenhet, setEgenErfarenhet] = useState<string | null>(null)
+
+  const occupation = egetYrke ?? initialOccupation ?? ''
+  const region = egenRegion ?? initialRegion ?? ''
+  const experience = egenErfarenhet ?? (initialExperience?.toString() || '')
 
   if (!AI_FEATURES.SALARY_COMPASS) {
     return null
@@ -61,7 +77,7 @@ export function SalaryInsightsPanel({
 
   const handleAnalyze = async () => {
     if (!occupation.trim()) {
-      setError('Ange ett yrke')
+      setError(t('salary.insights.missingOccupation'))
       return
     }
 
@@ -73,14 +89,14 @@ export function SalaryInsightsPanel({
         occupation: occupation.trim(),
         region: region.trim() || undefined,
         experienceYears: experience ? parseInt(experience) : undefined,
-        currentSalary: initialSalary,
         skills: initialSkills,
       }
 
       const response = await getSalaryCompass(params)
       setResult(response.result)
+      setCitations(response.citations ?? [])
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod')
+      setError(err instanceof Error ? err.message : t('salary.insights.genericError'))
     } finally {
       setIsLoading(false)
     }
@@ -88,39 +104,40 @@ export function SalaryInsightsPanel({
 
   if (!result && !isLoading && !error) {
     return (
-      <AiConsentGate compact featureName="Lönekompass">
+      <AiConsentGate compact featureName={t('salary.insights.title')}>
         <div className={cn('p-5 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50', className)}>
           <div className="flex items-start gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
-              <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="p-2 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30">
+              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
             </div>
             <div>
-              <h4 className="font-medium text-stone-800 dark:text-stone-200">
-                AI Lönekompass
+              <h4 className="font-medium text-stone-800 dark:text-stone-100">
+                {t('salary.insights.title')}
               </h4>
-              <p className="text-sm text-stone-600 dark:text-stone-600">
-                Få aktuell lönedata och förhandlingstips
+              <p className="text-sm text-stone-600 dark:text-stone-300">
+                {t('salary.insights.subtitle')}
               </p>
             </div>
           </div>
 
           <div className="space-y-3">
             <Input
-              placeholder="Yrke (t.ex. Systemutvecklare)"
+              label={t('salary.insights.occupationLabel')}
               value={occupation}
-              onChange={(e) => setOccupation(e.target.value)}
+              onChange={(e) => setEgetYrke(e.target.value)}
             />
             <div className="grid grid-cols-2 gap-3">
               <Input
-                placeholder="Region (valfritt)"
+                label={t('salary.insights.regionLabel')}
                 value={region}
-                onChange={(e) => setRegion(e.target.value)}
+                onChange={(e) => setEgenRegion(e.target.value)}
               />
               <Input
-                placeholder="Erfarenhet (år)"
+                label={t('salary.insights.experienceLabel')}
+                hint={t('salary.insights.experienceHint')}
                 type="number"
                 value={experience}
-                onChange={(e) => setExperience(e.target.value)}
+                onChange={(e) => setEgenErfarenhet(e.target.value)}
               />
             </div>
             <Button
@@ -128,7 +145,7 @@ export function SalaryInsightsPanel({
               className="w-full"
               leftIcon={<TrendingUp className="w-4 h-4" />}
             >
-              Hämta lönedata
+              {t('salary.insights.fetch')}
             </Button>
           </div>
         </div>
@@ -137,95 +154,75 @@ export function SalaryInsightsPanel({
   }
 
   return (
-    <AiConsentGate compact featureName="Lönekompass">
+    <AiConsentGate compact featureName={t('salary.insights.title')}>
       <AIResultCard
         aiGenerated={!!result}
-        title="AI Lönekompass"
-        subtitle={`${occupation}${region ? ` i ${region}` : ''}`}
+        title={t('salary.insights.title')}
+        subtitle={`${occupation}${region ? ` · ${region}` : ''}`}
         icon={<TrendingUp className="w-5 h-5 text-white" />}
         isLoading={isLoading}
-        loadingText="Hämtar marknadsdata..."
+        loadingText={t('salary.insights.loading')}
         error={error}
         onRetry={handleAnalyze}
-        sources={result?.sources}
+        sources={citations.length > 0 ? citations : undefined}
         className={className}
         headerActions={
           result && (
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setResult(null)}
+              onClick={() => { setResult(null); setCitations([]) }}
               className="text-white/80 hover:text-white hover:bg-white/10"
             >
-              Ny sökning
+              {t('salary.insights.newSearch')}
             </Button>
           )
         }
       >
         {result && (
           <div className="space-y-4">
-            {/* Market Data Stats */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <AIStatBlock label={t('salary.insights.average')} value={result.marketData.averageSalary} />
+              <AIStatBlock label={t('salary.insights.range')} value={result.marketData.salaryRange} />
               <AIStatBlock
-                label="Medellön"
-                value={result.marketData.averageSalary}
-              />
-              <AIStatBlock
-                label="Intervall"
-                value={result.marketData.salaryRange}
-              />
-              <AIStatBlock
-                label="25:e percentil"
+                label={t('salary.insights.p25')}
                 value={result.marketData.percentile25}
-                subValue="Lägre kvartil"
+                subValue={t('salary.insights.p25Sub')}
               />
               <AIStatBlock
-                label="75:e percentil"
+                label={t('salary.insights.p75')}
                 value={result.marketData.percentile75}
-                subValue="Högre kvartil"
+                subValue={t('salary.insights.p75Sub')}
               />
             </div>
 
-            {/* Salary Progression */}
             <CollapsibleSection
-              title="Löneutveckling"
+              title={t('salary.insights.progression')}
               icon={<BarChart3 className="w-4 h-4" />}
               defaultOpen
             >
               <div className="flex items-end justify-between gap-4 py-4">
-                <div className="text-center">
-                  <div className="h-16 w-12 bg-[var(--c-solid)] rounded-t-lg flex items-end justify-center">
-                    <span className="text-white text-xs font-medium pb-1">1 år</span>
+                {([
+                  { hojd: 'h-16', etikett: t('salary.insights.year1'), text: result.progression.year1, ton: 'bg-[var(--c-solid)]/60' },
+                  { hojd: 'h-24', etikett: t('salary.insights.year3'), text: result.progression.year3, ton: 'bg-[var(--c-solid)]/80' },
+                  { hojd: 'h-32', etikett: t('salary.insights.year5'), text: result.progression.year5, ton: 'bg-[var(--c-solid)]' },
+                ]).map((steg, i) => (
+                  <div key={steg.etikett} className="flex items-end gap-4">
+                    {i > 0 && <ChevronRight className="w-4 h-4 text-stone-500 mb-8" aria-hidden="true" />}
+                    <div className="text-center">
+                      <div className={cn(steg.hojd, 'w-12 rounded-t-lg flex items-end justify-center', steg.ton)}>
+                        <span className="text-white text-xs font-medium pb-1">{steg.etikett}</span>
+                      </div>
+                      <p className="text-xs text-stone-600 dark:text-stone-300 mt-2">{steg.text}</p>
+                    </div>
                   </div>
-                  <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">
-                    {result.progression.year1}
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-stone-600 mb-8" />
-                <div className="text-center">
-                  <div className="h-24 w-12 bg-sky-500 rounded-t-lg flex items-end justify-center">
-                    <span className="text-white text-xs font-medium pb-1">3 år</span>
-                  </div>
-                  <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">
-                    {result.progression.year3}
-                  </p>
-                </div>
-                <ChevronRight className="w-4 h-4 text-stone-600 mb-8" />
-                <div className="text-center">
-                  <div className="h-32 w-12 bg-emerald-500 rounded-t-lg flex items-end justify-center">
-                    <span className="text-white text-xs font-medium pb-1">5 år</span>
-                  </div>
-                  <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">
-                    {result.progression.year5}
-                  </p>
-                </div>
+                ))}
               </div>
             </CollapsibleSection>
 
-            {/* High Value Skills */}
             {result.highValueSkills.length > 0 && (
               <CollapsibleSection
-                title="Kompetenser som höjer lönen"
+                title={t('salary.insights.highValueSkills')}
                 icon={<Award className="w-4 h-4" />}
                 badge={result.highValueSkills.length}
               >
@@ -235,10 +232,10 @@ export function SalaryInsightsPanel({
                       key={i}
                       className="flex items-center justify-between p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50"
                     >
-                      <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+                      <span className="text-sm font-medium text-stone-700 dark:text-stone-200">
                         {skill.skill}
                       </span>
-                      <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                      <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">
                         {skill.salaryImpact}
                       </span>
                     </div>
@@ -247,10 +244,9 @@ export function SalaryInsightsPanel({
               </CollapsibleSection>
             )}
 
-            {/* Negotiation Insights */}
             {result.negotiationInsights.length > 0 && (
               <CollapsibleSection
-                title="Förhandlingsinsikter"
+                title={t('salary.insights.negotiationInsights')}
                 icon={<Lightbulb className="w-4 h-4" />}
                 badge={result.negotiationInsights.length}
               >
@@ -258,10 +254,9 @@ export function SalaryInsightsPanel({
               </CollapsibleSection>
             )}
 
-            {/* Comparisons */}
             {result.comparisons.length > 0 && (
               <CollapsibleSection
-                title="Jämförelser"
+                title={t('salary.insights.comparisons')}
                 icon={<DollarSign className="w-4 h-4" />}
               >
                 <div className="space-y-2">
@@ -271,15 +266,14 @@ export function SalaryInsightsPanel({
                       className="p-3 rounded-lg border border-stone-200 dark:border-stone-700"
                     >
                       <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-600">
-                          {comp.industry}
-                        </span>
-                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-600">
-                          {comp.region}
-                        </span>
-                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-600">
-                          {comp.experience}
-                        </span>
+                        {[comp.industry, comp.region, comp.experience].map((del) => (
+                          <span
+                            key={del}
+                            className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-300"
+                          >
+                            {del}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   ))}

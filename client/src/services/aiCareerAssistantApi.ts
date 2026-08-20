@@ -44,7 +44,10 @@ export interface SalaryCompassParams {
   occupation: string
   region?: string
   experienceYears?: number
-  currentSalary?: number
+  // `currentSalary` togs bort 2026-08-20: kalkylatorn skickade sin EGEN
+  // uppskattning hit, och edge-funktionen presenterade den för modellen som
+  // "NUVARANDE LÖN". Användaren hade aldrig angett någon lön. Ska fältet
+  // återinföras måste det komma från något personen själv skrivit in.
   skills?: string[]
 }
 

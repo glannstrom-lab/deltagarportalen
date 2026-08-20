@@ -1,471 +1,324 @@
 /**
- * Market Data Tab - Salary statistics by industry and region
- * Features: interactive sorting, filtering, visual charts, search, expandable rows
+ * Marknadsdata — löneläget per yrkesområde och region.
+ *
+ * Vad som ändrades 2026-08-20, och varför:
+ *
+ * · Sidan sa "Data baseras på branschrapporter, SCB-statistik och
+ *   löneundersökningar. Senast uppdaterad: Q1 2026". Ingenting hämtades:
+ *   alla tal var literaler i den här filen, oförändrade sedan 2026-03-18.
+ *   Nu står det vad de är, och var riktig statistik finns.
+ * · Sju av tretton branscher visade NEDÅTPIL bredvid en positiv löneökning,
+ *   eftersom pilen valdes av `change >= 3` i stället för av tecknet. Vård,
+ *   bygg, utbildning och handel såg alltså ut att ha sjunkande löner.
+ *   Löneökningstalen hade ingen källa alls och är borttagna — en prognos med
+ *   en decimal är ett påstående, inte en dekoration.
+ * · Regionerna visade "+15 %" bredvid "48 000 kr" där talen kom från två
+ *   oberoende literaler som inte stämde överens (48 000/40 000 = +20 %).
+ *   Båda härleds nu ur samma tabell.
+ * · Min/max räknades som median × 0,8 respektive × 1,3 i renderingen, vilket
+ *   gav IT-taket 67 600 kr medan kalkylatorfliken sa 85 000 för samma
+ *   bransch. Båda läser nu `data/lonedata.ts`.
  */
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BarChart3, TrendingUp, MapPin, Building2, ArrowUp, ArrowDown, Search, ChevronDown } from '@/components/ui/icons'
+import { Search, Building2, MapPin, ChevronDown, Info, ExternalLink } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
+import { EmptySearch } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
+import {
+  YRKESOMRADEN, LONEREGIONER, EXTERNA_LONEKALLOR,
+  riksmedian, regionmedian,
+} from '@/data/lonedata'
 
-// Industry salary data (monthly SEK)
-const INDUSTRY_DATA = [
-  { name: 'IT & Tech', median: 52000, change: 4.2, employees: '320 000' },
-  { name: 'Finans & Bank', median: 55000, change: 3.1, employees: '85 000' },
-  { name: 'Juridik', median: 55000, change: 3.8, employees: '45 000' },
-  { name: 'Teknik & Ingenjör', median: 48000, change: 3.5, employees: '180 000' },
-  { name: 'Ekonomi', median: 48000, change: 3.1, employees: '120 000' },
-  { name: 'HR & Personal', median: 43000, change: 2.5, employees: '65 000' },
-  { name: 'Marknadsföring', median: 42000, change: 2.8, employees: '95 000' },
-  { name: 'Hälso- & Sjukvård', median: 40000, change: 2.9, employees: '450 000' },
-  { name: 'Försäljning', median: 40000, change: 2.2, employees: '210 000' },
-  { name: 'Design & Kreativt', median: 40000, change: 2.6, employees: '55 000' },
-  { name: 'Bygg & Hantverk', median: 38000, change: 2.3, employees: '320 000' },
-  { name: 'Utbildning', median: 38000, change: 2.0, employees: '280 000' },
-  { name: 'Administration', median: 35000, change: 1.8, employees: '180 000' },
-]
-
-// Regional data
-const REGIONAL_DATA = [
-  { region: 'Stockholm', premium: '+15%', avgSalary: 48000, costOfLiving: 'Hög' },
-  { region: 'Göteborg', premium: '+8%', avgSalary: 44000, costOfLiving: 'Medel-hög' },
-  { region: 'Malmö', premium: '+5%', avgSalary: 42000, costOfLiving: 'Medel' },
-  { region: 'Uppsala', premium: '+3%', avgSalary: 41000, costOfLiving: 'Medel-hög' },
-  { region: 'Linköping', premium: '0%', avgSalary: 40000, costOfLiving: 'Medel' },
-  { region: 'Västerås', premium: '0%', avgSalary: 40000, costOfLiving: 'Medel' },
-  { region: 'Umeå', premium: '-3%', avgSalary: 39000, costOfLiving: 'Medel' },
-  { region: 'Övriga', premium: '-5%', avgSalary: 38000, costOfLiving: 'Låg-medel' },
-]
-
-// Hot skills with salary premiums
-const HOT_SKILLS = [
-  { skill: 'AI/Machine Learning', premium: '+25-40%', demand: 'Mycket hög' },
-  { skill: 'Cloud Architecture', premium: '+20-35%', demand: 'Mycket hög' },
-  { skill: 'Cybersecurity', premium: '+20-30%', demand: 'Hög' },
-  { skill: 'Data Engineering', premium: '+15-25%', demand: 'Hög' },
-  { skill: 'DevOps/SRE', premium: '+15-25%', demand: 'Hög' },
-  { skill: 'Product Management', premium: '+10-20%', demand: 'Medel-hög' },
-]
-
-type SortKey = 'name' | 'median' | 'change'
-type SortOrder = 'asc' | 'desc'
-
-interface ExpandedRows {
-  [key: string]: boolean
-}
+type Vy = 'bransch' | 'region'
+type Sortering = 'median' | 'namn'
 
 export default function MarketDataTab() {
-  const { t } = useTranslation()
-  const [selectedView, setSelectedView] = useState<'industry' | 'region'>('industry')
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sortKey, setSortKey] = useState<SortKey>('median')
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
-  const [expandedRows, setExpandedRows] = useState<ExpandedRows>({})
+  const { t, i18n } = useTranslation()
+  const [vy, setVy] = useState<Vy>('bransch')
+  const [sok, setSok] = useState('')
+  const [sortering, setSortering] = useState<Sortering>('median')
+  const [oppen, setOppen] = useState<string | null>(null)
 
-  const maxMedian = Math.max(...INDUSTRY_DATA.map(d => d.median))
+  const sprak = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
+  const kr = (n: number) => n.toLocaleString(sprak)
 
-  const toggleSort = (key: SortKey) => {
-    if (sortKey === key) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
-    } else {
-      setSortKey(key)
-      setSortOrder('desc')
-    }
-  }
+  const namnFor = (nyckel: string, fallback: string, typ: 'occupations' | 'regions') =>
+    t(`salary.data.${typ}.${nyckel}`, fallback)
 
-  const toggleExpandRow = (id: string) => {
-    setExpandedRows(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }))
-  }
-
-  const filteredAndSortedIndustries = useMemo(() => {
-    const filtered = INDUSTRY_DATA.filter(ind =>
-      ind.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const branscher = useMemo(() => {
+    const sokord = sok.trim().toLowerCase()
+    const lista = YRKESOMRADEN.filter(y =>
+      !sokord || namnFor(y.nyckel, y.namn, 'occupations').toLowerCase().includes(sokord),
     )
-
-    filtered.sort((a, b) => {
-      let aVal: string | number = a[sortKey]
-      let bVal: string | number = b[sortKey]
-
-      if (sortKey === 'median') {
-        aVal = parseInt(String(aVal))
-        bVal = parseInt(String(bVal))
-      } else if (sortKey === 'change') {
-        aVal = parseFloat(String(aVal))
-        bVal = parseFloat(String(bVal))
-      }
-
-      if (sortOrder === 'asc') {
-        return aVal > bVal ? 1 : -1
-      } else {
-        return aVal < bVal ? 1 : -1
-      }
-    })
-
-    return filtered
-  }, [searchTerm, sortKey, sortOrder])
-
-  const filteredRegions = useMemo(() => {
-    return REGIONAL_DATA.filter(reg =>
-      reg.region.toLowerCase().includes(searchTerm.toLowerCase())
+    return [...lista].sort((a, b) =>
+      sortering === 'median'
+        ? b.median - a.median
+        : namnFor(a.nyckel, a.namn, 'occupations').localeCompare(namnFor(b.nyckel, b.namn, 'occupations'), sprak),
     )
-  }, [searchTerm])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sok, sortering, i18n.language])
+
+  const regioner = useMemo(() => {
+    const sokord = sok.trim().toLowerCase()
+    const lista = LONEREGIONER.filter(r =>
+      !sokord || namnFor(r.nyckel, r.namn, 'regions').toLowerCase().includes(sokord),
+    )
+    return [...lista].sort((a, b) => b.justeringProcent - a.justeringProcent)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sok, i18n.language])
+
+  const hogstaMedian = Math.max(...YRKESOMRADEN.map(y => y.median))
+  const riks = riksmedian()
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
-            <BarChart3 className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.marketData.title')}</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('salary.marketData.description')}
-            </p>
-          </div>
-        </div>
-      </Card>
+      <p className="text-sm text-stone-600 dark:text-stone-300">
+        {t('salary.marketData.description')}
+      </p>
 
-      {/* View toggle and search */}
-      <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-2">
+      {/* Vyväxlare */}
+      <div className="flex gap-2" role="group" aria-label={t('salary.marketData.viewSwitchLabel')}>
+        {(['bransch', 'region'] as const).map((v) => (
           <button
-            onClick={() => setSelectedView('industry')}
+            key={v}
+            onClick={() => { setVy(v); setOppen(null) }}
+            aria-pressed={vy === v}
             className={cn(
-              "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
-              selectedView === 'industry'
-                ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white"
-                : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
+              'inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors min-h-[44px]',
+              vy === v
+                ? 'bg-[var(--c-solid)] text-white'
+                : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-700',
             )}
           >
-            <Building2 className="w-4 h-4" />
-            {t('salary.marketData.byIndustry')}
+            {v === 'bransch'
+              ? <Building2 className="w-4 h-4" aria-hidden="true" />
+              : <MapPin className="w-4 h-4" aria-hidden="true" />}
+            {t(`salary.marketData.view.${v}`)}
           </button>
-          <button
-            onClick={() => setSelectedView('region')}
-            className={cn(
-              "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
-              selectedView === 'region'
-                ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white"
-                : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
-            )}
-          >
-            <MapPin className="w-4 h-4" />
-            {t('salary.marketData.byRegion')}
-          </button>
-        </div>
-
-        {/* Search bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400" />
-          <input
-            type="text"
-            aria-label={selectedView === 'industry' ? t('salary.marketData.searchIndustry') : t('salary.marketData.searchRegion')}
-            placeholder={selectedView === 'industry' ? t('salary.marketData.searchIndustry') : t('salary.marketData.searchRegion')}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] text-gray-800 dark:text-gray-100"
-          />
-        </div>
+        ))}
       </div>
 
-      {/* Industry view */}
-      {selectedView === 'industry' && (
+      {/* Sök */}
+      <div className="relative">
+        <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-500" aria-hidden="true" />
+        <input
+          type="search"
+          value={sok}
+          onChange={(e) => setSok(e.target.value)}
+          aria-label={t(vy === 'bransch' ? 'salary.marketData.searchIndustry' : 'salary.marketData.searchRegion')}
+          placeholder={t(vy === 'bransch' ? 'salary.marketData.searchIndustry' : 'salary.marketData.searchRegion')}
+          className="w-full pl-9 pr-3 py-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:ring-2 focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)]"
+        />
+      </div>
+
+      {vy === 'bransch' ? (
         <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100">
               {t('salary.marketData.medianByIndustry')}
-            </h3>
-            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredAndSortedIndustries.length} {t('salary.marketData.results')}</span>
+            </h2>
+            <p className="text-sm text-stone-600 dark:text-stone-300" role="status" aria-live="polite">
+              {t('salary.marketData.resultCount', { count: branscher.length })}
+            </p>
           </div>
 
-          {/* Sort controls */}
-          <div className="flex gap-2 mb-4 flex-wrap">
-            <button
-              onClick={() => toggleSort('median')}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
-                sortKey === 'median'
-                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
-                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
-              )}
-            >
-              {t('salary.marketData.sortSalary')} {sortKey === 'median' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </button>
-            <button
-              onClick={() => toggleSort('change')}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
-                sortKey === 'change'
-                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
-                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
-              )}
-            >
-              {t('salary.marketData.sortGrowth')} {sortKey === 'change' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </button>
-            <button
-              onClick={() => toggleSort('name')}
-              className={cn(
-                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
-                sortKey === 'name'
-                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
-                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
-              )}
-            >
-              {t('salary.marketData.sortName')} {sortKey === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
-            </button>
+          <div className="flex gap-2 mb-4">
+            {(['median', 'namn'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setSortering(s)}
+                aria-pressed={sortering === s}
+                className={cn(
+                  'px-3 py-2 rounded-lg text-sm min-h-[44px]',
+                  sortering === s
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)] font-medium'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700',
+                )}
+              >
+                {t(`salary.marketData.sortBy.${s}`)}
+              </button>
+            ))}
           </div>
 
-          <AnimatePresence>
-            {filteredAndSortedIndustries.length > 0 ? (
-              <div className="space-y-2">
-                {filteredAndSortedIndustries.map((industry) => {
-                  const isExpanded = expandedRows[industry.name]
-                  return (
-                    <motion.div
-                      key={industry.name}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="group"
-                    >
-                      <button
-                        onClick={() => toggleExpandRow(industry.name)}
-                        className="w-full text-left hover:bg-[var(--c-bg)]/30 dark:hover:bg-[var(--c-bg)]/20 p-3 rounded-xl transition-colors"
-                      >
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-2 flex-1">
-                            <span className={cn(
-                              'transition-transform',
-                              isExpanded && 'rotate-180'
-                            )}>
-                              <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                            </span>
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{industry.name}</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <span className={cn(
-                              "text-xs flex items-center gap-0.5 font-medium",
-                              industry.change >= 3 ? "text-[var(--c-text)] dark:text-[var(--c-solid)]" : "text-gray-700 dark:text-gray-400"
-                            )}>
-                              {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
-                              {industry.change}{t('salary.marketData.perYear')}
-                            </span>
-                            <span className="text-sm font-bold text-gray-900 dark:text-gray-100 min-w-fit">
-                              {industry.median.toLocaleString('sv-SE')} kr
-                            </span>
-                          </div>
-                        </div>
-                        <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-[var(--c-solid)] rounded-full transition-all group-hover:from-[var(--c-solid)] group-hover:to-[var(--c-text)]"
-                            style={{ width: `${(industry.median / maxMedian) * 100}%` }}
-                          />
-                        </div>
-                      </button>
-
-                      {/* Expanded detail row */}
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="overflow-hidden"
-                          >
-                            <div className="px-3 pb-3 pt-1 bg-[var(--c-bg)]/30 dark:bg-[var(--c-bg)]/10 rounded-b-xl border-t border-[var(--c-accent)]/40/50 dark:border-[var(--c-accent)]/50/50">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div className="text-sm">
-                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.employeesInSweden')}</p>
-                                  <p className="font-semibold text-gray-900 dark:text-gray-100">~{industry.employees}</p>
-                                </div>
-                                <div className="text-sm">
-                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.annualGrowth')}</p>
-                                  <p className={cn(
-                                    'font-semibold',
-                                    industry.change >= 3 ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'text-gray-700 dark:text-gray-300'
-                                  )}>
-                                    +{industry.change}%
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="mt-3 p-2 bg-white dark:bg-stone-700 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.marketData.salaryRange')}</p>
-                                <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300">
-                                  <span>{t('salary.marketData.min')}: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
-                                  <span>{t('salary.marketData.max')}: ~{Math.round(industry.median * 1.3).toLocaleString('sv-SE')} kr</span>
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  )
-                })}
-              </div>
-            ) : (
-              <div className="text-center py-8 text-gray-700 dark:text-gray-300">
-                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>{t('salary.marketData.noIndustryFound', { searchTerm })}</p>
-              </div>
-            )}
-          </AnimatePresence>
-        </Card>
-      )}
-
-      {/* Region view */}
-      {selectedView === 'region' && (
-        <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-              {t('salary.marketData.salaryByRegion')}
-            </h3>
-            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredRegions.length} {t('salary.marketData.results')}</span>
-          </div>
-
-          <div className="space-y-3">
-            {filteredRegions.length > 0 ? (
-              filteredRegions.map((region) => {
-                const isExpanded = expandedRows[region.region]
-                const premiumNum = parseFloat(region.premium)
+          {branscher.length === 0 ? (
+            <EmptySearch query={sok} onClear={() => setSok('')} />
+          ) : (
+            <ul className="space-y-3">
+              {branscher.map((y) => {
+                const isOppen = oppen === y.nyckel
+                const namn = namnFor(y.nyckel, y.namn, 'occupations')
                 return (
-                  <motion.div
-                    key={region.region}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="border border-stone-200 dark:border-stone-600 rounded-xl overflow-hidden hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] transition-colors"
-                  >
+                  <li key={y.nyckel}>
                     <button
-                      onClick={() => toggleExpandRow(region.region)}
-                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-stone-50/50 dark:hover:bg-stone-700/50 transition-colors"
+                      onClick={() => setOppen(isOppen ? null : y.nyckel)}
+                      aria-expanded={isOppen}
+                      aria-controls={`bransch-${y.nyckel}`}
+                      className="w-full text-left group"
                     >
-                      <div className="flex-1">
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{region.region}</p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          {region.avgSalary.toLocaleString('sv-SE')} {t('salary.marketData.perMonth')}
-                        </p>
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <span className="flex items-center gap-2 font-medium text-stone-800 dark:text-stone-100">
+                          <ChevronDown
+                            className={cn('w-4 h-4 transition-transform', isOppen && 'rotate-180')}
+                            aria-hidden="true"
+                          />
+                          {namn}
+                        </span>
+                        <span className="text-sm font-semibold text-stone-900 dark:text-stone-100 whitespace-nowrap">
+                          {kr(y.median)} kr
+                        </span>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <span className={cn(
-                          "px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap",
-                          premiumNum > 0
-                            ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]"
-                            : premiumNum < 0
-                            ? "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300"
-                            : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
-                        )}>
-                          {region.premium}
-                        </span>
-                        <span className={cn(
-                          'transition-transform',
-                          isExpanded && 'rotate-180'
-                        )}>
-                          <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </span>
+                      <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-[var(--c-solid)]"
+                          style={{ width: `${(y.median / hogstaMedian) * 100}%` }}
+                        />
                       </div>
                     </button>
 
-                    <AnimatePresence>
-                      {isExpanded && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="border-t border-stone-200 dark:border-stone-600 overflow-hidden"
-                        >
-                          <div className="px-4 py-3 bg-stone-50/30 dark:bg-stone-700/30 space-y-4">
-                            {/* Cost of living */}
-                            <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.marketData.costOfLiving')}</p>
-                                <p className="font-semibold text-gray-900 dark:text-gray-100">{region.costOfLiving}</p>
-                              </div>
-                              <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.marketData.averageSalary')}</p>
-                                <p className="font-semibold text-gray-900 dark:text-gray-100">{region.avgSalary.toLocaleString('sv-SE')} kr</p>
-                              </div>
-                            </div>
-
-                            {/* Premium visualization */}
-                            <div>
-                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.marketData.salaryPremium')}</p>
-                              <div className="flex items-center gap-2">
-                                <div className="flex-1 h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
-                                  <div
-                                    className={cn(
-                                      'h-full transition-all',
-                                      premiumNum > 0 ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80' : 'bg-rose-500 dark:bg-rose-400'
-                                    )}
-                                    style={{ width: `${50 + (premiumNum * 2)}%` }}
-                                  />
-                                </div>
-                                <span className="text-xs font-medium text-gray-700 dark:text-gray-300 min-w-fit">{region.premium}</span>
-                              </div>
-                            </div>
-
-                            {/* Info */}
-                            <div className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600 text-xs text-gray-600 dark:text-gray-400">
-                              <p>
-                                {premiumNum > 0
-                                  ? t('salary.marketData.premiumHigher')
-                                  : premiumNum < 0
-                                  ? t('salary.marketData.premiumLower')
-                                  : t('salary.marketData.premiumAverage')
-                                }
-                              </p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                    <div
+                      id={`bransch-${y.nyckel}`}
+                      hidden={!isOppen}
+                      className="mt-3 p-3 rounded-lg bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/40"
+                    >
+                      <dl className="grid grid-cols-3 gap-3 text-sm">
+                        <div>
+                          <dt className="text-stone-600 dark:text-stone-300">{t('salary.marketData.low')}</dt>
+                          <dd className="font-semibold text-stone-900 dark:text-stone-100">{kr(y.min)} kr</dd>
+                        </div>
+                        <div>
+                          <dt className="text-stone-600 dark:text-stone-300">{t('salary.marketData.median')}</dt>
+                          <dd className="font-semibold text-stone-900 dark:text-stone-100">{kr(y.median)} kr</dd>
+                        </div>
+                        <div>
+                          <dt className="text-stone-600 dark:text-stone-300">{t('salary.marketData.high')}</dt>
+                          <dd className="font-semibold text-stone-900 dark:text-stone-100">{kr(y.max)} kr</dd>
+                        </div>
+                      </dl>
+                      <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+                        {t('salary.marketData.rangeNote')}
+                      </p>
+                    </div>
+                  </li>
                 )
-              })
-            ) : (
-              <div className="text-center py-8 text-gray-700 dark:text-gray-300">
-                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>{t('salary.marketData.noRegionFound', { searchTerm })}</p>
-              </div>
-            )}
+              })}
+            </ul>
+          )}
+        </Card>
+      ) : (
+        <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100">
+              {t('salary.marketData.byRegion')}
+            </h2>
+            <p className="text-sm text-stone-600 dark:text-stone-300" role="status" aria-live="polite">
+              {t('salary.marketData.resultCount', { count: regioner.length })}
+            </p>
           </div>
+          <p className="text-sm text-stone-600 dark:text-stone-300 mb-4">
+            {t('salary.marketData.regionBasis', { median: kr(riks) })}
+          </p>
+
+          {regioner.length === 0 ? (
+            <EmptySearch query={sok} onClear={() => setSok('')} />
+          ) : (
+            <ul className="space-y-3">
+              {regioner.map((r) => {
+                const isOppen = oppen === r.nyckel
+                const namn = namnFor(r.nyckel, r.namn, 'regions')
+                const median = regionmedian(r)
+                // Nollinjen ligger i mitten; stapeln växer åt det håll tecknet pekar.
+                const bredd = Math.min(50, Math.abs(r.justeringProcent) * 2.5)
+                return (
+                  <li key={r.nyckel}>
+                    <button
+                      onClick={() => setOppen(isOppen ? null : r.nyckel)}
+                      aria-expanded={isOppen}
+                      aria-controls={`region-${r.nyckel}`}
+                      className="w-full text-left"
+                    >
+                      <div className="flex items-center justify-between gap-3 mb-1">
+                        <span className="flex items-center gap-2 font-medium text-stone-800 dark:text-stone-100">
+                          <ChevronDown
+                            className={cn('w-4 h-4 transition-transform', isOppen && 'rotate-180')}
+                            aria-hidden="true"
+                          />
+                          {namn}
+                        </span>
+                        <span className="text-sm text-stone-700 dark:text-stone-200 whitespace-nowrap">
+                          {r.justeringProcent > 0 ? '+' : ''}{r.justeringProcent} %
+                          <span className="ml-2 font-semibold text-stone-900 dark:text-stone-100">{kr(median)} kr</span>
+                        </span>
+                      </div>
+                      {/* Divergerande stapel med synlig nollinje */}
+                      <div className="relative h-2 bg-stone-100 dark:bg-stone-700 rounded-full">
+                        <div className="absolute inset-y-0 left-1/2 w-px bg-stone-400 dark:bg-stone-500" aria-hidden="true" />
+                        <motion.div
+                          className={cn(
+                            'absolute inset-y-0 rounded-full',
+                            r.justeringProcent >= 0 ? 'bg-[var(--c-solid)]' : 'bg-stone-400 dark:bg-stone-500',
+                          )}
+                          style={
+                            r.justeringProcent >= 0
+                              ? { left: '50%', width: `${bredd}%` }
+                              : { right: '50%', width: `${bredd}%` }
+                          }
+                        />
+                      </div>
+                    </button>
+
+                    <div
+                      id={`region-${r.nyckel}`}
+                      hidden={!isOppen}
+                      className="mt-3 p-3 rounded-lg bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/40 text-sm text-stone-700 dark:text-stone-200"
+                    >
+                      {t('salary.marketData.regionDetail', {
+                        region: namn,
+                        percent: `${r.justeringProcent > 0 ? '+' : ''}${r.justeringProcent}`,
+                        median: kr(median),
+                      })}
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          )}
         </Card>
       )}
 
-      {/* Hot skills */}
+      {/* Var talen kommer ifrån */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          {t('salary.marketData.highPremiumSkills')}
-        </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {HOT_SKILLS.map((item) => (
-            <div
-              key={item.skill}
-              className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800"
-            >
-              <p className="font-medium text-gray-800 dark:text-gray-100">{item.skill}</p>
-              <p className="text-lg font-bold text-amber-700 dark:text-amber-400 mt-1">{item.premium}</p>
-              <p className="text-xs text-gray-700 dark:text-gray-400 mt-1">{t('salary.marketData.demand')}: {item.demand}</p>
-            </div>
-          ))}
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+              {t('salary.marketData.aboutTitle')}
+            </h3>
+            <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
+              {t('salary.marketData.aboutText')}
+            </p>
+            <ul className="space-y-2">
+              {EXTERNA_LONEKALLOR.map((kalla) => (
+                <li key={kalla.nyckel}>
+                  <a
+                    href={kalla.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline inline-flex items-center gap-1"
+                  >
+                    {kalla.namn}
+                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                    <span className="sr-only">{t('salary.calculator.opensInNewTab')}</span>
+                  </a>
+                  <span className="text-sm text-stone-700 dark:text-stone-300">
+                    {' — '}{t(`salary.data.sources.${kalla.nyckel}`, kalla.beskrivning)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
-      </Card>
-
-      {/* Disclaimer */}
-      <Card className="bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600">
-        <p className="text-sm text-gray-700 dark:text-gray-300">
-          <strong>{t('salary.marketData.disclaimerTitle')}</strong> {t('salary.marketData.disclaimerText')}
-        </p>
       </Card>
     </div>
   )

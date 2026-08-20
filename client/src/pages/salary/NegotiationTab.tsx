@@ -1,639 +1,546 @@
 /**
- * Negotiation Tab - Salary negotiation guide and tips
- * Features: interactive checklist with progress, scenario simulator, tips carousel, localStorage persistence
+ * Förhandlingsfliken.
+ *
+ * Fliken var ett anslag: den bad deltagaren förbereda sex saker och erbjöd
+ * inte ett enda ställe att göra dem på. Nu finns tre fält — målön, lägsta
+ * nivå, mina argument — som sparas, så att det man tänkt ut finns kvar när
+ * man sitter i mötet.
+ *
+ * Tre saker som var direkt fel och inte får återinföras:
+ *
+ * · Scenarierna visade fyra påhittade lönesiffror under etiketten "Marknad",
+ *   utan yrke, region eller källa. Siffrorna är borta; situationerna och
+ *   resonemangen finns kvar. Ett scenario behöver inte ett tal för att lära
+ *   ut ett sätt att tänka.
+ * · Ett scenario rådde deltagaren att begära 5 000 kr under marknadsnivån
+ *   "för att visa flexibilitet" — till den som har svagast läge från början.
+ *   Ett annat sa "du är redan över marknaden" till någon vars egna tal låg
+ *   4 000 kr under.
+ * · Allt sakinnehåll var hårdkodad svenska i en tvåspråkig portal. Det ligger
+ *   nu i språkfilerna under `salary.negotiation.*`.
  */
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TrendingUp, CheckCircle, AlertCircle, MessageSquare, Target, Clock, Sparkles, ChevronDown, ChevronUp, RotateCcw, Play } from '@/components/ui/icons'
+import { Link } from 'react-router-dom'
+import {
+  TrendingUp, CheckCircle, AlertCircle, ChevronDown, MessageSquare,
+  Target, Clock, Lightbulb, RotateCcw, ArrowRight,
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
+import { IconButton } from '@/components/ui/Button'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { cn } from '@/lib/utils'
-import { motion, AnimatePresence } from 'framer-motion'
+import { logger } from '@/lib/logger'
 
-interface NegotiationStep {
-  id: number
+const CHECKLIST_NYCKEL = 'negotiationChecklist'
+const FORBEREDELSE_NYCKEL = 'negotiationPrep'
+const ANTAL_CHECKPUNKTER = 6
+
+interface Steg {
   title: string
   description: string
   tips: string[]
   phrases: string[]
 }
 
-const NEGOTIATION_STEPS: NegotiationStep[] = [
-  {
-    id: 1,
-    title: 'Förberedelse',
-    description: 'Grunden för en lyckad förhandling läggs innan mötet.',
-    tips: [
-      'Undersök marknadslön för din roll och erfarenhet',
-      'Dokumentera dina prestationer och resultat',
-      'Bestäm ditt mål och din lägsta acceptabla nivå',
-      'Förbered konkreta exempel på ditt värde',
-    ],
-    phrases: [
-      '"Jag har undersökt marknaden och ser att liknande roller ligger på X-Y kr..."',
-      '"Under senaste året har jag bidragit till..."',
-    ],
-  },
-  {
-    id: 2,
-    title: 'Inledning',
-    description: 'Börja samtalet på rätt sätt.',
-    tips: [
-      'Tacka för möjligheten att diskutera lön',
-      'Uttryck entusiasm för rollen/företaget',
-      'Var tydlig med att du vill diskutera kompensation',
-      'Lyssna aktivt på arbetsgivarens perspektiv',
-    ],
-    phrases: [
-      '"Jag uppskattar möjligheten att diskutera min kompensation..."',
-      '"Jag trivs verkligen här och vill gärna prata om hur min lön speglar mitt bidrag..."',
-    ],
-  },
-  {
-    id: 3,
-    title: 'Argumentation',
-    description: 'Presentera ditt case med fakta och resultat.',
-    tips: [
-      'Fokusera på värdet du tillför, inte vad du behöver',
-      'Använd konkreta siffror och exempel',
-      'Jämför med marknadslöner objektivt',
-      'Var beredd att motivera varje punkt',
-    ],
-    phrases: [
-      '"Baserat på mina resultat där jag ökade försäljningen med X%..."',
-      '"Jag tog på mig ansvar för Y-projektet som sparade företaget Z kr..."',
-    ],
-  },
-  {
-    id: 4,
-    title: 'Förhandling',
-    description: 'Hantera motbud och kompromisser.',
-    tips: [
-      'Be aldrig om ursäkt för att förhandla',
-      'Var beredd på motbud - det är normalt',
-      'Överväg hela paketet: bonus, förmåner, semester',
-      'Ta tid på dig att överväga om det behövs',
-    ],
-    phrases: [
-      '"Jag förstår budgeten är begränsad. Kan vi titta på andra förmåner?"',
-      '"Kan vi komma överens om en utvärdering om 6 månader?"',
-    ],
-  },
-  {
-    id: 5,
-    title: 'Avslutning',
-    description: 'Avsluta professionellt oavsett utfall.',
-    tips: [
-      'Sammanfatta vad ni kommit överens om',
-      'Be om skriftlig bekräftelse',
-      'Tacka för samtalet och möjligheten',
-      'Sätt datum för uppföljning om relevant',
-    ],
-    phrases: [
-      '"Kan vi sammanfatta vad vi kommit överens om skriftligt?"',
-      '"Tack för ett konstruktivt samtal. Jag ser fram emot att fortsätta bidra."',
-    ],
-  },
-]
-
-const DO_AND_DONT = {
-  do: [
-    'Var förberedd med fakta och siffror',
-    'Fokusera på värdet du tillför',
-    'Lyssna aktivt och ställ frågor',
-    'Var professionell och lugn',
-    'Ha en BATNA (bästa alternativ)',
-    'Dokumentera allt skriftligt',
-  ],
-  dont: [
-    'Nämn inte personliga ekonomiska behov',
-    'Jämför dig inte med kollegor',
-    'Ge inte ultimatum tidigt',
-    'Acceptera inte första erbjudandet direkt',
-    'Bli inte defensiv vid motbud',
-    'Glöm inte bort förmåner utöver lön',
-  ],
-}
-
-interface ChecklistItem {
-  id: string
-  text: string
-  completed: boolean
-}
-
-interface NegotiationScenario {
-  id: string
+interface Scenario {
   title: string
   description: string
-  targetSalary: number
-  currentSalary: number
-  marketRate: number
-  recommendation: string
+  advice: string
 }
 
-const SCENARIOS: NegotiationScenario[] = [
-  {
-    id: '1',
-    title: 'Jobstart',
-    description: 'Du får ett jobboffert och kan förhandla innan du börjar',
-    targetSalary: 45000,
-    currentSalary: 0,
-    marketRate: 50000,
-    recommendation: 'Förhandla från ett starkt läge - marknadsraten är 50k, men börja lite under för att visa flexibilitet.',
-  },
-  {
-    id: '2',
-    title: 'Årligt lönesamtal',
-    description: 'Det är lönesamtal och du vill ha en höjning',
-    targetSalary: 55000,
-    currentSalary: 50000,
-    marketRate: 54000,
-    recommendation: 'Du är redan över marknaden. Fokusera på dina bidrag och undvik att jämföra med andra.',
-  },
-  {
-    id: '3',
-    title: 'Efter stor framgång',
-    description: 'Du avslutade ett projekt som sparade företaget pengar',
-    targetSalary: 60000,
-    currentSalary: 52000,
-    marketRate: 55000,
-    recommendation: 'Du har bevisbara resultat. Använd detta konkret i förhandlingen.',
-  },
-  {
-    id: '4',
-    title: 'Ny roll',
-    description: 'Du fick nya ansvar och vill ha motsvarande höjning',
-    targetSalary: 58000,
-    currentSalary: 50000,
-    marketRate: 56000,
-    recommendation: 'Tydliga nya ansvar = tydlig grund för förhandling. Dokumentera skillnaden.',
-  },
-]
+interface Tidpunkt {
+  title: string
+  description: string
+}
 
-const TIPS_CAROUSEL = [
-  'Hämta fram branschrapporter som stöd för dina siffror',
-  'Träna på att presentera dina argument innan mötet',
-  'Kom ihåg att det är normalt med motbud - det är en dialog',
-  'Tänk på hela paketet: bonus, hemarbetstid, utbildning, pension',
-  'Följ upp skriftligt: "Som vi diskuterade, från och med..."',
-  'Var redo att säga att du behöver tid för att tänka',
-]
+interface Forberedelse {
+  malon: string
+  lagsta: string
+  argument: string
+}
+
+const TOM_FORBEREDELSE: Forberedelse = { malon: '', lagsta: '', argument: '' }
+
+const STEG_ORDNING = ['preparation', 'opening', 'case', 'apart', 'closing'] as const
+const SCENARIO_ORDNING = ['firstJob', 'offer', 'annual', 'newDuties'] as const
+const TIDPUNKT_ORDNING = ['offer', 'annual', 'newDuties', 'wentWell'] as const
+
+/** Läser sparat tillstånd utan att kunna vitna sidan på trasig data. */
+function lasJson<T>(nyckel: string, arGiltig: (v: unknown) => v is T): T | null {
+  try {
+    const ratext = localStorage.getItem(nyckel)
+    if (!ratext) return null
+    const varde: unknown = JSON.parse(ratext)
+    return arGiltig(varde) ? varde : null
+  } catch (error) {
+    logger.warn(`Kunde inte läsa ${nyckel} ur localStorage`, { error })
+    return null
+  }
+}
+
+const arBooleanLista = (v: unknown): v is boolean[] =>
+  Array.isArray(v) && v.length === ANTAL_CHECKPUNKTER && v.every(x => typeof x === 'boolean')
+
+const arForberedelse = (v: unknown): v is Forberedelse =>
+  typeof v === 'object' && v !== null &&
+  ['malon', 'lagsta', 'argument'].every(k => typeof (v as Record<string, unknown>)[k] === 'string')
 
 export default function NegotiationTab() {
   const { t } = useTranslation()
-  const [expandedStep, setExpandedStep] = useState<number | null>(1)
-  const [checklist, setChecklist] = useState<ChecklistItem[]>([])
-  const [selectedScenario, setSelectedScenario] = useState<NegotiationScenario | null>(null)
-  const [showScenario, setShowScenario] = useState(false)
-  const [currentTipIndex, setCurrentTipIndex] = useState(0)
 
-  // Load checklist from localStorage
+  // Nycklade objekt, inte listor: språkfilernas dubblettvakt läser råtexten
+  // och kan inte se att `title` i två listelement hör till olika objekt.
+  // Stabila nycklar är dessutom lättare att översätta mot. Ordningen bor här.
+  const steg = STEG_ORDNING.map(nyckel =>
+    t(`salary.negotiation.steps.${nyckel}`, { returnObjects: true }) as unknown as Steg,
+  )
+  const scenarier = SCENARIO_ORDNING.map(nyckel =>
+    t(`salary.negotiation.scenarios.items.${nyckel}`, { returnObjects: true }) as unknown as Scenario,
+  )
+  const tips = t('salary.negotiation.tips.items', { returnObjects: true }) as unknown as string[]
+  const tidpunkter = TIDPUNKT_ORDNING.map(nyckel =>
+    t(`salary.negotiation.timing.items.${nyckel}`, { returnObjects: true }) as unknown as Tidpunkt,
+  )
+  const gorLista = t('salary.negotiation.do.items', { returnObjects: true }) as unknown as string[]
+  const undvikLista = t('salary.negotiation.dont.items', { returnObjects: true }) as unknown as string[]
+  const checkpunkter = t('salary.negotiation.checklist.items', { returnObjects: true }) as unknown as string[]
+
+  const [oppetSteg, setOppetSteg] = useState<number | null>(0)
+  const [valtScenario, setValtScenario] = useState<number | null>(null)
+  const [tipsIndex, setTipsIndex] = useState(0)
+  const [visaMer, setVisaMer] = useState(false)
+  const { confirm } = useConfirmDialog()
+
+  const [avbockat, setAvbockat] = useState<boolean[]>(() =>
+    lasJson(CHECKLIST_NYCKEL, arBooleanLista) ?? Array(ANTAL_CHECKPUNKTER).fill(false),
+  )
+  const [forberedelse, setForberedelse] = useState<Forberedelse>(() =>
+    lasJson(FORBEREDELSE_NYCKEL, arForberedelse) ?? TOM_FORBEREDELSE,
+  )
+  const [sparatVid, setSparatVid] = useState<string | null>(null)
+
   useEffect(() => {
-    const saved = localStorage.getItem('negotiationChecklist')
-    if (saved) {
-      setChecklist(JSON.parse(saved))
-    } else {
-      // Initialize with preparation checklist
-      const initialChecklist: ChecklistItem[] = [
-        { id: '1', text: 'Undersök marknadslön för min roll', completed: false },
-        { id: '2', text: 'Samla dokumentation på mina resultat', completed: false },
-        { id: '3', text: 'Bestäm målön och lägsta acceptabel nivå', completed: false },
-        { id: '4', text: 'Förbered konkreta exempel på mitt värde', completed: false },
-        { id: '5', text: 'Planera mitt öppningsargument', completed: false },
-        { id: '6', text: 'Träna på att presentera mitt case', completed: false },
-      ]
-      setChecklist(initialChecklist)
-      localStorage.setItem('negotiationChecklist', JSON.stringify(initialChecklist))
+    try {
+      localStorage.setItem(CHECKLIST_NYCKEL, JSON.stringify(avbockat))
+    } catch (error) {
+      logger.warn('Kunde inte spara checklistan', { error })
     }
-  }, [])
+  }, [avbockat])
 
-  // Save checklist to localStorage whenever it changes
-  useEffect(() => {
-    if (checklist.length > 0) {
-      localStorage.setItem('negotiationChecklist', JSON.stringify(checklist))
+  const sparaForberedelse = (nasta: Forberedelse) => {
+    setForberedelse(nasta)
+    try {
+      localStorage.setItem(FORBEREDELSE_NYCKEL, JSON.stringify(nasta))
+      setSparatVid(new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' }))
+    } catch (error) {
+      logger.warn('Kunde inte spara förberedelsen', { error })
     }
-  }, [checklist])
-
-  const toggleChecklistItem = (id: string) => {
-    setChecklist(prev => prev.map(item =>
-      item.id === id ? { ...item, completed: !item.completed } : item
-    ))
   }
 
-  const resetChecklist = () => {
-    const initialChecklist: ChecklistItem[] = [
-      { id: '1', text: 'Undersök marknadslön för min roll', completed: false },
-      { id: '2', text: 'Samla dokumentation på mina resultat', completed: false },
-      { id: '3', text: 'Bestäm målön och lägsta acceptabel nivå', completed: false },
-      { id: '4', text: 'Förbered konkreta exempel på mitt värde', completed: false },
-      { id: '5', text: 'Planera mitt öppningsargument', completed: false },
-      { id: '6', text: 'Träna på att presentera mitt case', completed: false },
-    ]
-    setChecklist(initialChecklist)
-  }
-
-  const completedCount = checklist.filter(item => item.completed).length
-  const progressPercent = checklist.length > 0 ? (completedCount / checklist.length) * 100 : 0
-
-  const nextTip = () => {
-    setCurrentTipIndex((prev) => (prev + 1) % TIPS_CAROUSEL.length)
-  }
-
-  const prevTip = () => {
-    setCurrentTipIndex((prev) => (prev - 1 + TIPS_CAROUSEL.length) % TIPS_CAROUSEL.length)
-  }
+  const antalKlara = avbockat.filter(Boolean).length
+  const harForberedelse = Object.values(forberedelse).some(v => v.trim().length > 0)
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
-            <TrendingUp className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.negotiation.title')}</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('salary.negotiation.description')}
-            </p>
-          </div>
-        </div>
-      </Card>
+      <p className="text-sm text-stone-600 dark:text-stone-300">
+        {t('salary.negotiation.description')}
+      </p>
 
-      {/* Swedish context note */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      {/* Så funkar det i Sverige */}
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
           <div>
-            <p className="font-medium text-[var(--c-text)] dark:text-white">{t('salary.negotiation.swedishMarket')}</p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1">
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+              {t('salary.negotiation.swedishMarket')}
+            </h2>
+            <p className="text-sm text-stone-700 dark:text-stone-200">
               {t('salary.negotiation.swedishMarketDesc')}
             </p>
           </div>
         </div>
       </Card>
 
-      {/* Step-by-step guide */}
+      {/* Din förberedelse — det som faktiskt sparas */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          {t('salary.negotiation.fiveSteps')}
-        </h3>
-
-        <div className="space-y-3">
-          {NEGOTIATION_STEPS.map((step) => (
-            <div
-              key={step.id}
-              className={cn(
-                "border rounded-xl overflow-hidden transition-all",
-                expandedStep === step.id ? "border-[var(--c-accent)]/60 dark:border-[var(--c-solid)] bg-[var(--c-bg)]/30 dark:bg-[var(--c-bg)]/10" : "border-stone-200 dark:border-stone-600"
-              )}
-            >
-              <button
-                onClick={() => setExpandedStep(expandedStep === step.id ? null : step.id)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-stone-50/50 dark:hover:bg-stone-700/50"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
-                    expandedStep === step.id
-                      ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white"
-                      : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
-                  )}>
-                    {step.id}
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-gray-100">{step.title}</p>
-                    <p className="text-sm text-gray-700 dark:text-gray-400">{step.description}</p>
-                  </div>
-                </div>
-                {expandedStep === step.id ? (
-                  <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-                )}
-              </button>
-
-              {expandedStep === step.id && (
-                <div className="px-4 pb-4 space-y-4">
-                  {/* Tips */}
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('salary.negotiation.tipsLabel')}</p>
-                    <ul className="space-y-2">
-                      {step.tips.map((tip, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                          <CheckCircle className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
-                          {tip}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Phrases */}
-                  <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
-                      <MessageSquare className="w-4 h-4" />
-                      {t('salary.negotiation.examplePhrases')}
-                    </p>
-                    <div className="space-y-2">
-                      {step.phrases.map((phrase, idx) => (
-                        <div key={idx} className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 text-sm text-gray-700 dark:text-gray-300 italic">
-                          {phrase}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Do and Don't */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-white dark:bg-stone-800">
-          <h3 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)] mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-            {t('salary.negotiation.doThis')}
-          </h3>
-          <ul className="space-y-3">
-            {DO_AND_DONT.do.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <div className="w-5 h-5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-3 h-3 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-                </div>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </Card>
-
-        <Card className="border-rose-200 dark:border-rose-800 bg-white dark:bg-stone-800">
-          <h3 className="font-semibold text-rose-800 dark:text-rose-200 mb-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
-            {t('salary.negotiation.avoidThis')}
-          </h3>
-          <ul className="space-y-3">
-            {DO_AND_DONT.dont.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <div className="w-5 h-5 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center shrink-0">
-                  <AlertCircle className="w-3 h-3 text-rose-600 dark:text-rose-400" />
-                </div>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
-
-      {/* Preparation Checklist */}
-      <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-white dark:bg-stone-800">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-            {t('salary.negotiation.preparationChecklist')}
-          </h3>
-          <Button
-            onClick={resetChecklist}
-            size="sm"
-            variant="ghost"
-            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {/* Progress bar */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('salary.negotiation.completion')}</span>
-            <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{completedCount}/{checklist.length}</span>
+        <div className="flex items-start gap-3 mb-4">
+          <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100">
+              {t('salary.negotiation.prep.title')}
+            </h2>
+            <p className="text-sm text-stone-700 dark:text-stone-300">
+              {t('salary.negotiation.prep.intro')}
+            </p>
           </div>
-          <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercent}%` }}
-              transition={{ duration: 0.3 }}
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="prep-target" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              {t('salary.negotiation.prep.targetLabel')}
+            </label>
+            <input
+              id="prep-target"
+              type="text"
+              inputMode="numeric"
+              value={forberedelse.malon}
+              onChange={(e) => sparaForberedelse({ ...forberedelse, malon: e.target.value })}
+              aria-describedby="prep-target-hint"
+              className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
             />
+            <p id="prep-target-hint" className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+              {t('salary.negotiation.prep.targetHint')}
+            </p>
+          </div>
+
+          <div>
+            <label htmlFor="prep-floor" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              {t('salary.negotiation.prep.floorLabel')}
+            </label>
+            <input
+              id="prep-floor"
+              type="text"
+              inputMode="numeric"
+              value={forberedelse.lagsta}
+              onChange={(e) => sparaForberedelse({ ...forberedelse, lagsta: e.target.value })}
+              aria-describedby="prep-floor-hint"
+              className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
+            />
+            <p id="prep-floor-hint" className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+              {t('salary.negotiation.prep.floorHint')}
+            </p>
           </div>
         </div>
 
-        {/* Checklist items */}
-        <div className="space-y-2">
-          {checklist.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => toggleChecklistItem(item.id)}
-              className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-[var(--c-bg)]/50 dark:hover:bg-[var(--c-bg)]/30 transition-colors text-left group"
-            >
-              <div className={cn(
-                'w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all mt-0.5',
-                item.completed
-                  ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80 border-[var(--c-solid)] dark:border-[var(--c-solid)]/60'
-                  : 'border-stone-300 dark:border-stone-500 group-hover:border-[var(--c-solid)] dark:group-hover:border-[var(--c-solid)]/60'
-              )}>
-                {item.completed && <CheckCircle className="w-4 h-4 text-white" />}
-              </div>
-              <span className={cn(
-                'text-sm transition-all',
-                item.completed
-                  ? 'text-gray-700 dark:text-gray-400 line-through'
-                  : 'text-gray-700 dark:text-gray-300'
-              )}>
-                {item.text}
-              </span>
-            </button>
+        <div className="mt-4">
+          <label htmlFor="prep-arguments" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+            {t('salary.negotiation.prep.argumentsLabel')}
+          </label>
+          <textarea
+            id="prep-arguments"
+            rows={4}
+            value={forberedelse.argument}
+            onChange={(e) => sparaForberedelse({ ...forberedelse, argument: e.target.value })}
+            aria-describedby="prep-arguments-hint"
+            className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
+          />
+          <p id="prep-arguments-hint" className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+            {t('salary.negotiation.prep.argumentsHint')}
+          </p>
+        </div>
+
+        <p className="text-xs text-stone-600 dark:text-stone-400 mt-3" role="status" aria-live="polite">
+          {harForberedelse && sparatVid
+            ? t('salary.negotiation.prep.savedAt', { time: sparatVid })
+            : t('salary.negotiation.prep.savesAutomatically')}
+        </p>
+
+        <Link
+          to="/salary/market"
+          className="inline-flex items-center gap-1 mt-4 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline"
+        >
+          {t('salary.negotiation.links.toMarket')}
+          <ArrowRight className="w-4 h-4" aria-hidden="true" />
+        </Link>
+      </Card>
+
+      {/* Checklista */}
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100">
+            <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+            {t('salary.negotiation.checklist.title')}
+          </h2>
+          <IconButton
+            icon={<RotateCcw className="w-4 h-4" />}
+            label={t('salary.negotiation.checklist.resetLabel')}
+            variant="ghost"
+            size="sm"
+            onClick={async () => {
+              const jaTack = await confirm({
+                title: t('salary.negotiation.checklist.resetLabel'),
+                message: t('salary.negotiation.checklist.resetConfirm'),
+                confirmText: t('salary.negotiation.checklist.resetConfirmAction'),
+                cancelText: t('common.cancel'),
+                variant: 'warning',
+              })
+              if (jaTack) setAvbockat(Array(ANTAL_CHECKPUNKTER).fill(false))
+            }}
+          />
+        </div>
+
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-3" role="status" aria-live="polite">
+          {antalKlara === 0
+            ? t('salary.negotiation.checklist.emptyHint')
+            : t('salary.negotiation.checklist.progress', { done: antalKlara, total: ANTAL_CHECKPUNKTER })}
+        </p>
+
+        <div
+          className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4"
+          role="progressbar"
+          aria-valuenow={antalKlara}
+          aria-valuemin={0}
+          aria-valuemax={ANTAL_CHECKPUNKTER}
+          aria-label={t('salary.negotiation.checklist.title')}
+        >
+          <div
+            className="h-full bg-[var(--c-solid)] transition-all"
+            style={{ width: `${(antalKlara / ANTAL_CHECKPUNKTER) * 100}%` }}
+          />
+        </div>
+
+        <ul className="space-y-2">
+          {checkpunkter.map((punkt, i) => (
+            <li key={punkt}>
+              <button
+                role="checkbox"
+                aria-checked={avbockat[i] ?? false}
+                onClick={() => setAvbockat(avbockat.map((v, j) => (j === i ? !v : v)))}
+                className="w-full flex items-start gap-3 text-left p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 min-h-[44px]"
+              >
+                <span
+                  className={cn(
+                    'w-5 h-5 rounded border-2 shrink-0 mt-0.5 flex items-center justify-center',
+                    avbockat[i]
+                      ? 'bg-[var(--c-solid)] border-[var(--c-solid)]'
+                      : 'border-stone-400 dark:border-stone-500',
+                  )}
+                  aria-hidden="true"
+                >
+                  {avbockat[i] && <CheckCircle className="w-3.5 h-3.5 text-white" />}
+                </span>
+                <span className={cn(
+                  'text-sm text-stone-800 dark:text-stone-100',
+                  avbockat[i] && 'line-through text-stone-600 dark:text-stone-400',
+                )}>
+                  {punkt}
+                </span>
+              </button>
+            </li>
           ))}
+        </ul>
+      </Card>
+
+      {/* Fem steg */}
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-4">
+          <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+          {t('salary.negotiation.stepsTitle')}
+        </h2>
+
+        <ul className="space-y-3">
+          {steg.map((s, i) => {
+            const oppen = oppetSteg === i
+            return (
+              <li key={s.title} className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
+                <button
+                  onClick={() => setOppetSteg(oppen ? null : i)}
+                  aria-expanded={oppen}
+                  aria-controls={`steg-${i}`}
+                  className="w-full flex items-center gap-3 p-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700"
+                >
+                  <span className={cn(
+                    'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0',
+                    oppen
+                      ? 'bg-[var(--c-solid)] text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200',
+                  )} aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <span className="flex-1">
+                    <span className="block font-medium text-stone-900 dark:text-stone-100">{s.title}</span>
+                    <span className="block text-sm text-stone-600 dark:text-stone-300">{s.description}</span>
+                  </span>
+                  <ChevronDown className={cn('w-5 h-5 text-stone-500 transition-transform', oppen && 'rotate-180')} aria-hidden="true" />
+                </button>
+
+                <div id={`steg-${i}`} hidden={!oppen} className="px-4 pb-4">
+                  <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                    {t('salary.negotiation.tipsLabel')}
+                  </p>
+                  <ul className="space-y-1 mb-4">
+                    {s.tips.map((tip) => (
+                      <li key={tip} className="flex items-start gap-2 text-sm text-stone-700 dark:text-stone-200">
+                        <CheckCircle className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <p className="flex items-center gap-2 text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                    <MessageSquare className="w-4 h-4" aria-hidden="true" />
+                    {t('salary.negotiation.phrasesLabel')}
+                  </p>
+                  <ul className="space-y-2">
+                    {s.phrases.map((fras) => (
+                      <li
+                        key={fras}
+                        className="text-sm italic text-stone-700 dark:text-stone-200 bg-stone-50 dark:bg-stone-700 rounded-lg p-3 border border-stone-200 dark:border-stone-600"
+                      >
+                        {fras}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            )
+          })}
+        </ul>
+      </Card>
+
+      {/* Gör / Undvik */}
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+              {t('salary.negotiation.do.title')}
+            </h2>
+            <ul className="space-y-2">
+              {gorLista.map((rad) => (
+                <li key={rad} className="flex items-start gap-2 text-sm text-stone-700 dark:text-stone-200">
+                  <span className="text-[var(--c-text)] dark:text-[var(--c-text)] mt-0.5" aria-hidden="true">+</span>
+                  {rad}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="md:border-l md:border-stone-200 md:dark:border-stone-700 md:pl-6">
+            <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300" aria-hidden="true" />
+              {t('salary.negotiation.dont.title')}
+            </h2>
+            <ul className="space-y-2">
+              {undvikLista.map((rad) => (
+                <li key={rad} className="flex items-start gap-2 text-sm text-stone-700 dark:text-stone-200">
+                  <span className="text-stone-500 mt-0.5" aria-hidden="true">−</span>
+                  {rad}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </Card>
 
-      {/* Scenario Simulator */}
-      <Card className="border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/20">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Play className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          {t('salary.negotiation.scenarioSimulator')}
-        </h3>
+      {/* Öva på ett läge */}
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+          {t('salary.negotiation.scenarios.title')}
+        </h2>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
+          {t('salary.negotiation.scenarios.intro')}
+        </p>
 
-        {!showScenario ? (
+        {valtScenario === null ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {SCENARIOS.map((scenario) => (
+            {scenarier.map((s, i) => (
               <button
-                key={scenario.id}
-                onClick={() => {
-                  setSelectedScenario(scenario)
-                  setShowScenario(true)
-                }}
-                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40 hover:border-[var(--c-solid)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all text-left group"
+                key={s.title}
+                onClick={() => setValtScenario(i)}
+                className="text-left p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] hover:bg-[var(--c-bg)]/40 dark:hover:bg-[var(--c-bg)]/20 transition-colors min-h-[44px]"
               >
-                <p className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">{scenario.title}</p>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{scenario.description}</p>
+                <span className="block font-medium text-stone-900 dark:text-stone-100">{s.title}</span>
+                <span className="block text-sm text-stone-600 dark:text-stone-300 mt-1">{s.description}</span>
               </button>
             ))}
           </div>
-        ) : selectedScenario ? (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-4"
-          >
-            <button
-              onClick={() => setShowScenario(false)}
-              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4"
-            >
-              ← {t('salary.negotiation.backToScenarios')}
-            </button>
-
-            <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
-              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{selectedScenario.title}</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{selectedScenario.description}</p>
-
-              {/* Salary comparison */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
-                {selectedScenario.currentSalary > 0 && (
-                  <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.current')}</p>
-                    <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.currentSalary.toLocaleString('sv-SE')} kr</p>
-                  </div>
-                )}
-                <div className="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-3">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.market')}</p>
-                  <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.marketRate.toLocaleString('sv-SE')} kr</p>
-                </div>
-                <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg p-3">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.targetSalary')}</p>
-                  <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.targetSalary.toLocaleString('sv-SE')} kr</p>
-                </div>
-              </div>
-
-              {/* Analysis */}
-              <div className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40 mb-4">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{t('salary.negotiation.recommendation')}</p>
-                <p className="text-sm text-gray-700 dark:text-gray-300">{selectedScenario.recommendation}</p>
-              </div>
-
-              {/* Salary gap visualization */}
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('salary.negotiation.salaryRange')}</p>
-                {selectedScenario.currentSalary > 0 && (
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-600 dark:text-gray-400">{t('salary.negotiation.fromCurrent')}</span>
-                      <span className="font-medium text-gray-900 dark:text-gray-100">
-                        +{selectedScenario.targetSalary - selectedScenario.currentSalary} kr
-                        ({(((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100).toFixed(1)}%)
-                      </span>
-                    </div>
-                    <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80"
-                        style={{
-                          width: `${Math.min(100, ((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100)}%`
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
-                <div>
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-600 dark:text-gray-400">{t('salary.negotiation.comparedToMarket')}</span>
-                    <span className={cn(
-                      'font-medium',
-                      selectedScenario.targetSalary > selectedScenario.marketRate
-                        ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]'
-                        : selectedScenario.targetSalary < selectedScenario.marketRate
-                        ? 'text-amber-600 dark:text-amber-400'
-                        : 'text-gray-600 dark:text-gray-400'
-                    )}>
-                      {selectedScenario.targetSalary > selectedScenario.marketRate
-                        ? `+${selectedScenario.targetSalary - selectedScenario.marketRate} kr över marknad`
-                        : selectedScenario.targetSalary < selectedScenario.marketRate
-                        ? `${selectedScenario.marketRate - selectedScenario.targetSalary} kr under marknad`
-                        : 'I nivå med marknad'
-                      }
-                    </span>
-                  </div>
-                  <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-[var(--c-solid)]"
-                      style={{
-                        width: `${(selectedScenario.targetSalary / selectedScenario.marketRate) * 100}%`,
-                        maxWidth: '100%'
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
+        ) : (
+          <div role="status" aria-live="polite">
+            <Button variant="ghost" size="sm" onClick={() => setValtScenario(null)} className="mb-3">
+              ← {t('salary.negotiation.scenarios.back')}
+            </Button>
+            <div className="p-4 rounded-xl bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60">
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+                {scenarier[valtScenario].title}
+              </h3>
+              <p className="text-sm text-stone-700 dark:text-stone-200 mb-3">
+                {scenarier[valtScenario].description}
+              </p>
+              <p className="text-sm text-stone-800 dark:text-stone-100">
+                <span className="font-medium">{t('salary.negotiation.scenarios.adviceLabel')}: </span>
+                {scenarier[valtScenario].advice}
+              </p>
             </div>
-          </motion.div>
-        ) : null}
-      </Card>
-
-      {/* Tips Carousel */}
-      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          {t('salary.negotiation.dailyTip')}
-        </h3>
-
-        <div className="relative">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentTipIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-amber-200 dark:border-amber-700 text-center min-h-24 flex items-center justify-center"
-            >
-              <p className="text-gray-800 dark:text-gray-100 font-medium">{TIPS_CAROUSEL[currentTipIndex]}</p>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="flex items-center justify-between mt-4">
-            <button
-              onClick={prevTip}
-              className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
-            >
-              ← {t('common.previous')}
-            </button>
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              {currentTipIndex + 1} / {TIPS_CAROUSEL.length}
-            </span>
-            <button
-              onClick={nextTip}
-              className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
-            >
-              {t('common.next')} →
-            </button>
           </div>
-        </div>
+        )}
       </Card>
 
-      {/* Timing advice */}
+      {/* Mer om förhandling */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          {t('salary.negotiation.whenToNegotiate')}
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.jobStart')}</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.jobStartDesc')}</p>
+        <button
+          onClick={() => setVisaMer(!visaMer)}
+          aria-expanded={visaMer}
+          aria-controls="negotiation-more"
+          className="w-full flex items-center justify-between gap-3 text-left min-h-[44px]"
+        >
+          <span className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100">
+            <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+            {t('salary.negotiation.more.title')}
+          </span>
+          <ChevronDown className={cn('w-5 h-5 text-stone-500 transition-transform', visaMer && 'rotate-180')} aria-hidden="true" />
+        </button>
+
+        <div id="negotiation-more" hidden={!visaMer} className="mt-4 space-y-6">
+          {/* Ett tips */}
+          <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600">
+            <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+              {t('salary.negotiation.tips.title')}
+            </p>
+            <p className="text-stone-800 dark:text-stone-100" role="status" aria-live="polite">
+              {tips[tipsIndex]}
+            </p>
+            <div className="flex items-center justify-between mt-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTipsIndex((tipsIndex - 1 + tips.length) % tips.length)}
+              >
+                ← {t('common.previous')}
+              </Button>
+              <span className="text-xs text-stone-600 dark:text-stone-400">
+                {t('salary.negotiation.tips.counter', { current: tipsIndex + 1, total: tips.length })}
+              </span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTipsIndex((tipsIndex + 1) % tips.length)}
+              >
+                {t('common.next')} →
+              </Button>
+            </div>
           </div>
-          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.annualReview')}</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.annualReviewDesc')}</p>
+
+          {/* När ska du förhandla */}
+          <div>
+            <h3 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-3">
+              <Clock className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+              {t('salary.negotiation.timing.title')}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {tidpunkter.map((tp) => (
+                <div
+                  key={tp.title}
+                  className="p-3 rounded-xl bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/40"
+                >
+                  <p className="font-medium text-stone-900 dark:text-stone-100">{tp.title}</p>
+                  <p className="text-sm text-stone-700 dark:text-stone-200">{tp.description}</p>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.afterSuccess')}</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.afterSuccessDesc')}</p>
-          </div>
-          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.newResponsibilities')}</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.newResponsibilitiesDesc')}</p>
-          </div>
+
+          <Link
+            to="/salary"
+            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline"
+          >
+            {t('salary.negotiation.links.toCalculator')}
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </Link>
         </div>
       </Card>
+
     </div>
   )
 }

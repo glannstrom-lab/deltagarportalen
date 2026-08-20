@@ -2,9 +2,11 @@
  * Delad AI-grind för de två Perplexity-funktionerna (2026-08-19)
  * ============================================================
  *
- * Används av — och BARA av — `ai-company-search` och `ai-company-analysis`.
- * Lägger du till en tredje anropare: läs hela den här filen först, särskilt
- * policyrutorna. De två funktionerna kör portalens dyraste modell
+ * Används av `ai-company-search`, `ai-company-analysis` och — sedan
+ * 2026-08-20 — `ai-career-assistant` (lönekompassen på /salary hade samma
+ * lucka: `ai_enabled = false` gav ändå fullt AI-svar).
+ * Lägger du till en fjärde anropare: läs hela den här filen först, särskilt
+ * policyrutorna. Funktionerna kör portalens dyraste modell
  * (`perplexity/sonar`, ett medvetet undantag i `docs/AI_MODEL_LOCKING.md:8`)
  * och skriver till samma `ai_usage_logs` som CV- och brevfunktionerna.
  *

@@ -274,6 +274,11 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 > `ai_enabled`-brytare (art. 21) — ett konto med AI avstängt fick fullt AI-svar. Klientsidans
 > sanering är åtgärdad; grinden i edge-funktionerna likaså. Se ROADMAP A23.
 >
+> **Samma lucka fanns kvar i `ai-career-assistant` till 2026-08-20** (lönekompassen på /salary,
+> AI-teamets karriärsvar m.fl.). Den har nu `checkAiEnabled` + tokentak ur `_shared/aiGate.ts`.
+> Grinden `ai-sanningsregel.test.ts` kräver båda, plus sanningsregeln i löneprompten. Lägger du
+> till en fjärde Perplexity-anropare: kopiera mönstret, och lägg till en rad i den grinden.
+>
 > Kontrollera modellsträngarna med
 > `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u`, och jämför mot
 > allowlisten — inte mot en enda modell.
@@ -285,14 +290,14 @@ cd client
 npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (412)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (409)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 1 760 tester i 127 filer (~45 s, mätt 2026-08-19)
+npm run test:run           # 1 824 tester i 130 filer (~45 s, mätt 2026-08-20)
 npm run build
 ```
 
-De tre **frysta taken** (122 warnings, 412 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (122 warnings, 409 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

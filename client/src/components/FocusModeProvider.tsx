@@ -17,6 +17,19 @@ import { useCallback, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { useFocusWizardStore } from '@/stores/focusWizardStore'
+import { avkodaSokvag } from '@/lib/sokvag'
+
+/**
+ * Verktyg med flikar bor på flera sökvägar: `/salary`, `/salary/negotiation`,
+ * `/salary/market`. Lämnade man guiden på den första och klickade på en flik
+ * slog guiden till igen, eftersom jämförelsen var exakt strängmatchning — man
+ * fick lämna samma guide en gång per flik. Vi jämför därför på verktyget,
+ * alltså första segmentet i sökvägen. Svenska tecken i sökvägar når koden
+ * procentkodade (`/spontanans%C3%B6kan`), så avkoda först.
+ */
+function verktygsrot(pathname: string): string {
+  return avkodaSokvag(pathname).split('/').filter(Boolean)[0] ?? ''
+}
 
 export function FocusModeProvider() {
   const { focusMode } = useSettingsStore()
@@ -76,7 +89,7 @@ export function useFocusMode() {
   }, [resetDismissed, toggleFocusMode])
 
   return {
-    isFocusMode: focusMode && !dismissedPaths.includes(pathname),
+    isFocusMode: focusMode && !dismissedPaths.some(p => verktygsrot(p) === verktygsrot(pathname)),
     isFocusModeEnabled: focusMode,
     leaveWizard,
     toggleFocusMode: toggleFocusModeAndReset,

@@ -16,6 +16,122 @@
 
 ---
 
+## Genomgång 2026-08-20 — Lön & Förhandling, sex granskare (åtgärdad, ej pushad)
+
+Kod + inloggad dev/prod. Sex parallella granskare (kalkylator, förhandling,
+marknadsdata, design/i18n, tillgänglighet/tester, integration). Sidan hade
+**noll tester** när passet började, och tre riktade mutationer överlevde hela
+sviten på 1 760 tester: `/salary`-routen borttagen ur `App.tsx`, nettolönen
+satt till 10 % av brutto, och Stockholms påslag höjt från 15 % till 900 %.
+
+### Det allvarligaste: nettolönen var en platt schablon
+
+`calculateNetSalary = brutto * 0.78`, oberoende av inkomst. Ingen
+kommunalskatt, inget grundavdrag, inget jobbskatteavdrag och **ingen statlig
+inkomstskatt** — trots att 87 av 336 möjliga utfall i kalkylatorns egna
+tabeller ligger över brytpunkten. Felet mätt mot 2025 års regler:
+
+| Kombination | Brutto | Kodens netto | Modellerat | Fel |
+|---|---|---|---|---|
+| Administration / Mellansverige / 0–2 år | 28 263 | 22 045 | 22 382 | −337 kr/mån |
+| IT / Stockholm / 3–5 år | 59 800 | 46 644 | 42 778 | +3 866 kr/mån |
+| Juridik / Stockholm / 10+ år | 82 225 | 64 136 | 52 777 | **+11 359 kr/mån** |
+
+Riktningen är dubbelt olycklig för målgruppen: för låga löner **underskattas**
+nettot, för höga **överskattas** det grovt. Räkningen ligger nu i
+`client/src/lib/skatt.ts` — grundavdrag, kommunalskatt (satsen går att ändra),
+statlig skatt över skiktgränsen och jobbskatteavdrag — med elva tester, och
+med utskrivna antaganden i gränssnittet (år, kommunalskattesats, vad modellen
+inte räknar med). Talen ligger inom 3 % av Skatteverkets tabeller för vanliga
+löner; testet vaktar det.
+
+### Ärlighetsklassen, en gång till
+
+- **"Data baseras på branschrapporter, SCB-statistik och löneundersökningar.
+  Senast uppdaterad: Q1 2026."** Ingenting hämtades. Alla 27 tal var literaler
+  i `MarketDataTab.tsx`, oförändrade sedan `9a8d5936` (2026-03-18), och
+  "Q1 2026" var en fast sträng som aldrig uppdateras. `grep -rni scb` över
+  `client/src`, `client/api` och `supabase/` ger noll anrop mot SCB.
+  Kontrollerat: `af-historical/salary-stats` är **inte** en användbar ersättare
+  — den ger 0–1 annonser per yrke (lokalvårdare: median ur **en** annons).
+  Sidan säger nu vad talen är och länkar till SCB Lönesök, Medlingsinstitutet
+  och Skatteverket (alla tre kontrollerade, HTTP 200).
+- **Sju av tretton branscher visade nedåtpil bredvid en positiv siffra**, för
+  att pilen valdes av `change >= 3` i stället för av tecknet. Vård, bygg,
+  utbildning och handel — målgruppens branscher — såg ut att ha sjunkande
+  löner. Löneökningstalen hade ingen källa och är borttagna.
+- **Regionerna visade "+15 %" bredvid "48 000 kr"** där talen kom från två
+  oberoende literaler (48 000/40 000 = +20 %). Härleds nu ur en tabell.
+- **Tre parallella lönedatabaser** (`SalaryCalculatorTab`, `MarketDataTab`,
+  `services/scbSalaryApi.ts`) gav olika svar för samma bransch en flik isär.
+  Nu en källa: `client/src/data/lonedata.ts`.
+- **Förhandlingsfliken visade fyra påhittade lönesiffror under etiketten
+  "Marknad"** utan yrke, region eller källa — och två av fyra rekommendationer
+  var felaktiga: en rådde deltagaren att begära 5 000 kr **under** marknaden
+  "för att visa flexibilitet", en annan sa "du är redan över marknaden" till
+  någon vars egna tal låg 4 000 kr under. Siffrorna är borta, råden omskrivna,
+  och ett femte scenario tillagt: första jobbet efter lång tid utan arbete.
+- **AI-lönekompassen fick kalkylatorns egen uppskattning** och skickade den
+  vidare till modellen som `NUVARANDE LÖN` — ett tal användaren aldrig angett.
+  Propen är borttagen hela vägen ned i prompten. "Källor" under svaret var
+  dessutom modellens egna påståenden (`result.sources`); de riktiga
+  citationerna returnerades av edgen och kastades. Nu visas de riktiga.
+
+### AI-brytaren gällde inte lönekompassen (art. 21)
+
+`ai-career-assistant` importerade inte `_shared/aiGate.ts` — samma lucka som
+A23 stängde i `ai-company-search`/`ai-company-analysis`. Ett konto med
+`ai_enabled = false` fick fullt AI-svar från `perplexity/sonar`, som dessutom
+söker på webben. Klientens `AiConsentGate` är ett gränssnitt, inte en grind.
+Nu: `checkAiEnabled` (fail closed) + dagligt tokentak, och en sanningsregel i
+löneprompten. Grinden `ai-sanningsregel.test.ts` kräver båda.
+
+### Tillgänglighet
+
+`dark:text-[var(--c-accent)]` som **textfärg** ger 1,67:1 i mörkt läge —
+verifierat med en positiv kontroll genom `e2e/mat-kontrast.cjs`, som flaggade
+den injicerade klassen och sedan gick rent. Sex förekomster på /salary
+åtgärdade; **50 återstår i övriga `client/src`** och bör tas i ett eget svep
+(se F-spåret). Vidare: 27 expanderbara kontroller saknade
+`aria-expanded`/`aria-controls`, checklistan var knappar utan
+`role="checkbox"`, resultatet annonserades inte, sorteringsknapparna saknade
+`aria-pressed`, och två ikonknappar hade inget tillgängligt namn. Allt
+åtgärdat. Kontrastmätningen efteråt: 0 fel i ljust och mörkt på alla tre
+flikar.
+
+### Det som byggdes, inte bara lagades
+
+- **Förhandlingsfliken fick tre fält som sparas** — målön, lägsta nivå, mina
+  argument. Den bad tidigare deltagaren förbereda sex saker och erbjöd inte ett
+  enda ställe att göra dem på.
+- **Kalkylatorns jämförelser sparas i `salary_searches`.** Tabellen (10
+  kolumner) och API:t (`careerApi.salaryApi`) fanns i prod med **noll**
+  anropare och noll rader. Nu används de.
+- **Regionen förifylls från profilen**, med en rad som säger att den gjort det.
+- **Fokusguiden räknar ut siffran.** Den frågade tidigare efter roll och stad
+  som fritext och avslutade med "öppna lönesidan i normalläge" — svaren gick
+  ingenstans, och normalvyn har ingen fritextruta att skriva in dem i. Nu
+  väljer man ur samma listor som kalkylatorn, valen delas, och sista steget
+  visar lön och nettolön.
+- **Fokuslägesväxeln raderar inte längre arbetet** (samma fel som `b93be382`
+  lagade i intervjusimulatorn). Vaktat av ett test som **växlar** läget.
+- **Innehållet i förhandlingsfliken är i18n:at** — ~60 svenska strängar låg
+  hårdkodade i en tvåspråkig portal.
+
+### Kvar / beslut
+
+| Punkt | Vad | Beslut |
+|---|---|---|
+| **L1** | 50 `dark:text-[var(--c-accent)]` som textfärg i övriga `client/src` — WCAG-fel i mörkt läge, 1,67:1 | Eget svep, kräver okulär kontroll per sida |
+| **L2** | Yrkeslistan (12 breda områden) saknar lager, lokalvård, restaurang, transport, barnomsorg, kundtjänst. Ingen ligger under 35 000 kr | Produktbeslut: bredda med belagd data, eller behåll och lita på källänkarna |
+| **L3** | `services/scbSalaryApi.ts` påstår i sin docstring en SCB-integration som inte finns (noll `fetch`), och `estimateSalary()` returnerar snittet av listan för vilket okänt yrke som helst, stämplat `year: 2026`. Konsument: `CareerRecommendationsPanel` | Rätta docstringen; låt `estimateSalary` returnera `null` |
+| **L4** | `ai-sanningsregel.test.ts` pekar ut edge-filer en och en (nu tre). Katalogdriven kontroll över `supabase/functions/` skulle täcka alla | Eget arbete — flera prompter saknar sannolikt regeln |
+| **L5** | Ingen ingång till /salary utom menyn och hubbkortet. Ingen länk från ett jobbkort ("vad är rimlig lön för det här?"), från ansökningsflödet eller från intresseguiden | Bygg vid nästa passage i respektive sida |
+
+**Typtaket sänkt 412 → 409.** Tester 1 760 → 1 824 i 130 filer.
+
+---
+
 ## Genomgång 2026-08-19 (natt) — Intervjusimulatorn, fem granskare (klar, deployad)
 
 Kod + inloggad prod. **Åtgärdat och pushat** (commit `b93be382`, deploy grön,

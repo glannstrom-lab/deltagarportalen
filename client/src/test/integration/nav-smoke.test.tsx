@@ -17,6 +17,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 import { Suspense } from 'react'
 
 // Mock auth so RootRoute and PrivateRoute treat us as logged-in USER
@@ -198,4 +200,38 @@ describe('Deep-link smoke test (NAV-04)', () => {
       20000
     )
   })
+
+/**
+ * Renderingstestet ovan kan INTE se att en route försvunnit.
+ *
+ * Uppmätt 2026-08-20: hela raden `<Route path="salary/*" …>` togs bort ur
+ * `App.tsx` och sviten förblev grön — 1 760 tester, 127 filer. Orsaken är att
+ * catch-allen (`App.tsx`, `path="*"` → `/` → `/oversikt`) renderar
+ * instrumentpanelen, som har innehåll och inte fyrar någon felgräns. Testet
+ * frågar "kom det något på skärmen?", inte "kom RÄTT sida?".
+ *
+ * Den här kontrollen läser routetabellen som text i stället. Den är trubbig
+ * med flit: den bevisar inte att sidan fungerar, bara att sökvägen fortfarande
+ * har en egen route — vilket är precis det renderingstestet inte kan.
+ */
+describe('routetabellen — varje djuplänk har en egen route (NAV-05)', () => {
+  const appKalla = readFileSync(resolve(__dirname, '../../App.tsx'), 'utf8')
+  const routeSokvagar = new Set(
+    [...appKalla.matchAll(/<Route\s+[^>]*path="([^"]+)"/g)].map((m) => m[1].replace(/\/\*$/, '')),
+  )
+
+  it('routetabellen går att läsa — positiv kontroll', () => {
+    expect(routeSokvagar.size).toBeGreaterThan(20)
+  })
+
+  it.each([...DEEP_LINK_PATHS, ...HUB_PATHS])('%s finns i App.tsx', (path) => {
+    // Rutterna är nästlade under `/`, så de skrivs utan inledande snedstreck.
+    const utanSnedstreck = path.replace(/^\//, '')
+    expect(
+      routeSokvagar.has(utanSnedstreck) || routeSokvagar.has(path),
+      `Sökvägen ${path} har ingen route i App.tsx och faller därför på ` +
+        'catch-allen — tyst, tillbaka till Översikt.',
+    ).toBe(true)
+  })
+})
 

@@ -9194,136 +9194,364 @@
     "tryAsking": "Try asking about:"
   },
   "salary": {
-    "editorialSpot": "Calculate your salary, prepare for the negotiation and see what the market pays.",
-    "negotiation": {
-      "title": "Salary Negotiation Guide",
-      "description": "Step-by-step guide for negotiating salary in Swedish work culture. Prepared negotiation gives better results.",
-      "swedishMarket": "Swedish labor market",
-      "swedishMarketDesc": "In Sweden, salary negotiation is often more structured than in other countries. Many industries have collective agreements that set the framework. Individual negotiations often occur during annual salary reviews.",
-      "fiveSteps": "The 5 steps of negotiation",
-      "tipsLabel": "Tips:",
-      "examplePhrases": "Example phrases:",
-      "doThis": "Do this",
-      "avoidThis": "Avoid this",
-      "preparationChecklist": "Preparation checklist",
-      "completion": "Completion",
-      "scenarioSimulator": "Scenario simulator",
-      "backToScenarios": "Back to scenarios",
-      "current": "Current",
-      "market": "Market",
-      "targetSalary": "Target salary",
-      "recommendation": "Recommendation",
-      "salaryRange": "Salary range",
-      "fromCurrent": "From current",
-      "comparedToMarket": "Compared to market",
-      "dailyTip": "Tip of the day",
-      "whenToNegotiate": "When should you negotiate?",
-      "timing": {
-        "jobStart": "At job start",
-        "jobStartDesc": "Best opportunity to set the right level",
-        "annualReview": "Annual salary review",
-        "annualReviewDesc": "Planned occasion - be prepared",
-        "afterSuccess": "After major success",
-        "afterSuccessDesc": "Document and capitalize",
-        "newResponsibilities": "With new responsibilities",
-        "newResponsibilitiesDesc": "More responsibility = more compensation"
+    "pageTitle": "Salary & Negotiation",
+    "pageDescription": "Get a sense of pay levels and negotiate with more confidence",
+    "tabs": {
+      "calculator": {
+        "label": "Salary calculator"
+      },
+      "negotiation": {
+        "label": "Negotiation"
+      },
+      "market": {
+        "label": "Market data"
+      }
+    },
+    "data": {
+      "occupations": {
+        "law": "Law",
+        "it": "IT & software development",
+        "finance": "Finance & accounting",
+        "engineering": "Engineering",
+        "hr": "HR & people",
+        "marketing": "Marketing & communication",
+        "sales": "Sales",
+        "health": "Health & care",
+        "design": "Design & creative",
+        "education": "Education",
+        "construction": "Construction & trades",
+        "admin": "Administration"
+      },
+      "regions": {
+        "stockholm": "Stockholm",
+        "gothenburg": "Gothenburg",
+        "malmo": "Malmö",
+        "uppsala": "Uppsala",
+        "otherMetro": "Other metropolitan areas",
+        "northern": "Northern Sweden",
+        "central": "Central Sweden"
+      },
+      "experience": {
+        "junior": "0–2 years",
+        "mid": "3–5 years",
+        "senior": "6–10 years",
+        "expert": "10 years or more"
+      },
+      "sources": {
+        "scb": "Official salary statistics by occupation, gender, age and sector.",
+        "medlingsinstitutet": "Wage development and collective bargaining — how much pay actually rose.",
+        "skatteverket": "Tax tables and the amounts that apply for the year."
       }
     },
     "calculator": {
-      "title": "Salary Calculator",
-      "description": "Calculate expected salary based on occupation, experience and region. Data based on Swedish salary statistics.",
-      "enterDetails": "Enter your details",
-      "occupation": "Occupation category",
-      "selectCategory": "Select category...",
-      "region": "Region",
-      "selectRegion": "Select region...",
-      "experience": "Experience",
-      "selectExperience": "Select experience...",
-      "calculate": "Calculate salary",
-      "yourResult": "Your salary result",
-      "minimum": "Minimum",
-      "maximum": "Maximum",
-      "medianRecommended": "Median (recommended)",
+      "description": "These figures are rough estimates for whole occupational areas — not sourced statistics. Use them as a starting point, and get a real figure before you say one out loud in a negotiation.",
+      "enterDetails": "Tell us a little about you",
+      "occupation": "Occupational area",
+      "selectCategory": "Choose an area",
+      "region": "Where in Sweden",
+      "selectRegion": "Choose an area",
+      "experience": "How long you have worked",
+      "selectExperience": "Choose number of years",
+      "prefilledFromProfile": "Filled in from your profile — change it if it is wrong.",
+      "calculate": "Work out your salary",
+      "yourResult": "Here is how it looks",
+      "yourResultNamed": "Here is how it looks, {{name}}",
+      "minimum": "Lower end",
+      "medianRecommended": "Middle",
+      "maximum": "Upper end",
       "perMonth": "per month",
-      "netSalaryPerMonth": "Net salary/month",
-      "afterTax": "(after tax ~22%)",
-      "annualSalaryGross": "Annual salary (gross)",
-      "annualIncrease": "Annual increase (avg)",
-      "salaryRangeDistribution": "Salary range distribution",
-      "min": "Min",
-      "median": "Median",
-      "max": "Max",
-      "taxDeduction": "Tax deduction",
-      "primaryTax": "Primary withholding tax (approx. 22%): ~{{amount}} kr",
-      "employerFeeNotIncluded": "Employer fee not included in your salary",
-      "aboutCalculation": "About the calculation",
-      "aboutCalculationText": "Salary data is based on industry statistics and adjusted for region and experience. Net salary is an estimate. Actual tax varies based on personal circumstances.",
-      "addComparison": "Add comparison",
-      "salaryComparisons": "Salary comparisons ({{count}})",
-      "gross": "Gross",
-      "net": "Net",
-      "comparedToCurrent": "Compared to current calculation",
-      "tipsTitle": "Tips for better salary",
+      "estimateNotice": "These are rough estimates for the whole occupational area, adjusted for region and years worked. They do not come from Statistics Sweden or any salary survey. What you actually get depends on the employer, the collective agreement and what you agree on.",
+      "netSalaryPerMonth": "Left after tax",
+      "effectiveTax": "{{percent}} % goes to tax",
+      "showTaxDetail": "See how the tax is worked out",
+      "taxRowMunicipal": "Municipal tax",
+      "taxRowState": "State income tax",
+      "taxRowJobDeduction": "Employment tax credit",
+      "taxRowTotal": "Total tax",
+      "municipalTaxLabel": "Municipal tax where you live (%)",
+      "municipalTaxHint": "The national average is {{avg}} %. If you know your municipality’s rate, change it here.",
+      "taxAssumptions": "Estimate based on {{year}} tax rules with {{rate}} % municipal tax.",
+      "taxNotIncluded": "Church fee, deductions and tax adjustment are not included, and for very high salaries the real tax is somewhat higher than shown here.",
+      "annualSalaryGross": "Yearly salary before tax",
+      "rangeTitle": "Where in the range you land",
+      "saveCalculation": "Save this calculation",
+      "savedTitle": "Your saved calculations ({{count}})",
+      "removeSaved": "Remove the calculation for {{occupation}}",
+      "saveFailed": "We could not save it just now. Try again in a moment.",
+      "deleteFailed": "We could not remove it just now. Try again in a moment.",
+      "sameAsCurrent": "Same figure as the calculation above.",
+      "diffToCurrent": "{{diff}} kr {{direction}} than the calculation above.",
+      "higher": "higher",
+      "lower": "lower",
+      "gross": "Before tax",
+      "net": "After tax",
+      "sourcesTitle": "Where do you find real salary statistics?",
+      "sourcesIntro": "If you need a figure that holds up in a negotiation, get it here. If you belong to a union, they usually have statistics for your exact occupation.",
+      "opensInNewTab": "Opens in a new tab",
+      "exportTitle": "Salary calculation from Jobin",
+      "exportFilename": "salary-calculation",
+      "grossPerMonth": "Salary before tax per month",
+      "tipsTitle": "Tips for better pay",
       "tips": {
-        "buildSkills": "Build competence",
-        "buildSkillsDesc": "Certifications and special skills increase salary",
-        "documentResults": "Document results",
-        "documentResultsDesc": "Concrete examples strengthen your negotiation position",
-        "timing": "Timing is everything",
-        "timingDesc": "Negotiate after successes or when given new responsibilities",
-        "knowMarket": "Know your market",
-        "knowMarketDesc": "Stay informed about what competitors offer"
+        "buildSkills": "Build on what you know",
+        "buildSkillsDesc": "Courses, certificates and specialist skills affect what you can ask for.",
+        "documentResults": "Write down what you have done",
+        "documentResultsDesc": "Concrete examples are what make a salary request credible.",
+        "timing": "Pick the right moment",
+        "timingDesc": "At a new job, in the annual review, or when your duties have grown.",
+        "knowMarket": "Find out the going rate",
+        "knowMarketDesc": "Knowing what other employers pay makes the conversation easier."
       }
     },
-    "marketData": {
-      "title": "Salary Statistics",
-      "description": "Compare salaries by industry and region. Data based on Swedish salary surveys and SCB statistics.",
-      "byIndustry": "By industry",
-      "byRegion": "By region",
-      "searchIndustry": "Search industry...",
-      "searchRegion": "Search region...",
-      "medianByIndustry": "Median salary by industry",
-      "results": "results",
-      "sortSalary": "Salary",
-      "sortGrowth": "Growth",
-      "sortName": "Name",
-      "perYear": "%/year",
-      "employeesInSweden": "Employees in Sweden",
-      "annualGrowth": "Annual growth",
-      "salaryRange": "Salary range (estimate):",
-      "min": "Min",
-      "max": "Max",
-      "noIndustryFound": "No industry found for \"{{searchTerm}}\"",
-      "salaryByRegion": "Salary level by region",
-      "perMonth": "kr/month",
-      "costOfLiving": "Cost of living",
-      "averageSalary": "Average salary",
-      "salaryPremium": "Salary premium relative to average",
-      "premiumHigher": "Higher salaries than average. Important to weigh this against living costs.",
-      "premiumLower": "Lower salaries than average, but often with lower living costs.",
-      "premiumAverage": "Average salary for Sweden.",
-      "noRegionFound": "No region found for \"{{searchTerm}}\"",
-      "highPremiumSkills": "Skills with high salary premium",
-      "demand": "Demand",
-      "disclaimerTitle": "About the statistics:",
-      "disclaimerText": "Data is based on industry reports, SCB statistics and salary surveys. Figures are estimates and may vary depending on specific role, company size and individual factors. Last updated: Q1 2026."
+    "negotiation": {
+      "description": "How to prepare for the salary conversation — step by step, with room to write down what you decide.",
+      "swedishMarket": "How it works in Sweden",
+      "swedishMarketDesc": "In many sectors a collective agreement sets the framework for pay, and salaries are usually reviewed once a year in a salary conversation. If you belong to a union they can give you data and support.",
+      "stepsTitle": "Five steps through the conversation",
+      "tipsLabel": "Things to keep in mind",
+      "phrasesLabel": "You could say",
+      "steps": {
+        "preparation": {
+          "title": "Preparation",
+          "description": "Most of it is settled before the meeting starts.",
+          "tips": [
+            "Find out roughly what others get for similar work",
+            "Write down what you can do and have done — including internships, studies and volunteering",
+            "Decide on a level you aim for and a lowest level you would accept",
+            "Ask your union whether they have salary statistics for the occupation"
+          ],
+          "phrases": [
+            "“I have looked at what similar roles pay, and I land around …”",
+            "“What I bring into the role is …”"
+          ]
+        },
+        "opening": {
+          "title": "Opening",
+          "description": "Start calmly and clearly.",
+          "tips": [
+            "Say early that you want to talk about pay, so neither of you has to wonder",
+            "Let the other side name a figure first if you can",
+            "Keep your notes in front of you — that is perfectly fine",
+            "Breathe. Silence after a question is not yours to fill"
+          ],
+          "phrases": [
+            "“I am looking forward to starting. Shall we cover pay as well?”",
+            "“What did you have in mind for this role?”"
+          ]
+        },
+        "case": {
+          "title": "Your case",
+          "description": "Explain why the level is reasonable.",
+          "tips": [
+            "Start from the work and what you contribute, not from your private finances",
+            "Give examples rather than judgements about yourself",
+            "Mention what is hard to replace: languages, a driving licence, certificates, experience of that setting",
+            "If you have been away from work — say what you did during that time"
+          ],
+          "phrases": [
+            "“In my last job I did … and it led to …”",
+            "“Given what the role requires, I am thinking …”"
+          ]
+        },
+        "apart": {
+          "title": "If you land apart",
+          "description": "A counter-offer is not a no.",
+          "tips": [
+            "Ask for time to think — you do not have to answer the same day",
+            "Ask what it would take to get higher, and when you can revisit it",
+            "Things other than money can be negotiated: hours, training, wellness, travel, permanent contract",
+            "If you are far apart, ask how they arrived at their figure"
+          ],
+          "phrases": [
+            "“Could I think it over until tomorrow?”",
+            "“If we land there — could we review the salary again in six months?”"
+          ]
+        },
+        "closing": {
+          "title": "Closing",
+          "description": "Make sure what you agreed is written down.",
+          "tips": [
+            "Summarise out loud what you have agreed",
+            "Ask for it in writing: salary, hours, start date, any follow-up",
+            "Say thank you whatever the outcome — you will be working together",
+            "Write down your own impressions afterwards, while they are fresh"
+          ],
+          "phrases": [
+            "“So we say … kronor from …, is that right?”",
+            "“Could you send that in writing so I have it?”"
+          ]
+        }
+      },
+      "do": {
+        "title": "Do this",
+        "items": [
+          "Have a range in mind, not a single figure",
+          "Talk about the work and what you contribute",
+          "Ask questions and listen to the end",
+          "Take time to think if you get unsure",
+          "Decide your lowest level in advance",
+          "Ask for the agreement in writing"
+        ]
+      },
+      "dont": {
+        "title": "Avoid",
+        "items": [
+          "Saying yes straight away to the first offer",
+          "Justifying the salary with your private finances",
+          "Comparing yourself with named colleagues",
+          "Giving ultimatums you will not stand behind",
+          "Apologising for raising the subject of pay",
+          "Forgetting everything but the money — hours and training are worth something too"
+        ]
+      },
+      "prep": {
+        "title": "Your preparation",
+        "intro": "Write this down before the meeting so it is still there when you are sitting in it. It is saved in this browser.",
+        "targetLabel": "The level you are aiming for",
+        "targetHint": "For example 32,000 kr. It is fine to aim higher than you expect to get.",
+        "floorLabel": "Your lowest level",
+        "floorHint": "The figure where you would rather say no. Only you see it.",
+        "argumentsLabel": "My arguments",
+        "argumentsHint": "Two or three concrete things you can do, have done, or bring into the role.",
+        "savesAutomatically": "Saved as you type.",
+        "savedAt": "Saved at {{time}}."
+      },
+      "checklist": {
+        "title": "Before the meeting",
+        "items": [
+          "Found out roughly what the work usually pays",
+          "Written down what I can do and have done",
+          "Decided the level I am aiming for",
+          "Decided my lowest level",
+          "Thought through how I open the conversation",
+          "Said it out loud to myself once"
+        ],
+        "progress": "You have ticked off {{done}} of {{total}}.",
+        "emptyHint": "Start whenever you want — nothing has to happen today.",
+        "resetLabel": "Start the list over",
+        "resetConfirm": "All ticks will be removed. What you wrote in the fields above is not affected.",
+        "resetConfirmAction": "Remove the ticks"
+      },
+      "scenarios": {
+        "title": "Practise a situation",
+        "intro": "Four common situations. No figures here — they depend entirely on occupation, place and employer.",
+        "adviceLabel": "How to think about it",
+        "back": "Back to the situations",
+        "items": {
+          "firstJob": {
+            "title": "First job after a long time out of work",
+            "description": "You have an offer and need to say what salary you want.",
+            "advice": "Having been away from work does not lower what the job is worth. Start from what the role normally pays and ask in line with that — not below it to be accommodating. Where there is a collective agreement, the minimum is a floor, not a target. If you are unsure: ask for time to think and call the union the same day."
+          },
+          "offer": {
+            "title": "You have a job offer",
+            "description": "They have mentioned a salary and you can respond before signing.",
+            "advice": "Thank them and ask to come back tomorrow. Check the level against a real source. If you want more, name a figure and one sentence on why, and mention what you bring to the role. Also ask when pay is next reviewed."
+          },
+          "annual": {
+            "title": "The annual salary review",
+            "description": "You have been there a while and want a raise.",
+            "advice": "Start from what has changed since last time: new duties, more responsibility, things you solved. Write three examples in advance. If the answer is no, ask what it would take for a yes, and agree when you will revisit it."
+          },
+          "newDuties": {
+            "title": "Your duties have grown",
+            "description": "The job has expanded but the salary has not.",
+            "advice": "Describe what has been added and what it means in practice. Growing duties is in itself a sound reason to talk about pay — you do not have to wait for the annual review to raise it."
+          }
+        }
+      },
+      "more": {
+        "title": "More about negotiating"
+      },
+      "tips": {
+        "title": "One tip",
+        "counter": "{{current}} of {{total}}",
+        "items": [
+          "Avoid naming the first figure if you can — ask what they had in mind instead.",
+          "If you are pushed for a figure: give a range and say what it depends on.",
+          "Find out whether the workplace has a collective agreement. It affects both pay and conditions.",
+          "Silence is not yours to fill. It is fine to think for a few seconds.",
+          "Ask when pay is next reviewed — a date is part of the negotiation too.",
+          "If you are in a union: call them before the meeting, not after."
+        ]
+      },
+      "timing": {
+        "title": "When is a good moment to raise pay?",
+        "items": {
+          "offer": {
+            "title": "When you get an offer",
+            "description": "Before you sign — that is when there is most room."
+          },
+          "annual": {
+            "title": "In the annual review",
+            "description": "A planned moment. Come prepared with examples."
+          },
+          "newDuties": {
+            "title": "When your duties have grown",
+            "description": "The work has changed, so the pay can too."
+          },
+          "wentWell": {
+            "title": "When something went well",
+            "description": "Write down what you did while it is fresh, and raise it at the next conversation."
+          }
+        }
+      },
+      "links": {
+        "toMarket": "See pay levels in your occupational area",
+        "toCalculator": "Work out a salary"
+      }
     },
-    "pageTitle": "Salary & Negotiation",
-    "pageDescription": "Get a grip on the salary landscape and negotiate smarter",
-    "tabs": {
-      "calculator": {
-        "label": "Salary Calculator",
-        "description": "Calculate market salary for your role"
+    "insights": {
+      "title": "Salary compass",
+      "subtitle": "Let the AI look up pay levels and give negotiation tips",
+      "occupationLabel": "Occupation",
+      "regionLabel": "Town or region",
+      "experienceLabel": "Experience",
+      "experienceHint": "Number of years",
+      "fetch": "Look up pay levels",
+      "loading": "Fetching market data …",
+      "missingOccupation": "Write which occupation it is, and we will look it up.",
+      "genericError": "Something went wrong. Try again in a moment.",
+      "newSearch": "New search",
+      "average": "Average salary",
+      "range": "Range",
+      "p25": "Lower quartile",
+      "p25Sub": "25 % earn less",
+      "p75": "Upper quartile",
+      "p75Sub": "25 % earn more",
+      "progression": "Salary progression",
+      "year1": "1 year",
+      "year3": "3 years",
+      "year5": "5 years",
+      "highValueSkills": "Skills that raise pay",
+      "negotiationInsights": "Before the negotiation",
+      "comparisons": "Comparisons"
+    },
+    "marketData": {
+      "description": "Pay levels by occupational area and part of the country. Rough estimates — not statistics.",
+      "viewSwitchLabel": "Choose what to see",
+      "view": {
+        "bransch": "By occupational area",
+        "region": "By area"
       },
-      "negotiation": {
-        "label": "Negotiation",
-        "description": "Tips for salary negotiation"
+      "searchIndustry": "Search occupational area",
+      "searchRegion": "Search area",
+      "medianByIndustry": "Middle salary by occupational area",
+      "resultCount_one": "{{count}} match",
+      "resultCount_other": "{{count}} matches",
+      "sortBy": {
+        "median": "Highest pay first",
+        "namn": "Alphabetical"
       },
-      "market": {
-        "label": "Market Data",
-        "description": "Salary statistics by industry"
-      },
-      "newBadge": "New!"
+      "low": "Lower end",
+      "median": "Middle",
+      "high": "Upper end",
+      "rangeNote": "The range shows where most salaries in the area tend to sit. Individual roles can fall below or above it.",
+      "byRegion": "How it differs across the country",
+      "regionBasis": "The comparison starts from {{median}} kr, the middle salary across all areas here.",
+      "regionDetail": "In {{region}} salaries sit roughly {{percent}} % from the national level, so around {{median}} kr a month. Remember that living costs differ too.",
+      "aboutTitle": "Where do these figures come from?",
+      "aboutText": "They were written by hand as a rough guide and have no source behind them. The page used to say they came from Statistics Sweden — that was not true. If you need figures that hold up in a negotiation, get them here:"
     }
   },
   "focus": {
@@ -9561,13 +9789,14 @@
       "question": "What do you need to read or find?"
     },
     "salary": {
-      "cityHint": "Type a city or leave blank for all of Sweden.",
-      "cityPlaceholder": "e.g. Malmö",
-      "cityTitle": "In which city?",
-      "doneText": "Open the salary page in normal mode to see an estimate for \"{{role}}\" in {{city}}.",
+      "cityTitle": "Where in the country?",
       "doneTitle": "Done!",
-      "rolePlaceholder": "e.g. carpenter, sales rep",
-      "roleTitle": "Which role do you want to know the salary for?"
+      "roleTitle": "Which occupational area do you want to know the pay for?",
+      "experienceTitle": "How long have you worked?",
+      "resultIntro": "Here is where pay sits for {{role}} in {{city}}:",
+      "perMonthBeforeTax": "a month before tax",
+      "netLine": "Roughly {{amount}} kr left after tax.",
+      "missingChoice": "Go back and make your choices, and we will do the maths."
     },
     "settings": {
       "categoryTitle": "What would you like to change?",

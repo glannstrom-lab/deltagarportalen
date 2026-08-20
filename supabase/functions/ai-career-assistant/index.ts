@@ -12,6 +12,12 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
+import {
+  checkAiEnabled,
+  createGateDenialResponse,
+  checkDailyTokenCap,
+  createTokenCapResponse,
+} from '../_shared/aiGate.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -157,7 +163,7 @@ Svara ENDAST med giltig JSON.`
 }
 
 function buildSalaryCompassPrompt(params: Record<string, unknown>): string {
-  const { occupation, region, experienceYears, currentSalary, skills } = params
+  const { occupation, region, experienceYears, skills } = params
 
   return `Du är en expert på lönedata för den svenska arbetsmarknaden.
 
@@ -166,10 +172,23 @@ UPPGIFT: Ge aktuell lönestatistik och insikter.
 YRKE: ${occupation}
 REGION: ${region || 'Sverige'}
 ERFARENHET: ${experienceYears || 'Ej specificerad'} år
-${currentSalary ? `NUVARANDE LÖN: ${currentSalary} kr/mån` : ''}
 ${skills ? `KOMPETENSER: ${(skills as string[]).join(', ')}` : ''}
 
-Sök på Glassdoor, LinkedIn Salary, SCB och andra källor för aktuell lönedata.
+SANNINGSREGEL — läs den innan du skriver något:
+- Hitta ALDRIG på lönesiffror. Hittar du inte underlag för ett fält, skriv
+  "Vi hittade inget underlag" i stället för ett tal. Ett tomt fält är bättre
+  än ett påhittat.
+- Påstå aldrig något om personen. Du vet bara yrket, orten och antalet år
+  ovan — inget om hens nuvarande lön, anställning eller livssituation.
+  Skriv inte "din nuvarande lön" och anta inte att personen har ett arbete.
+- Skriv ut vilket år uppgifterna gäller när du vet det, och var siffran
+  kommer ifrån. Är underlaget tunt — säg det.
+- Rör svaret svenska regelverk (a-kassa, aktivitetsstöd, kollektivavtal):
+  hänvisa till Arbetsförmedlingen, facket eller Medlingsinstitutet i stället
+  för att återge belopp och villkor ur minnet.
+
+Sök på SCB, Medlingsinstitutet, fackförbundens lönestatistik och andra
+källor för aktuell lönedata.
 
 RETURNERA exakt detta JSON-format:
 {
@@ -325,6 +344,30 @@ Deno.serve(async (req) => {
 
     if (authError || !user) {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+    }
+
+    // AI-BRYTAREN (GDPR art. 21). FAIL CLOSED — se motiveringen i aiGate.ts.
+    // Funktionen kör `perplexity/sonar` och skickar användarens yrke, ort och
+    // fritext vidare till en tredjepart som dessutom söker på webben. Fram
+    // till 2026-08-20 gällde `profiles.ai_enabled = false` inte här: den som
+    // stängt av AI i Inställningar fick ändå ett fullt AI-svar. Klientsidans
+    // `AiConsentGate` är ett gränssnitt, inte en grind — den går att gå förbi
+    // genom att anropa funktionen direkt.
+    //
+    // `supabase` här är service-role-klienten, vilket är vad grinden kräver
+    // för att säkert nå profilraden. Skicka aldrig in en anon-klient (A19).
+    const aiGate = await checkAiEnabled(supabase, user.id)
+    if (!aiGate.allowed) {
+      console.warn(`[ai-career-assistant] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`)
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin)
+    }
+
+    // DAGLIGT TOKENTAK. Delar budget med `client/api/ai.js` (samma
+    // `ai_usage_logs`) — funktionen åt tidigare den budgeten utan att räknas.
+    const tokenCap = await checkDailyTokenCap(supabase, user.id)
+    if (!tokenCap.allowed) {
+      console.warn(`[ai-career-assistant] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`)
+      return createTokenCapResponse(tokenCap, origin)
     }
 
     // Rate limiting

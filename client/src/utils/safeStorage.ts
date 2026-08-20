@@ -220,6 +220,9 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
   'article_checklists',
   'integration-checklist',
   'negotiationChecklist',
+  // Löneförhandlingens förberedelse: målön, lägstanivå och egna argument.
+  // Skrivs av pages/salary/NegotiationTab.tsx och är innehållsbärande.
+  'negotiationPrep',
   'culture-preferences',
   'dashboard_preferences',
   'user_preferences',

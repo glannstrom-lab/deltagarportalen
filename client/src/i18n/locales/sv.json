@@ -9194,136 +9194,364 @@
     }
   },
   "salary": {
-    "editorialSpot": "Räkna på din lön, förbered förhandlingen och se vad marknaden betalar.",
-    "negotiation": {
-      "title": "Löneförhandlingsguide",
-      "description": "Steg-för-steg guide för att förhandla lön i svensk arbetskultur. Förberedd förhandling ger bättre resultat.",
-      "swedishMarket": "Svensk arbetsmarknad",
-      "swedishMarketDesc": "I Sverige är löneförhandling ofta mer strukturerad än i andra länder. Många branscher har kollektivavtal som sätter ramarna. Individuella förhandlingar sker ofta vid årliga lönesamtal.",
-      "fiveSteps": "Förhandlingens 5 steg",
-      "tipsLabel": "Tips:",
-      "examplePhrases": "Exempelfraser:",
-      "doThis": "Gör detta",
-      "avoidThis": "Undvik detta",
-      "preparationChecklist": "Förberedelschecklista",
-      "completion": "Färdiggrad",
-      "scenarioSimulator": "Scenariosimulatör",
-      "backToScenarios": "Tillbaka till scenarion",
-      "current": "Nuvarande",
-      "market": "Marknad",
-      "targetSalary": "Målön",
-      "recommendation": "Rekommendation",
-      "salaryRange": "Löneintervall",
-      "fromCurrent": "Från nuvarande",
-      "comparedToMarket": "Jämfört med marknad",
-      "dailyTip": "Tips för dagen",
-      "whenToNegotiate": "När ska du förhandla?",
-      "timing": {
-        "jobStart": "Vid jobbstart",
-        "jobStartDesc": "Bästa tillfället att sätta rätt nivå",
-        "annualReview": "Årligt lönesamtal",
-        "annualReviewDesc": "Planerat tillfälle - var förberedd",
-        "afterSuccess": "Efter stora framgångar",
-        "afterSuccessDesc": "Dokumentera och kapitalisera",
-        "newResponsibilities": "Vid nya ansvar",
-        "newResponsibilitiesDesc": "Mer ansvar = mer kompensation"
-      }
-    },
-    "calculator": {
-      "title": "Lönekalkylator",
-      "description": "Beräkna förväntad lön baserat på yrke, erfarenhet och region. Data baserad på svensk lönestatistik.",
-      "enterDetails": "Ange dina uppgifter",
-      "occupation": "Yrkeskategori",
-      "selectCategory": "Välj kategori...",
-      "region": "Region",
-      "selectRegion": "Välj region...",
-      "experience": "Erfarenhet",
-      "selectExperience": "Välj erfarenhet...",
-      "calculate": "Beräkna lön",
-      "yourResult": "Ditt löneresultat",
-      "minimum": "Minimum",
-      "maximum": "Maximum",
-      "medianRecommended": "Median (rekommenderat)",
-      "perMonth": "per månad",
-      "netSalaryPerMonth": "Nettolön/månad",
-      "afterTax": "(efter skatt ~22%)",
-      "annualSalaryGross": "Årslön (brutto)",
-      "annualIncrease": "Löneökning/år (snitt)",
-      "salaryRangeDistribution": "Löneintervallets fördelning",
-      "min": "Min",
-      "median": "Median",
-      "max": "Max",
-      "taxDeduction": "Skatteavdrag",
-      "primaryTax": "Primär källskatt (ungefär 22%): ~{{amount}} kr",
-      "employerFeeNotIncluded": "Arbetsgivaravgift ingår ej i din lön",
-      "aboutCalculation": "Om beräkningen",
-      "aboutCalculationText": "Löneuppgifterna är baserade på branschstatistik och justerade för region och erfarenhet. Nettolönen är en uppskattning. Faktisk skatt varierar baserat på personliga förhållanden.",
-      "addComparison": "Lägg till jämförelse",
-      "salaryComparisons": "Lönejämförelser ({{count}})",
-      "gross": "Brutto",
-      "net": "Netto",
-      "comparedToCurrent": "Jämfört med nuvarande beräkning",
-      "tipsTitle": "Tips för bättre lön",
-      "tips": {
-        "buildSkills": "Bygg kompetens",
-        "buildSkillsDesc": "Certifieringar och specialkunskaper höjer lönen",
-        "documentResults": "Dokumentera resultat",
-        "documentResultsDesc": "Konkreta exempel stärker din förhandlingsposition",
-        "timing": "Tajming är allt",
-        "timingDesc": "Förhandla efter framgångar eller vid nya ansvar",
-        "knowMarket": "Känn din marknad",
-        "knowMarketDesc": "Ha koll på vad konkurrenter erbjuder"
-      }
-    },
-    "marketData": {
-      "title": "Lönestatistik",
-      "description": "Jämför löner per bransch och region. Data baserad på svenska löneundersökningar och SCB-statistik.",
-      "byIndustry": "Per bransch",
-      "byRegion": "Per region",
-      "searchIndustry": "Sök bransch...",
-      "searchRegion": "Sök region...",
-      "medianByIndustry": "Medianlön per bransch",
-      "results": "resultat",
-      "sortSalary": "Lön",
-      "sortGrowth": "Ökning",
-      "sortName": "Namn",
-      "perYear": "%/år",
-      "employeesInSweden": "Anställda i Sverige",
-      "annualGrowth": "Årlig tillväxt",
-      "salaryRange": "Lönespektrum (uppskattning):",
-      "min": "Min",
-      "max": "Max",
-      "noIndustryFound": "Ingen bransch hittad för \"{{searchTerm}}\"",
-      "salaryByRegion": "Lönenivå per region",
-      "perMonth": "kr/månad",
-      "costOfLiving": "Levnadskostnad",
-      "averageSalary": "Snittlön",
-      "salaryPremium": "Lönepremie relativt genomsnitt",
-      "premiumHigher": "Högre löner än genomsnitt. Viktigt att väga detta mot levnadskostnaderna.",
-      "premiumLower": "Lägre löner än genomsnitt, men ofta med lägre levnadskostnader.",
-      "premiumAverage": "Genomsnittlig lön för Sverige.",
-      "noRegionFound": "Ingen region hittad för \"{{searchTerm}}\"",
-      "highPremiumSkills": "Kompetenser med hög lönepremie",
-      "demand": "Efterfrågan",
-      "disclaimerTitle": "Om statistiken:",
-      "disclaimerText": "Data baseras på branschrapporter, SCB-statistik och löneundersökningar. Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer. Senast uppdaterad: Q1 2026."
-    },
     "pageTitle": "Lön & Förhandling",
     "pageDescription": "Få koll på löneläget och förhandla smartare",
     "tabs": {
       "calculator": {
-        "label": "Lönekalkylator",
-        "description": "Beräkna marknadslön för ditt yrke"
+        "label": "Lönekalkylator"
       },
       "negotiation": {
-        "label": "Förhandling",
-        "description": "Tips för löneförhandling"
+        "label": "Förhandling"
       },
       "market": {
-        "label": "Marknadsdata",
-        "description": "Lönestatistik per bransch"
+        "label": "Marknadsdata"
+      }
+    },
+    "data": {
+      "occupations": {
+        "law": "Juridik",
+        "it": "IT & systemutveckling",
+        "finance": "Ekonomi & finans",
+        "engineering": "Teknik & ingenjör",
+        "hr": "HR & personal",
+        "marketing": "Marknadsföring & kommunikation",
+        "sales": "Försäljning",
+        "health": "Hälso- & sjukvård",
+        "design": "Design & kreativt",
+        "education": "Utbildning",
+        "construction": "Bygg & hantverk",
+        "admin": "Administration"
       },
-      "newBadge": "Ny!"
+      "regions": {
+        "stockholm": "Stockholm",
+        "gothenburg": "Göteborg",
+        "malmo": "Malmö",
+        "uppsala": "Uppsala",
+        "otherMetro": "Övriga storstadsregioner",
+        "northern": "Norrland",
+        "central": "Mellansverige"
+      },
+      "experience": {
+        "junior": "0–2 år",
+        "mid": "3–5 år",
+        "senior": "6–10 år",
+        "expert": "10 år eller mer"
+      },
+      "sources": {
+        "scb": "Officiell lönestatistik per yrke, kön, ålder och sektor.",
+        "medlingsinstitutet": "Löneutveckling och avtalsrörelsen — hur mycket lönerna faktiskt steg.",
+        "skatteverket": "Skattetabeller och de belopp som gäller för året."
+      }
+    },
+    "calculator": {
+      "description": "Siffrorna här är grova uppskattningar för hela yrkesområden — inte hämtad statistik. Använd dem som en utgångspunkt, och hämta en riktig siffra innan du säger den högt i en förhandling.",
+      "enterDetails": "Berätta lite om dig",
+      "occupation": "Yrkesområde",
+      "selectCategory": "Välj yrkesområde",
+      "region": "Var i landet",
+      "selectRegion": "Välj område",
+      "experience": "Hur länge du jobbat",
+      "selectExperience": "Välj antal år",
+      "prefilledFromProfile": "Ifyllt från din profil — ändra om det inte stämmer.",
+      "calculate": "Räkna ut din lön",
+      "yourResult": "Så här ser det ut",
+      "yourResultNamed": "Så här ser det ut, {{name}}",
+      "minimum": "Lägre nivå",
+      "medianRecommended": "Mitten",
+      "maximum": "Högre nivå",
+      "perMonth": "per månad",
+      "estimateNotice": "Talen är grova uppskattningar för hela yrkesområdet, justerade för område och antal år. De kommer inte från SCB eller någon löneundersökning. Vad du faktiskt får beror på arbetsgivaren, kollektivavtalet och vad ni kommer överens om.",
+      "netSalaryPerMonth": "Kvar efter skatt",
+      "effectiveTax": "{{percent}} % går till skatt",
+      "showTaxDetail": "Se hur skatten räknas",
+      "taxRowMunicipal": "Kommunalskatt",
+      "taxRowState": "Statlig skatt",
+      "taxRowJobDeduction": "Jobbskatteavdrag",
+      "taxRowTotal": "Skatt totalt",
+      "municipalTaxLabel": "Kommunalskatt där du bor (%)",
+      "municipalTaxHint": "Riksgenomsnittet är {{avg}} %. Vet du din kommuns sats kan du ändra den här.",
+      "taxAssumptions": "Uppskattning enligt {{year}} års skatteregler med {{rate}} % kommunalskatt.",
+      "taxNotIncluded": "Kyrkoavgift, avdrag och jämkning ingår inte, och för riktigt höga löner blir skatten något högre än den som visas här.",
+      "annualSalaryGross": "Årslön före skatt",
+      "rangeTitle": "Var i spannet du hamnar",
+      "saveCalculation": "Spara den här beräkningen",
+      "savedTitle": "Dina sparade beräkningar ({{count}})",
+      "removeSaved": "Ta bort beräkningen för {{occupation}}",
+      "saveFailed": "Vi kunde inte spara just nu. Prova igen om en stund.",
+      "deleteFailed": "Vi kunde inte ta bort den just nu. Prova igen om en stund.",
+      "sameAsCurrent": "Samma siffra som beräkningen ovan.",
+      "diffToCurrent": "{{diff}} kr {{direction}} än beräkningen ovan.",
+      "higher": "högre",
+      "lower": "lägre",
+      "gross": "Före skatt",
+      "net": "Efter skatt",
+      "sourcesTitle": "Var hittar du riktig lönestatistik?",
+      "sourcesIntro": "Behöver du en siffra som håller i en förhandling — hämta den här. Är du med i ett fackförbund har de oftast statistik för just ditt yrke.",
+      "opensInNewTab": "Öppnas i en ny flik",
+      "exportTitle": "Löneberäkning från Jobin",
+      "exportFilename": "loneberakning",
+      "grossPerMonth": "Lön före skatt per månad",
+      "tipsTitle": "Tips för bättre lön",
+      "tips": {
+        "buildSkills": "Bygg på det du kan",
+        "buildSkillsDesc": "Kurser, certifikat och specialkunskaper påverkar vad du kan begära.",
+        "documentResults": "Skriv ner vad du gjort",
+        "documentResultsDesc": "Konkreta exempel är det som gör ett löneanspråk trovärdigt.",
+        "timing": "Välj rätt tillfälle",
+        "timingDesc": "Vid nytt jobb, i lönesamtalet eller när du fått nya arbetsuppgifter.",
+        "knowMarket": "Ta reda på läget",
+        "knowMarketDesc": "Vet du vad andra arbetsgivare betalar står du tryggare i samtalet."
+      }
+    },
+    "negotiation": {
+      "description": "Så förbereder du samtalet om lön — steg för steg, och med plats att skriva ner det du kommer fram till.",
+      "swedishMarket": "Så funkar det i Sverige",
+      "swedishMarketDesc": "I många branscher finns kollektivavtal som sätter ramarna för lönen, och lönen ses ofta över en gång om året i ett lönesamtal. Är du med i ett fackförbund kan de ge dig underlag och följa med som stöd.",
+      "stepsTitle": "Fem steg genom samtalet",
+      "tipsLabel": "Att tänka på",
+      "phrasesLabel": "Så kan du säga",
+      "steps": {
+        "preparation": {
+          "title": "Förberedelse",
+          "description": "Det mesta avgörs innan mötet börjar.",
+          "tips": [
+            "Ta reda på ungefär vad andra får i samma slags arbete",
+            "Skriv ner vad du har gjort och kan — även från praktik, studier eller ideellt arbete",
+            "Bestäm en nivå du siktar på och en lägsta nivå du kan tacka ja till",
+            "Fråga facket om de har lönestatistik för yrket"
+          ],
+          "phrases": [
+            "\"Jag har tittat på vad liknande arbeten ligger på, och landar i ett spann kring …\"",
+            "\"Det jag tar med mig in i rollen är …\""
+          ]
+        },
+        "opening": {
+          "title": "Inledning",
+          "description": "Börja lugnt och tydligt.",
+          "tips": [
+            "Säg tidigt att du vill prata om lönen, så slipper ni båda undra",
+            "Låt den andra parten säga sin siffra först om du kan",
+            "Ha papper eller mobil med dina anteckningar framme — det är helt okej",
+            "Andas. Tystnad efter en fråga är inte ditt ansvar att fylla"
+          ],
+          "phrases": [
+            "\"Jag ser fram emot att komma igång. Ska vi ta lönen också?\"",
+            "\"Vad har ni tänkt er för den här rollen?\""
+          ]
+        },
+        "case": {
+          "title": "Ditt underlag",
+          "description": "Berätta varför nivån är rimlig.",
+          "tips": [
+            "Utgå från arbetet och vad du kan bidra med, inte från vad du behöver privat",
+            "Ge exempel i stället för omdömen om dig själv",
+            "Nämn det som är svårt att ersätta: språk, körkort, certifikat, erfarenhet av just den miljön",
+            "Har du varit borta från arbetsmarknaden — säg vad du gjort under tiden"
+          ],
+          "phrases": [
+            "\"I mitt förra arbete gjorde jag … och det ledde till …\"",
+            "\"Utifrån vad rollen kräver tänker jag mig …\""
+          ]
+        },
+        "apart": {
+          "title": "Om ni landar olika",
+          "description": "Ett motbud är inte ett nej.",
+          "tips": [
+            "Be om betänketid — du behöver inte svara samma dag",
+            "Fråga vad som krävs för att komma högre, och när ni kan titta på det igen",
+            "Annat än kronor kan förhandlas: arbetstid, upplärning, friskvård, resor, fast tjänst",
+            "Går ni isär kraftigt — fråga hur de kommit fram till sin siffra"
+          ],
+          "phrases": [
+            "\"Kan jag få fundera till i morgon?\"",
+            "\"Om vi landar där — kan vi stämma av lönen igen om sex månader?\""
+          ]
+        },
+        "closing": {
+          "title": "Avsluta",
+          "description": "Se till att det ni sagt finns nedskrivet.",
+          "tips": [
+            "Sammanfatta vad ni kommit överens om, högt",
+            "Be att få det skriftligt: lön, tjänstgöringsgrad, startdatum, eventuell uppföljning",
+            "Tacka för samtalet oavsett utfall — ni ska jobba ihop",
+            "Skriv ner dina egna intryck efteråt, medan de är färska"
+          ],
+          "phrases": [
+            "\"Så vi säger … kronor från och med …, stämmer det?\"",
+            "\"Kan du skicka det skriftligt så jag har det?\""
+          ]
+        }
+      },
+      "do": {
+        "title": "Gör så här",
+        "items": [
+          "Ha ett spann i huvudet, inte en enda siffra",
+          "Prata om arbetet och vad du kan bidra med",
+          "Ställ frågor och lyssna färdigt",
+          "Ta betänketid om du blir osäker",
+          "Ha en lägsta nivå klar för dig själv i förväg",
+          "Be om att få överenskommelsen skriftligt"
+        ]
+      },
+      "dont": {
+        "title": "Undvik",
+        "items": [
+          "Att säga ja direkt på första budet",
+          "Att motivera lönen med din privatekonomi",
+          "Att jämföra dig med namngivna kollegor",
+          "Att ge ultimatum du inte tänker stå för",
+          "Att be om ursäkt för att du tar upp lönen",
+          "Att glömma allt annat än kronorna — arbetstid och upplärning är också värt något"
+        ]
+      },
+      "prep": {
+        "title": "Din förberedelse",
+        "intro": "Skriv ner det här innan mötet, så finns det kvar när du sitter där. Det sparas i den här webbläsaren.",
+        "targetLabel": "Nivån du siktar på",
+        "targetHint": "Till exempel 32 000 kr. Det är okej att sikta högre än du tror du får.",
+        "floorLabel": "Din lägsta nivå",
+        "floorHint": "Den siffra där du hellre tackar nej. Bara du ser den.",
+        "argumentsLabel": "Mina argument",
+        "argumentsHint": "Två eller tre konkreta saker du kan, har gjort eller tar med dig in i rollen.",
+        "savesAutomatically": "Sparas medan du skriver.",
+        "savedAt": "Sparat {{time}}."
+      },
+      "checklist": {
+        "title": "Innan mötet",
+        "items": [
+          "Tagit reda på ungefär vad arbetet brukar ge",
+          "Skrivit ner vad jag kan och har gjort",
+          "Bestämt nivån jag siktar på",
+          "Bestämt min lägsta nivå",
+          "Tänkt igenom hur jag börjar samtalet",
+          "Sagt det högt för mig själv en gång"
+        ],
+        "progress": "Du har bockat av {{done}} av {{total}}.",
+        "emptyHint": "Börja när du vill — inget måste göras i dag.",
+        "resetLabel": "Börja om med listan",
+        "resetConfirm": "Alla bockar tas bort. Det du skrivit i fälten ovanför påverkas inte.",
+        "resetConfirmAction": "Ta bort bockarna"
+      },
+      "scenarios": {
+        "title": "Öva på ett läge",
+        "intro": "Fyra vanliga situationer. Inga siffror här — de beror helt på yrke, ort och arbetsgivare.",
+        "adviceLabel": "Så kan du tänka",
+        "back": "Tillbaka till lägena",
+        "items": {
+          "firstJob": {
+            "title": "Första jobbet efter en lång tid utan arbete",
+            "description": "Du har fått ett erbjudande och ska svara på vad du vill ha i lön.",
+            "advice": "Att ha varit borta från arbetsmarknaden sänker inte vad arbetet är värt. Utgå från vad tjänsten normalt ger och begär i nivå med det — inte under för att \"vara till lags\". Finns kollektivavtal är lägstalönen där en botten, inte ett riktmärke. Är du osäker: be om betänketid och fråga facket samma dag."
+          },
+          "offer": {
+            "title": "Du har fått ett jobberbjudande",
+            "description": "De har nämnt en lön och du kan svara innan du skriver på.",
+            "advice": "Tacka för erbjudandet och be att få återkomma i morgon. Kolla nivån mot en riktig källa. Vill du högre — säg en siffra och en mening om varför, och nämn vad du tar med dig in i rollen. Fråga också när lönen ses över nästa gång."
+          },
+          "annual": {
+            "title": "Det årliga lönesamtalet",
+            "description": "Du har jobbat ett tag och vill ha en höjning.",
+            "advice": "Utgå från vad som förändrats sedan sist: nya uppgifter, större ansvar, saker du löst. Skriv ihop tre exempel i förväg. Får du nej — fråga vad som krävs för ett ja, och kom överens om när ni stämmer av igen."
+          },
+          "newDuties": {
+            "title": "Du har fått nya arbetsuppgifter",
+            "description": "Arbetet har växt men lönen står still.",
+            "advice": "Beskriv vad som tillkommit och vad det innebär i praktiken. Att uppgifterna växt är i sig ett sakligt skäl att prata lön — du behöver inte vänta på det årliga samtalet för att ta upp det."
+          }
+        }
+      },
+      "more": {
+        "title": "Mer om förhandling"
+      },
+      "tips": {
+        "title": "Ett tips",
+        "counter": "{{current}} av {{total}}",
+        "items": [
+          "Säg inte den första siffran om du kan undvika det — fråga i stället vad de tänkt sig.",
+          "Blir du pressad på en siffra: ge ett spann och säg vad det beror på.",
+          "Ta reda på om arbetsplatsen har kollektivavtal. Det påverkar både lön och villkor.",
+          "Tystnad är inget du måste fylla. Det är okej att tänka i några sekunder.",
+          "Fråga när lönen ses över nästa gång — ett datum är också en förhandling.",
+          "Är du med i facket: ring dem före mötet, inte efter."
+        ]
+      },
+      "timing": {
+        "title": "När är det läge att ta upp lönen?",
+        "items": {
+          "offer": {
+            "title": "När du får ett erbjudande",
+            "description": "Innan du skriver på — då är utrymmet som störst."
+          },
+          "annual": {
+            "title": "I det årliga lönesamtalet",
+            "description": "Planerat tillfälle. Kom förberedd med exempel."
+          },
+          "newDuties": {
+            "title": "När du fått nya uppgifter",
+            "description": "Arbetet har ändrats, då kan lönen också göra det."
+          },
+          "wentWell": {
+            "title": "När något gått bra",
+            "description": "Skriv ner vad du gjorde medan det är färskt, och ta upp det vid nästa samtal."
+          }
+        }
+      },
+      "links": {
+        "toMarket": "Se löneläget i ditt yrkesområde",
+        "toCalculator": "Räkna på en lön"
+      }
+    },
+    "insights": {
+      "title": "Lönekompassen",
+      "subtitle": "Låt AI:n leta upp löneläget och ge förhandlingstips",
+      "occupationLabel": "Yrke",
+      "regionLabel": "Ort eller region",
+      "experienceLabel": "Erfarenhet",
+      "experienceHint": "Antal år",
+      "fetch": "Hämta löneläget",
+      "loading": "Hämtar marknadsdata …",
+      "missingOccupation": "Skriv vilket yrke det gäller, så letar vi.",
+      "genericError": "Något gick fel. Prova igen om en stund.",
+      "newSearch": "Ny sökning",
+      "average": "Medellön",
+      "range": "Spann",
+      "p25": "Lägre kvartil",
+      "p25Sub": "25 % tjänar mindre",
+      "p75": "Högre kvartil",
+      "p75Sub": "25 % tjänar mer",
+      "progression": "Löneutveckling",
+      "year1": "1 år",
+      "year3": "3 år",
+      "year5": "5 år",
+      "highValueSkills": "Kompetenser som höjer lönen",
+      "negotiationInsights": "Inför förhandlingen",
+      "comparisons": "Jämförelser"
+    },
+    "marketData": {
+      "description": "Löneläget per yrkesområde och del av landet. Grova uppskattningar — inte statistik.",
+      "viewSwitchLabel": "Välj vad du vill se",
+      "view": {
+        "bransch": "Per yrkesområde",
+        "region": "Per område"
+      },
+      "searchIndustry": "Sök yrkesområde",
+      "searchRegion": "Sök område",
+      "medianByIndustry": "Lön i mitten per yrkesområde",
+      "resultCount_one": "{{count}} träff",
+      "resultCount_other": "{{count}} träffar",
+      "sortBy": {
+        "median": "Högst lön först",
+        "namn": "Bokstavsordning"
+      },
+      "low": "Lägre nivå",
+      "median": "Mitten",
+      "high": "Högre nivå",
+      "rangeNote": "Spannet visar var de flesta lönerna i yrkesområdet brukar ligga. Enskilda tjänster kan ligga både under och över.",
+      "byRegion": "Så skiljer det sig mellan olika delar av landet",
+      "regionBasis": "Jämförelsen utgår från {{median}} kr, mitten-lönen för alla yrkesområden här.",
+      "regionDetail": "I {{region}} ligger lönerna ungefär {{percent}} % från rikssnittet, alltså kring {{median}} kr i månaden. Kom ihåg att levnadskostnaderna också skiljer sig åt.",
+      "aboutTitle": "Var kommer siffrorna ifrån?",
+      "aboutText": "De är skrivna för hand som ett riktmärke och har ingen källa bakom sig. Sidan sa tidigare att de kom från SCB — det stämde inte. Behöver du siffror som håller i en förhandling, hämta dem här:"
     }
   },
   "focus": {
@@ -9561,13 +9789,14 @@
       "question": "Vad behöver du läsa eller hitta?"
     },
     "salary": {
-      "cityHint": "Skriv en stad eller lämna tomt för hela Sverige.",
-      "cityPlaceholder": "t.ex. Malmö",
-      "cityTitle": "I vilken stad?",
-      "doneText": "Öppna lönesidan i normalläge för att se en uppskattning för \"{{role}}\" i {{city}}.",
+      "cityTitle": "Var i landet?",
       "doneTitle": "Klart!",
-      "rolePlaceholder": "t.ex. snickare, säljare",
-      "roleTitle": "Vilken roll vill du veta lön för?"
+      "roleTitle": "Vilket yrkesområde vill du veta lön för?",
+      "experienceTitle": "Hur länge har du jobbat?",
+      "resultIntro": "Så här ligger lönerna för {{role}} i {{city}}:",
+      "perMonthBeforeTax": "i månaden före skatt",
+      "netLine": "Ungefär {{amount}} kr kvar efter skatt.",
+      "missingChoice": "Gå tillbaka och gör dina val, så räknar vi."
     },
     "settings": {
       "categoryTitle": "Vad vill du ändra?",
