@@ -172,8 +172,11 @@ function JobsokHubInner() {
       {
         key: 'international',
         icon: Globe,
-        title: t('jobsokHub.features.international.title', 'Jobba utomlands'),
-        description: t('jobsokHub.features.international.description', 'Så söker du jobb i ett annat land.'),
+        // Kortet lovade "Jobba utomlands — så söker du jobb i ett annat land"
+        // och ledde till en sida om att komma i arbete i Sverige. Rättat
+        // 2026-08-20 när sidan omscopades till "Ny i Sverige".
+        title: t('jobsokHub.features.international.title', 'Ny i Sverige'),
+        description: t('jobsokHub.features.international.description', 'Validering av din utbildning, första tiden här och svenskan.'),
         href: '/international',
       },
     ]

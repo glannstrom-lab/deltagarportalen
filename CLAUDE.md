@@ -290,14 +290,14 @@ cd client
 npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (409)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (406)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 2 072 tester i 132 filer (~50 s, mätt 2026-08-20)
+npm run test:run           # 2 086 tester i 133 filer (~50 s, mätt 2026-08-20)
 npm run build
 ```
 
-De tre **frysta taken** (122 warnings, 409 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (122 warnings, 406 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

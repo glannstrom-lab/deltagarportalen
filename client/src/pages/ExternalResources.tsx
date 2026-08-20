@@ -122,7 +122,7 @@ const externalResources: ExternalResource[] = [
     id: 'migrationsverket',
     name: 'Migrationsverket - Arbeta i Sverige',
     description: 'Information om arbetstillstånd och visum för dig som vill arbeta i Sverige.',
-    url: 'https://www.migrationsverket.se/Privatpersoner/Arbeta-i-Sverige.html',
+    url: 'https://www.migrationsverket.se/du-vill-ansoka/arbeta/anstalld-eller-egen-foretagare/anstalld.html',
     icon: Globe,
     category: 'guide',
     tags: ['Visum', 'Arbetstillstånd']

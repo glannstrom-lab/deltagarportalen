@@ -1,38 +1,101 @@
 /**
- * Integration Tab - Checklist for establishing yourself in Sweden
- * With cloud sync, notes, and target dates
+ * Din första tid i Sverige — checklista med rätt ordning.
+ *
+ * Vad som var fel och som inte får återinföras:
+ *
+ * 1. **Sakfel med konsekvenser.** Personnummer var något man "ansöker om" på
+ *    "Dag 1-2" (man anmäler flytt, det tar veckor, kräver personligt besök och
+ *    minst ett års planerad vistelse). SFI låg "Vecka 1-4" trots att rätten
+ *    kräver folkbokföring. Bankkonto beskrevs som bankens godtycke fast rätten
+ *    till betalkonto är lagstadgad inom EES. Skattepunkten handlade om SINK,
+ *    som per definition inte gäller den som folkbokförts.
+ * 2. **Ordningen saknades.** Kategorierna var tidsbaserade, inte
+ *    beroendebaserade, och motsade sig själva: BankID lovades på 2-4 veckor
+ *    men kräver personnummer, som sidans egen ruta sa tar 2-8 veckor. Nu är
+ *    kategorierna beroenden — "Börja här", "När du har personnummer".
+ * 3. **Checklistan gick inte att bocka av med tangentbord.** Varje rad var en
+ *    `<div onClick>` utan roll, tabIndex eller aria-checked. Sidans enda
+ *    interaktiva funktion var stängd för skärmläsare.
+ * 4. **Ett misslyckat sparande såg ut som ett lyckat.** Returvärdet från
+ *    `saveProgress` kastades och den optimistiska uppdateringen rullades aldrig
+ *    tillbaka. En användare vars skrivning nekades såg fjorton gröna bockar
+ *    som bara fanns i minnet.
+ * 5. **localStorage-fallbacken markerade ALLT som klart.** `!!objekt` är alltid
+ *    sant, och blocket läste det nya formatet som om det vore det gamla.
+ *
+ * Alla myndighetslänkar kontrollerade 2026-08-20 (HTTP 200). Den gamla
+ * Skatteverket-länken var en 404 — och den satt på den punkt allt annat hänger
+ * på.
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  Users,
-  CheckCircle,
-  Circle,
-  Clock,
-  AlertCircle,
-  ExternalLink,
-  ChevronDown,
-  ChevronUp,
-  MessageSquare,
-  Calendar,
-  Download,
-  Save,
-} from '@/components/ui/icons'
-import { Card, Button, Input } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import { Check, ChevronDown, ChevronUp, ExternalLink, Info, AlertCircle } from '@/components/ui/icons'
+import { Card, Button } from '@/components/ui'
 import { integrationChecklistApi } from '@/services/cloudStorage'
-import { motion, AnimatePresence } from 'framer-motion'
+import { logger } from '@/lib/logger'
+import { cn } from '@/lib/utils'
+import { KONTROLLERAD } from '../International'
 
-interface ChecklistItem {
+interface Punkt {
   id: string
-  title: string
-  description: string
-  timeframe: string
-  links?: { label: string; url: string }[]
-  priority: 'critical' | 'important' | 'recommended'
+  /** Gäller bara den som inte är EU/EES- eller nordisk medborgare. */
+  endastTredjeland?: boolean
+  url?: string
 }
 
-interface ItemProgress {
+interface Kategori {
+  nyckel: 'start' | 'afterId' | 'work' | 'later'
+  punkter: Punkt[]
+}
+
+/**
+ * Ordningen är beroendeordning, inte kalender. Nästan allt i "När du har
+ * personnummer" är omöjligt innan folkbokföringen är klar — det var precis det
+ * den gamla tidsindelningen dolde.
+ *
+ * Id:na är också nycklar för sparade kryss (`user_preferences.integration_checklist`).
+ * Byter du ett id nollställs den punkten för alla som redan kryssat den.
+ */
+const KATEGORIER: Kategori[] = [
+  {
+    nyckel: 'start',
+    punkter: [
+      { id: 'folkbokforing', url: 'https://www.skatteverket.se/privat/folkbokforing/flyttatillsverige' },
+      { id: 'samordningsnummer', url: 'https://www.skatteverket.se/privat/folkbokforing' },
+      { id: 'arbetsformedlingen', url: 'https://arbetsformedlingen.se/for-arbetssokande' },
+    ],
+  },
+  {
+    nyckel: 'afterId',
+    punkter: [
+      { id: 'idkort', url: 'https://www.skatteverket.se/privat/folkbokforing' },
+      { id: 'bankkonto', url: 'https://www.arn.se/' },
+      { id: 'bankid' },
+      { id: 'forsakringskassan', url: 'https://www.forsakringskassan.se/' },
+      { id: 'vardcentral', url: 'https://www.1177.se/' },
+      { id: 'sfi', url: 'https://www.skolverket.se/undervisning/komvux/komvux-i-svenska-for-invandrare-sfi' },
+    ],
+  },
+  {
+    nyckel: 'work',
+    punkter: [
+      { id: 'validering', url: 'https://www.uhr.se/bedomning-av-utlandsk-utbildning/' },
+      { id: 'akassa' },
+      { id: 'skatt', url: 'https://www.skatteverket.se/' },
+    ],
+  },
+  {
+    nyckel: 'later',
+    punkter: [
+      { id: 'korkort', url: 'https://www.transportstyrelsen.se/sv/korkort/' },
+      { id: 'pension', url: 'https://www.pensionsmyndigheten.se/' },
+    ],
+  },
+]
+
+const ALLA_PUNKTER = KATEGORIER.flatMap(k => k.punkter)
+
+interface SparadPunkt {
   id: string
   completed: boolean
   completedAt?: string
@@ -40,535 +103,320 @@ interface ItemProgress {
   targetDate?: string
 }
 
-const CHECKLIST_CATEGORIES = [
-  {
-    id: 'before-arrival',
-    title: 'Före ankomst',
-    items: [
-      {
-        id: 'visa',
-        title: 'Arbetstillstånd',
-        description: 'Ansök om och få godkänt arbetstillstånd innan du reser till Sverige.',
-        timeframe: '1-4 månader före',
-        priority: 'critical',
-        links: [{ label: 'Migrationsverket', url: 'https://www.migrationsverket.se' }],
-      },
-      {
-        id: 'housing-search',
-        title: 'Börja leta bostad',
-        description: 'Bostadsmarknaden i Sverige är svår. Börja leta i god tid.',
-        timeframe: '2-3 månader före',
-        priority: 'important',
-        links: [{ label: 'Blocket Bostad', url: 'https://www.blocket.se/bostad' }],
-      },
-      {
-        id: 'job-contract',
-        title: 'Signera anställningsavtal',
-        description: 'Säkerställ att alla villkor är tydliga och skriftliga.',
-        timeframe: 'Innan ansökan',
-        priority: 'critical',
-      },
-    ] as ChecklistItem[],
-  },
-  {
-    id: 'first-week',
-    title: 'Första veckan',
-    items: [
-      {
-        id: 'personnummer',
-        title: 'Ansök om personnummer',
-        description: 'Registrera dig hos Skatteverket för att få svenskt personnummer. Krävs för det mesta.',
-        timeframe: 'Dag 1-2',
-        priority: 'critical',
-        links: [{ label: 'Skatteverket', url: 'https://www.skatteverket.se/privat/folkbokforing/flyttatillsverige.4.76a43be412206334b89800052051.html' }],
-      },
-      {
-        id: 'id-card',
-        title: 'ID-kort',
-        description: 'Boka tid för ID-kort hos Skatteverket (när personnummer är klart).',
-        timeframe: 'Efter personnummer',
-        priority: 'important',
-      },
-      {
-        id: 'bank-account',
-        title: 'Öppna bankkonto',
-        description: 'Behövs för lön. Vissa banker kräver personnummer, andra accepterar samordningsnummer.',
-        timeframe: 'Vecka 1',
-        priority: 'critical',
-        links: [
-          { label: 'Nordea', url: 'https://www.nordea.se' },
-          { label: 'Handelsbanken', url: 'https://www.handelsbanken.se' },
-        ],
-      },
-      {
-        id: 'phone',
-        title: 'Svenskt mobilnummer',
-        description: 'Skaffa svenskt SIM-kort. Behövs för BankID och många tjänster.',
-        timeframe: 'Dag 1',
-        priority: 'important',
-      },
-    ] as ChecklistItem[],
-  },
-  {
-    id: 'first-month',
-    title: 'Första månaden',
-    items: [
-      {
-        id: 'bankid',
-        title: 'BankID',
-        description: 'Digital identifiering för nästan allt i Sverige. Kräver personnummer och bankkonto.',
-        timeframe: '2-4 veckor',
-        priority: 'critical',
-      },
-      {
-        id: 'forsakringskassan',
-        title: 'Registrera hos Försäkringskassan',
-        description: 'För socialförsäkring, föräldrapenning, etc.',
-        timeframe: 'Vecka 2-4',
-        priority: 'important',
-        links: [{ label: 'Försäkringskassan', url: 'https://www.forsakringskassan.se' }],
-      },
-      {
-        id: 'healthcare',
-        title: 'Registrera hos vårdcentral',
-        description: 'Välj en vårdcentral i ditt område för primärvård.',
-        timeframe: 'Vecka 2-4',
-        priority: 'important',
-        links: [{ label: '1177 Vårdguiden', url: 'https://www.1177.se' }],
-      },
-      {
-        id: 'sfi',
-        title: 'Anmäl dig till SFI',
-        description: 'Svenska för invandrare - gratis svenskundervisning.',
-        timeframe: 'Vecka 1-4',
-        priority: 'recommended',
-      },
-    ] as ChecklistItem[],
-  },
-  {
-    id: 'settling-in',
-    title: 'Etablering (1-3 månader)',
-    items: [
-      {
-        id: 'drivers-license',
-        title: 'Körkortsfrågor',
-        description: 'Kontrollera om ditt körkort gäller i Sverige eller behöver bytas.',
-        timeframe: '1-3 månader',
-        priority: 'recommended',
-        links: [{ label: 'Transportstyrelsen', url: 'https://www.transportstyrelsen.se' }],
-      },
-      {
-        id: 'pension',
-        title: 'Pensionsfrågor',
-        description: 'Förstå det svenska pensionssystemet och dina rättigheter.',
-        timeframe: '1-3 månader',
-        priority: 'recommended',
-        links: [{ label: 'Pensionsmyndigheten', url: 'https://www.pensionsmyndigheten.se' }],
-      },
-      {
-        id: 'tax-return',
-        title: 'Förstå skattedeklaration',
-        description: 'Lär dig om svensk skatt och SINK-skatt för nyanlända.',
-        timeframe: 'Inom 3 månader',
-        priority: 'important',
-      },
-    ] as ChecklistItem[],
-  },
-]
-
 export default function IntegrationTab() {
-  const { t } = useTranslation()
-  const [itemProgress, setItemProgress] = useState<Record<string, ItemProgress>>({})
-  const [expandedItem, setExpandedItem] = useState<string | null>(null)
-  const [editingNotes, setEditingNotes] = useState<string | null>(null)
-  const [tempNotes, setTempNotes] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
-  const [, setIsLoading] = useState(true)
+  const { t, i18n } = useTranslation()
+  const [sparat, setSparat] = useState<Record<string, SparadPunkt>>({})
+  const [laddar, setLaddar] = useState(true)
+  const [sparfel, setSparfel] = useState(false)
+  const [oppen, setOppen] = useState<string | null>(null)
+  const [redigerar, setRedigerar] = useState<string | null>(null)
+  const [utkast, setUtkast] = useState('')
 
-  // Load from cloud storage
   useEffect(() => {
-    async function loadProgress() {
-      setIsLoading(true)
-      try {
-        const data = await integrationChecklistApi.getProgress()
-        if (data?.items) {
-          setItemProgress(data.items)
-        }
-      } catch (error) {
-        console.error('[IntegrationTab] Failed to load progress:', error)
-        // Fallback to localStorage
-        const saved = localStorage.getItem('integration-checklist')
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          // Convert old format to new format
-          const converted: Record<string, ItemProgress> = {}
-          Object.entries(parsed).forEach(([id, completed]) => {
-            converted[id] = { id, completed: !!completed }
-          })
-          setItemProgress(converted)
-        }
-      } finally {
-        setIsLoading(false)
+    let avbruten = false
+    integrationChecklistApi
+      .getProgress()
+      .then((data) => {
+        if (avbruten) return
+        setSparat(data?.items ?? {})
+      })
+      .catch((error: unknown) => {
+        logger.warn('Kunde inte läsa integrationschecklistan', { error })
+      })
+      .finally(() => {
+        if (!avbruten) setLaddar(false)
+      })
+    return () => { avbruten = true }
+  }, [])
+
+  /** Skriver hela mängden och rullar tillbaka om molnet säger nej. */
+  const spara = async (nasta: Record<string, SparadPunkt>) => {
+    const forra = sparat
+    setSparat(nasta)
+    setSparfel(false)
+    try {
+      const ok = await integrationChecklistApi.saveProgress(nasta)
+      if (!ok) {
+        setSparat(forra)
+        setSparfel(true)
       }
+    } catch (error) {
+      logger.warn('Kunde inte spara integrationschecklistan', { error })
+      setSparat(forra)
+      setSparfel(true)
     }
-    loadProgress()
-  }, [])
+  }
 
-  const toggleItem = useCallback(async (id: string) => {
-    const currentState = itemProgress[id]?.completed || false
-    const newCompleted = !currentState
-
-    // Optimistic update
-    setItemProgress(prev => ({
-      ...prev,
+  const vaxlaKryss = (id: string) => {
+    const klar = !sparat[id]?.completed
+    void spara({
+      ...sparat,
       [id]: {
-        ...prev[id],
+        ...sparat[id],
         id,
-        completed: newCompleted,
-        completedAt: newCompleted ? new Date().toISOString() : undefined,
-      }
-    }))
+        completed: klar,
+        completedAt: klar ? new Date().toISOString() : undefined,
+      },
+    })
+  }
 
-    // Sync to cloud
-    await integrationChecklistApi.toggleItem(id, newCompleted)
-  }, [itemProgress])
+  const sparaAnteckning = (id: string, text: string) => {
+    void spara({
+      ...sparat,
+      [id]: { ...sparat[id], id, completed: sparat[id]?.completed ?? false, notes: text || undefined },
+    })
+    setRedigerar(null)
+  }
 
-  const saveNotes = useCallback(async (id: string) => {
-    if (!tempNotes.trim()) return
-    setIsSaving(true)
+  const sattDatum = (id: string, datum: string) => {
+    void spara({
+      ...sparat,
+      [id]: { ...sparat[id], id, completed: sparat[id]?.completed ?? false, targetDate: datum || undefined },
+    })
+  }
 
-    setItemProgress(prev => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        id,
-        completed: prev[id]?.completed || false,
-        notes: tempNotes,
-      }
-    }))
+  // Räknar bara punkter som finns i dagens lista. Tidigare räknades allt som
+  // låg i molnet, så en borttagen punkt kunde ge "15/14 (107 %)".
+  const antalKlara = useMemo(
+    () => ALLA_PUNKTER.filter(p => sparat[p.id]?.completed).length,
+    [sparat],
+  )
 
-    await integrationChecklistApi.updateItemNotes(id, tempNotes)
-    setEditingNotes(null)
-    setTempNotes('')
-    setIsSaving(false)
-  }, [tempNotes])
-
-  const setTargetDate = useCallback(async (id: string, date: string) => {
-    setItemProgress(prev => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        id,
-        completed: prev[id]?.completed || false,
-        targetDate: date,
-      }
-    }))
-
-    await integrationChecklistApi.setTargetDate(id, date)
-  }, [])
-
-  const exportChecklist = useCallback(async () => {
-    const data = await integrationChecklistApi.exportProgress()
-    const blob = new Blob([data], { type: 'application/json' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `integrations-checklista-${new Date().toISOString().split('T')[0]}.json`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
-  }, [])
-
-  const totalItems = CHECKLIST_CATEGORIES.flatMap(c => c.items).length
-  const completedItems = Object.values(itemProgress).filter(p => p.completed).length
-  const progress = Math.round((completedItems / totalItems) * 100)
+  const sprak = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Users className="w-6 h-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('international.integration.title')}</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('international.integration.description')}
+      <p className="text-sm text-stone-700 dark:text-stone-300">
+        {t('international.integration.description')}
+      </p>
+
+      {/* Läs det här först — beroendena, överst i stället för längst ned */}
+      <Card className="p-4 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
+        <div className="flex items-start gap-3">
+          <Info className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0 mt-0.5" aria-hidden="true" />
+          <div>
+            <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
+              {t('international.integration.firstNote.title')}
+            </h2>
+            <p className="text-sm text-stone-700 dark:text-stone-200">
+              {t('international.integration.firstNote.body')}
             </p>
           </div>
         </div>
-
-        {/* Progress bar */}
-        <div className="mt-4 pt-4 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('international.integration.yourProgress')}</span>
-            <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedItems}/{totalItems} ({progress}%)</span>
-          </div>
-          <div className="h-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-[var(--c-solid)] rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-            />
-          </div>
-        </div>
-
-        {/* Export button */}
-        <div className="mt-4 flex justify-end">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={exportChecklist}
-            className="gap-2 text-[var(--c-text)] dark:text-[var(--c-text)] border-[var(--c-accent)] dark:border-[var(--c-accent)]/40"
-          >
-            <Download className="w-4 h-4" />
-            {t('international.integration.exportChecklist')}
-          </Button>
-        </div>
       </Card>
 
-      {/* Checklist categories */}
-      {CHECKLIST_CATEGORIES.map((category) => (
-        <Card key={category.id} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-            {category.title}
-          </h3>
+      {/* Framsteg — tre lägen. Laddning är inte tomhet, och en nolla är ett
+          omdöme snarare än en uppgift (DESIGN.md §3 och §7). */}
+      <div role="status" aria-live="polite">
+        {laddar ? (
+          <p className="text-sm text-stone-600 dark:text-stone-300">
+            {t('international.integration.loading')}
+          </p>
+        ) : (
+          <>
+            <p className="text-sm text-stone-700 dark:text-stone-200">
+              {antalKlara === 0
+                ? t('international.integration.emptyHint')
+                : `${t('international.integration.yourProgress')} — ${t('international.integration.progressCount', { done: antalKlara, total: ALLA_PUNKTER.length })}`}
+            </p>
+            <div
+              className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mt-2"
+              role="progressbar"
+              aria-valuenow={antalKlara}
+              aria-valuemin={0}
+              aria-valuemax={ALLA_PUNKTER.length}
+              aria-label={t('international.integration.yourProgress')}
+            >
+              <div
+                className="h-full bg-[var(--c-solid)] transition-all"
+                style={{ width: `${(antalKlara / ALLA_PUNKTER.length) * 100}%` }}
+              />
+            </div>
+          </>
+        )}
+      </div>
 
-          <div className="space-y-3">
-            {category.items.map((item) => {
-              const itemState = itemProgress[item.id]
-              const isCompleted = itemState?.completed || false
-              const isExpanded = expandedItem === item.id
+      {sparfel && (
+        <Card className="p-3 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600">
+          <p className="flex items-start gap-2 text-sm text-stone-800 dark:text-stone-100">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+            {t('international.integration.saveFailed')}
+          </p>
+        </Card>
+      )}
+
+      {KATEGORIER.map((kategori) => (
+        <section key={kategori.nyckel} className="space-y-3">
+          <h2 className="font-semibold text-stone-900 dark:text-stone-100">
+            {t(`international.integration.categories.${kategori.nyckel}`)}
+          </h2>
+
+          <ul className="space-y-3">
+            {kategori.punkter.map((punkt) => {
+              const bas = `international.integration.items.${punkt.id}`
+              const titel = t(`${bas}.title`)
+              const klar = sparat[punkt.id]?.completed ?? false
+              const utfalld = oppen === punkt.id
+              const post = sparat[punkt.id]
 
               return (
-                <div
-                  key={item.id}
-                  className={cn(
-                    "rounded-xl border transition-all overflow-hidden",
-                    isCompleted
-                      ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
-                      : item.priority === 'critical'
-                      ? "bg-rose-50/50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800"
-                      : "bg-stone-50 dark:bg-stone-700 border-stone-100 dark:border-stone-600"
-                  )}
-                >
-                  {/* Main item row */}
-                  <div
-                    className="p-4 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
-                    onClick={() => toggleItem(item.id)}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5">
-                        {isCompleted ? (
-                          <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                        ) : (
-                          <Circle className="w-5 h-5 text-stone-300 dark:text-stone-500" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className={cn(
-                            "font-medium",
-                            isCompleted ? "text-emerald-800 dark:text-emerald-200 line-through" : "text-gray-800 dark:text-gray-100"
-                          )}>
-                            {item.title}
-                          </h4>
-                          {item.priority === 'critical' && !isCompleted && (
-                            <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs rounded-full font-medium">
-                              Kritiskt
-                            </span>
-                          )}
-                          {itemState?.notes && (
-                            <span className="px-2 py-0.5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] text-xs rounded-full">
-                              <MessageSquare className="w-3 h-3 inline mr-1" />
-                              Anteckning
-                            </span>
-                          )}
-                          {itemState?.targetDate && (
-                            <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs rounded-full">
-                              <Calendar className="w-3 h-3 inline mr-1" />
-                              {new Date(itemState.targetDate).toLocaleDateString('sv-SE')}
-                            </span>
-                          )}
-                        </div>
-                        <p className={cn(
-                          "text-sm mt-1",
-                          isCompleted ? "text-emerald-600 dark:text-emerald-300" : "text-gray-600 dark:text-gray-300"
-                        )}>
-                          {item.description}
-                        </p>
-                        <div className="flex items-center gap-4 mt-2">
-                          <span className="text-xs text-gray-600 dark:text-gray-400">
-                            <Clock className="w-3 h-3 inline mr-1" />
-                            {item.timeframe}
-                          </span>
-                          {item.links && (
-                            <div className="flex gap-2 flex-wrap">
-                              {item.links.map((link) => (
-                                <a
-                                  key={link.url}
-                                  href={link.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  onClick={(e) => e.stopPropagation()}
-                                  className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] flex items-center gap-1"
-                                >
-                                  {link.label}
-                                  <ExternalLink className="w-3 h-3" />
-                                </a>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                <li key={punkt.id}>
+                  <Card className="p-0 overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+                    <div className="flex items-start gap-2 p-4">
+                      {/* Kryssrutan är en riktig kontroll, och bara den är
+                          klickyta — tidigare togglade hela kortet, så ett
+                          klick i brödtexten bockade av punkten av misstag. */}
                       <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setExpandedItem(isExpanded ? null : item.id)
-                        }}
-                        className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
-                        aria-expanded={isExpanded}
-                        aria-label={t('common.showMore', 'Visa mer')}
+                        role="checkbox"
+                        aria-checked={klar}
+                        onClick={() => vaxlaKryss(punkt.id)}
+                        className="flex items-start gap-3 text-left flex-1 min-h-[44px]"
                       >
-                        {isExpanded ? (
-                          <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        )}
+                        <span
+                          className={cn(
+                            'w-5 h-5 rounded border-2 shrink-0 mt-0.5 flex items-center justify-center',
+                            klar
+                              ? 'bg-[var(--c-solid)] border-[var(--c-solid)]'
+                              : 'border-stone-400 dark:border-stone-500',
+                          )}
+                          aria-hidden="true"
+                        >
+                          {klar && <Check className="w-3.5 h-3.5 text-white" />}
+                        </span>
+                        <span>
+                          <span className={cn(
+                            'block font-medium text-stone-900 dark:text-stone-100',
+                            klar && 'line-through text-stone-600 dark:text-stone-400',
+                          )}>
+                            {titel}
+                          </span>
+                          {punkt.endastTredjeland && (
+                            <span className="block text-xs text-stone-600 dark:text-stone-400 mt-0.5">
+                              {t('international.integration.onlyThirdCountry')}
+                            </span>
+                          )}
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => setOppen(utfalld ? null : punkt.id)}
+                        aria-expanded={utfalld}
+                        aria-controls={`punkt-${punkt.id}`}
+                        aria-label={utfalld
+                          ? t('international.integration.hideDetails', { title: titel })
+                          : t('international.integration.showDetails', { title: titel })}
+                        className="p-2 shrink-0 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                      >
+                        {utfalld
+                          ? <ChevronUp className="w-5 h-5 text-stone-500" aria-hidden="true" />
+                          : <ChevronDown className="w-5 h-5 text-stone-500" aria-hidden="true" />}
                       </button>
                     </div>
-                  </div>
 
-                  {/* Expanded details */}
-                  <AnimatePresence>
-                    {isExpanded && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-inherit"
-                      >
-                        <div className="p-4 space-y-4 bg-white/50 dark:bg-black/20">
-                          {/* Target date */}
-                          <div>
-                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                              <Calendar className="w-3 h-3 inline mr-1" />
-                              Måldatum
+                    <div id={`punkt-${punkt.id}`} hidden={!utfalld} className="px-4 pb-4 space-y-4">
+                      <p className="text-sm text-stone-700 dark:text-stone-200">
+                        {t(`${bas}.body`)}
+                      </p>
+
+                      {punkt.url && (
+                        <a
+                          href={punkt.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline"
+                        >
+                          {t(`${bas}.linkLabel`)}
+                          <ExternalLink className="w-3 h-3" aria-hidden="true" />
+                          <span className="sr-only">{t('international.opensInNewTab')}</span>
+                        </a>
+                      )}
+
+                      <div>
+                        <label
+                          htmlFor={`datum-${punkt.id}`}
+                          className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1"
+                        >
+                          {t('international.integration.dateLabel')}
+                        </label>
+                        <input
+                          id={`datum-${punkt.id}`}
+                          type="date"
+                          value={post?.targetDate ?? ''}
+                          onChange={(e) => sattDatum(punkt.id, e.target.value)}
+                          className="px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
+                        />
+                      </div>
+
+                      <div>
+                        {redigerar === punkt.id ? (
+                          <>
+                            <label
+                              htmlFor={`anteckning-${punkt.id}`}
+                              className="block text-xs font-medium text-stone-700 dark:text-stone-300 mb-1"
+                            >
+                              {t('international.integration.notesLabel')}
                             </label>
-                            <Input
-                              type="date"
-                              value={itemState?.targetDate?.split('T')[0] || ''}
-                              onChange={(e) => setTargetDate(item.id, e.target.value)}
-                              className="max-w-[200px] text-sm"
+                            <textarea
+                              id={`anteckning-${punkt.id}`}
+                              rows={3}
+                              value={utkast}
+                              onChange={(e) => setUtkast(e.target.value)}
+                              placeholder={t('international.integration.notesPlaceholder')}
+                              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
                             />
-                          </div>
-
-                          {/* Notes */}
-                          <div>
-                            <label htmlFor={`integration-notes-${item.id}`} className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                              <MessageSquare className="w-3 h-3 inline mr-1" aria-hidden="true" />
-                              Anteckningar
-                            </label>
-                            {editingNotes === item.id ? (
-                              <div className="space-y-2">
-                                <textarea
-                                  id={`integration-notes-${item.id}`}
-                                  value={tempNotes}
-                                  onChange={(e) => setTempNotes(e.target.value)}
-                                  placeholder="Lägg till anteckningar..."
-                                  className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-stone-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[var(--c-solid)]"
-                                  rows={3}
-                                />
-                                <div className="flex gap-2">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => saveNotes(item.id)}
-                                    disabled={isSaving}
-                                    className="gap-1"
-                                  >
-                                    <Save className="w-3 h-3" />
-                                    {isSaving ? 'Sparar...' : 'Spara'}
-                                  </Button>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    onClick={() => {
-                                      setEditingNotes(null)
-                                      setTempNotes('')
-                                    }}
-                                  >
-                                    Avbryt
-                                  </Button>
-                                </div>
-                              </div>
-                            ) : (
-                              <div>
-                                {itemState?.notes ? (
-                                  <div
-                                    className="p-2 bg-white dark:bg-stone-800 rounded-lg text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-gray-50 dark:hover:bg-stone-700"
-                                    onClick={() => {
-                                      setEditingNotes(item.id)
-                                      setTempNotes(itemState.notes || '')
-                                    }}
-                                  >
-                                    {itemState.notes}
-                                  </div>
-                                ) : (
-                                  <button
-                                    onClick={() => {
-                                      setEditingNotes(item.id)
-                                      setTempNotes('')
-                                    }}
-                                    className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]"
-                                  >
-                                    + Lägg till anteckning
-                                  </button>
-                                )}
-                              </div>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {/* Tom text sparar också — det är så man raderar
+                                  en anteckning. Tidigare returnerade Spara utan
+                                  att göra någonting alls. */}
+                              <Button size="sm" onClick={() => sparaAnteckning(punkt.id, utkast.trim())}>
+                                {utkast.trim()
+                                  ? t('international.integration.notesSave')
+                                  : t('international.integration.notesClear')}
+                              </Button>
+                              <Button size="sm" variant="ghost" onClick={() => setRedigerar(null)}>
+                                {t('international.integration.notesCancel')}
+                              </Button>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {post?.notes && (
+                              <p className="text-sm text-stone-700 dark:text-stone-200 bg-stone-50 dark:bg-stone-700 rounded-lg p-3 mb-2 whitespace-pre-wrap">
+                                {post.notes}
+                              </p>
                             )}
-                          </div>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => { setRedigerar(punkt.id); setUtkast(post?.notes ?? '') }}
+                            >
+                              {post?.notes
+                                ? t('international.integration.notesLabel')
+                                : t('international.integration.notesAdd')}
+                            </Button>
+                          </>
+                        )}
+                      </div>
 
-                          {/* Completed timestamp */}
-                          {isCompleted && itemState?.completedAt && (
-                            <p className="text-xs text-emerald-600 dark:text-emerald-400">
-                              <CheckCircle className="w-3 h-3 inline mr-1" />
-                              Avklarat {new Date(itemState.completedAt).toLocaleDateString('sv-SE', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric'
-                              })}
-                            </p>
-                          )}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
+                      {klar && post?.completedAt && (
+                        <p className="text-xs text-stone-600 dark:text-stone-400">
+                          {t('international.integration.doneAt')}{' '}
+                          {new Date(post.completedAt).toLocaleDateString(sprak)}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
+                </li>
               )
             })}
-          </div>
-        </Card>
+          </ul>
+        </section>
       ))}
 
-      {/* Tips */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-        <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
-          <div>
-            <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">Bra att veta</p>
-            <ul className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-2 space-y-1">
-              <li>- Personnummer kan ta 2-8 veckor att få</li>
-              <li>- BankID kräver svenskt personnummer och bankkonto</li>
-              <li>- Många tjänster fungerar inte utan BankID</li>
-              <li>- Spara alla kvitton och dokument digitalt</li>
-            </ul>
-          </div>
-        </div>
-      </Card>
+      <p className="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-400">
+        <Info className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+        {t('international.checkedNote', { date: KONTROLLERAD })}
+      </p>
     </div>
   )
 }

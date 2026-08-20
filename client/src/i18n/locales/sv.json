@@ -3971,37 +3971,295 @@
     }
   },
   "international": {
-    "editorialSpot": "Visum, integration och språk — det du behöver för att jobba i ett nytt land.",
-    "integration": {
-      "title": "Integrationschecklista",
-      "description": "Steg-för-steg guide för att etablera dig i Sverige. Markera punkter som klara för att spara din progress.",
-      "yourProgress": "Din framsteg",
-      "exportChecklist": "Exportera checklista"
-    },
-    "language": {
-      "title": "Svenska för arbetslivet",
-      "description": "Resurser och tips för att lära dig svenska. Grundläggande svenska uppskattas mycket på svenska arbetsplatser."
-    },
-    "visa": {
-      "title": "Visum & Arbetstillstånd",
-      "description": "Guide till olika typer av arbetstillstånd i Sverige. Klicka på varje typ för att se krav och processinformation."
-    },
-    "pageTitle": "Internationell Guide",
-    "pageDescription": "Allt du behöver veta om att arbeta i Sverige",
+    "pageTitle": "Ny i Sverige",
+    "pageDescription": "Det som behövs för att komma i arbete här — papperen, myndigheterna och svenskan.",
     "tabs": {
-      "visa": {
-        "label": "Visum & Arbetstillstånd",
-        "description": "Guide för arbetstillstånd"
+      "validation": {
+        "label": "Din utbildning"
       },
       "integration": {
-        "label": "Integration",
-        "description": "Checklista för etablering"
+        "label": "Första tiden"
       },
       "language": {
-        "label": "Språk",
-        "description": "Svenska för arbetslivet"
+        "label": "Svenska"
+      }
+    },
+    "checkedNote": "Uppgifterna kontrollerades mot myndigheternas webbplatser {{date}}. Reglerna ändras — kontrollera alltid hos myndigheten innan du fattar ett beslut.",
+    "opensInNewTab": "Öppnas i en ny flik",
+    "validation": {
+      "title": "Räknas det du redan kan?",
+      "description": "Har du utbildning eller ett yrke från ett annat land finns det två frågor att reda ut: vad din utbildning motsvarar här, och om ditt yrke kräver ett svenskt tillstånd.",
+      "uhr": {
+        "title": "Få din utbildning bedömd",
+        "body": "Universitets- och högskolerådet (UHR) bedömer utbildning från andra länder och skriver ett utlåtande om vad den motsvarar i Sverige. Det är kostnadsfritt, och utlåtandet kan du bifoga när du söker jobb eller utbildning. UHR bedömer gymnasieutbildning, yrkesutbildning efter gymnasiet och högskoleutbildning.",
+        "link": "UHR — bedömning av utländsk utbildning",
+        "tip": "Har du inte kvar dina betyg? Ansök ändå — UHR beskriver på sin sida vad som går att göra när dokument saknas."
       },
-      "newBadge": "Ny!"
+      "regulated": {
+        "title": "Kräver ditt yrke legitimation?",
+        "body": "En del yrken får du inte arbeta i utan ett svenskt tillstånd, hur lång erfarenhet du än har. Det gäller bland annat många yrken i vården och läraryrket. Då är det yrkesmyndigheten som prövar din utbildning — inte UHR.",
+        "health": "Vård och omsorg: Socialstyrelsen prövar legitimation och skyddade yrkestitlar. Vägen ser olika ut beroende på om du är utbildad inom eller utanför EU/EES, och kravet på svenska är högt — nivån står på deras sida.",
+        "teacher": "Skola och förskola: Skolverket prövar lärar- och förskollärarlegitimation.",
+        "other": "Är du osäker på om ditt yrke är reglerat — börja med UHR och fråga Arbetsförmedlingen. De vet vem som prövar vad.",
+        "healthLink": "Socialstyrelsen — legitimation",
+        "teacherLink": "Skolverket — legitimation"
+      },
+      "permit": {
+        "title": "Behöver du arbetstillstånd?",
+        "eu": "Är du medborgare i ett EU/EES-land eller i Norden behöver du inget arbetstillstånd. Du får arbeta direkt, och du ska inte kontakta Migrationsverket — gå vidare till nästa flik.",
+        "thirdCountry": "Är du medborgare i ett land utanför EU/EES krävs oftast arbetstillstånd, och huvudregeln är att du ansöker innan du reser hit. Bor du redan här med uppehållstillstånd av något annat skäl kan andra regler gälla.",
+        "noNumbers": "Vi anger medvetet inga belopp eller handläggningstider här. De ändras varje år, och en gammal siffra på den här sidan kan kosta dig ett tillstånd. Migrationsverket har alltid det som gäller nu.",
+        "linkPermit": "Migrationsverket — arbetstillstånd",
+        "linkEu": "Migrationsverket — EU/EES-medborgare",
+        "linkException": "Migrationsverket — vem får arbeta utan tillstånd"
+      },
+      "next": {
+        "title": "Sedan då?",
+        "body": "När du vet vad din utbildning motsvarar: skriv in det i ditt CV med den svenska motsvarigheten inom parentes, så förstår en svensk arbetsgivare vad hen läser.",
+        "toCv": "Öppna CV-byggaren",
+        "toJobSearch": "Sök lediga jobb"
+      }
+    },
+    "integration": {
+      "title": "Din första tid i Sverige",
+      "description": "Ordningen spelar roll: det mesta hänger på att du först blir folkbokförd. Kryssa av det du gjort — det sparas.",
+      "yourProgress": "Så här långt har du kommit",
+      "emptyHint": "Börja med det första steget när du orkar. Inget måste göras i dag.",
+      "progressCount": "{{done}} av {{total}} avklarade",
+      "loading": "Hämtar var du är …",
+      "saveFailed": "Krysset kunde inte sparas just nu. Prova igen om en stund.",
+      "onlyThirdCountry": "Gäller dig som inte är EU/EES- eller nordisk medborgare",
+      "firstNote": {
+        "title": "Läs det här först",
+        "body": "Nästan allt annat kräver att du är folkbokförd och har ett personnummer. Det tar tid — räkna med flera veckor. Under tiden går det inte att skaffa BankID, och många tjänster kräver BankID. Det är inte du som gör fel; det är så systemet hänger ihop."
+      },
+      "categories": {
+        "start": "Börja här",
+        "afterId": "När du har personnummer",
+        "work": "När du börjar söka jobb",
+        "later": "Längre fram"
+      },
+      "notesLabel": "Egna anteckningar",
+      "notesPlaceholder": "Skriv det du vill komma ihåg — bokade tider, vad du fick för besked …",
+      "notesSave": "Spara",
+      "notesClear": "Ta bort anteckningen",
+      "notesCancel": "Avbryt",
+      "notesAdd": "Lägg till en anteckning",
+      "dateLabel": "När vill du ha gjort det?",
+      "showDetails": "Visa mer om {{title}}",
+      "hideDetails": "Dölj {{title}}",
+      "doneAt": "Avklarat",
+      "items": {
+        "folkbokforing": {
+          "title": "Anmäl att du flyttat till Sverige",
+          "body": "Du ansöker inte om personnummer — du anmäler din flytt till Skatteverket och blir folkbokförd. Personnumret kommer med folkbokföringen. Det förutsätter att du planerar att bo här i minst ett år. Anmälan gör du i Skatteverkets e-tjänst, tidigast 14 dagar före flytten, och du måste sedan besöka ett servicekontor personligen för att styrka vem du är. Boka tid i förväg.",
+          "linkLabel": "Skatteverket — flytta till Sverige"
+        },
+        "samordningsnummer": {
+          "title": "Ska du stanna kortare än ett år?",
+          "body": "Då får du inte personnummer, men kan i stället få ett samordningsnummer. Det söks separat, och en del tjänster fungerar sämre med det. Skatteverket förklarar skillnaden.",
+          "linkLabel": "Skatteverket — folkbokföring"
+        },
+        "idkort": {
+          "title": "Skaffa id-kort",
+          "body": "Skatteverkets id-kort kräver att du är folkbokförd. Avgiften ska vara betald innan du bokar tid, och du tar med kvittot till besöket. Du behöver också kunna styrka din identitet — antingen med en godkänd id-handling eller med en person som intygar vem du är.",
+          "linkLabel": "Skatteverket — id-kort"
+        },
+        "bankkonto": {
+          "title": "Öppna ett bankkonto",
+          "body": "Du har rätt till ett betalkonto med grundläggande funktioner om du är lagligen bosatt inom EES. Att du saknar personnummer är i sig inte ett skäl för banken att säga nej. Får du ändå nej ska du få det skriftligt — och du kan då vända dig till bankens klagomålsansvarige och vidare till Allmänna reklamationsnämnden.",
+          "linkLabel": "Allmänna reklamationsnämnden"
+        },
+        "bankid": {
+          "title": "Skaffa BankID",
+          "body": "BankID beställer du hos din bank, så det förutsätter att du har ett konto. Väldigt mycket i Sverige kräver BankID. Saknar du det finns Freja som alternativ hos vissa myndigheter — fråga på plats.",
+          "linkLabel": ""
+        },
+        "forsakringskassan": {
+          "title": "Anmäl din flytt till Försäkringskassan",
+          "body": "Du registrerar dig inte generellt — du anmäler att du flyttat hit. Det behövs framför allt om du flyttar med barn, vill ha EU-kort eller ska ansöka om en ersättning. Om du är försäkrad avgörs av att du bor eller arbetar här.",
+          "linkLabel": "Försäkringskassan"
+        },
+        "vardcentral": {
+          "title": "Välj vårdcentral",
+          "body": "Du väljer själv vilken vårdcentral du vill tillhöra. Det är dit du ringer när du blir sjuk, och de hjälper dig vidare vid behov.",
+          "linkLabel": "1177 Vårdguiden"
+        },
+        "sfi": {
+          "title": "Anmäl dig till svenska för invandrare (sfi)",
+          "body": "Sfi är avgiftsfritt för dig som fyllt 16 år, bor i kommunen och inte redan kan grundläggande svenska. Du anmäler dig hos din kommun. När du är folkbokförd ska kommunen kunna erbjuda dig plats inom tre månader.",
+          "linkLabel": "Skolverket — om sfi"
+        },
+        "validering": {
+          "title": "Få din utbildning bedömd",
+          "body": "UHR skriver ett kostnadsfritt utlåtande om vad din utbildning motsvarar i Sverige. Det är ofta det som gör att en arbetsgivare förstår vad du kan.",
+          "linkLabel": "UHR — bedömning av utländsk utbildning"
+        },
+        "arbetsformedlingen": {
+          "title": "Skriv in dig på Arbetsförmedlingen",
+          "body": "Skriv in dig så tidigt du kan. Det påverkar vilket stöd och vilken ersättning du kan få, och en del insatser kräver att du varit inskriven en tid.",
+          "linkLabel": "Arbetsförmedlingen"
+        },
+        "akassa": {
+          "title": "Gå med i en a-kassa",
+          "body": "A-kassan är frivillig och du betalar en avgift varje månad. Ersättningen bygger på hur länge du varit medlem och hur mycket du arbetat — därför lönar det sig att gå med tidigt, även om du inte behöver den nu.",
+          "linkLabel": ""
+        },
+        "korkort": {
+          "title": "Gäller ditt körkort här?",
+          "body": "Körkort från EU/EES gäller i Sverige. Är ditt körkort från ett annat land gäller andra regler, och det finns tidsgränser. Transportstyrelsen har vad som gäller för ditt land.",
+          "linkLabel": "Transportstyrelsen — körkort"
+        },
+        "skatt": {
+          "title": "Kolla din skattetabell",
+          "body": "När du fått jobb dras skatt enligt en tabell som beror på var du bor. Stämmer inte avdraget kan du ansöka om jämkning hos Skatteverket, så du inte betalar för mycket eller för lite under året.",
+          "linkLabel": "Skatteverket"
+        },
+        "pension": {
+          "title": "Din pension när du flyttat hit",
+          "body": "Har du arbetat i ett annat land kan du ha tjänat in pension där. Pensionsmyndigheten kan berätta vad som gäller mellan Sverige och det landet.",
+          "linkLabel": "Pensionsmyndigheten"
+        }
+      }
+    },
+    "language": {
+      "title": "Svenska",
+      "description": "Du behöver inte vänta tills svenskan sitter för att söka jobb. Men den öppnar dörrar, och här är vägarna dit.",
+      "levelsTitle": "Hur bra svenska behöver du?",
+      "levelsBody": "Det beror på yrket. I många jobb bestämmer arbetsgivaren, och en fungerande vardagssvenska räcker långt. I några yrken är kravet reglerat — för legitimation i vården ställer Socialstyrelsen krav på hög nivå i svenska.",
+      "sfiTitle": "Sfi har en egen indelning",
+      "sfiBody": "Sfi är uppdelat i fyra kurser (A, B, C och D) och tre studievägar, där studievägen väljs efter din tidigare skolbakgrund. Den indelningen är inte samma sak som den europeiska skalan A1–C2, och det finns ingen officiell översättning mellan dem. Fråga din kommun vilken kurs som passar dig.",
+      "cefrTitle": "Den europeiska skalan (CEFR)",
+      "cefrNote": "Skalan används av många språkkurser och i vissa jobbannonser.",
+      "levels": {
+        "a1": {
+          "name": "A1 — nybörjare",
+          "description": "Enkla fraser och hälsningar"
+        },
+        "a2": {
+          "name": "A2 — grund",
+          "description": "Enkla samtal om vardagliga saker"
+        },
+        "b1": {
+          "name": "B1 — mellannivå",
+          "description": "Klarar samtal på jobbet om ämnet är bekant"
+        },
+        "b2": {
+          "name": "B2 — högre mellannivå",
+          "description": "Följer med i de flesta arbetssituationer"
+        },
+        "c1": {
+          "name": "C1 — avancerad",
+          "description": "Uttrycker dig fritt, även om svåra ämnen"
+        },
+        "c2": {
+          "name": "C2 — nära modersmål",
+          "description": "Förstår i princip allt du hör och läser"
+        }
+      },
+      "resourcesTitle": "Var du kan lära dig",
+      "filterAll": "Allt",
+      "filterFree": "Bara gratis",
+      "filterCourse": "Kurser",
+      "filterSelf": "Öva själv",
+      "resultCount_one": "{{count}} förslag",
+      "resultCount_other": "{{count}} förslag",
+      "free": "Gratis",
+      "paid": "Kostar",
+      "freemium": "Gratis med betaldel",
+      "resources": {
+        "sfi": {
+          "name": "Sfi — svenska för invandrare",
+          "description": "Kommunens svenskundervisning. Avgiftsfri för dig som bor i kommunen, fyllt 16 år och inte redan kan grundläggande svenska. Du anmäler dig hos kommunen."
+        },
+        "utbildningsguiden": {
+          "name": "Utbildningsguiden",
+          "description": "Skolverkets guide där du kan söka vuxenutbildning, inklusive svenska som andraspråk, på din ort."
+        },
+        "folkuniversitetet": {
+          "name": "Folkuniversitetet",
+          "description": "Svenskkurser på kvällar och helger. Kostar pengar — priset står på deras sida."
+        },
+        "klartext": {
+          "name": "Sveriges Radio Klartext",
+          "description": "Dagens nyheter på lätt svenska. Bra att lyssna på varje dag, gratis."
+        },
+        "duolingo": {
+          "name": "Duolingo",
+          "description": "App med korta övningar. Gratis grundversion, betald variant utan reklam."
+        },
+        "swedishpod": {
+          "name": "SwedishPod101",
+          "description": "Poddlektioner för olika nivåer. Delvis gratis, resten kostar."
+        },
+        "tandem": {
+          "name": "Tandem",
+          "description": "Språkutbyte — du övar svenska med någon som vill öva ditt språk. Gratis grundversion."
+        }
+      },
+      "phrasesTitle": "Fraser att ha med sig",
+      "phrasesIntro": "De första är till för när du söker jobb, de sista för när du har fått ett.",
+      "listen": "Lyssna på {{phrase}}",
+      "phrases": {
+        "p1": {
+          "sv": "Hej, jag heter … och jag söker arbete som …",
+          "en": "Hello, my name is … and I am looking for work as a …",
+          "context": "Söka jobb"
+        },
+        "p2": {
+          "sv": "Har ni något ledigt just nu?",
+          "en": "Do you have any openings right now?",
+          "context": "Söka jobb"
+        },
+        "p3": {
+          "sv": "Kan jag lämna mitt CV till någon?",
+          "en": "Can I leave my CV with someone?",
+          "context": "Söka jobb"
+        },
+        "p4": {
+          "sv": "Jag har jobbat med det här i … år.",
+          "en": "I have worked with this for … years.",
+          "context": "Intervju"
+        },
+        "p5": {
+          "sv": "Kan du säga det en gång till, lite långsammare?",
+          "en": "Could you say that again, a little slower?",
+          "context": "Intervju"
+        },
+        "p6": {
+          "sv": "Jag förstår inte riktigt — menar du att …?",
+          "en": "I do not quite understand — do you mean that …?",
+          "context": "Intervju"
+        },
+        "p7": {
+          "sv": "När får jag besked?",
+          "en": "When will I hear from you?",
+          "context": "Intervju"
+        },
+        "p8": {
+          "sv": "God morgon! Hur är läget?",
+          "en": "Good morning! How are things?",
+          "context": "På jobbet"
+        },
+        "p9": {
+          "sv": "Kan du visa mig hur jag ska göra?",
+          "en": "Could you show me how to do it?",
+          "context": "På jobbet"
+        },
+        "p10": {
+          "sv": "Jag är klar — vad ska jag göra nu?",
+          "en": "I am finished — what should I do next?",
+          "context": "På jobbet"
+        }
+      },
+      "tipsTitle": "Det här brukar hjälpa",
+      "tips": {
+        "t1": "Säg det du kan, även om det blir fel. Du lär dig snabbare av att prata än av att vänta tills det blir rätt.",
+        "t2": "Lyssna på nyheter på lätt svenska en stund varje dag — samma ord återkommer.",
+        "t3": "Ställ in telefonen på svenska. Du läser den ändå hundra gånger om dagen.",
+        "t4": "Öva de tio fraserna ovan högt innan du går på en intervju.",
+        "t5": "Be någon rätta dig. De flesta gör det gärna om du frågar."
+      }
     }
   },
   "personalBrand": {
@@ -9755,14 +10013,12 @@
       "roleTitle": "Vilken roll vill du öva för?"
     },
     "intl": {
-      "countryPlaceholder": "t.ex. Tyskland, Norge",
-      "countryTitle": "Vilket land funderar du på?",
-      "languageHint": "Förutom svenska.",
-      "languagePlaceholder": "t.ex. engelska, spanska",
-      "languageTitle": "Vilket språk kan du jobba på?",
-      "tipExtra": "Öppna internationella sidan i normalläge för fler tips om {{country}}.",
-      "tipText": "Ett bra första steg: skriv ditt CV på {{language}} och spara en kopia. Du kan göra det i CV-byggaren.",
-      "tipTitle": "Ett tips att börja med"
+      "introTitle": "Vad vill du ta tag i?",
+      "optionValidation": "Min utbildning",
+      "optionFirstSteps": "Första tiden här",
+      "optionLanguage": "Svenskan",
+      "doneTitle": "Klart!",
+      "doneText": "Vi öppnar {{part}} åt dig. Avsluta fokusläget så ligger den framme."
     },
     "jobSearch": {
       "cityHint": "Skriv en stad eller lämna tomt för hela Sverige.",

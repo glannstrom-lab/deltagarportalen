@@ -3971,37 +3971,295 @@
     }
   },
   "international": {
-    "editorialSpot": "Visas, integration and language — what you need to work in a new country.",
-    "integration": {
-      "title": "Integration Checklist",
-      "description": "Step-by-step guide to establishing yourself in Sweden. Mark items as complete to save your progress.",
-      "yourProgress": "Your progress",
-      "exportChecklist": "Export checklist"
-    },
-    "language": {
-      "title": "Swedish for Work",
-      "description": "Resources and tips for learning Swedish. Basic Swedish is highly appreciated in Swedish workplaces."
-    },
-    "visa": {
-      "title": "Visa & Work Permits",
-      "description": "Guide to different types of work permits in Sweden. Click on each type to see requirements and process information."
-    },
-    "pageTitle": "International Guide",
-    "pageDescription": "Everything you need to know about working in Sweden",
+    "pageTitle": "New in Sweden",
+    "pageDescription": "What you need to start working here — the paperwork, the authorities and the language.",
     "tabs": {
-      "visa": {
-        "label": "Visa & Work Permits",
-        "description": "Guide for work permits"
+      "validation": {
+        "label": "Your education"
       },
       "integration": {
-        "label": "Integration",
-        "description": "Checklist for getting established"
+        "label": "Your first months"
       },
       "language": {
-        "label": "Language",
-        "description": "Swedish for work life"
+        "label": "Swedish"
+      }
+    },
+    "checkedNote": "This information was checked against the authorities’ own websites on {{date}}. The rules change — always check with the authority before making a decision.",
+    "opensInNewTab": "Opens in a new tab",
+    "validation": {
+      "title": "Does what you already know count here?",
+      "description": "If you have education or a profession from another country, there are two things to sort out: what your education corresponds to here, and whether your profession requires a Swedish licence.",
+      "uhr": {
+        "title": "Have your education assessed",
+        "body": "The Swedish Council for Higher Education (UHR) assesses education from other countries and writes a statement of what it corresponds to in Sweden. It is free of charge, and you can attach the statement when you apply for jobs or studies. UHR assesses upper secondary education, post-secondary vocational education and higher education.",
+        "link": "UHR — assessment of foreign qualifications",
+        "tip": "Do not have your certificates any more? Apply anyway — UHR explains on their site what can be done when documents are missing."
       },
-      "newBadge": "New!"
+      "regulated": {
+        "title": "Does your profession require a licence?",
+        "body": "Some professions you may not work in without a Swedish licence, however much experience you have. This includes many jobs in healthcare and teaching. In that case the professional authority assesses your education — not UHR.",
+        "health": "Healthcare: the National Board of Health and Welfare decides on licences and protected professional titles. The route differs depending on whether you were educated inside or outside the EU/EEA, and the Swedish language requirement is high — the level is stated on their site.",
+        "teacher": "Schools and preschools: the Swedish National Agency for Education decides on teacher certification.",
+        "other": "Not sure whether your profession is regulated — start with UHR and ask the Public Employment Service. They know who assesses what.",
+        "healthLink": "National Board of Health and Welfare — licensing",
+        "teacherLink": "National Agency for Education — certification"
+      },
+      "permit": {
+        "title": "Do you need a work permit?",
+        "eu": "If you are a citizen of an EU/EEA country or of a Nordic country you do not need a work permit. You may start working straight away, and you should not contact the Migration Agency — move on to the next tab.",
+        "thirdCountry": "If you are a citizen of a country outside the EU/EEA a work permit is usually required, and as a rule you apply before travelling here. If you already live here with a residence permit on other grounds, different rules may apply.",
+        "noNumbers": "We deliberately do not state any amounts or processing times here. They change every year, and an outdated figure on this page could cost you a permit. The Migration Agency always has what applies right now.",
+        "linkPermit": "Migration Agency — work permit",
+        "linkEu": "Migration Agency — EU/EEA citizens",
+        "linkException": "Migration Agency — who may work without a permit"
+      },
+      "next": {
+        "title": "What next?",
+        "body": "Once you know what your education corresponds to: write it in your CV with the Swedish equivalent in brackets, so a Swedish employer understands what they are reading.",
+        "toCv": "Open the CV builder",
+        "toJobSearch": "Search for jobs"
+      }
+    },
+    "integration": {
+      "title": "Your first months in Sweden",
+      "description": "The order matters: almost everything depends on being registered as a resident first. Tick off what you have done — it is saved.",
+      "yourProgress": "How far you have come",
+      "emptyHint": "Start with the first step when you have the energy. Nothing has to happen today.",
+      "progressCount": "{{done}} of {{total}} done",
+      "loading": "Fetching where you are …",
+      "saveFailed": "The tick could not be saved just now. Try again in a moment.",
+      "onlyThirdCountry": "Applies to you if you are not an EU/EEA or Nordic citizen",
+      "firstNote": {
+        "title": "Read this first",
+        "body": "Almost everything else requires you to be registered as a resident and to have a personal identity number. That takes time — count on several weeks. Until then you cannot get a BankID, and many services require BankID. It is not you doing something wrong; that is how the system fits together."
+      },
+      "categories": {
+        "start": "Start here",
+        "afterId": "Once you have a personal identity number",
+        "work": "When you start looking for work",
+        "later": "Later on"
+      },
+      "notesLabel": "Your own notes",
+      "notesPlaceholder": "Write what you want to remember — appointments booked, what you were told …",
+      "notesSave": "Save",
+      "notesClear": "Delete the note",
+      "notesCancel": "Cancel",
+      "notesAdd": "Add a note",
+      "dateLabel": "When do you want it done?",
+      "showDetails": "Show more about {{title}}",
+      "hideDetails": "Hide {{title}}",
+      "doneAt": "Done",
+      "items": {
+        "folkbokforing": {
+          "title": "Report that you have moved to Sweden",
+          "body": "You do not apply for a personal identity number — you report your move to the Tax Agency and are registered as a resident. The number comes with that registration. It requires that you plan to live here for at least a year. You report the move in the Tax Agency’s e-service, at the earliest 14 days before you move, and you must then visit a service office in person to prove who you are. Book a time in advance.",
+          "linkLabel": "Tax Agency — moving to Sweden"
+        },
+        "samordningsnummer": {
+          "title": "Staying for less than a year?",
+          "body": "Then you will not get a personal identity number, but you may instead get a coordination number. It is applied for separately, and some services work less well with it. The Tax Agency explains the difference.",
+          "linkLabel": "Tax Agency — population registration"
+        },
+        "idkort": {
+          "title": "Get an ID card",
+          "body": "The Tax Agency’s ID card requires that you are registered as a resident. The fee must be paid before you book a time, and you bring the receipt to the appointment. You also need to prove your identity — either with an approved ID document or with a person who vouches for who you are.",
+          "linkLabel": "Tax Agency — ID card"
+        },
+        "bankkonto": {
+          "title": "Open a bank account",
+          "body": "You have the right to a payment account with basic functions if you are legally resident within the EEA. Not having a personal identity number is not in itself a reason for the bank to say no. If you are refused anyway you are entitled to it in writing — and you can then turn to the bank’s complaints officer and on to the National Board for Consumer Disputes.",
+          "linkLabel": "National Board for Consumer Disputes"
+        },
+        "bankid": {
+          "title": "Get a BankID",
+          "body": "You order BankID from your bank, so it requires that you have an account. A great deal in Sweden requires BankID. If you do not have one, Freja is an alternative at some authorities — ask when you are there.",
+          "linkLabel": ""
+        },
+        "forsakringskassan": {
+          "title": "Tell the Social Insurance Agency you have moved",
+          "body": "You do not register in general — you report that you have moved here. It matters above all if you move with children, want a European Health Insurance Card, or are going to apply for a benefit. Whether you are insured follows from living or working here.",
+          "linkLabel": "Social Insurance Agency"
+        },
+        "vardcentral": {
+          "title": "Choose a health centre",
+          "body": "You choose which health centre you want to belong to. That is who you call when you fall ill, and they refer you onwards if needed.",
+          "linkLabel": "1177 Healthcare Guide"
+        },
+        "sfi": {
+          "title": "Sign up for Swedish for immigrants (sfi)",
+          "body": "Sfi is free of charge for you who are 16 or older, live in the municipality and do not already know basic Swedish. You sign up with your municipality. Once you are registered as a resident, the municipality must be able to offer you a place within three months.",
+          "linkLabel": "National Agency for Education — about sfi"
+        },
+        "validering": {
+          "title": "Have your education assessed",
+          "body": "UHR writes a free statement of what your education corresponds to in Sweden. It is often what makes an employer understand what you can do.",
+          "linkLabel": "UHR — assessment of foreign qualifications"
+        },
+        "arbetsformedlingen": {
+          "title": "Register with the Public Employment Service",
+          "body": "Register as early as you can. It affects what support and what benefits you can get, and some programmes require that you have been registered for a while.",
+          "linkLabel": "Public Employment Service"
+        },
+        "akassa": {
+          "title": "Join an unemployment insurance fund",
+          "body": "Membership is voluntary and you pay a monthly fee. The benefit depends on how long you have been a member and how much you have worked — which is why it pays to join early, even if you do not need it now.",
+          "linkLabel": ""
+        },
+        "korkort": {
+          "title": "Is your driving licence valid here?",
+          "body": "A driving licence from the EU/EEA is valid in Sweden. If your licence is from another country, different rules apply and there are time limits. The Transport Agency has what applies for your country.",
+          "linkLabel": "Transport Agency — driving licences"
+        },
+        "skatt": {
+          "title": "Check your tax table",
+          "body": "When you get a job, tax is deducted according to a table that depends on where you live. If the deduction is wrong you can apply for an adjustment with the Tax Agency, so you do not pay too much or too little during the year.",
+          "linkLabel": "Tax Agency"
+        },
+        "pension": {
+          "title": "Your pension after moving here",
+          "body": "If you have worked in another country you may have earned a pension there. The Swedish Pensions Agency can tell you what applies between Sweden and that country.",
+          "linkLabel": "Swedish Pensions Agency"
+        }
+      }
+    },
+    "language": {
+      "title": "Swedish",
+      "description": "You do not have to wait until your Swedish is solid to apply for jobs. But it opens doors, and here are the routes.",
+      "levelsTitle": "How good does your Swedish need to be?",
+      "levelsBody": "It depends on the job. In many jobs the employer decides, and everyday Swedish goes a long way. In a few professions the requirement is regulated — for a healthcare licence the National Board of Health and Welfare requires a high level of Swedish.",
+      "sfiTitle": "Sfi has its own structure",
+      "sfiBody": "Sfi is divided into four courses (A, B, C and D) and three study paths, where the path is chosen according to your previous schooling. That structure is not the same as the European scale A1–C2, and there is no official translation between them. Ask your municipality which course suits you.",
+      "cefrTitle": "The European scale (CEFR)",
+      "cefrNote": "The scale is used by many language courses and in some job ads.",
+      "levels": {
+        "a1": {
+          "name": "A1 — beginner",
+          "description": "Simple phrases and greetings"
+        },
+        "a2": {
+          "name": "A2 — elementary",
+          "description": "Simple conversations about everyday things"
+        },
+        "b1": {
+          "name": "B1 — intermediate",
+          "description": "Manages conversations at work on familiar topics"
+        },
+        "b2": {
+          "name": "B2 — upper intermediate",
+          "description": "Follows most situations at work"
+        },
+        "c1": {
+          "name": "C1 — advanced",
+          "description": "Expresses yourself freely, even on difficult topics"
+        },
+        "c2": {
+          "name": "C2 — near native",
+          "description": "Understands practically everything you hear and read"
+        }
+      },
+      "resourcesTitle": "Where you can learn",
+      "filterAll": "Everything",
+      "filterFree": "Free only",
+      "filterCourse": "Courses",
+      "filterSelf": "Practise on your own",
+      "resultCount_one": "{{count}} suggestion",
+      "resultCount_other": "{{count}} suggestions",
+      "free": "Free",
+      "paid": "Costs money",
+      "freemium": "Free with a paid tier",
+      "resources": {
+        "sfi": {
+          "name": "Sfi — Swedish for immigrants",
+          "description": "The municipality’s Swedish tuition. Free for you who live in the municipality, are 16 or older and do not already know basic Swedish. You sign up with the municipality."
+        },
+        "utbildningsguiden": {
+          "name": "Utbildningsguiden",
+          "description": "The National Agency for Education’s guide where you can search for adult education, including Swedish as a second language, in your area."
+        },
+        "folkuniversitetet": {
+          "name": "Folkuniversitetet",
+          "description": "Swedish courses in the evenings and at weekends. Costs money — the price is on their site."
+        },
+        "klartext": {
+          "name": "Sveriges Radio Klartext",
+          "description": "Today’s news in easy Swedish. Good to listen to every day, free."
+        },
+        "duolingo": {
+          "name": "Duolingo",
+          "description": "App with short exercises. Free basic version, paid version without ads."
+        },
+        "swedishpod": {
+          "name": "SwedishPod101",
+          "description": "Podcast lessons for different levels. Partly free, the rest costs money."
+        },
+        "tandem": {
+          "name": "Tandem",
+          "description": "Language exchange — you practise Swedish with someone who wants to practise your language. Free basic version."
+        }
+      },
+      "phrasesTitle": "Phrases to take with you",
+      "phrasesIntro": "The first ones are for when you are looking for work, the last for when you have found it.",
+      "listen": "Listen to {{phrase}}",
+      "phrases": {
+        "p1": {
+          "sv": "Hej, jag heter … och jag söker arbete som …",
+          "en": "Hello, my name is … and I am looking for work as a …",
+          "context": "Job hunting"
+        },
+        "p2": {
+          "sv": "Har ni något ledigt just nu?",
+          "en": "Do you have any openings right now?",
+          "context": "Job hunting"
+        },
+        "p3": {
+          "sv": "Kan jag lämna mitt CV till någon?",
+          "en": "Can I leave my CV with someone?",
+          "context": "Job hunting"
+        },
+        "p4": {
+          "sv": "Jag har jobbat med det här i … år.",
+          "en": "I have worked with this for … years.",
+          "context": "Interview"
+        },
+        "p5": {
+          "sv": "Kan du säga det en gång till, lite långsammare?",
+          "en": "Could you say that again, a little slower?",
+          "context": "Interview"
+        },
+        "p6": {
+          "sv": "Jag förstår inte riktigt — menar du att …?",
+          "en": "I do not quite understand — do you mean that …?",
+          "context": "Interview"
+        },
+        "p7": {
+          "sv": "När får jag besked?",
+          "en": "When will I hear from you?",
+          "context": "Interview"
+        },
+        "p8": {
+          "sv": "God morgon! Hur är läget?",
+          "en": "Good morning! How are things?",
+          "context": "At work"
+        },
+        "p9": {
+          "sv": "Kan du visa mig hur jag ska göra?",
+          "en": "Could you show me how to do it?",
+          "context": "At work"
+        },
+        "p10": {
+          "sv": "Jag är klar — vad ska jag göra nu?",
+          "en": "I am finished — what should I do next?",
+          "context": "At work"
+        }
+      },
+      "tipsTitle": "This tends to help",
+      "tips": {
+        "t1": "Say what you can, even if it comes out wrong. You learn faster by speaking than by waiting until it is right.",
+        "t2": "Listen to the news in easy Swedish for a while every day — the same words keep coming back.",
+        "t3": "Set your phone to Swedish. You read it a hundred times a day anyway.",
+        "t4": "Practise the ten phrases above out loud before you go to an interview.",
+        "t5": "Ask someone to correct you. Most people are happy to if you ask."
+      }
     }
   },
   "personalBrand": {
@@ -9755,14 +10013,12 @@
       "roleTitle": "Which role do you want to practise for?"
     },
     "intl": {
-      "countryPlaceholder": "e.g. Germany, Norway",
-      "countryTitle": "Which country are you considering?",
-      "languageHint": "Besides Swedish.",
-      "languagePlaceholder": "e.g. English, Spanish",
-      "languageTitle": "Which language can you work in?",
-      "tipExtra": "Open the international page in normal mode for more tips about {{country}}.",
-      "tipText": "A good first step: write your CV in {{language}} and save a copy. You can do it in the CV builder.",
-      "tipTitle": "A tip to start with"
+      "introTitle": "What do you want to get started on?",
+      "optionValidation": "My education",
+      "optionFirstSteps": "My first months here",
+      "optionLanguage": "Swedish",
+      "doneTitle": "Done!",
+      "doneText": "We will open {{part}} for you. Leave focus mode and it will be there."
     },
     "jobSearch": {
       "cityHint": "Type a city or leave blank for all of Sweden.",

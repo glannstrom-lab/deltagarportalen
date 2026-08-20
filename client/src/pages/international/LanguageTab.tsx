@@ -1,299 +1,255 @@
 /**
- * Language Tab - Swedish language resources for work
+ * Svenska — nivåer, var man lär sig, och fraser att ha med sig.
+ *
+ * Vad som var fel:
+ *
+ * 1. **"Mellannivå"-knappen gjorde ingenting.** Filtret var
+ *    `r.level !== 'advanced'`, och ingen resurs hade `level: 'advanced'` — så
+ *    knappen gav exakt samma lista som "Alla nivåer". Filtret är omskrivet till
+ *    något som faktiskt filtrerar: kostnad och form.
+ * 2. **SFI beskrevs som fritt tillgängligt.** Rätten kräver att du fyllt 16,
+ *    bor i kommunen och inte redan kan grundläggande svenska. Villkoret stod
+ *    ingenstans, på en flik vars läsare ofta ännu inte är folkbokförd.
+ * 3. **"B1 räcker på en svensk arbetsplats"** var ett obelagt påstående om
+ *    arbetsmarknaden — och direkt fel för legitimationsyrken, där kravet är
+ *    reglerat och högt. Nu delas svaret: arbetsgivaren bestämmer i de flesta
+ *    jobb, myndigheten i några.
+ * 4. **CEFR presenterades som skalan**, fast sfi har en egen indelning (kurs
+ *    A–D, studieväg 1–3) och det inte finns någon officiell översättning
+ *    mellan dem. Nu står båda, och att de inte är utbytbara.
+ * 5. **Ingen `lang`-märkning på de engelska raderna** — svensk talsyntes läste
+ *    engelsk text som svenska. Och tipsen förutsatte att man redan har jobb
+ *    ("prata svenska på jobbet", "under pendlingen", "delta i fika") på en
+ *    portal för arbetssökande.
+ *
+ * Länkar kontrollerade 2026-08-20. Folkuniversitetets gamla URL var en 404.
  */
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Languages, BookOpen, Headphones, MessageSquare, Trophy, ExternalLink, Play, CheckCircle } from '@/components/ui/icons'
+import { BookOpen, Headphones, MessageSquare, Volume2, ExternalLink, Info } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { KONTROLLERAD } from '../International'
 
-interface Resource {
+type Kostnad = 'free' | 'paid' | 'freemium'
+type Form = 'course' | 'self'
+
+interface Resurs {
   id: string
-  name: string
-  description: string
-  type: 'course' | 'app' | 'podcast' | 'practice'
-  level: 'beginner' | 'intermediate' | 'advanced'
-  cost: 'free' | 'paid' | 'both'
   url: string
+  kostnad: Kostnad
+  form: Form
 }
 
-const RESOURCES: Resource[] = [
-  {
-    id: 'sfi',
-    name: 'SFI (Svenska för invandrare)',
-    description: 'Gratis svenskundervisning från kommunen. Olika nivåer beroende på förkunskaper.',
-    type: 'course',
-    level: 'beginner',
-    cost: 'free',
-    url: 'https://www.skolverket.se/undervisning/vuxenutbildningen/komvux-svenska-for-invandrare-sfi',
-  },
-  {
-    id: 'duolingo',
-    name: 'Duolingo',
-    description: 'Populär app för att lära sig svenska. Bra för nybörjare och daglig övning.',
-    type: 'app',
-    level: 'beginner',
-    cost: 'both',
-    url: 'https://www.duolingo.com/course/sv/en/Learn-Swedish',
-  },
-  {
-    id: 'babbel',
-    name: 'Babbel',
-    description: 'Strukturerade kurser med fokus på konversation och grammatik.',
-    type: 'app',
-    level: 'beginner',
-    cost: 'paid',
-    url: 'https://www.babbel.com/learn-swedish',
-  },
-  {
-    id: 'sverigesradio',
-    name: 'Sveriges Radio - Klartext',
-    description: 'Nyheter på lätt svenska. Perfekt för att öva hörförståelse.',
-    type: 'podcast',
-    level: 'intermediate',
-    cost: 'free',
-    url: 'https://sverigesradio.se/klartext',
-  },
-  {
-    id: 'swedishpod101',
-    name: 'SwedishPod101',
-    description: 'Podcast-baserad kurs med lektioner för alla nivåer.',
-    type: 'podcast',
-    level: 'beginner',
-    cost: 'both',
-    url: 'https://www.swedishpod101.com/',
-  },
-  {
-    id: 'folkuniversitetet',
-    name: 'Folkuniversitetet',
-    description: 'Kurser i svenska på kvällar och helger. Bra för yrkesverksamma.',
-    type: 'course',
-    level: 'intermediate',
-    cost: 'paid',
-    url: 'https://www.folkuniversitetet.se/spraklanguages/svenska/',
-  },
-  {
-    id: 'tandem',
-    name: 'Tandem / HelloTalk',
-    description: 'Språkutbyte med modersmålstalare. Öva konversation med svenskar.',
-    type: 'practice',
-    level: 'intermediate',
-    cost: 'free',
-    url: 'https://www.tandem.net/',
-  },
+const RESURSER: Resurs[] = [
+  { id: 'sfi', url: 'https://www.skolverket.se/undervisning/komvux/komvux-i-svenska-for-invandrare-sfi', kostnad: 'free', form: 'course' },
+  { id: 'utbildningsguiden', url: 'https://utbildningsguiden.skolverket.se/', kostnad: 'free', form: 'course' },
+  { id: 'folkuniversitetet', url: 'https://www.folkuniversitetet.se/kurser-utbildningar/sprak/', kostnad: 'paid', form: 'course' },
+  { id: 'klartext', url: 'https://sverigesradio.se/klartext', kostnad: 'free', form: 'self' },
+  { id: 'duolingo', url: 'https://www.duolingo.com/course/sv/en/Learn-Swedish', kostnad: 'freemium', form: 'self' },
+  { id: 'swedishpod', url: 'https://www.swedishpod101.com/', kostnad: 'freemium', form: 'self' },
+  { id: 'tandem', url: 'https://www.tandem.net/', kostnad: 'freemium', form: 'self' },
 ]
 
-const WORK_PHRASES = [
-  { swedish: 'Godmorgon, hur mår du?', english: 'Good morning, how are you?', context: 'Hälsning' },
-  { swedish: 'Jag förstår inte, kan du förklara igen?', english: "I don't understand, can you explain again?", context: 'Möten' },
-  { swedish: 'Kan vi boka ett möte?', english: 'Can we book a meeting?', context: 'Möten' },
-  { swedish: 'Jag skickar ett mail om det.', english: "I'll send an email about it.", context: 'Kommunikation' },
-  { swedish: 'Vad trevligt att träffas!', english: 'Nice to meet you!', context: 'Hälsning' },
-  { swedish: 'Jag jobbar med...', english: 'I work with...', context: 'Presentation' },
-  { swedish: 'Kan du hjälpa mig med...?', english: 'Can you help me with...?', context: 'Hjälp' },
-  { swedish: 'Det låter bra!', english: 'That sounds good!', context: 'Svar' },
-  { swedish: 'Vi hörs!', english: "We'll be in touch!", context: 'Avslutning' },
-  { swedish: 'Ha en bra helg!', english: 'Have a nice weekend!', context: 'Avslutning' },
-]
+const NIVAER = ['a1', 'a2', 'b1', 'b2', 'c1', 'c2'] as const
+const FRASER = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10'] as const
 
-const LEVELS = [
-  { id: 'A1', name: 'A1 - Nybörjare', description: 'Grundläggande fraser och hälsningar' },
-  { id: 'A2', name: 'A2 - Elementär', description: 'Enkla samtal om vardagliga ämnen' },
-  { id: 'B1', name: 'B1 - Mellannivå', description: 'Kan delta i arbetsrelaterade samtal' },
-  { id: 'B2', name: 'B2 - Övre mellannivå', description: 'Flytande i de flesta arbetssituationer' },
-  { id: 'C1', name: 'C1 - Avancerad', description: 'Nära modersmålsnivå' },
-]
+type Filter = 'all' | 'free' | 'course' | 'self'
 
 export default function LanguageTab() {
   const { t } = useTranslation()
-  const [selectedLevel, setSelectedLevel] = useState<string | null>(null)
+  const [filter, setFilter] = useState<Filter>('all')
 
-  const filteredResources = selectedLevel
-    ? RESOURCES.filter(r =>
-        (selectedLevel === 'beginner' && r.level === 'beginner') ||
-        (selectedLevel === 'intermediate' && r.level !== 'advanced') ||
-        (selectedLevel === 'advanced')
-      )
-    : RESOURCES
+  const resurser = useMemo(() => {
+    switch (filter) {
+      case 'free': return RESURSER.filter(r => r.kostnad === 'free')
+      case 'course': return RESURSER.filter(r => r.form === 'course')
+      case 'self': return RESURSER.filter(r => r.form === 'self')
+      default: return RESURSER
+    }
+  }, [filter])
+
+  /** Uppläsning via webbläsarens egen talsyntes — ingen backend, ingen data. */
+  const kanLasaUpp = typeof window !== 'undefined' && 'speechSynthesis' in window
+  const lasUpp = (text: string) => {
+    if (!kanLasaUpp) return
+    window.speechSynthesis.cancel()
+    const yttrande = new SpeechSynthesisUtterance(text)
+    yttrande.lang = 'sv-SE'
+    yttrande.rate = 0.85
+    window.speechSynthesis.speak(yttrande)
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Languages className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('international.language.title')}</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('international.language.description')}
-            </p>
-          </div>
-        </div>
-      </Card>
+      <p className="text-sm text-stone-700 dark:text-stone-300">
+        {t('international.language.description')}
+      </p>
 
-      {/* Language levels */}
-      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Trophy className="w-5 h-5 text-amber-500 dark:text-amber-400" />
-          Språknivåer (CEFR)
+      {/* Hur bra svenska behöver du? */}
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
+          {t('international.language.levelsTitle')}
+        </h2>
+        <p className="text-sm text-stone-700 dark:text-stone-200 mb-4">
+          {t('international.language.levelsBody')}
+        </p>
+
+        <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-2">
+          {t('international.language.sfiTitle')}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-3">
-          {LEVELS.map((level, idx) => (
-            <div
-              key={level.id}
-              className={cn(
-                "p-3 rounded-xl border text-center transition-all",
-                idx < 2 ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700" :
-                idx < 4 ? "bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700" :
-                "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40"
-              )}
+        <p className="text-sm text-stone-700 dark:text-stone-200 mb-4">
+          {t('international.language.sfiBody')}
+        </p>
+
+        <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-2">
+          {t('international.language.cefrTitle')}
+        </h3>
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {NIVAER.map((niva) => (
+            <li
+              key={niva}
+              className="p-3 rounded-lg bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/40"
             >
-              <p className="font-bold text-gray-800 dark:text-gray-100">{level.id}</p>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{level.description}</p>
-            </div>
+              <p className="font-medium text-stone-900 dark:text-stone-100">
+                {t(`international.language.levels.${niva}.name`)}
+              </p>
+              <p className="text-sm text-stone-700 dark:text-stone-200">
+                {t(`international.language.levels.${niva}.description`)}
+              </p>
+            </li>
           ))}
-        </div>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mt-3">
-          <strong className="text-gray-800 dark:text-gray-100">Tips:</strong> B1-nivå är ofta tillräckligt för att fungera bra på en svensk arbetsplats
-          där engelska också används.
+        </ul>
+        <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+          {t('international.language.cefrNote')}
         </p>
       </Card>
 
-      {/* Filter */}
-      <div className="flex gap-2 flex-wrap">
-        <button
-          onClick={() => setSelectedLevel(null)}
-          className={cn(
-            "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            !selectedLevel ? "bg-[var(--c-solid)] text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
-          )}
-        >
-          Alla nivåer
-        </button>
-        <button
-          onClick={() => setSelectedLevel('beginner')}
-          className={cn(
-            "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            selectedLevel === 'beginner' ? "bg-[var(--c-solid)] text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
-          )}
-        >
-          Nybörjare
-        </button>
-        <button
-          onClick={() => setSelectedLevel('intermediate')}
-          className={cn(
-            "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            selectedLevel === 'intermediate' ? "bg-[var(--c-solid)] text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
-          )}
-        >
-          Mellannivå
-        </button>
-      </div>
+      {/* Var du kan lära dig */}
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h2 className="font-semibold text-stone-900 dark:text-stone-100">
+            {t('international.language.resourcesTitle')}
+          </h2>
+          <p className="text-sm text-stone-600 dark:text-stone-300" role="status" aria-live="polite">
+            {t('international.language.resultCount', { count: resurser.length })}
+          </p>
+        </div>
 
-      {/* Resources */}
-      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          Resurser för att lära dig svenska
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredResources.map((resource) => (
-            <a
-              key={resource.id}
-              href={resource.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all group"
+        <div className="flex flex-wrap gap-2 mb-4" role="group" aria-label={t('international.language.resourcesTitle')}>
+          {(['all', 'free', 'course', 'self'] as const).map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              aria-pressed={filter === f}
+              className={cn(
+                'px-3 py-2 rounded-lg text-sm min-h-[44px]',
+                filter === f
+                  ? 'bg-[var(--c-solid)] text-white font-medium'
+                  : 'bg-stone-50 dark:bg-stone-700 text-stone-700 dark:text-stone-200',
+              )}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "w-10 h-10 rounded-lg flex items-center justify-center",
-                    resource.type === 'course' && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]",
-                    resource.type === 'app' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
-                    resource.type === 'podcast' && "bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400",
-                    resource.type === 'practice' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400"
-                  )}>
-                    {resource.type === 'course' && <BookOpen className="w-5 h-5" />}
-                    {resource.type === 'app' && <Play className="w-5 h-5" />}
-                    {resource.type === 'podcast' && <Headphones className="w-5 h-5" />}
-                    {resource.type === 'practice' && <MessageSquare className="w-5 h-5" />}
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-gray-800 dark:text-gray-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">
-                      {resource.name}
-                    </h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className={cn(
-                        "text-xs px-2 py-0.5 rounded-full",
-                        resource.level === 'beginner' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
-                        resource.level === 'intermediate' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300",
-                        resource.level === 'advanced' && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)]"
-                      )}>
-                        {resource.level === 'beginner' ? 'Nybörjare' :
-                         resource.level === 'intermediate' ? 'Mellannivå' : 'Avancerad'}
-                      </span>
-                      <span className={cn(
-                        "text-xs px-2 py-0.5 rounded-full",
-                        resource.cost === 'free' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
-                        resource.cost === 'paid' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300",
-                        resource.cost === 'both' && "bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300"
-                      )}>
-                        {resource.cost === 'free' ? 'Gratis' :
-                         resource.cost === 'paid' ? 'Betald' : 'Gratis/Betald'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)]" />
-              </div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{resource.description}</p>
-            </a>
+              {t(`international.language.filter${f.charAt(0).toUpperCase()}${f.slice(1)}`)}
+            </button>
           ))}
         </div>
+
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {resurser.map((r) => (
+            <li key={r.id}>
+              <a
+                href={r.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block h-full p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] transition-colors"
+              >
+                <span className="flex items-center justify-between gap-2 mb-1">
+                  <span className="flex items-center gap-2 font-medium text-stone-900 dark:text-stone-100">
+                    {r.form === 'course'
+                      ? <BookOpen className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+                      : <Headphones className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />}
+                    {t(`international.language.resources.${r.id}.name`)}
+                  </span>
+                  <ExternalLink className="w-3 h-3 text-stone-500 shrink-0" aria-hidden="true" />
+                </span>
+                <span className="inline-block text-xs px-2 py-0.5 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)] mb-2">
+                  {t(`international.language.${r.kostnad}`)}
+                </span>
+                <span className="block text-sm text-stone-700 dark:text-stone-200">
+                  {t(`international.language.resources.${r.id}.description`)}
+                </span>
+                <span className="sr-only">{t('international.opensInNewTab')}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </Card>
 
-      {/* Work phrases */}
-      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-          Vanliga fraser på jobbet
-        </h3>
+      {/* Fraser */}
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-1">
+          <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+          {t('international.language.phrasesTitle')}
+        </h2>
+        <p className="text-sm text-stone-700 dark:text-stone-200 mb-4">
+          {t('international.language.phrasesIntro')}
+        </p>
 
-        <div className="space-y-3">
-          {WORK_PHRASES.map((phrase, idx) => (
-            <div key={idx} className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-              <div className="flex items-start justify-between">
+        <ul className="space-y-2">
+          {FRASER.map((nyckel) => {
+            const sv = t(`international.language.phrases.${nyckel}.sv`)
+            const en = t(`international.language.phrases.${nyckel}.en`)
+            const sammanhang = t(`international.language.phrases.${nyckel}.context`)
+            return (
+              <li
+                key={nyckel}
+                className="flex items-start justify-between gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700"
+              >
                 <div>
-                  <p className="font-medium text-gray-800 dark:text-gray-100">{phrase.swedish}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">{phrase.english}</p>
+                  {/* lang-märkningen är inte kosmetik: utan den läser svensk
+                      talsyntes den engelska raden som svenska. */}
+                  <p lang="sv" className="font-medium text-stone-900 dark:text-stone-100">{sv}</p>
+                  <p lang="en" className="text-sm text-stone-700 dark:text-stone-300">{en}</p>
                 </div>
-                <span className="text-xs px-2 py-1 bg-white dark:bg-stone-600 rounded-full text-gray-600 dark:text-gray-300 border border-stone-200 dark:border-stone-500">
-                  {phrase.context}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]">
+                    {sammanhang}
+                  </span>
+                  {kanLasaUpp && (
+                    <button
+                      onClick={() => lasUpp(sv)}
+                      aria-label={t('international.language.listen', { phrase: sv })}
+                      className="p-2 rounded-lg min-h-[44px] min-w-[44px] flex items-center justify-center hover:bg-white dark:hover:bg-stone-600"
+                    >
+                      <Volume2 className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+              </li>
+            )
+          })}
+        </ul>
       </Card>
 
       {/* Tips */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-        <h3 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)] mb-3 flex items-center gap-2">
-          <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          Tips för att lära dig snabbare
-        </h3>
-        <ul className="space-y-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
-          <li>- Prata svenska på jobbet så mycket du kan - kollegor uppskattar det</li>
-          <li>- Lyssna på svensk radio/podcasts under pendling</li>
-          <li>- Ställ in telefon och dator på svenska</li>
-          <li>- Delta i "fika" - det är bästa stället att öva vardagssvenska</li>
-          <li>- Var inte rädd för att göra fel - svenskar är tålmodiga</li>
+      <Card className="p-6 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
+          {t('international.language.tipsTitle')}
+        </h2>
+        <ul className="space-y-2">
+          {(['t1', 't2', 't3', 't4', 't5'] as const).map((nyckel) => (
+            <li key={nyckel} className="flex items-start gap-2 text-sm text-stone-700 dark:text-stone-200">
+              <span className="text-[var(--c-text)] dark:text-[var(--c-text)] mt-0.5" aria-hidden="true">·</span>
+              {t(`international.language.tips.${nyckel}`)}
+            </li>
+          ))}
         </ul>
       </Card>
+
+      <p className="flex items-start gap-2 text-xs text-stone-600 dark:text-stone-400">
+        <Info className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+        {t('international.checkedNote', { date: KONTROLLERAD })}
+      </p>
     </div>
   )
 }

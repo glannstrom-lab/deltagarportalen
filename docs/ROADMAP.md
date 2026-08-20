@@ -16,6 +16,102 @@
 
 ---
 
+## Genomgång 2026-08-20 (natt) — Internationellt, sex granskare (åtgärdad, omscopad)
+
+Kod + inloggad vy. Sidan hade **noll beteendetester**, och tre av fyra
+mutationer överlevde sviten på 2 072 tester — bland dem att sätta lönegolvet i
+visumfliken till "1 kr/mån".
+
+### Beslutet: sidan var skriven för fel person
+
+Granskarna visade att `/international` genomgående förutsatte någon som står
+**utanför** Sverige och **redan har ett jobberbjudande**: "Före ankomst", "ansök
+INNAN du reser", "kräver jobboffert från svensk arbetsgivare". Portalens
+deltagare bor här och söker jobb. Samtidigt lovade hubbkortet "Jobba utomlands —
+så söker du jobb i ett annat land" och ledde hit, och fokusguiden frågade
+"vilket land funderar du på?".
+
+**Beslut (Mikael, 2026-08-20):** visumfliken ersätts av **validering och
+legitimation**, och sidan anger **inga belopp**. Sidan heter nu "Ny i Sverige".
+
+- `VisaGuideTab.tsx` borttagen, `ValideringTab.tsx` tillagd: bedömning av
+  utländsk utbildning (UHR), yrkeslegitimation (Socialstyrelsen, Skolverket),
+  och ett kort block om arbetstillstånd som skiljer EU/EES från tredjeland och
+  länkar vidare — utan siffror.
+- Hubbkortets text rättad till vad sidan faktiskt är.
+- **Validering och legitimation saknades i hela portalen.** `grep` på "UHR",
+  "Universitets- och högskolerådet" och "bedömning av utländsk" gav noll
+  träffar utanför artikeltexter, trots att det är det som avgör om en
+  deltagares utbildning räknas här.
+
+### Sakfelen — det här är portalens mest riskfyllda innehåll
+
+Verifierat mot myndigheternas egna sidor 2026-08-20:
+
+| Sidan sa | Vad som gäller |
+|---|---|
+| "Lön minst … eller minst **13 000 kr/mån**" | Försörjningskravet ersattes i november 2023. Talet var fel i **tre år** |
+| "EU Blue Card: **1,5 ×** genomsnittslön", "anställning minst **1 år**" | Multiplikatorn är lägre och anställningskravet kortare |
+| Företagartillstånd "**2-4 månader**" | Migrationsverket redovisar väsentligt längre tid, och för kompletta ansökningar **ingen** siffra alls |
+| "År 5+: Medborgarskap" | Kraven ändrades 2026 |
+| "Ansök om personnummer, **Dag 1-2**" | Man ansöker inte — man anmäler flytt, det kräver minst ett års planerad vistelse, e-tjänsten öppnar tidigast 14 dagar före, och identitetskontroll sker vid personligt besök |
+| "SINK-skatt för nyanlända" | SINK gäller den som är bosatt **utomlands** — per definition inte den som följt sidans egen checklista |
+| Bankkonto: "vissa banker kräver personnummer" | Rätten till betalkonto är lagstadgad inom EES; avslag ska vara skriftligt och går att klaga på |
+| "Anmäl dig till SFI, vecka 1-4" | Rätten kräver folkbokföring, som tar veckor. Kommunen ska erbjuda plats inom tre månader |
+| "B1 räcker på en svensk arbetsplats" | Obelagt — och fel för legitimationsyrken, där kravet är reglerat och högt |
+
+Två länkar var **404**, en var en **mjuk 404** (Migrationsverkets gamla URL gav
+200 men landade på förstasidan — värre, eftersom inget larmar). Samma döda URL
+fanns i `ExternalResources.tsx` och är rättad där också.
+
+**Regeln som gäller nu:** inga belopp, inga handläggningstider, inga årtal om
+tillstånd i källkoden. Ett test faller om ett kronbelopp kommer tillbaka.
+Sidan bär också ett synligt "kontrollerat"-datum — utan det kunde felen ligga
+i tre år utan att någon ifrågasatte dem.
+
+### Övrigt åtgärdat
+
+- **Checklistan gick inte att bocka av med tangentbord.** Varje rad var en
+  `<div onClick>` utan roll, tabIndex eller `aria-checked` — sidans enda
+  interaktiva funktion var stängd för skärmläsare. Dessutom togglade hela
+  kortet, så ett klick i brödtexten bockade av punkten av misstag.
+- **Ett misslyckat sparande såg ut som ett lyckat.** Returvärdet kastades och
+  den optimistiska uppdateringen rullades aldrig tillbaka.
+- **localStorage-fallbacken markerade allt som klart** (`!!objekt` är alltid
+  sant), och räknaren kunde ge "15 av 14" eftersom den summerade allt i molnet.
+- **Laddning såg ut som tomhet:** `isLoading` sattes men lästes aldrig, så
+  "0/14 (0 %)" visades för den som bockat av tio saker.
+- **Ordningen är nu beroendeordning**, inte kalender. Den gamla motsade sig
+  själv: BankID lovades på 2-4 veckor men kräver personnummer, som sidans egen
+  ruta sa tar 2-8 veckor.
+- **"Mellannivå"-filtret på språkfliken gjorde ingenting** — villkoret var
+  `level !== 'advanced'` och ingen resurs hade den nivån.
+- **De engelska raderna saknade `lang`**, så svensk talsyntes läste dem som
+  svenska. Fraserna är dessutom omskrivna för den som **söker** jobb, inte den
+  som redan har ett ("prata svenska på jobbet", "under pendlingen", "delta i
+  fika"), och har fått uppläsning via webbläsarens egen talsyntes.
+- **~129 hårdkodade svenska strängar** låg utanför i18n på portalens enda sida
+  vars målgrupp kan sakna svenska. Allt innehåll ligger nu i språkfilerna.
+- Nio uppmätta kontrastfel åtgärdade; mätningen ger nu 0 i ljust och mörkt på
+  alla tre flikar. Tre typfel i det frysta taket borta (409 → 406).
+- Fokusläget: fjärde sidan med samma avmonteringsfel. Guiden frågade om fel
+  saker och kastade svaren; nu väljer man vad man vill ta tag i och den öppnar
+  den fliken.
+
+### Kvar / beslut
+
+| Punkt | Vad | Beslut |
+|---|---|---|
+| **N1** | `client/src/data/helpContent.ts` (790 rader) är dödkod med noll importörer, innehåller ett obelagt "300 %"-påstående och beskriver funktioner som tagits bort | Radera i nästa städpass |
+| **N2** | `articleData.ts` har **7 dubblerade artikel-id:n** — bara en av varje går att nå | Egen genomgång |
+| **N3** | `coaches.ts:862` konflaterar EURES (jobbportal) och Europass (CV-verktyg), och `:868` säger "EU-NARIC" (heter ENIC-NARIC) | Rätta vid nästa passage i rådgivartexterna |
+| **N4** | Lätt svenska-artiklarna (`lattsvenska-forsta-jobbet` m.fl.) är skrivna för exakt den här läsaren men länkas inte från sidan | Lägg in `<a href>` mot de prerenderade sidorna |
+| **N5** | Sidan saknar innehåll om referenser från andra länder och om hur ett CV med utländska arbetsgivare läses av svenska rekryterare | Eget arbete |
+
+**Tester 2 072 → 2 086 i 133 filer.** Taket sänkt 409 → 406.
+
+---
+
 ## Genomgång 2026-08-20 (kväll) — LinkedIn, sex granskare (åtgärdad)
 
 Kod + inloggad vy, ljust och mörkt läge. Sidan hade **noll tester**, och tre

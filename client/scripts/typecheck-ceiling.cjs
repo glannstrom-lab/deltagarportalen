@@ -54,7 +54,7 @@ const path = require('node:path')
 // `InterviewPrep.tsx:23` fortsatte anropa den utan `await` — skuld som räknats
 // i taket i fem månader, i kod ingen användare nått. Se
 // archive/2026-08-doda-intervjukomponenter/README.md.
-const CEILING = 409
+const CEILING = 406
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 
