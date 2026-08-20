@@ -27,7 +27,7 @@
 | Dagbok | Reflektera och dokumentera | - |
 | Hälsa/Wellness | Följ mående och energi | - |
 | Fokusläge | Guidat fokusflöde (i18n-namespace `focus.*`) | - |
-| Konsultvy | Hantera deltagare, GDPR-logg (`/consultant` — **portalens enda konsulentvy**) | - |
+| Konsultvy | Hantera deltagare, dataexport (`/consultant` — **portalens enda konsulentvy**) | - |
 
 ### Avaktiverade moduler (koden är kvar — bygg inte vidare på dem utan beslut)
 
@@ -283,7 +283,7 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 > `grep -roh "model: '[^']*'" supabase/functions client/api | sort -u`, och jämför mot
 > allowlisten — inte mot en enda modell.
 
-### CI-grindarna (åtta st, alla körbara lokalt)
+### CI-grindarna (alla körbara lokalt)
 
 ```bash
 cd client
@@ -293,9 +293,15 @@ npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inge
 npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (406)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 2 086 tester i 133 filer (~50 s, mätt 2026-08-20)
+npm run lint:vercel        # vercel.json-konfigurationen
+npm run lint:links         # döda länkmål i levande kod (C27)
+npm run test:run           # 2 086 tester i 133 filer (~42 s, mätt 2026-08-21)
 npm run build
 ```
+
+> **Rättat 2026-08-21:** rubriken sa "åtta st" och listan utelämnade `lint:vercel`
+> och `lint:links`, trots att `npm run verify` kör båda. `lint:links` är inte
+> dekorativ — den fällde ett riktigt fynd i C27. Räkna inte grindar; kör `verify`.
 
 De tre **frysta taken** (122 warnings, 406 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje

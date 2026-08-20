@@ -5,6 +5,7 @@ import { useSettingsStore } from '../stores/settingsStore'
 import { useAuthStore } from '../stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
 import { userApi } from '../services/supabaseApi'
+import { vaxlaSamtycke, type SamtyckesTyp } from '@/services/consentApi'
 import { supabase } from '@/lib/supabase'
 import {
   Bell, Lock, User, Palette, Shield,
@@ -102,6 +103,8 @@ function SettingsInner() {
   })
   /** UX18: sant när återkallandet lyckades men delningen inte gick att stänga av. */
   const [sharingStopFailed, setSharingStopFailed] = useState(false)
+  /** MV1: vilken samtyckesväxlare som misslyckades, om någon. Null = allt gick bra. */
+  const [consentSaveFailed, setConsentSaveFailed] = useState<string | null>(null)
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
   const [isTogglingAi, setIsTogglingAi] = useState(false)
 
@@ -186,11 +189,15 @@ function SettingsInner() {
     consentType: 'ai' | 'marketing' | 'wellness' | 'health',
     currentValue: string | null
   ) => {
-    const columnMap = {
-      ai: 'ai_consent_at',
-      marketing: 'marketing_consent_at',
-      wellness: 'wellness_consent_at',
-      health: 'health_consent_at',
+    // MV1: går via `vaxlaSamtycke`, inte via `updateProfile`. Den gamla vägen
+    // satte tidsstämpeln men skrev ingenting i `consent_history` — art. 7.1
+    // lägger bevisbördan på oss, och registret var tomt av den anledningen.
+    // Skriv aldrig `*_consent_at` direkt härifrån igen.
+    const rpcTypMap: Record<typeof consentType, SamtyckesTyp> = {
+      ai: 'ai_processing',
+      marketing: 'marketing',
+      wellness: 'wellness_data',
+      health: 'health_data',
     }
     const stateMap = {
       ai: 'aiConsentAt',
@@ -202,11 +209,9 @@ function SettingsInner() {
     try {
       setIsUpdatingConsent(consentType)
       setSharingStopFailed(false)
-      const newValue = currentValue ? null : new Date().toISOString()
+      setConsentSaveFailed(null)
 
-      await userApi.updateProfile({
-        [columnMap[consentType]]: newValue,
-      })
+      const newValue = await vaxlaSamtycke(rpcTypMap[consentType], currentValue)
 
       // UX18: ett återkallat art. 9-samtycke måste också stoppa delningen med
       // konsulenten. Annars fortsätter hen se det som redan samlats in, och
@@ -221,7 +226,11 @@ function SettingsInner() {
         [stateMap[consentType]]: newValue,
       }))
     } catch (error) {
+      // Tidigare loggades felet bara till konsolen, och växlaren såg ut att ha
+      // fungerat. Ett samtycke som ser givet ut men inte registrerats är värre
+      // än ett som uppenbart misslyckades — säg det rakt ut.
       console.error('Error updating consent:', error)
+      setConsentSaveFailed(consentType)
     } finally {
       setIsUpdatingConsent(null)
     }
@@ -780,6 +789,19 @@ function SettingsInner() {
                       {t(
                         'settings.privacy.consent.sharingStopFailed',
                         'Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under "Datadelning med konsulent" nedan, eller hör av dig till oss.'
+                      )}
+                    </p>
+                  </InfoCard>
+                )}
+
+                {/* MV1: en misslyckad skrivning loggades tidigare bara till
+                    konsolen, och växlaren såg ut att ha fungerat. */}
+                {consentSaveFailed && (
+                  <InfoCard variant="warning" icon={<AlertTriangle size={20} />}>
+                    <p className="text-sm" role="alert">
+                      {t(
+                        'settings.privacy.consent.saveFailed',
+                        'Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund.'
                       )}
                     </p>
                   </InfoCard>

@@ -29,7 +29,16 @@ export default function WellnessPage() {
         icon={Smile}
         domain="wellbeing"
       >
-        <FocusWellnessWizard onExit={leaveWizard} />
+        {/* MV3 (2026-08-21): grinden låg tidigare BARA på `<Route path="/">`
+            nedan, så fokusläget renderades utanför den. Wizarden skriver till
+            `mood_logs`, som är RLS-grindad på `check_wellness_consent` — utan
+            samtycke nekade databasen skrivningen medan wizarden ändå stängdes
+            med en klarmarkering. Ett fokusläge byggt för den som lätt tappar
+            tråden gav alltså en falsk kvittens på att måendet loggats.
+            Grinden hör hemma runt BÅDA vägarna, inte den ena. */}
+        <WellnessConsentGate>
+          <FocusWellnessWizard onExit={leaveWizard} />
+        </WellnessConsentGate>
       </PageFocusShell>
     )
   }

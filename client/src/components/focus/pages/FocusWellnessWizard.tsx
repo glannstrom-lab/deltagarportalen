@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
-import { Smile, BatteryMedium, MessageSquare, ArrowRight, CheckCircle2 } from '@/components/ui/icons'
+import { Smile, BatteryMedium, MessageSquare, ArrowRight, CheckCircle2, AlertCircle } from '@/components/ui/icons'
 import { moodLogsApi } from '@/services/diaryApi'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
@@ -23,6 +23,8 @@ export function FocusWellnessWizard({ onExit }: Props) {
   const [reason, setReason] = useState('')
   const [nextStep, setNextStep] = useState('')
   const [saved, setSaved] = useState(false)
+  /** MV3: sant när sparningen nekats. Wizarden stängs då inte. */
+  const [sparfel, setSparfel] = useState(false)
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -74,7 +76,19 @@ export function FocusWellnessWizard({ onExit }: Props) {
       current={step}
       onNext={async () => {
         if (current.id === 'done') {
-          try { await saveMutation.mutateAsync() } catch (err) { console.error(err) }
+          // MV3 (2026-08-21): felet svaldes tidigare med bara en
+          // `console.error`, och `onExit()` kördes ändå. Deltagaren fick alltså
+          // en klarmarkering för en incheckning som databasen nekat — samma
+          // klass som lärdomen 2026-08-20, där ett misslyckat sparande såg ut
+          // som ett lyckat. Stanna kvar och säg det i stället.
+          setSparfel(false)
+          try {
+            await saveMutation.mutateAsync()
+          } catch (err) {
+            console.error('[FocusWellnessWizard] kunde inte spara incheckningen:', err)
+            setSparfel(true)
+            return
+          }
           onExit()
           return
         }
@@ -134,6 +148,22 @@ export function FocusWellnessWizard({ onExit }: Props) {
             <div className="flex items-center gap-2 text-stone-700 dark:text-stone-200">
               <CheckCircle2 className="w-5 h-5 text-[var(--c-solid)]" />
               {t('focus.wellness.savedText', 'Tack — sparat i din dagbok.')}
+            </div>
+          ) : sparfel ? (
+            // MV3: tonen är avsiktligt lugn och skuldfri (DESIGN.md §2) — den
+            // som är i fokusläge har ofta minst marginal, och ett rött larm
+            // gör mer skada än nytta. Men den ska veta att inget sparades.
+            <div
+              role="alert"
+              className="flex items-start gap-2 p-3 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)] text-stone-700 dark:text-stone-200"
+            >
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--c-solid)]" aria-hidden="true" />
+              <span>
+                {t(
+                  'focus.wellness.saveFailed',
+                  'Din incheckning kunde inte sparas just nu. Det du skrivit finns kvar — prova igen om en liten stund.'
+                )}
+              </span>
             </div>
           ) : (
             <p className="text-stone-600 dark:text-stone-300">

@@ -104,11 +104,19 @@ vi.mock('@/hooks/useCVAutoSave', () => ({
     isOnline: true,
     hasRemoteChanges: false,
   })),
+  // CB1 (2026-08-21): mocken speglade en hook som inte finns. Den returnerade
+  // `draft`, `saveDraft` och `hasDraft`; den riktiga `useCVDraft` returnerar
+  // `{ restoreDraft, clearDraft }` och har gjort det hela tiden. Så länge
+  // ingen anropade hooken spelade det ingen roll — mocken kunde ljuga fritt.
+  // Första gången `CVBuilder` faktiskt använde `restoreDraft()` fällde två
+  // tester med "restoreDraft is not a function".
+  //
+  // Samma familj som lärdomen 2026-08-04 om localStorage-mocken utan backing
+  // store: en mock som inte speglar sin källa bevisar ingenting, den döljer.
+  // Formen nedan är kopierad ur `useCVAutoSave.ts:324`.
   useCVDraft: vi.fn(() => ({
-    draft: null,
-    saveDraft: vi.fn(),
+    restoreDraft: vi.fn(() => null),
     clearDraft: vi.fn(),
-    hasDraft: false,
   })),
 }))
 

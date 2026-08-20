@@ -29,7 +29,7 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
-import { useCVAutoSave } from '@/hooks/useCVAutoSave'
+import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
 // SaveIndicator is now rendered in CVPage header
 import { AIHelpButton } from '@/components/cv/AIHelpButton'
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
@@ -378,6 +378,8 @@ export default function CVBuilder() {
   // NYA FEATURES: Auto-save (täcker ALLA fält, inte bara workExperience)
   // saveStatus/lastSavedAt visas via SaveIndicator i CVPage-headern (läser från cvStore).
   const { hasUnsavedChanges, triggerSave, hasRemoteChanges } = useCVAutoSave(data)
+  // CB1: utkastet återställs i loadCV(). Hooken hade noll anropare fram till 2026-08-21.
+  const { restoreDraft } = useCVDraft()
   const prevDataRef = useRef<string>('')
   const triggerSaveRef = useRef(triggerSave)
   triggerSaveRef.current = triggerSave
@@ -444,13 +446,25 @@ export default function CVBuilder() {
     return () => clearTimeout(timer)
   }, [])
   
-  // Rensa gammal draft vid mount för att undvika konflikter. Säkerställ
-  // också att eventuell PII-läcka från äldre versioner (full CV i localStorage)
-  // rensas — sedan 2026-05-09 lagras drafts i sessionStorage istället.
+  // CB1 (2026-08-21): rensar BARA localStorage — inte sessionStorage.
+  //
+  // Den här effekten rensade tidigare `sessionStorage['cv-draft']` också,
+  // ovillkorligt vid varje mount. Tillsammans med att `restoreDraft()` aldrig
+  // anropades gjorde det hela utkastlagret dekorativt: utkastet skrevs vid
+  // varje tangenttryck, rensades så fort sidan monterades, och lästes aldrig
+  // för återställning. Det som såg ut som ett skyddsnät var ingenting.
+  //
+  // Det som ska rensas är den GAMLA localStorage-lagringen — en verklig
+  // PII-läcka på delade datorer, åtgärdad 2026-05-09 genom flytten till
+  // sessionStorage (tab-isolerad, försvinner när fliken stängs).
+  // `cv-last-saved` är bara ett tidsstämpel utan PII och behövs av
+  // `restoreDraft()` för att avgöra om utkastet är nyare än servern — den får
+  // alltså INTE rensas här. Att den gjorde det innebar att jämförelsen alltid
+  // föll ut till "utkastet är nyast", vilket inte spelade roll så länge
+  // ingen läste det.
   useEffect(() => {
-    try { sessionStorage.removeItem('cv-draft') } catch { /* ignore */ }
     try { localStorage.removeItem('cv-draft') } catch { /* ignore */ }
-    try { localStorage.removeItem('cv-last-saved') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-data') } catch { /* ignore */ }
   }, []) // Kör bara en gång vid mount
 
   // Warn user before leaving with unsaved changes
@@ -511,28 +525,51 @@ export default function CVBuilder() {
       const cv = await cvApi.getCV()
 
       if (cv) {
+        // CB1/CB2 (2026-08-21): återställ utkastet i stället för att rensa det.
+        //
+        // Blocket här läste `cv-draft` och gjorde bara en sak med det: rensade
+        // det. Datat användes aldrig — `restoreDraft()`, som är byggd för
+        // precis detta och har både åldersgräns och jämförelse mot senaste
+        // serversparning, hade noll anropare. Utkastlagret var alltså
+        // dekorativt: skrevs vid varje tangenttryck, rensades vid mount,
+        // lästes aldrig.
+        //
+        // CB2: den gamla åldersgränsen multiplicerade fem gånger fem gånger
+        // tusen — alltså tjugofem sekunder — medan kommentaren bredvid lovade
+        // fem minuter. Faktor tolv fel. `restoreDraft()` använder sin egen,
+        // uttryckliga gräns på sju dygn.
+        //
+        // (Uttrycket står i ord här med flit: vakten i `useCVUtkast.test.ts`
+        // förbjuder talformen i den här filen, och en historisk notering ska
+        // inte tvinga fram ett undantag i regeln. Samma lösning som KO1.)
+        //
+        // ORDNINGEN ÄR VIKTIG: `restoreDraft()` jämför utkastets tidsstämpel
+        // mot `cv-last-saved`. Skrivs den om före läsningen ser utkastet alltid
+        // äldre ut än servern och kastas — vilket är exakt vad den gamla koden
+        // gjorde, en rad för tidigt. Läs först, skriv sedan.
+        const utkast = restoreDraft()
+
         setData(prev => {
-          const newData = { ...prev, ...cv }
+          const newData = { ...prev, ...cv, ...(utkast ?? {}) }
           cvLogger.debug('CVBuilder: Setting data with workExperience:', newData.workExperience)
           return newData
         })
-        // Viktigt: Markera att server-data är laddad så draft inte triggar.
-        // cv-last-saved är bara ett timestamp (ingen PII).
-        try { localStorage.setItem('cv-last-saved', Date.now().toString()) } catch { /* ignore */ }
-        // Rensa eventuellt gammalt draft i sessionStorage. Nuvarande draft-
-        // strategi är sessionStorage (per-flik, ingen cross-user-läcka).
-        const draft = sessionStorage.getItem('cv-draft')
-        if (draft) {
-          try {
-            const parsed = JSON.parse(draft)
-            // Om draft är äldre än 5 minuter, rensa det
-            if (Date.now() - (parsed._timestamp || 0) > 5 * 5 * 1000) {
-              sessionStorage.removeItem('cv-draft')
-            }
-          } catch {
-            // sessionStorage parse failure — ignore
-          }
+
+        if (utkast) {
+          // Säg det. Ett tyst återställt utkast som skriver över serverdata är
+          // lika förvirrande som ett tappat — deltagaren ska veta vad hon ser.
+          showToast.success(
+            t(
+              'cvBuilder.messages.draftRestored',
+              'Vi hittade ändringar som inte hann sparas och lade tillbaka dem.'
+            )
+          )
         }
+
+        // Markera att server-data är laddad. `cv-last-saved` är bara ett
+        // tidsstämpel (ingen PII).
+        try { localStorage.setItem('cv-last-saved', Date.now().toString()) } catch { /* ignore */ }
+
         // Kolla om vi ska visa quick mode (ingen befintlig CV-data)
         const hasExistingData = !!(cv.firstName || cv.lastName || cv.title || cv.summary)
         setShowQuickMode(!hasExistingData)

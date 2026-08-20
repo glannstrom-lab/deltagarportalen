@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { Brain, Shield, Settings, Loader2 } from '@/components/ui/icons'
 import { useAiConsent } from '@/hooks/useAiConsent'
 import { useAuthStore } from '@/stores/authStore'
-import { userApi } from '@/services/userApi'
+import { beviljaSamtycke } from '@/services/consentApi'
 import { cn } from '@/lib/utils'
 
 interface AiConsentGateProps {
@@ -45,9 +45,10 @@ export function AiConsentGate({
       setIsGranting(true)
       setGrantError(null)
 
-      await userApi.updateProfile({
-        ai_consent_at: new Date().toISOString(),
-      })
+      // MV1: går via `beviljaSamtycke`, inte `updateProfile`. Den gamla vägen
+      // satte tidsstämpeln men skrev ingen rad i `consent_history` — och
+      // art. 7.1 lägger bevisbördan för samtycket på oss.
+      await beviljaSamtycke('ai_processing')
 
       // Force refresh the auth store to get updated profile
       window.location.reload()

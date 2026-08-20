@@ -25,7 +25,7 @@
  */
 
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
 
 /* eslint-disable @typescript-eslint/no-require-imports */
@@ -194,6 +194,76 @@ describe('edge-vägen har samma regel som Vercel-vägen', () => {
     expect(kalla).toMatch(/checkAiEnabled/)
     expect(kalla).toMatch(/createGateDenialResponse/)
   })
+})
+
+/**
+ * JD1 (2026-08-21): grinden härleder sin egen lista.
+ *
+ * `_shared/aiGate.ts` byggdes 2026-08-19 för `ai-company-search` och
+ * `ai-company-analysis`, fick `ai-career-assistant` 2026-08-20 — och stannade
+ * där. `ai-commute-planner` och `ai-industry-radar` kör samma modell och hade
+ * ingen grind alls: ett konto med `ai_enabled = false` fick sin HEMADRESS
+ * skickad till Perplexity ändå.
+ *
+ * Testet ovanför är skrivet per funktion, och det är precis varför de två
+ * kunde bli kvar — en handskriven lista glider isär från verkligheten. Samma
+ * lärdom som A20, där `export_user_data()` räknade upp tabeller för hand och
+ * missade den som faktiskt hade rader. Den här grinden RÄKNAR UPP filerna
+ * själv: varje edge-funktion som nämner `perplexity/sonar` måste bära
+ * grinden. En sjätte anropare kan alltså inte glömmas bort — den fäller
+ * bygget den dag den skrivs.
+ *
+ * Motsvarande kontroll av att listan inte KRYMPER tyst: `MINSTA_ANTAL` nedan.
+ * Försvinner en funktion ur svepet — filen omdöpt, modellsträngen ändrad,
+ * katalogen flyttad — vill vi veta det, inte tro att allt är grönt för att
+ * noll filer kontrollerades.
+ */
+describe('JD1: varje Perplexity-funktion bär AI-brytaren och tokentaket', () => {
+  const FUNKTIONSKATALOG = resolve(__dirname, '../../../supabase/functions')
+
+  /** Filer som nämner modellen, härlett — inte handskrivet. */
+  const perplexityFunktioner = readdirSync(FUNKTIONSKATALOG, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
+    .map((d) => ({ namn: d.name, sokvag: resolve(FUNKTIONSKATALOG, d.name, 'index.ts') }))
+    .filter((f) => existsSync(f.sokvag))
+    .filter((f) => /perplexity\/sonar/.test(readFileSync(f.sokvag, 'utf8')))
+
+  /**
+   * Fem vid mätningen 2026-08-21. Talet är ett golv, inte ett facit: lägger
+   * någon till en sjätte ska testet ovan täcka den utan att den här raden rörs.
+   */
+  const MINSTA_ANTAL = 5
+
+  it(`hittar minst ${MINSTA_ANTAL} funktioner som kör perplexity/sonar`, () => {
+    expect(perplexityFunktioner.length).toBeGreaterThanOrEqual(MINSTA_ANTAL)
+  })
+
+  it.each(perplexityFunktioner.map((f) => [f.namn, f.sokvag]))(
+    '%s kontrollerar ai_enabled och dygnets tokentak',
+    (_namn, sokvag) => {
+      const kalla = readFileSync(sokvag, 'utf8')
+      // Importen räcker inte — den kan ligga oanvänd. Kräv anropet.
+      expect(kalla).toMatch(/await\s+checkAiEnabled\s*\(/)
+      expect(kalla).toMatch(/createGateDenialResponse/)
+      expect(kalla).toMatch(/await\s+checkDailyTokenCap\s*\(/)
+      expect(kalla).toMatch(/createTokenCapResponse/)
+    }
+  )
+
+  it.each(perplexityFunktioner.map((f) => [f.namn, f.sokvag]))(
+    '%s grindar FÖRE anropet till OpenRouter',
+    (_namn, sokvag) => {
+      const kalla = readFileSync(sokvag, 'utf8')
+      const grind = kalla.indexOf('await checkAiEnabled')
+      const anrop = kalla.indexOf('OPENROUTER_API_URL,')
+      // En grind som körs efter att uppgifterna redan skickats är dekoration —
+      // exakt felet i A29, där `send-invite-email` hann skicka mejlet före sin
+      // egen 403.
+      expect(grind).toBeGreaterThan(-1)
+      expect(anrop).toBeGreaterThan(-1)
+      expect(grind).toBeLessThan(anrop)
+    }
+  )
 })
 
 describe('G15: karriärplanen känner till svenska stödsystem', () => {

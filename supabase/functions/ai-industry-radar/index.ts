@@ -6,8 +6,21 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
+import {
+  checkAiEnabled,
+  createGateDenialResponse,
+  checkDailyTokenCap,
+  createTokenCapResponse,
+  sanitizeForPrompt,
+} from '../_shared/aiGate.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
+/** Fritext från klienten. Taken kapar en prompt som försöker bli en instruktion. */
+const MAX_YRKESLANGD = 120
+const MAX_REGIONLANGD = 80
+const MAX_INTRESSELANGD = 60
+const MAX_ANTAL_INTRESSEN = 10
 
 interface IndustryRadarRequest {
   userInterests?: string[]
@@ -39,7 +52,18 @@ interface IndustryRadarResult {
 }
 
 function buildIndustryRadarPrompt(params: IndustryRadarRequest): string {
-  const { userInterests, currentOccupation, region } = params
+  // Saneras här, där fälten blir en prompt — se motiveringen i
+  // `ai-commute-planner`. `userInterests` är en array från klienten, så både
+  // antalet poster och varje posts längd måste kapas; utan taket på antalet
+  // kan en lång lista ensam fylla hela kontextfönstret.
+  const currentOccupation = sanitizeForPrompt(params.currentOccupation, MAX_YRKESLANGD)
+  const region = sanitizeForPrompt(params.region, MAX_REGIONLANGD)
+  const userInterests = Array.isArray(params.userInterests)
+    ? params.userInterests
+        .slice(0, MAX_ANTAL_INTRESSEN)
+        .map((i) => sanitizeForPrompt(i, MAX_INTRESSELANGD))
+        .filter(Boolean)
+    : []
 
   return `Du är en expert på arbetsmarknadstrender i Sverige.
 
@@ -143,6 +167,28 @@ Deno.serve(async (req) => {
 
     if (authError || !user) {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+    }
+
+    // AI-BRYTAREN (GDPR art. 21). Skickar yrke, intressen och region till
+    // `perplexity/sonar`. Grinden fanns i `_shared/aiGate.ts` sedan
+    // 2026-08-19 men var inkopplad i bara tre av de fem Perplexity-
+    // funktionerna; den här och `ai-commute-planner` blev kvar till
+    // 2026-08-21 (JD1).
+    //
+    // `supabase` är service-role-klienten, vilket grinden kräver för att nå
+    // profilraden. Skicka aldrig in en anon-klient — det är A19-buggen.
+    const aiGate = await checkAiEnabled(supabase, user.id)
+    if (!aiGate.allowed) {
+      console.warn(`[ai-industry-radar] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`)
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin)
+    }
+
+    // DAGLIGT TOKENTAK. Delar budget med `client/api/ai.js` via samma
+    // `ai_usage_logs` — funktionen åt den budgeten utan att räknas mot något.
+    const tokenCap = await checkDailyTokenCap(supabase, user.id)
+    if (!tokenCap.allowed) {
+      console.warn(`[ai-industry-radar] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`)
+      return createTokenCapResponse(tokenCap, origin)
     }
 
     // Rate limiting

@@ -6,8 +6,18 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
+import {
+  checkAiEnabled,
+  createGateDenialResponse,
+  checkDailyTokenCap,
+  createTokenCapResponse,
+  sanitizeForPrompt,
+} from '../_shared/aiGate.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
+/** Adresser är korta. Taket finns för att kapa en prompt som försöker bli en instruktion. */
+const MAX_ADRESSLANGD = 200
 
 interface CommutePlannerRequest {
   homeAddress: string
@@ -41,7 +51,13 @@ interface CommutePlannerResult {
 }
 
 function buildCommutePlannerPrompt(params: CommutePlannerRequest): string {
-  const { homeAddress, workAddress } = params
+  // Saneras här, inte hos anroparen: den här funktionen är det enda stället
+  // adresserna blir en prompt, och en sanering som ligger utanför går att
+  // glömma vid nästa anropsställe. `sanitizeForPrompt` kapar längd och gör
+  // radbrytningar till mellanslag, så en adress inte kan bryta ut ur sitt
+  // stycke och se ut som en ny instruktion.
+  const homeAddress = sanitizeForPrompt(params.homeAddress, MAX_ADRESSLANGD)
+  const workAddress = sanitizeForPrompt(params.workAddress, MAX_ADRESSLANGD)
 
   return `Du är en expert på pendling och transport i Sverige.
 
@@ -142,6 +158,29 @@ Deno.serve(async (req) => {
 
     if (authError || !user) {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+    }
+
+    // AI-BRYTAREN (GDPR art. 21). Den här funktionen skickar användarens
+    // HEMADRESS till `perplexity/sonar` — den känsligaste indatan av de fem
+    // Perplexity-funktionerna. Grinden fanns i `_shared/aiGate.ts` sedan
+    // 2026-08-19 och kopplades in i tre av fem; den här och
+    // `ai-industry-radar` blev kvar till 2026-08-21 (JD1). Utan den fick ett
+    // konto med `ai_enabled = false` ändå sin bostadsadress vidarebefordrad.
+    //
+    // `supabase` är service-role-klienten, vilket grinden kräver för att nå
+    // profilraden. Skicka aldrig in en anon-klient — det är A19-buggen.
+    const aiGate = await checkAiEnabled(supabase, user.id)
+    if (!aiGate.allowed) {
+      console.warn(`[ai-commute-planner] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`)
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin)
+    }
+
+    // DAGLIGT TOKENTAK. Delar budget med `client/api/ai.js` via samma
+    // `ai_usage_logs` — funktionen åt den budgeten utan att räknas mot något.
+    const tokenCap = await checkDailyTokenCap(supabase, user.id)
+    if (!tokenCap.allowed) {
+      console.warn(`[ai-commute-planner] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`)
+      return createTokenCapResponse(tokenCap, origin)
     }
 
     // Rate limiting

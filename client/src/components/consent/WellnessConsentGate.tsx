@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Heart, Shield, Settings, Loader2, AlertCircle } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
-import { userApi } from '@/services/userApi'
+import { beviljaSamtycke } from '@/services/consentApi'
 import { cn } from '@/lib/utils'
 
 interface WellnessConsentGateProps {
@@ -44,9 +44,10 @@ export function WellnessConsentGate({
       setIsGranting(true)
       setGrantError(null)
 
-      await userApi.updateProfile({
-        wellness_consent_at: new Date().toISOString(),
-      })
+      // MV1: går via `beviljaSamtycke`, inte `updateProfile`. Den gamla
+      // vägen satte tidsstämpeln men skrev ingen rad i `consent_history` —
+      // och art. 7.1 lägger bevisbördan för samtycket på oss.
+      await beviljaSamtycke('wellness_data')
 
       // Force refresh the auth store to get updated profile
       window.location.reload()

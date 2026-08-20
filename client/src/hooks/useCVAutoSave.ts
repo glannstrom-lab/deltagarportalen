@@ -135,12 +135,44 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     }
   }, [])
 
-  // Cleanup debounce timer on unmount
+  // CB1 (2026-08-21): FLUSHA vid unmount — inte bara rensa timern.
+  //
+  // Den här cleanupen gjorde tidigare enbart `clearTimeout()`. Vid en
+  // SPA-navigering (klicka vidare i portalen, inte stänga fliken) körs varken
+  // `visibilitychange` eller `beforeunload` — bara unmount. Allt som låg i
+  // 800 ms-debouncen kastades alltså tyst. `visibilitychange`-hanteraren tjugo
+  // rader ovanför gör det rätt sedan tidigare; den här var kvar.
+  //
+  // `flushRef` behövs för att cleanupen måste ha `[]` som beroenden — annars
+  // körs den vid varje ändring av `isOnline`, inte bara vid unmount, och skulle
+  // flusha långt oftare än avsett. Refen pekar alltid på den färskaste
+  // versionen av funktionen.
+  const flushRef = useRef<(() => void) | null>(null)
+
+  // Refen skrivs i en effekt utan beroendelista — alltså efter VARJE render,
+  // men aldrig under själva renderingen. `react-hooks/refs` förbjuder det
+  // senare ("Cannot access refs during render"), och regeln är körd som error
+  // i `lint:ci`.
   useEffect(() => {
-    return () => {
+    flushRef.current = () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current)
+        debounceTimer.current = null
       }
+      if (!pendingData.current) return
+      if (isOnline) {
+        saveToServer(pendingData.current)
+        pendingData.current = null
+      }
+      // Offline: `pendingData` lämnas kvar med flit. sessionStorage-utkastet
+      // skrevs redan i `triggerSave`, och `restoreDraft()` plockar upp det när
+      // sidan monteras igen.
+    }
+  })
+
+  useEffect(() => {
+    return () => {
+      flushRef.current?.()
     }
   }, [])
 

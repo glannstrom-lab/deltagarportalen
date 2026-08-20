@@ -27,6 +27,26 @@ export default defineConfig({
       VITE_SUPABASE_URL: 'http://localhost:54321',
       VITE_SUPABASE_ANON_KEY: 'test-anon-key-not-a-real-credential',
     },
+    // BL3 (2026-08-21): sviten gav olika svar på samma rena träd.
+    //
+    // Uppmätt: tre körningar av oförändrad kod gav 2 086/2 086 grönt, sedan
+    // fyra timeouts (`nav-smoke`, `aiHandlerResponse`, `aiServerConsentGate`),
+    // sedan grönt igen — och under `test:coverage`, där v8-instrumenteringen
+    // lägger på overhead, föll `register-flow` på vitests default 5 000 ms.
+    // Isolerat kör samma fil sina åtta tester grönt, men två av dem tar
+    // 1,7–1,8 s var. Marginalen till 5 s äts upp av parallella filer plus
+    // coverage.
+    //
+    // Det är alltså ingen logikbugg utan för snäva marginaler i tunga
+    // jsdom-integrationstester. Höjt till 20 s: samma tal som `nav-smoke`
+    // redan satte lokalt, och tillräckligt för CI:s delade runners.
+    //
+    // Varför det spelar roll: en grind som failar slumpvis lär man sig att
+    // köra om i stället för att läsa. Då är den värdelös den dagen den har
+    // rätt. Höjningen gör inte något test svagare — ett test som verkligen
+    // hänger sig failar fortfarande, bara 15 sekunder senare.
+    testTimeout: 20_000,
+    hookTimeout: 20_000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'json-summary', 'html'],
