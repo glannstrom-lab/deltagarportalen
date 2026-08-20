@@ -7632,107 +7632,165 @@
     }
   },
   "linkedInOptimizer": {
-    "title": "LinkedIn-optimerare",
-    "description": "Gör din LinkedIn-profil mer synlig och professionell med AI-genererade texter.",
+    "title": "LinkedIn",
+    "description": "Skriv texterna till din LinkedIn-profil — och se vad som är kvar att fylla i.",
     "tabs": {
       "headline": {
-        "label": "Headline",
-        "description": "Skapa en catchy profilrubrik"
+        "label": "Rubrik"
       },
       "about": {
-        "label": "About",
-        "description": "Skriv en övertygande bio"
+        "label": "Om dig"
       },
       "post": {
-        "label": "Inlägg",
-        "description": "Skapa engagerande inlägg"
+        "label": "Inlägg"
       },
       "connection": {
-        "label": "Kontakt",
-        "description": "Nätverka smart"
+        "label": "Kontakt"
       },
       "audit": {
-        "label": "Checklista",
-        "description": "Gå igenom din profil punkt för punkt"
+        "label": "Checklista"
       }
+    },
+    "relevance": {
+      "title": "Är LinkedIn rätt kanal för dig?",
+      "body": "LinkedIn är starkast inom kontor, IT, ekonomi, teknik och offentlig förvaltning. Söker du inom vård, lager, handel, bygg, städ eller restaurang tillsätts jobben oftast på annat sätt — via arbetsgivarens egen sida, bemanningsföretag, Platsbanken eller genom att du hör av dig direkt. En profil kan ändå hjälpa dig att bli hittad, men lägg huvuddelen av din tid där jobben faktiskt tillsätts.",
+      "toSpontaneous": "Hitta företag att höra av dig till",
+      "toJobSearch": "Sök lediga jobb"
     },
     "headline": {
-      "title": "Skapa Headline",
-      "description": "Din headline syns direkt under ditt namn. Gör den beskrivande och catchy!",
-      "jobTitleLabel": "Din yrkestitel",
-      "specializationLabel": "Din specialisering",
-      "jobTitlePlaceholder": "Din yrkestitel (t.ex. Projektledare)",
-      "specializationPlaceholder": "Specialisering (t.ex. Digitala transformationer)",
+      "title": "Din rubrik på LinkedIn",
+      "description": "Rubriken står direkt under ditt namn. De första omkring 70 tecknen är det som syns i sökträffar — säg det viktigaste där. Hela fältet rymmer 220 tecken.",
+      "jobTitleLabel": "Vad du gör eller vill göra",
+      "jobTitlePlaceholder": "t.ex. undersköterska, lagerarbetare, butikssäljare",
+      "prefilledFromCv": "Hämtat från ditt CV — ändra om du vill.",
+      "specializationLabel": "Något som gör dig lättare att hitta",
+      "specializationPlaceholder": "t.ex. demensvård, truckkort A+B, kassa och kundservice",
       "tipLabel": "Tips",
-      "tipText": "Inkludera nyckelord som rekryterare söker efter för att öka din synlighet."
+      "tipText": "Öppna tre annonser för jobb du vill ha. Orden som återkommer i alla tre är de arbetsgivare söker på — ta med dem.",
+      "pasteWhere": "Klistra in i LinkedIn: din profil → pennan uppe till höger → fältet Rubrik."
     },
     "about": {
-      "title": "Skriv About-sektion",
-      "description": "Berätta vem du är och vad du gör. Max 2000 tecken.",
-      "backgroundLabel": "Din bakgrund och erfarenhet",
-      "strengthsLabel": "Dina styrkor",
-      "goalsLabel": "Dina karriärmål",
-      "backgroundPlaceholder": "Din bakgrund och erfarenhet...",
-      "strengthsPlaceholder": "Dina styrkor och vad du brinner för...",
-      "goalsPlaceholder": "Dina karriärmål..."
+      "title": "Berätta om dig själv",
+      "description": "Avsnittet heter \"Om\" på svenska LinkedIn. Bara omkring 300 tecken syns innan läsaren måste klicka \"se mer\" — lägg det viktigaste först. Hela fältet rymmer 2 600 tecken.",
+      "backgroundLabel": "Din bakgrund",
+      "backgroundPlaceholder": "t.ex. 8 år inom äldreomsorgen, senast på särskilt boende",
+      "strengthsLabel": "Vad du är bra på",
+      "strengthsPlaceholder": "t.ex. lugn med oroliga vårdtagare, van vid nattpass",
+      "goalsLabel": "Vad du söker nu",
+      "goalsPlaceholder": "t.ex. fast tjänst inom hemtjänsten i Göteborg",
+      "pasteWhere": "Klistra in i LinkedIn: din profil → avsnittet Om → pennan."
     },
     "post": {
-      "title": "Skapa LinkedIn-inlägg",
-      "description": "Engagerande inlägg ökar din synlighet. Max 1300 tecken.",
+      "title": "Skriv ett inlägg",
+      "description": "Ett inlägg rymmer 3 000 tecken, men bara omkring 210 syns innan \"…visa mer\". Du behöver inte posta för att ha nytta av LinkedIn — det här är för dig som vill.",
       "topicLabel": "Vad vill du skriva om?",
-      "toneLabel": "Ton i inlägget",
-      "topicPlaceholder": "Vad vill du skriva om? (t.ex. 'Erfarenheter från mitt senaste projekt')",
+      "topicPlaceholder": "t.ex. att jag är klar med min utbildning och söker jobb",
+      "toneLabel": "Ton",
       "tones": {
         "professional": "Professionell",
-        "personal": "Personlig & reflekterande",
-        "enthusiastic": "Entusiastisk",
+        "personal": "Personlig",
+        "enthusiastic": "Peppande",
         "formal": "Formell"
-      }
+      },
+      "pasteWhere": "Klistra in i LinkedIn: startsidan → \"Skapa ett inlägg\"."
     },
     "connection": {
-      "title": "Nätverka - Kontaktmeddelande",
-      "description": "Ett personligt meddelande ökar chansen att bli accepterad.",
+      "title": "Skriv till någon du vill nå",
+      "description": "Meddelandet som följer med en kontaktförfrågan är kort — räkna med omkring 200 tecken. Gratiskonton kan dessutom bara skicka ett begränsat antal personliga inbjudningar per månad, så använd dem där de gör mest nytta.",
       "nameLabel": "Personens namn",
-      "roleLabel": "Personens roll",
-      "purposeLabel": "Varför vill du connecta?",
-      "namePlaceholder": "Personens namn",
-      "rolePlaceholder": "Personens roll (t.ex. HR-chef på Volvo)",
-      "purposePlaceholder": "Varför vill du connecta? (t.ex. 'Jag beundrar ditt arbete inom...')"
+      "namePlaceholder": "t.ex. Anna Svensson",
+      "roleLabel": "Vad personen jobbar med",
+      "rolePlaceholder": "t.ex. enhetschef på ett äldreboende i Göteborg",
+      "purposeLabel": "Varför du hör av dig",
+      "purposePlaceholder": "t.ex. jag söker jobb hos er och undrar hur ni brukar rekrytera",
+      "pasteWhere": "I LinkedIn: gå till personens profil → Anslut → Lägg till en anteckning."
     },
-    "generate": "Skapa med AI",
+    "generate": "Skriv ett förslag med AI",
+    "generating": "Skriver …",
+    "missingFields": "Fyll i fälten ovan först, så har AI:n något att utgå från.",
     "result": {
-      "title": "Din LinkedIn-text",
-      "copy": "Kopiera",
-      "copied": "Kopierat!",
-      "tip": "Tips: Anpassa texten efter din personliga stil innan du publicerar!"
+      "title": "Ditt förslag",
+      "titleNamed": "Ditt förslag, {{name}}",
+      "copy": "Kopiera texten",
+      "copied": "Kopierad",
+      "copyFailed": "Kopieringen gick inte. Markera texten och kopiera för hand.",
+      "regenerate": "Skriv ett nytt förslag",
+      "charCount": "{{count}} tecken av {{limit}}",
+      "charCountOver": "{{count}} tecken — det är {{over}} för många för LinkedIn",
+      "beforeYouPaste": "Innan du klistrar in",
+      "check1": "Läs igenom och ändra det som inte stämmer. Allt som står ska vara sant om dig.",
+      "check2": "Fråga dig: kan jag berätta om det här i en intervju?",
+      "check3": "Låter det som du? Skriv om meningar som känns främmande."
+    },
+    "draft": {
+      "title": "Grundmall — inte ett AI-svar",
+      "body": "AI:n kunde inte svara just nu, så här är en mall att fylla i själv. Byt ut det som står inom hakparenteser."
     },
     "errors": {
-      "generateFailed": "Kunde inte generera text. Försök igen."
+      "aiOff": "Du har stängt av AI-behandling av dina uppgifter. Du kan slå på det igen i Inställningar — eller fylla i mallen nedan för hand.",
+      "login": "Din inloggning verkar ha gått ut. Ladda om sidan och logga in igen.",
+      "tooMany": "Många frågar AI:n samtidigt just nu. Vänta en stund och försök igen.",
+      "generic": "AI:n svarade inte den här gången. Mallen nedan går att fylla i själv under tiden.",
+      "settingsLink": "Öppna inställningarna"
     },
     "audit": {
-      "profileHealth": "Profilhälsa",
-      "grade": "Betyg",
-      "profileCompleted": "Profil ifylld",
-      "recommendation": "Fokusera på de röda områdena för att förbättra din synlighet och attraktivitet för rekryterare.",
-      "checklists": "Checklista",
-      "beforeAfterExamples": "Före & Efter-exempel",
-      "before": "Före",
-      "after": "Efter",
-      "hideKeywords": "Dölj nyckelord",
-      "showKeywords": "Visa nyckelord",
-      "priorityActions": "Prioriterade åtgärder",
-      "high": "Hög",
-      "medium": "Medel",
-      "action1": "Lägg till minst 3 rekommendationer",
-      "action2": "Skriv om din About-sektion med en engagerande hook",
-      "action3": "Uppdatera erfarenhetsbeskrivningar med mätbara resultat",
-      "action4": "Lägg till nyckelkompetenser i din headline",
-      "startAudit": "Öppna checklistan",
-          "checklistHeading": "Checklista för din LinkedIn-profil",
-          "intro": "Jobin kan inte läsa din LinkedIn-profil. Gå igenom listan med profilen öppen bredvid och kryssa i det du redan har — då ser du själv vad som återstår.",
-          "yourTicks": "Du har kryssat i",
-          "sectionTicks": "{{klara}} av {{totalt}}",
-          "remaining": "Kvar att göra"
+      "title": "Gå igenom din profil",
+      "intro": "Jobin kan inte läsa din LinkedIn-profil. Gå igenom listan med profilen öppen bredvid och kryssa i det du redan har — då ser du själv vad som återstår.",
+      "saved": "Dina kryss sparas.",
+      "savedOffline": "Dina kryss sparas i den här webbläsaren.",
+      "yourTicks": "Du har kryssat i {{done}} av {{total}}",
+      "emptyHint": "Börja där det känns lättast — inget måste göras i dag.",
+      "remaining": "Kvar att göra",
+      "exampleBefore": "Kort",
+      "exampleAfter": "Mer att gå på",
+      "findWords": "Så hittar du dina ord",
+      "askTemplate": "Så kan du fråga",
+      "sections": {
+        "rubrik": {
+          "name": "Rubriken",
+          "points": {
+            "yrke": "Rubriken börjar med vad du gör eller vill göra",
+            "sokord": "Innehåller ord en arbetsgivare skulle söka på",
+            "synligt": "Det viktigaste står först — bara omkring 70 tecken syns i sökträffar"
+          },
+          "exampleBefore": "Arbetssökande",
+          "exampleAfter": "Undersköterska med demensinriktning | 8 år på särskilt boende | söker arbete i Göteborg",
+          "findWords": "Öppna tre annonser för jobb du vill ha och skriv ner orden som återkommer i alla tre. Det är dina sökord — inga andra behövs."
+        },
+        "om": {
+          "name": "Om-avsnittet",
+          "points": {
+            "borjan": "Första meningen säger vem du är och vad du söker",
+            "konkret": "Något konkret du kan — inte bara egenskaper",
+            "kontakt": "Slutar med hur någon kan höra av sig",
+            "lasbar": "Korta stycken med blankrad emellan"
+          },
+          "exampleBefore": "Jobbar inom vården.",
+          "exampleAfter": "Jag är undersköterska och trivs bäst där det är tempo och tydliga rutiner. Van vid nattpass och kontaktmannaskap, och den nya kollegor brukar fråga. Söker fast tjänst i Göteborg — hör gärna av dig här.",
+          "findWords": "Skriv först det du skulle säga om någon frågade \"vad jobbar du med?\" i en fikapaus. Städa språket efteråt."
+        },
+        "erfarenhet": {
+          "name": "Erfarenheterna",
+          "points": {
+            "vadDuGjorde": "Beskriver vad du gjorde, inte bara vad tjänsten hette",
+            "konkret": "Något som går att ta på: antal, utrustning, ansvar",
+            "luckor": "Praktik, vikariat, ideellt arbete och studier finns med"
+          },
+          "exampleBefore": "Lagerarbetare, ICA",
+          "exampleAfter": "Lagerarbetare, ICA Maxi — plock med röststyrning, truck A+B, ansvarade för inventeringen på min avdelning",
+          "findWords": "Titta i ditt eget CV i portalen. Det du redan skrivit där går oftast att använda rakt av."
+        },
+        "rekommendationer": {
+          "name": "Rekommendationer",
+          "points": {
+            "fragat": "Frågat minst en tidigare chef, handledare eller kollega",
+            "olika": "Gärna från olika håll — chef, kollega, kund",
+            "kompetenser": "Kompetenserna på profilen är de du vill bli hittad på"
+          },
+          "askTemplate": "Hej [namn]! Jag söker jobb inom [yrke] och håller på att fylla på min LinkedIn-profil. Skulle du vilja skriva några rader om hur det var att jobba ihop? Det räcker med två-tre meningar — och säg gärna nej om du inte hinner.",
+          "findWords": "Fråga hellre en person som minns dig väl än tre som knappt gör det."
+        }
+      }
     }
   },
   "careerPlan": {
@@ -9729,12 +9787,16 @@
       "doneTitle": "Bra val!"
     },
     "linkedin": {
-      "doneText": "Öppna LinkedIn-optimeraren i normalläge för att få AI-förslag på din text.",
+      "title": "LinkedIn",
+      "introTitle": "Vilken del vill du skriva?",
+      "partHeadline": "Rubriken",
+      "partAbout": "Om dig",
+      "partExperience": "Ett inlägg",
+      "textTitle": "Berätta kort om dig",
+      "textHint": "Några ord räcker. Vi tar med det till nästa steg.",
+      "textPlaceholder": "t.ex. undersköterska, 8 år, söker jobb i Göteborg",
       "doneTitle": "Klart!",
-      "partTitle": "Vilken del vill du förbättra?",
-      "textHint": "Vi använder den för att föreslå förbättringar i normalläge.",
-      "textPlaceholder": "Klistra in din text här...",
-      "textTitle": "Klistra in din nuvarande text"
+      "doneText": "Vi tar med det du skrev till {{part}}. Avsluta fokusläget så ligger det redan ifyllt."
     },
     "minVardagHub": {
       "question": "Vad känns viktigt i din vardag just nu?"

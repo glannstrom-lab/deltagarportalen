@@ -35,6 +35,10 @@ const AUTH_PAGES = [
   { name: 'Cover Letter', path: '/#/cover-letter' },
   { name: 'Profile', path: '/#/profile' },
   { name: 'Settings', path: '/#/settings' },
+  // Tillagd 2026-08-20: sidan hade noll automatisk tillgänglighetskontroll,
+  // och granskningen hittade fem expanderare utan aria-expanded, ett resultat
+  // som aldrig annonserades och en hover-färg på 1,79:1 i mörkt läge.
+  { name: 'LinkedIn', path: '/#/linkedin-optimizer' },
 ]
 
 test.describe('A11y — Public pages (WCAG 2.1 AA)', () => {

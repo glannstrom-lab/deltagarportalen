@@ -879,13 +879,40 @@ Svara ENDAST med JSON.`,
   },
   'linkedin-optimering': (data) => {
     const typ = data?.typ || 'headline';
+
+    // LinkedIns fältgränser, kontrollerade 2026-08-20. Prompten kände tidigare
+    // inte till dem alls: kontaktförfrågningar blev rutinmässigt flera gånger
+    // längre än de ~200 tecken som får plats i en inbjudan, och användaren
+    // upptäckte det först när LinkedIn kapade texten. Klienten skickar med
+    // `maxTecken`; taken här är reserven om den inte gör det.
+    const TECKENTAK = { headline: 220, about: 2600, post: 3000, connection: 200 };
+    const tak = Number.isFinite(data?.maxTecken) ? data.maxTecken : (TECKENTAK[typ] || 2600);
+
+    // Bara ifyllda fält går vidare. Ett tomt formulär gav tidigare
+    // `{"yrke":"","erfarenhet":""}` plus ordern "skriv 3 rubriker" — den enda
+    // situation där modellen MÅSTE hitta på för att kunna lyda.
+    const underlag = Object.fromEntries(
+      Object.entries(data?.data || {}).filter(([, v]) => typeof v === 'string' ? v.trim() : v)
+    );
+
     const prompts = {
-      headline: `Skriv 3 LinkedIn-rubriker för: ${JSON.stringify(data?.data)}`,
-      about: `Skriv LinkedIn "Om mig" för: ${JSON.stringify(data?.data)}`,
-      post: `Skriv LinkedIn-inlägg om: ${JSON.stringify(data?.data)}`,
-      connection: `Skriv kontaktförfrågan för: ${JSON.stringify(data?.data)}`
+      headline: `Skriv 3 förslag på LinkedIn-rubrik (max ${tak} tecken vardera, det viktigaste i de första 70) utifrån: ${JSON.stringify(underlag)}`,
+      about: `Skriv ett "Om"-avsnitt till LinkedIn (max ${tak} tecken, det viktigaste i de första 300) utifrån: ${JSON.stringify(underlag)}`,
+      post: `Skriv ett LinkedIn-inlägg (max ${tak} tecken, det viktigaste i de första 210) om: ${JSON.stringify(underlag)}`,
+      connection: `Skriv ett meddelande till en kontaktförfrågan på LinkedIn. Det MÅSTE rymmas inom ${tak} tecken inklusive hälsning och avslutning. Underlag: ${JSON.stringify(underlag)}`
     };
-    return { system: 'Du är LinkedIn-expert. Skriv på svenska. SANNINGSREGEL: bygg endast på personens egna uppgifter. Hitta aldrig på titlar, arbetsgivare, utbildningar, kompetenser, certifikat eller siffror (antal år, antal projekt, resultat). Profilen ska personen kunna stå för i en intervju. Är underlaget tunt — skriv kortare, inte mer.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'text' };
+
+    return {
+      system: 'Du är LinkedIn-expert. Skriv på svenska. SANNINGSREGEL: bygg endast på personens egna uppgifter. '
+        + 'Hitta aldrig på titlar, arbetsgivare, utbildningar, kompetenser, certifikat eller siffror '
+        + '(antal år, antal projekt, resultat). Profilen ska personen kunna stå för i en intervju. '
+        + 'Är underlaget tunt — skriv kortare, inte mer. '
+        + `Håll dig inom teckengränsen som anges i uppgiften (${tak} tecken) — en text som är längre går inte att använda. `
+        + 'Skriv enkelt och konkret. Undvik engelska modeord och superlativ om personen själv.',
+      user: prompts[typ] || prompts.headline,
+      maxTokens: 800,
+      responseKey: 'text'
+    };
   },
   'intervju-simulator': (data) => {
     // Kategorin kommer från deltagarens egen meny på sidan. Den var död fram

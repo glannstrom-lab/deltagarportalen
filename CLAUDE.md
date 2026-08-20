@@ -293,7 +293,7 @@ npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inge
 npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (409)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
-npm run test:run           # 1 824 tester i 130 filer (~45 s, mätt 2026-08-20)
+npm run test:run           # 2 072 tester i 132 filer (~50 s, mätt 2026-08-20)
 npm run build
 ```
 

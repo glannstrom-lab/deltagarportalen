@@ -7632,107 +7632,165 @@
     }
   },
   "linkedInOptimizer": {
-    "title": "LinkedIn Optimizer",
-    "description": "Make your LinkedIn profile more visible and professional with AI-generated texts.",
+    "title": "LinkedIn",
+    "description": "Write the texts for your LinkedIn profile — and see what is left to fill in.",
     "tabs": {
       "headline": {
-        "label": "Headline",
-        "description": "Create a catchy profile headline"
+        "label": "Headline"
       },
       "about": {
-        "label": "About",
-        "description": "Write a compelling bio"
+        "label": "About you"
       },
       "post": {
-        "label": "Post",
-        "description": "Create engaging posts"
+        "label": "Post"
       },
       "connection": {
-        "label": "Connect",
-        "description": "Network smart"
+        "label": "Contact"
       },
       "audit": {
-        "label": "Checklist",
-        "description": "Go through your profile point by point"
+        "label": "Checklist"
       }
+    },
+    "relevance": {
+      "title": "Is LinkedIn the right channel for you?",
+      "body": "LinkedIn is strongest in office work, IT, finance, engineering and public administration. If you are looking for work in care, warehousing, retail, construction, cleaning or restaurants, jobs are usually filled another way — through the employer’s own site, staffing agencies, the Swedish Public Employment Service, or by getting in touch directly. A profile can still help people find you, but spend most of your time where the jobs are actually filled.",
+      "toSpontaneous": "Find companies to contact",
+      "toJobSearch": "Search for jobs"
     },
     "headline": {
-      "title": "Create Headline",
-      "description": "Your headline appears right below your name. Make it descriptive and catchy!",
-      "jobTitleLabel": "Your job title",
-      "specializationLabel": "Your specialization",
-      "jobTitlePlaceholder": "Your job title (e.g. Project Manager)",
-      "specializationPlaceholder": "Specialization (e.g. Digital Transformations)",
+      "title": "Your LinkedIn headline",
+      "description": "The headline sits right under your name. The first 70 characters or so are what shows in search results — put the important part there. The whole field holds 220 characters.",
+      "jobTitleLabel": "What you do, or want to do",
+      "jobTitlePlaceholder": "e.g. care assistant, warehouse worker, shop assistant",
+      "prefilledFromCv": "Taken from your CV — change it if you like.",
+      "specializationLabel": "Something that makes you easier to find",
+      "specializationPlaceholder": "e.g. dementia care, forklift licence, tills and customer service",
       "tipLabel": "Tip",
-      "tipText": "Include keywords that recruiters search for to increase your visibility."
+      "tipText": "Open three ads for jobs you want. The words that appear in all three are what employers search for — use those.",
+      "pasteWhere": "Paste into LinkedIn: your profile → the pencil at the top right → the Headline field."
     },
     "about": {
-      "title": "Write About Section",
-      "description": "Tell who you are and what you do. Max 2000 characters.",
-      "backgroundLabel": "Your background and experience",
-      "strengthsLabel": "Your strengths",
-      "goalsLabel": "Your career goals",
-      "backgroundPlaceholder": "Your background and experience...",
-      "strengthsPlaceholder": "Your strengths and passions...",
-      "goalsPlaceholder": "Your career goals..."
+      "title": "Tell people about yourself",
+      "description": "This is the \"About\" section. Only around 300 characters show before the reader has to click \"see more\" — put the important part first. The whole field holds 2,600 characters.",
+      "backgroundLabel": "Your background",
+      "backgroundPlaceholder": "e.g. 8 years in elderly care, most recently in a care home",
+      "strengthsLabel": "What you are good at",
+      "strengthsPlaceholder": "e.g. calm with anxious residents, used to night shifts",
+      "goalsLabel": "What you are looking for now",
+      "goalsPlaceholder": "e.g. a permanent job in home care in Gothenburg",
+      "pasteWhere": "Paste into LinkedIn: your profile → the About section → the pencil."
     },
     "post": {
-      "title": "Create LinkedIn Post",
-      "description": "Engaging posts increase your visibility. Max 1300 characters.",
+      "title": "Write a post",
+      "description": "A post holds 3,000 characters, but only around 210 show before \"…see more\". You do not have to post at all to benefit from LinkedIn — this is for you if you want to.",
       "topicLabel": "What do you want to write about?",
-      "toneLabel": "Tone of the post",
-      "topicPlaceholder": "What do you want to write about? (e.g. 'Lessons from my latest project')",
+      "topicPlaceholder": "e.g. that I have finished my training and am looking for work",
+      "toneLabel": "Tone",
       "tones": {
         "professional": "Professional",
-        "personal": "Personal & reflective",
-        "enthusiastic": "Enthusiastic",
+        "personal": "Personal",
+        "enthusiastic": "Encouraging",
         "formal": "Formal"
-      }
+      },
+      "pasteWhere": "Paste into LinkedIn: the home page → \"Start a post\"."
     },
     "connection": {
-      "title": "Network - Connection Message",
-      "description": "A personal message increases the chance of being accepted.",
-      "nameLabel": "Person's name",
-      "roleLabel": "Person's role",
-      "purposeLabel": "Why do you want to connect?",
-      "namePlaceholder": "Person's name",
-      "rolePlaceholder": "Person's role (e.g. HR Manager at Volvo)",
-      "purposePlaceholder": "Why do you want to connect? (e.g. 'I admire your work in...')"
+      "title": "Write to someone you want to reach",
+      "description": "The note attached to a connection request is short — count on about 200 characters. Free accounts can also only send a limited number of personalised invitations each month, so use them where they matter most.",
+      "nameLabel": "Their name",
+      "namePlaceholder": "e.g. Anna Svensson",
+      "roleLabel": "What they work with",
+      "rolePlaceholder": "e.g. unit manager at a care home in Gothenburg",
+      "purposeLabel": "Why you are getting in touch",
+      "purposePlaceholder": "e.g. I am looking for work with you and wonder how you usually recruit",
+      "pasteWhere": "In LinkedIn: go to their profile → Connect → Add a note."
     },
-    "generate": "Generate with AI",
+    "generate": "Write a draft with AI",
+    "generating": "Writing …",
+    "missingFields": "Fill in the fields above first, so the AI has something to work from.",
     "result": {
-      "title": "Your LinkedIn Text",
-      "copy": "Copy",
-      "copied": "Copied!",
-      "tip": "Tip: Customize the text to your personal style before publishing!"
+      "title": "Your draft",
+      "titleNamed": "Your draft, {{name}}",
+      "copy": "Copy the text",
+      "copied": "Copied",
+      "copyFailed": "The copy did not go through. Select the text and copy it manually.",
+      "regenerate": "Write a new draft",
+      "charCount": "{{count}} characters of {{limit}}",
+      "charCountOver": "{{count}} characters — that is {{over}} too many for LinkedIn",
+      "beforeYouPaste": "Before you paste",
+      "check1": "Read it through and change anything that is not right. Everything in it should be true about you.",
+      "check2": "Ask yourself: could I talk about this in an interview?",
+      "check3": "Does it sound like you? Rewrite the sentences that feel foreign."
+    },
+    "draft": {
+      "title": "Template — not an AI answer",
+      "body": "The AI could not answer just now, so here is a template to fill in yourself. Replace what is inside the square brackets."
     },
     "errors": {
-      "generateFailed": "Could not generate text. Please try again."
+      "aiOff": "You have turned off AI processing of your data. You can turn it back on in Settings — or fill in the template below by hand.",
+      "login": "Your session seems to have expired. Reload the page and sign in again.",
+      "tooMany": "A lot of people are asking the AI right now. Wait a moment and try again.",
+      "generic": "The AI did not answer this time. The template below can be filled in by hand in the meantime.",
+      "settingsLink": "Open settings"
     },
     "audit": {
-      "profileHealth": "Profile Health",
-      "grade": "Grade",
-      "profileCompleted": "Profile completed",
-      "recommendation": "Focus on the red areas to improve your visibility and attractiveness to recruiters.",
-      "checklists": "Checklist",
-      "beforeAfterExamples": "Before & After Examples",
-      "before": "Before",
-      "after": "After",
-      "hideKeywords": "Hide keywords",
-      "showKeywords": "Show keywords",
-      "priorityActions": "Priority Actions",
-      "high": "High",
-      "medium": "Medium",
-      "action1": "Add at least 3 recommendations",
-      "action2": "Rewrite your About section with an engaging hook",
-      "action3": "Update experience descriptions with measurable results",
-      "action4": "Add key skills to your headline",
-      "startAudit": "Open the checklist",
-          "checklistHeading": "Checklist for your LinkedIn profile",
-          "intro": "Jobin can't read your LinkedIn profile. Go through the list with your profile open beside it and tick what you already have — then you can see for yourself what's left.",
-          "yourTicks": "You've ticked",
-          "sectionTicks": "{{klara}} of {{totalt}}",
-          "remaining": "Left to do"
+      "title": "Go through your profile",
+      "intro": "Jobin cannot read your LinkedIn profile. Go through the list with your profile open beside you and tick what you already have — then you can see for yourself what is left.",
+      "saved": "Your ticks are saved.",
+      "savedOffline": "Your ticks are saved in this browser.",
+      "yourTicks": "You have ticked {{done}} of {{total}}",
+      "emptyHint": "Start wherever it feels easiest — nothing has to happen today.",
+      "remaining": "Left to do",
+      "exampleBefore": "Short",
+      "exampleAfter": "More to go on",
+      "findWords": "How to find your words",
+      "askTemplate": "How you could ask",
+      "sections": {
+        "rubrik": {
+          "name": "The headline",
+          "points": {
+            "yrke": "The headline starts with what you do, or want to do",
+            "sokord": "It contains words an employer would search for",
+            "synligt": "The important part comes first — only about 70 characters show in search results"
+          },
+          "exampleBefore": "Job seeker",
+          "exampleAfter": "Care assistant, dementia care | 8 years in a care home | looking for work in Gothenburg",
+          "findWords": "Open three ads for jobs you want and write down the words that appear in all three. Those are your search words — you do not need any others."
+        },
+        "om": {
+          "name": "The About section",
+          "points": {
+            "borjan": "The first sentence says who you are and what you are looking for",
+            "konkret": "Something concrete you can do — not just qualities",
+            "kontakt": "It ends with how someone can reach you",
+            "lasbar": "Short paragraphs with a blank line between them"
+          },
+          "exampleBefore": "Works in care.",
+          "exampleAfter": "I am a care assistant and I am at my best where the pace is high and the routines are clear. Used to night shifts and being the one new colleagues ask. Looking for a permanent job in Gothenburg — do get in touch here.",
+          "findWords": "First write what you would say if someone asked \"what do you do?\" over coffee. Tidy up the language afterwards."
+        },
+        "erfarenhet": {
+          "name": "The experience entries",
+          "points": {
+            "vadDuGjorde": "They describe what you did, not just what the job was called",
+            "konkret": "Something concrete: numbers, equipment, responsibility",
+            "luckor": "Internships, temp work, volunteering and studies are included"
+          },
+          "exampleBefore": "Warehouse worker, ICA",
+          "exampleAfter": "Warehouse worker, ICA Maxi — voice-directed picking, forklift licence A+B, responsible for stocktaking on my aisle",
+          "findWords": "Look at your own CV in the portal. What you have already written there can usually be used as it is."
+        },
+        "rekommendationer": {
+          "name": "Recommendations",
+          "points": {
+            "fragat": "You have asked at least one former manager, supervisor or colleague",
+            "olika": "Ideally from different places — manager, colleague, customer",
+            "kompetenser": "The skills on your profile are the ones you want to be found for"
+          },
+          "askTemplate": "Hi [name]! I am looking for work in [occupation] and am filling out my LinkedIn profile. Would you be willing to write a few lines about what it was like working together? Two or three sentences is plenty — and do say no if you have not got the time.",
+          "findWords": "Better to ask one person who remembers you well than three who barely do."
+        }
+      }
     }
   },
   "careerPlan": {
@@ -9729,12 +9787,16 @@
       "doneTitle": "Good choice!"
     },
     "linkedin": {
-      "doneText": "Open the LinkedIn optimiser in normal mode to get AI suggestions for your text.",
+      "title": "LinkedIn",
+      "introTitle": "Which part do you want to write?",
+      "partHeadline": "The headline",
+      "partAbout": "About you",
+      "partExperience": "A post",
+      "textTitle": "Tell us briefly about yourself",
+      "textHint": "A few words is enough. We will bring it to the next step.",
+      "textPlaceholder": "e.g. care assistant, 8 years, looking for work in Gothenburg",
       "doneTitle": "Done!",
-      "partTitle": "Which part do you want to improve?",
-      "textHint": "We use it to suggest improvements in normal mode.",
-      "textPlaceholder": "Paste your text here...",
-      "textTitle": "Paste your current text"
+      "doneText": "We will bring what you wrote to {{part}}. Leave focus mode and it will already be filled in."
     },
     "minVardagHub": {
       "question": "What feels important in your everyday life right now?"

@@ -1,293 +1,449 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, MessageSquare, Shield, AlertCircle, Eye, EyeOff, ChevronDown, ChevronUp } from '@/components/ui/icons'
+import { Link } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
+import {
+  Linkedin, Copy, Check, Sparkles, RefreshCw, Shield, AlertCircle,
+  ChevronDown, ChevronUp, ArrowRight, Info,
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { Progress } from '@/components/ui/Progress'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { callAI } from '@/services/aiApi'
+import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusLinkedInWizard } from '@/components/focus/pages/FocusLinkedInWizard'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import { articleChecklistApi } from '@/services/cloudStorage'
+import { cvApi } from '@/services/supabaseApi'
+import { useProfileStore } from '@/stores/profileStore'
+import { logger } from '@/lib/logger'
+import { cn } from '@/lib/utils'
 
 /**
- * En del av LinkedIn-profilen, med checklista, exempel och nyckelord.
+ * LinkedIn — skriv texterna, och se vad som är kvar att fylla i.
  *
- * **Ingen `score`.** Fram till 2026-08-17 bar varje del ett fast betyg (85, 72,
- * 68, 45 %), sidan visade "Profilhälsa" med bokstavsbetyg och "Profil ifylld
- * 67 %", och kryssrutorna kom förikryssade — som om portalen läst användarens
- * LinkedIn-profil. Det hade den aldrig gjort. Talen var hårdkodade och
- * identiska för alla; en deltagare fick veta att hen låg på 45 % i
- * rekommendationer utan att något kontrollerats.
+ * TRE SAKER SOM VAR FEL OCH INTE FÅR ÅTERINFÖRAS
  *
- * Det är samma felklass som granskningen 2026-08-09 kallade projektets
- * kärnproblem, men i dess värsta form: inte ett påhittat tal utan påhittade
- * råd *om användaren*. Checklistan och exemplen är däremot bra och är kvar —
- * de påstår ingenting om just din profil.
+ * 1. **Checklistan gick inte att nå från sin egen flik.** `auditSections`
+ *    fylldes bara av en knapp som renderades på rubrik-fliken, så den som
+ *    klickade "Checklista" i sidoskenan fick en rubrik, ett stycke som sa
+ *    "gå igenom listan" — och sedan ingenting. Innehållet ligger nu i
+ *    språkfilerna och renderas alltid.
+ * 2. **Reservmallen märktes som AI-genererad.** När anropet failade lades en
+ *    handskriven mall i samma `resultat` som AI-svaret, och renderades med
+ *    `data-ai-generated="true"` + "Detta förslag är genererat med AI-stöd".
+ *    Mallen påstod dessutom saker om personen: "Erfaren specialist inom
+ *    branschen", "Jag är en driven … med passion för …". Nu är mallen ett
+ *    ifyllbart utkast med hålrum, tydligt märkt som mall — samma beslut som
+ *    d2d1baf9/7c4d5435 tog för personligt brev.
+ * 3. **Alla fel såg likadana ut.** Ett naket `catch` gjorde att "du har stängt
+ *    av AI" (art. 21), utgången session, för många anrop och timeout blev
+ *    samma mening: "AI-tjänsten är inte tillgänglig just nu" — osant i tre av
+ *    fyra fall. `tolkaAiFel` skiljer dem åt, som i CoverLetterWrite.
  *
- * Numera kryssar användaren själv, och det enda talet på sidan räknas ur de
- * kryssen. Det är alltså hens egen uppgift, inte portalens gissning.
+ * TECKENGRÄNSERNA är kontrollerade 2026-08-20: rubrik 220 (~70 syns i
+ * sökträffar), Om 2 600 (~300 syns före "se mer"), inlägg 3 000 (~210 syns),
+ * kontaktnotis ~200. Sidan sa tidigare 2 000 och 1 300 — det senare var
+ * LinkedIns gräns före 2017.
  */
-interface SectionAudit {
-  name: string
-  checklist: { item: string; completed: boolean }[]
-  examples: { before: string; after: string }
-  keywords: string[]
+
+type Flik = 'headline' | 'about' | 'post' | 'connection' | 'audit'
+
+/** LinkedIns fältgränser. Se filhuvudet för när de kontrollerades. */
+const TECKENGRANS: Record<Exclude<Flik, 'audit'>, number> = {
+  headline: 220,
+  about: 2600,
+  post: 3000,
+  connection: 200,
+}
+
+/**
+ * Checklistans struktur. Ordningen bor här, texterna i språkfilerna under
+ * `linkedInOptimizer.audit.sections.*`. Nycklarna är också id:n för sparade
+ * kryss — byt dem inte utan att tänka på att någons kryss då nollställs.
+ */
+const PROFILDELAR = [
+  { nyckel: 'rubrik', punkter: ['yrke', 'sokord', 'synligt'], har: 'exempel' },
+  { nyckel: 'om', punkter: ['borjan', 'konkret', 'kontakt', 'lasbar'], har: 'exempel' },
+  { nyckel: 'erfarenhet', punkter: ['vadDuGjorde', 'konkret', 'luckor'], har: 'exempel' },
+  { nyckel: 'rekommendationer', punkter: ['fragat', 'olika', 'kompetenser'], har: 'mall' },
+] as const
+
+/**
+ * Kryssen sparas via `articleChecklistApi` — ett generiskt nyckel→lista-lager
+ * med molnsynk och localStorage-fallback. Id:t är avsiktligt inte ett
+ * artikel-id; tabellen `article_checklists` har ingen främmande nyckel mot
+ * artiklar och unikhet på (user_id, article_id), så raden lever för sig.
+ * En egen tabell vore renare men kräver en migration mot prod.
+ */
+const CHECKLIST_ID = 'linkedin-profil'
+
+interface FormData {
+  headline: { yrke: string; erfarenhet: string }
+  about: { bakgrund: string; styrkor: string; mal: string }
+  post: { amne: string; ton: string }
+  connection: { namn: string; roll: string; syfte: string }
+}
+
+const TOM_FORM: FormData = {
+  headline: { yrke: '', erfarenhet: '' },
+  about: { bakgrund: '', styrkor: '', mal: '' },
+  post: { amne: '', ton: 'professionell' },
+  connection: { namn: '', roll: '', syfte: '' },
+}
+
+type Felsort = 'ai-avstangd' | 'inloggning' | 'for-manga' | 'ai'
+
+/** Skiljer felen åt så användaren får rätt väg framåt. Samma mönster som
+ *  `components/cover-letter/CoverLetterWrite.tsx` — `callAI` kastar
+ *  `AiConsentRequiredError` för grinden men platt `Error` för resten. */
+function tolkaAiFel(error: unknown): Felsort {
+  if (error instanceof AiConsentRequiredError) return 'ai-avstangd'
+  const text = error instanceof Error ? error.message : ''
+  if (/inloggad|logga in|session/i.test(text)) return 'inloggning'
+  if (/många förfrågningar/i.test(text)) return 'for-manga'
+  return 'ai'
 }
 
 export default function LinkedInOptimizer() {
   const { t } = useTranslation()
   const { isFocusMode, leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('linkedInOptimizer.title', 'LinkedIn-optimerare')}
-        icon={Linkedin}
-        domain="activity"
-      >
-        <FocusLinkedInWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
+  /**
+   * Tillståndet bor här, inte i `Inner` — och fokusläget är ett ÖVERLÄGG,
+   * inte en gren som byter ut sidan. Låg `if (isFocusMode) return …` här ute
+   * avmonterades allt ifyllt när växeln slogs om, samma fel som b93be382
+   * (intervjusimulatorn) och 00d8be26 (lönesidan) lagade. Växeln sitter på två
+   * ställen som båda syns på rutten: toppnaven och "Lugnare läge".
+   */
+  const [aktivTab, setAktivTab] = useState<Flik>('headline')
+  const [formData, setFormData] = useState<FormData>(TOM_FORM)
 
-  return <LinkedInOptimizerInner />
+  return (
+    <>
+      <div style={isFocusMode ? { display: 'none' } : undefined}>
+        <LinkedInOptimizerInner
+          aktivTab={aktivTab}
+          setAktivTab={setAktivTab}
+          formData={formData}
+          setFormData={setFormData}
+        />
+      </div>
+
+      {isFocusMode && (
+        <PageFocusShell title={t('linkedInOptimizer.title')} icon={Linkedin} domain="activity">
+          <FocusLinkedInWizard
+            onTaMedTillNormalvy={(del, text) => {
+              setAktivTab(del)
+              setFormData((f) =>
+                del === 'headline'
+                  ? { ...f, headline: { ...f.headline, yrke: text } }
+                  : del === 'about'
+                    ? { ...f, about: { ...f.about, bakgrund: text } }
+                    : { ...f, post: { ...f.post, amne: text } },
+              )
+            }}
+            onExit={leaveWizard}
+          />
+        </PageFocusShell>
+      )}
+    </>
+  )
 }
 
-function LinkedInOptimizerInner() {
+interface InnerProps {
+  aktivTab: Flik
+  setAktivTab: (f: Flik) => void
+  formData: FormData
+  setFormData: React.Dispatch<React.SetStateAction<FormData>>
+}
+
+function LinkedInOptimizerInner({ aktivTab, setAktivTab, formData, setFormData }: InnerProps) {
   const { t } = useTranslation()
-  const [aktivTab, setAktivTab] = useState<'headline' | 'about' | 'post' | 'connection' | 'audit'>('headline')
-  const [formData, setFormData] = useState({
-    headline: { yrke: '', erfarenhet: '' },
-    about: { bakgrund: '', styrkor: '', mal: '' },
-    post: { amne: '', ton: 'professionell' },
-    connection: { namn: '', roll: '', syfte: '' }
-  })
-  const [resultat, setResultat] = useState('')
+  const profil = useProfileStore((s) => s.profile)
+
+  // Ett resultat per flik: att byta flik ska inte radera en text man håller på
+  // att läsa. Tidigare gjorde `bytTab` `setResultat('')` villkorslöst.
+  const [resultatPerFlik, setResultatPerFlik] = useState<Partial<Record<Flik, string>>>({})
+  const [kallaPerFlik, setKallaPerFlik] = useState<Partial<Record<Flik, 'ai' | 'mall'>>>({})
   const [isLoading, setIsLoading] = useState(false)
+  const [felsort, setFelsort] = useState<Felsort | null>(null)
+  const [kopieringsfel, setKopieringsfel] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [auditSections, setAuditSections] = useState<SectionAudit[]>([])
-  const [expandedSection, setExpandedSection] = useState<string | null>(null)
-  const [showKeywords, setShowKeywords] = useState(false)
+  const [oppenDel, setOppenDel] = useState<string | null>(PROFILDELAR[0].nyckel)
+  const [visaOrd, setVisaOrd] = useState<string | null>(null)
+  const [visaRelevans, setVisaRelevans] = useState(false)
+  const [kryssade, setKryssade] = useState<string[]>([])
+  const [kryssKalla, setKryssKalla] = useState<'moln' | 'lokal'>('moln')
+  const [forifyllt, setForifyllt] = useState(false)
+
+  const resultat = resultatPerFlik[aktivTab] ?? ''
+  const kalla = kallaPerFlik[aktivTab] ?? null
+
+  // Portalen vet redan yrkestiteln — den står i CV:t användaren byggt här.
+  const { data: cv } = useQuery({ queryKey: ['cv'], queryFn: () => cvApi.getCV(), staleTime: 300_000 })
+  useEffect(() => {
+    if (forifyllt || formData.headline.yrke || !cv?.title) return
+    setFormData((f) => ({ ...f, headline: { ...f.headline, yrke: cv.title as string } }))
+    setForifyllt(true)
+  }, [cv?.title, formData.headline.yrke, forifyllt, setFormData])
+
+  // Sparade kryss. Faller tillbaka på localStorage när molnet inte svarar —
+  // och säger vilket det blev, i stället för att låtsas att allt är sparat.
+  useEffect(() => {
+    let avbruten = false
+    articleChecklistApi
+      .get(CHECKLIST_ID)
+      .then((sparade: string[]) => {
+        if (!avbruten) setKryssade(Array.isArray(sparade) ? sparade : [])
+      })
+      .catch((error: unknown) => {
+        logger.warn('Kunde inte läsa LinkedIn-checklistan', { error })
+        if (!avbruten) setKryssKalla('lokal')
+      })
+    return () => { avbruten = true }
+  }, [])
+
+  const vaxlaKryss = (id: string) => {
+    const nasta = kryssade.includes(id) ? kryssade.filter((k) => k !== id) : [...kryssade, id]
+    setKryssade(nasta)
+    articleChecklistApi.update(CHECKLIST_ID, nasta).catch((error: unknown) => {
+      logger.warn('Kunde inte spara LinkedIn-checklistan', { error })
+      setKryssKalla('lokal')
+    })
+  }
+
+  const allaPunkter = useMemo(
+    () => PROFILDELAR.flatMap((d) => d.punkter.map((p) => `${d.nyckel}.${p}`)),
+    [],
+  )
+  const antalKryssade = kryssade.filter((k) => allaPunkter.includes(k)).length
+  const kvarAttGora = allaPunkter.filter((id) => !kryssade.includes(id))
+
+  const harUnderlag = (flik: Exclude<Flik, 'audit'>): boolean => {
+    switch (flik) {
+      case 'headline': return formData.headline.yrke.trim().length > 0
+      case 'about': return formData.about.bakgrund.trim().length > 0
+      case 'post': return formData.post.amne.trim().length > 0
+      case 'connection': return formData.connection.roll.trim().length > 0 && formData.connection.syfte.trim().length > 0
+    }
+  }
+
+  /** Ifyllbara utkast. Hålrum, inga påståenden om personen. */
+  const mallFor = (flik: Exclude<Flik, 'audit'>): string => {
+    switch (flik) {
+      case 'headline':
+        return `${formData.headline.yrke || '[ditt yrke]'} | ${formData.headline.erfarenhet || '[något du kan]'} | söker arbete i [ort]`
+      case 'about':
+        return [
+          `Jag är ${formData.about.bakgrund || '[ditt yrke]'} och har [antal] års erfarenhet av [vad du gjort].`,
+          `Jag är van vid ${formData.about.styrkor || '[något konkret du kan]'}.`,
+          `Just nu söker jag ${formData.about.mal || '[vilket jobb du söker]'} i [ort].`,
+          'Hör gärna av dig här om du vill veta mer.',
+        ].join('\n\n')
+      case 'post':
+        return [
+          `[En mening om ${formData.post.amne || '[ditt ämne]'} — det här är det enda som syns innan "visa mer".]`,
+          '[Berätta kort vad som hände och vad du tar med dig.]',
+          '[Avsluta med vad du söker, eller en fråga till den som läser.]',
+        ].join('\n\n')
+      case 'connection':
+        return `Hej ${formData.connection.namn || '[namn]'}! Jag såg att du arbetar som ${formData.connection.roll || '[roll]'}. ${formData.connection.syfte || '[varför du hör av dig]'}. Vänliga hälsningar, [ditt namn]`
+    }
+  }
 
   const generera = async () => {
-    if (aktivTab === 'audit') return // audit doesn't use the generera function
+    if (aktivTab === 'audit') return
+    const flik = aktivTab
     setIsLoading(true)
+    setFelsort(null)
     try {
       const data = await callAI<{ text: string }>('linkedin-optimering', {
-        typ: aktivTab,
-        data: formData[aktivTab as keyof typeof formData]
+        typ: flik,
+        data: formData[flik],
+        maxTecken: TECKENGRANS[flik],
       })
-      setResultat((data as { text?: string }).text || '')
+      const text = (data as { text?: string }).text?.trim() || ''
+      if (!text) throw new Error('Tomt svar')
+      setResultatPerFlik((r) => ({ ...r, [flik]: text }))
+      setKallaPerFlik((k) => ({ ...k, [flik]: 'ai' }))
     } catch (error) {
-      // F6 (2026-05-15): AI-fel maskerades tidigare som "AI-svar" via fallback-
-      // strängar (audit M18). Användaren såg en mall som låtsades vara AI-output.
-      // Nu visar vi ett ärligt felmeddelande + en mall som tydligt märks som
-      // grundmall (inte AI-svar).
-      console.error('[LinkedInOptimizer] AI call failed:', error)
-      const templates: Record<string, string> = {
-        headline: `${formData.headline.yrke} | Erfaren specialist inom ${formData.headline.erfarenhet || 'branschen'}`,
-        about: `Jag är en driven ${formData.about.bakgrund} med passion för ${formData.about.styrkor}. ${formData.about.mal}`,
-        post: `Idag vill jag dela med mig av mina tankar om ${formData.post.amne}. Vad tycker ni?`,
-        connection: `Hej ${formData.connection.namn}! Jag såg att du arbetar som ${formData.connection.roll} och skulle gärna vilja connecta. ${formData.connection.syfte}`
-      }
-      const template = templates[aktivTab]
-      if (template) {
-        setResultat(
-          `⚠️ AI-tjänsten är inte tillgänglig just nu. Här är en grundmall du kan utgå från och anpassa själv:\n\n${template}`
-        )
-      } else {
-        setResultat(t('linkedInOptimizer.errors.generateFailed'))
-      }
+      logger.warn('LinkedIn-generering misslyckades', { error })
+      setFelsort(tolkaAiFel(error))
+      setResultatPerFlik((r) => ({ ...r, [flik]: mallFor(flik) }))
+      setKallaPerFlik((k) => ({ ...k, [flik]: 'mall' }))
     } finally {
       setIsLoading(false)
     }
   }
 
-  const startAudit = () => {
-    const sections: SectionAudit[] = [
-      {
-        name: 'Rubrik (Headline)',
-        checklist: [
-          { item: 'Innehåller jobbroll', completed: false },
-          { item: 'Innehåller nyckelkompetenser', completed: false },
-          { item: 'Använder relevanta nyckelord', completed: false },
-          { item: 'Under 220 tecken', completed: false }
-        ],
-        examples: {
-          before: 'Senior Developer',
-          after: 'Senior Full-Stack Developer | React, Node.js & Cloud Solutions | Building scalable digital products'
-        },
-        keywords: ['Full-Stack', 'React', 'Node.js', 'Cloud', 'AWS', 'Leadership']
-      },
-      {
-        name: 'Om mig (About Section)',
-        checklist: [
-          { item: 'Startar med en hook/engagament', completed: false },
-          { item: 'Visar unika värderingar', completed: false },
-          { item: 'Inkluderar call-to-action', completed: false },
-          { item: 'Personlig men professionell ton', completed: false }
-        ],
-        examples: {
-          before: 'Developer with 5 years experience',
-          after: 'Passionate about building solutions that make a difference. 5+ years scaling products, leading teams, and mentoring junior developers.'
-        },
-        keywords: ['Leadership', 'Innovation', 'Collaboration', 'Problem-solving', 'Mentoring']
-      },
-      {
-        name: 'Erfarenhet (Experience)',
-        checklist: [
-          { item: 'Använder STAR-metoden i beskrivningar', completed: false },
-          { item: 'Visar mätbara resultat', completed: false },
-          { item: 'Inkluderar relevanta nyckelord', completed: false },
-          { item: 'Länkat till projekt/portfolio', completed: false }
-        ],
-        examples: {
-          before: 'Worked on web development projects',
-          after: 'Led development of e-commerce platform serving 100K+ users, increasing conversion by 34%. Implemented microservices architecture reducing load time by 60%.'
-        },
-        keywords: ['Leadership', 'Performance', 'Scalability', 'Team Management', 'Innovation']
-      },
-      {
-        name: 'Rekommendationer & Endorsements',
-        checklist: [
-          { item: 'Minst 3 rekommendationer', completed: false },
-          { item: 'Diverse rekommendatörer', completed: false },
-          { item: 'Relevanta färdigheter endorsade', completed: false }
-        ],
-        examples: {
-          before: 'No recommendations',
-          after: 'Rekommenderad av managers, kollegor och klienter för leadership och technical excellence'
-        },
-        keywords: ['Technical Skills', 'Leadership', 'Communication', 'Reliability']
-      }
-    ]
-
-    setAuditSections(sections)
-    setAktivTab('audit')
+  const kopiera = async () => {
+    setKopieringsfel(false)
+    try {
+      await navigator.clipboard.writeText(resultat)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (error) {
+      logger.warn('Kunde inte kopiera texten', { error })
+      setKopieringsfel(true)
+    }
   }
 
-  // Räknas ur användarens egna kryss. Enda talet på sidan som har underlag.
-  const kryssade = auditSections.reduce(
-    (n, s) => n + s.checklist.filter((i) => i.completed).length,
-    0
-  )
-  const totaltAntalPunkter = auditSections.reduce((n, s) => n + s.checklist.length, 0)
-  const profileCompleteness =
-    totaltAntalPunkter === 0 ? 0 : Math.round((kryssade / totaltAntalPunkter) * 100)
-
-  const kopiera = () => {
-    navigator.clipboard.writeText(resultat)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const tabs = [
-    { id: 'headline', label: t('linkedInOptimizer.tabs.headline.label'), icon: User, beskrivning: t('linkedInOptimizer.tabs.headline.description') },
-    { id: 'about', label: t('linkedInOptimizer.tabs.about.label'), icon: FileText, beskrivning: t('linkedInOptimizer.tabs.about.description') },
-    { id: 'post', label: t('linkedInOptimizer.tabs.post.label'), icon: Share2, beskrivning: t('linkedInOptimizer.tabs.post.description') },
-    { id: 'connection', label: t('linkedInOptimizer.tabs.connection.label'), icon: MessageSquare, beskrivning: t('linkedInOptimizer.tabs.connection.description') },
-    { id: 'audit', label: t('linkedInOptimizer.tabs.audit.label'), icon: Shield, beskrivning: t('linkedInOptimizer.tabs.audit.description') }
+  const flikar: { id: Flik; etikett: string }[] = [
+    { id: 'headline', etikett: t('linkedInOptimizer.tabs.headline.label') },
+    { id: 'about', etikett: t('linkedInOptimizer.tabs.about.label') },
+    { id: 'post', etikett: t('linkedInOptimizer.tabs.post.label') },
+    { id: 'connection', etikett: t('linkedInOptimizer.tabs.connection.label') },
+    { id: 'audit', etikett: t('linkedInOptimizer.tabs.audit.label') },
   ]
 
-  const bytTab = (id: string) => {
-    setAktivTab(id as 'headline' | 'about' | 'post' | 'connection' | 'audit')
-    setResultat('')
-  }
-
-  // Bokstavsbetyget (A–D) är borttaget 2026-08-17. Det räknades ur ett
-  // hårdkodat tal och satte ett omdöme på en människa utan att ha mätt något.
-  // DESIGN.md §2: aldrig prestationsspråk i deltagarvyer.
+  const faltklass =
+    'w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100'
+  const etikettklass = 'block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5'
+  const fornamn = profil?.first_name?.trim()
 
   return (
     <PageLayout
       title={t('linkedInOptimizer.title')}
       subtitle={t('linkedInOptimizer.description')}
       domain="activity"
-      showTabs={false}
       sidoflikar={{
-        poster: tabs.map((tab) => ({ id: tab.id, etikett: tab.label })),
+        poster: flikar.map((f) => ({ id: f.id, etikett: f.etikett })),
         aktiv: aktivTab,
-        vidVal: bytTab,
+        vidVal: (id: string) => setAktivTab(id as Flik),
       }}
       className="sidbredd"
       contentClassName="space-y-6"
     >
-      <RadgivarTips pathname="/linkedin-optimizer" index={0} />
+      {/* Är LinkedIn rätt kanal för dig? Sidan lovade tidigare synlighet utan
+          förbehåll — för den som söker inom vård, lager, handel, bygg, städ
+          eller restaurang är det ett råd som kostar tid utan att ge jobb. */}
+      <Card className="p-0 overflow-hidden bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
+        <button
+          onClick={() => setVisaRelevans(!visaRelevans)}
+          aria-expanded={visaRelevans}
+          aria-controls="li-relevans"
+          className="w-full flex items-center justify-between gap-3 p-4 text-left min-h-[44px]"
+        >
+          <span className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100">
+            <Info className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+            {t('linkedInOptimizer.relevance.title')}
+          </span>
+          {visaRelevans
+            ? <ChevronUp className="w-5 h-5 text-stone-500" aria-hidden="true" />
+            : <ChevronDown className="w-5 h-5 text-stone-500" aria-hidden="true" />}
+        </button>
+        <div id="li-relevans" hidden={!visaRelevans} className="px-4 pb-4">
+          <p className="text-sm text-stone-700 dark:text-stone-200 mb-3">
+            {t('linkedInOptimizer.relevance.body')}
+          </p>
+          <div className="flex flex-wrap gap-4">
+            <Link to="/spontanansökan" className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline">
+              {t('linkedInOptimizer.relevance.toSpontaneous')}
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+            <Link to="/job-search" className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline">
+              {t('linkedInOptimizer.relevance.toJobSearch')}
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+            </Link>
+          </div>
+        </div>
+      </Card>
 
-      {/* Form or Audit */}
       {aktivTab !== 'audit' ? (
         <>
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+              {t(`linkedInOptimizer.${aktivTab}.title`)}
+            </h2>
+            <p className="text-sm text-stone-600 dark:text-stone-300 mt-1 mb-4">
+              {t(`linkedInOptimizer.${aktivTab}.description`)}
+            </p>
+
             {aktivTab === 'headline' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.headline.title')}</h2>
-                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.headline.description')}</p>
                 <div>
-                  <label htmlFor="li-headline-jobtitle" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.headline.jobTitleLabel')}</label>
+                  <label htmlFor="li-headline-jobtitle" className={etikettklass}>
+                    {t('linkedInOptimizer.headline.jobTitleLabel')}
+                  </label>
                   <input
                     id="li-headline-jobtitle"
                     type="text"
                     placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
                     value={formData.headline.yrke}
                     onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    aria-describedby={forifyllt ? 'li-headline-prefill' : undefined}
+                    className={faltklass}
                   />
+                  {forifyllt && (
+                    <p id="li-headline-prefill" className="text-xs text-stone-600 dark:text-stone-400 mt-1">
+                      {t('linkedInOptimizer.headline.prefilledFromCv')}
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label htmlFor="li-headline-spec" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.headline.specializationLabel')}</label>
+                  <label htmlFor="li-headline-spec" className={etikettklass}>
+                    {t('linkedInOptimizer.headline.specializationLabel')}
+                  </label>
                   <input
                     id="li-headline-spec"
                     type="text"
                     placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
                     value={formData.headline.erfarenhet}
                     onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={faltklass}
                   />
                 </div>
-                <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-4 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
+                <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-4 rounded-lg border border-[var(--c-accent)]/60">
+                  <p className="text-sm text-stone-800 dark:text-stone-100">
+                    <strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong>{' '}
+                    {t('linkedInOptimizer.headline.tipText')}
+                  </p>
                 </div>
               </div>
             )}
 
             {aktivTab === 'about' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.about.title')}</h2>
-                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.about.description')}</p>
                 <div>
-                  <label htmlFor="li-about-background" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.backgroundLabel')}</label>
+                  <label htmlFor="li-about-background" className={etikettklass}>
+                    {t('linkedInOptimizer.about.backgroundLabel')}
+                  </label>
                   <textarea
                     id="li-about-background"
+                    rows={3}
                     placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
                     value={formData.about.bakgrund}
                     onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={cn(faltklass, 'resize-y')}
                   />
                 </div>
                 <div>
-                  <label htmlFor="li-about-strengths" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.strengthsLabel')}</label>
+                  <label htmlFor="li-about-strengths" className={etikettklass}>
+                    {t('linkedInOptimizer.about.strengthsLabel')}
+                  </label>
                   <textarea
                     id="li-about-strengths"
+                    rows={3}
                     placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
                     value={formData.about.styrkor}
                     onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={cn(faltklass, 'resize-y')}
                   />
                 </div>
                 <div>
-                  <label htmlFor="li-about-goals" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.about.goalsLabel')}</label>
+                  <label htmlFor="li-about-goals" className={etikettklass}>
+                    {t('linkedInOptimizer.about.goalsLabel')}
+                  </label>
                   <input
                     id="li-about-goals"
                     type="text"
                     placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
                     value={formData.about.mal}
                     onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={faltklass}
                   />
                 </div>
               </div>
@@ -295,26 +451,28 @@ function LinkedInOptimizerInner() {
 
             {aktivTab === 'post' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.post.title')}</h2>
-                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.post.description')}</p>
                 <div>
-                  <label htmlFor="li-post-topic" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.post.topicLabel')}</label>
+                  <label htmlFor="li-post-topic" className={etikettklass}>
+                    {t('linkedInOptimizer.post.topicLabel')}
+                  </label>
                   <textarea
                     id="li-post-topic"
+                    rows={4}
                     placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
                     value={formData.post.amne}
                     onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
-                    rows={4}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={cn(faltklass, 'resize-y')}
                   />
                 </div>
                 <div>
-                  <label htmlFor="li-post-tone" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.post.toneLabel')}</label>
+                  <label htmlFor="li-post-tone" className={etikettklass}>
+                    {t('linkedInOptimizer.post.toneLabel')}
+                  </label>
                   <select
                     id="li-post-tone"
                     value={formData.post.ton}
                     onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={faltklass}
                   >
                     <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
                     <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
@@ -327,270 +485,354 @@ function LinkedInOptimizerInner() {
 
             {aktivTab === 'connection' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.connection.title')}</h2>
-                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.connection.description')}</p>
                 <div>
-                  <label htmlFor="li-conn-name" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.nameLabel')}</label>
+                  <label htmlFor="li-conn-name" className={etikettklass}>
+                    {t('linkedInOptimizer.connection.nameLabel')}
+                  </label>
                   <input
                     id="li-conn-name"
                     type="text"
                     placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
                     value={formData.connection.namn}
                     onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={faltklass}
                   />
                 </div>
                 <div>
-                  <label htmlFor="li-conn-role" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.roleLabel')}</label>
+                  <label htmlFor="li-conn-role" className={etikettklass}>
+                    {t('linkedInOptimizer.connection.roleLabel')}
+                  </label>
                   <input
                     id="li-conn-role"
                     type="text"
                     placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
                     value={formData.connection.roll}
                     onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={faltklass}
                   />
                 </div>
                 <div>
-                  <label htmlFor="li-conn-purpose" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{t('linkedInOptimizer.connection.purposeLabel')}</label>
+                  <label htmlFor="li-conn-purpose" className={etikettklass}>
+                    {t('linkedInOptimizer.connection.purposeLabel')}
+                  </label>
                   <textarea
                     id="li-conn-purpose"
+                    rows={3}
                     placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
                     value={formData.connection.syfte}
                     onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
-                    rows={3}
-                    className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
+                    className={cn(faltklass, 'resize-y')}
                   />
                 </div>
               </div>
             )}
 
-            <Button
-              onClick={generera}
-              disabled={isLoading}
-              className="w-full mt-6 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]"
-            >
-              {isLoading ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <Sparkles className="w-5 h-5 mr-2" />
-                  {t('linkedInOptimizer.generate')}
-                </>
+            <div className="mt-6">
+              <Button
+                onClick={generera}
+                disabled={isLoading || !harUnderlag(aktivTab)}
+                aria-busy={isLoading}
+                className="w-full sm:w-auto"
+                leftIcon={isLoading
+                  ? <RefreshCw className="w-4 h-4 animate-spin" />
+                  : <Sparkles className="w-4 h-4" />}
+              >
+                {isLoading ? t('linkedInOptimizer.generating') : t('linkedInOptimizer.generate')}
+              </Button>
+              {!harUnderlag(aktivTab) && (
+                <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+                  {t('linkedInOptimizer.missingFields')}
+                </p>
               )}
-            </Button>
+            </div>
           </Card>
 
           {/* Resultat */}
-          {resultat && (
-            <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
-                <button
-                  onClick={kopiera}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
-                >
-                  {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
-                </button>
-              </div>
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-                <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap" data-ai-generated="true">{resultat}</p>
-                <AIGeneratedWatermark contentType="förslag" />
-              </div>
-              <p className="text-xs text-stone-600 dark:text-stone-400 mt-3">
-                {t('linkedInOptimizer.result.tip')}
-              </p>
-            </Card>
-          )}
-        </>
-      ) : (
-        /* Audit View */
-        <div className="space-y-6">
-          {/* Completeness Overview */}
-          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-            <div className="flex items-center gap-2 mb-3">
-              <Shield className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0" />
-              <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 m-0">
-                {t('linkedInOptimizer.audit.checklistHeading', 'Checklista för din LinkedIn-profil')}
-              </h2>
-            </div>
-
-            {/*
-              Ersätter "Profilhälsa: Betyg C, Profil ifylld 67 %". Portalen kan
-              inte läsa din LinkedIn-profil, så den kan inte betygsätta den.
-              Att säga det rakt ut är både sannare och mer användbart än ett
-              tal — nu vet användaren varför hen ska kryssa själv.
-            */}
-            <p className="text-sm text-stone-700 dark:text-stone-300 m-0 mb-3">
-              {t(
-                'linkedInOptimizer.audit.intro',
-                'Jobin kan inte läsa din LinkedIn-profil. Gå igenom listan med profilen öppen bredvid och kryssa i det du redan har — då ser du själv vad som återstår.'
-              )}
-            </p>
-
-            {kryssade > 0 && (
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    {t('linkedInOptimizer.audit.yourTicks', 'Du har kryssat i')}
-                  </span>
-                  <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-                    {kryssade} / {totaltAntalPunkter}
-                  </span>
+          <div role="status" aria-live="polite">
+            {felsort && (
+              <Card className="p-4 mb-4 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300 shrink-0 mt-0.5" aria-hidden="true" />
+                  <div>
+                    <p className="text-sm text-stone-800 dark:text-stone-100">
+                      {t(`linkedInOptimizer.errors.${
+                        felsort === 'ai-avstangd' ? 'aiOff'
+                          : felsort === 'inloggning' ? 'login'
+                            : felsort === 'for-manga' ? 'tooMany' : 'generic'
+                      }`)}
+                    </p>
+                    {felsort === 'ai-avstangd' && (
+                      <Link to="/settings" className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline mt-1 inline-block">
+                        {t('linkedInOptimizer.errors.settingsLink')}
+                      </Link>
+                    )}
+                  </div>
                 </div>
-                <Progress value={profileCompleteness} className="h-3" />
-              </div>
-            )}
-          </Card>
-
-          {/* Audit Sections */}
-          <div className="space-y-4">
-            {auditSections.map((section) => (
-              <Card key={section.name} className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-                <button
-                  onClick={() => setExpandedSection(expandedSection === section.name ? null : section.name)}
-                  className="w-full p-6 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700 transition text-left"
-                >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <h3 className="font-semibold text-stone-800 dark:text-stone-100">{section.name}</h3>
-                      {/*
-                        Var ett fast procentbetyg i rött/gult/grönt (85, 72, 68,
-                        45) som ingen räknat fram. Visar nu användarens egna
-                        kryss, och bara när hen börjat kryssa — en nolla i rött
-                        vid första besöket är ett omdöme, inte en uppgift.
-                      */}
-                      {section.checklist.some((i) => i.completed) && (
-                        <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[var(--c-bg)] text-[var(--c-text)]">
-                          {t('linkedInOptimizer.audit.sectionTicks', {
-                            defaultValue: '{{klara}} av {{totalt}}',
-                            klara: section.checklist.filter((i) => i.completed).length,
-                            totalt: section.checklist.length,
-                          })}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  {expandedSection === section.name ? (
-                    <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" />
-                  ) : (
-                    <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" />
-                  )}
-                </button>
-
-                {expandedSection === section.name && (
-                  <div className="border-t border-stone-200 dark:border-stone-700 p-6 bg-stone-50 dark:bg-stone-900/50 space-y-4">
-                    {/* Checklist */}
-                    <div>
-                      <h4 className="font-medium text-stone-800 dark:text-stone-100 mb-2 flex items-center gap-2">
-                        <ListCheckIcon className="w-4 h-4" />
-                        {t('linkedInOptimizer.audit.checklists')}
-                      </h4>
-                      <div className="space-y-2">
-                        {section.checklist.map((item, idx) => (
-                          <label key={idx} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white dark:hover:bg-stone-800 transition">
-                            <input
-                              type="checkbox"
-                              checked={item.completed}
-                              onChange={() => {
-                                const updated = [...auditSections]
-                                updated[auditSections.indexOf(section)].checklist[idx].completed = !item.completed
-                                setAuditSections(updated)
-                              }}
-                              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] cursor-pointer"
-                            />
-                            <span className={item.completed ? 'line-through text-stone-500 dark:text-stone-500' : 'text-stone-700 dark:text-stone-300'}>{item.item}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Before/After Examples */}
-                    <div>
-                      <h4 className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('linkedInOptimizer.audit.beforeAfterExamples')}</h4>
-                      <div className="grid md:grid-cols-2 gap-3">
-                        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800">
-                          <p className="text-xs text-red-700 dark:text-red-400 font-medium mb-1">{t('linkedInOptimizer.audit.before')}</p>
-                          <p className="text-sm text-stone-700 dark:text-stone-300">{section.examples.before}</p>
-                        </div>
-                        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded border border-emerald-200 dark:border-emerald-800">
-                          <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-1">{t('linkedInOptimizer.audit.after')}</p>
-                          <p className="text-sm text-stone-700 dark:text-stone-300">{section.examples.after}</p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Keywords */}
-                    <div>
-                      <button
-                        onClick={() => setShowKeywords(!showKeywords)}
-                        className="flex items-center gap-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]"
-                      >
-                        {showKeywords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {showKeywords ? t('linkedInOptimizer.audit.hideKeywords') : t('linkedInOptimizer.audit.showKeywords')}
-                      </button>
-                      {showKeywords && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {section.keywords.map((kw, idx) => (
-                            <span key={idx} className="text-xs bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] px-2 py-1 rounded-full">
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
               </Card>
-            ))}
+            )}
+
+            {resultat && (
+              <Card className={cn(
+                'p-6',
+                kalla === 'ai'
+                  ? 'bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60'
+                  : 'bg-white dark:bg-stone-800 border-dashed border-stone-400 dark:border-stone-500',
+              )}>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+                      {kalla === 'mall'
+                        ? t('linkedInOptimizer.draft.title')
+                        : fornamn
+                          ? t('linkedInOptimizer.result.titleNamed', { name: fornamn })
+                          : t('linkedInOptimizer.result.title')}
+                    </h3>
+                    {kalla === 'mall' && (
+                      <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
+                        {t('linkedInOptimizer.draft.body')}
+                      </p>
+                    )}
+                  </div>
+                  <Button
+                    onClick={kopiera}
+                    size="sm"
+                    variant="outline"
+                    className="gap-2 shrink-0"
+                    leftIcon={copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                  >
+                    {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
+                  </Button>
+                </div>
+
+                {kopieringsfel && (
+                  <p className="text-sm text-stone-700 dark:text-stone-200 mb-2">
+                    {t('linkedInOptimizer.result.copyFailed')}
+                  </p>
+                )}
+
+                <p
+                  className="whitespace-pre-wrap text-stone-800 dark:text-stone-100 bg-white dark:bg-stone-900/40 rounded-lg p-4 border border-stone-200 dark:border-stone-700"
+                  {...(kalla === 'ai' ? { 'data-ai-generated': 'true' } : {})}
+                >
+                  {resultat}
+                </p>
+
+                {/* Teckenräknaren mäter mot LinkedIns riktiga gräns för fältet. */}
+                <p className={cn(
+                  'text-xs mt-2',
+                  resultat.length > TECKENGRANS[aktivTab]
+                    ? 'text-red-700 dark:text-red-300 font-medium'
+                    : 'text-stone-600 dark:text-stone-400',
+                )}>
+                  {resultat.length > TECKENGRANS[aktivTab]
+                    ? t('linkedInOptimizer.result.charCountOver', {
+                        count: resultat.length,
+                        over: resultat.length - TECKENGRANS[aktivTab],
+                      })
+                    : t('linkedInOptimizer.result.charCount', {
+                        count: resultat.length,
+                        limit: TECKENGRANS[aktivTab],
+                      })}
+                </p>
+
+                {/* AI Act art. 50.2 — märkningen gäller bara det AI:n skrivit. */}
+                {kalla === 'ai' && <AIGeneratedWatermark contentType="förslag" />}
+
+                <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
+                  <p className="text-sm font-medium text-stone-800 dark:text-stone-100 mb-2">
+                    {t('linkedInOptimizer.result.beforeYouPaste')}
+                  </p>
+                  <ul className="space-y-1 text-sm text-stone-700 dark:text-stone-200">
+                    {(['check1', 'check2', 'check3'] as const).map((n) => (
+                      <li key={n} className="flex items-start gap-2">
+                        <span className="text-[var(--c-text)] dark:text-[var(--c-text)] mt-0.5" aria-hidden="true">·</span>
+                        {t(`linkedInOptimizer.result.${n}`)}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-sm text-stone-700 dark:text-stone-200 mt-3">
+                    {t(`linkedInOptimizer.${aktivTab}.pasteWhere`)}
+                  </p>
+                </div>
+              </Card>
+            )}
           </div>
 
-          {/* Kvar att göra — döljs helt när allt är ikryssat. */}
-          {kryssade < totaltAntalPunkter && (
-          <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
-            <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              {t('linkedInOptimizer.audit.remaining', 'Kvar att göra')}
-            </h3>
-            {/*
-              Var fyra fasta rader ("Lägg till minst 3 rekommendationer") som
-              varje användare fick, oavsett vad hen redan hade gjort — och som
-              stod kvar oförändrade även efter att hen kryssat i punkten.
-              Listan byggs nu av det användaren faktiskt lämnat okryssat.
-            */}
-            <ol className="space-y-1.5 m-0 pl-5 list-decimal">
-              {auditSections
-                .flatMap((s) => s.checklist.filter((i) => !i.completed).map((i) => ({ s, i })))
-                .slice(0, 4)
-                .map(({ s, i }) => (
-                  <li key={`${s.name}-${i.item}`} className="text-sm text-stone-700 dark:text-stone-300">
-                    <span className="text-stone-500 dark:text-stone-400">{s.name}:</span> {i.item}
-                  </li>
-                ))}
-            </ol>
+          <RadgivarTips pathname="/linkedin-optimizer" index={0} />
+        </>
+      ) : (
+        <>
+          {/* Checklistan. Innehållet ligger i språkfilerna och renderas alltid —
+              tidigare fylldes den av en knapp på en annan flik, så den här
+              fliken var tom för den som klickade sig hit via skenan. */}
+          <Card className="p-6 bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60">
+            <h2 className="flex items-center gap-2 font-semibold text-stone-900 dark:text-stone-100 mb-2">
+              <Shield className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
+              {t('linkedInOptimizer.audit.title')}
+            </h2>
+            <p className="text-sm text-stone-700 dark:text-stone-200">
+              {t('linkedInOptimizer.audit.intro')}
+            </p>
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+              {kryssKalla === 'moln'
+                ? t('linkedInOptimizer.audit.saved')
+                : t('linkedInOptimizer.audit.savedOffline')}
+            </p>
           </Card>
-          )}
-        </div>
-      )}
 
-      {/* Bottom Action Button */}
-      {aktivTab === 'headline' && !resultat && (
-        <div className="flex gap-2">
-          <Button onClick={startAudit} variant="outline" className="flex-1 border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800">
-            <Shield className="w-4 h-4 mr-2" />
-            {t('linkedInOptimizer.audit.startAudit')}
-          </Button>
-        </div>
+          <div role="status" aria-live="polite">
+            {/* En nolla är ett omdöme, inte en uppgift (DESIGN.md §7). Innan
+                användaren kryssat något visas en invit i stället för talet. */}
+            <p className="text-sm text-stone-700 dark:text-stone-200">
+              {antalKryssade === 0
+                ? t('linkedInOptimizer.audit.emptyHint')
+                : t('linkedInOptimizer.audit.yourTicks', { done: antalKryssade, total: allaPunkter.length })}
+            </p>
+            <div
+              className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mt-2"
+              role="progressbar"
+              aria-valuenow={antalKryssade}
+              aria-valuemin={0}
+              aria-valuemax={allaPunkter.length}
+              aria-label={t('linkedInOptimizer.audit.title')}
+            >
+              <div
+                className="h-full bg-[var(--c-solid)] transition-all"
+                style={{ width: `${(antalKryssade / allaPunkter.length) * 100}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {PROFILDELAR.map((del) => {
+              const oppen = oppenDel === del.nyckel
+              const bas = `linkedInOptimizer.audit.sections.${del.nyckel}`
+              const klaraIDelen = del.punkter.filter((p) => kryssade.includes(`${del.nyckel}.${p}`)).length
+              return (
+                <Card key={del.nyckel} className="p-0 overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+                  <button
+                    onClick={() => setOppenDel(oppen ? null : del.nyckel)}
+                    aria-expanded={oppen}
+                    aria-controls={`li-del-${del.nyckel}`}
+                    className="w-full flex items-center justify-between gap-3 p-4 text-left min-h-[44px]"
+                  >
+                    <span className="font-medium text-stone-900 dark:text-stone-100">
+                      {t(`${bas}.name`)}
+                      <span className="ml-2 text-sm font-normal text-stone-600 dark:text-stone-300">
+                        {klaraIDelen}/{del.punkter.length}
+                      </span>
+                    </span>
+                    {oppen
+                      ? <ChevronUp className="w-5 h-5 text-stone-500" aria-hidden="true" />
+                      : <ChevronDown className="w-5 h-5 text-stone-500" aria-hidden="true" />}
+                  </button>
+
+                  <div id={`li-del-${del.nyckel}`} hidden={!oppen} className="px-4 pb-4 space-y-4">
+                    <ul className="space-y-2">
+                      {del.punkter.map((punkt) => {
+                        const id = `${del.nyckel}.${punkt}`
+                        const ikryssad = kryssade.includes(id)
+                        return (
+                          <li key={id}>
+                            <button
+                              role="checkbox"
+                              aria-checked={ikryssad}
+                              onClick={() => vaxlaKryss(id)}
+                              className="w-full flex items-start gap-3 text-left p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 min-h-[44px]"
+                            >
+                              <span
+                                className={cn(
+                                  'w-5 h-5 rounded border-2 shrink-0 mt-0.5 flex items-center justify-center',
+                                  ikryssad
+                                    ? 'bg-[var(--c-solid)] border-[var(--c-solid)]'
+                                    : 'border-stone-400 dark:border-stone-500',
+                                )}
+                                aria-hidden="true"
+                              >
+                                {ikryssad && <Check className="w-3.5 h-3.5 text-white" />}
+                              </span>
+                              <span className={cn(
+                                'text-sm text-stone-800 dark:text-stone-100',
+                                ikryssad && 'line-through text-stone-600 dark:text-stone-400',
+                              )}>
+                                {t(`${bas}.points.${punkt}`)}
+                              </span>
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+
+                    {del.har === 'exempel' ? (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="p-3 rounded-lg bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600">
+                          <p className="text-xs font-medium text-stone-600 dark:text-stone-300 mb-1">
+                            {t('linkedInOptimizer.audit.exampleBefore')}
+                          </p>
+                          <p className="text-sm text-stone-700 dark:text-stone-200">{t(`${bas}.exampleBefore`)}</p>
+                        </div>
+                        <div className="p-3 rounded-lg bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60">
+                          <p className="text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-text)] mb-1">
+                            {t('linkedInOptimizer.audit.exampleAfter')}
+                          </p>
+                          <p className="text-sm text-stone-800 dark:text-stone-100">{t(`${bas}.exampleAfter`)}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3 rounded-lg bg-[var(--c-bg)]/60 dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60">
+                        <p className="text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-text)] mb-1">
+                          {t('linkedInOptimizer.audit.askTemplate')}
+                        </p>
+                        <p className="text-sm text-stone-800 dark:text-stone-100 whitespace-pre-wrap">
+                          {t(`${bas}.askTemplate`)}
+                        </p>
+                      </div>
+                    )}
+
+                    <div>
+                      <button
+                        onClick={() => setVisaOrd(visaOrd === del.nyckel ? null : del.nyckel)}
+                        aria-expanded={visaOrd === del.nyckel}
+                        aria-controls={`li-ord-${del.nyckel}`}
+                        className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] underline min-h-[44px]"
+                      >
+                        {t('linkedInOptimizer.audit.findWords')}
+                      </button>
+                      <p
+                        id={`li-ord-${del.nyckel}`}
+                        hidden={visaOrd !== del.nyckel}
+                        className="text-sm text-stone-700 dark:text-stone-200 mt-2"
+                      >
+                        {t(`${bas}.findWords`)}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              )
+            })}
+          </div>
+
+          {kvarAttGora.length > 0 && (
+            <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+              <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">
+                {t('linkedInOptimizer.audit.remaining')}
+              </h3>
+              <ol className="space-y-1 text-sm text-stone-700 dark:text-stone-200 list-decimal list-inside">
+                {kvarAttGora.slice(0, 4).map((id) => {
+                  const [delNyckel, punkt] = id.split('.')
+                  return (
+                    <li key={id}>
+                      {t(`linkedInOptimizer.audit.sections.${delNyckel}.points.${punkt}`)}
+                    </li>
+                  )
+                })}
+              </ol>
+            </Card>
+          )}
+
+          <RadgivarTips pathname="/linkedin-optimizer" index={1} />
+        </>
       )}
     </PageLayout>
-  )
-}
-
-function ListCheckIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
   )
 }

@@ -16,6 +16,108 @@
 
 ---
 
+## Genomgång 2026-08-20 (kväll) — LinkedIn, sex granskare (åtgärdad)
+
+Kod + inloggad vy, ljust och mörkt läge. Sidan hade **noll tester**, och tre
+mutationer överlevde hela sviten på 1 824 tester: en i18n-nyckel bytt mot en
+obefintlig, AI-felet svalt till en tom yta, och hela `LinkedInOptimizerInner`
+ersatt med `return null` — sidan kunde vara **helt tom** utan att något larmade.
+
+### Det allvarligaste: fliken som inte visade någonting
+
+`auditSections` fylldes bara av `startAudit()`, vars knapp ("Öppna
+checklistan") renderades enbart när `aktivTab === 'headline' && !resultat`.
+Klickade man "Checklista" i sidoskenan — den väg skenan bjuder in till — fick
+man rubriken, stycket *"Gå igenom listan och kryssa i det du redan har"*, och
+sedan ingenting. Verifierat i webbläsaren: **0 sektionskort, 0 kryssrutor**.
+Hade man genererat en text fanns ingen väg alls dit. Sidans enda innehåll som
+inte kräver AI var i praktiken oåtkomligt.
+
+Innehållet ligger nu i språkfilerna och renderas alltid. Kryssen sparas
+(`articleChecklistApi`, id `linkedin-profil` — molnsynk med
+localStorage-fallback, och gränssnittet säger vilket det blev).
+
+### Ärlighetsklassen
+
+- **Reservmallen märktes som AI-genererad.** När anropet failade lades en
+  handskriven mall i samma `resultat` som AI-svaret och renderades med
+  `data-ai-generated="true"` + *"Detta förslag är genererat med AI-stöd"* —
+  alltså falsk märkning både för människan och för en granskare som läser
+  DOM:en (AI Act art. 50.2). B21 stängdes 2026-08-09 i personligt brev och
+  intervjusimulatorn; den här instansen rördes aldrig.
+- **Mallen påstod saker om personen.** `"${yrke} | Erfaren specialist inom
+  ${erfarenhet || 'branschen'}"` och *"Jag är en driven … med passion för …"*.
+  En lokalvårdare som varit utan arbete i fyra år fick alltså "erfaren
+  specialist" inskrivet åt sig — i felvägen, där ingen sanningsregel gäller.
+  Mallen är nu ett ifyllbart utkast med hålrum.
+- **Alla fel såg likadana ut.** Ett naket `catch` gjorde "du har stängt av AI"
+  (art. 21), utgången session, rate limit och timeout till samma mening:
+  *"AI-tjänsten är inte tillgänglig just nu"* — osant i tre av fyra fall, och
+  utan väg vidare. `AiConsentRequiredError` importerades inte ens.
+- **Två teckengränser var fel.** "Max 2000 tecken" om Om-avsnittet (verklig
+  gräns 2 600) och "Max 1300 tecken" om inlägg (3 000 — 1 300 var LinkedIns
+  gräns före 2017). Talen som faktiskt betyder något stod ingenstans: ~70
+  tecken syns i sökträffar, ~300 i Om innan "se mer", ~210 i ett inlägg.
+- **Kontaktmeddelandet kunde inte klistras in.** Prompten hade ingen
+  längdinstruktion och `maxTokens: 800`; notisen till en kontaktförfrågan
+  rymmer ~200 tecken. Prompten känner nu gränsen, och sidan säger den.
+
+### Målgruppen
+
+Varje exempel och nyckelord kom från en IT-tjänstemannakarriär utan luckor:
+*"Senior Full-Stack Developer | React, Node.js"*, *"Led development of
+e-commerce platform serving 100K+ users, increasing conversion by 34%"*,
+`['Full-Stack', 'React', 'AWS', 'Leadership']` — sex av sju exempel på
+engelska. Måttstocken var alltså "ledde ett team, 5+ år, 34 % konvertering"
+för en användare som söker inom vård, lager, handel, bygg, städ eller
+restaurang. Exemplen är omskrivna till målgruppens yrken, och nyckelordslistan
+är ersatt med en instruktion som är sann för alla yrken: *öppna tre annonser
+för jobb du vill ha, orden som återkommer i alla tre är dina sökord*.
+
+**Nytt: en ärlighetsruta överst.** Sidan lovade tidigare synlighet utan
+förbehåll. Den säger nu att LinkedIn är starkast inom kontor, IT, ekonomi,
+teknik och offentlig förvaltning, att jobb inom vård, lager, handel, bygg, städ
+och restaurang oftast tillsätts på annat sätt — och länkar vidare till
+spontanansökan och jobbsökningen. Att skicka en långtidsarbetslös
+restauranganställd på att finslipa en headline utan att säga det är dåligt
+konsulentarbete.
+
+### Övrigt åtgärdat
+
+- Fokuslägesväxeln raderade allt ifyllt (tredje sidan med samma fel efter
+  `b93be382` och `00d8be26`). Grenen är nu ett överlägg; `Inner` förblir
+  monterad. Vaktat av ett test som **växlar** läget och kräver att det
+  genererade resultatet står kvar — bara fältvärdena räcker inte, dem äger
+  föräldern.
+- Fokusguiden frågade vilken del man ville skriva och bad om texten — och
+  kastade båda svaren. Nu lämnas de över till normalvyn.
+- Genererad text raderades vid flikbyte (`setResultat('')` villkorslöst). Nu
+  ett resultat per flik.
+- Yrket förifylls från `cvs.title` (ifylld på 21 av 26 CV:n i prod), med en rad
+  som säger att det gjorts.
+- Tillgänglighet: fem expanderare utan `aria-expanded`/`aria-controls`,
+  resultatet annonserades inte, knappen var namnlös under laddning, `role`- och
+  `aria-checked`-lösa kryssrutor, och en hover-färg på **1,79:1** i mörkt läge
+  (`dark:hover:text-[var(--c-accent)]`). Allt åtgärdat; kontrastmätningen ger
+  0 fel i båda lägena, och sidan är tillagd i `e2e/axe-a11y.spec.ts`.
+- 11 döda i18n-nycklar från det borttagna betygssystemet ("Profilhälsa",
+  "Betyg", "action1–4") är raderade — och ett test hindrar dem från att komma
+  tillbaka.
+
+### Kvar / beslut
+
+| Punkt | Vad | Beslut |
+|---|---|---|
+| **M1** | `client/src/data/helpContent.ts` (790 rader) har **noll importörer** och innehåller bl.a. *"En bra rubrik ökar din synlighet med upp till 300%"* (obelagt) och en FAQ om "profilhälsa" — funktionen som togs bort för att den var påhittad | Radera filen, eller koppla in den. Ligger utanför den här sidan |
+| **M2** | `articleData.ts` har **7 dubblerade artikel-id:n** (bl.a. `linkedin-optimering` ×2, `informationsintervju-guide` ×3). Bara en av varje går att nå | Egen genomgång |
+| **M3** | LinkedIn-artikeln och övningen `linkedin` i `exercises.ts` länkar inte till sidan, och sidan inte till dem | Lägg in vid nästa passage |
+| **M4** | `profiles.linkedin_url` finns i prod, ifylld på **0 av 92** konton, exponeras av `useKarriarHubSummary` men renderas aldrig | LinkedIn-sidan är det naturliga stället att fråga efter den |
+| **M5** | Artiklarnas LinkedIn-statistik motsäger sig själv ("14x fler visningar" vs "21 gånger fler") och saknar källa | Rätta med `coaches.ts:792` som mall — påståendet utan siffran, avsändaren utsatt |
+
+**Tester 1 824 → 2 072 i 132 filer.** Taket 409 hållet.
+
+---
+
 ## Genomgång 2026-08-20 — Lön & Förhandling, sex granskare (åtgärdad, ej pushad)
 
 Kod + inloggad dev/prod. Sex parallella granskare (kalkylator, förhandling,
