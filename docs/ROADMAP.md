@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-21** (fyra sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,84 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-21 (natt II) — Personligt varumärke, fyra granskare
+
+`/personal-brand` och dess fyra flikar granskade i kod och visuellt. Tre granskare
+(varumärkeskoll+pitch, portfolio+synlighet, UX/a11y/i18n/ton) plus en visuell körning i
+1440 och 390 px.
+
+**Domen:** portalens sämst underhållna verktygssida. Tre av fyra flikar hade **noll AI-anrop**
+trots placeringen bland AI-verktygen — det är en checklista, en textredigerare och två listor,
+och det är i sig helt i sin ordning. Problemet är att **inget av det användaren gjorde
+sparades, och sidan sa att det gjorde det.** Fem tabeller, alla med noll rader i prod:
+`personal_brand_audit`, `personal_brand_audits`, `portfolio_items`, `elevator_pitches`,
+`visibility_progress`. För två av dem gick det bevisligen inte att spara ens om någon försökt.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| PB1 | **Varumärkeskollens svar kunde aldrig sparas.** `.upsert(…, { onConflict: 'user_id' })` mot `personal_brand_audit`, som bara har `personal_brand_audit_pkey` på `id` — inget unikt index på `user_id`. Postgres svarar **42P10** varje gång. Felet sväljdes av `handleStorageError` och svaren lades i localStorage, som ingen läsväg hämtade dem ur och som `clearUserScopedStorage()` tömmer vid utloggning. Rubriken sa "Dina svar sparas automatiskt i molnet" | Läs-sedan-skriv i stället för upsert — **ingen migration behövs**. Skrivfel kastar nu och visas. Indexen verifierade i `pg_index` 2026-08-21 |
+| PB2 | **Portfolioposten var osparbar av ett värde.** Datumfälten är `type="month"` → `"2026-03"`; kolumnerna är `date`, och `pg_input_is_valid('2026-03','date')` är **false** (mätt mot prod). Insert → 400 → sväljt → formuläret stängdes → listan oförändrad. Titel, beskrivning, taggar och datum borta utan ett ord. `lint:schema` kan inte se det: kolumnnamnet är rätt, det är värdet som är fel | `manadTillDatum()` normaliserar till månadens första dag; `visaPeriod()` skriver "mars 2026 – juni 2026" i stället för "2026-03-01 - 2026-06-01" |
+| PB3 | **Fallbacken skrev till en localStorage som aldrig lästes.** `addPortfolioItem` och `addPitch` returnerade en lokal kopia som om sparningen lyckats. Läsvägen hämtar bara localStorage när SELECT failar — för en inloggad användare med fungerande läsning möttes de två aldrig. Och `handleSave` kör `loadPitches()` direkt efteråt, som **skriver över** kopian med serverns lista. Pitchen försvann framför ögonen på användaren | Skrivfel kastar (`LagringsFel`); formuläret stängs inte vid fel; toast visar vad som hände |
+| PB4 | **Fokusguiden sparade ingenting** och sa motsatsen. `handleNext` var `async` utan `await`; filen innehöll varken `Api.`, `supabase` eller `localStorage`. Slutsteget: *"Fint! Du kan kopiera och använda din 'om mig' på LinkedIn och i CV."* — utan att visa texten och utan kopieringsknapp. I samma sekund användaren tryckte "Klar" var tre skrivsteg om sig själv borta. En NPF-anpassad guide som ber en utmattad person skriva om sig själv och sedan slänger det | Texten visas på slutsteget med kopieringsknapp och sparas som en pitch i `elevator_pitches` — samma skrivväg som Pitch-fliken. Guiden stängs inte om sparningen faller |
+| PB5 | **Fokusläget rev allt ifyllt — femte gången samma klass.** `if (isFocusMode) return` avmonterade hela `<Routes>` och därmed alla fyra flikar. Ingen flik har utkastlager. Det som försvann, namngivet: pitchens `content` (flera stycken text om sig själv), portfolioformulärets sju fält, kalenderformuläret, och kryssen från de senaste 500 ms | Överlägg med `display: none`, som `Career.tsx` och `SkillsGapAnalysis.tsx` |
+| PB6 | **Poäng på personen i hjälteposition.** 96 px ring med `strokeDashoffset`, talet i `text-2xl font-bold`, och under den `🚀 Behöver arbete` i rosa. Nämnaren var alla sexton frågor, täljaren bara de ikryssade — den som ärligt gått igenom två frågor och svarat ja på båda fick **13 %**. Kortet slog dessutom upp så fort `Object.keys(answers).length > 0`, och `toggleAnswer` lämnar kvar `false`-poster: det räckte att kryssa i och ur EN ruta för att mötas av "0 % 🚀 Behöver arbete". Kategorimärkena visade fyra `0 %` i rad innan man börjat | Räknat antal med definition: "Du har kryssat i 3 av 16", "2 av 5" per kategori. Emoji, färggradering och omdömesetiketter borta |
+| PB7 | **"0/8 strategier klara"** i `text-2xl font-bold` överst på Synlighet. En naken nolla, och ordet "klara" framställde självrapportering som utfall | Invit vid noll; annars "Du har provat 3 av 8 sätt" |
+| PB8 | **Kryssrutorna hade inget tillstånd för skärmläsare.** Sexton `<button>` utan `aria-pressed`/`role="checkbox"`; tillståndet bars av bakgrundsfärg och en ikon som lucide auto-döljer. En skärmläsare hörde "Har du en uppdaterad LinkedIn-profil?, knapp" — identiskt oavsett svar, för alla sexton. Sidans kärninteraktion (SC 4.1.2). En **`<Link>` låg dessutom inuti knappen** — ogiltig HTML, med `stopPropagation` som symptom | `aria-pressed` på alla sexton; länken flyttad ut på egen rad |
+| PB9 | **"Återställ audit" återställde ingenting.** Knappen körde `setAnswers({})`, men spar-effekten inleds med `if (… length === 0) return` — den tomma mängden tog den tidiga returen, molnraden behöll svaren, och kryssen kom tillbaka vid nästa laddning. Användaren hade bekräftat och fått ett nej utan att få veta det | Skriver tomt till molnet före state-uppdateringen, och rapporterar utfallet |
+| PB10 | **"Dela portfolio" delade ingenting.** `copyShareLink` kopierade `window.location.href` — en inloggningsskyddad rutt bakom RLS. Kodens egen kommentar: *"In a real app, this would generate a shareable link"*. Två rader ovanför stod *"Perfekt att länka till i ansökningar."* Portalen bad alltså en arbetssökande skicka en död länk till en arbetsgivare | Knappen och löftet borttagna. Ingressen beskriver vad sidan gör: samla underlag till CV och ansökningar |
+| PB11 | **Sexton ikonknappar utan tillgängligt namn** (mätt i webbläsaren), varav en raderar. Fyra låg bakom `opacity-0 group-hover:opacity-100` utan `focus-within` — tangentbordsanvändaren tabbade in i osynliga knappar (SC 2.4.7). Sex hade bara `title=`, som inte syns på pekskärm | `aria-label` med objektets namn på alla; `focus-within:opacity-100` |
+| PB12 | **Planerade inlägg gick att skapa men aldrig se eller ta bort.** Vyn visade bara innevarande vecka, så ett inlägg planerat till nästa vecka försvann i samma sekund det sparades. `deleteContentItem` fanns i servicen med noll anropare — kommentaren i koden sa det rakt ut. Fältet `content` låg i formulärstate utan input, så kolumnen skrevs alltid tom | Veckoväxling, raderaknapp per post, tomtillstånd. `content` borttaget ur state |
+| PB13 | **Två hela flikar saknade i18n.** Varken `PortfolioTab` eller `VisibilityTab` importerade `useTranslation`; `BrandAuditTab` anropade den men destrukturerade aldrig `t`. ~116 svenska strängar mitt på en översatt sida — en engelsk användare fick flikraden på engelska och allt innehåll under den på svenska | Alla tre flikarna översatta, sv+en. Frågorna, tipsen och synlighetssätten ligger i i18n; strukturen i `auditFragor.ts` och `synlighetData.ts` |
+| PB14 | **Åtta strategier med två omdömen utan källa.** `difficulty` ("Avancerat") och `impact` ("Hög påverkan") renderade som faktaetiketter. Portalen talade om för en arbetssökande att poddar har hög påverkan på hennes chans att få jobb — en gissning som såg ut som statistik. Och listan var skriven för fel person: "Gästa poddar — erbjud dig som gäst i ditt expertområde", "Tala på branschevent", "Skriv LinkedIn-artiklar … visar djup expertis". Samma fynd som Internationellt-sidan fick 2026-08-20 | `impact` borta. Kvar är `energi`, som beskriver vad det kostar henne. Tre poster utbytta mot sådant som går att göra i morgon: be om en rekommendation, höra av sig till någon man jobbat med, gå på en träff |
+| PB15 | **"85 % av alla jobb tillsätts via nätverk"** utan källa — det välkända obelagda påståendet, mitt bland grannrader som var korrekt hedgeade ("LinkedIn själva säger att…"). Och "Att dela innehåll 1-2 gånger i veckan ökar din synlighet markant" | Omskrivna till kvalitativ form: "hur många går inte att säga säkert, men kontakter är sällan bortkastade" |
+| PB16 | **Fyra ifyllda gröna bockar bredvid saker användaren inte gjort** ("LinkedIn Quick Wins"). Samma visuella språk som en faktiskt avklarad strategi tjugo rader ovanför — bocken betydde två saker på samma sida | Neutral chevron |
+| PB17 | **Statusen bars av färg och opacitet.** `skipped` hade bara `opacity-50` — ingen ikon, ingen text — och `opacity-50` sänkte kontrasten i hela kortet till 2,34:1. De fyra lägena gick inte att skilja åt utan syn (SC 1.4.1 + 1.3.1) | Status i text plus ikon; opaciteten borta |
+| PB18 | **Arton textställen i mörkt läge mellan 1,51 och 1,78:1.** `dark:text-[var(--c-accent)]` är `#6B2D38` — mörk plommon på mörk bakgrund. Det var alla fyra tipskorten i pitchfliken, alla tre i portfoliofliken, idérutan och veckoprogrammet. Och `dark:bg-[var(--c-text)] text-white` på det valda kategorifiltret gav **1,51:1** | Utbytta mot `dark:text-stone-100` (12,02:1). Ikonbrickorna fick `dark:text-stone-900` |
+| PB19 | **En naken nolla i pitchlistan.** `{pitch.practice_count && pitch.practice_count > 0 && …}` — med värdet 0 renderar React **siffran**. Varje ny pitch fick en lös `0` under typmärket, och en till i vyn | `!!`-prefix |
+| PB20 | **Tomtillstånd under laddning**, tre CTA:er för samma handling, och två staplade tomtillstånd bredvid varandra (DESIGN.md §7). "Kopierad!" visades även när kopieringen nekades. Mallarna med hakparenteser gick att spara och öva på. Native `confirm()` på tre ställen. Övningstimern hade ingen `aria-live` — den som klickade "Öva nu" utan att se skärmen fick inget att öva mot | Allt åtgärdat; `role="timer"` med en `aria-live="polite"`-region för tröskelbytena |
+| PB21 | Ton: "Varumärkesaudit" (revisorsspråk), "Din poäng", "Aktivera Open to Work", "LinkedIn Quick Wins", "Din Portfolio" (engelsk Title Case), "Personligt Varumärke" i navet, en permanent **"Ny!"-badge sedan 2026-03-22**, och flikbeskrivningar som aldrig renderats (`description` finns inte i `Tab`-typen) | Omdöpt genomgående: "Så ser du ut utifrån", "Dina arbetsprover", "Bli lättare att hitta", "Slå på". Badgen och de fyra döda nycklarna borta |
+| PB22 | **Rådgivarrådet var detsamma på alla fyra flikar** — `RadgivarTips` låg utanför `<Routes>` med fast `index={0}`. Innehållet i sig är rent: fem tips, inga påståenden om portalen (kontrollerat) | Eget index per flik |
+
+**Skyddsnät:** `client/src/pages/personal-brand/__tests__/varumarke-arlighet.test.ts` — 49 vakter,
+**17 riktade mutationer, 17 rätt hanterade** inklusive en positiv kontroll. Två av mina egna
+vakter fälldes först av fel skäl och skärptes: en kollade att `sanitizeHref` *nämns* i filen i
+stället för att kortet använder den, och en slice på ett fast antal tecken rann in i nästa
+funktion. Två befintliga tester i `cloudStorage.test.ts` **cementerade buggarna** och är
+omskrivna — det ena hette "upsertar answers + poäng med onConflict user_id" och asserterade
+exakt det anrop som ger 42P10 i prod; det andra asserterade att fallbacken skrev till
+localStorage, men aldrig att objektet gick att läsa tillbaka.
+
+`npm run verify` grön: 138 testfiler, 2 298 tester, 0 eslint-fel, typtaket sänkt 386 → 384.
+
+### Kvarstår — kräver beslut eller eget arbete
+
+- **PB-A — `text-white` på `--c-solid` mäter 2,03:1 i mörkt läge, för VARJE primärknapp i
+  portalen.** `design-system.ts:203` definierar `primary: 'bg-[var(--c-solid)] text-white'`, och
+  `.dark` sätter alla hubbars `--*-solid` till en ljus pastell. Det är ett tokenproblem, inte ett
+  sidproblem — jag har lagat det lokalt på de fyra ikonbrickorna men INTE rört den delade
+  knappdefinitionen, eftersom det ändrar varje knapp på varje sida. Eget ärende.
+- **PB-B — `PageFocusShell.tsx:34-42` rekommenderar fortfarande det trasiga mönstret i sin egen
+  docstring**, och `grep -rn "if (isFocusMode)" client/src/pages/` ger **28 sidor** som följer
+  den. Fem är lagade en och en. Att laga dem i den takten kommer inte ikapp docstringen — rätta
+  källan, och överväg en grind.
+- **PB-C — ett unikt index på `personal_brand_audit(user_id)`** vore den snyggare modellen än
+  läs-sedan-skriv. Tabellen är tom, så migrationen är riskfri — men det är en prod-ändring och
+  därmed Mikaels beslut. Koden fungerar utan den.
+- **PB-D — `personal_brand_audit` och `personal_brand_audits` är två tabeller för samma sak**
+  (aktuellt läge respektive historik), båda tomma. `getAuditHistory` och
+  `personalBrandAuditsApi.getLatest` har noll anropare — historiken är skrivbar men läses aldrig
+  av sidan, bara av hubbhookarna. Antingen bygg en historikvy eller slå ihop tabellerna.
+- **PB-E — historikrader går inte att radera.** `personalBrandAuditsApi` har bara `create` och
+  `getLatest`. Samma art. 17-friktion som IG-H på Intresseguiden.
+- **PB-F — hela sidan låg bland AI-verktygen utan att göra ett enda AI-anrop.** Det är inte ett
+  fel i sig, men placeringen sätter en förväntan. Antingen ska något här faktiskt använda AI
+  (t.ex. utkast till pitchen, som Personligt brev gör) eller så ska sidan beskrivas som det den
+  är: en checklista och en skrivyta. Produktbeslut.
 
 ---
 
@@ -69,11 +147,26 @@ En tredje läste en tom sträng — fel ankare i en `slice` — och en tom strä
   Den styr ingenting i gränssnittet längre, men den finns i schemat, i Zod-schemat och i prompten.
   Att göra kolumnen nullbar är en migration mot prod och därmed Mikaels beslut. Så länge den
   ligger kvar kan en framtida vy plocka upp den igen.
-- **SGA-B — edge-fixen är verifierad uppströms men inte i drift.** JobEd-anropet är kontrollerat
-  mot API:t med rätt parametrar och svarsform (2026-08-21), men `/match`-rutten kan först provas
-  efter att `education-search` deployats. Kör
-  `curl -sS -X POST "$SUPABASE_URL/functions/v1/education-search/match" -H "Authorization: Bearer $ANON" -H "Content-Type: application/json" -d '{"jobTitle":"undersköterska","limit":3}'`
-  → förväntat: `{"educations":[…],"source":"jobed-connect-match"}`, **inte** `{"error":"Education not found"}`.
+- ~~**SGA-B — edge-fixen är verifierad uppströms men inte i drift.**~~ **✅ Verifierad i drift
+  2026-08-21** efter deploy av `7fcc36eb`. `POST /functions/v1/education-search/match` med
+  `{"jobTitle":"undersköterska"}` svarar nu `source: "jobed-connect-match"`, 1 849 träffar,
+  `matchedOccupation: "Undersköterska, vård- och specialavdelning och mottagning"`, och riktiga
+  utbildningar med anordnare, formetikett och startdatum. Rutten hade svarat
+  `{"error":"Education not found"}` under hela sin livstid.
+
+  > **Fälla i verifieringen, värd att komma ihåg:** första kontrollen efter deploy gav
+  > `source: "error"` och såg ut som att fixen inte tagit. Felet låg i mitt eget testanrop —
+  > `ö` i JSON-kroppen från ett bash-heredoc nådde funktionen felkodat. Samma anrop med
+  > `"undersk\u00f6terska"` gick igenom direkt, och `{"jobTitle":"lagerarbetare"}` hade
+  > fungerat hela tiden. Kontrollera testharnessen innan du felsöker koden när felet bara
+  > uppträder för indata med svenska tecken.
+
+- **SGA-H — sökvägen har kvar samma etikettlucka som matchvägen hade.** `GET /education-search?q=…`
+  returnerar `typeLabel: "vuxgy"`, `formLabel: "vuxgy"` och `type: "other"` — de långa nycklarna
+  i `FORM_LABELS` (`gymnasial_vuxenutbildning` m.fl.) matchar aldrig de korta koderna API:t
+  faktiskt svarar med. `MATCH_FORM_LABELS`/`MATCH_FORM_TYPE` som lades till för matchvägen har
+  rätt kodtabell; sökvägen behöver samma. Syns på `/education`, inte på Kompetensanalysen.
+  Verifierat mot prod 2026-08-21.
 - **SGA-C — `CareerRecommendationsPanel` har visat tom utbildningslista sedan den byggdes**, av
   samma tre fel som SGA3. Den är inte granskad i den här omgången; kontrollera att den nu får
   träffar, och att den skiljer `source === 'error'` från noll träffar (det gör den inte i dag).

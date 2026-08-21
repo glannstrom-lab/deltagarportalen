@@ -408,7 +408,7 @@
     "career": "Karriär",
     "education": "Utbildningar",
     "salary": "Lön & Förhandling",
-    "personalBrand": "Personligt Varumärke",
+    "personalBrand": "Personligt varumärke",
     "international": "Internationell Guide",
     "externalResources": "Externa resurser",
     "interestGuide": "Intresseguide",
@@ -4410,27 +4410,22 @@
     }
   },
   "personalBrand": {
-    "editorialSpot": "Bygg ett tydligt personligt varumärke som visar vad du kan.",
-    "pageTitle": "Personligt Varumärke",
-    "pageDescription": "Bygg och stärk ditt professionella varumärke",
+    "editorialSpot": "Bygg en tydlig bild av vad du kan.",
+    "pageTitle": "Ditt personliga varumärke",
+    "pageDescription": "Hur du syns för en arbetsgivare — och vad du kan göra åt det",
     "tabs": {
       "audit": {
-        "label": "Varumärkesaudit",
-        "description": "Analysera ditt personliga varumärke"
+        "label": "Din bild utåt"
       },
       "pitch": {
-        "label": "Personlig Pitch",
-        "description": "Skapa och öva din hiss-pitch"
+        "label": "Din pitch"
       },
       "portfolio": {
-        "label": "Portfolio",
-        "description": "Visa upp dina projekt"
+        "label": "Arbetsprover"
       },
       "visibility": {
-        "label": "Synlighet",
-        "description": "Öka din digitala närvaro"
-      },
-      "newBadge": "Ny!"
+        "label": "Synlighet"
+      }
     },
     "pitch": {
       "header": {
@@ -4561,6 +4556,318 @@
           "text": "Bjud in till dialog istället för att bara prata om dig själv."
         }
       }
+    },
+    "audit": {
+      "title": "Så ser du ut utifrån",
+      "intro": "{{antal}} frågor om hur du syns för en arbetsgivare. Kryssa i det du redan gjort — resten är förslag, inte krav.",
+      "loading": "Hämtar dina svar …",
+      "loadFailed": "Vi kunde inte hämta dina svar just nu. Det betyder inte att de är borta.",
+      "saving": "Sparar …",
+      "saveFailed": "Vi kunde inte spara just nu. Dina kryss ligger kvar på skärmen — försök igen om en stund.",
+      "summary": "Du har kryssat i {{klara}} av {{totalt}}.",
+      "categoryCount": "{{klara}} av {{totalt}}",
+      "categories": {
+        "online": "Där du syns",
+        "content": "Det du skriver",
+        "network": "Folk du känner",
+        "consistency": "Att det hänger ihop"
+      },
+      "suggestionsTitle": "Tre saker du kan börja med",
+      "showTip": "Visa tips",
+      "hideTip": "Dölj tips",
+      "saveRoundCta": "Spara genomgången",
+      "roundSavedCta": "Sparad",
+      "savedRound": "Genomgången är sparad. Den syns på Karriär-sidan.",
+      "reset": "Börja om med listan",
+      "resetTitle": "Börja om med listan?",
+      "resetBody": "Alla kryss tas bort. Du kan gå igenom frågorna igen när du vill.",
+      "resetConfirm": "Ta bort alla kryss",
+      "resetDone": "Listan är nollställd.",
+      "resetFailed": "Vi kunde inte nollställa listan. Dina kryss är kvar — försök igen om en stund.",
+      "questions": {
+        "linkedin-profile": {
+          "question": "Har du en uppdaterad LinkedIn-profil?",
+          "tip": "En ifylld profil hittas oftare av rekryterare än en halvfärdig. Rubrik, om-text och erfarenhet räcker långt.",
+          "action": "Se över LinkedIn"
+        },
+        "linkedin-photo": {
+          "question": "Har du ett profilfoto?",
+          "tip": "LinkedIn själva säger att profiler med foto får fler visningar. Ett vanligt, tydligt ansikte räcker — det behöver inte vara taget av fotograf.",
+          "action": ""
+        },
+        "linkedin-headline": {
+          "question": "Står det i din LinkedIn-rubrik vad du gör eller söker?",
+          "tip": "Rubriken är det första någon ser. \"Undersköterska som söker nytt\" säger mer än \"Öppen för möjligheter\".",
+          "action": "Skriv en rubrik"
+        },
+        "google-search": {
+          "question": "Har du googlat ditt eget namn någon gång?",
+          "tip": "Många tittar upp den de ska träffa. Bra att veta vad som kommer upp — oftast är det ingenting, och det är också ett svar.",
+          "action": ""
+        },
+        "personal-website": {
+          "question": "Har du någonstans att visa det du gjort?",
+          "tip": "Det behöver inte vara en hemsida. En samling arbetsprover som du kan länka till i en ansökan räcker.",
+          "action": "Samla arbetsprover"
+        },
+        "share-content": {
+          "question": "Delar du något som rör din bransch på LinkedIn?",
+          "tip": "Att då och då dela något du läst gör att fler ser ditt namn. Det finns ingen given takt — gör det när du har något att dela.",
+          "action": "Se idéer"
+        },
+        "own-content": {
+          "question": "Har du skrivit något eget — ett inlägg eller en text?",
+          "tip": "Ett kort inlägg om något du kan räcker. Du behöver inte vara expert för att ha något att säga.",
+          "action": "Skriv ett inlägg"
+        },
+        "engage-others": {
+          "question": "Kommenterar eller gillar du andras inlägg?",
+          "tip": "Att svara på andras inlägg är ofta lättare än att skriva egna — och det syns för deras nätverk.",
+          "action": ""
+        },
+        "expertise-shown": {
+          "question": "Märks det du kan i det du skriver?",
+          "tip": "Konkreta erfarenheter från jobb du haft säger mer än allmänna råd.",
+          "action": ""
+        },
+        "active-network": {
+          "question": "Håller du kontakt med folk i din bransch?",
+          "tip": "Många jobb tillsätts genom att någon känner någon — hur många går inte att säga säkert, men kontakter är sällan bortkastade.",
+          "action": ""
+        },
+        "industry-events": {
+          "question": "Går du på branschträffar eller andra sammankomster?",
+          "tip": "Att träffas gör oftast större intryck än ett meddelande. Ett tillfälle då och då räcker.",
+          "action": ""
+        },
+        "mentors": {
+          "question": "Har du någon att fråga om råd i yrkeslivet?",
+          "tip": "Det behöver inte vara en formell mentor. En tidigare kollega eller chef som du kan höra av dig till räknas.",
+          "action": ""
+        },
+        "recommendations": {
+          "question": "Har du rekommendationer på LinkedIn?",
+          "tip": "Rekommendationer från andra väger tyngre än det du skriver om dig själv. De flesta säger ja om man frågar.",
+          "action": ""
+        },
+        "consistent-message": {
+          "question": "Säger ditt CV och din LinkedIn ungefär samma sak?",
+          "tip": "Samma yrkesord på båda ställena gör att det du säger känns igen — och att du är lättare att söka fram.",
+          "action": ""
+        },
+        "unique-value": {
+          "question": "Kan du säga vad du är bra på, kort?",
+          "tip": "Två meningar räcker. Det är sådant man får fram genom att skriva ner det, inte genom att tänka på det.",
+          "action": "Skriv din pitch"
+        },
+        "target-audience": {
+          "question": "Vet du vilken sorts arbetsgivare du vill nå?",
+          "tip": "Vet du vem du skriver för blir både texter och ansökningar lättare att formulera.",
+          "action": ""
+        }
+      }
+    },
+    "portfolio": {
+      "title": "Dina arbetsprover",
+      "intro": "Samla det du gjort — jobb, uppdrag, utbildningar, projekt. Bra att ha när du ska skriva en ansökan eller fylla i ditt CV.",
+      "loading": "Hämtar dina arbetsprover …",
+      "loadFailed": "Vi kunde inte hämta dina arbetsprover just nu. Det betyder inte att de är borta.",
+      "add": "Lägg till",
+      "addFirst": "Lägg till det första",
+      "emptyTitle": "Här samlar du det du gjort",
+      "emptyBody": "Ett jobb, en utbildning, ett uppdrag eller något du byggt. Det behöver inte vara stort för att vara värt att skriva ner.",
+      "newHeading": "Nytt arbetsprov",
+      "editHeading": "Ändra arbetsprov",
+      "fieldTitle": "Vad handlar det om?",
+      "titlePlaceholder": "t.ex. Lagerarbete på Coop",
+      "fieldType": "Vad är det?",
+      "fieldDescription": "Beskrivning",
+      "descriptionPlaceholder": "Vad gjorde du, och vad blev resultatet? Ett par meningar räcker.",
+      "fieldStart": "Från (valfritt)",
+      "fieldEnd": "Till (valfritt)",
+      "fieldUrl": "Länk (valfritt)",
+      "urlInvalid": "Det här ser inte ut som en webbadress. Den ska börja med http:// eller https://.",
+      "fieldTags": "Nyckelord (separera med komma)",
+      "tagsPlaceholder": "truck, lager, kundkontakt",
+      "featureLabel": "Visa den här överst",
+      "save": "Spara",
+      "saveEdit": "Spara ändringen",
+      "saved": "Sparat.",
+      "saveFailed": "Vi kunde inte spara just nu. Det du skrivit ligger kvar — försök igen om en stund.",
+      "deleted": "Borttaget.",
+      "deleteFailed": "Vi kunde inte ta bort det. Det ligger kvar — försök igen om en stund.",
+      "deleteTitle": "Ta bort?",
+      "deleteBody": "\"{{titel}}\" tas bort permanent.",
+      "featured": "Överst",
+      "openLink": "Öppna länken",
+      "featureAria": "Visa {{titel}} överst",
+      "editAria": "Ändra {{titel}}",
+      "deleteAria": "Ta bort {{titel}}",
+      "types": {
+        "project": {
+          "label": "Projekt",
+          "description": "Något du byggt eller drivit"
+        },
+        "work": {
+          "label": "Jobb",
+          "description": "Anställning eller uppdrag"
+        },
+        "certificate": {
+          "label": "Intyg",
+          "description": "Utbildning, kurs eller certifikat"
+        },
+        "other": {
+          "label": "Annat",
+          "description": "Allt annat du vill ha med"
+        }
+      },
+      "tipsTitle": "Tre saker som brukar hjälpa",
+      "tips": {
+        "quality": {
+          "title": "Hellre några få",
+          "body": "Det du är mest nöjd med säger mer än en lång lista."
+        },
+        "role": {
+          "title": "Skriv vad DU gjorde",
+          "body": "Inte vad arbetsplatsen gjorde — vad din del var."
+        },
+        "result": {
+          "title": "Ta med resultatet",
+          "body": "Blev något bättre, snabbare eller lättare? Skriv det."
+        }
+      }
+    },
+    "visibility": {
+      "title": "Bli lättare att hitta",
+      "introEmpty": "Här är {{antal}} sätt att synas för en arbetsgivare. Välj ett som känns rimligt — du behöver inte göra alla.",
+      "introSome": "Du har provat {{provade}} av {{antal}} sätt. Det finns ingen ordning du måste följa.",
+      "loading": "Hämtar …",
+      "loadFailed": "Vi kunde inte hämta det här just nu. Det betyder inte att inget är sparat.",
+      "statusFailed": "Vi kunde inte spara ändringen. Försök igen om en stund.",
+      "ideaTitle": "Något att skriva om",
+      "newIdea": "Visa en annan",
+      "writePost": "Skriv inlägget",
+      "ideas": {
+        "0": "Dela något du lärt dig av ett misstag",
+        "1": "Berätta om ett jobb du är stolt över",
+        "2": "Förklara något från ditt yrke så en utomstående förstår",
+        "3": "Skriv vad du hade velat veta när du började",
+        "4": "Kommentera något som händer i din bransch",
+        "5": "Tacka någon som hjälpt dig",
+        "6": "Dela en bok, podd eller kurs du gillat",
+        "7": "Ställ en fråga till dem som följer dig",
+        "8": "Berätta kort om din väg hit",
+        "9": "Skriv om en vanlig missuppfattning i ditt yrke",
+        "10": "Visa något du gjort den här veckan",
+        "11": "Berätta vad du söker just nu"
+      },
+      "calendarTitle": "Planerade inlägg",
+      "calendarEmpty": "Du har inget planerat än. Det går bra att bara skriva när det passar — planen är till för den som vill ha en.",
+      "planPost": "Planera ett inlägg",
+      "planWhat": "Vad ska du skriva om?",
+      "planPlaceholder": "t.ex. Tacka min gamla chef",
+      "planWhere": "Var?",
+      "planWhen": "När?",
+      "planSave": "Spara",
+      "planSaved": "Inlägget är planerat.",
+      "planFailed": "Vi kunde inte spara det planerade inlägget. Försök igen om en stund.",
+      "planDeleted": "Borttaget.",
+      "planDeleteFailed": "Vi kunde inte ta bort det. Det ligger kvar — försök igen om en stund.",
+      "deletePlanTitle": "Ta bort det planerade inlägget?",
+      "deletePlanBody": "\"{{titel}}\" tas bort från din plan.",
+      "deletePlanAria": "Ta bort {{titel}}",
+      "platformBlog": "Blogg",
+      "platformOther": "Annat",
+      "prevWeek": "Föregående vecka",
+      "nextWeek": "Nästa vecka",
+      "thisWeek": "Den här veckan",
+      "filterAria": "Filtrera sätten",
+      "filterAll": "Alla ({{antal}})",
+      "categories": {
+        "content": "Skriva",
+        "engagement": "Svara andra",
+        "networking": "Kontakter",
+        "platform": "Egna sidor"
+      },
+      "waysTitle": "{{antal}} sätt att synas",
+      "waysIntro": "Ordnade efter hur mycket de brukar kosta i ork — inte efter hur bra de är.",
+      "helpHere": "Vi hjälper till här",
+      "energy": {
+        "lag": "Lite ork",
+        "medel": "En del ork",
+        "hog": "Mycket ork"
+      },
+      "time": {
+        "kort": "Några minuter",
+        "halvtimme": "Ungefär en halvtimme",
+        "timme": "Ungefär en timme",
+        "varierar": "Varierar"
+      },
+      "status": {
+        "not_started": "Inte börjat",
+        "in_progress": "Pågår",
+        "completed": "Provat",
+        "skipped": "Överhoppat"
+      },
+      "startAria": "Börja med {{titel}}",
+      "skipAria": "Hoppa över {{titel}}",
+      "doneAria": "Markera {{titel}} som provat",
+      "pauseAria": "Pausa {{titel}}",
+      "resetAria": "Återställ {{titel}}",
+      "ways": {
+        "linkedin-engage": {
+          "title": "Svara på andras inlägg",
+          "description": "Skriv en kommentar på något någon annan lagt upp. Det är oftast lättare än att skriva eget, och ditt namn syns för deras kontakter."
+        },
+        "share-articles": {
+          "title": "Dela något du läst",
+          "description": "En artikel om din bransch, med en rad om varför du tyckte den var värd att läsa."
+        },
+        "ask-recommendation": {
+          "title": "Be om en rekommendation",
+          "description": "Fråga en tidigare kollega eller chef om de kan skriva några rader på LinkedIn. De flesta säger ja."
+        },
+        "reach-out": {
+          "title": "Hör av dig till någon du jobbat med",
+          "description": "Ett kort meddelande räcker. Många jobb kommer den vägen, och det kostar ingenting att höra av sig."
+        },
+        "join-groups": {
+          "title": "Gå med i en grupp",
+          "description": "Grupper för din bransch eller din ort. Du behöver inte skriva något för att ha nytta av att läsa."
+        },
+        "write-posts": {
+          "title": "Skriv ett eget inlägg",
+          "description": "Om något du kan eller något du varit med om. Några meningar räcker — det behöver inte vara en artikel."
+        },
+        "local-meet": {
+          "title": "Gå på en träff",
+          "description": "En jobbmässa, en branschträff eller något Arbetsförmedlingen ordnar. Att träffas gör oftast större intryck än ett meddelande."
+        },
+        "portfolio-page": {
+          "title": "Samla dina arbetsprover",
+          "description": "En samling av det du gjort som du kan hänvisa till i en ansökan."
+        }
+      },
+      "quickTitle": "Fyra snabba på LinkedIn",
+      "quick": {
+        "headline": {
+          "title": "Skriv jobbtiteln i rubriken",
+          "body": "Det är den rekryterare söker på."
+        },
+        "openToWork": {
+          "title": "Slå på \"Open to Work\"",
+          "body": "Går att välja så att bara rekryterare ser det."
+        },
+        "recommendations": {
+          "title": "Be om rekommendationer",
+          "body": "Från chefer eller kollegor du haft."
+        },
+        "creator": {
+          "title": "Slå på Creator Mode",
+          "body": "Om du tänker skriva regelbundet."
+        }
+      },
+      "openLinkedIn": "Öppna LinkedIn-hjälpen"
     }
   },
   "exercises": {

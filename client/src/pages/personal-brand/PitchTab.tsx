@@ -20,10 +20,11 @@ import {
   CheckCircle,
   Copy,
   Check,
-  X,
-  MessageSquare
+  X
 } from '@/components/ui/icons'
-import { Card, Button, EmptyState } from '@/components/ui'
+import { Card, Button, EmptyState, LoadingState } from '@/components/ui'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { showToast } from '@/components/Toast'
 import { cn } from '@/lib/utils'
 import { personalBrandApi, type ElevatorPitch } from '@/services/cloudStorage'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -58,9 +59,12 @@ const PITCH_TEMPLATES = [
 ] as const
 
 export default function PitchTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [pitches, setPitches] = useState<ElevatorPitch[]>([])
+  const { confirm } = useConfirmDialog()
   const [isLoading, setIsLoading] = useState(true)
+  const [laddningsfel, setLaddningsfel] = useState(false)
+  const [sparar, setSparar] = useState(false)
   const [selectedPitch, setSelectedPitch] = useState<ElevatorPitch | null>(null)
   const [isEditing, setIsEditing] = useState(false)
   const [isPracticing, setIsPracticing] = useState(false)
@@ -106,12 +110,19 @@ export default function PitchTab() {
 
   const loadPitches = async () => {
     setIsLoading(true)
+    setLaddningsfel(false)
     try {
       const data = await personalBrandApi.getPitches()
       setPitches(data)
       if (data.length > 0 && !selectedPitch) {
         setSelectedPitch(data[0])
       }
+    } catch (err) {
+      // `try/finally` utan `catch` gjorde ett läsfel identiskt med "du har
+      // ingen pitch än" — och tomtillståndet visades dessutom UNDER hela
+      // hämtningen, eftersom `isLoading` bara styrde vänsterspalten.
+      console.error('Pitch: kunde inte hämta', err)
+      setLaddningsfel(true)
     } finally {
       setIsLoading(false)
     }
@@ -145,9 +156,17 @@ export default function PitchTab() {
 
   const stopPractice = async () => {
     setIsTimerRunning(false)
-    if (selectedPitch?.id) {
+    if (!selectedPitch?.id) return
+    try {
       await personalBrandApi.recordPractice(selectedPitch.id)
-      loadPitches()
+      const uppdaterade = await personalBrandApi.getPitches()
+      setPitches(uppdaterade)
+      // `loadPitches()` lämnade `selectedPitch` orörd, så "Du har övat …" i
+      // den öppna vyn stod kvar på det gamla talet tills man klickade om.
+      const min = uppdaterade.find(p => p.id === selectedPitch.id)
+      if (min) setSelectedPitch(min)
+    } catch (err) {
+      console.error('Pitch: kunde inte registrera övningen', err)
     }
   }
 
@@ -168,27 +187,57 @@ export default function PitchTab() {
       key_points: formData.key_points || []
     }
 
-    if (selectedPitch?.id && isEditing) {
-      await personalBrandApi.updatePitch(selectedPitch.id, pitchData)
-    } else {
-      const newPitch = await personalBrandApi.addPitch(pitchData)
-      if (newPitch) {
-        setSelectedPitch(newPitch)
+    setSparar(true)
+    try {
+      if (selectedPitch?.id && isEditing) {
+        await personalBrandApi.updatePitch(selectedPitch.id, pitchData)
+      } else {
+        const newPitch = await personalBrandApi.addPitch(pitchData)
+        if (newPitch) {
+          setSelectedPitch(newPitch)
+        }
       }
-    }
 
-    await loadPitches()
-    setIsEditing(false)
-    resetForm()
+      await loadPitches()
+      setIsEditing(false)
+      resetForm()
+      showToast.success(t('personalBrand.pitch.saved', 'Pitchen är sparad.'))
+    } catch (err) {
+      // Servicen returnerade tidigare en localStorage-kopia som om allt gått
+      // bra, varpå `loadPitches()` hämtade serverns lista UTAN kopian och
+      // skrev över den. Användaren såg formuläret stängas och pitchen
+      // försvinna, utan ett ord. Formuläret stängs inte längre vid fel.
+      console.error('Pitch: kunde inte spara', err)
+      showToast.error(t('personalBrand.pitch.saveFailed', 'Vi kunde inte spara pitchen. Texten ligger kvar — försök igen om en stund.'))
+    } finally {
+      setSparar(false)
+    }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('personalBrand.pitch.confirmDelete', 'Ta bort denna pitch?'))) return
-    await personalBrandApi.deletePitch(id)
-    if (selectedPitch?.id === id) {
-      setSelectedPitch(null)
+    // Inbyggd `confirm()` blockerar tråden och är avstängd i vissa inbäddade
+    // kontexter — då raderades ingenting, tyst.
+    const bekraftat = await confirm({
+      title: t('personalBrand.pitch.confirmDeleteTitle', 'Ta bort pitchen?'),
+      message: t('personalBrand.pitch.confirmDelete', 'Pitchen tas bort permanent.'),
+      confirmText: t('common.delete'),
+      variant: 'danger',
+    })
+    if (!bekraftat) return
+
+    try {
+      await personalBrandApi.deletePitch(id)
+      if (selectedPitch?.id === id) {
+        setSelectedPitch(null)
+      }
+      await loadPitches()
+      showToast.success(t('personalBrand.pitch.deleted', 'Pitchen är borttagen.'))
+    } catch (err) {
+      // Sväljdes tidigare — art. 17: den som ber om radering ska få veta om
+      // den inte skedde.
+      console.error('Pitch: kunde inte ta bort', err)
+      showToast.error(t('personalBrand.pitch.deleteFailed', 'Vi kunde inte ta bort pitchen. Den ligger kvar — försök igen om en stund.'))
     }
-    await loadPitches()
   }
 
   const handleEdit = (pitch: ElevatorPitch) => {
@@ -241,13 +290,33 @@ export default function PitchTab() {
     }))
   }
 
-  const copyToClipboard = () => {
-    if (selectedPitch) {
-      navigator.clipboard.writeText(selectedPitch.content)
+  /**
+   * Mallarna innehåller hakparenteser — "Hej! Jag heter [Namn] och arbetar
+   * som [Roll]". Sparaknappen kontrollerade bara att fälten inte var tomma,
+   * så det gick att spara OCH öva på en pitch full av platshållare.
+   */
+  const harPlatshallare = /\[[^\]]+\]/.test(formData.content || '')
+
+  const copyToClipboard = async () => {
+    if (!selectedPitch) return
+    try {
+      // `writeText` väntades varken in eller fångades, och `setCopied(true)`
+      // kördes ovillkorligt — bocken visades även när kopieringen nekades,
+      // och `navigator.clipboard` är `undefined` i osäker kontext.
+      await navigator.clipboard.writeText(selectedPitch.content)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
+    } catch {
+      showToast.error(t('personalBrand.pitch.copyFailed', 'Kunde inte kopiera. Markera texten och kopiera för hand.'))
     }
   }
+
+  /** Grov uppskattning: ~15 tecken per sekund talad text. Ingen mätning. */
+  const uppskattadeSekunder = Math.round((formData.content?.length || 0) / 15)
+  /** Skillnaden mot den längd användaren valt. `null` när fältet är tomt. */
+  const avvikelse = (formData.content?.length ?? 0) > 0
+    ? uppskattadeSekunder - (formData.duration_seconds || 30)
+    : null
 
   const getTargetTime = () => selectedPitch?.duration_seconds || 30
   const isOverTime = practiceTime > getTargetTime()
@@ -259,14 +328,14 @@ export default function PitchTab() {
       <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Mic className="w-6 h-6 text-white" />
+            <Mic className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
               {t('personalBrand.pitch.header.title', 'Din personliga pitch')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {t('personalBrand.pitch.header.description', 'Skapa och öva på din hiss-pitch. En bra pitch tar 30-60 sekunder och lämnar ett starkt intryck.')}
+              {t('personalBrand.pitch.header.description', 'En kort presentation av dig själv, att ha när någon frågar. Ett halvt till en minut räcker för att någon ska vilja fråga mer.')}
             </p>
           </div>
           <Button onClick={() => { resetForm(); setIsEditing(true); setSelectedPitch(null); }}>
@@ -279,24 +348,18 @@ export default function PitchTab() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pitch List */}
         <div className="lg:col-span-1 space-y-4">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-            {t('personalBrand.pitch.yourPitches', 'Dina pitchar')}
-          </h3>
+          {/* Listan hade ett eget tomtillstånd bredvid huvudytans — två
+              staplade tomtillstånd som sa samma sak, med tre knappar för
+              samma handling ("Ny pitch", "Skapa din första pitch", "Skapa
+              pitch"). DESIGN.md §7 förbjuder det. Kolumnen visar sin rubrik
+              först när det finns något att lista; inviten står en gång. */}
+          {pitches.length > 0 && (
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">
+              {t('personalBrand.pitch.yourPitches', 'Dina pitchar')}
+            </h3>
+          )}
 
-          {pitches.length === 0 && !isLoading ? (
-            <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-              <EmptyState
-                compact
-                icon={MessageSquare}
-                title={t('personalBrand.pitch.emptyList.title', 'Dina pitchar samlas här')}
-                description={t('personalBrand.pitch.emptyList.description', 'En kort presentation av dig själv som du kan öva på och använda när det gäller.')}
-                action={{
-                  label: t('personalBrand.pitch.emptyList.action', 'Skapa din första pitch'),
-                  onClick: () => { resetForm(); setIsEditing(true) },
-                }}
-              />
-            </Card>
-          ) : (
+          {pitches.length > 0 && (
             <div className="space-y-2">
               {pitches.map((pitch) => {
                 const typeInfo = PITCH_TYPES[pitch.pitch_type]
@@ -317,7 +380,7 @@ export default function PitchTab() {
                         <div className="flex items-center gap-2 mt-1">
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
-                            typeInfo.color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
+                            typeInfo.color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100",
                             typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
                             typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
                             typeInfo.color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
@@ -334,7 +397,9 @@ export default function PitchTab() {
                         <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
                       )}
                     </div>
-                    {pitch.practice_count && pitch.practice_count > 0 && (
+                    {/* `{x && x > 0 && …}` med x = 0 renderar SIFFRAN 0.
+                        Varje ny pitch fick en lös nolla under typmärket. */}
+                    {!!pitch.practice_count && pitch.practice_count > 0 && (
                       <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                         {t('personalBrand.pitch.practicedTimes', 'Övat {{count}} gånger', { count: pitch.practice_count })}
                       </p>
@@ -359,17 +424,24 @@ export default function PitchTab() {
               >
                 <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-white dark:bg-stone-800">
                   <div className="text-center py-8">
-                    {/* Timer */}
-                    <div className={cn(
-                      "text-6xl font-bold mb-4 transition-colors",
-                      isOverTime ? "text-rose-600 dark:text-rose-400" : isNearTarget ? "text-emerald-600 dark:text-emerald-400" : "text-gray-800 dark:text-gray-100"
-                    )}>
+                    {/* Timer. `role="timer"` med `aria-live="off"` — varje
+                        sekund uppläst vore oanvändbart; tröskelbytena
+                        annonseras av regionen under i stället. */}
+                    <div
+                      role="timer"
+                      aria-live="off"
+                      className={cn(
+                        "text-6xl font-bold mb-4 transition-colors",
+                        isOverTime ? "text-red-700 dark:text-red-300" : isNearTarget ? "text-[var(--c-text)] dark:text-[var(--c-solid)]" : "text-stone-800 dark:text-stone-100"
+                      )}
+                    >
                       {formatTime(practiceTime)}
                     </div>
-                    <p className="text-gray-600 dark:text-gray-300 mb-6">
+                    <p className="text-stone-700 dark:text-stone-300 mb-6" role="status" aria-live="polite">
                       {t('personalBrand.pitch.practice.target', 'Mål: {{time}}', { time: formatTime(getTargetTime()) })}
-                      {isNearTarget && ` - ${t('personalBrand.pitch.practice.perfectTiming', 'Perfekt timing!')}`}
-                      {isOverTime && ` - ${t('personalBrand.pitch.practice.tryShorten', 'Försök korta ner')}`}
+                      {/* "Perfekt timing!" — ingen perfektion att leva upp till. */}
+                      {isNearTarget && ` — ${t('personalBrand.pitch.practice.goodLength', 'Bra längd')}`}
+                      {isOverTime && ` — ${t('personalBrand.pitch.practice.tryShorten', 'Försök korta ner')}`}
                     </p>
 
                     {/* Controls */}
@@ -399,10 +471,10 @@ export default function PitchTab() {
                     </div>
 
                     {/* Key points */}
-                    {selectedPitch.key_points.length > 0 && (
+                    {(selectedPitch.key_points?.length ?? 0) > 0 && (
                       <div className="mt-4 flex flex-wrap justify-center gap-2">
                         {selectedPitch.key_points.map((point, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] rounded-full text-sm">
+                          <span key={idx} className="px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100 rounded-full text-sm">
                             {point}
                           </span>
                         ))}
@@ -534,12 +606,31 @@ export default function PitchTab() {
                         className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] min-h-[150px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         placeholder={t('personalBrand.pitch.form.contentPlaceholder', 'Skriv din pitch här...')}
                       />
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                        {t('personalBrand.pitch.form.readingTime', 'Ca {{seconds}} sekunder att läsa ({{chars}} tecken)', {
-                          seconds: Math.round((formData.content?.length || 0) / 15),
-                          chars: formData.content?.length || 0,
-                        })}
-                      </p>
+                      {/* Visade "Ca 0 sekunder att läsa (0 tecken)" för ett
+                          tomt fält — en nolla utan underlag — och jämförde
+                          aldrig med den längd användaren valt två fält upp. */}
+                      {(formData.content?.length ?? 0) > 0 && (
+                        <p className="text-xs text-stone-700 dark:text-stone-400 mt-1">
+                          {t('personalBrand.pitch.form.readingTime', 'Ungefär {{seconds}} sekunder att säga ({{chars}} tecken)', {
+                            seconds: uppskattadeSekunder,
+                            chars: formData.content?.length || 0,
+                          })}
+                          {avvikelse !== null && (
+                            <span>
+                              {' — '}
+                              {avvikelse > 0
+                                ? t('personalBrand.pitch.form.overTarget', '{{sek}} sekunder längre än ditt mål', { sek: avvikelse })
+                                : t('personalBrand.pitch.form.underTarget', '{{sek}} sekunder kortare än ditt mål', { sek: Math.abs(avvikelse) })}
+                            </span>
+                          )}
+                        </p>
+                      )}
+
+                      {harPlatshallare && (
+                        <p id="pb-pitch-platshallare" className="text-xs text-stone-800 dark:text-stone-100 mt-1" role="alert">
+                          {t('personalBrand.pitch.form.placeholdersLeft', 'Texten innehåller platshållare inom hakparenteser — byt ut dem mot dina egna uppgifter innan du sparar.')}
+                        </p>
+                      )}
                     </div>
 
                     {/* Key points */}
@@ -578,9 +669,15 @@ export default function PitchTab() {
                     </div>
 
                     <div className="flex gap-2 pt-4">
-                      <Button onClick={handleSave} disabled={!formData.title?.trim() || !formData.content?.trim()}>
+                      <Button
+                        onClick={handleSave}
+                        disabled={!formData.title?.trim() || !formData.content?.trim() || harPlatshallare || sparar}
+                        aria-describedby={harPlatshallare ? 'pb-pitch-platshallare' : undefined}
+                      >
                         <Save className="w-4 h-4 mr-1" />
-                        {t('personalBrand.pitch.form.save', 'Spara')}
+                        {sparar
+                          ? t('personalBrand.pitch.form.saving', 'Sparar …')
+                          : t('personalBrand.pitch.form.save', 'Spara')}
                       </Button>
                       <Button variant="outline" onClick={() => { setIsEditing(false); resetForm(); }}>
                         {t('personalBrand.pitch.form.cancel', 'Avbryt')}
@@ -606,7 +703,7 @@ export default function PitchTab() {
                       <div className="flex items-center gap-3 mt-1">
                         <span className={cn(
                           "px-2 py-0.5 rounded-full text-xs font-medium",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
@@ -652,14 +749,14 @@ export default function PitchTab() {
                     </p>
                   </div>
 
-                  {selectedPitch.key_points.length > 0 && (
+                  {(selectedPitch.key_points?.length ?? 0) > 0 && (
                     <div className="mb-6">
                       <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
                         {t('personalBrand.pitch.view.remember', 'Kom ihåg:')}
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedPitch.key_points.map((point, idx) => (
-                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] rounded-full text-sm">
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100 rounded-full text-sm">
                             <CheckCircle className="w-3 h-3" />
                             {point}
                           </span>
@@ -681,13 +778,13 @@ export default function PitchTab() {
                     </Button>
                   </div>
 
-                  {selectedPitch.practice_count && selectedPitch.practice_count > 0 && (
+                  {!!selectedPitch.practice_count && selectedPitch.practice_count > 0 && (
                     <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
                       {t('personalBrand.pitch.view.practicedStats', 'Du har övat på denna pitch {{count}} gånger', { count: selectedPitch.practice_count })}
                       {selectedPitch.last_practiced_at && (
                         <span>
                           {t('personalBrand.pitch.view.lastPracticed', ', senast {{date}}', {
-                            date: new Date(selectedPitch.last_practiced_at).toLocaleDateString('sv-SE'),
+                            date: new Date(selectedPitch.last_practiced_at).toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US'),
                           })}
                         </span>
                       )}
@@ -697,8 +794,28 @@ export default function PitchTab() {
               </motion.div>
             )}
 
+            {/* Laddningen styrde tidigare bara vänsterspalten, så en
+                återvändande användare med sparade pitchar möttes av
+                "Här skapar du din pitch" tills svaret var inne. */}
+            {isLoading && !selectedPitch && !isEditing && (
+              <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+                <LoadingState message={t('personalBrand.pitch.loading', 'Hämtar dina pitchar …')} />
+              </Card>
+            )}
+
+            {laddningsfel && !isEditing && (
+              <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
+                    {t('personalBrand.pitch.loadFailed', 'Vi kunde inte hämta dina pitchar just nu. Det betyder inte att de är borta.')}
+                  </p>
+                  <Button variant="outline" onClick={loadPitches}>{t('common.tryAgain')}</Button>
+                </div>
+              </Card>
+            )}
+
             {/* Empty state when no pitch selected and not editing */}
-            {!selectedPitch && !isEditing && (
+            {!isLoading && !laddningsfel && !selectedPitch && !isEditing && (
               <motion.div
                 key="empty"
                 initial={{ opacity: 0 }}
@@ -708,7 +825,7 @@ export default function PitchTab() {
                   <EmptyState
                     icon={Mic}
                     title={t('personalBrand.pitch.empty.title', 'Här skapar du din pitch')}
-                    description={t('personalBrand.pitch.empty.description', 'En bra hiss-pitch är nyckeln till att göra ett starkt första intryck. Börja med en generell pitch som du kan anpassa efter situation.')}
+                    description={t('personalBrand.pitch.empty.description', 'Några meningar om vem du är och vad du kan. Börja allmänt — du kan anpassa den efter situation sedan.')}
                     action={{
                       label: t('personalBrand.pitch.empty.action', 'Skapa pitch'),
                       onClick: () => { resetForm(); setIsEditing(true) },
@@ -732,7 +849,7 @@ export default function PitchTab() {
             <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('personalBrand.pitch.tips.specific.title', 'Var specifik')}
             </p>
-            <p className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs mt-1">
+            <p className="text-[var(--c-text)] dark:text-stone-100 text-xs mt-1">
               {t('personalBrand.pitch.tips.specific.text', 'Undvik vaga uttalanden. "Jag sparade företaget 2 miljoner" är bättre än "jag är bra på att spara pengar".')}
             </p>
           </div>
@@ -740,7 +857,7 @@ export default function PitchTab() {
             <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('personalBrand.pitch.tips.adapt.title', 'Anpassa efter lyssnaren')}
             </p>
-            <p className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs mt-1">
+            <p className="text-[var(--c-text)] dark:text-stone-100 text-xs mt-1">
               {t('personalBrand.pitch.tips.adapt.text', 'Ha olika versioner för olika målgrupper och situationer.')}
             </p>
           </div>
@@ -748,7 +865,7 @@ export default function PitchTab() {
             <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('personalBrand.pitch.tips.aloud.title', 'Öva högt')}
             </p>
-            <p className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs mt-1">
+            <p className="text-[var(--c-text)] dark:text-stone-100 text-xs mt-1">
               {t('personalBrand.pitch.tips.aloud.text', 'En pitch ska kännas naturlig. Öva tills den sitter utan att den låter inövad.')}
             </p>
           </div>
@@ -756,7 +873,7 @@ export default function PitchTab() {
             <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('personalBrand.pitch.tips.question.title', 'Avsluta med en fråga')}
             </p>
-            <p className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs mt-1">
+            <p className="text-[var(--c-text)] dark:text-stone-100 text-xs mt-1">
               {t('personalBrand.pitch.tips.question.text', 'Bjud in till dialog istället för att bara prata om dig själv.')}
             </p>
           </div>

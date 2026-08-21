@@ -138,6 +138,30 @@ function isSupabaseError(error: unknown): error is SupabaseError {
   return typeof error === 'object' && error !== null && ('code' in error || 'status' in error)
 }
 
+/**
+ * Fel som anroparen ska kunna visa för användaren.
+ *
+ * `handleStorageError` nedan är `void`-typad och sväljer allt. Det mönstret
+ * gjorde att Personligt varumärke kunde tappa hela objekt utan ett ord:
+ * portfolioposten skrevs, servern svarade 400, formuläret stängdes och listan
+ * var oförändrad. Skrivvägar som användaren har arbetat för ska kasta det
+ * här i stället.
+ */
+export class LagringsFel extends Error {
+  readonly kod?: string
+  constructor(meddelande: string, kod?: string) {
+    super(meddelande)
+    this.name = 'LagringsFel'
+    this.kod = kod
+  }
+}
+
+function kastaLagringsFel(error: unknown, context: string): never {
+  handleStorageError(error, context)
+  const kod = isSupabaseError(error) ? String(error.code ?? error.status ?? '') : undefined
+  throw new LagringsFel(context, kod)
+}
+
 // Hjälpfunktion för att hantera fel
 function handleStorageError(error: unknown, context: string): void {
   if (!isSupabaseError(error)) {
@@ -1712,6 +1736,25 @@ export const personalBrandApi = {
     return data?.[0]?.answers || {}
   },
 
+  /**
+   * Varumärkeskollens svar.
+   *
+   * Låg tidigare på `.upsert(…, { onConflict: 'user_id' })`. Prod har inget
+   * unikt index på `personal_brand_audit(user_id)` — bara primärnyckeln på
+   * `id` — så Postgres svarade **42P10 varje gång**: "there is no unique or
+   * exclusion constraint matching the ON CONFLICT specification". Felet
+   * sväljdes av `handleStorageError` och svaren lades i localStorage, som
+   * ingen läsväg någonsin hämtade dem ur och som `clearUserScopedStorage()`
+   * tömmer vid utloggning. Sidan sa "Dina svar sparas automatiskt i molnet".
+   *
+   * Ingen migration behövs för att laga det: läs först, skriv sedan. Ett
+   * unikt index vore den snyggare modellen men är en prod-ändring och
+   * därmed ett eget beslut — se `supabase/migrations/` och ROADMAP PB-A.
+   *
+   * Verifierat i prod 2026-08-21: `personal_brand_audit` har indexen
+   * `personal_brand_audit_pkey` (unikt, id), `idx_..._user_id` (icke-unikt)
+   * och `idx_..._updated` (icke-unikt).
+   */
   async saveAuditAnswers(answers: Record<string, boolean>, totalScore: number, categoryScores: Record<string, number>): Promise<void> {
     const user = await getCurrentUser()
     if (!user) {
@@ -1719,22 +1762,28 @@ export const personalBrandApi = {
       return
     }
 
-    const { error } = await supabase
-      .from('personal_brand_audit')
-      .upsert({
-        user_id: user.id,
-        answers,
-        total_score: totalScore,
-        category_scores: categoryScores,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      })
-
-    if (error) {
-      handleStorageError(error, 'spara varumärkesaudit')
-      localStorage.setItem('brand-audit-answers', JSON.stringify(answers))
+    const rad = {
+      answers,
+      total_score: totalScore,
+      category_scores: categoryScores,
+      updated_at: new Date().toISOString(),
     }
+
+    const { data: befintlig, error: lasFel } = await supabase
+      .from('personal_brand_audit')
+      .select('id')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (lasFel) kastaLagringsFel(lasFel, 'spara varumärkeskollen')
+
+    const { error } = befintlig?.id
+      ? await supabase.from('personal_brand_audit').update(rad).eq('id', befintlig.id).eq('user_id', user.id)
+      : await supabase.from('personal_brand_audit').insert({ ...rad, user_id: user.id })
+
+    if (error) kastaLagringsFel(error, 'spara varumärkeskollen')
   },
 
   async getAuditHistory(): Promise<{ total_score: number; category_scores: Record<string, number>; created_at: string }[]> {
@@ -1770,11 +1819,10 @@ export const personalBrandApi = {
       .eq('user_id', user.id)
       .order('sort_order', { ascending: true })
 
-    if (error) {
-      handleStorageError(error, 'hämta portfolio')
-      const saved = localStorage.getItem('portfolio-items')
-      return saved ? JSON.parse(saved) : []
-    }
+    // Ett läsfel får inte se ut som "du har inget än" — det var precis den
+    // förväxlingen som fick sidan att visa "Ingen portfolio ännu" för någon
+    // med sparade poster.
+    if (error) kastaLagringsFel(error, 'hämta portfolion')
     return data || []
   },
 
@@ -1794,14 +1842,13 @@ export const personalBrandApi = {
       .select()
       .single()
 
-    if (error) {
-      handleStorageError(error, 'lägga till portfolio-objekt')
-      const items = JSON.parse(localStorage.getItem('portfolio-items') || '[]')
-      const newItem = { ...item, id: Date.now().toString() }
-      items.unshift(newItem)
-      localStorage.setItem('portfolio-items', JSON.stringify(items))
-      return newItem
-    }
+    // Skrev tidigare en kopia i localStorage och returnerade den som om
+    // sparningen lyckats. Läsvägen ovan hämtar bara localStorage när SELECT
+    // failar — för en inloggad användare med fungerande läsning möttes de
+    // två aldrig. Objektet fanns alltså i webbläsaren, syntes aldrig, och
+    // raderades vid nästa utloggning. Ett synligt fel är bättre än en tyst
+    // halvsparning.
+    if (error) kastaLagringsFel(error, 'spara portfolioposten')
     return data
   },
 
@@ -1823,9 +1870,7 @@ export const personalBrandApi = {
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      handleStorageError(error, 'uppdatera portfolio-objekt')
-    }
+    if (error) kastaLagringsFel(error, 'uppdatera portfolioposten')
   },
 
   async deletePortfolioItem(id: string): Promise<void> {
@@ -1843,9 +1888,9 @@ export const personalBrandApi = {
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      handleStorageError(error, 'ta bort portfolio-objekt')
-    }
+    // En raderingsbegäran som inte gick igenom och inte heller sa något är
+    // art. 17-relevant — användaren tror att posten är borta.
+    if (error) kastaLagringsFel(error, 'ta bort portfolioposten')
   },
 
   // ===== ELEVATOR PITCHES =====
@@ -1863,11 +1908,7 @@ export const personalBrandApi = {
       .eq('user_id', user.id)
       .order('updated_at', { ascending: false })
 
-    if (error) {
-      handleStorageError(error, 'hämta pitchar')
-      const saved = localStorage.getItem('elevator-pitches')
-      return saved ? JSON.parse(saved) : []
-    }
+    if (error) kastaLagringsFel(error, 'hämta dina pitchar')
     return data || []
   },
 
@@ -1887,14 +1928,11 @@ export const personalBrandApi = {
       .select()
       .single()
 
-    if (error) {
-      handleStorageError(error, 'lägga till pitch')
-      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
-      const newPitch = { ...pitch, id: Date.now().toString() }
-      pitches.unshift(newPitch)
-      localStorage.setItem('elevator-pitches', JSON.stringify(pitches))
-      return newPitch
-    }
+    // Returnerade tidigare en localStorage-kopia som om sparningen lyckats.
+    // Anroparen kör sedan `loadPitches()`, som hämtar serverns lista UTAN
+    // kopian och skriver över den — användaren såg formuläret stängas och
+    // pitchen försvinna, utan ett ord.
+    if (error) kastaLagringsFel(error, 'spara pitchen')
     return data
   },
 
@@ -1916,9 +1954,7 @@ export const personalBrandApi = {
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      handleStorageError(error, 'uppdatera pitch')
-    }
+    if (error) kastaLagringsFel(error, 'uppdatera pitchen')
   },
 
   async deletePitch(id: string): Promise<void> {
@@ -1936,9 +1972,7 @@ export const personalBrandApi = {
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      handleStorageError(error, 'ta bort pitch')
-    }
+    if (error) kastaLagringsFel(error, 'ta bort pitchen')
   },
 
   async recordPractice(id: string): Promise<void> {
@@ -2000,7 +2034,7 @@ export const personalBrandApi = {
       .eq('user_id', user.id)
 
     if (error) {
-      handleStorageError(error, 'hämta synlighets-progress')
+      kastaLagringsFel(error, 'hämta dina strategier')
       const saved = localStorage.getItem('visibility-progress')
       return saved ? JSON.parse(saved) : []
     }
@@ -2032,7 +2066,7 @@ export const personalBrandApi = {
       })
 
     if (error) {
-      handleStorageError(error, 'uppdatera synlighets-progress')
+      kastaLagringsFel(error, 'spara ändringen')
     }
   },
 
@@ -2061,7 +2095,7 @@ export const personalBrandApi = {
     const { data, error } = await query
 
     if (error) {
-      handleStorageError(error, 'hämta innehållskalender')
+      kastaLagringsFel(error, 'hämta din innehållskalender')
       const saved = localStorage.getItem('content-calendar')
       return saved ? JSON.parse(saved) : []
     }
@@ -2085,7 +2119,7 @@ export const personalBrandApi = {
       .single()
 
     if (error) {
-      handleStorageError(error, 'lägga till innehållsobjekt')
+      kastaLagringsFel(error, 'spara det planerade inlägget')
       return null
     }
     return data
@@ -2110,7 +2144,7 @@ export const personalBrandApi = {
       .eq('user_id', user.id)
 
     if (error) {
-      handleStorageError(error, 'uppdatera innehållsobjekt')
+      kastaLagringsFel(error, 'uppdatera det planerade inlägget')
     }
   },
 
@@ -2130,7 +2164,7 @@ export const personalBrandApi = {
       .eq('user_id', user.id)
 
     if (error) {
-      handleStorageError(error, 'ta bort innehållsobjekt')
+      kastaLagringsFel(error, 'ta bort det planerade inlägget')
     }
   }
 }

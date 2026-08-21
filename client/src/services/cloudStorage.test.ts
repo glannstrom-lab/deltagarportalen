@@ -380,19 +380,36 @@ describe('personalBrandApi audit', () => {
     await expect(personalBrandApi.getAuditAnswers()).resolves.toEqual({})
   })
 
-  it('saveAuditAnswers upsertar answers + poäng med onConflict user_id', async () => {
+  it('saveAuditAnswers upsertar INTE mot user_id', async () => {
+    /*
+      Testet hette tidigare "upsertar answers + poäng med onConflict user_id"
+      och asserterade exakt det anrop som ger 42P10 i prod:
+      `personal_brand_audit` har inget unikt index på `user_id`, bara
+      primärnyckeln på `id` (verifierat 2026-08-21). Mot en mockad klient går
+      ett omöjligt `ON CONFLICT` alltid igenom — samma fälla som
+      `journey_goals`. Testet cementerade alltså en skrivväg som aldrig
+      kunnat lyckas, medan sidan sa "Dina svar sparas automatiskt i molnet".
+    */
     loggedIn('user-42')
-    setResult({ error: null })
+    setResult({ data: null, error: null })
     await personalBrandApi.saveAuditAnswers({ q1: true }, 80, { profil: 90 })
-    expect(mockFromBuilder.upsert).toHaveBeenCalledWith(
+    expect(mockFromBuilder.upsert).not.toHaveBeenCalled()
+    expect(mockFromBuilder.insert).toHaveBeenCalledWith(
       expect.objectContaining({
         user_id: 'user-42',
         answers: { q1: true },
         total_score: 80,
         category_scores: { profil: 90 },
-      }),
-      { onConflict: 'user_id' }
+      })
     )
+  })
+
+  it('saveAuditAnswers kastar när skrivningen failar', async () => {
+    // Felet sväljdes tidigare av `handleStorageError`, och svaren lades i
+    // localStorage som ingen läsväg hämtade dem ur.
+    loggedIn('user-42')
+    setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
+    await expect(personalBrandApi.saveAuditAnswers({ q1: true }, 1, {})).rejects.toThrow()
   })
 
   it('saveAuditAnswers sparar till localStorage utan inloggad användare', async () => {
@@ -427,16 +444,24 @@ describe('personalBrandApi portfolio', () => {
     expect(result).toMatchObject({ id: 'p1', title: 'Projekt X' })
   })
 
-  it('addPortfolioItem faller tillbaka på localStorage vid databasfel', async () => {
+  it('addPortfolioItem kastar vid databasfel i stället för att låtsas lyckas', async () => {
+    /*
+      Testet hette "faller tillbaka på localStorage vid databasfel" och
+      asserterade att `setItem` anropades — men aldrig att objektet gick att
+      läsa TILLBAKA. Det gick det inte: `getPortfolioItems` hämtar bara
+      localStorage när SELECT failar, och för en inloggad användare med
+      fungerande läsning möttes de två aldrig. Objektet låg i webbläsaren,
+      syntes aldrig, och raderades vid nästa utloggning. Användaren fick se
+      formuläret stängas och listan vara oförändrad.
+    */
     loggedIn()
     setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
     vi.mocked(window.localStorage.getItem).mockReturnValue('[]')
-    const result = await personalBrandApi.addPortfolioItem(item)
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(
+    await expect(personalBrandApi.addPortfolioItem(item)).rejects.toThrow()
+    expect(window.localStorage.setItem).not.toHaveBeenCalledWith(
       'portfolio-items',
       expect.any(String)
     )
-    expect(result).toMatchObject({ title: 'Projekt X', id: expect.any(String) })
   })
 
   it('deletePortfolioItem raderar med id + user_id', async () => {

@@ -1,288 +1,255 @@
 /**
- * Visibility Tab - Increase your digital presence
- * Features: Strategy tracking, content calendar, progress sync
+ * Synlighet — sätt att bli lättare att hitta, och en plan för när.
+ *
+ * Vad som var fel till 2026-08-21:
+ *
+ * · **"0/8 strategier klara" i hjälteposition.** En naken nolla överst på
+ *   sidan för en ny användare, och ordet "klara" framställde självrapportering
+ *   som utfall — räknaren speglar att någon tryckt på en bock, inte att hon
+ *   engagerat sig någonstans. Nu en invit vid noll och ett språk om vad hon
+ *   provat.
+ *
+ * · **Statusen bars enbart av färg och opacitet.** `skipped` hade bara
+ *   `opacity-50` — ingen ikon, ingen text, ingen färg — och `completed` och
+ *   `in_progress` hade ikoner som lucide auto-döljer för skärmläsare. De fyra
+ *   lägena gick alltså inte att skilja åt utan syn (SC 1.4.1 + 1.3.1), och
+ *   `opacity-50` sänkte dessutom kontrasten i kortet till 2,34:1.
+ *
+ * · **Sexton ikonknappar utan tillgängligt namn** (mätt i webbläsaren),
+ *   varav flera bara hade `title=`, som inte syns på pekskärm.
+ *
+ * · **Planerade inlägg gick att skapa men aldrig ta bort eller ens se.**
+ *   Vyn visade bara innevarande vecka; ett inlägg planerat till nästa vecka
+ *   försvann ur vyn i samma sekund det sparades. `deleteContentItem` fanns i
+ *   servicen med noll anropare — kommentaren i koden sa det rakt ut. Nu finns
+ *   veckoväxling och en raderaknapp per post.
+ *
+ * · **Fältet `content` fanns i formulärstate men hade ingen input** — kolumnen
+ *   skrevs alltid tom. Borttaget.
+ *
+ * · **Hela fliken saknade i18n.** Ingen `useTranslation`, ~50 hårdkodade
+ *   svenska strängar mitt på en översatt sida.
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
-  Eye,
-  Linkedin,
-  TrendingUp,
-  CheckCircle,
-  Lightbulb,
-  Calendar,
-  Plus,
-  Play,
-  Pause,
-  SkipForward,
-  Clock,
-  Loader2,
-  RefreshCw,
-  ChevronRight,
-  Edit2,
-  Save
+  Eye, TrendingUp, CheckCircle, Lightbulb, Calendar, Plus, Play, Pause,
+  SkipForward, Clock, Loader2, RefreshCw, Edit2, Save, Trash2, ChevronRight,
+  AlertCircle, ChevronLeft, Circle,
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { showToast } from '@/components/Toast'
 import { cn } from '@/lib/utils'
 import { personalBrandApi, type VisibilityProgressItem, type ContentCalendarItem } from '@/services/cloudStorage'
 import { motion, AnimatePresence } from 'framer-motion'
 import { format, addDays, startOfWeek, isToday, isSameDay, parseISO } from 'date-fns'
-import { sv } from 'date-fns/locale'
+import { sv, enGB } from 'date-fns/locale'
+import {
+  SYNLIGHETSSATT, SYNLIGHETSKATEGORIER, ANTAL_IDEER,
+  type Synlighetskategori,
+} from './synlighetData'
 
-interface VisibilityStrategy {
-  id: string
-  title: string
-  description: string
-  difficulty: 'easy' | 'medium' | 'hard'
-  impact: 'low' | 'medium' | 'high'
-  timePerWeek: string
-  category: 'content' | 'engagement' | 'networking' | 'platform'
-}
+type Status = VisibilityProgressItem['status']
 
-const VISIBILITY_STRATEGIES: VisibilityStrategy[] = [
-  {
-    id: 'linkedin-engage',
-    title: 'Engagera dig på LinkedIn',
-    description: 'Kommentera och gilla andras inlägg regelbundet. Det ökar din synlighet i flödet.',
-    difficulty: 'easy',
-    impact: 'medium',
-    timePerWeek: '15 min/dag',
-    category: 'engagement'
-  },
-  {
-    id: 'share-articles',
-    title: 'Dela branschartiklar',
-    description: 'Dela intressanta artiklar med en egen reflektion. Visar att du håller dig uppdaterad.',
-    difficulty: 'easy',
-    impact: 'medium',
-    timePerWeek: '30 min/vecka',
-    category: 'content'
-  },
-  {
-    id: 'write-posts',
-    title: 'Skriv egna inlägg',
-    description: 'Dela dina erfarenheter, insikter eller lärdomar. Positionerar dig som expert.',
-    difficulty: 'medium',
-    impact: 'high',
-    timePerWeek: '1-2 tim/vecka',
-    category: 'content'
-  },
-  {
-    id: 'join-groups',
-    title: 'Delta i LinkedIn-grupper',
-    description: 'Gå med i relevanta grupper och delta aktivt i diskussioner.',
-    difficulty: 'easy',
-    impact: 'low',
-    timePerWeek: '30 min/vecka',
-    category: 'engagement'
-  },
-  {
-    id: 'speak-events',
-    title: 'Tala på event/meetups',
-    description: 'Presentera på branschevent eller meetups. Stor synlighet och nätverkande.',
-    difficulty: 'hard',
-    impact: 'high',
-    timePerWeek: 'Varierar',
-    category: 'networking'
-  },
-  {
-    id: 'write-articles',
-    title: 'Skriv LinkedIn-artiklar',
-    description: 'Längre artiklar indexeras i Google och visar djup expertis.',
-    difficulty: 'hard',
-    impact: 'high',
-    timePerWeek: '2-4 tim/månad',
-    category: 'content'
-  },
-  {
-    id: 'podcast-guest',
-    title: 'Gästa poddar',
-    description: 'Kontakta relevanta poddar och erbjud dig som gäst i ditt expertområde.',
-    difficulty: 'hard',
-    impact: 'high',
-    timePerWeek: 'Varierar',
-    category: 'networking'
-  },
-  {
-    id: 'personal-website',
-    title: 'Skapa egen hemsida',
-    description: 'En enkel portfoliosida eller blogg som du kontrollerar helt själv.',
-    difficulty: 'medium',
-    impact: 'medium',
-    timePerWeek: 'Engångs + underhåll',
-    category: 'platform'
-  },
-]
-
-const CONTENT_IDEAS = [
-  'Dela ett misstag du lärt dig av',
-  'Berätta om ett projekt du är stolt över',
-  'Förklara något komplext på ett enkelt sätt',
-  'Ge tips till din yngre själv',
-  'Kommentera en branschtrend',
-  'Gratulera en kollega publikt',
-  'Dela en bok eller resurs du gillar',
-  'Ställ en fråga till ditt nätverk',
-  'Berätta om din karriärresa',
-  'Ge din syn på en aktuell nyhet',
-  'Dela en "behind the scenes" från ditt arbete',
-  'Tacka någon som hjälpt dig',
-]
-
-const CATEGORIES = {
-  content: { label: 'Innehåll', color: 'teal' },
-  engagement: { label: 'Engagemang', color: 'blue' },
-  networking: { label: 'Nätverkande', color: 'emerald' },
-  platform: { label: 'Plattform', color: 'amber' }
+const STATUS_IKON: Record<Status, typeof Circle> = {
+  not_started: Circle,
+  in_progress: Play,
+  completed: CheckCircle,
+  skipped: SkipForward,
 }
 
 export default function VisibilityTab() {
-  const [progress, setProgress] = useState<VisibilityProgressItem[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [contentIdea, setContentIdea] = useState(CONTENT_IDEAS[Math.floor(Math.random() * CONTENT_IDEAS.length)])
+  const { t, i18n } = useTranslation()
+  const { confirm } = useConfirmDialog()
+  const locale = i18n.language === 'sv' ? sv : enGB
 
-  // Content calendar state
+  const [progress, setProgress] = useState<VisibilityProgressItem[]>([])
   const [calendarItems, setCalendarItems] = useState<ContentCalendarItem[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [laddningsfel, setLaddningsfel] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<Synlighetskategori | null>(null)
+  const [ideIndex, setIdeIndex] = useState(0)
+  const [veckoOffset, setVeckoOffset] = useState(0)
+
   const [showCalendarForm, setShowCalendarForm] = useState(false)
   const [calendarForm, setCalendarForm] = useState({
     title: '',
-    content: '',
     platform: 'linkedin' as ContentCalendarItem['platform'],
     scheduled_date: format(new Date(), 'yyyy-MM-dd'),
-    status: 'draft' as ContentCalendarItem['status']
   })
 
-  // Load data
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true)
+    setLaddningsfel(false)
     try {
-      const [progressData, calendarData] = await Promise.all([
+      const [p, c] = await Promise.all([
         personalBrandApi.getVisibilityProgress(),
-        personalBrandApi.getContentCalendar()
+        personalBrandApi.getContentCalendar(),
       ])
-      setProgress(progressData)
-      setCalendarItems(calendarData)
+      setProgress(p)
+      setCalendarItems(c)
+    } catch (err) {
+      // `try/finally` utan `catch` gjorde ett läsfel identiskt med "du har
+      // inte börjat" — och `getCurrentUser()` gör ett nätverksanrop.
+      console.error('Synlighet: kunde inte hämta', err)
+      setLaddningsfel(true)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  const updateStrategyStatus = async (strategyId: string, status: VisibilityProgressItem['status']) => {
-    const item: VisibilityProgressItem = {
-      strategy_id: strategyId,
-      status,
-      started_at: status === 'in_progress' ? new Date().toISOString() : undefined,
-      completed_at: status === 'completed' ? new Date().toISOString() : undefined
+  useEffect(() => { void loadData() }, [loadData])
+
+  const statusFor = (id: string): Status =>
+    progress.find(p => p.strategy_id === id)?.status ?? 'not_started'
+
+  const andraStatus = async (strategyId: string, status: Status) => {
+    try {
+      await personalBrandApi.updateVisibilityProgress({
+        strategy_id: strategyId,
+        status,
+        started_at: status === 'in_progress' ? new Date().toISOString() : undefined,
+        // Skickades tidigare bara vid `completed`, så en återställd strategi
+        // behöll sitt gamla `completed_at` med status `not_started`.
+        completed_at: status === 'completed' ? new Date().toISOString() : undefined,
+      })
+      await loadData()
+    } catch (err) {
+      console.error('Synlighet: kunde inte spara status', err)
+      showToast.error(t('personalBrand.visibility.statusFailed'))
     }
-    await personalBrandApi.updateVisibilityProgress(item)
-    await loadData()
   }
 
-  const getStrategyProgress = (strategyId: string) => {
-    return progress.find(p => p.strategy_id === strategyId)?.status || 'not_started'
-  }
+  const provade = useMemo(
+    () => progress.filter(p => p.status === 'completed' || p.status === 'in_progress').length,
+    [progress]
+  )
 
-  const filteredStrategies = selectedCategory
-    ? VISIBILITY_STRATEGIES.filter(s => s.category === selectedCategory)
-    : VISIBILITY_STRATEGIES
+  const synligaSatt = selectedCategory
+    ? SYNLIGHETSSATT.filter(s => s.category === selectedCategory)
+    : SYNLIGHETSSATT
 
-  const completedCount = progress.filter(p => p.status === 'completed').length
+  const nyIde = () => setIdeIndex(i => (i + 1) % ANTAL_IDEER)
 
-  const refreshIdea = () => {
-    let newIdea = contentIdea
-    while (newIdea === contentIdea) {
-      newIdea = CONTENT_IDEAS[Math.floor(Math.random() * CONTENT_IDEAS.length)]
-    }
-    setContentIdea(newIdea)
-  }
+  const veckoStart = useMemo(
+    () => addDays(startOfWeek(new Date(), { weekStartsOn: 1 }), veckoOffset * 7),
+    [veckoOffset]
+  )
+  const veckoDagar = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(veckoStart, i)),
+    [veckoStart]
+  )
 
-  const saveCalendarItem = async () => {
+  const sparaKalenderpost = async () => {
     if (!calendarForm.title.trim()) return
-
-    await personalBrandApi.addContentItem({
-      ...calendarForm,
-      tags: []
-    })
-
-    setShowCalendarForm(false)
-    setCalendarForm({
-      title: '',
-      content: '',
-      platform: 'linkedin',
-      scheduled_date: format(new Date(), 'yyyy-MM-dd'),
-      status: 'draft'
-    })
-    await loadData()
+    try {
+      await personalBrandApi.addContentItem({
+        title: calendarForm.title,
+        // `content` låg i formulärstate men hade ingen input — kolumnen
+        // skrevs alltid tom.
+        content: '',
+        platform: calendarForm.platform,
+        scheduled_date: calendarForm.scheduled_date,
+        status: 'draft',
+        tags: [],
+      })
+      setShowCalendarForm(false)
+      setCalendarForm({ title: '', platform: 'linkedin', scheduled_date: format(new Date(), 'yyyy-MM-dd') })
+      await loadData()
+      showToast.success(t('personalBrand.visibility.planSaved'))
+    } catch (err) {
+      console.error('Synlighet: kunde inte spara inlägget', err)
+      showToast.error(t('personalBrand.visibility.planFailed'))
+    }
   }
 
-  // deleteCalendarItem är inte ansluten i UI än (ingen knapp anropar).
-  // Återinför när delete-flow för content-kalender byggs.
-
-  // Generate week view for calendar
-  const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })
-  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+  const raderaKalenderpost = async (id: string, titel: string) => {
+    const bekraftat = await confirm({
+      title: t('personalBrand.visibility.deletePlanTitle'),
+      message: t('personalBrand.visibility.deletePlanBody', { titel }),
+      confirmText: t('common.delete'),
+      variant: 'danger',
+    })
+    if (!bekraftat) return
+    try {
+      await personalBrandApi.deleteContentItem(id)
+      await loadData()
+      showToast.success(t('personalBrand.visibility.planDeleted'))
+    } catch (err) {
+      console.error('Synlighet: kunde inte ta bort inlägget', err)
+      showToast.error(t('personalBrand.visibility.planDeleteFailed'))
+    }
+  }
 
   if (isLoading) {
     return (
-      <div
-        className="flex items-center justify-center py-12"
-        role="status"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <Loader2 className="w-8 h-8 animate-spin text-cyan-600" aria-hidden="true" />
-        <span className="sr-only">Laddar synlighetsöversikt...</span>
+      <div className="flex items-center justify-center py-12" role="status" aria-live="polite" aria-busy="true">
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
+        <span className="sr-only">{t('personalBrand.visibility.loading')}</span>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <Eye className="w-6 h-6 text-white" />
+            <Eye className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Öka din synlighet</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Strategier för att bli mer synlig för rekryterare och potentiella arbetsgivare.
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+              {t('personalBrand.visibility.title')}
+            </h2>
+            {/* Stod tidigare som "0/8" i `text-2xl font-bold` med etiketten
+                "strategier klara". */}
+            <p className="text-stone-700 dark:text-stone-300 mt-1">
+              {provade === 0
+                ? t('personalBrand.visibility.introEmpty', { antal: SYNLIGHETSSATT.length })
+                : t('personalBrand.visibility.introSome', { provade, antal: SYNLIGHETSSATT.length })}
             </p>
-          </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{completedCount}/{VISIBILITY_STRATEGIES.length}</p>
-            <p className="text-xs text-gray-600 dark:text-gray-400">strategier klara</p>
           </div>
         </div>
       </Card>
 
-      {/* Content idea generator */}
+      {laddningsfel && (
+        <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300 shrink-0" aria-hidden="true" />
+            <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
+              {t('personalBrand.visibility.loadFailed')}
+            </p>
+            <Button variant="outline" onClick={loadData}>
+              <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
+              {t('common.tryAgain')}
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {/* Idé för nästa inlägg */}
       <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
         <div className="flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
-          <div className="flex-1">
-            <p className="font-medium text-[var(--c-text)] dark:text-white">Idé för nästa inlägg</p>
-            <p className="text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1 text-lg">{contentIdea}</p>
-            <div className="flex gap-2 mt-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-[var(--c-text)] dark:text-[var(--c-solid)]"
-                onClick={refreshIdea}
-              >
-                <RefreshCw className="w-4 h-4 mr-1" />
-                Ny idé
+          <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-[var(--c-text)] dark:text-stone-100">
+              {t('personalBrand.visibility.ideaTitle')}
+            </p>
+            {/* `dark:text-[var(--c-accent)]` mätte 1,55:1 här. */}
+            <p className="text-[var(--c-text)] dark:text-stone-100 mt-1 text-lg" aria-live="polite">
+              {t(`personalBrand.visibility.ideas.${ideIndex}`)}
+            </p>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Button variant="ghost" onClick={nyIde}>
+                <RefreshCw className="w-4 h-4 mr-1" aria-hidden="true" />
+                {t('personalBrand.visibility.newIdea')}
               </Button>
               <Link to="/linkedin-optimizer">
-                <Button variant="ghost" size="sm" className="text-[var(--c-text)] dark:text-[var(--c-solid)]">
-                  <Edit2 className="w-4 h-4 mr-1" />
-                  Skapa inlägg
+                <Button variant="ghost">
+                  <Edit2 className="w-4 h-4 mr-1" aria-hidden="true" />
+                  {t('personalBrand.visibility.writePost')}
                 </Button>
               </Link>
             </div>
@@ -290,54 +257,68 @@ export default function VisibilityTab() {
         </div>
       </Card>
 
-      {/* Mini content calendar */}
+      {/* Planerade inlägg */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-            Innehållskalender
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+            {t('personalBrand.visibility.calendarTitle')}
           </h3>
-          <Button size="sm" variant="outline" onClick={() => setShowCalendarForm(true)}>
-            <Plus className="w-4 h-4 mr-1" />
-            Planera inlägg
+          <Button variant="outline" onClick={() => setShowCalendarForm(true)}>
+            <Plus className="w-4 h-4 mr-1" aria-hidden="true" />
+            {t('personalBrand.visibility.planPost')}
           </Button>
         </div>
 
-        {/* Week view */}
-        <div className="grid grid-cols-7 gap-2 mb-4">
-          {weekDays.map((day) => {
-            const dayItems = calendarItems.filter(item =>
-              isSameDay(parseISO(item.scheduled_date), day)
-            )
-            const isCurrentDay = isToday(day)
+        {/* Veckoväxling — vyn satt tidigare fast på innevarande vecka, så ett
+            inlägg planerat till nästa vecka var varken synligt eller
+            raderbart. */}
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <Button variant="ghost" onClick={() => setVeckoOffset(v => v - 1)} aria-label={t('personalBrand.visibility.prevWeek')}>
+            <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+          </Button>
+          <p className="text-sm text-stone-700 dark:text-stone-300" aria-live="polite">
+            {veckoOffset === 0
+              ? t('personalBrand.visibility.thisWeek')
+              : format(veckoStart, 'd MMMM', { locale })}
+          </p>
+          <Button variant="ghost" onClick={() => setVeckoOffset(v => v + 1)} aria-label={t('personalBrand.visibility.nextWeek')}>
+            <ChevronRight className="w-4 h-4" aria-hidden="true" />
+          </Button>
+        </div>
 
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-4">
+          {veckoDagar.map((day) => {
+            const dagensPoster = calendarItems.filter(i => isSameDay(parseISO(i.scheduled_date), day))
+            const idag = isToday(day)
             return (
               <div
                 key={day.toISOString()}
                 className={cn(
-                  "p-2 rounded-lg border min-h-[80px]",
-                  isCurrentDay ? "border-[var(--c-accent)] dark:border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30" : "border-stone-200 dark:border-stone-600"
+                  'p-1 sm:p-2 rounded-lg border min-h-[80px] min-w-0',
+                  idag ? 'border-[var(--c-accent)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30' : 'border-stone-200 dark:border-stone-600'
                 )}
               >
-                <p className={cn(
-                  "text-xs font-medium mb-1",
-                  isCurrentDay ? "text-[var(--c-text)] dark:text-[var(--c-accent)]" : "text-gray-600 dark:text-gray-400"
-                )}>
-                  {format(day, 'EEE d', { locale: sv })}
+                {/* "EEE d" ger "mån 17", som kapas till "m…" i en
+                    sjukolumnsgrid på 390 px. Bokstaven och siffran får egna
+                    rader i stället — dagen syns hela vägen ner. */}
+                <p className={cn('text-[10px] sm:text-xs font-medium mb-1 text-center',
+                  idag ? 'text-[var(--c-text)] dark:text-stone-100' : 'text-stone-700 dark:text-stone-400')}>
+                  <span className="block sm:hidden">{format(day, 'EEEEE', { locale })}</span>
+                  <span className="hidden sm:inline">{format(day, 'EEE', { locale })} </span>
+                  <span className="block sm:inline">{format(day, 'd', { locale })}</span>
                 </p>
-                {dayItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className={cn(
-                      "text-xs p-1 rounded mb-1 truncate",
-                      item.platform === 'linkedin' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
-                      item.platform === 'twitter' && "bg-sky-100 dark:bg-sky-900/50 text-[var(--c-text)] dark:text-sky-300",
-                      item.platform === 'blog' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
-                      item.platform === 'other' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300"
-                    )}
-                    title={item.title}
-                  >
-                    {item.title}
+                {dagensPoster.map((post) => (
+                  <div key={post.id} className="text-[10px] sm:text-xs p-1 rounded mb-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100">
+                    <span className="block truncate" title={post.title}>{post.title}</span>
+                    <button
+                      type="button"
+                      onClick={() => post.id && raderaKalenderpost(post.id, post.title)}
+                      aria-label={t('personalBrand.visibility.deletePlanAria', { titel: post.title })}
+                      className="mt-0.5 text-red-700 dark:text-red-300 hover:underline"
+                    >
+                      <Trash2 className="w-3 h-3" aria-hidden="true" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -345,7 +326,12 @@ export default function VisibilityTab() {
           })}
         </div>
 
-        {/* Calendar form */}
+        {calendarItems.length === 0 && !showCalendarForm && (
+          <p className="text-sm text-stone-700 dark:text-stone-300">
+            {t('personalBrand.visibility.calendarEmpty')}
+          </p>
+        )}
+
         <AnimatePresence>
           {showCalendarForm && (
             <motion.div
@@ -355,41 +341,55 @@ export default function VisibilityTab() {
               className="border-t border-stone-100 dark:border-stone-700 pt-4 mt-4"
             >
               <div className="space-y-3">
-                <input
-                  type="text"
-                  aria-label="Vad ska du posta?"
-                  value={calendarForm.title}
-                  onChange={(e) => setCalendarForm(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
-                  placeholder="Vad ska du posta?"
-                />
-                <div className="grid grid-cols-2 gap-3">
-                  <select
-                    aria-label="Plattform"
-                    value={calendarForm.platform}
-                    onChange={(e) => setCalendarForm(prev => ({ ...prev, platform: e.target.value as ContentCalendarItem['platform'] }))}
-                    className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
-                  >
-                    <option value="linkedin">LinkedIn</option>
-                    <option value="twitter">Twitter/X</option>
-                    <option value="blog">Blogg</option>
-                    <option value="other">Annat</option>
-                  </select>
+                <div>
+                  <label htmlFor="pb-plan-titel" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    {t('personalBrand.visibility.planWhat')}
+                  </label>
                   <input
-                    type="date"
-                    aria-label="Datum för inlägget"
-                    value={calendarForm.scheduled_date}
-                    onChange={(e) => setCalendarForm(prev => ({ ...prev, scheduled_date: e.target.value }))}
-                    className="px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                    id="pb-plan-titel"
+                    type="text"
+                    value={calendarForm.title}
+                    onChange={(e) => setCalendarForm(p => ({ ...p, title: e.target.value }))}
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-100"
+                    placeholder={t('personalBrand.visibility.planPlaceholder')}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={saveCalendarItem} disabled={!calendarForm.title.trim()}>
-                    <Save className="w-4 h-4 mr-1" />
-                    Spara
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label htmlFor="pb-plan-plattform" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                      {t('personalBrand.visibility.planWhere')}
+                    </label>
+                    <select
+                      id="pb-plan-plattform"
+                      value={calendarForm.platform}
+                      onChange={(e) => setCalendarForm(p => ({ ...p, platform: e.target.value as ContentCalendarItem['platform'] }))}
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-100"
+                    >
+                      <option value="linkedin">LinkedIn</option>
+                      <option value="blog">{t('personalBrand.visibility.platformBlog')}</option>
+                      <option value="other">{t('personalBrand.visibility.platformOther')}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="pb-plan-datum" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                      {t('personalBrand.visibility.planWhen')}
+                    </label>
+                    <input
+                      id="pb-plan-datum"
+                      type="date"
+                      value={calendarForm.scheduled_date}
+                      onChange={(e) => setCalendarForm(p => ({ ...p, scheduled_date: e.target.value }))}
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg text-sm bg-white dark:bg-stone-700 text-stone-800 dark:text-stone-100"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <Button onClick={sparaKalenderpost} disabled={!calendarForm.title.trim()}>
+                    <Save className="w-4 h-4 mr-1" aria-hidden="true" />
+                    {t('personalBrand.visibility.planSave')}
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => setShowCalendarForm(false)}>
-                    Avbryt
+                  <Button variant="outline" onClick={() => setShowCalendarForm(false)}>
+                    {t('common.cancel')}
                   </Button>
                 </div>
               </div>
@@ -398,217 +398,186 @@ export default function VisibilityTab() {
         </AnimatePresence>
       </Card>
 
-      {/* Category filter */}
-      <div className="flex gap-2 flex-wrap">
+      {/* Kategorifilter */}
+      <div className="flex gap-2 flex-wrap" role="group" aria-label={t('personalBrand.visibility.filterAria')}>
         <button
+          type="button"
           onClick={() => setSelectedCategory(null)}
+          aria-pressed={selectedCategory === null}
           className={cn(
-            "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            !selectedCategory ? "bg-[var(--c-solid)] dark:bg-[var(--c-text)] text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
+            'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+            !selectedCategory
+              ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
+              : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
           )}
         >
-          Alla ({VISIBILITY_STRATEGIES.length})
+          {t('personalBrand.visibility.filterAll', { antal: SYNLIGHETSSATT.length })}
         </button>
-        {Object.entries(CATEGORIES).map(([key, cat]) => {
-          const count = VISIBILITY_STRATEGIES.filter(s => s.category === key).length
+        {SYNLIGHETSKATEGORIER.map((k) => {
+          const antal = SYNLIGHETSSATT.filter(s => s.category === k).length
+          const vald = selectedCategory === k
           return (
             <button
-              key={key}
-              onClick={() => setSelectedCategory(key)}
+              key={k}
+              type="button"
+              onClick={() => setSelectedCategory(vald ? null : k)}
+              aria-pressed={vald}
               className={cn(
-                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-                selectedCategory === key
-                  ? cn(
-                    cat.color === 'teal' && "bg-[var(--c-solid)] dark:bg-[var(--c-text)] text-white",
-                    cat.color === 'blue' && "bg-blue-600 dark:bg-blue-700 text-white",
-                    cat.color === 'emerald' && "bg-emerald-600 dark:bg-emerald-700 text-white",
-                    cat.color === 'amber' && "bg-amber-600 dark:bg-amber-700 text-white"
-                  )
-                  : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
+                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                // `dark:bg-[var(--c-text)] text-white` gav 1,51:1 här — den
+                // valda knappen var i praktiken oläslig i mörkt läge.
+                vald
+                  ? 'bg-[var(--c-solid)] text-white dark:text-stone-900'
+                  : 'bg-stone-100 dark:bg-stone-700 text-stone-800 dark:text-stone-200 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
-              {cat.label} ({count})
+              {t(`personalBrand.visibility.categories.${k}`)} ({antal})
             </button>
           )
         })}
       </div>
 
-      {/* Strategies list */}
+      {/* Sätten */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          Strategier för synlighet
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+          {t('personalBrand.visibility.waysTitle', { antal: SYNLIGHETSSATT.length })}
         </h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
+          {t('personalBrand.visibility.waysIntro')}
+        </p>
 
-        <div className="space-y-3">
-          {filteredStrategies.map((strategy) => {
-            const status = getStrategyProgress(strategy.id)
-
+        <ul className="space-y-3 list-none p-0 m-0">
+          {synligaSatt.map((satt) => {
+            const status = statusFor(satt.id)
+            const StatusIkon = STATUS_IKON[status]
             return (
-              <div
-                key={strategy.id}
+              <li
+                key={satt.id}
                 className={cn(
-                  "p-4 rounded-xl border transition-all",
-                  status === 'completed' && "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700",
-                  status === 'in_progress' && "bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700",
-                  status === 'skipped' && "opacity-50",
-                  status === 'not_started' && "border-stone-100 dark:border-stone-600 hover:border-stone-200 dark:hover:border-stone-500"
+                  'p-4 rounded-xl border transition-all',
+                  status === 'completed' && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]',
+                  status === 'in_progress' && 'bg-stone-50 dark:bg-stone-700 border-[var(--c-accent)]/60',
+                  // `opacity-50` sänkte kontrasten i allt inuti kortet till
+                  // 2,34:1 och var dessutom statusens enda bärare.
+                  status === 'skipped' && 'border-stone-200 dark:border-stone-600 bg-stone-50/50 dark:bg-stone-800',
+                  status === 'not_started' && 'border-stone-200 dark:border-stone-600'
                 )}
               >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-800 dark:text-gray-100">{strategy.title}</h4>
-                      {status === 'completed' && (
-                        <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      )}
-                      {status === 'in_progress' && (
-                        <Play className="w-4 h-4 text-[var(--c-text)] dark:text-blue-400 fill-blue-600 dark:fill-blue-400" />
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <h4 className="font-medium text-stone-800 dark:text-stone-100">
+                        {t(`personalBrand.visibility.ways.${satt.id}.title`)}
+                      </h4>
+                      {/* Statusen står nu i TEXT, inte bara i färg. */}
+                      {status !== 'not_started' && (
+                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-600 text-stone-800 dark:text-stone-100">
+                          <StatusIkon className="w-3 h-3" aria-hidden="true" />
+                          {t(`personalBrand.visibility.status.${status}`)}
+                        </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{strategy.description}</p>
+                    <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
+                      {t(`personalBrand.visibility.ways.${satt.id}.description`)}
+                    </p>
 
-                    <div className="flex items-center gap-4 mt-3">
-                      <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        strategy.difficulty === 'easy' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
-                        strategy.difficulty === 'medium' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300",
-                        strategy.difficulty === 'hard' && "bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300"
-                      )}>
-                        {strategy.difficulty === 'easy' ? 'Lätt' : strategy.difficulty === 'medium' ? 'Medel' : 'Avancerat'}
+                    <div className="flex flex-wrap items-center gap-3 mt-3">
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-stone-100">
+                        {t(`personalBrand.visibility.energy.${satt.energi}`)}
                       </span>
-                      <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        strategy.impact === 'low' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
-                        strategy.impact === 'medium' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
-                        strategy.impact === 'high' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]"
-                      )}>
-                        {strategy.impact === 'low' ? 'Låg' : strategy.impact === 'medium' ? 'Medel' : 'Hög'} påverkan
+                      <span className="text-xs text-stone-700 dark:text-stone-400 flex items-center gap-1">
+                        <Clock className="w-3 h-3" aria-hidden="true" />
+                        {t(`personalBrand.visibility.time.${satt.tid}`)}
                       </span>
-                      <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {strategy.timePerWeek}
-                      </span>
+                      {satt.lank && (
+                        <Link to={satt.lank} className="text-xs text-[var(--c-text)] dark:text-stone-200 underline">
+                          {t('personalBrand.visibility.helpHere')}
+                        </Link>
+                      )}
                     </div>
                   </div>
 
-                  {/* Action buttons */}
-                  <div className="flex gap-1 ml-4">
+                  <div className="flex gap-1 shrink-0">
                     {status === 'not_started' && (
                       <>
-                        <button
-                          onClick={() => updateStrategyStatus(strategy.id, 'in_progress')}
-                          className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
-                          title="Starta"
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'in_progress')}
+                          aria-label={t('personalBrand.visibility.startAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
                         >
-                          <Play className="w-4 h-4 text-[var(--c-text)] dark:text-blue-400" />
-                        </button>
-                        <button
-                          onClick={() => updateStrategyStatus(strategy.id, 'skipped')}
-                          className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
-                          title="Hoppa över"
+                          <Play className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'skipped')}
+                          aria-label={t('personalBrand.visibility.skipAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
                         >
-                          <SkipForward className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </button>
+                          <SkipForward className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </>
                     )}
                     {status === 'in_progress' && (
                       <>
-                        <button
-                          onClick={() => updateStrategyStatus(strategy.id, 'completed')}
-                          className="p-2 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 rounded-lg transition-colors"
-                          title="Markera som klar"
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'completed')}
+                          aria-label={t('personalBrand.visibility.doneAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
                         >
-                          <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                        </button>
-                        <button
-                          onClick={() => updateStrategyStatus(strategy.id, 'not_started')}
-                          className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
-                          title="Pausa"
+                          <CheckCircle className="w-4 h-4" aria-hidden="true" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          onClick={() => andraStatus(satt.id, 'not_started')}
+                          aria-label={t('personalBrand.visibility.pauseAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
                         >
-                          <Pause className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                        </button>
+                          <Pause className="w-4 h-4" aria-hidden="true" />
+                        </Button>
                       </>
                     )}
-                    {status === 'completed' && (
-                      <button
-                        onClick={() => updateStrategyStatus(strategy.id, 'not_started')}
-                        className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
-                        title="Återställ"
+                    {(status === 'completed' || status === 'skipped') && (
+                      <Button
+                        variant="ghost"
+                        onClick={() => andraStatus(satt.id, 'not_started')}
+                        aria-label={t('personalBrand.visibility.resetAria', { titel: t(`personalBrand.visibility.ways.${satt.id}.title`) })}
                       >
-                        <RefreshCw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                      </button>
-                    )}
-                    {status === 'skipped' && (
-                      <button
-                        onClick={() => updateStrategyStatus(strategy.id, 'not_started')}
-                        className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
-                        title="Återställ"
-                      >
-                        <RefreshCw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                      </button>
+                        <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                      </Button>
                     )}
                   </div>
                 </div>
-              </div>
+              </li>
             )
           })}
-        </div>
+        </ul>
       </Card>
 
-      {/* LinkedIn Quick Wins */}
-      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Linkedin className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
-          LinkedIn Quick Wins
+      {/* Snabba saker på LinkedIn */}
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+        <h3 className="font-semibold text-[var(--c-text)] dark:text-stone-100 mb-3">
+          {t('personalBrand.visibility.quickTitle')}
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {[
-            { title: 'Rubrik med keywords', desc: 'Inkludera jobbtitlar du söker' },
-            { title: 'Aktivera "Open to Work"', desc: 'Kan vara synligt endast för rekryterare' },
-            { title: 'Be om rekommendationer', desc: 'Från chefer och kollegor' },
-            { title: 'Aktivera Creator Mode', desc: 'Om du planerar dela innehåll regelbundet' }
-          ].map((tip, idx) => (
-            <div key={idx} className="flex items-start gap-2 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg">
-              <CheckCircle className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
+        <ul className="space-y-2 list-none p-0 m-0">
+          {(['headline', 'openToWork', 'recommendations', 'creator'] as const).map((k) => (
+            <li key={k} className="flex items-start gap-2">
+              {/* Var fyra ifyllda gröna bockar bredvid saker användaren INTE
+                  gjort — samma visuella språk som en faktiskt avklarad
+                  strategi tjugo rader ovanför. Nu en neutral punkt. */}
+              <ChevronRight className="w-4 h-4 text-[var(--c-solid)] shrink-0 mt-0.5" aria-hidden="true" />
               <div>
-                <p className="font-medium text-[var(--c-text)] dark:text-white text-sm">{tip.title}</p>
-                <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)]">{tip.desc}</p>
+                <p className="text-sm font-medium text-[var(--c-text)] dark:text-stone-100">
+                  {t(`personalBrand.visibility.quick.${k}.title`)}
+                </p>
+                <p className="text-xs text-[var(--c-text)] dark:text-stone-300">
+                  {t(`personalBrand.visibility.quick.${k}.body`)}
+                </p>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
-        <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
-          <Link
-            to="/linkedin-optimizer"
-            className="inline-flex items-center gap-1 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]"
-          >
-            Öppna LinkedIn-optimeraren
-            <ChevronRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </Card>
-
-      {/* Weekly plan */}
-      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <h3 className="font-semibold text-[var(--c-text)] dark:text-white mb-3 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          Veckoprogramförslag (30 min/dag)
-        </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
-          {[
-            { day: 'Måndag', task: 'Engagera på 10 inlägg' },
-            { day: 'Tisdag', task: 'Dela en artikel' },
-            { day: 'Onsdag', task: 'Kommentera i grupper' },
-            { day: 'Torsdag', task: 'Skriv eget inlägg' },
-            { day: 'Fredag', task: 'Skicka 3 kontaktförfrågningar' }
-          ].map(({ day, task }) => (
-            <div key={day} className="p-3 bg-white dark:bg-stone-800 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-              <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)] text-sm">{day}</p>
-              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1">{task}</p>
-            </div>
-          ))}
-        </div>
+        </ul>
+        <Link to="/linkedin-optimizer" className="inline-flex items-center gap-1 text-sm mt-4 text-[var(--c-text)] dark:text-stone-200 underline">
+          {t('personalBrand.visibility.openLinkedIn')}
+        </Link>
       </Card>
     </div>
   )

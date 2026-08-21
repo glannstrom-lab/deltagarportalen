@@ -1,546 +1,413 @@
 /**
- * Brand Audit Tab - Analyze your personal brand
- * Features: Cloud sync, action buttons, progress tracking
+ * Din bild utåt — en checklista över hur man syns för en arbetsgivare.
+ *
+ * Vad som togs bort 2026-08-21, och varför:
+ *
+ * · **Poängen på personen.** En 96 px ring med `strokeDashoffset`, talet i
+ *   `text-2xl font-bold` mitt i, och under den en etikett med emoji:
+ *   `🚀 Behöver arbete` i rosa, `💪 Potential att utveckla`, `👍 Bra grund`.
+ *   Nämnaren var alla sexton frågor och täljaren bara de ikryssade, så den
+ *   som ärligt gått igenom två frågor och svarat ja på båda fick **13 %**.
+ *   Kortet slog dessutom upp så fort `Object.keys(answers).length > 0` — och
+ *   `toggleAnswer` lämnar kvar `false`-poster, så det räckte att kryssa i
+ *   och ur en enda ruta för att mötas av "0 % 🚀 Behöver arbete".
+ *   DESIGN.md §2 regel 3 och Manifestet §1 förbjuder båda delarna.
+ *   Kategorimärkena visade samma sak: fyra `0 %` i rad innan man börjat.
+ *
+ * · **Ett tillstånd bara seende kunde uppfatta.** De sexton frågorna var
+ *   `<button onClick={toggleAnswer}>` utan `aria-pressed`, `role="checkbox"`
+ *   eller `aria-checked`. Tillståndet bars av bakgrundsfärg och en ikon som
+ *   lucide auto-sätter `aria-hidden` på. En skärmläsare hörde alltså
+ *   "Har du en uppdaterad LinkedIn-profil?, knapp" — identiskt oavsett svar,
+ *   för alla sexton, för alltid. Sidans kärninteraktion (SC 4.1.2).
+ *
+ * · **En `<Link>` inuti en `<button>`.** Ogiltig HTML; `stopPropagation`
+ *   löste musklicket men inte nästlingen. Åtgärdslänken ligger nu utanför.
+ *
+ * · **"Återställ audit" återställde ingenting.** Knappen körde `setAnswers({})`,
+ *   men spar-effekten inleds med `if (… Object.keys(answers).length === 0) return`
+ *   — ett tomt objekt tog alltså den tidiga returen, molnraden behöll de
+ *   gamla svaren, och vid nästa laddning kom alla kryss tillbaka. Användaren
+ *   hade bekräftat "Vill du återställa alla svar?" och fått ett nej utan att
+ *   få veta det.
+ *
+ * · **En historikrad per klick.** `personalBrandAuditsApi.create` låg inne i
+ *   500 ms-debouncen, alltså en INSERT per ikryssad fråga — upp till sexton
+ *   rader per genomgång, var och en med ett poängbetyg på personen. Hubbens
+ *   "Senast idag" pekade på ett kryssklick, inte på en genomgång. Skrivs nu
+ *   vid en uttrycklig handling.
+ *
+ * · **"Dina svar sparas automatiskt i molnet"** var osant: upserten mot
+ *   `personal_brand_audit` angav `onConflict: 'user_id'` mot en tabell utan
+ *   unikt index på den kolumnen, så Postgres svarade 42P10 varje gång och
+ *   felet sväljdes. Se `cloudStorage.saveAuditAnswers`.
  */
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
-  ClipboardCheck,
-  CheckCircle,
-  Circle,
-  Sparkles,
-  Linkedin,
-  FileText,
-  Users,
-  Target,
-  ChevronRight,
-  RefreshCw,
-  BarChart3,
-  Loader2
+  ClipboardCheck, CheckCircle, Circle, Sparkles, Linkedin, FileText, Users,
+  Target, ChevronRight, RefreshCw, AlertCircle, Loader2
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { showToast } from '@/components/Toast'
 import { cn } from '@/lib/utils'
 import { personalBrandApi } from '@/services/cloudStorage'
 import { personalBrandAuditsApi } from '@/services/personalBrandAuditsApi'
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  AUDIT_FRAGOR, AUDIT_KATEGORIER, antalFragor, antalIkryssade, harBorjat,
+  type AuditKategori,
+} from './auditFragor'
 
-interface AuditQuestion {
-  id: string
-  question: string
-  category: 'online' | 'content' | 'network' | 'consistency'
-  actionLink?: string
-  actionLabel?: string
-  tip?: string
-}
-
-const AUDIT_QUESTIONS: AuditQuestion[] = [
-  // Online presence
-  {
-    id: 'linkedin-profile',
-    question: 'Har du en uppdaterad LinkedIn-profil?',
-    category: 'online',
-    actionLink: '/linkedin-optimizer',
-    actionLabel: 'Optimera LinkedIn',
-    tip: 'En komplett profil hittas oftare av rekryterare än en halvfärdig — fyll i rubrik, om-text och erfarenhet'
-  },
-  {
-    id: 'linkedin-photo',
-    question: 'Har du ett professionellt profilfoto?',
-    category: 'online',
-    tip: 'LinkedIn själva säger att en profil med foto får klart fler visningar — ett tydligt ansikte räcker'
-  },
-  {
-    id: 'linkedin-headline',
-    question: 'Beskriver din LinkedIn-rubrik vad du gör/söker?',
-    category: 'online',
-    actionLink: '/linkedin-optimizer',
-    actionLabel: 'Skapa rubrik',
-    tip: 'Din headline är det första rekryterare ser - gör den sökbar och intressant'
-  },
-  {
-    id: 'google-search',
-    question: 'Har du googlat ditt namn nyligen?',
-    category: 'online',
-    tip: 'Många rekryterare googlar den de ska träffa — kontrollera vad som kommer upp på ditt namn'
-  },
-  {
-    id: 'personal-website',
-    question: 'Har du en egen hemsida eller portfolio?',
-    category: 'online',
-    actionLink: '/personal-brand/portfolio',
-    actionLabel: 'Skapa portfolio',
-    tip: 'En personlig sida stärker ditt varumärke och ger dig kontroll över din online-närvaro'
-  },
-
-  // Content
-  {
-    id: 'share-content',
-    question: 'Delar du branschrelevant innehåll på LinkedIn?',
-    category: 'content',
-    actionLink: '/personal-brand/visibility',
-    actionLabel: 'Se innehållsidéer',
-    tip: 'Att dela innehåll 1-2 gånger i veckan ökar din synlighet markant'
-  },
-  {
-    id: 'own-content',
-    question: 'Skapar du eget innehåll (artiklar, inlägg)?',
-    category: 'content',
-    actionLink: '/linkedin-optimizer',
-    actionLabel: 'Skapa inlägg',
-    tip: 'Eget innehåll positionerar dig som expert i ditt område'
-  },
-  {
-    id: 'engage-others',
-    question: 'Engagerar du dig i andras inlägg regelbundet?',
-    category: 'content',
-    tip: 'Genuint engagemang bygger relationer och ökar din synlighet i andras nätverk'
-  },
-  {
-    id: 'expertise-shown',
-    question: 'Visar ditt innehåll din expertis?',
-    category: 'content',
-    tip: 'Dela konkreta erfarenheter och lärdomar - inte bara generella tips'
-  },
-
-  // Network
-  {
-    id: 'active-network',
-    question: 'Nätverkar du aktivt (online eller offline)?',
-    category: 'network',
-    tip: '85% av alla jobb tillsätts via nätverk - aktivt nätverkande lönar sig'
-  },
-  {
-    id: 'industry-events',
-    question: 'Deltar du i branschevent eller meetups?',
-    category: 'network',
-    tip: 'Fysiska möten skapar starkare relationer än digitala kontakter'
-  },
-  {
-    id: 'mentors',
-    question: 'Har du mentorer eller rådgivare i din bransch?',
-    category: 'network',
-    tip: 'En mentor kan ge ovärderlig vägledning och öppna dörrar i din karriär'
-  },
-  {
-    id: 'recommendations',
-    question: 'Har du LinkedIn-rekommendationer?',
-    category: 'network',
-    tip: 'Rekommendationer från andra ger trovärdighet - be om dem från tidigare kollegor/chefer'
-  },
-
-  // Consistency
-  {
-    id: 'consistent-message',
-    question: 'Är ditt budskap konsekvent över alla plattformar?',
-    category: 'consistency',
-    tip: 'Samma professionella bild på alla plattformar stärker igenkänningen'
-  },
-  {
-    id: 'unique-value',
-    question: 'Kan du tydligt beskriva ditt unika värde?',
-    category: 'consistency',
-    actionLink: '/personal-brand/pitch',
-    actionLabel: 'Skapa pitch',
-    tip: 'Vad skiljer dig från andra? Varför ska någon välja just dig?'
-  },
-  {
-    id: 'target-audience',
-    question: 'Vet du vem din målgrupp är?',
-    category: 'consistency',
-    tip: 'Att veta vem du vill nå hjälper dig skapa relevant innehåll och budskap'
-  },
-]
-
-const CATEGORIES = {
-  online: { label: 'Digital närvaro', color: 'blue', icon: Linkedin },
-  content: { label: 'Innehåll', color: 'teal', icon: FileText },
-  network: { label: 'Nätverk', color: 'emerald', icon: Users },
-  consistency: { label: 'Konsekvens', color: 'amber', icon: Target },
+const KATEGORI_IKON: Record<AuditKategori, typeof Linkedin> = {
+  online: Linkedin,
+  content: FileText,
+  network: Users,
+  consistency: Target,
 }
 
 export default function BrandAuditTab() {
-  useTranslation()
+  const { t } = useTranslation()
+  const { confirm } = useConfirmDialog()
+
   const [answers, setAnswers] = useState<Record<string, boolean>>({})
-  const [showResults, setShowResults] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [laddningsfel, setLaddningsfel] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [sparfel, setSparfel] = useState(false)
   const [expandedTip, setExpandedTip] = useState<string | null>(null)
+  const [sparadGenomgang, setSparadGenomgang] = useState(false)
 
-  // Load saved answers from cloud
-  useEffect(() => {
-    loadAnswers()
-  }, [])
-
-  const loadAnswers = async () => {
+  const laddaSvar = useCallback(async () => {
     setIsLoading(true)
+    setLaddningsfel(false)
     try {
-      const saved = await personalBrandApi.getAuditAnswers()
-      setAnswers(saved)
+      setAnswers(await personalBrandApi.getAuditAnswers())
+    } catch (err) {
+      // `try/finally` utan `catch` gjorde ett läsfel till en tom checklista
+      // utan ett ord — samma sak som "du har inte börjat".
+      console.error('Varumärkeskollen: kunde inte hämta svaren', err)
+      setLaddningsfel(true)
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
-  // Save answers with debounce
+  useEffect(() => { void laddaSvar() }, [laddaSvar])
+
+  /** Sparar svaren. Anropas explicit, inte av en effekt på varje ändring. */
+  const spara = useCallback(async (nya: Record<string, boolean>) => {
+    setIsSaving(true)
+    setSparfel(false)
+    try {
+      const kategoripoang = Object.fromEntries(
+        AUDIT_KATEGORIER.map(k => [k, antalIkryssade(nya, k)])
+      )
+      await personalBrandApi.saveAuditAnswers(nya, antalIkryssade(nya), kategoripoang)
+      return true
+    } catch (err) {
+      console.error('Varumärkeskollen: kunde inte spara', err)
+      setSparfel(true)
+      return false
+    } finally {
+      setIsSaving(false)
+    }
+  }, [])
+
+  // Autospar med debounce — men bara av SVAREN. Historikraden skrivs inte här.
   useEffect(() => {
-    if (isLoading || Object.keys(answers).length === 0) return
-
-    const timeout = setTimeout(async () => {
-      setIsSaving(true)
-      try {
-        const categoryScores = Object.fromEntries(
-          Object.keys(CATEGORIES).map(cat => [cat, getCategoryScore(cat)])
-        )
-        await personalBrandApi.saveAuditAnswers(answers, totalScore, categoryScores)
-        // Phase 3 / DATA-02 — append audit history row (separate from upsert above)
-        try {
-          await personalBrandAuditsApi.create({
-            score: totalScore,
-            dimensions: categoryScores,
-            summary: undefined,
-          })
-        } catch (auditError) {
-          console.error('Phase 3 DATA-02 audit-history append failed (non-blocking):', auditError)
-        }
-      } finally {
-        setIsSaving(false)
-      }
-    }, 500)
-
+    if (isLoading || laddningsfel) return
+    const timeout = setTimeout(() => { void spara(answers) }, 500)
     return () => clearTimeout(timeout)
-  }, [answers])
+  }, [answers, isLoading, laddningsfel, spara])
 
   const toggleAnswer = (id: string) => {
+    setSparadGenomgang(false)
     setAnswers(prev => ({ ...prev, [id]: !prev[id] }))
   }
 
-  const getCategoryScore = (category: string) => {
-    const questions = AUDIT_QUESTIONS.filter(q => q.category === category)
-    const answered = questions.filter(q => answers[q.id]).length
-    return Math.round((answered / questions.length) * 100)
+  const ikryssade = antalIkryssade(answers)
+  const borjat = harBorjat(answers)
+
+  /**
+   * Historikraden skrivs när användaren säger att hon är klar för nu — inte
+   * vid varje kryss. Det är den raden hubbarna läser som "senaste
+   * genomgången".
+   */
+  const sparaGenomgang = async () => {
+    const ok = await spara(answers)
+    if (!ok) return
+    try {
+      await personalBrandAuditsApi.create({
+        score: ikryssade,
+        dimensions: Object.fromEntries(AUDIT_KATEGORIER.map(k => [k, antalIkryssade(answers, k)])),
+        summary: undefined,
+      })
+      setSparadGenomgang(true)
+      showToast.success(t('personalBrand.audit.savedRound'))
+    } catch (err) {
+      console.error('Varumärkeskollen: kunde inte spara genomgången', err)
+      showToast.error(t('personalBrand.audit.saveFailed'))
+    }
   }
 
-  const totalScore = useMemo(() => {
-    return Math.round(
-      (Object.values(answers).filter(Boolean).length / AUDIT_QUESTIONS.length) * 100
-    )
-  }, [answers])
+  const aterstall = async () => {
+    const bekraftat = await confirm({
+      title: t('personalBrand.audit.resetTitle'),
+      message: t('personalBrand.audit.resetBody'),
+      confirmText: t('personalBrand.audit.resetConfirm'),
+      variant: 'danger',
+    })
+    if (!bekraftat) return
 
-  const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-emerald-600'
-    if (score >= 60) return 'text-amber-600'
-    if (score >= 40) return 'text-orange-600'
-    return 'text-rose-600'
+    // Skriv tomt till molnet FÖRE state-uppdateringen. Den gamla knappen
+    // satte bara `setAnswers({})`, och den tomma mängden tog den tidiga
+    // returen i spar-effekten — molnraden rördes aldrig.
+    const ok = await spara({})
+    if (!ok) {
+      showToast.error(t('personalBrand.audit.resetFailed'))
+      return
+    }
+    setAnswers({})
+    setSparadGenomgang(false)
+    showToast.success(t('personalBrand.audit.resetDone'))
   }
 
-  const getScoreLabel = (score: number) => {
-    if (score >= 80) return 'Starkt varumärke!'
-    if (score >= 60) return 'Bra grund'
-    if (score >= 40) return 'Potential att utveckla'
-    return 'Behöver arbete'
-  }
-
-  const getScoreEmoji = (score: number) => {
-    if (score >= 80) return '🌟'
-    if (score >= 60) return '👍'
-    if (score >= 40) return '💪'
-    return '🚀'
-  }
-
-  // Get recommended actions based on unchecked items
-  const recommendedActions = useMemo(() => {
-    return AUDIT_QUESTIONS
-      .filter(q => !answers[q.id] && q.actionLink)
-      .slice(0, 3)
-  }, [answers])
+  /**
+   * Förslag härleds ur frågor användaren INTE kryssat i — vilket bara säger
+   * något när hon faktiskt svarat. Före rättelsen stod tre konkreta
+   * rekommendationer överst för någon som inte rört en enda ruta, alltså ett
+   * påstående om henne innan hon sagt något.
+   */
+  const forslag = useMemo(
+    () => (borjat ? AUDIT_FRAGOR.filter(f => !answers[f.id] && f.actionLink).slice(0, 3) : []),
+    [answers, borjat]
+  )
 
   if (isLoading) {
     return (
-      <div
-        className="flex items-center justify-center py-12"
-        role="status"
-        aria-live="polite"
-        aria-busy="true"
-      >
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" aria-hidden="true" />
-        <span className="sr-only">Laddar varumärkesaudit...</span>
+      <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
+        <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
+        <span className="sr-only">{t('personalBrand.audit.loading')}</span>
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-        <div className="flex items-start gap-4">
+        <div className="flex flex-col sm:flex-row items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
-            <ClipboardCheck className="w-6 h-6 text-white" />
+            {/* Vit på `--c-solid` mäter 2,03:1 i mörkt läge (.dark sätter
+                coaching-solid till ljusrosa #E8A4AE). */}
+            <ClipboardCheck className="w-6 h-6 text-white dark:text-stone-900" aria-hidden="true" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Varumärkesaudit</h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Gå igenom frågorna för att analysera styrkan i ditt personliga varumärke.
-              Dina svar sparas automatiskt i molnet.
+          <div className="flex-1 min-w-0">
+            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+              {t('personalBrand.audit.title')}
+            </h2>
+            <p className="text-stone-700 dark:text-stone-300 mt-1">
+              {t('personalBrand.audit.intro', { antal: antalFragor() })}
             </p>
           </div>
           {isSaving && (
-            <span className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
-              <RefreshCw className="w-3 h-3 animate-spin" />
-              Sparar...
+            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1 shrink-0">
+              <RefreshCw className="w-3 h-3 animate-spin" aria-hidden="true" />
+              {t('personalBrand.audit.saving')}
             </span>
           )}
         </div>
       </Card>
 
-      {/* Score overview */}
+      {laddningsfel && (
+        <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300 shrink-0" aria-hidden="true" />
+            <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
+              {t('personalBrand.audit.loadFailed')}
+            </p>
+            <Button variant="outline" onClick={laddaSvar}>{t('common.tryAgain')}</Button>
+          </div>
+        </Card>
+      )}
+
+      {sparfel && !laddningsfel && (
+        <Card className="bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="alert">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-stone-600 dark:text-stone-300 shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-sm text-stone-800 dark:text-stone-100">
+              {t('personalBrand.audit.saveFailed')}
+            </p>
+          </div>
+        </Card>
+      )}
+
+      {/* Sammanfattning — ett räknat antal, ingen procent och inget omdöme */}
       <AnimatePresence>
-        {Object.keys(answers).length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-          >
+        {borjat && (
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
             <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-white dark:bg-stone-800">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-                  Din poäng
-                </h3>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowResults(!showResults)}
-                >
-                  {showResults ? 'Dölj detaljer' : 'Visa detaljer'}
+              <p className="text-stone-800 dark:text-stone-100">
+                {t('personalBrand.audit.summary', { klara: ikryssade, totalt: antalFragor() })}
+              </p>
+              <ul className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3 list-none p-0 m-0">
+                {AUDIT_KATEGORIER.map((k) => {
+                  const Ikon = KATEGORI_IKON[k]
+                  return (
+                    <li key={k} className="text-center p-3 rounded-xl bg-stone-50 dark:bg-stone-700">
+                      <Ikon className="w-5 h-5 mx-auto mb-2 text-[var(--c-solid)]" aria-hidden="true" />
+                      <div className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+                        {t('personalBrand.audit.categoryCount', {
+                          klara: antalIkryssade(answers, k),
+                          totalt: antalFragor(k),
+                        })}
+                      </div>
+                      <p className="text-xs text-stone-700 dark:text-stone-300">
+                        {t(`personalBrand.audit.categories.${k}`)}
+                      </p>
+                    </li>
+                  )
+                })}
+              </ul>
+
+              <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700 flex flex-col sm:flex-row gap-2">
+                <Button onClick={sparaGenomgang} disabled={isSaving} className="bg-[var(--c-solid)] text-white dark:text-stone-900">
+                  {sparadGenomgang
+                    ? t('personalBrand.audit.roundSavedCta')
+                    : t('personalBrand.audit.saveRoundCta')}
+                </Button>
+                <Button variant="ghost" onClick={aterstall} disabled={isSaving}>
+                  <RefreshCw className="w-4 h-4 mr-1" aria-hidden="true" />
+                  {t('personalBrand.audit.reset')}
                 </Button>
               </div>
-
-              <div className="flex items-center gap-6">
-                <div className="relative">
-                  <svg className="w-24 h-24 transform -rotate-90">
-                    <circle
-                      cx="48"
-                      cy="48"
-                      r="40"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                      fill="none"
-                      className="text-stone-200 dark:text-stone-700"
-                    />
-                    <circle
-                      cx="48"
-                      cy="48"
-                      r="40"
-                      stroke="currentColor"
-                      strokeWidth="8"
-                      fill="none"
-                      strokeDasharray={251.2}
-                      strokeDashoffset={251.2 - (251.2 * totalScore) / 100}
-                      className={cn(
-                        "transition-all duration-500",
-                        totalScore >= 80 ? "text-emerald-500" :
-                        totalScore >= 60 ? "text-amber-500" :
-                        totalScore >= 40 ? "text-orange-500" : "text-rose-500"
-                      )}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <span className={cn("text-2xl font-bold", getScoreColor(totalScore))}>
-                      {totalScore}%
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <p className={cn("text-lg font-semibold", getScoreColor(totalScore))}>
-                    {getScoreEmoji(totalScore)} {getScoreLabel(totalScore)}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    {Object.values(answers).filter(Boolean).length} av {AUDIT_QUESTIONS.length} punkter uppfyllda
-                  </p>
-                </div>
-              </div>
-
-              {showResults && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700"
-                >
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {Object.entries(CATEGORIES).map(([key, cat]) => {
-                      const score = getCategoryScore(key)
-                      const Icon = cat.icon
-                      return (
-                        <div key={key} className="text-center p-3 rounded-xl bg-stone-50 dark:bg-stone-700">
-                          <Icon className={cn(
-                            "w-5 h-5 mx-auto mb-2",
-                            score >= 70 ? "text-emerald-600 dark:text-emerald-400" :
-                            score >= 40 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
-                          )} />
-                          <div className={cn(
-                            "text-2xl font-bold",
-                            score >= 70 ? "text-emerald-600 dark:text-emerald-400" :
-                            score >= 40 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
-                          )}>
-                            {score}%
-                          </div>
-                          <p className="text-xs text-gray-600 dark:text-gray-300">{cat.label}</p>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </motion.div>
-              )}
             </Card>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Recommended Actions */}
-      {recommendedActions.length > 0 && totalScore < 80 && (
+      {forslag.length > 0 && (
         <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-          <h3 className="font-semibold text-[var(--c-text)] dark:text-white mb-3 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-            Rekommenderade nästa steg
+          <h3 className="font-semibold text-[var(--c-text)] dark:text-stone-100 mb-3 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
+            {t('personalBrand.audit.suggestionsTitle')}
           </h3>
-          <div className="space-y-2">
-            {recommendedActions.map((action) => (
-              <Link
-                key={action.id}
-                to={action.actionLink!}
-                className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-sm transition-all group"
-              >
-                <div>
-                  <p className="font-medium text-gray-800 dark:text-gray-100">{action.actionLabel}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">{action.question}</p>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors" />
-              </Link>
+          <ul className="space-y-2 list-none p-0 m-0">
+            {forslag.map((f) => (
+              <li key={f.id}>
+                <Link
+                  to={f.actionLink!}
+                  className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 hover:border-[var(--c-accent)] transition-all group"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-medium text-stone-800 dark:text-stone-100">
+                      {t(`personalBrand.audit.questions.${f.id}.action`)}
+                    </span>
+                    <span className="block text-sm text-stone-700 dark:text-stone-300">
+                      {t(`personalBrand.audit.questions.${f.id}.question`)}
+                    </span>
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-stone-600 dark:text-stone-300 shrink-0" aria-hidden="true" />
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </Card>
       )}
 
-      {/* Questions by category */}
-      {Object.entries(CATEGORIES).map(([categoryKey, category]) => {
-        const Icon = category.icon
-        const score = getCategoryScore(categoryKey)
-
+      {AUDIT_KATEGORIER.map((kategori) => {
+        const Ikon = KATEGORI_IKON[kategori]
         return (
-          <Card key={categoryKey} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center justify-between">
+          <Card key={kategori} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex flex-wrap items-center justify-between gap-2">
               <span className="flex items-center gap-2">
-                <Icon className={cn(
-                  "w-5 h-5",
-                  category.color === 'blue' && "text-[var(--c-text)] dark:text-blue-400",
-                  category.color === 'teal' && "text-[var(--c-text)] dark:text-[var(--c-solid)]",
-                  category.color === 'emerald' && "text-emerald-600 dark:text-emerald-400",
-                  category.color === 'amber' && "text-amber-600 dark:text-amber-400"
-                )} />
-                {category.label}
+                <Ikon className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+                {t(`personalBrand.audit.categories.${kategori}`)}
               </span>
-              <span className={cn(
-                "text-sm font-medium px-3 py-1 rounded-full",
-                score >= 70 ? "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300" :
-                score >= 40 ? "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300" :
-                "bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300"
-              )}>
-                {score}%
-              </span>
+              {/* Stod tidigare som `0%` i rosa på varje kategori innan man
+                  börjat — fyra underkända prov i rad. */}
+              {borjat && (
+                <span className="text-sm font-medium px-3 py-1 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-stone-100">
+                  {t('personalBrand.audit.categoryCount', {
+                    klara: antalIkryssade(answers, kategori),
+                    totalt: antalFragor(kategori),
+                  })}
+                </span>
+              )}
             </h3>
 
-            <div className="space-y-3">
-              {AUDIT_QUESTIONS.filter(q => q.category === categoryKey).map((question) => (
-                <div key={question.id}>
-                  <button
-                    onClick={() => toggleAnswer(question.id)}
-                    className={cn(
-                      "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
-                      answers[question.id]
-                        ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
-                        : "bg-stone-50 dark:bg-stone-700 border-stone-100 dark:border-stone-600 hover:border-stone-200 dark:hover:border-stone-500"
-                    )}
-                  >
-                    {answers[question.id] ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-stone-300 dark:text-stone-500 shrink-0" />
-                    )}
-                    <span className={cn(
-                      "flex-1 text-sm",
-                      answers[question.id] ? "text-emerald-800 dark:text-emerald-200" : "text-gray-600 dark:text-gray-300"
-                    )}>
-                      {question.question}
-                    </span>
-                    {!answers[question.id] && question.actionLink && (
-                      <Link
-                        to={question.actionLink}
-                        onClick={(e) => e.stopPropagation()}
-                        className="text-xs px-2 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] rounded-full hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-solid)]/50 transition-colors"
-                      >
-                        {question.actionLabel}
-                      </Link>
-                    )}
-                  </button>
+            <ul className="space-y-3 list-none p-0 m-0">
+              {AUDIT_FRAGOR.filter(f => f.category === kategori).map((fraga) => {
+                const ikryssad = !!answers[fraga.id]
+                const tipsId = `tips-${fraga.id}`
+                return (
+                  <li key={fraga.id}>
+                    <button
+                      type="button"
+                      onClick={() => toggleAnswer(fraga.id)}
+                      aria-pressed={ikryssad}
+                      className={cn(
+                        'w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left',
+                        ikryssad
+                          ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]'
+                          : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500'
+                      )}
+                    >
+                      {ikryssad
+                        ? <CheckCircle className="w-5 h-5 text-[var(--c-solid)] shrink-0" aria-hidden="true" />
+                        : <Circle className="w-5 h-5 text-stone-500 dark:text-stone-400 shrink-0" aria-hidden="true" />}
+                      <span className="flex-1 text-sm text-stone-800 dark:text-stone-100">
+                        {t(`personalBrand.audit.questions.${fraga.id}.question`)}
+                      </span>
+                    </button>
 
-                  {/* Expandable tip */}
-                  {question.tip && !answers[question.id] && (
-                    <AnimatePresence>
-                      {expandedTip === question.id ? (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="ml-8 mt-2 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
+                    {/* Åtgärdslänken låg INUTI knappen ovan — interaktivt
+                        element i interaktivt element. Nu på egen rad. */}
+                    <div className="ml-8 mt-1 flex flex-wrap items-center gap-3">
+                      {!ikryssad && fraga.actionLink && (
+                        <Link
+                          to={fraga.actionLink}
+                          className="text-xs px-2 py-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100 rounded-full hover:bg-[var(--c-accent)]/60 transition-colors"
                         >
-                          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
-                            {question.tip}
-                          </p>
-                          <button
-                            onClick={() => setExpandedTip(null)}
-                            className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] mt-2 hover:underline"
-                          >
-                            Dölj tips
-                          </button>
-                        </motion.div>
-                      ) : (
+                          {t(`personalBrand.audit.questions.${fraga.id}.action`)}
+                        </Link>
+                      )}
+                      {!ikryssad && (
                         <button
-                          onClick={() => setExpandedTip(question.id)}
-                          className="ml-8 mt-1 text-xs text-gray-600 dark:text-gray-400 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)]"
+                          type="button"
+                          onClick={() => setExpandedTip(expandedTip === fraga.id ? null : fraga.id)}
+                          aria-expanded={expandedTip === fraga.id}
+                          aria-controls={tipsId}
+                          className="text-xs text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] underline"
                         >
-                          Visa tips
+                          {expandedTip === fraga.id
+                            ? t('personalBrand.audit.hideTip')
+                            : t('personalBrand.audit.showTip')}
                         </button>
                       )}
-                    </AnimatePresence>
-                  )}
-                </div>
-              ))}
-            </div>
+                    </div>
+
+                    {!ikryssad && expandedTip === fraga.id && (
+                      <div
+                        id={tipsId}
+                        className="ml-8 mt-2 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40"
+                      >
+                        {/* `dark:text-[var(--c-text)]` stod här och mäter
+                            1,55:1 i mörkt läge — i praktiken osynlig. */}
+                        <p className="text-sm text-[var(--c-text)] dark:text-stone-100">
+                          {t(`personalBrand.audit.questions.${fraga.id}.tip`)}
+                        </p>
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
           </Card>
         )
       })}
-
-      {/* Reset button */}
-      {Object.keys(answers).length > 0 && (
-        <div className="text-center">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              if (confirm('Vill du återställa alla svar?')) {
-                setAnswers({})
-                setShowResults(false)
-              }
-            }}
-          >
-            <RefreshCw className="w-4 h-4 mr-1" />
-            Återställ audit
-          </Button>
-        </div>
-      )}
     </div>
   )
 }

@@ -424,7 +424,7 @@
     "spontaneous": "Spontaneous Application",
     "network": "Network",
     "salary": "Salary & Negotiation",
-    "personalBrand": "Personal Brand",
+    "personalBrand": "Personal brand",
     "international": "International Guide",
     "externalResources": "External Resources",
     "myConsultant": "My Consultant",
@@ -4410,27 +4410,22 @@
     }
   },
   "personalBrand": {
-    "editorialSpot": "Build a clear personal brand that shows what you can do.",
-    "pageTitle": "Personal Brand",
-    "pageDescription": "Build and strengthen your professional brand",
+    "editorialSpot": "Build a clear picture of what you can do.",
+    "pageTitle": "Your personal brand",
+    "pageDescription": "How you appear to an employer — and what you can do about it",
     "tabs": {
       "audit": {
-        "label": "Brand Audit",
-        "description": "Analyze your personal brand"
+        "label": "How you come across"
       },
       "pitch": {
-        "label": "Personal Pitch",
-        "description": "Create and practice your elevator pitch"
+        "label": "Your pitch"
       },
       "portfolio": {
-        "label": "Portfolio",
-        "description": "Showcase your projects"
+        "label": "Work samples"
       },
       "visibility": {
-        "label": "Visibility",
-        "description": "Increase your digital presence"
-      },
-      "newBadge": "New!"
+        "label": "Visibility"
+      }
     },
     "pitch": {
       "header": {
@@ -4561,6 +4556,318 @@
           "text": "Invite a dialogue instead of only talking about yourself."
         }
       }
+    },
+    "audit": {
+      "title": "How you come across",
+      "intro": "{{antal}} questions about how you appear to an employer. Tick what you have already done — the rest are suggestions, not requirements.",
+      "loading": "Fetching your answers …",
+      "loadFailed": "We could not fetch your answers right now. That does not mean they are gone.",
+      "saving": "Saving …",
+      "saveFailed": "We could not save right now. Your ticks are still on screen — please try again shortly.",
+      "summary": "You have ticked {{klara}} of {{totalt}}.",
+      "categoryCount": "{{klara}} of {{totalt}}",
+      "categories": {
+        "online": "Where you show up",
+        "content": "What you write",
+        "network": "People you know",
+        "consistency": "Hanging together"
+      },
+      "suggestionsTitle": "Three things you could start with",
+      "showTip": "Show tip",
+      "hideTip": "Hide tip",
+      "saveRoundCta": "Save this round",
+      "roundSavedCta": "Saved",
+      "savedRound": "This round is saved. It shows on your Career page.",
+      "reset": "Start the list over",
+      "resetTitle": "Start the list over?",
+      "resetBody": "All ticks are removed. You can go through the questions again whenever you like.",
+      "resetConfirm": "Remove all ticks",
+      "resetDone": "The list has been cleared.",
+      "resetFailed": "We could not clear the list. Your ticks are still there — please try again shortly.",
+      "questions": {
+        "linkedin-profile": {
+          "question": "Is your LinkedIn profile up to date?",
+          "tip": "A filled-in profile is found by recruiters more often than a half-finished one. Headline, about text and experience go a long way.",
+          "action": "Review LinkedIn"
+        },
+        "linkedin-photo": {
+          "question": "Do you have a profile photo?",
+          "tip": "LinkedIn themselves say profiles with a photo get more views. An ordinary, clear picture of your face is enough — it does not need a photographer.",
+          "action": ""
+        },
+        "linkedin-headline": {
+          "question": "Does your LinkedIn headline say what you do or are looking for?",
+          "tip": "The headline is the first thing anyone sees. \"Care assistant looking for something new\" says more than \"Open to opportunities\".",
+          "action": "Write a headline"
+        },
+        "google-search": {
+          "question": "Have you ever searched for your own name?",
+          "tip": "Many people look up whoever they are about to meet. Worth knowing what comes up — usually nothing, and that is an answer too.",
+          "action": ""
+        },
+        "personal-website": {
+          "question": "Do you have somewhere to show what you have done?",
+          "tip": "It does not have to be a website. A collection of work samples you can link to in an application is enough.",
+          "action": "Collect work samples"
+        },
+        "share-content": {
+          "question": "Do you share anything about your field on LinkedIn?",
+          "tip": "Sharing something you have read now and then means more people see your name. There is no set rhythm — do it when you have something to share.",
+          "action": "See ideas"
+        },
+        "own-content": {
+          "question": "Have you written anything of your own — a post or a text?",
+          "tip": "A short post about something you know is enough. You do not have to be an expert to have something to say.",
+          "action": "Write a post"
+        },
+        "engage-others": {
+          "question": "Do you comment on or like other people’s posts?",
+          "tip": "Replying to others is often easier than writing your own — and it shows up for their network.",
+          "action": ""
+        },
+        "expertise-shown": {
+          "question": "Does what you know come through in what you write?",
+          "tip": "Concrete experience from jobs you have had says more than general advice.",
+          "action": ""
+        },
+        "active-network": {
+          "question": "Do you keep in touch with people in your field?",
+          "tip": "Many jobs are filled because someone knows someone — how many cannot be said with certainty, but contacts are rarely wasted.",
+          "action": ""
+        },
+        "industry-events": {
+          "question": "Do you go to industry meet-ups or other gatherings?",
+          "tip": "Meeting in person usually makes more of an impression than a message. One occasion now and then is enough.",
+          "action": ""
+        },
+        "mentors": {
+          "question": "Do you have someone to ask for advice about working life?",
+          "tip": "It does not have to be a formal mentor. A former colleague or manager you can get in touch with counts.",
+          "action": ""
+        },
+        "recommendations": {
+          "question": "Do you have recommendations on LinkedIn?",
+          "tip": "Recommendations from others carry more weight than what you write about yourself. Most people say yes if you ask.",
+          "action": ""
+        },
+        "consistent-message": {
+          "question": "Do your CV and your LinkedIn say roughly the same thing?",
+          "tip": "The same job words in both places makes what you say recognisable — and makes you easier to search for.",
+          "action": ""
+        },
+        "unique-value": {
+          "question": "Can you say briefly what you are good at?",
+          "tip": "Two sentences is enough. It is the kind of thing you work out by writing it down, not by thinking about it.",
+          "action": "Write your pitch"
+        },
+        "target-audience": {
+          "question": "Do you know what kind of employer you want to reach?",
+          "tip": "Knowing who you are writing for makes both texts and applications easier to put together.",
+          "action": ""
+        }
+      }
+    },
+    "portfolio": {
+      "title": "Your work samples",
+      "intro": "Collect what you have done — jobs, assignments, courses, projects. Useful when writing an application or filling in your CV.",
+      "loading": "Fetching your work samples …",
+      "loadFailed": "We could not fetch your work samples right now. That does not mean they are gone.",
+      "add": "Add",
+      "addFirst": "Add the first one",
+      "emptyTitle": "This is where you collect what you have done",
+      "emptyBody": "A job, a course, an assignment or something you built. It does not have to be big to be worth writing down.",
+      "newHeading": "New work sample",
+      "editHeading": "Edit work sample",
+      "fieldTitle": "What is it about?",
+      "titlePlaceholder": "e.g. Warehouse work at Coop",
+      "fieldType": "What is it?",
+      "fieldDescription": "Description",
+      "descriptionPlaceholder": "What did you do, and what came of it? A couple of sentences is enough.",
+      "fieldStart": "From (optional)",
+      "fieldEnd": "To (optional)",
+      "fieldUrl": "Link (optional)",
+      "urlInvalid": "That does not look like a web address. It should start with http:// or https://.",
+      "fieldTags": "Keywords (separate with commas)",
+      "tagsPlaceholder": "forklift, warehouse, customer contact",
+      "featureLabel": "Show this one at the top",
+      "save": "Save",
+      "saveEdit": "Save the change",
+      "saved": "Saved.",
+      "saveFailed": "We could not save right now. What you wrote is still here — please try again shortly.",
+      "deleted": "Removed.",
+      "deleteFailed": "We could not remove it. It is still there — please try again shortly.",
+      "deleteTitle": "Remove?",
+      "deleteBody": "\"{{titel}}\" will be permanently removed.",
+      "featured": "At the top",
+      "openLink": "Open the link",
+      "featureAria": "Show {{titel}} at the top",
+      "editAria": "Edit {{titel}}",
+      "deleteAria": "Remove {{titel}}",
+      "types": {
+        "project": {
+          "label": "Project",
+          "description": "Something you built or ran"
+        },
+        "work": {
+          "label": "Job",
+          "description": "Employment or assignment"
+        },
+        "certificate": {
+          "label": "Certificate",
+          "description": "Education, course or certificate"
+        },
+        "other": {
+          "label": "Other",
+          "description": "Anything else you want to include"
+        }
+      },
+      "tipsTitle": "Three things that usually help",
+      "tips": {
+        "quality": {
+          "title": "A few is better",
+          "body": "What you are most pleased with says more than a long list."
+        },
+        "role": {
+          "title": "Write what YOU did",
+          "body": "Not what the workplace did — what your part was."
+        },
+        "result": {
+          "title": "Include the result",
+          "body": "Did something get better, faster or easier? Write that."
+        }
+      }
+    },
+    "visibility": {
+      "title": "Become easier to find",
+      "introEmpty": "Here are {{antal}} ways to be seen by an employer. Pick one that feels manageable — you do not have to do them all.",
+      "introSome": "You have tried {{provade}} of {{antal}} ways. There is no order you have to follow.",
+      "loading": "Fetching …",
+      "loadFailed": "We could not fetch this right now. That does not mean nothing is saved.",
+      "statusFailed": "We could not save the change. Please try again shortly.",
+      "ideaTitle": "Something to write about",
+      "newIdea": "Show another",
+      "writePost": "Write the post",
+      "ideas": {
+        "0": "Share something you learned from a mistake",
+        "1": "Tell people about a job you are proud of",
+        "2": "Explain something from your trade so an outsider understands",
+        "3": "Write what you wish you had known when you started",
+        "4": "Comment on something happening in your field",
+        "5": "Thank someone who has helped you",
+        "6": "Share a book, podcast or course you liked",
+        "7": "Ask a question to the people who follow you",
+        "8": "Briefly tell people how you got here",
+        "9": "Write about a common misconception in your trade",
+        "10": "Show something you did this week",
+        "11": "Say what you are looking for right now"
+      },
+      "calendarTitle": "Planned posts",
+      "calendarEmpty": "You have nothing planned yet. It is fine to just write when it suits you — the plan is for those who want one.",
+      "planPost": "Plan a post",
+      "planWhat": "What are you going to write about?",
+      "planPlaceholder": "e.g. Thank my old manager",
+      "planWhere": "Where?",
+      "planWhen": "When?",
+      "planSave": "Save",
+      "planSaved": "The post is planned.",
+      "planFailed": "We could not save the planned post. Please try again shortly.",
+      "planDeleted": "Removed.",
+      "planDeleteFailed": "We could not remove it. It is still there — please try again shortly.",
+      "deletePlanTitle": "Remove the planned post?",
+      "deletePlanBody": "\"{{titel}}\" will be removed from your plan.",
+      "deletePlanAria": "Remove {{titel}}",
+      "platformBlog": "Blog",
+      "platformOther": "Other",
+      "prevWeek": "Previous week",
+      "nextWeek": "Next week",
+      "thisWeek": "This week",
+      "filterAria": "Filter the ways",
+      "filterAll": "All ({{antal}})",
+      "categories": {
+        "content": "Writing",
+        "engagement": "Replying to others",
+        "networking": "Contacts",
+        "platform": "Your own pages"
+      },
+      "waysTitle": "{{antal}} ways to be seen",
+      "waysIntro": "Ordered by how much energy they usually cost — not by how good they are.",
+      "helpHere": "We can help with this",
+      "energy": {
+        "lag": "Little energy",
+        "medel": "Some energy",
+        "hog": "A lot of energy"
+      },
+      "time": {
+        "kort": "A few minutes",
+        "halvtimme": "About half an hour",
+        "timme": "About an hour",
+        "varierar": "Varies"
+      },
+      "status": {
+        "not_started": "Not started",
+        "in_progress": "In progress",
+        "completed": "Tried",
+        "skipped": "Skipped"
+      },
+      "startAria": "Start with {{titel}}",
+      "skipAria": "Skip {{titel}}",
+      "doneAria": "Mark {{titel}} as tried",
+      "pauseAria": "Pause {{titel}}",
+      "resetAria": "Reset {{titel}}",
+      "ways": {
+        "linkedin-engage": {
+          "title": "Reply to other people’s posts",
+          "description": "Write a comment on something someone else has posted. It is usually easier than writing your own, and your name shows up for their contacts."
+        },
+        "share-articles": {
+          "title": "Share something you have read",
+          "description": "An article about your field, with a line about why you thought it was worth reading."
+        },
+        "ask-recommendation": {
+          "title": "Ask for a recommendation",
+          "description": "Ask a former colleague or manager if they can write a few lines on LinkedIn. Most people say yes."
+        },
+        "reach-out": {
+          "title": "Get in touch with someone you have worked with",
+          "description": "A short message is enough. Many jobs come that way, and getting in touch costs nothing."
+        },
+        "join-groups": {
+          "title": "Join a group",
+          "description": "Groups for your field or your area. You do not have to post anything to benefit from reading."
+        },
+        "write-posts": {
+          "title": "Write a post of your own",
+          "description": "About something you know or something you have been through. A few sentences is enough — it does not have to be an article."
+        },
+        "local-meet": {
+          "title": "Go to a meet-up",
+          "description": "A job fair, an industry gathering or something the employment service arranges. Meeting in person usually makes more of an impression than a message."
+        },
+        "portfolio-page": {
+          "title": "Collect your work samples",
+          "description": "A collection of what you have done that you can point to in an application."
+        }
+      },
+      "quickTitle": "Four quick things on LinkedIn",
+      "quick": {
+        "headline": {
+          "title": "Put the job title in your headline",
+          "body": "That is what recruiters search for."
+        },
+        "openToWork": {
+          "title": "Turn on \"Open to Work\"",
+          "body": "You can set it so only recruiters see it."
+        },
+        "recommendations": {
+          "title": "Ask for recommendations",
+          "body": "From managers or colleagues you have had."
+        },
+        "creator": {
+          "title": "Turn on Creator Mode",
+          "body": "If you intend to post regularly."
+        }
+      },
+      "openLinkedIn": "Open the LinkedIn help"
     }
   },
   "exercises": {
