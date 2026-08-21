@@ -62,7 +62,12 @@ export interface SearchResult {
   educations: Education[];
   total: number;
   hasMore: boolean;
+  /** `'error'` betyder att anropet föll — INTE att det saknas utbildningar.
+   *  Den som ritar listan måste skilja på de två, annars ser ett nätverksfel
+   *  ut som ett besked om att inget finns. */
   source: string;
+  /** Yrket JobEd tolkade fritexten som. */
+  matchedOccupation?: string;
 }
 
 export interface EducationTypeOption {
@@ -257,7 +262,11 @@ export async function matchEducationsByJobTitle(
       },
     });
 
-    defaultCache.set(cacheKey, result, 30 * 60 * 1000);
+    // Cacha inte ett misslyckat anrop i 30 minuter — då blir ett tillfälligt
+    // avbrott ett halvtimmeslångt "det finns inga utbildningar".
+    if (result.source !== 'error') {
+      defaultCache.set(cacheKey, result, 30 * 60 * 1000);
+    }
     return result;
   } catch (error) {
     console.error('Fel vid matchning av utbildningar:', error);

@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-21** (projektgenomgång, sju linser över det som aldrig sidgranskats — se avsnittet direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-21** (fyra sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,86 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-21 (kväll) — Kompetensanalysen, fyra granskare
+
+`/skills-gap-analysis` granskad i kod och visuellt. Fyra granskare: AI-vägen och
+sanningshalten, data och robusthet, tillgänglighet/i18n/ton, och en visuell.
+
+**Domen:** sidan gjorde två saker den inte hade täckning för. Den satte en **procentsiffra
+på en människa** i hjälteposition — 64 px cirkel i solid rosa, `role="progressbar"`,
+`aria-valuenow` — där talet är en språkmodells helhetsomdöme om ett CV; två körningar på
+samma underlag gav 25 respektive 22. Och den **hittade på utbildningar**: prompten bad om
+"max 3 verkliga svenska/kända kursförslag" med arrangör, längd och pris, och modellen
+levererade det den ombads om. Under det låg tio tysta fel — fyra `.catch()` som gjorde ett
+nätverksfel identiskt med "du har inget CV", en språknyckel som skickade `undefined` till
+modellen för 15 av 18 CV:n, och en hel utbildningsintegration som aldrig fungerat.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| SGA1 | **Matchningsprocenten i hjälteposition.** Ett tal utan mätning, uppläst med `aria-valuenow` för någon som varit arbetslös länge. "22 %" läser som ett underkänt prov | Borta ur vy, historik och nedladdad fil. Ersatt av ett räknat tal med definition: "Av 5 kompetenser yrket brukar kräva har du redan 1 på plats" — går att räkna efter i listan under. Kolumnen `match_percentage` är kvar i databasen för äldre analyser men styr ingenting |
+| SGA2 | **Kurserna var påhittade.** Prompten bad uttryckligen om verkliga anordnare, längder och priser. En deltagare som planerar sin försörjning efter en YH-utbildning som inte finns har fått ett aktivt felaktigt underlag | Prompten förbjuder kursförslag helt. Utbildningarna hämtas från Arbetsförmedlingens JobEd Connect via `education-search`-edgen — med anordnare, form, startdatum och distansflagga |
+| SGA3 | **JobEd-integrationen har aldrig fungerat — tre fel staplade.** (a) `/:id`-grenen i edge-routern saknade metodkontroll och `/^\/[^/]+$/` matchar `/match`, så `POST /match` slog upp utbildningen med id "match" och svarade 404. (b) Uppströms skickades `{job_title}` som JSON-body; JobEd vill ha `?jobtitle=` som query-parameter och svarar annars 400. (c) Svaret är ett objekt `{mapped_occupation_for_match, hits_total, hits}`, men koden körde `Array.isArray(data)` — alltid falskt. Allt sväljs av `catch → return []`, så `CareerRecommendationsPanel` har visat tom lista tyst | Alla tre lagade + `normalizeMatchHit` för matchträffarnas platta form (`education_title`, `education_form`) och en formkodstabell mätt mot API:t (`vuxgy`/`yh`/`hs`/`af arbetsmarknadsutbildning` — de långa nycklarna i `FORM_LABELS` matchar aldrig en matchträff). Verifierat mot JobEd 2026-08-21; edge-fixen kan först verifieras efter deploy |
+| SGA4 | **`undefined (Flytande)` skickades till modellen.** Koden läste `l.name`; fältet heter `language`. **15 av de 18 CV:n i prod som har språk ifyllda** bär den nyckeln (mätt mot `cvs`) | Båda formerna tas emot. Utbildningens årtal lästes ur `edu.year` — ett fält som noll av 26 CV:n bär — så utbildningstiden nådde aldrig prompten heller; nu ur `startDate`/`endDate` |
+| SGA5 | **Fokusläget rev allt ifyllt.** `if (isFocusMode) return` bytte ut hela trädet. Drömjobbsfältet är en `rows={6}` textarea vars placeholder ber om en hel jobbannons, och ingen persistens finns. Slogs växeln om **under** analysen avmonterades komponenten mitt i `analyze()`: raden hamnade i molnet, `setCurrentAnalysis` blev en no-op, och användaren möttes av ett tomt formulär utan felmeddelande. Fjärde gången samma klass (b93be382, 00d8be26, `Career.tsx`) | Överlägg med `display: none`. Guiden lämnar dessutom över yrket till normalvyns fält |
+| SGA6 | **Fokusguiden skrev en tom "analys".** `skillsAnalysisApi.create({ match_percentage: 0, skills_comparison: [], … })`. Sidan laddar senaste raden, så nästa besök visade "Din analys är klar", **0 %** matchning med `aria-valuenow={0}`, AI-vattenstämpel över användarens egen text — och ingen väg tillbaka, för "Ny analys" låg inuti handlingsplanskortet som inte renderas när planen är tom. Inga sådana rader hann skapas i prod (4 rader, alla riktiga analyser): armerad, inte utlöst | Guiden skriver till `profiles.desired_jobs`/`interests`, stänger bara vid lyckad sparning, och visar felet i stället för att svälja det. "Ny analys" flyttad till resultathuvudet |
+| SGA7 | **Ett nätverksfel såg ut som "du har inget CV".** Fyra tysta `.catch(() => …)` i laddningen. Sidan bad då någon med fullständigt CV att gå och fylla i det | `Promise.allSettled`; sidan vet vilket anrop som föll och visar Försök igen. Samma skillnad görs för utbildningslistan: ett avbrott mot Arbetsförmedlingen är inte ett besked om att inga utbildningar finns |
+| SGA8 | **Hela jobbannonsen mitt i meningen.** `dream_job` skrevs rakt ut två gånger: "…nästa steg ut mot Vi söker en lagermedarbetare till vårt distributionscenter i Göteborg. Arbetsuppgifter: plockning…" | `kortDromjobb` returnerar en titel bara om texten *är* en titel (≤ 60 tecken, ≤ 7 ord, ingen mening). Annars tom sträng, och raden visar ett tydligt kapat **citat** av det användaren skrev. Att gissa fram en titel ur en annons vore ett påstående vi inte kan belägga. Hela texten ligger bakom `<details>` |
+| SGA9 | **Nivåerna var omdömen om personen.** "Nuvarande: 3/5" / "Mål: 5/5" / "Gap: 4 nivåer" i rött, orange och gult — fyra främmande färgfamiljer på en rosa sida, och fyra kontrastfall under AA (gult 2,74:1, grönt 3,00:1, orange 3,10:1, rött 3,97:1 mot kravet 4,5). Färgen bar informationen ensam (SC 1.4.1) | Ramen omskriven i både prompt och UI: "Ditt CV visar 3 av 5" / "Yrket brukar kräva 5 av 5" / "2 steg kvar". Tre intensiteter av hubbfärgen; texten bär graden. Stapeln visar nu skillnaden, inte bara nuvarande nivå |
+| SGA10 | **Raderaknappen saknade tillgängligt namn**, resultatet varken annonserades eller fick fokus (live-regionen **avmonterades** i stället för att uppdateras, och fokus föll till `<body>`), `role="list"` utan `listitem` annonserades som "lista, 0 objekt", historiktoggeln saknade `aria-controls`, och `+`/`−` lästes upp som "plus"/"minus" | Allt åtgärdat. Beständig `aria-live` över alla tre lägena; fokus flyttas till resultatets `<h2>`; riktiga `ul`/`ol` |
+| SGA11 | **Tre tysta fel till.** `deleteAnalysis` svalde fel (art. 17 — den som ber om radering ska få veta om den inte skedde), `addToCareerPlan` svalde fel och kunde skriva en halv plan, och native `confirm()` blockerar tråden och är avstängd i vissa inbäddade kontexter — då raderas inget, tyst | Toast vid varje utfall; `useConfirmDialog` |
+| SGA12 | **Karriärplanen fick ett avhugget CV-fragment som "nuvarande situation"** (`cv_text.substring(0, 200)`, ofta mitt i en mening) och tidsramen "12 månader" utan att någon frågat | Situationen är en mening om målet; ingen påhittad tidsram |
+| SGA13 | **`window.open(course.url, '_blank')` utan `noopener` och utan schemaspärr** på en URL som kom ur AI-genererat innehåll — tabnabbing, och `javascript:` gick igenom | `sakerUrl` kräver absolut http(s); `rel="noopener noreferrer"` |
+| SGA14 | **Offline-lagret överlevde utloggningen.** IndexedDB `deltagarportal-offline` höll karriärplan, milstolpar, nätverkskontakter och kompetensanalysens `cv_text` i sju dygn. A31 rensade localStorage och en senare runda React Query-cachen — IndexedDB stod kvar. Målgruppen sitter ofta vid delade datorer. Dessutom skrev `cacheSkillsAnalysis` under ett UUID medan läsaren alltid slog upp `'latest'`: de möttes aldrig, så lagret samlade PII som ingenting läste | `careerOfflineCache.rensaAllt()` vid utloggning; nyckeln rättad |
+| SGA15 | **Den utgråade knappen gav ingen anledning**, och tröskeln var ett teckenantal (`length > 50`) som släppte igenom ett CV med bara namn och titel och stoppade ett med tre kompetenser — utan att i något fall säga vad som saknades | Fältvis kontroll som namnger delarna; knappen är aktiv och tar användaren till det som fattas |
+| SGA16 | **Nedladdade filen bar ingen AI-märkning** — trots att skärmen har `AIGeneratedWatermark` med hänvisning till AI Act art. 50.2. Filen är just den som skickas vidare till handledare eller arbetsgivare. Den bar dessutom matchningsprocenten vidare, och blob-URL:en revokades aldrig | AI-notis först i filen; procenten borta; `revokeObjectURL` |
+| SGA17 | **"Detta analys är genererat med AI-stöd."** `AIGeneratedWatermark` satte artikeln utan genus. Två av de åtta använda orden är utrum (`analys`, `karriärplan`). En grammatikmiss i just den märkning som ska bära tydlighet enligt art. 50.2 | Genusbestämning i komponenten; participet böjs med |
+| SGA18 | **Sidan var 890 rader i en komponent** med fem returgrenar, tolv `useState` och noll egna testfiler. `formatProfileSummary` och nedladdningen gick inte att pröva utan att montera hela sidan | Delad i `pages/skills-gap/`: `useSkillsGap`, `SkillsGapForm`, `SkillsGapResult`, `profilunderlag`, `dromjobb`, `laddaNerAnalys`. Skalet är ~150 rader |
+| SGA19 | **Namnet skickades till OpenRouter i onödan.** Prompten inleddes "Namn: Anna, Undersköterska". Namnet behövs inte för att jämföra kompetenser mot ett yrke | Borta. Titeln är kvar — den säger något om yrkesinriktning |
+| SGA20 | Ton och i18n: sidan hette "Kompetensgap-analys", knappen "Analysera gapet", varje rad hade en badge "Gap: 2 nivåer", och uppmuntranstexten låg i en **amber varningsruta med `AlertCircle`** — formen sa "något är fel", texten sa "Du har en stark grund!". Under 60 % stod "Det finns potential!", vilket läser som ett artigt nej. Fjorton hårdkodade svenska strängar och sju `isEn ? … : …` kringgick i18n helt | Omdöpt till "Kompetensanalys" / "Visa vad som behövs" / "2 steg kvar" / "Dina nästa steg". Alla strängar i sv+en. Datum via `dateLocale` överallt |
+
+**Skyddsnät:** `client/src/pages/skills-gap/__tests__/kompetensanalys-arlighet.test.ts` — 51 vakter,
+varav de rena funktionerna prövas mot riktiga anrop. **14 riktade mutationer, 14 rätt hanterade**
+inklusive en positiv kontroll. Två av mina egna vakter fälldes först av misstag och skärptes:
+en matchade sin egen instruktion i prompten (`Fältet "courses" ska utelämnas helt`), och en
+gick grön när `if (analysPagar.current) return` togs bort men tilldelningarna låg kvar.
+En tredje läste en tom sträng — fel ankare i en `slice` — och en tom sträng passerar varje
+`not.toContain`. Vakten kontrollerar nu att blocket den läser faktiskt har innehåll.
+
+### Kvarstår — kräver beslut eller eget arbete
+
+- **SGA-A — `matchPercentage` begärs fortfarande av modellen och skrivs till en NOT NULL-kolumn.**
+  Den styr ingenting i gränssnittet längre, men den finns i schemat, i Zod-schemat och i prompten.
+  Att göra kolumnen nullbar är en migration mot prod och därmed Mikaels beslut. Så länge den
+  ligger kvar kan en framtida vy plocka upp den igen.
+- **SGA-B — edge-fixen är verifierad uppströms men inte i drift.** JobEd-anropet är kontrollerat
+  mot API:t med rätt parametrar och svarsform (2026-08-21), men `/match`-rutten kan först provas
+  efter att `education-search` deployats. Kör
+  `curl -sS -X POST "$SUPABASE_URL/functions/v1/education-search/match" -H "Authorization: Bearer $ANON" -H "Content-Type: application/json" -d '{"jobTitle":"undersköterska","limit":3}'`
+  → förväntat: `{"educations":[…],"source":"jobed-connect-match"}`, **inte** `{"error":"Education not found"}`.
+- **SGA-C — `CareerRecommendationsPanel` har visat tom utbildningslista sedan den byggdes**, av
+  samma tre fel som SGA3. Den är inte granskad i den här omgången; kontrollera att den nu får
+  träffar, och att den skiljer `source === 'error'` från noll träffar (det gör den inte i dag).
+- **SGA-D — CV-texten som skickas till OpenRouter är inte art. 9-grindad.** Fritextfälten i CV:t
+  (`summary`, erfarenhetsbeskrivningar) kan innehålla hälsouppgifter som deltagaren själv skrivit
+  in — "sjukskriven 2019–2021", "anpassat arbete efter ryggskada". Kompetensanalysen är
+  klassad som art. 6-data och passerar därför ingen samtyckesgrind. Det är inte den här sidans
+  fel utan CV-verktygets, men det är den här sidan som skickar texten vidare. Kräver beslut:
+  grinda, sanera, eller skriva in i DPIA:n som accepterad risk.
+- **SGA-E — `favorite_occupations` har noll rader, två läsare och noll skrivare** i hela portalen.
+  Chipsen "Dina sparade yrken" kan aldrig visas. Antingen bygg skrivvägen (yrkeskorten i
+  Intresseguiden är det naturliga stället) eller ta bort läsarna. `user_skills` är helt död.
+- **SGA-F — analysen går inte att avbryta.** Ingen `AbortController`, ingen Avbryt-knapp.
+  Överlägget visar nu det ifyllda bakom sig och säger att det kan ta upp till en minut, men den
+  som ångrar sig får vänta ut anropet.
+- **SGA-G — `AIGeneratedWatermark`s text är hårdkodad svenska.** Engelska användare får en svensk
+  mening, och två anropsställen skickar in engelska `contentType` ("recommendation", "script") i
+  en svensk sats. Genusrättelsen i SGA17 rör inte det. Gäller alla åtta anropare, inte bara
+  den här sidan.
 
 ---
 
@@ -67,6 +147,30 @@ i matchningen.
 
 **Taket sänkt:** 400 → 390 strict-typfel.
 
+### Tillägg efter granskningen (samma dag)
+
+| # | Vad | Belägg |
+|---|---|---|
+| IG26 | **Yrkeslistan utökad 135 → 165**, varav 110 utan högskolekrav (var 77). Urvalet är mätt mot Arbetsförmedlingens egen indelning, inte gissat: först de sju av AF:s trettio största yrkesgrupper som saknades helt, sedan täckning per yrkesområde | `stats=occupation-group` och `stats=occupation-field`, hämtade 2026-08-21 |
+| IG27 | **"Sanering och renhållning" hade 1 414 annonser och NOLL yrken** i listan. "Bygg och anläggning" hade 2 161 annonser och i praktiken bara snickare. "Kropps- och skönhetsvård" hade två. Alla tre är nu täckta | Områdesmätningen ovan |
+| IG28 | **Fem namndubbletter** utöver de sju id-dubbletterna — `cnc_operatör`/`cnc_operator`, `miljöinspektör`/`miljoinspektor`, `fastighetsmäklare`/`fastighetsmaklare` m.fl. Samma post inlagd två gånger med och utan svenska tecken. Avdubbleringen gäller nu både id och namn | — |
+| IG29 | **Matchningen förklarar sig.** Varje träff bär en `forklaring` byggd ur samma delpoäng som rangordningen vilar på: en mening om vilka av användarens svar som drog upp respektive ner, de fyra delpoängen med sin vikt, och en rad om att kodningen är redaktionell och inte kommer från SSYK eller O*NET | Verifierat i webbläsare |
+
+> Två fel i min egen förklaringsimplementation fångades innan de gick ut: etiketterna sa samma
+> sak två gånger ("att arbeta med människor och att hjälpa och arbeta med människor" — RIASEC-
+> och intressenamnet överlappade), och den neutrala texten "varken sticker ut eller sorteras
+> bort" skrevs ut även på yrket som låg **sist** i listan.
+>
+> Fördelningen mättes om efter tillägget (`scripts/mat-matchningsfordelning.mjs`): oförändrad
+> form — alla svar = 1 ger median 30, alla svar = 3 ger 74, och noll av 500 slumpprofiler får
+> alla yrken över tröskeln. De 21 nya posterna har alltså inte skevat skalan.
+
+- **IG-J — lönespannen på yrkeskorten saknar källa och årtal**, precis som RIASEC-koderna gjorde.
+  Förklaringsrutan säger nu att *kodningen* är redaktionell, men inte att *lönerna* är det.
+  Antingen en stämpel i stil med `data/flyttdata.ts`, eller koppla mot
+  `afTrendsApi.getSalaryStats` och visa "—" där underlag saknas. 165 yrken × ett lönespann är
+  165 opåstådda anspråk — samma klass som de 48 på Flytta-fliken.
+
 ### Kvarstår (Intresseguiden) — kräver beslut
 
 - **IG-A — RLS: art. 9-grinden gäller inte.** `interest_results` har en `FOR ALL`-policy vars
@@ -81,9 +185,24 @@ i matchningen.
   → Migrationen för A–C ligger skriven i
   `supabase/migrations/20260821_intresseguide_art9_rls.sql`. **Inte körd** — RLS mot prod kräver
   Mikaels ja.
-- **IG-D — dokumentationen.** `GDPR-ART30-REGISTER.md` listar bara den tomma `interest_results`
-  under B4 (art. 9); historik- och progresstabellerna står under avtalsdata trots `icf_profile`.
-  `DPIA-PORTAL.md:44` nämner inte ICF/funktionsförmåga alls.
+- **IG-D — dokumentationen.** ✅ **Klar 2026-08-21.** `GDPR-ART30-REGISTER.md` B4 utökad med
+  `interest_guide_progress` och `interest_guide_history`, med en tabell över var grinden sitter
+  per tabell; B16 hänvisar dit; revisionsnot med de tre osanna påståendena. `DPIA-PORTAL.md` har
+  funktionsförutsättningar som egen Art 9-kategori, ny risk **R11** (inträffad, inte hypotetisk),
+  rättad åtgärdsrad för R1, och totalbedömningen höjd från "MEDEL → LÅG" till **MEDEL** eftersom
+  den gamla siffran vilade på ett åtgärdspåstående som inte höll.
+- **IG-H — historikposter går inte att radera (art. 17).** Verifierat 2026-08-21: en grep över
+  hela klienten ger **noll** raderingsanrop mot `interest_guide_history`. `interestGuideApi.reset()`
+  ("Gör om testet") raderar bara raden i `interest_guide_progress`. Enda vägen till radering är
+  kontoradering. Posterna bär `answers`, `riasec_profile`, `bigfive_profile` och `icf_profile`.
+  Behöver en raderingsväg per post plus "radera hela historiken", med `useConfirmDialog` och
+  felvisning — inte `console.error`.
+- **IG-I — art. 9-grinden vid lagring ligger i klientkoden.** Efter migrationen 2026-08-21 är
+  RLS rättad där den kan vara det, men `interest_guide_progress`, `interest_guide_history` och
+  `user_adaptations` grindas fortfarande av `TestTab` respektive inte alls. En annan klient med
+  användarens token kan skriva hälsodata utan samtycke. Antingen en `check_health_consent()`-
+  villkorad INSERT-policy per tabell, eller bryt ut ICF-delen i en egen tabell. Det senare är
+  troligen renare — `answers` blandar i dag art. 9-data med vanliga intressesvar.
   `AI-ACT-CLASSIFICATION.md:107` motiverar lågriskklassningen med "standardiserat psykometriskt
   instrument (validerat sedan 1959)" — det som är validerat är Hollands teori, inte portalens sex
   egna frågor. Premissen bör rättas.

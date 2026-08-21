@@ -1,9 +1,41 @@
 # GDPR Art 30 — Register över behandlingar
 
 **Lagkrav:** GDPR Art 30 (registerförteckning över behandlingar).
-**Datum:** 2026-07-27 (reviderat mot verkligt produktionsschema; föregående version 2026-05-15)
+**Datum:** 2026-08-21 (B4 och B16 rättade efter granskningen av Intresseguiden; föregående
+version 2026-07-27, dessförinnan 2026-05-15)
 **Personuppgiftsansvarig:** [Företagsnamn — fyll i]
 **Kontakt DPO:** dpo@jobin.se
+
+---
+
+## Revisionsnot 2026-08-21 (Intresseguiden — B4 och B16)
+
+Granskningen av `/interest-guide` visade att registret beskrev en skyddsnivå som inte fanns.
+Tre påståenden i B4 var osanna, och de hade varit det sedan behandlingen skrevs in.
+
+| Stod i registret | Verkligheten, mätt i produktion |
+|---|---|
+| Tabeller: `interest_results`, `user_adaptations`, `participant_data_sharing` | `interest_results` hade **1 rad** och skrivs inte av någon kodväg. Den faktiska ICF-datan låg i `interest_guide_history` (10 rader) och `interest_guide_progress` (22 rader) — båda redovisade under **B16 som avtalsdata**, trots att de bär självskattad kognition, koncentration, motorik, sensorik och ork |
+| "Mottagare: tilldelad konsulent **endast** om `share_health_data = true`" | Gällde `interest_results`. Policyn på `interest_guide_history` krävde bara konsulentroll + tilldelning — konsulenten kunde alltså läsa deltagarens funktionsförmågeprofil **utan** delningssamtycke |
+| "Säkerhetsåtgärder: RLS via `check_health_consent()`" | Funktionen fanns och anropades i en INSERT-policy på `interest_results` — men en `FOR ALL`-policy på samma tabell saknade `WITH CHECK`. Postgres använder då `USING` som check, och permissiva policyer OR:as, så det effektiva villkoret blev `auth.uid() = user_id`. **Samtycket kunde inte fälla någon skrivning.** Samma mönster som lärdomen 2026-08-04 om `profiles`, `mood_logs` och `storage.objects` |
+
+**Vad som gjordes 2026-08-21:**
+
+1. `supabase/migrations/20260821_intresseguide_art9_rls.sql` körd mot produktion. Den tar bort
+   `FOR ALL`-policyn på `interest_results` (så samtyckesgrinden blir bindande), lägger
+   `share_health_data`-villkoret i konsulentpolicyn på `interest_guide_history`, och tar bort en
+   överflödig dubblettpolicy på `interest_guide_progress`. Utfallet är verifierat i `pg_policies`
+   — inte kommandots exitkod.
+2. Klientkoden (`TestTab`) grindar nu **skrivningen** av ICF-delen på `profiles.health_consent_at`.
+   Tidigare omslöt `HealthConsentGate` bara renderingen, så data lagrades oavsett samtycke: vid
+   granskningen fanns 10 sådana rader och **en** profil med samtycke satt.
+3. B4 utökad med de två tabellerna och med en uttrycklig redovisning av var grinden sitter per
+   tabell. B16 hänvisar dit.
+
+**Kvarstår, och är inte dokumentation utan beslut:** för `interest_guide_history`,
+`interest_guide_progress` och `user_adaptations` ligger art. 9-grinden i applikationskoden, inte i
+RLS. `user_adaptations` har ingen samtyckesgrind alls vid lagring, trots att registret anger
+Art 9.2.a som rättslig grund. Se residualrisken i B4 och ROADMAP IG-B.
 
 ---
 
@@ -70,7 +102,7 @@ för `RETENTION-POLICY.md`.
 | Tredjelandsöverföring | Nej |
 | Gallring | Med konto-radering |
 | Säkerhetsåtgärder | RLS `auth.uid() = id`, audit via `consent_history` |
-| Tabeller | `profiles`, `user_adaptations` |
+| Tabeller | `profiles`. `user_adaptations` stod även här till 2026-08-21 — men den bär arbetsanpassningsbehov och redovisas under **B4** med Art 9.2.a som grund. Samma tabell kan inte ha två rättsliga grunder; B4 gäller |
 
 ### B3: CV och jobbansökningar
 
@@ -96,12 +128,28 @@ för `RETENTION-POLICY.md`.
 | Ändamål | Anpassa portalen efter användarens energinivå, kognitiva och funktionsmässiga behov |
 | Rättslig grund | Uttryckligt samtycke (Art 9.2.a) — `HealthConsentGate` |
 | Kategorier registrerade | Deltagare som aktivt slagit på hälsodata-stöd |
-| Kategorier personuppgifter | Energinivå, kognitiv kapacitet, kommunikationsstil, motorik, sensorisk, koncentration, funktionsanpassningar |
-| Mottagare | Tilldelad konsulent **endast** om `participant_data_sharing.share_health_data = true` |
-| Tredjelandsöverföring | Nej (lagring i EU) |
-| Gallring | Med samtyckeåterkall eller konto-radering |
-| Säkerhetsåtgärder | RLS via `check_health_consent()`-funktion, audit-loggning vid varje delning |
-| Tabeller | `interest_results`, `user_adaptations`, `participant_data_sharing` |
+| Kategorier personuppgifter | Energinivå, kognitiv kapacitet, kommunikationsstil, motorik, sensorisk bearbetning, koncentration, funktionsanpassningar. **Inklusive intresseguidens självskattning av funktionsförutsättningar** (åtta frågor om ork, koncentration, motorik, sinnesintryck, kognition och kommunikation) samt den härledda profilen |
+| Mottagare | Tilldelad konsulent **endast** om `participant_data_sharing.share_health_data = true`. Gäller sedan 2026-08-21 även `interest_guide_history` — se revisionsnoten nedan |
+| Tredjelandsöverföring | Nej (lagring i EU). Intresseguidens beräkning sker helt i klienten; inga svar skickas till någon AI-tjänst |
+| Gallring | Med samtyckeåterkall eller konto-radering. Samtliga tabeller nedan har `ON DELETE CASCADE` mot `auth.users` respektive `profiles` (verifierat mot `pg_constraint` 2026-08-21) |
+| Säkerhetsåtgärder | Se tabellen nedan — grinden ligger på olika nivå för olika tabeller, och det ska framgå |
+| Tabeller | `interest_results`, `interest_guide_progress`, `interest_guide_history`, `user_adaptations`, `participant_data_sharing` |
+
+**Var grinden faktiskt sitter** (avstämt mot `pg_policies` i produktion 2026-08-21):
+
+| Tabell | Hälsosamtycke vid lagring | Delningskrav mot konsulent | Anmärkning |
+|---|---|---|---|
+| `interest_results` | **RLS** — `check_health_consent()` på INSERT | **RLS** — `share_health_data` | Skrivs inte av någon kodväg idag (1 rad i produktion). Läses via fallback till `interest_guide_history` |
+| `interest_guide_history` | **Klientkod** — `TestTab` utelämnar `icf_profile` och ICF-svaren när `health_consent_at` saknas | **RLS** — `share_health_data` | 10 rader. Grinden är applikationsnivå, inte RLS — se residualrisk nedan |
+| `interest_guide_progress` | **Klientkod** — samma grind | Ingen konsulentåtkomst | 22 rader. `answers` bär de råa ICF-svaren |
+| `user_adaptations` | **Ingen** — RLS begränsar bara till egen `user_id` | Ingen konsulentåtkomst via RLS | Anpassningsbehoven lagras utan uttryckligt samtycke. Se residualrisk |
+| `participant_data_sharing` | — | — | Bär själva delningsbesluten |
+
+> **Residualrisk, oreglerad:** för `interest_guide_history`, `interest_guide_progress` och
+> `user_adaptations` vilar art. 9-grinden på **applikationskoden**, inte på RLS. En annan klient
+> med användarens token kan alltså skriva hälsodata utan samtycke. Att flytta grinden till RLS
+> kräver antingen en `check_health_consent()`-villkorad INSERT-policy per tabell eller att
+> ICF-delen bryts ut i en egen tabell. Det är ett öppet beslut (ROADMAP IG-B).
 
 ### B5: Wellness & dagbok (Art 9)
 
@@ -276,14 +324,14 @@ för `RETENTION-POLICY.md`.
 | Aspekt | Värde |
 |---|---|
 | Ändamål | Sätta mål, kartlägga kompetensgap, spara intresseguideresultat, planera utbildning, bygga personligt varumärke |
-| Rättslig grund | Avtal (Art 6.1.b). Intresseguidens resultat kan säga något om personens läggning → hanteras med samma varsamhet som B4 `[bekräftas]` |
+| Rättslig grund | Avtal (Art 6.1.b) för karriärmål, kompetenser och yrkesintressen. **Intresseguidens funktionsdel (ICF) är art. 9-data och redovisas i B4** — se revisionsnoten 2026-08-21. Formuleringen "kan säga något om personens läggning → hanteras med samma varsamhet som B4 `[bekräftas]`" stod här tidigare; frågan är nu avgjord åt det hållet |
 | Kategorier registrerade | Deltagare |
 | Kategorier personuppgifter | Karriärmål och milstolpar, kompetensskattningar, RIASEC-profil och svarshistorik, favoritryrken, sparade utbildningar och kursrekommendationer, portfölj, certifikat, flyttvillighet, synlighetsinställningar, pitchtexter, varumärkesgranskningar |
 | Mottagare | Tilldelad konsulent (om delning godkänd) |
 | Tredjelandsöverföring | **Ja indirekt** — `kompetensgap` och `karriarplan` (B6) skickar CV-text, mål och en kompakt RIASEC-rad till OpenRouter/USA |
 | Gallring | Med konto-radering eller manuell borttagning |
 | Säkerhetsåtgärder | RLS per `user_id` |
-| Tabeller | `career_plans`, `career_milestones`, `career_paths`, `skills_analyses`, `user_skills`, `interest_guide_progress`, `interest_guide_history`, `favorite_occupations`, `saved_educations`, `course_recommendations`, `user_recommended_courses`, `courses`, `portfolio_items`, `user_certifications`, `relocation_preferences`, `personal_brand_audits`, `visibility_settings`, `visibility_progress`, `content_calendar` |
+| Tabeller | `career_plans`, `career_milestones`, `career_paths`, `skills_analyses`, `user_skills`, `favorite_occupations`, `saved_educations`, `course_recommendations`, `user_recommended_courses`, `courses`, `portfolio_items`, `user_certifications`, `relocation_preferences`, `personal_brand_audits`, `visibility_settings`, `visibility_progress`, `content_calendar`. **`interest_guide_progress` och `interest_guide_history` flyttade till B4 2026-08-21** — de bär ICF-data och hör under art. 9, inte under avtalsgrund |
 
 ### B17: Lärande, övningar och aktivitetslogg
 
@@ -369,9 +417,9 @@ för `RETENTION-POLICY.md`.
 | Behandling | Tabeller | Antal |
 |---|---|---|
 | B1 Konton | `profiles` (+ `auth.users`) | 1 |
-| B2 Profil | `profiles`, `user_adaptations` | 2 |
+| B2 Profil | `profiles`, ~~`user_adaptations`~~ | 1 |
 | B3 CV | `cvs`, `cv_versions`, `cv_analyses`, `cv_shares`, `cover_letters`, `elevator_pitches` | 6 |
-| B4 Hälsodata | `interest_results`, `user_adaptations`, `participant_data_sharing` | 3 |
+| B4 Hälsodata | `interest_results`, `interest_guide_progress`, `interest_guide_history`, `user_adaptations`, `participant_data_sharing` | 5 |
 | B5 Wellness/dagbok | `mood_logs`, `diary_entries`, `diary_streaks`, `gratitude_entries` | 4 |
 | B6 AI | `ai_usage_logs`, `ai_team_sessions` | 2 |
 | B7 Konsulentkoppling | `consultant_participants`, `participant_data_sharing`, `data_sharing_audit` | 3 |
@@ -381,7 +429,7 @@ för `RETENTION-POLICY.md`.
 | **B13 STA** | 10 `sta_*`-tabeller | 10 |
 | **B14 Jobbsökning** | `saved_jobs`, `application_contacts`, `application_history`, `application_reminders`, `job_alerts`, `job_notifications`, `shared_jobs`, `spontaneous_companies`, `salary_searches`, `email_notifications` | 10 |
 | **B15 Konsulentdokumentation** | 12 `consultant_*`-tabeller | 12 |
-| **B16 Karriär/kompetens** | 19 tabeller (se B16) | 19 |
+| **B16 Karriär/kompetens** | 17 tabeller (se B16) | 17 |
 | **B17 Lärande** | `article_reading_progress`, `article_bookmarks`, `article_checklists`, `exercise_answers`, `learning_activities`, `user_learning_paths`, `user_activity_log`, `user_activities`, `interview_sessions` | 9 |
 | **B18 Inställningar** | `user_preferences`, `dashboard_preferences`, `notification_settings`, `user_drafts`, `unified_profiles`, `profile_documents`, `profile_skills`, `profile_history` | 8 |
 | **B19 Nätverk** | `network_contacts`, `networking_events`, `profile_shares`, `shared_resources` | 4 |

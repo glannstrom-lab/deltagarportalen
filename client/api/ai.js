@@ -704,11 +704,23 @@ SANNINGSREGEL: hitta ALDRIG på siffror som är regler. Inga belopp, procentsats
     responseKey: 'plan',
     parseJson: true
   }),
+  // KURSER BEGÄRS INTE LÄNGRE (2026-08-21). Modellen ombads tidigare om
+  // "max 3 verkliga svenska/kända kursförslag" med arrangör, längd och pris.
+  // Den levererade det den ombads om — utbildningar som inte fanns, hos
+  // anordnare som inte fanns, med priser som ingen kunde stå för. En
+  // deltagare som planerar sin försörjning efter en påhittad YH-utbildning
+  // har fått ett aktivt felaktigt underlag. Kurslistan hämtas nu från
+  // Arbetsförmedlingens JobEd Connect via edge-funktionen education-search.
+  // `courses` är kvar i Zod-schemat (äldre sparade analyser bär fältet) men
+  // ska inte längre komma från modellen.
   'kompetensgap': (data) => ({
     system: `Du är en varm och konkret karriärcoach. Analysera gapet mellan personens CV och drömjobbet. Svara ENDAST med JSON i detta format:
-{"matchPercentage":65,"skills":[{"name":"Kompetens","current":3,"target":5,"gap":"medium"}],"courses":[{"title":"Kursnamn","provider":"Arrangör","duration":"4 veckor","type":"online","cost":"Gratis"}],"actionPlan":[{"order":1,"title":"Kort steg","description":"Konkret beskrivning"}]}
-Regler: matchPercentage 0-100 utifrån hur väl CV:t täcker drömjobbets krav. skills = 3-6 viktigaste kompetenserna för drömjobbet; current och target är heltal 1-5 (current utifrån CV:t, target vad drömjobbet kräver); gap = "none" om current>=target, "small" vid 1 stegs skillnad, "medium" vid 2, "large" vid 3+. courses = max 3 verkliga svenska/kända kursförslag (hitta ALDRIG på leverantörer som inte finns; osäker → utelämna kursen). actionPlan = 3-4 konkreta steg i prioritetsordning. Basera allt på det faktiska CV:t — generiska exempel är förbjudna. Allt på svenska.
-Om en intresseprofil (RIASEC) anges: låt den styra VILKA kurser och steg du föreslår (format och inriktning som passar personen), aldrig matchPercentage eller current-nivåerna — de ska enbart bygga på CV:t. Profilen beskriver vad personen dras till, inte vad personen kan. Nämn aldrig bokstavskoden i texten.`,
+{"matchPercentage":65,"skills":[{"name":"Kompetens","current":3,"target":5,"gap":"medium"}],"actionPlan":[{"order":1,"title":"Kort steg","description":"Konkret beskrivning"}]}
+Regler: matchPercentage 0-100 utifrån hur väl CV:t täcker drömjobbets krav. skills = 3-6 viktigaste kompetenserna för drömjobbet; current och target är heltal 1-5. target = den nivå YRKET brukar kräva, alltså en beskrivning av yrket. current = vad CV:t ger stöd för; står det inget om kompetensen sätter du 1 och beskriver inte personen som svag — du beskriver vad underlaget säger. gap = "none" om current>=target, "small" vid 1 stegs skillnad, "medium" vid 2, "large" vid 3+. actionPlan = 3-4 konkreta steg i prioritetsordning. Basera allt på det faktiska CV:t — generiska exempel är förbjudna. Allt på svenska.
+FÖRESLÅ INGA KURSER, UTBILDNINGAR ELLER ANORDNARE. Fältet "courses" ska utelämnas helt. Utbildningsförslagen hämtas från Arbetsförmedlingens utbildningsdatabas, inte från dig.
+Skriv inga omdömen om personen ("du saknar", "du är svag i") — beskriv yrkets krav och vad nästa steg är.
+SANNINGSREGEL: hitta ALDRIG på erfarenheter, kompetenser, utbildningar, certifikat eller meriter som personen inte uppgett i CV:t — varken i skills eller i actionPlan. Hitta heller aldrig på behörighetskrav, längder eller kostnader för utbildningar; det är Arbetsförmedlingen och anordnaren som avgör dem. Är du osäker — utelämna det.
+Om en intresseprofil (RIASEC) anges: låt den styra VILKA steg du föreslår (format och inriktning som passar personen), aldrig matchPercentage eller current-nivåerna — de ska enbart bygga på CV:t. Profilen beskriver vad personen dras till, inte vad personen kan. Nämn aldrig bokstavskoden i texten.`,
     user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}${data?.riasec ? `\nIntresseprofil: ${data.riasec}` : ''}\n\nSvara ENDAST med JSON.`,
     maxTokens: 1500,
     responseKey: 'analys',

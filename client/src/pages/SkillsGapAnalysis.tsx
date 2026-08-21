@@ -1,890 +1,167 @@
 /**
- * Skills Gap Analysis Page
- * Merged best features from SkillsTab and original SkillsGapAnalysis:
- * - Auto-fetches CV data from profile
- * - Cloud storage via skillsAnalysisApi
- * - AI streaming for better UX
- * - Career plan integration
- * - Favorite occupations as quick picks
- * - Export to file
- * - Skills by category with color coding
+ * Kompetensanalysen — jämför CV:t mot ett yrke och visar vad nästa steg är.
+ *
+ * Sidan var 890 rader i en komponent med fem returgrenar, tolv `useState`,
+ * fem async-funktioner och all presentation inline. Delad 2026-08-21 i
+ * `pages/skills-gap/` — se filerna där för vad som rättades i varje del.
+ *
+ * Det som rättades HÄR:
+ *
+ * · **Fokusläget rev allt ifyllt.** `if (isFocusMode) return <PageFocusShell…>`
+ *   bytte ut hela trädet, så drömjobbsfältet — en `rows={6}` textarea vars
+ *   placeholder ber användaren klistra in en hel jobbannons — tömdes när
+ *   växeln slogs om. Ingen persistens fanns. Växeln sitter i toppnaven och i
+ *   Lugnare läge-panelen, alltså nåbar från vilken sida som helst. Värre:
+ *   slogs den om MEDAN analysen kördes avmonterades komponenten mitt i
+ *   `analyze()` — raden hamnade i molnet men `setCurrentAnalysis` blev en
+ *   no-op, och användaren möttes av ett tomt formulär utan felmeddelande.
+ *   Samma fel som b93be382 (intervjusimulatorn), 00d8be26 (lönesidan) och
+ *   Career.tsx lagade. Fokusläget är nu ett ÖVERLÄGG.
+ *
+ * · **Laddningen bytte ut hela sidan.** Analysen ersatte trädet med ett
+ *   spinnerkort — ingen Avbryt-knapp, ingen möjlighet att se den inklistrade
+ *   annonsen, och texten "Startar analys…" stod kvar oförändrad i trettio
+ *   sekunder. Nu ligger den som ett överlägg ovanpå formuläret.
+ *
+ * · **Live-regionen avmonterades i stället för att uppdateras.** En
+ *   avmonterad `aria-live` annonserar ingenting, och fokus föll till
+ *   `<body>`. Regionen är nu beständig och lever över alla tre lägena.
  */
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
-import {
-  Target, Search, TrendingUp, CheckCircle, BookOpen, Sparkles,
-  Download, BarChart3, Award, Loader2, User, FileText, AlertCircle,
-  Heart, History, Trash2, Plus
-} from '@/components/ui/icons'
-import { Button } from '@/components/ui/Button'
+import { TrendingUp, Loader2 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
-import { cvApi } from '@/services/cvApi'
-import type { CVData } from '@/services/supabaseApi'
-import { useAuthStore } from '@/stores/authStore'
-import { callAI } from '@/services/aiApi'
-import { safeParseAiResponse, KompetensgapSchema } from '@/services/aiSchemas'
-import { useInterestProfile, formatRiasecForPrompt } from '@/hooks/useInterestProfile'
-import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
-import {
-  skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi,
-  type SkillsAnalysis, type SkillComparison, type CourseRecommendation,
-  type ActionPlanItem, type FavoriteOccupation
-} from '@/services/careerApi'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSkillsGapWizard } from '@/components/focus/pages/FocusSkillsGapWizard'
-import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
-
-// Kompetensstaplarnas färg. Tabellen som stod här hade sju poster
-// (teknisk/ledarskap/mjuk i två språk) men bara `default` slogs någonsin upp —
-// varje stapel blev lila, och den lila kodade alltså ingenting som gick att
-// avläsa. En färg utan legend är dekor; den följer sidans hubbfärg i stället.
-const KOMPETENSSTAPEL = 'bg-[var(--c-solid)]'
-
-// Helper to format CV data into a text summary for AI analysis
-function formatProfileSummary(cvData: CVData | null, profile: { first_name?: string | null; email?: string } | null): string {
-  if (!cvData) return ''
-
-  const parts: string[] = []
-
-  // Name and title
-  const name = cvData.firstName || cvData.first_name || profile?.first_name || ''
-  const title = cvData.title || ''
-  if (name || title) {
-    parts.push(`Namn: ${name}${title ? `, ${title}` : ''}`)
-  }
-
-  // Summary/Profile
-  if (cvData.summary) {
-    parts.push(`\nProfil: ${cvData.summary}`)
-  }
-
-  // Work experience
-  const workExp = cvData.workExperience || cvData.work_experience || []
-  if (workExp.length > 0) {
-    parts.push('\nArbetserfarenhet:')
-    workExp.forEach(exp => {
-      const period = exp.startDate ? `${exp.startDate} - ${exp.endDate || 'nuvarande'}` : ''
-      parts.push(`- ${exp.title || exp.position} på ${exp.company}${period ? ` (${period})` : ''}`)
-      if (exp.description) {
-        parts.push(`  ${exp.description.substring(0, 200)}${exp.description.length > 200 ? '...' : ''}`)
-      }
-    })
-  }
-
-  // Education
-  const education = cvData.education || []
-  if (education.length > 0) {
-    parts.push('\nUtbildning:')
-    education.forEach(edu => {
-      parts.push(`- ${edu.degree || edu.field} på ${edu.school}${edu.year ? ` (${edu.year})` : ''}`)
-    })
-  }
-
-  // Skills
-  const skills = cvData.skills || []
-  if (skills.length > 0) {
-    parts.push('\nKompetenser:')
-    const skillNames = skills.map(s => typeof s === 'string' ? s : s.name).join(', ')
-    parts.push(skillNames)
-  }
-
-  // Languages
-  const languages = cvData.languages || []
-  if (languages.length > 0) {
-    parts.push('\nSpråk:')
-    const langNames = languages.map(l => typeof l === 'string' ? l : `${l.name} (${l.level})`).join(', ')
-    parts.push(langNames)
-  }
-
-  // Certificates
-  const certs = cvData.certificates || []
-  if (certs.length > 0) {
-    parts.push('\nCertifikat:')
-    certs.forEach(cert => {
-      parts.push(`- ${cert.name}${cert.issuer ? ` från ${cert.issuer}` : ''}`)
-    })
-  }
-
-  return parts.join('\n')
-}
+import { useSkillsGap } from './skills-gap/useSkillsGap'
+import { SkillsGapForm } from './skills-gap/SkillsGapForm'
+import { SkillsGapResult } from './skills-gap/SkillsGapResult'
+import { laddaNerAnalys } from './skills-gap/laddaNerAnalys'
 
 export default function SkillsGapAnalysis() {
   const { t, i18n } = useTranslation()
-  const { profile } = useAuthStore()
   const { isFocusMode, leaveWizard } = useFocusMode()
-  // G10: intresseprofilen är React Query-cachad (5 min) och delas med andra
-  // ytor — kortet kostar ingen extra rundtur i praktiken.
-  const { profile: interestProfile } = useInterestProfile()
+  const sg = useSkillsGap()
 
-  // Hooks MÅSTE deklareras före conditional returns (rules-of-hooks).
-  // Tidigare låg useState efter `if (isFocusMode) return` vilket gav 13
-  // conditional hook calls — kunde krascha vid focus-mode-toggle.
+  /**
+   * En enda beständig live-region för hela sidan. Den byts aldrig ut, så
+   * skärmläsaren hör faktiskt att analysen är klar.
+   */
+  const [annonsering, setAnnonsering] = useState('')
+  const forraAnalysId = useRef<string | null>(null)
 
-  // Profile data
-  const [, setCvData] = useState<CVData | null>(null)
-  const [profileSummary, setProfileSummary] = useState('')
-  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
-
-  // Analysis state
-  const [dreamJob, setDreamJob] = useState('')
-  const [currentAnalysis, setCurrentAnalysis] = useState<SkillsAnalysis | null>(null)
-  const [previousAnalyses, setPreviousAnalyses] = useState<SkillsAnalysis[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [showHistory, setShowHistory] = useState(false)
-
-  // Career plan integration
-  const [isAddingToPlan, setIsAddingToPlan] = useState(false)
-  const [addedToPlan, setAddedToPlan] = useState(false)
-
-  // Favorites
-  const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
-
-  // AI analysis (JSON-varianten av kompetensgap + Zod-validering — den gamla
-  // streaming+regex-vägen föll tillbaka på hårdkodade exempelresultat, B6)
-  const [isAnalyzing, setIsAnalyzing] = useState(false)
-  const [analysisError, setAnalysisError] = useState<string | null>(null)
-
-  // Load data on mount
   useEffect(() => {
-    loadAllData()
-  }, [])
-
-  const loadAllData = async () => {
-    setIsLoading(true)
-    setIsLoadingProfile(true)
-
-    try {
-      // Load all data in parallel
-      const [cv, analyses, favorites] = await Promise.all([
-        cvApi.getCV().catch(() => null),
-        skillsAnalysisApi.getAll().catch(() => []),
-        favoriteOccupationsApi.getAll().catch(() => [])
-      ])
-
-      // Set CV data
-      setCvData(cv)
-      const summary = formatProfileSummary(cv, profile)
-      setProfileSummary(summary)
-
-      // Set analyses
-      setPreviousAnalyses(analyses)
-      if (analyses.length > 0) {
-        setCurrentAnalysis(analyses[0])
-      }
-
-      // Set favorites
-      setFavoriteOccupations(favorites)
-    } catch (err) {
-      console.error('Failed to load data:', err)
-    } finally {
-      setIsLoading(false)
-      setIsLoadingProfile(false)
+    if (sg.isAnalyzing) {
+      setAnnonsering(t('skillsGapAnalysis.analyzing'))
+      return
     }
-  }
-
-  const analyze = async () => {
-    if (!profileSummary.trim() || !dreamJob.trim()) return
-
-    setIsAnalyzing(true)
-    setAnalysisError(null)
-    setAddedToPlan(false)
-
-    try {
-      // G10: skicka med intresseprofilen när den finns. RIASEC är ett
-      // preferenssignal (vad personen dras till), inte ett kompetenspåstående
-      // — prompten i ai.js får den avgränsningen explicit.
-      const riasec = formatRiasecForPrompt(interestProfile.dominantTypes)
-
-      const response = await callAI('kompetensgap', {
-        cvText: profileSummary,
-        dromjobb: dreamJob,
-        ...(riasec ? { riasec } : {})
-      })
-
-      const parsed = safeParseAiResponse(KompetensgapSchema, response?.analys)
-      if (!parsed.success || !parsed.data) {
-        // Ärligt fel i stället för hårdkodade exempelresultat — ett påhittat
-        // "resultat" är värre än inget för den som planerar sin utveckling
-        console.error('Kompetensgap: AI-svaret gick inte att validera:', parsed.error)
-        setAnalysisError(t('skillsGapAnalysis.analysisFailed'))
-        return
-      }
-
-      const skills: SkillComparison[] = parsed.data.skills
-      const courses: CourseRecommendation[] = (parsed.data.courses ?? []).map(c => ({
-        title: c.title,
-        provider: c.provider || '',
-        duration: c.duration || '',
-        type: c.type || 'online',
-        cost: c.cost || '',
-        url: c.url
-      }))
-      const actionPlan: ActionPlanItem[] = (parsed.data.actionPlan ?? []).map((a, idx) => ({
-        order: a.order ?? idx + 1,
-        title: a.title,
-        description: a.description || a.title
-      }))
-
-      const saved = await skillsAnalysisApi.create({
-        dream_job: dreamJob,
-        cv_text: profileSummary,
-        match_percentage: parsed.data.matchPercentage,
-        skills_comparison: skills,
-        recommended_courses: courses,
-        action_plan: actionPlan
-      })
-      setCurrentAnalysis(saved)
-      setPreviousAnalyses(prev => [saved, ...prev])
-    } catch (err) {
-      // Visa alltid ett vänligt, översatt felmeddelande — aldrig rå err.message
-      // (t.ex. "Failed to fetch" vid nätverksfel ska inte nå användaren oöversatt)
-      console.error('Failed to run skills gap analysis:', err)
-      setAnalysisError(t('skillsGapAnalysis.analysisFailed'))
-    } finally {
-      setIsAnalyzing(false)
+    if (sg.currentAnalysis && sg.currentAnalysis.id !== forraAnalysId.current) {
+      forraAnalysId.current = sg.currentAnalysis.id
+      setAnnonsering(t('skillsGapAnalysis.result.heading'))
     }
+  }, [sg.isAnalyzing, sg.currentAnalysis, t])
+
+  const laddaNer = () => {
+    if (!sg.currentAnalysis) return
+    laddaNerAnalys(sg.currentAnalysis, sg.utbildningar, t, i18n.language)
   }
 
-  const deleteAnalysis = async (id: string) => {
-    if (!confirm(t('skillsGapAnalysis.confirmDelete'))) return
-    try {
-      await skillsAnalysisApi.delete(id)
-      const remainingAnalyses = previousAnalyses.filter(a => a.id !== id)
-      setPreviousAnalyses(remainingAnalyses)
-      if (currentAnalysis?.id === id) {
-        setCurrentAnalysis(remainingAnalyses.length > 0 ? remainingAnalyses[0] : null)
-      }
-    } catch (err) {
-      console.error('Failed to delete analysis:', err)
-    }
-  }
+  return (
+    <>
+      <div style={isFocusMode ? { display: 'none' } : undefined}>
+        <PageLayout
+          title={t('skillsGapAnalysis.title')}
+          subtitle={t('skillsGapAnalysis.description')}
+          domain="coaching"
+          showTabs={false}
+          className="sidbredd"
+          contentClassName="space-y-6 pb-20"
+        >
+          <div role="status" aria-live="polite" className="sr-only">{annonsering}</div>
 
-  const selectAnalysis = (analysis: SkillsAnalysis) => {
-    setCurrentAnalysis(analysis)
-    setShowHistory(false)
-    setAddedToPlan(false)
-  }
-
-  const addToCareerPlan = async () => {
-    if (!currentAnalysis) return
-    setIsAddingToPlan(true)
-    try {
-      // Check if there's an active career plan
-      let plan = await careerPlanApi.getActive()
-
-      if (!plan) {
-        // Create a new career plan with dream job as goal
-        plan = await careerPlanApi.create({
-          current_situation: currentAnalysis.cv_text?.substring(0, 200) || 'Nuvarande situation baserat på kompetensanalys',
-          goal: currentAnalysis.dream_job,
-          timeframe: '12 månader'
-        })
-      }
-
-      // Add action plan items as milestones
-      const actionPlan = currentAnalysis.action_plan || []
-      const existingMilestones = plan.milestones || []
-
-      for (const item of actionPlan) {
-        const exists = existingMilestones.some(m =>
-          m.title.toLowerCase() === item.title.toLowerCase()
-        )
-
-        if (!exists) {
-          await milestonesApi.create({
-            plan_id: plan.id,
-            title: item.title,
-            description: item.description,
-            steps: [item.description],
-            sort_order: existingMilestones.length + item.order
-          })
-        }
-      }
-
-      // Add skills gap courses as milestones
-      const courses = currentAnalysis.recommended_courses || []
-      for (let i = 0; i < Math.min(courses.length, 2); i++) {
-        const course = courses[i]
-        const courseTitle = `${i18n.language === 'en' ? 'Complete course' : 'Slutför kurs'}: ${course.title}`
-        const exists = existingMilestones.some(m =>
-          m.title.toLowerCase().includes(course.title.toLowerCase())
-        )
-
-        if (!exists) {
-          await milestonesApi.create({
-            plan_id: plan.id,
-            title: courseTitle,
-            description: `${course.provider} - ${course.duration}`,
-            steps: [
-              i18n.language === 'en' ? 'Sign up for the course' : 'Anmäl dig till kursen',
-              i18n.language === 'en' ? 'Complete course material' : 'Slutför kursmaterialet',
-              i18n.language === 'en' ? 'Apply knowledge in practice' : 'Tillämpa kunskapen i praktiken'
-            ],
-            sort_order: existingMilestones.length + actionPlan.length + i
-          })
-        }
-      }
-
-      setAddedToPlan(true)
-    } catch (err) {
-      console.error('Failed to add to career plan:', err)
-    } finally {
-      setIsAddingToPlan(false)
-    }
-  }
-
-  const startNewAnalysis = () => {
-    setCurrentAnalysis(null)
-    setDreamJob('')
-    setAnalysisError(null)
-    setAddedToPlan(false)
-  }
-
-  const downloadAnalysis = () => {
-    if (!currentAnalysis) return
-
-    const skills = currentAnalysis.skills_comparison || []
-    const courses = currentAnalysis.recommended_courses || []
-    const actionPlan = currentAnalysis.action_plan || []
-    const dateLocale = i18n.language === 'sv' ? 'sv-SE' : 'en-US'
-
-    const content = `${t('skillsGapAnalysis.download.title')}
-${t('skillsGapAnalysis.download.date')}: ${new Date(currentAnalysis.created_at).toLocaleDateString(dateLocale)}
-${t('skillsGapAnalysis.download.dreamJob')}: ${currentAnalysis.dream_job}
-
-${t('skillsGapAnalysis.download.matchRate')}: ${currentAnalysis.match_percentage}%
-
-${t('skillsGapAnalysis.download.skillsOverview')}:
-${skills.map(s => `- ${s.name}: ${s.current}/5 → ${s.target}/5 (Gap: ${s.target - s.current})`).join('\n')}
-
-${t('skillsGapAnalysis.download.recommendedCourses')}:
-${courses.map(c => `- ${c.title} (${c.provider}, ${c.duration})`).join('\n')}
-
-${t('skillsGapAnalysis.download.actionPlan')}:
-${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
-
-    const blob = new Blob([content], { type: 'text/plain' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `${t('skillsGapAnalysis.download.filename')}-${new Date().toISOString().split('T')[0]}.txt`
-    a.click()
-  }
-
-  const getGapColor = (gap: string) => {
-    switch (gap) {
-      case 'none': return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
-      case 'small': return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30'
-      case 'medium': return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30'
-      case 'large': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
-      default: return 'text-gray-600 dark:text-gray-400 bg-stone-100 dark:bg-stone-700'
-    }
-  }
-
-  const hasProfileData = profileSummary.trim().length > 50
-
-  // Focus-mode tas efter alla hooks deklarerats (rules-of-hooks).
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('skillsGap.title', 'Kompetensgap')}
-        icon={TrendingUp}
-        domain="coaching"
-      >
-        <FocusSkillsGapWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  // Loading state — wrap i PageLayout för konsistent 4 px coaching-kant
-  if (isLoading || isLoadingProfile) {
-    return (
-      <PageLayout
-        title={t('skillsGapAnalysis.title')}
-        subtitle={t('skillsGapAnalysis.description')}
-        domain="coaching"
-        showTabs={false}
-        className="sidbredd"
-        contentClassName="pb-20"
-      >
-        <div className="flex items-center justify-center py-20">
-          <div className="text-center" role="status" aria-live="polite">
-            <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
-            <p className="text-stone-600 dark:text-stone-400">
-              {t('skillsGapAnalysis.loadingProfile')}
-            </p>
-          </div>
-        </div>
-      </PageLayout>
-    )
-  }
-
-  // Analysis in progress
-  if (isAnalyzing) {
-    return (
-      <PageLayout
-        title={t('skillsGapAnalysis.title')}
-        subtitle={t('skillsGapAnalysis.description')}
-        domain="coaching"
-        showTabs={false}
-        className="sidbredd"
-        contentClassName="space-y-6 pb-20"
-      >
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
-          <div className="flex items-center gap-3">
-            <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-                {t('skillsGapAnalysis.analyzing')}
-              </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('skillsGapAnalysis.startingAnalysis')}
-              </p>
-            </div>
-          </div>
-        </Card>
-      </PageLayout>
-    )
-  }
-
-  // Show results if we have a current analysis
-  if (currentAnalysis) {
-    const skills = currentAnalysis.skills_comparison || []
-    const courses = currentAnalysis.recommended_courses || []
-    const actionPlan = currentAnalysis.action_plan || []
-
-    return (
-      <PageLayout
-        title={t('skillsGapAnalysis.title')}
-        subtitle={t('skillsGapAnalysis.description')}
-        domain="coaching"
-        showTabs={false}
-        className="sidbredd"
-        contentClassName="space-y-6 pb-20"
-      >
-        {/* Slutförande-hälsning (Fas 5 — success-spot) */}
-        <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
-          <img
-            src="/illustrations/success-kompetens.webp"
-            alt=""
-            aria-hidden="true"
-            loading="lazy"
-            className="w-20 h-20 flex-shrink-0 select-none"
-          />
-          <div>
-            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">Din analys är klar</h2>
-            <p className="text-stone-600 dark:text-stone-300 mt-1">
-              Så här ser dina styrkor och nästa steg ut mot {currentAnalysis.dream_job}.
-            </p>
-          </div>
-        </div>
-
-        {/* Results Header */}
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" data-ai-generated="true">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('skillsGapAnalysis.result.title')}</h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                {t('skillsGapAnalysis.dreamJobLabel')}: {currentAnalysis.dream_job}
-              </p>
-              <p className="text-sm text-gray-500">{new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-[var(--c-solid)] flex items-center justify-center">
-                <span className="text-2xl font-bold text-white">{currentAnalysis.match_percentage}%</span>
-              </div>
-              <div className="flex flex-col gap-1">
-                <Button size="sm" variant="outline" onClick={downloadAnalysis} title={i18n.language === 'en' ? 'Download' : 'Ladda ner'}>
-                  <Download className="w-4 h-4" />
-                </Button>
-                <Button size="sm" variant="ghost" className="text-red-600" onClick={() => deleteAnalysis(currentAnalysis.id)}>
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+          {sg.isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
+                <p className="text-stone-600 dark:text-stone-400">
+                  {t('skillsGapAnalysis.loadingProfile')}
+                </p>
               </div>
             </div>
-          </div>
-
-          <div
-            className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4"
-            role="progressbar"
-            aria-valuenow={currentAnalysis.match_percentage}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`${i18n.language === 'en' ? 'Match against dream job' : 'Matchning mot drömjobb'}: ${currentAnalysis.match_percentage}%`}
-          >
-            <div
-              className="h-full bg-[var(--c-solid)] transition-all duration-500"
-              style={{ width: `${currentAnalysis.match_percentage}%` }}
+          ) : sg.currentAnalysis ? (
+            <SkillsGapResult
+              analysis={sg.currentAnalysis}
+              previousAnalyses={sg.previousAnalyses}
+              showHistory={sg.showHistory}
+              setShowHistory={sg.setShowHistory}
+              utbildningar={sg.utbildningar}
+              utbildningslage={sg.utbildningslage}
+              matchatYrke={sg.matchatYrke}
+              isAddingToPlan={sg.isAddingToPlan}
+              addedToPlan={sg.addedToPlan}
+              dateLocale={sg.dateLocale}
+              onDelete={sg.raderaAnalys}
+              onDownload={laddaNer}
+              onAddToPlan={sg.laggTillIKarriarplan}
+              onSelect={sg.valjAnalys}
+              onNew={sg.nyAnalys}
             />
-          </div>
+          ) : (
+            <div className="relative">
+              <SkillsGapForm
+                profileSummary={sg.profileSummary}
+                tackning={sg.tackning}
+                laddningsfel={sg.laddningsfel}
+                dreamJob={sg.dreamJob}
+                setDreamJob={sg.setDreamJob}
+                previousAnalyses={sg.previousAnalyses}
+                favoriteOccupations={sg.favoriteOccupations}
+                analysisError={sg.analysisError}
+                isAnalyzing={sg.isAnalyzing}
+                dateLocale={sg.dateLocale}
+                onAnalyze={sg.analysera}
+                onSelect={sg.valjAnalys}
+                onReload={sg.laddaAllt}
+              />
 
-          <div className="flex items-center gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
-            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
-            <p className="text-sm text-amber-800 dark:text-amber-200">
-              {currentAnalysis.match_percentage >= 80
-                ? (i18n.language === 'en' ? 'You have a strong foundation! Focus on refining the last competencies.' : 'Du har en stark grund! Fokusera på att finslipa de sista kompetenserna.')
-                : currentAnalysis.match_percentage >= 60
-                ? (i18n.language === 'en' ? 'You have a good foundation! With focused development you can reach your goal.' : 'Du har en god grund! Med fokuserad utveckling kan du nå ditt mål.')
-                : (i18n.language === 'en' ? 'There is potential! Start with the most important competencies below.' : 'Det finns potential! Börja med de viktigaste kompetenserna nedan.')}
-            </p>
-          </div>
-
-          <AIGeneratedWatermark contentType="analys" />
-        </Card>
-
-        {/* Skills Gap */}
-        {skills.length > 0 && (
-          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label={t('skillsGapAnalysis.regionAria', 'Kompetensanalys')}>
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-              {t('skillsGapAnalysis.skillsComparison')}
-            </h3>
-            <div className="space-y-4" role="list" aria-label={t('skillsGapAnalysis.skillsListAria', 'Lista över kompetenser')}>
-              {skills.map((skill, idx) => (
-                <div key={idx} className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium text-gray-800 dark:text-gray-100">{skill.name}</span>
-                    <span className={`text-xs px-2 py-1 rounded-full ${getGapColor(skill.gap)}`}>
-                      Gap: {skill.target - skill.current} {t('skillsGapAnalysis.levels')}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300 mb-1">
-                        <span>{t('skillsGapAnalysis.current')}: {skill.current}/5</span>
-                        <span>{t('skillsGapAnalysis.goal')}: {skill.target}/5</span>
-                      </div>
-                      <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
-                        <div
-                          className={`h-full ${KOMPETENSSTAPEL} rounded-full transition-all`}
-                          style={{ width: `${(skill.current / 5) * 100}%` }}
-                        />
+              {/* Överlägg, inte ett utbytt träd — det ifyllda finns kvar
+                  bakom och kan läsas medan analysen körs. */}
+              {sg.isAnalyzing && (
+                <div className="absolute inset-0 z-10 flex items-start justify-center pt-24 bg-white/80 dark:bg-stone-900/80 backdrop-blur-sm rounded-xl">
+                  <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 max-w-md">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
+                      <div>
+                        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+                          {t('skillsGapAnalysis.analyzing')}
+                        </h2>
+                        <p className="text-sm text-stone-600 dark:text-stone-400">
+                          {t('skillsGapAnalysis.analyzingHint')}
+                        </p>
                       </div>
                     </div>
-                  </div>
+                  </Card>
                 </div>
-              ))}
-            </div>
-          </Card>
-        )}
-
-        {/* Course Recommendations */}
-        {courses.length > 0 && (
-          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-              {t('skillsGapAnalysis.recommendedCourses')}
-            </h3>
-            <div className="space-y-3">
-              {courses.map((course, index) => (
-                <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] transition-colors bg-white dark:bg-stone-700">
-                  <div>
-                    <h4 className="font-semibold text-gray-800 dark:text-gray-100">{course.title}</h4>
-                    <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 mt-1">
-                      <span>{course.provider}</span>
-                      <span>•</span>
-                      <span>{course.duration}</span>
-                      <span>•</span>
-                      <span className="capitalize">{course.type}</span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-sm font-medium text-green-600 dark:text-green-400">{course.cost}</span>
-                    {course.url && (
-                      <Button size="sm" variant="outline" className="mt-1 block" onClick={() => window.open(course.url, '_blank')}>
-                        {t('skillsGapAnalysis.learnMore')}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Card>
-        )}
-
-        {/* Action Plan */}
-        {actionPlan.length > 0 && (
-          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-              {t('skillsGapAnalysis.yourActionPlan')}
-            </h3>
-            <div className="space-y-3">
-              {actionPlan.map((item) => (
-                <div key={item.order} className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
-                  <div className="w-6 h-6 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs font-bold text-[var(--c-solid)] dark:text-[var(--c-solid)]">{item.order}</span>
-                  </div>
-                  <div>
-                    <p className="font-medium text-gray-800 dark:text-gray-100">{item.title}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Add to Career Plan Button */}
-            <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600">
-              {addedToPlan ? (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
-                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                  <span className="text-sm text-green-800 dark:text-green-200">
-                    {t('skillsGapAnalysis.addedToCareerPlan')}
-                  </span>
-                  <Link
-                    to="/career/plan"
-                    className="ml-auto text-sm font-medium text-green-700 dark:text-green-300 hover:underline"
-                  >
-                    {t('skillsGapAnalysis.viewPlan')} →
-                  </Link>
-                </div>
-              ) : (
-                <Button
-                  onClick={addToCareerPlan}
-                  disabled={isAddingToPlan}
-                  className="w-full bg-[var(--c-solid)] hover:brightness-110 text-white"
-                >
-                  {isAddingToPlan ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {t('skillsGapAnalysis.addingToPlan')}
-                    </>
-                  ) : (
-                    <>
-                      <Target className="w-4 h-4 mr-2" />
-                      {t('skillsGapAnalysis.addToCareerPlan')}
-                    </>
-                  )}
-                </Button>
               )}
             </div>
-
-            <Button
-              variant="outline"
-              className="w-full mt-3"
-              onClick={startNewAnalysis}
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              {t('skillsGapAnalysis.newAnalysis')}
-            </Button>
-          </Card>
-        )}
-
-        {/* History */}
-        {previousAnalyses.length > 1 && (
-          <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-            <button
-              onClick={() => setShowHistory(!showHistory)}
-              className="w-full flex items-center justify-between text-gray-700 dark:text-gray-300"
-              aria-expanded={showHistory}
-            >
-              <span className="font-medium flex items-center gap-2">
-                <History className="w-4 h-4" />
-                {t('skillsGapAnalysis.showPreviousAnalyses', { count: previousAnalyses.length - 1 })}
-              </span>
-              <span>{showHistory ? '−' : '+'}</span>
-            </button>
-
-            {showHistory && (
-              <div className="mt-3 space-y-2">
-                {previousAnalyses.filter(a => a.id !== currentAnalysis?.id).map(a => (
-                  <button
-                    key={a.id}
-                    onClick={() => selectAnalysis(a)}
-                    className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] transition-colors"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-medium text-gray-800 dark:text-gray-100">{a.dream_job}</span>
-                      <span className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)]">{a.match_percentage}% match</span>
-                    </div>
-                    <span className="text-xs text-gray-500">{new Date(a.created_at).toLocaleDateString('sv-SE')}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </Card>
-        )}
-      </PageLayout>
-    )
-  }
-
-  // Input form — DESIGN.md §3 läge B: neutral hero med 4 px karriär-rosa-kant
-  return (
-    <PageLayout
-      title={t('skillsGapAnalysis.title')}
-      subtitle={t('skillsGapAnalysis.description')}
-      domain="coaching"
-      showTabs={false}
-      className="sidbredd"
-      contentClassName="space-y-6 pb-20"
-    >
-      {/* Previous Analyses */}
-      {previousAnalyses.length > 0 && (
-        <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-              <History className="w-4 h-4" />
-              {t('skillsGapAnalysis.previousAnalyses')}
-            </h4>
-            <span className="text-sm text-gray-500">{previousAnalyses.length} {t('skillsGapAnalysis.saved')}</span>
-          </div>
-          <div className="space-y-2">
-            {previousAnalyses.slice(0, 3).map(analysis => (
-              <button
-                key={analysis.id}
-                onClick={() => selectAnalysis(analysis)}
-                className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-gray-800 dark:text-gray-100">{analysis.dream_job}</span>
-                  <span className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)]">{analysis.match_percentage}% match</span>
-                </div>
-                <span className="text-xs text-gray-500">{new Date(analysis.created_at).toLocaleDateString('sv-SE')}</span>
-              </button>
-            ))}
-          </div>
-        </Card>
-      )}
-
-      {/* Profile Summary - Auto-loaded */}
-      <Card className="p-4 sm:p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-              <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <div className="min-w-0">
-              <h2 className="font-semibold text-stone-800 dark:text-stone-100">
-                {t('skillsGapAnalysis.yourCurrentProfile')}
-              </h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('skillsGapAnalysis.fetchedFromCVAndProfile')}
-              </p>
-            </div>
-          </div>
-          <div className="flex gap-3 sm:gap-2 sm:flex-shrink-0 pl-13 sm:pl-0">
-            <Link
-              to="/profile"
-              className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:underline flex items-center gap-1"
-            >
-              <User className="w-4 h-4" />
-              {t('common.profile', 'Profil')}
-            </Link>
-            <Link
-              to="/cv"
-              className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:underline flex items-center gap-1"
-            >
-              <FileText className="w-4 h-4" />
-              CV
-            </Link>
-          </div>
-        </div>
-
-        {hasProfileData ? (
-          <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 max-h-48 overflow-y-auto">
-            <pre className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap font-sans">
-              {profileSummary}
-            </pre>
-          </div>
-        ) : (
-          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
-                  {t('skillsGapAnalysis.needMoreInfo')}
-                </p>
-                <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
-                  {t('skillsGapAnalysis.goToCVPage1')}
-                  <Link to="/cv" className="underline font-medium">{t('skillsGapAnalysis.cvPage')}</Link>
-                  {t('skillsGapAnalysis.goToCVPage2')}
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </Card>
-
-      <RadgivarTips pathname="/skills-gap-analysis" index={0} />
-
-      {/* Dream Job Input */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-[var(--c-solid)] flex items-center justify-center">
-            <Search className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('skillsGapAnalysis.dreamJobDescription')}
-            </p>
-          </div>
-        </div>
-
-        {/* Favorite occupations suggestions */}
-        {favoriteOccupations.length > 0 && !dreamJob && (
-          <div className="mb-4 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]">
-            <div className="flex items-center gap-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mb-2">
-              <Heart className="w-4 h-4" />
-              {t('skillsGapAnalysis.favoriteOccupations')}
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {favoriteOccupations.slice(0, 5).map((fav) => (
-                <button
-                  key={fav.id}
-                  onClick={() => setDreamJob(fav.occupation_title)}
-                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-[var(--c-accent)] text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-bg)] transition-colors"
-                >
-                  {fav.occupation_title}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <label
-          htmlFor="skillsgap-dreamjob"
-          className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5"
-        >
-          {t('skillsGapAnalysis.dreamJob.label')}
-        </label>
-        <textarea
-          id="skillsgap-dreamjob"
-          value={dreamJob}
-          onChange={(e) => setDreamJob(e.target.value)}
-          placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
-          rows={6}
-          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
-        />
-        <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-          {t('skillsGapAnalysis.dreamJob.tip')}
-        </p>
-      </Card>
-
-      {/* Analysis error — honest failure instead of fabricated results */}
-      {analysisError && (
-        <Card className="p-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" role="alert">
-          <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
-            <p className="text-sm text-amber-800 dark:text-amber-200">{analysisError}</p>
-          </div>
-        </Card>
-      )}
-
-      {/* Analyze Button */}
-      <div className="flex justify-center">
-        <Button
-          onClick={analyze}
-          disabled={!hasProfileData || !dreamJob.trim() || isAnalyzing}
-          className="px-8 py-4 text-lg bg-[var(--c-solid)] hover:brightness-110 text-white"
-        >
-          <Sparkles className="w-6 h-6 mr-2" />
-          {t('skillsGapAnalysis.analyzeGap')}
-        </Button>
+          )}
+        </PageLayout>
       </div>
-    </PageLayout>
+
+      {isFocusMode && (
+        <PageFocusShell
+          title={t('skillsGapAnalysis.title')}
+          icon={TrendingUp}
+          domain="coaching"
+        >
+          <FocusSkillsGapWizard
+            onExit={leaveWizard}
+            onTaMedDromjobb={(yrke) => sg.setDreamJob(yrke)}
+          />
+        </PageFocusShell>
+      )}
+    </>
   )
 }

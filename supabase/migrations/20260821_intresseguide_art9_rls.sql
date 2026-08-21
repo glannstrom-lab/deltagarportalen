@@ -53,9 +53,10 @@ CREATE POLICY "Consultants can view participant history"
     EXISTS (
       SELECT 1 FROM public.profiles p
       WHERE p.id = auth.uid()
-        AND (p.role IN ('consultant', 'superadmin')
-             OR p.roles @> ARRAY['consultant']
-             OR p.roles @> ARRAY['superadmin'))
+        AND (p.role = 'consultant'::text
+             OR p.role = 'superadmin'::text
+             OR p.roles @> ARRAY['consultant'::text]
+             OR p.roles @> ARRAY['superadmin'::text])
     )
     AND EXISTS (
       SELECT 1 FROM public.profiles participant

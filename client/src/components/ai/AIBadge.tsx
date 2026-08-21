@@ -93,6 +93,24 @@ interface AIGeneratedWatermarkProps {
  * AI Act Art 50.2: AI-genererat innehåll måste märkas på ett sätt som är
  * "tydligt och tillgängligt" för slutanvändaren.
  */
+/**
+ * Ord som böjs med `en`. Rutan skrev tidigare "Detta {contentType} är
+ * genererat" rakt av, vilket gav "Detta analys är genererat" på
+ * kompetensanalysen och "Detta karriärplan" på karriärplanen — två av de
+ * åtta använda orden är utrum. En grammatikmiss i just den märkning som ska
+ * bära tydlighet enligt AI Act art. 50.2 drar ner tilltron till hela texten.
+ */
+const UTRUM = new Set([
+  'analys', 'karriärplan', 'sammanfattning', 'rekommendation', 'plan', 'text',
+])
+
+function inledning(contentType: string): string {
+  const ord = contentType.trim().toLowerCase()
+  return UTRUM.has(ord)
+    ? `Denna ${contentType} är genererad med AI-stöd.`
+    : `Detta ${contentType} är genererat med AI-stöd.`
+}
+
 export function AIGeneratedWatermark({ contentType = 'innehåll', className }: AIGeneratedWatermarkProps) {
   return (
     <div
@@ -106,7 +124,7 @@ export function AIGeneratedWatermark({ contentType = 'innehåll', className }: A
     >
       <Bot className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
       <div>
-        <strong>Detta {contentType} är genererat med AI-stöd.</strong>{' '}
+        <strong>{inledning(contentType)}</strong>{' '}
         Granska och redigera innan du använder det. AI kan göra misstag eller missa viktiga nyanser.
       </div>
     </div>

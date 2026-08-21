@@ -1,22 +1,46 @@
 /**
- * FocusSkillsGapWizard — NPF-anpassad kompetensgap-analys.
+ * FocusSkillsGapWizard — samlar in drömjobb och kompetenser i fokusläge.
  *
- * Steg: drömjobb → mina starkaste kompetenser → AI-analys (sparas i molnet).
- * Använder skillsAnalysisApi.create för att spara — samma data som normalvyn.
+ * VAD DEN INTE GÖR: den kör ingen analys. Fram till 2026-08-21 skrev den en
+ * rad i `skills_analyses` med `match_percentage: 0` och tomma
+ * `skills_comparison`, `recommended_courses` och `action_plan`. Eftersom
+ * sidan laddar senaste posten och renderar resultatvyn för den, blev följden:
+ *
+ *   · rubriken "Din analys är klar" och en cirkel med **0 %** matchning mot
+ *     drömjobbet, med `role="progressbar"` och `aria-valuenow={0}` — ett
+ *     tal utan mätning, uppläst för en deltagare som redan söker jobb efter
+ *     lång tid;
+ *   · `AIGeneratedWatermark` ovanpå det, alltså ett intyg om AI-ursprung för
+ *     något användaren själv skrivit. Fel märkning åt det håll AI Act
+ *     art. 50.2 inte tillåter;
+ *   · och sidan kunde låsa sig: "Ny analys" låg inuti handlingsplanskortet,
+ *     som inte renderas när planen är tom.
+ *
+ * Inga sådana rader hann skapas i prod (kontrollerat 2026-08-21: fyra rader,
+ * alla riktiga analyser). Defekten var armerad, inte utlöst.
+ *
+ * Nu sparas drömjobbet där det hör hemma — `profiles.desired_jobs` — och
+ * sidan förifyller fältet därifrån. Guiden samlar in; analysen görs där den
+ * kan göras.
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
 import { Target, ListChecks, TrendingUp, Sparkles, CheckCircle2 } from '@/components/ui/icons'
-import { skillsAnalysisApi } from '@/services/careerApi'
+import { userApi } from '@/services/userApi'
+import { showToast } from '@/components/Toast'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
+  /** Skickar drömjobbet vidare till normalvyns fält. Ett barn kan inte
+   *  lyfta tillstånd uppåt av sig självt, och användaren fick tidigare
+   *  skriva samma sak två gånger. */
+  onTaMedDromjobb?: (yrke: string) => void
 }
 
-export function FocusSkillsGapWizard({ onExit }: Props) {
+export function FocusSkillsGapWizard({ onExit, onTaMedDromjobb }: Props) {
   const { t } = useTranslation()
 
   const [step, setStep] = useState(0)
@@ -26,13 +50,24 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      return skillsAnalysisApi.create({
-        dream_job: dreamJob.trim(),
-        cv_text: `Mina kompetenser:\n${skills.trim()}`,
-        match_percentage: 0,
-        skills_comparison: [],
-        recommended_courses: [],
-        action_plan: [],
+      const dromjobb = dreamJob.trim()
+      const kompetenser = skills.trim()
+      const befintliga = await userApi.getPreferences()
+
+      const redanSparat = (befintliga?.desired_jobs ?? []).some(
+        (j) => j.label.toLowerCase() === dromjobb.toLowerCase()
+      )
+
+      await userApi.updatePreferences({
+        desired_jobs: redanSparat
+          ? befintliga?.desired_jobs
+          : [
+              ...(befintliga?.desired_jobs ?? []),
+              { label: dromjobb, priority: (befintliga?.desired_jobs?.length ?? 0) + 1 },
+            ],
+        // Kompetenserna hamnar bland intressena — samma fält som
+        // fokuslägets intresseguide skriver till.
+        interests: [...new Set([...(befintliga?.interests ?? []), ...kompetenser.split('\n').map((r) => r.trim()).filter(Boolean)])],
       })
     },
     onSuccess: () => setSaved(true),
@@ -55,7 +90,7 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
       id: 'save',
       icon: TrendingUp,
       title: t('focus.skillsGap.saveTitle', 'Klart att spara'),
-      hint: t('focus.skillsGap.saveHint', 'Vi sparar dina svar så vi kan visa gapet senare.'),
+      hint: t('focus.skillsGap.saveHint', 'Vi sparar dina svar till din profil.'),
     },
   ] as const
 
@@ -71,12 +106,15 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
       return
     }
     if (current.id === 'save') {
+      // Stängde tidigare oavsett utfall, med "Sparat!" på skärmen.
       try {
         await saveMutation.mutateAsync()
+        onTaMedDromjobb?.(dreamJob.trim())
+        onExit()
       } catch (err) {
         console.error('Failed to save skills analysis', err)
+        showToast.error(t('focus.skillsGap.saveFailed', 'Kunde inte spara det du skrev. Försök igen.'))
       }
-      onExit()
     }
   }
 
@@ -96,7 +134,7 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
       onExit={onExit}
       canNext={canNext}
       busy={saveMutation.isPending}
-      finishLabel={t('focus.skillsGap.saveCta', 'Spara och se gapet')}
+      finishLabel={t('focus.skillsGap.saveCta', 'Spara och gå vidare')}
     >
       {current.id === 'dream' && (
         <input
@@ -130,7 +168,7 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
           {saved ? (
             <div className="flex items-center gap-2 text-stone-700 dark:text-stone-200">
               <CheckCircle2 className="w-5 h-5 text-[var(--c-solid)]" />
-              {t('focus.skillsGap.savedText', 'Sparat! Öppna Kompetensgap-sidan för att se hela analysen.')}
+              {t('focus.skillsGap.savedText', 'Sparat. När du orkar kan du öppna Kompetensanalysen i normalläge — drömjobbet är redan ifyllt där.')}
             </div>
           ) : (
             <div className="flex items-start gap-3 text-stone-600 dark:text-stone-300">
@@ -138,7 +176,7 @@ export function FocusSkillsGapWizard({ onExit }: Props) {
               <p>
                 {t(
                   'focus.skillsGap.reviewText',
-                  'Vi sparar dina svar och visar gapet mellan dina kompetenser och drömjobbet på kompetensgap-sidan.'
+                  'Vi sparar det du skrivit till din profil. Själva jämförelsen mot drömjobbet görs på Kompetensanalysen i normalläge — den behöver ditt CV.'
                 )}
               </p>
             </div>

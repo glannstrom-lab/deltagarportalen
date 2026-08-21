@@ -206,6 +206,119 @@ describe('Påståenden om användaren', () => {
   })
 })
 
+describe('Yrkeslistan', () => {
+  it('har inga dubbletter, varken på id eller namn', () => {
+    // Rådatan hade sju id-dubbletter och fem namndubbletter, tre av dem samma
+    // ord med och utan svenska tecken (cnc_operatör / cnc_operator).
+    const idn = occupations.map(o => o.id)
+    const namn = occupations.map(o => o.name.toLowerCase())
+    expect(new Set(idn).size).toBe(idn.length)
+    expect(new Set(namn).size).toBe(namn.length)
+  })
+
+  it('täcker Arbetsförmedlingens största yrkesgrupper', () => {
+    /*
+      Listan saknade sju av AF:s trettio största grupper 2026-08-21, och alla
+      sju var yrken utan högskolekrav — alltså den del av arbetsmarknaden
+      portalens målgrupp söker sig till.
+    */
+    for (const namn of [
+      'Köks- och restaurangbiträde', 'Kundtjänstmedarbetare', 'Boendestödjare',
+      'Behandlingsassistent', 'Maskinoperatör inom industri', 'Montör inom industri',
+      'Underhållsmekaniker', 'Truckförare',
+    ]) {
+      expect(occupations.some(o => o.name === namn)).toBe(true)
+    }
+  })
+
+  it('lämnar inget av AF:s yrkesområden utan yrken', () => {
+    /*
+      Täckningen mättes per område mot AF:s egen indelning (stats=
+      occupation-field, 2026-08-21). "Sanering och renhållning" hade
+      **1 414 annonser och noll yrken** i listan; "Bygg och anläggning"
+      2 161 annonser och i praktiken bara snickare.
+    */
+    const omraden: Record<string, string[]> = {
+      'Sanering och renhållning': ['saner', 'återvinning', 'renhållning', 'fönsterputs'],
+      'Bygg och anläggning': ['murare', 'betong', 'anläggnings', 'maskinförare', 'golvläggare', 'ställning', 'plåtslagare'],
+      'Kropps- och skönhetsvård': ['hudterapeut', 'fotterapeut', 'barberare'],
+      'Vårdadministration': ['medicinsk sekreterare', 'tandsköterska', 'apotekstekniker'],
+    }
+    for (const [omrade, ord] of Object.entries(omraden)) {
+      const traffar = occupations.filter(o => ord.some(k => o.name.toLowerCase().includes(k)))
+      expect(traffar.length, `${omrade} saknar yrken`).toBeGreaterThanOrEqual(3)
+    }
+  })
+
+  it('har fler yrken utan högskolekrav än med', () => {
+    const utan = occupations.filter(o => !o.requiresUniversity).length
+    expect(utan).toBeGreaterThan(occupations.length - utan)
+  })
+})
+
+describe('Förklaringen av matchningen', () => {
+  const profil = calculateUserProfile(alla(4))
+  const traffar = calculateJobMatches(profil)
+
+  it('finns på varje träff och namnger de fyra delpoängen med sin vikt', () => {
+    for (const t of traffar.slice(0, 5)) {
+      expect(t.forklaring.delar).toHaveLength(4)
+      expect(t.forklaring.delar.reduce((s, d) => s + d.andel, 0)).toBe(100)
+      expect(t.forklaring.sammanfattning.length).toBeGreaterThan(20)
+    }
+  })
+
+  it('nämner bara sådant som faktiskt påverkade ordningen', () => {
+    /*
+      En profil som svarar högt på ALLT ska inte få "du svarade lågt om…" —
+      förklaringen får inte hitta på ett skäl som låter bra.
+    */
+    for (const t of traffar.slice(0, 10)) {
+      expect(t.forklaring.drogNer).toHaveLength(0)
+    }
+  })
+
+  it('säger inte att ett yrke sist i listan varken sticker ut eller sorteras bort', () => {
+    // Den neutrala texten skrevs tidigare ut även på sista yrket.
+    const sist = traffar[traffar.length - 1]
+    if (sist.forklaring.drogUpp.length === 0 && sist.forklaring.drogNer.length === 0) {
+      expect(sist.forklaring.sammanfattning).not.toMatch(/varken sticker ut/)
+    }
+  })
+
+  it('upprepar inte samma sak med två olika ord', () => {
+    /*
+      Första versionen skrev "du svarade positivt om att arbeta med människor
+      och att hjälpa och arbeta med människor" — RIASEC-etiketten och
+      intresseetiketten beskrev samma sak med olika formulering.
+
+      En exakt dubblettkontroll räcker INTE: `sortera()` dedupar redan på
+      exakt sträng, så identiska fraser når aldrig utdatan. Det var
+      NÄRA-dubbletter som var felet. Vakten prövar därför att ingen fras är en
+      delsträng av en annan — det fångar precis den formen. (En första version
+      letade bara efter ordet "människor" och överlevde mutationsprovet.)
+    */
+    for (const t of traffar.slice(0, 20)) {
+      const fraser = [...t.forklaring.drogUpp, ...t.forklaring.drogNer]
+      expect(new Set(fraser).size).toBe(fraser.length)
+      for (const a of fraser) {
+        for (const b of fraser) {
+          if (a === b) continue
+          expect(a.includes(b)).toBe(false)
+        }
+      }
+    }
+  })
+
+  it('renderas för användaren, inte bara i datalagret', () => {
+    const o = kod('pages/interest-guide/OccupationsTab.tsx')
+    expect(o).toContain('match.forklaring.sammanfattning')
+    expect(o).toContain('match.forklaring.delar.map')
+    // Och den ska säga vad kodningen bygger på.
+    expect(o).toMatch(/redaktionella bedömning|SSYK|O\*NET/)
+  })
+})
+
 describe('Lönestatistiken', () => {
   it('hittar inte på en median för okända yrken', () => {
     const s = kod('services/scbSalaryApi.ts')

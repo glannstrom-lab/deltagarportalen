@@ -52,6 +52,9 @@ interface SearchResult {
   total: number;
   hasMore: boolean;
   source: string;
+  /** Yrket JobEd tolkade fritexten som. Visas så användaren ser vad
+   *  listan svarar på — texten hen skrev kan vara en hel jobbannons. */
+  matchedOccupation?: string;
 }
 
 // Map education_type codes to readable labels
@@ -292,39 +295,108 @@ async function getEducationById(id: string): Promise<Education | null> {
   }
 }
 
+// Formkoderna som match-by-jobtitle svarar med är KORTA — `vuxgy`, `yh`,
+// `hs`, `fhsk`, `af arbetsmarknadsutbildning`. De långa nycklarna i
+// FORM_LABELS ('gymnasial_vuxenutbildning' m.fl.) kommer från sökendpointen
+// och matchar aldrig en träff härifrån. Uppmätt mot API:t 2026-08-21.
+const MATCH_FORM_LABELS: Record<string, string> = {
+  'vuxgy': 'Komvux, gymnasial',
+  'vuxgr': 'Komvux, grundläggande',
+  'yh': 'Yrkeshögskola',
+  'hs': 'Högskola/universitet',
+  'fhsk': 'Folkhögskola',
+  'af arbetsmarknadsutbildning': 'Arbetsmarknadsutbildning',
+  'kku': 'Konst- och kulturutbildning',
+};
+
+const MATCH_FORM_TYPE: Record<string, string> = {
+  'vuxgy': 'komvux',
+  'vuxgr': 'komvux',
+  'yh': 'yrkeshogskola',
+  'hs': 'hogskola',
+  'fhsk': 'folkhogskola',
+  'af arbetsmarknadsutbildning': 'arbetsmarknadsutbildning',
+};
+
+// Träffarna från match-by-jobtitle har en HELT ANNAN form än sökträffarna:
+// platta `education_title`/`education_provider_name`/`education_form` i
+// stället för det nästlade `{education: {...}}`. `normalizeEducation` läser
+// därför bara undefined ur dem och gav "Namnlös utbildning" rakt igenom.
+function normalizeMatchHit(raw: any): Education {
+  const event = raw.eventSummary || {};
+  const execution = event.executions?.[0] || {};
+  const formCode = (raw.education_form || '').toLowerCase();
+  const pacePercent = event.paceOfStudyPercentage?.[0] ?? null;
+
+  // Beskrivningen kommer som HTML från anordnaren. Vi visar den inte, men
+  // låter den inte heller följa med som råmärkt HTML till klienten.
+  const description = typeof raw.education_description === 'string'
+    ? raw.education_description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+    : '';
+
+  return {
+    id: raw.id || raw.code || '',
+    title: raw.education_title || 'Namnlös utbildning',
+    provider: raw.providerSummary?.providers?.[0] || raw.education_provider_name || '',
+    type: MATCH_FORM_TYPE[formCode] || 'other',
+    typeLabel: MATCH_FORM_LABELS[formCode] || raw.education_form || '',
+    form: formCode || undefined,
+    formLabel: MATCH_FORM_LABELS[formCode] || raw.education_form || '',
+    description: description ? description.slice(0, 400) : undefined,
+    startDate: execution.start || undefined,
+    endDate: execution.end || undefined,
+    pace: pacePercent ? `${pacePercent}%` : undefined,
+    pacePercent: pacePercent ?? undefined,
+    distance: event.distance === true,
+    location: event.distance === true ? 'Distans' : undefined,
+  };
+}
+
 // Match educations by job title
 async function matchByJobTitle(jobTitle: string, params: SearchParams = {}): Promise<SearchResult> {
+  const rensat = (jobTitle || '').trim();
+  if (!rensat) {
+    return { educations: [], total: 0, hasMore: false, source: 'empty-query' };
+  }
+
   try {
+    // JobEd vill ha yrkestiteln som QUERY-parameter `jobtitle` och inget
+    // request body alls. Funktionen skickade `{job_title}` som JSON-body och
+    // fick 400 "Required query parameter jobtitle not specified" varje gång.
     const queryParams = new URLSearchParams();
+    queryParams.set('jobtitle', rensat);
     if (params.region) queryParams.set('region_code', params.region);
-    if (params.limit) queryParams.set('limit', String(params.limit));
+    queryParams.set('limit', String(params.limit || 10));
 
     const url = `${JOBED_API_BASE}/educations/match-by-jobtitle?${queryParams.toString()}`;
 
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ job_title: jobTitle }),
+      headers: { 'Accept': 'application/json' },
     });
 
     if (!response.ok) {
       throw new Error(`Match API error: ${response.status}`);
     }
 
+    // Svaret är ett OBJEKT — {mapped_occupation_for_match, hits_total, hits}.
+    // `Array.isArray(data)` var alltså alltid falskt och listan alltid tom.
     const data = await response.json();
-    const educations = Array.isArray(data) ? data.map(normalizeEducation) : [];
+    const hits = Array.isArray(data?.hits) ? data.hits : [];
+    const educations = hits.map(normalizeMatchHit).filter((e: Education) => e.title !== 'Namnlös utbildning');
 
     return {
       educations,
-      total: educations.length,
-      hasMore: false,
+      total: typeof data?.hits_total === 'number' ? data.hits_total : educations.length,
+      hasMore: educations.length < (data?.hits_total ?? 0),
       source: 'jobed-connect-match',
-    };
+      matchedOccupation: data?.mapped_occupation_for_match?.occupation_label || undefined,
+    } as SearchResult;
   } catch (error) {
     console.error('[education-search] Match error:', error);
+    // 'error' skiljer sig från 'jobed-connect-match' med noll träffar — den
+    // som ritar listan måste kunna säga "kunde inte hämta" i stället för
+    // "det finns inga utbildningar".
     return { educations: [], total: 0, hasMore: false, source: 'error' };
   }
 }
@@ -637,9 +709,15 @@ serve(async (req) => {
     }
 
     // GET /:id - Single education
-    if (path.match(/^\/[^/]+$/) && !path.includes('?')) {
+    //
+    // Metodkontrollen saknades, och `/^\/[^/]+$/` matchar även `/match`.
+    // POST /match hamnade därför här, slog upp utbildningen med id "match"
+    // och svarade 404 {"error":"Education not found"} — matchgrenen nedan var
+    // oåtkomlig och `educationApi.matchEducationsByJobTitle` har därmed
+    // alltid returnerat tom lista. Verifierat mot prod 2026-08-21.
+    if (req.method === 'GET' && path.match(/^\/[^/]+$/) && !path.includes('?')) {
       const id = path.substring(1);
-      if (id && id !== 'search') {
+      if (id && id !== 'search' && id !== 'match') {
         const education = await getEducationById(id);
         if (education) {
           return new Response(JSON.stringify(education), {

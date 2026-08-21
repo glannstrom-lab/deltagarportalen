@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { clearUserScopedStorage } from '@/utils/safeStorage'
 import type { User, Session } from '@supabase/supabase-js'
 import { rensaAllCache } from '@/lib/queryClient'
+import { careerOfflineCache } from '@/services/offlineStorage'
 
 // E9: lazy-import Sentry istället för statisk — håller @sentry/react SDK
 // (~80KB) ute ur entry-bundlen tills cookie-consent finns.
@@ -409,6 +410,11 @@ export const useAuthStore = create<AuthState>()(
           // samma flik, och med `gcTime: 10 min` hinner ingen refetch ske
           // innan hon ser föregående deltagares uppgifter.
           await rensaAllCache()
+
+          // ...och IndexedDB. Offline-lagret höll karriärplan, milstolpar,
+          // nätverkskontakter och kompetensanalysens CV-text i sju dygn —
+          // ingenting rörde det vid utloggning.
+          await careerOfflineCache.rensaAllt()
 
           const { error } = await supabase.auth.signOut()
 

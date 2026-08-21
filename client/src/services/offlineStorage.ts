@@ -198,7 +198,11 @@ export const careerOfflineCache = {
 
   async cacheSkillsAnalysis(analysis: { id?: string } & Record<string, unknown>): Promise<void> {
     if (!analysis) return
-    await offlineStorage.set(STORES.skillsAnalysis, analysis.id || 'latest', analysis, 7 * 24 * 60 * 60 * 1000)
+    // Skrev tidigare under `analysis.id` — ett UUID — medan läsaren nedan
+    // alltid slår upp 'latest'. De två möttes aldrig, så cachen har aldrig
+    // kunnat användas offline. Den samlade däremot på sig en rad per analys,
+    // var och en med `cv_text`, som ingenting läste och ingenting rensade.
+    await offlineStorage.set(STORES.skillsAnalysis, 'latest', analysis, 7 * 24 * 60 * 60 * 1000)
   },
 
   async getCachedSkillsAnalysis(): Promise<unknown | null> {
@@ -224,6 +228,20 @@ export const careerOfflineCache = {
   // Set last sync timestamp
   async setLastSync(): Promise<void> {
     await offlineStorage.set(STORES.metadata, 'lastSync', Date.now(), 365 * 24 * 60 * 60 * 1000)
+  },
+
+  /**
+   * Tömmer hela offline-lagret. Anropas vid utloggning.
+   *
+   * A31 rensade localStorage och en senare runda rensade React Query-cachen,
+   * men IndexedDB stod kvar: karriärplanen, milstolparna, nätverkskontakterna
+   * och kompetensanalysens `cv_text` låg kvar i sju dygn efter att deltagaren
+   * loggat ut. Målgruppen sitter ofta vid delade datorer.
+   */
+  async rensaAllt(): Promise<void> {
+    await Promise.all(
+      (Object.values(STORES) as StoreName[]).map((store) => offlineStorage.clear(store))
+    )
   },
 
   async getLastSync(): Promise<number | null> {

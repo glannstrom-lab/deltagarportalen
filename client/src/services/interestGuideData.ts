@@ -159,6 +159,25 @@ export interface Occupation {
   requiresUniversity: boolean
 }
 
+/**
+ * Varför ett yrke hamnade där det hamnade.
+ *
+ * Tillagd 2026-08-21. Listan var tidigare en rangordning utan motivering:
+ * användaren fick ett tal och en ordning, men ingen möjlighet att bedöma om
+ * den stämde. För en deltagare som ska fatta ett livsval på det här är
+ * "varför" viktigare än "hur mycket".
+ */
+export interface MatchForklaring {
+  /** Delpoängen bakom rangordningen. `andel` är vikten i procent. */
+  delar: { namn: string; andel: number; poang: number }[]
+  /** Användarens svar som drog UPP matchningen, starkast först. */
+  drogUpp: string[]
+  /** Användarens svar som drog NER den. */
+  drogNer: string[]
+  /** En mening i klartext, redo att visas. */
+  sammanfattning: string
+}
+
 export interface JobMatch {
   occupation: Occupation
   matchPercentage: number
@@ -166,6 +185,7 @@ export interface JobMatch {
   needsAdaptation: boolean
   adaptations?: string[]
   warnings?: string[]
+  forklaring: MatchForklaring
 }
 
 export interface ICFAdaptation {
@@ -2799,25 +2819,636 @@ const occupationsRadata: Occupation[] = [
     careerPath: ['Massageterapeut', 'Specialist', 'Egen verksamhet'],
     requiresUniversity: false,
   },
+  // ===== TILLAGDA 2026-08-21 =====
+  //
+  // Fjorton yrken valda mot Arbetsförmedlingens FAKTISKA trettio största
+  // yrkesgrupper (hämtade 2026-08-21 via stats=occupation-group), korsat mot
+  // vad listan redan hade. Det som saknades var nästan uteslutande yrken utan
+  // högskolekrav — alltså precis den del av arbetsmarknaden portalens
+  // målgrupp söker sig till. Antal annonser i AF:s platsbank vid urvalet står
+  // i kommentaren per yrke, som belägg för att posten hör hemma här.
+  //
+  // RIASEC-, Big Five- och ICF-koderna är redaktionella, precis som för de
+  // 135 befintliga posterna. De kommer inte från O*NET, SSYK eller någon
+  // validerad källa. Lönespannen likaså — se LONEUPPGIFTER_ANGAVS nedan.
+  {
+    id: 'koksbitrade',
+    name: 'Köks- och restaurangbiträde',
+    description: 'Förbereder råvaror, diskar och håller ordning i köket tillsammans med kockarna',
+    riasec: { R: 4, I: 1, A: 2, S: 3, E: 1, C: 3 },
+    bigFive: { openness: 40, conscientiousness: 65, extraversion: 45, agreeableness: 60, stability: 55 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 4, noggrannhet: 3, social: 2 },
+    challenges: { fysisk_rorlighet: 4, tidspress: 4, sensorisk: 3, social_energi: 2 },
+    salary: '24 000 - 28 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Kock', 'Måltidsbiträde', 'Städare/Lokalvårdare'],
+    careerPath: ['Köksbiträde', 'Kockassistent', 'Kock'],
+    requiresUniversity: false,
+  }, // AF: 836 annonser (7:e största gruppen)
+  {
+    id: 'kundtjanstmedarbetare',
+    name: 'Kundtjänstmedarbetare',
+    description: 'Svarar på frågor från kunder via telefon, chatt och mejl och löser deras ärenden',
+    riasec: { R: 1, I: 2, A: 1, S: 4, E: 3, C: 4 },
+    bigFive: { openness: 45, conscientiousness: 70, extraversion: 60, agreeableness: 75, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 1, sensorisk: 3, energi: 3 },
+    categories: { affarer_forsaljning: 4, kommunikation: 4, administration_kontor: 3, social: 4 },
+    challenges: { stillasittande: 4, social_energi: 4, multitasking: 4, koncentration: 3 },
+    salary: '26 000 - 32 000 kr/mån',
+    education: { name: 'Gymnasium, ofta med intern utbildning', length: 'Några veckor upplärning', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Receptionist/Hotellreceptionist', 'Administratör', 'Butikssäljare/Detaljhandel'],
+    careerPath: ['Kundtjänstmedarbetare', 'Teamledare kundtjänst', 'Kundtjänstchef'],
+    requiresUniversity: false,
+  }, // AF: 372 annonser
+  {
+    id: 'vardbitrade_hemtjanst',
+    name: 'Vårdbiträde inom hemtjänst',
+    description: 'Hjälper människor i deras hem med vardagen — måltider, städning, sällskap och stöd',
+    riasec: { R: 2, I: 1, A: 1, S: 5, E: 1, C: 2 },
+    bigFive: { openness: 45, conscientiousness: 70, extraversion: 55, agreeableness: 85, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { vard: 5, social: 5, praktisk: 3, kommunikation: 3 },
+    challenges: { fysisk_rorlighet: 4, social_energi: 4, kvallsarbete: 3, tidspress: 3 },
+    salary: '25 000 - 29 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs — vård- och omsorgsutbildning är meriterande', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'growing',
+    relatedJobs: ['Undersköterska', 'Personlig assistent', 'Boendestödjare'],
+    careerPath: ['Vårdbiträde', 'Undersköterska', 'Specialistundersköterska'],
+    requiresUniversity: false,
+  }, // AF: 889 annonser för undersköterskor i hemtjänst (6:e största)
+  {
+    id: 'boendestodjare',
+    name: 'Boendestödjare',
+    description: 'Stöttar personer med psykisk ohälsa eller funktionsnedsättning att klara sin vardag',
+    riasec: { R: 2, I: 2, A: 2, S: 5, E: 2, C: 2 },
+    bigFive: { openness: 55, conscientiousness: 70, extraversion: 50, agreeableness: 85, stability: 75 },
+    icf: { kognitiv: 3, kommunikation: 5, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 },
+    categories: { vard: 4, social: 5, kommunikation: 5, praktisk: 2 },
+    challenges: { social_energi: 5, kvallsarbete: 3, multitasking: 2 },
+    salary: '27 000 - 32 000 kr/mån',
+    education: { name: 'Gymnasium, gärna vård och omsorg eller barn och fritid', length: '3 år', type: 'Gymnasium' },
+    prognosis: 'growing',
+    relatedJobs: ['Behandlingsassistent', 'Personlig assistent', 'Undersköterska'],
+    careerPath: ['Boendestödjare', 'Samordnare', 'Enhetschef'],
+    requiresUniversity: false,
+  }, // AF: 364 annonser (Vårdare, boendestödjare)
+  {
+    id: 'behandlingsassistent',
+    name: 'Behandlingsassistent',
+    description: 'Arbetar med människor i behandling — samtal, rutiner och stöd i vardagen på boenden och behandlingshem',
+    riasec: { R: 2, I: 3, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 60, conscientiousness: 75, extraversion: 50, agreeableness: 80, stability: 80 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 3, energi: 4 },
+    categories: { vard: 4, social: 5, kommunikation: 5, noggrannhet: 3 },
+    challenges: { social_energi: 5, kvallsarbete: 4, tidspress: 3, koncentration: 3 },
+    salary: '28 000 - 34 000 kr/mån',
+    education: { name: 'Behandlingspedagog eller motsvarande yrkeshögskola', length: '2 år', type: 'Yrkeshögskola' },
+    prognosis: 'growing',
+    relatedJobs: ['Boendestödjare', 'Socialsekreterare', 'Undersköterska'],
+    careerPath: ['Behandlingsassistent', 'Behandlingspedagog', 'Föreståndare'],
+    requiresUniversity: false,
+  }, // AF: 370 annonser
+  {
+    id: 'elevassistent',
+    name: 'Elevassistent',
+    description: 'Stöttar en eller flera elever i skolan, i klassrummet och på raster',
+    riasec: { R: 2, I: 2, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 55, conscientiousness: 70, extraversion: 50, agreeableness: 85, stability: 75 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 2, energi: 3 },
+    categories: { social: 5, pedagogik: 4, kommunikation: 4, vard: 2 },
+    challenges: { social_energi: 4, sensorisk: 4, multitasking: 3, koncentration: 3 },
+    salary: '24 000 - 29 000 kr/mån',
+    education: { name: 'Gymnasium, gärna barn och fritid', length: '3 år', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Barnskötare', 'Boendestödjare', 'Personlig assistent'],
+    careerPath: ['Elevassistent', 'Barnskötare', 'Lärarassistent'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'maskinoperator',
+    name: 'Maskinoperatör inom industri',
+    description: 'Sköter och övervakar maskiner som tillverkar detaljer, kontrollerar kvalitet och åtgärdar stopp',
+    riasec: { R: 5, I: 2, A: 1, S: 1, E: 1, C: 4 },
+    bigFive: { openness: 35, conscientiousness: 80, extraversion: 35, agreeableness: 50, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
+    categories: { teknisk: 4, praktisk: 5, noggrannhet: 5 },
+    challenges: { fysisk_rorlighet: 3, sensorisk: 4, koncentration: 4, kvallsarbete: 3 },
+    salary: '28 000 - 34 000 kr/mån',
+    education: { name: 'Gymnasium industriteknik eller upplärning på plats', length: '3 år alternativt upplärning', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['CNC-operatör', 'Montör inom industri', 'Underhållsmekaniker'],
+    careerPath: ['Maskinoperatör', 'Maskinställare', 'Produktionsledare'],
+    requiresUniversity: false,
+  }, // AF: 504 annonser (Maskinställare och maskinoperatörer, metallarbete)
+  {
+    id: 'montor_industri',
+    name: 'Montör inom industri',
+    description: 'Sätter samman detaljer till färdiga produkter, ofta vid en monteringslinje',
+    riasec: { R: 5, I: 1, A: 1, S: 1, E: 1, C: 4 },
+    bigFive: { openness: 30, conscientiousness: 80, extraversion: 35, agreeableness: 55, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 3 },
+    categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
+    challenges: { fysisk_rorlighet: 4, koncentration: 4, stillasittande: 3, sensorisk: 3 },
+    salary: '26 000 - 31 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Maskinoperatör inom industri', 'Lagerarbetare', 'Kvalitetstekniker'],
+    careerPath: ['Montör', 'Lagledare', 'Produktionstekniker'],
+    requiresUniversity: false,
+  }, // AF: 432 annonser (Montörer, metall-, gummi- och plastprodukter)
+  {
+    id: 'underhallsmekaniker',
+    name: 'Underhållsmekaniker',
+    description: 'Håller maskiner igång — felsöker, byter delar och gör förebyggande underhåll',
+    riasec: { R: 5, I: 3, A: 1, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 45, conscientiousness: 80, extraversion: 35, agreeableness: 50, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { teknisk: 5, praktisk: 5, analytisk: 3, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 5, tidspress: 4, sensorisk: 3, kvallsarbete: 3 },
+    salary: '30 000 - 38 000 kr/mån',
+    education: { name: 'Gymnasium industriteknik eller el', length: '3 år', type: 'Gymnasium' },
+    prognosis: 'growing',
+    relatedJobs: ['Mekaniker', 'Maskinoperatör inom industri', 'Industrirobottekniker'],
+    careerPath: ['Underhållsmekaniker', 'Underhållstekniker', 'Underhållsledare'],
+    requiresUniversity: false,
+  }, // AF: 375 annonser
+  {
+    id: 'truckforare',
+    name: 'Truckförare',
+    description: 'Kör truck på lager och terminal, lastar och lossar gods',
+    riasec: { R: 5, I: 1, A: 1, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 30, conscientiousness: 75, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 4, energi: 3 },
+    categories: { praktisk: 5, teknisk: 3, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 3, koncentration: 4, sensorisk: 4, kvallsarbete: 3 },
+    salary: '27 000 - 33 000 kr/mån',
+    education: { name: 'Truckkort A + B', length: 'Några dagar', type: 'Certifikat' },
+    prognosis: 'stable',
+    relatedJobs: ['Lagerarbetare', 'Terminalarbetare', 'Lastbilschaufför'],
+    careerPath: ['Truckförare', 'Lagerledare', 'Logistikansvarig'],
+    requiresUniversity: false,
+  }, // AF: 751 annonser (Lager- och terminalpersonal, 8:e största)
+  {
+    id: 'terminalarbetare',
+    name: 'Terminalarbetare',
+    description: 'Sorterar och lastar paket och gods på en terminal, ofta i skift',
+    riasec: { R: 5, I: 1, A: 1, S: 2, E: 1, C: 3 },
+    bigFive: { openness: 30, conscientiousness: 70, extraversion: 40, agreeableness: 55, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 5, kvallsarbete: 4, tidspress: 4, sensorisk: 3 },
+    salary: '25 000 - 30 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Lagerarbetare', 'Truckförare', 'Bud- och distributionsförare'],
+    careerPath: ['Terminalarbetare', 'Truckförare', 'Lagerledare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'budbilsforare',
+    name: 'Bud- och distributionsförare',
+    description: 'Kör ut paket och varor till hem och företag, planerar sin runda',
+    riasec: { R: 5, I: 1, A: 1, S: 2, E: 2, C: 3 },
+    bigFive: { openness: 35, conscientiousness: 75, extraversion: 45, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
+    categories: { praktisk: 5, social: 2, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 4, tidspress: 5, koncentration: 4, kvallsarbete: 3 },
+    salary: '26 000 - 31 000 kr/mån',
+    education: { name: 'B-körkort', length: 'Körkortsutbildning', type: 'Certifikat' },
+    prognosis: 'growing',
+    relatedJobs: ['Lastbilschaufför', 'Terminalarbetare', 'Taxichaufför'],
+    careerPath: ['Budbilsförare', 'Lastbilschaufför', 'Transportledare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'maltidsbitrade',
+    name: 'Måltidsbiträde',
+    description: 'Lagar och serverar mat i skola, förskola eller äldreboende',
+    riasec: { R: 4, I: 1, A: 2, S: 4, E: 1, C: 3 },
+    bigFive: { openness: 40, conscientiousness: 70, extraversion: 50, agreeableness: 75, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 4, social: 3, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 4, tidspress: 4, sensorisk: 3 },
+    salary: '24 000 - 28 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs — livsmedelshygien är vanligt krav', length: 'Kort kurs', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Köks- och restaurangbiträde', 'Kock', 'Barnskötare'],
+    careerPath: ['Måltidsbiträde', 'Kock', 'Kostchef'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'parkarbetare',
+    name: 'Parkarbetare',
+    description: 'Sköter parker och grönytor — klipper, planterar, röjer och håller rent',
+    riasec: { R: 5, I: 1, A: 2, S: 1, E: 1, C: 2 },
+    bigFive: { openness: 40, conscientiousness: 70, extraversion: 35, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, natur: 5, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 5, sensorisk: 2, kvallsarbete: 2 },
+    salary: '25 000 - 30 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs — trädgårdsutbildning är meriterande', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Trädgårdsmästare', 'Fastighetsskötare', 'Skogsarbetare/Skogshuggare'],
+    careerPath: ['Parkarbetare', 'Trädgårdsmästare', 'Parkförman'],
+    requiresUniversity: false,
+  },
+  // ===== TILLAGDA 2026-08-21, andra omgången =====
+  //
+  // Urvalet gjordes genom att mäta portalens täckning PER YRKESOMRÅDE mot
+  // Arbetsförmedlingens egen indelning (stats=occupation-field, hämtat
+  // 2026-08-21). Tre områden var underrepresenterade i förhållande till hur
+  // många annonser de faktiskt har:
+  //
+  //   · Sanering och renhållning — 1 414 annonser, NOLL yrken i listan
+  //   · Bygg och anläggning — 2 161 annonser, i praktiken bara snickare
+  //   · Kropps- och skönhetsvård — 308 annonser, två yrken
+  //
+  // Därtill några vanliga kontors- och vårdadministrativa yrken, eftersom
+  // "Administration, ekonomi, juridik" är AF:s näst största område men bara
+  // representerades av "Administratör".
+  //
+  // Volymen i kommentarerna är OMRÅDETS annonsantal, inte yrkets — AF:s
+  // per-yrkesstatistik kommer dubblerad och går inte att attribuera säkert.
+  // Koderna är redaktionella, som resten av listan.
+
+  // — Sanering och renhållning —
+  {
+    id: 'saneringsarbetare',
+    name: 'Saneringsarbetare',
+    description: 'Sanerar efter vattenskador, bränder och skadedjur, och återställer lokaler',
+    riasec: { R: 5, I: 2, A: 1, S: 2, E: 1, C: 3 },
+    bigFive: { openness: 35, conscientiousness: 75, extraversion: 40, agreeableness: 55, stability: 75 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 4, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 4, teknisk: 3 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, sensorisk: 5, kvallsarbete: 3 },
+    salary: '27 000 - 33 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs — intern utbildning är vanlig', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Städare/Lokalvårdare', 'Fastighetsskötare', 'Byggnadsarbetare'],
+    careerPath: ['Saneringsarbetare', 'Saneringstekniker', 'Arbetsledare sanering'],
+    requiresUniversity: false,
+  }, // AF-området Sanering och renhållning: 1 414 annonser
+  {
+    id: 'atervinningsarbetare',
+    name: 'Återvinningsarbetare',
+    description: 'Sorterar och hanterar avfall och material på en återvinningsanläggning',
+    riasec: { R: 5, I: 1, A: 1, S: 2, E: 1, C: 3 },
+    bigFive: { openness: 30, conscientiousness: 70, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 4, energi: 4 },
+    categories: { praktisk: 5, natur: 3, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, sensorisk: 4, kvallsarbete: 2 },
+    salary: '26 000 - 31 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'growing',
+    relatedJobs: ['Renhållningsarbetare', 'Terminalarbetare', 'Truckförare'],
+    careerPath: ['Återvinningsarbetare', 'Maskinförare', 'Platsansvarig'],
+    requiresUniversity: false,
+  }, // AF-området Sanering och renhållning: 1 414 annonser
+  {
+    id: 'renhallningsarbetare',
+    name: 'Renhållningsarbetare',
+    description: 'Hämtar sopor och håller gator och offentliga platser rena',
+    riasec: { R: 5, I: 1, A: 1, S: 2, E: 1, C: 2 },
+    bigFive: { openness: 30, conscientiousness: 75, extraversion: 40, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 4, energi: 5 },
+    categories: { praktisk: 5, natur: 2 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, sensorisk: 4, kvallsarbete: 3 },
+    salary: '27 000 - 32 000 kr/mån',
+    education: { name: 'B- eller C-körkort beroende på tjänst', length: 'Körkortsutbildning', type: 'Certifikat' },
+    prognosis: 'stable',
+    relatedJobs: ['Återvinningsarbetare', 'Parkarbetare', 'Lastbilschaufför'],
+    careerPath: ['Renhållningsarbetare', 'Chaufför renhållning', 'Arbetsledare'],
+    requiresUniversity: false,
+  }, // AF-området Sanering och renhållning: 1 414 annonser
+  {
+    id: 'fonsterputsare',
+    name: 'Fönsterputsare',
+    description: 'Putsar fönster och fasader åt företag och privatpersoner, ofta på höjd',
+    riasec: { R: 5, I: 1, A: 1, S: 3, E: 2, C: 2 },
+    bigFive: { openness: 35, conscientiousness: 75, extraversion: 45, agreeableness: 60, stability: 70 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 4, social: 2 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 3, koncentration: 3 },
+    salary: '25 000 - 31 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs — liftutbildning kan behövas', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Städare/Lokalvårdare', 'Fastighetsskötare', 'Saneringsarbetare'],
+    careerPath: ['Fönsterputsare', 'Arbetsledare', 'Egen firma'],
+    requiresUniversity: false,
+  }, // AF-området Sanering och renhållning: 1 414 annonser
+
+  // — Bygg och anläggning —
+  {
+    id: 'murare',
+    name: 'Murare',
+    description: 'Murar väggar och skorstenar i tegel och block, putsar fasader',
+    riasec: { R: 5, I: 2, A: 3, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 40, conscientiousness: 80, extraversion: 35, agreeableness: 55, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, precision: 4 },
+    salary: '30 000 - 38 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet med lärlingstid', length: '3 år + lärling', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Snickare/Byggarbetare', 'Betongarbetare', 'Plattsättare'],
+    careerPath: ['Lärling', 'Murare', 'Lagbas', 'Arbetsledare'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'betongarbetare',
+    name: 'Betongarbetare',
+    description: 'Bygger formar, armerar och gjuter betongkonstruktioner',
+    riasec: { R: 5, I: 2, A: 1, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 30, conscientiousness: 80, extraversion: 35, agreeableness: 55, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 5 },
+    categories: { praktisk: 5, noggrannhet: 4, teknisk: 3 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, precision: 3 },
+    salary: '30 000 - 37 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet med lärlingstid', length: '3 år + lärling', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Murare', 'Snickare/Byggarbetare', 'Anläggningsarbetare'],
+    careerPath: ['Lärling', 'Betongarbetare', 'Lagbas'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'anlaggningsarbetare',
+    name: 'Anläggningsarbetare',
+    description: 'Bygger vägar, ledningar och markarbeten — gräver, lägger rör och asfalterar',
+    riasec: { R: 5, I: 2, A: 1, S: 2, E: 1, C: 2 },
+    bigFive: { openness: 30, conscientiousness: 75, extraversion: 40, agreeableness: 60, stability: 70 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 5, sensorisk: 3, energi: 5 },
+    categories: { praktisk: 5, teknisk: 3, natur: 2 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, sensorisk: 3, kvallsarbete: 2 },
+    salary: '29 000 - 36 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet eller upplärning på plats', length: '3 år alternativt upplärning', type: 'Gymnasium' },
+    prognosis: 'growing',
+    relatedJobs: ['Betongarbetare', 'Maskinförare', 'Snickare/Byggarbetare'],
+    careerPath: ['Anläggningsarbetare', 'Maskinförare', 'Lagbas'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'maskinforare',
+    name: 'Maskinförare',
+    description: 'Kör grävmaskin, hjullastare eller annan anläggningsmaskin på byggen och i grustag',
+    riasec: { R: 5, I: 2, A: 1, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 35, conscientiousness: 80, extraversion: 30, agreeableness: 50, stability: 75 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 4, energi: 3 },
+    categories: { praktisk: 5, teknisk: 4, noggrannhet: 4 },
+    challenges: { koncentration: 5, sensorisk: 4, stillasittande: 3, kvallsarbete: 2 },
+    salary: '31 000 - 39 000 kr/mån',
+    education: { name: 'Yrkesbevis anläggningsmaskinförare', length: '1–2 år inkl. praktik', type: 'Yrkesutbildning' },
+    prognosis: 'growing',
+    relatedJobs: ['Anläggningsarbetare', 'Truckförare', 'Lastbilschaufför'],
+    careerPath: ['Maskinförare', 'Erfaren maskinförare', 'Arbetsledare'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'golvlaggare',
+    name: 'Golvläggare',
+    description: 'Lägger parkett, klinker, linoleum och mattor i hem och lokaler',
+    riasec: { R: 5, I: 1, A: 3, S: 2, E: 1, C: 4 },
+    bigFive: { openness: 40, conscientiousness: 85, extraversion: 35, agreeableness: 60, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 5, kreativ: 2 },
+    challenges: { fysisk_rorlighet: 5, precision: 5, sensorisk: 3 },
+    salary: '29 000 - 36 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet eller lärling', length: '3 år alternativt lärling', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Plattsättare', 'Snickare/Byggarbetare', 'Målare'],
+    careerPath: ['Lärling', 'Golvläggare', 'Egen firma'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'stallningsbyggare',
+    name: 'Ställningsbyggare',
+    description: 'Monterar och demonterar byggnadsställningar, ofta högt upp',
+    riasec: { R: 5, I: 1, A: 1, S: 2, E: 1, C: 3 },
+    bigFive: { openness: 30, conscientiousness: 80, extraversion: 40, agreeableness: 60, stability: 80 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 5, sensorisk: 4, energi: 5 },
+    categories: { praktisk: 5, noggrannhet: 5, teknisk: 3 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 5, koncentration: 4, precision: 3 },
+    salary: '30 000 - 37 000 kr/mån',
+    education: { name: 'Ställningsbyggarutbildning enligt Arbetsmiljöverkets krav', length: 'Några veckor till några månader', type: 'Certifikat' },
+    prognosis: 'stable',
+    relatedJobs: ['Snickare/Byggarbetare', 'Betongarbetare', 'Anläggningsarbetare'],
+    careerPath: ['Ställningsbyggare', 'Lagbas', 'Arbetsledare'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+  {
+    id: 'platslagare',
+    name: 'Plåtslagare',
+    description: 'Tillverkar och monterar plåt på tak och fasader',
+    riasec: { R: 5, I: 2, A: 2, S: 1, E: 1, C: 3 },
+    bigFive: { openness: 35, conscientiousness: 85, extraversion: 30, agreeableness: 55, stability: 75 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 4, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 5, teknisk: 4 },
+    challenges: { fysisk_rorlighet: 5, precision: 5, koncentration: 4 },
+    salary: '30 000 - 38 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet, inriktning plåtslageri', length: '3 år + lärling', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Snickare/Byggarbetare', 'Svetsare', 'Murare'],
+    careerPath: ['Lärling', 'Plåtslagare', 'Lagbas'],
+    requiresUniversity: false,
+  }, // AF-området Bygg och anläggning: 2 161 annonser
+
+  // — Hotell, restaurang, storhushåll —
+  {
+    id: 'hotellstadare',
+    name: 'Hotellstädare',
+    description: 'Städar hotellrum och gemensamma ytor, byter sängkläder och fyller på',
+    riasec: { R: 4, I: 1, A: 1, S: 3, E: 1, C: 4 },
+    bigFive: { openness: 30, conscientiousness: 80, extraversion: 40, agreeableness: 65, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 5, social: 2 },
+    challenges: { fysisk_rorlighet: 5, tidspress: 4, sensorisk: 3 },
+    salary: '24 000 - 28 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Städare/Lokalvårdare', 'Receptionist/Hotellreceptionist', 'Måltidsbiträde'],
+    careerPath: ['Hotellstädare', 'Husfru', 'Housekeeping-ansvarig'],
+    requiresUniversity: false,
+  }, // AF-området Hotell, restaurang, storhushåll: 2 661 annonser
+  {
+    id: 'cafebitrade',
+    name: 'Cafébiträde',
+    description: 'Serverar kaffe och fika, tar betalt och håller ordning i caféet',
+    riasec: { R: 3, I: 1, A: 2, S: 4, E: 3, C: 3 },
+    bigFive: { openness: 45, conscientiousness: 70, extraversion: 60, agreeableness: 75, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { affarer_forsaljning: 3, social: 4, praktisk: 4, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 4, social_energi: 4, tidspress: 4, sensorisk: 3 },
+    salary: '24 000 - 28 000 kr/mån',
+    education: { name: 'Ingen formell utbildning krävs', length: 'Upplärning på plats', type: 'Arbetsplatsutbildning' },
+    prognosis: 'stable',
+    relatedJobs: ['Servitör/Servitris', 'Butikssäljare/Detaljhandel', 'Bartender'],
+    careerPath: ['Cafébiträde', 'Barista', 'Caféföreståndare'],
+    requiresUniversity: false,
+  }, // AF-området Hotell, restaurang, storhushåll: 2 661 annonser
+
+  // — Kropps- och skönhetsvård —
+  {
+    id: 'hudterapeut',
+    name: 'Hudterapeut',
+    description: 'Ger ansiktsbehandlingar och hudvårdsråd, arbetar nära kunden',
+    riasec: { R: 3, I: 2, A: 3, S: 5, E: 3, C: 3 },
+    bigFive: { openness: 55, conscientiousness: 80, extraversion: 55, agreeableness: 80, stability: 65 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
+    categories: { social: 4, praktisk: 4, noggrannhet: 5, vard: 3 },
+    challenges: { social_energi: 4, precision: 4, stillasittande: 3 },
+    salary: '25 000 - 32 000 kr/mån',
+    education: { name: 'Hudterapeututbildning', length: '1–2 år', type: 'Yrkeshögskola' },
+    prognosis: 'stable',
+    relatedJobs: ['Frisör', 'Massageterapeut', 'Fotterapeut'],
+    careerPath: ['Hudterapeut', 'Egen salong', 'Utbildare'],
+    requiresUniversity: false,
+  }, // AF-området Kropps- och skönhetsvård: 308 annonser
+  {
+    id: 'fotterapeut',
+    name: 'Fotterapeut',
+    description: 'Behandlar fötter och naglar, ofta för äldre och personer med diabetes',
+    riasec: { R: 4, I: 3, A: 1, S: 5, E: 2, C: 4 },
+    bigFive: { openness: 45, conscientiousness: 85, extraversion: 45, agreeableness: 80, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 3, energi: 3 },
+    categories: { vard: 4, social: 4, noggrannhet: 5, praktisk: 4 },
+    challenges: { precision: 5, social_energi: 3, stillasittande: 4 },
+    salary: '26 000 - 32 000 kr/mån',
+    education: { name: 'Medicinsk fotterapeututbildning', length: '1 år', type: 'Yrkesutbildning' },
+    prognosis: 'growing',
+    relatedJobs: ['Hudterapeut', 'Undersköterska', 'Massageterapeut'],
+    careerPath: ['Fotterapeut', 'Medicinsk fotterapeut', 'Egen mottagning'],
+    requiresUniversity: false,
+  }, // AF-området Kropps- och skönhetsvård: 308 annonser
+  {
+    id: 'barberare',
+    name: 'Barberare',
+    description: 'Klipper och rakar, formar skägg och ger råd om hårvård',
+    riasec: { R: 4, I: 1, A: 4, S: 4, E: 3, C: 3 },
+    bigFive: { openness: 55, conscientiousness: 75, extraversion: 60, agreeableness: 70, stability: 65 },
+    icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { konst_kultur: 3, social: 4, praktisk: 5, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 4, social_energi: 4, precision: 5 },
+    salary: '24 000 - 32 000 kr/mån',
+    education: { name: 'Barberar- eller frisörutbildning', length: '1–3 år', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Frisör', 'Hudterapeut', 'Stylist'],
+    careerPath: ['Lärling', 'Barberare', 'Egen salong'],
+    requiresUniversity: false,
+  }, // AF-området Kropps- och skönhetsvård: 308 annonser
+
+  // — Administration och vårdadministration —
+  {
+    id: 'ekonomiassistent',
+    name: 'Ekonomiassistent',
+    description: 'Hanterar fakturor, bokför löpande och stämmer av konton',
+    riasec: { R: 1, I: 3, A: 1, S: 2, E: 2, C: 5 },
+    bigFive: { openness: 40, conscientiousness: 90, extraversion: 35, agreeableness: 60, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 1, sensorisk: 2, energi: 3 },
+    categories: { administration_kontor: 5, ekonomi: 5, noggrannhet: 5, analytisk: 3 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 3 },
+    salary: '28 000 - 34 000 kr/mån',
+    education: { name: 'Ekonomiprogrammet eller yrkeshögskola', length: '1–3 år', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Redovisningskonsult', 'Löneadministratör', 'Administratör'],
+    careerPath: ['Ekonomiassistent', 'Redovisningsekonom', 'Redovisningsansvarig'],
+    requiresUniversity: false,
+  }, // AF-området Administration, ekonomi, juridik: näst största området
+  {
+    id: 'loneadministrator',
+    name: 'Löneadministratör',
+    description: 'Räknar ut och betalar löner, håller reda på avtal, semester och avdrag',
+    riasec: { R: 1, I: 3, A: 1, S: 3, E: 2, C: 5 },
+    bigFive: { openness: 40, conscientiousness: 90, extraversion: 40, agreeableness: 65, stability: 75 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 1, sensorisk: 2, energi: 3 },
+    categories: { administration_kontor: 5, ekonomi: 4, noggrannhet: 5, kommunikation: 3 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    salary: '31 000 - 38 000 kr/mån',
+    education: { name: 'Yrkeshögskola löneadministration', length: '1–2 år', type: 'Yrkeshögskola' },
+    prognosis: 'stable',
+    relatedJobs: ['Ekonomiassistent', 'HR-specialist', 'Administratör'],
+    careerPath: ['Löneadministratör', 'Lönespecialist', 'Löneansvarig'],
+    requiresUniversity: false,
+  }, // AF-området Administration, ekonomi, juridik: näst största området
+  {
+    id: 'medicinsk_sekreterare',
+    name: 'Medicinsk sekreterare',
+    description: 'Skriver journaler, bokar patienter och håller ordning på vårdens dokumentation',
+    riasec: { R: 1, I: 3, A: 1, S: 4, E: 2, C: 5 },
+    bigFive: { openness: 45, conscientiousness: 90, extraversion: 45, agreeableness: 75, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 2, energi: 3 },
+    categories: { administration_kontor: 5, vard: 3, noggrannhet: 5, kommunikation: 4 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 3 },
+    salary: '29 000 - 35 000 kr/mån',
+    education: { name: 'Yrkeshögskola vårdadministration', length: '1,5–2 år', type: 'Yrkeshögskola' },
+    prognosis: 'growing',
+    relatedJobs: ['Administratör', 'Undersköterska', 'Ekonomiassistent'],
+    careerPath: ['Medicinsk sekreterare', 'Vårdadministratör', 'Enhetsadministratör'],
+    requiresUniversity: false,
+  }, // AF-området Hälso- och sjukvård: 6 152 annonser (största området)
+  {
+    id: 'tandskoterska',
+    name: 'Tandsköterska',
+    description: 'Assisterar tandläkaren, förbereder instrument och tar hand om patienten',
+    riasec: { R: 3, I: 3, A: 1, S: 5, E: 2, C: 4 },
+    bigFive: { openness: 45, conscientiousness: 85, extraversion: 50, agreeableness: 80, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 5, motorik: 4, sensorisk: 3, energi: 3 },
+    categories: { vard: 5, social: 4, noggrannhet: 5, praktisk: 3 },
+    challenges: { precision: 4, social_energi: 3, stillasittande: 3, koncentration: 4 },
+    salary: '27 000 - 33 000 kr/mån',
+    education: { name: 'Tandsköterskeutbildning', length: '1,5 år', type: 'Yrkeshögskola' },
+    prognosis: 'growing',
+    relatedJobs: ['Tandhygienist', 'Undersköterska', 'Medicinsk sekreterare'],
+    careerPath: ['Tandsköterska', 'Tandhygienist', 'Klinikkoordinator'],
+    requiresUniversity: false,
+  }, // AF-området Hälso- och sjukvård: 6 152 annonser (största området)
+  {
+    id: 'apotekstekniker',
+    name: 'Apotekstekniker',
+    description: 'Expedierar läkemedel på apotek och ger råd om egenvård',
+    riasec: { R: 2, I: 3, A: 1, S: 4, E: 2, C: 5 },
+    bigFive: { openness: 45, conscientiousness: 90, extraversion: 50, agreeableness: 75, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 3, sensorisk: 3, energi: 3 },
+    categories: { vard: 4, affarer_forsaljning: 3, noggrannhet: 5, social: 3 },
+    challenges: { koncentration: 5, social_energi: 3, precision: 4 },
+    salary: '27 000 - 33 000 kr/mån',
+    education: { name: 'Apoteksteknikerutbildning', length: '1,5 år', type: 'Yrkeshögskola' },
+    prognosis: 'stable',
+    relatedJobs: ['Butikssäljare/Detaljhandel', 'Undersköterska', 'Medicinsk sekreterare'],
+    careerPath: ['Apotekstekniker', 'Egenvårdsrådgivare', 'Apotekschef'],
+    requiresUniversity: false,
+  }, // AF-området Hälso- och sjukvård: 6 152 annonser (största området)
 ]
 
 /**
- * Yrkeslistan, avdubblerad.
+ * Yrkeslistan, avdubblerad på både id och namn.
  *
- * Rådatan har 142 poster men bara 135 unika id: biolog, agronom,
- * skogsarbetare, vaktare, skadespelare, key_account_manager och inkopare
- * finns två gånger. Fyra av dem har OLIKA RIASEC-koder i de två posterna
- * (biolog R:2 mot R:3, agronom I:4 mot I:5, skogsarbetare I:1 mot I:2,
- * key_account_manager A:1/S:4 mot A:2/S:5), så samma yrke fick två olika
- * matchningspoäng och kunde stå två gånger i samma träfflista. Listorna
- * renderas per id, vilket dessutom gav React-varningen om dubbla nycklar.
+ * Rådatan innehåller två sorters dubbletter, båda funna 2026-08-21:
  *
- * Första posten vinner. Att städa rådatan är rätt på sikt — men en
- * avdubblering vid exporten gör felet ofarligt nu och kan inte glömmas bort.
- * (2026-08-21)
+ * 1. **Samma id två gånger** — biolog, agronom, skogsarbetare, vaktare,
+ *    skadespelare, key_account_manager, inkopare. Fyra av dem har OLIKA
+ *    RIASEC-koder i de två posterna (biolog R:2 mot R:3, agronom I:4 mot I:5,
+ *    skogsarbetare I:1 mot I:2, key_account_manager A:1/S:4 mot A:2/S:5), så
+ *    samma yrke fick två olika matchningspoäng. Listorna renderas per id,
+ *    vilket dessutom gav React-varningen om dubbla nycklar.
+ * 2. **Samma namn, olika id** — `cnc_operatör`/`cnc_operator`,
+ *    `miljöinspektör`/`miljoinspektor`, `fastighetsmäklare`/`fastighetsmaklare`,
+ *    `flygvardinna`/`kabinpersonal`, `cybersakerhet`/`cybersecurity`. De tre
+ *    första är samma ord med och utan svenska tecken — posten är helt enkelt
+ *    inlagd två gånger. En id-dedup missar dem, och användaren ser två
+ *    identiska rader.
+ *
+ * Första posten vinner. Att städa rådatan är rätt på sikt; avdubbleringen här
+ * gör felet ofarligt nu och kan inte glömmas bort.
  */
+const yrkesnyckel = (yrke: Occupation) =>
+  yrke.name.toLowerCase().replace(/\s+/g, ' ').trim()
+
 export const occupations: Occupation[] = occupationsRadata.filter(
-  (yrke, i, lista) => lista.findIndex(y => y.id === yrke.id) === i
+  (yrke, i, lista) =>
+    lista.findIndex(y => y.id === yrke.id) === i &&
+    lista.findIndex(y => yrkesnyckel(y) === yrkesnyckel(yrke)) === i
 )
 
 // ===== ICF ANPASSNINGSREKOMMENDATIONER =====
@@ -2979,11 +3610,132 @@ export function calculateJobMatches(
       needsAdaptation,
       adaptations: adaptations.slice(0, 5),
       warnings: warnings.slice(0, 3),
+      forklaring: byggForklaring(profile, occupation, {
+        riasec: riasecScore,
+        intressen: interestScore,
+        bigFive: bigFiveScore,
+        toppRiasec: topRiasecMatch,
+      }),
     }
   }).filter((match): match is JobMatch => match !== null)
 
   // Sortera efter matchningsprocent
   return matches.sort((a, b) => b.matchPercentage - a.matchPercentage)
+}
+
+/** Svenska namn på intresseområdena, för förklaringstexten. */
+const intresseNamn: Record<keyof StrongInterestCategories, string> = {
+  teknik_mekanik: 'teknik och mekanik',
+  natur_vetenskap: 'natur och vetenskap',
+  konst_kultur: 'konst och kultur',
+  social_vard: 'vård och omsorg',
+  affarer_forsaljning: 'affärer och försäljning',
+  administration_kontor: 'administration och kontorsarbete',
+  utomhusarbete: 'utomhusarbete',
+  ledarskap_organisation: 'ledarskap och organisation',
+  data_it: 'data och IT',
+  undervisning_pedagogik: 'undervisning och pedagogik',
+}
+
+/**
+ * Bygger förklaringen ur SAMMA tal som rangordningen vilar på.
+ *
+ * Regeln: förklaringen får bara nämna sådant som faktiskt påverkade
+ * ordningen. Den ska aldrig hitta på ett skäl som låter bra — då blir den
+ * ett påstående om användaren i stället för en redovisning.
+ */
+function byggForklaring(
+  profil: UserProfile,
+  yrke: Occupation,
+  delpoang: { riasec: number; intressen: number; bigFive: number; toppRiasec: number }
+): MatchForklaring {
+  const delar = [
+    { namn: 'Vilken sorts arbete du dras till (RIASEC)', andel: 40, poang: Math.round(delpoang.riasec * 100) },
+    { namn: 'Dina intresseområden', andel: 35, poang: Math.round(delpoang.intressen * 100) },
+    { namn: 'Hur du beskrev dig själv', andel: 15, poang: Math.round(delpoang.bigFive * 100) },
+    { namn: 'Dina starkaste sidor mot yrkets krav', andel: 10, poang: Math.round(delpoang.toppRiasec * 100) },
+  ]
+
+  // Vilka av yrkets kravområden matchar användarens svar, och vilka inte?
+  const kravMappning: Record<string, keyof StrongInterestCategories> = {
+    vard: 'social_vard', teknisk: 'teknik_mekanik', it: 'data_it', kreativ: 'konst_kultur',
+    ekonomi: 'affarer_forsaljning', pedagogik: 'undervisning_pedagogik', natur: 'natur_vetenskap',
+    praktisk: 'teknik_mekanik', analytisk: 'natur_vetenskap', social: 'social_vard',
+    noggrannhet: 'administration_kontor', kommunikation: 'ledarskap_organisation',
+    forskning: 'natur_vetenskap', ledarskap_organisation: 'ledarskap_organisation',
+    administration_kontor: 'administration_kontor', konst_kultur: 'konst_kultur',
+    affarer_forsaljning: 'affarer_forsaljning', stresshantering: 'social_vard',
+    utomhusarbete: 'natur_vetenskap',
+  }
+
+  const upp: { text: string; vikt: number }[] = []
+  const ner: { text: string; vikt: number }[] = []
+  const sedda = new Set<string>()
+
+  Object.entries(yrke.categories).forEach(([krav, vikt]) => {
+    const kategori = kravMappning[krav]
+    if (!kategori || !vikt || sedda.has(kategori)) return
+    sedda.add(kategori)
+    const svar = profil.strongInterest[kategori]
+    if (svar >= 60) upp.push({ text: intresseNamn[kategori], vikt: vikt * svar })
+    else if (svar <= 40) ner.push({ text: intresseNamn[kategori], vikt: vikt * (100 - svar) })
+  })
+
+  // RIASEC: de dimensioner där yrket kräver mycket och användaren svarade högt.
+  const riasecNycklar: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
+  riasecNycklar.forEach(k => {
+    if (yrke.riasec[k] >= 4 && profil.riasec[k] >= 4) {
+      upp.push({ text: riasecNamn[k], vikt: 400 })
+    } else if (yrke.riasec[k] >= 4 && profil.riasec[k] <= 2) {
+      ner.push({ text: riasecNamn[k], vikt: 400 })
+    }
+  })
+
+  const sortera = (lista: { text: string; vikt: number }[]) =>
+    [...new Map(lista.sort((a, b) => b.vikt - a.vikt).map(x => [x.text, x])).values()]
+      .map(x => x.text)
+      .slice(0, 3)
+
+  const drogUpp = sortera(upp)
+  const drogNer = sortera(ner)
+
+  let sammanfattning: string
+  if (drogUpp.length && drogNer.length) {
+    sammanfattning = `Yrket hamnade här främst för att du svarade positivt om ${listaText(drogUpp)}. Det som talar emot är att du svarade lågt om ${listaText(drogNer)}.`
+  } else if (drogUpp.length) {
+    sammanfattning = `Yrket hamnade här främst för att du svarade positivt om ${listaText(drogUpp)}.`
+  } else if (drogNer.length) {
+    sammanfattning = `Yrket ligger längre ned i listan för att du svarade lågt om ${listaText(drogNer)}.`
+  } else {
+    /*
+      Ingen dimension korsade tröskeln åt något håll. Då får texten inte säga
+      att yrket "varken sticker ut eller sorteras bort" — det stod här först,
+      och skrevs ut även på yrket som låg SIST i listan. Delpoängen vet
+      däremot var yrket ligger, så vi använder dem.
+    */
+    const kandeIgen = (delpoang.riasec + delpoang.intressen) / 2
+    sammanfattning = kandeIgen >= 0.6
+      ? 'Dina svar låg nära mitten på de områden yrket kräver. Det gör att yrket varken sticker ut eller sorteras bort — titta på det om det lockar dig.'
+      : 'Inget i dina svar pekar särskilt mot det här yrket. Det betyder inte att du inte skulle kunna trivas — bara att just de här frågorna inte fångade det.'
+  }
+
+  return { delar, drogUpp, drogNer, sammanfattning }
+}
+
+/** "a, b och c" — svensk uppräkning. */
+function listaText(delar: string[]): string {
+  if (delar.length <= 1) return delar[0] ?? ''
+  return `${delar.slice(0, -1).join(', ')} och ${delar[delar.length - 1]}`
+}
+
+/** Beskrivande namn på RIASEC-typerna, i förklaringstextens form. */
+const riasecNamn: Record<keyof RiasecScores, string> = {
+  R: 'praktiskt arbete med händerna',
+  I: 'att undersöka och lösa problem',
+  A: 'att skapa och uttrycka dig',
+  S: 'att möta och stötta andra',
+  E: 'att påverka och driva',
+  C: 'ordning och tydliga rutiner',
 }
 
 function calculateRiasecMatch(user: RiasecScores, job: RiasecScores): number {
