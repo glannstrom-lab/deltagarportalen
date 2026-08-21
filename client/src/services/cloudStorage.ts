@@ -8,6 +8,16 @@
 
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
+// Typerna för intresseguidens profiler. `Record<string, number>` stod här och
+// gav fyra TS2322 i TestTab: ett interface är inte tilldelningsbart till
+// Record<string, number> eftersom det saknar indexsignatur. interestGuideData
+// importerar inget härifrån, så ingen cirkel uppstår.
+import type {
+  RiasecScores,
+  BigFiveScores,
+  ICFScores,
+  StrongInterestCategories,
+} from './interestGuideData'
 
 // ============================================
 // TYPE DEFINITIONS
@@ -726,31 +736,52 @@ export const interestGuideApi = {
       return null
     }
 
-    // E11 (2026-07-23): explicit kolumnlista — alla konsumenter (QuestionCard,
-    // TestTab, HistoryTab, OccupationsTab, ResultsTab, DailyJobTab,
-    // ContinueWhereYouLeft, useInterestProfile) läser bara dessa tre fält.
+    // E11 (2026-07-23): explicit kolumnlista.
+    // `updated_at` tillagd 2026-08-21: `useInterestProfile:280,293` och
+    // `QuestionCard:36` läste redan fältet, men det hämtades aldrig — så
+    // `completedAt` var alltid null i fallback-grenen. `lint:schema` ser inget
+    // fel eftersom kolumnen finns i tabellen; den fattas bara i select-listan.
     const { data, error } = await supabase
       .from('interest_guide_progress')
-      .select('answers, current_step, is_completed')
+      .select('answers, current_step, is_completed, updated_at')
       .eq('user_id', user.id)
       .maybeSingle()
 
+    /*
+      KASTAR vid annat än "ingen rad". Tidigare loggades felet och `null`
+      returnerades — och varje anropare tolkar `null` som "användaren har inte
+      gjort testet". Ett RLS-fel eller ett nätverksglapp blev alltså
+      "Genomför testet först" för någon som gjort det, och i TestTab dessutom
+      startpunkten för ett nytt test som upsertade över de sparade svaren.
+      (Granskning 2026-08-21.)
+    */
     if (error && error.code !== 'PGRST116') {
       storageLogger.error('Error getting interest guide progress:', error)
+      throw error
     }
     return data || null
   },
 
+  /**
+   * Returnerar `true` bara om raden faktiskt skrevs.
+   *
+   * Funktionen kunde tidigare inte misslyckas: `handleStorageError` är
+   * `void`-typad och kastar aldrig, så `await saveProgress(...)` löstes alltid
+   * ut. TestTabs `catch` var därmed oåtkomlig för databasfel, och den gröna
+   * bocken **"Sparat"** visades även när ingenting sparats. För en målgrupp
+   * vars ork räcker till ett försök var det den dyraste buggen på sidan.
+   * Mönstret följer `integrationChecklistApi.saveProgress`.
+   */
   async saveProgress(progress: {
     current_step?: number
     answers?: InterestGuideAnswers
     energy_level?: string
     is_completed?: boolean
-  }) {
+  }): Promise<boolean> {
     const user = await getCurrentUser()
     if (!user) {
       storageLogger.debug('Ingen användare inloggad - intresseguide sparas inte')
-      return
+      return false
     }
 
     const { error } = await supabase
@@ -765,7 +796,9 @@ export const interestGuideApi = {
 
     if (error) {
       handleStorageError(error, 'spara intresseguide')
+      return false
     }
+    return true
   },
 
   async reset() {
@@ -785,10 +818,11 @@ export const interestGuideApi = {
   // ===== HISTORIK =====
   async saveToHistory(historyEntry: {
     answers: Record<string, number>
-    riasec_profile: Record<string, number>
-    bigfive_profile: Record<string, number>
-    icf_profile: Record<string, number>
-    strong_interest: Record<string, number>
+    riasec_profile: RiasecScores
+    bigfive_profile: BigFiveScores
+    /** null när hälsosamtycke saknas — ICF-delen är art. 9-data. */
+    icf_profile: ICFScores | null
+    strong_interest: StrongInterestCategories
     top_occupations: Array<{ name: string; matchPercentage: number }>
   }) {
     const user = await getCurrentUser()

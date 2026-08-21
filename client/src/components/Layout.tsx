@@ -192,7 +192,25 @@ export default function Layout() {
               className={cn(
                 'flex-1 overflow-auto min-w-0',
                 isMobile ? 'p-4' : 'p-6',
-                showHubBottomNav && 'pb-20'  // 64px footroom for the fixed bottom nav (h ~56px + safe-area)
+                /*
+                  Fotutrymme för det fixerade bottennavet. `pb-20` (80 px) stod
+                  här med kommentaren "h ~56px + safe-area" — men navet mättes
+                  2026-08-21 till **65 px** i prod, och det bär självt
+                  `pb-safe`. På en telefon med hemindikator blir navet alltså
+                  65 + upp till ~34 px = ca 99 px, mer än de 80 som reserverats,
+                  och sidans sista rad hamnar under det. Marginalen följer nu
+                  safe-area i stället för att gissa den.
+
+                  (Klassen `.has-mobile-nav` i styles/mobile.css var tänkt för
+                  just det här och appliceras aldrig någonstans — det är den
+                  som är död, inte paddingen.)
+
+                  Mät om med `node e2e/career-bottennav-hittest.cjs` innan du
+                  ändrar talet. Okulär besiktning av en fullPage-skärmbild
+                  duger inte: ett `position: fixed`-element renderas där vid
+                  dokumentets slut, inte vid vyportens.
+                */
+                showHubBottomNav && 'pb-[calc(5rem+env(safe-area-inset-bottom))]'
               )}
               tabIndex={-1}
             >

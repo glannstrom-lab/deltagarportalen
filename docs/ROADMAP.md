@@ -16,6 +16,169 @@
 
 ---
 
+## Genomgång 2026-08-21 (natt) — Intresseguiden, sex granskare (åtgärdad, ej pushad)
+
+Fem flikar (`/interest-guide`, `/results`, `/occupations`, `/explore`, `/history`) granskade
+i kod och visuellt mot prod. Sex granskare: testinstrumentet, resultatvyn, yrkesmatchningen,
+Utforska+Historik, en visuell, en på skal/i18n/integritet.
+
+**Domen:** det här är portalens mest anspråksfulla verktyg och det minst underbyggda. Testet
+lovade en "Big Five-analys av din personlighet" (två frågor per drag) och en "ICF-bedömning av
+dina funktionsförutsättningar" (WHO:s kliniska klassifikation, här åtta självskattningsfrågor),
+utan källa, datum eller reservation någonstans i flödet. Ovanpå det låg fyra buggar som
+tyst förstörde eller förvanskade användarens data.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| IG1 | **"Sparat" var ett löfte som aldrig kontrollerades.** `handleStorageError` är `void`-typad och kastar aldrig, så `saveProgress` kunde inte misslyckas — den gröna bocken visades även vid RLS-fel. För en målgrupp vars ork räcker till ett försök den dyraste buggen på sidan | `saveProgress` returnerar `boolean`; bocken visas bara vid `true`, annars "Inte sparat" |
+| IG2 | **Ett läsfel raderade tyst allt tidigare arbete.** Fel → `hasSavedProgress=false` → IntroScreen → `handleStart` nollställde svaren → första svaret upsertade över den sparade raden. Trettio besvarade frågor kunde försvinna av ett nätverksglapp | Tredje läget; `getProgress` kastar nu vid annat än PGRST116; autospar blockerat vid läsfel |
+| IG3 | **Den ena energifrågan kastades bort.** `icf[category] = …` var en tilldelning; `icf_en_fys` ("ork att vara fysiskt aktiv") och `icf_en_men` delar kategori, så orkfrågan påverkade ingenting — och det är just `icf.energi` som styr varningarna för fysiskt krävande yrken | Alla sex domäner medelvärdesbildas |
+| IG4 | **ICF-skalan gjorde ett mittensvar rött.** `normalizedValue * 5` gav 2,5 för svar 3, och `< 3` klassades som "Utmanande – anpassningar rekommenderas" i rött. Tre verkliga användare har 2.5 lagrat i prod och har alltså sett rött ljus på sin kognition | Skalan är 1–5; färgskalan och omdömesorden borta; texten refererar svaret ("Du svarade att det här fungerar delvis") |
+| IG5 | **Testet kunde slutföras med 8 av 34 svar.** SectionDots låter en hoppa; "Se mitt resultat" skrev `is_completed: true` oavsett, och defaultvärdena (RIASEC 0, Big Five 50, ICF 3) rankade yrken | Alla frågor krävs; användaren skickas till den första som saknas |
+| IG6 | **Obesvarad fråga renderades som maxsvar.** `value={answers[id] \|\| 50}` — femtio på en skala 1–5. Reglaget stod på "Stämmer helt", stapeln fick 1225 % bredd, `aria-valuenow` lästes som "50" | Obesvarat läge: mitten, ingen färg, inget `aria-valuenow`, "Inget svar än". Verifierat i webbläsare |
+| IG7 | **Hälsodata skrevs utan samtycke.** `HealthConsentGate` omslöt bara ICF-avsnittets RENDERING. `icf_profile` + åtta råa ICF-svar skrevs ovillkorligt. I prod: 10 sådana rader, **en** profil med `health_consent_at` | Grind på SKRIVNINGEN, fail closed. Utan samtycke sparas resultatet utan hälsodelen |
+| IG8 | **Matchningsprocenten var uppblåst.** Formeln körd mot alla 142 yrken: den som svarade 3 på allt fick 68–80 % mot varje yrke och **142 av 142** passerade "lämplig"-tröskeln. Golv i varje delpoäng (intressen ≥0,5, ICF ≥0,2, toppbonus ≥0,3) | Golven borttagna. Mätt om med `scripts/mat-matchningsfordelning.mjs` |
+| IG9 | **ICF drog ner matchningen, hårdast för dem verktyget finns för.** Den som svarade 1 på allt fick topplistan lastbilschaufför, skogsarbetare, trädgårdsmästare, lagerarbetare, städare — låga ICF-svar straffade allt kognitivt, så kvar blev det personen just angett att hen inte orkar | ICF har vikt 0. Den ger anpassningar och varningar, inte poängavdrag. Poängsummeringen är helt borttagen ur `calculateICFMatch` |
+| IG10 | **Procenten är strukturellt oinformativ.** Även utan golv får en neutral profil 61–82 % — ett avståndsmått belönar att ligga i mitten. Talet visades som "87 %", som "9/10" och i tre färger | UI visar PLATS ("Nr 3 av 135 utifrån dina svar"). Talet finns kvar för sortering |
+| IG11 | "Utmärkta (90 %+)"-kortet stod permanent på 0 (nåddes av 1 av 500 slumpprofiler), "Bra (70 %+)" på i stort sett 142 | Båda borttagna; kvar två KPI:er som går att belägga |
+| IG12 | **128 av 142 yrken fick samma påhittade lönemedian.** `estimateSalary` returnerade medelvärdet av tjugo handskrivna rader som "Median" med percentiler, under rubriken "Löneinformation" och med ett filhuvud som påstod SCB | `estimateSalary` raderad; uppslaget returnerar `null`, och panelen säger att statistik saknas + länkar till SCB |
+| IG13 | **Historik-fliken var den enda som inte läste historiken.** Den byggde en påhittad post av den aktuella raden, med `date: new Date()` — ett test gjort i april stod som gjort idag | Läser `interest_guide_history` (10 rader i prod); `completed_at` eller "Datum saknas" |
+| IG14 | **`interest_results` skrivs av ingenting** (1 rad mot 10 slutförda test) men läses av sju ställen. `useUnifiedProgress` gav alltid `riasecScore = 0` — 15 % av framstegsmätaren — och visade tipset "Gör intressetestet" till den som just gjort det | `interestApi.getResult` faller tillbaka på senaste historikposten. Ett ställe i stället för sju |
+| IG15 | **Fokuslägets guide tvingade fram fritext om användaren och kastade den.** `onNext` gjorde bara `onExit()`; slutskärmen sa "Bra start!" om något som inte fanns kvar | Skrivs till `profiles.interests`; fel rapporteras |
+| IG16 | Fokusväxeln rev `<Routes>` och avmonterade flikarna (mildrat av serversparningen, men samma buggklass som Intervjusimulatorn och Karriär) | `display: none`, komponenterna förblir monterade |
+| IG17 | 142 yrken i en platt lista: 12 082 px desktop, 15 232 px mobil, ~39 skärmhöjder, utan "visa fler" | Paginering om 20. Nu 2 184 px respektive 3 100 px |
+| IG18 | **Sju dubblerade yrkes-id**, fyra med olika RIASEC-koder — samma yrke fick två matchningspoäng och kunde stå två gånger, plus React-varning om dubbla nycklar | Avdubblering vid exporten. 142 → 135 |
+| IG19 | Personlighetspåståenden byggda på två svar per drag ("Dina främsta personlighetsdrag är att du är noggrann och pålitlig"), och en fallgren som sa **"Din personlighet är mer återhållsam"** vid neutrala svar | Referat av svaren, med underlaget utskrivet. Fallgrenen borttagen |
+| IG20 | `education.length` är utbildningens LÄNGD i text, inte en array — renderades som "5,5 år + AT 1,5 år alternativ". `type` visades aldrig | Namn, längd och nivå var för sig |
+| IG21 | Rådgivaren lovade "hoppa över och kom tillbaka" — en knapp som inte finns | Omskrivet till autosparningen, som är belagd |
+| IG22 | `RadgivarTips index={0}` utanför `<Routes>`: samma testråd på alla fem flikar | Ett råd per flik |
+| IG23 | Död flikdubblett `interestGuideTabs` (noll importörer), samma mönster som `careerTabs` | Raderad |
+| IG24 | Uppmuntringstexter skrivna för ett 20-frågorstest ("Halvvägs!" på fråga 10 av 34, "Nästan klart nu!" på 15) + emojidriven peppning | Härleds ur antalet; emoji borta |
+| IG25 | Kvarglömda hjältar och andra `<h1>` på Utforska och Historik; amber genomgående på en coaching-sida; `min-h-screen` inuti ett scrollande skal; kontrast `text-gray-400` (2,8:1) | Åtgärdade |
+
+**Skyddsnät:** `client/src/pages/interest-guide/__tests__/intresseguide-arlighet.test.ts` — 27 vakter,
+varav elva kör poängmodellen på riktigt (den var helt otestad). Mutationsprövat: **10/10 korrekt
+hanterade**, inklusive en negativ kontroll som ska förbli grön. En vakt fick skrivas om från
+sträng- till beteendebaserad efter att ha överlevt ett återinfört golv.
+`client/scripts/mat-matchningsfordelning.mjs` mäter fördelningen — kör den efter varje ändring
+i matchningen.
+
+**Taket sänkt:** 400 → 390 strict-typfel.
+
+### Kvarstår (Intresseguiden) — kräver beslut
+
+- **IG-A — RLS: art. 9-grinden gäller inte.** `interest_results` har en `FOR ALL`-policy vars
+  `WITH CHECK` utelämnats; Postgres använder då `USING`, och permissiva policyer OR:as. Det
+  effektiva INSERT-villkoret blir `auth.uid() = user_id` — `check_health_consent` kan inte fälla
+  något. Samma mönster som lärdomen 2026-08-04 om `profiles`/`mood_logs`.
+- **IG-B — grinden vaktar fel tabell.** ICF-datan ligger i `interest_guide_history.icf_profile`
+  och `interest_guide_progress.answers`, som saknar samtyckesgrind helt.
+- **IG-C — konsulenten läser ICF utan delningssamtycke.** `interest_guide_history`-policyn
+  kräver bara roll + tilldelning, inte `share_health_data` — tvärtemot vad
+  `docs/GDPR-ART30-REGISTER.md:101` påstår.
+  → Migrationen för A–C ligger skriven i
+  `supabase/migrations/20260821_intresseguide_art9_rls.sql`. **Inte körd** — RLS mot prod kräver
+  Mikaels ja.
+- **IG-D — dokumentationen.** `GDPR-ART30-REGISTER.md` listar bara den tomma `interest_results`
+  under B4 (art. 9); historik- och progresstabellerna står under avtalsdata trots `icf_profile`.
+  `DPIA-PORTAL.md:44` nämner inte ICF/funktionsförmåga alls.
+  `AI-ACT-CLASSIFICATION.md:107` motiverar lågriskklassningen med "standardiserat psykometriskt
+  instrument (validerat sedan 1959)" — det som är validerat är Hollands teori, inte portalens sex
+  egna frågor. Premissen bör rättas.
+- **IG-E — instrumentets omfång är ett produktbeslut.** Sex RIASEC-frågor (en per typ) och tio
+  Big Five-frågor (två per drag) räcker inte för de anspråk som gjordes. Anspråken är nedtonade
+  och en reservation finns, men frågan om testet ska byggas ut, ersättas med ett validerat
+  instrument, eller stanna som samtalsunderlag är Mikaels.
+- **IG-F — `QuestionCard` saknar mörkt läge** och delar av `ResultsView`/`OccupationsTab` är
+  hårdkodad svenska (i18n-nycklarna finns, texten går inte genom `t()`).
+- **IG-G — yrkeskorten på Yrken-fliken är klickbara `div`:ar** utan tangentbordsstöd, och
+  `calculateICFMatch`:s varningar renderas inte där (bara i den oanvända `JobCard`). En
+  rullstolsburen deltagare ser yrket utan ett ord om att det kräver fysisk rörlighet.
+
+---
+
+## Genomgång 2026-08-21 (kväll) — Karriär, sex granskare (åtgärdad, ej pushad)
+
+Fem flikar (`/career`, `/career/adaptation`, `/career/credentials`, `/career/relocation`,
+`/career/plan`) granskade i kod och visuellt mot prod (skärmbilder 1440 + 390 px, inloggat
+testkonto). Sex granskare: en per flik, en visuell, en på skalet/i18n/navigation.
+
+**Domen:** skelettet höll — skena, hubbfärg, noll gradienter. Innehållet var fyra sidor
+byggda vid fyra tillfällen, och samma felklass som resten av portalen: ett påhittat värde
+föredraget framför ett tomt fält, plus tre tysta dataförluster.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| KAR1 | "Mest sökta yrken" stod över `stats=occupation-group` — antal *annonser*, ingen har sökt | Rubrik + antal per yrkesgrupp |
+| KAR2 | "Efterfrågade kompetenser" var en rangordnad lista ingen mätt; `af-trends` skickar med yrkesområde + antal "så att siffran kan tillskrivas rätt sak", vilket kastades | Attribueringen renderas |
+| KAR3 | Branschradarn: underrubrik "AI-drivna marknadsinsikter" + "Personaliserade trender baserat på din profil". Noll AI-anrop, ingen profil läses. `AiConsentGate` låste publik AF-statistik bakom AI-samtycke | Komponenten **raderad** — den ritade dessutom samma data som fliken redan visar. 12 döda i18n-nycklar bort |
+| KAR4 | En tom dellista sprängde hela Arbetsmarknad (`Promise.all` + wrappers som kastar på tomt) | `allSettled` + tomtillstånd per sektion |
+| KAR5 | Regionnamn stympades: "Stockholms", "Västra Götalands" | `.replace(' län','')` bort |
+| KAR6 | Fotens datum var renderingstiden; trendcachen har 30 min TTL | `marketStats.last_updated` |
+| KAR7 | **Flytta: nettolön = `lön * 0.7`.** Bar hyresandel, "överkomlig" och sammanfattningen. Vid 25 000 kr är verklig andel 78–80 % → hyresandelen överdrevs ~12 p.e. | `lib/skatt.ts` (samma fix som lönesidan fick 2026-08-20) |
+| KAR8 | 48 påståenden utan källa (12 städer × hyra, lön, kötid, jobbmarknad). `avgSalary` motsade `lonedata.ts` (Sthlm 48 000 mot 47 150) | Lönekolumnen **bort** (/salary äger frågan). `jobMarket`-etiketterna ersatta av AF:s verkliga annonsantal per kommun. Hyra/kötid → `data/flyttdata.ts` med `UPPGIFTERNA_ANGAVS` + stämpel i UI |
+| KAR9 | "Infinity%" och "2071429%" vid lön 0 respektive 1 | `beraknaNetto` returnerar null för orimlig indata |
+| KAR10 | Tömt fält kunde inte rensas (`undefined` faller bort ur JSON) | `null`; `relocationApi.save` tillåter det |
+| KAR11 | Målstäder gick inte att välja med tangentbord (`<tr onClick>`, hjärta utan text) | Riktig knapp med `aria-pressed`, i båda renderingarna |
+| KAR12 | `jobMarket.includes('stark')` matchade aldrig "Stark" | Moot — etiketten borta |
+| KAR13 | **Tre tysta dataförluster.** Läsfel → tomt formulär → autospar skrev tomheten över molnet. Gällde Flytta, Anpassning (art. 9-data) och Karriärplan (visade skapa-formuläret → `create()` avaktiverade befintlig plan) | Tredje läget i alla tre; sparning blockerad tills en läsning lyckats |
+| KAR14 | `clearAll` nollställde state före anropet och svalde felet — användaren såg tom lista, uppgifterna låg kvar (art. 17) | Raderar först, återställer vid fel |
+| KAR15 | Ett köat spar försvann tyst (`if (isSaving) return` utan ombokning) | `pendingSave` |
+| KAR16 | **Tre 404-länkar till myndigheter** på Anpassning, plus "Hjälpmedelsinstitutet" (nedlagt 2014) | Åtta verifierade länkar (curl → 200), `LANKARNA_KONTROLLERADES` |
+| KAR17 | FK-mallen listade fem påhittade krav och skickade arbetssökande till fel myndighet | Hänvisar till rätt väg, listar inga krav |
+| KAR18 | Rättighetspåståendet saknade lagrum och tappade "skäliga" | Diskrimineringslagen 2008:567, arbetsmiljölagen 1977:1160, kontrolldatum |
+| KAR19 | Karriärplan: reglaget skrev till databasen per pixel (upp till 60 UPDATE + 60 SELECT, svar ur ordning) | Lokalt tillstånd, skriv vid `onPointerUp`/`onBlur` |
+| KAR20 | AI-märkningen ljög åt båda håll: användarens egna milstolpar märktes som AI | Nollställs när användaren lägger till egen. **Kvarstår:** vid omladdning märks AI-genererade milstolpar inte alls — kräver `ai_generated`-kolumn |
+| KAR21 | "Tidsram: 5_years" renderades rått (skrivs av `FocusCareerWizard`) | Slug → etikett |
+| KAR22 | "0%" och "0 av 0 milstolpar" i hjälteposition; `total_progress` klibbade kvar (triggern är DELETE-blind) | Invit i stället; härleds ur milstolparna |
+| KAR23 | Meriter: förslagslistan var sju IT-/projektledningscertifikat (PMP kräver tre års dokumenterad erfarenhet) för en portal vars egen data säger personliga assistenter och undersköterskor | Truckkort, YKB, HLR, hygien, heta arbeten, delegering, väktare, B-körkort, SFI, datorkunskap |
+| KAR24 | `.slice(0, 6)` dolde SFI (index 8) permanent | Bort |
+| KAR25 | Fem tysta `catch` på Meriter, inget tomtillstånd | Toast + felläge + `<EmptyState>` |
+| KAR26 | **Fokusväxeln avmonterade alla fem flikarna** — halvifylld merit, valda anpassningar, flyttbudget, planutkast försvann. Samma bugg som intervjusimulatorn hade till 2026-08-19 | Grenen flyttad; flikarna döljs med `display: none`, förblir monterade |
+| KAR27 | Permanent "Ny!"-badge på tre flikar — utan utgång, och renderades aldrig (`SidRail` läser inte `badge`; `PageTabs` vaktade `badge > 0`, falskt för en sträng). Enda avtrycket var ett typfel i taket | `badgeKey` + `description` bort |
+| KAR28 | Två flikdefinitioner som glidit isär; `careerTabs` hade tre onåbara anropare, en mot en route som inte finns | Raderad |
+| KAR29 | `RadgivarTips` gav samma råd på alla fem flikar (`index={0}` hårdkodat) | Ett råd per flik |
+| KAR30 | `localStorage['career-visited']` skrevs vid varje besök, noll läsare i repot | Bort (molnskrivningen behålls — `getPreferences` läser den) |
+| KAR31 | `afTrendsApi` deklarerade sju fält edge-funktionen slutade skicka i B13. `RealMarketInsights.tsx` renderade "undefined dagar" och "Efterfrågan: undefined%" | Typerna snävade; filen raderad (noll importörer) |
+| KAR32 | `af-trends/popular-searches` skickade aldrig `stats.limit`, så AF returnerade fem värden oavsett `limit` — kategorin `municipalities` kunde aldrig ge mer än fem kommuner | `stats.limit` tillagd |
+| KAR33 | Nästlad `<button>` i branschradarns huvud (ogiltig HTML) — osynlig i drift eftersom samtyckesgrinden dolde sektionen | Moot — komponenten borta |
+| KAR34 | Fotutrymmet för bottennavet var `pb-20` (80 px) men navet mättes till 65 px **plus** `pb-safe` → upp till ~99 px på telefon med hemindikator | `calc(5rem + env(safe-area-inset-bottom))`. Gäller hela portalen |
+| KAR35 | Kvarglömda hjältar på Meriter och Flytta; färger utanför hubben (violet, amber, sky, teal-hex); native `confirm()`; råa ISO-datum; saknade `aria-label`/`aria-live`/`aria-pressed`/`role="listitem"` | Åtgärdade |
+
+**Skyddsnät:** `client/src/pages/career/__tests__/career-arlighet.test.tsx` — 35 vakter.
+Mutationsprövade: **8/8 mutationer fångade**. Första körningen fällde tio av tolv negativa
+vakter på att de matchade sina egna kommentarer; de läser nu kommentarsfri källa.
+`e2e/career-bottennav-hittest.cjs` mäter KAR34 geometriskt (en fullPage-skärmbild kan inte —
+`position: fixed` renderas där vid dokumentets slut).
+
+**Taket sänkt:** 403 → 400 strict-typfel.
+
+### Kvarstår (Karriär)
+
+- **KAR-A — `ai_generated` per milstolpe.** Kräver en kolumn på `career_milestones`, alltså
+  en migration mot prod = Mikaels beslut. Utan den är AI-genererade milstolpar omärkta efter
+  omladdning. Samma sak gäller milstolpar som `SkillsGapAnalysis.tsx` skriver.
+- **KAR-B — `careerPlanApi.create` avaktiverar befintlig plan utan varning.** Två andra flöden
+  anropar den (`FocusCareerWizard`, `SkillsGapAnalysis`), och `getAll()` har noll anropare, så
+  den gamla planen blir onåbar. Antingen varna eller ge PlanTab en "tidigare planer"-väg.
+- **KAR-C — `careerOfflineCache` är inte användarscopad.** Nyckeln är strängen `'active'`,
+  TTL 7 dygn, och ingen kod rensar `deltagarportal-offline` vid utloggning. Samma store håller
+  `skills_analyses` inklusive `cv_text`.
+- **KAR-D — `AdaptationTab.tsx` är 1 147 rader** och kringgår i18n (~90 ternärer). Uppdelning
+  föreslagen i granskningen; vyväxlaren bör flyttas till skenans `sidoflikar` (den ger i dag
+  en andra flikrad ovanpå sidans egna).
+- **KAR-E — 286 av 422 `career.*`-nycklar har ingen läsare.** Rester efter borttagna flikar
+  (`network`, `companies`, `skills`) plus tre flikar som skriver båda språken inline.
+  Rensning kräver att mall-literaler (`career.credentials.types.${type}`) hanteras.
+- **KAR-F — ingen levande e2e rör `/career`s underflikar.** En raderad `<Route>` skulle
+  passera hela sviten tyst.
+
+---
+
 ## Projektgenomgång 2026-08-21 — sju linser över det som aldrig sidgranskats
 
 > Översikt att arbeta mot: <https://claude.ai/code/artifact/227bae53-753b-4c66-bdcb-f8767a35260e>

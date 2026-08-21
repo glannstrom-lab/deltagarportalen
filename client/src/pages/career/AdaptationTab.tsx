@@ -2,7 +2,7 @@
  * Adaptation Tab - Comprehensive workplace adaptation and support
  * Features: 7 categories, status tracking, AI recommendations, templates, export
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Accessibility, FileText, Building2,
@@ -10,7 +10,7 @@ import {
   Zap, Users, Clock, Layout, Loader2, Cloud, CloudOff,
   Monitor, MessageSquare, Thermometer, Star, Calendar,
   ExternalLink, Sparkles, Copy, Mail, Stethoscope,
-  Scale, ChevronDown
+  Scale, ChevronDown, AlertCircle
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -156,41 +156,86 @@ const statusOptions = [
 
 // ===== EXTERNAL RESOURCES =====
 
+/**
+ * Länkar till myndigheter. **Kontrollerade 2026-08-21 — alla svarar 200.**
+ *
+ * Tre av de fem som stod här gav 404: Arbetsmiljöverkets föreskriftssida
+ * (strukturen ändrades i regelreformen som gäller från 1 januari 2025),
+ * Arbetsförmedlingens "stöd vid funktionsnedsättning" och deras
+ * "anpassningsstöd" för arbetsgivare. Försäkringskassans blankettlänk gav
+ * också 404. En person som klickar vidare för att söka ett bidrag hamnade
+ * alltså på myndighetens felsida — sämsta tänkbara utfall för just den här
+ * målgruppen.
+ *
+ * En femte post hette "Hjälpmedelsinstitutet". Den myndigheten lades ned
+ * 2014; uppgifterna gick till Myndigheten för delaktighet, vilket URL:en
+ * faktiskt pekade på. Rubriken namngav alltså en organisation som varit
+ * nedlagd i tolv år.
+ *
+ * ÄNDRAR DU EN LÄNK: kör den mot `curl -o /dev/null -w "%{http_code}" -L` och
+ * flytta fram `LANKARNA_KONTROLLERADES`. `npm run lint:links` ser bara interna
+ * mål — externa länkar ruttnar tyst.
+ */
+export const LANKARNA_KONTROLLERADES = '2026-08-21'
+
+const AF_STOD = 'https://arbetsformedlingen.se/for-arbetssokande/extra-stod/stod-a-o'
+
 const externalResources = [
   {
-    titleSv: 'Försäkringskassans blankett för arbetshjälpmedel',
-    titleEn: 'Social Insurance Agency - Work aids form',
-    url: 'https://www.forsakringskassan.se/privatperson/funktionsnedsattning/arbetshjalpmedel',
-    descriptionSv: 'Ansök om bidrag för arbetshjälpmedel',
-    descriptionEn: 'Apply for work aid subsidies',
+    titleSv: 'Bidrag till hjälpmedel på arbetsplatsen',
+    titleEn: 'Grant for workplace assistive equipment',
+    url: `${AF_STOD}/bidrag-till-hjalpmedel-pa-arbetsplatsen`,
+    descriptionSv: 'Arbetsförmedlingen — gäller dig som är arbetssökande eller nyanställd. Vad som gäller i ditt fall avgör de.',
+    descriptionEn: 'Arbetsförmedlingen — for you who are job-seeking or newly employed. They decide what applies in your case.',
   },
   {
-    titleSv: 'Arbetsmiljöverkets föreskrifter om arbetsanpassning',
-    titleEn: 'Work Environment Authority - Adaptation regulations',
-    url: 'https://www.av.se/arbetsmiljoarbete-och-inspektioner/arbetsanpassning/',
-    descriptionSv: 'Information om arbetsgivarens skyldigheter',
-    descriptionEn: 'Information about employer obligations',
+    titleSv: 'Bidrag för personligt biträde',
+    titleEn: 'Grant for a personal assistant at work',
+    url: `${AF_STOD}/bidrag-for-personligt-bitrade`,
+    descriptionSv: 'Arbetsförmedlingen — stöd av en kollega eller extern person för sådant funktionsnedsättningen gör svårt.',
+    descriptionEn: 'Arbetsförmedlingen — help from a colleague or an outside person with what the disability makes difficult.',
   },
   {
-    titleSv: 'Arbetsförmedlingens stöd vid funktionsnedsättning',
-    titleEn: 'Employment Agency - Disability support',
-    url: 'https://arbetsformedlingen.se/for-arbetssokande/stod-och-insatser/stod-a-o/stod-vid-funktionsnedsattning',
-    descriptionSv: 'Stöd och bidrag för anpassning',
-    descriptionEn: 'Support and subsidies for adaptation',
+    titleSv: 'SIUS — stödperson vid introduktion',
+    titleEn: 'SIUS — support person during onboarding',
+    url: `${AF_STOD}/sarskild-stodperson-for-introduktions--och-uppfoljningsstod---sius`,
+    descriptionSv: 'Arbetsförmedlingen — en person som följer med in på jobbet de första tiden och även stöttar arbetsgivaren.',
+    descriptionEn: 'Arbetsförmedlingen — someone who follows you into the job at first, and supports the employer too.',
   },
   {
-    titleSv: 'Hjälpmedelsinstitutet',
-    titleEn: 'Assistive Technology Institute',
+    titleSv: 'Lönebidrag',
+    titleEn: 'Wage subsidy',
+    url: `${AF_STOD}/lonebidrag`,
+    descriptionSv: 'Arbetsförmedlingen — ersättning till arbetsgivaren. Vi anger medvetet inga belopp eller tak här; de ändras varje år.',
+    descriptionEn: 'Arbetsförmedlingen — compensation to the employer. We deliberately give no amounts or caps here; they change every year.',
+  },
+  {
+    titleSv: 'Arbetsmiljöverket om arbetsanpassning',
+    titleEn: 'The Work Environment Authority on workplace adaptation',
+    url: 'https://www.av.se/halsa-och-sakerhet/arbetsanpassning-individuella-atgarder/vagledning-om-arbetsanpassning/',
+    descriptionSv: 'Vägledning om vad arbetsgivaren ska göra, och hur det ska gå till.',
+    descriptionEn: 'Guidance on what the employer must do, and how it should be done.',
+  },
+  {
+    titleSv: 'Försäkringskassan för dig med funktionsnedsättning',
+    titleEn: 'Försäkringskassan for people with a disability',
+    url: 'https://www.forsakringskassan.se/privatperson/vuxen-med-funktionsnedsattning',
+    descriptionSv: 'Försäkringskassans hjälpmedelsbidrag förutsätter i normalfallet att du är anställd eller egen företagare. Är du arbetssökande går vägen via Arbetsförmedlingen.',
+    descriptionEn: 'Försäkringskassan’s equipment grant normally requires that you are employed or self-employed. If you are job-seeking, the route goes via Arbetsförmedlingen.',
+  },
+  {
+    titleSv: 'Diskrimineringsombudsmannen om arbetslivet',
+    titleEn: 'The Equality Ombudsman on working life',
+    url: 'https://www.do.se/jobbet-skolan-samhallet',
+    descriptionSv: 'Vad som räknas som diskriminering på jobbet, och vad du kan göra.',
+    descriptionEn: 'What counts as discrimination at work, and what you can do about it.',
+  },
+  {
+    titleSv: 'Myndigheten för delaktighet (MFD)',
+    titleEn: 'The Swedish Agency for Participation (MFD)',
     url: 'https://www.mfd.se/',
-    descriptionSv: 'Information om hjälpmedel och tillgänglighet',
-    descriptionEn: 'Information about assistive technology and accessibility',
-  },
-  {
-    titleSv: 'Anpassningsstöd för arbetsgivare',
-    titleEn: 'Adaptation support for employers',
-    url: 'https://arbetsformedlingen.se/for-arbetsgivare/stod-och-insatser/anpassningsstod',
-    descriptionSv: 'Arbetsgivare kan få bidrag för att anpassa arbetsplatsen',
-    descriptionEn: 'Employers can receive subsidies to adapt the workplace',
+    descriptionSv: 'Kunskapsstöd om tillgänglighet och delaktighet. De handlägger inga bidrag.',
+    descriptionEn: 'Knowledge support on accessibility and participation. They do not process grant applications.',
   },
 ]
 
@@ -227,15 +272,25 @@ const dialogTemplates = {
       },
     ],
   },
+  /*
+    Mallen hette "Ansökan till Försäkringskassan" och listade fem punkter som
+    FK:s faktiska krav — utan källa och utan årtal. Två problem: listan var
+    påhittad, och den skickade fel person åt fel håll. FK:s bidrag till
+    arbetshjälpmedel förutsätter i normalfallet anställning eller eget
+    företag; för den som saknar arbete är det Arbetsförmedlingen som är rätt
+    väg, och portalens målgrupp är arbetssökande. Mallen säger nu vart man
+    ska vända sig och hjälper till med det den faktiskt kan hjälpa till med —
+    att formulera sig. Kravlistan ersatt av en hänvisning. (2026-08-21)
+  */
   fk: {
-    titleSv: 'Mall: Ansökan till Försäkringskassan',
-    titleEn: 'Template: Application to Social Insurance Agency',
+    titleSv: 'Mall: Så beskriver du vad du behöver',
+    titleEn: 'Template: How to describe what you need',
     sections: [
       {
-        headingSv: 'Arbetshjälpmedel - Vad du behöver',
-        headingEn: 'Work aids - What you need',
-        contentSv: `1. Intyg från läkare eller specialist\n2. Beskrivning av dina arbetsuppgifter\n3. Motivering till varför hjälpmedlet behövs\n4. Offert på hjälpmedlet\n5. Arbetsgivarens godkännande`,
-        contentEn: `1. Certificate from doctor or specialist\n2. Description of your work tasks\n3. Justification for why the aid is needed\n4. Quote for the aid\n5. Employer's approval`,
+        headingSv: 'Först: vem ska du fråga?',
+        headingEn: 'First: who should you ask?',
+        contentSv: `Är du arbetssökande går vägen via Arbetsförmedlingen — prata med din handläggare.\n\nÄr du anställd eller egen företagare kan Försäkringskassan vara rätt, men arbetsgivaren har eget ansvar den första tiden i en anställning.\n\nVilka underlag som krävs bestäms av myndigheten och ändras över tid. Fråga dem — vi listar medvetet ingen kravlista här, eftersom en sådan blir gammal utan att någon märker det.`,
+        contentEn: `If you are job-seeking, the route goes via Arbetsförmedlingen — talk to your case worker.\n\nIf you are employed or self-employed, Försäkringskassan may be right, but the employer has their own responsibility during the first period of an employment.\n\nWhich documents are required is decided by the authority and changes over time. Ask them — we deliberately list no requirements here, because such a list goes stale without anyone noticing.`,
       },
       {
         headingSv: 'Så skriver du ansökan',
@@ -302,9 +357,20 @@ export default function AdaptationTab() {
 
   // Cloud storage state
   const [isLoading, setIsLoading] = useState(true)
+  /**
+   * Det tredje läget. Utan det renderades ett tomt formulär efter ett läsfel,
+   * omöjligt att skilja från "du har inte valt något än". Kryssade användaren
+   * i en enda ruta skrev autosparet två sekunder senare ett `upsert` som
+   * ersatte HELA den tidigare uppsättningen art. 9-uppgifter med en tom post.
+   * Ett nätverksfel kostade alltså allt personen fyllt i om sin
+   * funktionsnedsättning. Sparningen är nu blockerad tills en läsning lyckats.
+   */
+  const [loadError, setLoadError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+  /** Sätts när ett spar begärdes medan ett annat pågick, så inget tappas. */
+  const pendingSave = useRef(false)
 
   // Category titles (hardcoded for simplicity since translations may not exist yet)
   const categoryTitles: Record<string, { sv: string; en: string; desc: { sv: string; en: string } }> = {
@@ -337,6 +403,7 @@ export default function AdaptationTab() {
         }
       } catch (err) {
         console.error('Failed to load adaptations:', err)
+        setLoadError(true)
       } finally {
         setIsLoading(false)
       }
@@ -346,17 +413,21 @@ export default function AdaptationTab() {
 
   // Auto-save when changes are made (debounced)
   useEffect(() => {
-    if (!hasUnsavedChanges || isLoading) return
+    if (!hasUnsavedChanges || isLoading || loadError) return
 
     const saveTimeout = setTimeout(async () => {
       await saveToCloud()
     }, 2000)
 
     return () => clearTimeout(saveTimeout)
-  }, [selectedNeeds, adaptationDetails, hasUnsavedChanges, isLoading])
+  }, [selectedNeeds, adaptationDetails, hasUnsavedChanges, isLoading, loadError])
 
   const saveToCloud = useCallback(async () => {
-    if (isSaving) return
+    if (loadError) return // skriv aldrig över molnet med ett tillstånd vi inte läst
+    // `if (isSaving) return` utan ombokning lät ett köat spar försvinna tyst:
+    // hasUnsavedChanges blev kvar true men ingen ny timeout startade förrän
+    // användaren råkade ändra något igen.
+    if (isSaving) { pendingSave.current = true; return }
 
     setIsSaving(true)
     try {
@@ -379,8 +450,12 @@ export default function AdaptationTab() {
       showToast.error(isEn ? 'Failed to save' : 'Kunde inte spara')
     } finally {
       setIsSaving(false)
+      if (pendingSave.current) {
+        pendingSave.current = false
+        setHasUnsavedChanges(true) // bokar om debouncen ovan
+      }
     }
-  }, [selectedNeeds, adaptationDetails, isSaving, isEn])
+  }, [selectedNeeds, adaptationDetails, isSaving, isEn, loadError])
 
   const generateSummaryText = useCallback(() => {
     const parts: string[] = []
@@ -604,16 +679,29 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
     if (!window.confirm(isEn ? 'Are you sure you want to clear all selections?' : 'Är du säker på att du vill rensa alla val?')) {
       return
     }
-    setSelectedNeeds({})
-    setAdaptationDetails({})
-    setHasUnsavedChanges(true)
+    /*
+      State nollställdes tidigare FÖRE anropet och felet loggades bara. Efter
+      ett misslyckat anrop såg användaren en tom lista och trodde att
+      uppgifterna om sin funktionsnedsättning var borta — i databasen låg de
+      kvar. Det är ett art. 17-löfte som inte hölls, inte bara en UX-miss.
+      Nu raderas först, och state nollställs bara om raderingen lyckades.
+    */
+    const tidigareVal = selectedNeeds
+    const tidigareDetaljer = adaptationDetails
     try {
       await adaptationsApi.delete()
+      setSelectedNeeds({})
+      setAdaptationDetails({})
       setLastSaved(null)
       setHasUnsavedChanges(false)
       showToast.success(isEn ? 'All cleared' : 'Allt rensat')
     } catch (err) {
       console.error('Failed to clear adaptations:', err)
+      setSelectedNeeds(tidigareVal)
+      setAdaptationDetails(tidigareDetaljer)
+      showToast.error(isEn
+        ? 'Could not clear your choices. They are still saved.'
+        : 'Kunde inte rensa dina val. De ligger kvar sparade.')
     }
   }
 
@@ -629,6 +717,27 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
           {isEn ? 'Loading your adaptations...' : 'Laddar dina anpassningar...'}
         </span>
       </div>
+    )
+  }
+
+  // Tredje läget. Ett tomt formulär efter ett läsfel ser ut som "du har inte
+  // valt något än" — och nästa kryss skriver över allt i molnet.
+  if (loadError) {
+    return (
+      <Card className="p-8 text-center" role="alert">
+        <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" aria-hidden="true" />
+        <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
+          {isEn ? 'Could not load your adaptations' : 'Kunde inte hämta dina anpassningar'}
+        </h2>
+        <p className="text-stone-600 dark:text-stone-400 mb-4 max-w-md mx-auto">
+          {isEn
+            ? 'Nothing has been changed — what you saved earlier is still there. Reload the page and try again.'
+            : 'Ingenting har ändrats — det du sparat tidigare ligger kvar. Ladda om sidan och försök igen.'}
+        </p>
+        <Button onClick={() => window.location.reload()}>
+          {isEn ? 'Try again' : 'Försök igen'}
+        </Button>
+      </Card>
     )
   }
 
@@ -656,14 +765,15 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
             </Button>
           ))}
         </div>
-        <div className="flex items-center gap-2 text-sm">
+        {/* Sparstatusen vaxlade tyst mellan tre lagen i en <div> utan roll. */}
+        <div className="flex items-center gap-2 text-sm" role="status" aria-live="polite">
           {isSaving ? (
-            <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+            <span className="flex items-center gap-1 text-amber-600 dark:text-[var(--c-solid)]">
               <Loader2 className="w-4 h-4 animate-spin" />
               {isEn ? 'Saving...' : 'Sparar...'}
             </span>
           ) : hasUnsavedChanges ? (
-            <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+            <span className="flex items-center gap-1 text-amber-600 dark:text-[var(--c-solid)]">
               <CloudOff className="w-4 h-4" />
               {isEn ? 'Unsaved changes' : 'Osparade ändringar'}
             </span>
@@ -698,13 +808,18 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                 <Sparkles className="w-4 h-4" />
                 AI
               </Button>
+              {/* Knappen raderar allt användaren fyllt i om sin
+                  funktionsnedsättning och hade inget tillgängligt namn alls —
+                  en skärmläsare läste bara "knapp". */}
               <Button
                 variant="outline"
                 size="sm"
                 onClick={clearAll}
                 className="text-red-600 hover:text-red-700"
+                aria-label={isEn ? 'Clear all your choices' : 'Rensa alla dina val'}
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
+                <span className="sr-only">{isEn ? 'Clear all your choices' : 'Rensa alla dina val'}</span>
               </Button>
             </div>
           </div>
@@ -715,7 +830,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
       {showAIPanel && (
         <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-violet-600" />
+            <Sparkles className="w-5 h-5 text-[var(--c-solid)]" />
             <h3 className="font-semibold text-gray-800 dark:text-gray-100">
               {isEn ? 'AI Assistant' : 'AI-assistent'}
             </h3>
@@ -938,7 +1053,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                                         onClick={() => updateAdaptationRating(category.id, optKey, star)}
                                         className={cn(
                                           'w-5 h-5',
-                                          (detail.rating || 0) >= star ? 'text-amber-400' : 'text-gray-300'
+                                          (detail.rating || 0) >= star ? 'text-[var(--c-solid)]' : 'text-gray-300'
                                         )}
                                       >
                                         <Star className="w-4 h-4 fill-current" />
@@ -977,7 +1092,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                     <div className="flex items-center gap-3">
                       {key === 'employer' && <Building2 className="w-5 h-5 text-[var(--c-text)]" />}
                       {key === 'fk' && <FileText className="w-5 h-5 text-[var(--c-text)]" />}
-                      {key === 'union' && <Scale className="w-5 h-5 text-violet-600" />}
+                      {key === 'union' && <Scale className="w-5 h-5 text-[var(--c-solid)]" />}
                       {key === 'doctor' && <Stethoscope className="w-5 h-5 text-[var(--c-solid)]" />}
                       <span className="font-medium text-gray-800 dark:text-gray-100">
                         {isEn ? template.titleEn : template.titleSv}
@@ -1062,10 +1177,22 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                     {isEn ? 'Know Your Rights' : 'Känn till dina rättigheter'}
                   </h4>
+                  {/*
+                    Påståendet var kategoriskt ("skyldiga att anpassa vid
+                    behov") medan skyldigheten i praktiken gäller SKÄLIGA
+                    åtgärder — kvalifikationen dök upp först i andra meningen
+                    och gällde där något annat. Nu står ordet i båda, med
+                    lagrum och kontrolldatum, så nästa läsare kan verifiera.
+                  */}
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     {isEn
-                      ? 'According to Swedish law, employers are obligated to adapt the workplace when needed. The Discrimination Act and Work Environment Act protect your rights to reasonable accommodations.'
-                      : 'Enligt svensk lag är arbetsgivare skyldiga att anpassa arbetsplatsen vid behov. Diskrimineringslagen och Arbetsmiljölagen skyddar din rätt till skäliga anpassningar.'}
+                      ? 'Under Swedish law an employer must take reasonable measures to adapt the workplace: the Discrimination Act (2008:567, ch. 1 s. 4 and ch. 2) counts a failure to provide reasonable accessibility measures as discrimination, and the Work Environment Act (1977:1160, ch. 3 s. 3) requires the employer to adapt working conditions to the individual. What counts as reasonable is judged case by case.'
+                      : 'Enligt svensk lag ska en arbetsgivare vidta skäliga åtgärder för att anpassa arbetsplatsen: diskrimineringslagen (2008:567, 1 kap. 4 § och 2 kap.) räknar bristande tillgänglighet som diskriminering, och arbetsmiljölagen (1977:1160, 3 kap. 3 §) kräver att arbetsförhållandena anpassas till den enskilda. Vad som är skäligt avgörs från fall till fall.'}
+                  </p>
+                  <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
+                    {isEn
+                      ? `Checked ${LANKARNA_KONTROLLERADES}. Arbetsmiljöverket’s regulations on workplace adaptation were restructured in the rule reform in force since 1 January 2025 — check the current wording.`
+                      : `Kontrollerat ${LANKARNA_KONTROLLERADES}. Arbetsmiljöverkets föreskrifter om arbetsanpassning fick ny struktur i regelreformen som gäller från 1 januari 2025 — kontrollera aktuell lydelse.`}
                   </p>
                 </div>
               </div>
@@ -1118,7 +1245,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   onClick={() => generateDocument('plan')}
                   className="p-4 border border-stone-200 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-left"
                 >
-                  <Calendar className="w-8 h-8 text-violet-600 mb-3" />
+                  <Calendar className="w-8 h-8 text-[var(--c-solid)] mb-3" />
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
                     {isEn ? 'Implementation Plan' : 'Implementeringsplan'}
                   </h4>

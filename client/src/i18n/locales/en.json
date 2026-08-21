@@ -300,36 +300,36 @@
       "description": "Allow your consultant to see your ICF data (cognitive, motor, sensory, etc.)"
     },
     "wellness": {
-    "consent": {
-      "grantError": "Could not save consent",
-      "requiredTitle": "Consent required",
-      "requiredDesc": "You must give consent to use this feature",
-      "grantNow": "Give consent",
-      "manageInSettings": "Manage",
-      "fullTitle": "Consent for wellbeing data",
-      "fullDesc": "To support your personal development and wellbeing, we need your consent to collect data about your mood and energy.",
-      "whatWeCollect": "What data do we collect?",
-      "item": {
-        "mood": "Daily mood and emotional state",
-        "energy": "Energy and stress levels",
-        "sleep": "Sleep quality and patterns",
-        "diary": "Diary entries and reflections",
-        "gratitude": "Gratitude notes and positive reflections"
+      "consent": {
+        "grantError": "Could not save consent",
+        "requiredTitle": "Consent required",
+        "requiredDesc": "You must give consent to use this feature",
+        "grantNow": "Give consent",
+        "manageInSettings": "Manage",
+        "fullTitle": "Consent for wellbeing data",
+        "fullDesc": "To support your personal development and wellbeing, we need your consent to collect data about your mood and energy.",
+        "whatWeCollect": "What data do we collect?",
+        "item": {
+          "mood": "Daily mood and emotional state",
+          "energy": "Energy and stress levels",
+          "sleep": "Sleep quality and patterns",
+          "diary": "Diary entries and reflections",
+          "gratitude": "Gratitude notes and positive reflections"
+        },
+        "whyWeCollect": "Why do we collect this data?",
+        "whyDesc": "To support your personal development and self-esteem, and to give you insights into your wellbeing over time.",
+        "whoHasAccess": "Who has access?",
+        "whoAccessDesc": "You are the only one who can see this data, unless you enable sharing with your assigned advisor.",
+        "dataProtection": "Your wellbeing data is fully private and processed in accordance with GDPR.",
+        "canWithdraw": "You can at any time:",
+        "withdrawDetail1": "Withdraw your consent in Settings",
+        "withdrawDetail2": "Have all your wellbeing data deleted",
+        "withdrawDetail3": "Contact us for more information",
+        "grantConsent": "I consent",
+        "goToSettings": "Go to Settings",
+        "privacyLink": "Read more in our",
+        "privacyPolicy": "privacy policy"
       },
-      "whyWeCollect": "Why do we collect this data?",
-      "whyDesc": "To support your personal development and self-esteem, and to give you insights into your wellbeing over time.",
-      "whoHasAccess": "Who has access?",
-      "whoAccessDesc": "You are the only one who can see this data, unless you enable sharing with your assigned advisor.",
-      "dataProtection": "Your wellbeing data is fully private and processed in accordance with GDPR.",
-      "canWithdraw": "You can at any time:",
-      "withdrawDetail1": "Withdraw your consent in Settings",
-      "withdrawDetail2": "Have all your wellbeing data deleted",
-      "withdrawDetail3": "Contact us for more information",
-      "grantConsent": "I consent",
-      "goToSettings": "Go to Settings",
-      "privacyLink": "Read more in our",
-      "privacyPolicy": "privacy policy"
-    },
       "title": "Share wellbeing data",
       "description": "Allow your consultant to see your diary, mood and wellbeing information"
     },
@@ -1991,7 +1991,7 @@
       "coverLetterNone": "Create with AI"
     }
   },
-    "coverLetter": {
+  "coverLetter": {
     "title": "Cover Letter",
     "subtitle": "Create personalized cover letters for your applications",
     "description": "Create professional cover letters that open doors to new opportunities",
@@ -2931,7 +2931,7 @@
       "tip4": "Focus on activities, not results"
     }
   },
-    "spontaneous": {
+  "spontaneous": {
     "title": "Spontaneous Application",
     "description": "Find and contact companies that match your profile",
     "tabs": {
@@ -3360,25 +3360,6 @@
         "expert": "Expert"
       }
     },
-    "industryRadar": {
-      "title": "Industry Radar",
-      "subtitle": "AI-powered market insights",
-      "personalized": "Personalized trends based on your profile",
-      "loading": "Fetching market trends...",
-      "trendingIndustries": "Trending Industries",
-      "emergingSkills": "Emerging Skills",
-      "marketInsights": "Market Insights",
-      "recommendations": "Recommendations for you",
-      "salaryTrend": "Salary trend",
-      "learningTime": "Learning time",
-      "impact": "Impact",
-      "lastUpdated": "Last updated",
-      "demand": {
-        "high": "High demand",
-        "medium": "Medium demand",
-        "low": "Low demand"
-      }
-    },
     "network": {
       "contacts": "Contacts",
       "activeThisMonth": "Active this month",
@@ -3546,7 +3527,44 @@
       "updatePlan": "Start over with a new plan",
       "overallProgressAria": "Overall career plan progress",
       "timelineAria": "Career plan timeline",
-      "milestonesAria": "Milestones"
+      "milestonesAria": "Milestones",
+      "loading": "Loading your career plan…",
+      "loadErrorTitle": "Could not load your career plan",
+      "loadErrorBody": "We will not show a create form until we know whether you already have a plan — otherwise you might replace it by accident. Reload the page and try again.",
+      "retry": "Try again",
+      "timeframeLabel": "Timeframe",
+      "deletePlanLabel": "Delete the entire career plan",
+      "deletePlanConfirmTitle": "Delete the career plan?",
+      "deletePlanConfirmBody": "The plan and every milestone in it will be gone. This cannot be undone.",
+      "deletePlanConfirmCta": "Delete the plan",
+      "deleteMilestoneConfirmTitle": "Delete the milestone?",
+      "deleteMilestoneConfirmBody": "The milestone and its steps will be gone. This cannot be undone.",
+      "deleteMilestoneConfirmCta": "Delete",
+      "cancel": "Cancel",
+      "overallProgress": "How far you have come",
+      "milestonesDone": "{{done}} of {{total}} milestones done",
+      "noProgressYet": "Add your first milestone and we will track progress here.",
+      "addMilestone": "Add a milestone",
+      "milestoneTitleLabel": "What should the milestone be called?",
+      "timelineHeading": "Your way forward",
+      "progressLabel": "Progress",
+      "progressFor": "Progress for {{title}}",
+      "smartHelperLabel": "Show help with phrasing your goal",
+      "startOver": "Start over with a new plan",
+      "emptyMilestonesTitle": "This is where you build your way forward",
+      "emptyMilestonesBody": "Break the goal into steps you can actually take. One at a time is enough.",
+      "timeframes": {
+        "5_years": "Five years",
+        "3_years": "Three years",
+        "1_year": "One year",
+        "6_months": "Six months"
+      },
+      "milestoneTimeframeLabel": "Timeframe for the milestone",
+      "milestoneTimeframePlaceholder": "Timeframe (e.g. month 1–2)",
+      "milestoneDateLabel": "Target date for the milestone",
+      "milestoneStepsLabel": "Steps (one per line)",
+      "saveFailed": "Could not save your progress",
+      "deleteFailed": "Could not delete"
     },
     "skills": {
       "skillsGapAnalysis": "Skills Gap Analysis",
@@ -3573,7 +3591,7 @@
       "description": "Track certifications, degrees, and licenses you have or plan to get.",
       "addCredential": "Add credential",
       "myCredentials": "My credentials",
-      "popularCredentials": "Popular certifications",
+      "popularCredentials": "Common licences and courses",
       "confirmDelete": "Are you sure you want to delete this credential?",
       "targetDateLabel": "Target",
       "completedDateLabel": "Completed",
@@ -3595,7 +3613,20 @@
         "issuerPlaceholder": "E.g. Amazon",
         "type": "Type",
         "targetDate": "Target date (optional)"
-      }
+      },
+      "saveFailed": "Could not save. Please try again.",
+      "deleteFailed": "Could not delete. Please try again.",
+      "loadErrorTitle": "Could not load your credentials",
+      "loadErrorBody": "Nothing has changed — what you added earlier is still there. Please try again.",
+      "retry": "Try again",
+      "cancel": "Cancel",
+      "confirmDeleteTitle": "Delete the credential?",
+      "confirmDeleteBody": "It will be removed from your list. This cannot be undone.",
+      "confirmDeleteCta": "Delete",
+      "deleteLabel": "Delete {{name}}",
+      "statusGroupLabel": "Status for {{name}}",
+      "emptyTitle": "This is where you collect your credentials",
+      "emptyBody": "Courses, licences, certificates and education — both what you have and what you are aiming for. Then you do not have to go looking when you apply for a job."
     },
     "relocation": {
       "title": "Relocate for Work",
@@ -3618,7 +3649,7 @@
       "highRent": "Rent exceeds 30% of net salary. Consider cheaper options.",
       "findHousing": "Find housing",
       "movingChecklist": "Moving checklist",
-      "checklistProgress": "{{completed}} of {{total}} items done",
+      "checklistProgress": "{{count}} of {{total}} done",
       "housingTips": {
         "title": "Tips for finding housing",
         "tip1": "Sign up for housing queues early - it takes time",
@@ -3649,38 +3680,89 @@
         }
       },
       "checklist": {
-        "addressChange": {
-          "label": "Report address change to Tax Agency",
-          "timeframe": "By moving day"
-        },
-        "mailForward": {
-          "label": "Order mail forwarding",
-          "timeframe": "2 weeks before"
-        },
-        "utilities": {
-          "label": "Sign electricity contract",
-          "timeframe": "2-4 weeks before"
-        },
-        "internet": {
-          "label": "Order internet/fiber",
-          "timeframe": "2-4 weeks before"
-        },
-        "insurance": {
-          "label": "Get/update home insurance",
-          "timeframe": "Before move-in"
-        },
-        "cleaning": {
-          "label": "Book moving cleaning",
-          "timeframe": "2-4 weeks before"
-        },
-        "parking": {
-          "label": "Arrange parking permit if needed",
-          "timeframe": "1-2 weeks before"
-        },
-        "keys": {
-          "label": "Pick up/return keys",
-          "timeframe": "Moving day"
-        }
+        "housingQueue": "Join a housing queue",
+        "jobSearch": "Start looking for jobs in the new city",
+        "addressChange": "Report your move to Skatteverket",
+        "mailForward": "Order mail forwarding",
+        "utilities": "Cancel and sign up for electricity",
+        "internet": "Order internet for the new home",
+        "insurance": "Move your home insurance",
+        "bank": "Tell your bank your new address",
+        "healthcare": "Change health centre",
+        "cleaning": "Clean the old home",
+        "parking": "Arrange a parking permit",
+        "keys": "Hand back the keys"
+      },
+      "heading": "If you are thinking about moving",
+      "intro": "Compare cities, see what rent would take out of your pay, and keep track of what needs doing.",
+      "fromProfile": "According to your profile you live in",
+      "loading": "Loading…",
+      "loadErrorTitle": "Could not load your moving plans",
+      "loadErrorBody": "We are not touching anything until we know what you saved earlier — your choices are still there. Reload the page and try again.",
+      "retry": "Try again",
+      "saving": "Saving…",
+      "unsaved": "Unsaved changes",
+      "saved": "Saved",
+      "saveFailed": "Could not save. We will try again shortly.",
+      "planTitle": "Your moving plan",
+      "planRegions_one": "{{count}} city you are looking at",
+      "planRegions_other": "{{count}} cities you are looking at",
+      "planChecklist": "{{count}} of {{total}} items ticked off",
+      "budgetTitle": "What would it cost to live there?",
+      "budgetIntro": "Enter what you expect to earn and we will show how much of it rent would take in each city.",
+      "salaryLabel": "Monthly salary before tax (SEK)",
+      "salaryHelp": "Not sure? See what the occupation usually pays on the salary page.",
+      "salaryLink": "Open the salary compass",
+      "currentRegionLabel": "Where do you live now?",
+      "choose": "Choose…",
+      "netExplained": "After tax that is roughly {{netto}} SEK a month (municipal tax {{skatt}} %, {{ar}} rules).",
+      "compareTitle": "Cities to compare",
+      "compareHint": "Pick the cities you are curious about — they are saved for next time.",
+      "colCity": "City",
+      "colRent": "Estimated rent",
+      "colQueue": "Housing queue",
+      "colJobs": "Open jobs now",
+      "colShare": "Share of your pay",
+      "colLeft": "Left after rent",
+      "pickCity": "Add {{city}} to the cities you are looking at",
+      "unpickCity": "Remove {{city}} from the cities you are looking at",
+      "youLiveHere": "You live here",
+      "jobsUnavailable": "Not fetched",
+      "jobsSource": "The number of open jobs comes from Arbetsförmedlingen and is fetched when you open the page.",
+      "estimateNote": "The rents and queue times here are rough estimates entered by hand on {{datum}}. They do not come from Hyresgästföreningen, SCB or any housing queue — use them for a sense of scale, not to make a decision.",
+      "estimateSources": "Check real figures at",
+      "rentRule": "A common rule of thumb is that rent should not take more than 30 % of what you get after tax.",
+      "needSalary": "Enter a monthly salary above and we will work out what share rent takes.",
+      "housingTitle": "Look for housing",
+      "housingDisclaimer": "Six private housing sites. The portal has no relationship with them and does not recommend one over another — they are here because they are large.",
+      "sites": {
+        "blocket": "Listings from both private landlords and agents",
+        "qasa": "Subletting with the contract handled through the site",
+        "bostadsportalen": "Collects housing queues and first-hand contracts",
+        "samtrygg": "Subletting where the site sits between tenant and landlord",
+        "homeq": "Rental flats allocated without a municipal queue",
+        "bostadDirekt": "Furnished flats and short-term housing"
+      },
+      "supportTitle": "Before you move for a job",
+      "supportBody": "Talk to your case worker first. What Arbetsförmedlingen can help with when you move depends on your situation, and they are the ones who decide — we deliberately give no amounts or conditions here, because such figures go stale without anyone noticing.",
+      "supportLink": "Arbetsförmedlingen’s support A–Z",
+      "checklistTitle": "Things to do before the move",
+      "checklistIntro": "Tick them off at your own pace. The list is saved.",
+      "when": {
+        "sixMonths": "Six months before",
+        "threeMonths": "A few months before",
+        "twoWeeks": "A couple of weeks before",
+        "oneWeek": "The week before",
+        "movingDay": "Moving day",
+        "before": "Before the move",
+        "after": "After the move"
+      },
+      "tipsTitle": "Four things that usually help",
+      "tips": {
+        "queue": "Join a housing queue early, even if you are unsure about moving. Queues rarely cost much and you lose nothing by staying in one.",
+        "sublet": "Subletting first and a first-hand contract later is a common route — you do not need everything solved at once.",
+        "jobFirst": "Having the job sorted before you move often makes housing easier to get.",
+        "firstMonths": "Expect the first months to cost more than usual: deposit, furniture, overlapping rent."
       }
     },
     "networkTab": {
@@ -3749,6 +3831,27 @@
       "copy": "Copy",
       "toReconnect": "To reconnect",
       "followUpThisWeek": "Follow-up this week"
+    },
+    "laborMarket": {
+      "heading": "The Swedish labour market",
+      "source": "Figures from Arbetsförmedlingen’s job bank",
+      "refresh": "Refresh",
+      "loading": "Loading market data…",
+      "errorTitle": "Could not fetch market data",
+      "errorBody": "Arbetsförmedlingen’s service did not respond. This usually resolves on its own.",
+      "retry": "Try again",
+      "openJobs": "open positions right now",
+      "newThisWeek": "{{antal}} of them were posted in the past week",
+      "skillsTitle": "Skills in the occupational fields with the most jobs",
+      "skillsEmpty": "Arbetsförmedlingen returned no occupational fields this time.",
+      "skillsField": "{{field}} — {{antal}} open positions",
+      "occupationsTitle": "Occupational groups with the most open positions",
+      "occupationsEmpty": "No occupational statistics in the response right now.",
+      "jobsUnit": "{{antal}} jobs",
+      "regionsTitle": "Where are the jobs?",
+      "dataFrom": "Data from",
+      "updated": "Fetched",
+      "noSource": "—"
     }
   },
   "myConsultant": {
@@ -3906,7 +4009,13 @@
           "title": "Your conditions",
           "description": "How do you experience your conditions for work?"
         }
-      }
+      },
+      "notSaved": "Not saved",
+      "missingAnswers_one": "{{count}} answer is missing. We took you to that question.",
+      "missingAnswers_other": "{{count}} answers are missing. We took you to the first one.",
+      "loadErrorTitle": "Could not load your answers",
+      "loadErrorBody": "We will not show a new test until we know what you have already answered — otherwise you risk overwriting it. Reload the page and try again.",
+      "retry": "Try again"
     },
     "occupationsThatSuitYou": "Occupations that suit you",
     "basedOnYourProfile": "Based on your profile",
@@ -3941,7 +4050,9 @@
       },
       "showing": "Showing {{count}} of {{total}} occupations",
       "noResults": "No occupations found with your filters.",
-      "clearFilters": "Clear filters"
+      "clearFilters": "Clear filters",
+      "showMore": "Show {{count}} more",
+      "shownOfTotal": "Showing {{visade}} of {{totalt}}"
     },
     "history": {
       "badge": "Your history",
@@ -3951,7 +4062,41 @@
       "errorLoading": "Could not load history",
       "noHistory": "No history yet",
       "noHistoryDesc": "When you complete the test, your results will be saved here. You can redo the test anytime and compare the results.",
-      "startTest": "Start the test"
+      "startTest": "Start the test",
+      "currentProfile": "Your current profile",
+      "topInterests": "What you answered most positively about",
+      "seeFullResults": "See the full result",
+      "retakeTest": "Take the test again",
+      "previousResults": "Previous times you took the test",
+      "noDate": "Date missing",
+      "errorBody": "We could not load your earlier results. Nothing has changed — reload the page and try again.",
+      "retry": "Try again"
+    },
+    "question": {
+      "sliderLabel": "Answer question {{number}}: {{text}}",
+      "noAnswerYet": "Not answered yet",
+      "scale": {
+        "1": "Does not describe me at all",
+        "2": "Describes me poorly",
+        "3": "Describes me partly",
+        "4": "Describes me fairly well",
+        "5": "Describes me completely"
+      },
+      "low": "Not at all",
+      "mid": "Partly",
+      "high": "Completely",
+      "questionOf": "Question {{number}} of {{total}}",
+      "remaining_one": "{{count}} left",
+      "remaining_other": "{{count}} left",
+      "lastQuestion": "Last question.",
+      "halfway": "Halfway. Take a break if you need one.",
+      "takeYourTime": "{{progress}} % done — take the time you need.",
+      "pauseTitle": "Would you like a break?",
+      "pauseBody": "Your answers are saved automatically. You can pick up exactly where you left off.",
+      "pauseContinue": "Keep answering",
+      "pauseConfirm": "Pause and go back",
+      "pauseButton": "Pause",
+      "tip": "There are no right answers. Answer as things are for you today."
     }
   },
   "quests": {

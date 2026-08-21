@@ -254,7 +254,12 @@ async function handlePopularSearches(category: string, limit: number, corsHeader
   }
 
   try {
-    const statsUrl = `${JOBSEARCH_API_BASE}/search?limit=0&stats=${statsType}`;
+    // AF returnerar som default bara fem värden per stats-typ, oavsett vad
+    // anroparen ber om. Utan `stats.limit` blev `slice(0, limit)` nedan en
+    // no-op och kategorin `municipalities` kunde aldrig ge mer än de fem
+    // största kommunerna. AF:s tak är 30.
+    const statsLimit = Math.min(Math.max(limit, 1), 30);
+    const statsUrl = `${JOBSEARCH_API_BASE}/search?limit=0&stats=${statsType}&stats.limit=${statsLimit}`;
     console.log(`[af-trends] Fetching ${category}: ${statsUrl}`);
 
     const data = await fetchJobSearch(statsUrl);

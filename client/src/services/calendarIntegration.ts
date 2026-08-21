@@ -3,7 +3,9 @@
  * Connects career module with calendar - syncs milestones, network follow-ups, and reminders
  */
 
-import { careerPlanApi, networkApi, type Milestone, type NetworkContact } from './careerApi'
+// careerApi exporterar `CareerMilestone`, aldrig `Milestone`. Importen stod
+// som `type Milestone` och gav ett TS2305 som legat i det frysta taket.
+import { careerPlanApi, networkApi, type CareerMilestone as Milestone, type NetworkContact } from './careerApi'
 import { calendarApi } from './cloudStorage'
 import type { CalendarEvent, SmartReminder } from './calendarData'
 

@@ -213,31 +213,53 @@ export function CareerRecommendationsPanel({
                 className="border-t border-gray-100 dark:border-gray-700"
               >
                 <div className="p-4 space-y-6">
-                  {/* Salary Info */}
+                  {/*
+                    Rutan visades för ALLA yrken, eftersom uppslaget alltid
+                    returnerade något: 128 av 142 yrken fick medelvärdet av tjugo
+                    handskrivna rader presenterat som "Median" med percentiler.
+                    Nu returnerar uppslaget null utan underlag, och vi säger det
+                    i stället för att tyst utelämna raden. Året skrivs ut.
+                  */}
+                  {!rec.salaryData && (
+                    <div className="rounded-xl p-4 bg-[var(--c-bg)] border border-[var(--c-accent)]">
+                      <p className="text-sm text-stone-700 dark:text-stone-300">
+                        Vi har ingen lönestatistik för det här yrket. Kolla{' '}
+                        <a
+                          href="https://www.scb.se/hitta-statistik/sverige-i-siffror/lonesok/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline text-[var(--c-text)]"
+                        >
+                          SCB:s lönesök
+                        </a>{' '}
+                        eller lönesidan i portalen.
+                      </p>
+                    </div>
+                  )}
                   {rec.salaryData && (
-                    <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4">
+                    <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <BarChart3 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                        <h4 className="font-semibold text-emerald-900 dark:text-emerald-100">
-                          Löneinformation
+                        <BarChart3 className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+                        <h4 className="font-semibold text-stone-800 dark:text-stone-100">
+                          Löneläge {rec.salaryData.year}
                         </h4>
                       </div>
                       <div className="grid grid-cols-3 gap-4 text-center">
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">10:e percentilen</p>
-                          <p className="font-bold text-emerald-700 dark:text-emerald-300">
+                          <p className="font-bold text-[var(--c-text)]">
                             {rec.salaryData.p10.toLocaleString('sv-SE')} kr
                           </p>
                         </div>
-                        <div className="border-x border-emerald-200 dark:border-emerald-700">
+                        <div className="border-x border-[var(--c-accent)]">
                           <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Median</p>
-                          <p className="font-bold text-emerald-700 dark:text-emerald-300 text-lg">
+                          <p className="font-bold text-[var(--c-text)] text-lg">
                             {rec.salaryData.median.toLocaleString('sv-SE')} kr
                           </p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">90:e percentilen</p>
-                          <p className="font-bold text-emerald-700 dark:text-emerald-300">
+                          <p className="font-bold text-[var(--c-text)]">
                             {rec.salaryData.p90.toLocaleString('sv-SE')} kr
                           </p>
                         </div>

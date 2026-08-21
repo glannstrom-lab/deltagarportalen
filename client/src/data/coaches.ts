@@ -697,7 +697,10 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
       },
       mentalcoach: {
         tips: [
-          'Det finns inget "fel" svar. Om du fastnar på en fråga, hoppa över och kom tillbaka.',
+          // Stod tidigare "hoppa över och kom tillbaka" — en knapp som inte
+          // finns. TestTab har bara Föregående/Nästa. Det som DÄREMOT är sant
+          // är autosparningen, och det är beläggbart. (2026-08-21)
+          'Det finns inget "fel" svar. Dina svar sparas efter varje fråga, så du kan lämna sidan och fortsätta senare.',
           'Var snäll mot dig själv — du behöver inte passa in i en låda.',
         ],
       },

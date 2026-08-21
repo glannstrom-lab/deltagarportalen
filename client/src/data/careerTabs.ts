@@ -1,11 +1,28 @@
 /**
- * Career Page Tabs Configuration
- * 5 tabs: Arbetsmarknad, Anpassning, Credentials, Flytt, Karriärplan
- * Note: Nätverk moved to /nätverk, Företag removed (duplicate of Spontanansökan)
- * Note: Kompetens removed - merged into standalone /skills-gap page
+ * Flikarna på /career. Fem stycken.
+ *
+ * Nätverk flyttade till /nätverk. Företag togs bort (dubblerade
+ * Spontanansökan). Kompetens slogs ihop med /skills-gap-analysis.
+ *
+ * Granskning 2026-08-21 — två saker togs bort här:
+ *
+ * · **`badgeKey: 'career.new'`** låg på Anpassning, Meriter och Flytta.
+ *   Märkningen hade ingen utgångsmekanism: den var en statisk sträng utan
+ *   datum och utan koppling till `jobin_visited_features` (som sidnavens
+ *   badge i `navigation.ts` faktiskt använder). "Ny!" hade alltså stått kvar
+ *   för alltid. Den *syntes* aldrig — `SidRail` renderar inte `badge` alls,
+ *   och den gamla `PageTabs`-vägen vaktade varje badge med `badge > 0`, vilket
+ *   är falskt för strängen "Ny!". Enda spåret den lämnade var ett typfel i den
+ *   frysta takskulden. Vill man märka en flik igen: använd skenans
+ *   `markering`-prop och grinda den mot ett datum eller mot besökshistoriken.
+ *
+ * · **Den andra listan, `careerTabs`** (hårdkodad svenska, "for backwards
+ *   compatibility"). Den hade tre anropare, alla i `getTabsForPath` — och alla
+ *   tre var onåbara: `/career` skickar alltid `customTabs`, `/skills-gap` kör
+ *   `showTabs={false}`, och `/career-plan` är ingen route. Listorna hade redan
+ *   glidit isär (badges skilde sig). En sanning räcker.
  */
 
-import type { Tab } from '@/components/layout/PageTabs'
 import {
   TrendingUp,
   Accessibility,
@@ -14,20 +31,11 @@ import {
   Home,
 } from '@/components/ui/icons'
 
-// Tab definitions with i18n keys - labels are resolved at render time
+// Etiketterna slås upp vid rendering — se Career.tsx.
 export const careerTabDefs = [
-  { id: 'labor-market', labelKey: 'career.tabs.laborMarket', descriptionKey: 'career.tabs.laborMarketDesc', path: '/career', icon: TrendingUp },
-  { id: 'adaptation', labelKey: 'career.tabs.adaptation', descriptionKey: 'career.tabs.adaptationDesc', path: '/career/adaptation', icon: Accessibility, badgeKey: 'career.new' },
-  { id: 'credentials', labelKey: 'career.tabs.credentials', descriptionKey: 'career.tabs.credentialsDesc', path: '/career/credentials', icon: GraduationCap, badgeKey: 'career.new' },
-  { id: 'relocation', labelKey: 'career.tabs.relocation', descriptionKey: 'career.tabs.relocationDesc', path: '/career/relocation', icon: Home, badgeKey: 'career.new' },
-  { id: 'plan', labelKey: 'career.tabs.plan', descriptionKey: 'career.tabs.planDesc', path: '/career/plan', icon: Target },
-]
-
-// For backwards compatibility - static tabs (Swedish)
-export const careerTabs: Tab[] = [
-  { id: 'labor-market', label: 'Arbetsmarknad', path: '/career', icon: TrendingUp },
-  { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
-  { id: 'credentials', label: 'Meriter', path: '/career/credentials', icon: GraduationCap, badge: undefined },
-  { id: 'relocation', label: 'Flytta', path: '/career/relocation', icon: Home, badge: undefined },
-  { id: 'plan', label: 'Karriärplan', path: '/career/plan', icon: Target },
+  { id: 'labor-market', labelKey: 'career.tabs.laborMarket', path: '/career', icon: TrendingUp },
+  { id: 'adaptation', labelKey: 'career.tabs.adaptation', path: '/career/adaptation', icon: Accessibility },
+  { id: 'credentials', labelKey: 'career.tabs.credentials', path: '/career/credentials', icon: GraduationCap },
+  { id: 'relocation', labelKey: 'career.tabs.relocation', path: '/career/relocation', icon: Home },
+  { id: 'plan', labelKey: 'career.tabs.plan', path: '/career/plan', icon: Target },
 ]

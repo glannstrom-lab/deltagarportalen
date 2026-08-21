@@ -72,15 +72,29 @@ async function fetchFromHistorical(endpoint: string, params?: Record<string, str
 
 // ============== POPULAR SEARCHES ==============
 
+/**
+ * Vad "af-trends/popular-searches" faktiskt skickar sedan B13 (2026-08-05):
+ * termen och AF:s antal publicerade annonser. Inget annat. Typen deklarerade
+ * tidigare "trend" och "change_percent" som om de kom med i svaret — de var
+ * satta efter listposition respektive Math.random() och togs bort då.
+ * "fetchFromFunction" returnerar "any", så TypeScript fångade inte att de
+ * saknades; konsumenter renderade "undefined". Håll typen ärlig mot svaret.
+ */
 export interface PopularSearch {
   term: string;
   count: number;
-  trend: 'up' | 'down' | 'stable';
-  change_percent?: number;
 }
 
+/** Speglar POPULAR_SEARCH_CATEGORIES i supabase/functions/af-trends. */
+export type PopularSearchCategory =
+  | 'occupations'
+  | 'occupation-names'
+  | 'fields'
+  | 'locations'
+  | 'municipalities';
+
 export async function getPopularSearches(
-  category: 'occupations' | 'skills' | 'locations' | 'employers' = 'occupations',
+  category: PopularSearchCategory = 'occupations',
   limit: number = 10
 ): Promise<PopularSearch[]> {
   const result = await fetchFromTrends('/popular-searches', {
@@ -92,12 +106,17 @@ export async function getPopularSearches(
 
 // ============== TRENDING SKILLS ==============
 
+/**
+ * AF:s JobSearch-API har inget stats=skill. af-trends mappar därför
+ * yrkesområde → kompetenser ur en handskriven tabell och skickar med vilket
+ * yrkesområde kompetensen kom ur, plus områdets annonsantal, "så att siffran
+ * kan tillskrivas rätt sak i gränssnittet". Fälten demand, trend, job_count
+ * och average_salary togs bort i B13 — de var uträknade, inte mätta.
+ */
 export interface TrendingSkill {
   skill: string;
-  demand: number;
-  trend: 'up' | 'down' | 'stable';
-  job_count: number;
-  average_salary?: number;
+  occupation_field?: string;
+  occupation_field_job_count?: number;
 }
 
 export async function getTrendingSkills(limit: number = 20): Promise<TrendingSkill[]> {
@@ -109,25 +128,27 @@ export async function getTrendingSkills(limit: number = 20): Promise<TrendingSki
 
 // ============== MARKET STATS ==============
 
+/**
+ * Enbart mätta värden. Fälten avg_time_to_hire_days och competition_index
+ * fanns aldrig i AF:s API och skickas inte längre; growth_percent och trend
+ * togs bort i B13 eftersom en jämförelse mellan två sjudagarsfönster mäter
+ * utgångna annonser, inte tillväxt.
+ */
 export interface MarketStats {
   total_jobs: number;
   new_jobs_today: number;
   new_jobs_week: number;
-  avg_time_to_hire_days: number;
-  competition_index: number; // Antal sökande per jobb
-  
+
   by_region: Array<{
     region: string;
     job_count: number;
-    growth_percent: number;
   }>;
-  
+
   by_occupation: Array<{
     occupation: string;
     job_count: number;
-    trend: 'up' | 'down' | 'stable';
   }>;
-  
+
   last_updated: string;
 }
 
@@ -196,7 +217,7 @@ export interface DataWithSource<T> {
 }
 
 async function getPopularSearchesWithFallback(
-  category: 'occupations' | 'skills' | 'locations' | 'employers' = 'occupations',
+  category: PopularSearchCategory = 'occupations',
   limit: number = 10
 ): Promise<DataWithSource<PopularSearch[]>> {
   const result = await getPopularSearches(category, limit);

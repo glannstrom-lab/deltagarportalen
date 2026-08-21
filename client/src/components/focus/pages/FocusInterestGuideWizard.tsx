@@ -8,6 +8,8 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Heart, Star, Smile } from '@/components/ui/icons'
+import { userApi } from '@/services/userApi'
+import { showToast } from '@/components/Toast'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
@@ -19,6 +21,7 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
   const [step, setStep] = useState(0)
   const [interests, setInterests] = useState('')
   const [strengths, setStrengths] = useState('')
+  const [sparar, setSparar] = useState(false)
 
   const STEPS: ReadonlyArray<FocusWizardStep> = [
     {
@@ -45,9 +48,34 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
     <FocusWizardFrame
       steps={STEPS}
       current={step}
+      /*
+        Guiden TVINGAR fram fritext ("canNext" kräver att fälten är ifyllda)
+        och kastade sedan bort den: `onNext` gjorde bara `onExit()` vid sista
+        steget. Inget API-anrop, ingen localStorage, ingen koppling till
+        intresseguiden. Slutskärmen sa "Bra start!" om något som inte fanns
+        kvar när användaren kom till normalläget.
+
+        Nu skrivs svaren till `profiles.interests`, som `userApi.getPreferences`
+        redan läser. Misslyckas det säger vi det i stället för att stänga som
+        om det gått bra. (Granskning 2026-08-21.)
+      */
       onNext={async () => {
-        if (current.id === 'done') { onExit(); return }
-        setStep((s) => s + 1)
+        if (current.id !== 'done') { setStep((s) => s + 1); return }
+
+        setSparar(true)
+        try {
+          const befintliga = await userApi.getPreferences()
+          const nya = [interests.trim(), strengths.trim()].filter(Boolean)
+          await userApi.updatePreferences({
+            interests: [...new Set([...(befintliga?.interests ?? []), ...nya])],
+          })
+          onExit()
+        } catch (err) {
+          console.error('Kunde inte spara fokuslägets intressesvar:', err)
+          showToast.error(t('focus.interest.saveFailed', 'Kunde inte spara det du skrev. Försök igen.'))
+        } finally {
+          setSparar(false)
+        }
       }}
       onBack={() => setStep((s) => Math.max(s - 1, 0))}
       onExit={onExit}
@@ -55,7 +83,7 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
         ? interests.trim().length > 0
         : current.id === 'strengths'
           ? strengths.trim().length > 0
-          : true}
+          : !sparar}
     >
       {current.id === 'interests' && (
         <textarea
@@ -81,7 +109,7 @@ export function FocusInterestGuideWizard({ onExit }: Props) {
       )}
       {current.id === 'done' && (
         <p className="text-stone-600 dark:text-stone-300">
-          {t('focus.interest.doneText', 'Bra start! Öppna intresseguiden i normalläge för att göra hela RIASEC-testet och se yrken som passar dig.')}
+          {t('focus.interest.doneText', 'Bra start. Det du skrev sparas till din profil. Öppna intresseguiden i normalläge när du orkar — där finns hela testet och yrken att titta på.')}
         </p>
       )}
     </FocusWizardFrame>

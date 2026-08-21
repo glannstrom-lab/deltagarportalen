@@ -54,7 +54,15 @@ const path = require('node:path')
 // `InterviewPrep.tsx:23` fortsatte anropa den utan `await` — skuld som räknats
 // i taket i fem månader, i kod ingen användare nått. Se
 // archive/2026-08-doda-intervjukomponenter/README.md.
-const CEILING = 403
+// 403 → 400 (2026-08-21, Karriär-genomgången): tre fel betalda. Två var
+// riktiga buggar, inte typskuld — `calendarIntegration.ts` importerade
+// `Milestone` som careerApi aldrig exporterat, och Career.tsx mappade en
+// `badge`-sträng till en prop som är typad som `number` och som ingen
+// renderar. Det tredje var badgens systerfält `description`.
+// 400 → 390 (2026-08-21, Intresseguiden): tio fel betalda, bl.a. fyra
+// TS2322 där saveToHistory tog Record<string, number> i stället för de
+// riktiga profiltyperna, och en import av `Milestone` som inte finns.
+const CEILING = 390
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

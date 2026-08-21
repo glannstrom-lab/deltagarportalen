@@ -300,36 +300,36 @@
       "description": "Tillåt din konsulent att se din ICF-data (kognitiv, motorisk, sensorisk osv.)"
     },
     "wellness": {
-    "consent": {
-      "grantError": "Kunde inte spara samtycke",
-      "requiredTitle": "Samtycke krävs",
-      "requiredDesc": "Du måste ge samtycke för att kunna använda den här funktionen",
-      "grantNow": "Ge samtycke",
-      "manageInSettings": "Hantera",
-      "fullTitle": "Samtycke för välmåendedata",
-      "fullDesc": "För att kunna stödja din personliga utveckling och ditt välmående behöver vi ditt samtycke att samla in data om ditt humör och din energi.",
-      "whatWeCollect": "Vilken data samlar vi in?",
-      "item": {
-        "mood": "Dagligt humör och emotionellt tillstånd",
-        "energy": "Energi- och stressnivåer",
-        "sleep": "Sömnkvalitet och mönster",
-        "diary": "Dagboksanteckningar och reflektioner",
-        "gratitude": "Tacksamhetsanteckningar och positiva reflektioner"
+      "consent": {
+        "grantError": "Kunde inte spara samtycke",
+        "requiredTitle": "Samtycke krävs",
+        "requiredDesc": "Du måste ge samtycke för att kunna använda den här funktionen",
+        "grantNow": "Ge samtycke",
+        "manageInSettings": "Hantera",
+        "fullTitle": "Samtycke för välmåendedata",
+        "fullDesc": "För att kunna stödja din personliga utveckling och ditt välmående behöver vi ditt samtycke att samla in data om ditt humör och din energi.",
+        "whatWeCollect": "Vilken data samlar vi in?",
+        "item": {
+          "mood": "Dagligt humör och emotionellt tillstånd",
+          "energy": "Energi- och stressnivåer",
+          "sleep": "Sömnkvalitet och mönster",
+          "diary": "Dagboksanteckningar och reflektioner",
+          "gratitude": "Tacksamhetsanteckningar och positiva reflektioner"
+        },
+        "whyWeCollect": "Varför samlar vi in datan?",
+        "whyDesc": "För att stödja din personliga utveckling och självkänsla, och för att ge dig insikter om ditt välmående över tid.",
+        "whoHasAccess": "Vem har åtkomst?",
+        "whoAccessDesc": "Du är den enda som kan se datan, om du inte aktiverar delning med din tilldelade konsulent.",
+        "dataProtection": "Ditt välmåendedata är helt privat och behandlas enligt GDPR.",
+        "canWithdraw": "Du kan när som helst:",
+        "withdrawDetail1": "Dra tillbaka ditt samtycke i Inställningar",
+        "withdrawDetail2": "Få all din välmåendedata raderad",
+        "withdrawDetail3": "Kontakta oss för mer information",
+        "grantConsent": "Jag samtycker",
+        "goToSettings": "Gå till Inställningar",
+        "privacyLink": "Läs mer i vår",
+        "privacyPolicy": "integritetspolicy"
       },
-      "whyWeCollect": "Varför samlar vi in datan?",
-      "whyDesc": "För att stödja din personliga utveckling och självkänsla, och för att ge dig insikter om ditt välmående över tid.",
-      "whoHasAccess": "Vem har åtkomst?",
-      "whoAccessDesc": "Du är den enda som kan se datan, om du inte aktiverar delning med din tilldelade konsulent.",
-      "dataProtection": "Ditt välmåendedata är helt privat och behandlas enligt GDPR.",
-      "canWithdraw": "Du kan när som helst:",
-      "withdrawDetail1": "Dra tillbaka ditt samtycke i Inställningar",
-      "withdrawDetail2": "Få all din välmåendedata raderad",
-      "withdrawDetail3": "Kontakta oss för mer information",
-      "grantConsent": "Jag samtycker",
-      "goToSettings": "Gå till Inställningar",
-      "privacyLink": "Läs mer i vår",
-      "privacyPolicy": "integritetspolicy"
-    },
       "title": "Dela välmåendedata",
       "description": "Tillåt din konsulent att se din dagbok, ditt humör och din välmåendeinformation"
     },
@@ -1991,7 +1991,7 @@
       "coverLetterNone": "Skapa med AI"
     }
   },
-    "coverLetter": {
+  "coverLetter": {
     "title": "Personligt brev",
     "subtitle": "Skapa personliga brev för dina ansökningar",
     "description": "Skapa professionella personliga brev som öppnar dörrar till nya möjligheter",
@@ -2931,7 +2931,7 @@
       "tip4": "Fokusera på aktiviteter, inte resultat"
     }
   },
-    "spontaneous": {
+  "spontaneous": {
     "title": "Spontanansökan",
     "description": "Hitta och kontakta företag som passar dig",
     "tabs": {
@@ -3360,25 +3360,6 @@
         "expert": "Expert"
       }
     },
-    "industryRadar": {
-      "title": "Branschradar",
-      "subtitle": "AI-drivna marknadsinsikter",
-      "personalized": "Personaliserade trender baserat på din profil",
-      "loading": "Hämtar marknadstrender...",
-      "trendingIndustries": "Trendande branscher",
-      "emergingSkills": "Kompetenser på uppgång",
-      "marketInsights": "Marknadsinsikter",
-      "recommendations": "Rekommendationer för dig",
-      "salaryTrend": "Lönetrend",
-      "learningTime": "Lärtid",
-      "impact": "Påverkan",
-      "lastUpdated": "Senast uppdaterad",
-      "demand": {
-        "high": "Hög efterfrågan",
-        "medium": "Medel efterfrågan",
-        "low": "Låg efterfrågan"
-      }
-    },
     "network": {
       "contacts": "Kontakter",
       "activeThisMonth": "Aktiva denna månad",
@@ -3546,7 +3527,44 @@
       "updatePlan": "Börja om med en ny plan",
       "overallProgressAria": "Övergripande framsteg för karriärplan",
       "timelineAria": "Tidslinje för karriärplan",
-      "milestonesAria": "Milstolpar"
+      "milestonesAria": "Milstolpar",
+      "loading": "Laddar din karriärplan…",
+      "loadErrorTitle": "Kunde inte hämta din karriärplan",
+      "loadErrorBody": "Vi visar inget skapa-formulär förrän vi vet om du redan har en plan — annars riskerar du att av misstag ersätta den. Ladda om sidan och försök igen.",
+      "retry": "Försök igen",
+      "timeframeLabel": "Tidsram",
+      "deletePlanLabel": "Ta bort hela karriärplanen",
+      "deletePlanConfirmTitle": "Ta bort karriärplanen?",
+      "deletePlanConfirmBody": "Planen och alla milstolpar i den försvinner. Det går inte att ångra.",
+      "deletePlanConfirmCta": "Ta bort planen",
+      "deleteMilestoneConfirmTitle": "Ta bort milstolpen?",
+      "deleteMilestoneConfirmBody": "Milstolpen och dess steg försvinner. Det går inte att ångra.",
+      "deleteMilestoneConfirmCta": "Ta bort",
+      "cancel": "Avbryt",
+      "overallProgress": "Så här långt har du kommit",
+      "milestonesDone": "{{done}} av {{total}} milstolpar klara",
+      "noProgressYet": "Lägg till din första milstolpe, så följer vi framstegen här.",
+      "addMilestone": "Lägg till milstolpe",
+      "milestoneTitleLabel": "Vad ska milstolpen heta?",
+      "timelineHeading": "Din väg framåt",
+      "progressLabel": "Framsteg",
+      "progressFor": "Framsteg för {{title}}",
+      "smartHelperLabel": "Visa hjälp med att formulera målet",
+      "startOver": "Börja om med en ny plan",
+      "emptyMilestonesTitle": "Här bygger du din väg framåt",
+      "emptyMilestonesBody": "Dela upp målet i steg du faktiskt kan ta. Ett i taget räcker.",
+      "timeframes": {
+        "5_years": "Fem år",
+        "3_years": "Tre år",
+        "1_year": "Ett år",
+        "6_months": "Ett halvår"
+      },
+      "milestoneTimeframeLabel": "Tidsram för milstolpen",
+      "milestoneTimeframePlaceholder": "Tidsram (t.ex. månad 1–2)",
+      "milestoneDateLabel": "Måldatum för milstolpen",
+      "milestoneStepsLabel": "Steg (ett per rad)",
+      "saveFailed": "Kunde inte spara framstegen",
+      "deleteFailed": "Kunde inte ta bort"
     },
     "skills": {
       "skillsGapAnalysis": "Kompetensgap-analys",
@@ -3573,7 +3591,7 @@
       "description": "Håll koll på certifieringar, utbildningar och licenser du har eller planerar att ta.",
       "addCredential": "Lägg till merit",
       "myCredentials": "Dina meriter",
-      "popularCredentials": "Populära certifieringar",
+      "popularCredentials": "Vanliga yrkesbevis och kurser",
       "confirmDelete": "Är du säker på att du vill ta bort denna credential?",
       "targetDateLabel": "Mål",
       "completedDateLabel": "Klar",
@@ -3595,7 +3613,20 @@
         "issuerPlaceholder": "T.ex. Amazon",
         "type": "Typ",
         "targetDate": "Måldatum (valfritt)"
-      }
+      },
+      "saveFailed": "Kunde inte spara. Försök igen.",
+      "deleteFailed": "Kunde inte ta bort. Försök igen.",
+      "loadErrorTitle": "Kunde inte hämta dina meriter",
+      "loadErrorBody": "Inget har ändrats — det du lagt in tidigare ligger kvar. Försök igen.",
+      "retry": "Försök igen",
+      "cancel": "Avbryt",
+      "confirmDeleteTitle": "Ta bort meriten?",
+      "confirmDeleteBody": "Meriten försvinner ur din lista. Det går inte att ångra.",
+      "confirmDeleteCta": "Ta bort",
+      "deleteLabel": "Ta bort {{name}}",
+      "statusGroupLabel": "Status för {{name}}",
+      "emptyTitle": "Här samlar du dina meriter",
+      "emptyBody": "Kurser, körkort, yrkesbevis och utbildningar — både sådant du har och sådant du siktar på. Då slipper du leta när du ska söka jobb."
     },
     "relocation": {
       "title": "Flytta för jobb",
@@ -3618,7 +3649,7 @@
       "highRent": "Hyran överstiger 30% av nettolön. Överväg billigare alternativ.",
       "findHousing": "Hitta bostad",
       "movingChecklist": "Flyttchecklista",
-      "checklistProgress": "{{completed}} av {{total}} punkter klara",
+      "checklistProgress": "{{count}} av {{total}} klara",
       "housingTips": {
         "title": "Tips för att hitta bostad",
         "tip1": "Skriv dig i bostadskö tidigt - det tar tid",
@@ -3649,38 +3680,89 @@
         }
       },
       "checklist": {
-        "addressChange": {
-          "label": "Anmäl adressändring till Skatteverket",
-          "timeframe": "Senast flyttdagen"
-        },
-        "mailForward": {
-          "label": "Beställ eftersändning av post",
-          "timeframe": "2 veckor före"
-        },
-        "utilities": {
-          "label": "Teckna elavtal för nya bostaden",
-          "timeframe": "2-4 veckor före"
-        },
-        "internet": {
-          "label": "Beställ bredband/fiber",
-          "timeframe": "2-4 veckor före"
-        },
-        "insurance": {
-          "label": "Teckna/uppdatera hemförsäkring",
-          "timeframe": "Innan inflyttning"
-        },
-        "cleaning": {
-          "label": "Boka flyttstädning",
-          "timeframe": "2-4 veckor före"
-        },
-        "parking": {
-          "label": "Ordna parkeringstillstånd om behövs",
-          "timeframe": "1-2 veckor före"
-        },
-        "keys": {
-          "label": "Hämta/lämna nycklar",
-          "timeframe": "Flyttdagen"
-        }
+        "housingQueue": "Ställ dig i bostadskö",
+        "jobSearch": "Börja söka jobb i den nya staden",
+        "addressChange": "Anmäl flytt till Skatteverket",
+        "mailForward": "Beställ eftersändning av post",
+        "utilities": "Säg upp och teckna el",
+        "internet": "Beställ internet till nya bostaden",
+        "insurance": "Flytta över hemförsäkringen",
+        "bank": "Meddela banken din nya adress",
+        "healthcare": "Byt vårdcentral",
+        "cleaning": "Städa den gamla bostaden",
+        "parking": "Ordna parkeringstillstånd",
+        "keys": "Lämna tillbaka nycklarna"
+      },
+      "heading": "Om du funderar på att flytta",
+      "intro": "Jämför städer, se vad hyran skulle ta av din lön, och håll ordning på vad som ska göras.",
+      "fromProfile": "Enligt din profil bor du i",
+      "loading": "Laddar…",
+      "loadErrorTitle": "Kunde inte hämta dina flyttplaner",
+      "loadErrorBody": "Vi rör ingenting förrän vi vet vad du sparat sedan tidigare — dina val ligger kvar. Ladda om sidan och försök igen.",
+      "retry": "Försök igen",
+      "saving": "Sparar…",
+      "unsaved": "Osparade ändringar",
+      "saved": "Sparat",
+      "saveFailed": "Kunde inte spara. Vi försöker igen strax.",
+      "planTitle": "Din flyttplan",
+      "planRegions_one": "{{count}} stad du tittar på",
+      "planRegions_other": "{{count}} städer du tittar på",
+      "planChecklist": "{{count}} av {{total}} punkter avbockade",
+      "budgetTitle": "Vad skulle det kosta att bo där?",
+      "budgetIntro": "Fyll i vad du räknar med att tjäna, så visar vi hur stor del av lönen hyran skulle ta i varje stad.",
+      "salaryLabel": "Månadslön före skatt (kr)",
+      "salaryHelp": "Vet du inte? Se vad yrket brukar ge på lönesidan.",
+      "salaryLink": "Öppna lönekompassen",
+      "currentRegionLabel": "Var bor du nu?",
+      "choose": "Välj…",
+      "netExplained": "Efter skatt blir det ungefär {{netto}} kr i månaden (kommunalskatt {{skatt}} %, {{ar}} års regler).",
+      "compareTitle": "Städer att jämföra",
+      "compareHint": "Välj de städer du är nyfiken på — de sparas till nästa gång.",
+      "colCity": "Stad",
+      "colRent": "Uppskattad hyra",
+      "colQueue": "Kötid bostad",
+      "colJobs": "Lediga jobb nu",
+      "colShare": "Andel av lönen",
+      "colLeft": "Kvar efter hyran",
+      "pickCity": "Lägg till {{city}} bland städerna du tittar på",
+      "unpickCity": "Ta bort {{city}} från städerna du tittar på",
+      "youLiveHere": "Här bor du",
+      "jobsUnavailable": "Inte hämtat",
+      "jobsSource": "Antal lediga jobb kommer från Arbetsförmedlingen och hämtas när du öppnar sidan.",
+      "estimateNote": "Hyror och kötider här är grova uppskattningar som skrevs in för hand {{datum}}. De kommer inte från Hyresgästföreningen, SCB eller någon bostadskö — använd dem för att få en känsla, inte för att fatta beslut.",
+      "estimateSources": "Kolla riktiga siffror hos",
+      "rentRule": "En vanlig tumregel är att hyran inte bör ta mer än 30 % av det du får ut efter skatt.",
+      "needSalary": "Fyll i en månadslön ovan så räknar vi ut hur stor del hyran tar.",
+      "housingTitle": "Leta bostad",
+      "housingDisclaimer": "Sex privata bostadssajter. Portalen har ingen relation till dem och rekommenderar ingen framför en annan — de finns här för att de är stora.",
+      "sites": {
+        "blocket": "Annonser från både privatpersoner och mäklare",
+        "qasa": "Andrahandsuthyrning med kontrakt genom sajten",
+        "bostadsportalen": "Samlar bostadsköer och förstahandskontrakt",
+        "samtrygg": "Andrahandsuthyrning där sajten står mellan hyresgäst och värd",
+        "homeq": "Hyresrätter som fördelas utan kommunal kö",
+        "bostadDirekt": "Möblerade lägenheter och korttidsboende"
+      },
+      "supportTitle": "Innan du flyttar för ett jobb",
+      "supportBody": "Prata med din handläggare först. Vad Arbetsförmedlingen kan hjälpa till med vid en flytt beror på din situation, och det är de som avgör — vi anger medvetet inga belopp eller villkor här, eftersom sådana uppgifter blir gamla utan att någon märker det.",
+      "supportLink": "Arbetsförmedlingens stöd A–Ö",
+      "checklistTitle": "Att göra inför flytten",
+      "checklistIntro": "Bocka av i din egen takt. Listan sparas.",
+      "when": {
+        "sixMonths": "Ett halvår innan",
+        "threeMonths": "Några månader innan",
+        "twoWeeks": "Ett par veckor innan",
+        "oneWeek": "Veckan innan",
+        "movingDay": "Flyttdagen",
+        "before": "Innan flytten",
+        "after": "Efter flytten"
+      },
+      "tipsTitle": "Fyra saker som brukar underlätta",
+      "tips": {
+        "queue": "Ställ dig i bostadskö tidigt, även om du är osäker på om du vill flytta. Kön kostar sällan mycket och du förlorar inget på att stå kvar.",
+        "sublet": "Andrahandskontrakt först och förstahandskontrakt sedan är en vanlig väg — du behöver inte ha allt löst på en gång.",
+        "jobFirst": "Har du jobbet klart innan flytten blir det ofta lättare att få bostad.",
+        "firstMonths": "Räkna med att de första månaderna kostar mer än vanligt: deposition, möbler, dubbla hyror."
       }
     },
     "networkTab": {
@@ -3749,6 +3831,27 @@
       "copy": "Kopiera",
       "toReconnect": "Att återknyta",
       "followUpThisWeek": "Uppföljning denna vecka"
+    },
+    "laborMarket": {
+      "heading": "Svensk arbetsmarknad",
+      "source": "Siffror från Arbetsförmedlingens platsbank",
+      "refresh": "Uppdatera",
+      "loading": "Laddar marknadsdata…",
+      "errorTitle": "Kunde inte hämta marknadsdata",
+      "errorBody": "Arbetsförmedlingens tjänst svarade inte. Det brukar gå över av sig självt.",
+      "retry": "Försök igen",
+      "openJobs": "lediga jobb just nu",
+      "newThisWeek": "{{antal}} av dem kom in den senaste veckan",
+      "skillsTitle": "Kompetenser i de yrkesområden som har flest jobb",
+      "skillsEmpty": "Arbetsförmedlingen svarade utan yrkesområden den här gången.",
+      "skillsField": "{{field}} — {{antal}} lediga jobb",
+      "occupationsTitle": "Yrkesgrupper med flest lediga jobb",
+      "occupationsEmpty": "Ingen yrkesstatistik i svaret just nu.",
+      "jobsUnit": "{{antal}} jobb",
+      "regionsTitle": "Var finns jobben?",
+      "dataFrom": "Data från",
+      "updated": "Hämtat",
+      "noSource": "—"
     }
   },
   "myConsultant": {
@@ -3922,7 +4025,13 @@
           "title": "Dina förutsättningar",
           "description": "Hur upplever du dina förutsättningar för arbete?"
         }
-      }
+      },
+      "notSaved": "Inte sparat",
+      "missingAnswers_one": "Det saknas {{count}} svar. Vi tog dig till den frågan.",
+      "missingAnswers_other": "Det saknas {{count}} svar. Vi tog dig till den första av dem.",
+      "loadErrorTitle": "Kunde inte hämta dina svar",
+      "loadErrorBody": "Vi visar inget nytt test förrän vi vet vad du redan svarat — annars riskerar du att skriva över det. Ladda om sidan och försök igen.",
+      "retry": "Försök igen"
     },
     "explore": {
       "badge": "Utforska yrken",
@@ -3941,7 +4050,9 @@
       },
       "showing": "Visar {{count}} av {{total}} yrken",
       "noResults": "Inga yrken hittades med dina filter.",
-      "clearFilters": "Rensa filter"
+      "clearFilters": "Rensa filter",
+      "showMore": "Visa {{count}} till",
+      "shownOfTotal": "Visar {{visade}} av {{totalt}}"
     },
     "history": {
       "badge": "Din historik",
@@ -3951,7 +4062,41 @@
       "errorLoading": "Kunde inte ladda historiken",
       "noHistory": "Ingen historik än",
       "noHistoryDesc": "När du genomfört testet kommer dina resultat att sparas här. Du kan göra om testet när som helst och jämföra resultaten.",
-      "startTest": "Starta testet"
+      "startTest": "Starta testet",
+      "currentProfile": "Din nuvarande profil",
+      "topInterests": "Det du svarade mest positivt om",
+      "seeFullResults": "Se hela resultatet",
+      "retakeTest": "Gör om testet",
+      "previousResults": "Tidigare gånger du gjort testet",
+      "noDate": "Datum saknas",
+      "errorBody": "Vi kunde inte hämta dina tidigare resultat. Inget har ändrats — ladda om sidan och försök igen.",
+      "retry": "Försök igen"
+    },
+    "question": {
+      "sliderLabel": "Svara på fråga {{number}}: {{text}}",
+      "noAnswerYet": "Inget svar än",
+      "scale": {
+        "1": "Stämmer inte alls",
+        "2": "Stämmer ganska dåligt",
+        "3": "Stämmer delvis",
+        "4": "Stämmer ganska bra",
+        "5": "Stämmer helt"
+      },
+      "low": "Stämmer inte alls",
+      "mid": "Stämmer delvis",
+      "high": "Stämmer helt",
+      "questionOf": "Fråga {{number}} av {{total}}",
+      "remaining_one": "{{count}} kvar",
+      "remaining_other": "{{count}} kvar",
+      "lastQuestion": "Sista frågan.",
+      "halfway": "Halvvägs. Ta en paus om du behöver.",
+      "takeYourTime": "{{progress}} % klart — ta den tid du behöver.",
+      "pauseTitle": "Vill du ta en paus?",
+      "pauseBody": "Dina svar sparas automatiskt. Du kan fortsätta precis där du var när du kommer tillbaka.",
+      "pauseContinue": "Fortsätt svara",
+      "pauseConfirm": "Pausa och gå tillbaka",
+      "pauseButton": "Pausa",
+      "tip": "Det finns inga rätta svar. Svara som det är för dig i dag."
     }
   },
   "quests": {

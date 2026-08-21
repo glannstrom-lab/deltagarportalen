@@ -1,7 +1,14 @@
 /**
- * SCB Salary Data Service
- * Provides salary statistics from Statistics Sweden (SCB)
- * Uses their public API when available, with fallback to curated data
+ * Löneuppslag för intresseguidens yrkespanel.
+ *
+ * VAD DET HÄR ÄR: tjugo handskrivna rader i SALARY_DATA_2026, mest IT- och
+ * kontorsyrken. Någon SCB-anslutning har aldrig funnits — filhuvudet sa
+ * tidigare "Provides salary statistics from Statistics Sweden (SCB)" och
+ * "Uses their public API when available", och båda var osanna.
+ *
+ * data/lonedata.ts namnger den här filen som den tredje osynkade kopian av
+ * portalens löneuppgifter. Rätta vägen framåt är att läsa därifrån eller från
+ * afTrendsApi.getSalaryStats — inte att lägga till en fjärde.
  */
 
 // supabase-importen borttagen 2026-07-27 (H5): den enda databasanvändningen
@@ -106,8 +113,18 @@ class SCBSalaryService {
       return match
     }
 
-    // Fallback: estimate based on similar occupations
-    return this.estimateSalary(occupation)
+    /*
+      RETURNERAR NULL. Här stod "return this.estimateSalary(occupation)", som
+      gav MEDELVÄRDET av de tjugo handskrivna raderna — samma tal för varje
+      okänt yrke. Intresseguiden har 142 yrken, så 128 av dem fick
+      "Median 47 450 kr" med percentiler, under rubriken "Löneinformation"
+      och med filhuvudets påstående om SCB bakom sig. Frisör, kock och städare
+      fick alltså alla samma "lönestatistik".
+
+      Mönstret finns redan i huset: afTrendsApi.getSalaryStats returnerar null
+      utan underlag. (Granskning 2026-08-21.)
+    */
+    return null
   }
 
   /**
@@ -250,26 +267,11 @@ class SCBSalaryService {
     }
   }
 
-  /**
-   * Estimate salary for unknown occupation
-   */
-  private estimateSalary(occupation: string): SalaryData {
-    // Use average as fallback
-    const avgMedian = Math.round(
-      SALARY_DATA_2026.reduce((sum, s) => sum + s.median, 0) / SALARY_DATA_2026.length
-    )
-
-    return {
-      occupation,
-      occupationCode: 'UNKNOWN',
-      median: avgMedian,
-      p10: Math.round(avgMedian * 0.7),
-      p90: Math.round(avgMedian * 1.4),
-      mean: avgMedian,
-      year: 2026,
-      sector: 'all',
-    }
-  }
+  // estimateSalary RADERAD 2026-08-21. Den returnerade medelvärdet av de
+  // tjugo handskrivna raderna som "median" för varje okänt yrke, med
+  // occupationCode: 'UNKNOWN' och p10/p90 satta till ×0,7 och ×1,4. Se
+  // kommentaren i getSalaryByOccupation. Lägg inte tillbaka den: ett tal utan
+  // underlag ska visas som "—", inte som statistik.
 
   // logSalaryLookup RADERAD 2026-07-27 (H5). Skrev till tabellen
   // `salary_lookups` som inte finns — insert:en failade tyst i sitt catch vid

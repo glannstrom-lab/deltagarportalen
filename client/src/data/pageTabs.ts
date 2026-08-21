@@ -25,7 +25,6 @@ import {
 // Import new tab configurations
 import { wellnessTabs } from './wellnessTabs'
 import { dashboardTabs } from './dashboardTabs'
-import { careerTabs } from './careerTabs'
 import { consultantTabs } from './consultantTabs'
 
 // Tab definitions with i18n keys - labels are resolved at render time
@@ -143,9 +142,9 @@ export function getTabsForPath(path: string): Tab[] {
   if (path.startsWith('/cover-letter')) return coverLetterTabs
   if (path.startsWith('/job-search')) return jobSearchTabs
   if (path.startsWith('/job-tracker')) return jobSearchTabs // Redirect old path to job search tabs
-  if (path.startsWith('/career')) return careerTabs
-  if (path.startsWith('/skills-gap')) return careerTabs
-  if (path.startsWith('/career-plan')) return careerTabs
+  // /career skickar alltid customTabs och /skills-gap kör showTabs={false},
+  // så de tre careerTabs-raderna som stod här nåddes aldrig. /career-plan var
+  // dessutom ingen route. Borttagna 2026-08-21.
   if (path.startsWith('/wellness')) return wellnessTabs
   // Knowledge base sidan har egen sökning + kategori-grid (2026-05-15
   // redesign), inga flikar längre.

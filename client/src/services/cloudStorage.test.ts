@@ -122,10 +122,32 @@ describe('interestGuideApi.saveProgress', () => {
     expect(mockFrom).not.toHaveBeenCalled()
   })
 
-  it('kastar inte vid databasfel — felet sväljs', async () => {
+  /*
+    Testet hette "kastar inte vid databasfel — felet sväljs" och asserterade
+    `resolves.toBeUndefined()`. Det cementerade defekten: eftersom anropet
+    aldrig kunde misslyckas visade TestTab den gröna bocken "Sparat" även när
+    ingenting sparats. Samma familj som `journey_goals`-testet och
+    `useJobsokHubSummary.test.ts` — ett test som låser fast det trasiga.
+
+    Kontraktet nu: kastar fortfarande inte (anroparen ska inte behöva
+    try/catch per tangenttryck), men returnerar false så UI:t kan säga
+    sanningen. (2026-08-21)
+  */
+  it('returnerar false vid databasfel i stället för att se ut att lyckas', async () => {
     loggedIn()
     setResult({ error: { code: '42501', message: 'RLS' } })
-    await expect(interestGuideApi.saveProgress({ current_step: 1 })).resolves.toBeUndefined()
+    await expect(interestGuideApi.saveProgress({ current_step: 1 })).resolves.toBe(false)
+  })
+
+  it('returnerar true när raden faktiskt skrevs', async () => {
+    loggedIn()
+    setResult({ error: null })
+    await expect(interestGuideApi.saveProgress({ current_step: 1 })).resolves.toBe(true)
+  })
+
+  it('returnerar false när ingen är inloggad', async () => {
+    loggedOut()
+    await expect(interestGuideApi.saveProgress({ current_step: 1 })).resolves.toBe(false)
   })
 })
 
@@ -163,14 +185,30 @@ describe('interestGuideApi historik', () => {
     expect(result).toBe(7)
   })
 
+/**
+ * Verkliga former, inte tomma objekt. Fixturerna var "riasec_profile: { R: 1 }"
+ * och "icf_profile: {}" — de gick igenom mot Record<string, number> och testade
+ * därför att koden fungerar på data som inte finns. Samma fälla som
+ * CV-kompetenserna 2026-08-03. Skalorna nedan är de riktiga: RIASEC och ICF
+ * 1–5, Big Five och intressen 0–100.
+ */
+const RIASEC = { R: 1, I: 3, A: 5, S: 4, E: 2, C: 3 }
+const BIGFIVE = { openness: 75, conscientiousness: 50, extraversion: 25, agreeableness: 60, stability: 40 }
+const ICF = { kognitiv: 4, kommunikation: 3, koncentration: 2, motorik: 5, sensorisk: 3, energi: 4 }
+const INTRESSEN = {
+  teknik_mekanik: 50, natur_vetenskap: 25, konst_kultur: 75, social_vard: 100,
+  affarer_forsaljning: 0, administration_kontor: 50, utomhusarbete: 25,
+  ledarskap_organisation: 50, data_it: 75, undervisning_pedagogik: 50,
+}
+
   it('saveToHistory insertar med user_id + completed_at och returnerar raden', async () => {
     loggedIn('user-42')
     const entry = {
       answers: { q1: 3 },
-      riasec_profile: { R: 1 },
-      bigfive_profile: { O: 2 },
-      icf_profile: {},
-      strong_interest: {},
+      riasec_profile: RIASEC,
+      bigfive_profile: BIGFIVE,
+      icf_profile: ICF,
+      strong_interest: INTRESSEN,
       top_occupations: [{ name: 'Snickare', matchPercentage: 88 }],
     }
     setResult({ data: { id: 'h1', ...entry }, error: null })
@@ -190,8 +228,8 @@ describe('interestGuideApi historik', () => {
     loggedIn()
     setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
     const result = await interestGuideApi.saveToHistory({
-      answers: {}, riasec_profile: {}, bigfive_profile: {},
-      icf_profile: {}, strong_interest: {}, top_occupations: [],
+      answers: {}, riasec_profile: RIASEC, bigfive_profile: BIGFIVE,
+      icf_profile: ICF, strong_interest: INTRESSEN, top_occupations: [],
     })
     expect(result).toBeNull()
   })

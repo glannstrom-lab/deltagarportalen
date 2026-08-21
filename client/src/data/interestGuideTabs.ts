@@ -3,7 +3,6 @@
  * 5 tabs: Testet, Resultat, Yrken, Utforska, Historik
  */
 
-import type { Tab } from '@/components/layout/PageTabs'
 import {
   ClipboardList,
   PieChart,
@@ -21,11 +20,11 @@ export const interestGuideTabDefs = [
   { id: 'history', labelKey: 'interestGuide.tabs.history', path: '/interest-guide/history', icon: History },
 ]
 
-// For backwards compatibility - static tabs (Swedish)
-export const interestGuideTabs: Tab[] = [
-  { id: 'test', label: 'Testet', path: '/interest-guide', icon: ClipboardList },
-  { id: 'results', label: 'Resultat', path: '/interest-guide/results', icon: PieChart },
-  { id: 'occupations', label: 'Yrken', path: '/interest-guide/occupations', icon: Briefcase },
-  { id: 'explore', label: 'Utforska', path: '/interest-guide/explore', icon: Compass },
-  { id: 'history', label: 'Historik', path: '/interest-guide/history', icon: History },
-]
+/*
+  Den hårdkodade svenska listan "interestGuideTabs" låg här, märkt "for
+  backwards compatibility". Den hade noll importörer: getTabsForPath i
+  data/pageTabs.ts har ingen /interest-guide-gren, och InterestGuide.tsx
+  skickar tabs={...} byggd ur defs ovan — vilket kortsluter fallbacken helt.
+  Samma dubblett som careerTabs.ts, raderad samma dag. En sanning räcker.
+  (2026-08-21)
+*/

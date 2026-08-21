@@ -14,7 +14,6 @@ import { RiasecChart } from '@/components/interest-guide/RiasecChart'
 import { LoadingState, Button, InfoCard, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
-  History,
   Calendar,
   Target,
   Brain,
@@ -26,13 +25,14 @@ import {
 
 interface HistoryEntry {
   id: string
-  date: string
+  /** null när posten saknar datering — visa inget hellre än dagens datum. */
+  date: string | null
   profile: UserProfile
   answers: Record<string, number>
 }
 
 export default function HistoryTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
@@ -40,26 +40,43 @@ export default function HistoryTab() {
   const [error, setError] = useState<string | null>(null)
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null)
 
+  /*
+    Fliken som heter Historik var den enda som inte läste historiken.
+
+    Den hämtade den AKTUELLA raden ur `interest_guide_progress` och byggde en
+    enda påhittad post av den, med kommentaren "In a real implementation, this
+    would fetch from a history table". Tabellen finns — `interest_guide_history`
+    med 10 rader i prod — den skrivs vid varje avslutat test och läses redan av
+    ResultsTab och useInterestProfile.
+
+    Värre: `date: new Date().toISOString()` satte DAGENS datum under rubriken
+    "Tidigare resultat". Ett test gjort i april stod som gjort idag. Nu används
+    `completed_at` ur posten, och saknas det visas ingen datering alls.
+    (Granskning 2026-08-21.)
+  */
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true)
-        const data = await interestGuideApi.getProgress()
+        setError(null)
 
-        if (data?.is_completed && data.answers) {
-          const calculatedProfile = calculateUserProfile(data.answers)
-          setCurrentProfile(calculatedProfile)
+        const [aktuell, historik] = await Promise.all([
+          interestGuideApi.getProgress(),
+          interestGuideApi.getHistory(10),
+        ])
 
-          // Create a history entry from current data
-          // In a real implementation, this would fetch from a history table
-          const historyEntry: HistoryEntry = {
-            id: 'current',
-            date: new Date().toISOString(),
-            profile: calculatedProfile,
-            answers: data.answers,
-          }
-          setHistory([historyEntry])
+        if (aktuell?.is_completed && aktuell.answers) {
+          setCurrentProfile(calculateUserProfile(aktuell.answers))
         }
+
+        setHistory(
+          (historik || []).map(rad => ({
+            id: rad.id,
+            date: rad.completed_at || rad.created_at || null,
+            profile: calculateUserProfile(rad.answers || {}),
+            answers: rad.answers || {},
+          }))
+        )
       } catch (err) {
         console.error('Failed to load history:', err)
         setError(t('interestGuide.history.errorLoading'))
@@ -69,11 +86,13 @@ export default function HistoryTab() {
     }
 
     loadData()
-  }, [])
+  }, [t])
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string | null) => {
+    if (!dateString) return null
     const date = new Date(dateString)
-    return date.toLocaleDateString('sv-SE', {
+    if (Number.isNaN(date.getTime())) return null
+    return date.toLocaleDateString(i18n.language === 'en' ? 'en-GB' : 'sv-SE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -95,9 +114,30 @@ export default function HistoryTab() {
     )
   }
 
+  /*
+    Ordningen är laddar → fel → tomt → data. Tidigare returnerade
+    tomtillståndet FÖRE felkortet, så ett laddningsfel visades som "du har
+    aldrig gjort testet" och felmeddelandet kunde aldrig renderas.
+  */
+  if (error) {
+    return (
+      <div className="max-w-lg mx-auto py-12">
+        <div role="alert">
+          <InfoCard variant="error">
+            <h2 className="font-semibold mb-1">{t('interestGuide.history.errorLoading')}</h2>
+            <p className="mb-3">{t('interestGuide.history.errorBody')}</p>
+            <Button onClick={() => window.location.reload()}>
+              {t('interestGuide.history.retry')}
+            </Button>
+          </InfoCard>
+        </div>
+      </div>
+    )
+  }
+
   if (history.length === 0) {
     return (
-      <div className="max-w-lg mx-auto py-12 min-h-screen">
+      <div className="max-w-lg mx-auto py-12">
         <EmptyState
           illustration="karriar"
           title={t('interestGuide.history.noHistory')}
@@ -109,36 +149,29 @@ export default function HistoryTab() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto min-h-screen  p-4">
-      {error && (
-        <InfoCard variant="error" className="mb-6">
-          {error}
-        </InfoCard>
-      )}
-
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
-          <History className="w-4 h-4" />
-          {t('interestGuide.history.badge')}
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.title')}</h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+    <div className="p-4">
+      {/* Badge + centrerad h1 låg här — en kvarglömd hjälte som upprepade
+          skenan, och en andra <h1> på sidan. */}
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+          {t('interestGuide.history.title')}
+        </h2>
+        <p className="text-stone-600 dark:text-stone-400 mt-1">
           {t('interestGuide.history.description')}
         </p>
       </div>
 
       {/* Current Profile Summary */}
       {currentProfile && (
-        <div className="bg-amber-50 dark:bg-amber-900/20 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
+        <div className="bg-[var(--c-bg)] rounded-2xl p-6 border border-[var(--c-accent)] mb-8">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center flex-shrink-0">
               <Target className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">Din nuvarande profil</h3>
-              <p className="text-amber-800 dark:text-amber-200 text-sm mb-3">
-                Topp intressen: {getTopRiasec(currentProfile).join(', ')}
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1">{t('interestGuide.history.currentProfile')}</h3>
+              <p className="text-stone-700 dark:text-stone-300 text-sm mb-3">
+                {t('interestGuide.history.topInterests')}: {getTopRiasec(currentProfile).join(', ')}
               </p>
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -148,7 +181,7 @@ export default function HistoryTab() {
                   className="gap-1"
                 >
                   <Brain className="w-4 h-4" />
-                  Se fullständiga resultat
+                  {t('interestGuide.history.seeFullResults')}
                 </Button>
                 <Button
                   variant="outline"
@@ -157,7 +190,7 @@ export default function HistoryTab() {
                   className="gap-1"
                 >
                   <RotateCcw className="w-4 h-4" />
-                  Gör om testet
+                  {t('interestGuide.history.retakeTest')}
                 </Button>
               </div>
             </div>
@@ -168,8 +201,8 @@ export default function HistoryTab() {
       {/* History List */}
       <div className="space-y-4">
         <h2 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-gray-400 dark:text-gray-500" />
-          Tidigare resultat
+          <Clock className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+          {t('interestGuide.history.previousResults')}
         </h2>
 
         {history.map((entry) => (
@@ -181,6 +214,8 @@ export default function HistoryTab() {
               onClick={() => setExpandedEntry(
                 expandedEntry === entry.id ? null : entry.id
               )}
+              aria-expanded={expandedEntry === entry.id}
+              aria-controls={`historik-${entry.id}`}
               className="w-full p-4 flex items-center justify-between text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
             >
               <div className="flex items-center gap-4">
@@ -188,9 +223,11 @@ export default function HistoryTab() {
                   <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900 dark:text-gray-100">{formatDate(entry.date)}</h3>
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100">
+                    {formatDate(entry.date) ?? t('interestGuide.history.noDate')}
+                  </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Topp: {getTopRiasec(entry.profile).join(', ')}
+                    {t('interestGuide.history.topInterests')}: {getTopRiasec(entry.profile).join(', ')}
                   </p>
                 </div>
               </div>
@@ -201,15 +238,15 @@ export default function HistoryTab() {
                   </span>
                 )}
                 {expandedEntry === entry.id ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                 )}
               </div>
             </button>
 
             {expandedEntry === entry.id && (
-              <div className="px-4 pb-4 border-t border-stone-100 dark:border-stone-700">
+              <div id={`historik-${entry.id}`} className="px-4 pb-4 border-t border-stone-100 dark:border-stone-700">
                 <div className="py-4">
                   {/* RIASEC Chart */}
                   <div className="flex justify-center mb-6">

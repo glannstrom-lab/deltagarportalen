@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { Question } from '@/services/interestGuideData'
 import { Pause, Save, RotateCcw } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
@@ -7,7 +8,13 @@ import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface QuestionCardProps {
   question: Question
-  value: number
+  /**
+   * Odefinierad = frågan är inte besvarad än. Propen var tidigare `number`
+   * och TestTab skickade `|| 50` — ett värde utanför skalan 1–5 som
+   * webbläsaren klampade till max, så reglaget stod på "Stämmer helt" innan
+   * användaren rört det. Ett obesvarat läge måste gå att uttrycka.
+   */
+  value: number | undefined
   onChange: (value: number) => void
   questionNumber: number
   totalQuestions: number
@@ -50,6 +57,7 @@ export function QuestionCard({
   totalQuestions,
   onPause,
 }: QuestionCardProps) {
+  const { t } = useTranslation()
   const [isAnimating, setIsAnimating] = useState(false)
   const [showPauseConfirm, setShowPauseConfirm] = useState(false)
 
@@ -59,13 +67,6 @@ export function QuestionCard({
     restoreFocus: true,
     autoFocus: true,
   })
-
-  // Spara progress vid varje svar
-  useEffect(() => {
-    if (value > 0) {
-      // Detta kommer att sparas av parent-komponenten
-    }
-  }, [value])
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value)
@@ -83,16 +84,23 @@ export function QuestionCard({
     onPause?.()
   }, [onPause])
 
+  const besvarad = typeof value === 'number'
+
   const getThumbPosition = () => {
-    return ((value || 1) - 1) / 4 * 100
+    if (!besvarad) return 0
+    return ((value - 1) / 4) * 100
   }
 
+  /*
+    Skalan gick rött → orange → gult → grönt, alltså ett omdöme om svaret:
+    "Stämmer inte alls" färgades rött. Frågorna handlar bland annat om
+    användarens ork och koncentration — det finns inget dåligt svar, och en
+    röd stapel säger motsatsen. En intensitet av hubbfärgen räcker för att
+    visa var reglaget står.
+  */
   const getGradientColor = () => {
-    const percentage = ((value || 1) - 1) / 4
-    if (percentage < 0.25) return 'bg-red-400'
-    if (percentage < 0.5) return 'bg-orange-400'
-    if (percentage < 0.75) return 'bg-yellow-400'
-    return 'bg-emerald-500'
+    if (!besvarad) return 'bg-transparent'
+    return 'bg-[var(--c-solid)]'
   }
 
   // Beräkna progress
@@ -115,24 +123,24 @@ export function QuestionCard({
             <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Pause className="w-8 h-8 text-amber-600" aria-hidden="true" />
             </div>
-            <h3 id="pause-dialog-title" className="text-lg font-semibold text-gray-900 mb-2">Vill du ta en paus?</h3>
-            <p id="pause-dialog-description" className="text-gray-600 mb-6 max-w-xs">
-              Dina svar sparas automatiskt. Du kan fortsätta precis där du var när du kommer tillbaka.
+            <h3 id="pause-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">{t('interestGuide.question.pauseTitle')}</h3>
+            <p id="pause-dialog-description" className="text-stone-700 dark:text-stone-300 mb-6 max-w-xs">
+              {t('interestGuide.question.pauseBody')}
             </p>
             <div className="flex gap-3 justify-center">
               <button
                 type="button"
                 onClick={() => setShowPauseConfirm(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                className="px-4 py-2 text-stone-700 dark:text-stone-300 hover:text-stone-900"
               >
-                Fortsätt
+                {t('interestGuide.question.pauseContinue')}
               </button>
               <button
                 type="button"
                 onClick={confirmPause}
                 className="px-6 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
               >
-                Spara & Pausa
+                {t('interestGuide.question.pauseConfirm')}
               </button>
             </div>
           </div>
@@ -143,22 +151,21 @@ export function QuestionCard({
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-500">
-              Fråga {questionNumber} av {totalQuestions}
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              {t('interestGuide.question.questionOf', { number: questionNumber, total: totalQuestions })}
             </span>
-            <span className="text-xs text-gray-400">
-              ({remaining} kvar)
+            <span className="text-xs text-stone-600 dark:text-stone-400">
+              ({t('interestGuide.question.remaining', { count: remaining })})
             </span>
           </div>
           
           {/* Paus-knapp */}
           <button
             onClick={handlePause}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-            title="Spara och gör paus"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-stone-700 dark:text-stone-300 hover:bg-[var(--c-bg)] rounded-lg transition-colors"
           >
-            <Pause className="w-4 h-4" />
-            Pausa
+            <Pause className="w-4 h-4" aria-hidden="true" />
+            {t('interestGuide.question.pauseButton')}
           </button>
         </div>
 
@@ -172,13 +179,20 @@ export function QuestionCard({
           </div>
           
           {/* Progress meddelande */}
-          <p className="text-xs text-gray-500 mt-2 text-center">
-            {questionNumber === 1 && 'Bra att du kom igång! 🌱'}
-            {questionNumber === 5 && 'Du har kommit en bit nu! 💪'}
-            {questionNumber === 10 && 'Halvvägs! Ta en paus om du behöver ☕'}
-            {questionNumber === 15 && 'Nästan klart nu! 🌟'}
-            {questionNumber === totalQuestions && 'Sista frågan! 🎉'}
-            {![1, 5, 10, 15, totalQuestions].includes(questionNumber) && `${progress}% klart - ta den tid du behöver 💙`}
+          {/*
+            Milstolparna var hårdkodade för 20 frågor: "Halvvägs!" på fråga 10
+            av 34 (29 %) och "Nästan klart nu!" på fråga 15 (44 %). Att säga
+            "nästan klart" till någon med 19 frågor kvar är precis det slags
+            påhittade påstående som ska bort. Nu härleds de ur antalet, och
+            emojidrivet pepp är struket (DESIGN.md §1 — aldrig en
+            gamification-app).
+          */}
+          <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 text-center">
+            {questionNumber === totalQuestions
+              ? t('interestGuide.question.lastQuestion')
+              : progress >= 50 && progress < 55
+                ? t('interestGuide.question.halfway')
+                : t('interestGuide.question.takeYourTime', { progress })}
           </p>
         </div>
       </div>
@@ -199,10 +213,10 @@ export function QuestionCard({
       {/* Slider */}
       <div className="relative px-2" role="group" aria-labelledby={`question-${questionNumber}`}>
         {/* Scale labels */}
-        <div className="flex justify-between text-xs text-gray-400 mb-3 px-1" aria-hidden="true">
-          <span className="text-center flex-1">Stämmer inte alls</span>
-          <span className="text-center flex-1">Stämmer delvis</span>
-          <span className="text-center flex-1">Stämmer helt</span>
+        <div className="flex justify-between text-xs text-stone-600 dark:text-stone-400 mb-3 px-1" aria-hidden="true">
+          <span className="text-center flex-1">{t('interestGuide.question.low')}</span>
+          <span className="text-center flex-1">{t('interestGuide.question.mid')}</span>
+          <span className="text-center flex-1">{t('interestGuide.question.high')}</span>
         </div>
 
         {/* Slider track */}
@@ -220,7 +234,7 @@ export function QuestionCard({
           {/* Dots for each value (visual only, not keyboard accessible) */}
           <div className="absolute inset-x-0 flex justify-between px-1 z-10" aria-hidden="true">
             {[1, 2, 3, 4, 5].map((dotValue) => {
-              const isActive = (value || 0) >= dotValue
+              const isActive = besvarad && value >= dotValue
               const isCurrent = value === dotValue
 
               return (
@@ -249,19 +263,16 @@ export function QuestionCard({
             min="1"
             max="5"
             step="1"
-            value={value || 3}
+            value={besvarad ? value : 3}
             onChange={handleSliderChange}
-            aria-label={`Svara på fråga ${questionNumber}: ${question.text}`}
+            aria-label={t('interestGuide.question.sliderLabel', { number: questionNumber, text: question.text })}
             aria-valuemin={1}
             aria-valuemax={5}
-            aria-valuenow={value || 3}
+            {...(besvarad ? { 'aria-valuenow': value } : {})}
             aria-valuetext={
-              (value || 0) === 1 ? 'Stämmer inte alls' :
-              (value || 0) === 2 ? 'Stämmer ganska dåligt' :
-              (value || 0) === 3 ? 'Stämmer delvis' :
-              (value || 0) === 4 ? 'Stämmer ganska bra' :
-              (value || 0) === 5 ? 'Stämmer helt' :
-              'Inget svar än'
+              besvarad
+                ? t(`interestGuide.question.scale.${value}`)
+                : t('interestGuide.question.noAnswerYet')
             }
             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
           />
@@ -278,7 +289,7 @@ export function QuestionCard({
               className={`text-xs font-medium transition-colors ${
                 value === num
                   ? num <= 2 ? 'text-red-500' : num === 3 ? 'text-yellow-500' : 'text-emerald-500'
-                  : 'text-gray-400 hover:text-gray-600'
+                  : 'text-stone-600 dark:text-stone-400 hover:text-gray-600'
               }`}
             >
               {num}
@@ -302,21 +313,17 @@ export function QuestionCard({
             }
           `}
         >
-          <span>Ditt svar:</span>
-          <span className="font-bold">
-            {(value || 0) === 1 && 'Stämmer inte alls'}
-            {(value || 0) === 2 && 'Stämmer ganska dåligt'}
-            {(value || 0) === 3 && 'Stämmer delvis'}
-            {(value || 0) === 4 && 'Stämmer ganska bra'}
-            {(value || 0) === 5 && 'Stämmer helt'}
-            {(value || 0) === 0 && 'Inget svar än'}
+          <span className="font-medium">
+            {besvarad
+              ? t(`interestGuide.question.scale.${value}`)
+              : t('interestGuide.question.noAnswerYet')}
           </span>
         </div>
       </div>
 
       {/* Föregående-knapp info */}
       {questionNumber > 1 && (
-        <p className="text-xs text-center text-gray-400 mt-4">
+        <p className="text-xs text-center text-stone-600 dark:text-stone-400 mt-4">
           💡 Du kan alltid gå tillbaka för att ändra tidigare svar
         </p>
       )}

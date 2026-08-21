@@ -1356,13 +1356,20 @@ export const relocationApi = {
     return data;
   },
 
+  /**
+   * D7-mönstret gäller även här: `null`, inte `undefined`, är det som RENSAR
+   * en kolumn. `undefined` faller bort ur JSON-serialiseringen, så upserten
+   * rörde aldrig fältet — tömde användaren lönefältet stod gamla lönen kvar i
+   * databasen och kom tillbaka vid nästa laddning. Signaturen tillåter därför
+   * `null` uttryckligen. (Granskning 2026-08-21.)
+   */
   async save(prefs: {
     target_regions?: string[];
-    current_region?: string;
-    max_rent_budget?: number;
-    expected_salary?: number;
+    current_region?: string | null;
+    max_rent_budget?: number | null;
+    expected_salary?: number | null;
     checklist_completed?: string[];
-    notes?: string;
+    notes?: string | null;
   }): Promise<RelocationPreferences> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);

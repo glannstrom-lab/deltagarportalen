@@ -16,7 +16,6 @@ import {
   ChevronDown,
   ChevronUp,
   Users,
-  Compass,
 } from '@/components/ui/icons'
 
 // Group occupations by field
@@ -41,6 +40,9 @@ function getOccupationField(occupation: Occupation): string {
   return 'other'
 }
 
+/** Hur många yrken som visas innan användaren ber om fler. */
+const SIDSTORLEK = 20
+
 export default function ExploreTab() {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
@@ -49,6 +51,7 @@ export default function ExploreTab() {
   const [filterPrognosis, setFilterPrognosis] = useState<string | null>(null)
   const [expandedOccupation, setExpandedOccupation] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
+  const [antalVisade, setAntalVisade] = useState(SIDSTORLEK)
 
   // Filter and group occupations
   const filteredOccupations = useMemo(() => {
@@ -82,6 +85,9 @@ export default function ExploreTab() {
     })
   }, [searchQuery, selectedField, filterUni, filterPrognosis])
 
+  const synligaYrken = filteredOccupations.slice(0, antalVisade)
+  const finnsFler = filteredOccupations.length > antalVisade
+
   const getPrognosisIcon = (prognosis: string) => {
     switch (prognosis) {
       case 'growing':
@@ -89,7 +95,7 @@ export default function ExploreTab() {
       case 'declining':
         return <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />
       default:
-        return <Minus className="w-4 h-4 text-gray-400 dark:text-gray-500" />
+        return <Minus className="w-4 h-4 text-stone-600 dark:text-stone-400" />
     }
   }
 
@@ -105,15 +111,14 @@ export default function ExploreTab() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto min-h-screen  p-4">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
-          <Compass className="w-4 h-4" />
-          {t('interestGuide.explore.badge')}
-        </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.explore.title')}</h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+    <div className="p-4">
+      {/* Badge + centrerad h1 låg här — kvarglömd hjälte, och en andra <h1>
+          på en sida vars h1 redan står i skenan. */}
+      <div className="mb-6">
+        <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
+          {t('interestGuide.explore.title')}
+        </h2>
+        <p className="text-stone-600 dark:text-stone-400 mt-1">
           {t('interestGuide.explore.description')}
         </p>
       </div>
@@ -122,14 +127,14 @@ export default function ExploreTab() {
       <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400" />
             <input
               type="text"
               aria-label={t('interestGuide.explore.searchPlaceholder')}
               placeholder={t('interestGuide.explore.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
           <Button
@@ -268,9 +273,16 @@ export default function ExploreTab() {
         )}
       </div>
 
+      {/* Paginering. Listan renderade ALLA 142 yrken platt: 12 817 px på
+          desktop och 15 232 px på mobil, alltså ~39 skärmhöjder, utan
+          "visa fler", gruppering eller tillbaka-till-toppen. DESIGN.md §8
+          säger max 5–7 saker synliga utan att användaren valt en avdelning.
+          För en målgrupp med energibegränsningar var det här den tyngsta ytan
+          i modulen — och rådgivarpanelen hamnade efter alla raderna på mobil.
+          (2026-08-21) */}
       {/* Results count */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-stone-600 dark:text-stone-400" role="status" aria-live="polite">
           {t('interestGuide.explore.showing', { count: filteredOccupations.length, total: occupations.length })}
         </p>
       </div>
@@ -295,10 +307,10 @@ export default function ExploreTab() {
         </div>
       ) : (
         <div className="space-y-3">
-          {filteredOccupations.map(occupation => (
+          {synligaYrken.map(occupation => (
             <div
               key={occupation.id}
-              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
+              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:border-[var(--c-accent)]  transition-colors"
             >
               <button
                 onClick={() => setExpandedOccupation(
@@ -308,7 +320,7 @@ export default function ExploreTab() {
               >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg flex items-center justify-center">
-                    <Briefcase className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <Briefcase className="w-5 h-5 text-[var(--c-solid)]" />
                   </div>
                   <div>
                     <h3 className="font-medium text-gray-900 dark:text-gray-100">{occupation.name}</h3>
@@ -328,9 +340,9 @@ export default function ExploreTab() {
                   </div>
                 </div>
                 {expandedOccupation === occupation.id ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                 )}
               </button>
 
@@ -344,29 +356,53 @@ export default function ExploreTab() {
                         <p className="text-gray-500 dark:text-gray-400 mb-1">Lön</p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.salary}</p>
                       </div>
+                      {/*
+                        occupation.education är ett OBJEKT med fälten name,
+                        length och type — inte en array. education.length är
+                        alltså utbildningens LÄNGD i text, och renderades som
+                        ett antal: "5,5 år + AT 1,5 år alternativ". Vakten
+                        "occupation.education &&" var dessutom alltid sann
+                        (objekt är sanningsvärde), och rubriken
+                        "Utbildningsvägar" stod över exakt en chip. Fältet
+                        type visades aldrig. (Granskning 2026-08-21.)
+                      */}
                       <div>
-                        <p className="text-gray-500 dark:text-gray-400 mb-1">Utbildning</p>
-                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.length} alternativ</p>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">Utbildning</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.name}</p>
                       </div>
                     </div>
 
-                    {occupation.education && (
+                    <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">Utbildningsvägar</p>
-                        <div className="flex flex-wrap gap-2">
-                          <span
-                            className="px-2 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded text-xs text-gray-600 dark:text-gray-300"
-                          >
-                            {occupation.education.name} ({occupation.education.length})
-                          </span>
-                        </div>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">Längd</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.length}</p>
                       </div>
-                    )}
+                      <div>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">Nivå</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.type}</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </div>
           ))}
+
+          {finnsFler && (
+            <div className="pt-2 text-center">
+              <Button variant="outline" onClick={() => setAntalVisade(n => n + SIDSTORLEK)}>
+                {t('interestGuide.explore.showMore', {
+                  count: Math.min(SIDSTORLEK, filteredOccupations.length - antalVisade),
+                })}
+              </Button>
+              <p className="mt-2 text-xs text-stone-600 dark:text-stone-400" role="status" aria-live="polite">
+                {t('interestGuide.explore.shownOfTotal', {
+                  visade: synligaYrken.length,
+                  totalt: filteredOccupations.length,
+                })}
+              </p>
+            </div>
+          )}
         </div>
       )}
     </div>

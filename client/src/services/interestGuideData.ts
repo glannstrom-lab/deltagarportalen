@@ -64,11 +64,34 @@ export interface StrongInterestCategories {
   undervisning_pedagogik: number
 }
 
+/**
+ * Hur många svar varje dimension faktiskt vilar på.
+ *
+ * Fanns inte före 2026-08-21, och det var därför omöjligt för en vy att skilja
+ * "användaren svarade lågt" från "användaren svarade inte alls":
+ * `calculateUserProfile` initierade RIASEC till 0, Big Five till 50, intressen
+ * till 50 och ICF till 3, och skrev bara över det som hade svar. En dimension
+ * utan underlag renderades alltså som "Realistisk 0/5" och "Öppenhet 50 %" —
+ * omöjligt att skilja från en mätning. Vyer som påstår något om användaren ska
+ * kontrollera coverage först och annars visa en invit, aldrig ett tal.
+ */
+export interface ProfileCoverage {
+  riasec: Record<keyof RiasecScores, number>
+  bigFive: Record<keyof BigFiveScores, number>
+  icf: Record<keyof ICFScores, number>
+  strongInterest: Record<keyof StrongInterestCategories, number>
+  /** Antal besvarade frågor totalt. */
+  answered: number
+  /** Antal frågor i testet. */
+  total: number
+}
+
 export interface UserProfile {
   riasec: RiasecScores
   bigFive: BigFiveScores
   icf: ICFScores
   strongInterest: StrongInterestCategories
+  coverage: ProfileCoverage
 }
 
 export interface JobRequirements {
@@ -460,7 +483,7 @@ export const allQuestions: Question[] = [
 
 // ===== YRKESDATABAS =====
 
-export const occupations: Occupation[] = [
+const occupationsRadata: Occupation[] = [
   // Högskoleyrken
   {
     id: 'lakare',
@@ -2778,6 +2801,25 @@ export const occupations: Occupation[] = [
   },
 ]
 
+/**
+ * Yrkeslistan, avdubblerad.
+ *
+ * Rådatan har 142 poster men bara 135 unika id: biolog, agronom,
+ * skogsarbetare, vaktare, skadespelare, key_account_manager och inkopare
+ * finns två gånger. Fyra av dem har OLIKA RIASEC-koder i de två posterna
+ * (biolog R:2 mot R:3, agronom I:4 mot I:5, skogsarbetare I:1 mot I:2,
+ * key_account_manager A:1/S:4 mot A:2/S:5), så samma yrke fick två olika
+ * matchningspoäng och kunde stå två gånger i samma träfflista. Listorna
+ * renderas per id, vilket dessutom gav React-varningen om dubbla nycklar.
+ *
+ * Första posten vinner. Att städa rådatan är rätt på sikt — men en
+ * avdubblering vid exporten gör felet ofarligt nu och kan inte glömmas bort.
+ * (2026-08-21)
+ */
+export const occupations: Occupation[] = occupationsRadata.filter(
+  (yrke, i, lista) => lista.findIndex(y => y.id === yrke.id) === i
+)
+
 // ===== ICF ANPASSNINGSREKOMMENDATIONER =====
 
 export const icfAdaptations: Record<string, ICFAdaptation> = {
@@ -2874,31 +2916,46 @@ export function calculateJobMatches(
     const adaptations: string[] = []
     const warnings: string[] = []
 
-    // Viktfördelning optimerad för bästa matchning:
-    // - RIASEC är mest forskningsvaliderat (30%)
-    // - Intresseområden visar konkreta preferenser (25%)
-    // - ICF säkerställer att användaren klarar jobbet (20%)
-    // - Big Five fångar personlighetsmatchning (15%)
-    // - Toppvärdesbonus belönar starka matchningar (10%)
+    /*
+      VIKTFÖRDELNING — omlagd 2026-08-21.
 
-    // 1. RIASEC-matchning (30%) - arbetsstil och intresse
+      Två fel mättes upp i granskningen, båda med formeln körd mot alla 142
+      yrken:
+
+      1. **Skalan var uppblåst.** Den som svarade 3 (mitten) på samtliga 34
+         frågor fick 68–80 % mot VARJE yrke, och alla 142 passerade
+         "lämplig"-tröskeln 65. Orsaken var golv i delpoängen: intressen kunde
+         aldrig ge under 0,5, ICF aldrig under 0,2, toppbonusen aldrig under
+         0,3. Siffran mätte alltså mest att formeln hade ett golv.
+
+      2. **ICF drog ner matchningen**, och det slog hårdast mot dem verktyget
+         finns för. Den som svarade 1 på allt — rimligt vid depression, smärta
+         eller låg tilltro — fick topplistan lastbilschaufför, skogsarbetare,
+         trädgårdsmästare, lagerarbetare, städare. Låga ICF-svar straffade allt
+         kognitivt hårdast, så kvar blev fysiskt arbete, vilket personen just
+         angett att hen inte orkar.
+
+      ICF ingår därför inte längre i POÄNGEN. Den producerar fortfarande
+      anpassningsförslag och varningar — det är där den gör nytta. Ett yrke ska
+      inte matcha sämre för att någon behöver en anpassning för att göra det.
+    */
+
+    // 1. RIASEC (40 %) — arbetsstil och intresse
     const riasecScore = calculateRiasecMatch(profile.riasec, occupation.riasec)
-    totalScore += riasecScore * 0.30
-    totalWeight += 0.30
+    totalScore += riasecScore * 0.40
+    totalWeight += 0.40
 
-    // 2. Intresseområden (25%) - specifika intressen
+    // 2. Intresseområden (35 %) — konkreta preferenser
     const interestScore = calculateInterestMatch(profile.strongInterest, occupation.categories)
-    totalScore += interestScore * 0.25
-    totalWeight += 0.25
+    totalScore += interestScore * 0.35
+    totalWeight += 0.35
 
-    // 3. ICF-matchning (20%) - funktionsförutsättningar
+    // 3. ICF — vikt 0. Bidrar med anpassningar och varningar, inte med poäng.
     const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges)
-    totalScore += icfResult.score * 0.20
-    totalWeight += 0.20
     adaptations.push(...icfResult.adaptations)
     warnings.push(...icfResult.warnings)
 
-    // 4. Big Five-matchning (15%) - personlighet
+    // 4. Big Five (15 %) — personlighet
     const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
     totalScore += bigFiveScore * 0.15
     totalWeight += 0.15
@@ -2951,35 +3008,35 @@ function calculateBigFiveMatch(user: BigFiveScores, job: BigFiveScores): number 
   return 1 - (diffSum / maxDiff)
 }
 
+/**
+ * ICF: producerar ANPASSNINGAR och VARNINGAR, ingen poäng.
+ *
+ * Funktionen returnerade tidigare även en  som vägde 20 % av
+ * matchningen. Den togs bort 2026-08-21: att någon behöver en anpassning för
+ * att göra ett jobb ska inte göra jobbet till en sämre match. Effekten var
+ * mätbar och gick åt fel håll — den som skattade sig lågt sorterades in i
+ * fysiskt arbete, alltså precis det hen angett att hen inte orkar.
+ *
+ * Poängsummeringen och dess golv () är borta
+ * i sin helhet, så den inte kan kopplas tillbaka av misstag.
+ */
 function calculateICFMatch(
-  user: ICFScores, 
-  job: ICFScores, 
+  user: ICFScores,
+  job: ICFScores,
   challenges: JobChallenges
-): { score: number; adaptations: string[]; warnings: string[] } {
+): { adaptations: string[]; warnings: string[] } {
   const keys: (keyof ICFScores)[] = ['kognitiv', 'kommunikation', 'koncentration', 'motorik', 'sensorisk', 'energi']
-  let scoreSum = 0
   const adaptations: string[] = []
   const warnings: string[] = []
 
   keys.forEach(key => {
     const userScore = user[key]
     const jobScore = job[key]
-    
-    if (userScore >= jobScore) {
-      // Användaren överträffar eller möter kravet - full poäng
-      scoreSum += 1
-    } else {
-      // Användaren under kravet - proportional poäng baserat på gap
+
+    if (userScore < jobScore) {
       const gap = jobScore - userScore
-      // Mjukare nedtrappning: gap på 1 ger 80% poäng, gap på 2 ger 50%, gap på 3+ ger 20%
-      let gapPenalty = 0
-      if (gap <= 1) gapPenalty = 0.2
-      else if (gap <= 2) gapPenalty = 0.5
-      else gapPenalty = 0.8
-      
-      scoreSum += Math.max(0.2, 1 - gapPenalty)
-      
-      // Lägg till anpassningsrekommendationer vid större gap
+
+      // Anpassningsförslag vid gap — det ICF-delen faktiskt är till för.
       if (gap >= 1 && icfAdaptations[key]) {
         const adaptationText = `${icfAdaptations[key].name}: ${icfAdaptations[key].adaptations[0]}`
         if (!adaptations.includes(adaptationText)) {
@@ -3051,7 +3108,7 @@ function calculateICFMatch(
     }
   }
 
-  return { score: scoreSum / keys.length, adaptations, warnings }
+  return { adaptations, warnings }
 }
 
 // Fysiska matchningen är nu integrerad i ICF-matchningen via motorik och energi
@@ -3101,19 +3158,29 @@ function calculateInterestMatch(
 
       let matchScore = 0
       if (weight >= 4) {
-        // Viktigt krav - användaren bör ha högt intresse
+        /*
+          Golven borttagna 2026-08-21. Trappan slutade tidigare på 0,2 för
+          viktiga krav, 0,4 för medelviktiga, och mindre viktiga krav kunde
+          aldrig ge under 0,5 (`0.5 + userInterest * 0.5`). Följden var att ett
+          lågt intresse ändå gav halva poängen, och att matchningsprocenten
+          landade 68–80 % för i stort sett alla yrken oavsett svar. En trappa
+          som inte når noll mäter inte skillnaden mellan att vilja och att inte
+          vilja.
+        */
+        // Viktigt krav — användaren bör ha högt intresse
         if (userScore >= 70) matchScore = 1.0
         else if (userScore >= 50) matchScore = 0.7
-        else if (userScore >= 30) matchScore = 0.4
-        else matchScore = 0.2
+        else if (userScore >= 30) matchScore = 0.35
+        else matchScore = 0
       } else if (weight >= 3) {
         // Medelviktigt krav
         if (userScore >= 60) matchScore = 1.0
-        else if (userScore >= 40) matchScore = 0.7
-        else matchScore = 0.4
+        else if (userScore >= 40) matchScore = 0.65
+        else if (userScore >= 20) matchScore = 0.3
+        else matchScore = 0
       } else {
-        // Mindre viktigt - alla får rimlig score
-        matchScore = 0.5 + (userInterest * 0.5)
+        // Mindre viktigt krav — följer intresset rakt av, utan golv
+        matchScore = userInterest
       }
 
       // Bonus om detta är ett av användarens toppintressen
@@ -3126,7 +3193,9 @@ function calculateInterestMatch(
     }
   })
 
-  return totalWeight > 0 ? matchSum / totalWeight : 0.5
+  // Inga kravviktade kategorier alls för yrket = vi vet ingenting. Returnerade
+  // tidigare 0,5, alltså halva poängen för frånvaro av information.
+  return totalWeight > 0 ? matchSum / totalWeight : 0
 }
 
 // Bonus för höga RIASEC-matchningar (när användaren har höga värden där jobbet kräver höga värden)
@@ -3145,9 +3214,9 @@ function calculateTopRiasecBonus(user: RiasecScores, job: RiasecScores): number 
       if (userScore >= jobScore) {
         bonusSum += 1 // Perfekt match
       } else if (userScore >= 3) {
-        bonusSum += 0.7 // God match
+        bonusSum += 0.6 // God match
       } else {
-        bonusSum += 0.3 // Svag match
+        bonusSum += 0 // Svag match — gav tidigare 0,3 i golv
       }
       count++
     } else if (userScore >= 4 && jobScore >= 3) {
@@ -3156,8 +3225,10 @@ function calculateTopRiasecBonus(user: RiasecScores, job: RiasecScores): number 
       count++
     }
   })
-  
-  return count > 0 ? bonusSum / count : 0.5
+
+  // Ingen dimension kvalade in = ingen bonus. Returnerade tidigare 0,5, alltså
+  // en halv bonuspoäng för att inget matchade.
+  return count > 0 ? bonusSum / count : 0
 }
 
 // ===== HJÄLPFUNKTIONER =====
@@ -3215,7 +3286,24 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
 
   // ICF (funktionsförutsättningar - inkluderar kognitivt, kommunikativt och fysiskt)
   const icf: ICFScores = { kognitiv: 3, kommunikation: 3, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 }
-  const icfMotorikValues: number[] = []
+  /**
+   * ALLA sex ICF-domäner samlas i arrayer, inte bara motorik.
+   *
+   * Före 2026-08-21 stod här `icf[category] = normalizedValue * 5` — en
+   * TILLDELNING. Motorik specialbehandlades och medelvärdesberäknades, men
+   * `energi` har också två frågor: `icf_en_fys` ("Jag har ork att vara fysiskt
+   * aktiv under arbetsdagen") och `icf_en_men` ("energi att tänka"). Den sist
+   * itererade vann, så svaret på ORKFRÅGAN påverkade ingenting. Och det är
+   * just `icf.energi` som styr varningarna för fysiskt krävande yrken
+   * (`calculateICFMatch`). För en målgrupp med fysiska funktionsnedsättningar
+   * var det den fråga som borde väga tyngst.
+   *
+   * (`if (!icfMotorikValues.length) { push } else { push }` — de två grenarna
+   * var dessutom identiska.)
+   */
+  const icfValues: Record<keyof ICFScores, number[]> = {
+    kognitiv: [], kommunikation: [], koncentration: [], motorik: [], sensorisk: [], energi: [],
+  }
 
   // Summera svar
   // Värden från QuestionCard är 1-5, normalisera till 0-1 skala
@@ -3225,9 +3313,24 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
 
     // Konvertera 1-5 skala till 0-1 (där 1=0.0, 3=0.5, 5=1.0)
     const normalizedValue = (value - 1) / 4
+    /**
+     * Tillbaka till 1–5, inte 0–5.
+     *
+     * `normalizedValue * 5` gav ett svar på mitten (3) värdet 2,5 och ett
+     * lägsta svar värdet 0. Två följder, båda belagda i prod-data:
+     *   · ICF: `ICFSection` klassar `< 3` som "Utmanande – anpassningar
+     *     rekommenderas" i rött. Ett MITTENSVAR blev alltså rött, och
+     *     användaren fick se "2.5/5". Tre verkliga användare har i skrivande
+     *     stund kognitiv/koncentration/sensorisk lagrade som exakt 2.5.
+     *   · RIASEC: yrkena är kodade 1–5 och `calculateRiasecMatch` antar
+     *     `maxDiff = 6 * 4`. Med användarvärde 0 kan differensen bli 5 per
+     *     dimension och delpoängen bli negativ. Dessutom var värdet 2
+     *     oåtkomligt (avrundningen gav {0,1,3,4,5}).
+     */
+    const skala1till5 = 1 + normalizedValue * 4
 
     if (question.section === 'riasec') {
-      riasec[question.category as keyof RiasecScores] += normalizedValue * 5
+      riasec[question.category as keyof RiasecScores] += skala1till5
       riasecCounts[question.category]++
     } else if (question.section === 'bigfive') {
       bigFiveCounts[question.category].sum += normalizedValue * 100
@@ -3236,25 +3339,18 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
       strongCounts[question.category].sum += normalizedValue * 100
       strongCounts[question.category].count++
     } else if (question.section === 'icf') {
-      // Hantera både motorik-grov och motorik-fin som motorik
       const category = question.category as keyof ICFScores
-      if (category === 'motorik' || question.id === 'icf_mot_grov' || question.id === 'icf_mot_fin') {
-        // Beräkna medelvärde för motorik om flera frågor
-        if (!icfMotorikValues.length) {
-          icfMotorikValues.push(normalizedValue * 5)
-        } else {
-          icfMotorikValues.push(normalizedValue * 5)
-        }
-      } else {
-        icf[category] = normalizedValue * 5
-      }
+      if (icfValues[category]) icfValues[category].push(skala1till5)
     }
   })
-  
-  // Beräkna medelvärde för motorik från de två frågorna
-  if (icfMotorikValues.length > 0) {
-    icf.motorik = Math.round(icfMotorikValues.reduce((a, b) => a + b, 0) / icfMotorikValues.length)
-  }
+
+  // Medelvärde per ICF-domän, avrundat likadant för alla sex. Motorik
+  // avrundades tidigare men de fem övriga inte, vilket dolde skalfelet.
+  ;(Object.keys(icfValues) as (keyof ICFScores)[]).forEach(k => {
+    if (icfValues[k].length > 0) {
+      icf[k] = Math.round(icfValues[k].reduce((a, b) => a + b, 0) / icfValues[k].length)
+    }
+  })
 
   // Normalisera RIASEC
   Object.keys(riasec).forEach(key => {
@@ -3282,7 +3378,77 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
     }
   })
 
-  return { riasec, bigFive, icf, strongInterest }
+  const coverage: ProfileCoverage = {
+    riasec: {
+      R: riasecCounts.R, I: riasecCounts.I, A: riasecCounts.A,
+      S: riasecCounts.S, E: riasecCounts.E, C: riasecCounts.C,
+    },
+    bigFive: {
+      openness: bigFiveCounts.openness.count,
+      conscientiousness: bigFiveCounts.conscientiousness.count,
+      extraversion: bigFiveCounts.extraversion.count,
+      agreeableness: bigFiveCounts.agreeableness.count,
+      stability: bigFiveCounts.stability.count,
+    },
+    icf: {
+      kognitiv: icfValues.kognitiv.length,
+      kommunikation: icfValues.kommunikation.length,
+      koncentration: icfValues.koncentration.length,
+      motorik: icfValues.motorik.length,
+      sensorisk: icfValues.sensorisk.length,
+      energi: icfValues.energi.length,
+    },
+    strongInterest: Object.fromEntries(
+      Object.keys(strongCounts).map(k => [k, strongCounts[k].count])
+    ) as ProfileCoverage['strongInterest'],
+    answered: Object.keys(answers).filter(id => allQuestions.some(q => q.id === id)).length,
+    total: allQuestions.length,
+  }
+
+  return { riasec, bigFive, icf, strongInterest, coverage }
+}
+
+/**
+ * Frågorna om funktionsförmåga — ork, koncentration, motorik, sinnesintryck.
+ *
+ * Det är uppgifter om hälsa i GDPR art. 9:s mening, och de får därför inte
+ * lagras utan uttryckligt samtycke. Exporteras så att TestTab kan utelämna
+ * dem ur det som skrivs när samtycke saknas. (2026-08-21.)
+ */
+export const ICF_FRAGE_IDN: string[] = allQuestions
+  .filter(q => q.section === 'icf')
+  .map(q => q.id)
+
+/** Är alla frågor besvarade? Villkoret för att få kalla testet slutfört. */
+export function arProfilenKomplett(answers: Record<string, number>): boolean {
+  return allQuestions.every(q => typeof answers[q.id] === 'number')
+}
+
+/**
+ * Hur matchningen ska UTTRYCKAS i gränssnittet.
+ *
+ * `matchPercentage` är en relativ poäng och duger för att SORTERA, men den är
+ * inte tolkbar som "hur väl passar jag". Mätt 2026-08-21 med
+ * `scripts/mat-matchningsfordelning.mjs`: den som svarar 3 (mitten) på alla 34
+ * frågor får 61–82 % mot varje yrke, median 75. Det är inte en egenskap hos
+ * formelns golv utan hos avståndsmåttet — den som ligger i mitten ligger nära
+ * allt. Yrkena är kodade 1–5, och ett neutralt svar är aldrig långt från något.
+ *
+ * Talet visades tidigare som "87 % match" med färgskala och som "9/10". Det
+ * läses som en mätning av lämplighet, och deltagare fattar livsval på det.
+ * Rangordningen är däremot äkta information: den säger vilka yrken som ligger
+ * närmast just de svar personen gav.
+ *
+ * Regeln: visa PLATS, inte procent. Talet finns kvar i typen för sortering och
+ * historik.
+ */
+export function matchningsplats(index: number, totalt: number): string {
+  return `Nr ${index + 1} av ${totalt} utifrån dina svar`
+}
+
+/** Frågor som saknar svar — används för att peka användaren rätt. */
+export function obesvaradeFragor(answers: Record<string, number>): Question[] {
+  return allQuestions.filter(q => typeof answers[q.id] !== 'number')
 }
 
 // ===== RIASEC FÄRGER =====

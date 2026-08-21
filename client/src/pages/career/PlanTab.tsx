@@ -9,6 +9,8 @@ import {
   Zap, Trash2, Loader2, Heart, FileText
 } from '@/components/ui/icons'
 import { Card, Button, EmptyState } from '@/components/ui'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { showToast } from '@/components/Toast'
 import { cn } from '@/lib/utils'
 import { careerPlanApi, milestonesApi, favoriteOccupationsApi, type CareerPlan, type CareerMilestone, type FavoriteOccupation } from '@/services/careerApi'
 import { CalendarSync } from '@/components/calendar/CalendarSync'
@@ -20,6 +22,9 @@ import { useInterestProfile, formatRiasecForPrompt } from '@/hooks/useInterestPr
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
+  // Providern sitter i main.tsx. Den fristående `confirmDialog`-exporten är
+  // bara en window.confirm-fallback — hooken ger projektets egen dialog.
+  const { confirm } = useConfirmDialog()
   const { profile: interestProfile } = useInterestProfile()
   const [currentSituation, setCurrentSituation] = useState('')
   const [goal, setGoal] = useState('')
@@ -27,7 +32,15 @@ export default function PlanTab() {
   const [plan, setPlan] = useState<CareerPlan | null>(null)
   const [milestones, setMilestones] = useState<CareerMilestone[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  /**
+   * Reglagets värde medan man drar. Tidigare gick varje `onChange` rakt till
+   * databasen: ett drag 0→60 blev upp till 60 UPDATE plus 60 SELECT, och
+   * svaren kunde landa ur ordning så ett äldre värde skrev över ett nyare.
+   * Nu skrivs värdet en gång, när man släpper.
+   */
+  const [dragProgress, setDragProgress] = useState<Record<string, number>>({})
   const [showSMARTHelper, setShowSMARTHelper] = useState(false)
   const [isAddingMilestone, setIsAddingMilestone] = useState(false)
   const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
@@ -130,10 +143,18 @@ export default function PlanTab() {
     loadProfileData()
   }, [])
 
+  /**
+   * Tre lägen krävs här, inte två. Tidigare loggades ett läsfel bara, och
+   * `plan` blev `null` — vilket komponenten renderar som *skapa-formuläret*.
+   * En användare med en befintlig plan fyllde då i på nytt, och
+   * `careerPlanApi.create` avaktiverar den gamla planen. Ett nätverksfel
+   * kostade alltså hela karriärplanen. `plan === null` (ingen plan) och
+   * `loadError` (vi vet inte) måste hållas isär.
+   */
   const loadData = async () => {
     setIsLoading(true)
+    setLoadError(false)
     try {
-      // Load plan and favorites in parallel
       const [activePlan, favorites] = await Promise.all([
         careerPlanApi.getActive(),
         favoriteOccupationsApi.getAll()
@@ -150,6 +171,7 @@ export default function PlanTab() {
       }
     } catch (err) {
       console.error('Failed to load data:', err)
+      setLoadError(true)
     } finally {
       setIsLoading(false)
     }
@@ -230,15 +252,22 @@ export default function PlanTab() {
     }
   }
 
-  const updateMilestoneProgress = async (id: string, progress: number) => {
+  /** Skrivs när användaren släpper reglaget, inte per pixel. */
+  const commitMilestoneProgress = async (id: string, progress: number) => {
     try {
       const updated = await milestonesApi.updateProgress(id, progress)
       setMilestones(prev => prev.map(m => m.id === id ? updated : m))
-      // Refresh plan to get updated progress
       const refreshedPlan = await careerPlanApi.getActive()
       if (refreshedPlan) setPlan(refreshedPlan)
     } catch (err) {
       console.error('Failed to update progress:', err)
+      showToast.error(t('career.plan.saveFailed', 'Kunde inte spara framstegen'))
+    } finally {
+      setDragProgress(prev => {
+        const nasta = { ...prev }
+        delete nasta[id]
+        return nasta
+      })
     }
   }
 
@@ -257,6 +286,17 @@ export default function PlanTab() {
       setMilestones(prev => [...prev, created])
       setNewMilestone({ title: '', timeframe: '', target_date: '', steps: '' })
       setIsAddingMilestone(false)
+      /*
+        AI-märkningen ligger under HELA listan, inte per rad. Så fort
+        användaren lägger till en egen milstolpe är listan inte längre
+        AI-genererad, och att låta stämpeln stå kvar vore att märka
+        användarens egna ord som AI-utdata (AI Act art. 50.2, i spegelvänd
+        form mot mockGenerateLetter-felet). Kvar står den motsatta luckan: vid
+        omladdning är `aiGenerated` false, så AI-genererade milstolpar visas
+        omärkta. Att laga den kräver en `ai_generated`-kolumn på
+        `career_milestones` — en migration mot prod, alltså Mikaels beslut.
+      */
+      setAiGenerated(false)
     } catch (err) {
       console.error('Failed to add milestone:', err)
     } finally {
@@ -264,19 +304,36 @@ export default function PlanTab() {
     }
   }
 
+  // Native confirm() stod här: ostilad, hanterar inte fokus, kan vara
+  // blockerad i webbläsaren, och texterna var hårdkodad svenska.
   const deleteMilestone = async (id: string) => {
-    if (!confirm('Är du säker på att du vill ta bort denna milstolpe?')) return
+    const ok = await confirm({
+      title: t('career.plan.deleteMilestoneConfirmTitle'),
+      message: t('career.plan.deleteMilestoneConfirmBody'),
+      confirmText: t('career.plan.deleteMilestoneConfirmCta'),
+      cancelText: t('career.plan.cancel'),
+      variant: 'danger',
+    })
+    if (!ok) return
     try {
       await milestonesApi.delete(id)
       setMilestones(prev => prev.filter(m => m.id !== id))
     } catch (err) {
       console.error('Failed to delete milestone:', err)
+      showToast.error(t('career.plan.deleteFailed', 'Kunde inte ta bort milstolpen'))
     }
   }
 
   const deletePlan = async () => {
     if (!plan) return
-    if (!confirm('Är du säker på att du vill ta bort hela karriärplanen?')) return
+    const ok = await confirm({
+      title: t('career.plan.deletePlanConfirmTitle'),
+      message: t('career.plan.deletePlanConfirmBody'),
+      confirmText: t('career.plan.deletePlanConfirmCta'),
+      cancelText: t('career.plan.cancel'),
+      variant: 'danger',
+    })
+    if (!ok) return
     try {
       await careerPlanApi.delete(plan.id)
       setPlan(null)
@@ -284,21 +341,49 @@ export default function PlanTab() {
       setCurrentSituation('')
       setGoal('')
       setTimeframe('')
+      setAiGenerated(false)
     } catch (err) {
       console.error('Failed to delete plan:', err)
+      showToast.error(t('career.plan.deleteFailed', 'Kunde inte ta bort planen'))
     }
   }
 
   const completedCount = milestones.filter(m => m.is_completed).length
-  const totalProgress = plan?.total_progress ||
-    (milestones.length > 0 ? Math.round(milestones.reduce((sum, m) => sum + (m.progress || 0), 0) / milestones.length) : 0)
+  /**
+   * Räknas ur milstolparna, inte ur `plan.total_progress`. Databastriggern
+   * (`20260412100000_career_module_tables.sql`) kör på INSERT och UPDATE men
+   * **inte** på DELETE, så kolumnen står kvar på gamla värdet när man raderar
+   * de sista milstolparna. `||` valde dessutom det gamla värdet framför en
+   * färsk nolla — resultatet blev "50 %" ovanför "0 av 0". Klienten har den
+   * färska sanningen; använd den.
+   */
+  const totalProgress = milestones.length > 0
+    ? Math.round(milestones.reduce((sum, m) => sum + (m.progress || 0), 0) / milestones.length)
+    : 0
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
         <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" aria-hidden="true" />
-        <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar karriärplan...</span>
+        <span className="ml-3 text-gray-600 dark:text-gray-400">{t('career.plan.loading')}</span>
       </div>
+    )
+  }
+
+  // Före skapa-formuläret: vet vi inte om en plan finns, visa inte ett
+  // formulär som kan ersätta den.
+  if (loadError) {
+    return (
+      <Card className="p-8 text-center" role="alert">
+        <AlertCircle className="w-12 h-12 text-red-600 dark:text-red-400 mx-auto mb-4" aria-hidden="true" />
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
+          {t('career.plan.loadErrorTitle')}
+        </h3>
+        <p className="text-stone-600 dark:text-stone-400 mb-4 max-w-md mx-auto">
+          {t('career.plan.loadErrorBody')}
+        </p>
+        <Button onClick={loadData}>{t('career.plan.retry')}</Button>
+      </Card>
     )
   }
 
@@ -325,11 +410,11 @@ export default function PlanTab() {
 
               {/* Auto-fill from CV/Profile */}
               {hasProfileData && !currentSituation && (
-                <div className="mb-3 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-sky-200 dark:border-sky-700">
+                <div className="mb-3 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]">
                   <div className="flex items-start gap-2">
                     <FileText className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-[var(--c-text)] dark:text-sky-300 mb-2">
+                      <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mb-2">
                         {i18n.language === 'en'
                           ? 'We found information from your CV and profile:'
                           : 'Vi hittade information från ditt CV och din profil:'}
@@ -428,16 +513,18 @@ export default function PlanTab() {
               <Button
                 variant="outline"
                 onClick={() => setShowSMARTHelper(!showSMARTHelper)}
-                title="SMART goals helper"
+                aria-label={t('career.plan.smartHelperLabel')}
+                aria-expanded={showSMARTHelper}
+                aria-controls="smart-helper"
               >
-                <Zap className="w-4 h-4" />
+                <Zap className="w-4 h-4" aria-hidden="true" />
               </Button>
             </div>
           </div>
         </Card>
 
         {showSMARTHelper && (
-          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-2 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
+          <Card id="smart-helper" className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-2 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
             <div className="flex items-start gap-3 mb-4">
               <AlertCircle className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
               <div>
@@ -488,46 +575,78 @@ export default function PlanTab() {
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('career.plan.yourCareerPlan')}</h3>
-            <p className="text-gray-600 dark:text-gray-300"><strong>Från:</strong> {plan.current_situation}</p>
-            <p className="text-gray-600 dark:text-gray-300"><strong>Till:</strong> {plan.goal}</p>
+            <p className="text-gray-600 dark:text-gray-300"><strong>{t('career.plan.from')}:</strong> {plan.current_situation}</p>
+            <p className="text-gray-600 dark:text-gray-300"><strong>{t('career.plan.to')}:</strong> {plan.goal}</p>
+            {/*
+              Tidsramen slås upp mot en etikett. Fokuslägets guide skriver
+              slugen `5_years`, så här stod bokstavligen "Tidsram: 5_years".
+              Är slugen okänd visas den råa strängen — den kan vara något
+              användaren själv skrivit.
+            */}
             {plan.timeframe && (
-              <p className="text-gray-500 dark:text-gray-400 text-sm"><strong>Tidsram:</strong> {plan.timeframe}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                <strong>{t('career.plan.timeframeLabel')}:</strong>{' '}
+                {t(`career.plan.timeframes.${plan.timeframe}`, { defaultValue: plan.timeframe })}
+              </p>
             )}
           </div>
-          <Button variant="ghost" size="sm" className="text-red-600" onClick={deletePlan}>
-            <Trash2 className="w-4 h-4" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-red-600"
+            onClick={deletePlan}
+            aria-label={t('career.plan.deletePlanLabel')}
+          >
+            <Trash2 className="w-4 h-4" aria-hidden="true" />
           </Button>
         </div>
 
-        {/* Overall Progress */}
+        {/*
+          Progresskortet visade tidigare ett stort "0%" och "0 av 0 milstolpar
+          slutförda" innan användaren hunnit lägga till något — särskilt när
+          AI-förslagen fallerat. Ett tomt fält är inte en nolla (DESIGN.md §2).
+          Utan milstolpar visas en invit i stället.
+        */}
         <div
-          className="mb-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+          className="mb-6 p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/60"
           role="region"
-          aria-label={t('career.plan.overallProgressAria', 'Övergripande framsteg för karriärplan')}
+          aria-label={t('career.plan.overallProgress')}
         >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
-              <span className="font-semibold text-gray-800 dark:text-gray-100">Övergripande framsteg</span>
-            </div>
-            <span className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]" aria-live="polite">{totalProgress}%</span>
-          </div>
-          <div
-            className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-[var(--c-accent)]/60 dark:border-[var(--c-solid)]"
-            role="progressbar"
-            aria-valuenow={totalProgress}
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-label={`Karriärplan framsteg: ${totalProgress}%`}
-          >
-            <div
-              className="h-full bg-[var(--c-solid)] transition-all duration-500"
-              style={{ width: `${totalProgress}%` }}
-            />
-          </div>
-          <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-2" role="status">
-            {completedCount} av {milestones.length} milstolpar slutförda
-          </p>
+          {milestones.length === 0 ? (
+            <p className="text-sm text-stone-700 dark:text-stone-300">
+              {t('career.plan.noProgressYet')}
+            </p>
+          ) : (
+            <>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
+                  <span className="font-semibold text-gray-800 dark:text-gray-100">
+                    {t('career.plan.overallProgress')}
+                  </span>
+                </div>
+                <span className="text-2xl font-bold text-[var(--c-text)] tabular-nums" aria-live="polite">
+                  {totalProgress} %
+                </span>
+              </div>
+              <div
+                className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-[var(--c-accent)]/60"
+                role="progressbar"
+                aria-valuenow={totalProgress}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={t('career.plan.overallProgress')}
+              >
+                <div
+                  className="h-full bg-[var(--c-solid)] transition-all duration-500"
+                  style={{ width: `${totalProgress}%` }}
+                />
+              </div>
+              <p className="text-xs text-[var(--c-text)] mt-2" role="status">
+                {t('career.plan.milestonesDone', { done: completedCount, total: milestones.length })}
+              </p>
+            </>
+          )}
         </div>
 
         {/* Add Milestone Button */}
@@ -539,7 +658,7 @@ export default function PlanTab() {
             className="flex-1"
           >
             <Plus className="w-4 h-4 mr-1" />
-            Lägg till milstolpe
+            {t('career.plan.addMilestone')}
           </Button>
           <CalendarSync compact showSync={true} showUpcoming={false} />
         </div>
@@ -550,8 +669,8 @@ export default function PlanTab() {
             <div className="grid gap-3">
               <input
                 type="text"
-                aria-label="Milstolpens titel"
-                placeholder="Milstolpens titel"
+                aria-label={t('career.plan.milestoneTitleLabel')}
+                placeholder={t('career.plan.milestoneTitleLabel')}
                 value={newMilestone.title}
                 onChange={(e) => setNewMilestone(prev => ({ ...prev, title: e.target.value }))}
                 className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
@@ -559,23 +678,23 @@ export default function PlanTab() {
               <div className="grid grid-cols-2 gap-3">
                 <input
                   type="text"
-                  aria-label="Tidsram för milstolpen"
-                  placeholder="Tidsram (t.ex. Månad 1-2)"
+                  aria-label={t('career.plan.milestoneTimeframeLabel')}
+                  placeholder={t('career.plan.milestoneTimeframePlaceholder')}
                   value={newMilestone.timeframe}
                   onChange={(e) => setNewMilestone(prev => ({ ...prev, timeframe: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
                 />
                 <input
                   type="date"
-                  aria-label="Måldatum för milstolpen"
+                  aria-label={t('career.plan.milestoneDateLabel')}
                   value={newMilestone.target_date}
                   onChange={(e) => setNewMilestone(prev => ({ ...prev, target_date: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
                 />
               </div>
               <textarea
-                aria-label="Steg (ett per rad)"
-                placeholder="Steg (ett per rad)"
+                aria-label={t('career.plan.milestoneStepsLabel')}
+                placeholder={t('career.plan.milestoneStepsLabel')}
                 value={newMilestone.steps}
                 onChange={(e) => setNewMilestone(prev => ({ ...prev, steps: e.target.value }))}
                 rows={3}
@@ -592,10 +711,10 @@ export default function PlanTab() {
         )}
 
         {/* Timeline */}
-        <div className="mb-6" role="region" aria-label={t('career.plan.timelineAria', 'Tidslinje för karriärplan')}>
+        <div className="mb-6" role="region" aria-label={t('career.plan.timelineHeading')}>
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
-            Tidslinje för karriärplan
+            {t('career.plan.timelineHeading')}
           </h4>
 
           {aiNotice && (
@@ -605,20 +724,28 @@ export default function PlanTab() {
             </div>
           )}
 
-          <div className="relative pl-6" role="list" aria-label={t('career.plan.milestonesAria', 'Milstolpar')}>
-            {milestones.length === 0 ? (
-              <EmptyState
-                compact
-                illustration="karriar"
-                title="Inga milstolpar ännu"
-                description='Klicka på "Lägg till milstolpe" för att komma igång.'
-              />
-            ) : milestones.map((milestone, index) => (
-              <div key={milestone.id} className="mb-6 relative">
+          {/* EmptyState låg tidigare INUTI role="list", vilket annonseras som
+              en tom lista. Nu ligger den utanför, och listan får riktiga
+              listitems. */}
+          {milestones.length === 0 ? (
+            <EmptyState
+              compact
+              illustration="karriar"
+              title={t('career.plan.emptyMilestonesTitle')}
+              description={t('career.plan.emptyMilestonesBody')}
+              action={{
+                label: t('career.plan.addMilestone'),
+                onClick: () => setIsAddingMilestone(true),
+              }}
+            />
+          ) : (
+          <div className="relative pl-6" role="list" aria-label={t('career.plan.timelineHeading')}>
+            {milestones.map((milestone, index) => (
+              <div key={milestone.id} role="listitem" className="mb-6 relative">
                 {/* Timeline dot */}
                 <div className="absolute -left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center border-2 bg-white dark:bg-stone-800"
                   style={{
-                    borderColor: milestone.is_completed ? '#14b8a6' : '#d1d5db',
+                    borderColor: milestone.is_completed ? 'var(--c-solid)' : 'var(--c-accent)',
                   }}
                 >
                   {milestone.is_completed ? (
@@ -698,19 +825,34 @@ export default function PlanTab() {
                   {!milestone.is_completed && (
                     <div className="mb-3">
                       <div className="flex items-center justify-between mb-1">
-                        <label htmlFor={`progress-${milestone.id}`} className="text-xs text-gray-600 dark:text-gray-400">Framsteg</label>
-                        <span className="text-xs font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]" aria-live="polite">{milestone.progress || 0}%</span>
+                        <label htmlFor={`progress-${milestone.id}`} className="text-xs text-gray-600 dark:text-gray-400">
+                          {t('career.plan.progressLabel')}
+                        </label>
+                        <span className="text-xs font-semibold text-[var(--c-text)] tabular-nums" aria-live="polite">
+                          {dragProgress[milestone.id] ?? milestone.progress ?? 0} %
+                        </span>
                       </div>
                       <input
                         id={`progress-${milestone.id}`}
                         type="range"
                         min="0"
                         max="100"
-                        value={milestone.progress || 0}
-                        onChange={(e) => updateMilestoneProgress(milestone.id, parseInt(e.target.value))}
+                        step="5"
+                        value={dragProgress[milestone.id] ?? milestone.progress ?? 0}
+                        onChange={(e) =>
+                          setDragProgress(prev => ({ ...prev, [milestone.id]: Number(e.target.value) }))
+                        }
+                        onPointerUp={(e) =>
+                          commitMilestoneProgress(milestone.id, Number(e.currentTarget.value))
+                        }
+                        onBlur={(e) => {
+                          if (dragProgress[milestone.id] !== undefined) {
+                            commitMilestoneProgress(milestone.id, Number(e.currentTarget.value))
+                          }
+                        }}
                         className="w-full h-2 bg-stone-200 dark:bg-stone-600 rounded-full appearance-none cursor-pointer accent-[var(--c-solid)]"
-                        aria-label={`Framsteg för ${milestone.title}`}
-                        aria-valuetext={`${milestone.progress || 0} procent`}
+                        aria-label={t('career.plan.progressFor', { title: milestone.title })}
+                        aria-valuetext={`${dragProgress[milestone.id] ?? milestone.progress ?? 0} %`}
                       />
                     </div>
                   )}
@@ -733,6 +875,7 @@ export default function PlanTab() {
               </div>
             ))}
           </div>
+          )}
 
           {/* Art 50: milstolparna genererades av AI i denna session */}
           {aiGenerated && milestones.length > 0 && (
@@ -740,13 +883,12 @@ export default function PlanTab() {
           )}
         </div>
 
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={deletePlan}
-        >
-          <Plus className="w-4 h-4 mr-1" />
-          {t('career.plan.updatePlan')}
+        {/* Knappen hette "Uppdatera plan", bar en plusikon och raderade
+            planen. Nu säger den vad den gör; bekräftelsedialogen är samma som
+            papperskorgen ovanför. */}
+        <Button variant="outline" className="w-full" onClick={deletePlan}>
+          <Trash2 className="w-4 h-4 mr-1" aria-hidden="true" />
+          {t('career.plan.startOver')}
         </Button>
       </Card>
     </div>

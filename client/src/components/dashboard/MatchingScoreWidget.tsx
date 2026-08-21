@@ -5,10 +5,13 @@ import { Link } from 'react-router-dom';
 import { trendsApi } from '@/services/afTrendsApi';
 import { useDashboardData } from '@/hooks/useDashboardData';
 
+/**
+ * `demand` och `trend` togs bort ur `af-trends` i B13 (2026-08-05) — de var
+ * uträknade efter listposition, inte mätta. Pilen ↑ som stod här ritades
+ * alltså efter var i listan kompetensen råkade hamna.
+ */
 interface TrendingSkill {
   name: string;
-  demand: number;
-  trend: 'up' | 'down' | 'stable';
 }
 
 export default function MatchingScoreWidget() {
@@ -24,11 +27,7 @@ export default function MatchingScoreWidget() {
         const trending = await trendsApi.getTrendingSkills(5);
         if (!cancelled) {
           setTopSkills(
-            trending.slice(0, 3).map((s) => ({
-              name: s.skill,
-              demand: s.demand,
-              trend: s.trend as 'up' | 'down' | 'stable',
-            }))
+            trending.slice(0, 3).map((s) => ({ name: s.skill }))
           );
         }
       } catch (error) {
@@ -157,7 +156,6 @@ export default function MatchingScoreWidget() {
                   className="text-xs px-2 py-0.5 bg-white dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-400"
                 >
                   {skill.name}
-                  {skill.trend === 'up' && ' ↑'}
                 </span>
               ))}
             </div>

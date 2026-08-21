@@ -53,7 +53,10 @@ const riasecInfo = {
 // Pedagogisk information om Big Five
 const bigFiveInfo = {
   title: 'Vad är Big Five?',
-  description: 'Big Five är den mest vedertagna modellen inom personlighetspsykologi. Den beskriver fem grundläggande personlighetsdrag som påverkar hur vi beter oss i olika situationer, inklusive på jobbet.',
+  // "den mest vedertagna modellen" gällde MODELLEN, men stod som rubrik över
+  // portalens egen tiofrågorsenkät och läste därför som en kvalitetsstämpel på
+  // resultatet. Sista meningen säger nu vad den här versionen är.
+  description: 'Femfaktormodellen (Big Five) är en etablerad modell inom personlighetspsykologi. Den beskriver fem drag som påverkar hur vi fungerar i olika situationer, också på jobbet. Frågorna här är våra egna och två per drag — tillräckligt för en fingervisning, inte för en mätning.',
   traits: [
     { 
       key: 'openness', 
@@ -110,19 +113,34 @@ function interpretRiasec(scores: RiasecScores): string {
   return combinations[key] || combinations[key2] || 'Du har en unik kombination av intressen som ger dig många möjligheter!'
 }
 
+/**
+ * Referat av svaren — inte omdömen om personen.
+ *
+ * Stod tidigare: *"Dina främsta personlighetsdrag är att du är noggrann och
+ * pålitlig. Detta ger dig goda förutsättningar för yrken som värdesätter
+ * dessa egenskaper."* Varje drag vilar på TVÅ likert-svar. Två items ger
+ * ingen reliabilitet, och formuleringen är ett påstående om vem användaren
+ * ÄR.
+ *
+ * Värre var fallgrenen: fick inget drag ≥ 60 sa vyn *"Din personlighet är mer
+ * återhållsam"* — en negativ karaktärsbeskrivning som utlöstes av NEUTRALA
+ * svar (alla 3 → alla drag = 50). Den grenen är borttagen.
+ *
+ * Nu: "du svarade att…", och en rad som säger vad underlaget är.
+ */
 function interpretBigFive(scores: BigFiveScores): string {
-  const traits = []
-  if (scores.openness >= 60) traits.push('nyfiken och öppen för nya idéer')
-  if (scores.conscientiousness >= 60) traits.push('noggrann och pålitlig')
-  if (scores.extraversion >= 60) traits.push('social och utåtriktad')
-  if (scores.agreeableness >= 60) traits.push('hjälpsam och empatisk')
-  if (scores.stability >= 60) traits.push('stabil under press')
-  
+  const traits: string[] = []
+  if (scores.openness >= 60) traits.push('gillar att prova nytt')
+  if (scores.conscientiousness >= 60) traits.push('är noggrann och håller ordning')
+  if (scores.extraversion >= 60) traits.push('trivs med människor omkring dig')
+  if (scores.agreeableness >= 60) traits.push('gärna hjälper andra')
+  if (scores.stability >= 60) traits.push('håller dig lugn under press')
+
   if (traits.length === 0) {
-    return 'Din personlighet är mer återhållsam, vilket kan passa bra för yrken som kräver eftertanke och noggrannhet.'
+    return 'Du svarade ganska mitt på skalan på de flesta frågorna. Det säger inte att du saknar de här dragen — bara att du inte lade dig i någon ytterkant den här gången.'
   }
-  
-  return `Dina främsta personlighetsdrag är att du är ${traits.join(', ')}. Detta ger dig goda förutsättningar för yrken som värdesätter dessa egenskaper.`
+
+  return `Du svarade att du ${traits.join(', ')}. Det bygger på två frågor per drag, så se det som en öppning för ett samtal — inte som en personlighetsbedömning.`
 }
 
 export function ResultsView({ profile, onRestart }: ResultsViewProps) {

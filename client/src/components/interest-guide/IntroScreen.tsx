@@ -1,5 +1,10 @@
-import { Search, Brain, Activity, Clock, CheckCircle2, ArrowRight, UserCircle } from '@/components/ui/icons'
+import { Search, Brain, Activity, Clock, CheckCircle2, ArrowRight, UserCircle, Info } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
+import { occupations, allQuestions } from '@/services/interestGuideData'
+
+/** Härleds ur datan. Skärmen lovade "80+ yrken"; listan har 142. */
+const ANTAL_YRKEN = occupations.length
+const ANTAL_FRAGOR = allQuestions.length
 
 interface IntroScreenProps {
   onStart: () => void
@@ -12,32 +17,32 @@ const sections = [
     icon: Search,
     name: 'Arbetsintressen',
     description: 'Vilka typer av arbete tilltalar dig?',
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-50',
+    color: 'text-[var(--c-solid)]',
+    bgColor: 'bg-[var(--c-bg)]',
     questions: 6,
   },
   {
     icon: Brain,
     name: 'Personlighet',
     description: 'Hur skulle du beskriva dig själv?',
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-50',
+    color: 'text-[var(--c-solid)]',
+    bgColor: 'bg-[var(--c-bg)]',
     questions: 10,
   },
   {
     icon: UserCircle,
     name: 'Intresseområden',
     description: 'Vad tycker du är intressant?',
-    color: 'text-pink-600',
-    bgColor: 'bg-pink-50',
+    color: 'text-[var(--c-solid)]',
+    bgColor: 'bg-[var(--c-bg)]',
     questions: 10,
   },
   {
     icon: Activity,
     name: 'Dina förutsättningar',
     description: 'Hur upplever du dina kapaciteter?',
-    color: 'text-emerald-600',
-    bgColor: 'bg-emerald-50',
+    color: 'text-[var(--c-solid)]',
+    bgColor: 'bg-[var(--c-bg)]',
     questions: 8,
   },
 ]
@@ -59,12 +64,22 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
           Detta får du
         </h2>
         
+        {/*
+          Löftena var fyra anspråk portalen inte kan hålla, alla med bestämd
+          artikel: "Big Five-ANALYS av din personlighet" bygger på två frågor
+          per drag; "ICF-BEDÖMNING av dina funktionsförutsättningar" är WHO:s
+          kliniska klassifikation, här åtta självskattningsfrågor; och "80+
+          yrken" stämde inte — listan har 142. Formuleringarna beskriver nu
+          vad testet gör, inte vad det vore om det vore validerat.
+          Reservationen nedan ersätter det som helt saknades: källa, vem som
+          skrivit frågorna, och vad resultatet inte är. (2026-08-21)
+        */}
         <div className="space-y-3">
           {[
-            'Personlig RIASEC-profil med yrkestyper som matchar',
-            'Big Five-analys av din personlighet',
-            'ICF-bedömning av dina funktionsförutsättningar',
-            'Matchning med 80+ yrken och anpassningsförslag',
+            'En bild av vilka typer av arbete som lockar dig',
+            'Hur du beskriver dig själv på fem personlighetsdrag',
+            'Dina egna svar om vad som fungerar bra och mindre bra för dig i arbete',
+            `Förslag bland ${ANTAL_YRKEN} yrken, med anpassningar att prata vidare om`,
           ].map((item, index) => (
             <div key={index} className="flex items-start gap-3">
               <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -80,7 +95,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
 
       {/* Sections preview */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="font-semibold text-gray-900 mb-4">4 delar att besvara</h2>
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">Så här är frågorna upplagda</h2>
         
         <div className="space-y-3">
           {sections.map((section) => {
@@ -104,6 +119,29 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
         </div>
       </div>
 
+      {/*
+        Reservationen. Före 2026-08-21 fanns ingen källhänvisning, inget
+        datum och ingen rad om vad resultatet inte är — någonstans i hela
+        testflödet. Samtidigt lovade skärmen en "Big Five-analys" och en
+        "ICF-bedömning". Rutan står här, där påståendena görs, inte i en
+        hopfällbar panel bredvid.
+      */}
+      <div className="rounded-2xl border border-[var(--c-accent)] bg-[var(--c-bg)] p-5 mb-6">
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-2 flex items-center gap-2">
+          <Info className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
+          Vad det här är, och inte är
+        </h2>
+        <p className="text-sm text-stone-700 dark:text-stone-300">
+          Frågorna är skrivna av oss och inspirerade av tre etablerade ramverk:
+          Hollands yrkesvalsteori (RIASEC), femfaktormodellen och WHO:s sätt att
+          beskriva funktion i arbete. <strong>Det är ingen psykologisk testning
+          och ingen bedömning av dig.</strong> Det är dina egna svar, sammanställda
+          så att du får något att utgå från — i ett samtal med din konsulent, eller
+          för egen del. Ett annat svar en annan dag ger ett annat resultat, och det
+          är inte konstigt.
+        </p>
+      </div>
+
       {/* Info bar */}
       <div className="flex items-center justify-center gap-6 text-sm text-gray-500 mb-8">
         <div className="flex items-center gap-1.5">
@@ -112,7 +150,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
         </div>
         <div className="flex items-center gap-1.5">
           <CheckCircle2 className="w-4 h-4" />
-          <span>34 frågor totalt</span>
+          <span>{ANTAL_FRAGOR} frågor totalt</span>
         </div>
       </div>
 

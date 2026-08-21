@@ -9,27 +9,35 @@ import {
   sections,
   calculateUserProfile,
   calculateJobMatches,
+  obesvaradeFragor,
+  ICF_FRAGE_IDN,
   type SectionId,
 } from '@/services/interestGuideData'
 import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { Button, LoadingState, InfoCard } from '@/components/ui'
-import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from '@/components/ui/icons'
+import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase, CloudOff } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { userApi } from '@/services/userApi'
+import { useAuthStore } from '@/stores/authStore'
 
 export default function TestTab() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  // Art. 9: hälsosamtycket avgör om ICF-delen får lagras. Se handleNext.
+  const { profile } = useAuthStore()
   const [screen, setScreen] = useState<'intro' | 'quiz' | 'completed'>('intro')
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [hasSavedProgress, setHasSavedProgress] = useState(false)
   const [showSaveIndicator, setShowSaveIndicator] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  /** Sant bara när senaste sparningen faktiskt skrev en rad. */
+  const [saveFailed, setSaveFailed] = useState(false)
 
   // Load saved progress
   useEffect(() => {
@@ -51,7 +59,16 @@ export default function TestTab() {
           }
         }
       } catch (err) {
+        /*
+          Tredje läget. Utan det blev `hasSavedProgress = false` vid ett
+          läsfel → IntroScreen visade bara "Starta" → `handleStart` nollställde
+          `answers` → första svaret upsertade ÖVER den sparade raden. Trettio
+          besvarade frågor kunde försvinna av ett nätverksglapp, utan ett ord.
+          `loadError` blockerar både start och autospar tills vi vet vad som
+          finns. (Granskning 2026-08-21.)
+        */
         console.error('Failed to load interest guide progress:', err)
+        setLoadError(true)
       } finally {
         setIsLoading(false)
       }
@@ -60,30 +77,46 @@ export default function TestTab() {
     loadProgress()
   }, [])
 
-  // Auto-save progress
+  /*
+    Autospar. Två rättelser 2026-08-21:
+    · `loadError` blockerar — skriv aldrig över en rad vi inte lyckats läsa.
+    · Bocken "Sparat" visas bara när `saveProgress` returnerar `true`.
+      Tidigare visades den alltid, eftersom anropet inte kunde misslyckas.
+    Effekten beror på `currentQuestionIndex`, så den skriver två gånger per
+    fråga (~68 per test). Kvar att åtgärda; en debounce här behöver samordnas
+    med att sista frågan sparar synkront i handleNext.
+  */
   useEffect(() => {
-    if (Object.keys(answers).length > 0 && screen === 'quiz' && !isLoading) {
-      const saveProgress = async () => {
-        try {
-          setIsSaving(true)
-          await interestGuideApi.saveProgress({
-            current_step: currentQuestionIndex,
-            answers: answers,
-            is_completed: false
-          })
-          setShowSaveIndicator(true)
-          const timer = setTimeout(() => setShowSaveIndicator(false), 2000)
-          return () => clearTimeout(timer)
-        } catch (err) {
-          console.error('Failed to save progress:', err)
-        } finally {
-          setIsSaving(false)
-        }
-      }
+    if (Object.keys(answers).length === 0 || screen !== 'quiz' || isLoading || loadError) return
 
-      saveProgress()
+    let avbruten = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const saveProgress = async () => {
+      setIsSaving(true)
+      try {
+        const ok = await interestGuideApi.saveProgress({
+          current_step: currentQuestionIndex,
+          answers: answers,
+          is_completed: false
+        })
+        if (avbruten) return
+        setSaveFailed(!ok)
+        if (ok) {
+          setShowSaveIndicator(true)
+          timer = setTimeout(() => setShowSaveIndicator(false), 2000)
+        }
+      } catch (err) {
+        console.error('Failed to save progress:', err)
+        if (!avbruten) setSaveFailed(true)
+      } finally {
+        if (!avbruten) setIsSaving(false)
+      }
     }
-  }, [answers, currentQuestionIndex, screen, isLoading])
+
+    saveProgress()
+    return () => { avbruten = true; if (timer) clearTimeout(timer) }
+  }, [answers, currentQuestionIndex, screen, isLoading, loadError])
 
   const currentQuestion = allQuestions[currentQuestionIndex]
   const currentSection = sections.find(s => s.id === currentQuestion?.section)
@@ -122,8 +155,27 @@ export default function TestTab() {
       setCurrentQuestionIndex(prev => prev + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
+      /*
+        Testet kunde slutföras med 8 av 34 svar: SectionDots låter användaren
+        hoppa till valfri sektion, och "Se mitt resultat" skrev `is_completed:
+        true` oavsett. `calculateUserProfile` fyllde då dimensionerna utan
+        underlag med påhittade tal (RIASEC 0, Big Five 50, intressen 50, ICF 3),
+        och resultatsidan rankade yrken på dem. Det bryter projektregeln rakt
+        av. Nu krävs alla frågor, och användaren skickas till den första som
+        saknas i stället för att mötas av ett nej.
+      */
+      const saknas = obesvaradeFragor(answers)
+      if (saknas.length > 0) {
+        const forstaIndex = allQuestions.findIndex(q => q.id === saknas[0].id)
+        setCurrentQuestionIndex(forstaIndex >= 0 ? forstaIndex : 0)
+        setError(t('interestGuide.test.missingAnswers', { count: saknas.length }))
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        return
+      }
+
       try {
         setIsSaving(true)
+        setError(null)
         const calculatedProfile = calculateUserProfile(answers)
 
         // Calculate job matches for history
@@ -133,19 +185,46 @@ export default function TestTab() {
           matchPercentage: m.matchPercentage
         }))
 
-        // Save current progress
-        await interestGuideApi.saveProgress({
+        // Markera klart — men bara om skrivningen faktiskt gick igenom.
+        // Tidigare navigerade vi till resultatsidan oavsett utfall.
+        const sparat = await interestGuideApi.saveProgress({
           current_step: currentQuestionIndex,
           answers: answers,
           is_completed: true
         })
+        if (!sparat) {
+          setError(t('interestGuide.test.couldNotSaveResult'))
+          return
+        }
+
+        /*
+          ART. 9-GRIND PÅ SKRIVNINGEN.
+
+          `HealthConsentGate` omslöt bara ICF-avsnittets RENDERING i
+          ResultsView. Datan skrevs ovillkorligt: `icf_profile` plus de åtta
+          råa ICF-svaren hamnade i `interest_guide_history` oavsett samtycke.
+          I prod fanns 10 sådana rader men bara EN profil med
+          `health_consent_at` satt — nio personers självskattade kognition,
+          koncentration, motorik, sensorik och ork lagrade utan uttryckligt
+          samtycke. Grinden som fanns satt dessutom på `interest_results`,
+          en tabell koden aldrig skriver till.
+
+          Utan samtycke sparas resultatet ändå — men utan hälsodelen. Fail
+          closed: kan vi inte läsa samtycket sparar vi inte ICF.
+        */
+        const harHalsosamtycke = Boolean(profile?.health_consent_at)
+        const svarUtanIcf = harHalsosamtycke
+          ? answers
+          : Object.fromEntries(
+              Object.entries(answers).filter(([id]) => !ICF_FRAGE_IDN.includes(id))
+            )
 
         // Save to history for comparison over time
         await interestGuideApi.saveToHistory({
-          answers: answers,
+          answers: svarUtanIcf,
           riasec_profile: calculatedProfile.riasec,
           bigfive_profile: calculatedProfile.bigFive,
-          icf_profile: calculatedProfile.icf,
+          icf_profile: harHalsosamtycke ? calculatedProfile.icf : null,
           strong_interest: calculatedProfile.strongInterest,
           top_occupations: topOccupations
         }).catch(err => {
@@ -205,6 +284,22 @@ export default function TestTab() {
     return (
       <div className="flex items-center justify-center py-12 ">
         <LoadingState title={t('interestGuide.test.loading')} size="lg" />
+      </div>
+    )
+  }
+
+  // Tredje läget. Att visa introskärmen här vore att erbjuda ett nytt test
+  // som skriver över svar vi inte lyckats läsa.
+  if (loadError) {
+    return (
+      <div className="max-w-2xl mx-auto p-4">
+        <InfoCard variant="error">
+          <h2 className="font-semibold mb-1">{t('interestGuide.test.loadErrorTitle')}</h2>
+          <p className="mb-3">{t('interestGuide.test.loadErrorBody')}</p>
+          <Button onClick={() => window.location.reload()}>
+            {t('interestGuide.test.retry')}
+          </Button>
+        </InfoCard>
       </div>
     )
   }
@@ -330,9 +425,9 @@ export default function TestTab() {
   return (
     <div className="max-w-2xl mx-auto min-h-screen  p-4">
       {error && (
-        <InfoCard variant="error" className="mb-6">
+        <div role="alert"><InfoCard variant="error" className="mb-6">
           {error}
-        </InfoCard>
+        </InfoCard></div>
       )}
 
       {/* Header */}
@@ -347,10 +442,18 @@ export default function TestTab() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {showSaveIndicator && (
-            <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">
-              <CheckCircle2 className="w-3 h-3" />
+        {/* Spartillståndet annonseras nu, och "Sparat" visas bara när det
+            faktiskt sparats. Misslyckas det säger vi det. */}
+        <div className="flex items-center gap-2" role="status" aria-live="polite">
+          {saveFailed && !isSaving && (
+            <span className="flex items-center gap-1 text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/30 px-2 py-1 rounded-full">
+              <CloudOff className="w-3 h-3" aria-hidden="true" />
+              {t('interestGuide.test.notSaved')}
+            </span>
+          )}
+          {showSaveIndicator && !saveFailed && (
+            <span className="flex items-center gap-1 text-xs text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">
+              <CheckCircle2 className="w-3 h-3" aria-hidden="true" />
               {t('interestGuide.test.saved')}
             </span>
           )}
@@ -397,9 +500,16 @@ export default function TestTab() {
 
       {/* Question */}
       <div className="mb-8">
+        {/*
+          `|| 50` stod här — femtio, på en skala 1–5. Webbläsaren klampade
+          `<input type="range" max="5">` till 5, så reglaget stod längst till
+          höger på "Stämmer helt" innan användaren rört det, den aktiva
+          stapeln fick 1225 % bredd och `aria-valuenow` lästes upp som "50".
+          Användaren såg ett maxsvar; systemet hade inget svar.
+        */}
         <QuestionCard
           question={currentQuestion}
-          value={answers[currentQuestion.id] || 50}
+          value={answers[currentQuestion.id]}
           onChange={handleAnswer}
           questionNumber={currentQuestionIndex + 1}
           totalQuestions={allQuestions.length}

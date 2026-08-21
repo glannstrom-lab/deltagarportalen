@@ -1,8 +1,8 @@
 /**
  * Interest Guide Page - Main entry point with tab navigation
  */
-import { lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense, useMemo } from 'react'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { LoadingState } from '@/components/ui'
@@ -32,48 +32,66 @@ function TabLoading() {
 export default function InterestGuide() {
   const { t } = useTranslation()
   const { isFocusMode, leaveWizard } = useFocusMode()
+  const { pathname } = useLocation()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('interestGuide.title', 'Intresseguide')}
-        icon={Compass}
-        domain="coaching"
-      >
-        <FocusInterestGuideWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
+  const interestGuideTabs = useMemo(
+    () => interestGuideTabDefs.map((tab) => ({ ...tab, label: t(tab.labelKey) })),
+    [t]
+  )
 
-  // Build tabs with translated labels
-  const interestGuideTabs = interestGuideTabDefs.map((tab) => ({
-    ...tab,
-    label: t(tab.labelKey),
-  }))
+  /**
+   * Rådgivartipset var hårdkodat till `index={0}` och låg utanför `<Routes>`,
+   * så samma mening — "Svara intuitivt, första instinkten är oftast rätt" —
+   * stod överst även på Resultat, Yrken, Utforska och Historik, där man inte
+   * svarar på något. Nu väljs ett tips per flik.
+   */
+  const flikIndex = Math.max(0, interestGuideTabDefs.findIndex((tab) => tab.path === pathname))
 
   return (
     <>
-      <PageLayout
-        title={t('interestGuide.title')}
-        subtitle={t('interestGuide.discover')}
-        tabs={interestGuideTabs}
-        tabVariant="glass"
-        domain="coaching"
-        className="sidbredd"
->
-        <RadgivarTips pathname="/interest-guide" index={0} />
+      {isFocusMode && (
+        <PageFocusShell
+          title={t('interestGuide.title', 'Intresseguide')}
+          icon={Compass}
+          domain="coaching"
+        >
+          <FocusInterestGuideWizard onExit={leaveWizard} />
+        </PageFocusShell>
+      )}
 
-        <Suspense fallback={<TabLoading />}>
-          <Routes>
-            <Route index element={<TestTab />} />
-            <Route path="results" element={<ResultsTab />} />
-            <Route path="occupations" element={<OccupationsTab />} />
-            <Route path="explore" element={<ExploreTab />} />
-            <Route path="history" element={<HistoryTab />} />
-            <Route path="*" element={<Navigate to="/interest-guide" replace />} />
-          </Routes>
-        </Suspense>
-      </PageLayout>
+      {/*
+        Flikarna DÖLJS i fokusläge, de avmonteras inte.
+
+        `if (isFocusMode) return <PageFocusShell>` låg ovanför den här returen
+        och rev `<Routes>`. Testsvaren överlever tack vare serversparningen,
+        men filterval, expanderade kort och skrollposition försvann — och
+        nästa osparade fält någon lägger in i en flik hade fått den riktiga
+        buggen gratis. Samma mönster som Intervjusimulatorn (2026-08-19) och
+        Karriär (2026-08-21). `display: none` behåller komponenterna monterade
+        och tar samtidigt bort trädet ur tillgänglighetsträdet.
+      */}
+      <div style={isFocusMode ? { display: 'none' } : undefined}>
+        <PageLayout
+          title={t('interestGuide.title')}
+          subtitle={t('interestGuide.discover')}
+          tabs={interestGuideTabs}
+          domain="coaching"
+          className="sidbredd"
+        >
+          <RadgivarTips pathname={pathname} index={flikIndex} />
+
+          <Suspense fallback={<TabLoading />}>
+            <Routes>
+              <Route index element={<TestTab />} />
+              <Route path="results" element={<ResultsTab />} />
+              <Route path="occupations" element={<OccupationsTab />} />
+              <Route path="explore" element={<ExploreTab />} />
+              <Route path="history" element={<HistoryTab />} />
+              <Route path="*" element={<Navigate to="/interest-guide" replace />} />
+            </Routes>
+          </Suspense>
+        </PageLayout>
+      </div>
     </>
   )
 }

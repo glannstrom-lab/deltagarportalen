@@ -9,8 +9,10 @@ import {
   calculateUserProfile,
   calculateJobMatches,
   type UserProfile,
+  matchningsplats,
+  type JobMatch,
 } from '@/services/interestGuideData'
-import { LoadingState, InfoCard, Button, Card, Progress, EmptyState } from '@/components/ui'
+import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
   ClipboardList,
@@ -18,10 +20,9 @@ import {
   Briefcase,
   GraduationCap,
   TrendingUp,
+  Star,
   Filter,
   Search,
-  Star,
-  BarChart3,
   ChevronDown,
   X,
 } from '@/components/ui/icons'
@@ -75,7 +76,7 @@ export default function OccupationsTab() {
   // Calculate job matches - useMemo must be called unconditionally
   const { allMatches, calculationError } = useMemo(() => {
     if (!profile) {
-      return { allMatches: [], calculationError: null }
+      return { allMatches: [] as JobMatch[], calculationError: null }
     }
     try {
       const matches = calculateJobMatches(profile, filterUni)
@@ -83,7 +84,7 @@ export default function OccupationsTab() {
     } catch (err) {
       console.error('OccupationsTab - Failed to calculate job matches:', err)
       return {
-        allMatches: [],
+        allMatches: [] as JobMatch[],
         calculationError: `Kunde inte beräkna yrkesmatchningar: ${err instanceof Error ? err.message : 'Okänt fel'}`
       }
     }
@@ -108,10 +109,15 @@ export default function OccupationsTab() {
   }, [searchQuery, allMatches, sortBy])
 
   // Stats calculations - also unconditional
+  /*
+    "Utmärkta (90 %+)" och "Bra (70 %+)" är borttagna. Den första nåddes av
+    1 av 500 slumpprofiler och av 0 av 5 uniforma svarsmönster — kortet stod
+    permanent på 0 överst på sidan, vilket både bryter mot "ett tomt fält är
+    inte en nolla" och ser ut som en bugg. Den andra var nästan alltid 142,
+    alltså lika oinformativ. Kvar står det som faktiskt går att belägga.
+  */
   const stats = useMemo(() => ({
-    goodMatches: allMatches.filter(m => m.matchPercentage >= 70).length,
     growingJobs: allMatches.filter(m => m.occupation.prognosis === 'growing').length,
-    excellentMatches: allMatches.filter(m => m.matchPercentage >= 90).length,
     displayedMatches: showAll ? filteredMatches : filteredMatches.slice(0, 10),
   }), [allMatches, filteredMatches, showAll])
 
@@ -192,54 +198,37 @@ export default function OccupationsTab() {
         </p>
       </motion.div>
 
-      {/* Stats Cards */}
+      {/*
+        Fyra KPI-kort i hjälteposition, i grönt, blått, lila och orange på en
+        rosa sida. Två av talen gick inte att belägga: "Utmärkta (90 %+)" stod
+        permanent på 0 och "Bra (70 %+)" på i stort sett 142. Kvar är de två
+        som betyder något, i hubbfärgen.
+      */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-1 md:grid-cols-4 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 gap-4"
       >
-        <Card className="p-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
+        <Card className="p-4 bg-[var(--c-bg)] border-[var(--c-accent)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-200 dark:bg-green-800/50 rounded-lg flex items-center justify-center">
-              <Star className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <div className="w-10 h-10 bg-white/60 dark:bg-white/10 rounded-lg flex items-center justify-center">
+              <Briefcase className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-900 dark:text-green-100">{stats.excellentMatches}</p>
-              <p className="text-xs text-green-700 dark:text-green-300">Utmärkta (90%+)</p>
+              <p className="text-2xl font-bold text-[var(--c-text)] tabular-nums">{allMatches.length}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">yrken att utforska</p>
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-blue-50 dark:bg-blue-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+        <Card className="p-4 bg-[var(--c-bg)] border-[var(--c-accent)]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-blue-200 dark:bg-blue-800/50 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
+            <div className="w-10 h-10 bg-white/60 dark:bg-white/10 rounded-lg flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats.goodMatches}</p>
-              <p className="text-xs text-[var(--c-text)] dark:text-blue-300">Bra (70%+)</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-purple-50 dark:bg-purple-900/20 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-200 dark:bg-purple-800/50 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{stats.growingJobs}</p>
-              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)]">Växande yrken</p>
-            </div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-200 dark:bg-orange-800/50 rounded-lg flex items-center justify-center">
-              <Briefcase className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-orange-900 dark:text-orange-100">{allMatches.length}</p>
-              <p className="text-xs text-orange-700 dark:text-orange-300">Totalt att utforska</p>
+              <p className="text-2xl font-bold text-[var(--c-text)] tabular-nums">{stats.growingJobs}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">av dem växer, enligt vår redaktionella bedömning</p>
             </div>
           </div>
         </Card>
@@ -393,14 +382,17 @@ export default function OccupationsTab() {
                         </div>
                       </div>
 
-                      {/* Match Percentage Bar */}
-                      <div className="mb-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-semibold text-gray-600 dark:text-gray-400">Matchning</span>
-                          <span className="text-sm font-bold text-amber-600 dark:text-amber-400">{match.matchPercentage}%</span>
-                        </div>
-                        <Progress value={match.matchPercentage} className="h-2" />
-                      </div>
+                      {/*
+                        Här stod "{matchPercentage}%" med en progressbar. Talet
+                        är inte tolkbart som lämplighet — en neutral svarsprofil
+                        får 61–82 % mot varje yrke (mätt med
+                        scripts/mat-matchningsfordelning.mjs). Rangordningen är
+                        däremot äkta: den säger vilka yrken som ligger närmast
+                        just de svar personen gav.
+                      */}
+                      <p className="mb-3 text-xs text-stone-600 dark:text-stone-400">
+                        {matchningsplats(allMatches.indexOf(match), allMatches.length)}
+                      </p>
 
                       {/* Tags */}
                       <div className="flex flex-wrap gap-2">
@@ -424,11 +416,9 @@ export default function OccupationsTab() {
 
                     {/* Right side - Match score + Actions */}
                     <div className="flex flex-col items-end gap-3 flex-shrink-0">
-                      <div className="flex flex-col items-center">
-                        <div className="w-12 h-12 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
-                          <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{Math.round(match.matchPercentage / 10)}/10</span>
-                        </div>
-                      </div>
+                      {/* "9/10" visade samma otolkbara tal i ett tredje
+                          format. Platsen räcker, och den står redan till
+                          vänster. */}
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
