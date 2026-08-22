@@ -415,6 +415,11 @@ describe('Kurserna kommer inte längre ur språkmodellen', () => {
 
 describe('Utbildningsvägen till JobEd Connect', () => {
   const edge = repo('supabase/functions/education-search/index.ts')
+  // Den rena normaliseringen bröts ut ur index.ts 2026-08-22 så att den går
+  // att köra i test. Textassertionerna nedan som rör den läser därför den
+  // filen; de riktiga testerna av samma kod ligger i
+  // services/__tests__/utbildning-normalisering.test.ts.
+  const normalisera = repo('supabase/functions/education-search/normalisera.ts')
 
   it('låter inte /:id-grenen fånga POST /match', () => {
     /*
@@ -448,8 +453,8 @@ describe('Utbildningsvägen till JobEd Connect', () => {
   })
 
   it('normaliserar matchträffarnas platta form', () => {
-    expect(edge).toContain('function normalizeMatchHit')
-    expect(edge).toContain('education_title')
+    expect(normalisera).toContain('function normalizeMatchHit')
+    expect(normalisera).toContain('education_title')
   })
 })
 

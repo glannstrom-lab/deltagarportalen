@@ -185,8 +185,11 @@ export const typography = {
   bodySmall: 'text-sm text-stone-600',
   bodyLarge: 'text-lg text-stone-600',
   // Labels
-  label: 'text-sm font-medium text-stone-700 mb-1.5',
-  labelSmall: 'text-xs font-medium text-stone-600',
+  // `dark:`-varianterna saknades. `text-stone-700` (#44403b) på ett mörkt
+  // kort mäter ~1,4:1 — varje fältetikett i portalen var i praktiken osynlig
+  // i mörkt läge. accessibility.css guardar bara stone-400/500, inte 600/700.
+  label: 'text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5',
+  labelSmall: 'text-xs font-medium text-stone-600 dark:text-stone-400',
   // Special
   caption: 'text-xs text-stone-500',
   button: 'text-sm font-medium',
@@ -300,7 +303,11 @@ export const inputBase = cn(
   colors.neutral.border,
   'border',
   radius.input,
-  'text-stone-800 placeholder:text-stone-600',
+  // `dark:`-varianterna saknades helt. Uppmätt 2026-08-22: stone-800 (#292524)
+  // på ett mörkt fält (#44403b) = 1,48:1 — det man skriver i sökrutan var i
+  // praktiken osynligt i mörkt läge, i varje input och select i portalen.
+  'text-stone-800 dark:text-stone-100',
+  'placeholder:text-stone-600 dark:placeholder:text-stone-400',
   'transition-all duration-200',
   animations.focusRing,
   'disabled:opacity-50 disabled:cursor-not-allowed'

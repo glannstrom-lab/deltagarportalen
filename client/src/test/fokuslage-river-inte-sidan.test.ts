@@ -35,6 +35,12 @@ const SIDOR = join(__dirname, '..', 'pages')
 /**
  * Sidor som ännu inte konverterats.
  *
+ * Education.tsx stod här till 2026-08-22 med skälet "monolitisk med flera
+ * tidiga returer". Det stämde inte: filen hade EN tidig return och var redan
+ * delad i Education() + EducationInner() — alltså den billigaste posten i
+ * listan, inte en av de svåra. Ett felaktigt skäl höll den kvar i månader.
+ * Kontrollera skälet mot filen innan du låter en post ligga kvar.
+ *
  * Var och en har ett skäl. De fyra första kräver att en människa läser dem:
  * guiden tar props som kan komma ur sidans tillstånd, eller sidan är
  * monolitisk med flera tidiga returer. De tre sista förlorar ingenting —
@@ -45,7 +51,6 @@ const KVAR: Record<string, string> = {
   'CoverLetterPage.tsx': 'guiden tar onComplete/onSkip/onBack — kräver läsning',
   'CVPage.tsx': 'guiden tar inga props alls — kräver läsning',
   'Settings.tsx': 'guiden tar annat än onExit — kräver läsning',
-  'Education.tsx': 'monolitisk med flera tidiga returer',
   'Help.tsx': 'monolitisk; en radkommentar med /dashboard/* stympade tidigare vaktens läsning av just den här filen',
   'InterviewSimulator.tsx': 'monolitisk, 1843 rader — har utkastlager men förlorar ändå fältinnehåll',
   'JobSearch.tsx': 'monolitisk, 19 useState',

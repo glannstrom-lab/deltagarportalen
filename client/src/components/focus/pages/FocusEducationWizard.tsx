@@ -1,7 +1,13 @@
 /**
  * FocusEducationWizard — NPF-anpassad utbildningssök.
  *
- * Steg: vad intresserar dig → klart (länkar till sökresultat i normalvyn).
+ * Steg: vad intresserar dig → klart.
+ *
+ * Guiden LÄMNAR ÖVER det användaren skrev. Till 2026-08-22 gjorde den inte
+ * det: sista steget sa "Öppna utbildningssidan i normalläge för att se
+ * utbildningar inom X" — till en användare som redan stod på utbildningssidan
+ * — och `interest` levde bara i lokalt state och kastades vid avslut.
+ * Guiden bad om en uppgift, upprepade den vid namn, och slängde den.
  */
 
 import { useState } from 'react'
@@ -11,9 +17,12 @@ import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from '.
 
 interface Props {
   onExit: () => void
+  /** Körs med det användaren skrev när guiden avslutas. Sidan sätter det
+   *  som sökord i normalvyn, som ligger kvar monterad bakom guiden. */
+  onSok?: (fraga: string) => void
 }
 
-export function FocusEducationWizard({ onExit }: Props) {
+export function FocusEducationWizard({ onExit, onSok }: Props) {
   const { t } = useTranslation()
   const [step, setStep] = useState(0)
   const [interest, setInterest] = useState('')
@@ -40,6 +49,8 @@ export function FocusEducationWizard({ onExit }: Props) {
       current={step}
       onNext={async () => {
         if (current.id === 'done') {
+          const fraga = interest.trim()
+          if (fraga) onSok?.(fraga)
           onExit()
           return
         }
@@ -65,7 +76,7 @@ export function FocusEducationWizard({ onExit }: Props) {
         <p className="text-stone-600 dark:text-stone-300">
           {t(
             'focus.education.doneText',
-            'Öppna utbildningssidan i normalläge för att se utbildningar inom "{{interest}}".',
+            'Vi söker efter utbildningar inom "{{interest}}" åt dig. Tryck på Klar så visas träffarna.',
             { interest: interest || 'ditt intresse' }
           )}
         </p>

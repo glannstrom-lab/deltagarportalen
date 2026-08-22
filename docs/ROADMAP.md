@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-22** (sidgenomgång: Utbildningar — se avsnittet direkt nedan), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -15,6 +15,79 @@
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
 
 ---
+
+## Genomgång 2026-08-22 — Utbildningar, fem granskare (åtgärdad)
+
+`/education` hade aldrig sidgranskats. Fem parallella granskare (datakontrakt,
+design, tillgänglighet, i18n/sanningshalt, fokusläge + konsumenter) plus ett
+visuellt svep mot prod och mot dev. Sidan har **inga flikar** — den frågan i
+uppdraget besvaras med att `showTabs={false}`; det som ser ut som flikar överst
+är Karriär-hubbens systersidor i SubNav. Utbildningsformen har nu flyttat in i
+skenan som `sidoflikar`, vilket är den enda flikuppsättning sidan bär.
+
+**Rotorsaken bakom fem av sex kritiska fynd: `education-search` normaliserade
+aldrig JobEd Connects faktiska svarsformat.** Funktionen skickade vidare API:ts
+egna former (`{key, value}`, `{lang, content}`, korta formkoder, SCB-koder) till
+ett gränssnitt som väntade strängar och etiketter.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| U1 | **Filterknappen kraschade hela sidan i produktion.** `/types` och `/regions` svarade `{"id":{"key":"yh","value":"Yh"},"label":{...}}` — edgen läste `item.id || item.code || item`, och alla tre var `undefined`. `<option>` fick ett objekt som barn → React error #31 → `RouteErrorBoundary` bytte ut sidan mot "Något gick fel". Regionerna saknade `id` helt. Reproducerat i Playwright mot jobin.se | Edgen läser `key`/`value` och sätter våra egna etiketter. Klienten har dessutom en formvakt (`baraStrangval`) som faller tillbaka på den inbyggda listan i stället för att låta sidan dö |
+| U2 | **Alla fyra typfilter gav noll träffar av 80 313.** `typeToFormMap` skickade `education_form=yrkeshögskoleutbildning`; JobEd tar korta koder (`yh`, `hs`, `vuxgy`, `vuxgr`, `fhs`, `kku`, `af arbetsmarknadsutbildning`). Snabbvalskorten "Yrkeshögskola" och "Högskola & Universitet" landade därför **alltid** i tomtillståndet — två av sex ingångar på startvyn var återvändsgränder | Kortkoder. `komvux` skickar både `vuxgy` och `vuxgr`. Verifierat i drift: 1 532 / 60 972 / 15 301 / 2 059 träffar. Stänger **SGA-H** |
+| U3 | **Varje "Läs mer" var `href="[object Object]"`.** `url`/`providerUrl` sattes till `edu.urls?.[0]`, alltså `{lang, content}`. 20 av 20 kort. Länken öppnade `jobin.se/[object Object]` → SPA-fallbacken → portalens startsida | `svenskText()` + `sakerUrl()` i edgen, och `sakerUrl` som vakt i kortet. Hjälparen flyttad till `@/lib/sakerUrl` och används nu även av `CareerRecommendationsPanel` |
+| U4 | **Ett driftavbrott presenterades som "Inga utbildningar hittades — prova att ändra dina sökfilter", med en knapp som raderade det användaren skrivit.** `educationApi.search` kastar inte; den returnerar `source: 'error'`. Hookens `catch` nåddes aldrig, felrutan i sidan var orenderbar dödkod | Hooken läser `source === 'error'`, sidan har ett eget felläge med `role="alert"` och **Försök igen** — inte "Rensa filter". Samma skillnad görs nu i `CareerRecommendationsPanel`. Stänger **SGA-C** |
+| U5 | **Ett mockregister med åtta påhittade utbildningar var nåbart vid varje API-fel** — "Webbutvecklare Fullstack / Nackademin", "Civilingenjör Datateknik / KTH", "Sjuksköterskeexamen / Karolinska" — med **påhittade ansökningsdatum** (15 april, 1 maj, 15 maj 2026, alla passerade) och länkar till skolornas riktiga webbplatser. Märkningen var ordet "(Demodata)" i 12 px amber inom parentes. Det är påståenden om tredje part | Mockregistret raderat. Ett avbrott svarar `source: 'error'` |
+| U6 | **Kortet visade råa API-koder och fel enheter.** Badgen sa `vuxgy`/`hs`/`fhs`; platsen var kommunkoden `2518`; samma tal renderades som "1900 YH-poäng" **och** "1900 hp" om en komvuxkurs på 1 900 gymnasiepoäng; beskrivningen inleddes med bokstaven `<p>` och `&nbsp;` | En formtabell på kortkoderna (`FORMER`), en kommunkodstabell (219 kommuner ur `/searchparameters/municipalities`), enhet ur poängsystemet (`yh`/`hp`/`vp`), HTML-strippning, och `duration` som en riktig längd härledd ur start- och slutdatum |
+| U7 | **55 % av träffarna var samma kurs igen.** Alvis publicerar en post per kommun; 20 träffar gav 9 unika titlar. `provider` var dessutom kommunnamnet, inte anordnaren, så korten såg olika ut | Edgen slår ihop dubbletter på titel + form och samlar orterna på ett kort ("Nykvarn, Södertälje, Huddinge +1 till"). Räknaren säger `utbildningstillfällen`, inte `utbildningar`, med en rad om varför |
+| U8 | **`education.removeFilter` fanns i ingen språkfil.** Fyra X-knappar hade det tillgängliga namnet `"education.removeFilter"` — en rå i18n-nyckel uppläst för skärmläsare, identisk för fyra olika handlingar. Tre nycklar till (`studyFormat`, `distanceOnly`, `distanceHint`) hade bara hårdkodad svenska som fallback | Alla fyra införda i sv + en, med interpolation: "Ta bort filtret {{filter}}". Pluralformer för `resultsCount`. Döda nycklar (`search`, `deadline`, `demoData`, `infoBanner.title`) borttagna |
+| U9 | **Sidan var lila.** 30 `purple-`, 14 `sky-`, 10 `emerald-`, 10 `amber-` och 55 `gray-`-klasser. Karriär-hubbens färg är rosa (`--coaching-*`); lilan kom från `tailwind.config.js`, som Tailwind 4 **aldrig läser** (inget `@config` i `index.css`). Systersidorna i hubben har noll hårdkodade färger | Allt genom `--c-*`-tokens och `stone-*`. Ikonplattans bakgrund byggdes dessutom i runtime (`typeColorClass.replace('text-','bg-') + '/20'`) — den klassen finns inte i bygget, så plattan hade ingen bakgrund alls. Borttagen |
+| U10 | **Mörkt läge: tolv textställen på 2,0–2,4:1.** `accessibility.css` satte `.text-gray-400/500 { ... !important }` **utan lägesguard**, till skillnad från stone/slate bredvid. Tailwinds mörkervariant kompileras med `:where()` (specificitet 0) och kunde aldrig vinna. Dessutom: `inputBase` saknade `dark:text-*` — text man skrev i sökrutan mätte **1,48:1** — och `typography.label` likaså. Båda gäller **hela portalen**, inte bara den här sidan | Guardade regler i `accessibility.css` (inkl. `::placeholder`), `dark:text-stone-100` i `inputBase`, `dark:text-stone-300` i `typography.label` |
+| U11 | **Fokusläget rev normalvyn.** `if (isFocusMode) return <PageFocusShell...>` avmonterade `EducationInner` — träfflistan, alla sidor man laddat med "Visa fler", den öppna filterpanelen och det man skrivit de senaste 300 ms försvann. Allowlisten i `fokuslage-river-inte-sidan.test.ts` motiverade posten med "monolitisk med flera tidiga returer"; filen hade **en** tidig return och var redan delad i `Education()` + `EducationInner()` — alltså listans billigaste post, inte en av de svåra | `FokusVaxel`. Posten borttagen ur allowlisten (TAK 12 → 11), och skälet rättat i docstringen: kontrollera skälet mot filen |
+| U12 | **Guiden i fokusläget slängde det användaren skrev.** Sista steget sa "Öppna utbildningssidan i normalläge för att se utbildningar inom X" — till någon som redan stod på utbildningssidan — och `interest` dog med komponenten | Guiden lämnar över frågan till normalvyn, som söker på den |
+| U13 | **"Visa fler" hämtade sida två och kastade bort den 300 ms senare.** `offset` låg i state och stod i `performSearch`-callbackens beroendelista, medan `performSearch` stod i auto-sökeffektens: varje avslutad sökning gav ny callbackidentitet → effekten kördes om → `setOffset(0)`. Varje sökning kördes dessutom dubbelt. `AbortController` skapades men nådde aldrig `fetch` — ett långsamt äldre svar kunde skriva över ett nyare | `offset` i en ref, löpnummer per sökning, dedupe vid append. Sju enhetstester, mutationsprövade |
+| U14 | Docstringen påstod integration med **"Susa-navet (Skolverket)"**. Ordet "Susa" finns i noll andra filer; enda källan är JobEd Connect | Rättad, och infobannern namnger källan och säger vad portalen **inte** vet ("inte vad det kostar eller vad du är behörig till") |
+| U15 | Övrigt: skelettkorten hade annan padding än de riktiga korten (innehållet hoppade ~40 px när de byttes), första sökningen hade ingen laddningsvy alls, `aria-controls` pekade på ett element som bara fanns när panelen var öppen, resultatlistan var en `<div class="grid">` utan listsemantik och utan rubrik, "Ladda fler" tappade fokus till `<body>` när den blev `disabled`, och liveregionen monterades tillsammans med sin text (annonseras inte) | Allt åtgärdat. Escape stänger filterpanelen och lämnar tillbaka fokus |
+
+### Fällor som kostade tid — läs dessa innan nästa granskning
+
+- **Git Bash på den här maskinen manglar UTF-8 i curl-argument.** `--data-urlencode "query=undersköterska"` mot JobEd ger `hits: 0`; `?query=undersk%C3%B6terska` ger 211. Två granskare rapporterade falska nollor på det, den ena som ett eget kritiskt fynd ("varje yrkestitel med å/ä/ö får `source: error`"). Kontrollerat om med korrekt kodning: `/match` fungerar för `undersköterska`, `sjuksköterska`, `målare`. **Procentkoda för hand.** Samma fälla noterades redan 2026-08-21 i SGA-loggen nedan — den träffade alltså igen.
+- **Olagrad CSS slår Tailwinds `@layer utilities`, oavsett specificitet.** `accessibility.css` har `fieldset { border: 1px solid; padding: 1rem }` utanför alla lager; `border-0 p-0` på elementet bet inte. Gruppen ritades om till `role="group"` + `aria-labelledby`.
+- **En importsökning räcker inte, men inte heller ett antal tester.** 2 304 tester passerade medan edge-anropet pekade på en funktion som inte finns. Den rena normaliseringen är därför utbruten till `normalisera.ts` och täcks nu av 20 kontraktstester med fixturer hämtade ordagrant ur API:t — mutationsprövade: tre medvetna fel fällde fyra tester.
+
+### Städat i samma pass
+
+`EducationPathFinder.tsx` (146 rader, noll importörer) och `services/afJobEdApi.ts`
+(201 rader, enda importören var den döda komponenten) raderade — en tredje
+parallell JobEd-klient. `getEducationsForSkillGaps` och `getEducationsForRIASEC`
+(~90 rader, noll anropare) borttagna ur `educationApi`, liksom `POPULAR_SEARCHES`.
+
+### Kvarstår (Utbildningar) — kräver beslut
+
+- **U-A — "Spara utbildning" finns i databasen men har inget UI.** Tabellen
+  `saved_educations` finns i prod (15 kolumner, **0 rader**) och CRUD-lagret ligger
+  i `careerApi.ts:325`, men **ingen fil importerar det**. Antingen bygg knappen
+  eller radera lagret; att låta båda ligga kvar är en tredje halvfärdig väg.
+  Notera namnkollisionen: `careerApi` exporterar också ett `educationApi`, som är
+  något helt annat än `services/educationApi.ts`.
+- **U-B — matchträffarna bär ingen länk.** JobEds `match-by-jobtitle` svarar utan
+  `education_url` (kontrollerat fältvis 2026-08-22). Kompetensanalysens
+  utbildningslista kan därför aldrig visa "Läs mer". Att slå upp varje träff mot
+  `GET /educations/{id}` skulle ge länken men kostar tio extra anrop per panel.
+- **U-C — högskoleposterna saknar ortdata helt** (`municipalityCode: []`,
+  `regionCode: []` hos JobEd). Kortet visar ingen plats för dem. Det är sant, men
+  det är också den vanligaste träfftypen (60 972 poster).
+- **U-D — snabbvalens fritextsökningar speglar inte sina beskrivningar.**
+  "Vård & Omsorg — sjukvård, äldreomsorg och socialt arbete" ger 18 av 20
+  sjuksköterskeprogram på högskolenivå. Nu när typfiltret fungerar kan korten
+  kombinera fritext med form (`vård omsorg` + `vuxgy,yh`), men det är ett
+  produktval: ska korten leda till yrkesutbildning eller till hela utbudet?
+- **U-E — två obelagda påståenden i studievägledarens råd** (`coaches.ts:747, 759`):
+  att YH tar in "utan formell behörighet om man visat intresse" (det som finns är
+  *reell kompetens* och fri kvot, alltså en bedömning av kunskaper — inte av
+  engagemang), och att "skolorna har stöd" som ett generellt löfte för alla
+  huvudmän. Rådgivartexterna granskades inte om i det här passet.
 
 ## PB-B åtgärdad 2026-08-22 — fokusläget river inte längre normalvyn
 
@@ -233,13 +306,13 @@ En tredje läste en tom sträng — fel ankare i en `slice` — och en tom strä
   > fungerat hela tiden. Kontrollera testharnessen innan du felsöker koden när felet bara
   > uppträder för indata med svenska tecken.
 
-- **SGA-H — sökvägen har kvar samma etikettlucka som matchvägen hade.** `GET /education-search?q=…`
+- ~~**SGA-H — sökvägen har kvar samma etikettlucka som matchvägen hade.**~~ **Stängd 2026-08-22 (U2/U6).** Ursprunglig text: `GET /education-search?q=…`
   returnerar `typeLabel: "vuxgy"`, `formLabel: "vuxgy"` och `type: "other"` — de långa nycklarna
   i `FORM_LABELS` (`gymnasial_vuxenutbildning` m.fl.) matchar aldrig de korta koderna API:t
   faktiskt svarar med. `MATCH_FORM_LABELS`/`MATCH_FORM_TYPE` som lades till för matchvägen har
   rätt kodtabell; sökvägen behöver samma. Syns på `/education`, inte på Kompetensanalysen.
   Verifierat mot prod 2026-08-21.
-- **SGA-C — `CareerRecommendationsPanel` har visat tom utbildningslista sedan den byggdes**, av
+- ~~**SGA-C — `CareerRecommendationsPanel` har visat tom utbildningslista sedan den byggdes**~~ **Stängd 2026-08-22 (U2/U4).** Panelen får träffar och skiljer numera `source === 'error'` från noll träffar. Ursprunglig text: av
   samma tre fel som SGA3. Den är inte granskad i den här omgången; kontrollera att den nu får
   träffar, och att den skiljer `source === 'error'` från noll träffar (det gör den inte i dag).
 - **SGA-D — CV-texten som skickas till OpenRouter är inte art. 9-grindad.** Fritextfälten i CV:t

@@ -220,6 +220,20 @@ html.dark .text-stone-500 {
   opacity: 1;
 }
 
+/* Samma regel gällde tidigare även i mörkt läge, där #64748b landar på
+ * 3,5:1 mot ett mörkt fält. #a8a29e ger 6,0:1. */
+html.dark ::placeholder {
+  color: #a8a29e !important;
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) ::placeholder {
+    color: #a8a29e !important;
+    opacity: 1;
+  }
+}
+
 /* Tailwind placeholder variants */
 .placeholder-slate-400::placeholder,
 .placeholder-slate-500::placeholder,
@@ -229,13 +243,34 @@ html.dark .text-stone-500 {
   opacity: 1;
 }
 
-/* Gray color overrides */
-.text-gray-400 {
+/* Gray color overrides
+ *
+ * MÅSTE vara lägesguardade — precis som stone/slate ovan.
+ * Utan `html:not(.dark)` gällde `!important`-regeln även i mörkt läge, och
+ * eftersom Tailwind 4 kompilerar mörkervarianten till
+ * `.dark\:text-gray-400:where(.dark,.dark *)` (specificitet 0, utan
+ * !important) kunde `dark:text-gray-400` aldrig vinna. Uppmätt 2026-08-22 på
+ * /education: #4b5563 på mörkt kort = 2,0:1 mot kravet 4,5:1, på tolv
+ * textställen — och samma sak i varje fil i portalen som skriver
+ * `text-gray-500 dark:text-gray-400`. */
+html:not(.dark) .text-gray-400 {
   color: #6b7280 !important; /* gray-500 */
 }
 
-.text-gray-500 {
+html:not(.dark) .text-gray-500 {
   color: #4b5563 !important; /* gray-600 */
+}
+
+html.dark .text-gray-400,
+html.dark .text-gray-500 {
+  color: #a8a29e !important; /* 6,0:1 mot mörka kort (#292524) */
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.light) .text-gray-400,
+  html:not(.light) .text-gray-500 {
+    color: #a8a29e !important;
+  }
 }
 
 /* High contrast mode support */

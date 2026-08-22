@@ -5301,30 +5301,42 @@
   "education": {
     "title": "Utbildningar",
     "description": "Sök och utforska utbildningar från hela Sverige",
+    "searchLabel": "Vad vill du lära dig?",
     "searchPlaceholder": "Sök utbildning, ämne eller skola...",
+    "searching": "Söker utbildningar…",
     "filters": "Filter",
-    "search": "Sök",
     "educationType": "Utbildningsform",
+    "studyFormat": "Så vill du studera",
+    "distanceOnly": "Bara distans",
+    "distanceHint": "Visar utbildningar du kan läsa hemifrån",
     "region": "Region",
-    "activeFilters": "Aktiva filter",
-    "clearAll": "Rensa alla",
+    "activeFilters": "Du söker på",
+    "clearAll": "Börja om",
+    "removeFilter": "Ta bort filtret {{filter}}",
     "distance": "Distans",
-    "deadline": "Ansök senast",
     "readMore": "Läs mer",
-    "resultsCount": "{{count}} utbildningar hittades",
-    "demoData": "Demodata",
+    "readMoreAbout": "Läs mer om {{title}} hos anordnaren (öppnas i ny flik)",
+    "moreLocations": "+{{count}} till",
+    "resultsCount": "{{count}} utbildningstillfällen matchar",
+    "resultsCount_one": "1 utbildningstillfälle matchar",
+    "resultsCount_other": "{{count}} utbildningstillfällen matchar",
+    "mergedNote": "Samma utbildning på flera orter visas som ett kort.",
     "loadMore": "Ladda fler",
     "noResults": {
-      "title": "Inga utbildningar hittades",
-      "description": "Prova att ändra dina sökfilter eller sök efter något annat.",
-      "action": "Rensa filter"
+      "title": "Vi hittade ingen utbildning som matchar",
+      "description": "Prova ett bredare sökord, eller ta bort ett filter — utbudet ändras ofta.",
+      "action": "Börja om sökningen"
+    },
+    "error": {
+      "title": "Vi når inte utbildningsregistret just nu",
+      "description": "Det är inte din sökning det är fel på. Försök igen om en stund.",
+      "action": "Försök igen"
     },
     "infoBanner": {
-      "title": "Hitta rätt utbildning för dig",
-      "description": "Vi samlar utbildningar från Yrkeshögskolan, universitet, Komvux och folkhögskolor i hela Sverige. Använd sökfunktionen eller snabbvalen nedan för att börja utforska."
+      "description": "Utbildningarna hämtas från Arbetsförmedlingens tjänst JobEd Connect och omfattar yrkeshögskola, högskola och universitet, komvux, folkhögskola, arbetsmarknadsutbildning samt konst- och kulturutbildning. Portalen visar vad som finns och var — inte vad det kostar eller vad du är behörig till."
     },
     "quickSearch": {
-      "title": "Populära kategorier",
+      "title": "Vad är du nyfiken på?",
       "yh": {
         "title": "Yrkeshögskola",
         "description": "Praktiska utbildningar med hög anställningsgrad"
@@ -5356,7 +5368,7 @@
         "description": "Gör vår intresseguide för att hitta yrken som passar dig"
       },
       "skillsGap": {
-        "title": "Kompetensgap-analys",
+        "title": "Vad saknas för drömjobbet?",
         "description": "Se vilka kompetenser du behöver utveckla"
       }
     }
@@ -10438,7 +10450,7 @@
       "tomorrowTitle": "En sak du vill göra imorgon"
     },
     "education": {
-      "doneText": "Öppna utbildningssidan i normalläge för att se utbildningar inom \"{{interest}}\".",
+      "doneText": "Vi söker efter utbildningar inom \"{{interest}}\" åt dig. Tryck på Klar så visas träffarna.",
       "doneTitle": "Klart!",
       "interestHint": "Ett ämne eller en yrkesroll räcker.",
       "interestPlaceholder": "t.ex. webbutveckling, vård, ekonomi",

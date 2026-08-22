@@ -5301,30 +5301,42 @@
   "education": {
     "title": "Education",
     "description": "Search and explore education programs across Sweden",
+    "searchLabel": "What do you want to learn?",
     "searchPlaceholder": "Search education, subject or school...",
+    "searching": "Searching for programmes…",
     "filters": "Filters",
-    "search": "Search",
     "educationType": "Education type",
+    "studyFormat": "How you want to study",
+    "distanceOnly": "Distance only",
+    "distanceHint": "Showing programmes you can study from home",
     "region": "Region",
-    "activeFilters": "Active filters",
-    "clearAll": "Clear all",
+    "activeFilters": "You are searching for",
+    "clearAll": "Start over",
+    "removeFilter": "Remove the filter {{filter}}",
     "distance": "Distance",
-    "deadline": "Apply by",
     "readMore": "Read more",
-    "resultsCount": "{{count}} education programs found",
-    "demoData": "Demo data",
+    "readMoreAbout": "Read more about {{title}} at the provider (opens in a new tab)",
+    "moreLocations": "+{{count}} more",
+    "resultsCount": "{{count}} course occasions match",
+    "resultsCount_one": "1 course occasion matches",
+    "resultsCount_other": "{{count}} course occasions match",
+    "mergedNote": "The same programme in several locations is shown as one card.",
     "loadMore": "Load more",
     "noResults": {
-      "title": "No education programs found",
-      "description": "Try adjusting your search filters or search for something else.",
-      "action": "Clear filters"
+      "title": "We found no programme that matches",
+      "description": "Try a broader search term, or remove a filter — the range changes often.",
+      "action": "Start the search over"
+    },
+    "error": {
+      "title": "We cannot reach the education register right now",
+      "description": "There is nothing wrong with your search. Please try again in a moment.",
+      "action": "Try again"
     },
     "infoBanner": {
-      "title": "Find the right education for you",
-      "description": "We collect education programs from vocational colleges, universities, adult education and folk high schools across Sweden. Use the search function or quick selections below to start exploring."
+      "description": "Programmes come from the Swedish Public Employment Service's JobEd Connect and cover vocational colleges, universities, adult education, folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for."
     },
     "quickSearch": {
-      "title": "Popular categories",
+      "title": "What are you curious about?",
       "yh": {
         "title": "Vocational College",
         "description": "Practical education with high employment rates"
@@ -5356,7 +5368,7 @@
         "description": "Take our interest guide to find careers that suit you"
       },
       "skillsGap": {
-        "title": "Skills Gap Analysis",
+        "title": "What is missing for your dream job?",
         "description": "See which skills you need to develop"
       }
     }
@@ -10438,7 +10450,7 @@
       "tomorrowTitle": "One thing you want to do tomorrow"
     },
     "education": {
-      "doneText": "Open the education page in normal mode to see programmes in \"{{interest}}\".",
+      "doneText": "We are searching for programmes in \"{{interest}}\" for you. Press Done to see the results.",
       "doneTitle": "Done!",
       "interestHint": "A subject or a job role is enough.",
       "interestPlaceholder": "e.g. web development, healthcare, finance",

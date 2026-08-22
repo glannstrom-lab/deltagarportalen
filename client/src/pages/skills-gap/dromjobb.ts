@@ -72,22 +72,15 @@ export function antalKlara(skills: { current: number; target: number; gap?: stri
 }
 
 /**
- * Bara http(s) släpps igenom. `window.open(course.url, '_blank')` öppnade
- * tidigare vad AI:n än hade skrivit i fältet — inklusive `javascript:` — och
- * utan `noopener`, så måldokumentet fick `window.opener` mot portalen.
+ * Flyttad till `@/lib/sakerUrl` 2026-08-22 och återexporterad här.
+ *
+ * Skyddet behövdes på tre ställen till — utbildningssidan och intresseguidens
+ * karriärrekommendationer gjorde `href={edu.url}` utan vakt, och fick
+ * `href="[object Object]"` när API:t skickade `{lang, content}`. En kopia per
+ * sida hade gett samma bugg en fjärde gång.
+ *
+ * `window.open(course.url, '_blank')` öppnade tidigare vad AI:n än hade
+ * skrivit i fältet — inklusive `javascript:` — och utan `noopener`, så
+ * måldokumentet fick `window.opener` mot portalen.
  */
-export function sakerUrl(url: string | null | undefined): string | null {
-  if (!url) return null
-  try {
-    // ABSOLUT URL krävs — ingen bas skickas med. Löste vi mot
-    // `window.location.origin` blev "inte en url alls" till en giltig
-    // länk på vårt eget ursprung, alltså en länk till ingenstans som såg
-    // legitim ut. Ett fält ur AI-genererat innehåll ska antingen bära en
-    // riktig extern adress eller ingen alls.
-    const u = new URL(url)
-    if (u.protocol !== 'https:' && u.protocol !== 'http:') return null
-    return u.href
-  } catch {
-    return null
-  }
-}
+export { sakerUrl } from '@/lib/sakerUrl'

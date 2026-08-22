@@ -20,32 +20,44 @@ export type EducationType =
   | 'komvux'
   | 'folkhogskola';
 
+/**
+ * Formen som `education-search`-edgen faktiskt svarar med, mätt mot prod
+ * 2026-08-22. Tre fält har tagits bort ur typen eftersom de ALDRIG kom:
+ * `durationMonths`, `applicationDeadline` och `sunCode` var hårdkodade
+ * `undefined` i edge-funktionen. Kortet ritade ändå en hel gren för
+ * "Sista ansökningsdag" — den kunde bara nås av mockdatan, där datumet var
+ * påhittat. Ett fält som bara mockdata kan fylla är sämre än inget fält.
+ */
 export interface Education {
   id: string;
   title: string;
   provider: string;
   providerUrl?: string;
   type: EducationType | string;
+  /** Läsbar form ("Yrkeshögskola"), aldrig JobEds råkod ("yh", "vuxgy"). */
   typeLabel: string;
   form?: string;
   formLabel?: string;
   description?: string;
+  /** Studielängd i klartext ("2 år"), härledd ur start- och slutdatum. */
   duration?: string;
-  durationMonths?: number;
   startDate?: string;
   endDate?: string;
-  applicationDeadline?: string;
   location?: string;
+  /** Alla orter utbildningen ges på. Samma kurs publiceras en gång per
+   *  kommun hos JobEd; edgen slår ihop dem till ett kort. */
+  locations?: string[];
   municipality?: string;
   region?: string;
   pace?: string;
   pacePercent?: number;
   distance?: boolean;
   url?: string;
-  sunCode?: string;
-  credits?: number;
+  /** Poängen MED enhet ("400 YH-poäng", "180 hp", "1900 poäng"). Kortet
+   *  visade tidigare talet två gånger, som "YH-poäng" och som "hp", oavsett
+   *  skolform — 1900 gymnasiepoäng lästes som 1900 högskolepoäng. */
+  creditsLabel?: string;
   level?: string;
-  qualificationLevel?: string;
 }
 
 export interface SearchParams {
@@ -66,6 +78,8 @@ export interface SearchResult {
    *  Den som ritar listan måste skilja på de två, annars ser ett nätverksfel
    *  ut som ett besked om att inget finns. */
   source: string;
+  /** Antal kurstillfällen som slogs ihop bort ur sidan (dubbletter). */
+  merged?: number;
   /** Yrket JobEd tolkade fritexten som. */
   matchedOccupation?: string;
 }
@@ -160,8 +174,12 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
 
     const result = await fetchFromEducationApi<SearchResult>('', queryParams);
 
-    // Cache results for 5 minutes
-    defaultCache.set(cacheKey, result, 5 * 60 * 1000);
+    // Cacha inte ett misslyckat anrop — då blir ett tillfälligt avbrott ett
+    // fem minuter långt "det finns inga utbildningar". Samma skäl som i
+    // matchEducationsByJobTitle nedan.
+    if (result.source !== 'error') {
+      defaultCache.set(cacheKey, result, 5 * 60 * 1000);
+    }
 
     return result;
   } catch (error) {
@@ -195,6 +213,25 @@ export async function getEducation(id: string): Promise<Education | null> {
 /**
  * Hämta utbildningstyper/kategorier
  */
+/**
+ * Bara poster där BÅDE id och label är strängar släpps vidare.
+ *
+ * Utan den här vakten kraschade hela utbildningssidan i drift: edgen skickade
+ * JobEds `{key, value}`-objekt som `label`, `<option>` fick ett objekt som
+ * barn och React kastade #31 så fort någon klickade på "Filter". Edgen är
+ * lagad, men en formändring uppströms ska ge en kortare lista — inte en
+ * vit sida. Faller allt bort används fallback-listan nedan.
+ */
+function baraStrangval<T extends { id?: unknown; label?: unknown }>(
+  poster: T[] | undefined
+): Array<T & { id: string; label: string }> {
+  if (!Array.isArray(poster)) return [];
+  return poster.filter(
+    (p): p is T & { id: string; label: string } =>
+      typeof p?.id === 'string' && typeof p?.label === 'string' && p.label.length > 0
+  );
+}
+
 export async function getEducationTypes(): Promise<EducationTypeOption[]> {
   const cacheKey = 'edu_types';
   const cached = defaultCache.get<EducationTypeOption[]>(cacheKey);
@@ -202,8 +239,10 @@ export async function getEducationTypes(): Promise<EducationTypeOption[]> {
 
   try {
     const result = await fetchFromEducationApi<{ types: EducationTypeOption[] }>('/types');
-    defaultCache.set(cacheKey, result.types, 60 * 60 * 1000); // 1h cache
-    return result.types;
+    const rensade = baraStrangval(result.types);
+    if (!rensade.length) throw new Error('Education API: /types gav inga giltiga val');
+    defaultCache.set(cacheKey, rensade, 60 * 60 * 1000); // 1h cache
+    return rensade;
   } catch {
     // Fallback
     return [
@@ -226,8 +265,10 @@ export async function getRegions(): Promise<RegionOption[]> {
 
   try {
     const result = await fetchFromEducationApi<{ regions: RegionOption[] }>('/regions');
-    defaultCache.set(cacheKey, result.regions, 60 * 60 * 1000);
-    return result.regions;
+    const rensade = baraStrangval(result.regions);
+    if (!rensade.length) throw new Error('Education API: /regions gav inga giltiga val');
+    defaultCache.set(cacheKey, rensade, 60 * 60 * 1000);
+    return rensade;
   } catch {
     // Fallback with region codes
     return [
@@ -274,104 +315,12 @@ export async function matchEducationsByJobTitle(
   }
 }
 
-/**
- * Hämta rekommenderade utbildningar baserat på kompetensgap
+/*
+ * `getEducationsForSkillGaps` och `getEducationsForRIASEC` låg här till
+ * 2026-08-22 (~90 rader) med noll anropare i hela repot. Kompetensanalysen och
+ * intresseguiden använder `matchByJobTitle`, inte de här. Två döda exporter i
+ * en levande fil ser ut som en API-yta någon förlitar sig på.
  */
-export async function getEducationsForSkillGaps(
-  skills: string[]
-): Promise<Education[]> {
-  if (skills.length === 0) return [];
-
-  // Sök efter utbildningar som matchar saknade kompetenser
-  const searchPromises = skills.slice(0, 3).map(skill =>
-    searchEducations({ query: skill, limit: 5 })
-  );
-
-  try {
-    const results = await Promise.all(searchPromises);
-
-    // Kombinera och deduplicera resultat
-    const educationMap = new Map<string, Education>();
-
-    results.forEach(result => {
-      result.educations.forEach(edu => {
-        if (!educationMap.has(edu.id)) {
-          educationMap.set(edu.id, edu);
-        }
-      });
-    });
-
-    return Array.from(educationMap.values()).slice(0, 10);
-  } catch (error) {
-    console.error('Fel vid hämtning av utbildningar för kompetensgap:', error);
-    return [];
-  }
-}
-
-/**
- * Hämta utbildningsrekommendationer baserat på RIASEC-resultat
- */
-export async function getEducationsForRIASEC(
-  riasecCode: string
-): Promise<Education[]> {
-  // Mappa RIASEC-koder till söktermer
-  const riasecSearchTerms: Record<string, string[]> = {
-    'R': ['teknik', 'bygg', 'el', 'mekanik', 'verkstad'],
-    'I': ['vetenskap', 'forskning', 'analys', 'data', 'matematik'],
-    'A': ['design', 'konst', 'musik', 'media', 'kreativ'],
-    'S': ['vård', 'socialt arbete', 'lärare', 'pedagog', 'omsorg'],
-    'E': ['ledarskap', 'försäljning', 'entreprenör', 'affär', 'management'],
-    'C': ['administration', 'ekonomi', 'redovisning', 'kontor', 'organisation'],
-  };
-
-  // Ta de två första bokstäverna i RIASEC-koden
-  const primaryCode = riasecCode.charAt(0).toUpperCase();
-  const secondaryCode = riasecCode.charAt(1)?.toUpperCase();
-
-  const searchTerms = [
-    ...(riasecSearchTerms[primaryCode] || []),
-    ...(riasecSearchTerms[secondaryCode] || []),
-  ];
-
-  if (searchTerms.length === 0) {
-    return [];
-  }
-
-  // Sök med de två första termerna
-  const searchPromises = searchTerms.slice(0, 2).map(term =>
-    searchEducations({ query: term, limit: 5 })
-  );
-
-  try {
-    const results = await Promise.all(searchPromises);
-
-    const educationMap = new Map<string, Education>();
-    results.forEach(result => {
-      result.educations.forEach(edu => {
-        if (!educationMap.has(edu.id)) {
-          educationMap.set(edu.id, edu);
-        }
-      });
-    });
-
-    return Array.from(educationMap.values()).slice(0, 8);
-  } catch (error) {
-    console.error('Fel vid hämtning av utbildningar för RIASEC:', error);
-    return [];
-  }
-}
-
-/**
- * Populära sökningar (snabbval)
- */
-export const POPULAR_SEARCHES = [
-  { query: 'webbutvecklare', label: 'Webbutveckling', type: 'yrkeshogskola' as EducationType },
-  { query: 'sjuksköterska', label: 'Vård & Omsorg', type: 'hogskola' as EducationType },
-  { query: 'ekonomi redovisning', label: 'Ekonomi', type: 'all' as EducationType },
-  { query: 'design ux', label: 'Design & UX', type: 'yrkeshogskola' as EducationType },
-  { query: 'projektledare', label: 'Projektledning', type: 'all' as EducationType },
-  { query: 'data scientist ai', label: 'AI & Data', type: 'yrkeshogskola' as EducationType },
-];
 
 // ============== EXPORT ==============
 
@@ -381,8 +330,6 @@ export const educationApi = {
   getTypes: getEducationTypes,
   getRegions,
   matchByJobTitle: matchEducationsByJobTitle,
-  getForSkillGaps: getEducationsForSkillGaps,
-  getForRIASEC: getEducationsForRIASEC,
 };
 
 export default educationApi;

@@ -13,6 +13,7 @@ import {
   type JobMatch,
 } from '@/services/interestGuideData'
 import { educationApi, type Education } from '@/services/educationApi'
+import { sakerUrl } from '@/lib/sakerUrl'
 import { scbSalaryService, type SalaryData } from '@/services/scbSalaryApi'
 import {
   GraduationCap,
@@ -42,6 +43,8 @@ interface CareerPathRecommendation {
   occupation: string
   salaryData: SalaryData | null
   educations: Education[]
+  /** Anropet mot utbildningsregistret föll. Skiljs från "inga utbildningar". */
+  utbildningsfel: boolean
   matchPercentage: number
 }
 
@@ -77,6 +80,10 @@ export function CareerRecommendationsPanel({
             occupation: occupationName,
             salaryData,
             educations: educationResult.educations,
+            // `'error'` betyder att anropet FÖLL — inte att yrket saknar
+            // utbildningar. Utan den här flaggan blev ett avbrott en tyst
+            // tom sektion. Se docstringen på SearchResult.source.
+            utbildningsfel: educationResult.source === 'error',
             matchPercentage: match.matchPercentage,
           }
         })
@@ -267,6 +274,16 @@ export function CareerRecommendationsPanel({
                     </div>
                   )}
 
+                  {/* Utbildningsregistret svarade inte. Utan den här raden
+                      blev ett avbrott en sektion som bara inte fanns — och
+                      läsaren drog slutsatsen att yrket saknar utbildningar. */}
+                  {rec.utbildningsfel && rec.educations.length === 0 && (
+                    <p className="text-sm text-stone-600 dark:text-stone-400">
+                      Vi når inte utbildningsregistret just nu, så
+                      utbildningsvägarna saknas här. Försök igen om en stund.
+                    </p>
+                  )}
+
                   {/* Education Paths */}
                   {rec.educations.length > 0 && (
                     <div>
@@ -299,9 +316,9 @@ export function CareerRecommendationsPanel({
                                 )}
                               </div>
                             </div>
-                            {edu.url && (
+                            {sakerUrl(edu.url) && (
                               <a
-                                href={edu.url}
+                                href={sakerUrl(edu.url)!}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-1.5 text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40 rounded-lg"

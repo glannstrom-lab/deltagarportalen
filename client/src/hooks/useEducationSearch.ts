@@ -72,7 +72,17 @@ export function useEducationSearch(
   const [total, setTotal] = useState(0)
   const [hasMore, setHasMore] = useState(false)
   const [source, setSource] = useState('')
-  const [offset, setOffset] = useState(0)
+
+  // Offset ligger i en ref, INTE i state.
+  //
+  // Tidigare var den ett state-värde som stod i `performSearch`-callbackens
+  // beroendelista, och `performSearch` stod i auto-sökeffektens. Varje
+  // avslutad sökning ändrade offset → ny callbackidentitet → effekten kördes
+  // om → `setOffset(0)` + ny sökning. Uppmätt: "Visa fler" hämtade sida två,
+  // visade 40 träffar, och 300 ms senare stod listan tillbaka på 20. Med 211
+  // träffar gick det inte att nå träff 21. Varje sökning kördes dessutom
+  // dubbelt.
+  const offsetRef = useRef(0)
 
   // Status state
   const [isLoading, setIsLoading] = useState(false)
@@ -82,7 +92,12 @@ export function useEducationSearch(
 
   // Refs for debouncing
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const abortControllerRef = useRef<AbortController | null>(null)
+
+  // Löpnummer per sökning. `educationApi.search` tar ingen AbortSignal, så
+  // den gamla AbortController-dansen avbröt ingenting — ett långsamt tidigare
+  // svar kunde skriva över ett nyare. Numret gör att bara det senaste svaret
+  // får röra tillståndet.
+  const korningRef = useRef(0)
 
   // Create cache key for current search params
   const searchKey = useMemo(() => {
@@ -93,18 +108,13 @@ export function useEducationSearch(
   const performSearch = useCallback(async (
     isLoadMore = false
   ) => {
-    // Cancel any pending request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-    abortControllerRef.current = new AbortController()
-
     // Check minimum query length
     if (query.length > 0 && query.length < minQueryLength) {
       return
     }
 
-    const currentOffset = isLoadMore ? offset : 0
+    const korning = ++korningRef.current
+    const currentOffset = isLoadMore ? offsetRef.current : 0
 
     setIsLoading(true)
     if (!isLoadMore) {
@@ -122,9 +132,32 @@ export function useEducationSearch(
         offset: currentOffset,
       })
 
+      // Ett äldre svar som kommer in efter ett nyare får inte skriva över det.
+      if (korning !== korningRef.current) return
+
+      // `source: 'error'` betyder att anropet FÖLL — inte att det saknas
+      // utbildningar. Servicen kastar inte (den fångar och returnerar), så
+      // utan den här grenen hade hookens catch aldrig nåtts och sidan hade
+      // visat "Inga utbildningar hittades" vid varje avbrott. Samma mönster
+      // som useSkillsGap redan använder.
+      if (result.source === 'error') {
+        setSource('error')
+        setError('Vi kunde inte nå utbildningsregistret just nu.')
+        if (!isLoadMore) {
+          setResults([])
+          setTotal(0)
+          setHasMore(false)
+        }
+        setHasSearched(true)
+        return
+      }
+
       if (isLoadMore) {
-        // Append to existing results
-        setResults(prev => [...prev, ...result.educations])
+        // Samma kurs kan komma tillbaka på nästa sida — lägg inte till den igen.
+        setResults(prev => {
+          const sedda = new Set(prev.map(e => e.id))
+          return [...prev, ...result.educations.filter(e => !sedda.has(e.id))]
+        })
       } else {
         setResults(result.educations)
       }
@@ -132,27 +165,29 @@ export function useEducationSearch(
       setTotal(result.total)
       setHasMore(result.hasMore)
       setSource(result.source)
-      setOffset(currentOffset + result.educations.length)
+      // Går mot JobEds paginering, alltså mot antalet HÄMTADE poster — inte
+      // mot de hopslagna som visas.
+      offsetRef.current = currentOffset + initialLimit
       setHasSearched(true)
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        // Ignore aborted requests
-        return
-      }
+      if (korning !== korningRef.current) return
       console.error('[useEducationSearch] Search error:', err)
       setError('Ett fel uppstod vid sökning. Försök igen.')
       setResults([])
       setTotal(0)
       setHasMore(false)
+      setHasSearched(true)
     } finally {
-      setIsLoading(false)
-      setIsSearching(false)
+      if (korning === korningRef.current) {
+        setIsLoading(false)
+        setIsSearching(false)
+      }
     }
-  }, [query, educationType, region, distanceOnly, offset, minQueryLength, initialLimit])
+  }, [query, educationType, region, distanceOnly, minQueryLength, initialLimit])
 
   // Manual search trigger
   const search = useCallback(async () => {
-    setOffset(0)
+    offsetRef.current = 0
     await performSearch(false)
   }, [performSearch])
 
@@ -168,7 +203,7 @@ export function useEducationSearch(
     setTotal(0)
     setHasMore(false)
     setSource('')
-    setOffset(0)
+    offsetRef.current = 0
     setHasSearched(false)
     setError(null)
   }, [])
@@ -200,7 +235,7 @@ export function useEducationSearch(
 
     // Debounce the search
     debounceRef.current = setTimeout(() => {
-      setOffset(0)
+      offsetRef.current = 0
       performSearch(false)
     }, debounceDelay)
 
@@ -217,9 +252,9 @@ export function useEducationSearch(
       if (debounceRef.current) {
         clearTimeout(debounceRef.current)
       }
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort()
-      }
+      // Höjer löpnumret så att ett svar som kommer in efter avmontering
+      // inte försöker sätta state.
+      korningRef.current++
     }
   }, [])
 
