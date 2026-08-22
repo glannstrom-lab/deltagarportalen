@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-22** (sidgenomgång: Utbildningar — se avsnittet direkt nedan), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar — se avsnittet direkt nedan), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -15,6 +15,125 @@
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
 
 ---
+
+## Genomgång 2026-08-22 (kväll) — Kunskapsbanken, fem granskare (åtgärdad)
+
+`/knowledge-base`, dess filtrerade vy och `/knowledge-base/article/:id` hade
+aldrig sidgranskats. Fem parallella granskare (dataväg, design, tillgänglighet,
+innehåll/i18n, dödkod + tester), ett visuellt svep mot prod och mot dev i
+ljust läge, mörkt läge och 375 px, samt ett mutationsstickprov.
+
+**Sidan har inga flikar** — det svarar på frågan i uppdraget. Landning,
+kategorivy och sökvy styrs av `?category=` och `?q=`. Men i
+`components/knowledge-base/tabs/` låg **sex** flikkomponenter, varav **en**
+renderades. De fem andra hölls vid liv av barrel-filen `index.ts`, som
+`Article.tsx` importerar — exakt fällan i lärdomen 2026-08-04, och
+nåbarhetsanalysen räknade dem som nåbara.
+
+**Premissrättelse:** prod har **163 aktiva artiklar**, inte 141 som
+`articleData.ts` bär, och **alla tretton kategorier har innehåll** (2–27
+artiklar). Inget kategorikort leder till ett tomt rum. Min och två agenters
+utgångshypotes om tomma kategorier höll inte.
+
+### Åtgärdat
+
+| # | Fynd | Åtgärd |
+|---|---|---|
+| KB1 | **Artikelsidan renderade i fel hubbfärg.** `Article.tsx` använder ingen `PageLayout`, och `PageLayout` är enda stället i portalen som sätter `data-domain`. `--c-*` föll därför tillbaka på `:root` = Översiktens MINT. Uppmätt `rgb(26,119,87)`: läsprogressbaren, sammanfattningsrutan, checklistan och "Nästa steg" var gröna mitt i en sky-blå kunskapsbank | `data-domain="info"` på sidans yttersta element |
+| KB2 | **Kunskapsbanken hade inget mörkt läge utanför landningen.** `TopicsTab`, `EnhancedArticleCard`, `ReadingTime` och `Article.tsx` hade noll `dark:`-varianter. `.card` byter bakgrund med temat men texten satt fast: **kortrubriken 1,15:1, taggarna 1,70:1, sammanfattningen 2,28:1**, mot kravet 4,5:1. 80 axe-noder i kategorivyn, 83 i sökvyn, 21 på artikelsidan. Rotorsak för filterpanelen: `cardVariants.elevated` var den **enda av fyra varianterna utan `dark:`**, så panelen förblev ett vitt kort på svart sida — det man skrev i sökrutan mätte 1,09:1 | `dark:`-varianter genomgående, `dark:bg-stone-800` på `elevated` |
+| KB3 | **Varje besök hämtade 325 kB gzip.** `select('*')` drog med hela `content` för alla 163 artiklar. Artikelsidan hämtade dessutom HELA korpusen en gång till, utanför React Query och alltså okachad, enbart för att slå upp tre relaterade — och 152 av 163 artiklar har relaterade | Smal kolumnlista för listvyerna (14 kB gzip), `getBySlugs()` för de relaterade |
+| KB4 | **`mockArticlesData` — 141 inbyggda artiklar, 247 kB brotli — returnerades tyst vid varje DB-fel, tomt svar eller exception.** Prod har 163, så reservkopian var både inaktuell (31 artiklar saknades) och trasig (141 poster, 133 unika id → åtta gick inte att öppna). Chunken var appens näst största och drogs in av åtta sidor. Ett RLS-fel såg ut som en fungerande kunskapsbank | Raderad. `getAll()` **kastar** vid fel. `articleData.ts`: 24 856 → 190 rader. Chunken: **247 kB → 53 kB brotli** |
+| KB5 | **Sidan hade två lägen, laddar och klart.** Nycklarna `couldNotLoad` och `tryAgain` fanns i båda språkfilerna sedan länge — tillståndet de skrevs för existerade inte, eftersom felen svaldes av KB4 | Tredje läget med `<EmptyState>` och Försök igen |
+| KB6 | **Sökningen läste inte artiklarnas text** och vek inte diakriter. Uppmätt mot prod: "Personligt brev" gav 4 träffar i UI mot 19 i innehållet, "lön" 14 mot 66, och **`lon` gav noll**. `contentArticleApi.search()`, som redan gjorde `ilike` på `content`, hade noll anropare | `searchSlugs()` kompletterar klientfiltret; NFD-vikning på titel, sammanfattning och taggar |
+| KB7 | **Tre namn på samma kategori i samma flöde.** Landningskortet sa "Intervju och anställning", filterkolumnen "🎯 Intervju & Anställning", artikelsidan `interview`. `categoryNameMap` plattade dessutom ihop huvud- och underkategorier: tre id:n fanns i båda, och det sista vann, så `job-search` och `interview` tappade sina namn | Ett register: `data/artikelkategorier.ts`. Namn och beskrivningar i i18n, med svenska reservnamn som defaults. `kategoriNamn()` returnerar aldrig en slug |
+| KB8 | **123 av 163 artiklar bar påhittade namngivna experter som byline** — fem artiklar om ersättningsnivåer signerade "Katarina Holm, Handläggare Arbetsförmedlingen", fem om depression och avslag av "Anna Lindberg, Psykolog". Ingen av personerna finns | Utgivaren "Jobin" renderas i stället. **Stänger AR2** i UI-ledet; kolumnerna ligger kvar i databasen, se KB-A |
+| KB9 | **Datumet var databasens insert-tidpunkt.** 133 artiklar bär samma sekund (seed 2026-05-15), 30 en annan (2026-08-12), och det renderades bredvid en kalenderikon — alltså som publiceringsdatum. `updated_at` finns, är sant för 133 rader, och visades aldrig | "Uppdaterad {{datum}}" ur `updated_at` |
+| KB10 | **Två fält renderades som om de fanns.** `helpfulnessRating` ("★ N/5 användarbetyg") och `bookmarkCount` ("N har sparat") är **0 för samtliga 163 artiklar**, och ingen kod någonstans — klient, edge eller `client/api` — skriver till dem. Ett fält som bara kan bli sant genom manuell inmatning i databasen är en fälla för social bevisning | Båda renderingsgrenarna borttagna |
+| KB11 | **Checklistan gick inte att använda med tangentbord.** `<li onClick>` med en `<div>` som kryssruta: uppmätt sex rader, samtliga `tabindex: null, role: null, aria-checked: null`. Artikelsidans mest använda interaktion gav noll tabbstopp, och en skärmläsare fick bara text | `<button role="checkbox" aria-checked>`, `role="progressbar"` på stapeln, `role="alert"` på felrutan |
+| KB12 | **Läspåminnelsen täckte hela bottennavet på mobil.** En `fixed bottom-4 right-4 z-50`-ruta öppnade sig själv efter tio minuters läsning. Hit-testat vid 390 px: **5 av 5 flikar och coach-knappen helt blockerade** (navet är z-30). Den sa dessutom "Du har läst N % av artikeln" och bröt mot §10 "inga obetonade overlays" — för just den långsamme läsaren | Borttagen. Pauspåminnelser hör hemma i Lugnare läge, där de är ett aktivt val |
+| KB13 | **Uppläsningen läste markdown.** `TextToSpeech` fick `article.content` rått; alla 163 artiklar innehåller `##`, `**` eller `|`, 39 har tabeller och 15 har inline-länkar med hela URL:en i texten. Talsyntesen läste alltså pipes, asterisker och webbadresser — till den som valt att lyssna för att hon inte orkar läsa | `textUrMarkdown()`; tabeller läses "kolumnrubrik: värde" |
+| KB14 | **Fem hubbpasteller på en sida.** `DOMAIN_BG` färgade de tretton kategorikorten emerald/orange/pink/sky/violet efter vilken hubb kategorin råkade mappas till — en upplysning läsaren inte kan använda. Plus 44 rader `gray-*` (kall neutral i en varm palett) och `indigo`, `green`, `blue`, `purple` i badges som stod bredvid varandra på samma kort | En kulör via `--c-*`, variation genom ikonen. `gray-*` → `stone-*`. `DifficultyBadge` och `ReadingTime` enfärgade |
+| KB15 | **43 hårdkodade svenska strängar på landningen**, inklusive alla tretton kategorinamn. En engelsk användare fick tre saker översatta. Samtidigt var **109 av 131 `knowledgeBase.*`-nycklar döda** (83 %) — 91 tillhörde de fem omonterade flikarna | Landningen i18n:ad, 19 döda toppnycklar och sex hela subträd borttagna, tre saknade nycklar (`showMore`, `remaining`, `article.title`) tillagda med pluralformer |
+| KB16 | **"Populära ämnen" var inte mätt.** Ingenting loggar sökningar. "CV-skrivning" gav **1 träff av de 17 artiklar som handlar om CV** | "Prova något av det här" med termer som fångar sitt ämne (CV, personligt brev, avslag, lön, intervju) |
+| KB17 | **Rådgivaren lovade en innehållsförteckning som inte fanns.** `ArticleContent` renderade rubriker utan `id`, det fanns inga ankarlänkar och ingen TOC-komponent i repot | Byggd. Ankar-id på varje rubrik, och en innehållsförteckning från fyra avsnitt och uppåt. Löftet stämmer nu |
+| KB18 | **Bokmärkena hade två vägar med olika localStorage-nycklar** — `article-bookmarks` i `Article.tsx`, `article_bookmarks` i `articleBookmarksApi`. Ett bokmärke som räddades undan ett molnfel hittades aldrig igen. `useArticles.ts` hade dessutom `useBookmarks`/`useToggleBookmark` mot `/api/bookmarks`, **en endpoint som inte finns**: SPA-rewriten gav 200 med HTML, och POST fick 405 utan att `fetch` kastar, så localStorage-fallbacken kördes aldrig | Samma nyckel. De två hookarna raderade. `add()` gör `upsert` (tabellen har UNIQUE, så ett andra bokmärke gav 23505) |
+| KB19 | **`@/types/knowledge` fanns inte** — fyra filer importerade `Article` därifrån, och modulen var allowlistad i `typecheck-critical.cjs` med motiveringen "import type only". Det stämde, men följden var att `Article` var `any` i **just de två filer som filtrerar och renderar artiklarna** | Filen skapad, undantaget borttaget. **15 strict-typfel betalda**, taket 383 → 368 |
+| KB20 | **Dödkod:** fem orenderade flikar (1 145 rader), `BeginnerPath` (249, muterar en array in-place och sparar ingenstans), `CategoryFilter`, `CantReadButton`, `EnergyFilter`, `ZenModeToggle`, `RiasecPersonalizationBanner`, `utils/supportiveMessages.ts`, `data/knowledgeTabs.ts` — vars docstring påstod att `KnowledgeBase.tsx` importerar den och att man ska lägga till en `switch`-gren i en `renderContent()` som inte finns. Plus åtta oanvända exporter i `useArticles.ts` | Allt raderat, barreln trimmad till de sju `Article.tsx` faktiskt använder, med en kommentar om varför den inte får växa |
+| KB21 | Övrigt: rubrikhopp h1→h3 och h2→h4, filtren skrevs aldrig tillbaka till URL:en (bakåtknappen och delade länkar pekade fel), `useMemo` användes för att köra `setVisibleCount`, tomtillståndet var ett handbyggt kort, resultatrubriken sa "Sökresultat" även vid kategoribläddring, kategoribannern ritades bara om kategorin råkade ha en illustration (`job-search` — den största — saknades), och de tre textstorleksknapparna hette alla "A" | Allt åtgärdat |
+
+### Grindar och fällor som avslöjades på vägen
+
+- **`lint:links` läste inte objektnyckeln `link:`.** Ett ord i nyckellistan
+  (`href|to|path|url|ctaHref|linkTo|route`) — och grinden var blind för
+  portalens vanligaste länkform i datastrukturer. Efter tillägget föll den
+  direkt på **fem döda länkmål i levande kod**: `/cv-builder` × 3 i
+  `CompletionGuide.tsx` (routen heter `/cv`) och `/job-tracker` × 2 i
+  `workflowApi.ts` (finns inte; ansökningarna bor på `/applications`). Alla
+  fem rättade.
+- **`touchOptimized` nollade tyst ut `leftIcon`-paddingen i `Input`.**
+  `touch.input` bär `px-4` och stod EFTER `pl-10` i `cn()`. Uppmätt på
+  kunskapsbankens sökruta: `paddingLeft: 16px` med en ikon som slutar på
+  32 px — sökikonen låg ovanpå platshållartexten. Ordningen är bytt; gäller
+  varje fält i portalen som kombinerar de två.
+- **`--c-accent` är MÖRK i mörkt läge.** Mönstret
+  `text-[var(--c-text)] dark:text-[var(--c-accent)]` mäter **2,04:1** —
+  `--c-text` vänder redan med temat och behöver ingen `dark:`-variant alls.
+  Rättat i de filer passet rörde. **Mönstret finns i ytterligare ~16 filer**
+  (AI-kort, kalender, konsulentvyn, CV-analys, dashboard) och är inte
+  granskat här — se KB-D.
+- **Barrel-filer, en gång till.** `dead-code.cjs` flaggade tre av arton filer
+  i `components/knowledge-base/`. De övriga elva döda syntes först när
+  barreln trimmades. Skriptet ser inte skillnad på "exporteras" och
+  "renderas"; det gör bara en JSX-sökning.
+
+### Testerna kunde inte falla
+
+Ett mutationsstickprov slog sönder artikelhämtningen, sökningen,
+kategorifiltret, artikellänken och reservdatan — **fem av sju mutationer gick
+gröna** genom hela sviten på 2 331 tester. Den enda riktiga täckningen var 32
+tester om hur en artikeltext blir HTML.
+
+Fyra nya testfiler, 35 tester: `KnowledgeBase.test.tsx` (tre lägen,
+kategoriräkning ur datan), `TopicsTab.test.tsx` (sökning, kategorifilter,
+kortets länkmål, URL-synk), `artikelkategorier.test.ts` (registret mot prods
+`category_key`, aldrig en slug, inga emoji) och `artikelhamtning.test.ts`
+(`getAll()` kastar, ordningen i `getBySlugs`). **Åtta mutationer prövade —
+alla åtta röda.**
+
+### Kvarstår (Kunskapsbanken) — kräver beslut
+
+- **KB-A — de påhittade bylinerna ligger kvar i databasen.** UI:t visar
+  "Jobin", men `articles.author` bär fortfarande 123 påhittade namn och
+  `author_title` 30 yrkestitlar. Ska kolumnerna nollas (`UPDATE`, en
+  proddataändring som kräver ditt ja), återanvändas för verkliga granskare,
+  eller tas bort ur schemat?
+- **KB-B — lästiden förutsätter 232 ord/minut.** Mätt över alla 163 artiklar:
+  **163 av 163** förutsätter över 150 ord/min, 136 över 200. Värst
+  `karriarplanering-guide`: 2 086 ord på "6 min" = 348 ord/min. Talet är
+  handskrivet per artikel. Att räkna om det ur ordantalet är en `UPDATE` mot
+  prod.
+- **KB-C — tolv artiklar anger belopp i kronor, noll har källa eller
+  datummarkering.** Bl.a. "Grundersättning ca 510 kr/dag", takbeloppet
+  20 000 kr för nystartsjobb, 5 000 kr friskvård, 25 000 kr aktiekapital, och
+  åtta lönespann i branschguiderna. Ingen av dem är nödvändigtvis fel i dag —
+  poängen är att ingen läsare kan avgöra det, och att ingen får en signal när
+  de blir fel. Förslag: en obligatorisk fotrad med "Uppgifterna gäller [månad
+  år]" och en myndighetslänk.
+- **KB-D — `dark:text-[var(--c-accent)]` i ~16 filer utanför kunskapsbanken.**
+  Uppmätt 2,04:1. Mekanisk fix, men den rör AI-kort, kalendern, konsulentvyn
+  och CV-analysen — ytor som inte är granskade i det här passet.
+- **KB-E — `exercises` och `article_categories` har 0 rader i prod.** Båda
+  vägarna faller därför alltid tillbaka på bundlen, tyst. Övningarnas
+  reservkopia behölls medvetet (den ÄR källan), men det bör vara ett beslut,
+  inte en tillfällighet: seeda tabellerna eller ta bort dem.
+- **KB-F — `CantReadButton` raderad, idén kvar.** "Jag orkar inte läsa just
+  nu" var byggd men aldrig monterad. Den är den enda av de raderade
+  komponenterna med ett verkligt tillgänglighetssyfte som saknas i dag. Vill
+  du ha den, bygg den mot artikelsidan — filen låg i vägen som dödkod.
+- **KB-G — scroll-återställning saknas i hela portalen.** Uppmätt: scrollY 831
+  på landningen → klick på ett kategorikort längst ned → ny vy öppnas på
+  scrollY 88 med fokus på `<body>`. Löst lokalt i kunskapsbanken (rubriken tar
+  fokus och scrollas in), men mönstret gäller varje klientnavigering.
 
 ## Genomgång 2026-08-22 — Utbildningar, fem granskare (åtgärdad)
 
@@ -1592,7 +1711,7 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 - [ ] **DR2** Ingen schemaläggare på någon av tre nivåer: `cron.job` finns inte, `crons` saknas i båda `vercel.json`, `schedule:` saknas i alla workflows. `email_queue` har 0 rader någonsin. **GDPR-gallringen (art. 5.1.e) har aldrig körts** · välj *en* nivå · S + M
 - [x] **AR1** ✅ *(klar 2026-08-17)* `QNaN NaN` i uppdragsgivarens PDF. `calculateCohorts` läste `p.created_at`, men vyn `consultant_dashboard_participants` har bara `registered_at`/`assigned_at`. **Gjort:** funktionen läser nu `assigned_at ?? registered_at` — samma bedömning som kommentaren i `fetchAnalytics` redan gjort ("assigned_at = rätt mått för perioden"). Deltagare utan användbart datum hamnar i en namngiven kohort **"Okänt startdatum"** i stället för ett påhittat kvartal eller att försvinna tyst ur summeringen; båda hade brutit mot B31. **Samma NaN-källa fanns i `avgTime`** och var inte med i fyndet — den räknar nu bara på par där båda datumen går att läsa, med antalet sådana par som nämnare. Sorteringen fick en gren för den okända kohorten (en NaN-jämförelse gör sorteringen odefinierad för *hela* listan, inte bara den raden). Funktionen är utbruten till `pages/consultant/cohorts.ts` — inte för filstorlek utan för att den var **omöjlig att testa inifrån komponenten**, vilket är hela skälet till att buggen kunde nå en skarp PDF. Vakt: `cohorts.test.ts`, 11 tester med fixturer som har vyns verkliga kolumnuppsättning ur `information_schema` (alltså **utan** `created_at`), plus en negativ kontroll som kör den gamla implementationen och bekräftar att den ger `QNaN NaN`. **Betalade 3 strict-typfel** — taket sänkt 466 → 463
 - [x] **KO1** ✅ *(klar 2026-08-17)* `/verktyg/cv/` lovade "13 mallar" fyra gånger. Koden har **12**. Kommentaren i `tools.json:2` sa ordagrant "VARJE PÅSTÅENDE HÄR ÄR KONTROLLERAT MOT KODEN — 13 CV-mallar" — ärlighetsregeln var själv det påhittade värdet. **Gjort:** siffran rättad på alla fyra ställen, kommentaren omskriven till att peka ut rätt källa (`TEMPLATES` i `CVBuilder.tsx` = det användaren kan välja, inte antalet filer i mappen) och att dokumentera att den ljög i tolv dagar. Vakt: `src/test/tools-json-pastaenden.test.ts` knyter varje *sifferpåstående om mallar* till koden, återanvänder byggets egen `validateRoutes` i stället för en andra routematchare, och gör filens egen regel om social bevisning körbar. **Testet fällde direkt på min egen kommentar** (som skrev "13" som historik) — historiska tal skrivs nu i ord så regeln kan vara sträng. Mutationstestat: återinförd 13:a och ett påhittat betyg fällde båda
-- [ ] **AR2** **123 av 163 artiklar bär påhittade namngivna experter som byline** — bl.a. "Katarina Holm, Handläggare Arbetsförmedlingen" (5 artiklar, däribland `nystartsjobb-guide` och `rattigheter-stod`) och "Anna Lindberg, Psykolog" (5), plus fyra olika "Arbetsrättsjurist". 30 säger "Jobin-redaktionen", 10 är tomma. **Omfattningsrättelse:** syns bara i portalen (`Article.tsx:274-278`) — guidemallen sätter korrekt `author: Organization "Jobin"` i JSON-LD, så publika sidor och Google är rena · M
+- [x] ~~**AR2**~~ ✅ *(UI-ledet klart 2026-08-22, se KB8)* — artikelsidan visar utgivaren "Jobin" i stället för bylinen. Kolumnerna ligger kvar i databasen; se **KB-A**. Ursprunglig text: **123 av 163 artiklar bär påhittade namngivna experter som byline** — bl.a. "Katarina Holm, Handläggare Arbetsförmedlingen" (5 artiklar, däribland `nystartsjobb-guide` och `rattigheter-stod`) och "Anna Lindberg, Psykolog" (5), plus fyra olika "Arbetsrättsjurist". 30 säger "Jobin-redaktionen", 10 är tomma. **Omfattningsrättelse:** syns bara i portalen (`Article.tsx:274-278`) — guidemallen sätter korrekt `author: Organization "Jobin"` i JSON-LD, så publika sidor och Google är rena · M
 - [x] **AR3** ✅ *(klar 2026-08-17)* `AICoachAssistant` monterades fortfarande med hårdkodade "Maria Lindberg (inte loggat in på 12 dagar)" och "Anna Karlsson", **noll AI- eller databasanrop** — komponentens egen kommentar löd `// Mock AI responses`. **Gjort:** monteringen borttagen ur `Consultant.tsx` och filen raderad (648 rader). En kommentar på platsen förklarar varför den är borta och pekar på G19 (kontaktregistret) som det som faktiskt saknas för att en sådan yta ska kunna säga något sant. Noll kvarvarande referenser i `src/` och `e2e/`. **Sänkte eslint-warningtaket 129 → 128** i samma svep
 
 ### Sedan — skav som märks

@@ -1,3 +1,9 @@
+/**
+ * Läsindikatorn högst upp på artikelsidan, plus sparad läsposition.
+ *
+ * Påminnelserutan som dök upp efter tio minuter är borttagen 2026-08-22 —
+ * se kommentaren vid returen längre ner för hit-testet som avgjorde det.
+ */
 import { useState, useEffect, useCallback } from 'react'
 import { articleProgressApi } from '@/services/cloudStorage'
 import { storageLogger } from '@/lib/logger'
@@ -13,7 +19,6 @@ interface DatabaseError {
 
 export default function ReadingProgress({ articleId }: ReadingProgressProps) {
   const [progress, setProgress] = useState(0)
-  const [showReminder, setShowReminder] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   // Ladda sparad progress från molnet vid mount
@@ -32,7 +37,7 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
         if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
           storageLogger.debug('Reading progress: RLS policy prevents loading (non-critical)')
         } else {
-          storageLogger.error('Failed to load reading progress:', err)
+          storageLogger.error('Failed to load reading progress', { err: String(err) })
         }
       } finally {
         setIsLoading(false)
@@ -52,7 +57,7 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
       if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
         storageLogger.debug('Reading progress: RLS policy prevents saving (non-critical)')
       } else {
-        storageLogger.error('Failed to save reading progress:', err)
+        storageLogger.error('Failed to save reading progress', { err: String(err) })
       }
     }
   }, [articleId])
@@ -60,7 +65,6 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
   useEffect(() => {
     if (isLoading) return
 
-    let reminderTimeout: NodeJS.Timeout | null = null
     let saveTimeout: NodeJS.Timeout | null = null
 
     const handleScroll = () => {
@@ -76,12 +80,6 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
       saveTimeout = setTimeout(() => {
         saveProgress(newProgress)
       }, 1000)
-
-      // Show reminder after 10 minutes
-      if (scrollPercent < 100 && scrollPercent > 0) {
-        if (reminderTimeout) clearTimeout(reminderTimeout)
-        reminderTimeout = setTimeout(() => setShowReminder(true), 10 * 60 * 1000)
-      }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -89,60 +87,48 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
 
     return () => {
       window.removeEventListener('scroll', handleScroll)
-      if (reminderTimeout) clearTimeout(reminderTimeout)
       if (saveTimeout) clearTimeout(saveTimeout)
     }
   }, [articleId, isLoading, saveProgress])
-
-  const handlePause = async () => {
-    setShowReminder(false)
-    try {
-      await articleProgressApi.pause(articleId)
-    } catch (err: unknown) {
-      // Tyst ignorera RLS-policy fel
-      const dbError = err as DatabaseError
-      if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
-        storageLogger.debug('Reading progress: RLS policy prevents pause save (non-critical)')
-      } else {
-        storageLogger.error('Failed to save pause state:', err)
-      }
-    }
-  }
 
   if (progress === 0) return null
 
   return (
     <>
-      {/* Fixed progress bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 bg-stone-200 z-50">
-        <div 
-          className="h-full bg-[var(--c-solid)] transition-all"
-          style={{ width: `${progress}%` }}
-        />
+      {/* Läsindikator. 4 px hög, ovanför den sticky toppnaven — de överlappar
+          bara de fyra pixlarna, uppmätt. */}
+      <div
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Hur långt du läst i artikeln"
+        className="fixed top-0 left-0 right-0 h-1 bg-stone-200 dark:bg-stone-700 z-50"
+      >
+        <div className="h-full bg-[var(--c-solid)] transition-all" style={{ width: `${progress}%` }} />
       </div>
 
-      {/* Reading reminder */}
-      {showReminder && progress < 100 && (
-        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm z-50 animate-slide-up">
-          <p className="text-sm text-stone-700 mb-2">
-            Du har läst {progress}% av artikeln. Vill du ta en paus eller fortsätta?
-          </p>
-          <div className="flex gap-2">
-            <button 
-              onClick={() => setShowReminder(false)}
-              className="px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm rounded-lg hover:bg-[var(--c-text)]"
-            >
-              Fortsätt läsa
-            </button>
-            <button 
-              onClick={handlePause}
-              className="px-3 py-1.5 bg-stone-100 text-stone-700 text-sm rounded-lg hover:bg-stone-200"
-            >
-              Pausa
-            </button>
-          </div>
-        </div>
-      )}
+      {/*
+        LÄSPÅMINNELSEN ÄR BORTTAGEN (2026-08-22).
+
+        En `fixed bottom-4 right-4 z-50`-ruta dök upp av sig själv efter tio
+        minuters läsning och frågade om man ville pausa. Tre problem, och det
+        första ensamt räcker:
+
+        1. Vid 390 px täckte den **alla fem flikarna i bottennavet** och
+           coach-knappen (hit-testat 2026-08-22: 5 av 5 blockerade, rutan
+           z-50 mot navets z-30). Man kunde inte navigera vidare utan att
+           först klicka bort den.
+        2. DESIGN.md §10: "Inga obetonade overlays. Modaler ska aldrig öppna
+           utan användarens explicita klick." Den öppnade sig själv, för just
+           den långsamme läsaren.
+        3. Den sa "Du har läst {progress}% av artikeln" — en prestationsmätning
+           i en deltagarvy (§2 regel 3).
+
+        Pauspåminnelser hör hemma i **Lugnare läge**, där de redan finns och
+        är ett aktivt val. `articleProgressApi.pause()` finns kvar och anropas
+        därifrån den dagen någon vill koppla ihop dem.
+      */}
     </>
   )
 }

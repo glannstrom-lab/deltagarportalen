@@ -82,63 +82,82 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
   }
 
   return (
-    <div className="bg-stone-50 rounded-xl p-5 my-6">
+    <div className="bg-stone-50 dark:bg-stone-900/50 rounded-xl p-5 my-6">
       <div className="flex items-center justify-between mb-4">
-        <h4 className="font-semibold text-stone-800">Din checklista</h4>
+        {/* h3, inte h4: brödtexten slutar i 60 av 163 artiklar på en h2, så
+            h4 gav ett hopp över nivå tre. */}
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100">Din checklista</h3>
         <div className="flex items-center gap-2">
-          {isSaving && (
-            <Loader2 className="w-4 h-4 text-stone-600 animate-spin" />
-          )}
-          <span className="text-sm text-stone-600">{progress}%</span>
+          {isSaving && <Loader2 className="w-4 h-4 text-stone-600 dark:text-stone-400 animate-spin" aria-hidden="true" />}
+          <span className="text-sm text-stone-600 dark:text-stone-400">{progress}%</span>
         </div>
       </div>
-      
+
       {error && (
-        <div className="mb-4 p-2 bg-red-50 text-red-600 text-sm rounded-lg">
+        <div role="alert" className="mb-4 p-2 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm rounded-lg">
           {error}
         </div>
       )}
-      
-      <div className="w-full bg-stone-200 rounded-full h-2 mb-4">
-        <div 
-          className="bg-[var(--c-solid)] h-2 rounded-full transition-all"
-          style={{ width: `${progress}%` }}
-        />
+
+      <div
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Andel avbockade punkter"
+        className="w-full bg-stone-200 dark:bg-stone-700 rounded-full h-2 mb-4"
+      >
+        <div className="bg-[var(--c-solid)] h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
       </div>
 
-      <ul className="space-y-2">
+      {/*
+        Raderna var `<li onClick>` med en `<div>` som kryssruta: inget
+        tabbstopp, ingen roll, inget tillstånd. Checklistan — artikelsidans
+        mest använda interaktion — gick inte att använda med tangentbord, och
+        en skärmläsare fick bara text. Uppmätt 2026-08-22: sex rader, samtliga
+        `tabindex: null, role: null, aria-checked: null`.
+      */}
+      <ul className="space-y-2 list-none p-0 m-0">
         {items.map((item) => {
           const isChecked = checkedItems.has(item.id)
           return (
-            <li 
-              key={item.id}
-              onClick={() => toggleItem(item.id)}
-              className={`
-                flex items-start gap-3 p-3 rounded-lg cursor-pointer transition-all
-                ${isChecked ? 'bg-white' : 'bg-white/50 hover:bg-white'}
-              `}
-            >
-              <div className={`
-                flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5
-                ${isChecked 
-                  ? 'bg-[var(--c-solid)] border-[var(--c-solid)]' 
-                  : 'border-stone-300 hover:border-[var(--c-solid)]/60'
-                }
-              `}>
-                {isChecked && <Check size={14} className="text-white" />}
-              </div>
-              <span className={`text-sm ${isChecked ? 'text-stone-700 line-through' : 'text-stone-700'}`}>
-                {item.text}
-              </span>
+            <li key={item.id}>
+              <button
+                type="button"
+                role="checkbox"
+                aria-checked={isChecked}
+                onClick={() => toggleItem(item.id)}
+                className={`w-full text-left flex items-start gap-3 p-3 min-h-[44px] rounded-lg transition-colors ${
+                  isChecked
+                    ? 'bg-white dark:bg-stone-800'
+                    : 'bg-white/50 dark:bg-stone-800/50 hover:bg-white dark:hover:bg-stone-800'
+                }`}
+              >
+                <span
+                  aria-hidden="true"
+                  className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5 ${
+                    isChecked
+                      ? 'bg-[var(--c-solid)] border-[var(--c-solid)]'
+                      : 'border-stone-300 dark:border-stone-600'
+                  }`}
+                >
+                  {isChecked && <Check size={14} className="text-white" />}
+                </span>
+                <span className={`text-sm text-stone-700 dark:text-stone-200 ${isChecked ? 'line-through' : ''}`}>
+                  {item.text}
+                </span>
+              </button>
             </li>
           )
         })}
       </ul>
 
+      {/* Manifestet §1: inga konfettiexplosioner. Rutan sa
+          "🎉 Bra jobbat! Du har gått igenom allt!". */}
       {progress === 100 && (
-        <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center text-sm font-medium">
-          🎉 Bra jobbat! Du har gått igenom allt!
-        </div>
+        <p role="status" className="mt-4 p-3 bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)] rounded-lg text-center text-sm font-medium">
+          Allt avbockat.
+        </p>
       )}
     </div>
   )

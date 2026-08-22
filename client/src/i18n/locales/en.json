@@ -5376,195 +5376,107 @@
   "knowledgeBase": {
     "title": "Knowledge Base",
     "subtitle": "Articles and guides for job seekers",
-    "description": "Articles and guides for your job search",
-    "intro": "Articles, guides and tools for your job search journey. Whether you're a beginner or experienced, you'll find something to help you move forward.",
-    "searchAria": "Search the knowledge base",
-    "tabs": {
-      "forYou": "For you",
-      "gettingStarted": "Getting Started",
-      "topics": "Topics",
-      "quickHelp": "Quick Help",
-      "myJourney": "My Journey",
-      "tools": "Tools"
-    },
-    "energyLevel": "Your energy level",
-    "energyLow": "Low",
-    "energyMedium": "Medium",
-    "energyHigh": "High",
-    "energyLowTip": "Short articles recommended",
-    "energyMediumTip": "Balanced content",
-    "energyHighTip": "Perfect for in-depth reading",
     "loadingContent": "Loading content...",
-    "couldNotLoad": "Could not load articles",
+    "couldNotLoad": "We could not load the articles",
     "tryAgain": "Try again",
-    "welcome": "Welcome",
-    "selectTab": "Select a tab above to explore the knowledge base.",
-    "defaultUser": "you",
-    "forYou": {
-      "greeting": "Hi {{name}}!",
-      "personalizedContent": "Content personalized for your interest profile.",
-      "curatedContent": "Explore our articles and guides.",
-      "recommended": "Recommended for you",
-      "allArticles": "Articles",
-      "basedOnProfile": "Based on your interest profile",
-      "recentArticles": "Recent articles",
-      "noArticles": "No articles available",
-      "noArticlesDescription": "There are no articles to display right now."
-    },
-    "gettingStarted": {
-      "title": "Getting Started",
-      "description": "You have completed {{completed}} of {{total}} steps.",
-      "loading": "Loading your progress...",
-      "complete": "complete",
-      "completed": "Completed",
-      "allComplete": "Congratulations!",
-      "allCompleteDescription": "You have completed all getting started steps. Keep exploring the knowledge base!",
-      "steps": {
-        "cv": {
-          "title": "Create your CV",
-          "description": "Build your CV with our CV builder to showcase your experience.",
-          "action": "Go to CV builder"
-        },
-        "interest": {
-          "title": "Take the interest guide",
-          "description": "Discover which careers suit you based on your interests.",
-          "action": "Start guide"
-        },
-        "jobs": {
-          "title": "Save interesting jobs",
-          "description": "Search and save jobs that interest you to keep track of them.",
-          "action": "Search jobs"
-        },
-        "coverLetter": {
-          "title": "Write a cover letter",
-          "description": "Create a cover letter that you can customize for different applications.",
-          "action": "Create letter"
-        }
-      }
-    },
-    "quickHelp": {
-      "title": "Quick Help",
-      "description": "Quick answers and help when you need it most.",
-      "quickActions": "Quick actions",
-      "actions": {
-        "cv": {
-          "title": "Update your CV",
-          "description": "Go to the CV builder and make changes"
-        },
-        "coverLetter": {
-          "title": "Write a cover letter",
-          "description": "Create a new letter or edit existing ones"
-        },
-        "jobs": {
-          "title": "Search jobs",
-          "description": "Find new job opportunities"
-        },
-        "interest": {
-          "title": "Explore careers",
-          "description": "See which careers suit you"
-        }
-      },
-      "checklists": {
-        "title": "Quick checklists",
-        "beforeInterview": {
-          "title": "Before the interview",
-          "items": {
-            "clothes": "Outfit selected and ready",
-            "directions": "Directions or meeting link tested",
-            "strengths": "3 strengths prepared",
-            "questions": "Questions to ask written down",
-            "documents": "CV and cover letter printed"
-          }
-        },
-        "afterInterview": {
-          "title": "After the interview",
-          "items": {
-            "thankYou": "Send thank you email within 24h",
-            "reflect": "Reflect on what went well",
-            "notes": "Note what to ask about next time",
-            "tracker": "Update your job tracker"
-          }
-        }
-      },
-      "relatedArticles": "Related articles",
-      "needSupport": {
-        "title": "Need to talk to someone?",
-        "description": "If you feel overwhelmed or need support, don't hesitate to contact your employment consultant.",
-        "action": "Book a meeting"
-      }
-    },
     "topics": {
       "filter": "Filter",
       "searchPlaceholder": "Search articles...",
       "categories": "Categories",
       "allCategories": "All categories",
       "clearFilters": "Clear filters",
-      "searchResults": "Search results",
       "allArticles": "All articles",
-      "articles": "articles",
-      "noMatches": "No articles match your filters",
       "gridView": "Grid view",
-      "listView": "List view"
+      "listView": "List view",
+      "searchLabel": "Search the articles",
+      "resultsFor": "Results for \"{{query}}\"",
+      "articlesCount_one": "1 article",
+      "articlesCount_other": "{{count}} articles",
+      "browsingCategory": "You are browsing {{category}}.",
+      "emptyTitle": "We found no article that matches",
+      "emptyDescription": "Try a shorter search term, or browse the topics in the list.",
+      "showMore": "Show more",
+      "remainingCount_one": "1 left",
+      "remainingCount_other": "{{count}} left",
+      "articlesCount": "{{count}} articles",
+      "remainingCount": "{{count}} left"
     },
-    "tools": {
-      "title": "Tools & features",
-      "description": "Use our built-in tools to improve your job search.",
-      "goTo": "Open",
-      "cvBuilder": {
-        "title": "CV Builder",
-        "description": "Create a professional CV with our step-by-step guide."
+    "searchLabel": "What are you looking for?",
+    "searchPlaceholderShort": "Search the knowledge base",
+    "searchHint_one": "Searching 1 article — try \"cover letter\", \"rejection\" or \"salary\".",
+    "searchHint_other": "Searching {{count}} articles — try \"cover letter\", \"rejection\" or \"salary\".",
+    "searchButton": "Search",
+    "shortcutsLabel": "Try one of these:",
+    "browseHeading": "What would you like to read about?",
+    "categoryCount_one": "1 article",
+    "categoryCount_other": "{{count}} articles",
+    "categoryEmpty": "Coming soon",
+    "allTopics": "All topics",
+    "searchResultsSubtitle": "Search results",
+    "couldNotLoadDescription": "It may not be your connection — please try again in a moment.",
+    "relatedExercises_one": "1 related exercise",
+    "relatedExercises_other": "{{count}} related exercises",
+    "aiTeamHeading": "Can’t find an answer?",
+    "aiTeamBody": "The AI team can answer questions the articles do not cover. Five focuses of the same AI.",
+    "aiTeamCta": "Open the AI team",
+    "categories": {
+      "getting-started": {
+        "name": "Getting started",
+        "description": "Finding your way around the portal and taking the first steps."
       },
-      "coverLetter": {
-        "title": "Cover Letter",
-        "description": "Generate customized cover letters with AI assistance."
+      "self-awareness": {
+        "name": "Self-awareness",
+        "description": "Understand your strengths, interests and personality to find the right role."
       },
-      "jobSearch": {
-        "title": "Job Search",
-        "description": "Search among thousands of jobs from the employment office."
+      "job-search": {
+        "name": "Job search",
+        "description": "Strategies and techniques for finding and applying for jobs."
       },
-      "interestGuide": {
-        "title": "Interest Guide",
-        "description": "Discover which careers match your personality."
+      "interview": {
+        "name": "Interviews and hiring",
+        "description": "Preparation, interview technique and the hiring process."
       },
-      "diary": {
-        "title": "Diary",
-        "description": "Reflect on your journey and track your progress."
+      "networking": {
+        "name": "Networking",
+        "description": "Build and keep a professional network that opens doors."
       },
-      "profile": {
-        "title": "My Profile",
-        "description": "Your settings and personal information."
-      }
+      "digital-presence": {
+        "name": "Online presence",
+        "description": "Improve your profile and visibility online."
+      },
+      "employment-law": {
+        "name": "Employment law",
+        "description": "Your rights, obligations and what to know about being employed."
+      },
+      "career-development": {
+        "name": "Career development",
+        "description": "Plan and develop your career over the long term."
+      },
+      "wellness": {
+        "name": "Wellbeing and motivation",
+        "description": "Support for mental health and motivation while job hunting."
+      },
+      "accessibility": {
+        "name": "Accessibility and support",
+        "description": "Rights, support and adjustments."
+      },
+      "job-market": {
+        "name": "The labour market",
+        "description": "Information about the labour market and different industries."
+      },
+      "tools": {
+        "name": "Practical tools",
+        "description": "Checklists, templates and practical guides."
+      },
+      "easy-swedish": {
+        "name": "Plain Swedish",
+        "description": "Articles written in simple, easy-to-read Swedish."
+      },
+      "other": "Other"
     },
-    "myJourney": {
-      "loading": "Loading your journey...",
-      "savedJobs": "Saved jobs",
-      "cvCompleteness": "CV completeness",
-      "interestProfile": "Interest profile",
-      "noProfile": "Not completed",
-      "coverLetters": "Cover letters",
-      "yourProfile": "Your interest profile",
-      "viewFullProfile": "View full profile",
-      "nextSteps": "Next steps",
-      "createCV": "Create your CV",
-      "createCVDescription": "Build a professional CV",
-      "takeInterestGuide": "Take the interest guide",
-      "takeInterestGuideDescription": "Discover which careers suit you",
-      "searchJobs": "Explore jobs",
-      "searchJobsDescription": "Find and save interesting jobs",
-      "start": "Start",
-      "greatProgress": "Great progress!",
-      "greatProgressDescription": "You've come a long way in your job search journey. Keep it up!",
-      "recentSavedJobs": "Recently saved jobs",
-      "viewAll": "View all",
-      "unknownJob": "Unknown job",
-      "jobStatus": {
-        "saved": "Saved",
-        "applied": "Applied",
-        "interview": "Interview",
-        "accepted": "Offer",
-        "rejected": "Rejected"
-      }
-    }
+    "searchHint": "Searching {{count}} articles — try \"cover letter\", \"rejection\" or \"salary\".",
+    "categoryCount": "{{count}} articles",
+    "relatedExercises": "{{count}} related exercises"
   },
   "resources": {
     "title": "My Resources",
@@ -8223,13 +8135,19 @@
     "shareArticle": "Share article",
     "copied": "Copied!",
     "nextSteps": "Next steps",
-    "userRating": "{{rating}}/5 user rating",
-    "savedCount": "{{count}} have saved",
     "relatedExercises": "Related exercises",
     "relatedArticles": "Related articles",
     "needMoreHelp": "Need more help?",
     "helpDescription": "If you have questions or need support, don't hesitate to contact your employment consultant. We're here for you!",
-    "bookMeeting": "Book a meeting"
+    "title": "Article",
+    "publisher": "Jobin",
+    "updatedOn": "Updated {{date}}",
+    "copyFailed": "Could not copy the link — select the address bar and copy from there.",
+    "contactConsultant": "Go to your adviser",
+    "fontSizeGroup": "Text size",
+    "tocLabel": "Article contents",
+    "tocHeading": "In this article",
+    "tableScrollLabel": "Table – scroll sideways to see all of it"
   },
   "coverLetterGenerator": {
     "title": "Cover Letter",

@@ -82,7 +82,7 @@ export function CompletionGuide({
       description: t('profile.completionGuide.items.cvSummary.description'),
       completed: Boolean(cv?.summary),
       priority: 'high',
-      link: '/cv-builder',
+      link: '/cv',
       icon: <FileText className="w-4 h-4" />
     },
     {
@@ -91,7 +91,7 @@ export function CompletionGuide({
       description: t('profile.completionGuide.items.experience.description'),
       completed: Boolean(cv?.workExperience?.length),
       priority: 'high',
-      link: '/cv-builder',
+      link: '/cv',
       icon: <Briefcase className="w-4 h-4" />
     },
     {
@@ -100,7 +100,7 @@ export function CompletionGuide({
       description: t('profile.completionGuide.items.education.description'),
       completed: Boolean(cv?.education?.length),
       priority: 'medium',
-      link: '/cv-builder',
+      link: '/cv',
       icon: <GraduationCap className="w-4 h-4" />
     },
     {

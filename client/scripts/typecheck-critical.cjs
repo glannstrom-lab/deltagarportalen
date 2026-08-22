@@ -32,8 +32,10 @@ const ALLOWED_PATHS = [
   'src/pwa/serviceWorker.ts',
   // Test setup uses globalThis-injected vitest helpers.
   'src/test/setup.ts',
-  // @/types/knowledge is `import type` only — erased at build time.
-  '@/types/knowledge',
+  // (`@/types/knowledge` låg här till 2026-08-22 med motiveringen "import type
+  // only — erased at build time". Det stämde, men modulen fanns inte alls, så
+  // `Article` var `any` i de två filer som filtrerar och renderar artiklarna.
+  // Filen finns nu; undantaget behövs inte.)
 ];
 
 const critical = lines.filter((line) => {

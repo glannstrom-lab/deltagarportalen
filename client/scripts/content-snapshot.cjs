@@ -14,7 +14,9 @@
  * jämför snapshoten mot prod och säger till när de glidit isär.
  *
  * PREMISS (mätt 2026-08-05): tabellen `articles` har 133 aktiva rader med
- * unika slugs. `articleData.ts` (141 st) är BARA en fallback i contentApi —
+ * unika slugs. `articleData.ts` bar tidigare 141 artiklar som fallback i
+ * contentApi — den reservkopian är borttagen 2026-08-22, databasen är enda
+ * källan —
  * den visas när DB-anropet failar eller ger noll rader. Sanningen är
  * databasen; kör inte det här skriptet mot mock-datat.
  */

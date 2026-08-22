@@ -1,8 +1,20 @@
 /**
  * Content API - Articles and Exercises from Supabase
  *
- * This service fetches articles and exercises from the database.
- * It provides a fallback to mock data if database is empty or unavailable.
+ * ## Artiklarna har INGEN reservkopia längre (2026-08-22)
+ *
+ * Fram till dess returnerade varje artikelfunktion `mockArticlesData` — 141
+ * inbyggda artiklar — vid DB-fel, tomt svar ELLER exception, tyst och med en
+ * `console.warn`. Prod har 163 aktiva artiklar, så reservkopian var både
+ * inaktuell och osann: ett RLS-fel eller ett nätverksglapp såg ut som en
+ * fungerande kunskapsbank där 22 artiklar råkade saknas. Den var dessutom
+ * appens näst största chunk (247 kB brotli), levererad till varje besökare
+ * som öppnade en artikel, kunskapsbanken, övningarna, utskrifterna,
+ * spontanansökan eller intervjusimulatorn.
+ *
+ * Numera kastar artikelfunktionerna vid fel. Ett fel ska se ut som ett fel.
+ * Övningarna har kvar sin reservkopia — tabellen `exercises` har 0 rader i
+ * prod, så den vägen ÄR bundlen tills någon seedar den (se ROADMAP).
  */
 
 import { supabase } from '@/lib/supabase'
@@ -13,13 +25,25 @@ const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12
 function isUuid(s: string): boolean {
   return UUID_REGEX.test(s)
 }
-import { mockArticlesData, articleCategories, type EnhancedArticle, type ArticleChecklistItem, type ArticleAction } from './articleData'
+import { articleCategories } from './articleData'
+import type { EnhancedArticle, ArticleChecklistItem, ArticleAction } from '@/data/artikelkategorier'
 import { exercises as mockExercises, type Exercise, type ExerciseStep } from '@/data/exercises'
 import { getIcon } from '@/lib/dynamicIconMap'
 
 // ============================================
 // TYPES
 // ============================================
+
+/**
+ * Kolumnerna listvyerna behöver. `select('*')` drog med hela `content` för
+ * alla 163 artiklar: 1 001 kB rått / **325 kB gzip** över nätet, varje gång
+ * någon öppnade kunskapsbanken. Samma fråga utan brödtexten väger 14 kB gzip.
+ * Målgruppen sitter delvis på mobil med begränsad datamängd.
+ */
+const LISTKOLUMNER =
+  'id,slug,title,summary,category_key,subcategory,tags,reading_time,difficulty,' +
+  'energy_level,author,author_title,related_article_slugs,related_exercise_slugs,' +
+  'related_tools,checklist,actions,helpfulness_rating,bookmark_count,created_at,updated_at'
 
 export interface ArticleCategory {
   id: string
@@ -118,7 +142,8 @@ function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
     id: article.slug, // Use slug as ID for backwards compatibility
     title: article.title,
     summary: article.summary,
-    content: article.content,
+    // Listvyerna hämtar inte brödtexten (se LISTKOLUMNER).
+    content: article.content ?? '',
     category: article.category_key || '',
     subcategory: article.subcategory || undefined,
     tags: article.tags || [],
@@ -189,31 +214,26 @@ function dbExerciseToExercise(
 
 export const contentArticleApi = {
   /**
-   * Get all active articles
+   * Alla aktiva artiklar — UTAN brödtext. Kastar vid fel.
+   *
+   * Returnerar tom lista bara när databasen faktiskt är tom. Skillnaden är
+   * hela poängen: den som ritar listan måste kunna säga "vi når inte
+   * artiklarna" i stället för "det finns inga artiklar".
    */
   async getAll(): Promise<EnhancedArticle[]> {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true })
+    const { data, error } = await supabase
+      .from('articles')
+      .select(LISTKOLUMNER)
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .returns<ArticleFromDB[]>()
 
-      if (error) {
-        console.warn('Error fetching articles from DB, using mock data:', error.message)
-        return mockArticlesData
-      }
-
-      if (!data || data.length === 0) {
-        apiLogger.debug('No articles in database, using mock data')
-        return mockArticlesData
-      }
-
-      return data.map(dbArticleToEnhanced)
-    } catch (err) {
-      console.error('Exception fetching articles:', err)
-      return mockArticlesData
+    if (error) {
+      apiLogger.error('Kunde inte hämta artiklar', { message: error.message })
+      throw new Error(`Kunde inte hämta artiklar: ${error.message}`)
     }
+
+    return (data ?? []).map(dbArticleToEnhanced)
   },
 
   /**
@@ -222,90 +242,81 @@ export const contentArticleApi = {
    * uuid" och hela or-klausulen droppas (400 Bad Request).
    */
   async getById(identifier: string): Promise<EnhancedArticle | null> {
-    try {
-      const column = isUuid(identifier) ? 'id' : 'slug'
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq(column, identifier)
-        .eq('is_active', true)
-        .maybeSingle()
+    const column = isUuid(identifier) ? 'id' : 'slug'
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .eq(column, identifier)
+      .eq('is_active', true)
+      .maybeSingle()
 
-      if (error && error.code !== 'PGRST116') {
-        console.warn('Error fetching article from DB:', error.message)
-      }
-
-      if (data) {
-        return dbArticleToEnhanced(data)
-      }
-
-      // Fallback to mock data
-      const mockArticle = mockArticlesData.find(a => a.id === identifier)
-      return mockArticle || null
-    } catch (err) {
-      console.error('Exception fetching article:', err)
-      const mockArticle = mockArticlesData.find(a => a.id === identifier)
-      return mockArticle || null
+    if (error && error.code !== 'PGRST116') {
+      apiLogger.error('Kunde inte hämta artikeln', { identifier, message: error.message })
+      throw new Error(`Kunde inte hämta artikeln: ${error.message}`)
     }
+
+    return data ? dbArticleToEnhanced(data) : null
+  },
+
+  /**
+   * Hämta ett fåtal artiklar på slug — för "Relaterade artiklar".
+   *
+   * Artikelsidan hämtade tidigare HELA korpusen (`getAll()`, 325 kB gzip,
+   * utanför React Query alltså okachad) enbart för att slå upp tre relaterade
+   * slugs. 152 av 163 artiklar har relaterade, så det skedde nästan alltid.
+   */
+  async getBySlugs(slugs: string[]): Promise<EnhancedArticle[]> {
+    const rensade = slugs.filter((s) => typeof s === 'string' && s.length > 0).slice(0, 12)
+    if (!rensade.length) return []
+
+    const { data, error } = await supabase
+      .from('articles')
+      .select(LISTKOLUMNER)
+      .in('slug', rensade)
+      .eq('is_active', true)
+      .returns<ArticleFromDB[]>()
+
+    if (error) {
+      apiLogger.error('Kunde inte hämta relaterade artiklar', { message: error.message })
+      return []
+    }
+
+    // Behåll ordningen anroparen bad om — `.in()` garanterar ingen.
+    const karta = new Map((data ?? []).map((rad) => [rad.slug, dbArticleToEnhanced(rad)]))
+    return rensade.map((s) => karta.get(s)).filter(Boolean) as EnhancedArticle[]
   },
 
   /**
    * Get articles by category
    */
   async getByCategory(categoryKey: string): Promise<EnhancedArticle[]> {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('category_key', categoryKey)
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true })
+    const { data, error } = await supabase
+      .from('articles')
+      .select(LISTKOLUMNER)
+      .eq('category_key', categoryKey)
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+      .returns<ArticleFromDB[]>()
 
-      if (error) {
-        console.warn('Error fetching articles by category:', error.message)
-        return mockArticlesData.filter(a => a.category === categoryKey)
-      }
-
-      if (!data || data.length === 0) {
-        return mockArticlesData.filter(a => a.category === categoryKey)
-      }
-
-      return data.map(dbArticleToEnhanced)
-    } catch (err) {
-      console.error('Exception fetching articles by category:', err)
-      return mockArticlesData.filter(a => a.category === categoryKey)
+    if (error) {
+      apiLogger.error('Kunde inte hämta artiklar per kategori', { categoryKey, message: error.message })
+      throw new Error(`Kunde inte hämta artiklar: ${error.message}`)
     }
+
+    return (data ?? []).map(dbArticleToEnhanced)
   },
 
   /**
    * Get all article categories
+   *
+   * OBS: tabellen `article_categories` har **0 rader i prod** (mätt
+   * 2026-08-22), så den här funktionen faller alltid tillbaka på listan i
+   * `articleData.ts`. Reservkopian behålls därför medvetet — den ÄR källan
+   * tills någon seedar tabellen. Se ROADMAP.
    */
   async getCategories(): Promise<ArticleCategory[]> {
-    try {
-      const { data, error } = await supabase
-        .from('article_categories')
-        .select('*')
-        .eq('is_active', true)
-        .order('sort_order', { ascending: true })
-
-      if (error || !data || data.length === 0) {
-        // Return mock categories
-        return articleCategories.map((cat, index) => ({
-          id: cat.id,
-          key: cat.id,
-          name: cat.name,
-          description: cat.description,
-          icon: cat.icon,
-          sort_order: index,
-          is_active: true,
-          subcategories: cat.subcategories,
-        }))
-      }
-
-      return data
-    } catch (err) {
-      console.error('Exception fetching categories:', err)
-      return articleCategories.map((cat, index) => ({
+    const reserv = () =>
+      articleCategories.map((cat, index) => ({
         id: cat.id,
         key: cat.id,
         name: cat.name,
@@ -315,49 +326,55 @@ export const contentArticleApi = {
         is_active: true,
         subcategories: cat.subcategories,
       }))
+
+    try {
+      const { data, error } = await supabase
+        .from('article_categories')
+        .select('*')
+        .eq('is_active', true)
+        .order('sort_order', { ascending: true })
+
+      if (error || !data || data.length === 0) return reserv()
+      return data
+    } catch (err) {
+      apiLogger.error('Exception fetching categories', { err })
+      return reserv()
     }
   },
 
   /**
-   * Search articles by query
+   * Fritextsökning som faktiskt läser artiklarnas TEXT.
+   *
+   * Klientfiltret i TopicsTab matchar bara titel, sammanfattning och taggar.
+   * Uppmätt mot prod: "Personligt brev" gav 4 träffar i UI mot 19 i
+   * innehållet, "lön" 14 mot 66. Den här funktionen fanns redan och hade
+   * noll anropare — nu används den när användaren söker.
+   *
+   * Returnerar slugs, inte hela artiklar, så att anroparen kan skära i den
+   * lista den redan har utan att hämta brödtexten en gång till.
    */
-  async search(query: string): Promise<EnhancedArticle[]> {
-    const lowerQuery = query.toLowerCase()
+  async searchSlugs(query: string): Promise<string[]> {
+    const q = query.trim()
+    if (q.length < 2) return []
 
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('is_active', true)
-        .or(`title.ilike.%${query}%,summary.ilike.%${query}%,content.ilike.%${query}%`)
-        .order('sort_order', { ascending: true })
-        .limit(20)
+    // `%` och `_` är jokertecken i ilike, `,` bryter or-klausulen.
+    const sakert = q.replace(/[%_,()]/g, ' ').trim()
+    if (!sakert) return []
 
-      if (error) {
-        console.warn('Error searching articles:', error.message)
-        return mockArticlesData.filter(a =>
-          a.title.toLowerCase().includes(lowerQuery) ||
-          a.summary.toLowerCase().includes(lowerQuery) ||
-          a.tags.some(t => t.toLowerCase().includes(lowerQuery))
-        )
-      }
+    const { data, error } = await supabase
+      .from('articles')
+      .select('slug')
+      .eq('is_active', true)
+      .or(`title.ilike.%${sakert}%,summary.ilike.%${sakert}%,content.ilike.%${sakert}%`)
+      .limit(60)
+      .returns<{ slug: string }[]>()
 
-      if (!data || data.length === 0) {
-        return mockArticlesData.filter(a =>
-          a.title.toLowerCase().includes(lowerQuery) ||
-          a.summary.toLowerCase().includes(lowerQuery) ||
-          a.tags.some(t => t.toLowerCase().includes(lowerQuery))
-        )
-      }
-
-      return data.map(dbArticleToEnhanced)
-    } catch (err) {
-      console.error('Exception searching articles:', err)
-      return mockArticlesData.filter(a =>
-        a.title.toLowerCase().includes(lowerQuery) ||
-        a.summary.toLowerCase().includes(lowerQuery)
-      )
+    if (error) {
+      apiLogger.error('Kunde inte söka i artiklarna', { message: error.message })
+      return []
     }
+
+    return (data ?? []).map((rad) => rad.slug)
   },
 }
 
@@ -591,6 +608,8 @@ export const contentExerciseApi = {
   },
 }
 
-// Re-export for convenience
-export { mockArticlesData, articleCategories } from './articleData'
+// Re-export for convenience.
+// `mockArticlesData` låg här också — borttagen 2026-08-22 tillsammans med
+// artiklarnas reservkopia. Noll importörer hade den.
+export { articleCategories } from './articleData'
 export { exercises as mockExercises } from '@/data/exercises'

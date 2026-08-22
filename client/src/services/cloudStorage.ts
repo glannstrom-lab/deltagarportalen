@@ -272,12 +272,15 @@ export const articleBookmarksApi = {
       return
     }
 
+    // `upsert`, inte `insert`: tabellen har UNIQUE (user_id, article_id), så
+    // ett andra bokmärke på samma artikel gav 23505 som tyst dumpades i
+    // localStorage-fallbacken.
     const { error } = await supabase
       .from('article_bookmarks')
-      .insert({ 
-        user_id: user.id,
-        article_id: articleId 
-      })
+      .upsert(
+        { user_id: user.id, article_id: articleId },
+        { onConflict: 'user_id,article_id' }
+      )
     
     if (error) {
       handleStorageError(error, 'lägga till bokmärke')

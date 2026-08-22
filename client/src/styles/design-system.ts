@@ -280,7 +280,10 @@ export const cardVariants = {
     'transition-all duration-200'
   ),
   elevated: cn(
-    'bg-white',
+    // `dark:` saknades — enda varianten av fyra utan. Kunskapsbankens
+    // filterpanel förblev ett VITT kort mitt på en mörk sida, och texten i
+    // sökfältet mätte 1,09:1 (uppmätt av axe 2026-08-22).
+    'bg-white dark:bg-stone-800',
     radius.cardLarge,
     shadows.elevated,
     colors.neutral.border,

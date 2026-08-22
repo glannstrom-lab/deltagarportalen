@@ -213,7 +213,7 @@ const LANK_MONSTER = [
   /\bhref=\{\s*["'`]([^"'`{}]+)["'`]\s*\}/g,
   /\bwindow\.location\.href\s*=\s*["'`]([^"'`{}]+)["'`]/g,
   // objekt-literaler: { href: '/x' }, { to: '/x' }, { path: '/x' }, { url: '/x' }
-  /\b(?:href|to|path|url|ctaHref|linkTo|route)\s*:\s*["'`]([^"'`{}]+)["'`]/g,
+  /\b(?:href|to|path|url|ctaHref|linkTo|link|route)\s*:\s*["'`]([^"'`{}]+)["'`]/g,
 ]
 
 const traffar = []

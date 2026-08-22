@@ -66,10 +66,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={describedBy}
             className={cn(
               inputBase,
+              // `touch.input` bär `px-4` och måste därför komma FÖRE
+              // ikonpaddingen — annars nollar `touchOptimized` tyst ut
+              // `pl-10`/`pr-10`, och ikonen hamnar ovanpå texten. Uppmätt på
+              // kunskapsbankens sökruta 2026-08-22: paddingLeft 16px med en
+              // ikon som slutar på 32px.
+              touchOptimized && touch.input,
               leftIcon && 'pl-10',
               rightIcon && 'pr-10',
               error && 'border-red-300 focus:border-red-500 focus:ring-red-500/20',
-              touchOptimized && touch.input,
               className
             )}
             {...props}

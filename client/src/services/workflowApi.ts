@@ -386,11 +386,11 @@ export const nextStepApi = {
             : 'Skapa ansökan',
           link: firstUnapplied 
             ? `/dashboard/job-search?createApplication=${firstUnapplied.job_id}`
-            : '/dashboard/job-tracker'
+            : '/applications'
         },
         secondaryAction: {
           label: 'Se alla sparade jobb',
-          link: '/job-tracker'
+          link: '/applications'
         },
         icon: '📨',
         priority: 'high'
@@ -428,7 +428,7 @@ export const nextStepApi = {
         },
         secondaryAction: {
           label: 'Se dina ansökningar',
-          link: '/job-tracker'
+          link: '/applications'
         },
         icon: '📊',
         priority: 'medium'

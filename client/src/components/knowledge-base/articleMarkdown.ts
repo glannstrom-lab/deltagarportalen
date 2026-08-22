@@ -241,3 +241,82 @@ export function parseInline(text: string): InlineSegment[] {
 
   return segment
 }
+
+/**
+ * Markdown → ren uppläsningstext.
+ *
+ * `TextToSpeech` fick tidigare `article.content` rått. Samtliga 163 artiklar
+ * innehåller `##`, `**` eller `|`; 39 har tabeller och 15 har inline-länkar
+ * där hela URL:en ligger i texten. Talsyntesen läste alltså tabellpipes,
+ * asterisker och webbadresser — för just den användare som valt att lyssna
+ * för att hon inte orkar läsa.
+ *
+ * Blocken separeras med punkt och radbrytning så att rösten pausar mellan
+ * rubrik, stycke och listpunkt i stället för att köra ihop dem.
+ */
+export function textUrMarkdown(content: string): string {
+  const rentInline = (text: string) =>
+    parseInline(text)
+      .map((s) => s.text)
+      .join('')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+  const bitar: string[] = []
+
+  for (const block of parseArticleMarkdown(content)) {
+    switch (block.kind) {
+      case 'heading':
+        bitar.push(rentInline(block.text))
+        break
+      case 'paragraph':
+      case 'quote':
+        bitar.push(rentInline(block.text))
+        break
+      case 'list':
+        block.items.forEach((post) => bitar.push(rentInline(post)))
+        break
+      case 'table':
+        // Tabeller läses upp rad för rad med kolumnrubriken före värdet,
+        // annars blir en tabell en rad lösryckta ord.
+        block.rows.forEach((rad) => {
+          const celler = rad.map((cell, i) =>
+            block.head[i] ? `${rentInline(block.head[i])}: ${rentInline(cell)}` : rentInline(cell)
+          )
+          bitar.push(celler.filter(Boolean).join(', '))
+        })
+        break
+      // Kodblock och avdelare läses inte upp.
+      case 'code':
+      case 'rule':
+        break
+    }
+  }
+
+  return bitar
+    .filter(Boolean)
+    .map((rad) => (/[.!?:]$/.test(rad) ? rad : `${rad}.`))
+    .join('\n')
+}
+
+/**
+ * Rubriktext → ankar-id.
+ *
+ * Rådgivaren har sedan länge lovat att "längre artiklar har
+ * innehållsförteckning — hoppa till det relevanta avsnittet". Det fanns
+ * ingen: `ArticleContent` renderade `h2`–`h4` utan `id`, och ingen
+ * TOC-komponent existerade i repot. Nu gör den det, och löftet stämmer.
+ *
+ * Svenska tecken translittereras i stället för att strykas — annars blir
+ * "Vad räknas som en aktivitet" och "Vad r knas..." samma id.
+ */
+export function rubrikId(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[åä]/g, 'a')
+    .replace(/ö/g, 'o')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .slice(0, 60)
+}

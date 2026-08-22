@@ -21,13 +21,13 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { parseArticleMarkdown, parseInline } from './articleMarkdown'
+import { parseArticleMarkdown, parseInline, rubrikId } from './articleMarkdown'
 import type { ArticleBlock } from './articleMarkdown'
 
 export type ArticleFontSize = 'normal' | 'large' | 'xlarge'
 
 const KOD_KLASS =
-  'px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-900 text-[0.9em] font-mono text-gray-800 dark:text-gray-100'
+  'px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-900 text-[0.9em] font-mono text-stone-900 dark:text-stone-100'
 
 /** `**fet**`, `*kursiv*`, `` `kod` `` och `[text](url)` → React-noder. */
 function renderInline(text: string, nyckelPrefix: string): ReactNode {
@@ -58,7 +58,7 @@ function renderInline(text: string, nyckelPrefix: string): ReactNode {
       }
       case 'strong':
         return (
-          <strong key={nyckel} className="font-semibold text-gray-900 dark:text-gray-50">
+          <strong key={nyckel} className="font-semibold text-stone-900 dark:text-stone-50">
             {s.text}
           </strong>
         )
@@ -164,7 +164,7 @@ function ArticleTable({
             {rows.map((row, r) => (
               <tr key={r} className="border-t border-stone-200 dark:border-stone-700">
                 {row.map((cell, c) => (
-                  <td key={c} className="px-4 py-3 align-top text-gray-700 dark:text-gray-200">
+                  <td key={c} className="px-4 py-3 align-top text-stone-700 dark:text-stone-200">
                     {renderInline(cell, `td-${r}-${c}`)}
                   </td>
                 ))}
@@ -194,7 +194,10 @@ function ArticleBlockView({
       const Tag = (['h2', 'h3', 'h4'] as const)[block.level - 2]
       return (
         <Tag
-          className={`text-gray-800 dark:text-gray-100 ${RUBRIK_RYTM[block.level]} ${
+          // Ankaret gör innehållsförteckningen möjlig — och den utlovades av
+          // studievägledarens råd långt innan den fanns.
+          id={rubrikId(block.text)}
+          className={`scroll-mt-24 text-stone-900 dark:text-stone-100 ${RUBRIK_RYTM[block.level]} ${
             RUBRIK_KLASS[block.level][fontSize]
           }`}
         >
@@ -207,7 +210,7 @@ function ArticleBlockView({
       return block.ordered ? (
         <ol className="list-decimal pl-6 space-y-2 my-4 marker:font-semibold marker:text-[var(--c-solid)]">
           {block.items.map((item, i) => (
-            <li key={i} className="text-gray-700 dark:text-gray-200 pl-1">
+            <li key={i} className="text-stone-700 dark:text-stone-200 pl-1">
               {renderInline(item, `ol-${index}-${i}`)}
             </li>
           ))}
@@ -215,7 +218,7 @@ function ArticleBlockView({
       ) : (
         <ul className="list-disc pl-6 space-y-2 my-4 marker:text-[var(--c-solid)]">
           {block.items.map((item, i) => (
-            <li key={i} className="text-gray-700 dark:text-gray-200">
+            <li key={i} className="text-stone-700 dark:text-stone-200">
               {renderInline(item, `ul-${index}-${i}`)}
             </li>
           ))}
@@ -224,7 +227,7 @@ function ArticleBlockView({
 
     case 'quote':
       return (
-        <blockquote className="border-l-4 border-[var(--c-solid)] pl-4 italic text-gray-600 dark:text-gray-300 my-6">
+        <blockquote className="border-l-4 border-[var(--c-solid)] pl-4 italic text-stone-600 dark:text-stone-300 my-6">
           {renderInline(block.text, `q-${index}`)}
         </blockquote>
       )
@@ -232,7 +235,7 @@ function ArticleBlockView({
     case 'code':
       return (
         <pre className="my-6 overflow-x-auto rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900 p-4">
-          <code className="font-mono text-sm text-gray-800 dark:text-gray-100">{block.text}</code>
+          <code className="font-mono text-sm text-stone-900 dark:text-stone-100">{block.text}</code>
         </pre>
       )
 
@@ -242,7 +245,7 @@ function ArticleBlockView({
     case 'paragraph':
     default:
       return (
-        <p className="mb-4 text-gray-700 dark:text-gray-200">
+        <p className="mb-4 text-stone-700 dark:text-stone-200">
           {renderInline(block.text, `p-${index}`)}
         </p>
       )
@@ -257,6 +260,44 @@ interface ArticleContentProps {
   className?: string
 }
 
+/**
+ * Innehållsförteckning för långa artiklar.
+ *
+ * Ritas från fyra avsnitt och uppåt. Under det är den mer brus än hjälp, och
+ * medianartikeln har färre. Bara nivå två — en tvånivåers TOC blir en andra
+ * navigation, och sidan har redan skena och rådgivarkolumn.
+ */
+function Innehallsforteckning({ block }: { block: ArticleBlock[] }) {
+  const { t } = useTranslation()
+  const avsnitt = block.filter((b): b is Extract<ArticleBlock, { kind: 'heading' }> =>
+    b.kind === 'heading' && b.level === 2
+  )
+  if (avsnitt.length < 4) return null
+
+  return (
+    <nav
+      aria-label={t('article.tocLabel', 'Innehåll i artikeln')}
+      className="not-prose mb-8 rounded-xl border border-[var(--c-accent)]/60 bg-[var(--c-bg)] p-4"
+    >
+      <h2 className="text-sm font-semibold uppercase tracking-wide text-[var(--c-text)] m-0 mb-2">
+        {t('article.tocHeading', 'I den här artikeln')}
+      </h2>
+      <ol className="m-0 list-decimal space-y-1 pl-5 marker:text-[var(--c-solid)]">
+        {avsnitt.map((rubrik, i) => (
+          <li key={i} className="text-sm">
+            <a
+              href={`#${rubrikId(rubrik.text)}`}
+              className="text-[var(--c-text)] underline underline-offset-2 hover:no-underline"
+            >
+              {rubrik.text}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
 export function ArticleContent({
   content,
   fontSize = 'normal',
@@ -266,6 +307,7 @@ export function ArticleContent({
 
   return (
     <div className={className}>
+      <Innehallsforteckning block={block} />
       {block.map((b, i) => (
         <ArticleBlockView key={i} block={b} fontSize={fontSize} index={i} />
       ))}
