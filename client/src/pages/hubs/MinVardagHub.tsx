@@ -16,9 +16,9 @@ import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 import { WeeklyReflectionCard } from '@/components/wellness/WeeklyReflectionCard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
@@ -34,16 +34,14 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function MinVardagHub() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('minVardagHub.title', 'Min vardag')}
-        icon={Heart}
-        domain="wellbeing"
-      >
-        <FocusHubWizard
+  return (
+    <FokusVaxel
+      title={t('minVardagHub.title', 'Min vardag')}
+      icon={Heart}
+      domain="wellbeing"
+      guide={<FocusHubWizard
           onExit={leaveWizard}
           pageKey="minVardagHub"
           question={t('focus.minVardagHub.question', 'Vad känns viktigt i din vardag just nu?')}
@@ -55,12 +53,11 @@ export default function MinVardagHub() {
             { id: 'consultant', path: '/my-consultant', label: t('nav.myConsultant', 'Min konsulent'), icon: UserCheck },
             { id: 'profile', path: '/profile', label: t('nav.profile', 'Profil'), icon: User },
           ]}
-        />
-      </PageFocusShell>
-    )
-  }
-
-  return <MinVardagHubInner />
+        />}
+    >
+      <MinVardagHubInner />
+    </FokusVaxel>
+  )
 }
 
 function MinVardagHubInner() {

@@ -13,26 +13,23 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Calendar as CalendarIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusCalendarWizard } from '@/components/focus/pages/FocusCalendarWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 export default function Calendar() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('calendar.title', 'Kalender')}
-        icon={CalendarIcon}
-        domain="wellbeing"
-      >
-        <FocusCalendarWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <CalendarInner />
+  return (
+    <FokusVaxel
+      title={t('calendar.title', 'Kalender')}
+      icon={CalendarIcon}
+      domain="wellbeing"
+      guide={<FocusCalendarWizard onExit={leaveWizard} />}
+    >
+      <CalendarInner />
+    </FokusVaxel>
+  )
 }
 
 function CalendarInner() {

@@ -18,26 +18,23 @@ import { Users, Lightbulb, Bot } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusAITeamWizard } from '@/components/focus/pages/FocusAITeamWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 export default function AITeam() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('aiTeam.title', 'AI-team')}
-        icon={Bot}
-        domain="action"
-      >
-        <FocusAITeamWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <AITeamInner />
+  return (
+    <FokusVaxel
+      title={t('aiTeam.title', 'AI-team')}
+      icon={Bot}
+      domain="action"
+      guide={<FocusAITeamWizard onExit={leaveWizard} />}
+    >
+      <AITeamInner />
+    </FokusVaxel>
+  )
 }
 
 function AITeamInner() {

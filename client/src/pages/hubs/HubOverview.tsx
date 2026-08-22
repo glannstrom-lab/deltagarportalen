@@ -15,10 +15,10 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 import OversiktPanel, { type PanelTillstand } from './OversiktPanel'
 import RollGenvag from './RollGenvag'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 /**
  * Översikt — minimal launchpad.
@@ -55,16 +55,14 @@ const heroVariants = {
 
 export default function HubOverview() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('hubOverview.title', 'Översikt')}
-        icon={LayoutDashboard}
-        domain="action"
-      >
-        <FocusHubWizard
+  return (
+    <FokusVaxel
+      title={t('hubOverview.title', 'Översikt')}
+      icon={LayoutDashboard}
+      domain="action"
+      guide={<FocusHubWizard
           onExit={leaveWizard}
           pageKey="hubOverview"
           question={t('focus.hubOverview.question', 'Vad vill du fokusera på idag?')}
@@ -74,12 +72,11 @@ export default function HubOverview() {
             { id: 'resources', path: '/knowledge-base', label: t('nav.knowledgeBase', 'Kunskapsbas'), icon: BookOpen },
             { id: 'wellbeing', path: '/wellness', label: t('nav.wellness', 'Mående'), icon: Heart },
           ]}
-        />
-      </PageFocusShell>
-    )
-  }
-
-  return <HubOverviewInner />
+        />}
+    >
+      <HubOverviewInner />
+    </FokusVaxel>
+  )
 }
 
 function HubOverviewInner() {

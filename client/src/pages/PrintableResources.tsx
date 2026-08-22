@@ -26,8 +26,8 @@ import {
 } from '@/services/pdfExportService'
 import { cn } from '@/lib/utils'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusPrintWizard } from '@/components/focus/pages/FocusPrintWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 type ResourceType = 'articles' | 'exercises'
 
@@ -42,21 +42,18 @@ const localizeCategory = (slug: string): string =>
 
 export default function PrintableResources() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('printableResources.title', 'Skriv ut')}
-        icon={Printer}
-        domain="info"
-      >
-        <FocusPrintWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <PrintableResourcesInner />
+  return (
+    <FokusVaxel
+      title={t('printableResources.title', 'Skriv ut')}
+      icon={Printer}
+      domain="info"
+      guide={<FocusPrintWizard onExit={leaveWizard} />}
+    >
+      <PrintableResourcesInner />
+    </FokusVaxel>
+  )
 }
 
 function PrintableResourcesInner() {

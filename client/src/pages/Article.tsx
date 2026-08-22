@@ -30,25 +30,22 @@ import { useAchievementTracker } from '../hooks/useAchievementTracker'
 import type { EnhancedArticle } from '../services/articleData'
 import { BookOpen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 export default function Article() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('article.title', 'Artikel')}
-        icon={BookOpen}
-        domain="info"
-      >
-        <ArticleFocusReader onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <ArticleInner />
+  return (
+    <FokusVaxel
+      title={t('article.title', 'Artikel')}
+      icon={BookOpen}
+      domain="info"
+      guide={<ArticleFocusReader onExit={leaveWizard} />}
+    >
+      <ArticleInner />
+    </FokusVaxel>
+  )
 }
 
 function ArticleFocusReader({ onExit }: { onExit: () => void }) {

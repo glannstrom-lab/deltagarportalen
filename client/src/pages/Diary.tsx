@@ -18,8 +18,8 @@ import { Card } from '@/components/ui'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 import { NotebookPen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusDiaryWizard } from '@/components/focus/pages/FocusDiaryWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 // Tab configuration — flikarna själva flyttade in i sidoskenan (steg 5,
 // 2026-08-17). Etiketterna kommer fortfarande härifrån.
@@ -91,21 +91,18 @@ function AchievementBanner() {
 
 export default function Diary() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('diary.title', 'Dagbok')}
-        icon={NotebookPen}
-        domain="wellbeing"
-      >
-        <FocusDiaryWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <DiaryInner />
+  return (
+    <FokusVaxel
+      title={t('diary.title', 'Dagbok')}
+      icon={NotebookPen}
+      domain="wellbeing"
+      guide={<FocusDiaryWizard onExit={leaveWizard} />}
+    >
+      <DiaryInner />
+    </FokusVaxel>
+  )
 }
 
 function DiaryInner() {

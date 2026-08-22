@@ -15,8 +15,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
@@ -32,16 +32,14 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function ResurserHub() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('resurserHub.title', 'Resurser')}
-        icon={BookOpen}
-        domain="info"
-      >
-        <FocusHubWizard
+  return (
+    <FokusVaxel
+      title={t('resurserHub.title', 'Resurser')}
+      icon={BookOpen}
+      domain="info"
+      guide={<FocusHubWizard
           onExit={leaveWizard}
           pageKey="resurserHub"
           question={t('focus.resurserHub.question', 'Vad behöver du läsa eller hitta?')}
@@ -54,12 +52,11 @@ export default function ResurserHub() {
             { id: 'network', path: '/nätverk', label: t('nav.network', 'Nätverk'), icon: Users },
             { id: 'help', path: '/help', label: t('nav.help', 'Hjälp'), icon: LifeBuoy },
           ]}
-        />
-      </PageFocusShell>
-    )
-  }
-
-  return <ResurserHubInner />
+        />}
+    >
+      <ResurserHubInner />
+    </FokusVaxel>
+  )
 }
 
 function ResurserHubInner() {

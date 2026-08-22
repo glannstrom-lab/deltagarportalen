@@ -28,8 +28,8 @@ import { PageLayout } from '@/components/layout/index'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Dumbbell } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusExercisesWizard } from '@/components/focus/pages/FocusExercisesWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
@@ -69,21 +69,18 @@ interface ExerciseAnswer {
 
 export default function Exercises() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('exercises.title', 'Övningar')}
-        icon={Dumbbell}
-        domain="wellbeing"
-      >
-        <FocusExercisesWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <ExercisesInner />
+  return (
+    <FokusVaxel
+      title={t('exercises.title', 'Övningar')}
+      icon={Dumbbell}
+      domain="wellbeing"
+      guide={<FocusExercisesWizard onExit={leaveWizard} />}
+    >
+      <ExercisesInner />
+    </FokusVaxel>
+  )
 }
 
 function ExercisesInner() {

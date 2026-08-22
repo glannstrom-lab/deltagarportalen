@@ -29,17 +29,38 @@
  * ../steps/Focus*.tsx (FocusWelcome, FocusProfile, FocusCV, FocusJobSearch,
  * FocusCoverLetter, FocusComplete).
  *
- * Användning (i en sida):
+ * ANVÄND INTE DEN HÄR KOMPONENTEN DIREKT FRÅN EN SIDA — använd
+ * `FokusVaxel` i samma mapp:
  *
- *   const { isFocusMode, toggleFocusMode } = useFocusMode()
+ *   return (
+ *     <FokusVaxel
+ *       title="Personligt brev"
+ *       icon={Mail}
+ *       domain="activity"
+ *       guide={<FocusCoverLetter onComplete={leaveWizard} ... />}
+ *     >
+ *       <PageLayout ...>...hela normalvyn...</PageLayout>
+ *     </FokusVaxel>
+ *   )
+ *
+ * Exemplet som stod här till 2026-08-22 var det här, och det var fel:
+ *
  *   if (isFocusMode) {
- *     return (
- *       <PageFocusShell title="Personligt brev" icon={Mail} domain="activity">
- *         <FocusCoverLetter onComplete={toggleFocusMode} ... />
- *       </PageFocusShell>
- *     )
+ *     return <PageFocusShell ...><FocusCoverLetter ... /></PageFocusShell>
  *   }
  *   // normalvy nedan — orörd
+ *
+ * Normalvyn är INTE orörd. En tidig `return` avmonterar den, och allt
+ * tillstånd som bodde där — textfält, halvifyllda formulär, vald flik —
+ * försvinner när användaren slår om växeln. Växeln sitter i toppnaven och i
+ * Lugnare läge-panelen, alltså nåbar mitt i ett halvskrivet brev. Det bryter
+ * dessutom mot punkt 8 i kontraktet ovan: användaren ska aldrig tappa arbete.
+ *
+ * Buggen lagades en sida i taget FEM gånger — intervjusimulatorn
+ * (b93be382), lönesidan (00d8be26), Karriär, Kompetensanalysen och
+ * Personligt varumärke — innan någon läste var mönstret kom ifrån. Det kom
+ * härifrån. Grinden `fokuslage-river-inte-sidan.test.ts` fäller nya
+ * förekomster.
  *
  * DESIGN.md-respekt:
  *   - Hub-färg via prop `domain` (sätter data-domain → tokens.css → --c-*)

@@ -12,7 +12,6 @@ import {
 import { PageLayout } from '@/components/layout/index'
 import { Button } from '@/components/ui'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusApplicationsWizard } from '@/components/focus/pages/FocusApplicationsWizard'
 
 // Import application components
@@ -25,6 +24,7 @@ import { AddApplicationModal } from '@/components/applications/AddApplicationMod
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal'
 import type { Application } from '@/types/application.types'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 // Tab definitions with i18n keys
 const applicationTabDefs = [
@@ -59,21 +59,18 @@ function PipelineWrapper({
 
 export default function Applications() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('applications.title', 'Ansökningar')}
-        icon={ClipboardList}
-        domain="activity"
-      >
-        <FocusApplicationsWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <ApplicationsInner />
+  return (
+    <FokusVaxel
+      title={t('applications.title', 'Ansökningar')}
+      icon={ClipboardList}
+      domain="activity"
+      guide={<FocusApplicationsWizard onExit={leaveWizard} />}
+    >
+      <ApplicationsInner />
+    </FokusVaxel>
+  )
 }
 
 function ApplicationsInner() {

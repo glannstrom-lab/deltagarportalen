@@ -17,7 +17,7 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 /**
  * Översikt-historik — full lista över aktiviteter (ingen 5-cap som på Översikt).
@@ -67,21 +67,18 @@ function domainBgClass(d: Domain): string {
 
 export default function HubOverviewHistory() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('hubOverviewHistory.title', 'Aktivitet')}
-        icon={CalendarDays}
-        domain="action"
-      >
-        <HubHistoryFocus onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <HubOverviewHistoryInner />
+  return (
+    <FokusVaxel
+      title={t('hubOverviewHistory.title', 'Aktivitet')}
+      icon={CalendarDays}
+      domain="action"
+      guide={<HubHistoryFocus onExit={leaveWizard} />}
+    >
+      <HubOverviewHistoryInner />
+    </FokusVaxel>
+  )
 }
 
 function HubHistoryFocus({ onExit }: { onExit: () => void }) {

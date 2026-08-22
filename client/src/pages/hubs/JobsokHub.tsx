@@ -18,8 +18,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 const SWEDISH_MONTHS = [
   'januari', 'februari', 'mars', 'april', 'maj', 'juni',
@@ -34,16 +34,14 @@ function shortDate(iso: string | null | undefined, t: TFunction): string | null 
 
 export default function JobsokHub() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('jobsokHub.title', 'Söka jobb')}
-        icon={Briefcase}
-        domain="activity"
-      >
-        <FocusHubWizard
+  return (
+    <FokusVaxel
+      title={t('jobsokHub.title', 'Söka jobb')}
+      icon={Briefcase}
+      domain="activity"
+      guide={<FocusHubWizard
           onExit={leaveWizard}
           pageKey="jobsokHub"
           question={t('focus.jobsokHub.question', 'Vad i jobbsökandet vill du göra?')}
@@ -55,12 +53,11 @@ export default function JobsokHub() {
             { id: 'letter', path: '/cover-letter', label: t('nav.coverLetter', 'Personligt brev'), icon: Mail },
             { id: 'interview', path: '/interview-simulator', label: t('nav.interview', 'Intervju'), icon: Mic },
           ]}
-        />
-      </PageFocusShell>
-    )
-  }
-
-  return <JobsokHubInner />
+        />}
+    >
+      <JobsokHubInner />
+    </FokusVaxel>
+  )
 }
 
 function JobsokHubInner() {

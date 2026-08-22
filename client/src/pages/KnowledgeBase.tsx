@@ -33,9 +33,9 @@ import {
   Languages,
 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusKnowledgeBaseWizard } from '@/components/focus/pages/FocusKnowledgeBaseWizard'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 const TopicsTab = lazy(() => import('@/components/knowledge-base/tabs/TopicsTab'))
 
@@ -89,21 +89,18 @@ function TabLoader({ message }: { message?: string }) {
 
 export default function KnowledgeBase() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('knowledgeBase.title', 'Kunskapsbank')}
-        icon={BookOpen}
-        domain="info"
-      >
-        <FocusKnowledgeBaseWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <KnowledgeBaseInner />
+  return (
+    <FokusVaxel
+      title={t('knowledgeBase.title', 'Kunskapsbank')}
+      icon={BookOpen}
+      domain="info"
+      guide={<FocusKnowledgeBaseWizard onExit={leaveWizard} />}
+    >
+      <KnowledgeBaseInner />
+    </FokusVaxel>
+  )
 }
 
 function KnowledgeBaseInner() {

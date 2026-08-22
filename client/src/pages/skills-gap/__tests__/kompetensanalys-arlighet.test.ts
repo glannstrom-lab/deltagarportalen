@@ -25,8 +25,13 @@ const ROT = join(KLIENT, '..')
 
 const kod = (abs: string) =>
   readFileSync(abs, 'utf-8')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+    // Radkommentarer FÖRST: en rad som "// … /dashboard/*, som App.tsx"
+    // innehåller ett `/*` som aldrig stängs, och blockregexen nedan skulle
+    // då sluka allt fram till nästa `*/` längre ner i filen. I Help.tsx
+    // försvann 1 286 tecken inklusive hela fokusgrenen, och vakten läste en
+    // fil som såg ren ut.
     .replace(/(?<!:)\/\/.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
 
 const src = (rel: string) => kod(join(KLIENT, 'src', rel))
 const repo = (rel: string) => kod(join(ROT, rel))

@@ -50,9 +50,9 @@ import { PageLayout } from '@/components/layout/index'
 import type { PageStat } from '@/components/layout/PageTabs'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusResourcesWizard } from '@/components/focus/pages/FocusResourcesWizard'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 // NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size
 
 // Types
@@ -424,21 +424,18 @@ async function generateCVWord(cvData: CVData) {
 // Main Component
 export default function Resources() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('resources.title', 'Resurser')}
-        icon={Bookmark}
-        domain="info"
-      >
-        <FocusResourcesWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <ResourcesInner />
+  return (
+    <FokusVaxel
+      title={t('resources.title', 'Resurser')}
+      icon={Bookmark}
+      domain="info"
+      guide={<FocusResourcesWizard onExit={leaveWizard} />}
+    >
+      <ResourcesInner />
+    </FokusVaxel>
+  )
 }
 
 function ResourcesInner() {

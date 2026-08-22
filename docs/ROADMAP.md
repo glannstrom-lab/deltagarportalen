@@ -16,6 +16,77 @@
 
 ---
 
+## PB-B åtgärdad 2026-08-22 — fokusläget river inte längre normalvyn
+
+Rotorsaken bakom fem separata lagningar. `PageFocusShell` rekommenderade i sin
+egen docstring det mönster som orsakade buggen:
+
+```
+ *   if (isFocusMode) {
+ *     return <PageFocusShell …><FocusNågotWizard /></PageFocusShell>
+ *   }
+ *   // normalvy nedan — orörd
+```
+
+Normalvyn är inte orörd — en tidig `return` avmonterar den, och allt tillstånd
+som bodde där försvinner. Docstringen stod dessutom tio rader under shellens
+eget kontrakt, punkt 8: *"Spara automatiskt vid varje 'Nästa' så användaren
+aldrig tappar arbete om de avbryter."*
+
+**Uppmätt före åtgärd:** 27 sidor med mönstret, 7 redan lagade en och en
+(intervjusimulatorn `b93be382`, lönesidan `00d8be26`, Karriär, Intresseguiden,
+LinkedIn, Kompetensanalysen, Personligt varumärke).
+
+### Åtgärdat
+
+| # | Vad | Åtgärd |
+|---|---|---|
+| PB-B1 | **Källan.** Docstringens användningsexempel visade det trädrivande mönstret och kallade normalvyn "orörd" | Exemplet visar nu `FokusVaxel`. Det gamla står kvar men märkt som fel, med förklaringen varför |
+| PB-B2 | **Rätt mönster var en refaktorering, fel mönster var fyra rader.** Därför vann fel mönster varje gång | `FokusVaxel` gör det rätta till en inslagning: normalvyn ligger kvar monterad bakom `display: none`, guiden renderas bredvid |
+| PB-B3 | **17 sidor konverterade** — AITeam, Applications, Article, Calendar, Diary, Exercises, ExternalResources, KnowledgeBase, MyConsultant, PrintableResources, Resources och de sex hubbarna | Mekanisk konvertering; 21 av sidorna hade redan ett tunt ytterskal som renderar `<XInner />`, så ändringen är fyra rader per sida |
+| PB-B4 | **Grind med fryst tak.** `client/src/test/fokuslage-river-inte-sidan.test.ts` | Fäller varje NY sida med mönstret. Taket är 12 och ska sänkas. Grinden kräver också att varje kvarvarande rad bär ett **skäl**, och fäller om listan innehåller en sida som redan konverterats — en allowlist som räknar upp lagade sidor gör taket falskt högt |
+
+**Verifierat i webbläsaren, inte bara i typkontrollen:** på fyra konverterade
+sidor (`/ai-team`, `/diary`, `/knowledge-base`, `/resources`) skrevs text i ett
+fält, fokusläget slogs på och av — texten fanns kvar. På `/education`, som
+medvetet står kvar på listan, försvann den. Mätmetoden kan alltså upptäcka
+förlusten, vilket är vad som gör de fyra gröna svaren värda något.
+
+`npm run verify` grön: 139 testfiler, 2 304 tester, typtaket oförändrat 384.
+Grinden mutationstestad: **5 riktade mutationer, 5 rätt hanterade** inklusive
+en positiv kontroll.
+
+### Ett fynd på vägen: vakterna kunde läsa stympad källkod
+
+`kod()`-hjälparen i dagens fyra vaktfiler ströks blockkommentarer **före**
+radkommentarer. En rad som
+
+```
+// UX35: de två första pekade på /dashboard/*, som App.tsx omdirigerar
+```
+
+innehåller ett `/*` som aldrig stängs, och blockregexen slukar då allt fram
+till nästa `*/` längre ner i filen. I `Help.tsx` försvann **1 286 tecken**,
+inklusive hela `if (isFocusMode)`-grenen — vakten läste en fil som såg ren ut.
+
+Kontrollerat: **ingen av dagens vaktade filer innehåller mönstret**, så inget
+guardvärde var falskt. Fällan var armerad, inte utlöst. Ordningen är omkastad i
+alla fem vaktfilerna.
+
+### Kvarstår — 12 sidor, var och en med skäl
+
+Listan står i grindens `KVAR`. Fyra kräver läsning för att guiden tar props som
+kan komma ur sidans tillstånd (`CoverLetterPage`, `CVPage`, `Settings`,
+`Wellness`), sju är monolitiska med flera tidiga returer (`Education`, `Help`,
+`InterviewSimulator`, `JobSearch`, `Network`, `Profile`, `Spontaneous`), och
+`sta/StaParticipant` tillhör en avaktiverad modul som inte monteras.
+
+De med störst förlust är `InterviewSimulator` (1 843 rader, tre fält),
+`JobSearch` (19 useState) och `CoverLetterPage` (renderar `CoverLetterWrite`,
+alltså brevets hela text).
+
+---
+
 ## Genomgång 2026-08-21 (natt II) — Personligt varumärke, fyra granskare
 
 `/personal-brand` och dess fyra flikar granskade i kod och visuellt. Tre granskare
@@ -74,8 +145,9 @@ localStorage, men aldrig att objektet gick att läsa tillbaka.
   `.dark` sätter alla hubbars `--*-solid` till en ljus pastell. Det är ett tokenproblem, inte ett
   sidproblem — jag har lagat det lokalt på de fyra ikonbrickorna men INTE rört den delade
   knappdefinitionen, eftersom det ändrar varje knapp på varje sida. Eget ärende.
-- **PB-B — `PageFocusShell.tsx:34-42` rekommenderar fortfarande det trasiga mönstret i sin egen
-  docstring**, och `grep -rn "if (isFocusMode)" client/src/pages/` ger **28 sidor** som följer
+- ~~**PB-B — `PageFocusShell` rekommenderar det trasiga mönstret i sin egen docstring**~~
+  **✅ ÅTGÄRDAD 2026-08-22** — se avsnittet överst. Docstringen rättad, `FokusVaxel` tillagd,
+  17 sidor konverterade, grind med fryst tak 12. Ursprunglig text:, och `grep -rn "if (isFocusMode)" client/src/pages/` ger **28 sidor** som följer
   den. Fem är lagade en och en. Att laga dem i den takten kommer inte ikapp docstringen — rätta
   källan, och överväg en grind.
 - **PB-C — ett unikt index på `personal_brand_audit(user_id)`** vore den snyggare modellen än

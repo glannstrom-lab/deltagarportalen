@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { ExternalLink, Play, BookOpen, FileText, Users, Building2, GraduationCap, Globe, Briefcase, Scale, Heart, Headphones, Search, Laptop, Rocket, Wrench, Coffee, MessageCircle, Lightbulb, Award, Accessibility, Handshake, MapPin, Clock, Palette, Code, Stethoscope, Baby, UserPlus, Calendar, Languages, Leaf, Shield, Home, RefreshCw, Brain, Sparkles, Target, Landmark, Camera, Gavel, Newspaper, Database, PenTool, Zap, Video, Megaphone, Lock, Coins, Hammer, Train, ShoppingCart } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusExternalResourcesWizard } from '@/components/focus/pages/FocusExternalResourcesWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 interface ExternalResource {
   id: string
@@ -3384,21 +3384,18 @@ function CollapsibleCategory({
 
 export default function ExternalResources() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('externalResources.title', 'Externa resurser')}
-        icon={ExternalLink}
-        domain="info"
-      >
-        <FocusExternalResourcesWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <ExternalResourcesInner />
+  return (
+    <FokusVaxel
+      title={t('externalResources.title', 'Externa resurser')}
+      icon={ExternalLink}
+      domain="info"
+      guide={<FocusExternalResourcesWizard onExit={leaveWizard} />}
+    >
+      <ExternalResourcesInner />
+    </FokusVaxel>
+  )
 }
 
 function ExternalResourcesInner() {

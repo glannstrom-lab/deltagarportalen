@@ -32,8 +32,13 @@ const las = (fil: string) => readFileSync(join(HAR, fil), 'utf-8')
  */
 const kod = (fil: string) =>
   las(fil)
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+    // Radkommentarer FÖRST: en rad som "// … /dashboard/*, som App.tsx"
+    // innehåller ett `/*` som aldrig stängs, och blockregexen nedan skulle
+    // då sluka allt fram till nästa `*/` längre ner i filen. I Help.tsx
+    // försvann 1 286 tecken inklusive hela fokusgrenen, och vakten läste en
+    // fil som såg ren ut.
     .replace(/(?<!:)\/\/.*$/gm, '')
+    .replace(/\/\*[\s\S]*?\*\//g, '')
 
 describe('Arbetsmarknad — etiketterna beskriver det datan faktiskt är', () => {
   const kalla = kod('LaborMarketTab.tsx')

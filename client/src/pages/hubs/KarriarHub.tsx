@@ -14,8 +14,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
@@ -32,16 +32,14 @@ function relativeShort(iso: string | null | undefined, t: TFunction): string | n
 
 export default function KarriarHub() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('karriarHub.title', 'Karriär')}
-        icon={Target}
-        domain="coaching"
-      >
-        <FocusHubWizard
+  return (
+    <FokusVaxel
+      title={t('karriarHub.title', 'Karriär')}
+      icon={Target}
+      domain="coaching"
+      guide={<FocusHubWizard
           onExit={leaveWizard}
           pageKey="karriarHub"
           question={t('focus.karriarHub.question', 'Vad i karriären vill du jobba med?')}
@@ -52,12 +50,11 @@ export default function KarriarHub() {
             { id: 'brand', path: '/personal-brand', label: t('nav.brand', 'Personligt varumärke'), icon: Star },
             { id: 'education', path: '/education', label: t('nav.education', 'Utbildning'), icon: GraduationCap },
           ]}
-        />
-      </PageFocusShell>
-    )
-  }
-
-  return <KarriarHubInner />
+        />}
+    >
+      <KarriarHubInner />
+    </FokusVaxel>
+  )
 }
 
 function KarriarHubInner() {

@@ -38,7 +38,6 @@ import {
   AlertCircle,
 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusMyConsultantWizard } from '@/components/focus/pages/FocusMyConsultantWizard'
 import { supabase } from '@/lib/supabase'
 import { applicationsApi } from '@/services/applicationsApi'
@@ -51,6 +50,7 @@ import { cn } from '@/lib/utils'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
+import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
 // Types
 interface ConsultantInfo {
@@ -686,21 +686,18 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
 // Main Page Component
 export default function MyConsultant() {
   const { t } = useTranslation()
-  const { isFocusMode, leaveWizard } = useFocusMode()
+  const { leaveWizard } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('myConsultant.title', 'Min konsulent')}
-        icon={UserCheck}
-        domain="wellbeing"
-      >
-        <FocusMyConsultantWizard onExit={leaveWizard} />
-      </PageFocusShell>
-    )
-  }
-
-  return <MyConsultantInner />
+  return (
+    <FokusVaxel
+      title={t('myConsultant.title', 'Min konsulent')}
+      icon={UserCheck}
+      domain="wellbeing"
+      guide={<FocusMyConsultantWizard onExit={leaveWizard} />}
+    >
+      <MyConsultantInner />
+    </FokusVaxel>
+  )
 }
 
 function MyConsultantInner() {
