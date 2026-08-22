@@ -26,10 +26,18 @@
 -- Backning: `supabase/backups/2026-08-22-artikelforfattare.json` har slug,
 -- author och author_title för alla 163 rader som de såg ut före körningen.
 
+-- VARNING till nästa läsare: raden `updated_at = updated_at` nedan gjorde
+-- INTE det den ser ut att göra. Tabellen har en BEFORE UPDATE-trigger,
+-- `update_articles_updated_at`, som sätter `now()` oavsett vad satsen säger.
+-- Alla 163 artiklar kom därför att påstå att de uppdaterades 2026-08-22, och
+-- artikelsidan visar `updated_at` som "Uppdaterad {{datum}}" — alltså ett
+-- datum utan underlag, direkt synligt för läsaren. Rättat samma dag av
+-- `20260822_aterstall_updated_at.sql`, som stänger av triggern under
+-- körningen. Ska du röra den här tabellen igen: kontrollera triggern först.
+
 UPDATE articles
 SET author = 'Mikael Glännström',
-    author_title = 'Arbetskonsulent',
-    updated_at = updated_at;   -- rör inte "senast uppdaterad" — texten är oförändrad
+    author_title = 'Arbetskonsulent';
 
 -- Kontroll (ska ge 163 / 1 / 1):
 --   SELECT count(*) AS rader,
