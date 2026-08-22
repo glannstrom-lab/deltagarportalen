@@ -259,11 +259,13 @@ jobs:
           echo "::endgroup::"
 
           if [ $kod -ne 0 ]; then
-            # Annotationer, sa felet gar att lasa utan admin-behorighet.
-            grep -iE "error|failed|cannot|ENOENT|EACCES|Chrome|timeout" lhci-out.txt \
-              | head -n 12 \
-              | while IFS= read -r rad; do echo "::error::lhci: ${rad}"; done
-            echo "::error::lhci avslutade med kod $kod. Filer i .lighthouseci: $(ls .lighthouseci 2>/dev/null | wc -l)"
+            # EN annotation, inte tolv: GitHub visar hogst 10 per steg,
+            # och forra korningens grep matchade "chrome" i
+            # dokumentationslankar sa att sjalva sammanfattningen
+            # trangdes ut. Full utdata ligger i artefakten.
+            antal=$(ls .lighthouseci 2>/dev/null | wc -l)
+            forsta=$(grep -iEm3 "assertion|expected|failure|cannot|ENOENT" lhci-out.txt | tr "\n" " ")
+            echo "::error::lhci exit $kod - filer i .lighthouseci: $antal - forsta felraderna: ${forsta:-inga} - full utdata i artefakten lighthouse-diagnostics"
             exit 1
           fi
         env:

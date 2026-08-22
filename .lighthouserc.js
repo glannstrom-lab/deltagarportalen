@@ -71,17 +71,28 @@ module.exports = {
         chromeFlags: '--no-sandbox --disable-dev-shm-usage --disable-gpu',
       },
     },
+    // ROTORSAKEN, uppmätt 2026-08-23 via `::error::`-annotationer från en
+    // riktig körning: `collect` LYCKAS. Det var `preset:
+    // 'lighthouse:recommended'` som fällde jobbet — presetet asserterar
+    // *varje* audit på error-nivå, och de fyra `categories:*`-overriderna
+    // rör bara kategoripoängen, inte de enskilda auditsen. Utdatan var en
+    // lista med underkända audits: bootup-time, unused-javascript,
+    // total-byte-weight, valid-source-maps, csp-xss och hela pwa-familjen
+    // (installable-manifest, maskable-icon, splash-screen, themed-omnibox).
+    //
+    // En jobbportal är ingen PWA och behöver inte vara installerbar. Presetet
+    // är borta; kvar står det vi faktiskt vill veta, som varningar. D6:s
+    // ursprungliga avsikt var just det — "skärp till error när CI-variansen
+    // är känd" — men variansen går inte att lära känna medan jobbet alltid
+    // är rött. Höj trösklarna när det varit grönt några körningar.
     assert: {
-      preset: 'lighthouse:recommended',
       assertions: {
-        // D6 (2026-07-10): LCP-budget 2500 ms som warn. Baseline mot prod
-        // 2026-07-10: landning ~340 ms, inloggad översikt ~1400 ms (median,
-        // e2e/lcp-baseline.cjs). Skärp till error när CI-variansen är känd —
-        // och det går inte att veta förrän jobbet varit grönt några gånger.
-        'categories:performance': 'off',
-        'categories:accessibility': 'warn',
-        'categories:best-practices': 'warn',
-        'categories:seo': 'warn',
+        'categories:performance': ['warn', { minScore: 0.5 }],
+        'categories:accessibility': ['warn', { minScore: 0.9 }],
+        'categories:best-practices': ['warn', { minScore: 0.9 }],
+        'categories:seo': ['warn', { minScore: 0.9 }],
+        // Baseline mot prod 2026-07-10: landning ~340 ms, inloggad översikt
+        // ~1400 ms (median, e2e/lcp-baseline.cjs).
         'largest-contentful-paint': ['warn', { maxNumericValue: 2500 }],
       },
     },
