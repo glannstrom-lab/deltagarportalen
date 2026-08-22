@@ -40,7 +40,10 @@ const LOGG = path.join(NYA, '_inlagda.json')
 
 const DOLLAR_TAG = '$jobin_ny$'
 const ORD_PER_MINUT = 200
-const FORFATTARE = 'Jobin-redaktionen'
+// En verklig, ansvarig person — inte en redaktion som inte finns.
+// Se supabase/migrations/20260822_artikelforfattare.sql.
+const FORFATTARE = 'Mikael Glännström'
+const FORFATTARTITEL = 'Arbetskonsulent'
 
 // Kategorierna som redan finns i prod. En ny kategori kräver att
 // KnowledgeBase-filtren och guideindexet uppdateras — alltså ett eget beslut.
@@ -269,6 +272,7 @@ const satser = artiklar.map((a) => {
     ['difficulty', m.difficulty ? citera(m.difficulty) : 'NULL'],
     ['energy_level', m.energy_level ? citera(m.energy_level) : 'NULL'],
     ['author', citera(FORFATTARE)],
+    ['author_title', citera(FORFATTARTITEL)],
     ['related_article_slugs', textArray(m.related_article_slugs)],
     ['related_tools', textArray(m.related_tools)],
     ['checklist', jsonb(a.checklist)],

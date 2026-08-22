@@ -1,0 +1,821 @@
+{
+  "kommentar": "Säkerhetskopia av articles.author och articles.author_title före migrationen 20260822_artikelforfattare.sql, som satte samtliga 163 aktiva artiklar till 'Mikael Glännström, Arbetskonsulent'. 123 av namnen nedan var påhittade personer (ROADMAP AR2/KB-A) — kopian finns för att ändringen ska gå att backa, inte för att värdena ska återanvändas.",
+  "tagen": "2026-08-22",
+  "rader": [
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "a-kassa-sa-fungerar-det"
+    },
+    {
+      "author": "Johan Andersson",
+      "author_title": "Tech-rekryterare",
+      "slug": "ai-jobbsokning-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "aktivitetsrapport-guide"
+    },
+    {
+      "author": "Karin Holm",
+      "author_title": "Tillgänglighetsrådgivare",
+      "slug": "anpassningar-arbetsplats"
+    },
+    {
+      "author": "Anna Eriksson",
+      "author_title": "Arbetsrättsjurist",
+      "slug": "anpassningar-arbetsplatsen"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "ansokningsstrategi"
+    },
+    {
+      "author": "Katarina Holm",
+      "author_title": "Handläggare Arbetsförmedlingen",
+      "slug": "anstallningsformer-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "arbetsgivarintyg-och-betyg"
+    },
+    {
+      "author": "Karl Svensson",
+      "author_title": "Arbetsmarknadsanalytiker",
+      "slug": "arbetsmarknadstrender-nu"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "arbetsmiljo-guide"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Organisationspsykolog",
+      "slug": "arbetsmiljo-kultur-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "arbetsprov-och-case"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "arbetspsykologiska-tester"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "arbetstraning-vad-innebar-det"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "ats-optimering"
+    },
+    {
+      "author": "David Eriksson",
+      "author_title": "Rekryteringsteknolog",
+      "slug": "ats-system-guide"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärrådgivare",
+      "slug": "ats-system-tips"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "bakgrundskontroll-och-belastningsregistret"
+    },
+    {
+      "author": "Magnus Ek",
+      "author_title": "Karriärstrateg",
+      "slug": "befordran-guide"
+    },
+    {
+      "author": "Sara Blom",
+      "author_title": "Karriärrådgivare",
+      "slug": "bemanningsforetag-guide"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "branscher-brist"
+    },
+    {
+      "author": "Jonas Andersson",
+      "author_title": "Tech-rekryterare",
+      "slug": "branschguide-it-tech"
+    },
+    {
+      "author": "Maria Lindberg",
+      "author_title": "Branschexpert vård och omsorg",
+      "slug": "branschguide-vard-omsorg"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "bygg-ditt-personliga-varumarke"
+    },
+    {
+      "author": "Johan Berg",
+      "author_title": "Karriärcoach",
+      "slug": "bygga-natverk-introverta"
+    },
+    {
+      "author": "Sara Blom",
+      "author_title": "Karriärrådgivare",
+      "slug": "checklista-ansoka-jobb"
+    },
+    {
+      "author": "Sara Blom",
+      "author_title": "Karriärrådgivare",
+      "slug": "checklista-fore-intervju"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "checklista-innan-ansokan"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "cv-grunder"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "cv-mallar-exempel"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "cv-utan-erfarenhet"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "digital-intervju"
+    },
+    {
+      "author": "Lisa Andersson",
+      "author_title": "Digital marknadsförare",
+      "slug": "digital-narvaro-rensning"
+    },
+    {
+      "author": "Eva Nilsson",
+      "author_title": "Arbetsrättsjurist",
+      "slug": "diskriminering-jobbsokning"
+    },
+    {
+      "author": "Marcus Holm",
+      "author_title": "Remote Work-konsult",
+      "slug": "distansarbete-guide"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "dolda-jobbmarknaden"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "dromjobbsanalys"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "ersattning-under-program"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "etableringsprogrammet"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "facket-ska-jag-ga-med"
+    },
+    {
+      "author": "Sofia Månsson",
+      "author_title": "HR-konsult",
+      "slug": "feedback-efter-avslag"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "folja-upp-din-ansokan"
+    },
+    {
+      "author": "Magnus Ek",
+      "author_title": "Karriärstrateg",
+      "slug": "forsta-90-dagarna"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "forsta-dagen-nytt-jobb"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "forsta-jobbet-efter-studier"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "forsta-veckan-checklista"
+    },
+    {
+      "author": "Erik Svensson",
+      "author_title": "Arbetsmarknadsanalytiker",
+      "slug": "framtidens-jobb"
+    },
+    {
+      "author": "Karin Holm",
+      "author_title": "Tillgänglighetsrådgivare",
+      "slug": "funktionsnedsattning-jobbsokning"
+    },
+    {
+      "author": "Magnus Ek",
+      "author_title": "Karriärstrateg",
+      "slug": "gig-ekonomin"
+    },
+    {
+      "author": "Sofie Lindgren",
+      "author_title": "Digital marknadsförare",
+      "slug": "googla-dig-sjalv"
+    },
+    {
+      "author": "Lisa Andersson",
+      "author_title": "Karriärcoach",
+      "slug": "grupperintervju-guide"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "hantera-avslag"
+    },
+    {
+      "author": "Anna Lindberg",
+      "author_title": "Psykolog",
+      "slug": "hantera-avslag-motivation"
+    },
+    {
+      "author": "Emma Karlsson",
+      "author_title": "Karriärrådgivare",
+      "slug": "hitta-dina-varderingar"
+    },
+    {
+      "author": "Emma Karlsson",
+      "author_title": "Karriärrådgivare",
+      "slug": "hitta-ditt-drommjobb"
+    },
+    {
+      "author": "Anna Lindberg",
+      "author_title": "Psykolog",
+      "slug": "imposter-syndrome"
+    },
+    {
+      "author": "Lisa Andersson",
+      "author_title": "Nätverkscoach",
+      "slug": "informationsintervju-guide"
+    },
+    {
+      "author": "Sara Ekström",
+      "author_title": "Rekryterare",
+      "slug": "intervju-forberedelser"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "intervju-fragor"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "jobbsokar-ordlista"
+    },
+    {
+      "author": "Margareta Holm",
+      "author_title": "Karriärrådgivare för seniorer",
+      "slug": "jobbsokning-50-plus"
+    },
+    {
+      "author": "Anna Lindberg",
+      "author_title": "Psykolog",
+      "slug": "jobbsokning-depression"
+    },
+    {
+      "author": "Emma Karlsson",
+      "author_title": "Tillgänglighetskonsult",
+      "slug": "jobbsokning-funktionsnedsattning"
+    },
+    {
+      "author": "Magnus Ek",
+      "author_title": "Karriärstrateg",
+      "slug": "karriarbyte-guide"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "karriarplanering-guide"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "karriarvaxling-guide"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "komma-igang-intro"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "kompetensinventering-guide"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "kompetensportfolj"
+    },
+    {
+      "author": "Anna Bergström",
+      "author_title": "Karriärcoach",
+      "slug": "kompetensutvardering"
+    },
+    {
+      "author": "Emma Karlsson",
+      "author_title": "Karriärrådgivare",
+      "slug": "kompetensutveckling-guide"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärrådgivare",
+      "slug": "kompetensutveckling-plan"
+    },
+    {
+      "author": "Peter Johansson",
+      "author_title": "Organisationskonsult",
+      "slug": "konflikthantering-arbetsplats"
+    },
+    {
+      "author": "Max Lindberg",
+      "author_title": "Kreativ strateg",
+      "slug": "kreativ-jobbsokning"
+    },
+    {
+      "author": "Eva Nilsson",
+      "author_title": "Arbetsrättsjurist",
+      "slug": "las-anstallningsavtal"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "lasa-arbetsmarknaden"
+    },
+    {
+      "author": "Jobin Team",
+      "author_title": "Lätt svenska-redaktionen",
+      "slug": "latt-svenska-avslag"
+    },
+    {
+      "author": "Jobin Team",
+      "author_title": "Lätt svenska-redaktionen",
+      "slug": "latt-svenska-cv"
+    },
+    {
+      "author": "Jobin Team",
+      "author_title": "Lätt svenska-redaktionen",
+      "slug": "latt-svenska-intervju"
+    },
+    {
+      "author": "Jobin Team",
+      "author_title": "Lätt svenska-redaktionen",
+      "slug": "latt-svenska-personligt-brev"
+    },
+    {
+      "author": "Jobin Team",
+      "author_title": "Lätt svenska-redaktionen",
+      "slug": "latt-svenska-soka-jobb"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lattsvenska-a-kassa"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lattsvenska-anstallningsavtal"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-arbetsformedlingen"
+    },
+    {
+      "author": "Anna Lindberg",
+      "author_title": "Psykolog",
+      "slug": "lattsvenska-avslag"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-cv"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-forsta-jobbet"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-fragor-intervju"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-intervju"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lattsvenska-lon-och-skatt"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-nar-du-blir-sjuk"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lattsvenska-praktik"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lattsvenska-rapportera-till-arbetsformedlingen"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-skriva-mail"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-tips-bra-cv"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "lattsvenska-vad-ar-cv"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "linkedin-optimering"
+    },
+    {
+      "author": "Sofie Lindgren",
+      "author_title": "Digital marknadsförare",
+      "slug": "linkedin-profil-optimering"
+    },
+    {
+      "author": "Katarina Holm",
+      "author_title": "Handläggare Arbetsförmedlingen",
+      "slug": "lon-och-formaner-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "lonebidrag-sa-fungerar-det"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "loneforhandling-guide"
+    },
+    {
+      "author": "Lisa Andersson",
+      "author_title": "Karriärcoach",
+      "slug": "loneforhandling-komplett"
+    },
+    {
+      "author": "Peter Svensson",
+      "author_title": "Karriärrådgivare",
+      "slug": "loneforhandling-tips"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "mental-halsa-guide"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "mental-halsa-jobbsokning"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "mindfulness-stresshantering-jobbsokare"
+    },
+    {
+      "author": "Sara Ekström",
+      "author_title": "Psykolog",
+      "slug": "motivation-jobbsokning"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "motivation-langsiktig"
+    },
+    {
+      "author": "Lisa Andersson",
+      "author_title": "Nätverkscoach",
+      "slug": "natverk-underhall"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "natverka-for-jobb"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "natverksbyggande-guide"
+    },
+    {
+      "author": "Katarina Holm",
+      "author_title": "Handläggare Arbetsförmedlingen",
+      "slug": "nystartsjobb-guide"
+    },
+    {
+      "author": "Erik Svensson",
+      "author_title": "Arbetsmarknadsanalytiker",
+      "slug": "ordlista-jobbsokning"
+    },
+    {
+      "author": "Katarina Holm",
+      "author_title": "Handläggare Arbetsförmedlingen",
+      "slug": "personlig-ekonomi-jobbsokning"
+    },
+    {
+      "author": "Emma Karlsson",
+      "author_title": "Karriärrådgivare",
+      "slug": "personlighetstyper-arbete"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "personlighetstyper-i-arbetslivet"
+    },
+    {
+      "author": "Anna Bergström",
+      "author_title": "Karriärcoach",
+      "slug": "personlighetstyper-jobb"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "personligt-brev"
+    },
+    {
+      "author": "Sara Blom",
+      "author_title": "Karriärrådgivare",
+      "slug": "personligt-brev-mall"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "personligt-varumarke"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärrådgivare",
+      "slug": "portfolio-guide"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "praktik-som-vag-in"
+    },
+    {
+      "author": "Helena Persson",
+      "author_title": "Kommunikationskonsult",
+      "slug": "professionell-kommunikation"
+    },
+    {
+      "author": "Anna Svensson",
+      "author_title": "Arbetsrättsjurist",
+      "slug": "provanstallning-guide"
+    },
+    {
+      "author": "Katarina Holm",
+      "author_title": "Handläggare Arbetsförmedlingen",
+      "slug": "rattigheter-stod"
+    },
+    {
+      "author": "Anders Bergström",
+      "author_title": "Rekryteringsspecialist",
+      "slug": "referenser-guide"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Rekryteringskonsult",
+      "slug": "referenssamtal-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "rekryteringsprocessen-steg-for-steg"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "rusta-och-matcha"
+    },
+    {
+      "author": "Sara Blom",
+      "author_title": "Karriärrådgivare",
+      "slug": "sasongsjobb-guide"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "sfi-och-jobbsokande-samtidigt"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "sius-stod-vid-introduktion"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "sjuklon-karens-och-vab"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "skatt-pa-lon-forsta-jobbet"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "skriva-in-dig-arbetsformedlingen"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "skyddat-arbete-och-samhall"
+    },
+    {
+      "author": "Amanda Lindgren",
+      "author_title": "Digital strateg",
+      "slug": "sociala-medier-jobbsokning"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "sociala-medier-jobsokning"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "sommarjobb-och-extrajobb"
+    },
+    {
+      "author": "Morgan Andersson",
+      "author_title": "Kursledare Steg till arbete",
+      "slug": "sta-fem-faktorer"
+    },
+    {
+      "author": "Morgan Andersson",
+      "author_title": "Kursledare Steg till arbete",
+      "slug": "sta-hard-talk"
+    },
+    {
+      "author": "Morgan Andersson",
+      "author_title": "Kursledare Steg till arbete",
+      "slug": "sta-saga-nej"
+    },
+    {
+      "author": "Morgan Andersson",
+      "author_title": "Kursledare Steg till arbete",
+      "slug": "sta-somn-ostrukturerad"
+    },
+    {
+      "author": "Morgan Andersson",
+      "author_title": "Kursledare Steg till arbete",
+      "slug": "sta-utmattning-recovery"
+    },
+    {
+      "author": "Martin Eriksson",
+      "author_title": "Entreprenör och rådgivare",
+      "slug": "starta-eget-guide"
+    },
+    {
+      "author": null,
+      "author_title": null,
+      "slug": "stresshantering"
+    },
+    {
+      "author": "Anna Lindberg",
+      "author_title": "Psykolog",
+      "slug": "stresshantering-jobbsokning"
+    },
+    {
+      "author": "Erik Svensson",
+      "author_title": "Produktivitetscoach",
+      "slug": "struktur-jobbsokning"
+    },
+    {
+      "author": "Anna Bergström",
+      "author_title": "Karriärcoach",
+      "slug": "styrkor-svagheter"
+    },
+    {
+      "author": "Anders Bergström",
+      "author_title": "Rekryteringsspecialist",
+      "slug": "styrkor-svagheter-intervju"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "svenska-pa-jobbet"
+    },
+    {
+      "author": "Sara Ekström",
+      "author_title": "Rekryterare",
+      "slug": "tackbrev-intervju"
+    },
+    {
+      "author": "Anders Bergström",
+      "author_title": "Rekryteringsspecialist",
+      "slug": "telefonintervju-tips"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "tillbaka-till-jobb-efter-sjukskrivning"
+    },
+    {
+      "author": "Sara Ekström",
+      "author_title": "Rekryterare",
+      "slug": "under-intervjun-tips"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "underhall-kontakter"
+    },
+    {
+      "author": "Maria Lindqvist",
+      "author_title": "Arbetskonsulent",
+      "slug": "upptack-dina-styrkor"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "utlandsk-erfarenhet-i-cv"
+    },
+    {
+      "author": "Jobin-redaktionen",
+      "author_title": null,
+      "slug": "validera-utlandsk-utbildning"
+    },
+    {
+      "author": "Lisa Bergström",
+      "author_title": "Beteendevetare",
+      "slug": "varderingar-i-arbetslivet"
+    },
+    {
+      "author": "Erik Johansson",
+      "author_title": "Karriärcoach",
+      "slug": "varderingar-karriarval"
+    },
+    {
+      "author": "Anders Bergström",
+      "author_title": "Rekryteringsspecialist",
+      "slug": "videointervju-tips"
+    },
+    {
+      "author": "Dr. Maria Eriksson",
+      "author_title": "Arbetsmiljöpsykolog",
+      "slug": "work-life-balance-guide"
+    }
+  ]
+}

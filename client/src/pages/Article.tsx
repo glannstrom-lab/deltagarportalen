@@ -302,15 +302,19 @@ function ArticleInner() {
         </h1>
 
         {/*
-          Utgivare, inte författare — ROADMAP AR2.
+          Bylinen läses ur databasen igen — men databasen är städad.
 
-          Fältet `author` bär i prod 123 påhittade namngivna experter: fem
-          artiklar om ersättningsnivåer signerade "Katarina Holm, Handläggare
-          Arbetsförmedlingen", fem om depression och avslag signerade "Anna
-          Lindberg, Psykolog". Ingen av personerna finns. En byline utan en
-          verklig person bakom sig är ett påstående utan underlag, och det
-          väger tyngst just där myndighets- eller klinikerauktoritet åberopas.
-          Kolumnerna ligger kvar i databasen; UI:t slutar återge dem.
+          Fältet bar till 2026-08-22 **37 olika namn**, varav 36 var påhittade
+          personer: fem artiklar om ersättningsnivåer signerade "Katarina Holm,
+          Handläggare Arbetsförmedlingen", fem om depression och avslag av
+          "Anna Lindberg, Psykolog". Ingen av dem fanns. Migrationen
+          `20260822_artikelforfattare.sql` satte samtliga 163 artiklar till en
+          verklig, ansvarig person (beslut Mikael) — ett namn läsaren kan
+          kontrollera och vända sig till.
+
+          Att läsa fältet i stället för att hårdkoda ett namn är avsiktligt:
+          en framtida artikel av någon annan ska kunna krediteras rätt utan
+          kodändring. `Jobin` står kvar som reserv när fältet är tomt.
 
           Datumet visar `updatedAt`, inte `createdAt`. `created_at` är
           insert-tidpunkten från två seed-körningar — 133 artiklar bär samma
@@ -320,7 +324,8 @@ function ArticleInner() {
         <div className="flex flex-wrap items-center gap-4 text-sm text-stone-600 dark:text-stone-300 mb-6">
           <span className="flex items-center gap-1.5">
             <User size={16} aria-hidden="true" />
-            {t('article.publisher', 'Jobin')}
+            {article.author || t('article.publisher', 'Jobin')}
+            {article.author && article.authorTitle && `, ${article.authorTitle}`}
           </span>
           {article.updatedAt && (
             <span className="flex items-center gap-1.5">

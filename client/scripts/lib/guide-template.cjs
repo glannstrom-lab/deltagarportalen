@@ -370,7 +370,16 @@ function renderGuide(a, relaterade) {
         mainEntityOfPage: url,
         datePublished: (a.updated_at || '').slice(0, 10) || undefined,
         dateModified: (a.updated_at || '').slice(0, 10) || undefined,
-        author: { '@type': 'Organization', name: 'Jobin' },
+        // Författaren är en PERSON, utgivaren är organisationen. Fram till
+        // 2026-08-22 stod Jobin som båda — vilket var rätt så länge
+        // alternativet var de 36 påhittade namnen i `articles.author`, men
+        // fel nu när en verklig person står bakom texterna. Portalen och den
+        // publika guidesidan visar samma byline.
+        author: {
+          '@type': 'Person',
+          name: a.author || 'Jobin',
+          ...(a.author_title ? { jobTitle: a.author_title } : {}),
+        },
         publisher: { '@type': 'Organization', name: 'Jobin', url: SITE },
       },
       {
