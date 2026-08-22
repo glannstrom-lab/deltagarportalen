@@ -625,6 +625,7 @@ export function MyCVs() {
                     <PDFExportButton
                       type="cv"
                       data={cv.data}
+                      versionId={cv.id}
                       filename={`CV_${cv.data?.firstName || t('common.unknown')}_${cv.data?.lastName || ''}.pdf`}
                       variant="light"
                       size="sm"
@@ -729,6 +730,7 @@ export function MyCVs() {
                 <PDFExportButton
                   type="cv"
                   data={previewCV.data}
+                  versionId={previewCV.id}
                   filename={`CV_${previewCV.data?.firstName || 'okänd'}_${previewCV.data?.lastName || ''}.pdf`}
                   variant="primary"
                   size="sm"

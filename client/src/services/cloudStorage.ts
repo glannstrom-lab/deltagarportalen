@@ -206,6 +206,19 @@ export const articleBookmarksApi = {
    * Get bookmarked articles with full article data
    * Returns article objects with title, category, readingTime etc.
    */
+  /**
+   * `category` är artikelns **kategorinyckel** (`articles.category_key`), inte
+   * ett färdigt visningsnamn.
+   *
+   * Fram till 2026-08-22 översatte den här funktionen nyckeln själv, mot en
+   * hårdkodad lista med åtta namn. Prod har tretton kategorier — de fem som
+   * saknades (`getting-started`, `self-awareness`, `digital-presence`,
+   * `accessibility`, `job-market`, `tools`, `easy-swedish`) föll igenom till
+   * `article.category_key`, så bokmärkeskortet visade den råa engelska slugen
+   * `digital-presence` som etikett. Registret ligger numera i
+   * `data/artikelkategorier.ts`; anroparen översätter med `kategoriNamn(t, …)`,
+   * som aldrig returnerar en slug.
+   */
   async getBookmarks(): Promise<Array<{
     id: string
     title: string
@@ -236,26 +249,16 @@ export const articleBookmarksApi = {
       return bookmarkIds.map((id: string) => ({
         id,
         title: id,
-        category: 'Okänd'
+        // Tom nyckel, inte ordet "Okänd" — anroparen översätter till "Övrigt".
+        category: '',
       }))
-    }
-
-    // Map category_key to display names
-    const categoryNames: Record<string, string> = {
-      'cv-writing': 'CV-skrivning',
-      'cover-letter': 'Personligt brev',
-      'interviews': 'Intervju',
-      'job-search': 'Jobbsökning',
-      'networking': 'Nätverkande',
-      'career': 'Karriär',
-      'wellness': 'Välmående',
-      'rights': 'Arbetsrätt',
     }
 
     return (articles || []).map(article => ({
       id: article.slug || article.id,
       title: article.title,
-      category: categoryNames[article.category_key || ''] || article.category_key || 'Artikel',
+      // Nyckeln, inte namnet. Se docstringen ovan.
+      category: article.category_key || '',
       readingTime: article.reading_time,
       summary: article.summary
     }))

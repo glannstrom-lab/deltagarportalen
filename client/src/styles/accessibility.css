@@ -53,6 +53,47 @@ input[type="radio"]:focus-visible {
 }
 
 /* ============================================
+   FOKUSRING I MÖRKT LÄGE — WCAG 1.4.11 (3:1)
+   ============================================
+
+   #7c3aed är rätt val mot ljusa ytor (5,46–5,70:1) men för mörk mot mörka
+   kort. Uppmätt 2026-08-22 på /resources:
+
+     mot bg-stone-800 (jobbkort, dokumentkort)  2,66:1  ✗
+     mot bg-stone-700 (hylsor, inputs)          1,80:1  ✗
+     mot bg-stone-900 (skena, modal)            3,07:1  knappt
+     mot body #0c0a09                           3,47:1  ✓
+
+   Det är alltså inte frånvaron av en fokusring som är problemet — den finns
+   på varje fokuserbart element — utan att den försvinner mot just de ytor
+   där de flesta knapparna sitter. #c4b5fd (violet-300) ger 7,4:1 mot
+   stone-800 och 5,4:1 mot stone-700, och håller mot alla fyra underlagen.
+
+   Global regel, för buggen är global: samma korttyper finns på varje sida. */
+.dark *:focus-visible {
+  outline-color: #c4b5fd;
+}
+
+.dark button:focus-visible,
+.dark [role="button"]:focus-visible {
+  outline-color: #c4b5fd;
+  box-shadow: 0 0 0 4px rgba(196, 181, 253, 0.25);
+}
+
+.dark a:focus-visible {
+  outline-color: #c4b5fd;
+  background-color: rgba(196, 181, 253, 0.12);
+}
+
+.dark input:focus-visible,
+.dark textarea:focus-visible,
+.dark select:focus-visible {
+  outline-color: #c4b5fd;
+  border-color: #c4b5fd;
+  box-shadow: 0 0 0 3px rgba(196, 181, 253, 0.2);
+}
+
+/* ============================================
    SKIP LINKS - WCAG 2.4.1 Bypass Blocks
    ============================================ */
 

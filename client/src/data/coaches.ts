@@ -319,7 +319,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         faqs: [
           {
             question: 'Var hittar jag mina egna saker?',
-            answer: 'Under Dina dokument. Där ligger ditt CV, dina personliga brev, bokmärkta artiklar och filer du laddat upp — allt på ett ställe.',
+            answer: 'Under Dina dokument. Där ligger ditt CV, dina personliga brev, sparade jobb och bokmärkta artiklar — allt på ett ställe.',
           },
         ],
         links: [
@@ -1055,8 +1055,8 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
     byCoach: {
       digitalcoach: {
         tips: [
-          'Här ligger det du sparat i Jobin: CV, brev, jobb, artiklar och filer. Länkar till AF, Försäkringskassan och andra hittar du under Externa resurser.',
-          'Bokmärk en artikel med bokmärkesikonen uppe till höger, så hittar du tillbaka till den här.',
+          'Här ligger det du sparat i Jobin: ditt CV, dina personliga brev, sparade jobb och bokmärkta artiklar. Länkar till AF, Försäkringskassan och andra hittar du under Externa resurser.',
+          'Bokmärk en artikel med bokmärkesikonen i raden ovanför artikeltexten, så hittar du tillbaka till den här.',
         ],
       },
       studievagledare: {

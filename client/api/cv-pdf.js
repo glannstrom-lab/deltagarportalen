@@ -129,9 +129,27 @@ function getCorsHeaders(origin) {
   };
 }
 
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 // Hämta CV via Supabase med användarens Bearer-token. RLS garanterar att
 // användaren bara kan se sitt eget CV.
-async function fetchUserCV(token) {
+//
+// `versionId` (valfritt) hämtar en sparad version ur `cv_versions` i stället
+// för det nuvarande CV:t.
+//
+// Varför servern slår upp versionen själv i stället för att ta emot CV-datan
+// från klienten: `/resources` visade PDF-knappar på varje versionskort, men
+// knappen skickade bara `template` — servern hämtade `cvs`-raden och
+// levererade alltså **dagens** CV under versionens filnamn. Word-knappen
+// bredvid exporterade rätt version, så samma kort gav två olika dokument. Två
+// konton i prod har dessutom versioner men ingen `cvs`-rad; för dem svarade
+// knappen "Inget CV hittades" på ett kort som visade innehåll.
+//
+// Att i stället låta klienten POSTa hela CV:t hade löst det men gjort
+// endpointen till en renderare av godtyckligt klientinnehåll. Ett `versionId`
+// är ett ogenomskinligt id, och `cv_versions` har en enda SELECT-policy
+// (`auth.uid() = user_id`) — ägarskapet avgörs alltså i databasen, inte här.
+async function fetchUserCV(token, versionId) {
   const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const anonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
   if (!supabaseUrl || !anonKey) throw new Error('Supabase env saknas');
@@ -142,6 +160,21 @@ async function fetchUserCV(token) {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
   if (authError || !user) throw new Error('Ogiltig token');
+
+  if (versionId) {
+    const { data: version, error: versionError } = await supabase
+      .from('cv_versions')
+      .select('data')
+      .eq('id', versionId)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (versionError) throw versionError;
+    if (!version || !version.data) throw new Error('Versionen hittades inte');
+    // `cv_versions.data` lagras redan i camelCase (cvApi.saveVersion sparar
+    // klientformen rakt av) — ingen omskrivning behövs här.
+    return version.data;
+  }
 
   const { data, error } = await supabase
     .from('cvs')
@@ -211,6 +244,14 @@ module.exports = async (req, res) => {
 
   // Klienten skickar template + en print-host (för att stödja preview-deploys).
   const template = String(req.body?.template || 'sidebar').slice(0, 50);
+  // Valfritt: en sparad version i stället för det nuvarande CV:t. Formen
+  // valideras här så ett skräpvärde blir 400 i stället för ett tyst fall
+  // tillbaka till fel CV — det senare var precis buggen.
+  const rawVersionId = req.body?.versionId;
+  if (rawVersionId !== undefined && rawVersionId !== null && !UUID.test(String(rawVersionId))) {
+    return res.status(400).json({ error: 'Ogiltigt versionId' });
+  }
+  const versionId = rawVersionId ? String(rawVersionId) : null;
   // Print-URL: Origin används bara om den finns i allowlisten (SSRF-skydd,
   // A11 2026-07-23 — CORS-headers stoppar inte direkta anrop, så en
   // ovaliderad Origin lät anroparen styra vart server-Chromium navigerar).
@@ -220,7 +261,7 @@ module.exports = async (req, res) => {
   let browser = null;
   try {
     // 1. Hämta CV
-    const cv = await fetchUserCV(token);
+    const cv = await fetchUserCV(token, versionId);
 
     // 2. Encoder CV-data → base64
     const cvJson = JSON.stringify(cv);

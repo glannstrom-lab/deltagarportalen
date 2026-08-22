@@ -22,7 +22,7 @@ import type { CVData, JobData } from '@/types/pdf.types';
  * tradeoff (vita band ELLER gleshet ELLER block-i-kanten på sida 2). Detta
  * är samma teknik Resume.io/Kickresume använder i sin paid-tier.
  */
-async function generateServerCV(template: string): Promise<Blob> {
+async function generateServerCV(template: string, versionId?: string): Promise<Blob> {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token
   if (!token) throw new Error('Du måste vara inloggad för att exportera CV.')
@@ -33,7 +33,7 @@ async function generateServerCV(template: string): Promise<Blob> {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
     },
-    body: JSON.stringify({ template }),
+    body: JSON.stringify(versionId ? { template, versionId } : { template }),
   })
 
   if (!res.ok) {
@@ -51,8 +51,26 @@ async function generateServerCV(template: string): Promise<Blob> {
 interface PDFExportButtonProps {
   type: 'cv' | 'job' | 'applications';
   data: CVData | JobData | unknown;
+  /**
+   * Id på en rad i `cv_versions`. Sätt den ALLTID när `data` är en sparad
+   * version i stället för användarens nuvarande CV.
+   *
+   * Utan den skickar knappen bara `template` till `/api/cv-pdf`, och servern
+   * hämtar `cvs`-raden — alltså dagens CV, under versionens filnamn. Buggen
+   * satt i två vyer samtidigt (`/resources` och `/cv/my-cvs`) och märktes inte
+   * eftersom `data` är typad `unknown` här; Word-knappen bredvid exporterade
+   * hela tiden rätt version.
+   */
+  versionId?: string;
+  /**
+   * Knappens text. Utelämnad blir det "Exportera PDF".
+   *
+   * Behövs där knappen sitter i en trång rad — på CV-versionskorten bröts
+   * "Exportera PDF" över två rader och trängde undan Word-knappen bredvid.
+   */
+  label?: string;
   filename?: string;
-  variant?: 'primary' | 'secondary' | 'outline' | 'light';
+  variant?: 'primary' | 'secondary' | 'outline' | 'light' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   showPreview?: boolean;
   className?: string;
@@ -61,6 +79,8 @@ interface PDFExportButtonProps {
 export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   type,
   data,
+  versionId,
+  label,
   filename,
   variant = 'primary',
   size = 'md',
@@ -77,10 +97,21 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: 'bg-primary-600 text-white hover:bg-primary-700',
+    // Sidans hub-färg i stället för primary-600. `bg-primary-600 text-white`
+    // mätte 4,44:1 i ljust och 2,13:1 i MÖRKT läge (#ffffff på #3BC79D) —
+    // båda under AA. `--c-solid` är dokumenterat AA mot vitt i ljust läge, och
+    // `--c-on-solid` är den token som finns just för att mörkerpasteller
+    // kräver mörk text. DESIGN.md §4 vill dessutom ha en hub-färg per sida.
+    primary: 'bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-110',
     secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
     outline: 'border border-stone-300 text-stone-700 bg-white hover:bg-stone-50',
     light: 'bg-white text-indigo-600 hover:bg-indigo-50 font-medium',
+    // Diskret variant som följer temat. `light` och `outline` är hårdkodat
+    // vita och lyser som block på ett mörkt kort; `--c-text` vänder med
+    // temat (7,43:1 mot vitt, 10,15:1 mot stone-800) medan `--c-accent`
+    // är mörk i mörkt läge och därför inte får bära text.
+    ghost:
+      'bg-white dark:bg-stone-800 text-[var(--c-text)] border border-[var(--c-accent)] dark:border-stone-600 hover:bg-[var(--c-bg)] dark:hover:bg-stone-700 font-medium',
   };
 
   const getDefaultFilename = () => {
@@ -140,7 +171,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       setIsGenerating(true);
       try {
         const template = (data as CVData)?.template || 'sidebar';
-        const blob = await generateServerCV(template);
+        const blob = await generateServerCV(template, versionId);
         downloadPDF(blob, finalFilename);
         showToast.success('CV nedladdat.');
       } catch (err) {
@@ -164,7 +195,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       setIsGenerating(true);
       try {
         const template = (data as CVData)?.template || 'sidebar';
-        const blob = await generateServerCV(template);
+        const blob = await generateServerCV(template, versionId);
         previewPDF(blob);
       } catch (err) {
         const msg = err instanceof Error ? err.message : 'Kunde inte generera PDF.';
@@ -204,8 +235,8 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
           sizeClasses[size]
         } ${variantClasses[variant]} ${className}`}
       >
-        <FileDown className="w-4 h-4" />
-        Exportera PDF
+        <FileDown className="w-4 h-4" aria-hidden="true" />
+        {label ?? 'Exportera PDF'}
       </button>
     );
   }
@@ -218,8 +249,8 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
           sizeClasses[size]
         } ${variantClasses[variant]} ${className}`}
       >
-        <FileDown className="w-4 h-4" />
-        Exportera PDF
+        <FileDown className="w-4 h-4" aria-hidden="true" />
+        {label ?? 'Exportera PDF'}
       </button>
 
       {showMenu && (
