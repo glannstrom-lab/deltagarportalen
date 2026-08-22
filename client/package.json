@@ -60,7 +60,7 @@
     "papaparse": "^5.5.3",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^6.2.108",
-    "puppeteer-core": "^25.8.0",
+    "puppeteer-core": "^24.43.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hot-toast": "^2.6.0",
