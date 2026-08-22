@@ -169,11 +169,24 @@ describe('AI-fel syns i stället för att maskeras', () => {
     fireEvent.change(textarea, { target: { value: 'Mitt svar' } })
     fireEvent.click(await screen.findByRole('button', { name: /Nästa fråga/ }))
 
+    // Vänta på det som faktiskt prövas — inte på något annat som råkar
+    // hända ungefär samtidigt.
+    //
+    // Här stod en `waitFor` på att svaret dykt upp i DOM:en, följd av ett
+    // synkront påstående om frågan. Men svarstexten finns i textarean redan
+    // när `fireEvent.change` körts, alltså FÖRE klicket — så `waitFor`
+    // kunde lösa direkt, medan den avvisade AI-promisen ännu inte hunnit
+    // sätta den nya reservfrågan. Utfallet avgjordes av mikrotaskordningen:
+    // grönt på en snabb maskin, rött på en lastad CI-runner (CI 2026-08-22,
+    // `expected 'Berätta om dig själv och din bakgrund' to not deeply equal`
+    // sig själv).
+    //
+    // Feldetekteringen är oförändrad: återinförs buggen — `antalFragor` läst
+    // före ökningen — byts frågan aldrig, och `waitFor` faller på timeout.
     await waitFor(() => {
-      expect(container.textContent).toContain('Mitt svar')
+      expect(fragetext()).not.toEqual(forsta)
     })
-
-    expect(fragetext()).not.toEqual(forsta)
+    expect(container.textContent).toContain('Mitt svar')
   })
 })
 
