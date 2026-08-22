@@ -184,7 +184,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
           </button>
           <button
             onClick={() => setIsEditing(true)}
-            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]"
+            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)]"
           >
             {t('calendar.travel.edit')}
           </button>

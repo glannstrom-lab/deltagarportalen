@@ -544,7 +544,7 @@ export function ATSAnalyzer({
             {showRecruiterView ? t('common.hide', 'Dölj') : t('common.showDetails', 'Visa detaljer')}
           </button>
         </div>
-        <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mb-3">
+        <p className="text-xs text-[var(--c-text)] mb-3">
           {t('cv.ats.analyzer.recruiterTest.description', 'En rekryterare skannar ditt CV på 6 sekunder. Så här ser det ut:')}
         </p>
         <div className="grid grid-cols-2 gap-2 text-sm" role="list" aria-label={t('cv.ats.analyzer.recruiterTest.listLabel', 'Checklista för snabbskanning')}>
@@ -613,7 +613,7 @@ export function ATSAnalyzer({
                 aria-hidden="true"
               />
             </div>
-            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mt-2">
+            <p className="text-xs text-[var(--c-text)] mt-2">
               {scanabilityScore >= 80
                 ? t('cv.ats.analyzer.scanability.excellent', 'Mycket lättskannat CV - rekryterare ser snabbt dina styrkor!')
                 : scanabilityScore >= 60

@@ -57,7 +57,7 @@ export function AILoadingIndicator({
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
         />
       </div>
-      <p className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-accent)]">{displayText}</p>
+      <p className="text-sm font-medium text-[var(--c-text)]">{displayText}</p>
       {subtext && (
         <p className="text-xs text-stone-700 dark:text-stone-400 mt-1">{subtext}</p>
       )}
@@ -108,7 +108,7 @@ export function CollapsibleSection({
             {title}
           </span>
           {badge !== undefined && (
-            <span className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] text-xs rounded-full">
               {badge}
             </span>
           )}

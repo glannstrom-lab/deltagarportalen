@@ -604,7 +604,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
                         className={cn(
                           'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
                           isActive
-                            ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
+                            ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] font-medium'
                             : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                         )}
                       >
@@ -695,7 +695,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           className={cn(
             'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/settings'
-              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
+              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] font-medium'
               : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >
@@ -708,7 +708,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           className={cn(
             'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/help'
-              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
+              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] font-medium'
               : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >

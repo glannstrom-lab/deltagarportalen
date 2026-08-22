@@ -227,7 +227,7 @@ function PersonalityOption({ personality, isSelected, onSelect }: PersonalityOpt
         'px-2 py-2 rounded-lg',
         'transition-colors',
         isSelected
-          ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+          ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
           : 'hover:bg-stone-50 dark:hover:bg-stone-700'
       )}
       role="option"

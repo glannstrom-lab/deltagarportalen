@@ -226,7 +226,7 @@ export function TopBar() {
                 {profile?.profile_image_url ? (
                   <img src={profile.profile_image_url} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-[10px] sm:text-xs font-semibold">
+                  <span className="text-[var(--c-text)] text-[10px] sm:text-xs font-semibold">
                     {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
                   </span>
                 )}
@@ -286,7 +286,7 @@ export function TopBar() {
                           className={cn(
                             'px-3 py-1 text-xs font-medium rounded-full transition-colors',
                             i18n.language === 'sv'
-                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                           )}
                         >
@@ -297,7 +297,7 @@ export function TopBar() {
                           className={cn(
                             'px-3 py-1 text-xs font-medium rounded-full transition-colors',
                             i18n.language === 'en'
-                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                           )}
                         >

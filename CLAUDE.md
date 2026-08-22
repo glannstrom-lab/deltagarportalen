@@ -295,7 +295,7 @@ npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:vercel        # vercel.json-konfigurationen
 npm run lint:links         # döda länkmål i levande kod (C27)
-npm run test:run           # 2 086 tester i 133 filer (~42 s, mätt 2026-08-21)
+npm run test:run           # 2 384 tester i 146 filer (~45 s, mätt 2026-08-22)
 npm run build
 ```
 
@@ -324,28 +324,46 @@ takskript skriver ut det nya talet när skulden minskat.
 > (commit `b93be382`): **6 av 8 jobb gröna** — `Lint & Type Check`, `Coverage`, `Run Tests`,
 > `Build`, båda e2e-jobben. **Två röda:**
 >
-> · **`Lighthouse CI`**, steg "Run Lighthouse CI". Rotorsaken är fastställd och är inte den som
->   stod här: `ci.yml:238-239` skickar `--collect.staticDistDir` som **CLI-flagga**, vilket får
->   lhci att ignorera `.lighthouserc.js:22`s `url:`-lista helt och bara auditera `index.html`.
->   Fixen från 12 augusti kunde därför aldrig verka, oavsett vilka filer som ligger i `dist/`.
->   Se ROADMAP DR4.
+> · **`Security Scan`** — **åtgärdad 2026-08-22 (DR6).** Jobbet hade fällt i minst åtta
+>   körningar i rad på tre högallvarliga sårbarheter i `extract-zip` → `@puppeteer/browsers`
+>   → `puppeteer-core` (GHSA-jmr9-qjv8-65gv, symlänk-traversering). Det finns ingen lagad
+>   `extract-zip`, så enda vägen var `puppeteer-core` 24 → 25 — en brytande major på
+>   CV-PDF-renderaren.
 >
-> · **`Security Scan`**, steg "Run npm audit (production dependencies)" — **rättat 2026-08-19.**
->   Rutan sa tidigare att jobbet var grönt och räknade upp det bland de gröna. Det stämmer inte:
->   det har fällt i **minst åtta körningar i rad**, alltså även vid mätningen 17 augusti som
->   påståendet byggde på. Kontrollera själv med
->   `curl -sS ".../actions/workflows/<id>/runs?branch=main"` och slå upp jobbet per körning —
->   en enskild körnings sammanfattning räcker inte, jobbnamnen måste läsas ut.
+>   Gjord och verifierad: `npm audit --omit=dev --audit-level=high` i `client/` ger nu
+>   **0 sårbarheter** (repo-roten likaså, efter `npm audit fix` som lyfte `ws` och
+>   `lighthouse` 13.3.0 → 13.4.1). Uppgraderingen är röktestad mot en riktig Chromium med
+>   `node e2e/cv-pdf-puppeteer-rok.cjs`, som kör exakt de puppeteer-anrop `cv-pdf.js` gör:
+>   samma PDF som före, 111 995 byte, en sida, rätt innehåll.
 >
->   Orsaken är tre högallvarliga sårbarheter i `extract-zip` → `@puppeteer/browsers` →
->   `puppeteer-core` (GHSA-jmr9-qjv8-65gv, symlänk-traversering). **Det finns ingen lagad
->   version av `extract-zip`** — 2.0.1 är både senaste och den flaggade — så enda vägen är
->   `puppeteer-core` 24 → 25, en brytande uppgradering av CV-PDF-renderaren.
+>   **Följdkrav:** `puppeteer-core@25` kräver **Node ≥ 22.12**. Därför står numera
+>   `"engines": { "node": "22.x" }` i `client/package.json` — det är den raden som avgör
+>   Vercels runtime, och utan den var runtimen ett antagande. `node-version` i båda
+>   workflowarna är lyft 20 → 22 av samma skäl (och GitHub varnade redan för att 20 är
+>   avvecklat). Sänk inte tillbaka någon av dem utan att först sänka `puppeteer-core`.
 >
->   Praktiskt är kodvägen sannolikt inte nåbar: `client/api/cv-pdf.js` skickar **alltid** en
->   explicit `executablePath` (`@sparticuz/chromium` i prod, detekterad lokal Chrome i dev), så
->   `@puppeteer/browsers`' nedladdare — den enda anroparen av `extract-zip` — körs aldrig.
->   Grinden kan inte veta det. Beslutet är Mikaels; se ROADMAP DR6.
+> · **`Lighthouse CI`** — **fortfarande rött, och orsaken är INTE fastställd.** Här stod till
+>   2026-08-22 att `--collect.staticDistDir` som CLI-flagga fick lhci att ignorera
+>   `.lighthouserc.js`s `url:`-lista. **Det stämmer inte.** Uppmätt genom att köra exakt
+>   CI:s flaggsats lokalt: healthcheck passerar (`✅ Configuration file found`), och
+>   körningen startar på listans **första** URL — inte på `guider/a-kassa.../index.html`
+>   som autodiscovery i bokstavsordning hade gett. Rc-filen läses alltså och gäller.
+>
+>   Vad som återstår att veta: jobbet faller med enda spåret "No files were found with the
+>   provided path: .lighthouseci", alltså att `collect` dog innan något skrevs. Det gick
+>   **inte** att reproducera lokalt — på Windows faller körningen på ett `EPERM` när
+>   chrome-launcher städar sin temp-katalog, ett plattformsfel som inte finns på Ubuntu.
+>   Rapporten som ändå producerades hade `runtimeError: false`, så mätningen i sig fungerar.
+>   `@lhci/cli` saknar try/catch i collect-loopen, så vilken som helst nollskild exitkod från
+>   barnprocessen — även ett städningsfel efter en lyckad mätning — ger exakt det här
+>   symptomet. Därför har det tagit fem månader.
+>
+>   Gjort 2026-08-22: all konfiguration flyttad från tio CLI-flaggor till `.lighthouserc.js`
+>   (en sanning i stället för två som skuggade varandra), `chromeFlags` med
+>   `--no-sandbox --disable-dev-shm-usage` tillagda — GitHub-runnerns `/dev/shm` är 64 MB och
+>   det är den mest sannolika Ubuntu-orsaken, men det är en **hypotes, inte en mätning** — och
+>   steget skriver numera ut innehållet i `.lighthouseci/` innan det faller, så nästa körning
+>   lämnar något att läsa. Se ROADMAP DR4.
 >
 > Historiken bakom rutan, för sammanhang: fram till 2026-08-09 hade CI **aldrig** varit grön på
 > `main` — 687 körningar sedan 2 april, noll lyckade. Felet var att sju testfiler kraschade vid

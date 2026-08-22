@@ -113,7 +113,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium disabled:opacity-50"
+          className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium disabled:opacity-50"
         >
           {displayImage ? t('profile.imageUpload.changeImage') : t('common.upload')}
         </button>

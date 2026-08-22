@@ -395,7 +395,7 @@ function InlineMarkdown({ text }: { text: string }) {
           className={cn(
             'px-1.5 py-0.5 rounded-md',
             'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
-            'text-[var(--c-text)] dark:text-[var(--c-accent)]',
+            'text-[var(--c-text)]',
             'text-[13px] font-mono font-medium'
           )}
         >
@@ -430,7 +430,7 @@ function InlineMarkdown({ text }: { text: string }) {
             className={cn(
               'inline-flex items-center gap-0.5',
               'text-[var(--c-text)] dark:text-[var(--c-solid)]',
-              'hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]',
+              'hover:text-[var(--c-text)]',
               'underline decoration-[var(--c-accent)] dark:decoration-[var(--c-solid)]',
               'underline-offset-2 hover:decoration-[var(--c-solid)]',
               'transition-colors'
@@ -471,7 +471,7 @@ function processInlineCode(text: string, startKey: number): (string | JSX.Elemen
           className={cn(
             'px-1.5 py-0.5 rounded-md',
             'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
-            'text-[var(--c-text)] dark:text-[var(--c-accent)]',
+            'text-[var(--c-text)]',
             'text-[13px] font-mono font-medium'
           )}
         >

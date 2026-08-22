@@ -254,7 +254,7 @@ export function CompanyAnalysisPanel({
                     {result.recruitmentNeeds.roles.map((role, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs rounded-full"
+                        className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] text-xs rounded-full"
                       >
                         {role}
                       </span>

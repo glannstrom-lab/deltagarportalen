@@ -875,7 +875,7 @@ function ExercisesInner() {
             <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5" />
             <div className="flex-1">
               <h3 className="font-medium text-[var(--c-text)] dark:text-white">Relaterade artiklar</h3>
-              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1 mb-3">
+              <p className="text-sm text-[var(--c-text)] mt-1 mb-3">
                 Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
               </p>
               <div className="space-y-2">
@@ -892,7 +892,7 @@ function ExercisesInner() {
               </div>
               <Link
                 to="/knowledge-base"
-                className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] mt-3 font-medium"
+                className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] mt-3 font-medium"
               >
                 Se alla artiklar
                 <ArrowRight className="w-4 h-4" />

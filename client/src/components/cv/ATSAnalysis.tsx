@@ -457,7 +457,7 @@ export function ATSAnalysis() {
                         <div className="mt-3">
                           <button
                             onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
-                            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium flex items-center gap-1"
+                            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium flex items-center gap-1"
                           >
                             {showDetails === check.id ? t('cv.ats.hideTips') : t('cv.ats.showTips')}
                             <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
@@ -467,7 +467,7 @@ export function ATSAnalysis() {
                             <div className="mt-3 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl">
                               <ul className="space-y-2">
                                 {check.tips.map((tip, i) => (
-                                  <li key={i} className="flex items-start gap-2 text-sm text-[var(--c-text)] dark:text-[var(--c-accent)]">
+                                  <li key={i} className="flex items-start gap-2 text-sm text-[var(--c-text)]">
                                     <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                     {tip}
                                   </li>

@@ -117,7 +117,7 @@ export function CalendarSync({
       case 'medium':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
       case 'low':
-        return 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+        return 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
     }
   }
 

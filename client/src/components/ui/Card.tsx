@@ -346,7 +346,7 @@ export function ActionCard({
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{title}</h3>
             {badge && (
-              <span className="px-1.5 sm:px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] text-[10px] sm:text-xs font-medium rounded-full">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] text-[10px] sm:text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}

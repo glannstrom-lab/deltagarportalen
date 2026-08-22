@@ -67,7 +67,7 @@ export function TagInput({
 
   const colorClasses = {
     teal: {
-      tag: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-accent)] border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
+      tag: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
       tagHover: 'hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-solid)]',
       button: 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] focus:ring-[var(--c-solid)]',
       focus: 'focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)]',

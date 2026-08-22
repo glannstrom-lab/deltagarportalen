@@ -185,7 +185,7 @@ function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
       className={cn(
         'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
         active
-          ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+          ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)]'
           : 'text-stone-600 dark:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700'
       )}
       aria-pressed={active}
@@ -333,7 +333,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium"
+                    className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] font-medium"
                   >
                     Markera alla som lästa
                   </button>

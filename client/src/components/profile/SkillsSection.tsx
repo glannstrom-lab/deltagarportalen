@@ -153,7 +153,7 @@ export function SkillsSection({ className }: Props) {
         <button
           onClick={handleImportFromCV}
           disabled={importing}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-accent)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-lg hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/60 transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--c-text)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-lg hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/60 transition-colors disabled:opacity-50"
         >
           {importing ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />

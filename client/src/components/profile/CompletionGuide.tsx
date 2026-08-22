@@ -149,7 +149,7 @@ export function CompletionGuide({
       {/* Progress overview */}
       <div className="p-4 bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-[var(--c-text)] dark:text-[var(--c-accent)]">
+          <span className="font-semibold text-[var(--c-text)]">
             {t('profile.completionGuide.title')}
           </span>
           <span className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">

@@ -116,7 +116,7 @@ export function ChipSelect({
                 'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50 focus:ring-offset-1',
                 size === 'sm' ? 'px-2.5 py-1 text-xs min-h-[32px]' : 'px-3 py-1.5 text-sm min-h-[40px]',
                 checked
-                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]'
+                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 text-[var(--c-text)]'
                   : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300',
                 !disabled && !checked && 'hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30',
                 disabled && 'opacity-50 cursor-not-allowed'

@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -99,7 +99,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -128,7 +128,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -183,7 +183,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -217,7 +217,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -230,21 +230,28 @@ jobs:
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.13.x
 
+      # DR4 (2026-08-22): flaggorna låg tidigare här — tio stycken som
+      # dubblerade och skuggade `.lighthouserc.js`, så ingen kunde läsa ut
+      # vad som faktiskt gällde. All konfiguration bor nu i rc-filen; det
+      # här steget kör den och inget annat.
+      #
+      # Diagnostiken: jobbet har fallit sedan 2 april med enda spåret "No
+      # files were found with the provided path: .lighthouseci", alltså att
+      # collect dog innan något skrevs. `@lhci/cli` saknar try/catch i sin
+      # collect-loop, så orsaken syns aldrig i loggen. Nu skrivs innehållet
+      # i katalogen ut innan steget faller.
       - name: Run Lighthouse CI
-        # D6 (2026-07-10): LCP-budget 2500 ms som warn. Baseline mot prod
-        # 2026-07-10: landning ~340 ms, inloggad översikt ~1400 ms (median,
-        # e2e/lcp-baseline.cjs). Skärp till error när CI-variansen är känd.
         run: |
-          lhci autorun \
-            --collect.staticDistDir=./client/dist \
-            --collect.numberOfRuns=3 \
-            --assert.preset=lighthouse:recommended \
-            --assert.assertions.categories:performance=off \
-            --assert.assertions.largest-contentful-paint="warn:{\"maxNumericValue\":2500}" \
-            --assert.assertions.categories:accessibility=warn \
-            --assert.assertions.categories:best-practices=warn \
-            --assert.assertions.categories:seo=warn \
-            --upload.target=temporary-public-storage
+          lhci healthcheck --fatal || true
+          lhci autorun || {
+            echo "::group::.lighthouseci efter misslyckad koerning"
+            ls -la .lighthouseci 2>/dev/null || echo "(katalogen finns inte)"
+            for f in .lighthouseci/*.log; do
+              [ -f "$f" ] && { echo "--- $f"; tail -n 80 "$f"; }
+            done
+            echo "::endgroup::"
+            exit 1
+          }
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
@@ -268,7 +275,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -314,7 +321,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 
@@ -361,7 +368,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: client/package-lock.json
 

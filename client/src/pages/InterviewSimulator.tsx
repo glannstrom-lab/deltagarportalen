@@ -1527,7 +1527,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
                   {/* Expanderbar feedback */}
                   <button
                     onClick={() => setExpandedFeedback(expandedFeedback === index ? null : index)}
-                    className="flex items-center gap-2 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] transition font-medium"
+                    className="flex items-center gap-2 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] transition font-medium"
                     aria-expanded={expandedFeedback === index}
                     aria-controls={`feedback-${index}`}
                   >

@@ -197,7 +197,7 @@ function EducationCard({ education }: { education: Education }) {
               href={lank}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] transition-colors"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--c-solid)] hover:text-[var(--c-text)] transition-colors"
               aria-label={t('education.readMoreAbout', { title: education.title })}
             >
               {t('education.readMore')}

@@ -25,7 +25,7 @@ const eventTypeConfigs = [
   { value: 'reminder', labelKey: 'calendar.eventTypes.reminder', color: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300' },
   { value: 'task', labelKey: 'calendar.eventTypes.task', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' },
   { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
-  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/30 dark:text-[var(--c-accent)]' },
+  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/30' },
 ]
 
 export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle, isSaving = false }: EventModalProps) {
@@ -328,7 +328,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Linked job */}
               {linkedJobTitle && (
                 <div className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] flex items-center gap-2">
+                  <p className="text-sm text-[var(--c-text)] flex items-center gap-2">
                     <Link2 size={14} />
                     {t('calendar.modal.linkedTo')}: <strong>{linkedJobTitle}</strong>
                   </p>

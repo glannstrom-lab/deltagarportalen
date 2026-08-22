@@ -17,7 +17,7 @@ export const TAG_COLOR_CLASSES: Record<string, string> = {
   amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 ring-amber-500',
   rose: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 ring-rose-500',
   emerald: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 ring-emerald-500',
-  teal: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-accent)] ring-[var(--c-solid)]',
+  teal: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 ring-[var(--c-solid)]',
   blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 ring-blue-500',
   orange: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 ring-orange-500',
 }
