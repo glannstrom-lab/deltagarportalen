@@ -336,34 +336,61 @@ takskript skriver ut det nya talet när skulden minskat.
 >   `node e2e/cv-pdf-puppeteer-rok.cjs`, som kör exakt de puppeteer-anrop `cv-pdf.js` gör:
 >   samma PDF som före, 111 995 byte, en sida, rätt innehåll.
 >
->   **Följdkrav:** `puppeteer-core@25` kräver **Node ≥ 22.12**. Därför står numera
->   `"engines": { "node": "22.x" }` i `client/package.json` — det är den raden som avgör
->   Vercels runtime, och utan den var runtimen ett antagande. `node-version` i båda
->   workflowarna är lyft 20 → 22 av samma skäl (och GitHub varnade redan för att 20 är
->   avvecklat). Sänk inte tillbaka någon av dem utan att först sänka `puppeteer-core`.
+>   **⚠️ Uppgraderingen tog ner CV-exporten i prod i cirka 45 minuter innan den satt.**
+>   `puppeteer-core@25` är ESM-only (`"type": "module"`), och `client/api/cv-pdf.js` gjorde
+>   `require('puppeteer-core')` på modulnivå. Funktionen kraschade vid **laddning** —
+>   `FUNCTION_INVOCATION_FAILED`, även på den rena valideringsvägen som svarar 400 långt
+>   före all puppeteer-användning. Att `/api/ai` och `/api/upload-image` samtidigt svarade
+>   401 var det som pekade ut modulladdningen.
 >
-> · **`Lighthouse CI`** — **fortfarande rött, och orsaken är INTE fastställd.** Här stod till
->   2026-08-22 att `--collect.staticDistDir` som CLI-flagga fick lhci att ignorera
->   `.lighthouserc.js`s `url:`-lista. **Det stämmer inte.** Uppmätt genom att köra exakt
->   CI:s flaggsats lokalt: healthcheck passerar (`✅ Configuration file found`), och
->   körningen startar på listans **första** URL — inte på `guider/a-kassa.../index.html`
->   som autodiscovery i bokstavsordning hade gett. Rc-filen läses alltså och gäller.
+>   **Fixen: `await import('puppeteer-core')` inne i handlern.** Dynamisk import fungerar
+>   från CJS mot både CJS och ESM. Verifierat i prod med både v24 och v25 — samma PDF,
+>   37 950 byte.
 >
->   Vad som återstår att veta: jobbet faller med enda spåret "No files were found with the
->   provided path: .lighthouseci", alltså att `collect` dog innan något skrevs. Det gick
->   **inte** att reproducera lokalt — på Windows faller körningen på ett `EPERM` när
->   chrome-launcher städar sin temp-katalog, ett plattformsfel som inte finns på Ubuntu.
->   Rapporten som ändå producerades hade `runtimeError: false`, så mätningen i sig fungerar.
->   `@lhci/cli` saknar try/catch i collect-loopen, så vilken som helst nollskild exitkod från
->   barnprocessen — även ett städningsfel efter en lyckad mätning — ger exakt det här
->   symptomet. Därför har det tagit fem månader.
+>   **Två saker jag först påstod och som var fel:**
+>   1. *"Vercel kör Node < 22.12, därför faller `require(esm)`."* Nej. Funktionen fick
+>      rapportera `process.version` på en autentiserad felväg: **v24.18.1**, där
+>      `require(esm)` fungerar. Kvarstående förklaring är Vercels bundling av en ESM-only
+>      modul som `require`:as från CJS.
+>   2. *"`engines` i `client/package.json` avgör Vercels runtime."* Nej. Pinnen sa `22.x`
+>      och funktionen körde ändå 24. **Runtimen sätts i Vercels projektinställningar, inte
+>      i package.json.** Fältet står nu som `">=22.12"` — ett ärligt golv för npm och för
+>      den som läser, inte en kontroll över Vercel.
 >
->   Gjort 2026-08-22: all konfiguration flyttad från tio CLI-flaggor till `.lighthouserc.js`
->   (en sanning i stället för två som skuggade varandra), `chromeFlags` med
->   `--no-sandbox --disable-dev-shm-usage` tillagda — GitHub-runnerns `/dev/shm` är 64 MB och
->   det är den mest sannolika Ubuntu-orsaken, men det är en **hypotes, inte en mätning** — och
->   steget skriver numera ut innehållet i `.lighthouseci/` innan det faller, så nästa körning
->   lämnar något att läsa. Se ROADMAP DR4.
+>   **Regeln som följer:** ett röktest i fel runtime bevisar ingenting om rätt runtime.
+>   `node e2e/cv-pdf-puppeteer-rok.cjs` kör mot din lokala Node och Chrome;
+>   `node e2e/cv-pdf-prod-rok.cjs` kör mot skarp drift. Det andra är det som räknas — kör
+>   det efter varje ändring som rör den här funktionen.
+>
+>   `node-version` i båda workflowarna är lyft 20 → 22 (GitHub varnade redan för att 20 är
+>   avvecklat). Det påverkar CI, inte Vercel.
+>
+> · **`Lighthouse CI`** — **åtgärdad 2026-08-23 (DR4). Rotorsaken var `assert`, inte `collect`.**
+>
+>   Två diagnoser stod här före denna och båda var fel. Först: att
+>   `--collect.staticDistDir` som CLI-flagga skulle få lhci att ignorera `.lighthouserc.js`s
+>   `url:`-lista — motbevisat genom att köra flaggsatsen lokalt (healthcheck passerar,
+>   körningen startar på listans första URL). Sedan: att Chrome kraschade på runnerns
+>   64 MB `/dev/shm` — rimligt, men inte det.
+>
+>   Vad som avgjorde: steget skriver numera sin utdata som `::error::`-rader. Jobbloggen
+>   kräver admin-behörighet för att hämta via API:t, medan **annotationer går att läsa
+>   publikt** via `/check-runs`. Den ändringen ensam gjorde ett fem månader gammalt
+>   osynligt fel läsbart på en körning — och utdatan var `lhci assert` som räknade upp
+>   underkända audits (`bootup-time`, `unused-javascript`, `total-byte-weight`,
+>   `valid-source-maps`, `csp-xss`, hela pwa-familjen). `collect` hade lyckats hela tiden.
+>
+>   Felet var `preset: 'lighthouse:recommended'`, som asserterar **varje** audit på
+>   error-nivå. De fyra `categories:*`-overriderna rörde bara kategoripoängen, inte de
+>   enskilda auditsen. Presetet är borta; kvar står performance ≥ 0,5,
+>   accessibility/best-practices/seo ≥ 0,9 och LCP ≤ 2500 ms — som **varningar**, vilket var
+>   D6:s ursprungliga avsikt. En jobbportal är ingen PWA och behöver inte vara installerbar.
+>
+>   **Lärdomen är inte om Lighthouse.** Ett CI-fel vars logg kräver behörighet du inte har
+>   är ett osynligt fel. Skriv diagnostik som `::error::` — då kan vem som helst läsa den.
+>
+>   **CI är 8 av 8 grön sedan `e86c5b37`.** Höj Lighthouse-trösklarna till `error` först när
+>   det stått grönt några körningar och variansen är känd.
 >
 > Historiken bakom rutan, för sammanhang: fram till 2026-08-09 hade CI **aldrig** varit grön på
 > `main` — 687 körningar sedan 2 april, noll lyckade. Felet var att sju testfiler kraschade vid

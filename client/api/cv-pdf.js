@@ -23,19 +23,27 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
-// DYNAMISK import, inte `require`. Bakgrunden ar en nedtid jag orsakade
-// 2026-08-22: uppgraderingen till `puppeteer-core@25` gick igenom lokalt men
-// tog ner `/api/cv-pdf` i prod, eftersom v25 ar ESM-only (`"type": "module"`)
-// och `require()` av en ESM-modul bara fungerar pa Node >= 22.12. Funktionen
-// kraschade vid MODULLADDNING, alltsa innan en enda rad av den har filen
-// kordes — aven den rena valideringsvagen som svarar 400 gav 500.
+// DYNAMISK import, inte `require`. RÖR INTE.
 //
-// Rotestet lokalt sag inte detta: min maskin kor Node 24. Ett test i fel
-// runtime bevisar ingenting om ratt runtime.
+// `puppeteer-core@25` ar ESM-only (`"type": "module"`). Med
+// `require('puppeteer-core')` pa modulniva kraschade hela funktionen vid
+// LADDNING i prod 2026-08-22 — FUNCTION_INVOCATION_FAILED, aven pa den rena
+// valideringsvagen som svarar 400 langt fore all puppeteer-anvandning.
+// CV-exporten lag nere i cirka 45 minuter.
 //
-// `await import()` fungerar fran CJS mot bade CJS och ESM, oavsett
-// Node-version, och gor filen okanslig for vilken modultyp puppeteer valjer
-// harnast. `.default ?? modul` tacker bada formerna.
+// Min forsta forklaring var att Vercel korde Node < 22.12, dar `require(esm)`
+// inte ar tillatet. **Den var fel.** Funktionen fick rapportera sin egen
+// runtime pa en autentiserad felvag: **v24.18.1**, dar `require(esm)`
+// fungerar utmarkt. Det som aterstar som forklaring ar Vercels bundling av
+// en ESM-only modul som `require`:as fran CJS.
+//
+// Notera ocksa att `"engines"` i `client/package.json` INTE styr Vercels
+// runtime — pinnen sa `22.x` och funktionen korde anda 24. Runtimen sätts i
+// Vercels projektinstallningar.
+//
+// `await import()` fungerar fran CJS mot bade CJS och ESM oavsett allt detta,
+// och gor filen okanslig for vilken modultyp puppeteer valjer harnast.
+// Verifierat i prod med bade v24 och v25: samma PDF, 37 950 byte.
 let puppeteerCache = null;
 async function laddaPuppeteer() {
   if (!puppeteerCache) {
@@ -269,11 +277,7 @@ module.exports = async (req, res) => {
   // tillbaka till fel CV — det senare var precis buggen.
   const rawVersionId = req.body?.versionId;
   if (rawVersionId !== undefined && rawVersionId !== null && !UUID.test(String(rawVersionId))) {
-    // `runtime` ar en avsiktlig diagnostik pa en AUTENTISERAD felvag.
-    // Vercels Node-version gar inte att lasa utifran, och just den avgor om
-    // `puppeteer-core@25` (kraver >= 22.12) kan tas i bruk — se DR6. Ta bort
-    // raden nar den fragan ar besvarad.
-    return res.status(400).json({ error: 'Ogiltigt versionId', runtime: process.version });
+    return res.status(400).json({ error: 'Ogiltigt versionId' });
   }
   const versionId = rawVersionId ? String(rawVersionId) : null;
   // Print-URL: Origin används bara om den finns i allowlisten (SSRF-skydd,
