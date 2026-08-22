@@ -23,7 +23,27 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
-const puppeteer = require('puppeteer-core');
+// DYNAMISK import, inte `require`. Bakgrunden ar en nedtid jag orsakade
+// 2026-08-22: uppgraderingen till `puppeteer-core@25` gick igenom lokalt men
+// tog ner `/api/cv-pdf` i prod, eftersom v25 ar ESM-only (`"type": "module"`)
+// och `require()` av en ESM-modul bara fungerar pa Node >= 22.12. Funktionen
+// kraschade vid MODULLADDNING, alltsa innan en enda rad av den har filen
+// kordes — aven den rena valideringsvagen som svarar 400 gav 500.
+//
+// Rotestet lokalt sag inte detta: min maskin kor Node 24. Ett test i fel
+// runtime bevisar ingenting om ratt runtime.
+//
+// `await import()` fungerar fran CJS mot bade CJS och ESM, oavsett
+// Node-version, och gor filen okanslig for vilken modultyp puppeteer valjer
+// harnast. `.default ?? modul` tacker bada formerna.
+let puppeteerCache = null;
+async function laddaPuppeteer() {
+  if (!puppeteerCache) {
+    const modul = await import('puppeteer-core');
+    puppeteerCache = modul.default || modul;
+  }
+  return puppeteerCache;
+}
 
 // Rate-limit: 5 PDF-genereringar per 15 min/user. Puppeteer är resurstung —
 // utan limit är det en lätt DoS-vektor.
@@ -249,7 +269,11 @@ module.exports = async (req, res) => {
   // tillbaka till fel CV — det senare var precis buggen.
   const rawVersionId = req.body?.versionId;
   if (rawVersionId !== undefined && rawVersionId !== null && !UUID.test(String(rawVersionId))) {
-    return res.status(400).json({ error: 'Ogiltigt versionId' });
+    // `runtime` ar en avsiktlig diagnostik pa en AUTENTISERAD felvag.
+    // Vercels Node-version gar inte att lasa utifran, och just den avgor om
+    // `puppeteer-core@25` (kraver >= 22.12) kan tas i bruk — se DR6. Ta bort
+    // raden nar den fragan ar besvarad.
+    return res.status(400).json({ error: 'Ogiltigt versionId', runtime: process.version });
   }
   const versionId = rawVersionId ? String(rawVersionId) : null;
   // Print-URL: Origin används bara om den finns i allowlisten (SSRF-skydd,
@@ -278,6 +302,7 @@ module.exports = async (req, res) => {
 
     // 4. Lansera Chromium
     const chromiumConfig = await getChromium();
+    const puppeteer = await laddaPuppeteer();
     browser = await puppeteer.launch({
       args: chromiumConfig.args,
       executablePath: chromiumConfig.executablePath,
