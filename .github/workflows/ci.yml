@@ -230,30 +230,55 @@ jobs:
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.13.x
 
-      # DR4 (2026-08-22): flaggorna låg tidigare här — tio stycken som
+      # DR4 (2026-08-22/23): flaggorna låg tidigare här — tio stycken som
       # dubblerade och skuggade `.lighthouserc.js`, så ingen kunde läsa ut
-      # vad som faktiskt gällde. All konfiguration bor nu i rc-filen; det
-      # här steget kör den och inget annat.
+      # vad som faktiskt gällde. All konfiguration bor nu i rc-filen.
       #
-      # Diagnostiken: jobbet har fallit sedan 2 april med enda spåret "No
-      # files were found with the provided path: .lighthouseci", alltså att
-      # collect dog innan något skrevs. `@lhci/cli` saknar try/catch i sin
-      # collect-loop, så orsaken syns aldrig i loggen. Nu skrivs innehållet
-      # i katalogen ut innan steget faller.
+      # Diagnostiken skrivs som `::error::`-rader, INTE bara till loggen.
+      # Jobbloggen kräver admin-behörighet för att hämta via API:t, medan
+      # annotationer går att läsa publikt via `/check-runs`. Första försöket
+      # (22 aug) skrev bara till loggen och lärde oss därför ingenting.
+      #
+      # Notera också att "Upload Lighthouse reports" rapporterar `success`
+      # även när katalogen är tom — "No files were found" är en varning, inte
+      # ett fel. Använd inte det steget som bevis för att collect lyckades.
       - name: Run Lighthouse CI
         run: |
-          lhci healthcheck --fatal || true
-          lhci autorun || {
-            echo "::group::.lighthouseci efter misslyckad koerning"
-            ls -la .lighthouseci 2>/dev/null || echo "(katalogen finns inte)"
-            for f in .lighthouseci/*.log; do
-              [ -f "$f" ] && { echo "--- $f"; tail -n 80 "$f"; }
-            done
-            echo "::endgroup::"
+          set +e
+          lhci healthcheck 2>&1 | tee lhci-health.txt
+          lhci autorun > lhci-out.txt 2>&1
+          kod=$?
+          set -e
+
+          echo "::group::lhci-utdata (exitkod $kod)"
+          cat lhci-out.txt || true
+          echo "::endgroup::"
+
+          echo "::group::.lighthouseci"
+          ls -la .lighthouseci 2>/dev/null || echo "(katalogen finns inte)"
+          echo "::endgroup::"
+
+          if [ $kod -ne 0 ]; then
+            # Annotationer, sa felet gar att lasa utan admin-behorighet.
+            grep -iE "error|failed|cannot|ENOENT|EACCES|Chrome|timeout" lhci-out.txt \
+              | head -n 12 \
+              | while IFS= read -r rad; do echo "::error::lhci: ${rad}"; done
+            echo "::error::lhci avslutade med kod $kod. Filer i .lighthouseci: $(ls .lighthouseci 2>/dev/null | wc -l)"
             exit 1
-          }
+          fi
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse diagnostics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-diagnostics
+          path: |
+            lhci-out.txt
+            lhci-health.txt
+          if-no-files-found: warn
+          retention-days: 30
 
       - name: Upload Lighthouse reports
         uses: actions/upload-artifact@v4
