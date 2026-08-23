@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-23** (utskriftssidan borttagen, skriv ut och ladda ner flyttade till varje artikel — se avsnittet direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-23** (två arbeten samma dygn: sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,57 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-23 — Externa resurser, sex granskare (åtgärdad)
+
+`/externa-resurser` hade aldrig sidgranskats. Sex parallella granskare
+(länkhälsa, innehåll/deltagarnytta, design, tillgänglighet, i18n, kod) plus
+webbläsarsvep i ljust och mörkt läge och på mobil.
+
+**Domen: 87 av 323 länkar var trasiga — 27 %.** Det är sidans poäng som inte
+fungerade. Resten av fynden är allvarliga men underordnade det.
+
+### Det som var fel, och vad som gjordes
+
+| Fynd | Belagt | Åtgärd |
+|---|---|---|
+| 87 av 323 länkar trasiga | Varje URL anropad på riktigt; 24 avregistrerade domäner, 5 trasiga DNS-zoner, 7 parkerade, 5 svarslösa servrar, resten 404 | 61 poster borttagna, 26 fick ny adress (var och en verifierad 200 innan den skrevs in), 18 följde en flytt. Kvar: **264** |
+| Alla fem flikar såg likadana ut | 8 synliga länkar på *varje* flik — allt hopfällt, och urvalet överst var identiskt | Att välja en flik öppnar dess avsnitt; urvalet visas bara på "Alla". Uppmätt efter: 86 / 41 / 59 / 59 / 19 |
+| "Visa alla" gav 14 419 px | Uppmätt i webbläsaren | Kvar som val, men behövs sällan nu |
+| Noll träffar = tom sida | "Hittade 0 resurser", sedan ansvarsfriskrivningen | `EmptyState` med illustration, mänsklig rubrik och en väg vidare (DESIGN.md §7) |
+| Accordionen saknade `aria-expanded`/`aria-controls` | Uppmätt `null` före och efter klick | Knapp–panel kopplade, panelen `role="region"` med `aria-labelledby` |
+| 35 kategorier utan rubriknivå | Titlarna var `<span>` i en knapp | `h3` runt knappen |
+| Träffräkningen annonserades inte (WCAG 4.1.3) | Ingen liveregion fanns | `role="status" aria-live="polite"`; säger också hur många avsnitt som är öppna |
+| 323 länkar utan varning om ny flik (WCAG 3.2.5) | `aria-label: null`, ingen text | `sr-only`-tillägg i varje länks tillgängliga namn |
+| Varje kort avhugget mitt i meningen | `truncate` = en rad; beskrivningarna är i median 49 tecken | Tre rader — rymmer den längsta (107 tecken) |
+| "Populära resurser" var ett påstående utan mätning | Noll klickloggning i klient, edge eller `client/api` | "Bra att börja med", med kriteriet utskrivet i koden. Tre poster föll på kriteriet och byttes |
+| Fackförbund och omställning beskrevs som öppna för alla | 11 poster utan villkor i texten | Medlemskrav och kollektivavtalskrav utskrivna |
+| Betaltjänster beskrevs som gratistjänster | 11 poster sa "gratis"; frånvaron lästes som gratis | `(betaltjänst)` där det stämmer |
+| Tio AI-verktyg utan integritetsupplysning | Portalen varnar för sina egna underbiträden men inte för dessa | Rad i kategoribeskrivningen: klistra inte in personnummer eller hälsouppgifter |
+| Sextton hårdkodade strängar + 70 i kategorierna | Ett enda `t()`-anrop i filen — mot en nyckel som inte fanns | Hela sidan i18n:ad, 20 nycklar + 35 kategorier × 2, sv och en |
+| `dark:border-[var(--c-accent)]/50/50` | Dubbelt opacitetssuffix; ramen föll bort i mörkt läge | Rättad |
+| `categoryLabels[category]` utan reserv | Destrukturering rakt av | `kategoriTitel(t, id)` med fallback, som `artikelkategorier.ts` |
+| Två kryss i sökfältet | Chromes eget plus vårt | Det inbyggda dölt |
+| 3 580 rader i en sidfil | 3 216 av dem var datan | Datan i `data/externaResurser.ts`; sidan ~380 rader |
+| Inga tester | Enda testfilen som nämnde sidan låg i `archive/` och prövade widget-systemet | 10 tester, samtliga mutationskontrollerade |
+
+**Luckor som fylldes:** ekonomiskt bistånd (socialtjänsten), Sveriges a-kassor,
+UHR:s bedömning av utländsk utbildning, Socialstyrelsens legitimationsprövning
+och Informationsverige.se på lätt svenska — fem saker målgruppen behöver som
+inte fanns.
+
+**Flikbalansen:** `youth` och `senior` flyttade till Stöd (målgruppsstöd, inte
+jobbannonser), `coworking` till Starta eget. 15/6/8/5/1 → 13/6/7/7/2.
+
+**Mätt:** chunken 19,0 → **17,5 kB brotli** — av de borttagna posterna, inte av
+filuppdelningen. `npm run verify` grön, build grön.
+
+**Öppet, ej åtgärdat:** 30 länkar kunde inte avgöras maskinellt (Indeed, TED,
+Glassdoor m.fl. blockerar bottar) — de är kvar och behöver ögonkontroll.
+Fokusringen är violett på en sky-blå sida; det är en portalbred regel i
+`accessibility.css` (5,70:1, godkänd kontrast) och rördes inte här.
 
 ---
 

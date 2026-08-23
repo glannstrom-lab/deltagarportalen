@@ -789,6 +789,41 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 
 **Kontroll:** varje punkt som kräver en dashboardåtgärd får en verifieringsrad med kommando och **förväntat svar** (`→ HTTP 200`, inte `→ HTTP 503`), och den raden körs innan punkten stängs.
 
+### 2026-08-23: En länklista röttnar tyst — 87 av 323 länkar var döda
+
+**Problem:** `/externa-resurser` pekade på 323 externa adresser. En maskinell
+kontroll av varenda en visade att **87 var trasiga** — 24 avregistrerade
+domäner, 5 trasiga DNS-zoner, 7 parkerade hos hostingleverantörer, 5
+svarslösa servrar och resten 404. En av dem, `remoteeurope.com`, var till
+salu hos HugeDomains. En annan, `toastmasters.se`, hade återanvänts av en
+finsk blogg. Ingenting i portalen larmade, för ingenting kontrollerade.
+
+**Lärdomen:** `npm run lint:schema` vaktar databasen och `npm run lint:links`
+vaktar interna länkmål — men **ingen grind rör externa adresser**, och en
+extern länk är den enda sortens beroende som kan försvinna utan att en enda
+rad kod ändras. En länklista är inte statisk data; den är ett påstående om
+omvärlden med en hållbarhetstid.
+
+**Kontroll — gör det innan du litar på en länksamling:**
+```bash
+# GET med redirect:follow, Chrome-UA, ~10 parallellt. 403/429 från LinkedIn,
+# Indeed, Glassdoor m.fl. betyder botblockering, INTE död länk.
+```
+Tre fällor som kostade tid att lära sig:
+1. **200 bevisar ingenting.** Sju adresser svarade 200 med en parkeringssida
+   eller fel innehåll. Titeln och sidlängden avslöjar dem.
+2. **En redirect är inte alltid en flytt.** Språkprefix (`/sv`, `/en`) och
+   trailing slash är brus; bara domänbyte är en riktig flytt.
+3. **Byt aldrig en död länk mot en gissad.** Varje ny adress i den här
+   omgången anropades först; de sex som inte svarade 200 blev borttagning i
+   stället. En omdirigering till en startsida som inte handlar om det posten
+   lovar är ett värre fel än en 404 — den ser ut att fungera.
+
+**Kvar att göra:** 30 länkar är botblockerade och kan bara kontrolleras med
+ögonen. Datan bor numera i `client/src/data/externaResurser.ts` och testet
+`pages/ExternalResources.test.tsx` håller formen ren (inga dubbletter, allt
+https) så nästa svep kan lita på den.
+
 ### 2026-08-23: Utskriftssidan borttagen — skriv ut och ladda ner bor på artikeln
 
 **Ändring (beslut Mikael):** `/print-resources` (`PrintableResources.tsx`,

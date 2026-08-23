@@ -5576,6 +5576,176 @@
     "createCV": "Skapa CV",
     "searchJobs": "Sök jobb"
   },
+  "externalResources": {
+    "title": "Externa resurser",
+    "subtitle": "{{count}} länkar vi samlat åt dig",
+    "searchLabel": "Sök bland resurserna",
+    "searchPlaceholder": "Sök bland resurser...",
+    "clearSearch": "Rensa sökningen",
+    "resultsCount_one": "{{count}} resurs för ”{{query}}”",
+    "resultsCount_other": "{{count}} resurser för ”{{query}}”",
+    "emptyTitle": "Vi hittade ingen resurs som matchar",
+    "emptyDescription": "Prova ett kortare sökord, eller bläddra bland avsnitten i listan.",
+    "featuredHeading": "Bra att börja med",
+    "featuredNote": "Ett urval vi gjort åt dig — öppna för alla och utan kostnad.",
+    "expandAll": "Öppna alla avsnitt",
+    "collapseAll": "Stäng alla avsnitt",
+    "sectionsOpen_one": "{{count}} avsnitt är öppet",
+    "sectionsOpen_other": "{{count}} avsnitt är öppna",
+    "sectionsClosed": "Alla avsnitt är stängda",
+    "opensInNewTab": "öppnas i ny flik",
+    "disclaimer": "Länkarna tar dig vidare till andra webbplatser. Vad som står där är inte något vi styr över.",
+    "tabs": {
+      "all": "Alla",
+      "findJobs": "Hitta jobb",
+      "learning": "Lärande",
+      "career": "Karriär",
+      "support": "Stöd",
+      "startBusiness": "Starta eget"
+    },
+    "categories": {
+      "jobs": {
+        "title": "Jobbsajter & Rekrytering",
+        "description": "Hitta lediga jobb och tjänster"
+      },
+      "staffing": {
+        "title": "Bemanningsföretag",
+        "description": "Bemanning, rekrytering och konsultuppdrag"
+      },
+      "public-sector": {
+        "title": "Offentlig sektor",
+        "description": "Jobb hos myndigheter och offentliga arbetsgivare"
+      },
+      "niche": {
+        "title": "Branschspecifika jobbsajter",
+        "description": "Jobb inom specifika branscher och yrken"
+      },
+      "nonprofit": {
+        "title": "Ideella & NGO-jobb",
+        "description": "Jobb inom ideell sektor och civilsamhälle"
+      },
+      "creative": {
+        "title": "Kreativa & Kulturella jobb",
+        "description": "Jobb inom konst, kultur och media"
+      },
+      "science": {
+        "title": "Vetenskap & Forskning",
+        "description": "Akademiska tjänster och forskarjobb"
+      },
+      "legal": {
+        "title": "Juridik",
+        "description": "Jobb för jurister och advokater"
+      },
+      "youth": {
+        "title": "Ungdom & Studenter",
+        "description": "Jobb och resurser för unga och studenter"
+      },
+      "senior": {
+        "title": "Seniorer (55+)",
+        "description": "Jobb och resurser för erfarna yrkespersoner"
+      },
+      "regional": {
+        "title": "Regionala resurser",
+        "description": "Jobb och näringsliv i olika regioner"
+      },
+      "international": {
+        "title": "Internationellt & EU",
+        "description": "Jobba utomlands och i Europa"
+      },
+      "remote": {
+        "title": "Distansarbete",
+        "description": "Remote-jobb och digitalt nomadliv"
+      },
+      "freelance": {
+        "title": "Frilans & Gig-ekonomi",
+        "description": "Plattformar för frilansare och extrauppdrag"
+      },
+      "green": {
+        "title": "Gröna jobb",
+        "description": "Karriär inom miljö och hållbarhet"
+      },
+      "video": {
+        "title": "Video & Media",
+        "description": "Filmer, podcasts och webbutbildningar"
+      },
+      "podcasts": {
+        "title": "Karriärpodcasts",
+        "description": "Podcasts om karriär, entreprenörskap och ledarskap"
+      },
+      "guide": {
+        "title": "Guider & Verktyg",
+        "description": "Praktiska guider och verktyg för arbetssökande"
+      },
+      "ai-tools": {
+        "title": "AI-verktyg",
+        "description": "AI-assistenter för CV, brev och intervjuförberedelse"
+      },
+      "interview": {
+        "title": "Intervjuförberedelse",
+        "description": "Övning och tips inför anställningsintervjun"
+      },
+      "salary": {
+        "title": "Löneresurser",
+        "description": "Lönestatistik och förhandlingstips"
+      },
+      "assessment": {
+        "title": "Personlighetstester",
+        "description": "Tester för självinsikt och karriärvägledning"
+      },
+      "portfolio": {
+        "title": "Portfolio-plattformar",
+        "description": "Visa upp ditt arbete för arbetsgivare"
+      },
+      "language": {
+        "title": "Språkinlärning",
+        "description": "Lär dig svenska och andra språk"
+      },
+      "learning": {
+        "title": "Lärande & Utbildning",
+        "description": "Onlinekurser och vidareutbildning"
+      },
+      "certifications": {
+        "title": "Certifieringar",
+        "description": "Professionella certifieringar och diplom"
+      },
+      "soft-skills": {
+        "title": "Mjuka färdigheter",
+        "description": "Ledarskap, kommunikation och personlig utveckling"
+      },
+      "coworking": {
+        "title": "Coworking",
+        "description": "Coworking-spaces och kontorsplatser"
+      },
+      "networking": {
+        "title": "Nätverk & Mentorskap",
+        "description": "Bygg ditt professionella nätverk"
+      },
+      "startup": {
+        "title": "Starta eget",
+        "description": "Resurser för dig som vill bli egenföretagare"
+      },
+      "career-change": {
+        "title": "Karriärbyte & Omställning",
+        "description": "Stöd vid uppsägning och karriärbyte"
+      },
+      "organization": {
+        "title": "Fackförbund & Organisationer",
+        "description": "Stöd och karriärhjälp från fackliga organisationer"
+      },
+      "diversity": {
+        "title": "Mångfald & Inkludering",
+        "description": "Resurser för en inkluderande arbetsmarknad"
+      },
+      "accessibility": {
+        "title": "Tillgänglighet & Funktionsvariation",
+        "description": "Stöd för personer med funktionsnedsättning"
+      },
+      "support": {
+        "title": "Stöd & Ersättningar",
+        "description": "Rättigheter, ersättningar och hjälp"
+      }
+    }
+  },
   "settings": {
     "title": "Inställningar",
     "description": "Anpassa portalen efter dina behov",

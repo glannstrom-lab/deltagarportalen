@@ -5576,6 +5576,176 @@
     "createCV": "Create CV",
     "searchJobs": "Search jobs"
   },
+  "externalResources": {
+    "title": "External resources",
+    "subtitle": "{{count}} links we have gathered for you",
+    "searchLabel": "Search the resources",
+    "searchPlaceholder": "Search resources...",
+    "clearSearch": "Clear search",
+    "resultsCount_one": "{{count}} resource for ”{{query}}”",
+    "resultsCount_other": "{{count}} resources for ”{{query}}”",
+    "emptyTitle": "Nothing here matched your search",
+    "emptyDescription": "Try a shorter search term, or browse the sections in the list.",
+    "featuredHeading": "A good place to start",
+    "featuredNote": "A selection we made for you — open to everyone and free of charge.",
+    "expandAll": "Open all sections",
+    "collapseAll": "Close all sections",
+    "sectionsOpen_one": "{{count}} section is open",
+    "sectionsOpen_other": "{{count}} sections are open",
+    "sectionsClosed": "All sections are closed",
+    "opensInNewTab": "opens in a new tab",
+    "disclaimer": "These links take you to other websites. We do not control what they say.",
+    "tabs": {
+      "all": "All",
+      "findJobs": "Find jobs",
+      "learning": "Learning",
+      "career": "Career",
+      "support": "Support",
+      "startBusiness": "Start a business"
+    },
+    "categories": {
+      "jobs": {
+        "title": "Job boards & recruitment",
+        "description": "Find vacancies and open positions"
+      },
+      "staffing": {
+        "title": "Staffing agencies",
+        "description": "Staffing, recruitment and consultancy assignments"
+      },
+      "public-sector": {
+        "title": "Public sector",
+        "description": "Jobs with government agencies and public employers"
+      },
+      "niche": {
+        "title": "Industry-specific job boards",
+        "description": "Jobs within specific industries and occupations"
+      },
+      "nonprofit": {
+        "title": "Non-profit & NGO jobs",
+        "description": "Jobs in the non-profit sector and civil society"
+      },
+      "creative": {
+        "title": "Creative & cultural jobs",
+        "description": "Jobs in art, culture and media"
+      },
+      "science": {
+        "title": "Science & research",
+        "description": "Academic positions and research jobs"
+      },
+      "legal": {
+        "title": "Law",
+        "description": "Jobs for lawyers and legal professionals"
+      },
+      "youth": {
+        "title": "Young people & students",
+        "description": "Jobs and resources for young people and students"
+      },
+      "senior": {
+        "title": "Seniors (55+)",
+        "description": "Jobs and resources for experienced professionals"
+      },
+      "regional": {
+        "title": "Regional resources",
+        "description": "Jobs and business life in different regions"
+      },
+      "international": {
+        "title": "International & EU",
+        "description": "Working abroad and in Europe"
+      },
+      "remote": {
+        "title": "Remote work",
+        "description": "Remote jobs and digital nomad life"
+      },
+      "freelance": {
+        "title": "Freelance & gig economy",
+        "description": "Platforms for freelancers and side jobs"
+      },
+      "green": {
+        "title": "Green jobs",
+        "description": "Careers in environment and sustainability"
+      },
+      "video": {
+        "title": "Video & media",
+        "description": "Films, podcasts and online courses"
+      },
+      "podcasts": {
+        "title": "Career podcasts",
+        "description": "Podcasts on career, entrepreneurship and leadership"
+      },
+      "guide": {
+        "title": "Guides & tools",
+        "description": "Practical guides and tools for job seekers"
+      },
+      "ai-tools": {
+        "title": "AI tools",
+        "description": "AI assistants for CVs, letters and interview preparation"
+      },
+      "interview": {
+        "title": "Interview preparation",
+        "description": "Practice and tips ahead of the job interview"
+      },
+      "salary": {
+        "title": "Salary resources",
+        "description": "Salary statistics and negotiation tips"
+      },
+      "assessment": {
+        "title": "Personality tests",
+        "description": "Tests for self-insight and career guidance"
+      },
+      "portfolio": {
+        "title": "Portfolio platforms",
+        "description": "Show your work to employers"
+      },
+      "language": {
+        "title": "Language learning",
+        "description": "Learn Swedish and other languages"
+      },
+      "learning": {
+        "title": "Learning & education",
+        "description": "Online courses and further education"
+      },
+      "certifications": {
+        "title": "Certifications",
+        "description": "Professional certifications and diplomas"
+      },
+      "soft-skills": {
+        "title": "Soft skills",
+        "description": "Leadership, communication and personal development"
+      },
+      "coworking": {
+        "title": "Coworking",
+        "description": "Coworking spaces and desks"
+      },
+      "networking": {
+        "title": "Networking & mentoring",
+        "description": "Build your professional network"
+      },
+      "startup": {
+        "title": "Starting a business",
+        "description": "Resources if you want to work for yourself"
+      },
+      "career-change": {
+        "title": "Career change & transition",
+        "description": "Support when you are made redundant or change track"
+      },
+      "organization": {
+        "title": "Unions & organisations",
+        "description": "Support and career help from trade unions"
+      },
+      "diversity": {
+        "title": "Diversity & inclusion",
+        "description": "Resources for an inclusive labour market"
+      },
+      "accessibility": {
+        "title": "Accessibility & disability",
+        "description": "Support for people with disabilities"
+      },
+      "support": {
+        "title": "Support & benefits",
+        "description": "Rights, benefits and help"
+      }
+    }
+  },
   "settings": {
     "title": "Settings",
     "description": "Customize the portal to your needs",
