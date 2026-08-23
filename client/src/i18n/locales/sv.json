@@ -416,7 +416,6 @@
     "diary": "Dagbok",
     "wellness": "Hälsa",
     "knowledgeBase": "Kunskapsbank",
-    "printResources": "Skriv ut resurser",
     "resources": "Resurser",
     "myDocuments": "Dina dokument",
     "settings": "Inställningar",
@@ -8185,7 +8184,12 @@
     "fontSizeGroup": "Textstorlek",
     "tocLabel": "Innehåll i artikeln",
     "tocHeading": "I den här artikeln",
-    "tableScrollLabel": "Tabell – skrolla i sidled för att se hela"
+    "tableScrollLabel": "Tabell – skrolla i sidled för att se hela",
+    "printArticle": "Skriv ut",
+    "downloadArticle": "Ladda ner",
+    "downloadPreparing": "Förbereder nedladdning…",
+    "downloadReady": "Artikeln är nedladdad som PDF.",
+    "downloadFailed": "Kunde inte skapa PDF:en — försök igen om en stund."
   },
   "coverLetterGenerator": {
     "title": "Personligt brev",
@@ -10536,11 +10540,6 @@
       "taglinePlaceholder": "t.ex. Jag är en noggrann administratör som hjälper team att hålla ordning.",
       "taglineTitle": "En kort mening om dig"
     },
-    "print": {
-      "doneText": "Öppna utskriftssidan i normalläge för att skriva ut.",
-      "doneTitle": "Bra val!",
-      "pickTitle": "Vilken resurs vill du skriva ut?"
-    },
     "profile": {
       "doneText": "Bra jobbat! Du kan alltid uppdatera dina uppgifter senare under Profil.",
       "doneTitle": "Klart! Din profil är sparad.",
@@ -11041,11 +11040,6 @@
         "title": "Mina dokument",
         "description": "Sparade CV, brev och andra dokument.",
         "none": "Inga ännu"
-      },
-      "printResources": {
-        "title": "Utskriftsmaterial",
-        "description": "Mallar och checklistor du kan skriva ut.",
-        "browse": "Bläddra"
       },
       "externalResources": {
         "title": "Externa resurser",

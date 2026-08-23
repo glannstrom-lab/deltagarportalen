@@ -324,7 +324,6 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
         ],
         links: [
           { label: 'Dina dokument', href: '/resources' },
-          { label: 'Skriv ut material', href: '/print-resources' },
           aiTeam('studievagledare'),
         ],
       },

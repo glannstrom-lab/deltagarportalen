@@ -4,7 +4,8 @@
  * ## Vad som togs bort 2026-08-22
  *
  * Filen var 250 rader med nio exporter. **En** av dem hade konsumenter:
- * `useArticles` (KnowledgeBase, PrintableResources, InterviewSimulator).
+ * `useArticles` (KnowledgeBase, InterviewSimulator). `PrintableResources`
+ * stod också här till 2026-08-23, då den sidan togs bort.
  * De åtta andra — `useArticle`, `useBookmarks`, `useToggleBookmark`,
  * `useSaveProgress`, `useReadingProgress`, `usePrefetchArticle`,
  * `useSearchArticles`, `usePersonalizedArticles` — hade noll. Filnivå-

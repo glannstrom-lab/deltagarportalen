@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import {
   BookOpen,
   Bookmark,
-  Printer,
   ExternalLink,
   Bot,
   Users,
@@ -46,7 +45,6 @@ export default function ResurserHub() {
           tools={[
             { id: 'kb', path: '/knowledge-base', label: t('nav.knowledgeBase', 'Kunskapsbas'), icon: BookOpen },
             { id: 'res', path: '/resources', label: t('nav.resources', 'Sparade resurser'), icon: Bookmark },
-            { id: 'print', path: '/print-resources', label: t('nav.printResources', 'Skriv ut'), icon: Printer },
             { id: 'ext', path: '/externa-resurser', label: t('nav.externalResources', 'Externa länkar'), icon: ExternalLink },
             { id: 'ai', path: '/ai-team', label: t('nav.aiTeam', 'AI-team'), icon: Bot },
             { id: 'network', path: '/nätverk', label: t('nav.network', 'Nätverk'), icon: Users },
@@ -97,14 +95,6 @@ function ResurserHubInner() {
           : t('resurserHub.features.myDocuments.none', 'Inga ännu'),
         isActive: docsCount > 0,
         href: '/resources',
-      },
-      {
-        key: 'print-resources',
-        icon: Printer,
-        title: t('resurserHub.features.printResources.title', 'Utskriftsmaterial'),
-        description: t('resurserHub.features.printResources.description', 'Mallar och checklistor du kan skriva ut.'),
-        // Ingen status — hubben vet inget om utskrifter.
-        href: '/print-resources',
       },
       {
         key: 'external-resources',

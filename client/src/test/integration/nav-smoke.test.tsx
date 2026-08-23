@@ -119,7 +119,6 @@ const DEEP_LINK_PATHS = [
   '/wellness',
   '/settings',
   '/resources',
-  '/print-resources',
   '/help',
   '/salary',
   '/education',

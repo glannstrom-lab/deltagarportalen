@@ -40,7 +40,6 @@ export const TOOL_ICON_SRC: Record<string, string> = {
   // Resurser (sky, Ark 4)
   '/knowledge-base': '/illustrations/icon-kunskapsbank.webp',
   '/resources': '/illustrations/icon-dokument.webp',
-  '/print-resources': '/illustrations/icon-utskrift.webp',
   '/externa-resurser': '/illustrations/icon-externa.webp',
   '/ai-team': '/illustrations/icon-aiteam.webp',
   '/nätverk': '/illustrations/icon-natverk.webp',

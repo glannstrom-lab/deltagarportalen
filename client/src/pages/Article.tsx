@@ -22,6 +22,9 @@ import {
   Lightbulb,
   Dumbbell,
   ArrowRight,
+  Printer,
+  FileDown,
+  Loader2,
 } from '@/components/ui/icons'
 import { contentArticleApi, contentExerciseApi } from '../services/contentApi'
 import type { Exercise } from '../data/exercises'
@@ -30,6 +33,7 @@ import { useAchievementTracker } from '../hooks/useAchievementTracker'
 import type { EnhancedArticle } from '@/data/artikelkategorier'
 import { kategoriNamn } from '@/data/artikelkategorier'
 import { textUrMarkdown } from '../components/knowledge-base/articleMarkdown'
+import { generateArticlePDF, downloadPDF, type ArticleForPDF } from '../services/pdfExportService'
 import { BookOpen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
@@ -81,6 +85,7 @@ function ArticleInner() {
   const [loading, setLoading] = useState(true)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [kopieringsLage, setKopieringsLage] = useState<'vilande' | 'klar' | 'fel'>('vilande')
+  const [nedladdningsLage, setNedladdningsLage] = useState<'vilande' | 'arbetar' | 'klar' | 'fel'>('vilande')
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal')
   const [relatedArticles, setRelatedArticles] = useState<EnhancedArticle[]>([])
   const [relatedExercises, setRelatedExercises] = useState<Exercise[]>([])
@@ -197,6 +202,65 @@ function ArticleInner() {
     }
   }
 
+  /**
+   * Utskriftsreglerna i `accessibility.css` döljer allt utom själva artikeln.
+   * De får bara gälla när artikeln är monterad — därav klassen på `body`
+   * i stället för `:has()`, som inte bär i alla webbläsare målgruppen kör.
+   * Bieffekten är avsiktlig: Ctrl+P på en artikelsida ger samma rena utskrift
+   * som knappen.
+   */
+  useEffect(() => {
+    document.body.classList.add('artikelsida')
+    return () => document.body.classList.remove('artikelsida')
+  }, [])
+
+  /**
+   * Skriv ut artikeln — webbläsarens egen utskrift, inte en PDF via jsPDF.
+   *
+   * Det är ett medvetet val: `window.print()` skriver ut det användaren
+   * faktiskt ser (vald textstorlek, tabeller, länkar) och kräver varken
+   * popup-tillåtelse eller ett bibliotek som laddas ner först. Att i stället
+   * generera en PDF och öppna den i en flik hade blockerats av popup-spärren,
+   * eftersom `window.open` då sker efter ett `await` och inte längre räknas
+   * som utlöst av klicket.
+   */
+  const skrivUtArtikel = () => {
+    window.print()
+  }
+
+  /**
+   * Ladda ner artikeln som PDF.
+   *
+   * Kategorin skickas som visningsnamn, inte som slug. `generateArticlePDF`
+   * sätter fältet versalt överst på första sidan, och den gamla
+   * utskriftssidan skickade slugen rakt igenom — så PDF:en inleddes med
+   * "JOB-SEARCH" medan skärmen sa "Jobbsökning".
+   */
+  const laddaNerArtikel = async () => {
+    if (!article || nedladdningsLage === 'arbetar') return
+    setNedladdningsLage('arbetar')
+    try {
+      const underlag: ArticleForPDF = {
+        id: article.id,
+        title: article.title,
+        summary: article.summary,
+        content: article.content,
+        category: kategoriNamn(t, article.category),
+        readingTime: article.readingTime,
+        difficulty: article.difficulty,
+        checklist: (article.checklist || []) as Array<{ id: string; text: string }>,
+      }
+      const blob = await generateArticlePDF(underlag)
+      downloadPDF(blob, `${article.id}.pdf`)
+      setNedladdningsLage('klar')
+      setTimeout(() => setNedladdningsLage('vilande'), 2500)
+    } catch (err) {
+      logger.warn('Kunde inte skapa PDF för artikeln', { err })
+      setNedladdningsLage('fel')
+      setTimeout(() => setNedladdningsLage('vilande'), 4000)
+    }
+  }
+
   const changeFontSize = (size: 'normal' | 'large' | 'xlarge') => {
     setFontSize(size)
     localStorage.setItem('article-font-size', size)
@@ -285,7 +349,7 @@ function ArticleInner() {
       </button>
 
       {/* Article header */}
-      <article className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-6 mb-8">
+      <article className="artikel-utskrift bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-6 mb-8">
         {/* Category & Meta */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
           {/* Renderade tidigare `article.category` rått — alltså `job-search`
@@ -349,13 +413,45 @@ function ArticleInner() {
         )}
 
         {/* Action bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-b border-stone-100 dark:border-stone-700 mb-6">
-          <div className="flex items-center gap-2">
+        {/* `artikel-atgardsrad` är utskriftens hakning: raden är idel knappar
+            och ska inte lämna en tom ram med ramlinjer på pappret. */}
+        <div className="artikel-atgardsrad flex flex-wrap items-center justify-between gap-4 py-4 border-t border-b border-stone-100 dark:border-stone-700 mb-6">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Text to speech */}
             {/* Ren text. Tidigare skickades rå markdown, så uppläsningen
                 läste tabellpipes, asterisker och hela URL:er — till just den
                 användare som valt att lyssna för att hon inte orkar läsa. */}
             <TextToSpeech text={textUrMarkdown(article.content)} />
+
+            {/*
+              Skriv ut och Ladda ner, per artikel.
+
+              Ersätter sidan /print-resources (borttagen 2026-08-23), där man
+              först fick leta upp artikeln i en andra lista och bocka i den.
+              Knapparna har synlig text, inte bara ikon: bokmärke och dela är
+              handlingar man känner igen på symbolen, men "skriv ut" och
+              "ladda ner" är de två som målgruppen faktiskt letar efter.
+            */}
+            <button
+              onClick={skrivUtArtikel}
+              className="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-lg bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 text-sm font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors"
+            >
+              <Printer size={18} aria-hidden="true" />
+              {t('article.printArticle', 'Skriv ut')}
+            </button>
+
+            <button
+              onClick={laddaNerArtikel}
+              disabled={nedladdningsLage === 'arbetar'}
+              className="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-lg bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-200 text-sm font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors disabled:opacity-60 disabled:cursor-wait"
+            >
+              {nedladdningsLage === 'arbetar' ? (
+                <Loader2 size={18} className="animate-spin" aria-hidden="true" />
+              ) : (
+                <FileDown size={18} aria-hidden="true" />
+              )}
+              {t('article.downloadArticle', 'Ladda ner')}
+            </button>
           </div>
 
           <div className="flex items-center gap-2">
@@ -420,6 +516,9 @@ function ArticleInner() {
         <p role="status" aria-live="polite" className="-mt-4 mb-4 text-sm min-h-[1.25rem] text-stone-700 dark:text-stone-300">
           {kopieringsLage === 'klar' && t('article.copied')}
           {kopieringsLage === 'fel' && t('article.copyFailed', 'Kunde inte kopiera länken — markera adressfältet och kopiera därifrån.')}
+          {nedladdningsLage === 'arbetar' && t('article.downloadPreparing', 'Förbereder nedladdning…')}
+          {nedladdningsLage === 'klar' && t('article.downloadReady', 'Artikeln är nedladdad som PDF.')}
+          {nedladdningsLage === 'fel' && t('article.downloadFailed', 'Kunde inte skapa PDF:en — försök igen om en stund.')}
         </p>
 
         {/* Artikelns innehåll — markdown renderas som React-element */}

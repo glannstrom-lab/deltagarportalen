@@ -88,7 +88,6 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   { path: '/knowledge-base/article', sv: 'Artikel' },
   { path: '/knowledge-base', key: 'nav.knowledgeBase', sv: 'Kunskapsbank' },
   { path: '/resources', key: 'nav.myDocuments', sv: 'Dina dokument' },
-  { path: '/print-resources', key: 'nav.printResources', sv: 'Skriv ut resurser' },
   { path: '/externa-resurser', key: 'nav.externalResources', sv: 'Externa resurser' },
   { path: '/ai-team', key: 'nav.aiTeam', sv: 'Ditt AI-team' },
   { path: '/nätverk', key: 'nav.network', sv: 'Nätverk' },

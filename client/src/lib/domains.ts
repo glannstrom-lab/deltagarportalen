@@ -57,7 +57,6 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/help',                  'info'],
   ['/resources',             'info'],
   ['/externa-resurser',      'info'],
-  ['/print-resources',       'info'],
   ['/knowledge-base',        'info'],
   ['/network',               'info'],
   ['/nätverk',               'info'],

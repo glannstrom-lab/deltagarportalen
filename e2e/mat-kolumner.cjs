@@ -20,7 +20,7 @@ const SIDOR = [
   '/job-search', '/applications', '/spontanansökan', '/cover-letter',
   '/interview-simulator', '/salary', '/linkedin-optimizer', '/international',
   '/career', '/interest-guide', '/skills-gap-analysis', '/personal-brand',
-  '/education', '/knowledge-base', '/resources', '/print-resources',
+  '/education', '/knowledge-base', '/resources',
   '/externa-resurser', '/ai-team', '/nätverk', '/wellness', '/diary',
   '/calendar', '/exercises', '/my-consultant', '/profile', '/help', '/settings',
 ]

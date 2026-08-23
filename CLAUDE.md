@@ -605,7 +605,7 @@ Portalen har **5 domän-hubbar** som ersätter den platta 27-items-navigationen.
 | Översikt | `/oversikt` | action | Dashboard / startpunkt |
 | Söka jobb | `/jobb` | activity | JobSearch, Applications, Spontanansökan, CV, CoverLetter, InterviewSimulator, Salary, International, LinkedIn |
 | Karriär | `/karriar` | coaching | Career, InterestGuide, SkillsGap, PersonalBrand, Education |
-| Resurser | `/resurser` | info | KnowledgeBase, Resources, PrintResources, ExternalResources, AI-team, Nätverk |
+| Resurser | `/resurser` | info | KnowledgeBase, Resources, ExternalResources, AI-team, Nätverk |
 | Min vardag | `/min-vardag` | wellbeing | Wellness, Diary, Calendar, Exercises, MyConsultant, Profile |
 
 Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-paths får inte dubbleras mellan hubbar.
@@ -788,6 +788,38 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 **Lärdom:** en fix som inte är verifierad i drift är en avsikt, inte en åtgärd. Och en tabell som städades är inget bevis för att mönstret är utrotat.
 
 **Kontroll:** varje punkt som kräver en dashboardåtgärd får en verifieringsrad med kommando och **förväntat svar** (`→ HTTP 200`, inte `→ HTTP 503`), och den raden körs innan punkten stängs.
+
+### 2026-08-23: Utskriftssidan borttagen — skriv ut och ladda ner bor på artikeln
+
+**Ändring (beslut Mikael):** `/print-resources` (`PrintableResources.tsx`,
+`FocusPrintWizard.tsx`) är **raderad**. Sidan lät användaren leta upp artikeln
+i en andra lista och bocka i den. I stället har varje artikel i kunskapsbanken
+två knappar i sin åtgärdsrad: **Skriv ut** och **Ladda ner**.
+
+- **Skriv ut = `window.print()`**, inte en genererad PDF. Utskriftsreglerna bor
+  i `styles/accessibility.css` och gäller bara medan `body.artikelsida` är satt
+  (`pages/Article.tsx` sätter klassen vid montering). Reglerna döljer allt utom
+  `.artikel-utskrift`, tvingar svart på vitt — annars skriver mörkt tema ut ljus
+  text på vitt papper — och tar tillbaka checklistans `role="checkbox"`-knappar,
+  som annars fångas av den globala regeln `button { display: none }`.
+  Bieffekt med flit: Ctrl+P på en artikelsida ger samma rena utskrift.
+- **Ladda ner = `generateArticlePDF` + `downloadPDF`.** Öppna INTE PDF:en i en
+  ny flik: `window.open` efter ett `await` räknas inte längre som utlöst av
+  klicket och blockeras av popup-spärren.
+- **`generateArticlePDF` renderar nu markdown.** Den strök tidigare HTML-taggar
+  ur ett innehåll som aldrig varit HTML, så varje PDF bar `## Rubrik`,
+  `**fetstil**` och `[text](https://…)` som synlig text. Den använder samma
+  `parseArticleMarkdown`/`parseInline` som skärmen och uppläsningen.
+- **Sidfoten sa `www.deltagarportalen.se`** — staging — på varje genererad PDF.
+  Nu `www.jobin.se`.
+- `generateExercisePDF`, `generateArticlesBundlePDF` och
+  `generateExercisesBundlePDF` (409 rader) föll utan anropare i samma ändring
+  och är raderade.
+
+**Fällan i testet:** ett PDF-strängliteral eskaperar `(` och `)` med bakstreck.
+Ett `expect(pdf).not.toContain('](http')` mot byteströmmen är alltså alltid
+sant — en rå länk slinker igenom. `artikelPdf.test.ts` av-eskaperar först;
+utan den raden överlevde mutationen "skriv stycket rått".
 
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.

@@ -62,7 +62,7 @@ const path = require('node:path')
 // 400 → 390 (2026-08-21, Intresseguiden): tio fel betalda, bl.a. fyra
 // TS2322 där saveToHistory tog Record<string, number> i stället för de
 // riktiga profiltyperna, och en import av `Milestone` som inte finns.
-const CEILING = 363
+const CEILING = 362
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

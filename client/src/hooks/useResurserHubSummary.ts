@@ -20,7 +20,8 @@ export function useResurserHubSummary() {
       //   2. cover_letters  — most recent 3 letters (shared cache key: ['cover-letters'])
       //   3. article_reading_progress — Kunskapsbank "recent" + completed-count
       //   4. ai_team_sessions — AI-team "recent agent" + total session count
-      // Externa resurser, Utskriftsmaterial, Övningar are STATIC widgets — no DB read.
+      // Externa resurser och Övningar are STATIC widgets — no DB read.
+      // (Utskriftsmaterial stod här till 2026-08-23, då sidan togs bort.)
       // B33 (2026-08-09): antalen hämtas med egna count-frågor, INTE genom att
       // räkna i listorna nedan. Tidigare stod det
       //   articleCompletedCount = articles.filter(a => a.is_completed).length

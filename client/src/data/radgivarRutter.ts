@@ -50,7 +50,6 @@ export const ROUTE_TO_PAGE_KEY: Array<[string, string]> = [
   ['/linkedin-optimizer', 'linkedinOptimizer'],
   ['/my-consultant', 'myConsultant'],
   ['/personal-brand', 'personalBrand'],
-  ['/print-resources', 'resources'],
   ['/profile', 'profile'],
   ['/resources', 'resources'],
   ['/salary', 'salary'],

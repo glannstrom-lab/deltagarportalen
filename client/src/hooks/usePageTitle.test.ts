@@ -56,7 +56,7 @@ describe('resolvePageTitleRule', () => {
       '/resurser', '/min-vardag', '/cv', '/cover-letter', '/interest-guide',
       '/knowledge-base', '/knowledge-base/article/1', '/profile', '/my-consultant',
       '/job-search', '/applications', '/career', '/diary', '/wellness', '/settings',
-      '/resources', '/print-resources', '/help', '/salary', '/education', '/calendar',
+      '/resources', '/help', '/salary', '/education', '/calendar',
       '/spontanansökan', '/nätverk', '/personal-brand', '/linkedin-optimizer',
       '/skills-gap-analysis', '/interview-simulator', '/ai-team', '/exercises',
       '/international', '/externa-resurser', '/consultant', '/admin',

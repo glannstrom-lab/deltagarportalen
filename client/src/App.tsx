@@ -65,7 +65,6 @@ const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 const AITeam = lazy(() => import('./pages/AITeam'))
 const Network = lazy(() => import('./pages/Network'))
 const ExternalResources = lazy(() => import('./pages/ExternalResources'))
-const PrintableResources = lazy(() => import('./pages/PrintableResources'))
 
 // Hub pages (Phase 1 — navigation shell)
 const HubOverview = lazy(() => import('./pages/hubs/HubOverview'))
@@ -275,7 +274,6 @@ function App() {
           <Route path="wellness/*" element={<LazyRoute><RouteErrorBoundary><Wellness /></RouteErrorBoundary></LazyRoute>} />
           <Route path="settings" element={<LazyRoute><RouteErrorBoundary><Settings /></RouteErrorBoundary></LazyRoute>} />
           <Route path="resources" element={<LazyRoute><RouteErrorBoundary><Resources /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="print-resources" element={<LazyRoute><RouteErrorBoundary><PrintableResources /></RouteErrorBoundary></LazyRoute>} />
           <Route path="help" element={<LazyRoute><RouteErrorBoundary><Help /></RouteErrorBoundary></LazyRoute>} />
           <Route path="salary/*" element={<LazyRoute><RouteErrorBoundary><Salary /></RouteErrorBoundary></LazyRoute>} />
           <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />

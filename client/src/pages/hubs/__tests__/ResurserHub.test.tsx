@@ -51,10 +51,18 @@ describe('ResurserHub — feature-page', () => {
     renderHub()
     expect(screen.getByRole('link', { name: /Kunskapsbank/ })).toHaveAttribute('href', '/knowledge-base')
     expect(screen.getByRole('link', { name: /Mina dokument/ })).toHaveAttribute('href', '/resources')
-    expect(screen.getByRole('link', { name: /Utskriftsmaterial/ })).toHaveAttribute('href', '/print-resources')
     expect(screen.getByRole('link', { name: /Externa resurser/ })).toHaveAttribute('href', '/externa-resurser')
     expect(screen.getByRole('link', { name: /AI-team/ })).toHaveAttribute('href', '/ai-team')
     expect(screen.getByRole('link', { name: /Nätverk/ })).toHaveAttribute('href', '/nätverk')
+  })
+
+  // Regressionsvakt. Utskriftssidan togs bort 2026-08-23 — skriv ut och ladda
+  // ner görs numera per artikel i kunskapsbanken. Kortet får inte komma tillbaka.
+  it('does NOT link to the removed print page', () => {
+    renderHub()
+    expect(screen.queryByRole('link', { name: /Utskriftsmaterial/ })).not.toBeInTheDocument()
+    const links = screen.getAllByRole('link')
+    expect(links.some((l) => l.getAttribute('href') === '/print-resources')).toBe(false)
   })
 
   it('does NOT render legacy widget grid', () => {

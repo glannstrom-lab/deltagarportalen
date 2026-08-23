@@ -412,7 +412,6 @@
     "diary": "Diary",
     "wellness": "Wellness",
     "knowledgeBase": "Knowledge Base",
-    "printResources": "Print Resources",
     "resources": "Resources",
     "myDocuments": "My Documents",
     "settings": "Settings",
@@ -8185,7 +8184,12 @@
     "fontSizeGroup": "Text size",
     "tocLabel": "Article contents",
     "tocHeading": "In this article",
-    "tableScrollLabel": "Table – scroll sideways to see all of it"
+    "tableScrollLabel": "Table – scroll sideways to see all of it",
+    "printArticle": "Print",
+    "downloadArticle": "Download",
+    "downloadPreparing": "Preparing download…",
+    "downloadReady": "The article has been downloaded as a PDF.",
+    "downloadFailed": "Could not create the PDF — please try again in a moment."
   },
   "coverLetterGenerator": {
     "title": "Cover Letter",
@@ -10536,11 +10540,6 @@
       "taglinePlaceholder": "e.g. I am a meticulous administrator who helps teams stay organised.",
       "taglineTitle": "A short sentence about you"
     },
-    "print": {
-      "doneText": "Open the print page in normal mode to print.",
-      "doneTitle": "Good choice!",
-      "pickTitle": "Which resource do you want to print?"
-    },
     "profile": {
       "doneText": "Well done! You can always update your details later under Profile.",
       "doneTitle": "Done! Your profile is saved.",
@@ -11041,11 +11040,6 @@
         "title": "My documents",
         "description": "Saved CVs, letters and other documents.",
         "none": "None yet"
-      },
-      "printResources": {
-        "title": "Printable materials",
-        "description": "Templates and checklists you can print.",
-        "browse": "Browse"
       },
       "externalResources": {
         "title": "External resources",

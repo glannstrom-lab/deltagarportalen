@@ -434,6 +434,90 @@ legend {
   }
 }
 
+/* --------------------------------------------
+   Utskrift av EN artikel
+
+   Ersätter sidan /print-resources (borttagen 2026-08-23). Reglerna gäller
+   bara medan `body.artikelsida` är satt — `pages/Article.tsx` sätter den vid
+   montering och tar bort den vid avmontering.
+
+   `visibility` i stället för `display: none`: den senare kollapsar layouten
+   och tar med sig artikeln när föräldern döljs. Med `visibility` behåller
+   artikeln sin egen layout och kan lyftas till sidans överkant.
+
+   Färgerna tvingas till svart på vitt. Utan det skriver mörkt tema ut ljus
+   text mot papprets vita, alltså en tom sida för den som valt mörkt läge.
+   -------------------------------------------- */
+@media print {
+  @page {
+    margin: 15mm;
+  }
+
+  body.artikelsida * {
+    visibility: hidden;
+  }
+
+  body.artikelsida .artikel-utskrift,
+  body.artikelsida .artikel-utskrift * {
+    visibility: visible;
+  }
+
+  body.artikelsida .artikel-utskrift {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  body.artikelsida .artikel-utskrift,
+  body.artikelsida .artikel-utskrift * {
+    background: transparent !important;
+    color: #1c1917 !important;
+    border-color: #d6d3d1 !important;
+  }
+
+  /* Åtgärdsraden är bara knappar. Den globala regeln ovan döljer knapparna
+     men lämnar ramen och högtalarikonen kvar som ett tomt band. */
+  body.artikelsida .artikel-utskrift .artikel-atgardsrad {
+    display: none !important;
+  }
+
+  /* Checklistan ska däremot MED på pappret — det är halva poängen med att
+     skriva ut en artikel. Raderna är `role="checkbox"`-knappar och fångas
+     annars av `button { display: none }`. Rutan ritas som en tom fyrkant
+     att kryssa i för hand. */
+  body.artikelsida .artikel-utskrift [role="checkbox"] {
+    display: flex !important;
+    break-inside: avoid;
+  }
+
+  body.artikelsida .artikel-utskrift [role="checkbox"] > span:first-child {
+    border: 1.5px solid #1c1917 !important;
+  }
+
+  /* Fyllnadsstapeln säger ingenting på papper. */
+  body.artikelsida .artikel-utskrift [role="progressbar"] {
+    display: none !important;
+  }
+
+  /* Rubriker och listor ska inte brytas mitt itu. */
+  body.artikelsida .artikel-utskrift h1,
+  body.artikelsida .artikel-utskrift h2,
+  body.artikelsida .artikel-utskrift h3 {
+    break-after: avoid-page;
+  }
+
+  body.artikelsida .artikel-utskrift li,
+  body.artikelsida .artikel-utskrift blockquote,
+  body.artikelsida .artikel-utskrift table {
+    break-inside: avoid;
+  }
+}
+
 /* ============================================
    CALM MODE / ENERGY SAVE MODE
    For users with low energy or who need reduced stimulation

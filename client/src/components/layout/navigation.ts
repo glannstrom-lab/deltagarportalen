@@ -32,7 +32,6 @@ import {
   UserCheck,
   Bot,
   ExternalLink,
-  Printer,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -115,7 +114,6 @@ export const navGroups: NavGroup[] = [
       { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
       { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
-      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer, isNew: true },
       { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
     ],
   },
@@ -357,7 +355,6 @@ export const navHubs: NavHub[] = [
     memberPaths: [
       '/knowledge-base',
       '/resources',
-      '/print-resources',
       '/externa-resurser',
       '/ai-team',
       '/help',
@@ -366,7 +363,6 @@ export const navHubs: NavHub[] = [
     items: [
       { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
       { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
-      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer },
       { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
       { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
       { path: '/nätverk', labelKey: 'nav.network', icon: Users },

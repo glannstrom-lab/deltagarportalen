@@ -7,6 +7,7 @@
  */
 
 import type { CVData, JobData } from '@/types/pdf.types'
+import { parseArticleMarkdown, parseInline } from '@/components/knowledge-base/articleMarkdown'
 import type jsPDF from 'jspdf'
 
 export type { CVData, JobData } from '@/types/pdf.types'
@@ -1086,33 +1087,128 @@ export async function generateArticlePDF(article: ArticleForPDF): Promise<Blob> 
     y += summaryLines.length * 5 + 10
   }
 
-  // Innehåll - ta bort HTML-taggar
-  const plainContent = article.content
-    .replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '\n$1\n')
-    .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n')
-    .replace(/<li[^>]*>(.*?)<\/li>/gi, '• $1\n')
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
+  /*
+    Innehållet är MARKDOWN, inte HTML.
 
-  doc.setFontSize(10)
-  doc.setTextColor(30, 41, 59)
-  doc.setFont('helvetica', 'normal')
+    Fram till 2026-08-23 ströks HTML-taggar här och resten skrevs rakt av.
+    Artiklarna har aldrig varit HTML, så varje nedladdad PDF bar "## Rubrik",
+    "**fetstil**" och "[text](https://…)" som synlig text mitt i brödtexten.
+    Samma familj som uppläsningen, som läste tabellpipes högt innan den fick
+    `textUrMarkdown`.
 
-  const contentLines = doc.splitTextToSize(sanitizeText(plainContent), contentWidth)
-
-  for (let i = 0; i < contentLines.length; i++) {
-    if (y > 270) {
+    Lösningen är densamma: samma parser som skärmen använder. En markdown, en
+    tolkning, tre konsumenter — skärm, tal och PDF.
+  */
+  const nyttUppslagVidBehov = (behov: number) => {
+    if (y + behov > 275) {
       doc.addPage()
       y = margin
     }
-    doc.text(contentLines[i], margin, y)
-    y += 5
+  }
+
+  const skrivStycke = (
+    text: string,
+    opt: {
+      storlek?: number
+      stil?: 'normal' | 'bold' | 'italic'
+      farg?: number[]
+      indrag?: number
+      radhojd?: number
+    } = {}
+  ) => {
+    if (!text) return
+    const { storlek = 10, stil = 'normal', farg = [30, 41, 59], indrag = 0, radhojd = 5 } = opt
+    doc.setFontSize(storlek)
+    doc.setFont('helvetica', stil)
+    doc.setTextColor(farg[0], farg[1], farg[2])
+    const rader: string[] = doc.splitTextToSize(sanitizeText(text), contentWidth - indrag)
+    for (const rad of rader) {
+      nyttUppslagVidBehov(radhojd)
+      doc.text(rad, margin + indrag, y)
+      y += radhojd
+    }
+  }
+
+  // Inline-uppmärkning plattas ut: jsPDF kan inte byta typsnitt mitt i en rad
+  // utan att själv mäta varje ord. Länkens adress följer med i klartext — på
+  // papper är en länk utan adress oanvändbar.
+  const platta = (text: string): string =>
+    parseInline(text)
+      .map((seg) => (seg.kind === 'link' ? seg.text + ' (' + seg.href.replace(/^https?:[/][/]/, '') + ')' : seg.text))
+      .join('')
+
+  for (const block of parseArticleMarkdown(article.content)) {
+    switch (block.kind) {
+      case 'heading':
+        y += block.level === 2 ? 6 : 4
+        skrivStycke(platta(block.text), {
+          storlek: block.level === 2 ? 13 : 11,
+          stil: 'bold',
+          radhojd: block.level === 2 ? 7 : 6,
+        })
+        y += 2
+        break
+
+      case 'paragraph':
+        skrivStycke(platta(block.text))
+        y += 3
+        break
+
+      case 'list':
+        block.items.forEach((post, i) => {
+          const prefix = block.ordered ? `${i + 1}. ` : '\u2022 '
+          doc.setFontSize(10)
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(30, 41, 59)
+          const rader: string[] = doc.splitTextToSize(sanitizeText(platta(post)), contentWidth - 6)
+          rader.forEach((rad, radnr) => {
+            nyttUppslagVidBehov(5)
+            if (radnr === 0) doc.text(prefix, margin, y)
+            doc.text(rad, margin + 6, y)
+            y += 5
+          })
+        })
+        y += 3
+        break
+
+      case 'quote':
+        skrivStycke(platta(block.text), { stil: 'italic', farg: [71, 85, 105], indrag: 6 })
+        y += 3
+        break
+
+      case 'code':
+        doc.setFont('courier', 'normal')
+        doc.setFontSize(9)
+        doc.setTextColor(51, 65, 85)
+        for (const rad of doc.splitTextToSize(sanitizeText(block.text), contentWidth - 6) as string[]) {
+          nyttUppslagVidBehov(4.5)
+          doc.text(rad, margin + 6, y)
+          y += 4.5
+        }
+        doc.setFont('helvetica', 'normal')
+        y += 3
+        break
+
+      case 'table':
+        // Rad för rad med kolumnrubriken före värdet — samma val som
+        // uppläsningen gör. En riktig tabell i 170 mm blir sällan läsbar, och
+        // artiklarnas tabeller är nyckel/värde i praktiken.
+        block.rows.forEach((rad) => {
+          const celler = rad.map((cell, i) =>
+            block.head[i] ? `${platta(block.head[i])}: ${platta(cell)}` : platta(cell)
+          )
+          skrivStycke(celler.filter(Boolean).join(' \u2014 '), { indrag: 6 })
+        })
+        y += 3
+        break
+
+      case 'rule':
+        nyttUppslagVidBehov(6)
+        doc.setDrawColor(226, 232, 240)
+        doc.line(margin, y, pageWidth - margin, y)
+        y += 6
+        break
+    }
   }
 
   // Checklista om den finns
@@ -1144,416 +1240,7 @@ export async function generateArticlePDF(article: ArticleForPDF): Promise<Blob> 
   // Footer
   doc.setFontSize(8)
   doc.setTextColor(150, 150, 150)
-  doc.text('Deltagarportalen - www.deltagarportalen.se', margin, 285)
-
-  return doc.output('blob')
-}
-
-// ==================== EXERCISE PDF ====================
-
-export interface ExerciseForPDF {
-  id: string
-  title: string
-  description: string
-  category?: string
-  duration?: string
-  difficulty?: string
-  steps: Array<{
-    id: number
-    title: string
-    description: string
-    questions: Array<{
-      id: string
-      text: string
-      placeholder?: string
-    }>
-  }>
-}
-
-/**
- * Generera PDF för en övning
- */
-export async function generateExercisePDF(exercise: ExerciseForPDF): Promise<Blob> {
-  const jsPDFClass = await loadPDFLibraries()
-  const doc = new jsPDFClass({
-    unit: 'mm',
-    format: 'a4',
-    orientation: 'portrait',
-  })
-
-  const margin = 20
-  const pageWidth = 210
-  const contentWidth = pageWidth - (margin * 2)
-  let y = margin
-
-  // Header med kategori
-  if (exercise.category) {
-    doc.setFontSize(10)
-    doc.setTextColor(20, 184, 166) // teal
-    doc.setFont('helvetica', 'bold')
-    doc.text(sanitizeText(exercise.category.toUpperCase()), margin, y)
-    y += 8
-  }
-
-  // Titel
-  doc.setFontSize(22)
-  doc.setTextColor(30, 41, 59)
-  doc.setFont('helvetica', 'bold')
-  const titleLines = doc.splitTextToSize(sanitizeText(exercise.title), contentWidth)
-  doc.text(titleLines, margin, y)
-  y += titleLines.length * 8 + 5
-
-  // Metadata
-  doc.setFontSize(9)
-  doc.setTextColor(100, 116, 139)
-  doc.setFont('helvetica', 'normal')
-  const meta = []
-  if (exercise.duration) meta.push(exercise.duration)
-  if (exercise.difficulty) meta.push(exercise.difficulty)
-  if (meta.length > 0) {
-    doc.text(meta.join(' • '), margin, y)
-    y += 8
-  }
-
-  // Beskrivning
-  if (exercise.description) {
-    doc.setFontSize(11)
-    doc.setTextColor(71, 85, 105)
-    const descLines = doc.splitTextToSize(sanitizeText(exercise.description), contentWidth)
-    doc.text(descLines, margin, y)
-    y += descLines.length * 5 + 5
-  }
-
-  // Linje
-  doc.setDrawColor(226, 232, 240)
-  doc.setLineWidth(0.5)
-  doc.line(margin, y, pageWidth - margin, y)
-  y += 12
-
-  // Steg
-  exercise.steps.forEach((step) => {
-    if (y > 240) {
-      doc.addPage()
-      y = margin
-    }
-
-    // Steg-rubrik
-    doc.setFillColor(240, 253, 250) // teal-50
-    doc.roundedRect(margin, y - 5, contentWidth, 12, 2, 2, 'F')
-
-    doc.setFontSize(12)
-    doc.setTextColor(20, 184, 166)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`Steg ${step.id}: ${sanitizeText(step.title)}`, margin + 4, y + 3)
-    y += 15
-
-    // Steg-beskrivning
-    if (step.description) {
-      doc.setFontSize(10)
-      doc.setTextColor(71, 85, 105)
-      doc.setFont('helvetica', 'normal')
-      const stepDescLines = doc.splitTextToSize(sanitizeText(step.description), contentWidth - 8)
-      doc.text(stepDescLines, margin + 4, y)
-      y += stepDescLines.length * 5 + 8
-    }
-
-    // Frågor med skrivutrymme
-    step.questions.forEach((question, qIndex) => {
-      if (y > 250) {
-        doc.addPage()
-        y = margin
-      }
-
-      // Frågetext
-      doc.setFontSize(10)
-      doc.setTextColor(30, 41, 59)
-      doc.setFont('helvetica', 'bold')
-      const qLines = doc.splitTextToSize(`${qIndex + 1}. ${sanitizeText(question.text)}`, contentWidth - 8)
-      doc.text(qLines, margin + 4, y)
-      y += qLines.length * 5 + 3
-
-      // Skrivutrymme (streckade linjer)
-      doc.setDrawColor(200, 200, 200)
-      doc.setLineWidth(0.3)
-      for (let line = 0; line < 4; line++) {
-        if (y > 275) {
-          doc.addPage()
-          y = margin
-        }
-        doc.setLineDashPattern([2, 2], 0)
-        doc.line(margin + 4, y, pageWidth - margin - 4, y)
-        y += 8
-      }
-      doc.setLineDashPattern([], 0)
-      y += 5
-    })
-
-    y += 8
-  })
-
-  // Footer
-  doc.setFontSize(8)
-  doc.setTextColor(150, 150, 150)
-  doc.text('Deltagarportalen - www.deltagarportalen.se', margin, 285)
-
-  return doc.output('blob')
-}
-
-/**
- * Generera PDF för flera artiklar
- */
-export async function generateArticlesBundlePDF(articles: ArticleForPDF[]): Promise<Blob> {
-  const jsPDFClass = await loadPDFLibraries()
-  const doc = new jsPDFClass({
-    unit: 'mm',
-    format: 'a4',
-    orientation: 'portrait',
-  })
-
-  const margin = 20
-  const pageWidth = 210
-  const contentWidth = pageWidth - (margin * 2)
-
-  // Försättssida
-  doc.setFillColor(20, 184, 166) // teal
-  doc.rect(0, 0, pageWidth, 80, 'F')
-
-  doc.setFontSize(28)
-  doc.setTextColor(255, 255, 255)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Kunskapsbank', margin, 45)
-
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'normal')
-  doc.text(`${articles.length} artiklar`, margin, 58)
-
-  doc.setFontSize(10)
-  doc.setTextColor(30, 41, 59)
-  doc.text(`Genererad: ${new Date().toLocaleDateString('sv-SE')}`, margin, 95)
-
-  // Innehållsförteckning
-  doc.setFontSize(16)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Innehåll', margin, 115)
-
-  let tocY = 125
-  articles.forEach((article, index) => {
-    if (tocY > 270) {
-      doc.addPage()
-      tocY = margin
-    }
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(71, 85, 105)
-    const tocLine = `${index + 1}. ${sanitizeText(article.title)}`
-    const tocLines = doc.splitTextToSize(tocLine, contentWidth - 20)
-    doc.text(tocLines[0], margin, tocY)
-    tocY += 7
-  })
-
-  // Varje artikel
-  for (const article of articles) {
-    doc.addPage()
-    let y = margin
-
-    // Kategori
-    if (article.category) {
-      doc.setFontSize(10)
-      doc.setTextColor(100, 100, 100)
-      doc.text(sanitizeText(article.category.toUpperCase()), margin, y)
-      y += 8
-    }
-
-    // Titel
-    doc.setFontSize(18)
-    doc.setTextColor(30, 41, 59)
-    doc.setFont('helvetica', 'bold')
-    const titleLines = doc.splitTextToSize(sanitizeText(article.title), contentWidth)
-    doc.text(titleLines, margin, y)
-    y += titleLines.length * 7 + 8
-
-    // Innehåll
-    const plainContent = article.content
-      .replace(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/gi, '\n$1\n')
-      .replace(/<p[^>]*>(.*?)<\/p>/gi, '$1\n\n')
-      .replace(/<li[^>]*>(.*?)<\/li>/gi, '• $1\n')
-      .replace(/<br\s*\/?>/gi, '\n')
-      .replace(/<[^>]+>/g, '')
-      .replace(/&nbsp;/g, ' ')
-      .replace(/\n{3,}/g, '\n\n')
-      .trim()
-
-    doc.setFontSize(10)
-    doc.setTextColor(30, 41, 59)
-    doc.setFont('helvetica', 'normal')
-
-    const contentLines = doc.splitTextToSize(sanitizeText(plainContent), contentWidth)
-
-    for (const line of contentLines) {
-      if (y > 275) {
-        doc.addPage()
-        y = margin
-      }
-      doc.text(line, margin, y)
-      y += 5
-    }
-  }
-
-  // Footer på sista sidan
-  doc.setFontSize(8)
-  doc.setTextColor(150, 150, 150)
-  doc.text('Deltagarportalen - www.deltagarportalen.se', margin, 285)
-
-  return doc.output('blob')
-}
-
-/**
- * Generera PDF för flera övningar
- */
-export async function generateExercisesBundlePDF(exercises: ExerciseForPDF[]): Promise<Blob> {
-  const jsPDFClass = await loadPDFLibraries()
-  const doc = new jsPDFClass({
-    unit: 'mm',
-    format: 'a4',
-    orientation: 'portrait',
-  })
-
-  const margin = 20
-  const pageWidth = 210
-  const contentWidth = pageWidth - (margin * 2)
-
-  // Försättssida
-  doc.setFillColor(59, 130, 246) // blue
-  doc.rect(0, 0, pageWidth, 80, 'F')
-
-  doc.setFontSize(28)
-  doc.setTextColor(255, 255, 255)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Övningsbok', margin, 45)
-
-  doc.setFontSize(14)
-  doc.setFont('helvetica', 'normal')
-  doc.text(`${exercises.length} övningar`, margin, 58)
-
-  doc.setFontSize(10)
-  doc.setTextColor(30, 41, 59)
-  doc.text(`Genererad: ${new Date().toLocaleDateString('sv-SE')}`, margin, 95)
-
-  // Innehållsförteckning
-  doc.setFontSize(16)
-  doc.setFont('helvetica', 'bold')
-  doc.text('Innehåll', margin, 115)
-
-  let tocY = 125
-  exercises.forEach((ex, index) => {
-    if (tocY > 270) {
-      doc.addPage()
-      tocY = margin
-    }
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'normal')
-    doc.setTextColor(71, 85, 105)
-    doc.text(`${index + 1}. ${sanitizeText(ex.title)} (${ex.duration || '-'})`, margin, tocY)
-    tocY += 7
-  })
-
-  // Varje övning
-  for (const exercise of exercises) {
-    doc.addPage()
-    let y = margin
-
-    // Kategori
-    if (exercise.category) {
-      doc.setFontSize(10)
-      doc.setTextColor(59, 130, 246)
-      doc.setFont('helvetica', 'bold')
-      doc.text(sanitizeText(exercise.category.toUpperCase()), margin, y)
-      y += 8
-    }
-
-    // Titel
-    doc.setFontSize(18)
-    doc.setTextColor(30, 41, 59)
-    doc.setFont('helvetica', 'bold')
-    const titleLines = doc.splitTextToSize(sanitizeText(exercise.title), contentWidth)
-    doc.text(titleLines, margin, y)
-    y += titleLines.length * 7 + 5
-
-    // Metadata
-    const meta = []
-    if (exercise.duration) meta.push(exercise.duration)
-    if (exercise.difficulty) meta.push(exercise.difficulty)
-    if (meta.length > 0) {
-      doc.setFontSize(9)
-      doc.setTextColor(100, 116, 139)
-      doc.setFont('helvetica', 'normal')
-      doc.text(meta.join(' • '), margin, y)
-      y += 8
-    }
-
-    // Beskrivning
-    if (exercise.description) {
-      doc.setFontSize(10)
-      doc.setTextColor(71, 85, 105)
-      const descLines = doc.splitTextToSize(sanitizeText(exercise.description), contentWidth)
-      doc.text(descLines, margin, y)
-      y += descLines.length * 5 + 8
-    }
-
-    // Steg
-    for (const step of exercise.steps) {
-      if (y > 230) {
-        doc.addPage()
-        y = margin
-      }
-
-      // Steg-rubrik
-      doc.setFillColor(239, 246, 255) // blue-50
-      doc.roundedRect(margin, y - 5, contentWidth, 12, 2, 2, 'F')
-      doc.setFontSize(11)
-      doc.setTextColor(59, 130, 246)
-      doc.setFont('helvetica', 'bold')
-      doc.text(`Steg ${step.id}: ${sanitizeText(step.title)}`, margin + 4, y + 3)
-      y += 15
-
-      // Frågor med skrivutrymme
-      for (let qIndex = 0; qIndex < step.questions.length; qIndex++) {
-        const question = step.questions[qIndex]
-        if (y > 245) {
-          doc.addPage()
-          y = margin
-        }
-
-        doc.setFontSize(10)
-        doc.setTextColor(30, 41, 59)
-        doc.setFont('helvetica', 'bold')
-        const qLines = doc.splitTextToSize(`${qIndex + 1}. ${sanitizeText(question.text)}`, contentWidth - 8)
-        doc.text(qLines, margin + 4, y)
-        y += qLines.length * 5 + 3
-
-        // Skrivlinjer
-        doc.setDrawColor(200, 200, 200)
-        doc.setLineWidth(0.3)
-        for (let line = 0; line < 3; line++) {
-          if (y > 275) {
-            doc.addPage()
-            y = margin
-          }
-          doc.setLineDashPattern([2, 2], 0)
-          doc.line(margin + 4, y, pageWidth - margin - 4, y)
-          y += 7
-        }
-        doc.setLineDashPattern([], 0)
-        y += 5
-      }
-      y += 5
-    }
-  }
-
-  // Footer
-  doc.setFontSize(8)
-  doc.setTextColor(150, 150, 150)
-  doc.text('Deltagarportalen - www.deltagarportalen.se', margin, 285)
+  doc.text('Jobin - www.jobin.se', margin, 285)
 
   return doc.output('blob')
 }

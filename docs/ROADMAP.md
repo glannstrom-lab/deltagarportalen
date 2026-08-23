@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar — se avsnittet direkt nedan), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-23** (utskriftssidan borttagen, skriv ut och ladda ner flyttade till varje artikel — se avsnittet direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,46 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Ändring 2026-08-23 — utskriftssidan borttagen, knapparna flyttade till artikeln
+
+**Beslut Mikael:** ta bort fliken "Skriv ut resurser" och lägg en **Skriv ut**-
+och en **Ladda ner**-knapp på varje artikel i kunskapsbanken i stället.
+
+**Gjort och verifierat i webbläsare (dev :3000, inloggad):**
+
+- `/print-resources` är borta — route, lazy-import, `navGroups`, `navHubs`
+  (både `memberPaths` och `items`), hubbkortet i `ResurserHub`, hubbens
+  fokuslägesval, `hubIcons`, `domains`, `radgivarRutter`, `usePageTitle`,
+  coach-länken i `coaches.ts`, nav-smoke-listan, `e2e/mat-kolumner.cjs` och
+  i18n-nycklarna (`nav.printResources`, `resurserHub.features.printResources`,
+  `focus.print`). `PrintableResources.tsx` och `FocusPrintWizard.tsx` raderade.
+  `ResurserHub.test.tsx` har en **regressionsvakt** som kräver att kortet inte
+  kommer tillbaka.
+- Artikelsidan har två nya knappar med synlig text i åtgärdsraden. **Skriv ut**
+  är `window.print()` mot en utskriftsstil i `accessibility.css` som döljer allt
+  utom artikeln, tvingar svart på vitt och tar tillbaka checklistans rutor att
+  kryssa i för hand. **Ladda ner** ger en PDF namngiven efter slugen.
+  Uppmätt: 4 sidor utskrift, 17,7 kB PDF, noll konsolfel.
+
+**Två defekter som föll ut på köpet, båda ärvda från den borttagna sidan:**
+
+1. `generateArticlePDF` strök **HTML**-taggar ur innehåll som är **markdown**.
+   Varje nedladdad artikel bar `## Rubrik`, `**fetstil**` och
+   `[text](https://…)` som synlig text. Den går nu genom samma
+   `parseArticleMarkdown`/`parseInline` som skärmen och uppläsningen — en
+   markdown, en tolkning, tre konsumenter.
+2. Sidfoten på varje genererad PDF sa `www.deltagarportalen.se`. Det är
+   staging; prod är `jobin.se`.
+
+Dessutom: `generateExercisePDF`, `generateArticlesBundlePDF` och
+`generateExercisesBundlePDF` (409 rader) föll utan anropare när sidan försvann
+och är raderade i samma ändring.
+
+**Grindar:** `npm run verify` grön. 148 testfiler, 2 391 tester. Typtaket sänkt
+363 → 362.
 
 ---
 
