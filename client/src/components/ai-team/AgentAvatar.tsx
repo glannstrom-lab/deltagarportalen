@@ -55,24 +55,3 @@ export function AgentAvatar({ agentId, color, size = 'md', className }: AgentAva
     </div>
   )
 }
-
-export function AgentAvatarSolid({ agentId, color, size = 'md', className }: AgentAvatarProps) {
-  const Icon = agentIcons[agentId]
-  const colors = agentColorClasses[color]
-
-  return (
-    <div
-      className={cn(
-        'rounded-xl flex items-center justify-center flex-shrink-0',
-        'shadow-md',
-        colors.bg,
-        sizeClasses[size],
-        className
-      )}
-    >
-      <Icon className={cn(iconSizeClasses[size], 'text-white')} aria-hidden="true" />
-    </div>
-  )
-}
-
-export default AgentAvatar

@@ -9969,6 +9969,15 @@
     "selectPersonality": "Select personality",
     "clearChat": "Clear chat",
     "chatHistory": "Chat history",
+    "intro": "Here is your team. Pick who you would like to talk to — you can change the personality and reply length in the side panel at any time.",
+    "aiBadge": "AI coach",
+    "opensInNewTab": "opens in a new tab",
+    "participantLabel": "Participant",
+    "switchAgentKeepsChat": "Each agent has its own chat. Your earlier conversation is still there.",
+    "chat": {
+      "taskCreateErrorTitle": "Could not create the task",
+      "taskCreateErrorMessage": "The task could not be saved to your calendar. Please try again."
+    },
     "thinking": "Thinking...",
     "send": "Send",
     "inputPlaceholder": "Write a message...",
@@ -9977,28 +9986,23 @@
     "agents": {
       "arbetskonsulent": {
         "name": "Employment Consultant",
-        "description": "Expert on job searching, CVs and applications",
-        "systemPrompt": "You are an experienced employment consultant. IMPORTANT: You have access to the user's ACTUAL CV data and profile information in the context block below. When giving feedback you MUST base it on these SPECIFIC details - don't make things up or assume. If asked to review a CV, refer to the actual titles, employers and skills found in the context. Be supportive but professional."
+        "description": "Expert on job searching, CVs and applications"
       },
       "arbetsterapeut": {
         "name": "Occupational Therapist",
-        "description": "Specialist in work ability and accommodations",
-        "systemPrompt": "You are an occupational therapist helping people with disabilities and health challenges. IMPORTANT: You have access to the user's energy level and profile in the context block below - adapt your responses accordingly. Give advice about workplace accommodations, energy management and finding the right work-life balance."
+        "description": "Specialist in work ability and accommodations"
       },
       "studievagledare": {
         "name": "Career Counselor",
-        "description": "Guide for education and career paths",
-        "systemPrompt": "You are a career counselor helping with education choices and career planning. IMPORTANT: You have access to the user's CV, experience and interest profile in the context block below - base your recommendations on these ACTUAL details. You know a lot about skill validation, further education and how to build on competencies."
+        "description": "Guide for education and career paths"
       },
       "motivationscoach": {
         "name": "Motivation Coach",
-        "description": "Support for motivation and self-confidence",
-        "systemPrompt": "You are a motivation coach helping people find their inner drive. IMPORTANT: You have access to the user's profile and job search status in the context block below - use these to give personal encouragement. Provide support during setbacks, help with goal setting and celebrate progress based on their actual situation."
+        "description": "Support for motivation and self-confidence"
       },
       "digitalcoach": {
         "name": "Digital Coach",
-        "description": "Expert on LinkedIn and digital tools",
-        "systemPrompt": "You are a digital coach helping with online presence and digital tools for job searching. IMPORTANT: You have access to the user's CV data and profile in the context block below - give advice that matches their ACTUAL skills and background. Help with LinkedIn optimization, digital portfolios and professional networking online."
+        "description": "Expert on LinkedIn and digital tools"
       }
     },
     "personalities": {
@@ -10114,28 +10118,6 @@
     },
     "copyMessage": "Copy",
     "messageCopied": "Copied!",
-    "onboarding": {
-      "welcome": {
-        "title": "Welcome to My AI Team!",
-        "description": "Your personal support team with 5 AI specialists to help you in your job search."
-      },
-      "agents": {
-        "title": "Meet your agents",
-        "description": "Each agent specializes in their area and can help you with specific challenges."
-      },
-      "personality": {
-        "title": "Choose personality",
-        "description": "Customize how your agents communicate. From professional to fun grandma style!"
-      },
-      "quickstart": {
-        "title": "Get started quickly",
-        "description": "Here's how to best use AI Team:",
-        "step1": "Choose an agent that matches your question",
-        "step2": "Use quick actions or write freely",
-        "step3": "Try different personalities for variety"
-      },
-      "startChat": "Start chatting"
-    },
     "welcomeMessage": "Hi! I am here to help you. There are no silly questions - start when you feel ready!",
     "tryAsking": "Try asking about:"
   },

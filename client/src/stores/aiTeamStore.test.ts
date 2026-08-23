@@ -40,7 +40,21 @@ describe('aiTeamStore', () => {
     expect(s.error).toBeNull()
   })
 
-  it('byte av agent rensar historiken och nollställer laddning/fel', () => {
+  /**
+   * ÄNDRAT 2026-08-23: testet krävde tidigare att historiken RENSAS vid
+   * agentbyte, och cementerade därmed två buggar.
+   *
+   * 1. Agentkorten är en `radiogroup` — en piltangent räckte för att radera
+   *    hela samtalet, utan varning.
+   * 2. Sparningen till `ai_team_sessions` är debouncead 1000 ms. Bytte man
+   *    agent inom den sekunden avbröt effektens cleanup timern samtidigt som
+   *    `messages` nollställdes — meddelandet fanns då varken i minnet eller i
+   *    databasen.
+   *
+   * `AgentChat` laddar historiken per agent vid byte, så det finns ingen
+   * anledning att tömma här.
+   */
+  it('byte av agent behåller historiken men nollställer laddning/fel', () => {
     const s = useAITeamStore.getState()
     s.addMessage(meddelande('user', 'Hej'))
     useAITeamStore.setState({ isLoading: true, error: 'gammalt fel' })
@@ -49,9 +63,20 @@ describe('aiTeamStore', () => {
 
     const efter = useAITeamStore.getState()
     expect(efter.selectedAgent).toBe('studievagledare')
-    expect(efter.messages).toEqual([])
+    expect(efter.messages).toHaveLength(1)
+    expect(efter.messages[0].content).toBe('Hej')
     expect(efter.isLoading).toBe(false)
     expect(efter.error).toBeNull()
+  })
+
+  it('att välja samma agent igen är en nolloperation', () => {
+    useAITeamStore.getState().addMessage(meddelande('user', 'Hej'))
+    useAITeamStore.setState({ error: 'gammalt fel' })
+
+    useAITeamStore.getState().setAgent('arbetskonsulent')
+
+    // Felet står kvar: inget byte skedde, så ingenting ska nollställas.
+    expect(useAITeamStore.getState().error).toBe('gammalt fel')
   })
 
   it('byte av personlighet behåller historiken', () => {

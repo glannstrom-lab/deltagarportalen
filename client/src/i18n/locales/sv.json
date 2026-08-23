@@ -9969,6 +9969,15 @@
     "selectPersonality": "Välj personlighet",
     "clearChat": "Rensa chatt",
     "chatHistory": "Chatthistorik",
+    "intro": "Här är ditt team. Välj vem du vill prata med — du kan ändra personlighet och svarslängd i sidopanelen när som helst.",
+    "aiBadge": "AI-coach",
+    "opensInNewTab": "öppnas i ny flik",
+    "participantLabel": "Deltagare",
+    "switchAgentKeepsChat": "Varje agent har sin egen chatt. Din tidigare konversation finns kvar.",
+    "chat": {
+      "taskCreateErrorTitle": "Kunde inte skapa uppgiften",
+      "taskCreateErrorMessage": "Uppgiften kunde inte sparas i kalendern. Försök igen."
+    },
     "thinking": "Tänker...",
     "send": "Skicka",
     "inputPlaceholder": "Skriv meddelande...",
@@ -9979,28 +9988,23 @@
     "agents": {
       "arbetskonsulent": {
         "name": "Arbetskonsulent",
-        "description": "Expert på jobbsökning, CV och ansökningar",
-        "systemPrompt": "Du är en erfaren arbetskonsulent. VIKTIGT: Du har tillgång till användarens faktiska CV-data och profilinformation i kontextblocket nedan. När du ger feedback MÅSTE du basera den på dessa SPECIFIKA uppgifter - inte hitta på eller anta saker. Om du ombeds granska ett CV, referera till de faktiska titlar, arbetsgivare och kompetenser som finns i kontexten. Var stöttande men professionell."
+        "description": "Expert på jobbsökning, CV och ansökningar"
       },
       "arbetsterapeut": {
         "name": "Arbetsterapeut",
-        "description": "Specialist på arbetsförmåga och anpassningar",
-        "systemPrompt": "Du är en arbetsterapeut som hjälper personer med funktionsvariationer och hälsoutmaningar. VIKTIGT: Du har tillgång till användarens energinivå och profil i kontextblocket nedan - anpassa dina svar efter dessa uppgifter. Ge råd om arbetsanpassningar, energihantering och att hitta rätt balans i arbetslivet."
+        "description": "Specialist på arbetsförmåga och anpassningar"
       },
       "studievagledare": {
         "name": "Studievägledare",
-        "description": "Guide för utbildning och karriärvägar",
-        "systemPrompt": "Du är en studievägledare som hjälper till med utbildningsval och karriärplanering. VIKTIGT: Du har tillgång till användarens CV, erfarenhet och intresseprofil i kontextblocket nedan - basera dina rekommendationer på dessa FAKTISKA uppgifter. Du vet mycket om validering, vidareutbildning och hur man bygger på sin kompetens."
+        "description": "Guide för utbildning och karriärvägar"
       },
       "motivationscoach": {
         "name": "Motivationscoach",
-        "description": "Stöd för motivation och självförtroende",
-        "systemPrompt": "Du är en motivationscoach som hjälper människor att hitta sin inre drivkraft. VIKTIGT: Du har tillgång till användarens profil och jobbsökningsstatus i kontextblocket nedan - använd dessa för att ge personlig uppmuntran. Ge stöd vid motgångar, hjälp med målsättning och fira framsteg baserat på deras faktiska situation."
+        "description": "Stöd för motivation och självförtroende"
       },
       "digitalcoach": {
         "name": "Digital Coach",
-        "description": "Expert på LinkedIn och digitala verktyg",
-        "systemPrompt": "Du är en digital coach som hjälper med online-närvaro och digitala verktyg för jobbsökning. VIKTIGT: Du har tillgång till användarens CV-data och profil i kontextblocket nedan - ge råd som matchar deras FAKTISKA kompetenser och bakgrund. Hjälp med LinkedIn-optimering, digitala portfolios och professionellt nätverkande online."
+        "description": "Expert på LinkedIn och digitala verktyg"
       }
     },
     "personalities": {
@@ -10115,29 +10119,7 @@
       "noResponse": "Inget svar från AI-tjänsten."
     },
     "copyMessage": "Kopiera",
-    "messageCopied": "Kopierat!",
-    "onboarding": {
-      "welcome": {
-        "title": "Välkommen till Mitt AI Team!",
-        "description": "Ditt personliga supportteam med 5 AI-specialister som hjälper dig i jobbsökningen."
-      },
-      "agents": {
-        "title": "Möt dina agenter",
-        "description": "Varje agent är specialist inom sitt område och kan hjälpa dig med specifika utmaningar."
-      },
-      "personality": {
-        "title": "Välj personlighet",
-        "description": "Anpassa hur dina agenter kommunicerar. Från professionell till rolig mormor-stil!"
-      },
-      "quickstart": {
-        "title": "Kom igång snabbt",
-        "description": "Så här använder du AI Team på bästa sätt:",
-        "step1": "Välj en agent som matchar din fråga",
-        "step2": "Använd snabbfunktioner eller skriv fritt",
-        "step3": "Prova olika personligheter för variation"
-      },
-      "startChat": "Börja chatta"
-    }
+    "messageCopied": "Kopierat!"
   },
   "salary": {
     "pageTitle": "Lön & Förhandling",

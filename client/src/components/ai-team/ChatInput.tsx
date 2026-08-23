@@ -93,7 +93,12 @@ export function ChatInput({
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder={t('aiTeam.inputPlaceholder')}
-          disabled={disabled || isLoading}
+          /* WCAG 2.4.3. Att avaktivera ett element som HAR fokus kastar fokus
+             till <body>. Användaren tappade sin plats vid VARJE skickat
+             meddelande och fick tabba om från sidans topp. Fältet står kvar
+             öppet i stället, så man kan formulera nästa fråga medan svaret
+             kommer. Dubbelsändning är redan spärrad i `sendMessage`. */
+          disabled={disabled}
           rows={1}
           className={cn(
             'flex-1 min-w-0 resize-none',

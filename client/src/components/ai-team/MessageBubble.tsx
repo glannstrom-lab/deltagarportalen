@@ -103,7 +103,7 @@ export function MessageBubble({
             <button
               onClick={() => onSpeak?.(message.content)}
               className={cn(
-                'px-2 py-1 rounded-lg',
+                'min-w-[36px] min-h-[36px] px-2 py-2 rounded-lg',
                 'bg-white dark:bg-stone-700',
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
@@ -115,13 +115,13 @@ export function MessageBubble({
               )}
               aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
             >
-              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-[var(--c-solid)] animate-pulse')} aria-hidden="true" />
+              <Volume2 className={cn('w-4 h-4', isSpeaking && 'text-[var(--c-solid)] animate-pulse')} aria-hidden="true" />
             </button>
             {/* Create task button */}
             <button
               onClick={() => onCreateTask?.(message.content)}
               className={cn(
-                'px-2 py-1 rounded-lg',
+                'min-w-[36px] min-h-[36px] px-2 py-2 rounded-lg',
                 'bg-white dark:bg-stone-700',
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
@@ -133,16 +133,16 @@ export function MessageBubble({
               aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
             >
               {taskCreated ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
+                <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
               ) : (
-                <CalendarPlus className="w-3 h-3" aria-hidden="true" />
+                <CalendarPlus className="w-4 h-4" aria-hidden="true" />
               )}
             </button>
             {/* Save to diary button */}
             <button
               onClick={() => onSaveToDiary?.(message.content)}
               className={cn(
-                'px-2 py-1 rounded-lg',
+                'min-w-[36px] min-h-[36px] px-2 py-2 rounded-lg',
                 'bg-white dark:bg-stone-700',
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
@@ -154,16 +154,16 @@ export function MessageBubble({
               aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
             >
               {diarySaved ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
+                <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
               ) : (
-                <BookOpen className="w-3 h-3" aria-hidden="true" />
+                <BookOpen className="w-4 h-4" aria-hidden="true" />
               )}
             </button>
             {/* Copy button */}
             <button
               onClick={handleCopy}
               className={cn(
-                'px-2 py-1 rounded-lg',
+                'min-w-[36px] min-h-[36px] px-2 py-2 rounded-lg',
                 'bg-white dark:bg-stone-700',
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
@@ -175,9 +175,9 @@ export function MessageBubble({
               aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
             >
               {copied ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
+                <Check className="w-4 h-4 text-green-500" aria-hidden="true" />
               ) : (
-                <Copy className="w-3 h-3" aria-hidden="true" />
+                <Copy className="w-4 h-4" aria-hidden="true" />
               )}
             </button>
           </div>

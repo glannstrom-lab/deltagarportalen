@@ -27,6 +27,16 @@ export type AgentColor = 'teal' | 'rose' | 'violet' | 'amber' | 'sky'
 // Response mode types
 export type ResponseMode = 'short' | 'medium' | 'detailed'
 
+/**
+ * Fråga som väntar på att skickas.
+ *
+ * Fokuslägets guide samlade in en fråga och kastade den — den skickades
+ * aldrig någonstans, och sista steget sa ändå "Bra! Öppna AI-team i
+ * normalläge för att fortsätta samtalet", som om den gått iväg. Guiden lämnar
+ * den här i stället, och `AgentChat` plockar upp den.
+ */
+export type PendingQuestion = string | null
+
 // Personality types
 export type PersonalityId =
   | 'professional'
@@ -44,7 +54,16 @@ export interface Personality {
   nameKey: string
   descriptionKey: string
   category: PersonalityCategory
-  systemPrompt: string
+  /**
+   * OBS: det HÄR fältet finns inte längre på personligheterna.
+   *
+   * Klienten hade sju `systemPrompt`-strängar som aldrig skickades någonstans
+   * — `grep` för `.systemPrompt` gav noll träffar utanför definitionen. Den
+   * faktiska tonen styrs av `PERSONALITY_MODIFIERS` i `client/api/ai.js`.
+   * Det var värre än vanlig dödkod: klientversionen var mer riskabel än
+   * serverns (Arnold-texten där instruerade filmcitat utan faktabroms), så
+   * den som ville härda tonlägena hade härdat fel fil och trott sig klar.
+   */
 }
 
 // Quick actions
@@ -69,6 +88,8 @@ export interface ChatMessage {
 
 // Store state
 export interface AITeamState {
+  pendingQuestion: PendingQuestion
+  setPendingQuestion: (question: PendingQuestion) => void
   selectedAgent: AgentId
   selectedPersonality: PersonalityId
   responseMode: ResponseMode
@@ -89,6 +110,29 @@ export interface AITeamState {
 }
 
 // Color utilities
+/**
+ * Agentens färger — samtliga fem pekar på hubbens tokens.
+ *
+ * Fram till 2026-08-23 hade varje agent sin egen pastell (teal/rose/violet/
+ * amber/sky). Följden: fem olika pasteller bredvid varandra i agentväljaren,
+ * och när man valt en färgades tipsrutan, snabbfunktionernas ikon och varje
+ * AI-avatar om efter den — mitt på en sida som hör till hubben Resurser
+ * (sky). DESIGN.md §4 säger uttryckligen att variationen ska komma från ikon
+ * och text, inte från olika pasteller på samma sida, och §14 att komponenter
+ * alltid konsumerar `--c-*` — aldrig en specifik hubbs token.
+ *
+ * Nycklarna är kvar med flit: agenterna behåller sin identitet via ikon och
+ * namn, och skulle en framtida design vilja återinföra färgvariation är det
+ * ett eget beslut — inte något som smyger tillbaka via en datafil.
+ */
+const HUBBFARGER = {
+  bg: 'bg-[var(--c-solid)]',
+  bgLight: 'bg-[var(--c-bg)]',
+  text: 'text-[var(--c-text)]',
+  border: 'border-[var(--c-accent)]',
+  ring: 'ring-[var(--c-solid)]',
+} as const
+
 export const agentColorClasses: Record<AgentColor, {
   bg: string
   bgLight: string
@@ -96,39 +140,9 @@ export const agentColorClasses: Record<AgentColor, {
   border: string
   ring: string
 }> = {
-  teal: {
-    bg: 'bg-teal-500',
-    bgLight: 'bg-teal-50 dark:bg-teal-900/30',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-800',
-    ring: 'ring-teal-500',
-  },
-  rose: {
-    bg: 'bg-rose-500',
-    bgLight: 'bg-rose-50 dark:bg-rose-900/30',
-    text: 'text-rose-600 dark:text-rose-400',
-    border: 'border-rose-200 dark:border-rose-800',
-    ring: 'ring-rose-500',
-  },
-  violet: {
-    bg: 'bg-violet-500',
-    bgLight: 'bg-violet-50 dark:bg-violet-900/30',
-    text: 'text-violet-600 dark:text-violet-400',
-    border: 'border-violet-200 dark:border-violet-800',
-    ring: 'ring-violet-500',
-  },
-  amber: {
-    bg: 'bg-amber-500',
-    bgLight: 'bg-amber-50 dark:bg-amber-900/30',
-    text: 'text-amber-600 dark:text-amber-400',
-    border: 'border-amber-200 dark:border-amber-800',
-    ring: 'ring-amber-500',
-  },
-  sky: {
-    bg: 'bg-sky-500',
-    bgLight: 'bg-sky-50 dark:bg-sky-900/30',
-    text: 'text-sky-600 dark:text-sky-400',
-    border: 'border-sky-200 dark:border-sky-800',
-    ring: 'ring-sky-500',
-  },
+  teal: HUBBFARGER,
+  rose: HUBBFARGER,
+  violet: HUBBFARGER,
+  amber: HUBBFARGER,
+  sky: HUBBFARGER,
 }

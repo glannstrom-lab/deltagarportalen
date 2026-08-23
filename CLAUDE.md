@@ -789,6 +789,59 @@ Ska `anon` aldrig nå funktionen: `REVOKE EXECUTE ON FUNCTION … FROM PUBLIC;` 
 
 **Kontroll:** varje punkt som kräver en dashboardåtgärd får en verifieringsrad med kommando och **förväntat svar** (`→ HTTP 200`, inte `→ HTTP 503`), och den raden körs innan punkten stängs.
 
+### 2026-08-23: En säkerhetsregel som bara gäller en av fem är ingen regel
+
+**Problem:** AI-teamets fem agenter delar promptbyggare, men "ABSOLUT REGEL OM
+REGELVERK" (aldrig belopp, procentsatser eller villkor om a-kassa, sjukpenning
+eller LAS ur minnet) låg bara i `arbetskonsulent`-strängen. `arbetsterapeut`,
+`studievagledare`, `motivationscoach` och `digitalcoach` svarade utan den — och
+`useSuggestedAgent` rekommenderar `arbetsterapeut` **just när användaren loggat
+sitt mående**, alltså precis när frågan "vad händer med min ersättning om jag
+blir sjukskriven" är som mest trolig.
+
+**Grinden såg det aldrig.** `ai-sanningsregel.test.ts` anropade `ai-team-chat`
+utan `agentTyp`, och funktionen faller då tillbaka på `arbetskonsulent` — den
+enda agent som redan var säker. Testet var grönt hela tiden och kunde inte falla.
+
+**Lärdomen:** när en prompt har grenar måste grinden itereras över **alla**
+grenar. Ett test som anropar med tomt underlag prövar standardgrenen, och
+standardgrenen är nästan alltid den som redan är rätt. Samma familj som
+"mutationsstickprov slår kodläsning", fast en våning ned: det är inte koden som
+saknar test, det är *varianten*.
+
+**Härledd regel:** lägg en sådan regel på **sammansättningsstället**, inte i
+varje gren. `REGELVERKSREGEL` är nu en konstant som `ai-team-chat` slår ihop med
+vald agent — en sjätte agent kan då inte tillkomma utan skyddet.
+
+**Två fällor i verifieringen som kostade tid:**
+1. Min första mutationskontroll av grinden **applicerades aldrig** (strängen
+   matchade inte p.g.a. escaping) och gav ett falskt grönt. Kör aldrig en
+   mutation utan att kontrollera att den faktiskt tog — `if (fore === efter)
+   throw`.
+2. Arbetskopian har **CRLF**. Flerradiga sökmönster i ett skript matchar bara
+   mot LF. Normalisera vid inläsning och skriv tillbaka i samma format, annars
+   får du antingen tysta missar eller en diff över hela filen.
+
+### 2026-08-23: Renderaren och prompten var två halvor av samma bugg
+
+**Problem:** AI-teamets svar visade `**Ansök till sparade jobb**` med synliga
+asterisker. `MarkdownRenderer.tsx` är 491 rader och har en fungerande
+fetstilsparser — men alla fyra inline-mönstren (fet, kursiv, kod, länk) inleds
+`^(.+?)`, som kräver **minst ett tecken före markeringen**. En rad som börjar
+med `**` matchade därför aldrig.
+
+Det är inget kantfall: systemprompten i `client/api/ai.js` säger ordagrant
+*"Formatera så här: **Rubrik 1**"*. Portalen instruerade alltså modellen att
+skriva exakt det format renderaren inte klarade.
+
+**Extra fälla:** testfilen *dokumenterade* begränsningen i en kommentar och
+valde ett testfall som gick runt den — som om den vore avsiktlig. En kommentar
+som förklarar ett beteende är inget bevis för att beteendet är rätt.
+
+**Kontroll:** när AI-utdata ser fel ut i UI:t — jämför vad **prompten ber om**
+med vad **renderaren klarar**. De skrivs av olika personer vid olika tillfällen
+och driver isär utan att något larmar.
+
 ### 2026-08-23: En länklista röttnar tyst — 87 av 323 länkar var döda
 
 **Problem:** `/externa-resurser` pekade på 323 externa adresser. En maskinell

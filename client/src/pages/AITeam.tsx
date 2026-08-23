@@ -29,7 +29,10 @@ export default function AITeam() {
     <FokusVaxel
       title={t('aiTeam.title', 'AI-team')}
       icon={Bot}
-      domain="action"
+      /* "action" är Översiktens mint. Sidan hör till hubben Resurser, och
+         normalvyn nedan säger redan "info" — så fokusläget färgade om hela
+         sidan till fel hubb. Samma bugg som Article.tsx hade 2026-08-22. */
+      domain="info"
       guide={<FocusAITeamWizard onExit={leaveWizard} />}
     >
       <AITeamInner />
@@ -77,28 +80,33 @@ function AITeamInner() {
           OnboardingModal. AI Team-sidan självförklarar (titel + agentkort)
           så en kort inline-tip räcker. */}
       <InlineTip storageKey="ai-team-intro" icon={Lightbulb} className="mb-4">
-        Välj en agent nedan för att börja chatta. Du kan byta personlighet
-        och svarsstil i sidopanelen — varje agent är expert på sitt område.
+        {t(
+          'aiTeam.intro',
+          'Här är ditt team. Välj vem du vill prata med — du kan ändra personlighet och svarslängd i sidopanelen när som helst.'
+        )}
       </InlineTip>
 
       {/* Suggested Agent Banner */}
       {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
         <button
           onClick={handleSuggestedAgentClick}
-          className="w-full flex items-center gap-3 p-3 mb-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors text-left group"
+          /* Amber är enligt DESIGN.md §4 semantisk varningsfärg. Ett positivt
+             förslag är ingen varning — och en amber-yta mitt på en sky-blå
+             sida bryter en-färg-per-sida-regeln. */
+          className="w-full flex items-center gap-3 p-3 mb-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)] hover:bg-[var(--c-accent)]/30 transition-colors text-left group"
         >
-          <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
-            <Lightbulb className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+          <div className="w-8 h-8 rounded-lg bg-white/60 dark:bg-stone-900/40 flex items-center justify-center flex-shrink-0">
+            <Lightbulb className="w-4 h-4 text-[var(--c-text)]" aria-hidden="true" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+            <p className="text-sm font-medium text-[var(--c-text)]">
               {t('aiTeam.suggestion.title', 'Rekommenderad för dig')}
             </p>
-            <p className="text-xs text-amber-700 dark:text-amber-300 truncate">
+            <p className="text-xs text-stone-600 dark:text-stone-400 truncate">
               {t(suggestedAgent.reasonKey, suggestedAgent.reason)} — {t(`aiTeam.agents.${suggestedAgent.agentId}.name`)}
             </p>
           </div>
-          <span className="text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+          <span aria-hidden="true" className="text-[var(--c-text)] group-hover:translate-x-1 transition-transform">
             →
           </span>
         </button>
@@ -119,8 +127,35 @@ function AITeamInner() {
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Sidebar */}
-        <div className="lg:col-span-1 space-y-4 order-last lg:order-first">
+        {/* Chat Area */}
+        {/*
+          Höjden är relativ till fönstret, inte tre fasta pixeltal. Med
+          `h-[450px]` krympte inte chatten när mobiltangentbordet fälldes upp,
+          så fältet man skrev i kunde hamna bakom det — och sidan fick både en
+          yttre och en inre scroll på en liten skärm.
+
+          `role="region"` + namn: skiplänken ovan flyttar fokus hit, men målet
+          hade varken roll eller namn, så en skärmläsare sa ingenting om var
+          man landat.
+        */}
+        <div
+          id="ai-chat"
+          role="region"
+          aria-label={t('aiTeam.chatHistory', 'Chatthistorik')}
+          className="lg:col-span-3 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden h-[min(70dvh,600px)] min-h-[420px] lg:order-last"
+          tabIndex={-1}
+        >
+          <AgentChat ref={chatRef} />
+        </div>
+        {/*
+          Sidopanelen ligger EFTER chatten i DOM.
+
+          Den låg före, och `order-last`/`lg:order-first` flyttade den visuellt
+          — vilket betyder att tangentbord och skärmläsare på mobil gick genom
+          personlighet, svarslängd, fem snabbfunktioner och tipsrutan INNAN
+          chatten, trots att chatten syns överst. WCAG 1.3.2 och 2.4.3.
+        */}
+        <div className="lg:col-span-1 space-y-4 lg:order-first">
           {/* Personality */}
           <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
             <PersonalityDropdown />
@@ -168,15 +203,6 @@ function AITeamInner() {
               </li>
             </ul>
           </section>
-        </div>
-
-        {/* Chat Area */}
-        <div
-          id="ai-chat"
-          className="lg:col-span-3 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px] order-first lg:order-last"
-          tabIndex={-1}
-        >
-          <AgentChat ref={chatRef} />
         </div>
       </div>
     </PageLayout>

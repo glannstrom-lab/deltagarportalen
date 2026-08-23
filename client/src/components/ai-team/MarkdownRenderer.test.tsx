@@ -15,11 +15,12 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MarkdownRenderer } from './MarkdownRenderer'
 
-// InlineMarkdown-regexet för länkar (`^(.+?)\[...\]\(...\)`) kräver minst ett
-// tecken FÖRE `[` för att träffa — samma mönster som fet/kursiv-reglerna i
-// samma parser. En rad som redan innehåller inledande text (precis som ett
-// AI-svar normalt formulerar sig, "Läs mer här: [länk](url)") är alltså det
-// realistiska testfallet, inte en länk som absolut första tecken.
+// RÄTTAT 2026-08-23: här stod tidigare att inline-regexen kräver minst ett
+// tecken FÖRE markeringen, och testfallet valdes för att gå runt det — som om
+// begränsningen vore avsiktlig. Den var en bugg: alla fyra mönstren (fet,
+// kursiv, kod, länk) misslyckades i början av en rad, och systemprompten i
+// `client/api/ai.js` instruerar uttryckligen modellen att inleda varje punkt
+// med `**Rubrik**`. Se testerna längst ned i filen.
 describe('MarkdownRenderer — länksanering', () => {
   it('renderar INTE en javascript:-URL som klickbar href', () => {
     render(<MarkdownRenderer content="Läs mer här: [Klicka här](javascript:alert(1))" />)
@@ -55,5 +56,72 @@ describe('MarkdownRenderer — länksanering', () => {
     expect(link).toHaveAttribute('href', 'https://arbetsformedlingen.se')
     expect(link).toHaveAttribute('target', '_blank')
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+  })
+})
+
+/**
+ * Fetstil, kursiv, kod och länk i BÖRJAN av en rad.
+ *
+ * Alla fyra inline-mönstren inleddes med `^(.+?)` — minst ett tecken före
+ * markeringen. En rad som börjar med `**Rubrik**` matchade alltså aldrig, och
+ * asteriskerna renderades som synlig text. Det är inte ett kantfall: systemprompten
+ * i `client/api/ai.js` säger ordagrant "Formatera så här: **Rubrik 1**", så
+ * modellen inleder nästan varje punkt precis så. Uppmätt i webbläsaren
+ * 2026-08-23: hela AI-svaret fullt av `**`.
+ *
+ * Mutationskontroll: ändra tillbaka något mönster till `^(.+?)` och testet faller.
+ */
+describe('MarkdownRenderer — inline-markering först på raden', () => {
+  it('renderar fetstil som inleder en rad', () => {
+    render(<MarkdownRenderer content="**Ansök till sparade jobb** Skicka in ansökningarna." />)
+
+    expect(screen.getByText('Ansök till sparade jobb').tagName).toBe('STRONG')
+    expect(screen.queryByText(/\*\*/)).toBeNull()
+  })
+
+  it('renderar kursiv som inleder en rad', () => {
+    render(<MarkdownRenderer content="*Observera* att villkoren ändras." />)
+
+    expect(screen.getByText('Observera').tagName).toBe('EM')
+  })
+
+  it('renderar en länk som inleder en rad', () => {
+    render(<MarkdownRenderer content="[Arbetsförmedlingen](https://arbetsformedlingen.se) har mer information." />)
+
+    const länk = screen.getByRole('link', { name: /Arbetsförmedlingen/i })
+    expect(länk).toHaveAttribute('href', 'https://arbetsformedlingen.se')
+    expect(länk).toHaveAttribute('rel', expect.stringContaining('noopener'))
+  })
+
+  it('renderar fetstil mitt i en rad också — den vägen var aldrig trasig', () => {
+    render(<MarkdownRenderer content="Du bör **verkligen** söka." />)
+
+    expect(screen.getByText('verkligen').tagName).toBe('STRONG')
+  })
+})
+
+/**
+ * Tabeller.
+ *
+ * `parseMarkdown` hade ingen tabellgren. Rader som börjar med `|` föll ned i
+ * paragraf-grenen, som slog ihop dem till en enda rad — varken seende eller
+ * skärmläsare kunde läsa strukturen.
+ */
+describe('MarkdownRenderer — tabeller', () => {
+  const TABELL = ['| Villkor | Betyder |', '| --- | --- |', '| Medlemsvillkoret | Hur länge du varit medlem |'].join('\n')
+
+  it('renderar en riktig tabell med kolumnrubriker', () => {
+    render(<MarkdownRenderer content={TABELL} />)
+
+    expect(screen.getByRole('table')).toBeInTheDocument()
+    const rubrik = screen.getByRole('columnheader', { name: 'Villkor' })
+    expect(rubrik).toHaveAttribute('scope', 'col')
+    expect(screen.getByRole('cell', { name: 'Medlemsvillkoret' })).toBeInTheDocument()
+  })
+
+  it('lämnar inga pipes kvar som text', () => {
+    const { container } = render(<MarkdownRenderer content={TABELL} />)
+
+    expect(container.textContent).not.toMatch(/\|\s*---/)
   })
 })

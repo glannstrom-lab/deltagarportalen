@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-23** (två arbeten samma dygn: sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -13,6 +13,55 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-23 (kväll) — AI-teamet, sex granskare (åtgärdad)
+
+`/ai-team` med fem agenter, sju personligheter och tre svarslägen hade aldrig
+sidgranskats. Sex parallella granskare (AI-vägen, personligheter/risk, design,
+tillgänglighet, kod/tester, i18n) plus webbläsarsvep i ljust och mörkt läge
+och på mobil.
+
+**Domen: sanningsregeln fanns bara på en av fem agenter, och grinden som skulle
+vakta den prövade bara den agenten.**
+
+### Det som var fel, och vad som gjordes
+
+| Fynd | Belagt | Åtgärd |
+|---|---|---|
+| Regelverksregeln (a-kassa, sjukpenning, LAS — aldrig belopp ur minnet) fanns bara i `arbetskonsulent` | Kört promptbyggaren för alla fem: `truthRule=true` för en, `false` för fyra | Regeln är en delad konstant och läggs på i `ai-team-chat`, så en sjätte agent inte kan tillkomma utan den |
+| Grinden `ai-sanningsregel.test.ts` prövade bara standardagenten | `UNDERLAG` saknar `agentTyp` → fallback till `arbetskonsulent`, den enda som redan var säker | Prövar nu alla fem grenar. Mutationskontroll: 3 tester faller, felet säger *"saknar sanningsregel i 4 av 5 grenar"* |
+| `useSuggestedAgent` rekommenderar `arbetsterapeut` **just när** användaren loggat sitt mående | Läst i hooken | Det gör luckan ovan värre än den såg ut — frågan om ersättning vid sjukskrivning är som mest trolig då |
+| `arbetsterapeut` är en skyddad legitimationstitel utan förbehåll | Prompten sa ingenting | Säger nu uttryckligen att den inte är legitimerad vårdpersonal och hänvisar vidare |
+| `sportscaster` saknade den faktabroms de tre andra roliga har | `arnold`/`mormor`/`pirate` slutar "men håll…", `sportscaster` inte | Samma broms tillagd |
+| **AI-svaren visade rå markdown** | `**Ansök till sparade jobb**` med asterisker i webbläsaren. Alla fyra inline-mönstren börjar `^(.+?)` — kräver ett tecken före markeringen | `^(.*?)`. Och systemprompten *instruerar* modellen att inleda varje punkt med `**Rubrik**` — de två halvorna av samma bugg |
+| Tabeller i AI-svar blev en oläslig rad | `parseMarkdown` hade ingen tabellgren | Riktig `<table>` med `<th scope="col">` i en scrollbar behållare |
+| Fokus hamnade på `<body>` vid varje skickat meddelande | Textarean avaktiverades medan den hade fokus | Fältet står kvar öppet; dubbelsändning var redan spärrad |
+| Strömmande svar annonserades token för token | Ingen `aria-busy` i hela katalogen | `aria-busy` på loggen, `aria-live="off"` på förhandsvisningen |
+| Att byta agent raderade hela konversationen | `setAgent` nollställde `messages` synkront — och korten är en `radiogroup`, så en piltangent räckte | Historiken behålls; `AgentChat` laddar redan per agent. Ett test som cementerade det gamla beteendet är omskrivet |
+| Sparningen kunde tappa sista meddelandet | Debounce 1000 ms vs synkron nollställning — cleanup avbröt timern samtidigt som datan försvann | Samma fix |
+| **Fokuslägets guide kastade bort frågan** och sa ändå att samtalet var igång | `question` skickades aldrig någonstans; agent-id:na matchade inte ens riktiga `AgentId` | Frågan lämnas via `pendingQuestion` och skickas på riktigt; riktiga id:n; texten säger vad som hänt |
+| Fem agentfärger på en sky-blå sida | teal/rose/violet/amber/sky, uppmätt | Alla pekar på hubbens tokens. Identiteten bärs av ikon och namn, som DESIGN.md §4 föreskriver |
+| `domain="action"` på `FokusVaxel`, `"info"` på `PageLayout` | Fokusläget färgade sidan i Översiktens mint | Båda `info` |
+| Personlighetsmenyn täckte hela sidan | Uppmätt 1440 px mot en 169 px trigger — `relative` saknades på containern | Ligger nu i sin egen kolumn; fokus går tillbaka till triggern |
+| `bg-[var(--c-accent)]/40/80` | Dubbelt opacitetssuffix — inline-kod saknade bakgrund | Rättad (även `from-`/`to-` utan riktning, som gav ljus ruta i mörkt läge) |
+| Träffytor 20×28 px i meddelandebubblan | Uppmätt | 36×36 px |
+| Svaren kom alltid på svenska | `- Svara på svenska` hårdkodat i systemprompten | Följer nu gränssnittets språk |
+| 3 saknade i18n-nycklar, 17 döda | `aiTeam.chat.*`, `aiTeam.aiBadge` saknades; `onboarding.*` (12) och fem `systemPrompt` var kvarlevor | 7 nya, 17 borttagna, sv + en |
+| Klientens `systemPrompt` var dödkod som såg levande ut | Noll träffar på `.systemPrompt` utanför definitionen — och texten var *mer* riskabel än serverns | Borttagen, med en kommentar som pekar på var tonen faktiskt styrs |
+| Död barrel + `AgentAvatarSolid` | Noll importörer | Raderade |
+| Dubbelsändningsspärren var otestad | Kodgranskarens mutation tog bort den — 26/26 förblev gröna | Test tillagt; faller under samma mutation |
+
+**Mätt:** chunken 15,8 → **15,5 kB brotli**. `npm run verify` grön, build grön,
+149 testfiler, 2 408 tester.
+
+**Inte gjort, och varför:** AI:ns faktiska svar är **inte** granskade mot prod.
+Dev-servern svarar 501 för AI-anrop, så promptförändringarna är verifierade
+genom att köra promptbyggaren — inte genom att läsa modellsvar. Att
+`arbetsterapeut` verkligen slutar gissa på sjukpenningregler kräver ett skarpt
+anrop mot `jobin.se`. `AgentChat.tsx` är fortfarande 690 rader; kodgranskarens
+uppdelningsförslag är inte genomfört.
 
 ---
 

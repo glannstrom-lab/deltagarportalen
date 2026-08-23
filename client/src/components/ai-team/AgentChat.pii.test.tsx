@@ -208,3 +208,52 @@ describe('B15: ai-team-komponenterna har inget eget /api/ai-anrop kvar', () => {
     ).not.toMatch(/fetch\(\s*['"`]\/api\/ai/)
   })
 })
+
+/**
+ * Dubbelsändningsspärren.
+ *
+ * `sendMessage` börjar med `if (!text || isLoading || isStreaming) return`.
+ * Vakten fanns, men INGET test prövade den: en riktad mutation som tog bort
+ * `isLoading || isStreaming` 2026-08-23 lämnade samtliga 26 tester gröna.
+ * Ett andra anrop mitt i ett pågående svar hade skickat en ny fråga till
+ * modellen — dubbel kostnad, och två svar som skriver över varandra i vyn.
+ */
+describe('AgentChat spärrar ett andra anrop medan svaret hämtas', () => {
+  it('skickar bara ett anrop när två meddelanden avfyras samtidigt', async () => {
+    // En ström som inte blir klar förrän vi säger till — håller anropet igång.
+    let släpp: (() => void) | null = null
+    const hänger = new Promise<void>((r) => { släpp = r })
+    mockFetch.mockReset()
+    mockFetch.mockImplementation(async () => ({
+      ok: true,
+      status: 200,
+      body: {
+        getReader: () => ({
+          read: async () => {
+            await hänger
+            return { done: true, value: undefined }
+          },
+        }),
+      },
+    }))
+
+    const ref = createRef<AgentChatHandle>()
+    render(<AgentChat ref={ref} />)
+
+    // Starta det första anropet utan att vänta in det — det är poängen.
+    let första: Promise<void> | undefined
+    await act(async () => {
+      första = ref.current!.sendMessage('Första frågan')
+      await Promise.resolve()
+    })
+
+    await act(async () => {
+      await ref.current!.sendMessage('Andra frågan')
+    })
+
+    expect(mockFetch).toHaveBeenCalledTimes(1)
+
+    släpp!()
+    await act(async () => { await första })
+  })
+})

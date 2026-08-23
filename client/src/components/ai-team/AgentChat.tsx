@@ -52,6 +52,8 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setLoading,
       setError,
       setMessages,
+      pendingQuestion,
+      setPendingQuestion,
     } = useAITeamStore()
 
     const [inputValue, setInputValue] = useState('')
@@ -415,7 +417,22 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       }
     }, [messages, t, agent.nameKey, selectedAgent])
 
-    // Expose sendMessage to parent via ref
+    /**
+     * Fråga som fokuslägets guide lämnat.
+     *
+     * Guiden samlade in en fråga och kastade den — den skickades aldrig
+     * någonstans, och sista steget sa ändå att samtalet var igång. Nu sätter
+     * guiden `pendingQuestion`, och den plockas upp här. Normalvyn är
+     * monterad hela tiden (FokusVäxel döljer den, avmonterar den inte), så
+     * svaret finns på plats när användaren lämnar fokusläget.
+     */
+    useEffect(() => {
+      if (!pendingQuestion || isLoading) return
+      setPendingQuestion(null)
+      void sendMessage(pendingQuestion)
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pendingQuestion, isLoading])
+
     useImperativeHandle(ref, () => ({
       sendMessage: async (message: string) => {
         await sendMessage(message)
@@ -482,6 +499,11 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           className="flex-1 overflow-y-auto p-4 space-y-4"
           role="log"
           aria-live="polite"
+          /* WCAG 4.1.3. Utan `aria-busy` köar skärmläsaren en annonsering per
+             strömmad token — användaren hör ordbrottstycken i följd i stället
+             för ett svar. Själva förhandsvisningen ligger dessutom i en egen
+             `aria-live="off"` nedan; det är den färdiga bubblan som ska läsas. */
+          aria-busy={isLoading || isStreaming}
           aria-label={t('aiTeam.chatHistory')}
         >
           {messages.length === 0 ? (
@@ -504,7 +526,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
           {/* Streaming response */}
           {isStreaming && streamingContent && (
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3" aria-live="off">
               <div className={cn(
                 'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0',
                 colors.bgLight

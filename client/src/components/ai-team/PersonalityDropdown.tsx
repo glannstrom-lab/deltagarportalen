@@ -19,21 +19,18 @@ export const personalities: Personality[] = [
     nameKey: 'aiTeam.personalities.professional.name',
     descriptionKey: 'aiTeam.personalities.professional.description',
     category: 'serious',
-    systemPrompt: 'Du är professionell, saklig och strukturerad. Ge tydliga och konkreta råd.',
   },
   {
     id: 'empathetic',
     nameKey: 'aiTeam.personalities.empathetic.name',
     descriptionKey: 'aiTeam.personalities.empathetic.description',
     category: 'serious',
-    systemPrompt: 'Du är varm, förstående och stöttande. Visa empati och uppmuntra användaren.',
   },
   {
     id: 'direct',
     nameKey: 'aiTeam.personalities.direct.name',
     descriptionKey: 'aiTeam.personalities.direct.description',
     category: 'serious',
-    systemPrompt: 'Du går rakt på sak och är effektiv. Ge korta, koncisa svar utan omsvep.',
   },
   // Fun personalities
   {
@@ -41,28 +38,24 @@ export const personalities: Personality[] = [
     nameKey: 'aiTeam.personalities.arnold.name',
     descriptionKey: 'aiTeam.personalities.arnold.description',
     category: 'fun',
-    systemPrompt: 'Du pratar som Arnold Schwarzenegger. Använd hans kända uttryck som "I\'ll be back", "Get to the chopper", "No pain, no gain". Var motiverande och energisk med en österrikisk accent. Blanda in träningsmetaforer.',
   },
   {
     id: 'mormor',
     nameKey: 'aiTeam.personalities.mormor.name',
     descriptionKey: 'aiTeam.personalities.mormor.description',
     category: 'fun',
-    systemPrompt: 'Du är en kärleksfull svensk mormor. Säg "lansen" och "hjärtat mitt". Föreslå fikapauser och prata om att ta hand om sig själv. Var omtänksam men bestämd.',
   },
   {
     id: 'pirate',
     nameKey: 'aiTeam.personalities.pirate.name',
     descriptionKey: 'aiTeam.personalities.pirate.description',
     category: 'fun',
-    systemPrompt: 'Du är en pirat! Säg "Arrr", "Ahoy", "Shiver me timbers". Kalla jobb för "skatter" och arbetsgivare för "kaptener". Var äventyrlig och entusiastisk.',
   },
   {
     id: 'sportscaster',
     nameKey: 'aiTeam.personalities.sportscaster.name',
     descriptionKey: 'aiTeam.personalities.sportscaster.description',
     category: 'fun',
-    systemPrompt: 'Du är en entusiastisk sportkommentator! Beskriv jobbsökandet som en spännande match. Använd sporttermer och var otroligt energisk. "OCH HAN GÅR IGENOM MED CV:T!"',
   },
 ]
 
@@ -79,6 +72,13 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
   const { selectedPersonality, setPersonality } = useAITeamStore()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  /* Menyn avmonteras när den stängs. Stod fokus på ett alternativ försvann
+     noden och fokus föll till <body> — WCAG 2.4.3. */
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const stäng = () => {
+    setIsOpen(false)
+    triggerRef.current?.focus()
+  }
 
   const currentPersonality = getPersonalityById(selectedPersonality)
   const seriousPersonalities = personalities.filter((p) => p.category === 'serious')
@@ -100,7 +100,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
   useEffect(() => {
     function handleEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
-        setIsOpen(false)
+        stäng()
       }
     }
 
@@ -109,7 +109,10 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
   }, [])
 
   return (
-    <div className={cn('space-y-3', className)} ref={dropdownRef}>
+    /* `relative` saknades, så panelen nedan (`absolute left-4 right-4`)
+       positionerades mot sidan i stället för mot sin egen kolumn: uppmätt
+       1440 px bred mot en 169 px trigger, utfälld över hela chatten. */
+    <div className={cn('relative space-y-3', className)} ref={dropdownRef}>
       {/* Header */}
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
@@ -122,6 +125,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
 
       {/* Dropdown Button */}
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
@@ -157,7 +161,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
       {isOpen && (
         <div
           className={cn(
-            'absolute z-50 left-4 right-4 lg:left-0 lg:right-0 mt-1',
+            'absolute z-50 left-0 right-0 mt-1',
             'bg-white dark:bg-stone-800',
             'border border-stone-200 dark:border-stone-700',
             'rounded-xl shadow-lg',
@@ -178,7 +182,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
                 isSelected={selectedPersonality === personality.id}
                 onSelect={() => {
                   setPersonality(personality.id)
-                  setIsOpen(false)
+                  stäng()
                 }}
               />
             ))}
@@ -198,7 +202,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
                 isSelected={selectedPersonality === personality.id}
                 onSelect={() => {
                   setPersonality(personality.id)
-                  setIsOpen(false)
+                  stäng()
                 }}
               />
             ))}

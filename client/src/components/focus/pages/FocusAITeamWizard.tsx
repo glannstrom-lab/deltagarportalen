@@ -7,24 +7,35 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Bot, MessageSquare, Smile } from '@/components/ui/icons'
+import { useAITeamStore } from '@/stores/aiTeamStore'
+import type { AgentId } from '@/components/ai-team/types'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
   onExit: () => void
 }
 
-const AGENTS = [
-  { id: 'jobcoach', labelKey: 'focus.ai.jobcoach', labelDefault: 'Jobbcoach — hjälper dig söka jobb' },
-  { id: 'cv', labelKey: 'focus.ai.cv', labelDefault: 'CV-experten — hjälper med CV och brev' },
-  { id: 'interview', labelKey: 'focus.ai.interview', labelDefault: 'Intervju-coach — öva inför intervjuer' },
-  { id: 'wellbeing', labelKey: 'focus.ai.wellbeing', labelDefault: 'Stöd — hjälper med mående och rutiner' },
+/**
+ * Id:na måste vara riktiga `AgentId`-värden.
+ *
+ * De var `jobcoach`/`cv`/`interview`/`wellbeing` — fyra strängar som inte
+ * motsvarade någon agent i `types.ts`. Även om valet hade skickats vidare
+ * hade det pekat på ingenting.
+ */
+const AGENTS: ReadonlyArray<{ id: AgentId; labelKey: string; labelDefault: string }> = [
+  { id: 'arbetskonsulent', labelKey: 'focus.ai.jobcoach', labelDefault: 'Jobbcoach — hjälper dig söka jobb' },
+  { id: 'digitalcoach', labelKey: 'focus.ai.cv', labelDefault: 'Digital coach — hjälper med CV och nätprofil' },
+  { id: 'studievagledare', labelKey: 'focus.ai.interview', labelDefault: 'Studievägledare — utbildning och nästa steg' },
+  { id: 'arbetsterapeut', labelKey: 'focus.ai.wellbeing', labelDefault: 'Arbetsterapeut — mående, energi och rutiner' },
 ] as const
 
 export function FocusAITeamWizard({ onExit }: Props) {
   const { t } = useTranslation()
   const [step, setStep] = useState(0)
-  const [agent, setAgent] = useState<string | null>(null)
+  const [agent, setAgent] = useState<AgentId | null>(null)
   const [question, setQuestion] = useState('')
+  const väljAgent = useAITeamStore((s) => s.setAgent)
+  const lämnaFråga = useAITeamStore((s) => s.setPendingQuestion)
 
   const STEPS: ReadonlyArray<FocusWizardStep> = [
     { id: 'agent', icon: Bot, title: t('focus.ai.agentTitle', 'Vem vill du prata med?') },
@@ -39,6 +50,13 @@ export function FocusAITeamWizard({ onExit }: Props) {
       current={step}
       onNext={async () => {
         if (current.id === 'done') { onExit(); return }
+        // Här skickas frågan på riktigt. `AgentChat` är monterad hela tiden
+        // (FokusVaxel döljer normalvyn, avmonterar den inte) och plockar upp
+        // `pendingQuestion` så snart den sätts.
+        if (current.id === 'question' && agent) {
+          väljAgent(agent)
+          lämnaFråga(question.trim())
+        }
         setStep((s) => s + 1)
       }}
       onBack={() => setStep((s) => Math.max(s - 1, 0))}
@@ -74,7 +92,7 @@ export function FocusAITeamWizard({ onExit }: Props) {
       )}
       {current.id === 'done' && (
         <p className="text-stone-600 dark:text-stone-300">
-          {t('focus.ai.doneText', 'Bra! Öppna AI-team i normalläge för att fortsätta samtalet.')}
+          {t('focus.ai.doneText', 'Din fråga är skickad. Öppna AI-team i normalläge för att läsa svaret.')}
         </p>
       )}
     </FocusWizardFrame>

@@ -95,10 +95,35 @@ const UNDERLAG: Record<string, unknown> = {
   cv: { workExperience: [{ title: 'Lagerarbetare', company: 'ICA' }] },
 }
 
+/**
+ * AI-teamets fem agenter.
+ *
+ * Grinden prövade fram till 2026-08-23 bara `ai-team-chat` UTAN `agentTyp`,
+ * och då faller funktionen tillbaka på `arbetskonsulent` — den enda agent som
+ * redan hade regelverksregeln. De fyra som saknade den kontrollerades alltså
+ * aldrig, och grinden var grön hela tiden. Ett test som inte kan falla är
+ * värdelöst; det här är samma fälla som testfilens egen kommentar ovan varnar
+ * för, en våning ned.
+ *
+ * Fälten är inerta för alla andra prompter, som ignorerar okända nycklar.
+ */
+const AGENTTYPER = [
+  'arbetskonsulent',
+  'arbetsterapeut',
+  'studievagledare',
+  'motivationscoach',
+  'digitalcoach',
+]
+
 /** Alla systemprompter en funktion kan producera — båda grenarna. */
 function allaSystemprompter(namn: string): string[] {
   const ut: string[] = []
-  for (const underlag of [{}, UNDERLAG]) {
+  const underlagsvarianter = [
+    {},
+    UNDERLAG,
+    ...AGENTTYPER.map((agentTyp) => ({ ...UNDERLAG, agentTyp })),
+  ]
+  for (const underlag of underlagsvarianter) {
     try {
       const s = PROMPTS[namn](underlag)?.system
       if (typeof s === 'string' && s && !ut.includes(s)) ut.push(s)

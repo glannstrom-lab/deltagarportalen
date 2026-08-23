@@ -31,6 +31,7 @@ type ElementType =
   | 'numbered-list'
   | 'code-block'
   | 'blockquote'
+  | 'table'
 
 interface ParsedElement {
   type: ElementType
@@ -38,6 +39,8 @@ interface ParsedElement {
   level?: number // For headings
   items?: string[] // For lists
   language?: string // For code blocks
+  head?: string[] // For tables
+  rows?: string[][] // For tables
 }
 
 function parseMarkdown(text: string): ParsedElement[] {
@@ -89,6 +92,27 @@ function parseMarkdown(text: string): ParsedElement[] {
         type: 'blockquote',
         content: quoteLines.join('\n'),
       })
+      continue
+    }
+
+    // Tabell
+    //
+    // Fanns inte alls före 2026-08-23. En rad som börjar med "|" matchade
+    // ingen gren och föll ned i paragraf-grenen, som slog ihop alla raderna
+    // till EN rad: "| Kompetens | Nivå | | --- | --- | | React | Avancerad |".
+    // Varken seende eller skärmläsare kunde läsa strukturen, och flera av
+    // agenterna svarar gärna med jämförelsetabeller.
+    if (/^\s*\|.*\|\s*$/.test(line) && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1] ?? '')) {
+      const delaRad = (rad: string) =>
+        rad.trim().replace(/^\||\|$/g, '').split('|').map((cell) => cell.trim())
+      const head = delaRad(line)
+      i += 2
+      const rows: string[][] = []
+      while (i < lines.length && /^\s*\|.*\|\s*$/.test(lines[i])) {
+        rows.push(delaRad(lines[i]))
+        i++
+      }
+      elements.push({ type: 'table', content: '', head, rows })
       continue
     }
 
@@ -159,6 +183,8 @@ function MarkdownElement({ element, isFirst }: { element: ParsedElement; isFirst
       return <Heading level={element.level || 2} content={element.content} />
     case 'paragraph':
       return <Paragraph content={element.content} isFirst={isFirst} />
+    case 'table':
+      return <Tabell head={element.head || []} rows={element.rows || []} />
     case 'list':
       return <UnorderedList items={element.items || []} />
     case 'numbered-list':
@@ -266,7 +292,7 @@ function OrderedList({ items }: { items: string[] }) {
             className={cn(
               'relative p-3 rounded-xl',
               'bg-white/70',
-              'dark:from-stone-800/80 dark:to-stone-800/40',
+              'dark:bg-stone-800/60',
               'border border-stone-200/60 dark:border-stone-700/60',
               'shadow-sm'
             )}
@@ -332,7 +358,7 @@ function Blockquote({ content }: { content: string }) {
     <blockquote className={cn(
       'relative pl-4 py-2 pr-3',
       'bg-amber-50/80',
-      'dark:from-amber-900/20 dark:to-transparent',
+      'dark:bg-amber-900/20',
       'border-l-4 border-amber-400 dark:border-amber-500',
       'rounded-r-lg'
     )}>
@@ -344,6 +370,47 @@ function Blockquote({ content }: { content: string }) {
   )
 }
 
+/**
+ * Tabell ur AI-svar.
+ *
+ * Egen scroll i sidled i stället för att tvinga hela chattbubblan att bli
+ * bred — en tabell från modellen kan ha godtyckligt många kolumner.
+ */
+function Tabell({ head, rows }: { head: string[]; rows: string[][] }) {
+  return (
+    <div className="overflow-x-auto -mx-1 px-1">
+      <table className="w-full text-sm border-collapse">
+        {head.length > 0 && (
+          <thead>
+            <tr>
+              {head.map((cell, i) => (
+                <th
+                  key={i}
+                  scope="col"
+                  className="text-left font-semibold text-stone-800 dark:text-stone-100 border-b border-stone-300 dark:border-stone-600 py-1.5 pr-3 align-top"
+                >
+                  <InlineMarkdown text={cell} />
+                </th>
+              ))}
+            </tr>
+          </thead>
+        )}
+        <tbody>
+          {rows.map((rad, r) => (
+            <tr key={r} className="border-b border-stone-200 dark:border-stone-700/60 last:border-0">
+              {rad.map((cell, c) => (
+                <td key={c} className="py-1.5 pr-3 align-top text-stone-700 dark:text-stone-300">
+                  <InlineMarkdown text={cell} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 // Inline markdown: **bold**, *italic*, `code`, [link](url)
 function InlineMarkdown({ text }: { text: string }) {
   const parts: (string | JSX.Element)[] = []
@@ -352,7 +419,7 @@ function InlineMarkdown({ text }: { text: string }) {
 
   while (remaining.length > 0) {
     // Bold: **text** or __text__
-    const boldMatch = remaining.match(/^(.+?)(\*\*|__)(.+?)\2/)
+    const boldMatch = remaining.match(/^(.*?)(\*\*|__)(.+?)\2/)
     if (boldMatch && boldMatch.index === 0) {
       if (boldMatch[1]) {
         parts.push(...processInlineCode(boldMatch[1], keyIndex))
@@ -368,7 +435,7 @@ function InlineMarkdown({ text }: { text: string }) {
     }
 
     // Italic: *text* or _text_ (but not ** or __)
-    const italicMatch = remaining.match(/^(.+?)(?<!\*)\*(?!\*)(.+?)\*(?!\*)/)
+    const italicMatch = remaining.match(/^(.*?)(?<!\*)\*(?!\*)(.+?)\*(?!\*)/)
     if (italicMatch && italicMatch.index === 0) {
       if (italicMatch[1]) {
         parts.push(...processInlineCode(italicMatch[1], keyIndex))
@@ -384,7 +451,7 @@ function InlineMarkdown({ text }: { text: string }) {
     }
 
     // Inline code: `code`
-    const codeMatch = remaining.match(/^(.+?)`([^`]+)`/)
+    const codeMatch = remaining.match(/^(.*?)`([^`]+)`/)
     if (codeMatch && codeMatch.index === 0) {
       if (codeMatch[1]) {
         parts.push(codeMatch[1])
@@ -394,7 +461,7 @@ function InlineMarkdown({ text }: { text: string }) {
           key={`code-${keyIndex++}`}
           className={cn(
             'px-1.5 py-0.5 rounded-md',
-            'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
+            'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
             'text-[var(--c-text)]',
             'text-[13px] font-mono font-medium'
           )}
@@ -407,7 +474,7 @@ function InlineMarkdown({ text }: { text: string }) {
     }
 
     // Link: [text](url)
-    const linkMatch = remaining.match(/^(.+?)\[([^\]]+)\]\(([^)]+)\)/)
+    const linkMatch = remaining.match(/^(.*?)\[([^\]]+)\]\(([^)]+)\)/)
     if (linkMatch && linkMatch.index === 0) {
       if (linkMatch[1]) {
         parts.push(linkMatch[1])
@@ -437,7 +504,7 @@ function InlineMarkdown({ text }: { text: string }) {
             )}
           >
             {linkMatch[2]}
-            <ArrowRight className="w-3 h-3" />
+            <ArrowRight className="w-3 h-3" aria-hidden="true" />
           </a>
         )
       }
@@ -470,7 +537,7 @@ function processInlineCode(text: string, startKey: number): (string | JSX.Elemen
           key={`code-${keyIndex++}`}
           className={cn(
             'px-1.5 py-0.5 rounded-md',
-            'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
+            'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
             'text-[var(--c-text)]',
             'text-[13px] font-mono font-medium'
           )}
