@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { riasecColors, riasecNames, type RiasecScores } from '@/services/interestGuideData'
+import { riasecColors, type RiasecScores } from '@/services/interestGuideData'
+import { useRiasecNamn } from '@/services/useIntresseguideInnehall'
 
 interface RiasecChartProps {
   scores: RiasecScores
@@ -8,6 +9,7 @@ interface RiasecChartProps {
 
 export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
   const { t } = useTranslation()
+  const riasecNames = useRiasecNamn()
   const center = size / 2
   const radius = (size / 2) - 40
   const keys: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
@@ -117,11 +119,11 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
     <div className="relative">
       {/* Screen reader accessible data table */}
       <table className="sr-only" aria-label={t('interestGuide.charts.riasecTableAria', 'RIASEC resultat i tabellform')}>
-        <caption>Dina RIASEC-resultat visar dina arbetsintressen på en skala 1-5</caption>
+        <caption>{t('interestGuide.charts.riasecTableCaption')}</caption>
         <thead>
           <tr>
-            <th scope="col">Intresseområde</th>
-            <th scope="col">Poäng (1-5)</th>
+            <th scope="col">{t('interestGuide.charts.riasecTableArea')}</th>
+            <th scope="col">{t('interestGuide.charts.riasecTableScore')}</th>
           </tr>
         </thead>
         <tbody>

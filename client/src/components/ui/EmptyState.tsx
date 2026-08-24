@@ -25,6 +25,7 @@
  */
 
 import { useNavigate, type NavigateFunction } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Button } from './Button'
 import type { LucideIcon } from '@/components/ui/icons'
@@ -237,6 +238,7 @@ export function EmptySearch({
   suggestions,
   className,
 }: EmptySearchProps) {
+  const { t } = useTranslation()
   return (
     <div className={cn(
       'flex flex-col items-center justify-center',
@@ -264,7 +266,7 @@ export function EmptySearch({
       
       {suggestions && suggestions.length > 0 && (
         <div className="mt-8 text-left w-full max-w-md">
-          <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">Förslag:</p>
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">{t('common.suggestions')}:</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((suggestion) => (
               <button

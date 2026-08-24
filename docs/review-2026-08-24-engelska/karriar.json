@@ -1,0 +1,232 @@
+{
+  "omrade": "Karriär och kompetens",
+  "nycklarGranskade": 1235,
+  "sammanfattning": "Engelskan i det här området är överlag ren, naturlig och håller rätt nivå för en B1-läsare — inga variabelfel, inga kvarglömda svenska ord, och Intresseguiden överdriver aldrig sina resultat (ingen 'personality type', ingen procentsats, inget 'scientifically proven' som svenskan saknar). Det återkommande felet är istället att skyddade myndighetsnamn översätts bort där de inte ska: 'Försäkringskassan' blir genomgående 'Social Insurance'/'the Employment Service' i career.adaptation.*, och 'Arbetsförmedlingen' försvinner till förmån för 'the Swedish Public Employment Service' eller — värst — gemener 'the employment service' i education.infoBanner, skillsGapAnalysis.educations.* och personalBrand.visibility. Detta står i skarp kontrast mot career.laborMarket.* och career.relocation.*, där exakt samma myndighet konsekvent får behålla sitt svenska namn — alltså inte ett genomgående val utan en glapp mellan namnrymder/skrivtillfällen. En kortare stapel fel gäller person: 'Dina meriter' blir två gånger 'My Credentials'/'My credentials' istället för 'Your credentials'. Ett par konstruktioner läser maskinöversatt ('Rent of salary' för 'Hyra av lön', 'conditions' för ICF-fältets 'förutsättningar'). Slutligen blandas brittisk och amerikansk stavning på tre ställen (labour/Labor, programmes/programs, licences/License) — inget allvarligt i sig, men ett tecken på att texten skrivits vid olika tillfällen utan en gemensam stilguide.",
+  "termlista": [
+    {"sv": "Arbetsförmedlingen", "en": "Arbetsförmedlingen (korrekt bevarat i career.laborMarket.* och career.relocation.*) vs. 'the Swedish Public Employment Service' / 'the employment service' (fel, på flera andra ställen)", "kommentar": "Samma myndighet, två helt olika strategier i samma namnrymd 'career'. Ska alltid stå kvar på svenska enligt regelverket."},
+    {"sv": "Försäkringskassan", "en": "'Social Insurance' / 'the Social Insurance Agency' / 'the Employment Service' (felaktigt, i career.adaptation.introText)", "kommentar": "Aldrig bevarat på svenska i den här namnrymden — inget korrekt exempel att jämföra med i granskat område."},
+    {"sv": "komvux / yrkeshögskola", "en": "'adult education' / 'vocational colleges'", "kommentar": "Skyddade termer, helt bortöversatta i education.infoBanner.description istället för att glossas ('komvux (municipal adult education)')."},
+    {"sv": "arbetsmarknad", "en": "'Labor Market' (career.tabs.laborMarket) vs 'labour market' (career.laborMarket.heading, education.infoBanner.description)", "kommentar": "Amerikansk/brittisk stavning blandad för samma ord."},
+    {"sv": "utbildning(ar) / program", "en": "'programs' (education.description) vs 'programmes' (nästan överallt annars)", "kommentar": "Samma mönster — en amerikansk stavning bland annars konsekvent brittisk."},
+    {"sv": "yrkesbevis / licens", "en": "'licences' (career.credentials.popularCredentials) vs 'License' (career.credentials.types.license)", "kommentar": "Brittisk/amerikansk stavning av samma ord i samma namnrymd."},
+    {"sv": "Kompetensanalys / Kompetensgap-analys", "en": "'Skills overview' (skillsGapAnalysis.title) vs 'Skills Gap Analysis' (career.skills.skillsGapAnalysis) vs 'Skills Analysis' (skillsWidget.skillsAnalysis)", "kommentar": "Tre olika engelska namn på samma verktyg beroende på var i UI:t man kommer ifrån, två av dem i Title Case."}
+  ],
+  "fynd": [
+    {
+      "nyckel": "career.adaptation.templates.fk.title",
+      "nuvarandeEn": "Apply for support",
+      "foreslagenEn": "Apply for support from Försäkringskassan",
+      "sv": "Ansök om stöd från FK",
+      "severity": "kritisk",
+      "typ": "betydelsefel",
+      "motivering": "Kortet ligger bredvid 'Talk to employer' och 'Contact work consultant' — varsitt tydligt mål. Att tappa 'från FK' gör kortet till ett innehållslöst 'ansök om stöd' utan mottagare, och användaren vet inte längre vilken myndighet det gäller."
+    },
+    {
+      "nyckel": "career.adaptation.introText",
+      "nuvarandeEn": "Here you can identify what adaptations would help you in working life. You can then create a document to share with employers, the Social Insurance Agency, or the Employment Service.",
+      "foreslagenEn": "Here you can identify what adaptations would help you in working life. You can then create a document to share with employers, Försäkringskassan, or Arbetsförmedlingen.",
+      "sv": "Här kan du identifiera vilka anpassningar som skulle hjälpa dig i arbetslivet. Du kan sedan skapa ett dokument att dela med arbetsgivare, Försäkringskassan eller Arbetsförmedlingen.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Båda myndighetsnamnen är på förbjudna översättningslistan (ska alltid stå kvar på svenska). Samma myndigheter behåller sina svenska namn korrekt i career.laborMarket.* och career.relocation.* — inkonsekvent inom samma sida."
+    },
+    {
+      "nyckel": "career.adaptation.fkSupport",
+      "nuvarandeEn": "Support from Social Insurance",
+      "foreslagenEn": "Support from Försäkringskassan",
+      "sv": "Stöd från Försäkringskassan",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "'Social Insurance' är dessutom ofullständig engelska (saknar 'Agency'/substantiv) och gör namnet svårare att känna igen för en läsare som senare möter 'Försäkringskassan' i verkligheten."
+    },
+    {
+      "nyckel": "career.adaptation.fkSupportText",
+      "nuvarandeEn": "The Social Insurance Agency can contribute to work aids and support to facilitate your return to work.",
+      "foreslagenEn": "Försäkringskassan can contribute to work aids and support to facilitate your return to work.",
+      "sv": "Försäkringskassan kan bidra till arbetshjälpmedel och stöd för att underlätta din återgång till arbete.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Samma regelbrott som ovan, i den förklarande brödtexten."
+    },
+    {
+      "nyckel": "career.adaptation.templates.fk.description",
+      "nuvarandeEn": "Example application to Social Insurance",
+      "foreslagenEn": "Example application to Försäkringskassan",
+      "sv": "Exempel på ansökan till Försäkringskassan",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "'to Social Insurance' är dessutom otymplig engelska — det saknas ett substantiv (Agency/Fund) efter 'Social Insurance'."
+    },
+    {
+      "nyckel": "education.infoBanner.description",
+      "nuvarandeEn": "Programmes come from the Swedish Public Employment Service's JobEd Connect and cover vocational colleges, universities, adult education, folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for.",
+      "foreslagenEn": "Programmes come from Arbetsförmedlingen's service JobEd Connect and cover yrkeshögskola (vocational higher education), universities, komvux (municipal adult education), folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for.",
+      "sv": "Utbildningarna hämtas från Arbetsförmedlingens tjänst JobEd Connect och omfattar yrkeshögskola, högskola och universitet, komvux, folkhögskola, arbetsmarknadsutbildning samt konst- och kulturutbildning. Portalen visar vad som finns och var — inte vad det kostar eller vad du är behörig till.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Det här är den mest lästa förklaringstexten på utbildningssidan och den bryter tre skyddade termer på en gång: Arbetsförmedlingen, yrkeshögskola och komvux ska alla stå kvar på svenska (med gloss vid behov), inte bytas ut helt mot engelska omskrivningar."
+    },
+    {
+      "nyckel": "skillsGapAnalysis.educations.source",
+      "nuvarandeEn": "From the Swedish Public Employment Service's education database.",
+      "foreslagenEn": "From Arbetsförmedlingen's education database.",
+      "sv": "Hämtat från Arbetsförmedlingens utbildningsdatabas.",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Samma bortöversättning av Arbetsförmedlingen som i educationsbannern, men i en mindre synlig källhänvisning."
+    },
+    {
+      "nyckel": "skillsGapAnalysis.educations.sourceMatched",
+      "nuvarandeEn": "From the Swedish Public Employment Service's education database, matched to the role {{yrke}}.",
+      "foreslagenEn": "From Arbetsförmedlingen's education database, matched to the role {{yrke}}.",
+      "sv": "Hämtat från Arbetsförmedlingens utbildningsdatabas, matchat mot yrket {{yrke}}.",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Samma fel som ovan."
+    },
+    {
+      "nyckel": "skillsGapAnalysis.download.educationSource",
+      "nuvarandeEn": "Source: the Swedish Public Employment Service's education database.",
+      "foreslagenEn": "Source: Arbetsförmedlingen's education database.",
+      "sv": "Källa: Arbetsförmedlingens utbildningsdatabas.",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Samma fel, den här gången i den nedladdade PDF:en — där källhänvisningen är själva poängen med raden."
+    },
+    {
+      "nyckel": "personalBrand.visibility.ways.local-meet.description",
+      "nuvarandeEn": "A job fair, an industry gathering or something the employment service arranges. Meeting in person usually makes more of an impression than a message.",
+      "foreslagenEn": "A job fair, an industry gathering or something Arbetsförmedlingen arranges. Meeting in person usually makes more of an impression than a message.",
+      "sv": "En jobbmässa, en branschträff eller något Arbetsförmedlingen ordnar. Att träffas gör oftast större intryck än ett meddelande.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Här är felet som allvarligast: 'the employment service' är helt gemener och namnlös — läsaren kan inte längre koppla ihop det med Arbetsförmedlingen som nämns med sitt riktiga namn på andra sidor i samma portal."
+    },
+    {
+      "nyckel": "career.credentials.title",
+      "nuvarandeEn": "My Credentials",
+      "foreslagenEn": "Your credentials",
+      "sv": "Dina meriter",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan säger 'Dina' (your), inte 'Mina' (my). Sidrubriken pratar om användarens meriter, inte systemets — och är dessutom skriven i Title Case, vilket bryter mot portalens meningsversalisering."
+    },
+    {
+      "nyckel": "career.credentials.myCredentials",
+      "nuvarandeEn": "My credentials",
+      "foreslagenEn": "Your credentials",
+      "sv": "Dina meriter",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Samma personfel som career.credentials.title, på en annan nyckel med exakt samma svenska källtext — så det är inte ett engångsmisstag utan ett återkommande mönster."
+    },
+    {
+      "nyckel": "career.relocation.rentOfSalary",
+      "nuvarandeEn": "Rent of salary",
+      "foreslagenEn": "Rent as share of pay",
+      "sv": "Hyra av lön",
+      "severity": "stor",
+      "typ": "maskinöversatt",
+      "motivering": "'Rent of salary' är inte begriplig engelska för en tabellrubrik. Portalen har redan en korrekt formulering för samma begrepp i career.relocation.colShare ('Share of your pay') — använd samma mönster här."
+    },
+    {
+      "nyckel": "career.onboarding.situations.new-to-country",
+      "nuvarandeEn": "New to the country",
+      "foreslagenEn": "New to Sweden",
+      "sv": "Ny i Sverige",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan namnger landet explicit. 'The country' är vagare och kräver att läsaren själv räknar ut vilket land det gäller — onödigt för just den här målgruppen."
+    },
+    {
+      "nyckel": "career.credentials.description",
+      "nuvarandeEn": "Track certifications, degrees, and licenses you have or plan to get.",
+      "foreslagenEn": "Track certifications, courses, and licenses you have or plan to get.",
+      "sv": "Håll koll på certifieringar, utbildningar och licenser du har eller planerar att ta.",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "'Utbildningar' är brett (kurser, examina, allt) medan 'degrees' bara betyder examina — samma sida har en egen 'course'-typ separat från 'degree', så ordvalet gör beskrivningen snävare än verktyget faktiskt täcker."
+    },
+    {
+      "nyckel": "career.adaptation.rightsText",
+      "nuvarandeEn": "Employers are responsible under workplace legislation to adapt the workplace for employees with disabilities.",
+      "foreslagenEn": "Under the Work Environment Act (arbetsmiljölagen), employers are responsible for adapting the workplace for employees with disabilities.",
+      "sv": "Arbetsgivare har enligt arbetsmiljölagen ansvar att anpassa arbetsplatsen för arbetstagare med funktionsnedsättning.",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan pekar på en namngiven lag; den generiska 'workplace legislation' gör påståendet svårare att verifiera eller slå upp för den som vill kontrollera sina rättigheter."
+    },
+    {
+      "nyckel": "interestGuide.test.sections.icf.title",
+      "nuvarandeEn": "Your conditions",
+      "foreslagenEn": "Your circumstances",
+      "sv": "Dina förutsättningar",
+      "severity": "liten",
+      "typ": "maskinöversatt",
+      "motivering": "'Conditions' läses lätt som hälsotillstånd/medicinska diagnoser på engelska. 'Circumstances' fångar det svenska 'förutsättningar' (arbetslivets ramar/situation) utan den bibetydelsen."
+    },
+    {
+      "nyckel": "interestGuide.test.sections.icf.description",
+      "nuvarandeEn": "How do you experience your conditions for work?",
+      "foreslagenEn": "How do you experience your circumstances for work?",
+      "sv": "Hur upplever du dina förutsättningar för arbete?",
+      "severity": "liten",
+      "typ": "maskinöversatt",
+      "motivering": "Samma ordval som föregående nyckel, i frågeformuleringen."
+    },
+    {
+      "nyckel": "career.tabs.laborMarket",
+      "nuvarandeEn": "Labor Market",
+      "foreslagenEn": "Labour Market",
+      "sv": "Arbetsmarknad",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma begrepp stavas 'labour' (brittiskt) i career.laborMarket.heading och education.infoBanner.description. Den amerikanska stavningen här är den enda avvikelsen."
+    },
+    {
+      "nyckel": "education.description",
+      "nuvarandeEn": "Search and explore education programs across Sweden",
+      "foreslagenEn": "Search and explore education programmes across Sweden",
+      "sv": "Sök och utforska utbildningar från hela Sverige",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Hela education-namnrymden stavar annars brittiskt 'programmes' (searching for programmes, showing programmes, no programme that matches). Det här är den enda amerikanska stavningen."
+    },
+    {
+      "nyckel": "career.credentials.popularCredentials",
+      "nuvarandeEn": "Common licences and courses",
+      "foreslagenEn": "Common licences and courses",
+      "sv": "Vanliga yrkesbevis och kurser",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Bevarad text för jämförelse — 'licences' (brittisk stavning) står i kontrast till 'License' i career.credentials.types.license. Välj en stavningsvariant och håll den konsekvent i hela namnrymden; rätta hellre den andra nyckeln till 'Licence'."
+    },
+    {
+      "nyckel": "skillsWidget.skillsAnalysis",
+      "nuvarandeEn": "Skills Analysis",
+      "foreslagenEn": "Skills overview",
+      "sv": "Kompetensanalys",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma svenska ord ('Kompetensanalys') översätts till tre olika engelska namn på samma verktyg beroende på ingång (widget/full sida/flikrubrik), och den här varianten bryter dessutom mot meningsversalisering med Title Case."
+    },
+    {
+      "nyckel": "interestGuide.tabs.test",
+      "nuvarandeEn": "The Test",
+      "foreslagenEn": "Test",
+      "sv": "Testet",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "De övriga flikarna i samma flikrad (Results, Occupations, Explore, History) är bara substantiv utan artikel. 'The Test' sticker ut i flikraden utan tydligt skäl."
+    },
+    {
+      "nyckel": "journey.tabs.achievements",
+      "nuvarandeEn": "Achievements",
+      "foreslagenEn": "Achievements",
+      "sv": "Achievements",
+      "severity": "sv-fel",
+      "typ": "oöversatt",
+      "motivering": "Den svenska källtexten är själv på engelska ('Achievements' i stället för t.ex. 'Utmärkelser' eller 'Klarade mål'). Engelskan är alltså korrekt kopierad men bara för att originalet aldrig blev översatt till svenska."
+    }
+  ]
+}

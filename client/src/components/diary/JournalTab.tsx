@@ -48,7 +48,7 @@ interface WriteModalProps {
 }
 
 function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps) {
-  useTranslation()
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState(initialPrompt ? `${initialPrompt}\n\n` : '')
   const [mood, setMood] = useState(3)
@@ -110,8 +110,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
               <BookHeart className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-stone-900">Ny dagboksanteckning</h2>
-              <p className="text-sm text-stone-700">{wordCount} ord</p>
+              <h2 className="text-lg font-bold text-stone-900">{t('diary.journal.writeModal.title')}</h2>
+              <p className="text-sm text-stone-700">{wordCount} {t('diary.words')}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-lg">
@@ -123,17 +123,17 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           {/* Title */}
           <input
             type="text"
-            aria-label="Titel på inlägget (valfritt)"
+            aria-label={t('diary.journal.writeModal.titleLabel')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Titel (valfritt)"
+            placeholder={t('diary.journal.writeModal.titlePlaceholder')}
             className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-lg font-medium"
           />
 
           {/* Mood selector */}
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Hur mår du?
+              {t('diary.journal.writeModal.howAreYou')}
             </label>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((m) => (
@@ -158,10 +158,10 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           <div>
             <textarea
               ref={contentRef}
-              aria-label="Dina tankar"
+              aria-label={t('diary.journal.writeModal.contentLabel')}
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder="Skriv dina tankar..."
+              placeholder={t('diary.journal.writeModal.contentPlaceholder')}
               rows={10}
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none leading-relaxed"
             />
@@ -170,7 +170,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           {/* Tags */}
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Taggar
+              {t('diary.tags')}
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {tags.map((tag) => (
@@ -188,11 +188,11 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
             <div className="flex gap-2">
               <input
                 type="text"
-                aria-label="Lägg till tagg"
+                aria-label={t('diary.journal.writeModal.addTagLabel')}
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
-                placeholder="Lägg till tagg..."
+                placeholder={t('diary.journal.writeModal.addTagPlaceholder')}
                 className="flex-1 px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
               />
               <Button variant="outline" size="sm" onClick={handleAddTag}>
@@ -204,14 +204,14 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
 
         <div className="sticky bottom-0 bg-white border-t border-stone-100 p-4 flex gap-3">
           <Button variant="outline" className="flex-1" onClick={onClose}>
-            Avbryt
+            {t('common.cancel')}
           </Button>
           <Button
             className="flex-1"
             onClick={handleSave}
             disabled={!content.trim() || isSaving}
           >
-            {isSaving ? 'Sparar...' : 'Spara'}
+            {isSaving ? t('common.saving') : t('common.save')}
           </Button>
         </div>
       </div>
@@ -231,7 +231,7 @@ interface DiaryEntry {
 }
 
 export function JournalTab() {
-  useTranslation()
+  const { t } = useTranslation()
   const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
@@ -295,7 +295,7 @@ export function JournalTab() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
-                <h3 className="font-semibold text-[var(--c-text)]">Dagens skrivtips</h3>
+                <h3 className="font-semibold text-[var(--c-text)]">{t('diary.journal.prompt.title')}</h3>
               </div>
               <p className="text-stone-700 dark:text-stone-200 leading-relaxed">{prompt.prompt_text}</p>
             </div>
@@ -303,13 +303,13 @@ export function JournalTab() {
               <button
                 onClick={() => getNewPrompt()}
                 disabled={promptLoading}
-                aria-label="Nytt skrivtips"
+                aria-label={t('diary.journal.prompt.newPrompt')}
                 className="p-2 hover:bg-[var(--c-bg)] rounded-lg text-[var(--c-solid)] transition-colors"
               >
                 <RefreshCw className={cn("w-5 h-5", promptLoading && "animate-spin")} aria-hidden="true" />
               </button>
               <Button size="sm" onClick={handleUsePrompt}>
-                Använd
+                {t('diary.journal.prompt.use')}
               </Button>
             </div>
           </div>
@@ -322,20 +322,20 @@ export function JournalTab() {
           <div className="relative flex-1 sm:w-64">
             {/* UX31: förstoringsglaset är den synliga ledtråden, etiketten
                 finns för skärmläsare och taligenkänning. */}
-            <label htmlFor="diary-search" className="sr-only">Sök i dagboken</label>
+            <label htmlFor="diary-search" className="sr-only">{t('diary.journal.search.label')}</label>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" aria-hidden="true" />
             <input
               id="diary-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Sök i dagboken..."
+              placeholder={t('diary.journal.search.placeholder')}
               className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             />
           </div>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            aria-label="Filtrera efter tagg"
+            aria-label={t('diary.journal.search.filterByTag')}
             aria-pressed={showFilters}
             className={cn(
               "p-2 rounded-lg border transition-colors",
@@ -350,7 +350,7 @@ export function JournalTab() {
 
         <Button onClick={() => setIsWriteModalOpen(true)}>
           <Plus className="w-4 h-4 mr-2" />
-          Ny anteckning
+          {t('diary.journal.newEntryButton')}
         </Button>
       </div>
 
@@ -366,7 +366,7 @@ export function JournalTab() {
                 : "bg-stone-100 text-stone-600 hover:bg-stone-200"
             )}
           >
-            Alla
+            {t('common.all')}
           </button>
           {allTags.map(tag => (
             <button
@@ -401,17 +401,17 @@ export function JournalTab() {
               />
             )}
             <h3 className="text-lg font-semibold text-stone-700 mb-2">
-              {searchQuery || filterTag ? 'Inga träffar' : 'Din dagbok är tom'}
+              {searchQuery || filterTag ? t('diary.journal.empty.noMatchesTitle') : t('diary.journal.empty.emptyTitle')}
             </h3>
             <p className="text-stone-700 mb-6">
               {searchQuery || filterTag
-                ? 'Prova att ändra din sökning'
-                : 'Börja skriva och samla dina tankar på ett ställe'}
+                ? t('diary.journal.empty.noMatchesDescription')
+                : t('diary.journal.empty.emptyDescription')}
             </p>
             {!searchQuery && !filterTag && (
               <Button onClick={() => setIsWriteModalOpen(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Skriv ditt första inlägg
+                {t('diary.writeFirst')}
               </Button>
             )}
           </Card>
@@ -426,7 +426,7 @@ export function JournalTab() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
                     <h3 className="font-semibold text-stone-900 truncate">
-                      {entry.title || 'Utan titel'}
+                      {entry.title || t('diary.noTitle')}
                     </h3>
                     {entry.mood && (
                       <span className={cn(
@@ -452,7 +452,7 @@ export function JournalTab() {
                         year: 'numeric'
                       })}
                     </span>
-                    <span>{entry.word_count} ord</span>
+                    <span>{entry.word_count} {t('diary.words')}</span>
                     {entry.tags.length > 0 && (
                       <div className="flex gap-1">
                         {entry.tags.slice(0, 3).map(tag => (
@@ -468,7 +468,7 @@ export function JournalTab() {
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleFavorite(entry.id) }}
-                    aria-label={entry.is_favorite ? `Ta bort "${entry.title || 'Utan titel'}" som favorit` : `Markera "${entry.title || 'Utan titel'}" som favorit`}
+                    aria-label={entry.is_favorite ? t('diary.journal.card.removeFavorite', { title: entry.title || t('diary.noTitle') }) : t('diary.journal.card.markFavorite', { title: entry.title || t('diary.noTitle') })}
                     aria-pressed={entry.is_favorite}
                     className={cn(
                       "p-2 rounded-lg transition-colors",
@@ -482,11 +482,11 @@ export function JournalTab() {
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
-                      if (confirm('Ta bort detta inlägg?')) {
+                      if (confirm(t('diary.journal.card.confirmDelete'))) {
                         deleteEntry(entry.id)
                       }
                     }}
-                    aria-label={`Radera dagboksinlägget "${entry.title || 'Utan titel'}"`}
+                    aria-label={t('diary.journal.card.deleteEntry', { title: entry.title || t('diary.noTitle') })}
                     className="p-2 rounded-lg text-stone-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
@@ -526,7 +526,7 @@ export function JournalTab() {
                     day: 'numeric',
                     month: 'long',
                     year: 'numeric'
-                  })} · {selectedEntry.word_count} ord
+                  })} · {selectedEntry.word_count} {t('diary.words')}
                 </p>
               </div>
               <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-stone-100 rounded-lg">
@@ -541,7 +541,7 @@ export function JournalTab() {
                   getMoodColor(selectedEntry.mood)
                 )}>
                   <span className="text-lg">{getMoodEmoji(selectedEntry.mood)}</span>
-                  <span>Humör: {selectedEntry.mood}/5</span>
+                  <span>{t('diary.journal.viewModal.mood', { mood: selectedEntry.mood })}</span>
                 </div>
               )}
 

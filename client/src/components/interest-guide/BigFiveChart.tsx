@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { bigFiveNames, type BigFiveScores } from '@/services/interestGuideData'
+import { type BigFiveScores } from '@/services/interestGuideData'
+import { useBigFiveNamn } from '@/services/useIntresseguideInnehall'
 
 interface BigFiveChartProps {
   scores: BigFiveScores
@@ -7,6 +8,7 @@ interface BigFiveChartProps {
 
 export function BigFiveChart({ scores }: BigFiveChartProps) {
   const { t } = useTranslation()
+  const bigFiveNames = useBigFiveNamn()
   const entries = Object.entries(scores) as [keyof BigFiveScores, number][]
 
   const getBarColor = (score: number) => {

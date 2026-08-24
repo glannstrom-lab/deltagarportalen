@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Users,
   MessageSquare,
@@ -50,6 +51,7 @@ export function NetworkingAssistant({
   userBackground,
   className,
 }: NetworkingAssistantProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<NetworkingHelpResult | null>(null)
@@ -83,7 +85,7 @@ export function NetworkingAssistant({
       const response = await getNetworkingHelp(params)
       setResult(response.result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod')
+      setError(err instanceof Error ? err.message : t('common.genericError'))
     } finally {
       setIsLoading(false)
     }
@@ -108,7 +110,7 @@ export function NetworkingAssistant({
 
   if (!result && !isLoading && !error) {
     return (
-      <AiConsentGate compact featureName="Nätverkshjälpen">
+      <AiConsentGate compact featureName={t('ai.networking.featureName')}>
         <div className={cn('p-5 rounded-xl bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800', className)}>
           <div className="flex items-start gap-3 mb-4">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
@@ -116,10 +118,10 @@ export function NetworkingAssistant({
             </div>
             <div>
               <h4 className="font-medium text-stone-800 dark:text-stone-200">
-                AI Nätverksassistent
+                {t('ai.networking.heading')}
               </h4>
               <p className="text-sm text-stone-600 dark:text-stone-600">
-                Generera personliga nätverksmeddelanden
+                {t('ai.networking.subheading')}
               </p>
             </div>
           </div>
@@ -138,31 +140,31 @@ export function NetworkingAssistant({
                 )}
               >
                 {platformIcons[p]}
-                {p === 'Other' ? 'Annat' : p}
+                {p === 'Other' ? t('ai.networking.platformOther') : p}
               </button>
             ))}
           </div>
 
           <div className="space-y-3">
             <Input
-              placeholder="Kontaktens namn (valfritt)"
+              placeholder={t('ai.networking.placeholderName')}
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
             />
             <div className="grid grid-cols-2 gap-3">
               <Input
-                placeholder="Titel"
+                placeholder={t('ai.networking.placeholderTitle')}
                 value={contactTitle}
                 onChange={(e) => setContactTitle(e.target.value)}
               />
               <Input
-                placeholder="Företag"
+                placeholder={t('ai.networking.placeholderCompany')}
                 value={contactCompany}
                 onChange={(e) => setContactCompany(e.target.value)}
               />
             </div>
             <Input
-              placeholder="Ditt mål med kontakten (t.ex. 'karriärrådgivning', 'jobbmöjligheter')"
+              placeholder={t('ai.networking.placeholderGoal')}
               value={userGoal}
               onChange={(e) => setUserGoal(e.target.value)}
             />
@@ -171,7 +173,7 @@ export function NetworkingAssistant({
               className="w-full"
               leftIcon={<MessageSquare className="w-4 h-4" />}
             >
-              Generera meddelande
+              {t('ai.networking.generateButton')}
             </Button>
           </div>
         </div>
@@ -180,14 +182,14 @@ export function NetworkingAssistant({
   }
 
   return (
-    <AiConsentGate compact featureName="Nätverkshjälpen">
+    <AiConsentGate compact featureName={t('ai.networking.featureName')}>
       <AIResultCard
         aiGenerated={!!result}
-        title="Nätverksassistent"
-        subtitle={contactName || contactCompany || 'Nätverksstrategi'}
+        title={t('ai.networking.title')}
+        subtitle={contactName || contactCompany || t('ai.networking.strategyFallback')}
         icon={<Users className="w-5 h-5 text-white" />}
         isLoading={isLoading}
-        loadingText="Skapar personligt meddelande..."
+        loadingText={t('ai.networking.loadingMessage')}
         error={error}
         onRetry={handleGenerate}
         className={className}
@@ -199,7 +201,7 @@ export function NetworkingAssistant({
               onClick={() => setResult(null)}
               className="text-white/80 hover:text-white hover:bg-white/10"
             >
-              Nytt meddelande
+              {t('ai.networking.newMessage')}
             </Button>
           )
         }
@@ -210,7 +212,7 @@ export function NetworkingAssistant({
             <div className="relative">
               <div className="absolute top-2 right-2 flex items-center gap-1">
                 <span className="text-xs text-stone-600">
-                  {result.suggestedMessage.length} tecken
+                  {t('ai.networking.charCount', { count: result.suggestedMessage.length })}
                 </span>
                 <button
                   onClick={handleCopyMessage}
@@ -232,7 +234,7 @@ export function NetworkingAssistant({
                 <div className="flex items-center gap-2 mb-3">
                   {platformIcons[platform]}
                   <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                    {platform}-meddelande
+                    {t('ai.networking.platformMessage', { platform })}
                   </span>
                 </div>
                 <p className="text-sm text-stone-800 dark:text-stone-200 whitespace-pre-wrap pr-16">
@@ -244,7 +246,7 @@ export function NetworkingAssistant({
             {/* Alternative Openings */}
             {result.alternativeOpenings.length > 0 && (
               <CollapsibleSection
-                title="Alternativa öppningar"
+                title={t('ai.networking.alternativeOpenings')}
                 icon={<MessageSquare className="w-4 h-4" />}
                 badge={result.alternativeOpenings.length}
               >
@@ -267,7 +269,7 @@ export function NetworkingAssistant({
             {/* Follow-up Strategy */}
             {result.followUpStrategy.length > 0 && (
               <CollapsibleSection
-                title="Uppföljningsstrategi"
+                title={t('ai.networking.followUpStrategy')}
                 icon={<Send className="w-4 h-4" />}
                 badge={result.followUpStrategy.length}
               >
@@ -289,7 +291,7 @@ export function NetworkingAssistant({
             {/* Relevant Groups */}
             {result.relevantGroups.length > 0 && (
               <CollapsibleSection
-                title="Relevanta nätverk"
+                title={t('ai.networking.relevantGroups')}
                 icon={<UserPlus className="w-4 h-4" />}
                 badge={result.relevantGroups.length}
               >
@@ -319,7 +321,7 @@ export function NetworkingAssistant({
             {/* Networking Tips */}
             {result.networkingTips.length > 0 && (
               <CollapsibleSection
-                title="Nätverkstips"
+                title={t('ai.networking.networkingTips')}
                 icon={<Lightbulb className="w-4 h-4" />}
               >
                 <AIList items={result.networkingTips} />
@@ -329,7 +331,7 @@ export function NetworkingAssistant({
             {/* LinkedIn Tips */}
             {result.linkedInTips.length > 0 && (
               <CollapsibleSection
-                title="LinkedIn-tips"
+                title={t('ai.networking.linkedInTips')}
                 icon={<Linkedin className="w-4 h-4" />}
               >
                 <AIList items={result.linkedInTips} />

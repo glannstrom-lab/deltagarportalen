@@ -3,6 +3,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { History, Loader2, ChevronDown, ChevronUp, Clock } from '@/components/ui/icons'
 import { profileHistoryApi, type ProfileHistoryEntry } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
@@ -27,6 +28,7 @@ const FIELD_LABELS: Record<string, string> = {
 }
 
 export function ProfileHistory({ className }: Props) {
+  const { t } = useTranslation()
   const [history, setHistory] = useState<ProfileHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -105,7 +107,7 @@ export function ProfileHistory({ className }: Props) {
     <div className={cn('space-y-4', className)}>
       <div className="flex items-center gap-2 mb-2">
         <History className="w-5 h-5 text-stone-500" />
-        <h3 className="font-semibold text-stone-800 dark:text-stone-200">Ändringshistorik</h3>
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('profile.support.changeHistory')}</h3>
       </div>
 
       {history.length > 0 ? (
@@ -144,7 +146,7 @@ export function ProfileHistory({ className }: Props) {
                 <div className="px-3 pb-3 border-t border-stone-100 dark:border-stone-700">
                   <div className="grid grid-cols-2 gap-3 pt-3">
                     <div>
-                      <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">Tidigare värde</p>
+                      <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('profile.history.previousValue')}</p>
                       <div className="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
                         <p className="text-xs text-stone-600 dark:text-stone-400 whitespace-pre-wrap break-words">
                           {formatValue(entry.old_value)}
@@ -152,7 +154,7 @@ export function ProfileHistory({ className }: Props) {
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">Nytt värde</p>
+                      <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">{t('profile.history.newValue')}</p>
                       <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
                         <p className="text-xs text-stone-600 dark:text-stone-400 whitespace-pre-wrap break-words">
                           {formatValue(entry.new_value)}

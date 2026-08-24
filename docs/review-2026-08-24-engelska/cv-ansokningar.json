@@ -1,0 +1,122 @@
+{
+  "omrade": "CV och ansökningar",
+  "nycklarGranskade": 1477,
+  "sammanfattning": "Engelskan i CV-, personligt brev- och ansökningsområdet håller genomgående hög kvalitet — tonen är lugn och vänlig, meningarna är korta och begripliga, och sakinnehållet (t.ex. AI-integritetslöftena i cv.upload.privacy1-4 och personligt-brev-flödets felmeddelanden) stämmer noggrant med svenskan. Inga farliga betydelseglidningar eller påhittade löften hittades. De återkommande problemen är i stället mekaniska och rör konsekvens: samma svenska fras får olika engelsk form beroende på var i trädet den ligger ('Personligt brev' blir både 'Cover Letter' och 'Cover letter'; 'Arbetslivserfarenhet' blir både 'Work Experience' och 'Work experience'), och exempel-/platshållartexter skiftar oförklarat mellan brittisk och amerikansk stavning och format (telefonnummerplatshållare i tre olika format, 'Acme Ltd' vs 'Acme Inc', 'recognise' mitt i annars amerikansk stavning rakt igenom). Ett tomtillstånd ('No CVs found') bryter uttryckligen mot portalens egen regel om att aldrig visa administrationsspråk vid noll data — det ska vara en invit, inte ett myndighetssvar. Ordet 'personnummer' har på två ställen översatts till 'personal ID number(s)' i stället för att stå kvar som svenskt sakord. Inget av detta är allvarligt fel i sak, men det är precis den typ av lågriskstädning som gör portalen mer trovärdig för en läsare som redan kämpar med engelskan.",
+  "termlista": [
+    {"sv": "personligt brev", "en": "cover letter", "kommentar": "term konsekvent vald och korrekt (aldrig 'personal letter'), men versaliseringen skiftar: 'Cover Letter' (Title Case) i coverLetter.title/coverLetterGenerator.title, 'Cover letter' (meningsversalisering, rätt enligt DESIGN.md) i coverLetter.write.untitled/coverLetterGenerator.messages.defaultTitle"},
+    {"sv": "arbetslivserfarenhet", "en": "work experience", "kommentar": "'Work experience' (rätt) i cv.experience/focusCV.steps.work.title, men 'Work Experience' (Title Case) i cv.ats.checks.experience.title för samma svenska källsträng"},
+    {"sv": "personnummer", "en": "personal ID number", "kommentar": "ska enligt uppdraget stå kvar oöversatt (ev. med engelsk förklaring inom parentes) men har översatts rakt av på två ställen"},
+    {"sv": "070-123 45 67 (telefonplatshållare)", "en": "blandat: '555-123-4567' / '+46 70-123 45 67' / '070-123 45 67'", "kommentar": "tre olika format för samma sorts platshållare i tre olika CV/kontakt-formulär; ett av dem (US-format) riskerar att vilseleda om vilket nummerformat som förväntas"},
+    {"sv": "t.ex. Acme AB (företagsplatshållare)", "en": "blandat: 'Acme Inc' / 'Acme Ltd'", "kommentar": "amerikansk och brittisk företagsform blandas för samma svenska platshållare"}
+  ],
+  "fynd": [
+    {
+      "nyckel": "cv.myCvs.empty.noCVs",
+      "nuvarandeEn": "No CVs found",
+      "foreslagenEn": "You haven't created a CV yet",
+      "sv": "Du har inte skapat något CV än",
+      "severity": "stor",
+      "typ": "ton",
+      "motivering": "Svenskan är en mjuk invit ('inte ... än'); engelskan är exakt det administrationsspråk ('X found/not found') som CLAUDE.md och DESIGN.md uttryckligen förbjuder för tomtillstånd med noll underlag. Bryter portalens egen regel om att aldrig visa ett påhittat nollresultat som ett faktapåstående."
+    },
+    {
+      "nyckel": "applications.empty.title",
+      "nuvarandeEn": "You have not started applying yet",
+      "foreslagenEn": "You haven't started applying yet",
+      "sv": "Du har inte börjat söka jobb än",
+      "severity": "liten",
+      "typ": "ton",
+      "motivering": "DESIGN.md ger just detta mönster som exempel och skriver uttryckligen kontraktionen 'haven't'. Den formella 'have not' utan sammandragning låter mer byråkratiskt än förlagan och än den ton portalen ska ha."
+    },
+    {
+      "nyckel": "cvBuilder.placeholders.phone",
+      "nuvarandeEn": "555-123-4567",
+      "foreslagenEn": "+46 70-123 45 67",
+      "sv": "070-123 45 67",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Detta är en svensk jobbportal där användaren ska ange sitt riktiga svenska telefonnummer till svenska arbetsgivare. Ett amerikanskt platshållarformat (555-XXX-XXXX, ett USA-reserverat testnummerprefix) signalerar fel format till en läsare som inte har engelska som modersmål. applications.detail.contactPhonePlaceholder använder korrekt '+46 70 123 45 67' för samma typ av fält — följ det mönstret här."
+    },
+    {
+      "nyckel": "cv.upload.counts.education",
+      "nuvarandeEn": "studies",
+      "foreslagenEn": "educations",
+      "sv": "utbildningar",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "cv.myCvs.educations översätter samma svenska ord till 'educations' och de tre systerposterna i samma namnrymd (counts.experience/skills/languages) följer mönstret 'plural av sektionen'. 'studies' bryter mönstret för just den här nyckeln."
+    },
+    {
+      "nyckel": "coverLetterWidget.createPersonalLetters",
+      "nuvarandeEn": "Create personal letters",
+      "foreslagenEn": "Create cover letters",
+      "sv": "Skapa personliga brev",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "Enda stället i hela granskade området där 'personligt brev' blir 'personal letter' i stället för det annars konsekvent använda 'cover letter'."
+    },
+    {
+      "nyckel": "coverLetter.title",
+      "nuvarandeEn": "Cover Letter",
+      "foreslagenEn": "Cover letter",
+      "sv": "Personligt brev",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Svenskan är meningsversaliserad. DESIGN.md §7 kräver meningsversalisering i engelskan, inte Title Case — och samma svenska sträng blir korrekt 'Cover letter' i coverLetter.write.untitled och coverLetterGenerator.messages.defaultTitle."
+    },
+    {
+      "nyckel": "coverLetterGenerator.title",
+      "nuvarandeEn": "Cover Letter",
+      "foreslagenEn": "Cover letter",
+      "sv": "Personligt brev",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma fel som coverLetter.title: Title Case i stället för meningsversalisering, inkonsekvent med coverLetterGenerator.messages.defaultTitle som har samma svenska källa men rätt casing."
+    },
+    {
+      "nyckel": "cv.ats.checks.experience.title",
+      "nuvarandeEn": "Work Experience",
+      "foreslagenEn": "Work experience",
+      "sv": "Arbetslivserfarenhet",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma svenska ord ('Arbetslivserfarenhet') översätts meningsversaliserat ('Work experience') i cv.experience och focusCV.steps.work.title, men Title Case här. Håll en form för samma begrepp."
+    },
+    {
+      "nyckel": "cv.upload.privacy2",
+      "nuvarandeEn": "The text is sent to the AI, which sorts it into the right fields. Personal ID numbers are removed automatically first.",
+      "foreslagenEn": "The text is sent to the AI, which sorts it into the right fields. Your personnummer (Swedish personal ID number) is removed automatically first.",
+      "sv": "Texten skickas till AI:n som sorterar den i rätt fält. Personnummer tas bort automatiskt först.",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "'Personnummer' hör till listan över termer som aldrig ska översättas rakt av — särskilt viktigt i just den här meningen eftersom den beskriver en integritetsåtgärd specifik för det svenska personnumret, inte ett generiskt ID-begrepp."
+    },
+    {
+      "nyckel": "cv.tips.sections.important.dont1",
+      "nuvarandeEn": "Include personal ID number (security risk)",
+      "foreslagenEn": "Include your personnummer (security risk)",
+      "sv": "Inkludera personnummer (säkerhetsrisk)",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Samma term-regel som cv.upload.privacy2 — 'personnummer' ska stå kvar, inte generaliseras till 'personal ID number'."
+    },
+    {
+      "nyckel": "coverLetter.write.placeholderCompany",
+      "nuvarandeEn": "e.g. Acme Ltd",
+      "foreslagenEn": "e.g. Acme Inc",
+      "sv": "t.ex. Acme AB",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "coverLetterGenerator.jobInfo.companyPlaceholder använder 'Acme Inc' för exakt samma svenska platshållare ('Acme AB'). Blandningen av brittisk ('Ltd') och amerikansk ('Inc') företagsform för samma exempel bör enas."
+    },
+    {
+      "nyckel": "cv.fileUpload.nameHint",
+      "nuvarandeEn": "Just so you recognise it in the list. The file itself isn't renamed.",
+      "foreslagenEn": "Just so you recognize it in the list. The file itself isn't renamed.",
+      "sv": "Bara för att du ska känna igen det i listan. Filen döps inte om.",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "Enda förekomsten av brittisk stavning ('recognise') i ett område som annars konsekvent använder amerikansk stavning (optimize, customize, color, centered, organized)."
+    }
+  ]
+}

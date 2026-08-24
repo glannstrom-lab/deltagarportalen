@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Building2,
   Newspaper,
@@ -47,6 +48,7 @@ export function CompanyAnalysisPanel({
   onClose,
   className,
 }: CompanyAnalysisPanelProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CompanyAnalysisResult | null>(null)
@@ -71,7 +73,7 @@ export function CompanyAnalysisPanel({
       const response = await getCompanyAnalysis(params)
       setResult(response.result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod')
+      setError(err instanceof Error ? err.message : t('common.genericError'))
     } finally {
       setIsLoading(false)
     }
@@ -101,7 +103,7 @@ export function CompanyAnalysisPanel({
 
   if (!hasStarted) {
     return (
-      <AiConsentGate compact featureName="Företagsanalys">
+      <AiConsentGate compact featureName={t('ai.companyAnalysis.title')}>
         <div className={cn('p-4 rounded-xl bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50">
@@ -109,17 +111,17 @@ export function CompanyAnalysisPanel({
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
-                Analysera {companyName}
+                {t('ai.companyAnalysis.analyzeHeading', { company: companyName })}
               </h4>
               <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
-                Få AI-genererade insikter om nyheter, kultur och tips för din spontanansökan.
+                {t('ai.companyAnalysis.analyzeDesc')}
               </p>
               <Button
                 onClick={handleAnalyze}
                 size="sm"
                 leftIcon={<Building2 className="w-4 h-4" />}
               >
-                Analysera företag
+                {t('ai.companyAnalysis.analyzeButton')}
               </Button>
             </div>
           </div>
@@ -129,14 +131,14 @@ export function CompanyAnalysisPanel({
   }
 
   return (
-    <AiConsentGate compact featureName="Företagsanalys">
+    <AiConsentGate compact featureName={t('ai.companyAnalysis.title')}>
       <AIResultCard
         aiGenerated={!!result}
-        title="Företagsanalys"
+        title={t('ai.companyAnalysis.title')}
         subtitle={companyName}
         icon={<Building2 className="w-5 h-5 text-white" />}
         isLoading={isLoading}
-        loadingText="Analyserar företaget..."
+        loadingText={t('ai.common.analyzingCompany')}
         error={error}
         onRetry={handleAnalyze}
         className={className}
@@ -148,7 +150,7 @@ export function CompanyAnalysisPanel({
               onClick={onClose}
               className="text-white/80 hover:text-white hover:bg-white/10"
             >
-              Stäng
+              {t('common.close')}
             </Button>
           )
         }
@@ -158,7 +160,7 @@ export function CompanyAnalysisPanel({
             {/* Recent News */}
             {result.recentNews.length > 0 && (
               <CollapsibleSection
-                title="Senaste nyheterna"
+                title={t('ai.common.recentNews')}
                 icon={<Newspaper className="w-4 h-4" />}
                 badge={result.recentNews.length}
                 defaultOpen
@@ -192,7 +194,7 @@ export function CompanyAnalysisPanel({
 
             {/* Financial Status */}
             <CollapsibleSection
-              title="Ekonomisk status"
+              title={t('ai.companyAnalysis.financialStatus')}
               icon={<TrendingUp className="w-4 h-4" />}
               defaultOpen
             >
@@ -202,7 +204,7 @@ export function CompanyAnalysisPanel({
               <div className="grid grid-cols-3 gap-2">
                 {result.financialStatus.revenue && (
                   <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
-                    <p className="text-xs text-stone-700 mb-0.5">Omsättning</p>
+                    <p className="text-xs text-stone-700 mb-0.5">{t('ai.companyAnalysis.revenue')}</p>
                     <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.revenue}
                     </p>
@@ -210,7 +212,7 @@ export function CompanyAnalysisPanel({
                 )}
                 {result.financialStatus.employees && (
                   <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
-                    <p className="text-xs text-stone-700 mb-0.5">Anställda</p>
+                    <p className="text-xs text-stone-700 mb-0.5">{t('ai.companyAnalysis.employees')}</p>
                     <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.employees}
                     </p>
@@ -218,7 +220,7 @@ export function CompanyAnalysisPanel({
                 )}
                 {result.financialStatus.growth && (
                   <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
-                    <p className="text-xs text-stone-700 mb-0.5">Tillväxt</p>
+                    <p className="text-xs text-stone-700 mb-0.5">{t('ai.companyAnalysis.growth')}</p>
                     <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.growth}
                     </p>
@@ -229,7 +231,7 @@ export function CompanyAnalysisPanel({
 
             {/* Recruitment Needs */}
             <CollapsibleSection
-              title="Rekryteringsbehov"
+              title={t('ai.companyAnalysis.recruitmentNeeds')}
               icon={<Briefcase className="w-4 h-4" />}
             >
               <div className="flex items-center gap-2 mb-3">
@@ -241,14 +243,14 @@ export function CompanyAnalysisPanel({
                       : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-600'
                   )}
                 >
-                  {result.recruitmentNeeds.hiring ? 'Rekryterar aktivt' : 'Ej aktiv rekrytering'}
+                  {result.recruitmentNeeds.hiring ? t('ai.companyAnalysis.hiringActive') : t('ai.companyAnalysis.hiringInactive')}
                 </span>
               </div>
 
               {result.recruitmentNeeds.roles.length > 0 && (
                 <div className="mb-3">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Roller som efterfrågas
+                    {t('ai.companyAnalysis.rolesWanted')}
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {result.recruitmentNeeds.roles.map((role, i) => (
@@ -266,7 +268,7 @@ export function CompanyAnalysisPanel({
               {result.recruitmentNeeds.signals.length > 0 && (
                 <>
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Signaler
+                    {t('ai.companyAnalysis.signals')}
                   </p>
                   <AIList items={result.recruitmentNeeds.signals} />
                 </>
@@ -275,7 +277,7 @@ export function CompanyAnalysisPanel({
 
             {/* Company Culture */}
             <CollapsibleSection
-              title="Företagskultur"
+              title={t('ai.common.companyCulture')}
               icon={<Users className="w-4 h-4" />}
             >
               <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
@@ -285,7 +287,7 @@ export function CompanyAnalysisPanel({
               {result.companyCulture.values.length > 0 && (
                 <div className="mb-3">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Värderingar
+                    {t('ai.companyAnalysis.values')}
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {result.companyCulture.values.map((value, i) => (
@@ -328,14 +330,14 @@ export function CompanyAnalysisPanel({
 
             {/* Application Tips */}
             <CollapsibleSection
-              title="Tips för din ansökan"
+              title={t('ai.companyAnalysis.applicationTips')}
               icon={<Lightbulb className="w-4 h-4" />}
               defaultOpen
             >
               <div className="space-y-3">
                 <div className="p-3 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
                   <p className="text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] mb-1">
-                    Bästa approach
+                    {t('ai.companyAnalysis.bestApproach')}
                   </p>
                   <p className="text-sm text-stone-700 dark:text-stone-300">
                     {result.spontaneousApplicationTips.bestApproach}
@@ -344,7 +346,7 @@ export function CompanyAnalysisPanel({
 
                 <div>
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Samtalsämnen att lyfta
+                    {t('ai.companyAnalysis.talkingPoints')}
                   </p>
                   <div className="space-y-1">
                     {result.spontaneousApplicationTips.talkingPoints.map((point, i) => (
@@ -364,7 +366,7 @@ export function CompanyAnalysisPanel({
                 {result.spontaneousApplicationTips.avoidTopics.length > 0 && (
                   <div>
                     <p className="text-xs font-medium text-red-600 dark:text-red-400 mb-2">
-                      Undvik att nämna
+                      {t('ai.companyAnalysis.avoidTopics')}
                     </p>
                     <AIList items={result.spontaneousApplicationTips.avoidTopics} />
                   </div>
@@ -372,7 +374,7 @@ export function CompanyAnalysisPanel({
 
                 <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
                   <p className="text-xs text-green-700 dark:text-green-300">
-                    <strong>Bästa tid att kontakta:</strong> {result.spontaneousApplicationTips.bestTimeToApply}
+                    <strong>{t('ai.companyAnalysis.bestTimeToContact')}</strong> {result.spontaneousApplicationTips.bestTimeToApply}
                   </p>
                 </div>
               </div>

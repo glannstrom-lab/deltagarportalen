@@ -4,6 +4,7 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { occupations, type Occupation } from '@/services/interestGuideData'
+import { useYrken } from '@/services/useIntresseguideInnehall'
 import { Button } from '@/components/ui'
 import {
   Search,
@@ -53,9 +54,19 @@ export default function ExploreTab() {
   const [showFilters, setShowFilters] = useState(false)
   const [antalVisade, setAntalVisade] = useState(SIDSTORLEK)
 
+  const yrken = useYrken()
+
+  // Fältkategoriseringen (`fields` ovan) matchar svenska nyckelord mot
+  // yrkestexten, och måste därför köras mot den OÖVERSATTA texten — annars
+  // matchar ingenting på engelska. Slås upp per id, inte per språk.
+  const yrkesFalt = useMemo(
+    () => new Map(occupations.map(o => [o.id, getOccupationField(o)])),
+    []
+  )
+
   // Filter and group occupations
   const filteredOccupations = useMemo(() => {
-    return occupations.filter(occ => {
+    return yrken.filter(occ => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase()
@@ -77,13 +88,13 @@ export default function ExploreTab() {
       }
 
       // Field filter
-      if (selectedField && getOccupationField(occ) !== selectedField) {
+      if (selectedField && yrkesFalt.get(occ.id) !== selectedField) {
         return false
       }
 
       return true
     })
-  }, [searchQuery, selectedField, filterUni, filterPrognosis])
+  }, [yrken, searchQuery, selectedField, filterUni, filterPrognosis, yrkesFalt])
 
   const synligaYrken = filteredOccupations.slice(0, antalVisade)
   const finnsFler = filteredOccupations.length > antalVisade
@@ -327,7 +338,7 @@ export default function ExploreTab() {
                     <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                       <span className="flex items-center gap-1">
                         {occupation.requiresUniversity ? (
-                          <><GraduationCap className="w-3 h-3" /> Högskola</>
+                          <><GraduationCap className="w-3 h-3" /> {t('interestGuide.explore.universityLevel')}</>
                         ) : (
                           <><Users className="w-3 h-3" /> Gymnasium/YH</>
                         )}
@@ -353,7 +364,7 @@ export default function ExploreTab() {
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-500 dark:text-gray-400 mb-1">Lön</p>
+                        <p className="text-gray-500 dark:text-gray-400 mb-1">{t('career.explore.salary')}</p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.salary}</p>
                       </div>
                       {/*
@@ -374,11 +385,11 @@ export default function ExploreTab() {
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-stone-600 dark:text-stone-400 mb-1">Längd</p>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">{t('interestGuide.explore.length')}</p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.length}</p>
                       </div>
                       <div>
-                        <p className="text-stone-600 dark:text-stone-400 mb-1">Nivå</p>
+                        <p className="text-stone-600 dark:text-stone-400 mb-1">{t('interestGuide.explore.level')}</p>
                         <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.type}</p>
                       </div>
                     </div>

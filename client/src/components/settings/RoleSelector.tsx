@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore, type UserRole } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { 
@@ -48,6 +49,7 @@ const roleConfig: Record<UserRole, {
 }
 
 export function RoleSelector() {
+  const { t } = useTranslation()
   const { profile, setActiveRole, updateProfile } = useAuthStore()
   const [isEditing, setIsEditing] = useState(false)
   const [selectedRoles, setSelectedRoles] = useState<UserRole[]>([])
@@ -85,9 +87,9 @@ export function RoleSelector() {
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
       {/* Header */}
       <div className="px-6 py-4 border-b border-stone-100">
-        <h3 className="text-lg font-semibold text-stone-900">Roll och behörigheter</h3>
+        <h3 className="text-lg font-semibold text-stone-900">{t('settings.roles.title')}</h3>
         <p className="text-sm text-stone-700 mt-1">
-          Välj vilken roll du vill använda just nu. Dina tillgängliga roller bestämmer vilka funktioner du har tillgång till.
+          {t('settings.roles.description')}
         </p>
       </div>
 
@@ -161,7 +163,7 @@ export function RoleSelector() {
               </button>
             ) : (
               <div className="bg-stone-50 rounded-xl p-4">
-                <h4 className="text-sm font-medium text-stone-700 mb-3">Välj roller för detta konto</h4>
+                <h4 className="text-sm font-medium text-stone-700 mb-3">{t('settings.roles.selectRolesForAccount')}</h4>
                 <div className="space-y-2 mb-4">
                   {(Object.keys(roleConfig) as UserRole[]).map((role) => {
                     const config = roleConfig[role]
@@ -230,8 +232,8 @@ export function RoleSelector() {
             <p className="font-medium text-stone-700 mb-1">Om roller</p>
             <ul className="space-y-1 list-disc list-inside">
               <li>Du kan ha flera roller samtidigt</li>
-              <li>Välj "Aktiv roll" för att byta vy i sidomenyn</li>
-              <li>Dina rättigheter är en kombination av alla dina roller</li>
+              <li>{t('settings.roles.tipActiveRole')}</li>
+              <li>{t('settings.roles.tipCombinedPermissions')}</li>
             </ul>
           </div>
         </div>

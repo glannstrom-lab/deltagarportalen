@@ -8,8 +8,8 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  type UserProfile,
   calculateJobMatches,
+  type UserProfile,
   type JobMatch,
 } from '@/services/interestGuideData'
 import { educationApi, type Education } from '@/services/educationApi'
@@ -58,7 +58,15 @@ export function CareerRecommendationsPanel({
   const [recommendations, setRecommendations] = useState<CareerPathRecommendation[]>([])
   const [expandedOccupation, setExpandedOccupation] = useState<string | null>(null)
 
-  // Get top matches if not provided
+  // Get top matches if not provided.
+  //
+  // MEDVETET inte översatt: `occupationName` (nedan) skickas rätt in som
+  // sökterm till `scbSalaryService.getSalaryByOccupation` och
+  // `educationApi.matchByJobTitle`, som båda matchar mot SVENSKA yrkestitlar
+  // (SCB:s lönedata, utbildningsregistret). Ett engelskt namn skulle inte
+  // hitta någon träff där. Namnet är alltså en uppslagsnyckel här, inte bara
+  // renderad text — samma undantag som poängberäkningen i
+  // `useJobbmatchningar`s docstring pekar ut.
   const matches = topMatches || calculateJobMatches(profile).slice(0, 5)
 
   // Load career data for top matches

@@ -27,6 +27,7 @@
  *    underlag UTELÄMNAS; den gissas aldrig.
  */
 import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import i18n from '@/i18n/config'
 import { getTemplateById, getDefaultTemplate } from './templates'
 
 export interface CoverLetterPDFData {
@@ -156,7 +157,7 @@ function ProfessionalPDF({ data, template }: { data: CoverLetterPDFData; templat
 
         {/* Signature */}
         <View style={styles.signatureBlock}>
-          <Text style={styles.signatureGreeting}>Med vänliga hälsningar,</Text>
+          <Text style={styles.signatureGreeting}>{i18n.t('coverLetter.closingGreeting')}</Text>
           {name && <Text style={styles.signatureName}>{name}</Text>}
           {data.sender.phone && <Text style={styles.signatureContact}>{data.sender.phone}</Text>}
           {data.sender.email && <Text style={styles.signatureContact}>{data.sender.email}</Text>}
@@ -241,7 +242,7 @@ function ModernPDF({ data, template }: { data: CoverLetterPDFData; template: Tem
         ))}
 
         <View style={styles.signatureBlock}>
-          <Text style={styles.signatureGreeting}>Med vänliga hälsningar,</Text>
+          <Text style={styles.signatureGreeting}>{i18n.t('coverLetter.closingGreeting')}</Text>
           {name && <Text style={styles.signatureName}>{name}</Text>}
           {data.sender.phone && <Text style={styles.signatureContact}>{data.sender.phone}</Text>}
           {data.sender.email && <Text style={styles.signatureContact}>{data.sender.email}</Text>}
@@ -302,7 +303,7 @@ function MinimalPDF({ data, template }: { data: CoverLetterPDFData; template: Te
         ))}
 
         <View style={styles.signatureBlock}>
-          <Text style={styles.signatureGreeting}>Med vänliga hälsningar,</Text>
+          <Text style={styles.signatureGreeting}>{i18n.t('coverLetter.closingGreeting')}</Text>
           {name && <Text style={styles.signatureName}>{name}</Text>}
           {data.sender.phone && <Text style={styles.signatureContact}>{data.sender.phone}</Text>}
           {data.sender.email && <Text style={styles.signatureContact}>{data.sender.email}</Text>}
@@ -365,7 +366,7 @@ function ExecutivePDF({ data, template }: { data: CoverLetterPDFData; template: 
         ))}
 
         <View style={styles.signatureBlock}>
-          <Text style={styles.signatureGreeting}>Med vänliga hälsningar,</Text>
+          <Text style={styles.signatureGreeting}>{i18n.t('coverLetter.closingGreeting')}</Text>
           {name && <Text style={styles.signatureName}>{name}</Text>}
           {data.sender.phone && <Text style={styles.signatureContact}>{data.sender.phone}</Text>}
           {data.sender.email && <Text style={styles.signatureContact}>{data.sender.email}</Text>}

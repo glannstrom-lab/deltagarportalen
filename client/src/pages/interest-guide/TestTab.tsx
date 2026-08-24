@@ -13,6 +13,7 @@ import {
   ICF_FRAGE_IDN,
   type SectionId,
 } from '@/services/interestGuideData'
+import { useFragor, useSektioner } from '@/services/useIntresseguideInnehall'
 import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
@@ -38,6 +39,12 @@ export default function TestTab() {
   const [error, setError] = useState<string | null>(null)
   /** Sant bara när senaste sparningen faktiskt skrev en rad. */
   const [saveFailed, setSaveFailed] = useState(false)
+
+  // Översatt text att rendera. `allQuestions`/`sections` (modulkonstanterna)
+  // används fortsatt för id, index och poängberäkning — se kommentarerna
+  // nedan där `currentQuestion`/`currentSection` härleds.
+  const oversattaFragor = useFragor()
+  const oversattaSektioner = useSektioner()
 
   // Load saved progress
   useEffect(() => {
@@ -120,6 +127,9 @@ export default function TestTab() {
 
   const currentQuestion = allQuestions[currentQuestionIndex]
   const currentSection = sections.find(s => s.id === currentQuestion?.section)
+  // Samma id/ordning som ovan — bara text och etiketter kommer härifrån.
+  const oversattFraga = oversattaFragor[currentQuestionIndex]
+  const oversattSektion = oversattaSektioner.find(s => s.id === currentSection?.id)
 
   const currentSectionQuestions = allQuestions.filter(q => q.section === currentSection?.id)
   const questionInSectionIndex = currentSectionQuestions.findIndex(q => q.id === currentQuestion?.id)
@@ -408,7 +418,7 @@ export default function TestTab() {
       case 'bigfive': return t('interestGuide.test.sections.bigfive.title')
       case 'strong': return t('interestGuide.test.sections.strong.title')
       case 'icf': return t('interestGuide.test.sections.icf.title')
-      default: return currentSection?.name
+      default: return oversattSektion?.name
     }
   }
 
@@ -418,7 +428,7 @@ export default function TestTab() {
       case 'bigfive': return t('interestGuide.test.sections.bigfive.description')
       case 'strong': return t('interestGuide.test.sections.strong.description')
       case 'icf': return t('interestGuide.test.sections.icf.description')
-      default: return currentSection?.subtitle
+      default: return oversattSektion?.subtitle
     }
   }
 
@@ -492,7 +502,7 @@ export default function TestTab() {
       {/* Section header */}
       <div className="text-center mb-6">
         <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-2">
-          {currentSection?.name}
+          {oversattSektion?.name}
         </span>
         <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">{getSectionTitle()}</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400">{getSectionDescription()}</p>
@@ -508,7 +518,7 @@ export default function TestTab() {
           Användaren såg ett maxsvar; systemet hade inget svar.
         */}
         <QuestionCard
-          question={currentQuestion}
+          question={oversattFraga}
           value={answers[currentQuestion.id]}
           onChange={handleAnswer}
           questionNumber={currentQuestionIndex + 1}
@@ -553,7 +563,7 @@ export default function TestTab() {
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-800 rounded-full border border-stone-200 dark:border-stone-700 text-xs text-gray-500 dark:text-gray-400">
           <span>{t('interestGuide.test.questionInSection', { current: questionInSectionIndex + 1, total: currentSectionQuestions.length })}</span>
           <span className="text-stone-300 dark:text-stone-600">|</span>
-          <span>{currentSection?.name}</span>
+          <span>{oversattSektion?.name}</span>
         </div>
       </div>
 

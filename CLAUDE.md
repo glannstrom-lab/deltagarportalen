@@ -464,6 +464,49 @@ const result = await callAI('personligt-brev', { ...params })
 
 Streaming via `useAIStream`-hooken (anropar `/api/ai-stream`).
 
+### Översättning — texten bor på TRE ställen
+
+Portalen är tvåspråkig (sv/en). Lägger du text på fel ställe blir den osynlig
+för engelskan. Full beskrivning: `docs/innehallsoversattning.md`.
+
+| Vad | Var |
+|---|---|
+| Gränssnittstext | `src/i18n/locales/{sv,en}.json` via `t()` |
+| Innehållsdata (övningar, intresseguide, externa resurser, rådgivare) | overlay i `src/data/oversattningar/*.en.json` |
+| Kunskapsbankens artiklar | kolumnerna `title_en`/`summary_en`/`content_en` i `articles` |
+
+**Innehållsdatan ligger kvar på svenska i sin datafil.** Engelskan är en platt
+karta `nyckel → text` som läggs på vid körning — strukturen bor på ett ställe,
+och en saknad nyckel ger svensk text i stället för tom. Läs den genom
+`useInnehall()` / `oversattInnehall()`, och intresseguiden genom hookarna i
+`services/useIntresseguideInnehall.ts`. **Läser du `occupations` direkt ur
+`interestGuideData.ts` får du svenska.**
+
+Fält som koden **jämför mot** översätts aldrig i datan — `id`, `category`,
+`difficulty`, `coachIds`, `kategorier` (se `FALT_SOM_AR_NYCKLAR`). En övnings
+`category` filtrerar, slår upp färg och mappar mot kunskapsbanken samtidigt som
+den visas; den renderas därför genom `t('exercises.categories.<svenska>')`.
+
+**Tre regler som vaktas maskinellt:**
+- **Svenska myndighetsnamn översätts aldrig.** Arbetsförmedlingen,
+  Försäkringskassan, Migrationsverket, Skatteverket, a-kassa, personnummer,
+  komvux, yrkeshögskola m.fl. — med kort engelsk förklaring inom parentes vid
+  första förekomsten. Ett generiskt engelskt namn går inte att googla, står inte
+  på skylten och finns inte på blanketten. Grind: `SKYDDADE_NAMN` i
+  `i18n/sprakparitet.test.ts`.
+- **Nyckel- och variabelparitet** mellan `sv.json` och `en.json`. Samma grind.
+- **Varje svensk innehållssträng har en engelsk motsvarighet.** Grind:
+  `data/oversattningar/innehallsparitet.test.ts`, som räknar fram nycklarna ur
+  den levande datan vid varje körning.
+
+**Engelskans läsare är oftast nyanländ och har varken svenska eller engelska som
+modersmål.** Skriv enkel, entydig engelska (ungefär B1): korta meningar, vanliga
+ord, inga idiom. Det väger tyngre än att låta idiomatiskt.
+
+**Inte översatt med flit:** konsulentvyn (svensktalande personal, DESIGN.md §2),
+STA-modulen (avaktiverad), `data/afRegions.ts` (svenska länsnamn) och de
+prerenderade guidesidorna i `dist/guider/` (svensk SEO-yta).
+
 ---
 
 ## UI/Design-instruktioner

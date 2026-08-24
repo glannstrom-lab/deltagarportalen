@@ -1,0 +1,113 @@
+{
+  "omrade": "Ramverk och juridik",
+  "nycklarGranskade": 1110,
+  "sammanfattning": "Granskningen omfattade alla 1110 nycklar i de tilldelade namnrymderna. Helhetsintrycket är gott: den juridiska texten (privacy.*, terms.*) är ovanligt korrekt översatt — GDPR-termerna (data controller, consent, legitimate interest, right to erasure, right to object m.fl.) matchar de vedertagna engelska juridiska formuleringarna exakt, och lagringstider, rättslig grund, tredjelandsöverföring och rättigheterna enligt art. 15–21 stämmer sakligt överens med svenskan. Den enda substantiella juridiska avvikelsen är att Integritetsskyddsmyndighetens faktiska svenska namn helt tappats bort i engelskan (privacy.complaint.authority) och ersatts med en ren beskrivning — en användare som vill klaga eller slå upp myndigheten känner inte igen den under det namn som anges. De fem hubbarna är namngivna konsekvent MED ETT tydligt undantag: 'Översikt' översätts både till 'Dashboard' (nav.dashboard) och 'Overview' (nav.hubs.oversikt, nav.groups.overview, dashboard.tabs.overview, hubOverview.title, hubOverviewHistory.backToOverview) — samma hubb har två olika engelska namn beroende på var i gränssnittet man är, och majoriteten pekar mot 'Overview'. Hubbkortet för 'Din vardag' på Översikt-sidan avviker på samma sätt från navets 'Everyday Life'. Ett par återkommande mönsterfel mot portalens egna tonregler: common.submit (SV 'Skicka') är fortfarande 'Submit' trots att DESIGN.md uttryckligen kräver 'Send' i stället för adminordet 'Submit', och topbar.focusModeOff bryter mot portalens etablerade norm (common.deactivate = 'Turn off', ihopkopplad med topbar.focusModeOn = 'Turn on') genom att i stället säga 'Disable'. En idiomatisk formulering ('you always make the final call') i integritetspolicyns AI-avsnitt är inte B1-vänlig. terms.account-listan har en grammatisk krock: tre av fyra punkter är korrekt omskrivna till gerundium för att passa stammen 'You are responsible for:', men första punkten bryter mönstret med en hel sats. Mindre fynd: brittisk stavning ('practise') i en i övrigt amerikansk-stavad text, och en maskinöversatt-klingande 'Good late morning' i den i stort sett döda dashboard-namnrymden. dashboard.*, sta.* och de tre *Widget-namnrymderna är genomsökta enligt instruktion men inte djupgranskade eftersom de till stor del är dödkod respektive en avaktiverad modul — inget där var direkt vilseledande.",
+  "hubbnamn": [
+    {"sv": "Översikt", "en": "Overview", "kommentar": "Majoriteten: nav.hubs.oversikt, nav.groups.overview, nav.groups.action, dashboard.tabs.overview, hubOverview.title, hubOverviewHistory.backToOverview säger alla 'Overview'. nav.dashboard och dashboard.title säger i stället 'Dashboard' — rätta dessa till 'Overview' för att matcha majoriteten och för att 'Dashboard' är ett mindre B1-vänligt lånord."},
+    {"sv": "Söka jobb", "en": "Job Search", "kommentar": "Konsekvent i nav.hubs.jobb, nav.jobSearch (SV 'Sök jobb') och nav.groups.jobSearch (SV 'Jobbsökning') — olika svenska källformuleringar men samma engelska resultat, som det ska vara."},
+    {"sv": "Karriär", "en": "Career", "kommentar": "Konsekvent i nav.hubs.karriar, nav.career och karriarHub.title."},
+    {"sv": "Resurser", "en": "Resources", "kommentar": "Konsekvent i nav.hubs.resurser, nav.resources och nav.groups.resources."},
+    {"sv": "Din vardag", "en": "Everyday Life", "kommentar": "nav.hubs.min-vardag säger 'Everyday Life' (Title Case, matchar de andra fyra hubbnamnens navstil). hubOverview.cards.minVardag.title har SAMMA svenska källtext ('Din vardag') men blir 'Your everyday life' — enda hubbkortet av de fyra som ordagrant upprepar hubbnamnet i stället för att ha en egen verbledd rubrik, så det bör spegla navets ordval, inte avvika från det."}
+  ],
+  "termlista": [
+    {"sv": "personuppgiftsansvarig", "en": "data controller", "kommentar": "Korrekt (privacy.controller.title)."},
+    {"sv": "dataskyddsombud", "en": "Data Protection Officer", "kommentar": "Korrekt (privacy.controller.dpo)."},
+    {"sv": "samtycke", "en": "consent", "kommentar": "Korrekt och konsekvent genom hela privacy.* (Art. 6.1.a, återkallande, uttryckligt samtycke)."},
+    {"sv": "berättigat intresse", "en": "legitimate interest", "kommentar": "Korrekt (privacy.legalBasis.legitimate, Art. 6.1.f)."},
+    {"sv": "rätt till radering", "en": "right to erasure", "kommentar": "Korrekt — matchar GDPR:s officiella engelska term (Art. 17), inte en bokstavlig 'right to deletion'."},
+    {"sv": "registrerad / berättigad enligt art. 15-22", "en": "your rights / you", "kommentar": "SV-texten tilltalar användaren direkt ('du') i stället för att använda juridiktermen 'registrerad'/'data subject'. Det är konsekvent i båda språken och alltså inget översättningsfel, bara värt att notera."},
+    {"sv": "Integritetsskyddsmyndigheten (IMY)", "en": "Swedish Authority for Privacy Protection (IMY)", "kommentar": "FEL — myndighetens faktiska svenska namn saknas helt i engelskan. Se fynd privacy.complaint.authority. Ska vara 'Integritetsskyddsmyndigheten (IMY)' med engelsk förklaring, inte en ren översättning som ersätter namnet."}
+  ],
+  "fynd": [
+    {
+      "nyckel": "privacy.complaint.authority",
+      "nuvarandeEn": "Swedish Authority for Privacy Protection (IMY)",
+      "foreslagenEn": "Integritetsskyddsmyndigheten (IMY) — the Swedish Authority for Privacy Protection",
+      "sv": "Integritetsskyddsmyndigheten (IMY)",
+      "severity": "kritisk",
+      "typ": "juridik",
+      "motivering": "Den svenska myndighetens faktiska namn saknas helt i den engelska texten — den är bara beskriven, inte namngiven. En användare som vill lämna klagomål eller söka upp myndigheten (t.ex. på imy.se, eller i kontakt med svenska myndigheter) känner inte igen 'Swedish Authority for Privacy Protection' som samma organisation. Myndighetsnamn ska stå kvar på svenska med en kort engelsk förklaring inom parentes vid första förekomsten."
+    },
+    {
+      "nyckel": "common.submit",
+      "nuvarandeEn": "Submit",
+      "foreslagenEn": "Send",
+      "sv": "Skicka",
+      "severity": "stor",
+      "typ": "ton",
+      "motivering": "DESIGN.md kräver uttryckligen 'Submit' → 'Save' eller 'Send' i stället för adminspråket 'Submit'. SV 'Skicka' betyder just 'Send', och common.submit är en delad sträng som troligen används på flera formulär i portalen, så adminordet ärvs överallt den anropas."
+    },
+    {
+      "nyckel": "nav.dashboard",
+      "nuvarandeEn": "Dashboard",
+      "foreslagenEn": "Overview",
+      "sv": "Översikt",
+      "severity": "stor",
+      "typ": "konsekvens",
+      "motivering": "Hubben 'Översikt' heter 'Overview' överallt annars den förekommer (nav.hubs.oversikt, nav.groups.overview, dashboard.tabs.overview, hubOverview.title, hubOverviewHistory.backToOverview) utom här, där den i stället kallas 'Dashboard'. Samma hubb får två olika engelska namn beroende på vilken navigeringsyta (topnav vs mobilmeny vs hubbsidan själv) man tittar i."
+    },
+    {
+      "nyckel": "topbar.focusModeOff",
+      "nuvarandeEn": "Disable focus mode",
+      "foreslagenEn": "Turn off focus mode",
+      "sv": "Stäng av fokusläge",
+      "severity": "stor",
+      "typ": "ton",
+      "motivering": "SV säger 'Stäng av' (turn off), inte 'avaktivera'/'disable'. Portalens egen etablerade norm — common.deactivate = 'Turn off', ihopkopplad med systerknappen topbar.focusModeOn = 'Turn on' — bryts här av 'Disable'. Paret bör vara symmetriskt: 'Turn on' / 'Turn off'."
+    },
+    {
+      "nyckel": "privacy.automated.noDecisions",
+      "nuvarandeEn": "No AI decision is binding — you always make the final call about jobs, education and career.",
+      "foreslagenEn": "No AI decision is binding — you always make the final decision about jobs, education and career.",
+      "sv": "Inga AI-beslut är bindande — du fattar alltid själv beslutet om jobb, utbildning och karriär.",
+      "severity": "stor",
+      "typ": "ton",
+      "motivering": "'Make the final call' är en idiomatisk fras som kräver att läsaren känner till 'call' i betydelsen 'beslut' — inte givet för en B1-läsare, och just den här meningen står i integritetspolicyns avsnitt om användarens rättigheter, där tydlighet väger tyngst. 'Make the final decision' säger exakt samma sak med enklare, entydigt ordval."
+    },
+    {
+      "nyckel": "hubOverview.cards.minVardag.title",
+      "nuvarandeEn": "Your everyday life",
+      "foreslagenEn": "Everyday life",
+      "sv": "Din vardag",
+      "severity": "stor",
+      "typ": "konsekvens",
+      "motivering": "Samma svenska text ('Din vardag') används dels som hubbens namn i nav.hubs.min-vardag ('Everyday Life'), dels som kortets rubrik här ('Your everyday life') — men får olika engelska ordval. De tre andra hubbkorten (jobb/karriar/resurser) har egna verbledda rubriker och upprepar inte hubbnamnet, så just det här kortet bör spegla navets ordval i stället för att avvika från det."
+    },
+    {
+      "nyckel": "terms.account.truthful",
+      "nuvarandeEn": "The information you provide is true, accurate, and current",
+      "foreslagenEn": "Providing information that is true, accurate, and current",
+      "sv": "Informationen du anger är sann, korrekt och aktuell",
+      "severity": "stor",
+      "typ": "mekanik",
+      "motivering": "Listan under stammen 'You are responsible for:' använder gerundium i de tre andra punkterna (terms.account.password: 'Protecting your password...', terms.account.notify: 'Immediately notifying us...', terms.account.oneAccount: 'Only creating one account...') men denna första punkt är en hel sats ('The information you provide is true...') som inte grammatiskt fortsätter stammen. Bryter läsbarheten för en B1-läsare som läser listan som en sammanhängande uppräkning."
+    },
+    {
+      "nyckel": "hubOverview.panel.interviewsInvite",
+      "nuvarandeEn": "practise when you have the energy",
+      "foreslagenEn": "practice when you have the energy",
+      "sv": "öva när du orkar",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Enda förekomsten av brittisk verb-stavning ('practise') i en text som annars konsekvent använder amerikansk stavning ('practice' som substantiv och verb på flera andra ställen, 'customize', 'optimize', 'personalized'). common.* sätter ingen uttrycklig norm för just detta ord, men majoritetsbruket i portalen är amerikanskt."
+    },
+    {
+      "nyckel": "hubOverview.panel.errorBody",
+      "nuvarandeEn": "We could not load your details right now. That is the portal misbehaving — nothing you did.",
+      "foreslagenEn": "We could not load your details right now. That's a problem with the portal — not something you did.",
+      "sv": "Vi kunde inte hämta dina uppgifter just nu. Det är portalen som strular — inget du har gjort.",
+      "severity": "liten",
+      "typ": "ton",
+      "motivering": "'Misbehaving' om mjukvara är ett ovanligare ord (B2+) som en nyanländ B1-läsare kan snubbla på. 'A problem with the portal' förmedlar samma skuldbefriande budskap ('inget du har gjort') med enklare vokabulär."
+    },
+    {
+      "nyckel": "dashboard.greetings.lateMorning",
+      "nuvarandeEn": "Good late morning",
+      "foreslagenEn": "Good morning",
+      "sv": "God förmiddag",
+      "severity": "liten",
+      "typ": "maskinöversatt",
+      "motivering": "'Good late morning' är ingen naturlig engelsk hälsningsfras — engelskan gör inte samma uppdelning av förmiddagen som svenskan. Låt den falla tillbaka till 'Good morning'. Lågt prioriterat eftersom dashboard.* till stor del är dödkod som inte monteras i prod."
+    }
+  ]
+}

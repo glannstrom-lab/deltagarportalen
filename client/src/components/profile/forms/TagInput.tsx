@@ -293,7 +293,7 @@ export function TagInput({
               )}
             >
               <Plus className="w-4 h-4" aria-hidden="true" />
-              <span className="hidden sm:inline">Lägg till</span>
+              <span className="hidden sm:inline">{t('common.add')}</span>
             </button>
           </div>
 

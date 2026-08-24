@@ -1,13 +1,16 @@
+import { useTranslation } from 'react-i18next'
+
 interface BarChartProps {
   data: { label: string; value: number; color: string }[]
 }
 
 export function BarChart({ data }: BarChartProps) {
+  const { t } = useTranslation()
   const max = Math.max(...data.map(d => d.value))
 
   return (
     <div className="card">
-      <h3 className="font-semibold text-stone-800 mb-6">Jobbsök aktivitet</h3>
+      <h3 className="font-semibold text-stone-800 mb-6">{t('common.jobSearchActivity')}</h3>
       <div className="space-y-4">
         {data.map((item) => (
           <div key={item.label} className="flex items-center gap-3">

@@ -16,6 +16,65 @@
 
 ---
 
+## Engelska översättningen 2026-08-24 — hela portalen (åtgärdad)
+
+**Premiss som föll:** `en.json` var i gott skick (8 550 nycklar, exakt paritet,
+noll variabelavvikelser) — men **innehållet låg inte där**. En användare som
+bytte till engelska fick ett engelskt skal runt svenskt innehåll: hela
+övningsbiblioteket, intresseguidens frågor, yrkesbeskrivningarna, de externa
+resurserna, rådgivartexterna och kunskapsbankens 163 artiklar var enbart
+svenska. Det var ingen bugg utan en outtalad produktavgränsning.
+
+**Gjort:**
+
+- **Gränssnittet.** 111 fynd från sju granskare (rapporter i
+  `docs/review-2026-08-24-engelska/`), 164 strängar rättade. Två felklasser
+  dominerade: svenska myndighetsnamn översattes bort i 53 strängar — värst i
+  `international.*`, sidan för nyanlända — och **kontoraderingen gick inte att
+  slutföra på engelska** (koden jämförde mot `'RADERA'` medan texten bad om
+  "DELETE"; rätten till radering enligt art. 17 var blockerad i UI:t).
+- **Innehållsdatan.** 6 731 strängar översatta som overlay
+  (`src/data/oversattningar/`). Övningar, intresseguide, externa resurser,
+  rådgivare.
+- **Artiklarna.** `articles` fick `title_en`/`summary_en`/`content_en`
+  (nullbara, svenskan orörd). Alla 163 artiklar översatta — 838 k tecken
+  engelska i prod, verifierat.
+- **Hårdkodad svenska.** 516 nya i18n-nycklar ur ~58 deltagarvända komponenter,
+  plus tio CV-rubriker som hamnade i genererade PDF:er.
+- **Tre grindar, alla på noll:** nyckel-/variabelparitet och skyddade
+  myndighetsnamn (`i18n/sprakparitet.test.ts`), innehållsparitet mot levande
+  data (`data/oversattningar/innehallsparitet.test.ts`) och att översättningen
+  faktiskt används (`innehallKorning.test.ts`).
+
+Arkitekturen: `docs/innehallsoversattning.md`. Granskningen: `docs/engelska-granskning-2026-08-24.md`.
+
+### Öppet — beslut, inte arbete
+
+- **EN1 — obelagda påståenden på startsidan.** Åtta strängar (`landing.trust.*`,
+  `landing.socialProof.*`, `landing.faq.a2/a3`, `ai.assistant.insights.*`) står
+  **identiskt på svenska och engelska**: "Trusted by organizations across
+  Sweden" med Arbetsförmedlingen som logotyp, ett kundcitat utan namngiven
+  källa, "78% chance of interview". Samma felklass som 2026-08-09. De lämnades
+  orörda med flit — att rätta dem bara på engelska hade skapat divergens.
+  Kräver beslut om den svenska texten.
+- **EN2 — engelska guidesidor.** `dist/guider/` prerenderas på svenska för SEO.
+  Nu när artiklarna har `content_en` **går** det att generera engelska
+  motsvarigheter, men det kräver beslut om URL-struktur, `hreflang` och sitemap.
+- **EN3 — konsulentvyn.** Inte översatt, med flit: arbetskonsulenterna är
+  svensktalande och vyn har enligt DESIGN.md §2 medvetet en annan ton. Att
+  översätta den är ett eget beslut.
+- **EN4 — fel i den svenska källtexten** som översättarna flaggade utan att
+  rätta: `journey.tabs.achievements` är på engelska i den svenska filen;
+  `consultant.participants.noParticipantsDesc` saknar ett `s` (*tilldelat* →
+  *tilldelats*); `aiPolicy.compliance.aiActDesc` citerar AI Act **art. 52**,
+  ett utkastnummer — den slutliga förordningen har märkningskravet i art. 50.2;
+  `resurserHub.hubDescription` lovar "utskriftsmaterial" som togs bort
+  2026-08-23. Flera artiklar bär dessutom osourcade statistikpåståenden
+  ("75 % av alla CV sorteras bort av ATS", "85 % av rekryterare googlar",
+  "78 % chans till intervju") — samma ärlighetsfråga som EN1.
+
+---
+
 ## Genomgång 2026-08-23 (kväll) — AI-teamet, sex granskare (åtgärdad)
 
 `/ai-team` med fem agenter, sju personligheter och tre svarslägen hade aldrig

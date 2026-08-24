@@ -13,6 +13,7 @@
  * Atelier (cream + teal subtle): Berlin är kontrastrik, geometrisk, mer "tidning".
  */
 
+import { useTranslation } from 'react-i18next'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
 
@@ -24,6 +25,7 @@ const muted = '#5A5A5A'
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII']
 
 export function BerlinTemplate({ data, fullName }: TemplateProps) {
+  const { t } = useTranslation()
   const initials = getInitials(data.firstName, data.lastName)
   let sectionIndex = 0
   const nextRoman = () => ROMAN[sectionIndex++] || ''
@@ -322,7 +324,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
 
         {data.languages?.length > 0 && (
           <section className="cv-keep" style={{ marginBottom: '12px' }}>
-            <SectionHeader roman={nextRoman()} title="Språk" />
+            <SectionHeader roman={nextRoman()} title={t('cv.languages')} />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px' }}>
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
@@ -372,7 +374,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
             )}
             {data.links?.length > 0 && (
               <div>
-                <SectionHeader roman={nextRoman()} title="Länkar" />
+                <SectionHeader roman={nextRoman()} title={t('cv.links')} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                   {data.links.map((link) => (
                     <div key={link.id} style={{ fontSize: '11.5px' }}>

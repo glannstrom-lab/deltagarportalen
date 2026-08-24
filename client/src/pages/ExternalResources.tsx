@@ -57,6 +57,7 @@ import {
   kategoriBeskrivning,
   type ExternalResource,
 } from '@/data/externaResurser'
+import { useInnehall } from '@/data/oversattningar'
 
 const ALLA = 'alla'
 
@@ -218,6 +219,9 @@ export default function ExternalResources() {
 
 function ExternalResourcesInner() {
   const { t } = useTranslation()
+  // Namn, beskrivningar och taggar översätts; `category` och `id` är nycklar
+  // och rörs inte — grupperingen nedan bygger på dem.
+  const resurser = useInnehall('externaResurser', EXTERNA_RESURSER, 'EXTERNA_RESURSER')
   const [sokning, setSokning] = useState('')
   const [aktivFlik, setAktivFlik] = useState<string>(ALLA)
   const [oppnaAvsnitt, setOppnaAvsnitt] = useState<Set<string>>(new Set())
@@ -227,14 +231,14 @@ function ExternalResourcesInner() {
 
   const traffar = useMemo(() => {
     const q = sokning.trim().toLowerCase()
-    if (!q) return EXTERNA_RESURSER
-    return EXTERNA_RESURSER.filter(
+    if (!q) return resurser
+    return resurser.filter(
       (r) =>
         r.name.toLowerCase().includes(q) ||
         r.description.toLowerCase().includes(q) ||
         r.tags?.some((tag) => tag.toLowerCase().includes(q))
     )
-  }, [sokning])
+  }, [sokning, resurser])
 
   const perKategori = useMemo(() => {
     const grupper: Record<string, ExternalResource[]> = {}
@@ -246,10 +250,10 @@ function ExternalResourcesInner() {
 
   const utvalda = useMemo(
     () =>
-      UTVALDA_IDN.map((id) => EXTERNA_RESURSER.find((r) => r.id === id)).filter(
+      UTVALDA_IDN.map((id) => resurser.find((r) => r.id === id)).filter(
         (r): r is ExternalResource => r !== undefined
       ),
-    []
+    [resurser]
   )
 
   const aktivaKategorier = useMemo(
@@ -291,7 +295,7 @@ function ExternalResourcesInner() {
     <PageLayout
       title={t('externalResources.title', 'Externa resurser')}
       description={t('externalResources.subtitle', {
-        count: EXTERNA_RESURSER.length,
+        count: resurser.length,
         defaultValue: '{{count}} länkar vi samlat åt dig',
       })}
       icon={ExternalLink}

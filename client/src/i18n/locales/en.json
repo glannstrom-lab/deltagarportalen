@@ -41,7 +41,7 @@
     "back": "Back",
     "next": "Next",
     "previous": "Previous",
-    "submit": "Submit",
+    "submit": "Send",
     "reset": "Reset",
     "yes": "Yes",
     "no": "No",
@@ -104,7 +104,11 @@
     "resetToSystemTheme": "Reset to system setting",
     "goBack": "Go back",
     "opensInNewTab": "opens in a new tab",
-    "profile": "Profile"
+    "profile": "Profile",
+    "genericError": "Something went wrong",
+    "jobSearchActivity": "Job search activity",
+    "noDataYet": "No data yet",
+    "noDataYetDesc": "Data will show once there is enough information"
   },
   "riasec": {
     "realistic": "Realistic",
@@ -321,7 +325,7 @@
         "whyWeCollect": "Why do we collect this data?",
         "whyDesc": "To support your personal development and self-esteem, and to give you insights into your wellbeing over time.",
         "whoHasAccess": "Who has access?",
-        "whoAccessDesc": "You are the only one who can see this data, unless you enable sharing with your assigned advisor.",
+        "whoAccessDesc": "You are the only one who can see this data, unless you enable sharing with your assigned consultant.",
         "dataProtection": "Your wellbeing data is fully private and processed in accordance with GDPR.",
         "canWithdraw": "You can at any time:",
         "withdrawDetail1": "Withdraw your consent in Settings",
@@ -353,7 +357,7 @@
       "manageInSettings": "Manage",
       "grantError": "Couldn't save consent",
       "fullTitle": "Consent for health data",
-      "fullDesc": "To give you personalized recommendations, we need your consent to collect and analyze data about your functional capabilities.",
+      "fullDesc": "To give you personalised recommendations, we need your consent to collect and analyse data about your functional capabilities.",
       "whatWeCollect": "What data do we collect?",
       "dimension": {
         "cognitive": "Cognitive function (thinking, planning, memory)",
@@ -399,7 +403,7 @@
       "recent": "Recently visited",
       "startHere": "Start here"
     },
-    "dashboard": "Dashboard",
+    "dashboard": "Overview",
     "profile": "My Profile",
     "journey": "My Job Journey",
     "cv": "CV",
@@ -435,10 +439,10 @@
     "help": "Help",
     "hubs": {
       "oversikt": "Overview",
-      "jobb": "Job Search",
+      "jobb": "Job search",
       "karriar": "Career",
       "resurser": "Resources",
-      "min-vardag": "Everyday Life"
+      "min-vardag": "Your everyday life"
     },
     "groups": {
       "overview": "Overview",
@@ -465,7 +469,7 @@
   },
   "rollgenvag": {
     "text": "You are signed in as {{roll}}. This is the participant view.",
-    "konsulent": "an employment consultant",
+    "konsulent": "a consultant",
     "arbetsterapeut": "an occupational therapist",
     "admin": "an administrator",
     "superadmin": "a superadmin"
@@ -504,7 +508,7 @@
     "welcome": "Welcome",
     "accessibility": "Accessibility",
     "focusModeOn": "Turn on focus mode",
-    "focusModeOff": "Disable focus mode"
+    "focusModeOff": "Turn off focus mode"
   },
   "language": {
     "select": "Select language",
@@ -640,7 +644,7 @@
         "5": "Fantastic"
       }
     },
-    "title": "Dashboard",
+    "title": "Overview",
     "description": "Your personal dashboard and overview",
     "welcome": "Welcome",
     "welcomeBack": "Welcome back",
@@ -669,7 +673,7 @@
     "progressAria": "Job ready: {{percent}}% complete, {{completed}} of {{total}} steps done",
     "greetings": {
       "morning": "Good morning",
-      "lateMorning": "Good late morning",
+      "lateMorning": "Good morning",
       "afternoon": "Good afternoon",
       "evening": "Good evening"
     },
@@ -799,7 +803,7 @@
         "savedJobs": "{{count}} saved jobs",
         "searchThousands": "Search thousands of jobs",
         "newToday": "{{count}} new jobs today",
-        "fromAF": "From the Employment Agency",
+        "fromAF": "From Arbetsförmedlingen",
         "search": "Search jobs",
         "new": "{{count}} new"
       },
@@ -1110,7 +1114,7 @@
       "orImport": "Would you rather we filled in the CV builder's fields from the file?",
       "orImportLink": "Import it under Create CV",
       "nameLabel": "What should the CV be called in the portal?",
-      "nameHint": "Just so you recognise it in the list. The file itself isn't renamed.",
+      "nameHint": "Just so you recognize it in the list. The file itself isn't renamed.",
       "saving": "Saving your CV…",
       "save": "Save among my CVs",
       "saved": "Your CV is saved. You'll find it among your saved CVs.",
@@ -1191,7 +1195,7 @@
       "choose": "Choose file",
       "privacyTitle": "How the file is handled",
       "privacy1": "The file is read in your browser and is never uploaded anywhere.",
-      "privacy2": "The text is sent to the AI, which sorts it into the right fields. Personal ID numbers are removed automatically first.",
+      "privacy2": "The text is sent to the AI, which sorts it into the right fields. Your personnummer (Swedish personal identity number) is removed automatically first.",
       "privacy3": "The AI may not rewrite or add anything, only move what is already in the file.",
       "privacy4": "You see the result and approve it before anything is saved.",
       "reading": "Reading the file in your browser…",
@@ -1210,7 +1214,7 @@
       "saveFailed": "Could not save the CV right now. Please try again shortly.",
       "counts": {
         "experience": "experiences",
-        "education": "studies",
+        "education": "educations",
         "skills": "skills",
         "languages": "languages"
       },
@@ -1290,7 +1294,7 @@
         "nordic": "Nordic"
       },
       "empty": {
-        "noCVs": "No CVs found",
+        "noCVs": "You haven't created a CV yet",
         "noSearchResults": "No CVs matched your search",
         "createFirst": "Create your first CV to get started. You can save multiple versions for different types of jobs.",
         "tryOtherSearch": "Try searching for something else or change the category"
@@ -1360,7 +1364,7 @@
           "tip2": "Mention what type of role you're looking for"
         },
         "experience": {
-          "title": "Work Experience",
+          "title": "Work experience",
           "description": "Have you listed your previous jobs?",
           "tip1": "Start with your most recent job",
           "tip2": "Use bullet points for job duties"
@@ -1639,7 +1643,7 @@
           "do3": "List work experience in reverse chronological order",
           "do4": "Include education and certifications",
           "do5": "Add relevant skills and languages",
-          "dont1": "Include personal ID number (security risk)",
+          "dont1": "Include your personnummer (Swedish personal identity number) — a security risk",
           "dont2": "Write \"CV\" or \"Curriculum Vitae\" as heading",
           "dont3": "Add references (\"Available upon request\")",
           "dont4": "Include hobbies that aren't relevant",
@@ -1869,6 +1873,49 @@
       "title": "Welcome to the CV Builder",
       "subtitle": "Choose how you want to start",
       "fullBuilder": "Or use the full CV builder"
+    },
+    "onboarding": {
+      "closeGuide": "Close the guide"
+    },
+    "educationEditor": {
+      "emptyTitle": "You haven't added any education yet",
+      "emptySubtitle": "Add your education background",
+      "selectLevel": "Choose a level...",
+      "degreePlaceholder": "e.g. Engineer",
+      "currentLabel": "I am studying now",
+      "descriptionPlaceholder": "Describe what you learned, your focus areas, and projects..."
+    },
+    "experienceEditor": {
+      "emptyTitle": "You haven't added any jobs yet",
+      "emptySubtitle": "Add your first work experience",
+      "titlePlaceholder": "e.g. Sales Assistant",
+      "currentLabel": "I still work here"
+    },
+    "skillsEditor": {
+      "addTitle": "Add a skill",
+      "nameAriaLabel": "Skill to add",
+      "categoryAriaLabel": "Category for the skill",
+      "emptyTitle": "You haven't added any skills yet",
+      "emptySubtitle": "Add your skills above"
+    },
+    "saveIndicator": {
+      "retryTitle": "Trying to save again..."
+    },
+    "pdf": {
+      "sections": {
+        "contact": "Contact",
+        "expertise": "Expertise",
+        "languages": "Languages",
+        "certifications": "Certifications",
+        "profile": "Profile",
+        "workExperience": "Work experience",
+        "education": "Education",
+        "aboutMe": "About me",
+        "skills": "Skills",
+        "experience": "Experience",
+        "company": "Company",
+        "readingTime": "{{min}} min read"
+      }
     }
   },
   "focusCV": {
@@ -1981,7 +2028,7 @@
       "coverLetter": "Write a cover letter"
     },
     "actions": {
-      "cv": "My CV",
+      "cv": "Your CV",
       "cvComplete": "Complete",
       "cvIncomplete": "Start here",
       "jobs": "Search jobs",
@@ -1993,7 +2040,7 @@
     }
   },
   "coverLetter": {
-    "title": "Cover Letter",
+    "title": "Cover letter",
     "subtitle": "Create personalized cover letters for your applications",
     "description": "Create professional cover letters that open doors to new opportunities",
     "savedLetters": "Your saved letters",
@@ -2098,7 +2145,7 @@
       "manualToggle": "I will fill it in myself",
       "manualToggleBody": "Type in the company and the job by hand",
       "labelCompany": "Company",
-      "placeholderCompany": "e.g. Acme Ltd",
+      "placeholderCompany": "e.g. Acme Inc",
       "labelJobTitle": "What is the job called?",
       "placeholderJobTitle": "e.g. Project manager",
       "labelJobAd": "The ad text (if you have it)",
@@ -2182,11 +2229,15 @@
       "downloadFailed": "We couldn't create the PDF right now. Please try again in a moment.",
       "copied": "The text is copied. Paste it wherever you want to continue.",
       "copyFailed": "We couldn't copy the text. Select it in the letter and copy it manually."
+    },
+    "closingGreeting": "Best regards,",
+    "colorPreview": {
+      "secondary": "Secondary"
     }
   },
   "jobSearch": {
-    "title": "Job Search",
-    "subtitle": "Find job openings from the Employment Agency",
+    "title": "Job search",
+    "subtitle": "Find job openings from Arbetsförmedlingen",
     "filters": "Filters",
     "results": "Results",
     "noResults": "No jobs found",
@@ -2240,18 +2291,18 @@
     "lastWeek": "Last week",
     "lastMonth": "Last month",
     "searchingJobs": "Searching jobs...",
-    "fetchingFromAF": "Fetching from the Employment Agency",
+    "fetchingFromAF": "Fetching from Arbetsförmedlingen",
     "showingXofY": "Showing {{shown}} of {{total}} jobs",
     "showingX": "Showing {{shown}} jobs",
     "pageXofY": "Page {{current}} of {{total}}",
     "createApplication": "Create application",
-    "applyDirectlyAtAF": "Apply directly at the Employment Agency",
+    "applyDirectlyAtAF": "Apply directly at Arbetsförmedlingen",
     "couldNotSearch": "Could not search jobs. Please try again.",
     "voiceSearch": "Search by voice",
     "listening": "Listening — say what you are looking for",
     "suggestions": "Search suggestions",
     "noSavedJobsTitle": "No saved jobs",
-    "noSavedJobsDesc": "Save jobs you're interested in to easily find them later.",
+    "noSavedJobsDesc": "Click the bookmark on a job you're interested in — then you can easily find it again.",
     "youHaveXSavedJobs": "You have {{count}} saved jobs",
     "noApplicationsTitle": "No applications yet",
     "noApplicationsDesc": "Keep track of your job applications here.",
@@ -2266,7 +2317,7 @@
       "search": "Search jobs",
       "map": "Map",
       "hidden": "Hidden jobs",
-      "daily": "Daily job",
+      "daily": "Today's job",
       "saved": "Saved",
       "crm": "CRM",
       "culture": "Culture",
@@ -2365,11 +2416,11 @@
       "loading": "Finding your job of the day...",
       "noJobTitle": "No job for today",
       "serviceErrorTitle": "Platsbanken is not responding right now",
-      "serviceError": "There is nothing wrong with you or your profile — we could not reach the Swedish Public Employment Service. Try again in a moment.",
+      "serviceError": "There is nothing wrong with you or your profile — we could not reach Arbetsförmedlingen's service. Try again in a moment.",
       "tryAgain": "Try again",
       "noJobText": "Try refreshing or come back tomorrow.",
       "refresh": "Refresh",
-      "title": "Today's Job For You",
+      "title": "Today's job for you",
       "basedOnFilter": "Based on your filter:",
       "focusText": "Focus on one opportunity at a time. No pressure, no overwhelm.",
       "aboutJob": "About this job",
@@ -2394,7 +2445,11 @@
       "reasonNewThisWeek": "New this week",
       "reasonEasyApply": "Easy to apply",
       "reasonDefault": "Good opportunity"
-    }
+    },
+    "occupationPlaceholder": "E.g. warehouse worker, nurse",
+    "sortLatestSaved": "Latest saved",
+    "sortCompanyAZ": "Company A-Z",
+    "markAsApplied": "Mark as applied"
   },
   "jobs": {
     "card": {
@@ -2413,7 +2468,7 @@
       "applyAtAF": "Apply at arbetsformedlingen.se",
       "apply": "Apply",
       "applyBy": "Apply by {{date}}",
-      "viaAF": "Via the Employment Agency",
+      "viaAF": "Via Arbetsförmedlingen",
       "readMore": "Read more"
     },
     "filters": {
@@ -2520,7 +2575,7 @@
       "showMoreMatches": "Show {{count}} more possible matches",
       "refresh": "Refresh",
       "createProfileFirst": "Create your profile first",
-      "createProfileDesc": "To find matches you need to create your CV, take the interest guide, or set career goals.",
+      "createProfileDesc": "Once we know what you can do and what you want, we can find jobs that fit. Start with one of these:",
       "createCV": "Create CV",
       "takeInterestGuide": "Take interest guide",
       "setCareerGoals": "Set career goals",
@@ -2561,7 +2616,7 @@
       },
       "empty": {
         "title": "No applications yet",
-        "description": "When you save a job and change status to \"Applied\" it will appear here. Track your applications and keep track of your job search."
+        "description": "When you save a job and change status to \"Applied\" it will appear here — so you can keep track of what you've applied to."
       }
     }
   },
@@ -2612,7 +2667,7 @@
       "low": "Low"
     },
     "empty": {
-      "title": "You have not started applying yet",
+      "title": "You haven't started applying yet",
       "description": "Save jobs from job search and they show up here — or add an application by hand if you have already applied somewhere.",
       "addCta": "Add your first application",
       "searchCta": "Search jobs"
@@ -2908,6 +2963,42 @@
       "deleteConfirm": "Are you sure you want to delete this application? This cannot be undone.",
       "markDoneAria": "Mark \"{{title}}\" as done",
       "atTime": "at"
+    },
+    "create": {
+      "saveErrorMessage": "We could not save the application. Please try again.",
+      "successApplied": "Application saved",
+      "successSaved": "Job saved",
+      "successAppliedDesc": "Your application is now in your job tracker. Well done!",
+      "successSavedDesc": "You will find the job among your saved jobs.",
+      "title": "Create application",
+      "step1Title": "Get your CV ready",
+      "yourMatch": "Your match",
+      "matchExcellent": "Great match!",
+      "matchGood": "Good match - can be better",
+      "matchLow": "Add more relevant experience",
+      "keywordsMatched": "{{matched}} of {{total}} keywords match",
+      "missingKeywords": "🔍 Keywords missing from the job ad",
+      "moreCount": "+{{count}} more",
+      "improvementTips": "💡 Tips to improve it:",
+      "matchFailedTitle": "We could not work out your match",
+      "matchFailedDesc": "This does not say how well you fit the job — only that the calculation did not work. You can still apply.",
+      "calculatingMatch": "Calculating your match...",
+      "improveCvLink": "Improve your CV for a better match",
+      "step2Title": "Write a cover letter",
+      "coverLetterHint": "A cover letter gives you a better chance of being called to interview.",
+      "writeWithAi": "Write with AI help",
+      "writeYourself": "Write it yourself",
+      "jobInfoPrefilled": "Job info filled in for you",
+      "step3Title": "Add to your job tracker",
+      "statusLabel": "Status",
+      "statusSaved": "💾 Saved (will send later)",
+      "statusApplied": "📨 Applied (today)",
+      "statusInterview": "📅 Interview booked",
+      "notesLabel": "Notes (optional)",
+      "notesPlaceholder": "for example: Sent by email, waiting for a reply...",
+      "applyDirectly": "Apply directly",
+      "saveAndSend": "Save & send application",
+      "saveJob": "Save job"
     }
   },
   "journey": {
@@ -2933,7 +3024,7 @@
     }
   },
   "spontaneous": {
-    "title": "Spontaneous Application",
+    "title": "Speculative applications",
     "description": "Find and contact companies that match your profile",
     "tabs": {
       "search": "Find companies to contact",
@@ -2959,11 +3050,11 @@
       "low": "Low"
     },
     "search": {
-      "title": "Search companies",
+      "title": "Find companies to contact",
       "placeholder": "Organization number (e.g., 556074-7551)",
       "button": "Search",
       "invalidFormat": "Invalid format. Enter 10 digits (e.g., 5560747551 or 556074-7551)",
-      "notFound": "Company not found in the Swedish Companies Registry",
+      "notFound": "The company was not found in Bolagsverket's register",
       "error": "Something went wrong. Please try again.",
       "aiSearch": "AI search",
       "orgNumber": "Org. number",
@@ -3119,7 +3210,7 @@
       "savedAsNote": "Your message was saved as a note"
     },
     "tips": {
-      "title": "Tips for spontaneous applications",
+      "title": "Tips for speculative applications",
       "tip1": "A few companies at a time is plenty — thoughtful beats many",
       "tip2": "Choose companies that match your competence",
       "tip3": "Research the company before you contact them",
@@ -3143,7 +3234,7 @@
       "minChars": "Enter at least 3 characters for AI search",
       "noResults": "No companies found. Try a different search term.",
       "failed": "Search failed",
-      "resultsFound": "{{total}} companies found, {{verified}} verified against the Swedish Companies Registry",
+      "resultsFound": "{{total}} companies found, {{verified}} verified against Bolagsverket",
       "nothingToShow": "We got nothing to show this time. Try a different search term — or search again in a little while.",
       "openSettings": "Open Settings",
       "useOrgNumberInstead": "Search by registration number instead",
@@ -3225,7 +3316,7 @@
     "yourCareerPlan": "Your personal career plan",
     "createPlan": "Create my career plan",
     "tabs": {
-      "laborMarket": "Labor Market",
+      "laborMarket": "Labour Market",
       "laborMarketDesc": "Trends and demand",
       "network": "Network",
       "networkDesc": "Build and maintain your network",
@@ -3303,7 +3394,7 @@
         "career-change": "Changing career",
         "parental-leave": "Parental leave",
         "sick-leave": "On sick leave",
-        "new-to-country": "New to the country",
+        "new-to-country": "New to Sweden",
         "self-employed": "Self-employed",
         "retired": "Retired",
         "other": "Other"
@@ -3393,7 +3484,7 @@
     },
     "adaptation": {
       "workAdaptation": "Work Adaptation",
-      "introText": "Here you can identify what adaptations would help you in working life. You can then create a document to share with employers, the Social Insurance Agency, or the Employment Service.",
+      "introText": "Here you can identify what adaptations would help you in working life. You can then create a document to share with employers, Försäkringskassan, or Arbetsförmedlingen.",
       "identifyNeeds": "Identify your needs",
       "selectHelpful": "Mark the adaptations that would help you. You can select multiple in each category.",
       "youSelected": "You have selected {{count}} adaptations",
@@ -3450,9 +3541,9 @@
         }
       },
       "yourRights": "Your rights",
-      "rightsText": "Employers are responsible under workplace legislation to adapt the workplace for employees with disabilities.",
-      "fkSupport": "Support from Social Insurance",
-      "fkSupportText": "The Social Insurance Agency can contribute to work aids and support to facilitate your return to work.",
+      "rightsText": "Under the Work Environment Act (arbetsmiljölagen), employers are responsible for adapting the workplace for employees with disabilities.",
+      "fkSupport": "Support from Försäkringskassan",
+      "fkSupportText": "Försäkringskassan (the Swedish Social Insurance Agency) can contribute to work aids and support to make your return to work easier.",
       "dialogTemplates": "Conversation templates",
       "templates": {
         "employer": {
@@ -3460,8 +3551,8 @@
           "description": "How to discuss adaptations"
         },
         "fk": {
-          "title": "Apply for support",
-          "description": "Example application to Social Insurance"
+          "title": "Apply for support from Försäkringskassan",
+          "description": "Example application to Försäkringskassan"
         },
         "consultant": {
           "title": "Contact work consultant",
@@ -3565,7 +3656,15 @@
       "milestoneDateLabel": "Target date for the milestone",
       "milestoneStepsLabel": "Steps (one per line)",
       "saveFailed": "Could not save your progress",
-      "deleteFailed": "Could not delete"
+      "deleteFailed": "Could not delete",
+      "timeframePlaceholder": "E.g. 6 months, 1 year",
+      "smartHelperTitle": "SMART goal helper",
+      "smartHelperIntro": "Make sure your goal is Specific, Measurable, Achievable, Relevant and Time-bound:",
+      "smartS": "Specific: What exactly do you want to achieve?",
+      "smartM": "Measurable: How will you know when you have reached the goal?",
+      "smartA": "Achievable: Is it realistic in your time frame?",
+      "smartR": "Relevant: Does it match your values and ambitions?",
+      "smartT": "Time-bound: Do you have a time frame in mind?"
     },
     "skills": {
       "skillsGapAnalysis": "Skills Gap Analysis",
@@ -3588,10 +3687,10 @@
       "newAnalysis": "New analysis"
     },
     "credentials": {
-      "title": "My Credentials",
-      "description": "Track certifications, degrees, and licenses you have or plan to get.",
+      "title": "Your credentials",
+      "description": "Track certifications, courses, and licenses you have or plan to get.",
       "addCredential": "Add credential",
-      "myCredentials": "My credentials",
+      "myCredentials": "Your credentials",
       "popularCredentials": "Common licences and courses",
       "confirmDelete": "Are you sure you want to delete this credential?",
       "targetDateLabel": "Target",
@@ -3644,7 +3743,7 @@
       "selectRegion": "Select region",
       "selectRegionPlaceholder": "Select region...",
       "netApprox": "Net (approx.)",
-      "rentOfSalary": "Rent of salary",
+      "rentOfSalary": "Rent as share of pay",
       "afterRent": "Remaining after rent",
       "goodBudget": "Good budget! Recommended max is 30% of net salary on rent.",
       "highRent": "Rent exceeds 30% of net salary. Consider cheaper options.",
@@ -3964,7 +4063,7 @@
     "subtitle": "Discover your interests and strengths",
     "discover": "Discover occupations that suit you by answering questions about your interests and personality",
     "tabs": {
-      "test": "The Test",
+      "test": "Test",
       "results": "Results",
       "occupations": "Occupations",
       "explore": "Explore",
@@ -4007,8 +4106,8 @@
           "description": "Which areas do you find interesting?"
         },
         "icf": {
-          "title": "Your conditions",
-          "description": "How do you experience your conditions for work?"
+          "title": "Your circumstances",
+          "description": "How do you experience your circumstances for work?"
         }
       },
       "notSaved": "Not saved",
@@ -4032,7 +4131,10 @@
     "couldNotRestartTest": "Could not restart the test",
     "charts": {
       "bigFiveAria": "Big Five personality traits",
-      "riasecTableAria": "RIASEC results in table form"
+      "riasecTableAria": "RIASEC results in table form",
+      "riasecTableCaption": "Your RIASEC results show your work interests on a scale of 1-5",
+      "riasecTableArea": "Interest area",
+      "riasecTableScore": "Score (1-5)"
     },
     "explore": {
       "badge": "Explore occupations",
@@ -4053,7 +4155,10 @@
       "noResults": "No occupations found with your filters.",
       "clearFilters": "Clear filters",
       "showMore": "Show {{count}} more",
-      "shownOfTotal": "Showing {{visade}} of {{totalt}}"
+      "shownOfTotal": "Showing {{visade}} of {{totalt}}",
+      "universityLevel": "University",
+      "length": "Length",
+      "level": "Level"
     },
     "history": {
       "badge": "Your history",
@@ -4097,7 +4202,35 @@
       "pauseContinue": "Keep answering",
       "pauseConfirm": "Pause and go back",
       "pauseButton": "Pause",
-      "tip": "There are no right answers. Answer as things are for you today."
+      "tip": "There are no right answers. Answer as things are for you today.",
+      "resumeModal": {
+        "takeYourTime": "It is okay to take your time."
+      }
+    },
+    "intro": {
+      "questionsLayout": "How the questions are set up"
+    },
+    "jobCard": {
+      "careerPath": "Career path:"
+    },
+    "results": {
+      "howToReadRiasec": "How to read your RIASEC profile",
+      "understandTraits": "Understand your personality traits",
+      "whatResultSays": "What does the result say about you?",
+      "greenAreasHeading": "🟢 Green areas (4-5)",
+      "greenAreasDesc": "Your strengths! These areas give you an advantage in the job market.",
+      "yellowRedAreasHeading": "🟡 Yellow/red areas (1-3)",
+      "yellowRedAreasDesc": "Areas where adjustments can help. Under the Work Environment Act, you have the right to reasonable workplace adjustments.",
+      "rememberHeading": "Remember",
+      "compareOccupations": "Compare occupations",
+      "comparisonWithPreviousTest": "Comparison with your previous test"
+    },
+    "occupations": {
+      "growingShare": "of these are growing, based on our editorial assessment",
+      "sortMatch": "Sort: Match",
+      "sortName": "Sort: Name (A-Z)",
+      "sortSalary": "Sort: Salary (highest first)",
+      "salaryRange": "Salary range"
     }
   },
   "quests": {
@@ -4146,18 +4279,18 @@
         "body": "Some professions you may not work in without a Swedish licence, however much experience you have. This includes many jobs in healthcare and teaching. In that case the professional authority assesses your education — not UHR.",
         "health": "Healthcare: the National Board of Health and Welfare decides on licences and protected professional titles. The route differs depending on whether you were educated inside or outside the EU/EEA, and the Swedish language requirement is high — the level is stated on their site.",
         "teacher": "Schools and preschools: the Swedish National Agency for Education decides on teacher certification.",
-        "other": "Not sure whether your profession is regulated — start with UHR and ask the Public Employment Service. They know who assesses what.",
+        "other": "Not sure whether your profession is regulated — start with UHR and ask Arbetsförmedlingen. They know who assesses what.",
         "healthLink": "National Board of Health and Welfare — licensing",
         "teacherLink": "National Agency for Education — certification"
       },
       "permit": {
         "title": "Do you need a work permit?",
-        "eu": "If you are a citizen of an EU/EEA country or of a Nordic country you do not need a work permit. You may start working straight away, and you should not contact the Migration Agency — move on to the next tab.",
+        "eu": "If you are a citizen of an EU/EEA country or of a Nordic country you do not need a work permit. You may start working straight away, and you should not contact Migrationsverket — move on to the next tab.",
         "thirdCountry": "If you are a citizen of a country outside the EU/EEA a work permit is usually required, and as a rule you apply before travelling here. If you already live here with a residence permit on other grounds, different rules may apply.",
-        "noNumbers": "We deliberately do not state any amounts or processing times here. They change every year, and an outdated figure on this page could cost you a permit. The Migration Agency always has what applies right now.",
-        "linkPermit": "Migration Agency — work permit",
-        "linkEu": "Migration Agency — EU/EEA citizens",
-        "linkException": "Migration Agency — who may work without a permit"
+        "noNumbers": "We deliberately do not state any amounts or processing times here. They change every year, and an outdated figure on this page could cost you a permit. Migrationsverket always has what applies right now.",
+        "linkPermit": "Migrationsverket — work permit",
+        "linkEu": "Migrationsverket — EU/EEA citizens",
+        "linkException": "Migrationsverket — who may work without a permit"
       },
       "next": {
         "title": "What next?",
@@ -4177,11 +4310,11 @@
       "onlyThirdCountry": "Applies to you if you are not an EU/EEA or Nordic citizen",
       "firstNote": {
         "title": "Read this first",
-        "body": "Almost everything else requires you to be registered as a resident and to have a personal identity number. That takes time — count on several weeks. Until then you cannot get a BankID, and many services require BankID. It is not you doing something wrong; that is how the system fits together."
+        "body": "Almost everything else requires you to be registered as a resident and to have a personnummer (Swedish personal identity number). That takes time — count on several weeks. Until then you cannot get a BankID, and many services require BankID. It is not you doing something wrong; that is how the system fits together."
       },
       "categories": {
         "start": "Start here",
-        "afterId": "Once you have a personal identity number",
+        "afterId": "Once you have a personnummer",
         "work": "When you start looking for work",
         "later": "Later on"
       },
@@ -4198,22 +4331,22 @@
       "items": {
         "folkbokforing": {
           "title": "Report that you have moved to Sweden",
-          "body": "You do not apply for a personal identity number — you report your move to the Tax Agency and are registered as a resident. The number comes with that registration. It requires that you plan to live here for at least a year. You report the move in the Tax Agency’s e-service, at the earliest 14 days before you move, and you must then visit a service office in person to prove who you are. Book a time in advance.",
-          "linkLabel": "Tax Agency — moving to Sweden"
+          "body": "You do not apply for a personnummer (Swedish personal identity number) — you report your move to Skatteverket (the Swedish Tax Agency) and are entered in the population register (folkbokföring). The number comes with that registration. It requires that you plan to live here for at least a year. You report the move in Skatteverket's e-service, at the earliest 14 days before you move, and you must then visit a service office in person to prove who you are. Book a time in advance.",
+          "linkLabel": "Skatteverket — moving to Sweden"
         },
         "samordningsnummer": {
           "title": "Staying for less than a year?",
-          "body": "Then you will not get a personal identity number, but you may instead get a coordination number. It is applied for separately, and some services work less well with it. The Tax Agency explains the difference.",
-          "linkLabel": "Tax Agency — population registration"
+          "body": "Then you will not get a personnummer, but you may instead get a samordningsnummer (coordination number). It is applied for separately, and some services work less well with it. Skatteverket explains the difference.",
+          "linkLabel": "Skatteverket — folkbokföring (population registration)"
         },
         "idkort": {
           "title": "Get an ID card",
-          "body": "The Tax Agency’s ID card requires that you are registered as a resident. The fee must be paid before you book a time, and you bring the receipt to the appointment. You also need to prove your identity — either with an approved ID document or with a person who vouches for who you are.",
-          "linkLabel": "Tax Agency — ID card"
+          "body": "Skatteverket's ID card requires that you are registered as a resident. The fee must be paid before you book a time, and you bring the receipt to the appointment. You also need to prove your identity — either with an approved ID document or with a person who vouches for who you are.",
+          "linkLabel": "Skatteverket — ID card"
         },
         "bankkonto": {
           "title": "Open a bank account",
-          "body": "You have the right to a payment account with basic functions if you are legally resident within the EEA. Not having a personal identity number is not in itself a reason for the bank to say no. If you are refused anyway you are entitled to it in writing — and you can then turn to the bank’s complaints officer and on to the National Board for Consumer Disputes.",
+          "body": "You have the right to a payment account with basic functions if you are legally resident within the EEA. Not having a personnummer is not in itself a reason for the bank to say no. If you are refused anyway you are entitled to it in writing — and you can then turn to the bank's complaints officer and on to the National Board for Consumer Disputes.",
           "linkLabel": "National Board for Consumer Disputes"
         },
         "bankid": {
@@ -4222,9 +4355,9 @@
           "linkLabel": ""
         },
         "forsakringskassan": {
-          "title": "Tell the Social Insurance Agency you have moved",
+          "title": "Tell Försäkringskassan you have moved",
           "body": "You do not register in general — you report that you have moved here. It matters above all if you move with children, want a European Health Insurance Card, or are going to apply for a benefit. Whether you are insured follows from living or working here.",
-          "linkLabel": "Social Insurance Agency"
+          "linkLabel": "Försäkringskassan"
         },
         "vardcentral": {
           "title": "Choose a health centre",
@@ -4242,13 +4375,13 @@
           "linkLabel": "UHR — assessment of foreign qualifications"
         },
         "arbetsformedlingen": {
-          "title": "Register with the Public Employment Service",
+          "title": "Register with Arbetsförmedlingen",
           "body": "Register as early as you can. It affects what support and what benefits you can get, and some programmes require that you have been registered for a while.",
-          "linkLabel": "Public Employment Service"
+          "linkLabel": "Arbetsförmedlingen"
         },
         "akassa": {
-          "title": "Join an unemployment insurance fund",
-          "body": "Membership is voluntary and you pay a monthly fee. The benefit depends on how long you have been a member and how much you have worked — which is why it pays to join early, even if you do not need it now.",
+          "title": "Join an a-kassa",
+          "body": "A-kassa is voluntary and you pay a fee every month. The benefit depends on how long you have been a member and how much you have worked — which is why it pays to join early, even if you do not need it now.",
           "linkLabel": ""
         },
         "korkort": {
@@ -4258,8 +4391,8 @@
         },
         "skatt": {
           "title": "Check your tax table",
-          "body": "When you get a job, tax is deducted according to a table that depends on where you live. If the deduction is wrong you can apply for an adjustment with the Tax Agency, so you do not pay too much or too little during the year.",
-          "linkLabel": "Tax Agency"
+          "body": "When you get a job, tax is deducted according to a table that depends on where you live. If the deduction is wrong you can apply for an adjustment with Skatteverket, so you do not pay too much or too little during the year.",
+          "linkLabel": "Skatteverket"
         },
         "pension": {
           "title": "Your pension after moving here",
@@ -4350,17 +4483,17 @@
         "p1": {
           "sv": "Hej, jag heter … och jag söker arbete som …",
           "en": "Hello, my name is … and I am looking for work as a …",
-          "context": "Job hunting"
+          "context": "Job search"
         },
         "p2": {
           "sv": "Har ni något ledigt just nu?",
           "en": "Do you have any openings right now?",
-          "context": "Job hunting"
+          "context": "Job search"
         },
         "p3": {
           "sv": "Kan jag lämna mitt CV till någon?",
           "en": "Can I leave my CV with someone?",
-          "context": "Job hunting"
+          "context": "Job search"
         },
         "p4": {
           "sv": "Jag har jobbat med det här i … år.",
@@ -4840,7 +4973,7 @@
         },
         "local-meet": {
           "title": "Go to a meet-up",
-          "description": "A job fair, an industry gathering or something the employment service arranges. Meeting in person usually makes more of an impression than a message."
+          "description": "A job fair, an industry gathering or something Arbetsförmedlingen arranges. Meeting in person usually makes more of an impression than a message."
         },
         "portfolio-page": {
           "title": "Collect your work samples",
@@ -4925,7 +5058,25 @@
     "errorLoadingAnswers": "An error occurred while loading your answers",
     "couldNotSaveCloud": "Could not save to the cloud",
     "errorSaving": "An error occurred while saving",
-    "couldNotClear": "Could not clear your answers"
+    "couldNotClear": "Could not clear your answers",
+    "aboutThisExercise": "About this exercise",
+    "categories": {
+      "Självkännedom": "Self-knowledge",
+      "Jobbsökning": "Job search",
+      "Nätverkande": "Networking",
+      "Digital närvaro": "Digital presence",
+      "Arbetsrätt": "Employment law",
+      "Karriärutveckling": "Career development",
+      "Välmående": "Wellbeing",
+      "Arbetslivskunskap": "Working life",
+      "Arbetssökande": "Job seeking",
+      "Rehabilitering": "Rehabilitation"
+    },
+    "difficulties": {
+      "Lätt": "Easy",
+      "Medel": "Medium",
+      "Utmanande": "Challenging"
+    }
   },
   "diary": {
     "editorialSpot": "Collect thoughts, moods, goals and gratitude in one place — at your own pace.",
@@ -4999,6 +5150,215 @@
         "title": "Two week record!",
         "description": "Your longest streak: {{count}} days!"
       }
+    },
+    "gratitude": {
+      "today": {
+        "title": "Today's gratitude",
+        "logged": "Logged",
+        "prompt": "What are you grateful for today?",
+        "itemLabel": "Grateful for, number {{number}}",
+        "placeholder": "I am grateful for...",
+        "placeholderOptional": "I am grateful for... (optional)",
+        "reflectionLabel": "Reflection (optional)",
+        "reflectionPlaceholder": "Why are these things important to you?",
+        "save": "Save gratitude",
+        "saved": "✓ Saved!"
+      },
+      "history": {
+        "title": "History",
+        "emptyTitle": "No history yet",
+        "emptyDescription": "Start logging your daily gratitude to see your history here"
+      },
+      "stats": {
+        "streakLabel": "days in a row",
+        "totalEntries": "entries in total",
+        "totalItems": "things you were grateful for"
+      },
+      "intro": {
+        "title": "Why gratitude?",
+        "description": "Research shows that daily gratitude can improve wellbeing, lower stress, and help us focus on the positive. Take a moment each day to think about what you appreciate — big things or small ones."
+      }
+    },
+    "goals": {
+      "categories": {
+        "career": "Career",
+        "health": "Health",
+        "personal": "Personal",
+        "learning": "Learning",
+        "general": "Other"
+      },
+      "priorities": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "form": {
+        "questionLabel": "What do you want to do this week?",
+        "placeholder": "For example: apply to 5 jobs, exercise 3 times...",
+        "category": "Category",
+        "priority": "Priority",
+        "adding": "Adding...",
+        "add": "Add goal"
+      },
+      "card": {
+        "reflectionLabel": "Your thoughts about this goal",
+        "reflectionPlaceholder": "How did it go? What did you learn?",
+        "completedOn": "Done on {{date}}",
+        "addReflection": "Add your thoughts",
+        "confirmDelete": "Remove this goal?"
+      },
+      "progress": {
+        "title": "This week's progress",
+        "completedOfTotal": "{{completed}} of {{total}} goals done",
+        "allDone": "Well done — all goals are done!"
+      },
+      "header": {
+        "title": "This week's goals",
+        "newGoal": "New goal"
+      },
+      "empty": {
+        "title": "No goals set for this week",
+        "description": "Set some goals to help you stay focused and see how far you have come",
+        "cta": "Set your first goal"
+      },
+      "list": {
+        "pending": "In progress ({{count}})",
+        "completed": "Done ({{count}})"
+      },
+      "tips": {
+        "title": "Tips for setting goals",
+        "tip1": "Be specific — \"Apply to 5 jobs\" instead of \"Apply to jobs\"",
+        "tip2": "Make your goals measurable, so you know when you are done",
+        "tip3": "Set at most 3 to 5 goals a week, so you can stay focused"
+      }
+    },
+    "moodTab": {
+      "scale": {
+        "veryBad": "Very bad",
+        "bad": "Bad",
+        "okay": "Okay",
+        "good": "Good",
+        "veryGood": "Very good"
+      },
+      "activities": {
+        "exercise": "Exercise",
+        "sleep": "Good sleep",
+        "social": "Time with others",
+        "nature": "Outdoors",
+        "work": "Productive",
+        "relax": "Relaxation",
+        "hobby": "Hobby",
+        "learn": "Learning"
+      },
+      "today": {
+        "title": "How are you feeling today?",
+        "logged": "Logged",
+        "overallMood": "Overall mood",
+        "energyLevel": "Energy level",
+        "tired": "Tired",
+        "energetic": "Full of energy",
+        "stressLevel": "Stress level",
+        "calm": "Calm",
+        "stressed": "Stressed",
+        "sleepQuality": "Sleep quality",
+        "poor": "Poor",
+        "rested": "Well rested",
+        "valueOfFive": "{{value}} of 5",
+        "activitiesLabel": "What have you done today?",
+        "noteLabel": "Note (optional)",
+        "notePlaceholder": "Anything special that affected your day?",
+        "save": "Save today's mood",
+        "saved": "✓ Saved!"
+      },
+      "calendar": {
+        "title": "Mood calendar",
+        "prevMonth": "Previous month",
+        "nextMonth": "Next month",
+        "moodTitle": "Mood: {{level}}/5"
+      },
+      "stats": {
+        "mood": "Mood",
+        "trend": "Trend",
+        "trendUp": "Improving",
+        "trendDown": "Dropping",
+        "trendSame": "Steady",
+        "energy": "Energy",
+        "days": "Days",
+        "topActivities": "Your most common activities"
+      }
+    },
+    "journal": {
+      "writeModal": {
+        "title": "New diary entry",
+        "titleLabel": "Entry title (optional)",
+        "titlePlaceholder": "Title (optional)",
+        "howAreYou": "How are you feeling?",
+        "contentLabel": "Your thoughts",
+        "contentPlaceholder": "Write your thoughts...",
+        "addTagLabel": "Add a tag",
+        "addTagPlaceholder": "Add a tag..."
+      },
+      "prompt": {
+        "title": "Today's writing prompt",
+        "newPrompt": "New writing prompt",
+        "use": "Use this"
+      },
+      "search": {
+        "label": "Search your diary",
+        "placeholder": "Search your diary...",
+        "filterByTag": "Filter by tag"
+      },
+      "newEntryButton": "New entry",
+      "empty": {
+        "noMatchesTitle": "No matches",
+        "emptyTitle": "Your diary is empty",
+        "noMatchesDescription": "Try changing your search",
+        "emptyDescription": "Start writing to keep your thoughts in one place"
+      },
+      "card": {
+        "removeFavorite": "Remove \"{{title}}\" from favorites",
+        "markFavorite": "Mark \"{{title}}\" as a favorite",
+        "confirmDelete": "Remove this entry?",
+        "deleteEntry": "Delete the diary entry \"{{title}}\""
+      },
+      "viewModal": {
+        "mood": "Mood: {{mood}}/5"
+      }
+    },
+    "dailyTask": {
+      "title": "Today's task",
+      "estimatedTime": "Takes about {{time}}",
+      "refresh": "Get a different task",
+      "markIncomplete": "Mark as not done",
+      "markComplete": "Mark as done",
+      "goTo": "Go there",
+      "completionMessage": "Nice work. You are one step closer to your goal.",
+      "tasks": {
+        "diary": {
+          "title": "Write in your diary",
+          "description": "Think about your day and how far you have come"
+        },
+        "exercise": {
+          "title": "Do an exercise",
+          "description": "Explore your strengths, or practice for an interview"
+        },
+        "cv": {
+          "title": "Update your CV",
+          "description": "Add a new experience or skill"
+        },
+        "jobsearch": {
+          "title": "Search for jobs",
+          "description": "Look for new opportunities that match your profile"
+        },
+        "networking": {
+          "title": "Build your network",
+          "description": "Reach out to someone in your network, or grow it"
+        },
+        "reflection": {
+          "title": "Think about your goals",
+          "description": "What matters most to you right now?"
+        }
+      }
     }
   },
   "wellness": {
@@ -5012,9 +5372,9 @@
       "energyDesc": "Track your energy and plan activities",
       "routines": "Routines",
       "routinesDesc": "Build sustainable daily routines",
-      "cognitive": "Cognitive Training",
+      "cognitive": "Cognitive training",
       "cognitiveDesc": "Train memory and concentration",
-      "crisis": "Crisis Support",
+      "crisis": "Crisis support",
       "crisisDesc": "Help with mental health"
     },
     "health": {
@@ -5216,7 +5576,29 @@
       "suggestions": {
         "morningStretch": "Morning stretch 10 min",
         "lunchWalk": "Lunch walk",
-        "weeklyReview": "Weekly goals review"
+        "weeklyReview": "Weekly goals review",
+        "morningStretchDesc": "Start the day with energy",
+        "lunchWalkDesc": "Fresh air and movement",
+        "weeklyReviewDesc": "Think back over the day"
+      },
+      "today": "Today",
+      "routinesCompleted": "routines done",
+      "share": "Share",
+      "bestStreak": "Best streak",
+      "streakDays": "days in a row",
+      "dailyProgress": "Today's progress",
+      "timeLabel": "Time",
+      "suggestedIntro": "Suggested routines that can help you build a structured day:",
+      "templates": {
+        "title": "Routine templates",
+        "morning": {
+          "title": "Morning routine",
+          "description": "5 activities for a good start"
+        },
+        "evening": {
+          "title": "Evening routine",
+          "description": "4 activities for better sleep"
+        }
       }
     },
     "cognitive": {
@@ -5268,7 +5650,23 @@
           "title": "Distracted reading",
           "description": "Read and understand text with background noise"
         }
-      }
+      },
+      "games": {
+        "congrats": "Well done!",
+        "memoryMatchedAll": "You matched every pair in {{moves}} tries",
+        "finishExercise": "Finish exercise",
+        "memoryProgress": "Tries: {{moves}} | Matched: {{matched}}/6",
+        "round": "Round {{round}}",
+        "sequence": "Sequence: {{sequence}}",
+        "yourSequence": "Your sequence: {{sequence}}"
+      },
+      "streakBanner": {
+        "title": "Training streak",
+        "days": "{{count}} days",
+        "subtitle": "Keep it up — you're building a great habit!"
+      },
+      "completedCount": "{{count}} done",
+      "gameTag": "Game"
     },
     "consent": {
       "fullTitle": "Health Data Consent",
@@ -5282,7 +5680,7 @@
         "gratitude": "Gratitude notes"
       },
       "whyWeCollect": "Why we collect this",
-      "whyDesc": "The data is used to give you personal insights about your wellbeing and to customize recommendations during your job search. We analyze trends to help you understand what affects your mood.",
+      "whyDesc": "The data is used to give you personal insights about your wellbeing and to customise recommendations during your job search. We analyse trends to help you understand what affects your mood.",
       "whoHasAccess": "Who has access",
       "whoAccessDesc": "Only you can see what you write here. Your consultant sees it only if you turn on sharing yourself under Settings > Privacy — it is off until you do. Data is never shared with employers or third parties.",
       "dataProtection": "Your data is protected under GDPR and stored securely in the EU. You can export or delete all your data at any time.",
@@ -5299,7 +5697,7 @@
   },
   "education": {
     "title": "Education",
-    "description": "Search and explore education programs across Sweden",
+    "description": "Search and explore education programmes across Sweden",
     "searchLabel": "What do you want to learn?",
     "searchPlaceholder": "Search education, subject or school...",
     "searching": "Searching for programmes…",
@@ -5332,12 +5730,12 @@
       "action": "Try again"
     },
     "infoBanner": {
-      "description": "Programmes come from the Swedish Public Employment Service's JobEd Connect and cover vocational colleges, universities, adult education, folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for."
+      "description": "Programmes come from Arbetsförmedlingen's service JobEd Connect and cover yrkeshögskola (vocational higher education), universities, komvux (municipal adult education), folk high schools, labour market training and arts and culture programmes. The portal shows what exists and where — not what it costs or what you are eligible for."
     },
     "quickSearch": {
       "title": "What are you curious about?",
       "yh": {
-        "title": "Vocational College",
+        "title": "Yrkeshögskola",
         "description": "Practical education with high employment rates"
       },
       "university": {
@@ -5416,7 +5814,7 @@
     "relatedExercises_one": "1 related exercise",
     "relatedExercises_other": "{{count}} related exercises",
     "aiTeamHeading": "Can’t find an answer?",
-    "aiTeamBody": "The AI team can answer questions the articles do not cover. Five focuses of the same AI.",
+    "aiTeamBody": "The AI team can answer questions the articles do not cover. It has five specialists, all part of the same AI.",
     "aiTeamCta": "Open the AI team",
     "categories": {
       "getting-started": {
@@ -5460,8 +5858,8 @@
         "description": "Rights, support and adjustments."
       },
       "job-market": {
-        "name": "The labour market",
-        "description": "Information about the labour market and different industries."
+        "name": "The labor market",
+        "description": "Information about the labor market and different industries."
       },
       "tools": {
         "name": "Practical tools",
@@ -5475,7 +5873,13 @@
     },
     "searchHint": "Searching {{count}} articles — try \"cover letter\", \"rejection\" or \"salary\".",
     "categoryCount": "{{count}} articles",
-    "relatedExercises": "{{count}} related exercises"
+    "relatedExercises": "{{count}} related exercises",
+    "difficultyBadge": {
+      "difficultyLevel": "Difficulty level: "
+    },
+    "readingProgress": {
+      "ariaLabel": "How far you have read in the article"
+    }
   },
   "resources": {
     "title": "Your saved resources",
@@ -5729,12 +6133,12 @@
         "description": "Support when you are made redundant or change track"
       },
       "organization": {
-        "title": "Unions & organisations",
+        "title": "Unions & organizations",
         "description": "Support and career help from trade unions"
       },
       "diversity": {
         "title": "Diversity & inclusion",
-        "description": "Resources for an inclusive labour market"
+        "description": "Resources for an inclusive labor market"
       },
       "accessibility": {
         "title": "Accessibility & disability",
@@ -5832,7 +6236,7 @@
       "profileVisibility": "Profile visibility",
       "profileVisibilityDesc": "Choose who can see your profile.",
       "onlyMe": "Only me",
-      "caseworkers": "Caseworkers",
+      "caseworkers": "Consultants",
       "everyone": "Everyone",
       "consent": {
         "title": "Your consents",
@@ -5894,11 +6298,12 @@
       "immediateTitle": "Delete immediately",
       "immediateDesc": "This will delete your account and all data immediately without a grace period.",
       "immediateWarning": "WARNING: This cannot be undone! All your data will be permanently lost.",
-      "typeToConfirm": "Type DELETE to confirm:",
-      "confirmTextError": "You must type DELETE to confirm.",
+      "typeToConfirm": "Type {{ord}} to confirm:",
+      "confirmTextError": "You must type {{ord}} to confirm.",
       "deleteForever": "Delete forever",
       "deleteError": "Could not delete account. Please try again.",
-      "deletedMessage": "Your account has been deleted. Thank you for using Jobin."
+      "deletedMessage": "Your account has been deleted. Thank you for using Jobin.",
+      "confirmWord": "DELETE"
     },
     "security": {
       "title": "Security",
@@ -5913,7 +6318,18 @@
       "updatePassword": "Update password",
       "twoFactor": "Two-factor authentication",
       "twoFactorDesc": "Add extra security"
-    }
+    },
+    "programSelector": {
+      "pageNowAt": "This page is now at"
+    },
+    "roles": {
+      "title": "Role and permissions",
+      "description": "Choose which role you want to use right now. Your available roles decide which features you can use.",
+      "selectRolesForAccount": "Choose roles for this account",
+      "tipActiveRole": "Choose \"Active role\" to switch view in the side menu",
+      "tipCombinedPermissions": "Your permissions are a combination of all your roles"
+    },
+    "coachTipsTitle": "Coach tips on every page"
   },
   "auth": {
     "login": "Log in",
@@ -5965,7 +6381,7 @@
     },
     "errors": {
       "userExists": "A user with this email address already exists. Log in instead.",
-      "createFailed": "Could not create the account. Please try again later."
+      "createFailed": "Could not create the account. Please try again in a moment."
     },
     "consent": {
       "title": "Agreements",
@@ -5975,6 +6391,43 @@
       "privacyLink": "privacy policy",
       "acceptAi": "I consent to AI processing of my data",
       "aiDescription": "We use AI to help you write CVs and cover letters. Your data is then processed by our AI provider OpenRouter, whose servers are in the USA. This consent is optional but required for AI features."
+    },
+    "invite": {
+      "invalidOrExpired": "This invitation is not valid, or it has expired",
+      "yourConsultant": "Your consultant",
+      "consentRequired": "You need to agree before you continue",
+      "invalidTitle": "Invitation not valid",
+      "goToLogin": "Go to log in",
+      "accountCreatedTitle": "Account created!",
+      "accountCreatedSta": "Your account is ready and Steps to Work is turned on. You will go to the log in page soon…",
+      "accountCreated": "Your account is ready. You will go to the log in page soon…",
+      "welcome": "Welcome!",
+      "invitedBySta": "{{consultantName}} invited you to Steps to Work",
+      "invitedGeneric": "You have been invited to Jobin",
+      "contactConsultantHint": "You can contact your consultant directly, or from the \"My consultant\" page once you are logged in.",
+      "consentHeading": "Consent to share data",
+      "consentTextMissing": "The consent text is missing — please contact your consultant.",
+      "consentDataSharingPrefix": "I agree that",
+      "consentDataSharingSuffix": "can see my Steps to Work data (activities, ratings, CV, mood, documents) and can send reports to Arbetsförmedlingen on my behalf.",
+      "consentRevocationPrefix": "I understand that I",
+      "consentRevocationBold": "can end this connection at any time",
+      "consentRevocationSuffix": "from the \"My consultant\" page. The consultant will then stop seeing new activity. Documents already sent to Arbetsförmedlingen stay saved, as the rules require.",
+      "firstNameLabel": "First name *",
+      "lastNameLabel": "Last name *",
+      "passwordLabel": "Password *",
+      "passwordMinLength": "At least 12 characters",
+      "reqUpper": "One capital letter (A-Z)",
+      "reqLower": "One small letter (a-z)",
+      "reqDigit": "One number (0-9)",
+      "reqSpecial": "One special character (!@#$%^&*)",
+      "confirmPasswordLabel": "Confirm password *",
+      "repeatPasswordPlaceholder": "Type the password again",
+      "passwordMismatch": "The passwords do not match",
+      "consentRequiredTitle": "You need to agree first",
+      "creatingAccount": "Creating your account…",
+      "createAccountButton": "Create account",
+      "checkBothBoxesHint": "Check both boxes above to turn on the button.",
+      "termsNotice": "By creating an account, you agree to our terms of use."
     }
   },
   "ai": {
@@ -6001,7 +6454,10 @@
       "analyzing": "AI analyzing...",
       "copied": "Copied!",
       "copy": "Copy",
-      "sources": "Sources"
+      "sources": "Sources",
+      "analyzingCompany": "Looking at the company...",
+      "recentNews": "Latest news",
+      "companyCulture": "Company culture"
     },
     "tools": {
       "title": "AI Tools",
@@ -6105,6 +6561,91 @@
       "seeAllJobs": "See all matched jobs",
       "overlap": "overlap",
       "toLearn": "To learn"
+    },
+    "companyAnalysis": {
+      "title": "Company analysis",
+      "analyzeHeading": "Analyze {{company}}",
+      "analyzeDesc": "Get AI insights about news, culture, and tips for your open application.",
+      "analyzeButton": "Analyze company",
+      "financialStatus": "Financial status",
+      "revenue": "Revenue",
+      "employees": "Employees",
+      "growth": "Growth",
+      "recruitmentNeeds": "Hiring needs",
+      "hiringActive": "Hiring now",
+      "hiringInactive": "Not hiring right now",
+      "rolesWanted": "Roles they are looking for",
+      "signals": "Signals",
+      "values": "Values",
+      "applicationTips": "Tips for your application",
+      "bestApproach": "Best approach",
+      "talkingPoints": "Things to talk about",
+      "avoidTopics": "Avoid mentioning",
+      "bestTimeToContact": "Best time to contact:"
+    },
+    "networking": {
+      "featureName": "Networking help",
+      "title": "Networking assistant",
+      "heading": "AI networking assistant",
+      "subheading": "Create a personal networking message",
+      "platformOther": "Other",
+      "placeholderName": "Contact's name (optional)",
+      "placeholderTitle": "Title",
+      "placeholderCompany": "Company",
+      "placeholderGoal": "Your goal with the contact (for example 'career advice', 'job openings')",
+      "generateButton": "Create message",
+      "strategyFallback": "Networking strategy",
+      "loadingMessage": "Creating your personal message...",
+      "newMessage": "New message",
+      "charCount": "{{count}} characters",
+      "platformMessage": "{{platform}} message",
+      "alternativeOpenings": "Other ways to start",
+      "followUpStrategy": "How to follow up",
+      "relevantGroups": "Networks that fit you",
+      "networkingTips": "Networking tips",
+      "linkedInTips": "LinkedIn tips"
+    },
+    "interviewPrep": {
+      "title": "Interview preparation",
+      "heading": "Get ready for the interview",
+      "desc": "Get AI interview tips, company information, and questions you may be asked.",
+      "button": "Prepare for interview",
+      "aboutCompany": "About the company",
+      "challenges": "Challenges to talk about",
+      "expectedQuestions": "Questions you may be asked",
+      "commonQuestions": "Common questions",
+      "roleSpecificQuestions": "Questions about the role",
+      "behavioralQuestions": "Questions about how you work",
+      "tipsTitle": "Tips for the interview",
+      "questionsToAsk": "Questions you can ask",
+      "salaryExpectations": "Salary expectations",
+      "expectedSalaryRange": "Expected salary range: {{range}}",
+      "negotiationTips": "Tips for negotiating"
+    },
+    "commute": {
+      "errNoHome": "Enter your home address",
+      "errNoWork": "Enter the workplace address",
+      "featureName": "Commute planner",
+      "heading": "Commute planner",
+      "resultTitle": "Commute analysis",
+      "subheading": "See travel time and cost",
+      "placeholderHome": "Your home address",
+      "placeholderWork": "Workplace address",
+      "calculateButton": "Calculate commute",
+      "loadingText": "Checking commute options...",
+      "newCalculation": "New calculation",
+      "publicTransit": "Public transport",
+      "travelTime": "Travel time",
+      "transfers": "Changes",
+      "monthlyCost": "Monthly cost",
+      "car": "Car",
+      "distance": "Distance",
+      "bike": "Bike",
+      "cost": "Cost",
+      "recommendation": "Our tip",
+      "remoteWorkLabel": "Working from home:",
+      "alternativeJobs": "Other jobs to consider",
+      "fromTo": "From: {{from}} → To: {{to}}"
     }
   },
   "errors": {
@@ -6145,7 +6686,7 @@
     "contactConsultant": "Contact your employment consultant for personal help and guidance.",
     "bookMeeting": "Book meeting",
     "emailSupport": "Email support",
-    "version": "Participant Portal v2.0",
+    "version": "Jobin v2.0",
     "categories": {
       "gettingStarted": "Getting Started",
       "cvCoverLetter": "CV & Cover Letter",
@@ -6217,8 +6758,8 @@
     "yourProgress": "Your progress",
     "completed": "Completed",
     "remaining": "Remaining",
-    "continuePractice": "Continue practicing",
-    "startPractice": "Start practicing"
+    "continuePractice": "Continue practising",
+    "startPractice": "Start practising"
   },
   "knowledgeWidget": {
     "knowledge": "Knowledge",
@@ -6254,7 +6795,7 @@
         "description": "For those having thoughts of taking their own life"
       },
       "companion": {
-        "name": "On-call Companion",
+        "name": "Jourhavande medmänniska",
         "hours": "9 PM - 6 AM",
         "description": "Someone to talk to when things feel tough"
       },
@@ -6434,7 +6975,7 @@
     "noPlannedEvents": "No planned events",
     "addInterviewsAndMeetings": "Add interviews and meetings",
     "consultantMeetingBooked": "Consultant meeting booked",
-    "consultantMeetingDescription": "You have a meeting with your career consultant",
+    "consultantMeetingDescription": "You have a meeting with your employment consultant",
     "openCalendar": "Open calendar",
     "daysInRow": "Days in a row",
     "upcomingEventsHeader": "Upcoming events",
@@ -6489,7 +7030,7 @@
     "registeredApplications": "Registered applications",
     "applicationPipeline": "Application pipeline",
     "recentLetters": "Recent letters",
-    "createPersonalLetters": "Create personal letters",
+    "createPersonalLetters": "Create cover letters",
     "wellWrittenLetterTip": "A well-written letter can make the difference between getting an interview or not.",
     "yourApplicationJourney": "Your application journey",
     "newLetter": "New letter",
@@ -6600,7 +7141,7 @@
   },
   "wellnessWidget": {
     "wellness": "Wellness",
-    "yourWellness": "Your Wellness",
+    "yourWellness": "Your wellbeing",
     "howAreYou": "How are you feeling today?",
     "logMood": "Log mood",
     "todaysMood": "Today's mood",
@@ -6671,7 +7212,7 @@
   },
   "skillsWidget": {
     "skills": "Skills",
-    "skillsAnalysis": "Skills Analysis",
+    "skillsAnalysis": "Skills overview",
     "analyze": "Analyze",
     "analyzed": "Analyzed",
     "findStrengths": "Find strengths",
@@ -6863,7 +7404,7 @@
         "description": "Knowledge base, documents, AI team, external links — all in one place."
       },
       "vardag": {
-        "title": "My everyday",
+        "title": "Your everyday life",
         "description": "Wellbeing, diary, calendar, exercises, and dialog with your consultant."
       }
     },
@@ -6876,7 +7417,7 @@
       "af": "AF integration",
       "afDesc": "Direct connection to Arbetsförmedlingen's APIs",
       "partnersTitle": "Trusted by organizations across Sweden",
-      "arbetsformedlingen": "Employment Agency",
+      "arbetsformedlingen": "Arbetsförmedlingen",
       "platsbanken": "Platsbanken",
       "unions": "Trade Unions",
       "jobCoaches": "Job Coaches",
@@ -7071,9 +7612,9 @@
       "q1": "What does Jobin cost?",
       "a1": "Jobin is always free for participants. Organizations pay a fixed license of 2,990 SEK/month plus 290 SEK per active consultant. No hidden fees – all features included.",
       "q2": "I've been job searching for a long time without results. Can Jobin really help me?",
-      "a2": "Absolutely. Many of our users have been long-term unemployed and have, with the help of our structured tools and personal guidance, gotten back to work. You're not alone, and there are paths forward. The tools are specially designed to provide support even when things feel tough.",
+      "a2": "Our tools are built for exactly this situation — structured support and personal guidance when things feel tough. You are not alone, and there are ways forward.",
       "q3": "I don't even know what I want to work with. Where should I start?",
-      "a3": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery. Many users have discovered new career paths they never thought of before.",
+      "a3": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery.",
       "q4": "Is my personal information safe?",
       "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption on servers in the EU and is never shared with third parties without your consent. If you choose to use AI features, your texts are sent to our AI provider OpenRouter for processing, which takes place in the USA — you explicitly consent to this the first time, and you can use the portal without AI. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security.",
       "q5": "How does the AI help in the CV generator work?",
@@ -7194,7 +7735,9 @@
       "aiDesc": "OpenRouter (only if you consent to AI processing) - your texts are processed in the USA",
       "analytics": "Error tracking:",
       "analyticsDesc": "Sentry (only if you accept cookies) - to identify and fix technical issues",
-      "none": "We never sell your personal data to third parties."
+      "none": "We never sell your personal data to third parties.",
+      "dpaOpenRouterNote": "AI provider (USA, SCC + TIA)",
+      "dpaSentryNote": "error monitoring (after consent)"
     },
     "transfers": {
       "title": "Transfer to third countries",
@@ -7236,7 +7779,7 @@
     "automated": {
       "title": "Profiling and AI recommendations",
       "intro": "We use AI to guide you, but:",
-      "noDecisions": "No AI decision is binding — you always make the final call about jobs, education and career.",
+      "noDecisions": "No AI decision is binding — you always make the final decision about jobs, education and career.",
       "aiAssist": "AI recommends occupations, skills and jobs based on your profile. This is profiling under GDPR Art 4(4) — you have the right to object (Art 21) or turn off AI features in Settings without deleting your account.",
       "consent": "AI features require your explicit consent and you can use the core portal without them.",
       "transparency": "AI-generated content is clearly marked in the app. You can always see when AI has been involved.",
@@ -7256,7 +7799,7 @@
     "complaint": {
       "title": "Complaint to supervisory authority",
       "intro": "If you believe we are processing your personal data incorrectly, you have the right to lodge a complaint with:",
-      "authority": "Swedish Authority for Privacy Protection (IMY)",
+      "authority": "Integritetsskyddsmyndigheten (IMY, the Swedish Authority for Privacy Protection)",
       "website": "www.imy.se",
       "email": "imy@imy.se"
     },
@@ -7290,7 +7833,7 @@
     "account": {
       "title": "User account",
       "intro": "To use Jobin, you need to create an account. You are responsible for:",
-      "truthful": "The information you provide is true, accurate, and current",
+      "truthful": "Providing information that is true, accurate, and current",
       "password": "Protecting your password and not sharing it with others",
       "notify": "Immediately notifying us of unauthorized access to your account",
       "oneAccount": "Only creating one account per person"
@@ -7351,7 +7894,7 @@
       "coverLetter": "Cover Letter Generator:",
       "coverLetterData": "The job listing, parts of your CV, and your instructions",
       "notSent": "The following is NEVER sent to AI:",
-      "notSentList": "Personal ID numbers, passwords, bank details, or other sensitive information"
+      "notSentList": "Personnummer, passwords, bank details, or other sensitive information"
     },
     "userControl": {
       "title": "Your Control",
@@ -7392,8 +7935,8 @@
       "a1": "No, all AI features are completely optional. You can build your CV and write cover letters entirely without AI.",
       "q2": "Are my AI requests saved?",
       "a2": "No, we don't save the requests. AI-generated content is only saved if you choose to keep it.",
-      "q3": "Can AI see my personal ID number?",
-      "a3": "No, sensitive information like personal ID numbers is never sent to AI services."
+      "q3": "Can AI see my personnummer?",
+      "a3": "No, sensitive information such as your personnummer is never sent to AI services."
     },
     "contact": {
       "title": "Questions about AI?",
@@ -7448,7 +7991,7 @@
     "roleLabel": "What role are you interviewing for?",
     "rolePlaceholder": "e.g. Project Manager, Sales Rep, Developer...",
     "companyLabel": "Company (optional)",
-    "companyPlaceholder": "e.g. Google, Microsoft...",
+    "companyPlaceholder": "e.g. Volvo, Spotify...",
     "startInterview": "Start interview",
     "ratingAria": "Rating",
     "currentQuestionAria": "Current question",
@@ -7642,9 +8185,9 @@
     "lastNamePlaceholder": "Your last name",
     "contactInfo": "Contact information",
     "phone": "Phone number",
-    "phonePlaceholder": "+1 555 123 4567",
+    "phonePlaceholder": "+46 70 123 45 67",
     "location": "City / Location",
-    "locationPlaceholder": "New York",
+    "locationPlaceholder": "Stockholm",
     "aboutMe": "About me",
     "bioPlaceholder": "Tell us a bit about yourself...",
     "bioHint": "Max 500 characters (shown on your public profile)",
@@ -7660,7 +8203,7 @@
     "coverLetters": "Cover letters",
     "interestGuide": "Interest guide",
     "tipsTitle": "Tips for a great profile",
-    "tip1": "Fill in all fields so employers can contact you",
+    "tip1": "Fill in all fields so your caseworker can contact you",
     "tip2": "A short bio helps employers get to know you",
     "tip3": "Update your profile regularly with current information",
     "errorLoadingSection": "Something went wrong while loading this section",
@@ -7681,7 +8224,8 @@
       "selectImageFile": "Please select an image file",
       "maxSize": "Max 5MB",
       "changeImage": "Change image",
-      "uploadAria": "Upload profile picture"
+      "uploadAria": "Upload profile picture",
+      "previewAlt": "Profile picture preview"
     },
     "settingsSection": {
       "shareProfile": "Share your profile",
@@ -7818,7 +8362,8 @@
         "noApplications": "No applications registered",
         "supportAreas": "{{count}} support areas identified",
         "overdueFollowup": "Overdue follow-up"
-      }
+      },
+      "profileCompleteExclaim": "Your profile is complete!"
     },
     "jobSearch": {
       "statusAvailability": "Status & Availability",
@@ -7832,7 +8377,7 @@
       "contacts": "Contacts",
       "references": "References",
       "laborMarketStatus": "Labor Market Status",
-      "registeredAF": "Registered at Employment Agency",
+      "registeredAF": "Registered with Arbetsförmedlingen",
       "participatingInProgram": "Participating in program",
       "program": "Program",
       "hasActivitySupport": "Has activity support/compensation",
@@ -8064,7 +8609,7 @@
         "energyLevel": "Energy Level",
         "shortTermGoal": "Short-term Goal",
         "longTermGoal": "Long-term Goal",
-        "registeredAF": "Registered at AF",
+        "registeredAF": "Registered with Arbetsförmedlingen",
         "sectors": "Desired Sectors"
       }
     },
@@ -8154,13 +8699,13 @@
       "benefits": "Important benefits"
     },
     "laborMarket": {
-      "registeredAF": "Registered at Employment Service",
+      "registeredAF": "Registered with Arbetsförmedlingen",
       "registeredAFDesc": "Registered as job seeker",
       "inProgram": "Participating in labor market program",
       "inProgramDesc": "E.g. job guarantee, establishment program, internship",
       "whichProgram": "Which program?",
       "hasSupport": "Has activity support/benefits",
-      "hasSupportDesc": "Activity support, unemployment benefits or other compensation",
+      "hasSupportDesc": "Activity support, a-kassa or other benefits",
       "programs": {
         "jobbgarantin": "Job and development guarantee",
         "etablering": "Establishment program",
@@ -8232,7 +8777,7 @@
       "namePlaceholder": "E.g. Project management course",
       "type": "Type",
       "issuer": "Issuer",
-      "issuerPlaceholder": "E.g. University, Employment Agency",
+      "issuerPlaceholder": "E.g. komvux, Arbetsförmedlingen",
       "issuedDate": "Issue date",
       "validUntil": "Valid until",
       "description": "Description",
@@ -8311,6 +8856,10 @@
       "next": "Next",
       "getStarted": "Get started",
       "takeYourTime": "You can always come back and change things. Take the time you need."
+    },
+    "history": {
+      "previousValue": "Previous value",
+      "newValue": "New value"
     }
   },
   "sharedProfile": {
@@ -8350,7 +8899,7 @@
     "publisher": "Jobin",
     "updatedOn": "Updated {{date}}",
     "copyFailed": "Could not copy the link — select the address bar and copy from there.",
-    "contactConsultant": "Go to your adviser",
+    "contactConsultant": "Go to your consultant",
     "fontSizeGroup": "Text size",
     "tocLabel": "Article contents",
     "tocHeading": "In this article",
@@ -8362,7 +8911,7 @@
     "downloadFailed": "Could not create the PDF — please try again in a moment."
   },
   "coverLetterGenerator": {
-    "title": "Cover Letter",
+    "title": "Cover letter",
     "pageTitle": "Help formulating your cover letter",
     "pageDescription": "Your experience + our help with wording = a letter that feels like you. It's okay not to be 100% enthusiastic - honesty is best.",
     "stepByStep": "Step by step - let's take it slow",
@@ -8803,10 +9352,10 @@
     "gapSteps": "{{antal}} steps to go",
     "educations": {
       "title": "Courses that could suit you",
-      "source": "From the Swedish Public Employment Service's education database.",
-      "sourceMatched": "From the Swedish Public Employment Service's education database, matched to the role {{yrke}}.",
+      "source": "From Arbetsförmedlingen's education database.",
+      "sourceMatched": "From Arbetsförmedlingen's education database, matched to the role {{yrke}}.",
       "loading": "Searching for courses …",
-      "failed": "We could not reach the education database right now. That does not mean there are no courses.",
+      "failed": "We could not reach Arbetsförmedlingen's education database right now. That does not mean there are no courses.",
       "none": "We found no courses linked to this role. The Education page may return more.",
       "distance": "Distance learning",
       "starts": "Starts {{datum}}",
@@ -8851,7 +9400,7 @@
       "date": "Date",
       "dreamJob": "Role",
       "skillsOverview": "SKILLS",
-      "educationSource": "Source: the Swedish Public Employment Service's education database.",
+      "educationSource": "Source: Arbetsförmedlingen's education database.",
       "actionPlan": "NEXT STEPS"
     }
   },
@@ -9026,7 +9575,7 @@
       "lastName": "Anderson",
       "jobTitle": "Experienced salesperson",
       "email": "anna@email.com",
-      "phone": "555-123-4567",
+      "phone": "+46 70-123 45 67",
       "location": "New York"
     },
     "summary": {
@@ -9341,7 +9890,7 @@
         "private": "Only me",
         "privateDesc": "Your profile is completely private",
         "consultant": "Consultants",
-        "consultantDesc": "Visible to your work consultant",
+        "consultantDesc": "Visible to your consultant",
         "public": "Everyone",
         "publicDesc": "Visible to employers and recruiters"
       },
@@ -9982,7 +10531,7 @@
     "send": "Send",
     "inputPlaceholder": "Write a message...",
     "inputHint": "Press Enter to send, Shift+Enter for new line",
-    "startChatHint": "Select a quick action or write a message to begin",
+    "startChatHint": "Or write your own message below",
     "agents": {
       "arbetskonsulent": {
         "name": "Employment Consultant",
@@ -10784,7 +11333,7 @@
       "profile": "Profile",
       "cv": "CV",
       "jobs": "Jobs",
-      "coverLetter": "Cover Letter",
+      "coverLetter": "Cover letter",
       "complete": "Done"
     },
     "progress": "Your progress",
@@ -10962,7 +11511,7 @@
       "applicationsInvite": "find your first job",
       "cvInvite": "create your CV",
       "lettersInvite": "write your first",
-      "interviewsInvite": "practise when you have the energy",
+      "interviewsInvite": "practice when you have the energy",
       "skillsGap": "Skills analysis",
       "skillsInvite": "compare your CV with a dream job",
       "careerPlan": "Your career plan",
@@ -11002,7 +11551,7 @@
       "statusLoading": "Loading your overview.",
       "statusError": "The overview could not be loaded.",
       "statusReady": "Overview updated.",
-      "errorBody": "We could not load your details right now. That is the portal misbehaving — nothing you did.",
+      "errorBody": "We could not load your details right now. That's a problem with the portal — not something you did.",
       "retry": "Try again",
       "cvSub2": "Open and add to it",
       "yourCv": "Your CV",
@@ -11117,7 +11666,7 @@
         "none": "None yet"
       },
       "spontaneous": {
-        "title": "Spontaneous applications",
+        "title": "Speculative applications",
         "description": "Send applications to companies you believe in."
       },
       "cv": {
@@ -11283,6 +11832,10 @@
       "desiredJobsListAria": "Desired occupations in priority order",
       "searchLabel": "Search occupation",
       "suggestionsAria": "Occupation suggestions"
+    },
+    "desiredJobsList": {
+      "linkedToAf": "Linked to the Swedish Public Employment Service's list — matched exactly in search",
+      "freeTextNotLinked": "Free text — not linked to the Swedish Public Employment Service. Remove it and pick from the list for an exact match."
     }
   },
   "samlingar": {
@@ -11316,6 +11869,231 @@
   "autoSave": {
     "aria": {
       "restoreData": "Restore previously saved data"
+    }
+  },
+  "workflow": {
+    "common": {
+      "optimizeCvForJob": "Make your CV better for this job"
+    },
+    "quickAction": {
+      "cvSaved": {
+        "title": "Your CV is saved!",
+        "message": "Now it's time to find jobs that match your skills.",
+        "primary": "Search jobs with this CV",
+        "secondary": "Improve your CV further"
+      },
+      "jobSaved": {
+        "title": "Job \"{{title}}...\" saved!",
+        "message": "Do you want to write a cover letter while the job is fresh in your mind?",
+        "primary": "Write a cover letter",
+        "secondary": "See saved jobs"
+      },
+      "letterSaved": {
+        "title": "Cover letter saved!",
+        "message": "Well done! You can use this as a template when you find more jobs you like.",
+        "primary": "Search for more jobs",
+        "secondary": "See all letters"
+      },
+      "profileComplete": {
+        "title": "Your profile is complete!",
+        "message": "You have everything you need to start searching for jobs.",
+        "primary": "Start searching for jobs",
+        "secondary": "See the interest guide"
+      },
+      "applicationReminder": {
+        "title": "Reminder: search for jobs today",
+        "message": "Searching often improves your chances. Take 30 minutes now!",
+        "primary": "Find jobs now"
+      },
+      "markApplied": "Mark as applied",
+      "backToJobSearch": "Back to job search"
+    },
+    "knowledgeWidget": {
+      "context": {
+        "cvBuilding": "Tips for your CV",
+        "coverLetterWriting": "Writing a cover letter",
+        "jobSearching": "Job search",
+        "rejectionHandling": "Dealing with rejection",
+        "salaryNegotiation": "Salary talks",
+        "careerPlanning": "Planning your career",
+        "default": "Picked for you"
+      },
+      "readTime": "{{count}} min read",
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Medium",
+        "advanced": "Advanced"
+      },
+      "seeAllArticles": "See all articles",
+      "selectedForYou": "Articles picked for where you are now",
+      "smart": {
+        "interview": {
+          "title": "🎯 You have an interview coming up!",
+          "subtitle": "Get ready to make your best impression"
+        },
+        "rejected": {
+          "title": "💪 It's just a rejection, not a failure",
+          "subtitle": "Tips for coming back stronger"
+        },
+        "default": {
+          "title": "💡 Tips for your job search"
+        }
+      }
+    },
+    "nextStep": {
+      "fetchError": "We could not get your next step",
+      "noStepAvailable": "No next step right now",
+      "or": "Or:"
+    }
+  },
+  "accessibility": {
+    "backToHome": "Back to home",
+    "title": "Accessibility statement",
+    "lastEdited": "This page was last edited: 2026-08-17",
+    "assessmentDate": "This assessment is based on a review carried out on: 2026-08-17",
+    "ambition": {
+      "title": "Our ambition",
+      "pre": "Jobin.se should work for everyone, no matter your abilities. We follow the EU accessibility directive (European Accessibility Act, Directive 2019/882) and aim to meet",
+      "strong": "WCAG 2.1 level AA",
+      "post": ". Our users include people with physical and cognitive challenges, so accessibility is central to what we do."
+    },
+    "assessment": {
+      "title": "How this assessment was made",
+      "p1Pre": "This is an",
+      "p1Strong": "internal review",
+      "p1Post": ", not an independent expert review. The method is automated testing with axe-core (through Playwright, in real Chromium), together with manual keyboard testing: 48 page views, 22 pages tested by keyboard, 19 pages checked for contrast. No testing with a real screen reader (NVDA, VoiceOver, TalkBack) has been done yet. Automated tools can tell",
+      "p1Em": "whether",
+      "p1Post2": "something is announced to assistive technology, not whether it makes sense.",
+      "p2": "Automated tools like axe catch about one third of the WCAG requirements. The rest need manual review, which we do on an ongoing basis but have not covered fully yet (including the consultant view and text alternatives for charts)."
+    },
+    "works": {
+      "title": "What works",
+      "publicPages": {
+        "label": "Public pages:",
+        "desc": "The homepage, the tool pages, and all 133 guide pages had zero axe violations at the last check."
+      },
+      "focusIndicator": {
+        "label": "Focus indicator:",
+        "desc": "Visible on every tab stop we tested, with good contrast against the background."
+      },
+      "reducedMotion": {
+        "label": "Reduced motion:",
+        "desc": "Animations turn off automatically if you have \"prefers-reduced-motion\" turned on in your operating system."
+      },
+      "noTimeLimits": {
+        "label": "No time limits:",
+        "desc": "No countdown in the interview simulator. The CV builder saves automatically."
+      },
+      "calmMode": {
+        "label": "Calm Mode:",
+        "desc": "A softer color palette and less information on screen, for cognitive accessibility."
+      },
+      "focusMode": {
+        "label": "Focus mode:",
+        "desc": "One thing at a time, for when you need less on your screen."
+      },
+      "energyAdaptation": {
+        "label": "Energy adjustment:",
+        "desc": "You can tell us your energy for the day, and the portal adjusts how much it shows you."
+      },
+      "twoLanguages": {
+        "label": "Two languages:",
+        "desc": "Swedish and English. You can switch at any time."
+      },
+      "darkMode": {
+        "label": "Dark mode:",
+        "desc": "Follows your system setting, or your own choice."
+      }
+    },
+    "issues": {
+      "title": "Known issues",
+      "intro": "We are open about where we are not fully accessible yet. These are the issues we have measured and confirmed. We are working to fix them, starting with the most serious:",
+      "buttonLabels": {
+        "label": "Some buttons have no name for screen readers:",
+        "desc": "A few icon buttons are only read out as \"button\", without saying what they do — for example, deleting a diary entry."
+      },
+      "jobCards": {
+        "label": "Job cards with several actions in one:",
+        "desc": "The job cards in job search, and some cards in the career tools, have several clickable parts (save, apply, write letter) inside one larger clickable card. Screen readers can read this differently."
+      },
+      "colorContrast": {
+        "label": "Color contrast:",
+        "desc": "Some smaller text elements (including numbers in chips and counters on several pages) do not have enough contrast against their background, under WCAG 2.1 AA (4.5:1)."
+      },
+      "headingStructure": {
+        "label": "Heading structure:",
+        "desc": "On several pages, heading levels skip (for example from H1 straight to H3). This makes it harder to move by heading with a screen reader."
+      },
+      "complexVisualization": {
+        "label": "Complex charts:",
+        "desc": "Charts (the RIASEC radar, salary data) do not have a full text alternative."
+      },
+      "pdfExport": {
+        "label": "PDF export:",
+        "desc": "Generated CV PDFs do not have verified tagging for screen readers."
+      },
+      "voiceControl": {
+        "label": "Voice control:",
+        "desc": "Only supported in the interview simulator, not across the whole portal."
+      },
+      "plainLanguage": {
+        "label": "Plain language:",
+        "desc": "A plain-language guide is available to everyone, but the tools inside the portal do not have a plain-language version."
+      },
+      "screenReaderTesting": {
+        "label": "Real screen reader testing:",
+        "desc": "We have not yet carried out and confirmed a full test round with NVDA, VoiceOver, or TalkBack — only automated and keyboard-based tests."
+      },
+      "consultantView": {
+        "label": "The consultant view",
+        "desc": "and a few areas (including direct applications, networking, and an ongoing interview session) have not been reviewed yet in the latest round."
+      }
+    },
+    "wcagStatus": {
+      "title": "WCAG 2.1: our status by principle",
+      "perceivable": {
+        "label": "Perceivable:",
+        "desc": "Partly met. Images have alt text, but charts lack a full description, and some text has too little contrast (see Known issues)."
+      },
+      "operable": {
+        "label": "Operable:",
+        "desc": "Partly met. Keyboard navigation works well overall, but the visibility of the skip link and the mobile menu's focus order are known issues."
+      },
+      "understandable": {
+        "label": "Understandable:",
+        "desc": "Partly met. The language is clear and navigation is consistent, but sign-up form errors do not reach assistive technology, and some heading structures skip."
+      },
+      "robust": {
+        "label": "Robust:",
+        "desc": "Partly met. Semantic HTML and ARIA are used in most places, but some buttons lack an accessible name, and some cards have nested interactive elements."
+      }
+    },
+    "navigate": {
+      "title": "How to move around",
+      "tab": "move focus forward",
+      "shiftTab": "move focus back",
+      "enterSpace": "activate a button or link",
+      "esc": "close pop-ups and dialogs",
+      "arrowsLabel": "Arrow keys",
+      "arrowsDesc": "move through lists and menus"
+    },
+    "assistiveTech": {
+      "title": "Assistive technology we have tested with",
+      "pre": "We have",
+      "strong": "not",
+      "post": "yet carried out and confirmed a test round with a real screen reader such as NVDA, VoiceOver, or TalkBack. This is a known issue (see above) and our most important remaining gap. What we have tested is keyboard navigation directly in the browser, and the screen reader tree using developer tools, in Chrome. We plan to run real screen reader tests and update this page once that is done. Browser support: Chrome, Firefox, Safari, Edge."
+    },
+    "authority": {
+      "title": "Supervisory authority",
+      "description": "If you feel we do not meet the accessibility requirements, you can report it to us (see the contact details below). You can also report it to the Swedish Agency for Digital Government (DIGG), which oversees the public sector, or to the Equality Ombudsman (DO), since poor accessibility counts as discrimination under the Discrimination Act (2008:567)."
+    },
+    "contact": {
+      "title": "Contact us about accessibility",
+      "description": "Found something that does not work? Let us know — we treat accessibility bugs as a priority.",
+      "emailLabel": "Email:"
+    },
+    "footer": {
+      "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
     }
   }
 }

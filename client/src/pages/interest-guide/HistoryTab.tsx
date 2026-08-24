@@ -6,10 +6,9 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   calculateUserProfile,
-  riasecNames,
-  bigFiveNames,
   type UserProfile,
 } from '@/services/interestGuideData'
+import { useBigFiveNamn, useRiasecNamn } from '@/services/useIntresseguideInnehall'
 import { RiasecChart } from '@/components/interest-guide/RiasecChart'
 import { LoadingState, Button, InfoCard, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
@@ -39,6 +38,8 @@ export default function HistoryTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [expandedEntry, setExpandedEntry] = useState<string | null>(null)
+  const riasecNames = useRiasecNamn()
+  const bigFiveNames = useBigFiveNamn()
 
   /*
     Fliken som heter Historik var den enda som inte läste historiken.

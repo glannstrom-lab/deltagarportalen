@@ -103,12 +103,12 @@ export default function RoutinesTab() {
         <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Idag</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.today')}</p>
               <h3 className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedToday}/{routines.length}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">rutiner slutförda</p>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{t('wellness.routines.routinesCompleted')}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Andel</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.share')}</p>
               <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completionPercentage}%</p>
             </div>
           </div>
@@ -120,9 +120,9 @@ export default function RoutinesTab() {
               <Flame className="w-8 h-8 text-orange-600 dark:text-orange-400" />
             </motion.div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Bästa serie</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">{t('wellness.routines.bestStreak')}</p>
               <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400">12</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">dagar i rad</p>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{t('wellness.routines.streakDays')}</p>
             </div>
           </div>
         </Card>
@@ -131,7 +131,7 @@ export default function RoutinesTab() {
       {/* Progress bar */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Daglig framsteg</span>
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{t('wellness.routines.dailyProgress')}</span>
           <span className="text-sm text-gray-600 dark:text-gray-300">{completionPercentage}%</span>
         </div>
         <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
@@ -280,7 +280,7 @@ export default function RoutinesTab() {
               />
               <input
                 type="time"
-                aria-label={t('wellness.routines.timeLabel', 'Tid')}
+                aria-label={t('wellness.routines.timeLabel')}
                 value={newRoutine.time}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, time: e.target.value }))}
                 className="px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 text-gray-800 dark:text-gray-100"
@@ -297,14 +297,15 @@ export default function RoutinesTab() {
       {/* Suggested Routines - Templates */}
       <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{t('wellness.routines.suggestedIntro')}</p>
         <div className="space-y-2">
           {[
-            { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, desc: 'Starta dagen med energi' },
-            { titleKey: 'wellness.routines.suggestions.lunchWalk', time: '12:00', icon: Coffee, desc: 'Frisk luft och rörelse' },
-            { titleKey: 'wellness.routines.suggestions.weeklyReview', time: '18:00', icon: CalendarDays, desc: 'Reflektera över dagen' },
+            { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, descKey: 'wellness.routines.suggestions.morningStretchDesc' },
+            { titleKey: 'wellness.routines.suggestions.lunchWalk', time: '12:00', icon: Coffee, descKey: 'wellness.routines.suggestions.lunchWalkDesc' },
+            { titleKey: 'wellness.routines.suggestions.weeklyReview', time: '18:00', icon: CalendarDays, descKey: 'wellness.routines.suggestions.weeklyReviewDesc' },
           ].map((suggestion, index) => {
             const title = t(suggestion.titleKey)
+            const desc = t(suggestion.descKey)
             const Icon = suggestion.icon
             return (
               <motion.button
@@ -319,7 +320,7 @@ export default function RoutinesTab() {
                 <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-800 dark:text-gray-100">{title}</p>
-                  <p className="text-xs text-gray-600 dark:text-gray-300">{suggestion.time} • {suggestion.desc}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">{suggestion.time} • {desc}</p>
                 </div>
                 <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
               </motion.button>
@@ -330,15 +331,15 @@ export default function RoutinesTab() {
 
       {/* Morning & Evening Routine Templates */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Rutinmallar</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.templates.title')}</h3>
         <div className="grid grid-cols-2 gap-3">
           <motion.div
             whileHover={{ scale: 1.02 }}
             className="p-4 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-2 border-[var(--c-accent)] cursor-pointer hover:shadow-md transition-all"
           >
             <Sun className="w-6 h-6 text-orange-600 dark:text-orange-400 mb-2" />
-            <h4 className="font-semibold text-orange-900 dark:text-orange-200">Morgon-rutin</h4>
-            <p className="text-xs text-orange-800 dark:text-orange-300 mt-1">5 aktiviteter för bra start</p>
+            <h4 className="font-semibold text-orange-900 dark:text-orange-200">{t('wellness.routines.templates.morning.title')}</h4>
+            <p className="text-xs text-orange-800 dark:text-orange-300 mt-1">{t('wellness.routines.templates.morning.description')}</p>
             <p className="text-xs text-orange-700 dark:text-orange-400 mt-2">07:00 - 09:00</p>
           </motion.div>
 
@@ -347,8 +348,8 @@ export default function RoutinesTab() {
             className="p-4 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 cursor-pointer hover:shadow-md transition-all"
           >
             <Moon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mb-2" />
-            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]">Kväll-rutin</h4>
-            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">4 aktiviteter för bättre sömn</p>
+            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]">{t('wellness.routines.templates.evening.title')}</h4>
+            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{t('wellness.routines.templates.evening.description')}</p>
             <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-2">20:00 - 21:30</p>
           </motion.div>
         </div>

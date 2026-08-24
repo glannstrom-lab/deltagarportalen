@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Heart, Check, Calendar, Sparkles,
   ChevronLeft, ChevronRight, Sun, Star
@@ -11,6 +12,7 @@ import { useGratitude } from '@/hooks/useDiary'
 import { Card, Button } from '@/components/ui'
 
 function TodayGratitude() {
+  const { t } = useTranslation()
   const { todayEntry, createEntry, hasLoggedToday, isLoading } = useGratitude()
   const [item1, setItem1] = useState(todayEntry?.item1 || '')
   const [item2, setItem2] = useState(todayEntry?.item2 || '')
@@ -58,7 +60,7 @@ function TodayGratitude() {
             <Heart className="w-6 h-6 text-rose-600" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-rose-900">Dagens tacksamhet</h3>
+            <h3 className="text-lg font-semibold text-rose-900">{t('diary.gratitude.today.title')}</h3>
             <p className="text-sm text-rose-600">
               {new Date().toLocaleDateString('sv-SE', {
                 weekday: 'long',
@@ -71,14 +73,14 @@ function TodayGratitude() {
         {hasLoggedToday && (
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
             <Check className="w-4 h-4" />
-            Loggat
+            {t('diary.gratitude.today.logged')}
           </span>
         )}
       </div>
 
       <div className="space-y-4">
         <p className="text-rose-800 font-medium">
-          Vad är du tacksam för idag?
+          {t('diary.gratitude.today.prompt')}
         </p>
 
         <div className="space-y-3">
@@ -88,10 +90,10 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
-              aria-label="Tacksam för, nr 1"
+              aria-label={t('diary.gratitude.today.itemLabel', { number: 1 })}
               value={item1}
               onChange={(e) => setItem1(e.target.value)}
-              placeholder="Jag är tacksam för..."
+              placeholder={t('diary.gratitude.today.placeholder')}
               className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
             />
           </div>
@@ -102,10 +104,10 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
-              aria-label="Tacksam för, nr 2"
+              aria-label={t('diary.gratitude.today.itemLabel', { number: 2 })}
               value={item2}
               onChange={(e) => setItem2(e.target.value)}
-              placeholder="Jag är tacksam för... (valfritt)"
+              placeholder={t('diary.gratitude.today.placeholderOptional')}
               className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
             />
           </div>
@@ -116,10 +118,10 @@ function TodayGratitude() {
             </span>
             <input
               type="text"
-              aria-label="Tacksam för, nr 3"
+              aria-label={t('diary.gratitude.today.itemLabel', { number: 3 })}
               value={item3}
               onChange={(e) => setItem3(e.target.value)}
-              placeholder="Jag är tacksam för... (valfritt)"
+              placeholder={t('diary.gratitude.today.placeholderOptional')}
               className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
             />
           </div>
@@ -127,13 +129,13 @@ function TodayGratitude() {
 
         <div>
           <label htmlFor="gratitudetab-f1" className="block text-sm font-medium text-rose-700 mb-2">
-            Reflektion (valfritt)
+            {t('diary.gratitude.today.reflectionLabel')}
           </label>
           <textarea
             id="gratitudetab-f1"
             value={reflection}
             onChange={(e) => setReflection(e.target.value)}
-            placeholder="Varför är dessa saker viktiga för dig?"
+            placeholder={t('diary.gratitude.today.reflectionPlaceholder')}
             rows={3}
             className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none bg-white"
           />
@@ -144,7 +146,7 @@ function TodayGratitude() {
           disabled={!item1.trim() || isSaving}
           className="w-full bg-rose-600 hover:bg-rose-700"
         >
-          {isSaving ? 'Sparar...' : saved ? '✓ Sparat!' : 'Spara tacksamhet'}
+          {isSaving ? t('common.saving') : saved ? t('diary.gratitude.today.saved') : t('diary.gratitude.today.save')}
         </Button>
       </div>
     </Card>
@@ -152,6 +154,7 @@ function TodayGratitude() {
 }
 
 function GratitudeHistory() {
+  const { t } = useTranslation()
   const { entries, isLoading } = useGratitude()
   const [currentPage, setCurrentPage] = useState(0)
   const entriesPerPage = 7
@@ -185,9 +188,9 @@ function GratitudeHistory() {
           loading="lazy"
           className="w-24 h-24 mx-auto mb-4 select-none"
         />
-        <h3 className="font-semibold text-stone-700 mb-2">Ingen historik än</h3>
+        <h3 className="font-semibold text-stone-700 mb-2">{t('diary.gratitude.history.emptyTitle')}</h3>
         <p className="text-sm text-stone-700">
-          Börja logga din dagliga tacksamhet för att se din historik här
+          {t('diary.gratitude.history.emptyDescription')}
         </p>
       </Card>
     )
@@ -198,7 +201,7 @@ function GratitudeHistory() {
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-stone-900 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-stone-600" />
-          Historik
+          {t('diary.gratitude.history.title')}
         </h3>
         {totalPages > 1 && (
           <div className="flex items-center gap-2">
@@ -270,6 +273,7 @@ function GratitudeHistory() {
 }
 
 function GratitudeStats() {
+  const { t } = useTranslation()
   const { entries } = useGratitude()
 
   // Calculate streak
@@ -300,25 +304,26 @@ function GratitudeStats() {
       <Card className="p-4 text-center bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800">
         <Sun className="w-6 h-6 text-amber-600 mx-auto mb-2" />
         <p className="text-2xl font-bold text-amber-700">{streak}</p>
-        <p className="text-sm text-amber-600">dagar i rad</p>
+        <p className="text-sm text-amber-600">{t('diary.gratitude.stats.streakLabel')}</p>
       </Card>
 
       <Card className="p-4 text-center">
         <Calendar className="w-6 h-6 text-stone-600 mx-auto mb-2" />
         <p className="text-2xl font-bold text-stone-900">{entries.length}</p>
-        <p className="text-sm text-stone-700">inlägg totalt</p>
+        <p className="text-sm text-stone-700">{t('diary.gratitude.stats.totalEntries')}</p>
       </Card>
 
       <Card className="p-4 text-center">
         <Star className="w-6 h-6 text-stone-600 mx-auto mb-2" />
         <p className="text-2xl font-bold text-stone-900">{totalItems}</p>
-        <p className="text-sm text-stone-700">saker att vara tacksam för</p>
+        <p className="text-sm text-stone-700">{t('diary.gratitude.stats.totalItems')}</p>
       </Card>
     </div>
   )
 }
 
 export function GratitudeTab() {
+  const { t } = useTranslation()
   const { isLoading } = useGratitude()
 
   if (isLoading) {
@@ -338,11 +343,9 @@ export function GratitudeTab() {
             <Sparkles className="w-6 h-6 text-amber-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-amber-900 mb-1">Varför tacksamhet?</h3>
+            <h3 className="font-semibold text-amber-900 mb-1">{t('diary.gratitude.intro.title')}</h3>
             <p className="text-sm text-amber-700 leading-relaxed">
-              Forskning visar att daglig tacksamhet förbättrar välbefinnande, minskar stress och hjälper
-              oss att fokusera på det positiva. Ta en stund varje dag för att reflektera över vad du
-              uppskattar - det kan vara stora eller små saker.
+              {t('diary.gratitude.intro.description')}
             </p>
           </div>
         </div>

@@ -343,6 +343,7 @@ export function ResumeModal({
   questionIndex: number
   savedDate: Date
 }) {
+  const { t } = useTranslation()
   const hoursSince = Math.round((Date.now() - savedDate.getTime()) / (1000 * 60 * 60))
 
   // Focus-trap. ResumeModal renders alltid när komponenten är mountad.
@@ -376,7 +377,7 @@ export function ResumeModal({
             : `Du var på fråga ${questionIndex + 1} för ${hoursSince} timme${hoursSince > 1 ? 'r' : ''} sedan.`
           }
           <br />
-          <span className="text-sm">Det är okej att ta det i din takt.</span>
+          <span className="text-sm">{t('interestGuide.question.resumeModal.takeYourTime')}</span>
         </p>
 
         <div className="space-y-3">

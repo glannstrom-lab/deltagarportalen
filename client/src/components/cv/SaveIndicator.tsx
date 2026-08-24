@@ -3,10 +3,12 @@
  * Shows auto-save status in the UI
  */
 
+import { useTranslation } from 'react-i18next'
 import { Check, Loader2, CloudOff } from '@/components/ui/icons'
 import { useCVStore } from '@/stores/cvStore'
 
 export function SaveIndicator() {
+  const { t } = useTranslation()
   const { saveStatus, lastSavedAt, hasUnsavedChanges, pendingCount } = useCVStore()
   
   const formatTime = (date: Date | null) => {
@@ -38,7 +40,7 @@ export function SaveIndicator() {
   
   if (saveStatus === 'error' || pendingCount > 0) {
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-red-600" title="Försöker spara igen...">
+      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-red-600" title={t('cv.saveIndicator.retryTitle')}>
         <CloudOff className="w-4 h-4" aria-hidden="true" />
         <span>Offline</span>
       </div>

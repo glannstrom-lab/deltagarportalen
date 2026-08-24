@@ -3,6 +3,7 @@
  * Classic layout with teal accent
  */
 
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { CoverLetterTemplateProps } from './index'
 
@@ -15,6 +16,7 @@ export function ProfessionalTemplate({
   template,
   className
 }: CoverLetterTemplateProps) {
+  const { t } = useTranslation()
   // Parse content into paragraphs, removing markdown bold markers
   const paragraphs = content
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -91,7 +93,7 @@ export function ProfessionalTemplate({
 
       {/* Signature */}
       <div className="mt-8">
-        <p className="mb-4">Med vänliga hälsningar,</p>
+        <p className="mb-4">{t('coverLetter.closingGreeting')}</p>
         <p className="font-semibold" style={{ color: template.colors.header }}>
           {sender.name}
         </p>

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T23:14:42.738Z",
+  "generatedAt": "2026-08-24T10:45:58.493Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -160,6 +160,7 @@
       "category_key",
       "checklist",
       "content",
+      "content_en",
       "created_at",
       "difficulty",
       "energy_level",
@@ -174,8 +175,10 @@
       "sort_order",
       "subcategory",
       "summary",
+      "summary_en",
       "tags",
       "title",
+      "title_en",
       "updated_at"
     ],
     "audit_logs": [

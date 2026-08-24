@@ -118,6 +118,13 @@ export function MatchesTab() {
     ).filter(Boolean) || []
 
     // === INTEREST GUIDE DATA ===
+    // MEDVETET inte kopplad till den översatta yrkeslistan: `occ.name` blir
+    // sökterm mot Arbetsförmedlingens platsbank (`getSearchTerms` i
+    // `searchInterestJobs` nedan), som indexerar svenska jobbannonser. Ett
+    // engelskt yrkesnamn skulle inte hitta några träffar där — samma
+    // undantag som `occupationName` i CareerRecommendationsPanel.tsx. Dessutom
+    // ligger anropet i en `useCallback`, inte på komponentens toppnivå, så en
+    // hook hade brutit mot hook-reglerna även om översättning vore önskad här.
     let occupations: Array<{ name: string; matchPercentage: number }> = []
     if (interestProgress?.is_completed && interestProgress.answers) {
       try {

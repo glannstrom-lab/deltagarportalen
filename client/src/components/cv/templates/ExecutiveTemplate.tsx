@@ -7,6 +7,7 @@
  * tog plats parallellt — ful effekt utan något att vinna designmässigt.
  */
 
+import { useTranslation } from 'react-i18next'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName } from './helpers'
 
@@ -17,6 +18,7 @@ const ink = '#1A1A1A'
 const muted = '#666666'
 
 export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
+  const { t } = useTranslation()
   const sectionHeader: React.CSSProperties = {
     fontSize: '12px',
     fontWeight: 400,
@@ -225,7 +227,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
 
         {data.languages?.length > 0 && (
           <section className="cv-keep" style={{ marginBottom: '8px' }}>
-            <h2 style={sectionHeader}>Språk</h2>
+            <h2 style={sectionHeader}>{t('cv.languages')}</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
@@ -270,7 +272,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
             )}
             {data.links?.length > 0 && (
               <div>
-                <h2 style={sectionHeader}>Länkar</h2>
+                <h2 style={sectionHeader}>{t('cv.links')}</h2>
                 <div>
                   {data.links.map((link) => (
                     <div key={link.id} className="cv-entry" style={{ marginBottom: '3px', fontSize: '11.5px' }}>

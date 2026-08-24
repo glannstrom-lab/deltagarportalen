@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   MessageSquare,
   Building2,
@@ -45,6 +46,7 @@ export function InterviewPrepPanel({
   jobDescription,
   className,
 }: InterviewPrepPanelProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<InterviewPrepResult | null>(null)
@@ -68,7 +70,7 @@ export function InterviewPrepPanel({
       const response = await getInterviewPrep(params)
       setResult(response.result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod')
+      setError(err instanceof Error ? err.message : t('common.genericError'))
     } finally {
       setIsLoading(false)
     }
@@ -76,7 +78,7 @@ export function InterviewPrepPanel({
 
   if (!result && !isLoading && !error) {
     return (
-      <AiConsentGate compact featureName="Intervjuförberedelse">
+      <AiConsentGate compact featureName={t('ai.interviewPrep.title')}>
         <div className={cn('p-4 rounded-xl bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50">
@@ -84,17 +86,17 @@ export function InterviewPrepPanel({
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
-                Förbered dig för intervjun
+                {t('ai.interviewPrep.heading')}
               </h4>
               <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
-                Få AI-genererade intervjutips, företagsinformation och förväntade frågor.
+                {t('ai.interviewPrep.desc')}
               </p>
               <Button
                 onClick={handleAnalyze}
                 size="sm"
                 leftIcon={<MessageSquare className="w-4 h-4" />}
               >
-                Förbered intervju
+                {t('ai.interviewPrep.button')}
               </Button>
             </div>
           </div>
@@ -104,14 +106,14 @@ export function InterviewPrepPanel({
   }
 
   return (
-    <AiConsentGate compact featureName="Intervjuförberedelse">
+    <AiConsentGate compact featureName={t('ai.interviewPrep.title')}>
       <AIResultCard
         aiGenerated={!!result}
-        title="Intervjuförberedelse"
+        title={t('ai.interviewPrep.title')}
         subtitle={`${companyName}${jobTitle ? ` - ${jobTitle}` : ''}`}
         icon={<MessageSquare className="w-5 h-5 text-white" />}
         isLoading={isLoading}
-        loadingText="Analyserar företaget..."
+        loadingText={t('ai.common.analyzingCompany')}
         error={error}
         onRetry={handleAnalyze}
         className={className}
@@ -120,7 +122,7 @@ export function InterviewPrepPanel({
           <div className="space-y-4">
             {/* Company Info */}
             <CollapsibleSection
-              title="Om företaget"
+              title={t('ai.interviewPrep.aboutCompany')}
               icon={<Building2 className="w-4 h-4" />}
               defaultOpen
             >
@@ -132,7 +134,7 @@ export function InterviewPrepPanel({
                 <div className="mb-3">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
                     <Newspaper className="w-3 h-3" />
-                    Senaste nyheterna
+                    {t('ai.common.recentNews')}
                   </p>
                   <AIList items={result.companyInfo.recentNews} />
                 </div>
@@ -142,7 +144,7 @@ export function InterviewPrepPanel({
                 <div className="mb-3">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
                     <Users className="w-3 h-3" />
-                    Företagskultur
+                    {t('ai.common.companyCulture')}
                   </p>
                   <p className="text-sm text-stone-700 dark:text-stone-300">
                     {result.companyInfo.culture}
@@ -154,7 +156,7 @@ export function InterviewPrepPanel({
                 <div>
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
-                    Utmaningar att diskutera
+                    {t('ai.interviewPrep.challenges')}
                   </p>
                   <AIList items={result.companyInfo.challenges} />
                 </div>
@@ -163,7 +165,7 @@ export function InterviewPrepPanel({
 
             {/* Interview Questions */}
             <CollapsibleSection
-              title="Förväntade intervjufrågor"
+              title={t('ai.interviewPrep.expectedQuestions')}
               icon={<HelpCircle className="w-4 h-4" />}
               badge={
                 result.interviewQuestions.common.length +
@@ -175,7 +177,7 @@ export function InterviewPrepPanel({
               {result.interviewQuestions.common.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Vanliga frågor
+                    {t('ai.interviewPrep.commonQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.common} />
                 </div>
@@ -184,7 +186,7 @@ export function InterviewPrepPanel({
               {result.interviewQuestions.roleSpecific.length > 0 && (
                 <div className="mb-4">
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Rollspecifika frågor
+                    {t('ai.interviewPrep.roleSpecificQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.roleSpecific} />
                 </div>
@@ -193,7 +195,7 @@ export function InterviewPrepPanel({
               {result.interviewQuestions.behavioral.length > 0 && (
                 <div>
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Beteendefrågor
+                    {t('ai.interviewPrep.behavioralQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.behavioral} />
                 </div>
@@ -202,7 +204,7 @@ export function InterviewPrepPanel({
 
             {/* Tips */}
             <CollapsibleSection
-              title="Tips inför intervjun"
+              title={t('ai.interviewPrep.tipsTitle')}
               icon={<Lightbulb className="w-4 h-4" />}
               badge={result.tipsForCandidate.length}
             >
@@ -211,7 +213,7 @@ export function InterviewPrepPanel({
 
             {/* Questions to Ask */}
             <CollapsibleSection
-              title="Frågor att ställa"
+              title={t('ai.interviewPrep.questionsToAsk')}
               icon={<MessageSquare className="w-4 h-4" />}
               badge={result.questionsToAsk.length}
             >
@@ -232,18 +234,18 @@ export function InterviewPrepPanel({
 
             {/* Salary Expectations */}
             <CollapsibleSection
-              title="Löneförväntningar"
+              title={t('ai.interviewPrep.salaryExpectations')}
               icon={<DollarSign className="w-4 h-4" />}
             >
               <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 mb-3">
                 <p className="text-sm font-medium text-green-800 dark:text-green-200">
-                  Förväntat löneintervall: {result.salaryExpectations.range}
+                  {t('ai.interviewPrep.expectedSalaryRange', { range: result.salaryExpectations.range })}
                 </p>
               </div>
               {result.salaryExpectations.negotiationTips.length > 0 && (
                 <>
                   <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
-                    Förhandlingstips
+                    {t('ai.interviewPrep.negotiationTips')}
                   </p>
                   <AIList items={result.salaryExpectations.negotiationTips} />
                 </>

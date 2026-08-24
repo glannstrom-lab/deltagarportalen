@@ -9,6 +9,19 @@
 import type { CVData, JobData } from '@/types/pdf.types'
 import { parseArticleMarkdown, parseInline } from '@/components/knowledge-base/articleMarkdown'
 import type jsPDF from 'jspdf'
+import i18n from '@/i18n/config'
+
+/**
+ * Rubrik i ett genererat dokument, på användarens språk.
+ *
+ * PDF-tjänsten är ingen React-komponent och kan inte använda `useTranslation`,
+ * men i18next-instansen är global. Rubrikerna låg tidigare som svenska
+ * literaler — en engelskspråkig användare fick alltså ett CV med
+ * "ARBETSLIVSERFARENHET" och "SPRÅK" som avsnittsrubriker.
+ */
+function pdfRubrik(nyckel: string): string {
+  return i18n.t(`cv.pdf.sections.${nyckel}`).toUpperCase()
+}
 
 export type { CVData, JobData } from '@/types/pdf.types'
 
@@ -351,7 +364,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     doc.setTextColor(...(isNordic ? template.colors.sidebarText as [number, number, number] : [255, 255, 255]))
     doc.setFontSize(9)
     doc.setFont(template.fonts.heading, 'bold')
-    doc.text('KONTAKT', margin, yPos)
+    doc.text(pdfRubrik('contact'), margin, yPos)
     
     yPos += 8
     doc.setFont(template.fonts.body, 'normal')
@@ -372,7 +385,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       yPos += 8
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(9)
-      doc.text('EXPERTIS', margin, yPos)
+      doc.text(pdfRubrik('expertise'), margin, yPos)
       yPos += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -390,7 +403,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       yPos += 8
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(9)
-      doc.text('SPRÅK', margin, yPos)
+      doc.text(pdfRubrik('languages'), margin, yPos)
       yPos += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -409,7 +422,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       yPos += 8
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(9)
-      doc.text('CERTIFIERINGAR', margin, yPos)
+      doc.text(pdfRubrik('certifications'), margin, yPos)
       yPos += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -451,7 +464,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setTextColor(...template.colors.text as [number, number, number])
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
-      doc.text('PROFIL', mainX, mainY)
+      doc.text(pdfRubrik('profile'), mainX, mainY)
       mainY += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -466,7 +479,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('ARBETSLIVSERFARENHET', mainX, mainY)
+      doc.text(pdfRubrik('workExperience'), mainX, mainY)
       mainY += 8
 
       data.workExperience.forEach(job => {
@@ -508,7 +521,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('UTBILDNING', mainX, mainY)
+      doc.text(pdfRubrik('education'), mainX, mainY)
       mainY += 8
 
       data.education.forEach(edu => {
@@ -628,7 +641,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setTextColor(...template.colors.text as [number, number, number])
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
-      doc.text('OM MIG', margin, mainY)
+      doc.text(pdfRubrik('aboutMe'), margin, mainY)
       mainY += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -642,7 +655,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (data.skills?.length > 0) {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
-      doc.text('KOMPETENSER', margin, mainY)
+      doc.text(pdfRubrik('skills'), margin, mainY)
       mainY += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -664,7 +677,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('ERFARENHET', margin, expY)
+      doc.text(pdfRubrik('experience'), margin, expY)
       
       let expRowY = expY + 6
       doc.setFont(template.fonts.body, 'normal')
@@ -703,7 +716,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(12)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('UTBILDNING', rightX, eduY)
+      doc.text(pdfRubrik('education'), rightX, eduY)
       
       let eduRowY = eduY + 6
       doc.setFont(template.fonts.body, 'normal')
@@ -806,7 +819,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       leftY += 10
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(10)
-      doc.text('SPRÅK', leftWidth / 2, leftY, { align: 'center' })
+      doc.text(pdfRubrik('languages'), leftWidth / 2, leftY, { align: 'center' })
       leftY += 8
 
       data.languages.forEach(lang => {
@@ -829,7 +842,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setTextColor(...template.colors.text as [number, number, number])
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(14)
-      doc.text('PROFIL', rightX, rightY)
+      doc.text(pdfRubrik('profile'), rightX, rightY)
       rightY += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -843,7 +856,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (data.workExperience?.length > 0) {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(14)
-      doc.text('ERFARENHET', rightX, rightY)
+      doc.text(pdfRubrik('experience'), rightX, rightY)
       rightY += 8
 
       data.workExperience.forEach(job => {
@@ -883,7 +896,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(14)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('KOMPETENSER', rightX, rightY)
+      doc.text(pdfRubrik('skills'), rightX, rightY)
       rightY += 6
       
       doc.setFont(template.fonts.body, 'normal')
@@ -901,7 +914,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(14)
       doc.setTextColor(...template.colors.text as [number, number, number])
-      doc.text('UTBILDNING', rightX, rightY)
+      doc.text(pdfRubrik('education'), rightX, rightY)
       rightY += 6
 
       data.education.forEach(edu => {
@@ -981,7 +994,7 @@ export async function generateApplicationHistoryPDF(applications: ApplicationHis
     y += 10
 
     doc.setFontSize(10)
-    doc.text(sanitizeText(`Företag: ${app.company || ''}`), 20, y)
+    doc.text(sanitizeText(`${i18n.t('cv.pdf.sections.company')}: ${app.company || ''}`), 20, y)
     y += 7
     doc.text(sanitizeText(`Status: ${app.status || ''}`), 20, y)
     y += 7
@@ -1064,7 +1077,7 @@ export async function generateArticlePDF(article: ArticleForPDF): Promise<Blob> 
   doc.setTextColor(100, 116, 139)
   doc.setFont('helvetica', 'normal')
   const meta = []
-  if (article.readingTime) meta.push(`${article.readingTime} min läsning`)
+  if (article.readingTime) meta.push(i18n.t('cv.pdf.sections.readingTime', { min: article.readingTime }))
   if (article.difficulty) meta.push(article.difficulty)
   if (meta.length > 0) {
     doc.text(meta.join(' • '), margin, y)

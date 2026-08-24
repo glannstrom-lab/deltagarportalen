@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Search, Brain, Activity, Clock, CheckCircle2, ArrowRight, UserCircle, Info } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { occupations, allQuestions } from '@/services/interestGuideData'
@@ -48,6 +49,7 @@ const sections = [
 ]
 
 export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScreenProps) {
+  const { t } = useTranslation()
   return (
     <div className="max-w-2xl mx-auto">
       {/* Rubriken låg här som en egen hjälte — lila ikonruta, "Intresseguide"
@@ -95,7 +97,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
 
       {/* Sections preview */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
-        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">Så här är frågorna upplagda</h2>
+        <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">{t('interestGuide.intro.questionsLayout')}</h2>
         
         <div className="space-y-3">
           {sections.map((section) => {

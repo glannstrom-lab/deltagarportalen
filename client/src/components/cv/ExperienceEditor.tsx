@@ -167,8 +167,8 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
       {experiences.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-stone-200 rounded-xl bg-stone-50">
           <Briefcase className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-          <p className="text-stone-700 mb-1">Inga jobb tillagda ännu</p>
-          <p className="text-sm text-stone-600 mb-4">Lägg till din första arbetslivserfarenhet</p>
+          <p className="text-stone-700 mb-1">{t('cv.experienceEditor.emptyTitle')}</p>
+          <p className="text-sm text-stone-600 mb-4">{t('cv.experienceEditor.emptySubtitle')}</p>
           <button
             onClick={addExperience}
             className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors font-medium"
@@ -290,7 +290,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                   }))
                                 }
                               }}
-                              placeholder="t.ex. Butikssäljare"
+                              placeholder={t('cv.experienceEditor.titlePlaceholder')}
                               aria-required="true"
                               aria-invalid={!!errors[exp.id]?.title}
                               className={`
@@ -426,7 +426,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
                             className="w-4 h-4 text-[var(--c-solid)] border-stone-300 rounded focus:ring-[var(--c-solid)]"
                           />
-                          <span className="text-sm text-stone-700">Jag jobbar här fortfarande</span>
+                          <span className="text-sm text-stone-700">{t('cv.experienceEditor.currentLabel')}</span>
                         </label>
 
                         {/* Description */}

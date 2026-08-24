@@ -3532,9 +3532,16 @@ export const icfAdaptations: Record<string, ICFAdaptation> = {
 
 export function calculateJobMatches(
   profile: UserProfile,
-  filterUniversity?: boolean | null
+  filterUniversity?: boolean | null,
+  /**
+   * Yrkeslistan att matcha mot. Anges för att kunna skicka in den ENGELSKA
+   * listan — matchningen bär med sig hela yrkesobjektet ut i gränssnittet
+   * (`m.occupation.name`), så utan den här parametern visar resultatsidan
+   * svenska yrkesnamn även på engelska. Utelämnad = svenska originalet.
+   */
+  yrken: Occupation[] = occupations
 ): JobMatch[] {
-  const matches: JobMatch[] = occupations.map(occupation => {
+  const matches: JobMatch[] = yrken.map(occupation => {
     // Filtrera på universitetskrav om angivet
     if (filterUniversity !== null && filterUniversity !== undefined) {
       if (occupation.requiresUniversity !== filterUniversity) {

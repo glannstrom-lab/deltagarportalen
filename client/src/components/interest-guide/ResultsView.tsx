@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   calculateJobMatches,
   type UserProfile,
-  riasecNames,
   type RiasecScores,
   type BigFiveScores
 } from '@/services/interestGuideData'
+import { useRiasecNamn, useYrken } from '@/services/useIntresseguideInnehall'
 import { RiasecChart } from './RiasecChart'
 import { BigFiveChart } from './BigFiveChart'
 import { ICFSection } from './ICFSection'
@@ -144,13 +145,32 @@ function interpretBigFive(scores: BigFiveScores): string {
 }
 
 export function ResultsView({ profile, onRestart }: ResultsViewProps) {
+  const { t } = useTranslation()
   const [filterUni, setFilterUni] = useState<boolean | null>(null)
   const [selectedJobs, setSelectedJobs] = useState<Set<string>>(new Set())
   const [showComparison, setShowComparison] = useState(false)
   const [activeTab, setActiveTab] = useState<'profile' | 'jobs'>('profile')
   const [expandedInfo, setExpandedInfo] = useState<Record<string, boolean>>({})
+  const riasecNames = useRiasecNamn()
+  const yrken = useYrken()
 
-  const matches = calculateJobMatches(profile, filterUni)
+  /*
+    `useJobbmatchningar` (services/useIntresseguideInnehall.ts) skulle ha gjort
+    det här, men den skickar `yrken` som ett TREDJE argument till
+    `calculateJobMatches`, som bara har två parametrar — extra argument
+    ignoreras tyst i JS, och `npx tsc --noEmit` flaggar redan TS2554 på den
+    raden. Hooken översätter alltså inte matchningarna i praktiken. Tills
+    `calculateJobMatches` får sin tredje parameter görs översättningen här:
+    beräkna som vanligt, byt sedan ut varje `occupation` mot den översatta
+    posten med samma id.
+  */
+  const matches = useMemo(() => {
+    const yrkeOversattPerId = new Map(yrken.map(o => [o.id, o]))
+    return calculateJobMatches(profile, filterUni).map(m => ({
+      ...m,
+      occupation: yrkeOversattPerId.get(m.occupation.id) ?? m.occupation,
+    }))
+  }, [profile, filterUni, yrken])
   const topMatches = matches.slice(0, 10)
 
   const toggleInfo = (key: string) => {
@@ -335,7 +355,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                 >
                   <div className="flex items-center gap-3">
                     <Lightbulb className="w-5 h-5 text-amber-500" />
-                    <span className="font-semibold text-gray-900">Så här läser du din RIASEC-profil</span>
+                    <span className="font-semibold text-gray-900">{t('interestGuide.results.howToReadRiasec')}</span>
                   </div>
                   {expandedInfo['riasec'] ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </button>
@@ -412,7 +432,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                 >
                   <div className="flex items-center gap-3">
                     <Lightbulb className="w-5 h-5 text-amber-500" />
-                    <span className="font-semibold text-gray-900">Förstå dina personlighetsdrag</span>
+                    <span className="font-semibold text-gray-900">{t('interestGuide.results.understandTraits')}</span>
                   </div>
                   {expandedInfo['bigfive'] ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                 </button>
@@ -447,7 +467,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-blue-900 mb-1">Vad säger resultatet om dig?</h4>
+                    <h4 className="font-semibold text-blue-900 mb-1">{t('interestGuide.results.whatResultSays')}</h4>
                     <p className="text-blue-800 text-sm leading-relaxed">
                       {interpretBigFive(profile.bigFive)} Ingen profil är "bättre" än en annan - 
                       olika yrken kräver olika egenskaper. Det viktiga är att hitta en matchning som passar just dig.
@@ -502,12 +522,12 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                        <h5 className="font-semibold text-green-800 mb-2">🟢 Gröna områden (4-5)</h5>
-                        <p className="text-sm text-green-700">Dina styrkor! Dessa områden ger dig fördelar på arbetsmarknaden.</p>
+                        <h5 className="font-semibold text-green-800 mb-2">{t('interestGuide.results.greenAreasHeading')}</h5>
+                        <p className="text-sm text-green-700">{t('interestGuide.results.greenAreasDesc')}</p>
                       </div>
                       <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
-                        <h5 className="font-semibold text-amber-800 mb-2">🟡 Gul/Röda områden (1-3)</h5>
-                        <p className="text-sm text-amber-700">Där anpassningar kan hjälpa. Enligt Arbetsmiljölagen har du rätt till rimliga arbetsanpassningar.</p>
+                        <h5 className="font-semibold text-amber-800 mb-2">{t('interestGuide.results.yellowRedAreasHeading')}</h5>
+                        <p className="text-sm text-amber-700">{t('interestGuide.results.yellowRedAreasDesc')}</p>
                       </div>
                     </div>
                     <p className="text-sm">
@@ -523,7 +543,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-green-900 mb-1">Kom ihåg</h4>
+                    <h4 className="font-semibold text-green-900 mb-1">{t('interestGuide.results.rememberHeading')}</h4>
                     <p className="text-green-800 text-sm leading-relaxed">
                       Dina förutsättningar är inte statiska - de kan förändras över tid och variera beroende på situation. 
                       Det viktiga är att hitta ett yrke där du kan använda dina styrkor och få stöd där det behövs. 
@@ -638,7 +658,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
             onClick={e => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold">Jämför yrken</h2>
+              <h2 className="text-2xl font-bold">{t('interestGuide.results.compareOccupations')}</h2>
               <button onClick={() => setShowComparison(false)} className="p-2 hover:bg-gray-100 rounded-lg">
                 <X className="w-6 h-6" />
               </button>
@@ -672,7 +692,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                     ))}
                   </tr>
                   <tr>
-                    <td className="p-3 border-b font-medium">Lön</td>
+                    <td className="p-3 border-b font-medium">{t('career.explore.salary')}</td>
                     {selectedMatches.map(m => (
                       <td key={m.occupation.id} className="p-3 border-b text-center text-sm">
                         {m.occupation.salary}

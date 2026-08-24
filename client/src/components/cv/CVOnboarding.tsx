@@ -5,6 +5,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   X, ChevronRight, ChevronLeft, Sparkles, CheckCircle,
   FileText, User, Briefcase, Award, Eye
@@ -99,6 +100,7 @@ interface CVOnboardingProps {
 }
 
 export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
+  const { t } = useTranslation()
   const [currentStep, setCurrentStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false) // start dold, claim:a session först
 
@@ -197,7 +199,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
             </div>
             <button
               onClick={handleSkip}
-              aria-label="Stäng guiden"
+              aria-label={t('cv.onboarding.closeGuide')}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
               <X className="w-5 h-5" aria-hidden="true" />

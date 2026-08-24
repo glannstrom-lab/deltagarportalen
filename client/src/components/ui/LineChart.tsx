@@ -1,9 +1,12 @@
+import { useTranslation } from 'react-i18next'
+
 interface LineChartProps {
   data: number[];
   label?: string;
 }
 
 export function LineChart({ data, label = "Aktivitet över tid" }: LineChartProps) {
+  const { t } = useTranslation()
   const width = 300
   const height = 100
   const padding = 10
@@ -28,8 +31,8 @@ export function LineChart({ data, label = "Aktivitet över tid" }: LineChartProp
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" 
               />
             </svg>
-            <p className="text-sm text-stone-700">Ingen data än</p>
-            <p className="text-xs text-stone-600 mt-1">Data visas när tillräckligt med information finns</p>
+            <p className="text-sm text-stone-700">{t('common.noDataYet')}</p>
+            <p className="text-xs text-stone-600 mt-1">{t('common.noDataYetDesc')}</p>
           </div>
         </div>
       </div>

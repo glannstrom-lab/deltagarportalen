@@ -3,6 +3,7 @@
  * Clean design with blue accent header
  */
 
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { CoverLetterTemplateProps } from './index'
 
@@ -15,6 +16,7 @@ export function ModernTemplate({
   template,
   className
 }: CoverLetterTemplateProps) {
+  const { t } = useTranslation()
   // Parse content into paragraphs, removing markdown bold markers
   const paragraphs = content
     .replace(/\*\*(.*?)\*\*/g, '$1')
@@ -111,7 +113,7 @@ export function ModernTemplate({
 
       {/* Signature */}
       <div className="mt-8 border-t pt-6" style={{ borderColor: template.colors.headerBg }}>
-        <p className="mb-4">Med vänliga hälsningar,</p>
+        <p className="mb-4">{t('coverLetter.closingGreeting')}</p>
         <p className="font-bold text-lg" style={{ color: template.colors.header }}>
           {sender.name}
         </p>

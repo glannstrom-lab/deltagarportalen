@@ -5,6 +5,7 @@
  * se kommentaren vid returen längre ner för hit-testet som avgjorde det.
  */
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { articleProgressApi } from '@/services/cloudStorage'
 import { storageLogger } from '@/lib/logger'
 
@@ -18,6 +19,7 @@ interface DatabaseError {
 }
 
 export default function ReadingProgress({ articleId }: ReadingProgressProps) {
+  const { t } = useTranslation()
   const [progress, setProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -102,7 +104,7 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
         aria-valuenow={progress}
         aria-valuemin={0}
         aria-valuemax={100}
-        aria-label="Hur långt du läst i artikeln"
+        aria-label={t('knowledgeBase.readingProgress.ariaLabel')}
         className="fixed top-0 left-0 right-0 h-1 bg-stone-200 dark:bg-stone-700 z-50"
       >
         <div className="h-full bg-[var(--c-solid)] transition-all" style={{ width: `${progress}%` }} />

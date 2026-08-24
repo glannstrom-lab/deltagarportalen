@@ -1,0 +1,113 @@
+{
+  "omrade": "Min vardag och fokus",
+  "nycklarGranskade": 969,
+  "sammanfattning": "Engelskan i det här området håller genomgående hög kvalitet: enkla, korta meningar, konsekvent varsam ton (\"It's okay to rest\", \"You don't have to go through this alone\"), inga idiom, och regeln om att inte påstå mer än underlaget håller (inga medicinska diagnoser eller behandlingsråd hittades, bara samma självhjälpsspråk som svenskan använder). crisis.* och wellness.crisis.* är korrekt, tydlig och lika allvarlig som svenskan — 112, 1177 och 90101 (Självmordslinjen) är hårdkodade telefonnummer separat från i18n-strängarna och påverkas inte av språkval, så inget hjälpnummer riskerar att bli fel eller bortöversatt till ett amerikanskt nummer. Den enda substantiella bristen i krisstödet är att egennamnet \"Jourhavande medmänniska\" — som enligt uppdraget aldrig ska översättas — har blivit \"On-call Companion\", vilket gör tjänsten svårare att känna igen och slå upp på svenska för den som faktiskt behöver ringa. Övriga fynd är småputs: en handfull inkonsekvenser i Title Case kontra meningsversalisering (bland annat samma svenska källsträng \"Personligt brev\" som ger både \"Cover letter\" och \"Cover Letter\" i samma namnrymd), en blandning av brittisk och amerikansk stavning (\"organised\"/\"practised\" mot \"personalized\"/\"analyze\"/\"customize\"/\"practicing\"), ett par perspektivglapp (\"Ditt CV\" blir \"My CV\" i stället för \"Your CV\") och en term som översätts på tre olika sätt (\"arbetskonsulent\" som både \"employment consultant\" och en avvikande \"career consultant\"). Inget av detta är förvirrande nog för att skada någon, men det är den typ av polityp en van engelsktalande inte lägger märke till och en B1-läsare kan snubbla på.",
+  "termlista": [
+    { "sv": "mående / välmående", "en": "wellbeing (till exempel minVardagHub.features.wellness.title) / well-being (wellness.description, wellness.health.logMoodToTrack)", "kommentar": "Samma begrepp stavas både med och utan bindestreck. Välj en variant (rekommendation: \"wellbeing\" utan bindestreck, som är vanligast i texten) och gör konsekvent." },
+    { "sv": "Hälsa (wellness.title)", "en": "Wellness", "kommentar": "Inte en bokstavlig översättning men konsekvent använt som modulnamn genom hela namnrymden (wellnessWidget, minVardagHub) — en medveten varumärkesterm, inte ett fel." },
+    { "sv": "arbetskonsulent", "en": "employment consultant (vanligast) / career consultant (ett ställe) / consultant (kortform, vanligast i focus.*)", "kommentar": "Se fynd om diaryWidget.consultantMeetingDescription — en av tre varianter avviker." },
+    { "sv": "Jourhavande medmänniska", "en": "On-call Companion", "kommentar": "Ska enligt uppdraget stå kvar oöversatt (som Mind, 1177, BankID). Se kritiskt/stort fynd." },
+    { "sv": "Akut stöd (flik)", "en": "Crisis Support", "kommentar": "Kontextuellt rimlig, inte bokstavlig, översättning — problemet är enbart Title Case, inte betydelsen." }
+  ],
+  "fynd": [
+    {
+      "nyckel": "crisis.resources.companion.name",
+      "nuvarandeEn": "On-call Companion",
+      "foreslagenEn": "Jourhavande medmänniska (a volunteer to talk to, by phone)",
+      "sv": "Jourhavande medmänniska",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "\"Jourhavande medmänniska\" står uttryckligen på listan över termer som aldrig ska översättas, tillsammans med Mind, 1177 och BankID. Telefonnumret (08-702 16 80) är hårdkodat separat och stämmer fortfarande, men den som vill hitta eller nämna tjänsten på svenska — t.ex. fråga en vårdcentral eller söka online — känner inte igen \"On-call Companion\"."
+    },
+    {
+      "nyckel": "focusDashboard.actions.cv",
+      "nuvarandeEn": "My CV",
+      "foreslagenEn": "Your CV",
+      "sv": "Ditt CV",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan tilltalar användaren i andra person (\"Ditt\"); engelskan byter till första person (\"My\") och bryter mot den genomgående \"Your X\"-adresseringen i resten av portalen (Your profile, Your progress, Your CV is complete m.fl.)."
+    },
+    {
+      "nyckel": "diaryWidget.consultantMeetingDescription",
+      "nuvarandeEn": "You have a meeting with your career consultant",
+      "foreslagenEn": "You have a meeting with your employment consultant",
+      "sv": "Du har ett möte med din arbetskonsulent",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "\"arbetskonsulent\" översätts konsekvent som \"employment consultant\" på andra ställen (calendar.mockData.consultantMeeting, minVardagHub.features.myConsultant.description). \"career consultant\" är en avvikande term för samma svenska ord som kan läsas som en annan yrkesroll av en läsare med begränsad engelska."
+    },
+    {
+      "nyckel": "wellness.tabs.cognitive",
+      "nuvarandeEn": "Cognitive Training",
+      "foreslagenEn": "Cognitive training",
+      "sv": "Kognitiv träning",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Title Case i stället för meningsversalisering, och skiljer sig från samma begrepp i wellness.cognitive.title (\"Cognitive training\", litet t) för samma svenska källsträng."
+    },
+    {
+      "nyckel": "wellness.tabs.crisis",
+      "nuvarandeEn": "Crisis Support",
+      "foreslagenEn": "Crisis support",
+      "sv": "Akut stöd",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Title Case i stället för meningsversalisering. Övriga flikrubriker i samma lista (Health, Energy, Routines) är enstaka ord, så avvikelsen syns bara här."
+    },
+    {
+      "nyckel": "wellnessWidget.yourWellness",
+      "nuvarandeEn": "Your Wellness",
+      "foreslagenEn": "Your wellbeing",
+      "sv": "Ditt välmående",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Title Case (\"Wellness\" med versalt W) avviker från mönstret \"Your profile\", \"Your progress\" m.fl. Föreslår även \"wellbeing\" i stället för modulnamnet \"Wellness\", eftersom nyckeln beskriver användarens välmående specifikt, inte modulen."
+    },
+    {
+      "nyckel": "focusGuide.steps.coverLetter",
+      "nuvarandeEn": "Cover Letter",
+      "foreslagenEn": "Cover letter",
+      "sv": "Personligt brev",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma svenska källsträng (\"Personligt brev\") ger \"Cover letter\" (litet l) på andra ställen i samma namnrymd, t.ex. focusGuide.letter.title — en ren versaliseringsinkonsekvens inom samma flöde."
+    },
+    {
+      "nyckel": "health.consent.fullDesc",
+      "nuvarandeEn": "To give you personalized recommendations, we need your consent to collect and analyze data about your functional capabilities.",
+      "foreslagenEn": "To give you personalised recommendations, we need your consent to collect and analyse data about your functional capabilities.",
+      "sv": "För att kunna ge dig personliga rekommendationer behöver vi ditt samtycke att samla in och analysera data om dina funktionsförutsättningar.",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Portalens engelska lutar tydligt brittisk (\"organised\", \"practised\", \"the maths\" förekommer på andra ställen i samma granskade underlag). \"personalized\"/\"analyze\" är amerikansk stavning och bryter stavningskonsekvensen."
+    },
+    {
+      "nyckel": "wellness.consent.whyDesc",
+      "nuvarandeEn": "The data is used to give you personal insights about your wellbeing and to customize recommendations during your job search. We analyze trends to help you understand what affects your mood.",
+      "foreslagenEn": "The data is used to give you personal insights about your wellbeing and to customise recommendations during your job search. We analyse trends to help you understand what affects your mood.",
+      "sv": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma amerikanska/brittiska stavningsblandning som health.consent.fullDesc (\"customize\"/\"analyze\" mot resten av portalens brittiska stavning)."
+    },
+    {
+      "nyckel": "exercisesWidget.continuePractice",
+      "nuvarandeEn": "Continue practicing",
+      "foreslagenEn": "Continue practising",
+      "sv": "Fortsätt öva",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Portalen använder brittisk stavning av verbet \"practise\" på andra ställen (focus.interview.doneText: \"You've practised...\", \"Want to practise more?\"). \"practicing\" är amerikansk stavning."
+    },
+    {
+      "nyckel": "exercisesWidget.startPractice",
+      "nuvarandeEn": "Start practicing",
+      "foreslagenEn": "Start practising",
+      "sv": "Börja öva",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma stavningsinkonsekvens som exercisesWidget.continuePractice."
+    }
+  ]
+}

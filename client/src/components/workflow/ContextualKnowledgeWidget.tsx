@@ -10,6 +10,7 @@ import {
   FileText, Search, MessageSquare, Target, Award
 } from '@/components/ui/icons'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 // ============================================
@@ -284,6 +285,7 @@ export function ContextualKnowledgeWidget({
   variant = 'compact',
   className
 }: ContextualKnowledgeWidgetProps) {
+  const { t } = useTranslation()
   const location = useLocation()
   const [articles, setArticles] = useState<ContextualArticle[]>([])
   const [currentContext, setCurrentContext] = useState<KnowledgeContext>('general')
@@ -296,14 +298,14 @@ export function ContextualKnowledgeWidget({
 
   const getContextTitle = (ctx: KnowledgeContext): string => {
     switch (ctx) {
-      case 'cv-building': return 'Tips för ditt CV'
-      case 'cover-letter-writing': return 'Skriva personligt brev'
-      case 'job-searching': return 'Jobbsökning'
-      case 'interview-prep': return 'Förbered dig för intervjun'
-      case 'rejection-handling': return 'Hantera avslag'
-      case 'salary-negotiation': return 'Löneförhandling'
-      case 'career-planning': return 'Karriärplanering'
-      default: return 'Rekommenderat för dig'
+      case 'cv-building': return t('workflow.knowledgeWidget.context.cvBuilding')
+      case 'cover-letter-writing': return t('workflow.knowledgeWidget.context.coverLetterWriting')
+      case 'job-searching': return t('workflow.knowledgeWidget.context.jobSearching')
+      case 'interview-prep': return t('ai.interviewPrep.heading')
+      case 'rejection-handling': return t('workflow.knowledgeWidget.context.rejectionHandling')
+      case 'salary-negotiation': return t('workflow.knowledgeWidget.context.salaryNegotiation')
+      case 'career-planning': return t('workflow.knowledgeWidget.context.careerPlanning')
+      default: return t('workflow.knowledgeWidget.context.default')
     }
   }
 
@@ -349,15 +351,15 @@ export function ContextualKnowledgeWidget({
                     {article.excerpt}
                   </p>
                   <div className="flex items-center gap-2 mt-1.5 text-xs text-stone-600">
-                    <span>{article.readTime} min läsning</span>
+                    <span>{t('workflow.knowledgeWidget.readTime', { count: article.readTime })}</span>
                     <span>•</span>
                     <span className={cn(
                       article.difficulty === 'beginner' ? "text-green-700" :
                       article.difficulty === 'intermediate' ? "text-amber-700" :
                       "text-rose-700"
                     )}>
-                      {article.difficulty === 'beginner' ? 'Nybörjare' :
-                       article.difficulty === 'intermediate' ? 'Medel' : 'Avancerad'}
+                      {article.difficulty === 'beginner' ? t('workflow.knowledgeWidget.difficulty.beginner') :
+                       article.difficulty === 'intermediate' ? t('workflow.knowledgeWidget.difficulty.intermediate') : t('workflow.knowledgeWidget.difficulty.advanced')}
                     </span>
                   </div>
                 </div>
@@ -372,7 +374,7 @@ export function ContextualKnowledgeWidget({
           className="flex items-center justify-center gap-1 mt-3 text-sm text-amber-700 hover:text-amber-800 font-medium"
         >
           <BookOpen size={14} />
-          Se alla artiklar
+          {t('workflow.knowledgeWidget.seeAllArticles')}
         </Link>
       </div>
     )
@@ -390,7 +392,7 @@ export function ContextualKnowledgeWidget({
         </div>
         <div className="min-w-0">
           <h3 className="font-semibold text-stone-900 text-sm">{getContextTitle(currentContext)}</h3>
-          <p className="text-xs text-stone-600">Artiklar valda för där du är nu</p>
+          <p className="text-xs text-stone-600">{t('workflow.knowledgeWidget.selectedForYou')}</p>
         </div>
       </div>
 
@@ -412,14 +414,14 @@ export function ContextualKnowledgeWidget({
                 {article.excerpt}
               </p>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-[11px] text-stone-600">
-                <span>{article.readTime} min läsning</span>
+                <span>{t('workflow.knowledgeWidget.readTime', { count: article.readTime })}</span>
                 <span className={cn(
                   article.difficulty === 'beginner' ? "text-green-700" :
                   article.difficulty === 'intermediate' ? "text-amber-700" :
                   "text-rose-700"
                 )}>
-                  {article.difficulty === 'beginner' ? 'Nybörjare' :
-                   article.difficulty === 'intermediate' ? 'Medel' : 'Avancerad'}
+                  {article.difficulty === 'beginner' ? t('workflow.knowledgeWidget.difficulty.beginner') :
+                   article.difficulty === 'intermediate' ? t('workflow.knowledgeWidget.difficulty.intermediate') : t('workflow.knowledgeWidget.difficulty.advanced')}
                 </span>
               </div>
             </div>
@@ -444,6 +446,7 @@ interface SmartContextWidgetProps {
  * Smart widget som ändrar innehåll baserat på jobbstatus
  */
 export function SmartContextWidget({ jobStatus, className }: SmartContextWidgetProps) {
+  const { t } = useTranslation()
   const getContextFromStatus = (): KnowledgeContext => {
     switch (jobStatus) {
       case 'interview': return 'interview-prep'
@@ -456,18 +459,18 @@ export function SmartContextWidget({ jobStatus, className }: SmartContextWidgetP
     switch (jobStatus) {
       case 'interview':
         return {
-          title: '🎯 Intervju på gång!',
-          subtitle: 'Förbered dig för att göra ditt bästa intryck'
+          title: t('workflow.knowledgeWidget.smart.interview.title'),
+          subtitle: t('workflow.knowledgeWidget.smart.interview.subtitle')
         }
       case 'rejected':
         return {
-          title: '💪 Bara ett avslag, inte ett misslyckande',
-          subtitle: 'Tips för att komma tillbaka starkare'
+          title: t('workflow.knowledgeWidget.smart.rejected.title'),
+          subtitle: t('workflow.knowledgeWidget.smart.rejected.subtitle')
         }
       default:
         return {
-          title: '💡 Tips för din jobbsökning',
-          subtitle: 'Artiklar valda för där du är nu'
+          title: t('workflow.knowledgeWidget.smart.default.title'),
+          subtitle: t('workflow.knowledgeWidget.selectedForYou')
         }
     }
   }

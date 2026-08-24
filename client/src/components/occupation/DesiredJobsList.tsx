@@ -118,14 +118,14 @@ export function DesiredJobsList({
                 {job.conceptId ? (
                   <span
                     className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400"
-                    title="Kopplad till AF-taxonomi — matchas exakt i sökning"
+                    title={t('occupation.desiredJobsList.linkedToAf')}
                   >
                     <CheckCircle2 size={11} />
                   </span>
                 ) : (
                   <span
                     className="inline-flex items-center gap-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400"
-                    title="Fritext — ej kopplad till AF. Ta bort och välj från listan för exakt matchning."
+                    title={t('occupation.desiredJobsList.freeTextNotLinked')}
                   >
                     <AlertCircle size={11} />
                   </span>

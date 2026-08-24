@@ -35,6 +35,7 @@ const categoryDefs = {
 
 // Memory Card Game component
 function MemoryCardGame({ onComplete }: { onComplete: () => void }) {
+  const { t } = useTranslation()
   const [cards, setCards] = useState<{ id: number; number: number; flipped: boolean; matched: boolean }[]>([])
   const [moves, setMoves] = useState(0)
   const [matched, setMatched] = useState(0)
@@ -80,9 +81,9 @@ function MemoryCardGame({ onComplete }: { onComplete: () => void }) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-6">
         <Trophy className="w-16 h-16 text-yellow-500 dark:text-yellow-400 mx-auto mb-3" />
-        <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Grattis!</h4>
-        <p className="text-gray-600 dark:text-gray-300 mb-4">Du matchade alla par på {moves} försök</p>
-        <Button onClick={onComplete} className="w-full">Avsluta övning</Button>
+        <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('wellness.cognitive.games.congrats')}</h4>
+        <p className="text-gray-600 dark:text-gray-300 mb-4">{t('wellness.cognitive.games.memoryMatchedAll', { moves })}</p>
+        <Button onClick={onComplete} className="w-full">{t('wellness.cognitive.games.finishExercise')}</Button>
       </motion.div>
     )
   }
@@ -106,13 +107,14 @@ function MemoryCardGame({ onComplete }: { onComplete: () => void }) {
           </motion.button>
         ))}
       </div>
-      <p className="text-sm text-gray-600 dark:text-gray-300">Försök: {moves} | Matchade: {matched}/6</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300">{t('wellness.cognitive.games.memoryProgress', { moves, matched })}</p>
     </div>
   )
 }
 
 // Number Sequence Game component
 function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
+  const { t } = useTranslation()
   const [sequence, setSequence] = useState<number[]>([])
   const [playerSequence, setPlayerSequence] = useState<number[]>([])
   const [round, setRound] = useState(1)
@@ -160,8 +162,8 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
   return (
     <div>
       <div className="text-center mb-4">
-        <p className="text-sm text-gray-600 dark:text-gray-300">Omgång {round}</p>
-        <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">Sekvens: {sequence.join(' → ')}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('wellness.cognitive.games.round', { round })}</p>
+        <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">{t('wellness.cognitive.games.sequence', { sequence: sequence.join(' → ') })}</p>
       </div>
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
@@ -181,7 +183,7 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
         ))}
       </div>
       {playerSequence.length > 0 && (
-        <p className="text-sm text-gray-600 dark:text-gray-300">Din sekvens: {playerSequence.join(' → ')}</p>
+        <p className="text-sm text-gray-600 dark:text-gray-300">{t('wellness.cognitive.games.yourSequence', { sequence: playerSequence.join(' → ') })}</p>
       )}
     </div>
   )
@@ -250,9 +252,9 @@ export default function CognitiveTab() {
       >
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm opacity-90">Träningsserie</p>
-            <h2 className="text-3xl font-bold mt-1">{streak} dagar</h2>
-            <p className="text-sm opacity-75 mt-1">Fortsätt så här för att nå nya höjder!</p>
+            <p className="text-sm opacity-90">{t('wellness.cognitive.streakBanner.title')}</p>
+            <h2 className="text-3xl font-bold mt-1">{t('wellness.cognitive.streakBanner.days', { count: streak })}</h2>
+            <p className="text-sm opacity-75 mt-1">{t('wellness.cognitive.streakBanner.subtitle')}</p>
           </div>
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
@@ -272,7 +274,7 @@ export default function CognitiveTab() {
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full">
             <Star className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <span className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedExercises.length} {completedExercises.length === 1 ? 'färdig' : 'färdiga'}</span>
+            <span className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{t('wellness.cognitive.completedCount', { count: completedExercises.length })}</span>
           </div>
         </div>
 
@@ -405,7 +407,7 @@ export default function CognitiveTab() {
                     </span>
                     {hasGame && (
                       <span className="text-xs px-2 py-1 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
-                        Spel
+                        {t('wellness.cognitive.gameTag')}
                       </span>
                     )}
                   </div>

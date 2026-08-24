@@ -276,7 +276,7 @@ export function OccupationPicker({
             </li>
           )}
           {!error && loading && suggestions.length === 0 && (
-            <li className="px-3 py-2 text-sm text-stone-500 dark:text-stone-400">Söker yrken…</li>
+            <li className="px-3 py-2 text-sm text-stone-500 dark:text-stone-400">{t('career.explore.searching')}</li>
           )}
           {!error && !loading && input.length >= 2 && suggestions.length === 0 && (
             <li className="px-3 py-2 text-sm text-stone-500 dark:text-stone-400">

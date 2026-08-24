@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Trash2, Plus, Sparkles, Star,
   Code, Users, Wrench, Palette, Globe,
@@ -43,6 +44,7 @@ const skillSuggestions: Record<SkillCategory, string[]> = {
 }
 
 export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
+  const { t } = useTranslation()
   const [draggedId, setDraggedId] = useState<string | null>(null)
   const [newSkillName, setNewSkillName] = useState('')
   const [newSkillCategory, setNewSkillCategory] = useState<SkillCategory>('technical')
@@ -134,12 +136,12 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
     <div className="space-y-6">
       {/* Add new skill */}
       <div className="bg-stone-50 p-4 rounded-xl border border-stone-200">
-        <h4 className="font-medium text-stone-800 mb-3">Lägg till kompetens</h4>
+        <h4 className="font-medium text-stone-800 mb-3">{t('cv.skillsEditor.addTitle')}</h4>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <input
               type="text"
-              aria-label="Kompetens att lägga till"
+              aria-label={t('cv.skillsEditor.nameAriaLabel')}
               value={newSkillName}
               onChange={(e) => setNewSkillName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addSkill()}
@@ -148,7 +150,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
             />
           </div>
           <select
-            aria-label="Kategori för kompetensen"
+            aria-label={t('cv.skillsEditor.categoryAriaLabel')}
             value={newSkillCategory}
             onChange={(e) => setNewSkillCategory(e.target.value as SkillCategory)}
             className="px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"
@@ -293,8 +295,8 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
       {skills.length === 0 && (
         <div className="text-center py-12 border-2 border-dashed border-stone-200 rounded-xl">
           <Wrench className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-          <p className="text-stone-700 mb-1">Inga kompetenser tillagda ännu</p>
-          <p className="text-sm text-stone-600">Lägg till dina kompetenser ovan</p>
+          <p className="text-stone-700 mb-1">{t('cv.skillsEditor.emptyTitle')}</p>
+          <p className="text-sm text-stone-600">{t('cv.skillsEditor.emptySubtitle')}</p>
         </div>
       )}
     </div>

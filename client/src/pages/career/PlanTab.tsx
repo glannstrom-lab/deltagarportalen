@@ -496,7 +496,7 @@ export default function PlanTab() {
                 type="text"
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
-                placeholder="T.ex. 6 månader, 1 år"
+                placeholder={t('career.plan.timeframePlaceholder')}
                 className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
               />
             </div>
@@ -528,16 +528,16 @@ export default function PlanTab() {
             <div className="flex items-start gap-3 mb-4">
               <AlertCircle className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)] mb-2">SMART-mål hjälpare</h4>
+                <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)] mb-2">{t('career.plan.smartHelperTitle')}</h4>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
-                  Se till att ditt mål är Specifikt, Mätbart, Uppnåeligt, Relevant och Tidsbundet:
+                  {t('career.plan.smartHelperIntro')}
                 </p>
                 <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
-                  <li><strong>S</strong> - Specifikt: Vad exakt vill du uppnå?</li>
-                  <li><strong>M</strong> - Mätbart: Hur vet du när du har nått målet?</li>
-                  <li><strong>A</strong> - Uppnåeligt: Är det realistiskt under din tidsram?</li>
-                  <li><strong>R</strong> - Relevant: Matchar det dina värden och ambitioner?</li>
-                  <li><strong>T</strong> - Tidsbundet: Har du en tidsram i åtanke?</li>
+                  <li><strong>S</strong> - {t('career.plan.smartS')}</li>
+                  <li><strong>M</strong> - {t('career.plan.smartM')}</li>
+                  <li><strong>A</strong> - {t('career.plan.smartA')}</li>
+                  <li><strong>R</strong> - {t('career.plan.smartR')}</li>
+                  <li><strong>T</strong> - {t('career.plan.smartT')}</li>
                 </ul>
               </div>
             </div>

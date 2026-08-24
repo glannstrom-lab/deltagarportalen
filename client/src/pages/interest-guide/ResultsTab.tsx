@@ -2,11 +2,12 @@
  * Results Tab - Display RIASEC profile and personality analysis
  * With history comparison feature
  */
-import { useState, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
+import { useYrken } from '@/services/useIntresseguideInnehall'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
@@ -49,6 +50,34 @@ export default function ResultsTab() {
   const [history, setHistory] = useState<InterestGuideHistoryEntry[]>([])
   const [showHistory, setShowHistory] = useState(false)
   const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
+
+  const yrken = useYrken()
+
+  /*
+    Låg tidigare EFTER två tidiga `return` nedan (laddar/inget resultat), vilket
+    bryter hook-regeln nu när beräkningen behöver `useYrken()`. Flyttad hit och
+    skyddad mot `profile === null` — samma mönster som OccupationsTab.tsx.
+  */
+  const jobMatches = useMemo(
+    () => (profile ? calculateJobMatches(profile) : []),
+    [profile]
+  )
+
+  /*
+    Bara för "Dina topp 3 yrkesmatchningar" nedan. `CareerRecommendationsPanel`
+    får `jobMatches` OÖVERSATT via `topMatches`-propen (se den komponenten) —
+    den använder yrkesnamnet som sökterm mot SCB:s lönedata och
+    utbildningsregistret, som är svenska källor. `calculateJobMatches` saknar
+    dessutom den tredje parametern (yrkeslistan) som skulle gjort detta i ett
+    steg — se kommentaren i OccupationsTab.tsx.
+  */
+  const oversattaTopMatches = useMemo(() => {
+    const yrkeOversattPerId = new Map(yrken.map(o => [o.id, o]))
+    return jobMatches.slice(0, 3).map(m => ({
+      ...m,
+      occupation: yrkeOversattPerId.get(m.occupation.id) ?? m.occupation,
+    }))
+  }, [jobMatches, yrken])
 
   useEffect(() => {
     const loadResults = async () => {
@@ -171,8 +200,6 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
     )
   }
 
-  const jobMatches = calculateJobMatches(profile)
-  const topMatches = jobMatches.slice(0, 3)
   const goodMatches = jobMatches.filter(m => m.matchPercentage >= 70).length
 
   return (
@@ -264,7 +291,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                   <History className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-900 dark:text-gray-100">Jämförelse med tidigare test</h3>
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.comparisonWithPreviousTest')}</h3>
                   <p className="text-xs text-gray-700 dark:text-gray-300">
                     Från {new Date(previousResult.completed_at).toLocaleDateString('sv-SE')}
                   </p>
@@ -427,7 +454,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
             </Button>
           </div>
           <div className="space-y-3">
-            {topMatches.map((match, index) => (
+            {oversattaTopMatches.map((match, index) => (
               <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors cursor-pointer">
                 <div className="flex-shrink-0 w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}

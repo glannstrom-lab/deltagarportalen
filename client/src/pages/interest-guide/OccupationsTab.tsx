@@ -12,6 +12,7 @@ import {
   matchningsplats,
   type JobMatch,
 } from '@/services/interestGuideData'
+import { useYrken } from '@/services/useIntresseguideInnehall'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
@@ -42,6 +43,8 @@ export default function OccupationsTab() {
   const [favorites, setFavorites] = useState<string[]>([])
   const [sortBy, setSortBy] = useState<'match' | 'name' | 'salary'>('match')
   const [expandedOccupation, setExpandedOccupation] = useState<string | null>(null)
+
+  const yrken = useYrken()
 
   // useEffect for loading data
   useEffect(() => {
@@ -80,7 +83,21 @@ export default function OccupationsTab() {
     }
     try {
       const matches = calculateJobMatches(profile, filterUni)
-      return { allMatches: matches, calculationError: null }
+      /*
+        `calculateJobMatches` har bara två parametrar — den tredje
+        (yrkeslistan) som `useJobbmatchningar` i useIntresseguideInnehall.ts
+        skickar existerar inte i funktionssignaturen och ignoreras tyst av
+        JS (verifierat: `npx tsc --noEmit` flaggar TS2554 på den raden).
+        Matchningarna beräknas alltså alltid mot den svenska yrkeslistan.
+        Yrkesobjektet i varje träff byts därför ut här, efteråt, mot den
+        översatta posten med samma id — bara text, poängen är orörd.
+      */
+      const yrkeOversattPerId = new Map(yrken.map(o => [o.id, o]))
+      const oversattaMatches = matches.map(m => ({
+        ...m,
+        occupation: yrkeOversattPerId.get(m.occupation.id) ?? m.occupation,
+      }))
+      return { allMatches: oversattaMatches, calculationError: null }
     } catch (err) {
       console.error('OccupationsTab - Failed to calculate job matches:', err)
       return {
@@ -88,7 +105,7 @@ export default function OccupationsTab() {
         calculationError: `Kunde inte beräkna yrkesmatchningar: ${err instanceof Error ? err.message : 'Okänt fel'}`
       }
     }
-  }, [profile, filterUni])
+  }, [profile, filterUni, yrken])
 
   // Filter and sort matches - also unconditional
   const filteredMatches = useMemo(() => {
@@ -228,7 +245,7 @@ export default function OccupationsTab() {
             </div>
             <div>
               <p className="text-2xl font-bold text-[var(--c-text)] tabular-nums">{stats.growingJobs}</p>
-              <p className="text-xs text-stone-700 dark:text-stone-300">av dem växer, enligt vår redaktionella bedömning</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">{t('interestGuide.occupations.growingShare')}</p>
             </div>
           </div>
         </Card>
@@ -263,9 +280,9 @@ export default function OccupationsTab() {
                 onChange={(e) => setSortBy(e.target.value as 'match' | 'name' | 'salary')}
                 className="px-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 appearance-none cursor-pointer text-gray-900 dark:text-gray-100"
               >
-                <option value="match">Sortera: Matchning</option>
-                <option value="name">Sortera: Namn (A-Z)</option>
-                <option value="salary">Sortera: Lön (högst först)</option>
+                <option value="match">{t('interestGuide.occupations.sortMatch')}</option>
+                <option value="name">{t('interestGuide.occupations.sortName')}</option>
+                <option value="salary">{t('interestGuide.occupations.sortSalary')}</option>
               </select>
             </div>
           </div>
@@ -448,14 +465,14 @@ export default function OccupationsTab() {
                       >
                         {match.occupation.salary && (
                           <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 dark:text-gray-400">Lönespann:</span>
+                            <span className="text-sm text-gray-600 dark:text-gray-400">{t('interestGuide.occupations.salaryRange')}:</span>
                             <span className="font-semibold text-gray-900 dark:text-gray-100">
                               {match.occupation.salary}
                             </span>
                           </div>
                         )}
                         <div className="flex justify-between items-center">
-                          <span className="text-sm text-stone-600 dark:text-stone-400">Efterfrågan:</span>
+                          <span className="text-sm text-stone-600 dark:text-stone-400">{t('career.explore.demand')}:</span>
                           <span className="font-semibold text-gray-900 dark:text-gray-100">
                             {match.occupation.prognosis === 'growing' ? 'Växande' : match.occupation.prognosis === 'stable' ? 'Stabil' : 'Minskande'}
                           </span>

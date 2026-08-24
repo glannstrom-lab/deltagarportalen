@@ -1,0 +1,147 @@
+{
+  "omrade": "Konsulent och profil",
+  "nycklarGranskade": 1538,
+  "sammanfattning": "Mekaniken (variabler, pluralformer) är ren i hela området — inga {{variabel}}-avvikelser hittades. De faktiska problemen är av tre sorter. Först ett par konkreta betydelsefel: 'arbetsförmedlare' i profile.tip1 har blivit 'employers' trots att profile.tip2 i samma sektion korrekt översätter 'arbetsgivare' till 'employers' — två olika svenska ord har kollapsat till samma engelska, vilket ändrar vem läsaren tror kan se profilen. Allvarligare är att kontoraderingsflödet (settings.deleteAccount) är trasigt för engelskspråkiga användare: koden i DeleteAccountSection.tsx jämför bokstavligen mot strängen 'RADERA', men den engelska texten instruerar användaren att skriva 'DELETE' — knappen kan aldrig aktiveras för den som följer instruktionen, vilket gör att engelskspråkiga användare inte kan utöva sin GDPR-rätt att radera kontot via UI. För det andra ett återkommande mönster: Arbetsförmedlingen översätts inte konsekvent bort utan blir 'Employment Agency', 'Employment Service' eller bara 'AF' beroende på nyckel — tvärtemot regeln att myndighetsnamnet ska stå kvar. För det tredje glider konsulentrollen mellan minst fyra engelska varianter ('consultant', 'career consultant', 'employment consultant', 'work consultant') beroende på var i portalen man läser, vilket är precis den typ av rollinkonsekvens som CLAUDE.md pekar ut som portalens ryggrad. Placeholder-exemplen för telefon och ort har också bytt land (+1/New York) i två nycklar men behållit Sverige (Stockholm) i systernycklar i samma formulär, vilket är förvirrande för en portal som bara gäller Sverige. Konsulentvyns eget innehåll (consultant.*, ~700 nycklar) är däremot genomgående korrekt, konsekvent och i rätt sakligt tonläge — den stora skulden ligger i deltagarnas profil- och integritetsytor."
+  ,
+  "termlista": [
+    {
+      "sv": "arbetskonsulent / konsulent",
+      "en": "consultant / career consultant / employment consultant / work consultant",
+      "kommentar": "Minst fyra olika engelska varianter för samma roll beroende på namnrymd: 'Consultant' (roles.consultant, sidebar.consultantSection, consultant.settings.consultant), 'career consultant' (myConsultant.*), 'an employment consultant' (rollgenvag.konsulent), 'work consultant' (consultant.settings.visibility.consultantDesc). Ingen enhetlig kanonisk term. Rekommendation: standardisera på 'consultant' i korta etiketter och 'career consultant' i löpande, varm text (myConsultant-sektionen är redan konsekvent internt) — och rätta de två avvikande instanserna."
+    },
+    {
+      "sv": "Arbetsförmedlingen",
+      "en": "Employment Agency / Employment Service / AF",
+      "kommentar": "Myndighetsnamnet ska enligt regelverket stå kvar oöversatt (ev. med engelsk glossa vid första förekomst), men här försvinner det helt i tre olika varianter beroende på nyckel (profile.jobSearch.registeredAF, profile.completion.fields.registeredAF, samt döda profile.laborMarket.registeredAF). Ingen av varianterna är fel i sak, men ingen av dem är rätt enligt regeln, och de är inte ens konsekventa sinsemellan."
+    },
+    {
+      "sv": "deltagare",
+      "en": "participant",
+      "kommentar": "Positiv kontroll: helt konsekvent genom hela konsulent- och profilytan (roles.participant, samtliga consultant.*-nycklar). Inget att åtgärda."
+    },
+    {
+      "sv": "arbetsförmedlare",
+      "en": "employers (fel) / caseworkers",
+      "kommentar": "'Arbetsförmedlare' (handläggare på Arbetsförmedlingen) är inte samma sak som 'arbetsgivare' (employers), men profile.tip1 slår ihop dem. settings.privacy.caseworkers använder separat 'Caseworkers' för samma svenska ord, vilket visar att en rimlig engelsk term redan finns i portalen — den används bara inte konsekvent."
+    }
+  ],
+  "fynd": [
+    {
+      "nyckel": "settings.deleteAccount.typeToConfirm",
+      "nuvarandeEn": "Type DELETE to confirm:",
+      "foreslagenEn": "Type RADERA to confirm:",
+      "sv": "Skriv RADERA för att bekräfta:",
+      "severity": "kritisk",
+      "typ": "mekanik",
+      "motivering": "client/src/components/settings/DeleteAccountSection.tsx:173 jämför bokstavligen confirmText !== 'RADERA' (även platshållaren i fältet är hårdkodad 'RADERA', rad 501). Instruerar man en engelskspråkig användare att skriva 'DELETE' kan knappen aldrig aktiveras (disabled={confirmText !== 'RADERA'}, rad 526) — kontoraderingen går inte att slutföra på engelska. Textändringen löser det akuta symptomet; den riktiga fixen är att koden ska läsa det lokaliserade ordet, men det ligger utanför i18n-filen."
+    },
+    {
+      "nyckel": "settings.deleteAccount.confirmTextError",
+      "nuvarandeEn": "You must type DELETE to confirm.",
+      "foreslagenEn": "You must type RADERA to confirm.",
+      "sv": "Du måste skriva RADERA för att bekräfta.",
+      "severity": "kritisk",
+      "typ": "mekanik",
+      "motivering": "Samma bugg som typeToConfirm ovan, felmeddelandet som visas när valideringen (mot den hårdkodade strängen 'RADERA') misslyckas. Måste rättas i par med typeToConfirm — annars säger felmeddelandet samma felaktiga instruktion igen."
+    },
+    {
+      "nyckel": "profile.tip1",
+      "nuvarandeEn": "Fill in all fields so employers can contact you",
+      "foreslagenEn": "Fill in all fields so your caseworker can contact you",
+      "sv": "Fyll i alla fält för att arbetsförmedlare ska kunna kontakta dig",
+      "severity": "kritisk",
+      "typ": "betydelsefel",
+      "motivering": "'Arbetsförmedlare' (handläggare på Arbetsförmedlingen) har blivit 'employers'. Det är en annan grupp människor med annan relation till användaren — jämför profile.tip2 i samma lista, där 'arbetsgivare' korrekt blir 'employers'. Att påstå att arbetsgivare (i stället för handläggare) kan se ett ifyllt fält är ett påstående om vem som får åtkomst till informationen, vilket är fel enligt CLAUDE.md:s regel om att inte påstå mer än underlaget medger."
+    },
+    {
+      "nyckel": "datasharing.wellness.consent.whoAccessDesc",
+      "nuvarandeEn": "You are the only one who can see this data, unless you enable sharing with your assigned advisor.",
+      "foreslagenEn": "You are the only one who can see this data, unless you enable sharing with your assigned consultant.",
+      "sv": "Du är den enda som kan se datan, om du inte aktiverar delning med din tilldelade konsulent.",
+      "severity": "stor",
+      "typ": "integritet",
+      "motivering": "Det här är en samtyckestext om vem som får se känslig välmåendedata — precis den typ av text CLAUDE.md pekar ut som mest känslig. 'Advisor' används ingen annanstans i portalen för den här rollen (settings.privacy.consent.wellnessDesc använder korrekt 'consultant' för exakt samma relation), vilket gör att en läsare kan tro att en tredje, odefinierad person ('advisor') har åtkomst utöver den konsulent som nämns överallt annars."
+    },
+    {
+      "nyckel": "profile.phonePlaceholder",
+      "nuvarandeEn": "+1 555 123 4567",
+      "foreslagenEn": "+46 70 123 45 67",
+      "sv": "+46 70 123 45 67",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Portalen gäller bara Sverige (jobin.se), och målgruppen för engelskan är nyanlända bosatta i Sverige. Ett amerikanskt riktnummer som exempel signalerar fel land och kan få användaren att skriva sitt telefonnummer i fel format. SV-originalet visar korrekt svenskt format."
+    },
+    {
+      "nyckel": "profile.locationPlaceholder",
+      "nuvarandeEn": "New York",
+      "foreslagenEn": "Stockholm",
+      "sv": "Stockholm",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Samma formulär har profile.overview.locationPlaceholder som korrekt visar 'Stockholm' i både SV och EN, och unifiedProfile.fields.locationPlaceholder som visar 'e.g. Stockholm'. Just den här nyckeln har bytt till en amerikansk stad utan anledning — inkonsekvent och missvisande för en Sverige-portal."
+    },
+    {
+      "nyckel": "profile.jobSearch.registeredAF",
+      "nuvarandeEn": "Registered at Employment Agency",
+      "foreslagenEn": "Registered with Arbetsförmedlingen (the Swedish Public Employment Service)",
+      "sv": "Inskriven hos Arbetsförmedlingen",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Myndighetsnamnet Arbetsförmedlingen ska enligt regelverket stå kvar, ev. glossat vid första förekomst, inte ersättas med ett generiskt 'Employment Agency' som inte entydigt pekar ut vilken myndighet det gäller."
+    },
+    {
+      "nyckel": "profile.completion.fields.registeredAF",
+      "nuvarandeEn": "Registered at AF",
+      "foreslagenEn": "Registered with Arbetsförmedlingen",
+      "sv": "Registrerad på AF",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Förkortningen 'AF' är obegriplig för en läsare som inte redan kan den svenska myndighetsstrukturen — just den grupp som läser engelska i den här portalen. Skriv ut myndighetsnamnet."
+    },
+    {
+      "nyckel": "profile.documents.issuerPlaceholder",
+      "nuvarandeEn": "E.g. University, Employment Agency",
+      "foreslagenEn": "E.g. Komvux, Arbetsförmedlingen",
+      "sv": "T.ex. Komvux, Arbetsförmedlingen",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Två fel i en nyckel: 'Komvux' (kommunal vuxenutbildning, inte högskola) har blivit det missvisande 'University', och 'Arbetsförmedlingen' har försvunnit helt. Exemplet ska visa svenska, för målgruppen relevanta utfärdare — inte påhittade amerikanska motsvarigheter."
+    },
+    {
+      "nyckel": "consultant.settings.visibility.consultantDesc",
+      "nuvarandeEn": "Visible to your work consultant",
+      "foreslagenEn": "Visible to your consultant",
+      "sv": "Synlig för din arbetskonsulent",
+      "severity": "stor",
+      "typ": "maskinöversatt",
+      "motivering": "'Work consultant' är inte en naturlig engelsk kollokation och läses som maskinöversatt. Byt till samma term ('consultant') som används i roles.consultant, sidebar.consultantSection och resten av inställningssidan, i stället för att uppfinna en femte variant."
+    },
+    {
+      "nyckel": "rollgenvag.konsulent",
+      "nuvarandeEn": "an employment consultant",
+      "foreslagenEn": "a consultant",
+      "sv": "arbetskonsulent",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Ytterligare en variant av rollnamnet i en mening som visas direkt efter inloggning ('Du är inloggad som...'). Portalen använder redan 'Consultant' konsekvent i roller/sidomeny — align hit i stället för att introducera 'employment consultant'."
+    },
+    {
+      "nyckel": "settings.privacy.caseworkers",
+      "nuvarandeEn": "Caseworkers",
+      "foreslagenEn": "Consultants",
+      "sv": "Arbetsförmedlare",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "I det här sammanhanget (profilsynlighet: Endast jag / Arbetsförmedlare / Alla) är avsikten sannolikt samma roll som portalen annars kallar 'consultant' — kontrollera avsikten, men om det syftar på samma tilldelade konsulent bör termen matcha resten av portalen i stället för att införa ännu en synonym."
+    },
+    {
+      "nyckel": "consultant.participants.noParticipantsDesc",
+      "nuvarandeEn": "You have not been assigned any participants yet.",
+      "foreslagenEn": "You have not been assigned any participants yet.",
+      "sv": "Du har inte tilldelat några deltagare ännu.",
+      "severity": "sv-fel",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan använder aktiv form ('tilldelat' = du har tilldelat) medan den identiska, väntade betydelsen (och den engelska texten, som redan är korrekt) är passiv — jämför systernyckeln consultant.participants.noParticipantsYet som korrekt skriver 'tilldelats' (passiv). Sannolikt ett 's' som saknas i SV-originalet. Ingen ändring behövs i EN — SV bör rättas till 'Du har inte tilldelats några deltagare ännu.'"
+    }
+  ]
+}

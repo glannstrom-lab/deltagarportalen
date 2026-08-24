@@ -14,6 +14,7 @@
  * elementet redan har text. Det ligger nu i ett `sr-only`-prefix.
  */
 
+import { useTranslation } from 'react-i18next'
 import { GraduationCap, Brain, BookOpen, Languages } from '@/components/ui/icons'
 
 interface DifficultyBadgeProps {
@@ -40,6 +41,7 @@ export default function DifficultyBadge({
   showLabel = true,
   size = 'sm',
 }: DifficultyBadgeProps) {
+  const { t } = useTranslation()
   const { label, color, icon: Icon } = config[level]
 
   const sizeClasses = {
@@ -50,7 +52,7 @@ export default function DifficultyBadge({
   return (
     <span className={`inline-flex items-center rounded-full font-medium ${color} ${sizeClasses[size]}`}>
       <Icon size={size === 'sm' ? 12 : 14} aria-hidden="true" />
-      <span className="sr-only">Svårighetsgrad: </span>
+      <span className="sr-only">{t('knowledgeBase.difficultyBadge.difficultyLevel')}</span>
       {showLabel ? <span>{label}</span> : <span className="sr-only">{label}</span>}
     </span>
   )

@@ -28,6 +28,7 @@ function isUuid(s: string): boolean {
 import { articleCategories } from './articleData'
 import type { EnhancedArticle, ArticleChecklistItem, ArticleAction } from '@/data/artikelkategorier'
 import { exercises as mockExercises, type Exercise, type ExerciseStep } from '@/data/exercises'
+import { oversattInnehall } from '@/data/oversattningar'
 import { getIcon } from '@/lib/dynamicIconMap'
 
 // ============================================
@@ -41,7 +42,7 @@ import { getIcon } from '@/lib/dynamicIconMap'
  * Målgruppen sitter delvis på mobil med begränsad datamängd.
  */
 const LISTKOLUMNER =
-  'id,slug,title,summary,category_key,subcategory,tags,reading_time,difficulty,' +
+  'id,slug,title,summary,title_en,summary_en,category_key,subcategory,tags,reading_time,difficulty,' +
   'energy_level,author,author_title,related_article_slugs,related_exercise_slugs,' +
   'related_tools,checklist,actions,helpfulness_rating,bookmark_count,created_at,updated_at'
 
@@ -62,6 +63,10 @@ export interface ArticleFromDB {
   title: string
   summary: string
   content: string
+  /** Engelsk översättning. NULL = ingen finns; då används svenskan. */
+  title_en?: string | null
+  summary_en?: string | null
+  content_en?: string | null
   category_id: string | null
   category_key: string | null
   subcategory: string | null
@@ -137,13 +142,33 @@ export interface ExerciseQuestionFromDB {
 /**
  * Convert database article to EnhancedArticle format
  */
+/**
+ * Väljer engelsk text när användaren kör engelska OCH översättningen finns.
+ *
+ * Fältvis fallback, inte artikelvis: en artikel som fått titel och ingress
+ * översatta men ännu inte brödtexten visar engelsk rubrik och svensk text i
+ * stället för att helt utebli. Att blanda är fult men läsbart; att sakna är
+ * varken.
+ */
+function pa(sprak: string, en: string | null | undefined, sv: string): string {
+  if (sprak === 'sv') return sv
+  const t = (en ?? '').trim()
+  return t ? t : sv
+}
+
 function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
+  let sprak = 'sv'
+  try {
+    sprak = localStorage.getItem('language') || 'sv'
+  } catch {
+    // Privat läge eller blockerad lagring — svenska är rätt reserv.
+  }
   return {
     id: article.slug, // Use slug as ID for backwards compatibility
-    title: article.title,
-    summary: article.summary,
+    title: pa(sprak, article.title_en, article.title),
+    summary: pa(sprak, article.summary_en, article.summary),
     // Listvyerna hämtar inte brödtexten (se LISTKOLUMNER).
-    content: article.content ?? '',
+    content: pa(sprak, article.content_en, article.content ?? ''),
     category: article.category_key || '',
     subcategory: article.subcategory || undefined,
     tags: article.tags || [],
@@ -382,6 +407,22 @@ export const contentArticleApi = {
 // EXERCISE API
 // ============================================
 
+/**
+ * Övningarnas text ligger i `data/exercises.ts` på svenska. Engelskan är en
+ * overlay som läggs på här, vid tjänstegränsen, så att ALLA vägar in till en
+ * övning (lista, enskild, per kategori, steg) får samma översättning — i
+ * stället för att varje sida måste komma ihåg att göra det.
+ * Är språket svenska returneras datan oförändrad utan att overlayen hämtas.
+ */
+const oversattOvningar = (lista: Exercise[]) =>
+  oversattInnehall('exercises', lista, 'exercises')
+
+const oversattOvning = (ovning: Exercise) =>
+  oversattInnehall('exercises', ovning, `exercises.${ovning.id}`)
+
+const oversattSteg = (ovning: Exercise) =>
+  oversattInnehall('exercises', ovning.steps, `exercises.${ovning.id}.steps`)
+
 export const contentExerciseApi = {
   /**
    * Get all active exercises
@@ -407,18 +448,18 @@ export const contentExerciseApi = {
 
       if (exercisesRes.error || !exercisesRes.data || exercisesRes.data.length === 0) {
         apiLogger.debug('No exercises in database, using mock data')
-        return mockExercises
+        return oversattOvningar(mockExercises)
       }
 
       const steps = stepsRes.data || []
       const questions = questionsRes.data || []
 
-      return exercisesRes.data.map(ex =>
-        dbExerciseToExercise(ex, steps, questions)
+      return oversattOvningar(
+        exercisesRes.data.map(ex => dbExerciseToExercise(ex, steps, questions))
       )
     } catch (err) {
       console.error('Exception fetching exercises:', err)
-      return mockExercises
+      return oversattOvningar(mockExercises)
     }
   },
 
@@ -438,7 +479,7 @@ export const contentExerciseApi = {
 
       if (error || !exercise) {
         const mockExercise = mockExercises.find(e => e.id === identifier)
-        return mockExercise || null
+        return mockExercise ? oversattOvning(mockExercise) : null
       }
 
       // Fetch steps and questions
@@ -456,11 +497,11 @@ export const contentExerciseApi = {
         .in('step_id', stepIds)
         .order('sort_order', { ascending: true })
 
-      return dbExerciseToExercise(exercise, steps || [], questions || [])
+      return oversattOvning(dbExerciseToExercise(exercise, steps || [], questions || []))
     } catch (err) {
       console.error('Exception fetching exercise:', err)
       const mockExercise = mockExercises.find(e => e.id === identifier)
-      return mockExercise || null
+      return mockExercise ? oversattOvning(mockExercise) : null
     }
   },
 
@@ -477,7 +518,7 @@ export const contentExerciseApi = {
         .order('sort_order', { ascending: true })
 
       if (error || !exercises || exercises.length === 0) {
-        return mockExercises.filter(e => e.category === categoryName)
+        return oversattOvningar(mockExercises.filter(e => e.category === categoryName))
       }
 
       // Fetch all steps and questions
@@ -502,7 +543,7 @@ export const contentExerciseApi = {
       )
     } catch (err) {
       console.error('Exception fetching exercises by category:', err)
-      return mockExercises.filter(e => e.category === categoryName)
+      return oversattOvningar(mockExercises.filter(e => e.category === categoryName))
     }
   },
 
@@ -565,7 +606,7 @@ export const contentExerciseApi = {
 
       if (!exercise) {
         const mockExercise = mockExercises.find(e => e.id === exerciseSlug)
-        return mockExercise?.steps || []
+        return mockExercise ? oversattSteg(mockExercise) : []
       }
 
       // Get steps
@@ -577,7 +618,7 @@ export const contentExerciseApi = {
 
       if (!steps || steps.length === 0) {
         const mockExercise = mockExercises.find(e => e.id === exerciseSlug)
-        return mockExercise?.steps || []
+        return mockExercise ? oversattSteg(mockExercise) : []
       }
 
       // Get questions
@@ -603,7 +644,7 @@ export const contentExerciseApi = {
     } catch (err) {
       console.error('Exception fetching exercise steps:', err)
       const mockExercise = mockExercises.find(e => e.id === exerciseSlug)
-      return mockExercise?.steps || []
+      return mockExercise ? oversattSteg(mockExercise) : []
     }
   },
 }

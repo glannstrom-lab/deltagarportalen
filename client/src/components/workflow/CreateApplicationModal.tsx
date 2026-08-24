@@ -8,6 +8,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { 
   X, FileText, Briefcase, CheckCircle2, 
   ChevronRight, Sparkles, Save, Loader2,
@@ -36,6 +37,7 @@ export function CreateApplicationModal({
   onClose,
   onSuccess 
 }: CreateApplicationModalProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   
   const [currentStep] = useState<Step>(1)
@@ -73,7 +75,7 @@ export function CreateApplicationModal({
       const jobData: JobData = {
         jobId: job.id,
         headline: job.headline,
-        employer: job.employer?.name || 'Arbetsgivare ej angiven',
+        employer: job.employer?.name || t('common.employerNotSpecified'),
         description: job.description?.text || '',
         url: job.application_details?.url || '',
         location: job.workplace_address?.municipality || job.workplace_address?.city,
@@ -131,7 +133,7 @@ export function CreateApplicationModal({
       const jobData: JobData = {
         jobId: job.id,
         headline: job.headline,
-        employer: job.employer?.name || 'Arbetsgivare ej angiven',
+        employer: job.employer?.name || t('common.employerNotSpecified'),
         description: job.description?.text || '',
         url: job.application_details?.url || '',
         location: job.workplace_address?.municipality || job.workplace_address?.city,
@@ -144,8 +146,8 @@ export function CreateApplicationModal({
       setSaved(true)
     } catch {
       showToast.error(
-        'Något gick fel',
-        'Kunde inte spara ansökan. Försök igen.'
+        t('common.error'),
+        t('applications.create.saveErrorMessage')
       )
     } finally {
       setLoading(false)
@@ -178,18 +180,18 @@ export function CreateApplicationModal({
             className="w-28 h-28 mx-auto mb-4 select-none"
           />
           <h2 className="text-xl font-semibold text-stone-900 mb-1">
-            {applied ? 'Ansökan registrerad' : 'Jobbet sparat'}
+            {applied ? t('applications.create.successApplied') : t('applications.create.successSaved')}
           </h2>
           <p className="text-sm text-stone-600 mb-6">
             {applied
-              ? 'Din ansökan finns nu i jobbtrackern. Heja dig!'
-              : 'Du hittar jobbet bland dina sparade.'}
+              ? t('applications.create.successAppliedDesc')
+              : t('applications.create.successSavedDesc')}
           </p>
           <button
             onClick={onClose}
             className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-text)] text-white font-medium py-2.5 rounded-lg transition-colors"
           >
-            Klar
+            {t('common.done')}
           </button>
         </div>
       </div>
@@ -203,7 +205,7 @@ export function CreateApplicationModal({
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-start justify-between">
           <div>
             <h2 className="text-lg font-semibold text-stone-900">
-              Skapa ansökan
+              {t('applications.create.title')}
             </h2>
             <p className="text-sm text-stone-700 mt-0.5 line-clamp-1">
               {job.headline}
@@ -228,7 +230,7 @@ export function CreateApplicationModal({
               <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-stone-600">
                 <span className="flex items-center gap-1">
                   <Building2 size={14} />
-                  {job.employer?.name || 'Arbetsgivare ej angiven'}
+                  {job.employer?.name || t('common.employerNotSpecified')}
                 </span>
                 {job.workplace_address?.municipality && (
                   <span className="flex items-center gap-1">
@@ -246,7 +248,7 @@ export function CreateApplicationModal({
           {/* Step 1: CV */}
           <StepCard 
             number={1}
-            title="Förbered CV"
+            title={t('applications.create.step1Title')}
             isActive={currentStep === 1}
             isCompleted={workflow.step1_cv.optimize}
           >
@@ -263,15 +265,15 @@ export function CreateApplicationModal({
                       {cvMatchScore}%
                     </div>
                     <div>
-                      <p className="font-medium text-stone-900">Din matchning</p>
+                      <p className="font-medium text-stone-900">{t('applications.create.yourMatch')}</p>
                       <p className="text-sm text-stone-700">
-                        {cvMatchScore >= 70 ? 'Utmärkt match!' :
-                         cvMatchScore >= 40 ? 'God match - kan förbättras' :
-                         'Lägg till mer relevant erfarenhet'}
+                        {cvMatchScore >= 70 ? t('applications.create.matchExcellent') :
+                         cvMatchScore >= 40 ? t('applications.create.matchGood') :
+                         t('applications.create.matchLow')}
                       </p>
                       {cvAnalysis && (
                         <p className="text-xs text-stone-600 mt-0.5">
-                          {cvAnalysis.matchedKeywords} av {cvAnalysis.totalKeywords} keywords matchade
+                          {t('applications.create.keywordsMatched', { matched: cvAnalysis.matchedKeywords, total: cvAnalysis.totalKeywords })}
                         </p>
                       )}
                     </div>
@@ -284,7 +286,7 @@ export function CreateApplicationModal({
                         onClick={() => setShowDetailedAnalysis(!showDetailedAnalysis)}
                         className="flex items-center justify-between w-full text-sm font-medium text-stone-700"
                       >
-                        <span>🔍 Saknade keywords från annonsen</span>
+                        <span>{t('applications.create.missingKeywords')}</span>
                         <ChevronRight size={16} className={cn("transition-transform", showDetailedAnalysis && "rotate-90")} />
                       </button>
                       
@@ -308,7 +310,7 @@ export function CreateApplicationModal({
                             ))}
                             {cvAnalysis.missingKeywords.length > 8 && (
                               <span className="text-xs text-stone-700 px-1">
-                                +{cvAnalysis.missingKeywords.length - 8} till
+                                {t('applications.create.moreCount', { count: cvAnalysis.missingKeywords.length - 8 })}
                               </span>
                             )}
                           </div>
@@ -316,7 +318,7 @@ export function CreateApplicationModal({
                           {/* Förbättringsförslag */}
                           {cvAnalysis.suggestions.length > 0 && (
                             <div className="mt-3 pt-3 border-t border-stone-200">
-                              <p className="text-xs font-medium text-stone-600 mb-2">💡 Förbättringstips:</p>
+                              <p className="text-xs font-medium text-stone-600 mb-2">{t('applications.create.improvementTips')}</p>
                               <ul className="space-y-1.5">
                                 {cvAnalysis.suggestions.slice(0, 3).map((suggestion, idx) => (
                                   <li key={idx} className="text-xs text-stone-600 flex items-start gap-1.5">
@@ -340,16 +342,15 @@ export function CreateApplicationModal({
                 /* UX14: ärligt besked i stället för en siffra vi inte har.
                    Steget är inte blockerat — man kan söka jobbet ändå. */
                 <div className="text-sm text-stone-700">
-                  <p className="font-medium text-stone-900">Vi kunde inte räkna ut din matchning</p>
+                  <p className="font-medium text-stone-900">{t('applications.create.matchFailedTitle')}</p>
                   <p className="mt-0.5 text-stone-600">
-                    Det säger inget om hur väl du passar för jobbet — bara att uträkningen
-                    inte gick igenom. Du kan söka ändå.
+                    {t('applications.create.matchFailedDesc')}
                   </p>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-stone-700">
                   <Loader2 size={18} className="animate-spin" />
-                  Beräknar matchning...
+                  {t('applications.create.calculatingMatch')}
                 </div>
               )}
               
@@ -359,8 +360,8 @@ export function CreateApplicationModal({
               >
                 <Sparkles size={16} />
                 {cvAnalysis && cvAnalysis.matchScore !== null && cvAnalysis.matchScore < 60
-                  ? 'Förbättra CV för bättre matchning'
-                  : 'Optimera CV för detta jobb'
+                  ? t('applications.create.improveCvLink')
+                  : t('workflow.common.optimizeCvForJob')
                 }
                 <ArrowRight size={14} />
               </button>
@@ -370,13 +371,13 @@ export function CreateApplicationModal({
           {/* Step 2: Cover Letter */}
           <StepCard 
             number={2}
-            title="Skriv personligt brev"
+            title={t('applications.create.step2Title')}
             isActive={currentStep === 2}
             isCompleted={workflow.step2_letter.generateAI}
           >
             <div className="space-y-3">
               <p className="text-sm text-stone-600">
-                Ett personligt brev ökar dina chanser att bli kallad till intervju.
+                {t('applications.create.coverLetterHint')}
               </p>
               
               <div className="flex gap-2">
@@ -385,20 +386,20 @@ export function CreateApplicationModal({
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-solid)] transition-colors"
                 >
                   <Sparkles size={18} />
-                  Skriv med AI-hjälp
+                  {t('applications.create.writeWithAi')}
                 </button>
                 <button
                   onClick={() => navigate(`/cover-letter?jobId=${job.id}`)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-stone-100 text-stone-700 rounded-lg font-medium hover:bg-stone-200 transition-colors"
                 >
                   <FileText size={18} />
-                  Skriv själv
+                  {t('applications.create.writeYourself')}
                 </button>
               </div>
 
               <div className="flex items-center gap-2 text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg">
                 <CheckCircle2 size={14} />
-                Jobbinfo förifylld automatiskt
+                {t('applications.create.jobInfoPrefilled')}
               </div>
             </div>
           </StepCard>
@@ -406,14 +407,14 @@ export function CreateApplicationModal({
           {/* Step 3: Tracker */}
           <StepCard 
             number={3}
-            title="Lägg till i jobbtracker"
+            title={t('applications.create.step3Title')}
             isActive={currentStep === 3}
             isCompleted={false}
           >
             <div className="space-y-3">
               <div>
                 <label htmlFor="createapplicationmodal-f1" className="block text-sm font-medium text-stone-700 mb-1.5">
-                  Status
+                  {t('applications.create.statusLabel')}
                 </label>
                 <select
                   id="createapplicationmodal-f1"
@@ -424,15 +425,15 @@ export function CreateApplicationModal({
                   }))}
                   className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
                 >
-                  <option value="SAVED">💾 Sparat (skickar senare)</option>
-                  <option value="APPLIED">📨 Ansökt (idag)</option>
-                  <option value="INTERVIEW">📅 Intervju inbokad</option>
+                  <option value="SAVED">{t('applications.create.statusSaved')}</option>
+                  <option value="APPLIED">{t('applications.create.statusApplied')}</option>
+                  <option value="INTERVIEW">{t('applications.create.statusInterview')}</option>
                 </select>
               </div>
 
               <div>
                 <label htmlFor="createapplicationmodal-f2" className="block text-sm font-medium text-stone-700 mb-1.5">
-                  Anteckningar (valfritt)
+                  {t('applications.create.notesLabel')}
                 </label>
                 <textarea
                   id="createapplicationmodal-f2"
@@ -441,7 +442,7 @@ export function CreateApplicationModal({
                     ...prev,
                     step3_tracker: { ...prev.step3_tracker, notes: e.target.value }
                   }))}
-                  placeholder="t.ex. Skickade via mejl, väntar på svar..."
+                  placeholder={t('applications.create.notesPlaceholder')}
                   className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm resize-none"
                   rows={2}
                 />
@@ -456,7 +457,7 @@ export function CreateApplicationModal({
             onClick={onClose}
             className="px-4 py-2 text-stone-600 hover:text-stone-800 font-medium"
           >
-            Avbryt
+            {t('common.cancel')}
           </button>
           
           <div className="flex items-center gap-3">
@@ -472,7 +473,7 @@ export function CreateApplicationModal({
                 className="hidden sm:flex items-center gap-2 px-4 py-2 text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
               >
                 <ExternalLink size={16} />
-                Ansök direkt
+                {t('applications.create.applyDirectly')}
               </a>
             )}
             <button
@@ -483,14 +484,14 @@ export function CreateApplicationModal({
               {loading ? (
                 <>
                   <Loader2 size={18} className="animate-spin" />
-                  Sparar...
+                  {t('common.saving')}
                 </>
               ) : (
                 <>
                   <Save size={18} />
                   {workflow.step3_tracker.status === 'APPLIED' 
-                    ? 'Spara & Skicka ansökan'
-                    : 'Spara jobb'
+                    ? t('applications.create.saveAndSend')
+                    : t('applications.create.saveJob')
                   }
                 </>
               )}

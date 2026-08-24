@@ -105,7 +105,7 @@ export function CoverLetterTemplateSelector({
                   <div
                     className="w-3 h-3 rounded-full border border-white shadow-sm"
                     style={{ backgroundColor: template.colors.muted }}
-                    title="Sekundär"
+                    title={t('coverLetter.colorPreview.secondary')}
                   />
                   <span className="text-xs text-stone-500 dark:text-stone-400 ml-1">
                     {template.fontFamily === 'serif' ? 'Serif' : 'Sans'}

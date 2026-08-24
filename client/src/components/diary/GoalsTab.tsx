@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Target, Plus, Check, Trash2, MessageSquare,
   Award, Calendar, Sparkles
@@ -12,17 +13,17 @@ import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
 const CATEGORIES = [
-  { id: 'career', label: 'Karriär', emoji: '💼', color: 'bg-blue-100 text-blue-700 border-blue-200' },
-  { id: 'health', label: 'Hälsa', emoji: '🏃', color: 'bg-green-100 text-green-700 border-green-200' },
-  { id: 'personal', label: 'Personligt', emoji: '🌟', color: 'bg-sky-100 text-sky-700 border-sky-200' },
-  { id: 'learning', label: 'Lärande', emoji: '📚', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { id: 'general', label: 'Övrigt', emoji: '✨', color: 'bg-stone-100 text-stone-700 border-stone-200' },
+  { id: 'career', labelKey: 'diary.goals.categories.career', emoji: '💼', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+  { id: 'health', labelKey: 'diary.goals.categories.health', emoji: '🏃', color: 'bg-green-100 text-green-700 border-green-200' },
+  { id: 'personal', labelKey: 'diary.goals.categories.personal', emoji: '🌟', color: 'bg-sky-100 text-sky-700 border-sky-200' },
+  { id: 'learning', labelKey: 'diary.goals.categories.learning', emoji: '📚', color: 'bg-amber-100 text-amber-700 border-amber-200' },
+  { id: 'general', labelKey: 'diary.goals.categories.general', emoji: '✨', color: 'bg-stone-100 text-stone-700 border-stone-200' },
 ]
 
 const PRIORITIES = [
-  { value: 1, label: 'Hög', color: 'bg-red-100 text-red-700' },
-  { value: 2, label: 'Medium', color: 'bg-yellow-100 text-yellow-700' },
-  { value: 3, label: 'Låg', color: 'bg-green-100 text-green-700' },
+  { value: 1, labelKey: 'diary.goals.priorities.high', color: 'bg-red-100 text-red-700' },
+  { value: 2, labelKey: 'diary.goals.priorities.medium', color: 'bg-yellow-100 text-yellow-700' },
+  { value: 3, labelKey: 'diary.goals.priorities.low', color: 'bg-green-100 text-green-700' },
 ]
 
 function AddGoalForm({
@@ -32,6 +33,7 @@ function AddGoalForm({
   onAdd: (goal: { goal_text: string; category: string; priority: number }) => void
   onCancel: () => void
 }) {
+  const { t } = useTranslation()
   const [text, setText] = useState('')
   const [category, setCategory] = useState('general')
   const [priority, setPriority] = useState(2)
@@ -57,14 +59,14 @@ function AddGoalForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="goalstab-f1" className="block text-sm font-medium text-stone-700 mb-2">
-            Vad vill du uppnå denna vecka?
+            {t('diary.goals.form.questionLabel')}
           </label>
           <input
             id="goalstab-f1"
             type="text"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="T.ex. Söka 5 jobb, Träna 3 gånger..."
+            placeholder={t('diary.goals.form.placeholder')}
             className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             autoFocus
           />
@@ -73,7 +75,7 @@ function AddGoalForm({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Kategori
+              {t('diary.goals.form.category')}
             </label>
             <div className="flex flex-wrap gap-2">
               {CATEGORIES.map((cat) => (
@@ -88,7 +90,7 @@ function AddGoalForm({
                       : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
                   )}
                 >
-                  {cat.emoji} {cat.label}
+                  {cat.emoji} {t(cat.labelKey)}
                 </button>
               ))}
             </div>
@@ -96,7 +98,7 @@ function AddGoalForm({
 
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Prioritet
+              {t('diary.goals.form.priority')}
             </label>
             <div className="flex gap-2">
               {PRIORITIES.map((p) => (
@@ -111,7 +113,7 @@ function AddGoalForm({
                       : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                   )}
                 >
-                  {p.label}
+                  {t(p.labelKey)}
                 </button>
               ))}
             </div>
@@ -120,10 +122,10 @@ function AddGoalForm({
 
         <div className="flex gap-3">
           <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
-            Avbryt
+            {t('common.cancel')}
           </Button>
           <Button type="submit" disabled={!text.trim() || isSubmitting} className="flex-1">
-            {isSubmitting ? 'Lägger till...' : 'Lägg till mål'}
+            {isSubmitting ? t('diary.goals.form.adding') : t('diary.goals.form.add')}
           </Button>
         </div>
       </form>
@@ -152,6 +154,7 @@ function GoalCard({
   onDelete: () => void
   onReflect: (reflection: string) => void
 }) {
+  const { t } = useTranslation()
   const [showReflection, setShowReflection] = useState(false)
   const [reflection, setReflection] = useState(goal.reflection || '')
 
@@ -187,13 +190,13 @@ function GoalCard({
               "px-2 py-0.5 rounded text-xs font-medium border",
               categoryConfig.color
             )}>
-              {categoryConfig.emoji} {categoryConfig.label}
+              {categoryConfig.emoji} {t(categoryConfig.labelKey)}
             </span>
             <span className={cn(
               "px-2 py-0.5 rounded text-xs font-medium",
               priorityConfig.color
             )}>
-              {priorityConfig.label}
+              {t(priorityConfig.labelKey)}
             </span>
           </div>
 
@@ -216,19 +219,19 @@ function GoalCard({
           {showReflection && (
             <div className="mt-3 space-y-2">
               <textarea
-                aria-label="Din reflektion om målet"
+                aria-label={t('diary.goals.card.reflectionLabel')}
                 value={reflection}
                 onChange={(e) => setReflection(e.target.value)}
-                placeholder="Hur gick det? Vad lärde du dig?"
+                placeholder={t('diary.goals.card.reflectionPlaceholder')}
                 rows={3}
                 className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => setShowReflection(false)}>
-                  Avbryt
+                  {t('common.cancel')}
                 </Button>
                 <Button size="sm" onClick={handleSaveReflection}>
-                  Spara
+                  {t('common.save')}
                 </Button>
               </div>
             </div>
@@ -236,7 +239,7 @@ function GoalCard({
 
           {goal.is_completed && goal.completed_at && !showReflection && (
             <p className="text-xs text-stone-600 mt-2">
-              Avklarad {new Date(goal.completed_at).toLocaleDateString('sv-SE')}
+              {t('diary.goals.card.completedOn', { date: new Date(goal.completed_at).toLocaleDateString('sv-SE') })}
             </p>
           )}
         </div>
@@ -246,14 +249,14 @@ function GoalCard({
             <button
               onClick={() => setShowReflection(true)}
               className="p-1.5 hover:bg-[var(--c-bg)] rounded text-[var(--c-solid)]"
-              title="Lägg till reflektion"
+              title={t('diary.goals.card.addReflection')}
             >
               <MessageSquare className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={() => {
-              if (confirm('Ta bort detta mål?')) {
+              if (confirm(t('diary.goals.card.confirmDelete'))) {
                 onDelete()
               }
             }}
@@ -274,15 +277,16 @@ function WeekProgress({
   completed: number
   total: number
 }) {
+  const { t } = useTranslation()
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0
 
   return (
     <Card className="p-5 bg-[var(--c-bg)] border-[var(--c-accent)]/40">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-[var(--c-text)]">Veckans framsteg</h3>
+          <h3 className="font-semibold text-[var(--c-text)]">{t('diary.goals.progress.title')}</h3>
           <p className="text-sm text-[var(--c-text)]">
-            {completed} av {total} mål avklarade
+            {t('diary.goals.progress.completedOfTotal', { completed, total })}
           </p>
         </div>
         <div className="w-16 h-16 rounded-full bg-white border-4 border-[var(--c-accent)]/60 flex items-center justify-center">
@@ -300,7 +304,7 @@ function WeekProgress({
       {progress === 100 && total > 0 && (
         <div className="mt-4 flex items-center gap-2 text-[var(--c-text)]">
           <Award className="w-5 h-5" />
-          <span className="font-medium">Fantastiskt! Alla mål avklarade!</span>
+          <span className="font-medium">{t('diary.goals.progress.allDone')}</span>
         </div>
       )}
     </Card>
@@ -308,6 +312,7 @@ function WeekProgress({
 }
 
 export function GoalsTab() {
+  const { t } = useTranslation()
   const { goals, isLoading, createGoal, toggleComplete, addReflection, deleteGoal, completedCount, totalCount } = useWeeklyGoals()
   const [showAddForm, setShowAddForm] = useState(false)
 
@@ -343,7 +348,7 @@ export function GoalsTab() {
         <div>
           <h2 className="text-xl font-bold text-stone-900 flex items-center gap-2">
             <Target className="w-6 h-6 text-[var(--c-text)]" />
-            Veckans mål
+            {t('diary.goals.header.title')}
           </h2>
           <p className="text-sm text-stone-700 flex items-center gap-1">
             <Calendar className="w-4 h-4" />
@@ -353,7 +358,7 @@ export function GoalsTab() {
         {!showAddForm && (
           <Button onClick={() => setShowAddForm(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Nytt mål
+            {t('diary.goals.header.newGoal')}
           </Button>
         )}
       </div>
@@ -380,14 +385,14 @@ export function GoalsTab() {
             className="w-28 h-28 mx-auto mb-4 select-none"
           />
           <h3 className="text-lg font-semibold text-stone-700 mb-2">
-            Inga mål satta för denna vecka
+            {t('diary.goals.empty.title')}
           </h3>
           <p className="text-stone-700 mb-6">
-            Sätt upp mål för att hålla fokus och spåra dina framsteg
+            {t('diary.goals.empty.description')}
           </p>
           <Button onClick={() => setShowAddForm(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Sätt ditt första mål
+            {t('diary.goals.empty.cta')}
           </Button>
         </Card>
       ) : (
@@ -396,7 +401,7 @@ export function GoalsTab() {
           {pendingGoals.length > 0 && (
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-stone-700 uppercase tracking-wider">
-                Pågående ({pendingGoals.length})
+                {t('diary.goals.list.pending', { count: pendingGoals.length })}
               </h3>
               {pendingGoals.map(goal => (
                 <GoalCard
@@ -415,7 +420,7 @@ export function GoalsTab() {
             <div className="space-y-3">
               <h3 className="text-sm font-semibold text-stone-700 uppercase tracking-wider flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-500" />
-                Avklarade ({completedGoals.length})
+                {t('diary.goals.list.completed', { count: completedGoals.length })}
               </h3>
               {completedGoals.map(goal => (
                 <GoalCard
@@ -436,11 +441,11 @@ export function GoalsTab() {
         <div className="flex items-start gap-3">
           <Sparkles className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-medium text-amber-900 mb-1">Tips för bättre mål</h4>
+            <h4 className="font-medium text-amber-900 mb-1">{t('diary.goals.tips.title')}</h4>
             <ul className="text-sm text-amber-700 space-y-1">
-              <li>• Var specifik - "Söka 5 jobb" istället för "Söka jobb"</li>
-              <li>• Gör dem mätbara så du vet när du är klar</li>
-              <li>• Ha max 3-5 mål per vecka för att hålla fokus</li>
+              <li>• {t('diary.goals.tips.tip1')}</li>
+              <li>• {t('diary.goals.tips.tip2')}</li>
+              <li>• {t('diary.goals.tips.tip3')}</li>
             </ul>
           </div>
         </div>

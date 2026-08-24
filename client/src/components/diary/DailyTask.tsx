@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle2, Circle, Sparkles, ChevronRight, RefreshCw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { userPreferencesApi } from '@/services/cloudStorage'
@@ -12,51 +13,60 @@ interface Task {
   link: string
 }
 
-const dailyTasks: Task[] = [
+interface TaskDef {
+  id: string
+  titleKey: string
+  descKey: string
+  type: 'diary' | 'exercise' | 'cv' | 'jobsearch' | 'networking' | 'reflection'
+  estimatedTime: string
+  link: string
+}
+
+const dailyTaskDefs: TaskDef[] = [
   {
     id: 'diary-1',
-    title: 'Skriv i dagboken',
-    description: 'Reflektera över din dag och dina framsteg',
+    titleKey: 'diary.dailyTask.tasks.diary.title',
+    descKey: 'diary.dailyTask.tasks.diary.description',
     type: 'diary',
     estimatedTime: '5 min',
     link: '/diary'
   },
   {
     id: 'exercise-1',
-    title: 'Gör en övning',
-    description: 'Utforska dina styrkor eller öva på intervjuteknik',
+    titleKey: 'diary.dailyTask.tasks.exercise.title',
+    descKey: 'diary.dailyTask.tasks.exercise.description',
     type: 'exercise',
     estimatedTime: '15 min',
     link: '/exercises'
   },
   {
     id: 'cv-1',
-    title: 'Uppdatera ditt CV',
-    description: 'Lägg till en ny erfarenhet eller färdighet',
+    titleKey: 'diary.dailyTask.tasks.cv.title',
+    descKey: 'diary.dailyTask.tasks.cv.description',
     type: 'cv',
     estimatedTime: '10 min',
     link: '/cv'
   },
   {
     id: 'jobsearch-1',
-    title: 'Sök efter jobb',
-    description: 'Utforska nya möjligheter som matchar din profil',
+    titleKey: 'diary.dailyTask.tasks.jobsearch.title',
+    descKey: 'diary.dailyTask.tasks.jobsearch.description',
     type: 'jobsearch',
     estimatedTime: '15 min',
     link: '/job-search'
   },
   {
     id: 'networking-1',
-    title: 'Nätverka',
-    description: 'Kontakta någon i ditt nätverk eller utöka det',
+    titleKey: 'diary.dailyTask.tasks.networking.title',
+    descKey: 'diary.dailyTask.tasks.networking.description',
     type: 'networking',
     estimatedTime: '10 min',
     link: '/career'
   },
   {
     id: 'reflection-1',
-    title: 'Fundera över dina mål',
-    description: 'Vad är viktigast för dig just nu?',
+    titleKey: 'diary.dailyTask.tasks.reflection.title',
+    descKey: 'diary.dailyTask.tasks.reflection.description',
     type: 'reflection',
     estimatedTime: '5 min',
     link: '/exercises'
@@ -79,9 +89,19 @@ interface DailyTaskState {
 }
 
 export function DailyTask() {
+  const { t } = useTranslation()
   const [completed, setCompleted] = useState(false)
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
   const [loading, setLoading] = useState(true)
+
+  const dailyTasks: Task[] = useMemo(() => dailyTaskDefs.map(def => ({
+    id: def.id,
+    title: t(def.titleKey),
+    description: t(def.descKey),
+    type: def.type,
+    estimatedTime: def.estimatedTime,
+    link: def.link
+  })), [t])
 
   // Ladda sparad status från molnet
   useEffect(() => {
@@ -210,11 +230,11 @@ export function DailyTask() {
               'font-semibold transition-all',
               completed ? 'text-stone-700 line-through' : 'text-stone-900'
             )}>
-              Dagens uppgift
+              {t('diary.dailyTask.title')}
             </h3>
             {!completed && (
               <span className="text-xs text-stone-700">
-                Tar cirka {currentTask.estimatedTime}
+                {t('diary.dailyTask.estimatedTime', { time: currentTask.estimatedTime })}
               </span>
             )}
           </div>
@@ -224,7 +244,7 @@ export function DailyTask() {
           <button
             onClick={handleRefresh}
             className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
-            title="Få en annan uppgift"
+            title={t('diary.dailyTask.refresh')}
           >
             <RefreshCw size={18} />
           </button>
@@ -261,12 +281,12 @@ export function DailyTask() {
           {completed ? (
             <>
               <Circle size={18} />
-              Markera som ej klar
+              {t('diary.dailyTask.markIncomplete')}
             </>
           ) : (
             <>
               <CheckCircle2 size={18} />
-              Markera som klar
+              {t('diary.dailyTask.markComplete')}
             </>
           )}
         </button>
@@ -280,7 +300,7 @@ export function DailyTask() {
               : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
           )}
         >
-          Gå till
+          {t('diary.dailyTask.goTo')}
           <ChevronRight size={16} />
         </a>
       </div>
@@ -290,7 +310,7 @@ export function DailyTask() {
         <div className="mt-4 pt-4 border-t border-stone-200">
           <p className="text-sm text-green-700 flex items-center gap-2">
             <Sparkles size={16} className="text-amber-500" />
-            Bra jobbat! Du är ett steg närmare ditt mål.
+            {t('diary.dailyTask.completionMessage')}
           </p>
         </div>
       )}

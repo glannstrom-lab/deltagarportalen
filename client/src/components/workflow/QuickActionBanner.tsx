@@ -9,6 +9,7 @@ import {
   Briefcase, CheckCircle2
 } from '@/components/ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
@@ -31,6 +32,7 @@ export function QuickActionBanner({
   onDismiss,
   className 
 }: QuickActionBannerProps) {
+  const { t } = useTranslation()
   const [dismissed, setDismissed] = useState(false)
   const navigate = useNavigate()
 
@@ -52,14 +54,14 @@ export function QuickActionBanner({
   }> = {
     cv_saved: {
       icon: <CheckCircle2 size={20} className="text-green-600" />,
-      title: 'CV:t är sparat!',
-      message: 'Nu är det dags att hitta jobb som matchar dina kompetenser.',
+      title: t('workflow.quickAction.cvSaved.title'),
+      message: t('workflow.quickAction.cvSaved.message'),
       primaryAction: {
-        label: 'Sök jobb med detta CV',
+        label: t('workflow.quickAction.cvSaved.primary'),
         to: '/job-search'
       },
       secondaryAction: {
-        label: 'Optimera CV:t ytterligare',
+        label: t('workflow.quickAction.cvSaved.secondary'),
         to: '/cv'
       },
       bgColor: 'bg-green-50',
@@ -67,10 +69,10 @@ export function QuickActionBanner({
     },
     job_saved: {
       icon: <Briefcase size={20} className="text-[var(--c-text)]" />,
-      title: `Jobbet "${data?.title?.substring(0, 30) || ''}..." sparat!`,
-      message: 'Vill du skriva ett personligt brev medan du har jobbet i minnet?',
+      title: t('workflow.quickAction.jobSaved.title', { title: data?.title?.substring(0, 30) || '' }),
+      message: t('workflow.quickAction.jobSaved.message'),
       primaryAction: {
-        label: 'Skriv personligt brev',
+        label: t('workflow.quickAction.jobSaved.primary'),
         onClick: () => {
           if (data?.id) {
             navigate(`/dashboard/cover-letter?jobId=${data.id}&company=${encodeURIComponent(data.employer || '')}&title=${encodeURIComponent(data.title || '')}`)
@@ -78,7 +80,7 @@ export function QuickActionBanner({
         }
       },
       secondaryAction: {
-        label: 'Se sparade jobb',
+        label: t('workflow.quickAction.jobSaved.secondary'),
         to: '/job-search'
       },
       bgColor: 'bg-[var(--c-bg)]',
@@ -86,14 +88,14 @@ export function QuickActionBanner({
     },
     letter_saved: {
       icon: <FileText size={20} className="text-[var(--c-text)]" />,
-      title: 'Personligt brev sparat!',
-      message: 'Bra jobbat! När du hittar fler intressanta jobb kan du använda detta som mall.',
+      title: t('workflow.quickAction.letterSaved.title'),
+      message: t('workflow.quickAction.letterSaved.message'),
       primaryAction: {
-        label: 'Sök fler jobb',
+        label: t('workflow.quickAction.letterSaved.primary'),
         to: '/job-search'
       },
       secondaryAction: {
-        label: 'Se alla brev',
+        label: t('workflow.quickAction.letterSaved.secondary'),
         to: '/cover-letter'
       },
       bgColor: 'bg-[var(--c-bg)]',
@@ -101,14 +103,14 @@ export function QuickActionBanner({
     },
     profile_complete: {
       icon: <Sparkles size={20} className="text-amber-600" />,
-      title: 'Profilen är komplett!',
-      message: 'Du har allt du behöver för att börja söka jobb på allvar.',
+      title: t('workflow.quickAction.profileComplete.title'),
+      message: t('workflow.quickAction.profileComplete.message'),
       primaryAction: {
-        label: 'Börja söka jobb',
+        label: t('workflow.quickAction.profileComplete.primary'),
         to: '/job-search'
       },
       secondaryAction: {
-        label: 'Se intresseguiden',
+        label: t('workflow.quickAction.profileComplete.secondary'),
         to: '/interest-guide'
       },
       bgColor: 'bg-amber-50',
@@ -116,10 +118,10 @@ export function QuickActionBanner({
     },
     application_reminder: {
       icon: <Search size={20} className="text-blue-600" />,
-      title: 'Påminnelse: Sök jobb idag',
-      message: 'Regelbunden jobbsökning ökar dina chanser. Sätt av 30 minuter nu!',
+      title: t('workflow.quickAction.applicationReminder.title'),
+      message: t('workflow.quickAction.applicationReminder.message'),
       primaryAction: {
-        label: 'Hitta jobb nu',
+        label: t('workflow.quickAction.applicationReminder.primary'),
         to: '/job-search'
       },
       bgColor: 'bg-blue-50',
@@ -209,6 +211,7 @@ export function JobTrackerActions({
   status,
   onStatusChange 
 }: JobTrackerActionsProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   return (
@@ -216,7 +219,7 @@ export function JobTrackerActions({
       <button
         onClick={() => navigate(`/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
         className="p-1.5 text-stone-700 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
-        title="Skriv personligt brev"
+        title={t('workflow.quickAction.jobSaved.primary')}
       >
         <FileText size={16} />
       </button>
@@ -224,7 +227,7 @@ export function JobTrackerActions({
       <button
         onClick={() => navigate(`/cv?optimizeFor=${jobId}`)}
         className="p-1.5 text-stone-700 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
-        title="Optimera CV för detta jobb"
+        title={t('workflow.common.optimizeCvForJob')}
       >
         <Sparkles size={16} />
       </button>
@@ -233,7 +236,7 @@ export function JobTrackerActions({
         <button
           onClick={() => onStatusChange?.('APPLIED')}
           className="p-1.5 text-stone-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-          title="Markera som ansökt"
+          title={t('workflow.quickAction.markApplied')}
         >
           <CheckCircle2 size={16} />
         </button>
@@ -249,16 +252,17 @@ interface FloatingBackButtonProps {
 }
 
 export function FloatingBackButton({ 
-  label = 'Tillbaka till jobbsökning',
+  label,
   to 
 }: FloatingBackButtonProps) {
+  const { t } = useTranslation()
   return (
     <Link
       to={to}
       className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-full shadow-lg hover:bg-[var(--c-solid)] hover:shadow-xl transition-all hover:-translate-y-0.5"
     >
       <ArrowRight size={18} />
-      <span className="font-medium text-sm">{label}</span>
+      <span className="font-medium text-sm">{label || t('workflow.quickAction.backToJobSearch')}</span>
     </Link>
   )
 }

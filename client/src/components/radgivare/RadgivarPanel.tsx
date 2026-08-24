@@ -39,7 +39,8 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ChevronDown } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { COACHES, type CoachId } from '@/data/coaches'
+import { COACHES, getPageKeyForPath, type CoachId } from '@/data/coaches'
+import { useInnehall } from '@/data/oversattningar'
 import { radgivareForPath } from './radgivarData'
 import { useRadgivarTipsApi, useVisadeTips } from './radgivarKontext'
 
@@ -65,7 +66,12 @@ function Avatar({ id, stor = false }: { id: CoachId; stor?: boolean }) {
  */
 export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?: number }) {
   const { t } = useTranslation()
-  const innehall = radgivareForPath(pathname)
+  const sidnyckel = getPageKeyForPath(pathname)
+  const raInnehall = radgivareForPath(pathname)
+  // Råden och FAQ:erna är innehåll, inte gränssnittstext — de bor i
+  // `data/coaches.ts` och översätts genom overlayen, inte genom i18next.
+  const innehall = useInnehall('coaches', raInnehall, `PAGE_COACH_CONTENT.${sidnyckel ?? ''}`)
+  const COACHES_T = useInnehall('coaches', COACHES, 'COACHES')
   const coachId = innehall?.coachIds?.[0]
   const tips = coachId ? innehall?.byCoach?.[coachId]?.tips ?? [] : []
   const rad = tips[index]
@@ -85,7 +91,7 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
 
   if (!coachId || !rad) return null
 
-  const coach = COACHES[coachId]
+  const coach = COACHES_T[coachId]
   return (
     <aside
       data-domain={coach.accent}
@@ -130,7 +136,10 @@ export default function RadgivarPanel({
   iKolumn?: boolean
 }) {
   const { t } = useTranslation()
-  const innehall = radgivareForPath(pathname)
+  const sidnyckel = getPageKeyForPath(pathname)
+  const raInnehall = radgivareForPath(pathname)
+  const innehall = useInnehall('coaches', raInnehall, `PAGE_COACH_CONTENT.${sidnyckel ?? ''}`)
+  const COACHES_T = useInnehall('coaches', COACHES, 'COACHES')
   const visadeRad = useVisadeTips()
   const forstaCoach = innehall?.coachIds?.[0] ?? null
   const [oppenCoach, setOppenCoach] = useState<CoachId | null>(iKolumn ? forstaCoach : null)
@@ -171,7 +180,7 @@ export default function RadgivarPanel({
       className="space-y-3"
     >
       {innehall.coachIds.map((id) => {
-        const coach = COACHES[id]
+        const coach = COACHES_T[id]
         const c = innehall.byCoach[id]
         if (!c) return null
         // Hoppa över råd som redan står infogade i sidans flöde — annars

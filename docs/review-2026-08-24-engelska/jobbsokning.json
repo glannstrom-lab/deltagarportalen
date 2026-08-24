@@ -1,0 +1,187 @@
+{
+  "omrade": "Jobbsökning",
+  "nycklarGranskade": 1296,
+  "sammanfattning": "Engelskan i det här området är överlag mekaniskt ren — inga variabelfel, inga trasiga {{}}-taggar, och salary.* respekterar regelverksregeln strikt (inga hittepå-belopp eller -procentsatser i EN som saknas i SV; siffror är antingen exempel som redan finns i SV eller kommer via {{variabler}}). Det största och mest återkommande problemet är att myndighetsnamn som explicit ska stå kvar på svenska genomgående görs om till generiska engelska namn: Arbetsförmedlingen blir 'the Employment Agency'/'the Public Employment Service', Migrationsverket blir 'the Migration Agency', Skatteverket blir 'the Tax Agency', Försäkringskassan blir 'the Social Insurance Agency', och en enda a-kassa-nyckel tappar ordet 'a-kassa' helt. Det här sker även i international.*, områdets viktigaste namnrymd, där en nyanländ läsare specifikt behöver känna igen de svenska myndighetsnamnen för att hitta rätt i verkligheten — UHR-nyckeln visar för övrigt att rätt mönster (svenskt namn/förkortning bevarat, med engelsk förklaring) redan finns i samma namnrymd, så inkonsekvensen är påtaglig. 'Spontanansökan' översätts som 'Spontaneous Application/applications' på tre ställen, vilket är en känd icke-idiomatisk maskinöversättning enligt uppdraget. Utöver detta finns enstaka betydelseglidningar (jobs.matches.createProfileDesc byter från inbjudande 'vi hjälper dig, börja med en av dessa' till administrativt 'du måste göra X, Y eller Z'; jobSearch.tabs.daily 'Daily job' läses som en jobbtyp snarare än 'dagens jobb'), en lokaliseringsmiss (Volvo/Spotify byts mot Google/Microsoft i ett exempelfält), och spridd användning av Title Case i sid-/widgettitlar och knappar där mening-versalisering är regeln. Inget kritiskt regelverksbrott (belopp/procent/villkor) hittades i salary.* eller international.*."
+  ,
+  "termlista": [
+    {"sv": "spontanansökan", "en": "speculative application", "kommentar": "'Spontaneous application' (nuvarande, 3 nycklar) är inte gängse engelska. 'Speculative application' är den vedertagna termen i internationell/brittisk karriärrådgivning; 'unsolicited application' är ett fullgott alternativ om 'speculative' bedöms för ovant för B1-läsare. Håll ett val konsekvent."},
+    {"sv": "Arbetsförmedlingen", "en": "Arbetsförmedlingen (the Swedish Public Employment Service)", "kommentar": "Ska stå kvar på svenska. Nuvarande EN använder genomgående 'the Employment Agency' eller 'the Public Employment Service' utan det svenska namnet — läsaren möter i praktiken bara 'Arbetsförmedlingen' och känner inte igen den engelska varianten. ~10 förekomster i jobSearch/jobs/international."},
+    {"sv": "Migrationsverket", "en": "Migrationsverket (the Swedish Migration Agency)", "kommentar": "Ska stå kvar på svenska. Nuvarande EN skriver genomgående 'the Migration Agency' utan svenskt namn, i international.validation.permit.* — den mest känsliga delen av hela området (arbetstillstånd)."},
+    {"sv": "Skatteverket", "en": "Skatteverket (the Swedish Tax Agency)", "kommentar": "Ska stå kvar på svenska. Nuvarande EN skriver genomgående 'the Tax Agency' utan svenskt namn i international.integration.items.*."},
+    {"sv": "Försäkringskassan", "en": "Försäkringskassan (the Swedish Social Insurance Agency)", "kommentar": "Ska stå kvar på svenska. Nuvarande EN skriver 'the Social Insurance Agency' utan svenskt namn."},
+    {"sv": "a-kassa", "en": "a-kassa (unemployment insurance fund)", "kommentar": "Ska stå kvar på svenska. Enda förekomsten (international.integration.items.akassa.title) tappar ordet helt."}
+  ],
+  "fynd": [
+    {
+      "nyckel": "jobSearch.subtitle",
+      "nuvarandeEn": "Find job openings from the Employment Agency",
+      "foreslagenEn": "Find job openings from Arbetsförmedlingen (the Swedish Public Employment Service)",
+      "sv": "Hitta lediga jobb från Arbetsförmedlingen",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Arbetsförmedlingen ska aldrig översättas. 'The Employment Agency' är exakt det exempel på fel översättning som uppdraget varnar för, och det här är den allra första meningen läsaren möter i jobbsökningsmodulen."
+    },
+    {
+      "nyckel": "jobs.card.viaAF",
+      "nuvarandeEn": "Via the Employment Agency",
+      "foreslagenEn": "Via Arbetsförmedlingen",
+      "sv": "Via Arbetsförmedlingen",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Samma mönster som ovan, syns på varje jobbkort. En användare som ska navigera till arbetsformedlingen.se känner inte igen 'the Employment Agency' som samma organisation."
+    },
+    {
+      "nyckel": "jobSearch.dailyTab.serviceError",
+      "nuvarandeEn": "There is nothing wrong with you or your profile — we could not reach the Swedish Public Employment Service. Try again in a moment.",
+      "foreslagenEn": "There is nothing wrong with you or your profile — we could not reach Arbetsförmedlingen (the Swedish Public Employment Service). Try again in a moment.",
+      "sv": "Det är inget fel på dig eller din profil — Arbetsförmedlingens tjänst gick inte att nå. Prova igen om en stund.",
+      "severity": "liten",
+      "typ": "term",
+      "motivering": "Använder redan den korrekta officiella engelska benämningen, men saknar det svenska namnet som läsaren faktiskt möter i vardagen. Lägre severity än övriga eftersom termen i sig är korrekt, bara namnet på organisationen saknas."
+    },
+    {
+      "nyckel": "international.validation.permit.eu",
+      "nuvarandeEn": "If you are a citizen of an EU/EEA country or of a Nordic country you do not need a work permit. You may start working straight away, and you should not contact the Migration Agency — move on to the next tab.",
+      "foreslagenEn": "If you are a citizen of an EU/EEA country or of a Nordic country you do not need a work permit. You may start working straight away, and you should not contact Migrationsverket — move on to the next tab.",
+      "sv": "Är du medborgare i ett EU/EES-land eller i Norden behöver du inget arbetstillstånd. Du får arbeta direkt, och du ska inte kontakta Migrationsverket — gå vidare till nästa flik.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Migrationsverket ska stå kvar på svenska. Det här är dessutom den mest känsliga delen av området (arbetstillstånd) — läsaren måste kunna koppla texten till den svenska myndighet hen faktiskt ska (eller inte ska) kontakta."
+    },
+    {
+      "nyckel": "international.integration.items.folkbokforing.body",
+      "nuvarandeEn": "You do not apply for a personal identity number — you report your move to the Tax Agency and are registered as a resident. The number comes with that registration. It requires that you plan to live here for at least a year. You report the move in the Tax Agency’s e-service, at the earliest 14 days before you move, and you must then visit a service office in person to prove who you are. Book a time in advance.",
+      "foreslagenEn": "You do not apply for a personal identity number — you report your move to Skatteverket (the Swedish Tax Agency) and are registered as a resident. The number comes with that registration. It requires that you plan to live here for at least a year. You report the move in Skatteverket's e-service, at the earliest 14 days before you move, and you must then visit a service office in person to prove who you are. Book a time in advance.",
+      "sv": "Du ansöker inte om personnummer — du anmäler din flytt till Skatteverket och blir folkbokförd. Personnumret kommer med folkbokföringen. Det förutsätter att du planerar att bo här i minst ett år. Anmälan gör du i Skatteverkets e-tjänst, tidigast 14 dagar före flytten, och du måste sedan besöka ett servicekontor personligen för att styrka vem du är. Boka tid i förväg.",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Skatteverket ska stå kvar på svenska. Det här är det första och viktigaste steget i hela 'Första tiden'-checklistan — helt centralt att läsaren känner igen myndigheten."
+    },
+    {
+      "nyckel": "international.integration.items.forsakringskassan.title",
+      "nuvarandeEn": "Tell the Social Insurance Agency you have moved",
+      "foreslagenEn": "Tell Försäkringskassan (the Swedish Social Insurance Agency) you have moved",
+      "sv": "Anmäl din flytt till Försäkringskassan",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Försäkringskassan ska stå kvar på svenska. Det svenska namnet saknas helt i den engelska rubriken."
+    },
+    {
+      "nyckel": "international.integration.items.arbetsformedlingen.title",
+      "nuvarandeEn": "Register with the Public Employment Service",
+      "foreslagenEn": "Register with Arbetsförmedlingen (the Swedish Public Employment Service)",
+      "sv": "Skriv in dig på Arbetsförmedlingen",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "Arbetsförmedlingen ska stå kvar på svenska — särskilt påfallande här eftersom nyckelns eget namn ('arbetsformedlingen') visar att det handlar om just den myndigheten, men det svenska namnet försvinner i den engelska texten."
+    },
+    {
+      "nyckel": "international.integration.items.akassa.title",
+      "nuvarandeEn": "Join an unemployment insurance fund",
+      "foreslagenEn": "Join an a-kassa (unemployment insurance fund)",
+      "sv": "Gå med i en a-kassa",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "'a-kassa' står explicit på listan över termer som aldrig ska översättas, men den enda förekomsten i hela området tappar ordet helt. En nyanländ som senare hör ordet 'a-kassa' från andra källor kopplar inte ihop det med den här checklistpunkten."
+    },
+    {
+      "nyckel": "jobs.matches.createProfileDesc",
+      "nuvarandeEn": "To find matches you need to create your CV, take the interest guide, or set career goals.",
+      "foreslagenEn": "Once we know what you can do and what you want, we can find jobs that fit. Start with one of these:",
+      "sv": "När vi vet vad du kan och vill kan vi hitta jobb som passar. Börja med någon av dessa:",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan är inbjudande och beskriver vad portalen gör ('vi hittar jobb som passar... börja med en av dessa'); engelskan gör om det till en administrativ instruktion ('you need to do X, Y, or Z') som låter som ett krav snarare än en inbjudan. Bryter mot ton-principen i DESIGN.md §2 om att aldrig använda administrationsspråk."
+    },
+    {
+      "nyckel": "jobSearch.tabs.daily",
+      "nuvarandeEn": "Daily job",
+      "foreslagenEn": "Today's job",
+      "sv": "Dagens jobb",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "'Daily job' läses som en jobbkategori (ett återkommande deltidsjobb/dagjobb), inte som 'dagens utvalda jobb'. Flikens innehåll (jobSearch.dailyTab.title = 'Today's Job For You') visar att rätt betydelse är 'today's job' — flikettiketten matchar inte sitt eget innehåll."
+    },
+    {
+      "nyckel": "jobs.applications.empty.description",
+      "nuvarandeEn": "When you save a job and change status to \"Applied\" it will appear here. Track your applications and keep track of your job search.",
+      "foreslagenEn": "When you save a job and change status to \"Applied\" it will appear here — so you can keep track of what you've applied to.",
+      "sv": "När du sparar ett jobb och markerar det som \"Ansökt\" syns det här — så har du koll på vilka du sökt.",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Engelskan lägger till en hel mening ('Track your applications and keep track of your job search') som inte finns i svenskan, och upprepar dessutom 'track'/'keep track' klumpigt i samma stycke."
+    },
+    {
+      "nyckel": "interviewSimulator.companyPlaceholder",
+      "nuvarandeEn": "e.g. Google, Microsoft...",
+      "foreslagenEn": "e.g. Volvo, Spotify...",
+      "sv": "t.ex. Volvo, Spotify...",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "Exempelföretagen är bytta från de två svenska/nordiska bolag som nämns i svenskan till amerikanska bolag. Portalen är för den svenska arbetsmarknaden — Volvo och Spotify är rimliga, kända exempel att öva intervju mot; Google/Microsoft signalerar fel marknad."
+    },
+    {
+      "nyckel": "spontaneous.title",
+      "nuvarandeEn": "Spontaneous Application",
+      "foreslagenEn": "Speculative applications",
+      "sv": "Spontanansökan",
+      "severity": "stor",
+      "typ": "maskinöversatt",
+      "motivering": "'Spontaneous application' är en ordagrann men icke-idiomatisk översättning. Det här är sidtiteln för hela modulen och syns i navigationen — värt att fixa högt upp för konsekvens med övriga två nycklar som använder samma ord."
+    },
+    {
+      "nyckel": "spontaneous.tips.title",
+      "nuvarandeEn": "Tips for spontaneous applications",
+      "foreslagenEn": "Tips for speculative applications",
+      "sv": "Tips för spontanansökningar",
+      "severity": "liten",
+      "typ": "maskinöversatt",
+      "motivering": "Samma term-fråga som spontaneous.title — ska bytas i samma svep för konsekvens."
+    },
+    {
+      "nyckel": "jobsokHub.features.spontaneous.title",
+      "nuvarandeEn": "Spontaneous applications",
+      "foreslagenEn": "Speculative applications",
+      "sv": "Spontanansökan",
+      "severity": "stor",
+      "typ": "maskinöversatt",
+      "motivering": "Det här är kortrubriken på hubbsidan 'Söka jobb' — en av de första platserna en engelsktalande användare möter termen, så den bör vara rätt från början."
+    },
+    {
+      "nyckel": "spontaneous.search.title",
+      "nuvarandeEn": "Search companies",
+      "foreslagenEn": "Find companies to contact",
+      "sv": "Hitta företag att kontakta",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "Samma svenska sträng ('Hitta företag att kontakta') används även i spontaneous.tabs.search och är där översatt till 'Find companies to contact'. Här blir den plötsligt 'Search companies' och tappar 'att kontakta' — två olika engelska texter för identisk svensk text."
+    },
+    {
+      "nyckel": "jobSearch.noSavedJobsDesc",
+      "nuvarandeEn": "Save jobs you're interested in to easily find them later.",
+      "foreslagenEn": "Click the bookmark on a job you're interested in — then you can easily find it again.",
+      "sv": "Klicka på bokmärket på ett jobb du är intresserad av — då hittar du tillbaka enkelt.",
+      "severity": "liten",
+      "typ": "betydelsefel",
+      "motivering": "Svenskan ger en konkret handling ('klicka på bokmärket'); engelskan gör det till en allmän instruktion ('save jobs') utan att säga hur. För målgruppen är den konkreta UI-instruktionen mer hjälpsam."
+    },
+    {
+      "nyckel": "jobSearch.title",
+      "nuvarandeEn": "Job Search",
+      "foreslagenEn": "Job search",
+      "sv": "Sök jobb",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Title Case i stället för mening-versalisering. Samma mönster återkommer i flera sid-/widgettitlar i området (t.ex. jobSearch.dailyTab.title 'Today's Job For You', interviewSimulator.title 'Interview Simulator', salary.pageTitle 'Salary & Negotiation', interviewWidget.interviewTraining 'Interview Training', linkedInWidget.linkedInOptimization 'LinkedIn Optimization', jobs.matches.title 'Job Matches') — ett genomgående brott mot versaliseringsregeln, värt en samlad översyn snarare än nyckel-för-nyckel."
+    },
+    {
+      "nyckel": "jobSearch.dailyTab.title",
+      "nuvarandeEn": "Today's Job For You",
+      "foreslagenEn": "Today's job for you",
+      "sv": "Dagens jobb för dig",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Title Case ('Job For You') i stället för mening-versalisering — se samlad kommentar under jobSearch.title."
+    }
+  ]
+}

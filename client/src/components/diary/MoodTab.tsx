@@ -3,6 +3,7 @@
  */
 
 import { useId, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Smile, Sun, Moon, Battery, Brain,
   TrendingUp, TrendingDown, Minus, Calendar, Check,
@@ -13,22 +14,22 @@ import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
 const MOOD_CONFIG = [
-  { value: 1, emoji: '😢', label: 'Mycket dåligt', color: 'bg-rose-500', bgColor: 'bg-rose-100', textColor: 'text-rose-700' },
-  { value: 2, emoji: '😔', label: 'Dåligt', color: 'bg-orange-500', bgColor: 'bg-orange-100', textColor: 'text-orange-700' },
-  { value: 3, emoji: '😐', label: 'Okej', color: 'bg-yellow-500', bgColor: 'bg-yellow-100', textColor: 'text-yellow-700' },
-  { value: 4, emoji: '🙂', label: 'Bra', color: 'bg-green-500', bgColor: 'bg-green-100', textColor: 'text-green-700' },
-  { value: 5, emoji: '😄', label: 'Mycket bra', color: 'bg-emerald-500', bgColor: 'bg-emerald-100', textColor: 'text-emerald-700' },
+  { value: 1, emoji: '😢', labelKey: 'diary.moodTab.scale.veryBad', color: 'bg-rose-500', bgColor: 'bg-rose-100', textColor: 'text-rose-700' },
+  { value: 2, emoji: '😔', labelKey: 'diary.moodTab.scale.bad', color: 'bg-orange-500', bgColor: 'bg-orange-100', textColor: 'text-orange-700' },
+  { value: 3, emoji: '😐', labelKey: 'diary.moodTab.scale.okay', color: 'bg-yellow-500', bgColor: 'bg-yellow-100', textColor: 'text-yellow-700' },
+  { value: 4, emoji: '🙂', labelKey: 'diary.moodTab.scale.good', color: 'bg-green-500', bgColor: 'bg-green-100', textColor: 'text-green-700' },
+  { value: 5, emoji: '😄', labelKey: 'diary.moodTab.scale.veryGood', color: 'bg-emerald-500', bgColor: 'bg-emerald-100', textColor: 'text-emerald-700' },
 ]
 
 const ACTIVITIES = [
-  { id: 'exercise', label: 'Träning', emoji: '🏃' },
-  { id: 'sleep', label: 'Bra sömn', emoji: '😴' },
-  { id: 'social', label: 'Umgås', emoji: '👥' },
-  { id: 'nature', label: 'Utomhus', emoji: '🌳' },
-  { id: 'work', label: 'Produktiv', emoji: '💼' },
-  { id: 'relax', label: 'Avslappning', emoji: '🧘' },
-  { id: 'hobby', label: 'Hobby', emoji: '🎨' },
-  { id: 'learn', label: 'Lärande', emoji: '📚' },
+  { id: 'exercise', labelKey: 'diary.moodTab.activities.exercise', emoji: '🏃' },
+  { id: 'sleep', labelKey: 'diary.moodTab.activities.sleep', emoji: '😴' },
+  { id: 'social', labelKey: 'diary.moodTab.activities.social', emoji: '👥' },
+  { id: 'nature', labelKey: 'diary.moodTab.activities.nature', emoji: '🌳' },
+  { id: 'work', labelKey: 'diary.moodTab.activities.work', emoji: '💼' },
+  { id: 'relax', labelKey: 'diary.moodTab.activities.relax', emoji: '🧘' },
+  { id: 'hobby', labelKey: 'diary.moodTab.activities.hobby', emoji: '🎨' },
+  { id: 'learn', labelKey: 'diary.moodTab.activities.learn', emoji: '📚' },
 ]
 
 function MoodSelector({
@@ -40,6 +41,7 @@ function MoodSelector({
   onChange: (value: number) => void
   size?: 'small' | 'large'
 }) {
+  const { t } = useTranslation()
   return (
     <div className={cn(
       "flex gap-2",
@@ -63,7 +65,7 @@ function MoodSelector({
               "text-xs font-medium",
               value === mood.value ? mood.textColor : "text-stone-700"
             )}>
-              {mood.label}
+              {t(mood.labelKey)}
             </span>
           )}
         </button>
@@ -90,6 +92,7 @@ function LevelSlider({
   // UX31: reglaget hade bara en <span> som etikett — inget htmlFor, inget id.
   // Skärmläsaren läste "reglage, 3" utan att säga vad som reglerades.
   const sliderId = useId()
+  const { t } = useTranslation()
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -105,7 +108,7 @@ function LevelSlider({
         min={1}
         max={5}
         value={value}
-        aria-valuetext={`${value} av 5`}
+        aria-valuetext={t('diary.moodTab.today.valueOfFive', { value })}
         onChange={(e) => onChange(parseInt(e.target.value))}
         className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-[var(--c-solid)]"
       />
@@ -118,6 +121,7 @@ function LevelSlider({
 }
 
 function TodayLogger() {
+  const { t } = useTranslation()
   const { todayMood, logMood } = useMoodLogs()
   const [mood, setMood] = useState(todayMood?.mood_level || 3)
   const [energy, setEnergy] = useState(todayMood?.energy_level || 3)
@@ -159,7 +163,7 @@ function TodayLogger() {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-stone-900">Hur mår du idag?</h3>
+          <h3 className="text-lg font-semibold text-stone-900">{t('diary.moodTab.today.title')}</h3>
           <p className="text-sm text-stone-700">
             {new Date().toLocaleDateString('sv-SE', {
               weekday: 'long',
@@ -171,7 +175,7 @@ function TodayLogger() {
         {todayMood && (
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
             <Check className="w-4 h-4" />
-            Loggat
+            {t('diary.moodTab.today.logged')}
           </span>
         )}
       </div>
@@ -180,7 +184,7 @@ function TodayLogger() {
         {/* Mood */}
         <div role="group" aria-labelledby="mood-overall-label">
           <span id="mood-overall-label" className="block text-sm font-medium text-stone-700 mb-3">
-            Allmänt humör
+            {t('diary.moodTab.today.overallMood')}
           </span>
           <MoodSelector value={mood} onChange={setMood} />
         </div>
@@ -188,35 +192,35 @@ function TodayLogger() {
         {/* Energy, Stress, Sleep */}
         <div className="grid gap-6 md:grid-cols-3">
           <LevelSlider
-            label="Energinivå"
+            label={t('diary.moodTab.today.energyLevel')}
             icon={Battery}
             value={energy}
             onChange={setEnergy}
-            lowLabel="Trött"
-            highLabel="Energisk"
+            lowLabel={t('diary.moodTab.today.tired')}
+            highLabel={t('diary.moodTab.today.energetic')}
           />
           <LevelSlider
-            label="Stressnivå"
+            label={t('diary.moodTab.today.stressLevel')}
             icon={Brain}
             value={stress}
             onChange={setStress}
-            lowLabel="Lugn"
-            highLabel="Stressad"
+            lowLabel={t('diary.moodTab.today.calm')}
+            highLabel={t('diary.moodTab.today.stressed')}
           />
           <LevelSlider
-            label="Sömnkvalitet"
+            label={t('diary.moodTab.today.sleepQuality')}
             icon={Moon}
             value={sleep}
             onChange={setSleep}
-            lowLabel="Dålig"
-            highLabel="Utvilad"
+            lowLabel={t('diary.moodTab.today.poor')}
+            highLabel={t('diary.moodTab.today.rested')}
           />
         </div>
 
         {/* Activities */}
         <div role="group" aria-labelledby="mood-activities-label">
           <span id="mood-activities-label" className="block text-sm font-medium text-stone-700 mb-3">
-            Vad har du gjort idag?
+            {t('diary.moodTab.today.activitiesLabel')}
           </span>
           <div className="flex flex-wrap gap-2">
             {ACTIVITIES.map((activity) => (
@@ -231,7 +235,7 @@ function TodayLogger() {
                 )}
               >
                 <span>{activity.emoji}</span>
-                {activity.label}
+                {t(activity.labelKey)}
               </button>
             ))}
           </div>
@@ -240,13 +244,13 @@ function TodayLogger() {
         {/* Note */}
         <div>
           <label htmlFor="mood-note" className="block text-sm font-medium text-stone-700 mb-2">
-            Anteckning (valfritt)
+            {t('diary.moodTab.today.noteLabel')}
           </label>
           <textarea
             id="mood-note"
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            placeholder="Något speciellt som påverkade din dag?"
+            placeholder={t('diary.moodTab.today.notePlaceholder')}
             rows={3}
             className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
           />
@@ -257,7 +261,7 @@ function TodayLogger() {
           disabled={isSaving}
           className="w-full"
         >
-          {isSaving ? 'Sparar...' : saved ? '✓ Sparat!' : 'Spara dagens humör'}
+          {isSaving ? t('common.saving') : saved ? t('diary.moodTab.today.saved') : t('diary.moodTab.today.save')}
         </Button>
       </div>
     </Card>
@@ -265,6 +269,7 @@ function TodayLogger() {
 }
 
 function MoodCalendar() {
+  const { t } = useTranslation()
   const { logs } = useMoodLogs()
   const [currentMonth, setCurrentMonth] = useState(new Date())
 
@@ -285,16 +290,16 @@ function MoodCalendar() {
     setCurrentMonth(newDate)
   }
 
-  const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+  const days = [t('diary.days.mon'), t('diary.days.tue'), t('diary.days.wed'), t('diary.days.thu'), t('diary.days.fri'), t('diary.days.sat'), t('diary.days.sun')]
 
   return (
     <Card className="p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-stone-900">Humörkalender</h3>
+        <h3 className="font-semibold text-stone-900">{t('diary.moodTab.calendar.title')}</h3>
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('prev')}
-            aria-label="Föregående månad"
+            aria-label={t('diary.moodTab.calendar.prevMonth')}
             className="p-1 hover:bg-stone-100 rounded"
           >
             <ChevronLeft className="w-5 h-5 text-stone-700" aria-hidden="true" />
@@ -304,7 +309,7 @@ function MoodCalendar() {
           </span>
           <button
             onClick={() => navigate('next')}
-            aria-label="Nästa månad"
+            aria-label={t('diary.moodTab.calendar.nextMonth')}
             className="p-1 hover:bg-stone-100 rounded"
           >
             <ChevronRight className="w-5 h-5 text-stone-700" aria-hidden="true" />
@@ -336,7 +341,7 @@ function MoodCalendar() {
                 isToday && "ring-2 ring-[var(--c-solid)] ring-offset-1",
                 moodConfig ? moodConfig.bgColor : "bg-stone-50"
               )}
-              title={moodLog ? `Humör: ${moodLog.mood_level}/5` : ''}
+              title={moodLog ? t('diary.moodTab.calendar.moodTitle', { level: moodLog.mood_level }) : ''}
             >
               {moodConfig ? (
                 <span className="text-lg">{moodConfig.emoji}</span>
@@ -352,6 +357,7 @@ function MoodCalendar() {
 }
 
 function MoodStats() {
+  const { t } = useTranslation()
   const { logs, stats } = useMoodLogs()
 
   // Calculate weekly comparison
@@ -383,7 +389,7 @@ function MoodStats() {
       <Card className="p-3 sm:p-4">
         <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
           <Smile className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-xs sm:text-sm font-medium">Humör</span>
+          <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.mood')}</span>
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
           <span className="text-lg sm:text-2xl font-bold text-stone-900">
@@ -396,25 +402,25 @@ function MoodStats() {
       <Card className="p-3 sm:p-4">
         <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
           <Activity className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-xs sm:text-sm font-medium">Trend</span>
+          <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.trend')}</span>
         </div>
         <div className="flex items-center gap-1 sm:gap-2">
           {trend === 'up' && (
             <>
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
-              <span className="text-sm text-green-600 font-medium">Uppåt</span>
+              <span className="text-sm text-green-600 font-medium">{t('diary.moodTab.stats.trendUp')}</span>
             </>
           )}
           {trend === 'down' && (
             <>
               <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-              <span className="text-sm text-orange-600 font-medium">Nedåt</span>
+              <span className="text-sm text-orange-600 font-medium">{t('diary.moodTab.stats.trendDown')}</span>
             </>
           )}
           {trend === 'same' && (
             <>
               <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-stone-600" />
-              <span className="text-sm text-stone-600 font-medium">Stabil</span>
+              <span className="text-sm text-stone-600 font-medium">{t('diary.moodTab.stats.trendSame')}</span>
             </>
           )}
         </div>
@@ -423,7 +429,7 @@ function MoodStats() {
       <Card className="p-3 sm:p-4">
         <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
           <Battery className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-xs sm:text-sm font-medium">Energi</span>
+          <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.energy')}</span>
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
           <span className="text-lg sm:text-2xl font-bold text-stone-900">
@@ -436,7 +442,7 @@ function MoodStats() {
       <Card className="p-3 sm:p-4">
         <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
           <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-          <span className="text-xs sm:text-sm font-medium">Dagar</span>
+          <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.days')}</span>
         </div>
         <span className="text-lg sm:text-2xl font-bold text-stone-900">
           {stats.totalLogs}
@@ -447,7 +453,7 @@ function MoodStats() {
         <Card className="p-4 md:col-span-2 lg:col-span-4">
           <div className="flex items-center gap-2 text-stone-700 mb-3">
             <Sun className="w-4 h-4" />
-            <span className="text-sm font-medium">Vanligaste aktiviteterna</span>
+            <span className="text-sm font-medium">{t('diary.moodTab.stats.topActivities')}</span>
           </div>
           <div className="flex gap-3">
             {topActivities.map(([id, count]) => {
@@ -456,7 +462,7 @@ function MoodStats() {
               return (
                 <div key={id} className="flex items-center gap-2 px-3 py-2 bg-stone-50 rounded-lg">
                   <span className="text-lg">{activity.emoji}</span>
-                  <span className="text-sm font-medium text-stone-700">{activity.label}</span>
+                  <span className="text-sm font-medium text-stone-700">{t(activity.labelKey)}</span>
                   <span className="text-xs text-stone-600">({count}x)</span>
                 </div>
               )

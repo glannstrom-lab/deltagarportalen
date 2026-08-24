@@ -612,7 +612,7 @@ function SearchTab() {
                   onSelect={addOccupationFilter}
                   excludeConceptIds={filters.occupations.map((o) => o.conceptId)}
                   label="Lägg till yrke"
-                  placeholder="T.ex. lagerarbetare, sjuksköterska"
+                  placeholder={t('jobSearch.occupationPlaceholder')}
                 />
               )}
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
@@ -1173,8 +1173,8 @@ function SavedJobsTab() {
             onChange={(e) => setSortBy(e.target.value as 'date' | 'company' | 'status')}
             className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
           >
-            <option value="date">Senast sparade</option>
-            <option value="company">Företag A-Ö</option>
+            <option value="date">{t('jobSearch.sortLatestSaved')}</option>
+            <option value="company">{t('jobSearch.sortCompanyAZ')}</option>
           </select>
         </div>
       </div>
@@ -1218,7 +1218,7 @@ function SavedJobsTab() {
                   <button
                     onClick={() => handleMarkAsApplied(job.id)}
                     className="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors text-stone-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400"
-                    title="Markera som ansökt"
+                    title={t('jobSearch.markAsApplied')}
                   >
                     <CheckCircle className="w-5 h-5" />
                   </button>

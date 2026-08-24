@@ -44,6 +44,13 @@ export function DeleteAccountSection() {
   const [showConfirmDialog, setShowConfirmDialog] = useState(false)
   const [showImmediateDialog, setShowImmediateDialog] = useState(false)
   const [confirmText, setConfirmText] = useState('')
+  // Bekräftelseordet kommer ur översättningen, inte ur en literal i koden.
+  // Jämförelsen låg tidigare mot den hårdkodade svenska strängen "RADERA"
+  // medan den engelska texten bad användaren skriva "DELETE" — knappen gick
+  // därför aldrig att aktivera på engelska, och rätten till radering
+  // (GDPR art. 17) var i praktiken blockerad för den gruppen.
+  const bekraftelseord = t('settings.deleteAccount.confirmWord').trim()
+  const bekraftat = confirmText.trim() === bekraftelseord
   const [deleteReason, setDeleteReason] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -170,8 +177,8 @@ export function DeleteAccountSection() {
 
   // Immediate deletion (skip grace period)
   const handleImmediateDeletion = async () => {
-    if (confirmText !== 'RADERA') {
-      setError(t('settings.deleteAccount.confirmTextError'))
+    if (!bekraftat) {
+      setError(t('settings.deleteAccount.confirmTextError', { ord: bekraftelseord }))
       return
     }
 
@@ -491,20 +498,20 @@ export function DeleteAccountSection() {
 
               <div className="mb-4">
                 <label htmlFor="deleteaccountsection-f2" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  {t('settings.deleteAccount.typeToConfirm')}
+                  {t('settings.deleteAccount.typeToConfirm', { ord: bekraftelseord })}
                 </label>
                 <input
                   id="deleteaccountsection-f2"
                   type="text"
                   value={confirmText}
                   onChange={(e) => setConfirmText(e.target.value)}
-                  placeholder="RADERA"
+                  placeholder={bekraftelseord}
                   className={cn(
                     "w-full px-4 py-3 border rounded-xl text-center font-mono text-lg",
                     "bg-white dark:bg-stone-900",
                     "border-stone-200 dark:border-stone-600",
                     "text-stone-900 dark:text-stone-100",
-                    confirmText === 'RADERA' && "border-red-500 bg-red-50 dark:bg-red-900/20"
+                    bekraftat && "border-red-500 bg-red-50 dark:bg-red-900/20"
                   )}
                 />
               </div>
@@ -523,7 +530,7 @@ export function DeleteAccountSection() {
                 <Button
                   variant="primary"
                   onClick={handleImmediateDeletion}
-                  disabled={confirmText !== 'RADERA'}
+                  disabled={!bekraftat}
                   isLoading={isDeleting}
                   className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-stone-300"
                 >

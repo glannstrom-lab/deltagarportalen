@@ -193,7 +193,7 @@ export function ImageUpload({
           <div className="relative aspect-square max-w-[200px] mx-auto">
             <img
               src={previewUrl}
-              alt="Profilbild förhandsvisning"
+              alt={t('profile.imageUpload.previewAlt')}
               className="w-full h-full object-cover rounded-xl"
             />
             

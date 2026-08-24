@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { JobMatch } from '@/services/interestGuideData'
 import { 
   ChevronDown, 
@@ -27,6 +28,7 @@ export function JobCard({
   onSelect,
   showCompare = false 
 }: JobCardProps) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
   const { occupation, matchPercentage, isSuitable, needsAdaptation, adaptations, warnings } = match
 
@@ -161,7 +163,7 @@ export function JobCard({
             <div className="bg-white rounded-lg p-3 border border-gray-200">
               <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
                 <Wallet className="w-4 h-4" />
-                <span>Lön</span>
+                <span>{t('career.explore.salary')}</span>
               </div>
               <p className="font-medium text-gray-900">{occupation.salary}</p>
             </div>
@@ -178,7 +180,7 @@ export function JobCard({
 
           {/* Karriärväg */}
           <div className="mb-4">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Karriärväg:</h4>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">{t('interestGuide.jobCard.careerPath')}</h4>
             <div className="flex flex-wrap items-center gap-2">
               {occupation.careerPath.map((step, i) => (
                 <span key={i} className="flex items-center gap-2">

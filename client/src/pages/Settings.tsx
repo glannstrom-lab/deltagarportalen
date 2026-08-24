@@ -1146,7 +1146,7 @@ function AppearanceSettings() {
       </CardSection>
 
       {/* Coach-widget toggle */}
-      <CardSection title="Coach-tips på varje sida">
+      <CardSection title={t('settings.coachTipsTitle')}>
         <Card variant="flat" padding="sm">
           <Toggle
             label="Visa coach-tips"

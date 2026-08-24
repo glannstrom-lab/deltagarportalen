@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   MapPin,
   Train,
@@ -41,6 +42,7 @@ export function CommutePlannerPanel({
   savedHomeAddress,
   className,
 }: CommutePlannerPanelProps) {
+  const { t } = useTranslation()
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CommutePlannerResult | null>(null)
@@ -55,11 +57,11 @@ export function CommutePlannerPanel({
 
   const handleAnalyze = async () => {
     if (!homeAddress.trim()) {
-      setError('Ange din hemadress')
+      setError(t('ai.commute.errNoHome'))
       return
     }
     if (!workAddress.trim()) {
-      setError('Ange arbetsplatsens adress')
+      setError(t('ai.commute.errNoWork'))
       return
     }
 
@@ -75,7 +77,7 @@ export function CommutePlannerPanel({
       const response = await getCommutePlan(params)
       setResult(response.result)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod')
+      setError(err instanceof Error ? err.message : t('common.genericError'))
     } finally {
       setIsLoading(false)
     }
@@ -83,7 +85,7 @@ export function CommutePlannerPanel({
 
   if (!result && !isLoading && !error) {
     return (
-      <AiConsentGate compact featureName="Pendlingsplaneraren">
+      <AiConsentGate compact featureName={t('ai.commute.featureName')}>
         <div className={cn('p-5 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800', className)}>
           <div className="flex items-start gap-3 mb-4">
             <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/50">
@@ -91,10 +93,10 @@ export function CommutePlannerPanel({
             </div>
             <div>
               <h4 className="font-medium text-stone-800 dark:text-stone-200">
-                Pendlingsplanerare
+                {t('ai.commute.heading')}
               </h4>
               <p className="text-sm text-stone-600 dark:text-stone-600">
-                Beräkna restid och kostnad
+                {t('ai.commute.subheading')}
               </p>
             </div>
           </div>
@@ -103,7 +105,7 @@ export function CommutePlannerPanel({
             <div className="relative">
               <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <Input
-                placeholder="Din hemadress"
+                placeholder={t('ai.commute.placeholderHome')}
                 value={homeAddress}
                 onChange={(e) => setHomeAddress(e.target.value)}
                 className="pl-10"
@@ -112,7 +114,7 @@ export function CommutePlannerPanel({
             <div className="relative">
               <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <Input
-                placeholder={workCompanyName || "Arbetsplatsens adress"}
+                placeholder={workCompanyName || t('ai.commute.placeholderWork')}
                 value={workAddress}
                 onChange={(e) => setWorkAddress(e.target.value)}
                 className="pl-10"
@@ -123,7 +125,7 @@ export function CommutePlannerPanel({
               className="w-full"
               leftIcon={<MapPin className="w-4 h-4" />}
             >
-              Beräkna pendling
+              {t('ai.commute.calculateButton')}
             </Button>
           </div>
         </div>
@@ -132,14 +134,14 @@ export function CommutePlannerPanel({
   }
 
   return (
-    <AiConsentGate compact featureName="Pendlingsplaneraren">
+    <AiConsentGate compact featureName={t('ai.commute.featureName')}>
       <AIResultCard
         aiGenerated={!!result}
-        title="Pendlingsanalys"
+        title={t('ai.commute.resultTitle')}
         subtitle={workCompanyName || workAddress}
         icon={<MapPin className="w-5 h-5 text-white" />}
         isLoading={isLoading}
-        loadingText="Beräknar pendlingsalternativ..."
+        loadingText={t('ai.commute.loadingText')}
         error={error}
         onRetry={handleAnalyze}
         className={className}
@@ -151,7 +153,7 @@ export function CommutePlannerPanel({
               onClick={() => setResult(null)}
               className="text-white/80 hover:text-white hover:bg-white/10"
             >
-              Ny beräkning
+              {t('ai.commute.newCalculation')}
             </Button>
           )
         }
@@ -166,24 +168,24 @@ export function CommutePlannerPanel({
                   <div className="flex items-center gap-2 mb-3">
                     <Train className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     <span className="font-medium text-stone-800 dark:text-stone-200">
-                      Kollektivtrafik
+                      {t('ai.commute.publicTransit')}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.travelTime')}</span>
                       <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.publicTransit.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Byten</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.transfers')}</span>
                       <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.publicTransit.transfers}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Månadskostnad</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.monthlyCost')}</span>
                       <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                         {result.publicTransit.monthlyCost}
                       </span>
@@ -212,24 +214,24 @@ export function CommutePlannerPanel({
                   <div className="flex items-center gap-2 mb-3">
                     <Car className="w-5 h-5 text-stone-600 dark:text-stone-600" />
                     <span className="font-medium text-stone-800 dark:text-stone-200">
-                      Bil
+                      {t('ai.commute.car')}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.travelTime')}</span>
                       <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.car.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Avstånd</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.distance')}</span>
                       <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.car.distance}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Månadskostnad</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.monthlyCost')}</span>
                       <span className="text-sm font-bold text-stone-700 dark:text-stone-300">
                         {result.car.monthlyCost}
                       </span>
@@ -249,24 +251,24 @@ export function CommutePlannerPanel({
                   <div className="flex items-center gap-2 mb-3">
                     <Bike className="w-5 h-5 text-green-600 dark:text-green-400" />
                     <span className="font-medium text-stone-800 dark:text-stone-200">
-                      Cykel
+                      {t('ai.commute.bike')}
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.travelTime')}</span>
                       <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.bike.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Avstånd</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.distance')}</span>
                       <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.bike.distance}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-stone-700">Kostnad</span>
+                      <span className="text-xs text-stone-700">{t('ai.commute.cost')}</span>
                       <span className="text-sm font-bold text-green-600 dark:text-green-400">
                         0 kr
                       </span>
@@ -286,7 +288,7 @@ export function CommutePlannerPanel({
                   <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
-                      Rekommendation
+                      {t('ai.commute.recommendation')}
                     </h4>
                     <p className="text-sm text-stone-700 dark:text-stone-300">
                       {result.recommendation}
@@ -300,7 +302,7 @@ export function CommutePlannerPanel({
             {result.remoteWorkSuggestion && (
               <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800">
                 <p className="text-sm text-amber-800 dark:text-amber-200">
-                  <strong>Distansarbete:</strong> {result.remoteWorkSuggestion}
+                  <strong>{t('ai.commute.remoteWorkLabel')}</strong> {result.remoteWorkSuggestion}
                 </p>
               </div>
             )}
@@ -308,7 +310,7 @@ export function CommutePlannerPanel({
             {/* Alternative Jobs Suggestion */}
             {result.alternativeJobs?.suggestion && (
               <CollapsibleSection
-                title="Alternativa jobb"
+                title={t('ai.commute.alternativeJobs')}
                 icon={<Building2 className="w-4 h-4" />}
               >
                 <p className="text-sm text-stone-700 dark:text-stone-300">
@@ -320,7 +322,7 @@ export function CommutePlannerPanel({
             {/* Summary Stats */}
             <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
               <p className="text-xs text-stone-600 text-center">
-                Från: {homeAddress} → Till: {workAddress}
+                {t('ai.commute.fromTo', { from: homeAddress, to: workAddress })}
               </p>
             </div>
           </div>

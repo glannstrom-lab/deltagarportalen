@@ -119,8 +119,8 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
       {education.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-stone-200 rounded-xl bg-stone-50">
           <GraduationCap className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-          <p className="text-stone-700 mb-1">Inga utbildningar tillagda ännu</p>
-          <p className="text-sm text-stone-600 mb-4">Lägg till din utbildningsbakgrund</p>
+          <p className="text-stone-700 mb-1">{t('cv.educationEditor.emptyTitle')}</p>
+          <p className="text-sm text-stone-600 mb-4">{t('cv.educationEditor.emptySubtitle')}</p>
           <button
             onClick={addEducation}
             className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors font-medium"
@@ -232,7 +232,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             onChange={(e) => updateEducation(ed.id, 'level', e.target.value)}
                             className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"
                           >
-                            <option value="">Välj nivå...</option>
+                            <option value="">{t('cv.educationEditor.selectLevel')}</option>
                             {educationLevels.map(level => (
                               <option key={level.value} value={level.value}>
                                 {level.label}
@@ -253,7 +253,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               type="text"
                               value={ed.degree}
                               onChange={(e) => updateEducation(ed.id, 'degree', e.target.value)}
-                              placeholder="t.ex. Civilingenjör"
+                              placeholder={t('cv.educationEditor.degreePlaceholder')}
                               className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                             />
                           </div>
@@ -354,7 +354,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             onChange={(e) => updateEducation(ed.id, 'current', e.target.checked)}
                             className="w-4 h-4 text-[var(--c-solid)] border-stone-300 rounded focus:ring-[var(--c-solid)]"
                           />
-                          <span className="text-sm text-stone-700">Pågående utbildning</span>
+                          <span className="text-sm text-stone-700">{t('cv.educationEditor.currentLabel')}</span>
                         </label>
 
                         {/* Description */}
@@ -365,7 +365,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                           <RichTextEditor
                             value={ed.description || ''}
                             onChange={(value) => updateEducation(ed.id, 'description', value)}
-                            placeholder="Beskriv vad du lärt dig, specialiseringar, projekt..."
+                            placeholder={t('cv.educationEditor.descriptionPlaceholder')}
                             maxLength={500}
                             minHeight="80px"
                           />

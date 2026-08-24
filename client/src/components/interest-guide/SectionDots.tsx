@@ -1,4 +1,5 @@
-import { type SectionId, sections } from '@/services/interestGuideData'
+import { type SectionId } from '@/services/interestGuideData'
+import { useSektioner } from '@/services/useIntresseguideInnehall'
 import { UserCircle2, Brain, Heart, Activity } from '@/components/ui/icons'
 
 interface SectionDotsProps {
@@ -26,9 +27,10 @@ export function SectionDots({
   completedSections,
   onSectionClick 
 }: SectionDotsProps) {
+  const sektioner = useSektioner()
   return (
     <div className="flex items-center justify-center gap-2">
-      {sections.map((section, index) => {
+      {sektioner.map((section, index) => {
         const Icon = sectionIcons[section.id]
         const isCurrent = section.id === currentSection
         const isCompleted = completedSections.includes(section.id)
@@ -63,7 +65,7 @@ export function SectionDots({
             </button>
             
             {/* Connector line */}
-            {index < sections.length - 1 && (
+            {index < sektioner.length - 1 && (
               <div className={`w-4 sm:w-6 h-0.5 ${isCompleted ? 'bg-green-400' : 'bg-gray-200'}`} />
             )}
           </div>

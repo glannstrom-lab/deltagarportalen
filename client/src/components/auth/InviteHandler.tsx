@@ -9,6 +9,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Mail,
@@ -44,6 +45,7 @@ interface InviteData {
 }
 
 export const InviteHandler: React.FC = () => {
+  const { t } = useTranslation();
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
 
@@ -80,7 +82,7 @@ export const InviteHandler: React.FC = () => {
         .maybeSingle();
 
       if (error || !data) {
-        throw new Error('Inbjudan är ogiltig eller har gått ut');
+        throw new Error(t('auth.invite.invalidOrExpired'));
       }
 
       setInviteData(data as InviteData);
@@ -93,7 +95,7 @@ export const InviteHandler: React.FC = () => {
         }));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod');
+      setError(err instanceof Error ? err.message : t('common.genericError'));
     } finally {
       setValidating(false);
       setLoading(false);
@@ -103,7 +105,7 @@ export const InviteHandler: React.FC = () => {
   const isStaInvite = inviteData?.metadata?.program === 'steg_till_arbete';
   const consultantName = inviteData?.metadata?.consultant_first_name
     ? `${inviteData.metadata.consultant_first_name} ${inviteData.metadata.consultant_last_name ?? ''}`.trim()
-    : 'Din konsulent';
+    : t('auth.invite.yourConsultant');
 
   const consentOk = !isStaInvite || (consentDataSharing && consentRevocation);
 
@@ -120,7 +122,7 @@ export const InviteHandler: React.FC = () => {
       }
 
       if (isStaInvite && !consentOk) {
-        throw new Error('Du måste godkänna samtycket för att fortsätta');
+        throw new Error(t('auth.invite.consentRequired'));
       }
 
       // Skapa användare — triggern handle_invitation_acceptance kopplar
@@ -142,7 +144,7 @@ export const InviteHandler: React.FC = () => {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ett fel uppstod');
+      setError(err instanceof Error ? err.message : t('common.genericError'));
     } finally {
       setSubmitting(false);
     }
@@ -161,13 +163,13 @@ export const InviteHandler: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Ogiltig inbjudan</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('auth.invite.invalidTitle')}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={() => navigate('/login')}
             className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
           >
-            Gå till inloggning
+            {t('auth.invite.goToLogin')}
           </button>
         </div>
       </div>
@@ -179,11 +181,11 @@ export const InviteHandler: React.FC = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center">
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          <h2 className="text-xl font-bold text-gray-900 mb-2">Konto skapat!</h2>
+          <h2 className="text-xl font-bold text-gray-900 mb-2">{t('auth.invite.accountCreatedTitle')}</h2>
           <p className="text-gray-600 mb-6">
             {isStaInvite
-              ? 'Ditt konto är skapat och Steg till arbete är aktiverat. Du omdirigeras till inloggningen…'
-              : 'Ditt konto har skapats. Du omdirigeras till inloggningen…'}
+              ? t('auth.invite.accountCreatedSta')
+              : t('auth.invite.accountCreated')}
           </p>
         </div>
       </div>
@@ -194,11 +196,11 @@ export const InviteHandler: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Välkommen!</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('auth.invite.welcome')}</h1>
           <p className="text-gray-600 mt-2">
             {isStaInvite
-              ? `${consultantName} har bjudit in dig till Steg till arbete`
-              : 'Du har blivit inbjuden till Jobin'}
+              ? t('auth.invite.invitedBySta', { consultantName })
+              : t('auth.invite.invitedGeneric')}
           </p>
           <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-500">
             <Mail className="w-4 h-4" />
@@ -216,7 +218,7 @@ export const InviteHandler: React.FC = () => {
           <div className="mb-6 border border-stone-200 rounded-xl overflow-hidden">
             <div className="px-5 py-3 bg-stone-50 border-b border-stone-200 flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-stone-600" />
-              <h3 className="font-semibold text-stone-900">Din konsulent</h3>
+              <h3 className="font-semibold text-stone-900">{t('auth.invite.yourConsultant')}</h3>
             </div>
             <div className="p-5 space-y-1">
               <p className="text-stone-900 font-medium">{consultantName}</p>
@@ -224,7 +226,7 @@ export const InviteHandler: React.FC = () => {
                 <p className="text-sm text-stone-600">{inviteData.metadata.consultant_email}</p>
               )}
               <p className="text-xs text-stone-500 mt-2">
-                Du kan kontakta din konsulent direkt eller från "Min konsulent"-sidan när du loggat in.
+                {t('auth.invite.contactConsultantHint')}
               </p>
             </div>
           </div>
@@ -234,11 +236,11 @@ export const InviteHandler: React.FC = () => {
           <div className="mb-6 border border-stone-200 rounded-xl overflow-hidden">
             <div className="px-5 py-3 bg-stone-50 border-b border-stone-200 flex items-center gap-2">
               <Shield className="w-5 h-5 text-stone-600" />
-              <h3 className="font-semibold text-stone-900">Samtycke till datadelning</h3>
+              <h3 className="font-semibold text-stone-900">{t('auth.invite.consentHeading')}</h3>
             </div>
             <div className="p-5 space-y-4">
               <p className="text-sm text-stone-700 whitespace-pre-line">
-                {inviteData?.metadata?.consent_text ?? 'Samtyckes-text saknas — kontakta din konsulent.'}
+                {inviteData?.metadata?.consent_text ?? t('auth.invite.consentTextMissing')}
               </p>
 
               <div className="space-y-3 pt-2 border-t border-stone-100">
@@ -250,9 +252,8 @@ export const InviteHandler: React.FC = () => {
                     className="mt-0.5 w-4 h-4 rounded border-stone-300 text-primary-600 focus:ring-primary-500"
                   />
                   <span className="text-sm text-stone-800">
-                    Jag samtycker till att <strong>{consultantName}</strong> får tillgång till min STA-data
-                    (aktiviteter, skattningar, CV, mående, dokument) och kan skicka rapporter till
-                    Arbetsförmedlingen för min räkning.
+                    {t('auth.invite.consentDataSharingPrefix')} <strong>{consultantName}</strong>{' '}
+                    {t('auth.invite.consentDataSharingSuffix')}
                   </span>
                 </label>
 
@@ -264,9 +265,9 @@ export const InviteHandler: React.FC = () => {
                     className="mt-0.5 w-4 h-4 rounded border-stone-300 text-primary-600 focus:ring-primary-500"
                   />
                   <span className="text-sm text-stone-800">
-                    Jag förstår att jag <strong>när som helst kan säga upp kopplingen</strong> från
-                    "Min konsulent"-sidan. Då slutar konsulenten se ny aktivitet, men dokument som
-                    redan skickats till Arbetsförmedlingen behålls enligt arkivkraven.
+                    {t('auth.invite.consentRevocationPrefix')}{' '}
+                    <strong>{t('auth.invite.consentRevocationBold')}</strong>{' '}
+                    {t('auth.invite.consentRevocationSuffix')}
                   </span>
                 </label>
               </div>
@@ -277,7 +278,7 @@ export const InviteHandler: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label htmlFor="invitehandler-f1" className="block text-sm font-medium text-gray-700 mb-1">Förnamn *</label>
+              <label htmlFor="invitehandler-f1" className="block text-sm font-medium text-gray-700 mb-1">{t('auth.invite.firstNameLabel')}</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -292,7 +293,7 @@ export const InviteHandler: React.FC = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="invitehandler-f2" className="block text-sm font-medium text-gray-700 mb-1">Efternamn *</label>
+              <label htmlFor="invitehandler-f2" className="block text-sm font-medium text-gray-700 mb-1">{t('auth.invite.lastNameLabel')}</label>
               <input
                 id="invitehandler-f2"
                 type="text"
@@ -306,7 +307,7 @@ export const InviteHandler: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="invitehandler-f3" className="block text-sm font-medium text-gray-700 mb-1">Lösenord *</label>
+            <label htmlFor="invitehandler-f3" className="block text-sm font-medium text-gray-700 mb-1">{t('auth.invite.passwordLabel')}</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -316,31 +317,31 @@ export const InviteHandler: React.FC = () => {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                placeholder="Minst 12 tecken"
+                placeholder={t('auth.invite.passwordMinLength')}
                 autoComplete="new-password"
               />
             </div>
             <ul className="mt-2 text-xs text-gray-500 space-y-0.5">
               <li className={formData.password.length >= 12 ? 'text-green-600' : ''}>
-                {formData.password.length >= 12 ? '✓' : '○'} Minst 12 tecken
+                {formData.password.length >= 12 ? '✓' : '○'} {t('auth.invite.passwordMinLength')}
               </li>
               <li className={/[A-Z]/.test(formData.password) ? 'text-green-600' : ''}>
-                {/[A-Z]/.test(formData.password) ? '✓' : '○'} En stor bokstav (A-Z)
+                {/[A-Z]/.test(formData.password) ? '✓' : '○'} {t('auth.invite.reqUpper')}
               </li>
               <li className={/[a-z]/.test(formData.password) ? 'text-green-600' : ''}>
-                {/[a-z]/.test(formData.password) ? '✓' : '○'} En liten bokstav (a-z)
+                {/[a-z]/.test(formData.password) ? '✓' : '○'} {t('auth.invite.reqLower')}
               </li>
               <li className={/[0-9]/.test(formData.password) ? 'text-green-600' : ''}>
-                {/[0-9]/.test(formData.password) ? '✓' : '○'} En siffra (0-9)
+                {/[0-9]/.test(formData.password) ? '✓' : '○'} {t('auth.invite.reqDigit')}
               </li>
               <li className={/[^A-Za-z0-9]/.test(formData.password) ? 'text-green-600' : ''}>
-                {/[^A-Za-z0-9]/.test(formData.password) ? '✓' : '○'} Ett specialtecken (!@#$%^&*)
+                {/[^A-Za-z0-9]/.test(formData.password) ? '✓' : '○'} {t('auth.invite.reqSpecial')}
               </li>
             </ul>
           </div>
 
           <div>
-            <label htmlFor="invitehandler-f4" className="block text-sm font-medium text-gray-700 mb-1">Bekräfta lösenord *</label>
+            <label htmlFor="invitehandler-f4" className="block text-sm font-medium text-gray-700 mb-1">{t('auth.invite.confirmPasswordLabel')}</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
@@ -350,12 +351,12 @@ export const InviteHandler: React.FC = () => {
                 value={formData.confirmPassword}
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                placeholder="Upprepa lösenord"
+                placeholder={t('auth.invite.repeatPasswordPlaceholder')}
                 autoComplete="new-password"
               />
             </div>
             {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-              <p className="mt-1 text-xs text-red-500">Lösenorden matchar inte</p>
+              <p className="mt-1 text-xs text-red-500">{t('auth.invite.passwordMismatch')}</p>
             )}
           </div>
 
@@ -363,26 +364,26 @@ export const InviteHandler: React.FC = () => {
             type="submit"
             disabled={submitting || !consentOk}
             className="w-full py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            title={!consentOk ? 'Du måste godkänna samtycket först' : undefined}
+            title={!consentOk ? t('auth.invite.consentRequiredTitle') : undefined}
           >
             {submitting ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Skapar konto…
+                {t('auth.invite.creatingAccount')}
               </>
             ) : (
-              'Skapa konto'
+              t('auth.invite.createAccountButton')
             )}
           </button>
           {isStaInvite && !consentOk && (
             <p className="text-xs text-stone-500 text-center">
-              Bocka i båda samtyckes-rutorna ovan för att aktivera knappen.
+              {t('auth.invite.checkBothBoxesHint')}
             </p>
           )}
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          Genom att skapa ett konto godkänner du våra användarvillkor.
+          {t('auth.invite.termsNotice')}
         </p>
       </div>
     </div>

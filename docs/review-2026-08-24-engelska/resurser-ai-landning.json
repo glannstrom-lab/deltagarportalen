@@ -1,0 +1,213 @@
+{
+  "omrade": "Resurser, AI och startsida",
+  "nycklarGranskade": 915,
+  "sammanfattning": "Kunskapsbanken, AI-teamet, hjälpsidan och aiPolicy-sidan är genomgående välskrivna: konsekvent 'knowledge base' (aldrig 'knowledge bank'), 'cover letter', korrekt AI-märkning ('AI-generated'), och ingen {{variabel}}-avvikelse hittades i hela materialet (maskinellt kontrollerat, 0 träffar). aiPolicy.* stämmer sakligt överens med svenskan rad för rad om vilken modell som används, vilken data som skickas och att inget skickas till AI utan samtycke — inga avvikelser att rapportera där, förutom en möjlig felaktig artikelhänvisning (Art. 52) som finns i båda språken och därför är ett sv-fel, inte en översättningsavvikelse. landing.* är däremot precis det ärlighetsproblem CLAUDE.md varnar för, och engelskan ärver alla problemen rakt av från svenskan: en 'Trusted by organizations across Sweden'-sektion med Arbetsförmedlingen som logotyp (dessutom felaktigt översatt till 'Employment Agency' i strid med regeln att aldrig översätta myndighetsnamn), ett påhittat kundcitat utan namngiven källa, ett 'Growing every day / New users registering'-påstående, och två FAQ-svar som hävdar att 'många av våra användare' fått jobb och hittat nya karriärvägar — allt utan underlag, i en portal med enligt senaste granskningen 7 aktiva konton. Samma mönster med påhittade siffror ('3x fler svar på tisdagar', '+25% aktivitet', '78% chans till intervju') finns även i ai.assistant.*-namnrymden. Utöver detta: en genuin betydelseskillnad i aiTeam.startChatHint (engelskan instruerar användaren att välja en snabbåtgärd, svenskan säger bara 'skriv ett eget meddelande'), inkonsekvent översättning av 'arbetskonsulent'/'konsulent' (employment consultant / career consultant / adviser om vartannat), och en brittisk/amerikansk stavningsblandning ('labour market' och 'organisations' mot annars genomgående amerikansk stavning som 'color', 'organize', 'License', 'Analyze').",
+  "termlista": [
+    {"sv": "kunskapsbank", "en": "knowledge base", "kommentar": "Konsekvent och korrekt genom hela materialet — aldrig 'knowledge bank'. Bra mönster, inget att åtgärda."},
+    {"sv": "personligt brev", "en": "cover letter", "kommentar": "Konsekvent genom hela materialet."},
+    {"sv": "arbetskonsulent / konsulent", "en": "employment consultant / career consultant / adviser (blandat)", "kommentar": "Tre olika engelska ord för samma roll beroende på vilken fil man läser. Välj ett (förslag: 'employment consultant', redan vanligast) och använd genomgående."},
+    {"sv": "Arbetsförmedlingen", "en": "Arbetsförmedlingen (korrekt på de flesta ställen) / Employment Agency (fel, ett ställe)", "kommentar": "Ska ALDRIG översättas enligt CLAUDE.md §7. Ett brott hittat, se fynd landing.trust.arbetsformedlingen."},
+    {"sv": "studievägledare", "en": "Career Counselor", "kommentar": "Något löst — 'studievägledare' är specifikt utbildnings-/studievägledning, inte generell karriärcoachning (som redan finns som eget begrepp 'career coach' på andra ställen). Inte fel nog för ett eget fynd, men värt att se över för tydlighet."},
+    {"sv": "arbetsterapeut", "en": "Occupational Therapist", "kommentar": "Korrekt standardterm."}
+  ],
+  "fynd": [
+    {
+      "nyckel": "landing.trust.partnersTitle",
+      "nuvarandeEn": "Trusted by organizations across Sweden",
+      "foreslagenEn": "",
+      "sv": "Betrodda av organisationer över hela Sverige",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Ett rakt 'trusted by'-påstående utan underlag, precis den regel CLAUDE.md förbjuder ('inga trusted by-påståenden'). Senaste granskningen visade 7 aktiva konton i produktion. Gäller båda språken — hela raden bör tas bort, inte bara omformuleras."
+    },
+    {
+      "nyckel": "landing.trust.arbetsformedlingen",
+      "nuvarandeEn": "Employment Agency",
+      "foreslagenEn": "Arbetsförmedlingen",
+      "sv": "Arbetsförmedlingen",
+      "severity": "kritisk",
+      "typ": "term",
+      "motivering": "Arbetsförmedlingen ska aldrig översättas (CLAUDE.md §7) — här är den helt översatt till 'Employment Agency', till skillnad från t.ex. landing.trust.afDesc där namnet korrekt behålls. Kombinerat med att den visas som en 'trusted by'-logotyp bredvid partnersTitle ger det starkt sken av att den svenska statliga Arbetsförmedlingen officiellt stödjer eller samarbetar med plattformen, vilket inte är belagt."
+    },
+    {
+      "nyckel": "landing.socialProof.growing",
+      "nuvarandeEn": "Growing every day",
+      "foreslagenEn": "",
+      "sv": "Växer varje dag",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Tillväxtpåstående utan underlag i en portal med enligt granskning 7 aktiva användare. Finns identiskt i svenskan — båda språken bör rensas, inte bara engelskan."
+    },
+    {
+      "nyckel": "landing.socialProof.everyDay",
+      "nuvarandeEn": "New users registering",
+      "foreslagenEn": "",
+      "sv": "Nya användare registreras",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Hör ihop med socialProof.growing — implicerar ett kontinuerligt inflöde av nya användare utan siffror bakom. Samma åtgärd: ta bort i båda språken."
+    },
+    {
+      "nyckel": "landing.socialProof.quote",
+      "nuvarandeEn": "Users and job consultants love being able to focus on what matters and easily customize the planning and execution of labor market training.",
+      "foreslagenEn": "",
+      "sv": "Användare och arbetskonsulenter älskar att kunna fokusera på det som är viktigt och enkelt anpassa planering och genomförande av arbetsmarknadskunskap.",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Ett citat framställt som ett verkligt kundomdöme men utan namngiven person eller organisation — ett påhittat testimonial är allvarligare än en siffra, det är ett falskt vittnesmål. Finns identiskt på svenska. Ta bort eller ersätt med ett verkligt, verifierbart citat med namn och samtycke från den citerade."
+    },
+    {
+      "nyckel": "landing.socialProof.quoteSource",
+      "nuvarandeEn": "Users & job consultants across Sweden",
+      "foreslagenEn": "",
+      "sv": "Användare & arbetskonsulenter över hela Sverige",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Källattribution till det påhittade citatet ovan — en anonym, overifierbar källa som ändå ska föreställa en riksomfattande grupp använder. Hör ihop med föregående fynd och bör tas bort tillsammans med det."
+    },
+    {
+      "nyckel": "landing.faq.a2",
+      "nuvarandeEn": "Absolutely. Many of our users have been long-term unemployed and have, with the help of our structured tools and personal guidance, gotten back to work. You're not alone, and there are paths forward. The tools are specially designed to provide support even when things feel tough.",
+      "foreslagenEn": "Our tools are built for exactly this situation — structured support and personal guidance when things feel tough. You are not alone, and there are ways forward.",
+      "sv": "Absolut. Många av våra användare har varit långtidsarbetslösa och har med hjälp av våra strukturerade verktyg och personlig vägledning tagit sig tillbaka till arbete. Du är inte ensam, och det finns vägar framåt. Verktygen är speciellt utformade för att ge stöd även när det känns tufft.",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "'Many of our users... gotten back to work' är ett outcome-påstående (framgångsandel) utan siffror eller källa, i strid med regeln om inga framgångsprocent/obelagda påståenden. Finns identiskt på svenska — föreslagen text behåller den empatiska tonen men tar bort det obelagda sakpåståendet."
+    },
+    {
+      "nyckel": "landing.faq.a3",
+      "nuvarandeEn": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery. Many users have discovered new career paths they never thought of before.",
+      "foreslagenEn": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery.",
+      "sv": "Börja med vår intresseguide! Den hjälper dig utforska dina styrkor och intressen, och ger förslag på yrken som kan passa dig. Ingen press – bara upptäckande. Många användare har upptäckt nya karriärvägar de aldrig tänkt på tidigare.",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "'Many users have discovered new career paths' är ett obelagt påstående om andra användares upplevelse. Finns identiskt på svenska — sista meningen bör strykas i båda språken, resten av svaret står på egna ben utan den."
+    },
+    {
+      "nyckel": "ai.assistant.insights.tuesdayApplications",
+      "nuvarandeEn": "Your Tuesday applications get 3x more responses",
+      "foreslagenEn": "",
+      "sv": "Dina ansökningar på tisdagar får 3x fler svar",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Presenteras som ett personligt, datadrivet insikt om just den här användaren men är en hårdkodad textsträng (samma i alla konton, identisk i SV/EN) — exakt det mönster CLAUDE.md redan dokumenterat under 'ett påhittat värde har alltid föredragits framför ett tomt fält'. Vilseleder användaren om att systemet analyserat deras faktiska data."
+    },
+    {
+      "nyckel": "ai.assistant.insights.wellnessBoost",
+      "nuvarandeEn": "When you log wellness, your activity increases by 25%",
+      "foreslagenEn": "",
+      "sv": "När du loggar välmående ökar din aktivitet med 25%",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "Samma mönster som föregående fynd — en fabricerad procentsats framställd som ett personligt AI-genererat rön. Finns identiskt i båda språken."
+    },
+    {
+      "nyckel": "ai.assistant.insights.increaseRate",
+      "nuvarandeEn": "Increase pace: Users who apply to 5+ jobs have 78% chance of interview within 30 days",
+      "foreslagenEn": "",
+      "sv": "Öka takten: Användare som söker 5+ jobb har 78% chans till intervju inom 30 dagar",
+      "severity": "kritisk",
+      "typ": "obelagt-påstående",
+      "motivering": "En konkret, specifik procentsats (78%) om verkliga användares utfall utan angiven källa eller underlag — precis den typ av framgångsprocent CLAUDE.md förbjuder. Finns identiskt i båda språken."
+    },
+    {
+      "nyckel": "aiTeam.startChatHint",
+      "nuvarandeEn": "Select a quick action or write a message to begin",
+      "foreslagenEn": "Or write your own message below",
+      "sv": "Eller skriv ett eget meddelande nedan",
+      "severity": "stor",
+      "typ": "betydelsefel",
+      "motivering": "Engelskan säger något annat än svenskan — svenskan är en kort fortsättning ('Eller skriv...') medan engelskan är en fristående instruktion som nämner en 'snabbåtgärd' som inte finns i den svenska meningen. Kan förvirra en användare som följer instruktionerna bokstavligt."
+    },
+    {
+      "nyckel": "article.contactConsultant",
+      "nuvarandeEn": "Go to your adviser",
+      "foreslagenEn": "Go to your consultant",
+      "sv": "Till din konsulent",
+      "severity": "stor",
+      "typ": "term",
+      "motivering": "'Adviser' används bara här — överallt annars (helpPage.contactConsultant, aiTeam.agents.arbetskonsulent, landing) heter samma roll 'consultant'. En användare som lär sig ordet 'consultant' på en sida känner inte igen 'adviser' på en annan, vilket är precis det B1-läsare är mest känsliga för."
+    },
+    {
+      "nyckel": "knowledgeBase.aiTeamBody",
+      "nuvarandeEn": "The AI team can answer questions the articles do not cover. Five focuses of the same AI.",
+      "foreslagenEn": "The AI team can answer questions the articles do not cover. It has five specialists, all part of the same AI.",
+      "sv": "AI-teamet kan svara på frågor som inte täcks i artiklarna. Fem inriktningar av samma AI.",
+      "severity": "stor",
+      "typ": "maskinöversatt",
+      "motivering": "'Five focuses' är ovanlig engelska — 'focus' som räknebart substantiv i den här formen läses inte naturligt, särskilt inte för en B1-läsare. Förslaget uttrycker samma sak ('fem inriktningar, en och samma AI') med vanligare ord."
+    },
+    {
+      "nyckel": "knowledgeBase.categories.job-market.name",
+      "nuvarandeEn": "The labour market",
+      "foreslagenEn": "The labor market",
+      "sv": "Arbetsmarknaden",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Brittisk stavning ('labour') mot annars genomgående amerikansk stavning i materialet ('color', 'organize', 'organizations', 'License', 'Analyze'). Samma fel upprepas i knowledgeBase.categories.job-market.description och externalResources.categories.diversity.description."
+    },
+    {
+      "nyckel": "knowledgeBase.categories.job-market.description",
+      "nuvarandeEn": "Information about the labour market and different industries.",
+      "foreslagenEn": "Information about the labor market and different industries.",
+      "sv": "Information om arbetsmarknaden och olika branscher.",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma brittisk/amerikansk-blandning som knowledgeBase.categories.job-market.name."
+    },
+    {
+      "nyckel": "externalResources.categories.diversity.description",
+      "nuvarandeEn": "Resources for an inclusive labour market",
+      "foreslagenEn": "Resources for an inclusive labor market",
+      "sv": "Resurser för en inkluderande arbetsmarknad",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Samma brittisk/amerikansk-blandning som ovan."
+    },
+    {
+      "nyckel": "externalResources.categories.organization.title",
+      "nuvarandeEn": "Unions & organisations",
+      "foreslagenEn": "Unions & organizations",
+      "sv": "Fackförbund & Organisationer",
+      "severity": "liten",
+      "typ": "mekanik",
+      "motivering": "Enda förekomsten av brittisk stavning 'organisations' — resten av materialet skriver genomgående 'organizations' (t.ex. landing.trust.partnersTitle, landing.pricing.description, landing.footer.brand)."
+    },
+    {
+      "nyckel": "helpPage.version",
+      "nuvarandeEn": "Participant Portal v2.0",
+      "foreslagenEn": "Jobin v2.0",
+      "sv": "Deltagarportalen v2.0",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "Portalens varumärke i produktion är 'Jobin' (jobin.se) — samma sida använder redan 'Jobin' på andra ställen (t.ex. auth.backToJobin). Att kalla produkten 'Participant Portal' här är den enda platsen i materialet som gör det, och kan läsas som ett annat namn på samma produkt. Gäller även den svenska texten, som bör bytas till 'Jobin' i samma veva."
+    },
+    {
+      "nyckel": "auth.errors.createFailed",
+      "nuvarandeEn": "Could not create the account. Please try again later.",
+      "foreslagenEn": "Could not create the account. Please try again in a moment.",
+      "sv": "Det gick inte att skapa kontot. Försök igen om en stund.",
+      "severity": "liten",
+      "typ": "konsekvens",
+      "motivering": "'Om en stund' översätts konsekvent som 'in a moment' på andra felmeddelanden (t.ex. resources.deleteFailed, resources.exportFailed) men som 'later' här — liten betydelseglidning (later signalerar en längre väntan) och en inkonsekvens i annars enhetligt återkommande frastext."
+    },
+    {
+      "nyckel": "aiPolicy.compliance.aiActDesc",
+      "nuvarandeEn": "Our AI features are classified as limited risk under the EU AI Regulation. We follow the transparency requirements in Art. 52.",
+      "foreslagenEn": "",
+      "sv": "Våra AI-funktioner klassificeras som begränsad risk enligt EU:s AI-förordning. Vi följer transparenskraven i Art. 52.",
+      "severity": "sv-fel",
+      "typ": "ai-act",
+      "motivering": "CLAUDE.md hänvisar konsekvent till AI Act art. 50.2 som den artikel som kräver märkning av AI-genererat innehåll. Den här sidan citerar i stället 'Art. 52', vilket ser ut som en kvarleva från ett tidigare utkast av förordningen (artikelnumreringen ändrades mellan utkast och slutlig text). Finns identiskt i båda språken — bör verifieras och rättas mot den slutgiltiga förordningstexten, inte en engelsk översättningsfråga."
+    },
+    {
+      "nyckel": "resurserHub.hubDescription",
+      "nuvarandeEn": "Documents, knowledge base, AI team and printable materials.",
+      "foreslagenEn": "",
+      "sv": "Dokument, kunskapsbank, AI-team och utskriftsmaterial.",
+      "severity": "sv-fel",
+      "typ": "betydelsefel",
+      "motivering": "Nämner 'utskriftsmaterial'/'printable materials' som en egen resurstyp på hubben. Enligt CLAUDE.md (2026-08-23) är /print-resources-sidan raderad — utskrift och nedladdning ligger numera per artikel, inte som ett eget innehållsslag. Beskrivningen pekar alltså på en funktion som inte längre finns som egen kategori. Finns identiskt i båda språken, så det är innehållet snarare än översättningen som behöver uppdateras."
+    }
+  ]
+}

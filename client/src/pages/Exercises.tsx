@@ -346,7 +346,7 @@ function ExercisesInner() {
     return (
       <PageLayout
         title={t('exercises.title')}
-        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        description={t('exercises.description')}
         showTabs={false}
         className="sidbredd"
 >
@@ -376,7 +376,7 @@ function ExercisesInner() {
     return (
       <PageLayout
         title={t('exercises.title')}
-        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        description={t('exercises.description')}
         showTabs={false}
         className="sidbredd"
 >
@@ -536,7 +536,7 @@ function ExercisesInner() {
                 {/* Tags */}
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className={`text-xs px-2 py-1 rounded-full border ${difficultyColors[exercise.difficulty]}`}>
-                    {exercise.difficulty}
+                    {t(`exercises.difficulties.${exercise.difficulty}`, exercise.difficulty)}
                   </span>
                   <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
@@ -547,7 +547,7 @@ function ExercisesInner() {
                 {/* Category & Progress */}
                 <div className="flex items-center justify-between">
                   <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
-                    {exercise.category}
+                    {t(`exercises.categories.${exercise.category}`, exercise.category)}
                   </span>
                   {isStarted ? (
                     <div className="w-16 h-2 bg-gray-200 dark:bg-stone-600 rounded-full overflow-hidden">
@@ -602,8 +602,8 @@ function ExercisesInner() {
   if (isCompleted) {
     return (
       <PageLayout
-        title="Övningar"
-        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        title={t('exercises.title')}
+        description={t('exercises.description')}
         showTabs={false}
         className="sidbredd"
 >
@@ -629,7 +629,7 @@ function ExercisesInner() {
           {/* Cloud saved indicator */}
           <div className="flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-400">
             <Cloud className="w-5 h-5" />
-            <span>Dina svar är sparade i molnet</span>
+            <span>{t('exercises.answersSavedCloud')}</span>
           </div>
         </div>
 
@@ -684,8 +684,8 @@ function ExercisesInner() {
 
   return (
     <PageLayout
-      title="Övningar"
-      description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+      title={t('exercises.title')}
+      description={t('exercises.description')}
       showTabs={false}
       className="sidbredd"
 >
@@ -709,7 +709,7 @@ function ExercisesInner() {
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{selectedExercise.title}</h2>
             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className={`px-2 py-0.5 rounded-full text-xs ${categoryColors[selectedExercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
-                {selectedExercise.category}
+                {t(`exercises.categories.${selectedExercise.category}`, selectedExercise.category)}
               </span>
               <span>•</span>
               <span className="flex items-center gap-1">
@@ -718,7 +718,7 @@ function ExercisesInner() {
               </span>
               <span>•</span>
               <span className={`px-2 py-0.5 rounded-full text-xs border ${difficultyColors[selectedExercise.difficulty]}`}>
-                {selectedExercise.difficulty}
+                {t(`exercises.difficulties.${selectedExercise.difficulty}`, selectedExercise.difficulty)}
               </span>
             </div>
           </div>
@@ -860,7 +860,7 @@ function ExercisesInner() {
         <div className="flex items-start gap-3">
           <Signal className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" />
           <div>
-            <h3 className="font-medium text-gray-800 dark:text-gray-100">Om denna övning</h3>
+            <h3 className="font-medium text-gray-800 dark:text-gray-100">{t('exercises.aboutThisExercise')}</h3>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
               {selectedExercise.description}
             </p>
@@ -874,9 +874,11 @@ function ExercisesInner() {
           <div className="flex items-start gap-3">
             <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5" />
             <div className="flex-1">
-              <h3 className="font-medium text-[var(--c-text)] dark:text-white">Relaterade artiklar</h3>
+              <h3 className="font-medium text-[var(--c-text)] dark:text-white">{t('exercises.relatedArticles')}</h3>
               <p className="text-sm text-[var(--c-text)] mt-1 mb-3">
-                Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
+                {t('exercises.readMoreIn')}{' '}
+                {t(`exercises.categories.${selectedExercise.category}`, selectedExercise.category).toLowerCase()}{' '}
+                {t('exercises.inKnowledgeBase')}
               </p>
               <div className="space-y-2">
                 {relatedArticles.map((article) => (

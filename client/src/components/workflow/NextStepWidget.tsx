@@ -10,6 +10,7 @@ import {
   FileText, Search, Send, TrendingUp
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { nextStepApi, type NextStep, type UserProgress } from '@/services/workflowApi'
 
@@ -18,6 +19,7 @@ interface NextStepWidgetProps {
 }
 
 export function NextStepWidget({ className }: NextStepWidgetProps) {
+  const { t } = useTranslation()
   const [nextStep, setNextStep] = useState<NextStep | null>(null)
   const [progress, setProgress] = useState<UserProgress | null>(null)
   const [loading, setLoading] = useState(true)
@@ -34,7 +36,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
       setNextStep(step)
       setProgress(userProgress)
     } catch (err) {
-      setError('Kunde inte hämta nästa steg')
+      setError(t('workflow.nextStep.fetchError'))
       console.error('Fel vid hämtning av nästa steg:', err)
     } finally {
       setLoading(false)
@@ -65,13 +67,13 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
         className
       )}>
         <div className="text-center py-6">
-          <p className="text-stone-700">{error || 'Inget steg tillgängligt'}</p>
+          <p className="text-stone-700">{error || t('workflow.nextStep.noStepAvailable')}</p>
           <button
             onClick={fetchNextStep}
             className="mt-3 flex items-center gap-2 mx-auto text-[var(--c-text)] hover:text-[var(--c-text)]"
           >
             <RefreshCw size={16} />
-            Försök igen
+            {t('common.tryAgain')}
           </button>
         </div>
       </div>
@@ -171,19 +173,19 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
                 <p className="text-2xl font-bold text-stone-900">
                   {progress.applicationsCount}
                 </p>
-                <p className="text-xs text-stone-700">Ansökningar</p>
+                <p className="text-xs text-stone-700">{t('dashboard.kpi.applications')}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-stone-900">
                   {progress.savedJobsCount}
                 </p>
-                <p className="text-xs text-stone-700">Sparade jobb</p>
+                <p className="text-xs text-stone-700">{t('dashboard.kpi.savedJobs')}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-stone-900">
                   {progress.coverLettersCount}
                 </p>
-                <p className="text-xs text-stone-700">Personliga brev</p>
+                <p className="text-xs text-stone-700">{t('dashboard.widgets.coverLetters.title')}</p>
               </div>
             </div>
           </div>
@@ -191,13 +193,13 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
 
         {/* Quick actions row */}
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-sm text-stone-700">Eller:</span>
+          <span className="text-sm text-stone-700">{t('workflow.nextStep.or')}</span>
           <div className="flex items-center gap-1">
             <QuickLink to="/cv" icon={<FileText size={14} />}>
               CV
             </QuickLink>
             <QuickLink to="/job-search" icon={<Search size={14} />}>
-              Sök
+              {t('common.search')}
             </QuickLink>
             <QuickLink to="/job-search" icon={<TrendingUp size={14} />}>
               Tracker

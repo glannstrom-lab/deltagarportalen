@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/supabaseApi'
@@ -14,6 +15,7 @@ import { Briefcase, CheckCircle2, AlertCircle, Loader2, ExternalLink } from '@/c
  * Projekt-specifika sidor monteras separat när de byggs.
  */
 export function ProgramSelector() {
+  const { t } = useTranslation()
   const { profile } = useAuthStore()
   const [selected, setSelected] = useState<ProgramSlug | null>(null)
   const [isSaving, setIsSaving] = useState(false)
@@ -129,12 +131,12 @@ export function ProgramSelector() {
         {!isSaving && feedback === 'error' && (
           <div className="flex items-center gap-2 text-sm text-rose-700 dark:text-rose-300">
             <AlertCircle className="w-4 h-4" />
-            <span>Kunde inte spara. Försök igen.</span>
+            <span>{t('career.credentials.saveFailed')}</span>
           </div>
         )}
         {!isSaving && !feedback && selected === 'steg_till_arbete' && MODULES.STA && (
           <div className="flex items-center gap-2 flex-wrap text-xs">
-            <span className="text-stone-500 dark:text-stone-400">Sidan finns nu på</span>
+            <span className="text-stone-500 dark:text-stone-400">{t('settings.programSelector.pageNowAt')}</span>
             <Link
               to="/steg-till-arbete"
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:border-stone-300 transition-colors"

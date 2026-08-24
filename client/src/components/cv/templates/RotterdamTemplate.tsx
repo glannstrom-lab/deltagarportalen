@@ -7,6 +7,7 @@
  * Det stora namnet bor i main-kolumnen och behåller sin visuella vikt.
  */
 
+import { useTranslation } from 'react-i18next'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
 
@@ -14,6 +15,7 @@ const ink = '#1F2937'
 const muted = '#6B7280'
 
 export function RotterdamTemplate({ data, fullName }: TemplateProps) {
+  const { t } = useTranslation()
   const firstName = (data.firstName || '').toUpperCase()
   const lastName = (data.lastName || '').toUpperCase()
 
@@ -85,7 +87,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
 
         {data.links?.length > 0 && (
           <section className="cv-keep" style={{ marginBottom: '32px' }}>
-            <h3 style={sectionHeader}>LÄNKAR</h3>
+            <h3 style={sectionHeader}>{t('cv.links').toUpperCase()}</h3>
             <div>
               {data.links.map((link) => (
                 <div key={link.id} className="cv-entry" style={{ marginBottom: '10px' }}>
@@ -129,7 +131,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
 
         {data.languages?.length > 0 && (
           <section className="cv-keep">
-            <h3 style={sectionHeader}>SPRÅK</h3>
+            <h3 style={sectionHeader}>{t('cv.languages').toUpperCase()}</h3>
             <div style={{ fontSize: '11px', lineHeight: 1.7, color: '#374151' }}>
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')

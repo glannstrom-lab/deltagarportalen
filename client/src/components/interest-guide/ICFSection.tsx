@@ -22,7 +22,8 @@
  * ICF-namn i gränssnittet. Anpassningsförslagen visas för alla domäner där
  * användaren angett att något är svårare — som förslag, inte recept.
  */
-import { icfAdaptations, type ICFScores, type ProfileCoverage } from '@/services/interestGuideData'
+import { type ICFScores, type ProfileCoverage } from '@/services/interestGuideData'
+import { useIcfAnpassningar } from '@/services/useIntresseguideInnehall'
 import { Brain, MessageCircle, Focus, Hand, Ear, Zap } from '@/components/ui/icons'
 
 interface ICFSectionProps {
@@ -62,6 +63,7 @@ function svarstext(score: number): string {
 }
 
 export function ICFSection({ scores, coverage }: ICFSectionProps) {
+  const icfAdaptations = useIcfAnpassningar()
   const entries = Object.entries(scores) as [keyof ICFScores, number][]
 
   return (
