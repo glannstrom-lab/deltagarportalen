@@ -19,7 +19,7 @@
  *    säger det, och procenten står aldrig ensam utan sina nyckelord.
  */
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, Loader2, Bookmark, ClipboardPaste, ChevronDown, ChevronUp,
@@ -29,6 +29,7 @@ import { cn } from '@/lib/utils'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { callAI } from '@/services/aiApi'
 import { showToast } from '@/components/Toast'
+import { jamforMotAnnons } from '@/services/atsNyckelord'
 import type { CVData } from '@/services/supabaseApi'
 
 /** Taket i client/api/ai.js: 10 anrop per 15 minuter för cv-jobbmatchning. */
@@ -96,6 +97,27 @@ export function CVJobMatchPanel({ cvs }: CVJobMatchPanelProps) {
   const [korning, setKorning] = useState<{ klara: number; totalt: number } | null>(null)
   const [resultat, setResultat] = useState<Matchning[] | null>(null)
   const [utfalltCv, setUtfalltCv] = useState<string | null>(null)
+  const [utfalltOrdCv, setUtfalltOrdCv] = useState<string | null>(null)
+
+  /**
+   * O4 (2026-08-25): den lokala nyckelordskontrollen.
+   *
+   * Körs i webbläsaren, utan AI, så fort en annons är vald — alla CV, inte
+   * bara de tio som ryms i AI-omgången, och även för den som stängt av AI.
+   * Ingen text lämnar enheten och det finns ingen poäng: bara vilka av
+   * annonsens ord som finns i CV:t och vilka som inte gör det.
+   */
+  const ordkontroll = useMemo(() => {
+    const annons = annonstext.trim()
+    if (!annons) return null
+    return cvs
+      .map((cv) => ({
+        cvId: cv.id,
+        cvNamn: cv.name,
+        ...jamforMotAnnons(cvTillText(cv.data), annons),
+      }))
+      .sort((a, b) => b.finns.length - a.finns.length || a.cvNamn.localeCompare(b.cvNamn, 'sv'))
+  }, [cvs, annonstext])
 
   // De CV som ryms i omgången — nyast först (listan kommer redan sorterad).
   const iOmgang = cvs.slice(0, MAX_CV_PER_OMGANG)
@@ -280,6 +302,78 @@ export function CVJobMatchPanel({ cvs }: CVJobMatchPanelProps) {
             <p className="text-sm text-amber-800 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl p-3">
               {t('cv.jobMatch.capped', 'Du har {{totalt}} sparade CV. AI-granskningen klarar {{max}} åt gången, så de {{max}} senaste granskas nu.', { totalt: cvs.length, max: MAX_CV_PER_OMGANG })}
             </p>
+          )}
+
+          {ordkontroll && ordkontroll.length > 0 && ordkontroll[0].provade > 0 && (
+            <section className="rounded-xl border border-stone-200 dark:border-stone-700 p-4">
+              <h3 className="font-medium text-stone-900 dark:text-stone-100">
+                {t('cv.jobMatch.keywords.title', 'Orden i annonsen')}
+              </h3>
+              <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
+                {t(
+                  'cv.jobMatch.keywords.intro',
+                  'Vi har jämfört annonsens {{antal}} vanligaste ord med dina CV. Räkningen sker i din webbläsare och är ingen bedömning — den visar bara vilka ord som saknas.',
+                  { antal: ordkontroll[0].provade }
+                )}
+              </p>
+
+              <ul className="mt-3 space-y-2">
+                {ordkontroll.map((rad) => {
+                  const utfalld = utfalltOrdCv === rad.cvId
+                  return (
+                    <li key={rad.cvId} className="rounded-lg border border-stone-200 dark:border-stone-700">
+                      <button
+                        onClick={() => setUtfalltOrdCv(utfalld ? null : rad.cvId)}
+                        aria-expanded={utfalld}
+                        aria-controls={`ordkontroll-${rad.cvId}`}
+                        className="w-full flex items-center justify-between gap-3 p-3 text-left hover:bg-stone-50 dark:hover:bg-stone-800/50 rounded-lg"
+                      >
+                        <span className="min-w-0 truncate text-sm font-medium text-stone-900 dark:text-stone-100">
+                          {rad.cvNamn}
+                        </span>
+                        <span className="flex items-center gap-2 flex-shrink-0">
+                          <span className="text-sm tabular-nums text-stone-700 dark:text-stone-300">
+                            {t('cv.jobMatch.keywords.count', '{{finns}} av {{totalt}} ord finns', {
+                              finns: rad.finns.length,
+                              totalt: rad.provade,
+                            })}
+                          </span>
+                          {utfalld
+                            ? <ChevronUp className="w-4 h-4 text-stone-500" aria-hidden="true" />
+                            : <ChevronDown className="w-4 h-4 text-stone-500" aria-hidden="true" />}
+                        </span>
+                      </button>
+
+                      {utfalld && (
+                        <div id={`ordkontroll-${rad.cvId}`} className="px-3 pb-3 space-y-2">
+                          {rad.saknas.length > 0 ? (
+                            <div>
+                              <p className="text-xs font-medium text-stone-700 dark:text-stone-300">
+                                {t('cv.jobMatch.keywords.missing', 'Finns i annonsen men inte i det här CV:t')}
+                              </p>
+                              <ul className="mt-1 flex flex-wrap gap-1.5">
+                                {rad.saknas.map((ord) => (
+                                  <li key={ord} className="text-xs px-2 py-1 rounded-md bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300">
+                                    {ord}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-stone-700 dark:text-stone-300">
+                              {t('cv.jobMatch.keywords.noneMissing', 'Alla ord vi tittade på finns redan i det här CV:t.')}
+                            </p>
+                          )}
+                          <p className="text-xs text-stone-600 dark:text-stone-400">
+                            {t('cv.jobMatch.keywords.caveat', 'Lägg bara till ord som stämmer på dig. Ett ord i CV:t som du inte kan svara på i en intervju hjälper ingen.')}
+                          </p>
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
           )}
 
           <button

@@ -518,6 +518,79 @@ legend {
   }
 }
 
+/* --------------------------------------------
+   AKTIVITETSRAPPORTEN (O3, 2026-08-25)
+
+   Samma mönster som artikelutskriften ovan: reglerna gäller bara medan
+   `body.aktivitetsrapport-sida` är satt, vilket
+   `ApplicationsActivityReport.tsx` gör vid montering.
+
+   Månadsväljaren, knapparna och rutan om saknade datum bär klassen
+   `aktivitetsrapport-atgardsrad` och tas bort ur utskriften — de säger
+   ingenting på papper, och en tom `<select>` mitt i en tabell ser ut som
+   ett fel.
+   -------------------------------------------- */
+@media print {
+  body.aktivitetsrapport-sida * {
+    visibility: hidden;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift,
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift * {
+    visibility: visible;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Svart på vitt. Utan det skriver mörkt tema ut ljus text på vitt papper. */
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift,
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift * {
+    background: transparent !important;
+    color: #1c1917 !important;
+    border-color: #d6d3d1 !important;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-atgardsrad {
+    display: none !important;
+  }
+
+  /* Tabellen ska inte klippas horisontellt av sin scroll-behållare. */
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift table {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-collapse: collapse;
+  }
+
+  /* Radhuvudet upprepas på varje sida i en flersidig rapport. */
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift thead {
+    display: table-header-group;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift tr {
+    break-inside: avoid;
+  }
+
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift th,
+  body.aktivitetsrapport-sida .aktivitetsrapport-utskrift td {
+    border-bottom: 1px solid #d6d3d1 !important;
+    padding: 4pt 6pt !important;
+    text-align: left;
+  }
+}
+
 /* ============================================
    CALM MODE / ENERGY SAVE MODE
    For users with low energy or who need reduced stimulation

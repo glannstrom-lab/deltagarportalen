@@ -19,7 +19,22 @@ import type {
   ApplicationFilters,
   ApplicationSort,
 } from '@/types/application.types'
+import { APPLICATION_STATUS_CONFIG } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+
+/**
+ * Dagens datum som `YYYY-MM-DD` i användarens tidszon.
+ *
+ * `new Date().toISOString()` ger UTC, vilket i Sverige betyder att allt som
+ * sker efter kl. 01–02 på natten daterar sig till gårdagen. För ett fält som
+ * hamnar i en aktivitetsrapport är det fel datum, inte en avrundning.
+ */
+function idagLokalt(): string {
+  const nu = new Date()
+  const månad = String(nu.getMonth() + 1).padStart(2, '0')
+  const dag = String(nu.getDate()).padStart(2, '0')
+  return `${nu.getFullYear()}-${månad}-${dag}`
+}
 
 // ============================================
 // HELPER FUNCTIONS
@@ -287,6 +302,38 @@ export const applicationsApi = {
    * Update application status
    */
   async updateStatus(id: string, status: ApplicationStatus): Promise<Application> {
+    // O3 (2026-08-25): sätt ansökningsdatum när kortet flyttas till "Ansökt"
+    // eller längre fram, om det inte redan finns ett.
+    //
+    // Fram till i dag skrevs `application_date` bara av formuläret och av
+    // `applyToJob`. Att dra ett kort till Ansökt i tavlan — den vanligaste
+    // vägen — lämnade fältet tomt. I prod hade **1 av 26 rader** ett datum,
+    // och därför kunde ingen aktivitetsrapport byggas ur dem.
+    //
+    // Datumet är dagens, eftersom det är den dag användaren säger att hen
+    // sökte. Sökte man för en vecka sedan går fältet att rätta i
+    // ansökningens formulär — det är därför vi bara fyller i när det är TOMT,
+    // aldrig skriver över.
+    const raknasSomSokt =
+      status !== 'withdrawn' &&
+      APPLICATION_STATUS_CONFIG[status].order >= APPLICATION_STATUS_CONFIG.applied.order
+
+    if (raknasSomSokt) {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: befintlig } = await supabase
+          .from('saved_jobs')
+          .select('application_date')
+          .eq('id', id)
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        if (befintlig && !befintlig.application_date) {
+          return this.update(id, { status, applicationDate: idagLokalt() })
+        }
+      }
+    }
+
     return this.update(id, { status })
   },
 

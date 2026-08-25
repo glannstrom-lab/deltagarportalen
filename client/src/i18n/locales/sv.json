@@ -1256,7 +1256,15 @@
       "missing": "Saknas — lägg gärna till om det stämmer på dig",
       "noneMissing": "AI:n hittade inget viktigt som saknas.",
       "allFailed": "Ingen av granskningarna gick igenom. Försök igen om en stund.",
-      "someFailed": "{{antal}} av dina CV kunde inte granskas den här gången."
+      "someFailed": "{{antal}} av dina CV kunde inte granskas den här gången.",
+      "keywords": {
+        "title": "Orden i annonsen",
+        "intro": "Vi har jämfört annonsens {{antal}} vanligaste ord med dina CV. Räkningen sker i din webbläsare och är ingen bedömning — den visar bara vilka ord som saknas.",
+        "count": "{{finns}} av {{totalt}} ord finns",
+        "missing": "Finns i annonsen men inte i det här CV:t",
+        "noneMissing": "Alla ord vi tittade på finns redan i det här CV:t.",
+        "caveat": "Lägg bara till ord som stämmer på dig. Ett ord i CV:t som du inte kan svara på i en intervju hjälper ingen."
+      }
     },
     "myCvs": {
       "title": "Dina sparade CV",
@@ -2646,7 +2654,8 @@
       "timeline": "Historik",
       "calendar": "Kalender",
       "contacts": "Kontakter",
-      "analytics": "Statistik"
+      "analytics": "Statistik",
+      "activityReport": "Aktivitetsrapport"
     },
     "status": {
       "interested": "Intresserad",
@@ -2914,6 +2923,16 @@
         "job_alert": "Jobbnotis",
         "manual": "Manuellt tillagd",
         "import": "Importerad"
+      },
+      "method": "Hur du sökte",
+      "methodEmpty": "Välj om du vill",
+      "methodHelp": "Tas med i underlaget för aktivitetsrapporten.",
+      "methods": {
+        "portal": "Via annons eller rekryteringssystem",
+        "email": "Med e-post",
+        "linkedin": "Via LinkedIn",
+        "referral": "Genom en kontakt",
+        "other": "På annat sätt"
       }
     },
     "detail": {
@@ -2999,6 +3018,35 @@
       "applyDirectly": "Ansök direkt",
       "saveAndSend": "Spara & Skicka ansökan",
       "saveJob": "Spara jobb"
+    },
+    "activityReport": {
+      "title": "Underlag för aktivitetsrapport",
+      "intro": "Här är de jobb du sökt under månaden, i den ordning Arbetsförmedlingen frågar efter dem. Skriv ut listan eller kopiera den, och fyll i den på Mina sidor.",
+      "noSubmitNote": "Jobin skickar ingenting till Arbetsförmedlingen. Du fyller i rapporten själv.",
+      "monthLabel": "Välj månad",
+      "print": "Skriv ut",
+      "copy": "Kopiera som text",
+      "copied": "Kopierat",
+      "copyFailed": "Kunde inte kopiera. Markera texten i tabellen och kopiera för hand.",
+      "loading": "Hämtar dina ansökningar …",
+      "errorTitle": "Underlaget kunde inte hämtas",
+      "errorDescription": "Vi når inte dina ansökningar just nu. En ofullständig rapport är sämre än ingen, så vi visar den inte.",
+      "notFilledIn": "Inte ifyllt",
+      "missingDate_one": "En sökt ansökan saknar datum och kommer inte med i någon månad. Lägg till ansökningsdatum på kortet så hamnar den rätt.",
+      "missingDate_other": "{{count}} sökta ansökningar saknar datum och kommer inte med i någon månad. Lägg till ansökningsdatum på korten så hamnar de rätt.",
+      "emptyTitle": "Inga sökta jobb registrerade den här månaden",
+      "emptyDescription": "När du markerar en ansökan som skickad och fyller i datumet hamnar den här.",
+      "emptyAction": "Gå till tavlan",
+      "summary_one": "1 jobb sökt i {{month}}",
+      "summary_other": "{{count}} jobb sökta i {{month}}",
+      "tableCaption": "Sökta jobb i {{month}}",
+      "columns": {
+        "date": "Datum",
+        "employer": "Arbetsgivare",
+        "role": "Tjänst",
+        "method": "Hur du sökte",
+        "outcome": "Vad det ledde till"
+      }
     }
   },
   "journey": {
@@ -9554,7 +9602,13 @@
       },
       "selected": "Vald",
       "isSelected": "är vald",
-      "selectedInfo": "Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, eller klicka på Förhandsgranska för att se resultatet."
+      "selectedInfo": "Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, eller klicka på Förhandsgranska för att se resultatet.",
+      "spaltform": {
+        "en-spalt": "En spalt",
+        "tva-spalter": "Två spalter",
+        "dekorativ-spalt": "En spalt med dekorkant"
+      },
+      "atsNote": "PDF:en innehåller riktig text som går att markera och söka i — det gäller alla mallar. Vet du att arbetsgivaren använder ett rekryteringssystem är en mall i en spalt det säkraste valet, eftersom texten då läses i en enda ordning. Vi har inte testat mallarna mot något enskilt system."
     },
     "profileImage": {
       "title": "Profilbild",

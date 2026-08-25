@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils'
 // kontextuellt råd inne i formuläret — inte en ring i hörnet.
 import RadgivarPanel, { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
+import { spaltformFor, spaltformNyckel } from '@/data/cvMallar'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
@@ -882,6 +883,15 @@ export default function CVBuilder() {
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
+                  {/* O4 (2026-08-25): spaltformen först, eftersom den säger
+                      något om hur mallen LÄSES — av en människa och av ett
+                      rekryteringssystem — medan resten beskriver hur den ser
+                      ut. Formen är mätt i mallfilerna, se data/cvMallar.ts. */}
+                  {spaltformFor(tpl.id) && (
+                    <span className="text-xs px-2 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] rounded-md font-medium">
+                      {t(spaltformNyckel(spaltformFor(tpl.id)!))}
+                    </span>
+                  )}
                   {tpl.features.map((feature, i) => (
                     <span
                       key={i}
@@ -909,6 +919,13 @@ export default function CVBuilder() {
               </p>
               <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
+              </p>
+              {/* Vad vi kan belägga om maskinläsning, och inget mer. PDF:en
+                  renderas ur HTML av Chromium och innehåller riktig text —
+                  det gäller alla mallar. Vi har INTE testat dem mot något
+                  rekryteringssystem, och påstår därför inte "ATS-godkänd". */}
+              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-2">
+                {t('cvBuilder.templates.atsNote')}
               </p>
             </div>
           </div>

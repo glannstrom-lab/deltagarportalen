@@ -19,6 +19,7 @@ import {
   type ApplicationStatus,
   type ApplicationPriority,
   type ApplicationSource,
+  type ApplicationMethod,
   type ManualJobData
 } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
@@ -55,6 +56,22 @@ const SOURCE_OPTIONS: { value: ApplicationSource; label: string }[] = [
   { value: 'import', label: 'Importerad' },
 ]
 
+/**
+ * Hur ansökan lämnades in. Fältet fanns i databasen och i typen sedan länge
+ * men fanns aldrig i formuläret — 0 av 26 rader i prod hade ett värde. Det är
+ * en av de fem uppgifter Arbetsförmedlingen frågar efter i aktivitetsrapporten
+ * (O3, 2026-08-25), så utan fältet blev rapportens fjärde kolumn alltid tom.
+ *
+ * Tomt värde är tillåtet och betyder "inte ifyllt" — aldrig en gissning.
+ */
+const METHOD_OPTIONS: { value: ApplicationMethod; label: string }[] = [
+  { value: 'portal', label: 'Via annons eller rekryteringssystem' },
+  { value: 'email', label: 'Med e-post' },
+  { value: 'linkedin', label: 'Via LinkedIn' },
+  { value: 'referral', label: 'Genom en kontakt' },
+  { value: 'other', label: 'På annat sätt' },
+]
+
 export function AddApplicationModal({
   isOpen,
   onClose,
@@ -73,6 +90,7 @@ export function AddApplicationModal({
     status: 'interested' as ApplicationStatus,
     priority: 'medium' as ApplicationPriority,
     applicationDate: '',
+    applicationMethod: '' as ApplicationMethod | '',
     notes: '',
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -93,6 +111,7 @@ export function AddApplicationModal({
         status: editApplication.status,
         priority: editApplication.priority,
         applicationDate: editApplication.applicationDate?.slice(0, 10) || '',
+        applicationMethod: editApplication.applicationMethod || '',
         notes: editApplication.notes || '',
       })
     } else if (prefillJob) {
@@ -115,6 +134,7 @@ export function AddApplicationModal({
         status: 'interested',
         priority: 'medium',
         applicationDate: '',
+        applicationMethod: '',
         notes: '',
       })
     }
@@ -143,6 +163,7 @@ export function AddApplicationModal({
           status: formData.status,
           priority: formData.priority,
           applicationDate: formData.applicationDate || undefined,
+          applicationMethod: formData.applicationMethod || undefined,
           notes: formData.notes || undefined,
         })
       } else {
@@ -161,6 +182,7 @@ export function AddApplicationModal({
           status: formData.status,
           priority: formData.priority,
           applicationDate: formData.applicationDate || undefined,
+          applicationMethod: formData.applicationMethod || undefined,
           notes: formData.notes || undefined,
         })
       }
@@ -306,6 +328,30 @@ export function AddApplicationModal({
                 />
               </div>
             </div>
+          </div>
+
+          {/* Hur ansökan lämnades in — en av uppgifterna aktivitetsrapporten
+              frågar efter. Frivillig: tomt betyder "inte ifyllt". */}
+          <div>
+            <label htmlFor="addapplicationmodal-metod" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              {t('applications.form.method', 'Hur du sökte')}
+            </label>
+            <select
+              id="addapplicationmodal-metod"
+              value={formData.applicationMethod}
+              onChange={(e) => setFormData({ ...formData, applicationMethod: e.target.value as ApplicationMethod | '' })}
+              className="w-full px-3 py-2.5 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+            >
+              <option value="">{t('applications.form.methodEmpty', 'Välj om du vill')}</option>
+              {METHOD_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>
+                  {t(`applications.form.methods.${opt.value}`, opt.label)}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-stone-600 dark:text-stone-400">
+              {t('applications.form.methodHelp', 'Tas med i underlaget för aktivitetsrapporten.')}
+            </p>
           </div>
 
           {/* Status & Priority */}

@@ -1256,7 +1256,15 @@
       "missing": "Missing — add it if it is true for you",
       "noneMissing": "The AI found nothing important missing.",
       "allFailed": "None of the reviews went through. Please try again shortly.",
-      "someFailed": "{{antal}} of your CVs could not be reviewed this time."
+      "someFailed": "{{antal}} of your CVs could not be reviewed this time.",
+      "keywords": {
+        "title": "The words in the advert",
+        "intro": "We compared the {{antal}} most common words in the advert with your CVs. The counting happens in your browser. It is not a judgement — it only shows which words are missing.",
+        "count": "{{finns}} of {{totalt}} words are there",
+        "missing": "In the advert but not in this CV",
+        "noneMissing": "Every word we looked at is already in this CV.",
+        "caveat": "Only add words that are true for you. A word in your CV that you cannot talk about in an interview helps no one."
+      }
     },
     "myCvs": {
       "title": "My saved CVs",
@@ -2646,7 +2654,8 @@
       "timeline": "History",
       "calendar": "Calendar",
       "contacts": "Contacts",
-      "analytics": "Statistics"
+      "analytics": "Statistics",
+      "activityReport": "Activity report"
     },
     "status": {
       "interested": "Interested",
@@ -2914,6 +2923,16 @@
         "job_alert": "Job alert",
         "manual": "Added manually",
         "import": "Imported"
+      },
+      "method": "How you applied",
+      "methodEmpty": "Choose if you want to",
+      "methodHelp": "Included in your activity report summary.",
+      "methods": {
+        "portal": "Through an advert or recruitment system",
+        "email": "By email",
+        "linkedin": "Through LinkedIn",
+        "referral": "Through a contact",
+        "other": "Some other way"
       }
     },
     "detail": {
@@ -2999,6 +3018,35 @@
       "applyDirectly": "Apply directly",
       "saveAndSend": "Save & send application",
       "saveJob": "Save job"
+    },
+    "activityReport": {
+      "title": "Summary for your activity report",
+      "intro": "These are the jobs you applied for this month, in the order Arbetsförmedlingen (the Swedish Public Employment Service) asks for them. Print the list or copy it, then fill it in on Mina sidor (their website).",
+      "noSubmitNote": "Jobin does not send anything to Arbetsförmedlingen. You fill in the report yourself.",
+      "monthLabel": "Choose a month",
+      "print": "Print",
+      "copy": "Copy as text",
+      "copied": "Copied",
+      "copyFailed": "We could not copy it. Select the text in the table and copy it by hand.",
+      "loading": "Loading your applications …",
+      "errorTitle": "We could not load the summary",
+      "errorDescription": "We cannot reach your applications right now. An incomplete report is worse than none, so we are not showing one.",
+      "notFilledIn": "Not filled in",
+      "missingDate_one": "One application has no date, so it is not in any month. Add the date you applied and it will appear.",
+      "missingDate_other": "{{count}} applications have no date, so they are not in any month. Add the dates you applied and they will appear.",
+      "emptyTitle": "No jobs applied for in this month",
+      "emptyDescription": "When you mark an application as sent and fill in the date, it shows up here.",
+      "emptyAction": "Go to the board",
+      "summary_one": "1 job applied for in {{month}}",
+      "summary_other": "{{count}} jobs applied for in {{month}}",
+      "tableCaption": "Jobs applied for in {{month}}",
+      "columns": {
+        "date": "Date",
+        "employer": "Employer",
+        "role": "Job title",
+        "method": "How you applied",
+        "outcome": "What happened"
+      }
     }
   },
   "journey": {
@@ -9554,7 +9602,13 @@
       },
       "selected": "Selected",
       "isSelected": "is selected",
-      "selectedInfo": "The template includes preset colors and fonts. Continue to fill in your CV, or click Preview to see the result."
+      "selectedInfo": "The template includes preset colors and fonts. Continue to fill in your CV, or click Preview to see the result.",
+      "spaltform": {
+        "en-spalt": "One column",
+        "tva-spalter": "Two columns",
+        "dekorativ-spalt": "One column with a decorative edge"
+      },
+      "atsNote": "The PDF holds real text that you can select and search — this is true for every template. If you know the employer uses a recruitment system, a one-column template is the safest choice, because then the text is read in a single order. We have not tested the templates against any specific system."
     },
     "profileImage": {
       "title": "Profile picture",

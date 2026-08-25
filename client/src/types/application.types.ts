@@ -464,6 +464,34 @@ export function getStatusColor(status: ApplicationStatus): string {
   return APPLICATION_STATUS_CONFIG[status].color
 }
 
+/**
+ * Hur långt en ansökan bevisligen kommit i processen (statusordning).
+ *
+ * Terminala statusar säger inte var man var när processen tog slut:
+ * avslag räknas som "har ansökt" (man kan inte få avslag utan att ha sökt),
+ * återkallad räknas som "har ansökt" bara om ansökningsdatum finns.
+ *
+ * Låg 2026-08-19 till 2026-08-25 som privat funktion i
+ * `ApplicationsAnalytics.tsx`. Flyttad hit när aktivitetsrapporten (O3)
+ * behövde exakt samma bedömning — två kopior av "har personen sökt jobbet?"
+ * hade garanterat glidit isär, och då hade statistiken och rapporten sagt
+ * olika saker om samma rad.
+ */
+export function naddStatusordning(app: Application): number {
+  if (app.status === 'rejected') {
+    return APPLICATION_STATUS_CONFIG.applied.order
+  }
+  if (app.status === 'withdrawn') {
+    return app.applicationDate ? APPLICATION_STATUS_CONFIG.applied.order : 0
+  }
+  return APPLICATION_STATUS_CONFIG[app.status].order
+}
+
+/** Har personen faktiskt sökt jobbet, eller bara bokmärkt det? */
+export function harSokt(app: Application): boolean {
+  return naddStatusordning(app) >= APPLICATION_STATUS_CONFIG.applied.order
+}
+
 export function getStatusBgColor(status: ApplicationStatus): string {
   return APPLICATION_STATUS_CONFIG[status].bgColor
 }

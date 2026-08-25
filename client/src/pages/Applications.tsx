@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import {
-  Kanban, Clock, Calendar, Users, BarChart3, Plus, ClipboardList
+  Kanban, Clock, Calendar, Users, BarChart3, Plus, ClipboardList, FileText
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { Button } from '@/components/ui'
@@ -20,6 +20,7 @@ import { ApplicationsTimeline } from '@/components/applications/ApplicationsTime
 import { ApplicationsCalendar } from '@/components/applications/ApplicationsCalendar'
 import { ApplicationsContacts } from '@/components/applications/ApplicationsContacts'
 import { ApplicationsAnalytics } from '@/components/applications/ApplicationsAnalytics'
+import { ApplicationsActivityReport } from '@/components/applications/ApplicationsActivityReport'
 import { AddApplicationModal } from '@/components/applications/AddApplicationModal'
 import { ApplicationDetailModal } from '@/components/applications/ApplicationDetailModal'
 import type { Application } from '@/types/application.types'
@@ -33,6 +34,8 @@ const applicationTabDefs = [
   { id: 'calendar', labelKey: 'applications.tabs.calendar', path: '/applications/calendar', icon: Calendar },
   { id: 'contacts', labelKey: 'applications.tabs.contacts', path: '/applications/contacts', icon: Users },
   { id: 'analytics', labelKey: 'applications.tabs.analytics', path: '/applications/analytics', icon: BarChart3 },
+  // O3 (2026-08-25): underlag för Arbetsförmedlingens aktivitetsrapport.
+  { id: 'aktivitetsrapport', labelKey: 'applications.tabs.activityReport', path: '/applications/aktivitetsrapport', icon: FileText },
 ]
 
 // Pipeline tab wrapper with actions
@@ -139,6 +142,7 @@ function ApplicationsInner() {
           <Route path="calendar" element={<ApplicationsCalendar />} />
           <Route path="contacts" element={<ApplicationsContacts />} />
           <Route path="analytics" element={<ApplicationsAnalytics />} />
+          <Route path="aktivitetsrapport" element={<ApplicationsActivityReport />} />
           <Route path="*" element={<Navigate to="/applications" replace />} />
         </Routes>
       </PageLayout>

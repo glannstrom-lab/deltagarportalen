@@ -396,6 +396,35 @@ async function sendEmail(to, subject, html, text) {
   }
 }
 
+/**
+ * Ska den här bevakningen mejlas i dagens körning?
+ *
+ * Cron-schemat i `client/vercel.json` kör `action=check` **en gång per dygn**
+ * (06:00 UTC). Utan den här grinden fick varje bevakning med frekvens ≠ 'none'
+ * ett mejl varje dygn — även de som användaren satt till 'weekly'. Det är samma
+ * felklass som resten av portalen betalat av: gränssnittet lovar en sak och
+ * koden gör en annan.
+ *
+ * - `none`   → aldrig mejl (aviseringen finns kvar i `job_notifications`)
+ * - `weekly` → bara på måndagar
+ * - allt annat (`daily`, `instant`, saknat värde) → varje körning, alltså dagligen
+ *
+ * `instant` levereras alltså dagligen, inte direkt. Ingen kodväg sätter det
+ * värdet i dag — `useJobAlerts.ts` skapar alltid `daily` — men typen i
+ * `services/jobsApi.ts` tillåter det, så beteendet står skrivet här i stället
+ * för att gissas. Vill vi ha äkta `instant` krävs tätare cron, vilket i sin tur
+ * kräver att Vercel-planen tillåter det.
+ *
+ * @param {string | null | undefined} frequency
+ * @param {Date} [now] Injicerbar för test.
+ * @returns {boolean}
+ */
+function shouldEmailToday(frequency, now = new Date()) {
+  if (frequency === 'none') return false;
+  if (frequency === 'weekly') return now.getUTCDay() === 1; // måndag
+  return true;
+}
+
 // Check alerts for a specific user
 async function checkUserAlerts(userId) {
   // Get user's active alerts
@@ -468,8 +497,9 @@ async function checkUserAlerts(userId) {
         }, { onConflict: 'alert_id,job_id' });
       }
 
-      // Send email notification if enabled
-      if (userEmail && alert.notification_frequency !== 'none') {
+      // Send email notification if enabled — men bara om bevakningens frekvens
+      // säger att den ska levereras i dag. Se shouldEmailToday().
+      if (userEmail && shouldEmailToday(alert.notification_frequency)) {
         const template = templates.newJobsAlert(alert.name, newJobs, userEmail);
         await sendEmail(userEmail, template.subject, template.html, template.text);
       }
@@ -672,3 +702,7 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// Exponerad för test (O1, 2026-08-25). Vercel bryr sig bara om att
+// `module.exports` är en funktion; extra egenskaper på den är osynliga i drift.
+module.exports.shouldEmailToday = shouldEmailToday;

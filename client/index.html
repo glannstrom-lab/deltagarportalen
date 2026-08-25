@@ -8,7 +8,15 @@
     <meta name="application-name" content="Jobin" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Jobin hjälper dig som söker jobb: skriv CV och personligt brev, öva inför intervjun och håll koll på dina ansökningar — med stöd hela vägen.">
-    <meta name="theme-color" content="#4f46e5">
+    <!-- O2 (2026-08-25): #4f46e5 var indigo från en design portalen lämnade i
+         augusti. Färgen är nu Översiktshubbens `--action-solid` ur tokens.css,
+         i båda lägena — annars får den installerade appen fel ram i mörkt tema. -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1A7757">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#122A22">
+
+    <!-- O2 (2026-08-25): manifestet fanns i public/ sedan länge men var aldrig
+         länkat, så portalen gick inte att installera. Se sw.js för cache-strategin. -->
+    <link rel="manifest" href="/manifest.json">
 
     <!-- K1 (2026-08-05): kanonisk URL. Nödvändig här eftersom SPA-fallbacken
          svarar 200 med den här filen för VARJE sökväg — utan canonical kan
@@ -95,21 +103,26 @@
 
     <!-- Build timestamp: 2026-04-09 -->
 
-    <!-- Clear broken service workers -->
+    <!-- O2 (2026-08-25): registrera service workern.
+         Här stod tidigare motsatsen — ett skript som avregistrerade VARJE
+         service worker och tömde alla cachar vid varje sidladdning. Det skrevs
+         för att laga en trasig cache, och gjorde samtidigt portalen omöjlig att
+         installera. Den nya `sw.js` är versionsstyrd (CACHE_VERSION) och rensar
+         sina egna gamla cachar vid aktivering, så orsaken till det gamla
+         skriptet finns inte kvar.
+
+         Registreras efter `load` så att den inte konkurrerar med appens
+         första hämtningar. -->
     <script type="text/javascript">
       (function() {
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.getRegistrations().then(function(registrations) {
-            registrations.forEach(function(registration) {
-              registration.unregister();
-            });
+        if (!('serviceWorker' in navigator)) return;
+        // Bara på https (och localhost) — SW registreras ändå inte på http.
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js').catch(function(err) {
+            // Ett misslyckat SW-bygge får aldrig hindra appen från att starta.
+            console.warn('[sw] registrering misslyckades:', err && err.message);
           });
-          if ('caches' in window) {
-            caches.keys().then(function(names) {
-              names.forEach(function(name) { caches.delete(name); });
-            });
-          }
-        }
+        });
       })();
     </script>
 

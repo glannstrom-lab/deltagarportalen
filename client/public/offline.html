@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ingen anslutning — Jobin</title>
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#1A7757" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#122A22" />
+    <!--
+      O2 (2026-08-25): sidan som visas när service workern varken når nätet
+      eller har något cachat. Den måste vara helt fristående — inga externa
+      typsnitt, bilder eller CSS-filer, eftersom ingenting går att hämta.
+
+      Tonen följer DESIGN.md §2: en invit, inte ett felmeddelande. Ingen röd
+      varningstriangel, ingen versalskrift, ingen skuld hos användaren.
+    -->
+    <style>
+      :root {
+        --papper: #ECF7F1;
+        --yta: #FFFFFF;
+        --ink: #155F47;
+        --ink-svag: #4A6159;
+        --accent: #1A7757;
+        --linje: #C5E5D4;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --papper: #122A22;
+          --yta: #1F1E1A;
+          --ink: #A8E2CC;
+          --ink-svag: #8FA69C;
+          --accent: #3BC79D;
+          --linje: #1F5C45;
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+        background: var(--papper);
+        color: var(--ink);
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+      }
+      main {
+        background: var(--yta);
+        border: 1px solid var(--linje);
+        border-radius: 12px;
+        padding: 2rem 1.75rem;
+        max-width: 30rem;
+        width: 100%;
+      }
+      h1 {
+        font-size: 1.5rem;
+        line-height: 1.25;
+        margin: 0 0 0.75rem;
+        font-weight: 600;
+      }
+      p { margin: 0 0 1rem; color: var(--ink-svag); }
+      p:last-of-type { margin-bottom: 1.5rem; }
+      ul { margin: 0 0 1.5rem; padding-left: 1.15rem; color: var(--ink-svag); }
+      li { margin-bottom: 0.35rem; }
+      button {
+        font: inherit;
+        font-weight: 600;
+        color: #FFFFFF;
+        background: var(--accent);
+        border: none;
+        border-radius: 8px;
+        padding: 0.7rem 1.25rem;
+        cursor: pointer;
+        min-height: 44px;
+      }
+      button:hover { filter: brightness(1.08); }
+      button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+      .en {
+        margin-top: 1.5rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--linje);
+        font-size: 0.9375rem;
+        color: var(--ink-svag);
+      }
+      @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Du är inte uppkopplad just nu</h1>
+      <p>Jobin behöver internet för att hämta dina uppgifter. Ingenting du har sparat är borta — det ligger kvar och väntar.</p>
+      <ul>
+        <li>Kolla wifi eller mobildata</li>
+        <li>Är du på tåget eller i en hiss? Vänta en stund och försök igen</li>
+      </ul>
+      <button type="button" onclick="location.reload()">Försök igen</button>
+      <p class="en" lang="en">
+        <strong>You are offline.</strong> Jobin needs an internet connection to load your
+        information. Nothing you saved is lost. Check your wifi or mobile data, then select
+        “Försök igen” to try again.
+      </p>
+    </main>
+  </body>
+</html>

@@ -25,25 +25,12 @@ import { useApplications } from '@/hooks/useApplications'
 import {
   APPLICATION_STATUS_CONFIG,
   getStatusLabel,
+  harSokt,
+  naddStatusordning,
   type Application,
   type ApplicationStatus
 } from '@/types/application.types'
 
-// Hur långt en ansökan bevisligen kommit i processen (statusordning).
-// Terminala statusar säger inte var man var när processen tog slut:
-// avslag räknas som "har ansökt" (man kan inte få avslag utan att ha sökt),
-// återkallad räknas som "har ansökt" bara om ansökningsdatum finns.
-function reachedOrder(app: Application): number {
-  if (app.status === 'rejected') {
-    return APPLICATION_STATUS_CONFIG.applied.order
-  }
-  if (app.status === 'withdrawn') {
-    return app.applicationDate ? APPLICATION_STATUS_CONFIG.applied.order : 0
-  }
-  return APPLICATION_STATUS_CONFIG[app.status].order
-}
-
-const APPLIED_ORDER = APPLICATION_STATUS_CONFIG.applied.order
 const SCREENING_ORDER = APPLICATION_STATUS_CONFIG.screening.order
 const PHONE_ORDER = APPLICATION_STATUS_CONFIG.phone.order
 
@@ -65,15 +52,10 @@ const SEGMENTFARG: Record<ApplicationStatus, string> = {
   withdrawn: 'bg-stone-400',
 }
 
-/** Har personen faktiskt sökt jobbet, eller bara bokmärkt det? */
-function harSokts(app: Application): boolean {
-  return reachedOrder(app) >= APPLIED_ORDER
-}
-
 /** Pågående = sökt, inte arkiverad, inte avslutad. */
 function arPagaende(app: Application): boolean {
   return (
-    harSokts(app) &&
+    harSokt(app) &&
     !app.archivedAt &&
     !['accepted', 'rejected', 'withdrawn'].includes(app.status)
   )
@@ -196,7 +178,7 @@ function ConversionFunnel({ applications }: { applications: Application[] }) {
     return defs.map(d => ({
       label: t(`applications.status.${d.status}`, getStatusLabel(d.status)),
       icon: d.icon,
-      count: applications.filter(a => reachedOrder(a) >= APPLICATION_STATUS_CONFIG[d.status].order).length
+      count: applications.filter(a => naddStatusordning(a) >= APPLICATION_STATUS_CONFIG[d.status].order).length
     }))
   }, [applications, t])
 
@@ -322,21 +304,21 @@ export function ApplicationsAnalytics() {
   const navigate = useNavigate()
   const { applications, applicationsByStatus, staleApplications, isLoading, error, refetch } = useApplications()
 
-  // Alla siffror räknas ur `applications` (kumulativt via reachedOrder).
+  // Alla siffror räknas ur `applications` (kumulativt via naddStatusordning).
   const metrics = useMemo(() => {
     const now = new Date()
 
     // Bokmärken: sparade/intresserade jobb som ännu inte sökts.
-    const savedNotApplied = applications.filter(a => !harSokts(a) && !a.archivedAt).length
+    const savedNotApplied = applications.filter(a => !harSokt(a) && !a.archivedAt).length
 
-    const submitted = applications.filter(harSokts).length
+    const submitted = applications.filter(harSokt).length
     // "Svar" här = de statusar deltagaren själv dragit kortet till. Ingen
     // kolumn i saved_jobs registrerar ett arbetsgivarsvar (alla 24 kolumner
     // kontrollerade 2026-08-19), så texterna säger "du har markerat".
     const marked = applications.filter(
-      a => reachedOrder(a) >= SCREENING_ORDER || a.status === 'rejected'
+      a => naddStatusordning(a) >= SCREENING_ORDER || a.status === 'rejected'
     ).length
-    const interviews = applications.filter(a => reachedOrder(a) >= PHONE_ORDER).length
+    const interviews = applications.filter(a => naddStatusordning(a) >= PHONE_ORDER).length
 
     const markedRate = submitted > 0 ? Math.round((marked / submitted) * 100) : 0
     const interviewRate = submitted > 0 ? Math.round((interviews / submitted) * 100) : 0

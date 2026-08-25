@@ -10,9 +10,440 @@
 >
 > **Nytt 2026-08-05 — spår K (Synlighet).** Portalen har 141 färdigskrivna artiklar (~90 000 ord) i `articleData.ts` och **noll indexerbara sidor** — `HashRouter` gör hela jobin.se till en enda URL, och `robots.txt`/`sitemap.xml` returnerar `index.html` med status 200. Innehållet är alltså redan producerat; det som saknas är publicering. Se spår K nedan.
 
+> **Nytt 2026-08-25 — spår O (Omvärlden).** Första konkurrentkartläggningen: Arbetsförmedlingen plus 31 aktörer i sju grupper. Resultatet är 24 punkter där någon annan är bättre eller vi saknar funktionen helt. Fem premisser föll vid granskningen — bl.a. att jobbevakningen är obemannad snarare än obyggd, att PWA:n är aktivt avstängd i `index.html`, och att hela JobTech-stacken redan är proxad. Vår närmaste konkurrent är **inte** Arbetsförmedlingen utan Wundermatch (grundat 2024), som bygger samma kombination av deltagarapp och leverantörssystem. Se avsnittet direkt nedan.
+
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Spår O (Omvärlden) 2026-08-25 — de 24 punkterna där någon annan är bättre
+
+> **Underlag:** konkurrentkartläggning 25 augusti 2026 över Arbetsförmedlingen och 31 andra
+> aktörer i sju grupper. Artefakt: `https://claude.ai/code/artifact/d97672d8-ee22-43d1-b7e2-616648cff564`.
+> Målet Mikael satte: **bäst på allt**. Spåret nedan är hela vägen dit, ordnad efter
+> användarnytta per krona — inte efter vad som är roligast att bygga.
+
+**Fem premisser föll vid granskningen. De ändrar ordningen, så läs dem först.**
+
+1. **Jobbevakningen är inte "obyggd" — den är obemannad.** `client/api/job-alerts.js`
+   är 674 rader och komplett: `job_alerts`-tabellen finns i prod, Resend-integrationen
+   finns (`sendEmail`, rad 341), `email_notifications` loggas, och funktionen accepterar
+   redan **Vercels cron-konvention** (`Authorization: Bearer <CRON_SECRET>`, rad ~60).
+   Det som saknas är tre rader `crons` i `client/vercel.json` och tre miljövariabler.
+   Punkten är en konfigurationsuppgift, inte ett bygge.
+2. **PWA:n är inte obyggd — den är aktivt avstängd.** `client/public/manifest.json`
+   finns och är komplett (ikoner 192/512, `display: standalone`). Men den är **inte
+   länkad** från `client/index.html`, `public/sw.js` är en 26-raders självavregistrerande
+   stubbe, och `index.html` rad 98–113 kör ett skript som avregistrerar varje service
+   worker och tömmer alla cachar. Att göra portalen installerbar är att ta bort kod,
+   inte skriva ny. `theme_color` är dessutom `#4f46e5` — indigo från en design vi lämnat.
+3. **Vi äger redan hela JobTech-stacken.** Fem edge-funktioner proxar den:
+   `af-jobsearch` (JobSearch), `af-taxonomy` (Taxonomy v16), `af-enrichments`
+   (JobAd Enrichments — **extraherar kompetenser ur annonstext**), `af-jobed`
+   (JobEd Connect), `af-historical`. Poängsatt matchning mot hela flödet och
+   yrkesprognoser är därför datajobb ovanpå befintlig infrastruktur, inte nya
+   integrationer. **Yrkesbarometern ligger som öppna data** på `data.jobtechdev.se`,
+   och **JobStream** ger realtidsflödet av alla annonser.
+4. **Aktivitetsrapport-exporten har redan sitt underlag.** `saved_jobs` bär
+   `application_date`, `applied_at`, `company_name`, `job_title`, `job_url`,
+   `application_method`, `status`, `notes`. Allt AF vill ha i en aktivitetsrapport
+   finns i tabellen. Det som saknas är en sammanställningsvy och en export.
+5. **Intervjuns leveransanalys är halvvägs gratis — men bara halvvägs.**
+   `components/VoiceInput.tsx` använder **Web Speech API** (`SpeechRecognition`), inte
+   `MediaRecorder`. Vi får alltså en transkription men **inget ljud**. Utfyllnadsord
+   ("öh", "liksom", "typ", "asså") och taltempo går att räkna ur transkriptionen med
+   tidsstämplar. Tonläge, pauslängd och röststyrka gör det inte — det kräver att vi
+   spelar in ljud, vilket är en ny personuppgiftskategori och därmed ett DPIA-tillägg.
+
+**En invändning innan planen, sedan bygger jag hela den.** Två av punkterna gör oss
+sämre om de byggs rakt av. **Autofyll/auto-apply** (O9) är marknadens mest omtalade
+kvalitetsproblem 2026 — massansökningar till löst matchade roller, generiska svar på
+urvalsfrågor, dubbletter. Att kopiera Wundermatchs AI-Apply rakt av strider mot allt
+portalen står för. Jag har därför omscopat den till *förberedd ansökan* i stället för
+*avsänd ansökan*. Och **arbetsgivarsökbar profil** (O16) gör portalen tvåsidig, vilket
+är en annan produkt med en annan rättslig grund — den ligger som beslut, inte som bygge.
+Allt annat är byggbart som beskrivet.
+
+### Våg 1 genomförd 2026-08-25 — O1–O4
+
+Alla fyra byggda och grindade (`npm run verify` grön: 156 testfiler, taken 122 warnings /
+362 typfel / 52 gradienter orörda, `npm run build` grön). **Sex premisser till föll under
+arbetet** — de står först, eftersom tre av dem är riktiga buggar som ingen sett.
+
+#### Premisser som föll under bygget
+
+1. **`applied_at` är en död kolumn.** Spårtexten ovan sa att rapporten skulle läsa
+   `saved_jobs.applied_at`. `applicationsApi` skriver aldrig den — bara
+   `application_date`. Rapporten läser `applicationDate`, och kommentaren i
+   `aktivitetsrapport.ts` varnar nästa läsare.
+
+2. **`application_method` fanns i databasen, i typen — och ingenstans i gränssnittet.**
+   Mätt i prod: **0 av 26 rader** har ett värde, eftersom inget formulär någonsin frågade.
+   Fältet är en av de fem uppgifter Arbetsförmedlingen vill ha. Utan det hade rapportens
+   fjärde kolumn alltid varit tom. Fältet är tillagt i `AddApplicationModal`, frivilligt,
+   med tomt = "inte ifyllt".
+
+3. **Att dra ett kort till "Ansökt" satte aldrig ansökningsdatum.** Bara formuläret och
+   `applyToJob` skrev `application_date`. Tavlan — den vanligaste vägen — lämnade fältet
+   tomt. Mätt i prod: **1 av 26 rader** har ett datum. Det är hela förklaringen till att
+   ingen aktivitetsrapport gick att bygga ur datan. `applicationsApi.updateStatus` fyller
+   nu i dagens datum när status når "Ansökt" eller längre **och fältet är tomt** — aldrig
+   över ett befintligt värde, och aldrig för "återkallad" utan datum.
+
+4. **`services/afEnrichmentsApi.ts` är dödkod.** Noll importörer, och dess bas-URL
+   `/af/enrichments/v1` har ingen proxy vare sig i `vercel.json` eller `vite.config.ts` —
+   ett anrop hade fått `index.html` tillbaka. Spårtexten för O4 byggde på att den var
+   levande. Nyckelordskontrollen är därför skriven som en egen, lokal modul utan nätverk.
+   *Den döda filen är kvar orörd; radering hör till dödkodspasset, inte hit.*
+
+5. **`components/cv/CVTemplateSelector.tsx` är dödkod med fel innehåll.** Noll importörer,
+   och listar åtta mall-id (`classic`, `tech`, `academic`, `corporate` …) som inte finns.
+   Den levande listan är `TEMPLATES` i `pages/CVBuilder.tsx`, tolv stycken.
+
+6. **`public/pwa-512.png` bär förvanskad text.** Ikonen innehåller orden
+   "JOBIN — VÄGÊN TILL NYTT JÔBB", med fel diakriter. Den syntes aldrig förut eftersom
+   manifestet inte var länkat; nu hamnar den på folks hemskärmar. Den är **inte**
+   deklarerad som `maskable` — texten hade beskurits bort av masken, och ett `purpose`
+   vi inte verifierat är ett påstående utan täckning. **Kvarstår: ny ikon.**
+
+#### O1 — jobbevakningen ✅ kod, 🟡 kräver tre miljövariabler
+
+- `crons` tillagt i `client/vercel.json`: `/api/job-alerts?action=check` kl. 06:00 UTC
+  dagligen. En cron, inte två — `send-digest` hade dubblerat mejlen, eftersom `check`
+  redan mejlar alla med frekvens ≠ `none`.
+- **Ny grind i koden:** `shouldEmailToday()` i `job-alerts.js`. Utan den hade en
+  bevakning satt till `weekly` fått mejl varje dygn. `none` → aldrig, `weekly` → bara
+  måndagar, övrigt → dagligen. Vaktad av `services/jobAlertFrekvens.test.ts` (5 tester).
+- Cache-headers för `/sw.js`, `/manifest.json` och `/offline.html` tillagda **före** den
+  breda `.js`-regeln, som annars hade satt `immutable, max-age=31536000` på service
+  workern och fryst den för alltid.
+
+> **Punkten är inte klar förrän ett mejl landat.** Följande måste sättas i Vercels
+> projektinställningar — jag kan inte göra det:
+>
+> | Variabel | Varför |
+> |---|---|
+> | `CRON_SECRET` | `verifyCronSecret` returnerar `false` utan den, och cronen får 401. Vercel skickar automatiskt `Authorization: Bearer $CRON_SECRET` när variabeln finns. |
+> | `RESEND_API_KEY` | Utan den köas mejlet som `pending` i `email_notifications` **utan leverans** — funktionen svarar ändå 200. |
+> | `EMAIL_FROM` | Annars går allt från `onboarding@resend.dev`. Kräver verifierad avsändardomän hos Resend. |
+>
+> Kontrollera också takgränsen för cron-frekvens på projektets Vercel-plan.
+>
+> **Verifieringsrad:** ett riktigt mejl i en riktig inkorg, och raden i
+> `email_notifications` som levererad — inte `pending`. Samma regel som A18-lärdomen.
+
+#### O2 — portalen går att installera ✅
+
+- `manifest.json` länkat från `index.html`. **Avregistreringsskriptet borttaget** —
+  rad 98–113 tömde varje service worker och alla cachar vid varje sidladdning.
+- `public/sw.js` omskriven från 26-raders självmordsstubbe till en versionsstyrd worker:
+  navigering hämtas från nätet först och faller tillbaka på cachad `/` och sedan
+  `offline.html`; `/assets/*` cache-först; API-anrop rörs aldrig. `CACHE_VERSION` i
+  cache-namnet, och `activate` raderar alla `jobin-*`-cachar som inte är den aktuella —
+  det är den mekaniken som gör att det gamla nödskriptet inte behövs.
+- **Inget `skipWaiting`.** En ny worker tar över först när alla flikar stängts. Att byta
+  tillgångar mitt i en session är precis det som ger "Loading chunk failed", som
+  `index.html` redan har en overlay för.
+- `public/offline.html`: fristående sida, inga externa beroenden, svenska + engelska,
+  ljust och mörkt läge. Tonen är en invit, inte ett fel.
+- `theme_color` och `<meta name="theme-color">` rättade från `#4f46e5` (indigo ur en
+  design vi lämnat i augusti) till Översiktshubbens `--action-solid`, med egen färg för
+  mörkt läge. `orientation: portrait` **borttagen** — att låsa orienteringen bryter mot
+  WCAG 1.3.4.
+- Genvägar i manifestet: Sök jobb, Mina ansökningar, Mitt CV.
+- Verifierat i `dist/`: manifestlänken finns, avregistreringen är borta, alla tre filerna
+  ligger i bygget. **Inte verifierat:** installationsdialogen på riktig Android/iOS — det
+  kräver en enhet mot skarp drift efter deploy.
+
+#### O3 — aktivitetsrapport ur Ansökningar ✅
+
+- Ny flik `/applications/aktivitetsrapport`. Väljer månad, listar månadens sökta jobb i
+  Arbetsförmedlingens ordning: datum, arbetsgivare, tjänst, hur du sökte, vad det ledde
+  till. Skriv ut och kopiera som text.
+- **Öppnar på rätt månad av sig själv:** till och med den 14:e på förra månaden (det är
+  då rapporten lämnas), därefter på den innevarande.
+- **Ingen koppling mot Arbetsförmedlingen, med flit.** Det finns inget API, och en
+  "skickad"-bekräftelse vi inte kan belägga vore samma felklass som resten av sommaren.
+  Vyn säger det rakt ut i sin egen text.
+- **Tre lägen, inte två:** laddar / fel / klart. Ett trasigt anrop får inte ritas som
+  "inga sökta jobb den här månaden" — då fyller någon i en tom rapport till en myndighet.
+- **Sökta jobb utan datum räknas och namnges** i stället för att tappas tyst.
+- Utskriftsreglerna följer artikelsidans mönster: `body.aktivitetsrapport-sida` +
+  `.aktivitetsrapport-utskrift`, svart på vitt, tabellhuvudet upprepas per sida,
+  månadsväljaren och knapparna tas bort ur utskriften.
+- `naddStatusordning`/`harSokt` **flyttade** från `ApplicationsAnalytics.tsx` till
+  `types/application.types.ts`. Två kopior av "har personen sökt jobbet?" hade glidit isär
+  och fått statistiken och rapporten att säga olika saker om samma rad.
+- Tester: `aktivitetsrapport.test.ts` (19) + `ApplicationsActivityReport.test.tsx` (7).
+  Mutationsprövade: `<= 14` → `< 14` och borttaget `harSokt`-filter fällde 3 tester.
+
+#### O4 — ATS ✅
+
+- **Ny lokal nyckelordskontroll**, `services/atsNyckelord.ts`, i `CVJobMatchPanel`. Körs i
+  webbläsaren utan AI, direkt, mot **alla** CV — inte bara de tio som ryms i AI-omgången,
+  och även för den som stängt av AI. Ingen text lämnar enheten.
+- **Ingen poäng.** Bara "X av Y ord finns" (en räkning vi faktiskt gjort) och listan över
+  vilka ord som saknas. En procentsats hade sett exakt ut utan att vara det.
+- Böjningshantering med **prefixgolv på sex tecken**: "erfarenhet" ⊂ "erfarenheter"
+  matchar, "lag" ⊂ "lager" gör det inte. Stopplista för annonsspråk och floskler
+  ("spännande", "driven", "tjänsten"). Deterministisk sortering, annars flyttar sig orden
+  mellan två körningar på samma annons.
+- Texten säger uttryckligen: *lägg bara till ord som stämmer på dig*.
+- **Mallarna är mätta, inte betygsatta.** `data/cvMallar.ts` klassar alla tolv genom att
+  läsa mallfilerna: sju har en sidopanel som bär innehåll (`sidebar`, `nordic`,
+  `budapest`, `rotterdam`, `chicago`, `atelier`, `manhattan`), fyra är en spalt
+  (`centered`, `minimal`, `creative`, `executive`), och `berlin` har en 60 px dekorkant
+  utan uppgifter. Spaltformen syns nu som första etiketten på varje mallkort.
+- **Vi skriver inte "ATS-godkänd".** Vi har inte testat mallarna mot något
+  rekryteringssystem. Det vi säger är det vi kan belägga: PDF:en innehåller riktig,
+  markerbar text (Chromium renderar den ur HTML), och en spalt läses i en enda ordning.
+- `cvMallar.test.ts` läser `CVBuilder.tsx` och `CVPreview.tsx` och fäller bygget om
+  listorna glider isär — samt kontrollerar spaltformen mot `<aside>` i varje mallfil.
+- Tester: `atsNyckelord.test.ts` (13) + `cvMallar.test.ts` (8).
+
+#### Kvarstår ur våg 1
+
+- **De tre miljövariablerna** (O1). Utan dem går inget mejl.
+- **Ny app-ikon** — `pwa-512.png` har förvanskad text och kan inte bli `maskable` som den
+  ser ut. Behövs innan installation marknadsförs.
+- **Installationsdialogen är oprovad på riktig enhet.** Testa på Android/Chrome och
+  iOS/Safari efter deployen.
+- `afEnrichmentsApi.ts` och `CVTemplateSelector.tsx` är belagd dödkod — hör till C-spårets
+  raderingspass, inte hit.
+
+---
+
+### Våg 1 — löften vi redan gett men inte håller (0–3 veckor)
+
+Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte får.
+
+**O1 · Jobbevakningen ska skicka mejl** — *premiss verifierad, konfiguration*
+- Lägg `crons` i `client/vercel.json` mot `/api/job-alerts?action=check`. Kontrollera
+  planens takgräns för cron-frekvens innan schemat sätts — Hobby och Pro har olika tak.
+- Sätt `CRON_SECRET`, `RESEND_API_KEY`, `EMAIL_FROM` i Vercel. Verifiera avsändardomänen
+  hos Resend, annars fastnar allt på `onboarding@resend.dev`.
+- **Kräver Mikaels ja** — `client/vercel.json` står på undantagslistan i CLAUDE.md.
+- **Klart när:** ett riktigt mejl landar i en riktig inkorg, och raden i
+  `email_notifications` står som levererad, inte `pending`. Inte "koden är deployad".
+
+**O2 · Portalen ska gå att installera** — *premiss verifierad, borttagning*
+- Länka `manifest.json` från `client/index.html`. Ta bort avregistreringsskriptet
+  (rad 98–113). Ersätt `public/sw.js` med en riktig worker: app shell-cache, offline-sida,
+  `skipWaiting` bara vid ny version.
+- Rätta `theme_color` från `#4f46e5` till hubbfärgen ur `tokens.css`.
+- **Fällan:** skriptet skrevs för att laga en trasig cache. Tas det bort utan en
+  versionsstyrd worker återkommer buggen. Skriv `sw.js` med `version.json` som nyckel —
+  filen finns redan i `public/`.
+- **Klart när:** "Lägg till på hemskärmen" syns i Chrome på Android och Safari på iOS,
+  och en påslagen flygplansläge visar offline-sidan i stället för dinosaurien.
+
+**O3 · Aktivitetsrapporten ska gå att hämta ur Ansökningar** — *premiss verifierad*
+- Ny vy under `/applications`: välj månad, få de ansökningar som har `applied_at` i
+  månaden, i AF:s ordning (datum, arbetsgivare, tjänst, hur du sökte, resultat).
+- Exportera som utskrift och som kopierbar text. **Ingen API-koppling mot AF** — den
+  finns inte att få, och en påhittad integration vore precis den felklassen vi betalat av.
+- Fyll bara i det vi faktiskt vet. Saknas `application_method` visas en invit, inte en
+  gissning.
+- **Klart när:** en deltagare kan ta sammanställningen och fylla i Mina sidor utan att
+  öppna något annat.
+
+**O4 · Säg att vi är ATS-säkra, och gör det sant** — *premiss delvis*
+- Vi har `cv-jobbmatchning` i `ai.js` men nämner aldrig ATS. Varje svensk CV-sajt leder
+  med ordet.
+- Bygg en nyckelordskontroll som körs lokalt (ingen AI): jämför CV:ts termer mot
+  annonsens, med `af-enrichments` som källa för vilka kompetenser annonsen faktiskt
+  efterfrågar. Visa vad som saknas, inte en poäng.
+- Gå igenom de 12 CV-mallarna: flerkolumnslayout, textrutor och ikoner utan textalternativ
+  är det som fäller en ATS-parser. Märk mallarna ärligt.
+- **Klart när:** varje mall har en verifierad ATS-status, och kontrollen pekar ut ord
+  som saknas i stället för att sätta betyg.
+
+---
+
+### Våg 2 — matchningen, där de flesta konkurrenterna slår oss (3–8 veckor)
+
+**O5 · Poängsätt hela annonsflödet mot användarens CV** — *premiss verifierad, byggbart*
+- Källa: **JobStream** (realtidsflöde av alla annonser) i stället för att söka per fråga.
+  Ny edge-funktion `af-jobstream` efter mönstret i `af-jobsearch`.
+- Kompetenser ur annonsen hämtas med `af-enrichments`, som redan är proxad.
+- Poängsättning körs nattligt per användare, inte per sidladdning. Resultat i egen tabell
+  med migration + `schema:refresh` i samma commit.
+- **Visa plats och skäl, inte procent.** Intresseguiden lärde oss det redan: ett tal som
+  ser exakt ut men inte är validerat är ett påhittat värde. "Bland de tio närmaste — du
+  har fyra av fem efterfrågade kompetenser, det som saknas är truckkort."
+- **Klart när:** en användare med CV får en rankad lista som går att förklara rad för rad.
+
+**O6 · Annonser utanför Platsbanken** — *premiss omscopad*
+- JobStream täcker mer än Platsbankens webbgränssnitt, eftersom flera jobbsajter levererar
+  in. Mät hur stor luckan faktiskt är innan något skrivs — det kan visa sig att O5 löser
+  större delen av O6.
+- Skrapa inte LinkedIn eller Indeed. Det bryter mot deras villkor och gör oss beroende av
+  en väg som stängs.
+- **Klart när:** vi kan säga hur många procent av svenska annonser vi ser, med en mätning
+  bakom talet.
+
+**O7 · Push på det som faktiskt hänt** — *bygger på O2*
+- Web Push via den nya service workern. Tre sorters avisering, inte fler: ny matchning
+  över tröskeln, påminnelse om deadline i `saved_jobs.offer_deadline`, meddelande från
+  konsulenten.
+- **Fråga aldrig om push-tillstånd vid första besöket.** Fråga när användaren själv slår
+  på en bevakning.
+- **Klart när:** en avisering leder till en sida som handlar om just det som aviserades.
+
+**O8 · Yrkesprognoser in i produkten** — *premiss verifierad, öppna data*
+- Hämta **Yrkesbarometern** från `data.jobtechdev.se` och lägg den bredvid lönedatan i
+  `data/lonedata.ts`, samt i Kompetensanalysen och Karriär.
+- Visa bristläget per yrke och län. Skriv ut mätperioden — en prognos utan datum är ett
+  påstående utan täckning.
+- **Klart när:** en användare som väljer ett målyrke ser om det finns jobb där hen bor,
+  inte bara vad yrket betalar.
+
+**O9 · Förberedd ansökan i stället för auto-apply** — *omscopad med flit*
+- Vi bygger inte massansökan. Vi bygger det steget före: ett paket per jobb med CV
+  anpassat mot annonsens kompetenser, brev, svar på de vanligaste urvalsfrågorna, och
+  en kopieringsknapp per fält.
+- Ett webbläsartillägg för autofyll är möjligt senare, men det är en egen distributionskanal
+  med egen granskning — inte en del av portalen.
+- **Klart när:** tiden från "det här jobbet ser bra ut" till "ansökan är skickad" är mätbart
+  kortare, utan att en enda ansökan skickats utan att användaren läst den.
+
+---
+
+### Våg 3 — djup i det vi redan äger (8–16 veckor)
+
+**O10 · Leveransanalys i intervjusimulatorn** — *premiss delvis, dela i två steg*
+- **Steg 1, utan nytt ljud:** räkna utfyllnadsord och taltempo ur transkriptionen med
+  tidsstämplar från `SpeechRecognition`. Kostar ingenting rättsligt.
+- **Steg 2, kräver DPIA-tillägg:** `MediaRecorder` för pauslängd, röststyrka och tonläge.
+  Ljudinspelning är en ny kategori personuppgifter. Ta inte steg 2 utan att uppdatera
+  DPIA:n och samtyckestexten först.
+- **Klart när:** användaren får veta *hur* hen svarade, inte bara *vad* — och vet att
+  inget ljud sparas i steg 1.
+
+**O11 · Träning på rekryteringstester** — *nytt bygge*
+- Tre familjer: matrisresonemang, verbal förmåga, numerisk förmåga. Jobbcoach.ai har sex
+  paket; vi behöver inte fler än tre för att stänga luckan.
+- **Generera aldrig testfrågor med AI vid körning.** Ett resonemangstest med genererade
+  svar blir slumpmässigt fel. Skriv en fast bank med facit och förklaring per uppgift.
+- Träning, inte bedömning: portalen får aldrig visa ett IQ-liknande tal.
+- **Klart när:** en användare kan öva samma testtyp tre gånger och se sin egen utveckling
+  utan att få en etikett på sig.
+
+**O12 · Kompetensintyg efter genomförd träning** — *bygger på O10/O11*
+- Intyget säger exakt vad som gjorts: "genomförde sex intervjuövningar för yrket X mellan
+  två datum". Det säger **inte** att personen är duktig. Wundermatchs intyg och vår
+  cv-analys-lärdom pekar åt samma håll: ett omdöme vi inte kan belägga får inte tryckas.
+- Delas via samma mekanism som `SharedProfile` (`/profile/shared/:shareCode`).
+- **Klart när:** varje mening på intyget går att härleda till en rad i databasen.
+
+**O13 · Deltagaren ska kunna föreslå en tid** — *premiss verifierad, litet bygge*
+- `consultant_meetings` finns, och `MyConsultant.tsx` visar redan nästa möte med
+  möteslänk. Det som saknas är riktningen tillbaka: föreslå tid, konsulenten bekräftar.
+- **Klart när:** en deltagare kan boka utan att mejla.
+
+**O14 · Videomöte i tjänsten** — *litet bygge ovanpå O13*
+- `meeting_link` finns redan i modellen. Lägg till en inbäddad lösning så mötet inte kastar
+  ut användaren i en annan app — Jitsi eller Whereby, EU-drift, in i CSP:n i `vercel.json`.
+- **Kräver Mikaels ja** (CSP-ändring).
+
+**O15 · Schema, närvaro och 32-timmarsuppföljning i konsulentvyn** — *nytt bygge*
+- Det är det här som får en leverantör att betala för ett system. Wundermatch och
+  Workbuster äger området.
+- Veckoschema per deltagare, närvaroregistrering, summering mot 32-timmarskravet,
+  automatisk journalrad.
+- **Läs upphandlingsunderlaget för Rusta och matcha 2 innan en enda rad skrivs.**
+  Kraven där är produktkravspecifikationen, och de ändras mellan upphandlingar.
+- **Klart när:** en konsulent kan lämna sin nuvarande Excel.
+
+**O16 · Profil som arbetsgivare kan hitta** — 🔴 **beslut, inte bygge**
+- `SharedProfile` finns som delningslänk. Att göra profiler *sökbara* gör portalen
+  tvåsidig: ny användarkategori, ny rättslig grund, ny modererings- och missbruksrisk,
+  och en marknadsplats som måste ha volym på båda sidor för att vara värd något.
+- AF, LinkedIn och EURES äger ytan. Vår realistiska väg är i stället att göra
+  **exporten till deras ytor** friktionsfri — Europass-format, AF-kompetensprofil.
+- **Frågan till dig:** egen arbetsgivaryta, eller bäst i klassen på att exportera till andras?
+
+**O17 · Inspelade pass i kunskapsbanken** — *litet bygge*
+- AF Play har livewebbinarier med frågechatt. Livesändning är fel skala för oss.
+- Rätt drag är inspelade genomgångar kopplade till artiklarna som redan finns —
+  video som ett fält på artikeln, inte som en egen sida.
+- **Klart när:** en artikel kan bära en film utan att artikelvyn byggs om.
+
+---
+
+### Våg 4 — räckvidd och förtroende (kvartal, delvis beslut)
+
+**O18 · Fler språk än svenska och engelska** — *premiss mätt, större än det ser ut*
+- Kostnaden är mätt: **9 187 nycklar** i `sv.json`, fem innehållsoverlays i
+  `data/oversattningar/`, och 163 artiklar med tre kolumner var. Full paritet för ett
+  språk är alltså ~9 200 + ~1 500 + 489 strängar.
+- **Omscopa till ett kärnspråkspaket.** Jobskills valde sex språk: arabiska, persiska,
+  somaliska, tigrinja, engelska, svenska. Ta samma sex, men bara för det en nyanländ
+  behöver först: registrering, Ny i Sverige-spåret, CV, ansökan, kris. Resten faller
+  tillbaka på svenska, precis som overlay-mekaniken redan gör.
+- Grinden `sprakparitet.test.ts` måste byggas om för fler än två språk innan arbetet
+  börjar, annars fäller den varje ofullständigt språk.
+- Regeln står fast: **svenska myndighetsnamn översätts aldrig**, oavsett språk.
+
+**O19 · Uppläsning av artiklar** — *litet bygge, stor effekt*
+- informationsverige.se har uppläsning på sex språk. Vi har 163 artiklar och en målgrupp
+  där lässvårigheter är vanliga.
+- Web Speech API:s `speechSynthesis` finns i webbläsaren och kostar ingenting.
+- **Klart när:** en artikel kan läsas upp med pausbar uppspelning, och utskriftsläget
+  inte bryts av kontrollerna.
+
+**O20 · BankID** — 🔴 **beslut, kostar pengar**
+- Vi har e-post och Google OAuth (`authStore.ts:303`). BankID kräver en leverantör —
+  Criipto, Signicat eller Freja eID — med avtal och löpande kostnad, kopplad som
+  OIDC-provider i Supabase.
+- Det är förtroendetröskeln i Sverige, och en förutsättning om O15 ska säljas till en
+  leverantör. Men det är en faktura, inte en sprint.
+- **Frågan till dig:** ska vi ha det innan vi vet vem som betalar för portalen?
+
+**O21 · Kanal: fack och omställningsorganisationer** — 🔴 **beslut**
+- Cowrite är gratis för 2,3 miljoner fackmedlemmar. Det är hela deras försprång, och det
+  är en distributionsaffär, inte en produktegenskap.
+- Vi har något Cowrite inte har: måendespåret, kunskapsbanken, kompetensanalysen.
+  Ett förbund som redan ger bort CV-hjälp har fortfarande inget att ge sina
+  långtidssjukskrivna eller uppsagda medlemmar.
+
+**O22 · Kanal: licens till leverantörer av arbetsmarknadstjänster** — 🔴 **beslut**
+- Vi är närmast här: konsulentvyn, kohorterna, dataexporten och rapportutkasten finns.
+  Det som fattas är O15 (schema/närvaro/32 h) och sannolikt O20 (BankID).
+- Wundermatch grundades 2024 och bygger exakt detta. Fönstret är öppet men inte länge.
+
+**O23 · Vet vi om något av det här funkar?** — *förutsättning för allt ovan*
+- Portalen har 92 konton och 7 aktiva. Med de talen är varje prioritering nedan en gissning
+  tills vi mäter aktivering: hur många skapar ett CV, hur många kommer tillbaka vecka två,
+  var slutar folk.
+- Bygg det innan våg 2, inte efter. Annars vet vi inte om O5 var värd åtta veckor.
+- **Klart när:** vi kan svara på "vilken funktion får någon att komma tillbaka" med en
+  siffra i stället för en åsikt.
+
+**O24 · Människan i loopen för dem som inte har en konsulent** — 🔴 **beslut**
+- Unionen, TRR och Akavia bokar in en riktig coach. Rusta och matcha ger möte varannan
+  vecka. Våra AI-agenter är bra, men de är inte en människa, och portalen ska aldrig
+  påstå att de är det.
+- Alternativen: partnerskap med en aktör som har coacher, eller att vi säger tydligt att
+  vi inte erbjuder det.
+
+---
+
+### Ordningen, kort
+
+| Våg | Punkter | Vad det ger |
+|---|---|---|
+| 1 (0–3 v) | O1 O2 O3 O4 | Vi håller det gränssnittet redan lovar |
+| 2 (3–8 v) | O23 → O5 O6 O7 O8 O9 | Vi slutar vara sämst på matchning |
+| 3 (8–16 v) | O10 O11 O12 O13 O14 O15 O17 | Djup i det vi redan äger — och en produkt att sälja |
+| 4 (kvartal) | O18 O19 + besluten O16 O20 O21 O22 O24 | Räckvidd, förtroende, affärsmodell |
+
+**Sju punkter är beslut, inte arbete:** O16, O20, O21, O22, O24 helt, samt O1 och O14
+som rör `vercel.json` och därför kräver ditt ja enligt CLAUDE.md. De blockerar inte
+resten — men O21/O22 avgör om våg 3 ska byggas för deltagaren eller för leverantören,
+och det svaret ändrar vad O15 ska innehålla.
 
 ---
 
