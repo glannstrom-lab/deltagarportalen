@@ -116,9 +116,16 @@ arbetet** — de står först, eftersom tre av dem är riktiga buggar som ingen 
 - **Ny grind i koden:** `shouldEmailToday()` i `job-alerts.js`. Utan den hade en
   bevakning satt till `weekly` fått mejl varje dygn. `none` → aldrig, `weekly` → bara
   måndagar, övrigt → dagligen. Vaktad av `services/jobAlertFrekvens.test.ts` (5 tester).
-- Cache-headers för `/sw.js`, `/manifest.json` och `/offline.html` tillagda **före** den
-  breda `.js`-regeln, som annars hade satt `immutable, max-age=31536000` på service
-  workern och fryst den för alltid.
+- Cache-headers för `/sw.js`, `/manifest.json` och `/offline.html`.
+  **Rättat efter mätning i drift samma dag:** reglerna låg först i `headers`-arrayen,
+  och `/sw.js` serverades ändå `Cache-Control: public, max-age=31536000, immutable`
+  från den breda `.js`-regeln längre ned. En service worker fryst i ett år hade gjort
+  varje framtida uppdatering osynlig för alla som besökt sidan en gång.
+  **Vercel låter den SENARE regeln vinna** när två regler sätter samma header —
+  `Service-Worker-Allowed` slog igenom direkt eftersom ingen annan regel satte den,
+  medan `Cache-Control` överskrevs. De tre reglerna ligger nu sist.
+  *Lärdomen: en headerregel som "finns" i vercel.json är inget bevis för att den
+  gäller. `curl -I` mot skarp drift är beviset.*
 
 > **Punkten är inte klar förrän ett mejl landat.** Följande måste sättas i Vercels
 > projektinställningar — jag kan inte göra det:
