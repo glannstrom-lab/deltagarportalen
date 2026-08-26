@@ -378,22 +378,74 @@ async function sendEmail(to, subject, html, text) {
     });
     return status !== 'failed';
   } catch (error) {
+    // Loggningen misslyckades — mejlet kan mycket väl ha gått iväg ändå.
+    // Den gamla fallbacken här skrev till `user_notifications`, en tabell som
+    // ingen levande kodväg läser (`notificationsService.ts` och
+    // `NotificationsCenter.tsx` är onåbara från main.tsx), och den utelämnade
+    // dessutom `user_id` — raden hade inte kunnat kopplas till någon användare
+    // även om någon läst tabellen. En fallback som ingen kan se är inte en
+    // fallback. Portalnotisen skapas i stället på lyckovägen, se
+    // skapaPortalnotis().
     console.error('Error storing email notification:', error);
-
-    // Fallback: store in user_notifications table
-    try {
-      await supabase.from('user_notifications').insert({
-        type: 'job_alert',
-        title: subject,
-        message: text?.substring(0, 500),
-        read: false,
-        created_at: new Date().toISOString()
-      });
-    } catch (e) {
-      console.error('Fallback notification also failed:', e);
-    }
     return false;
   }
+}
+
+/**
+ * Skapar notisen som syns på klockan i portalens toppnav.
+ *
+ * Klockan (`NotificationBell` → `useNotifications`) läser tabellen
+ * `notifications`. Fram till 2026-08-26 skrev ingenting i portalen dit:
+ * `createNotification()` i `hooks/useNotifications.ts` hade **noll anropare**,
+ * och prod hade noll rader. Klockan kunde alltså aldrig visa något — den var
+ * tom av konstruktion, inte för att inget hänt.
+ *
+ * Den här funktionen kör med service role och går därför förbi RLS-policyn
+ * (`auth.uid() = user_id`), som annars bara låter användaren skriva åt sig själv.
+ *
+ * En notis per bevakning och körning — inte en per jobb. Tio nya träffar ska
+ * inte ge tio rader att bocka av.
+ *
+ * @param {string} userId
+ * @param {{ id: string, name?: string }} alert
+ * @param {number} antalNyaJobb
+ */
+async function skapaPortalnotis(userId, alert, antalNyaJobb) {
+  try {
+    const { error } = await supabase.from('notifications').insert(
+      byggPortalnotis(userId, alert, antalNyaJobb)
+    );
+    if (error) throw error;
+  } catch (error) {
+    // Notisen är en bonus ovanpå mejlet. Faller den ska körningen fortsätta
+    // för resten av användarnas bevakningar.
+    console.error('[job-alerts] Kunde inte skapa portalnotis:', error);
+  }
+}
+
+/**
+ * Bygger raden. Egen funktion för att den ska gå att pröva utan databas —
+ * ett test som mockar `.insert()` bevisar bara att mocken anropades.
+ *
+ * `action_url` är en **router-sökväg utan `#`**. Portalen kör HashRouter, och
+ * `NotificationBell` navigerar med `navigate(action_url)`. Ett värde som
+ * `/#/job-search/alerts` blir då `#/#/job-search/alerts` och leder ingenstans.
+ *
+ * @param {string} userId
+ * @param {{ id: string, name?: string }} alert
+ * @param {number} antalNyaJobb
+ */
+function byggPortalnotis(userId, alert, antalNyaJobb) {
+  const namn = alert.name || 'din bevakning';
+  const jobbtext = antalNyaJobb === 1 ? 'ett nytt jobb' : `${antalNyaJobb} nya jobb`;
+  return {
+    user_id: userId,
+    type: 'job_match',
+    title: antalNyaJobb === 1 ? 'Ett nytt jobb i din bevakning' : `${antalNyaJobb} nya jobb i din bevakning`,
+    message: `Bevakningen "${namn}" har hittat ${jobbtext} sedan förra kontrollen.`,
+    action_url: '/job-search/alerts',
+    data: { alert_id: alert.id, new_jobs: antalNyaJobb }
+  };
 }
 
 /**
@@ -425,6 +477,49 @@ function shouldEmailToday(frequency, now = new Date()) {
   return true;
 }
 
+/**
+ * Är huvudbrytaren för e-post påslagen för den här användaren?
+ *
+ * Källan är `user_preferences.email_notifications`, som `settingsStore` skriver
+ * när användaren rör reglaget på /settings.
+ *
+ * **Fail open, med avsikt.** Saknas raden har användaren aldrig rört reglaget,
+ * och `settingsStore` har `true` som standard — att tolka frånvaro som "nej"
+ * hade tystat bevakningar användaren själv skapat. Går uppslaget fel skickar vi
+ * också, eftersom kostnaden är ett mejl för mycket, inte en förlorad rättighet.
+ * Jämför art. 9-samtyckesgrinden, som är fail closed just för att kostnaden där
+ * är den motsatta (se CLAUDE.md, lärdomen 2026-08-03).
+ *
+ * Bara ett uttryckligt `false` stoppar mejlet.
+ *
+ * @param {string} userId
+ * @returns {Promise<boolean>}
+ */
+async function mejlArPaslaget(userId) {
+  try {
+    const { data, error } = await supabase
+      .from('user_preferences')
+      .select('email_notifications')
+      .eq('user_id', userId)
+      .maybeSingle();
+    if (error) throw error;
+    return tolkaMejlbrytare(data);
+  } catch (error) {
+    console.error('[job-alerts] Kunde inte läsa e-postbrytaren, skickar ändå:', error);
+    return true;
+  }
+}
+
+/**
+ * Själva beslutet, utan databas — så att det går att pröva.
+ *
+ * @param {{ email_notifications?: boolean | null } | null | undefined} rad
+ * @returns {boolean} true = mejla
+ */
+function tolkaMejlbrytare(rad) {
+  return rad?.email_notifications !== false;
+}
+
 // Check alerts for a specific user
 async function checkUserAlerts(userId) {
   // Get user's active alerts
@@ -446,6 +541,13 @@ async function checkUserAlerts(userId) {
     .single();
 
   const userEmail = profile?.email;
+
+  // Huvudbrytaren på /settings → Notifikationer → "E-postnotiser". Den skrivs
+  // av `settingsStore` till `user_preferences.email_notifications` men lästes
+  // fram till 2026-08-26 av ingen avsändare alls — brytaren stängde av
+  // ingenting. Samma felklass som AI-brytaren i A23: en grind som finns i
+  // gränssnittet men inte gäller.
+  const skickaMejl = await mejlArPaslaget(userId);
   let totalNewJobs = 0;
 
   for (const alert of alerts) {
@@ -497,9 +599,15 @@ async function checkUserAlerts(userId) {
         }, { onConflict: 'alert_id,job_id' });
       }
 
-      // Send email notification if enabled — men bara om bevakningens frekvens
-      // säger att den ska levereras i dag. Se shouldEmailToday().
-      if (userEmail && shouldEmailToday(alert.notification_frequency)) {
+      // Notisen på klockan i toppnaven. Den lyder INTE under shouldEmailToday()
+      // — frekvensen styr mejl, inte vad portalen visar när man är inne i den.
+      // `none` betyder "mejla mig inte", inte "dölj att det finns nya jobb".
+      await skapaPortalnotis(userId, alert, newJobs.length);
+
+      // Send email notification if enabled — men bara om huvudbrytaren är på
+      // OCH bevakningens frekvens säger att den ska levereras i dag.
+      // Se mejlArPaslaget() och shouldEmailToday().
+      if (userEmail && skickaMejl && shouldEmailToday(alert.notification_frequency)) {
         const template = templates.newJobsAlert(alert.name, newJobs, userEmail);
         await sendEmail(userEmail, template.subject, template.html, template.text);
       }
@@ -560,6 +668,12 @@ async function sendDailyDigest(userId) {
     .single();
 
   if (!profile?.email) return false;
+
+  // Samma huvudbrytare som i checkUserAlerts. Utan den här raden hade
+  // sammanfattningsmejlet fortsatt gå ut till en användare som stängt av
+  // e-postnotiser — brytaren hade då gällt på en av två utskicksvägar, vilket
+  // är samma sorts halvgrind som sanningsregeln på en av fem AI-agenter.
+  if (!(await mejlArPaslaget(userId))) return false;
 
   // Format alerts with new jobs
   const alertsWithJobs = alerts.map(alert => ({
@@ -706,3 +820,5 @@ module.exports = async (req, res) => {
 // Exponerad för test (O1, 2026-08-25). Vercel bryr sig bara om att
 // `module.exports` är en funktion; extra egenskaper på den är osynliga i drift.
 module.exports.shouldEmailToday = shouldEmailToday;
+module.exports.byggPortalnotis = byggPortalnotis;
+module.exports.tolkaMejlbrytare = tolkaMejlbrytare;

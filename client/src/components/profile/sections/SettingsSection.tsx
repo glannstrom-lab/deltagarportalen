@@ -4,13 +4,9 @@
  */
 
 import { useTranslation } from 'react-i18next'
-import { Share2, Bell, Eye, Lightbulb } from '@/components/ui/icons'
+import { Share2, Bell, Lightbulb } from '@/components/ui/icons'
 import { SectionCard } from '../forms'
-import {
-  ProfileSharing,
-  NotificationSettingsSection,
-  VisibilitySettingsSection
-} from '../index'
+import { ProfileSharing, NotificationSettingsSection } from '../index'
 
 export function SettingsSection() {
   const { t } = useTranslation()
@@ -64,23 +60,18 @@ export function SettingsSection() {
         </div>
       </div>
 
-      {/* Notification Settings */}
+      {/* Notification Settings — spänner över båda kolumnerna sedan
+          synlighetskortet togs bort (2026-08-26), annars står den ensam på
+          halva bredden med tomrum bredvid. */}
       <SectionCard
         title={t('profile.settingsSection.notifications')}
         icon={<Bell className="w-4 h-4" />}
         colorScheme="teal"
+        className="lg:col-span-2"
       >
         <NotificationSettingsSection />
       </SectionCard>
 
-      {/* Visibility Settings */}
-      <SectionCard
-        title={t('profile.settingsSection.visibility')}
-        icon={<Eye className="w-4 h-4" />}
-        colorScheme="sky"
-      >
-        <VisibilitySettingsSection />
-      </SectionCard>
     </div>
   )
 }

@@ -8908,6 +8908,15 @@
     "history": {
       "previousValue": "Tidigare värde",
       "newValue": "Nytt värde"
+    },
+    "notiser": {
+      "intro": "Så här hör portalen av sig till dig i dag. Vi lägger inte till fler kanaler utan att säga det.",
+      "mejlTitel": "Mejl om nya jobb",
+      "mejlText": "Har du en jobbevakning skickar vi mejl när den hittar något nytt. Du väljer själv hur ofta — per bevakning.",
+      "klockanTitel": "Klockan här uppe",
+      "klockanText": "Nya träffar i dina bevakningar dyker också upp på klockan i portalen, även om du valt att inte få mejl.",
+      "tillBevakningar": "Till dina jobbevakningar",
+      "tillHuvudbrytare": "Stäng av all e-post"
     }
   },
   "sharedProfile": {

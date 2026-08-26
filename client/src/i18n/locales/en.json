@@ -8908,6 +8908,15 @@
     "history": {
       "previousValue": "Previous value",
       "newValue": "New value"
+    },
+    "notiser": {
+      "intro": "This is how the portal contacts you today. We will not add more channels without telling you.",
+      "mejlTitel": "Email about new jobs",
+      "mejlText": "If you have a job alert, we email you when it finds something new. You choose how often, for each alert.",
+      "klockanTitel": "The bell at the top",
+      "klockanText": "New matches in your alerts also show up on the bell in the portal, even if you have turned off email.",
+      "tillBevakningar": "Go to your job alerts",
+      "tillHuvudbrytare": "Turn off all email"
     }
   },
   "sharedProfile": {

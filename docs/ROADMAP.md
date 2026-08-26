@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -15,6 +15,223 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Genomgång 2026-08-26 — våg 2 premissgranskad, och notiserna som aldrig nådde fram
+
+> **Underlag:** fem parallella premissgranskningar av våg 2 (O23, O5/O6, O7, O8, O9) enligt
+> `CLAUDE.md § Premissgranskning`, plus det arbete som föll ut ur dem. **Ingen av de fem
+> punkterna höll sin premiss oförändrad.** Två krympte kraftigt, en avskrivs helt, en visade
+> sig vara ett UX-problem snarare än ett datajobb, och en avslöjade en felklass i drift som
+> inte stod någonstans i planen.
+
+### Det som byggdes
+
+Allt grindat: `npm run verify` grön — 160 testfiler, 2 527 tester, taken 122 warnings /
+362 typfel / 52 gradienter orörda, `npm run build` grön.
+
+#### Notiserna — tre stackar, noll fungerande vägar
+
+Fyndet kom ur O7:s premissgranskning och är större än O7. Portalen hade **tre parallella
+notissystem** och ingen hel kedja mellan producent och konsument:
+
+| Tabell | Skrivs av | Läses av | Rader i prod |
+|---|---|---|---|
+| `notifications` | `createNotification()` — **noll anropare** | `NotificationBell` i toppnaven (nåbar) | 0 |
+| `job_notifications` | cron-körningen i `job-alerts.js` | `AlertsTab` via `jobAlertEmailService` | 0 |
+| `user_notifications` | en fallback i `sendEmail()`s catch-block | `notificationsService.ts` + `NotificationsCenter.tsx` — **båda onåbara från main.tsx** | 0 |
+
+**Klockan i toppnaven kunde alltså aldrig visa något.** Den var tom av konstruktion, inte
+för att inget hänt. Och fallbacken skrev till en tabell ingen läser — dessutom **utan
+`user_id`**, så raden hade inte gått att koppla till en användare ens om någon läst den.
+En fallback som ingen kan se är inte en fallback.
+
+Åtgärdat i `client/api/job-alerts.js`:
+
+- Jobbevakningens cron skapar nu **en portalnotis per bevakning och körning** (inte en per
+  jobb) i `notifications`, med service role — RLS-policyn är `auth.uid() = user_id` och
+  hade annars stoppat skrivningen. Klockan visar därmed det som faktiskt hänt.
+- Notisen lyder **inte** under `shouldEmailToday()`. Frekvensen styr mejl, inte vad portalen
+  visar när man är inne i den; `none` betyder "mejla mig inte", inte "dölj att det finns
+  nya jobb".
+- Den döda `user_notifications`-fallbacken är borttagen.
+- **`action_url` är en router-sökväg utan brädgård.** Portalen kör HashRouter och
+  `NotificationBell` navigerar med `navigate(action_url)` — ett värde med `/#/` framför blir
+  dubbelt och leder ingenstans. Jag skrev först fel värde och rättade det; vaktat av test.
+
+#### Huvudbrytaren för e-post gällde ingenting
+
+`/settings` → Notifikationer → "E-postnotiser" skriver till
+`user_preferences.email_notifications` via `settingsStore`. **Ingen avsändare läste den.**
+Kolumnen finns i prod (11 rader), och ingen hade råkat stänga av än — brytaren var en lögn
+som ännu inte hunnit drabba någon. Samma felklass som A23: en grind som finns i
+gränssnittet men inte gäller.
+
+`job-alerts.js` frågar nu brytaren på **båda** utskicksvägarna (`checkUserAlerts` och
+`sendDailyDigest`). Att bara laga den ena hade varit samma halvgrind som sanningsregeln på
+en av fem AI-agenter. **Fail open med avsikt:** saknas raden har användaren aldrig rört
+reglaget och `settingsStore` har `true` som standard; går uppslaget fel skickar vi också,
+eftersom kostnaden är ett mejl för mycket och inte en förlorad rättighet. Bara ett
+uttryckligt `false` stoppar mejlet. Jämför art. 9-grinden, som är fail closed just för att
+kostnaden där är den motsatta.
+
+#### Profilsidans två attrapper — 28 reglage som inte gjorde något, och råa i18n-nycklar i UI
+
+`components/profile/SettingsSections.tsx` innehöll två paneler:
+
+- **Notifikationer** — tio reglage mot `notification_settings`. **0 rader i prod, ingen
+  avsändare läser tabellen.** Jobbevakningens mejl styrs av
+  `job_alerts.notification_frequency`. Push fanns inte alls: noll träffar på `pushManager`,
+  `VAPID` eller `PushSubscription` i hela repot.
+- **Synlighet** — arton reglage mot `visibility_settings` (1 rad i prod), som heller ingen
+  läser. Den riktiga delningskontrollen, `ProfileSharing` med delningskoder och QR, låg
+  redan högst upp på **samma sida**; samtycket till att dela med konsulenten bor i
+  `DataSharingSettings` på /settings.
+
+**Dessutom visade båda panelerna råa nycklar på skärmen.** Etiketterna anropar
+`t('profile.settings.…')` — en nyckelväg som saknas i både `sv.json` och `en.json`.
+i18next returnerar då nyckeln, så användaren läste texten
+`profile.settings.emailNotifications`. Verifierat mot den riktiga i18n-instansen, inte
+resonerat fram.
+
+Åtgärdat: synlighetspanelen är borttagen, notispanelen ersatt med en kort sektion som säger
+det portalen faktiskt gör — mejl om nya jobb per bevakning, klockan i toppnaven, och två
+länkar till de riktiga kontrollerna. `notificationSettingsApi`, `visibilitySettingsApi` och
+deras två typer är raderade (−152 rader i `profileEnhancementsApi.ts`). Nya nycklar under
+`profile.notiser.*` på båda språken.
+
+#### App-ikonerna — värre än våg 1 noterade
+
+Våg 1 noterade att `pwa-512.png` bar förvanskad text. Vid närmare titt visade de fyra
+ikonfilerna **tre olika bilder**: `pwa-512` var en AI-genererad logotyp i turkos, medan
+`favicon-64`, `apple-touch-icon` och `pwa-192` var en stockbild på en man med portfölj.
+**Ingen av dem var märket i `components/ui/Logo.tsx`**, som pekar på `/logo-icon.svg`.
+
+Alla sex ikoner genereras nu ur det märket av `scripts/generate-app-icons.mjs`, så de inte
+kan glida isär igen. Skriptet **mäter** säkerhetszonen på den färdiga bilden i stället för
+att lova något om den: varje målad pixel i en `maskable`-ikon ska ligga inom en cirkel med
+radien 40 % av bredden. Uppmätt **29,6 %** — därför är `purpose: "maskable"` nu ett belagt
+påstående och inte en gissning, och `pwa-maskable-192/512` är tillagda i manifestet.
+Bonus: `pwa-512` gick från 112 kB till 9,1 kB. **Kvarstår ur våg 1:** ikonen är fortfarande
+oprovad på riktig Android/iOS-enhet.
+
+#### O8 steg 1 — länskoden som saknades
+
+Arbetsförmedlingen använder **två olika länskoder i två API:er**: NUTS-3 (`SE110`) i
+JobSearch, SCB:s länskod (`01`) i Yrkesbarometern. `afRegions.ts` hade bara den första, så
+"finns det jobb i ditt län" gick inte att svara på — regionen fanns i ett system och
+prognosen i ett annat. Alla 21 koder är nu inlagda och **verifierade mot den skarpa filen**
+(utgåva 2026:1, hämtad 2026-08-26): de lästes ur `lan`-fältet och stämdes av mot länsnamnet
+i `text_jobbmojligheter`, inte skrivna ur minnet. `getLanskod()` returnerar `null` för okänd
+kod i stället för att gissa — en felaktig länskod ger tyst fel prognos.
+
+### Rättelser mot förra versionen
+
+1. **O6 avskrivs.** Raden sa "mät hur stor luckan är". Mätningen är i praktiken redan gjord,
+   och svaret är att det **inte finns någon laglig väg till annonser utanför Platsbanken**.
+   `JobAd Links` (`links.api.jobtechdev.se`) är den enda JobTech-native kandidaten och
+   JobTechs egen dokumentation påstår "ytterligare 30 % unika annonser". Det reproducerar
+   inte: på `lager` ger JobAd Links **1 376 träffar mot Platsbankens 1 393**, alltså färre.
+   Källfördelningen över 184 annonser avgör saken — **varje annons bär en AF-länk**, och de
+   21 partnerlänkarna är alternativa länkar till annonser som redan finns i Platsbanken.
+   Noll blocket, noll monster, noll LinkedIn, noll Indeed. Skrapning är redan utesluten av
+   raden själv. Kvar av O6 är **en mening i produkten**, inte ett bygge.
+   *Två fällor om ett täckningstal någonsin ska publiceras:* AF:s egen serie
+   (44 % 2013, 52 % 2014) är nedlagd sedan 2018 och har **nyanställningar** som nämnare, inte
+   annonser — citera därför aldrig "30–50 % av annonserade vakanser". Och trenden pekar
+   nedåt: andelen företag som använt Arbetsförmedlingen som rekryteringskanal gick från
+   64 % (2002) till 36 % (2023).
+
+2. **O23 är inte "vi mäter ingenting" utan "vi loggar redan, vi läser aldrig".**
+   `user_activity_log` har **767 rader från 21 användare**, färskaste 2026-08-25, skriven
+   från sex nåbara ytor via `useAchievementTracker`. **Noll läsare** — G9 tog bort den enda
+   och behöll skrivningen med flit. `auth.sessions` (513 rader, 55 användare) ger dessutom
+   retention gratis. Punkten krymper från "bygg mätning" till "koppla på".
+   **Talen är dessutom inaktuella:** 92 konton stämmer, men **aktiva senaste 30 dygnen är 4,
+   inte 7**, och inget nytt konto har skapats sedan 2026-07-23. Aktiveringen, mätt i dag:
+   72 har loggat in någon gång · 26 skapat CV · 8 använt AI · 6 sparat jobb · 3 skrivit brev
+   · 1 dagbok. Av 55 med sessionsrader har **38 exakt en session**; 5 återkom efter dag 7.
+   Två händelsetyper saknas för att svara på "var slutar folk": `login` och `page_visited`
+   är deklarerade i typunionen men skrivs aldrig. `milestone_completed` är 280 av 767 rader
+   **från en enda användare** och mäter borttagen gamification — filtrera bort den, annars
+   ljuger varje snitt.
+   **Varningen som följer:** av 92 konton har 20 aldrig loggat in en enda gång och 38 av 55
+   kom aldrig tillbaka efter första sessionen. Flaskhalsen ligger **före** funktionerna, inte
+   i dem. Mer matchningsdjup (O5) mäts inte av någon förrän första besöket leder någonstans.
+
+3. **O7 är tre punkter, varav en blockerad, en utan indata och en byggbar.** Service workern
+   från O2 har **ingen `push`-lyssnare och ingen `notificationclick`** — "via den nya service
+   workern" betyder *lägg till två lyssnare*, inte *använd befintliga*. Ingen VAPID, ingen
+   prenumerationstabell. Av de tre aviseringstyperna är matchningsnotisen blockerad av O5,
+   deadline-notisen blockerad av att **`saved_jobs.offer_deadline` är 0 av 26 ifyllda och
+   inget UI kan sätta fältet**, och bara konsulentmeddelandet har både producent och
+   konsument i drift — men det kräver en **RLS-policy** som låter konsulenten skriva åt
+   deltagaren, alltså Mikaels ja.
+   **Rättelse till O2-raden:** den föreskrev `version.json` som nyckel för service workern.
+   Workern använder i stället konstanten `CACHE_VERSION`, och `public/version.json` står kvar
+   på 2.1.1 från 2026-03-15 och **läses av ingen**. Död fil.
+   **iOS-förbehållet, som ändrar värdet av hela punkten:** Web Push på iOS kräver
+   fortfarande att portalen lagts till på hemskärmen (WebKit, oförändrat i iOS 17/18/26), och
+   alla iOS-webbläsare kör WebKit. För vår målgrupp är push därmed två steg bort och e-post
+   fortsatt den enda kanal som når alla. **Rättsligt:** push-prenumerationer går via Apple,
+   Google eller Mozilla — **tre nya mottagare i tredjeland** som saknas helt i DPIA:n och
+   art. 30-registret. De raderna måste skrivas före första utskicket, inte efter.
+
+4. **O8 håller till två tredjedelar.** Yrkesbarometern finns som öppna data (CC0, ingen
+   nyckel, HTTP 200, 5,7 MB, utgåva 2026:1 publicerad 8 juni 2026) och dess värden är **ord,
+   inte procent** — små/medelstora/stora, överskott/balans/brist — vilket passar portalens
+   procentförbud. Men **`lonedata.ts`-delen av raden faller**: den filen har tolv
+   handskrivna breda kategorier utan SSYK och utan concept-id, sju påhittade "löneregioner",
+   och en docstring som själv säger att talen skrevs in för hand. Att lägga en CC0-märkt
+   myndighetsprognos bredvid dem lånar barometerns trovärdighet åt påhittade siffror.
+   Stryk `lonedata.ts` ur punkten; behåll Kompetensanalysen och Karriär.
+   Två förbehåll datan bär själv och som måste ut i UI:t: 316 av 4 818 rader har **tom**
+   bedömning, och **93 % av länsraderna är `delvis`**, alltså delvis baserade på ett större
+   geografiskt område. Joina på taxonomins `barometer-occupation`-relation, **inte på SSYK**
+   — 30 yrken är *del av* en SSYK och 13 SSYK-koder delas av flera barometeryrken.
+   Nästa steg efter länskoden: ett engångsskript som skriver `data/yrkesbarometern.ts`
+   (~28 kB brotli statiskt; CORS saknas på datavärden, så webbläsaren kan inte hämta direkt).
+
+5. **O9 krymper från fyra nybyggen till "koppla ihop det som finns".** Tre av fyra delar
+   finns redan: `cv-jobbmatchning` med två monterade vyer, O4:s lokala `atsNyckelord`, och en
+   brevgenerator som **redan bär jobbets identitet** via `buildCoverLetterUrl`. Den fjärde,
+   urvalsfrågorna, **ska inte byggas** — vi har noll data på vilka frågor svenska
+   arbetsgivare ställer, och ett AI-svar på en gissad fråga är precis den felklass
+   brevgenomgången 2026-08-19 stängde.
+   Den verkliga luckan är att **jobbets identitet inte överlever klicket till CV-sidan**:
+   `CreateApplicationModal` navigerar till `/cv` utan jobbdata, och ingen länk i portalen
+   skickar en annons till `/cv/adapt`. Brevet fick den bron, CV:t aldrig.
+   **Datan finns redan:** `job_data` (jsonb) är ifyllt i 26 av 26 rader och bär hela
+   AF-nyttolasten — annonstext på 1 800–4 600 tecken i 20 av dem. Ingen anpassning kräver ett
+   nytt AF-anrop. Men `must_have.skills` är ifyllt i **1 av 20** — bygg mot fritexten, inte
+   mot de strukturerade kompetenserna.
+   **"Klart när" är omätbart som det står.** Med en handfull aktiva användare och två
+   registrerade ansökningar totalt kan "tiden från *ser bra ut* till *skickad*" aldrig nå ett
+   tal någon vågar tro på. Föreslaget kriterium i stället: *andelen sparade jobb som får en
+   registrerad ansökan inom 14 dagar* — två räkningar, inte ett medelvärde. Baslinjen i dag
+   är **0 %** (0 av 26 rader har status `applied`).
+
+6. **`afEnrichmentsApi.ts` var död på två sätt, inte ett.** Våg 1 noterade noll importörer.
+   Den saknar dessutom proxy för sin bas-URL i både `vercel.json` och `vite.config.ts` — ett
+   anrop hade fått `index.html` tillbaka. Edge-funktionen `af-enrichments` finns och
+   fungerar; det är klientmodulen som är skräp. Skilj på de två när O5 tar upp den.
+
+### Kvarstår ur den här passeringen
+
+- **Ny app-ikon är gjord — men oprovad på riktig enhet.** Testa "Lägg till på hemskärmen" på
+  Android/Chrome och iOS/Safari.
+- **De tre miljövariablerna för O1** (`CRON_SECRET`, `RESEND_API_KEY`, `EMAIL_FROM`).
+  Utan dem går inget mejl, och portalnotisen ovan blir den enda kanal som faktiskt fungerar.
+- **RLS-policy för konsulentnotiser** — kräver Mikaels ja innan O7:s enda byggbara del kan
+  tas.
+- **`user_preferences.push_notifications`** är fortfarande en brytare utan funktion. Den
+  ligger kvar tills push finns; den ska antingen döljas eller få en text som säger att
+  kanalen inte finns än.
+- **`/settings`-sidans notispanel** har korrekta översättningar och persisterar, men bara
+  e-postbrytaren är kopplad. `weeklySummary` och `push` läses fortfarande av ingen.
+- **`notificationsService.ts`, `NotificationsCenter.tsx` och `user_notifications`** är nu
+  bevisat övergivna. Hör till C-spårets raderingspass.
 
 ---
 
@@ -213,8 +430,10 @@ arbetet** — de står först, eftersom tre av dem är riktiga buggar som ingen 
 #### Kvarstår ur våg 1
 
 - **De tre miljövariablerna** (O1). Utan dem går inget mejl.
-- **Ny app-ikon** — `pwa-512.png` har förvanskad text och kan inte bli `maskable` som den
-  ser ut. Behövs innan installation marknadsförs.
+- ~~**Ny app-ikon**~~ — ✅ **klar 2026-08-26.** Alla sex ikoner genereras nu ur
+  `logo-icon.svg` av `scripts/generate-app-icons.mjs`, och `maskable` är mätt (29,6 % av
+  taket 40 %), inte påstådd. De tre gamla filerna visade dessutom två helt andra bilder än
+  märket — se genomgången 2026-08-26.
 - **Installationsdialogen är oprovad på riktig enhet.** Testa på Android/Chrome och
   iOS/Safari efter deployen.
 - `afEnrichmentsApi.ts` och `CVTemplateSelector.tsx` är belagd dödkod — hör till C-spårets
@@ -282,7 +501,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
   har fyra av fem efterfrågade kompetenser, det som saknas är truckkort."
 - **Klart när:** en användare med CV får en rankad lista som går att förklara rad för rad.
 
-**O6 · Annonser utanför Platsbanken** — *premiss omscopad*
+**O6 · Annonser utanför Platsbanken** — ⛔ **AVSKRIVEN 2026-08-26.** Mätningen är gjord: det finns ingen laglig väg dit. Kvar är en mening i produkten, inte ett bygge. Se rättelse 1 i genomgången 2026-08-26
 - JobStream täcker mer än Platsbankens webbgränssnitt, eftersom flera jobbsajter levererar
   in. Mät hur stor luckan faktiskt är innan något skrivs — det kan visa sig att O5 löser
   större delen av O6.
@@ -291,7 +510,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 - **Klart när:** vi kan säga hur många procent av svenska annonser vi ser, med en mätning
   bakom talet.
 
-**O7 · Push på det som faktiskt hänt** — *bygger på O2*
+**O7 · Push på det som faktiskt hänt** — *delvis avklarad 2026-08-26: portalnotisen finns nu. Web Push kvarstår och är tre punkter, varav en blockerad av O5 och en av att `offer_deadline` aldrig fylls. Se rättelse 3*
 - Web Push via den nya service workern. Tre sorters avisering, inte fler: ny matchning
   över tröskeln, påminnelse om deadline i `saved_jobs.offer_deadline`, meddelande från
   konsulenten.
@@ -299,7 +518,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
   på en bevakning.
 - **Klart när:** en avisering leder till en sida som handlar om just det som aviserades.
 
-**O8 · Yrkesprognoser in i produkten** — *premiss verifierad, öppna data*
+**O8 · Yrkesprognoser in i produkten** — *premiss håller till två tredjedelar; `lonedata.ts`-delen faller. Steg 1 (länskoden) klart 2026-08-26. Se rättelse 4*
 - Hämta **Yrkesbarometern** från `data.jobtechdev.se` och lägg den bredvid lönedatan i
   `data/lonedata.ts`, samt i Kompetensanalysen och Karriär.
 - Visa bristläget per yrke och län. Skriv ut mätperioden — en prognos utan datum är ett
@@ -307,7 +526,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 - **Klart när:** en användare som väljer ett målyrke ser om det finns jobb där hen bor,
   inte bara vad yrket betalar.
 
-**O9 · Förberedd ansökan i stället för auto-apply** — *omscopad med flit*
+**O9 · Förberedd ansökan i stället för auto-apply** — *omscopad igen 2026-08-26: tre av fyra delar finns redan, luckan är att jobbets identitet inte överlever klicket till CV-sidan. Se rättelse 5*
 - Vi bygger inte massansökan. Vi bygger det steget före: ett paket per jobb med CV
   anpassat mot annonsens kompetenser, brev, svar på de vanligaste urvalsfrågorna, och
   en kopieringsknapp per fält.
@@ -421,7 +640,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
   Det som fattas är O15 (schema/närvaro/32 h) och sannolikt O20 (BankID).
 - Wundermatch grundades 2024 och bygger exakt detta. Fönstret är öppet men inte länge.
 
-**O23 · Vet vi om något av det här funkar?** — *förutsättning för allt ovan*
+**O23 · Vet vi om något av det här funkar?** — *omscopad 2026-08-26: vi loggar redan, vi läser aldrig. 767 rader i `user_activity_log` utan läsare. Se rättelse 2*
 - Portalen har 92 konton och 7 aktiva. Med de talen är varje prioritering nedan en gissning
   tills vi mäter aktivering: hur många skapar ett CV, hur många kommer tillbaka vecka två,
   var slutar folk.
@@ -443,7 +662,7 @@ Ingenting nytt. Fyra saker som användaren redan ser i gränssnittet men inte f�
 | Våg | Punkter | Vad det ger |
 |---|---|---|
 | 1 (0–3 v) | O1 O2 O3 O4 | Vi håller det gränssnittet redan lovar |
-| 2 (3–8 v) | O23 → O5 O6 O7 O8 O9 | Vi slutar vara sämst på matchning |
+| 2 (3–8 v) | O23 → O5 O7 O8 O9 (~~O6~~ avskriven) | Vi slutar vara sämst på matchning |
 | 3 (8–16 v) | O10 O11 O12 O13 O14 O15 O17 | Djup i det vi redan äger — och en produkt att sälja |
 | 4 (kvartal) | O18 O19 + besluten O16 O20 O21 O22 O24 | Räckvidd, förtroende, affärsmodell |
 

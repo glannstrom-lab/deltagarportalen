@@ -11,7 +11,7 @@ export { AISummary } from './AISummary'
 export { CompletionGuide } from './CompletionGuide'
 export { ProfileHistory } from './ProfileHistory'
 export { CareerTimeline } from './CareerTimeline'
-export { NotificationSettingsSection, VisibilitySettingsSection } from './SettingsSections'
+export { NotificationSettingsSection } from './SettingsSections'
 
 // New consolidated components
 export { ProfileHeader } from './ProfileHeader'
