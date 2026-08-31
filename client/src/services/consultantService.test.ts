@@ -672,12 +672,58 @@ describe('consultantService — participant-relation skriver mot consultant_part
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ priority: 5 })
   })
 
-  it('updateParticipantStatus skriver mot consultant_participants', async () => {
+  // KS10 (2026-08-31): detta test hette tidigare "updateParticipantStatus
+  // skriver mot consultant_participants" och asserterade just det — samma
+  // fälla som journey_goals (2026-07-27): mot en mockad klient går ett
+  // tabellnamn/kolumnnamn som inte finns i prod alltid igenom, så testet var
+  // grönt trots att `consultant_participants` aldrig haft en `status`-kolumn
+  // (verifierat mot information_schema). Statusen bor på `profiles.status` —
+  // samma kolumn vyn consultant_dashboard_participants läser.
+  it('KS10: updateParticipantStatus skriver mot profiles.status (INTE consultant_participants)', async () => {
     loggedIn()
-    queueResult({ data: null, error: null })
+    mockFromBuilder.single.mockResolvedValue({ data: { id: 'p1' }, error: null })
     await consultantService.updateParticipantStatus('p1', 'ON_HOLD')
-    expect(mockFrom).toHaveBeenCalledWith('consultant_participants')
+    expect(mockFrom).toHaveBeenCalledWith('profiles')
+    expect(mockFrom).not.toHaveBeenCalledWith('consultant_participants')
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ status: 'ON_HOLD' })
+    expect(mockFromBuilder.eq).toHaveBeenCalledWith('id', 'p1')
+  })
+
+  it('KS10 (mutationskontroll): en 0-rader-träff (RLS filtrerar bort raden) kastar i stället för att tyst "lyckas" — .select().single() gör no-op:en synlig', async () => {
+    loggedIn()
+    // Exakt vad en RLS-blockerad UPDATE ger i verkligheten: raden filtreras
+    // bort av USING-satsen, .select().single() ser noll rader och PostgREST
+    // svarar PGRST116 i stället för ett tomt lyckat svar.
+    mockFromBuilder.single.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' },
+    })
+    await expect(consultantService.updateParticipantStatus('p1', 'ON_HOLD')).rejects.toMatchObject({
+      code: 'PGRST116',
+    })
+  })
+
+  // ⚠️ RLS-LUCKA, ÖPPEN (rapporterad 2026-08-31, inte byggd runt): `profiles`
+  // saknar idag en UPDATE-policy som släpper in en konsulent som ändrar en
+  // TILLDELAD deltagares status — verifierat med
+  //   npx supabase db query --linked "select policyname, cmd, qual, with_check
+  //     from pg_policies where tablename='profiles' order by cmd;"
+  // (bara två träffar: ägaren själv, och admin). Det här testet dokumenterar
+  // det ÖNSKADE kontraktet — anropet ska lyckas för en konsulent mot sin
+  // egen deltagare — mot en mock som simulerar exakt den RLS-blockerade
+  // 0-rader-responsen ovan. Det är därför markerat `it.fails`: det går grönt
+  // (som förväntat-fail) så länge policyn saknas, och blir rött (dvs.
+  // "lyckas trots att det inte skulle") den dag någon lägger till policyn —
+  // ta bort `.fails` då, inte förr.
+  it.fails('KS10 (RLS-lucka öppen — kräver ny policy på profiles, ej byggd här): en konsulent ska kunna sätta status på sin tilldelade deltagare', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({
+      data: null,
+      error: { code: 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' },
+    })
+    await expect(
+      consultantService.updateParticipantStatus('p1', 'ON_HOLD')
+    ).resolves.toBeUndefined()
   })
 
   it('setParticipantTags ersätter taggarna helt i consultant_participants', async () => {

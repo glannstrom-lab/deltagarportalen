@@ -6,6 +6,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2, UserPlus } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
+import { Dialog } from '@/components/ui/Dialog';
 
 interface InviteParticipantDialogProps {
   isOpen: boolean;
@@ -40,8 +41,6 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
       setLoading(false);
     }
   }, [isOpen]);
-
-  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,12 +163,16 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
   if (success) {
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-8 text-center">
+      <Dialog
+        isOpen={isOpen}
+        onClose={onClose}
+        labelledBy="invite-success-title"
+        className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-8 text-center"
+      >
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           {success === 'invite' ? (
             <>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Inbjudan skickad!
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
@@ -178,7 +181,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
             </>
           ) : (
             <>
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+              <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Kopplingsförfrågan skickad!
               </h2>
               <p className="text-gray-600 dark:text-gray-400">
@@ -186,24 +189,28 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               </p>
             </>
           )}
-        </div>
-      </div>
+      </Dialog>
     );
   }
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      labelledBy="invite-dialog-title"
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+    >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Bjud in deltagare</h2>
+            <h2 id="invite-dialog-title" className="text-xl font-bold text-gray-900 dark:text-gray-100">Bjud in deltagare</h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Skicka inbjudan eller kopplingsförfrågan
             </p>
           </div>
           <button
             onClick={onClose}
+            aria-label="Stäng"
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <X className="w-5 h-5 text-gray-500" />
@@ -339,7 +346,6 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
             </div>
           </div>
         </form>
-      </div>
-    </div>
+    </Dialog>
   );
 };

@@ -116,7 +116,7 @@ function MetricCard({
   const colorClasses = {
     teal: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400',
+    amber: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     rose: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
     blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
   }
@@ -194,7 +194,7 @@ function ProgressRing({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="text-amber-500 dark:text-amber-400 transition-all duration-500"
+            className="text-[var(--c-solid)] dark:text-[var(--c-solid)] transition-all duration-500"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -935,7 +935,7 @@ export function AnalyticsTab() {
                 className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-xs font-bold text-amber-700 dark:text-amber-400">
+                  <span className="w-6 h-6 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-xs font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
                     {index + 1}
                   </span>
                   <span className="font-medium text-stone-900 dark:text-stone-100">

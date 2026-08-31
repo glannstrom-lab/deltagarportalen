@@ -230,7 +230,7 @@ function QuickAction({
       className={cn(
         'flex items-center gap-3 w-full p-3 rounded-lg transition-all duration-200',
         variant === 'primary'
-          ? 'bg-amber-500 dark:from-amber-600 dark:to-orange-600 text-white hover:from-amber-600 hover:to-orange-600'
+          ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)] hover:brightness-95'
           : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
       )}
     >
@@ -627,14 +627,14 @@ export function OverviewTab() {
           <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Bell className="w-5 h-5 text-amber-600" />
+                <Bell className="w-5 h-5 text-[var(--c-solid)]" />
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                   {t('consultant.overview.attentionAlerts')}
                 </h3>
               </div>
               <Link
                 to="/consultant/participants?filter=attention"
-                className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
+                className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] font-medium"
               >
                 {t('consultant.overview.viewAll')}
               </Link>
@@ -714,7 +714,7 @@ export function OverviewTab() {
           <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-700">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Activity className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <Activity className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                   {t('consultant.overview.recentActivity')}
                 </h3>
@@ -780,7 +780,7 @@ export function OverviewTab() {
               </div>
               <Link
                 to="/consultant/analytics"
-                className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
+                className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] font-medium"
               >
                 {t('consultant.overview.seeDetails')}
               </Link>

@@ -9,6 +9,7 @@ import { X, Search, Send, Loader2, CheckSquare, Square } from '@/components/ui/i
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -132,15 +133,17 @@ export function GroupMessageDialog({
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      labelledBy="group-message-dialog-title"
+      className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
+    >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 id="group-message-dialog-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Skicka meddelande
             </h2>
             <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
@@ -265,7 +268,6 @@ export function GroupMessageDialog({
             )}
           </Button>
         </div>
-      </div>
-    </div>
+    </Dialog>
   )
 }

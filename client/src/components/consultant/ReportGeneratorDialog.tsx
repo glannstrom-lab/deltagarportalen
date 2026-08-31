@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 import {
   downloadConsultantReport,
@@ -89,8 +90,6 @@ export function ReportGeneratorDialog({
       setGenerating(false)
     }
   }, [isOpen])
-
-  if (!isOpen) return null
 
   const toggleSection = (section: ReportSection) => {
     const newSections = new Set(selectedSections)
@@ -175,21 +174,17 @@ export function ReportGeneratorDialog({
   ]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Dialog */}
-      <div
-        className={cn(
-          'relative z-10 w-full bg-white dark:bg-stone-900 rounded-2xl shadow-xl',
-          'max-h-[90vh] overflow-hidden flex flex-col',
-          step === 'preview' ? 'max-w-4xl' : 'max-w-lg'
-        )}
-      >
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      labelledBy="report-generator-dialog-title"
+      overlayClassName="backdrop-blur-sm"
+      className={cn(
+        'w-full bg-white dark:bg-stone-900 rounded-2xl shadow-xl',
+        'max-h-[90vh] overflow-hidden flex flex-col',
+        step === 'preview' ? 'max-w-4xl' : 'max-w-lg'
+      )}
+    >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-3">
@@ -197,7 +192,7 @@ export function ReportGeneratorDialog({
               <FileText className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+              <h2 id="report-generator-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.report.title', 'Generera PDF-rapport')}
               </h2>
               <p className="text-sm text-stone-500 dark:text-stone-600">
@@ -209,6 +204,7 @@ export function ReportGeneratorDialog({
           </div>
           <button
             onClick={onClose}
+            aria-label={t('common.close', 'Stäng')}
             className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
           >
             <X className="w-5 h-5 text-stone-500" />
@@ -409,7 +405,6 @@ export function ReportGeneratorDialog({
             </>
           )}
         </div>
-      </div>
-    </div>
+    </Dialog>
   )
 }

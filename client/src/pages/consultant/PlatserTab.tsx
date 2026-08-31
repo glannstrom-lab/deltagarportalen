@@ -33,6 +33,7 @@ import { PlaceringCard } from '@/components/consultant/PlaceringCard'
 import { PlaceringFormModal } from '@/components/consultant/PlaceringFormModal'
 import { PlaceringUppfoljningModal } from '@/components/consultant/PlaceringUppfoljningModal'
 import { PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL } from '@/components/consultant/placeringLabels'
+import { StodPanel } from '@/components/consultant/StodPanel'
 
 const QK_PLACERINGAR = ['placeringar'] as const
 const QK_DELTAGARE = ['placeringar-deltagare'] as const
@@ -53,6 +54,8 @@ export function PlatserTab() {
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Placering | null>(null)
   const [uppfoljningFor, setUppfoljningFor] = useState<Placering | null>(null)
+  /** AG2 — stödkalkylatorn, expanderad för högst en placering i taget. */
+  const [stodOppetFor, setStodOppetFor] = useState<string | null>(null)
 
   const {
     data: placeringar,
@@ -300,17 +303,33 @@ export function PlatserTab() {
       ) : (
         <Card variant="flat" padding="lg" className="space-y-3">
           {filtrerade.map((p) => (
-            <PlaceringCard
-              key={p.id}
-              placering={p}
-              deltagarNamn={deltagarNamn.get(p.participant_id) ?? '—'}
-              onEdit={() => {
-                setEditing(p)
-                setFormOpen(true)
-              }}
-              onUppfoljning={() => setUppfoljningFor(p)}
-              onDelete={() => handleDelete(p)}
-            />
+            <div key={p.id} className="space-y-2">
+              <PlaceringCard
+                placering={p}
+                deltagarNamn={deltagarNamn.get(p.participant_id) ?? '—'}
+                onEdit={() => {
+                  setEditing(p)
+                  setFormOpen(true)
+                }}
+                onUppfoljning={() => setUppfoljningFor(p)}
+                onDelete={() => handleDelete(p)}
+              />
+              <button
+                type="button"
+                onClick={() => setStodOppetFor((current) => (current === p.id ? null : p.id))}
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-600 hover:text-stone-900 underline"
+                aria-expanded={stodOppetFor === p.id}
+              >
+                {stodOppetFor === p.id ? 'Dölj stödkalkylatorn' : 'Vilka anställningsstöd kan vara aktuella?'}
+              </button>
+              {stodOppetFor === p.id && (
+                <StodPanel
+                  deltagarNamn={deltagarNamn.get(p.participant_id)}
+                  companyName={p.company_name}
+                  initialPlaneratStartdatum={p.start_date}
+                />
+              )}
+            </div>
           ))}
         </Card>
       )}

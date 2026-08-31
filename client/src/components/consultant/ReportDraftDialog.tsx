@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { callAI } from '@/services/aiApi'
 import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
 interface ReportDraftDialogProps {
@@ -121,15 +122,17 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
     onClose()
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog
+      isOpen={isOpen}
+      onClose={handleClose}
+      labelledBy="report-draft-dialog-title"
+      className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+    >
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            <h3 id="report-draft-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               Rapportutkast från journalen
             </h3>
           </div>
@@ -238,7 +241,6 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
             </Button>
           </div>
         </div>
-      </div>
-    </div>
+    </Dialog>
   )
 }

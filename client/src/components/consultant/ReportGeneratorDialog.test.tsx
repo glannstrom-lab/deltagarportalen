@@ -26,7 +26,7 @@
  * byteström kan vara meningslöst grönt.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { ReportGeneratorDialog } from './ReportGeneratorDialog'
 import type { ReportData } from '@/services/pdfReportGenerator'
@@ -72,6 +72,26 @@ async function forhandsgranskadPdfText(): Promise<string> {
   // FileReader.readAsBinaryString.
   return avEskapera(atob(base64))
 }
+
+describe('ReportGeneratorDialog — tillgänglighet (KT1)', () => {
+  it('är en riktig modal och Escape stänger den (ingen tangentbordsfälla)', async () => {
+    const onClose = vi.fn()
+    render(
+      <ReportGeneratorDialog
+        isOpen
+        onClose={onClose}
+        analyticsData={analyticsData}
+        periodLabel="Andra kvartalet 2026"
+      />
+    )
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveAttribute('aria-modal', 'true')
+    expect(dialog).toHaveAttribute('aria-labelledby')
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+})
 
 describe('ReportGeneratorDialog — periodetiketten ska motsvara datan (KS6)', () => {
   it('skriver EXAKT den period anropande vy redan valt — inte ett eget val', async () => {

@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { act, useEffect } from 'react'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react'
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/config'
+import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
 import { ParticipantDetailPage } from './ParticipantDetailPage'
 
 // ---------------------------------------------------------------------------
@@ -19,7 +20,13 @@ import { ParticipantDetailPage } from './ParticipantDetailPage'
 // the user has already navigated to a different participant (KK1).
 // ---------------------------------------------------------------------------
 type EqFilters = Record<string, string>
-type TableHandler = (filters: EqFilters) => Promise<{ data: unknown; error: unknown }>
+// KJ1 (2026-08-31): utökad med `CallInfo` så en handler kan se VILKEN
+// operation som körs (insert/update/delete har inga .eq()-filter av sig
+// själva — journalens insert() bär t.ex. inga filter alls), och läsa
+// payloaden som skickades in. Bakåtkompatibelt: en handler som ignorerar den
+// andra parametern (som `emptyGoals`/`emptyJournal`) fungerar oförändrat.
+type CallInfo = { insert: boolean; update: boolean; delete: boolean; payload: unknown }
+type TableHandler = (filters: EqFilters, info: CallInfo) => Promise<{ data: unknown; error: unknown }>
 
 function createDeferred<T>() {
   let resolve!: (value: T) => void
@@ -34,6 +41,7 @@ function createDeferred<T>() {
 function makeFromMock(tableHandlers: Record<string, TableHandler>) {
   return vi.fn((table: string) => {
     const filters: EqFilters = {}
+    const info: CallInfo = { insert: false, update: false, delete: false, payload: undefined }
     const builder: Record<string, unknown> = {
       select: vi.fn(() => builder),
       eq: vi.fn((col: string, val: string) => {
@@ -43,11 +51,23 @@ function makeFromMock(tableHandlers: Record<string, TableHandler>) {
       order: vi.fn(() => builder),
       limit: vi.fn(() => builder),
       single: vi.fn(() => builder),
-      insert: vi.fn(() => builder),
-      update: vi.fn(() => builder),
+      insert: vi.fn((payload: unknown) => {
+        info.insert = true
+        info.payload = payload
+        return builder
+      }),
+      update: vi.fn((payload: unknown) => {
+        info.update = true
+        info.payload = payload
+        return builder
+      }),
+      delete: vi.fn(() => {
+        info.delete = true
+        return builder
+      }),
       then: (onFulfilled: (v: { data: unknown; error: unknown }) => unknown, onRejected?: (e: unknown) => unknown) => {
         const handler = tableHandlers[table]
-        const result = handler ? handler(filters) : Promise.resolve({ data: null, error: null })
+        const result = handler ? handler(filters, info) : Promise.resolve({ data: null, error: null })
         return result.then(onFulfilled, onRejected)
       },
     }
@@ -106,12 +126,15 @@ function NavExposer() {
 function renderAt(initialPath: string) {
   return render(
     <I18nextProvider i18n={i18n}>
-      <MemoryRouter initialEntries={[initialPath]}>
-        <NavExposer />
-        <Routes>
-          <Route path="/consultant/participants/:participantId" element={<ParticipantDetailPage />} />
-        </Routes>
-      </MemoryRouter>
+      {/* ParticipantJournal (KJ1) bekräftar radering via useConfirmDialog. */}
+      <ConfirmDialogProvider>
+        <MemoryRouter initialEntries={[initialPath]}>
+          <NavExposer />
+          <Routes>
+            <Route path="/consultant/participants/:participantId" element={<ParticipantDetailPage />} />
+          </Routes>
+        </MemoryRouter>
+      </ConfirmDialogProvider>
     </I18nextProvider>
   )
 }
@@ -238,5 +261,138 @@ describe('ParticipantDetailPage — KA5: möte och mål kan skapas från deltaga
     await waitFor(() => {
       expect(screen.getAllByText('Anna Andersson').length).toBeGreaterThan(0)
     })
+  })
+})
+
+describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJournal ersätter den bara textarean', () => {
+  it('sparar en ny anteckning MED VALD KATEGORI (inte hårdkodad GENERAL) och den dyker upp i listan', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    let insertedRow: Record<string, unknown> | null = null
+
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: (_filters, info) => {
+        if (info.insert) {
+          insertedRow = info.payload as Record<string, unknown>
+          return Promise.resolve({
+            data: { id: 'new-entry', ...insertedRow, created_at: '2026-08-31T09:00:00.000Z' },
+            error: null,
+          })
+        }
+        // Hämtningen (SELECT) — tom lista innan tillägget.
+        return Promise.resolve({ data: [], error: null })
+      },
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
+    fireEvent.click(screen.getByRole('radio', { name: /^Oro$/i }))
+    fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
+      target: { value: 'Verkar nedstämd efter avslaget, bör följas upp.' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /^Spara$/i }))
+
+    await screen.findByText('Verkar nedstämd efter avslaget, bör följas upp.')
+
+    expect(insertedRow).not.toBeNull()
+    expect(insertedRow).toMatchObject({
+      consultant_id: 'consultant-1',
+      participant_id: 'p1',
+      content: 'Verkar nedstämd efter avslaget, bör följas upp.',
+      category: 'CONCERN',
+    })
+  })
+
+  it('ett nekat INSERT (42501 — konsulenten saknar aktiv relation) visas som ett fel, sväljs inte tyst', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: (_filters, info) => {
+        if (info.insert) {
+          return Promise.resolve({
+            data: null,
+            error: { code: '42501', message: 'new row violates row-level security policy' },
+          })
+        }
+        return Promise.resolve({ data: [], error: null })
+      },
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
+    fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
+      target: { value: 'Ett kritiskt observandum.' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /^Spara$/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/inte längre en aktiv koppling/i)
+    // Felet får inte se ut som tom data: texten användaren skrev finns kvar,
+    // och den låtsas INTE ha sparats.
+    expect(screen.getByPlaceholderText('Skriv din anteckning här...')).toHaveValue('Ett kritiskt observandum.')
+    expect(screen.queryByText('Ett kritiskt observandum.', { selector: 'p.whitespace-pre-wrap' })).not.toBeInTheDocument()
+  })
+
+  it('ett nekat DELETE (tyst RLS-nollträff — 0 rader påverkade) visas som ett fel, anteckningen försvinner INTE tyst', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    const existingRow = {
+      id: 'entry-9',
+      content: 'En anteckning som redan fanns.',
+      category: 'GENERAL',
+      created_at: '2026-08-30T08:00:00.000Z',
+    }
+
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: (_filters, info) => {
+        if (info.delete) {
+          // RLS filtrerade bort raden (t.ex. bruten relation) — Postgrest
+          // ger INGET fel här, bara ett tomt data-set.
+          return Promise.resolve({ data: [], error: null })
+        }
+        return Promise.resolve({ data: [existingRow], error: null })
+      },
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    await screen.findByText('En anteckning som redan fanns.')
+
+    fireEvent.click(screen.getByRole('button', { name: /Ta bort anteckningen/i }))
+    const dialog = await screen.findByRole('dialog')
+    fireEvent.click(within(dialog).getByRole('button', { name: /^Ta bort$/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/inte längre en aktiv koppling/i)
+    // Anteckningen ska fortfarande stå kvar — raderingen låtsas inte ha lyckats.
+    expect(screen.getByText('En anteckning som redan fanns.')).toBeInTheDocument()
+  })
+
+  it('ett fel vid HÄMTNING av journalen visas som fel, inte som tom lista', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: () => Promise.resolve({ data: null, error: { message: 'network error' } }),
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/kunde inte hämtas/i)
+    expect(screen.queryByText(/Här samlas anteckningarna/i)).not.toBeInTheDocument()
   })
 })

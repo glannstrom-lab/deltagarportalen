@@ -96,7 +96,7 @@ function TemplateCard({
     cv: { label: t('consultant.resources.cv'), color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
     job_search: { label: t('consultant.resources.jobSearch'), color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
     interview: { label: t('consultant.resources.interview'), color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40' },
-    networking: { label: t('consultant.resources.networking'), color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
+        networking: { label: t('consultant.resources.networking'), color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40' },
     skills: { label: t('consultant.resources.skills'), color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
   }
 
@@ -117,7 +117,7 @@ function TemplateCard({
           >
             <Star className={cn(
               'w-4 h-4',
-              template.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400 dark:text-stone-500'
+                            template.isStarred ? 'fill-[var(--c-solid)] text-[var(--c-solid)]' : 'text-stone-400 dark:text-stone-500'
             )} />
           </button>
           {!isDefault && (
@@ -191,8 +191,8 @@ function JobCollectionCard({
   return (
     <Card className="p-4 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
-        <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
-          <Folder className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+        <div className="p-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-xl">
+          <Folder className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
         </div>
         <div className="relative">
           <button
@@ -287,7 +287,7 @@ function BestPracticeCard({
     >
       <div className="flex items-start gap-3">
         <div className="p-2 bg-white dark:bg-stone-900 rounded-lg shadow-sm">
-          <Icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          <Icon className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
         </div>
         <div className="flex-1">
           <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
@@ -296,7 +296,7 @@ function BestPracticeCard({
           <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
             {practice.description}
           </p>
-          <span className="inline-flex items-center gap-1 mt-2 text-xs text-amber-600 dark:text-amber-400">
+          <span className="inline-flex items-center gap-1 mt-2 text-xs text-[var(--c-text)] dark:text-[var(--c-solid)]">
             {practice.steps.length} {t('consultant.resources.steps')}
             <ChevronRight className="w-3 h-3" />
           </span>
@@ -375,7 +375,7 @@ function TemplateFormDialog({
               type="text"
               value={formData.title || ''}
               onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+              className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
               placeholder={t('consultant.resources.form.titlePlaceholder')}
             />
           </div>
@@ -402,7 +402,7 @@ function TemplateFormDialog({
             <textarea
               value={formData.description || ''}
               onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100 resize-none"
+              className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100 resize-none"
               rows={2}
               placeholder={t('consultant.resources.form.descriptionPlaceholder')}
             />
@@ -418,7 +418,7 @@ function TemplateFormDialog({
                   type="text"
                   value={formData.specific || ''}
                   onChange={e => setFormData(prev => ({ ...prev, specific: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
                   placeholder={t('consultant.resources.form.specificPlaceholder')}
                 />
               </div>
@@ -430,7 +430,7 @@ function TemplateFormDialog({
                   type="text"
                   value={formData.measurable || ''}
                   onChange={e => setFormData(prev => ({ ...prev, measurable: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
                   placeholder={t('consultant.resources.form.measurablePlaceholder')}
                 />
               </div>
@@ -442,7 +442,7 @@ function TemplateFormDialog({
                   type="text"
                   value={formData.achievable || ''}
                   onChange={e => setFormData(prev => ({ ...prev, achievable: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
                   placeholder={t('consultant.resources.form.achievablePlaceholder')}
                 />
               </div>
@@ -454,7 +454,7 @@ function TemplateFormDialog({
                   type="text"
                   value={formData.relevant || ''}
                   onChange={e => setFormData(prev => ({ ...prev, relevant: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
                   placeholder={t('consultant.resources.form.relevantPlaceholder')}
                 />
               </div>
@@ -466,7 +466,7 @@ function TemplateFormDialog({
                   type="text"
                   value={formData.timeBound || ''}
                   onChange={e => setFormData(prev => ({ ...prev, timeBound: e.target.value }))}
-                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
+                  className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
                   placeholder={t('consultant.resources.form.timeBoundPlaceholder')}
                 />
               </div>
@@ -523,23 +523,23 @@ function TemplateDetailDialog({
             <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('consultant.resources.form.smartGoals')}</h4>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.specific')}:</span>
+                <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('consultant.resources.detail.specific')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.specific}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.measurable')}:</span>
+                <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('consultant.resources.detail.measurable')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.measurable}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.achievable')}:</span>
+                <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('consultant.resources.detail.achievable')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.achievable}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.relevant')}:</span>
+                <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('consultant.resources.detail.relevant')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.relevant}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.timeBound')}:</span>
+                <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('consultant.resources.detail.timeBound')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.timeBound}</span>
               </div>
             </div>
@@ -597,7 +597,7 @@ function BestPracticeDetailDialog({
             <ol className="space-y-2">
               {practice.steps.map((step, index) => (
                 <li key={index} className="flex items-start gap-3">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-medium">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </span>
                   <span className="text-stone-600 dark:text-stone-400 pt-0.5">{step}</span>
@@ -1067,7 +1067,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'templates'
-              ? 'bg-amber-500 dark:bg-amber-600 text-white'
+              ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)]'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >
@@ -1079,7 +1079,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'collections'
-              ? 'bg-amber-500 dark:bg-amber-600 text-white'
+              ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)]'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >
@@ -1091,7 +1091,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'practices'
-              ? 'bg-amber-500 dark:bg-amber-600 text-white'
+              ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)]'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >
@@ -1115,7 +1115,7 @@ export function ResourcesTab() {
                 className={cn(
                   'w-full pl-10 pr-4 py-2.5 rounded-xl',
                   'bg-stone-100 dark:bg-stone-800',
-                  'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
+                  'border-2 border-transparent focus:border-[var(--c-solid)]',
                   'text-stone-900 dark:text-stone-100'
                 )}
               />

@@ -29,6 +29,7 @@ vi.mock('@/services/consultantService', () => ({
   consultantService: {
     addParticipantTags: vi.fn(),
     updateParticipantStatus: vi.fn(),
+    logContact: vi.fn(),
   },
 }))
 
@@ -139,6 +140,79 @@ describe('BulkActionsDialog — delvis-utfall vid batch-taggning (KS5)', () => {
 
     await waitFor(() =>
       expect(screen.getByText('Det gick inte att lägga till taggar')).toBeInTheDocument()
+    )
+
+    expect(screen.queryByText('Åtgärd slutförd!')).not.toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(onClose).not.toHaveBeenCalled()
+    expect(onComplete).not.toHaveBeenCalled()
+  })
+})
+
+/**
+ * KA4/KV3 (2026-08-31): ny massåtgärd "logga kontakt" — anropar
+ * consultantService.logContact() för varje vald deltagare. Löser KV3
+ * (logContact fanns sedan tidigare men hade noll anropare i hela portalen,
+ * så last_contact_at var null för samtliga deltagare i drift). Samma
+ * delvis-lyckat-mönster (KS5) som tag/status ovan, testat på samma sätt.
+ */
+describe('BulkActionsDialog — massåtgärden "logga kontakt" (KA4/KV3)', () => {
+  it('alla lyckas → anropar logContact för alla valda, visar success-vyn och stänger sig själv', async () => {
+    vi.mocked(consultantService.logContact).mockResolvedValue(undefined)
+
+    const { onClose, onComplete } = renderaDialog({ actionType: 'contact' })
+
+    fireEvent.click(screen.getByRole('button', { name: /Logga kontakt/i }))
+
+    await waitFor(() => expect(screen.getByText('Åtgärd slutförd!')).toBeInTheDocument())
+
+    expect(consultantService.logContact).toHaveBeenCalledWith('p1')
+    expect(consultantService.logContact).toHaveBeenCalledWith('p2')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+
+    await vi.advanceTimersByTimeAsync(1500)
+
+    expect(onComplete).toHaveBeenCalledTimes(1)
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('några misslyckas → delvis-vy som namnger deltagarna, "kunde inte loggas", och INTE autostänger', async () => {
+    vi.mocked(consultantService.logContact).mockImplementation(participantId =>
+      participantId === 'p1' ? Promise.resolve() : Promise.reject(new Error('nej'))
+    )
+
+    const { onClose, onComplete } = renderaDialog({ actionType: 'contact' })
+
+    fireEvent.click(screen.getByRole('button', { name: /Logga kontakt/i }))
+
+    const larm = await waitFor(() => screen.getByRole('alert'))
+    expect(larm).toHaveTextContent('1 av 2')
+    expect(larm).toHaveTextContent('kunde inte loggas')
+    expect(larm).toHaveTextContent('Bertil Berg')
+    expect(larm).not.toHaveTextContent('Anna Andersson')
+
+    expect(screen.queryByText('Åtgärd slutförd!')).not.toBeInTheDocument()
+
+    await vi.advanceTimersByTimeAsync(5000)
+    expect(onClose).not.toHaveBeenCalled()
+    expect(onComplete).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: /Stäng/i }))
+    expect(onComplete).toHaveBeenCalledTimes(1)
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
+
+  it('alla misslyckas → felet syns, ingen success och ingen tystnad', async () => {
+    vi.mocked(consultantService.logContact).mockRejectedValue(new Error('nej'))
+
+    const { onClose, onComplete } = renderaDialog({ actionType: 'contact' })
+
+    fireEvent.click(screen.getByRole('button', { name: /Logga kontakt/i }))
+
+    await waitFor(() =>
+      expect(screen.getByText('Det gick inte att logga kontakt')).toBeInTheDocument()
     )
 
     expect(screen.queryByText('Åtgärd slutförd!')).not.toBeInTheDocument()

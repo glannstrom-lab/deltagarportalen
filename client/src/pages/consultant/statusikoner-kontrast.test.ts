@@ -29,9 +29,18 @@ const kod = (relativSokvag: string) =>
     .replace(/(?<!:)\/\/.*$/gm, '')
     .replace(/\/\*[\s\S]*?\*\//g, '')
 
+// `components/consultant/ConsultantStats.tsx` stod här till 2026-08-31 och är
+// borttagen ur listan samma dag — filen är arkiverad till
+// `archive/2026-08-doda-konsulentkomponenter/` sedan den bekräftats onåbar från
+// `main.tsx` (KK2).
+//
+// Att den hann komma in i vakten är i sig lärdomen värd att minnas: kontrastfixen
+// (KT4) skrevs in i filen några timmar innan nåbarheten kontrollerades, alltså
+// betalt arbete i kod ingen kör. Samma felklass som WCAG-svepet 2026-08-09, som
+// skrev 58 rader i femton onåbara filer och sköt raderingsfönstret en vecka.
+// Kontrollera nåbarhet FÖRE ett svep, inte efter.
 const FILER = [
   'pages/consultant/OverviewTab.tsx',
-  'components/consultant/ConsultantStats.tsx',
   'components/consultant/InsightsPanel.tsx',
   'pages/consultant/AnalyticsTab.tsx',
 ] as const

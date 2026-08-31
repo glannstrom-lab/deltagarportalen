@@ -638,11 +638,42 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // KS10 (2026-08-31): skrev tidigare mot `consultant_participants.status`
+    // — en kolumn som ALDRIG funnits där (verifierat mot prod-schemat).
+    // Skrivningen kunde strukturellt aldrig lyckas; massåtgärden "ändra
+    // status" i BulkActionsDialog har alltså aldrig fungerat. Statusen bor på
+    // `profiles.status`, samma kolumn `consultant_dashboard_participants`
+    // läser (se vydefinitionen).
+    //
+    // ⚠️ ÖPPEN RLS-LUCKA (rapporterad, inte åtgärdad här — RLS-migrationer
+    // ägs av en annan agent i den här omgången): `profiles` har idag bara två
+    // UPDATE-policyer — "Users can update own profile safely" (auth.uid() =
+    // id) och en admin-policy. Ingen policy släpper in en konsulent som
+    // uppdaterar en TILLDELAD deltagares profil. Verifierat:
+    //   npx supabase db query --linked "select policyname, cmd, qual, with_check
+    //     from pg_policies where tablename='profiles' order by cmd;"
+    // Utan en sådan policy filtrerar RLS:s USING-sats bort raden helt, och en
+    // vanlig `.update()` skulle då tyst lyckas med 0 träffade rader (inget
+    // fel, ingen data) — exakt den "tomt-som-lyckat"-fällan CLAUDE.md varnar
+    // för. Därför `.select('id').single()` nedan: träffar uppdateringen noll
+    // rader (obehörig eller fel id) blir det ett kastat PGRST116-fel i
+    // stället för en tyst no-op. Se testet "KS10 (RLS-lucka öppen)" i
+    // consultantService.test.ts — det är markerat `it.fails` och ska sluta
+    // vara det den dag policyn finns.
+    //
+    // Krävs för att detta ska fungera i drift: en UPDATE-policy på `profiles`
+    // som (a) bara släpper igenom när den inloggade är konsulent för just
+    // den deltagaren (EXISTS mot consultant_participants, samma mönster som
+    // policyerna på consultant_participants) och (b) helst begränsar
+    // WITH CHECK till status-fältet, t.ex. efter mönstret i
+    // check_role_change_allowed, så en konsulent inte kan smyga med andra
+    // profilfält i samma anrop.
     const { error } = await supabase
-      .from('consultant_participants')
+      .from('profiles')
       .update({ status })
-      .eq('consultant_id', user.id)
-      .eq('participant_id', participantId)
+      .eq('id', participantId)
+      .select('id')
+      .single()
 
     if (error) throw error
   }

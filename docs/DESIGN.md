@@ -246,7 +246,7 @@ båda håll före 2026-08-17.
 | **Översikt** | Bara `/oversikt` (`/` redirectas) |
 | **Söka jobb** | JobSearch, Applications, Spontanansökan, CV, Cover Letter, Interview Simulator, Salary, International, LinkedIn Optimizer |
 | **Karriär** | Career, Interest Guide, Skills Gap, Personal Brand, Education |
-| **Resurser** | Knowledge Base, Resources, Print Resources, External Resources, AI-team, Nätverk |
+| **Resurser** | Knowledge Base, Resources, External Resources, AI-team, Nätverk |
 | **Min vardag** | Wellness, Diary, Calendar, Exercises, My Consultant, Profile |
 
 ---

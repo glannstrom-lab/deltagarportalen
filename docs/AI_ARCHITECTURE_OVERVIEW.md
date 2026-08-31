@@ -20,7 +20,7 @@ ny funktion — se CLAUDE.md-avsnittet "Dual-AI-backend-fallgropen".
 | | `client/api/ai.js` | `supabase/functions/*` |
 |---|---|---|
 | Runtime | Vercel serverless (Node) | Deno edge (Supabase) |
-| Antal funktioner | 16 (efter C12, se §2) | 24 st, varav 8 är `ai-*`/LLM-relaterade |
+| Antal funktioner | 20 (räknat i `PROMPTS`-objektet 2026-08-31, se §2 — räkna om i stället för att lita på talet, se noten där) | 24 st, varav 8 är `ai-*`/LLM-relaterade |
 | Auth | Bearer-token, `supabase.auth.getUser(token)` | Supabase `verify_jwt` (per-funktion) |
 | Rate limiting | Inbyggd, per-funktion (§2.2) | Delad `_shared/rateLimit.ts` (varierar per funktion) |
 | Används för | Merparten av UI:ts AI-knappar, inkl. streaming AI-team-chatt | Perplexity-sökningar (företag, bransch, pendling), AF/Bolagsverket-integrationer, kontohantering |
@@ -40,26 +40,38 @@ m.fl.) — det finns ingen gemensam edge-klient-wrapper.
 En enda fil (1084 rader), en handler (`module.exports = async (req, res) =>
 …`), routad på `req.body.function` mot ett `PROMPTS`-objekt.
 
-### 2.1 De 16 funktionerna
+### 2.1 De 20 funktionerna
 
-| Funktion | Rate limit (per 15 min) | Kommentar |
+> **Rättat 2026-08-31.** Den här tabellen sa "16 funktioner" och saknade fyra
+> rader (`cv-import`, `cv-import-erfarenhet`, `intervju-sammanfattning`,
+> `vecko-reflektion`) — alla fyra har levande anropare i klienten. Samma tal
+> har stått fel i tre andra dokument samtidigt på tre olika värden (18, 16 och
+> 24). **Räkna om i stället för att lita på ett tal:** antalet är antalet
+> top-level-nycklar i `PROMPTS`-objektet i `client/api/ai.js` — ett skript
+> eller en snabb `node -e`-räkning slår alltid en cementerad siffra.
+
+| Funktion | Rate limit | Kommentar |
 |---|---|---|
-| `personligt-brev` | 10 | Personligt brev-generatorn |
-| `cv-writing` | 20 | CV-textförbättring |
-| `intervju-simulator` | 20 | Intervjusimulator-feedback |
-| `karriarplan` | 5 | Karriärplan (anropas direkt via `callAI` i `PlanTab`, ingen egen wrapper i aiApi.ts) |
-| `kompetensgap` | 10 | Kompetensanalys |
-| `adaptation-recommendations` | 10 | Arbetsanpassning — rekommendationer |
-| `adaptation-conversation` | 10 | Arbetsanpassning — uppföljningsdialog |
-| `cv-jobbmatchning` | 10 | CV mot jobbannons (AI-variant; se även `cvOptimizer.ts` för den deterministiska varianten, `docs/api/services-overview.md`) |
-| `linkedin-optimering` | 15 | LinkedIn-optimeraren |
-| `profile-summary` | 10 | Genererar profilsammanfattning |
-| `chatbot` | 30 | Enkel career-chatbot |
-| `ai-team-chat` | 50 | AI-team/agentchatt — enda funktionen med SSE-stöd (§2.3) |
-| `sta-document-draft` | 10 | STA/AF-blankett-utkast |
-| `sta-week-summary` | 20 | STA veckosammanfattning |
-| `sta-doa-sammanfattning` | 15 | STA DOA-självskattning → AF-blankett sida 4 |
-| `konsulent-rapportutkast` | 10 | Konsulentens rapportutkast från journalanteckningar |
+| `personligt-brev` | 10 / 15 min | Personligt brev-generatorn |
+| `cv-writing` | 20 / 15 min | CV-textförbättring |
+| `intervju-simulator` | 20 / 15 min | Intervjusimulator-feedback |
+| `intervju-sammanfattning` | 10 / 15 min | Sammanfattning efter avslutad intervjusimulering |
+| `karriarplan` | 5 / 15 min | Karriärplan (anropas direkt via `callAI` i `PlanTab`, ingen egen wrapper i aiApi.ts) |
+| `kompetensgap` | 10 / 15 min | Kompetensanalys |
+| `adaptation-recommendations` | 10 / 15 min | Arbetsanpassning — rekommendationer |
+| `adaptation-conversation` | 10 / 15 min | Arbetsanpassning — uppföljningsdialog |
+| `cv-jobbmatchning` | 10 / 15 min | CV mot jobbannons (AI-variant; se även `cvOptimizer.ts` för den deterministiska varianten, `docs/api/services-overview.md`) |
+| `cv-import` | 10 / 60 min | CV-import, rubrikdelen — körs parallellt med `cv-import-erfarenhet` (se kommentar i `ai.js`: ett odelat anrop timeout:ade på hela CV:n) |
+| `cv-import-erfarenhet` | 10 / 60 min | CV-import, erfarenhetsdelen |
+| `linkedin-optimering` | 15 / 15 min | LinkedIn-optimeraren |
+| `profile-summary` | 10 / 15 min | Genererar profilsammanfattning |
+| `chatbot` | 30 / 15 min | Enkel career-chatbot |
+| `ai-team-chat` | 50 / 15 min | AI-team/agentchatt — enda funktionen med SSE-stöd (§2.3) |
+| `sta-document-draft` | 10 / 15 min | STA/AF-blankett-utkast |
+| `sta-week-summary` | 20 / 15 min | STA veckosammanfattning |
+| `vecko-reflektion` | 5 / 60 min | Veckoreflektion i Min vardag (`WeeklyReflectionCard`) |
+| `sta-doa-sammanfattning` | 15 / 15 min | STA DOA-självskattning → AF-blankett sida 4 |
+| `konsulent-rapportutkast` | 10 / 15 min | Konsulentens rapportutkast från journalanteckningar |
 
 (`default`-raden i `RATE_LIMITS` — 20/15 min — används bara om en okänd
 funktion råkar slippa igenom `PROMPTS`-whitelisten, vilket routern annars
@@ -69,7 +81,9 @@ avvisar med 400 innan den ens når rate-limiten.)
 (`cv-optimering`, `generera-cv-text`, `intervju-forberedelser`, `jobbtips`,
 `loneforhandling`, `natverkande`, `ansokningscoach`, `mentalt-stod`) hade noll
 anropare i klienten och togs bort tillsammans med sina
-`aiApi.ts`-wrappers. Återskapas från git-historiken vid behov.
+`aiApi.ts`-wrappers. Återskapas från git-historiken vid behov. Fyra nya
+funktioner (`cv-import`, `cv-import-erfarenhet`, `intervju-sammanfattning`,
+`vecko-reflektion`) har tillkommit sedan dess — 16 efter C12, 20 idag.
 
 ### 2.2 Säkerhet & kostnadsskydd (i handler-ordning)
 
@@ -256,11 +270,11 @@ Perplexity-/GPT-4-undantagen (§3.1) ska gå mot `openai/gpt-oss-120b` via
 `AI_MODEL`-miljövariabeln. Byt aldrig modell utan explicit beslut av
 Mikael — det är en kostnadsfråga, inte en kvalitetsfråga.
 
-> **Känd kvarstående avvikelse (utanför C15s scope):** `AI_MODEL_LOCKING.md`
-> självt anger fortfarande "ai.js (18 funktioner)" och "ai-stream.js (13
-> funktioner)" i sin tabell — båda siffrorna och filreferensen är föråldrade
-> efter C12/B6 (se §2.1, §2.3). Bör rättas i en egen roadmap-post.
+> **Rättat 2026-08-31:** `AI_MODEL_LOCKING.md` angav "ai.js (18 funktioner)" i
+> sin tabell — rättat till 20. Dess `ai-stream.js`-rad var redan korrekt
+> markerad som struken med "Filen finns inte" och behövde ingen ändring.
 
 ---
 
-*Senast verifierat mot koden: 2026-07-23 (roadmap C15).*
+*Senast verifierat mot koden: 2026-08-31 (funktionsantalet i §2.1 räknat om;
+övriga avsnitt oförändrade sedan 2026-07-23, roadmap C15).*

@@ -59,7 +59,7 @@ function Toggle({
       onClick={() => onChange(!enabled)}
       className={cn(
         'relative w-12 h-7 rounded-full transition-colors',
-        enabled ? 'bg-amber-500 dark:bg-amber-600' : 'bg-stone-300 dark:bg-stone-600'
+        enabled ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
       )}
     >
       <span
@@ -400,8 +400,8 @@ export function SettingsTab() {
       {/* Notification Settings */}
       <Card className="p-5">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
-            <Bell className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+          <div className="p-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-xl">
+            <Bell className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
@@ -605,7 +605,7 @@ export function SettingsTab() {
               className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
+                <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">
                   {member.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
@@ -621,7 +621,7 @@ export function SettingsTab() {
                 <span className={cn(
                   'px-2.5 py-1 rounded-full text-xs font-medium',
                   member.role === 'admin'
-                    ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
+                    ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-solid)]'
                     : 'bg-stone-200 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
                 )}>
                   {member.role === 'admin' ? t('consultant.settings.admin') : t('consultant.settings.consultant')}

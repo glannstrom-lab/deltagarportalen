@@ -64,6 +64,21 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: IntersectionObserverMock,
 })
 
+// offsetParent är alltid null i jsdom (2026-08-31, TI6/KT1).
+//
+// `useFocusTrap` filtrerar bort element med `offsetParent === null` som
+// "dolda" — utan den här shimmen ser hooken noll fokuserbara element i VARJE
+// test, och ett fokusfälle-/fokusåterställningstest går grönt oavsett om
+// beteendet faktiskt fungerar (samma fälla noterad 2026-08-04). Shimmen låg
+// tidigare duplicerad lokalt i CVOnboarding.test.tsx — flyttad hit så alla
+// dialog-/modaltester får den utan att kopiera den in i varje fil. `configurable:
+// true` låter ett enskilt test fortfarande ersätta den med sin egen definition
+// om det behöver ett annat beteende.
+Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
+  configurable: true,
+  get() { return this.parentNode },
+})
+
 // scrollIntoView finns inte i jsdom (2026-08-17).
 //
 // Utan den kastar varje komponent som rullar en markerad post i sikte —

@@ -279,7 +279,7 @@ export function ParticipantsTab() {
                 'w-full pl-10 pr-4 py-2.5 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
                 'border-2 border-transparent',
-                'focus:border-amber-500 dark:focus:border-amber-400 focus:bg-white dark:focus:bg-stone-900',
+                'focus:border-[var(--c-solid)] focus:bg-white dark:focus:bg-stone-900',
                 'text-stone-900 dark:text-stone-100',
                 'placeholder:text-stone-600',
                 'transition-all duration-200'
@@ -296,7 +296,7 @@ export function ParticipantsTab() {
                 'px-4 py-2.5 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
                 'border-2 border-transparent',
-                'focus:border-amber-500 dark:focus:border-amber-400',
+                'focus:border-[var(--c-solid)]',
                 'text-stone-900 dark:text-stone-100'
               )}
             >
@@ -351,7 +351,7 @@ export function ParticipantsTab() {
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'grid'
-                    ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                 )}
               >
@@ -364,7 +364,7 @@ export function ParticipantsTab() {
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'list'
-                    ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                 )}
               >
@@ -383,16 +383,16 @@ export function ParticipantsTab() {
 
       {/* Bulk Actions Bar */}
       {showBulkActions && (
-        <Card className="p-3 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+        <Card className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSelectedParticipants([])}
-                className="p-1.5 hover:bg-amber-100 dark:hover:bg-amber-900/40 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <X className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
               </button>
-              <span className="font-medium text-amber-900 dark:text-amber-100">
+              <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
                 {t('consultant.participants.selectedCount', { count: selectedParticipants.length })}
               </span>
             </div>
@@ -442,7 +442,7 @@ export function ParticipantsTab() {
         {filteredParticipants.length > 0 && (
           <button
             onClick={toggleSelectAll}
-            className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
+            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] font-medium"
           >
             {selectedParticipants.length === filteredParticipants.length
               ? t('consultant.participants.deselectAll')
@@ -499,7 +499,7 @@ export function ParticipantsTab() {
                 key={p.participant_id}
                 className={cn(
                   'relative overflow-hidden transition-all duration-200',
-                  isSelected && 'ring-2 ring-amber-500 dark:ring-amber-400'
+                  isSelected && 'ring-2 ring-[var(--c-solid)]'
                 )}
               >
                 {/* Selection Checkbox */}
@@ -513,8 +513,8 @@ export function ParticipantsTab() {
                   className={cn(
                     'absolute top-4 left-4 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all',
                     isSelected
-                      ? 'bg-amber-500 border-amber-500 text-white'
-                      : 'border-stone-300 dark:border-stone-600 hover:border-amber-400 dark:hover:border-amber-500'
+                      ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-[var(--c-on-solid)]'
+                      : 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60'
                   )}
                 >
                   {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
@@ -526,7 +526,7 @@ export function ParticipantsTab() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3 pl-8">
-                      <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-semibold">
+                      <div className="w-12 h-12 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold">
                         {getInitials(p)}
                       </div>
                       <div>
@@ -620,7 +620,7 @@ export function ParticipantsTab() {
                       className={cn(
                         'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
                         allSelected
-                          ? 'bg-amber-500 border-amber-500 text-white'
+                          ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-[var(--c-on-solid)]'
                           : 'border-stone-300 dark:border-stone-600'
                       )}
                     >
@@ -674,7 +674,7 @@ export function ParticipantsTab() {
                       key={p.participant_id}
                       className={cn(
                         'hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors',
-                        isSelected && 'bg-amber-50 dark:bg-amber-900/10'
+                        isSelected && 'bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/15'
                       )}
                     >
                       <td className="px-4 py-4">
@@ -700,7 +700,7 @@ export function ParticipantsTab() {
                           to={`/consultant/participants/${p.participant_id}`}
                           className="flex items-center gap-3"
                         >
-                          <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
+                          <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">
                             {getInitials(p)}
                           </div>
                           <div>
@@ -760,7 +760,7 @@ export function ParticipantsTab() {
                       <td className="px-4 py-4 text-right">
                         <Link
                           to={`/consultant/participants/${p.participant_id}`}
-                          className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 text-sm font-medium"
+                          className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-solid)] dark:hover:text-[var(--c-text)] text-sm font-medium"
                         >
                           {t('common.view')}
                         </Link>

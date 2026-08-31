@@ -32,6 +32,7 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
+import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -63,13 +64,6 @@ interface Goal {
   priority: 'HIGH' | 'MEDIUM' | 'LOW'
   deadline: string
   progress: number
-}
-
-interface JournalEntry {
-  id: string
-  content: string
-  category: 'GENERAL' | 'PROGRESS' | 'CONCERN' | 'GOAL'
-  createdAt: string
 }
 
 interface TimelineEvent {
@@ -243,7 +237,7 @@ function GoalCard({
           <div
             className={cn(
               'h-full rounded-full transition-all',
-              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-amber-500 dark:bg-amber-400'
+              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-[var(--c-solid)]'
             )}
             style={{ width: `${goal.progress}%` }}
           />
@@ -278,6 +272,7 @@ export function ParticipantDetailPage() {
   const [participant, setParticipant] = useState<Participant | null>(null)
   const [goals, setGoals] = useState<Goal[]>([])
   const [journal, setJournal] = useState<JournalEntry[]>([])
+  const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'goals' | 'journal' | 'timeline'>('overview')
   const [newNote, setNewNote] = useState('')
@@ -300,6 +295,7 @@ export function ParticipantDetailPage() {
     setParticipant(null)
     setGoals([])
     setJournal([])
+    setJournalLoadError(null)
     setTimeline([])
     setError(null)
     fetchParticipantData(participantId)
@@ -363,7 +359,7 @@ export function ParticipantDetailPage() {
       }
 
       // Fetch real journal entries from database
-      const { data: journalData, error: journalError } = await supabase
+      const { data: journalData, error: journalFetchError } = await supabase
         .from('consultant_journal')
         .select('*')
         .eq('consultant_id', user.id)
@@ -373,8 +369,9 @@ export function ParticipantDetailPage() {
 
       if (isStale()) return
 
-      if (journalError) {
-        console.error('Error fetching journal:', journalError)
+      if (journalFetchError) {
+        console.error('Error fetching journal:', journalFetchError)
+        setJournalLoadError('Anteckningarna kunde inte hämtas. Försök igen.')
       } else if (journalData) {
         setJournal(journalData.map(j => ({
           id: j.id,
@@ -382,6 +379,7 @@ export function ParticipantDetailPage() {
           category: j.category,
           createdAt: j.created_at,
         })))
+        setJournalLoadError(null)
       }
 
       // Timeline: tidigare visades hårdkodad mock-data ("Sparade 3 jobb",
@@ -438,6 +436,158 @@ export function ParticipantDetailPage() {
       })))
     } catch (err) {
       console.error('Error refetching goals:', err)
+    }
+  }
+
+  // Egen omhämtning för journalen (samma delta-vakt som refetchGoals), så en
+  // "Försök igen" i ParticipantJournal inte behöver lägga hela sidan i
+  // laddningsläge eller nollställa profil/mål.
+  const refetchJournal = async () => {
+    const requestedId = participantId
+    if (!requestedId) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || activeParticipantIdRef.current !== requestedId) return
+
+      const { data: journalData, error: journalFetchError } = await supabase
+        .from('consultant_journal')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .eq('participant_id', requestedId)
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+      if (activeParticipantIdRef.current !== requestedId) return
+
+      if (journalFetchError) {
+        console.error('Error refetching journal:', journalFetchError)
+        setJournalLoadError('Anteckningarna kunde inte hämtas. Försök igen.')
+        return
+      }
+
+      setJournal((journalData || []).map(j => ({
+        id: j.id,
+        content: j.content,
+        category: j.category,
+        createdAt: j.created_at,
+      })))
+      setJournalLoadError(null)
+    } catch (err) {
+      console.error('Error refetching journal:', err)
+      setJournalLoadError('Anteckningarna kunde inte hämtas. Försök igen.')
+    }
+  }
+
+  // KS4-migrationen (20260831140000_ks_consultant_rls.sql, körd) kräver en
+  // AKTIV rad i consultant_participants för INSERT/UPDATE/DELETE på
+  // consultant_journal. En konsulent utan aktiv relation får ett synligt
+  // 42501-fel på INSERT (WITH CHECK) — men UPDATE/DELETE ger INGET fel från
+  // Postgrest när USING-villkoret filtrerar bort raden, bara ett tomt svar.
+  // Alla tre handlers räknar därför "inga rader påverkade" som ett fel, inte
+  // som "inget att göra", annars ser en nekad ändring ut som en lyckad.
+  const addJournalEntry = async (
+    content: string,
+    category: NoteCategory
+  ): Promise<JournalMutationResult> => {
+    if (!participantId) {
+      return { ok: false, error: 'Ingen deltagare vald.' }
+    }
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        return { ok: false, error: 'Du är inte inloggad. Ladda om sidan och försök igen.' }
+      }
+
+      const { data, error } = await supabase
+        .from('consultant_journal')
+        .insert({
+          consultant_id: user.id,
+          participant_id: participantId,
+          content,
+          category,
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error adding journal entry:', error)
+        const message = error.code === '42501'
+          ? 'Anteckningen kunde inte sparas — du har troligen inte längre en aktiv koppling till den här deltagaren.'
+          : 'Anteckningen kunde inte sparas. Försök igen.'
+        return { ok: false, error: message }
+      }
+
+      if (data) {
+        setJournal(prev => [
+          { id: data.id, content: data.content, category: data.category, createdAt: data.created_at },
+          ...prev,
+        ])
+      }
+      return { ok: true }
+    } catch (err) {
+      console.error('Error adding journal entry:', err)
+      return { ok: false, error: 'Anteckningen kunde inte sparas. Försök igen.' }
+    }
+  }
+
+  const updateJournalEntry = async (
+    id: string,
+    content: string,
+    category: NoteCategory
+  ): Promise<JournalMutationResult> => {
+    try {
+      const { data, error } = await supabase
+        .from('consultant_journal')
+        .update({ content, category })
+        .eq('id', id)
+        .select()
+
+      if (error) {
+        console.error('Error updating journal entry:', error)
+        return { ok: false, error: 'Anteckningen kunde inte uppdateras. Försök igen.' }
+      }
+
+      if (!data || data.length === 0) {
+        return {
+          ok: false,
+          error: 'Anteckningen kunde inte uppdateras — du har troligen inte längre en aktiv koppling till den här deltagaren.',
+        }
+      }
+
+      const updated = data[0]
+      setJournal(prev => prev.map(e => (e.id === id ? { ...e, content: updated.content, category: updated.category } : e)))
+      return { ok: true }
+    } catch (err) {
+      console.error('Error updating journal entry:', err)
+      return { ok: false, error: 'Anteckningen kunde inte uppdateras. Försök igen.' }
+    }
+  }
+
+  const deleteJournalEntry = async (id: string): Promise<JournalMutationResult> => {
+    try {
+      const { data, error } = await supabase
+        .from('consultant_journal')
+        .delete()
+        .eq('id', id)
+        .select()
+
+      if (error) {
+        console.error('Error deleting journal entry:', error)
+        return { ok: false, error: 'Anteckningen kunde inte tas bort. Försök igen.' }
+      }
+
+      if (!data || data.length === 0) {
+        return {
+          ok: false,
+          error: 'Anteckningen kunde inte tas bort — du har troligen inte längre en aktiv koppling till den här deltagaren.',
+        }
+      }
+
+      setJournal(prev => prev.filter(e => e.id !== id))
+      return { ok: true }
+    } catch (err) {
+      console.error('Error deleting journal entry:', err)
+      return { ok: false, error: 'Anteckningen kunde inte tas bort. Försök igen.' }
     }
   }
 
@@ -575,7 +725,7 @@ export function ParticipantDetailPage() {
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start gap-6">
           {/* Avatar */}
-          <div className="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-2xl font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0">
             {getInitials()}
           </div>
 
@@ -659,7 +809,7 @@ export function ParticipantDetailPage() {
             className={cn(
               'flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap',
               activeTab === tab.id
-                ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
+                ? 'text-[var(--c-text)] dark:text-[var(--c-solid)] border-b-2 border-[var(--c-solid)]'
                 : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
             )}
           >
@@ -708,7 +858,7 @@ export function ParticipantDetailPage() {
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
+                'border-2 border-transparent focus:border-[var(--c-solid)]',
                 'text-stone-900 dark:text-stone-100',
                 'resize-none'
               )}
@@ -754,52 +904,16 @@ export function ParticipantDetailPage() {
               {t('consultant.participantDetail.reportDraft')}
             </Button>
           </div>
-          <Card className="p-4">
-            <textarea
-              value={newNote}
-              onChange={e => setNewNote(e.target.value)}
-              placeholder={t('consultant.participantDetail.writeNote')}
-              rows={3}
-              className={cn(
-                'w-full px-4 py-3 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
-                'text-stone-900 dark:text-stone-100',
-                'resize-none'
-              )}
-            />
-            <div className="flex items-center justify-end mt-3">
-              <Button onClick={handleAddNote} disabled={!newNote.trim()}>
-                <Plus className="w-4 h-4 mr-2" />
-                {t('common.add')}
-              </Button>
-            </div>
-          </Card>
 
-          <div className="space-y-3">
-            {journal.map(entry => {
-              const categoryColors = {
-                GENERAL: 'border-stone-200 dark:border-stone-700',
-                PROGRESS: 'border-emerald-200 dark:border-emerald-800',
-                CONCERN: 'border-amber-200 dark:border-amber-800',
-                GOAL: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
-              }
-              return (
-                <Card key={entry.id} className={cn('p-4 border-l-4', categoryColors[entry.category])}>
-                  <p className="text-stone-900 dark:text-stone-100">{entry.content}</p>
-                  <p className="text-xs text-stone-500 mt-2">
-                    {new Date(entry.createdAt).toLocaleDateString('sv-SE', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </Card>
-              )
-            })}
-          </div>
+          <ParticipantJournal
+            participantName={`${participant.first_name} ${participant.last_name}`}
+            entries={journal}
+            loadError={journalLoadError}
+            onRetryLoad={refetchJournal}
+            onAddEntry={addJournalEntry}
+            onUpdateEntry={updateJournalEntry}
+            onDeleteEntry={deleteJournalEntry}
+          />
         </div>
       )}
 
@@ -831,8 +945,8 @@ export function ParticipantDetailPage() {
               return (
                 <div key={event.id} className="flex gap-4">
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
                     </div>
                     {index < timeline.length - 1 && (
                       <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-stone-200 dark:bg-stone-700" />

@@ -159,7 +159,7 @@ konsulent ska kunna bedöma om kapaciteten räcker.
   en deltagare, och se vilka platser som är lediga. **Detta är det kommunala AME-behovet från KM1
   och det företag lättast säger ja till** — ett mycket lägre åtagande än en anställning. Ingen
   företagsinloggning krävs i den här etappen; konsulenten för in platsen. · ~1 vecka
-- [ ] **AG2** **Stödkalkylatorn.** Vilka anställningsstöd kan gälla för den här personen och den
+- [x] **AG2** ✅ **Klar 2026-08-31.** Tre nya filer: `data/anstallningsstod.ts`, en ren `services/stodMatchning.ts` och `components/consultant/StodPanel.tsx`, monterad per plats. **Fem stödformer, inte fyra** — lönebidrag och OSA delades, eftersom OSA kräver offentlig arbetsgivare och har egen källa; avvikelsen är motiverad i filhuvudet. **Kalkylatorn räknar aldrig fram ett belopp**, trots namnet: svaret är "kan vara aktuellt — kontrollera med Arbetsförmedlingen" med länk. **Regel och erfarenhet hålls isär strukturellt:** 80 %-regeln ligger som ett `belopp` märkt `kallTyp: konsulent_erfarenhet`, medan 30–50 %-observationen ligger i ett fält som **bara bär text och källa — inget `varde`, ingen `enhet`** — och därför inte kan renderas som ett tal ens av misstag. Två vakter: en fäller om ett belopp saknar `kalla` eller `hamtad`, en kontrollerar vid körning att inget matchningsresultat innehåller ett valuta- eller procentmönster. Luckorna ur underlaget lämnades öppna som `ejBelagt`, inte gissade. *(Var:)* **Stödkalkylatorn.** Vilka anställningsstöd kan gälla för den här personen och den
   här platsen — nystartsjobb, introduktionsjobb, lönebidrag, arbetsträning? Mätt: portalen nämner
   stöden i dag bara i `profile/constants.ts`, `data/exercises.ts` och den avstängda STA-modulen —
   **det finns ingen funktion.** Detta är den enskilt största friktionen för en arbetsgivare som
@@ -252,7 +252,7 @@ i kandidatsökningen.
 
 ### Nu — riktiga fel
 
-- [ ] **KS2** **Att säga upp sin konsulent tar inte ifrån henne åtkomsten.** Mätt mot prod:
+- [x] **KS2** ✅ **Klar 2026-08-31 — migration körd och verifierad mot prod.** Konsulentens `ALL`-policy på `consultant_journal` och `consultant_goals` kräver nu `EXISTS` mot `consultant_participants`, alltså en **aktiv** relation. **Prövat rollat i transaktion:** en konsulent utan relation nekas med `42501`, en med aktiv relation släpps igenom. Båda proven behövdes — en policy som nekar alla hade gett samma svar i det negativa. Radantalen mättes före (0/0/2), så ändringen var riskfri. *(Beslut Mikael:)* historiska anteckningar **låses kvar oläsbara**, de raderas inte. *(Var:)* **Att säga upp sin konsulent tar inte ifrån henne åtkomsten.** Mätt mot prod:
   `revoke_consultant_link` rör `profiles`, `consultant_participants`, `consultant_consents`,
   `sta_enrollments` och `sta_documents` — **varken `consultant_journal` eller `consultant_goals`.**
   Båda tabellernas RLS är `USING (auth.uid() = consultant_id)` utan villkor om aktiv relation, och
@@ -261,7 +261,7 @@ i kandidatsökningen.
   påstår motsatsen ("RLS kopplad till `consultant_participants`"). **Läs hela policyuppsättningen efter
   migrationen**, inte bara den nya raden — dubblettmönstret har fällt projektet fem gånger ·
   `20260323100000_consultant_features.sql:92,116` · ~4–8 h + migration
-- [ ] **KS1** **"Placeringsgrad" mäter inte placeringar — och kan strukturellt aldrig göra det.**
+- [x] **KS1** ✅ **Klar 2026-08-31 — åtgärdad tillsammans med AG3, deployad i `c73366f1`.** **"Placeringsgrad" mätte inte placeringar.** Kortet räknar nu från `consultant_placements` i stället för `status === COMPLETED`, och `recordPlacement()` har fått sin första anropare efter att ha legat oanvänd sedan den skrevs. Med noll placeringar visar kortet **`—` och "Inga placeringar än"**, aldrig `0 %` i rött. Se AG3 i spår AG för hela genomförandet, inklusive uppföljningarna vid 3 och 6 månader och de två mutationstesterna. *(Var:)* **"Placeringsgrad" mäter inte placeringar — och kan strukturellt aldrig göra det.**
   `AnalyticsTab.tsx:732-738` visar `analytics.completedParticipants` under strängen
   `'{{rate}}% placeringsgrad'`, räknad som andelen med status `COMPLETED` — en status konsulenten
   sätter manuellt och som betyder "Avslutad" (flytt, byte, avhopp). Samtidigt finns
@@ -278,7 +278,7 @@ i kandidatsökningen.
   med `program = 'steg_till_arbete'` — 13 har inget.** De ser sitt CV, sin ATS-poäng, sin Hollandkod
   och sin inloggningsaktivitet visas för en namngiven person utan att ha sagt ja. **De 13 befintliga
   kräver ett eget beslut:** efterhandssamtycke eller avkoppling · ~1 dag + beslut
-- [ ] **KS4** **Deltagaren får se sina mål men aldrig anteckningarna — och mönstret fanns rätt en
+- [x] **KS4** ✅ **Klar 2026-08-31 — samma migration.** `consultant_journal` har nu en SELECT-policy för `participant_id`, som `consultant_goals` och `consultant_notes` redan hade. *(Beslut Mikael:)* **allt är synligt, även kategorin "Oro"** — art. 15 ger ändå rätt till registerutdrag, och en anteckning man vet blir läst tenderar att bli mer saklig. Journalytan säger det rakt ut för konsulenten. *(Var:)* **Deltagaren får se sina mål men aldrig anteckningarna — och mönstret fanns rätt en
   gång.** Mätt mot prod: `consultant_goals` har "Participants can view their goals", och den
   övergivna `consultant_notes` har "Participants can view notes about themselves". Men
   `consultant_journal` — dit allt faktiskt skrivs — har **en enda policy**, för konsulenten. Portalen
@@ -299,7 +299,7 @@ i kandidatsökningen.
   (`pdfReportGenerator.ts:237-238`). `analyticsData` beräknas av föräldern *innan* dialogen öppnas —
   från Översikt utan periodavgränsning alls. En PDF som säger "Senaste året" och bär senaste månadens
   siffror ser fullständigt konsekvent ut. Billigast och ärligast: ta bort väljaren och ärv perioden · ~2–3 h
-- [ ] **KS8** **Vem som helst kan meddela vem som helst — spärren finns bara i gränssnittet.** Mätt mot
+- [x] **KS8** ✅ **Klar 2026-08-31 — samma migration.** `consultant_messages` INSERT kräver nu aktiv relation i **båda riktningarna** (deltagaren svarar genom samma tabell). De två befintliga raderna kontrollerades individuellt mot relationstabellen före ändringen — båda passerar. *(Var:)* **Vem som helst kan meddela vem som helst — spärren finns bara i gränssnittet.** Mätt mot
   prod: `consultant_messages` INSERT är `WITH CHECK (auth.uid() = sender_id)`, utan kontroll av
   mottagaren. Att konsulent A inte når B:s deltagare beror uteslutande på att dialogerna bygger
   mottagarlistan ur `consultant_dashboard_participants`. Kräv aktiv relation i `WITH CHECK`, i båda
@@ -314,7 +314,7 @@ i kandidatsökningen.
   hela filen från CRLF till LF — gjordes om med ett CRLF-bevarande skript som kontrollerar att
   mutationen faktiskt applicerades. 60/60 gröna, `typecheck:critical` ren.
 
-- [ ] **KS10** **Massåtgärden "ändra status" skriver till en kolumn som inte finns.** Föll ur KS9:s
+- [~] **KS10** 🟡 **Koden klar 2026-08-31, policyn väntar på körning.** Skrivningen går nu till **`profiles.status`**, där statusen faktiskt bor, med `.select().single()` så en blockerad uppdatering **kastar** i stället för att tyst "lyckas" med noll rader. Testet som asserterade den trasiga formen är omskrivet. *(Kvarstår:)* `profiles` saknar en policy som låter en konsulent ändra sin deltagares status — migrationen `20260831150000_ks10_consultant_status_only_update.sql` är skriven men **inte körd**. **Kolumnrättigheter visade sig omöjliga:** `authenticated` är samma roll för deltagare, konsulent och admin, så ett `GRANT UPDATE (status)` hade brutit både självredigering och adminvägen. Lösningen är en `WITH CHECK` som jämför hela raden före och efter med jsonb minus `status` och `updated_at` — vilket gör **framtida kolumner säkra som standard**. `updated_at` måste undantas eftersom en trigger sätter den innan kontrollen körs. Ett `it.fails`-test dokumenterar kontraktet och börjar falla när policyn landar · *(Var:)* **Massåtgärden "ändra status" skriver till en kolumn som inte finns.** Föll ur KS9:s
   genomgång och verifierades separat mot prod. `consultantService.updateParticipantStatus`
   (`:630-644`) gör `.from('consultant_participants').update({ status })` — men den tabellen har
   **ingen `status`-kolumn**. Mätt mot `information_schema`: kolumnerna är `id`, `consultant_id`,
@@ -340,7 +340,7 @@ i kandidatsökningen.
   konsulent möts av tom lista och en död knapp; den fungerande vägen är `InviteParticipantDialog`
   under Snabbåtgärder på en annan flik. `GoalCreationDialog` och `MeetingSchedulerDialog` har redan
   en `preselectedParticipant`-prop byggd för detta · ~2–3 h
-- [ ] **KT1** **Ingen av de åtta dialogerna går att stänga med Esc.** Mätt i alla `*Dialog.tsx`: noll
+- [x] **KT1** ✅ **Klar 2026-08-31.** Ny delad primitiv `components/ui/Dialog.tsx` — portal till body, `role="dialog"`, `aria-modal`, `aria-labelledby`, Esc, fokusfälla och fokusåterställning, plus `inert` på `#root` med **räknare så nästlade dialoger inte låser upp bakgrunden för tidigt**. Effektordningen är medveten: `inert`-effekten deklareras före `useFocusTrap` så dess städning hinner ta bort attributet innan fokus återställs in i subträdet. Sju dialoger migrerade. **`BottomSheet` och `Modal`, som CLAUDE.md:s komponentkatalog listar, finns inte** — katalogen är föråldrad där. **Och TI6 är löst på köpet:** `offsetParent`-shimmen ligger nu i `test/setup.ts`. Utan den ser `useFocusTrap` noll fokuserbara element i jsdom, så fokustester gick grönt även när fokushanteringen var trasig — den har alltså aldrig varit prövad förrän nu. *(Var:)* **Ingen av de åtta dialogerna går att stänga med Esc.** Mätt i alla `*Dialog.tsx`: noll
   träffar på `role="dialog"`, `aria-modal`, `Escape` och fokusfälla. Bakgrunden är en overlay-knapp,
   inte `inert` — fokus vandrar igenom till sidan bakom. Här bokas möten och körs massåtgärder. Bygg en
   delad `Dialog`-primitiv. **Fälla:** i jsdom är `offsetParent` alltid `null` och `useFocusTrap`
@@ -352,7 +352,7 @@ i kandidatsökningen.
   (`ParticipantDetailPage.tsx:460-466`). "Öppna → läsa → tillbaka → nästa" är dagens mest upprepade
   rörelse, och varje varv börjar om. Lägg dem i `searchParams` — samma mönster som `filter` redan
   använder · ~2–3 h
-- [ ] **KT3** **Amber har tagit över som sidans färg.** Vyn sätter `domain="info"` (sky). Räknat per fil,
+- [x] **KT3** ✅ **Klar 2026-08-31.** Från **201 amber-förekomster till 55** i de sex filerna, och de kvarvarande är faktiska varningar: hög prioritet, försenad kontakt, ON_HOLD, osparade ändringar, "Oro"-markering. Fokusringar, aktiva flikar, valda rader, avatarer och taggar går nu på hub-tokens. **Granskaren mätte `--c-accent` som fokusring till 1,39–1,95:1** och valde `--c-solid` i stället (4,62:1 ljust, 7,17:1 mörkt) — den fällan står i projektets minne, och den hittades självständigt i stället för att kopieras från `CommunicationTab`, som var enda tidigare användningen. En vitlistevakt håller resultatet: varje amber-rad som inte är en dokumenterad status fäller. Gradientbaslinjen orörd på 52. *(Var:)* **Amber har tagit över som sidans färg.** Vyn sätter `domain="info"` (sky). Räknat per fil,
   hubtokens mot amber-klasser: **ParticipantsTab 3/59, ResourcesTab 3/50, OverviewTab 4/34,
   ParticipantDetailPage 2/26, SettingsTab 0/20.** Undantaget är CommunicationTab med 39/0, som gör
   rätt. Amber används för fokusringar, aktiva filter och avatarer — så en *riktig* varning
@@ -378,7 +378,8 @@ i kandidatsökningen.
   vilket `participantId` som gäller när svaret kommer. Av 16 datahämtande `useEffect` i vyn har **ett**
   skydd. Hinner A:s svar sist skrivs A:s mål och journal över B:s sida, under B:s namn. Besläktad med
   den öppna KV1 · ~1–2 h
-- [ ] **KK2** **1 976 rader onåbara — och den bättre journalen är en av dem.** Sju komponenter med noll
+- [x] **KK2** ✅ **Klar 2026-08-31 — och journalen blev det motsatta av arkiverad.** **1 587 rader** flyttade till `archive/2026-08-doda-konsulentkomponenter/` (ActionPlan, IncomingSharedJobs, ParticipantList, ConsultantRequestBanner, RecentActivity, ConsultantStats). **Barrel-filen är borttagen** — den var själva mekanismen: en `grep` efter importörer hittar barreln och rapporterar "har importör", fast ingen importerar barreln. Det är så 175 filer kunde stå odokumenterade genom fyra granskningar. *(Beslut Mikael:)* `ParticipantJournal` **kopplades in i stället för att arkiveras** — se posten nedan. **Lärdom noterad i arkivets README:** `ConsultantStats` fick en kontrastfix samma dag, timmar innan nåbarheten kontrollerades. Betalt arbete i kod ingen kör, samma felklass som WCAG-svepet 2026-08-09. Kontrollera nåbarhet **före** ett svep. *(Var:)* **1 976 rader onåbara.** Sju komponenter med noll
+- [x] **KK7** ✅ **Klar 2026-08-31 — `ParticipantJournal` inkopplad, textarean borta.** Beslut av Mikael. Den bara textarean sparade **alltid `category: 'GENERAL'`** och gick inte att redigera eller radera; journalytan har kategorier, redigering och radering. **Det gör `ReportDraftDialog`s "Oro"-filter meningsfullt** — filtret fanns i datamodellen men gränssnittet lät aldrig konsulenten sätta kategorin, så skyddet var verkningslöst. **Tre premisser i den gamla komponenten föll vid kontroll mot prod:** den förutsatte kolumnerna `updated_at`, `is_goal`, `goal_deadline` och `is_completed`, som **inte finns** — måldeadline-funktionen hade sett ut att fungera och tyst tappats vid omladdning. Den saknade helt `dark:`-klasser (skriven före mörkt läge). Och den skötte `consultant_id` själv; nu äger föräldern persistensen. **Ett fynd värt att minnas:** en UPDATE eller DELETE som RLS blockerar returnerar `{data: [], error: null}` — **inget fel**. Båda hanterarna behandlar därför tom radmängd som misslyckande, annars hade en nekad radering sett lyckad ut. Ytan säger rakt ut att deltagaren kan läsa allt, inklusive "Oro".
   importörer utanför den likaledes döda barreln: `ActionPlan` (702), `ParticipantJournal` (389),
   `IncomingSharedJobs` (271), `ParticipantList` (232), `ConsultantRequestBanner` (176),
   `RecentActivity` (131), `ConsultantStats` (75) — **37 % av mappen.** Det intressanta är vad som
@@ -568,7 +569,7 @@ allt som kräver ett beslut står kvar nedan.
   `USING (auth.uid() = consultant_id)`, utan koppling till den tabellen, och ingen gallring sker.
   **Rättas i samma svep som KS2**, eftersom rätt lydelse beror på hur åtkomsten löses — inte före ·
   ~15 min efter KS2
-- [ ] **DOK2** **`/ai-policy` i drift anger fel personuppgiftsbiträde.** Verifierat på skarp sajt
+- [x] **DOK2** ✅ **Klar 2026-08-31.** `/ai-policy` anger nu **OpenRouter**, inte "OpenAI, Inc.", och **Perplexity redovisas** — med de fem funktionerna, att Sonar gör en webbsökning på användarens fritext, och att reseplaneraren skickar hemadressen. DPF-påståendet är borta; sidan säger att överföringsgrunden inte är fastställd, vilket är sant enligt A5. *(Var:)*  **`/ai-policy` i drift anger fel personuppgiftsbiträde.** Verifierat på skarp sajt
   2026-08-31, citerat ordagrant: *"OpenRouter (modell: gpt-oss-120b) … Leverantör: **OpenAI, Inc.**
   … Databehandling: **USA (EU-US DPF)**."* Perplexity nämns inte alls. Detta är den öppna posten
   **JD2**, som nu är bekräftad i drift och inte bara läst i koden. Integritetspolicyn listar
@@ -590,14 +591,14 @@ allt som kräver ett beslut står kvar nedan.
   om talen är aktuella eller kvarlämnade. **Notera kopplingen till RM5:** en licens som prissätts
   per konsulent möter Rusta och matchas tak på 50 deltagare per heltidshandledare — en leverantör
   med 200 deltagare behöver minst fyra, alltså 4 150 kr/mån · beslut
-- [ ] **DOK6** **`services-overview.md` säger att en refaktorering "pågår" som aldrig gjordes.**
+- [x] **DOK6** ✅ **Klar 2026-08-31.** `services-overview.md` sa att en refaktorering "pågår" som aldrig gjordes — `DeleteAccountSection` anropar `supabase.rpc` direkt och rör aldrig `accountApi`, som är onåbar från `main.tsx`. Står nu som dödkod. *(Var:)*  **`services-overview.md` säger att en refaktorering "pågår" som aldrig gjordes.**
   Om `accountApi.ts`: *"Ska användas av `DeleteAccountSection.tsx` (refactor pågår)"*.
   `DeleteAccountSection` importerar `supabase` direkt och rör aldrig `accountApi`, som dessutom är
   onåbar från `main.tsx`. Skriv "dödkod, aldrig inkopplad" · ~10 min
-- [ ] **DOK7** **`DESIGN.md` §3 listar `/print-resources` under Resurser** — sidan raderades
+- [x] **DOK7** ✅ **Klar 2026-08-31.** `DESIGN.md` §3 listade `/print-resources` under Resurser; sidan raderades 2026-08-23. Verifierat mot `navigation.ts` och borttaget. *(Var:)*  **`DESIGN.md` §3 listar `/print-resources` under Resurser** — sidan raderades
   2026-08-23. Tabellen skrevs den 18:e, fem dagar före. `CLAUDE.md`s egen hubbtabell är korrekt ·
   ~5 min
-- [ ] **DOK8** **Åtta npm-skript är odokumenterade** i `CLAUDE.md`s kommandolista:
+- [x] **DOK8** ✅ **Klar 2026-08-31.** De åtta odokumenterade npm-skripten är införda i `CLAUDE.md`, var och en med en rad ur skriptets eget huvud. Inget dokumenterat skript saknades i `package.json`. *(Var:)*  **Åtta npm-skript är odokumenterade** i `CLAUDE.md`s kommandolista:
   `content:refresh`, `content:triage`, `content:new`, `guides`, `icons`, `analyze`,
   `verify:widget-chunks`, `report:i18n` · ~15 min
 
@@ -2253,8 +2254,8 @@ som står här är **nytt eller nyare än de raderna**.
 - [ ] **SA3** **Nio ospårbara statistikpåståenden om jobbmarknaden i sex publicerade guider — och de motsäger varandra.** Mätt mot `articles.snapshot.json` och **reproducerat live**: `https://www.jobin.se/guider/natverksbyggande-guide/` säger i brödtexten "Upp till 70% av alla jobb tillsätts via kontakter" och sedan i listan "**85% av tillsatta tjänster** sker via nätverk" — i samma artikel, under rubriken "Statistiken talar". Övriga: `dolda-jobbmarknaden` (2), `informationsintervju-guide`, `kreativ-jobbsokning`, `loneforhandling-komplett` (60 %), `natverka-for-jobb`. Samma 85 %-siffra står också i appen på `BrandAuditTab.tsx:111`, kopplad till frågan "Nätverkar du aktivt?". Alla sex guider är publicerade och indexerbara. Detta är portalens mest spridda innehåll, och siffrorna styr hur någon prioriterar sin tid · ~1 h
 - [ ] **SA2** **Sanningsregeln finns bara i den svenska AI-grenen.** `adaptation-recommendations` och `adaptation-conversation` är de enda två promptarna i `client/api/ai.js` med en engelsk variant. Den svenska bär hela spärren ("Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser… personen fattar beslut om sin försörjning utifrån det du skriver"). Den engelska säger bara "Give concrete, warm, practical advice in English" (`ai.js:858`, `:871`). Den som läser portalen på engelska är ofta utlandsfödd — alltså precis den som minst kan bedöma om ett bidragsbelopp är påhittat · ~15 min
 - [ ] **SA4** **12 av 20 promptar i `ai.js` saknar sanningsregel.** Mätt genom att balansera klamrar över `PROMPTS`-objektet: 8 har den, 12 inte — bland dem `cv-writing`, `kompetensgap`, `chatbot`, `ai-team-chat` och `vecko-reflektion`. Regeln har införts prompt för prompt när ett fynd tvingat fram den. Ett fjärde tillfälle att införa den styckvis är ett skäl att göra den till en delad konstant i stället · ~2 h
-- [ ] **KV3** **`logContact()` byggdes och kopplades aldrig in — triagelistan flaggar alla, alltid.** Mätt: enda anroparen av `consultantService.logContact` (`:593`) är dess egen testfil. Alla sex ställen som frågar "har vi hört av oss?" läser `last_contact_at`, som därför är `null` för samtliga deltagare — "Hör av dig" (`OverviewTab.tsx:377`), filtret (`ParticipantsTab.tsx:121`), statusen (`ParticipantDetailPage.tsx:534`) och "Riskerar att fastna" (`AnalyticsTab.tsx:384`). En konsulent med 30 deltagare ser hela listan röd, varje dag, vilket gör triagen värdelös. Skrivvägen finns — ingen knapp ringer den · ~1–2 h
-- [ ] **KV4** **Anteckningsräknaren räknar en tabell ingen skriver till.** Vyn räknar `consultant_notes` (`20260412130000_fix_invitation_acceptance.sql:60-61`); alla nio skrivvägar i klienten går till `consultant_journal`. Mätt: **noll `.from('consultant_notes')` i hela kodbasen.** `notes_count` renderas på deltagarkortet (`ParticipantsTab.tsx:518`) och visar därför 0 hur mycket konsulenten än dokumenterar — vilket kan läsas som att ingen dokumentation gjorts · vyändring + migration · ~30 min
+- [x] **KV3 + KA4** ✅ **Klara 2026-08-31.** `logContact()` har fått sin första anropare efter att ha legat oanvänd — som en **femte massåtgärd, "logga kontakt"**, som skriver en journalpost och sätter `last_contact_at` för alla valda. Efter en workshop med åtta deltagare räcker en åtgärd i stället för åtta. Följer KS5-mönstret: namnger vilka som föll och stänger inte sig själv vid delvis utfall. *(Kvarstår:)* knappen som utlöser den behöver kopplas i `ParticipantsTab` · *(Var:)* **`logContact()` byggdes och kopplades aldrig in.** Mätt: enda anroparen av `consultantService.logContact` (`:593`) är dess egen testfil. Alla sex ställen som frågar "har vi hört av oss?" läser `last_contact_at`, som därför är `null` för samtliga deltagare — "Hör av dig" (`OverviewTab.tsx:377`), filtret (`ParticipantsTab.tsx:121`), statusen (`ParticipantDetailPage.tsx:534`) och "Riskerar att fastna" (`AnalyticsTab.tsx:384`). En konsulent med 30 deltagare ser hela listan röd, varje dag, vilket gör triagen värdelös. Skrivvägen finns — ingen knapp ringer den · ~1–2 h
+- [~] **KV4** 🟡 **Migration skriven 2026-08-31, inte körd.** Vydefinitionen pekar om `notes_count`/`last_note_date` från `consultant_notes` (noll skrivare) till `consultant_journal` (alla nio skrivvägar). **Bonus:** eftersom vyn är `security_invoker` och journalens RLS filtrerar på konsulent rättas samtidigt en obemärkt bugg — räknaren räknade *alla* konsulenters anteckningar om en deltagare, inte den frågande konsulentens. `supabase/migrations/20260831141000_kv4_notes_count_consultant_journal.sql` · *(Var:)* **Anteckningsräknaren räknar en tabell ingen skriver till.** Vyn räknar `consultant_notes` (`20260412130000_fix_invitation_acceptance.sql:60-61`); alla nio skrivvägar i klienten går till `consultant_journal`. Mätt: **noll `.from('consultant_notes')` i hela kodbasen.** `notes_count` renderas på deltagarkortet (`ParticipantsTab.tsx:518`) och visar därför 0 hur mycket konsulenten än dokumenterar — vilket kan läsas som att ingen dokumentation gjorts · vyändring + migration · ~30 min
 - [ ] **KV5** **"CV-kvalitet" mäter två olika saker under samma ord.** `OverviewTab.tsx:606` visar `stats.averageProgress` (snittet av `ats_score`, där `null` räknas som 0); `AnalyticsTab.tsx:786` visar `analytics.cvCompletionRate` (andelen med `has_cv`). Båda hämtar strängen `'CV-kvalitet'` ur `sv.json`. En deltagare med komplett CV men saknad ATS-poäng ger nära 0 % på en flik och nära 100 % på nästa, i samma session · ~1 h
 - [x] **KV1** ✅ **Klar 2026-08-31 — åtgärdad tillsammans med KK1**, eftersom det visade sig vara samma trasiga tillståndshantering sedd från två håll. Se KK1 i genomgången 2026-08-31 för vad som gjordes och hur det mutationstestades. *(Var:)* **Fel deltagares data kan stå kvar efter en misslyckad hämtning.** `ParticipantDetailPage.tsx:302` sätter `participant` bara inuti `if (participantData)`, utan `else`, och `useEffect` nollställer ingenting före nästa hämtning. Failar frågan för deltagare B fortsätter sidan visa A:s namn, mål och anteckningar under B:s URL, utan felmarkering · ~20 min
 - [ ] **KV2** **`InsightsPanel` frågar efter en kolumn vyn inte har.** `consultantInsights.ts:157` gör `.select('*, participant:consultant_dashboard_participants!inner(name, user_id)')`. Vyn har `first_name`/`last_name`, **inte** `name` (kontrollerat mot `schema-snapshot.json`). `if (goalsError) throw goalsError` fäller hela panelen, inklusive de insikter som redan räknats fram. Panelen monteras i `AnalyticsTab.tsx:742`. **Omätt mot prod** — kör frågan med samma embed och läs felkoden innan fixen väljs · ~1–2 h

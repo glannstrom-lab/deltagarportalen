@@ -46,10 +46,11 @@ function ListItem({ icon: Icon, title, desc, positive = true }: { icon?: Compone
 
 export default function AiPolicy() {
   const { t, i18n } = useTranslation()
+  const isEnglish = i18n.language === 'en'
 
   const formatDate = () => {
-    const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
-    return new Date('2026-03-27').toLocaleDateString(locale, {
+    const locale = isEnglish ? 'en-US' : 'sv-SE'
+    return new Date('2026-08-31').toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -98,13 +99,13 @@ export default function AiPolicy() {
           {/* AI Models */}
           <Section icon={Brain} title={t('aiPolicy.models.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('aiPolicy.models.intro')}</p>
-            <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl p-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+            <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl p-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 mb-4">
               <h3 className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)] text-lg mb-3">{t('aiPolicy.models.openai')}</h3>
               <p className="text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">{t('aiPolicy.models.openaiDesc')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
                   <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.provider')}</span>
-                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">OpenAI, Inc.</p>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">OpenRouter Inc.</p>
                 </div>
                 <div>
                   <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.purpose')}</span>
@@ -112,7 +113,43 @@ export default function AiPolicy() {
                 </div>
                 <div>
                   <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.location')}</span>
-                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">USA (EU-US DPF)</p>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">
+                    {isEnglish
+                      ? 'USA — the legal transfer basis is still being finalized (not yet the EU-US Data Privacy Framework)'
+                      : 'USA — överföringsgrunden är ännu inte fastställd (inte EU-US Data Privacy Framework)'}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl p-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+              <h3 className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)] text-lg mb-3">
+                {isEnglish ? 'Perplexity (via OpenRouter, model: sonar)' : 'Perplexity (via OpenRouter, modell: sonar)'}
+              </h3>
+              <p className="text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">
+                {isEnglish
+                  ? 'Used by the career assistant, commute planner, company search, company analysis and industry radar. Perplexity runs a web search on the text you enter — the commute planner sends your home address as part of that search.'
+                  : 'Används av karriärassistenten, pendlingsplaneraren, företagssökningen, företagsanalysen och branschradarn. Perplexity gör en websökning på det du skriver in — pendlingsplaneraren skickar din hemadress som en del av den sökningen.'}
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.provider')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">Perplexity AI, Inc. (via OpenRouter)</p>
+                </div>
+                <div>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.purpose')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">
+                    {isEnglish
+                      ? 'Career assistant, commute planner, company search & analysis, industry radar'
+                      : 'Karriärassistent, pendlingsplanerare, företagssök/-analys, branschradar'}
+                  </p>
+                </div>
+                <div>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.location')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">
+                    {isEnglish
+                      ? 'USA — same open transfer basis as above'
+                      : 'USA — samma olösta överföringsgrund som ovan'}
+                  </p>
                 </div>
               </div>
             </div>

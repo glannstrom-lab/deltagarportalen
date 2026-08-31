@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -326,20 +327,27 @@ export function GoalCreationDialog({
     setSearchQuery('')
   }
 
+  const handleClose = () => {
+    onClose()
+    resetForm()
+  }
+
   const filteredParticipants = participants.filter(p =>
     `${p.first_name} ${p.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
     p.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+    <Dialog
+      isOpen={isOpen}
+      onClose={handleClose}
+      labelledBy="goal-dialog-title"
+      className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden"
+    >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div>
-            <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 id="goal-dialog-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Skapa mål
             </h2>
             <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
@@ -349,7 +357,8 @@ export function GoalCreationDialog({
             </p>
           </div>
           <button
-            onClick={() => { onClose(); resetForm(); }}
+            onClick={handleClose}
+            aria-label="Stäng"
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
           >
             <X className="w-5 h-5 text-stone-500" />
@@ -731,7 +740,7 @@ export function GoalCreationDialog({
             )}
           </div>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" onClick={() => { onClose(); resetForm(); }}>
+            <Button variant="ghost" onClick={handleClose}>
               Avbryt
             </Button>
             {step === 'customize' && (
@@ -751,7 +760,6 @@ export function GoalCreationDialog({
             )}
           </div>
         </div>
-      </div>
-    </div>
+    </Dialog>
   )
 }

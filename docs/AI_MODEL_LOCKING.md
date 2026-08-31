@@ -15,7 +15,7 @@ dyker upp, eller om någon fil anropar `api.openai.com` direkt. Tabellerna nedan
 
 | Endpoint | Modell-default | Status |
 |----------|---------------|--------|
-| `client/api/ai.js` (Vercel, 18 funktioner) | `resolveModel()` → `process.env.AI_MODEL \|\| 'openai/gpt-oss-120b'` | ✅ Låst. **B18:** modellnamnet stod på fyra ställen; ett av dem läste `AI_MODEL_HAIKU` först. Nu en enda funktion |
+| `client/api/ai.js` (Vercel, 20 funktioner — räknat i `PROMPTS`-objektet 2026-08-31, räkna om i stället för att lita på talet) | `resolveModel()` → `process.env.AI_MODEL \|\| 'openai/gpt-oss-120b'` | ✅ Låst. **B18:** modellnamnet stod på fyra ställen; ett av dem läste `AI_MODEL_HAIKU` först. Nu en enda funktion |
 | ~~`client/api/ai-stream.js` (Vercel, 13 funktioner)~~ | — | ⛔ **Filen finns inte** — streaming-lagret arkiverades. Raden var fel sedan dess |
 | `supabase/functions/ai-cover-letter` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |
 | `supabase/functions/ai-cv-writing` | `Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'` | ✅ Låst 2026-05-15 |

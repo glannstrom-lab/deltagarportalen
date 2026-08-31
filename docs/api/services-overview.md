@@ -29,8 +29,10 @@ generateDoaSummary({ firstName, categories })                          // → 's
 ```
 
 Varje wrappar `callAI(<funktionsnamn>, data)`. Funktionsnamn matchar
-`PROMPTS`-objektet i `client/api/ai.js` (16 funktioner efter C12 — se
-`docs/AI_ARCHITECTURE_OVERVIEW.md`). Övriga PROMPTS-funktioner (t.ex.
+`PROMPTS`-objektet i `client/api/ai.js` (20 funktioner, räknat 2026-08-31 —
+räkna om i stället för att lita på talet; det har stått fel i fyra dokument
+på fyra olika värden. Se `docs/AI_ARCHITECTURE_OVERVIEW.md` §2.1). Övriga
+PROMPTS-funktioner (t.ex.
 `karriarplan`, `kompetensgap`, `intervju-simulator`, `sta-document-draft`)
 anropas direkt via `callAI(...)` från respektive sida/komponent utan en
 namngiven wrapper här.
@@ -50,7 +52,15 @@ med sina motsvarande, då orphanade, `ai.js`-funktioner (0 anropare). Går att
 ## `accountApi.ts` — GDPR-radering (Art. 17)
 
 Wrapper kring Supabase RPC + delete-account edge function.
-Ska användas av `DeleteAccountSection.tsx` (refactor pågår).
+
+**Dödkod, aldrig inkopplad (verifierat 2026-08-31).** `DeleteAccountSection.tsx`
+anropar `supabase.rpc(...)` direkt (`get_deletion_status`, `export_user_data`,
+`request_account_deletion`, `cancel_account_deletion`,
+`execute_account_deletion_immediate`) och importerar inte `accountApi.ts`.
+Filens egen header-kommentar påstår samma sak ("Används av
+components/settings/DeleteAccountSection") — det stämmer inte. Enda
+importören i hela `client/src` är `accountApi.test.ts`; filen är onåbar från
+`main.tsx`. De 11 testerna nedan testar alltså en modul ingenting kör.
 
 ### `requestDeletion(reason?): Promise<DeletionRequestResult>`
 Begär radering med 14 dagars grace period. Returnerar `scheduled_at` + `grace_period_days`.

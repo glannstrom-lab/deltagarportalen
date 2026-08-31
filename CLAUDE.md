@@ -60,7 +60,7 @@ Monitoring:   Sentry
 deltagarportal/
 ├── client/                  # React frontend (Vercel rootDirectory)
 │   ├── api/                 # Vercel serverless functions
-│   │   ├── ai.js            # Huvud-AI-endpoint (18 funktioner, samlad)
+│   │   ├── ai.js            # Huvud-AI-endpoint (20 funktioner, räknat 2026-08-31, samlad)
 │   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
 │   │   ├── upload-image.js  # Profilbild → Vercel Blob
@@ -105,6 +105,22 @@ npx playwright test
 
 # TypeScript-kompilering (för felsökning)
 npx tsc --noEmit
+```
+
+### Övriga npm-skript i `client/` (kompletterat 2026-08-31)
+
+Utöver ovanstående finns åtta skript som körs mer sällan — innehållspipeline,
+ikoner och analys. Ingen av dem ingår i `npm run verify` eller CI.
+
+```bash
+npm run content:refresh        # Hämtar publicerbara artiklar ur prod → content/articles.snapshot.json (K2)
+npm run content:triage         # Visar/skriver content/publish-list.json enligt publiceringsreglerna (K3); --skriv skriver filen
+npm run content:new            # Lägger in NYA artiklar ur content/new-articles/ i prod-tabellen articles; torrkörning som default, --skriv krävs
+npm run guides                 # Genererar de publika guidesidorna (dist/guider/) + sitemap.xml, körs efter build (K1/K2)
+npm run icons                  # Genererar app-ikonerna (favicon, apple-touch-icon, pwa-*) ur public/logo-icon.svg
+npm run analyze                # vite build --mode analyze — bundlestorlek/chunk-inspektion
+npm run verify:widget-chunks   # Bygger och kontrollerar att widget-komponenterna (components/widgets/, se lärdomen 2026-07-10) hamnar i egna lazy chunks
+npm run report:i18n            # Heuristisk rapport (report-only) över hårdkodad svenska (å/ä/ö) utanför t()
 ```
 
 ---

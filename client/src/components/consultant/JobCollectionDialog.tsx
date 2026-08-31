@@ -7,6 +7,7 @@
 import { useState, useEffect } from 'react'
 import { X, Plus, Trash2, Save, Loader2, Briefcase } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 import type { CollectionJob } from '@/pages/consultant/ResourcesTab'
 
@@ -94,13 +95,15 @@ export function JobCollectionDialog({
     })
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <Dialog
+      isOpen={isOpen}
+      onClose={onClose}
+      labelledBy="job-collection-dialog-title"
+      className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+    >
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+          <h3 id="job-collection-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {collection ? 'Redigera samling' : 'Ny jobbsamling'}
           </h3>
           <button
@@ -216,7 +219,6 @@ export function JobCollectionDialog({
             {collection ? 'Spara ändringar' : 'Skapa samling'}
           </Button>
         </div>
-      </div>
-    </div>
+    </Dialog>
   )
 }

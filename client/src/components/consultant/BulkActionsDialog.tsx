@@ -18,6 +18,7 @@ import {
   FileText,
   FileSpreadsheet,
   AlertCircle,
+  Phone,
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
@@ -34,7 +35,11 @@ interface Participant {
   status: string
 }
 
-type BulkActionType = 'message' | 'tag' | 'export' | 'status'
+// KA4 (2026-08-31): 'contact' tillagd — massåtgärden "logga kontakt" (löser
+// KV3: consultantService.logContact() fanns sedan tidigare men hade noll
+// anropare någonstans i portalen, så last_contact_at var null för samtliga
+// deltagare i drift).
+type BulkActionType = 'message' | 'tag' | 'export' | 'status' | 'contact'
 
 interface BulkActionsDialogProps {
   isOpen: boolean
@@ -339,6 +344,48 @@ export function BulkActionsDialog({
     }
   }
 
+  // KA4 (2026-08-31): logga kontakt för alla valda i ett svep — löser KV3
+  // (logContact() fanns men hade ingen anropare). Samma delvis-lyckat-mönster
+  // (KS5) som handleApplyTags/handleUpdateStatus: ett riktigt fel för NÅGRA
+  // av deltagarna får aldrig se ut som en fullständig framgång.
+  const handleLogContact = async () => {
+    setLoading(true)
+    setError(null)
+    setPartialFailure(null)
+
+    try {
+      const results = await Promise.allSettled(
+        selectedParticipants.map(p => consultantService.logContact(p.participant_id))
+      )
+
+      const failedParticipants = selectedParticipants.filter(
+        (_, i) => results[i].status === 'rejected'
+      )
+
+      if (failedParticipants.length === selectedParticipants.length) {
+        throw new Error('Det gick inte att logga kontakt')
+      }
+
+      if (failedParticipants.length > 0) {
+        setPartialFailure(
+          failedParticipants.map(p => `${p.first_name} ${p.last_name}`.trim())
+        )
+        return
+      }
+
+      setSuccess(true)
+      setTimeout(() => {
+        onComplete()
+        onClose()
+      }, 1500)
+    } catch (err) {
+      console.error('Error logging contact:', err)
+      setError('Det gick inte att logga kontakt')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleSubmit = () => {
     switch (actionType) {
       case 'message':
@@ -353,6 +400,9 @@ export function BulkActionsDialog({
       case 'status':
         handleUpdateStatus()
         break
+      case 'contact':
+        handleLogContact()
+        break
     }
   }
 
@@ -362,6 +412,7 @@ export function BulkActionsDialog({
       case 'tag': return t('consultant.bulk.addTags', 'Lägg till taggar')
       case 'export': return t('consultant.bulk.export', 'Exportera deltagare')
       case 'status': return t('consultant.bulk.updateStatus', 'Uppdatera status')
+      case 'contact': return t('consultant.bulk.logContact', 'Logga kontakt')
     }
   }
 
@@ -371,6 +422,7 @@ export function BulkActionsDialog({
       case 'tag': return Tag
       case 'export': return Download
       case 'status': return UserCheck
+      case 'contact': return Phone
     }
   }
 
@@ -429,7 +481,11 @@ export function BulkActionsDialog({
                 <div>
                   <p className="font-medium text-stone-900 dark:text-stone-100">
                     {partialFailure.length} av {selectedParticipants.length}{' '}
-                    {actionType === 'tag' ? 'kunde inte taggas' : 'kunde inte uppdateras'}
+                    {actionType === 'tag'
+                      ? 'kunde inte taggas'
+                      : actionType === 'contact'
+                        ? 'kunde inte loggas'
+                        : 'kunde inte uppdateras'}
                   </p>
                   <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
                     Resten gick igenom. Du kan försöka igen för de som är kvar.
@@ -636,6 +692,18 @@ export function BulkActionsDialog({
                 </div>
               )}
 
+              {actionType === 'contact' && (
+                <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl flex items-start gap-3">
+                  <Phone className="w-5 h-5 text-stone-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-stone-700 dark:text-stone-300">
+                    {t(
+                      'consultant.bulk.logContactDescription',
+                      'Registrerar dagens datum som senaste kontakt för alla valda deltagare. Använd det här efter en workshop eller ett samlat utskick — inte i stället för en anteckning om vad ni pratade om.'
+                    )}
+                  </p>
+                </div>
+              )}
+
               {/* Error message */}
               {error && (
                 <div className="flex items-center gap-2 p-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl text-rose-600 dark:text-rose-400">
@@ -679,6 +747,11 @@ export function BulkActionsDialog({
                 <>
                   <Download className="w-4 h-4 mr-2" />
                   {t('consultant.bulk.download', 'Ladda ner')}
+                </>
+              ) : actionType === 'contact' ? (
+                <>
+                  <Phone className="w-4 h-4 mr-2" />
+                  {t('consultant.bulk.logContactAction', 'Logga kontakt')}
                 </>
               ) : (
                 <>

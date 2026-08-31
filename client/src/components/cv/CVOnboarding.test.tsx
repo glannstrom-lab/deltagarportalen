@@ -21,29 +21,17 @@ function renderGate() {
   return { ...view, onComplete, onSkip }
 }
 
-/**
- * jsdom sätter alltid `offsetParent = null`, och `useFocusTrap` filtrerar bort
- * element med `offsetParent === null` som "dolda". Utan den här shimmen ser
- * hooken noll fokuserbara element och fokustestet blir meningslöst — det hade
- * gått grönt även med trasig fokushantering.
- */
-let offsetParentSpy: PropertyDescriptor | undefined
+// offsetParent-shimmen (jsdom returnerar annars alltid null, vilket gör
+// useFocusTrap blind för fokuserbara element) ligger sedan KT1/TI6 globalt i
+// test/setup.ts — flyttad dit ur den här filen så den inte behöver dupliceras
+// i varje dialog-/modaltest.
 beforeEach(() => {
-  offsetParentSpy = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetParent')
-  Object.defineProperty(HTMLElement.prototype, 'offsetParent', {
-    configurable: true,
-    get() { return this.parentNode },
-  })
   // Modalen visas bara för den som inte sett den och som får claim:a sessionen
   localStorage.clear()
   sessionStorage.clear()
   // UX16: guiden väntar på cookiebeslutet. Utgångsläget i testerna är att
   // användaren har svarat — den motsatta vägen har ett eget test nedan.
   localStorage.setItem('jobin_cookie_consent', 'true')
-})
-
-afterEach(() => {
-  if (offsetParentSpy) Object.defineProperty(HTMLElement.prototype, 'offsetParent', offsetParentSpy)
 })
 
 afterEach(() => {
