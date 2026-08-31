@@ -3,7 +3,7 @@
  * Profile, progress tracker, goals, journal, and communication
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -17,7 +17,6 @@ import {
   Target,
   MessageSquare,
   Clock,
-  Edit2,
   MoreVertical,
   Plus,
   AlertTriangle,
@@ -31,6 +30,8 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
+import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
+import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -273,6 +274,7 @@ export function ParticipantDetailPage() {
   const navigate = useNavigate()
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [participant, setParticipant] = useState<Participant | null>(null)
   const [goals, setGoals] = useState<Goal[]>([])
   const [journal, setJournal] = useState<JournalEntry[]>([])
@@ -280,81 +282,162 @@ export function ParticipantDetailPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'goals' | 'journal' | 'timeline'>('overview')
   const [newNote, setNewNote] = useState('')
   const [showReportDraft, setShowReportDraft] = useState(false)
+  const [showGoalDialog, setShowGoalDialog] = useState(false)
+  const [showMeetingDialog, setShowMeetingDialog] = useState(false)
+
+  // KV1/KK1: håller reda på VILKEN deltagare som senast begärdes. Varje
+  // asynkron etapp i fetchParticipantData jämför mot den här innan den
+  // skriver till state — hinner ett svar från en övergiven deltagare fram
+  // efter att man bytt sida ignoreras det i stället för att skriva över
+  // den nya deltagarens uppgifter.
+  const activeParticipantIdRef = useRef<string | undefined>(participantId)
 
   useEffect(() => {
-    fetchParticipantData()
+    activeParticipantIdRef.current = participantId
+    // Nollställ allt tillstånd vid varje deltagarbyte. Utan det här kunde
+    // förra deltagarens namn, mål och anteckningar stå kvar under den nya
+    // URL:en tills (eller om) hämtningen lyckades.
+    setParticipant(null)
+    setGoals([])
+    setJournal([])
+    setTimeline([])
+    setError(null)
+    fetchParticipantData(participantId)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participantId])
 
-  const fetchParticipantData = async () => {
+  const fetchParticipantData = async (requestedId: string | undefined) => {
+    const isStale = () => activeParticipantIdRef.current !== requestedId
+
     try {
       setLoading(true)
+
       const { data: { user } } = await supabase.auth.getUser()
-      if (!user || !participantId) return
+      if (isStale()) return
+
+      if (!user || !requestedId) {
+        setError(t('consultant.participantDetail.loadError', 'Det gick inte att hämta deltagarens uppgifter.'))
+        return
+      }
 
       // Fetch participant
-      const { data: participantData } = await supabase
+      const { data: participantData, error: participantError } = await supabase
         .from('consultant_dashboard_participants')
         .select('*')
         .eq('consultant_id', user.id)
-        .eq('participant_id', participantId)
+        .eq('participant_id', requestedId)
         .single()
 
-      if (participantData) {
-        setParticipant(participantData)
+      if (isStale()) return
 
-        // Fetch real goals from database
-        const { data: goalsData } = await supabase
-          .from('consultant_goals')
-          .select('*')
-          .eq('consultant_id', user.id)
-          .eq('participant_id', participantId)
-          .order('created_at', { ascending: false })
-
-        if (goalsData && goalsData.length > 0) {
-          setGoals(goalsData.map(g => ({
-            id: g.id,
-            title: g.title,
-            description: g.description || '',
-            status: g.status,
-            priority: g.priority,
-            deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            progress: g.progress || 0,
-          })))
-        } else {
-          // No goals yet - start with empty array
-          setGoals([])
-        }
-
-        // Fetch real journal entries from database
-        const { data: journalData } = await supabase
-          .from('consultant_journal')
-          .select('*')
-          .eq('consultant_id', user.id)
-          .eq('participant_id', participantId)
-          .order('created_at', { ascending: false })
-          .limit(20)
-
-        if (journalData) {
-          setJournal(journalData.map(j => ({
-            id: j.id,
-            content: j.content,
-            category: j.category,
-            createdAt: j.created_at,
-          })))
-        }
-
-        // Timeline: tidigare visades hårdkodad mock-data ("Sparade 3 jobb",
-        // "Uppföljningsmöte" osv) som lurade konsulenten att tro att det var
-        // riktig aktivitet. Borttaget 2026-05-09 (P1-skuld).
-        // user_activities-tabellen finns men RLS:en tillåter bara user_id =
-        // auth.uid() — konsulenter behöver en separat policy för att läsa
-        // sina deltagare. Spårad i docs/teknisk-skuld-2026-05/.
-        setTimeline([])
+      if (participantError || !participantData) {
+        console.error('Error fetching participant:', participantError)
+        setError(t('consultant.participantDetail.loadError', 'Det gick inte att hämta deltagarens uppgifter.'))
+        return
       }
-    } catch (error) {
-      console.error('Error fetching participant:', error)
+
+      setParticipant(participantData)
+
+      // Fetch real goals from database
+      const { data: goalsData, error: goalsError } = await supabase
+        .from('consultant_goals')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .eq('participant_id', requestedId)
+        .order('created_at', { ascending: false })
+
+      if (isStale()) return
+
+      if (goalsError) {
+        console.error('Error fetching goals:', goalsError)
+      } else {
+        setGoals((goalsData || []).map(g => ({
+          id: g.id,
+          title: g.title,
+          description: g.description || '',
+          status: g.status,
+          priority: g.priority,
+          deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          progress: g.progress || 0,
+        })))
+      }
+
+      // Fetch real journal entries from database
+      const { data: journalData, error: journalError } = await supabase
+        .from('consultant_journal')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .eq('participant_id', requestedId)
+        .order('created_at', { ascending: false })
+        .limit(20)
+
+      if (isStale()) return
+
+      if (journalError) {
+        console.error('Error fetching journal:', journalError)
+      } else if (journalData) {
+        setJournal(journalData.map(j => ({
+          id: j.id,
+          content: j.content,
+          category: j.category,
+          createdAt: j.created_at,
+        })))
+      }
+
+      // Timeline: tidigare visades hårdkodad mock-data ("Sparade 3 jobb",
+      // "Uppföljningsmöte" osv) som lurade konsulenten att tro att det var
+      // riktig aktivitet. Borttaget 2026-05-09 (P1-skuld).
+      // user_activities-tabellen finns men RLS:en tillåter bara user_id =
+      // auth.uid() — konsulenter behöver en separat policy för att läsa
+      // sina deltagare. Spårad i docs/teknisk-skuld-2026-05/.
+      setTimeline([])
+    } catch (err) {
+      if (!isStale()) {
+        console.error('Error fetching participant:', err)
+        setError(t('consultant.participantDetail.loadError', 'Det gick inte att hämta deltagarens uppgifter.'))
+      }
     } finally {
-      setLoading(false)
+      if (!isStale()) {
+        setLoading(false)
+      }
+    }
+  }
+
+  // Uppdaterar bara mållistan (t.ex. efter att "Nytt mål" skapats via dialogen)
+  // utan att lägga hela sidan i laddningsläge eller nollställa profil/journal.
+  // Samma delta-vaktar mot activeParticipantIdRef som fetchParticipantData.
+  const refetchGoals = async () => {
+    const requestedId = participantId
+    if (!requestedId) return
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user || activeParticipantIdRef.current !== requestedId) return
+
+      const { data: goalsData, error: goalsError } = await supabase
+        .from('consultant_goals')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .eq('participant_id', requestedId)
+        .order('created_at', { ascending: false })
+
+      if (activeParticipantIdRef.current !== requestedId) return
+
+      if (goalsError) {
+        console.error('Error refetching goals:', goalsError)
+        return
+      }
+
+      setGoals((goalsData || []).map(g => ({
+        id: g.id,
+        title: g.title,
+        description: g.description || '',
+        status: g.status,
+        priority: g.priority,
+        deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: g.progress || 0,
+      })))
+    } catch (err) {
+      console.error('Error refetching goals:', err)
     }
   }
 
@@ -393,6 +476,9 @@ export function ParticipantDetailPage() {
     }
   }
 
+  // OBS (KK3, ej åtgärdat här): duplicerar consultantService.completeGoal utan
+  // dess auth-guards. consultantService.ts ägs av en annan agent i den här
+  // omgången — flaggat men medvetet orört.
   const handleCompleteGoal = async (goalId: string) => {
     try {
       const { error } = await supabase
@@ -436,6 +522,26 @@ export function ParticipantDetailPage() {
 
   if (loading) {
     return <LoadingState type="profile" />
+  }
+
+  // Fel är ett eget läge, skilt från "hittades inte" och skilt från laddning
+  // (isLoading || !data) — annars kan ett fel se ut som tom data, eller värre,
+  // som en tidigare deltagares kvarblivna uppgifter (KV1).
+  if (error) {
+    return (
+      <div className="text-center py-12" role="alert">
+        <AlertTriangle className="w-10 h-10 mx-auto text-rose-500 mb-3" aria-hidden="true" />
+        <p className="text-stone-700 dark:text-stone-200 font-medium">{error}</p>
+        <div className="flex items-center justify-center gap-3 mt-4">
+          <Button variant="outline" onClick={() => fetchParticipantData(participantId)}>
+            {t('consultant.analytics.tryAgain', 'Försök igen')}
+          </Button>
+          <Button variant="ghost" onClick={() => navigate('/consultant/participants')}>
+            {t('consultant.participantDetail.backToParticipants')}
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   if (!participant) {
@@ -495,9 +601,9 @@ export function ParticipantDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <StatusBadge status={participant.status} t={t} />
-                <Button variant="outline" size="sm">
-                  <Edit2 className="w-4 h-4 mr-1" />
-                  {t('common.edit')}
+                <Button variant="outline" size="sm" onClick={() => setShowMeetingDialog(true)}>
+                  <Calendar className="w-4 h-4 mr-1" />
+                  {t('consultant.communication.bookMeeting', 'Boka möte')}
                 </Button>
               </div>
             </div>
@@ -621,7 +727,7 @@ export function ParticipantDetailPage() {
             <p className="text-stone-500">
               {t('consultant.participantDetail.activeGoalsCount', { count: goals.filter(g => g.status !== 'COMPLETED').length })}
             </p>
-            <Button>
+            <Button onClick={() => setShowGoalDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
               {t('consultant.participantDetail.newGoal')}
             </Button>
@@ -757,6 +863,30 @@ export function ParticipantDetailPage() {
           isOpen={showReportDraft}
           onClose={() => setShowReportDraft(false)}
           participantId={participantId}
+        />
+      )}
+
+      {/* KA5: möte och mål gick tidigare bara att skapa via en generisk dialog
+          på en annan flik, där konsulenten fick söka fram samma person hon
+          just tittade på. Båda dialogerna tar emot deltagaren direkt. */}
+      {participant && (
+        <GoalCreationDialog
+          isOpen={showGoalDialog}
+          onClose={() => setShowGoalDialog(false)}
+          onSuccess={() => {
+            setShowGoalDialog(false)
+            refetchGoals()
+          }}
+          preselectedParticipant={participant}
+        />
+      )}
+
+      {participant && (
+        <MeetingSchedulerDialog
+          isOpen={showMeetingDialog}
+          onClose={() => setShowMeetingDialog(false)}
+          onSuccess={() => setShowMeetingDialog(false)}
+          preselectedParticipant={participant}
         />
       )}
     </div>

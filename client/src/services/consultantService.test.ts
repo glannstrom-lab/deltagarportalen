@@ -512,6 +512,26 @@ describe('consultantService.recordPlacement / updatePlacementFollowup', () => {
     )
   })
 
+  // AG3/KS1 (2026-08-31): `notes` fanns som kolumn i consultant_placements
+  // sedan grundmigrationen men saknades i Placement-interfacet — ett fält
+  // konsulenten skrev i PlacementDialog hade därför tystats bort av
+  // TypeScript innan det ens nådde insert().
+  it('recordPlacement skickar med notes när det finns', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValue({ data: { id: 'pl1' }, error: null })
+    await consultantService.recordPlacement({
+      participant_id: 'p1',
+      employer_name: 'Acme',
+      placement_type: 'permanent',
+      notes: 'Fick jobbet via en tidigare praktikplats.',
+      followup_3m: false,
+      followup_6m: false,
+    })
+    expect(mockFromBuilder.insert).toHaveBeenCalledWith(
+      expect.objectContaining({ notes: 'Fick jobbet via en tidigare praktikplats.' })
+    )
+  })
+
   it('D11: updatePlacementFollowup kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
     loggedOut()
     await expect(
@@ -580,6 +600,23 @@ describe('consultantService.getAnalytics', () => {
     // just den luckan schemadriftgrinden (H1) täcker.
     expect(mockFrom).toHaveBeenCalledWith('consultant_goals')
     expect(mockFrom).toHaveBeenCalledWith('consultant_placements')
+  })
+
+  it('KS9: filtrerar avklarade mål med VERSALER — mocken svarar count:3 oavsett värde, så detta måste kontrollera SJÄLVA ARGUMENTET till .eq()', async () => {
+    loggedIn()
+    queueResult({
+      data: [{ user_id: 'p1', status: 'ACTIVE', has_cv: true, ats_score: 80 }],
+      error: null,
+    })
+    queueResult({ count: 3, error: null }) // consultant_goals
+    queueResult({ count: 1, error: null }) // consultant_placements
+    await consultantService.getAnalytics()
+    // consultant_goals.status har CHECK (status IN ('NOT_STARTED','IN_PROGRESS',
+    // 'COMPLETED','BLOCKED')) och completeGoal() skriver status: 'COMPLETED'.
+    // Postgres .eq() är skiftlägeskänsligt — 'completed' (gemener) matchar aldrig
+    // en rad i skarp drift, även om denna mock inte bryr sig om värdet.
+    expect(mockFromBuilder.eq).toHaveBeenCalledWith('status', 'COMPLETED')
+    expect(mockFromBuilder.eq).not.toHaveBeenCalledWith('status', 'completed')
   })
 
   it('sväljer fel i goals/placements-deltat (try/catch) och faller tillbaka till 0', async () => {

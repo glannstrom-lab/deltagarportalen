@@ -72,6 +72,10 @@ export interface Placement {
   start_date?: string
   salary_range?: string
   placement_type: 'permanent' | 'temp' | 'trial'
+  // AG3/KS1 (2026-08-31): kolumnen finns i consultant_placements sedan
+  // grundmigrationen (20260323100000) men saknades här, så PlacementDialog
+  // hade tyst tappat konsulentens anteckning vid varje registrering.
+  notes?: string
   followup_3m: boolean
   followup_6m: boolean
   created_at: string
@@ -551,11 +555,15 @@ class ConsultantService {
       // dessutom är den enda målkälla konsulentvyn skriver till: den har
       // `participant_id`, `status` och `completed_at`.
       try {
+        // KS9 (2026-08-31): filtret jämförde mot 'completed' (gemener), men
+        // ConsultantGoal['status'] och completeGoal() skriver alltid VERSALER
+        // ('COMPLETED'). Postgres .eq() är skiftlägeskänsligt — frågan kunde
+        // aldrig matcha en rad, så goalsCompletedThisMonth var alltid 0.
         const { count: goalsCount } = await supabase
           .from('consultant_goals')
           .select('id', { count: 'exact', head: true })
           .in('participant_id', participantIds)
-          .eq('status', 'completed')
+          .eq('status', 'COMPLETED')
           .gte('completed_at', startIso)
         goalsCompletedThisMonth = goalsCount ?? 0
       } catch (err) {

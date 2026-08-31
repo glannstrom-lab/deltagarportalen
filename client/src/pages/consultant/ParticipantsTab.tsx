@@ -30,8 +30,10 @@ import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
+import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { getTagLabel, getTagColorClasses } from '@/components/consultant/participantTags'
 
 interface Participant {
@@ -61,16 +63,57 @@ type SortOrder = 'asc' | 'desc'
 export function ParticipantsTab() {
   const { t } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
+
+  // KA2 (2026-08-31): sök, sortering, vy och filter lever i URL:en (q/sort/dir/view/filter)
+  // så att de överlever navigering till en deltagare och tillbaka. OBS: `ParticipantDetailPage`
+  // (annan agents fil) har en HÅRDKODAD "tillbaka"-länk till `/consultant/participants` — den
+  // bär i dag INTE med sig den här querysträngen. Ska tillbaka-navigeringen återställa
+  // sök/filter/sortering måste den länken bytas mot en dynamisk länk som inkluderar
+  // `location.search`, eller så måste den här sidan läsa `location.state`/`document.referrer`.
   const [loading, setLoading] = useState(true)
   const [participants, setParticipants] = useState<Participant[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filterStatus, setFilterStatus] = useState<string>(searchParams.get('filter') || 'all')
-  const [view, setView] = useState<'grid' | 'list'>('grid')
-  const [sortField, setSortField] = useState<SortField>('priority')
-  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
+  const [filterStatus, setFilterStatusState] = useState<string>(() => searchParams.get('filter') || 'all')
+  const [view, setViewState] = useState<'grid' | 'list'>(() => (searchParams.get('view') === 'list' ? 'list' : 'grid'))
+  const [sortField, setSortFieldState] = useState<SortField>(() => (searchParams.get('sort') as SortField) || 'priority')
+  const [sortOrder, setSortOrderState] = useState<SortOrder>(() => (searchParams.get('dir') as SortOrder) || 'desc')
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
   const [showBulkActions, setShowBulkActions] = useState(false)
   const [bulkActionType, setBulkActionType] = useState<'message' | 'tag' | 'export' | 'status' | null>(null)
+  const [showInviteDialog, setShowInviteDialog] = useState(false)
+
+  /** Uppdaterar en eller flera URL-parametrar utan att tappa de andra (replace, ingen historik-spam). */
+  const updateSearchParams = (updates: Record<string, string | null>) => {
+    setSearchParams(prev => {
+      const next = new URLSearchParams(prev)
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null || value === '') next.delete(key)
+        else next.set(key, value)
+      }
+      return next
+    }, { replace: true })
+  }
+
+  const setSearchQuery = (value: string) => {
+    setSearchQueryState(value)
+    updateSearchParams({ q: value || null })
+  }
+  const setFilterStatus = (value: string) => {
+    setFilterStatusState(value)
+    updateSearchParams({ filter: value !== 'all' ? value : null })
+  }
+  const setView = (value: 'grid' | 'list') => {
+    setViewState(value)
+    updateSearchParams({ view: value !== 'grid' ? value : null })
+  }
+  const setSortField = (value: SortField) => {
+    setSortFieldState(value)
+    updateSearchParams({ sort: value !== 'priority' ? value : null })
+  }
+  const setSortOrder = (value: SortOrder) => {
+    setSortOrderState(value)
+    updateSearchParams({ dir: value !== 'desc' ? value : null })
+  }
 
   useEffect(() => {
     fetchParticipants()
@@ -149,6 +192,9 @@ export function ParticipantsTab() {
 
     return result
   }, [participants, searchQuery, filterStatus, sortField, sortOrder])
+
+  const allSelected = filteredParticipants.length > 0 && selectedParticipants.length === filteredParticipants.length
+  const someSelected = selectedParticipants.length > 0 && !allSelected
 
   const toggleSelectAll = () => {
     if (selectedParticipants.length === filteredParticipants.length) {
@@ -245,10 +291,7 @@ export function ParticipantsTab() {
           <div className="flex items-center gap-2">
             <select
               value={filterStatus}
-              onChange={e => {
-                setFilterStatus(e.target.value)
-                setSearchParams(e.target.value !== 'all' ? { filter: e.target.value } : {})
-              }}
+              onChange={e => setFilterStatus(e.target.value)}
               className={cn(
                 'px-4 py-2.5 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
@@ -286,6 +329,9 @@ export function ParticipantsTab() {
               </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                aria-label={sortOrder === 'asc'
+                  ? t('consultant.participants.sort.setDescending', 'Sortera fallande')
+                  : t('consultant.participants.sort.setAscending', 'Sortera stigande')}
                 className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
               >
                 {sortOrder === 'asc' ? (
@@ -300,6 +346,8 @@ export function ParticipantsTab() {
             <div className="flex items-center gap-1 border-l border-stone-200 dark:border-stone-700 pl-2">
               <button
                 onClick={() => setView('grid')}
+                aria-label={t('consultant.participants.view.grid', 'Rutnätsvy')}
+                aria-pressed={view === 'grid'}
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'grid'
@@ -311,6 +359,8 @@ export function ParticipantsTab() {
               </button>
               <button
                 onClick={() => setView('list')}
+                aria-label={t('consultant.participants.view.list', 'Listvy')}
+                aria-pressed={view === 'list'}
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'list'
@@ -323,7 +373,7 @@ export function ParticipantsTab() {
             </div>
 
             {/* Add Participant Button */}
-            <Button className="ml-2">
+            <Button className="ml-2" onClick={() => setShowInviteDialog(true)}>
               <UserPlus className="w-4 h-4 mr-2" />
               {t('consultant.participants.invite')}
             </Button>
@@ -403,29 +453,40 @@ export function ParticipantsTab() {
 
       {/* Participant List */}
       {filteredParticipants.length === 0 ? (
-        <Card className="p-12 text-center">
-          <Users className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-            {t('consultant.participants.noResults')}
-          </h3>
-          <p className="text-stone-500 dark:text-stone-600 mb-6">
-            {searchQuery || filterStatus !== 'all'
-              ? t('consultant.participants.tryDifferentFilters')
-              : t('consultant.participants.noParticipantsYet')}
-          </p>
-          {(searchQuery || filterStatus !== 'all') && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSearchQuery('')
-                setFilterStatus('all')
-                setSearchParams({})
+        participants.length === 0 ? (
+          // Inga deltagare alls — helt annan situation än "inga sökträffar" (KA1).
+          <Card className="p-0 overflow-hidden">
+            <EmptyState
+              icon={Users}
+              title={t('consultant.participants.noParticipants', 'Inga deltagare ännu')}
+              description={t(
+                'consultant.participants.noParticipantsDesc',
+                'Du har inte tilldelat några deltagare ännu.'
+              )}
+              action={{
+                label: t('consultant.participants.inviteFirst', 'Bjud in din första deltagare'),
+                onClick: () => setShowInviteDialog(true),
               }}
-            >
-              {t('consultant.participants.clearFilters')}
-            </Button>
-          )}
-        </Card>
+            />
+          </Card>
+        ) : (
+          // Sökning/filter gav noll träffar — annan CTA än ovan.
+          <Card className="p-0 overflow-hidden">
+            <EmptyState
+              icon={Search}
+              title={t('consultant.participants.noResults')}
+              description={t('consultant.participants.tryDifferentFilters')}
+              action={{
+                label: t('consultant.participants.clearFilters'),
+                variant: 'outline',
+                onClick: () => {
+                  setSearchQuery('')
+                  setFilterStatus('all')
+                },
+              }}
+            />
+          </Card>
+        )
       ) : view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filteredParticipants.map(p => {
@@ -444,6 +505,11 @@ export function ParticipantsTab() {
                 {/* Selection Checkbox */}
                 <button
                   onClick={() => toggleSelect(p.participant_id)}
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  aria-label={t('consultant.participants.selectParticipant', {
+                    defaultValue: `Välj ${p.first_name} ${p.last_name}`,
+                  })}
                   className={cn(
                     'absolute top-4 left-4 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all',
                     isSelected
@@ -451,7 +517,7 @@ export function ParticipantsTab() {
                       : 'border-stone-300 dark:border-stone-600 hover:border-amber-400 dark:hover:border-amber-500'
                   )}
                 >
-                  {isSelected && <Check className="w-4 h-4" />}
+                  {isSelected && <Check className="w-4 h-4" aria-hidden="true" />}
                 </button>
 
                 <Link
@@ -543,37 +609,56 @@ export function ParticipantsTab() {
             <table className="w-full">
               <thead>
                 <tr className="bg-stone-50 dark:bg-stone-700 border-b border-stone-200 dark:border-stone-600">
-                  <th className="px-4 py-3 text-left">
+                  <th className="px-4 py-3 text-left" scope="col">
                     <button
                       onClick={toggleSelectAll}
+                      role="checkbox"
+                      aria-checked={allSelected ? true : someSelected ? 'mixed' : false}
+                      aria-label={allSelected
+                        ? t('consultant.participants.deselectAll')
+                        : t('consultant.participants.selectAll')}
                       className={cn(
                         'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
-                        selectedParticipants.length === filteredParticipants.length
+                        allSelected
                           ? 'bg-amber-500 border-amber-500 text-white'
                           : 'border-stone-300 dark:border-stone-600'
                       )}
                     >
-                      {selectedParticipants.length === filteredParticipants.length && (
-                        <Check className="w-3 h-3" />
-                      )}
+                      {allSelected && <Check className="w-3 h-3" aria-hidden="true" />}
                     </button>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th
+                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
+                    scope="col"
+                    aria-sort={sortField === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
+                  >
                     {t('consultant.participants.table.name')}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th
+                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
+                    scope="col"
+                    aria-sort={sortField === 'status' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
+                  >
                     {t('consultant.participants.table.status')}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th
+                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
+                    scope="col"
+                    aria-sort={sortField === 'ats_score' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
+                  >
                     {t('consultant.participants.table.cv')}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider" scope="col">
                     {t('consultant.participants.table.savedJobs')}
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th
+                    className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider"
+                    scope="col"
+                    aria-sort={sortField === 'last_contact' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : undefined}
+                  >
                     {t('consultant.participants.table.lastContact')}
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider" scope="col">
                     {t('consultant.participants.table.actions')}
                   </th>
                 </tr>
@@ -595,6 +680,11 @@ export function ParticipantsTab() {
                       <td className="px-4 py-4">
                         <button
                           onClick={() => toggleSelect(p.participant_id)}
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          aria-label={t('consultant.participants.selectParticipant', {
+                            defaultValue: `Välj ${p.first_name} ${p.last_name}`,
+                          })}
                           className={cn(
                             'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
                             isSelected
@@ -602,7 +692,7 @@ export function ParticipantsTab() {
                               : 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60'
                           )}
                         >
-                          {isSelected && <Check className="w-3 h-3" />}
+                          {isSelected && <Check className="w-3 h-3" aria-hidden="true" />}
                         </button>
                       </td>
                       <td className="px-4 py-4">
@@ -694,6 +784,16 @@ export function ParticipantsTab() {
           onComplete={handleBulkActionComplete}
         />
       )}
+
+      {/* Invite Participant Dialog (KA1) */}
+      <InviteParticipantDialog
+        isOpen={showInviteDialog}
+        onClose={() => setShowInviteDialog(false)}
+        onSuccess={() => {
+          setShowInviteDialog(false)
+          fetchParticipants()
+        }}
+      />
     </div>
   )
 }

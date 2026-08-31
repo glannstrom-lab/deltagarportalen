@@ -111,7 +111,7 @@ export function InsightsPanel({
       case 'engagement_drop':
       case 'goal_at_risk':
       case 'milestone_overdue':
-        return 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+        return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400'
       case 'cv_improvement':
       case 'needs_support':
         return 'bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400'
@@ -157,7 +157,7 @@ export function InsightsPanel({
       <Card className="p-6">
         <div className="flex flex-col items-center text-center py-6" role="alert">
           <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
-            <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+            <AlertTriangle className="w-6 h-6 text-amber-700 dark:text-amber-400" />
           </div>
           <p className="font-medium text-stone-800 dark:text-stone-200">Kunde inte hämta insikterna</p>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-sm">

@@ -9993,10 +9993,9 @@
       "reportTitle": "Report Title",
       "titlePlaceholder": "Consultant Report",
       "dateRange": "Time Period",
-      "lastWeek": "Last week",
-      "lastMonth": "Last month",
-      "lastQuarter": "Last quarter",
-      "lastYear": "Last year",
+      "currentStatusOn": "Current status as of {{date}}",
+      "dateRangeFromView": "This is the period already selected in the view you opened the report from.",
+      "dateRangeSnapshot": "This view has no time period — the report shows current totals, not a period.",
       "language": "Report Language",
       "includeSections": "Include Sections",
       "sections": {

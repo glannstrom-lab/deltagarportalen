@@ -105,7 +105,7 @@ function KPICard({
 
   const iconColors = {
     green: 'text-emerald-600 dark:text-emerald-400',
-    yellow: 'text-amber-600 dark:text-amber-400',
+    yellow: 'text-amber-700 dark:text-amber-400',
     red: 'text-rose-600 dark:text-rose-400',
     neutral: 'text-stone-600 dark:text-stone-400',
   }
@@ -170,7 +170,7 @@ function AttentionAlert({
   const alerts = {
     no_contact: {
       icon: Clock,
-      color: 'text-amber-600 bg-amber-100',
+      color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
       message: t('consultant.alerts.noContact'),
     },
     inactive: {
@@ -185,7 +185,7 @@ function AttentionAlert({
     },
     low_engagement: {
       icon: Activity,
-      color: 'text-amber-600 bg-amber-100',
+      color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
       message: t('consultant.alerts.lowEngagement'),
     },
   }
@@ -737,9 +737,9 @@ export function OverviewTab() {
                     className="flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
                   >
                     <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/40">
-                      {activity.type === 'cv_updated' && <FileText className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
-                      {activity.type === 'job_saved' && <Briefcase className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
-                      {activity.type === 'login' && <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />}
+                      {activity.type === 'cv_updated' && <FileText className="w-4 h-4 text-amber-700 dark:text-amber-400" />}
+                      {activity.type === 'job_saved' && <Briefcase className="w-4 h-4 text-amber-700 dark:text-amber-400" />}
+                      {activity.type === 'login' && <Users className="w-4 h-4 text-amber-700 dark:text-amber-400" />}
                       {activity.type === 'goal_completed' && <Target className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />}
                       {activity.type === 'message' && <MessageSquare className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
                     </div>

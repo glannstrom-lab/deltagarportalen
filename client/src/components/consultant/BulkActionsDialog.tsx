@@ -87,6 +87,10 @@ export function BulkActionsDialog({
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Namnen på de deltagare som INTE gick igenom vid en delvis lyckad batch
+  // (KS5). Skild från `error` eftersom den visar en egen vy som kräver aktiv
+  // stängning — den får aldrig autostängas som en full framgång.
+  const [partialFailure, setPartialFailure] = useState<string[] | null>(null)
 
   // Message state
   const [messageContent, setMessageContent] = useState('')
@@ -107,6 +111,7 @@ export function BulkActionsDialog({
       setLoading(false)
       setSuccess(false)
       setError(null)
+      setPartialFailure(null)
       setMessageContent('')
       setSelectedTemplate(null)
       setSelectedTags([])
@@ -179,6 +184,7 @@ export function BulkActionsDialog({
 
     setLoading(true)
     setError(null)
+    setPartialFailure(null)
 
     try {
       const results = await Promise.allSettled(
@@ -187,12 +193,21 @@ export function BulkActionsDialog({
         )
       )
 
-      const failed = results.filter(r => r.status === 'rejected').length
-      if (failed === selectedParticipants.length) {
+      const failedParticipants = selectedParticipants.filter(
+        (_, i) => results[i].status === 'rejected'
+      )
+
+      if (failedParticipants.length === selectedParticipants.length) {
         throw new Error('Det gick inte att lägga till taggar')
       }
-      if (failed > 0) {
-        setError(`${failed} av ${selectedParticipants.length} kunde inte taggas`)
+
+      if (failedParticipants.length > 0) {
+        // Delvis lyckat (KS5): visa vilka som inte gick igenom och kräv
+        // aktiv stängning i stället för att låtsas att allt gick bra.
+        setPartialFailure(
+          failedParticipants.map(p => `${p.first_name} ${p.last_name}`.trim())
+        )
+        return
       }
 
       setSuccess(true)
@@ -283,6 +298,7 @@ export function BulkActionsDialog({
   const handleUpdateStatus = async () => {
     setLoading(true)
     setError(null)
+    setPartialFailure(null)
 
     try {
       const results = await Promise.allSettled(
@@ -294,12 +310,20 @@ export function BulkActionsDialog({
         )
       )
 
-      const failed = results.filter(r => r.status === 'rejected').length
-      if (failed === selectedParticipants.length) {
+      const failedParticipants = selectedParticipants.filter(
+        (_, i) => results[i].status === 'rejected'
+      )
+
+      if (failedParticipants.length === selectedParticipants.length) {
         throw new Error('Det gick inte att uppdatera status')
       }
-      if (failed > 0) {
-        setError(`${failed} av ${selectedParticipants.length} kunde inte uppdateras`)
+
+      if (failedParticipants.length > 0) {
+        // Delvis lyckat (KS5): samma resonemang som handleApplyTags ovan.
+        setPartialFailure(
+          failedParticipants.map(p => `${p.first_name} ${p.last_name}`.trim())
+        )
+        return
       }
 
       setSuccess(true)
@@ -395,6 +419,38 @@ export function BulkActionsDialog({
               <p className="font-medium text-stone-900 dark:text-stone-100">
                 {t('consultant.bulk.success', 'Åtgärd slutförd!')}
               </p>
+            </div>
+          ) : partialFailure ? (
+            <div role="alert" aria-live="polite" className="py-2">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-12 h-12 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
+                  <AlertCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
+                </div>
+                <div>
+                  <p className="font-medium text-stone-900 dark:text-stone-100">
+                    {partialFailure.length} av {selectedParticipants.length}{' '}
+                    {actionType === 'tag' ? 'kunde inte taggas' : 'kunde inte uppdateras'}
+                  </p>
+                  <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
+                    Resten gick igenom. Du kan försöka igen för de som är kvar.
+                  </p>
+                </div>
+              </div>
+              <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
+                <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  Dessa deltagare gick inte igenom
+                </p>
+                <ul className="flex flex-wrap gap-2">
+                  {partialFailure.map(name => (
+                    <li
+                      key={name}
+                      className="px-2 py-1 bg-white dark:bg-stone-700 rounded-lg text-xs text-stone-700 dark:text-stone-300"
+                    >
+                      {name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -592,7 +648,18 @@ export function BulkActionsDialog({
         </div>
 
         {/* Footer */}
-        {!success && (
+        {partialFailure ? (
+          <div className="flex items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
+            <Button
+              onClick={() => {
+                onComplete()
+                onClose()
+              }}
+            >
+              {t('common.close', 'Stäng')}
+            </Button>
+          </div>
+        ) : !success && (
           <div className="flex items-center justify-end gap-3 p-5 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
             <Button variant="outline" onClick={onClose} disabled={loading}>
               {t('common.cancel', 'Avbryt')}

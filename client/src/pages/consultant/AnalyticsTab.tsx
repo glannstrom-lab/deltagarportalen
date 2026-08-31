@@ -22,6 +22,7 @@ import {
   AlertTriangle,
   Calendar,
   ChevronRight,
+  Plus,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
@@ -32,15 +33,33 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
+import { PlacementDialog } from '@/components/consultant/PlacementDialog'
+import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
 // att testa härifrån, och det var därför `QNaN NaN` kunde nå en skarp PDF.
 import { calculateCohorts, type CohortData } from './cohorts'
 
+import { computePlacementMetric, followupStatus } from './placeringsmatt'
+
+interface PlacementRow {
+  id: string
+  participantId: string
+  participantName: string
+  employerName: string
+  jobTitle: string | null
+  startDate: string | null
+  followup3m: boolean
+  followup6m: boolean
+}
+
 interface AnalyticsData {
   totalParticipants: number
   activeParticipants: number
   completedParticipants: number
+  // AG3/KS1: alla registrerade placeringar (consultant_placements), oavsett
+  // vald datumperiod — det talet KPI-kortet "Placeringar" visar.
+  totalPlacements: number
   averageProgress: number
   cvCompletionRate: number
   jobApplicationRate: number
@@ -97,7 +116,7 @@ function MetricCard({
   const colorClasses = {
     teal: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
+    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400',
     rose: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
     blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
   }
@@ -197,7 +216,9 @@ export function AnalyticsTab() {
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const [showPlacementDialog, setShowPlacementDialog] = useState(false)
   const [cohortData, setCohortData] = useState<CohortData[]>([])
+  const [placementRows, setPlacementRows] = useState<PlacementRow[]>([])
   const [stuckList, setStuckList] = useState<StuckParticipant[]>([])
   const [interventionEffect, setInterventionEffect] = useState<InterventionEffect | null>(null)
   const [trends, setTrends] = useState<TrendData>({
@@ -210,6 +231,7 @@ export function AnalyticsTab() {
     totalParticipants: 0,
     activeParticipants: 0,
     completedParticipants: 0,
+    totalPlacements: 0,
     averageProgress: 0,
     cvCompletionRate: 0,
     jobApplicationRate: 0,
@@ -310,6 +332,28 @@ export function AnalyticsTab() {
       // Calculate cohorts from all participants
       const cohorts = calculateCohorts(participants || [], allPlacementsData || [])
       setCohortData(cohorts)
+
+      // AG3/KS1: lista över registrerade placeringar + uppföljningsstatus.
+      // Namnet slås upp via participant_id — vyn har inget join mot placeringar.
+      const participantNameById = new Map<string, string>(
+        (participants || []).map((p: Record<string, unknown>) => [
+          String(p.participant_id),
+          `${p.first_name ?? ''} ${p.last_name ?? ''}`.trim() || 'Okänd deltagare',
+        ])
+      )
+      const rows: PlacementRow[] = (allPlacementsData || [])
+        .map((pl: Record<string, unknown>) => ({
+          id: String(pl.id),
+          participantId: String(pl.participant_id),
+          participantName: participantNameById.get(String(pl.participant_id)) || 'Okänd deltagare',
+          employerName: String(pl.employer_name ?? ''),
+          jobTitle: (pl.job_title as string) ?? null,
+          startDate: (pl.start_date as string) ?? null,
+          followup3m: Boolean(pl.followup_3m),
+          followup6m: Boolean(pl.followup_6m),
+        }))
+        .sort((a, b) => (b.startDate || '').localeCompare(a.startDate || ''))
+      setPlacementRows(rows)
 
       // Calculate trends comparing current vs previous period
       const trendData = calculateTrends(
@@ -442,6 +486,7 @@ export function AnalyticsTab() {
           totalParticipants: total,
           activeParticipants: active,
           completedParticipants: completed,
+          totalPlacements: (allPlacementsData || []).length,
           averageProgress: avgATS,
           cvCompletionRate: Math.round((withCV / Math.max(total, 1)) * 100),
           jobApplicationRate: Math.round((participants.filter(p => p.saved_jobs_count > 0).length / Math.max(total, 1)) * 100),
@@ -458,6 +503,28 @@ export function AnalyticsTab() {
       notifications.error(t('consultant.analytics.loadError'))
     } finally {
       setLoading(false)
+    }
+  }
+
+  // AG3/KS1: kopplar in updatePlacementFollowup() (fanns, noll anropare).
+  // Optimistisk lokal uppdatering; ett fel återställer INTE — konsulenten
+  // ser felmeddelandet och kan försöka igen, hellre än att tyst tappa klicket.
+  const handleToggleFollowup = async (
+    placementId: string,
+    field: 'followup_3m' | 'followup_6m',
+    value: boolean
+  ) => {
+    try {
+      await consultantService.updatePlacementFollowup(placementId, field, value)
+      setPlacementRows(prev => prev.map(row => {
+        if (row.id !== placementId) return row
+        return field === 'followup_3m'
+          ? { ...row, followup3m: value }
+          : { ...row, followup6m: value }
+      }))
+    } catch (err) {
+      console.error('[AnalyticsTab] kunde inte uppdatera uppföljningen:', err)
+      notifications.error('Uppföljningen kunde inte sparas just nu.')
     }
   }
 
@@ -658,6 +725,10 @@ export function AnalyticsTab() {
     ],
   }
 
+  // AG3/KS1: se computePlacementMetric ovan för varför det här ersätter
+  // completedParticipants-baserad "placeringsgrad".
+  const placementMetric = computePlacementMetric(analytics.totalPlacements, analytics.totalParticipants)
+
   if (loading) {
     return <LoadingState type="dashboard" />
   }
@@ -691,6 +762,10 @@ export function AnalyticsTab() {
           </button>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setShowPlacementDialog(true)}>
+            <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
+            Registrera placering
+          </Button>
           <Button variant="outline" onClick={() => handleExport('excel')}>
             <Download className="w-4 h-4 mr-2" />
             Excel
@@ -730,9 +805,11 @@ export function AnalyticsTab() {
           color="blue"
         />
         <MetricCard
-          title={t('consultant.analytics.metrics.completedWithJob')}
-          value={analytics.completedParticipants}
-          subtitle={t('consultant.analytics.metrics.placementRate', { rate: Math.round((analytics.completedParticipants / Math.max(analytics.totalParticipants, 1)) * 100) })}
+          title="Placeringar"
+          value={placementMetric.hasPlacements ? placementMetric.value! : '—'}
+          subtitle={placementMetric.hasPlacements
+            ? t('consultant.analytics.metrics.placementRate', { rate: placementMetric.rate })
+            : t('consultant.analytics.metrics.noPlacementsYet')}
           icon={Award}
           color="emerald"
         />
@@ -858,7 +935,7 @@ export function AnalyticsTab() {
                 className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-xs font-bold text-amber-600 dark:text-amber-400">
+                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-xs font-bold text-amber-700 dark:text-amber-400">
                     {index + 1}
                   </span>
                   <span className="font-medium text-stone-900 dark:text-stone-100">
@@ -1057,11 +1134,98 @@ export function AnalyticsTab() {
         </div>
       </Card>
 
+      {/* Placeringar & uppföljning (AG3/KS1) */}
+      <Card className="p-5">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+              Placeringar
+            </h3>
+            <p className="text-sm text-stone-500 dark:text-stone-600">
+              Registrerade placeringar och deras uppföljning (3/6 månader)
+            </p>
+          </div>
+          <Award className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+        </div>
+        {placementRows.length === 0 ? (
+          <p className="text-sm text-stone-500 dark:text-stone-400 py-4">
+            Inga placeringar registrerade än. Klicka på &quot;Registrera placering&quot; högst upp för att lägga till den första.
+          </p>
+        ) : (
+          <ul className="space-y-3">
+            {placementRows.map(row => {
+              const status = followupStatus({
+                startDate: row.startDate,
+                followup3m: row.followup3m,
+                followup6m: row.followup6m,
+              })
+              return (
+                <li key={row.id} className="p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
+                  <div className="flex items-start justify-between gap-3 flex-wrap">
+                    <div className="min-w-0">
+                      <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                        {row.participantName} · {row.employerName}
+                      </p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 truncate">
+                        {row.jobTitle ? `${row.jobTitle} · ` : ''}
+                        {row.startDate
+                          ? new Date(row.startDate).toLocaleDateString('sv-SE')
+                          : 'Startdatum saknas'}
+                      </p>
+                    </div>
+                    <span className={cn(
+                      'text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap',
+                      status.tone === 'done' && 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300',
+                      status.tone === 'ok' && 'bg-stone-200 text-stone-600 dark:bg-stone-700 dark:text-stone-300',
+                      status.tone === 'soon' && 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300',
+                      status.tone === 'due' && 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300',
+                      status.tone === 'unknown' && 'bg-stone-200 text-stone-500 dark:bg-stone-700 dark:text-stone-400',
+                    )}>
+                      {status.text}
+                    </span>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-4 mt-3">
+                    <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
+                      <input
+                        type="checkbox"
+                        checked={row.followup3m}
+                        onChange={e => handleToggleFollowup(row.id, 'followup_3m', e.target.checked)}
+                        className="rounded border-stone-300"
+                      />
+                      3-månadersuppföljning gjord
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
+                      <input
+                        type="checkbox"
+                        checked={row.followup6m}
+                        onChange={e => handleToggleFollowup(row.id, 'followup_6m', e.target.checked)}
+                        className="rounded border-stone-300"
+                      />
+                      6-månadersuppföljning gjord
+                    </label>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+        )}
+      </Card>
+
       {/* PDF Report Dialog */}
       <ReportGeneratorDialog
         isOpen={showReportDialog}
         onClose={() => setShowReportDialog(false)}
         analyticsData={reportData}
+      />
+
+      {/* AG3/KS1: registrera placering — enda skrivvägen till consultant_placements */}
+      <PlacementDialog
+        isOpen={showPlacementDialog}
+        onClose={() => setShowPlacementDialog(false)}
+        onSuccess={() => {
+          setShowPlacementDialog(false)
+          fetchAnalytics()
+        }}
       />
     </div>
   )

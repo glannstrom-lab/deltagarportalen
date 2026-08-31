@@ -7,6 +7,7 @@ import type { Tab } from '@/components/layout/PageTabs'
 import {
   LayoutDashboard,
   Users,
+  Building2,
   BarChart3,
   MessageSquare,
   Wrench,
@@ -28,6 +29,17 @@ export const consultantTabDefs = [
     descriptionKey: 'consultant.tabs.participantsDesc',
     path: '/consultant/participants',
     icon: Users
+  },
+  {
+    id: 'placeringar',
+    // AG1 (2026-08-31): egen labelKey lagd till, men fallback-strängen
+    // nedan i `consultantTabs` (Swedish, oöversatt) är den som faktiskt
+    // renderas — se `consultant.tabs.placeringar` bara om i18n-uppslaget
+    // används på nytt någonstans.
+    labelKey: 'consultant.tabs.placeringar',
+    descriptionKey: 'consultant.tabs.placeringarDesc',
+    path: '/consultant/platser',
+    icon: Building2
   },
   {
     id: 'analytics',
@@ -63,6 +75,7 @@ export const consultantTabDefs = [
 export const consultantTabs: Tab[] = [
   { id: 'overview', label: 'Översikt', path: '/consultant', icon: LayoutDashboard },
   { id: 'participants', label: 'Deltagare', path: '/consultant/participants', icon: Users },
+  { id: 'placeringar', label: 'Platser', path: '/consultant/platser', icon: Building2 },
   { id: 'analytics', label: 'Rapporter', path: '/consultant/analytics', icon: BarChart3 },
   { id: 'communication', label: 'Kommunikation', path: '/consultant/communication', icon: MessageSquare },
   { id: 'resources', label: 'Resurser', path: '/consultant/resources', icon: Wrench },

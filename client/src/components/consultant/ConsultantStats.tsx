@@ -40,7 +40,7 @@ export const ConsultantStats: React.FC<ConsultantStatsProps> = ({ stats }) => {
       label: t('consultant.stats.needsAttention'),
       value: stats.needsAttention,
       icon: AlertTriangle,
-      color: 'text-amber-600 dark:text-amber-400',
+      color: 'text-amber-700 dark:text-amber-400',
       bgColor: 'bg-amber-100 dark:bg-amber-900/30',
     },
     {

@@ -10291,10 +10291,9 @@
       "reportTitle": "Rapporttitel",
       "titlePlaceholder": "Konsultrapport",
       "dateRange": "Tidsperiod",
-      "lastWeek": "Senaste veckan",
-      "lastMonth": "Senaste månaden",
-      "lastQuarter": "Senaste kvartalet",
-      "lastYear": "Senaste året",
+      "currentStatusOn": "Aktuell status per {{date}}",
+      "dateRangeFromView": "Perioden är den som redan är vald i vyn du öppnade rapporten från.",
+      "dateRangeSnapshot": "Den här vyn har ingen tidsavgränsning — rapporten visar aktuella totalsummor, inte en period.",
       "language": "Rapportspråk",
       "includeSections": "Inkludera sektioner",
       "sections": {

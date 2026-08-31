@@ -74,10 +74,10 @@ deltagarportal/
 │       └── lib/             # supabase, sentry, validators, ...
 ├── api/                     # Repo-root Vercel-katalog
 │   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
-├── supabase/                # Migrations (133 filer) + 24 edge functions
+├── supabase/                # Migrations (142 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester (10 spec + 10 verktygsskript; 82 ad-hoc i e2e/archive/)
+├── e2e/                     # Playwright-tester (10 spec + 23 verktygsskript; 82 ad-hoc i e2e/archive/)
 ├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
 ├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
 ├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
@@ -242,7 +242,9 @@ När något inte fungerar, följ denna ordning:
 
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
-- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **18 funktioner** samlade (verifierat 2026-08-04; siffran 24 var fel sedan C12). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** **Det finns ingen streaming-väg** — `client/api/ai-stream.js` och `useAIStream` är borta sedan streaming-lagret arkiverades; skriv inte kod som antar dem.
+- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **20 funktioner** samlade (räknat i `PROMPTS`-objektet 2026-08-31; talen 24, 18 och 16 har alla stått här och i tre andra dokument, alla föråldrade — räkna om i stället för att tro på siffran). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.**
+
+  > **Rättat 2026-08-31: det finns en streaming-väg, och den används.** Den här raden sa tidigare rakt ut "det finns ingen streaming-väg … skriv inte kod som antar dem", vilket kunde få nästa läsare att bygga ett duplicerat lager. Sant är att den **gamla** vägen är borta: `client/api/ai-stream.js` och `useAIStream`-hooken finns inte. Men `ai.js:1999` har en egen SSE-gren — `if (stream && fn === 'ai-team-chat')` sätter `Content-Type: text/event-stream` och strömmar OpenRouters svar vidare — och klientsidan går genom **`callAIStream()`** i `services/aiApi.ts:319`, som `components/ai-team/AgentChat.tsx` anropar i drift. Streaming finns alltså för **en** funktion, `ai-team-chat`, genom `/api/ai` och ingen annanstans. Gå aldrig förbi `callAI`/`callAIStream` med ett eget `fetch` — då körs varken PII-saneringen eller art. 9-grinden, vilket `AgentChat.pii.test.tsx` vaktar.
 - **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
 
 > **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
@@ -290,12 +292,13 @@ cd client
 npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (406)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (362)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:vercel        # vercel.json-konfigurationen
 npm run lint:links         # döda länkmål i levande kod (C27)
-npm run test:run           # 2 384 tester i 146 filer (~45 s, mätt 2026-08-22)
+npm run test:run           # ~2 550 tester i ~165 filer (~51 s, mätt 2026-08-31 — talet
+                           # driver snabbt, mät om i stället för att tro på det här)
 npm run build
 ```
 
@@ -303,7 +306,7 @@ npm run build
 > och `lint:links`, trots att `npm run verify` kör båda. `lint:links` är inte
 > dekorativ — den fällde ett riktigt fynd i C27. Räkna inte grindar; kör `verify`.
 
-De tre **frysta taken** (122 warnings, 406 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (122 warnings, 362 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 
@@ -462,7 +465,10 @@ const result = await callAI('personligt-brev', { ...params })
 // Internt: POST /api/ai med Authorization: Bearer <supabase-token>
 ```
 
-Streaming via `useAIStream`-hooken (anropar `/api/ai-stream`).
+Strömmande svar går genom `callAIStream()` i samma fil — inte genom någon hook, och inte mot
+någon egen endpoint. Den anropar `/api/ai` med `stream: true`, vilket bara `ai-team-chat`
+svarar på. *(Rättat 2026-08-31: raden sa `useAIStream` mot `/api/ai-stream`; varken hooken
+eller filen finns.)*
 
 ### Översättning — texten bor på TRE ställen
 

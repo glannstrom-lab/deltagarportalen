@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next'
 // Nu får varje tab sin egen chunk, laddas just-in-time vid navigering.
 const OverviewTab = lazy(() => import('./consultant/OverviewTab').then(m => ({ default: m.OverviewTab })))
 const ParticipantsTab = lazy(() => import('./consultant/ParticipantsTab').then(m => ({ default: m.ParticipantsTab })))
+const PlatserTab = lazy(() => import('./consultant/PlatserTab').then(m => ({ default: m.PlatserTab })))
 const AnalyticsTab = lazy(() => import('./consultant/AnalyticsTab').then(m => ({ default: m.AnalyticsTab })))
 const CommunicationTab = lazy(() => import('./consultant/CommunicationTab').then(m => ({ default: m.CommunicationTab })))
 const ResourcesTab = lazy(() => import('./consultant/ResourcesTab').then(m => ({ default: m.ResourcesTab })))
@@ -38,6 +39,7 @@ export default function Consultant() {
             <Route index element={<OverviewTab />} />
             <Route path="participants" element={<ParticipantsTab />} />
             <Route path="participants/:participantId" element={<ParticipantDetailPage />} />
+            <Route path="platser" element={<PlatserTab />} />
             <Route path="analytics" element={<AnalyticsTab />} />
             <Route path="communication" element={<CommunicationTab />} />
             <Route path="resources" element={<ResourcesTab />} />

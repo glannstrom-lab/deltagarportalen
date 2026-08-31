@@ -32,6 +32,21 @@ interface ReportGeneratorDialogProps {
   onClose: () => void
   analyticsData: ReportData
   consultantName?: string
+  /**
+   * Etiketten för den period `analyticsData` faktiskt representerar.
+   *
+   * KS6: dialogen hade tidigare en egen "Tidsperiod"-väljare (vecka/månad/
+   * kvartal/år) som bara ändrade en TEXT i PDF-huvudet — den siffersättande
+   * `analyticsData` kommer redan färdigberäknad från föräldern och reagerade
+   * inte på valet. En konsulent kunde välja "Senaste året" och få en PDF som
+   * SÄGER "Senaste året" men VISAR förra månadens siffror.
+   *
+   * Dialogen väljer därför ingen period längre — den VISAR den period
+   * anropande vy redan har valt. Utelämnas propen (t.ex. från Översikt, som
+   * inte har någon periodavgränsning alls) visas ett ärligt
+   * ögonblicksvärde-meddelande i stället för en påhittad period.
+   */
+  periodLabel?: string
 }
 
 type ReportSection = 'overview' | 'cohort' | 'participants'
@@ -41,6 +56,7 @@ export function ReportGeneratorDialog({
   onClose,
   analyticsData,
   consultantName = 'Konsulent',
+  periodLabel,
 }: ReportGeneratorDialogProps) {
   const { t, i18n } = useTranslation()
   const [step, setStep] = useState<'options' | 'preview'>('options')
@@ -49,13 +65,21 @@ export function ReportGeneratorDialog({
 
   // Report options
   const [reportTitle, setReportTitle] = useState('')
-  const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [selectedSections, setSelectedSections] = useState<Set<ReportSection>>(
     new Set(['overview', 'cohort'])
   )
   const [language, setLanguage] = useState<'sv' | 'en'>(
     i18n.language === 'en' ? 'en' : 'sv'
   )
+
+  // Perioden är inte ett val i dialogen (se periodLabel-kommentaren ovan).
+  // Saknas den (Översikt har ingen periodavgränsning) visar vi ett
+  // ögonblicksvärde med dagens datum i stället för att gissa en period.
+  const effectivePeriodLabel =
+    periodLabel ||
+    t('consultant.report.currentStatusOn', 'Aktuell status per {{date}}', {
+      date: new Date().toLocaleDateString('sv-SE'),
+    })
 
   // Reset state when dialog opens
   useEffect(() => {
@@ -81,29 +105,21 @@ export function ReportGeneratorDialog({
     setSelectedSections(newSections)
   }
 
-  const getDateRangeLabel = (range: string): string => {
-    const labels: Record<string, string> = {
-      week: t('consultant.report.lastWeek', 'Senaste veckan'),
-      month: t('consultant.report.lastMonth', 'Senaste månaden'),
-      quarter: t('consultant.report.lastQuarter', 'Senaste kvartalet'),
-      year: t('consultant.report.lastYear', 'Senaste året'),
-    }
-    return labels[range] || range
-  }
-
   const handleGeneratePreview = async () => {
     setGenerating(true)
     try {
       const options: ReportOptions = {
         title: reportTitle || undefined,
         consultantName,
-        dateRange: getDateRangeLabel(dateRange),
+        dateRange: effectivePeriodLabel,
         includeParticipantDetails: selectedSections.has('participants'),
         includeCohortAnalysis: selectedSections.has('cohort'),
         language,
       }
 
-      const dataUrl = generateReportDataUrl(analyticsData, options)
+      // KS6: saknades `await` — previewUrl fick en Promise i stället för en
+      // data-URL och förhandsgranskningen kunde aldrig visa något (TS2345).
+      const dataUrl = await generateReportDataUrl(analyticsData, options)
       setPreviewUrl(dataUrl)
       setStep('preview')
     } catch (error) {
@@ -117,7 +133,7 @@ export function ReportGeneratorDialog({
     const options: ReportOptions = {
       title: reportTitle || undefined,
       consultantName,
-      dateRange: getDateRangeLabel(dateRange),
+      dateRange: effectivePeriodLabel,
       includeParticipantDetails: selectedSections.has('participants'),
       includeCohortAnalysis: selectedSections.has('cohort'),
       language,
@@ -227,27 +243,32 @@ export function ReportGeneratorDialog({
                 />
               </div>
 
-              {/* Date Range */}
+              {/* Date Range — visas, väljs inte här. Se periodLabel-kommentaren
+                  i props-typen: perioden bestäms av vyn som öppnade dialogen. */}
               <div>
                 <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                   {t('consultant.report.dateRange', 'Tidsperiod')}
                 </label>
-                <select
-                  value={dateRange}
-                  onChange={e => setDateRange(e.target.value as typeof dateRange)}
+                <div
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent',
-                    'focus:border-[var(--c-solid)] focus:outline-none',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 >
-                  <option value="week">{t('consultant.report.lastWeek', 'Senaste veckan')}</option>
-                  <option value="month">{t('consultant.report.lastMonth', 'Senaste månaden')}</option>
-                  <option value="quarter">{t('consultant.report.lastQuarter', 'Senaste kvartalet')}</option>
-                  <option value="year">{t('consultant.report.lastYear', 'Senaste året')}</option>
-                </select>
+                  {effectivePeriodLabel}
+                </div>
+                <p className="text-xs text-stone-500 dark:text-stone-600 mt-1.5">
+                  {periodLabel
+                    ? t(
+                        'consultant.report.dateRangeFromView',
+                        'Perioden är den som redan är vald i vyn du öppnade rapporten från.'
+                      )
+                    : t(
+                        'consultant.report.dateRangeSnapshot',
+                        'Den här vyn har ingen tidsavgränsning — rapporten visar aktuella totalsummor, inte en period.'
+                      )}
+                </p>
               </div>
 
               {/* Language */}

@@ -52,7 +52,9 @@ git clone https://github.com/glannstrom-lab/deltagarportalen.git
 cd deltagarportalen/client
 npm install
 cp .env.example .env  # fyll i Supabase URL + anon key
-npm run dev           # http://localhost:5173 (port faller tillbaka 3000/3001/3002)
+npm run dev           # http://localhost:3000 — porten är satt explicit i vite.config.ts,
+                      # det finns ingen 5173-fallback (playwright.config.ts defaultar dock
+                      # till 5173, vilket är en känd fälla). Rättat 2026-08-31.
 ```
 
 `.env`:
@@ -136,8 +138,8 @@ npx supabase secrets set AI_MODEL=openai/gpt-oss-120b  # låst modell, se docs/A
 deltagarportalen/
 ├── client/                       React frontend (aktiv)
 │   ├── api/                      Vercel serverless functions
-│   │   ├── ai.js                 18 AI-funktioner (cv, cover-letter, etc.)
-│   │   ├── ai-stream.js          Streaming SSE-variant
+│   │   ├── ai.js                 20 AI-funktioner (räknat 2026-08-31). Har en egen
+│   │   │                         SSE-gren för ai-team-chat; ai-stream.js finns inte
 │   │   └── ...
 │   └── src/
 │       ├── components/           React-komponenter (organiserade per feature)
@@ -223,11 +225,21 @@ Rollkontroll via `PrivateRoute` + Supabase RLS på alla 130 publika tabeller.
 
 ## Bidra
 
-1. Skapa branch från `main`
-2. Kör `npx tsc --noEmit && npm run test:run` lokalt
-3. Skapa PR — CI körs automatiskt (lint, typecheck, vitest, build, lighthouse,
-   security scan, e2e smoke)
-4. Coverage-rapport visas i PR-summary
+> **Rättat 2026-08-31.** Det här avsnittet beskrev ett PR-flöde med feature-grenar som projektet
+> inte använder — och som motsäger den enda gällande släppproceduren i `CLAUDE.md`. Följ den, inte
+> det här: **allt går direkt på `main`, och en push till `main` ÄR deployen.**
+
+1. Kör `cd client && npm run verify` lokalt — hela grinduppsättningen.
+   Pre-push-hooken kör bara fem av dem och inga tester alls, så den är inget skyddsnät.
+   (`npx tsc --noEmit` utan `-p` är dessutom en no-op i det här projektet — använd
+   `npm run typecheck:critical`.)
+2. Commit direkt på `main`, med vad *och varför*.
+3. `git push origin main` — det triggar `deploy.yml`: bygge, prod-deploy, edge functions, smoke-test.
+4. **Verifiera utfallet.** En push är inte klar förrän deployen är grön.
+5. Ändringar i `client/vercel.json`, `.github/workflows/`, RLS-policyer eller migrationer mot prod
+   kräver Mikaels ja innan push.
+
+Fullständig procedur med kommandon: `CLAUDE.md § Släpp`.
 
 ---
 
