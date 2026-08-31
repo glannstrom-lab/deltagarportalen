@@ -703,24 +703,25 @@ describe('consultantService — participant-relation skriver mot consultant_part
     })
   })
 
-  // ⚠️ RLS-LUCKA, ÖPPEN (rapporterad 2026-08-31, inte byggd runt): `profiles`
-  // saknar idag en UPDATE-policy som släpper in en konsulent som ändrar en
-  // TILLDELAD deltagares status — verifierat med
-  //   npx supabase db query --linked "select policyname, cmd, qual, with_check
-  //     from pg_policies where tablename='profiles' order by cmd;"
-  // (bara två träffar: ägaren själv, och admin). Det här testet dokumenterar
-  // det ÖNSKADE kontraktet — anropet ska lyckas för en konsulent mot sin
-  // egen deltagare — mot en mock som simulerar exakt den RLS-blockerade
-  // 0-rader-responsen ovan. Det är därför markerat `it.fails`: det går grönt
-  // (som förväntat-fail) så länge policyn saknas, och blir rött (dvs.
-  // "lyckas trots att det inte skulle") den dag någon lägger till policyn —
-  // ta bort `.fails` då, inte förr.
-  it.fails('KS10 (RLS-lucka öppen — kräver ny policy på profiles, ej byggd här): en konsulent ska kunna sätta status på sin tilldelade deltagare', async () => {
+  // KS10 — RLS-luckan är STÄNGD sedan 2026-08-31. `profiles` har nu policyn
+  // "Konsulent kan ändra status på sin tilldelade deltagare"
+  // (20260831150000_ks10_consultant_status_only_update.sql, körd mot prod),
+  // som kräver aktiv relation i `consultant_participants` och via en
+  // SECURITY DEFINER-kontroll att INGET annat fält än `status` ändrats.
+  //
+  // Verifierat rollat mot prod med ett riktigt CONSULTANT-konto — inte ett
+  // adminkonto, vilket är hela poängen:
+  //   status på egen deltagare      → lyckas
+  //   role = 'SUPERADMIN'           → 42501, nekas
+  //   status på främmande deltagare → 0 rader, nekas
+  //
+  // ⚠️ Det första försöket att verifiera detta gjordes med ett SUPERADMIN-konto
+  // och såg då ut som en rolleskaleringslucka — men det var policyn "Admins can
+  // update profiles" som matchade, helt korrekt. Pröva aldrig en
+  // behörighetspolicy med ett konto som redan har behörigheten.
+  it('KS10: en konsulent kan sätta status på sin tilldelade deltagare', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({
-      data: null,
-      error: { code: 'PGRST116', message: 'JSON object requested, multiple (or no) rows returned' },
-    })
+    mockFromBuilder.single.mockResolvedValue({ data: { id: 'p1' }, error: null })
     await expect(
       consultantService.updateParticipantStatus('p1', 'ON_HOLD')
     ).resolves.toBeUndefined()

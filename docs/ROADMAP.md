@@ -143,10 +143,21 @@ arbetsgivare, men får aldrig visas som ett förväntat utfall eller räknas fra
 Infört i `docs/anstallningsstod-underlag.md` med källan utskriven — den är Mikael, inte
 Arbetsförmedlingen.
 
-**Fortfarande obesvarat:** om `attendance_pct` (närvaro i procent) är något som faktiskt ska
-registreras, eller om det är avvikelsen som räknas — att någon inte kom, och varför. Kolumnen
-ligger kvar orörd tills det är avgjort. Och vad som behöver stå om en **handledare** för att en
-konsulent ska kunna bedöma om kapaciteten räcker.
+**5. Avvikelsen är det viktiga, inte närvaron.** Mikaels svar 2026-08-31 på den sista öppna frågan:
+*"avvikelsen är det viktiga"*. Det avgör uppföljningsmodellen — och det gör roadmapposten **RM2**
+konkret i stället för principiell.
+
+Konsekvensen för `consultant_work_placement_followups`: `attendance_pct` är fel mätvärde. Det som ska
+registreras är **avvikelsen** — att någon inte kom, kom sent, gick tidigt eller avbröt, med datum,
+orsak och **om frånvaron bedöms giltig eller ogiltig**. Den sista skillnaden är den som gör
+registreringen användbar i båda marknaderna: för en Rusta och matcha-leverantör är det underlaget till
+avvikelserapporten (vite **50 000 kr per tillfälle** vid systematiska brister, FFU §6.12.2), och för en
+kommunal arbetsmarknadsenhet är det underlaget en biståndshandläggare behöver för att bedöma
+ekonomiskt bistånd (SoL 4 kap. 4 §).
+
+**Kolumnen `attendance_pct` är fortfarande orörd i schemat** — den ska bytas mot en avvikelsemodell,
+inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
+
 
 ### Etapp 0 — det som är värt att bygga även om företagsspåret dröjer
 
@@ -314,7 +325,7 @@ i kandidatsökningen.
   hela filen från CRLF till LF — gjordes om med ett CRLF-bevarande skript som kontrollerar att
   mutationen faktiskt applicerades. 60/60 gröna, `typecheck:critical` ren.
 
-- [~] **KS10** 🟡 **Koden klar 2026-08-31, policyn väntar på körning.** Skrivningen går nu till **`profiles.status`**, där statusen faktiskt bor, med `.select().single()` så en blockerad uppdatering **kastar** i stället för att tyst "lyckas" med noll rader. Testet som asserterade den trasiga formen är omskrivet. *(Kvarstår:)* `profiles` saknar en policy som låter en konsulent ändra sin deltagares status — migrationen `20260831150000_ks10_consultant_status_only_update.sql` är skriven men **inte körd**. **Kolumnrättigheter visade sig omöjliga:** `authenticated` är samma roll för deltagare, konsulent och admin, så ett `GRANT UPDATE (status)` hade brutit både självredigering och adminvägen. Lösningen är en `WITH CHECK` som jämför hela raden före och efter med jsonb minus `status` och `updated_at` — vilket gör **framtida kolumner säkra som standard**. `updated_at` måste undantas eftersom en trigger sätter den innan kontrollen körs. Ett `it.fails`-test dokumenterar kontraktet och börjar falla när policyn landar · *(Var:)* **Massåtgärden "ändra status" skriver till en kolumn som inte finns.** Föll ur KS9:s
+- [x] **KS10** ✅ **Klar 2026-08-31 — policy körd och verifierad mot prod.** Skrivningen går till **`profiles.status`**, med `.select().single()` så en blockerad uppdatering **kastar** i stället för att tyst "lyckas" med noll rader. Policyn `20260831150000_ks10_consultant_status_only_update.sql` är körd. **Kolumnrättigheter visade sig omöjliga:** `authenticated` är samma roll för deltagare, konsulent och admin, så ett `GRANT UPDATE (status)` hade brutit både självredigering och adminvägen. Lösningen är en `SECURITY DEFINER`-kontroll som jämför hela raden före och efter med **jsonb minus `status` och `updated_at`** — vilket gör **framtida kolumner säkra som standard**: en ny kolumn måste vara oförändrad, inte uttryckligen listas. `updated_at` måste undantas eftersom en trigger sätter den innan `WITH CHECK` körs. **Verifierat rollat med ett riktigt CONSULTANT-konto:** status på egen deltagare → lyckas; `role = SUPERADMIN` → `42501`; status på främmande deltagare → 0 rader. `it.fails`-testet är omskrivet till ett vanligt test. *(Var:)* **Massåtgärden "ändra status" skriver till en kolumn som inte finns.**
   genomgång och verifierades separat mot prod. `consultantService.updateParticipantStatus`
   (`:630-644`) gör `.from('consultant_participants').update({ status })` — men den tabellen har
   **ingen `status`-kolumn**. Mätt mot `information_schema`: kolumnerna är `id`, `consultant_id`,
@@ -490,6 +501,28 @@ i kandidatsökningen.
   `GoalCreationDialog` och `MeetingSchedulerDialog` har båda en `preselectedParticipant`-prop byggd
   för detta; `ParticipantDetailPage.tsx` importerar ingen av dem. Hon måste byta flik, öppna en
   generisk dialog och söka fram samma person hon just tittade på · ~2 h *(delvis samma arbete som KA1)*
+
+### Ett falsklarm värt att minnas — pröva aldrig en behörighetspolicy med ett adminkonto
+
+Efter att `profiles`-policyn körts mot prod gjorde jag ett prov: kunde en konsulent sätta
+`role = 'SUPERADMIN'` på sin deltagare? Svaret blev **ja**, och jag tog omedelbart bort policyn ur
+produktionsdatabasen.
+
+**Det var fel.** Kontot jag testade med var självt `SUPERADMIN`, så policyn *"Admins can update
+profiles with restrictions"* matchade — helt korrekt beteende, som jag misstog för en läcka. Efter
+omprövning med ett riktigt `CONSULTANT`-konto står det klart att policyn gör precis det den ska:
+status går igenom, rolländring nekas med `42501`, främmande deltagare ger 0 rader. Policyn är
+återinförd och verifierad.
+
+**Tre saker att ta med sig:**
+1. **Ett konto som redan har behörigheten kan inte pröva om någon annan får den.** Välj testkonto
+   efter den roll policyn gäller, och kontrollera rollen först — `select role from profiles where id = …`.
+2. **En `UPDATE` utan `RETURNING` returnerar aldrig rader.** Tom radmängd är därför inget bevis för
+   att något blockerades. Mitt första prov mätte ingenting alls. Samma insikt som journalytan bygger
+   på: en RLS-blockerad UPDATE ger `{data: [], error: null}` — inget fel.
+3. **Supabase läser `request.jwt.claims` (plural, JSON-objekt), inte `request.jwt.claim.sub`.**
+   Med fel variabel blir `auth.uid()` NULL och provet blir meningslöst. Verifiera alltid först:
+   `select current_user, auth.uid();` inne i samma transaktion.
 
 ### Prövat och avfärdat
 
@@ -2255,7 +2288,7 @@ som står här är **nytt eller nyare än de raderna**.
 - [ ] **SA2** **Sanningsregeln finns bara i den svenska AI-grenen.** `adaptation-recommendations` och `adaptation-conversation` är de enda två promptarna i `client/api/ai.js` med en engelsk variant. Den svenska bär hela spärren ("Hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal eller åldersgränser… personen fattar beslut om sin försörjning utifrån det du skriver"). Den engelska säger bara "Give concrete, warm, practical advice in English" (`ai.js:858`, `:871`). Den som läser portalen på engelska är ofta utlandsfödd — alltså precis den som minst kan bedöma om ett bidragsbelopp är påhittat · ~15 min
 - [ ] **SA4** **12 av 20 promptar i `ai.js` saknar sanningsregel.** Mätt genom att balansera klamrar över `PROMPTS`-objektet: 8 har den, 12 inte — bland dem `cv-writing`, `kompetensgap`, `chatbot`, `ai-team-chat` och `vecko-reflektion`. Regeln har införts prompt för prompt när ett fynd tvingat fram den. Ett fjärde tillfälle att införa den styckvis är ett skäl att göra den till en delad konstant i stället · ~2 h
 - [x] **KV3 + KA4** ✅ **Klara 2026-08-31.** `logContact()` har fått sin första anropare efter att ha legat oanvänd — som en **femte massåtgärd, "logga kontakt"**, som skriver en journalpost och sätter `last_contact_at` för alla valda. Efter en workshop med åtta deltagare räcker en åtgärd i stället för åtta. Följer KS5-mönstret: namnger vilka som föll och stänger inte sig själv vid delvis utfall. *(Kvarstår:)* knappen som utlöser den behöver kopplas i `ParticipantsTab` · *(Var:)* **`logContact()` byggdes och kopplades aldrig in.** Mätt: enda anroparen av `consultantService.logContact` (`:593`) är dess egen testfil. Alla sex ställen som frågar "har vi hört av oss?" läser `last_contact_at`, som därför är `null` för samtliga deltagare — "Hör av dig" (`OverviewTab.tsx:377`), filtret (`ParticipantsTab.tsx:121`), statusen (`ParticipantDetailPage.tsx:534`) och "Riskerar att fastna" (`AnalyticsTab.tsx:384`). En konsulent med 30 deltagare ser hela listan röd, varje dag, vilket gör triagen värdelös. Skrivvägen finns — ingen knapp ringer den · ~1–2 h
-- [~] **KV4** 🟡 **Migration skriven 2026-08-31, inte körd.** Vydefinitionen pekar om `notes_count`/`last_note_date` från `consultant_notes` (noll skrivare) till `consultant_journal` (alla nio skrivvägar). **Bonus:** eftersom vyn är `security_invoker` och journalens RLS filtrerar på konsulent rättas samtidigt en obemärkt bugg — räknaren räknade *alla* konsulenters anteckningar om en deltagare, inte den frågande konsulentens. `supabase/migrations/20260831141000_kv4_notes_count_consultant_journal.sql` · *(Var:)* **Anteckningsräknaren räknar en tabell ingen skriver till.** Vyn räknar `consultant_notes` (`20260412130000_fix_invitation_acceptance.sql:60-61`); alla nio skrivvägar i klienten går till `consultant_journal`. Mätt: **noll `.from('consultant_notes')` i hela kodbasen.** `notes_count` renderas på deltagarkortet (`ParticipantsTab.tsx:518`) och visar därför 0 hur mycket konsulenten än dokumenterar — vilket kan läsas som att ingen dokumentation gjorts · vyändring + migration · ~30 min
+- [x] **KV4** ✅ **Klar 2026-08-31 — migration körd mot prod.** Vydefinitionen räknar nu `notes_count`/`last_note_date` från `consultant_journal` (dit alla nio skrivvägar går) i stället för `consultant_notes` (noll skrivare). **Bonus:** eftersom vyn är `security_invoker` och journalens RLS filtrerar på konsulent rättas samtidigt en obemärkt bugg — räknaren räknade *alla* konsulenters anteckningar om en deltagare, inte den frågande konsulentens. *(Var:)* **Anteckningsräknaren räknar en tabell ingen skriver till.**
 - [ ] **KV5** **"CV-kvalitet" mäter två olika saker under samma ord.** `OverviewTab.tsx:606` visar `stats.averageProgress` (snittet av `ats_score`, där `null` räknas som 0); `AnalyticsTab.tsx:786` visar `analytics.cvCompletionRate` (andelen med `has_cv`). Båda hämtar strängen `'CV-kvalitet'` ur `sv.json`. En deltagare med komplett CV men saknad ATS-poäng ger nära 0 % på en flik och nära 100 % på nästa, i samma session · ~1 h
 - [x] **KV1** ✅ **Klar 2026-08-31 — åtgärdad tillsammans med KK1**, eftersom det visade sig vara samma trasiga tillståndshantering sedd från två håll. Se KK1 i genomgången 2026-08-31 för vad som gjordes och hur det mutationstestades. *(Var:)* **Fel deltagares data kan stå kvar efter en misslyckad hämtning.** `ParticipantDetailPage.tsx:302` sätter `participant` bara inuti `if (participantData)`, utan `else`, och `useEffect` nollställer ingenting före nästa hämtning. Failar frågan för deltagare B fortsätter sidan visa A:s namn, mål och anteckningar under B:s URL, utan felmarkering · ~20 min
 - [ ] **KV2** **`InsightsPanel` frågar efter en kolumn vyn inte har.** `consultantInsights.ts:157` gör `.select('*, participant:consultant_dashboard_participants!inner(name, user_id)')`. Vyn har `first_name`/`last_name`, **inte** `name` (kontrollerat mot `schema-snapshot.json`). `if (goalsError) throw goalsError` fäller hela panelen, inklusive de insikter som redan räknats fram. Panelen monteras i `AnalyticsTab.tsx:742`. **Omätt mot prod** — kör frågan med samma embed och läs felkoden innan fixen väljs · ~1–2 h
