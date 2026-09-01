@@ -104,6 +104,21 @@ export function CoverLetterMyLetters() {
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const menuButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
+  /**
+   * Timern som nollställer "Kopierat!"-markeringen. Den låg tidigare som en naken
+   * `window.setTimeout` utan uppstädning: lämnar man sidan inom två sekunder efter en
+   * kopiering anropas `setCopiedId` på en avmonterad komponent. I testsviten syns det som
+   * `ReferenceError: window is not defined` EFTER att miljön rivits — ett fel som fäller
+   * hela körningen men pekar på en annan fil än den som orsakat det, och som bara dyker
+   * upp ibland eftersom det är en kapplöpning mot rivningen.
+   */
+  const kopieratTimer = useRef<number | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (kopieratTimer.current !== null) window.clearTimeout(kopieratTimer.current)
+    }
+  }, [])
 
   // Load profile data if not already loaded
   useEffect(() => {
@@ -289,7 +304,11 @@ export function CoverLetterMyLetters() {
       await navigator.clipboard.writeText(letter.content)
       setCopiedId(letter.id)
       showToast.success(t('coverLetter.myLetters.copied', 'Texten är kopierad. Klistra in den där du vill fortsätta.'))
-      window.setTimeout(() => setCopiedId(null), 2000)
+      if (kopieratTimer.current !== null) window.clearTimeout(kopieratTimer.current)
+      kopieratTimer.current = window.setTimeout(() => {
+        kopieratTimer.current = null
+        setCopiedId(null)
+      }, 2000)
     } catch (err) {
       console.error('Failed to copy letter text:', err)
       showToast.error(t('coverLetter.myLetters.copyFailed', 'Vi kunde inte kopiera texten. Markera den i brevet och kopiera manuellt.'))

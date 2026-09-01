@@ -7797,7 +7797,9 @@
       "legalDesc": "Some data may be retained longer by law (e.g., accounting for 7 years)"
     },
     "sharing": {
-      "title": "Sharing with third parties",
+      "dpasTitle": "Data processing agreements (Art. 28 GDPR)",
+          "dpasIntro": "We have written agreements with every processor, in line with GDPR Art. 28. You can read their agreements here:",
+          "title": "Sharing with third parties",
       "intro": "We share your data with the following categories of recipients:",
       "hosting": "Cloud services:",
       "hostingDesc": "Supabase (database and authentication) - data is stored within EU/EEA",
@@ -7887,7 +7889,10 @@
       "text": "We may update this policy when necessary. For significant changes, we will notify you via email or in the app. Continued use after changes means you accept the updated policy."
     },
     "contact": {
-      "title": "Contact us",
+      "accessibility": "Accessibility statement",
+          "aiPolicy": "AI policy",
+          "terms": "Terms of use",
+          "title": "Contact us",
       "text": "Do you have questions about our privacy policy or how we handle your data? Contact us at",
       "dpo": "For data protection questions, contact the DPO at"
     },
@@ -7896,7 +7901,27 @@
     "copyright": "2026 Jobin. All rights reserved."
   },
   "terms": {
-    "backToHome": "Back to home page",
+    "ai": {
+      "title": "AI features — guidance, not decisions",
+      "text": "The AI features in the portal (CV builder, cover letter, interview simulator, skills analysis, AI coach and others) are support tools. They give suggestions, not decisions. You always make your own decisions about jobs, education, applications and career. AI recommendations are not professional career advice, legal advice, or an instruction from Arbetsförmedlingen (the Swedish Public Employment Service). We take no responsibility for what follows if you do or do not follow an AI suggestion. Always read AI-generated content before you send it on."
+    },
+    "noScreening": {
+      "title": "What the portal must not be used for",
+      "intro": "The portal is built so that you, as a job seeker, can run your own job search, and for the job coaches who support you. The following applies to all users — including a company that is given an account.",
+      "noSearch": "Employers and recruiters must not search, filter, rank or compare people in the portal. There is no candidate database and no search function aimed at participants. This is a deliberate choice, not a missing feature.",
+      "proposalOnly": "If the portal gives a company an account, the company can only receive a proposal about one named person, from a job coach, and only after that person has said yes to that specific sharing. The company then sees only the details the person approved — nothing else.",
+      "noAiRanking": "No AI ranks, scores or selects people for an employer. A human being — the job coach — always decides who is proposed. AI may help write text; it may never choose the person.",
+      "noAiOutput": "AI results about a person are never given to an employer. This covers match scores, skills analysis, interest profiles and assessments of a CV, and it applies whatever consents exist.",
+      "scraping": "Automated collection of data — scraping, bulk API calls — is not allowed.",
+      "thirdParty": "AI output must not be passed on to anyone else in order to make a work-related decision about a third person.",
+      "discrimination": "The portal must not be used for discriminatory purposes (compare the Swedish Discrimination Act, diskrimineringslagen 2008:567).",
+      "consequence": "An account that breaks these rules is closed. The rules exist so that the portal can be a tool for the person looking for work, and not become a selection instrument used about her."
+    },
+    "notHealthcare": {
+      "title": "The wellness features are not healthcare",
+      "text": "The portal's wellness and health features — mood logging, energy tracking, diary, breathing exercises, crisis support — are tools for reflection and self-help. They are not healthcare, therapy, psychological treatment or medical advice. If you feel mentally unwell, have thoughts of taking your own life, or need care: contact 1177 (the Swedish healthcare advice line), a psychiatric emergency unit, or call 112. Mind Självmordslinjen (the suicide prevention line): 90101. Jourhavande medmänniska (on-duty fellow human being): 08-702 16 80."
+    },
+        "backToHome": "Back to home page",
     "title": "Terms of Use",
     "subtitle": "Rules and guidelines for using Jobin",
     "acceptance": {

@@ -81,7 +81,7 @@ Detta är ett återkommande tolkningsdiskussion. **Säker tolkning:** funktioner
 
 **Beslut:** GRÄNSFALL — klassa som LÅGRISK i nuvarande B2C-deployment, men:
 - Dokumentera tydligt att vi *inte* tillåter användning för screening av flera kandidater
-- Lägg till villkor i ToS som förbjuder arbetsgivare att använda funktionen för screening
+- ✅ **Gjort 2026-09-01 (AG4).** Villkoren förbjuder inte bara "screening" utan namnger handlingarna: arbetsgivare får inte **söka, filtrera, rangordna eller jämföra** personer, och portalen har varken kandidatdatabas eller sökfunktion mot deltagare. Lydelsen bor i `terms.noScreening.*` i `sv.json`/`en.json` och renderas av `pages/Terms.tsx`
 - Märk output: "Detta är vägledning åt dig själv — det är inte en bedömning från en arbetsgivare"
 
 ### #22: cv-analysis
@@ -135,7 +135,19 @@ Om någon av dessa villkor inte är uppfyllda → HÖGRISK och alla Art 9-15-kra
    inget AI-utdatagranskningsflöde. Detta krav är **inte uppfyllt**, inte "uppfyllt via
    konsulenten". Om mänsklig granskning ska vara kravsvaret måste den byggas: en yta där
    konsulenten ser samma AI-resultat som deltagaren och kan markera dem granskade.
-6. **Förbud i ToS:** Arbetsgivare/rekryterare får inte använda portalen för att utvärdera externa kandidater.
+6. **Förbud i ToS (omskrivet 2026-09-01, AG4 — skärpt inför arbetsgivarspåret):** Villkoren
+   säger nu fyra saker, och det är de tre sista som bär klassningen när företag släpps in:
+   · arbetsgivare får inte **söka, filtrera, rangordna eller jämföra** personer — det finns
+     ingen kandidatdatabas och ingen sökfunktion mot deltagare;
+   · ett företagskonto kan **bara ta emot ett förslag om en namngiven person**, från en
+     konsulent, efter att personen sagt ja till just den delningen;
+   · **ingen AI rangordnar, poängsätter eller väljer ut personer åt en arbetsgivare** — en
+     människa (konsulenten) avgör vem som föreslås, AI får bara formulera text. Det är
+     precis den gränsen som håller portalen utanför Annex III 4(a);
+   · **AI-resultat om en person lämnas aldrig ut till en arbetsgivare** — matchningspoäng,
+     kompetensanalys, intresseprofil eller CV-omdöme — oavsett samtycke.
+   Vaktat av `client/src/test/juridiska-sidor-i18n.test.ts`. **Skrivs lydelsen om måste den
+   här punkten och DPIA:ns R9 ändras i samma commit.**
 
 ---
 
@@ -161,7 +173,7 @@ Vid bekräftad HÖGRISK gäller AI Act kap III (Art 8-15):
 
 1. **Slutgiltigt beslut på gränsfall** — jurist konsulterar inom 4 veckor. Vi opererar enligt LÅGRISK-tolkning men har möjlig högrisk-implementation klar att aktivera om jurist säger annat.
 2. **AI Act Art 50 transparens-märkning** — implementeras före 2 aug 2026 (gäller ALLA AI-funktioner).
-3. **Förbjud i ToS** — uppdatera användarvillkor att portalen inte får användas av arbetsgivare för screening.
+3. ✅ **Förbud i ToS — gjort 2026-09-01 (AG4).** Se punkt 6 ovan för lydelsen. Juridisk genomläsning kvarstår (ROADMAP A2).
 4. **Bias-test-protokoll** — etablera baseline test för kompetensgap + cv-analysis + intresseguide.
 5. **Granska ALL data-flöde** till konsulent — säkerställ att enskilda AI-resultat inte används för "arbetsfördelning" utan särskild deltagar-consent (Annex III 4(b)).
 

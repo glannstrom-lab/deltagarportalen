@@ -187,11 +187,17 @@ inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
 > Börjar först när AG1–AG3 står, och **Terms är omskriven**. Ordningen är inte förhandlingsbar:
 > villkoren före koden.
 
-- [ ] **AG4** 🔴 **Skriv om `Terms.tsx` — före all annan kod i etapp 1.** Dagens
-  screening-förbud ska inte tas bort utan **skärpas och preciseras**: företag får ta emot förslag,
-  aldrig söka, filtrera eller jämföra. Samtidigt måste `AI-ACT-CLASSIFICATION.md` och
-  `DPIA-PORTAL.md` uppdateras, eftersom fyra funktioners riskbedömning hänger på den gamla
-  lydelsen. **Bygg ingenting i etapp 1 innan detta är gjort** · ~1 dag + juridisk genomläsning
+- [x] **AG4** ✅ **Klar 2026-09-01 — villkoren omskrivna före första raden kod i etapp 1.** **Förbudet är skärpt, inte lättat.** Dagens lydelse sa att arbetsgivare inte får "utvärdera, screena eller jämföra externa kandidater" — ett ord som *screening* går att tolka bort. Den nya lydelsen namnger handlingarna och lägger till det som saknades:
+  · arbetsgivare får inte **söka, filtrera, rangordna eller jämföra** personer — det finns ingen kandidatdatabas och ingen sökfunktion mot deltagare, och det står uttryckligen att det är ett medvetet val, inte en funktion som saknas;
+  · ett företagskonto kan **bara ta emot ett förslag om en namngiven person**, från en konsulent, efter att personen sagt ja till just den delningen, och ser då bara de fält hon godkänt;
+  · **ingen AI rangordnar, poängsätter eller väljer ut personer åt en arbetsgivare** — konsulenten avgör, AI får formulera text. Det är den gränsen som håller portalen utanför Annex III 4(a);
+  · **AI-resultat om en person lämnas aldrig ut till en arbetsgivare** — matchningspoäng, kompetensanalys, intresseprofil, CV-omdöme — oavsett samtycke;
+  · plus en följdmening: ett konto som bryter mot detta stängs av. Ett förbud utan följd är en åsikt.
+  Formuleringarna är **villkorade** ("om portalen ger ett företag ett konto"), eftersom företagskonton inte finns i dag. Villkoren ska beskriva vad som gäller, inte lova en funktion.
+  **`AI-ACT-CLASSIFICATION.md` och `DPIA-PORTAL.md` är uppdaterade i samma ändring** — tre respektive en rad åberopade den gamla lydelsen som mitigering, och en omskrivning som lämnar dem orörda river riskbedömningen medan den ser ut att stärka den.
+  **Fynd på vägen, större än AG4 självt: 10 av 41 i18n-nycklar i `Terms.tsx` fanns inte i vare sig `sv.json` eller `en.json`.** Sidan renderade `t()`-anropens svenska fallback-argument, så den såg rätt ut på svenska och var **oöversatt på engelska** — och det gällde hela screening-förbudet, hela AI-ansvarsfriskrivningen och hela avsnittet om att wellness-funktionerna inte är vård, det som bär 1177, 112 och Mind Självmordslinjen. `sprakparitet.test.ts` kunde inte se det: den jämför `sv.json` mot `en.json`, och en nyckel som saknas i **båda** är osynlig. Alla 45 nycklar bor nu i båda filerna, och fem till av samma klass hittades och lagades på `Privacy.tsx`. Ny vakt: `client/src/test/juridiska-sidor-i18n.test.ts` (12 tester) kräver att varje nyckel på Terms, Privacy och AI-policy löser ut i båda språken, plus att förbudets och krisstödets bärande ord finns kvar.
+  **Fälla i själva insättningen:** första försöket landade de tio nycklarna under `privacy` i stället för `terms`, eftersom ankaret `"lastUpdated"` förekommer fem gånger i filen. JSON:en förblev giltig och paritetsgrinden grön — båda filerna fick samma fel. Kontrollera att ett textankare är unikt (`s.count(anchor) == 1`) innan du sätter in något i en 8 000 rader lång locale-fil.
+  *(Kvarstår:)* juridisk genomläsning — ROADMAP **A2** · ~1 dag ✅
 - [ ] **AG5** **Ny samtyckestyp för delning med arbetsgivare.** `consentApi.ts:58-64` har sex
   typer (`terms`, `privacy`, `ai_processing`, `marketing`, `health_data`, `wellness_data`) — ingen
   passar. En ny kräver migration i **båda** ändar: `grant_consent`/`withdraw_consent` har en
@@ -3880,6 +3886,18 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **A36** ✅ *(klar 2026-09-01)* | **`npm run lint:grants` är byggd och inlagd i `verify`.** `npm run grants:refresh` skriver `supabase/grants-snapshot.json` ur prod (samma snapshot-mönster som `lint:schema`, så CI slipper DB-hemligheter); grinden fäller på varje anon-öppen definer-funktion utanför en **motiverad** allowlist — varje rad bär sitt verifierade anropsställe — på varje tabell utan RLS, och på ett fryst tak för `authenticated` (26). Den mäter `has_function_privilege`, inte vad ett REVOKE-kommando svarade; A17:s lärdom var att `REVOKE … FROM anon` lyckas tyst utan att ändra något när PUBLIC har EXECUTE. **Grinden är prövad i båda riktningarna:** röd på läget före A22 (33 otillåtna + taket), grön efter. Dagens läge: 65 definer-funktioner, 3 öppna för anon, 134 tabeller alla med RLS | — |
 
 ---
+
+### F-post ur AG4-passet 2026-09-01 — nycklar som saknas i BÅDA språkfilerna
+
+- [ ] **F31** **286 i18n-nycklar i 72 filer finns i varken `sv.json` eller `en.json`.** Koden
+  renderar då `t()`-anropets fallback-argument, alltså svenska, för båda språken — och
+  `sprakparitet.test.ts` kan per konstruktion inte se det, eftersom den jämför filerna med
+  varandra. Mätt 2026-09-01. Störst: `CVBuilder.tsx` (27), `components/dashboard/NextStepCard.tsx`
+  (19), `components/cv/JobAdaptPanel.tsx` (18), `personal-brand/PitchTab.tsx` (18),
+  `Landing.tsx` (16). **Svep inte rakt av:** flera av filerna ligger i den onåbara
+  `components/dashboard/`, och ett mekaniskt svep över hela `src/` betalar för dödkod och
+  blockerar dessutom städningen av den (lärdomen 2026-08-09). Filtrera på nåbarhet från
+  `main.tsx` först. De juridiska sidorna är redan tagna i AG4 · M
 
 ## Spår B — Ärlighet i produkten (nya fynd 2026-07-10)
 

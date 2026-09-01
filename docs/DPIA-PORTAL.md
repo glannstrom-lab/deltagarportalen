@@ -173,7 +173,7 @@ Se 1.5. **Gap att åtgärda:** automatisk gallring.
 | R6 | Privacy-sida, AI-policy, AI-disclosure i UI | 🟡 Sidor finns, AI Act Art 50-märkning saknas |
 | R7 | Settings-toggle "AI-funktioner PÅ/AV" | ❌ Att implementera |
 | R8 | WCAG 2.1 AA-audit + tillgänglighetsredogörelse | 🟡 Delvis |
-| R9 | ToS-förbud, ingen bulk-API | ✅ Ingen bulk-API; ToS uppdateras |
+| R9 | ToS-förbud, ingen bulk-API | ✅ Ingen bulk-API. **ToS omskrivet 2026-09-01 (AG4)** — förbudet namnger handlingarna (söka, filtrera, rangordna, jämföra), slår fast att ett företagskonto bara kan ta emot ett förslag om en namngiven person efter dennes ja, att ingen AI väljer person åt en arbetsgivare, och att AI-resultat om en person aldrig lämnas ut till en arbetsgivare. Lydelsen i `terms.noScreening.*`, vaktad av `juridiska-sidor-i18n.test.ts` |
 | R10 | OpenRouter-villkor förbjuder modellträning | 🟡 Verifieras med OpenRouter |
 | R11 | Grinden i RLS, inte bara i UI. Konsulentåtkomst villkorad av `share_health_data` | 🟡 Rättat för `interest_results` och för konsulentåtkomsten till `interest_guide_history` (migration körd 2026-08-21, utfall verifierat i `pg_policies`). **Kvarstår:** `interest_guide_progress`, `interest_guide_history` och `user_adaptations` grindas fortfarande av applikationskoden vid lagring. `user_adaptations` har ingen samtyckesgrind alls |
 

@@ -141,48 +141,81 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
               <Bot className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-              {t('terms.ai.title', 'AI-funktioner — vägledning, inte beslut')}
+              {t('terms.ai.title')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              {t('terms.ai.text', 'AI-funktionerna i portalen (CV-byggare, personligt brev, intervjusimulator, kompetensanalys, AI-coach m.fl.) är hjälpverktyg och ger förslag, inte slutgiltiga beslut. Du fattar alltid själv besluten kring jobb, utbildning, ansökningar och karriär. AI-rekommendationer är inte att betrakta som professionell karriärrådgivning, juridisk rådgivning eller arbetsmarknadspolitisk anvisning. Vi tar inget ansvar för konsekvenser av att du följer eller inte följer AI-genererade förslag. Granska alltid AI-genererat innehåll innan du skickar det vidare.')}
+              {t('terms.ai.text')}
             </p>
           </section>
 
+          {/* AG4 (2026-09-01) — omskriven FÖRE första raden kod i arbetsgivarspåret.
+              Ordningen är inte kosmetisk: dagens lydelse ("arbetsgivare får inte
+              utvärdera, screena eller jämföra externa kandidater") är den NAMNGIVNA
+              mitigeringen som håller fyra AI-funktioner utanför högriskklassning i
+              `docs/AI-ACT-CLASSIFICATION.md`, och den bär DPIA:ns R9. Att ta bort den
+              för att släppa in företag hade rivit riskbedömningen samtidigt.
+
+              Därför är förbudet SKÄRPT, inte lättat. Det som tillkommit säger vad ett
+              företagskonto aldrig får göra — söka, filtrera, rangordna, jämföra, eller
+              få se AI-resultat om en person — och att det alltid är en människa som
+              väljer vem som föreslås. Det är precis den gränsen som håller portalen i
+              lågrisk enligt Annex III 4(a).
+
+              Formuleringarna är villkorade ("om portalen ger ett företag ett konto"),
+              eftersom företagskonton INTE finns i dag. Villkoren ska beskriva vad som
+              gäller, inte lova en funktion.
+
+              Juridisk genomläsning kvarstår — se ROADMAP A2. */}
           <section>
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
               <Shield className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-              {t('terms.noScreening.title', 'Förbjuden användning')}
+              {t('terms.noScreening.title')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-3">
-              {t('terms.noScreening.intro', 'Tjänsten är designad för arbetssökande att stödja sin egen jobbsökning. Följande är förbjudet:')}
+              {t('terms.noScreening.intro')}
             </p>
             <ul className="space-y-2 text-gray-600 dark:text-gray-300">
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
-                <span>{t('terms.noScreening.recruiters', 'Arbetsgivare och rekryterare får inte använda portalen för att utvärdera, screena eller jämföra externa kandidater.')}</span>
+                <span>{t('terms.noScreening.noSearch')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
-                <span>{t('terms.noScreening.scraping', 'Automatiserad inhämtning av data (scraping, bulk-API-anrop) är inte tillåtet.')}</span>
+                <span>{t('terms.noScreening.proposalOnly')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
-                <span>{t('terms.noScreening.thirdParty', 'AI-output får inte vidareföras till tredje part för att fatta arbetsrelaterade beslut om någon annan.')}</span>
+                <span>{t('terms.noScreening.noAiRanking')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
-                <span>{t('terms.noScreening.discrimination', 'Användning av portalen för diskriminerande ändamål är otillåtet (jfr. diskrimineringslagen 2008:567).')}</span>
+                <span>{t('terms.noScreening.noAiOutput')}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
+                <span>{t('terms.noScreening.scraping')}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
+                <span>{t('terms.noScreening.thirdParty')}</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
+                <span>{t('terms.noScreening.discrimination')}</span>
               </li>
             </ul>
+            <p className="mt-3 text-gray-600 dark:text-gray-300 leading-relaxed">
+              {t('terms.noScreening.consequence')}
+            </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
               <Heart className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-              {t('terms.notHealthcare.title', 'Wellness-funktioner är inte vård')}
+              {t('terms.notHealthcare.title')}
             </h2>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
-              {t('terms.notHealthcare.text', 'Portalens wellness- och hälsofunktioner (mood-loggning, energispårning, dagbok, andningsövningar, krisstöd) är reflektions- och självhjälpsverktyg. De är inte hälso- och sjukvård, terapi, psykologisk behandling eller medicinsk rådgivning. Om du upplever psykisk ohälsa, suicidtankar eller behöver vård, kontakta vården (1177), psykiatrisk akutmottagning eller ring 112. Mind: 90101. Jourhavande medmänniska: 08-702 16 80.')}
+              {t('terms.notHealthcare.text')}
             </p>
           </section>
 

@@ -7797,7 +7797,9 @@
       "legalDesc": "Vissa uppgifter kan behållas längre enligt lag (t.ex. bokföring i 7 år)"
     },
     "sharing": {
-      "title": "Delning med tredje part",
+      "dpasTitle": "Personuppgiftsbiträdesavtal (Art 28 GDPR)",
+          "dpasIntro": "Vi har skriftliga avtal med alla biträden som följer GDPR Art 28. Här kan du läsa deras avtal:",
+          "title": "Delning med tredje part",
       "intro": "Vi delar dina uppgifter med följande kategorier av mottagare:",
       "hosting": "Molntjänster:",
       "hostingDesc": "Supabase (databas och autentisering) - data lagras inom EU/EES",
@@ -7887,7 +7889,10 @@
       "text": "Vi kan uppdatera denna policy vid behov. Vid väsentliga ändringar meddelar vi dig via e-post eller i appen. Fortsatt användning efter ändringar innebär att du accepterar den uppdaterade policyn."
     },
     "contact": {
-      "title": "Kontakta oss",
+      "accessibility": "Tillgänglighetsredogörelse",
+          "aiPolicy": "AI-policy",
+          "terms": "Användarvillkor",
+          "title": "Kontakta oss",
       "text": "Har du frågor om vår integritetspolicy eller hur vi hanterar dina uppgifter? Kontakta oss på",
       "dpo": "För dataskyddsfrågor, kontakta dataskyddsombudet på"
     },
@@ -7896,7 +7901,27 @@
     "copyright": "2026 Jobin. Alla rättigheter förbehållna."
   },
   "terms": {
-    "backToHome": "Tillbaka till startsidan",
+    "ai": {
+      "title": "AI-funktioner — vägledning, inte beslut",
+      "text": "AI-funktionerna i portalen (CV-byggare, personligt brev, intervjusimulator, kompetensanalys, AI-coach med flera) är hjälpverktyg. De ger förslag, inte beslut. Du fattar alltid själv besluten om jobb, utbildning, ansökningar och karriär. AI-rekommendationer är inte professionell karriärrådgivning, juridisk rådgivning eller en arbetsmarknadspolitisk anvisning. Vi tar inget ansvar för följderna av att du följer eller inte följer ett AI-genererat förslag. Läs alltid igenom AI-genererat innehåll innan du skickar det vidare."
+    },
+    "noScreening": {
+      "title": "Vad portalen inte får användas till",
+      "intro": "Portalen är byggd för att du som arbetssökande ska kunna driva din egen jobbsökning, och för de konsulenter som stöttar dig. Det följande gäller alla användare — även ett företag som får ett konto.",
+      "noSearch": "Arbetsgivare och rekryterare får inte söka, filtrera, rangordna eller jämföra personer i portalen. Det finns ingen kandidatdatabas och ingen sökfunktion mot deltagare. Det är ett medvetet val, inte en funktion som råkar saknas.",
+      "proposalOnly": "Om portalen ger ett företag ett konto kan företaget bara ta emot ett förslag om en namngiven person, från en konsulent, och först efter att personen själv sagt ja till just den delningen. Företaget ser då bara de uppgifter personen godkänt — ingenting annat.",
+      "noAiRanking": "Ingen AI rangordnar, poängsätter eller väljer ut personer åt en arbetsgivare. Det är alltid en människa, konsulenten, som avgör vem som föreslås. AI får hjälpa till att formulera text — aldrig att välja person.",
+      "noAiOutput": "AI-resultat om en person lämnas aldrig ut till en arbetsgivare. Det gäller matchningspoäng, kompetensanalys, intresseprofil och omdömen om ett CV, och det gäller oavsett vilka samtycken som finns.",
+      "scraping": "Automatiserad inhämtning av data — skrapning, massanrop mot API:er — är inte tillåten.",
+      "thirdParty": "AI-utdata får inte föras vidare till någon annan för att fatta ett arbetsrelaterat beslut om en tredje person.",
+      "discrimination": "Portalen får inte användas för diskriminerande ändamål (jämför diskrimineringslagen 2008:567).",
+      "consequence": "Ett konto som bryter mot det här stängs av. Reglerna finns för att portalen ska kunna vara ett verktyg för den som söker jobb, och inte bli ett urvalsinstrument som används om henne."
+    },
+    "notHealthcare": {
+      "title": "Wellness-funktionerna är inte vård",
+      "text": "Portalens wellness- och hälsofunktioner — måendeloggning, energispårning, dagbok, andningsövningar, krisstöd — är verktyg för reflektion och självhjälp. De är inte hälso- och sjukvård, terapi, psykologisk behandling eller medicinsk rådgivning. Om du mår psykiskt dåligt, har tankar på att ta ditt liv eller behöver vård: kontakta 1177, en psykiatrisk akutmottagning, eller ring 112. Mind Självmordslinjen: 90101. Jourhavande medmänniska: 08-702 16 80."
+    },
+        "backToHome": "Tillbaka till startsidan",
     "title": "Användarvillkor",
     "subtitle": "Regler och riktlinjer för att använda Jobin",
     "acceptance": {

@@ -166,8 +166,8 @@ export default function Privacy() {
             </ul>
 
             <div className="mt-4 p-4 bg-stone-50 dark:bg-stone-700/30 rounded-lg border border-stone-200 dark:border-stone-700">
-              <p className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('privacy.sharing.dpasTitle', 'Personuppgiftsbiträdesavtal (Art 28 GDPR)')}</p>
-              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">{t('privacy.sharing.dpasIntro', 'Vi har skriftliga avtal med alla biträden som följer GDPR Art 28. Här kan du läsa deras avtal:')}</p>
+              <p className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('privacy.sharing.dpasTitle')}</p>
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">{t('privacy.sharing.dpasIntro')}</p>
               <ul className="space-y-1 text-sm">
                 <li><a href="https://supabase.com/legal/dpa" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Supabase DPA <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— DB, Auth, lagring (Irland)</span></li>
                 <li><a href="https://vercel.com/legal/dpa" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Vercel DPA <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— hosting, serverless functions (Frankfurt)</span></li>
@@ -304,15 +304,15 @@ export default function Privacy() {
             </p>
             <div className="mt-4 flex flex-wrap gap-2 text-sm">
               <Link to="/tillganglighet" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
-                {t('privacy.contact.accessibility', 'Tillgänglighetsredogörelse')} <ExternalLink className="w-3 h-3" />
+                {t('privacy.contact.accessibility')} <ExternalLink className="w-3 h-3" />
               </Link>
               <span className="text-stone-400">·</span>
               <Link to="/ai-policy" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
-                {t('privacy.contact.aiPolicy', 'AI-policy')} <ExternalLink className="w-3 h-3" />
+                {t('privacy.contact.aiPolicy')} <ExternalLink className="w-3 h-3" />
               </Link>
               <span className="text-stone-400">·</span>
               <Link to="/terms" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
-                {t('privacy.contact.terms', 'Användarvillkor')} <ExternalLink className="w-3 h-3" />
+                {t('privacy.contact.terms')} <ExternalLink className="w-3 h-3" />
               </Link>
             </div>
           </Section>
