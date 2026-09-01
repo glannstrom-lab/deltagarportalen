@@ -21,6 +21,28 @@
       "message": "Nu finns det att skicka med när du hittar något som passar."
     }
   },
+  "consultantConsent": {
+    "heading": "Din konsulent ser en del av din portal",
+    "intro": "{{namn}} är kopplad som din konsulent i Jobin. Vi frågar i efterhand, eftersom du aldrig fick frågan när kopplingen skapades. Du bestämmer.",
+    "seesHeading": "Det här ser {{namn}}:",
+    "seesList": [
+      "dina kontaktuppgifter — namn, e-post och telefon",
+      "om du har ett CV, vilken ATS-poäng det fick och när du senast ändrade det",
+      "om du gjort intressetestet och vilken Hollandkod du fick",
+      "hur många jobb du har sparat",
+      "när du senast var inloggad",
+      "anteckningar och mål som {{namn}} skriver om dig — dem kan du själv läsa"
+    ],
+    "notSeen": "Din dagbok och ditt mående ingår inte. De delas bara om du säger ja till det separat.",
+    "revocation": "Du kan när som helst säga upp kopplingen från sidan Min konsulent. Då slutar {{namn}} att se dina uppgifter och kan varken läsa eller skriva anteckningar om dig.",
+    "checkboxSharing": "Jag samtycker till att {{namn}} ser uppgifterna ovan.",
+    "checkboxRevocation": "Jag förstår att jag kan säga upp kopplingen när som helst.",
+    "yes": "Ja, det är okej",
+    "no": "Nej, avsluta kopplingen",
+    "later": "Jag vill tänka på det",
+    "saveFailed": "Det gick inte att spara ditt svar.",
+    "yourConsultant": "Din konsulent"
+  },
   "common": {
     "export": "Exportera",
     "save": "Spara",

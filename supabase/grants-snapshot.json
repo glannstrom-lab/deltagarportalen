@@ -1,395 +1,614 @@
 {
-  "generatedAt": "2026-09-01T14:29:13.784Z",
-  "definerFunctions": [
+  "generatedAt": "2026-09-01T15:58:19.202Z",
+  "functions": [
     {
       "name": "accept_consultant_request",
       "signature": "accept_consultant_request(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "audit_data_sharing_change",
       "signature": "audit_data_sharing_change()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "auto_generate_recommendations",
+      "signature": "auto_generate_recommendations()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "calculate_profile_completeness",
+      "signature": "calculate_profile_completeness(unified_profiles,cvs,interest_results)",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "can_assign_role",
       "signature": "can_assign_role(text)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "cancel_account_deletion",
       "signature": "cancel_account_deletion()",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "check_health_consent",
       "signature": "check_health_consent(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "check_login_rate_limit",
       "signature": "check_login_rate_limit(text,text,integer,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "check_rate_limit",
       "signature": "check_rate_limit(text,text,integer,integer)",
+      "definer": true,
       "anon": true,
       "authenticated": true
     },
     {
       "name": "check_role_change_allowed",
       "signature": "check_role_change_allowed(uuid,text,text[],text)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "check_wellness_consent",
       "signature": "check_wellness_consent(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "cleanup_old_activities",
       "signature": "cleanup_old_activities()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "cleanup_old_login_attempts",
+      "signature": "cleanup_old_login_attempts()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "cleanup_rate_limits",
       "signature": "cleanup_rate_limits()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "consultant_has_access",
       "signature": "consultant_has_access(uuid,uuid,text)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "create_daily_quests",
+      "signature": "create_daily_quests(uuid)",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "create_learning_path_from_gap",
       "signature": "create_learning_path_from_gap(uuid,text,text,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "decline_consultant_request",
       "signature": "decline_consultant_request(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "execute_account_deletion_immediate",
       "signature": "execute_account_deletion_immediate()",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "export_user_data",
       "signature": "export_user_data()",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "find_buddy_matches",
       "signature": "find_buddy_matches(uuid,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "generate_course_recommendations",
       "signature": "generate_course_recommendations(uuid,uuid,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_application_stats",
       "signature": "get_application_stats(uuid)",
+      "definer": true,
       "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "get_article_by_slug_or_id",
+      "signature": "get_article_by_slug_or_id(text)",
+      "definer": false,
+      "anon": true,
       "authenticated": true
     },
     {
       "name": "get_deletion_status",
       "signature": "get_deletion_status()",
+      "definer": true,
       "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "get_exercise_by_slug_or_id",
+      "signature": "get_exercise_by_slug_or_id(text)",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "get_exercise_with_content",
+      "signature": "get_exercise_with_content(text)",
+      "definer": false,
+      "anon": true,
       "authenticated": true
     },
     {
       "name": "get_invitation_by_token",
       "signature": "get_invitation_by_token(text)",
+      "definer": true,
       "anon": true,
       "authenticated": true
     },
     {
       "name": "get_mood_streak",
       "signature": "get_mood_streak(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_my_consultant",
       "signature": "get_my_consultant()",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "get_or_create_user_preferences",
       "signature": "get_or_create_user_preferences(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_shared_profile",
       "signature": "get_shared_profile(text)",
+      "definer": true,
       "anon": true,
       "authenticated": true
     },
     {
       "name": "get_stale_applications",
       "signature": "get_stale_applications(uuid,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_upcoming_reminders",
       "signature": "get_upcoming_reminders(uuid,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_user_courses",
       "signature": "get_user_courses(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "get_user_learning_stats",
       "signature": "get_user_learning_stats(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "grant_consent",
       "signature": "grant_consent(text)",
+      "definer": true,
       "anon": false,
-      "authenticated": false
+      "authenticated": true
+    },
+    {
+      "name": "grant_consultant_consent",
+      "signature": "grant_consultant_consent(text,jsonb)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
     },
     {
       "name": "handle_first_signin",
       "signature": "handle_first_signin()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "handle_invitation_acceptance",
       "signature": "handle_invitation_acceptance()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "handle_new_user",
       "signature": "handle_new_user()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "increment_template_usage",
       "signature": "increment_template_usage(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "increment_user_points",
       "signature": "increment_user_points(uuid,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "initialize_user_milestones",
       "signature": "initialize_user_milestones(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "is_admin_or_superadmin",
       "signature": "is_admin_or_superadmin()",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "join_community_group",
       "signature": "join_community_group(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "leave_community_group",
       "signature": "leave_community_group(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "log_application_created",
       "signature": "log_application_created()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "log_application_status_change",
       "signature": "log_application_status_change()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "log_consent_column_change",
+      "signature": "log_consent_column_change()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "log_profile_changes",
       "signature": "log_profile_changes()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "log_user_activity",
       "signature": "log_user_activity(uuid,text,text,text,integer,jsonb)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "post_to_community_feed",
       "signature": "post_to_community_feed(uuid,text,text,text,jsonb,boolean)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "prevent_last_superadmin_removal",
+      "signature": "prevent_last_superadmin_removal()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "profiles_consultant_status_only_check",
       "signature": "profiles_consultant_status_only_check(uuid,jsonb)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "react_to_feed_item",
       "signature": "react_to_feed_item(uuid,uuid,text)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "remove_reaction",
       "signature": "remove_reaction(uuid,uuid,text)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "request_account_deletion",
       "signature": "request_account_deletion(text,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "revoke_consultant_link",
       "signature": "revoke_consultant_link(uuid,text)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_bulk_invite",
       "signature": "sta_bulk_invite(jsonb,date,text,jsonb)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_bulk_smart_add",
       "signature": "sta_bulk_smart_add(jsonb,date,integer,text,jsonb,boolean)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_get_consultant_for_participant",
       "signature": "sta_get_consultant_for_participant(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_participant_mark_doa_done",
       "signature": "sta_participant_mark_doa_done(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_participant_save_doa_score",
       "signature": "sta_participant_save_doa_score(uuid,integer,integer,integer,text)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_participant_update_self",
       "signature": "sta_participant_update_self(uuid,date,smallint,boolean)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_participant_update_start_date",
       "signature": "sta_participant_update_start_date(uuid,date)",
+      "definer": true,
       "anon": false,
       "authenticated": true
     },
     {
       "name": "sta_sign_assessment",
       "signature": "sta_sign_assessment(uuid)",
+      "definer": true,
       "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sync_ai_enabled_on_consent_withdrawal",
+      "signature": "sync_ai_enabled_on_consent_withdrawal()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "sync_certification_to_cv",
+      "signature": "sync_certification_to_cv()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "sync_cv_to_unified_profile",
+      "signature": "sync_cv_to_unified_profile()",
+      "definer": false,
+      "anon": true,
       "authenticated": true
     },
     {
       "name": "update_ai_team_sessions_updated_at",
       "signature": "update_ai_team_sessions_updated_at()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "update_application_contacts_updated_at",
+      "signature": "update_application_contacts_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "update_calendar_updated_at",
       "signature": "update_calendar_updated_at()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "update_career_plan_progress",
       "signature": "update_career_plan_progress()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "update_consultant_updated_at",
+      "signature": "update_consultant_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "update_last_login",
       "signature": "update_last_login()",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
       "name": "update_milestone_progress",
       "signature": "update_milestone_progress(uuid,text,integer)",
+      "definer": true,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "update_saved_jobs_updated_at",
+      "signature": "update_saved_jobs_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
     },
     {
       "name": "update_shared_resources_updated_at",
       "signature": "update_shared_resources_updated_at()",
+      "definer": true,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "update_sta_updated_at",
+      "signature": "update_sta_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "update_topic_reply_count",
+      "signature": "update_topic_reply_count()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "update_updated_at_column",
+      "signature": "update_updated_at_column()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "update_user_adaptations_updated_at",
+      "signature": "update_user_adaptations_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "update_user_preferences_updated_at",
+      "signature": "update_user_preferences_updated_at()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
     },
     {
       "name": "update_user_streak",
       "signature": "update_user_streak(uuid)",
+      "definer": true,
       "anon": false,
       "authenticated": false
     },
     {
+      "name": "update_uwl_timestamp",
+      "signature": "update_uwl_timestamp()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
       "name": "withdraw_consent",
       "signature": "withdraw_consent(text)",
+      "definer": true,
       "anon": false,
-      "authenticated": false
+      "authenticated": true
     }
   ],
   "tables": [

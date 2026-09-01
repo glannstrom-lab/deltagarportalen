@@ -342,6 +342,14 @@ npm run build
 > **Varför den finns:** A17 stängde 18 av 53 definer-funktioner den 4 augusti. Mätt den
 > 1 september: **36 av 65** — den öppna mängden hade vuxit, utan att något larmade. En
 > granskning hittar ett läge; bara en grind håller det.
+>
+> **Grinden går åt BÅDA hållen, och den andra riktningen är den som hittade en skarp bugg.**
+> Regel 3 kräver att varje `.rpc('…')` i `client/src` pekar på en funktion `authenticated`
+> faktiskt kan köra. A17 revokade `grant_consent`/`withdraw_consent` den 4 augusti när de
+> hade noll anropare — korrekt då. Den 21 augusti byggdes `consentApi.ts` som portalens
+> **enda** väg till samtycken, och den anropar precis dem. Ingen gav tillbaka rättigheten,
+> och **från 21 augusti kunde ingen användare ge eller återkalla ett samtycke** (42501).
+> Lärdomen: en REVOKE är aldrig klar, för koden runt omkring rör sig.
 
 De tre **frysta taken** (122 warnings, 362 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje

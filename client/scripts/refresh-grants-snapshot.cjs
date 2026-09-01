@@ -43,16 +43,21 @@ function queryJson(sql) {
   }
 }
 
-console.log('Hämtar SECURITY DEFINER-funktioner och deras EXECUTE-rättigheter …')
+// ALLA funktioner i `public`, inte bara definer-funktionerna. Anledningen är
+// RPC-kontrollen i grinden: varje `.rpc('...')` i klientkoden måste peka på en funktion
+// som `authenticated` kan köra, och den funktionen behöver inte vara SECURITY DEFINER.
+// `definer`-flaggan avgör sedan vilka regler som gäller per funktion.
+console.log('Hämtar funktioner och deras EXECUTE-rättigheter …')
 const functionRows = queryJson(`
   SELECT
     p.proname AS name,
     p.oid::regprocedure::text AS signature,
+    p.prosecdef AS definer,
     has_function_privilege('anon', p.oid, 'EXECUTE') AS anon,
     has_function_privilege('authenticated', p.oid, 'EXECUTE') AS authenticated
   FROM pg_proc p
   JOIN pg_namespace n ON n.oid = p.pronamespace
-  WHERE n.nspname = 'public' AND p.prosecdef
+  WHERE n.nspname = 'public' AND p.prokind = 'f'
   ORDER BY p.proname, p.oid::regprocedure::text
 `)
 
@@ -67,9 +72,10 @@ const tableRows = queryJson(`
 
 const snapshot = {
   generatedAt: new Date().toISOString(),
-  definerFunctions: functionRows.map((r) => ({
+  functions: functionRows.map((r) => ({
     name: r.name,
     signature: r.signature,
+    definer: r.definer === true || r.definer === 't',
     anon: r.anon === true || r.anon === 't',
     authenticated: r.authenticated === true || r.authenticated === 't',
   })),
@@ -78,8 +84,10 @@ const snapshot = {
 
 fs.writeFileSync(OUT_FILE, JSON.stringify(snapshot, null, 2) + '\n', 'utf8')
 
-const anonCount = snapshot.definerFunctions.filter((f) => f.anon).length
+const definer = snapshot.functions.filter((f) => f.definer)
+const anonCount = definer.filter((f) => f.anon).length
 const rlsOff = snapshot.tables.filter((t) => !t.rls).length
 console.log(`\nSkrev ${path.relative(REPO_ROOT, OUT_FILE)}`)
-console.log(`  ${snapshot.definerFunctions.length} definer-funktioner, varav ${anonCount} anropbara av anon`)
+console.log(`  ${snapshot.functions.length} funktioner, varav ${definer.length} SECURITY DEFINER`)
+console.log(`  ${anonCount} definer-funktioner anropbara av anon`)
 console.log(`  ${snapshot.tables.length} tabeller, varav ${rlsOff} utan RLS`)

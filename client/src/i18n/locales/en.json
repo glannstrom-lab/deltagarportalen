@@ -21,6 +21,28 @@
       "message": "It's ready to send whenever you find something that fits."
     }
   },
+  "consultantConsent": {
+    "heading": "Your job coach can see part of your portal",
+    "intro": "{{namn}} is linked to you as your job coach in Jobin. We are asking now, because you were never asked when the link was made. You decide.",
+    "seesHeading": "This is what {{namn}} can see:",
+    "seesList": [
+      "your contact details — name, email and phone number",
+      "whether you have a CV, the ATS score it got, and when you last changed it",
+      "whether you have done the interest test, and which Holland code you got",
+      "how many jobs you have saved",
+      "when you last signed in",
+      "notes and goals that {{namn}} writes about you — you can read those yourself"
+    ],
+    "notSeen": "Your diary and your mood are not included. They are only shared if you say yes to that separately.",
+    "revocation": "You can end the link at any time from the My job coach page. Then {{namn}} stops seeing your details and can no longer read or write notes about you.",
+    "checkboxSharing": "I agree that {{namn}} may see the details above.",
+    "checkboxRevocation": "I understand that I can end the link at any time.",
+    "yes": "Yes, that is fine",
+    "no": "No, end the link",
+    "later": "I want to think about it",
+    "saveFailed": "Your answer could not be saved.",
+    "yourConsultant": "Your job coach"
+  },
   "common": {
     "export": "Export",
     "save": "Save",
