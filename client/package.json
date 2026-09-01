@@ -34,8 +34,10 @@
     "lint:schema": "node scripts/check-schema-drift.cjs",
     "lint:vercel": "node scripts/check-vercel-config.cjs",
     "lint:links": "node scripts/lint-links.cjs",
-    "verify": "npm run lint:vercel && npm run lint:schema && npm run typecheck:critical && npm run typecheck:api && npm run typecheck:ceiling && npm run lint:ci && npm run lint:design && npm run lint:links && npm run test:coverage",
+    "lint:grants": "node scripts/lint-grants.cjs",
+    "verify": "npm run lint:vercel && npm run lint:schema && npm run lint:grants && npm run typecheck:critical && npm run typecheck:api && npm run typecheck:ceiling && npm run lint:ci && npm run lint:design && npm run lint:links && npm run test:coverage",
     "schema:refresh": "node scripts/refresh-schema-snapshot.cjs",
+    "grants:refresh": "node scripts/refresh-grants-snapshot.cjs",
     "report:i18n": "node scripts/report-hardcoded-swedish.cjs"
   },
   "dependencies": {

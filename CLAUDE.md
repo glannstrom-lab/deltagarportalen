@@ -193,6 +193,14 @@ curl -sS "https://api.github.com/repos/glannstrom-lab/deltagarportalen/actions/r
 
 ### Supabase-migrationer
 
+> **⚠️ `supabase functions deploy` utan argument deployar ALLT som ligger i
+> `supabase/functions/`.** `.github/workflows/deploy.yml:71` gör precis det, och CLI:n har
+> ingen `--exclude`-flagga (`--prune` används inte). Att ta bort en funktion ur prod med
+> `functions delete` håller därför bara till nästa push — katalogen måste **flyttas ur**
+> `supabase/functions/` för att avpubliceringen ska vara varaktig. Fyra callerlösa
+> AI-funktioner togs bort så 2026-09-01 (A27); de ligger i
+> `archive/2026-09-01-avpublicerade-edge/` med en README om hur de tas tillbaka.
+
 **VIKTIGT:** Använd INTE `npx supabase db push` — det försöker köra ALLA migrationer och failar på konflikter.
 
 ```bash
@@ -311,6 +319,7 @@ npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inge
 npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (362)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
+npm run lint:grants        # anon-öppna SECURITY DEFINER-funktioner + RLS per tabell (A36)
 npm run lint:vercel        # vercel.json-konfigurationen
 npm run lint:links         # döda länkmål i levande kod (C27)
 npm run test:run           # ~2 550 tester i ~165 filer (~51 s, mätt 2026-08-31 — talet
@@ -321,6 +330,18 @@ npm run build
 > **Rättat 2026-08-21:** rubriken sa "åtta st" och listan utelämnade `lint:vercel`
 > och `lint:links`, trots att `npm run verify` kör båda. `lint:links` är inte
 > dekorativ — den fällde ett riktigt fynd i C27. Räkna inte grindar; kör `verify`.
+
+> **Nytt 2026-09-01: `lint:grants` (A36).** Läser `supabase/grants-snapshot.json`, som
+> `npm run grants:refresh` hämtar ur prod. Fäller på varje `SECURITY DEFINER`-funktion som
+> `anon` kan köra utanför en motiverad allowlist, på varje tabell utan RLS, och på ett fryst
+> tak för `authenticated` (26). **Kör `grants:refresh` efter varje migration som rör
+> GRANT/REVOKE eller RLS och committa snapshoten i samma commit** — precis som med
+> `schema:refresh`. Grinden mäter `has_function_privilege`, inte vad ett REVOKE-kommando
+> svarade: `REVOKE … FROM anon` lyckas tyst utan att ändra något när PUBLIC har EXECUTE.
+>
+> **Varför den finns:** A17 stängde 18 av 53 definer-funktioner den 4 augusti. Mätt den
+> 1 september: **36 av 65** — den öppna mängden hade vuxit, utan att något larmade. En
+> granskning hittar ett läge; bara en grind håller det.
 
 De tre **frysta taken** (122 warnings, 362 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje

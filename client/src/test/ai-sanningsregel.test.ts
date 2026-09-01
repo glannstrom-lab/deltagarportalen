@@ -182,12 +182,29 @@ describe('prompter som rör svenska regelverk hänvisar till rätt myndighet', (
 })
 
 describe('edge-vägen har samma regel som Vercel-vägen', () => {
-  // B25: `ai-cover-letter` är callerlös men deployad och nåbar via HTTP. Den
-  // fick aldrig C11:s regel, trots att kommentaren i ai.js säger att reglerna
-  // "portades från ai-cover-letter-edgen" — allt utom källan fick fixen.
-  it('ai-cover-letter förbjuder påhittade meriter', () => {
+  // A27 (2026-09-01): `ai-cover-letter` var callerlös men deployad och nåbar via
+  // HTTP — förbi AI-brytaren, PII-saneringen, art. 9-grinden och tokentaket. Den
+  // och tre systrar är avpublicerade ur prod och flyttade till
+  // `archive/2026-09-01-avpublicerade-edge/`.
+  //
+  // Flytten är det som gör avpubliceringen varaktig: `deploy.yml:71` kör
+  // `supabase functions deploy` UTAN argument, alltså allt som ligger lokalt.
+  // Läggs en katalog tillbaka utan grind deployas den vid nästa push.
+  const AVPUBLICERADE = ['ai-assistant', 'ai-cover-letter', 'ai-cv-writing', 'cv-analysis']
+
+  it.each(AVPUBLICERADE)(
+    '%s ligger inte kvar i supabase/functions (den katalogen ÄR deploy-mängden)',
+    (slug) => {
+      expect(existsSync(resolve(__dirname, `../../../supabase/functions/${slug}`))).toBe(false)
+    }
+  )
+
+  // Regeln får inte tappas bort i arkivet heller — kommer funktionen tillbaka ska
+  // den komma tillbaka korrekt. (Kommentaren i ai.js påstår att C11:s regler
+  // "portades från ai-cover-letter-edgen"; sanningen var att källan aldrig fick dem.)
+  it('den arkiverade ai-cover-letter bär förbudet mot påhittade meriter', () => {
     const kalla = readFileSync(
-      resolve(__dirname, '../../../supabase/functions/ai-cover-letter/index.ts'),
+      resolve(__dirname, '../../../archive/2026-09-01-avpublicerade-edge/ai-cover-letter/index.ts'),
       'utf8'
     )
     expect(kalla).toMatch(/Hitta ALDRIG på erfarenheter/)

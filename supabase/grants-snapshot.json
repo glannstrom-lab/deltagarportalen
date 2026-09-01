@@ -1,0 +1,933 @@
+{
+  "generatedAt": "2026-09-01T14:29:13.784Z",
+  "definerFunctions": [
+    {
+      "name": "accept_consultant_request",
+      "signature": "accept_consultant_request(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "audit_data_sharing_change",
+      "signature": "audit_data_sharing_change()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "can_assign_role",
+      "signature": "can_assign_role(text)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "cancel_account_deletion",
+      "signature": "cancel_account_deletion()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "check_health_consent",
+      "signature": "check_health_consent(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "check_login_rate_limit",
+      "signature": "check_login_rate_limit(text,text,integer,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "check_rate_limit",
+      "signature": "check_rate_limit(text,text,integer,integer)",
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "check_role_change_allowed",
+      "signature": "check_role_change_allowed(uuid,text,text[],text)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "check_wellness_consent",
+      "signature": "check_wellness_consent(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "cleanup_old_activities",
+      "signature": "cleanup_old_activities()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "cleanup_rate_limits",
+      "signature": "cleanup_rate_limits()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "consultant_has_access",
+      "signature": "consultant_has_access(uuid,uuid,text)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "create_learning_path_from_gap",
+      "signature": "create_learning_path_from_gap(uuid,text,text,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "decline_consultant_request",
+      "signature": "decline_consultant_request(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "execute_account_deletion_immediate",
+      "signature": "execute_account_deletion_immediate()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "export_user_data",
+      "signature": "export_user_data()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "find_buddy_matches",
+      "signature": "find_buddy_matches(uuid,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "generate_course_recommendations",
+      "signature": "generate_course_recommendations(uuid,uuid,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_application_stats",
+      "signature": "get_application_stats(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "get_deletion_status",
+      "signature": "get_deletion_status()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "get_invitation_by_token",
+      "signature": "get_invitation_by_token(text)",
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "get_mood_streak",
+      "signature": "get_mood_streak(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_my_consultant",
+      "signature": "get_my_consultant()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "get_or_create_user_preferences",
+      "signature": "get_or_create_user_preferences(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_shared_profile",
+      "signature": "get_shared_profile(text)",
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "get_stale_applications",
+      "signature": "get_stale_applications(uuid,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_upcoming_reminders",
+      "signature": "get_upcoming_reminders(uuid,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_user_courses",
+      "signature": "get_user_courses(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "get_user_learning_stats",
+      "signature": "get_user_learning_stats(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "grant_consent",
+      "signature": "grant_consent(text)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "handle_first_signin",
+      "signature": "handle_first_signin()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "handle_invitation_acceptance",
+      "signature": "handle_invitation_acceptance()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "handle_new_user",
+      "signature": "handle_new_user()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "increment_template_usage",
+      "signature": "increment_template_usage(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "increment_user_points",
+      "signature": "increment_user_points(uuid,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "initialize_user_milestones",
+      "signature": "initialize_user_milestones(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "is_admin_or_superadmin",
+      "signature": "is_admin_or_superadmin()",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "join_community_group",
+      "signature": "join_community_group(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "leave_community_group",
+      "signature": "leave_community_group(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "log_application_created",
+      "signature": "log_application_created()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "log_application_status_change",
+      "signature": "log_application_status_change()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "log_profile_changes",
+      "signature": "log_profile_changes()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "log_user_activity",
+      "signature": "log_user_activity(uuid,text,text,text,integer,jsonb)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "post_to_community_feed",
+      "signature": "post_to_community_feed(uuid,text,text,text,jsonb,boolean)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "profiles_consultant_status_only_check",
+      "signature": "profiles_consultant_status_only_check(uuid,jsonb)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "react_to_feed_item",
+      "signature": "react_to_feed_item(uuid,uuid,text)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "remove_reaction",
+      "signature": "remove_reaction(uuid,uuid,text)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "request_account_deletion",
+      "signature": "request_account_deletion(text,integer)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "revoke_consultant_link",
+      "signature": "revoke_consultant_link(uuid,text)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_bulk_invite",
+      "signature": "sta_bulk_invite(jsonb,date,text,jsonb)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_bulk_smart_add",
+      "signature": "sta_bulk_smart_add(jsonb,date,integer,text,jsonb,boolean)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_get_consultant_for_participant",
+      "signature": "sta_get_consultant_for_participant(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_participant_mark_doa_done",
+      "signature": "sta_participant_mark_doa_done(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_participant_save_doa_score",
+      "signature": "sta_participant_save_doa_score(uuid,integer,integer,integer,text)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_participant_update_self",
+      "signature": "sta_participant_update_self(uuid,date,smallint,boolean)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_participant_update_start_date",
+      "signature": "sta_participant_update_start_date(uuid,date)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "sta_sign_assessment",
+      "signature": "sta_sign_assessment(uuid)",
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "update_ai_team_sessions_updated_at",
+      "signature": "update_ai_team_sessions_updated_at()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_calendar_updated_at",
+      "signature": "update_calendar_updated_at()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_career_plan_progress",
+      "signature": "update_career_plan_progress()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_last_login",
+      "signature": "update_last_login()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_milestone_progress",
+      "signature": "update_milestone_progress(uuid,text,integer)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_shared_resources_updated_at",
+      "signature": "update_shared_resources_updated_at()",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "update_user_streak",
+      "signature": "update_user_streak(uuid)",
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "withdraw_consent",
+      "signature": "withdraw_consent(text)",
+      "anon": false,
+      "authenticated": false
+    }
+  ],
+  "tables": [
+    {
+      "name": "account_deletion_requests",
+      "rls": true
+    },
+    {
+      "name": "achievements",
+      "rls": true
+    },
+    {
+      "name": "admin_audit_log",
+      "rls": true
+    },
+    {
+      "name": "ai_team_sessions",
+      "rls": true
+    },
+    {
+      "name": "ai_usage_logs",
+      "rls": true
+    },
+    {
+      "name": "application_contacts",
+      "rls": true
+    },
+    {
+      "name": "application_history",
+      "rls": true
+    },
+    {
+      "name": "application_reminders",
+      "rls": true
+    },
+    {
+      "name": "application_templates",
+      "rls": true
+    },
+    {
+      "name": "article_bookmarks",
+      "rls": true
+    },
+    {
+      "name": "article_categories",
+      "rls": true
+    },
+    {
+      "name": "article_checklists",
+      "rls": true
+    },
+    {
+      "name": "article_course_links",
+      "rls": true
+    },
+    {
+      "name": "article_reading_progress",
+      "rls": true
+    },
+    {
+      "name": "articles",
+      "rls": true
+    },
+    {
+      "name": "audit_logs",
+      "rls": true
+    },
+    {
+      "name": "calendar_events",
+      "rls": true
+    },
+    {
+      "name": "calendar_goals",
+      "rls": true
+    },
+    {
+      "name": "calendar_mood_entries",
+      "rls": true
+    },
+    {
+      "name": "career_milestones",
+      "rls": true
+    },
+    {
+      "name": "career_paths",
+      "rls": true
+    },
+    {
+      "name": "career_plans",
+      "rls": true
+    },
+    {
+      "name": "consent_history",
+      "rls": true
+    },
+    {
+      "name": "consultant_consents",
+      "rls": true
+    },
+    {
+      "name": "consultant_goal_templates",
+      "rls": true
+    },
+    {
+      "name": "consultant_goals",
+      "rls": true
+    },
+    {
+      "name": "consultant_job_collections",
+      "rls": true
+    },
+    {
+      "name": "consultant_journal",
+      "rls": true
+    },
+    {
+      "name": "consultant_meetings",
+      "rls": true
+    },
+    {
+      "name": "consultant_messages",
+      "rls": true
+    },
+    {
+      "name": "consultant_notes",
+      "rls": true
+    },
+    {
+      "name": "consultant_participants",
+      "rls": true
+    },
+    {
+      "name": "consultant_placements",
+      "rls": true
+    },
+    {
+      "name": "consultant_requests",
+      "rls": true
+    },
+    {
+      "name": "consultant_settings",
+      "rls": true
+    },
+    {
+      "name": "consultant_work_placement_followups",
+      "rls": true
+    },
+    {
+      "name": "consultant_work_placements",
+      "rls": true
+    },
+    {
+      "name": "content_calendar",
+      "rls": true
+    },
+    {
+      "name": "course_recommendations",
+      "rls": true
+    },
+    {
+      "name": "courses",
+      "rls": true
+    },
+    {
+      "name": "cover_letters",
+      "rls": true
+    },
+    {
+      "name": "cv_analyses",
+      "rls": true
+    },
+    {
+      "name": "cv_shares",
+      "rls": true
+    },
+    {
+      "name": "cv_versions",
+      "rls": true
+    },
+    {
+      "name": "cvs",
+      "rls": true
+    },
+    {
+      "name": "daily_tasks",
+      "rls": true
+    },
+    {
+      "name": "dashboard_preferences",
+      "rls": true
+    },
+    {
+      "name": "data_export_logs",
+      "rls": true
+    },
+    {
+      "name": "data_sharing_audit",
+      "rls": true
+    },
+    {
+      "name": "diary_entries",
+      "rls": true
+    },
+    {
+      "name": "diary_streaks",
+      "rls": true
+    },
+    {
+      "name": "elevator_pitches",
+      "rls": true
+    },
+    {
+      "name": "email_notifications",
+      "rls": true
+    },
+    {
+      "name": "email_queue",
+      "rls": true
+    },
+    {
+      "name": "exercise_answers",
+      "rls": true
+    },
+    {
+      "name": "exercise_categories",
+      "rls": true
+    },
+    {
+      "name": "exercise_questions",
+      "rls": true
+    },
+    {
+      "name": "exercise_steps",
+      "rls": true
+    },
+    {
+      "name": "exercises",
+      "rls": true
+    },
+    {
+      "name": "favorite_occupations",
+      "rls": true
+    },
+    {
+      "name": "gratitude_entries",
+      "rls": true
+    },
+    {
+      "name": "interest_guide_history",
+      "rls": true
+    },
+    {
+      "name": "interest_guide_progress",
+      "rls": true
+    },
+    {
+      "name": "interest_results",
+      "rls": true
+    },
+    {
+      "name": "interview_sessions",
+      "rls": true
+    },
+    {
+      "name": "invitations",
+      "rls": true
+    },
+    {
+      "name": "job_alerts",
+      "rls": true
+    },
+    {
+      "name": "job_applications",
+      "rls": true
+    },
+    {
+      "name": "job_interest_matches",
+      "rls": true
+    },
+    {
+      "name": "job_notifications",
+      "rls": true
+    },
+    {
+      "name": "journal_entries",
+      "rls": true
+    },
+    {
+      "name": "learning_activities",
+      "rls": true
+    },
+    {
+      "name": "login_attempts",
+      "rls": true
+    },
+    {
+      "name": "milestones",
+      "rls": true
+    },
+    {
+      "name": "mood_history",
+      "rls": true
+    },
+    {
+      "name": "mood_logs",
+      "rls": true
+    },
+    {
+      "name": "network_contacts",
+      "rls": true
+    },
+    {
+      "name": "networking_events",
+      "rls": true
+    },
+    {
+      "name": "notification_preferences",
+      "rls": true
+    },
+    {
+      "name": "notification_settings",
+      "rls": true
+    },
+    {
+      "name": "notifications",
+      "rls": true
+    },
+    {
+      "name": "participant_data_sharing",
+      "rls": true
+    },
+    {
+      "name": "personal_brand_audit",
+      "rls": true
+    },
+    {
+      "name": "personal_brand_audits",
+      "rls": true
+    },
+    {
+      "name": "platsbanken_saved_jobs",
+      "rls": true
+    },
+    {
+      "name": "platsbanken_saved_searches",
+      "rls": true
+    },
+    {
+      "name": "portfolio_items",
+      "rls": true
+    },
+    {
+      "name": "profile_documents",
+      "rls": true
+    },
+    {
+      "name": "profile_history",
+      "rls": true
+    },
+    {
+      "name": "profile_shares",
+      "rls": true
+    },
+    {
+      "name": "profile_skills",
+      "rls": true
+    },
+    {
+      "name": "profiles",
+      "rls": true
+    },
+    {
+      "name": "quests",
+      "rls": true
+    },
+    {
+      "name": "rate_limits",
+      "rls": true
+    },
+    {
+      "name": "relocation_preferences",
+      "rls": true
+    },
+    {
+      "name": "salary_searches",
+      "rls": true
+    },
+    {
+      "name": "saved_educations",
+      "rls": true
+    },
+    {
+      "name": "saved_jobs",
+      "rls": true
+    },
+    {
+      "name": "shared_jobs",
+      "rls": true
+    },
+    {
+      "name": "shared_resources",
+      "rls": true
+    },
+    {
+      "name": "skills_analyses",
+      "rls": true
+    },
+    {
+      "name": "spontaneous_companies",
+      "rls": true
+    },
+    {
+      "name": "sta_absences",
+      "rls": true
+    },
+    {
+      "name": "sta_activities",
+      "rls": true
+    },
+    {
+      "name": "sta_assessments",
+      "rls": true
+    },
+    {
+      "name": "sta_documents",
+      "rls": true
+    },
+    {
+      "name": "sta_enrollments",
+      "rls": true
+    },
+    {
+      "name": "sta_pulse_checks",
+      "rls": true
+    },
+    {
+      "name": "sta_quick_notes",
+      "rls": true
+    },
+    {
+      "name": "sta_weekly_checkins",
+      "rls": true
+    },
+    {
+      "name": "sta_workplace_followups",
+      "rls": true
+    },
+    {
+      "name": "sta_workplaces",
+      "rls": true
+    },
+    {
+      "name": "unified_profiles",
+      "rls": true
+    },
+    {
+      "name": "user_achievements",
+      "rls": true
+    },
+    {
+      "name": "user_activities",
+      "rls": true
+    },
+    {
+      "name": "user_activity_log",
+      "rls": true
+    },
+    {
+      "name": "user_adaptations",
+      "rls": true
+    },
+    {
+      "name": "user_certifications",
+      "rls": true
+    },
+    {
+      "name": "user_credentials",
+      "rls": true
+    },
+    {
+      "name": "user_drafts",
+      "rls": true
+    },
+    {
+      "name": "user_gamification",
+      "rls": true
+    },
+    {
+      "name": "user_goals",
+      "rls": true
+    },
+    {
+      "name": "user_interests",
+      "rls": true
+    },
+    {
+      "name": "user_learning_paths",
+      "rls": true
+    },
+    {
+      "name": "user_milestones",
+      "rls": true
+    },
+    {
+      "name": "user_notifications",
+      "rls": true
+    },
+    {
+      "name": "user_preferences",
+      "rls": true
+    },
+    {
+      "name": "user_sessions",
+      "rls": true
+    },
+    {
+      "name": "user_skills",
+      "rls": true
+    },
+    {
+      "name": "user_streaks",
+      "rls": true
+    },
+    {
+      "name": "visibility_progress",
+      "rls": true
+    },
+    {
+      "name": "visibility_settings",
+      "rls": true
+    },
+    {
+      "name": "weekly_goals",
+      "rls": true
+    },
+    {
+      "name": "writing_prompts",
+      "rls": true
+    }
+  ]
+}
