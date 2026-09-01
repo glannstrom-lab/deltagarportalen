@@ -543,7 +543,7 @@
     "showOriginal": "Visa original (Svenska)",
     "poweredByGoogle": "Via Google Translate",
     "machineTranslation": "Maskinöversättning via Google",
-    "translationPrivacy": "När du översätter skickas sidans innehåll till Google för översättning."
+    "translationPrivacy": "När du översätter skickas sidans innehåll till Google — även det du själv har skrivit, till exempel ett dagboksinlägg du har öppet."
   },
   "dashboard": {
     "careerReadiness": {
@@ -7805,7 +7805,10 @@
       "aiDesc": "OpenRouter (endast om du samtyckt till AI-behandling) - dina texter behandlas i USA",
       "analytics": "Felspårning:",
       "analyticsDesc": "Sentry (endast om du accepterat cookies) - för att identifiera och åtgärda tekniska problem",
-      "none": "Vi säljer aldrig dina personuppgifter till tredje part.",
+      "translateTitle": "Google Översätt — du slår på det själv",
+          "translateBody": "Globikonen högst upp översätter sidan till ett av tretton språk. Slår du på den skickas sidans text till Google — även det du själv har skrivit, till exempel ett dagboksinlägg du har öppet. Det sker bara när du valt ett språk, och du stänger av det genom att välja Svenska igen.",
+          "translateNoDpa": "Vi har inget personuppgiftsbiträdesavtal med Google för den här funktionen, till skillnad från biträdena ovan. Därför står den här och inte i listan. Portalen fungerar fullt ut på svenska och engelska utan att du slår på den.",
+          "none": "Vi säljer aldrig dina personuppgifter till tredje part.",
       "dpaOpenRouterNote": "AI-leverantör (USA, SCC + TIA)",
       "dpaSentryNote": "felövervakning (efter consent)"
     },

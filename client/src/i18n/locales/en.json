@@ -543,7 +543,7 @@
     "showOriginal": "Show original (Swedish)",
     "poweredByGoogle": "Powered by Google Translate",
     "machineTranslation": "Machine translation by Google",
-    "translationPrivacy": "When you translate, the page content is sent to Google for translation."
+    "translationPrivacy": "When you translate, the page content is sent to Google — including what you have written yourself, for example a diary entry you have open."
   },
   "dashboard": {
     "careerReadiness": {
@@ -7805,7 +7805,10 @@
       "aiDesc": "OpenRouter (only if you consent to AI processing) - your texts are processed in the USA",
       "analytics": "Error tracking:",
       "analyticsDesc": "Sentry (only if you accept cookies) - to identify and fix technical issues",
-      "none": "We never sell your personal data to third parties.",
+      "translateTitle": "Google Translate — you switch it on yourself",
+          "translateBody": "The globe icon at the top translates the page into one of thirteen languages. If you switch it on, the text on the page is sent to Google — including what you have written yourself, for example a diary entry you have open. This happens only when you have chosen a language, and you switch it off by choosing Swedish again.",
+          "translateNoDpa": "We do not have a data processing agreement with Google for this feature, unlike the processors listed above. That is why it is described here and not in that list. The portal works fully in Swedish and English without switching it on.",
+          "none": "We never sell your personal data to third parties.",
       "dpaOpenRouterNote": "AI provider (USA, SCC + TIA)",
       "dpaSentryNote": "error monitoring (after consent)"
     },

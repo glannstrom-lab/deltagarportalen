@@ -301,14 +301,20 @@ export function GoogleTranslate() {
               ))}
             </div>
 
-            {/* Footer — maskinöversättning + integritetsnotis (GDPR: sidans
-                innehåll skickas till Google vid översättning) */}
+            {/* Footer — maskinöversättning + integritetsnotis.
+                A34 (2026-09-01): notisen fanns, men var oläsbar och otydlig.
+                · Kontrast mätt: `text-stone-400` på vitt gav 2,52:1 och
+                  `dark:text-stone-500` på stone-900 gav 3,65:1 — båda under AA:s 4,5:1,
+                  och i 11 px. En upplysning om att text lämnar portalen får inte vara
+                  det minst läsbara i menyn.
+                · Texten sa "sidans innehåll", vilket den som står på Dagboken inte
+                  nödvändigtvis läser som "det jag själv har skrivit". Nu står det. */}
             <div className="px-4 py-2.5 border-t border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30">
-              <p className="text-xs text-stone-400 dark:text-stone-500 text-center">
+              <p className="text-xs font-medium text-stone-600 dark:text-stone-300 text-center">
                 {t('language.machineTranslation', 'Maskinöversättning via Google')}
               </p>
-              <p className="mt-1 text-[11px] text-stone-400 dark:text-stone-500 text-center leading-snug">
-                {t('language.translationPrivacy', 'När du översätter skickas sidans innehåll till Google för översättning.')}
+              <p className="mt-1 text-xs text-stone-600 dark:text-stone-300 text-center leading-snug">
+                {t('language.translationPrivacy', 'När du översätter skickas sidans innehåll till Google — även det du själv har skrivit, till exempel ett dagboksinlägg du har öppet.')}
               </p>
             </div>
           </div>

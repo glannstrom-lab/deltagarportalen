@@ -93,21 +93,48 @@ const ALLOWED_ORIGINS = [
     'http://localhost:5174',
     'http://localhost:3000',
   ] : []),
+  // Deployens egen URL. Vercel satter dessa per deployment - de kan inte sattas av
+  // nagon annans projekt, till skillnad fran den gamla namnmatchningen (A32).
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null,
+  process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : null,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null,
 ].filter(Boolean);
 
-function isVercelPreviewUrl(origin) {
-  if (!origin) return false;
-  return /^https:\/\/deltagarportal(en)?-[a-z0-9]+-[\w-]+\.vercel\.app$/.test(origin);
-}
+/**
+ * A32 (2026-09-01) - den gamla preview-regexen var forfalskningsbar.
+ *
+ * Den matchade VILKEN vercel.app-deploy som helst vars projektnamn borjar med
+ * `deltagarportal`. Vem som helst kan skapa ett Vercel-projekt med det namnet och far da
+ * en URL pa formen `deltagarportalen-<hash>-<egen-team-slug>.vercel.app`.
+ *
+ * Bevisat mot skarp drift 2026-09-01:
+ *   curl -i -X POST https://www.jobin.se/api/ai
+ *        -H 'Origin: https://deltagarportalen-abc123-evilteam.vercel.app'
+ *   -> Access-Control-Allow-Origin reflekterade angriparens origin,
+ *      och svaret bar dessutom credentials-rubriken.
+ * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se.)
+ *
+ * ATGARD: monstermatchningen ar borta. I stallet tillater varje deploy SIN EGEN URL,
+ * hamtad ur Vercels systemvariabler. De satts av plattformen per deployment och kan inte
+ * sattas av nagon annans projekt, sa previews fortsatter fungera medan gissningsytan ar noll.
+ *
+ * Credentials-rubriken ar ocksa borttagen. Portalen autentiserar med
+ * `Authorization: Bearer <supabase-token>` - en header, inte en cookie - och `credentials:`
+ * finns inte i nagon fetch i `client/src`. Rubriken gav alltsa ingen funktion, bara den
+ * egenskap som gor en reflekterad origin farlig.
+ *
+ * Vaktat av `client/src/test/cors-preview.test.ts`. Vakten matchar KODFORMEN med
+ * citattecken och kolon - inte det losa ordet, som ju star har i kommentaren. En vakt som
+ * matchar sin egen forklaring kan aldrig bli gron (lardomen fran 2026-08-21).
+ */
 
 function getCorsHeaders(requestOrigin) {
-  const isAllowed = ALLOWED_ORIGINS.includes(requestOrigin) || isVercelPreviewUrl(requestOrigin);
+  const isAllowed = ALLOWED_ORIGINS.includes(requestOrigin);
   const origin = isAllowed ? requestOrigin : ALLOWED_ORIGINS[0];
   return {
     'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Authorization, Content-Type',
-    'Access-Control-Allow-Credentials': 'true',
   };
 }
 

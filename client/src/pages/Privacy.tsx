@@ -178,6 +178,18 @@ export default function Privacy() {
               </ul>
             </div>
 
+            {/* A34 (2026-09-01): Google Översätt stod tidigare INTE här alls — Google
+                fanns bara som "opt-in Calendar-integration". Widgeten skickar sidans text
+                till Google, inklusive det användaren själv skrivit. Den ligger medvetet
+                UTANFÖR biträdeslistan ovan: den rutan säger "vi har skriftliga avtal med
+                alla biträden", och något art. 28-avtal för översättningswidgeten finns
+                inte. Att lägga in den där hade gjort listans egen mening osann. */}
+            <div className="mt-4 p-4 bg-stone-50 dark:bg-stone-700/30 rounded-lg border border-stone-200 dark:border-stone-700">
+              <p className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('privacy.sharing.translateTitle')}</p>
+              <p className="text-sm text-stone-600 dark:text-stone-300 mb-2">{t('privacy.sharing.translateBody')}</p>
+              <p className="text-sm text-stone-600 dark:text-stone-300">{t('privacy.sharing.translateNoDpa')}</p>
+            </div>
+
             <p className="mt-4 font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-3 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
               {t('privacy.sharing.none')}
             </p>
