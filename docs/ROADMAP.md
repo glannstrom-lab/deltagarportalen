@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -63,9 +63,16 @@ ersätta den river samtidigt riskbedömningen för fyra funktioner.** Terms mås
 - `consultant_placements` bär redan `employer_name`, `job_title`, `start_date`, `placement_type`
   och de två uppföljningsflaggorna. Den behöver en FK till företagskontot — inte en ny tabell.
 
-**Fälla att undvika:** `aiCompanySearchApi.ts` (156 rader + test) är en **andra, onåbar väg** till
-företagsuppslagning. Den levande vägen är `bolagsverketApi` → edge-funktionen `bolagsverket`.
-Bygg ingen tredje; radera paret i stället.
+**~~Fälla att undvika:~~ Rättat 2026-09-02 — premissen var fel.** Raden sa att `aiCompanySearchApi.ts`
+(156 rader + test) var "en andra, onåbar väg" som skulle raderas. Mätt: `pages/spontaneous/SearchTab.tsx:42`
+importerar den, `Spontaneous.tsx:68` renderar `SearchTab` som **standardfliken** på `/spontanansökan`, och
+`searchCompaniesWithAI` anropar edge-funktionen `ai-company-search`, som finns i drift och fick sin
+`aiGate`-grind i A23. Det är alltså den levande AI-sökningen på spontanansökningssidan. **Källan till felet
+var `client/scripts/dead-code.cjs`**, som klassade filen RADERA: importregexens teckenklass `[\w…]` är
+ASCII-only, och raden innehåller identifieraren `AiFöretagsfel`. Regexen är rättad (`\p{L}` + flaggan `u`);
+efteråt går RADERA från 93 till 91 filer. **Radera inte paret.** Två vägar till företagsuppslagning finns
+med flit: Bolagsverket för ett känt org.nr, Perplexity-sökningen för "vilka företag finns i min bransch nära
+mig". Bygg ingen tredje.
 
 **Notering utan åtgärdskrav:** `profile_shares.password_hash` finns som kolumn men läses aldrig i
 `get_shared_profile`. Inget UI påstår att länkar är lösenordsskyddade, så det är ingen lögn mot
@@ -165,7 +172,7 @@ inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
 > Alla tre posterna nedan är redan efterfrågade av konsulentvyn på egen hand, och de är samtidigt
 > grunden företagsytan står på. Blir företagsspåret försenat har ingenting varit förgäves.
 
-- [x] **AG1** ✅ **Klar 2026-08-31 — migrationen är körd. Verifierat mot prod 2026-09-01:** `consultant_work_placements` och `consultant_work_placement_followups` finns i `information_schema`, och båda står i `schema-snapshot.json`. **Praktikplatser i konsulentvyn.** **Gjort:** ny flik `PlatserTab.tsx`, servicelager `placeringarApi.ts`, tre komponenter (`PlaceringCard`, `PlaceringFormModal`, `PlaceringUppfoljningModal`) och `placeringLabels.ts`. **Kravbilden kom från Mikael som arbetskonsulent, inte från gissningar** — och den syns i schemat: alla fyra insatstyperna (`praktik`, `arbetstraning`, `arbetsprovning`, `subventionerad_anstallning`) är en styrande CHECK-kolumn, eftersom de har olika juridik och dokumentation. **Fysiska krav ligger som egna kolumner** — `lifting_required`, `standing_required`, `temperature_demands`, `noise_level`, `pace_level`, `shift_work` — inte som ett fritextfält bland andra, just för att det är det som oftast fäller en placering för målgruppen och sällan står nedskrivet. **Handledning modelleras från båda håll:** `participant_supervision_need` mot `workplace_supervision_capacity`, så det blir en matchning och inte en notering. `company_account_id` ligger nullbar och oanvänd, så etapp 1 inte kräver en ny migration. **Två RLS-policyer, och båda är medvetna:** konsulentens access kräver `EXISTS` mot `consultant_participants` — alltså en **aktiv** relation, vilket är precis felet som ligger öppet som KS2 — och **deltagaren ser sin egen plats**, vilket är motsatsen till journalfelet i KS4. **Portat från STA:** `sta_workplaces` (0 rader) hade rätt fältuppsättning men fel semantik (`af_submission_status`, `inriktning`), så den lämnades orörd och en ny tabell byggdes; uppföljningsmönstret (`week_number`, `attendance_pct`, `status` good/concerns/critical, `next_step`) är lånat rakt av från `sta_workplace_followups`. **10 tester**, alla gröna. *(Kvarstår:)* `attendance_pct` ska bytas mot avvikelsemodellen — se RM2 och Mikaels svar "avvikelsen är det viktiga" ovan. *(Var:)* **Praktikplatser i konsulentvyn.** En plats bär arbetsgivare, kontaktperson, period,
+- [x] **AG1** ✅ **Klar 2026-08-31 — migrationen är körd. Verifierat mot prod 2026-09-01:** `consultant_work_placements` och `consultant_work_placement_followups` finns i `information_schema`, och båda står i `schema-snapshot.json`. **Praktikplatser i konsulentvyn.** **Gjort:** ny flik `PlatserTab.tsx`, servicelager `placeringarApi.ts`, tre komponenter (`PlaceringCard`, `PlaceringFormModal`, `PlaceringUppfoljningModal`) och `placeringLabels.ts`. **Kravbilden kom från Mikael som arbetskonsulent, inte från gissningar** — och den syns i schemat: alla fyra insatstyperna (`praktik`, `arbetstraning`, `arbetsprovning`, `subventionerad_anstallning`) är en styrande CHECK-kolumn, eftersom de har olika juridik och dokumentation. **Fysiska krav ligger som egna kolumner** — `lifting_required`, `standing_required`, `temperature_demands`, `noise_level`, `pace_level`, `shift_work` — inte som ett fritextfält bland andra, just för att det är det som oftast fäller en placering för målgruppen och sällan står nedskrivet. **Handledning modelleras från båda håll:** `participant_supervision_need` mot `workplace_supervision_capacity`, så det blir en matchning och inte en notering. `company_account_id` ligger nullbar och oanvänd, så etapp 1 inte kräver en ny migration. **Två RLS-policyer, och båda är medvetna:** konsulentens access kräver `EXISTS` mot `consultant_participants` — alltså en **aktiv** relation, vilket är precis felet som ligger öppet som KS2 — och **deltagaren ser sin egen plats**, vilket är motsatsen till journalfelet i KS4. **Portat från STA:** `sta_workplaces` (0 rader) hade rätt fältuppsättning men fel semantik (`af_submission_status`, `inriktning`), så den lämnades orörd och en ny tabell byggdes; uppföljningsmönstret (`week_number`, `attendance_pct`, `status` good/concerns/critical, `next_step`) är lånat rakt av från `sta_workplace_followups`. **10 tester**, alla gröna. *(Kvarstår — migrationen skriven 2026-09-02, INTE körd:)* `attendance_pct` byts mot avvikelsemodellen i `supabase/migrations/20260902110000_rm2_placement_deviations.sql` — en rad per avvikelse (frånvaro/sen ankomst/tidig avgång/avbrott) med bedömd giltighet som eget fält (`giltig`/`ogiltig`/`obedomd`, default `obedomd` så en obedömd aldrig ser ut som ogiltig), plus `period_start`/`period_end` på uppföljningen och **DROP av `attendance_pct`**. Kräver Mikaels ja; koden i `PlaceringUppfoljningModal` och `placeringarApi` ändras i samma commit som körningen. Se RM2. *(Var:)* **Praktikplatser i konsulentvyn.** En plats bär arbetsgivare, kontaktperson, period,
   omfattning, uppgifter och handledare. Konsulenten kan lägga in en plats hon känner till, koppla
   en deltagare, och se vilka platser som är lediga. **Detta är det kommunala AME-behovet från KM1
   och det företag lättast säger ja till** — ett mycket lägre åtagande än en anställning. Ingen
@@ -177,7 +184,7 @@ inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
   överväger målgruppen, och den är värdefull för konsulenten och deltagaren oavsett företagskonto.
   **Regelverksregeln gäller hårt här:** aldrig belopp, procentsatser eller villkor ur minnet —
   visa vad som kan gälla och länka till AF för beslut, aldrig ett påhittat belopp · ~1 vecka
-- [x] **AG3 + KS1** ✅ **Klara 2026-08-31 — migrationen är körd. Verifierat mot prod 2026-09-01:** `consultant_placements.company_id` finns. **Skrivvägen till `consultant_placements` — och placeringsgraden som mätte fel sak.** **Gjort:** `PlacementDialog.tsx` anropar den befintliga `recordPlacement()`, som haft noll anropare sedan den skrevs. Dialogen är byggd som **tillgänglighetsförebild** för post KT1 — `role="dialog"`, `aria-modal`, etiketterade fält och `useFocusTrap` med Esc — eftersom de åtta befintliga dialogerna saknar allt det. **KPI-kortet räknar nu från `consultant_placements`, inte från `status === COMPLETED`.** Med noll placeringar visar det **`—` och "Inga placeringar än"**, aldrig `0 %` i rött. Uträkningen är utbruten till `computePlacementMetric()` — ren och exporterad, alltså testbar utifrån, samma grepp som gav `cohorts.ts` sina tester. **Uppföljningarna inkopplade:** `followupStatus()` räknar 3- och 6-månadersstatus ur `start_date` med injicerbar `now`; **saknas startdatum blir svaret `unknown`, aldrig ett gissat dagantal.** `updatePlacementFollowup()` har fått sin första anropare. **Bifynd:** `Placement`-interfacet saknade `notes`, trots att kolumnen funnits sedan basmigrationen — dialogens anteckningsfält hade tappats tyst av TypeScript. **19 nya tester**, bland dem en källkodsvakt som greppar anropsstället och låser det mot att regressera till `completedParticipants`. **Mutationstestat två gånger:** återinförd `completedParticipants` som källa fällde vakten; borttagen `—`-gren fällde nollplaceringstestet. Båda mutationerna verifierades applicerade före körning. *(Kvarstår:)* knappen hamnade i `AnalyticsTab.tsx:846` i stället för på deltagarens detaljsida, eftersom agentens filscope inte tillät den filen — **det är fel plats ur konsulentens perspektiv** (hon står på deltagarens sida när en placering blir av) och bör flyttas när ParticipantDetailPage är fri · ~30 min. *(Var:)* **Skrivvägen till `consultant_placements`.** Redan öppen som **KS1** — placeringen
+- [x] **AG3 + KS1** ✅ **Klara 2026-08-31 — migrationen är körd. Verifierat mot prod 2026-09-01:** `consultant_placements.company_id` finns. **Skrivvägen till `consultant_placements` — och placeringsgraden som mätte fel sak.** **Gjort:** `PlacementDialog.tsx` anropar den befintliga `recordPlacement()`, som haft noll anropare sedan den skrevs. Dialogen är byggd som **tillgänglighetsförebild** för post KT1 — `role="dialog"`, `aria-modal`, etiketterade fält och `useFocusTrap` med Esc — eftersom de åtta befintliga dialogerna saknar allt det. **KPI-kortet räknar nu från `consultant_placements`, inte från `status === COMPLETED`.** Med noll placeringar visar det **`—` och "Inga placeringar än"**, aldrig `0 %` i rött. Uträkningen är utbruten till `computePlacementMetric()` — ren och exporterad, alltså testbar utifrån, samma grepp som gav `cohorts.ts` sina tester. **Uppföljningarna inkopplade:** `followupStatus()` räknar 3- och 6-månadersstatus ur `start_date` med injicerbar `now`; **saknas startdatum blir svaret `unknown`, aldrig ett gissat dagantal.** `updatePlacementFollowup()` har fått sin första anropare. **Bifynd:** `Placement`-interfacet saknade `notes`, trots att kolumnen funnits sedan basmigrationen — dialogens anteckningsfält hade tappats tyst av TypeScript. **19 nya tester**, bland dem en källkodsvakt som greppar anropsstället och låser det mot att regressera till `completedParticipants`. **Mutationstestat två gånger:** återinförd `completedParticipants` som källa fällde vakten; borttagen `—`-gren fällde nollplaceringstestet. Båda mutationerna verifierades applicerade före körning. *(Rest stängd 2026-09-02:)* knappen låg i `AnalyticsTab.tsx` — fel plats, konsulenten står på deltagarens sida när en placering blir av. Flyttad till `ParticipantDetailPage.tsx`, bredvid "Boka möte", med `preselectedParticipant` så dialogen hoppar över deltagarsökningen; borttagen ur analysfliken. Nytt KA5-test i `ParticipantDetailPage.test.tsx`. *(Var:)* **Skrivvägen till `consultant_placements`.** Redan öppen som **KS1** — placeringen
   måste gå att registrera innan någon siffra om placeringar kan bli sann, och innan en
   arbetsgivarrelation har något att hänga på. Bygg den med en `company_id`-kolumn förberedd
   (nullbar), så att etapp 1 inte kräver en ny migration · se KS1
@@ -198,16 +205,38 @@ inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
   **Fynd på vägen, större än AG4 självt: 10 av 41 i18n-nycklar i `Terms.tsx` fanns inte i vare sig `sv.json` eller `en.json`.** Sidan renderade `t()`-anropens svenska fallback-argument, så den såg rätt ut på svenska och var **oöversatt på engelska** — och det gällde hela screening-förbudet, hela AI-ansvarsfriskrivningen och hela avsnittet om att wellness-funktionerna inte är vård, det som bär 1177, 112 och Mind Självmordslinjen. `sprakparitet.test.ts` kunde inte se det: den jämför `sv.json` mot `en.json`, och en nyckel som saknas i **båda** är osynlig. Alla 45 nycklar bor nu i båda filerna, och fem till av samma klass hittades och lagades på `Privacy.tsx`. Ny vakt: `client/src/test/juridiska-sidor-i18n.test.ts` (12 tester) kräver att varje nyckel på Terms, Privacy och AI-policy löser ut i båda språken, plus att förbudets och krisstödets bärande ord finns kvar.
   **Fälla i själva insättningen:** första försöket landade de tio nycklarna under `privacy` i stället för `terms`, eftersom ankaret `"lastUpdated"` förekommer fem gånger i filen. JSON:en förblev giltig och paritetsgrinden grön — båda filerna fick samma fel. Kontrollera att ett textankare är unikt (`s.count(anchor) == 1`) innan du sätter in något i en 8 000 rader lång locale-fil.
   *(Kvarstår:)* juridisk genomläsning — ROADMAP **A2** · ~1 dag ✅
-- [ ] **AG5** **Ny samtyckestyp för delning med arbetsgivare.** `consentApi.ts:58-64` har sex
-  typer (`terms`, `privacy`, `ai_processing`, `marketing`, `health_data`, `wellness_data`) — ingen
-  passar. En ny kräver migration i **båda** ändar: `grant_consent`/`withdraw_consent` har en
-  CASE-sats och en check-constraint. **Samtycket ska vara per delning och per mottagare**, inte en
-  generell brytare — det är vad valet "deltagaren godkänner varje delning" betyder tekniskt · ~1 dag
+- [ ] **AG5** **Omscopad 2026-09-02 — premissen höll inte.** Raden sa "ny samtyckestyp i
+  `grant_consent`/`withdraw_consent`". Mätt: CASE-satsen (`20260901110000_a30…sql:111-119`) mappar varje
+  typ till **en tidsstämpelkolumn på `profiles`** — en generell brytare per användare. Det är exakt det
+  raden själv sa att samtycket *inte* får vara. Ett samtycke per delning och per mottagare kan inte bo i
+  en profilkolumn; det måste bo i **en rad per delning**. **Ny form: förslagsraden är samtycket.**
+  `supabase/migrations/20260902100000_ag5_share_proposals.sql` (**INTE körd** — kräver Mikaels ja):
+  tabellen `employer_share_proposals` (plats + deltagare + konsulent, `show_*` med **DEFAULT false** på
+  allt — `profile_shares` har opt-out på fem av sex, det duger inte mot en arbetsgivare — presentationstext,
+  tillståndsmaskin `pending → accepted | declined`, `accepted → withdrawn`, utgångsdatum, visningstak);
+  `consent_history` får typen `employer_share` och en `reference_id` som pekar på förslaget, så
+  registret svarar på *vilket* samtycke, till *vem*, för *vad*; RPC:n `respond_to_share_proposal` är
+  deltagarens **enda** skrivväg (ingen UPDATE-policy för henne), fail closed, loggar `granted`/`withdrawn`
+  i samma transaktion — ett nej loggas inte som samtycke, förslagsraden är beviset. En trigger hindrar
+  konsulenten från att ändra fälten på ett redan besvarat förslag (bara tillbakadragning). **Ingen läsväg
+  för företag finns i migrationen** — den byggs i AG8 som en vitlistad SECURITY DEFINER-funktion. **Vid
+  körning:** `schema:refresh` + `grants:refresh` i samma commit, och `AUTH_TAK` 29 → 30 i
+  `lint-grants.cjs` med en rad i takloggen — det är deltagarens enda väg att svara, samma klass som
+  `grant_consent`. Därefter: `services/delningsforslagApi.ts` + deltagarens vy "Förfrågningar" ·
+  migration skriven, ~1 dag kod efter körning
 - [ ] **AG6** **Företagskonto och roll `EMPLOYER`.** `profiles.role` är en **text**-kolumn, inte
   enum, så själva rollen är gratis. Den verkliga kostnaden är mätt: **43 RLS-policyer** refererar
   `CONSULTANT`/`ADMIN` i sitt `qual`-uttryck, och `can_assign_role()` hårdkodar hierarkin i
   IF-satser. Varje policy måste gås igenom — en företagsanvändare får inte råka ärva något en
-  konsulent har. **Läs hela policyuppsättningen per tabell**, inte bara den nya raden ·
+  konsulent har. **Läs hela policyuppsättningen per tabell**, inte bara den nya raden.
+  *Mätt i prod 2026-09-02 som startpunkt:* **13 policyer namnger en roll ordagrant** i `qual`/`with_check`
+  (`admin_audit_log`, `audit_logs` ×2, `consent_history`, `consultant_participants` ×2,
+  `data_sharing_audit`, `interest_guide_history`, `invitations`, `login_attempts`, `profiles` ×2,
+  `writing_prompts`); resten av de 43 går via hjälpfunktioner (`is_admin_or_superadmin()`,
+  `can_assign_role()` m.fl.) — det är funktionerna som ska läsas först, för en ändring där slår
+  igenom överallt. Och `interest_guide_history` jämför mot **gemener** (`'consultant'`, `'superadmin'`)
+  medan alla andra jämför mot versaler — den policyn kan aldrig ha matchat en riktig rad. Egen rad:
+  verifiera och rätta i AG6, inte före ·
   ~1 vecka + migration
 - [ ] **AG7** **Företagsprofilen, byggd på det som finns.** Utöka `spontaneous_companies` med
   `company_account_id` i stället för en ny tabell. Företaget fyller i vad de gör, om de tar emot
@@ -243,6 +272,50 @@ B2B. Att konkurrera om arbetsgivarens *uppmärksamhet* är en annan marknad än 
 **Det som talar för spåret** är att ingen av dem gör något åt anställningsstödens krångel, och att
 praktikplatser är en bristvara kommunerna aktivt letar efter. Det är där dörren står öppen — inte
 i kandidatsökningen.
+
+---
+
+## Passering 2026-09-02 — AG-restposter, en premiss som föll och skriptet som fällde den
+
+> "Kör" efter AG4. Tre restposter i spår AG plus NÄSTA 3 ur uppdraget. Två av fyra visade sig ha fel
+> premiss vid granskningen, och den ena felpremissen kom från en grind vi litar på.
+
+### Gjort
+
+- **AG3-rest:** "Registrera placering" flyttad från analysfliken till deltagarens sida, förvald deltagare,
+  test. Se AG3.
+- **`dead-code.cjs` såg inte importrader med svenska tecken.** Teckenklassen `[\w*{}\n\r\t ,$]` är
+  ASCII-only. Blastradien mätt: **exakt en importrad** i `client/src` har å/ä/ö i identifierarlistan
+  (`AiFöretagsfel` i `SearchTab.tsx`) — men den ena raden räckte för att klassa 255 rader levande kod
+  som RADERA, och den klassningen blev en rad i den här planen. Rättad med `\p{L}\p{N}` + `u`.
+  Nåbara filer 570 → 571, RADERA 93 → 91.
+- **AG5 omscopad** och **RM2 konkretiserad** — två migrationsfiler skrivna, **ingen körd**. Se raderna.
+
+### Rättelser mot förra versionen
+
+- **NÄSTA 3 i uppdraget ("radera `aiCompanySearchApi.ts` + test") är avskriven.** Filen är
+  spontanansökningssidans standardflik, inte dödkod. Se rättelsen under "Premissgranskning" i spår AG.
+- **AG5 var fel form.** En samtyckestyp i `grant_consent` är per användare, inte per delning. Se AG5.
+- **AG6:** 13 av 43 policyer namnger rollen ordagrant; resten går via funktioner. Och
+  `interest_guide_history` jämför mot gemener. Se AG6.
+
+### Lärdomen
+
+En grind som klassar kod som död är en premissgenerator. `dead-code.cjs` skriver "dubbelkollad med
+namnsökning" i varje RADERA-rads motivering, men namngrinden (`GRIND_OMFANG`, rad ~430) söker **allt
+utom `client/src`** — grafen antas täcka src, så en lucka i grafens parser är osynlig för båda grindarna
+samtidigt. Och namngrinden körs bara med `--namngrind`/`--skriv`; torrkörningens lista bär ändå texten.
+**Innan en RADERA-rad blir en roadmap-punkt: `grep -rn "<filnamn>" client/src` för hand.** Två sekunder,
+och det hade fångat detta 2026-08-31.
+
+### Väntar på Mikael
+
+- **Ja/nej till att köra `20260902100000_ag5_share_proposals.sql`** (AG5). Efter ja: snapshotar,
+  `AUTH_TAK` 29 → 30, sedan API + deltagarens vy.
+- **Ja/nej till att köra `20260902110000_rm2_placement_deviations.sql`** (RM2). Droppar
+  `attendance_pct`; koden ändras i samma commit.
+- **Fortfarande öppet från 2026-08-31:** ring tre företag före AG6. Etapp 0 är byggd; etapp 1 kostar
+  veckor som blir fel mot en gissning.
 
 ---
 

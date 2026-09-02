@@ -32,6 +32,7 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
+import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
 import { cn } from '@/lib/utils'
 
@@ -279,6 +280,7 @@ export function ParticipantDetailPage() {
   const [showReportDraft, setShowReportDraft] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
+  const [showPlacementDialog, setShowPlacementDialog] = useState(false)
 
   // KV1/KK1: håller reda på VILKEN deltagare som senast begärdes. Varje
   // asynkron etapp i fetchParticipantData jämför mot den här innan den
@@ -755,6 +757,13 @@ export function ParticipantDetailPage() {
                   <Calendar className="w-4 h-4 mr-1" />
                   {t('consultant.communication.bookMeeting', 'Boka möte')}
                 </Button>
+                {/* AG3-rest (2026-09-02): knappen låg på analysfliken, där
+                    konsulenten fick söka fram samma person hon just lämnat.
+                    En placering blir av när hon står på deltagarens sida. */}
+                <Button variant="outline" size="sm" onClick={() => setShowPlacementDialog(true)}>
+                  <Briefcase className="w-4 h-4 mr-1" aria-hidden="true" />
+                  Registrera placering
+                </Button>
               </div>
             </div>
 
@@ -1000,6 +1009,17 @@ export function ParticipantDetailPage() {
           isOpen={showMeetingDialog}
           onClose={() => setShowMeetingDialog(false)}
           onSuccess={() => setShowMeetingDialog(false)}
+          preselectedParticipant={participant}
+        />
+      )}
+
+      {/* AG3/KS1: enda skrivvägen till consultant_placements. Flyttad hit
+          från AnalyticsTab 2026-09-02 — dialogen hoppar över deltagarsökningen. */}
+      {participant && (
+        <PlacementDialog
+          isOpen={showPlacementDialog}
+          onClose={() => setShowPlacementDialog(false)}
+          onSuccess={() => setShowPlacementDialog(false)}
           preselectedParticipant={participant}
         />
       )}

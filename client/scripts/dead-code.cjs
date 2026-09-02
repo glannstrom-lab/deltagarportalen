@@ -84,7 +84,12 @@ function utanKommentarer(kod) {
 
 const MONSTER = [
   // import x from '…' / import '…' / import type … from '…'
-  /\bimport\s+(?:type\s+)?(?:[\w*{}\n\r\t ,$]+from\s*)?['"]([^'"]+)['"]/g,
+  //
+  // \p{L} i stället för \w, med flaggan u: \w är ASCII-only, så en importrad
+  // med ett svenskt tecken i en identifierare (`AiFöretagsfel` i
+  // SearchTab.tsx) matchade aldrig, filen den importerade klassades RADERA,
+  // och den felklassningen blev en premiss i ROADMAP (spår AG, 2026-09-02).
+  /\bimport\s+(?:type\s+)?(?:[\p{L}\p{N}_*{}\n\r\t ,$]+from\s*)?['"]([^'"]+)['"]/gu,
   // export … from '…'  (inkl. export * from)
   /\bexport\s+(?:type\s+)?(?:\*|\{[^}]*\})\s*(?:as\s+\w+\s*)?from\s*['"]([^'"]+)['"]/g,
   // dynamisk import('…')

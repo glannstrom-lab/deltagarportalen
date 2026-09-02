@@ -262,6 +262,29 @@ describe('ParticipantDetailPage — KA5: möte och mål kan skapas från deltaga
       expect(screen.getAllByText('Anna Andersson').length).toBeGreaterThan(0)
     })
   })
+
+  // AG3-rest (2026-09-02): knappen låg tidigare på analysfliken, där
+  // konsulenten fick söka fram samma person hon just tittade på.
+  it('öppnar PlacementDialog förvald med rätt deltagare via "Registrera placering"', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: emptyJournal,
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    fireEvent.click(screen.getByRole('button', { name: /Registrera placering/i }))
+
+    // Dialogen hoppar över deltagarsökningen och står direkt på formuläret,
+    // med namnet synligt — sidhuvudet plus dialogen ger minst två träffar.
+    await screen.findByRole('heading', { name: 'Registrera placering' })
+    await waitFor(() => {
+      expect(screen.getAllByText('Anna Andersson').length).toBeGreaterThanOrEqual(2)
+    })
+  })
 })
 
 describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJournal ersätter den bara textarean', () => {

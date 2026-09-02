@@ -22,7 +22,6 @@ import {
   AlertTriangle,
   Calendar,
   ChevronRight,
-  Plus,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
@@ -33,7 +32,6 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
-import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
@@ -216,7 +214,6 @@ export function AnalyticsTab() {
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
-  const [showPlacementDialog, setShowPlacementDialog] = useState(false)
   const [cohortData, setCohortData] = useState<CohortData[]>([])
   const [placementRows, setPlacementRows] = useState<PlacementRow[]>([])
   const [stuckList, setStuckList] = useState<StuckParticipant[]>([])
@@ -762,10 +759,6 @@ export function AnalyticsTab() {
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowPlacementDialog(true)}>
-            <Plus className="w-4 h-4 mr-2" aria-hidden="true" />
-            Registrera placering
-          </Button>
           <Button variant="outline" onClick={() => handleExport('excel')}>
             <Download className="w-4 h-4 mr-2" />
             Excel
@@ -1216,16 +1209,6 @@ export function AnalyticsTab() {
         isOpen={showReportDialog}
         onClose={() => setShowReportDialog(false)}
         analyticsData={reportData}
-      />
-
-      {/* AG3/KS1: registrera placering — enda skrivvägen till consultant_placements */}
-      <PlacementDialog
-        isOpen={showPlacementDialog}
-        onClose={() => setShowPlacementDialog(false)}
-        onSuccess={() => {
-          setShowPlacementDialog(false)
-          fetchAnalytics()
-        }}
       />
     </div>
   )
