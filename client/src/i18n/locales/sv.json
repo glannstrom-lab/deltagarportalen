@@ -130,7 +130,12 @@
     "genericError": "Ett fel uppstod",
     "jobSearchActivity": "Jobbsök aktivitet",
     "noDataYet": "Ingen data än",
-    "noDataYetDesc": "Data visas när tillräckligt med information finns"
+    "noDataYetDesc": "Data visas när tillräckligt med information finns",
+    "processing": "Bearbetar...",
+    "generating": "Genererar...",
+    "optional": "valfritt",
+    "required": "Obligatorisk",
+    "copy": "Kopiera"
   },
   "riasec": {
     "realistic": "Realistisk",
@@ -475,8 +480,13 @@
       "account": "Konto",
       "action": "Översikt",
       "reflection": "Reflektion",
-      "outbound": "Utåtriktat"
-    }
+      "outbound": "Utåtriktat",
+      "admin": "Admin",
+      "consultant": "Konsulent"
+    },
+    "interview": "Intervju",
+    "brand": "Personligt varumärke",
+    "skills": "Kompetensgap"
   },
   "lugnare": {
     "rubrik": "Lugnare läge",
@@ -509,7 +519,8 @@
     "minimize": "Minimera sidomenyn",
     "expand": "Expandera sidomenyn",
     "consultantSection": "Konsulent",
-    "adminSection": "Admin"
+    "adminSection": "Admin",
+    "collapse": "Minimera"
   },
   "topbar": {
     "searchPlaceholder": "Sök jobb, artiklar...",
@@ -530,7 +541,9 @@
     "welcome": "Välkommen",
     "accessibility": "Tillgänglighet",
     "focusModeOn": "Slå på fokusläge",
-    "focusModeOff": "Stäng av fokusläge"
+    "focusModeOff": "Stäng av fokusläge",
+    "faq": "Vanliga frågor",
+    "viewProfile": "Visa profil"
   },
   "language": {
     "select": "Välj språk",
@@ -1800,7 +1813,8 @@
       "errors": {
         "writeFirst": "Skriv något först innan du använder AI-förbättring.",
         "aiCouldNotGenerate": "AI kunde inte generera ett svar.",
-        "couldNotContact": "Kunde inte kontakta AI-tjänsten."
+        "couldNotContact": "Kunde inte kontakta AI-tjänsten.",
+        "fillCVFirst": "Fyll i lite information om dig först (titel, erfarenhet eller kompetenser)"
       },
       "powerWords": {
         "wasResponsibleFor": "var ansvarig för",
@@ -1823,7 +1837,9 @@
         "analyzed": "analyserade",
         "fixed": "fixade",
         "solved": "löste"
-      }
+      },
+      "undo": "Ångra",
+      "undoReplacements": "Ångra ersättningar"
     },
     "quickMode": {
       "versionLabel": "Snabb-CV",
@@ -1897,7 +1913,26 @@
       "name": "Namn",
       "jobTitle": "Titel",
       "skills": "Kompetenser",
-      "editCV": "Redigera CV"
+      "editCV": "Redigera CV",
+      "analyzeError": "Kunde inte analysera annonsen just nu. Försök igen om en stund.",
+      "clickToAdd": "Klicka för att lägga till som kompetens",
+      "found": "Du har",
+      "help": "Vi analyserar nyckelord och föreslår förbättringar",
+      "missing": "Saknas i ditt CV",
+      "newAnalysis": "Analysera ny annons",
+      "noSavedJobs": "Du har inga sparade jobb ännu",
+      "pasteJob": "Klistra in jobbannonsen",
+      "pasteTab": "Klistra in",
+      "saveJobsHint": "Spara jobb från jobbsökningen för att använda dem här",
+      "savedTab": "Sparade jobb",
+      "scoreGood": "Bra matchning!",
+      "scoreLow": "Behöver anpassning",
+      "scoreMedium": "Kan förbättras",
+      "selectSavedJob": "Välj ett sparat jobb",
+      "subtitle": "Matcha ditt CV med en jobbannons",
+      "suggestions": "Förslag till din sammanfattning",
+      "watermarkType": "analys",
+      "saveRollback": "Kunde inte spara ändringen. Vi har återställt föregående version."
     },
     "welcome": {
       "title": "Välkommen till CV-byggaren",
@@ -1946,7 +1981,8 @@
         "company": "Företag",
         "readingTime": "{{min}} min läsning"
       }
-    }
+    },
+    "railTools": "CV-verktyg"
   },
   "focusCV": {
     "subtitle": "Steg-för-steg",
@@ -2479,7 +2515,9 @@
     "occupationPlaceholder": "T.ex. lagerarbetare, sjuksköterska",
     "sortLatestSaved": "Senast sparade",
     "sortCompanyAZ": "Företag A-Ö",
-    "markAsApplied": "Markera som ansökt"
+    "markAsApplied": "Markera som ansökt",
+    "endOfList": "Inga fler jobb att visa",
+    "loadingMore": "Laddar fler jobb…"
   },
   "jobs": {
     "card": {
@@ -4701,7 +4739,8 @@
         "start": "Starta",
         "continue": "Fortsätt",
         "reset": "Återställ",
-        "end": "Avsluta övning"
+        "end": "Avsluta övning",
+        "goodLength": "Bra längd"
       },
       "form": {
         "editTitle": "Redigera pitch",
@@ -4725,7 +4764,11 @@
         "addKeyPoint": "Lägg till nyckelpoäng",
         "removeKeyPoint": "Ta bort nyckelpoäng",
         "save": "Spara",
-        "cancel": "Avbryt"
+        "cancel": "Avbryt",
+        "overTarget": "{{sek}} sekunder längre än ditt mål",
+        "placeholdersLeft": "Texten innehåller platshållare inom hakparenteser — byt ut dem mot dina egna uppgifter innan du sparar.",
+        "saving": "Sparar …",
+        "underTarget": "{{sek}} sekunder kortare än ditt mål"
       },
       "view": {
         "seconds_one": "{{count}} sek",
@@ -4757,7 +4800,15 @@
           "title": "Avsluta med en fråga",
           "text": "Bjud in till dialog istället för att bara prata om dig själv."
         }
-      }
+      },
+      "confirmDeleteTitle": "Ta bort pitchen?",
+      "copyFailed": "Kunde inte kopiera. Markera texten och kopiera för hand.",
+      "deleteFailed": "Vi kunde inte ta bort pitchen. Den ligger kvar — försök igen om en stund.",
+      "deleted": "Pitchen är borttagen.",
+      "loadFailed": "Vi kunde inte hämta dina pitchar just nu. Det betyder inte att de är borta.",
+      "loading": "Hämtar dina pitchar …",
+      "saveFailed": "Vi kunde inte spara pitchen. Texten ligger kvar — försök igen om en stund.",
+      "saved": "Pitchen är sparad."
     },
     "audit": {
       "title": "Så ser du ut utifrån",
@@ -5146,7 +5197,8 @@
       "Lätt": "Lätt",
       "Medel": "Medel",
       "Utmanande": "Utmanande"
-    }
+    },
+    "errorLoadingExercises": "Kunde inte hämta övningarna"
   },
   "diary": {
     "editorialSpot": "Samla tankar, humör, mål och tacksamhet på ett ställe — i din egen takt.",
@@ -5762,7 +5814,12 @@
       "decline": "Nej tack",
       "goToSettings": "Ändra i inställningar",
       "privacyLink": "Läs mer i vår ",
-      "privacyPolicy": "integritetspolicy"
+      "privacyPolicy": "integritetspolicy",
+      "grantError": "Kunde inte spara samtycke",
+      "grantNow": "Ge samtycke",
+      "manageInSettings": "Hantera",
+      "requiredDesc": "Du måste ge samtycke för att kunna använda denna funktion",
+      "requiredTitle": "Samtycke krävs"
     }
   },
   "education": {
@@ -6253,7 +6310,9 @@
       "aboutMePlaceholder": "Berätta kort om dig själv...",
       "loadingProfile": "Laddar profil...",
       "errorLoading": "Fel vid laddning av profil:",
-      "errorSaving": "Fel vid sparande av profil:"
+      "errorSaving": "Fel vid sparande av profil:",
+      "firstNamePlaceholder": "T.ex. Anna",
+      "lastNamePlaceholder": "T.ex. Andersson"
     },
     "accessibility": {
       "title": "Tillgänglighet",
@@ -6329,7 +6388,17 @@
         "health": "Funktionsförutsättningar",
         "healthDesc": "Används för anpassade rekommendationer utifrån dina förutsättningar. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan fyllt i ligger kvar tills du raderar det.",
         "sharingStopFailed": "Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under \"Datadelning med konsulent\" nedan, eller hör av dig till oss.",
-        "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare."
+        "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare.",
+        "saveFailed": "Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund."
+      },
+      "aiToggle": {
+        "desc": "Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.",
+        "gdpr": "GDPR Art 21",
+        "pause": "Pausa AI",
+        "resume": "Slå på AI",
+        "statusOff": "AI-funktioner är pausade",
+        "statusOn": "AI-funktioner är aktiva",
+        "title": "Aktiv AI-användning"
       }
     },
     "deleteAccount": {
@@ -6498,6 +6567,12 @@
       "createAccountButton": "Skapa konto",
       "checkBothBoxesHint": "Bocka i båda samtyckes-rutorna ovan för att aktivera knappen.",
       "termsNotice": "Genom att skapa ett konto godkänner du våra användarvillkor."
+    },
+    "returnTo": {
+      "loginTool": "Logga in för att fortsätta till {{tool}}",
+      "loginGeneric": "Logga in för att fortsätta dit du var på väg",
+      "registerTool": "Skapa ett konto för att fortsätta till {{tool}}",
+      "registerGeneric": "Skapa ett konto för att fortsätta dit du var på väg"
     }
   },
   "ai": {
@@ -7432,7 +7507,8 @@
         "cta": "Skapa konto gratis",
         "bullet1": "Skapa CV på 5 minuter",
         "bullet2": "Träna inför intervjun",
-        "bullet3": "Hitta jobb från Platsbanken"
+        "bullet3": "Hitta jobb från Platsbanken",
+        "guides": "Eller läs guiderna först — utan konto"
       },
       "consultant": {
         "tag": "Arbetskonsulent",
@@ -7730,7 +7806,24 @@
       "createAccount": "Skapa konto",
       "copyright": "2026 Jobin. Alla rättigheter förbehållna.",
       "madeWith": "Skapad med",
-      "forJobSeekers": "för arbetssökande i Sverige"
+      "forJobSeekers": "för arbetssökande i Sverige",
+      "accessibility": "Tillgänglighet",
+      "aiPolicy": "AI-policy",
+      "allTools": "Alla verktyg",
+      "coverLetter": "Personligt brev",
+      "guidesTitle": "Guider",
+      "skillsAnalysis": "Kompetensanalys"
+    },
+    "guides": {
+      "all": "Alla guider",
+      "description": "Guider om att söka jobb, klara intervjun, förstå dina rättigheter och orka hela vägen. Gratis att läsa, utan konto.",
+      "easySwedish": "Lätt svenska",
+      "interview": "Intervju",
+      "jobSearch": "Söka jobb",
+      "rights": "Dina rättigheter",
+      "support": "Stöd och anpassningar",
+      "title": "Läs innan du bestämmer dig",
+      "wellbeing": "Orka och må bra"
     }
   },
   "privacy": {
@@ -8422,7 +8515,8 @@
       "support": "Stöd & Mål",
       "supportShort": "Stöd",
       "settings": "Inställningar",
-      "settingsShort": "Mer"
+      "settingsShort": "Mer",
+      "nextStep": "Att fylla i"
     },
     "header": {
       "welcome": "Välkommen!",
@@ -9673,7 +9767,8 @@
       "title": "Profilbild",
       "description": "Lägg till en professionell profilbild för att göra ditt CV mer personligt",
       "mustBeLoggedIn": "Du måste vara inloggad för att ladda upp bilder",
-      "uploadFailed": "Uppladdning misslyckades: "
+      "uploadFailed": "Uppladdning misslyckades: ",
+      "uploading": "Laddar upp..."
     },
     "fields": {
       "firstName": "Förnamn *",
@@ -9681,7 +9776,8 @@
       "jobTitle": "Yrkestitel",
       "email": "E-post",
       "phone": "Telefon",
-      "location": "Ort"
+      "location": "Ort",
+      "languageLevel": "Språknivå"
     },
     "placeholders": {
       "firstName": "Anna",
@@ -9689,7 +9785,8 @@
       "jobTitle": "Erfaren säljare",
       "email": "anna@email.se",
       "phone": "070-123 45 67",
-      "location": "Stockholm"
+      "location": "Stockholm",
+      "language": "Språk"
     },
     "summary": {
       "title": "Sammanfattning",
@@ -9727,7 +9824,9 @@
       "preview": "Förhandsvisning",
       "restore": "Återställ",
       "cancel": "Avbryt",
-      "clearDemoData": "Ta bort exempeldata"
+      "clearDemoData": "Ta bort exempeldata",
+      "fill": "Fyll i",
+      "remove": "Ta bort"
     },
     "versions": {
       "beforeImport": "Säkerhetskopia innan import",
@@ -9765,8 +9864,36 @@
       "demoDataFilled": "Exempeldata ifylld i de tomma fälten. Ersätt gärna med dina egna uppgifter innan du sparar eller skickar CV:t vidare.",
       "demoDataCleared": "Exempeldata borttagen.",
       "demoDataBannerTitle": "Exempeldata ifylld",
-      "demoDataBannerBody": "Det här är fortfarande exempeltext, inte dina egna uppgifter: {{fields}}. Ersätt det innan du sparar eller skickar CV:t vidare."
-    }
+      "demoDataBannerBody": "Det här är fortfarande exempeltext, inte dina egna uppgifter: {{fields}}. Ersätt det innan du sparar eller skickar CV:t vidare.",
+      "demoDataTitle": "Fyll i exempeldata",
+      "draftRestored": "Vi hittade ändringar som inte hann sparas och lade tillbaka dem."
+    },
+    "contentOverview": "Innehåll i ditt CV",
+    "loading": "Laddar...",
+    "progress": {
+      "done": "{{klara}} av {{totalt}} delar klara",
+      "left": "Ungefär {{min}} minuter kvar",
+      "notStarted": "Du har inte börjat än. Första delen tar ett par minuter — du kan avbryta när du vill, allt sparas."
+    },
+    "review": {
+      "a4Note": "Förhandsgranskning i A4-format",
+      "actionsDesc": "Ditt CV är sparat i molnet. Ladda ner som PDF eller skapa en versionssäkring att gå tillbaka till.",
+      "actionsTitle": "Klar?",
+      "checklistTitle": "Innehåll i ditt CV",
+      "editHint": "Om en sektion bryts olämpligt — gå tillbaka och redigera. Den streckade linjen visar exakt var sida 2 börjar.",
+      "exportWord": "Ladda ner Word",
+      "missingHint": "Ofyllda sektioner är inte krav — du kan ladda ner ändå.",
+      "pageBreak": "Sida 2 börjar här",
+      "subtitle": "Här är ditt CV. Allt sparas automatiskt — ladda ner när du är nöjd.",
+      "title": "Granska och spara ditt CV",
+      "wordError": "Kunde inte skapa Word-fil",
+      "wordSuccess": "Word-fil nedladdad"
+    },
+    "tabs": {
+      "advice": "Råd",
+      "preview": "Förhandsvisning"
+    },
+    "yourCv": "Ditt CV"
   },
   "consultant": {
     "title": "Konsultportal",
@@ -9905,13 +10032,21 @@
         "name": "Namn",
         "cvScore": "CV-poäng",
         "lastContact": "Senast kontakt",
-        "status": "Status"
+        "status": "Status",
+        "setAscending": "Sortera stigande",
+        "setDescending": "Sortera fallande"
       },
       "bulk": {
         "sendMessage": "Skicka meddelande",
         "addTag": "Lägg till tagg",
         "changeStatus": "Ändra status",
         "export": "Exportera"
+      },
+      "inviteFirst": "Bjud in din första deltagare",
+      "selectParticipant": "Välj {{firstName}} {{lastName}}",
+      "view": {
+        "grid": "Rutnätsvy",
+        "list": "Listvy"
       }
     },
     "participantDetail": {
@@ -9967,7 +10102,8 @@
       "notePlaceholder": "Skriv en anteckning om deltagaren...",
       "activeGoalsCount": "{{count}} aktiva mål",
       "writeNote": "Skriv anteckning",
-      "reportDraft": "Rapportutkast (AI)"
+      "reportDraft": "Rapportutkast (AI)",
+      "loadError": "Det gick inte att hämta deltagarens uppgifter."
     },
     "analytics": {
       "dateRange": {
@@ -10112,7 +10248,10 @@
       "writeReply": "Skriv ditt svar...",
       "sending": "Skickar...",
       "sendReply": "Skicka svar",
-      "confirmCancelMeeting": "Är du säker på att du vill avboka detta möte?"
+      "confirmCancelMeeting": "Är du säker på att du vill avboka detta möte?",
+      "conversations": "Konversationer",
+      "selectConversation": "Välj en konversation",
+      "selectConversationDesc": "Klicka på en konversation till vänster eller starta ett nytt meddelande."
     },
     "resources": {
       "goalTemplates": "Målmallar",
@@ -10398,7 +10537,10 @@
       "send": "Skicka",
       "download": "Ladda ner",
       "apply": "Tillämpa",
-      "changeStatus": "Ändra status"
+      "changeStatus": "Ändra status",
+      "logContact": "Logga kontakt",
+      "logContactAction": "Logga kontakt",
+      "logContactDescription": "Registrerar dagens datum som senaste kontakt för alla valda deltagare. Använd det här efter en workshop eller ett samlat utskick — inte i stället för en anteckning om vad ni pratade om."
     },
     "stats": {
       "totalParticipants": "Totalt antal deltagare",
@@ -10522,7 +10664,8 @@
   },
   "layout": {
     "pageTabs": {
-      "selectPage": "Välj sida"
+      "selectPage": "Välj sida",
+      "mobileNav": "Sidor"
     },
     "bottomBar": {
       "cvScore": "CV-poäng",
@@ -10740,7 +10883,9 @@
       "recording": "Lyssnar...",
       "speak": "Läs upp",
       "stopSpeaking": "Stoppa uppläsning",
-      "notSupported": "Röstfunktioner stöds inte i denna webbläsare"
+      "notSupported": "Röstfunktioner stöds inte i denna webbläsare",
+      "error": "Något gick fel med rösten",
+      "permissionDenied": "Mikrofonåtkomst nekades"
     },
     "export": {
       "toPdf": "Exportera till PDF",
@@ -11267,7 +11412,8 @@
       "interestsTitle": "Vad gillar du att göra?",
       "strengthsHint": "Något du gör utan att tänka på det.",
       "strengthsPlaceholder": "t.ex. lyssna på andra, lösa problem, vara noga med detaljer",
-      "strengthsTitle": "Vad är du extra bra på?"
+      "strengthsTitle": "Vad är du extra bra på?",
+      "saveFailed": "Kunde inte spara det du skrev. Försök igen."
     },
     "interview": {
       "answerHint": "Det finns inget rätt eller fel — bara träning.",
@@ -11302,7 +11448,9 @@
       "queryPlaceholder": "t.ex. lärare, lager, kock",
       "queryTitle": "Vilket jobb letar du efter?",
       "resultsTitle": "Här är jobben vi hittade",
-      "searchError": "Något gick fel. Prova igen."
+      "searchError": "Något gick fel. Prova igen.",
+      "saveJob": "Spara jobb",
+      "unsaveJob": "Ta bort från sparade jobb"
     },
     "jobsokHub": {
       "question": "Vad i jobbsökandet vill du göra?"
@@ -11351,7 +11499,17 @@
       "doneTitle": "Klart!",
       "taglineHint": "Vad är du bra på? Hur hjälper du andra?",
       "taglinePlaceholder": "t.ex. Jag är en noggrann administratör som hjälper team att hålla ordning.",
-      "taglineTitle": "En kort mening om dig"
+      "taglineTitle": "En kort mening om dig",
+      "closeCta": "Stäng",
+      "copied": "Kopierad",
+      "copy": "Kopiera texten",
+      "copyFailed": "Kunde inte kopiera. Markera texten och kopiera för hand.",
+      "doneHint": "Läs igenom. Vi sparar den bland dina pitchar.",
+      "saveCta": "Spara texten",
+      "saveFailed": "Kunde inte spara texten. Den ligger kvar här — försök igen.",
+      "saveHint": "Tryck på Spara texten så finns den kvar bland dina pitchar.",
+      "savedText": "Sparad bland dina pitchar. Du hittar den under Personligt varumärke i normalläge.",
+      "savedTitle": "Om mig — skriven i fokusläge"
     },
     "profile": {
       "doneText": "Bra jobbat! Du kan alltid uppdatera dina uppgifter senare under Profil.",
@@ -11427,7 +11585,8 @@
       "reasonHint": "Ett ord eller en mening räcker. Du kan hoppa över.",
       "reasonPlaceholder": "t.ex. sov dåligt, mycket att tänka på",
       "reasonTitle": "Vad tror du beror det på?",
-      "savedText": "Tack — sparat i din dagbok."
+      "savedText": "Tack — sparat i din dagbok.",
+      "saveFailed": "Din incheckning kunde inte sparas just nu. Det du skrivit finns kvar — prova igen om en liten stund."
     },
     "exit": "Avsluta fokusläge",
     "exitShort": "Avsluta fokus",
@@ -11802,6 +11961,14 @@
       "salary": {
         "title": "Lön & förhandling",
         "description": "Förbered dig på lönesamtal och förhandlingar."
+      },
+      "international": {
+        "description": "Validering av din utbildning, första tiden här och svenskan.",
+        "title": "Ny i Sverige"
+      },
+      "linkedin": {
+        "description": "Få din LinkedIn-profil att synas för rekryterare.",
+        "title": "LinkedIn-optimering"
       }
     }
   },
@@ -11923,7 +12090,8 @@
       "closeIntro": "Stäng introduktionen",
       "editActivityScope": "Ändra aktivitetsomfattning",
       "adjustStartDate": "Justera startdatum"
-    }
+    },
+    "title": "Steg till arbete"
   },
   "coachWidget": {
     "aria": {
@@ -12207,5 +12375,30 @@
     "footer": {
       "text": "Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Se \"Hur bedömningen är gjord\" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen."
     }
+  },
+  "onboarding": {
+    "back": "Tillbaka",
+    "nextStep": "Nästa",
+    "skip": "Hoppa över",
+    "stepProgress": "Steg {{current}} av {{total}}"
+  },
+  "radgivare": {
+    "faq": "Vanliga frågor",
+    "moreTips": "{{count}} råd till",
+    "panelLabel": "Råd för den här sidan",
+    "tipFrom": "Råd från {{namn}}"
+  },
+  "network": {
+    "description": "Bygg och underhåll ditt professionella kontaktnät",
+    "title": "Nätverk"
+  },
+  "hubBottomNav": {
+    "label": "Hubnavigering"
+  },
+  "routeAnnouncer": {
+    "navigated": "Du är nu på {{page}}"
+  },
+  "sidRail": {
+    "sidoflikAnnonsering": "Visar nu {{section}}"
   }
 }

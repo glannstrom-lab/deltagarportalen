@@ -29,7 +29,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
-import { LoadingState } from '@/components/ui/LoadingState'
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
@@ -48,7 +48,9 @@ interface DashboardStats {
   activeParticipants: number
   needsAttention: number
   completedCV: number
-  averageProgress: number
+  // KV5: null när ingen deltagare har en ATS-poäng ännu — inte 0. Ett
+  // saknat värde är inte samma sak som ett dåligt värde.
+  averageProgress: number | null
   meetingsThisWeek: number
   pendingMessages: number
   goalsCompleted: number
@@ -244,12 +246,15 @@ export function OverviewTab() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+  // KS7: ett fel vid hämtning ska aldrig se ut som "inga deltagare" — eget
+  // läge, skilt från loading och från den tomma dashboarden.
+  const [error, setError] = useState<string | null>(null)
   const [stats, setStats] = useState<DashboardStats>({
     totalParticipants: 0,
     activeParticipants: 0,
     needsAttention: 0,
     completedCV: 0,
-    averageProgress: 0,
+    averageProgress: null,
     meetingsThisWeek: 0,
     pendingMessages: 0,
     goalsCompleted: 0,
@@ -286,6 +291,7 @@ export function OverviewTab() {
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
+      setError(null)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
@@ -349,6 +355,19 @@ export function OverviewTab() {
           p.has_cv && (p.ats_score || 0) >= 70
         )
 
+        // KV5: snittet ska tas över dem som FAKTISKT har en ATS-poäng — en
+        // deltagare utan CV eller utan analyserat CV har `ats_score: null`,
+        // och att räkna null som 0 drar ner snittet mot noll ju fler
+        // ej-startade deltagare konsulenten har, vilket inte säger något om
+        // CV-kvaliteten hos dem som faktiskt skickat in ett CV.
+        const participantsWithAtsScore = participantsData.filter(p => p.ats_score != null)
+        const averageAtsScore = participantsWithAtsScore.length > 0
+          ? Math.round(
+              participantsWithAtsScore.reduce((acc, p) => acc + (p.ats_score || 0), 0) /
+              participantsWithAtsScore.length
+            )
+          : null
+
         // Calculate goals stats
         const completedGoals = goalsData?.filter(g => g.status === 'COMPLETED').length || 0
         const overdueGoals = goalsData?.filter(g =>
@@ -360,10 +379,7 @@ export function OverviewTab() {
           activeParticipants: active.length,
           needsAttention: needsAttention.length,
           completedCV: completedCV.length,
-          averageProgress: Math.round(
-            participantsData.reduce((acc, p) => acc + (p.ats_score || 0), 0) /
-            Math.max(participantsData.length, 1)
-          ),
+          averageProgress: averageAtsScore,
           meetingsThisWeek: meetingsData?.length || 0,
           pendingMessages: messagesData?.length || 0,
           goalsCompleted: completedGoals,
@@ -499,7 +515,10 @@ export function OverviewTab() {
               type: 'login' as const,
               participantName: `${p.first_name} ${p.last_name}`,
               participantId: p.participant_id,
-              description: t('consultant.overview.activity.loggedIn'),
+              // KV6-S: `last_login` kommer ur vyns `p.updated_at AS last_login`
+              // (profiles.updated_at) — INTE en riktig inloggningslogg. "Loggade
+              // in" påstod något portalen inte kan mäta. Se title på raden nedan.
+              description: 'Profilen ändrades senast',
               timestamp: p.last_login!,
             }))
           setRecentActivity(recentLogins)
@@ -562,6 +581,10 @@ export function OverviewTab() {
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
       notifications.error(t('consultant.analytics.loadError'))
+      // KS7: ett fel får aldrig se ut som "inga deltagare" — utan det här
+      // stannar `stats` på sina initiala nollor och renderar en dashboard
+      // som ser exakt ut som en konsulent utan deltagare.
+      setError('Översikten kunde inte hämtas. Kontrollera anslutningen och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -569,6 +592,20 @@ export function OverviewTab() {
 
   if (loading) {
     return <LoadingState type="dashboard" />
+  }
+
+  // Fel är ett eget läge, skilt från laddning och från en verkligt tom
+  // dashboard (KS7) — samma mönster som ParticipantDetailPage (KV1).
+  if (error) {
+    return (
+      <Card className="p-8">
+        <ErrorState
+          title="Översikten kunde inte hämtas"
+          message={error}
+          onRetry={fetchDashboardData}
+        />
+      </Card>
+    )
   }
 
   return (
@@ -602,12 +639,24 @@ export function OverviewTab() {
           status={stats.needsAttention === 0 ? 'green' : stats.needsAttention <= 3 ? 'yellow' : 'red'}
           onClick={() => navigate('/consultant/participants?filter=attention')}
         />
+        {/* KV5: "CV-kvalitet" delades med AnalyticsTab, som visar ett HELT
+            annat tal (andelen med CV) under samma ord. Det här kortet mäter
+            snittet av ATS-poäng bland dem som faktiskt HAR en — hårdkodad
+            etikett i stället för den delade i18n-nyckeln, så de två inte
+            längre kan se ut som samma mätvärde. */}
         <KPICard
-          title={t('consultant.overview.cvQuality')}
-          value={`${stats.averageProgress}%`}
-          subtitle={t('consultant.overview.completeCvs', { count: stats.completedCV })}
+          title="Snitt ATS-poäng"
+          value={stats.averageProgress !== null ? `${stats.averageProgress}%` : '—'}
+          subtitle={
+            stats.averageProgress !== null
+              ? t('consultant.overview.completeCvs', { count: stats.completedCV })
+              : 'Ingen ATS-poäng ännu'
+          }
           icon={FileText}
-          status={stats.averageProgress >= 70 ? 'green' : stats.averageProgress >= 50 ? 'yellow' : 'red'}
+          status={
+            stats.averageProgress === null ? 'neutral' :
+            stats.averageProgress >= 70 ? 'green' : stats.averageProgress >= 50 ? 'yellow' : 'red'
+          }
           onClick={() => navigate('/consultant/analytics')}
         />
         <KPICard
@@ -747,7 +796,10 @@ export function OverviewTab() {
                       <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
                         {activity.participantName}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                      <p
+                        className="text-sm text-stone-500 dark:text-stone-400"
+                        title={activity.type === 'login' ? 'Visar när profilen senast ändrades — portalen har ingen riktig inloggningslogg.' : undefined}
+                      >
                         {activity.description}
                       </p>
                     </div>

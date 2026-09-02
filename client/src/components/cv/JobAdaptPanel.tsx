@@ -13,6 +13,7 @@ import {
   Bookmark, ClipboardPaste
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { skillName } from '@/services/cvOptimizer'
 import type { CVData } from '@/services/supabaseApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { callAI } from '@/services/aiApi'
@@ -51,10 +52,11 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
   // Hämta sparade jobb
   const { savedJobs, isLoaded: savedJobsLoaded } = useSavedJobs()
 
-  // Skapa CV-text för matchning
+  // Skapa CV-text för matchning. CB5: `s.name` rakt av gav ordet "undefined"
+  // för kompetensposter i strängform — `skillName` läser båda formerna.
   const cvText = [
     cvData.summary || '',
-    cvData.skills?.map(s => s.name).join(' ') || '',
+    cvData.skills?.map(skillName).join(' ') || '',
     cvData.workExperience?.map(w => `${w.title} ${w.description}`).join(' ') || '',
     cvData.title || ''
   ].join(' ').toLowerCase()

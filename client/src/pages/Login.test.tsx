@@ -44,9 +44,9 @@ vi.mock('@/components/ui/OptimizedImage', () => ({
   ),
 }))
 
-function renderLogin() {
+function renderLogin(initialPath = '/login') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[initialPath]}>
       <Login />
     </MemoryRouter>
   )
@@ -116,5 +116,30 @@ describe('Login', () => {
     expect(screen.getByRole('status')).toBeInTheDocument()
     // Form ska inte renderas under laddning
     expect(screen.queryByLabelText(/e-post/i)).not.toBeInTheDocument()
+  })
+
+  // KO2: subtiteln ska säga VART hon var på väg när returnTo finns i URL:en,
+  // i stället för det generiska "Logga in för att fortsätta".
+  describe('returnTo-subtitel (KO2)', () => {
+    it('nämner verktygets namn för ett känt mål', () => {
+      renderLogin('/login?returnTo=%2Fcv')
+      expect(screen.getByText(/fortsätta till CV/i)).toBeInTheDocument()
+      expect(screen.queryByText('Logga in för att fortsätta')).not.toBeInTheDocument()
+    })
+
+    it('visar en neutral rad för ett okänt men säkert mål', () => {
+      renderLogin('/login?returnTo=%2Fnagon-okand-sida')
+      expect(screen.getByText(/fortsätta dit du var på väg/i)).toBeInTheDocument()
+    })
+
+    it('visar den generiska subtiteln utan returnTo', () => {
+      renderLogin('/login')
+      expect(screen.getByText('Logga in för att fortsätta')).toBeInTheDocument()
+    })
+
+    it('visar den generiska subtiteln när returnTo är en osäker (extern) länk', () => {
+      renderLogin('/login?returnTo=' + encodeURIComponent('https://ondsajt.se'))
+      expect(screen.getByText('Logga in för att fortsätta')).toBeInTheDocument()
+    })
   })
 })

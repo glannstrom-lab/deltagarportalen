@@ -21,6 +21,11 @@ export function ProgressBars({ items }: ProgressBarsProps) {
             </div>
             <div className="h-2.5 bg-stone-100 rounded-full overflow-hidden">
               <div
+                role="progressbar"
+                aria-valuenow={item.value}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={item.label}
                 className={`h-full rounded-full transition-all duration-500 ${item.color}`}
                 style={{ width: `${item.value}%` }}
               />

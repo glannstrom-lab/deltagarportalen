@@ -59,12 +59,35 @@ export interface ParticipantRisk {
 }
 
 /**
+ * KV2 (2026-09-02): `consultant_dashboard_participants` har `first_name`/
+ * `last_name` — ALDRIG `name` (verifierat mot `supabase/schema-snapshot.json`).
+ * Varje `.name`-läsning i den här filen returnerade alltså `undefined` och
+ * föll ner på "Deltagare" för samtliga insikter och risker, oavsett deltagare.
+ */
+function formatParticipantName(row: { first_name?: string | null; last_name?: string | null } | null | undefined): string {
+  if (!row) return 'Deltagare'
+  const namn = `${row.first_name ?? ''} ${row.last_name ?? ''}`.trim()
+  return namn || 'Deltagare'
+}
+
+export interface ParticipantInsightsResult {
+  insights: ParticipantInsight[]
+  /**
+   * true om mål-baserade insikter (goal_at_risk/milestone_overdue) inte
+   * kunde hämtas eller bearbetas. Deltagar-baserade insikter (engagement_drop,
+   * cv_improvement, ready_for_jobs, high_performer) visas ändå — en trasig
+   * källa ska inte fälla de andra (KV2).
+   */
+  goalInsightsFailed: boolean
+}
+
+/**
  * Generate AI-driven insights about participants
  */
 export async function generateParticipantInsights(
   consultantId: string,
   limit: number = 10
-): Promise<ParticipantInsight[]> {
+): Promise<ParticipantInsightsResult> {
   const insights: ParticipantInsight[] = []
 
   // Fetch participants with their data
@@ -75,11 +98,13 @@ export async function generateParticipantInsights(
     .eq('status', 'ACTIVE')
 
   if (participantsError) throw participantsError
-  if (!participants) return insights
+  if (!participants) return { insights, goalInsightsFailed: false }
 
     const now = new Date()
 
     for (const participant of participants) {
+      const participantName = formatParticipantName(participant)
+
       // Check for engagement drop
       if (participant.last_login) {
         const daysSinceLogin = Math.floor(
@@ -89,10 +114,10 @@ export async function generateParticipantInsights(
         if (daysSinceLogin > 7) {
           insights.push({
             participantId: participant.user_id,
-            participantName: participant.name || 'Deltagare',
+            participantName,
             type: 'engagement_drop',
             priority: daysSinceLogin > 14 ? 'high' : 'medium',
-            title: `${participant.name || 'Deltagare'} har inte loggat in på ${daysSinceLogin} dagar`,
+            title: `${participantName} har inte loggat in på ${daysSinceLogin} dagar`,
             description: 'Överväg att ta kontakt för att återengagera deltagaren.',
             actionLabel: 'Skicka påminnelse',
             actionPath: `/consultant/participants/${participant.user_id}`,
@@ -106,10 +131,10 @@ export async function generateParticipantInsights(
       if (participant.ats_score !== null && participant.ats_score < 50) {
         insights.push({
           participantId: participant.user_id,
-          participantName: participant.name || 'Deltagare',
+          participantName,
           type: 'cv_improvement',
           priority: participant.ats_score < 30 ? 'high' : 'medium',
-          title: `${participant.name || 'Deltagare'} har ett CV som behöver förbättras`,
+          title: `${participantName} har ett CV som behöver förbättras`,
           description: `CV-poäng är ${participant.ats_score}%. Hjälp till med att förbättra nyckelområden.`,
           actionLabel: 'Se CV-analys',
           actionPath: `/consultant/participants/${participant.user_id}?tab=cv`,
@@ -122,10 +147,10 @@ export async function generateParticipantInsights(
       if (participant.ats_score >= 70 && participant.saved_jobs_count === 0) {
         insights.push({
           participantId: participant.user_id,
-          participantName: participant.name || 'Deltagare',
+          participantName,
           type: 'ready_for_jobs',
           priority: 'medium',
-          title: `${participant.name || 'Deltagare'} har ett starkt CV men söker inga jobb`,
+          title: `${participantName} har ett starkt CV men söker inga jobb`,
           description: 'CV är redo - uppmuntra till aktiv jobbsökning.',
           actionLabel: 'Diskutera jobbsökning',
           actionPath: `/consultant/participants/${participant.user_id}`,
@@ -138,10 +163,10 @@ export async function generateParticipantInsights(
       if (participant.ats_score >= 85 && participant.saved_jobs_count > 5) {
         insights.push({
           participantId: participant.user_id,
-          participantName: participant.name || 'Deltagare',
+          participantName,
           type: 'high_performer',
           priority: 'low',
-          title: `${participant.name || 'Deltagare'} visar utmärkta framsteg`,
+          title: `${participantName} visar utmärkta framsteg`,
           description: 'Överväg att erbjuda avancerade resurser eller intervjuträning.',
           actionLabel: 'Se profil',
           actionPath: `/consultant/participants/${participant.user_id}`,
@@ -151,14 +176,21 @@ export async function generateParticipantInsights(
       }
     }
 
-  // Fetch goals at risk
-  const { data: goals, error: goalsError } = await supabase
-    .from('consultant_goals')
-    .select('*, participant:consultant_dashboard_participants!inner(name, user_id)')
-    .eq('consultant_id', consultantId)
-    .eq('status', 'IN_PROGRESS')
+  // Fetch goals at risk. KV2: den här källan fick tidigare fälla HELA
+  // funktionen (`if (goalsError) throw`) — ett fel här kastade bort de
+  // deltagar-baserade insikterna ovan också, trots att de redan var klara.
+  // Nu isolerad: ett fel loggas och `goalInsightsFailed` sätts, men
+  // `insights` som redan räknats fram returneras ändå.
+  let goalInsightsFailed = false
+  try {
+    const { data: goals, error: goalsError } = await supabase
+      .from('consultant_goals')
+      // KV2: vyn har first_name/last_name, inte name — se formatParticipantName.
+      .select('*, participant:consultant_dashboard_participants!inner(first_name, last_name, user_id)')
+      .eq('consultant_id', consultantId)
+      .eq('status', 'IN_PROGRESS')
 
-  if (goalsError) throw goalsError
+    if (goalsError) throw goalsError
 
     if (goals) {
       for (const goal of goals) {
@@ -166,11 +198,12 @@ export async function generateParticipantInsights(
           const daysUntil = Math.floor(
             (new Date(goal.deadline).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
           )
+          const goalParticipantName = formatParticipantName(goal.participant)
 
           if (daysUntil < 0) {
             insights.push({
               participantId: goal.participant?.user_id || goal.participant_id,
-              participantName: goal.participant?.name || 'Deltagare',
+              participantName: goalParticipantName,
               type: 'milestone_overdue',
               priority: 'high',
               title: `"${goal.title}" är försenad`,
@@ -183,7 +216,7 @@ export async function generateParticipantInsights(
           } else if (daysUntil <= 7 && goal.progress < 50) {
             insights.push({
               participantId: goal.participant?.user_id || goal.participant_id,
-              participantName: goal.participant?.name || 'Deltagare',
+              participantName: goalParticipantName,
               type: 'goal_at_risk',
               priority: 'high',
               title: `"${goal.title}" riskerar att inte nås`,
@@ -197,12 +230,16 @@ export async function generateParticipantInsights(
         }
       }
     }
+  } catch (err) {
+    console.error('Kunde inte hämta mål-baserade insikter (goal_at_risk/milestone_overdue):', err)
+    goalInsightsFailed = true
+  }
 
   // Sort by priority
   const priorityOrder = { high: 0, medium: 1, low: 2 }
   insights.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
 
-  return insights.slice(0, limit)
+  return { insights: insights.slice(0, limit), goalInsightsFailed }
 }
 
 /**
@@ -310,7 +347,7 @@ export async function assessParticipantRisks(
       if (riskScore > 0) {
         risks.push({
           participantId: participant.user_id,
-          participantName: participant.name || 'Deltagare',
+          participantName: formatParticipantName(participant),
           riskScore: Math.min(100, riskScore),
           riskFactors,
           recommendedActions
@@ -379,7 +416,7 @@ export async function getDashboardSummary(consultantId: string): Promise<{
     )
 
     // Get top insight
-    const insights = await generateParticipantInsights(consultantId, 1)
+    const { insights } = await generateParticipantInsights(consultantId, 1)
     const topInsight = insights[0] || null
 
     return {

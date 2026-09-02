@@ -13,7 +13,7 @@
  * siffran ska vara räknad — inte gissad.
  */
 import { describe, it, expect } from 'vitest'
-import { analyzeCVForJob } from './cvOptimizer'
+import { analyzeCVForJob, skillName } from './cvOptimizer'
 import type { CVData } from './supabaseApi'
 
 /**
@@ -144,5 +144,46 @@ describe('analyzeCVForJob — siffran är räknad, inte gissad', () => {
     expect(result.totalKeywords).toBe(0)
     expect(result.matchScore).toBeNull()
     expect(Number.isNaN(result.matchScore as number)).toBe(false)
+  })
+})
+
+/**
+ * CB5 — Kompetensformen hanterades defensivt på ett ställe (`skillText` i
+ * denna fil) och naivt med `.map(s => s.name)` på fyra andra
+ * (`CVOptimizer.tsx`, `JobAdaptPanel.tsx`, samt `ai.js` som en annan agent
+ * äger). En kompetenspost i strängform gav då bokstavligen ordet
+ * "undefined" — `('sträng' as any).name` är `undefined`, ingen krasch, så
+ * felet syns aldrig i typkontrollen och renderas rakt in i AI-prompten
+ * eller UI:t.
+ *
+ * `skillName` är den delade normaliseraren, nu exporterad så
+ * `CVOptimizer.tsx` och `JobAdaptPanel.tsx` kan använda den i stället för
+ * `s.name` rakt av. Mätt mot prod 2026-09-02: 81 av 81 kompetensposter i de
+ * 17 CV:n som har kompetenser är objektformen — noll i strängform. Testerna
+ * nedan täcker ändå strängformen, eftersom typen (`Skill[]`) inte skyddar
+ * mot att den dyker upp igen (samma typlögn som `unifiedProfileApi.ts` hade).
+ */
+describe('skillName — läser kompetensnamnet oavsett form (CB5)', () => {
+  it('läser namnet ur produktionens objektform', () => {
+    expect(skillName({ id: '1', name: 'React', level: 4, category: 'technical' })).toBe('React')
+  })
+
+  it('läser en äldre kompetens i strängform', () => {
+    expect(skillName('Docker')).toBe('Docker')
+  })
+
+  it('ger tom sträng — ALDRIG "undefined" — för en post utan läsbart namn', () => {
+    expect(skillName(undefined)).toBe('')
+    expect(skillName(null)).toBe('')
+    expect(skillName({ id: '1', level: 4 })).toBe('')
+    expect(skillName(42)).toBe('')
+  })
+
+  it('bevarar originalformen (skiljer den från skillText, som gemenar)', () => {
+    // skillName används för visning/prompttext — VERSALgemener ska bevaras.
+    // Blandar man ihop den med den interna, gemenade skillText får
+    // AI-prompten och UI:t "react" i stället för "React".
+    expect(skillName('React')).toBe('React')
+    expect(skillName({ id: '1', name: 'React', level: 4, category: 'technical' })).toBe('React')
   })
 })

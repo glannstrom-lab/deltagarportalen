@@ -39,6 +39,9 @@ import type { ReportData } from '@/services/pdfReportGenerator'
 import { calculateCohorts, type CohortData } from './cohorts'
 
 import { computePlacementMetric, followupStatus } from './placeringsmatt'
+// KK6: computeMonthlyProgress/calculateTrends/calculateGoalCategories utbrutna
+// ur den här filen 2026-09-02, samma grepp som gav cohorts.ts sina tester.
+import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, type TrendData } from './analytics'
 
 interface PlacementRow {
   id: string
@@ -67,13 +70,6 @@ interface AnalyticsData {
   monthlyProgress: Array<{ month: string; value: number }>
   statusDistribution: Array<{ label: string; value: number; color: string }>
   topGoalCategories: Array<{ category: string; count: number }>
-}
-
-interface TrendData {
-  cvCompletion: { value: number; isPositive: boolean }
-  placementTime: { value: number; isPositive: boolean }
-  goalsCompletion: { value: number; isPositive: boolean }
-  engagement: { value: number; isPositive: boolean }
 }
 
 interface StuckParticipant {
@@ -212,6 +208,11 @@ function ProgressRing({
 export function AnalyticsTab() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
+  // KS7: ett fel (timeout, RLS, kvot) såg tidigare exakt likadant ut som "inga
+  // deltagare" — samma skärm, ingen skillnad. Tre lägen krävs (laddar/fel/
+  // klart), mönstret från ParticipantDetailPage.tsx (KV1), inte kopierat rakt
+  // av eftersom den här fliken inte navigerar bort vid fel.
+  const [error, setError] = useState<string | null>(null)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
   const [cohortData, setCohortData] = useState<CohortData[]>([])
@@ -247,6 +248,7 @@ export function AnalyticsTab() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true)
+      setError(null)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
@@ -495,8 +497,13 @@ export function AnalyticsTab() {
           topGoalCategories: goalCategories,
         })
       }
-    } catch (error) {
-      console.error('Error fetching analytics:', error)
+    } catch (err) {
+      // KS7: fel var tidigare bara en console.error + en toast som försvinner
+      // efter några sekunder — resten av vyn visade sina defaultvärden (0/0/0),
+      // vilket ser exakt ut som "inga deltagare". setError ger ett kvarstående,
+      // korrekt läge med en "Försök igen"-knapp i stället.
+      console.error('Error fetching analytics:', err)
+      setError(t('consultant.analytics.loadError'))
       notifications.error(t('consultant.analytics.loadError'))
     } finally {
       setLoading(false)
@@ -525,142 +532,8 @@ export function AnalyticsTab() {
     }
   }
 
-  // Räknar verkliga slutförda milstolpar per månad (avslutade mål + placeringar).
-  // Tidigare fabricerade denna en ATS-progression med Math.random() — borttaget
-  // 2026-06-06, en konsulent får inte visa brus som utvecklingskurva. Tomma
-  // månader blir 0 (sanning), inte uppdiktade värden.
-  const computeMonthlyProgress = (
-    range: string,
-    goals: Array<Record<string, unknown>>,
-    placements: Array<Record<string, unknown>>
-  ) => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
-    const now = new Date()
-
-    let numMonths: number
-    switch (range) {
-      case 'week': numMonths = 1; break
-      case 'month': numMonths = 1; break
-      case 'quarter': numMonths = 3; break
-      case 'year': numMonths = 12; break
-      default: numMonths = 6
-    }
-
-    const buckets: Array<{ month: string; value: number }> = []
-    const indexByKey: Record<string, number> = {}
-    for (let i = numMonths - 1; i >= 0; i--) {
-      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
-      indexByKey[`${d.getFullYear()}-${d.getMonth()}`] = buckets.length
-      buckets.push({ month: months[d.getMonth()], value: 0 })
-    }
-
-    const bump = (iso: unknown) => {
-      if (!iso) return
-      const d = new Date(iso as string)
-      if (isNaN(d.getTime())) return
-      const idx = indexByKey[`${d.getFullYear()}-${d.getMonth()}`]
-      if (idx !== undefined) buckets[idx].value += 1
-    }
-
-    goals.forEach(g => { if (g.status === 'COMPLETED') bump(g.completed_at || g.updated_at) })
-    placements.forEach(p => bump(p.placement_date || p.start_date || p.created_at))
-
-    return buckets
-  }
-
-
-  // Helper function to calculate trends (compare current period to previous)
-  const calculateTrends = (
-    currentParticipants: Array<Record<string, unknown>>,
-    previousParticipants: Array<Record<string, unknown>>,
-    currentGoals: Array<Record<string, unknown>>,
-    previousGoals: Array<Record<string, unknown>>
-  ): TrendData => {
-    const calcPercentChange = (current: number, previous: number): { value: number; isPositive: boolean } => {
-      if (previous === 0) return { value: current > 0 ? 100 : 0, isPositive: current >= 0 }
-      const change = Math.round(((current - previous) / previous) * 100)
-      return { value: Math.abs(change), isPositive: change >= 0 }
-    }
-
-    // CV completion rate
-    const currentCvRate = currentParticipants.length > 0
-      ? (currentParticipants.filter(p => p.has_cv).length / currentParticipants.length) * 100
-      : 0
-    const previousCvRate = previousParticipants.length > 0
-      ? (previousParticipants.filter(p => p.has_cv).length / previousParticipants.length) * 100
-      : 0
-
-    // Goals completion rate
-    const currentGoalsComplete = currentGoals.filter(g => g.status === 'COMPLETED').length
-    const currentGoalsTotal = currentGoals.length
-    const currentGoalsRate = currentGoalsTotal > 0 ? (currentGoalsComplete / currentGoalsTotal) * 100 : 0
-
-    const previousGoalsComplete = previousGoals.filter(g => g.status === 'COMPLETED').length
-    const previousGoalsTotal = previousGoals.length
-    const previousGoalsRate = previousGoalsTotal > 0 ? (previousGoalsComplete / previousGoalsTotal) * 100 : 0
-
-    // Engagement rate (active in last 7 days)
-    const now = new Date()
-    const recentThreshold = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-    const currentEngaged = currentParticipants.filter(p =>
-      p.last_login && new Date(p.last_login) > recentThreshold
-    ).length
-    const currentEngagementRate = currentParticipants.length > 0
-      ? (currentEngaged / currentParticipants.length) * 100
-      : 0
-
-    // For previous period engagement, we need to offset the threshold
-    const previousEngaged = previousParticipants.filter(p =>
-      p.last_login && new Date(p.last_login) > recentThreshold
-    ).length
-    const previousEngagementRate = previousParticipants.length > 0
-      ? (previousEngaged / previousParticipants.length) * 100
-      : 0
-
-    return {
-      cvCompletion: calcPercentChange(currentCvRate, previousCvRate),
-      placementTime: { value: 0, isPositive: true }, // Ingen historisk placeringstidsserie ännu → 0 döljer trenden (render gate rad ~687) i st. för att visa en uppdiktad +5%
-      goalsCompletion: calcPercentChange(currentGoalsRate, previousGoalsRate),
-      engagement: calcPercentChange(currentEngagementRate, previousEngagementRate),
-    }
-  }
-
-  // Helper function to calculate goal categories
-  const calculateGoalCategories = (goals: Array<Record<string, unknown>>) => {
-    if (goals.length === 0) {
-      return [
-        { category: t('consultant.analytics.goalCategories.cvImprovement'), count: 0 },
-        { category: t('consultant.analytics.goalCategories.jobApplications'), count: 0 },
-        { category: t('consultant.analytics.goalCategories.interviewTraining'), count: 0 },
-      ]
-    }
-
-    const categories: Record<string, number> = {}
-
-    goals.forEach(goal => {
-      const title = (goal.title || '').toLowerCase()
-      let category = t('consultant.analytics.goalCategories.other')
-
-      if (title.includes('cv') || title.includes('resume') || title.includes('meritförteckning')) {
-        category = t('consultant.analytics.goalCategories.cvImprovement')
-      } else if (title.includes('jobb') || title.includes('ansök') || title.includes('söka')) {
-        category = t('consultant.analytics.goalCategories.jobApplications')
-      } else if (title.includes('intervju')) {
-        category = t('consultant.analytics.goalCategories.interviewTraining')
-      } else if (title.includes('nätverk') || title.includes('linkedin') || title.includes('kontakt')) {
-        category = t('consultant.analytics.goalCategories.networking')
-      } else if (title.includes('kompetens') || title.includes('kurs') || title.includes('utbildning')) {
-        category = t('consultant.analytics.goalCategories.skillsDevelopment')
-      }
-
-      categories[category] = (categories[category] || 0) + 1
-    })
-
-    return Object.entries(categories)
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 5)
-      .map(([category, count]) => ({ category, count }))
-  }
+  // KK6 (2026-09-02): computeMonthlyProgress/calculateTrends/calculateGoalCategories
+  // flyttade till analytics.ts — se importen ovan. Anropen nedan är oförändrade.
 
   const handleExport = (format: 'pdf' | 'excel') => {
     if (format === 'pdf') {
@@ -728,6 +601,22 @@ export function AnalyticsTab() {
 
   if (loading) {
     return <LoadingState type="dashboard" />
+  }
+
+  // KS7: eget läge, skilt från laddning och skilt från "inga deltagare" —
+  // annars ser ett trasigt anrop ut som en tom lista (portalens stående felklass).
+  if (error) {
+    return (
+      <div className="text-center py-12" role="alert">
+        <AlertTriangle className="w-10 h-10 mx-auto text-rose-500 mb-3" aria-hidden="true" />
+        <p className="text-stone-700 dark:text-stone-200 font-medium">{error}</p>
+        <div className="flex items-center justify-center gap-3 mt-4">
+          <Button variant="outline" onClick={() => fetchAnalytics()}>
+            {t('consultant.analytics.tryAgain')}
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -849,11 +738,19 @@ export function AnalyticsTab() {
             <PieChart className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
           <div className="grid grid-cols-3 gap-4">
+            {/* KV5: kortet visar andelen med registrerat CV (has_cv), inte
+                CV:ets kvalitet (ATS-poäng) — OverviewTab.tsx visar snitt-ATS
+                under en annan nyckel (consultant.overview.cvQuality) och äger
+                den. Den delade nyckeln keyMetrics.cvQuality användes bara
+                här och var missvisande ("CV-kvalitet" om en täckningsgrad);
+                locale-filerna ägs av en annan agent i den här omgången, så
+                nyckeln lämnas orörd i sv.json/en.json — texten hårdkodas i
+                stället, vilket redan är normen i konsulentvyn (DESIGN.md §2). */}
             <ProgressRing
               value={analytics.cvCompletionRate}
               size={100}
               strokeWidth={10}
-              label={t('consultant.analytics.keyMetrics.cvQuality')}
+              label="Andel med CV"
             />
             <ProgressRing
               value={analytics.goalsCompletionRate}
@@ -921,26 +818,35 @@ export function AnalyticsTab() {
             </div>
             <Target className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
-          <div className="space-y-3">
-            {analytics.topGoalCategories.map((goal, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800 rounded-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-xs font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-                    {index + 1}
-                  </span>
-                  <span className="font-medium text-stone-900 dark:text-stone-100">
-                    {goal.category}
+          {/* KK6: tomt underlag (inga mål alls) gav tidigare tre påhittade
+              nollor ("CV-förbättring: 0 mål" osv.) — se calculateGoalCategories
+              i analytics.ts. Ett tomt underlag visar nu en invit i stället. */}
+          {analytics.topGoalCategories.length === 0 ? (
+            <p className="text-sm text-stone-500 dark:text-stone-400 py-4">
+              Inga mål registrerade än.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {analytics.topGoalCategories.map((goal, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800 rounded-xl"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="w-6 h-6 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-xs font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
+                      {index + 1}
+                    </span>
+                    <span className="font-medium text-stone-900 dark:text-stone-100">
+                      {goal.category}
+                    </span>
+                  </div>
+                  <span className="text-sm text-stone-500 dark:text-stone-400">
+                    {t('consultant.analytics.goalCategories.goalsCount', { count: goal.count })}
                   </span>
                 </div>
-                <span className="text-sm text-stone-500 dark:text-stone-400">
-                  {t('consultant.analytics.goalCategories.goalsCount', { count: goal.count })}
-                </span>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </Card>
       </div>
 

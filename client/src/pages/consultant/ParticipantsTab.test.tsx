@@ -142,6 +142,27 @@ describe('ParticipantsTab — KT2: kryssrutornas tillgänglighet', () => {
   })
 })
 
+describe('ParticipantsTab — KS7: felläge skilt från tomtillstånden', () => {
+  it('visar ett eget felläge med orsak och "Försök igen" — inte samma vy som "inga deltagare"', async () => {
+    mockEq.mockResolvedValueOnce({ data: null, error: { message: 'network down' } })
+    renderTab()
+
+    const alert = await screen.findByRole('alert')
+    expect(alert).toHaveTextContent(/kunde inte hämtas/i)
+
+    // Felet får inte se ut som EmptyState-grenen för "inga deltagare".
+    expect(screen.queryByText('Inga deltagare ännu')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Bjud in din första deltagare' })).not.toBeInTheDocument()
+
+    // Nästa försök (mockEq faller tillbaka på beforeEach:s lyckade svar)
+    // ska visa listan och ta bort felläget.
+    fireEvent.click(screen.getByRole('button', { name: /försök igen/i }))
+
+    await screen.findByText('Anna Andersson')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
 describe('ParticipantsTab — KA2: sök/sortering/vy i URL:en', () => {
   it('en skriven sökning speglas i searchParams (överlever en simulerad återgång)', async () => {
     renderTab()

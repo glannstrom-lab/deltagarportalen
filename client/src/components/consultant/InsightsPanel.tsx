@@ -49,6 +49,10 @@ export function InsightsPanel({
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [loadError, setLoadError] = useState(false)
+  // KV2: mål-baserade insikter (goal_at_risk/milestone_overdue) kan misslyckas
+  // separat — de deltagar-baserade insikterna ska ändå visas, inte försvinna
+  // bakom en helpanels-felskärm.
+  const [goalInsightsFailed, setGoalInsightsFailed] = useState(false)
   const [activeTab, setActiveTab] = useState<'insights' | 'trends' | 'risks'>('insights')
 
   useEffect(() => {
@@ -58,17 +62,19 @@ export function InsightsPanel({
   const loadData = async () => {
     setIsLoading(true)
     setLoadError(false)
+    setGoalInsightsFailed(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const [insightsData, metricsData, risksData] = await Promise.all([
+      const [insightsResult, metricsData, risksData] = await Promise.all([
         consultantInsights.generateParticipantInsights(user.id, maxInsights),
         showTrends ? consultantInsights.getKeyMetrics(user.id) : Promise.resolve([]),
         showRisks ? consultantInsights.assessParticipantRisks(user.id) : Promise.resolve([])
       ])
 
-      setInsights(insightsData)
+      setInsights(insightsResult.insights)
+      setGoalInsightsFailed(insightsResult.goalInsightsFailed)
       setMetrics(metricsData)
       setRisks(risksData.slice(0, 5))
     } catch (error) {
@@ -271,16 +277,39 @@ export function InsightsPanel({
         {/* Insights Tab */}
         {activeTab === 'insights' && (
           <>
-            {insights.length === 0 ? (
-              <div className="p-8 text-center">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
-                  <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <p className="text-stone-600 dark:text-stone-400 font-medium">Inga insikter just nu</p>
-                <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
-                  Alla deltagare ser bra ut!
-                </p>
+            {/* KV2: mål-källan (goal_at_risk/milestone_overdue) kan ha
+                misslyckats separat — visa det ärligt i stället för att tiga
+                och låta den tomma listan se ut som "allt är bra". */}
+            {goalInsightsFailed && (
+              <div
+                className="px-4 py-2 text-xs text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 border-b border-amber-100 dark:border-amber-800/40"
+                role="status"
+              >
+                Mål-baserade insikter (t.ex. försenade mål) kunde inte hämtas just nu — övriga insikter visas ändå.
               </div>
+            )}
+            {insights.length === 0 ? (
+              goalInsightsFailed ? (
+                <div className="p-8 text-center" role="alert">
+                  <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mx-auto mb-3">
+                    <AlertTriangle className="w-6 h-6 text-amber-700 dark:text-amber-400" />
+                  </div>
+                  <p className="text-stone-600 dark:text-stone-400 font-medium">Insikterna kunde inte hämtas</p>
+                  <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+                    Försök igen om en stund.
+                  </p>
+                </div>
+              ) : (
+                <div className="p-8 text-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
+                    <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  </div>
+                  <p className="text-stone-600 dark:text-stone-400 font-medium">Inga insikter just nu</p>
+                  <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+                    Alla deltagare ser bra ut!
+                  </p>
+                </div>
+              )
             ) : (
               <div className="divide-y divide-stone-100 dark:divide-stone-700">
                 {insights.map((insight) => (

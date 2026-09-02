@@ -1,6 +1,46 @@
 import { useState, useMemo } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { safeReturnTo, medReturnTo } from '../lib/returnTo'
+
+/**
+ * KO2: samma karta som i Login.tsx (medvetet duplicerad — två sidor, ingen
+ * delad modul att lägga den i utan att utöka filuppdraget). Se Login.tsx för
+ * bakgrunden.
+ */
+const MALNAMN: Record<string, string> = {
+  '/cv': 'nav.cv',
+  '/cover-letter': 'nav.coverLetter',
+  '/interview-simulator': 'nav.interviewSimulator',
+  '/career': 'nav.career',
+  '/interest-guide': 'nav.interestGuide',
+  '/skills-gap-analysis': 'nav.skillsGap',
+  '/personal-brand': 'nav.personalBrand',
+  '/education': 'nav.education',
+  '/wellness': 'nav.wellness',
+  '/diary': 'nav.diary',
+  '/calendar': 'nav.calendar',
+  '/exercises': 'nav.exercises',
+  '/job-search': 'nav.jobSearch',
+  '/applications': 'nav.applications',
+  '/spontanansökan': 'nav.spontaneous',
+  '/salary': 'nav.salary',
+  '/externa-resurser': 'nav.externalResources',
+  '/linkedin-optimizer': 'nav.linkedinOptimizer',
+  '/international': 'nav.international',
+  '/knowledge-base': 'nav.knowledgeBase',
+  '/resources': 'nav.myDocuments',
+  '/nätverk': 'nav.network',
+  '/ai-team': 'nav.aiTeam',
+  '/my-consultant': 'nav.myConsultant',
+  '/profile': 'nav.profile',
+}
+
+/** Nyckeln för verktyget en säker `returnTo`-sökväg pekar på, eller `undefined` om okänt. */
+function malNyckelFor(returnTo: string | null): string | undefined {
+  if (!returnTo) return undefined
+  const utanQuery = returnTo.split(/[?#]/)[0]
+  return MALNAMN[utanQuery]
+}
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
@@ -38,6 +78,16 @@ export default function Register() {
   ], [t])
   const [showPassword, setShowPassword] = useState(false)
   const [submitError, setSubmitError] = useState('')
+
+  // KO2: subtiteln säger VART hon var på väg när returnTo finns — se
+  // Login.tsx för resonemanget.
+  const returnToSafe = safeReturnTo(searchParams.get('returnTo'))
+  const malNyckel = malNyckelFor(returnToSafe)
+  const subtitel = returnToSafe
+    ? malNyckel
+      ? t('auth.returnTo.registerTool', { tool: t(malNyckel) })
+      : t('auth.returnTo.registerGeneric')
+    : t('auth.firstStep')
 
   const {
     values,
@@ -126,7 +176,7 @@ export default function Register() {
         {/* Register Card */}
         <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.createAccount')}</h2>
-          <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{t('auth.firstStep')}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{subtitel}</p>
 
           {/* Google Quick Registration */}
           <button

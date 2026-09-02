@@ -1,7 +1,8 @@
 -- KS2 / KS4 / KS8: tre RLS-brister i konsulentvyn — verifierade mot
 -- produktionsdatabasen 2026-08-31 (uppdrag Mikael, samma runda som AG1/AG3).
 --
--- INTE KÖRD ÄN. Kräver Mikaels uttryckliga ja enligt CLAUDE.md (RLS-ändringar
+-- KÖRD 2026-08-31, verifierad mot pg_policies 2026-09-02 (fem policyer, DOK1). Huvudet sa "INTE KÖRD ÄN" till 2026-09-02.
+-- (Ursprunglig text:) Kräver Mikaels uttryckliga ja enligt CLAUDE.md (RLS-ändringar
 -- mot prod). Kör manuellt när klartecken finns:
 --   npx supabase db query --linked -f supabase/migrations/20260831140000_ks_consultant_rls.sql
 -- Uppdatera sedan schema-snapshoten i SAMMA commit som körningen:

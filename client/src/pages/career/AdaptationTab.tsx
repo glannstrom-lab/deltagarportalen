@@ -157,26 +157,29 @@ const statusOptions = [
 // ===== EXTERNAL RESOURCES =====
 
 /**
- * Länkar till myndigheter. **Kontrollerade 2026-08-21 — alla svarar 200.**
+ * Länkar till myndigheter. **Omkontrollerade 2026-09-02 — samtliga åtta svarar
+ * 200 med en titel som stämmer med posten** (`curl -sIL` följt av redirect,
+ * Chrome-UA, `<title>` läst per URL — se roadmapens SA1). 200 ensamt bevisar
+ * ingenting (lärdomen 2026-08-23: en parkerad sida eller en felaktig
+ * omdirigering kan också svara 200) — det är titelkontrollen som gör provet
+ * giltigt.
  *
- * Tre av de fem som stod här gav 404: Arbetsmiljöverkets föreskriftssida
- * (strukturen ändrades i regelreformen som gäller från 1 januari 2025),
- * Arbetsförmedlingens "stöd vid funktionsnedsättning" och deras
- * "anpassningsstöd" för arbetsgivare. Försäkringskassans blankettlänk gav
- * också 404. En person som klickar vidare för att söka ett bidrag hamnade
- * alltså på myndighetens felsida — sämsta tänkbara utfall för just den här
- * målgruppen.
- *
- * En femte post hette "Hjälpmedelsinstitutet". Den myndigheten lades ned
- * 2014; uppgifterna gick till Myndigheten för delaktighet, vilket URL:en
- * faktiskt pekade på. Rubriken namngav alltså en organisation som varit
- * nedlagd i tolv år.
+ * SA1 (mätt 2026-08-21) hade redan åtgärdats när den här kontrollen kördes:
+ * tre av de dåvarande fem länkarna gav 404 — Arbetsmiljöverkets
+ * föreskriftssida (strukturen ändrades i regelreformen som gäller från
+ * 1 januari 2025), Arbetsförmedlingens "stöd vid funktionsnedsättning" och
+ * deras "anpassningsstöd" för arbetsgivare — och en femte post hette
+ * "Hjälpmedelsinstitutet", en myndighet nedlagd 2014 (uppgifterna gick till
+ * Myndigheten för delaktighet). Listan har sedan dess sju Arbetsförmedlingen-
+ * länkar under `AF_STOD` plus Arbetsmiljöverket, Försäkringskassan, DO och
+ * Myndigheten för delaktighet (MFD) med rätt namn — inget av det ändrades i
+ * den här passeringen, bara omkontrollerat.
  *
  * ÄNDRAR DU EN LÄNK: kör den mot `curl -o /dev/null -w "%{http_code}" -L` och
  * flytta fram `LANKARNA_KONTROLLERADES`. `npm run lint:links` ser bara interna
  * mål — externa länkar ruttnar tyst.
  */
-export const LANKARNA_KONTROLLERADES = '2026-08-21'
+export const LANKARNA_KONTROLLERADES = '2026-09-02'
 
 const AF_STOD = 'https://arbetsformedlingen.se/for-arbetssokande/extra-stod/stod-a-o'
 

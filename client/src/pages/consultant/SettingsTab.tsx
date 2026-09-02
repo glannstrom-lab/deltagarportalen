@@ -26,7 +26,7 @@ import { supabase } from '@/lib/supabase'
 import { notifications as toast } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { LoadingState } from '@/components/ui/LoadingState'
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { cn } from '@/lib/utils'
 
@@ -108,6 +108,9 @@ export function SettingsTab() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+  // KS7: en misslyckad hämtning fick tidigare bara ett console.error — sidan
+  // renderade oförändrat med defaultinställningarna, som om allt var klart.
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
@@ -182,15 +185,21 @@ export function SettingsTab() {
   const loadSettings = async () => {
     try {
       setLoading(true)
+      setLoadError(null)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
       // Fetch settings from database
-      const { data: settingsData } = await supabase
+      // KS7: `error` saknades tidigare här helt — ett trasigt anrop gav
+      // `settingsData: undefined` som tolkades som "ingen sparad rad ännu"
+      // och sidan visade tyst defaultinställningarna som om de var laddade.
+      const { data: settingsData, error: fetchError } = await supabase
         .from('consultant_settings')
         .select('*')
         .eq('consultant_id', user.id)
         .maybeSingle() // .single() gav 406 för konsulenter utan sparad settings-rad
+
+      if (fetchError) throw fetchError
 
       if (settingsData) {
         // Apply saved notifications
@@ -219,6 +228,7 @@ export function SettingsTab() {
 
     } catch (error) {
       console.error('Error loading settings:', error)
+      setLoadError('Inställningarna kunde inte hämtas. Kontrollera anslutningen och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -349,6 +359,20 @@ export function SettingsTab() {
     return <LoadingState type="form" />
   }
 
+  // KS7: eget felläge — annars visas defaultinställningarna som om de vore
+  // laddade, och ett sparat-men-osynkat val kan skriva över en riktig rad.
+  if (loadError) {
+    return (
+      <Card className="p-8">
+        <ErrorState
+          title="Inställningarna kunde inte hämtas"
+          message={loadError}
+          onRetry={loadSettings}
+        />
+      </Card>
+    )
+  }
+
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Save Banner */}
@@ -412,6 +436,15 @@ export function SettingsTab() {
             </p>
           </div>
         </div>
+
+        {/* KV7: inställningarna sparas i consultant_settings.notifications,
+            men ingen cron/edge-funktion läser kolumnen — se grep-underlaget
+            i roadmapen (client/vercel.json har bara jobb-bevakningens cron,
+            supabase/functions har ingen träff på consultant_settings). Samma
+            ärliga märkning som Team-sektionen redan använder nedanför. */}
+        <p className="text-xs text-stone-500 dark:text-stone-400 -mt-2 mb-4">
+          Kommande — de här aviseringarna skickas inte ännu. Dina val sparas, men levereras inte förrän funktionen är byggd.
+        </p>
 
         <div className="space-y-1">
           {notifications.map(notification => (

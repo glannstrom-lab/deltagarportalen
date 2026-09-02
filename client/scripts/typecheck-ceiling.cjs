@@ -62,7 +62,11 @@ const path = require('node:path')
 // 400 → 390 (2026-08-21, Intresseguiden): tio fel betalda, bl.a. fyra
 // TS2322 där saveToHistory tog Record<string, number> i stället för de
 // riktiga profiltyperna, och en import av `Milestone` som inte finns.
-const CEILING = 357
+// 357 → 356 (2026-09-02, nio-agenterspasset): ett fel betalt netto — tre nya
+// (oanvänd @ts-expect-error i DropdownMenu, otypad CJS-import i i18n-grinden,
+// mockad returtyp i ReportDraftDialog.test) lagades samma kväll, och
+// unifiedProfileApi.ts fick rätt typ på skills (CB5).
+const CEILING = 356
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

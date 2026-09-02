@@ -10,6 +10,7 @@ import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ConfirmDialogProvider } from './components/ui/ConfirmDialog'
+import { MotionConfig } from 'framer-motion'
 import './i18n/config'
 import './index.css'
 import './styles/mobile.css'
@@ -83,19 +84,27 @@ if (rootElement) {
   root.render(
     <React.StrictMode>
       <ErrorBoundary>
-        <QueryClientProvider client={queryClient}>
-          <HashRouter>
-            <ThemeProvider>
-              <FontProvider>
-                <ConfirmDialogProvider>
-                  <MobileOptimizer />
-                  <App />
-                  <UpdateNotification />
-                </ConfirmDialogProvider>
-              </FontProvider>
-            </ThemeProvider>
-          </HashRouter>
-        </QueryClientProvider>
+        {/* TI2: MotionConfig i roten följer prefers-reduced-motion för ALLA
+            framer-motion-komponenter i trädet (mätt 2026-09-02: 25 filer importerar
+            'framer-motion', bara 5 satte reducedMotion lokalt sedan tidigare). CSS-
+            regeln i styles/accessibility.css:141-157 nollställer bara CSS-
+            animationer/transitions — den rör aldrig Framer Motions JS-drivna
+            transform-animationer, som behöver den här kontexten. */}
+        <MotionConfig reducedMotion="user">
+          <QueryClientProvider client={queryClient}>
+            <HashRouter>
+              <ThemeProvider>
+                <FontProvider>
+                  <ConfirmDialogProvider>
+                    <MobileOptimizer />
+                    <App />
+                    <UpdateNotification />
+                  </ConfirmDialogProvider>
+                </FontProvider>
+              </ThemeProvider>
+            </HashRouter>
+          </QueryClientProvider>
+        </MotionConfig>
       </ErrorBoundary>
     </React.StrictMode>,
   )

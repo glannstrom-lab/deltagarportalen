@@ -8,6 +8,50 @@ import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from '@/components/ui/ic
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { safeReturnTo, medReturnTo } from '../lib/returnTo'
 
+/**
+ * KO2: en liten karta sökväg → verktygets namn (samma `nav.*`-nycklar som
+ * redan används i menyn, se `components/layout/navigation.ts`), så att
+ * subtiteln kan säga VART hon var på väg i stället för ett generiskt
+ * "Logga in för att fortsätta" — den frasen är sann men säger ingenting till
+ * någon som just klickade "Bygg ditt CV" på en guidesida (K11/DOK4-familjen).
+ * Ett okänt mål (t.ex. en framtida sida som saknas här) faller tillbaka på
+ * en neutral rad i stället för att visa fel eller tomt.
+ */
+const MALNAMN: Record<string, string> = {
+  '/cv': 'nav.cv',
+  '/cover-letter': 'nav.coverLetter',
+  '/interview-simulator': 'nav.interviewSimulator',
+  '/career': 'nav.career',
+  '/interest-guide': 'nav.interestGuide',
+  '/skills-gap-analysis': 'nav.skillsGap',
+  '/personal-brand': 'nav.personalBrand',
+  '/education': 'nav.education',
+  '/wellness': 'nav.wellness',
+  '/diary': 'nav.diary',
+  '/calendar': 'nav.calendar',
+  '/exercises': 'nav.exercises',
+  '/job-search': 'nav.jobSearch',
+  '/applications': 'nav.applications',
+  '/spontanansökan': 'nav.spontaneous',
+  '/salary': 'nav.salary',
+  '/externa-resurser': 'nav.externalResources',
+  '/linkedin-optimizer': 'nav.linkedinOptimizer',
+  '/international': 'nav.international',
+  '/knowledge-base': 'nav.knowledgeBase',
+  '/resources': 'nav.myDocuments',
+  '/nätverk': 'nav.network',
+  '/ai-team': 'nav.aiTeam',
+  '/my-consultant': 'nav.myConsultant',
+  '/profile': 'nav.profile',
+}
+
+/** Nyckeln för verktyget en säker `returnTo`-sökväg pekar på, eller `undefined` om okänt. */
+function malNyckelFor(returnTo: string | null): string | undefined {
+  if (!returnTo) return undefined
+  const utanQuery = returnTo.split(/[?#]/)[0]
+  return MALNAMN[utanQuery]
+}
+
 // Google Logo SVG component
 function GoogleIcon({ className }: { className?: string }) {
   return (
@@ -52,6 +96,17 @@ export default function Login() {
   })
 
   const [showPassword, setShowPassword] = useState(false)
+
+  // KO2: subtiteln säger VART hon var på väg när returnTo finns, i stället
+  // för det generiska "Logga in för att fortsätta" — som är sant men
+  // ointressant för någon som just klickade en CTA på en guidesida.
+  const returnToSafe = safeReturnTo(searchParams.get('returnTo'))
+  const malNyckel = malNyckelFor(returnToSafe)
+  const subtitel = returnToSafe
+    ? malNyckel
+      ? t('auth.returnTo.loginTool', { tool: t(malNyckel) })
+      : t('auth.returnTo.loginGeneric')
+    : t('auth.loginToContinue')
 
   // Redirect if already authenticated.
   // K11: `returnTo` bär vart hon var på väg innan inloggningen — en gäst som
@@ -104,7 +159,7 @@ export default function Login() {
         {/* Login Card */}
         <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-xl p-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.welcomeBack')}</h2>
-          <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{t('auth.loginToContinue')}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{subtitel}</p>
 
           {(authError || errors.email || errors.password) && (
             <div

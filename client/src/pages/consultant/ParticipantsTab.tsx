@@ -29,7 +29,7 @@ import {
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { LoadingState } from '@/components/ui/LoadingState'
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
@@ -71,6 +71,9 @@ export function ParticipantsTab() {
   // sök/filter/sortering måste den länken bytas mot en dynamisk länk som inkluderar
   // `location.search`, eller så måste den här sidan läsa `location.state`/`document.referrer`.
   const [loading, setLoading] = useState(true)
+  // KS7: ett misslyckat anrop ska visa ett eget felläge — aldrig samma tomma
+  // lista som en konsulent utan deltagare (se EmptyState-grenarna nedan).
+  const [error, setError] = useState<string | null>(null)
   const [participants, setParticipants] = useState<Participant[]>([])
   const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
   const [filterStatus, setFilterStatusState] = useState<string>(() => searchParams.get('filter') || 'all')
@@ -126,18 +129,22 @@ export function ParticipantsTab() {
   const fetchParticipants = async () => {
     try {
       setLoading(true)
+      setError(null)
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data, error } = await supabase
+      const { data, error: fetchError } = await supabase
         .from('consultant_dashboard_participants')
         .select('*')
         .eq('consultant_id', user.id)
 
-      if (error) throw error
+      if (fetchError) throw fetchError
       setParticipants(data || [])
-    } catch (error) {
-      console.error('Error fetching participants:', error)
+    } catch (err) {
+      console.error('Error fetching participants:', err)
+      // KS7: utan den här raden ser ett trasigt anrop EXAKT ut som "inga
+      // deltagare" — samma EmptyState, samma CTA, ingen antydan om fel.
+      setError('Deltagarlistan kunde inte hämtas. Kontrollera anslutningen och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -260,6 +267,20 @@ export function ParticipantsTab() {
 
   if (loading) {
     return <LoadingState type="list" />
+  }
+
+  // KS7: eget felläge — skiljer sig i UTSEENDE, inte bara i text, från de
+  // två EmptyState-grenarna längre ned ("inga deltagare" / "inga sökträffar").
+  if (error) {
+    return (
+      <Card className="p-8">
+        <ErrorState
+          title="Deltagarna kunde inte hämtas"
+          message={error}
+          onRetry={fetchParticipants}
+        />
+      </Card>
+    )
   }
 
   return (
@@ -508,7 +529,8 @@ export function ParticipantsTab() {
                   role="checkbox"
                   aria-checked={isSelected}
                   aria-label={t('consultant.participants.selectParticipant', {
-                    defaultValue: `Välj ${p.first_name} ${p.last_name}`,
+                    firstName: p.first_name,
+                    lastName: p.last_name,
                   })}
                   className={cn(
                     'absolute top-4 left-4 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all',
@@ -683,7 +705,8 @@ export function ParticipantsTab() {
                           role="checkbox"
                           aria-checked={isSelected}
                           aria-label={t('consultant.participants.selectParticipant', {
-                            defaultValue: `Välj ${p.first_name} ${p.last_name}`,
+                            firstName: p.first_name,
+                            lastName: p.last_name,
                           })}
                           className={cn(
                             'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',

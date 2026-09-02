@@ -53,3 +53,14 @@ export function aktivFlikId(
     t.path.split('?')[0].length > bast.path.split('?')[0].length ? t : bast,
   ).id
 }
+
+/**
+ * Etiketten för en sidoflik-post, given dess id. Egen liten funktion så
+ * annonseringen i SidRail.tsx (TI4) är testbar utan att rendera React.
+ */
+export function etikettForFlik(
+  poster: Array<{ id: string; etikett: string }>,
+  id: string | null | undefined,
+): string | undefined {
+  return poster.find((p) => p.id === id)?.etikett
+}

@@ -180,6 +180,13 @@ function sanitizeAll(obj, depth = 0) {
  */
 const REGELVERKSREGEL = 'ABSOLUT REGEL OM REGELVERK: påstå aldrig något om a-kassa, aktivitetsstöd, försörjningsstöd, lönebidrag, nystartsjobb, arbetshjälpmedel, sjukpenning, uppsägningstid eller LAS som du inte är säker på. Ange ALDRIG belopp, procentsatser, antal dagar eller kvalificeringsvillkor ur minnet. Säg att villkoren ändras och beror på personens situation, och hänvisa till rätt källa: Arbetsförmedlingen för insatser, den egna a-kassan för ersättning, Försäkringskassan för aktivitetsstöd och sjukpenning, kommunen för försörjningsstöd.';
 
+// SA4/SA2 (2026-09-02): delad sanningsregel för ALLA tjugo promptar i
+// PROMPTS, satt samman en gång i taget efter att objektet definierats — se
+// loopen strax efter `const PROMPTS = { ... };` nedan. Tvåspråkig av samma
+// skäl som beskrivs där: sammansättningsstället vet inte vilket språk en
+// enskild prompt valt.
+const SANNINGSREGEL = `SANNINGSREGEL: hitta ALDRIG på siffror som är regler — belopp, procentsatser, dagantal, åldersgränser eller kvalificeringsvillkor. De ändras, och personen fattar beslut om sin försörjning utifrån det du skriver. Beskriv vad stödet gör och vem som beslutar, och hänvisa det exakta till Arbetsförmedlingen, den egna a-kassan, Försäkringskassan eller kommunen. Hitta heller aldrig på erfarenheter, kompetenser, meriter eller andra uppgifter om personen som inte finns i underlaget. Är du osäker — utelämna det.\n\nTRUTH RULE (English): never invent numbers that act as rules — amounts, percentages, day counts, age limits or qualification conditions. These change, and the person makes decisions about their livelihood based on what you write. Describe what the support does and who decides, and refer the exact details to Arbetsförmedlingen (the Swedish Public Employment Service), the unemployment fund the person belongs to (a-kassa), Försäkringskassan (the Social Insurance Agency) or the municipality. Never invent experience, skills, qualifications or other facts about the person that are not in the material either. If unsure, leave it out.`;
+
 const AGENT_PROMPTS = {
   // AR4 (2026-08-17): rollen hade redan "hitta inte på eller anta saker" om
   // CV-uppgifter, men saknade regelverksskyddet som `chatbot` fick i B22 —
@@ -596,6 +603,23 @@ function getCorsHeaders(requestOrigin) {
  *
  * @typedef {{ choices?: Array<{ message?: { content?: string }, finish_reason?: string }>, usage?: { total_tokens?: number, completion_tokens?: number, completion_tokens_details?: { reasoning_tokens?: number } } }} OpenRouterSvar
  */
+
+/**
+ * CB5 (2026-09-02): `skills` bär objekt i prod ({id,name,level,category}) men
+ * har varit rena strängar i äldre rader. `.map(s => s.name)` rakt av gav
+ * ordet "undefined" i prompten för de gamla raderna, i `profile-summary` och
+ * `cv-writing` — samma buggklass `personligt-brev` (ovan) redan tålde med en
+ * inline-koll. En hjälpare i stället för fyra kopior av samma villkor.
+ * @param {unknown} s
+ * @returns {string}
+ */
+function skillText(s) {
+  if (typeof s === 'string') return s;
+  if (s && typeof s === 'object' && typeof (/** @type {{ name?: unknown }} */ (s)).name === 'string') {
+    return /** @type {{ name: string }} */ (s).name;
+  }
+  return '';
+}
 
 const PROMPTS = {
   // Konsulent: rapportutkast från journalanteckningar + måldata.
@@ -1061,7 +1085,7 @@ Regler: overall_score är ett heltal 0-10 för hela sessionen. strengths = 2-4 p
     // Build skills text
     let skillsText = '';
     if (data?.skills?.length) {
-      skillsText = data.skills.map(s => s.name + (s.level ? ` (nivå ${s.level}/5)` : '')).join(', ');
+      skillsText = data.skills.map(s => skillText(s) + (s && s.level ? ` (nivå ${s.level}/5)` : '')).filter(Boolean).join(', ');
     }
 
     return {
@@ -1134,7 +1158,7 @@ Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
     }
 
     if (cvData.skills?.length) {
-      const topSkills = cvData.skills.slice(0, 8).map(s => s.name).join(', ');
+      const topSkills = cvData.skills.slice(0, 8).map(s => skillText(s)).filter(Boolean).join(', ');
       cvContext += `Kompetenser: ${topSkills}\n`;
     }
 
@@ -1638,6 +1662,38 @@ ABSOLUTA REGLER:
     };
   }
 };
+
+// SA4 (2026-09-02): sanningsregeln lades tidigare in i enskilda promptar, en i
+// taget, när ett fynd tvingade fram den (B14, B17, B22, B25, B26, G11, G15,
+// AR4). Mätt om innan den här ändringen, genom att läsa varje funktion i
+// PROMPTS: nästan alla tjugo hade redan NÅGON sanningsregel i egen
+// ordalydelse, men bara fem (`karriarplan`, `chatbot`, `ai-team-chat` via
+// REGELVERKSREGEL, och den SVENSKA grenen av `adaptation-recommendations`
+// och `adaptation-conversation`) bar den specifika regeln om påhittade
+// belopp/procentsatser/dagantal för svenska regelverk. Den ENGELSKA grenen
+// av de två sista hade ingen sanningsregel alls — SA2, samma lucka som
+// 2026-08-23 hittade i ai-team-chat men en nivå upp: en gren, inte en agent.
+//
+// Löst EN gång här, på sammansättningsstället för PROMPTS, i stället för
+// prompt för prompt: varje funktion i objektet packas om så att den alltid
+// lägger SANNINGSREGEL sist i sin systemprompt, oavsett vad funktionen redan
+// skrivit själv. En framtida tjugoförsta funktion kan inte glömma bort den —
+// den bor inte i den enskilda prompten, den bor i loopen. `SANNINGSREGEL` är
+// dessutom tvåspråkig med flit: sammansättningsstället känner inte till
+// vilket språk en enskild prompt valde (bara två av tjugo grenar på
+// `data.language`), så konstanten bär båda språken i EN sträng hellre än
+// att gissa fel — och sätts in EFTER att PROMPTS[fn](data) redan valt gren,
+// aldrig före.
+for (const namn of Object.keys(PROMPTS)) {
+  const byggFunktion = PROMPTS[namn];
+  PROMPTS[namn] = (data) => {
+    const resultat = byggFunktion(data);
+    if (resultat && typeof resultat.system === 'string') {
+      resultat.system = `${resultat.system}\n\n${SANNINGSREGEL}`;
+    }
+    return resultat;
+  };
+}
 
 // ============================================
 // Svarsvalidering för JSON-funktioner (B17, 2026-08-05)

@@ -1,8 +1,21 @@
 /**
  * Simple Dropdown Menu Component
  * A lightweight dropdown menu without external dependencies
+ *
+ * TI3 (2026-09-02): primitiven hade noll aria-attribut — en skärmläsare hörde
+ * bara "knapp", inget om att en meny fanns eller om den var öppen. Mönstret
+ * är hämtat från NotificationBell.tsx (aria-haspopup/aria-expanded/
+ * aria-controls på triggern) och WAI-ARIA APG:s menu-button-mönster
+ * (role="menu"/"menuitem" på innehållet, eftersom varje DropdownMenuItem här
+ * är en handling — inte en länk). Sex användningsställen ärver detta utan
+ * att själva ändras.
+ *
+ * Fokus fångas via `onClick`s `event.currentTarget` i stället för
+ * `React.cloneElement`-refar, eftersom triggerns barn ibland är
+ * `components/ui/Button` — en vanlig funktionskomponent utan `forwardRef`.
+ * En ref via cloneElement hade bara gett en varning och `null`.
  */
-import React, { useState, useRef, useEffect, createContext, useContext } from 'react'
+import React, { useState, useRef, useEffect, useId, useCallback, createContext, useContext } from 'react'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -11,19 +24,37 @@ const DropdownContext = createContext<{
   isOpen: boolean
   setIsOpen: (open: boolean) => void
   close: () => void
+  closeAndFocusTrigger: () => void
+  menuId: string
+  setTriggerEl: (el: HTMLElement | null) => void
 }>({
   isOpen: false,
   setIsOpen: () => {},
   close: () => {},
+  closeAndFocusTrigger: () => {},
+  menuId: '',
+  setTriggerEl: () => {},
 })
 
 // Root dropdown container
 export function DropdownMenu({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false)
+  const menuId = useId()
+  const triggerElRef = useRef<HTMLElement | null>(null)
+
   const close = () => setIsOpen(false)
+  const closeAndFocusTrigger = useCallback(() => {
+    setIsOpen(false)
+    triggerElRef.current?.focus()
+  }, [])
+  const setTriggerEl = useCallback((el: HTMLElement | null) => {
+    triggerElRef.current = el
+  }, [])
 
   return (
-    <DropdownContext.Provider value={{ isOpen, setIsOpen, close }}>
+    <DropdownContext.Provider
+      value={{ isOpen, setIsOpen, close, closeAndFocusTrigger, menuId, setTriggerEl }}
+    >
       <div className="relative inline-block">
         {children}
       </div>
@@ -39,26 +70,46 @@ export function DropdownMenuTrigger({
   children: ReactNode
   asChild?: boolean
 }) {
-  const { isOpen, setIsOpen } = useContext(DropdownContext)
+  const { isOpen, setIsOpen, menuId, setTriggerEl } = useContext(DropdownContext)
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation()
+    setTriggerEl(e.currentTarget)
     setIsOpen(!isOpen)
   }
 
+  // Piltangent nedåt öppnar menyn och flyttar fokus in i den (samma mönster
+  // som DropdownMenuContent nedan använder för att flytta fokus vid öppning).
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key === 'ArrowDown' && !isOpen) {
+      e.preventDefault()
+      setTriggerEl(e.currentTarget)
+      setIsOpen(true)
+    }
+  }
+
+  const ariaProps = {
+    'aria-haspopup': 'menu' as const,
+    'aria-expanded': isOpen,
+    'aria-controls': isOpen ? menuId : undefined,
+  }
+
   if (asChild) {
-    // Clone the child element and add onClick
-    const child = children as React.ReactElement
+    // Clone the child element and add onClick + aria-attribut
+    const child = children as React.ReactElement<Record<string, unknown>>
     return (
       <>
-        {/* @ts-expect-error - cloneElement typing */}
-        {React.cloneElement(child, { onClick: handleClick })}
+        {React.cloneElement(child, {
+          onClick: handleClick,
+          onKeyDown: handleKeyDown,
+          ...ariaProps,
+        })}
       </>
     )
   }
 
   return (
-    <button onClick={handleClick} type="button">
+    <button onClick={handleClick} onKeyDown={handleKeyDown} type="button" {...ariaProps}>
       {children}
     </button>
   )
@@ -74,7 +125,7 @@ export function DropdownMenuContent({
   align?: 'start' | 'end' | 'center'
   className?: string
 }) {
-  const { isOpen, close } = useContext(DropdownContext)
+  const { isOpen, close, closeAndFocusTrigger, menuId } = useContext(DropdownContext)
   const ref = useRef<HTMLDivElement>(null)
 
   // Close on click outside
@@ -89,7 +140,7 @@ export function DropdownMenuContent({
 
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        close()
+        closeAndFocusTrigger()
       }
     }
 
@@ -100,7 +151,31 @@ export function DropdownMenuContent({
       document.removeEventListener('mousedown', handleClickOutside)
       document.removeEventListener('keydown', handleEscape)
     }
-  }, [isOpen, close])
+  }, [isOpen, close, closeAndFocusTrigger])
+
+  // Flytta fokus in i menyn vid öppning (WAI-ARIA APG menu button-mönstret)
+  // — annars vet en tangentbords-/skärmläsaranvändare inte att menyn finns.
+  useEffect(() => {
+    if (!isOpen) return
+    const first = ref.current?.querySelector<HTMLElement>('[role="menuitem"]:not(:disabled)')
+    first?.focus()
+  }, [isOpen])
+
+  // Piltangenter flyttar fokus mellan menyalternativen (roving focus).
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
+    const items = Array.from(
+      ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? []
+    )
+    if (items.length === 0) return
+    e.preventDefault()
+    const currentIndex = items.indexOf(document.activeElement as HTMLElement)
+    const nextIndex =
+      e.key === 'ArrowDown'
+        ? (currentIndex + 1) % items.length
+        : (currentIndex - 1 + items.length) % items.length
+    items[nextIndex]?.focus()
+  }
 
   if (!isOpen) return null
 
@@ -116,6 +191,9 @@ export function DropdownMenuContent({
       <div className="fixed inset-0 z-40" onClick={close} />
       <div
         ref={ref}
+        id={menuId}
+        role="menu"
+        onKeyDown={handleKeyDown}
         className={cn(
           'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[180px]',
           alignmentClasses[align],
@@ -140,17 +218,19 @@ export function DropdownMenuItem({
   className?: string
   disabled?: boolean
 }) {
-  const { close } = useContext(DropdownContext)
+  const { closeAndFocusTrigger } = useContext(DropdownContext)
 
   const handleClick = () => {
     if (disabled) return
     onClick?.()
-    close()
+    closeAndFocusTrigger()
   }
 
   return (
     <button
       type="button"
+      role="menuitem"
+      tabIndex={-1}
       onClick={handleClick}
       disabled={disabled}
       className={cn(
@@ -168,5 +248,5 @@ export function DropdownMenuItem({
 
 // Separator line
 export function DropdownMenuSeparator() {
-  return <div className="h-px bg-stone-200 dark:bg-stone-700 my-1" />
+  return <div role="separator" className="h-px bg-stone-200 dark:bg-stone-700 my-1" />
 }

@@ -10,7 +10,7 @@ import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 import { showToast } from '@/components/Toast'
 import { Loader2, FileText, ArrowRight } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
-import type { CVData } from '@/services/supabaseApi'
+import type { CVData, Skill } from '@/services/supabaseApi'
 
 export default function JobAdaptPage() {
   const { t } = useTranslation()
@@ -32,14 +32,21 @@ export default function JobAdaptPage() {
     }
   }
 
+  // CB4: `handleAddSkill`/`handleUpdateSummary` satte state optimistiskt och
+  // visade vid fel bara en toast — ändringen låg kvar i UI:t som om den vore
+  // sparad, tills nästa laddning tyst tog bort den. Båda fångar nu det
+  // tidigare värdet (`previousData`, från staten INNAN den optimistiska
+  // uppdateringen) och rullar tillbaka till precis det vid fel, så UI:t
+  // aldrig ljuger om vad som faktiskt är sparat.
   const handleAddSkill = (skillName: string) => {
     if (!cvData) return
+    const previousData = cvData
 
-    const newSkill = {
+    const newSkill: Skill = {
       id: Date.now().toString(),
       name: skillName,
       level: 3,
-      category: 'technical' as const
+      category: 'technical'
     }
 
     const updatedData = {
@@ -53,12 +60,14 @@ export default function JobAdaptPage() {
     cvApi.updateCV(updatedData).then(() => {
       showToast.success(t('cv.jobAdapt.skillAdded', 'Kompetens tillagd: {{skill}}', { skill: skillName }))
     }).catch(() => {
-      showToast.error(t('common.error', 'Något gick fel'))
+      setCvData(previousData)
+      showToast.error(t('cv.jobAdapt.saveRollback', 'Kunde inte spara ändringen. Vi har återställt föregående version.'))
     })
   }
 
   const handleUpdateSummary = (summary: string) => {
     if (!cvData) return
+    const previousData = cvData
 
     const updatedData = { ...cvData, summary }
     setCvData(updatedData)
@@ -67,7 +76,8 @@ export default function JobAdaptPage() {
     cvApi.updateCV(updatedData).then(() => {
       showToast.success(t('cv.jobAdapt.summaryUpdated', 'Sammanfattning uppdaterad'))
     }).catch(() => {
-      showToast.error(t('common.error', 'Något gick fel'))
+      setCvData(previousData)
+      showToast.error(t('cv.jobAdapt.saveRollback', 'Kunde inte spara ändringen. Vi har återställt föregående version.'))
     })
   }
 

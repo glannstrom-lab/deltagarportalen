@@ -36,9 +36,9 @@ vi.mock('@/components/ui/OptimizedImage', () => ({
   ),
 }))
 
-function renderRegister() {
+function renderRegister(initialPath = '/register') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[initialPath]}>
       <Register />
     </MemoryRouter>
   )
@@ -117,5 +117,35 @@ describe('Register — F22 tillgängliga felmeddelanden', () => {
     expect(password).toHaveAttribute('aria-describedby', 'password-error')
     expect(confirmPassword).toHaveAttribute('aria-invalid', 'true')
     expect(confirmPassword).toHaveAttribute('aria-describedby', 'confirmPassword-error')
+  })
+})
+
+// KO2: subtiteln ska säga VART hon var på väg när returnTo finns i URL:en,
+// i stället för det generiska "Ta det första steget mot din nya karriär".
+describe('Register — returnTo-subtitel (KO2)', () => {
+  beforeEach(() => {
+    mockSignUp.mockReset()
+    mockSignInWithGoogle.mockReset()
+    mockNavigate.mockReset()
+  })
+
+  it('nämner verktygets namn för ett känt mål', () => {
+    renderRegister('/register?returnTo=%2Fcv')
+    expect(screen.getByText(/fortsätta till CV/i)).toBeInTheDocument()
+  })
+
+  it('visar en neutral rad för ett okänt men säkert mål', () => {
+    renderRegister('/register?returnTo=%2Fnagon-okand-sida')
+    expect(screen.getByText(/fortsätta dit du var på väg/i)).toBeInTheDocument()
+  })
+
+  it('visar den generiska subtiteln utan returnTo', () => {
+    renderRegister('/register')
+    expect(screen.getByText('Ta det första steget mot din nya karriär')).toBeInTheDocument()
+  })
+
+  it('visar den generiska subtiteln när returnTo är en osäker (extern) länk', () => {
+    renderRegister('/register?returnTo=' + encodeURIComponent('https://ondsajt.se'))
+    expect(screen.getByText('Ta det första steget mot din nya karriär')).toBeInTheDocument()
   })
 })

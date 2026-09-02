@@ -11,6 +11,7 @@ import {
   Check,
 } from '@/components/ui/icons'
 import { afApi } from '@/services/arbetsformedlingenApi'
+import { skillName } from '@/services/cvOptimizer'
 import type { CVData } from '@/services/supabaseApi'
 
 interface CVOptimizerProps {
@@ -35,10 +36,12 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
       setLoading(true)
       setError(null)
       
+      // CB5: `s.name` rakt av gav ordet "undefined" i prompten för
+      // kompetensposter i strängform — `skillName` läser båda formerna.
       const cvText = `
         ${cvData.summary}
         ${cvData.workExperience.map(w => w.description).join(' ')}
-        ${cvData.skills.map(s => s.name).join(' ')}
+        ${cvData.skills.map(skillName).join(' ')}
       `
       
       const result = await afApi.optimizeCV(cvText, targetJob)

@@ -33,7 +33,7 @@ import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { LoadingState } from '@/components/ui/LoadingState'
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 
@@ -569,6 +569,9 @@ export function CommunicationTab() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language
   const [loading, setLoading] = useState(true)
+  // KS7: ett fel vid hämtning ska aldrig se ut som "inga meddelanden ännu" —
+  // den tomtillstånds-vyn längre ned är för en riktigt tom inkorg.
+  const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'messages' | 'meetings'>('messages')
   const [messages, setMessages] = useState<Message[]>([])
   const [meetings, setMeetings] = useState<Meeting[]>([])
@@ -636,26 +639,35 @@ export function CommunicationTab() {
 
   const fetchData = async () => {
     try {
+      setError(null)
       const {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data: participantsData } = await supabase
+      // KS7: `error` saknades tidigare för alla tre frågorna här. Ett
+      // trasigt anrop gav `participantsData: undefined`, `if
+      // (participantsData)`-grenen hoppades bara över, och sidan visade
+      // tyst "Inga meddelanden ännu" — identiskt med en riktigt tom inkorg.
+      const { data: participantsData, error: participantsFetchError } = await supabase
         .from('consultant_dashboard_participants')
         .select('participant_id, first_name, last_name, email')
         .eq('consultant_id', user.id)
+
+      if (participantsFetchError) throw participantsFetchError
 
       if (participantsData) {
         setParticipants(participantsData)
         const participantMap = new Map(participantsData.map(p => [p.participant_id, p]))
 
-        const { data: messagesData } = await supabase
+        const { data: messagesData, error: messagesFetchError } = await supabase
           .from('consultant_messages')
           .select('*')
           .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
           .order('created_at', { ascending: true })
           .limit(500)
+
+        if (messagesFetchError) throw messagesFetchError
 
         if (messagesData) {
           const formatted: Message[] = messagesData.map(m => {
@@ -678,13 +690,15 @@ export function CommunicationTab() {
           setMessages([])
         }
 
-        const { data: meetingsData } = await supabase
+        const { data: meetingsData, error: meetingsFetchError } = await supabase
           .from('consultant_meetings')
           .select('*')
           .eq('consultant_id', user.id)
           .gte('scheduled_at', new Date().toISOString())
           .eq('status', 'scheduled')
           .order('scheduled_at', { ascending: true })
+
+        if (meetingsFetchError) throw meetingsFetchError
 
         if (meetingsData && meetingsData.length > 0) {
           const formattedMeetings: Meeting[] = meetingsData.map(m => {
@@ -710,6 +724,9 @@ export function CommunicationTab() {
     } catch (error) {
       console.error('Error fetching data:', error)
       notifications.error(t('consultant.analytics.loadError'))
+      // KS7: annars visas "Inga meddelanden ännu" med en "Nytt meddelande"-CTA
+      // — identisk vy för en trasig hämtning och en riktigt tom inkorg.
+      setError('Meddelanden och möten kunde inte hämtas. Kontrollera anslutningen och försök igen.')
     } finally {
       setLoading(false)
     }
@@ -887,6 +904,20 @@ export function CommunicationTab() {
   }
 
   if (loading) return <LoadingState type="list" />
+
+  // KS7: eget felläge, skilt från den tomma inkorgen och den tomma
+  // möteslistan längre ned.
+  if (error) {
+    return (
+      <Card className="p-8">
+        <ErrorState
+          title="Kommunikationen kunde inte hämtas"
+          message={error}
+          onRetry={fetchData}
+        />
+      </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">

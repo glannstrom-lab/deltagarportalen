@@ -10,7 +10,7 @@
 -- Ingen befintlig rad påverkas (prod har 0 rader i consultant_placements
 -- 2026-08-31, verifierat med `SELECT count(*) FROM consultant_placements`).
 --
--- INTE KÖRD ÄN. Kräver Mikaels ja enligt CLAUDE.md (migrationer mot prod).
+-- KÖRD 2026-08-31, verifierad mot prod 2026-09-01 (company_id finns i information_schema). Huvudet sa "INTE KÖRD ÄN" till 2026-09-02.
 -- Körs manuellt när klartecken finns:
 --   npx supabase db query --linked -f supabase/migrations/20260831120000_ag3_placement_company_id.sql
 -- Uppdatera sedan snapshoten i SAMMA commit som körningen:

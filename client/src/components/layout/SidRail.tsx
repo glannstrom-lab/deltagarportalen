@@ -20,11 +20,12 @@
  * ingen förändring alls.
  */
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { Tab } from './PageTabs'
-import { aktivFlikId } from './flikMatchning'
+import { aktivFlikId, etikettForFlik } from './flikMatchning'
 
 /**
  * Flikar som lever i sidans eget tillstånd i stället för i rutten.
@@ -92,6 +93,54 @@ function Grupp({ text }: { text: string }) {
   )
 }
 
+/**
+ * Skärmläsarannonsering för sidoflikar (TI4).
+ *
+ * De fem sidoflikssidorna (LinkedIn, Dagbok, Externa resurser, Profil,
+ * Resurser) byter avsnitt via `useState`/query-param — rutten (`pathname`)
+ * ändras inte. `RouteAnnouncer.tsx` i App.tsx lyssnar bara på `pathname` och
+ * fångar därför aldrig de här bytena; en skärmläsaranvändare som klickar en
+ * flik hör ingenting alls hända.
+ *
+ * Samma "hoppa över första renderingen"-mönster som RouteAnnouncer: annars
+ * läser skärmläsaren upp den redan synliga förstafliken en gång till, ovanpå
+ * sidladdningens egen uppläsning — brus, inte hjälp.
+ *
+ * Hooken används i BÅDA renderingsvägarna — `SidRail` (desktop-skenan) och
+ * `SidoflikRad` (den mobila raden). De är `hidden lg:block` respektive
+ * `lg:hidden`, så bara en av de två liveregionerna är exponerad för
+ * hjälpmedel vid en given brytpunkt; den andra ligger overksam bakom
+ * `display: none` (som redan utesluter den ur tillgänglighetsträdet).
+ *
+ * Ingen `useEffect`: "hoppa över första renderingen" görs i stället med
+ * mönstret React självt rekommenderar för att härleda tillstånd ur en
+ * ändrad prop (react.dev/learn/you-might-not-need-an-effect) — jämför mot
+ * föregående värde UNDER rendering och sätt state direkt om det skiljer.
+ * `foregAktiv` startar som `sidoflikar.aktiv` redan vid montering, så
+ * villkoret är falskt på just den första renderingen. En effekt hade gjort
+ * exakt samma sak en extra render-omgång senare, och dessutom utlöst
+ * `react-hooks/set-state-in-effect` (samma varning som redan finns på
+ * `RouteAnnouncer.tsx:40`, som annonseringen här är syskon till).
+ */
+function useSidoflikAnnonsering(sidoflikar?: Sidoflikar): string {
+  const { t } = useTranslation()
+  const [foregAktiv, setForegAktiv] = useState<string | null>(sidoflikar?.aktiv ?? null)
+  const [meddelande, setMeddelande] = useState('')
+
+  if (sidoflikar && sidoflikar.aktiv !== foregAktiv) {
+    setForegAktiv(sidoflikar.aktiv)
+    const etikett = etikettForFlik(sidoflikar.poster, sidoflikar.aktiv)
+    if (etikett) {
+      setMeddelande(t('sidRail.sidoflikAnnonsering', {
+        defaultValue: 'Visar nu {{section}}',
+        section: etikett,
+      }))
+    }
+  }
+
+  return meddelande
+}
+
 export default function SidRail({
   title,
   description,
@@ -108,6 +157,7 @@ export default function SidRail({
   const nagonFlik = harFlikar || harSidoflikar
   // Bara EN flik kan vara aktiv — se aktivFlikId i flikMatchning.ts.
   const aktivId = aktivFlikId(tabs ?? [], location.pathname, sok)
+  const sidoflikAnnonsering = useSidoflikAnnonsering(sidoflikar)
 
   if (!title && !nagonFlik && !children && !slotRef) return null
 
@@ -211,6 +261,10 @@ export default function SidRail({
               )
             })}
           </ul>
+          {/* Skärmläsarannonsering av flikbyte — se useSidoflikAnnonsering ovan. */}
+          <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+            {sidoflikAnnonsering}
+          </span>
         </nav>
       )}
 
@@ -221,6 +275,9 @@ export default function SidRail({
 
 /** Sidoflikarna som vågrät rad. Mobil, där ingen skena får plats. */
 export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
+  // Hooken måste anropas ovillkorligt (regeln om hooks) — den kollar själv
+  // om `sidoflikar` finns.
+  const sidoflikAnnonsering = useSidoflikAnnonsering(sidoflikar)
   if (!sidoflikar || sidoflikar.poster.length < 2) return null
 
   return (
@@ -256,6 +313,10 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
           )
         })}
       </ul>
+      {/* Skärmläsarannonsering av flikbyte — se useSidoflikAnnonsering ovan. */}
+      <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+        {sidoflikAnnonsering}
+      </span>
     </nav>
   )
 }

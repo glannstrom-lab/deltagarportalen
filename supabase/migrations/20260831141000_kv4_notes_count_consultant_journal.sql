@@ -28,7 +28,8 @@
 --   consultant_notes. Allt annat (kolumner, JOIN-logik, WHERE-filter,
 --   security_invoker, grants) är oförändrat.
 --
--- ⚠️ INTE KÖRD ÄN. Körs manuellt av Mikael (migrationer mot prod kräver hans
+-- KÖRD (notes_count finns på vyn i schema-snapshot, mätt 2026-09-02). Huvudet sa "INTE KÖRD ÄN" till 2026-09-02.
+-- (Ursprunglig text:) Körs manuellt av Mikael (migrationer mot prod kräver hans
 -- ja):
 --   npx supabase db query --linked -f supabase/migrations/20260831140000_kv4_notes_count_consultant_journal.sql
 -- Verifiera efteråt:

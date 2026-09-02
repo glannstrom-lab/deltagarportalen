@@ -29,7 +29,7 @@
 -- här kräver därför EXISTS mot consultant_participants, inte bara ett
 -- kolumnjämförelse.
 --
--- INTE KÖRD ÄN. Kräver Mikaels ja enligt CLAUDE.md (migrationer mot prod).
+-- KÖRD 2026-08-31, verifierad mot prod 2026-09-01 (båda tabellerna i information_schema och schema-snapshot). Huvudet sa "INTE KÖRD ÄN" till 2026-09-02.
 -- Kör manuellt när klartecken finns:
 --   npx supabase db query --linked -f supabase/migrations/20260831130000_ag1_work_placements.sql
 -- Uppdatera sedan schema-snapshoten i SAMMA commit som körningen:

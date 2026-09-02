@@ -92,14 +92,28 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
     },
   })
 
+  // CB3: ett synligt fel på STEGET, inte bara en toast som kan missas.
+  // Nollställs vid varje nytt sparförsök och vid manuell stegväxling
+  // (goPrev/stegikonerna), så det aldrig visas kvar på fel steg.
+  const [saveError, setSaveError] = useState(false)
+
   /** `isFinal` skiljer autosparningen vid "Nästa" från användarens avsiktliga
-   *  "Spara CV" på sista steget — bara den senare firas (G5). */
-  const handleSave = useCallback((isFinal = false) => {
-    saveMutation.mutate(cvData, {
-      onSuccess: () => {
-        if (isFinal) celebrate('cvComplete')
-      },
-    })
+   *  "Spara CV" på sista steget — bara den senare firas (G5).
+   *
+   * CB3: returnerar nu om sparningen lyckades, så anroparen kan vänta på
+   * resultatet i stället för att fyra av-och-glöm. `mutateAsync` kastar vid
+   * fel (`onError` ovan har redan visat toasten) — den kastas fångas här så
+   * att `handleSave` aldrig avbryter anroparens kod, bara rapporterar utfall. */
+  const handleSave = useCallback(async (isFinal = false): Promise<boolean> => {
+    setSaveError(false)
+    try {
+      await saveMutation.mutateAsync(cvData)
+      if (isFinal) celebrate('cvComplete')
+      return true
+    } catch {
+      setSaveError(true)
+      return false
+    }
   }, [cvData, saveMutation, celebrate])
 
   const currentStepData = FOCUS_STEPS[currentStep]
@@ -107,15 +121,24 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
   const isLastStep = currentStep === FOCUS_STEPS.length - 1
   const progress = ((currentStep + 1) / FOCUS_STEPS.length) * 100
 
-  const goNext = () => {
+  // CB3: fokuslägets wizard avancerade tidigare oavsett om sparningen
+  // lyckades — en fire-and-forget `mutate()` följt direkt av
+  // `setCurrentStep`. Deltagaren stod redan på nästa steg när felet kom.
+  // Nu väntar steget in sparningen: lyckas den, byts steget; misslyckas
+  // den, stannar wizarden kvar med felet synligt (se `saveError` nedan)
+  // och en "Försök igen"-knapp som bara kör om samma sparning.
+  const goNext = async () => {
     if (!isLastStep) {
-      handleSave()
-      setCurrentStep(prev => prev + 1)
+      const saved = await handleSave()
+      if (saved) {
+        setCurrentStep(prev => prev + 1)
+      }
     }
   }
 
   const goPrev = () => {
     if (!isFirstStep) {
+      setSaveError(false)
       setCurrentStep(prev => prev - 1)
     }
   }
@@ -162,7 +185,10 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
             return (
               <button
                 key={step.id}
-                onClick={() => setCurrentStep(i)}
+                onClick={() => {
+                  setSaveError(false)
+                  setCurrentStep(i)
+                }}
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center transition-all',
                   isComplete && 'bg-[var(--c-solid)] text-white',
@@ -205,6 +231,25 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
         )}
       </div>
 
+      {/* CB3: fokuslägets synliga sparfel. Wizarden avancerar inte förrän
+          detta är löst — en toast ensam räcker inte för målgruppen. */}
+      {saveError && (
+        <div
+          role="alert"
+          className="mt-4 flex items-center justify-between gap-4 rounded-xl border border-red-200 dark:border-red-800/50 bg-red-50 dark:bg-red-900/20 px-4 py-3"
+        >
+          <p className="text-sm text-red-700 dark:text-red-300">
+            {t('focusCV.saveError', 'Kunde inte spara CV')}
+          </p>
+          <button
+            onClick={() => { void goNext() }}
+            className="shrink-0 text-sm font-medium text-red-700 dark:text-red-300 underline hover:no-underline"
+          >
+            {t('common.tryAgain', 'Försök igen')}
+          </button>
+        </div>
+      )}
+
       {/* Navigation */}
       <div className="flex items-center justify-between mt-6 gap-4">
         <button
@@ -240,14 +285,22 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
           </button>
         ) : (
           <button
-            onClick={goNext}
+            onClick={() => { void goNext() }}
+            disabled={saveMutation.isPending}
             className={cn(
               'flex items-center gap-2 px-8 py-3 rounded-xl font-semibold transition-colors',
-              'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]'
+              'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+              'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
-            {t('common.next', 'Nästa')}
-            <ChevronRight className="w-5 h-5" />
+            {saveMutation.isPending ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              <>
+                {t('common.next', 'Nästa')}
+                <ChevronRight className="w-5 h-5" />
+              </>
+            )}
           </button>
         )}
       </div>

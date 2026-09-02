@@ -168,12 +168,18 @@ describe('Register Flow Integration', () => {
     await user.click(submitButton)
 
     // Should call signUp with correct data
+    // BL2: rollen asserterades inte, så Register.tsx:71 kunde ändras från
+    // 'USER' till 'CONSULTANT' utan att något test föll (mutationsstickprov
+    // 2026-09-01, 29 gröna). `handle_new_user()` läser aldrig klientens
+    // metadata i dag, så det fanns ingen levande lucka — men inget skydd mot
+    // att en framtida ändring öppnar en. Lägg till rollen uttryckligen.
     await waitFor(() => {
       expect(mockSignUp).toHaveBeenCalledWith(expect.objectContaining({
         email: 'anna@example.com',
         password: 'SecurePass123!',
         firstName: 'Anna',
         lastName: 'Andersson',
+        role: 'USER',
       }))
     })
   })

@@ -2,7 +2,8 @@
 -- deltagares `status` på `profiles` — och ingenting annat.
 --
 -- ============================================================================
--- INTE KÖRD ÄN. RLS mot prod kräver Mikaels uttryckliga ja (CLAUDE.md). Kör
+-- KÖRD (policyn "Konsulent kan ändra status på sin tilldelade deltagare" finns i pg_policies, mätt 2026-09-02). Huvudet sa "INTE KÖRD ÄN" till 2026-09-02.
+-- (Ursprunglig text:) RLS mot prod kräver Mikaels uttryckliga ja (CLAUDE.md). Kör
 -- manuellt när klartecken finns:
 --   npx supabase db query --linked -f supabase/migrations/20260831150000_ks10_consultant_status_only_update.sql
 -- Uppdatera schema-snapshoten i SAMMA commit som körningen:

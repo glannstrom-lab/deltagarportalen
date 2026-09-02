@@ -106,7 +106,16 @@ describe('unifiedProfileApi.getProfile', () => {
     }) // profiles
     mockFromBuilder.maybeSingle
       .mockResolvedValueOnce({
-        data: { summary: 'CV-sammanfattning', skills: ['React'], work_experience: [{ title: 'X' }], education: [] },
+        // CB5: `cv.skills` speglar PROD-formen, inte den bekväma. Mätt
+        // 2026-09-02: 81 av 81 kompetensposter i 17 CV:n är objektformen
+        // {id,name,level,category} — noll i strängform. `ProfessionalProfile.skills`
+        // var tidigare felaktigt typad som `string[]`; fixturen låg i samma fälla.
+        data: {
+          summary: 'CV-sammanfattning',
+          skills: [{ id: '1', name: 'React', level: 4, category: 'technical' }],
+          work_experience: [{ title: 'X' }],
+          education: [],
+        },
         error: null,
       }) // cvs
       .mockResolvedValueOnce({
@@ -125,11 +134,33 @@ describe('unifiedProfileApi.getProfile', () => {
     expect(result.core?.firstName).toBe('Override-Anna') // unified_profiles vinner över profiles
     expect(result.core?.lastName).toBe('Andersson') // faller tillbaka till profiles när unified saknar
     expect(result.core?.summary).toBe('CV-sammanfattning') // faller tillbaka till cv.summary
-    expect(result.professional?.skills).toEqual(['React'])
+    expect(result.professional?.skills).toEqual([{ id: '1', name: 'React', level: 4, category: 'technical' }])
     expect(result.career?.employmentStatus).toBe('employed')
     expect(result.career?.riasecScores).toEqual({ realistic: 3 })
     expect(result.usage?.coverLettersCount).toBe(2)
     expect(result.usage?.applicationsCount).toBe(5)
+  })
+
+  it('CB5: släpper igenom kompetenser i äldre strängform utan att kasta (backåtkompatibelt, trots att prod nu är 100 % objekt)', async () => {
+    loggedIn()
+    mockFromBuilder.single.mockResolvedValueOnce({ data: { first_name: 'Anna' }, error: null }) // profiles
+    mockFromBuilder.maybeSingle
+      .mockResolvedValueOnce({
+        data: { summary: '', skills: ['Docker', 'React'], work_experience: [], education: [] },
+        error: null,
+      }) // cvs — gammal strängform
+      .mockResolvedValueOnce({ data: null, error: null }) // interest_results
+      .mockResolvedValueOnce({ data: null, error: null }) // unified_profiles
+    queueResult({ count: 0, error: null })
+    queueResult({ count: 0, error: null })
+
+    const result = await unifiedProfileApi.getProfile()
+
+    // getProfile gör ingen egen transformering av skills — den ger vidare
+    // exakt vad `cvs`-tabellen returnerar. Så länge fältet inte krascher
+    // (det gjorde det aldrig här, till skillnad från cvOptimizer.ts) är
+    // ansvaret för att LÄSA formen rätt hos konsumenten (CB5).
+    expect(result.professional?.skills).toEqual(['Docker', 'React'])
   })
 
   it('D11: PGRST116 ("no rows") på profiles-frågan är legitimt — ny användare utan rad ger tomma defaults, kastar INTE', async () => {
@@ -362,7 +393,7 @@ describe('unifiedProfileApi.calculateCompleteness', () => {
         summary: 'Sammanfattning',
       },
       professional: {
-        skills: ['React'],
+        skills: [{ id: '1', name: 'React', level: 4, category: 'technical' }],
         languages: [],
         workExperience: [{ title: 'X', company: 'Y' }],
         education: [{ degree: 'X', school: 'Y' }],

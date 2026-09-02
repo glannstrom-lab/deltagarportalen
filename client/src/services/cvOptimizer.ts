@@ -213,26 +213,34 @@ function countOccurrences(haystack: string, needle: string): number {
 }
 
 /**
- * Läser ut sökbar text ur en kompetenspost, i gemener.
+ * Läser ut kompetensnamnet ur en post, oavsett form.
  *
  * FYND 2026-08-03 (under UX14-arbetet, verifierat mot prod): `cv.skills` är
  * **objekt** — `{ id, name, level, category }` — i 16 av 16 CV:n som har
- * kompetenser. Koden gjorde `s.toLowerCase()` rakt på posten, vilket kastar
- * `TypeError: s.toLowerCase is not a function`. Alltså: även efter att
- * regex-kraschen var lagad hade analysen fortsatt att falla för alla som
- * faktiskt fyllt i sina kompetenser — den grupp som har mest att vinna på
- * matchningen. Typfelet syntes i strict-listan (`Property 'toLowerCase' does
- * not exist on type 'Skill'`) men hade avfärdats som "bara typskuld".
+ * kompetenser. Ommätt 2026-09-02 (CB5): fortfarande 100 % objektform —
+ * 81 av 81 kompetensposter i 17 CV:n med kompetenser, noll i strängform.
+ * `CVData['skills']` är typat som `Skill[]` i hela kodbasen, så TypeScript
+ * varken fångar eller varnar för strängformen — den överlever bara som en
+ * runtime-möjlighet (äldre lokal data, ett CV under import). Ett direkt
+ * `s.name` på en strängpost ger `undefined`, inte ett fel — vilket är värre,
+ * för det syns aldrig i typkontrollen och renderas rakt in i AI-prompten
+ * eller UI:t som ordet "undefined" (CB5).
  *
- * Båda formerna hanteras: äldre lokal data kan vara rena strängar.
+ * `skillName` bevarar originalformen (för visning/prompttext); `skillText`
+ * är samma sak i gemener (för sökning/matchning, UX14). Båda hanterar
+ * strängform defensivt trots att den inte längre observerats i prod.
  */
-function skillText(skill: unknown): string {
-  if (typeof skill === 'string') return skill.toLowerCase()
+export function skillName(skill: unknown): string {
+  if (typeof skill === 'string') return skill
   if (skill && typeof skill === 'object') {
     const name = (skill as { name?: unknown }).name
-    if (typeof name === 'string') return name.toLowerCase()
+    if (typeof name === 'string') return name
   }
   return ''
+}
+
+function skillText(skill: unknown): string {
+  return skillName(skill).toLowerCase()
 }
 
 /**

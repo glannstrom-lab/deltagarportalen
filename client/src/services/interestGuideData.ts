@@ -503,6 +503,37 @@ export const allQuestions: Question[] = [
 
 // ===== YRKESDATABAS =====
 
+/**
+ * KÄLLA OCH DATUM — `salary` och `prognosis` på de 178 yrkena nedan.
+ *
+ * SA5 (docs/ROADMAP.md): granskningen 2026-08-21/2026-09-02 kunde INTE
+ * belägga en enda av de 356 talen (178 × lönespann + 178 × prognos) mot en
+ * verklig källa. De ligger handinskrivna, utan datum, presenterade i UI:t
+ * (`OccupationsTab.tsx`, `ExploreTab.tsx`, `JobCard.tsx`) som om de vore
+ * Yrkeskompassen — sorterbart, filtrerbart och hopräknat till en rubrik i
+ * stil med "X växande jobb". Samma mönster som lönegolvet på `/international`,
+ * som var fel i tre år innan någon kunde se det (se CLAUDE.md).
+ *
+ * Det finns en verklig, publicerad källa som SKULLE kunna ersätta detta:
+ * Arbetsförmedlingens **Yrkesbarometer** (~180 yrken, nulägesbedömning +
+ * femårsprognos, uppdateras två gånger om året i juni/december — verifierad
+ * 2026-09-02, se `arbetsformedlingen.se/statistik/yrkes--och-kompetensanalyser`,
+ * HTTP 200) för prognosdelen, och SCB:s lönestatistik för lönespannen. INGEN
+ * av dem är kopplad här. Yrkesbarometerns skala (fem nivåer: stor
+ * brist–stort överskott) motsvarar inte heller rakt av denna filens tre
+ * nivåer (growing/stable/declining) — att koppla ihop dem yrke för yrke är
+ * ett eget arbete, inte gjort i det här passet, och siffrorna nedan är därför
+ * INTE rättade mot Yrkesbarometern eller SCB.
+ *
+ * Minsta ärliga åtgärden inom den här filens ägarskap: dokumentera att
+ * uppgifterna saknar källa (den här kommentaren + konstanten nedan). Att
+ * faktiskt MÄRKA det för användaren kräver en ändring i UI-lagret
+ * (`OccupationsTab.tsx`/`ExploreTab.tsx`/`JobCard.tsx`), som ligger utanför
+ * den här passeringens filuppsättning — se roadmapraden för vem som äger
+ * det. Rör INTE de 356 talen själva utan en verifierad källa att rätta mot.
+ */
+export const YRKESDATA_UTAN_KALLA_KONSTATERAT = '2026-09-02'
+
 const occupationsRadata: Occupation[] = [
   // Högskoleyrken
   {

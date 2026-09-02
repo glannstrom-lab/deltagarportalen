@@ -26,12 +26,13 @@ import {
   Loader2,
   Edit2,
   Trash2,
+  AlertTriangle,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { LoadingState } from '@/components/ui/LoadingState'
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
@@ -624,6 +625,10 @@ export function ResourcesTab() {
 
   // Template state
   const [loading, setLoading] = useState(true)
+  // KS7: en misslyckad hämtning faller tillbaka på exempelmallar (se
+  // loadTemplates) i stället för en tom grid — men det fallet måste synas,
+  // annars ser en trasig hämtning ut som fungerande data.
+  const [templatesError, setTemplatesError] = useState<string | null>(null)
   const [templates, setTemplates] = useState<GoalTemplate[]>([])
   const [showTemplateForm, setShowTemplateForm] = useState(false)
   const [editingTemplate, setEditingTemplate] = useState<GoalTemplate | null>(null)
@@ -641,6 +646,9 @@ export function ResourcesTab() {
   // Job collections state
   const [collections, setCollections] = useState<JobCollection[]>([])
   const [collectionsLoading, setCollectionsLoading] = useState(true)
+  // KS7: utan detta ser en trasig hämtning EXAKT ut som "inga samlingar
+  // ännu" (samma EmptyState, samma CTA).
+  const [collectionsError, setCollectionsError] = useState<string | null>(null)
   const [showCollectionForm, setShowCollectionForm] = useState(false)
   const [editingCollection, setEditingCollection] = useState<JobCollection | null>(null)
   const [savingCollection, setSavingCollection] = useState(false)
@@ -654,6 +662,7 @@ export function ResourcesTab() {
 
   const loadTemplates = async () => {
     setLoading(true)
+    setTemplatesError(null)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -683,7 +692,10 @@ export function ResourcesTab() {
       setTemplates(formattedTemplates)
     } catch (err) {
       console.error('Error loading templates:', err)
-      // Use default templates as fallback
+      // KS7: exempelmallarna visas ändå (hellre en fungerande yta än en tom
+      // grid) — men bannern nedanför gör klart att det INTE är konsulentens
+      // egna sparade mallar, bara exempel, tills hämtningen lyckas igen.
+      setTemplatesError('Mallarna kunde inte hämtas. Det som visas nedan är exempelmallar, inte dina sparade — försök igen.')
       setTemplates(getDefaultTemplates())
     } finally {
       setLoading(false)
@@ -887,6 +899,7 @@ export function ResourcesTab() {
 
   const loadCollections = async () => {
     setCollectionsLoading(true)
+    setCollectionsError(null)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -910,6 +923,9 @@ export function ResourcesTab() {
       })))
     } catch (err) {
       console.error('Error loading job collections:', err)
+      // KS7: utan detta blir `collections` kvar på [] och renderas som
+      // "Inga samlingar ännu" — identiskt med en riktigt tom lista.
+      setCollectionsError('Jobbsamlingarna kunde inte hämtas. Kontrollera anslutningen och försök igen.')
     } finally {
       setCollectionsLoading(false)
     }
@@ -1103,6 +1119,24 @@ export function ResourcesTab() {
       {/* Goal Templates Section */}
       {activeSection === 'templates' && (
         <>
+          {/* KS7: en misslyckad hämtning visas ändå med exempelmallar (se
+              loadTemplates), men den här bannern gör klart att det inte är
+              konsulentens egna sparade mallar — och ger en väg tillbaka. */}
+          {templatesError && (
+            <div
+              role="alert"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-rose-200 dark:border-rose-800 bg-rose-50 dark:bg-rose-900/20"
+            >
+              <div className="flex items-start gap-2 text-rose-700 dark:text-rose-300">
+                <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <p className="text-sm font-medium">{templatesError}</p>
+              </div>
+              <Button variant="outline" size="sm" onClick={loadTemplates} className="flex-shrink-0">
+                {t('consultant.analytics.tryAgain', 'Försök igen')}
+              </Button>
+            </div>
+          )}
+
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
@@ -1191,7 +1225,19 @@ export function ResourcesTab() {
 
           {collectionsLoading && <LoadingState message={t('consultant.resources.loadingCollections')} />}
 
-          {!collectionsLoading && collections.length === 0 && (
+          {/* KS7: eget felläge — INTE samma vy som "inga samlingar ännu"
+              nedanför, som har en annan orsak och en annan CTA. */}
+          {!collectionsLoading && collectionsError && (
+            <Card className="p-8">
+              <ErrorState
+                title="Jobbsamlingarna kunde inte hämtas"
+                message={collectionsError}
+                onRetry={loadCollections}
+              />
+            </Card>
+          )}
+
+          {!collectionsLoading && !collectionsError && collections.length === 0 && (
             <EmptyState
               icon={Folder}
               title={t('consultant.resources.collectionsEmptyTitle')}
@@ -1203,7 +1249,7 @@ export function ResourcesTab() {
             />
           )}
 
-          {!collectionsLoading && collections.length > 0 && (
+          {!collectionsLoading && !collectionsError && collections.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {collections.map(collection => (
                 <JobCollectionCard

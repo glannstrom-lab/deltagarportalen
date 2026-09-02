@@ -222,6 +222,23 @@ describe('Anpassning — myndighetspåståenden', () => {
     expect(kalla).toMatch(/LANKARNA_KONTROLLERADES = '\d{4}-\d{2}-\d{2}'/)
   })
 
+  it('SA1: alla myndighetslänkar är https, ingen är dubblett', () => {
+    // Håller listan ren utan att importera komponenten (som kräver hela
+    // Card/Button/AiConsentGate-uppsättningen) — samma stil som resten av
+    // filen: läs källtexten, inte modulen. `${AF_STOD}`-mallen löses upp mot
+    // konstantens verkliga värde innan https-provet, annars faller varje
+    // Arbetsförmedlingen-länk på att strängen börjar med "$" i källkoden.
+    const afStod = kalla.match(/const AF_STOD = '([^']*)'/)?.[1]
+    expect(afStod?.startsWith('https://')).toBe(true)
+    const alla = [...kalla.matchAll(/url:\s*(?:`\$\{AF_STOD\}([^`]*)`|'([^']*)')/g)]
+      .map((m) => (m[1] !== undefined ? `${afStod}${m[1]}` : m[2]))
+    expect(alla.length).toBeGreaterThanOrEqual(8) // SA1 mätte fem — listan har nu åtta
+    for (const url of alla) {
+      expect(url.startsWith('https://')).toBe(true)
+    }
+    expect(new Set(alla).size).toBe(alla.length) // inga dubbletter
+  })
+
   it('listar ingen påhittad kravlista för Försäkringskassan', () => {
     expect(kalla).not.toContain('Intyg från läkare eller specialist\\n2.')
   })

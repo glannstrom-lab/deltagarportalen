@@ -499,14 +499,14 @@ export function ApplicationsPipeline({
 
       {/* Stale applications warning */}
       {staleApplications.length > 0 && (
-        <Card className="p-4 bg-amber-50 border-amber-200">
+        <Card className="p-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
           <div className="flex items-start gap-3">
-            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
             <div>
-              <p className="font-medium text-amber-900">
+              <p className="font-medium text-amber-900 dark:text-amber-200">
                 {t('applications.stale.title', { count: staleApplications.length })}
               </p>
-              <p className="text-sm text-amber-700 mt-1">
+              <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
                 {t('applications.stale.description', 'Dessa har inte uppdaterats på 7+ dagar. Överväg att följa upp eller uppdatera status.')}
               </p>
               <div className="flex flex-wrap gap-2 mt-2">
@@ -515,7 +515,7 @@ export function ApplicationsPipeline({
                     key={app.id}
                     type="button"
                     onClick={() => onViewApplication?.(app)}
-                    className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-amber-800 border border-amber-200 hover:bg-amber-100"
+                    className="px-2 py-1 bg-white dark:bg-stone-800 rounded-lg text-xs font-medium text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/40"
                   >
                     {app.companyName
                       || (app.jobData as { employer?: { name?: string } } | undefined)?.employer?.name
@@ -523,7 +523,7 @@ export function ApplicationsPipeline({
                   </button>
                 ))}
                 {staleApplications.length > 3 && (
-                  <span className="px-2 py-1 text-xs text-amber-600">
+                  <span className="px-2 py-1 text-xs text-amber-600 dark:text-amber-400">
                     {t('applications.stale.more', { count: staleApplications.length - 3 })}
                   </span>
                 )}

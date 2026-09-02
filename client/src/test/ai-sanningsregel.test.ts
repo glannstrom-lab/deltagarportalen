@@ -42,6 +42,11 @@ const SANNINGSMARKORER = [
   /påstå\s+aldrig/i,
   /sanningsregel/i,
   /utelämna\s+det/i,
+  // SA2 (2026-09-02): engelska grenar (adaptation-recommendations/
+  // -conversation med language: 'en') hade tidigare ingenting att matcha —
+  // den delade konstanten (SANNINGSREGEL i ai.js) bär numera båda språken.
+  /never\s+invent/i,
+  /truth\s+rule/i,
 ]
 
 /**
@@ -115,13 +120,25 @@ const AGENTTYPER = [
   'digitalcoach',
 ]
 
-/** Alla systemprompter en funktion kan producera — båda grenarna. */
+/**
+ * SA2 (2026-09-02): `adaptation-recommendations` och `adaptation-conversation`
+ * grenar på `data.language === 'en'`, och fram till den här ändringen provade
+ * grinden ALDRIG den grenen — `underlagsvarianter` satte aldrig `language`,
+ * så `allaSystemprompter` såg bara den svenska systemprompten. Exakt samma
+ * fälla som testfilens egen kommentar ovan varnar för (arketypen
+ * `intervju-simulator`, fast på språk i stället för på agentTyp): en gren som
+ * aldrig anropas kan inte falla, och grinden var grön av fel skäl.
+ */
+const SPRAKVARIANTER = [undefined, 'en'] as const
+
+/** Alla systemprompter en funktion kan producera — alla grenar, alla språk. */
 function allaSystemprompter(namn: string): string[] {
   const ut: string[] = []
   const underlagsvarianter = [
     {},
     UNDERLAG,
     ...AGENTTYPER.map((agentTyp) => ({ ...UNDERLAG, agentTyp })),
+    ...SPRAKVARIANTER.map((language) => ({ ...UNDERLAG, language })),
   ]
   for (const underlag of underlagsvarianter) {
     try {
@@ -324,4 +341,44 @@ describe('G15: karriärplanen känner till svenska stödsystem', () => {
     const system = PROMPTS['karriarplan']({})?.system ?? ''
     expect(system).toMatch(/aldrig på siffror som är regler/i)
   })
+})
+
+/**
+ * SA2 (2026-09-02): "Sanningsregeln finns bara i den svenska AI-grenen."
+ *
+ * `adaptation-recommendations` och `adaptation-conversation` grenar på
+ * `data.language === 'en'`. Testet ovan (`allaSystemprompter`) provar nu den
+ * grenen också — men ett brett marköregex som redan matchar den svenska
+ * halvan av en delad konstant (t.ex. `/sanningsregel/i`, som matchar
+ * ordet "SANNINGSREGEL" oavsett vilket språk resten av stycket är på) kan
+ * inte ensamt bevisa att den ENGELSKA halvan finns kvar. De här testerna
+ * kräver specifikt den engelska sanningsregeln — inte bara att den delade
+ * konstantens svenska etikett råkade följa med.
+ */
+describe('SA2: engelska grenen av adaptation-* har samma styrka som den svenska', () => {
+  const SPRAKGRENAR = ['adaptation-recommendations', 'adaptation-conversation']
+
+  it.each(SPRAKGRENAR)(
+    '%s (language: "en") bär en engelsk sanningsregel, inte bara den delade konstantens svenska etikett',
+    (namn) => {
+      const system = PROMPTS[namn]({ language: 'en' })?.system ?? ''
+      expect(system).toMatch(/never\s+invent/i)
+      expect(system).toMatch(/truth\s+rule/i)
+      expect(system).toMatch(/Arbetsförmedlingen/)
+    }
+  )
+
+  it.each(SPRAKGRENAR)(
+    '%s: svensk och engelsk gren skiljer sig åt men bär SAMMA delade konstant',
+    (namn) => {
+      const sv = PROMPTS[namn]({})?.system ?? ''
+      const en = PROMPTS[namn]({ language: 'en' })?.system ?? ''
+      // Grenarna ska INTE vara identiska (de väljer olika bassystemtext) —
+      // men båda ska bära sanningsregeln, satt på vid sammansättningsstället
+      // efter att språkvalet redan gjorts.
+      expect(sv).not.toBe(en)
+      expect(sv).toMatch(/sanningsregel/i)
+      expect(en).toMatch(/sanningsregel/i)
+    }
+  )
 })

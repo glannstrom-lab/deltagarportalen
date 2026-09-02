@@ -210,9 +210,12 @@ function calculateRiasecMatch(
     }
   }
 
-  // Ensure minimum score of 30 if any type matched (shows relevance)
+  // SA6 (docs/ROADMAP.md): tidigare gjorde `Math.max(30, …)` att en annons
+  // som nätt och jämnt nämnde ett enda nyckelord aldrig kunde visas under
+  // "30 % matchning" — ett golv som gjorde en svag träff till en falskt
+  // stark en. Poängen klampas nu bara uppåt (100), inte längre uppåt från 0.
   const finalScore = matchedTypes.length > 0
-    ? Math.max(30, Math.min(100, Math.round(totalScore)))
+    ? Math.min(100, Math.round(totalScore))
     : 0
 
   return {

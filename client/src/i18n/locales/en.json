@@ -130,7 +130,12 @@
     "genericError": "Something went wrong",
     "jobSearchActivity": "Job search activity",
     "noDataYet": "No data yet",
-    "noDataYetDesc": "Data will show once there is enough information"
+    "noDataYetDesc": "Data will show once there is enough information",
+    "processing": "Processing...",
+    "generating": "Generating...",
+    "optional": "optional",
+    "required": "Required",
+    "copy": "Copy"
   },
   "riasec": {
     "realistic": "Realistic",
@@ -475,8 +480,13 @@
       "account": "Account",
       "action": "Overview",
       "reflection": "Reflection",
-      "outbound": "Outreach"
-    }
+      "outbound": "Outreach",
+      "admin": "Admin",
+      "consultant": "Consultant"
+    },
+    "interview": "Interview",
+    "brand": "Personal brand",
+    "skills": "Skills gap"
   },
   "lugnare": {
     "rubrik": "Calmer mode",
@@ -509,7 +519,8 @@
     "minimize": "Minimize sidebar",
     "expand": "Expand sidebar",
     "consultantSection": "Consultant",
-    "adminSection": "Admin"
+    "adminSection": "Admin",
+    "collapse": "Collapse"
   },
   "topbar": {
     "searchPlaceholder": "Search jobs, articles...",
@@ -530,7 +541,9 @@
     "welcome": "Welcome",
     "accessibility": "Accessibility",
     "focusModeOn": "Turn on focus mode",
-    "focusModeOff": "Turn off focus mode"
+    "focusModeOff": "Turn off focus mode",
+    "faq": "Frequently asked questions",
+    "viewProfile": "View profile"
   },
   "language": {
     "select": "Select language",
@@ -1800,7 +1813,8 @@
       "errors": {
         "writeFirst": "Write something first before using AI improvement.",
         "aiCouldNotGenerate": "AI could not generate a response.",
-        "couldNotContact": "Could not contact the AI service."
+        "couldNotContact": "Could not contact the AI service.",
+        "fillCVFirst": "Fill in some information about yourself first (title, experience, or skills)"
       },
       "powerWords": {
         "wasResponsibleFor": "was responsible for",
@@ -1823,7 +1837,9 @@
         "analyzed": "analyzed",
         "fixed": "fixed",
         "solved": "solved"
-      }
+      },
+      "undo": "Undo",
+      "undoReplacements": "Undo replacements"
     },
     "quickMode": {
       "versionLabel": "Quick CV",
@@ -1897,7 +1913,26 @@
       "name": "Name",
       "jobTitle": "Title",
       "skills": "Skills",
-      "editCV": "Edit CV"
+      "editCV": "Edit CV",
+      "analyzeError": "Could not analyze the ad right now. Please try again in a moment.",
+      "clickToAdd": "Click to add as a skill",
+      "found": "You have",
+      "help": "We analyze keywords and suggest improvements",
+      "missing": "Missing from your CV",
+      "newAnalysis": "Analyze a new ad",
+      "noSavedJobs": "You have no saved jobs yet",
+      "pasteJob": "Paste the job ad",
+      "pasteTab": "Paste",
+      "saveJobsHint": "Save jobs from job search to use them here",
+      "savedTab": "Saved jobs",
+      "scoreGood": "Good match!",
+      "scoreLow": "Needs adjustment",
+      "scoreMedium": "Could be better",
+      "selectSavedJob": "Choose a saved job",
+      "subtitle": "Match your CV to a job ad",
+      "suggestions": "Suggestions for your summary",
+      "watermarkType": "analysis",
+      "saveRollback": "Could not save the change. We restored the previous version."
     },
     "welcome": {
       "title": "Welcome to the CV Builder",
@@ -1946,7 +1981,8 @@
         "company": "Company",
         "readingTime": "{{min}} min read"
       }
-    }
+    },
+    "railTools": "CV tools"
   },
   "focusCV": {
     "subtitle": "Step by step",
@@ -2479,7 +2515,9 @@
     "occupationPlaceholder": "E.g. warehouse worker, nurse",
     "sortLatestSaved": "Latest saved",
     "sortCompanyAZ": "Company A-Z",
-    "markAsApplied": "Mark as applied"
+    "markAsApplied": "Mark as applied",
+    "endOfList": "No more jobs to show",
+    "loadingMore": "Loading more jobs…"
   },
   "jobs": {
     "card": {
@@ -4701,7 +4739,8 @@
         "start": "Start",
         "continue": "Continue",
         "reset": "Reset",
-        "end": "End practice"
+        "end": "End practice",
+        "goodLength": "Good length"
       },
       "form": {
         "editTitle": "Edit pitch",
@@ -4725,7 +4764,11 @@
         "addKeyPoint": "Add key point",
         "removeKeyPoint": "Remove key point",
         "save": "Save",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "overTarget": "{{sek}} seconds longer than your target",
+        "placeholdersLeft": "The text still has placeholders in square brackets — replace them with your own details before saving.",
+        "saving": "Saving …",
+        "underTarget": "{{sek}} seconds shorter than your target"
       },
       "view": {
         "seconds_one": "{{count}} sec",
@@ -4757,7 +4800,15 @@
           "title": "End with a question",
           "text": "Invite a dialogue instead of only talking about yourself."
         }
-      }
+      },
+      "confirmDeleteTitle": "Delete the pitch?",
+      "copyFailed": "Could not copy. Select the text and copy it manually.",
+      "deleteFailed": "We could not delete the pitch. It is still there — please try again in a moment.",
+      "deleted": "The pitch has been deleted.",
+      "loadFailed": "We could not fetch your pitches right now. That does not mean they are gone.",
+      "loading": "Fetching your pitches …",
+      "saveFailed": "We could not save the pitch. The text is still here — please try again in a moment.",
+      "saved": "The pitch has been saved."
     },
     "audit": {
       "title": "How you come across",
@@ -5146,7 +5197,8 @@
       "Lätt": "Easy",
       "Medel": "Medium",
       "Utmanande": "Challenging"
-    }
+    },
+    "errorLoadingExercises": "Could not load the exercises"
   },
   "diary": {
     "editorialSpot": "Collect thoughts, moods, goals and gratitude in one place — at your own pace.",
@@ -5762,7 +5814,12 @@
       "decline": "No thanks",
       "goToSettings": "Manage in settings",
       "privacyLink": "Read more in our ",
-      "privacyPolicy": "privacy policy"
+      "privacyPolicy": "privacy policy",
+      "grantError": "Could not save consent",
+      "grantNow": "Give consent",
+      "manageInSettings": "Manage",
+      "requiredDesc": "You need to give consent to use this feature",
+      "requiredTitle": "Consent required"
     }
   },
   "education": {
@@ -6253,7 +6310,9 @@
       "aboutMePlaceholder": "Tell us briefly about yourself...",
       "loadingProfile": "Loading profile...",
       "errorLoading": "Error loading profile:",
-      "errorSaving": "Error saving profile:"
+      "errorSaving": "Error saving profile:",
+      "firstNamePlaceholder": "E.g. Anna",
+      "lastNamePlaceholder": "E.g. Andersson"
     },
     "accessibility": {
       "title": "Accessibility",
@@ -6329,7 +6388,17 @@
         "health": "Functional capacity",
         "healthDesc": "Used for recommendations adapted to your circumstances. Turning it off also stops sharing with your consultant — what you have already entered stays until you delete it.",
         "sharingStopFailed": "Your consent has been withdrawn, but we could not turn off sharing with your consultant. Try again under \"Data sharing with consultant\" below, or contact us.",
-        "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later."
+        "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later.",
+        "saveFailed": "We could not save your choice right now, so nothing has changed. Please try again in a moment."
+      },
+      "aiToggle": {
+        "desc": "Pause AI features without withdrawing your consent. This is your right under GDPR Art. 21 to object to profiling — you can turn it back on at any time.",
+        "gdpr": "GDPR Art. 21",
+        "pause": "Pause AI",
+        "resume": "Turn AI on",
+        "statusOff": "AI features are paused",
+        "statusOn": "AI features are active",
+        "title": "Active AI use"
       }
     },
     "deleteAccount": {
@@ -6498,6 +6567,12 @@
       "createAccountButton": "Create account",
       "checkBothBoxesHint": "Check both boxes above to turn on the button.",
       "termsNotice": "By creating an account, you agree to our terms of use."
+    },
+    "returnTo": {
+      "loginTool": "Log in to continue to {{tool}}",
+      "loginGeneric": "Log in to continue where you were headed",
+      "registerTool": "Create an account to continue to {{tool}}",
+      "registerGeneric": "Create an account to continue where you were headed"
     }
   },
   "ai": {
@@ -7432,7 +7507,8 @@
         "cta": "Sign up free",
         "bullet1": "Build a CV in 5 minutes",
         "bullet2": "Practice for the interview",
-        "bullet3": "Find jobs from Platsbanken"
+        "bullet3": "Find jobs from Platsbanken",
+        "guides": "Or read the guides first — no account needed"
       },
       "consultant": {
         "tag": "Career consultant",
@@ -7730,7 +7806,24 @@
       "createAccount": "Create account",
       "copyright": "2026 Jobin. All rights reserved.",
       "madeWith": "Made with",
-      "forJobSeekers": "for job seekers in Sweden"
+      "forJobSeekers": "for job seekers in Sweden",
+      "accessibility": "Accessibility",
+      "aiPolicy": "AI Policy",
+      "allTools": "All tools",
+      "coverLetter": "Cover letter",
+      "guidesTitle": "Guides",
+      "skillsAnalysis": "Skills analysis"
+    },
+    "guides": {
+      "all": "All guides",
+      "description": "Guides on job searching, doing well in interviews, understanding your rights, and staying motivated. Free to read, no account needed.",
+      "easySwedish": "Easy Swedish",
+      "interview": "Interview",
+      "jobSearch": "Job search",
+      "rights": "Your rights",
+      "support": "Support and adjustments",
+      "title": "Read before you decide",
+      "wellbeing": "Stay well and keep going"
     }
   },
   "privacy": {
@@ -8422,7 +8515,8 @@
       "support": "Support & Goals",
       "supportShort": "Support",
       "settings": "Settings",
-      "settingsShort": "More"
+      "settingsShort": "More",
+      "nextStep": "To fill in"
     },
     "header": {
       "welcome": "Welcome!",
@@ -9673,7 +9767,8 @@
       "title": "Profile picture",
       "description": "Add a professional profile picture to make your CV more personal",
       "mustBeLoggedIn": "You must be logged in to upload images",
-      "uploadFailed": "Upload failed: "
+      "uploadFailed": "Upload failed: ",
+      "uploading": "Uploading..."
     },
     "fields": {
       "firstName": "First name *",
@@ -9681,7 +9776,8 @@
       "jobTitle": "Job title",
       "email": "Email",
       "phone": "Phone",
-      "location": "City"
+      "location": "City",
+      "languageLevel": "Language level"
     },
     "placeholders": {
       "firstName": "Anna",
@@ -9689,7 +9785,8 @@
       "jobTitle": "Experienced salesperson",
       "email": "anna@email.com",
       "phone": "+46 70-123 45 67",
-      "location": "New York"
+      "location": "New York",
+      "language": "Language"
     },
     "summary": {
       "title": "Summary",
@@ -9727,7 +9824,9 @@
       "preview": "Preview",
       "restore": "Restore",
       "cancel": "Cancel",
-      "clearDemoData": "Remove example data"
+      "clearDemoData": "Remove example data",
+      "fill": "Fill in",
+      "remove": "Remove"
     },
     "versions": {
       "beforeImport": "Backup before import",
@@ -9765,8 +9864,36 @@
       "demoDataFilled": "Example data added to the empty fields. Replace it with your own details before you save or send your CV.",
       "demoDataCleared": "Example data removed.",
       "demoDataBannerTitle": "Example data added",
-      "demoDataBannerBody": "This is still example text, not your own details: {{fields}}. Replace it before you save or send your CV."
-    }
+      "demoDataBannerBody": "This is still example text, not your own details: {{fields}}. Replace it before you save or send your CV.",
+      "demoDataTitle": "Fill in example data",
+      "draftRestored": "We found changes that had not been saved yet and put them back."
+    },
+    "contentOverview": "Contents of your CV",
+    "loading": "Loading...",
+    "progress": {
+      "done": "{{klara}} of {{totalt}} parts done",
+      "left": "About {{min}} minutes left",
+      "notStarted": "You have not started yet. The first part takes a few minutes — you can stop any time, everything is saved."
+    },
+    "review": {
+      "a4Note": "Preview in A4 format",
+      "actionsDesc": "Your CV is saved in the cloud. Download it as a PDF or create a version backup to go back to.",
+      "actionsTitle": "Done?",
+      "checklistTitle": "Contents of your CV",
+      "editHint": "If a section breaks awkwardly — go back and edit it. The dashed line shows exactly where page 2 starts.",
+      "exportWord": "Download Word",
+      "missingHint": "Sections you have not filled in are not required — you can still download.",
+      "pageBreak": "Page 2 starts here",
+      "subtitle": "Here is your CV. Everything is saved automatically — download it when you are happy with it.",
+      "title": "Review and save your CV",
+      "wordError": "Could not create the Word file",
+      "wordSuccess": "Word file downloaded"
+    },
+    "tabs": {
+      "advice": "Advice",
+      "preview": "Preview"
+    },
+    "yourCv": "Your CV"
   },
   "consultant": {
     "title": "Consultant Portal",
@@ -9905,13 +10032,21 @@
         "name": "Name",
         "cvScore": "CV score",
         "lastContact": "Last contact",
-        "status": "Status"
+        "status": "Status",
+        "setAscending": "Sort ascending",
+        "setDescending": "Sort descending"
       },
       "bulk": {
         "sendMessage": "Send message",
         "addTag": "Add tag",
         "changeStatus": "Change status",
         "export": "Export"
+      },
+      "inviteFirst": "Invite your first participant",
+      "selectParticipant": "Select {{firstName}} {{lastName}}",
+      "view": {
+        "grid": "Grid view",
+        "list": "List view"
       }
     },
     "settings": {
@@ -10100,7 +10235,10 @@
       "send": "Send",
       "download": "Download",
       "apply": "Apply",
-      "changeStatus": "Change status"
+      "changeStatus": "Change status",
+      "logContact": "Log contact",
+      "logContactAction": "Log contact",
+      "logContactDescription": "Records today's date as the latest contact for all selected participants. Use this after a workshop or a group message — not instead of a note about what you talked about."
     },
     "stats": {
       "totalParticipants": "Total participants",
@@ -10274,7 +10412,8 @@
       "notePlaceholder": "Write a note about the participant...",
       "activeGoalsCount": "{{count}} active goals",
       "writeNote": "Write note",
-      "reportDraft": "Report draft (AI)"
+      "reportDraft": "Report draft (AI)",
+      "loadError": "Could not fetch the participant's details."
     },
     "analytics": {
       "dateRange": {
@@ -10419,7 +10558,10 @@
       "writeReply": "Write your reply...",
       "sending": "Sending...",
       "sendReply": "Send reply",
-      "confirmCancelMeeting": "Are you sure you want to cancel this meeting?"
+      "confirmCancelMeeting": "Are you sure you want to cancel this meeting?",
+      "conversations": "Conversations",
+      "selectConversation": "Select a conversation",
+      "selectConversationDesc": "Click a conversation on the left, or start a new message."
     },
     "resources": {
       "goalTemplates": "Goal templates",
@@ -10522,7 +10664,8 @@
   },
   "layout": {
     "pageTabs": {
-      "selectPage": "Select page"
+      "selectPage": "Select page",
+      "mobileNav": "Pages"
     },
     "bottomBar": {
       "cvScore": "CV score",
@@ -10738,7 +10881,9 @@
       "recording": "Listening...",
       "speak": "Read aloud",
       "stopSpeaking": "Stop reading",
-      "notSupported": "Voice features not supported in this browser"
+      "notSupported": "Voice features not supported in this browser",
+      "error": "Something went wrong with voice",
+      "permissionDenied": "Microphone access denied"
     },
     "export": {
       "toPdf": "Export to PDF",
@@ -11267,7 +11412,8 @@
       "interestsTitle": "What do you like to do?",
       "strengthsHint": "Something you do without thinking about it.",
       "strengthsPlaceholder": "e.g. listen to others, solve problems, pay attention to detail",
-      "strengthsTitle": "What are you especially good at?"
+      "strengthsTitle": "What are you especially good at?",
+      "saveFailed": "Could not save what you wrote. Please try again."
     },
     "interview": {
       "answerHint": "There's no right or wrong — just practice.",
@@ -11302,7 +11448,9 @@
       "queryPlaceholder": "e.g. teacher, warehouse, chef",
       "queryTitle": "Which job are you looking for?",
       "resultsTitle": "Here are the jobs we found",
-      "searchError": "Something went wrong. Try again."
+      "searchError": "Something went wrong. Try again.",
+      "saveJob": "Save job",
+      "unsaveJob": "Remove from saved jobs"
     },
     "jobsokHub": {
       "question": "What in your job search would you like to do?"
@@ -11351,7 +11499,17 @@
       "doneTitle": "Done!",
       "taglineHint": "What are you good at? How do you help others?",
       "taglinePlaceholder": "e.g. I am a meticulous administrator who helps teams stay organised.",
-      "taglineTitle": "A short sentence about you"
+      "taglineTitle": "A short sentence about you",
+      "closeCta": "Close",
+      "copied": "Copied",
+      "copy": "Copy the text",
+      "copyFailed": "Could not copy. Select the text and copy it manually.",
+      "doneHint": "Read it through. We will save it among your pitches.",
+      "saveCta": "Save the text",
+      "saveFailed": "Could not save the text. It is still here — please try again.",
+      "saveHint": "Press Save the text and it will stay among your pitches.",
+      "savedText": "Saved among your pitches. You will find it under Personal brand in normal mode.",
+      "savedTitle": "About me — written in focus mode"
     },
     "profile": {
       "doneText": "Well done! You can always update your details later under Profile.",
@@ -11427,7 +11585,8 @@
       "reasonHint": "A word or a sentence is enough. You can skip it.",
       "reasonPlaceholder": "e.g. slept badly, a lot on my mind",
       "reasonTitle": "What do you think is causing it?",
-      "savedText": "Thank you — saved in your diary."
+      "savedText": "Thank you — saved in your diary.",
+      "saveFailed": "Your check-in could not be saved right now. What you wrote is still there — please try again in a little while."
     },
     "exit": "Exit focus mode",
     "exitShort": "Exit focus",
@@ -11802,6 +11961,14 @@
       "salary": {
         "title": "Salary & negotiation",
         "description": "Prepare for salary talks and negotiations."
+      },
+      "international": {
+        "description": "Validation of your education, your first time here, and Swedish.",
+        "title": "New in Sweden"
+      },
+      "linkedin": {
+        "description": "Get your LinkedIn profile noticed by recruiters.",
+        "title": "LinkedIn optimization"
       }
     }
   },
@@ -11923,7 +12090,8 @@
       "closeIntro": "Close introduction",
       "editActivityScope": "Change activity scope",
       "adjustStartDate": "Adjust start date"
-    }
+    },
+    "title": "Steps to work"
   },
   "coachWidget": {
     "aria": {
@@ -12207,5 +12375,30 @@
     "footer": {
       "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
     }
+  },
+  "onboarding": {
+    "back": "Back",
+    "nextStep": "Next",
+    "skip": "Skip",
+    "stepProgress": "Step {{current}} of {{total}}"
+  },
+  "radgivare": {
+    "faq": "Frequently asked questions",
+    "moreTips": "{{count}} more tips",
+    "panelLabel": "Advice for this page",
+    "tipFrom": "Advice from {{namn}}"
+  },
+  "network": {
+    "description": "Build and maintain your professional network",
+    "title": "Network"
+  },
+  "hubBottomNav": {
+    "label": "Hub navigation"
+  },
+  "routeAnnouncer": {
+    "navigated": "You are now on {{page}}"
+  },
+  "sidRail": {
+    "sidoflikAnnonsering": "Now showing {{section}}"
   }
 }

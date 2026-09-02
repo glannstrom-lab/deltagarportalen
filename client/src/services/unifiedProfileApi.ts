@@ -8,6 +8,7 @@
 import { applicationsApi } from './applicationsApi'
 import { supabase } from '@/lib/supabase'
 import { showToast } from '@/components/Toast'
+import type { Skill } from './supabaseApi'
 
 // ============================================
 // TYPES
@@ -24,7 +25,11 @@ export interface CoreProfile {
 }
 
 export interface ProfessionalProfile {
-  skills: string[]
+  // CB5: typad som `string[]` trots att `cv?.skills` (rad 211 nedan) kommer
+  // rakt ur `cvs.skills` — mätt 2026-09-02: 81 av 81 kompetensposter i 17
+  // CV:n är objektformen `{id,name,level,category}`, noll i strängform.
+  // Samma typlögn som orsakade produktionskraschen i UX14.
+  skills: Skill[]
   languages: Array<{
     language: string
     level: string
