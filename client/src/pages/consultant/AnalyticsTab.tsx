@@ -23,8 +23,10 @@ import {
   Calendar,
   ChevronRight,
 } from '@/components/ui/icons'
+import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
+import { fetchCachedConsultantParticipants } from './consultantParticipantsQuery'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { BarChart } from '@/components/ui/BarChart'
@@ -207,6 +209,7 @@ function ProgressRing({
 
 export function AnalyticsTab() {
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
   const [loading, setLoading] = useState(true)
   // KS7: ett fel (timeout, RLS, kvot) såg tidigare exakt likadant ut som "inga
   // deltagare" — samma skärm, ingen skillnad. Tre lägen krävs (laddar/fel/
@@ -270,12 +273,13 @@ export function AnalyticsTab() {
           break
       }
 
-      // Fetch participants
-      const { data: participants, error: participantsError } = await supabase
-        .from('consultant_dashboard_participants')
-        .select('*')
-        .eq('consultant_id', user.id)
-      if (participantsError) throw participantsError
+      // KK4: delad cache (consultantParticipantsQuery.ts) i stället för ett
+      // eget `select('*')` — den här hämtningen kördes tidigare om varje
+      // gång `dateRange` ändrades, trots att deltagarlistan inte beror på
+      // perioden. Casten till `any[]` matchar samma implicita form frågan
+      // hade innan (klienten är otypad mot Database).
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any -- matchar tidigare implicit any (otypad supabase-klient)
+      const participants = (await fetchCachedConsultantParticipants(queryClient)) as any[]
 
       // Fetch goals
       const { data: goalsData } = await supabase

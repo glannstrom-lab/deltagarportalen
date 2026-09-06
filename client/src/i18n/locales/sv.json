@@ -6516,7 +6516,9 @@
       "uppercase": "En stor bokstav (A-Z)",
       "lowercase": "En liten bokstav (a-z)",
       "number": "En siffra (0-9)",
-      "special": "Ett specialtecken (!@#$%^&* etc)"
+      "special": "Ett specialtecken (!@#$%^&* etc)",
+      "noRepeat": "Inte samma tecken tre gånger i rad",
+      "noWeakPattern": "Inget vanligt lösenord (t.ex. \"lösenord\", \"12345678\")"
     },
     "errors": {
       "userExists": "En användare med denna e-postadress finns redan. Logga in istället.",
@@ -6529,7 +6531,8 @@
       "acceptPrivacy": "Jag har läst och godkänner",
       "privacyLink": "integritetspolicyn",
       "acceptAi": "Jag samtycker till AI-behandling av mina uppgifter",
-      "aiDescription": "Vi använder AI för att hjälpa dig skriva CV och personliga brev. Din data behandlas då av vår AI-leverantör OpenRouter, med servrar i USA. Detta samtycke är valfritt men krävs för AI-funktioner."
+      "aiDescription": "Vi använder AI för att hjälpa dig skriva CV och personliga brev. Din data behandlas då av vår AI-leverantör OpenRouter, med servrar i USA. Detta samtycke är valfritt men krävs för AI-funktioner.",
+      "optionalLabel": "Valfritt"
     },
     "invite": {
       "invalidOrExpired": "Inbjudan är ogiltig eller har gått ut",
@@ -10439,7 +10442,10 @@
       "visibleToEmployers": "Synlig för arbetsgivare",
       "visibleToEmployersDesc": "Arbetsgivare kan hitta din profil",
       "searchableProfile": "Sökbar profil",
-      "searchableProfileDesc": "Din profil kan hittas via sökning"
+      "searchableProfileDesc": "Din profil kan hittas via sökning",
+      "exportScopeNote": "Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.",
+      "exportIncludeConcern": "Ta med orosanteckningar",
+      "exportIncludeConcernNote": "Anteckningar i kategorin Oro utelämnas som standard."
     },
     "participantAnalytics": {
       "title": "Deltagaranalys",

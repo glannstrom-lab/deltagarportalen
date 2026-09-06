@@ -269,7 +269,12 @@ Det finns två parallella AI-vägar — välj rätt:
 - **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **20 funktioner** samlade (räknat i `PROMPTS`-objektet 2026-08-31; talen 24, 18 och 16 har alla stått här och i tre andra dokument, alla föråldrade — räkna om i stället för att tro på siffran). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.**
 
   > **Rättat 2026-08-31: det finns en streaming-väg, och den används.** Den här raden sa tidigare rakt ut "det finns ingen streaming-väg … skriv inte kod som antar dem", vilket kunde få nästa läsare att bygga ett duplicerat lager. Sant är att den **gamla** vägen är borta: `client/api/ai-stream.js` och `useAIStream`-hooken finns inte. Men `ai.js:1999` har en egen SSE-gren — `if (stream && fn === 'ai-team-chat')` sätter `Content-Type: text/event-stream` och strömmar OpenRouters svar vidare — och klientsidan går genom **`callAIStream()`** i `services/aiApi.ts:319`, som `components/ai-team/AgentChat.tsx` anropar i drift. Streaming finns alltså för **en** funktion, `ai-team-chat`, genom `/api/ai` och ingen annanstans. Gå aldrig förbi `callAI`/`callAIStream` med ett eget `fetch` — då körs varken PII-saneringen eller art. 9-grinden, vilket `AgentChat.pii.test.tsx` vaktar.
-- **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
+- **`supabase/functions/`** (Deno edge) — **20 funktioner** (räknat 2026-09-06; talet 24 stod här sedan A27 avpublicerade fyra, och `cv-analysis` fanns med i listan trots att den inte finns — räkna om i stället för att tro på siffran): `af-*` ×6, `ai-*` ×5, `learning-*` ×3, `bolagsverket`, `education-search`, `health`, `delete-account`, `send-inactivity-warning`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
+
+  > **Sex av de tjugo anropar en modell:** de fem `ai-*` plus `learning-analyze-gap`. Samtyckesgrinden (`_shared/aiGate.ts`) satt 2026-09-06 på fem av sex — `learning-analyze-gap` saknade den och är dessutom callerlös. Kontrollera med:
+  > ```bash
+  > for d in supabase/functions/*/; do n=$(basename $d); grep -qE 'openrouter|chat/completions' $d/index.ts 2>/dev/null &&  { grep -qE 'aiGate|checkAiEnabled' $d/index.ts && echo "grind  $n" || echo "SAKNAR $n"; }; done
+  > ```
 
 > **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
 

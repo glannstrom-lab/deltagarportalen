@@ -12,6 +12,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { CommunicationTab } from './CommunicationTab'
 
@@ -61,12 +62,17 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 function renderTab() {
+  // KK4: deltagarlistan hämtas via den delade cachen — egen QueryClient per
+  // render för testisolering (samma mönster som PlatserTab.test.tsx).
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter>
-      <I18nextProvider i18n={i18n}>
-        <CommunicationTab />
-      </I18nextProvider>
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <I18nextProvider i18n={i18n}>
+          <CommunicationTab />
+        </I18nextProvider>
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 

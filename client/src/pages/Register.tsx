@@ -68,13 +68,24 @@ export default function Register() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
 
   // Password validation rules with translated labels
-  // Must match strongPasswordSchema in lib/validations/index.ts
+  // Must match strongPasswordSchema in lib/validations/index.ts EXAKT — annars
+  // kan alla fem synliga bockar bli gröna medan ett osynligt Zod-refine ändå
+  // stoppar submit (KO3: reglerna ska synas medan man skriver, inte bara vid
+  // blur/submit).
   const passwordRules = useMemo(() => [
     { id: 'length', label: t('auth.passwordRules.minLength'), test: (pwd: string) => pwd.length >= 12 },
     { id: 'uppercase', label: t('auth.passwordRules.uppercase'), test: (pwd: string) => /[A-Z]/.test(pwd) },
     { id: 'lowercase', label: t('auth.passwordRules.lowercase'), test: (pwd: string) => /[a-z]/.test(pwd) },
     { id: 'number', label: t('auth.passwordRules.number'), test: (pwd: string) => /[0-9]/.test(pwd) },
     { id: 'special', label: t('auth.passwordRules.special'), test: (pwd: string) => /[^A-Za-z0-9]/.test(pwd) },
+    { id: 'noRepeat', label: t('auth.passwordRules.noRepeat'), test: (pwd: string) => !/(.)\1{2,}/.test(pwd) },
+    {
+      id: 'noWeakPattern',
+      label: t('auth.passwordRules.noWeakPattern'),
+      test: (pwd: string) => !['password', 'lösenord', '12345678', 'qwerty', 'abc123'].some(
+        weak => pwd.toLowerCase().includes(weak)
+      ),
+    },
   ], [t])
   const [showPassword, setShowPassword] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -525,7 +536,10 @@ export default function Register() {
                 />
                 <div>
                   <label htmlFor="acceptAiProcessing" className="text-sm text-gray-600 dark:text-gray-300">
-                    {t('auth.consent.acceptAi')}
+                    {t('auth.consent.acceptAi')}{' '}
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                      ({t('auth.consent.optionalLabel')})
+                    </span>
                   </label>
                   <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                     {t('auth.consent.aiDescription')}

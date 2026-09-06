@@ -765,3 +765,33 @@ describe('consultantService — participant-relation skriver mot consultant_part
     await expect(consultantService.logContact('p1')).rejects.toThrow('write-fel')
   })
 })
+
+// KK5: exportens urval ska bara omfatta aktiva relationer för tabeller som
+// (till skillnad från consultant_journal/consultant_goals efter KS2) inte
+// har någon RLS-spärr mot avslutade relationer.
+describe('consultantService.getActiveParticipantIds', () => {
+  it('läser participant_id ur consultant_participants filtrerat på consultant_id', async () => {
+    queueResult({
+      data: [{ participant_id: 'p1' }, { participant_id: 'p2' }],
+      error: null,
+    })
+    const ids = await consultantService.getActiveParticipantIds('consultant-1')
+    expect(mockFrom).toHaveBeenCalledWith('consultant_participants')
+    expect(mockFromBuilder.select).toHaveBeenCalledWith('participant_id')
+    expect(mockFromBuilder.eq).toHaveBeenCalledWith('consultant_id', 'consultant-1')
+    expect(ids).toEqual(new Set(['p1', 'p2']))
+  })
+
+  it('ger en tom mängd, inte ett kastat fel, när konsulenten saknar aktiva deltagare', async () => {
+    queueResult({ data: [], error: null })
+    const ids = await consultantService.getActiveParticipantIds('consultant-1')
+    expect(ids.size).toBe(0)
+  })
+
+  it('kastar vidare ett supabase-fel i stället för att ge en tyst tom mängd', async () => {
+    queueResult({ data: null, error: new Error('db-fel') })
+    await expect(
+      consultantService.getActiveParticipantIds('consultant-1')
+    ).rejects.toThrow('db-fel')
+  })
+})

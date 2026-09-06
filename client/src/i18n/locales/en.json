@@ -6516,7 +6516,9 @@
       "uppercase": "One uppercase letter (A-Z)",
       "lowercase": "One lowercase letter (a-z)",
       "number": "One number (0-9)",
-      "special": "One special character (!@#$%^&* etc)"
+      "special": "One special character (!@#$%^&* etc)",
+      "noRepeat": "Not the same character three times in a row",
+      "noWeakPattern": "Not a common password (like \"password\", \"12345678\")"
     },
     "errors": {
       "userExists": "A user with this email address already exists. Log in instead.",
@@ -6529,7 +6531,8 @@
       "acceptPrivacy": "I have read and accept the",
       "privacyLink": "privacy policy",
       "acceptAi": "I consent to AI processing of my data",
-      "aiDescription": "We use AI to help you write CVs and cover letters. Your data is then processed by our AI provider OpenRouter, whose servers are in the USA. This consent is optional but required for AI features."
+      "aiDescription": "We use AI to help you write CVs and cover letters. Your data is then processed by our AI provider OpenRouter, whose servers are in the USA. This consent is optional but required for AI features.",
+      "optionalLabel": "Optional"
     },
     "invite": {
       "invalidOrExpired": "This invitation is not valid, or it has expired",
@@ -10163,7 +10166,10 @@
       "visibleToEmployers": "Visible to employers",
       "visibleToEmployersDesc": "Employers can find your profile",
       "searchableProfile": "Searchable profile",
-      "searchableProfileDesc": "Your profile can be found via search"
+      "searchableProfileDesc": "Your profile can be found via search",
+      "exportScopeNote": "The export covers participants you have an active relationship with. Ended relationships are not included.",
+      "exportIncludeConcern": "Include concern notes",
+      "exportIncludeConcernNote": "Notes in the Concern category are left out by default."
     },
     "statuses": {
       "active": "Active",

@@ -29,6 +29,7 @@ import {
   Edit2,
   Loader2,
 } from '@/components/ui/icons'
+import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
@@ -36,6 +37,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
+import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
 
 interface Message {
   id: string
@@ -568,6 +570,10 @@ function NewMessageDialog({
 export function CommunicationTab() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language
+  const queryClient = useQueryClient()
+  // KK4: en bokad möte via den här flikens dialog ändrar
+  // next_meeting_scheduled i vyn — övriga flikar ska inte visa en gammal lista.
+  const invalidateParticipants = useInvalidateConsultantParticipants()
   const [loading, setLoading] = useState(true)
   // KS7: ett fel vid hämtning ska aldrig se ut som "inga meddelanden ännu" —
   // den tomtillstånds-vyn längre ned är för en riktigt tom inkorg.
@@ -649,12 +655,13 @@ export function CommunicationTab() {
       // trasigt anrop gav `participantsData: undefined`, `if
       // (participantsData)`-grenen hoppades bara över, och sidan visade
       // tyst "Inga meddelanden ännu" — identiskt med en riktigt tom inkorg.
-      const { data: participantsData, error: participantsFetchError } = await supabase
-        .from('consultant_dashboard_participants')
-        .select('participant_id, first_name, last_name, email')
-        .eq('consultant_id', user.id)
-
-      if (participantsFetchError) throw participantsFetchError
+      //
+      // KK4: delad cache (consultantParticipantsQuery.ts) i stället för ett
+      // eget `select('*')`. Realtidsprenumerationen nedan anropar fetchData()
+      // vid VARJE meddelandehändelse — innan detta hämtades HELA
+      // deltagarlistan om igen varje gång, trots att ett meddelande aldrig
+      // ändrar den. Nu träffar det cachen så länge den är fräsch.
+      const participantsData = (await fetchCachedConsultantParticipants(queryClient)) as unknown as Participant[]
 
       if (participantsData) {
         setParticipants(participantsData)
@@ -888,6 +895,7 @@ export function CommunicationTab() {
       if (error) throw error
 
       setShowMeetingDialog(false)
+      invalidateParticipants()
       fetchData()
     } catch (error) {
       console.error('Error scheduling meeting:', error)

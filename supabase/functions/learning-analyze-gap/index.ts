@@ -5,6 +5,12 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts';
+import {
+  checkAiEnabled,
+  createGateDenialResponse,
+  checkDailyTokenCap,
+  createTokenCapResponse,
+} from '../_shared/aiGate.ts';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -42,12 +48,18 @@ interface SkillGap {
   estimatedLearningTime: string;
 }
 
-async function analyzeWithAI(cvData: CVData, targetRole?: string, jobRequirements?: JobRequirements): Promise<SkillGap[]> {
+interface SkillGapAnalysis {
+  skillGaps: SkillGap[];
+  /** Tokens som modellen faktiskt förbrukade. 0 vid fallback (ingen modell anropad). */
+  tokensUsed: number;
+}
+
+async function analyzeWithAI(cvData: CVData, targetRole?: string, jobRequirements?: JobRequirements): Promise<SkillGapAnalysis> {
   const openRouterKey = Deno.env.get('OPENROUTER_API_KEY');
-  
+
   if (!openRouterKey) {
     console.error('OPENROUTER_API_KEY missing');
-    return generateFallbackAnalysis(cvData, targetRole);
+    return { skillGaps: generateFallbackAnalysis(cvData, targetRole), tokensUsed: 0 };
   }
 
   const prompt = buildAnalysisPrompt(cvData, targetRole, jobRequirements);
@@ -118,9 +130,9 @@ Viktigt:
     
     if (data.choices && data.choices[0] && data.choices[0].message) {
       const result = JSON.parse(data.choices[0].message.content);
-      return result.skillGaps || [];
+      return { skillGaps: result.skillGaps || [], tokensUsed: data.usage?.total_tokens ?? 0 };
     }
-    
+
     throw new Error('Unexpected response format from OpenRouter');
   } catch (error) {
     if (error.name === 'AbortError') {
@@ -128,7 +140,7 @@ Viktigt:
     } else {
       console.error('AI analysis failed:', error);
     }
-    return generateFallbackAnalysis(cvData, targetRole);
+    return { skillGaps: generateFallbackAnalysis(cvData, targetRole), tokensUsed: 0 };
   }
 }
 
@@ -286,16 +298,64 @@ serve(async (req) => {
       return jsonResponse({ error: 'Unauthorized' }, 401);
     }
 
+    const origin = req.headers.get('Origin');
+
+    // AI-BRYTAREN (GDPR art. 21) + DAGLIGT TOKENTAK — samma grind som de fem
+    // andra modellanroparna delar (`_shared/aiGate.ts`, se ai-career-assistant
+    // och ai-company-search som förlagor). FAIL CLOSED: kostar felet en
+    // rättighet (att AI-behandling fortsätter trots att den stängts av) väger
+    // tyngre än tillgänglighet, se motiveringen i aiGate.ts.
+    //
+    // `learning-analyze-gap` saknade båda grindarna till 2026-09-06 (SK4).
+    // Funktionen har noll anropare i klientkoden i dag (ROADMAP C4 — hela
+    // `learning-*`-familjen är callerlös och vilar bakom EU-utlysningsspåret),
+    // men den skickar CV-innehåll (kompetenser, arbetslivserfarenhet,
+    // utbildning) till en modell och ska därför inte vara ett undantag
+    // den dag en anropare tillkommer.
+    //
+    // `supabase` är service-role-klienten (skapad ovan med
+    // SUPABASE_SERVICE_ROLE_KEY), vilket grinden kräver för att säkert nå
+    // profilraden. Skicka aldrig in en anon-klient — det är A19-buggen.
+    const aiGate = await checkAiEnabled(supabase, user.id);
+    if (!aiGate.allowed) {
+      console.warn(`[learning-analyze-gap] Nekad av AI-grind (${aiGate.reason}) för ${user.id}`);
+      return createGateDenialResponse(aiGate.reason ?? 'lookup_failed', origin);
+    }
+
+    // Delar budget med `client/api/ai.js` och de fem andra edge-funktionerna
+    // via samma `ai_usage_logs` — funktionen åt tidigare den budgeten utan
+    // att räknas mot något.
+    const tokenCap = await checkDailyTokenCap(supabase, user.id);
+    if (!tokenCap.allowed) {
+      console.warn(`[learning-analyze-gap] Nekad av tokentak (${tokenCap.reason}) för ${user.id}`);
+      return createTokenCapResponse(tokenCap, origin);
+    }
+
     // Distribuerad rate limit — skyddar OpenRouter-vägen (A8, 2026-07-10)
     const rateLimit = await checkRateLimit(user.id, 'learning-analyze-gap');
     if (!rateLimit.allowed) {
-      return createRateLimitResponse(rateLimit.retryAfter || 60, req.headers.get('origin'));
+      return createRateLimitResponse(rateLimit.retryAfter || 60, origin);
     }
 
     console.log(`Analyzing gaps for user: ${user.id}, target: ${targetRole || 'general'}`);
 
     // Analyze skill gaps with AI
-    const skillGaps = await analyzeWithAI(cvData, targetRole, jobRequirements);
+    const { skillGaps, tokensUsed } = await analyzeWithAI(cvData, targetRole, jobRequirements);
+
+    // Logga förbrukningen mot samma tabell tokentaket ovan läser — annars
+    // räknas den här funktionens egen förbrukning aldrig mot sitt eget tak,
+    // precis som hos de fem andra anroparna.
+    try {
+      await supabase.from('ai_usage_logs').insert({
+        user_id: user.id,
+        function_name: 'learning-analyze-gap',
+        model: Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b',
+        tokens_used: tokensUsed,
+        created_at: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.log('[learning-analyze-gap] Log error:', e);
+    }
 
     // Create learning paths for identified gaps
     const pathIds = await createLearningPaths(supabase, user.id, skillGaps, source);

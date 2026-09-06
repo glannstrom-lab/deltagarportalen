@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { notifications as toast } from '@/lib/toast'
+import { consultantService } from '@/services/consultantService'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
@@ -115,6 +116,10 @@ export function SettingsTab() {
   const [saved, setSaved] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
   const [exporting, setExporting] = useState(false)
+  // KK5: samma avvägning som ReportDraftDialogs "Ta med orosanteckningar" —
+  // kategorin "Oro" är konsulentens interna riskbedömning, inte något som
+  // ska hamna i en nedladdad fil per default.
+  const [includeConcern, setIncludeConcern] = useState(false)
 
   const getDefaultNotifications = (): NotificationSetting[] => [
     {
@@ -294,13 +299,31 @@ export function SettingsTab() {
   // GDPR-export: laddar ner konsulentens egen yrkesdata som JSON.
   // Deltagardata ingår bara i form av konsulentens egna anteckningar/mål —
   // det är konsulentens behandlingsunderlag, inte deltagarens profildata.
+  //
+  // KK5 (2026-09-06): exporten tog tidigare med HELA historiken, inklusive
+  // deltagare som brutit kopplingen — journalens fritext (kategorin "Oro")
+  // om namngivna personer följde med okrypterat till en lokal fil. Fixen
+  // ändrar bara EXPORTENS omfattning, inte åtkomstmodellen:
+  //  - `consultant_journal`/`consultant_goals` är redan RLS-begränsade till
+  //    aktiva relationer sedan KS2 (verifierat mot pg_policies 2026-09-06);
+  //    filtreringen här är avsiktligt dubbel (defense in depth) och kostar
+  //    ingenting eftersom RLS redan gjort jobbet.
+  //  - `consultant_meetings`, `consultant_messages` och
+  //    `consultant_placements` saknar motsvarande RLS-spärr (KS8 höll SELECT
+  //    på meddelanden oförändrad med flit — historiska trådar ska fortsatt
+  //    gå att LÄSA i UI:t). Den här exporten drar en snävare gräns än
+  //    läsrätten: bara nuvarande caseload paketeras i filen.
+  //  - `consultant_settings`, `consultant_goal_templates` och
+  //    `consultant_job_collections` är inte knutna till en enskild
+  //    deltagarrelation (inget `participant_id`) och lämnas orörda.
   const handleExportData = async () => {
     setExporting(true)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const [settings, goals, journal, meetings, messages, templates, collections, placements] = await Promise.all([
+      const [activeParticipantIds, settings, goals, journal, meetings, messages, templates, collections, placements] = await Promise.all([
+        consultantService.getActiveParticipantIds(user.id),
         supabase.from('consultant_settings').select('*').eq('consultant_id', user.id).maybeSingle(),
         supabase.from('consultant_goals').select('*').eq('consultant_id', user.id),
         supabase.from('consultant_journal').select('*').eq('consultant_id', user.id),
@@ -311,17 +334,41 @@ export function SettingsTab() {
         supabase.from('consultant_placements').select('*').eq('consultant_id', user.id),
       ])
 
+      const isActiveParticipant = (participantId: string | null | undefined) =>
+        !!participantId && activeParticipantIds.has(participantId)
+
+      // "Oro" är konsulentens interna riskbedömning — samma undantag som
+      // ReportDraftDialog redan gör för AI-rapportutkast, upprepat här.
+      const journalEntries = (journal.data ?? []).filter(
+        (entry: { participant_id: string; category: string }) =>
+          isActiveParticipant(entry.participant_id) && (includeConcern || entry.category !== 'CONCERN')
+      )
+      const activeGoals = (goals.data ?? []).filter(
+        (goal: { participant_id: string }) => isActiveParticipant(goal.participant_id)
+      )
+      const activeMeetings = (meetings.data ?? []).filter(
+        (meeting: { participant_id: string }) => isActiveParticipant(meeting.participant_id)
+      )
+      const activeMessages = (messages.data ?? []).filter(
+        (message: { sender_id: string; receiver_id: string }) =>
+          isActiveParticipant(message.sender_id === user.id ? message.receiver_id : message.sender_id)
+      )
+      const activePlacements = (placements.data ?? []).filter(
+        (placement: { participant_id: string }) => isActiveParticipant(placement.participant_id)
+      )
+
       const exportPayload = {
         exportedAt: new Date().toISOString(),
         consultantId: user.id,
+        exportScope: 'Endast deltagare med en aktiv koppling. Avslutade relationer ingår inte.',
         settings: settings.data ?? null,
-        goals: goals.data ?? [],
-        journal: journal.data ?? [],
-        meetings: meetings.data ?? [],
-        messages: messages.data ?? [],
+        goals: activeGoals,
+        journal: journalEntries,
+        meetings: activeMeetings,
+        messages: activeMessages,
         goalTemplates: templates.data ?? [],
         jobCollections: collections.data ?? [],
-        placements: placements.data ?? [],
+        placements: activePlacements,
       }
 
       const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' })
@@ -701,6 +748,31 @@ export function SettingsTab() {
               ? <Loader2 className="w-5 h-5 text-stone-400 animate-spin" aria-hidden="true" />
               : <Download className="w-5 h-5 text-stone-400 dark:text-stone-500" aria-hidden="true" />}
           </button>
+          <p className="text-xs text-stone-500 dark:text-stone-400 px-1">
+            {t(
+              'consultant.settings.exportScopeNote',
+              'Omfattar bara deltagare du fortfarande handleder. Avslutade relationer ingår inte.'
+            )}
+          </p>
+          <label className="flex items-center gap-2 px-1 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={includeConcern}
+              onChange={e => setIncludeConcern(e.target.checked)}
+              className="w-4 h-4 rounded border-stone-300 accent-stone-700"
+            />
+            <span className="text-sm text-stone-700 dark:text-stone-300">
+              {t('consultant.settings.exportIncludeConcern', 'Ta med orosanteckningar')}
+            </span>
+          </label>
+          {!includeConcern && (
+            <p className="text-xs text-stone-500 dark:text-stone-400 px-1">
+              {t(
+                'consultant.settings.exportIncludeConcernNote',
+                'Orosanteckningar (kategori "Oro") är interna och tas inte med i exporten om du inte aktivt väljer det.'
+              )}
+            </p>
+          )}
           <button
             onClick={() => navigate('/privacy')}
             className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"

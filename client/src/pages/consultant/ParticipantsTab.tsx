@@ -26,7 +26,7 @@ import {
   UserCheck,
   Clock,
 } from '@/components/ui/icons'
-import { supabase } from '@/lib/supabase'
+import { useConsultantParticipants } from './consultantParticipantsQuery'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
@@ -70,11 +70,26 @@ export function ParticipantsTab() {
   // bär i dag INTE med sig den här querysträngen. Ska tillbaka-navigeringen återställa
   // sök/filter/sortering måste den länken bytas mot en dynamisk länk som inkluderar
   // `location.search`, eller så måste den här sidan läsa `location.state`/`document.referrer`.
-  const [loading, setLoading] = useState(true)
+  // KK4: delad hämtning — se consultantParticipantsQuery.ts. `loading`/`error`
+  // härleds ur react-querys eget tillstånd i stället för lokal state.
+  const {
+    data: participantsData,
+    isLoading: loading,
+    error: participantsError,
+    refetch: fetchParticipants,
+  } = useConsultantParticipants()
+  // useMemo (inte bara `?? []`) så referensen är stabil mellan renders när
+  // participantsData inte ändrats — annars ändras `filteredParticipants`s
+  // beroende (participants) varje render och useMemo där gör ingen nytta.
+  const participants = useMemo(
+    () => (participantsData ?? []) as unknown as Participant[],
+    [participantsData]
+  )
   // KS7: ett misslyckat anrop ska visa ett eget felläge — aldrig samma tomma
   // lista som en konsulent utan deltagare (se EmptyState-grenarna nedan).
-  const [error, setError] = useState<string | null>(null)
-  const [participants, setParticipants] = useState<Participant[]>([])
+  const error = participantsError
+    ? 'Deltagarlistan kunde inte hämtas. Kontrollera anslutningen och försök igen.'
+    : null
   const [searchQuery, setSearchQueryState] = useState(() => searchParams.get('q') || '')
   const [filterStatus, setFilterStatusState] = useState<string>(() => searchParams.get('filter') || 'all')
   const [view, setViewState] = useState<'grid' | 'list'>(() => (searchParams.get('view') === 'list' ? 'list' : 'grid'))
@@ -119,36 +134,8 @@ export function ParticipantsTab() {
   }
 
   useEffect(() => {
-    fetchParticipants()
-  }, [])
-
-  useEffect(() => {
     setShowBulkActions(selectedParticipants.length > 0)
   }, [selectedParticipants])
-
-  const fetchParticipants = async () => {
-    try {
-      setLoading(true)
-      setError(null)
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) return
-
-      const { data, error: fetchError } = await supabase
-        .from('consultant_dashboard_participants')
-        .select('*')
-        .eq('consultant_id', user.id)
-
-      if (fetchError) throw fetchError
-      setParticipants(data || [])
-    } catch (err) {
-      console.error('Error fetching participants:', err)
-      // KS7: utan den här raden ser ett trasigt anrop EXAKT ut som "inga
-      // deltagare" — samma EmptyState, samma CTA, ingen antydan om fel.
-      setError('Deltagarlistan kunde inte hämtas. Kontrollera anslutningen och försök igen.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   // Filter and sort participants
   const filteredParticipants = useMemo(() => {

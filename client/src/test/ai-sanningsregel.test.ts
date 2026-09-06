@@ -277,27 +277,45 @@ describe('edge-vägen har samma regel som Vercel-vägen', () => {
  * katalogen flyttad — vill vi veta det, inte tro att allt är grönt för att
  * noll filer kontrollerades.
  */
-describe('JD1: varje Perplexity-funktion bär AI-brytaren och tokentaket', () => {
+describe('JD1: varje modellanropande edge-funktion bär AI-brytaren och tokentaket', () => {
   const FUNKTIONSKATALOG = resolve(__dirname, '../../../supabase/functions')
 
-  /** Filer som nämner modellen, härlett — inte handskrivet. */
-  const perplexityFunktioner = readdirSync(FUNKTIONSKATALOG, { withFileTypes: true })
+  /**
+   * BREDDAD 2026-09-06 (SK4). Filtret var `/perplexity\/sonar/` och missade
+   * därför `learning-analyze-gap`, som kör `openai/gpt-oss-120b` och saknade
+   * grinden helt. Fixen gick att lägga in utan att ett enda test blev rött —
+   * en grind som inte kan falla för det den ska vakta är ingen grind.
+   *
+   * Kriteriet är nu det som faktiskt betyder något: **anropar funktionen en
+   * modell?** Listan härleds ur källkoden, aldrig handskriven.
+   */
+  const modellFunktioner = readdirSync(FUNKTIONSKATALOG, { withFileTypes: true })
     .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
     .map((d) => ({ namn: d.name, sokvag: resolve(FUNKTIONSKATALOG, d.name, 'index.ts') }))
     .filter((f) => existsSync(f.sokvag))
-    .filter((f) => /perplexity\/sonar/.test(readFileSync(f.sokvag, 'utf8')))
+    .filter((f) => /openrouter\.ai\/api|chat\/completions/.test(readFileSync(f.sokvag, 'utf8')))
+
+  const perplexityFunktioner = modellFunktioner.filter((f) =>
+    /perplexity\/sonar/.test(readFileSync(f.sokvag, 'utf8'))
+  )
 
   /**
-   * Fem vid mätningen 2026-08-21. Talet är ett golv, inte ett facit: lägger
-   * någon till en sjätte ska testet ovan täcka den utan att den här raden rörs.
+   * Golv, inte facit: sex modellanropare mätta 2026-09-06 (fem `ai-*` plus
+   * `learning-analyze-gap`), varav fem kör Perplexity. Lägger någon till en
+   * sjunde ska `it.each` nedan täcka den utan att de här raderna rörs.
    */
-  const MINSTA_ANTAL = 5
+  const MINSTA_MODELLANROPARE = 6
+  const MINSTA_PERPLEXITY = 5
 
-  it(`hittar minst ${MINSTA_ANTAL} funktioner som kör perplexity/sonar`, () => {
-    expect(perplexityFunktioner.length).toBeGreaterThanOrEqual(MINSTA_ANTAL)
+  it(`hittar minst ${MINSTA_MODELLANROPARE} funktioner som anropar en modell`, () => {
+    expect(modellFunktioner.length).toBeGreaterThanOrEqual(MINSTA_MODELLANROPARE)
   })
 
-  it.each(perplexityFunktioner.map((f) => [f.namn, f.sokvag]))(
+  it(`varav minst ${MINSTA_PERPLEXITY} kör perplexity/sonar`, () => {
+    expect(perplexityFunktioner.length).toBeGreaterThanOrEqual(MINSTA_PERPLEXITY)
+  })
+
+  it.each(modellFunktioner.map((f) => [f.namn, f.sokvag]))(
     '%s kontrollerar ai_enabled och dygnets tokentak',
     (_namn, sokvag) => {
       const kalla = readFileSync(sokvag, 'utf8')
@@ -309,16 +327,36 @@ describe('JD1: varje Perplexity-funktion bär AI-brytaren och tokentaket', () =>
     }
   )
 
-  it.each(perplexityFunktioner.map((f) => [f.namn, f.sokvag]))(
-    '%s grindar FÖRE anropet till OpenRouter',
+  /**
+   * Var i filen modellen faktiskt NÅS, inte var fetch-anropet står skrivet.
+   * `learning-analyze-gap` har sin fetch i en hjälpfunktion som DEFINIERAS på
+   * rad 75 men ANROPAS på rad 343, efter grinden. En rak positionsjämförelse
+   * mot fetch-raden hade gjort testet falskt rött.
+   */
+  function modellAnropsPunkt(kalla: string, serveIdx: number): number {
+    const direkt = kalla.indexOf('OPENROUTER_API_URL,', serveIdx)
+    if (direkt > -1) return direkt
+    const fetchIdx = kalla.indexOf('OPENROUTER_API_URL,')
+    if (fetchIdx === -1) return -1
+    const hjalpare = [
+      ...kalla.slice(0, fetchIdx).matchAll(/(?:async\s+)?function\s+([A-Za-z0-9_]+)\s*\(/g),
+    ].pop()
+    if (!hjalpare) return -1
+    return kalla.indexOf(`${hjalpare[1]}(`, serveIdx)
+  }
+
+  it.each(modellFunktioner.map((f) => [f.namn, f.sokvag]))(
+    '%s grindar FÖRE att modellen nås',
     (_namn, sokvag) => {
       const kalla = readFileSync(sokvag, 'utf8')
+      const serveIdx = kalla.search(/(?:Deno\.)?serve\s*\(/)
       const grind = kalla.indexOf('await checkAiEnabled')
-      const anrop = kalla.indexOf('OPENROUTER_API_URL,')
+      const anrop = modellAnropsPunkt(kalla, serveIdx)
       // En grind som körs efter att uppgifterna redan skickats är dekoration —
       // exakt felet i A29, där `send-invite-email` hann skicka mejlet före sin
       // egen 403.
-      expect(grind).toBeGreaterThan(-1)
+      expect(serveIdx).toBeGreaterThan(-1)
+      expect(grind).toBeGreaterThan(serveIdx)
       expect(anrop).toBeGreaterThan(-1)
       expect(grind).toBeLessThan(anrop)
     }

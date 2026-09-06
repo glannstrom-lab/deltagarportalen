@@ -679,6 +679,30 @@ class ConsultantService {
   }
 
   /**
+   * KK5: deltagar-ID:n för konsulentens AKTIVA relationer (en rad i
+   * `consultant_participants` = aktiv relation, samma tolkning som KS2/KS8 —
+   * en rads blotta existens ÄR relationen, ingen statuskolumn finns).
+   *
+   * Ändrar INGET i åtkomstmodellen: `consultant_journal`/`consultant_goals`
+   * är redan RLS-begränsade till aktiva relationer (KS2), och den här
+   * metoden läser ingenting en policy inte redan släpper igenom. Den finns
+   * för att `consultant_meetings`, `consultant_messages` och
+   * `consultant_placements` INTE har motsvarande RLS-spärr — där måste
+   * urvalet göras i appen, t.ex. för att skala av GDPR-exporten
+   * (`SettingsTab.handleExportData`) till nuvarande caseload.
+   */
+  async getActiveParticipantIds(consultantId: string): Promise<Set<string>> {
+    const { data, error } = await supabase
+      .from('consultant_participants')
+      .select('participant_id')
+      .eq('consultant_id', consultantId)
+
+    if (error) throw error
+
+    return new Set((data || []).map((row: { participant_id: string }) => row.participant_id))
+  }
+
+  /**
    * Add tags to a participant relation (merges with existing, no duplicates)
    */
   async addParticipantTags(participantId: string, newTags: string[]): Promise<void> {

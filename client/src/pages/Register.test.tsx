@@ -6,7 +6,8 @@
  * Formulärvalidering i sig (useZodForm) testas separat i useZodForm.test.ts.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import Register from './Register'
 
@@ -147,5 +148,91 @@ describe('Register — returnTo-subtitel (KO2)', () => {
   it('visar den generiska subtiteln när returnTo är en osäker (extern) länk', () => {
     renderRegister('/register?returnTo=' + encodeURIComponent('https://ondsajt.se'))
     expect(screen.getByText('Ta det första steget mot din nya karriär')).toBeInTheDocument()
+  })
+})
+
+// KO3: lösenordsreglerna ska synas MEDAN man skriver — inklusive de två regler
+// som fanns i strongPasswordSchema men inte i den synliga listan (upprepning,
+// vanliga osäkra mönster). Annars kan alla synliga bockar bli gröna medan
+// submit ändå är blockerad, utan att gästen förstår varför.
+describe('Register — lösenordsreglerna syns medan man skriver (KO3)', () => {
+  beforeEach(() => {
+    mockSignUp.mockReset()
+    mockSignInWithGoogle.mockReset()
+    mockNavigate.mockReset()
+  })
+
+  it('visar alla sju regler redan innan något är skrivet', () => {
+    renderRegister()
+    expect(screen.getByText(/minst 12 tecken/i)).toBeInTheDocument()
+    expect(screen.getByText(/en stor bokstav/i)).toBeInTheDocument()
+    expect(screen.getByText(/en liten bokstav/i)).toBeInTheDocument()
+    expect(screen.getByText(/en siffra/i)).toBeInTheDocument()
+    expect(screen.getByText(/ett specialtecken/i)).toBeInTheDocument()
+    // De två reglerna som tidigare bara syntes som ett Zod-felmeddelande vid blur:
+    expect(screen.getByText(/tre gånger i rad/i)).toBeInTheDocument()
+    expect(screen.getByText(/vanligt lösenord/i)).toBeInTheDocument()
+  })
+
+  it('flaggar ett vanligt osäkert mönster live, trots att de fem andra reglerna är gröna', async () => {
+    const user = userEvent.setup()
+    renderRegister()
+
+    const password = screen.getByLabelText(/^lösenord$/i)
+    // Uppfyller längd + alla fyra teckenklasser, men innehåller ett förbjudet
+    // mönster ("password") — strongPasswordSchema nekar den ändå.
+    await user.type(password, 'Password123!')
+
+    await waitFor(() => {
+      const weakPatternRow = screen.getByText(/vanligt lösenord/i).closest('li')
+      expect(weakPatternRow?.querySelector('svg.lucide-x')).not.toBeNull()
+      expect(weakPatternRow?.querySelector('svg.lucide-check')).toBeNull()
+    })
+
+    // "Perfekt! Ditt lösenord är säkert." ska INTE visas — annars ljuger
+    // indikatorn om ett lösenord som Zod ändå kommer neka vid submit.
+    expect(screen.queryByText(/perfekt! ditt lösenord är säkert/i)).not.toBeInTheDocument()
+  })
+})
+
+// KO3: den tredje kryssrutan (AI-behandling) är INTE rättsligt nödvändig för
+// att skapa ett konto — den ska inte blockera registreringen, och det ska stå
+// tydligt att den är valfri.
+describe('Register — AI-samtycket blockerar inte registreringen (KO3)', () => {
+  beforeEach(() => {
+    mockSignUp.mockReset()
+    mockSignInWithGoogle.mockReset()
+    mockNavigate.mockReset()
+  })
+
+  it('märker AI-kryssrutan som valfri', () => {
+    renderRegister()
+    const aiLabel = screen.getByText(/samtycker till ai-behandling/i).closest('label')
+    expect(aiLabel?.textContent).toMatch(/valfritt/i)
+  })
+
+  it('går att skicka in formuläret utan att kryssa i AI-samtycket', async () => {
+    const user = userEvent.setup()
+    mockSignUp.mockResolvedValue({ error: null })
+    renderRegister()
+
+    await user.type(screen.getByLabelText(/förnamn/i), 'Anna')
+    await user.type(screen.getByLabelText(/efternamn/i), 'Andersson')
+    await user.type(screen.getByLabelText(/e-postadress/i), 'anna@example.com')
+    await user.type(screen.getByLabelText(/^lösenord$/i), 'SecurePass9!xz')
+    await user.type(screen.getByLabelText(/bekräfta lösenord/i), 'SecurePass9!xz')
+    await user.click(screen.getByLabelText(/godkänner användarvillkoren/i))
+    await user.click(screen.getByLabelText(/godkänner integritetspolicyn/i))
+
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
+    await waitFor(() => expect(submitButton).not.toBeDisabled())
+
+    await user.click(submitButton)
+
+    await waitFor(() => {
+      expect(mockSignUp).toHaveBeenCalledWith(expect.objectContaining({
+        consent: expect.objectContaining({ aiProcessing: false }),
+      }))
+    })
   })
 })

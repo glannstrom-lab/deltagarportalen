@@ -16,6 +16,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { OverviewTab } from './OverviewTab'
 
@@ -78,12 +79,18 @@ function makeParticipant(overrides: Partial<Record<string, unknown>> = {}) {
 }
 
 function renderTab() {
+  // KK4: OverviewTab läser deltagarlistan via den delade cachen
+  // (fetchCachedConsultantParticipants) — en egen QueryClient per render
+  // håller testerna isolerade (samma mönster som PlatserTab.test.tsx).
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter>
-      <I18nextProvider i18n={i18n}>
-        <OverviewTab />
-      </I18nextProvider>
-    </MemoryRouter>
+    <QueryClientProvider client={queryClient}>
+      <MemoryRouter>
+        <I18nextProvider i18n={i18n}>
+          <OverviewTab />
+        </I18nextProvider>
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 

@@ -26,8 +26,10 @@ import {
   RefreshCw,
   Download,
 } from '@/components/ui/icons'
+import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
+import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
 import { Card } from '@/components/ui/Card'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
@@ -245,6 +247,11 @@ function QuickAction({
 export function OverviewTab() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  // KK4: mutationer som sker HÄR (t.ex. status/prioritet ändrad via en
+  // dialog öppnad från denna flik) ska göra att ParticipantsTab m.fl. inte
+  // visar en gammal lista tills staleTime löper ut.
+  const invalidateParticipants = useInvalidateConsultantParticipants()
   const [loading, setLoading] = useState(true)
   // KS7: ett fel vid hämtning ska aldrig se ut som "inga deltagare" — eget
   // läge, skilt från loading och från den tomma dashboarden.
@@ -295,12 +302,11 @@ export function OverviewTab() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      // Fetch participants
-      const { data: participantsData, error: participantsError } = await supabase
-        .from('consultant_dashboard_participants')
-        .select('*')
-        .eq('consultant_id', user.id)
-      if (participantsError) throw participantsError
+      // KK4: delad cache — se consultantParticipantsQuery.ts. Om
+      // ParticipantsTab (eller en annan flik) redan hämtat inom staleTime
+      // görs INGET nytt nätverksanrop här. Casten matchar samma implicita
+      // `any`-form frågan hade innan (klienten är otypad mot Database).
+      const participantsData = (await fetchCachedConsultantParticipants(queryClient)) as unknown as Participant[]
 
       // Fetch meetings this week
       const startOfWeek = new Date()
@@ -905,6 +911,9 @@ export function OverviewTab() {
         onClose={() => setShowInviteDialog(false)}
         onSuccess={() => {
           setShowInviteDialog(false)
+          // KK4: en ny tilldelning ändrar consultant_dashboard_participants —
+          // andra flikar (ParticipantsTab m.fl.) ska inte visa en gammal lista.
+          invalidateParticipants()
           fetchDashboardData()
         }}
       />
@@ -914,6 +923,8 @@ export function OverviewTab() {
         onClose={() => setShowMeetingDialog(false)}
         onSuccess={() => {
           setShowMeetingDialog(false)
+          // KK4: vyn bär next_meeting_scheduled — samma skäl som ovan.
+          invalidateParticipants()
           fetchDashboardData()
         }}
       />
