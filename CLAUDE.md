@@ -1040,6 +1040,25 @@ utan den raden överlevde mutationen "skriv stycket rått".
 
 ---
 
+## Skills
+
+Fem skills i `.claude/skills/` bär projektets återkommande procedurer. En lärdom
+i den här filen är passiv — den läses inte innan en uppgift som känns
+rutinmässig. En skill är aktiv.
+
+| Skill | När den gäller |
+|-------|----------------|
+| `slapp` | Commit, push, deploy och verifiering av körningen. **Push är deployen.** Innehåller också migrationsproceduren, eftersom snapshoten ska committas i samma commit |
+| `premissgranskning` | Före varje roadmap-punkt. Obligatorisk, utan undantag — sex av tio premisser har fallit i de senaste passen |
+| `sidgranskning` | Granska en sida eller ett flöde hela vägen: kod, prod-schema, ärlighet, mörkt läge, i18n, dödkod, grindarnas verkliga täckning |
+| `grind` | Gör ett återkommande fynd till en maskinell vakt som faktiskt kan falla |
+| `innehallsomgang` | En komplett innehållsomgång i spår K — luckmätning, agenter, granskning, prod-skrivning, bygge |
+
+Skillsen är sanningen för sina procedurer. Avsnitten här i CLAUDE.md är
+sammanfattningar; vid konflikt gäller skillen, som är närmare koden.
+
+---
+
 ## Agenter
 
 Projektets 10 specialiserade agenter finns i `.claude/agents/`:
