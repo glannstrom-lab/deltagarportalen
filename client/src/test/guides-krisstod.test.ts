@@ -39,6 +39,7 @@ const mall = require('../../scripts/lib/guide-template.cjs') as {
   renderKategori: (k: unknown, a: unknown[], s: unknown[]) => string
   renderTool: (t: unknown, g: unknown[]) => string
   renderToolIndex: (v: unknown[]) => string
+  renderB2B: (b: unknown, g: unknown[]) => string
 }
 const { KATEGORIER } = require('../../scripts/lib/guides.cjs') as {
   KATEGORIER: { key: string; rubrik: string }[]
@@ -47,6 +48,9 @@ const { KATEGORIER } = require('../../scripts/lib/guides.cjs') as {
 // En handskriven verktygsfixtur hade gått sönder tyst så fort formen ändrades,
 // och det är precis den fällan projektet redan gått i tre gånger.
 const VERKTYG = (require('../../content/tools.json') as { verktyg: Record<string, unknown>[] }).verktyg
+// Samma princip för B2B-sidorna (K7/K16): läs den riktiga datan, inte en
+// handskriven fixture som kan glida isär från content/b2b.json.
+const B2B = (require('../../content/b2b.json') as { sidor: Record<string, unknown>[] }).sidor
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 /** Formen är hämtad ur `articles.snapshot.json`, inte ur en bekvämare fantasiform. */
@@ -76,6 +80,11 @@ const sidtyper: [string, () => string][] = [
   ['kategorisida', () => mall.renderKategori(KATEGORIER[0], [artikel()], KATEGORIER.slice(0, 2))],
   ['verktygssida', () => mall.renderTool(VERKTYG[0], [artikel()])],
   ['verktygsindex', () => mall.renderToolIndex(VERKTYG)],
+  // K7/K16: B2B-sidorna riktar sig till en upphandlare, inte en deltagare i
+  // kris — men mönstret är att följa listan rakt av snarare än att göra ett
+  // tyst undantag. Se prerender-guides.cjs-uppdragets slutrapport för
+  // motiveringen och Mikaels beslut om den ska stå kvar.
+  ['B2B-sida', () => mall.renderB2B(B2B[0], [])],
 ]
 
 describe('krisstöd finns på varje publik sidtyp', () => {

@@ -1,219 +1,112 @@
 {
-  "lonebidrag-sa-fungerar-det": {
-    "title": "Lönebidrag – så fungerar stödet, och så tar du upp det",
-    "summary": "Lönebidrag går till arbetsgivaren, inte till dig. Så fungerar bedömningen, och så tar du upp det utan att det blir det första hon hör om dig.",
-    "category_key": "accessibility",
-    "subcategory": "stod-vid-anstallning",
-    "tags": [
-      "lönebidrag",
-      "Arbetsförmedlingen",
-      "anställning",
-      "funktionsnedsättning"
-    ],
+  "skulder-och-kronofogden": {
+    "title": "Skulder och Kronofogden – vad som faktiskt händer",
+    "summary": "Vad en utmätning innebär, vad förbehållsbeloppet skyddar, och hur skuldsanering och gratis budget- och skuldrådgivning fungerar.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["Kronofogden", "skulder", "skuldsanering", "utmätning"],
     "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": [
-      "rattigheter-stod",
-      "anpassningar-arbetsplats",
-      "sius-stod-vid-introduktion",
-      "provanstallning-guide"
-    ],
-    "related_tools": [
-      "/interview-simulator",
-      "/job-search"
-    ],
+    "energy_level": "high",
+    "related_article_slugs": ["forsorjningsstod-nar-pengarna-tar-slut", "personlig-ekonomi-jobbsokning", "betalningsanmarkning-och-jobb"],
+    "related_tools": ["/externa-resurser"],
     "checklist": [
-      "Beskriv för din handläggare vilka arbetsuppgifter som är svårast, inte vilken diagnos du har",
-      "Vänta med att ta upp lönebidrag tills arbetsgivaren visat intresse för dig som person",
-      "Formulera anpassningen konkret, till exempel skriftliga instruktioner eller flexibla tider",
-      "Fråga om din handläggare kan vara med i samtalet med arbetsgivaren",
-      "Öva formuleringen innan du säger den i en riktig intervju",
-      "Följ upp om bidraget efter en tid, i stället för att anta att det gäller för alltid"
+      "Öppna breven du fått, även de du skjutit upp",
+      "Bestrid ett betalningsföreläggande direkt om du inte håller med",
+      "Kontakta kommunens budget- och skuldrådgivning för ett kostnadsfritt samtal",
+      "Lämna korrekta uppgifter om din boendekostnad så förbehållsbeloppet blir rätt",
+      "Fråga Kronofogden om din egen beräkning i stället för att gissa"
     ],
     "actions": [
-      {
-        "href": "/interview-simulator",
-        "label": "Öva hur du tar upp det i en intervju",
-        "type": "primary"
-      },
-      {
-        "href": "/job-search",
-        "label": "Sök jobb hos arbetsgivare som passar dig",
-        "type": "secondary"
-      }
+      { "href": "/externa-resurser", "label": "Hitta budget- och skuldrådgivning nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/forsorjningsstod-nar-pengarna-tar-slut", "label": "Läs om försörjningsstöd", "type": "secondary" }
     ]
   },
-  "sius-stod-vid-introduktion": {
-    "title": "SIUS – stöd när du ska introduceras i ett nytt jobb",
-    "summary": "En SIUS-konsulent hjälper dig komma in i ett nytt jobb, både innan och efter att du börjat. Så blir du aktuell, och så här kan du använda stödet konkret.",
-    "category_key": "accessibility",
-    "subcategory": "stod-vid-introduktion",
-    "tags": [
-      "SIUS",
-      "Arbetsförmedlingen",
-      "introduktion",
-      "funktionsnedsättning"
+  "bostadsbidrag-och-boendekostnad": {
+    "title": "Bostadsbidrag och boendekostnad – så funkar det",
+    "summary": "Vem som kan söka, vad Försäkringskassan prövar, och varför bidraget alltid stäms av mot din faktiska inkomst i efterhand.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["bostadsbidrag", "Försäkringskassan", "boendekostnad"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": ["forsorjningsstod-nar-pengarna-tar-slut", "personlig-ekonomi-jobbsokning", "skulder-och-kronofogden"],
+    "related_tools": ["/externa-resurser"],
+    "checklist": [
+      "Gör en försiktig uppskattning av årets inkomst i stället för en optimistisk",
+      "Anmäl ändrad inkomst till Försäkringskassan direkt, inte i efterhand",
+      "Kontrollera vad som räknas som din boendekostnad",
+      "Spara besked och beslut du får under året",
+      "Hör av dig till Försäkringskassan om uträkningen känns oklar"
     ],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Läs mer hos Försäkringskassan", "type": "primary" },
+      { "href": "/knowledge-base/article/forsorjningsstod-nar-pengarna-tar-slut", "label": "Läs om försörjningsstöd", "type": "secondary" }
+    ]
+  },
+  "betalningsanmarkning-och-jobb": {
+    "title": "Betalningsanmärkning och jobb – vad som gäller",
+    "summary": "När en kreditupplysning görs vid rekrytering, vad du kan säga om anmärkningen kommer upp, och hur den försvinner över tid.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["betalningsanmärkning", "kreditupplysning", "rekrytering"],
     "difficulty": "easy",
     "energy_level": "low",
-    "related_article_slugs": [
-      "rattigheter-stod",
-      "funktionsnedsattning-jobbsokning",
-      "lonebidrag-sa-fungerar-det",
-      "praktik-som-vag-in"
-    ],
-    "related_tools": [
-      "/calendar",
-      "/diary"
-    ],
+    "related_article_slugs": ["skulder-och-kronofogden", "bakgrundskontroll-och-belastningsregistret", "diskriminering-jobbsokning"],
+    "related_tools": ["/interview-simulator"],
     "checklist": [
-      "Ta upp behovet av SIUS med din handläggare innan en anställning börjar",
-      "Beskriv konkret vilka moment som brukar vara svåra i en ny arbetsmiljö",
-      "Fråga om konsulenten kan följa med på anställningsintervjun",
-      "Kom överens med konsulenten om vad som ska förklaras för arbetsgivaren",
-      "Boka in avstämningar under uppföljningsperioden, inte bara i introduktionen"
+      "Begär ut dina egna uppgifter hos kreditupplysningsföretagen innan du blir överraskad",
+      "Ta reda på om tjänsten du söker faktiskt innebär ekonomiskt ansvar",
+      "Förbered ett kort, sakligt svar om anmärkningen kommer upp",
+      "Nämn en pågående avbetalningsplan eller skuldsanering om du har en",
+      "Kontakta budget- och skuldrådgivningen om skulden bakom anmärkningen saknar plan"
     ],
     "actions": [
-      {
-        "href": "/calendar",
-        "label": "Håll koll på avstämningarna med din konsulent",
-        "type": "primary"
-      },
-      {
-        "href": "/diary",
-        "label": "Skriv ner hur introduktionen går",
-        "type": "secondary"
-      }
+      { "href": "/interview-simulator", "label": "Öva på svaret om det kommer upp", "type": "primary" },
+      { "href": "/knowledge-base/article/skulder-och-kronofogden", "label": "Läs om skulder och Kronofogden", "type": "secondary" }
     ]
   },
-  "arbetstraning-vad-innebar-det": {
-    "title": "Arbetsträning – vad det är, och om det leder till jobb",
-    "summary": "Arbetsträning är ingen anställning och ger ingen lön, men kan bygga upp arbetstid och ork. Så avgör du om platsen faktiskt kan leda vidare.",
-    "category_key": "accessibility",
-    "subcategory": "atergang-arbete",
-    "tags": [
-      "arbetsträning",
-      "Försäkringskassan",
-      "rehabilitering",
-      "arbetsförmåga"
-    ],
+  "overklaga-ett-beslut": {
+    "title": "Överklaga ett beslut – så gör du, och till vem",
+    "summary": "Var överklagandet ska skickas, vad det ska innehålla, och skillnaden mellan omprövning och överklagande till domstol.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["överklaga", "omprövning", "förvaltningsrätt"],
     "difficulty": "medium",
     "energy_level": "medium",
-    "related_article_slugs": [
-      "praktik-som-vag-in",
-      "rattigheter-stod",
-      "tillbaka-till-jobb-efter-sjukskrivning",
-      "stresshantering"
-    ],
-    "related_tools": [
-      "/diary",
-      "/skills-gap-analysis"
-    ],
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "ersattning-under-program", "forsorjningsstod-nar-pengarna-tar-slut", "ersattning-nar-du-borjar-jobba"],
+    "related_tools": ["/calendar"],
     "checklist": [
-      "Fråga rakt ut om arbetsträningen är kopplad till en möjlig anställning",
-      "Be om en tydlig kontaktperson på arbetsplatsen",
-      "Kräv en genomgång av vad som förväntas innan du börjar en ny uppgift",
-      "Skriv ner hur passen känns, vecka för vecka",
-      "Ta upp det direkt med din handläggare om belastningen är för hög",
-      "Säg ifrån tidigt om en föreslagen plats inte känns rätt"
+      "Läs beslutets besvärshänvisning och notera tidsfristen",
+      "Ta reda på om omprövning eller direkt överklagande gäller för dig",
+      "Skriv vilket beslut det gäller, hur du vill ha det ändrat och varför",
+      "Skicka överklagandet till myndigheten som fattade beslutet",
+      "Spara en kopia av allt du skickar in"
     ],
     "actions": [
-      {
-        "href": "/diary",
-        "label": "Följ hur arbetsträningen går, vecka för vecka",
-        "type": "primary"
-      },
-      {
-        "href": "/skills-gap-analysis",
-        "label": "Se vad som skiljer dig från nästa jobb",
-        "type": "secondary"
-      }
+      { "href": "/calendar", "label": "Håll koll på din tidsfrist", "type": "primary" },
+      { "href": "/knowledge-base/article/ersattning-nar-du-borjar-jobba", "label": "Läs om ersättning när du börjar jobba", "type": "secondary" }
     ]
   },
-  "tillbaka-till-jobb-efter-sjukskrivning": {
-    "title": "Tillbaka till jobb efter lång sjukskrivning",
-    "summary": "Rehabiliteringskedjan prövar din arbetsförmåga i steg. Skillnaden mellan att gå tillbaka och att söka nytt, och hur du märker att takten är för hög.",
-    "category_key": "accessibility",
-    "subcategory": "atergang-arbete",
-    "tags": [
-      "sjukskrivning",
-      "rehabiliteringskedjan",
-      "Försäkringskassan",
-      "återgång i arbete"
-    ],
-    "difficulty": "detailed",
-    "energy_level": "high",
-    "related_article_slugs": [
-      "arbetstraning-vad-innebar-det",
-      "mental-halsa-guide",
-      "lattsvenska-nar-du-blir-sjuk",
-      "work-life-balance-guide"
-    ],
-    "related_tools": [
-      "/wellness",
-      "/calendar"
-    ],
-    "checklist": [
-      "Be om ett möte som klargör var i rehabiliteringskedjan du befinner dig",
-      "Fråga vem som äger upptrappningsplanen och vad som händer om ett steg inte går bra",
-      "Bestäm i förväg vad du berättar för en ny arbetsgivare och vad du inte behöver berätta",
-      "Skriv ner sömn, humör och energi under upptrappningen",
-      "Säg ifrån direkt om takten känns för hög, i stället för att vänta ut det"
-    ],
-    "actions": [
-      {
-        "href": "/wellness",
-        "label": "Följ din energi under upptrappningen",
-        "type": "primary"
-      },
-      {
-        "href": "/job-search",
-        "label": "Sök nytt om vägen tillbaka inte är rätt för dig",
-        "type": "secondary"
-      }
-    ]
-  },
-  "skyddat-arbete-och-samhall": {
-    "title": "Skyddat arbete och Samhall – vad det innebär",
-    "summary": "Skyddat arbete är en riktig anställning hos Samhall, men du söker den inte själv. Vad den ger, vad den inte ger, och hur du blir aktuell.",
-    "category_key": "accessibility",
-    "subcategory": "skyddat-arbete",
-    "tags": [
-      "Samhall",
-      "skyddat arbete",
-      "Arbetsförmedlingen",
-      "funktionsnedsättning"
-    ],
+  "ersattning-nar-du-borjar-jobba": {
+    "title": "Ersättning när du börjar jobba – så avslutar du den rätt",
+    "summary": "Vad som händer med a-kassa eller aktivitetsstöd när du får jobb, deltidsarbete vid sidan av ersättning, och glappet innan första lönen.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["a-kassa", "aktivitetsstöd", "ny anställning"],
     "difficulty": "medium",
     "energy_level": "medium",
-    "related_article_slugs": [
-      "rattigheter-stod",
-      "jobbsokning-funktionsnedsattning",
-      "arbetstraning-vad-innebar-det",
-      "nystartsjobb-guide"
-    ],
-    "related_tools": [
-      "/job-search",
-      "/career"
-    ],
+    "related_article_slugs": ["a-kassa-sa-fungerar-det", "ersattning-under-program", "aktivitetsrapport-guide", "forsorjningsstod-nar-pengarna-tar-slut"],
+    "related_tools": ["/applications"],
     "checklist": [
-      "Ta upp skyddat arbete med din handläggare om andra vägar inte har fungerat",
-      "Fråga specifikt vad en utredning skulle innebära och vad som prövas",
-      "Be om ett besök eller en introduktion innan du bestämmer dig",
-      "Säg tydligt om övergång till en annan arbetsgivare är ett mål för dig",
-      "Håll samtalet om att stanna eller gå vidare öppet, inte bestämt i förväg"
+      "Anmäl till a-kassan eller Arbetsförmedlingen samma dag du vet att du börjar jobba",
+      "Rapportera arbetade timmar ärligt om jobbet är deltid",
+      "Planera för glappet mellan sista ersättningen och första lönen",
+      "Hör av dig till a-kassan igen om anställningen tar slut snabbt",
+      "Spara bekräftelsen på att du anmält förändringen"
     ],
     "actions": [
-      {
-        "href": "/career",
-        "label": "Fundera igenom vad som passar dig",
-        "type": "primary"
-      },
-      {
-        "href": "/job-search",
-        "label": "Sök vidare medan du väntar på besked",
-        "type": "secondary"
-      }
+      { "href": "/applications", "label": "Uppdatera status när du fått jobbet", "type": "primary" },
+      { "href": "/knowledge-base/article/a-kassa-sa-fungerar-det", "label": "Läs om hur a-kassan fungerar", "type": "secondary" }
     ]
   }
 }

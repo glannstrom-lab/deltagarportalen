@@ -1033,6 +1033,173 @@ ${krisstod()}
 `
 }
 
+/**
+ * B2B-landningssidorna: /for-arbetsmarknadsenheter/ och /for-rusta-och-matcha/.
+ * (spår K7/K16, 2026-09-06)
+ *
+ * Köparen här är en kommunal arbetsmarknadsenhet eller en Rusta-och-matcha-
+ * leverantör, inte deltagaren — DESIGN.md §2 tillåter uttryckligen en annan,
+ * mer datadriven ton på just konsulent-/inköpsytor. Innehållet ligger som DATA
+ * i content/b2b.json, inte hårdkodat här, av samma skäl som tools.json: en
+ * felaktig siffra ska gå att rätta utan att röra mallen.
+ *
+ * Tre gränser som hölls med flit, se uppdragets krav:
+ *   - Inga kundreferenser, kundantal eller ROI-siffror — portalen har få
+ *     användare och konsulentvyn är i praktiken oprövad i skarp drift.
+ *     Sidan beskriver vad verktyget KAN, aldrig hur mycket det används.
+ *   - Inga priser. CTA:n är alltid ett mejl (`mailto:demo@jobin.se`), aldrig
+ *     en knapp som låtsas vara en offert.
+ *   - GDPR/AI-avsnittet är ärligt om vad som är klart och vad som pågår —
+ *     inklusive att Perplexity (nådd via OpenRouter i fem AI-funktioner) i
+ *     dagsläget INTE står i integritetspolicyn eller Art. 30-registret.
+ *     Se b2b.json:s egen kommentar för vad varje påstående är verifierat mot.
+ *
+ * Samma mall för båda sidorna — skillnaden är helt datadriven. `leverantorsvardag`
+ * finns bara i rusta-och-matcha-posten, så det avsnittet renderas villkorligt.
+ */
+function renderB2B(b, guider) {
+  const url = `${SITE}/${b.slug}/`
+  const demoHref = (amne) => `mailto:demo@jobin.se?subject=${amne}`
+
+  const punktlista = (arr) => `<ul class="checklist">${arr.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`
+  const enkelLista = (arr) => `<ul>${arr.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`
+
+  const leverantorsvardag = b.leverantorsvardag
+    ? `<h2>${escapeHtml(b.leverantorsvardag.rubrik)}</h2>
+    <p>${escapeHtml(b.leverantorsvardag.text)}</p>
+    ${punktlista(b.leverantorsvardag.punkter)}
+    <p><a href="${b.leverantorsvardag.guideHref}">${escapeHtml(b.leverantorsvardag.guideText)}</a></p>`
+    : ''
+
+  const faqHtml = b.faq.map(([f, s]) => `<h3>${escapeHtml(f)}</h3><p>${escapeHtml(s)}</p>`).join('')
+
+  const factsHtml = (b.facts || []).map((f) => `<span class="chip">${escapeHtml(f)}</span>`).join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Service',
+        name: `Jobin — ${b.h1}`,
+        serviceType: 'Digital plattform för jobbsökande och arbetskonsulenter',
+        provider: { '@type': 'Organization', name: 'Jobin', url: SITE },
+        areaServed: 'SE',
+        audience: { '@type': 'Audience', audienceType: b.malgrupp },
+        url,
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: b.faq.map(([f, s]) => ({
+          '@type': 'Question',
+          name: f,
+          acceptedAnswer: { '@type': 'Answer', text: s },
+        })),
+      },
+    ],
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel(b.title))}</title>
+<meta name="description" content="${escapeHtml(b.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(b.title)}">
+<meta property="og:description" content="${escapeHtml(b.description)}">
+<meta property="og:image" content="${SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${demoHref(b.ctaAmne)}">${escapeHtml(b.ctaLabel)}</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor"><a href="/">Jobin</a></nav>
+    <h1>${escapeHtml(b.h1)}</h1>
+    <p class="lead">${escapeHtml(b.lead)}</p>
+    <div class="facts">${factsHtml}</div>
+    <a class="btn" href="${demoHref(b.ctaAmne)}">${escapeHtml(b.ctaLabel)}</a>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    <h2>${escapeHtml(b.forDeltagaren.rubrik)}</h2>
+    <p>${escapeHtml(b.forDeltagaren.text)}</p>
+    ${punktlista(b.forDeltagaren.punkter)}
+    <p><a href="${b.forDeltagaren.lankHref}">${escapeHtml(b.forDeltagaren.lankText)}</a></p>
+
+    <h2>${escapeHtml(b.forKonsulenten.rubrik)}</h2>
+    <p>${escapeHtml(b.forKonsulenten.text)}</p>
+    ${punktlista(b.forKonsulenten.punkter)}
+    ${b.forKonsulenten.obs ? `<p>${escapeHtml(b.forKonsulenten.obs)}</p>` : ''}
+
+    ${leverantorsvardag}
+
+    <section class="cta">
+      <h2>${escapeHtml(b.gdprAi.rubrik)}</h2>
+      <p>${escapeHtml(b.gdprAi.intro)}</p>
+      <h3>Klart i dag</h3>
+      ${enkelLista(b.gdprAi.klart)}
+      <h3>Pågår</h3>
+      ${enkelLista(b.gdprAi.pagar)}
+      <p><a href="${b.gdprAi.lankHref}">${escapeHtml(b.gdprAi.lankText)}</a></p>
+    </section>
+
+    <h2>${escapeHtml(b.tillganglighet.rubrik)}</h2>
+    <p>${escapeHtml(b.tillganglighet.text)}</p>
+    <p><a href="${b.tillganglighet.lankHref}">${escapeHtml(b.tillganglighet.lankText)}</a></p>
+
+    <h2>Vanliga frågor</h2>
+    ${faqHtml}
+
+    ${
+      guider && guider.length
+        ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs mer</h2><ul>${guider
+            .map(relateradPost)
+            .join('')}</ul></nav>`
+        : ''
+    }
+
+    <section class="cta">
+      <h2>${escapeHtml(b.slutCta.rubrik)}</h2>
+      <p>${escapeHtml(b.slutCta.text)}</p>
+      <a class="btn" href="${demoHref(b.slutCta.ctaAmne)}">${escapeHtml(b.slutCta.ctaLabel)}</a>
+    </section>
+  </div>
+</main>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
 module.exports = {
   renderGuide,
   renderIndex,
@@ -1040,6 +1207,7 @@ module.exports = {
   renderLattlast,
   renderTool,
   renderToolIndex,
+  renderB2B,
   // SE3: exporteras för byggrapporten och testerna.
   sidtitel,
   titelForLang,

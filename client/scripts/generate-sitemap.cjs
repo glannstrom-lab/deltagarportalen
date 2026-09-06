@@ -72,6 +72,17 @@ if (fs.existsSync(TOOLS)) {
   }
 }
 
+// K7/K16: B2B-landningssidorna. Låg volym men det är köparen — samma
+// priority-nivå som verktygssidorna. Läser samma content/b2b.json som
+// prerender-guides.cjs, så sitemap och genererade sidor inte kan gå isär.
+const B2B = path.join(__dirname, '..', 'content', 'b2b.json')
+if (fs.existsSync(B2B)) {
+  const { sidor } = JSON.parse(fs.readFileSync(B2B, 'utf8'))
+  if (sidor?.length) {
+    urls.push(...sidor.map((b) => ({ loc: `/${b.slug}/`, changefreq: 'monthly', priority: '0.8' })))
+  }
+}
+
 const today = new Date().toISOString().slice(0, 10)
 
 const body = urls

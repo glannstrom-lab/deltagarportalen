@@ -1,0 +1,126 @@
+{
+  "jobba-som-underskoterska": {
+    "title": "Jobba som undersköterska – vad jobbet innebär",
+    "summary": "Vad arbetet som undersköterska innebär på sjukhus, boende och i hemtjänsten, vad utbildningen är för något, och skillnaden mot vårdbiträde.",
+    "category_key": "job-market",
+    "subcategory": "underskoterska",
+    "tags": ["undersköterska", "vård och omsorg", "skiftarbete", "vårdbiträde"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "jobba-inom-hemtjansten",
+      "bakgrundskontroll-och-belastningsregistret",
+      "behorigheter-som-oppnar-jobb",
+      "branschguide-vard-omsorg"
+    ],
+    "related_tools": ["/education", "/job-search"],
+    "checklist": [
+      "Ta reda på om du redan har betyg eller erfarenhet som kan räknas mot undersköterskebeviset",
+      "Kontakta komvux i din kommun för att se vilken utbildningsväg som passar dig",
+      "Fråga om schemaläggning och skiftarbete konkret innan du tackar ja till en tjänst",
+      "Läs igenom vilka behörigheter som efterfrågas i annonser du är intresserad av"
+    ],
+    "actions": [
+      { "href": "/education", "label": "Se vilka utbildningar som finns", "type": "primary" },
+      { "href": "/job-search", "label": "Sök lediga tjänster inom vård och omsorg", "type": "secondary" }
+    ]
+  },
+  "jobba-inom-hemtjansten": {
+    "title": "Jobba inom hemtjänsten – så ser vardagen ut",
+    "summary": "Hur ett arbetspass i hemtjänsten ser ut, vad ensamarbete och tidspress innebär i praktiken, och varför det är en vanlig väg in i vården.",
+    "category_key": "job-market",
+    "subcategory": "hemtjanst",
+    "tags": ["hemtjänst", "vård och omsorg", "ensamarbete", "vårdbiträde"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "jobba-som-underskoterska",
+      "bakgrundskontroll-och-belastningsregistret",
+      "arbetsmiljo-guide",
+      "praktik-som-vag-in"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Fråga om scheman och restider innan du tackar ja till en tjänst",
+      "Ta reda på hur introduktionen ser ut och hur länge du går bredvid en kollega",
+      "Fråga om rutinerna för nyckelhantering redan vid introduktionen",
+      "Ta upp återkommande tidspress med din chef så snart mönstret upprepas"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök lediga tjänster inom hemtjänsten", "type": "primary" }
+    ]
+  },
+  "jobba-som-barnskotare": {
+    "title": "Jobba som barnskötare – förskolans vardag",
+    "summary": "Vad barnskötare gör på förskolan, hur rollen skiljer sig från förskollärare, och vägen vidare via komvux eller yrkeshögskola.",
+    "category_key": "job-market",
+    "subcategory": "barnskotare",
+    "tags": ["barnskötare", "förskola", "förskollärare", "komvux"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "jobba-som-elevassistent",
+      "bakgrundskontroll-och-belastningsregistret",
+      "behorigheter-som-oppnar-jobb"
+    ],
+    "related_tools": ["/education", "/job-search"],
+    "checklist": [
+      "Fråga om anställningsformen är vikariat eller tillsvidare innan du tackar ja",
+      "Ta kontakt med komvux för att se vad en barnskötarutbildning skulle kräva av dig",
+      "Fråga hur förskolan jobbar med rast och återhämtning under dagen"
+    ],
+    "actions": [
+      { "href": "/education", "label": "Se vilka utbildningar som finns", "type": "primary" },
+      { "href": "/job-search", "label": "Sök lediga tjänster på förskolor", "type": "secondary" }
+    ]
+  },
+  "jobba-som-elevassistent": {
+    "title": "Jobba som elevassistent – vad rollen innebär",
+    "summary": "Vad en elevassistent faktiskt gör i skolan, varför rollen ser olika ut mellan skolor, och vad en visstidsanställning betyder för dig.",
+    "category_key": "job-market",
+    "subcategory": "elevassistent",
+    "tags": ["elevassistent", "skola", "visstidsanställning", "särskilt stöd"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "jobba-som-barnskotare",
+      "anstallningsformer-guide",
+      "bakgrundskontroll-och-belastningsregistret"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Fråga konkret vad tjänsten innebär hos just den skolan",
+      "Ta reda på om anställningen är knuten till en enskild elevs beslutade stöd",
+      "Fråga hur skolan jobbar med handledning för elevassistenter",
+      "Ta reda på vad som händer med din anställning om elevens behov förändras"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök lediga tjänster inom skolan", "type": "primary" }
+    ]
+  },
+  "jobba-inom-lss": {
+    "title": "Jobba inom LSS – gruppbostad och daglig verksamhet",
+    "summary": "Vad LSS är för lag, hur arbetet i gruppbostad och daglig verksamhet ser ut, och vad som skiljer det från hemtjänst och assistans.",
+    "category_key": "job-market",
+    "subcategory": "lss",
+    "tags": ["LSS", "gruppbostad", "daglig verksamhet", "funktionsnedsättning"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "jobba-som-personlig-assistent",
+      "bakgrundskontroll-och-belastningsregistret",
+      "skyddat-arbete-och-samhall",
+      "arbetstraning-vad-innebar-det"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Fundera på om gruppbostad eller daglig verksamhet passar dig bäst",
+      "Fråga vid intervjun hur arbetsplatsen jobbar med handledning",
+      "Ta reda på vilka behörigheter som efterfrågas för just den tjänsten",
+      "Lyft tidigare erfarenhet av vård och omsorg även om den kommer från ett annat håll"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök lediga tjänster inom LSS", "type": "primary" }
+    ]
+  }
+}

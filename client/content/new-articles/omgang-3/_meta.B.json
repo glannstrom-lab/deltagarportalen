@@ -1,0 +1,219 @@
+{
+  "lonebidrag-sa-fungerar-det": {
+    "title": "Lönebidrag – så fungerar stödet, och så tar du upp det",
+    "summary": "Lönebidrag går till arbetsgivaren, inte till dig. Så fungerar bedömningen, och så tar du upp det utan att det blir det första hon hör om dig.",
+    "category_key": "accessibility",
+    "subcategory": "stod-vid-anstallning",
+    "tags": [
+      "lönebidrag",
+      "Arbetsförmedlingen",
+      "anställning",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "rattigheter-stod",
+      "anpassningar-arbetsplats",
+      "sius-stod-vid-introduktion",
+      "provanstallning-guide"
+    ],
+    "related_tools": [
+      "/interview-simulator",
+      "/job-search"
+    ],
+    "checklist": [
+      "Beskriv för din handläggare vilka arbetsuppgifter som är svårast, inte vilken diagnos du har",
+      "Vänta med att ta upp lönebidrag tills arbetsgivaren visat intresse för dig som person",
+      "Formulera anpassningen konkret, till exempel skriftliga instruktioner eller flexibla tider",
+      "Fråga om din handläggare kan vara med i samtalet med arbetsgivaren",
+      "Öva formuleringen innan du säger den i en riktig intervju",
+      "Följ upp om bidraget efter en tid, i stället för att anta att det gäller för alltid"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva hur du tar upp det i en intervju",
+        "type": "primary"
+      },
+      {
+        "href": "/job-search",
+        "label": "Sök jobb hos arbetsgivare som passar dig",
+        "type": "secondary"
+      }
+    ]
+  },
+  "sius-stod-vid-introduktion": {
+    "title": "SIUS – stöd när du ska introduceras i ett nytt jobb",
+    "summary": "En SIUS-konsulent hjälper dig komma in i ett nytt jobb, både innan och efter att du börjat. Så blir du aktuell, och så här kan du använda stödet konkret.",
+    "category_key": "accessibility",
+    "subcategory": "stod-vid-introduktion",
+    "tags": [
+      "SIUS",
+      "Arbetsförmedlingen",
+      "introduktion",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "rattigheter-stod",
+      "funktionsnedsattning-jobbsokning",
+      "lonebidrag-sa-fungerar-det",
+      "praktik-som-vag-in"
+    ],
+    "related_tools": [
+      "/calendar",
+      "/diary"
+    ],
+    "checklist": [
+      "Ta upp behovet av SIUS med din handläggare innan en anställning börjar",
+      "Beskriv konkret vilka moment som brukar vara svåra i en ny arbetsmiljö",
+      "Fråga om konsulenten kan följa med på anställningsintervjun",
+      "Kom överens med konsulenten om vad som ska förklaras för arbetsgivaren",
+      "Boka in avstämningar under uppföljningsperioden, inte bara i introduktionen"
+    ],
+    "actions": [
+      {
+        "href": "/calendar",
+        "label": "Håll koll på avstämningarna med din konsulent",
+        "type": "primary"
+      },
+      {
+        "href": "/diary",
+        "label": "Skriv ner hur introduktionen går",
+        "type": "secondary"
+      }
+    ]
+  },
+  "arbetstraning-vad-innebar-det": {
+    "title": "Arbetsträning – vad det är, och om det leder till jobb",
+    "summary": "Arbetsträning är ingen anställning och ger ingen lön, men kan bygga upp arbetstid och ork. Så avgör du om platsen faktiskt kan leda vidare.",
+    "category_key": "accessibility",
+    "subcategory": "atergang-arbete",
+    "tags": [
+      "arbetsträning",
+      "Försäkringskassan",
+      "rehabilitering",
+      "arbetsförmåga"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "praktik-som-vag-in",
+      "rattigheter-stod",
+      "tillbaka-till-jobb-efter-sjukskrivning",
+      "stresshantering"
+    ],
+    "related_tools": [
+      "/diary",
+      "/skills-gap-analysis"
+    ],
+    "checklist": [
+      "Fråga rakt ut om arbetsträningen är kopplad till en möjlig anställning",
+      "Be om en tydlig kontaktperson på arbetsplatsen",
+      "Kräv en genomgång av vad som förväntas innan du börjar en ny uppgift",
+      "Skriv ner hur passen känns, vecka för vecka",
+      "Ta upp det direkt med din handläggare om belastningen är för hög",
+      "Säg ifrån tidigt om en föreslagen plats inte känns rätt"
+    ],
+    "actions": [
+      {
+        "href": "/diary",
+        "label": "Följ hur arbetsträningen går, vecka för vecka",
+        "type": "primary"
+      },
+      {
+        "href": "/skills-gap-analysis",
+        "label": "Se vad som skiljer dig från nästa jobb",
+        "type": "secondary"
+      }
+    ]
+  },
+  "tillbaka-till-jobb-efter-sjukskrivning": {
+    "title": "Tillbaka till jobb efter lång sjukskrivning",
+    "summary": "Rehabiliteringskedjan prövar din arbetsförmåga i steg. Skillnaden mellan att gå tillbaka och att söka nytt, och hur du märker att takten är för hög.",
+    "category_key": "accessibility",
+    "subcategory": "atergang-arbete",
+    "tags": [
+      "sjukskrivning",
+      "rehabiliteringskedjan",
+      "Försäkringskassan",
+      "återgång i arbete"
+    ],
+    "difficulty": "detailed",
+    "energy_level": "high",
+    "related_article_slugs": [
+      "arbetstraning-vad-innebar-det",
+      "mental-halsa-guide",
+      "lattsvenska-nar-du-blir-sjuk",
+      "work-life-balance-guide"
+    ],
+    "related_tools": [
+      "/wellness",
+      "/calendar"
+    ],
+    "checklist": [
+      "Be om ett möte som klargör var i rehabiliteringskedjan du befinner dig",
+      "Fråga vem som äger upptrappningsplanen och vad som händer om ett steg inte går bra",
+      "Bestäm i förväg vad du berättar för en ny arbetsgivare och vad du inte behöver berätta",
+      "Skriv ner sömn, humör och energi under upptrappningen",
+      "Säg ifrån direkt om takten känns för hög, i stället för att vänta ut det"
+    ],
+    "actions": [
+      {
+        "href": "/wellness",
+        "label": "Följ din energi under upptrappningen",
+        "type": "primary"
+      },
+      {
+        "href": "/job-search",
+        "label": "Sök nytt om vägen tillbaka inte är rätt för dig",
+        "type": "secondary"
+      }
+    ]
+  },
+  "skyddat-arbete-och-samhall": {
+    "title": "Skyddat arbete och Samhall – vad det innebär",
+    "summary": "Skyddat arbete är en riktig anställning hos Samhall, men du söker den inte själv. Vad den ger, vad den inte ger, och hur du blir aktuell.",
+    "category_key": "accessibility",
+    "subcategory": "skyddat-arbete",
+    "tags": [
+      "Samhall",
+      "skyddat arbete",
+      "Arbetsförmedlingen",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "rattigheter-stod",
+      "jobbsokning-funktionsnedsattning",
+      "arbetstraning-vad-innebar-det",
+      "nystartsjobb-guide"
+    ],
+    "related_tools": [
+      "/job-search",
+      "/career"
+    ],
+    "checklist": [
+      "Ta upp skyddat arbete med din handläggare om andra vägar inte har fungerat",
+      "Fråga specifikt vad en utredning skulle innebära och vad som prövas",
+      "Be om ett besök eller en introduktion innan du bestämmer dig",
+      "Säg tydligt om övergång till en annan arbetsgivare är ett mål för dig",
+      "Håll samtalet om att stanna eller gå vidare öppet, inte bestämt i förväg"
+    ],
+    "actions": [
+      {
+        "href": "/career",
+        "label": "Fundera igenom vad som passar dig",
+        "type": "primary"
+      },
+      {
+        "href": "/job-search",
+        "label": "Sök vidare medan du väntar på besked",
+        "type": "secondary"
+      }
+    ]
+  }
+}

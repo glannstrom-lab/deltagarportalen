@@ -1,0 +1,118 @@
+{
+  "jobb-och-utvecklingsgarantin": {
+    "title": "Jobb- och utvecklingsgarantin – så fungerar den",
+    "summary": "Hur du hamnar i jobb- och utvecklingsgarantin, vad som förväntas av dig, vad du kan begära av handläggaren, och vad som händer när den tar slut.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["jobb- och utvecklingsgarantin", "Arbetsförmedlingen", "aktivitetsstöd", "långtidsarbetslöshet"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["ersattning-under-program", "aktivitetsrapport-guide", "jobbgaranti-for-ungdomar", "skriva-in-dig-arbetsformedlingen"],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Skicka in en aktuell aktivitetsrapport i tid",
+      "Boka ett möte för att diskutera nästa insats i din plan",
+      "Ta med konkreta önskemål om vilket yrke eller vilken utbildning du vill satsa på",
+      "Fråga Försäkringskassan vad som gäller din ersättning om du är osäker"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt din jobbsökning", "type": "primary" },
+      { "href": "/knowledge-base/article/ersattning-under-program", "label": "Läs om vem som betalar din ersättning", "type": "secondary" }
+    ]
+  },
+  "jobbgaranti-for-ungdomar": {
+    "title": "Jobbgarantin för ungdomar – så fungerar den",
+    "summary": "Vad jobbgarantin för ungdomar innebär, hur den skiljer sig från den vanliga garantin, och hur du använder den aktivt i stället för att bara vänta.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["jobbgarantin för ungdomar", "unga", "Arbetsförmedlingen", "aktivitetsstöd"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": ["jobb-och-utvecklingsgarantin", "etableringsprogrammet", "arbetsmarknadsutbildning", "skriva-in-dig-arbetsformedlingen"],
+    "related_tools": ["/job-search", "/education"],
+    "checklist": [
+      "Kom med ett konkret förslag på yrke eller utbildning på första mötet",
+      "Fråga specifikt om praktik hos en arbetsgivare du är nyfiken på",
+      "Håll din egen jobbsökning igång parallellt med planen",
+      "Fråga i god tid vad som händer när garantitiden tar slut"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb medan garantin pågår", "type": "primary" },
+      { "href": "/education", "label": "Se om en utbildning kan snabba på vägen", "type": "secondary" }
+    ]
+  },
+  "extratjanst-vad-ar-det": {
+    "title": "Extratjänst – vad det var, och vad som gäller idag",
+    "summary": "Vad en extratjänst var, varför Arbetsförmedlingen slutat anvisa dem, och vilka stöd som finns i stället idag.",
+    "category_key": "employment-law",
+    "subcategory": "anstallningsformer",
+    "tags": ["extratjänst", "anställningsstöd", "subventionerad anställning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["nystartsjobb-guide", "introduktionsjobb", "lonebidrag-sa-fungerar-det", "anstallningsformer-guide"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt din jobbsökning", "type": "primary" },
+      { "href": "/knowledge-base/article/nystartsjobb-guide", "label": "Läs om det stöd som finns idag", "type": "secondary" }
+    ]
+  },
+  "introduktionsjobb": {
+    "title": "Introduktionsjobb – vad stödet innebär för dig",
+    "summary": "Vad introduktionsjobb innebär för dig och arbetsgivaren, och varför du ofta behöver berätta för arbetsgivaren att stödet finns.",
+    "category_key": "employment-law",
+    "subcategory": "anstallningsformer",
+    "tags": ["introduktionsjobb", "anställningsstöd", "Arbetsförmedlingen"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["nystartsjobb-guide", "jobb-och-utvecklingsgarantin", "etableringsprogrammet", "personligt-brev"],
+    "related_tools": ["/cover-letter", "/job-search"],
+    "checklist": [
+      "Fråga din handläggare om du är aktuell för introduktionsjobb",
+      "Nämn stödet kort i ditt personliga brev till arbetsgivare du verkligen vill jobba hos",
+      "Be handläggaren ta en direkt kontakt med arbetsgivare du är särskilt intresserad av",
+      "Läs igenom anställningsavtalet innan du skriver under"
+    ],
+    "actions": [
+      { "href": "/cover-letter", "label": "Skriv in stödet i ditt personliga brev", "type": "primary" },
+      { "href": "/job-search", "label": "Hitta arbetsgivare att föreslå för handläggaren", "type": "secondary" }
+    ]
+  },
+  "arbetsmarknadsutbildning": {
+    "title": "Arbetsmarknadsutbildning – så får du en plats",
+    "summary": "Hur Arbetsförmedlingen beslutar om arbetsmarknadsutbildning, vad som händer med ersättningen, och hur du argumenterar för en plats.",
+    "category_key": "career-development",
+    "subcategory": "utbildning",
+    "tags": ["arbetsmarknadsutbildning", "Arbetsförmedlingen", "yrkesutbildning"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["ersattning-under-program", "aktivitetsrapport-guide", "jobb-och-utvecklingsgarantin", "arbetsmarknadstrender-nu"],
+    "related_tools": ["/education", "/skills-gap-analysis"],
+    "checklist": [
+      "Samla exempel på annonser för yrket du är intresserad av",
+      "Förklara för handläggaren hur utbildningen bygger vidare på det du redan kan",
+      "Fråga om ett studiebesök innan ett beslut fattas",
+      "Stäm av med Försäkringskassan vad som gäller din ersättning under utbildningen"
+    ],
+    "actions": [
+      { "href": "/skills-gap-analysis", "label": "Se vilka kompetenser som saknas", "type": "primary" },
+      { "href": "/education", "label": "Utforska utbildningsvägar", "type": "secondary" }
+    ]
+  },
+  "studier-med-ersattning": {
+    "title": "Studier med ersättning – vilken väg passar dig",
+    "summary": "Vilka vägar som finns för att studera med ersättning, vem som beslutar om vad, och vad som hänt med studiestartsstödet.",
+    "category_key": "career-development",
+    "subcategory": "utbildning",
+    "tags": ["studiestöd", "aktivitetsstöd", "CSN", "a-kassa"],
+    "difficulty": "detailed",
+    "energy_level": "high",
+    "related_article_slugs": ["arbetsmarknadsutbildning", "ersattning-under-program", "a-kassa-sa-fungerar-det", "personlig-ekonomi-jobbsokning"],
+    "related_tools": ["/education"],
+    "checklist": [],
+    "actions": [
+      { "href": "/education", "label": "Utforska utbildningsvägar", "type": "primary" },
+      { "href": "/knowledge-base/article/ersattning-under-program", "label": "Läs om vem som betalar under ett program", "type": "secondary" }
+    ]
+  }
+}

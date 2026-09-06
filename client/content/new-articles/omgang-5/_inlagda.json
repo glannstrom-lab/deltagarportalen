@@ -1,0 +1,28 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-09-06",
+  "slugs": [
+    "arbetsmarknadsutbildning",
+    "extratjanst-vad-ar-det",
+    "introduktionsjobb",
+    "jobb-och-utvecklingsgarantin",
+    "jobba-i-restaurang-och-kok",
+    "jobba-inom-bygg",
+    "jobba-inom-hemtjansten",
+    "jobba-inom-industri-och-produktion",
+    "jobba-inom-lss",
+    "jobba-som-barnskotare",
+    "jobba-som-elevassistent",
+    "jobba-som-lastbilschauffor",
+    "jobba-som-underskoterska",
+    "jobba-som-vaktare",
+    "jobbgaranti-for-ungdomar",
+    "lattsvenska-arbetsmiljo",
+    "lattsvenska-diskriminering",
+    "lattsvenska-facket",
+    "lattsvenska-forsta-dagen-pa-jobbet",
+    "lattsvenska-provanstallning",
+    "lattsvenska-semester",
+    "studier-med-ersattning"
+  ]
+}

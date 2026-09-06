@@ -1,211 +1,103 @@
 {
-  "validera-utlandsk-utbildning": {
-    "title": "Bedömning av utländsk utbildning – så går det till",
-    "summary": "Så fungerar UHR:s bedömning av utländsk utbildning, varför vård, lärare och juridik går en annan väg, och vad du gör medan du väntar.",
-    "category_key": "career-development",
-    "subcategory": "utlandsk-utbildning",
-    "tags": [
-      "utländsk utbildning",
-      "UHR",
-      "reglerade yrken",
-      "validering"
-    ],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": [
-      "utlandsk-erfarenhet-i-cv",
-      "etableringsprogrammet",
-      "kompetensinventering-guide",
-      "cv-utan-erfarenhet"
-    ],
-    "related_tools": [
-      "/cv",
-      "/skills-gap-analysis"
-    ],
-    "checklist": [
-      "Samla in dina utbildningsbevis i original",
-      "Sök i UHR:s digitala bedömningstjänst för en snabb uppskattning",
-      "Ta reda på om ditt yrke är reglerat innan du går vidare",
-      "Skicka in en ansökan om utlåtande om du behöver ett skriftligt dokument",
-      "Bygg ett CV som beskriver vad du kan, inte bara utbildningens titel",
-      "Fortsätt söka jobb medan du väntar på svar"
-    ],
-    "actions": [
-      {
-        "href": "/cv",
-        "label": "Bygg ett CV som visar vad du kan",
-        "type": "primary"
-      },
-      {
-        "href": "/skills-gap-analysis",
-        "label": "Se vad som skiljer dig från drömjobbet",
-        "type": "secondary"
-      }
-    ]
-  },
-  "utlandsk-erfarenhet-i-cv": {
-    "title": "CV med utländsk arbetslivserfarenhet – så skriver du",
-    "summary": "Hur du översätter en utländsk yrkestitel, vad som ska med i ett svenskt CV, och hur du hanterar referenser och foto.",
-    "category_key": "job-search",
-    "subcategory": "cv",
-    "tags": [
-      "CV",
-      "utländsk erfarenhet",
-      "referenser",
-      "jobbsökning"
-    ],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": [
-      "validera-utlandsk-utbildning",
-      "cv-grunder",
-      "referenser-guide",
-      "ats-optimering"
-    ],
-    "related_tools": [
-      "/cv",
-      "/linkedin-optimizer"
-    ],
-    "checklist": [
-      "Beskriv vad du gjorde i varje roll, inte bara titeln",
-      "Skriv en mening om vad okända arbetsgivare gör",
-      "Ta bort foto, civilstånd och andra personuppgifter du är osäker på",
-      "Fråga referenser vilket språk de kan svara på",
-      "Låt någon utan kunskap om din bakgrund läsa igenom CV:t"
-    ],
-    "actions": [
-      {
-        "href": "/cv",
-        "label": "Bygg ditt CV med mallar anpassade för svenska rekryterare",
-        "type": "primary"
-      },
-      {
-        "href": "/linkedin-optimizer",
-        "label": "Uppdatera din profil med samma tydliga beskrivningar",
-        "type": "secondary"
-      }
-    ]
-  },
-  "sfi-och-jobbsokande-samtidigt": {
-    "title": "Söka jobb medan du läser SFI – varför du inte behöver vänta",
-    "summary": "Hur du kombinerar SFI-studier med jobbsökning, beskriver din språknivå ärligt och använder jobbet som språkträning.",
-    "category_key": "job-search",
-    "subcategory": "sfi",
-    "tags": [
-      "SFI",
-      "svenska",
-      "jobbsökning",
-      "kombinationsutbildning"
-    ],
-    "difficulty": "easy",
+  "lattsvenska-skulder": {
+    "title": "Vad gör jag om jag har skulder?",
+    "summary": "Vad som händer om du inte kan betala en räkning, vad Kronofogden är och var du får gratis hjälp.",
+    "category_key": "easy-swedish",
+    "subcategory": "ekonomi",
+    "tags": ["skulder", "Kronofogden", "budget- och skuldrådgivning"],
+    "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": [
-      "svenska-pa-jobbet",
-      "etableringsprogrammet",
-      "struktur-jobbsokning",
-      "latt-svenska-soka-jobb"
-    ],
-    "related_tools": [
-      "/job-search",
-      "/calendar"
-    ],
+    "related_article_slugs": ["lattsvenska-forsorjningsstod", "lattsvenska-bostadsbidrag", "lattsvenska-overklaga"],
+    "related_tools": ["/externa-resurser"],
     "checklist": [
-      "Skriv i ansökan vilken språknivå du faktiskt ligger på",
-      "Fråga din SFI-lärare eller handläggare om kombinationsutbildning finns",
-      "Sök jobb där du möter svenska varje dag",
-      "Lägg studietider och jobbsökande i samma kalender"
+      "Öppna räkningen och läs vad den säger",
+      "Kontakta den du är skyldig pengar",
+      "Berätta att du har svårt att betala",
+      "Fråga din kommun om budget- och skuldrådgivning",
+      "Ta med papper om din ekonomi till mötet"
     ],
     "actions": [
-      {
-        "href": "/job-search",
-        "label": "Sök jobb som passar din språknivå",
-        "type": "primary"
-      },
-      {
-        "href": "/calendar",
-        "label": "Få struktur på studier och sökande",
-        "type": "secondary"
-      }
+      { "href": "/externa-resurser", "label": "Hitta gratis skuldrådgivning", "type": "primary" }
     ]
   },
-  "svenska-pa-jobbet": {
-    "title": "Svenska på jobbet – vad som faktiskt krävs",
-    "summary": "Vad som faktiskt krävs i olika jobb, hur du frågar om hjälp utan att det känns pinsamt, och hur du blir bättre under tiden du jobbar.",
-    "category_key": "career-development",
-    "subcategory": "sprak-pa-jobbet",
-    "tags": [
-      "svenska",
-      "arbetsplats",
-      "kommunikation",
-      "språkinlärning"
-    ],
-    "difficulty": "easy",
+  "lattsvenska-e-legitimation": {
+    "title": "Vad är e-legitimation och hur skaffar jag BankID?",
+    "summary": "Vad e-legitimation är, varför du behöver den och hur du beställer BankID hos din bank.",
+    "category_key": "easy-swedish",
+    "subcategory": "digitala-tjanster",
+    "tags": ["e-legitimation", "BankID", "digitala tjänster"],
+    "difficulty": "easy-swedish",
     "energy_level": "low",
-    "related_article_slugs": [
-      "sfi-och-jobbsokande-samtidigt",
-      "professionell-kommunikation",
-      "forsta-dagen-nytt-jobb",
-      "mental-halsa-jobbsokning"
+    "related_article_slugs": ["lattsvenska-arbetsformedlingen", "lattsvenska-a-kassa", "lattsvenska-rapportera-till-arbetsformedlingen"],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Ta reda på om du har ett bankkonto",
+      "Kontakta din bank och fråga om BankID",
+      "Ha inget bankkonto? Fråga banken vad som krävs",
+      "Dela aldrig din kod med någon annan"
     ],
-    "related_tools": [
-      "/interview-simulator",
-      "/exercises"
-    ],
-    "checklist": [],
     "actions": [
-      {
-        "href": "/interview-simulator",
-        "label": "Öva samtal innan du börjar",
-        "type": "primary"
-      },
-      {
-        "href": "/exercises",
-        "label": "Öva på situationer i din egen takt",
-        "type": "secondary"
-      }
+      { "href": "/job-search", "label": "Fortsätt din jobbsökning", "type": "primary" }
     ]
   },
-  "etableringsprogrammet": {
-    "title": "Etableringsprogrammet – vad som ingår",
-    "summary": "Vem etableringsprogrammet gäller för, vad SFI, samhällsorientering och arbetsförberedande insatser innebär, och vad du bör få ut av tiden.",
-    "category_key": "job-search",
-    "subcategory": "etableringsprogrammet",
-    "tags": [
-      "etableringsprogrammet",
-      "Arbetsförmedlingen",
-      "SFI",
-      "samhällsorientering"
-    ],
-    "difficulty": "medium",
-    "energy_level": "medium",
-    "related_article_slugs": [
-      "sfi-och-jobbsokande-samtidigt",
-      "validera-utlandsk-utbildning",
-      "lattsvenska-arbetsformedlingen",
-      "struktur-jobbsokning"
-    ],
-    "related_tools": [
-      "/calendar",
-      "/education"
-    ],
+  "lattsvenska-sjukanmalan": {
+    "title": "Vad gör jag första dagen jag är sjuk?",
+    "summary": "Vad du gör när du blir sjuk – att ringa jobbet, vad ett läkarintyg är och vem du ska berätta för.",
+    "category_key": "easy-swedish",
+    "subcategory": "halsa",
+    "tags": ["sjukanmälan", "läkarintyg", "sjuk"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-nar-du-blir-sjuk", "lattsvenska-a-kassa", "lattsvenska-rapportera-till-arbetsformedlingen"],
+    "related_tools": ["/wellness"],
     "checklist": [
-      "Fråga din handläggare vad som ingår i just din plan",
-      "Be om en kartläggning av din utbildning och erfarenhet tidigt",
-      "Fråga specifikt om praktik inom ditt yrkesområde",
-      "Ta upp vad som händer efter programmet i god tid",
-      "Håll kontakt med din handläggare mellan de inbokade mötena"
+      "Ring eller mejla jobbet så tidigt du kan",
+      "Anmäl hos Arbetsförmedlingen om du är arbetslös",
+      "Boka vårdcentral om du behöver läkarintyg",
+      "Spara datumen du var sjuk"
     ],
     "actions": [
-      {
-        "href": "/calendar",
-        "label": "Håll koll på insatser och möten",
-        "type": "primary"
-      },
-      {
-        "href": "/education",
-        "label": "Se hur studier och praktik hänger ihop",
-        "type": "secondary"
-      }
+      { "href": "/wellness", "label": "Skriv ner hur du mår", "type": "primary" }
+    ]
+  },
+  "lattsvenska-overklaga": {
+    "title": "Vad betyder det att överklaga ett beslut?",
+    "summary": "Så säger du att ett myndighetsbeslut är fel – vad du skriver, vart du skickar det och var du får hjälp.",
+    "category_key": "easy-swedish",
+    "subcategory": "myndigheter",
+    "tags": ["överklaga", "beslut", "myndighet"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-forsorjningsstod", "lattsvenska-bostadsbidrag", "lattsvenska-skulder"],
+    "related_tools": ["/externa-resurser"],
+    "checklist": [
+      "Hitta beslutet och läs rubriken om hur du överklagar",
+      "Skriv ner varför du tycker beslutet är fel",
+      "Skriv under och spara en kopia",
+      "Skicka det dit beslutet säger"
+    ],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Hitta rådgivning nära dig", "type": "primary" }
+    ]
+  },
+  "lattsvenska-bostadsbidrag": {
+    "title": "Vad är bostadsbidrag och hur ansöker jag?",
+    "summary": "Vad bostadsbidrag är, vem som kan söka och vad som händer om din inkomst ändras.",
+    "category_key": "easy-swedish",
+    "subcategory": "ekonomi",
+    "tags": ["bostadsbidrag", "Försäkringskassan", "bostad"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-forsorjningsstod", "lattsvenska-a-kassa", "lattsvenska-overklaga"],
+    "related_tools": ["/externa-resurser"],
+    "checklist": [
+      "Gå in på Försäkringskassans webbplats eller ring",
+      "Samla papper om din inkomst och hyra",
+      "Skicka in din ansökan",
+      "Berätta direkt om något i din situation ändras"
+    ],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Läs mer hos Försäkringskassan", "type": "primary" }
     ]
   }
 }

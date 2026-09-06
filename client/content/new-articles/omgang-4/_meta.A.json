@@ -1,0 +1,138 @@
+{
+  "beratta-om-dig-sjalv": {
+    "title": "Berätta om dig själv – hur du bygger svaret på intervjun",
+    "summary": "Vad frågan egentligen prövar, hur du bygger ett svar på en till två minuter, och vad du kan hoppa över.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "berätta om dig själv", "intervju"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "varfor-ska-vi-anstalla-dig",
+      "intervju-forberedelser",
+      "styrkor-svagheter-intervju",
+      "under-intervjun-tips"
+    ],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Skriv ner var du står nu i en mening",
+      "Lista vägen dit i högst tre punkter",
+      "Formulera varför du söker just den här tjänsten",
+      "Läs svaret högt och ta tid",
+      "Korta svaret till högst två minuter",
+      "Öva svaret muntligt i intervjusimulatorn"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva svaret muntligt", "type": "primary" },
+      { "href": "/knowledge-base/article/intervju-forberedelser", "label": "Förbered hela intervjun", "type": "secondary" }
+    ]
+  },
+  "varfor-ska-vi-anstalla-dig": {
+    "title": "Varför ska vi anställa dig? Så svarar du utan att skryta",
+    "summary": "Vad frågan egentligen handlar om, en modell för svaret, och hur du undviker att jämföra dig med okända sökande.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "anställningsintervju", "styrkor"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "beratta-om-dig-sjalv",
+      "styrkor-svagheter-intervju",
+      "kompetensinventering-guide",
+      "intervju-forberedelser"
+    ],
+    "related_tools": ["/interview-simulator", "/skills-gap-analysis"],
+    "checklist": [
+      "Läs annonsen igen och plocka ut de viktigaste kraven",
+      "Hitta ett konkret exempel för varje krav",
+      "Formulera vad exemplet gav för resultat",
+      "Undvik jämförelser med andra sökande",
+      "Öva svaret högt innan intervjun"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva svaret muntligt", "type": "primary" },
+      { "href": "/skills-gap-analysis", "label": "Kartlägg din matchning mot rollen", "type": "secondary" }
+    ]
+  },
+  "varfor-slutade-du-pa-forra-jobbet": {
+    "title": "Varför slutade du på förra jobbet – så svarar du ärligt",
+    "summary": "Hur du berättar sant om uppsägning, konflikt eller sjukskrivning utan att svartmåla, och vad du inte är skyldig att uppge.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "uppsägning", "sjukskrivning"],
+    "difficulty": "medium",
+    "energy_level": "high",
+    "related_article_slugs": [
+      "referenssamtal-guide",
+      "diskriminering-jobbsokning",
+      "arbetsgivarintyg-och-betyg",
+      "tillbaka-till-jobb-efter-sjukskrivning"
+    ],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Formulera en kort, saklig mening om vad som hände",
+      "Ta bort detaljer du inte vill dela",
+      "Undvik att svartmåla tidigare chef eller kollegor",
+      "Lägg till en mening om vad du söker framåt",
+      "Öva att säga svaret lugnt"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva ditt svar lugnt", "type": "primary" },
+      { "href": "/knowledge-base/article/diskriminering-jobbsokning", "label": "Läs om dina rättigheter", "type": "secondary" }
+    ]
+  },
+  "fragor-att-stalla-till-arbetsgivaren": {
+    "title": "Frågor att ställa till arbetsgivaren på en intervju",
+    "summary": "Vilka frågor som visar att du läst annonsen, hur du frågar om anpassningar utan att hamna i underläge, och vad du sparar till senare.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "frågor till arbetsgivaren", "anpassningar"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "intervju-forberedelser",
+      "under-intervjun-tips",
+      "lonekrav-i-ansokan",
+      "anpassningar-arbetsplatsen"
+    ],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Läs annonsen igen kvällen före intervjun",
+      "Skriv ner tre till fem frågor byggda på annonsen",
+      "Formulera frågor om anpassningar rakt och tryggt",
+      "Stryk frågor som redan besvarats under samtalet",
+      "Ha frågorna redo på papper eller i telefonen"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva att ställa dina frågor", "type": "primary" },
+      { "href": "/knowledge-base/article/intervju-forberedelser", "label": "Förbered hela intervjun", "type": "secondary" }
+    ]
+  },
+  "lonekrav-i-ansokan": {
+    "title": "Löneanspråk i ansökan – så skriver du det före förhandlingen",
+    "summary": "Vad fältet används till, hur du hittar ett rimligt löneläge, och hur du formulerar ett intervall utan att gissa.",
+    "category_key": "interview",
+    "subcategory": "loneanspraket",
+    "tags": ["löneanspråk", "ansökan", "lön"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "loneforhandling-guide",
+      "loneforhandling-tips",
+      "personlig-ekonomi-jobbsokning",
+      "personligt-brev"
+    ],
+    "related_tools": ["/salary", "/cover-letter"],
+    "checklist": [
+      "Kolla din fackliga lönestatistik",
+      "Kolla SCB:s lönestatistik för yrket",
+      "Använd Jobins löneläge som underlag",
+      "Skriv ett intervall, inte en exakt siffra",
+      "Håll formuleringen kort och saklig"
+    ],
+    "actions": [
+      { "href": "/salary", "label": "Kolla ditt löneläge", "type": "primary" },
+      { "href": "/cover-letter", "label": "Skriv din ansökan", "type": "secondary" }
+    ]
+  }
+}

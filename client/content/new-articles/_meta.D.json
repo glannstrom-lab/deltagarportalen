@@ -1,212 +1,132 @@
 {
-  "arbetsgivarintyg-och-betyg": {
-    "title": "Arbetsgivarintyg och tjänstgöringsbetyg – så får du dem",
-    "summary": "Vad arbetsgivarintyget och tjänstgöringsbetyget är till för, hur du begär dem, och vad du gör om en tidigare arbetsgivare inte svarar.",
-    "category_key": "employment-law",
-    "subcategory": "dokument-och-intyg",
-    "tags": [
-      "arbetsgivarintyg",
-      "tjänstgöringsbetyg",
-      "a-kassa",
-      "referenser"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "las-anstallningsavtal",
-      "referenser-guide",
-      "skatt-pa-lon-forsta-jobbet"
-    ],
-    "related_tools": [
-      "/job-search"
-    ],
-    "checklist": [
-      "Begär arbetsgivarintyg redan din sista arbetsdag",
-      "Be om tjänstgöringsbetyg i samma samtal om du vill ha det",
-      "Spara namn och kontaktuppgifter till någon som kan vara referens",
-      "Skicka begäran skriftligt om du inte får svar inom rimlig tid",
-      "Spara kopior av lönespecifikationer och anställningsavtal som backup",
-      "Kontakta facket om du är medlem och arbetsgivaren inte svarar"
-    ],
-    "actions": [
-      {
-        "href": "/job-search",
-        "label": "Sök vidare medan du väntar på intyget",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/las-anstallningsavtal",
-        "label": "Läs vad som står i ditt anställningsavtal",
-        "type": "secondary"
-      }
-    ]
-  },
-  "skatt-pa-lon-forsta-jobbet": {
-    "title": "Skatt på lönen – så läser du ditt första lönebesked",
-    "summary": "Brutto, netto och preliminärskatt förklarat, och varför skatten kan bli fel med flera arbetsgivare – och vad jämkning gör åt det.",
-    "category_key": "employment-law",
-    "subcategory": "skatt-och-lonebesked",
-    "tags": [
-      "skatt",
-      "lönebesked",
-      "jämkning",
-      "första jobbet"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "lon-och-formaner-guide",
-      "personlig-ekonomi-jobbsokning",
-      "arbetsgivarintyg-och-betyg"
-    ],
-    "related_tools": [
-      "/salary"
-    ],
-    "checklist": [
-      "Läs igenom hela lönebeskedet, inte bara nettobeloppet",
-      "Kontrollera att rätt skatteuppgift är registrerad hos arbetsgivaren",
-      "Logga in hos Skatteverket och se din egen skatteuppgift",
-      "Räkna med jämkning om du har flera arbetsgivare samtidigt",
-      "Spara lönebeskeden om du behöver jämföra dem senare"
-    ],
-    "actions": [
-      {
-        "href": "/salary",
-        "label": "Se löneläget för ditt yrke",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/lon-och-formaner-guide",
-        "label": "Läs om lön och förmåner",
-        "type": "secondary"
-      }
-    ]
-  },
-  "facket-ska-jag-ga-med": {
-    "title": "Ska jag gå med i facket? Facket och a-kassan är olika",
-    "summary": "Vad ett fackligt medlemskap ger dig jämfört med a-kassan, hur du hittar rätt förbund, och vad det kostar i praktiken.",
-    "category_key": "employment-law",
-    "subcategory": "fackligt-medlemskap",
-    "tags": [
-      "fackförbund",
-      "a-kassa",
-      "medlemskap",
-      "rättigheter"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "las-anstallningsavtal",
-      "provanstallning-guide",
-      "personlig-ekonomi-jobbsokning",
-      "arbetsgivarintyg-och-betyg"
-    ],
-    "related_tools": [
-      "/career"
-    ],
-    "checklist": [
-      "Ta reda på vilket förbund som organiserar din bransch",
-      "Jämför vad medlemskapet ger utöver a-kassan",
-      "Kontrollera om arbetsplatsen har kollektivavtal",
-      "Fråga om avgiften och vad som ingår innan du bestämmer dig",
-      "Ansök om medlemskap i facket och a-kassan separat om du vill ha båda"
-    ],
-    "actions": [
-      {
-        "href": "/career",
-        "label": "Fortsätt planera nästa steg i din karriär",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/las-anstallningsavtal",
-        "label": "Läs vad som står i ditt anställningsavtal",
-        "type": "secondary"
-      }
-    ]
-  },
-  "sjuklon-karens-och-vab": {
-    "title": "Sjuklön, karensavdrag och vab – när du är ny på jobbet",
-    "summary": "Vem som betalar när du blir sjuk eller vabbar, vad karensavdrag är, när läkarintyg krävs, och vem du ska ringa.",
-    "category_key": "employment-law",
-    "subcategory": "sjukdom-och-vab",
-    "tags": [
-      "sjuklön",
-      "karensavdrag",
-      "vab",
-      "sjukskrivning"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "lon-och-formaner-guide",
-      "forsta-90-dagarna",
-      "personlig-ekonomi-jobbsokning"
-    ],
-    "related_tools": [
-      "/wellness"
-    ],
-    "checklist": [
-      "Sjukanmäl dig till din arbetsgivare samma dag, inte till Försäkringskassan",
-      "Ta reda på vad som gäller för läkarintyg på din arbetsplats",
-      "Anmäl vab till Försäkringskassan, inte till arbetsgivaren",
-      "Meddela ändå arbetsgivaren att du är borta när du vabbar",
-      "Spara intyg om du behöver styrka något senare"
-    ],
-    "actions": [
-      {
-        "href": "/wellness",
-        "label": "Håll koll på ditt mående",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/lon-och-formaner-guide",
-        "label": "Läs om lön och förmåner",
-        "type": "secondary"
-      }
-    ]
-  },
-  "sommarjobb-och-extrajobb": {
-    "title": "Sommarjobb och extrajobb – vägen in när du saknar erfarenhet",
-    "summary": "När du bör söka, var jobben faktiskt finns, och hur en timanställning skiljer sig från en fast tjänst.",
-    "category_key": "job-search",
-    "subcategory": "sommarjobb-och-extrajobb",
-    "tags": [
-      "sommarjobb",
-      "extrajobb",
-      "timanställning",
-      "första jobbet"
-    ],
+  "jobba-som-vaktmastare": {
+    "title": "Jobba som vaktmästare – bredden i uppdraget",
+    "summary": "Skillnaden mellan vaktmästare och fastighetsskötare, vad en dag brukar innehålla, och hur ensamarbetet och den egna planeringen ser ut.",
+    "category_key": "job-market",
+    "subcategory": "fastighetsservice",
+    "tags": ["vaktmästare", "fastighetsskötare", "fastighetsservice"],
     "difficulty": "easy",
     "energy_level": "medium",
     "related_article_slugs": [
-      "sasongsjobb-guide",
+      "behorigheter-som-oppnar-jobb",
       "cv-utan-erfarenhet",
-      "anstallningsformer-guide",
-      "forsta-jobbet-efter-studier"
+      "jobba-som-lokalvardare",
+      "arbetsmiljo-guide"
     ],
-    "related_tools": [
-      "/job-search",
-      "/cv"
-    ],
+    "related_tools": ["/job-search"],
     "checklist": [
-      "Börja söka god tid innan säsongen du vill jobba",
-      "Sök brett: kommun, bemanning, handel och vård tar ofta in extra personal",
-      "Skriv ett kort CV även utan tidigare erfarenhet",
-      "Läs igenom vad timanställning innebär innan du tackar ja",
-      "Var tydlig med din tillgänglighet när du söker",
-      "Sköt ett extrajobb som om det vore riktigt – det kan bli det"
+      "Bestäm om bostadsbolag, skola, kyrka eller ett fastighetsserviceföretag lockar mest",
+      "Läs några annonser och notera vilka praktiska färdigheter som återkommer",
+      "Lyft fram praktisk problemlösning i ditt CV, även utan tidigare titel som vaktmästare",
+      "Fråga om hur ensamt eller schemalagt arbetet är på just den arbetsplatsen"
     ],
     "actions": [
-      {
-        "href": "/job-search",
-        "label": "Sök sommarjobb och extrajobb",
-        "type": "primary"
-      },
-      {
-        "href": "/cv",
-        "label": "Bygg ett CV utan tidigare erfarenhet",
-        "type": "secondary"
-      }
+      { "href": "/job-search", "label": "Sök vaktmästar- och fastighetsjobb", "type": "primary" },
+      { "href": "/knowledge-base/article/cv-utan-erfarenhet", "label": "Skriv ett CV utan formell erfarenhet", "type": "secondary" }
+    ]
+  },
+  "jobba-med-post-och-paket": {
+    "title": "Jobba med post och paket – brevbärare, terminal, budbil",
+    "summary": "Skillnaden mellan brevbärare, terminalarbete och budbil, tempot, körkortets roll, och varför det ofta är en väg in.",
+    "category_key": "job-market",
+    "subcategory": "transport-bud",
+    "tags": ["brevbärare", "budbil", "paketterminal", "transport"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "gig-ekonomin",
+      "jobba-som-lastbilschauffor",
+      "behorigheter-som-oppnar-jobb",
+      "jobba-som-taxiforare-eller-budbil"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om en fast rutt, terminalarbete eller rörlig budkörning passar dig bäst",
+      "Kontrollera vilket körkort du har och vad rollen faktiskt kräver",
+      "Fråga om anställningsform – fast anställd eller egen företagare mot uppdrag",
+      "Sök brett, både direkt hos bolagen och via bemanningsföretag"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb inom post och paket", "type": "primary" },
+      { "href": "/knowledge-base/article/gig-ekonomin", "label": "Läs om att köra som egen företagare", "type": "secondary" }
+    ]
+  },
+  "jobba-med-tradgard-och-parkskotsel": {
+    "title": "Jobba med trädgård och parkskötsel – säsongen styr",
+    "summary": "Vad säsongen betyder för anställningen, vilka certifikat som krävs för maskinerna, och vad kroppen möter i grönyteskötsel.",
+    "category_key": "job-market",
+    "subcategory": "gronytor-tradgard",
+    "tags": ["grönyteskötsel", "trädgårdsarbete", "parkskötsel", "säsongsarbete"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "sasongsjobb-guide",
+      "behorigheter-som-oppnar-jobb",
+      "arbetsmiljo-guide",
+      "praktik-som-vag-in"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om kommunen, ett bostadsbolag eller ett anläggningsföretag passar dig bäst",
+      "Kolla vilka certifikat, som röjsågs- eller motorsågskörkort, som efterfrågas",
+      "Fråga redan på intervjun vad som gäller för anställningen under vinterhalvåret",
+      "Fråga arbetsgivaren vilka moment och redskap som faktiskt ingår i jobbet"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb inom grönyteskötsel", "type": "primary" },
+      { "href": "/knowledge-base/article/sasongsjobb-guide", "label": "Läs om hur säsongsanställning fungerar", "type": "secondary" }
+    ]
+  },
+  "jobba-inom-atervinning-och-avfall": {
+    "title": "Jobba inom återvinning och avfall – ÅVC, sophämtning",
+    "summary": "Skillnaden mellan återvinningscentral, sophämtning och sortering, skyddsutrustningen, och vilka behörigheter som brukar krävas.",
+    "category_key": "job-market",
+    "subcategory": "atervinning-avfall",
+    "tags": ["återvinningscentral", "sophämtning", "avfallshantering", "sortering"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "behorigheter-som-oppnar-jobb",
+      "arbetsmiljo-guide",
+      "jobba-som-lastbilschauffor",
+      "jobba-inom-lager-och-logistik"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om kundmötet på en ÅVC, sophämtning eller sorteringsarbete passar dig bäst",
+      "Kontrollera vilket körkort och vilka certifikat den aktuella rollen kräver",
+      "Fråga om introduktionen till säkerhetsrutiner för farligt avfall",
+      "Fråga vilken skyddsutrustning arbetsgivaren tillhandahåller"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb inom återvinning och avfall", "type": "primary" },
+      { "href": "/knowledge-base/article/behorigheter-som-oppnar-jobb", "label": "Läs om truckkort och andra behörigheter", "type": "secondary" }
+    ]
+  },
+  "jobba-som-taxiforare-eller-budbil": {
+    "title": "Jobba som taxiförare eller med budbil – vad skiljer dem",
+    "summary": "Hur taxiförarlegitimationen fungerar, skillnaden mot budbil, hur ersättningen brukar vara upplagd, och tryggheten i yrket.",
+    "category_key": "job-market",
+    "subcategory": "persontransport",
+    "tags": ["taxiförare", "taxiförarlegitimation", "budbil", "persontransport"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "jobba-som-lastbilschauffor",
+      "behorigheter-som-oppnar-jobb",
+      "gig-ekonomin",
+      "anstallningsformer-guide"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om persontransport eller godstransport passar dig bäst",
+      "Ska du köra taxi – kontakta en trafikskola inriktad på taxiförarlegitimation",
+      "Kontrollera vilket körkort du har och om det räcker för budbilsjobb du är intresserad av",
+      "Fråga alltid om anställningsform och vad som gäller vid sjukdom eller lågt orderflöde"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb inom persontransport och bud", "type": "primary" },
+      { "href": "/knowledge-base/article/anstallningsformer-guide", "label": "Läs om skillnaden mellan anställd och egen företagare", "type": "secondary" }
     ]
   }
 }

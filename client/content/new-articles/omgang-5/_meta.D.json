@@ -1,0 +1,127 @@
+{
+  "jobba-inom-bygg": {
+    "title": "Jobba inom bygg – yrken, vägen in och vad kroppen möter",
+    "summary": "Vilka yrken bygg rymmer, hur du kommer in utan färdig utbildning, och varför ID06 och säkerhetsutbildningar öppnar dörren.",
+    "category_key": "job-market",
+    "subcategory": "bygg",
+    "tags": ["bygg", "lärling", "ID06", "byggbranschen"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "behorigheter-som-oppnar-jobb",
+      "praktik-som-vag-in",
+      "bemanningsforetag-guide"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Ta reda på om gymnasiet, vuxenutbildning eller lärlingsanställning passar din situation",
+      "Kolla vilka byggjobb som är öppna utan färdigt yrkesbevis",
+      "Fråga om ID06 krävs och hur du ordnar det",
+      "Fråga vilka lyft och moment som faktiskt ingår innan du tackar ja"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök byggjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/behorigheter-som-oppnar-jobb", "label": "Läs om ID06 och andra behörigheter", "type": "secondary" }
+    ]
+  },
+  "jobba-som-lastbilschauffor": {
+    "title": "Jobba som lastbilschaufför – körkort, YKB och ensamarbete",
+    "summary": "Skillnaden mellan distribution och fjärrtrafik, hur körkort och YKB hänger ihop, och vägen dit om du saknar körkortet.",
+    "category_key": "job-market",
+    "subcategory": "transport",
+    "tags": ["lastbilschaufför", "YKB", "körkort", "transport"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "behorigheter-som-oppnar-jobb",
+      "jobba-inom-lager-och-logistik",
+      "bemanningsforetag-guide"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om distribution eller fjärrtrafik passar din vardag bäst",
+      "Ta reda på vilken körkortsbehörighet du redan har",
+      "Fråga Arbetsförmedlingen om arbetsmarknadsutbildning är ett alternativ",
+      "Kolla om åkerier i din närhet bekostar YKB-utbildning"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök chaufförsjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/behorigheter-som-oppnar-jobb", "label": "Läs om YKB och andra behörigheter", "type": "secondary" }
+    ]
+  },
+  "jobba-inom-industri-och-produktion": {
+    "title": "Jobba inom industri och produktion – skift och vägen in",
+    "summary": "Vad industrijobb faktiskt innebär, hur skiftgången påverkar dygnet, och vägen från inhyrd till fast anställning.",
+    "category_key": "job-market",
+    "subcategory": "industri",
+    "tags": ["industri", "produktion", "skiftarbete", "bemanning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bemanningsforetag-guide",
+      "provanstallning-guide",
+      "behorigheter-som-oppnar-jobb"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Fundera på om dagtid, tvåskift eller treskift passar dig bäst",
+      "Ta reda på om jobbet går via bemanningsföretag eller är en direktanställning",
+      "Fråga om introduktion och säkerhetsutbildning innan du börjar",
+      "Fråga vad som krävs för att gå från inhyrd till fast anställning"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök industrijobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/bemanningsforetag-guide", "label": "Läs om hur bemanningsföretag fungerar", "type": "secondary" }
+    ]
+  },
+  "jobba-som-vaktare": {
+    "title": "Jobba som väktare – skillnaden mot ordningsvakt",
+    "summary": "Skillnaden mellan väktare och ordningsvakt, vad som prövas om dig, och varför konflikthantering är kärnan i jobbet.",
+    "category_key": "job-market",
+    "subcategory": "bevakning",
+    "tags": ["väktare", "ordningsvakt", "bevakning", "säkerhetsbranschen"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bakgrundskontroll-och-belastningsregistret",
+      "konflikthantering-arbetsplats",
+      "arbetspsykologiska-tester"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om väktar- eller ordningsvaktsrollen passar dig bäst",
+      "Ta reda på vilka bevakningsföretag som anställer i din närhet",
+      "Läs på om vad en bakgrundskontroll innebär innan du söker",
+      "Fråga om schemat, eftersom kvällar och helger är vanligast"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök bevakningsjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/bakgrundskontroll-och-belastningsregistret", "label": "Läs om bakgrundskontroll och belastningsregister", "type": "secondary" }
+    ]
+  },
+  "jobba-i-restaurang-och-kok": {
+    "title": "Jobba i restaurang och kök – tempo, tider och vägen in",
+    "summary": "Vad som skiljer kök, servis och snabbmat åt, hur tempot och schemat ser ut, och varför det ofta blir en första anställning.",
+    "category_key": "job-market",
+    "subcategory": "restaurang",
+    "tags": ["restaurang", "kök", "servis", "hygienutbildning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "behorigheter-som-oppnar-jobb",
+      "sasongsjobb-guide",
+      "sommarjobb-och-extrajobb"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Bestäm om kök, servis eller snabbmat passar dig bäst",
+      "Ta reda på om hygienutbildning krävs för tjänsten",
+      "Räkna med att kvällar och helger är de vanligaste passen",
+      "Sök brett och tidigt om det är ett säsongs- eller sommarjobb"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök restaurangjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/behorigheter-som-oppnar-jobb", "label": "Läs om hygienutbildning och andra behörigheter", "type": "secondary" }
+    ]
+  }
+}

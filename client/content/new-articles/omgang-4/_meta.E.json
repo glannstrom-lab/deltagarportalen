@@ -1,0 +1,99 @@
+{
+  "adhd-i-arbetslivet": {
+    "title": "ADHD i arbetslivet – det här brukar bli svårt, och lättare",
+    "summary": "Vad som ofta blir svårt med adhd på jobbet, vad som ofta blir en styrka, och vilka anpassningar som brukar fungera.",
+    "category_key": "accessibility",
+    "subcategory": "adhd",
+    "tags": ["adhd", "anpassningar", "arbetsliv", "koncentration"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["anpassningar-arbetsplats", "rattigheter-stod", "beratta-om-diagnos-eller-inte"],
+    "related_tools": ["/calendar", "/interview-simulator"],
+    "checklist": [
+      "Skriv ner vilka situationer som brukar bli svårast för dig i en arbetsdag",
+      "Testa en anpassning i taget, inte flera samtidigt",
+      "Fråga vad arbetsplatsen redan erbjuder innan du föreslår något nytt",
+      "Ge en ny rutin tid att sätta sig innan du dömer ut den",
+      "Öva formuleringen för vad du behöver, inte varför du behöver det"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Få struktur på tider och uppgifter", "type": "primary" },
+      { "href": "/interview-simulator", "label": "Öva på att berätta vad du behöver", "type": "secondary" }
+    ]
+  },
+  "autism-och-arbete": {
+    "title": "Autism och arbete – de dolda kraven i en rekrytering",
+    "summary": "Vilka dolda krav en rekrytering ofta har, vad du kan be om i intervjun, och vad som gör en arbetsplats hållbar över tid.",
+    "category_key": "accessibility",
+    "subcategory": "autism",
+    "tags": ["autism", "rekrytering", "intervju", "anpassningar"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["anpassningar-arbetsplats", "sius-stod-vid-introduktion", "beratta-om-diagnos-eller-inte", "rattigheter-stod"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva intervjun i din egen takt", "type": "primary" }
+    ]
+  },
+  "dyslexi-i-ansokan-och-pa-jobbet": {
+    "title": "Dyslexi i ansökan och på jobbet – rätt hjälpmedel",
+    "summary": "Hur du hanterar skrivandet i en ansökan, vilka hjälpmedel som finns, och vad du kan be om på arbetsplatsen med dyslexi.",
+    "category_key": "accessibility",
+    "subcategory": "dyslexi",
+    "tags": ["dyslexi", "hjälpmedel", "ansökan", "anpassningar"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["anpassningar-arbetsplats", "rattigheter-stod", "beratta-om-diagnos-eller-inte", "arbetspsykologiska-tester"],
+    "related_tools": ["/cv", "/interview-simulator"],
+    "checklist": [
+      "Skriv innehållet i ansökan först, städa språket sist",
+      "Låt talsyntes läsa upp texten innan du skickar den",
+      "Fråga i förväg om formen på eventuella tester",
+      "Be om en anpassning av testet om det behövs, till exempel mer tid",
+      "Lista vilka hjälpmedel du redan använder och vilka du vill testa"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg ett CV som är lätt att få rätt", "type": "primary" },
+      { "href": "/interview-simulator", "label": "Öva muntligt som komplement till skriften", "type": "secondary" }
+    ]
+  },
+  "beratta-om-diagnos-eller-inte": {
+    "title": "Berätta om diagnos eller inte – vad som faktiskt gäller",
+    "summary": "Du är inte skyldig att berätta om en diagnos. Så fungerar valet vid ansökan, intervju, anställning och gentemot Arbetsförmedlingen.",
+    "category_key": "accessibility",
+    "subcategory": "beratta-om-diagnos",
+    "tags": ["diagnos", "anpassningar", "diskrimineringslagen", "arbetsliv"],
+    "difficulty": "detailed",
+    "energy_level": "high",
+    "related_article_slugs": ["adhd-i-arbetslivet", "autism-och-arbete", "dyslexi-i-ansokan-och-pa-jobbet", "rattigheter-stod"],
+    "related_tools": ["/diary", "/interview-simulator"],
+    "checklist": [],
+    "actions": [
+      { "href": "/diary", "label": "Reflektera i din egen takt kring vad du vill dela", "type": "primary" },
+      { "href": "/interview-simulator", "label": "Öva formuleringen om du vill testa den högt", "type": "secondary" }
+    ]
+  },
+  "arbetsformagebedomning-vad-hander": {
+    "title": "Arbetsförmågebedömning – vad som händer, steg för steg",
+    "summary": "Vad en bedömning av arbetsförmåga går ut på, vem som beställer den, hur du förbereder dig, och vad du gör om resultatet känns fel.",
+    "category_key": "accessibility",
+    "subcategory": "arbetsformagebedomning",
+    "tags": ["arbetsförmåga", "bedömning", "Försäkringskassan", "Arbetsförmedlingen"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["lonebidrag-sa-fungerar-det", "arbetstraning-vad-innebar-det", "tillbaka-till-jobb-efter-sjukskrivning", "rattigheter-stod"],
+    "related_tools": ["/diary", "/calendar"],
+    "checklist": [
+      "Skriv ner hur en vanlig, inte en bra, arbetsdag ser ut för dig",
+      "Ta fram konkreta exempel på vad som blir svårt och när",
+      "Fråga vad bedömningen ska användas till innan den börjar",
+      "Fråga om du kan ta med en anhörig eller stödperson",
+      "Be om att få kommentera resultatet innan det används i ett beslut"
+    ],
+    "actions": [
+      { "href": "/diary", "label": "Samla exempel inför bedömningen", "type": "primary" },
+      { "href": "/calendar", "label": "Håll koll på möten och avstämningar", "type": "secondary" }
+    ]
+  }
+}

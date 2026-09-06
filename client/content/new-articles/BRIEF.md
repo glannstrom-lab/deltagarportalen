@@ -1,4 +1,4 @@
-# Brief: nya guider för Jobin (spår K, innehållsomgång 3)
+# Brief: nya guider för Jobin (spår K, innehållsomgång 6)
 
 Du skriver **publika guidesidor** som ska ranka på Google och leda arbetssökande till jobin.se.
 Sidorna prerenderas till statisk HTML under `https://www.jobin.se/guider/<slug>/` och visas
@@ -135,7 +135,7 @@ Fältregler:
 ### Godkända `href`/`related_tools`-värden (routes som finns i App.tsx)
 
 ```
-/cv                     CV-byggaren, 13 mallar, PDF-export
+/cv                     CV-byggaren, 12 mallar, PDF-export
 /cover-letter           Personligt brev
 /interview-simulator    Intervjusimulator med tal-till-text
 /skills-gap-analysis    Kompetensgap mot ett drömjobb

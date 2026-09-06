@@ -1,0 +1,129 @@
+{
+  "lattsvenska-provanstallning": {
+    "title": "Vad är en provanställning?",
+    "summary": "Provanställning är ett jobb på prov. Här får du veta vad det betyder, och vad du ska fråga om innan du skriver på.",
+    "category_key": "easy-swedish",
+    "subcategory": "anstallning",
+    "tags": ["provanställning", "anställningsavtal", "prövotid"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-anstallningsavtal", "provanstallning-guide", "lattsvenska-forsta-dagen-pa-jobbet"],
+    "related_tools": ["/career"],
+    "checklist": [
+      "Läs igenom anställningsavtalet noga",
+      "Fråga hur lång provanställningen är",
+      "Fråga vad som händer efter provanställningen",
+      "Spara en kopia av avtalet",
+      "Fråga facket om du är osäker"
+    ],
+    "actions": [
+      { "href": "/career", "label": "Fortsätt planera din karriär", "type": "primary" },
+      { "href": "/knowledge-base/article/lattsvenska-anstallningsavtal", "label": "Läs mer om anställningsavtal", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-facket": {
+    "title": "Vad är facket?",
+    "summary": "Facket är inte samma sak som a-kassan. Här får du veta vad facket är, och vad det kan hjälpa dig med.",
+    "category_key": "easy-swedish",
+    "subcategory": "fackligt-medlemskap",
+    "tags": ["facket", "fackförbund", "a-kassa"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-a-kassa", "facket-ska-jag-ga-med", "a-kassa-sa-fungerar-det"],
+    "related_tools": ["/career"],
+    "checklist": [
+      "Ta reda på vilket förbund som passar ditt jobb",
+      "Fråga vad medlemskapet kostar",
+      "Fråga vad facket kan hjälpa dig med",
+      "Bestäm om du vill gå med"
+    ],
+    "actions": [
+      { "href": "/career", "label": "Fortsätt planera din karriär", "type": "primary" },
+      { "href": "/knowledge-base/article/lattsvenska-a-kassa", "label": "Läs om a-kassan", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-arbetsmiljo": {
+    "title": "Vad är arbetsmiljö?",
+    "summary": "Chefen har ansvar för att du är trygg på jobbet. Här får du veta vad du gör om något känns fel eller farligt.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsmiljo",
+    "tags": ["arbetsmiljö", "skyddsombud", "säkerhet på jobbet"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-nar-du-blir-sjuk", "rattigheter-stod", "lattsvenska-diskriminering"],
+    "related_tools": ["/wellness"],
+    "checklist": [
+      "Tänk efter hur du har det på jobbet",
+      "Ta reda på vem som är skyddsombud",
+      "Säg till chefen om något känns fel",
+      "Kontakta Arbetsmiljöverket om inget händer"
+    ],
+    "actions": [
+      { "href": "/wellness", "label": "Håll koll på hur du mår", "type": "primary" },
+      { "href": "/externa-resurser", "label": "Hitta fler bra länkar", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-semester": {
+    "title": "Vad är semester?",
+    "summary": "Semester är ledig tid du tjänar in när du jobbar. Här får du veta hur du ansöker, och vad som gäller för dig.",
+    "category_key": "easy-swedish",
+    "subcategory": "semester",
+    "tags": ["semester", "semesterlön", "ledighet"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-anstallningsavtal", "lattsvenska-lon-och-skatt", "lattsvenska-forsta-dagen-pa-jobbet"],
+    "related_tools": ["/wellness"],
+    "checklist": [
+      "Fråga chefen hur semester fungerar hos er",
+      "Berätta i god tid vilka dagar du vill vara ledig",
+      "Fråga vad som gäller om du är ny",
+      "Spara papper om din semesterlön"
+    ],
+    "actions": [
+      { "href": "/wellness", "label": "Håll koll på din energi", "type": "primary" },
+      { "href": "/knowledge-base/article/lattsvenska-anstallningsavtal", "label": "Läs mer om ditt anställningsavtal", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-forsta-dagen-pa-jobbet": {
+    "title": "Vad händer din första dag på jobbet?",
+    "summary": "Din första dag på ett nytt jobb kan kännas nervöst. Här får du veta vad som brukar hända, och vad du kan ta med.",
+    "category_key": "easy-swedish",
+    "subcategory": "nytt-jobb",
+    "tags": ["första dagen", "nytt jobb", "nervös"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-provanstallning", "lattsvenska-forsta-jobbet", "lattsvenska-anstallningsavtal"],
+    "related_tools": ["/wellness"],
+    "checklist": [
+      "Ta reda på var du ska vara, och när",
+      "Lägg fram det du ska ta med kvällen innan",
+      "Skriv ner namn på personer du möter",
+      "Fråga om det som känns oklart"
+    ],
+    "actions": [
+      { "href": "/wellness", "label": "Håll koll på hur du mår", "type": "primary" },
+      { "href": "/knowledge-base/article/lattsvenska-provanstallning", "label": "Läs om provanställning", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-diskriminering": {
+    "title": "Vad är diskriminering?",
+    "summary": "Diskriminering betyder att du behandlas orättvist. Det är förbjudet. Här får du veta vem du kan berätta för.",
+    "category_key": "easy-swedish",
+    "subcategory": "diskriminering",
+    "tags": ["diskriminering", "DO", "rättigheter"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["diskriminering-jobbsokning", "rattigheter-stod", "lattsvenska-arbetsmiljo"],
+    "related_tools": ["/career"],
+    "checklist": [
+      "Skriv ner vad som hänt, och när",
+      "Berätta för någon du litar på",
+      "Kontakta facket om du är medlem",
+      "Kontakta DO om du vill gå vidare"
+    ],
+    "actions": [
+      { "href": "/career", "label": "Fortsätt planera din karriär", "type": "primary" },
+      { "href": "/externa-resurser", "label": "Hitta fler bra länkar", "type": "secondary" }
+    ]
+  }
+}

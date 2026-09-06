@@ -1,207 +1,105 @@
 {
-  "a-kassa-sa-fungerar-det": {
-    "title": "Så fungerar a-kassan – medlemskap och villkor",
-    "summary": "Skillnaden mellan a-kassa och fack, varför medlemskapet måste finnas innan du blir arbetslös, och vad som prövas när du ansöker.",
-    "category_key": "employment-law",
-    "subcategory": "a-kassa",
-    "tags": [
-      "a-kassa",
-      "arbetslöshetsförsäkring",
-      "medlemskap",
-      "ersättning"
-    ],
+  "soka-jobb-efter-avtjanat-straff": {
+    "title": "Söka jobb efter avtjänat straff – vad som gäller",
+    "summary": "Vad en arbetsgivare får fråga om, vilket stöd Kriminalvården och Arbetsförmedlingen ger, och hur du hanterar luckan i CV:t.",
+    "category_key": "job-search",
+    "subcategory": "atergang-till-arbetslivet",
+    "tags": ["belastningsregister", "Kriminalvården", "frivård", "luckor i CV", "nystartsjobb"],
     "difficulty": "medium",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "personlig-ekonomi-jobbsokning",
-      "lattsvenska-arbetsformedlingen",
-      "aktivitetsrapport-guide",
-      "skriva-in-dig-arbetsformedlingen"
-    ],
-    "related_tools": [
-      "/calendar"
-    ],
+    "energy_level": "high",
+    "related_article_slugs": ["bakgrundskontroll-och-belastningsregistret", "luckor-i-cv", "nystartsjobb-guide", "motivation-langsiktig"],
+    "related_tools": ["/job-search", "/cv"],
     "checklist": [
-      "Kontrollera om du redan är medlem i en a-kassa",
-      "Gå med i en a-kassa innan du blir arbetslös, inte efter",
-      "Spara underlag som visar din anställningstid",
-      "Skriv in dig hos Arbetsförmedlingen din första dag utan jobb",
-      "Kontakta din a-kassa för att få veta vad som gäller just dig"
+      "Skriv in dig hos Arbetsförmedlingen",
+      "Fråga din handläggare om Krami finns som insats där du bor",
+      "Ta kontakt med frivården om du har övervakning",
+      "Förbered ett kort svar på frågan om luckan i CV:t",
+      "Undersök Samhall och arbetsintegrerande sociala företag som vägar in"
     ],
     "actions": [
-      {
-        "href": "/calendar",
-        "label": "Sätt påminnelser för viktiga datum",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/aktivitetsrapport-guide",
-        "label": "Läs om aktivitetsrapporten",
-        "type": "secondary"
-      }
+      { "href": "/job-search", "label": "Sök jobb som passar dig", "type": "primary" },
+      { "href": "/cv", "label": "Skriv om luckan i ditt CV", "type": "secondary" }
     ]
   },
-  "aktivitetsrapport-guide": {
-    "title": "Aktivitetsrapport till Arbetsförmedlingen – så gör du",
-    "summary": "Vad som ska stå i aktivitetsrapporten, när den ska in och vad som händer om du missar den.",
-    "category_key": "job-search",
-    "subcategory": "arbetsformedlingen",
-    "tags": [
-      "aktivitetsrapport",
-      "Arbetsförmedlingen",
-      "ersättning"
-    ],
+  "arbetsintegrerande-sociala-foretag": {
+    "title": "Arbetsintegrerande sociala företag – vad är ASF?",
+    "summary": "Vad ett ASF är, hur det skiljer sig från Samhall och en vanlig arbetsgivare, och hur du kommer i kontakt med ett.",
+    "category_key": "job-market",
+    "subcategory": "sociala-foretag",
+    "tags": ["ASF", "sociala företag", "Samhall", "arbetsmarknad"],
     "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "ansokningsstrategi",
-      "struktur-jobbsokning",
-      "skriva-in-dig-arbetsformedlingen"
-    ],
-    "related_tools": [
-      "/applications"
-    ],
-    "checklist": [
-      "Skriv ner varje sökt jobb samma dag du söker det",
-      "Anteckna företag, tjänst och datum för varje aktivitet",
-      "Kolla ditt rapporteringsfönster på Mina sidor",
-      "Lämna rapporten inom fönstret, varje månad",
-      "Hör av dig till Arbetsförmedlingen i förväg om du inte hinner"
-    ],
+    "energy_level": "medium",
+    "related_article_slugs": ["skyddat-arbete-och-samhall", "praktik-som-vag-in", "lonebidrag-sa-fungerar-det", "arbetstraning-vad-innebar-det"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
     "actions": [
-      {
-        "href": "/applications",
-        "label": "Håll koll på dina ansökningar",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
-        "label": "Förstå hur a-kassan fungerar",
-        "type": "secondary"
-      }
+      { "href": "/job-search", "label": "Sök jobb, ASF inräknat", "type": "primary" }
     ]
   },
-  "rusta-och-matcha": {
-    "title": "Rusta och matcha – så väljer du leverantör, och så byter du",
-    "summary": "Vad Rusta och matcha är, att du väljer leverantör själv, vilka frågor du bör ställa och vad du gör när det inte fungerar.",
-    "category_key": "job-search",
-    "subcategory": "arbetsformedlingen",
-    "tags": [
-      "Rusta och matcha",
-      "Arbetsförmedlingen",
-      "leverantör",
-      "stöd"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "bemanningsforetag-guide",
-      "kompetensutveckling-guide",
-      "skriva-in-dig-arbetsformedlingen"
-    ],
-    "related_tools": [
-      "/skills-gap-analysis"
-    ],
-    "checklist": [
-      "Jämför minst två leverantörer i ditt område",
-      "Fråga hur ofta ni träffas och på vilket sätt",
-      "Fråga vilken erfarenhet leverantören har av din situation",
-      "Skriv ner vad som inte fungerar om du överväger att byta",
-      "Kontakta din handläggare för att begära byte vid behov"
-    ],
-    "actions": [
-      {
-        "href": "/skills-gap-analysis",
-        "label": "Kartlägg vad du behöver utveckla",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/skriva-in-dig-arbetsformedlingen",
-        "label": "Läs om inskrivningen",
-        "type": "secondary"
-      }
-    ]
-  },
-  "skriva-in-dig-arbetsformedlingen": {
-    "title": "Skriva in dig på Arbetsförmedlingen – så går det till",
-    "summary": "När du ska skriva in dig, vad som händer vid inskrivningen, vad planeringssamtalet är och hur du förbereder dig.",
-    "category_key": "job-search",
-    "subcategory": "arbetsformedlingen",
-    "tags": [
-      "Arbetsförmedlingen",
-      "inskrivning",
-      "planeringssamtal"
-    ],
-    "difficulty": "easy",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "lattsvenska-arbetsformedlingen",
-      "forsta-veckan-checklista",
-      "a-kassa-sa-fungerar-det",
-      "rusta-och-matcha"
-    ],
-    "related_tools": [
-      "/cv"
-    ],
-    "checklist": [
-      "Skriv in dig samma dag som du blir arbetslös",
-      "Ha ett CV-utkast redo, det behöver inte vara klart",
-      "Lista din utbildning och tidigare anställningar",
-      "Tänk igenom vad du vill jobba med, eller vilka branscher som lockar",
-      "Skriv ner frågor du vill ställa på planeringssamtalet"
-    ],
-    "actions": [
-      {
-        "href": "/cv",
-        "label": "Bygg ditt CV innan mötet",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/rusta-och-matcha",
-        "label": "Läs om Rusta och matcha",
-        "type": "secondary"
-      }
-    ]
-  },
-  "ersattning-under-program": {
-    "title": "Aktivitetsstöd – vem betalar under ett program?",
-    "summary": "Arbetsförmedlingen beslutar om programmet, Försäkringskassan betalar ersättningen. Så håller du isär de två.",
-    "category_key": "employment-law",
-    "subcategory": "forsakringskassan",
-    "tags": [
-      "aktivitetsstöd",
-      "utvecklingsersättning",
-      "Försäkringskassan",
-      "program"
-    ],
+  "tillbaka-till-arbete-efter-beroende": {
+    "title": "Tillbaka till arbete efter ett beroende – så gör du",
+    "summary": "Vad du behöver ha på plats innan, hur du hanterar luckan i CV:t och drogtester, och var stödet finns.",
+    "category_key": "accessibility",
+    "subcategory": "atergang-till-arbetslivet",
+    "tags": ["beroende", "arbetsträning", "1177", "beroendemottagning", "anpassningar"],
     "difficulty": "medium",
-    "energy_level": "low",
-    "related_article_slugs": [
-      "personlig-ekonomi-jobbsokning",
-      "a-kassa-sa-fungerar-det",
-      "rusta-och-matcha"
-    ],
-    "related_tools": [
-      "/calendar"
-    ],
+    "energy_level": "high",
+    "related_article_slugs": ["arbetstraning-vad-innebar-det", "rattigheter-stod", "anpassningar-arbetsplats", "motivation-langsiktig"],
+    "related_tools": ["/cv", "/wellness"],
     "checklist": [
-      "Ansök om ersättning hos Försäkringskassan, inte bara Arbetsförmedlingen",
-      "Ta reda på om du ska ha aktivitetsstöd eller utvecklingsersättning",
-      "Rapportera din närvaro till Försäkringskassan enligt deras rutin",
-      "Sätt en påminnelse så du inte missar rapporteringen",
-      "Logga in hos Försäkringskassan och kolla status om utbetalningen uteblir"
+      "Boka ett samtal med din handläggare om tempo och stöd",
+      "Håll kontakten med kommunens beroendemottagning eller 1177",
+      "Bestäm i förväg hur mycket du vill berätta om luckan",
+      "Fråga om arbetsträning eller praktik som första steg",
+      "Ta upp eventuella anpassningar tidigt med arbetsgivaren"
     ],
     "actions": [
-      {
-        "href": "/calendar",
-        "label": "Sätt påminnelser för rapportering",
-        "type": "primary"
-      },
-      {
-        "href": "/knowledge-base/article/a-kassa-sa-fungerar-det",
-        "label": "Förstå hur a-kassan fungerar",
-        "type": "secondary"
-      }
+      { "href": "/cv", "label": "Skriv om åren i ditt CV", "type": "primary" },
+      { "href": "/wellness", "label": "Följ ditt mående på vägen tillbaka", "type": "secondary" }
+    ]
+  },
+  "efter-manga-ar-utan-jobb": {
+    "title": "Efter många år utan jobb – så går du vidare",
+    "summary": "Hur du bygger upp dygnsrytm och ork igen, beskriver åren som gått, och varför ett stegvis upplägg kan vara klokt.",
+    "category_key": "accessibility",
+    "subcategory": "atergang-till-arbetslivet",
+    "tags": ["långtidsarbetslöshet", "arbetsträning", "praktik", "dygnsrytm", "jobb- och utvecklingsgarantin"],
+    "difficulty": "medium",
+    "energy_level": "high",
+    "related_article_slugs": ["arbetstraning-vad-innebar-det", "praktik-som-vag-in", "jobb-och-utvecklingsgarantin", "luckor-i-cv"],
+    "related_tools": ["/cv", "/calendar"],
+    "checklist": [
+      "Öva på en fast dygnsrytm innan jobbet börjar",
+      "Boka möte med din handläggare om arbetsträning eller praktik",
+      "Beskriv åren kort och sakligt, utan att överförklara",
+      "Välj ett jobb som är lagom stort från början",
+      "Trappa upp gradvis mot fler timmar eller mer ansvar"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Beskriv åren på ditt sätt", "type": "primary" },
+      { "href": "/calendar", "label": "Bygg upp en ny rutin steg för steg", "type": "secondary" }
+    ]
+  },
+  "utan-fast-adress-och-soka-jobb": {
+    "title": "Utan fast adress och söker jobb – så löser du posten",
+    "summary": "Hur du tar emot post, vad folkbokföringen kräver utan egen bostad, och var du kan få hjälp med det praktiska.",
+    "category_key": "job-search",
+    "subcategory": "myndighetskontakt",
+    "tags": ["folkbokföring", "hemlöshet", "särskild postadress", "socialtjänst", "Skatteverket"],
+    "difficulty": "medium",
+    "energy_level": "high",
+    "related_article_slugs": ["skriva-in-dig-arbetsformedlingen", "aktivitetsrapport-guide", "forsorjningsstod-nar-pengarna-tar-slut", "rattigheter-stod"],
+    "related_tools": ["/job-search", "/externa-resurser"],
+    "checklist": [
+      "Kontakta Skatteverket om du är osäker på din folkbokföring",
+      "Ordna en c/o-adress eller anmäl särskild postadress",
+      "Kontakta kommunens socialtjänst för hjälp med boendet",
+      "Skriv in dig hos Arbetsförmedlingen och uppge hur du nås",
+      "Berätta för din handläggare om din boendesituation"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt söka jobb", "type": "primary" },
+      { "href": "/externa-resurser", "label": "Hitta stöd och resurser", "type": "secondary" }
     ]
   }
 }

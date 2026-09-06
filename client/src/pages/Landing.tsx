@@ -508,7 +508,7 @@ export default function Landing() {
               <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.executive.bullet1', 'GDPR + EU-data + BankID')}
+                  {t('landing.audience.executive.bullet1', 'GDPR + EU-data + krypterad lagring')}
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
@@ -526,6 +526,26 @@ export default function Landing() {
                 {t('landing.audience.executive.cta', 'Boka 30 min demo')}
                 <ArrowRight className="w-4 h-4" />
               </a>
+              {/*
+                K7/K16: egna landningssidor för de två köparrollerna — inte
+                bara ett scroll-mål på den här sidan. Vanlig <a>, inte <Link>,
+                av samma skäl som guide-länken i jobbsökarkortet ovan: det är
+                prerenderade statiska sidor utanför appens HashRouter.
+              */}
+              <div className="mt-3 flex flex-col gap-1 text-sm text-[var(--info-text)]">
+                <a
+                  href="/for-arbetsmarknadsenheter/"
+                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
+                >
+                  {t('landing.audience.executive.forMunicipality', 'Jobin för arbetsmarknadsenheter')}
+                </a>
+                <a
+                  href="/for-rusta-och-matcha/"
+                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
+                >
+                  {t('landing.audience.executive.forRustaOchMatcha', 'Jobin för Rusta och matcha-leverantörer')}
+                </a>
+              </div>
             </div>
           </div>
         </div>

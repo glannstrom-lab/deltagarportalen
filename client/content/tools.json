@@ -1,5 +1,5 @@
 {
-  "_kommentar": "Innehåll för de publika verktygssidorna under /verktyg/ (spår K6, 2026-08-05). VARJE PÅSTÅENDE HÄR SKA VERIFIERAS MOT KODEN INNAN DET SKRIVS — och den här raden påstod själv tretton CV-mallar i tolv dagar medan koden hade tolv (rättat 2026-08-17, BF/KO1). Räkna, skriv inte av. Källan för mallarna är TEMPLATES i src/pages/CVBuilder.tsx, alltså det användaren faktiskt kan välja — inte antalet filer i src/components/cv/templates/. 12 CV-mallar, PDF via api/cv-pdf.js (headless Chromium), tal-till-text via SpeechRecognition i InterviewSimulator.tsx, AI-funktionerna cv-writing/cv-jobbmatchning/personligt-brev/intervju-simulator/kompetensgap/linkedin-optimering i api/ai.js. Lägg inte till ett påstående här utan att först verifiera det i koden. Inga användarsiffror, inga omdömen, inga betyg — vi hittar inte på social bevisning.",
+  "_kommentar": "Innehåll för de publika verktygssidorna under /verktyg/ (spår K6, 2026-08-05). VARJE PÅSTÅENDE HÄR SKA VERIFIERAS MOT KODEN INNAN DET SKRIVS — och den här raden påstod själv tretton CV-mallar i tolv dagar medan koden hade tolv (rättat 2026-08-17, BF/KO1). Räkna, skriv inte av. Källan för mallarna är TEMPLATES i src/pages/CVBuilder.tsx, alltså det användaren faktiskt kan välja — inte antalet filer i src/components/cv/templates/. 12 CV-mallar, PDF via api/cv-pdf.js (headless Chromium), tal-till-text via SpeechRecognition i InterviewSimulator.tsx, AI-funktionerna cv-writing/cv-jobbmatchning/personligt-brev/intervju-simulator/kompetensgap/linkedin-optimering i api/ai.js. Lägg inte till ett påstående här utan att först verifiera det i koden. Inga användarsiffror, inga omdömen, inga betyg — vi hittar inte på social bevisning. Fyra verktyg till lades 2026-09-06 (K6, omgång 2), samma regel: yrkestest (services/interestGuideData.ts — 34 frågor i allQuestions, 165 yrken i occupations, räknat maskinellt samma dag; se pages/interest-guide/__tests__/intresseguide-arlighet.test.ts för varför sidan inte får kalla det vetenskapligt eller ange en matchningsprocent), linkedin (LinkedInOptimizer.tsx TECKENGRANS: rubrik 220/om 2600/inlägg 3000/kontaktförfrågan 200 tecken, samma tal i api/ai.js TECKENTAK; checklistan PROFILDELAR har 4 delar), spontanansokan (route är /spontanansökan med svenskt tecken — matchar App.tsx; Bolagsverket-uppslaget är riktig registerdata, AI-sökningen i services/aiCompanySearchApi.ts går via perplexity/sonar i supabase/functions/ai-company-search — en webbsökning, inte registerdata; SPONTANEOUS_STATUSES har 8 statusar), lon (data/lonedata.ts: 12 yrkesområden, 7 regioner, 4 erfarenhetsnivåer, ALLA grova uppskattningar utan källa sedan 2026-03-18 — sidan får inte kalla dem lönestatistik; lib/skatt.ts räknar nettolön enligt skattereglernas struktur, INGEN skattesats eller lönesumma får stå i den här filens texter eftersom de ändras). Sex verktyg till lades 2026-09-06 (K6, omgång 3), samma regel — och en av dem, ny-i-sverige, är MEDVETET omscopad, se dess egen kommentar: jobbsok (route /job-search, JobSearch.tsx — sökning/filter/spara mot AF:s platsbank; jobbevakningens mejlutskick är INTE igång, det säger appens egen sträng i18n/locales/sv.json:2463 `jobSearch.alertsTab.emailNotDelivered` rakt ut trots att vercel.json numera HAR en cron mot /api/job-alerts?action=check — texten här får aldrig lova mejl förrän den strängen ändras), ansokningar (route /applications — 11 statusar i APPLICATION_STATUS_CONFIG, src/types/application.types.ts, vaktat maskinellt nedan; ApplicationsActivityReport.tsx sammanställer underlag till Arbetsförmedlingens aktivitetsrapport men SKICKAR INGENTING dit, det säger komponentens egen docstring), personligt-varumarke (route /personal-brand — 4 flikar/delar i RAD_INDEX, src/pages/PersonalBrand.tsx, vaktat maskinellt nedan; PitchTab har AI-återkoppling på användarens EGEN text, ingen färdigskriven pitch), utbildning (route /education — datan kommer från JobEd Connect via services/educationApi.ts, docstringen i Education.tsx slår själv fast att \"Susa-navet\" ALDRIG integrerats trots en tidigare felaktig kommentar; utbildningsformerna yrkeshögskola/högskola/komvux/folkhögskola finns i EducationType), natverk (route /nätverk, obs SVENSKT tecken — matchar App.tsx `path=\"nätverk\"`; NetworkTab.tsx sparar kontakter+event i molnet via careerApi och har en AI NetworkingAssistant), ny-i-sverige (route /international — OMSCOPAD 2026-08-20, se International.tsx:s egen kommentar: sidan handlar om validering av utländsk utbildning/legitimation, första tiden och svenska för den som REDAN BOR i Sverige, INTE om att söka jobb utomlands eller om visum; anger med flit inga belopp eller tider om uppehålls-/arbetstillstånd, se ValideringTab.tsx:s kommentar om varför). Tre verktyg till lades 2026-09-06 (K6, omgång 4), samma regel — och ai-coach är den mest känsliga hittills eftersom den beskriver en AI-funktion för en publik som inte skapat konto: ai-coach (route /ai-team — 5 agenter i AgentSelector.tsx `agents`-arrayen, src/components/ai-team/AgentSelector.tsx, vaktat maskinellt nedan; `ai-team-chat` i api/ai.js är den ENDA strömmande AI-funktionen och går genom `callAIStream()`; REGELVERKSREGEL i api/ai.js läggs på ALLA fem agenter sedan 2026-08-23 och förbjuder agenten att ange belopp/procent/villkor om a-kassa, sjukpenning eller LAS ur minnet; funktionen ligger i ART9_FUNCTIONS i api/ai.js och är fail closed — kräver `profiles.ai_consent_at` och nekar om uppslaget mot databasen misslyckas, och `profiles.ai_enabled` (av/på i Inställningar) stänger av den utan att samtycket försvinner; sidan påstår INGET om juridisk/medicinsk rådgivning eller kännedom om användarens myndighetsärende, för det stämmer inte), maende (route /wellness — 4 flikar i wellnessTabDefs, src/data/wellnessTabs.ts, vaktat maskinellt nedan: Hälsa/Rutiner/Kognitiv träning/Akut stöd; måendeloggning går genom `WellnessConsentGate` och kräver `profiles.wellness_consent_at`, ETT EGET samtycke skilt från AI-samtycket; `mood_logs` läses/skrivs alltid filtrerat på `user_id` i services/diaryApi.ts, alltså privat per konto; sidan ger inga medicinska råd och hänvisar till 1177.se, se src/pages/wellness/CrisisTab.tsx för de riktiga kris­numren som redan visas via mallens egen krisstöd-sektion på varje publik sida), ovningar (route /exercises — 119 övningar i 10 kategorier räknat i src/data/exercises.ts, vaktat maskinellt nedan; svaren sparas per användare i `exercise_answers` via src/pages/Exercises.tsx, går att fortsätta senare; övningarna är reflektionsfrågor utan facit, ingen poäng eller diagnos).",
   "verktyg": [
     {
       "slug": "cv",
@@ -107,6 +107,351 @@
         ["Kostar det något?", "Nej."]
       ],
       "guider": ["kompetensinventering-guide", "karriarplanering-guide", "upptack-dina-styrkor"]
+    },
+    {
+      "slug": "yrkestest",
+      "route": "/interest-guide",
+      "h1": "Vilket yrke passar dig?",
+      "title": "Yrkestest — hitta ett yrke som passar dig",
+      "description": "Svara på frågor om vad som intresserar dig och få en lista över yrken att utforska. Inget facit, ingen matchningsprocent. Gratis och på svenska.",
+      "lead": "Ett yrkestest utan rätta svar. Du svarar på frågor om vad som intresserar dig och hur du fungerar, och får en lista över yrken att utforska — inte ett facit.",
+      "steg": [
+        ["Svara på frågorna", "34 frågor om dina intressen, din personlighet och dina förutsättningar. Ingen tidsgräns — du kan spara och fortsätta senare."],
+        ["Se din profil", "En sammanställning av vad du svarat. Ingen diagnos, inget personlighetsutlåtande."],
+        ["Utforska yrken som matchar", "165 yrken rangordnade efter dina svar, med en förklaring till varför varje yrke hamnar där det gör."]
+      ],
+      "punkter": [
+        "34 frågor om intressen, personlighet och dina förutsättningar",
+        "165 yrken att utforska, med och utan högskolekrav",
+        "En förklaring till varje placering — inte bara en poäng",
+        "Historik, så du kan se hur svaren ändras över tid"
+      ],
+      "for": "Dig som inte vet var du ska börja, dig som funderar på att byta bana, och dig som vill se yrken du kanske inte tänkt på själv.",
+      "faq": [
+        ["Är det ett vetenskapligt test?", "Nej. Det är portalens eget verktyg och inte validerat som ett psykologiskt test. Se det som ett sätt att sätta ord på vad som intresserar dig — inte en diagnos."],
+        ["Får jag en matchningsprocent?", "Nej, du får en plats i listan och en förklaring till den. En procentsats hade gett ett falskt intryck av exakthet."],
+        ["Måste jag svara på alla frågor?", "Ja, annars vilar resultatet på ofullständigt underlag. Du kan spara och fortsätta när du orkar."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["hitta-ditt-drommjobb", "hitta-dina-varderingar", "personlighetstyper-arbete", "upptack-dina-styrkor"]
+    },
+    {
+      "slug": "linkedin",
+      "route": "/linkedin-optimizer",
+      "h1": "Gör din LinkedIn-profil lättare att hitta",
+      "title": "Optimera din LinkedIn-profil — gratis hjälp",
+      "description": "Få hjälp att skriva rubrik, om-avsnitt och inlägg för LinkedIn, och en checklista för resten av profilen. Gratis, på svenska.",
+      "lead": "En bra LinkedIn-profil är svår att skriva själv — det är för nära inpå. Här får du utkast att bygga vidare på, och en checklista för resten.",
+      "steg": [
+        ["Skriv en rubrik", "Tre förslag på rubrik, inom LinkedIns teckengräns, byggda på det du själv fyller i — aldrig påhittade titlar eller siffror."],
+        ["Fyll i Om-avsnittet", "Ett utkast till presentationstext att göra till din egen. Ju tunnare underlag, desto kortare text — hellre kort och sant än långt och löst."],
+        ["Gå igenom checklistan", "4 delar — rubrik, om, erfarenhet och rekommendationer — för det en AI-text inte kan fixa åt dig, som att be en tidigare kollega om en rekommendation."]
+      ],
+      "punkter": [
+        "Tre förslag på rubrik, inom 220 tecken",
+        "Om-avsnitt anpassat efter din bakgrund, inom 2 600 tecken",
+        "Utkast till inlägg (3 000 tecken) och kontaktförfrågningar (200 tecken)",
+        "En checklista i 4 delar för resten av profilen"
+      ],
+      "for": "Dig som vet vad du kan men inte hur profilen ska sammanfatta det, och dig som vill synas bättre för rekryterare utan att gissa dig fram.",
+      "faq": [
+        ["Skriver AI:n texten helt åt mig?", "Nej. Du får ett utkast byggt på dina egna uppgifter — aldrig påhittade titlar, arbetsgivare eller siffror. Gör om det till dina egna ord innan du lägger upp det."],
+        ["Hur långa får texterna vara?", "LinkedIn sätter gränserna: rubrik 220 tecken, om-avsnitt 2 600, inlägg 3 000 och en kontaktförfrågan 200. Verktyget håller sig inom dem."],
+        ["Vad är checklistan?", "En genomgång av det som inte handlar om text — som att be om rekommendationer eller beskriva erfarenheter konkret. 4 delar du bockar av i din egen takt."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["linkedin-optimering", "digital-narvaro-rensning", "personligt-varumarke", "natverksbyggande-guide"]
+    },
+    {
+      "slug": "spontanansokan",
+      "route": "/spontanansökan",
+      "h1": "Sök jobb som aldrig annonseras",
+      "title": "Spontanansökan — hitta och kontakta företag",
+      "description": "Hitta företag att kontakta, se riktiga uppgifter från Bolagsverket och håll koll på var i processen du är. Gratis, på svenska.",
+      "lead": "De flesta jobb annonseras aldrig. Här hittar du företag att kontakta, tar reda på vem de faktiskt är innan du hör av dig, och håller koll på vilka du redan kontaktat.",
+      "steg": [
+        ["Hitta företag", "Sök på ort och bransch, eller slå upp ett företag du redan känner till med organisationsnummer."],
+        ["Se vem de är", "Adress, bransch, juridisk form och status hämtat direkt från Bolagsverket — även om företaget är under avveckling eller konkurs, så du inte lägger tid på ett som inte finns längre."],
+        ["Håll koll på dina kontakter", "Spara företagen du vill kontakta och märk var i processen du är, från sparat till svar."]
+      ],
+      "punkter": [
+        "Sök på ort och bransch, eller slå upp ett bolag direkt med organisationsnummer",
+        "Riktiga registeruppgifter från Bolagsverket, inklusive årsredovisningar att ladda ner",
+        "8 statusar att märka varje företag med, från sparat till svar",
+        "Exportera din lista som CSV"
+      ],
+      "for": "Dig som redan sökt alla annonser du hittat, dig som vill jobba på ett specifikt företag, och dig som vill ha ordning på vilka du kontaktat och när.",
+      "faq": [
+        ["Hur hittar jag rätt organisationsnummer?", "Sök på företagets namn på till exempel allabolag.se, eller använd sökningen på ort och bransch i verktyget."],
+        ["Är uppgifterna om företaget riktiga?", "Adress, bransch, juridisk form och status hämtas direkt från Bolagsverket, Sveriges officiella företagsregister. Sökningen som hittar nya företag att kontakta bygger på en AI-driven webbsökning och kan innehålla fel — kontrollera alltid mot företagets egen sida innan du hör av dig."],
+        ["Kan jag exportera listan?", "Ja, som CSV — bra att ha som backup eller att dela med en handledare."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["dolda-jobbmarknaden", "informationsintervju-guide", "kreativ-jobbsokning", "natverka-for-jobb"]
+    },
+    {
+      "slug": "lon",
+      "route": "/salary",
+      "h1": "Räkna ut vad du får kvar i lön",
+      "title": "Lönekalkylator — räkna ut nettolön, gratis",
+      "description": "Se vad du får kvar efter skatt, jämför ett ungefärligt lönespann för din bransch och förbered en löneförhandling. Gratis och på svenska.",
+      "lead": "Lönefrågor är svåra att prata om utan siffror. Här räknar du ut vad du faktiskt får kvar efter skatt, får en fingervisning om vad som är rimligt att begära, och förbereder dig inför förhandlingen.",
+      "steg": [
+        ["Räkna ut nettolön", "Ange din bruttolön och se vad som blir kvar — kalkylatorn följer hur skatten faktiskt beräknas: grundavdrag, kommunal skatt, statlig skatt och jobbskatteavdrag."],
+        ["Jämför ett ungefärligt spann", "Välj bransch, region och erfarenhet för en grov uppskattning, tydligt märkt som just det — inte officiell statistik — med länkar vidare till SCB och Medlingsinstitutet för de riktiga siffrorna."],
+        ["Förbered förhandlingen", "Konkreta situationer och strategier för själva samtalet, inte bara allmänna råd om att vara påläst."]
+      ],
+      "punkter": [
+        "Nettolön beräknad enligt hur svensk inkomstskatt faktiskt fungerar",
+        "Ett ungefärligt lönespann för 12 branscher, 7 regioner och 4 erfarenhetsnivåer",
+        "Tydligt märkt som uppskattning — med länkar till SCB och Medlingsinstitutet för riktig statistik",
+        "Konkreta strategier för löneförhandling"
+      ],
+      "for": "Dig som ska förhandla lön för första gången, dig som bytt jobb och vill veta vad du får kvar, och dig som vill ha en fingervisning innan du sätter ett lönekrav.",
+      "faq": [
+        ["Är lönesiffrorna officiell statistik?", "Nej. Branschspannen är grova uppskattningar för att ge en fingervisning, inte hämtade från SCB eller Medlingsinstitutet. Verktyget länkar vidare dit om du vill ha exakta siffror för ditt yrke."],
+        ["Hur räknas nettolönen ut?", "Kalkylatorn följer hur svensk inkomstskatt faktiskt beräknas — grundavdrag, kommunal skatt, statlig skatt över skiktgränsen och jobbskatteavdrag. Kyrkoavgift och avdrag som ROT/RUT ingår inte."],
+        ["Kan jag ändra kommunalskatten?", "Ja, om du vet din kommuns skattesats. Annars används ett riksgenomsnitt."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["skatt-pa-lon-forsta-jobbet", "loneforhandling-guide", "lon-och-formaner-guide", "personlig-ekonomi-jobbsokning"]
+    },
+    {
+      "slug": "jobbsok",
+      "route": "/job-search",
+      "h1": "Hitta jobb som passar dig",
+      "title": "Sök lediga jobb i Sverige — gratis jobbsökmotor",
+      "description": "Sök lediga jobb direkt ur Arbetsförmedlingens platsbank, filtrera på ort och yrke, och spara de som känns rätt. Gratis och på svenska.",
+      "lead": "Alla annonser kommer direkt från Arbetsförmedlingens platsbank. Du söker och filtrerar en gång, sparar det du gillar, och slipper hålla reda på resten i huvudet.",
+      "steg": [
+        ["Sök och filtrera", "Sök på ord, ort eller yrke, och begränsa till anställningsform eller hur nytt jobbet är. Datan kommer direkt från Arbetsförmedlingens platsbank."],
+        ["Spara det du vill gå tillbaka till", "Markera jobb du är intresserad av så hamnar de i din lista — du behöver inte hålla koll i huvudet eller i ett annat program."],
+        ["Ta hjälp av fler vägar in", "Ett jobb om dagen för dig som blir överväldigad av att skrolla, och en genväg till jobb matchade mot ditt CV om du hellre går den vägen."]
+      ],
+      "punkter": [
+        "Sök i Arbetsförmedlingens hela platsbank, med filter på ort, yrke, anställningsform och hur nytt jobbet är",
+        "Spara jobb du är intresserad av — de följer med till Ansökningar när du går vidare",
+        "Ett jobb om dagen för den som vill ta det lugnt, och jobb matchade mot ditt CV för den som hellre går den vägen",
+        "Spara en sökning som en bevakning — mejlutskicken är inte igång än, så du behöver själv titta till den"
+      ],
+      "for": "Dig som inte vet var du ska börja leta, dig som redan vet vad du söker men är trött på att göra samma sökning om och om igen, och dig som blir överväldigad av långa listor.",
+      "faq": [
+        ["Var kommer jobben ifrån?", "Direkt från Arbetsförmedlingens platsbank — samma annonser som på deras egen sida, men med filter och sparfunktion byggda för att göra sökandet mindre av ett kaos."],
+        ["Får jag ett mejl när ett nytt jobb dyker upp?", "Du kan spara en bevakning, men portalens mejlutskick är inte igång än. Öppna fliken Bevakningar när du vill se om något nytt kommit in."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["dolda-jobbmarknaden", "struktur-jobbsokning", "lasa-arbetsmarknaden", "ai-jobbsokning-guide"]
+    },
+    {
+      "slug": "ansokningar",
+      "route": "/applications",
+      "h1": "Håll ordning på dina ansökningar",
+      "title": "Håll koll på dina jobbansökningar — gratis verktyg",
+      "description": "Håll koll på var varje ansökan står, från intresserad till besked, med tidslinje, kalender och underlag till aktivitetsrapporten. Gratis.",
+      "lead": "När du söker flera jobb samtidigt är det lätt att tappa bort var du är i processen. Här är varje ansökan ett kort som flyttas genom stegen, med datum och kontakter samlade på samma ställe.",
+      "steg": [
+        ["Se allt på en tavla", "Varje ansökan är ett kort som flyttas genom stegen — intresserad, sökt, intervju, och vidare till besked. Du ser i ett ögonkast var du står."],
+        ["Håll koll på datum", "Tidslinje och kalender för intervjuer, deadlines och uppföljningar, så att inget faller mellan stolarna."],
+        ["Skriv ut underlaget till aktivitetsrapporten", "En sammanställning av de jobb du sökt en viss månad, i den ordning Arbetsförmedlingen frågar efter dem — redo att skriva ut eller kopiera. Portalen skickar ingenting åt dig; du för in det själv."]
+      ],
+      "punkter": [
+        "En tavla med 11 statusar, från intresserad till anställd eller avslag",
+        "Tidslinje, kalender och kontakter kopplade till varje ansökan",
+        "Underlag för Arbetsförmedlingens aktivitetsrapport — skriv ut eller kopiera",
+        "Statistik över hur din sökning ser ut över tid"
+      ],
+      "for": "Dig som söker flera jobb samtidigt och tappar bort var du är i processen, och dig som ska lämna en aktivitetsrapport och inte vill leta reda på allt i efterhand.",
+      "faq": [
+        ["Skickar ni min aktivitetsrapport till Arbetsförmedlingen?", "Nej. Det finns inget system att skicka till. Verktyget sammanställer ett underlag av jobben du sökt — du skriver ut det eller kopierar det själv till Mina sidor."],
+        ["Måste jag lägga in jobb för hand?", "Om du sparar jobb i Jobbsök hamnar de här automatiskt. Du kan också lägga till ansökningar du gjort på annat håll."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["checklista-ansoka-jobb", "ansokningsstrategi", "folja-upp-din-ansokan", "hantera-avslag"]
+    },
+    {
+      "slug": "personligt-varumarke",
+      "route": "/personal-brand",
+      "h1": "Sätt ord på vad du står för",
+      "title": "Bygg ditt personliga varumärke — gratis hjälp",
+      "description": "Se hur du syns utåt, öva din pitch, samla arbetsprover och bli lättare att hitta. Gratis hjälp att sätta ord på vad du står för.",
+      "lead": "Ett personligt varumärke är svårt att bygga själv — det är för nära inpå. Här går du igenom det i fyra delar: hur du syns utåt, din pitch, dina arbetsprover och var du kan bli lättare att hitta.",
+      "steg": [
+        ["Se hur du syns idag", "En checklista över hur du framstår för en arbetsgivare som googlar dig eller ser din profil på LinkedIn."],
+        ["Öva din pitch", "Skriv och öva den korta presentationen av dig själv, med timer och återkoppling så att den sitter när det gäller."],
+        ["Samla arbetsprover och synas mer", "Spara det du faktiskt gjort på ett ställe, och gå igenom var du kan bli lättare att hitta för den som söker på ditt namn."]
+      ],
+      "punkter": [
+        "4 delar: din bild utåt, pitch, arbetsprover och synlighet",
+        "Öva pitchen med timer och återkoppling",
+        "Samla arbetsprover du kan länka till i en ansökan",
+        "En plan för att bli lättare att hitta för den som söker på ditt namn"
+      ],
+      "for": "Dig som vet vad du kan men inte hur du ska sammanfatta det, och dig som blir nervös av frågan \"berätta om dig själv\".",
+      "faq": [
+        ["Sparas det jag fyller i?", "Ja, på ditt konto, så att du kan fortsätta senare eller ändra när din situation förändras."],
+        ["Är det AI som skriver min pitch åt mig?", "Du får återkoppling på det du själv skrivit, inte en färdig text att klistra in. Poängen är att öva på att säga det med egna ord."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["bygg-ditt-personliga-varumarke", "googla-dig-sjalv", "digital-narvaro-rensning", "portfolio-guide"]
+    },
+    {
+      "slug": "utbildning",
+      "route": "/education",
+      "h1": "Hitta en utbildning som tar dig vidare",
+      "title": "Hitta rätt utbildning — sök gratis på svenska",
+      "description": "Sök bland utbildningar från hela Sverige — yrkeshögskola, högskola, komvux och folkhögskola — hämtat från Arbetsförmedlingens register. Gratis.",
+      "lead": "Vill du vidareutbilda dig eller byta bana helt? Här söker du bland utbildningar från hela Sverige — yrkeshögskola, högskola, komvux och folkhögskola — med data hämtad från Arbetsförmedlingens eget register.",
+      "steg": [
+        ["Sök och filtrera", "Sök på ord eller ort, och begränsa till en utbildningsform om du redan vet vilken väg du är intresserad av."],
+        ["Jämför alternativen", "Se studieform, ort och utbildningsanordnare för varje träff, och gå vidare till anordnarens egen sida för att ansöka."],
+        ["Koppla till din kompetensanalys", "Ser du att en utbildning täcker det som Kompetensanalysen visade att du saknade, är det ett tecken på att den är värd att titta närmare på."]
+      ],
+      "punkter": [
+        "Data från JobEd Connect (Arbetsförmedlingen/JobTech) — inte påhittat av en språkmodell",
+        "Filtrera på utbildningsform: yrkeshögskola, högskola, komvux och folkhögskola",
+        "Sök på ort för att hitta utbildningar där du bor eller kan tänka dig att flytta",
+        "Går att koppla till det Kompetensanalysen visar att du saknar"
+      ],
+      "for": "Dig som vill byta bana men inte vet vilken utbildning som krävs, och dig som redan vet vad du vill läsa men inte var den finns.",
+      "faq": [
+        ["Var kommer utbildningarna ifrån?", "Från JobEd Connect, Arbetsförmedlingens register över utbildningar — inte från en språkmodell som gissar."],
+        ["Kan jag ansöka direkt i Jobin?", "Nej, ansökan görs hos utbildningsanordnaren. Portalen hjälper dig hitta rätt utbildning och länkar vidare."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["kompetensutveckling-guide", "kompetensutveckling-plan", "karriarbyte-guide", "kompetensportfolj"]
+    },
+    {
+      "slug": "natverk",
+      "route": "/nätverk",
+      "h1": "Bygg ett nätverk som faktiskt hjälper",
+      "title": "Nätverka för jobb — gratis verktyg på svenska",
+      "description": "Spara kontakter, planera nätverksträffar och få hjälp att skriva meddelandet du annars skjuter upp. Gratis och på svenska.",
+      "lead": "De flesta jobb går genom någon som redan känner någon. Här samlar du dina kontakter, planerar nätverksträffar och får hjälp att formulera det där första meddelandet som annars aldrig blir skickat.",
+      "steg": [
+        ["Samla dina kontakter", "Spara namn, relation och anteckningar om varje kontakt, så att du minns var ni var i kontakten senast."],
+        ["Planera träffar", "Lägg in event du planerar att gå på, med datum och förväntat antal deltagare."],
+        ["Skriv meddelandet", "Färdiga mallar att utgå från när du vill återuppta kontakt, be om råd, eller fråga om praktik — och en AI-assistent som hjälper dig formulera om det känns svårt."]
+      ],
+      "punkter": [
+        "Spara kontakter och nätverksträffar i molnet, inte i huvudet",
+        "Mallar för att återuppta kontakt, be om råd eller fråga om praktik",
+        "Manus för samtal på konferenser, efter möten och vid informationsintervjuer",
+        "En AI-assistent för dig som fastnar på formuleringen"
+      ],
+      "for": "Dig som tycker nätverkande känns påklistrat, och dig som har kontakter men aldrig hör av dig förrän du behöver något.",
+      "faq": [
+        ["Måste jag vara utåtriktad för att nätverka?", "Nej. Verktygets mallar och manus är till för just den som inte tycker det här kommer naturligt."],
+        ["Sparas mina kontakter säkert?", "Ja, på ditt konto. Bara du kommer åt dem."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["natverka-for-jobb", "natverksbyggande-guide", "bygga-natverk-introverta", "informationsintervju-guide"]
+    },
+    {
+      "slug": "ny-i-sverige",
+      "route": "/international",
+      "h1": "Ny i Sverige — vägen in på arbetsmarknaden",
+      "title": "Ny i Sverige — jobba här, gratis hjälp på svenska",
+      "description": "Se om din utländska utbildning eller legitimation räknas i Sverige, vad första tiden kräver, och var du lär dig svenska. Inga gissade belopp.",
+      "lead": "Den här sidan handlar om att bygga en väg in på svensk arbetsmarknad när du redan bor i Sverige — inte om att söka jobb utomlands. Du får hjälp att ta reda på om din utbildning eller legitimation räknas här, vad den första tiden kräver, och var du lär dig svenska.",
+      "steg": [
+        ["Ta reda på om det du kan räknas", "Bedömning av utländsk utbildning görs av UHR, och yrkeslegitimationer av Socialstyrelsen eller Skolverket beroende på yrke. Portalen visar vem som prövar vad och länkar direkt dit."],
+        ["Gå igenom din första tid", "En checklista i rätt ordning — vad som kräver personnummer, vad som kräver folkbokföring, och vad du kan göra redan innan."],
+        ["Hitta rätt nivå i svenska", "Se skillnaden mellan SFI:s kurser och studievägar, och vad olika nivåer faktiskt räcker till på jobbet."]
+      ],
+      "punkter": [
+        "Bedömning av utländsk utbildning (UHR) och yrkeslegitimation (Socialstyrelsen/Skolverket) — vem som prövar vad",
+        "En checklista för den första tiden, ordnad efter vad som faktiskt krävs för vad — inte efter vecka",
+        "Fakta om SFI, rätten till betalkonto och andra villkor — utan gissade belopp eller tider",
+        "Genomgång av vad olika svensknivåer faktiskt räcker till på jobbet"
+      ],
+      "for": "Dig som redan bor i Sverige och undrar om din utbildning eller yrkeslegitimation från ett annat land räknas här, och dig som är ny och vill veta i vilken ordning saker behöver göras.",
+      "faq": [
+        ["Handlar det här om att söka jobb utomlands?", "Nej. Sidan är till för dig som redan bor i Sverige och söker jobb här — inte om att flytta till eller arbeta i ett annat land."],
+        ["Anger ni hur mycket jag behöver tjäna för uppehållstillstånd?", "Nej, med flit. Såna belopp och tider ändras, och en sida som inte uppdateras varje gång skulle bara hinna bli fel. Vi länkar i stället direkt till Migrationsverket för den typen av frågor."],
+        ["Var bedöms min utländska utbildning?", "Hos UHR för de flesta utbildningar, och hos Socialstyrelsen eller Skolverket om ditt yrke kräver legitimation. Portalen visar vem som gäller för dig och länkar dit."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["validera-utlandsk-utbildning", "svenska-pa-jobbet", "sfi-och-jobbsokande-samtidigt", "etableringsprogrammet"]
+    },
+    {
+      "slug": "ai-coach",
+      "route": "/ai-team",
+      "h1": "Prata igenom det som känns svårt just nu",
+      "title": "AI-coach för jobbsökande — gratis, på svenska",
+      "description": "Chatta med fem AI-agenter om jobbsökning, ork, utbildning och digital närvaro. Kräver eget samtycke och går att stänga av när du vill. Gratis.",
+      "lead": "Fem AI-agenter, var och en med sitt eget fokus, svarar på det du undrar över — i din egen takt. De gissar aldrig på belopp eller regler; de hänvisar dig vidare till rätt ställe i stället.",
+      "steg": [
+        ["Välj en agent", "5 agenter med olika fokus: Arbetskonsulent, Arbetsterapeut, Studievägledare, Motivationscoach och Digital Coach. Portalen föreslår en utifrån det verktyg du senast använde, men du väljer alltid själv."],
+        ["Skriv vad du undrar", "Svaret kommer medan det skrivs, inte som en lång väntan följt av ett helt textblock."],
+        ["Bestäm själv hur mycket AI du vill ha", "AI-funktioner kräver ett eget samtycke innan de används första gången, och går sedan att stänga av och slå på igen i Inställningar."]
+      ],
+      "punkter": [
+        "5 AI-agenter: Arbetskonsulent, Arbetsterapeut, Studievägledare, Motivationscoach och Digital Coach",
+        "Föreslår automatiskt en agent utifrån vad du senast gjorde i portalen",
+        "Anger aldrig belopp, procentsatser eller villkor om till exempel a-kassa, sjukpenning eller uppsägningstid ur minnet — hänvisar i stället vidare till rätt myndighet",
+        "Kräver ett eget samtycke innan du kan chatta, och går att stänga av när du vill utan att samtycket försvinner"
+      ],
+      "for": "Dig som vill bolla en fråga innan du hör av dig till din handledare, och dig som vill öva på att formulera något svårt i lugn och ro.",
+      "faq": [
+        ["Vad gör AI-coachen INTE?", "Den ersätter ingen människa, ger ingen juridisk eller medicinsk rådgivning och känner inte till ditt ärende hos någon myndighet. Den gissar heller aldrig på belopp, procentsatser eller villkor om till exempel a-kassa eller sjukpenning — den hänvisar dig vidare i stället."],
+        ["Måste jag godkänna något innan jag kan chatta?", "Ja. AI-funktioner kräver ett eget samtycke, skilt från resten av kontot. Du kan när som helst pausa AI-funktionerna i Inställningar utan att samtycket försvinner, och du kan återkalla samtycket helt."],
+        ["Vilka agenter finns?", "Arbetskonsulent, Arbetsterapeut, Studievägledare, Motivationscoach och Digital Coach — fem agenter med olika fokus, från CV och ansökningar till arbetsförmåga och digitala verktyg."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["ai-jobbsokning-guide", "motivation-jobbsokning", "hantera-avslag-motivation", "imposter-syndrome"]
+    },
+    {
+      "slug": "maende",
+      "route": "/wellness",
+      "h1": "Håll koll på hur du mår medan du söker",
+      "title": "Må bra under jobbsökning — gratis verktyg",
+      "description": "Logga mående och energi, bygg rutiner och träna på att varva ner. Kräver eget samtycke, allt är privat, och krisnumren syns direkt. Gratis.",
+      "lead": "Jobbsökning tar på krafterna, särskilt om den drar ut på tiden. Här loggar du hur du mår, bygger rutiner som håller även på tunga dagar, och hittar numret att ringa om det känns akut.",
+      "steg": [
+        ["Logga hur du mår", "En kort daglig registrering av mående och energi. Ingenting sparas förrän du gett ett eget samtycke till det."],
+        ["Bygg rutiner som håller", "Enkla vanor att checka av, anpassade efter att orken varierar från dag till dag."],
+        ["Träna på att varva ner", "Andningsövningar och andra korta tekniker för de stunder jobbsökandet känns tungt."]
+      ],
+      "punkter": [
+        "4 delar: Hälsa, Rutiner, Kognitiv träning och Akut stöd",
+        "Kräver ett eget samtycke innan något mående sparas, skilt från resten av kontot",
+        "Bara du kommer åt det du loggar",
+        "Ger inga medicinska råd eller diagnoser — vid sjukvårdsfrågor hänvisar vi till 1177"
+      ],
+      "for": "Dig som märker att jobbsökandet tär på humöret, och dig som vill se mönster i hur du mår över tid i stället för att gissa i efterhand.",
+      "faq": [
+        ["Är det jag skriver privat?", "Ja. Bara du kommer åt ditt eget mående. Innan något sparas måste du ge ett eget samtycke, skilt från resten av kontot, och du kan återkalla det när du vill."],
+        ["Ger verktyget medicinska råd?", "Nej. Det är inte sjukvård och ställer ingen diagnos. Vid sjukvårdsfrågor, ring 1177 eller besök 1177.se."],
+        ["Vad gör jag om det känns akut?", "Sidan visar telefonnummer att ringa direkt, utan att du behöver leta eller klicka. Vid fara för liv, ring alltid 112."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["mental-halsa-jobbsokning", "mindfulness-stresshantering-jobbsokare", "stresshantering", "work-life-balance-guide"]
+    },
+    {
+      "slug": "ovningar",
+      "route": "/exercises",
+      "h1": "Öva på det som är svårt att sätta ord på",
+      "title": "Övningar för jobbsökande — gratis, på svenska",
+      "description": "119 reflektionsövningar i 10 kategorier, från självkännedom till nätverkande. Inget facit — bara frågor värda att fundera på. Gratis, på svenska.",
+      "lead": "119 övningar i 10 kategorier, från självkännedom till nätverkande, där du svarar i din egen takt. Inget facit — bara frågor värda att fundera på, ett steg i taget.",
+      "steg": [
+        ["Välj en övning", "Filtrera på kategori, svårighetsgrad, eller på vad du redan har påbörjat."],
+        ["Svara i din egen takt", "Varje övning är uppdelad i steg med konkreta frågor. Du kan spara och fortsätta en annan dag."],
+        ["Gå vidare", "Flera övningar hänger ihop med artiklar i kunskapsbanken, om du vill läsa mer om det du precis övat på."]
+      ],
+      "punkter": [
+        "119 övningar i 10 kategorier, från självkännedom till arbetsrätt",
+        "Svårighetsgrader från Lätt till Utmanande, så du kan välja efter dagsform",
+        "Sparas på ditt konto, så du kan fortsätta där du slutade",
+        "Filtrera på det du redan påbörjat, för att slippa leta upp var du var"
+      ],
+      "for": "Dig som vill tänka igenom något konkret steg för steg, i stället för att bara läsa om det.",
+      "faq": [
+        ["Finns det rätta svar?", "Nej. Övningarna är reflektionsfrågor utan facit. Poängen är att sätta ord på egna tankar, inte att träffa rätt."],
+        ["Sparas mina svar?", "Ja, på ditt konto, så att du kan fortsätta en övning en annan dag i stället för att börja om."],
+        ["Kostar det något?", "Nej."]
+      ],
+      "guider": ["upptack-dina-styrkor", "hitta-dina-varderingar", "styrkor-svagheter", "personlighetstyper-arbete"]
     }
   ]
 }

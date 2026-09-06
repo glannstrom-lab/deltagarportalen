@@ -1,0 +1,119 @@
+{
+  "bli-uppsagd-pa-grund-av-arbetsbrist": {
+    "title": "Uppsagd på grund av arbetsbrist – vad du gör nu",
+    "summary": "Vad arbetsbrist innebär juridiskt, hur turordning fungerar, vad beskedet ska innehålla och vad du bör göra de första dagarna.",
+    "category_key": "employment-law",
+    "subcategory": "uppsagning",
+    "tags": ["arbetsbrist", "uppsägning", "turordning", "LAS"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "uppsagningstid-och-uppsagningsbesked",
+      "foretradesratt-till-ateranstallning",
+      "a-kassa-sa-fungerar-det",
+      "skriva-in-dig-arbetsformedlingen"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Läs uppsägningsbeskedet i lugn och ro innan du skriver under något",
+      "Kontrollera att beskedet anger sista anställningsdag och eventuell företrädesrätt",
+      "Hör av dig till facket eller ett ombud direkt om något känns fel",
+      "Skriv in dig hos Arbetsförmedlingen din första dag utan jobb",
+      "Kontakta din a-kassa samma vecka",
+      "Be om arbetsgivarintyg i god tid"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Börja titta på nästa steg", "type": "primary" },
+      { "href": "/knowledge-base/article/a-kassa-sa-fungerar-det", "label": "Läs om a-kassan", "type": "secondary" }
+    ]
+  },
+  "uppsagningstid-och-uppsagningsbesked": {
+    "title": "Uppsägningstid och uppsägningsbesked – vad som gäller",
+    "summary": "Vad som avgör hur lång din uppsägningstid blir, vad beskedet ska innehålla, och vilka rättigheter du har medan tiden löper.",
+    "category_key": "employment-law",
+    "subcategory": "uppsagning",
+    "tags": ["uppsägningstid", "uppsägningsbesked", "anställningsavtal", "kollektivavtal"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bli-uppsagd-pa-grund-av-arbetsbrist",
+      "las-anstallningsavtal",
+      "avsked-eller-uppsagning",
+      "arbetsgivarintyg-och-betyg"
+    ],
+    "related_tools": ["/job-search", "/calendar"],
+    "checklist": [],
+    "actions": [
+      { "href": "/calendar", "label": "Håll koll på viktiga datum", "type": "primary" },
+      { "href": "/job-search", "label": "Börja söka redan under uppsägningstiden", "type": "secondary" }
+    ]
+  },
+  "avsked-eller-uppsagning": {
+    "title": "Avsked eller uppsägning – här är skillnaden",
+    "summary": "Vad som krävs för ett giltigt avsked, vad som händer med lön och a-kassa i respektive fall, och vad du gör om något känns fel.",
+    "category_key": "employment-law",
+    "subcategory": "uppsagning",
+    "tags": ["avsked", "uppsägning", "LAS", "a-kassa"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "bli-uppsagd-pa-grund-av-arbetsbrist",
+      "a-kassa-sa-fungerar-det",
+      "uppsagningstid-och-uppsagningsbesked"
+    ],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/knowledge-base/article/a-kassa-sa-fungerar-det", "label": "Läs om a-kassan", "type": "primary" }
+    ]
+  },
+  "foretradesratt-till-ateranstallning": {
+    "title": "Företrädesrätt till återanställning – så använder du den",
+    "summary": "Vad som krävs för att företrädesrätten ska gälla, hur du anmäler ditt anspråk, och varför den ofta glöms bort.",
+    "category_key": "employment-law",
+    "subcategory": "uppsagning",
+    "tags": ["företrädesrätt", "återanställning", "LAS", "arbetsbrist"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bli-uppsagd-pa-grund-av-arbetsbrist",
+      "anstallningsformer-guide",
+      "skriva-in-dig-arbetsformedlingen"
+    ],
+    "related_tools": ["/calendar"],
+    "checklist": [
+      "Kontrollera om du varit anställd tillräckligt länge för att omfattas",
+      "Skicka en skriftlig anmälan om företrädesrätt och spara en kopia",
+      "Sätt en påminnelse att följa upp med din gamla arbetsgivare",
+      "Kontakta facket om ett erbjudet jobb uteblir trots att du gjort anspråk"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Sätt en påminnelse att följa upp", "type": "primary" }
+    ]
+  },
+  "forsorjningsstod-nar-pengarna-tar-slut": {
+    "title": "Försörjningsstöd – så fungerar det när pengarna tar slut",
+    "summary": "Vem som beslutar, vad som prövas innan, hur en ansökan går till, och din rätt att få ett skriftligt beslut och överklaga.",
+    "category_key": "employment-law",
+    "subcategory": "ekonomi",
+    "tags": ["försörjningsstöd", "ekonomiskt bistånd", "socialtjänsten", "kommun"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "personlig-ekonomi-jobbsokning",
+      "a-kassa-sa-fungerar-det",
+      "ersattning-under-program"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Sök upp försörjningsstöd på din kommuns webbplats",
+      "Samla kontoutdrag, hyreskontrakt och inkomstuppgifter",
+      "Boka tid hos socialtjänsten eller ansök via kommunens e-tjänst",
+      "Fortsätt vara inskriven hos Arbetsförmedlingen och söka jobb aktivt",
+      "Spara beslutet och överklaga inom tidsfristen om du får avslag"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt söka jobb aktivt", "type": "primary" }
+    ]
+  }
+}

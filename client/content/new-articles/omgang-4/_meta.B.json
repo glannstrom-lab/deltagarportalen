@@ -1,0 +1,112 @@
+{
+  "hur-langt-ska-ett-cv-vara": {
+    "title": "Hur långt ska ett CV vara? Så avgör du längden",
+    "summary": "En sida är en tumregel, inte ett krav. Så avgör du vad som ska bort och hur långt ditt CV faktiskt behöver vara.",
+    "category_key": "job-search",
+    "subcategory": "cv",
+    "tags": ["CV", "längd", "struktur"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["cv-grunder", "cv-mallar-exempel", "ats-optimering"],
+    "related_tools": ["/cv"],
+    "checklist": [
+      "Läs varje rad och fråga vad den säger om just den här tjänsten",
+      "Stryk arbetsuppgifter äldre än tio–femton år som inte är relevanta",
+      "Ta bort upprepningar och detaljer utan koppling till rollen",
+      "Byt ut en text-tät sida mot rubriker och punktlistor",
+      "Anpassa längden efter vilket jobb du söker, inte efter en fast mall"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg och korta ner ditt CV", "type": "primary" },
+      { "href": "/knowledge-base/article/cv-mallar-exempel", "label": "Se mallar och exempel", "type": "secondary" }
+    ]
+  },
+  "bild-pa-cv-eller-inte": {
+    "title": "Bild på CV eller inte? Så tänker du om fotot",
+    "summary": "Det finns inget krav på foto i ett svenskt CV. Vad som talar för och emot, och hur bilden ska se ut om du väljer att ha en.",
+    "category_key": "job-search",
+    "subcategory": "cv",
+    "tags": ["CV", "foto", "anonymiserad rekrytering"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["cv-grunder", "diskriminering-jobbsokning", "personuppgifter-i-cv"],
+    "related_tools": ["/cv"],
+    "checklist": [
+      "Kolla om annonsen ber om anonym ansökan utan bild",
+      "Fundera på om branschen du söker inom har kundkontakt eller synlig roll",
+      "Välj bort bilden om du är osäker på kvaliteten",
+      "Använd porträttbild med neutral bakgrund om du väljer att ha en",
+      "Håll bilden i linje med det du använder på LinkedIn"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Lägg till eller ta bort bild i CV-byggaren", "type": "primary" },
+      { "href": "/knowledge-base/article/personuppgifter-i-cv", "label": "Läs om andra personuppgifter i CV:t", "type": "secondary" }
+    ]
+  },
+  "personuppgifter-i-cv": {
+    "title": "Vilka personuppgifter ska stå i ditt CV?",
+    "summary": "Namn, kontaktuppgifter och ort räcker. Varför personnummer, adress, civilstånd och ålder inte hör hemma i CV:t.",
+    "category_key": "job-search",
+    "subcategory": "cv",
+    "tags": ["CV", "personuppgifter", "GDPR"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["cv-grunder", "bild-pa-cv-eller-inte", "diskriminering-jobbsokning"],
+    "related_tools": ["/cv"],
+    "checklist": [
+      "Stryk fullständigt personnummer ur CV:t",
+      "Byt ut fullständig hemadress mot enbart ort",
+      "Ta bort civilstånd och födelsedatum",
+      "Fundera på om en bild behövs, se den egna guiden om foto",
+      "Behåll bara namn, kontaktuppgifter, ort och eventuell LinkedIn-länk"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg ditt CV med rätt fält", "type": "primary" },
+      { "href": "/knowledge-base/article/bild-pa-cv-eller-inte", "label": "Läs om bild på CV:t", "type": "secondary" }
+    ]
+  },
+  "luckor-i-cv": {
+    "title": "Luckor i CV:t – så redovisar du dem",
+    "summary": "Arbetslöshet, sjukskrivning, föräldraledighet eller avbrutna studier. Så skriver du raden, och så svarar du på frågan.",
+    "category_key": "job-search",
+    "subcategory": "cv",
+    "tags": ["CV", "luckor", "arbetslöshet"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["cv-utan-erfarenhet", "cv-grunder", "tillbaka-till-jobb-efter-sjukskrivning"],
+    "related_tools": ["/cv", "/interview-simulator"],
+    "checklist": [
+      "Lista varje period utan en rad i tidslinjen",
+      "Skriv en kort, sann beskrivning för varje lucka",
+      "Välj kronologiskt eller kompetensbaserat format utifrån din situation",
+      "Förbered ett kort svar i tre delar inför intervjun",
+      "Undvik att ljuga om datum eller överkompensera med hittade aktiviteter"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg ditt CV med rätt format", "type": "primary" },
+      { "href": "/interview-simulator", "label": "Öva på svaret inför intervjun", "type": "secondary" }
+    ]
+  },
+  "cv-utan-gymnasieexamen": {
+    "title": "CV utan gymnasieexamen – så skriver du det sant",
+    "summary": "Hur du skriver utbildningsavsnittet ärligt, vad du lyfter i stället, och vilka vägar som finns att komplettera.",
+    "category_key": "job-search",
+    "subcategory": "cv",
+    "tags": ["CV", "utbildning", "komvux", "gymnasieexamen"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["cv-utan-erfarenhet", "cv-grunder", "luckor-i-cv"],
+    "related_tools": ["/cv", "/education"],
+    "checklist": [
+      "Skriv programmet och åren du faktiskt läste, utan att gissa till en examen",
+      "Lyft fram arbetslivserfarenhet, kurser och praktiska exempel i stället",
+      "Ta reda på vad komvux eller folkhögskola erbjuder i din kommun",
+      "Fråga om prövning eller validering av det du redan kan",
+      "Förbered ett kort, sant svar om frågan kommer på en intervju"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Bygg ditt CV utan att gissa till en examen", "type": "primary" },
+      { "href": "/education", "label": "Se vägar att komplettera din utbildning", "type": "secondary" }
+    ]
+  }
+}

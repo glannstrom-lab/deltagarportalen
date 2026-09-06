@@ -1,0 +1,133 @@
+{
+  "jobba-som-personlig-assistent": {
+    "title": "Jobba som personlig assistent – så fungerar arbetet",
+    "summary": "Vad arbetet som personlig assistent innebär i praktiken, vem som är arbetsgivare, och vad som gör jobbet både tungt och meningsfullt.",
+    "category_key": "job-market",
+    "subcategory": "personlig-assistent",
+    "tags": ["personlig assistent", "LSS", "vårdyrken", "assistansersättning"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bakgrundskontroll-och-belastningsregistret",
+      "anstallningsformer-guide",
+      "arbetsmiljo-guide",
+      "behorigheter-som-oppnar-jobb"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Ta reda på om tjänsten är kommunal, privat eller brukarstyrd",
+      "Fråga om krav på registerutdrag innan du börjar",
+      "Läs igenom vad som ingår i schemat innan du tackar ja",
+      "Fråga om introduktion och upplärning innan du börjar själv",
+      "Ta reda på vem du vänder dig till om något känns fel"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök assistentjobb i ditt område", "type": "primary" },
+      { "href": "/knowledge-base/article/bakgrundskontroll-och-belastningsregistret", "label": "Läs om registerutdrag och bakgrundskontroll", "type": "secondary" }
+    ]
+  },
+  "jobba-inom-lager-och-logistik": {
+    "title": "Jobba inom lager och logistik – så ser jobbet ut",
+    "summary": "Arbetsuppgifter, skiftformer och fysiska krav inom lager och logistik – och vilka behörigheter som ofta efterfrågas.",
+    "category_key": "job-market",
+    "subcategory": "lager-och-logistik",
+    "tags": ["lager", "logistik", "truckkort", "bemanning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "bemanningsforetag-guide",
+      "sasongsjobb-guide",
+      "behorigheter-som-oppnar-jobb",
+      "arbetsmiljo-guide"
+    ],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [
+      "Kolla om tjänsten kräver truckkort innan du söker",
+      "Fråga om skiftschema och obekväm arbetstid i intervjun",
+      "Ta reda på om jobbet är via bemanningsföretag eller direkt anställning",
+      "Fråga vilka lyft och fysiska moment som faktiskt ingår"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök lagerjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/behorigheter-som-oppnar-jobb", "label": "Läs om truckkort och andra behörigheter", "type": "secondary" }
+    ]
+  },
+  "jobba-som-lokalvardare": {
+    "title": "Jobba som lokalvårdare – vad yrket innebär",
+    "summary": "Vad lokalvårdaryrket innebär, var jobben finns, arbetstider som skiljer sig från de flesta jobb, och vägen till arbetsledning.",
+    "category_key": "job-market",
+    "subcategory": "lokalvard",
+    "tags": ["lokalvårdare", "städ", "hygienutbildning", "arbetsledning"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "befordran-guide",
+      "bemanningsforetag-guide",
+      "behorigheter-som-oppnar-jobb",
+      "arbetsmiljo-guide"
+    ],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Ta reda på vilken miljö du ska städa – kontor, vård eller hotell",
+      "Fråga om skyddsutrustning och kemikalier ingår i introduktionen",
+      "Kolla om arbetstiden är tidig morgon eller sen kväll",
+      "Fråga vad som krävs för att bli arbetsledare längre fram"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök lokalvårdarjobb nära dig", "type": "primary" },
+      { "href": "/knowledge-base/article/befordran-guide", "label": "Läs om vägen mot arbetsledning", "type": "secondary" }
+    ]
+  },
+  "jobba-inom-butik-och-kundtjanst": {
+    "title": "Jobba i butik, kassa och kundtjänst – vad krävs",
+    "summary": "Vad butik, kassa, kundtjänst och callcenter har gemensamt och vad som skiljer dem – och varför det ofta blir en väg in.",
+    "category_key": "job-market",
+    "subcategory": "butik-och-kundtjanst",
+    "tags": ["butik", "kassa", "kundtjänst", "callcenter"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "cv-utan-erfarenhet",
+      "sommarjobb-och-extrajobb",
+      "bemanningsforetag-guide",
+      "befordran-guide"
+    ],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [
+      "Bestäm om du helst möter kunder fysiskt eller på telefon och chatt",
+      "Läs på om företagets produkter innan intervjun",
+      "Fråga om arbetstider inkluderar kvällar och helger",
+      "Öva på att svara på ett missnöjt kundsamtal i förväg"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb inom butik och kundtjänst", "type": "primary" },
+      { "href": "/cv", "label": "Bygg ett CV utan tidigare branscherfarenhet", "type": "secondary" }
+    ]
+  },
+  "behorigheter-som-oppnar-jobb": {
+    "title": "Behörigheter som öppnar jobb – truckkort, ID06 med fler",
+    "summary": "Truckkort, ID06, Heta arbeten, HLR och hygienutbildning förklarade – vad de kräver, och vem som ibland betalar för dem.",
+    "category_key": "job-market",
+    "subcategory": "behorigheter-och-certifikat",
+    "tags": ["truckkort", "ID06", "Heta arbeten", "yrkeskompetensbevis"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "jobba-inom-lager-och-logistik",
+      "jobba-som-personlig-assistent",
+      "kompetensutveckling-guide",
+      "rusta-och-matcha"
+    ],
+    "related_tools": ["/education", "/job-search"],
+    "checklist": [
+      "Läs jobbannonser inom ditt intresseområde och notera vilka behörigheter som efterfrågas",
+      "Fråga arbetsgivaren om de bekostar behörigheten vid anställning",
+      "Fråga din handläggare på Arbetsförmedlingen om arbetsmarknadsutbildning är aktuellt",
+      "Jämför utbildningsanordnare innan du bokar och betalar själv"
+    ],
+    "actions": [
+      { "href": "/education", "label": "Se vilka utbildningar som finns", "type": "primary" },
+      { "href": "/job-search", "label": "Sök jobb som matchar dina behörigheter", "type": "secondary" }
+    ]
+  }
+}

@@ -1,0 +1,196 @@
+{
+  "_kommentar": "Innehåll för de publika B2B-landningssidorna (roadmap K7/K16, 2026-09-06). Köparen är kommunala arbetsmarknadsenheter och Rusta-och-matcha-leverantörer, inte deltagaren — DESIGN.md §2 tillåter uttryckligen en annan, mer datadriven ton här. VARJE PÅSTÅENDE ÄR VERIFIERAT MOT KODEN/DOKUMENTEN INNAN DET SKREVS: /consultant-tabbarna (Overview/Participants/Platser/Analytics/Communication/Resources/Settings inkl. GDPR-dataexport) mot client/src/pages/Consultant.tsx och src/pages/consultant/*.tsx; EU-regionerna mot docs/HOSTING-REGIONS.md; OpenRouter/Perplexity mot docs/AI_MODEL_LOCKING.md, docs/GDPR-ART30-REGISTER.md och src/pages/Privacy.tsx (Perplexity nämns INGENSTANS i de två sistnämnda — flaggas medvetet här); DPIA/AI-Act-status mot docs/DPIA-PORTAL.md och docs/AI-ACT-CLASSIFICATION.md (båda 'Utkast'); WCAG-ambitionen och granskningsmetoden mot src/i18n/locales/sv.json (nyckel accessibility.*). Inga kundreferenser, kundantal, ROI-siffror, certifieringar eller priser — se CLAUDE.md-uppdraget för K7/K16. Lägg inte till ett påstående här utan att först verifiera det.",
+  "sidor": [
+    {
+      "slug": "for-arbetsmarknadsenheter",
+      "malgrupp": "Kommunal arbetsmarknadsenhet",
+      "title": "Digital plattform för arbetsmarknadsenheter",
+      "description": "Jobin ger deltagare CV, jobbsökning och intervjuträning, och din arbetsmarknadsenhet en samlad konsulentvy. Ärligt om GDPR och AI — boka en visning.",
+      "h1": "En digital plattform för din arbetsmarknadsenhet",
+      "lead": "Jobin är en portal för arbetssökande med en egen vy för dig som arbetar på en kommunal arbetsmarknadsenhet eller arbetsmarknadsförvaltning. Deltagarna får verktyg att söka jobb med, du får en samlad bild av dem du handleder — och du kan se hela plattformen innan ni bestämmer er.",
+      "facts": ["Drift i EU", "WCAG 2.1 AA — vår ambition"],
+      "ctaLabel": "Boka en visning",
+      "ctaAmne": "Demo%20-%20arbetsmarknadsenhet",
+      "forDeltagaren": {
+        "rubrik": "Vad deltagaren får",
+        "text": "Portalen är byggd för den som söker jobb, inte i första hand för administratören. Allt nedan är kostnadsfritt för deltagaren och kräver bara ett konto med e-post.",
+        "punkter": [
+          "CV-byggare med flera mallar och export till PDF",
+          "Personligt brev anpassat efter en specifik annons",
+          "Intervjuträning där man svarar med rösten och får skriftlig återkoppling",
+          "Kompetensanalys mot ett konkret jobb eller yrke, kopplad till utbildningsvägar",
+          "Jobbsökning mot Arbetsförmedlingens platsbank, med sparade sökningar",
+          "Stöd för mående och energi vid sidan av sökandet, och en dagbok bara deltagaren själv ser"
+        ],
+        "lankHref": "/verktyg/",
+        "lankText": "Se alla verktyg deltagaren får"
+      },
+      "forKonsulenten": {
+        "rubrik": "Vad du som konsulent ser i /consultant",
+        "text": "Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.",
+        "punkter": [
+          "En lista över dina deltagare, med en egen sida per person",
+          "Mål och journalanteckningar kopplade till varje deltagare",
+          "Meddelanden och bokade möten",
+          "Placeringar och en översiktlig analysvy",
+          "Export av din egen data direkt under inställningar (GDPR-uttag)"
+        ],
+        "obs": "/consultant är portalens enda konsulentvy. Steg till arbete-spåret (STA) är en separat modul som för närvarande är avstängd, och har ingen egen konsulentyta i dagsläget."
+      },
+      "leverantorsvardag": null,
+      "gdprAi": {
+        "rubrik": "Personuppgifter och AI — så är läget",
+        "intro": "Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.",
+        "klart": [
+          "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
+          "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
+          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.",
+          "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
+        ],
+        "pagar": [
+          "Fem AI-funktioner (bland annat karriärassistenten och företagssökningen) skickar frågan vidare till Perplexitys sökmodell via OpenRouter, som gör en riktig webbsökning på det som skrivits in. Det är i dagsläget inte utskrivet i integritetspolicyn eller i registret över personuppgiftsbiträden (Art. 30) — vi flaggar det ändå här.",
+          "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.",
+          "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar."
+        ],
+        "lankHref": "/#/privacy",
+        "lankText": "Läs hela integritetspolicyn"
+      },
+      "tillganglighet": {
+        "rubrik": "Tillgänglighet",
+        "text": "WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.",
+        "lankHref": "/#/tillganglighet",
+        "lankText": "Läs hela tillgänglighetsredogörelsen"
+      },
+      "faq": [
+        [
+          "Är det här en färdig upphandlad tjänst?",
+          "Nej. Det finns ingen prislista, inga referenskunder och ingen oberoende granskning att hänvisa till i dagsläget — se avsnittet om personuppgifter ovan för vad som faktiskt är klart."
+        ],
+        [
+          "Vad kostar det?",
+          "Vi har ingen offentlig prislista. Hör av dig så går vi igenom vad er verksamhet behöver och vad det skulle kosta."
+        ],
+        [
+          "Kan vi se plattformen innan vi bestämmer oss?",
+          "Ja. Boka en visning så går vi igenom både deltagarens verktyg och konsulentvyn live."
+        ],
+        [
+          "Behöver deltagaren installera något?",
+          "Nej, portalen körs i webbläsaren. Den fungerar på mobil, surfplatta och dator."
+        ],
+        [
+          "Kan vi stänga av AI-funktionerna för våra deltagare?",
+          "Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
+        ]
+      ],
+      "guider": [],
+      "slutCta": {
+        "rubrik": "Vill ni se det här på riktigt?",
+        "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",
+        "ctaLabel": "Boka en visning",
+        "ctaAmne": "Demo%20-%20arbetsmarknadsenhet"
+      }
+    },
+    {
+      "slug": "for-rusta-och-matcha",
+      "malgrupp": "Rusta och matcha-leverantör",
+      "title": "Jobin för Rusta och matcha-leverantörer",
+      "description": "Ett verktyg för dig som är leverantör inom Rusta och matcha: deltagaren får CV och jobbsökning, ni får en konsulentvy och samlad dokumentation.",
+      "h1": "Jobin för dig som är leverantör inom Rusta och matcha",
+      "lead": "Jobin är inte själva avtalet med Arbetsförmedlingen — det är verktyget era handledare och deltagare kan använda under tiden insatsen pågår. En portal för deltagaren, en konsulentvy för er.",
+      "facts": ["Drift i EU", "WCAG 2.1 AA — vår ambition"],
+      "ctaLabel": "Boka en visning",
+      "ctaAmne": "Demo%20-%20Rusta%20och%20matcha",
+      "forDeltagaren": {
+        "rubrik": "Vad deltagaren får",
+        "text": "Allt nedan är kostnadsfritt för deltagaren och kräver bara ett konto med e-post — oavsett vilken leverantör som handleder dem.",
+        "punkter": [
+          "CV-byggare med flera mallar och export till PDF",
+          "Personligt brev anpassat efter en specifik annons",
+          "Intervjuträning där man svarar med rösten och får skriftlig återkoppling",
+          "Kompetensanalys mot ett konkret jobb eller yrke",
+          "Jobbsökning mot Arbetsförmedlingens platsbank, med sparade sökningar",
+          "Stöd för mående och energi vid sidan av sökandet"
+        ],
+        "lankHref": "/verktyg/",
+        "lankText": "Se alla verktyg deltagaren får"
+      },
+      "forKonsulenten": {
+        "rubrik": "Vad er handledare ser i /consultant",
+        "text": "Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.",
+        "punkter": [
+          "En lista över era deltagare, med en egen sida per person",
+          "Mål och journalanteckningar kopplade till varje deltagare",
+          "Meddelanden och bokade möten",
+          "Placeringar och en översiktlig analysvy",
+          "Export av er egen data direkt under inställningar (GDPR-uttag)"
+        ],
+        "obs": "/consultant är portalens enda konsulentvy — samma yta oavsett vilken insats deltagaren är inskriven i."
+      },
+      "leverantorsvardag": {
+        "rubrik": "Er vardag som leverantör",
+        "text": "Rusta och matcha innebär löpande dokumentation av varje deltagares aktiviteter, regelbunden avstämning och rapportering vidare. Jobin samlar den vardagen på ett ställe i stället för i separata dokument: journalanteckningar, mål och möten ligger på deltagarens egen sida i /consultant, och deltagarens egna verktyg (CV, jobbsökning, intervjuträning) kan minska en del av handledarens skrivarbete. De exakta kraven och tidsgränserna i Rusta och matcha sätts av Arbetsförmedlingen — dem beskriver vi inte i siffror här, utan hänvisar till era egna avtalsvillkor.",
+        "punkter": [
+          "En sida per deltagare med mål, journal och tidslinje",
+          "Bokade möten och meddelanden samlade på ett ställe",
+          "Placeringar och en översikt över hela er caseload",
+          "Deltagarens egna sökverktyg minskar en del av handledarens manuella arbete"
+        ],
+        "guideHref": "/guider/rusta-och-matcha/",
+        "guideText": "Läs vår guide om Rusta och matcha, skriven ur deltagarens perspektiv"
+      },
+      "gdprAi": {
+        "rubrik": "Personuppgifter och AI — så är läget",
+        "intro": "Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.",
+        "klart": [
+          "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
+          "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
+          "AI-funktionerna kräver ett eget samtycke, funktion för funktion, innan något skickas — och går att stänga av helt.",
+          "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
+        ],
+        "pagar": [
+          "Fem AI-funktioner (bland annat karriärassistenten och företagssökningen) skickar frågan vidare till Perplexitys sökmodell via OpenRouter, som gör en riktig webbsökning på det som skrivits in. Det är i dagsläget inte utskrivet i integritetspolicyn eller i registret över personuppgiftsbiträden (Art. 30) — vi flaggar det ändå här.",
+          "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.",
+          "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar."
+        ],
+        "lankHref": "/#/privacy",
+        "lankText": "Läs hela integritetspolicyn"
+      },
+      "tillganglighet": {
+        "rubrik": "Tillgänglighet",
+        "text": "WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.",
+        "lankHref": "/#/tillganglighet",
+        "lankText": "Läs hela tillgänglighetsredogörelsen"
+      },
+      "faq": [
+        [
+          "Är Jobin en Arbetsförmedlingen-godkänd Rusta och matcha-leverantör?",
+          "Nej. Jobin är mjukvaran — plattformen som en leverantör kan använda i sitt arbete. Avtalet med Arbetsförmedlingen, och ansvaret för insatsen, är ert."
+        ],
+        [
+          "Vad kostar det?",
+          "Vi har ingen offentlig prislista. Hör av dig så går vi igenom vad er verksamhet behöver och vad det skulle kosta."
+        ],
+        [
+          "Kan vi se plattformen innan vi bestämmer oss?",
+          "Ja. Boka en visning så går vi igenom både deltagarens verktyg och konsulentvyn live."
+        ],
+        [
+          "Fungerar det för flera handledare samtidigt?",
+          "Konsulentvyn är byggd för att en handledare följer sina egna deltagare. Hör av dig om ni vill diskutera hur det passar er organisation."
+        ],
+        [
+          "Kan vi stänga av AI-funktionerna för våra deltagare?",
+          "Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
+        ]
+      ],
+      "guider": ["rusta-och-matcha"],
+      "slutCta": {
+        "rubrik": "Vill ni se det här på riktigt?",
+        "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",
+        "ctaLabel": "Boka en visning",
+        "ctaAmne": "Demo%20-%20Rusta%20och%20matcha"
+      }
+    }
+  ]
+}

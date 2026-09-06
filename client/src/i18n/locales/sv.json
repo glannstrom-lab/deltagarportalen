@@ -7526,7 +7526,9 @@
         "cta": "Boka 30 min demo",
         "bullet1": "GDPR + EU-data + krypterad lagring",
         "bullet2": "AF-integration via API",
-        "bullet3": "Anpassningsbara rapporter"
+        "bullet3": "Anpassningsbara rapporter",
+        "forMunicipality": "Jobin för arbetsmarknadsenheter",
+        "forRustaOchMatcha": "Jobin för Rusta och matcha-leverantörer"
       }
     },
     "platform": {

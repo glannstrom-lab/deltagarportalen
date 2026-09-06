@@ -1,0 +1,212 @@
+{
+  "arbetsgivarintyg-och-betyg": {
+    "title": "Arbetsgivarintyg och tjänstgöringsbetyg – så får du dem",
+    "summary": "Vad arbetsgivarintyget och tjänstgöringsbetyget är till för, hur du begär dem, och vad du gör om en tidigare arbetsgivare inte svarar.",
+    "category_key": "employment-law",
+    "subcategory": "dokument-och-intyg",
+    "tags": [
+      "arbetsgivarintyg",
+      "tjänstgöringsbetyg",
+      "a-kassa",
+      "referenser"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "las-anstallningsavtal",
+      "referenser-guide",
+      "skatt-pa-lon-forsta-jobbet"
+    ],
+    "related_tools": [
+      "/job-search"
+    ],
+    "checklist": [
+      "Begär arbetsgivarintyg redan din sista arbetsdag",
+      "Be om tjänstgöringsbetyg i samma samtal om du vill ha det",
+      "Spara namn och kontaktuppgifter till någon som kan vara referens",
+      "Skicka begäran skriftligt om du inte får svar inom rimlig tid",
+      "Spara kopior av lönespecifikationer och anställningsavtal som backup",
+      "Kontakta facket om du är medlem och arbetsgivaren inte svarar"
+    ],
+    "actions": [
+      {
+        "href": "/job-search",
+        "label": "Sök vidare medan du väntar på intyget",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/las-anstallningsavtal",
+        "label": "Läs vad som står i ditt anställningsavtal",
+        "type": "secondary"
+      }
+    ]
+  },
+  "skatt-pa-lon-forsta-jobbet": {
+    "title": "Skatt på lönen – så läser du ditt första lönebesked",
+    "summary": "Brutto, netto och preliminärskatt förklarat, och varför skatten kan bli fel med flera arbetsgivare – och vad jämkning gör åt det.",
+    "category_key": "employment-law",
+    "subcategory": "skatt-och-lonebesked",
+    "tags": [
+      "skatt",
+      "lönebesked",
+      "jämkning",
+      "första jobbet"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lon-och-formaner-guide",
+      "personlig-ekonomi-jobbsokning",
+      "arbetsgivarintyg-och-betyg"
+    ],
+    "related_tools": [
+      "/salary"
+    ],
+    "checklist": [
+      "Läs igenom hela lönebeskedet, inte bara nettobeloppet",
+      "Kontrollera att rätt skatteuppgift är registrerad hos arbetsgivaren",
+      "Logga in hos Skatteverket och se din egen skatteuppgift",
+      "Räkna med jämkning om du har flera arbetsgivare samtidigt",
+      "Spara lönebeskeden om du behöver jämföra dem senare"
+    ],
+    "actions": [
+      {
+        "href": "/salary",
+        "label": "Se löneläget för ditt yrke",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/lon-och-formaner-guide",
+        "label": "Läs om lön och förmåner",
+        "type": "secondary"
+      }
+    ]
+  },
+  "facket-ska-jag-ga-med": {
+    "title": "Ska jag gå med i facket? Facket och a-kassan är olika",
+    "summary": "Vad ett fackligt medlemskap ger dig jämfört med a-kassan, hur du hittar rätt förbund, och vad det kostar i praktiken.",
+    "category_key": "employment-law",
+    "subcategory": "fackligt-medlemskap",
+    "tags": [
+      "fackförbund",
+      "a-kassa",
+      "medlemskap",
+      "rättigheter"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "las-anstallningsavtal",
+      "provanstallning-guide",
+      "personlig-ekonomi-jobbsokning",
+      "arbetsgivarintyg-och-betyg"
+    ],
+    "related_tools": [
+      "/career"
+    ],
+    "checklist": [
+      "Ta reda på vilket förbund som organiserar din bransch",
+      "Jämför vad medlemskapet ger utöver a-kassan",
+      "Kontrollera om arbetsplatsen har kollektivavtal",
+      "Fråga om avgiften och vad som ingår innan du bestämmer dig",
+      "Ansök om medlemskap i facket och a-kassan separat om du vill ha båda"
+    ],
+    "actions": [
+      {
+        "href": "/career",
+        "label": "Fortsätt planera nästa steg i din karriär",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/las-anstallningsavtal",
+        "label": "Läs vad som står i ditt anställningsavtal",
+        "type": "secondary"
+      }
+    ]
+  },
+  "sjuklon-karens-och-vab": {
+    "title": "Sjuklön, karensavdrag och vab – när du är ny på jobbet",
+    "summary": "Vem som betalar när du blir sjuk eller vabbar, vad karensavdrag är, när läkarintyg krävs, och vem du ska ringa.",
+    "category_key": "employment-law",
+    "subcategory": "sjukdom-och-vab",
+    "tags": [
+      "sjuklön",
+      "karensavdrag",
+      "vab",
+      "sjukskrivning"
+    ],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "lon-och-formaner-guide",
+      "forsta-90-dagarna",
+      "personlig-ekonomi-jobbsokning"
+    ],
+    "related_tools": [
+      "/wellness"
+    ],
+    "checklist": [
+      "Sjukanmäl dig till din arbetsgivare samma dag, inte till Försäkringskassan",
+      "Ta reda på vad som gäller för läkarintyg på din arbetsplats",
+      "Anmäl vab till Försäkringskassan, inte till arbetsgivaren",
+      "Meddela ändå arbetsgivaren att du är borta när du vabbar",
+      "Spara intyg om du behöver styrka något senare"
+    ],
+    "actions": [
+      {
+        "href": "/wellness",
+        "label": "Håll koll på ditt mående",
+        "type": "primary"
+      },
+      {
+        "href": "/knowledge-base/article/lon-och-formaner-guide",
+        "label": "Läs om lön och förmåner",
+        "type": "secondary"
+      }
+    ]
+  },
+  "sommarjobb-och-extrajobb": {
+    "title": "Sommarjobb och extrajobb – vägen in när du saknar erfarenhet",
+    "summary": "När du bör söka, var jobben faktiskt finns, och hur en timanställning skiljer sig från en fast tjänst.",
+    "category_key": "job-search",
+    "subcategory": "sommarjobb-och-extrajobb",
+    "tags": [
+      "sommarjobb",
+      "extrajobb",
+      "timanställning",
+      "första jobbet"
+    ],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "sasongsjobb-guide",
+      "cv-utan-erfarenhet",
+      "anstallningsformer-guide",
+      "forsta-jobbet-efter-studier"
+    ],
+    "related_tools": [
+      "/job-search",
+      "/cv"
+    ],
+    "checklist": [
+      "Börja söka god tid innan säsongen du vill jobba",
+      "Sök brett: kommun, bemanning, handel och vård tar ofta in extra personal",
+      "Skriv ett kort CV även utan tidigare erfarenhet",
+      "Läs igenom vad timanställning innebär innan du tackar ja",
+      "Var tydlig med din tillgänglighet när du söker",
+      "Sköt ett extrajobb som om det vore riktigt – det kan bli det"
+    ],
+    "actions": [
+      {
+        "href": "/job-search",
+        "label": "Sök sommarjobb och extrajobb",
+        "type": "primary"
+      },
+      {
+        "href": "/cv",
+        "label": "Bygg ett CV utan tidigare erfarenhet",
+        "type": "secondary"
+      }
+    ]
+  }
+}

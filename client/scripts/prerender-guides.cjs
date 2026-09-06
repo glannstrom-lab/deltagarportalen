@@ -29,6 +29,7 @@ const {
   renderLattlast,
   renderTool,
   renderToolIndex,
+  renderB2B,
   titelForLang,
   TITEL_MAX,
 } = require('./lib/guide-template.cjs')
@@ -194,6 +195,34 @@ if (fs.existsSync(TOOLS_FILE)) {
   fs.writeFileSync(path.join(DIST, 'verktyg', 'index.html'), renderToolIndex(verktyg), 'utf8')
 }
 
+// K7/K16: B2B-landningssidorna för kommunala arbetsmarknadsenheter och
+// Rusta-och-matcha-leverantörer. Samma gating som verktygssidorna (K6): en
+// länkad guide måste vara publicerad, annars blir det en död länk vi själva
+// pekat besökaren mot.
+const B2B_FILE = path.join(CLIENT, 'content', 'b2b.json')
+let antalB2B = 0
+const b2bSlugs = []
+if (fs.existsSync(B2B_FILE)) {
+  const { sidor } = JSON.parse(fs.readFileSync(B2B_FILE, 'utf8'))
+
+  for (const b of sidor) {
+    const saknade = (b.guider || []).filter((s) => !publiceradeSlugs.has(s))
+    if (saknade.length) {
+      console.error(
+        `prerender-guides: B2B-sidan "${b.slug}" länkar till opublicerade guider: ${saknade.join(', ')}`
+      )
+      process.exit(1)
+    }
+
+    const dir = path.join(DIST, b.slug)
+    fs.mkdirSync(dir, { recursive: true })
+    const guider = (b.guider || []).map((s) => bySlug.get(s))
+    fs.writeFileSync(path.join(dir, 'index.html'), renderB2B(b, guider), 'utf8')
+    b2bSlugs.push(b.slug)
+    antalB2B++
+  }
+}
+
 const totalKb = Math.round(
   publicerade.reduce(
     (n, a) => n + fs.statSync(path.join(DIST, 'guider', a.slug, 'index.html')).size,
@@ -204,10 +233,18 @@ const totalKb = Math.round(
 // K12: startsidan länkar numera till de publika sidorna. En sådan länk kan
 // ruttna tyst — sluggen byter namn, kategorin tas bort — och resultatet blir
 // en mjuk 404 som vi själva pekar besökaren mot. Grinden kontrollerar att
-// varje /guider/- och /verktyg/-länk i Landing.tsx motsvarar en sida som just
-// genererats. Den läser dist/, inte källkoden, så den mäter utfallet.
+// varje /guider/-, /verktyg/- och B2B-länk i Landing.tsx motsvarar en sida som
+// just genererats. Den läser dist/, inte källkoden, så den mäter utfallet.
+//
+// K7/K16: prefixlistan byggs ur b2bSlugs i stället för att hårdkodas här —
+// annars glider grinden och content/b2b.json isär tyst den dag en tredje
+// B2B-sida läggs till.
 const LANDING = path.join(CLIENT, 'src', 'pages', 'Landing.tsx')
 if (fs.existsSync(LANDING)) {
+  const prefix = ['guider', 'verktyg', ...b2bSlugs].join('|')
+  const hrefRe = new RegExp(`href="(\\/(?:${prefix})[^"]*)"`, 'g')
+  const linkRe = new RegExp(`<Link\\s+to="(\\/(?:${prefix})[^"]*)"`, 'g')
+
   // Kommentarerna strippas först. Utan det matchade grinden sin egen
   // dokumentation — kommentaren som förklarar varför <Link to="/guider/"> är
   // fel innehåller ju strängen. En vakt som inte skiljer omnämnande från
@@ -216,11 +253,7 @@ if (fs.existsSync(LANDING)) {
     .readFileSync(LANDING, 'utf8')
     .replace(/\/\*[^]*?\*\//g, '')
     .replace(/^\s*\/\/.*$/gm, '')
-  const publikaLankar = [
-    ...new Set(
-      [...landingSrc.matchAll(/href="(\/(?:guider|verktyg)[^"]*)"/g)].map((m) => m[1])
-    ),
-  ]
+  const publikaLankar = [...new Set([...landingSrc.matchAll(hrefRe)].map((m) => m[1]))]
   const doda = publikaLankar.filter(
     (l) => !fs.existsSync(path.join(DIST, l.replace(/^\//, ''), 'index.html'))
   )
@@ -232,9 +265,7 @@ if (fs.existsSync(LANDING)) {
   }
   // En <Link to="/guider/…"> hade blivit #/guider/… under HashRouter och
   // skickat besökaren till startsidan. Den formen får inte smyga in igen.
-  const felaktigaLink = [...landingSrc.matchAll(/<Link\s+to="(\/(?:guider|verktyg)[^"]*)"/g)].map(
-    (m) => m[1]
-  )
+  const felaktigaLink = [...landingSrc.matchAll(linkRe)].map((m) => m[1])
   if (felaktigaLink.length) {
     console.error(
       `prerender-guides: Landing.tsx använder <Link to=…> för prerenderade sidor ` +
@@ -249,7 +280,7 @@ if (fs.existsSync(LANDING)) {
 
 console.log(
   `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalKategorier} ämnessidor + ` +
-    `${antalVerktyg} verktygssidor skrivna ` +
+    `${antalVerktyg} verktygssidor + ${antalB2B} B2B-sidor skrivna ` +
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )

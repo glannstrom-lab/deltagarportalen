@@ -195,6 +195,14 @@ function byggPrerenderade() {
         for (const t of verktyg) sidor.add(`/verktyg/${t.slug}/`)
       }
     }
+    // K7/K16: B2B-sidorna. Härleds ur b2b.json av samma skäl som ovan —
+    // prerender-guides.cjs bygger dem ur den filen, och en hårdkodad lista här
+    // hade blivit den drift grinden finns för att fånga.
+    const b2bFil = path.join(CLIENT, 'content', 'b2b.json')
+    if (fs.existsSync(b2bFil)) {
+      const { sidor: b2bSidor } = JSON.parse(fs.readFileSync(b2bFil, 'utf8'))
+      for (const b of b2bSidor || []) sidor.add(`/${b.slug}/`)
+    }
   } catch (err) {
     // Saknas snapshoten går linten vidare utan de här sidorna hellre än att
     // krascha — men säg det, annars ser tystnaden ut som att allt är grönt.

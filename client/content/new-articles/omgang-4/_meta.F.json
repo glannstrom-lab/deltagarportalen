@@ -1,0 +1,109 @@
+{
+  "lattsvenska-bli-uppsagd": {
+    "title": "Vad betyder det att bli uppsagd?",
+    "summary": "Du har blivit uppsagd. Här får du veta vilka papper du ska få, och vad du ska göra först.",
+    "category_key": "easy-swedish",
+    "subcategory": "employment-law",
+    "tags": ["uppsagd", "a-kassa", "Arbetsförmedlingen"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-a-kassa", "lattsvenska-arbetsformedlingen", "lattsvenska-anstallningsavtal", "lattsvenska-forsorjningsstod"],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [
+      "Läs igenom uppsägningen noga",
+      "Fråga facket om du är medlem",
+      "Kontakta din a-kassa",
+      "Skriv in dig hos Arbetsförmedlingen",
+      "Spara alla papper från din arbetsgivare"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Börja leta nytt jobb", "type": "primary" },
+      { "href": "/cv", "label": "Uppdatera ditt CV", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-forsorjningsstod": {
+    "title": "Vad är försörjningsstöd?",
+    "summary": "Försörjningsstöd är pengar från kommunen när du inte klarar dig själv. Här får du veta hur du ansöker.",
+    "category_key": "easy-swedish",
+    "subcategory": "employment-law",
+    "tags": ["försörjningsstöd", "kommunen", "socialtjänsten"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-a-kassa", "lattsvenska-bli-uppsagd", "lattsvenska-arbetsformedlingen"],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Kontakta socialtjänsten i din kommun",
+      "Boka ett möte med en handläggare",
+      "Ta med papper som visar din ekonomi",
+      "Berätta om din situation ärligt och tydligt",
+      "Vänta på ett skriftligt beslut"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt söka jobb", "type": "primary" }
+    ]
+  },
+  "lattsvenska-lasa-jobbannons": {
+    "title": "Hur läser jag en jobbannons?",
+    "summary": "Lär dig vad orden i en jobbannons betyder, och vad du måste kunna för att söka jobbet.",
+    "category_key": "easy-swedish",
+    "subcategory": "job-search",
+    "tags": ["jobbannons", "krav", "meriterande"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["latt-svenska-soka-jobb", "lattsvenska-cv", "lattsvenska-referenser"],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [
+      "Läs annonsen en gång till",
+      "Skriv ner vad som är krav",
+      "Skriv ner vad som är meriterande",
+      "Kolla sista ansökningsdag",
+      "Sök jobbet om du uppfyller kraven"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök och spara jobb", "type": "primary" },
+      { "href": "/cv", "label": "Bygg ditt CV", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-adhd-och-jobb": {
+    "title": "ADHD och jobbet – vad kan du göra?",
+    "summary": "Har du ADHD? Här får du veta vilket stöd du kan be om på jobbet, och vem du kan fråga.",
+    "category_key": "easy-swedish",
+    "subcategory": "accessibility",
+    "tags": ["ADHD", "anpassningar", "stöd på jobbet"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-arbetsformedlingen", "rattigheter-stod", "anpassningar-arbetsplats"],
+    "related_tools": ["/job-search", "/wellness"],
+    "checklist": [
+      "Fundera på vad som är svårast för dig på jobbet",
+      "Skriv ner det du behöver hjälp med",
+      "Be din chef om en anpassning",
+      "Fråga Arbetsförmedlingen om stöd"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb som passar dig", "type": "primary" },
+      { "href": "/wellness", "label": "Håll koll på din energi", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-referenser": {
+    "title": "Vad är en referens?",
+    "summary": "En referens är någon som berättar om dig för en arbetsgivare. Här får du veta hur det fungerar.",
+    "category_key": "easy-swedish",
+    "subcategory": "job-search",
+    "tags": ["referenser", "jobbansökan", "CV"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-cv", "latt-svenska-soka-jobb", "lattsvenska-lasa-jobbannons"],
+    "related_tools": ["/cv", "/applications"],
+    "checklist": [
+      "Fråga någon du litar på om de kan vara din referens",
+      "Berätta vilket jobb du söker",
+      "Skriv ner namn och telefonnummer",
+      "Påminn personen innan arbetsgivaren hör av sig"
+    ],
+    "actions": [
+      { "href": "/cv", "label": "Lägg till referenser i ditt CV", "type": "primary" },
+      { "href": "/applications", "label": "Håll koll på dina ansökningar", "type": "secondary" }
+    ]
+  }
+}
