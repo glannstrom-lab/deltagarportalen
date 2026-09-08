@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-09-08** (passering: 20 poster ur genomgången 7 september avbetalda av åtta agenter — tre premisser föll, tre migrationer väntar på ja; se avsnittet "Passering 2026-09-08"), byggd på **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -275,6 +275,168 @@ i kandidatsökningen.
 
 ---
 
+## Passering 2026-09-08 — 20 poster ur genomgången, åtta agenter, tre premisser som föll
+
+> Översikt: <https://claude.ai/code/artifact/f5c5f787-8169-4dad-beba-7f9a851044bb>.
+> Commit `1ca09eea`. Åtta agenter med exklusiva fillistor (ingen fil på två listor,
+> inga git-kommandon, inga delade byggen), varje post premissgranskad före ändring.
+
+### Gjort (deployat i `1ca09eea`)
+
+- **ON1/MB1** samtyckesrutan: `{ namn }` på båda `seesList`-anropen; testet förbjuder `{{`
+  både i DOM och i `p_consent_text`. Dialogen är `flex-col max-h-[calc(100dvh-2rem)]` med
+  innehållet i en rullande yta (`data-ks3="innehall"`) och fel + tre knappar i en fast sidfot
+  — inuti `modalRef`, så fokusfällan och DOM-ordningen håller. 12 tester, 4 mutationer fällda.
+- **KA1** ett toastsystem: `lib/toast.ts` delegerar till `components/Toast.tsx` (som fick ett
+  riktigt `dismissToast` — det var en tom stubb), `<Toaster/>` borta ur `Profile.tsx`,
+  `react-hot-toast` avinstallerat. Grinden `toast.grind.test.ts` skalar av kommentarer före
+  matchning (den fällde först på sin egen dokumentation). **Kvar:** `ToastContainer` ligger
+  `bottom-4 right-4` — det gamla systemet valde top-center för att inte krocka med
+  bottennavet; `Toast.tsx` har hårdkodat `bg-white`/`text-stone-900` (mörkt läge).
+- **SD2** minnesfallback i `cv-pdf.js`/`upload-image.js` via ny `_utils/rate-limit-fallback.js`
+  (tomt RPC-svar räknas som fel — strängare än `ai.js:306`). `api/_utils/rate-limiter.js`
+  hade noll importörer och är raderad; `typecheck:api` 0.
+- **DE2** reservvärden: `https://www.jobin.se` (307 från apex) med **hash-rutter** —
+  jobbevakningsmejlets fyra länkar saknade `#` och pekade på `?tab=alerts`, som aldrig varit
+  en rutt (rätt: `/#/job-search/alerts`). Saknad `EMAIL_FROM` med satt `RESEND_API_KEY`
+  ger 500 för `send-digest`; `check`/`check-user` körs vidare (portalnotiserna är den enda
+  kanal som når fram tills DE1 är löst) och bär `emailConfigError` i svaret.
+  `send-invite-email` likadant. Vercel-variablerna kan inte läsas härifrån.
+- **DE6** `[functions.health] verify_jwt = false` i `supabase/config.toml`; svaret är
+  `{ status, timestamp, checks: { database, storage } }` med bara `ok`/`error` (förut råa
+  Postgres-strängar, `version`, `uptime` och en `auth.getSession()` som med service role
+  aldrig kunde bli annat än ok). HEAD stöds; db-fel → 503.
+- **KA2** `authStore` registrerar `onAuthStateChange` på modulnivå och tömmer React Query
+  vid `SIGNED_OUT` och när `session.user.id` byter från ett känt id till ett annat.
+  `useAuth` var bara monterad på hubbsidorna; `useAuthInit` nås bara via en död barrel.
+  Vakten `registreraAuthLyssnare()` kontrollerar att metoden finns, för tre testfiler mockar
+  `supabase.auth` utan den — ta bort vakten när mockarna fått `onAuthStateChange`.
+- **ON4** `signUp` returnerar `{ needsConfirmation: true }`; `Register.tsx` visar en
+  `role="status"`-panel med fokusflytt. `auth.register` är en **sträng** i sv.json, så
+  nycklarna heter `auth.confirmEmail.*`.
+- **ON2** hjälten: "Sök jobb i din egen takt – med stöd på vägen", tre bockar utan siffror,
+  sekundärknapp → `/guider/`; B2B-raden "Arbetar du med arbetssökande?" med tre `<a href>`
+  (R&M, AME, demo). Avslutande CTA-sektionen (`Landing.tsx:~960`) är orörd.
+- **BL1** `EmptyState` + `mailto:support@jobin.se` (adressen ur `Terms.tsx:243`) — `EmptyState`
+  saknar `href`-action, så länken ligger under den. **Om adressen tar emot post är inte
+  verifierat.**
+- **AS4** `status: null` + "Välj hur det går på platsen", `role="radiogroup"`, 4 tester.
+- **MB3** `sm` → `text-sm` på alla bredder (118 `<Button size="sm">` i 42 filer, 12 dödkod);
+  `PDFExportButton` hade egna `sizeClasses` med `text-xs` — rättad. "Säg upp kopplingen" `md`.
+- **MB2 — premissen höll delvis, och det som höll var inte felet.** `<main>` hade redan
+  80 px + safe-area bottenpadding, och att Spara skärs av vikningen är inget fel (allt under
+  skärmkanten ligger under navet på varje rullande sida — att fälla ihop rådgivartipset
+  flyttar bara vilket kort som skärs). Den riktiga buggen: fönstret rullar, och
+  `scroll-padding-bottom: auto` fick `focus()`/Tab att **inte rulla alls** — tre knappar låg
+  kvar under navet efter Tab, på alla sidor. Nu `html { scroll-padding-bottom:
+  var(--bottom-nav-h) }` med variabeln satt från navets **uppmätta** höjd (65 px, inte
+  hårdkodade 64) via ResizeObserver, 0 när fokusläget döljer navet. Två fynd på vägen:
+  `pb-safe` **finns inte i Tailwind 4** (navet har haft noll safe-area) → `pb-[env(…)]`;
+  `SamlingarFab` positionerade sig med hårdkodade 68 px → nu ur tokenen. `JobSearch.tsx`
+  orörd. Mätskript `e2e/mat-bottennav-hittest.cjs` (tre regler, listar alla fixerade lager).
+- **SD3** `delete-account/storageCleanup.ts`: rekursiv, paginerad listning under `<uid>/`
+  (CV ligger under `<uid>/cv/…`, `list()` är en nivå), radering före `deleteUser()`, fel
+  rapporteras per bucket — aldrig "0 filer" vid fel. Stoppar inte auth-raderingen (profilen
+  är redan borta). Testet flyttat till `client/src/test/` — `vitest.config.ts` har
+  `include: src/**`, bredvid modulen kördes det aldrig.
+- **AS1** `guard_share_proposal_after_decision()` är `BEFORE INSERT OR UPDATE`: INSERT måste
+  vara `pending`, varje övergång från `pending` kräver `auth.uid() = OLD.participant_id`
+  (service role/NULL stoppas). Ett hål utöver roadmapens: konsulenten kunde radera
+  pending-raden och skapa en ny med `accepted` direkt. Prov A–H körda i ett lokalt
+  Postgres 18-kluster; med den gamla triggern gick prov C igenom utan rad i
+  `consent_history`. Verifierings-SQL ligger sist i migrationsfilen. **Okörd.**
+- **AS3** DPIA §1.2/§1.3: `internal_adaptation_notes` på `consultant_work_placements`
+  (källa konsulenten, ingen grind). Ställningstagande: 9.2.b/h faller, 9.2.a är hypotesen
+  men **inte uppfylld** — samtyckestexten nämner inte hälsa och `share_health_data`
+  kontrolleras inte vid skrivning.
+- **KG2** — **27 påståenden i 25 guider**, inte 18 (45 artiklar bär procent, 20 är
+  CV-exempel, regelsatser eller råd). Enda siffran som behölls: `branscher-brist` 51 %/40 %,
+  nu med "Arbetsförmedlingens Arbetsmarknadsutsikterna våren 2026" (verifierat mot PDF:en).
+  Skrivet till prod (sv + en) med `scripts/apply-procent-rattelser.cjs` +
+  `content/procent-rattelser.json` (torrkörning, backup, driftkontroll, återläsning); prod
+  bär **CRLF i `content_en`, LF i svenskan** — skriptet matchar fältets egna radslut.
+  `--bara=<slug>` finns för att en redan skriven post matchar 0 gånger nästa körning.
+  Grind `guides-pastaenden.test.ts` (ser bara svenskan — `content_en` finns inte i
+  snapshoten). Sidofynd rättat samma väg: `lon-och-formaner-guide` sa "minst 4,5 % av lönen
+  (lag)" om tjänstepension — ingen lag kräver den; 4,5 % är avtalsnivån i ITP 1/SAF-LO.
+- **KG1** kluster 24 + regeln "delad `category_key + subcategory` = kandidatkluster" (55 av
+  122 underkategorier delas). De två guiderna **länkar inte** till varandra — premissen höll
+  till två tredjedelar. Inlänkar 7 mot 2, ord 557 mot 1 237 → väntar på Search Console.
+
+### Skrivet men EJ kört — väntar på Mikaels ja
+
+Efter varje: `cd client && npm run schema:refresh && npm run grants:refresh` i samma commit.
+
+1. `npx supabase db query --linked -f supabase/migrations/20260902100000_ag5_share_proposals.sql`
+   → `select pg_get_triggerdef(oid) from pg_trigger where tgname='trg_esp_guard_after_decision'`
+   innehåller `BEFORE INSERT OR UPDATE`; prov C i filen → 42501.
+2. `… -f supabase/migrations/20260908100000_as2_placements_relation.sql` → `pg_policies where
+   tablename='consultant_placements'` = 1 rad med `EXISTS ( SELECT 1 FROM consultant_participants`
+   i **både** qual och with_check. Beslut i samma fil: ingen deltagar-SELECT (raden bär
+   `notes` + `salary_range`); historiska placeringar utan relation blir osynliga.
+   Kommentarer som blir falska efteråt: `consultantService.ts:685–695`, `SettingsTab.tsx:305–318`.
+3. `… -f supabase/migrations/20260908110000_sd1_get_shared_profile_atomic.sql` → `password_hash`
+   0 rader i `information_schema.columns`; `has_function_privilege('anon',
+   'public.get_shared_profile(text)','EXECUTE')` = true. Samtidighetsprov lokalt: gamla kroppen
+   gav `view_count = 2` vid `max_views = 1`, nya gav NULL till den andra. `SharedProfile.tsx`
+   oförändrad — svarsformen är identisk. Omnämnanden att städa: `GDPR-ART30-REGISTER.md:376`,
+   `security-audit.md:26`.
+
+### Premisser som föll eller ändrades
+
+- **MB2** — "sidan saknar bottenpadding" och "fäll ihop rådgivartipset" höll inte; felet var
+  `scroll-padding-bottom` (se ovan).
+- **KG2** — 18 var för lågt: 27 i 25.
+- **KG1** — de två guiderna länkar inte till varandra.
+- **KA1** — 14 anropare, inte 13.
+- **SD1** — "verkställ lösenordet eller ta bort kolumnen" var ett falskt val: ingen kod läste
+  eller skrev `password_hash`, inget UI erbjöd lösenord. Bara att droppa.
+- **DE2** — roadmapens "högljutt fel" rakt av hade stoppat portalnotiserna med. Grinden sitter
+  där mejlet skickas, inte före `check`.
+
+### Fynd på vägen, inte åtgärdade
+
+- `unifiedProfileApi.uploadProfileImage` laddar upp till `profile-images` under `profiles/…`
+  medan storage-policyn kräver `<uid>/` — kan aldrig lyckas, 0 anropare (dödkod).
+- `SamlingarFab` överlappar högerkanten på en fokuserad "Ansök"-knapp (14×45 px) — fokus
+  rullar upp till exakt FAB:ens remsa. Frågan är om en fixerad ö i innehållskolumnen ska
+  finnas alls.
+- `KonsulentSamtyckeFraga` täcker hela vyporten (z=100) och låser rullningen vid varje
+  sidladdning på testkontot — första mobilmätningen mätte rutan, inte navet.
+- `Layout.tsx` har ett `pb-safe` (no-op i Tailwind 4, harmlöst).
+- Tre testfiler mockar `supabase.auth` utan `onAuthStateChange` (vakten i `authStore`).
+
+### Verifiering
+
+Lokalt: `lint:vercel`, `lint:schema`, `lint:grants`, `typecheck:critical`, `typecheck:api` (0),
+`typecheck:ceiling`, `lint:ci` (0 fel, 115 av 122 varningar), `lint:design` (52/52),
+`lint:links`, `test:coverage` **209 filer / 2 956 tester** (var 2 894), `build`.
+
+**Verifierat i drift (körning `34230599833`):** `Deploy Frontend` ✅, `Deploy Supabase
+Migrations` (= edge-funktionerna) ✅, **`Smoke Test` ❌ på steget "API health check"** — steget
+kräver `401` från `/functions/v1/health` utan auth som bevis på "deployad och skyddad"
+(`deploy.yml:~185–200`), och DE6 gjorde just den funktionen publik. Alla steg före var gröna.
+Prod är alltså **levererad**, och röktestet mäter en premiss som inte längre gäller.
+**Kräver ja (workflow-ändring):** i `case "$anon"` byt `401)`-raden mot
+`200) echo "health: 200 utan auth — publik övervakningsendpoint (DE6). OK" ;;` och låt `401)`
+fälla med "verify_jwt har slagits på igen — config.toml [functions.health]"; den skarpa
+nyckelkontrollen kan stå kvar. Mätt direkt mot prod efter deployen:
+- `curl -o /dev/null -w "%{http_code}" …/functions/v1/health` → **200** (var 401); body
+  `{"status":"healthy","timestamp":…,"checks":{"database":"ok","storage":"ok"}}`; HEAD → 200.
+- Hjälten (`www.jobin.se`, Playwright): h1 "Sök jobb i din egen takt – med stöd på vägen",
+  två länkar till `/for-rusta-och-matcha/`, "Stärk dina deltagare" förekommer inte,
+  B2B-raden finns.
+- Samtyckesrutan på testkontot, 390×844 och 375×667: inget `{{` i DOM, raden lyder "mål
+  som Claude Test skriver om dig", alla tre knapparna inom vyporten (640–804 resp. 463–627),
+  innehållet rullar (`scrollHeight` 814/865 mot `clientHeight` 607/430),
+  `elementFromPoint` på första knappen träffar knappen.
+- `BASE_URL=https://www.jobin.se node e2e/mat-bottennav-hittest.cjs /job-search` (kör med
+  `MSYS_NO_PATHCONV=1` i Git Bash, annars blir `/job-search` en Windows-sökväg):
+  `scroll-padding-bottom=65px`, "efter fokus/Tab: alla nåbara" på båda vyporterna, **OK**.
+  Vid laddning ligger Spara/Ansök fortfarande 83 % under navet (vikningen, inte ett fel).
+
+---
+
 ## Projektgenomgång 2026-09-07 — åtta linser över det som byggts sedan 21 augusti
 
 > Översikt att arbeta mot: <https://claude.ai/code/artifact/227bae53-753b-4c66-bdcb-f8767a35260e>
@@ -312,20 +474,20 @@ nedan) och **MV2b** (väntar på beslut).
   lägg posterna hos Simply, skicka ett riktigt mejl till en adress utanför ditt konto och
   läs `dkim=pass`/`dmarc=pass` · `client/api/job-alerts.js:370`,
   `supabase/functions/send-invite-email/index.ts:408` · mätt · M, mest väntetid
-- [ ] **ON1** **Samtyckesrutan om konsulenten visar `{{namn}}` rått och sparar det i
+- [x] **ON1** *(✅ 2026-09-08 — `{ namn }` på båda anropen; test förbjuder `{{` i DOM och i beviset)* **Samtyckesrutan om konsulenten visar `{{namn}}` rått och sparar det i
   beviset.** Reproducerat live: sista punkten lyder "anteckningar och mål som {{namn}}
   skriver om dig". Båda anropen till `seesList` saknar `{ namn }`; de fem andra på samma
   strängfamilj har det. Texten går genom `byggSamtyckestext()` in i
   `grant_consultant_consent` — art. 7.1-beviset. Fix: skicka `{ namn: konsulentNamn }`
   på rad 159 och 205; test som renderar rutan och förbjuder `{{` i DOM ·
   `client/src/components/consultant/KonsulentSamtyckeFraga.tsx:159, 205` · mätt · ~15 min
-- [ ] **MB1** **Samma ruta på mobil: alla tre knapparna under skärmkanten, utan tecken på
+- [x] **MB1** *(✅ 2026-09-08 — fast sidfot utanför den rullande ytan (`100dvh`); pixelmätning mot prod efter deploy, se passeringen)* **Samma ruta på mobil: alla tre knapparna under skärmkanten, utan tecken på
   rullning.** 390×844: rutan slutar på 828 px, knapparna på 874/930/990. 375×667: 445 av
   1 045 px dolda. Komponentens egen kommentar säger att den inte ska vara en spärr; utan
   synlig rullning är den det. Fix: knappraden utanför den rullande ytan, fäst nedtill;
   hit-testa på båda viewporterna · `KonsulentSamtyckeFraga.tsx:215, 272–285` · mätt,
   skärmdump · ~½ dag
-- [ ] **KA1** **`notifications.*` ritas bara ut på profilsidan — två toastsystem, ett
+- [x] **KA1** *(✅ 2026-09-08 — `lib/toast.ts` är adapter mot `components/Toast.tsx`, `react-hot-toast` avinstallerat, grind `toast.grind.test.ts`; anroparna var **14**, inte 13)* **`notifications.*` ritas bara ut på profilsidan — två toastsystem, ett
   monterat.** `lib/toast.ts` (react-hot-toast) kräver `<Toaster/>`; den finns bara i
   `Profile.tsx:181`. Tretton **levande** filer anropar `notifications.success/error`:
   fyra konsulentflikar, gruppmeddelandet, rapportutkastet, aktivitetsrapporten,
@@ -333,7 +495,7 @@ nedan) och **MV2b** (väntar på beslut).
   (`components/Toast.tsx`, `ToastContainer` i `Layout.tsx:277`) är det som syns. Fix: ett
   system, en monteringspunkt; grind som greppar båda importvägarna · mätt (grep +
   nåbarhet) · ~1 h
-- [ ] **AS1** **AG5-migrationen låter konsulenten godkänna ett delningsförslag åt
+- [x] **AS1** *(✅ 2026-09-08 — triggern grindar `INSERT OR UPDATE`; ett andra hål (radera pending + skapa `accepted`) stängt i samma fil. **Migrationen är fortfarande okörd**)* **AG5-migrationen låter konsulenten godkänna ett delningsförslag åt
   deltagaren, utan spår i `consent_history`.** Policyn är `FOR ALL` med aktiv relation;
   triggern `guard_share_proposal_after_decision()` skyddar bara `OLD.status <> 'pending'`.
   En vanlig `UPDATE … SET status='accepted', decided_at=now()` passerar. Fix: blockera
@@ -341,7 +503,7 @@ nedan) och **MV2b** (väntar på beslut).
   rollad transaktion som konsulent **före** körning ·
   `supabase/migrations/20260902100000_ag5_share_proposals.sql:158–213` · läst i koden,
   migration okörd · ~30 min, **före** AG5:s ja
-- [ ] **AS2** **`consultant_placements` har en enda policy utan relationskoll.** Mätt i
+- [ ] **AS2** *(📝 2026-09-08 — migration `20260908100000_as2_placements_relation.sql` skriven och prövad lokalt; **väntar på ja**)* **`consultant_placements` har en enda policy utan relationskoll.** Mätt i
   prod: `Consultants can manage their placements`, ALL, `qual = (auth.uid() =
   consultant_id)`, ingen `EXISTS` mot `consultant_participants`. KK5 lagade exporten i
   applikationskoden, inte policyn. En återkallad konsulent läser, ändrar och raderar
@@ -357,13 +519,13 @@ nedan) och **MV2b** (väntar på beslut).
   `SET NULL` på deltagarägd data, CASCADE bara på konsulentens eget; eller överlämning i
   raderingsflödet — **beslut** · `supabase/migrations/20260327110000_delete_account.sql:191` ·
   mätt mot prod · beslut + ~3 h
-- [ ] **SD1** **`get_shared_profile` kontrollerar aldrig `password_hash`, och
+- [ ] **SD1** *(📝 2026-09-08 — migration `20260908110000_sd1_get_shared_profile_atomic.sql` (atomär UPDATE, `DROP COLUMN password_hash` — ingen kod läste eller skrev den); **väntar på ja**)* **`get_shared_profile` kontrollerar aldrig `password_hash`, och
   visningstaket är check-then-act.** Funktionskroppen läst ur prod: SELECT av
   `view_count`, jämförelse, separat UPDATE — två samtidiga anrop passerar båda. Öppen för
   `anon`. 0 delningar i prod i dag. Fix: atomär `UPDATE … WHERE view_count < max_views
   RETURNING *`; verkställ lösenordet eller ta bort kolumnen + UI:t ·
   `client/src/pages/SharedProfile.tsx:279` · mätt mot prod · ~1–2 h
-- [ ] **SD2** **CV-PDF och bilduppladdning släpper igenom allt vid rate-limit-fel.**
+- [x] **SD2** *(✅ 2026-09-08 — `_utils/rate-limit-fallback.js` i båda; `api/_utils/rate-limiter.js` raderad; grind `api-rate-limit-fallback.test.ts`)* **CV-PDF och bilduppladdning släpper igenom allt vid rate-limit-fel.**
   `{ allowed: true }` på tre ställen vardera vid RPC-fel; `ai.js`/`job-alerts.js` har
   minnesfallback. CV-PDF startar Chromium (1 024 MB) per anrop. `api/_utils/rate-limiter.js`
   importeras av ingen. Fix: samma minnesfallback; radera eller använd utilen ·
@@ -372,34 +534,34 @@ nedan) och **MV2b** (väntar på beslut).
 
 ### Sedan — skav som märks
 
-- [ ] **KG2** **18 av 240 artiklar bär ospårbara procentpåståenden** ("75 % av alla CV
+- [x] **KG2** *(✅ 2026-09-08 — **27 påståenden i 25 guider** (inte 18) omskrivna i prod sv+en; grind `guides-pastaenden.test.ts`)* **18 av 240 artiklar bär ospårbara procentpåståenden** ("75 % av alla CV
   ses aldrig" ×5, "70 % av jobben via kontakter" ×5, "87 % av rekryterare" ×2, "65 % av
   dagens barn" …). Räknat av mig med regex över `articles.snapshot.json` — agenten sa 5.
   `tools-json-pastaenden.test.ts` grindar klassen för de 18 verktygssidorna men inte för
   de 251 guiderna. Fix: skriv om de 18 genom pipelinen (siffra bara med källa och år),
   och lyft grinden till snapshoten · mätt · ~2 h + grind
-- [ ] **ON2** **Landningssidans hjälte talar till inköparen** ("Stärk dina deltagare mot
+- [x] **ON2** *(✅ 2026-09-08 — hjälten i du-form; B2B-rad med `<a href>` till de prerenderade sidorna)* **Landningssidans hjälte talar till inköparen** ("Stärk dina deltagare mot
   jobb … för dig som konsulent") medan knappen under är "Skapa konto gratis" för den
   arbetssökande. Strider mot DESIGN.md §2. Fix: hjälten i du-form till den som klickar;
   B2B-vinkeln till `/for-rusta-och-matcha/` och `/for-arbetsmarknadsenheter/` som redan
   finns · `sv.json:7579–7581`, `Landing.tsx:330` · mätt, skärmdump · ~1–2 h text
-- [ ] **BL1** *(kvar sedan 21 aug — bekräftad orörd)* `/my-consultant` utan konsulent: kort
+- [ ] **BL1** *(🟡 2026-09-08 — `EmptyState` + mailto `support@jobin.se`; beslutet (kö eller stängd självregistrering) kvarstår)* *(kvar sedan 21 aug — bekräftad orörd)* `/my-consultant` utan konsulent: kort
   utan knapp, utan `EmptyState` (som filen använder på rad 460). 70 av 101 konton saknar
   koppling. Beslutet står: stäng självregistreringen eller bygg en kö. Oavsett: en mailto i
   dag · `MyConsultant.tsx:1054–1067` · läst, skärmdump · beslut + ~1 h
-- [ ] **DE2** **Tre reservvärden i mejlkoden pekar fel:** `onboarding@resend.dev`
+- [x] **DE2** *(✅ 2026-09-08 — reserv `www.jobin.se` med hash-rutter (länkarna saknade `#`); 500 bara för `send-digest`, `check` bär `emailConfigError`)* **Tre reservvärden i mejlkoden pekar fel:** `onboarding@resend.dev`
   (sandlåda, når bara kontoägaren) när `EMAIL_FROM` saknas; `https://deltagarportalen.se`
   i alla fyra länkar i jobbevakningsmejlet när `VITE_APP_URL` saknas;
   `http://localhost:5173/#/invite/…` när `SITE_URL` saknas (sex systerfunktioner faller
   på jobin.se). Om variablerna är satta kan bara dashboarden svara. Fix: jobin.se som
   reservvärde, högljutt fel utan avsändare · `job-alerts.js:250–320, 370`,
   `send-invite-email/index.ts:408–409` · läst · ~30 min
-- [ ] **DE6** **`/health` svarar 401 före sin egen kod** — plattformens JWT-grind;
+- [x] **DE6** *(✅ 2026-09-08 — `verify_jwt = false` i `config.toml`, svaret nedskalat; verifiering efter deploy i passeringen)* **`/health` svarar 401 före sin egen kod** — plattformens JWT-grind;
   funktionen är skriven utan auth för övervakare. En uptime-tjänst utan `apikey` ser
   alltid "nere", och en riktig databasstörning ser likadan ut. Fix: `--no-verify-jwt`
   eller dokumentera nyckeln; koppla en gratis övervakare ·
   `supabase/functions/health/index.ts:34` · mätt (curl → 401) · ~30 min
-- [ ] **KA2** **40 av 40 React Query-nycklar saknar användar-id; cachen töms bara via
+- [ ] **KA2** *(🟡 2026-09-08 — töms centralt vid `SIGNED_OUT` och kontobyte (`authStore`); per-nyckel-`userId` kvar (35 filer))* **40 av 40 React Query-nycklar saknar användar-id; cachen töms bara via
   utloggningsknappen.** `rensaAllCache()` har en anropare (`authStore.ts:412`);
   `useSupabase.ts:32` lyssnar på `onAuthStateChange` men tömmer inget vid `SIGNED_OUT`.
   Spontanansökan-läckan (19 aug) lagades på ett ställe av 41. Fix: töm centralt på
@@ -414,20 +576,20 @@ nedan) och **MV2b** (väntar på beslut).
   säger olika saker). Fix: lägg till med vad som skickas och webbsökningen, eller stäng de
   fem funktionerna tills avtal finns — **beslut** · `Privacy.tsx:159–166`, `sv.json:7901`
   · mätt · beslut + ~30 min
-- [ ] **SD3** **Kontoraderingen städar Vercel Blob men inte bucketen `profile-documents`.**
+- [x] **SD3** *(✅ 2026-09-08 — `storageCleanup.ts` rekursivt före `deleteUser()`; testet ligger i `client/src/test/` för att vitest inte ser `supabase/`)* **Kontoraderingen städar Vercel Blob men inte bucketen `profile-documents`.**
   FK-kaskaden når inte `storage.objects`; edge-funktionen nämner inte bucketen. 0 objekt
   i dag. Fix: `list('<id>/')` + `remove()` före `deleteUser()`, som Blob-städningen rad
   74–111 · `supabase/functions/delete-account/index.ts`, `cvApi.ts:249` · mätt · ~1 h
-- [ ] **AS4** **Uppföljningsmodalen förifyller `status: 'good'`.** En konsulent som bara
+- [x] **AS4** *(✅ 2026-09-08 — `null` + krävt val, 4 tester)* **Uppföljningsmodalen förifyller `status: 'good'`.** En konsulent som bara
   fyller vecka och datum sparar "Går bra" ingen bedömt — mot ärlighetsregeln och mot ditt
   domänsvar 31 aug (avvikelsen är det viktiga). Fix: `null` + krävt val ·
   `PlaceringUppfoljningModal.tsx:42, 142–162` · läst · ~15 min
-- [ ] **MB2** **Första jobbträffens Spara-knapp ligger 54 % under bottennavet vid
+- [x] **MB2** *(✅ 2026-09-08 — **premissen höll delvis**: felet var `scroll-padding-bottom`, inte padding; se passeringen)* **Första jobbträffens Spara-knapp ligger 54 % under bottennavet vid
   laddning** (390×844: knapp 757–805, nav från 779; `elementFromPoint` träffar navet;
   reproducerat ×3). Fix: fäll ihop rådgivartipset/räkneraden under `sm` eller
   `scroll-margin`; hit-testa alla fixerade lager efteråt · `JobSearch.tsx:803–846`,
   `HubBottomNav.tsx:46` · mätt, skärmdump · ~2–4 h
-- [ ] **MB3** **12 px knapptext på mobil** för "Säg upp kopplingen", "Exportera PDF",
+- [x] **MB3** *(✅ 2026-09-08 — `text-sm` som golv i `Button` och `PDFExportButton`; "Säg upp kopplingen" `md`)* **12 px knapptext på mobil** för "Säg upp kopplingen", "Exportera PDF",
   "Spara reflektion": `size="sm"` ger `text-xs` under 640 px. Mätt på 9 av 17 rutter.
   Tap-målen är fine (golv 40–48 px); läsbarheten är det inte. Fix: `text-sm` som golv,
   `size="md"` på de konsekvensrika · `Button.tsx:51`,
@@ -436,7 +598,7 @@ nedan) och **MV2b** (väntar på beslut).
   ställen i mallen. Fix: en bild per kategori, en switch ·
   `client/scripts/lib/guide-template.cjs:411, 550, 636, 772, 900, 995, 1116` · mätt ·
   ~2–4 h
-- [ ] **ON4** **"Konto skapat!" renderas som rött fel om e-postbekräftelse slås på.**
+- [x] **ON4** *(✅ 2026-09-08 — `needsConfirmation`, `role="status"`, nycklar `auth.confirmEmail.*`)* **"Konto skapat!" renderas som rött fel om e-postbekräftelse slås på.**
   `signUp` returnerar texten som `error`; `Register.tsx` kastar den i `role="alert"`. Död
   gren i dag (alla nya konton autobekräftas inom 0,3 s), men 18 av 83 e-postkonton är
   obekräftade i historiken, så inställningen har varit på. Fix:
@@ -445,11 +607,11 @@ nedan) och **MV2b** (väntar på beslut).
 
 ### Framåt — utveckling
 
-- [ ] **KG1** **Kannibaliseringskartan missar `kompetensutveckling-guide` /
+- [x] **KG1** *(✅ 2026-09-08 — kluster 24 + regeln; de två **länkar inte** till varandra (premissen höll till två tredjedelar))* **Kannibaliseringskartan missar `kompetensutveckling-guide` /
   `kompetensutveckling-plan`** — samma underkategori, samma struktur, länkar till
   varandra; Jaccard-svepet såg bara ett delat ord. Fix: kluster 24 + regel på delad
   `category_key + subcategory` · `client/content/kannibalisering.md` · mätt · ~30 min
-- [ ] **AS3** **DPIA:n saknar `internal_adaptation_notes`** — art. 9-nära, skrivet av
+- [x] **AS3** *(✅ 2026-09-08 — rader i §1.2/§1.3 + ställningstagande: 9.2.a är hypotesen men inte uppfylld — beslut kvar)* **DPIA:n saknar `internal_adaptation_notes`** — art. 9-nära, skrivet av
   konsulenten, inte deltagaren; ingen kategori, källa eller rättslig grund i §1.2/§1.3.
   Fix: en rad vardera, och ett ställningstagande om grunden ·
   `docs/DPIA-PORTAL.md:44–56` · läst · ~30 min
