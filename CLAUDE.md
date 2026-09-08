@@ -73,7 +73,7 @@ deltagarportal/
 │       ├── hooks/           # 30+ custom hooks
 │       └── lib/             # supabase, sentry, validators, ...
 ├── api/                     # Repo-root Vercel-katalog
-│   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
+│   └── _utils/              # rate-limiter.js — importeras av INGEN av de fyra funktionerna (mätt 2026-09-07, SD2); var och en har sin egen checkRateLimit
 ├── supabase/                # Migrations (142 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
@@ -327,7 +327,7 @@ npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:grants        # anon-öppna SECURITY DEFINER-funktioner + RLS per tabell (A36)
 npm run lint:vercel        # vercel.json-konfigurationen
 npm run lint:links         # döda länkmål i levande kod (C27)
-npm run test:run           # ~2 550 tester i ~165 filer (~51 s, mätt 2026-08-31 — talet
+npm run test:run           # ~2 890 tester i ~203 filer (~100 s under belastning, mätt 2026-09-07 — talet
                            # driver snabbt, mät om i stället för att tro på det här)
 npm run build
 ```
