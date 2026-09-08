@@ -9,6 +9,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse, validateOriginOrReject } from '../_shared/cors.ts'
+import { cleanupUserStorage, describeCleanup } from './storageCleanup.ts'
 
 serve(async (req) => {
   // Handle CORS preflight
@@ -110,6 +111,27 @@ serve(async (req) => {
     }
     console.log(`[delete-account] Vercel Blob cleanup: ${blobCleanupStatus}`)
 
+    // SD3 (2026-09-08): Supabase Storage — CV-filer och intyg i bucketen
+    // profile-documents (privat) ligger under `<uid>/`, och FK-kaskaden når
+    // aldrig storage.objects. Samma klass som Blob-städningen ovan, samma
+    // placering: FÖRE deleteUser, medan ägaren fortfarande finns.
+    //
+    // Felpolicy — uttrycklig, inte kopierad: ett fel här STOPPAR INTE
+    // auth-raderingen. Profilen är redan borta (RPC-steget före det här
+    // anropet), så ett avbrott hade lämnat ett identitetskonto utan profil
+    // OCH filerna kvar — strikt sämre för användaren, och klienten
+    // (accountApi.executeImmediateDeletion) har ingen omförsöksväg. I
+    // stället: console.error + statusraden i svaret, så att en ofullständig
+    // radering går att se och städa med service role. (BL6: ingen Sentry i
+    // edge-funktionerna — loggen är det enda spåret tills det är löst.)
+    const storageResults = await cleanupUserStorage(supabaseAdmin.storage, userId)
+    const storageCleanupStatus = describeCleanup(storageResults)
+    if (storageResults.some((r) => r.error)) {
+      console.error(`[delete-account] Storage cleanup INCOMPLETE for ${userId}: ${storageCleanupStatus}`)
+    } else {
+      console.log(`[delete-account] Storage cleanup: ${storageCleanupStatus}`)
+    }
+
     // Delete from auth.users
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
 
@@ -127,7 +149,8 @@ serve(async (req) => {
       success: true,
       message: 'Account completely deleted',
       deletedAt: new Date().toISOString(),
-      blobCleanup: blobCleanupStatus
+      blobCleanup: blobCleanupStatus,
+      storageCleanup: storageCleanupStatus
     }, 200, origin)
 
   } catch (error) {

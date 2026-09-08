@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { safeReturnTo, medReturnTo } from '../lib/returnTo'
 
@@ -90,6 +90,19 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
+  // ON4: när Supabase kräver e-postbekräftelse är kontot skapat men det finns
+  // ingen session att gå vidare med. Det är ett nästa steg, inte ett fel —
+  // tidigare rann texten "Konto skapat! …" genom `submitError` och visades
+  // som en röd alert. Adressen sparas så att panelen kan säga VART mejlet gick.
+  const [bekraftelseMejl, setBekraftelseMejl] = useState<string | null>(null)
+  const bekraftelseRef = useRef<HTMLDivElement>(null)
+
+  // Flytta fokus till panelen när den dyker upp: formuläret hon stod i är
+  // borta, och utan flytt hamnar tangentbordsfokus i tomma intet.
+  useEffect(() => {
+    if (bekraftelseMejl) bekraftelseRef.current?.focus()
+  }, [bekraftelseMejl])
+
   // KO2: subtiteln säger VART hon var på väg när returnTo finns — se
   // Login.tsx för resonemanget.
   const returnToSafe = safeReturnTo(searchParams.get('returnTo'))
@@ -124,7 +137,7 @@ export default function Register() {
       setSubmitError('')
 
       try {
-        const { error: signUpError } = await signUp({
+        const { error: signUpError, needsConfirmation } = await signUp({
           email: data.email,
           password: data.password,
           firstName: data.firstName,
@@ -142,6 +155,11 @@ export default function Register() {
             throw new Error(t('auth.errors.userExists'))
           }
           throw new Error(signUpError)
+        }
+
+        if (needsConfirmation) {
+          setBekraftelseMejl(data.email)
+          return
         }
 
         // K11: dit hon var på väg innan registreringen, om det finns en säker
@@ -189,384 +207,414 @@ export default function Register() {
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.createAccount')}</h2>
           <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{subtitel}</p>
 
-          {/* Google Quick Registration */}
-          <button
-            type="button"
-            onClick={async () => {
-              setIsGoogleLoading(true)
-              await signInWithGoogle()
-              setIsGoogleLoading(false)
-            }}
-            disabled={isGoogleLoading}
-            className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
-          >
-            {isGoogleLoading ? (
-              <Loader2 className="animate-spin" size={20} />
-            ) : (
-              <GoogleIcon className="w-5 h-5" />
-            )}
-            <span>{t('auth.registerWithGoogle', 'Snabbregistrera med Google')}</span>
-          </button>
-
-          {/* Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-stone-200 dark:border-stone-600"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white dark:bg-stone-800 text-gray-500 dark:text-gray-400">
-                {t('auth.orWithEmail', 'eller med e-post')}
-              </span>
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {submitError && (
+          {bekraftelseMejl ? (
+            /* ON4: nästa steg, inte ett fel. role="status" + aria-live="polite" —
+               inte alert, som är reserverat för det som gått fel. Neutral ruta
+               med samma tokens som resten av sidan. */
             <div
-              role="alert"
+              ref={bekraftelseRef}
+              tabIndex={-1}
+              role="status"
               aria-live="polite"
-              className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm"
+              className="p-4 bg-stone-50 dark:bg-stone-700/50 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
             >
-              {submitError}
-            </div>
-          )}
-
-          {/* Validation Summary */}
-          {(Object.keys(errors).length > 0 && Object.keys(touched).length > 0) && (
-            <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
-              <p className="text-amber-800 dark:text-amber-300 text-sm font-medium mb-1">{t('auth.pleaseCorrect')}:</p>
-              <ul className="text-amber-700 dark:text-amber-400 text-sm list-disc list-inside">
-                {Object.entries(errors).map(([field, error]) => (
-                  touched[field as keyof typeof touched] && <li key={field}>{error}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-            {/* Name Fields */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
-                >
-                  {t('auth.firstName')}
-                </label>
-                <div className="relative">
-                  <User
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
-                    size={20}
-                    aria-hidden="true"
-                  />
-                  <input
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={values.firstName}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    aria-invalid={touched.firstName && !!errors.firstName}
-                    aria-describedby={touched.firstName && errors.firstName ? 'firstName-error' : undefined}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                      touched.firstName && errors.firstName
-                        ? 'border-red-300 dark:border-red-700 focus:border-red-500'
-                        : 'border-stone-300 dark:border-stone-600'
-                    }`}
-                    placeholder="Anna"
-                    autoComplete="given-name"
-                  />
-                </div>
-                {touched.firstName && errors.firstName && (
-                  <p id="firstName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
-                )}
-              </div>
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
-                >
-                  {t('auth.lastName')}
-                </label>
-                <input
-                  id="lastName"
-                  name="lastName"
-                  type="text"
-                  value={values.lastName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.lastName && !!errors.lastName}
-                  aria-describedby={touched.lastName && errors.lastName ? 'lastName-error' : undefined}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                    touched.lastName && errors.lastName
-                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
-                      : 'border-stone-300 dark:border-stone-600'
-                  }`}
-                  placeholder="Andersson"
-                  autoComplete="family-name"
-                />
-                {touched.lastName && errors.lastName && (
-                  <p id="lastName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
-              >
-                {t('auth.email')}
-              </label>
-              <div className="relative">
-                <Mail
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
-                  size={20}
-                  aria-hidden="true"
-                />
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.email && !!errors.email}
-                  aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                    touched.email && errors.email
-                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
-                      : 'border-stone-300 dark:border-stone-600'
-                  }`}
-                  placeholder="namn@exempel.se"
-                  autoComplete="email"
-                />
-              </div>
-              {touched.email && errors.email && (
-                <p id="email-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
-              )}
-            </div>
-
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
-              >
-                {t('auth.password')}
-              </label>
-              <div className="relative">
-                <Lock
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
-                  size={20}
-                  aria-hidden="true"
-                />
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.password && !!errors.password}
-                  aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                    touched.password && errors.password
-                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
-                      : 'border-stone-300 dark:border-stone-600'
-                  }`}
-                  placeholder={t('auth.newPasswordPlaceholder')}
-                  autoComplete="new-password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
-                  aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
-                >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-              {touched.password && errors.password && (
-                <p id="password-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
-              )}
-
-              {/* Password Strength Indicator */}
-              <div className="mt-3 p-3 bg-stone-50 dark:bg-stone-700/50 border border-stone-200 dark:border-stone-600 rounded-lg space-y-2">
-                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{t('auth.passwordNeeds')}:</p>
-                <ul className="space-y-1">
-                  {passwordRules.map((rule) => {
-                    const isPassed = rule.test(values.password)
-                    return (
-                      <li
-                        key={rule.id}
-                        className={`flex items-center gap-2 text-sm ${
-                          values.password === ''
-                            ? 'text-gray-600 dark:text-gray-300'
-                            : isPassed
-                              ? 'text-[var(--c-text)] dark:text-[var(--c-text)]'
-                              : 'text-gray-600 dark:text-gray-400'
-                        }`}
-                      >
-                        {isPassed ? (
-                          <Check size={16} className="text-[var(--c-solid)] dark:text-[var(--c-text)]" />
-                        ) : (
-                          <X size={16} className="text-stone-300 dark:text-stone-500" />
-                        )}
-                        <span>{rule.label}</span>
-                      </li>
-                    )
-                  })}
-                </ul>
-                {isPasswordValid && (
-                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] font-medium mt-2">
-                    {t('auth.passwordSecure')}
+              <div className="flex items-start gap-3">
+                <Check size={20} className="mt-0.5 shrink-0 text-[var(--c-solid)] dark:text-[var(--c-text)]" aria-hidden="true" />
+                <div className="space-y-2">
+                  <p className="font-semibold text-gray-800 dark:text-gray-100">
+                    {t('auth.confirmEmail.title', 'Nästan klart — kolla din e-post')}
                   </p>
-                )}
-              </div>
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
-              >
-                {t('auth.confirmPassword')}
-              </label>
-              <div className="relative">
-                <Lock
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
-                  size={20}
-                  aria-hidden="true"
-                />
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showPassword ? 'text' : 'password'}
-                  value={values.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.confirmPassword && !!errors.confirmPassword}
-                  aria-describedby={touched.confirmPassword && errors.confirmPassword ? 'confirmPassword-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
-                    touched.confirmPassword && errors.confirmPassword
-                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
-                      : 'border-stone-300 dark:border-stone-600'
-                  }`}
-                  placeholder={t('auth.confirmPasswordPlaceholder')}
-                  autoComplete="new-password"
-                />
-              </div>
-              {touched.confirmPassword && errors.confirmPassword && (
-                <p id="confirmPassword-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
-              )}
-              {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
-                <p className="mt-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] flex items-center gap-1">
-                  <Check size={16} />
-                  {t('auth.passwordsMatch')}
-                </p>
-              )}
-            </div>
-
-            {/* Consent Section */}
-            <div className="space-y-3 p-4 bg-stone-50 dark:bg-stone-700/50 rounded-lg border border-stone-200 dark:border-stone-600">
-              <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-3">{t('auth.consent.title')}</p>
-
-              {/* Terms Checkbox */}
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="acceptTerms"
-                  name="acceptTerms"
-                  checked={values.acceptTerms}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.acceptTerms && !!errors.acceptTerms}
-                  aria-describedby={touched.acceptTerms && errors.acceptTerms ? 'acceptTerms-error' : undefined}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
-                />
-                <label htmlFor="acceptTerms" className="text-sm text-gray-600 dark:text-gray-300">
-                  {t('auth.consent.acceptTerms')}{' '}
-                  <Link to="/terms" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
-                    {t('auth.consent.termsLink')}
-                  </Link>
-                  {' '}<span className="text-red-500 dark:text-red-400">*</span>
-                </label>
-              </div>
-              {touched.acceptTerms && errors.acceptTerms && (
-                <p id="acceptTerms-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptTerms}</p>
-              )}
-
-              {/* Privacy Checkbox */}
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="acceptPrivacy"
-                  name="acceptPrivacy"
-                  checked={values.acceptPrivacy}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  aria-invalid={touched.acceptPrivacy && !!errors.acceptPrivacy}
-                  aria-describedby={touched.acceptPrivacy && errors.acceptPrivacy ? 'acceptPrivacy-error' : undefined}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
-                />
-                <label htmlFor="acceptPrivacy" className="text-sm text-gray-600 dark:text-gray-300">
-                  {t('auth.consent.acceptPrivacy')}{' '}
-                  <Link to="/privacy" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
-                    {t('auth.consent.privacyLink')}
-                  </Link>
-                  {' '}<span className="text-red-500 dark:text-red-400">*</span>
-                </label>
-              </div>
-              {touched.acceptPrivacy && errors.acceptPrivacy && (
-                <p id="acceptPrivacy-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptPrivacy}</p>
-              )}
-
-              {/* AI Processing Checkbox (optional) */}
-              <div className="flex items-start gap-3 pt-2 border-t border-stone-200 dark:border-stone-600 mt-3">
-                <input
-                  type="checkbox"
-                  id="acceptAiProcessing"
-                  name="acceptAiProcessing"
-                  checked={values.acceptAiProcessing}
-                  onChange={handleChange}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
-                />
-                <div>
-                  <label htmlFor="acceptAiProcessing" className="text-sm text-gray-600 dark:text-gray-300">
-                    {t('auth.consent.acceptAi')}{' '}
-                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                      ({t('auth.consent.optionalLabel')})
-                    </span>
-                  </label>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                    {t('auth.consent.aiDescription')}
+                  <p className="text-sm text-gray-700 dark:text-gray-200">
+                    {t('auth.confirmEmail.body', 'Vi har skickat ett mejl till {{email}}. Öppna länken i mejlet för att komma igång.', { email: bekraftelseMejl })}
+                  </p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">
+                    {t('auth.confirmEmail.spamHint', 'Hittar du inget mejl? Titta i skräpposten.')}
                   </p>
                 </div>
               </div>
             </div>
-
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={isSubmitting || !isPasswordValid || !values.acceptTerms || !values.acceptPrivacy}
-              className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)] text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
-            >
-              {isSubmitting ? (
-                <>
+          ) : (
+            <>
+              {/* Google Quick Registration */}
+              <button
+                type="button"
+                onClick={async () => {
+                  setIsGoogleLoading(true)
+                  await signInWithGoogle()
+                  setIsGoogleLoading(false)
+                }}
+                disabled={isGoogleLoading}
+                className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+              >
+                {isGoogleLoading ? (
                   <Loader2 className="animate-spin" size={20} />
-                  <span>{t('auth.creatingAccount')}</span>
-                </>
-              ) : (
-                <>
-                  <span>{t('auth.register')}</span>
-                  <ArrowRight size={20} />
-                </>
+                ) : (
+                  <GoogleIcon className="w-5 h-5" />
+                )}
+                <span>{t('auth.registerWithGoogle', 'Snabbregistrera med Google')}</span>
+              </button>
+
+              {/* Divider */}
+              <div className="relative my-6">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-stone-200 dark:border-stone-600"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-4 bg-white dark:bg-stone-800 text-gray-500 dark:text-gray-400">
+                    {t('auth.orWithEmail', 'eller med e-post')}
+                  </span>
+                </div>
+              </div>
+
+              {/* Error Message */}
+              {submitError && (
+                <div
+                  role="alert"
+                  aria-live="polite"
+                  className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm"
+                >
+                  {submitError}
+                </div>
               )}
-            </button>
-          </form>
+
+              {/* Validation Summary */}
+              {(Object.keys(errors).length > 0 && Object.keys(touched).length > 0) && (
+                <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <p className="text-amber-800 dark:text-amber-300 text-sm font-medium mb-1">{t('auth.pleaseCorrect')}:</p>
+                  <ul className="text-amber-700 dark:text-amber-400 text-sm list-disc list-inside">
+                    {Object.entries(errors).map(([field, error]) => (
+                      touched[field as keyof typeof touched] && <li key={field}>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+                {/* Name Fields */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="firstName"
+                      className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
+                    >
+                      {t('auth.firstName')}
+                    </label>
+                    <div className="relative">
+                      <User
+                        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                        size={20}
+                        aria-hidden="true"
+                      />
+                      <input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        value={values.firstName}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        aria-invalid={touched.firstName && !!errors.firstName}
+                        aria-describedby={touched.firstName && errors.firstName ? 'firstName-error' : undefined}
+                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                          touched.firstName && errors.firstName
+                            ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                            : 'border-stone-300 dark:border-stone-600'
+                        }`}
+                        placeholder="Anna"
+                        autoComplete="given-name"
+                      />
+                    </div>
+                    {touched.firstName && errors.firstName && (
+                      <p id="firstName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
+                    )}
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="lastName"
+                      className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
+                    >
+                      {t('auth.lastName')}
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      value={values.lastName}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.lastName && !!errors.lastName}
+                      aria-describedby={touched.lastName && errors.lastName ? 'lastName-error' : undefined}
+                      className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                        touched.lastName && errors.lastName
+                          ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                          : 'border-stone-300 dark:border-stone-600'
+                      }`}
+                      placeholder="Andersson"
+                      autoComplete="family-name"
+                    />
+                    {touched.lastName && errors.lastName && (
+                      <p id="lastName-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
+                  >
+                    {t('auth.email')}
+                  </label>
+                  <div className="relative">
+                    <Mail
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                      size={20}
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={values.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.email && !!errors.email}
+                      aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                        touched.email && errors.email
+                          ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                          : 'border-stone-300 dark:border-stone-600'
+                      }`}
+                      placeholder="namn@exempel.se"
+                      autoComplete="email"
+                    />
+                  </div>
+                  {touched.email && errors.email && (
+                    <p id="email-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                  )}
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
+                  >
+                    {t('auth.password')}
+                  </label>
+                  <div className="relative">
+                    <Lock
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                      size={20}
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.password && !!errors.password}
+                      aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
+                      className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                        touched.password && errors.password
+                          ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                          : 'border-stone-300 dark:border-stone-600'
+                      }`}
+                      placeholder={t('auth.newPasswordPlaceholder')}
+                      autoComplete="new-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                      aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  {touched.password && errors.password && (
+                    <p id="password-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+                  )}
+
+                  {/* Password Strength Indicator */}
+                  <div className="mt-3 p-3 bg-stone-50 dark:bg-stone-700/50 border border-stone-200 dark:border-stone-600 rounded-lg space-y-2">
+                    <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{t('auth.passwordNeeds')}:</p>
+                    <ul className="space-y-1">
+                      {passwordRules.map((rule) => {
+                        const isPassed = rule.test(values.password)
+                        return (
+                          <li
+                            key={rule.id}
+                            className={`flex items-center gap-2 text-sm ${
+                              values.password === ''
+                                ? 'text-gray-600 dark:text-gray-300'
+                                : isPassed
+                                  ? 'text-[var(--c-text)] dark:text-[var(--c-text)]'
+                                  : 'text-gray-600 dark:text-gray-400'
+                            }`}
+                          >
+                            {isPassed ? (
+                              <Check size={16} className="text-[var(--c-solid)] dark:text-[var(--c-text)]" />
+                            ) : (
+                              <X size={16} className="text-stone-300 dark:text-stone-500" />
+                            )}
+                            <span>{rule.label}</span>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    {isPasswordValid && (
+                      <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] font-medium mt-2">
+                        {t('auth.passwordSecure')}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Confirm Password */}
+                <div>
+                  <label
+                    htmlFor="confirmPassword"
+                    className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
+                  >
+                    {t('auth.confirmPassword')}
+                  </label>
+                  <div className="relative">
+                    <Lock
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                      size={20}
+                      aria-hidden="true"
+                    />
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showPassword ? 'text' : 'password'}
+                      value={values.confirmPassword}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.confirmPassword && !!errors.confirmPassword}
+                      aria-describedby={touched.confirmPassword && errors.confirmPassword ? 'confirmPassword-error' : undefined}
+                      className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                        touched.confirmPassword && errors.confirmPassword
+                          ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                          : 'border-stone-300 dark:border-stone-600'
+                      }`}
+                      placeholder={t('auth.confirmPasswordPlaceholder')}
+                      autoComplete="new-password"
+                    />
+                  </div>
+                  {touched.confirmPassword && errors.confirmPassword && (
+                    <p id="confirmPassword-error" role="alert" className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
+                  )}
+                  {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
+                    <p className="mt-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] flex items-center gap-1">
+                      <Check size={16} />
+                      {t('auth.passwordsMatch')}
+                    </p>
+                  )}
+                </div>
+
+                {/* Consent Section */}
+                <div className="space-y-3 p-4 bg-stone-50 dark:bg-stone-700/50 rounded-lg border border-stone-200 dark:border-stone-600">
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-3">{t('auth.consent.title')}</p>
+
+                  {/* Terms Checkbox */}
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="acceptTerms"
+                      name="acceptTerms"
+                      checked={values.acceptTerms}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.acceptTerms && !!errors.acceptTerms}
+                      aria-describedby={touched.acceptTerms && errors.acceptTerms ? 'acceptTerms-error' : undefined}
+                      className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
+                    />
+                    <label htmlFor="acceptTerms" className="text-sm text-gray-600 dark:text-gray-300">
+                      {t('auth.consent.acceptTerms')}{' '}
+                      <Link to="/terms" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
+                        {t('auth.consent.termsLink')}
+                      </Link>
+                      {' '}<span className="text-red-500 dark:text-red-400">*</span>
+                    </label>
+                  </div>
+                  {touched.acceptTerms && errors.acceptTerms && (
+                    <p id="acceptTerms-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptTerms}</p>
+                  )}
+
+                  {/* Privacy Checkbox */}
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="acceptPrivacy"
+                      name="acceptPrivacy"
+                      checked={values.acceptPrivacy}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      aria-invalid={touched.acceptPrivacy && !!errors.acceptPrivacy}
+                      aria-describedby={touched.acceptPrivacy && errors.acceptPrivacy ? 'acceptPrivacy-error' : undefined}
+                      className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
+                    />
+                    <label htmlFor="acceptPrivacy" className="text-sm text-gray-600 dark:text-gray-300">
+                      {t('auth.consent.acceptPrivacy')}{' '}
+                      <Link to="/privacy" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:underline">
+                        {t('auth.consent.privacyLink')}
+                      </Link>
+                      {' '}<span className="text-red-500 dark:text-red-400">*</span>
+                    </label>
+                  </div>
+                  {touched.acceptPrivacy && errors.acceptPrivacy && (
+                    <p id="acceptPrivacy-error" role="alert" className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptPrivacy}</p>
+                  )}
+
+                  {/* AI Processing Checkbox (optional) */}
+                  <div className="flex items-start gap-3 pt-2 border-t border-stone-200 dark:border-stone-600 mt-3">
+                    <input
+                      type="checkbox"
+                      id="acceptAiProcessing"
+                      name="acceptAiProcessing"
+                      checked={values.acceptAiProcessing}
+                      onChange={handleChange}
+                      className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700"
+                    />
+                    <div>
+                      <label htmlFor="acceptAiProcessing" className="text-sm text-gray-600 dark:text-gray-300">
+                        {t('auth.consent.acceptAi')}{' '}
+                        <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                          ({t('auth.consent.optionalLabel')})
+                        </span>
+                      </label>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {t('auth.consent.aiDescription')}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !isPasswordValid || !values.acceptTerms || !values.acceptPrivacy}
+                  className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)] text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin" size={20} />
+                      <span>{t('auth.creatingAccount')}</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>{t('auth.register')}</span>
+                      <ArrowRight size={20} />
+                    </>
+                  )}
+                </button>
+              </form>
+            </>
+          )}
 
           {/* Login Link */}
           <div className="mt-6 text-center">

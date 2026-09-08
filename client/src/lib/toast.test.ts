@@ -1,109 +1,139 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { createElement } from 'react'
+import { render, screen, act, cleanup } from '@testing-library/react'
+import { ToastContainer } from '@/components/Toast'
+import { notifications, TOAST_MESSAGES } from './toast'
 
 /**
- * toast.ts är portalens enda vägen till användarfeedback (13 importörer).
- * Det som testas här är inte "visas en ruta" utan tillgänglighetskontraktet:
- * fel ska annonseras assertivt för skärmläsare, statusmeddelanden artigt,
- * och laddningstoasts får aldrig auto-stängas. Det är WCAG 2.1 AA-krav,
- * inte kosmetik — och det är osynligt om det går sönder.
+ * toast.ts är den ena av portalens två vägar till användarfeedback (14
+ * importörer: konsulentflikarna, gruppmeddelandet, rapportutkastet,
+ * aktivitetsrapporten, profileStore, profilkomponenterna).
+ *
+ * Före KA1 (2026-09-08) mockade det här testet react-hot-toast och
+ * kontrollerade vilka argument adaptern skickade vidare — och var grönt i
+ * månader medan ingen toast syntes utanför /profile, eftersom <Toaster/>
+ * bara satt där. Nu renderas den RIKTIGA behållaren (<ToastContainer/>, samma
+ * som Layout.tsx monterar) och testet frågar DOM:en. Det som vaktas är
+ * tillgänglighetskontraktet: fel annonseras assertivt för skärmläsare
+ * (role=alert), statusmeddelanden artigt (role=status), och laddningstoasts
+ * får aldrig auto-stängas. WCAG 2.1 AA-krav, inte kosmetik.
  */
-type Val = Record<string, unknown>
-const toastFn = vi.fn((_meddelande: string, _val?: Val) => 'toast-id')
-const toastMock = Object.assign(toastFn, {
-  success: vi.fn((_meddelande: string, _val?: Val) => 'success-id'),
-  error: vi.fn((_meddelande: string, _val?: Val) => 'error-id'),
-  loading: vi.fn((_meddelande: string, _val?: Val) => 'loading-id'),
-  dismiss: vi.fn((_id?: string) => undefined),
-  promise: vi.fn((_löfte: unknown, _texter: unknown, _val?: Val) => 'promise-id'),
-})
 
-vi.mock('react-hot-toast', () => ({
-  __esModule: true,
-  default: toastMock,
-  toast: toastMock,
-  Toaster: () => null,
-}))
+/**
+ * Nedräkningen går i 100 ms-steg; när den nått noll startar en 300 ms
+ * utgångsanimation innan elementet tas bort. React kör uppdateraren först när
+ * act() flushar, så tidsutgången och animationen måste avanceras i två steg.
+ */
+function latTidenGa(ms: number) {
+  act(() => { vi.advanceTimersByTime(ms + 200) })
+  act(() => { vi.advanceTimersByTime(300) })
+}
 
-const { notifications, TOAST_MESSAGES, TOASTER_CONFIG } = await import('./toast')
-
-describe('notifications', () => {
+describe('notifications ritas av den monterade behållaren', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.useFakeTimers()
+    render(createElement(ToastContainer))
   })
 
-  it('success annonseras artigt (role=status) och stängs efter 3 s', () => {
-    notifications.success('Sparat')
-
-    expect(toastMock.success).toHaveBeenCalledWith('Sparat', expect.objectContaining({
-      duration: 3000,
-      position: 'top-center',
-      ariaProps: { role: 'status', 'aria-live': 'polite' },
-    }))
+  afterEach(() => {
+    act(() => { notifications.dismiss() })
+    cleanup()
+    vi.useRealTimers()
   })
 
-  it('error annonseras assertivt (role=alert) och ligger kvar 5 s', () => {
-    notifications.error('Kunde inte spara')
+  it('success annonseras artigt (role=status, aria-live=polite)', () => {
+    act(() => { notifications.success('Sparat') })
 
-    expect(toastMock.error).toHaveBeenCalledWith('Kunde inte spara', expect.objectContaining({
-      duration: 5000,
-      ariaProps: { role: 'alert', 'aria-live': 'assertive' },
-    }))
+    const el = screen.getByRole('status')
+    expect(el).toHaveTextContent('Sparat')
+    expect(el).toHaveAttribute('aria-live', 'polite')
+    expect(el).toHaveAttribute('aria-atomic', 'true')
+  })
+
+  it('error annonseras assertivt (role=alert, aria-live=assertive)', () => {
+    act(() => { notifications.error('Kunde inte spara') })
+
+    const el = screen.getByRole('alert')
+    expect(el).toHaveTextContent('Kunde inte spara')
+    expect(el).toHaveAttribute('aria-live', 'assertive')
+  })
+
+  it('success stängs efter 3 s, error ligger kvar i 5 s', () => {
+    act(() => {
+      notifications.success('Klart')
+      notifications.error('Fel')
+    })
+    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+
+    latTidenGa(3000)
+    expect(screen.queryByRole('status')).toBeNull()
+    expect(screen.getByRole('alert')).toBeInTheDocument()
+
+    latTidenGa(2000)
+    expect(screen.queryByRole('alert')).toBeNull()
   })
 
   it('loading stängs ALDRIG av sig själv', () => {
-    notifications.loading('Genererar...')
+    act(() => { notifications.loading('Genererar...') })
+    expect(screen.getByRole('status')).toHaveTextContent('Genererar...')
 
-    expect(toastMock.loading.mock.calls[0][1]).toMatchObject({ duration: Infinity })
+    act(() => { vi.advanceTimersByTime(10 * 60 * 1000) })
+    expect(screen.getByRole('status')).toHaveTextContent('Genererar...')
   })
 
-  it('info och warning går via bas-toast med ikon', () => {
-    notifications.info('Ett tips')
-    expect(toastMock).toHaveBeenCalledWith('Ett tips', expect.objectContaining({
-      duration: 4000,
-      icon: 'ℹ️',
-    }))
+  it('loading returnerar ett id som dismiss(id) stänger — mönstret i ProfileHeader/AISummary/DocumentsSection', () => {
+    let id = ''
+    act(() => { id = notifications.loading('Laddar upp...') })
+    expect(id).toEqual(expect.any(String))
+    expect(id.length).toBeGreaterThan(0)
 
-    notifications.warning('Se upp')
-    expect(toastMock).toHaveBeenLastCalledWith('Se upp', expect.objectContaining({
-      icon: '⚠️',
-      ariaProps: { role: 'alert', 'aria-live': 'polite' },
-    }))
+    act(() => { notifications.dismiss(id) })
+    expect(screen.queryByRole('status')).toBeNull()
+  })
+
+  it('dismiss(id) stänger bara den toasten, dismiss() stänger alla', () => {
+    let a = ''
+    act(() => {
+      a = notifications.loading('A')
+      notifications.loading('B')
+      notifications.loading('C')
+    })
+    expect(screen.getAllByRole('status')).toHaveLength(3)
+
+    act(() => { notifications.dismiss(a) })
+    const kvar = screen.getAllByRole('status').map(el => el.textContent)
+    expect(kvar).toHaveLength(2)
+    expect(kvar.join('')).not.toContain('A')
+
+    act(() => { notifications.dismiss() })
+    expect(screen.queryAllByRole('status')).toHaveLength(0)
+  })
+
+  it('info och warning är statusmeddelanden, inte larm', () => {
+    act(() => {
+      notifications.info('Ett tips')
+      notifications.warning('Se upp')
+    })
+
+    const texter = screen.getAllByRole('status').map(el => el.textContent)
+    expect(texter.join(' ')).toContain('Ett tips')
+    expect(texter.join(' ')).toContain('Se upp')
+    expect(screen.queryByRole('alert')).toBeNull()
   })
 
   it('anroparens duration vinner över standardvärdet', () => {
-    notifications.success('Snabb', { duration: 500 })
+    act(() => { notifications.success('Snabb', { duration: 500 }) })
+    expect(screen.getByRole('status')).toBeInTheDocument()
 
-    expect(toastMock.success).toHaveBeenCalledWith('Snabb', expect.objectContaining({
-      duration: 500,
-    }))
+    latTidenGa(500)
+    expect(screen.queryByRole('status')).toBeNull()
   })
 
-  it('anroparens position vinner över top-center', () => {
-    notifications.error('Nere', { position: 'bottom-right' })
+  it('varje toast har en stängknapp med tillgängligt namn', () => {
+    act(() => { notifications.success('Sparat') })
 
-    expect(toastMock.error).toHaveBeenCalledWith('Nere', expect.objectContaining({
-      position: 'bottom-right',
-    }))
-  })
-
-  it('dismiss utan id stänger allt, med id stänger en', () => {
-    notifications.dismiss()
-    expect(toastMock.dismiss).toHaveBeenCalledWith()
-
-    notifications.dismiss('abc')
-    expect(toastMock.dismiss).toHaveBeenLastCalledWith('abc')
-  })
-
-  it('promise skickar vidare löftet och meddelandena', async () => {
-    const p = Promise.resolve('klart')
-    const messages = { loading: 'Laddar', success: 'Klart', error: 'Fel' }
-
-    notifications.promise(p, messages)
-
-    expect(toastMock.promise).toHaveBeenCalledWith(p, messages, expect.objectContaining({
-      position: 'top-center',
-    }))
-    await p
+    expect(screen.getByRole('button', { name: /stäng meddelande|close message/i })).toBeInTheDocument()
   })
 })
 
@@ -121,11 +151,5 @@ describe('TOAST_MESSAGES', () => {
 
   it('har separata meddelanden för lyckat och misslyckat sparande', () => {
     expect(TOAST_MESSAGES.SAVE_SUCCESS).not.toBe(TOAST_MESSAGES.SAVE_ERROR)
-  })
-})
-
-describe('TOASTER_CONFIG', () => {
-  it('placerar toasts i top-center så de inte krockar med bottennavet', () => {
-    expect(TOASTER_CONFIG.position).toBe('top-center')
   })
 })

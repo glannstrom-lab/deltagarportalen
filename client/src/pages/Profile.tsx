@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n/config'
 import { Loader2, User } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
-import { Toaster } from 'react-hot-toast'
 import { TABS, type TabId } from '@/components/profile/constants'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -177,27 +176,6 @@ export default function Profile() {
       }}
     >
       <div key={i18n.language} className="pb-8">
-        {/* Toast notifications */}
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              background: 'var(--toast-bg, #fff)',
-              color: 'var(--toast-color, #1c1917)',
-              borderRadius: '12px',
-              padding: '12px 16px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              border: '1px solid var(--toast-border, #e7e5e4)'
-            },
-            success: {
-              iconTheme: { primary: '#14b8a6', secondary: '#fff' }
-            },
-            error: {
-              iconTheme: { primary: '#ef4444', secondary: '#fff' }
-            }
-          }}
-        />
 
         {/* Onboarding modal for new users */}
         <OnboardingModal />

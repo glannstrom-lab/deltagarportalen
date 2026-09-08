@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock-fabriker tar emot variadic args och behöver any */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { useAuthStore, type Profile } from './authStore'
+import { useAuthStore, skapaAuthByteHanterare, type Profile } from './authStore'
+import { queryClient } from '@/lib/queryClient'
+
+// KA2: authStore registrerar sin auth-lyssnare NÄR MODULEN LADDAS, alltså
+// innan någon `let` i den här filen hunnit initieras. `vi.hoisted` är enda
+// sättet att fånga callbacken utan TDZ-fel. `vi.clearAllMocks()` i beforeEach
+// nollar mock.calls men inte implementationen, så referensen överlever.
+const authLyssnare = vi.hoisted(() => ({
+  callback: null as null | ((event: string, session: unknown) => Promise<void>),
+}))
 
 // Mock Supabase
 const mockSignInWithPassword = vi.fn()
@@ -18,13 +27,16 @@ vi.mock('@/lib/supabase', () => ({
       signOut: (...args: any[]) => mockSignOut(...args),
       getUser: (...args: any[]) => mockGetUser(...args),
       getSession: (...args: any[]) => mockGetSession(...args),
-      onAuthStateChange: vi.fn(() => ({
-        data: {
-          subscription: {
-            unsubscribe: vi.fn()
+      onAuthStateChange: vi.fn((cb: (event: string, session: unknown) => Promise<void>) => {
+        authLyssnare.callback = cb
+        return {
+          data: {
+            subscription: {
+              unsubscribe: vi.fn()
+            }
           }
         }
-      })),
+      }),
     },
     from: (...args: any[]) => mockFrom(...args),
   },
@@ -264,8 +276,106 @@ describe('authStore', () => {
 
       const result = await useAuthStore.getState().signUp(userData)
 
-      expect(result.error).toContain('e-post')
+      // ON4: ett skapat konto som väntar på bekräftelse är INTE ett fel.
+      // Tidigare kom "Konto skapat! …" som `error` och Register.tsx kastade
+      // den i en röd alert.
+      expect(result.error).toBeNull()
+      expect(result.needsConfirmation).toBe(true)
       expect(useAuthStore.getState().isAuthenticated).toBe(false)
+    })
+
+    it('markerar INTE needsConfirmation när sessionen kom direkt', async () => {
+      const mockUser = { id: 'user2', email: 'new@example.com' }
+      mockSignUp.mockResolvedValue({
+        data: { user: mockUser, session: { access_token: 't', user: mockUser } },
+        error: null,
+      })
+      mockFrom.mockReturnValue({
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: null, error: null }),
+          }),
+        }),
+      })
+
+      const result = await useAuthStore.getState().signUp({
+        email: 'new@example.com', password: 'x', firstName: 'N', lastName: 'U',
+      })
+
+      expect(result.needsConfirmation).toBeUndefined()
+      expect(useAuthStore.getState().isAuthenticated).toBe(true)
+    })
+  })
+
+  /**
+   * KA2: cachen ska tömmas centralt — inte bara från utloggningsknappen.
+   * En utgången session, ett signOut i en annan flik eller ett kontobyte i
+   * samma flik går aldrig genom `signOut()`, men alla går genom
+   * `onAuthStateChange`. 40 av 40 cachenycklar saknar användar-id, så det
+   * som ligger kvar matchar nästa inloggade person.
+   */
+  describe('auth-lyssnaren tömmer React Query-cachen (KA2)', () => {
+    const sessionFor = (id: string) => ({ user: { id } })
+
+    beforeEach(() => {
+      queryClient.clear()
+    })
+
+    it('registrerar sig hos supabase när modulen laddas — inte bara på vissa sidor', () => {
+      expect(authLyssnare.callback).toBeTypeOf('function')
+    })
+
+    it('SIGNED_OUT via onAuthStateChange tömmer cachen, utan att signOut() körts', async () => {
+      queryClient.setQueryData(['saved-jobs'], [{ id: 'jobb-1' }])
+      queryClient.setQueryData(['spontaneous-companies'], [{ id: 'f-1' }])
+      expect(queryClient.getQueryCache().getAll()).toHaveLength(2)
+
+      await authLyssnare.callback!('SIGNED_OUT', null)
+
+      expect(queryClient.getQueryCache().getAll()).toHaveLength(0)
+      expect(mockSignOut).not.toHaveBeenCalled()
+    })
+
+    it('kontobyte i samma flik (annat user.id) tömmer cachen', async () => {
+      const hantera = skapaAuthByteHanterare()
+      await hantera('SIGNED_IN', sessionFor('user-a') as never)
+      queryClient.setQueryData(['saved-jobs'], [{ id: 'a:s jobb' }])
+
+      await hantera('SIGNED_IN', sessionFor('user-b') as never)
+
+      expect(queryClient.getQueryData(['saved-jobs'])).toBeUndefined()
+    })
+
+    it('tokenförnyelse för SAMMA användare rör inte cachen', async () => {
+      const hantera = skapaAuthByteHanterare()
+      await hantera('INITIAL_SESSION', sessionFor('user-a') as never)
+      queryClient.setQueryData(['saved-jobs'], [{ id: 'jobb-1' }])
+
+      await hantera('TOKEN_REFRESHED', sessionFor('user-a') as never)
+      await hantera('USER_UPDATED', sessionFor('user-a') as never)
+
+      expect(queryClient.getQueryData(['saved-jobs'])).toEqual([{ id: 'jobb-1' }])
+    })
+
+    it('första inloggningen i en flik utan känd användare tömmer inte (publikt innehåll får ligga kvar)', async () => {
+      const hantera = skapaAuthByteHanterare()
+      queryClient.setQueryData(['articles', 'publika'], [{ slug: 'x' }])
+
+      await hantera('SIGNED_IN', sessionFor('user-a') as never)
+
+      expect(queryClient.getQueryData(['articles', 'publika'])).toEqual([{ slug: 'x' }])
+    })
+
+    it('efter SIGNED_OUT räknas nästa inloggning som ny baslinje, och ett byte därefter tömmer igen', async () => {
+      const hantera = skapaAuthByteHanterare()
+      await hantera('SIGNED_IN', sessionFor('user-a') as never)
+      await hantera('SIGNED_OUT', null)
+      await hantera('SIGNED_IN', sessionFor('user-b') as never)
+      queryClient.setQueryData(['saved-jobs'], [{ id: 'b:s jobb' }])
+
+      await hantera('SIGNED_IN', sessionFor('user-c') as never)
+
+      expect(queryClient.getQueryData(['saved-jobs'])).toBeUndefined()
     })
   })
 

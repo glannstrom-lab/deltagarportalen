@@ -74,3 +74,12 @@ enabled = false
 enabled = false
 port = 54328
 vector_port = 54329
+
+# DE6 (2026-09-08): hälsokontrollen ska nås av en uptime-tjänst utan apikey.
+# Plattformens JWT-grind svarade annars 401 (`UNAUTHORIZED_NO_AUTH_HEADER`)
+# före funktionens egen kod, så övervakaren såg alltid "nere". CLI:n läser
+# den här sektionen vid `supabase functions deploy` (deploy.yml kör det utan
+# flaggor). Svaret är nedskalat till status + tidsstämpel + ok/error per
+# kontroll — se supabase/functions/health/index.ts.
+[functions.health]
+verify_jwt = false

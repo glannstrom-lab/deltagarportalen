@@ -23,6 +23,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 // DYNAMISK import, inte `require`. RÖR INTE.
 //
 // `puppeteer-core@25` ar ESM-only (`"type": "module"`). Med
@@ -57,7 +58,14 @@ async function laddaPuppeteer() {
 // utan limit är det en lätt DoS-vektor.
 const RATE_LIMIT_PER_USER_PER_WINDOW = 5;
 const RATE_LIMIT_WINDOW_MINUTES = 15;
+const RATE_LIMIT_CONFIG = { limit: RATE_LIMIT_PER_USER_PER_WINDOW, windowMinutes: RATE_LIMIT_WINDOW_MINUTES };
 
+// SD2 (2026-09-08): de tre felvägarna svarade tidigare `{ allowed: true }` —
+// dörren stod öppen exakt när databasen strulade, och varje anrop startar
+// Chromium med 1 024 MB. Nu samma minnesfallback som ai.js/job-alerts.js,
+// via `_utils/rate-limit-fallback.js`. Vaktat av
+// `src/test/api-rate-limit-fallback.test.ts`: ett `allowed: true` i den här
+// funktionen fäller bygget.
 async function checkRateLimit(supabase, userId) {
   try {
     const { data, error } = await supabase.rpc('check_rate_limit', {
@@ -67,8 +75,8 @@ async function checkRateLimit(supabase, userId) {
       p_window_minutes: RATE_LIMIT_WINDOW_MINUTES,
     });
     if (error) {
-      console.error('[cv-pdf] Rate-limit RPC error:', error.message);
-      return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+      console.error('[cv-pdf] Rate-limit RPC error, using in-memory fallback:', error.message);
+      return rateLimitFallback(userId, 'cv-pdf', RATE_LIMIT_CONFIG);
     }
     if (data && data.length > 0) {
       const r = data[0];
@@ -77,10 +85,12 @@ async function checkRateLimit(supabase, userId) {
         : RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
       return { allowed: r.allowed, remaining: r.remaining || 0, resetIn };
     }
-    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+    // RPC:n ska alltid ge en rad. Ingen rad är ett fel, inte fritt fram.
+    console.error('[cv-pdf] Rate-limit RPC returned no row, using in-memory fallback');
+    return rateLimitFallback(userId, 'cv-pdf', RATE_LIMIT_CONFIG);
   } catch (err) {
-    console.error('[cv-pdf] Rate-limit check failed:', err);
-    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+    console.error('[cv-pdf] Rate-limit check failed, using in-memory fallback:', err);
+    return rateLimitFallback(userId, 'cv-pdf', RATE_LIMIT_CONFIG);
   }
 }
 

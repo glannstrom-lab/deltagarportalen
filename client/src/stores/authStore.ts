@@ -3,7 +3,7 @@ import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import { clearUserScopedStorage } from '@/utils/safeStorage'
-import type { User, Session } from '@supabase/supabase-js'
+import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { rensaAllCache } from '@/lib/queryClient'
 import { careerOfflineCache } from '@/services/offlineStorage'
 
@@ -129,7 +129,15 @@ interface AuthState {
       privacy: boolean
       aiProcessing?: boolean
     }
-  }) => Promise<{ error: string | null }>
+  }) => Promise<{
+    error: string | null
+    /**
+     * ON4: kontot är skapat men Supabase kräver e-postbekräftelse innan det
+     * går att logga in. INTE ett fel — sidan ska visa nästa steg, inte en
+     * röd ruta. Saknas (undefined) när sessionen kom direkt.
+     */
+    needsConfirmation?: boolean
+  }>
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null }>
   setActiveRole: (role: UserRole) => void
@@ -356,8 +364,11 @@ export const useAuthStore = create<AuthState>()(
           }
 
           if (!data.session) {
+            // ON4: bekräftelse via e-post är på i Supabase. Det här stod
+            // tidigare som `error: 'Konto skapat! …'` och renderades som ett
+            // rött fel i Register.tsx — ett lyckat resultat i felets kläder.
             set({ isLoading: false })
-            return { error: 'Konto skapat! Kontrollera din e-post för att bekräfta.' }
+            return { error: null, needsConfirmation: true }
           }
 
           const { data: profile } = await supabase
@@ -523,6 +534,74 @@ export const useAuthStore = create<AuthState>()(
     { name: 'AuthStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
+
+/**
+ * KA2 — centralt cacheskydd vid utloggning och kontobyte.
+ *
+ * `signOut()` ovan tömmer React Query-cachen, men det är bara en av vägarna
+ * ut: en utgången session, ett `signOut` från en annan flik (Supabase
+ * synkar via storage-event) eller ett kontobyte i samma flik går aldrig
+ * genom knappen. 40 av 40 cachenycklar saknar användar-id (mätt 2026-09-07),
+ * så allt som ligger kvar matchar nästa inloggade person.
+ *
+ * Därför lyssnar store-modulen själv på `onAuthStateChange` — på modulnivå,
+ * inte i en hook, för `useAuth` i `hooks/useSupabase.ts` monteras bara på
+ * hubbsidorna och `useAuthInit` nås inte från `main.tsx` alls. `authStore`
+ * importeras av `App.tsx` och är därmed laddad i alla lägen.
+ *
+ * Policyn: töm vid `SIGNED_OUT`, och töm när `session.user.id` byter till ett
+ * annat id än det senast kända. Tokenförnyelse och `USER_UPDATED` för samma
+ * id rör inte cachen. Att per-nyckel-userId fortfarande saknas är ett eget
+ * arbete (35 filer) — det här är golvet under det.
+ *
+ * Fabrik i stället för en fri funktion så tester kan få en färsk hanterare
+ * utan att dela "senast kända id" med varandra.
+ */
+export function skapaAuthByteHanterare() {
+  let senastKandaAnvandarId: string | null = null
+
+  return async function hanteraAuthByte(event: AuthChangeEvent, session: Session | null): Promise<void> {
+    const nyttId = session?.user?.id ?? null
+
+    if (event === 'SIGNED_OUT') {
+      senastKandaAnvandarId = null
+      await rensaAllCache()
+      return
+    }
+
+    const kontobyte = nyttId !== null && senastKandaAnvandarId !== null && nyttId !== senastKandaAnvandarId
+    if (nyttId !== null) {
+      senastKandaAnvandarId = nyttId
+    }
+    if (kontobyte) {
+      await rensaAllCache()
+    }
+  }
+}
+
+/** Den levande hanteraren — registrerad en gång när modulen laddas. */
+export const hanteraAuthByte = skapaAuthByteHanterare()
+
+/**
+ * Registrerar lyssnaren. Returnerar `false` om klienten saknar
+ * `auth.onAuthStateChange` — det händer aldrig i drift, men tre testfiler
+ * mockar `@/lib/supabase` med ett `auth`-objekt utan metoden och importerar
+ * den här storen; ett modulnivå-anrop utan vakt fällde dem vid import.
+ * Vakten är alltså till för mockar, inte för produktion, och den är tyst
+ * bara i test — i drift loggas det, för då är något på riktigt fel.
+ */
+export function registreraAuthLyssnare(): boolean {
+  if (typeof supabase.auth?.onAuthStateChange !== 'function') {
+    if (import.meta.env.MODE !== 'test') {
+      console.error('authStore: supabase.auth.onAuthStateChange saknas — cachen töms inte vid utloggning via andra vägar än knappen')
+    }
+    return false
+  }
+  supabase.auth.onAuthStateChange(hanteraAuthByte)
+  return true
+}
+
+registreraAuthLyssnare()
 
 // Helper hooks for role checking
 export const useActiveRole = () => {

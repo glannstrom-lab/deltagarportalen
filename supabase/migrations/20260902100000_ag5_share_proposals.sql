@@ -188,12 +188,50 @@ CREATE TRIGGER trg_esp_updated_at
 -- då vore fälten hon godkände inte längre de som gäller. Hon får bara dra
 -- tillbaka det (status → withdrawn). RLS kan inte uttrycka "vilka kolumner",
 -- så det bor i en trigger.
+--
+-- AS1 (2026-09-08, projektgenomgången 2026-09-07): triggern skyddade BARA
+-- raden efter att den var besvarad. Policyn ovan är FOR ALL, så konsulenten
+-- kunde med en vanlig `UPDATE … SET status='accepted', decided_at=now()`
+-- besvara förslaget ÅT deltagaren — utan att RPC:n kördes och därmed utan
+-- rad i consent_history. Ett samtycke som någon annan gett är inget
+-- samtycke (art. 7.1). Två grindar till, båda i samma trigger:
+--   1. Varje övergång FRÅN pending kräver auth.uid() = OLD.participant_id.
+--      Det är den enda som får svara; RPC:n respond_to_share_proposal
+--      kör som deltagaren (SECURITY DEFINER byter roll, inte JWT-claims,
+--      så auth.uid() är fortfarande hennes) och passerar. En service-role-
+--      körning (auth.uid() IS NULL) stoppas också — FAIL CLOSED med flit.
+--      Ett framtida gallringsjobb som ska sätta 'expired' måste alltså gå
+--      via en egen SECURITY DEFINER-funktion som loggar, inte via rå UPDATE.
+--   2. INSERT får aldrig födas besvarad. Utan den grinden kunde konsulenten
+--      i stället radera pending-raden och skapa en ny med status='accepted'
+--      — BEFORE UPDATE ser aldrig en INSERT. Triggern är därför
+--      BEFORE INSERT OR UPDATE.
+-- Konsulenten kan fortfarande redigera ett pending-förslag (fält, text) så
+-- länge status står kvar på pending — det är hennes utkast tills det skickas.
 CREATE OR REPLACE FUNCTION public.guard_share_proposal_after_decision()
 RETURNS trigger
 LANGUAGE plpgsql
 SET search_path TO 'public'
 AS $fn$
 BEGIN
+  -- AS1 grind 2: en ny rad är alltid obesvarad.
+  IF TG_OP = 'INSERT' THEN
+    IF NEW.status <> 'pending' THEN
+      RAISE EXCEPTION 'Ett delningsförslag skapas alltid som pending — bara deltagaren kan besvara det'
+        USING ERRCODE = 'insufficient_privilege';
+    END IF;
+    RETURN NEW;
+  END IF;
+
+  -- AS1 grind 1: bara deltagaren själv flyttar ett förslag från pending.
+  IF OLD.status = 'pending' AND NEW.status <> 'pending' THEN
+    IF auth.uid() IS NULL OR auth.uid() <> OLD.participant_id THEN
+      RAISE EXCEPTION 'Bara deltagaren själv kan besvara ett delningsförslag (id %)', OLD.id
+        USING ERRCODE = 'insufficient_privilege';
+    END IF;
+    RETURN NEW;
+  END IF;
+
   IF OLD.status <> 'pending' THEN
     -- Tillåtet: bara status → withdrawn (+ updated_at/decided_at via samma sats)
     IF NEW.status = 'withdrawn'
@@ -218,7 +256,7 @@ REVOKE ALL ON FUNCTION public.guard_share_proposal_after_decision() FROM authent
 
 DROP TRIGGER IF EXISTS trg_esp_guard_after_decision ON employer_share_proposals;
 CREATE TRIGGER trg_esp_guard_after_decision
-  BEFORE UPDATE ON employer_share_proposals
+  BEFORE INSERT OR UPDATE ON employer_share_proposals
   FOR EACH ROW EXECUTE FUNCTION guard_share_proposal_after_decision();
 
 -- =============================================================================
@@ -311,3 +349,60 @@ GRANT EXECUTE ON FUNCTION public.respond_to_share_proposal(uuid, text, text) TO 
 --   → 2 rader: "Konsulent hanterar förslag för aktiva deltagare" (ALL), "Deltagaren ser sina delningsförslag" (SELECT)
 -- select conname from pg_constraint where conname = 'consent_history_consent_type_check';
 --   → 1 rad, och pg_get_constraintdef ska innehålla 'employer_share'
+-- select tgname, pg_get_triggerdef(oid) from pg_trigger where tgname = 'trg_esp_guard_after_decision';
+--   → 1 rad, definitionen ska innehålla 'BEFORE INSERT OR UPDATE'
+--
+-- =============================================================================
+-- AS1 — funktionellt prov i en RULLAD transaktion (kör i dashboardens SQL-
+-- editor som postgres; CLI:ns transaktionshantering är inte verifierad).
+-- Migrationen är inte körd: klistra in HELA filen ovan först i samma
+-- BEGIN-block, eller kör provet direkt efter körningen. Varje sats som
+-- "ska ge fel" avbryter transaktionen — kör därför ett prov i taget, eller
+-- lägg SAVEPOINT före varje nekande prov.
+--
+-- Underlag: <konsulent> och <deltagare> med en rad i consultant_participants,
+-- och <plats> = en rad i consultant_work_placements för det paret.
+-- =============================================================================
+-- BEGIN;
+--   SET LOCAL ROLE authenticated;
+--   SET LOCAL request.jwt.claims = '{"sub":"<konsulent-uuid>","role":"authenticated"}';
+--
+--   -- Godkännande prov A: konsulenten skapar ett pending-förslag — ska lyckas.
+--   INSERT INTO employer_share_proposals (id, placement_id, participant_id, consultant_id)
+--     VALUES ('11111111-1111-1111-1111-111111111111', '<plats-uuid>', '<deltagare-uuid>', '<konsulent-uuid>');
+--
+--   -- Nekande prov B (grind 2): född besvarad — ska ge ERROR 42501
+--   -- "Ett delningsförslag skapas alltid som pending …".
+--   SAVEPOINT b;
+--   INSERT INTO employer_share_proposals (placement_id, participant_id, consultant_id, status, decided_at)
+--     VALUES ('<plats-uuid>', '<deltagare-uuid>', '<konsulent-uuid>', 'accepted', now());
+--   ROLLBACK TO SAVEPOINT b;
+--
+--   -- Nekande prov C (grind 1): konsulenten "godkänner" åt deltagaren — ska ge
+--   -- ERROR 42501 "Bara deltagaren själv kan besvara …". FÖRE AS1 gick den igenom.
+--   SAVEPOINT c;
+--   UPDATE employer_share_proposals SET status = 'accepted', decided_at = now()
+--     WHERE id = '11111111-1111-1111-1111-111111111111';
+--   ROLLBACK TO SAVEPOINT c;
+--
+--   -- Godkännande prov D: konsulenten redigerar sitt utkast — ska lyckas (status kvar pending).
+--   UPDATE employer_share_proposals SET presentation_text = 'utkast', show_skills = true
+--     WHERE id = '11111111-1111-1111-1111-111111111111';
+--
+--   -- Godkännande prov E: deltagaren svarar genom RPC:n — ska lyckas och logga.
+--   SET LOCAL request.jwt.claims = '{"sub":"<deltagare-uuid>","role":"authenticated"}';
+--   SELECT respond_to_share_proposal('11111111-1111-1111-1111-111111111111', 'accepted');
+--   SELECT status, decided_at FROM employer_share_proposals WHERE id = '11111111-1111-1111-1111-111111111111';
+--     → accepted, tidsstämpel
+--   SELECT consent_type, action, reference_id FROM consent_history
+--     WHERE user_id = '<deltagare-uuid>' AND consent_type = 'employer_share';
+--     → 1 rad: employer_share | granted | 11111111-…
+--
+--   -- Nekande prov F (befintlig grind, oförändrad): konsulenten ändrar ett besvarat
+--   -- förslag — ska ge check_violation "… kan bara dras tillbaka".
+--   SET LOCAL request.jwt.claims = '{"sub":"<konsulent-uuid>","role":"authenticated"}';
+--   SAVEPOINT f;
+--   UPDATE employer_share_proposals SET show_documents = true
+--     WHERE id = '11111111-1111-1111-1111-111111111111';
+--   ROLLBACK TO SAVEPOINT f;
+-- ROLLBACK;  -- alltid. Committa aldrig provdata.

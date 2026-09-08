@@ -13,6 +13,11 @@
  *  1. `rensaAllCache()` tömmer — skyddar när utloggningen körs.
  *  2. nyckeln bär användar-id — skyddar när den INTE körs (stängd flik,
  *     kraschad session, kontobyte via onAuthStateChange).
+ *
+ * Sedan KA2 (2026-09-08) tömmer `authStore` dessutom centralt vid SIGNED_OUT
+ * och kontobyte via `onAuthStateChange` — se `auth-lyssnaren`-blocket i
+ * `stores/authStore.test.ts`. Per-nyckel-userId (skydd 2) finns fortfarande
+ * bara på den här nyckeln; 39 andra saknar det.
  */
 import { describe, it, expect, beforeEach } from 'vitest'
 import { queryClient, rensaAllCache } from './queryClient'

@@ -156,7 +156,9 @@ export function KonsulentSamtyckeFraga() {
         t('consultantConsent.heading'),
         t('consultantConsent.intro', { namn: konsulentNamn }),
         t('consultantConsent.seesHeading', { namn: konsulentNamn }),
-        ...(t('consultantConsent.seesList', { returnObjects: true }) as string[]),
+        // `namn` måste med även här: sista punkten bär {{namn}}, och utan den
+        // sparades "{{namn}} skriver om dig" rått i art. 7.1-beviset (ON1).
+        ...(t('consultantConsent.seesList', { returnObjects: true, namn: konsulentNamn }) as string[]),
         t('consultantConsent.notSeen'),
         t('consultantConsent.revocation', { namn: konsulentNamn }),
         t('consultantConsent.checkboxSharing', { namn: konsulentNamn }),
@@ -202,8 +204,16 @@ export function KonsulentSamtyckeFraga() {
   if (lage === 'laddar' || lage === 'dold') return null
 
   const kanSvaraJa = samtyckerDelning && forstarUppsagning && lage !== 'sparar'
-  const punkter = t('consultantConsent.seesList', { returnObjects: true }) as string[]
+  const punkter = t('consultantConsent.seesList', { returnObjects: true, namn: konsulentNamn }) as string[]
 
+  /**
+   * Layouten är två våningar (MB1): texten rullar i en egen yta, knappraden står
+   * fast nedanför. Med hela rutan som rullande yta låg alla tre knapparna under
+   * skärmkanten på 390×844 och 375×667, utan något som avslöjade att man kunde
+   * rulla — en ruta som ser omöjlig ut att stänga är precis den spärr kommentaren
+   * ovan säger att den inte ska vara. `100dvh` (inte `vh`) för att mobilens
+   * adressfält inte ska äta av höjden; `min-h-0` för att flex-barnet ska få krympa.
+   */
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/40 p-4 sm:items-center">
       <div
@@ -212,82 +222,92 @@ export function KonsulentSamtyckeFraga() {
         aria-modal="true"
         aria-labelledby="ks3-titel"
         aria-describedby="ks3-intro"
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-stone-900"
+        className="flex max-h-[calc(100dvh-2rem)] w-full max-w-lg flex-col rounded-2xl bg-white shadow-xl dark:bg-stone-900"
       >
-        <div className="mb-4 flex items-start gap-3">
-          <span className="rounded-xl bg-sky-50 p-2 text-sky-700 dark:bg-sky-950 dark:text-sky-200">
-            <ShieldCheck size={22} aria-hidden="true" />
-          </span>
-          <h2 id="ks3-titel" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-            {t('consultantConsent.heading')}
-          </h2>
-        </div>
+        <div data-ks3="innehall" className="min-h-0 flex-1 overflow-y-auto p-6 pb-2">
+          <div className="mb-4 flex items-start gap-3">
+            <span className="rounded-xl bg-sky-50 p-2 text-sky-700 dark:bg-sky-950 dark:text-sky-200">
+              <ShieldCheck size={22} aria-hidden="true" />
+            </span>
+            <h2 id="ks3-titel" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+              {t('consultantConsent.heading')}
+            </h2>
+          </div>
 
-        <p id="ks3-intro" className="mb-4 text-sm text-stone-700 dark:text-stone-200">
-          {t('consultantConsent.intro', { namn: konsulentNamn })}
-        </p>
-
-        <p className="mb-2 text-sm font-medium text-stone-900 dark:text-stone-100">
-          {t('consultantConsent.seesHeading', { namn: konsulentNamn })}
-        </p>
-        <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-stone-700 dark:text-stone-200">
-          {punkter.map((rad) => (
-            <li key={rad}>{rad}</li>
-          ))}
-        </ul>
-
-        <p className="mb-4 text-sm text-stone-700 dark:text-stone-200">{t('consultantConsent.notSeen')}</p>
-        <p className="mb-5 text-sm text-stone-700 dark:text-stone-200">
-          {t('consultantConsent.revocation', { namn: konsulentNamn })}
-        </p>
-
-        <label className="mb-3 flex items-start gap-3 text-sm text-stone-800 dark:text-stone-100">
-          <input
-            type="checkbox"
-            checked={samtyckerDelning}
-            onChange={(e) => setSamtyckerDelning(e.target.checked)}
-            className="mt-1 h-4 w-4 shrink-0"
-          />
-          <span>{t('consultantConsent.checkboxSharing', { namn: konsulentNamn })}</span>
-        </label>
-
-        <label className="mb-5 flex items-start gap-3 text-sm text-stone-800 dark:text-stone-100">
-          <input
-            type="checkbox"
-            checked={forstarUppsagning}
-            onChange={(e) => setForstarUppsagning(e.target.checked)}
-            className="mt-1 h-4 w-4 shrink-0"
-          />
-          <span>{t('consultantConsent.checkboxRevocation')}</span>
-        </label>
-
-        {felText && (
-          <p role="alert" className="mb-4 flex items-start gap-2 text-sm text-red-700 dark:text-red-300">
-            <AlertCircle size={16} aria-hidden="true" className="mt-0.5 shrink-0" />
-            {t('consultantConsent.saveFailed')} {felText}
+          <p id="ks3-intro" className="mb-4 text-sm text-stone-700 dark:text-stone-200">
+            {t('consultantConsent.intro', { namn: konsulentNamn })}
           </p>
-        )}
 
-        <div className="flex flex-col gap-2 sm:flex-row-reverse">
-          <Button onClick={jaTack} disabled={!kanSvaraJa} className="sm:flex-1">
-            {lage === 'sparar' ? (
-              <Loader2 size={16} className="animate-spin" aria-hidden="true" />
-            ) : null}
-            {t('consultantConsent.yes')}
-          </Button>
-          <Button variant="secondary" onClick={nejTack} disabled={lage === 'sparar'} className="sm:flex-1">
-            {t('consultantConsent.no')}
-          </Button>
+          <p className="mb-2 text-sm font-medium text-stone-900 dark:text-stone-100">
+            {t('consultantConsent.seesHeading', { namn: konsulentNamn })}
+          </p>
+          <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-stone-700 dark:text-stone-200">
+            {punkter.map((rad) => (
+              <li key={rad}>{rad}</li>
+            ))}
+          </ul>
+
+          <p className="mb-4 text-sm text-stone-700 dark:text-stone-200">{t('consultantConsent.notSeen')}</p>
+          <p className="mb-5 text-sm text-stone-700 dark:text-stone-200">
+            {t('consultantConsent.revocation', { namn: konsulentNamn })}
+          </p>
+
+          <label className="mb-3 flex items-start gap-3 text-sm text-stone-800 dark:text-stone-100">
+            <input
+              type="checkbox"
+              checked={samtyckerDelning}
+              onChange={(e) => setSamtyckerDelning(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0"
+            />
+            <span>{t('consultantConsent.checkboxSharing', { namn: konsulentNamn })}</span>
+          </label>
+
+          <label className="mb-3 flex items-start gap-3 text-sm text-stone-800 dark:text-stone-100">
+            <input
+              type="checkbox"
+              checked={forstarUppsagning}
+              onChange={(e) => setForstarUppsagning(e.target.checked)}
+              className="mt-1 h-4 w-4 shrink-0"
+            />
+            <span>{t('consultantConsent.checkboxRevocation')}</span>
+          </label>
         </div>
 
-        <button
-          type="button"
-          onClick={skjutUpp}
-          disabled={lage === 'sparar'}
-          className="mt-3 w-full text-sm text-stone-600 underline underline-offset-2 dark:text-stone-300"
+        {/* Fast sidfot — utanför den rullande ytan men inuti dialogen, så fokusfällan
+            och DOM-ordningen (text → kryssrutor → knappar) är oförändrade. Kantlinjen
+            är det som visar att det finns mer att läsa ovanför. */}
+        <div
+          data-ks3="sidfot"
+          className="shrink-0 border-t border-stone-200 px-6 pb-6 pt-4 dark:border-stone-700"
         >
-          {t('consultantConsent.later')}
-        </button>
+          {felText && (
+            <p role="alert" className="mb-4 flex items-start gap-2 text-sm text-red-700 dark:text-red-300">
+              <AlertCircle size={16} aria-hidden="true" className="mt-0.5 shrink-0" />
+              {t('consultantConsent.saveFailed')} {felText}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-2 sm:flex-row-reverse">
+            <Button onClick={jaTack} disabled={!kanSvaraJa} className="sm:flex-1">
+              {lage === 'sparar' ? (
+                <Loader2 size={16} className="animate-spin" aria-hidden="true" />
+              ) : null}
+              {t('consultantConsent.yes')}
+            </Button>
+            <Button variant="secondary" onClick={nejTack} disabled={lage === 'sparar'} className="sm:flex-1">
+              {t('consultantConsent.no')}
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            onClick={skjutUpp}
+            disabled={lage === 'sparar'}
+            className="mt-3 w-full text-sm text-stone-600 underline underline-offset-2 dark:text-stone-300"
+          >
+            {t('consultantConsent.later')}
+          </button>
+        </div>
       </div>
     </div>
   )

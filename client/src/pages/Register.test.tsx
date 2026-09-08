@@ -236,3 +236,83 @@ describe('Register — AI-samtycket blockerar inte registreringen (KO3)', () => 
     })
   })
 })
+
+/**
+ * ON4: "Konto skapat!" renderades som ett rött fel (role="alert") när
+ * e-postbekräftelse var påslagen i Supabase — `signUp` returnerade texten som
+ * `error`. Död gren idag (nya konton autobekräftas), men inställningen har
+ * varit på förr. Nu returnerar `signUp` `needsConfirmation: true`, och sidan
+ * visar nästa steg i en statusruta (role="status", aria-live="polite").
+ */
+async function fyllIOchSkickaIn(user: ReturnType<typeof userEvent.setup>, email = 'anna@example.com') {
+  await user.type(screen.getByLabelText(/förnamn/i), 'Anna')
+  await user.type(screen.getByLabelText(/efternamn/i), 'Andersson')
+  await user.type(screen.getByLabelText(/e-postadress/i), email)
+  await user.type(screen.getByLabelText(/^lösenord$/i), 'SecurePass9!xz')
+  await user.type(screen.getByLabelText(/bekräfta lösenord/i), 'SecurePass9!xz')
+  await user.click(screen.getByLabelText(/godkänner användarvillkoren/i))
+  await user.click(screen.getByLabelText(/godkänner integritetspolicyn/i))
+  const submitButton = screen.getByRole('button', { name: /^registrera$/i })
+  await waitFor(() => expect(submitButton).not.toBeDisabled())
+  await user.click(submitButton)
+}
+
+describe('Register — e-postbekräftelse är ett nästa steg, inte ett fel (ON4)', () => {
+  beforeEach(() => {
+    mockSignUp.mockReset()
+    mockSignInWithGoogle.mockReset()
+    mockNavigate.mockReset()
+  })
+
+  it('visar en statusruta med adressen mejlet gick till — inte en alert', async () => {
+    const user = userEvent.setup()
+    mockSignUp.mockResolvedValue({ error: null, needsConfirmation: true })
+    renderRegister()
+
+    await fyllIOchSkickaIn(user, 'anna@example.com')
+
+    const status = await screen.findByRole('status')
+    expect(status).toHaveAttribute('aria-live', 'polite')
+    expect(status.textContent).toContain('anna@example.com')
+    // Nyckeln får visas rått tills locale-filerna har den (ägs av annan agent),
+    // men den får ALDRIG hamna i en röd alert.
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    expect(status.className).not.toMatch(/red-/)
+  })
+
+  it('navigerar inte vidare — det finns ingen session att gå in med', async () => {
+    const user = userEvent.setup()
+    mockSignUp.mockResolvedValue({ error: null, needsConfirmation: true })
+    renderRegister()
+
+    await fyllIOchSkickaIn(user)
+    await screen.findByRole('status')
+
+    expect(mockNavigate).not.toHaveBeenCalled()
+  })
+
+  it('tar bort formuläret och flyttar fokus till statusrutan', async () => {
+    const user = userEvent.setup()
+    mockSignUp.mockResolvedValue({ error: null, needsConfirmation: true })
+    renderRegister()
+
+    await fyllIOchSkickaIn(user)
+    const status = await screen.findByRole('status')
+
+    expect(screen.queryByLabelText(/förnamn/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^registrera$/i })).not.toBeInTheDocument()
+    await waitFor(() => expect(status).toHaveFocus())
+  })
+
+  it('ett riktigt fel från signUp visas fortfarande som alert', async () => {
+    const user = userEvent.setup()
+    mockSignUp.mockResolvedValue({ error: 'Något gick fel' })
+    renderRegister()
+
+    await fyllIOchSkickaIn(user)
+
+    const alert = await screen.findByRole('alert')
+    expect(alert.textContent).toContain('Något gick fel')
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+  })
+})

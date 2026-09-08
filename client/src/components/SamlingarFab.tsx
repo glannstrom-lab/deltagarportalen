@@ -159,12 +159,20 @@ export function SamlingarFab() {
              * 390 px: `elementFromPoint` returnerade knappens ikon ovanpå
              * första raden i en länklista på Översikt.
              *
-             * Nu strax ovanför navet (56 px + säker area + 12 px luft), så den
-             * ligger i chrome-zonen i stället för i texten. Samma familj som
-             * UX16-lärdomen: fixerade lager ska hit-testas mot allt som ligger
-             * under dem, inte bara mot det man råkar tänka på.
+             * Nu strax ovanför navet, så den ligger i chrome-zonen i stället
+             * för i texten. Samma familj som UX16-lärdomen: fixerade lager ska
+             * hit-testas mot allt som ligger under dem, inte bara mot det man
+             * råkar tänka på.
+             *
+             * MB2 (2026-09-08): avståndet räknas ur `--bottom-nav-h`, navets
+             * UPPMÄTTA höjd inkl. säker area (HubBottomNav sätter den; 0 när
+             * navet är dolt). Det hårdkodade 68 px gissade 64 + 4 medan navet
+             * mäter 65. Kvar att besluta: `scroll-padding-bottom` rullar upp
+             * fokuserade element till exakt den här remsan, så FAB:en kan
+             * fortfarande överlappa högerkanten på en fokuserad knapp
+             * (e2e/mat-bottennav-hittest.cjs visar det).
              */
-            'bottom-[calc(env(safe-area-inset-bottom)+68px)] right-4 sm:bottom-6 sm:right-6',
+            'bottom-[calc(var(--bottom-nav-h)+8px)] right-4 sm:bottom-6 sm:right-6',
             // Ikon-only på mobil, etikett-pill på desktop
             'flex items-center gap-0 sm:gap-2 p-1.5 sm:pl-2 sm:pr-3',
             'rounded-full bg-white dark:bg-stone-800 shadow-lg hover:shadow-xl',

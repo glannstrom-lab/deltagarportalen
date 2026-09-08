@@ -28,7 +28,11 @@ export function useAuth() {
       }
     })
 
-    // Listen for auth changes
+    // Listen for auth changes.
+    // KA2: den här lyssnaren tömmer INTE React Query-cachen vid SIGNED_OUT,
+    // och ska inte göra det — hooken monteras bara på hubbsidorna. Det
+    // centrala skyddet ligger på modulnivå i stores/authStore.ts
+    // (`hanteraAuthByte`), som är laddad i alla lägen.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         setUser(session?.user ?? null)

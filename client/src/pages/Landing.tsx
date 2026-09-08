@@ -354,11 +354,18 @@ export default function Landing() {
                 vad den gör är inte en detalj i en portal vars återkommande
                 felklass är påhittade utfästelser.
               */}
+              {/*
+                ON2 (2026-09-08): hjälten talar till den arbetssökande (du-form,
+                DESIGN.md §2). Demo-knappen — en inköparhandling — bor därför
+                inte längre bredvid "Skapa konto gratis" utan i B2B-raden
+                under bocklistan. Vanlig <a>, inte <Link>: /guider/ är en
+                prerenderad sida utanför HashRoutern (se ROADMAP K12).
+              */}
               <a
-                href="mailto:demo@jobin.se?subject=Boka%20demo"
+                href="/guider/"
                 className="text-stone-700 dark:text-stone-200 hover:text-stone-900 dark:hover:text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 transition-all bg-white dark:bg-stone-800"
               >
-                {t('landing.hero.ctaSecondary', 'Boka 30 min demo')}
+                {t('landing.audience.jobseeker.guides', 'Eller läs guiderna först — utan konto')}
               </a>
             </div>
 
@@ -376,6 +383,27 @@ export default function Landing() {
                 <span>{t('landing.hero.quickStart')}</span>
               </span>
             </div>
+
+            {/*
+              ON2: B2B-vinkeln finns på de prerenderade sidorna
+              /for-rusta-och-matcha/ och /for-arbetsmarknadsenheter/ — en
+              diskret rad hit, inte en hjälte som talar till inköparen medan
+              knappen talar till den arbetssökande. <a href>, inte <Link>.
+            */}
+            <p className="mt-8 text-sm text-stone-600 dark:text-stone-300 flex flex-wrap justify-center sm:justify-start items-center gap-x-3 gap-y-1">
+              <span>{t('landing.hero.b2bQuestion')}</span>
+              <a href="/for-rusta-och-matcha/" className="underline underline-offset-4 hover:no-underline text-[var(--c-text)] dark:text-[var(--c-solid)] inline-flex items-center min-h-[44px]">
+                {t('landing.hero.b2bRusta')}
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="/for-arbetsmarknadsenheter/" className="underline underline-offset-4 hover:no-underline text-[var(--c-text)] dark:text-[var(--c-solid)] inline-flex items-center min-h-[44px]">
+                {t('landing.hero.b2bAme')}
+              </a>
+              <span aria-hidden="true">·</span>
+              <a href="mailto:demo@jobin.se?subject=Boka%20demo" className="underline underline-offset-4 hover:no-underline text-[var(--c-text)] dark:text-[var(--c-solid)] inline-flex items-center min-h-[44px]">
+                {t('landing.hero.b2bDemo')}
+              </a>
+            </p>
           </div>
         </div>
       </section>

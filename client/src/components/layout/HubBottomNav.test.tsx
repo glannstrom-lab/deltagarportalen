@@ -101,4 +101,55 @@ describe('HubBottomNav', () => {
     const label = nav.getAttribute('aria-label')
     expect(label).toBeTruthy()
   })
+
+  /*
+   * MB2 (2026-09-08): `--bottom-nav-h` ska vara navets UPPMÄTTA höjd, inte ett
+   * hårdkodat 64. jsdom mäter allt till 0, så höjden stubbas på
+   * getBoundingClientRect — det är exakt det anropet komponenten gör.
+   * Konsumenter: CookieConsent, CVBuilder och `html { scroll-padding-bottom }`
+   * i tokens.css; en fel höjd här flyttar alla tre.
+   */
+  describe('--bottom-nav-h (uppmätt navhöjd)', () => {
+    const stubbaHojd = (h: number) => {
+      const orig = HTMLElement.prototype.getBoundingClientRect
+      HTMLElement.prototype.getBoundingClientRect = function () {
+        const r = orig.call(this)
+        return this.tagName === 'NAV' ? { ...r, height: h, bottom: r.top + h } : r
+      }
+      return () => { HTMLElement.prototype.getBoundingClientRect = orig }
+    }
+
+    it('sätter variabeln till navets mätta höjd, inte till ett fast tal', () => {
+      const aterstall = stubbaHojd(65)
+      try {
+        renderAt('/cv')
+        expect(document.documentElement.style.getPropertyValue('--bottom-nav-h')).toBe('65px')
+      } finally { aterstall() }
+    })
+
+    it('reserverar ingen plats när navet är dolt (fokusläget: display:none → 0)', () => {
+      const aterstall = stubbaHojd(0)
+      try {
+        renderAt('/cv')
+        expect(document.documentElement.style.getPropertyValue('--bottom-nav-h')).toBe('0px')
+      } finally { aterstall() }
+    })
+
+    it('tar bort variabeln vid avmontering (publika sidor ska inte ärva den)', () => {
+      const aterstall = stubbaHojd(65)
+      try {
+        const { unmount } = renderAt('/cv')
+        expect(document.documentElement.style.getPropertyValue('--bottom-nav-h')).toBe('65px')
+        unmount()
+        expect(document.documentElement.style.getPropertyValue('--bottom-nav-h')).toBe('')
+      } finally { aterstall() }
+    })
+
+    it('har riktig safe-area-padding — `pb-safe` finns inte i Tailwind 4', () => {
+      renderAt('/cv')
+      const nav = screen.getByRole('navigation')
+      expect(nav.className).toContain('pb-[env(safe-area-inset-bottom)]')
+      expect(nav.className).not.toMatch(/\bpb-safe\b/)
+    })
+  })
 })

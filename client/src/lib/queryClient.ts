@@ -15,6 +15,10 @@
  *
  * Modulen finns alltså för att `rensaAllCache()` ska gå att anropa därifrån.
  * Lägg inte tillbaka klienten i `main.tsx`.
+ *
+ * Anropare (KA2, 2026-09-08): `authStore.signOut()` och den modulnivå-
+ * registrerade `hanteraAuthByte` i samma fil, som tömmer vid `SIGNED_OUT`
+ * och vid kontobyte i samma flik — vägarna förbi utloggningsknappen.
  */
 
 import { QueryClient } from '@tanstack/react-query'

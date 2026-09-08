@@ -267,3 +267,27 @@
     margin-right: auto;
   }
 }
+
+/* === Bottennavets höjd ===
+
+   `--bottom-nav-h` är navets UPPMÄTTA höjd. HubBottomNav sätter den med en
+   ResizeObserver medan navet är monterat och tar bort den vid avmontering —
+   då gäller utgångsvärdet här: 0. Konsumenter: CookieConsent (bannern ovanför
+   navet), CVBuilder (knappraden ovanför navet) och scroll-padding nedan.
+
+   scroll-padding-bottom (MB2, 2026-09-08): på mobil är det FÖNSTRET som rullar,
+   inte <main>, och webbläsaren räknar hela vyporten som synlig yta. Fokus (Tab)
+   och scrollIntoView lade därför element mot vyportens nederkant — under det
+   fixerade navet. Uppmätt vid 390×844: Spara-knappen 765–813, navet från 779,
+   och `focus()` rullade inte alls eftersom knappen enligt webbläsaren redan
+   "syntes". Med scroll-padding vet den att navets remsa är upptagen, så fokus
+   och scrollIntoView landar ovanför. Regression: `node e2e/mat-bottennav-hittest.cjs`.
+   Vikningen i sig — att ett kort skärs av skärmens nederkant vid laddning — är
+   inte ett fel och botas inte av att flytta innehåll ovanför. */
+:root {
+  --bottom-nav-h: 0px;
+}
+
+html {
+  scroll-padding-bottom: var(--bottom-nav-h);
+}

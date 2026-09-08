@@ -405,12 +405,31 @@ serve(async (req) => {
     }
 
     const resendApiKey = Deno.env.get('RESEND_API_KEY')
-    const emailFrom = Deno.env.get('EMAIL_FROM') || 'Jobin <onboarding@resend.dev>'
-    const siteUrl = Deno.env.get('SITE_URL') || 'http://localhost:5173'
+    const emailFrom = Deno.env.get('EMAIL_FROM')
+
+    // DE2 (2026-09-08): EMAIL_FROM föll tidigare tillbaka på
+    // `onboarding@resend.dev` — Resends sandlåda, som bara levererar till
+    // kontoägaren. Inbjudan såg skickad ut och nådde aldrig deltagaren.
+    // Saknas adressen medan Resend-nyckeln finns är det ett fel som ska
+    // synas. Utan nyckel går fallback-läget (Supabase native invite) som
+    // förut — det använder ingen avsändaradress.
+    if (resendApiKey && !emailFrom) {
+      console.error('[send-invite-email] EMAIL_FROM saknas i miljön — RESEND_API_KEY är satt men ingen avsändaradress. Sätt EMAIL_FROM (t.ex. "Jobin <noreply@jobin.se>") med `supabase secrets set`.')
+      return createCorsResponse(
+        { error: 'E-postavsändare saknas (EMAIL_FROM). Inbjudan skickades inte.' },
+        500, origin,
+      )
+    }
+
+    // DE2: reservvärdet var `http://localhost:5173` — en inbjudningslänk dit
+    // är död för alla utom den som kör dev-servern. Systerfunktionerna
+    // faller på jobin.se; här produktionsdomänen med www, som `jobin.se`
+    // svarar 307 till.
+    const siteUrl = (Deno.env.get('SITE_URL') || 'https://www.jobin.se').replace(/\/+$/, '')
 
     const results = await Promise.all(
       invitationIds.map((id) =>
-        processInvitation(supabaseClient, id, resendApiKey, emailFrom, siteUrl, user.id, callerIsAdmin)
+        processInvitation(supabaseClient, id, resendApiKey, emailFrom ?? '', siteUrl, user.id, callerIsAdmin)
           .catch((err) => ({
             invitationId: id,
             success: false,

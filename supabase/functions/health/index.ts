@@ -1,141 +1,106 @@
 /**
  * Health Check Edge Function
  * Monitors service health for uptime tracking and alerting
+ *
+ * DE6 (2026-09-08). Funktionen har alltid varit skriven utan egen auth, för
+ * övervakare — men plattformens JWT-grind svarade 401
+ * (`UNAUTHORIZED_NO_AUTH_HEADER`, mätt mot prod) innan en rad här kördes.
+ * En uptime-tjänst utan apikey såg alltså alltid "nere".
+ * `[functions.health] verify_jwt = false` i supabase/config.toml öppnar den.
+ *
+ * Eftersom svaret då är publikt är det NEDSKALAT. Tidigare gick råa
+ * felsträngar ur Postgres och Storage rakt ut, plus version, instansens
+ * uptime och databaslatens. Nu: status, tidsstämpel och ok/error per
+ * kontroll. Felen loggas i stället (console.error → Supabase-loggarna).
+ *
+ * `auth.getSession()`-kontrollen är borttagen: med service role och
+ * `persistSession: false` finns ingen session att hämta, så den kunde
+ * aldrig bli annat än "ok" — ett påhittat värde, inte en kontroll.
+ *
+ * HEAD stöds, eftersom många uptime-tjänster pingar så.
+ *
+ * Verifiera efter deploy:
+ *   curl -sS -o /dev/null -w "%{http_code}" https://<ref>.supabase.co/functions/v1/health
+ *   → 200 (utan apikey)
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 
-interface HealthCheck {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  timestamp: string;
-  version: string;
+type CheckStatus = 'ok' | 'error'
+
+interface HealthResponse {
+  status: 'healthy' | 'degraded' | 'unhealthy'
+  timestamp: string
   checks: {
-    database: {
-      status: 'ok' | 'error';
-      latencyMs?: number;
-      error?: string;
-    };
-    auth: {
-      status: 'ok' | 'error';
-      error?: string;
-    };
-    storage: {
-      status: 'ok' | 'error';
-      error?: string;
-    };
-  };
-  uptime?: number;
+    database: CheckStatus
+    storage: CheckStatus
+  }
 }
 
-// Track uptime
-const startTime = Date.now();
+const HEADERS = {
+  'Content-Type': 'application/json',
+  'Cache-Control': 'no-cache, no-store, must-revalidate',
+  // Övervakare anropar från vilken origin som helst
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, HEAD',
+}
+
+function svara(body: unknown, status: number, method: string): Response {
+  return new Response(method === 'HEAD' ? null : JSON.stringify(body), { status, headers: HEADERS })
+}
 
 serve(async (req) => {
-  // Allow GET requests without authentication for monitoring services
-  if (req.method !== 'GET') {
-    return new Response(
-      JSON.stringify({ error: 'Method not allowed' }),
-      { status: 405, headers: { 'Content-Type': 'application/json' } }
-    );
+  if (req.method !== 'GET' && req.method !== 'HEAD') {
+    return svara({ error: 'Method not allowed' }, 405, req.method)
   }
 
-  const supabaseUrl = Deno.env.get('SUPABASE_URL');
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const timestamp = new Date().toISOString()
+  const supabaseUrl = Deno.env.get('SUPABASE_URL')
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 
   if (!supabaseUrl || !serviceRoleKey) {
-    return new Response(
-      JSON.stringify({
-        status: 'unhealthy',
-        timestamp: new Date().toISOString(),
-        version: Deno.env.get('APP_VERSION') || 'unknown',
-        error: 'Missing configuration',
-      }),
-      { status: 503, headers: { 'Content-Type': 'application/json' } }
-    );
+    console.error('[health] SUPABASE_URL eller SUPABASE_SERVICE_ROLE_KEY saknas')
+    return svara({ status: 'unhealthy', timestamp }, 503, req.method)
   }
 
   const supabase = createClient(supabaseUrl, serviceRoleKey, {
-    auth: { persistSession: false }
-  });
+    auth: { persistSession: false },
+  })
 
-  const health: HealthCheck = {
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    version: Deno.env.get('APP_VERSION') || '1.0.0',
-    checks: {
-      database: { status: 'ok' },
-      auth: { status: 'ok' },
-      storage: { status: 'ok' },
-    },
-    uptime: Date.now() - startTime,
-  };
+  const checks: HealthResponse['checks'] = { database: 'ok', storage: 'ok' }
 
-  // Check database connectivity
+  // Databas: en läsning med LIMIT 1. Svaret säger bara ok/error.
   try {
-    const dbStart = Date.now();
-    const { error: dbError } = await supabase
-      .from('profiles')
-      .select('id')
-      .limit(1);
-
-    health.checks.database.latencyMs = Date.now() - dbStart;
-
-    if (dbError) {
-      health.checks.database.status = 'error';
-      health.checks.database.error = dbError.message;
-      health.status = 'degraded';
+    const { error } = await supabase.from('profiles').select('id').limit(1)
+    if (error) {
+      console.error('[health] database:', error.message)
+      checks.database = 'error'
     }
   } catch (e) {
-    health.checks.database.status = 'error';
-    health.checks.database.error = e instanceof Error ? e.message : 'Unknown error';
-    health.status = 'unhealthy';
+    console.error('[health] database:', e instanceof Error ? e.message : e)
+    checks.database = 'error'
   }
 
-  // Check auth service
+  // Storage: listBuckets med service role. Bucketnamnen lämnar aldrig funktionen.
   try {
-    const { error: authError } = await supabase.auth.getSession();
-    if (authError) {
-      health.checks.auth.status = 'error';
-      health.checks.auth.error = authError.message;
-      health.status = health.status === 'healthy' ? 'degraded' : health.status;
+    const { error } = await supabase.storage.listBuckets()
+    if (error) {
+      console.error('[health] storage:', error.message)
+      checks.storage = 'error'
     }
   } catch (e) {
-    health.checks.auth.status = 'error';
-    health.checks.auth.error = e instanceof Error ? e.message : 'Unknown error';
-    health.status = 'degraded';
+    console.error('[health] storage:', e instanceof Error ? e.message : e)
+    checks.storage = 'error'
   }
 
-  // Check storage
-  try {
-    const { error: storageError } = await supabase.storage.listBuckets();
-    if (storageError) {
-      health.checks.storage.status = 'error';
-      health.checks.storage.error = storageError.message;
-      health.status = health.status === 'healthy' ? 'degraded' : health.status;
-    }
-  } catch (e) {
-    health.checks.storage.status = 'error';
-    health.checks.storage.error = e instanceof Error ? e.message : 'Unknown error';
-    health.status = 'degraded';
-  }
+  // Utan databas är portalen nere → 503. Utan storage är den försämrad → 200,
+  // så en övervakare skiljer på "nere" och "haltar".
+  const status: HealthResponse['status'] =
+    checks.database === 'error' ? 'unhealthy'
+    : checks.storage === 'error' ? 'degraded'
+    : 'healthy'
 
-  // Determine HTTP status code
-  const statusCode = health.status === 'healthy' ? 200
-    : health.status === 'degraded' ? 200
-    : 503;
-
-  return new Response(
-    JSON.stringify(health, null, 2),
-    {
-      status: statusCode,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        // Allow monitoring services to call this endpoint
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET',
-      },
-    }
-  );
-});
+  const body: HealthResponse = { status, timestamp, checks }
+  return svara(body, status === 'unhealthy' ? 503 : 200, req.method)
+})

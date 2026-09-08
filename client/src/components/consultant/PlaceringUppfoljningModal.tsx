@@ -39,7 +39,12 @@ function tomtFormular(placementId: string, weekNumber: number): PlaceringUppfolj
     // placeringarApi.berakMilstolpeUppfoljningar().
     is_completed: true,
     attendance_pct: null,
-    status: 'good',
+    // AS4 (2026-09-08): INGET förifyllt läge. Med 'good' som start sparade en
+    // konsulent som bara fyllde vecka och datum "Går bra" utan att någon
+    // bedömt det — ett påhittat värde, och avvikelsen är det viktiga i en
+    // uppföljning. Valet krävs i handleSave; CHECK-constrainten kräver ändå
+    // en status på en genomförd rad.
+    status: null,
     topics_to_discuss: null,
     notes: null,
     next_step: null,
@@ -73,6 +78,10 @@ export function PlaceringUppfoljningModal({ open, placementId, nextWeekNumber, o
     }
     if (!draft.week_number || draft.week_number < 1) {
       setError('Ange veckonummer')
+      return
+    }
+    if (!draft.status) {
+      setError('Välj hur det går på platsen')
       return
     }
     setSaving(true)
@@ -139,8 +148,8 @@ export function PlaceringUppfoljningModal({ open, placementId, nextWeekNumber, o
             />
           </Field>
 
-          <Field label="Läge">
-            <div className="grid grid-cols-3 gap-2">
+          <Field label="Läge *">
+            <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Läge på platsen">
               {(['good', 'concerns', 'critical'] as const).map((s) => (
                 <label
                   key={s}
@@ -192,7 +201,7 @@ export function PlaceringUppfoljningModal({ open, placementId, nextWeekNumber, o
 
         <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-stone-100 bg-stone-50 flex-wrap">
           {error && (
-            <span className="inline-flex items-center gap-1 text-xs text-rose-700">
+            <span role="alert" className="inline-flex items-center gap-1 text-xs text-rose-700">
               <AlertCircle size={12} />
               {error}
             </span>

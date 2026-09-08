@@ -24,11 +24,13 @@
 
 const { put } = require('@vercel/blob');
 const { createClient } = require('@supabase/supabase-js');
+const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const RATE_LIMIT_PER_USER_PER_WINDOW = 5;
 const RATE_LIMIT_WINDOW_MINUTES = 15;
+const RATE_LIMIT_CONFIG = { limit: RATE_LIMIT_PER_USER_PER_WINDOW, windowMinutes: RATE_LIMIT_WINDOW_MINUTES };
 
 const ALLOWED_ORIGINS = [
   'https://jobin.se',
@@ -86,6 +88,10 @@ function sanitizeFilename(name) {
     .slice(0, 200);                      // max 200 tecken
 }
 
+// SD2 (2026-09-08): de tre felvägarna svarade tidigare `{ allowed: true }`.
+// Nu samma minnesfallback som ai.js/job-alerts.js, via
+// `_utils/rate-limit-fallback.js`. Vaktat av
+// `src/test/api-rate-limit-fallback.test.ts`.
 async function checkRateLimit(supabase, userId) {
   try {
     const { data, error } = await supabase.rpc('check_rate_limit', {
@@ -95,8 +101,8 @@ async function checkRateLimit(supabase, userId) {
       p_window_minutes: RATE_LIMIT_WINDOW_MINUTES,
     });
     if (error) {
-      console.error('[Upload] Rate-limit RPC error:', error.message);
-      return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+      console.error('[Upload] Rate-limit RPC error, using in-memory fallback:', error.message);
+      return rateLimitFallback(userId, 'upload-image', RATE_LIMIT_CONFIG);
     }
     if (data && data.length > 0) {
       const r = data[0];
@@ -105,10 +111,12 @@ async function checkRateLimit(supabase, userId) {
         : RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
       return { allowed: r.allowed, remaining: r.remaining || 0, resetIn };
     }
-    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+    // RPC:n ska alltid ge en rad. Ingen rad är ett fel, inte fritt fram.
+    console.error('[Upload] Rate-limit RPC returned no row, using in-memory fallback');
+    return rateLimitFallback(userId, 'upload-image', RATE_LIMIT_CONFIG);
   } catch (err) {
-    console.error('[Upload] Rate-limit check failed:', err);
-    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+    console.error('[Upload] Rate-limit check failed, using in-memory fallback:', err);
+    return rateLimitFallback(userId, 'upload-image', RATE_LIMIT_CONFIG);
   }
 }
 

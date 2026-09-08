@@ -140,8 +140,14 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
   )
 }
 
-// Toast container and hook
+// Toast container and hook.
+//
+// Registret på modulnivå är det som gör att `showToast` och adaptern i
+// `lib/toast.ts` (`notifications.*`) kan anropas utanför React — ur stores,
+// services och händelsehanterare — och ändå ritas av den ENDA monterade
+// <ToastContainer/> i Layout.tsx. KA1 (2026-09-08): react-hot-toast är borta.
 let toastListeners: ((toast: Toast) => void)[] = []
+let dismissListeners: ((id?: string) => void)[] = []
 
 export function toast(toast: Omit<Toast, 'id'>) {
   const id = Math.random().toString(36).substring(2, 9)
@@ -152,8 +158,12 @@ export function toast(toast: Omit<Toast, 'id'>) {
   return id
 }
 
-export function dismissToast(_id: string) {
-  // Implementation would require storing toast IDs
+/**
+ * Stäng en toast via dess id, eller alla om id utelämnas. Det är den här
+ * vägen laddningstoasts ("Laddar upp…", duration Infinity) stängs på.
+ */
+export function dismissToast(id?: string) {
+  dismissListeners.forEach(listener => listener(id))
 }
 
 export function ToastContainer() {
@@ -164,9 +174,15 @@ export function ToastContainer() {
       setToasts(prev => [...prev, newToast])
     }
     
+    const dismissListener = (id?: string) => {
+      setToasts(prev => (id === undefined ? [] : prev.filter(t => t.id !== id)))
+    }
+
     toastListeners.push(listener)
+    dismissListeners.push(dismissListener)
     return () => {
       toastListeners = toastListeners.filter(l => l !== listener)
+      dismissListeners = dismissListeners.filter(l => l !== dismissListener)
     }
   }, [])
 

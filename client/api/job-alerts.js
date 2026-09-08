@@ -24,6 +24,18 @@ const supabaseAnon = SUPABASE_URL && SUPABASE_ANON_KEY
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 
+// DE2 (2026-09-08): länkarna i mejlen föll tillbaka på
+// `https://deltagarportalen.se` — staging — när VITE_APP_URL saknas, och de
+// saknade dessutom brädgården: portalen kör HashRouter, så
+// `https://www.jobin.se/job-search` landar på startsidan. `?tab=alerts` har
+// aldrig varit en rutt; bevakningarna bor på `/#/job-search/alerts`
+// (jfr `byggPortalnotis`, som av samma skäl skriver sökvägen UTAN `#` —
+// den går genom `navigate()`, inte genom webbläsarens adressfält).
+// Reservvärdet är produktionsdomänen; `jobin.se` utan www svarar 307 dit.
+const APP_URL = (process.env.VITE_APP_URL || 'https://www.jobin.se').replace(/\/+$/, '');
+const JOBBSOK_URL = `${APP_URL}/#/job-search`;
+const BEVAKNINGAR_URL = `${APP_URL}/#/job-search/alerts`;
+
 // Verifiera Bearer-token. Returnerar user-objekt eller null.
 async function verifyUserAuth(req) {
   const authHeader = req.headers.authorization || req.headers.Authorization;
@@ -247,7 +259,7 @@ const templates = {
       ` : ''}
 
       <div style="text-align: center; padding-top: 20px;">
-        <a href="${process.env.VITE_APP_URL || 'https://deltagarportalen.se'}/job-search"
+        <a href="${JOBBSOK_URL}"
            style="display: inline-block; padding: 12px 24px; background: #0d9488; color: white; text-decoration: none; border-radius: 10px; font-weight: 600;">
           Se alla matchningar
         </a>
@@ -257,7 +269,7 @@ const templates = {
     <div style="text-align: center; padding: 20px; color: #9ca3af; font-size: 12px;">
       <p>Du får detta mail för att du har en aktiv bevakning.</p>
       <p>
-        <a href="${process.env.VITE_APP_URL || 'https://deltagarportalen.se'}/job-search?tab=alerts" style="color: #14b8a6;">
+        <a href="${BEVAKNINGAR_URL}" style="color: #14b8a6;">
           Hantera bevakningar
         </a>
       </p>
@@ -268,7 +280,7 @@ const templates = {
     `,
     text: `Nya jobbmatchningar för "${alertName}"\n\n${jobs.slice(0, 5).map(job =>
       `${job.headline || job.title}\n${job.employer?.name || job.company}\n${job.workplace_address?.municipality || 'Plats ej angiven'}\n`
-    ).join('\n')}\n\nSe alla matchningar: ${process.env.VITE_APP_URL || 'https://deltagarportalen.se'}/job-search`
+    ).join('\n')}\n\nSe alla matchningar: ${JOBBSOK_URL}`
   }),
 
   dailyDigest: (alerts, _userEmail) => {
@@ -317,7 +329,7 @@ const templates = {
       `).join('')}
 
       <div style="text-align: center; padding-top: 10px;">
-        <a href="${process.env.VITE_APP_URL || 'https://deltagarportalen.se'}/job-search"
+        <a href="${JOBBSOK_URL}"
            style="display: inline-block; padding: 12px 24px; background: #7c3aed; color: white; text-decoration: none; border-radius: 10px; font-weight: 600;">
           Utforska alla jobb
         </a>
@@ -362,15 +374,25 @@ async function searchJobs(params) {
 }
 
 // E-postleverans via Resend — samma tjänst som supabase/functions/
-// send-invite-email. Kräver RESEND_API_KEY (+ valfri EMAIL_FROM) i Vercel-env.
+// send-invite-email. Kräver RESEND_API_KEY + EMAIL_FROM i Vercel-env.
 // Utan nyckel köas mejlet som 'pending' i email_notifications utan leverans
 // (tidigare beteende) så inget går förlorat, men då mejlas inga bevakningar.
+//
+// DE2 (2026-09-08): EMAIL_FROM föll tidigare tillbaka på
+// `onboarding@resend.dev` — Resends sandlåda, som bara levererar till
+// kontoägaren. Ett mejl därifrån ser skickat ut i loggen och når aldrig
+// deltagaren. Saknas adressen är det nu ett fel som syns: handlern svarar
+// 500 (se `saknarAvsandare`), och skulle vi ändå hamna här markeras mejlet
+// 'failed' i stället för att gå till sandlådan.
 async function sendEmail(to, subject, html, text) {
   const resendApiKey = process.env.RESEND_API_KEY;
-  const emailFrom = process.env.EMAIL_FROM || 'Jobin <onboarding@resend.dev>';
+  const emailFrom = process.env.EMAIL_FROM;
 
   let status = 'pending';
-  if (resendApiKey) {
+  if (resendApiKey && !emailFrom) {
+    console.error('[job-alerts] EMAIL_FROM saknas — mejlet skickas inte (ingen sandlådeadress som reserv)');
+    status = 'failed';
+  } else if (resendApiKey) {
     try {
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -718,6 +740,18 @@ async function sendDailyDigest(userId) {
   return true;
 }
 
+/**
+ * DE2: Resend-nyckel utan avsändaradress är en felkonfiguration som ska
+ * synas, inte tystas med en sandlådeadress. Egen funktion så beslutet går
+ * att pröva utan handler.
+ *
+ * @param {Record<string, string | undefined>} env - normalt process.env
+ * @returns {boolean}
+ */
+function saknarAvsandare(env) {
+  return Boolean(env.RESEND_API_KEY) && !env.EMAIL_FROM;
+}
+
 // Main handler
 module.exports = async (req, res) => {
   const requestOrigin = req.headers.origin;
@@ -790,6 +824,25 @@ module.exports = async (req, res) => {
     });
   }
 
+  // DE2: högljutt fel i stället för sandlådeadress. Kontrolleras EFTER auth
+  // och rate-limit så att en oautentiserad anropare inte kan läsa av
+  // konfigurationen.
+  //
+  // `send-digest` finns bara för att skicka mejl → 500. `check`/`check-user`
+  // skriver också portalnotiser (`notifications`), som i dag är den enda
+  // kanal som når fram (DE1: DNS saknar Resend) — de körs vidare, mejlen
+  // markeras `failed` i sendEmail, och felet står i svaret så att cron-loggen
+  // visar det i klartext i stället för att notiserna tystnar med.
+  const emailConfigError = saknarAvsandare(process.env)
+    ? 'E-postavsändare saknas (EMAIL_FROM). Inga bevakningsmejl skickas förrän den är satt.'
+    : null;
+  if (emailConfigError) {
+    console.error('[job-alerts] EMAIL_FROM saknas i miljön — RESEND_API_KEY är satt men ingen avsändaradress. Sätt EMAIL_FROM (t.ex. "Jobin <noreply@jobin.se>") i Vercel.');
+  }
+  if (emailConfigError && action === 'send-digest') {
+    return res.status(500).json({ error: emailConfigError });
+  }
+
   try {
     switch (action) {
       case 'check': {
@@ -798,14 +851,15 @@ module.exports = async (req, res) => {
         return res.json({
           success: true,
           message: `Checked ${result.alerts} alerts for ${result.users} users, found ${result.newJobs} new jobs`,
-          ...result
+          ...result,
+          ...(emailConfigError ? { emailConfigError } : {})
         });
       }
 
       case 'check-user': {
         // Verifierad användare — alltid använd authedUserId, ignorera ev. userId i body
         const result = await checkUserAlerts(authedUserId);
-        return res.json({ success: true, ...result });
+        return res.json({ success: true, ...result, ...(emailConfigError ? { emailConfigError } : {}) });
       }
 
       case 'send-digest': {
@@ -849,3 +903,4 @@ module.exports = async (req, res) => {
 module.exports.shouldEmailToday = shouldEmailToday;
 module.exports.byggPortalnotis = byggPortalnotis;
 module.exports.tolkaMejlbrytare = tolkaMejlbrytare;
+module.exports.saknarAvsandare = saknarAvsandare;

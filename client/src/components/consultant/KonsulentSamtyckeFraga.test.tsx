@@ -160,6 +160,35 @@ describe('KS3 — svaret', () => {
     expect(rpcMock.mock.calls.some(([namn]) => namn === 'grant_consultant_consent')).toBe(false)
   })
 
+  /**
+   * ON1 (2026-09-07): `seesList` hämtas med `returnObjects` och saknade `namn`, så
+   * sista punkten visade "{{namn}} skriver om dig" rått — och sparade det så i
+   * art. 7.1-beviset. Testet ovan ("namnger konsulenten") såg det inte, för namnet
+   * stod på tre andra ställen. Mutationsprövat: ta bort `namn` ur något av de två
+   * `seesList`-anropen så faller det här.
+   */
+  it('lämnar ingen ointerpolerad {{nyckel}} i rutan eller i det sparade beviset', async () => {
+    const anvandare = userEvent.setup()
+    render(<KonsulentSamtyckeFraga />)
+    const dialog = await screen.findByRole('dialog')
+
+    expect(dialog.textContent).not.toMatch(/\{\{|\}\}/)
+    // Sista listpunkten är den som bär namnet — och den ska bära det på riktigt.
+    const punkter = screen.getAllByRole('listitem').map((li) => li.textContent ?? '')
+    expect(punkter.at(-1)).toMatch(/Anna Ek/)
+
+    for (const ruta of screen.getAllByRole('checkbox')) await anvandare.click(ruta)
+    await anvandare.click(screen.getByRole('button', { name: /det är okej/i }))
+
+    await waitFor(() => {
+      const anrop = rpcMock.mock.calls.find(([namn]) => namn === 'grant_consultant_consent')
+      expect(anrop).toBeDefined()
+      const text = (anrop?.[1] as { p_consent_text: string }).p_consent_text
+      expect(text).not.toMatch(/\{\{|\}\}/)
+      expect(text).toMatch(/mål som Anna Ek skriver om dig/)
+    })
+  })
+
   it('visar felet i stället för att låtsas ha sparat', async () => {
     const anvandare = userEvent.setup()
     rpcMock.mockImplementation(async (namn: string) =>
@@ -176,5 +205,65 @@ describe('KS3 — svaret', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(/permission denied/)
     // Dialogen står kvar — ett misslyckat sparande får aldrig se ut som ett lyckat.
     expect(screen.getByRole('dialog')).toBeInTheDocument()
+  })
+})
+
+/**
+ * MB1 (2026-09-07): på 390×844 och 375×667 låg alla tre knapparna under
+ * skärmkanten, utan något som visade att rutan gick att rulla. jsdom har ingen
+ * layout, så det här är en strukturvakt: texten rullar i en egen yta med
+ * `overflow-y-auto`, dialogen har en höjd bunden till viewporten, och knapparna
+ * ligger UTANFÖR den rullande ytan men INUTI dialogen (fokusfällan). Pixelmätningen
+ * på riktig viewport görs mot prod efter deploy.
+ */
+describe('KS3 — knapparna ska alltid vara synliga (MB1)', () => {
+  it('knappraden ligger utanför den rullande ytan, i dialogen, sist i DOM-ordningen', async () => {
+    render(<KonsulentSamtyckeFraga />)
+    const dialog = await screen.findByRole('dialog')
+
+    // Dialogens höjd är bunden till viewporten (dvh, inte vh — adressfältet på mobil).
+    expect(dialog.className).toMatch(/max-h-\[calc\(100dvh-[^\]]+\)\]/)
+    expect(dialog.className).not.toMatch(/overflow-y-auto/)
+
+    const rullande = dialog.querySelector('.overflow-y-auto')
+    expect(rullande).not.toBeNull()
+    // Flex-barn krymper inte under sitt innehåll utan min-h-0 — då rullar inget.
+    expect(rullande!.className).toMatch(/min-h-0/)
+    // Texten och kryssrutorna bor i den rullande ytan …
+    expect(rullande!.contains(screen.getByRole('list'))).toBe(true)
+    for (const ruta of screen.getAllByRole('checkbox')) expect(rullande!.contains(ruta)).toBe(true)
+
+    // … men ingen av de tre knapparna gör det. De är ändå i dialogen (fokusfällan).
+    const knappar = [
+      screen.getByRole('button', { name: /det är okej/i }),
+      screen.getByRole('button', { name: /avsluta kopplingen/i }),
+      screen.getByRole('button', { name: /tänka på det/i }),
+    ]
+    for (const knapp of knappar) {
+      expect(rullande!.contains(knapp)).toBe(false)
+      expect(dialog.contains(knapp)).toBe(true)
+    }
+
+    // DOM-ordning: kryssrutorna före knapparna, så Tab går text → val → svar.
+    const sistaRuta = screen.getAllByRole('checkbox').at(-1)!
+    for (const knapp of knappar) {
+      expect(sistaRuta.compareDocumentPosition(knapp) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    }
+  })
+
+  it('felmeddelandet står i den fasta sidfoten, intill knapparna', async () => {
+    const anvandare = userEvent.setup()
+    rpcMock.mockImplementation(async (namn: string) =>
+      namn === 'get_my_consultant'
+        ? { data: { first_name: 'Anna', last_name: 'Ek' } as never, error: null }
+        : { data: null as never, error: { message: 'permission denied' } }
+    )
+    render(<KonsulentSamtyckeFraga />)
+    const dialog = await screen.findByRole('dialog')
+    for (const ruta of screen.getAllByRole('checkbox')) await anvandare.click(ruta)
+    await anvandare.click(screen.getByRole('button', { name: /det är okej/i }))
+
+    const fel = await screen.findByRole('alert')
+    expect(dialog.querySelector('.overflow-y-auto')!.contains(fel)).toBe(false)
   })
 })

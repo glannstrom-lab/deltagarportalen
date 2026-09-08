@@ -12,6 +12,12 @@ föregående version 2026-05-15)
 > lagringen. Se **R11** i §3.1. Bedömningen är uppdaterad i §1.2, §1.3, §3.1, §3.2 och §4.
 > Totalbedömningen är höjd från "MEDEL → LÅG efter implementation" till **MEDEL**, eftersom
 > den tidigare siffran vilade på ett åtgärdspåstående som inte höll.
+>
+> **Revision 2026-09-08 (AS3).** Projektgenomgången 2026-09-07 fann en Art 9-nära kategori
+> som bedömningen saknade: `consultant_work_placements.internal_adaptation_notes`, skriven
+> av konsulenten om deltagaren, utan samtyckesgrind. Tillagd i §1.2 och §1.3 med ett
+> ställningstagande om rättslig grund. Residualrisken i §4 påverkas inte i dag (0 rader),
+> men grunden är inte uppfylld förrän beslutet i §1.3 är taget.
 
 ---
 
@@ -51,6 +57,7 @@ Hjälpa arbetssökande (särskilt långtidsarbetslösa med fysiska/psykologiska 
 | **Hälsodata (Art 9)** | Energinivå, mående, kognitiva utmaningar, anpassningsbehov | Användaren — separate consent (`HealthConsentGate`) |
 | **Funktionsförutsättningar (Art 9)** | Självskattad ork, koncentration, motorik, hantering av sinnesintryck, kognition och kommunikation — åtta frågor i Intresseguiden, plus den härledda profilen | Användaren — samtyckesgrindad sedan 2026-08-21, se §3.1 R11 |
 | **Wellness (Art 9)** | Mood-loggar, dagboksinlägg, gratitude-listor | Användaren — separate consent (`WellnessConsentGate`) |
+| **Anpassningsbakgrund vid arbetsplacering (Art 9-nära)** | `consultant_work_placements.internal_adaptation_notes` — konsulentens fritext om *varför* en praktik-/arbetsträningsplats behöver anpassas (funktionsnedsättning, diagnosnära bakgrund). Skild från `employer_instructions` (*vad* arbetsplatsen ska göra, utan orsak), som får delas | **Konsulenten, inte deltagaren** — den enda Art 9-nära kategorin i tabellen som skrivs av någon annan än den registrerade. Ingen samtyckesgrind vid skrivning (varken UI eller RLS). Deltagaren kan läsa raden (RLS `Deltagaren ser sina platser`). Når aldrig arbetsgivaren: allowlisten `byggArbetsgivarUnderlag()` + vakttest i `placeringarApi.test.ts`. Kolumnen verifierad i prod 2026-09-08; 0 rader. Se ställningstagandet under §1.3 (AS3) |
 | Intressen | RIASEC-resultat, yrkesintressen, drömjobb | Användaren |
 | Beteende | Inloggningstider, klick, AI-promptar | Automatiskt loggat |
 | Konsulentkoppling | Vilken konsulent som är tilldelad | Konsulent eller AF |
@@ -64,6 +71,35 @@ Hjälpa arbetssökande (särskilt långtidsarbetslösa med fysiska/psykologiska 
 | Hälsodata (energy, mood) | Uttryckligt samtycke (Art 9.2.a) | `HealthConsentGate`, `WellnessConsentGate` |
 | Funktionsförutsättningar (Intresseguiden) | Uttryckligt samtycke (Art 9.2.a) | `profiles.health_consent_at` kontrolleras före lagring i `TestTab`. **Grinden ligger i applikationskoden, inte i RLS** för `interest_guide_progress`/`interest_guide_history` — se R11 |
 | Konsulent-datadelning | Samtycke (Art 6.1.a) — granulärt per kategori | `participant_data_sharing`-tabell |
+| Anpassningsbakgrund vid arbetsplacering (`internal_adaptation_notes`) | **Arbetshypotes: uttryckligt samtycke (Art 9.2.a)** genom konsulentsamtycket (`grant_consultant_consent`), villkorat av `participant_data_sharing.share_health_data`. **Inte uppfylld i dag** — se ställningstagandet nedan | Ingen grind vid skrivning. Samtyckestexten (`consultant.consent.seesList`) nämner "anteckningar och mål som konsulenten skriver om dig" men inte hälsa, och `share_health_data` kontrolleras inte när fältet sparas |
+
+> **Ställningstagande AS3 (2026-09-08).** Fältet skapades 2026-08-31 (AG1) med
+> uttrycklig avsikt att *hålla isär* orsak från instruktion, och migrationen hänvisar
+> till den här DPIA:n som grund för att aldrig serialisera det mot en arbetsgivare.
+> Men DPIA:n kände inte till fältet: raden "Hälsodata" ovan anger *Användaren själv*
+> som källa, och det stämmer inte här — det är konsulenten som skriver, om deltagaren.
+>
+> *Varför Art 9:* en anteckning om att en person behöver anpassning "på grund av" något
+> är en uppgift om hälsa eller funktionsnedsättning i Art 9.1:s mening, oavsett om
+> diagnosen nämns. Att fältet är fritext gör det värre, inte bättre.
+>
+> *Vilken grund:* Art 9.2.b (arbetsrätt/social trygghet) kräver stöd i svensk lag
+> för just den personuppgiftsansvarige; portalen är leverantörens verktyg, inte
+> Arbetsförmedlingens, och ingen sådan bestämmelse är identifierad. Art 9.2.h
+> (yrkesmedicin, social omsorg) förutsätter tystnadsplikt enligt lag. Det som återstår,
+> och som är konsekvent med hur portalen behandlar varje annan Art 9-kategori, är
+> **uttryckligt samtycke (9.2.a)** från deltagaren. Det samtycket finns delvis redan:
+> deltagaren godkänner konsulentkopplingen och att konsulenten "skriver anteckningar om
+> dig", och kan separat ge `share_health_data`. Men ingen av grindarna hindrar att
+> fältet fylls i utan samtycke — samma klass som R11.
+>
+> *Vad som krävs för att grunden ska hålla (beslut Mikael, inte taget här):*
+> (1) en RLS-`WITH CHECK` på `consultant_work_placements` som kräver att
+> `internal_adaptation_notes IS NULL` om deltagaren inte gett `share_health_data`, och
+> (2) att samtyckestexten säger att anteckningarna kan röra hälsa och anpassningsbehov.
+> Alternativet är att ta bort fältet och låta orsaken stanna i konsulentens journal, som
+> redan är samtyckesgrindad. Tills något av det är gjort är residualrisken för fältet
+> densamma som R11:s: **Medel**, med 0 rader i prod som enda mildrande omständighet.
 | Säkerhetsloggar (Sentry) | Berättigat intresse (Art 6.1.f) — efter cookie-consent | Intresseavvägning bifogad |
 | Analytics | Samtycke (Art 6.1.a) | Cookie-banner |
 | Email-notiser | Avtal + samtycke | Användaren slår på per notistyp |

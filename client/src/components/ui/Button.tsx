@@ -48,7 +48,11 @@ export function Button({
     buttonVariants[actualVariant as keyof typeof buttonVariants],
 
     // Size styling - auto touch-optimized on mobile
-    size === 'sm' && 'px-2.5 py-1.5 sm:px-3 text-xs sm:text-sm min-h-[40px] sm:min-h-[36px]',
+    // MB3 (2026-09-08): text-sm på ALLA bredder. `text-xs sm:text-sm` gav 12 px
+    // knapptext under 640 px på bl.a. "Säg upp kopplingen" och "Spara
+    // reflektion" — tap-målet var fint (40 px), läsbarheten inte. Över 640 px
+    // var det redan text-sm, så desktop är oförändrad.
+    size === 'sm' && 'px-2.5 py-1.5 sm:px-3 text-sm min-h-[40px] sm:min-h-[36px]',
     size === 'md' && 'px-4 py-2.5 sm:px-5 text-sm sm:text-base min-h-[44px]',
     size === 'lg' && 'px-5 py-3 sm:px-6 text-base sm:text-lg min-h-[48px] sm:min-h-[52px]',
     size === 'touch' && cn(touch.button, 'text-sm sm:text-base'),

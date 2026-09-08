@@ -1,0 +1,239 @@
+{
+  "_kommentar": "Rättelser av ospårbara procentpåståenden i prod-tabellen articles (ROADMAP KG2, 2026-09-08). Appliceras av scripts/apply-procent-rattelser.cjs. Varje post är `slug -> [ { falt, fore, efter, en: { fore, efter } } ]` (ett objekt i stället för en lista går också bra). `fore` måste förekomma EXAKT en gång i fältet, annars avbryter skriptet. `falt` är content (default) eller summary; `en` rättar motsvarande content_en/summary_en. Regeln: en siffra får bara stå kvar med namngiven källa och år i samma sektion — annars formuleras meningen utan siffra. Grinden src/test/guides-pastaenden.test.ts vaktar klassen.",
+  "_kallor": {
+    "branscher-brist": "Arbetsförmedlingen, Arbetsmarknadsutsikterna våren 2026 (Af-2026/0055 7419, publicerad 2026-06-16), avsnitt 3.6: 'Drygt hälften (51 procent) av de arbetsgivare som har försökt rekrytera under de senaste sex månaderna rapporterar att de har stött på ett eller flera typer av rekryteringsproblem', 'drygt vart fjärde arbetsställe (26 procent) har misslyckats', 'byggbranschen där andelen arbetsgivare som misslyckats uppgick till 40 procent'. Verifierat mot rapportens PDF 2026-09-08."
+  },
+  "rattelser": {
+    "branscher-brist": {
+      "fore": "Våren 2026 uppgav 51 procent av de arbetsgivare som försökt rekrytera under det senaste halvåret att de stött på ett eller flera problem.",
+      "efter": "Enligt Arbetsförmedlingens rapport Arbetsmarknadsutsikterna våren 2026 uppgav 51 procent av de arbetsgivare som försökt rekrytera under det senaste halvåret att de stött på ett eller flera problem.",
+      "en": {
+        "fore": "In spring 2026, 51 percent of employers who had tried to recruit over the past six months reported running into one or more problems.",
+        "efter": "According to Arbetsförmedlingen's (the Swedish Public Employment Service) report Arbetsmarknadsutsikterna våren 2026, 51 percent of employers who had tried to recruit over the past six months reported running into one or more problems."
+      }
+    },
+    "ats-optimering": {
+      "fore": "**Statistik:** Upp till 75% av alla CV:n avvisas av ATS innan en människa ser dem!",
+      "efter": "**Bra att veta:** Många CV:n sorteras bort av ATS innan en människa ser dem.",
+      "en": {
+        "fore": "**Statistic:** Up to 75% of all resumes are rejected by an ATS before a human ever sees them!",
+        "efter": "**Good to know:** Many resumes are rejected by an ATS before a human ever sees them."
+      }
+    },
+    "ats-system-guide": {
+      "fore": "Visste du att upp till 75% av alla CV:n aldrig ses av mänskliga ögon? De sorteras bort av ATS-system.",
+      "efter": "Många CV:n ses aldrig av mänskliga ögon – de sorteras bort av ATS-system.",
+      "en": {
+        "fore": "Did you know that up to 75% of all CVs are never seen by human eyes? They get filtered out by ATS systems.",
+        "efter": "Many CVs are never seen by human eyes – they get filtered out by ATS systems."
+      }
+    },
+    "ats-system-tips": {
+      "fore": "Visste du att upp till 75% av alla CV:n aldrig ses av en människa? De sorteras bort av ATS-system innan en rekryterare ens får chansen att läsa dem.",
+      "efter": "Många CV:n ses aldrig av en människa. De sorteras bort av ATS-system innan en rekryterare ens får chansen att läsa dem.",
+      "en": {
+        "fore": "Did you know that up to 75% of all CVs are never seen by a human? They get filtered out by ATS systems before a recruiter even has the chance to read them.",
+        "efter": "Many CVs are never seen by a human. They get filtered out by ATS systems before a recruiter even has the chance to read them."
+      }
+    },
+    "bygg-ditt-personliga-varumarke": {
+      "fore": "- **70% av arbetsgivare** googlar kandidater före intervju",
+      "efter": "- **Många arbetsgivare** googlar kandidater före intervju",
+      "en": {
+        "fore": "- **70% of employers** search for candidates online before an interview",
+        "efter": "- **Many employers** search for candidates online before an interview"
+      }
+    },
+    "cv-grunder": {
+      "fore": "Upp till 75% av alla CV:n sorteras bort av ATS innan en människa ser dem!",
+      "efter": "Många CV:n sorteras bort av ATS innan en människa ser dem.",
+      "en": {
+        "fore": "Up to 75% of all CVs are sorted out by ATS before a person ever sees them!",
+        "efter": "Many CVs are sorted out by ATS before a person ever sees them."
+      }
+    },
+    "digital-narvaro-rensning": {
+      "fore": "**Statistik:**\n- 70% av arbetsgivare googlar kandidater\n- 54% har avfärdat kandidater baserat på vad de hittat online",
+      "efter": "**Bra att veta:**\n- Många arbetsgivare googlar kandidater\n- En del har avfärdat kandidater baserat på vad de hittat online",
+      "en": {
+        "fore": "**Statistics:**\n- 70% of employers search online for candidates\n- 54% have rejected candidates based on what they found online",
+        "efter": "**Good to know:**\n- Many employers search online for candidates\n- Some have rejected candidates based on what they found online"
+      }
+    },
+    "dolda-jobbmarknaden": [
+      {
+        "falt": "summary",
+        "fore": "Upp till 70% av alla jobb annonseras aldrig ut.",
+        "efter": "Många jobb annonseras aldrig ut.",
+        "en": {
+          "fore": "Up to 70% of all jobs are never advertised.",
+          "efter": "Many jobs are never advertised."
+        }
+      },
+      {
+        "falt": "content",
+        "fore": "Uppskattningar varierar, men 50-70% av tjänster tillsätts utan annons.",
+        "efter": "Ingen vet exakt hur stor den är – uppskattningarna varierar – men en stor del av alla tjänster tillsätts utan annons.",
+        "en": {
+          "fore": "Estimates vary, but 50-70% of positions are filled without an ad.",
+          "efter": "No one knows exactly how big it is – estimates vary – but a large share of positions are filled without an ad."
+        }
+      }
+    ],
+    "gig-ekonomin": {
+      "fore": "- Uppskattningsvis 15-20% av arbetskraften",
+      "efter": "- Svår att mäta – hur stor andel av arbetskraften beror på hur man räknar",
+      "en": {
+        "fore": "- An estimated 15-20% of the workforce",
+        "efter": "- Hard to measure – the share of the workforce depends on how you count"
+      }
+    },
+    "googla-dig-sjalv": {
+      "fore": "85% av rekryterare googlar kandidater innan de kallar till intervju.",
+      "efter": "Många rekryterare googlar kandidater innan de kallar till intervju.",
+      "en": {
+        "fore": "85% of recruiters google candidates before inviting them to an interview.",
+        "efter": "Many recruiters google candidates before inviting them to an interview."
+      }
+    },
+    "hantera-avslag-motivation": {
+      "fore": "### Statistik att minnas\n- 75% av CV:n sorteras bort av ATS-system\n- En rekryterare tittar 6 sekunder på ett CV",
+      "efter": "### Bra att minnas\n- Många CV:n sorteras bort av ATS-system innan någon läser dem\n- En rekryterare hinner ofta bara skumma ett CV",
+      "en": {
+        "fore": "### Statistics to remember\n- 75% of CVs are filtered out by ATS (applicant tracking) systems\n- A recruiter looks at a CV for about 6 seconds",
+        "efter": "### Good to remember\n- Many CVs are filtered out by ATS (applicant tracking) systems before anyone reads them\n- A recruiter often only has time to skim a CV"
+      }
+    },
+    "imposter-syndrome": {
+      "fore": "- Uppskattningsvis 70% av alla människor någon gång",
+      "efter": "- Många människor, någon gång i livet",
+      "en": {
+        "fore": "- An estimated 70% of people, at some point in their lives",
+        "efter": "- Many people, at some point in their lives"
+      }
+    },
+    "informationsintervju-guide": {
+      "fore": "Visste du att upp till 70% av alla jobb aldrig annonseras ut? De tillsätts genom kontakter och nätverk.",
+      "efter": "Många jobb annonseras aldrig ut – de tillsätts genom kontakter och nätverk.",
+      "en": {
+        "fore": "Did you know that up to 70% of all jobs are never advertised? They are filled through contacts and networks.",
+        "efter": "Many jobs are never advertised – they are filled through contacts and networks."
+      }
+    },
+    "kompetensutveckling-plan": {
+      "fore": "- **65% av dagens barn** kommer arbeta i yrken som ännu inte finns",
+      "efter": "- **Nya yrken** uppstår hela tiden – många av dagens barn kommer att arbeta i yrken som ännu inte finns",
+      "en": {
+        "fore": "- **65% of today's children** will work in jobs that do not exist yet",
+        "efter": "- **New jobs** appear all the time – many of today's children will work in jobs that do not exist yet"
+      }
+    },
+    "kreativ-jobbsokning": {
+      "fore": "- 250+ ansökningar per annonserad tjänst (i attraktiva roller)\n- 7 sekunder – så lång tid får ditt CV i genomsnitt\n- 70% av jobb tillsätts via nätverk eller dolda kanaler",
+      "efter": "- Populära tjänster kan få väldigt många sökande\n- Ditt CV får ofta bara några sekunder av rekryterarens tid\n- Många jobb tillsätts via nätverk eller dolda kanaler",
+      "en": {
+        "fore": "- 250+ applications per posted position (for popular roles)\n- 7 seconds – the average time your CV gets looked at\n- 70% of jobs are filled through networks or channels that are never advertised",
+        "efter": "- Popular positions can get a very large number of applicants\n- Your CV often gets only a few seconds of the recruiter's time\n- Many jobs are filled through networks or channels that are never advertised"
+      }
+    },
+    "linkedin-optimering": {
+      "fore": "### Statistik som övertalar\n- **87% av rekryterare** använder LinkedIn för att hitta kandidater\n- **122 miljoner** personer har fått en intervju via LinkedIn\n- **35,5 miljoner** har blivit anställda av någon de kontaktat på LinkedIn\n- Profiler med foto får **21 gånger fler** visningar\n- Kompletta profiler är **40 gånger mer** sannolika att bli kontaktade",
+      "efter": "### Därför spelar profilen roll\n- **Många rekryterare** använder LinkedIn för att hitta kandidater\n- Intervjuer och anställningar börjar ofta med en kontakt på LinkedIn\n- Profiler med foto får **fler** visningar\n- Kompletta profiler blir **oftare** kontaktade",
+      "en": {
+        "fore": "### Statistics that convince\n- **87% of recruiters** use LinkedIn to find candidates\n- **122 million** people have gotten a job interview through LinkedIn\n- **35.5 million** have been hired by someone they contacted on LinkedIn\n- Profiles with a photo get **21 times more** views\n- Complete profiles are **40 times more** likely to be contacted",
+        "efter": "### Why your profile matters\n- **Many recruiters** use LinkedIn to find candidates\n- Interviews and jobs often start with a contact on LinkedIn\n- Profiles with a photo get **more** views\n- Complete profiles are contacted **more often**"
+      }
+    },
+    "linkedin-profil-optimering": {
+      "fore": "87% av rekryterare använder LinkedIn för att hitta kandidater.",
+      "efter": "Många rekryterare använder LinkedIn för att hitta kandidater.",
+      "en": {
+        "fore": "87% of recruiters use LinkedIn to find candidates.",
+        "efter": "Many recruiters use LinkedIn to find candidates."
+      }
+    },
+    "loneforhandling-guide": {
+      "fore": "**Geografisk faktor:**\n- Stockholm: +15-20% jämfört med rikssnittet\n- Göteborg/Malmö: +5-10%\n- Mindre orter: -5-15%",
+      "efter": "**Geografisk faktor:**\n- Storstäderna, framför allt Stockholm, ligger ofta över rikssnittet\n- Mindre orter ligger ofta under\n- Kolla lönestatistiken för just din region innan du sätter din siffra",
+      "en": {
+        "fore": "**Geographic factor:**\n- Stockholm: +15-20% compared with the national average\n- Gothenburg/Malmö: +5-10%\n- Smaller towns: -5-15%",
+        "efter": "**Geographic factor:**\n- The big cities, especially Stockholm, are often above the national average\n- Smaller towns are often below\n- Check the salary statistics for your own region before you set your number"
+      }
+    },
+    "loneforhandling-komplett": {
+      "fore": "### De flesta förhandlar inte\n- 60% av jobbsökare accepterar första erbjudandet",
+      "efter": "### Många förhandlar inte\n- Många jobbsökare accepterar första erbjudandet utan att förhandla",
+      "en": {
+        "fore": "### Most people do not negotiate\n- 60% of job seekers accept the first offer",
+        "efter": "### Many people do not negotiate\n- Many job seekers accept the first offer without negotiating"
+      }
+    },
+    "loneforhandling-tips": {
+      "fore": "**Statistik visar att:**\n- De som förhandlar lön tjänar i snitt 7-10% mer\n- Skillnaden ackumuleras över tid (kan bli miljoner under karriären)",
+      "efter": "**Bra att veta:**\n- De som förhandlar lön får ofta mer än de som inte gör det\n- Skillnaden ackumuleras över tid – varje löneökning blir grunden för nästa",
+      "en": {
+        "fore": "**Statistics show that:**\n- People who negotiate their salary earn 7-10% more on average\n- The difference adds up over time (it can add up to millions over a career)",
+        "efter": "**Good to know:**\n- People who negotiate their salary often get more than those who do not\n- The difference adds up over time – each raise becomes the base for the next"
+      }
+    },
+    "natverka-for-jobb": {
+      "fore": "Upp till 70% av alla jobb tillsätts via nätverk.",
+      "efter": "Många jobb tillsätts via nätverk.",
+      "en": {
+        "fore": "Up to 70% of all jobs are filled through networking.",
+        "efter": "Many jobs are filled through networking."
+      }
+    },
+    "natverksbyggande-guide": [
+      {
+        "fore": "Upp till 70% av alla jobb tillsätts via kontakter och rekommendationer.",
+        "efter": "Många jobb tillsätts via kontakter och rekommendationer.",
+        "en": {
+          "fore": "Up to 70% of all jobs are filled through contacts and recommendations.",
+          "efter": "Many jobs are filled through contacts and recommendations."
+        }
+      },
+      {
+        "fore": "### Statistiken talar\n- **70% av jobb** tillsätts utan att annonseras offentligt\n- **85% av tillsatta tjänster** sker via nätverk eller rekommendationer\n- Kandidater via nätverk anställs **5x oftare** än de som söker kallt",
+        "efter": "### Därför lönar det sig\n- **Många jobb** tillsätts utan att annonseras offentligt\n- **Rekommendationer** väger tungt när en arbetsgivare väljer\n- Kandidater via nätverk anställs **oftare** än de som söker kallt",
+        "en": {
+          "fore": "### The statistics speak\n- **70% of jobs** are filled without being advertised publicly\n- **85% of filled positions** happen through networks or recommendations\n- Candidates who come through a network are hired **5 times more often** than those who apply cold",
+          "efter": "### Why it pays off\n- **Many jobs** are filled without being advertised publicly\n- **Recommendations** carry a lot of weight when an employer chooses\n- Candidates who come through a network are hired **more often** than those who apply cold"
+        }
+      }
+    ],
+    "personligt-varumarke": {
+      "fore": "- 70% av arbetsgivare googlar kandidater före intervju",
+      "efter": "- Många arbetsgivare googlar kandidater före intervju",
+      "en": {
+        "fore": "- 70% of employers search for candidates online before an interview",
+        "efter": "- Many employers search for candidates online before an interview"
+      }
+    },
+    "sociala-medier-jobbsokning": {
+      "fore": "Studier visar att över 70% av svenska arbetsgivare googlar kandidater.",
+      "efter": "Många svenska arbetsgivare googlar kandidater.",
+      "en": {
+        "fore": "Studies show that over 70% of Swedish employers search for candidates online.",
+        "efter": "Many Swedish employers search for candidates online."
+      }
+    },
+    "styrkor-svagheter": {
+      "fore": "### På arbetsplatsen\n- Människor som använder sina styrkor dagligen är **6x mer engagerade**\n- Team som fokuserar på styrkor har **12.5% högre produktivitet**\n- Styrkebaserat ledarskap ökar medarbetarnöjdhet med **73%**",
+      "efter": "### På arbetsplatsen\n- Människor som får använda sina styrkor dagligen är ofta **mer engagerade**\n- Team som bygger på styrkor arbetar ofta **mer effektivt**\n- Styrkebaserat ledarskap hänger ihop med **nöjdare medarbetare**",
+      "en": {
+        "fore": "### In the workplace\n- People who use their strengths daily are **6x more engaged**\n- Teams that focus on strengths have **12.5% higher productivity**\n- Strengths-based leadership increases employee satisfaction by **73%**",
+        "efter": "### In the workplace\n- People who get to use their strengths daily are often **more engaged**\n- Teams that build on strengths often work **more effectively**\n- Strengths-based leadership goes together with **happier employees**"
+      }
+    },
+    "lon-och-formaner-guide": {
+      "fore": "**Vanliga nivåer:**\n- Minst 4,5% av lönen (lag)\n- 6-8% vanligt med kollektivavtal\n- 10-15% för tjänstemän med ITP",
+      "efter": "**Vanliga nivåer:**\n- Ingen lag kräver tjänstepension – den följer av kollektivavtal eller av ditt eget avtal med arbetsgivaren\n- 4,5% av lönen upp till ett lönetak är vanligt i kollektivavtal (till exempel ITP 1 och Avtalspension SAF-LO), och en högre andel på lön över taket\n- Saknar arbetsgivaren kollektivavtal: fråga vad som gäller innan du skriver på",
+      "en": {
+        "fore": "**Common levels:**\n- At least 4.5% of salary (by law)\n- 6-8% common under collective agreements\n- 10-15% for white-collar workers with the ITP plan",
+        "efter": "**Common levels:**\n- No law requires an occupational pension. It comes from a collective agreement or from your own contract with the employer\n- 4.5% of salary up to a salary cap is common in collective agreements (for example ITP 1 and Avtalspension SAF-LO), with a higher share on salary above the cap\n- If the employer has no collective agreement: ask what applies before you sign"
+      },
+      "_varfor": "Sidofynd KG2 2026-09-08: 'Minst 4,5 % (lag)' är fel — ingen lag kräver tjänstepension; 4,5 % är avtalsnivån i ITP 1/SAF-LO upp till 7,5 inkomstbasbelopp. '10–15 % med ITP' stämmer inte heller (ITP 1 = 4,5 %/30 %; ITP 2 är förmånsbestämd)."
+    }
+  }
+}

@@ -25,13 +25,24 @@ byggfil är ändrad av det här arbetet.
    varav de allra flesta var **falska positiva** — se avsnittet "Kontrollerat
    och friskförklarat" nedan för vilka mönster som slog ut brett utan att
    vara kannibalisering.
+   **Regel (tillagd 2026-09-08, KG1): två artiklar med delad `category_key +
+   subcategory` räknas som kandidatkluster oavsett Jaccard.** Likhetsmåttet
+   missade `kompetensutveckling-guide`/`kompetensutveckling-plan` (kluster 24)
+   — samma underkategori, samma öppnings- och slutrubrik, men den ena är en
+   översikt med åtta korta rubriker och den andra en sjustegsprocess, så
+   ordöverlappet i titel+ingress+rubriker hamnade under tröskeln 0,12. En
+   delad underkategori är en starkare signal än ordöverlapp och ska prövas
+   först. Mätt 2026-09-08: 55 av 122 underkategorier bär två eller fler
+   publicerade artiklar (171 artiklar) — de är kandidater att läsa, inte
+   kluster i sig; `easy-swedish/cv`-familjen och `jobba-som-*`-serien ligger
+   där med flit.
 4. Varje kandidat med verklig ämnesöverlappning är **läst i sin helhet**
    (titel, ingress, rubriker, utgående länkar) innan den togs med — se
    tabellen. Ordantal och inlänkar är mätta, inte uppskattade; kommandot för
    varje mätning finns i `dump.cjs`/`similarity.cjs` i arbetskatalogen
    (skrivs inte till repot, bara scratchpad).
 
-## Del 1 — Den fulla kartan: 23 kluster (roadmapen kände till 2 vid namn)
+## Del 1 — Den fulla kartan: 24 kluster (roadmapen kände till 2 vid namn)
 
 Formatet är **kluster**, inte strikta par, eftersom flera ämnen har tre eller
 fyra konkurrerande sidor (roadmapens egen text undertexter är delvis
@@ -64,6 +75,7 @@ pekar åt olika håll och Search Console verkligen behövs.
 | 21 | **Digital närvaro** — NY: `digital-narvaro-rensning` (532/0) vs `googla-dig-sjalv` (651/**1**) | | — | **Väntar på Search Console + redaktionellt beslut** | `digital-narvaro-rensning`s FÖRSTA rubrik är bokstavligen "Steg 1: Googla dig själv" — den ena sidan innehåller den andras hela ämne som sitt första steg. Ordantal/inlänkar pekar svagt på `googla-dig-sjalv`, men pelare-eller-undersida-logiken pekar åt andra hållet |
 | 22 | **Personligt varumärke** — NY: `bygg-ditt-personliga-varumarke` (579/**5**) vs `personligt-varumarke` (**1208**/2) | | — | **Väntar på Search Console** | Inlänkar för den ena (5 mot 2), ordantal för den andra (1208 mot 579) — motsatta signaler igen |
 | 23 | **Arbetsmiljö** — gränsfall, hittat via svepet: `arbetsmiljo-guide` (661/**8**) vs `arbetsmiljo-kultur-guide` (905/3) | | — | **Särskilj (rekommenderas), inte akut** | Delvis samma ämne (röda flaggor, utvärdera arbetsplats innan anställning) men olika tyngdpunkt (fysisk arbetsmiljö/rättigheter vs. företagskultur specifikt). Redaktionell översyn räcker — ingen brådska |
+| 24 | **Kompetensutveckling** — NY, hittad i projektgenomgången 2026-09-07 (KG1), missad av Jaccard-svepet: `kompetensutveckling-guide` (557/**7**) vs `kompetensutveckling-plan` (**1237**/2) | | — | **Väntar på Search Console** | Samma `career-development/skills-development` (de enda två i underkategorin), samma öppning ("Varför kompetensutveckling…") och samma avslut ("Sammanfattning"). Inlänkar pekar på `guide` (7 mot 2 — den är länkad från branschguiderna, `lasa-arbetsmarknaden` och `rusta-och-matcha`), ordantal och djup (11 rubriker, sju steg, resurser för Sverige) på `plan`. Motsatta signaler. **Rättelse mot roadmapens rad:** de länkar *inte* till varandra — `guide` → `framtidens-jobb`, `karriarbyte-guide`; `plan` → `kompetensutvardering`, `styrkor-svagheter`, `cv-grunder`; inga korslänkar i brödtexten heller. Att ingen av dem känner till den andra är snarare ett skäl att slå ihop än ett tecken på pelare-och-kluster. Mätt 2026-09-08 mot snapshoten `generatedAt: 2026-09-06` |
 
 ## Del 2 — Kontrollerat och friskförklarat (falska positiva)
 
@@ -111,8 +123,9 @@ CV lättläst (delvis — se rad 1), Intervju lättläst, Avslag lättläst (sva
 SE2, Sociala medier (stavfel), Löneförhandling, Mental hälsa, Stresshantering,
 Hantera avslag/motivation, Styrkor/svagheter, LinkedIn.
 
-**Väntar uttryckligen på Search Console (kriterierna pekar åt olika håll), 9 kluster:**
+**Väntar uttryckligen på Search Console (kriterierna pekar åt olika håll), 10 kluster:**
 Anpassningar arbetsplats, ATS, Motivation, Kompetensinventering/-utvärdering,
+Kompetensutveckling (kluster 24, tillagt 2026-09-08),
 Värderingar (delvis), Nätverksunderhåll, Digital närvaro/googla dig själv,
 Personligt varumärke, samt ATS-radens svagare syskon Personlighetstyper och
 Ordlistor (för svagt signal för att kalla "beslutbart", men inte en hård
@@ -181,7 +194,7 @@ Baserat på antalet kluster och vad var och en kräver:
   redirect-rad, uppdatera `related_article_slugs` som pekade på den gamla
   sluggen, köra `npm run content:new`-liknande verifiering. **Cirka 15–25
   minuter per kluster → 2,5–4 timmar totalt.**
-- **9 "väntar på Search Console"-kluster**: samma arbete per kluster, men
+- **10 "väntar på Search Console"-kluster**: samma arbete per kluster, men
   först måste SC-datan avgöra vinnaren (ingen extra tid utöver
   genomförandet, förutsatt att SC-rapporten är färdig innan man börjar).
   **Samma 15–25 min/kluster → 2,5–3,5 timmar**, plus tiden att läsa och
@@ -190,7 +203,7 @@ Baserat på antalet kluster och vad var och en kräver:
   `npm run lint:vercel`-verifiering.
 - **Total uppskattning när SC-datan finns:** en (1) arbetsdag, inte en
   eftermiddag som roadmapens ursprungliga tidsestimat för SE1+SE2 antog —
-  eftersom den fulla kartan är 23 kluster, inte 2.
+  eftersom den fulla kartan är 24 kluster, inte 2.
 
 ## Del 6 — Öppna frågor kvar till redaktören (inte tekniska)
 

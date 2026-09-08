@@ -66,7 +66,8 @@ export function RevokeConsultantLinkSection({
               </p>
             )}
           </div>
-          <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
+          {/* MB3: konsekvensrik handling — md, inte sm (12 px text på mobil). */}
+          <Button variant="secondary" size="md" onClick={() => setOpen(true)}>
             Säg upp kopplingen
           </Button>
         </div>

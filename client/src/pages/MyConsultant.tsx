@@ -47,6 +47,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { buttonVariants } from '@/styles/design-system'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
@@ -1051,18 +1052,33 @@ function MyConsultantInner() {
         </Card>
       )}
 
-      {/* No consultant message */}
+      {/* BL1 (2026-09-08): ingen konsulent = ett tomtillstånd med EN väg vidare,
+          inte ett kort som säger "vi hjälper dig gärna" utan knapp. 70 av 101
+          konton saknade koppling när det mättes. Beslutet om självregistrering
+          eller kö är Mikaels; det här är det som gäller oavsett: en mejlväg.
+          CTA:n är en riktig <a href="mailto:"> (WCAG — inte en knapp som byter
+          window.location), och adressen är den Terms.tsx redan anger. EmptyState
+          har ingen href-action, så länken ligger direkt under den. */}
       {!consultant && !loadError && (
-        <Card className="p-8 text-center">
-          <div className="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 mx-auto mb-6 flex items-center justify-center">
-            <User className="w-10 h-10 text-stone-400 dark:text-stone-500" />
+        <Card className="p-4 sm:p-8">
+          <EmptyState
+            icon={UserCheck}
+            title={t('myConsultant.noConsultant')}
+            description={t('myConsultant.noConsultantFullDesc')}
+            className="pb-0"
+          />
+          <div className="flex justify-center mt-6 pb-4">
+            <a
+              href={`mailto:support@jobin.se?subject=${encodeURIComponent(t('myConsultant.noConsultantMailSubject'))}`}
+              className={cn(
+                buttonVariants.primary,
+                'px-4 py-2.5 sm:px-5 text-sm sm:text-base min-h-[44px] no-underline'
+              )}
+            >
+              <Mail className="w-4 h-4" aria-hidden="true" />
+              {t('myConsultant.noConsultantCta')}
+            </a>
           </div>
-          <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
-            {t('myConsultant.noConsultant')}
-          </h2>
-          <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto">
-            {t('myConsultant.noConsultantFullDesc')}
-          </p>
         </Card>
       )}
 

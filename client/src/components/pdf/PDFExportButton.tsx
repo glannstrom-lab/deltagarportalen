@@ -91,7 +91,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   const [showMenu, setShowMenu] = useState(false);
 
   const sizeClasses = {
-    sm: 'px-2 py-1 text-xs',
+    sm: 'px-2 py-1 text-sm', // MB3 (2026-09-08): 12 px var för litet på mobil; text-sm som golv
     md: 'px-4 py-2 text-sm',
     lg: 'px-6 py-3 text-base',
   };
