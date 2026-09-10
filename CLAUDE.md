@@ -583,7 +583,7 @@ Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
   |---|---|---|
   | Verktygssida | `PageHero`, ~180 px överst | **Sidoskena till vänster** (`SidRail.tsx`) med rubrik, flikar, `actions` och `stats` |
   | Hubbsida | Pastell-hjälte, 80 px ikon, datumdisc | Rubrikrad på en våning + tät kortgrid (`HubPage.tsx`) |
-  | Översikt | Fyra hub-kort, sedan instrumentpanel | **Fyra kategorier med innehåll** (`OversiktPanel.tsx`) — Söka jobb, Karriär, Resurser, Din vardag |
+  | Översikt | Fyra hub-kort, sedan instrumentpanel | **Tre nivåer** (2026-09-10): ett nästa steg (`NastaSteg.tsx` + `nastaStegRegler.ts`), det som är igång (`Pagar.tsx`), och de fyra kategorierna (`OversiktPanel.tsx`). Tidsord i `oversiktTid.ts` — aldrig "för länge sedan" |
   | Sidbredd | `max-w-7xl` (1280 px), centrerad | Full bredd; menyer vid kanterna, mitten flexar. Klassen `.sidbredd` i `tokens.css` är enda stället att justera |
 
   `PageHero.tsx` ligger kvar i koden men anropas inte från `PageLayout`. **Bygg inte
