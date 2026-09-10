@@ -17,6 +17,7 @@ import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 import OversiktPanel, { type PanelTillstand } from './OversiktPanel'
+import { oversiktBilder } from './oversiktBilder'
 import RollGenvag from './RollGenvag'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
@@ -176,6 +177,8 @@ function HubOverviewInner() {
           och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar).
           Vänsterställd sedan 2026-09-10; centrerad flöt den i tomrummet. */}
       <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-stone-500 dark:text-stone-400">
+        {/* Stiltest 2026-09-10: kikaren = överblick över det som gjorts. Dekorativ. */}
+        <img src={oversiktBilder().kikare} alt="" aria-hidden="true" loading="lazy" className="mr-1 h-11 w-11 object-contain" />
         <Link
           to="/oversikt/historik"
           className="inline-flex items-center gap-1.5 font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"

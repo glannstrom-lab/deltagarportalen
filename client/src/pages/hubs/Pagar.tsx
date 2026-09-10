@@ -19,6 +19,7 @@ import type { TFunction } from 'i18next'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { datumSprak } from '@/lib/datumsprak'
 import { narText } from './oversiktTid'
+import { oversiktBilder } from './oversiktBilder'
 import type { PanelTillstand } from './OversiktPanel'
 
 interface Kort {
@@ -145,8 +146,10 @@ export default function Pagar({
     <section aria-labelledby="pagar-rubrik" data-testid="pagar">
       <h2
         id="pagar-rubrik"
-        className="m-0 mb-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
+        className="m-0 mb-2.5 flex items-center gap-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
       >
+        {/* Stiltest 2026-09-10: sneakers = "igång". Dekorativ. */}
+        <img src={oversiktBilder().sneakers} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
         {t('hubOverview.pagar.heading', 'Det som är igång')}
       </h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

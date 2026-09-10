@@ -62,7 +62,29 @@ const SPOTS_MAGENTA = [
   { src: 'spot lon.png', out: 'spot-lon' },
   { src: 'spot varumarke.png', out: 'spot-varumarke' },
   { src: 'spot karriarbygge.png', out: 'spot-karriarbygge' },
+  // Stiltest 2026-09-10 (BILDPROMPTER-SIDOR §0): Översikt i två stilar.
+  // Utsnitten är realistiska foton/renderingar på magenta — samma chroma-key.
+  { src: 'spel-oversikt-A-1.png', out: 'spel-oversikt-A-1' },
+  { src: 'spel-oversikt-A-2.png', out: 'spel-oversikt-A-2' },
+  { src: 'spel-oversikt-A-3.png', out: 'spel-oversikt-A-3' },
+  { src: 'spel-oversikt-A-4.png', out: 'spel-oversikt-A-4' },
+  { src: 'spel-oversikt-B-1.png', out: 'spel-oversikt-B-1' },
+  { src: 'spel-oversikt-B-2.png', out: 'spel-oversikt-B-2' },
+  { src: 'spel-oversikt-B-3.png', out: 'spel-oversikt-B-3' },
+  { src: 'spel-oversikt-B-4.png', out: 'spel-oversikt-B-4' },
 ]
+
+// Scener (BILDPROMPTER-SIDOR §1, v2): hela foton med naturlig bakgrund. INGEN
+// chroma-key, ingen trim — bara nedskalning och webp. Breda, ~1400 px.
+const SCENER = [
+  { src: 'scen-oversikt-A.png', out: 'scen-oversikt-A' },
+  { src: 'scen-oversikt-B.png', out: 'scen-oversikt-B' },
+]
+
+// `--bara=<prefix>` bearbetar bara poster vars `out` börjar så. Utan flaggan
+// kodas alla 66+ filer om, vilket ger en byte-diff på varje webp i git.
+// OBS: skriptets egen `async function process(...)` skuggar globalen — därför globalThis.
+const BARA = (globalThis.process.argv.find((a) => a.startsWith('--bara=')) || '').slice(7)
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
 // Rutmönstret är 243/254; pastellfärger har färgton (diff > 10) och undantas.
@@ -86,6 +108,10 @@ async function clean(input, mode = 'spot') {
   const { width, height, channels } = info // channels = 4
   const out = Buffer.from(data)
   const N = width * height
+
+  if (mode === 'none') {
+    return sharp(input)
+  }
 
   if (mode === 'magenta') {
     // Chroma-key mot solid magenta. Magentaness = min(R,B) - G: magenta #FF00FF
@@ -161,13 +187,14 @@ async function clean(input, mode = 'spot') {
 
 async function process(list, mode, resize) {
   for (const { src, out } of list) {
+    if (BARA && !out.startsWith(BARA)) continue
     const input = path.join(SRC, src)
     if (!fs.existsSync(input)) { console.log(`(hoppar ${src} — saknas)`); continue }
     const output = path.join(OUT, `${out}.webp`)
     const before = fs.statSync(input).size
     const cleaned = await clean(input, mode)
-    await cleaned
-      .trim()                              // beskär äkta transparent luft
+    const steg = mode === 'none' ? cleaned : cleaned.trim() // trim = beskär transparent luft; scener har ingen
+    await steg
       .resize(resize)
       .webp({ quality: 82, alphaQuality: 95, effort: 6 })
       .toFile(output)
@@ -180,4 +207,5 @@ async function process(list, mode, resize) {
   await process(MAP, 'spot', { width: 360, height: 360, fit: 'inside', withoutEnlargement: true })
   await process(HEROES, 'magenta', { width: 1200, withoutEnlargement: true })
   await process(SPOTS_MAGENTA, 'magenta', { width: 360, height: 360, fit: 'inside', withoutEnlargement: true })
+  await process(SCENER, 'none', { width: 1400, withoutEnlargement: true })
 })()
