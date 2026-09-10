@@ -59,6 +59,24 @@ inloggning och började ovanför skärmkanten på mobil så rubriken inte syntes
 från 2026-09-07). Mobilmenyns grupper "ÖVERSIKT / REFLEKTION" (CV, Personligt brev och Hälsa
 under "Reflektion") kommer ur gamla `navGroups` och stämmer inte med hubbarna.
 
+### Spår N (Navigationen) 2026-09-10 — toppraden, undermenyn och skenorna får färg
+
+> **Beställning Mikael 2026-09-10:** "framförallt toppraden, undermenyn, sidomenyerna ser
+> väldigt torra ut, de behöver livas upp." Förslaget med utsnitt och mock: artifakten
+> "Navigationen får färg". Bilderna det bygger på: `docs/BILDPROMPTER-SIDOR.md` (ark 0 och 22).
+
+| # | Punkt | Filer | Storlek |
+|---|---|---|---|
+| **N1** | Aktiv hubb i toppraden i sin hubbfärg (pastell-pill + textfärg + `icon-hub-*.webp` 18 px), 3 px linje under raden i aktiv hubbfärg. Undermenyn: verktygsikon (`icon-*.webp`, 16 px) i stället för 6 px-prick, aktiv flik som pastell-pill, "Börja här" i gemener utan monospace | `TopNav.tsx`, `hubIcons.ts`, `navigation.ts` (ikonnyckel per item) | S–M |
+| **N2** | Vänsterskenan: stegen som en **stig** (linje i hubbens ljusa ton; klar = fylld prick + bock, aktuell = ring med glöd, kommande = tom ring), etiketter i gemener 12 px semibold, verktygsikoner före raderna | `SidRail.tsx`, `SidRailStats.tsx` | S |
+| **N3** | Mobil: bottennavets aktiva hubb som pastell-pill med egen ikon; hamburgermenyn omgrupperad efter de fem hubbarna (i dag "ÖVERSIKT / REFLEKTION" ur gamla `navGroups`); toppraden ner till tre ikoner | `HubBottomNav.tsx`, mobilmenyn, `navGroups` | M |
+| **N4** | Toppraden: fyra ikoner i stället för åtta (sök, notiser, Lykta, avatar); språk, tema, skanna och hjälp in i avatarmenyn; hjärtat blir en flik under Resurser. **Lykta-knappen** öppnar "Ett bra nästa steg" från alla sidor (återanvänder `nastaStegRegler.ts`) | `TopNav.tsx`, ny `NastaStegPopover` | M — kräver ark 0 |
+| **N5** | Rådgivarnas foto får 2 px ring i rådgivarens accent; Lugnare läge får Lykta under trädet (ark 22 cell 3) | `RadgivarPanel.tsx`, `LugnarePanel.tsx` | S — kräver ark 0 + 22 |
+
+N1–N3 kräver inga nya bilder. Ingenting i spåret lägger till en färg, en gradient eller en
+prestationsmätning. **Beslut för Mikael:** ska rådgivarna i sidokolumnen bli illustrerade
+figurer i Lyktas familj (som AI-teamets agenter i ark 17) i stället för fotografier?
+
 ---
 
 ## Spår P (Premium) 2026-09-10 — gratis kvar, AI bakom 99 kr/mån via Stripe
