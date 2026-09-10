@@ -82,6 +82,7 @@ interface ServerSettings {
   language: string
   has_completed_onboarding: boolean
   show_coach_widget: boolean
+  graphics_style: Grafikstil
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -143,16 +144,12 @@ export const useSettingsStore = create<SettingsState>()(
         get()._saveToServer({ show_coach_widget: newValue })
       },
 
-      // Grafikstil — mjuk som standard. Sparas TILLS VIDARE bara lokalt:
-      // `user_preferences` saknar kolumnen, och en upsert med en okänd nyckel
-      // fäller hela sparningen (400) — då skulle varje annan inställning också
-      // sluta sparas. Migrationen ligger som
-      // supabase/migrations/PENDING_20260910_user_preferences_graphics_style.sql
-      // och väntar på Mikaels ja; när den är körd: lägg `graphics_style` i
-      // ServerSettings, i _saveToServer-anropet här och i syncWithServer.
+      // Grafikstil — mjuk som standard, sparas i molnet (kolumnen
+      // user_preferences.graphics_style, migration 20260910, körd samma dag).
       grafikstil: 'mjuk',
       setGrafikstil: (stil) => {
         set({ grafikstil: stil })
+        get()._saveToServer({ graphics_style: stil })
       },
 
       // Språk - synka med i18next
@@ -217,7 +214,7 @@ export const useSettingsStore = create<SettingsState>()(
 
           const { data, error } = await supabase
             .from('user_preferences')
-            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, show_coach_widget, updated_at')
+            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, show_coach_widget, graphics_style, updated_at')
             .eq('user_id', user.id)
             .maybeSingle()
 
@@ -241,6 +238,9 @@ export const useSettingsStore = create<SettingsState>()(
             if (data.has_completed_onboarding !== null) updates.hasCompletedOnboarding = data.has_completed_onboarding
             if (data.show_coach_widget !== null && data.show_coach_widget !== undefined) {
               updates.showCoachWidget = data.show_coach_widget
+            }
+            if (data.graphics_style === 'mjuk' || data.graphics_style === 'action') {
+              updates.grafikstil = data.graphics_style
             }
 
             if (data.language && (data.language === 'sv' || data.language === 'en')) {
@@ -266,7 +266,8 @@ export const useSettingsStore = create<SettingsState>()(
               large_text: state.largeText,
               language: state.language,
               has_completed_onboarding: state.hasCompletedOnboarding,
-              show_coach_widget: state.showCoachWidget
+              show_coach_widget: state.showCoachWidget,
+              graphics_style: state.grafikstil
             })
             set({ isLoading: false })
           }

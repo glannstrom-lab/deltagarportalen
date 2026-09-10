@@ -1,7 +1,6 @@
--- PENDING: körs manuellt med `npx supabase db query --linked -f <fil>` efter Mikaels ja.
--- Sedan: `cd client && npm run schema:refresh` och committa snapshoten i samma commit,
--- och koppla in `graphics_style` i stores/settingsStore.ts (ServerSettings,
--- _saveToServer-anropet i setGrafikstil, samt syncWithServer).
+-- Körd mot prod 2026-09-10 (beslut Mikael: "ja migrera") med
+-- `npx supabase db query --linked -f`. Verifierat: kolumnen finns, default 'mjuk',
+-- 12 befintliga rader fick 'mjuk'. Snapshoten uppdaterad i samma commit.
 --
 -- Grafikstil (beslut Mikael 2026-09-10): 'mjuk' (standard) eller 'action'.
 -- Ligger tills vidare bara i localStorage; den här kolumnen gör valet
