@@ -6357,7 +6357,13 @@
       "darkMode": "mörkt",
       "primaryButton": "Primär knapp",
       "secondaryButton": "Sekundär",
-      "autoSaveInfo": "Ditt val sparas automatiskt och gäller för alla dina enheter. Om du väljer \"System\" följer portalen din enhets inställningar."
+      "autoSaveInfo": "Ditt val sparas automatiskt och gäller för alla dina enheter. Om du väljer \"System\" följer portalen din enhets inställningar.",
+      "graphics": "Grafik",
+      "graphicsDesc": "Bilderna på Översikt och i verktygen finns i två stilar. Välj den som passar dig.",
+      "graphicsSoft": "Mjuk",
+      "graphicsSoftDesc": "Fotografier i dagsljus. Lugnt och hemma.",
+      "graphicsAction": "Action",
+      "graphicsActionDesc": "Renderade bilder med dramatiskt ljus. Matchdag."
     },
     "privacy": {
       "title": "Integritet",

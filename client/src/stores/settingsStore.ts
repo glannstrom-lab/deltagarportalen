@@ -10,6 +10,13 @@ import { storageLogger } from '@/lib/logger'
 
 export type EnergyLevel = 'low' | 'medium' | 'high'
 export type Language = 'sv' | 'en'
+/**
+ * Grafikstil (beslut Mikael 2026-09-10): två uppsättningar bilder på samma
+ * platser — 'mjuk' (realistiskt fotografi, dagsljus, standard) och 'action'
+ * (renderad, dramatiskt ljus, EA Sports-känsla). Användaren väljer under
+ * Inställningar → Utseende.
+ */
+export type Grafikstil = 'mjuk' | 'action'
 
 interface SettingsState {
   // Tillgänglighet
@@ -37,6 +44,10 @@ interface SettingsState {
   // Coach-widget — sidkontextuella tips längst ner till höger
   showCoachWidget: boolean
   toggleCoachWidget: () => void
+
+  // Grafikstil — se typen Grafikstil
+  grafikstil: Grafikstil
+  setGrafikstil: (stil: Grafikstil) => void
 
   // Språk
   language: Language
@@ -130,6 +141,18 @@ export const useSettingsStore = create<SettingsState>()(
         const newValue = !get().showCoachWidget
         set({ showCoachWidget: newValue })
         get()._saveToServer({ show_coach_widget: newValue })
+      },
+
+      // Grafikstil — mjuk som standard. Sparas TILLS VIDARE bara lokalt:
+      // `user_preferences` saknar kolumnen, och en upsert med en okänd nyckel
+      // fäller hela sparningen (400) — då skulle varje annan inställning också
+      // sluta sparas. Migrationen ligger som
+      // supabase/migrations/PENDING_20260910_user_preferences_graphics_style.sql
+      // och väntar på Mikaels ja; när den är körd: lägg `graphics_style` i
+      // ServerSettings, i _saveToServer-anropet här och i syncWithServer.
+      grafikstil: 'mjuk',
+      setGrafikstil: (stil) => {
+        set({ grafikstil: stil })
       },
 
       // Språk - synka med i18next
@@ -268,6 +291,7 @@ export const useSettingsStore = create<SettingsState>()(
           energyLevel: state.energyLevel,
           hasCompletedOnboarding: state.hasCompletedOnboarding,
           showCoachWidget: state.showCoachWidget,
+          grafikstil: state.grafikstil,
           lastSynced: state.lastSynced
         })
       }

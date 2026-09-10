@@ -90,6 +90,16 @@ fotorealistisk render-stil (dramatiskt ljus, hubbfärgen som kantljus). **Först
 resten genereras. Konsekvens på sikt: de 66 befintliga vektorillustrationerna byts i batchar
 (GRAFIK-PLAN §1 kräver en familj). Ikonerna står kvar tills vidare.
 
+**Utfall samma kväll (beslut Mikael):** "ha två inställningar på grafik. mjuk och action. så
+kan användaren själv välja i inställningar. mjuk är standard." Byggt: `grafikstil` i
+`settingsStore` ('mjuk' | 'action'), väljare under Inställningar → Utseende → Grafik,
+`useOversiktBilder()` läser valet, filerna heter `scen-oversikt-<stil>.webp` och
+`spel-oversikt-<stil>-1..4.webp`. **Sparas tills vidare bara lokalt** — `user_preferences`
+saknar kolumnen, och en upsert med okänd nyckel fäller hela sparningen. Migrationen ligger
+som `PENDING_20260910_user_preferences_graphics_style.sql` (se §7). Alla kommande ark i
+`docs/BILDPROMPTER-SIDOR.md` genereras i **båda** stilarna: varje motiv får en mjuk och en
+action-variant med samma filnamn och stilsuffix.
+
 N1–N3 kräver inga nya bilder. Ingenting i spåret lägger till en färg, en gradient eller en
 prestationsmätning. **Beslut för Mikael:** ska rådgivarna i sidokolumnen bli illustrerade
 figurer i Lyktas familj (som AI-teamets agenter i ark 17) i stället för fotografier?
@@ -5281,6 +5291,7 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | ~~EU-utlysning: 26-001/26-002/båda~~ | G6, C4 | ⏸ **Avaktiverat 2026-08-03** — spåret pausat på Mikaels beslut. Tas upp igen när du säger till |
 | **Premium (spår P): fyra frågor före P1.** (1) Är 99 kr/mån **inklusive** moms? (2) Bara månadspris, eller också årspris? (3) Får konsulentkopplade deltagare (Rusta och matcha / AME) premium via organisationslicensen? (4) Ska de 17 användare som redan gett AI-samtycke få en övergångsperiod, eller låses de samma dag? Plus det praktiska: Stripe-konto med produkt + pris, `STRIPE_SECRET_KEY` (live), `STRIPE_WEBHOOK_SECRET` och `STRIPE_PRICE_ID` i Vercel | P1–P5 | **nu — inget i spår P kan börja utan (1)–(3)** |
 | **P1-migrationen (`subscriptions` + `har_premium()`)** mot prod | P1 | **väntar på ditt ja** när den är skriven |
+| **Grafikstil i molnet.** `supabase/migrations/PENDING_20260910_user_preferences_graphics_style.sql` lägger till `user_preferences.graphics_style` ('mjuk' \| 'action', default mjuk). Tills den är körd sparas valet bara i webbläsaren — byter användaren enhet är det mjuk igen. Efter ja: kör med `db query --linked -f`, `schema:refresh`, och tre rader i `settingsStore.ts` (kommenterat vid `setGrafikstil`) | Grafik | **väntar på ditt ja** |
 | **Deploy-workflowens röktest är rött sedan 2026-09-08 — välj en rad.** Steget "API health check" i `.github/workflows/deploy.yml` kräver **401** utan auth från edge-funktionen `health`, men `1ca09eea` (8 sep) satte `verify_jwt = false` för den i `supabase/config.toml`, så den svarar **200** utan auth och steget fäller varje deploy ("oväntad status 200 utan auth"). Frontend- och Supabase-jobben är gröna; prod uppdateras. Antingen godta 200 för `health` i steget (den är öppen med flit och läcker inget), eller sätt `verify_jwt = true` igen. Båda rör filer som kräver ditt ja. Sista gröna deployen: `ddd403fb` 2 september | D-spåret | **nu — varje deploy är röd tills dess** |
 | **STA-återstart — hur ska konsulenten administrera insatsen?** Flaggan `VITE_STA_ENABLED` ger tillbaka deltagarvyn men inte konsulentvyn (den är borttagen med flit). Val: flikar i ordinarie `/consultant` eller återinföra separat vy | G1, G2, F11 | när STA slås på igen |
 | DPIA/Art 30: org-uppgifter + signatur | A4 | v. 29 |

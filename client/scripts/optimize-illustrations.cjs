@@ -62,23 +62,24 @@ const SPOTS_MAGENTA = [
   { src: 'spot lon.png', out: 'spot-lon' },
   { src: 'spot varumarke.png', out: 'spot-varumarke' },
   { src: 'spot karriarbygge.png', out: 'spot-karriarbygge' },
-  // Stiltest 2026-09-10 (BILDPROMPTER-SIDOR §0): Översikt i två stilar.
-  // Utsnitten är realistiska foton/renderingar på magenta — samma chroma-key.
-  { src: 'spel-oversikt-A-1.png', out: 'spel-oversikt-A-1' },
-  { src: 'spel-oversikt-A-2.png', out: 'spel-oversikt-A-2' },
-  { src: 'spel-oversikt-A-3.png', out: 'spel-oversikt-A-3' },
-  { src: 'spel-oversikt-A-4.png', out: 'spel-oversikt-A-4' },
-  { src: 'spel-oversikt-B-1.png', out: 'spel-oversikt-B-1' },
-  { src: 'spel-oversikt-B-2.png', out: 'spel-oversikt-B-2' },
-  { src: 'spel-oversikt-B-3.png', out: 'spel-oversikt-B-3' },
-  { src: 'spel-oversikt-B-4.png', out: 'spel-oversikt-B-4' },
+  // Två grafikstilar (BILDPROMPTER-SIDOR §0, beslut Mikael 2026-09-10):
+  // 'mjuk' = realistiskt foto (råfilerna hette A), 'action' = renderad
+  // EA Sports-känsla (råfilerna hette B). Utsnitten ligger på magenta.
+  { src: 'spel-oversikt-A-1.png', out: 'spel-oversikt-mjuk-1' },
+  { src: 'spel-oversikt-A-2.png', out: 'spel-oversikt-mjuk-2' },
+  { src: 'spel-oversikt-A-3.png', out: 'spel-oversikt-mjuk-3' },
+  { src: 'spel-oversikt-A-4.png', out: 'spel-oversikt-mjuk-4' },
+  { src: 'spel-oversikt-B-1.png', out: 'spel-oversikt-action-1' },
+  { src: 'spel-oversikt-B-2.png', out: 'spel-oversikt-action-2' },
+  { src: 'spel-oversikt-B-3.png', out: 'spel-oversikt-action-3' },
+  { src: 'spel-oversikt-B-4.png', out: 'spel-oversikt-action-4' },
 ]
 
 // Scener (BILDPROMPTER-SIDOR §1, v2): hela foton med naturlig bakgrund. INGEN
 // chroma-key, ingen trim — bara nedskalning och webp. Breda, ~1400 px.
 const SCENER = [
-  { src: 'scen-oversikt-A.png', out: 'scen-oversikt-A' },
-  { src: 'scen-oversikt-B.png', out: 'scen-oversikt-B' },
+  { src: 'scen-oversikt-A.png', out: 'scen-oversikt-mjuk' },
+  { src: 'scen-oversikt-B.png', out: 'scen-oversikt-action' },
 ]
 
 // `--bara=<prefix>` bearbetar bara poster vars `out` börjar så. Utan flaggan

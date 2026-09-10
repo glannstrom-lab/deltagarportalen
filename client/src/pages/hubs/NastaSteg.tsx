@@ -18,7 +18,7 @@ import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { datumSprak } from '@/lib/datumsprak'
 import { valjNastaSteg, type Steg } from './nastaStegRegler'
 import { manadsText } from './oversiktTid'
-import { oversiktBilder } from './oversiktBilder'
+import { useOversiktBilder } from './oversiktBilder'
 import type { PanelTillstand } from './OversiktPanel'
 
 function texter(steg: Steg, t: TFunction, sprak: string) {
@@ -46,13 +46,13 @@ export default function NastaSteg({
   tillstand: PanelTillstand
 }) {
   const { t, i18n } = useTranslation()
+  const bilder = useOversiktBilder()
   if (tillstand !== 'klart') return null
   const val = valjNastaSteg(summary)
   if (!val) return null
 
   const sprak = datumSprak(i18n.language)
   const p = texter(val.primar, t, sprak)
-  const bilder = oversiktBilder()
 
   /*
    * Scenen (stiltestet 2026-09-10) ligger som bakgrund i kortets högra del.

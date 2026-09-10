@@ -1048,7 +1048,24 @@ function SettingsInner() {
 function AppearanceSettings() {
   const { t } = useTranslation()
   const { theme, setTheme, isDark, systemPreference } = useTheme()
-  const { showCoachWidget, toggleCoachWidget } = useSettingsStore()
+  const { showCoachWidget, toggleCoachWidget, grafikstil, setGrafikstil } = useSettingsStore()
+
+  // Grafikstil (beslut Mikael 2026-09-10): två uppsättningar bilder på samma
+  // platser. Mjuk är standard. Se stores/settingsStore.ts (Grafikstil).
+  const grafikstilar = [
+    {
+      id: 'mjuk' as const,
+      label: t('settings.appearance.graphicsSoft', 'Mjuk'),
+      description: t('settings.appearance.graphicsSoftDesc', 'Fotografier i dagsljus. Lugnt och hemma.'),
+      bild: '/illustrations/spel-oversikt-mjuk-3.webp',
+    },
+    {
+      id: 'action' as const,
+      label: t('settings.appearance.graphicsAction', 'Action'),
+      description: t('settings.appearance.graphicsActionDesc', 'Renderade bilder med dramatiskt ljus. Matchdag.'),
+      bild: '/illustrations/spel-oversikt-action-3.webp',
+    },
+  ]
 
   const themes = [
     {
@@ -1120,6 +1137,48 @@ function AppearanceSettings() {
             {t('settings.appearance.systemCurrent')} <strong>{systemPreference === 'dark' ? t('settings.appearance.darkMode') : t('settings.appearance.lightMode')}</strong>.
           </p>
         )}
+      </CardSection>
+
+      {/* Grafikstil */}
+      <CardSection title={t('settings.appearance.graphics', 'Grafik')}>
+        <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
+          {t('settings.appearance.graphicsDesc', 'Bilderna på Översikt och i verktygen finns i två stilar. Välj den som passar dig.')}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label={t('settings.appearance.graphics', 'Grafik')}>
+          {grafikstilar.map((g) => {
+            const vald = grafikstil === g.id
+            return (
+              <button
+                key={g.id}
+                type="button"
+                role="radio"
+                aria-checked={vald}
+                onClick={() => setGrafikstil(g.id)}
+                className={cn(
+                  'relative flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all',
+                  vald
+                    ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
+                    : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
+                )}
+              >
+                <img src={g.bild} alt="" aria-hidden="true" loading="lazy" className="h-14 w-14 shrink-0 object-contain" />
+                <span className="min-w-0">
+                  <span className={cn('block font-medium', vald ? 'text-[var(--c-text)]' : 'text-stone-900 dark:text-stone-100')}>
+                    {g.label}
+                  </span>
+                  <span className="block text-xs text-stone-500 dark:text-stone-400 mt-0.5">{g.description}</span>
+                </span>
+                {vald && (
+                  <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[var(--c-solid)] flex items-center justify-center">
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </CardSection>
 
       {/* Preview */}

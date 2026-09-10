@@ -19,7 +19,7 @@ import type { TFunction } from 'i18next'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { datumSprak } from '@/lib/datumsprak'
 import { narText } from './oversiktTid'
-import { oversiktBilder } from './oversiktBilder'
+import { useOversiktBilder } from './oversiktBilder'
 import type { PanelTillstand } from './OversiktPanel'
 
 interface Kort {
@@ -138,6 +138,7 @@ export default function Pagar({
   tillstand: PanelTillstand
 }) {
   const { t, i18n } = useTranslation()
+  const bilder = useOversiktBilder()
   if (tillstand !== 'klart' || !summary) return null
   const kort = byggPagar(summary, t, datumSprak(i18n.language))
   if (kort.length === 0) return null
@@ -149,7 +150,7 @@ export default function Pagar({
         className="m-0 mb-2.5 flex items-center gap-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
       >
         {/* Stiltest 2026-09-10: sneakers = "igång". Dekorativ. */}
-        <img src={oversiktBilder().sneakers} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
+        <img src={bilder.sneakers} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
         {t('hubOverview.pagar.heading', 'Det som är igång')}
       </h2>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

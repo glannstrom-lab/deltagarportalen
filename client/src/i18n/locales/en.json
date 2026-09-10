@@ -6357,7 +6357,13 @@
       "darkMode": "dark",
       "primaryButton": "Primary button",
       "secondaryButton": "Secondary",
-      "autoSaveInfo": "Your choice is automatically saved and applies to all your devices. If you choose \"System\", the portal follows your device's settings."
+      "autoSaveInfo": "Your choice is automatically saved and applies to all your devices. If you choose \"System\", the portal follows your device's settings.",
+      "graphics": "Graphics",
+      "graphicsDesc": "The pictures on Overview and in the tools come in two styles. Choose the one you like.",
+      "graphicsSoft": "Soft",
+      "graphicsSoftDesc": "Photographs in daylight. Calm and homely.",
+      "graphicsAction": "Action",
+      "graphicsActionDesc": "Rendered pictures with dramatic light. Match day."
     },
     "privacy": {
       "title": "Privacy",

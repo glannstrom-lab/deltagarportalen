@@ -43,7 +43,7 @@ import { datumSprak } from '@/lib/datumsprak'
 import NastaSteg from './NastaSteg'
 import Pagar from './Pagar'
 import { narText } from './oversiktTid'
-import { oversiktBilder } from './oversiktBilder'
+import { useOversiktBilder } from './oversiktBilder'
 
 /**
  * Vad panelen vet just nu.
@@ -360,6 +360,7 @@ export default function OversiktPanel({
   vidForsokIgen?: () => void
 }) {
   const { t, i18n } = useTranslation()
+  const bilder = useOversiktBilder()
   const laddar = tillstand === 'laddar'
   const fel = tillstand === 'fel'
   const kategorier = byggKategorier(summary, t, tillstand, datumSprak(i18n.language))
@@ -410,7 +411,7 @@ export default function OversiktPanel({
           className="m-0 mb-2.5 flex items-center gap-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
         >
           {/* Stiltest 2026-09-10: vägvisaren = allt som finns att gå till. Dekorativ. */}
-          <img src={oversiktBilder().vagvisare} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
+          <img src={bilder.vagvisare} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
           {t('hubOverview.hubsHeading', 'Allt i portalen')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
