@@ -43,6 +43,25 @@ function rendera(isOpen: boolean, onClose = vi.fn()) {
   return { ...utils, panel, onClose }
 }
 
+describe('menyn är grupperad efter de fem hubbarna (N3, 2026-09-10)', () => {
+  it('visar fem hubbgrupper med hubbens ikon, och inga gamla domängrupper', () => {
+    // Fram till N3 itererade menyn `navGroups` — "Översikt / Reflektion /
+    // Utåtriktat" — så CV och Personligt brev stod under "Reflektion" medan
+    // resten av portalen sa "Söka jobb". Menyn ska vara samma träd som
+    // toppnaven och bottennavet.
+    const { panel } = rendera(true)
+    const grupper = panel.querySelectorAll('[data-testid="mobilmeny-hubb"]')
+    expect(grupper.length).toBe(5)
+    expect(panel.textContent).not.toMatch(/Reflektion|Utåtriktat/)
+    expect(panel.querySelectorAll('[data-testid="mobilmeny-hubb"] img').length).toBe(5)
+    // Söka jobbs nio undersidor ligger under sin hubb.
+    const hrefs = [...panel.querySelectorAll('a')].map((a) => a.getAttribute('href'))
+    expect(hrefs).toContain('/jobb')
+    expect(hrefs).toContain('/cv')
+    expect(hrefs).toContain('/linkedin-optimizer')
+  })
+})
+
 describe('TG1: stängd meny ligger utanför fokusordningen', () => {
   it('sätter inert när menyn är stängd', () => {
     const { panel } = rendera(false)

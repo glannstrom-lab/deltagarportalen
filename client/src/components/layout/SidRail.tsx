@@ -26,6 +26,8 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { Tab } from './PageTabs'
 import { aktivFlikId, etikettForFlik } from './flikMatchning'
+import { StigLista, StigPrick, SkenEtikett } from './Stig'
+import { stigRadKlasser } from './stigKlasser'
 
 /**
  * Flikar som lever i sidans eget tillstånd i stället för i rutten.
@@ -84,13 +86,9 @@ interface SidRailProps {
   children?: React.ReactNode
 }
 
-/** Liten gruppetikett i skenan. */
+/** Liten gruppetikett i skenan — gemener sedan N2 (2026-09-10), se Stig.tsx. */
 function Grupp({ text }: { text: string }) {
-  return (
-    <p className="m-0 mb-1.5 px-3 text-[9.5px] font-mono uppercase tracking-[0.1em] text-stone-500 dark:text-stone-400">
-      {text}
-    </p>
-  )
+  return <SkenEtikett text={text} />
 }
 
 /**
@@ -189,7 +187,10 @@ export default function SidRail({
       {harFlikar && (
         <nav aria-label={title ? `${title} — avsnitt` : 'Avsnitt'}>
           {tabsEtikett && <Grupp text={tabsEtikett} />}
-          <ul className="m-0 p-0 list-none space-y-0.5">
+          {/* Stigen (N2): en linje genom prickarna, aktiv flik som ring på
+              hubbens pastell. Flikarna är avsnitt, inte steg, så det finns
+              inget "klart" här — bara var man är och vart man kan gå. */}
+          <StigLista>
             {tabs!.map((tab) => {
               const aktiv = tab.id === aktivId
               return (
@@ -197,27 +198,15 @@ export default function SidRail({
                   <Link
                     to={tab.path}
                     aria-current={aktiv ? 'page' : undefined}
-                    className={cn(
-                      'flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px]',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
-                      aktiv
-                        ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
-                        : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
-                    )}
+                    className={stigRadKlasser(aktiv)}
                   >
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        'w-1.5 h-1.5 rounded-full shrink-0',
-                        aktiv ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
-                      )}
-                    />
+                    <StigPrick lage={aktiv ? 'aktiv' : 'kvar'} />
                     <span className="min-w-0 truncate">{tab.label}</span>
                   </Link>
                 </li>
               )
             })}
-          </ul>
+          </StigLista>
         </nav>
       )}
 
@@ -226,7 +215,7 @@ export default function SidRail({
           aria-label={title ? `${title} — avsnitt` : 'Avsnitt'}
           className={cn(harFlikar && 'mt-3 pt-3 border-t border-stone-200 dark:border-stone-700')}
         >
-          <ul className="m-0 p-0 list-none space-y-0.5">
+          <StigLista>
             {sidoflikar!.poster.map((p) => {
               const aktiv = p.id === sidoflikar!.aktiv
               return (
@@ -235,21 +224,9 @@ export default function SidRail({
                     type="button"
                     onClick={() => sidoflikar!.vidVal(p.id)}
                     aria-current={aktiv ? 'true' : undefined}
-                    className={cn(
-                      'w-full text-left flex items-center gap-2 px-3 py-1.5 rounded-lg text-[13px]',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
-                      aktiv
-                        ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
-                        : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
-                    )}
+                    className={stigRadKlasser(aktiv)}
                   >
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        'w-1.5 h-1.5 rounded-full shrink-0',
-                        aktiv ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
-                      )}
-                    />
+                    <StigPrick lage={aktiv ? 'aktiv' : 'kvar'} />
                     <span className="min-w-0 truncate">{p.etikett}</span>
                     {p.markering && (
                       <span className="ml-auto shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
@@ -260,7 +237,7 @@ export default function SidRail({
                 </li>
               )
             })}
-          </ul>
+          </StigLista>
           {/* Skärmläsarannonsering av flikbyte — se useSidoflikAnnonsering ovan. */}
           <span role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {sidoflikAnnonsering}

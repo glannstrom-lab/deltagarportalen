@@ -3,7 +3,7 @@
  * Clean icons without backgrounds, subtle hover states
  */
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import {
   Moon,
   Sun,
@@ -28,6 +28,7 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import CrisisSupport from '@/components/CrisisSupport'
 import { oppnaPalett } from '@/lib/palettEvent'
 import { HubNav } from './TopNav'
+import { getActiveHub } from './navigation'
 import { isTopNavEnabled } from '@/config/features'
 import { Search } from '@/components/ui/icons'
 
@@ -45,8 +46,13 @@ export function TopBar() {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const navigate = useNavigate()
+  const location = useLocation()
   const { signOut, user } = useAuthStore()
   const menuRef = useRef<HTMLDivElement>(null)
+  // N1 (2026-09-10): en 3 px linje under raden i den aktiva hubbens färg —
+  // billigaste möjliga "du är här". Byter färg när man byter hubb. Översikt
+  // (och sidor utanför hubbarna) får mint, hubbens egen.
+  const aktivHubDomain = getActiveHub(location.pathname)?.domain ?? 'action'
 
   const loadProfile = useCallback(async () => {
     if (!user) return
@@ -90,7 +96,7 @@ export function TopBar() {
   )
 
   return (
-    <header className="bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 sm:px-4 py-1.5 lg:py-0.5 sticky top-0 z-40">
+    <header className="bg-white dark:bg-stone-900 px-3 sm:px-4 pt-1.5 lg:pt-0.5 sticky top-0 z-40">
       {/* data-nav-tat: se undantaget i styles/mobile.css. Den globala
           48px-touchregeln saknar @media och blåste upp logga, sökruta och
           varje ikonknapp även med mus. */}
@@ -342,6 +348,13 @@ export function TopBar() {
           </div>
         </div>
       </div>
+      {/* Hubblinjen — se aktivHubDomain ovan. Ligger under raden, kant till kant. */}
+      <div
+        aria-hidden="true"
+        data-domain={aktivHubDomain}
+        data-testid="hubblinje"
+        className="h-[3px] -mx-3 sm:-mx-4 mt-1.5 lg:mt-0.5 bg-[var(--c-solid)]"
+      />
     </header>
   )
 }

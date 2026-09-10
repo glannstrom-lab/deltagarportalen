@@ -18,7 +18,8 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
+import { navHubs, adminNavItems, consultantNavItems, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
+import { HUB_ICON_SRC } from './layout/hubIcons'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { SamlingarFab } from './SamlingarFab'
@@ -494,7 +495,13 @@ function MobileTopBar() {
 
 /**
  * MobileMainMenu - Fullständig navigation med alla sidor grupperade
- * Synkad med Desktop Sidebar via navGroups
+ *
+ * Grupperad efter de FEM HUBBARNA sedan N3 (2026-09-10). Fram till dess
+ * itererade menyn `navGroups` — tre gamla domäner ("Översikt", "Reflektion",
+ * "Utåtriktat") från före hubbomläggningen — så CV, Personligt brev och Hälsa
+ * stod under "Reflektion" medan resten av portalen sa "Söka jobb" och "Din
+ * vardag". Nu är menyn samma träd som toppnaven, sidomenyn och bottennavet:
+ * `navHubs[]` är sanningen, och varje grupp bär sin hubbfärg via `data-domain`.
  */
 /**
  * Mobilens huvudmeny.
@@ -508,10 +515,10 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
   const { t } = useTranslation()
   const location = useLocation()
   const { profile, signOut } = useAuthStore()
-  // Alla grupper utfällda som default — tidigare default ('overview'/'job-search')
-  // matchade inga faktiska grupp-id:n (action/reflection/outbound) så menyn
-  // startade helt hopfälld (upptäckt av spar-c-verify 2026-07-10)
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['action', 'reflection', 'outbound'])
+  // Alla hubbar utfällda som default. (Före N3 låg här tre gamla grupp-id:n;
+  // en tidigare default matchade inga id:n alls så menyn startade hopfälld —
+  // upptäckt av spar-c-verify 2026-07-10. Därför härleds listan ur navHubs.)
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(() => navHubs.map((h) => h.id))
 
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
@@ -568,29 +575,53 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
       {/* Scrollable Navigation */}
       <nav className="flex-1 overflow-y-auto p-2">
-        {navGroups.map((group) => {
+        {navHubs.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
+          const hubAktiv = location.pathname === group.path
+          const hubIkon = HUB_ICON_SRC[group.domain]
 
           return (
-            <div key={group.id} className="mb-1">
-              {/* Group Header - Expandable */}
-              <button
-                onClick={() => toggleGroup(group.id)}
-                className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
-                aria-expanded={isGroupExpanded}
-              >
-                <span>{t(group.labelKey, group.fallbackLabel)}</span>
-                <ChevronDown
+            <div key={group.id} data-domain={group.domain} data-testid="mobilmeny-hubb" className="mb-1">
+              {/* Hubben: länk till hubbsidan + fällknapp för undersidorna.
+                  Översikt har inga undersidor och får bara länken. */}
+              <div className="flex items-center">
+                <Link
+                  to={group.path}
+                  onClick={onClose}
+                  aria-current={hubAktiv ? 'page' : undefined}
                   className={cn(
-                    'w-3.5 h-3.5 transition-transform',
-                    !isGroupExpanded && '-rotate-90'
+                    'flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg min-h-[44px] text-[14px] font-semibold transition-colors',
+                    hubAktiv
+                      ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]'
+                      : 'text-stone-800 dark:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800'
                   )}
-                />
-              </button>
+                >
+                  {hubIkon && (
+                    <img src={hubIkon} alt="" aria-hidden="true" width={20} height={20} className="w-5 h-5 object-contain" />
+                  )}
+                  <span>{t(group.labelKey, group.fallbackLabel)}</span>
+                </Link>
+                {group.items.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => toggleGroup(group.id)}
+                    className="w-11 h-11 flex items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+                    aria-expanded={isGroupExpanded}
+                    aria-label={t('sidebar.toggleGroup', { defaultValue: 'Visa eller dölj {{grupp}}', grupp: t(group.labelKey, group.fallbackLabel) })}
+                  >
+                    <ChevronDown
+                      className={cn(
+                        'w-4 h-4 transition-transform',
+                        !isGroupExpanded && '-rotate-90'
+                      )}
+                    />
+                  </button>
+                )}
+              </div>
 
-              {/* Group Items */}
-              {isGroupExpanded && (
-                <div className="mt-0.5 space-y-0.5">
+              {/* Undersidorna */}
+              {isGroupExpanded && group.items.length > 0 && (
+                <div className="mt-0.5 ml-4 pl-2 border-l-2 border-[var(--c-accent)] space-y-0.5">
                   {group.items.map((item) => {
                     const Icon = item.icon
                     const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)

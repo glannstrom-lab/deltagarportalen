@@ -520,7 +520,8 @@
     "expand": "Expandera sidomenyn",
     "consultantSection": "Konsulent",
     "adminSection": "Admin",
-    "collapse": "Minimera"
+    "collapse": "Minimera",
+    "toggleGroup": "Visa eller dölj {{grupp}}"
   },
   "topbar": {
     "searchPlaceholder": "Sök jobb, artiklar...",

@@ -520,7 +520,8 @@
     "expand": "Expand sidebar",
     "consultantSection": "Consultant",
     "adminSection": "Admin",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "toggleGroup": "Show or hide {{grupp}}"
   },
   "topbar": {
     "searchPlaceholder": "Search jobs, articles...",

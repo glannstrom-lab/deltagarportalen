@@ -1,5 +1,7 @@
 import { createPortal } from 'react-dom'
 import { useSkenSlot } from '@/components/layout/skenSlot'
+import { StigLista, StigPrick, SkenEtikett } from '@/components/layout/Stig'
+import { stigRadKlasser } from '@/components/layout/stigKlasser'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -1452,10 +1454,11 @@ export default function CVBuilder() {
             flyttar, så sidan slipper sin andra vänsterkolumn. */}
         {step < STEPS.length && skenSlot && createPortal(
           <nav aria-label={t('cvBuilder.contentOverview', 'Innehåll i ditt CV')} className="mb-3">
-            <p className="m-0 mb-1.5 px-3 text-[9.5px] font-mono uppercase tracking-[0.1em] text-stone-500 dark:text-stone-400">
-              {t('cvBuilder.yourCv', 'Ditt CV')}
-            </p>
-            <ul className="m-0 p-0 list-none space-y-0.5">
+            <SkenEtikett text={t('cvBuilder.yourCv', 'Ditt CV')} />
+            {/* Stigen (N2, 2026-09-10): stegen är en ordning man går igenom,
+                så de ritas som en väg — klar = fylld prick, aktuellt = ring,
+                kommande = tom ring — i stället för sex likadana punkter. */}
+            <StigLista>
               {STEPS.map((st) => {
                 const klar = completedSteps.includes(st.id)
                 const aktiv = step === st.id
@@ -1465,30 +1468,18 @@ export default function CVBuilder() {
                       type="button"
                       onClick={() => setStep(st.id)}
                       aria-current={aktiv ? 'step' : undefined}
-                      className={cn(
-                        'w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-left text-[13px]',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
-                        aktiv
-                          ? 'bg-white dark:bg-stone-800 font-semibold text-stone-900 dark:text-stone-100 shadow-sm'
-                          : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
-                      )}
+                      className={stigRadKlasser(aktiv)}
                     >
-                      <span
-                        aria-hidden="true"
-                        className={cn(
-                          'w-2 h-2 rounded-full shrink-0',
-                          klar ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
-                        )}
-                      />
+                      <StigPrick lage={aktiv ? 'aktiv' : klar ? 'klar' : 'kvar'} />
                       <span className="min-w-0 flex-1 truncate">{st.title}</span>
-                      <span className="text-[10px] font-mono text-stone-400 dark:text-stone-500 shrink-0">
-                        {klar ? '✓' : `${st.minutes}m`}
+                      <span className="text-[11px] text-stone-400 dark:text-stone-500 shrink-0">
+                        {klar ? '✓' : `${st.minutes} min`}
                       </span>
                     </button>
                   </li>
                 )
               })}
-            </ul>
+            </StigLista>
           </nav>,
           skenSlot
         )}

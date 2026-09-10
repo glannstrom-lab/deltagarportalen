@@ -322,7 +322,7 @@ Ikonerna renderas på två helt olika sätt i koden:
 
 | Yta | Storlek | Färg | Custom-ikon? |
 |-----|---------|------|--------------|
-| Sidofält / bottennav | 16–18px | byter på hover/aktiv (`text-current`) | **NEJ — behåll lucide.** Raster kan inte recoloras och blir grötigt vid 16px |
+| Sidofält / bottennav | 16–18px | byter på hover/aktiv (`text-current`) | **JA sedan spår N (2026-09-10)** — toppraden 18 px, undersidesraden 16 px, bottennavet 22 px, mobilmenyn 20 px. Inaktiva avfärgas med `filter: grayscale` + opacity i stället för att färgas om; källorna är 128 px. Utvärderas i drift — visar sig 16 px för grötigt är reservläget lucide i undersidesraden |
 | Hub-feature-kortens tile (`HubPage.tsx`) | 36–40px ruta | sidans hub-färg | **JA** — custom-ikonen fyller hela tilen |
 | Dashboard-widgetarnas rubrik-ikon | ~32–40px | hub-färg | **JA** |
 | Hub-kort på Översikt + PageHero | ≥40px | hub-färg | **JA** |

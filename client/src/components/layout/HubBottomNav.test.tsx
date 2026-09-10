@@ -23,6 +23,20 @@ const renderAt = (path: string) =>
     </MemoryRouter>
   )
 
+describe('HubBottomNav — egna hubbikoner (N3, 2026-09-10)', () => {
+  it('varje flik visar hubbens egen ikon, dekorativ, och bara den aktiva är i färg', () => {
+    const { container } = renderAt('/cv')
+    const ikoner = [...container.querySelectorAll('a img')]
+    expect(ikoner.length).toBe(5)
+    for (const i of ikoner) {
+      expect(i.getAttribute('alt')).toBe('')
+      expect(i.getAttribute('aria-hidden')).toBe('true')
+    }
+    const avfargade = ikoner.filter((i) => i.className.includes('grayscale'))
+    expect(avfargade.length).toBe(4)
+  })
+})
+
 describe('HubBottomNav', () => {
   it('Test 1: Renders exactly 5 navigation links', () => {
     renderAt('/cv')

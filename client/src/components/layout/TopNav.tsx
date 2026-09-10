@@ -24,14 +24,49 @@
  *    ~960 px och scrollar under det. Det är idéns svagaste punkt, och den som
  *    ska mätas mot en riktig användare innan fler sidor migreras. Blir den för
  *    trång är nästa steg rullgardiner per kategori (beslut Mikael 2026-08-17).
+ *
+ * ── Ikoner och hubbfärg (spår N1, 2026-09-10, beslut Mikael) ───────────────
+ *
+ * Båda raderna var ren text: fem kategorier i grått med en grå pill på den
+ * aktiva, och nio undersidor med en 6 px-prick framför varje. Nu står hubbens
+ * egen ikon (`icon-hub-*.webp`) före kategorinamnet och verktygets ikon
+ * (`icon-*.webp`) före undersidan, i stället för prickar. Aktiv kategori och
+ * aktiv undersida står på hubbens pastell (`--c-bg`) med text i `--c-text` —
+ * samma färger som korten på Översikt. Inaktiva ikoner är avfärgade
+ * (`grayscale`) och dämpade; de tänds på hover. GRAFIK-PLAN §9.1 avrådde från
+ * rasterikoner under 36 px eftersom de inte kan färgas om — det löses här med
+ * filter i stället för färg, och ikonerna är 128 px i källan så 18 px vid 2×
+ * DPR har marginal. Färgversionen byggs först och utvärderas i drift; en
+ * neutral variant (ikoner, ingen pastell) finns beskriven i roadmapens spår N.
  */
 
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { navHubs, getActiveHub, senasteBesok } from './navigation'
+import { HUB_ICON_SRC, TOOL_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
+
+/** Rasterikon i navigationen: avfärgad och dämpad tills raden är aktiv eller hovras. */
+function NavIkon({ src, storlek, aktiv }: { src: string; storlek: number; aktiv: boolean }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden="true"
+      width={storlek}
+      height={storlek}
+      loading="eager"
+      decoding="async"
+      className={cn(
+        'shrink-0 object-contain transition-[filter,opacity]',
+        aktiv ? '' : 'grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100'
+      )}
+      style={{ width: storlek, height: storlek }}
+    />
+  )
+}
 
 /** Sidor som föreslås för den som inte hunnit använda något än. */
 const BORJA_HAR = ['/cv', '/job-search', '/interest-guide'] as const
@@ -122,7 +157,7 @@ export function SubNav() {
       className="flex items-center gap-1 px-3 sm:px-4 bg-stone-100 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-700 overflow-x-auto scrollbar-none"
     >
       {oversikt && (
-        <span className="shrink-0 pr-2 text-[10px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
+        <span className="shrink-0 pr-2 text-[12px] font-semibold text-stone-500 dark:text-stone-400">
           {oversikt.etikett}
         </span>
       )}
@@ -138,18 +173,22 @@ export function SubNav() {
             data-domain={p.domain}
             aria-current={aktiv ? 'page' : undefined}
             className={cn(
-              'shrink-0 flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-md text-[12.5px] leading-5 whitespace-nowrap',
+              'group shrink-0 flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-md text-[13px] leading-5 whitespace-nowrap',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
-                ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 font-semibold shadow-sm'
+                ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold'
                 : 'text-stone-600 dark:text-stone-300 hover:bg-white/60 dark:hover:bg-stone-900/40'
             )}
           >
-            <span
-              aria-hidden="true"
-              className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ background: 'var(--c-solid)' }}
-            />
+            {TOOL_ICON_SRC[p.path] ? (
+              <NavIkon src={TOOL_ICON_SRC[p.path]} storlek={16} aktiv={aktiv} />
+            ) : (
+              <span
+                aria-hidden="true"
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ background: 'var(--c-solid)' }}
+              />
+            )}
             {p.label}
           </Link>
         )
@@ -201,20 +240,23 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
             data-domain={hub.domain}
             aria-current={aktiv ? 'page' : undefined}
             className={cn(
-              'shrink-0 whitespace-nowrap',
+              'group shrink-0 whitespace-nowrap flex items-center gap-1.5',
               inline
                 ? 'px-2.5 py-1 text-[13.5px] leading-5 rounded-lg'
                 : 'px-3 py-2.5 text-[14px] border-b-2 -mb-px',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
                 ? inline
-                  ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-semibold'
-                  : 'text-stone-900 dark:text-stone-100 font-semibold border-[var(--c-solid)]'
+                  ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold'
+                  : 'text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold border-[var(--c-solid)]'
                 : inline
                   ? 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/60'
                   : 'text-stone-600 dark:text-stone-300 border-transparent hover:text-stone-900 dark:hover:text-stone-100'
             )}
           >
+            {HUB_ICON_SRC[hub.domain] && (
+              <NavIkon src={HUB_ICON_SRC[hub.domain]} storlek={18} aktiv={aktiv} />
+            )}
             {t(hub.labelKey, hub.fallbackLabel)}
           </Link>
         )

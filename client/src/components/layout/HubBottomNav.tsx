@@ -13,6 +13,7 @@ import { useEffect, useRef } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { navHubs, getActiveHub } from './navigation'
+import { HUB_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
 
 export function HubBottomNav() {
@@ -76,6 +77,10 @@ export function HubBottomNav() {
         {navHubs.map((hub) => {
           const isActive = activeHub?.id === hub.id
           const Icon = hub.icon
+          // N3 (2026-09-10): hubbens egen ikon i stället för lucide-strecket.
+          // Fem olika former skiljer sig åt på avstånd; inaktiva är avfärgade
+          // så den aktiva (i färg, på pastell) är den enda som lyser.
+          const egenIkon = HUB_ICON_SRC[hub.domain]
           return (
             <li
               key={hub.id}
@@ -95,10 +100,24 @@ export function HubBottomNav() {
                     : 'text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)]'
                 )}
               >
-                <Icon
-                  className={cn('w-5 h-5', isActive ? 'text-[var(--c-solid)]' : '')}
-                  aria-hidden="true"
-                />
+                {egenIkon ? (
+                  <img
+                    src={egenIkon}
+                    alt=""
+                    aria-hidden="true"
+                    width={22}
+                    height={22}
+                    className={cn(
+                      'w-[22px] h-[22px] object-contain transition-[filter,opacity]',
+                      isActive ? '' : 'grayscale opacity-60'
+                    )}
+                  />
+                ) : (
+                  <Icon
+                    className={cn('w-5 h-5', isActive ? 'text-[var(--c-solid)]' : '')}
+                    aria-hidden="true"
+                  />
+                )}
                 <span className="truncate max-w-full">
                   {t(hub.labelKey, hub.fallbackLabel)}
                 </span>

@@ -4,8 +4,12 @@
  * Mappar designdomän → webp i /public/illustrations. Används där hub-ikonen
  * renderas i stor storlek (≥40px): HubOverview-kort + PageHero hub-hjälte.
  *
- * INTE i 16px-naven (sidofält/bottennav) — där är lucide kvar (§9.1), eftersom
- * raster-ikoner inte kan recoloras på hover/aktiv och blir grötiga vid 16px.
+ * Sedan spår N (2026-09-10) ÄVEN i navigationen: toppradens kategorier
+ * (18 px), undersidesraden (16 px), bottennavet (22 px) och mobilmenyn
+ * (20 px). §9.1 avrådde från rasterikoner under 36 px eftersom de inte kan
+ * färgas om på hover/aktiv — det löses med `filter: grayscale` + opacity på
+ * inaktiva i stället för färgbyte, och källorna är 128 px så 16–22 px vid 2×
+ * DPR har marginal. Utvärderas i drift (beslut Mikael).
  */
 export const HUB_ICON_SRC: Record<string, string> = {
   action: '/illustrations/icon-hub-oversikt.webp',

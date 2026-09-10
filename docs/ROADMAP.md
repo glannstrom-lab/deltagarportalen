@@ -65,17 +65,20 @@ under "Reflektion") kommer ur gamla `navGroups` och stämmer inte med hubbarna.
 > väldigt torra ut, de behöver livas upp." Förslaget med utsnitt och mock: artifakten
 > "Navigationen får ikoner". Bilderna det bygger på: `docs/BILDPROMPTER-SIDOR.md` (ark 0 och 22).
 >
-> **Rättat samma dag:** första versionen lade hubbfärg på det aktiva läget (pastell-pill,
-> 3 px färglinje, färgade flikar). Mikael: "lite väl färgrikt, ikoner tar nog inte lika mycket
-> plats för ögat". Regeln som följer, och som gäller hela spåret: **ikoner och bilder livar
-> upp, färgen stannar i innehållet.** Aktivt läge i navigationen = textfärg + neutral yta,
-> aldrig pastell. Högst en liten valbar färgaccent på ikonen.
+> **Två vändor samma dag.** Mockens första version hade hubbfärg på det aktiva läget men
+> **fyrkantiga platshållare** i stället för ikoner; Mikael: "lite väl färgrikt, ikoner tar nog
+> inte lika mycket plats för ögat". En neutral variant ritades. Sedan: "det kanske blir bra när
+> det är ikoner istället för färgade klumpar som i ditt förslag, gör med färg som
+> ursprungsförslaget först, så ser vi." **Beslut: färgversionen byggs med riktiga ikoner och
+> utvärderas i drift.** Lärdom: visa aldrig en färgidé med klumpar som ikoner — då bedöms
+> klumparna. Den neutrala varianten (grå ikoner, textfärg på aktiv, ingen pastell) står kvar som
+> reservläge om färgen visar sig för mycket i drift; den är en klassändring per rad.
 
-| # | Punkt | Filer | Storlek |
-|---|---|---|---|
-| **N1** | Hubbens egen ikon (`icon-hub-*.webp`, 18 px) före namnet i toppraden — dämpad grå inaktiv, textfärg aktiv, samma neutrala pill som i dag. Undermenyn: verktygsikon (`icon-*.webp`, 16 px) i stället för 6 px-prick, aktiv flik i textfärg på neutral yta, "Börja här" i gemener utan monospace. Ingen färg i raden | `TopNav.tsx`, `hubIcons.ts`, `navigation.ts` (ikonnyckel per item) | S–M |
-| **N2** | Vänsterskenan: stegen som en **stig** (tunn grå linje; klar = fylld grå prick + bock, aktuell = ring i textfärg, kommande = tom ring), etiketter i gemener 12 px semibold, verktygsikoner före raderna, sidans spot-bild längst ner (den enda färgen i skenan, och det är en bild) | `SidRail.tsx`, `SidRailStats.tsx` | S |
-| **N3** | Mobil: bottennavet med egen hubbikon (fem olika former, aktiv fylld i textfärg på neutral yta); hamburgermenyn omgrupperad efter de fem hubbarna (i dag "ÖVERSIKT / REFLEKTION" ur gamla `navGroups`); toppraden ner till tre ikoner | `HubBottomNav.tsx`, mobilmenyn, `navGroups` | M |
+| # | Punkt | Status |
+|---|---|---|
+| ~~**N1**~~ | Hubbens egen ikon (`icon-hub-*.webp`, 18 px) före namnet i toppraden, aktiv kategori på hubbens pastell (`--c-bg`) med text i `--c-text`, inaktiva ikoner avfärgade (`grayscale`) och dämpade, tänds på hover. **3 px linje under toppraden i aktiv hubbfärg** (`TopBar.tsx`, `data-testid="hubblinje"`). Undermenyn: verktygsikon (`icon-*.webp`, 16 px) i stället för 6 px-prick (prick kvar för `/profile`, som saknar ikon), aktiv flik på pastell, "Börja här / Senast besökt" i gemener 12 px semibold | ✅ **Byggt 2026-09-10.** `TopNav.tsx` (`NavIkon`), `TopBar.tsx`. Tester: hubbikoner ×5, verktygsikoner ×9 dekorativa, pastell på aktiv, ingen monospace |
+| ~~**N2**~~ | Vänsterskenan som **stig**: `components/layout/Stig.tsx` (`StigLista` med linje i `--c-accent`, `StigPrick` med lägena klar/aktiv/kvar, `SkenEtikett` i gemener) + `stigKlasser.ts` (radens klasser — egen fil eftersom en exporterad funktion i en komponentfil fäller `react-refresh`). Används av `SidRail.tsx` (flikar och sidoflikar) och CV-byggarens stegöversikt i skenan (klar = fylld prick + ✓, "2 min" i stället för monospace "2m"). Spot-bilden längst ner väntar på ark 9/22 | ✅ **Byggt 2026-09-10** (utom spot-bilden) |
+| ~~**N3**~~ | Bottennavet med egen hubbikon (22 px, inaktiva avfärgade, aktiv i färg på pastell). **Hamburgermenyn itererar `navHubs`** i stället för `navGroups`: fem grupper med hubbikon, hubbnamnet är länk till hubbsidan, undersidorna i en kolumn med `--c-accent`-linje, Översikt utan undersidor. `navGroups` ligger kvar i `navigation.ts` (exporteras som `navItems` via `layout/index.ts`) men har ingen renderande konsument längre | ✅ **Byggt 2026-09-10.** Toppraden på mobil är **inte** minskad till tre ikoner — avataren öppnar profilpanelen med Inställningar/Logga ut, och att flytta den kräver att hamburgermenyn tar över språkbytet; hör till N4 |
 | **N4** | Toppraden: fyra ikoner i stället för åtta (sök, notiser, Lykta, avatar); språk, tema, skanna och hjälp in i avatarmenyn; hjärtat blir en flik under Resurser. **Lykta-knappen** öppnar "Ett bra nästa steg" från alla sidor (återanvänder `nastaStegRegler.ts`) | `TopNav.tsx`, ny `NastaStegPopover` | M — kräver ark 0 |
 | **N5** | Rådgivarnas foto får 2 px ring i rådgivarens accent; Lugnare läge får Lykta under trädet (ark 22 cell 3) | `RadgivarPanel.tsx`, `LugnarePanel.tsx` | S — kräver ark 0 + 22 |
 

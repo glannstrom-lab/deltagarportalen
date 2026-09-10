@@ -172,10 +172,42 @@ describe('tillgänglighet', () => {
     for (const n of navs) expect(n.getAttribute('aria-label')).toBeTruthy()
   })
 
-  it('färgprickarna är dolda för skärmläsare', () => {
+  it('verktygsikonerna är dekorativa — tom alt och aria-hidden (N1, 2026-09-10)', () => {
+    // Fram till N1 stod en 6 px-prick framför varje undersida; nu står
+    // verktygets egen ikon där. Den bär ingen information som inte redan
+    // finns i länktexten, så den ska vara osynlig för skärmläsare.
     const { container } = rendera('/cv', SubNav)
-    const prickar = container.querySelectorAll('span[aria-hidden="true"]')
-    expect(prickar.length).toBeGreaterThan(0)
+    const ikoner = container.querySelectorAll('img[aria-hidden="true"]')
+    expect(ikoner.length).toBe(navHubs.find((h) => h.id === 'jobb')!.items.length)
+    for (const i of ikoner) expect(i.getAttribute('alt')).toBe('')
+  })
+})
+
+describe('ikoner och hubbfärg (spår N1, 2026-09-10)', () => {
+  it('rad 1 visar hubbens egen ikon före varje kategori', () => {
+    const { container } = rendera('/cv', HubNav)
+    const ikoner = [...container.querySelectorAll('a img')]
+    expect(ikoner.length).toBe(navHubs.length)
+    expect(ikoner.map((i) => i.getAttribute('src'))).toContain('/illustrations/icon-hub-jobb.webp')
+  })
+
+  it('den aktiva kategorin står på hubbens pastell, inaktiva ikoner är avfärgade', () => {
+    // `inline` är varianten TopBar använder i drift; `bar` markerar med en
+    // underkant i hubbfärg i stället för pastell.
+    rendera('/cv', () => <HubNav variant="inline" />)
+    const aktiv = screen.getByRole('link', { current: 'page' })
+    expect(aktiv.className).toContain('bg-[var(--c-bg)]')
+    expect(aktiv.querySelector('img')!.className).not.toContain('grayscale')
+    const inaktiv = screen.getAllByRole('link').find((l) => l.getAttribute('href') === '/karriar')!
+    expect(inaktiv.querySelector('img')!.className).toContain('grayscale')
+  })
+
+  it('rad 2: den aktiva undersidan står på pastell, och etiketten är inte monospace', () => {
+    rendera('/cv', SubNav)
+    const aktiv = screen.getByRole('link', { current: 'page' })
+    expect(aktiv.className).toContain('bg-[var(--c-bg)]')
+    const { container } = rendera('/oversikt', SubNav)
+    expect(container.querySelector('.font-mono')).toBeNull()
   })
 })
 
