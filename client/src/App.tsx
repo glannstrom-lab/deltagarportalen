@@ -1,6 +1,7 @@
-import { useEffect, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
+import { useAuthInit } from './hooks/useAuthInit'
 import { medReturnTo, safeReturnTo } from './lib/returnTo'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { Loader2 } from '@/components/ui/icons'
@@ -204,11 +205,18 @@ function RootRoute() {
 }
 
 function App() {
-  const { initialize, isLoading } = useAuthStore()
-
-  useEffect(() => {
-    initialize()
-  }, [initialize])
+  /**
+   * `useAuthInit` initierar auth OCH synkar inställningar, energinivå och
+   * senaste inloggning från molnet när användaren är inloggad. Fram till
+   * 2026-09-10 anropade App bara `initialize()` själv, och hooken hade ingen
+   * konsument — så `settingsStore.syncWithServer` kördes aldrig i drift:
+   * varje inställning sparades till `user_preferences` men lästes aldrig
+   * tillbaka, och på en ny enhet var allt default igen. Upptäckt när
+   * grafikstilen (sparad som 'action', verifierat i databasen) kom tillbaka
+   * som 'mjuk' vid ny inloggning. Samma väg bär `updateLastLogin`, så
+   * `last_login_at` skrevs aldrig heller.
+   */
+  const { isLoading } = useAuthInit()
 
   // Show loading screen while auth initializes
   if (isLoading) {

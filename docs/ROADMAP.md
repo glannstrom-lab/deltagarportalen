@@ -95,7 +95,21 @@ kan användaren själv välja i inställningar. mjuk är standard." Byggt: `graf
 `settingsStore` ('mjuk' | 'action'), väljare under Inställningar → Utseende → Grafik,
 `useOversiktBilder()` läser valet, filerna heter `scen-oversikt-<stil>.webp` och
 `spel-oversikt-<stil>-1..4.webp`. Sparas i molnet: `user_preferences.graphics_style`
-(migration `20260910_user_preferences_graphics_style.sql`, körd samma kväll). Alla kommande ark i
+(migration `20260910_user_preferences_graphics_style.sql`, körd samma kväll).
+
+**Fynd på vägen, allvarligt och lagat samma kväll: inställningarna lästes aldrig tillbaka
+från molnet.** Testet "välj Action, logga in i en ny webbläsare" gav mjuk fast databasraden
+stod på action. Orsak: `hooks/useAuthInit.ts` — hooken som synkar `settingsStore`,
+energinivån och `updateLastLogin` vid inloggning — hade **ingen anropare sedan `7faaf35f`
+(2026-03-01)**; App initierade auth själv. Alla inställningar i `user_preferences` (tema,
+lugnt läge, notiser, coach-tips …) sparades alltså men hämtades aldrig: en ny enhet fick
+default. Samma väg bär `last_login_at`, som därför aldrig skrevs — det förklarar
+konsulentvyns "senast inloggad"-fynd (2026-08-31). Fix: App monterar `useAuthInit()`; vakt i
+`useAuthInit.test.tsx` som både testar hooken och kräver att App anropar den (textvakt,
+eftersom det var monteringen som försvann). **Energisynken och `updateLastLogin` körs nu
+för första gången i drift** — håll ögonen på Sentry första dygnet.
+
+Alla kommande ark i
 `docs/BILDPROMPTER-SIDOR.md` genereras i **båda** stilarna: varje motiv får en mjuk och en
 action-variant med samma filnamn och stilsuffix.
 
