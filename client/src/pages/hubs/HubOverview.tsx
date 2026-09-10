@@ -114,7 +114,7 @@ function HubOverviewInner() {
       domain="action"
       showHeader={false}
       showTabs={false}
-      contentClassName="space-y-7"
+      contentClassName="space-y-6"
     >
       {/* 0. Konsulent/admin: vägen till arbetsytan.
           Renderar null för vanliga deltagare. Ligger först eftersom den som
@@ -123,20 +123,23 @@ function HubOverviewInner() {
           som man måste veta finns. Se RollGenvag.tsx. */}
       <RollGenvag />
 
-      {/* 1. Hero — minimal launchpad */}
       {/* 1. Hälsningen — komprimerad 2026-08-17 (steg 3).
           Hjälten var ~250 px hög med illustration, datumdisc och frågan
-          "Vad vill du göra idag?". Frågan besvaras numera av toppnavens två
-          rader och nyckeltalsremsan direkt under, så den upprepade sig.
-          Personaliseringen är kvar — DESIGN.md §1 punkt 4 säger att vi
-          använder namnet där vi har det. */}
+          "Vad vill du göra idag?". Frågan besvaras numera av nästa-steg-kortet
+          direkt under, så den upprepade sig. Personaliseringen är kvar —
+          DESIGN.md §1 punkt 4 säger att vi använder namnet där vi har det.
+
+          Datumet står som en mening i gemener ("torsdag 10 september"), inte i
+          versal monospace: det såg ut som terminalutdata, inte som en lugn
+          vän. På smala skärmar radbryts det under namnet i stället för att
+          trycka ihop rubriken till två rader. */}
       <motion.section
         initial="hidden"
         animate="visible"
         variants={heroVariants}
         transition={{ duration: 0.25 }}
         aria-labelledby="hero-greeting"
-        className="flex items-center gap-3"
+        className="flex flex-wrap items-center gap-x-3 gap-y-1"
       >
         {profileImageUrl ? (
           <img
@@ -152,36 +155,38 @@ function HubOverviewInner() {
             {initials ?? '·'}
           </span>
         )}
-        <h1 id="hero-greeting" className="text-[22px] sm:text-[26px] font-semibold tracking-tight m-0">
+        <h1 id="hero-greeting" className="text-[24px] sm:text-[28px] font-semibold tracking-tight m-0">
           {timeOfDayGreeting(today, t)}
-          {firstName ? `, ${firstName}` : ''}
+          {firstName ? ` ${firstName}` : ''}
         </h1>
-        <span className="ml-auto text-[12px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
+        <span className="basis-full sm:basis-auto sm:ml-auto pl-[52px] sm:pl-0 text-[15px] text-stone-500 dark:text-stone-400">
           {today.toLocaleDateString(datumSprak(i18n.language), { weekday: 'long', day: 'numeric', month: 'long' })}
         </span>
       </motion.section>
 
-      {/* 2. Instrumentpanelen (steg 3, 2026-08-17).
-          Hub-korten är borta: med den tvåradiga toppnaven upprepade de rad 1,
-          och sidan hämtade redan all data nedan utan att visa något av den.
-          Varje tal kommer ur useOversiktHubSummary — inget är påhittat, och
-          det som saknas visas som `—` med ett skäl (ROADMAP B31). */}
+      {/* 2. Innehållet i tre nivåer (2026-09-10): ett nästa steg, det som är
+          igång, och allt i portalen. Varje tal kommer ur useOversiktHubSummary
+          — inget är påhittat, och det som saknas visas som en invit, aldrig
+          som en nolla (ROADMAP B31). Se OversiktPanel.tsx. */}
       <OversiktPanel summary={summary} tillstand={tillstand} vidForsokIgen={refetch} />
 
       {/* 3. Väg in till hela historiken (G9, 2026-07-27).
           `/oversikt/historik` var routad men olänkad — sidan gick bara att nå
           via direktlänk. Medvetet lågmäld: en textlänk, ingen poängställning
-          och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar). */}
-      <section className="flex justify-center">
+          och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar).
+          Vänsterställd sedan 2026-09-10; centrerad flöt den i tomrummet. */}
+      <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-stone-500 dark:text-stone-400">
         <Link
           to="/oversikt/historik"
-          className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
+          className="inline-flex items-center gap-1.5 font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
         >
-          <CalendarDays size={14} aria-hidden="true" />
+          <CalendarDays size={15} aria-hidden="true" />
           {t('hubOverview.seeHistory', 'Se allt du har gjort')}
           <span aria-hidden="true">→</span>
         </Link>
-      </section>
+        <span aria-hidden="true" className="hidden sm:inline">·</span>
+        <span>{t('hubOverview.historyLead', 'Din historik i portalen, vecka för vecka.')}</span>
+      </p>
     </PageLayout>
   )
 }

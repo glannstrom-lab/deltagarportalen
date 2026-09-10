@@ -11835,7 +11835,6 @@
       "daysAgo_other": "{{count}} dagar sedan",
       "weeksAgo_one": "{{count}} vecka sedan",
       "weeksAgo_other": "{{count}} veckor sedan",
-      "longAgo": "för länge sedan",
       "loading": "hämtar …",
       "unknown": "kunde inte hämtas",
       "statusLoading": "Hämtar din översikt.",
@@ -11866,7 +11865,11 @@
         "offer": "erbjudande",
         "closed": "avslutade",
         "other": "övriga"
-      }
+      },
+      "inMonth": "i {{manad}}",
+      "inMonthYear": "{{manad}} {{ar}}",
+      "skillsSubFor": "mot {{jobb}}",
+      "allShort": "Allt"
     },
     "title": "Översikt",
     "goodMorning": "God morgon",
@@ -11911,7 +11914,89 @@
       "logged": "loggade",
       "wroteDiaryPrefix": "Du skrev i",
       "diary": "dagboken"
-    }
+    },
+    "nasta": {
+      "label": "Ett bra nästa steg",
+      "otherwise": "Om du hellre vill:",
+      "followUp": {
+        "title": "En arbetsgivare har inte svarat på din ansökan än",
+        "body_one": "Det har gått {{count}} dag. Ett kort mejl där du frågar hur det går visar intresse och brukar ge svar.",
+        "body_other": "Det har gått {{count}} dagar. Ett kort mejl där du frågar hur det går visar intresse och brukar ge svar.",
+        "cta": "Följ upp ansökan",
+        "short": "Följ upp ansökan som väntar på svar"
+      },
+      "spontaneous": {
+        "title": "Dags att höra av dig till ett företag igen",
+        "body": "Du har en uppföljning inplanerad för en spontanansökan. Ett kort meddelande räcker.",
+        "cta": "Öppna spontanansökan",
+        "short": "Följ upp en spontanansökan"
+      },
+      "event": {
+        "title": "Du har något inbokat: {{titel}}",
+        "bodyToday": "Det är i dag. Kolla tid och plats i kalendern.",
+        "bodyTomorrow": "Det är i morgon. Kolla tid och plats i kalendern.",
+        "cta": "Öppna kalendern",
+        "short": "Se vad som är inbokat"
+      },
+      "createCv": {
+        "title": "Börja med ditt CV",
+        "body": "Ett CV är grunden för allt annat här. Du kan ladda upp ett du redan har, eller bygga ett steg för steg.",
+        "cta": "Skapa ditt CV",
+        "short": "Skapa ditt CV"
+      },
+      "updateCv": {
+        "title": "Fyll på ditt CV",
+        "body": "Det senaste du ändrade var {{nar}}. Tio minuter räcker för att lägga till något nytt du gjort sedan dess.",
+        "cta": "Öppna ditt CV",
+        "short": "Fyll på ditt CV, det är från {{nar}}"
+      },
+      "firstJob": {
+        "title": "Hitta ett första jobb att söka",
+        "body": "Ditt CV finns. Nästa steg är att spara ett jobb som verkar rimligt. Du behöver inte söka det i dag.",
+        "cta": "Sök jobb",
+        "short": "Hitta ett första jobb att söka"
+      },
+      "firstLetter": {
+        "title": "Skriv ditt första personliga brev",
+        "body": "Du har jobb sparade. Ett brev till ett av dem går att bygga ur ditt CV.",
+        "cta": "Skriv brevet",
+        "short": "Skriv ditt första personliga brev"
+      },
+      "skills": {
+        "title": "Jämför ditt CV med ett drömjobb",
+        "body": "Kompetensanalysen visar vad som redan matchar och vad som saknas. Det tar några minuter.",
+        "cta": "Gör en kompetensanalys",
+        "short": "Jämför ditt CV med ett drömjobb"
+      },
+      "mood": {
+        "title": "Hur känns dagen?",
+        "body": "Att logga måendet tar en halv minut, och efter några veckor ser du vad som ger energi.",
+        "cta": "Logga hur du mår",
+        "short": "Logga hur dagen känns"
+      }
+    },
+    "pagar": {
+      "heading": "Det som är igång",
+      "applications": "Dina ansökningar",
+      "savedJobs_one": "sparat jobb",
+      "savedJobs_other": "sparade jobb",
+      "awaiting_one": "{{count}} väntar på svar",
+      "awaiting_other": "{{count}} väntar på svar",
+      "sentOn": "skickad {{datum}}",
+      "skills": "Din kompetensanalys",
+      "skillsDone": "Gjord {{nar}}",
+      "aiTeam": "Ditt AI-team",
+      "sessions_one": "samtal",
+      "sessions_other": "samtal",
+      "lastWith": "Senast med {{namn}}",
+      "mood": "Hur du mår",
+      "moodLogs_one": "loggning",
+      "moodLogs_other": "loggningar",
+      "moodLatest": "Senast {{nar}}",
+      "event": "Nästa i kalendern"
+    },
+    "hubsHeading": "Allt i portalen",
+    "historyLead": "Din historik i portalen, vecka för vecka."
   },
   "hubOverviewHistory": {
     "title": "Aktivitet",
@@ -12405,7 +12490,10 @@
     "faq": "Vanliga frågor",
     "moreTips": "{{count}} råd till",
     "panelLabel": "Råd för den här sidan",
-    "tipFrom": "Råd från {{namn}}"
+    "tipFrom": "Råd från {{namn}}",
+    "showMore_one": "{{count}} råd till",
+    "showMore_other": "{{count}} råd till",
+    "showLess": "Visa färre"
   },
   "network": {
     "description": "Bygg och underhåll ditt professionella kontaktnät",

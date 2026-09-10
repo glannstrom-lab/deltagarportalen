@@ -15,7 +15,7 @@
  */
 
 import { describe, it, expect, afterEach, vi } from 'vitest'
-import { render, screen, cleanup } from '@testing-library/react'
+import { render, screen, cleanup, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { useCallback, useMemo, useState } from 'react'
 import RadgivarPanel, { RadgivarTips } from './RadgivarPanel'
@@ -82,13 +82,18 @@ describe('infogat råd och kolumn upprepar inte varandra', () => {
     expect(screen.getAllByText(rad)).toHaveLength(1)
   })
 
-  it('kolumnen visar fortfarande sina övriga råd', () => {
+  it('kolumnen visar fortfarande sina övriga råd — ett i taget, resten bakom "råd till"', () => {
     const innehall = radgivareForPath(SIDA)!
     const tips = innehall.byCoach[innehall.coachIds[0]]!.tips
-    expect(tips.length).toBeGreaterThan(1)
+    expect(tips.length).toBeGreaterThan(2)
     rendera(true)
-    // Råd nummer två hör kolumnen till och ska inte försvinna med råd ett.
+    // Råd ett står i kortet. Kolumnen leder då med råd två — synligt direkt.
     expect(screen.getByText(tips[1])).toBeTruthy()
+    // Råd tre ligger bakom knappen (2026-09-10: ett råd i taget), men får
+    // inte försvinna: knappen ska finnas och visa det.
+    expect(screen.queryByText(tips[2])).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /råd till/i }))
+    expect(screen.getByText(tips[2])).toBeTruthy()
   })
 
   it('rådgivarens namn står kvar i kolumnen', () => {

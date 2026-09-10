@@ -32,6 +32,13 @@
  *
  * Innehållet kommer ur `data/coaches.ts` — samma källa som FAB:en använde.
  * Ingen text är omskriven, ingen är påhittad.
+ *
+ * ── Ett råd i taget (2026-09-10) ───────────────────────────────────────────
+ *
+ * En utfälld rådgivare visade alla sina tips, en FAQ-rubrik, frågorna och
+ * länkarna på en gång — tre stycken plus FAQ plus tre länkar på Översikt, och
+ * kolumnen blev längre än sidans innehåll. Nu säger rådgivaren EN sak; resten
+ * ligger bakom "N råd till". Länkarna står kvar synliga, de är vägen vidare.
  */
 
 import { useLayoutEffect, useState } from 'react'
@@ -143,6 +150,8 @@ export default function RadgivarPanel({
   const visadeRad = useVisadeTips()
   const forstaCoach = innehall?.coachIds?.[0] ?? null
   const [oppenCoach, setOppenCoach] = useState<CoachId | null>(iKolumn ? forstaCoach : null)
+  /** Vilken rådgivares övriga råd + FAQ som är utfällda. Nollställs vid sidbyte. */
+  const [merOppet, setMerOppet] = useState<CoachId | null>(null)
 
   /**
    * Nollställ vid sidbyte.
@@ -170,6 +179,7 @@ export default function RadgivarPanel({
   if (pathname !== senastePath) {
     setSenastePath(pathname)
     setOppenCoach(iKolumn ? forstaCoach : null)
+    setMerOppet(null)
   }
 
   if (!innehall || innehall.coachIds.length === 0) return null
@@ -191,6 +201,10 @@ export default function RadgivarPanel({
         // ihop, även om den är ensam, annars upprepar den det infogade rådet.
         const kanFallas = innehall.coachIds.length > 1 || !iKolumn
         const utfalld = oppenCoach === id || !kanFallas
+        const [forstaTips, ...flerTips] = kvarvarandeTips
+        const harFaq = !!c.faqs && c.faqs.length > 0
+        const finnsMer = flerTips.length > 0 || harFaq
+        const merUtfallt = merOppet === id
 
         return (
           <section
@@ -206,10 +220,10 @@ export default function RadgivarPanel({
             >
               <Avatar id={id} stor />
               <span className="min-w-0 flex-1">
-                <span className="block text-[13.5px] font-semibold text-stone-900 dark:text-stone-100">
+                <span className="block text-[14.5px] font-semibold text-stone-900 dark:text-stone-100">
                   {coach.name}
                 </span>
-                <span className="block text-[11.5px] text-stone-500 dark:text-stone-400 truncate">
+                <span className="block text-[13px] text-stone-500 dark:text-stone-400 truncate">
                   {coach.role}
                 </span>
               </span>
@@ -226,44 +240,68 @@ export default function RadgivarPanel({
 
             {utfalld && (
               <div className="px-3.5 pb-3.5 space-y-3">
-                {kvarvarandeTips.length > 0 && (
-                <ul className="space-y-2 m-0 p-0 list-none">
-                  {kvarvarandeTips.map((tip, i) => (
-                    <li
-                      key={i}
-                      className="text-[12.5px] leading-relaxed text-stone-700 dark:text-stone-300"
-                    >
-                      {tip}
-                    </li>
-                  ))}
-                </ul>
+                {forstaTips && (
+                  <p className="m-0 text-[14.5px] leading-relaxed text-stone-800 dark:text-stone-200">
+                    {forstaTips}
+                  </p>
                 )}
 
-                {c.faqs && c.faqs.length > 0 && (
-                  <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700">
-                    <p className="m-0 mb-1.5 text-[10px] font-mono uppercase tracking-wider text-stone-500 dark:text-stone-400">
-                      {t('radgivare.faq', 'Vanliga frågor')}
-                    </p>
-                    {c.faqs.map((f, i) => (
-                      <details key={i} className="group">
-                        <summary className="cursor-pointer list-none text-[12.5px] font-medium text-stone-800 dark:text-stone-200 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded">
-                          {f.question}
-                        </summary>
-                        <p className="mt-1 mb-2 text-[12px] leading-relaxed text-stone-600 dark:text-stone-400">
-                          {f.answer}
+                {finnsMer && (
+                  <button
+                    type="button"
+                    onClick={() => setMerOppet(merUtfallt ? null : id)}
+                    aria-expanded={merUtfallt}
+                    aria-controls={`radgivare-mer-${id}`}
+                    className="text-[13px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
+                  >
+                    {merUtfallt
+                      ? t('radgivare.showLess', 'Visa färre')
+                      : t('radgivare.showMore', { defaultValue: '{{count}} råd till', count: flerTips.length + (c.faqs?.length ?? 0) })}
+                  </button>
+                )}
+
+                {finnsMer && merUtfallt && (
+                  <div id={`radgivare-mer-${id}`} className="space-y-3">
+                    {flerTips.length > 0 && (
+                      <ul className="space-y-2 m-0 p-0 list-none">
+                        {flerTips.map((tip, i) => (
+                          <li
+                            key={i}
+                            className="text-[14px] leading-relaxed text-stone-700 dark:text-stone-300"
+                          >
+                            {tip}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {harFaq && (
+                      <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700">
+                        <p className="m-0 mb-1.5 text-[12.5px] font-semibold text-stone-500 dark:text-stone-400">
+                          {t('radgivare.faq', 'Vanliga frågor')}
                         </p>
-                      </details>
-                    ))}
+                        {c.faqs!.map((f, i) => (
+                          <details key={i} className="group">
+                            <summary className="cursor-pointer list-none text-[14px] font-medium text-stone-800 dark:text-stone-200 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded">
+                              {f.question}
+                            </summary>
+                            <p className="mt-1 mb-2 text-[13.5px] leading-relaxed text-stone-600 dark:text-stone-400">
+                              {f.answer}
+                            </p>
+                          </details>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
                 {c.links && c.links.length > 0 && (
-                  <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700 flex flex-wrap gap-2">
+                  <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700 flex flex-wrap gap-x-3 gap-y-1.5">
                     {c.links.map((l) => (
                       <Link
                         key={l.href}
                         to={l.href}
-                        className="text-[12px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] underline underline-offset-2"
+                        className="text-[13.5px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
                       >
                         {l.label}
                       </Link>

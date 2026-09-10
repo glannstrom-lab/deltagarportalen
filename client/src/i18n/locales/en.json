@@ -11835,7 +11835,6 @@
       "daysAgo_other": "{{count}} days ago",
       "weeksAgo_one": "{{count}} week ago",
       "weeksAgo_other": "{{count}} weeks ago",
-      "longAgo": "a long time ago",
       "loading": "loading …",
       "unknown": "could not be loaded",
       "statusLoading": "Loading your overview.",
@@ -11866,7 +11865,11 @@
         "offer": "offer",
         "closed": "closed",
         "other": "other"
-      }
+      },
+      "inMonth": "in {{manad}}",
+      "inMonthYear": "{{manad}} {{ar}}",
+      "skillsSubFor": "for {{jobb}}",
+      "allShort": "All"
     },
     "title": "Overview",
     "goodMorning": "Good morning",
@@ -11911,7 +11914,89 @@
       "logged": "logged",
       "wroteDiaryPrefix": "You wrote in",
       "diary": "your diary"
-    }
+    },
+    "nasta": {
+      "label": "A good next step",
+      "otherwise": "If you would rather:",
+      "followUp": {
+        "title": "An employer has not replied to your application yet",
+        "body_one": "It has been {{count}} day. A short email asking how it is going shows interest and usually gets a reply.",
+        "body_other": "It has been {{count}} days. A short email asking how it is going shows interest and usually gets a reply.",
+        "cta": "Follow up on the application",
+        "short": "Follow up on the application waiting for a reply"
+      },
+      "spontaneous": {
+        "title": "Time to contact a company again",
+        "body": "You have a follow-up planned for a spontaneous application. A short message is enough.",
+        "cta": "Open spontaneous applications",
+        "short": "Follow up on a spontaneous application"
+      },
+      "event": {
+        "title": "You have something booked: {{titel}}",
+        "bodyToday": "It is today. Check the time and place in the calendar.",
+        "bodyTomorrow": "It is tomorrow. Check the time and place in the calendar.",
+        "cta": "Open the calendar",
+        "short": "See what is booked"
+      },
+      "createCv": {
+        "title": "Start with your CV",
+        "body": "A CV is the base for everything else here. You can upload one you already have, or build one step by step.",
+        "cta": "Create your CV",
+        "short": "Create your CV"
+      },
+      "updateCv": {
+        "title": "Add to your CV",
+        "body": "Your last change was {{nar}}. Ten minutes is enough to add something new you have done since then.",
+        "cta": "Open your CV",
+        "short": "Add to your CV, it is from {{nar}}"
+      },
+      "firstJob": {
+        "title": "Find a first job to apply for",
+        "body": "Your CV is ready. The next step is to save a job that looks reasonable. You do not have to apply today.",
+        "cta": "Search for jobs",
+        "short": "Find a first job to apply for"
+      },
+      "firstLetter": {
+        "title": "Write your first cover letter",
+        "body": "You have saved jobs. A letter for one of them can be built from your CV.",
+        "cta": "Write the letter",
+        "short": "Write your first cover letter"
+      },
+      "skills": {
+        "title": "Compare your CV with a dream job",
+        "body": "The skills analysis shows what already matches and what is missing. It takes a few minutes.",
+        "cta": "Do a skills analysis",
+        "short": "Compare your CV with a dream job"
+      },
+      "mood": {
+        "title": "How does today feel?",
+        "body": "Logging how you feel takes half a minute, and after a few weeks you can see what gives you energy.",
+        "cta": "Log how you feel",
+        "short": "Log how today feels"
+      }
+    },
+    "pagar": {
+      "heading": "What is going on",
+      "applications": "Your applications",
+      "savedJobs_one": "saved job",
+      "savedJobs_other": "saved jobs",
+      "awaiting_one": "{{count}} waiting for a reply",
+      "awaiting_other": "{{count}} waiting for a reply",
+      "sentOn": "sent {{datum}}",
+      "skills": "Your skills analysis",
+      "skillsDone": "Done {{nar}}",
+      "aiTeam": "Your AI team",
+      "sessions_one": "conversation",
+      "sessions_other": "conversations",
+      "lastWith": "Last with {{namn}}",
+      "mood": "How you feel",
+      "moodLogs_one": "entry",
+      "moodLogs_other": "entries",
+      "moodLatest": "Last {{nar}}",
+      "event": "Next in the calendar"
+    },
+    "hubsHeading": "Everything in the portal",
+    "historyLead": "Your history in the portal, week by week."
   },
   "hubOverviewHistory": {
     "title": "Activity",
@@ -12405,7 +12490,10 @@
     "faq": "Frequently asked questions",
     "moreTips": "{{count}} more tips",
     "panelLabel": "Advice for this page",
-    "tipFrom": "Advice from {{namn}}"
+    "tipFrom": "Advice from {{namn}}",
+    "showMore_one": "{{count}} more tip",
+    "showMore_other": "{{count}} more tips",
+    "showLess": "Show fewer"
   },
   "network": {
     "description": "Build and maintain your professional network",

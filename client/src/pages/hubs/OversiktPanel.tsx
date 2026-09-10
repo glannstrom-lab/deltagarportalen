@@ -1,36 +1,37 @@
 /**
- * Översiktens fyra kategorier.  (Förslag A, 2026-08-18, beslut Mikael)
+ * Översiktens innehåll i tre nivåer.  (2026-09-10, beslut Mikael)
  *
- * Ersätter instrumentpanelen från 17 augusti — nyckeltalsremsa, "Fortsätt där
- * du var", pipelinekort, "Framöver", måendekurva och konsulentkort. Allt det
- * innehållet finns kvar, men sorterat under den kategori det hör till i stället
- * för utspritt över sex ytor. Skälet: samma fyra objekt visades i tre
- * representationer, och en deltagare möttes av tolv likvärdiga länkar utan
- * någon ordning.
+ *   1. Ett bra nästa steg   — ETT förslag, härlett ur egen data (`NastaSteg`)
+ *   2. Det som är igång     — upp till tre kort med riktigt innehåll (`Pagar`)
+ *   3. Allt i portalen      — de fyra kategorierna, kompakta (här nedan)
  *
- * ── Fyra regler som styrt varje rad ────────────────────────────────────────
+ * Före 2026-09-10 fanns bara nivå 3: sexton likadana rader i fyra kolumner,
+ * där "1 väntar på svar" vägde lika mycket som "Nätverk: lägg till en
+ * kontakt". Sidan tog inte ställning till något, och det närmaste ett förslag
+ * kom var rådgivarens allmänna text i sidokolumnen. Skärmbilder och motivering
+ * i designförslaget som ledde till beslutet (artifakten "Översikt med
+ * riktning").
+ *
+ * Kategorierna (nivå 3) ersatte i sin tur instrumentpanelen från 17 augusti
+ * (Förslag A, 2026-08-18). Reglerna som styrde dem gäller fortfarande, i alla
+ * tre nivåerna:
  *
  * 1. **Ingen siffra utan underlag** (ROADMAP B31). En rad utan data visar en
- *    INVIT — "skriv ditt första" — aldrig `0`, aldrig ett tankstreck, aldrig
- *    ett påhittat exempel. Nollan är det värsta av de tre: den ser ut som ett
- *    resultat.
- *
+ *    INVIT — aldrig `0`, aldrig ett tankstreck, aldrig ett påhittat exempel.
  * 2. **Laddning och fel är inte tomhet.** Innan svaret är inne får ingen rad
- *    påstå något om användaren. Se `PanelTillstand`.
+ *    påstå något om användaren. Se `PanelTillstand`. Nivå 1 och 2 ritas inte
+ *    alls förrän läget är `klart`.
+ * 3. **Inga prestationsmätningar** (DESIGN.md §1). Talen beskriver vad som
+ *    FINNS, aldrig hur väl man presterar. Ingen rad blir röd för ett lågt tal.
+ *    Därför är också "för länge sedan" borta: en tidsangivelse i förebrående
+ *    form hjälper ingen att öppna sitt CV. Nu står "i maj" eller "maj 2025".
+ * 4. **En kategori = en hubbfärg** via `data-domain`, aldrig en hårdkodad
+ *    hub-token (`lint:design`). Fyra pasteller bredvid varandra är Översiktens
+ *    uttryckliga undantag i DESIGN.md §4.
  *
- * 3. **Inga prestationsmätningar i hjälteposition** (DESIGN.md §1). Talen
- *    beskriver vad som FINNS ("5 jobb du följer"), aldrig hur väl man
- *    presterar mot ett mål. Ingen rad blir röd för att ett tal är lågt.
- *
- * 4. **En kategori = en hubbfärg.** Färgen sätts med `data-domain` på
- *    kolumnen, så `--c-bg`/`--c-solid`/`--c-text` löser ut per kategori. Aldrig
- *    en hårdkodad hub-token — grinden `lint:design` fäller det. Att fyra
- *    pasteller får stå bredvid varandra är Översiktens uttryckliga undantag i
- *    DESIGN.md §4, och de sitter bara i kolumnhuvudet och radernas strimma.
- *
- * Verktygsraderna speglar `navHubs[].items` i navigation.ts, men listar inte
- * alla — bara de fyra som har något att säga om just den här användaren, plus
- * en fot till hubben där resten finns.
+ * Typografin gick upp ett steg i samma ändring (radrubrik 13 → 14,5 px,
+ * underrad 11,5 → 13 px) och monospace-stämplarna försvann. Målgruppen är den
+ * som helst behöver större text, inte mindre.
  */
 
 import { Link } from 'react-router-dom'
@@ -39,6 +40,9 @@ import type { TFunction } from 'i18next'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
 import { datumSprak } from '@/lib/datumsprak'
+import NastaSteg from './NastaSteg'
+import Pagar from './Pagar'
+import { narText } from './oversiktTid'
 
 /**
  * Vad panelen vet just nu.
@@ -60,16 +64,16 @@ interface Rad {
   titel: string
   /** Under titeln. Bär antingen ett faktum eller en invit — aldrig en nolla. */
   under: string
-  /** Tal eller relativ tid till höger. `null` när raden är en ingång eller invit. */
+  /** Tal eller tidsangivelse till höger. `null` när raden är en ingång eller invit. */
   varde?: string | null
   till: string
   /**
    * Bär raden ett faktum om just den här användaren?
    *
-   * Styr strimmans färg: hubbfärg när det finns något, grå när raden är en
-   * invit eller en ren ingång. Det är den enda visuella skillnaden mellan
-   * "du har gjort det här" och "det här finns att göra" — och den behövs, för
-   * annars läses fyra rader som fyra ogjorda uppgifter.
+   * Styr hela radens vikt: titel i full färg och värde i hubbfärg när det
+   * finns något; dämpad titel och en pil när raden är en invit. Det är
+   * skillnaden mellan "du har gjort det här" och "det här finns att göra" —
+   * utan den läses fyra rader som fyra ogjorda uppgifter.
    */
   harData: boolean
 }
@@ -79,12 +83,9 @@ interface Kategori {
   /** Sätts som `data-domain` → styr --c-* för hela kolumnen. */
   domain: 'activity' | 'coaching' | 'info' | 'wellbeing'
   namn: string
-  /** Kort status i kolumnhuvudet. `null` när det inte finns något att säga. */
-  bricka: string | null
   rader: Rad[]
   /** Hubben där resten av kategorins verktyg finns. */
   till: string
-  fotText: string
 }
 
 /** Kortar fritext vid ordgräns så en rad inte spränger layouten. */
@@ -94,23 +95,6 @@ function kortaTitel(text: string, max = 38): string {
   const kap = t.slice(0, max)
   const brytpunkt = kap.lastIndexOf(' ')
   return (brytpunkt > max * 0.5 ? kap.slice(0, brytpunkt) : kap).replace(/[\s,.;:–—-]+$/, '') + '…'
-}
-
-function dagarSedan(iso: string | null | undefined): number | null {
-  if (!iso) return null
-  const d = new Date(iso)
-  if (isNaN(d.getTime())) return null
-  return Math.floor((Date.now() - d.getTime()) / 86_400_000)
-}
-
-function narText(iso: string | null | undefined, t: TFunction): string | null {
-  const d = dagarSedan(iso)
-  if (d === null) return null
-  if (d <= 0) return t('hubOverview.panel.today', 'i dag')
-  if (d === 1) return t('hubOverview.panel.yesterday', 'i går')
-  if (d < 7) return t('hubOverview.panel.daysAgo', { defaultValue: '{{count}} dagar sedan', count: d })
-  if (d < 30) return t('hubOverview.panel.weeksAgo', { defaultValue: '{{count}} veckor sedan', count: Math.floor(d / 7) })
-  return t('hubOverview.panel.longAgo', 'för länge sedan')
 }
 
 /**
@@ -174,7 +158,7 @@ function byggKategorier(
   // ── Söka jobb ────────────────────────────────────────────────────────────
   const appsTotalt = jobsok?.applicationStats?.total ?? 0
   const appsMening = pipelineMening(jobsok?.applicationStats?.segments, t)
-  const cvNar = narText(jobsok?.cv?.updated_at, t)
+  const cvNar = narText(jobsok?.cv?.updated_at, t, sprak)
   const brev = jobsok?.coverLetters?.length ?? 0
   const ovningar = jobsok?.interviewSessions?.length ?? 0
 
@@ -182,9 +166,7 @@ function byggKategorier(
     id: 'jobb',
     domain: 'activity',
     namn: t('nav.hubs.jobb', 'Söka jobb'),
-    bricka: okant || appsTotalt === 0 ? null : t('hubOverview.panel.badgeActive', { defaultValue: '{{count}} aktiva', count: appsTotalt }),
     till: '/jobb',
-    fotText: t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: t('nav.hubs.jobb', 'Söka jobb') }),
     rader: [
       rad({
         titel: t('hubOverview.panel.pipeline', 'Dina ansökningar'),
@@ -219,23 +201,25 @@ function byggKategorier(
 
   // ── Karriär ──────────────────────────────────────────────────────────────
   const analys = karriar?.latestSkillsAnalysis ?? null
-  const analysNar = narText(analys?.created_at, t)
+  const analysNar = narText(analys?.created_at, t, sprak)
   const varumarke = karriar?.latestBrandAudit ?? null
-  const malUppdaterat = narText(karriar?.careerGoals?.updatedAt, t)
+  const malUppdaterat = narText(karriar?.careerGoals?.updatedAt, t, sprak)
 
   const karriarKat: Kategori = {
     id: 'karriar',
     domain: 'coaching',
     namn: t('nav.hubs.karriar', 'Karriär'),
-    bricka: okant || !analys ? null : t('hubOverview.panel.badgeAnalysis', '1 analys'),
     till: '/karriar',
-    fotText: t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: t('nav.hubs.karriar', 'Karriär') }),
     rader: [
+      // Titeln är verktygets namn; drömjobbet står på underraden. Fram till
+      // 2026-09-10 hette raden "Kompetenser mot <annonstitel>", och eftersom
+      // fältet i prod ibland är en hel jobbannons blev det "Kompetenser mot
+      // Vi söker en lagermeda…" — annonsen läckte in i rubriken.
       rad({
-        titel: analys
-          ? t('hubOverview.panel.skillsFor', { defaultValue: 'Kompetenser mot {{jobb}}', jobb: kortaTitel(analys.dream_job) })
-          : t('hubOverview.panel.skillsGap', 'Kompetensanalys'),
-        under: analys ? t('hubOverview.panel.skillsSub', 'Din senaste analys') : t('hubOverview.panel.skillsInvite', 'jämför ditt CV med ett drömjobb'),
+        titel: t('hubOverview.panel.skillsGap', 'Kompetensanalys'),
+        under: analys
+          ? t('hubOverview.panel.skillsSubFor', { defaultValue: 'mot {{jobb}}', jobb: kortaTitel(analys.dream_job) })
+          : t('hubOverview.panel.skillsInvite', 'jämför ditt CV med ett drömjobb'),
         varde: analysNar,
         till: '/skills-gap-analysis',
         harData: !!analys,
@@ -250,7 +234,7 @@ function byggKategorier(
       rad({
         titel: t('hubOverview.panel.brand', 'Personligt varumärke'),
         under: varumarke ? t('hubOverview.panel.brandSub', 'senaste genomgången') : t('hubOverview.panel.brandInvite', 'inte påbörjat'),
-        varde: narText(varumarke?.created_at, t),
+        varde: narText(varumarke?.created_at, t, sprak),
         till: '/personal-brand',
         harData: !!varumarke,
       }),
@@ -277,10 +261,15 @@ function byggKategorier(
     id: 'resurser',
     domain: 'info',
     namn: t('nav.hubs.resurser', 'Resurser'),
-    bricka: okant || lasta === 0 ? null : t('hubOverview.panel.badgeRead', { defaultValue: '{{count}} lästa', count: lasta }),
     till: '/resurser',
-    fotText: t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: t('nav.hubs.resurser', 'Resurser') }),
     rader: [
+      rad({
+        titel: t('hubOverview.panel.aiTeam', 'Ditt AI-team'),
+        under: aiSessioner > 0 ? t('hubOverview.panel.aiTeamSub', 'samtal du haft') : t('hubOverview.panel.aiTeamInvite', 'fem att fråga'),
+        varde: aiSessioner > 0 ? String(aiSessioner) : null,
+        till: '/ai-team',
+        harData: aiSessioner > 0,
+      }),
       rad({
         titel: t('hubOverview.panel.knowledgeBase', 'Kunskapsbank'),
         under: lasta > 0 ? t('hubOverview.panel.knowledgeSub', 'artiklar du läst') : t('hubOverview.panel.knowledgeInvite', 'sök svar på en fråga'),
@@ -296,13 +285,6 @@ function byggKategorier(
         harData: egnaSaker > 0,
       }),
       rad({
-        titel: t('hubOverview.panel.aiTeam', 'Ditt AI-team'),
-        under: aiSessioner > 0 ? t('hubOverview.panel.aiTeamSub', 'samtal du haft') : t('hubOverview.panel.aiTeamInvite', 'fem att fråga'),
-        varde: aiSessioner > 0 ? String(aiSessioner) : null,
-        till: '/ai-team',
-        harData: aiSessioner > 0,
-      }),
-      rad({
         titel: t('hubOverview.panel.network', 'Nätverk'),
         under: kontakter > 0 ? t('hubOverview.panel.networkSub', 'kontakter') : t('hubOverview.panel.networkInvite', 'lägg till en kontakt'),
         varde: kontakter > 0 ? String(kontakter) : null,
@@ -313,7 +295,7 @@ function byggKategorier(
   }
 
   // ── Din vardag ───────────────────────────────────────────────────────────
-  const dagbokNar = narText(vardag?.latestDiaryEntry?.created_at, t)
+  const dagbokNar = narText(vardag?.latestDiaryEntry?.created_at, t, sprak)
   const mood = vardag?.recentMoodLogs ?? []
   const nastaHandelse = vardag?.upcomingEvents?.[0] ?? null
   const konsulent = vardag?.consultant ?? null
@@ -322,20 +304,8 @@ function byggKategorier(
     id: 'vardag',
     domain: 'wellbeing',
     namn: t('nav.hubs.min-vardag', 'Din vardag'),
-    bricka:
-      okant || !konsulent
-        ? null
-        : konsulent.full_name ?? t('hubOverview.panel.consultantUnnamed', 'Din konsulent'),
     till: '/min-vardag',
-    fotText: t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: t('nav.hubs.min-vardag', 'Din vardag') }),
     rader: [
-      rad({
-        titel: t('hubOverview.panel.diary', 'Din dagbok'),
-        under: dagbokNar ? t('hubOverview.panel.diarySub', 'Senaste anteckningen') : t('hubOverview.panel.diaryInvite', 'skriv några rader'),
-        varde: dagbokNar,
-        till: '/diary',
-        harData: !!dagbokNar,
-      }),
       rad({
         titel: t('hubOverview.panel.mood', 'Hur du mår'),
         under:
@@ -345,6 +315,13 @@ function byggKategorier(
         varde: mood.length > 0 ? String(mood.length) : null,
         till: '/wellness',
         harData: mood.length > 0,
+      }),
+      rad({
+        titel: t('hubOverview.panel.diary', 'Din dagbok'),
+        under: dagbokNar ? t('hubOverview.panel.diarySub', 'Senaste anteckningen') : t('hubOverview.panel.diaryInvite', 'skriv några rader'),
+        varde: dagbokNar,
+        till: '/diary',
+        harData: !!dagbokNar,
       }),
       rad({
         titel: t('hubOverview.panel.calendar', 'Kalender'),
@@ -387,7 +364,7 @@ export default function OversiktPanel({
   const kategorier = byggKategorier(summary, t, tillstand, datumSprak(i18n.language))
 
   return (
-    <div className="space-y-4" aria-busy={laddar || undefined}>
+    <div className="space-y-7" aria-busy={laddar || undefined}>
       {/* WCAG 4.1.3: talen byts ut när svaret kommer. Utan en levande region
           hände det tyst för den som inte ser skärmen. */}
       <p role="status" aria-live="polite" className="sr-only">
@@ -400,7 +377,7 @@ export default function OversiktPanel({
 
       {fel && (
         <section className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 px-4 py-3.5">
-          <p className="m-0 text-[13.5px] text-stone-700 dark:text-stone-200">
+          <p className="m-0 text-[15px] text-stone-700 dark:text-stone-200">
             {t(
               'hubOverview.panel.errorBody',
               'Vi kunde inte hämta dina uppgifter just nu. Det är portalen som strular — inget du har gjort.'
@@ -410,7 +387,7 @@ export default function OversiktPanel({
             <button
               type="button"
               onClick={vidForsokIgen}
-              className="mt-2.5 rounded-lg bg-[var(--c-solid)] px-3 py-1.5 text-[13px] font-medium text-white transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
+              className="mt-2.5 rounded-lg bg-[var(--c-solid)] px-3.5 py-2 text-[14px] font-medium text-[var(--c-on-solid)] transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
             >
               {t('hubOverview.panel.retry', 'Försök igen')}
             </button>
@@ -418,95 +395,107 @@ export default function OversiktPanel({
         </section>
       )}
 
-      {/*
-        Ett enda rutnät med delad hårlinje: `gap-px` på en stone-200-yta, som
-        nyckeltalsremsan gjorde före omläggningen. Fyra kolumner på lg, två på
-        sm, en på telefon — i ordningen Söka jobb, Karriär, Resurser, Din vardag.
-      */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px rounded-xl overflow-hidden border border-stone-200 dark:border-stone-700 bg-stone-200 dark:bg-stone-700">
-        {kategorier.map((kat) => (
-          <section
-            key={kat.id}
-            data-domain={kat.domain}
-            aria-labelledby={`kat-${kat.id}`}
-            className="bg-white dark:bg-stone-900 flex flex-col"
-          >
-            <div className="flex items-center gap-2 px-3 py-2.5 border-b border-stone-200 dark:border-stone-700 bg-[var(--c-bg)]">
-              {HUB_ICON_SRC[kat.domain] && (
-                <img
-                  src={HUB_ICON_SRC[kat.domain]}
-                  alt=""
-                  aria-hidden="true"
-                  loading="lazy"
-                  className="w-[22px] h-[22px] object-contain shrink-0"
-                />
-              )}
-              <h2
-                id={`kat-${kat.id}`}
-                className="m-0 text-[13.5px] font-semibold tracking-tight text-stone-900 dark:text-stone-100"
-              >
-                {kat.namn}
-              </h2>
-              {kat.bricka && (
-                <span className="ml-auto shrink-0 rounded bg-white/80 dark:bg-stone-900/60 px-1.5 py-0.5 text-[10.5px] font-mono text-[var(--c-text)] max-w-[52%] truncate">
-                  {kat.bricka}
-                </span>
-              )}
-            </div>
+      {/* 1. Ett bra nästa steg — ritas bara när läget är klart och ett villkor
+          är uppfyllt. Se nastaStegRegler.ts. */}
+      <NastaSteg summary={summary} tillstand={tillstand} />
 
-            <ul className="m-0 p-0 list-none">
-              {kat.rader.map((r) => (
-                <li key={r.till} className="border-b border-stone-100 dark:border-stone-800">
-                  <Link
-                    to={r.till}
-                    className="flex items-center gap-2.5 px-3 py-2 hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-solid)] no-underline"
-                  >
-                    {/* Färgad strimma = raden bär ett faktum om dig. Grå = en
-                        väg in. Skillnaden gör att fyra rader inte läses som
-                        fyra ogjorda uppgifter. */}
-                    <span
-                      aria-hidden="true"
-                      className={
-                        r.harData
-                          ? 'w-[3px] self-stretch min-h-[26px] rounded-full shrink-0 bg-[var(--c-solid)]'
-                          : 'w-[3px] self-stretch min-h-[26px] rounded-full shrink-0 bg-stone-200 dark:bg-stone-700'
-                      }
-                    />
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[13px] font-medium text-stone-900 dark:text-stone-100 truncate">
-                        {r.titel}
-                      </span>
-                      <span className="block text-[11.5px] leading-snug text-stone-500 dark:text-stone-400 truncate">
-                        {r.under}
-                      </span>
-                    </span>
-                    {/* B31: raden visar ett tal bara när det finns ett. Ingen
-                        nolla, inget tankstreck — underraden bär beskedet. */}
-                    {r.varde && (
-                      <span
-                        className={
-                          /^\d+$/.test(r.varde)
-                            ? 'shrink-0 text-[15px] font-semibold tabular-nums text-stone-900 dark:text-stone-100'
-                            : 'shrink-0 text-[10.5px] font-mono text-stone-400 dark:text-stone-500'
-                        }
-                      >
-                        {r.varde}
-                      </span>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+      {/* 2. Det som är igång — bara det som har underlag. */}
+      <Pagar summary={summary} tillstand={tillstand} />
 
-            <Link
-              to={kat.till}
-              className="mt-auto block px-3 py-2 border-t border-stone-200 dark:border-stone-700 text-[12px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:bg-[var(--c-bg)]"
+      {/* 3. Allt i portalen — fyra kompakta kort med hubbfärg i huvudet. */}
+      <section aria-labelledby="hubbar-rubrik">
+        <h2
+          id="hubbar-rubrik"
+          className="m-0 mb-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
+        >
+          {t('hubOverview.hubsHeading', 'Allt i portalen')}
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+          {kategorier.map((kat) => (
+            <section
+              key={kat.id}
+              data-domain={kat.domain}
+              aria-labelledby={`kat-${kat.id}`}
+              className="flex min-w-0 flex-col rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 overflow-hidden"
             >
-              {kat.fotText} <span aria-hidden="true">→</span>
-            </Link>
-          </section>
-        ))}
-      </div>
+              <div className="flex items-center gap-2.5 px-3.5 py-2.5 border-b border-stone-200 dark:border-stone-700">
+                {HUB_ICON_SRC[kat.domain] && (
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-[var(--c-bg)]">
+                    <img
+                      src={HUB_ICON_SRC[kat.domain]}
+                      alt=""
+                      aria-hidden="true"
+                      loading="lazy"
+                      className="h-[18px] w-[18px] object-contain"
+                    />
+                  </span>
+                )}
+                <h3
+                  id={`kat-${kat.id}`}
+                  className="m-0 min-w-0 flex-1 truncate text-[15px] font-semibold tracking-tight text-stone-900 dark:text-stone-100"
+                >
+                  {kat.namn}
+                </h3>
+                {/* Kort synlig text ("Allt →") så kortets rubrik inte klipps
+                    vid 1280 px; hela frasen ligger i aria-label. */}
+                <Link
+                  to={kat.till}
+                  aria-label={t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: kat.namn })}
+                  className="shrink-0 text-[13px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
+                >
+                  {t('hubOverview.panel.allShort', 'Allt')} <span aria-hidden="true">→</span>
+                </Link>
+              </div>
+
+              <ul className="m-0 list-none p-0 py-1">
+                {kat.rader.map((r) => (
+                  <li key={r.till}>
+                    <Link
+                      to={r.till}
+                      className="flex items-center gap-3 px-3.5 py-2 hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-solid)] no-underline"
+                    >
+                      <span className="min-w-0 flex-1">
+                        <span
+                          className={
+                            r.harData
+                              ? 'block truncate text-[14.5px] font-medium text-stone-900 dark:text-stone-100'
+                              : 'block truncate text-[14.5px] font-medium text-stone-600 dark:text-stone-400'
+                          }
+                        >
+                          {r.titel}
+                        </span>
+                        <span className="block truncate text-[13px] leading-snug text-stone-500 dark:text-stone-400">
+                          {r.under}
+                        </span>
+                      </span>
+                      {/* B31: raden visar ett tal bara när det finns ett. Ingen
+                          nolla, inget tankstreck — underraden bär beskedet.
+                          En invit får en pil: den är en väg in, inte ett resultat. */}
+                      {r.varde ? (
+                        <span
+                          className={
+                            /^\d+$/.test(r.varde)
+                              ? 'shrink-0 text-[15px] font-semibold tabular-nums text-[var(--c-text)] dark:text-[var(--c-solid)]'
+                              : 'shrink-0 text-[13px] text-stone-500 dark:text-stone-400'
+                          }
+                        >
+                          {r.varde}
+                        </span>
+                      ) : (
+                        !r.harData && (
+                          <span aria-hidden="true" className="shrink-0 text-stone-400 dark:text-stone-500">
+                            →
+                          </span>
+                        )
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }

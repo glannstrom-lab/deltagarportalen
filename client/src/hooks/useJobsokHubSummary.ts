@@ -8,7 +8,7 @@ import type { ApplicationStatus } from '@/types/application.types'
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
 
-type AppRow = { status: string; archivedAt: string | null }
+type AppRow = { status: string; archivedAt: string | null; applicationDate?: string | null }
 type SponRow = { id: string; followup_date: string | null; status: string }
 
 // Statusar där uppföljning inte längre är aktuell (speglar useSpontaneousCompanies)
@@ -84,7 +84,16 @@ function buildApplicationStats(allRows: AppRow[]) {
     .reduce((n, [, c]) => n + c, 0)
   if (övriga > 0) segments.push({ key: 'other', count: övriga })
 
-  return { total: rows.length, byStatus, segments }
+  // Äldsta datumet bland dem som väntar på svar. Rader utan datum hoppas
+  // över — en gissning om "hur länge" är värre än inget alls (B31).
+  const vantar = SEGMENTGRUPPER.find(g => g.key === 'awaiting')!.statusar as string[]
+  const awaitingSince =
+    rows
+      .filter(r => vantar.includes(r.status) && r.applicationDate)
+      .map(r => r.applicationDate as string)
+      .sort()[0] ?? null
+
+  return { total: rows.length, byStatus, segments, awaitingSince }
 }
 
 export function useJobsokHubSummary() {

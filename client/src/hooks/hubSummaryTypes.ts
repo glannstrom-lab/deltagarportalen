@@ -21,6 +21,13 @@ export interface JobsokSummary {
      * här i datalagret och kunde därför aldrig översättas.
      */
     segments: Array<{ key: string; count: number; deEmphasized?: boolean }>
+    /**
+     * Ansökningsdatum för den ÄLDSTA ansökan som väntar på svar (status
+     * applied/screening), eller null när ingen väntar eller ingen av dem har
+     * ett datum. Bär Översiktens nästa-steg-kort: "följ upp" föreslås bara
+     * när det gått minst en vecka, och utan datum föreslås det inte alls.
+     */
+    awaitingSince: string | null
   }
   spontaneousCount: number
   /** Kommande uppföljningar för spontanansökningar (30 dagar framåt) */

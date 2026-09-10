@@ -566,19 +566,26 @@ export const applicationsApi = {
    * Finns för att de tidigare gjorde egna `.from('saved_jobs')` runt servicelagret.
    * Returnerar status i GEMENER — anroparen ska aldrig behöva veta hur det lagras.
    */
-  async getStatusRows(): Promise<Array<{ status: ApplicationStatus; archivedAt: string | null }>> {
+  async getStatusRows(): Promise<
+    Array<{ status: ApplicationStatus; archivedAt: string | null; applicationDate: string | null }>
+  > {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // `application_date`, inte `applied_at`: det senare skrivs aldrig
+    // (0 av 23 rader i prod 2026-09-10). Datumet bär Översiktens
+    // nästa-steg-kort — "en ansökan har väntat på svar i en vecka" — och
+    // saknas det säger kortet ingenting om tid.
     const { data, error } = await supabase
       .from('saved_jobs')
-      .select('status, archived_at')
+      .select('status, archived_at, application_date')
       .eq('user_id', user.id)
 
     if (error) handleError(error)
     return (data || []).map(r => ({
       status: ((r.status as string) || 'saved').toLowerCase() as ApplicationStatus,
       archivedAt: (r.archived_at as string | null) ?? null,
+      applicationDate: (r.application_date as string | null) ?? null,
     }))
   },
 

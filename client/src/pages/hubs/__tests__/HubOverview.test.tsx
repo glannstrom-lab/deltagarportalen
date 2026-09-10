@@ -81,8 +81,9 @@ describe('HubOverview — fyra kategorier (förslag A, 2026-08-18)', () => {
   it('visar de fyra kategorierna med innehåll under varje', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
+    // Nivå 3 sedan 2026-09-10: de fyra ligger under h2 "Allt i portalen".
     for (const rubrik of ['Söka jobb', 'Karriär', 'Resurser', 'Din vardag']) {
-      expect(screen.getByRole('heading', { level: 2, name: rubrik })).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 3, name: rubrik })).toBeInTheDocument()
     }
     // Innehåll, inte bara rubriker: raderna pekar på verktygen.
     for (const rad of ['Dina ansökningar', 'Ditt CV', 'Din dagbok', 'Kunskapsbank']) {

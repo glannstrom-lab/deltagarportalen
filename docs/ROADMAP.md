@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-09-08** (passering: 20 poster ur genomgången 7 september avbetalda av åtta agenter — tre premisser föll, tre migrationer väntar på ja; se avsnittet "Passering 2026-09-08"), byggd på **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-09-10** (Översikt byggd om i tre nivåer efter designförslag, och beslutet om **spår P — premium 99 kr/mån via Stripe**; se avsnitten direkt nedan), byggd på **2026-09-08** (passering: 20 poster ur genomgången 7 september avbetalda av åtta agenter — tre premisser föll, tre migrationer väntar på ja; se avsnittet "Passering 2026-09-08"), byggd på **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -15,6 +15,92 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Ändring 2026-09-10 — Översikt i tre nivåer, och beslutet om premium
+
+> **Beslut Mikael 2026-09-10, efter designförslaget "Översikt med riktning"** (byggt på
+> skärmbilder av jobin.se i fem lägen: 1280, 1440, 1920, mobil, mörkt). Sidan visade sexton
+> likadana rader i fyra kolumner och tog inte ställning till något: "1 väntar på svar" vägde
+> lika mycket som "Nätverk: lägg till en kontakt". Typografin var 13 / 11,5 / 10,5 px med
+> tidsstämplar i monospace, "för länge sedan" stod tre gånger på samma skärm, rådgivaren
+> förklarade sidans uppbyggnad i sidokolumnen, och halva skärmhöjden var tom på allt över
+> 1280 px.
+
+**Byggt och verifierat (dev-server + testkontot, fem lägen; `npm run verify` grön, 210 testfiler):**
+
+| Nivå | Vad | Var |
+|---|---|---|
+| 1 | **Ett bra nästa steg** — ett förslag + två alternativ, härlett ur egen data. Nio kandidater i fallande angelägenhet (följ upp ansökan ≥ 7 dagar, spontanuppföljning inom 3 dagar, händelse i dag/i morgon, skapa CV, CV ≥ 90 dagar, första jobbet, första brevet, kompetensanalys, mående ≥ 7 dagar). Ritas bara i läget `klart` och bara när ett villkor är uppfyllt | `pages/hubs/nastaStegRegler.ts` (ren logik, 16 tester), `NastaSteg.tsx` |
+| 2 | **Det som är igång** — upp till tre kort med underlag (ansökningar, kompetensanalys, AI-team, mående, nästa händelse). Sektionen renderas inte alls utan underlag | `pages/hubs/Pagar.tsx` |
+| 3 | **Allt i portalen** — de fyra hubbkorten, kompakta: h3 under en h2, radrubrik 14,5 px, underrad 13 px, värde i hubbfärg, inviter dämpade med pil | `pages/hubs/OversiktPanel.tsx` |
+
+**Rättelser mot förra versionen:**
+- `saved_jobs.applied_at` är död (0 av 23 rader, mätt 2026-09-10); "följ upp"-kandidaten läser
+  `application_date` (2 av 3 skickade har det). `getStatusRows()` returnerar nu
+  `applicationDate`, och `JobsokSummary.applicationStats` bär `awaitingSince` = äldsta datum
+  bland applied/screening. Saknas datum föreslås ingen uppföljning — ingen gissning om tid.
+- i18n-nyckeln `hubOverview.panel.longAgo` är **borttagen** i båda språken. Tidsorden bor i
+  `pages/hubs/oversiktTid.ts`: i dag · i går · N dagar sedan · N veckor sedan · i maj · maj 2025.
+- Kompetensraden hette "Kompetenser mot <annonstitel>" och läckte hela annonsen in i rubriken.
+  Nu: titeln är verktygets namn, drömjobbet står kortat på underraden.
+- Datumet i hälsningsraden står i gemener som en mening, inte versal monospace; på mobil
+  bryts det under namnet i stället för att trycka ihop rubriken.
+- Rådgivarkolumnen (`RadgivarPanel.tsx`, alla sidor) visar **ett** råd; resten + FAQ ligger
+  bakom "N råd till". Länkarna står kvar synliga. Rådet "Sidan är delad i fyra …" är struket ur
+  `coaches.ts` — ett råd som förklarar gränssnittet är en manual, och det hade redan rättats
+  en gång (2026-08-18) när layouten ändrades under det.
+- Hubbkortens rubriker är **h3** (h2 = de tre sektionsrubrikerna). Testerna som sökte
+  `level: 2` är omskrivna, inte sänkta.
+
+**Sett på vägen, inte åtgärdat:** samtyckesmodalen för konsulenten låg över hela Översikt vid
+inloggning och började ovanför skärmkanten på mobil så rubriken inte syntes (se MB-posterna
+från 2026-09-07). Mobilmenyns grupper "ÖVERSIKT / REFLEKTION" (CV, Personligt brev och Hälsa
+under "Reflektion") kommer ur gamla `navGroups` och stämmer inte med hubbarna.
+
+---
+
+## Spår P (Premium) 2026-09-10 — gratis kvar, AI bakom 99 kr/mån via Stripe
+
+> **Beslut Mikael 2026-09-10 (tre meddelanden samma pass):** gratiskonton finns kvar, men
+> **AI-funktionerna låses till ett premiumkonto** som köps med **Stripe för 99 kronor i
+> månaden**. Alla landningssidor ska uppdateras, och användaren ska **pushas** mot steget i
+> portalen — synlig uppgraderingsväg, låsta AI-knappar som säljer.
+
+### Premissgranskning 2026-09-10 — läget innan något byggs
+
+- **Ingen Stripe-kod finns i repot** (`grep -ri stripe` i `client/src`, `client/api`,
+  `supabase/functions`: noll träffar). Inga Stripe-nycklar i miljön.
+- **Ingen plan-/tier-kolumn** på `profiles`. Det som finns är `ai_enabled` (art. 21-spaken)
+  och `ai_consent_at` (art. 9-samtycket) — två grindar med andra syften. Premium får **inte**
+  återanvända dem: en användare kan ha premium och ändå ha stängt av AI.
+- **AI-anrop går genom två backender** — `client/api/ai.js` (20 funktioner) och
+  `supabase/functions/_shared/aiGate.ts` (sex modellanropare). Lärdomen från A23: en grind i
+  bara en av dem är ingen grind. Premiumgrinden måste sitta i båda, fail closed, på servern.
+- **Prissektionen på landningssidan** (`pages/Landing.tsx`, `landing.pricing.participant`)
+  säger "Deltagare: alltid gratis – inga kostnader överhuvudtaget" och listar AI-verktygen
+  under gratis. `Terms.tsx` nämner inte premium. Båda måste skrivas om — men **först när
+  köpet fungerar**. Att skriva "99 kr/mån" innan Stripe-flödet är verifierat live är exakt
+  felklassen från 2026-08-09: ett påstående utan täckning.
+- **Organisationslicensen** (2 990 kr/mån + 290 kr/konsulent) står redan på prissidan.
+  Konsulentkopplade deltagare är rimligen premium via organisationen. **Det är ett beslut,
+  inte ett antagande** — se §7.
+
+### Ordning (får inte kastas om)
+
+| # | Punkt | Storlek | Beroende |
+|---|---|---|---|
+| **P1** | **Entitlement.** Ny tabell `subscriptions` (user_id, stripe_customer_id, stripe_subscription_id, status, current_period_end) + RLS (bara egen rad, bara läsning; skrivs av service role). RPC `har_premium()` SECURITY DEFINER. Migration mot prod + `schema:refresh` + `grants:refresh` i samma commit | M | Mikaels ja till migrationen |
+| **P2** | **Stripe Checkout + webhook.** `client/api/stripe-checkout.js` (skapar session, 99 kr/mån, `customer_email` från Supabase-token) och `client/api/stripe-webhook.js` (signaturverifiering; `checkout.session.completed`, `customer.subscription.updated/deleted` → skriver `subscriptions`). Kundportal-länk för uppsägning. **Verifiera live-nycklar** (`sk_live_`), inte test — lärdomen `verified-against-prod-can-still-be-sandbox` | M–L | Stripe-konto, produkt + pris, webhook-secret i Vercel |
+| **P3** | **Grinden.** `har_premium()` kontrolleras i `ai.js` (alla 20) och i `_shared/aiGate.ts` (alla sex), fail closed, med ett tydligt 402-svar som klienten känner igen. Konsulentens egna AI-anrop i `/consultant`: avgör om de går på organisationen (§7) | M | P1 |
+| **P4** | **Upsell i portalen.** `useHarPremium()`; AI-knappar i gratisläge visar lås + "Ingår i premium" och leder till `/premium` (ny sida: vad som ingår, 99 kr/mån, köp, hantera). Kort på Översikt (nivå 1-kandidat "Lås upp AI-verktygen" när CV finns men premium saknas). Menyrad "Uppgradera" i profilmenyn. Tonen enligt DESIGN.md §2: invit, inte tjat — **aldrig** en modal som avbryter | M | P2, P3 |
+| **P5** | **Landningssidorna.** Prissektionen: tre kolumner (Gratis / Premium 99 kr/mån / Organisation), AI-funktionerna flyttas till Premium; `Terms.tsx` får villkor för prenumeration (ångerrätt, uppsägning, moms); integritetspolicyn får Stripe som biträde; de prerenderade guidesidornas CTA:er. Sitemap/prerender rörs inte (`/premium` är en inloggad sida) | M | P2 verifierad live |
+| **P6** | **Grind i CI.** Test som itererar alla AI-funktioner i båda backenderna och kräver premiumkontrollen (samma mönster som `ai-sanningsregel.test.ts` — iterera **alla** grenar, inte defaultgrenen) | S | P3 |
+
+**Frågor som måste besvaras av Mikael innan P1 (se §7):** moms (är 99 kr inkl. moms?),
+årspris eller bara månad, om konsulentkopplade deltagare får premium via organisationen, och
+om befintliga användare med AI-samtycke (17 st) ska få en övergångsperiod.
 
 ---
 
@@ -5158,6 +5244,8 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | Dark mode i scope eller ej | F1 | var v. 26, försenad |
 | `design-source/`-hemvist (36 MB, persondata?) | C7 | v. 29 |
 | ~~EU-utlysning: 26-001/26-002/båda~~ | G6, C4 | ⏸ **Avaktiverat 2026-08-03** — spåret pausat på Mikaels beslut. Tas upp igen när du säger till |
+| **Premium (spår P): fyra frågor före P1.** (1) Är 99 kr/mån **inklusive** moms? (2) Bara månadspris, eller också årspris? (3) Får konsulentkopplade deltagare (Rusta och matcha / AME) premium via organisationslicensen? (4) Ska de 17 användare som redan gett AI-samtycke få en övergångsperiod, eller låses de samma dag? Plus det praktiska: Stripe-konto med produkt + pris, `STRIPE_SECRET_KEY` (live), `STRIPE_WEBHOOK_SECRET` och `STRIPE_PRICE_ID` i Vercel | P1–P5 | **nu — inget i spår P kan börja utan (1)–(3)** |
+| **P1-migrationen (`subscriptions` + `har_premium()`)** mot prod | P1 | **väntar på ditt ja** när den är skriven |
 | **STA-återstart — hur ska konsulenten administrera insatsen?** Flaggan `VITE_STA_ENABLED` ger tillbaka deltagarvyn men inte konsulentvyn (den är borttagen med flit). Val: flikar i ordinarie `/consultant` eller återinföra separat vy | G1, G2, F11 | när STA slås på igen |
 | DPIA/Art 30: org-uppgifter + signatur | A4 | v. 29 |
 
