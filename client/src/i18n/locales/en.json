@@ -7550,7 +7550,8 @@
     "nav": {
       "features": "Features",
       "platform": "Platform",
-      "audience": "Who it's for",
+      "guides": "Guides",
+      "organisations": "For organisations",
       "howItWorks": "How it works",
       "pricing": "Pricing",
       "faq": "FAQ",
@@ -7561,17 +7562,12 @@
       "bookDemo": "Book a demo"
     },
     "audience": {
-      "sectionLabel": "WHO IT'S FOR",
-      "title": "Who are you?",
-      "description": "Jobin is built for three roles. Pick the one that fits.",
+      "sectionLabel": "FOR ORGANISATIONS",
+      "title": "Do you work with job seekers?",
+      "description": "Jobin is used by career consultants, municipal employment units (arbetsmarknadsenheter) and Rusta och matcha providers. The job seeker keeps their own account — and decides what the consultant can see.",
+      "terms": "No commitment. No setup fees. Get started within 24 hours.",
+      "pricingLink": "See pricing",
       "jobseeker": {
-        "tag": "Job seeker",
-        "title": "I'm looking for a job",
-        "description": "AI-powered tools for CV, interview practice, job search, and support throughout the process.",
-        "cta": "Sign up free",
-        "bullet1": "Build a CV in 5 minutes",
-        "bullet2": "Practice for the interview",
-        "bullet3": "Find jobs from Platsbanken",
         "guides": "Or read the guides first — no account needed"
       },
       "consultant": {
@@ -7584,13 +7580,13 @@
         "bullet3": "Reports for stakeholders"
       },
       "executive": {
-        "tag": "CEO / Procurement",
-        "title": "I lead a job-coaching company",
-        "description": "Modern platform with GDPR-compliance, integration with Arbetsförmedlingen, and clear ROI.",
+        "tag": "Municipal unit / provider",
+        "title": "We run programmes for job seekers",
+        "description": "For municipal employment units (arbetsmarknadsenheter) and Rusta och matcha providers: the activity requirement (aktivitetskravet), GDPR-safe hosting in the EU and a connection to Arbetsförmedlingen.",
         "cta": "Book a 30-min demo",
         "bullet1": "GDPR + EU data + encrypted storage",
-        "bullet2": "AF integration via API",
-        "bullet3": "Customizable reporting",
+        "bullet2": "Schedule templates, individual plan and attendance for the activity requirement",
+        "bullet3": "AF integration via API",
         "forMunicipality": "Jobin for arbetsmarknadsenheter (municipal employment units)",
         "forRustaOchMatcha": "Jobin for Rusta och matcha providers (a job-matching programme run for Arbetsförmedlingen)"
       }
@@ -7685,7 +7681,7 @@
     "pricing": {
       "sectionLabel": "Pricing",
       "title": "Simple and transparent pricing",
-      "description": "Choose the plan that fits your organization. No hidden fees.",
+      "description": "Free for job seekers — always. Organisations pay per licence, with no hidden fees.",
       "organization": {
         "title": "Organization License",
         "price": "2,990",
@@ -7737,7 +7733,6 @@
         ]
       },
       "cta": "Contact us",
-      "mostPopular": "Most popular",
       "included": "Included",
       "perMonth": "per month"
     },
@@ -7848,10 +7843,10 @@
       "createFreeAccount": "Create free account"
     },
     "cta": {
-      "title": "Ready to strengthen your employment services?",
-      "description": "Give your participants the tools they need to succeed. Book a demo and see how Jobin can streamline your operations.",
-      "button": "Book demo",
-      "noCard": "No commitment. No setup fees. Get started within 24 hours."
+      "title": "Ready to take the next step?",
+      "description": "Create a free account and start where it feels easiest — with your CV, a guide or a saved job. You set the pace.",
+      "button": "Read the guides",
+      "noCard": "Free for job seekers. No card details, no commitment."
     },
     "footer": {
       "brand": "Jobin is a complete digital platform for employment services. We help organizations support job seekers with modern tools.",

@@ -206,12 +206,17 @@ export default function Landing() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-7 h-full">
-              <button
-                onClick={() => scrollToSection('audience')}
+              {/*
+                KO4: guiderna först i menyn — det är den arbetssökandes väg in.
+                Vanlig <a>, inte <Link>: /guider/ är prerenderad utanför
+                HashRoutern (ROADMAP K12).
+              */}
+              <a
+                href="/guider/"
                 className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
-                {t('landing.nav.audience', 'För vem')}
-              </button>
+                {t('landing.nav.guides', 'Guider')}
+              </a>
               <button
                 onClick={() => scrollToSection('plattformen')}
                 className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
@@ -225,10 +230,10 @@ export default function Landing() {
                 {t('landing.nav.howItWorks')}
               </button>
               <button
-                onClick={() => scrollToSection('priser')}
+                onClick={() => scrollToSection('for-organisationer')}
                 className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
-                {t('landing.nav.pricing')}
+                {t('landing.nav.organisations', 'För organisationer')}
               </button>
               <Link to="/login" className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors">
                 {t('landing.nav.login')}
@@ -261,12 +266,12 @@ export default function Landing() {
             mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}>
             <div className="space-y-1 pt-4 pb-6 border-t border-stone-100 dark:border-stone-700">
-              <button
-                onClick={() => scrollToSection('funktioner')}
+              <a
+                href="/guider/"
                 className="block w-full text-left text-stone-700 dark:text-stone-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-stone-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
               >
-                {t('landing.nav.features')}
-              </button>
+                {t('landing.nav.guides', 'Guider')}
+              </a>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
                 className="block w-full text-left text-stone-700 dark:text-stone-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-stone-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
@@ -274,10 +279,10 @@ export default function Landing() {
                 {t('landing.nav.howItWorks')}
               </button>
               <button
-                onClick={() => scrollToSection('priser')}
+                onClick={() => scrollToSection('for-organisationer')}
                 className="block w-full text-left text-stone-700 dark:text-stone-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-stone-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
               >
-                {t('landing.nav.pricing')}
+                {t('landing.nav.organisations', 'För organisationer')}
               </button>
               <Link
                 to="/login"
@@ -418,167 +423,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Audience Section — 3 målgrupper */}
-      <section id="audience" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
-              {t('landing.audience.sectionLabel', 'FÖR VEM')}
-            </p>
-            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
-              {t('landing.audience.title', 'Vem är du?')}
-            </h2>
-            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
-              {t('landing.audience.description', 'Jobin är byggt för tre roller. Klicka på den som passar dig.')}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-            {/* Arbetssökande — activity-färg (persika) */}
-            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--activity-bg)] border-2 border-[var(--activity-accent)] flex flex-col">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--activity-text)] mb-3">
-                {t('landing.audience.jobseeker.tag', 'Arbetssökande')}
-              </span>
-              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
-                {t('landing.audience.jobseeker.title', 'Jag söker jobb')}
-              </h3>
-              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
-                {t('landing.audience.jobseeker.description', 'AI-drivna verktyg för CV, intervjuträning, jobbsökning och stöd genom processen.')}
-              </p>
-              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.jobseeker.bullet1', 'Skapa CV på 5 minuter')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.jobseeker.bullet2', 'Träna inför intervjun')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.jobseeker.bullet3', 'Hitta jobb från Platsbanken')}
-                </li>
-              </ul>
-              <Link
-                to="/register"
-                className="inline-flex items-center justify-center gap-2 bg-[var(--activity-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
-              >
-                {t('landing.audience.jobseeker.cta', 'Skapa konto gratis')}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              {/*
-                Vanlig <a>, inte <Link> — /guider/ är en prerenderad statisk sida
-                utanför appen. Appen kör HashRouter, så ett <Link to="/guider/">
-                hade blivit #/guider/, fångats av catch-allen och skickat
-                besökaren tillbaka hit. Se ROADMAP K12.
-              */}
-              <a
-                href="/guider/"
-                className="mt-3 text-sm text-[var(--activity-text)] underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
-              >
-                {t('landing.audience.jobseeker.guides', 'Eller läs guiderna först — utan konto')}
-              </a>
-            </div>
-
-            {/* Konsulent — coaching-färg (rosa) */}
-            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--coaching-bg)] border-2 border-[var(--coaching-accent)] flex flex-col">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--coaching-text)] mb-3">
-                {t('landing.audience.consultant.tag', 'Arbetskonsulent')}
-              </span>
-              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
-                {t('landing.audience.consultant.title', 'Jag är arbetskonsulent')}
-              </h3>
-              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
-                {t('landing.audience.consultant.description', 'Följ dina deltagare, ge feedback och se framsteg i en samlad konsulent-vy.')}
-              </p>
-              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.consultant.bullet1', 'Översikt över alla deltagare')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.consultant.bullet2', 'Direktdialog och anteckningar')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.consultant.bullet3', 'Rapporter till uppdragsgivare')}
-                </li>
-              </ul>
-              {/*
-                K13: knappen hette "Se konsulentvyn" och gjorde
-                `scrollToSection('faq')` — den hoppade till vanliga frågor.
-                Det finns ingen konsulentvy att visa en gäst, så etiketten
-                kunde inte hållas hur knappen än kopplades. Nu erbjuder den
-                det vi faktiskt kan ge: en visning. Samma väg som VD-kortets
-                demoknapp, med ett ämne som säger vad det gäller.
-              */}
-              <a
-                href="mailto:demo@jobin.se?subject=Visning%20av%20konsulentvyn"
-                className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
-              >
-                {t('landing.audience.consultant.cta', 'Boka en visning av konsulentvyn')}
-                <ArrowRight className="w-4 h-4" />
-              </a>
-            </div>
-
-            {/* VD — info-färg (sky) */}
-            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--info-bg)] border-2 border-[var(--info-accent)] flex flex-col">
-              <span className="text-xs font-bold uppercase tracking-wider text-[var(--info-text)] mb-3">
-                {t('landing.audience.executive.tag', 'VD / Inköp')}
-              </span>
-              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
-                {t('landing.audience.executive.title', 'Jag leder ett jobbcoach-företag')}
-              </h3>
-              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
-                {t('landing.audience.executive.description', 'Modern plattform med GDPR-säkerhet, integration mot Arbetsförmedlingen och tydlig ROI.')}
-              </p>
-              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.executive.bullet1', 'GDPR + EU-data + krypterad lagring')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.executive.bullet2', 'AF-integration via API')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.executive.bullet3', 'Anpassningsbara rapporter')}
-                </li>
-              </ul>
-              <a
-                href="mailto:demo@jobin.se?subject=Boka%20demo"
-                className="inline-flex items-center justify-center gap-2 bg-[var(--info-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
-              >
-                {t('landing.audience.executive.cta', 'Boka 30 min demo')}
-                <ArrowRight className="w-4 h-4" />
-              </a>
-              {/*
-                K7/K16: egna landningssidor för de två köparrollerna — inte
-                bara ett scroll-mål på den här sidan. Vanlig <a>, inte <Link>,
-                av samma skäl som guide-länken i jobbsökarkortet ovan: det är
-                prerenderade statiska sidor utanför appens HashRouter.
-              */}
-              <div className="mt-3 flex flex-col gap-1 text-sm text-[var(--info-text)]">
-                <a
-                  href="/for-arbetsmarknadsenheter/"
-                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
-                >
-                  {t('landing.audience.executive.forMunicipality', 'Jobin för arbetsmarknadsenheter')}
-                </a>
-                <a
-                  href="/for-rusta-och-matcha/"
-                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
-                >
-                  {t('landing.audience.executive.forRustaOchMatcha', 'Jobin för Rusta och matcha-leverantörer')}
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Platform Hubs — 5 zoner i hub-färger */}
       <section id="plattformen" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
@@ -715,169 +559,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Trust Bar — säkerhet och regelefterlevnad */}
-      <section className="py-12 sm:py-16 dark:bg-stone-900">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-          <p className="text-center text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-8">
-            {t('landing.trust.title', 'Säkerhet och regelefterlevnad')}
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
-            <TrustChip
-              icon={Shield}
-              title={t('landing.trust.gdpr', 'GDPR-kompatibel')}
-              description={t('landing.trust.gdprDesc', 'All data hanteras enligt EU:s dataskyddsförordning')}
-            />
-            <TrustChip
-              icon={Lock}
-              title={t('landing.trust.eu', 'EU-data')}
-              // A24 (2026-08-09): påstod "Ingen data lämnar EES", vilket motsägs av
-              // projektets eget docs/HOSTING-REGIONS.md:14 — OpenRouter (all AI) är
-              // USA. Hela portalen utom AI-vägen ligger i EU; säg det i stället.
-              description={t('landing.trust.euDesc', 'Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.')}
-            />
-            <TrustChip
-              icon={Zap}
-              title={t('landing.trust.af', 'AF-integration')}
-              description={t('landing.trust.afDesc', 'Direkt koppling till Arbetsförmedlingens API:er')}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="priser" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
-        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.pricing.sectionLabel')}</p>
-            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 sm:mb-4 leading-tight">
-              {t('landing.pricing.title')}
-            </h2>
-            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
-              {t('landing.pricing.description')}
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8 max-w-5xl mx-auto">
-            {/* Organization */}
-            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 relative sm:col-span-2 md:col-span-1 shadow-lg dark:shadow-stone-950/50">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
-                  {t('landing.pricing.mostPopular')}
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2 mt-1">
-                {t('landing.pricing.organization.title')}
-              </h3>
-              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
-                {t('landing.pricing.organization.description')}
-              </p>
-              <div className="mb-6">
-                <span className="text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white">{t('landing.pricing.organization.price')}</span>
-                <span className="text-stone-600 dark:text-stone-400 text-sm"> {t('landing.pricing.organization.currency')}{t('landing.pricing.organization.period')}</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {(t('landing.pricing.organization.features', { returnObjects: true }) as string[]).map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
-                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="mailto:sales@jobin.se"
-                className="block w-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white text-center py-3.5 rounded-full font-semibold hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] active:bg-[var(--c-text)] transition-colors shadow-md"
-              >
-                {t('landing.pricing.cta')}
-              </a>
-            </div>
-
-            {/* Consultant */}
-            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border border-stone-200 dark:border-stone-700 shadow-sm dark:shadow-stone-950/30">
-              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
-                {t('landing.pricing.consultant.title')}
-              </h3>
-              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
-                {t('landing.pricing.consultant.description')}
-              </p>
-              <div className="mb-6">
-                <span className="text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white">{t('landing.pricing.consultant.price')}</span>
-                <span className="text-stone-600 dark:text-stone-400 text-sm"> {t('landing.pricing.consultant.currency')}{t('landing.pricing.consultant.period')}</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {(t('landing.pricing.consultant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
-                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="mailto:sales@jobin.se"
-                className="block w-full border-2 border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-200 text-center py-3.5 rounded-full font-semibold hover:bg-stone-50 dark:hover:bg-stone-700 active:bg-stone-100 transition-colors"
-              >
-                {t('landing.pricing.cta')}
-              </a>
-            </div>
-
-            {/* Free */}
-            <div className="bg-stone-50 dark:bg-stone-800/50 rounded-2xl p-7 sm:p-8 border border-stone-200 dark:border-stone-700 shadow-sm dark:shadow-stone-950/30">
-              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
-                {t('landing.pricing.participant.title')}
-              </h3>
-              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
-                {t('landing.pricing.participant.description')}
-              </p>
-              <div className="mb-6">
-                <span className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('landing.pricing.participant.priceLabel')}</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {(t('landing.pricing.participant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
-                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                to="/register"
-                className="block w-full bg-stone-900 dark:bg-stone-700 text-white text-center py-3.5 rounded-full font-semibold hover:bg-stone-800 dark:hover:bg-stone-600 active:bg-stone-700 transition-colors"
-              >
-                {t('landing.nav.getStartedFree')}
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* B20 (roadmap 2026-08-09): Testimonials-sektionen togs bort — tre påhittade
-          personer under en rubrik som påstod "verkliga historier" / intervjuer som
-          aldrig genomförts. Se docs/ROADMAP.md B20 och B31 (aldrig ett påhittat exempel). */}
-
-      {/* FAQ Section */}
-      <section id="faq" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
-        <div className="max-w-3xl mx-auto px-5 sm:px-6">
-          <div className="text-center mb-10 sm:mb-16">
-            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.faq.sectionLabel')}</p>
-            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 sm:mb-4 leading-tight">
-              {t('landing.faq.title')}
-            </h2>
-          </div>
-
-          <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm dark:shadow-stone-950/30 overflow-hidden">
-            {faqs.map((faq, idx) => (
-              <div key={idx} className={idx !== 0 ? '' : ''}>
-                <FAQItem
-                  question={faq.question}
-                  answer={faq.answer}
-                  isOpen={openFAQ === idx}
-                  onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/*
         Guider — spår K12.
 
@@ -891,7 +572,7 @@ export default function Landing() {
         en byggrind i scripts/prerender-guides.cjs — en död länk härifrån är en
         mjuk 404 i Search Console, inte ett skönhetsfel.
       */}
-      <section className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
+      <section className="py-16 sm:py-24 dark:bg-stone-900">
         <div className="max-w-5xl mx-auto px-5 sm:px-6">
           <div className="text-center mb-10 sm:mb-12">
             <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
@@ -941,11 +622,316 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 sm:py-24 dark:bg-stone-900">
+      {/* B20 (roadmap 2026-08-09): Testimonials-sektionen togs bort — tre påhittade
+          personer under en rubrik som påstod "verkliga historier" / intervjuer som
+          aldrig genomförts. Se docs/ROADMAP.md B20 och B31 (aldrig ett påhittat exempel). */}
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6">
+          <div className="text-center mb-10 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.faq.sectionLabel')}</p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 sm:mb-4 leading-tight">
+              {t('landing.faq.title')}
+            </h2>
+          </div>
+
+          <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm dark:shadow-stone-950/30 overflow-hidden">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className={idx !== 0 ? '' : ''}>
+                <FAQItem
+                  question={faq.question}
+                  answer={faq.answer}
+                  isOpen={openFAQ === idx}
+                  onClick={() => setOpenFAQ(openFAQ === idx ? null : idx)}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Bar — säkerhet och regelefterlevnad */}
+      <section className="py-12 sm:py-16 dark:bg-stone-900">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-8">
+            {t('landing.trust.title', 'Säkerhet och regelefterlevnad')}
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
+            <TrustChip
+              icon={Shield}
+              title={t('landing.trust.gdpr', 'GDPR-kompatibel')}
+              description={t('landing.trust.gdprDesc', 'All data hanteras enligt EU:s dataskyddsförordning')}
+            />
+            <TrustChip
+              icon={Lock}
+              title={t('landing.trust.eu', 'EU-data')}
+              // A24 (2026-08-09): påstod "Ingen data lämnar EES", vilket motsägs av
+              // projektets eget docs/HOSTING-REGIONS.md:14 — OpenRouter (all AI) är
+              // USA. Hela portalen utom AI-vägen ligger i EU; säg det i stället.
+              description={t('landing.trust.euDesc', 'Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.')}
+            />
+            <TrustChip
+              icon={Zap}
+              title={t('landing.trust.af', 'AF-integration')}
+              description={t('landing.trust.afDesc', 'Direkt koppling till Arbetsförmedlingens API:er')}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/*
+        KO4 (2026-09-12): startsidan börjar hos den arbetssökande.
+
+        Den här sektionen hette "Vem är du?" och låg som andra sektion, med tre
+        likvärdiga kort — Arbetssökande, Arbetskonsulent, VD/Inköp. En
+        guideläsare som klickade loggan landade i ett säljbudskap till
+        inköpare. Nu ligger inköparens material sist på sidan, efter guiderna
+        och de vanliga frågorna, och den arbetssökandes kort är borta: hjälten
+        och slut-CTA:n talar redan till henne. Länkarna till
+        /for-arbetsmarknadsenheter/ och /for-rusta-och-matcha/ är kvar —
+        prerenderade sidor, därför <a href> och inte <Link> (ROADMAP K12).
+      */}
+      <section id="for-organisationer" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
+              {t('landing.audience.sectionLabel', 'FÖR ORGANISATIONER')}
+            </p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
+              {t('landing.audience.title', 'Arbetar du med arbetssökande?')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+              {t('landing.audience.description', 'Jobin används av arbetskonsulenter, arbetsmarknadsenheter och Rusta och matcha-leverantörer. Deltagaren behåller sitt eget konto — och bestämmer själv vad konsulenten får se.')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
+            {/* Konsulent — coaching-färg (rosa) */}
+            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--coaching-bg)] border-2 border-[var(--coaching-accent)] flex flex-col">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--coaching-text)] mb-3">
+                {t('landing.audience.consultant.tag', 'Arbetskonsulent')}
+              </span>
+              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
+                {t('landing.audience.consultant.title', 'Jag är arbetskonsulent')}
+              </h3>
+              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
+                {t('landing.audience.consultant.description', 'Följ dina deltagare, ge feedback och se framsteg i en samlad konsulent-vy.')}
+              </p>
+              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet1', 'Översikt över alla deltagare')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet2', 'Direktdialog och anteckningar')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet3', 'Rapporter till uppdragsgivare')}
+                </li>
+              </ul>
+              {/*
+                K13: knappen hette "Se konsulentvyn" och gjorde
+                `scrollToSection('faq')` — den hoppade till vanliga frågor.
+                Det finns ingen konsulentvy att visa en gäst, så etiketten
+                kunde inte hållas hur knappen än kopplades. Nu erbjuder den
+                det vi faktiskt kan ge: en visning. Samma väg som VD-kortets
+                demoknapp, med ett ämne som säger vad det gäller.
+              */}
+              <a
+                href="mailto:demo@jobin.se?subject=Visning%20av%20konsulentvyn"
+                className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
+              >
+                {t('landing.audience.consultant.cta', 'Boka en visning av konsulentvyn')}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+
+            {/* Arbetsmarknadsenhet / leverantör — info-färg (sky) */}
+            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--info-bg)] border-2 border-[var(--info-accent)] flex flex-col">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--info-text)] mb-3">
+                {t('landing.audience.executive.tag', 'Arbetsmarknadsenhet / leverantör')}
+              </span>
+              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
+                {t('landing.audience.executive.title', 'Vi driver insatser för arbetssökande')}
+              </h3>
+              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
+                {t('landing.audience.executive.description', 'För kommunens arbetsmarknadsenhet och för Rusta och matcha-leverantörer: aktivitetskravet, GDPR-säker drift i EU och koppling till Arbetsförmedlingen.')}
+              </p>
+              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet1', 'GDPR + EU-data + krypterad lagring')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet2', 'Schemamallar, individuell plan och närvaro för aktivitetskravet')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet3', 'AF-integration via API')}
+                </li>
+              </ul>
+              <a
+                href="mailto:demo@jobin.se?subject=Boka%20demo"
+                className="inline-flex items-center justify-center gap-2 bg-[var(--info-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
+              >
+                {t('landing.audience.executive.cta', 'Boka 30 min demo')}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              {/*
+                K7/K16: egna landningssidor för de två köparrollerna — inte
+                bara ett scroll-mål på den här sidan. Vanlig <a>, inte <Link>,
+                av samma skäl som guide-länken i jobbsökarkortet ovan: det är
+                prerenderade statiska sidor utanför appens HashRouter.
+              */}
+              <div className="mt-3 flex flex-col gap-1 text-sm text-[var(--info-text)]">
+                <a
+                  href="/for-arbetsmarknadsenheter/"
+                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
+                >
+                  {t('landing.audience.executive.forMunicipality', 'Jobin för arbetsmarknadsenheter')}
+                </a>
+                <a
+                  href="/for-rusta-och-matcha/"
+                  className="underline underline-offset-4 hover:no-underline inline-flex items-center min-h-[44px]"
+                >
+                  {t('landing.audience.executive.forRustaOchMatcha', 'Jobin för Rusta och matcha-leverantörer')}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-8 text-center text-sm text-stone-600 dark:text-stone-300 flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
+            <span>{t('landing.audience.terms', 'Ingen bindningstid. Inga startavgifter. Kom igång inom 24 timmar.')}</span>
+            <button
+              type="button"
+              onClick={() => scrollToSection('priser')}
+              className="underline underline-offset-4 hover:no-underline text-[var(--c-text)] dark:text-[var(--c-solid)] inline-flex items-center min-h-[44px] font-medium"
+            >
+              {t('landing.audience.pricingLink', 'Se priser')}
+            </button>
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing Section — efter organisationssektionen (KO4); priserna är kvar, men sist */}
+      <section id="priser" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.pricing.sectionLabel')}</p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 sm:mb-4 leading-tight">
+              {t('landing.pricing.title')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+              {t('landing.pricing.description')}
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8 max-w-5xl mx-auto">
+            {/* Free */}
+            {/* KO4: gratiskortet först — det är den arbetssökandes rad, och sidan börjar hos henne. */}
+            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 sm:col-span-2 md:col-span-1 shadow-lg dark:shadow-stone-950/50">
+              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
+                {t('landing.pricing.participant.title')}
+              </h3>
+              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
+                {t('landing.pricing.participant.description')}
+              </p>
+              <div className="mb-6">
+                <span className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('landing.pricing.participant.priceLabel')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.participant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/register"
+                className="block w-full bg-stone-900 dark:bg-stone-700 text-white text-center py-3.5 rounded-full font-semibold hover:bg-stone-800 dark:hover:bg-stone-600 active:bg-stone-700 transition-colors"
+              >
+                {t('landing.nav.getStartedFree')}
+              </Link>
+            </div>
+            {/* Consultant */}
+            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border border-stone-200 dark:border-stone-700 shadow-sm dark:shadow-stone-950/30">
+              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
+                {t('landing.pricing.consultant.title')}
+              </h3>
+              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
+                {t('landing.pricing.consultant.description')}
+              </p>
+              <div className="mb-6">
+                <span className="text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white">{t('landing.pricing.consultant.price')}</span>
+                <span className="text-stone-600 dark:text-stone-400 text-sm"> {t('landing.pricing.consultant.currency')}{t('landing.pricing.consultant.period')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.consultant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:sales@jobin.se"
+                className="block w-full border-2 border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-200 text-center py-3.5 rounded-full font-semibold hover:bg-stone-50 dark:hover:bg-stone-700 active:bg-stone-100 transition-colors"
+              >
+                {t('landing.pricing.cta')}
+              </a>
+            </div>
+
+            {/* Organization */}
+            {/*
+              KO4: "Populärast"-plaketten är borta. Portalen har inga betalande
+              organisationer att räkna på (B19: 92 konton i prod), och en
+              plakett utan underlag är ett påhittat exempel (B31).
+            */}
+            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border border-stone-200 dark:border-stone-700 shadow-sm dark:shadow-stone-950/30">
+              <h3 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
+                {t('landing.pricing.organization.title')}
+              </h3>
+              <p className="text-stone-600 dark:text-stone-300 text-sm mb-5 leading-relaxed">
+                {t('landing.pricing.organization.description')}
+              </p>
+              <div className="mb-6">
+                <span className="text-3xl sm:text-4xl font-bold text-stone-900 dark:text-white">{t('landing.pricing.organization.price')}</span>
+                <span className="text-stone-600 dark:text-stone-400 text-sm"> {t('landing.pricing.organization.currency')}{t('landing.pricing.organization.period')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.organization.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-start gap-3 text-sm text-stone-600 dark:text-stone-300">
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:sales@jobin.se"
+                className="block w-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white text-center py-3.5 rounded-full font-semibold hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] active:bg-[var(--c-text)] transition-colors shadow-md"
+              >
+                {t('landing.pricing.cta')}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/*
+        CTA — till den arbetssökande (KO4). Rubriken sa "Redo att stärka dina
+        arbetsmarknadsinsatser?" ovanför en knapp som sa "Skapa konto gratis":
+        inköparens fråga, den arbetssökandes knapp. Demo-knappen bor nu i
+        organisationssektionen; här är andra valet guiderna (<a href>, K12).
+      */}
+      <section className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
         <div className="max-w-3xl mx-auto px-5 sm:px-6 text-center">
           <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 sm:mb-4 leading-tight">
-            {t('landing.cta.title')}
+            {t('landing.cta.title', 'Redo att ta nästa steg?')}
           </h2>
           <p className="text-stone-600 dark:text-stone-300 text-lg sm:text-lg mb-8 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
             {t('landing.cta.description')}
@@ -959,10 +945,10 @@ export default function Landing() {
               <ArrowRight className="w-5 h-5" />
             </Link>
             <a
-              href="mailto:demo@jobin.se?subject=Boka%20demo"
+              href="/guider/"
               className="inline-flex items-center gap-2 bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 text-stone-700 dark:text-stone-200 px-8 py-4 rounded-full font-semibold text-lg transition-all"
             >
-              {t('landing.hero.ctaSecondary', 'Boka 30 min demo')}
+              {t('landing.cta.button', 'Läs guiderna')}
             </a>
           </div>
           <p className="text-stone-500 dark:text-stone-400 text-sm sm:text-sm mt-5">

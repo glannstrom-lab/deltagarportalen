@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
 import { IvoUnderlagSektion } from '@/components/consultant/IvoUnderlagSektion'
+import { AvtalskravKort } from '@/components/consultant/AvtalskravKort'
 import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
@@ -1117,6 +1118,9 @@ export function AnalyticsTab() {
 
       {/* KM7: kvartalsunderlag till IVO + AF-checklista. Svenska literaler — konsulentvyn översätts inte. */}
       <IvoUnderlagSektion />
+
+      {/* RM4: aktivitetsloggen mot avtalskravet (FFU §4.1.1) — timkrav per vecka och andel fysiska. */}
+      <AvtalskravKort />
 
       {/* PDF Report Dialog */}
       <ReportGeneratorDialog

@@ -7550,7 +7550,8 @@
     "nav": {
       "features": "Funktioner",
       "platform": "Plattformen",
-      "audience": "För vem",
+      "guides": "Guider",
+      "organisations": "För organisationer",
       "howItWorks": "Så funkar det",
       "pricing": "Priser",
       "faq": "Vanliga frågor",
@@ -7561,17 +7562,12 @@
       "bookDemo": "Boka demo"
     },
     "audience": {
-      "sectionLabel": "FÖR VEM",
-      "title": "Vem är du?",
-      "description": "Jobin är byggt för tre roller. Klicka på den som passar dig.",
+      "sectionLabel": "FÖR ORGANISATIONER",
+      "title": "Arbetar du med arbetssökande?",
+      "description": "Jobin används av arbetskonsulenter, arbetsmarknadsenheter och Rusta och matcha-leverantörer. Deltagaren behåller sitt eget konto — och bestämmer själv vad konsulenten får se.",
+      "terms": "Ingen bindningstid. Inga startavgifter. Kom igång inom 24 timmar.",
+      "pricingLink": "Se priser",
       "jobseeker": {
-        "tag": "Arbetssökande",
-        "title": "Jag söker jobb",
-        "description": "AI-drivna verktyg för CV, intervjuträning, jobbsökning och stöd genom processen.",
-        "cta": "Skapa konto gratis",
-        "bullet1": "Skapa CV på 5 minuter",
-        "bullet2": "Träna inför intervjun",
-        "bullet3": "Hitta jobb från Platsbanken",
         "guides": "Eller läs guiderna först — utan konto"
       },
       "consultant": {
@@ -7584,13 +7580,13 @@
         "bullet3": "Rapporter till uppdragsgivare"
       },
       "executive": {
-        "tag": "VD / Inköp",
-        "title": "Jag leder ett jobbcoach-företag",
-        "description": "Modern plattform med GDPR-säkerhet, integration mot Arbetsförmedlingen och tydlig ROI.",
+        "tag": "Arbetsmarknadsenhet / leverantör",
+        "title": "Vi driver insatser för arbetssökande",
+        "description": "För kommunens arbetsmarknadsenhet och för Rusta och matcha-leverantörer: aktivitetskravet, GDPR-säker drift i EU och koppling till Arbetsförmedlingen.",
         "cta": "Boka 30 min demo",
         "bullet1": "GDPR + EU-data + krypterad lagring",
-        "bullet2": "AF-integration via API",
-        "bullet3": "Anpassningsbara rapporter",
+        "bullet2": "Schemamallar, individuell plan och närvaro för aktivitetskravet",
+        "bullet3": "AF-integration via API",
         "forMunicipality": "Jobin för arbetsmarknadsenheter",
         "forRustaOchMatcha": "Jobin för Rusta och matcha-leverantörer"
       }
@@ -7685,7 +7681,7 @@
     "pricing": {
       "sectionLabel": "Priser",
       "title": "Enkel och transparent prissättning",
-      "description": "Välj det upplägg som passar din organisation. Inga dolda avgifter.",
+      "description": "Gratis för dig som söker jobb — alltid. Organisationer betalar per licens, utan dolda avgifter.",
       "organization": {
         "title": "Organisationslicens",
         "price": "2 990",
@@ -7737,7 +7733,6 @@
         ]
       },
       "cta": "Kontakta oss",
-      "mostPopular": "Populärast",
       "included": "Inkluderat",
       "perMonth": "per månad"
     },
@@ -7848,10 +7843,10 @@
       "createFreeAccount": "Skapa konto gratis"
     },
     "cta": {
-      "title": "Redo att stärka dina arbetsmarknadsinsatser?",
-      "description": "Ge dina deltagare verktygen de behöver för att lyckas. Boka en demo och se hur Jobin kan effektivisera er verksamhet.",
-      "button": "Boka demo",
-      "noCard": "Ingen bindningstid. Inga startavgifter. Kom igång inom 24 timmar."
+      "title": "Redo att ta nästa steg?",
+      "description": "Skapa ett konto gratis och börja där det känns lättast — med CV:t, en guide eller ett sparat jobb. Du bestämmer takten.",
+      "button": "Läs guiderna",
+      "noCard": "Gratis för dig som söker jobb. Inga kortuppgifter, ingen bindningstid."
     },
     "footer": {
       "brand": "Jobin är en komplett digital plattform för arbetsmarknadstjänster. Vi hjälper organisationer stötta arbetssökande med moderna verktyg.",

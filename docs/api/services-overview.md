@@ -112,7 +112,11 @@ runt den (den filen finns inte heller).
 
 ## `cloudStorage.ts` — Supabase data-wrappers
 
-Stor fil (~2800 rader) med många små API-objekt per data-domän.
+**Sedan KA3 (2026-09-12) en tunn barrel (13 rader) över `services/cloud/`** — en fil per
+domän (`artiklar`, `installningar`, `maende`, `intresseguide`, `notiser`, `utkast`, `intervju`,
+`platsbanken`, `varumarke`, `kalender`, `integration`) med hjälparna i `_shared.ts` och
+`index.ts` som enda publika yta (17 api-objekt + `LagringsFel` + typer). Importörerna
+använder fortfarande `@/services/cloudStorage`; barreln tas bort när de flyttat.
 Centralisera all `supabase.from(...)`-användning här.
 
 Alla funktioner följer samma mönster:

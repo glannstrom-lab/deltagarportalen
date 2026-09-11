@@ -1,7 +1,9 @@
 /**
  * Tester för cloudStorage — låser nuvarande beteende hos de 5 mest använda
  * del-API:erna (interestGuideApi, savedJobsApi, moodApi, personalBrandApi,
- * calendarApi) inför uppdelning av filen (E3).
+ * calendarApi) inför uppdelning av filen (E3). Uppdelningen gjordes 2026-09-12
+ * (KA3): implementationen ligger i services/cloud/, och sist i filen vaktas
+ * att barreln exponerar exakt samma API-yta som före.
  *
  * Verifierar: auth-guards, rätt tabell + kolumner, felfall (sväljs med
  * fallback — propagerar ALDRIG), samt normalisering/transformation av rader.
@@ -641,5 +643,74 @@ describe('calendarApi.saveMoodEntry', () => {
     await expect(
       calendarApi.saveMoodEntry({ date: '2026-07-10', level: 2 })
     ).resolves.toBeNull()
+  })
+})
+
+// ============================================
+// API-YTAN (KA3, 2026-09-12)
+// ============================================
+// Filen delades per domän i services/cloud/ och cloudStorage.ts blev en tunn
+// barrel. Listan nedan är tagen ur den ODELADE filen (2 677 rader) innan
+// uppdelningen: samma 17 api-objekt med samma metodnamn, plus LagringsFel.
+// Faller testet har barreln tappat ett namn, eller en metod bytt namn —
+// båda går tyst igenom hos de 31 importörerna tills någon klickar.
+// journalApi bär getWellnessData/saveWellnessData via Object.assign i
+// maende.ts; det är med flit och står i listan.
+describe('cloudStorage — API-ytan efter uppdelningen', () => {
+  const YTA: Record<string, string[]> = {
+    articleBookmarksApi: ['add', 'getAll', 'getBookmarks', 'isBookmarked', 'remove'],
+    articleProgressApi: ['get', 'pause', 'update'],
+    articleChecklistApi: ['get', 'update'],
+    dashboardPreferencesApi: ['get', 'update'],
+    userPreferencesApi: ['get', 'getLastLoginDate', 'isChecklistDismissed', 'setChecklistDismissed', 'update', 'updateLastLogin'],
+    moodHistoryApi: ['add', 'getAll', 'getStats'],
+    journalApi: ['add', 'delete', 'getAll', 'getWellnessData', 'saveWellnessData', 'update'],
+    interestGuideApi: ['getHistory', 'getHistoryCount', 'getHistoryEntry', 'getProgress', 'reset', 'saveProgress', 'saveToHistory'],
+    notificationsApi: ['delete', 'getAll', 'getPreferences', 'getUnread', 'markAllAsRead', 'markAsRead', 'updatePreferences'],
+    draftsApi: ['delete', 'get', 'getAllByType', 'save'],
+    interviewSessionsApi: ['create', 'getAll', 'update'],
+    platsbankenApi: ['getSavedJobs', 'getSavedSearches', 'isSaved', 'removeSavedJob', 'removeSavedSearch', 'saveJob', 'saveSearch'],
+    moodApi: ['getHistory', 'getStreak', 'getTodaysMood', 'logMood'],
+    wellnessDataApi: ['get', 'save'],
+    personalBrandApi: [
+      'addContentItem', 'addPitch', 'addPortfolioItem', 'deleteContentItem', 'deletePitch', 'deletePortfolioItem',
+      'getAuditAnswers', 'getAuditHistory', 'getContentCalendar', 'getPitches', 'getPortfolioItems', 'getVisibilityProgress',
+      'recordPractice', 'saveAuditAnswers', 'updateContentItem', 'updatePitch', 'updatePortfolioItem', 'updateVisibilityProgress',
+    ],
+    calendarApi: ['createEvent', 'deleteEvent', 'getEvents', 'getGoals', 'getMoodEntries', 'saveGoal', 'saveMoodEntry', 'updateEvent'],
+    integrationChecklistApi: ['exportProgress', 'getProgress', 'saveProgress', 'setTargetDate', 'toggleItem', 'updateItemNotes'],
+  }
+
+  it('exporterar exakt de 17 api-objekten och LagringsFel — inget mer, inget mindre', async () => {
+    const modul = await import('./cloudStorage')
+    const namn = Object.keys(modul).sort()
+    expect(namn).toEqual([...Object.keys(YTA), 'LagringsFel'].sort())
+  })
+
+  it('varje api-objekt har exakt samma metoder som före uppdelningen', async () => {
+    const modul: Record<string, unknown> = await import('./cloudStorage')
+    const fel: string[] = []
+    for (const [api, metoder] of Object.entries(YTA)) {
+      const obj = modul[api] as Record<string, unknown>
+      const faktiska = Object.keys(obj).filter((k) => typeof obj[k] === 'function').sort()
+      if (JSON.stringify(faktiska) !== JSON.stringify(metoder)) fel.push(`${api}: ${JSON.stringify(faktiska)}`)
+    }
+    expect(fel).toEqual([])
+  })
+
+  it('hjälparna i _shared läcker inte ut genom barreln', async () => {
+    const modul = await import('./cloudStorage')
+    for (const intern of ['getCurrentUser', 'handleStorageError', 'kastaLagringsFel', 'isSupabaseError']) {
+      expect(intern in modul).toBe(false)
+    }
+  })
+
+  it('LagringsFel är samma klass via barreln som i _shared', async () => {
+    const [barrel, shared] = await Promise.all([import('./cloudStorage'), import('./cloud/_shared')])
+    expect(barrel.LagringsFel).toBe(shared.LagringsFel)
+    const e = new barrel.LagringsFel('spara', '42501')
+    expect(e).toBeInstanceOf(Error)
+    expect(e.name).toBe('LagringsFel')
+    expect(e.kod).toBe('42501')
   })
 })

@@ -387,11 +387,11 @@ describe('Fel skiljs från tomhet', () => {
 
 describe('Kurserna kommer inte längre ur språkmodellen', () => {
   it('prompten ber inte om kurser', () => {
-    const ai = repo('client/api/ai.js')
-    // Den FÖRSTA träffen på 'kompetensgap' är rate-limit-tabellen, inte
-    // prompten. En slice därifrån läser fel block och går grön av fel skäl.
+    const ai = repo('client/api/_prompts/karriar.js')
+    // KA3 2026-09-12: prompten bor i _prompts/karriar.js. Ankarna är två
+    // promptnycklar i den filen; med fel ankare blir slicen tom (se nedan).
     const start = ai.indexOf("'kompetensgap': (data)")
-    const slut = ai.indexOf("'cv-jobbmatchning': (data)")
+    const slut = ai.indexOf("'adaptation-recommendations': (data)")
     const block = ai.slice(start, slut)
     // En slice med fel ankare ger TOM sträng, och en tom sträng passerar
     // varje `not.toContain` — vakten hade då gått grön utan att läsa något.

@@ -366,7 +366,10 @@ describe('Pitchen försvinner inte tyst', () => {
 })
 
 describe('Datalagret säger ifrån', () => {
-  const service = kod('services/cloudStorage.ts')
+  // KA3 2026-09-12: cloudStorage.ts är en barrel; personalBrandApi bor i
+  // services/cloud/varumarke.ts och LagringsFel i services/cloud/_shared.ts.
+  const service = kod('services/cloud/varumarke.ts')
+  const delat = kod('services/cloud/_shared.ts')
 
   it('upsertar inte mot en kolumn utan unikt index', () => {
     /*
@@ -397,6 +400,6 @@ describe('Datalagret säger ifrån', () => {
   })
 
   it('har ett fel anroparen kan visa', () => {
-    expect(service).toContain('export class LagringsFel')
+    expect(delat).toContain('export class LagringsFel')
   })
 })
