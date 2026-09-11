@@ -2,7 +2,9 @@
  * AktivitetsplanSektion — tomtillstånd, närvaro och saldo (KM3/KM4/KM6).
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { screen, fireEvent, cleanup } from '@testing-library/react'
+// JobbsokTidKort (KM9) läser QueryClient — den delade rendern ger en.
+import { render } from '@/test/utils'
 import { AktivitetsplanSektion } from './AktivitetsplanSektion'
 
 const plan = {
@@ -32,6 +34,8 @@ vi.mock('@/services/aktivitetApi', () => ({
 }))
 vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: vi.fn(async () => true) }) }))
 vi.mock('@/services/aktivitetsplanPdf', () => ({ downloadAktivitetsplanPDF: vi.fn(async () => undefined) }))
+vi.mock('@/services/jobbsokAktivitet', () => ({ jobbsokAktivitetApi: { deltagarensJobbsok: vi.fn(async () => null) } }))
+vi.mock('@/pages/consultant/consultantParticipantsQuery', () => ({ fetchCachedConsultantParticipants: vi.fn(async () => []) }))
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] })

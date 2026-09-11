@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T14:54:21.651Z",
+  "generatedAt": "2026-09-11T16:17:32.352Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -26,6 +26,23 @@
       "requirement_value",
       "sort_order",
       "xp_reward"
+    ],
+    "activity_catalog_items": [
+      "activity_type",
+      "capacity",
+      "contact",
+      "created_at",
+      "description",
+      "end_time",
+      "id",
+      "is_active",
+      "location",
+      "org_id",
+      "owner_id",
+      "start_time",
+      "title",
+      "updated_at",
+      "weekday"
     ],
     "activity_plans": [
       "consultant_id",

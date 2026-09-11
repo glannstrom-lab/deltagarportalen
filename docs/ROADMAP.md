@@ -113,14 +113,35 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 - Kvar från verifieringen: inga fel i produkten utöver dialogfallbacken. Mallens typ-chip
   i testet blev "Arbetsplatsförlagd" för att skriptet valde index 3 — inte en bugg.
 
+### Gjort, pass 4 (samma dag) — KM8 aktivitetskatalog och KM9 jobbsökstid
+
+- **KM8** — migration `20260911200000_km8_aktivitetskatalog.sql` körd: `activity_catalog_items`
+  (org_id NULL = konsulentens egen), sex policyer utan självreferens, verifierade som
+  authenticated i rullad-tillbaka transaktion: konsulent i org ser 2 (egen + org) och får
+  0 rader vid update av org-posten; chef får 1 och ser inte konsulentens personliga; utomstående
+  ser 0. `services/aktivitetskatalogApi.ts`, sektionen "Aktivitetskatalog" i Resurser, och
+  "Hämta ur katalogen" per rad i SchemamallDialog. 16 tester.
+- **KM9** — `services/jobbsokAktivitet.ts`: veckans sparade jobb (`saved_jobs.created_at`),
+  skickade ansökningar (`application_date`, `applied_at` är död), CV uppdaterat, brev,
+  intervjuträning — lokal tid. Min vecka visar "Ditt jobbsökande den här veckan" som
+  deltagarens egen redovisning (invit när tomt, aldrig 0). Konsulenten får `JobbsokTidKort`
+  under veckosaldot med planens mål + det RLS ger (saved_jobs via `profiles.consultant_id`,
+  CV-datum ur vyn); när RLS inte ger rader står "Veckans siffror ser deltagaren själv" i stället
+  för 0. 13 tester. **Premiss noterad:** konsulentens läsrätt på `saved_jobs` hänger på
+  1:1-kolumnen `profiles.consultant_id`, inte på `consultant_participants` — en deltagare
+  kopplad bara via relationstabellen ger null-grenen.
+- Prod-röktestet `e2e/km-aktivitetskrav-prod.cjs` uppdaterat: prövar nu portalens egen
+  bekräftelsedialog ("Ja, underlag lämnat") och ångrar först om datumet redan står. 14/14 gröna
+  mot deployen `7e62247e`.
+
 ### Kvar i spåret (ordning)
 
 1. **KM2 rest** — självbetjäning för org-admin (kräver antingen ett höjt grants-tak med
    motivering eller att medlemskapet flyttas till en tabell utan självreferens),
    inbjudan via mejl (blockerad av DE1), otilldelade (BL1), överlämning av caseload.
-2. **KM8** aktivitetskatalog · **KM9** jobbsökstid ur portalens data · **KM10** notiser
-   (`notifications` skrivs fortfarande av ingen konsulenthändelse; DE1 blockerar mejl) ·
-   **KM11** språk · KM7-rest: kolumn för AF-registrering i stället för localStorage.
+2. ~~KM8~~ ~~KM9~~ (pass 4) · **KM10** notiser (`notifications` skrivs fortfarande av ingen
+   konsulenthändelse; DE1 blockerar mejl) · **KM11** språk · KM7-rest: kolumn för AF-registrering
+   i stället för localStorage · KM9-rest: konsulentens läsrätt på saved_jobs via consultant_participants.
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
@@ -1315,9 +1336,9 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 - [x] **KM7** ✅ 2026-09-11 (AF-bocken i localStorage) **IVO-kvartalsunderlag + AF-checklista.** Per org och kvartal: anvisade, ogiltig
   frånvaro, "underlag till nedsättning lämnat", per försörjningshinder (AF:s kategorier, ny kolumn
   på deltagaren). Checklista "registrerad i AF Mina sidor för kommuner" per deltagare · ~3 d
-- [ ] **KM8** **Aktivitetskatalog per organisation** (gruppaktiviteter, platser, tider) som
+- [x] **KM8** ✅ 2026-09-11 **Aktivitetskatalog per organisation** (gruppaktiviteter, platser, tider) som
   mallarna hämtar ur; praktikplatserna i `consultant_work_placements` är redan typ 4 · ~3 d
-- [ ] **KM9** **Jobbsökstid som räknas i planen** ur sparade jobb, ansökningar, CV-uppdatering,
+- [x] **KM9** ✅ 2026-09-11 **Jobbsökstid som räknas i planen** ur sparade jobb, ansökningar, CV-uppdatering,
   intervjuträning, visad som deltagarens egen redovisning, aldrig som kontroll. Försprånget ingen
   konkurrent (Workbuster, Wundermatch, GW Arbetsmarknad, Treserva) har · ~2 d
 - [ ] **KM10** **Påminnelser i appen + "Min vecka" på mobil.** Skriv till `notifications` från

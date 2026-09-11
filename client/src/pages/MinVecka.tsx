@@ -20,6 +20,7 @@ import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { minVeckaApi, type ActivitySession } from '@/services/aktivitetApi'
 import { MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys'
+import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 import {
   addDays,
   formatLocalDate,
@@ -72,6 +73,13 @@ export default function MinVecka() {
   const sessionsQuery = useQuery({
     queryKey: minVeckaSessionsKey(mandag),
     queryFn: () => minVeckaApi.listMySessions(mandag, sondag),
+    enabled: !!planQuery.data,
+  })
+
+  // KM9: deltagarens eget jobbsökande ur portalens data — egen redovisning, aldrig kontroll.
+  const jobbsokQuery = useQuery({
+    queryKey: ['min-vecka', 'jobbsok', mandag],
+    queryFn: () => jobbsokAktivitetApi.minaJobbsok(mandag),
     enabled: !!planQuery.data,
   })
 
@@ -161,6 +169,34 @@ export default function MinVecka() {
               })}
             </p>
           )}
+        </Card>
+
+        <Card className="p-5" aria-labelledby="jobbsok-rubrik">
+          <h2 id="jobbsok-rubrik" className="text-base font-semibold text-stone-800 dark:text-stone-200">
+            {t('minVecka.jobbsok.rubrik', 'Ditt jobbsökande den här veckan')}
+          </h2>
+          {jobbsokQuery.isLoading || (!jobbsokQuery.data && !jobbsokQuery.isError) ? (
+            <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">…</p>
+          ) : jobbsokQuery.isError ? (
+            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">{t('minVecka.jobbsok.fel', 'Ditt jobbsökande kunde inte hämtas just nu.')}</p>
+          ) : !harNagot(jobbsokQuery.data) ? (
+            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
+              {t('minVecka.jobbsok.tomt', 'Inget registrerat än den här veckan. Det syns här när du sparar ett jobb eller skickar en ansökan.')}
+            </p>
+          ) : (
+            <p className="mt-1 text-stone-900 dark:text-stone-100">
+              {[
+                jobbsokQuery.data.sparadeJobb > 0 && t('minVecka.jobbsok.sparade', { count: jobbsokQuery.data.sparadeJobb, defaultValue: '{{count}} jobb sparade' }),
+                jobbsokQuery.data.ansokningar > 0 && t('minVecka.jobbsok.ansokningar', { count: jobbsokQuery.data.ansokningar, defaultValue: '{{count}} ansökningar skickade' }),
+                jobbsokQuery.data.cvUppdaterad && t('minVecka.jobbsok.cv', 'CV uppdaterat'),
+                jobbsokQuery.data.brev > 0 && t('minVecka.jobbsok.brev', { count: jobbsokQuery.data.brev, defaultValue: '{{count}} personliga brev' }),
+                jobbsokQuery.data.intervjutraningar > 0 && t('minVecka.jobbsok.intervju', { count: jobbsokQuery.data.intervjutraningar, defaultValue: '{{count}} intervjuövningar' }),
+              ].filter(Boolean).join(' · ')}
+            </p>
+          )}
+          <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
+            {t('minVecka.jobbsok.egenRedovisning', 'Det här är din egen översikt. Din konsulent ser bara sparade jobb och ansökningar.')}
+          </p>
         </Card>
 
         <div className="flex items-center justify-between gap-2">

@@ -9,13 +9,14 @@
  * GoalCreationDialog: role="dialog", aria-modal, Esc, fokusfälla.
  */
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { X, Plus, Trash2, Copy, Loader2, Clock } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
 import { cn } from '@/lib/utils'
 import { schemamallApi, type ActivityTemplate, type TemplateInput } from '@/services/aktivitetApi'
+import { aktivitetskatalogApi, katalogpostTillMallrad, type CatalogItem } from '@/services/aktivitetskatalogApi'
 import {
   MAX_VECKOTIMMAR,
   mallensVeckotimmar,
@@ -80,6 +81,26 @@ function SchemamallForm({ isOpen, onClose, onSaved, mall }: SchemamallDialogProp
   const [forsokt, setForsokt] = useState(false)
   const [sparar, setSparar] = useState(false)
   const [sparfel, setSparfel] = useState<string | null>(null)
+
+  // KM8: katalogen (kommunens utbud) fyller en rad med rubrik, typ, plats,
+  // dag och tid. Hämtas när formuläret monteras; ett fel blockerar inte
+  // mallen — då visas bara ingen "Hämta ur katalogen".
+  const [katalog, setKatalog] = useState<{ status: 'laddar' | 'klart' | 'fel'; poster: CatalogItem[] }>({ status: 'laddar', poster: [] })
+  useEffect(() => {
+    let aktiv = true
+    aktivitetskatalogApi.list()
+      .then((poster) => { if (aktiv) setKatalog({ status: 'klart', poster: poster.filter((p) => p.is_active) }) })
+      .catch(() => { if (aktiv) setKatalog({ status: 'fel', poster: [] }) })
+    return () => { aktiv = false }
+  }, [])
+  const katalogVal = useMemo(
+    () => [{ value: '', label: 'Hämta ur katalogen…' }, ...katalog.poster.map((p) => ({ value: p.id, label: p.location ? `${p.title} · ${p.location}` : p.title }))],
+    [katalog.poster],
+  )
+  const hamtaUrKatalog = (key: number, postId: string) => {
+    const post = katalog.poster.find((p) => p.id === postId)
+    if (post) uppdatera(key, katalogpostTillMallrad(post))
+  }
 
   // Timmarna räknas på raderna med giltig tid — rubriken kan vara tom medan man skriver.
   const veckotimmar = useMemo(() => mallensVeckotimmar(rader.filter((r) => minuterMellan(r.start_time, r.end_time) > 0)), [rader])
@@ -265,6 +286,20 @@ function SchemamallForm({ isOpen, onClose, onSaved, mall }: SchemamallDialogProp
                     fullWidth
                   />
                 </div>
+                {katalog.status === 'klart' && katalog.poster.length > 0 && (
+                  <Select
+                    id={`rad-${rad.key}-katalog`}
+                    label="Hämta ur katalogen"
+                    options={katalogVal}
+                    value=""
+                    onChange={(e) => hamtaUrKatalog(rad.key, e.target.value)}
+                    hint="Fyller rubrik, typ, plats, dag och tid från kommunens katalog."
+                    fullWidth
+                  />
+                )}
+                {katalog.status === 'fel' && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Katalogen kunde inte hämtas just nu — skriv raden för hand.</p>
+                )}
                 <p className="text-xs text-stone-500 dark:text-stone-400">{AKTIVITETSTYP_HJALP[rad.activity_type]}</p>
                 {fel && (
                   <p className="text-sm text-rose-700 dark:text-rose-300" role="alert">{fel}</p>

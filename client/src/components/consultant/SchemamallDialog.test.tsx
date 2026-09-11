@@ -2,12 +2,16 @@
  * SchemamallDialog — validering och veckotimmar (KM3).
  */
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup, within } from '@testing-library/react'
 import { SchemamallDialog } from './SchemamallDialog'
 
 vi.mock('@/services/aktivitetApi', () => ({
   schemamallApi: { create: vi.fn(), update: vi.fn() },
 }))
+vi.mock('@/services/aktivitetskatalogApi', async () => {
+  const faktisk = await vi.importActual<typeof import('@/services/aktivitetskatalogApi')>('@/services/aktivitetskatalogApi')
+  return { ...faktisk, aktivitetskatalogApi: { list: vi.fn(async () => []) } }
+})
 
 afterEach(() => { cleanup(); vi.clearAllMocks() })
 
@@ -51,5 +55,33 @@ describe('SchemamallDialog', () => {
       name: 'Verkstad',
       items: [expect.objectContaining({ weekday: 1, start_time: '09:00', end_time: '15:00', title: 'Jobbsökarverkstad', activity_type: 'jobsearch' })],
     }))
+  })
+
+  it('KM8: "Hämta ur katalogen" fyller raden med rubrik, typ, plats, dag och tid', async () => {
+    const { aktivitetskatalogApi } = await import('@/services/aktivitetskatalogApi')
+    vi.mocked(aktivitetskatalogApi.list).mockResolvedValue([
+      { id: 'k1', org_id: 'o1', owner_id: 'u9', title: 'Språkcafé', activity_type: 'language', description: null, location: 'Hjernet', weekday: 2, start_time: '13:00', end_time: '15:00', capacity: null, contact: null, is_active: true, created_at: '', updated_at: '' },
+      { id: 'k2', org_id: 'o1', owner_id: 'u9', title: 'Nedlagd grupp', activity_type: 'motivation', description: null, location: null, weekday: null, start_time: null, end_time: null, capacity: null, contact: null, is_active: false, created_at: '', updated_at: '' },
+    ] as never)
+    render(<SchemamallDialog isOpen onClose={() => {}} onSaved={() => {}} />)
+    const val = await screen.findByLabelText('Hämta ur katalogen')
+    // Inaktiva poster erbjuds inte
+    expect(within(val).queryByRole('option', { name: /Nedlagd grupp/ })).toBeNull()
+    fireEvent.change(val, { target: { value: 'k1' } })
+    expect(screen.getByLabelText('Rubrik')).toHaveValue('Språkcafé')
+    expect(screen.getByLabelText('Aktivitetstyp')).toHaveValue('language')
+    expect(screen.getByLabelText('Plats')).toHaveValue('Hjernet')
+    expect(screen.getByLabelText('Veckodag')).toHaveValue('2')
+    expect(screen.getByLabelText('Start')).toHaveValue('13:00')
+    expect(screen.getByLabelText('Slut')).toHaveValue('15:00')
+    expect(screen.getByRole('status')).toHaveTextContent('2 h av högst 40 h per vecka')
+  })
+
+  it('KM8: utan katalogposter visas ingen hämtaknapp', async () => {
+    const { aktivitetskatalogApi } = await import('@/services/aktivitetskatalogApi')
+    vi.mocked(aktivitetskatalogApi.list).mockResolvedValue([])
+    render(<SchemamallDialog isOpen onClose={() => {}} onSaved={() => {}} />)
+    await screen.findByRole('dialog')
+    await vi.waitFor(() => expect(screen.queryByLabelText('Hämta ur katalogen')).toBeNull())
   })
 })

@@ -44,6 +44,7 @@ import {
   type Attendance,
 } from '@/services/aktivitetSchema'
 import { TillampaMallDialog } from './TillampaMallDialog'
+import { JobbsokTidKort } from './JobbsokTidKort'
 import {
   AKTIVITETSTYP_CHIP,
   AKTIVITETSTYP_ETIKETT,
@@ -326,6 +327,9 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
           Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.
           {saldo.antalOmarkerade > 0 && ` ${saldo.antalOmarkerade} pass i veckan är inte markerade än.`}
         </p>
+
+        {/* KM9: eget jobbsökande ur portalens data — deltagarens redovisning, inte kontroll. */}
+        <JobbsokTidKort participantId={participantId} plan={plan} vecka={vecka} />
 
         {dagar.length === 0 ? (
           <p className="text-sm text-stone-500 dark:text-stone-400">Inga pass den här veckan.</p>

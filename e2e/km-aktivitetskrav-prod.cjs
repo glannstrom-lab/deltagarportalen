@@ -11,8 +11,7 @@ const { chromium } = require('playwright')
 const fs = require('fs'); const path = require('path')
 ;(function laddaEnv() {
   const p = path.join(__dirname, '..', '.env.test.local'); if (!fs.existsSync(p)) return
-  for (const line of fs.readFileSync(p, 'utf8').split(/?
-/)) { const m = line.match(/^([A-Z_]+)=(.*)$/); if (m && m[2] && !process.env[m[1]]) process.env[m[1]] = m[2] }
+  for (const line of fs.readFileSync(p, 'utf8').split(/\r?\n/)) { const m = line.match(/^([A-Z_]+)=(.*)$/); if (m && m[2] && !process.env[m[1]]) process.env[m[1]] = m[2] }
 })()
 const BASE = process.env.PLAYWRIGHT_BASE_URL || 'https://www.jobin.se'
 const OUT = path.join(__dirname, 'screenshots', 'km'); fs.mkdirSync(OUT, { recursive: true })
@@ -122,10 +121,16 @@ async function hoppaOver(page) {
   } catch (e) { fel('närvaro', e); await shot(k, 'k07-narvaro-fel') }
 
   try {
+    // Idempotent: står datumet redan, ångra först så dialogen prövas på riktigt.
+    const angra = k.getByRole('button', { name: 'Ångra' }).first()
+    if (await angra.isVisible().catch(() => false)) { await angra.evaluate((el) => el.scrollIntoView({ block: 'center' })); await angra.click(); await k.waitForTimeout(1200) }
     const ul = k.locator('button:has-text("Underlag lämnat till handläggaren"), a:has-text("Underlag lämnat till handläggaren")').first()
     await ul.evaluate((el) => el.scrollIntoView({ block: 'center' })); await k.waitForTimeout(400); await ul.click()
     await k.waitForTimeout(700)
-    await k.waitForTimeout(300)
+    await shot(k, 'k08-bekrafta-dialog')
+    // Portalens egen dialog (useConfirmDialog). Native confirm() accepteras av dialog-lyssnaren ovan.
+    const ja = k.getByRole('button', { name: 'Ja, underlag lämnat' })
+    if (await ja.isVisible({ timeout: 3000 }).catch(() => false)) { await ja.click(); ok('portalens bekräftelsedialog visades') } else { fel('bekräftelsedialog', 'portalens dialog visades inte (native confirm?)') }
     await k.waitForTimeout(1200)
     await shot(k, 'k08-underlag-lamnat')
     ok('underlag lämnat-datum satt')

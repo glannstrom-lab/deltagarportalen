@@ -21,6 +21,12 @@ const getMyPlan = vi.fn()
 const listMySessions = vi.fn()
 const checkin = vi.fn()
 
+const minaJobbsok = vi.fn()
+vi.mock('@/services/jobbsokAktivitet', async () => {
+  const riktig = await vi.importActual<typeof import('@/services/jobbsokAktivitet')>('@/services/jobbsokAktivitet')
+  return { ...riktig, jobbsokAktivitetApi: { minaJobbsok: (...a: unknown[]) => minaJobbsok(...a) } }
+})
+
 vi.mock('@/services/aktivitetApi', () => ({
   minVeckaApi: {
     getMyPlan: (...a: unknown[]) => getMyPlan(...a),
@@ -73,10 +79,14 @@ const pass = (o: Record<string, unknown>) => ({
   ...o,
 })
 
+const tomtJobbsok = { vecka: mandag, sparadeJobb: 0, ansokningar: 0, cvUppdaterad: false, intervjutraningar: 0, brev: 0 }
+
 beforeEach(() => {
   getMyPlan.mockReset()
   listMySessions.mockReset()
   checkin.mockReset()
+  minaJobbsok.mockReset()
+  minaJobbsok.mockResolvedValue(tomtJobbsok)
 })
 afterEach(cleanup)
 
@@ -103,6 +113,24 @@ describe('Min vecka', () => {
     expect(screen.getByText('Språkcafé')).toBeInTheDocument()
     expect(screen.getByText('Verkstad')).toBeInTheDocument()
     expect(screen.getByText(/5 timmar för eget jobbsökande/)).toBeInTheDocument()
+  })
+
+  it('visar veckans jobbsökande som deltagarens egen redovisning', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    minaJobbsok.mockResolvedValue({ vecka: mandag, sparadeJobb: 3, ansokningar: 1, cvUppdaterad: true, intervjutraningar: 0, brev: 0 })
+    render(<MinVecka />)
+    expect(await screen.findByText('3 jobb sparade · 1 ansökan skickad · CV uppdaterat')).toBeInTheDocument()
+    expect(minaJobbsok).toHaveBeenCalledWith(mandag)
+    expect(screen.queryByText(/Inget registrerat än/)).not.toBeInTheDocument()
+  })
+
+  it('en tom vecka är en invit, inte en nolla', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Inget registrerat än den här veckan/)).toBeInTheDocument()
+    expect(screen.queryByText(/0 jobb/)).not.toBeInTheDocument()
   })
 
   it('"Jag är här" checkar in dagens pass med rätt id, och bara dagens', async () => {
