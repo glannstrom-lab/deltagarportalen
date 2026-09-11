@@ -165,6 +165,26 @@ export const orgApi = {
       .eq('id', membershipId)
     if (error) throw new Error(felText(error))
   },
+
+  /**
+   * Överlämning (KM2 steg 4, migration 20260912000000): flyttar ALLA deltagare
+   * från en konsulent till en annan i samma organisation, som chef/admin, via
+   * INSTEAD OF-triggern på vyn organization_handover. Flyttar
+   * consultant_participants, profiles.consultant_id och aktiva planer; journal,
+   * mål och möten stannar hos den tidigare konsulenten (produktbeslut väntar).
+   * Deltagarna får en notis och samtyckesfrågan ställs om. Returnerar antalet
+   * flyttade deltagare. Databasens svenska felmeddelande skickas vidare.
+   */
+  async handover(orgId: string, fromConsultantId: string, toConsultantId: string): Promise<number> {
+    await requireUser()
+    const { data, error } = await supabase
+      .from('organization_handover')
+      .insert({ org_id: orgId, from_consultant_id: fromConsultantId, to_consultant_id: toConsultantId })
+      .select('antal_deltagare')
+      .single()
+    if (error) throw new Error(felText(error))
+    return (data as { antal_deltagare: number } | null)?.antal_deltagare ?? 0
+  },
 }
 
 /**

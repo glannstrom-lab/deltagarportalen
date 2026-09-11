@@ -182,14 +182,32 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   utkast) — rensningen sker en microtask efter mock-anropet testet väntade på. Testet
   väntar nu på `removeItem`.
 
+### Gjort, pass 7 (2026-09-12, natt) — överlämning, KM9-rest, PUB-avtalsutkast
+
+- **KM2 steg 4, överlämning** — migration `20260912000000_km2_overlamning_km9_saved_jobs.sql`
+  körd: vyn `organization_handover` tar INSERT (org_id, from, to) som chef/admin via
+  INSTEAD OF-trigger (samma mönster som självbetjäningen). Flyttar consultant_participants,
+  profiles.consultant_id och aktiva planer; deltagaren får en notis och samtyckesfrågan ställs
+  om. **Journal, mål, möten och placeringar flyttas INTE** — de låses för båda (KS2-läge c) tills
+  Mikael beslutar arkivering/flytt. Verifierat som chef (1 deltagare flyttad, alla tre tabeller
+  pekar rätt, notis skapad), konsulent (42501), samma person (22023), mottagare utanför (42501).
+  UI: "Överlämna deltagare…" per konsulentrad i chefens caseload, mottagare ur kollegorna.
+- **KM9-rest** — ny SELECT-policy på `saved_jobs` via `consultant_participants`; verifierat att
+  konsulenten ser deltagarens sparade jobb även när `profiles.consultant_id` är null.
+- **`juridik/PUB-avtal-kommun-UTKAST.md`** — personuppgiftsbiträdesavtal med kommunen som
+  ansvarig, i SKR:s struktur, med bilagorna behandling/underbiträden/åtgärder ifyllda ur
+  Art 30, HOSTING-REGIONS, RETENTION och de nya migrationerna. Åtta "avvikelser att förhandla"
+  står uttryckligen (org.nr saknas, Perplexity, gallring, BankID/SSO, AI-brytare per org,
+  läslogg, certifieringar, journal vid byte). **Inte juridiskt granskat.**
+
 ### Kvar i spåret (ordning)
 
-1. ~~Självbetjäning~~ (pass 6) · inbjudan via mejl (blockerad av DE1), otilldelade (BL1),
-   överlämning av caseload.
+1. ~~Självbetjäning~~ ~~överlämning~~ (pass 6–7) · inbjudan via mejl (blockerad av DE1),
+   otilldelade (BL1) · **beslut:** journal/mål/möten vid byte av konsulent (KS2 a/b/c).
 2. ~~KM8~~ ~~KM9~~ ~~KM10~~ · KM11: fler språk kräver översättare (mekanismen finns) ·
-   KM9-rest: konsulentens läsrätt på saved_jobs via consultant_participants · mejlnotiser
-   när DE1 är löst.
-3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
+   mejlnotiser när DE1 är löst.
+3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal — utkast finns i
+   `juridik/`, juridisk granskning + org.nr kvar,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
 4. ~~Browserverifiering mot prod~~ — gjord i pass 3, se ovan. Kör `e2e/km-aktivitetskrav-prod.cjs`
@@ -1357,7 +1375,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 > **Ordning:** KM2 (beslut) → KM3+KM4+KM6 före 1 okt → KM5+KM7+KM8 före jan 2027 → resten.
 > **Ingen AI i kedjan schema → närvaro → beslutsunderlag** (AI-förordningen bilaga III p. 5 a).
 
-- [ ] **KM2** 🟡 datamodell, superadmin, kollegor, caseload och självbetjäning klara 2026-09-11; inbjudan via mejl (DE1) och överlämning kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
+- [ ] **KM2** 🟡 datamodell, superadmin, kollegor, caseload, självbetjäning och överlämning klara 2026-09-11/12; inbjudan via mejl (DE1) kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
   (`id, name, kind: kommun|leverantor, org_number`) + `organization_members` (`user_id, org_id,
   role: handlaggare|konsulent|chef|admin`). Alla KM-tabeller bär `org_id`. RLS: handläggare ser
   närvaro/avvikelser men inte journal, mående, dagbok (inre sekretess, OSL 26 kap.). Chefsvy:

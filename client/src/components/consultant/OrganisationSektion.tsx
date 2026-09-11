@@ -10,13 +10,19 @@
  * ingen ändrar sitt eget medlemskap). Databasens felmeddelanden är på svenska
  * och visas rakt av. Ingen inbjudan via mejl — DE1 blockerar utskick.
  *
+ * Överlämning (KM2 steg 4): chef/admin flyttar HELA caseloaden från en
+ * konsulent till en annan i organisationen — vyn organization_handover,
+ * INSTEAD OF-trigger. Chefen behöver inte se deltagarna för det (bara tal).
+ * Journal, mål och möten flyttas inte förrän ett beslut om arkivering finns
+ * (KS2) — UI:t säger det rakt ut.
+ *
  * Tre lägen: laddar / fel / klart. Utan medlemskap: ärlig text, ingen knapp
  * som inte gör något — organisationer läggs upp av superadmin i piloten.
  * Konsulentvyn översätts inte (DESIGN.md §2): svenska literaler.
  */
 
 import { useEffect, useState, type FormEvent } from 'react'
-import { Users, BarChart3, UserPlus, Trash2 } from '@/components/ui/icons'
+import { Users, BarChart3, UserPlus, Trash2, ArrowRight } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Input'
@@ -55,6 +61,8 @@ function arLedning(role: OrgRole): boolean {
 export function OrganisationSektion() {
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
   const [omgang, setOmgang] = useState(0)
+  const [caseloadBesked, setCaseloadBesked] = useState<string | null>(null)
+  const [caseloadFel, setCaseloadFel] = useState<string | null>(null)
 
   useEffect(() => {
     let aktiv = true
@@ -140,36 +148,41 @@ export function OrganisationSektion() {
                         <th className="py-2 pr-3 font-medium">Konsulent</th>
                         <th className="py-2 pr-3 font-medium">Deltagare</th>
                         <th className="py-2 pr-3 font-medium">Aktiva planer</th>
-                        <th className="py-2 font-medium">Ogiltig frånvaro 30 d</th>
+                        <th className="py-2 pr-3 font-medium">Ogiltig frånvaro 30 d</th>
+                        <th className="py-2 font-medium"><span className="sr-only">Åtgärd</span></th>
                       </tr>
                     </thead>
                     <tbody>
                       {lage.caseload.map((r) => (
-                        <tr key={`${r.org_id}-${r.consultant_id}`} className="border-t border-stone-200 dark:border-stone-700">
-                          <td className="py-2 pr-3 text-stone-900 dark:text-stone-100">
-                            {namn(r)}
-                            <span className="block text-xs text-stone-500 dark:text-stone-400">
-                              {ORG_ROLL_ETIKETT[r.role]}
-                              {lage.medlemskap.length > 1 ? ` · ${r.org_name}` : ''}
-                            </span>
-                          </td>
-                          <td className="py-2 pr-3 tabular-nums text-stone-900 dark:text-stone-100">
-                            {r.antal_deltagare === 0 ? <span className="text-stone-500 dark:text-stone-400">Inga deltagare än</span> : r.antal_deltagare}
-                          </td>
-                          <td className="py-2 pr-3 tabular-nums text-stone-900 dark:text-stone-100">{r.antal_aktiva_planer}</td>
-                          <td
-                            className={cn(
-                              'py-2 tabular-nums',
-                              r.ogiltig_franvaro_30d > 0 ? 'text-red-700 dark:text-red-300 font-medium' : 'text-stone-900 dark:text-stone-100',
-                            )}
-                          >
-                            {r.ogiltig_franvaro_30d}
-                          </td>
-                        </tr>
+                        <CaseloadRad
+                          key={`${r.org_id}-${r.consultant_id}`}
+                          rad={r}
+                          mottagare={lage.kollegor.filter((k) => k.org_id === r.org_id && k.user_id !== r.consultant_id && arMottagarroll(k.role))}
+                          visaOrg={lage.medlemskap.length > 1}
+                          onKlar={(besked) => {
+                            setCaseloadFel(null)
+                            setCaseloadBesked(besked)
+                            laddaTyst()
+                          }}
+                          onFel={(fel) => {
+                            setCaseloadBesked(null)
+                            setCaseloadFel(fel)
+                          }}
+                        />
                       ))}
                     </tbody>
                   </table>
                 </div>
+              )}
+              {caseloadFel && (
+                <p role="alert" className="mt-3 text-sm text-red-700 dark:text-red-300">
+                  {caseloadFel}
+                </p>
+              )}
+              {caseloadBesked && !caseloadFel && (
+                <p role="status" className="mt-3 text-sm text-emerald-700 dark:text-emerald-300">
+                  {caseloadBesked}
+                </p>
               )}
               <p className="mt-3 text-xs text-stone-500 dark:text-stone-400">
                 Bara tal. Namn på deltagare, journal och mående syns inte här.
@@ -179,6 +192,138 @@ export function OrganisationSektion() {
         </div>
       )}
     </Card>
+  )
+}
+
+function arMottagarroll(role: OrgRole): boolean {
+  return role === 'konsulent' || role === 'chef' || role === 'admin'
+}
+
+// ---------------------------------------------------------------------------
+// En rad i caseload-tabellen, med överlämning för rader som har deltagare
+// ---------------------------------------------------------------------------
+
+function CaseloadRad({
+  rad: r,
+  mottagare,
+  visaOrg,
+  onKlar,
+  onFel,
+}: {
+  rad: CaseloadRow
+  mottagare: Colleague[]
+  visaOrg: boolean
+  onKlar: (besked: string) => void
+  onFel: (fel: string) => void
+}) {
+  const { confirm } = useConfirmDialog()
+  const [oppen, setOppen] = useState(false)
+  const [tillId, setTillId] = useState('')
+  const [sparar, setSparar] = useState(false)
+  const panelId = `overlamning-${r.org_id}-${r.consultant_id}`
+  const vald = mottagare.find((k) => k.user_id === tillId) ?? null
+
+  const overlamna = async () => {
+    if (!vald) return
+    const ok = await confirm({
+      title: `Överlämna deltagarna hos ${namn(r)} till ${namn(vald)}?`,
+      message: `Alla ${r.antal_deltagare} deltagare flyttas till ${namn(vald)}. Deltagarna får en notis och en ny samtyckesfråga. Journal, mål och möten stannar hos den tidigare konsulenten tills ett beslut om arkivering finns.`,
+      confirmText: `Överlämna ${r.antal_deltagare} deltagare`,
+      cancelText: 'Avbryt',
+      variant: 'warning',
+    })
+    if (!ok) return
+    setSparar(true)
+    try {
+      const antal = await orgApi.handover(r.org_id, r.consultant_id, vald.user_id)
+      setOppen(false)
+      setTillId('')
+      onKlar(`${antal} deltagare överlämnade till ${namn(vald)}.`)
+    } catch (e) {
+      onFel(felText(e))
+    } finally {
+      setSparar(false)
+    }
+  }
+
+  return (
+    <>
+      <tr className="border-t border-stone-200 dark:border-stone-700">
+        <td className="py-2 pr-3 text-stone-900 dark:text-stone-100">
+          {namn(r)}
+          <span className="block text-xs text-stone-500 dark:text-stone-400">
+            {ORG_ROLL_ETIKETT[r.role]}
+            {visaOrg ? ` · ${r.org_name}` : ''}
+          </span>
+        </td>
+        <td className="py-2 pr-3 tabular-nums text-stone-900 dark:text-stone-100">
+          {r.antal_deltagare === 0 ? <span className="text-stone-500 dark:text-stone-400">Inga deltagare än</span> : r.antal_deltagare}
+        </td>
+        <td className="py-2 pr-3 tabular-nums text-stone-900 dark:text-stone-100">{r.antal_aktiva_planer}</td>
+        <td
+          className={cn(
+            'py-2 pr-3 tabular-nums',
+            r.ogiltig_franvaro_30d > 0 ? 'text-red-700 dark:text-red-300 font-medium' : 'text-stone-900 dark:text-stone-100',
+          )}
+        >
+          {r.ogiltig_franvaro_30d}
+        </td>
+        <td className="py-2">
+          {r.antal_deltagare > 0 && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setOppen((o) => !o)}
+              aria-expanded={oppen}
+              aria-controls={panelId}
+              disabled={sparar}
+            >
+              <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              Överlämna deltagare…
+            </Button>
+          )}
+        </td>
+      </tr>
+      {oppen && r.antal_deltagare > 0 && (
+        <tr className="bg-stone-50 dark:bg-stone-800">
+          <td colSpan={5} className="p-3">
+            <div id={panelId} className="space-y-2">
+              {mottagare.length === 0 ? (
+                <p className="text-sm text-stone-600 dark:text-stone-400">
+                  Ingen annan arbetskonsulent, chef eller administratör i organisationen att lämna över till. Lägg till en kollega först.
+                </p>
+              ) : (
+                <>
+                  <div className="flex flex-wrap items-end gap-2">
+                    <Select
+                      id={`${panelId}-till`}
+                      label="Lämna över till"
+                      value={tillId}
+                      onChange={(e) => setTillId(e.target.value)}
+                      disabled={sparar}
+                      fullWidth={false}
+                      options={[{ value: '', label: 'Välj kollega' }, ...mottagare.map((k) => ({ value: k.user_id, label: `${namn(k)} · ${ORG_ROLL_ETIKETT[k.role]}` }))]}
+                    />
+                    <Button size="sm" onClick={() => void overlamna()} disabled={!vald || sparar}>
+                      {sparar ? 'Överlämnar…' : `Överlämna ${r.antal_deltagare} deltagare`}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => setOppen(false)} disabled={sparar}>
+                      Avbryt
+                    </Button>
+                  </div>
+                  <p className="text-xs text-stone-600 dark:text-stone-400">
+                    {vald
+                      ? `Alla ${r.antal_deltagare} deltagare flyttas till ${namn(vald)}. `
+                      : `Alla ${r.antal_deltagare} deltagare flyttas till den du väljer. `}
+                    Deltagarna får en notis och en ny samtyckesfråga. Journal, mål och möten stannar hos den tidigare konsulenten tills ett beslut om arkivering finns.
+                  </p>
+                </>
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   )
 }
 
