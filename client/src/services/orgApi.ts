@@ -35,6 +35,8 @@ export interface Organization {
   name: string
   kind: OrgKind
   org_number: string | null
+  /** false = AI-funktionerna nekas alla deltagare kopplade till organisationens konsulenter (båda AI-grindarna). */
+  ai_enabled: boolean
   created_at: string
   updated_at: string
 }
@@ -220,7 +222,7 @@ export const orgAdminApi = {
     return data as Organization
   },
 
-  async updateOrganization(id: string, patch: Partial<Pick<Organization, 'name' | 'kind' | 'org_number'>>): Promise<Organization> {
+  async updateOrganization(id: string, patch: Partial<Pick<Organization, 'name' | 'kind' | 'org_number' | 'ai_enabled'>>): Promise<Organization> {
     await requireUser()
     const { data, error } = await supabase.from('organizations').update(patch).eq('id', id).select('*').single()
     if (error) throw error

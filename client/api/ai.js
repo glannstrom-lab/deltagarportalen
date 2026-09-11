@@ -485,6 +485,35 @@ async function checkAiEnabled(supabase, userId) {
   }
 }
 
+/**
+ * Organisationens AI-brytare (kommunspåret, PUB-avvikelse 5). En kommun kan
+ * stänga AI för ALLA deltagare kopplade till dess konsulenter, oavsett
+ * deltagarens egen `ai_enabled`. Läses genom vyn `my_ai_policy`
+ * (migration 20260912010000), som körs med ägarens rättigheter och filtrerar
+ * på auth.uid() — därför MÅSTE klienten vara den tokenbärande
+ * `supabaseAsUser`, precis som för `checkAiEnabled` (A19-fällan).
+ *
+ * Ingen rad = deltagaren är inte kopplad till någon organisation = ingen spärr.
+ * Fail closed vid uppslagsfel, samma policy som de två andra grindarna:
+ * kostnaden för att gissa fel är en behandling kommunen förbjudit.
+ */
+async function checkOrgAiEnabled(supabase, userId) {
+  if (!supabase || !userId) return { allowed: false, reason: 'lookup_failed' };
+  try {
+    const { data, error } = await supabase.from('my_ai_policy').select('org_name, ai_enabled');
+    if (error) {
+      console.warn('[OrgAiGate] uppslag misslyckades (blockerar):', error.message);
+      return { allowed: false, reason: 'lookup_failed' };
+    }
+    const sparr = (data || []).find((r) => r && r.ai_enabled === false);
+    if (sparr) return { allowed: false, reason: 'org_disabled', orgName: sparr.org_name || null };
+    return { allowed: true };
+  } catch (err) {
+    console.warn('[OrgAiGate] kastade (blockerar):', err.message);
+    return { allowed: false, reason: 'lookup_failed' };
+  }
+}
+
 // ============================================
 // Retry-helper för OpenRouter (C6)
 // ============================================
@@ -2020,6 +2049,23 @@ module.exports = async (req, res) => {
     // Ligger efter rate limit så att en flod av blockerade anrop ändå bromsas,
     // men före token-taket och före att prompten byggs — vi vill inte ens
     // konstruera en prompt av hälsodata vi saknar grund för att behandla.
+    // Kommunspåret: organisationens AI-brytare gäller alla funktioner som
+    // rör deltagarens egna uppgifter — samma undantag som B28-grinden (de
+    // konsulentfunktioner som behandlar en annan persons data).
+    if (!AI_ENABLED_EXEMPT_FUNCTIONS.has(fn)) {
+      const orgGate = await checkOrgAiEnabled(supabaseAsUser, user.id);
+      if (!orgGate.allowed) {
+        return res.status(403).json({
+          error:
+            orgGate.reason === 'org_disabled'
+              ? `AI-funktionerna är avstängda av ${orgGate.orgName || 'din organisation'}. Det gäller oavsett din egen inställning — prata med din konsulent om du har frågor.`
+              : 'Vi kunde inte kontrollera din organisations AI-inställning just nu, och skickar därför inte dina uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_CONSENT_REQUIRED',
+          reason: orgGate.reason,
+        });
+      }
+    }
+
     if (ART9_FUNCTIONS.has(fn)) {
       const consent = await checkArt9Consent(supabaseAsUser, user.id);
       if (!consent.allowed) {

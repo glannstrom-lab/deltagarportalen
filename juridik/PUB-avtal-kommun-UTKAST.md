@@ -113,8 +113,8 @@ deltagare.
 **Följande gäller alltid:**
 - Varje AI-funktion kräver deltagarens eget samtycke per funktion innan något skickas.
 - Kommunen kan begära att AI-funktionerna stängs av för samtliga deltagare kopplade till kommunens
-  konsulenter. `[Teknisk brytare per organisation finns inte i dag — sätts per deltagare av Jobin
-  på kommunens begäran, eller byggs före signering.]`
+  konsulenter. Brytaren finns per organisation (`organizations.ai_enabled`, 2026-09-12) och gäller
+  i båda AI-backenderna oavsett deltagarens egen inställning; Jobin sätter den på kommunens begäran.
 - **Ingen AI används i kedjan schema → närvaro → underlag till beslut om bistånd.** Schemamallar,
   plan, närvaro, veckosaldo och kvartalsunderlag är deterministiska beräkningar. Beslut om
   nedsättning eller nekande av försörjningsstöd fattas av socialnämnden i kommunens eget system.
@@ -173,7 +173,8 @@ har bekräftats.
 - **Autentisering:** e-post och lösenord via Supabase Auth; Google-inloggning som tillval.
   `[BankID/SSO finns inte — avvikelse.]`
 - **Loggning:** åtkomst- och ändringslogg för konsulenthändelser i den omfattning som anges i
-  `docs/security-audit.md`; deltagaren ser inte i dag vem som läst hens uppgifter (`[byggs]`).
+  `docs/security-audit.md`; deltagaren ser själv vem som öppnat hens uppgifter (läslogg i
+  Min konsulent, 2026-09-12).
 - **Underleverantörernas säkerhet:** enligt respektive DPA.
 - **Incidenthantering:** `docs/INCIDENT-RESPONSE.md`, 24 timmar till kommunen.
 - **Sårbarhetshantering:** beroendeskanning i varje bygge (`npm audit` på produktionsberoenden),
@@ -190,8 +191,8 @@ har bekräftats.
    kommunens deltagare.
 3. **Automatisk gallring** är inte driftsatt. Manuell gallring på begäran tills vidare.
 4. **BankID/SSO** finns inte. Kommunens IT kommer fråga.
-5. **Brytare för AI per organisation** finns inte; i dag per deltagare.
-6. **Läslogg för deltagaren** finns inte.
+5. ~~Brytare för AI per organisation~~ — finns sedan 2026-09-12.
+6. ~~Läslogg för deltagaren~~ — finns sedan 2026-09-12.
 7. **Certifieringar** finns inte; granskning enligt punkt 10 i stället.
 8. **Journal, mål och möten** vid byte av konsulent: låses i dag. Kommunen kommer vilja att de följer
    med eller arkiveras — produktbeslut.

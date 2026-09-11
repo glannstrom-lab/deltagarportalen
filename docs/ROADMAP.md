@@ -200,6 +200,26 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   står uttryckligen (org.nr saknas, Perplexity, gallring, BankID/SSO, AI-brytare per org,
   läslogg, certifieringar, journal vid byte). **Inte juridiskt granskat.**
 
+### Gjort, pass 8 (2026-09-12) — AI-brytare per organisation och deltagarens läslogg
+
+- **PUB-avvikelse 5, AI-brytare per organisation** — migration `20260912010000` körd:
+  `organizations.ai_enabled` (superadmin sätter, brytare i panelen) och vyn `my_ai_policy`
+  (deltagaren ser om en organisation hen är kopplad till stängt av AI; verifierat: kopplad
+  deltagare 1 rad `false`, okopplad 0 rader, deltagaren ser inte `organizations` direkt).
+  **Båda AI-grindarna** kontrollerar den: `client/api/ai.js` via `my_ai_policy` med den
+  tokenbärande klienten (`checkOrgAiEnabled`, före art. 9- och B28-grinden, samma undantag
+  som B28), `_shared/aiGate.ts` via joinen consultant_participants → organization_members →
+  organizations med service role (auth.uid() är null där, vyn duger inte). Nytt skäl
+  `org_disabled`, 403 med organisationens namn. Fail closed. 3 nya handlertester,
+  mutationskontrollerade (grinden bortkopplad → 2 röda). Deltagaren ser i Inställningar
+  "Avstängt av din organisation" och toggeln låses.
+- **PUB-avvikelse 6 / ÖV1, läslogg** — `audit_logs.participant_id` + SELECT-policy för
+  deltagaren på rader med `VIEWED_PARTICIPANT_DATA` (verifierat: ser sin visningsrad, inte
+  admin-raden). Konsulentvyn loggar en gång per deltagare och webbläsarsession när
+  deltagarsidan öppnas (`services/laslogg.ts`); Min konsulent visar kortet "Vem har öppnat dina
+  uppgifter" med de senaste 20.
+- Edge-funktionen typkontrolleras i deployen (deno saknas lokalt) — se Deploy-jobbet.
+
 ### Kvar i spåret (ordning)
 
 1. ~~Självbetjäning~~ ~~överlämning~~ (pass 6–7) · inbjudan via mejl (blockerad av DE1),
@@ -1423,7 +1443,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
   i `AI-ACT-CLASSIFICATION.md`; stäng Perplexity-funktionerna för organisationskonton tills
   underbiträdet är redovisat · S–M per punkt
 
-- [ ] **ÖV1** **En läslogg deltagaren själv kan se.** Enda loggade konsulenthändelsen är
+- [x] **ÖV1** ✅ 2026-09-12 (VIEWED_PARTICIPANT_DATA + participant_id + deltagarens policy; kortet i Min konsulent) **En läslogg deltagaren själv kan se.** Enda loggade konsulenthändelsen är
   `BULK_MESSAGE_SENT` (`consultantService.ts:182-194`). Att öppna någons journal, mål, mående eller
   intresseprofil loggas ingenstans. Åtkomstloggsknappen togs bort 2026-06-11 med motiveringen att
   konsulenten inte kan läsa loggen — sant, men `audit_logs` har `SELECT` bara för admin, så **inte

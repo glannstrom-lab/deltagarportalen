@@ -4066,6 +4066,13 @@
   },
   "myConsultant": {
     "title": "Min konsulent",
+    "laslogg": {
+      "title": "Vem har öppnat dina uppgifter",
+      "desc": "Varje gång din konsulent öppnar din sida loggas det här. Du ser det, ingen annan behöver berätta det.",
+      "rad": "Din konsulent öppnade dina uppgifter {{datum}} kl {{tid}}",
+      "tomt": "Ingen har öppnat dina uppgifter än — det syns här när din konsulent gör det.",
+      "fel": "Vi kunde inte hämta loggen just nu."
+    },
     "subtitle": "Kommunicera med {{name}}",
     "subtitleNoConsultant": "Ingen konsulent ännu",
     "noConsultant": "Du har ingen konsulent ännu",
@@ -6400,6 +6407,10 @@
         "sharingStopFailed": "Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under \"Datadelning med konsulent\" nedan, eller hör av dig till oss.",
         "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare.",
         "saveFailed": "Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund."
+      },
+      "orgAiLock": {
+        "text": "AI-funktionerna är avstängda av {{orgName}}. Det gäller oavsett din egen inställning.",
+        "status": "Avstängt av din organisation"
       },
       "aiToggle": {
         "desc": "Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.",

@@ -28,7 +28,7 @@ const users = [
   { id: 'u2', email: 'kim.karlsson@hellefors.se', first_name: 'Kim', last_name: 'Karlsson', role: 'CONSULTANT' },
   { id: 'u3', email: 'anna@example.se', first_name: 'Anna', last_name: null, role: 'USER' },
 ]
-const org = { id: 'o1', name: 'Hällefors kommun', kind: 'kommun', org_number: null, created_at: '', updated_at: '' }
+const org = { id: 'o1', name: 'Hällefors kommun', kind: 'kommun', org_number: null, ai_enabled: true, created_at: '', updated_at: '' }
 
 describe('OrganisationerTab', () => {
   beforeEach(() => vi.clearAllMocks())
@@ -91,5 +91,18 @@ describe('OrganisationerTab', () => {
     render(<OrganisationerTab users={users} />)
     expect(await screen.findByText('Organisationerna kunde inte hämtas')).toBeInTheDocument()
     expect(screen.getByText('permission denied')).toBeInTheDocument()
+  })
+  it('AI-brytaren anropar updateOrganization med ai_enabled: false och visar Av', async () => {
+    const { orgAdminApi } = await import('@/services/orgApi')
+    vi.mocked(orgAdminApi.listOrganizations).mockResolvedValue([org] as never)
+    vi.mocked(orgAdminApi.listMembers).mockResolvedValue([])
+    vi.mocked(orgAdminApi.updateOrganization).mockResolvedValue({ ...org, ai_enabled: false } as never)
+    render(<OrganisationerTab users={users as never} />)
+    const brytare = await screen.findByRole('switch', { name: /AI-funktioner för Hällefors kommuns deltagare/ })
+    expect(brytare).toHaveAttribute('aria-checked', 'true')
+    fireEvent.click(brytare)
+    await screen.findByText('Av')
+    expect(orgAdminApi.updateOrganization).toHaveBeenCalledWith('o1', { ai_enabled: false })
+    expect(screen.getByRole('switch', { name: /Hällefors/ })).toHaveAttribute('aria-checked', 'false')
   })
 })

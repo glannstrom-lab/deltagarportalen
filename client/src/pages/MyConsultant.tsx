@@ -50,6 +50,7 @@ import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/styles/design-system'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
+import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
@@ -1105,6 +1106,7 @@ function MyConsultantInner() {
           {/* Right column - Shared info */}
           <div className="space-y-6">
             <SharedInformationSection sharedInfo={sharedInfo} />
+            <VemHarOppnatKort />
           </div>
         </div>
       )}

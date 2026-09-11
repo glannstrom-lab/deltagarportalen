@@ -4066,6 +4066,13 @@
   },
   "myConsultant": {
     "title": "My Consultant",
+    "laslogg": {
+      "title": "Who has opened your information",
+      "desc": "Every time your consultant opens your page, it is logged here. You can see it yourself.",
+      "rad": "Your consultant opened your information on {{datum}} at {{tid}}",
+      "tomt": "No one has opened your information yet. It will show here when your consultant does.",
+      "fel": "We could not load the log right now."
+    },
     "subtitle": "Communicate with {{name}}",
     "subtitleNoConsultant": "No consultant yet",
     "noConsultant": "You don't have a consultant yet",
@@ -6400,6 +6407,10 @@
         "sharingStopFailed": "Your consent has been withdrawn, but we could not turn off sharing with your consultant. Try again under \"Data sharing with consultant\" below, or contact us.",
         "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later.",
         "saveFailed": "We could not save your choice right now, so nothing has changed. Please try again in a moment."
+      },
+      "orgAiLock": {
+        "text": "AI features are turned off by {{orgName}}. This applies no matter what you choose here.",
+        "status": "Turned off by your organisation"
       },
       "aiToggle": {
         "desc": "Pause AI features without withdrawing your consent. This is your right under GDPR Art. 21 to object to profiling — you can turn it back on at any time.",

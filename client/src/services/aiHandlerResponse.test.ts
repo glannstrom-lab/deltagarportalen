@@ -71,7 +71,9 @@ function stubNetwork(
   profile: { ai_consent_at: string | null; ai_enabled: boolean } = {
     ai_consent_at: '2026-08-01T10:00:00Z',
     ai_enabled: true,
-  }
+  },
+  // Organisationens AI-brytare (vyn my_ai_policy). Tom = ingen koppling = ingen spärr.
+  orgPolicy: Array<{ org_name: string; ai_enabled: boolean }> = []
 ) {
   const openRouterCalls: string[] = []
   const fetchStub = vi.fn(async (input: unknown, init?: { body?: string }) => {
@@ -95,6 +97,9 @@ function stubNetwork(
     }
     if (url.includes('/rest/v1/profiles')) {
       return jsonResponse(profile)
+    }
+    if (url.includes('/rest/v1/my_ai_policy')) {
+      return jsonResponse(orgPolicy)
     }
     throw new Error(`Oväntat nätverksanrop i test: ${url}`)
   })
@@ -316,6 +321,44 @@ describe('handlerns allmänna AI-av-grind (B28)', () => {
 
     expect(captured.status).toBe(200)
     expect(openRouterCalls).toHaveLength(1)
+  })
+})
+
+describe('organisationens AI-brytare (kommunspåret, PUB-avvikelse 5)', () => {
+  it('svarar 403 org_disabled för personligt-brev när kommunen stängt av AI — trots ai_enabled=true', async () => {
+    const { openRouterCalls } = stubNetwork('irrelevant', { ai_consent_at: null, ai_enabled: true }, [
+      { org_name: 'Testkommun', ai_enabled: false },
+    ])
+    const { res, captured } = makeRes()
+    await handler(makeReq('personligt-brev', { jobTitle: 'Kock' }), res)
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ code: 'AI_CONSENT_REQUIRED', reason: 'org_disabled' })
+    expect(String((captured.body as { error: string }).error)).toContain('Testkommun')
+    expect(openRouterCalls).toHaveLength(0)
+  })
+
+  it('gäller även art. 9-funktionerna (ai-team-chat) före samtyckeskontrollen', async () => {
+    const { openRouterCalls } = stubNetwork('irrelevant', { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: true }, [
+      { org_name: 'Testkommun', ai_enabled: false },
+    ])
+    const { res, captured } = makeRes()
+    await handler(makeReq('ai-team-chat', { message: 'hej', agentTyp: 'arbetskonsulent' }), res)
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ reason: 'org_disabled' })
+    expect(openRouterCalls).toHaveLength(0)
+  })
+
+  it('släpper igenom när organisationen har AI på, och när deltagaren saknar organisation', async () => {
+    const a = stubNetwork('Ett brev.', undefined, [{ org_name: 'Testkommun', ai_enabled: true }])
+    const ra = makeRes()
+    await handler(makeReq('personligt-brev', { jobTitle: 'Kock' }), ra.res)
+    expect(ra.captured.status).toBe(200)
+    expect(a.openRouterCalls.length).toBeGreaterThan(0)
+    const b = stubNetwork('Ett brev.', undefined, [])
+    const rb = makeRes()
+    await handler(makeReq('personligt-brev', { jobTitle: 'Kock' }), rb.res)
+    expect(rb.captured.status).toBe(200)
+    expect(b.openRouterCalls.length).toBeGreaterThan(0)
   })
 })
 

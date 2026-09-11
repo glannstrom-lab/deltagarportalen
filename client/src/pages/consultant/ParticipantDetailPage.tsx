@@ -34,6 +34,7 @@ import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
+import { laslogg } from '@/services/laslogg'
 import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSektion'
 import { cn } from '@/lib/utils'
 
@@ -302,6 +303,10 @@ export function ParticipantDetailPage() {
     setTimeline([])
     setError(null)
     fetchParticipantData(participantId)
+    // ÖV1: deltagaren ska kunna se vem som öppnat hens uppgifter. En rad per
+    // deltagare och webbläsarsession; fel sväljs i laslogg (console.warn) och
+    // får aldrig fälla sidan.
+    if (participantId) void laslogg.loggaVisningEnGang(participantId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participantId])
 

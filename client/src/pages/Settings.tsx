@@ -26,6 +26,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Settings as SettingsIcon } from '@/components/ui/icons'
 import { useFocusMode as useFocusModeProvider } from '@/components/FocusModeProvider'
+import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSettingsWizard } from '@/components/focus/pages/FocusSettingsWizard'
 
@@ -259,6 +260,11 @@ function SettingsInner() {
       return false
     }
   }
+
+  // PUB-avvikelse 5: organisationen (kommunen) kan ha stängt av AI för alla
+  // sina deltagare. Grinden sitter på servern; det här låser knappen och
+  // förklarar varför.
+  const orgAiSparr = useOrgAiSparr()
 
   // GDPR Art 21 — växla "AI-funktioner PÅ/AV" utan att återkalla samtycke
   const handleAiToggle = async () => {
@@ -638,16 +644,24 @@ function SettingsInner() {
                           "text-xs mt-2 flex items-center gap-1",
                           consentData.aiEnabled ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
                         )}>
-                          {consentData.aiEnabled
-                            ? t('settings.privacy.aiToggle.statusOn', 'AI-funktioner är aktiva')
-                            : t('settings.privacy.aiToggle.statusOff', 'AI-funktioner är pausade')}
+                          {orgAiSparr
+                            ? t('settings.privacy.orgAiLock.status', 'Avstängt av din organisation')
+                            : consentData.aiEnabled
+                              ? t('settings.privacy.aiToggle.statusOn', 'AI-funktioner är aktiva')
+                              : t('settings.privacy.aiToggle.statusOff', 'AI-funktioner är pausade')}
                         </p>
+                        {orgAiSparr && (
+                          <p className="text-sm text-stone-600 dark:text-stone-400 mt-2" role="status">
+                            {t('settings.privacy.orgAiLock.text', { defaultValue: 'AI-funktionerna är avstängda av {{orgName}}. Det gäller oavsett din egen inställning.', orgName: orgAiSparr.org_name })}
+                          </p>
+                        )}
                       </div>
                       <Button
                         variant={consentData.aiEnabled ? "secondary" : "primary"}
                         size="sm"
                         onClick={handleAiToggle}
                         isLoading={isTogglingAi}
+                        disabled={!!orgAiSparr}
                         className="flex-shrink-0"
                       >
                         {consentData.aiEnabled

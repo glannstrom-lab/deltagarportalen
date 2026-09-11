@@ -56,6 +56,7 @@ export function OrganisationerTab({ users }: Props) {
   const [vald, setVald] = useState<string | null>(null)
   const [fel, setFel] = useState<string | null>(null)
   const [visaNy, setVisaNy] = useState(false)
+  const [sparAi, setSparAi] = useState<string | null>(null)
 
   useEffect(() => {
     let aktiv = true
@@ -97,6 +98,22 @@ export function OrganisationerTab({ users }: Props) {
     setLage({ status: 'klart', orgs: [...orgs, org].sort((a, b) => a.name.localeCompare(b.name, 'sv')), medlemmar: { ...medlemmar, [org.id]: [] } })
     setVisaNy(false)
     setVald(org.id)
+  }
+
+  // PUB-avvikelse 5: AI-brytare per organisation. Läses av båda AI-grindarna
+  // (client/api/ai.js och supabase/functions/_shared/aiGate.ts) med service role
+  // via consultant_participants → organization_members → organizations.
+  const vaxlaAi = async (org: Organization) => {
+    setFel(null)
+    setSparAi(org.id)
+    try {
+      const uppdaterad = await orgAdminApi.updateOrganization(org.id, { ai_enabled: !org.ai_enabled })
+      setLage({ status: 'klart', orgs: orgs.map((o) => (o.id === org.id ? { ...o, ai_enabled: uppdaterad.ai_enabled } : o)), medlemmar })
+    } catch (e) {
+      setFel(`Kunde inte ändra AI-brytaren: ${felText(e)}`)
+    } finally {
+      setSparAi(null)
+    }
   }
 
   const taBortOrg = async (org: Organization) => {
@@ -169,6 +186,7 @@ export function OrganisationerTab({ users }: Props) {
                 <th className="px-4 py-3 font-medium">Typ</th>
                 <th className="px-4 py-3 font-medium">Org.nr</th>
                 <th className="px-4 py-3 font-medium">Medlemmar</th>
+                <th className="px-4 py-3 font-medium">AI-funktioner</th>
                 <th className="px-4 py-3 font-medium"><span className="sr-only">Åtgärder</span></th>
               </tr>
             </thead>
@@ -188,6 +206,20 @@ export function OrganisationerTab({ users }: Props) {
                   <td className="px-4 py-3 text-gray-700">{ORG_KIND_ETIKETT[o.kind]}</td>
                   <td className="px-4 py-3 text-gray-700">{o.org_number || <span className="text-gray-400">—</span>}</td>
                   <td className="px-4 py-3 tabular-nums text-gray-700">{(medlemmar[o.id] ?? []).length}</td>
+                  <td className="px-4 py-3">
+                    <button
+                      type="button"
+                      role="switch"
+                      aria-checked={o.ai_enabled}
+                      aria-label={`AI-funktioner för ${o.name}s deltagare`}
+                      disabled={sparAi === o.id}
+                      onClick={() => void vaxlaAi(o)}
+                      className={`inline-flex items-center gap-2 text-sm rounded-full px-3 py-1 border ${o.ai_enabled ? 'border-emerald-300 bg-emerald-50 text-emerald-800' : 'border-amber-300 bg-amber-50 text-amber-800'} disabled:opacity-60`}
+                    >
+                      <span className={`w-2 h-2 rounded-full ${o.ai_enabled ? 'bg-emerald-500' : 'bg-amber-500'}`} aria-hidden="true" />
+                      {o.ai_enabled ? 'På' : 'Av'}
+                    </button>
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       type="button"
@@ -202,6 +234,9 @@ export function OrganisationerTab({ users }: Props) {
               ))}
             </tbody>
           </table>
+          <p className="px-4 py-3 text-xs text-gray-500 border-t border-gray-200">
+            AI-funktioner: Av = alla deltagare kopplade till organisationens konsulenter nekas AI-funktioner, oavsett egen inställning. Gäller båda AI-backenderna.
+          </p>
         </div>
       )}
 

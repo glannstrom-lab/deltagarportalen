@@ -66,7 +66,7 @@ export const AI_GATE_CODES = {
 
 export type AiGateCode = typeof AI_GATE_CODES[keyof typeof AI_GATE_CODES]
 
-export type AiGateReason = 'opted_out' | 'no_consent' | 'lookup_failed'
+export type AiGateReason = 'opted_out' | 'no_consent' | 'lookup_failed' | 'org_disabled'
 
 export interface AiGateResult {
   allowed: boolean
@@ -181,9 +181,54 @@ export async function checkAiEnabled(
       return { allowed: false, reason: 'no_consent' }
     }
 
+    // Kommunspåret (PUB-avvikelse 5): organisationens AI-brytare gäller alla
+    // deltagare kopplade till organisationens konsulenter, oavsett egen
+    // inställning. Anroparna använder SERVICE ROLE (auth.uid() är null där),
+    // så vyn my_ai_policy ger inget — läs joinen direkt i stället:
+    // consultant_participants → organization_members → organizations.
+    const org = await checkOrgAiEnabled(client, userId)
+    if (!org.allowed) return org
+
     return { allowed: true }
   } catch (err) {
     console.warn('[AiGate] profiluppslag kastade (blockerar):', err instanceof Error ? err.message : err)
+    return { allowed: false, reason: 'lookup_failed' }
+  }
+}
+
+/**
+ * Organisationens AI-brytare (`organizations.ai_enabled`, migration 20260912010000).
+ * Kräver en klient som läser förbi RLS (service role) — deltagaren själv kan inte
+ * läsa organizations. Ingen koppling = ingen spärr. Fail closed vid fel.
+ */
+export async function checkOrgAiEnabled(client: SupabaseClient, userId: string): Promise<AiGateResult> {
+  try {
+    const { data: kopplingar, error: e1 } = await client
+      .from('consultant_participants')
+      .select('consultant_id')
+      .eq('participant_id', userId)
+    if (e1) {
+      console.warn('[AiGate] org-uppslag (kopplingar) misslyckades (blockerar):', e1.message)
+      return { allowed: false, reason: 'lookup_failed' }
+    }
+    const konsulenter = (kopplingar ?? []).map((r) => (r as { consultant_id: string }).consultant_id)
+    if (konsulenter.length === 0) return { allowed: true }
+    const { data: medlemskap, error: e2 } = await client
+      .from('organization_members')
+      .select('org_id, organizations!inner(ai_enabled)')
+      .in('user_id', konsulenter)
+    if (e2) {
+      console.warn('[AiGate] org-uppslag (organisationer) misslyckades (blockerar):', e2.message)
+      return { allowed: false, reason: 'lookup_failed' }
+    }
+    const sparr = (medlemskap ?? []).some((m) => {
+      const o = (m as { organizations?: { ai_enabled?: boolean } | { ai_enabled?: boolean }[] }).organizations
+      const rader = Array.isArray(o) ? o : o ? [o] : []
+      return rader.some((r) => r.ai_enabled === false)
+    })
+    return sparr ? { allowed: false, reason: 'org_disabled' } : { allowed: true }
+  } catch (err) {
+    console.warn('[AiGate] org-uppslag kastade (blockerar):', err instanceof Error ? err.message : err)
     return { allowed: false, reason: 'lookup_failed' }
   }
 }
@@ -193,6 +238,14 @@ export function createGateDenialResponse(
   reason: AiGateReason,
   origin: string | null,
 ): Response {
+  if (reason === 'org_disabled') {
+    return createAiErrorResponse(
+      AI_GATE_CODES.AI_DISABLED,
+      'AI-funktionerna är avstängda av din organisation. Det gäller oavsett din egen inställning — prata med din konsulent om du har frågor.',
+      403,
+      origin,
+    )
+  }
   if (reason === 'opted_out') {
     return createAiErrorResponse(
       AI_GATE_CODES.AI_DISABLED,
