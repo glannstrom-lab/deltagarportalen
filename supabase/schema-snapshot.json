@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T13:54:35.364Z",
+  "generatedAt": "2026-09-11T14:54:21.651Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -32,8 +32,10 @@
       "created_at",
       "decided_at",
       "end_date",
+      "forsorjningshinder",
       "id",
       "jobsearch_hours_per_week",
+      "nedsattning_underlag_lamnat_at",
       "org_id",
       "participant_id",
       "plan_text",
@@ -1151,6 +1153,29 @@
       "read_at",
       "title",
       "type",
+      "user_id"
+    ],
+    "organization_caseload": [
+      "antal_aktiva_planer",
+      "antal_deltagare",
+      "consultant_id",
+      "first_name",
+      "last_name",
+      "ogiltig_franvaro_30d",
+      "org_id",
+      "org_name",
+      "role"
+    ],
+    "organization_colleagues": [
+      "created_at",
+      "email",
+      "first_name",
+      "id",
+      "last_name",
+      "org_id",
+      "org_kind",
+      "org_name",
+      "role",
       "user_id"
     ],
     "organization_members": [

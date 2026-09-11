@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
-import { aktivitetsplanApi, schemamallApi, type ActivityPlan, type ActivityTemplate } from '@/services/aktivitetApi'
+import { aktivitetsplanApi, schemamallApi, FORSORJNINGSHINDER, FORSORJNINGSHINDER_ETIKETT, type ActivityPlan, type ActivityTemplate, type Forsorjningshinder } from '@/services/aktivitetApi'
 import {
   addDays,
   foreslagetVeckomal,
@@ -60,6 +60,7 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
   const [jobbsok, setJobbsok] = useState('0')
   const [planText, setPlanText] = useState('')
   const [beslutsdatum, setBeslutsdatum] = useState(() => formatLocalDate(new Date()))
+  const [forsorjningshinder, setForsorjningshinder] = useState<'' | Forsorjningshinder>('')
   const [forsokt, setForsokt] = useState(false)
   const [sparar, setSparar] = useState(false)
   const [sparfel, setSparfel] = useState<string | null>(null)
@@ -110,6 +111,7 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
         targetReason: avviker ? motivering : null,
         planText,
         decidedAt: beslutsdatum || null,
+        forsorjningshinder: forsorjningshinder || null,
       })
       onCreated(plan)
     } catch (err) {
@@ -228,6 +230,16 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
               />
               <Input id="tillampa-beslut" label="Beslutsdatum" type="date" value={beslutsdatum} onChange={(e) => setBeslutsdatum(e.target.value)} fullWidth />
             </div>
+
+            <Select
+              id="tillampa-forsorjningshinder"
+              label="Försörjningshinder (för IVO-underlaget)"
+              options={[{ value: '', label: 'Inte angivet' }, ...FORSORJNINGSHINDER.map((f) => ({ value: f, label: FORSORJNINGSHINDER_ETIKETT[f] }))]}
+              value={forsorjningshinder}
+              onChange={(e) => setForsorjningshinder(e.target.value as '' | Forsorjningshinder)}
+              hint="Kategori enligt Socialstyrelsens register. Valfritt, går att ändra på planen efteråt."
+              fullWidth
+            />
 
             <Textarea
               id="tillampa-plantext"

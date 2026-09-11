@@ -34,6 +34,7 @@ import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
+import { IvoUnderlagSektion } from '@/components/consultant/IvoUnderlagSektion'
 import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
@@ -1113,6 +1114,9 @@ export function AnalyticsTab() {
           </ul>
         )}
       </Card>
+
+      {/* KM7: kvartalsunderlag till IVO + AF-checklista. Svenska literaler — konsulentvyn översätts inte. */}
+      <IvoUnderlagSektion />
 
       {/* PDF Report Dialog */}
       <ReportGeneratorDialog

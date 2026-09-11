@@ -65,8 +65,40 @@ export interface ActivityPlan {
   status: PlanStatus
   plan_text: string | null
   decided_at: string | null
+  /** KM7: kategori enligt Socialstyrelsens register över ekonomiskt bistånd. */
+  forsorjningshinder: Forsorjningshinder | null
+  /** KM7: datum då avvikelseunderlag lämnats till biståndshandläggaren. */
+  nedsattning_underlag_lamnat_at: string | null
   created_at: string
   updated_at: string
+}
+
+export type Forsorjningshinder =
+  | 'arbetslos'
+  | 'sjukskriven_med_intyg'
+  | 'sjuk_eller_aktivitetsersattning'
+  | 'arbetshinder_sociala_skal'
+  | 'foraldraledig'
+  | 'arbetar_deltid'
+  | 'sprakhinder'
+  | 'utan_forsorjningshinder'
+  | 'annat'
+
+export const FORSORJNINGSHINDER: readonly Forsorjningshinder[] = [
+  'arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal',
+  'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat',
+] as const
+
+export const FORSORJNINGSHINDER_ETIKETT: Record<Forsorjningshinder, string> = {
+  arbetslos: 'Arbetslös',
+  sjukskriven_med_intyg: 'Sjukskriven med läkarintyg',
+  sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning',
+  arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl',
+  foraldraledig: 'Föräldraledig',
+  arbetar_deltid: 'Arbetar deltid',
+  sprakhinder: 'Språkhinder',
+  utan_forsorjningshinder: 'Utan försörjningshinder',
+  annat: 'Annat',
 }
 
 export interface ActivitySession {
@@ -108,6 +140,7 @@ export interface CreatePlanInput {
   targetReason?: string | null
   planText?: string | null
   decidedAt?: string | null
+  forsorjningshinder?: Forsorjningshinder | null
 }
 
 export interface AttendanceInput {
@@ -338,6 +371,7 @@ export const aktivitetsplanApi = {
         target_reason: input.targetReason?.trim() || null,
         plan_text: input.planText?.trim() || null,
         decided_at: input.decidedAt ?? null,
+        forsorjningshinder: input.forsorjningshinder ?? null,
         status: 'active',
       })
       .select('*')
@@ -371,7 +405,31 @@ export const aktivitetsplanApi = {
     return { plan: plan as ActivityPlan, sessions }
   },
 
-  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date'>>): Promise<ActivityPlan> {
+  /** Alla planer hos den inloggade konsulenten (KM7-underlag). Chef/admin ser även organisationens via RLS. */
+  async listAll(): Promise<ActivityPlan[]> {
+    await requireUser()
+    const { data, error } = await supabase
+      .from('activity_plans')
+      .select('*')
+      .order('start_date', { ascending: false })
+    if (error) throw error
+    return (data ?? []) as ActivityPlan[]
+  },
+
+  /** Alla pass mellan två datum som RLS låter mig läsa (egna deltagare, eller organisationens som chef). */
+  async listSessionsBetween(from: string, to: string): Promise<ActivitySession[]> {
+    await requireUser()
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .select('*')
+      .gte('date', from)
+      .lte('date', to)
+      .order('date', { ascending: true })
+    if (error) throw error
+    return (data ?? []).map((r) => mapSession(r as Record<string, unknown>))
+  },
+
+  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at'>>): Promise<ActivityPlan> {
     const user = await requireUser()
     const { data, error } = await supabase
       .from('activity_plans')

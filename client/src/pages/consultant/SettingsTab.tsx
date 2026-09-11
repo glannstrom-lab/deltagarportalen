@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Settings,
   Bell,
-  Users,
   Clock,
   Globe,
   Shield,
@@ -29,6 +28,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
+import { OrganisationSektion } from '@/components/consultant/OrganisationSektion'
 import { cn } from '@/lib/utils'
 
 interface NotificationSetting {
@@ -37,14 +37,6 @@ interface NotificationSetting {
   description: string
   enabled: boolean
   channel: 'email' | 'push' | 'both'
-}
-
-interface TeamMember {
-  id: string
-  name: string
-  email: string
-  role: 'consultant' | 'admin'
-  participantCount: number
 }
 
 // Toggle Switch Component
@@ -179,8 +171,6 @@ export function SettingsTab() {
     showInactiveWarning: 7,
   })
 
-  // Team members state
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
 
   // Load settings on mount
   useEffect(() => {
@@ -226,10 +216,6 @@ export function SettingsTab() {
           }))
         }
       }
-
-      // Ingen organisations-/teamtabell finns ännu — visa ärligt tomtillstånd
-      // i stället för påhittade kollegor (tidigare mock: Anna/Erik/Maria).
-      setTeamMembers([])
 
     } catch (error) {
       console.error('Error loading settings:', error)
@@ -655,67 +641,8 @@ export function SettingsTab() {
         </div>
       </Card>
 
-      {/* Team Section */}
-      <Card className="p-5">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-xl">
-              <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                {t('consultant.settings.team')}
-              </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-400">
-                {t('consultant.settings.teamDesc')}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {teamMembers.length === 0 && (
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('consultant.settings.teamEmpty')}
-            </p>
-          )}
-          {teamMembers.map(member => (
-            <div
-              key={member.id}
-              className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">
-                  {member.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div>
-                  <p className="font-medium text-stone-900 dark:text-stone-100">
-                    {member.name}
-                  </p>
-                  <p className="text-sm text-stone-500 dark:text-stone-400">
-                    {member.email}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className={cn(
-                  'px-2.5 py-1 rounded-full text-xs font-medium',
-                  member.role === 'admin'
-                    ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-solid)]'
-                    : 'bg-stone-200 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
-                )}>
-                  {member.role === 'admin' ? t('consultant.settings.admin') : t('consultant.settings.consultant')}
-                </span>
-                {member.participantCount > 0 && (
-                  <span className="text-sm text-stone-500 dark:text-stone-600">
-                    {t('consultant.settings.participantsCount', { count: member.participantCount })}
-                  </span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
+      {/* Organisation (KM2) — ersatte den hårdkodade tomma teamlistan 2026-09-11 */}
+      <OrganisationSektion />
 
       {/* Data & Privacy */}
       <Card className="p-5">

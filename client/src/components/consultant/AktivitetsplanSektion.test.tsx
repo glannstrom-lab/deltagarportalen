@@ -8,7 +8,7 @@ import { AktivitetsplanSektion } from './AktivitetsplanSektion'
 const plan = {
   id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: null, template_id: 't1', template_name: 'Verkstad 30 h',
   start_date: '2026-10-05', end_date: '2026-12-27', weekly_hours_target: 30, jobsearch_hours_per_week: 5, target_reason: null,
-  status: 'active', plan_text: null, decided_at: '2026-10-01', created_at: '', updated_at: '',
+  status: 'active', plan_text: null, decided_at: '2026-10-01', forsorjningshinder: null, nedsattning_underlag_lamnat_at: null, created_at: '', updated_at: '',
 }
 const pass = (o: Record<string, unknown>) => ({
   id: 's1', plan_id: 'plan1', participant_id: 'p1', date: '2026-10-05', start_time: '09:00', end_time: '12:00', title: 'Jobbsökarverkstad',
@@ -24,10 +24,14 @@ vi.mock('@/services/aktivitetApi', () => ({
     end: vi.fn(),
     addSession: vi.fn(),
     removeSession: vi.fn(),
+    update: vi.fn(),
   },
   schemamallApi: { list: vi.fn(async () => []) },
+  FORSORJNINGSHINDER: ['arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal', 'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat'],
+  FORSORJNINGSHINDER_ETIKETT: { arbetslos: 'Arbetslös', sjukskriven_med_intyg: 'Sjukskriven med läkarintyg', sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning', arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl', foraldraledig: 'Föräldraledig', arbetar_deltid: 'Arbetar deltid', sprakhinder: 'Språkhinder', utan_forsorjningshinder: 'Utan försörjningshinder', annat: 'Annat' },
 }))
 vi.mock('@/components/ui/ConfirmDialog', () => ({ confirmDialog: vi.fn(async () => true) }))
+vi.mock('@/services/aktivitetsplanPdf', () => ({ downloadAktivitetsplanPDF: vi.fn(async () => undefined) }))
 
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ['Date'] })
@@ -78,5 +82,26 @@ describe('AktivitetsplanSektion', () => {
     expect(await screen.findByText('Inga pass den här veckan')).toBeInTheDocument()
     expect(screen.getAllByText('—').length).toBeGreaterThanOrEqual(3)
     expect(screen.queryByText(/0 h \//)).not.toBeInTheDocument()
+  })
+
+  it('sparar försörjningshinder, markerar underlag lämnat och laddar ner plan-PDF (KM5/KM7)', async () => {
+    const { aktivitetsplanApi } = await import('@/services/aktivitetApi')
+    const { downloadAktivitetsplanPDF } = await import('@/services/aktivitetsplanPdf')
+    vi.mocked(aktivitetsplanApi.getForParticipant).mockResolvedValue(plan as never)
+    vi.mocked(aktivitetsplanApi.listAllSessions).mockResolvedValue([pass({})] as never)
+    vi.mocked(aktivitetsplanApi.update).mockImplementation(async (_id, patch) => ({ ...plan, ...patch }) as never)
+
+    render(<AktivitetsplanSektion participantId="p1" participantName="Anna Andersson" />)
+    await screen.findByText('Verkstad 30 h')
+
+    fireEvent.change(screen.getByLabelText('Försörjningshinder'), { target: { value: 'arbetslos' } })
+    await vi.waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenCalledWith('plan1', { forsorjningshinder: 'arbetslos' }))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Underlag lämnat till handläggaren' }))
+    await vi.waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenCalledWith('plan1', { nedsattning_underlag_lamnat_at: '2026-10-07' }))
+    expect(await screen.findByText(/Lämnat 7 oktober 2026/)).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Plan som PDF' }))
+    await vi.waitFor(() => expect(downloadAktivitetsplanPDF).toHaveBeenCalledWith(expect.objectContaining({ participantName: 'Anna Andersson', plan: expect.objectContaining({ id: 'plan1' }) })))
   })
 })

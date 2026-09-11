@@ -12,10 +12,12 @@ import {
   Search,
   CheckCircle,
   XCircle,
-  MoreVertical
+  MoreVertical,
+  Building2
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { OrganisationerTab } from './OrganisationerTab';
 
 interface User {
   id: string;
@@ -31,7 +33,7 @@ export const SuperAdminPanel: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   // 'settings'-fliken borttagen 2026-07-10 (B4): var en tom "Kommer snart..."-yta
-  const [activeTab, setActiveTab] = useState<'users' | 'stats'>('users');
+  const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'organisationer'>('users');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -100,10 +102,11 @@ export const SuperAdminPanel: React.FC = () => {
             {[
               { id: 'users', label: 'Användare', icon: Users },
               { id: 'stats', label: 'Statistik', icon: BarChart3 },
+              { id: 'organisationer', label: 'Organisationer', icon: Building2 },
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as 'users' | 'stats')}
+                onClick={() => setActiveTab(tab.id as 'users' | 'stats' | 'organisationer')}
                 className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary-600 text-primary-600'
@@ -234,6 +237,10 @@ export const SuperAdminPanel: React.FC = () => {
               </p>
             </div>
           </div>
+        )}
+
+        {activeTab === 'organisationer' && (
+          <OrganisationerTab users={users} />
         )}
 
       </div>

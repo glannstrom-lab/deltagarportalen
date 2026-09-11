@@ -55,14 +55,46 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   inskrivet i `AI-ACT-CLASSIFICATION.md`.
 - Tester: 9 (konsulent) + 3 (Min vecka) + 18 (logik), alla mutationskontrollerade.
 
+### Gjort, pass 2 (samma dag, "fortsätt mot målet")
+
+- **Migration `20260911160000_km2_org_vyer_km7_kolumner.sql` körd och verifierad som
+  authenticated** (chef: 2 kollegor + 2 caseload-rader; icke-medlem: 0 av allt). Den
+  rättar ett fel i pass 1: policyn "Medlem ser organisationens medlemmar" refererade sin
+  egen tabell och gav `42P17 infinite recursion` på varje läsning som inloggad —
+  tabellen var obrukbar för alla utom superadmin. Nu: egna rader + superadmin ALL, och
+  två vyer ägda av postgres **utan** security_invoker (`organization_colleagues`,
+  `organization_caseload`) som filtrerar på `auth.uid()`. Det är samma klass som en
+  definer-funktion; valt för att grants-taket (29) är nått. Lärdom skriven globalt:
+  testa RLS som `set local role authenticated` i en rullad-tillbaka transaktion.
+- **KM2, steg 2** — `services/orgApi.ts`; SuperAdminPanel fick fliken "Organisationer"
+  (skapa organisation, lägg till/ta bort medlem, byt roll); konsulentens Inställningar
+  visar organisation + kollegor (`OrganisationSektion`, ersatte den hårdkodade tomma
+  teamlistan) och för chef/admin caseload per konsulent — bara tal. **Medvetet ingen
+  självbetjäning för org-admin** (rekursionen ovan); pilotkommunerna sätts upp av Mikael.
+- **KM7** — kolumnerna `activity_plans.forsorjningshinder` (Socialstyrelsens
+  registerkategorier) och `nedsattning_underlag_lamnat_at`; `services/ivoKvartal.ts`
+  (12 tester); kortet "Aktivitetskravet — kvartalsunderlag till IVO" i Rapporter med
+  år/kvartal, tabell per försörjningshinder, TSV, och AF-checklista "registrerad i Mina
+  sidor för kommuner" (bock i localStorage — en kolumn är nästa steg).
+- **KM5** — `services/aktivitetsplanPdf.ts`: "Plan som PDF" på deltagarsidans
+  aktivitetsflik (uppgifter, plantext, veckoschema, signaturrader, sidfot om att beslut
+  fattas av socialnämnden). Ingen AI-text.
+- **KM12 (5)** — tillgänglighetsredogörelsen hänvisar nu även till DOS-lagen (2018:1937)
+  och EN 301 549 (sv + en).
+- **Fynd:** jsPDF med Helvetica skriver `—`/`–` som tom sträng (`() Tj`). Plan-PDF:en
+  använder `-`; **`pdfReportGenerator.ts` och `artikelPdf.ts` bör kontrolleras** — de kan
+  ha tomma celler där ett tankstreck var tänkt. Och `not.toContain('null')` mot en
+  PDF-byteström är alltid falskt säker: `null` förekommer i PDF-syntaxen.
+- `consultant.settings.team*` i sv/en.json renderas inte längre — döda nycklar att städa.
+
 ### Kvar i spåret (ordning)
 
-1. **KM2 helt** — chefsvy, inbjudan av konsulenter till organisation, otilldelade (BL1),
-   överlämning. Utan den kan kommun två inte läggas in.
-2. **KM5** plan som PDF · **KM7** IVO-kvartalsunderlag + AF-checklista (behövs jan 2027) ·
-   **KM8** aktivitetskatalog · **KM9** jobbsökstid ur portalens data · **KM10** notiser
+1. **KM2 rest** — självbetjäning för org-admin (kräver antingen ett höjt grants-tak med
+   motivering eller att medlemskapet flyttas till en tabell utan självreferens),
+   inbjudan via mejl (blockerad av DE1), otilldelade (BL1), överlämning av caseload.
+2. **KM8** aktivitetskatalog · **KM9** jobbsökstid ur portalens data · **KM10** notiser
    (`notifications` skrivs fortfarande av ingen konsulenthändelse; DE1 blockerar mejl) ·
-   **KM11** språk.
+   **KM11** språk · KM7-rest: kolumn för AF-registrering i stället för localStorage.
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
@@ -1231,7 +1263,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 > **Ordning:** KM2 (beslut) → KM3+KM4+KM6 före 1 okt → KM5+KM7+KM8 före jan 2027 → resten.
 > **Ingen AI i kedjan schema → närvaro → beslutsunderlag** (AI-förordningen bilaga III p. 5 a).
 
-- [ ] **KM2** 🟡 datamodell + läsrätt körd 2026-09-11, chefsvy/inbjudan kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
+- [ ] **KM2** 🟡 datamodell, superadmin-hantering, kollegor och chefens caseload klara 2026-09-11; självbetjäning/inbjudan/överlämning kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
   (`id, name, kind: kommun|leverantor, org_number`) + `organization_members` (`user_id, org_id,
   role: handlaggare|konsulent|chef|admin`). Alla KM-tabeller bär `org_id`. RLS: handläggare ser
   närvaro/avvikelser men inte journal, mående, dagbok (inre sekretess, OSL 26 kap.). Chefsvy:
@@ -1250,11 +1282,11 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
   kryssruta "läkarintyg inkommet", deltagarens `self_checkin_at` (status sätts bara av konsulent).
   Avvikelserad exporterbar som underlag; beslutet fattas i kommunens system. Migrationen
   `20260902110000_rm2_placement_deviations.sql` finns redan, utöka den i stället för två modeller · ~1 v
-- [ ] **KM5** **Individuell plan som PDF** ur `activity_plans` + SMART-mål: mål, typer, timmar,
+- [x] **KM5** ✅ 2026-09-11 **Individuell plan som PDF** ur `activity_plans` + SMART-mål: mål, typer, timmar,
   jobbsökstid, anpassningar, beslutsdatum, signatur. Ingen AI-text; det är ett myndighetsdokument · ~3 d
 - [x] **KM6** ✅ 2026-09-11 **Veckosaldo mot kravet.** Planerade/närvarotimmar mot veckomålet, ampel i listan
   och på deltagarsidan; `—` tills pass finns. Lugn ton i deltagarvyn · ~2 d
-- [ ] **KM7** **IVO-kvartalsunderlag + AF-checklista.** Per org och kvartal: anvisade, ogiltig
+- [x] **KM7** ✅ 2026-09-11 (AF-bocken i localStorage) **IVO-kvartalsunderlag + AF-checklista.** Per org och kvartal: anvisade, ogiltig
   frånvaro, "underlag till nedsättning lämnat", per försörjningshinder (AF:s kategorier, ny kolumn
   på deltagaren). Checklista "registrerad i AF Mina sidor för kommuner" per deltagare · ~3 d
 - [ ] **KM8** **Aktivitetskatalog per organisation** (gruppaktiviteter, platser, tider) som
@@ -1267,7 +1299,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
   kommunerna faktiskt använder mot gruppen, en dag + en rad i Art 30 · ~3 d
 - [ ] **KM11** **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och
   närvaron** (fyra vyer, inte hela portalen) · löpande
-- [ ] **KM12** 🟡 (1)(3)(6)(7) gjorda 2026-09-11 **Sajten före första kommunmejlet:** (1) priset säger 2 990 + 290 på startsidan och
+- [ ] **KM12** 🟡 (1)(3)(5)(6)(7) gjorda 2026-09-11 **Sajten före första kommunmejlet:** (1) priset säger 2 990 + 290 på startsidan och
   "ingen offentlig prislista" på `/for-arbetsmarknadsenheter/`, välj ett; (2) org.nr, adress och
   personuppgiftsansvarig är platshållare i policy/Art 30/DPIA; (3) stryk SSO/API/branding ur
   prislistan (DOK9); (4) PUB-avtal ifyllt med kommunen som ansvarig (`juridik/PUB_Avtalsmall.docx`

@@ -17,6 +17,8 @@ const mall = {
 vi.mock('@/services/aktivitetApi', () => ({
   schemamallApi: { list: vi.fn(async () => [mall]) },
   aktivitetsplanApi: { createFromTemplate: vi.fn() },
+  FORSORJNINGSHINDER: ['arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal', 'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat'],
+  FORSORJNINGSHINDER_ETIKETT: { arbetslos: 'Arbetslös', sjukskriven_med_intyg: 'Sjukskriven med läkarintyg', sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning', arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl', foraldraledig: 'Föräldraledig', arbetar_deltid: 'Arbetar deltid', sprakhinder: 'Språkhinder', utan_forsorjningshinder: 'Utan försörjningshinder', annat: 'Annat' },
 }))
 
 afterEach(() => { cleanup(); vi.clearAllMocks() })
@@ -54,6 +56,18 @@ describe('TillampaMallDialog', () => {
     await vi.waitFor(() => expect(onCreated).toHaveBeenCalled())
     expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalledWith(expect.objectContaining({
       participantId: 'p1', templateId: 't1', startDate: '2026-10-05', endDate: '2026-10-18', weeklyHoursTarget: 40, targetReason: null,
+      forsorjningshinder: null,
     }))
+  })
+
+  it('skickar valt försörjningshinder till planen (KM7)', async () => {
+    const { aktivitetsplanApi } = await import('@/services/aktivitetApi')
+    vi.mocked(aktivitetsplanApi.createFromTemplate).mockResolvedValue({ plan: { id: 'plan1' }, sessions: [] } as never)
+    render(<TillampaMallDialog isOpen onClose={() => {}} participantId="p1" participantName="Anna" onCreated={vi.fn()} />)
+    await screen.findByLabelText('Veckomål, timmar')
+    fireEvent.change(screen.getByLabelText('Försörjningshinder (för IVO-underlaget)'), { target: { value: 'sprakhinder' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Skapa plan' }))
+    await vi.waitFor(() => expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalled())
+    expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalledWith(expect.objectContaining({ forsorjningshinder: 'sprakhinder' }))
   })
 })

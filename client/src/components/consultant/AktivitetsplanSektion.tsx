@@ -10,7 +10,9 @@
  */
 
 import { useCallback, useEffect, useState } from 'react'
-import { CalendarDays, ChevronLeft, ChevronRight, Plus, Loader2, MapPin, CheckCircle2 } from '@/components/ui/icons'
+import { CalendarDays, ChevronLeft, ChevronRight, Plus, Loader2, MapPin, CheckCircle2, FileText } from '@/components/ui/icons'
+import { useAuthStore } from '@/stores/authStore'
+import { downloadAktivitetsplanPDF } from '@/services/aktivitetsplanPdf'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
@@ -22,8 +24,11 @@ import { notifications } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import {
   aktivitetsplanApi,
+  FORSORJNINGSHINDER,
+  FORSORJNINGSHINDER_ETIKETT,
   type ActivityPlan,
   type ActivitySession,
+  type Forsorjningshinder,
   type SessionInput,
 } from '@/services/aktivitetApi'
 import {
@@ -77,6 +82,8 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   const [vecka, setVecka] = useState(() => veckansMandag(formatLocalDate(new Date())))
   const [visaTillampa, setVisaTillampa] = useState(false)
   const [visaNyttPass, setVisaNyttPass] = useState(false)
+  const [sparaPlan, setSparaPlan] = useState<'hinder' | 'underlag' | 'pdf' | null>(null)
+  const profile = useAuthStore((s) => s.profile)
 
   // Hämtningen bor i effekten och skriver tillstånd först efter await —
   // inget setState synkront i effekten. ladda() = laddar-läge + ny omgång.
@@ -99,6 +106,62 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
     setLage({ status: 'laddar' })
     setOmgang((n) => n + 1)
   }, [])
+
+  const ersattPlan = (p: ActivityPlan) => {
+    setLage((prev) => (prev.status === 'klart' ? { ...prev, plan: p } : prev))
+  }
+
+  // KM7: kategori för IVO-underlaget. Ändras direkt på planen.
+  const sattHinder = async (plan: ActivityPlan, varde: '' | Forsorjningshinder) => {
+    setSparaPlan('hinder')
+    try {
+      ersattPlan(await aktivitetsplanApi.update(plan.id, { forsorjningshinder: varde || null }))
+    } catch (err) {
+      notifications.error(err instanceof Error ? err.message : 'Försörjningshinder kunde inte sparas')
+    } finally {
+      setSparaPlan(null)
+    }
+  }
+
+  // KM7: "underlag lämnat" är konsulentens notering om att avvikelserna gått
+  // vidare till biståndshandläggaren — inte ett beslut. Beslutet fattas av nämnden.
+  const sattUnderlag = async (plan: ActivityPlan, datum: string | null) => {
+    if (datum) {
+      const ok = await confirmDialog({
+        title: 'Underlag lämnat till handläggaren?',
+        message: 'Markerar att avvikelseunderlaget för den här planen har lämnats till biståndshandläggaren i dag. Räknas i IVO-underlaget för kvartalet.',
+        confirmText: 'Ja, underlag lämnat',
+        cancelText: 'Avbryt',
+      })
+      if (!ok) return
+    }
+    setSparaPlan('underlag')
+    try {
+      ersattPlan(await aktivitetsplanApi.update(plan.id, { nedsattning_underlag_lamnat_at: datum }))
+    } catch (err) {
+      notifications.error(err instanceof Error ? err.message : 'Kunde inte spara')
+    } finally {
+      setSparaPlan(null)
+    }
+  }
+
+  // KM5: planen som PDF till akten. Allt ur planen och passen, ingen AI.
+  const laddaNerPdf = async (plan: ActivityPlan, sessions: ActivitySession[]) => {
+    setSparaPlan('pdf')
+    try {
+      await downloadAktivitetsplanPDF({
+        plan,
+        sessions,
+        participantName,
+        consultantName: `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim() || 'Arbetskonsulent',
+        organizationName: null,
+      })
+    } catch (err) {
+      notifications.error(err instanceof Error ? err.message : 'PDF:en kunde inte skapas')
+    } finally {
+      setSparaPlan(null)
+    }
+  }
 
   const ersattSession = (s: ActivitySession) => {
     setLage((prev) => prev.status === 'klart'
@@ -175,12 +238,46 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               <div className="flex gap-2"><dt className="text-stone-500">Veckomål</dt><dd>{formatTimmar(Number(plan.weekly_hours_target))}</dd></div>
               <div className="flex gap-2"><dt className="text-stone-500">Eget jobbsökande</dt><dd>{formatTimmar(Number(plan.jobsearch_hours_per_week))}/vecka i planen</dd></div>
               {plan.decided_at && <div className="flex gap-2"><dt className="text-stone-500">Beslutad</dt><dd>{langtDatum(plan.decided_at)}</dd></div>}
+              <div className="flex gap-2 items-center">
+                <dt className="text-stone-500">Försörjningshinder</dt>
+                <dd>
+                  <select
+                    aria-label="Försörjningshinder"
+                    className="text-sm rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-2 py-1"
+                    value={plan.forsorjningshinder ?? ''}
+                    disabled={sparaPlan === 'hinder'}
+                    onChange={(e) => void sattHinder(plan, e.target.value as '' | Forsorjningshinder)}
+                  >
+                    <option value="">Inte angivet</option>
+                    {FORSORJNINGSHINDER.map((f) => <option key={f} value={f}>{FORSORJNINGSHINDER_ETIKETT[f]}</option>)}
+                  </select>
+                </dd>
+              </div>
+              <div className="flex gap-2 items-center">
+                <dt className="text-stone-500">Underlag till handläggaren</dt>
+                <dd>
+                  {plan.nedsattning_underlag_lamnat_at ? (
+                    <span>
+                      Lämnat {langtDatum(plan.nedsattning_underlag_lamnat_at)}
+                      <button type="button" className="ml-2 text-xs underline text-stone-500" disabled={sparaPlan === 'underlag'} onClick={() => void sattUnderlag(plan, null)}>Ångra</button>
+                    </span>
+                  ) : (
+                    <button type="button" className="text-xs underline text-stone-600 dark:text-stone-300" disabled={sparaPlan === 'underlag'} onClick={() => void sattUnderlag(plan, formatLocalDate(new Date()))}>
+                      Underlag lämnat till handläggaren
+                    </button>
+                  )}
+                </dd>
+              </div>
             </dl>
             {plan.target_reason && (
               <p className="text-sm text-stone-600 dark:text-stone-300"><span className="text-stone-500">Motivering till veckomålet:</span> {plan.target_reason}</p>
             )}
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <Button size="sm" variant="outline" disabled={sparaPlan === 'pdf'} onClick={() => void laddaNerPdf(plan, sessions)}>
+              <FileText className="w-4 h-4 mr-1.5" aria-hidden="true" />
+              Plan som PDF
+            </Button>
             <Button size="sm" variant="outline" onClick={() => setVisaNyttPass(true)}>
               <Plus className="w-4 h-4 mr-1.5" aria-hidden="true" />
               Lägg till pass

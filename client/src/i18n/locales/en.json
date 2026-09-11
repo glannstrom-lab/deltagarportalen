@@ -12388,7 +12388,7 @@
     "assessmentDate": "This assessment is based on a review carried out on: 2026-08-17",
     "ambition": {
       "title": "Our ambition",
-      "pre": "Jobin.se should work for everyone, no matter your abilities. We follow the EU accessibility directive (European Accessibility Act, Directive 2019/882) and aim to meet",
+      "pre": "Jobin.se should work for everyone, no matter your abilities. We follow the EU accessibility directive (European Accessibility Act, Directive 2019/882, Swedish law 2023:254). When a municipality (kommun) or another public body uses the portal, the Swedish law on accessibility of digital public services (DOS-lagen, 2018:1937) and the standard EN 301 549 also apply. This statement is written to work as a basis there too. We aim to meet",
       "strong": "WCAG 2.1 level AA",
       "post": ". Our users include people with physical and cognitive challenges, so accessibility is central to what we do."
     },
@@ -12528,7 +12528,7 @@
       "emailLabel": "Email:"
     },
     "footer": {
-      "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
+      "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. On 2026-09-11 we added the reference to DOS-lagen (2018:1937) and EN 301 549, because the portal is offered to municipalities. The web requirements in EN 301 549 chapter 9 match WCAG 2.1 AA, which is already our benchmark. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
     }
   },
   "onboarding": {

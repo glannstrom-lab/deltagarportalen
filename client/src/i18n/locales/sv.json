@@ -12388,7 +12388,7 @@
     "assessmentDate": "Bedömningen bygger på en granskning genomförd: 2026-08-17",
     "ambition": {
       "title": "Vår ambition",
-      "pre": "Jobin.se ska kunna användas av alla — oavsett funktionsförmåga. Vi följer EU:s tillgänglighetsdirektiv (European Accessibility Act, direktiv 2019/882) och strävar efter att uppfylla",
+      "pre": "Jobin.se ska kunna användas av alla — oavsett funktionsförmåga. Vi följer EU:s tillgänglighetsdirektiv (European Accessibility Act, direktiv 2019/882, svensk lag 2023:254). När portalen används av en kommun eller annan offentlig aktör gäller dessutom lagen om tillgänglighet till digital offentlig service (DOS-lagen, 2018:1937) och standarden EN 301 549 — den här redogörelsen är skriven för att duga som underlag även där. Vi strävar efter att uppfylla",
       "strong": "WCAG 2.1 nivå AA",
       "post": ". Vår målgrupp inkluderar personer med fysiska och kognitiva utmaningar, vilket gör tillgänglighet centralt för vår verksamhet."
     },
@@ -12528,7 +12528,7 @@
       "emailLabel": "Email:"
     },
     "footer": {
-      "text": "Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Se \"Hur bedömningen är gjord\" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen."
+      "text": "Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Den 2026-09-11 lades hänvisningen till DOS-lagen (2018:1937) och EN 301 549 till, eftersom portalen erbjuds kommuner; kraven i EN 301 549 kapitel 9 (webb) motsvarar WCAG 2.1 AA, som redan är vår måttstock. Se \"Hur bedömningen är gjord\" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen."
     }
   },
   "onboarding": {
