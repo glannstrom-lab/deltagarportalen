@@ -33,9 +33,11 @@
         "text": "Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.",
         "punkter": [
           "En lista över dina deltagare, med en egen sida per person",
-          "Schemamallar för aktivitet: bygg en veckomall en gång och tillämpa den på en deltagare från ett startdatum, med lagens fyra aktivitetstyper och tid för eget jobbsökande",
-          "Individuell plan per deltagare med veckomål i timmar, och en veckovy där du markerar närvaro, giltig eller ogiltig frånvaro, sjukfrånvaro med läkarintyg och extern aktivitet",
-          "Veckosaldo mot planen, per deltagare — beslut om nedsättning fattas av socialnämnden, aldrig av portalen",
+          "Schemamallar och en aktivitetskatalog för kommunens utbud: bygg en veckomall en gång och tillämpa den på en deltagare från ett startdatum, med lagens fyra aktivitetstyper och tid för eget jobbsökande",
+          "Individuell plan per deltagare med veckomål i timmar och försörjningshinder, exporterbar som PDF till akten, och en veckovy där du markerar närvaro, giltig eller ogiltig frånvaro, sjukfrånvaro med läkarintyg och extern aktivitet",
+          "Veckosaldo mot planen och deltagarens eget jobbsökande — beslut om nedsättning fattas av socialnämnden, aldrig av portalen",
+          "Kvartalsunderlag till IVO per försörjningshinder, och en checklista för registrering i Arbetsförmedlingens Mina sidor för kommuner",
+          "Organisation med kollegor och, för chefen, caseload per konsulent — bara tal, aldrig journal eller mående",
           "Mål och journalanteckningar kopplade till varje deltagare",
           "Meddelanden och bokade möten",
           "Praktikplatser, placeringar och en översiktlig analysvy",
@@ -78,7 +80,7 @@
         ],
         [
           "Hur hjälper portalen oss med aktivitetskravet från oktober 2026?",
-          "Konsulenten bygger schemamallar, tillämpar dem på deltagaren som en individuell plan med veckomål i timmar, och markerar närvaro per pass med giltig eller ogiltig frånvaro. Deltagaren ser sin vecka i mobilen och kan checka in själv. Portalen fattar inga beslut om bistånd och innehåller ingen AI i kedjan schema, närvaro och underlag — det är socialnämndens beslut och kommunens verksamhetssystem som gäller. Kvartalsunderlag till IVO och plan som PDF till akten är nästa steg och finns inte ännu."
+          "Konsulenten bygger schemamallar (eller hämtar ur kommunens aktivitetskatalog), tillämpar dem på deltagaren som en individuell plan med veckomål i timmar, markerar närvaro per pass med giltig eller ogiltig frånvaro, och får ut planen som PDF till akten och ett kvartalsunderlag per försörjningshinder till IVO-rapporten. Deltagaren ser sin vecka i mobilen, checkar in själv och ser sitt eget jobbsökande bredvid. Portalen fattar inga beslut om bistånd och innehåller ingen AI i kedjan schema, närvaro och underlag — det är socialnämndens beslut och kommunens verksamhetssystem som gäller. Det finns inget API mot IVO eller Arbetsförmedlingen; anvisningen registreras för hand i AF:s Mina sidor för kommuner och bockas av i portalen."
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",

@@ -10,7 +10,7 @@ import type { ActivityPlan, ActivitySession } from './aktivitetApi'
 const plan = (o: Partial<ActivityPlan> = {}): ActivityPlan => ({
   id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: null, template_id: 't1', template_name: 'Verkstad 30 h',
   start_date: '2026-10-05', end_date: '2026-12-27', weekly_hours_target: 30, jobsearch_hours_per_week: 5, target_reason: null,
-  status: 'active', plan_text: null, decided_at: '2026-10-01', forsorjningshinder: 'arbetslos', nedsattning_underlag_lamnat_at: null,
+  status: 'active', plan_text: null, decided_at: '2026-10-01', forsorjningshinder: 'arbetslos', nedsattning_underlag_lamnat_at: null, af_registered_at: null,
   created_at: '', updated_at: '', ...o,
 })
 

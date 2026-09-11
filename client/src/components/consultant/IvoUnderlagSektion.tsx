@@ -31,27 +31,14 @@ type Lage =
   | { status: 'klart'; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string> }
 
 /**
- * AF-checklistan sparas per webbläsare i localStorage — det finns ingen
- * kolumn för "registrerad hos AF" ännu. Nästa steg är en kolumn på
- * activity_plans så att bocken följer planen, inte datorn.
+ * AF-checklistan följer planen: `activity_plans.af_registered_at` (migration
+ * 20260911220000) bär datumet då anvisningen registrerades i AF:s Mina sidor
+ * för kommuner. Tidigare en localStorage-bock per webbläsare — den följde
+ * datorn, inte planen.
  */
-const AF_NYCKEL = (planId: string) => `af-anvisning-registrerad:${planId}`
-
-function lasAfBock(planId: string): boolean {
-  try {
-    return localStorage.getItem(AF_NYCKEL(planId)) === '1'
-  } catch {
-    return false
-  }
-}
-
-function skrivAfBock(planId: string, varde: boolean) {
-  try {
-    if (varde) localStorage.setItem(AF_NYCKEL(planId), '1')
-    else localStorage.removeItem(AF_NYCKEL(planId))
-  } catch {
-    /* privat läge eller blockerad lagring — bocken visas ändå tills sidan laddas om */
-  }
+function lokaltIdag(): string {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
 export function IvoUnderlagSektion() {
@@ -59,7 +46,8 @@ export function IvoUnderlagSektion() {
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
   const [omgang, setOmgang] = useState(0)
   const [val, setVal] = useState(() => kvartalForDatum(formatLocalDate(new Date())))
-  const [afBockar, setAfBockar] = useState<Record<string, boolean>>({})
+  const [afSparar, setAfSparar] = useState<string | null>(null)
+  const [afFel, setAfFel] = useState<string | null>(null)
 
   const { from, to } = kvartalGranser(val.ar, val.kvartal)
 
@@ -77,9 +65,6 @@ export function IvoUnderlagSektion() {
         for (const d of deltagare) {
           namn.set(d.participant_id, `${d.first_name ?? ''} ${d.last_name ?? ''}`.trim())
         }
-        const bockar: Record<string, boolean> = {}
-        for (const p of plans) bockar[p.id] = lasAfBock(p.id)
-        setAfBockar(bockar)
         setLage({ status: 'klart', plans, sessions, namn })
       } catch (err) {
         if (aktiv) setLage({ status: 'fel', fel: err instanceof Error ? err.message : 'Underlaget kunde inte hämtas.' })
@@ -202,15 +187,16 @@ export function IvoUnderlagSektion() {
               AF-checklista: anvisning registrerad i Mina sidor för kommuner
             </h4>
             <p className="text-xs text-stone-500 dark:text-stone-400">
-              Kommunen ska registrera varje anvisning hos Arbetsförmedlingen. Bocken sparas bara i den här webbläsaren.
+              Kommunen ska registrera varje anvisning hos Arbetsförmedlingen. Bocken sparas på planen med dagens datum — inget API finns, registreringen görs för hand.
             </p>
+            {afFel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{afFel}</p>}
             {aktivaPlaner.length === 0 ? (
               <p className="text-sm text-stone-600 dark:text-stone-300">Inga aktiva planer att registrera.</p>
             ) : (
               <ul className="divide-y divide-stone-100 dark:divide-stone-800">
                 {aktivaPlaner.map((p) => {
                   const namn = lage.namn.get(p.participant_id) || `Deltagare ${p.participant_id.slice(0, 8)}`
-                  const bockad = afBockar[p.id] ?? false
+                  const bockad = p.af_registered_at != null
                   return (
                     <li key={p.id} className="py-2 flex items-center gap-3">
                       <input
@@ -218,14 +204,26 @@ export function IvoUnderlagSektion() {
                         type="checkbox"
                         className="w-5 h-5 rounded border-stone-300 text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
                         checked={bockad}
-                        onChange={(e) => {
-                          skrivAfBock(p.id, e.target.checked)
-                          setAfBockar((prev) => ({ ...prev, [p.id]: e.target.checked }))
+                        disabled={afSparar === p.id}
+                        onChange={async (e) => {
+                          const datum = e.target.checked ? lokaltIdag() : null
+                          setAfSparar(p.id); setAfFel(null)
+                          try {
+                            const uppdaterad = await aktivitetsplanApi.update(p.id, { af_registered_at: datum })
+                            setLage((prev) => prev.status === 'klart'
+                              ? { ...prev, plans: prev.plans.map((x) => (x.id === p.id ? { ...x, af_registered_at: uppdaterad.af_registered_at } : x)) }
+                              : prev)
+                          } catch (err) {
+                            setAfFel(err instanceof Error ? err.message : 'AF-registreringen kunde inte sparas.')
+                          } finally {
+                            setAfSparar(null)
+                          }
                         }}
                       />
                       <label htmlFor={`af-${p.id}`} className="flex-1 text-sm text-stone-800 dark:text-stone-100">
                         {namn}
                         <span className="text-stone-500 dark:text-stone-400"> · plan från {langtDatum(p.start_date)}</span>
+                        {bockad && <span className="text-emerald-700 dark:text-emerald-300"> · Registrerad {langtDatum(p.af_registered_at as string)}</span>}
                       </label>
                       {bockad && <CheckCircle2 className="w-4 h-4 text-emerald-600" aria-hidden="true" />}
                     </li>

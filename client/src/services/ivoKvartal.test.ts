@@ -6,7 +6,7 @@ const plan = (o: Partial<{ id: string; start_date: string; end_date: string | nu
   start_date: '2026-10-05',
   end_date: null,
   forsorjningshinder: null,
-  nedsattning_underlag_lamnat_at: null,
+  nedsattning_underlag_lamnat_at: null, af_registered_at: null,
   ...o,
 }) as never
 

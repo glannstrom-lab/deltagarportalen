@@ -13,6 +13,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Loader2, MapPin, CheckCircle2, FileText } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { downloadAktivitetsplanPDF } from '@/services/aktivitetsplanPdf'
+import { orgApi } from '@/services/orgApi'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
@@ -151,12 +152,17 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   const laddaNerPdf = async (plan: ActivityPlan, sessions: ActivitySession[]) => {
     setSparaPlan('pdf')
     try {
+      // Organisationsnamnet ur konsulentens medlemskap, matchat mot planens org_id.
+      // Går hämtningen fel skrivs "-" i PDF:en — namnet är inte värt att fälla utskriften för.
+      const organizationName = plan.org_id
+        ? await orgApi.myMemberships().then((m) => m.find((x) => x.org_id === plan.org_id)?.organization.name ?? null).catch(() => null)
+        : null
       await downloadAktivitetsplanPDF({
         plan,
         sessions,
         participantName,
         consultantName: `${profile?.first_name ?? ''} ${profile?.last_name ?? ''}`.trim() || 'Arbetskonsulent',
-        organizationName: null,
+        organizationName,
       })
     } catch (err) {
       notifications.error(err instanceof Error ? err.message : 'PDF:en kunde inte skapas')

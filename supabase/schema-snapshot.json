@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T16:17:32.352Z",
+  "generatedAt": "2026-09-11T16:43:08.685Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -45,6 +45,7 @@
       "weekday"
     ],
     "activity_plans": [
+      "af_registered_at",
       "consultant_id",
       "created_at",
       "decided_at",

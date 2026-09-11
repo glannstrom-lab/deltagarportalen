@@ -6,7 +6,7 @@
 // Kräver TEST_CONSULTANT_EMAIL/PASSWORD + TEST_USER_EMAIL/PASSWORD i miljön
 // (eller .env.test.local). Konsulenten ska vara kopplad till deltagaren.
 // Idempotent: mall och plan återanvänds om de redan finns. Rör ingen AI.
-// Första körningen 2026-09-11: 13/13 steg gröna mot www.jobin.se.
+// Första körningen 2026-09-11: 13/13 steg gröna mot www.jobin.se. Steg 15 (notisklockan) tillagt samma kväll.
 const { chromium } = require('playwright')
 const fs = require('fs'); const path = require('path')
 ;(function laddaEnv() {
@@ -179,6 +179,15 @@ async function hoppaOver(page) {
       await har.click(); await d.waitForTimeout(1500); await shot(d, 'd03-incheckad'); ok('deltagaren checkade in')
     } else { fel('incheckning', 'ingen "Jag är här"-knapp synlig (inget pass i dag?)') }
   } catch (e) { fel('min vecka', e); await shot(d, 'd02-min-vecka-fel') }
+  // KM10: notisen om ogiltig frånvaro (konsulenten markerade måndagen ovan) ska synas i klockan.
+  try {
+    await d.goto(BASE + '/#/', { waitUntil: 'networkidle' }); await d.waitForTimeout(1500); await hoppaOver(d)
+    await d.getByRole('button', { name: /^Notifikationer/ }).first().click(); await d.waitForTimeout(1200)
+    await shot(d, 'd05-notisklockan')
+    const n = await d.getByText(/frånvaro utan giltigt skäl|Din vecka är planerad/).count()
+    n > 0 ? ok('deltagaren ser aktivitetsnotis i klockan', `${n} träff(ar)`) : fel('notisklockan', 'ingen aktivitetsnotis synlig')
+    await d.keyboard.press('Escape')
+  } catch (e) { fel('notisklockan', e); await shot(d, 'd05-notis-fel') }
   try {
     await d.goto(BASE + '/#/min-vardag', { waitUntil: 'networkidle' }); await d.waitForTimeout(1500)
     await shot(d, 'd04-min-vardag-hubb'); ok('hubbkortet Min vecka')

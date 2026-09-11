@@ -2,7 +2,7 @@
  * IvoUnderlagSektion — kvartalsunderlag + AF-checklista (KM7).
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
-import { render, screen, fireEvent, cleanup } from '@testing-library/react'
+import { render, screen, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { IvoUnderlagSektion } from './IvoUnderlagSektion'
 
@@ -14,7 +14,7 @@ const plan = (o: Record<string, unknown>) => ({
 })
 
 vi.mock('@/services/aktivitetApi', () => ({
-  aktivitetsplanApi: { listAll: vi.fn(), listSessionsBetween: vi.fn() },
+  aktivitetsplanApi: { listAll: vi.fn(), listSessionsBetween: vi.fn(), update: vi.fn() },
   FORSORJNINGSHINDER: ['arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal', 'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat'],
   FORSORJNINGSHINDER_ETIKETT: { arbetslos: 'Arbetslös', sjukskriven_med_intyg: 'Sjukskriven med läkarintyg', sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning', arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl', foraldraledig: 'Föräldraledig', arbetar_deltid: 'Arbetar deltid', sprakhinder: 'Språkhinder', utan_forsorjningshinder: 'Utan försörjningshinder', annat: 'Annat' },
 }))
@@ -54,16 +54,20 @@ describe('IvoUnderlagSektion', () => {
     expect(screen.getByLabelText(/Deltagare p2/)).toBeInTheDocument()
   })
 
-  it('sparar AF-bocken i localStorage per plan', async () => {
+  it('sparar AF-registreringen på planen med dagens datum, och nollar den vid avbock', async () => {
     const { aktivitetsplanApi } = await import('@/services/aktivitetApi')
     vi.mocked(aktivitetsplanApi.listAll).mockResolvedValue([plan({})] as never)
     vi.mocked(aktivitetsplanApi.listSessionsBetween).mockResolvedValue([] as never)
+    vi.mocked(aktivitetsplanApi.update).mockImplementation(async (_id, patch) => ({ ...plan({}), ...patch }) as never)
     renderMedQuery()
     const bock = await screen.findByLabelText(/Anna Andersson/)
     fireEvent.click(bock)
-    expect(localStorage.getItem('af-anvisning-registrerad:plan1')).toBe('1')
-    fireEvent.click(bock)
-    expect(localStorage.getItem('af-anvisning-registrerad:plan1')).toBeNull()
+    await waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenCalledWith('plan1', { af_registered_at: '2026-11-12' }))
+    expect(await screen.findByText(/Registrerad 12 nov/)).toBeInTheDocument()
+    fireEvent.click(screen.getByLabelText(/Anna Andersson/))
+    await waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenLastCalledWith('plan1', { af_registered_at: null }))
+    // Inget ligger kvar i webbläsaren — bocken bor på planen nu.
+    expect(localStorage.getItem('af-anvisning-registrerad:plan1')).toBeFalsy()
   })
 
   it('visar — och spärrar nedladdningen när inga planer finns i kvartalet', async () => {

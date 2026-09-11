@@ -134,14 +134,35 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   bekräftelsedialog ("Ja, underlag lämnat") och ångrar först om datumet redan står. 14/14 gröna
   mot deployen `7e62247e`.
 
+### Gjort, pass 5 (samma dag) — KM10 notiser, KM7-rest, PDF:ens organisationsnamn
+
+- **Migration `20260911220000_km10_notiser_km7_af_kolumn.sql` körd och verifierad** som
+  authenticated: konsulent får INSERT i `notifications` åt kopplad deltagare med
+  `type` i (aktivitet_plan, aktivitet_pass, aktivitet_franvaro) → 1 rad; typ `message` →
+  42501; okopplad användare → 42501; deltagaren ser notisen. `activity_plans.af_registered_at`
+  ersätter localStorage-bocken i IVO-kortet.
+- **KM10** — `services/aktivitetNotiser.ts`: "Din vecka är planerad" vid plan, "Ett pass
+  ändrades" vid tillagt/ändrat/borttaget pass, och vid ogiltig frånvaro en lugn text som
+  uppmanar att prata med konsulenten om det finns ett skäl. Notisen är en bonus: fel loggas
+  med `console.warn` och fäller aldrig huvudoperationen (enda stället som sväljer fel, med
+  kommentar). Bara i appen — mejl väntar på DE1. 10 tester.
+- PDF:en får organisationens namn ur `orgApi.myMemberships()`.
+- Sajten: B2B-sidans FAQ och konsulentlista beskriver nu det som är byggt (IVO-underlag,
+  plan-PDF, katalog, jobbsökande); artifakten "Jobin och aktivitetskravet" har ett läge-block
+  och uppdaterad tabell.
+- **KM11 (språk) — beslut väntar:** Min veckas svenska är redan enkel (B1); att lägga till
+  arabiska/somaliska/tigrinja/dari kräver ett val av hur språket väljs (i18n har bara sv/en och
+  en tvåvalsväljare). Föreslaget: fyra vyer (Min vecka, incheckning, notistexterna,
+  samtyckesrutan) som egna locale-filer med fallback till svenska, valbara i profilen. Inte
+  byggt utan Mikaels ja.
+
 ### Kvar i spåret (ordning)
 
 1. **KM2 rest** — självbetjäning för org-admin (kräver antingen ett höjt grants-tak med
    motivering eller att medlemskapet flyttas till en tabell utan självreferens),
    inbjudan via mejl (blockerad av DE1), otilldelade (BL1), överlämning av caseload.
-2. ~~KM8~~ ~~KM9~~ (pass 4) · **KM10** notiser (`notifications` skrivs fortfarande av ingen
-   konsulenthändelse; DE1 blockerar mejl) · **KM11** språk · KM7-rest: kolumn för AF-registrering
-   i stället för localStorage · KM9-rest: konsulentens läsrätt på saved_jobs via consultant_participants.
+2. ~~KM8~~ ~~KM9~~ ~~KM10~~ (pass 4–5) · **KM11** språk (beslut) · KM9-rest: konsulentens
+   läsrätt på saved_jobs via consultant_participants · mejlnotiser när DE1 är löst.
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
@@ -1341,7 +1362,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 - [x] **KM9** ✅ 2026-09-11 **Jobbsökstid som räknas i planen** ur sparade jobb, ansökningar, CV-uppdatering,
   intervjuträning, visad som deltagarens egen redovisning, aldrig som kontroll. Försprånget ingen
   konkurrent (Workbuster, Wundermatch, GW Arbetsmarknad, Treserva) har · ~2 d
-- [ ] **KM10** **Påminnelser i appen + "Min vecka" på mobil.** Skriv till `notifications` från
+- [x] **KM10** ✅ 2026-09-11 (i appen; mejl/SMS väntar på DE1) **Påminnelser i appen + "Min vecka" på mobil.** Skriv till `notifications` från
   konsulenthändelser (ingen gör det i dag); mejl först när DE1 är löst; SMS (46elks/Twilio) är det
   kommunerna faktiskt använder mot gruppen, en dag + en rad i Art 30 · ~3 d
 - [ ] **KM11** **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och

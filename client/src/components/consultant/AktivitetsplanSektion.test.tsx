@@ -10,7 +10,7 @@ import { AktivitetsplanSektion } from './AktivitetsplanSektion'
 const plan = {
   id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: null, template_id: 't1', template_name: 'Verkstad 30 h',
   start_date: '2026-10-05', end_date: '2026-12-27', weekly_hours_target: 30, jobsearch_hours_per_week: 5, target_reason: null,
-  status: 'active', plan_text: null, decided_at: '2026-10-01', forsorjningshinder: null, nedsattning_underlag_lamnat_at: null, created_at: '', updated_at: '',
+  status: 'active', plan_text: null, decided_at: '2026-10-01', forsorjningshinder: null, nedsattning_underlag_lamnat_at: null, af_registered_at: null, created_at: '', updated_at: '',
 }
 const pass = (o: Record<string, unknown>) => ({
   id: 's1', plan_id: 'plan1', participant_id: 'p1', date: '2026-10-05', start_time: '09:00', end_time: '12:00', title: 'Jobbsökarverkstad',
@@ -34,6 +34,7 @@ vi.mock('@/services/aktivitetApi', () => ({
 }))
 vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: vi.fn(async () => true) }) }))
 vi.mock('@/services/aktivitetsplanPdf', () => ({ downloadAktivitetsplanPDF: vi.fn(async () => undefined) }))
+vi.mock('@/services/orgApi', () => ({ orgApi: { myMemberships: vi.fn(async () => [{ org_id: 'org1', organization: { name: 'Testkommun' } }]) } }))
 vi.mock('@/services/jobbsokAktivitet', () => ({ jobbsokAktivitetApi: { deltagarensJobbsok: vi.fn(async () => null) } }))
 vi.mock('@/pages/consultant/consultantParticipantsQuery', () => ({ fetchCachedConsultantParticipants: vi.fn(async () => []) }))
 

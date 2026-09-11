@@ -51,6 +51,10 @@ export type NotificationType =
   | 'info'
   | 'success'
   | 'warning'
+  // KM10 — aktivitetskravet: skrivs av konsulenten åt deltagaren (RLS begränsar till dessa tre)
+  | 'aktivitet_plan'
+  | 'aktivitet_pass'
+  | 'aktivitet_franvaro'
 
 export interface Notification {
   id: string
@@ -440,6 +444,25 @@ export const notificationConfig: Record<NotificationType, {
     color: 'text-amber-600',
     bgColor: 'bg-amber-100',
     label: 'Varning',
+  },
+  // KM10 — ikonerna måste finnas i NotificationBell.tsx:iconMap; hub-färg wellbeing (Min vardag).
+  aktivitet_plan: {
+    icon: 'CheckCircle',
+    color: 'text-violet-700',
+    bgColor: 'bg-violet-100',
+    label: 'Din vecka',
+  },
+  aktivitet_pass: {
+    icon: 'Info',
+    color: 'text-violet-700',
+    bgColor: 'bg-violet-100',
+    label: 'Ett pass ändrades',
+  },
+  aktivitet_franvaro: {
+    icon: 'AlertTriangle',
+    color: 'text-stone-700',
+    bgColor: 'bg-stone-200',
+    label: 'Frånvaro',
   },
 }
 

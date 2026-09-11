@@ -23,6 +23,7 @@ import {
   type Attendance,
   type TemplateItem,
 } from './aktivitetSchema'
+import { notisOgiltigFranvaro, notisPassAndrat, notisPlanSkapad } from './aktivitetNotiser'
 
 // ============================================================================
 // TYPER
@@ -69,6 +70,8 @@ export interface ActivityPlan {
   forsorjningshinder: Forsorjningshinder | null
   /** KM7: datum då avvikelseunderlag lämnats till biståndshandläggaren. */
   nedsattning_underlag_lamnat_at: string | null
+  /** KM7: datum då anvisningen registrerats i AF:s Mina sidor för kommuner (manuellt). */
+  af_registered_at: string | null
   created_at: string
   updated_at: string
 }
@@ -203,6 +206,20 @@ function sortItems(items: ActivityTemplateItem[]): ActivityTemplateItem[] {
 }
 
 const TOLV_VECKOR_DAGAR = 12 * 7 - 1
+
+/**
+ * KM10: notisen till deltagaren är en bonus ovanpå det som redan sparats.
+ * Det här är det ENDA stället i filen där ett fel får sväljas — och det
+ * loggas, så det syns. Huvudoperationen (planen, passet, närvaron) har redan
+ * lyckats när vi kommer hit. Inget mejl (DE1).
+ */
+async function notisBonus(namn: string, skicka: () => Promise<void>): Promise<void> {
+  try {
+    await skicka()
+  } catch (err) {
+    console.warn(`[aktivitetApi] notisen "${namn}" kunde inte skapas — huvudoperationen är sparad`, err)
+  }
+}
 
 // ============================================================================
 // SCHEMAMALLAR (KM3)
@@ -402,6 +419,7 @@ export const aktivitetsplanApi = {
       if (countError) console.warn('usage_count kunde inte räknas upp', countError)
     }
 
+    await notisBonus('plan skapad', () => notisPlanSkapad(plan as ActivityPlan))
     return { plan: plan as ActivityPlan, sessions }
   },
 
@@ -429,7 +447,7 @@ export const aktivitetsplanApi = {
     return (data ?? []).map((r) => mapSession(r as Record<string, unknown>))
   },
 
-  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at'>>): Promise<ActivityPlan> {
+  async update(planId: string, patch: Partial<Pick<ActivityPlan, 'weekly_hours_target' | 'jobsearch_hours_per_week' | 'target_reason' | 'plan_text' | 'decided_at' | 'status' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at' | 'af_registered_at'>>): Promise<ActivityPlan> {
     const user = await requireUser()
     const { data, error } = await supabase
       .from('activity_plans')
@@ -490,7 +508,11 @@ export const aktivitetsplanApi = {
       .select('*')
       .single()
     if (error) throw error
-    return mapSession(data as Record<string, unknown>)
+    const markerad = mapSession(data as Record<string, unknown>)
+    if (input.attendance === 'absent_invalid') {
+      await notisBonus('ogiltig frånvaro', () => notisOgiltigFranvaro(markerad))
+    }
+    return markerad
   },
 
   async addSession(planId: string, participantId: string, input: SessionInput): Promise<ActivitySession> {
@@ -511,7 +533,9 @@ export const aktivitetsplanApi = {
       .select('*')
       .single()
     if (error) throw error
-    return mapSession(data as Record<string, unknown>)
+    const skapat = mapSession(data as Record<string, unknown>)
+    await notisBonus('pass tillagt', () => notisPassAndrat(skapat, { typ: 'tillagt' }))
+    return skapat
   },
 
   async updateSession(sessionId: string, input: Partial<SessionInput>): Promise<ActivitySession> {
@@ -523,13 +547,22 @@ export const aktivitetsplanApi = {
       .select('*')
       .single()
     if (error) throw error
-    return mapSession(data as Record<string, unknown>)
+    const andrat = mapSession(data as Record<string, unknown>)
+    await notisBonus('pass ändrat', () => notisPassAndrat(andrat, { typ: 'andrat' }))
+    return andrat
   },
 
   async removeSession(sessionId: string): Promise<void> {
     await requireUser()
-    const { error } = await supabase.from('activity_sessions').delete().eq('id', sessionId)
+    // Raden hämtas före raderingen så notisen kan säga vilket pass som försvann.
+    const { data: rad, error } = await supabase
+      .from('activity_sessions')
+      .delete()
+      .eq('id', sessionId)
+      .select('*')
+      .maybeSingle()
     if (error) throw error
+    if (rad) await notisBonus('pass borttaget', () => notisPassAndrat(mapSession(rad as Record<string, unknown>), { typ: 'borttaget' }))
   },
 }
 
