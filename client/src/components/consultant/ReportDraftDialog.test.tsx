@@ -155,6 +155,11 @@ describe('ReportDraftDialog — utkastlager (KA3)', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /^kopiera$/i }))
     await waitFor(() => expect(skrivTextMock).toHaveBeenCalledWith('Utkast som kopieras ut.'))
+    // Rensningen sker EFTER `await clipboard.writeText` — en microtask senare än
+    // mock-anropet. Under CI-last hann unmount-flushen före och skrev tillbaka
+    // utkastet (röd Coverage 2026-09-11, 8f5a8efa). Vänta på att lagringen är tom.
+    // (setup.ts-mocken saknar `length`; removeItem är en vi.fn.)
+    await waitFor(() => expect(sessionStorage.removeItem).toHaveBeenCalled())
 
     unmount()
     renderDialog()
