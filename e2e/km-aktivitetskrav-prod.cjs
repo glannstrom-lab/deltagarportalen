@@ -157,6 +157,24 @@ async function hoppaOver(page) {
     ok('organisation + caseload synlig')
   } catch (e) { fel('organisation', e); await shot(k, 'k10-org-fel') }
 
+  // KM2 steg 3: chefen lägger till en kollega på e-post och tar bort igen (INSTEAD OF-trigger).
+  try {
+    const KOLLEGA = 'claude-playwright-consultant@jobin.test'
+    const form = k.getByRole('form', { name: /Lägg till kollega/ }).first()
+    await form.getByLabel('E-post').fill(KOLLEGA)
+    await form.getByLabel('Roll').selectOption({ label: 'Arbetskonsulent' })
+    await form.getByRole('button', { name: 'Lägg till' }).click(); await k.waitForTimeout(2000)
+    const rad = k.locator('li, tr, div').filter({ hasText: KOLLEGA }).last()
+    await shot(k, 'k14-kollega-tillagd')
+    if (!(await k.getByText(KOLLEGA).first().isVisible().catch(() => false))) throw new Error('kollegan syns inte efter tillägg')
+    ok('chefen lade till kollega via e-post')
+    await rad.getByRole('button', { name: 'Ta bort' }).click(); await k.waitForTimeout(600)
+    const ja = k.getByRole('button', { name: /Ta bort|Bekräfta/ }).last(); if (await ja.isVisible({ timeout: 2000 }).catch(() => false)) await ja.click()
+    await k.waitForTimeout(2000)
+    if (await k.getByText(KOLLEGA).first().isVisible().catch(() => false)) throw new Error('kollegan finns kvar efter borttagning')
+    ok('chefen tog bort kollegan igen')
+  } catch (e) { fel('självbetjäning kollega', e); await shot(k, 'k14-kollega-fel') }
+
   // ---------------- Deltagare ----------------
   const dctx = await browser.newContext({ viewport: { width: 390, height: 844 }, locale: 'sv-SE', isMobile: true, hasTouch: true })
   const d = await dctx.newPage()
@@ -188,6 +206,16 @@ async function hoppaOver(page) {
     n > 0 ? ok('deltagaren ser aktivitetsnotis i klockan', `${n} träff(ar)`) : fel('notisklockan', 'ingen aktivitetsnotis synlig')
     await d.keyboard.press('Escape')
   } catch (e) { fel('notisklockan', e); await shot(d, 'd05-notis-fel') }
+  // KM11: Lätt svenska byter texterna i Min vecka.
+  try {
+    await d.goto(BASE + '/#/min-vecka', { waitUntil: 'networkidle' }); await d.waitForTimeout(1200)
+    await d.evaluate(() => localStorage.setItem('lattSvenska', '1'))
+    await d.reload({ waitUntil: 'networkidle' }); await d.waitForTimeout(1500); await hoppaOver(d)
+    const latt = await d.getByText(/Så har du sökt jobb den här veckan|Du var där|Du var borta/).count()
+    await shot(d, 'd06-latt-svenska')
+    latt > 0 ? ok('lätt svenska aktiv i Min vecka', `${latt} träff(ar)`) : fel('lätt svenska', 'inga lätt-svenska-strängar synliga')
+    await d.evaluate(() => localStorage.removeItem('lattSvenska'))
+  } catch (e) { fel('lätt svenska', e); await shot(d, 'd06-latt-fel') }
   try {
     await d.goto(BASE + '/#/min-vardag', { waitUntil: 'networkidle' }); await d.waitForTimeout(1500)
     await shot(d, 'd04-min-vardag-hubb'); ok('hubbkortet Min vecka')

@@ -10,10 +10,17 @@
  *   - Chef/admin i organisationen: läser caseload per konsulent (vyn
  *     organization_caseload) — bara tal, inga deltagaruppgifter.
  *   - Superadmin (is_admin_or_superadmin): skapar organisationer och lägger
- *     till/tar bort medlemmar. Det finns MEDVETET ingen självbetjäning för
- *     org-admin ännu: en policy som refererar organization_members inifrån
- *     organization_members ger RLS-rekursion (42P17), och en definer-funktion
- *     skulle spräcka grants-taket. Pilotkommunerna sätts upp av Mikael.
+ *     till/tar bort medlemmar direkt i organization_members.
+ *   - Chef/admin i organisationen (självbetjäning, migration 20260911230000):
+ *     lägger till kollega på e-post, byter roll och tar bort — genom INSERT/
+ *     UPDATE/DELETE på vyn organization_colleagues. En INSTEAD OF-trigger (definer,
+ *     inte anropbar direkt) kontrollerar allt: bara chef/admin i org; bara admin
+ *     ger admin; e-posten måste redan ha ett konto (P0002); dubblett 23505; egen
+ *     roll/eget medlemskap 42501; sista chef/admin kan inte tas bort (23514).
+ *     Databasens felmeddelanden är på svenska och visas rakt av i UI:t.
+ *     Varför inte en policy: en policy på organization_members som refererar
+ *     organization_members ger RLS-rekursion (42P17); och en anropbar
+ *     definer-RPC hade spräckt grants-taket.
  *
  * Mönster som övriga services: kastar vid fel, sväljer aldrig till [].
  */
@@ -129,6 +136,48 @@ export const orgApi = {
     const m = await orgApi.myMemberships()
     return m.some((x) => x.role === 'chef' || x.role === 'admin')
   },
+
+  // --- Självbetjäning för chef/admin (INSTEAD OF-trigger på vyn) ---
+
+  /** Lägger till en kollega som redan har ett konto. Databasens svenska felmeddelande skickas vidare. */
+  async addColleagueByEmail(orgId: string, email: string, role: OrgRole): Promise<void> {
+    await requireUser()
+    const { error } = await supabase
+      .from('organization_colleagues')
+      .insert({ org_id: orgId, email: email.trim(), role })
+    if (error) throw new Error(felText(error))
+  },
+
+  async setColleagueRole(membershipId: string, role: OrgRole): Promise<void> {
+    await requireUser()
+    const { error } = await supabase
+      .from('organization_colleagues')
+      .update({ role })
+      .eq('id', membershipId)
+    if (error) throw new Error(felText(error))
+  },
+
+  async removeColleague(membershipId: string): Promise<void> {
+    await requireUser()
+    const { error } = await supabase
+      .from('organization_colleagues')
+      .delete()
+      .eq('id', membershipId)
+    if (error) throw new Error(felText(error))
+  },
+}
+
+/**
+ * Databasens meddelande föredras — triggern skriver dem på svenska för att visas
+ * rakt av ("Ingen användare med e-posten …", "Personen är redan medlem …").
+ */
+export function felText(e: unknown): string {
+  if (e && typeof e === 'object' && 'message' in e && typeof (e as { message: unknown }).message === 'string') {
+    const m = (e as { message: string }).message.trim()
+    if (m) return m
+  }
+  if (e instanceof Error && e.message.trim()) return e.message
+  return 'Kunde inte spara'
 }
 
 /** Superadmin-delen. RLS släpper bara igenom is_admin_or_superadmin(). */

@@ -156,13 +156,35 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   samtyckesrutan) som egna locale-filer med fallback till svenska, valbara i profilen. Inte
   byggt utan Mikaels ja.
 
+### Gjort, pass 6 (samma dag) — självbetjäning för chefen och Lätt svenska
+
+- **KM2 steg 3** — migration `20260911230000_km2_sjalvbetjaning_org.sql` körd: vyn
+  `organization_colleagues` tar INSERT (org_id, email, role)/UPDATE (role)/DELETE genom en
+  INSTEAD OF-trigger. Triggerfunktionen är SECURITY DEFINER **utan EXECUTE för någon roll** —
+  uppmätt att den ändå avfyras som postgres medan direktanrop ger 42501, så den räknas inte i
+  grants-taket. Åtta regler verifierade som chef, andra chef och utomstående (dubblett 23505,
+  okänd e-post P0002, admin-roll 42501, egen roll 42501, sista chef 23514, utomstående 42501).
+  Konsulentens Inställningar har formuläret "Lägg till kollega" (e-post + roll), rollväljare
+  och "Ta bort" för chef/admin. Kollegan måste redan ha konto — inbjudan via mejl väntar på DE1.
+- **KM11, första steget: Lätt svenska.** Tredje valet i språkväljaren (och toppradens
+  mobilmeny). `i18n/locales/sv-latt.json` läggs som överlägg på sv-bundlen för Min vecka,
+  samtyckesfrågan om konsulenten och hubbkortet; allt annat är vanlig svenska. Valet sparas
+  per enhet (`localStorage.lattSvenska`). Grinden `i18n/lattSvenska.test.ts`: varje nyckel
+  finns i sv.json med samma {{variabler}}, på/av återställer, myndighetsnamn orörda.
+  **Fälla:** i18next deep-mergar in överlägget i SAMMA objekt som sv.json exporterar —
+  originalet fryses som djup kopia vid modulladdning, annars går "av" inte att göra.
+  **Arabiska/somaliska/tigrinja/dari** kräver en människa som översätter; mekanismen (en
+  överläggsfil per språk) är förberedd.
+- Prod-röktestet har nu 17 steg: chefen lägger till och tar bort en kollega, deltagaren
+  ser Min vecka på lätt svenska.
+
 ### Kvar i spåret (ordning)
 
-1. **KM2 rest** — självbetjäning för org-admin (kräver antingen ett höjt grants-tak med
-   motivering eller att medlemskapet flyttas till en tabell utan självreferens),
-   inbjudan via mejl (blockerad av DE1), otilldelade (BL1), överlämning av caseload.
-2. ~~KM8~~ ~~KM9~~ ~~KM10~~ (pass 4–5) · **KM11** språk (beslut) · KM9-rest: konsulentens
-   läsrätt på saved_jobs via consultant_participants · mejlnotiser när DE1 är löst.
+1. ~~Självbetjäning~~ (pass 6) · inbjudan via mejl (blockerad av DE1), otilldelade (BL1),
+   överlämning av caseload.
+2. ~~KM8~~ ~~KM9~~ ~~KM10~~ · KM11: fler språk kräver översättare (mekanismen finns) ·
+   KM9-rest: konsulentens läsrätt på saved_jobs via consultant_participants · mejlnotiser
+   när DE1 är löst.
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
@@ -1331,7 +1353,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 > **Ordning:** KM2 (beslut) → KM3+KM4+KM6 före 1 okt → KM5+KM7+KM8 före jan 2027 → resten.
 > **Ingen AI i kedjan schema → närvaro → beslutsunderlag** (AI-förordningen bilaga III p. 5 a).
 
-- [ ] **KM2** 🟡 datamodell, superadmin-hantering, kollegor och chefens caseload klara 2026-09-11; självbetjäning/inbjudan/överlämning kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
+- [ ] **KM2** 🟡 datamodell, superadmin, kollegor, caseload och självbetjäning klara 2026-09-11; inbjudan via mejl (DE1) och överlämning kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
   (`id, name, kind: kommun|leverantor, org_number`) + `organization_members` (`user_id, org_id,
   role: handlaggare|konsulent|chef|admin`). Alla KM-tabeller bär `org_id`. RLS: handläggare ser
   närvaro/avvikelser men inte journal, mående, dagbok (inre sekretess, OSL 26 kap.). Chefsvy:
@@ -1365,7 +1387,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 - [x] **KM10** ✅ 2026-09-11 (i appen; mejl/SMS väntar på DE1) **Påminnelser i appen + "Min vecka" på mobil.** Skriv till `notifications` från
   konsulenthändelser (ingen gör det i dag); mejl först när DE1 är löst; SMS (46elks/Twilio) är det
   kommunerna faktiskt använder mot gruppen, en dag + en rad i Art 30 · ~3 d
-- [ ] **KM11** **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och
+- [ ] **KM11** 🟡 Lätt svenska klar 2026-09-11; övriga språk väntar på översättare **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och
   närvaron** (fyra vyer, inte hela portalen) · löpande
 - [ ] **KM12** 🟡 (1)(3)(5)(6)(7) gjorda 2026-09-11 **Sajten före första kommunmejlet:** (1) priset säger 2 990 + 290 på startsidan och
   "ingen offentlig prislista" på `/for-arbetsmarknadsenheter/`, välj ett; (2) org.nr, adress och

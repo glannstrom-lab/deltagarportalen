@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T16:43:14.739Z",
+  "generatedAt": "2026-09-11T17:19:30.316Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -371,6 +371,13 @@
       "definer": true,
       "anon": false,
       "authenticated": true
+    },
+    {
+      "name": "organization_colleagues_iud",
+      "signature": "organization_colleagues_iud()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "post_to_community_feed",

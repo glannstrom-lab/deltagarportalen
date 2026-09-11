@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/icons'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { arLattSvenska, sattLattSvenska } from '@/i18n/lattSvenska'
 import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
@@ -288,15 +289,26 @@ export function TopBar() {
                       </div>
                       <div className="flex gap-2 ml-7">
                         <button
-                          onClick={() => i18n.changeLanguage('sv')}
+                          onClick={() => { if (arLattSvenska()) void sattLattSvenska(false); i18n.changeLanguage('sv') }}
                           className={cn(
                             'px-3 py-1 text-xs font-medium rounded-full transition-colors',
-                            i18n.language === 'sv'
+                            i18n.language === 'sv' && !arLattSvenska()
                               ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                           )}
                         >
                           Svenska
+                        </button>
+                        <button
+                          onClick={() => { void sattLattSvenska(true) }}
+                          className={cn(
+                            'px-3 py-1 text-xs font-medium rounded-full transition-colors',
+                            i18n.language === 'sv' && arLattSvenska()
+                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)]'
+                              : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                          )}
+                        >
+                          Lätt svenska
                         </button>
                         <button
                           onClick={() => i18n.changeLanguage('en')}

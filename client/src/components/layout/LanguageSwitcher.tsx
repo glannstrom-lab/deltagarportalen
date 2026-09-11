@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { LATT_SVENSKA_KOD, arLattSvenska, sattLattSvenska } from '@/i18n/lattSvenska'
 import { useTranslation } from 'react-i18next'
 import { Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -29,20 +30,31 @@ function BritishFlag({ className }: { className?: string }) {
   )
 }
 
+// 'sv-latt' är inte ett i18next-språk utan ett överlägg på svenskan (KM11).
 const languages = [
   { code: 'sv', name: 'Svenska', Flag: SwedishFlag },
+  { code: LATT_SVENSKA_KOD, name: 'Lätt svenska', Flag: SwedishFlag },
   { code: 'en', name: 'English', Flag: BritishFlag },
 ]
+
+function aktivKod(lng: string): string {
+  return lng === 'sv' && arLattSvenska() ? LATT_SVENSKA_KOD : lng
+}
 
 export function LanguageSwitcher() {
   const { i18n, t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]
+  const currentLanguage = languages.find((lang) => lang.code === aktivKod(i18n.language)) || languages[0]
 
   const changeLanguage = (code: string) => {
-    i18n.changeLanguage(code)
+    if (code === LATT_SVENSKA_KOD) {
+      void sattLattSvenska(true)
+    } else {
+      if (code === 'sv' && arLattSvenska()) void sattLattSvenska(false)
+      i18n.changeLanguage(code)
+    }
     setIsOpen(false)
   }
 

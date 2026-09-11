@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T16:43:08.685Z",
+  "generatedAt": "2026-09-11T17:19:24.281Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2036,6 +2036,7 @@
     "log_consent_column_change",
     "log_profile_changes",
     "log_user_activity",
+    "organization_colleagues_iud",
     "post_to_community_feed",
     "prevent_last_superadmin_removal",
     "profiles_consultant_status_only_check",

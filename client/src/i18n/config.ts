@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next'
 // lazy-laddas i en egen chunk — den drogs tidigare in i entry-chunken för
 // ALLA användare trots att de flesta kör svenska (P1, 2026-06-22).
 import sv from './locales/sv.json'
+import { arLattSvenska, tillampaLattSvenska } from './lattSvenska'
 
 // Hämta sparat språk från localStorage eller använd svenska som default
 const savedLanguage = localStorage.getItem('language') || 'sv'
@@ -63,5 +64,9 @@ i18n.on('languageChanged', (lng) => {
 
 // Sätt initial lang-attribut
 document.documentElement.lang = savedLanguage
+
+// Lätt svenska (KM11): ett överlägg på sv-bundlen, valt per enhet. Läggs på
+// efter init så att sv.json alltid är basen. Se i18n/lattSvenska.ts.
+if (arLattSvenska()) tillampaLattSvenska(true)
 
 export default i18n

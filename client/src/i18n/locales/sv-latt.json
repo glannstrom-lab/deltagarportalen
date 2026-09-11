@@ -1,0 +1,89 @@
+{
+  "_kommentar": "Lätt svenska (KM11). Bara nycklar som finns i sv.json — samma {{variabler}}. Läggs ovanpå svenskan när användaren valt Lätt svenska; övriga nycklar faller tillbaka på sv.json. Korta meningar, vanliga ord, en tanke per mening. Myndighetsnamn ändras aldrig. Vaktas av i18n/lattSvenska.test.ts.",
+  "minVecka": {
+    "title": "Min vecka",
+    "description": "Här ser du vad du ska göra varje vecka.",
+    "kundeInteHamta": "Vi kunde inte hämta din vecka just nu.",
+    "ingenPlan": {
+      "title": "Du har ingen vecka planerad än",
+      "text": "Din konsulent planerar veckan tillsammans med dig. Du behöver inte göra något här nu.",
+      "cta": "Gå till din konsulent"
+    },
+    "saldo": {
+      "ingaPass": "Du har inget planerat den här veckan.",
+      "rad": "Du har {{planerade}} av {{mal}} timmar den här veckan.",
+      "jobbsok": "Du har också {{h}} timmar för att söka jobb själv."
+    },
+    "nastaPass": "Nästa gång: {{titel}}, {{dag}} kl {{tid}}",
+    "forraVeckan": "Veckan före",
+    "nastaVeckan": "Veckan efter",
+    "veckaRubrik": "Vecka {{fran}} – {{till}}",
+    "tomVecka": "Du har inget planerat den här veckan. Du kan titta på en annan vecka.",
+    "idag": "i dag",
+    "jagArHar": "Jag är här",
+    "jobbsok": {
+      "rubrik": "Så har du sökt jobb den här veckan",
+      "sparade_one": "{{count}} jobb sparat",
+      "sparade_other": "{{count}} jobb sparade",
+      "ansokningar_one": "{{count}} ansökan skickad",
+      "ansokningar_other": "{{count}} ansökningar skickade",
+      "cv": "Du har uppdaterat ditt CV",
+      "brev_one": "{{count}} personligt brev",
+      "brev_other": "{{count}} personliga brev",
+      "intervju_one": "{{count}} intervjuövning",
+      "intervju_other": "{{count}} intervjuövningar",
+      "tomt": "Inget än den här veckan. Det syns här när du sparar ett jobb eller skickar en ansökan.",
+      "fel": "Vi kunde inte hämta det här just nu.",
+      "egenRedovisning": "Det här är din egen lista. Din konsulent ser bara sparade jobb och ansökningar."
+    },
+    "incheckad": "Du checkade in kl {{tid}}",
+    "incheckadStatus": "Tack. Nu är du incheckad.",
+    "incheckningMisslyckades": "Det gick inte att checka in. Försök igen, eller säg till din konsulent.",
+    "typ": {
+      "motivation": "Motivation och förmåga",
+      "language": "Svenska",
+      "jobsearch": "Söka jobb",
+      "workplace": "På en arbetsplats",
+      "jobsearch_own": "Söka jobb själv"
+    },
+    "narvaro": {
+      "present": "Du var där",
+      "absent_valid": "Du var borta, med giltigt skäl",
+      "absent_invalid": "Du var borta",
+      "sick_certified": "Sjuk",
+      "external": "Annan aktivitet"
+    }
+  },
+  "minVardagHub": {
+    "features": {
+      "minVecka": {
+        "title": "Min vecka",
+        "description": "Vad du ska göra varje vecka, och när du är på plats.",
+        "planerad": "Planerad",
+        "ingenPlan": "Ingen vecka planerad än"
+      }
+    }
+  },
+  "consultantConsent": {
+    "heading": "Din konsulent kan se en del av din portal",
+    "intro": "{{namn}} är din konsulent i Jobin. Vi frågar dig nu, för du fick inte frågan från början. Du bestämmer.",
+    "seesHeading": "Det här kan {{namn}} se:",
+    "seesList": [
+      "ditt namn, din e-post och ditt telefonnummer",
+      "om du har ett CV, vilken poäng det fick och när du ändrade det senast",
+      "om du har gjort intressetestet och vad det visade",
+      "hur många jobb du har sparat",
+      "när du senast var inloggad",
+      "anteckningar och mål som {{namn}} skriver om dig. Dem kan du själv läsa."
+    ],
+    "notSeen": "Din dagbok och ditt mående ser konsulenten inte. Det delas bara om du säger ja till det separat.",
+    "revocation": "Du kan när som helst ta bort kopplingen på sidan Min konsulent. Då kan {{namn}} inte längre se dina uppgifter eller skriva om dig.",
+    "checkboxSharing": "Jag säger ja till att {{namn}} ser uppgifterna ovan.",
+    "checkboxRevocation": "Jag förstår att jag kan ta bort kopplingen när som helst.",
+    "yes": "Ja, det är okej",
+    "no": "Nej, ta bort kopplingen",
+    "later": "Jag vill tänka på det",
+    "saveFailed": "Det gick inte att spara ditt svar.",
+    "yourConsultant": "Din konsulent"
+  }
+}
