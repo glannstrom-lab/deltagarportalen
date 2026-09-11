@@ -87,6 +87,32 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   PDF-byteström är alltid falskt säker: `null` förekommer i PDF-syntaxen.
 - `consultant.settings.team*` i sv/en.json renderas inte längre — döda nycklar att städa.
 
+### Gjort, pass 3 — browserverifiering mot prod (2026-09-11, "du kan skapa ett testkonto själv")
+
+- **Testkonton skapade i prod** via Supabase admin-API: `km-konsulent@jobin.test` (CONSULTANT,
+  chef i organisationen "Testkommun (KM-pilot)", org.nr 212000-0000) och `km-deltagare@jobin.test`
+  (kopplad via `consultant_participants`). Lösenordet ligger bara i `.env.test.local`
+  (gitignorerad) som `TEST_CONSULTANT_*`/`TEST_USER_*`.
+- **Hela flödet verifierat i webbläsare mot www.jobin.se**, skript `e2e/km-aktivitetskrav-prod.cjs`
+  (idempotent, 13 steg): mall skapad i Resurser → plan tillämpad på deltagaren (start måndag,
+  barn under 8 → veckomål 30, försörjningshinder Arbetslös) → ogiltig frånvaro + närvarande
+  markerade, ampeln "Ogiltig frånvaro i veckan" → underlag lämnat-datum satt → plan-PDF laddad
+  ner (14 kB) → IVO-kortet i Rapporter → organisation + caseload i Inställningar → deltagaren
+  ser Min vecka på mobil och checkar in → konsulenten ser "Checkade in 17:53".
+- **Fynd på vägen, rättat:** de tre nya komponenterna anropade `confirmDialog()` ur
+  `components/ui/ConfirmDialog.tsx`, som bara är en reservfunktion runt `window.confirm` —
+  inte portalens dialog (`useConfirmDialog()`, provider monterad i `main.tsx`). Playwright
+  avvisar native `confirm()` tyst, vilket var så det syntes. Alla tre använder nu hooken.
+  **Reservfunktionen bör tas bort eller kasta** så nästa komponent inte går i samma fälla
+  (C-spåret).
+- **Tre fällor i skriptet som gäller alla framtida prod-e2e:** (1) onboardingguiden
+  "Välkommen till Jobin!" fångar alla klick för nya konton — klicka "Hoppa över" efter
+  inloggning; (2) direkt-URL till `/#/consultant/...` strax efter inloggning landar i
+  deltagarvyn med bannern "Konsultportal" — klicka den först; (3) `button[aria-expanded]`
+  matchar språkväljaren i toppnaven — scopa till `aria-controls^="narvaro-"`.
+- Kvar från verifieringen: inga fel i produkten utöver dialogfallbacken. Mallens typ-chip
+  i testet blev "Arbetsplatsförlagd" för att skriptet valde index 3 — inte en bugg.
+
 ### Kvar i spåret (ordning)
 
 1. **KM2 rest** — självbetjäning för org-admin (kräver antingen ett höjt grants-tak med
@@ -98,8 +124,8 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
-4. **Browserverifiering mot prod** av hela flödet mall → plan → närvaro → Min vecka. Bara
-   enhetstester hittills.
+4. ~~Browserverifiering mot prod~~ — gjord i pass 3, se ovan. Kör `e2e/km-aktivitetskrav-prod.cjs`
+   efter varje ändring i spåret.
 5. `activity_sessions_participant_guard` har PUBLIC execute (harmlös som trigger, inte
    definer) — revokera för ordningens skull vid nästa migration.
 

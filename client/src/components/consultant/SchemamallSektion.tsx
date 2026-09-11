@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { confirmDialog } from '@/components/ui/ConfirmDialog'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { notifications } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import { schemamallApi, type ActivityTemplate } from '@/services/aktivitetApi'
@@ -23,6 +23,7 @@ import { AKTIVITETSTYP_CHIP, AKTIVITETSTYP_ETIKETT, formatTimmar } from './aktiv
 type Lage = { status: 'laddar' } | { status: 'fel'; fel: string } | { status: 'klart'; mallar: ActivityTemplate[] }
 
 export function SchemamallSektion() {
+  const { confirm } = useConfirmDialog()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
   const [userId, setUserId] = useState<string | null>(null)
   const [dialog, setDialog] = useState<{ open: boolean; mall: ActivityTemplate | null }>({ open: false, mall: null })
@@ -52,7 +53,7 @@ export function SchemamallSektion() {
   }, [])
 
   const taBort = async (mall: ActivityTemplate) => {
-    const ok = await confirmDialog({
+    const ok = await confirm({
       title: 'Ta bort schemamallen?',
       message: `"${mall.name}" tas bort. Planer som redan skapats ur mallen påverkas inte.`,
       confirmText: 'Ta bort',

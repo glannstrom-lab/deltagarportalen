@@ -10,7 +10,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Plus, Search, Trash2, Building2 } from '@/components/ui/icons'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
-import { confirmDialog } from '@/components/ui/ConfirmDialog'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import {
   orgAdminApi,
   ORG_KIND_ETIKETT,
@@ -50,6 +50,7 @@ function felText(e: unknown): string {
 }
 
 export function OrganisationerTab({ users }: Props) {
+  const { confirm } = useConfirmDialog()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
   const [omgang, setOmgang] = useState(0)
   const [vald, setVald] = useState<string | null>(null)
@@ -99,7 +100,7 @@ export function OrganisationerTab({ users }: Props) {
   }
 
   const taBortOrg = async (org: Organization) => {
-    const ok = await confirmDialog({
+    const ok = await confirm({
       title: `Ta bort ${org.name}?`,
       message: 'Medlemskapen försvinner. Planer och mallar som pekar på organisationen behålls men tappar kopplingen.',
       confirmText: 'Ta bort',
@@ -315,6 +316,7 @@ function Medlemmar({
   onFel: (fel: string | null) => void
   onUppdaterad: (rader: OrgMembership[]) => void
 }) {
+  const { confirm } = useConfirmDialog()
   const [sok, setSok] = useState('')
   const [valdUser, setValdUser] = useState<string>('')
   const [roll, setRoll] = useState<OrgRole>('konsulent')
@@ -359,7 +361,7 @@ function Medlemmar({
   }
 
   const taBort = async (m: OrgMembership) => {
-    const ok = await confirmDialog({
+    const ok = await confirm({
       title: `Ta bort ${namn(userById.get(m.user_id))} ur ${org.name}?`,
       message: 'Personen tappar åtkomst till organisationens mallar och caseload. Kontot finns kvar.',
       confirmText: 'Ta bort',

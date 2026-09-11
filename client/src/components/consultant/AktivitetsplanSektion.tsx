@@ -19,7 +19,7 @@ import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { Dialog } from '@/components/ui/Dialog'
-import { confirmDialog } from '@/components/ui/ConfirmDialog'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { notifications } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import {
@@ -78,6 +78,7 @@ const AMPEL_TEXT: Record<Ampel, { text: string; klass: string }> = {
 const STATUS_TEXT: Record<ActivityPlan['status'], string> = { active: 'Aktiv', paused: 'Pausad', ended: 'Avslutad' }
 
 export function AktivitetsplanSektion({ participantId, participantName }: AktivitetsplanSektionProps) {
+  const { confirm } = useConfirmDialog()
   const [lage, setLage] = useState<PlanLage>({ status: 'laddar' })
   const [vecka, setVecka] = useState(() => veckansMandag(formatLocalDate(new Date())))
   const [visaTillampa, setVisaTillampa] = useState(false)
@@ -127,7 +128,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   // vidare till biståndshandläggaren — inte ett beslut. Beslutet fattas av nämnden.
   const sattUnderlag = async (plan: ActivityPlan, datum: string | null) => {
     if (datum) {
-      const ok = await confirmDialog({
+      const ok = await confirm({
         title: 'Underlag lämnat till handläggaren?',
         message: 'Markerar att avvikelseunderlaget för den här planen har lämnats till biståndshandläggaren i dag. Räknas i IVO-underlaget för kvartalet.',
         confirmText: 'Ja, underlag lämnat',
@@ -170,7 +171,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   }
 
   const avslutaPlan = async (plan: ActivityPlan) => {
-    const ok = await confirmDialog({
+    const ok = await confirm({
       title: 'Avsluta aktivitetsplanen?',
       message: 'Planen markeras som avslutad. Passen och närvaron finns kvar som underlag.',
       confirmText: 'Avsluta plan',
@@ -372,6 +373,7 @@ function Saldotal({ etikett, varde, varning }: { etikett: string; varde: string;
 // ---------------------------------------------------------------------------
 
 function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; onChanged: (s: ActivitySession) => void; onRemoved: () => void }) {
+  const { confirm } = useConfirmDialog()
   const [oppen, setOppen] = useState(false)
   const [anteckning, setAnteckning] = useState(session.attendance_note ?? '')
   const [intyg, setIntyg] = useState(session.sick_certificate_received)
@@ -396,7 +398,7 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
   }
 
   const taBort = async () => {
-    const ok = await confirmDialog({ title: 'Ta bort passet?', message: `${session.title} ${kortDatum(session.date)} ${session.start_time}–${session.end_time} tas bort.`, confirmText: 'Ta bort', cancelText: 'Avbryt', variant: 'danger' })
+    const ok = await confirm({ title: 'Ta bort passet?', message: `${session.title} ${kortDatum(session.date)} ${session.start_time}–${session.end_time} tas bort.`, confirmText: 'Ta bort', cancelText: 'Avbryt', variant: 'danger' })
     if (!ok) return
     try {
       await aktivitetsplanApi.removeSession(session.id)

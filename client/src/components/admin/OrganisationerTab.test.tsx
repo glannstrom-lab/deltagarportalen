@@ -21,7 +21,7 @@ vi.mock('@/services/orgApi', async () => {
     },
   }
 })
-vi.mock('@/components/ui/ConfirmDialog', () => ({ confirmDialog: vi.fn(async () => true) }))
+vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: vi.fn(async () => true) }) }))
 
 const users = [
   { id: 'u1', email: 'fanny.forsell@hellefors.se', first_name: 'Fanny', last_name: 'Forsell', role: 'CONSULTANT' },
