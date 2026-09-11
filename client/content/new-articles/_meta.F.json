@@ -1,0 +1,24 @@
+{
+  "aktivitetskrav-forsorjningsstod": {
+    "title": "Aktivitetskravet för försörjningsstöd – vad gäller för dig",
+    "summary": "Vad aktivitetskravet innebär, vem som är undantagen, vad som räknas som aktivitet, vad som händer om du inte kan komma, och vilka rättigheter du har.",
+    "category_key": "employment-law",
+    "subcategory": "ersattning",
+    "tags": ["aktivitetskrav", "försörjningsstöd", "socialtjänsten", "ekonomiskt bistånd"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["forsorjningsstod-nar-pengarna-tar-slut", "lattsvenska-forsorjningsstod", "lattsvenska-overklaga"],
+    "related_tools": ["/min-vecka", "/cv"],
+    "checklist": [
+      "Fråga din handläggare om kravet gäller dig",
+      "Be att få din plan skriftligt och läs den innan du skriver under",
+      "Ta reda på hur du meddelar frånvaro, och spara numret",
+      "Ring vårdcentralen samma dag om du blir sjuk",
+      "Använd tiden för jobbsök i planen till CV och ansökningar"
+    ],
+    "actions": [
+      { "href": "/min-vecka", "label": "Se din vecka i portalen", "type": "primary" },
+      { "href": "/cv", "label": "Håll ditt CV uppdaterat", "type": "secondary" }
+    ]
+  }
+}

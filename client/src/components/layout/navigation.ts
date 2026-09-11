@@ -30,6 +30,7 @@ import {
   Mic,
   Building2,
   UserCheck,
+  ClipboardCheck,
   Bot,
   ExternalLink,
 } from '@/components/ui/icons'
@@ -381,6 +382,7 @@ export const navHubs: NavHub[] = [
       '/calendar',
       '/exercises',
       '/my-consultant',
+      '/min-vecka',
       // Tillagd 2026-08-17. `/profile` låg i navGroups men i ingen hub, så
       // `pageToHub` mappade den inte: uppmätt i webbläsaren markerades ingen
       // huvudkategori som aktiv på /profile, och undersidesraden föll från
@@ -397,6 +399,7 @@ export const navHubs: NavHub[] = [
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
       { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
+      { path: '/min-vecka', labelKey: 'nav.minVecka', icon: ClipboardCheck },
       { path: '/profile', labelKey: 'nav.profile', icon: Users },
     ],
   },

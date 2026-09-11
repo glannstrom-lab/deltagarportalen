@@ -7,8 +7,11 @@
       "title": "Digital plattform för arbetsmarknadsenheter",
       "description": "Jobin ger deltagare CV, jobbsökning och intervjuträning, och din arbetsmarknadsenhet en samlad konsulentvy. Ärligt om GDPR och AI — boka en visning.",
       "h1": "En digital plattform för din arbetsmarknadsenhet",
-      "lead": "Jobin är en portal för arbetssökande med en egen vy för dig som arbetar på en kommunal arbetsmarknadsenhet eller arbetsmarknadsförvaltning. Deltagarna får verktyg att söka jobb med, du får en samlad bild av dem du handleder — och du kan se hela plattformen innan ni bestämmer er.",
-      "facts": ["Drift i EU", "WCAG 2.1 AA — vår ambition"],
+      "lead": "Jobin är en portal för arbetssökande med en egen vy för dig som arbetar på en kommunal arbetsmarknadsenhet, i försörjningsstödet eller på en arbetsmarknadsförvaltning. Deltagarna får verktyg att söka jobb med, du får schemamallar, närvaro och en samlad bild av dem du handleder — och du kan se hela plattformen innan ni bestämmer er.",
+      "facts": [
+        "Drift i EU",
+        "WCAG 2.1 AA — vår ambition"
+      ],
       "ctaLabel": "Boka en visning",
       "ctaAmne": "Demo%20-%20arbetsmarknadsenhet",
       "forDeltagaren": {
@@ -30,9 +33,12 @@
         "text": "Konsulentvyn är en enda samlad yta, inte flera system att hoppa mellan.",
         "punkter": [
           "En lista över dina deltagare, med en egen sida per person",
+          "Schemamallar för aktivitet: bygg en veckomall en gång och tillämpa den på en deltagare från ett startdatum, med lagens fyra aktivitetstyper och tid för eget jobbsökande",
+          "Individuell plan per deltagare med veckomål i timmar, och en veckovy där du markerar närvaro, giltig eller ogiltig frånvaro, sjukfrånvaro med läkarintyg och extern aktivitet",
+          "Veckosaldo mot planen, per deltagare — beslut om nedsättning fattas av socialnämnden, aldrig av portalen",
           "Mål och journalanteckningar kopplade till varje deltagare",
           "Meddelanden och bokade möten",
-          "Placeringar och en översiktlig analysvy",
+          "Praktikplatser, placeringar och en översiktlig analysvy",
           "Export av din egen data direkt under inställningar (GDPR-uttag)"
         ],
         "obs": "/consultant är portalens enda konsulentvy. Steg till arbete-spåret (STA) är en separat modul som för närvarande är avstängd, och har ingen egen konsulentyta i dagsläget."
@@ -64,11 +70,15 @@
       "faq": [
         [
           "Är det här en färdig upphandlad tjänst?",
-          "Nej. Det finns ingen prislista, inga referenskunder och ingen oberoende granskning att hänvisa till i dagsläget — se avsnittet om personuppgifter ovan för vad som faktiskt är klart."
+          "Nej. Det finns inga referenskunder och ingen oberoende granskning att hänvisa till i dagsläget — se avsnittet om personuppgifter ovan för vad som faktiskt är klart. Priset står nedan."
         ],
         [
           "Vad kostar det?",
-          "Vi har ingen offentlig prislista. Hör av dig så går vi igenom vad er verksamhet behöver och vad det skulle kosta."
+          "Organisationslicens 2 990 kr per månad plus 290 kr per aktiv konsulent, exklusive moms. Deltagaren betalar ingenting. Inför aktivitetskravet erbjuder vi kommuner en kostnadsfri pilot hösten 2026 — hör av dig så går vi igenom vad er verksamhet behöver. Beloppen ligger under gränsen för direktupphandling."
+        ],
+        [
+          "Hur hjälper portalen oss med aktivitetskravet från oktober 2026?",
+          "Konsulenten bygger schemamallar, tillämpar dem på deltagaren som en individuell plan med veckomål i timmar, och markerar närvaro per pass med giltig eller ogiltig frånvaro. Deltagaren ser sin vecka i mobilen och kan checka in själv. Portalen fattar inga beslut om bistånd och innehåller ingen AI i kedjan schema, närvaro och underlag — det är socialnämndens beslut och kommunens verksamhetssystem som gäller. Kvartalsunderlag till IVO och plan som PDF till akten är nästa steg och finns inte ännu."
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
@@ -81,9 +91,15 @@
         [
           "Kan vi stänga av AI-funktionerna för våra deltagare?",
           "Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
+        ],
+        [
+          "Vem är personuppgiftsansvarig när en kommun använder portalen?",
+          "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA för AI-funktionerna, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
         ]
       ],
-      "guider": [],
+      "guider": [
+        "aktivitetskrav-forsorjningsstod"
+      ],
       "slutCta": {
         "rubrik": "Vill ni se det här på riktigt?",
         "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",
@@ -98,7 +114,10 @@
       "description": "Ett verktyg för dig som är leverantör inom Rusta och matcha: deltagaren får CV och jobbsökning, ni får en konsulentvy och samlad dokumentation.",
       "h1": "Jobin för dig som är leverantör inom Rusta och matcha",
       "lead": "Jobin är inte själva avtalet med Arbetsförmedlingen — det är verktyget era handledare och deltagare kan använda under tiden insatsen pågår. En portal för deltagaren, en konsulentvy för er.",
-      "facts": ["Drift i EU", "WCAG 2.1 AA — vår ambition"],
+      "facts": [
+        "Drift i EU",
+        "WCAG 2.1 AA — vår ambition"
+      ],
       "ctaLabel": "Boka en visning",
       "ctaAmne": "Demo%20-%20Rusta%20och%20matcha",
       "forDeltagaren": {
@@ -184,7 +203,9 @@
           "Varje AI-funktion kräver ett eget samtycke innan den används, och portalens grundfunktioner (CV, jobbsökning, dagbok) fungerar utan AI. Se avsnittet om personuppgifter ovan för vilken leverantör som behandlar vad."
         ]
       ],
-      "guider": ["rusta-och-matcha"],
+      "guider": [
+        "rusta-och-matcha"
+      ],
       "slutCta": {
         "rubrik": "Vill ni se det här på riktigt?",
         "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",

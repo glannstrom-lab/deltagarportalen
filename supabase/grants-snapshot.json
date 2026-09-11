@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-01T15:58:19.202Z",
+  "generatedAt": "2026-09-11T13:54:41.499Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -7,6 +7,13 @@
       "definer": true,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "activity_sessions_participant_guard",
+      "signature": "activity_sessions_participant_guard()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
     },
     {
       "name": "audit_data_sharing_change",
@@ -621,6 +628,22 @@
       "rls": true
     },
     {
+      "name": "activity_plans",
+      "rls": true
+    },
+    {
+      "name": "activity_sessions",
+      "rls": true
+    },
+    {
+      "name": "activity_template_items",
+      "rls": true
+    },
+    {
+      "name": "activity_templates",
+      "rls": true
+    },
+    {
       "name": "admin_audit_log",
       "rls": true
     },
@@ -934,6 +957,14 @@
     },
     {
       "name": "notifications",
+      "rls": true
+    },
+    {
+      "name": "organization_members",
+      "rls": true
+    },
+    {
+      "name": "organizations",
       "rls": true
     },
     {

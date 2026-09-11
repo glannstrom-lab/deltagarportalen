@@ -34,6 +34,7 @@ import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
+import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSektion'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -275,7 +276,7 @@ export function ParticipantDetailPage() {
   const [journal, setJournal] = useState<JournalEntry[]>([])
   const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
-  const [activeTab, setActiveTab] = useState<'overview' | 'goals' | 'journal' | 'timeline'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>('overview')
   const [newNote, setNewNote] = useState('')
   const [showReportDraft, setShowReportDraft] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
@@ -808,6 +809,8 @@ export function ParticipantDetailPage() {
       <div className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto">
         {[
           { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
+          // Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit, ingen sv.json-nyckel.
+          { id: 'aktivitet', label: 'Aktivitet', icon: Calendar },
           { id: 'goals', label: t('consultant.participantDetail.tabs.goals'), icon: Target },
           { id: 'journal', label: t('consultant.participantDetail.tabs.journal'), icon: MessageSquare },
           { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline'), icon: Clock },
@@ -878,6 +881,13 @@ export function ParticipantDetailPage() {
             </Button>
           </Card>
         </div>
+      )}
+
+      {activeTab === 'aktivitet' && participantId && (
+        <AktivitetsplanSektion
+          participantId={participantId}
+          participantName={`${participant.first_name} ${participant.last_name}`.trim()}
+        />
       )}
 
       {activeTab === 'goals' && (

@@ -1,12 +1,13 @@
 {
   "_kommentar": "Vilka guider som publiceras publikt under /guider/. Genererad av `npm run content:triage -- --skriv` — redigera hellre reglerna i scripts/triage-articles.cjs än den här listan för hand.",
   "_regler": "lättläst >= 120 ord, övriga >= 350 ord (checklistor inräknade); ej portalspecifika; ej onboarding; ej passerade årtal",
-  "genereradAt": "2026-09-06",
-  "antal": 238,
+  "genereradAt": "2026-09-11",
+  "antal": 239,
   "published": [
     "a-kassa-sa-fungerar-det",
     "adhd-i-arbetslivet",
     "ai-jobbsokning-guide",
+    "aktivitetskrav-forsorjningsstod",
     "aktivitetsrapport-guide",
     "anpassningar-arbetsplats",
     "anpassningar-arbetsplatsen",

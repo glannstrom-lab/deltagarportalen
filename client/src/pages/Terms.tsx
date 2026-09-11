@@ -5,9 +5,14 @@ import { ArrowLeft, FileText, Scale, Users, AlertCircle, CheckCircle, Bot, Heart
 export default function Terms() {
   const { t, i18n } = useTranslation()
 
+  // KM12 (2026-09-11): visade tidigare `new Date()`, alltså alltid dagens datum —
+  // dokumentet såg ut att ha uppdaterats varje gång någon öppnade det. Datumet
+  // nedan är senaste faktiska ändring av sidan. Flytta fram det när texten ändras.
+  const SENAST_UPPDATERAD = '2026-09-01'
   const formatDate = () => {
     const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
-    return new Date().toLocaleDateString(locale)
+    const [y, m, d] = SENAST_UPPDATERAD.split('-').map(Number)
+    return new Date(y, m - 1, d).toLocaleDateString(locale)
   }
 
   return (

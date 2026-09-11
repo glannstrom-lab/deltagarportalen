@@ -1,31 +1,7 @@
 {
   "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
-  "skrivet": "2026-09-06",
+  "skrivet": "2026-09-11",
   "slugs": [
-    "arbetsintegrerande-sociala-foretag",
-    "betalningsanmarkning-och-jobb",
-    "bostadsbidrag-och-boendekostnad",
-    "digitala-tjanster-du-behover",
-    "efter-manga-ar-utan-jobb",
-    "ersattning-nar-du-borjar-jobba",
-    "fylla-i-en-digital-ansokan",
-    "jobba-inom-atervinning-och-avfall",
-    "jobba-med-post-och-paket",
-    "jobba-med-tradgard-och-parkskotsel",
-    "jobba-som-taxiforare-eller-budbil",
-    "jobba-som-vaktmastare",
-    "lattsvenska-bostadsbidrag",
-    "lattsvenska-e-legitimation",
-    "lattsvenska-overklaga",
-    "lattsvenska-sjukanmalan",
-    "lattsvenska-skulder",
-    "ordna-din-jobbmejl",
-    "overklaga-ett-beslut",
-    "skanna-och-skicka-dokument",
-    "skulder-och-kronofogden",
-    "soka-jobb-efter-avtjanat-straff",
-    "soka-jobb-fran-mobilen",
-    "tillbaka-till-arbete-efter-beroende",
-    "utan-fast-adress-och-soka-jobb"
+    "aktivitetskrav-forsorjningsstod"
   ]
 }

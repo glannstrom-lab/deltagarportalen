@@ -459,6 +459,7 @@
     "network": "Nätverk",
     "myConsultant": "Din konsulent",
     "calendar": "Kalender",
+    "minVecka": "Min vecka",
     "linkedinOptimizer": "LinkedIn-optimering",
     "skillsGap": "Kompetensanalys",
     "interviewSimulator": "Intervjuträning",
@@ -7650,10 +7651,8 @@
           "Admin-panel med statistik",
           "Deltagaruppföljning",
           "Gruppadministration",
-          "API-integrationer",
-          "Prioriterad support",
-          "SSO-inloggning (tillval)",
-          "Anpassad branding (tillval)"
+          "Schemamallar, individuell plan och närvaro för aktivitetskravet",
+          "Prioriterad support"
         ]
       },
       "consultant": {
@@ -12152,6 +12151,45 @@
       }
     }
   },
+  "minVecka": {
+    "title": "Min vecka",
+    "description": "Dina planerade aktiviteter, vecka för vecka.",
+    "kundeInteHamta": "Din vecka kunde inte hämtas just nu.",
+    "ingenPlan": {
+      "title": "Ingen vecka planerad än",
+      "text": "Din konsulent lägger upp veckan tillsammans med dig. Tills dess finns det inget du behöver göra här.",
+      "cta": "Gå till din konsulent"
+    },
+    "saldo": {
+      "ingaPass": "Inget inplanerat den här veckan.",
+      "rad": "Du har {{planerade}} av {{mal}} timmar den här veckan.",
+      "jobbsok": "Och {{h}} timmar för eget jobbsökande."
+    },
+    "nastaPass": "Nästa: {{titel}}, {{dag}} kl {{tid}}",
+    "forraVeckan": "Förra veckan",
+    "nastaVeckan": "Nästa vecka",
+    "veckaRubrik": "Vecka {{fran}} – {{till}}",
+    "tomVecka": "Inga pass den här veckan. Du kan bläddra till en annan vecka.",
+    "idag": "i dag",
+    "jagArHar": "Jag är här",
+    "incheckad": "Incheckad kl {{tid}}",
+    "incheckadStatus": "Tack, du är incheckad.",
+    "incheckningMisslyckades": "Incheckningen gick inte igenom. Försök igen, eller säg till din konsulent.",
+    "typ": {
+      "motivation": "Motivation och förmåga",
+      "language": "Språk",
+      "jobsearch": "Jobbsökande",
+      "workplace": "På en arbetsplats",
+      "jobsearch_own": "Eget jobbsökande"
+    },
+    "narvaro": {
+      "present": "Närvarande",
+      "absent_valid": "Frånvaro, giltig",
+      "absent_invalid": "Frånvaro",
+      "sick_certified": "Sjuk",
+      "external": "Annan aktivitet"
+    }
+  },
   "minVardagHub": {
     "title": "Min vardag",
     "hubTitle": "Din vardag",
@@ -12185,6 +12223,12 @@
         "title": "Min konsulent",
         "description": "Kontakta din arbetskonsulent och se anteckningar.",
         "notAssigned": "Ingen kopplad än"
+      },
+      "minVecka": {
+        "title": "Min vecka",
+        "description": "Dina planerade aktiviteter och när du är på plats.",
+        "planerad": "Planerad",
+        "ingenPlan": "Ingen vecka planerad än"
       },
       "profile": {
         "title": "Din profil",

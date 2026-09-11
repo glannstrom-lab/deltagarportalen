@@ -18,6 +18,73 @@
 
 ---
 
+## Spår KM (Kommun) 2026-09-11 — aktivitetskravet: mallar, plan, närvaro byggda
+
+**Mikaels beslut 2026-09-11: "börja köra det här mot mål."** Underlaget är artifakten
+"Jobin och aktivitetskravet" (lag, sajtgranskning, Örebro läns tolv kommuner, pitch).
+Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulentgenomgången.
+
+### Gjort (samma pass)
+
+- **Migration `20260911120000_km_aktivitetskrav.sql` körd i prod** och verifierad:
+  6 nya tabeller med RLS (`organizations`, `organization_members`, `activity_templates`,
+  `activity_template_items`, `activity_plans`, `activity_sessions`), 13 policyer,
+  trigger `activity_sessions_participant_guard` (INTE definer — deltagaren får bara
+  ändra `self_checkin_at`). Ingen befintlig tabell eller policy rörd; `calendar_events`
+  orörd med flit. Snapshotarna uppdaterade: 143 tabeller, 0 utan RLS, definer-taket orört.
+- **KM3 schemamallar** — `services/aktivitetSchema.ts` (ren logik, 18 tester),
+  `services/aktivitetApi.ts` (schemamallApi / aktivitetsplanApi / minVeckaApi),
+  `components/consultant/SchemamallDialog.tsx` + `SchemamallSektion.tsx` (fjärde sektionen
+  i Resurser), `TillampaMallDialog.tsx` (veckomål ur `foreslagetVeckomal`: 40, −10 vid barn
+  under 8, minus deltid; motivering krävs vid avvikelse; visar antal pass innan bekräftelse).
+- **KM4 närvaro** — `AktivitetsplanSektion.tsx` (flik "Aktivitet" på deltagarsidan):
+  present / giltig / ogiltig / sjuk med läkarintygskryss / extern, anteckning, nollställ,
+  manuella pass. Ogiltig frånvaro är enda röda chipen. Texten "Beslut om nedsättning fattas
+  av socialnämnden, inte här" står vid saldot.
+- **KM6 veckosaldo** — `veckosaldo()` + `veckoampel()`; `—` när inga pass, aldrig 0 %.
+- **Deltagarens "Min vecka"** (`/min-vecka`, Min vardag-hubben, sv+en): saldo i lugn ton,
+  pass per dag, "Jag är här" bara för dagens pass → `self_checkin_at`. 3 tester.
+- **KM2, minimum** — bara datamodell + läsrätt (medlem ser sin org; chef/admin läser
+  planer och pass). Ingen chefsvy, ingen inbjudan, inga org-konton skapade.
+- **KM12, delar:** (1) B2B-sidan säger nu samma pris som startsidan + kostnadsfri pilot för
+  kommuner hösten 2026 + FAQ om aktivitetskravet och personuppgiftsansvar; (3) SSO/API/branding
+  strukna ur prislistan i båda språken; (6) `Terms.tsx` har fast datum (Privacy/AiPolicy
+  hade det redan — agentens fynd gällde bara villkoren); (7) guiden
+  `/guider/aktivitetskrav-forsorjningsstod/` skriven enligt BRIEF (inga belopp/timtal),
+  inlagd i prod (`articles`, 241 rader nu) och länkad från B2B-sidan; bilaga III p. 5 a
+  inskrivet i `AI-ACT-CLASSIFICATION.md`.
+- Tester: 9 (konsulent) + 3 (Min vecka) + 18 (logik), alla mutationskontrollerade.
+
+### Kvar i spåret (ordning)
+
+1. **KM2 helt** — chefsvy, inbjudan av konsulenter till organisation, otilldelade (BL1),
+   överlämning. Utan den kan kommun två inte läggas in.
+2. **KM5** plan som PDF · **KM7** IVO-kvartalsunderlag + AF-checklista (behövs jan 2027) ·
+   **KM8** aktivitetskatalog · **KM9** jobbsökstid ur portalens data · **KM10** notiser
+   (`notifications` skrivs fortfarande av ingen konsulenthändelse; DE1 blockerar mejl) ·
+   **KM11** språk.
+3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal ifyllt,
+   (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
+   oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
+4. **Browserverifiering mot prod** av hela flödet mall → plan → närvaro → Min vecka. Bara
+   enhetstester hittills.
+5. `activity_sessions_participant_guard` har PUBLIC execute (harmlös som trigger, inte
+   definer) — revokera för ordningens skull vid nästa migration.
+
+### Rättelser mot förra versionen
+
+- **"Bygg genereringen på `generateRecurringEvents()`" (KM3-raden) höll inte.** Funktionen
+  hoppar sju dagar efter första träffen i en vecka och kan därför aldrig ge två veckodagar
+  ur samma `daysOfWeek`, och den använder `toISOString()` (UTC-skift). Egen generator i
+  `aktivitetSchema.ts` med test som fäller just det felet. Den gamla funktionen har
+  fortfarande noll anropare — kandidat för C-spåret.
+- **"Senast uppdaterad visar alltid dagens datum" gällde bara `Terms.tsx`.** `Privacy.tsx`
+  (2026-03-27) och `AiPolicy.tsx` (2026-08-31) hade redan fasta datum.
+- **Apply-skriptet för artiklar tar hela mappen**, inte bara nya filer: förra omgångens 25
+  filer ligger kvar i `content/new-articles/` och fäller torrkörningen ("finns redan i
+  snapshoten"). Flyttades undan under körningen och lades tillbaka. Skriptet behöver en
+  `--bara=<slug>`-flagga eller en städning efter varje omgång.
+
 ## Ändring 2026-09-10 — Översikt i tre nivåer, och beslutet om premium
 
 > **Beslut Mikael 2026-09-10, efter designförslaget "Översikt med riktning"** (byggt på
@@ -1150,6 +1217,68 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
   fördel är att deltagaren själv har en inloggning**, vilket handläggarverktygen inte har — bygg på
   det, inte på att ersätta journalföringen. Välj marknad **innan RM5 byggs**; de kräver olika
   behörighetsmodeller · beslut
+
+> **Spår KM, förslag 2026-09-11 (väntar Mikaels beslut på KM1/RM5).** Aktivitetskravet i
+> försörjningsstödet (prop. 2025/26:207, SoL 2025:400 12 kap. 4 a–6 a §§, SFS 2026:730) gäller
+> från 1 juli 2026 och tillämpas första gången på stöd som avser **oktober 2026**. Kommunen ska
+> anvisa aktivitet till alla vuxna med tre månaders bistånd, upprätta individuell plan, följa
+> närvaro (nekande/nedsättning vid ogiltig frånvaro), rapportera kvartalsvis till IVO (första
+> gången 1–31 jan 2027) och registrera anvisning hos AF (inget API). Omfattning max 40 h/vecka,
+> minus 10 h vid barn under 8. Fyra lagstadgade aktivitetstyper. Portalen har **ingen** av
+> byggstenarna schema/närvaro/plan/kvartalsunderlag; närmast ligger `sta_activities` (avstängd)
+> och `consultant_goal_templates` (mallmodellen). Fullt underlag med lag, sajtgranskning,
+> Örebro läns tolv kommuner och pitch: artifakten "Jobin och aktivitetskravet" (2026-09-11).
+> **Ordning:** KM2 (beslut) → KM3+KM4+KM6 före 1 okt → KM5+KM7+KM8 före jan 2027 → resten.
+> **Ingen AI i kedjan schema → närvaro → beslutsunderlag** (AI-förordningen bilaga III p. 5 a).
+
+- [ ] **KM2** 🟡 datamodell + läsrätt körd 2026-09-11, chefsvy/inbjudan kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
+  (`id, name, kind: kommun|leverantor, org_number`) + `organization_members` (`user_id, org_id,
+  role: handlaggare|konsulent|chef|admin`). Alla KM-tabeller bär `org_id`. RLS: handläggare ser
+  närvaro/avvikelser men inte journal, mående, dagbok (inre sekretess, OSL 26 kap.). Chefsvy:
+  caseload, otilldelade (BL1), överlämning. Löser också "konsulent utan inbjudan" · beslut + ~1–2 v
+- [x] **KM3** ✅ 2026-09-11 **Schemamallar för aktivitet.** `activity_templates` (speglar
+  `consultant_goal_templates`: `is_public/is_starred/usage_count`), `activity_template_items`
+  (veckodag, tid, titel, `activity_type` = lagens fyra + `jobsearch_own`, plats),
+  `activity_plans` (deltagare, mall, start/slut, `weekly_hours_target` 40/30, `jobsearch_hours_per_week`,
+  `plan_text`, `decided_at`), `activity_sessions` (ett pass per rad, genererat ur mallen).
+  Mallredigerare i fliken Resurser bredvid målmallarna; tillämpning från deltagarsidan; veckovy
+  mån–fre för konsulenten; "Min vecka" för deltagaren i Min vardag + RLS-policy så konsulenten
+  får skriva `calendar_events` (typ `activity`) för kopplade deltagare. **Bygg genereringen på
+  `generateRecurringEvents()` (`calendarData.ts:137`, noll anropare i dag)**, väck inte STA · ~1 v
+- [x] **KM4** ✅ 2026-09-11 **Närvaro med giltig/ogiltig frånvaro** (= RM2 utökad till `activity_sessions`):
+  `present | absent_valid | absent_invalid | sick_certified | external`, orsak, `marked_by/at`,
+  kryssruta "läkarintyg inkommet", deltagarens `self_checkin_at` (status sätts bara av konsulent).
+  Avvikelserad exporterbar som underlag; beslutet fattas i kommunens system. Migrationen
+  `20260902110000_rm2_placement_deviations.sql` finns redan, utöka den i stället för två modeller · ~1 v
+- [ ] **KM5** **Individuell plan som PDF** ur `activity_plans` + SMART-mål: mål, typer, timmar,
+  jobbsökstid, anpassningar, beslutsdatum, signatur. Ingen AI-text; det är ett myndighetsdokument · ~3 d
+- [x] **KM6** ✅ 2026-09-11 **Veckosaldo mot kravet.** Planerade/närvarotimmar mot veckomålet, ampel i listan
+  och på deltagarsidan; `—` tills pass finns. Lugn ton i deltagarvyn · ~2 d
+- [ ] **KM7** **IVO-kvartalsunderlag + AF-checklista.** Per org och kvartal: anvisade, ogiltig
+  frånvaro, "underlag till nedsättning lämnat", per försörjningshinder (AF:s kategorier, ny kolumn
+  på deltagaren). Checklista "registrerad i AF Mina sidor för kommuner" per deltagare · ~3 d
+- [ ] **KM8** **Aktivitetskatalog per organisation** (gruppaktiviteter, platser, tider) som
+  mallarna hämtar ur; praktikplatserna i `consultant_work_placements` är redan typ 4 · ~3 d
+- [ ] **KM9** **Jobbsökstid som räknas i planen** ur sparade jobb, ansökningar, CV-uppdatering,
+  intervjuträning, visad som deltagarens egen redovisning, aldrig som kontroll. Försprånget ingen
+  konkurrent (Workbuster, Wundermatch, GW Arbetsmarknad, Treserva) har · ~2 d
+- [ ] **KM10** **Påminnelser i appen + "Min vecka" på mobil.** Skriv till `notifications` från
+  konsulenthändelser (ingen gör det i dag); mejl först när DE1 är löst; SMS (46elks/Twilio) är det
+  kommunerna faktiskt använder mot gruppen, en dag + en rad i Art 30 · ~3 d
+- [ ] **KM11** **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och
+  närvaron** (fyra vyer, inte hela portalen) · löpande
+- [ ] **KM12** 🟡 (1)(3)(6)(7) gjorda 2026-09-11 **Sajten före första kommunmejlet:** (1) priset säger 2 990 + 290 på startsidan och
+  "ingen offentlig prislista" på `/for-arbetsmarknadsenheter/`, välj ett; (2) org.nr, adress och
+  personuppgiftsansvarig är platshållare i policy/Art 30/DPIA; (3) stryk SSO/API/branding ur
+  prislistan (DOK9); (4) PUB-avtal ifyllt med kommunen som ansvarig (`juridik/PUB_Avtalsmall.docx`
+  är tom mall); (5) tillgänglighetsredogörelsen åberopar EAA, inte DOS-lagen/EN 301 549; (6)
+  "Senast uppdaterad" visar alltid dagens datum (`Terms.tsx:8–11`, `Privacy.tsx:52`,
+  `AiPolicy.tsx:51`); (7) guide `/guider/aktivitetskrav-forsorjningsstod/` + kommunvinkel på
+  B2B-sidan (0 publikt innehåll om kravet i dag); (8) demokonto i stället för mailto;
+  (9) kontakt/om oss-sida; (10) rotera OpenRouter-nyckeln (A1). Skriv in bilaga III-resonemanget
+  i `AI-ACT-CLASSIFICATION.md`; stäng Perplexity-funktionerna för organisationskonton tills
+  underbiträdet är redovisat · S–M per punkt
+
 - [ ] **ÖV1** **En läslogg deltagaren själv kan se.** Enda loggade konsulenthändelsen är
   `BULK_MESSAGE_SENT` (`consultantService.ts:182-194`). Att öppna någons journal, mål, mående eller
   intresseprofil loggas ingenstans. Åtkomstloggsknappen togs bort 2026-06-11 med motiveringen att

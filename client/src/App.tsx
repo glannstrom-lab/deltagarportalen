@@ -60,6 +60,7 @@ const LinkedInOptimizer = lazy(() => import('./pages/LinkedInOptimizer'))
 const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
 const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
 const Calendar = lazy(() => import('./pages/Calendar'))
+const MinVecka = lazy(() => import('./pages/MinVecka'))
 const Education = lazy(() => import('./pages/Education'))
 const Applications = lazy(() => import('./pages/Applications'))
 const Spontaneous = lazy(() => import('./pages/Spontaneous'))
@@ -291,6 +292,7 @@ function App() {
           <Route path="salary/*" element={<LazyRoute><RouteErrorBoundary><Salary /></RouteErrorBoundary></LazyRoute>} />
           <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />
           <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="min-vecka" element={<LazyRoute><RouteErrorBoundary><MinVecka /></RouteErrorBoundary></LazyRoute>} />
           <Route path="spontanansökan/*" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
           <Route path="nätverk" element={<LazyRoute><RouteErrorBoundary><Network /></RouteErrorBoundary></LazyRoute>} />
           <Route path="personal-brand/*" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />

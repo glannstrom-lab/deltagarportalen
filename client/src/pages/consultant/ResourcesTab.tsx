@@ -38,6 +38,8 @@ import { cn } from '@/lib/utils'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { JobCollectionDialog, type JobCollectionFormData } from '@/components/consultant/JobCollectionDialog'
 import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
+import { SchemamallSektion } from '@/components/consultant/SchemamallSektion'
+import { CalendarDays } from '@/components/ui/icons'
 
 interface GoalTemplate {
   id: string
@@ -619,7 +621,7 @@ function BestPracticeDetailDialog({
 
 export function ResourcesTab() {
   const { t } = useTranslation()
-  const [activeSection, setActiveSection] = useState<'templates' | 'collections' | 'practices'>('templates')
+  const [activeSection, setActiveSection] = useState<'templates' | 'schedules' | 'collections' | 'practices'>('templates')
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
 
@@ -1091,6 +1093,19 @@ export function ResourcesTab() {
           {t('consultant.resources.goalTemplates')}
         </button>
         <button
+          onClick={() => setActiveSection('schedules')}
+          className={cn(
+            'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
+            activeSection === 'schedules'
+              ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)]'
+              : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+          )}
+        >
+          <CalendarDays className="w-5 h-5" />
+          {/* Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit. */}
+          Schemamallar
+        </button>
+        <button
           onClick={() => setActiveSection('collections')}
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
@@ -1265,6 +1280,9 @@ export function ResourcesTab() {
           )}
         </>
       )}
+
+      {/* Schemamallar (KM3) — aktivitetskravet i försörjningsstödet */}
+      {activeSection === 'schedules' && <SchemamallSektion />}
 
       {/* Best Practices Section */}
       {activeSection === 'practices' && (

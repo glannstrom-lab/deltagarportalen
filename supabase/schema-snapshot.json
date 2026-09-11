@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T17:26:08.868Z",
+  "generatedAt": "2026-09-11T13:54:35.364Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -26,6 +26,68 @@
       "requirement_value",
       "sort_order",
       "xp_reward"
+    ],
+    "activity_plans": [
+      "consultant_id",
+      "created_at",
+      "decided_at",
+      "end_date",
+      "id",
+      "jobsearch_hours_per_week",
+      "org_id",
+      "participant_id",
+      "plan_text",
+      "start_date",
+      "status",
+      "target_reason",
+      "template_id",
+      "template_name",
+      "updated_at",
+      "weekly_hours_target"
+    ],
+    "activity_sessions": [
+      "activity_type",
+      "attendance",
+      "attendance_note",
+      "created_at",
+      "date",
+      "end_time",
+      "id",
+      "location",
+      "marked_at",
+      "marked_by",
+      "notes",
+      "participant_id",
+      "plan_id",
+      "self_checkin_at",
+      "sick_certificate_received",
+      "start_time",
+      "title",
+      "updated_at"
+    ],
+    "activity_template_items": [
+      "activity_type",
+      "end_time",
+      "id",
+      "location",
+      "notes",
+      "sort_order",
+      "start_time",
+      "template_id",
+      "title",
+      "weekday"
+    ],
+    "activity_templates": [
+      "created_at",
+      "description",
+      "id",
+      "is_public",
+      "is_starred",
+      "name",
+      "org_id",
+      "owner_id",
+      "updated_at",
+      "usage_count"
     ],
     "admin_audit_log": [
       "action",
@@ -1091,6 +1153,21 @@
       "type",
       "user_id"
     ],
+    "organization_members": [
+      "created_at",
+      "id",
+      "org_id",
+      "role",
+      "user_id"
+    ],
+    "organizations": [
+      "created_at",
+      "id",
+      "kind",
+      "name",
+      "org_number",
+      "updated_at"
+    ],
     "participant_data_sharing": [
       "consultant_id",
       "granted_at",
@@ -1864,6 +1941,7 @@
   },
   "routines": [
     "accept_consultant_request",
+    "activity_sessions_participant_guard",
     "audit_data_sharing_change",
     "auto_generate_recommendations",
     "calculate_profile_completeness",

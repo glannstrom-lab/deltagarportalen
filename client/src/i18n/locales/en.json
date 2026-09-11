@@ -459,6 +459,7 @@
     "externalResources": "External Resources",
     "myConsultant": "My Consultant",
     "calendar": "Calendar",
+    "minVecka": "My week",
     "linkedinOptimizer": "LinkedIn Optimizer",
     "skillsGap": "Skills Analysis",
     "interviewSimulator": "Interview Practice",
@@ -7650,10 +7651,8 @@
           "Admin panel with statistics",
           "Participant tracking",
           "Group administration",
-          "API integrations",
-          "Priority support",
-          "SSO login (optional)",
-          "Custom branding (optional)"
+          "Schedule templates, individual plan and attendance for the activity requirement (aktivitetskravet)",
+          "Priority support"
         ]
       },
       "consultant": {
@@ -12152,6 +12151,45 @@
       }
     }
   },
+  "minVecka": {
+    "title": "My week",
+    "description": "Your planned activities, week by week.",
+    "kundeInteHamta": "We could not load your week right now.",
+    "ingenPlan": {
+      "title": "No week planned yet",
+      "text": "Your consultant plans the week together with you. Until then there is nothing you need to do here.",
+      "cta": "Go to your consultant"
+    },
+    "saldo": {
+      "ingaPass": "Nothing planned this week.",
+      "rad": "You have {{planerade}} of {{mal}} hours this week.",
+      "jobbsok": "And {{h}} hours for your own job search."
+    },
+    "nastaPass": "Next: {{titel}}, {{dag}} at {{tid}}",
+    "forraVeckan": "Last week",
+    "nastaVeckan": "Next week",
+    "veckaRubrik": "Week {{fran}} – {{till}}",
+    "tomVecka": "No sessions this week. You can go to another week.",
+    "idag": "today",
+    "jagArHar": "I am here",
+    "incheckad": "Checked in at {{tid}}",
+    "incheckadStatus": "Thank you, you are checked in.",
+    "incheckningMisslyckades": "The check-in did not go through. Try again, or tell your consultant.",
+    "typ": {
+      "motivation": "Motivation and ability",
+      "language": "Language",
+      "jobsearch": "Job search",
+      "workplace": "At a workplace",
+      "jobsearch_own": "Your own job search"
+    },
+    "narvaro": {
+      "present": "Present",
+      "absent_valid": "Absent, valid reason",
+      "absent_invalid": "Absent",
+      "sick_certified": "Sick",
+      "external": "Other activity"
+    }
+  },
   "minVardagHub": {
     "title": "My everyday life",
     "hubTitle": "Your everyday life",
@@ -12185,6 +12223,12 @@
         "title": "My consultant",
         "description": "Contact your employment consultant and see notes.",
         "notAssigned": "None linked yet"
+      },
+      "minVecka": {
+        "title": "My week",
+        "description": "Your planned activities and when you are there.",
+        "planerad": "Planned",
+        "ingenPlan": "No week planned yet"
       },
       "profile": {
         "title": "Your profile",

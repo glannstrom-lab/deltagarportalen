@@ -7,9 +7,13 @@ import {
   Dumbbell,
   UserCheck,
   User,
+  ClipboardCheck,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
+import { useQuery } from '@tanstack/react-query'
+import { minVeckaApi } from '@/services/aktivitetApi'
+import { MIN_VECKA_PLAN_KEY } from '@/services/minVeckaKeys'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { streakDays } from '@/utils/streakDays'
 import { useAuthStore } from '@/stores/authStore'
@@ -64,6 +68,11 @@ function MinVardagHubInner() {
   const { t } = useTranslation()
   useOnboardedHubsTracking('min-vardag')
   const { data } = useMinVardagHubSummary()
+  // Min vecka (KM3): planen läses direkt, inte via hubbsammanfattningen —
+  // den frågan ska inte växa med varje ny sida. Utan svar visar kortet
+  // inviten, inte "ingen plan": `isLoading || !data`-regeln.
+  const planQuery = useQuery({ queryKey: MIN_VECKA_PLAN_KEY, queryFn: () => minVeckaApi.getMyPlan() })
+  const plan = planQuery.data ?? null
   const profile = useAuthStore(s => s.profile)
   const firstName = profile?.first_name
 
@@ -128,6 +137,17 @@ function MinVardagHubInner() {
         href: '/exercises',
       },
       {
+        key: 'min-vecka',
+        icon: ClipboardCheck,
+        title: t('minVardagHub.features.minVecka.title', 'Min vecka'),
+        description: t('minVardagHub.features.minVecka.description', 'Dina planerade aktiviteter och när du är på plats.'),
+        status: plan
+          ? t('minVardagHub.features.minVecka.planerad', 'Planerad')
+          : t('minVardagHub.features.minVecka.ingenPlan', 'Ingen vecka planerad än'),
+        isActive: !!plan,
+        href: '/min-vecka',
+      },
+      {
         key: 'my-consultant',
         icon: UserCheck,
         title: t('minVardagHub.features.myConsultant.title', 'Min konsulent'),
@@ -154,7 +174,7 @@ function MinVardagHubInner() {
       // Nätverk hör till Resurser-hubben (DESIGN.md §3 — en sida = en hub).
       // Tidigare dubblerad här; fixat 2026-05-10 i Fas 3.4.
     ]
-  }, [data, t, profileFilled])
+  }, [data, t, profileFilled, plan])
 
   return (
     <HubPage

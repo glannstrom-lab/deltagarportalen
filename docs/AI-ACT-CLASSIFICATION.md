@@ -169,6 +169,43 @@ Vid bekräftad HÖGRISK gäller AI Act kap III (Art 8-15):
 
 ---
 
+## Annex III punkt 5 a — aktivitetskravet och kommunerna (tillagt 2026-09-11)
+
+Från oktober 2026 säljs portalen till kommuner som stöd i **aktivitetskravet för
+försörjningsstöd** (SoL 2025:400 12 kap. 4 a–6 a §§). Det aktualiserar en annan
+Annex III-punkt än punkt 4:
+
+> **Annex III 5 a:** AI-system avsedda att användas av offentliga myndigheter, eller
+> för deras räkning, för att **bedöma fysiska personers rätt till väsentliga offentliga
+> förmåner och tjänster**, inklusive att bevilja, sänka, återkalla eller återkräva sådana
+> förmåner.
+
+Ett beslut om att neka eller sätta ned försörjningsstöd vid ogiltig frånvaro är exakt
+en sådan bedömning. **Portalens gräns, byggd 2026-09-11 (KM3/KM4/KM6):**
+
+| Led i kedjan | Var | AI? | Vem beslutar |
+|---|---|---|---|
+| Schemamall → pass | `aktivitetSchema.generateSessions()` | Nej, deterministiskt | Konsulenten väljer mall och datum |
+| Veckomål (40 h, −10 h vid barn under 8) | `foreslagetVeckomal()` | Nej, lagens tal | Konsulenten, med motivering vid avvikelse |
+| Närvaro per pass (giltig/ogiltig/sjuk/extern) | `activity_sessions.attendance`, sätts bara av konsulent (RLS + trigger) | Nej | Konsulenten markerar; deltagaren kan bara checka in själv |
+| Veckosaldo och ampel | `veckosaldo()`, `veckoampel()` | Nej, aritmetik | Ingen — det är en visning |
+| Beslut om nedsättning | Kommunens verksamhetssystem, socialnämnden | Utanför portalen | Socialnämnden |
+
+**Regel som gäller framåt:** ingen AI-funktion får läsa, sammanfatta, bedöma eller
+föreslå något ur `activity_plans`/`activity_sessions`. AI-teamet, rapportutkastet
+(`ReportDraftDialog`) och alla `ai-*`-funktioner hålls på deltagarens sida av skärmen
+(CV, brev, intervjuträning). Skulle någon vilja lägga en AI-sammanfattning av närvaro
+i konsulentvyn blir portalen ett högrisksystem enligt 5 a med krav på FRIA
+(art. 27), riskhanteringssystem, Annex IV-dokumentation och mänsklig övervakning —
+och kommunen blir *deployer* med egna skyldigheter. Det är ett beslut, inte en
+feature.
+
+**Att säga till en kommun:** "Portalen innehåller ingen AI i kedjan schema, närvaro,
+underlag. AI-funktionerna är deltagarens egna verktyg, kräver eget samtycke per
+funktion och kan stängas av för hela organisationen."
+
+---
+
 ## Action plan
 
 1. **Slutgiltigt beslut på gränsfall** — jurist konsulterar inom 4 veckor. Vi opererar enligt LÅGRISK-tolkning men har möjlig högrisk-implementation klar att aktivera om jurist säger annat.
