@@ -6,7 +6,9 @@
 // länkad mot prod (brytaren sätts med `db query --linked`).
 //
 // Steg: 1) sätt organisationens ai_enabled=false → /api/ai ska svara 403 med
-// reason org_disabled; 2) sätt tillbaka true → /api/ai ska INTE svara org_disabled
+// reason org_disabled; 2) sätt tillbaka true → /api/ai ska INTE svara org_disabled.
+// Rättat 2026-09-12: skickade `fn:` i stället för `{ function, data }` — steg 2 gav
+// 400 "Invalid function: undefined" och bevisade bara att org-grinden släppte igenom.
 // (200, eller 403 opted_out om testkontot själv stängt av AI — det räknas som OK,
 // det är en annan grind). Brytaren återställs alltid, även vid fel.
 const fs = require('fs'); const path = require('path'); const { execSync } = require('child_process')
@@ -29,7 +31,7 @@ async function token() {
   const j = await r.json(); if (!j.access_token) throw new Error('inloggning misslyckades: ' + JSON.stringify(j).slice(0, 200)); return j.access_token
 }
 async function anropaAi(tok) {
-  const r = await fetch(`${BASE}/api/ai`, { method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fn: 'personligt-brev', jobTitle: 'Kock', company: 'Testbolag', tone: 'professionell' }) })
+  const r = await fetch(`${BASE}/api/ai`, { method: 'POST', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ function: 'personligt-brev', data: { jobTitle: 'Kock', company: 'Testbolag', tone: 'professionell', cvSummary: 'Kock med fem års erfarenhet.', jobDescription: 'Kock till lunchrestaurang.' } }) })
   let body = null; try { body = await r.json() } catch { /* icke-JSON */ }
   return { status: r.status, body }
 }
