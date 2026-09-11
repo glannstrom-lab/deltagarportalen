@@ -172,6 +172,14 @@ export default defineConfig(({ mode }) => ({
         // och modulepreloadades på varje sidladdning trots att PDF-koden är
         // lazy-importerad. Function-form undviker detta.
         manualChunks(id) {
+          // KA5 (2026-09-12): Vites preload-helper (id `vite/preload-helper.js`, med Rollups nolltecken-prefix) är
+          // ett internt modul-id UTAN node_modules i sökvägen. Utan egen chunk
+          // lade Rollup helpern i vendor-jspdf — och entry importerade då
+          // 110 kB brotli jsPDF statiskt på varje sidladdning, bara för att nå
+          // helpern (`import{_ as e}from"./vendor-jspdf-…"`, mätt i dist).
+          // Egen liten chunk bryter beroendet. Kommentaren ovan om function-form
+          // räckte inte: helpern hamnade i den största chunken ändå.
+          if (id.includes('vite/preload-helper')) return 'preload'
           if (!id.includes('node_modules')) return undefined
 
           // PDF-libs — split per lib så cache kan stabiliseras separat
@@ -185,10 +193,13 @@ export default defineConfig(({ mode }) => ({
             return 'vendor-html2canvas'
           }
 
-          // Animation library — tung, kan lazy-loadas
-          if (id.includes('/node_modules/framer-motion/')) {
-            return 'vendor-animation'
-          }
+          // Animation library: INGEN manuell chunk (KA5, 2026-09-12). Regeln
+          // `vendor-animation` klumpade ihop hela framer-motion (37 kB brotli)
+          // i en chunk som entry importerade statiskt, eftersom main.tsx bara
+          // behöver `MotionConfig` (TI2, prefers-reduced-motion). Utan regeln
+          // delar Rollup upp per modul: entry drar in de få moduler
+          // MotionConfig behöver, och animationsmotorn (`motion`) hamnar i
+          // de lazy-laddade sidornas chunkar. Mätt före/efter i ROADMAP KA5.
 
           // Core React
           if (id.includes('/node_modules/react/') ||

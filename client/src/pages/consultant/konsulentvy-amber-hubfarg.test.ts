@@ -61,6 +61,8 @@ const TILLATNA_RADER: Record<string, string[]> = {
     `if (priority === 1) return { label: t('consultant.participants.priority.high'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' }`,
     `isOverdue(p.last_contact_at) ? 'text-amber-600' : 'text-stone-500'`,
     `(p.ats_score || 0) >= 50 ? 'text-amber-600' : 'text-stone-600'`,
+    // RM3 (2026-09-12): möteskadensen — 'snart' = inom tre dagar från 14-/28-dagarsgränsen. En varningsstatus, inte dekoration.
+    `snart: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',`,
   ],
   'pages/consultant/ResourcesTab.tsx': [],
   'pages/consultant/OverviewTab.tsx': [

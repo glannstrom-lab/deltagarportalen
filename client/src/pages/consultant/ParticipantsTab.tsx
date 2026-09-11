@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { getTagLabel, getTagColorClasses } from '@/components/consultant/participantTags'
+import { hamtaMotenForKonsulent, kadens as raknaKadens, kadensText, type Kadens, type KadensLage } from '@/services/moteskadens'
 
 interface Participant {
   participant_id: string
@@ -98,6 +99,19 @@ export function ParticipantsTab() {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
   const [showBulkActions, setShowBulkActions] = useState(false)
   const [bulkActionType, setBulkActionType] = useState<'message' | 'tag' | 'export' | 'status' | null>(null)
+  // RM3: möteskadens — 14 dagar individuellt, 28 dagar fysiskt. Hämtas en gång
+  // när listan finns; `undefined` = inte hämtat än (ingen chip), Map = klart,
+  // `kadensFel` = en rad ovanför listan. Aldrig 0 som falskt tal (kadensText).
+  const [kadensPerDeltagare, setKadensPerDeltagare] = useState<Map<string, Kadens> | undefined>(undefined)
+  const [kadensFel, setKadensFel] = useState<string | null>(null)
+  useEffect(() => {
+    if (loading || participants.length === 0) return
+    let aktiv = true
+    hamtaMotenForKonsulent()
+      .then((moten) => { if (aktiv) { setKadensPerDeltagare(raknaKadens(moten, new Date())); setKadensFel(null) } })
+      .catch((err: unknown) => { if (aktiv) { console.warn('Möteskadens kunde inte hämtas', err); setKadensFel('Mötesdatum kunde inte hämtas — kadensen visas inte.') } })
+    return () => { aktiv = false }
+  }, [loading, participants.length])
   const [showInviteDialog, setShowInviteDialog] = useState(false)
 
   /** Uppdaterar en eller flera URL-parametrar utan att tappa de andra (replace, ingen historik-spam). */
@@ -252,6 +266,29 @@ export function ParticipantsTab() {
     return new Date(date) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
   }
 
+  // RM3-chipen. Lugn färgsättning: snart = amber, över = rosa, inget/ok = neutral.
+  const KADENS_KLASS: Record<KadensLage, string> = {
+    ok: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-300',
+    inget: 'bg-stone-100 text-stone-500 dark:bg-stone-800 dark:text-stone-400',
+    snart: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300',
+    over: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300',
+  }
+  const KadensChip = ({ participantId }: { participantId: string }) => {
+    if (kadensPerDeltagare === undefined) return null
+    const k = kadensPerDeltagare.get(participantId)
+    const laget: KadensLage = k?.laget ?? 'inget'
+    return (
+      <span
+        className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-xs whitespace-nowrap', KADENS_KLASS[laget])}
+        data-testid="kadens-chip"
+        data-lage={laget}
+        title="Möte minst var 14:e dag, fysiskt minst var fjärde vecka"
+      >
+        {kadensText(k)}
+      </span>
+    )
+  }
+
   if (loading) {
     return <LoadingState type="list" />
   }
@@ -388,6 +425,10 @@ export function ParticipantsTab() {
           </div>
         </div>
       </Card>
+
+      {kadensFel && (
+        <p role="alert" className="text-sm text-red-700 dark:text-red-300">{kadensFel}</p>
+      )}
 
       {/* Bulk Actions Bar */}
       {showBulkActions && (
@@ -607,6 +648,9 @@ export function ParticipantsTab() {
                     </span>
                     <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
                   </div>
+                  <div className="pt-2">
+                    <KadensChip participantId={p.participant_id} />
+                  </div>
                 </Link>
               </Card>
             )
@@ -766,6 +810,9 @@ export function ParticipantsTab() {
                         )}>
                           {getLastContactText(p.last_contact_at)}
                         </span>
+                        <div className="mt-1">
+                          <KadensChip participantId={p.participant_id} />
+                        </div>
                       </td>
                       <td className="px-4 py-4 text-right">
                         <Link

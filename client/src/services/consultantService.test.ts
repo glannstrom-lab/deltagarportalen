@@ -157,6 +157,28 @@ describe('consultantService.sendMessage', () => {
   })
 })
 
+describe('consultantService.markMessagesAsRead (KK3)', () => {
+  it('gör ingenting för tom lista', async () => {
+    loggedIn()
+    await consultantService.markMessagesAsRead([])
+    expect(mockFrom).not.toHaveBeenCalled()
+  })
+
+  it('uppdaterar is_read för exakt de id:n som skickas in', async () => {
+    loggedIn()
+    queueResult({ data: null, error: null })
+    await consultantService.markMessagesAsRead(['m1', 'm2'])
+    expect(mockFrom).toHaveBeenNthCalledWith(1, 'consultant_messages')
+    expect(mockFromBuilder.update).toHaveBeenCalledWith({ is_read: true })
+    expect(mockFromBuilder.in).toHaveBeenCalledWith('id', ['m1', 'm2'])
+  })
+
+  it('kastar om ingen user är inloggad', async () => {
+    loggedOut()
+    await expect(consultantService.markMessagesAsRead(['m1'])).rejects.toThrow('Not authenticated')
+  })
+})
+
 describe('consultantService.sendBulkMessage', () => {
   it('kastar om ingen user är inloggad', async () => {
     loggedOut()

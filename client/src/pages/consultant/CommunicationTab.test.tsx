@@ -39,6 +39,22 @@ let fromCallCount: Record<string, number>
 
 const mockUser = { id: 'consultant-1', email: 'consultant@example.com' }
 
+// KK3 (2026-09-12): skrivningarna går genom consultantService, inte direkt
+// mot tabellerna. Servicen mockas här; supabase-mocken nedan täcker bara läsningar.
+// vi.mock hoistas — mockobjekten måste skapas med vi.hoisted för att finnas då.
+const { serviceMock, toastMock } = vi.hoisted(() => ({
+  serviceMock: {
+    sendMessage: vi.fn(async () => undefined),
+    sendBulkMessage: vi.fn(async () => undefined),
+    markMessagesAsRead: vi.fn(async () => undefined),
+    createMeeting: vi.fn(async () => ({})),
+    cancelMeeting: vi.fn(async () => undefined),
+  },
+  toastMock: { error: vi.fn(), success: vi.fn(), info: vi.fn(), warning: vi.fn() },
+}))
+vi.mock('@/services/consultantService', () => ({ consultantService: serviceMock }))
+vi.mock('@/lib/toast', () => ({ notifications: toastMock }))
+
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
@@ -117,5 +133,47 @@ describe('CommunicationTab — KS7: felläge skilt från "inga meddelanden ännu
 
     await screen.findByText('Inga meddelanden')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
+describe('CommunicationTab — KK3: skrivvägarna går genom consultantService', () => {
+  const participant = {
+    participant_id: 'p1', first_name: 'Dana', last_name: 'Deltagare', email: 'dana@example.com',
+    status: 'ACTIVE', last_login: null, next_meeting_scheduled: null, last_contact_at: null,
+  }
+  const inkommande = {
+    id: 'm1', sender_id: 'p1', receiver_id: 'consultant-1', content: 'Hej, när ses vi?',
+    is_read: false, created_at: '2026-09-10T10:00:00Z',
+  }
+
+  beforeEach(() => {
+    Object.values(serviceMock).forEach((fn) => fn.mockClear())
+    toastMock.error.mockClear()
+    tableResponses.consultant_dashboard_participants = { data: [participant], error: null }
+    tableResponses.consultant_messages = { data: [inkommande], error: null }
+  })
+
+  it('markerar olästa inkommande som lästa via servicen när tråden öppnas', async () => {
+    renderTab()
+    await waitFor(() => expect(serviceMock.markMessagesAsRead).toHaveBeenCalledWith(['m1']))
+    expect(fromCallCount.consultant_messages).toBeGreaterThan(0)
+  })
+
+  it('skickar ett svar via consultantService.sendMessage (inte via supabase.insert)', async () => {
+    renderTab()
+    const ruta = await screen.findByPlaceholderText(/Skriv ditt svar/)
+    fireEvent.change(ruta, { target: { value: 'Torsdag kl 10 passar.' } })
+    fireEvent.keyDown(ruta, { key: 'Enter', ctrlKey: true })
+    await waitFor(() => expect(serviceMock.sendMessage).toHaveBeenCalledWith('p1', 'Torsdag kl 10 passar.'))
+    expect(toastMock.error).not.toHaveBeenCalled()
+  })
+
+  it('visar ett fel när servicen kastar — svaret sväljs inte', async () => {
+    serviceMock.sendMessage.mockRejectedValueOnce(new Error('RLS says no'))
+    renderTab()
+    const ruta = await screen.findByPlaceholderText(/Skriv ditt svar/)
+    fireEvent.change(ruta, { target: { value: 'Hej' } })
+    fireEvent.keyDown(ruta, { key: 'Enter', ctrlKey: true })
+    await waitFor(() => expect(toastMock.error).toHaveBeenCalledWith(expect.stringMatching(/kunde inte skickas/i)))
   })
 })

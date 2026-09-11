@@ -25,6 +25,15 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
+// RM3: möteskadensen hämtas separat; utan mock skulle den kedja `.gte().order()`
+// som supabase-stubben ovan inte har. Den rena logiken (kadens/kadensText) behålls.
+// Typad tom lista — `async () => []` ger `never[]` och fäller strict-taket när ett test skickar riktiga rader.
+const { mockHamtaMoten } = vi.hoisted(() => ({ mockHamtaMoten: vi.fn(async (): Promise<Array<{ participant_id: string; scheduled_at: string; meeting_type: string; status: string }>> => []) }))
+vi.mock('@/services/moteskadens', async (importOriginal) => {
+  const orig = await importOriginal<typeof import('@/services/moteskadens')>()
+  return { ...orig, hamtaMotenForKonsulent: mockHamtaMoten }
+})
+
 // BulkActionsDialog körs bara när något är markerat — inte relevant för de här
 // testerna, men mockas bort så den inte drar in sina egna beroenden.
 vi.mock('@/components/consultant/BulkActionsDialog', () => ({
@@ -181,5 +190,40 @@ describe('ParticipantsTab — KA2: sök/sortering/vy i URL:en', () => {
     await waitFor(() => {
       expect(screen.getByTestId('location-probe').textContent).toContain('q=anna')
     })
+  })
+})
+
+describe('ParticipantsTab — RM3: möteskadens per deltagare', () => {
+  it('visar chipen med dagar sedan senaste möte och flaggar över 14 dagar', async () => {
+    const forDagarSedan = (n: number) => { const d = new Date(); d.setDate(d.getDate() - n); d.setHours(12, 0, 0, 0); return d.toISOString() }
+    mockEq.mockResolvedValue({ data: [makeParticipant()], error: null })
+    mockHamtaMoten.mockResolvedValueOnce([
+      { participant_id: makeParticipant().participant_id as string, scheduled_at: forDagarSedan(20), meeting_type: 'physical', status: 'completed' },
+    ])
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    const chip = await screen.findByTestId('kadens-chip')
+    expect(chip).toHaveTextContent('Senaste möte 20 dagar sedan')
+    expect(chip).toHaveTextContent('fysiskt 2 v sedan')
+    expect(chip).toHaveAttribute('data-lage', 'over')
+  })
+
+  it('säger "Inget möte än" — aldrig 0 — när deltagaren saknar möten', async () => {
+    mockEq.mockResolvedValue({ data: [makeParticipant()], error: null })
+    mockHamtaMoten.mockResolvedValueOnce([])
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    const chip = await screen.findByTestId('kadens-chip')
+    expect(chip).toHaveTextContent('Inget möte än')
+    expect(chip).not.toHaveTextContent('0')
+  })
+
+  it('visar en felrad ovanför listan när mötena inte kan hämtas, men listan renderas', async () => {
+    mockEq.mockResolvedValue({ data: [makeParticipant()], error: null })
+    mockHamtaMoten.mockRejectedValueOnce(new Error('nätverk'))
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    expect(await screen.findByRole('alert')).toHaveTextContent('Mötesdatum kunde inte hämtas')
+    expect(screen.queryByTestId('kadens-chip')).toBeNull()
   })
 })

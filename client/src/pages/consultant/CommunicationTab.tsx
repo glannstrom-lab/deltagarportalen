@@ -32,6 +32,7 @@ import {
 import { useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
+import { consultantService } from '@/services/consultantService'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
@@ -793,33 +794,18 @@ export function CommunicationTab() {
       prev.map(m => (unreadIds.includes(m.id) ? { ...m, isRead: true } : m))
     )
 
-    supabase
-      .from('consultant_messages')
-      .update({ is_read: true })
-      .in('id', unreadIds)
-      .then(({ error }) => {
-        if (error) console.error('Mark-as-read failed:', error)
-      })
+    // KK3: genom servicelagret (auth-guard + tester), inte direkt mot tabellen.
+    consultantService.markMessagesAsRead(unreadIds).catch((error: unknown) => {
+      console.error('Mark-as-read failed:', error)
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeParticipantId])
 
   const handleSendMessage = async (participantIds: string[], content: string) => {
     setSendingMessage(true)
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const newRows = participantIds.map(participantId => ({
-        sender_id: user.id,
-        receiver_id: participantId,
-        content,
-        is_read: false,
-      }))
-
-      const { error } = await supabase.from('consultant_messages').insert(newRows)
-      if (error) throw error
+      // KK3: servicelagret (auth-guard, audit-logg av massutskicket, tester).
+      await consultantService.sendBulkMessage(participantIds, content)
 
       // Realtime-channel kommer triggar fetchData, men anropa direkt också för UI-snabbhet
       fetchData()
@@ -830,6 +816,7 @@ export function CommunicationTab() {
       }
     } catch (error) {
       console.error('Error sending message:', error)
+      notifications.error('Meddelandet kunde inte skickas. Försök igen.')
     } finally {
       setSendingMessage(false)
     }
@@ -839,22 +826,13 @@ export function CommunicationTab() {
     if (!activeConversation) return
     setSendingMessage(true)
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const { error } = await supabase.from('consultant_messages').insert({
-        sender_id: user.id,
-        receiver_id: activeConversation.participantId,
-        content,
-        is_read: false,
-      })
-      if (error) throw error
+      // KK3: ett svar är inget massutskick — egen servicemetod utan bulk-audit.
+      await consultantService.sendMessage(activeConversation.participantId, content)
 
       fetchData()
     } catch (error) {
       console.error('Error sending reply:', error)
+      notifications.error('Meddelandet kunde inte skickas. Försök igen.')
     } finally {
       setSendingMessage(false)
     }
@@ -863,42 +841,33 @@ export function CommunicationTab() {
   const handleCancelMeeting = async (meetingId: string) => {
     if (!confirm(t('consultant.communication.confirmCancelMeeting', 'Avboka mötet?'))) return
     try {
-      const { error } = await supabase
-        .from('consultant_meetings')
-        .update({ status: 'cancelled' })
-        .eq('id', meetingId)
-      if (error) throw error
+      await consultantService.cancelMeeting(meetingId)
       setMeetings(prev => prev.filter(m => m.id !== meetingId))
     } catch (error) {
       console.error('Error cancelling meeting:', error)
+      notifications.error('Mötet kunde inte avbokas. Försök igen.')
     }
   }
 
   const handleScheduleMeeting = async (meetingData: { participantId: string; dateTime: string; duration: number; type: string; meetingLink?: string; location?: string; notes?: string }) => {
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) throw new Error('Not authenticated')
-
-      const { error } = await supabase.from('consultant_meetings').insert({
-        consultant_id: user.id,
+      await consultantService.createMeeting({
         participant_id: meetingData.participantId,
         scheduled_at: meetingData.dateTime,
         duration_minutes: meetingData.duration,
-        meeting_type: meetingData.type,
+        meeting_type: meetingData.type as 'video' | 'phone' | 'physical',
         meeting_link: meetingData.meetingLink,
         location: meetingData.location,
         notes: meetingData.notes,
         status: 'scheduled',
       })
-      if (error) throw error
 
       setShowMeetingDialog(false)
       invalidateParticipants()
       fetchData()
     } catch (error) {
       console.error('Error scheduling meeting:', error)
+      notifications.error('Mötet kunde inte bokas. Försök igen.')
     }
   }
 

@@ -16,6 +16,7 @@ import {
   Building2
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
+import { arTestkonto } from '@/lib/testkonton';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { OrganisationerTab } from './OrganisationerTab';
 
@@ -35,6 +36,9 @@ export const SuperAdminPanel: React.FC = () => {
   // 'settings'-fliken borttagen 2026-07-10 (B4): var en tom "Kommer snart..."-yta
   const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'organisationer'>('users');
   const [searchQuery, setSearchQuery] = useState('');
+  // BL5: testkonton (Playwright, KM-pilot, example.com) är borträknade som
+  // default — 91 av 104 AI-anrop och 30 av 31 konsulentrelationer var testtrafik.
+  const [doljTestkonton, setDoljTestkonton] = useState(true);
 
   useEffect(() => {
     fetchUsers();
@@ -72,9 +76,15 @@ export const SuperAdminPanel: React.FC = () => {
   };
 
   const filteredUsers = users.filter(u =>
-    u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (u.first_name?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+    (!doljTestkonton || !arTestkonto(u.email)) && (
+      u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (u.first_name?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+    )
   );
+
+  // Statistiken räknar ALLTID utan testkonton — kryssrutan gäller bara listan.
+  const riktigaAnvandare = users.filter(u => !arTestkonto(u.email));
+  const antalTestkonton = users.length - riktigaAnvandare.length;
 
   if (loading) {
     return <LoadingState type="dashboard" />;
@@ -136,10 +146,21 @@ export const SuperAdminPanel: React.FC = () => {
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 />
               </div>
-              <button className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-                <Plus className="w-5 h-5" />
-                Bjud in konsulent
-              </button>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 text-sm text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={doljTestkonton}
+                    onChange={(e) => setDoljTestkonton(e.target.checked)}
+                    className="h-4 w-4 rounded border-gray-300"
+                  />
+                  Dölj testkonton
+                </label>
+                <button className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
+                  <Plus className="w-5 h-5" />
+                  Bjud in konsulent
+                </button>
+              </div>
             </div>
 
             {/* Users Table */}
@@ -172,8 +193,13 @@ export const SuperAdminPanel: React.FC = () => {
                             </span>
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-gray-900">
-                              {user.first_name} {user.last_name}
+                            <div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+                              <span>{user.first_name} {user.last_name}</span>
+                              {arTestkonto(user.email) && (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                  Testkonto
+                                </span>
+                              )}
                             </div>
                             <div className="text-sm text-gray-500">{user.email}</div>
                           </div>
@@ -219,23 +245,29 @@ export const SuperAdminPanel: React.FC = () => {
         )}
 
         {activeTab === 'stats' && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <p className="text-sm text-gray-500">Totalt antal användare</p>
-              <p className="text-3xl font-bold text-gray-900">{users.length}</p>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <p className="text-sm text-gray-500">Totalt antal användare</p>
+                <p className="text-3xl font-bold text-gray-900">{riktigaAnvandare.length}</p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <p className="text-sm text-gray-500">Konsulenter</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {riktigaAnvandare.filter(u => u.role === 'CONSULTANT').length}
+                </p>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <p className="text-sm text-gray-500">Deltagare</p>
+                <p className="text-3xl font-bold text-gray-900">
+                  {riktigaAnvandare.filter(u => u.role === 'USER').length}
+                </p>
+              </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <p className="text-sm text-gray-500">Konsulenter</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'CONSULTANT').length}
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-              <p className="text-sm text-gray-500">Deltagare</p>
-              <p className="text-3xl font-bold text-gray-900">
-                {users.filter(u => u.role === 'USER').length}
-              </p>
-            </div>
+            {/* BL5: talen ovan är utan testtrafik. Raden här visar var resten tog vägen. */}
+            <p className="text-sm text-gray-500">
+              Testkonton (borträknade): {antalTestkonton}
+            </p>
           </div>
         )}
 

@@ -199,6 +199,22 @@ class ConsultantService {
   }
 
   /**
+   * Mark several messages as read in one call (KK3: CommunicationTab).
+   */
+  async markMessagesAsRead(messageIds: string[]): Promise<void> {
+    if (messageIds.length === 0) return
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase
+      .from('consultant_messages')
+      .update({ is_read: true })
+      .in('id', messageIds)
+
+    if (error) throw error
+  }
+
+  /**
    * Mark a message as read
    */
   async markMessageAsRead(messageId: string): Promise<void> {

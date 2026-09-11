@@ -19,6 +19,8 @@
  */
 
 const { markdownToHtml, markdownToPlain, escapeHtml } = require('./markdown.cjs')
+// KG3: en delningsbild per kategori/sidtyp i stället för samma på alla sidor.
+const { ogBildFor } = require('./og-bild.cjs')
 const { SITE, TOOLS, KATEGORI_NAMN, KATEGORIER, kategoriUrl, appUrl, verktygFor, guideUrl } =
   require('./guides.cjs')
 
@@ -408,7 +410,7 @@ function renderGuide(a, relaterade) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${escapeHtml(a.title)}">
 <meta property="og:description" content="${escapeHtml(beskrivning)}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'guide', category_key: a.category_key })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -547,7 +549,7 @@ function renderIndex(artiklar) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="Guider för dig som söker jobb — Jobin">
 <meta property="og:description" content="Konkreta guider om CV, personligt brev, intervju och att orka söka jobb.">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'index' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -633,7 +635,7 @@ function renderLattlast(artiklar) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="Söka jobb på lätt svenska — Jobin">
 <meta property="og:description" content="Guider om CV, jobb och intervju på lätt svenska. Korta texter med enkla ord.">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'lattlast' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -769,7 +771,7 @@ function renderKategori(kat, artiklar, syskon) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${escapeHtml(kat.rubrik)} — guider — Jobin">
 <meta property="og:description" content="${escapeHtml(beskrivning)}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'kategori', category_key: kat.key })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -897,7 +899,7 @@ function renderTool(t, guider) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${escapeHtml(t.title)}">
 <meta property="og:description" content="${escapeHtml(t.description)}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'tool' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -992,7 +994,7 @@ function renderToolIndex(verktyg) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="Gratis verktyg för dig som söker jobb — Jobin">
 <meta property="og:description" content="CV-byggare, personligt brev, intervjuträning och kompetensanalys. Kostnadsfritt och på svenska.">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'tool-index' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
@@ -1113,7 +1115,7 @@ function renderB2B(b, guider) {
 <meta property="og:url" content="${url}">
 <meta property="og:title" content="${escapeHtml(b.title)}">
 <meta property="og:description" content="${escapeHtml(b.description)}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${ogBildFor({ typ: 'b2b' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
 <style>${CSS}</style>
