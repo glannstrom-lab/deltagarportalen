@@ -176,7 +176,11 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
   **Arabiska/somaliska/tigrinja/dari** kräver en människa som översätter; mekanismen (en
   överläggsfil per språk) är förberedd.
 - Prod-röktestet har nu 17 steg: chefen lägger till och tar bort en kollega, deltagaren
-  ser Min vecka på lätt svenska.
+  ser Min vecka på lätt svenska. Första körningen lämnade testkollegan kvar (fel selektor
+  på "Ta bort <namn>"); rättat i `3a9ae0cc`, kollegan borttagen för hand.
+- **Flaky test rättat:** Coverage-jobbet föll på `ReportDraftDialog.test.tsx` (kopierat
+  utkast) — rensningen sker en microtask efter mock-anropet testet väntade på. Testet
+  väntar nu på `removeItem`.
 
 ### Kvar i spåret (ordning)
 
