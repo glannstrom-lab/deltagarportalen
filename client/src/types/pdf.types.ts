@@ -1,3 +1,4 @@
+import type { CVData as CanonicalCVData } from '@/types/cv';
 /**
  * PDF Types
  * MATCHAR EXAKT mockApi.ts struktur för CV-data
@@ -64,29 +65,24 @@ export interface Reference {
   phone?: string;
 }
 
-// Main CVData interface - MATCHAR mockApi.ts EXAKT
-export interface CVData {
+// KA4 (2026-09-12): PDF-lagrets CVData är en DERIVATION av den kanoniska
+// `@/types/cv`, inte en egen definition. PDF-generatorn kräver att fälten
+// finns (tomma strängar hellre än undefined), därför `-?` + `NonNullable`.
+// `skills` tillåter strängform: äldre `cv_versions.data` kan bära den, och
+// `utils/skillText.skillNamn` läser båda.
+export type CVData = {
+  [K in keyof Pick<
+    CanonicalCVData,
+    | 'firstName' | 'lastName' | 'title' | 'email' | 'phone' | 'location' | 'summary'
+    | 'workExperience' | 'education' | 'languages' | 'certificates' | 'links' | 'references'
+    | 'template' | 'colorScheme' | 'font'
+  >]-?: NonNullable<CanonicalCVData[K]>
+} & {
   id?: string;
-  firstName: string;
-  lastName: string;
-  title: string;
-  email: string;
-  phone: string;
-  location: string;
   address?: string;
-  summary: string;
   profileImage: string | null;
-  workExperience: WorkExperience[];
-  education: Education[];
   skills: (Skill | string)[];  // Can be objects or strings
-  languages: Language[];
-  certificates: Certificate[];
-  links: Link[];
-  references: Reference[];
-  template: string;
-  colorScheme: string;
-  font: string;
-}
+};
 
 // Types for job data - MATCHAR PlatsbankenJob
 export interface JobData {

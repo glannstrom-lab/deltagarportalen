@@ -108,7 +108,7 @@ npx tsc --noEmit
 
 ### Övriga npm-skript i `client/` (kompletterat 2026-08-31)
 
-Utöver ovanstående finns åtta skript som körs mer sällan — innehållspipeline,
+Utöver ovanstående finns sju skript som körs mer sällan — innehållspipeline,
 ikoner och analys. Ingen av dem ingår i `npm run verify` eller CI.
 
 ```bash
@@ -118,7 +118,6 @@ npm run content:new            # Lägger in NYA artiklar ur content/new-articles
 npm run guides                 # Genererar de publika guidesidorna (dist/guider/) + sitemap.xml, körs efter build (K1/K2)
 npm run icons                  # Genererar app-ikonerna (favicon, apple-touch-icon, pwa-*) ur public/logo-icon.svg
 npm run analyze                # vite build --mode analyze — bundlestorlek/chunk-inspektion
-npm run verify:widget-chunks   # Bygger och kontrollerar att widget-komponenterna (components/widgets/, se lärdomen 2026-07-10) hamnar i egna lazy chunks
 npm run report:i18n            # Heuristisk rapport (report-only) över hårdkodad svenska (å/ä/ö) utanför t()
 ```
 
@@ -317,10 +316,10 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 
 ```bash
 cd client
-npm run lint:ci            # eslint: 0 errors, max 122 warnings (fryst tak)
+npm run lint:ci            # eslint: 0 errors, max 117 warnings (fryst tak, sänkt 2026-09-12 — räknaren gav 114–117 i olika körningar samma kväll; taket är den högsta mätningen)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (362)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (352, sänkt 2026-09-12)
 npm run lint:design        # gradient-baseline (52)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:grants        # anon-öppna SECURITY DEFINER-funktioner + RLS per tabell (A36)
@@ -355,7 +354,7 @@ npm run build
 > och **från 21 augusti kunde ingen användare ge eller återkalla ett samtycke** (42501).
 > Lärdomen: en REVOKE är aldrig klar, för koden runt omkring rör sig.
 
-De tre **frysta taken** (122 warnings, 362 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (117 warnings, 352 typfel, 52 gradienter) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

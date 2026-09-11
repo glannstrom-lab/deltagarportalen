@@ -53,6 +53,10 @@ const { serviceMock, toastMock } = vi.hoisted(() => ({
   toastMock: { error: vi.fn(), success: vi.fn(), info: vi.fn(), warning: vi.fn() },
 }))
 vi.mock('@/services/consultantService', () => ({ consultantService: serviceMock }))
+// Avbokningen går genom portalens dialog (useConfirmDialog), inte native confirm().
+// Mockad så testet styr svaret: true = bekräftat, false = "Behåll".
+const { confirmMock } = vi.hoisted(() => ({ confirmMock: vi.fn(async () => true) }))
+vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: confirmMock }) }))
 vi.mock('@/lib/toast', () => ({ notifications: toastMock }))
 
 vi.mock('@/lib/supabase', () => ({
@@ -175,5 +179,51 @@ describe('CommunicationTab — KK3: skrivvägarna går genom consultantService',
     fireEvent.change(ruta, { target: { value: 'Hej' } })
     fireEvent.keyDown(ruta, { key: 'Enter', ctrlKey: true })
     await waitFor(() => expect(toastMock.error).toHaveBeenCalledWith(expect.stringMatching(/kunde inte skickas/i)))
+  })
+})
+
+describe('CommunicationTab — avbokning går genom portalens bekräftelsedialog', () => {
+  const participant = {
+    participant_id: 'p1', first_name: 'Dana', last_name: 'Deltagare', email: 'dana@example.com',
+    status: 'ACTIVE', last_login: null, next_meeting_scheduled: null, last_contact_at: null,
+  }
+  const omTvaDagar = () => { const d = new Date(); d.setDate(d.getDate() + 2); d.setHours(10, 0, 0, 0); return d.toISOString() }
+  const mote = {
+    id: 'mote-1', consultant_id: 'consultant-1', participant_id: 'p1', scheduled_at: omTvaDagar(),
+    duration_minutes: 30, meeting_type: 'video', status: 'scheduled', location: null, meeting_link: null, notes: null,
+  }
+
+  beforeEach(() => {
+    Object.values(serviceMock).forEach((fn) => fn.mockClear())
+    confirmMock.mockReset()
+    tableResponses.consultant_dashboard_participants = { data: [participant], error: null }
+    tableResponses.consultant_meetings = { data: [mote], error: null }
+  })
+
+  async function oppnaMotenOchKlickaAvboka() {
+    renderTab()
+    fireEvent.click(await screen.findByRole('button', { name: /Möten/ }))
+    fireEvent.click(await screen.findByRole('button', { name: /Avboka mötet med Dana Deltagare/ }))
+  }
+
+  it('bekräftat i dialogen → consultantService.cancelMeeting anropas med mötets id', async () => {
+    confirmMock.mockResolvedValueOnce(true)
+    await oppnaMotenOchKlickaAvboka()
+    await waitFor(() => expect(serviceMock.cancelMeeting).toHaveBeenCalledWith('mote-1'))
+    expect(confirmMock).toHaveBeenCalledWith(expect.objectContaining({
+      title: 'Avboka mötet?',
+      confirmText: 'Avboka',
+      cancelText: 'Behåll',
+      variant: 'warning',
+      message: expect.stringContaining('Dana Deltagare'),
+    }))
+  })
+
+  it('"Behåll" i dialogen → ingen avbokning och mötet står kvar', async () => {
+    confirmMock.mockResolvedValueOnce(false)
+    await oppnaMotenOchKlickaAvboka()
+    await waitFor(() => expect(confirmMock).toHaveBeenCalled())
+    expect(serviceMock.cancelMeeting).not.toHaveBeenCalled()
+    expect(screen.getByRole('button', { name: /Avboka mötet med Dana Deltagare/ })).toBeInTheDocument()
   })
 })

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
+import type { CVData as CanonicalCVData } from '@/types/cv'
 import { interestApi } from '@/services/interestApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
 import { activityApi } from '@/services/activityApi'
@@ -113,26 +114,19 @@ interface UserStreaks {
   current_streak: number
 }
 
-/** CV data structure */
-interface CVData {
-  updated_at?: string
-  summary?: string
-  work_experience?: unknown[]
-  workExperience?: unknown[]
-  template?: string
-  first_name?: string
-  last_name?: string
-  firstName?: string
-  lastName?: string
-  email?: string
-  personal_info?: {
-    first_name?: string
-    email?: string
-  }
-  education?: unknown[]
-  skills?: unknown[]
-  languages?: unknown[]
-}
+/**
+ * KA4: härledd ur den kanoniska `CVData` (`@/types/cv`) i stället för en egen
+ * kopia. Tidigare läste den ett `personal_info`-objekt som inte finns i `cvs`
+ * (schema-snapshot 2026-09-11) och därför aldrig träffade. Snake- och
+ * camelCase bärs båda av den kanoniska typen eftersom `cvApi` returnerar
+ * radformen medan UI:t skriver camelCase.
+ */
+type CVData = Pick<
+  CanonicalCVData,
+  | 'updated_at' | 'summary' | 'work_experience' | 'workExperience' | 'template'
+  | 'first_name' | 'last_name' | 'firstName' | 'lastName' | 'email'
+  | 'education' | 'skills' | 'languages'
+>
 
 // Query keys för caching
 const DASHBOARD_QUERY_KEY = 'dashboard' as const
@@ -613,8 +607,8 @@ function calculateCVProgress(cv: CVData | null): number {
   
   let score = 0
   const sections = [
-    { check: () => cv.first_name || cv.personal_info?.first_name || cv.firstName, points: 10 },
-    { check: () => cv.email || cv.personal_info?.email, points: 5 },
+    { check: () => cv.first_name || cv.firstName, points: 10 },
+    { check: () => cv.email, points: 5 },
     { check: () => cv.summary, points: 20 },
     { check: () => cv.work_experience?.length || cv.workExperience?.length, points: 25 },
     { check: () => cv.education?.length, points: 15 },
@@ -634,7 +628,7 @@ function getMissingSections(cv: CVData | null): string[] {
   
   const missing: string[] = []
   
-  if (!cv.first_name && !cv.personal_info?.first_name && !cv.firstName) missing.push('profile')
+  if (!cv.first_name && !cv.firstName) missing.push('profile')
   if (!cv.summary) missing.push('summary')
   if (!(cv.work_experience?.length || cv.workExperience?.length)) missing.push('work_experience')
   if (!cv.education?.length) missing.push('education')

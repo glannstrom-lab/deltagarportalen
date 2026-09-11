@@ -7,16 +7,11 @@ import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield, RotateCcw } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
+import type { CVData } from '@/types/cv'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 
-interface CVDataForAI {
-  title?: string
-  firstName?: string
-  lastName?: string
-  workExperience?: Array<{ title?: string; company?: string; description?: string }>
-  education?: Array<{ degree?: string; school?: string; field?: string }>
-  skills?: Array<{ name: string; level?: number }>
-}
+// KA4: en delmängd av den kanoniska CVData — inte en egen kopia.
+type CVDataForAI = Pick<CVData, 'title' | 'firstName' | 'lastName' | 'workExperience' | 'education' | 'skills'>
 
 interface AIWritingAssistantProps {
   content: string

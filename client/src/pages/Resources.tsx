@@ -45,6 +45,8 @@
  * konstaterade aldrig var byggd, men vars nyckeltal ändå visade ett hårt "0").
  */
 
+import type { CVData } from '@/types/cv'
+import { skillNamn } from '@/utils/skillText'
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -156,38 +158,7 @@ interface CVVersion {
   data: CVData
 }
 
-interface CVData {
-  firstName?: string
-  lastName?: string
-  title?: string
-  email?: string
-  phone?: string
-  location?: string
-  summary?: string
-  workExperience?: Array<{
-    title: string
-    company: string
-    description?: string
-    startDate?: string
-    endDate?: string
-    current?: boolean
-  }>
-  education?: Array<{
-    degree: string
-    school: string
-    startDate?: string
-    endDate?: string
-  }>
-  skills?: Array<{ id: string; name: string; level?: number; category?: string }> | string[]
-  languages?: Array<{
-    language: string
-    level: string
-  }>
-  template?: string
-  colorScheme?: string
-  font?: string
-  profileImage?: string | null
-}
+// KA4: EN CVData i klienten — `@/types/cv` (importerad överst).
 
 interface InterestResult {
   completed_at: string
@@ -1295,7 +1266,7 @@ function ResourcesInner() {
                                 key={i}
                                 className="px-2 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 text-xs rounded"
                               >
-                                {typeof skill === 'string' ? skill : (skill as { name: string }).name}
+                                {skillNamn(skill)}
                               </span>
                             ))}
                           </div>

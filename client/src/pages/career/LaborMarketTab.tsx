@@ -25,7 +25,7 @@
  * gå att peka tillbaka på ett svar från AF, och etiketten ska säga vad talet
  * faktiskt mäter. Finns talet inte visas ingenting — inte en platshållare.
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   MapPin,
@@ -36,6 +36,8 @@ import {
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
+import { sokPrognos, grupperaPerYrke, lansnamn, formateraPublicerad, type PrognosSvar, type PrognosRad, type YrkesUtsikt } from '@/services/afPrognosApi'
+import { AF_REGIONS } from '@/data/afRegions'
 
 /**
  * Sidan gjorde tidigare två uppsättningar anrop mot samma IP-rate-limitade
@@ -300,6 +302,9 @@ export default function LaborMarketTab() {
         </Card>
       )}
 
+      {/* MK3 (2026-09-12): AF:s yrkesbarometer, utsikter per yrke i AF:s egna ord. */}
+      <UtsikterSektion />
+
       {/* Källa och datans ålder */}
       <div className="text-center text-xs text-stone-600 dark:text-stone-400 py-4">
         <p>
@@ -318,5 +323,157 @@ export default function LaborMarketTab() {
         </p>
       </div>
     </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Utsikter för ett yrke (MK3, 2026-09-12). Datan är Arbetsförmedlingens
+// yrkesbarometer via edge-funktionen af-prognos: 219 yrken, riket + 21 län,
+// publicerad två gånger om året, CC0. Vi visar AF:s bedömning och text som den
+// är. Inga egna procent, ingen fallback som ser ut som data: saknas yrket
+// säger vi det. Fyra lägen: vila / laddar / fel / klart (träffar eller tomt).
+// ---------------------------------------------------------------------------
+
+type UtsikterLage =
+  | { status: 'vila' }
+  | { status: 'laddar' }
+  | { status: 'fel'; meddelande: string }
+  | { status: 'klart'; svar: PrognosSvar; utsikter: YrkesUtsikt[]; lan: string }
+
+const VARDE_NYCKEL: Record<string, string> = {
+  'små': 'sma', medelstora: 'medelstora', stora: 'stora',
+  'överskott': 'overskott', balans: 'balans', paradox: 'paradox', brist: 'brist',
+  'öka': 'oka', 'vara oförändrad': 'oforandrad', minska: 'minska',
+}
+
+const falt = 'mt-1 w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 py-2 text-stone-900 dark:text-stone-100'
+
+function Bedomning({ rad, rubrik, varde, t }: {
+  rad: PrognosRad
+  rubrik: string
+  varde: (v: string | null) => string
+  t: (k: string) => string
+}) {
+  return (
+    <div className="rounded-xl border border-stone-200 dark:border-stone-700 p-4 space-y-2">
+      <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{rubrik}</p>
+      <dl className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm">
+        <div>
+          <dt className="text-stone-500 dark:text-stone-400">{t('career.prognos.jobbmojligheter')}</dt>
+          <dd className="font-medium text-stone-800 dark:text-stone-100">{varde(rad.jobbmojligheter)}</dd>
+        </div>
+        <div>
+          <dt className="text-stone-500 dark:text-stone-400">{t('career.prognos.rekrytering')}</dt>
+          <dd className="font-medium text-stone-800 dark:text-stone-100">{varde(rad.rekryteringssituation)}</dd>
+        </div>
+        <div>
+          <dt className="text-stone-500 dark:text-stone-400">{t('career.prognos.prognosFemAr')}</dt>
+          <dd className="font-medium text-stone-800 dark:text-stone-100">{varde(rad.prognos)}</dd>
+        </div>
+      </dl>
+      {rad.text_jobbmojligheter && (
+        <p className="text-sm text-stone-700 dark:text-stone-300">{rad.text_jobbmojligheter}</p>
+      )}
+    </div>
+  )
+}
+
+export function UtsikterSektion() {
+  const { t, i18n } = useTranslation()
+  const [fraga, setFraga] = useState('')
+  const [lan, setLan] = useState('00')
+  const [lage, setLage] = useState<UtsikterLage>({ status: 'vila' })
+
+  const sok = async (e?: FormEvent) => {
+    e?.preventDefault()
+    if (fraga.trim().length < 2) {
+      setLage({ status: 'fel', meddelande: t('career.prognos.forKort') })
+      return
+    }
+    setLage({ status: 'laddar' })
+    const lanskod = lan === '00' ? null : lan
+    try {
+      const svar = await sokPrognos(fraga, lanskod)
+      setLage({ status: 'klart', svar, utsikter: grupperaPerYrke(svar.traffar, lanskod), lan })
+    } catch {
+      setLage({ status: 'fel', meddelande: t('career.prognos.fel') })
+    }
+  }
+
+  const varde = (v: string | null) =>
+    v && VARDE_NYCKEL[v] ? t(`career.prognos.varde.${VARDE_NYCKEL[v]}`) : t('career.prognos.varde.saknas')
+
+  const publicerad = lage.status === 'klart' ? formateraPublicerad(lage.svar.last_modified, i18n.language) : null
+
+  return (
+    <Card className="p-5" aria-labelledby="prognos-rubrik">
+      <h3 id="prognos-rubrik" className="font-semibold text-stone-800 dark:text-stone-100 mb-1">
+        {t('career.prognos.heading')}
+      </h3>
+      <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">{t('career.prognos.intro')}</p>
+      <form onSubmit={(e) => void sok(e)} className="flex flex-col sm:flex-row gap-2 sm:items-end">
+        <label className="flex-1 text-sm text-stone-700 dark:text-stone-300">
+          {t('career.prognos.sokLabel')}
+          <input
+            type="text"
+            value={fraga}
+            onChange={(e) => setFraga(e.target.value)}
+            placeholder={t('career.prognos.sokPlaceholder')}
+            className={falt}
+          />
+        </label>
+        <label className="text-sm text-stone-700 dark:text-stone-300">
+          {t('career.prognos.lanLabel')}
+          <select value={lan} onChange={(e) => setLan(e.target.value)} className={`${falt} sm:w-auto`}>
+            <option value="00">{t('career.prognos.riket')}</option>
+            {AF_REGIONS.map((r) => (
+              <option key={r.lanskod} value={r.lanskod}>{r.name}</option>
+            ))}
+          </select>
+        </label>
+        <Button type="submit" disabled={lage.status === 'laddar'}>{t('career.prognos.sok')}</Button>
+      </form>
+
+      <div className="mt-4" aria-live="polite">
+        {lage.status === 'laddar' && (
+          <p className="text-sm text-stone-600 dark:text-stone-400">{t('career.prognos.loading')}</p>
+        )}
+        {lage.status === 'fel' && (
+          <p role="alert" className="text-sm text-red-700 dark:text-red-300">{lage.meddelande}</p>
+        )}
+        {lage.status === 'klart' && lage.utsikter.length === 0 && (
+          <p className="text-sm text-stone-700 dark:text-stone-300">{t('career.prognos.ingenTraff')}</p>
+        )}
+        {lage.status === 'klart' && lage.utsikter.length > 0 && (
+          <div className="space-y-4">
+            {lage.utsikter.length > 1 && (
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                {t('career.prognos.flerTraffar', { antal: lage.utsikter.length })}
+              </p>
+            )}
+            {lage.utsikter.map((u) => (
+              <section key={u.concept_id} aria-label={u.yrke} className="space-y-2">
+                <h4 className="font-semibold text-stone-800 dark:text-stone-100">{u.yrke}</h4>
+                {u.riket && u.riket.ssyk_text && u.riket.ssyk_text !== u.yrke && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                    {t('career.prognos.delmangd', { yrke: u.yrke, grupp: u.riket.ssyk_text, ssyk: u.riket.ssyk })}
+                  </p>
+                )}
+                {u.lan && <Bedomning rad={u.lan} rubrik={t('career.prognos.iLan', { lan: lansnamn(lage.lan) })} varde={varde} t={t} />}
+                {u.riket && <Bedomning rad={u.riket} rubrik={t('career.prognos.riket')} varde={varde} t={t} />}
+              </section>
+            ))}
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              {lage.svar.omgang
+                ? t('career.prognos.kalla', { omgang: lage.svar.omgang })
+                : t('career.laborMarket.dataFrom') + ' Arbetsförmedlingen'}
+              {publicerad && <>, {t('career.prognos.publicerad', { datum: publicerad })}</>}
+              {' · '}
+              {t('career.prognos.licens')}
+            </p>
+          </div>
+        )}
+      </div>
+    </Card>
   )
 }

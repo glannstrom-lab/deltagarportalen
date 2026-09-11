@@ -7,6 +7,7 @@
  */
 
 import type { CVData, JobData } from '@/types/pdf.types'
+import { skillNamn } from '@/utils/skillText'
 import { parseArticleMarkdown, parseInline } from '@/components/knowledge-base/articleMarkdown'
 import type jsPDF from 'jspdf'
 import i18n from '@/i18n/config'
@@ -295,14 +296,8 @@ async function getCircularImage(url: string, size: number): Promise<string | nul
   }
 }
 
-// Hämta skill name
-function getSkillName(skill: string | { name: string } | Record<string, unknown>): string {
-  if (typeof skill === 'string') return skill
-  if (skill && typeof skill === 'object' && 'name' in skill && typeof skill.name === 'string') {
-    return skill.name
-  }
-  return ''
-}
+// KA4: kompetensnamn via den delade normaliseraren.
+const getSkillName = skillNamn
 
 export async function generateCVPDF(data: CVData): Promise<Blob> {
   // Ladda PDF-bibliotek dynamiskt (första gången)

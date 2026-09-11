@@ -500,6 +500,7 @@ innehåller data utom där annat anges.
 | Vercel Inc. | Hosting, serverless functions | DPA på vercel.com | EU/Frankfurt (efter 2026-05-15) | OK |
 | Vercel Blob | Filhosting | Del av Vercel-DPA | **Verifieras** | Manuell check |
 | OpenRouter Inc. | AI inferens | **Verifieras** | USA | SCC + TIA krävs |
+| Perplexity AI Inc. (via OpenRouter, modell `perplexity/sonar`) | Sökmodell i `ai-career-assistant`, `ai-company-search`, `ai-company-analysis`, `ai-commute-planner` (+ `ai-industry-radar` utan aktiv anropare) — gör en **webbsökning** på inmatad text; commute-planner skickar användarens adress | **Saknas** — omfattas inte av OpenRouters DPA per automatik, verifieras | USA | Tillagd 2026-09-12 (BL7). Står i integritetspolicyn sedan samma dag. Beslut Mikael: behåll med DPA/SCC, eller stäng av för organisationskonton |
 | Functional Software (Sentry) | Error tracking | DPA på sentry.io | Multi-region | EU-instans rekommenderad |
 | ~~LinkedIn Inc.~~ | ~~OAuth + profilimport~~ | — | — | **Utgår 2026-07-27:** ingen LinkedIn-import är implementerad. Ska in igen först när en faktiskt byggs |
 | Google LLC | OAuth + Calendar | DPA via Google | USA | Opt-in, SCC krävs |

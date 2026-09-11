@@ -7,6 +7,7 @@
  * Statisk data ligger i data/jobMatchingData.ts.
  */
 
+import { normaliseraKompetens } from '@/utils/skillText'
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import {
   SKILL_SYNONYMS,
@@ -75,7 +76,7 @@ export async function prefetchJobSearches(
  * Check if a skill is generic (should not be used for searching)
  */
 export function isGenericSkill(skill: string): boolean {
-  const skillLower = skill.toLowerCase().trim()
+  const skillLower = normaliseraKompetens(skill)
 
   // Direct match
   if (GENERIC_SKILLS.has(skillLower)) return true

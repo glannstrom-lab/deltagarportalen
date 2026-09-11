@@ -7,6 +7,7 @@
  * 3. Ge förbättringsförslag
  */
 
+import { normaliseraKompetens, skillNamn } from '@/utils/skillText'
 import type { CVData } from './supabaseApi'
 
 // ============================================
@@ -230,17 +231,12 @@ function countOccurrences(haystack: string, needle: string): number {
  * är samma sak i gemener (för sökning/matchning, UX14). Båda hanterar
  * strängform defensivt trots att den inte längre observerats i prod.
  */
-export function skillName(skill: unknown): string {
-  if (typeof skill === 'string') return skill
-  if (skill && typeof skill === 'object') {
-    const name = (skill as { name?: unknown }).name
-    if (typeof name === 'string') return name
-  }
-  return ''
-}
+// KA4: implementationen bor i `utils/skillText.ts`; namnet `skillName` behålls
+// för de befintliga importörerna och testerna.
+export const skillName = skillNamn
 
 function skillText(skill: unknown): string {
-  return skillName(skill).toLowerCase()
+  return normaliseraKompetens(skill)
 }
 
 /**

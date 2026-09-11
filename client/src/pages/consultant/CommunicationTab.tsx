@@ -38,6 +38,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
 
 interface Message {
@@ -374,8 +375,9 @@ function MeetingCard({
             <button
               onClick={() => onCancel(meeting.id)}
               className="p-2 hover:bg-rose-100 dark:hover:bg-rose-900/40 rounded-lg transition-colors"
+              aria-label={`Avboka mötet med ${meeting.participantName}`}
             >
-              <X className="w-4 h-4 text-rose-500" />
+              <X className="w-4 h-4 text-rose-500" aria-hidden="true" />
             </button>
           </div>
         )}
@@ -571,6 +573,10 @@ function NewMessageDialog({
 export function CommunicationTab() {
   const { t, i18n } = useTranslation()
   const locale = i18n.language
+  // Portalens egen bekräftelsedialog — inte webbläsarens confirm(), som bl.a.
+  // Playwright avvisar tyst och som inte följer temat (samma fälla som rättades
+  // i AktivitetsplanSektion/SchemamallSektion/OrganisationerTab 2026-09-11).
+  const { confirm } = useConfirmDialog()
   const queryClient = useQueryClient()
   // KK4: en bokad möte via den här flikens dialog ändrar
   // next_meeting_scheduled i vyn — övriga flikar ska inte visa en gammal lista.
@@ -839,7 +845,20 @@ export function CommunicationTab() {
   }
 
   const handleCancelMeeting = async (meetingId: string) => {
-    if (!confirm(t('consultant.communication.confirmCancelMeeting', 'Avboka mötet?'))) return
+    const mote = meetings.find(m => m.id === meetingId)
+    const nar = mote
+      ? new Date(mote.scheduledAt).toLocaleString(locale === 'en' ? 'en-GB' : 'sv-SE', { dateStyle: 'long', timeStyle: 'short' })
+      : ''
+    const ok = await confirm({
+      title: 'Avboka mötet?',
+      message: mote
+        ? `Mötet med ${mote.participantName} ${nar} tas bort ur kalendern. Deltagaren ser inte längre mötet.`
+        : 'Mötet tas bort ur kalendern.',
+      confirmText: 'Avboka',
+      cancelText: 'Behåll',
+      variant: 'warning',
+    })
+    if (!ok) return
     try {
       await consultantService.cancelMeeting(meetingId)
       setMeetings(prev => prev.filter(m => m.id !== meetingId))

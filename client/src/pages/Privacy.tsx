@@ -51,7 +51,7 @@ export default function Privacy() {
 
   const formatDate = () => {
     const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
-    return new Date('2026-03-27').toLocaleDateString(locale, {
+    return new Date('2026-09-12').toLocaleDateString(locale, {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

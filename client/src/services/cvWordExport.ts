@@ -16,38 +16,10 @@
  * när användaren bara kör PDF-export.
  */
 
-interface CVData {
-  firstName?: string
-  lastName?: string
-  title?: string
-  email?: string
-  phone?: string
-  location?: string
-  summary?: string
-  workExperience?: Array<{
-    title: string
-    company: string
-    location?: string
-    description?: string
-    startDate?: string
-    endDate?: string
-    current?: boolean
-  }>
-  education?: Array<{
-    degree: string
-    school: string
-    field?: string
-    startDate?: string
-    endDate?: string
-  }>
-  skills?: Array<{ id?: string; name: string; level?: number; category?: string }> | string[]
-  languages?: Array<{
-    language: string
-    level: string
-  }>
-  certificates?: Array<{ id?: string; name: string; issuer?: string }>
-  links?: Array<{ id?: string; label?: string; url: string }>
-}
+// KA4: EN CVData i klienten — `@/types/cv`. Alla fält är valfria där;
+// koden nedan hanterar redan tomma listor och saknade värden.
+import type { CVData } from '@/types/cv'
+import { skillNamnLista } from '@/utils/skillText'
 
 const NAVY = '0F1B2D'
 const COPPER = 'B07A4C'
@@ -77,7 +49,7 @@ export async function generateCVWord(cvData: CVData): Promise<void> {
   const { saveAs } = await import('file-saver')
 
   const fullName = `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim() || 'CV'
-  const skills = (cvData.skills || []).map(s => typeof s === 'string' ? s : s?.name).filter(Boolean) as string[]
+  const skills = skillNamnLista(cvData.skills)
 
   // ────────── HJÄLP-FUNKTIONER ──────────
   // Inga celler ska visas som rektanglar — vi använder bara tabellen som layout.

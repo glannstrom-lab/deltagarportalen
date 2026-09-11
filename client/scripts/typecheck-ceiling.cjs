@@ -66,7 +66,7 @@ const path = require('node:path')
 // (oanvänd @ts-expect-error i DropdownMenu, otypad CJS-import i i18n-grinden,
 // mockad returtyp i ReportDraftDialog.test) lagades samma kväll, och
 // unifiedProfileApi.ts fick rätt typ på skills (CB5).
-const CEILING = 356
+const CEILING = 352
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 
