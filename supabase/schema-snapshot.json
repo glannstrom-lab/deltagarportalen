@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T20:01:58.364Z",
+  "generatedAt": "2026-09-12T20:22:05.639Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -66,6 +66,9 @@
       "weekly_hours_target"
     ],
     "activity_sessions": [
+      "absence_note",
+      "absence_reason",
+      "absence_reported_at",
       "activity_type",
       "attendance",
       "attendance_note",
@@ -1999,6 +2002,7 @@
   },
   "routines": [
     "accept_consultant_request",
+    "activity_sessions_absence_notify",
     "activity_sessions_participant_guard",
     "audit_data_sharing_change",
     "auto_generate_recommendations",
@@ -2057,6 +2061,7 @@
     "log_user_activity",
     "organization_colleagues_iud",
     "organization_handover_insert",
+    "organizations_chef_guard",
     "post_to_community_feed",
     "prevent_last_superadmin_removal",
     "profiles_consultant_status_only_check",

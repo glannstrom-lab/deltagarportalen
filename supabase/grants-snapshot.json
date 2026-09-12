@@ -1,9 +1,16 @@
 {
-  "generatedAt": "2026-09-12T20:02:04.544Z",
+  "generatedAt": "2026-09-12T20:22:11.290Z",
   "functions": [
     {
       "name": "accept_consultant_request",
       "signature": "accept_consultant_request(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "activity_sessions_absence_notify",
+      "signature": "activity_sessions_absence_notify()",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -411,6 +418,13 @@
       "name": "organization_handover_insert",
       "signature": "organization_handover_insert()",
       "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "organizations_chef_guard",
+      "signature": "organizations_chef_guard()",
+      "definer": false,
       "anon": false,
       "authenticated": false
     },
