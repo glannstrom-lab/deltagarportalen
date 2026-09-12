@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
+import { kontaktText } from '@/lib/kontaktText'
 
 export interface MyDayMeeting {
   id: string
@@ -45,6 +46,8 @@ export interface MyDayContact {
   participantId: string
   participantName: string
   reason: 'no_contact' | 'inactive'
+  /** PG24: dagar sedan senaste kontakt, null = aldrig kontaktad. Samma regel som deltagarkortet. */
+  daysSinceContact?: number | null
 }
 
 interface MinDagSectionProps {
@@ -52,7 +55,12 @@ interface MinDagSectionProps {
   deadlines: MyDayDeadline[]
   contacts: MyDayContact[]
   onMessage: (participantId: string) => void
+  /** F12: logga en kontakt som skett utanför portalen (telefon/möte) — tar bort varningen. */
+  onLogContact?: (participantId: string) => void | Promise<void>
+  /** F9: dagens pass (DagensPass) — ritas överst, oavsett om resten är tomt. */
+  pass?: React.ReactNode
 }
+
 
 const meetingTypeIcons: Record<string, React.ElementType> = {
   video: Video,
@@ -70,7 +78,7 @@ function SectionHeading({ icon: Icon, label, count }: { icon: React.ElementType;
   )
 }
 
-export function MinDagSection({ meetings, deadlines, contacts, onMessage }: MinDagSectionProps) {
+export function MinDagSection({ meetings, deadlines, contacts, onMessage, onLogContact, pass }: MinDagSectionProps) {
   const { t } = useTranslation()
 
   const isEmpty = meetings.length === 0 && deadlines.length === 0 && contacts.length === 0
@@ -92,6 +100,8 @@ export function MinDagSection({ meetings, deadlines, contacts, onMessage }: MinD
           <span className="text-sm text-stone-500 dark:text-stone-400 capitalize">— {today}</span>
         </div>
       </div>
+
+      {pass && <div className="px-4 sm:px-5 pt-4 sm:pt-5">{pass}</div>}
 
       {isEmpty ? (
         <div className="p-8 text-center">
@@ -240,16 +250,27 @@ export function MinDagSection({ meetings, deadlines, contacts, onMessage }: MinD
                     </div>
                     <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                       {c.reason === 'no_contact'
-                        ? t('consultant.alerts.noContact')
+                        ? kontaktText(t, c.daysSinceContact)
                         : t('consultant.alerts.inactive')}
                     </p>
-                    <button
-                      onClick={() => onMessage(c.participantId)}
-                      className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 mt-2"
-                    >
-                      <MessageSquare className="w-3 h-3" aria-hidden="true" />
-                      {t('consultant.overview.myDay.sendMessage')}
-                    </button>
+                    <div className="flex flex-wrap gap-3 mt-2">
+                      <button
+                        onClick={() => onMessage(c.participantId)}
+                        className="text-xs font-medium text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1"
+                      >
+                        <MessageSquare className="w-3 h-3" aria-hidden="true" />
+                        {t('consultant.overview.myDay.sendMessage')}
+                      </button>
+                      {onLogContact && c.reason === 'no_contact' && (
+                        <button
+                          onClick={() => void onLogContact(c.participantId)}
+                          className="text-xs font-medium text-stone-700 dark:text-stone-300 hover:underline flex items-center gap-1"
+                        >
+                          <CheckCircle className="w-3 h-3" aria-hidden="true" />
+                          {t('consultant.overview.myDay.logContact')}
+                        </button>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>

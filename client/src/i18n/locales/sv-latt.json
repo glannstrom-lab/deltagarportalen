@@ -36,6 +36,28 @@
       "fel": "Vi kunde inte hämta det här just nu.",
       "egenRedovisning": "Det här är din egen lista. Din konsulent ser bara sparade jobb och ansökningar."
     },
+    "intyg": {
+      "rubrik": "Intyg om närvaro",
+      "text": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit. Du kan visa det för din handläggare.",
+      "manad": "Månad",
+      "knapp": "Ladda ner intyg",
+      "skapar": "Skapar …",
+      "forbehall": "Bara pass där konsulenten har skrivit \"närvarande\" räknas. Andra pass står som \"ej markerat\".",
+      "klart": "Intyget för {{manad}} är klart.",
+      "fel": "Det gick inte just nu. Försök igen om en stund."
+    },
+    "fraga": {
+      "knapp": "Fråga om passet",
+      "etikett": "Din fråga",
+      "inledning": "Hej! Jag har en fråga om passet \"{{titel}}\" den {{datum}} kl {{tid}}: ",
+      "tom": "Skriv din fråga efter första raden.",
+      "skicka": "Skicka",
+      "skickar": "Skickar …",
+      "avbryt": "Avbryt",
+      "skickat": "Skickat till {{namn}}.",
+      "dinKonsulent": "din konsulent",
+      "fel": "Det gick inte att skicka. Du kan skriva till din konsulent på sidan Min konsulent."
+    },
     "franvaro": {
       "knapp": "Jag kan inte komma",
       "rubrik": "Varför kan du inte komma? Din konsulent får veta det direkt.",

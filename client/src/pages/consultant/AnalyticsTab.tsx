@@ -1127,6 +1127,14 @@ export function AnalyticsTab() {
         isOpen={showReportDialog}
         onClose={() => setShowReportDialog(false)}
         analyticsData={reportData}
+        // F17 (2026-09-13): vyn har periodknappar; dialogen sa ändå "ingen
+        // tidsavgränsning" (persona-fynd, köparen). Etiketten är den vyn räknar på.
+        periodLabel={`${t('consultant.analytics.export.last')} ${{
+          week: t('consultant.analytics.export.week'),
+          month: t('consultant.analytics.export.month'),
+          quarter: t('consultant.analytics.export.quarter'),
+          year: t('consultant.analytics.export.year'),
+        }[dateRange]}`}
       />
     </div>
   )

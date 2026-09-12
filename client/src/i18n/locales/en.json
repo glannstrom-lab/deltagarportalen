@@ -1857,7 +1857,7 @@
         "contact": "Contact details"
       },
       "placeholders": {
-        "name": "John Smith",
+        "name": "Your name",
         "title": "e.g. Project Manager, Sales, Developer",
         "email": "your.email@example.com",
         "phone": "+46 70-123 45 67 (optional)"
@@ -9983,6 +9983,35 @@
     "yourCv": "Your CV"
   },
   "consultant": {
+    "underlag": {
+      "rubrik": "Documentation to the caseworker",
+      "tomt": "No documentation handed over yet.",
+      "lamna": "Hand over documentation",
+      "lamnat": "Handed over {{datum}} to {{mottagare}}",
+      "avVem": "by {{namn}}",
+      "period": "Period {{from}} – {{to}}",
+      "angrat": "Withdrawn {{datum}}: {{skal}}",
+      "angra": "Withdraw",
+      "angraForklaring": "Documentation can only be withdrawn on the same day it was handed over. Give a reason so the trace remains.",
+      "angraSkal": "Why is the documentation withdrawn?",
+      "angraBekrafta": "Withdraw documentation",
+      "dialogTitel": "Hand over documentation to the caseworker",
+      "dialogIngress": "This is the consultant's handover of the deviation documentation for the period. Decisions about reduced benefits are made by the socialnämnd (municipal social welfare committee), not here.",
+      "mottagare": "Recipient (caseworker or unit)",
+      "mottagarePlaceholder": "e.g. Anna Andersson, försörjningsstöd unit",
+      "periodFrom": "Period from",
+      "periodTo": "Period to",
+      "sammanfattning": "What is included",
+      "sammanfattningRad": "{{pass}} sessions: {{present}} present, {{absent_valid}} valid absence, {{absent_invalid}} invalid absence, {{sick_certified}} sick with certificate, {{external}} external activity, {{omarkerade}} not marked, {{anmald_franvaro}} reported in advance",
+      "ingaPass": "No sessions in the period — the documentation would be empty. Choose a period with sessions.",
+      "anteckning": "Note to the caseworker (optional)",
+      "anteckningPlaceholder": "What the numbers do not show, e.g. agreements or ongoing sick leave.",
+      "skicka": "Mark as handed over",
+      "avbryt": "Cancel",
+      "sparat": "The documentation is marked as handed over.",
+      "fel": "The documentation could not be saved",
+      "raknasIvo": "Counted in the IVO report for the quarter."
+    },
     "title": "Consultant Portal",
     "subtitle": "Manage and follow up on your participants",
     "tabs": {
@@ -10059,6 +10088,8 @@
         "overdue_other": "{{count}} days overdue",
         "dueToday": "Due today",
         "needsContact": "Reach out",
+        "contactLogged": "Contact logged.",
+        "logContact": "Log contact (call outside the portal)",
         "noContactsNeeded": "All participants have recent contact.",
         "sendMessage": "Send message",
         "joinMeeting": "Meeting link",
@@ -10269,6 +10300,17 @@
       "reportTitle": "Report Title",
       "titlePlaceholder": "Consultant Report",
       "dateRange": "Time Period",
+      "namnd": {
+        "typeLabel": "Report type",
+        "typeKonsult": "Consultant report",
+        "typeNamnd": "Board report (quarter)",
+        "description": "Per försörjningshinder (reason for support): participants with a plan, attendance rate, reported and unreported absence, documents handed to the caseworker. Counted from plans and sessions — decisions on reduced support are recorded in the kommun's own system.",
+        "quarterLabel": "Quarter",
+        "quarterCurrent": "Current",
+        "quarterPrevious": "Previous",
+        "quarterHint": "The quarter sets both the heading and the numbers. The report is in Swedish.",
+        "error": "The data could not be loaded. Check your connection and try again."
+      },
       "currentStatusOn": "Current status as of {{date}}",
       "dateRangeFromView": "This is the period already selected in the view you opened the report from.",
       "dateRangeSnapshot": "This view has no time period — the report shows current totals, not a period.",
@@ -10762,6 +10804,8 @@
       "bookMeeting": "Book meeting"
     },
     "alerts": {
+      "noContactDays_one": "No contact for 1 day",
+      "noContactDays_other": "No contact for {{count}} days",
       "noContact": "No contact for 7+ days",
       "inactive": "Inactive for 14+ days",
       "noCv": "CV missing",
@@ -12256,6 +12300,28 @@
       "fel": "Your job search could not be loaded right now.",
       "egenRedovisning": "This is your own overview. Your consultant only sees saved jobs and applications."
     },
+    "intyg": {
+      "rubrik": "Attendance certificate",
+      "text": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to your handläggare (case officer) for försörjningsstöd (income support).",
+      "manad": "Month",
+      "knapp": "Download attendance certificate",
+      "skapar": "Creating …",
+      "forbehall": "Only sessions your konsulent marked as present count as attendance. Sessions without a mark are shown as \"not marked\".",
+      "klart": "The certificate for {{manad}} has been downloaded.",
+      "fel": "The certificate could not be created right now. Please try again in a moment."
+    },
+    "fraga": {
+      "knapp": "Ask about this session",
+      "etikett": "Your question to your konsulent",
+      "inledning": "Hi! I have a question about the session \"{{titel}}\" on {{datum}} at {{tid}}: ",
+      "tom": "Write your question after the opening line.",
+      "skicka": "Send",
+      "skickar": "Sending …",
+      "avbryt": "Cancel",
+      "skickat": "Sent to {{namn}}.",
+      "dinKonsulent": "your konsulent",
+      "fel": "The question could not be sent. You can write to your konsulent from the page My konsulent."
+    },
     "franvaro": {
       "knapp": "I cannot come",
       "rubrik": "What stops you from coming? Your konsulent (job coach) gets a message right away.",
@@ -12355,6 +12421,7 @@
     }
   },
   "notificationBell": {
+    "paminnelse": { "karta": "Show {{plats}} on a map" },
     "aria": {
       "unread": "Unread",
       "markAsRead": "Mark as read",

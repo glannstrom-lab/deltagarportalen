@@ -134,6 +134,20 @@ function NotificationItem({
         <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5 line-clamp-2">
           {notification.message}
         </p>
+        {/* F3 (2026-09-13): påminnelsen bär platsen i data.location — en kartlänk är
+            det som skiljer "Hjernet, Malmgatan 4" som text från något man kan gå till.
+            stopPropagation så klicket inte också navigerar till Min vecka. */}
+        {notification.type === 'aktivitet_paminnelse' && typeof notification.data?.location === 'string' && notification.data.location && (
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(notification.data.location)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="inline-block mt-1 text-xs underline underline-offset-2 text-[var(--c-text)]"
+          >
+            {t('notificationBell.paminnelse.karta', 'Visa {{plats}} på karta', { plats: notification.data.location })}
+          </a>
+        )}
         <p className="text-[10px] text-stone-600 dark:text-stone-500 mt-1">
           {timeAgo}
         </p>

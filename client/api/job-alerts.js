@@ -15,7 +15,10 @@ const { medFelrapport } = require('./_utils/sentry.js');
 // ALDRIG använd utan föregående auth-kontroll (verifyUserAuth eller verifyCronSecret).
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
+  // F3-bifynd (2026-09-13): Vercel-env heter SUPABASE_SERVICE_ROLE_KEY — med bara
+  // SUPABASE_SERVICE_KEY föll funktionen tyst tillbaka på anon-nyckeln, och cron-
+  // körningen läste bevakningar under RLS som anon (= ingenting).
+  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
 
 // Anon-klient enbart för token-verifiering (ger oss user-id från JWT).

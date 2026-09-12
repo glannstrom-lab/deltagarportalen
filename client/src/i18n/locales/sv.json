@@ -1857,7 +1857,7 @@
         "contact": "Kontaktuppgifter"
       },
       "placeholders": {
-        "name": "Anna Andersson",
+        "name": "Ditt namn",
         "title": "t.ex. Projektledare, Säljare, Utvecklare",
         "email": "din.email@exempel.se",
         "phone": "070-123 45 67 (valfritt)"
@@ -9983,6 +9983,35 @@
     "yourCv": "Ditt CV"
   },
   "consultant": {
+    "underlag": {
+      "rubrik": "Underlag till handläggaren",
+      "tomt": "Inget underlag lämnat än.",
+      "lamna": "Lämna underlag",
+      "lamnat": "Lämnat {{datum}} till {{mottagare}}",
+      "avVem": "av {{namn}}",
+      "period": "Period {{from}} – {{to}}",
+      "angrat": "Ångrat {{datum}}: {{skal}}",
+      "angra": "Ångra",
+      "angraForklaring": "Ett underlag kan bara ångras samma dag som det lämnades. Ange varför, så finns spåret kvar.",
+      "angraSkal": "Varför ångras underlaget?",
+      "angraBekrafta": "Ångra underlaget",
+      "dialogTitel": "Lämna underlag till handläggaren",
+      "dialogIngress": "Det här är konsulentens överlämning av avvikelseunderlaget för perioden. Beslut om nedsättning fattas av socialnämnden, inte här.",
+      "mottagare": "Mottagare (handläggare eller enhet)",
+      "mottagarePlaceholder": "t.ex. Anna Andersson, Försörjningsstöd",
+      "periodFrom": "Period från",
+      "periodTo": "Period till",
+      "sammanfattning": "Det här ingår",
+      "sammanfattningRad": "{{pass}} pass: {{present}} närvarande, {{absent_valid}} giltig frånvaro, {{absent_invalid}} ogiltig frånvaro, {{sick_certified}} sjuk med intyg, {{external}} extern aktivitet, {{omarkerade}} ej markerade, {{anmald_franvaro}} anmälda i förväg",
+      "ingaPass": "Inga pass i perioden — underlaget blir tomt. Välj en period med pass.",
+      "anteckning": "Anteckning till handläggaren (valfritt)",
+      "anteckningPlaceholder": "Det som inte syns i siffrorna, t.ex. överenskommelser eller pågående sjukskrivning.",
+      "skicka": "Markera som lämnat",
+      "avbryt": "Avbryt",
+      "sparat": "Underlaget är markerat som lämnat.",
+      "fel": "Underlaget kunde inte sparas",
+      "raknasIvo": "Räknas i IVO-underlaget för kvartalet."
+    },
     "title": "Konsultportal",
     "subtitle": "Hantera och följ upp dina deltagare",
     "tabs": {
@@ -10059,6 +10088,8 @@
         "overdue_other": "{{count}} dagar försenade",
         "dueToday": "Förfaller idag",
         "needsContact": "Hör av dig",
+        "contactLogged": "Kontakten är loggad.",
+        "logContact": "Logga kontakt (samtal utanför portalen)",
         "noContactsNeeded": "Alla deltagare har aktuell kontakt.",
         "sendMessage": "Skicka meddelande",
         "joinMeeting": "Möteslänk",
@@ -10566,6 +10597,8 @@
       "bookMeeting": "Boka möte"
     },
     "alerts": {
+      "noContactDays_one": "Ej kontaktad på 1 dag",
+      "noContactDays_other": "Ej kontaktad på {{count}} dagar",
       "noContact": "Ej kontaktad på 7+ dagar",
       "inactive": "Inaktiv i 14+ dagar",
       "noCv": "CV saknas",
@@ -10586,6 +10619,17 @@
       "reportTitle": "Rapporttitel",
       "titlePlaceholder": "Konsultrapport",
       "dateRange": "Tidsperiod",
+      "namnd": {
+        "typeLabel": "Rapporttyp",
+        "typeKonsult": "Konsultrapport",
+        "typeNamnd": "Nämndrapport (kvartal)",
+        "description": "Per försörjningshinder: deltagare med plan, närvarograd, anmäld och oanmäld frånvaro, underlag lämnat. Räkning ur planer och pass — beslut om nedsättning registreras i kommunens verksamhetssystem.",
+        "quarterLabel": "Kvartal",
+        "quarterCurrent": "Innevarande",
+        "quarterPrevious": "Föregående",
+        "quarterHint": "Kvartalet styr både rubriken och siffrorna. Rapporten är på svenska.",
+        "error": "Underlaget kunde inte hämtas. Kontrollera anslutningen och försök igen."
+      },
       "currentStatusOn": "Aktuell status per {{date}}",
       "dateRangeFromView": "Perioden är den som redan är vald i vyn du öppnade rapporten från.",
       "dateRangeSnapshot": "Den här vyn har ingen tidsavgränsning — rapporten visar aktuella totalsummor, inte en period.",
@@ -12256,6 +12300,28 @@
       "fel": "Ditt jobbsökande kunde inte hämtas just nu.",
       "egenRedovisning": "Det här är din egen översikt. Din konsulent ser bara sparade jobb och ansökningar."
     },
+    "intyg": {
+      "rubrik": "Närvarointyg",
+      "text": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för din handläggare på försörjningsstöd.",
+      "manad": "Månad",
+      "knapp": "Ladda ner närvarointyg",
+      "skapar": "Skapar …",
+      "forbehall": "Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som \"ej markerat\".",
+      "klart": "Intyget för {{manad}} är nedladdat.",
+      "fel": "Intyget kunde inte skapas just nu. Försök igen om en stund."
+    },
+    "fraga": {
+      "knapp": "Fråga om passet",
+      "etikett": "Din fråga till konsulenten",
+      "inledning": "Hej! Jag har en fråga om passet \"{{titel}}\" den {{datum}} kl {{tid}}: ",
+      "tom": "Skriv din fråga efter inledningen.",
+      "skicka": "Skicka",
+      "skickar": "Skickar …",
+      "avbryt": "Avbryt",
+      "skickat": "Skickat till {{namn}}.",
+      "dinKonsulent": "din konsulent",
+      "fel": "Frågan gick inte att skicka. Du kan skriva till din konsulent från sidan Min konsulent."
+    },
     "franvaro": {
       "knapp": "Jag kan inte komma",
       "rubrik": "Vad hindrar dig? Din konsulent får besked direkt.",
@@ -12355,6 +12421,7 @@
     }
   },
   "notificationBell": {
+    "paminnelse": { "karta": "Visa {{plats}} på karta" },
     "aria": {
       "unread": "Oläst",
       "markAsRead": "Markera som läst",

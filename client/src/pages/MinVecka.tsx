@@ -23,6 +23,8 @@ import { MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys
 import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 // F1 (2026-09-12): deltagaren anmäler frånvaro på kommande pass
 import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
+import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
+import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
 import {
   addDays,
   formatLocalDate,
@@ -204,6 +206,9 @@ export default function MinVecka() {
           )}
         </Card>
 
+        {/* F5: deltagarens eget närvarointyg — kvitto till handläggaren, utan omväg via konsulenten */}
+        <NarvaroIntyg plan={plan} />
+
         <Card className="p-5" aria-labelledby="jobbsok-rubrik">
           <h2 id="jobbsok-rubrik" className="text-base font-semibold text-stone-800 dark:text-stone-200">
             {t('minVecka.jobbsok.rubrik', 'Ditt jobbsökande den här veckan')}
@@ -300,6 +305,14 @@ export default function MinVecka() {
                           )
                           setStatus(t('minVecka.franvaro.status', 'Din konsulent har fått besked.'))
                         }}
+                      />
+                    )}
+                    {/* F8: frågan uppstår vid passet — samma sändväg som Min konsulent, förifylld */}
+                    {s.activity_type !== 'jobsearch_own' && (
+                      <FragaOmPasset
+                        session={s}
+                        datumText={rubrikdatum(s.date)}
+                        onSent={(namn) => setStatus(t('minVecka.fraga.skickat', { defaultValue: 'Skickat till {{namn}}.', namn }))}
                       />
                     )}
                   </div>

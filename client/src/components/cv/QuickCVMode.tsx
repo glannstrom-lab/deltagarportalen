@@ -11,6 +11,7 @@ import {
   Check, Sparkles, ChevronRight, Loader2
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useProfileStore } from '@/stores/profileStore'
 import type { CVData } from '@/services/supabaseApi'
 
 interface QuickCVModeProps {
@@ -86,12 +87,16 @@ function generateQuickSkills(jobTitle: string): CVData['skills'] {
 
 export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVModeProps) {
   const { t } = useTranslation()
-  const [formData, setFormData] = useState<QuickFormData>({
-    fullName: '',
+  // PG8 (persona 2026-09-12): fältet var tomt med platshållaren "Anna Andersson" fast
+  // användaren var inloggad och profilen hade namnet. Förifyll ur profilen; platshållaren
+  // är neutral ("Ditt namn") och aldrig ett påhittat personnamn.
+  const profile = useProfileStore((s) => s.profile)
+  const [formData, setFormData] = useState<QuickFormData>(() => ({
+    fullName: [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim(),
     jobTitle: '',
-    email: '',
-    phone: ''
-  })
+    email: profile?.email ?? '',
+    phone: profile?.phone ?? ''
+  }))
   const [isGenerating, setIsGenerating] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
 
@@ -101,7 +106,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
       label: t('cv.quickMode.steps.name', 'Ditt namn'),
       icon: User,
       field: 'fullName' as const,
-      placeholder: t('cv.quickMode.placeholders.name', 'Anna Andersson'),
+      placeholder: t('cv.quickMode.placeholders.name', 'Ditt namn'),
       type: 'text'
     },
     {
@@ -188,7 +193,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
           <h2 className="text-xl sm:text-2xl font-bold">
             {t('cv.quickMode.title', 'Snabb-CV')}
           </h2>
-          <p className="text-white/80 text-sm">
+          <p className="text-white text-sm">
             {t('cv.quickMode.subtitle', 'Skapa ett grundläggande CV på 30 sekunder')}
           </p>
         </div>
@@ -197,7 +202,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between text-sm mb-2">
-          <span className="text-white/80">
+          <span className="text-white">
             {t('cv.quickMode.step', 'Steg')} {currentStep + 1} {t('cv.quickMode.of', 'av')} {steps.length}
           </span>
           <span className="font-medium">{Math.round(progress)}%</span>
@@ -261,11 +266,11 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                   onKeyDown={handleKeyDown}
                   placeholder={currentStepData.placeholder}
-                  className="w-full px-4 py-4 bg-white/20 backdrop-blur border border-white/30 rounded-xl text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
+                  className="w-full px-4 py-4 bg-white border border-white rounded-xl text-stone-900 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
                   autoFocus
                 />
                 <div className="flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-white/60" />
+                  <Phone className="w-5 h-5 text-white" />
                   <input
                     id="quick-phone"
                     type="tel"
@@ -273,7 +278,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
                     onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
                     onKeyDown={handleKeyDown}
                     placeholder={t('cv.quickMode.placeholders.phone', '070-123 45 67 (valfritt)')}
-                    className="flex-1 px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-white/50"
+                    className="flex-1 px-4 py-3 bg-white border border-white rounded-xl text-stone-900 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-white/50"
                   />
                 </div>
               </div>
@@ -285,7 +290,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
                 onChange={(e) => setFormData(prev => ({ ...prev, [currentStepData.field]: e.target.value }))}
                 onKeyDown={handleKeyDown}
                 placeholder={currentStepData.placeholder}
-                className="w-full px-4 py-4 bg-white/20 backdrop-blur border border-white/30 rounded-xl text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
+                className="w-full px-4 py-4 bg-white border border-white rounded-xl text-stone-900 placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-white/50 text-lg"
                 autoFocus
               />
             )}
@@ -320,7 +325,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
           {/* Switch to full mode */}
           <button
             onClick={onSwitchToFull}
-            className="w-full py-3 text-white/80 hover:text-white transition-colors text-sm flex items-center justify-center gap-1"
+            className="w-full py-3 text-white hover:text-white transition-colors text-sm flex items-center justify-center gap-1"
           >
             {t('cv.quickMode.switchToFull', 'Vill du ha mer kontroll?')}
             <ChevronRight className="w-4 h-4" />
@@ -335,7 +340,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
           <h3 className="text-xl font-semibold mb-2">
             {t('cv.quickMode.generating', 'Skapar ditt CV...')}
           </h3>
-          <p className="text-white/80">
+          <p className="text-white">
             {t('cv.quickMode.generatingHint', 'Vi genererar en professionell sammanfattning åt dig')}
           </p>
         </div>
@@ -343,7 +348,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
 
       {/* Benefits */}
       <div className="mt-6 pt-6 border-t border-white/20">
-        <p className="text-xs text-white/60 text-center">
+        <p className="text-xs text-white text-center">
           {t('cv.quickMode.benefits', 'Du kan alltid utöka och anpassa ditt CV efteråt')}
         </p>
       </div>

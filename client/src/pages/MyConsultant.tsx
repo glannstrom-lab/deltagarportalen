@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
+import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -980,20 +981,14 @@ function MyConsultantInner() {
 
   const handleSendMessage = async (content: string) => {
     if (!consultant || !user) return
-
-    const { data, error } = await supabase
-      .from('consultant_messages')
-      .insert({
-        sender_id: user.id,
-        receiver_id: consultant.id,
-        content,
-        is_read: false,
-      })
-      .select()
-      .single()
-
-    if (!error && data) {
-      setMessages(prev => [...prev, data])
+    // F8 (2026-09-13): EN sändväg — samma API som "Fråga om passet" i Min vecka
+    // (konsulentMeddelandeApi), i stället för ett eget insert här. Fel sväljs
+    // inte längre tyst.
+    try {
+      const skickat = await konsulentMeddelandeApi.skickaTillMinKonsulent(content)
+      setMessages(prev => [...prev, { ...skickat, sender_id: user.id, is_read: false } as unknown as (typeof prev)[number]])
+    } catch (err) {
+      console.warn('[MyConsultant] meddelandet kunde inte skickas', err)
     }
   }
 

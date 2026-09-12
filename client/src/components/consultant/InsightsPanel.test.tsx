@@ -139,3 +139,40 @@ describe('InsightsPanel — hela panelen kan fortfarande fela (participants-frå
     expect(screen.getByRole('button', { name: /Försök igen/i })).toBeInTheDocument()
   })
 })
+
+describe('InsightsPanel — PG2-rest: fast fel säger inte "försök igen"', () => {
+  it('PostgREST-fel (PGRST201) → fast fel utan "Försök igen"-knapp', async () => {
+    generateParticipantInsights.mockRejectedValue({ code: 'PGRST201', message: 'Could not embed', details: null, hint: null })
+
+    renderPanel()
+
+    await waitFor(() => {
+      expect(screen.getByText('Kunde inte hämta insikterna')).toBeInTheDocument()
+    })
+    expect(screen.getByText(/behöver en kodändring/i)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Försök igen/i })).not.toBeInTheDocument()
+    expect(screen.queryByText(/försök igen om en stund/i)).not.toBeInTheDocument()
+  })
+
+  it('nätfel (TypeError: Failed to fetch) → tillfälligt, med "Försök igen"', async () => {
+    generateParticipantInsights.mockRejectedValue(new TypeError('Failed to fetch'))
+
+    renderPanel()
+
+    await waitFor(() => {
+      expect(screen.getByText('Kunde inte hämta insikterna')).toBeInTheDocument()
+    })
+    expect(screen.getByRole('button', { name: /Försök igen/i })).toBeInTheDocument()
+  })
+
+  it('goalInsightsFailed + tom lista lovar inte att "en stund" hjälper', async () => {
+    generateParticipantInsights.mockResolvedValue({ insights: [], goalInsightsFailed: true })
+
+    renderPanel()
+
+    await waitFor(() => {
+      expect(screen.getByText('Insikterna kunde inte hämtas')).toBeInTheDocument()
+    })
+    expect(screen.queryByText(/försök igen om en stund/i)).not.toBeInTheDocument()
+  })
+})

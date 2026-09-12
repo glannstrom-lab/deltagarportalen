@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Settings,
-  Bell,
   Clock,
   Globe,
   Shield,
@@ -30,40 +29,6 @@ import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { OrganisationSektion } from '@/components/consultant/OrganisationSektion'
 import { cn } from '@/lib/utils'
-
-interface NotificationSetting {
-  id: string
-  label: string
-  description: string
-  enabled: boolean
-  channel: 'email' | 'push' | 'both'
-}
-
-// Toggle Switch Component
-function Toggle({
-  enabled,
-  onChange,
-}: {
-  enabled: boolean
-  onChange: (enabled: boolean) => void
-}) {
-  return (
-    <button
-      onClick={() => onChange(!enabled)}
-      className={cn(
-        'relative w-12 h-7 rounded-full transition-colors',
-        enabled ? 'bg-[var(--c-solid)]' : 'bg-stone-300 dark:bg-stone-600'
-      )}
-    >
-      <span
-        className={cn(
-          'absolute top-1 w-5 h-5 rounded-full bg-white shadow-sm transition-transform',
-          enabled ? 'translate-x-6' : 'translate-x-1'
-        )}
-      />
-    </button>
-  )
-}
 
 // Setting Row Component
 function SettingRow({
@@ -113,55 +78,6 @@ export function SettingsTab() {
   // ska hamna i en nedladdad fil per default.
   const [includeConcern, setIncludeConcern] = useState(false)
 
-  const getDefaultNotifications = (): NotificationSetting[] => [
-    {
-      id: 'new_participant',
-      label: t('consultant.settings.newParticipantAssigned'),
-      description: t('consultant.settings.whenAssigned'),
-      enabled: true,
-      channel: 'both',
-    },
-    {
-      id: 'participant_inactive',
-      label: t('consultant.settings.participantInactive'),
-      description: t('consultant.settings.notLoggedIn'),
-      enabled: true,
-      channel: 'email',
-    },
-    {
-      id: 'goal_deadline',
-      label: t('consultant.settings.goalDeadline'),
-      description: t('consultant.settings.deadlineWithinDays'),
-      enabled: true,
-      channel: 'both',
-    },
-    {
-      id: 'new_message',
-      label: t('consultant.settings.newMessageReceived'),
-      description: t('consultant.settings.messageFromParticipant'),
-      enabled: true,
-      channel: 'push',
-    },
-    {
-      id: 'cv_updated',
-      label: t('consultant.settings.cvUpdated'),
-      description: t('consultant.settings.participantUpdatedCv'),
-      enabled: false,
-      channel: 'email',
-    },
-    {
-      id: 'meeting_reminder',
-      label: t('consultant.settings.meetingReminder'),
-      description: t('consultant.settings.reminderBeforeMeeting'),
-      enabled: true,
-      channel: 'both',
-    },
-  ]
-
-  const defaultNotifications = getDefaultNotifications()
-
-  const [notifications, setNotifications] = useState<NotificationSetting[]>(defaultNotifications)
-
   const [preferences, setPreferences] = useState({
     defaultView: 'grid' as 'grid' | 'list',
     language: 'sv' as 'sv' | 'en',
@@ -197,16 +113,6 @@ export function SettingsTab() {
       if (fetchError) throw fetchError
 
       if (settingsData) {
-        // Apply saved notifications
-        if (settingsData.notifications) {
-          const savedNotifs = settingsData.notifications as Record<string, { enabled?: boolean; channel?: string } | undefined>
-          setNotifications(defaultNotifications.map(n => ({
-            ...n,
-            enabled: savedNotifs[n.id]?.enabled ?? n.enabled,
-            channel: savedNotifs[n.id]?.channel ?? n.channel,
-          })))
-        }
-
         // Apply saved preferences
         if (settingsData.preferences) {
           const savedPrefs = settingsData.preferences as Record<string, unknown>
@@ -225,13 +131,6 @@ export function SettingsTab() {
     }
   }
 
-  const updateNotification = (id: string, field: keyof NotificationSetting, value: NotificationSetting[keyof NotificationSetting]) => {
-    setNotifications(prev => prev.map(n =>
-      n.id === id ? { ...n, [field]: value } : n
-    ))
-    setHasChanges(true)
-    setSaved(false)
-  }
 
   const updatePreference = (key: string, value: unknown) => {
     setPreferences(prev => ({ ...prev, [key]: value }))
@@ -250,18 +149,11 @@ export function SettingsTab() {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      // Convert notifications to object format for storage
-      const notificationsObj = notifications.reduce((acc, n) => ({
-        ...acc,
-        [n.id]: { enabled: n.enabled, channel: n.channel },
-      }), {})
-
       // Upsert settings
       const { error } = await supabase
         .from('consultant_settings')
         .upsert({
           consultant_id: user.id,
-          notifications: notificationsObj,
           preferences: preferences,
           updated_at: new Date().toISOString(),
         }, {
@@ -376,7 +268,6 @@ export function SettingsTab() {
   }
 
   const handleReset = () => {
-    setNotifications(defaultNotifications)
     setPreferences({
       defaultView: 'grid',
       language: 'sv',
@@ -454,71 +345,11 @@ export function SettingsTab() {
       {/* Project / Program */}
       <ProgramSelector />
 
-      {/* Notification Settings */}
-      <Card className="p-5">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-xl">
-            <Bell className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('consultant.settings.notificationsTitle')}
-            </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('consultant.settings.notificationsDesc')}
-            </p>
-          </div>
-        </div>
-
-        {/* KV7: inställningarna sparas i consultant_settings.notifications,
-            men ingen cron/edge-funktion läser kolumnen — se grep-underlaget
-            i roadmapen (client/vercel.json har bara jobb-bevakningens cron,
-            supabase/functions har ingen träff på consultant_settings). Samma
-            ärliga märkning som Team-sektionen redan använder nedanför. */}
-        <p className="text-xs text-stone-500 dark:text-stone-400 -mt-2 mb-4">
-          Kommande — de här aviseringarna skickas inte ännu. Dina val sparas, men levereras inte förrän funktionen är byggd.
-        </p>
-
-        <div className="space-y-1">
-          {notifications.map(notification => (
-            <div
-              key={notification.id}
-              className="flex items-center justify-between py-4 border-b border-stone-100 dark:border-stone-800 last:border-0"
-            >
-              <div>
-                <p className="font-medium text-stone-900 dark:text-stone-100">
-                  {notification.label}
-                </p>
-                <p className="text-sm text-stone-500 dark:text-stone-400">
-                  {notification.description}
-                </p>
-              </div>
-              <div className="flex items-center gap-4">
-                <select
-                  value={notification.channel}
-                  onChange={e => updateNotification(notification.id, 'channel', e.target.value)}
-                  disabled={!notification.enabled}
-                  className={cn(
-                    'px-3 py-1.5 rounded-lg text-sm',
-                    'bg-stone-100 dark:bg-stone-800',
-                    'border-0',
-                    'text-stone-700 dark:text-stone-300',
-                    !notification.enabled && 'opacity-50'
-                  )}
-                >
-                  <option value="email">{t('consultant.settings.email')}</option>
-                  <option value="push">{t('consultant.settings.push')}</option>
-                  <option value="both">{t('consultant.settings.both')}</option>
-                </select>
-                <Toggle
-                  enabled={notification.enabled}
-                  onChange={enabled => updateNotification(notification.id, 'enabled', enabled)}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
+      {/* PG25 (persona 2026-09-12): notiskortet med sex val är borttaget. Ingen cron,
+          edge-funktion eller klientkod läser consultant_settings.notifications (grep
+          2026-09-12: bara den här filen), så valen levererades aldrig — och en
+          inställning som inte gör något är ett löfte. Sparade värden i databasen
+          ligger kvar orörda; kortet kommer tillbaka när en leveransväg finns. */}
 
       {/* Preferences */}
       <Card className="p-5">

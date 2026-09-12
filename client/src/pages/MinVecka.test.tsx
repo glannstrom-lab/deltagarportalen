@@ -33,6 +33,19 @@ vi.mock('@/services/franvaroApi', async () => {
   return { ...riktig, franvaroApi: { anmal: vi.fn(), angra: vi.fn() } }
 })
 
+// F5/F8: intyget och frågan testas i egna filer; här räcker att de finns på sidan
+const downloadNarvaroIntygPDF = vi.fn()
+vi.mock('@/services/narvaroIntygPdf', async () => {
+  const riktig = await vi.importActual<typeof import('@/services/narvaroIntygPdf')>('@/services/narvaroIntygPdf')
+  return { ...riktig, downloadNarvaroIntygPDF: (...a: unknown[]) => downloadNarvaroIntygPDF(...a) }
+})
+vi.mock('@/services/konsulentMeddelandeApi', () => ({
+  konsulentMeddelandeApi: { skickaTillMinKonsulent: vi.fn(), minKonsulent: vi.fn().mockResolvedValue({ id: 'k1', namn: 'Kim' }) },
+}))
+vi.mock('@/lib/supabase', () => ({
+  supabase: { from: () => ({ select: () => ({ limit: async () => ({ data: [{ org_name: 'Testkommun' }], error: null }) }) }) },
+}))
+
 vi.mock('@/services/aktivitetApi', () => ({
   minVeckaApi: {
     getMyPlan: (...a: unknown[]) => getMyPlan(...a),
@@ -187,5 +200,28 @@ describe('Min vecka', () => {
     await userEvent.click(knappar[0])
     await waitFor(() => expect(checkin).toHaveBeenCalledWith('s-today'))
     expect(checkin).not.toHaveBeenCalledWith('s-tomorrow')
+  })
+
+  it('F5/F8: närvarointyget kan laddas ner för en vald månad, och varje anvisat pass har "Fråga om passet"', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([
+      pass({ id: 's-a', title: 'Verkstad' }),
+      pass({ id: 's-egen', title: 'Eget sök', activity_type: 'jobsearch_own' }),
+    ])
+    downloadNarvaroIntygPDF.mockResolvedValue(undefined)
+    render(<MinVecka />)
+    expect(await screen.findByRole('heading', { name: 'Närvarointyg' })).toBeInTheDocument()
+    // Månadsvalet börjar på innevarande månad
+    const val = screen.getByRole('combobox', { name: 'Månad' }) as HTMLSelectElement
+    expect(val.value).toBe(idag.slice(0, 7))
+    await userEvent.click(screen.getByRole('button', { name: 'Ladda ner närvarointyg' }))
+    await waitFor(() => expect(downloadNarvaroIntygPDF).toHaveBeenCalledTimes(1))
+    const input = downloadNarvaroIntygPDF.mock.calls[0][0] as { manad: string; organizationName: string | null }
+    expect(input.manad).toBe(idag.slice(0, 7))
+    expect(input.organizationName).toBe('Testkommun')
+    // Sidan har redan en sr-only statusrad — leta på texten, inte rollen
+    expect(await screen.findByText(/nedladdat/i)).toBeInTheDocument()
+    // Eget jobbsökande får ingen fråga-knapp; det anvisade passet får en
+    expect(screen.getAllByRole('button', { name: 'Fråga om passet' })).toHaveLength(1)
   })
 })

@@ -179,3 +179,59 @@ describe('ReportGeneratorDialog — periodetiketten ska motsvara datan (KS6)', (
     expect(screen.queryByText('Första kvartalet 2026')).not.toBeInTheDocument()
   })
 })
+
+/**
+ * F17 (2026-09-13): "Nämndrapport (kvartal)" — kvartalet är ett FAST val som
+ * styr både rubrik och siffror, innehållet är per försörjningshinder, och
+ * konsultrapportens sektioner (kohortanalys) finns inte med. Datan hämtas ur
+ * planer och pass; här mockad så testet inte beror på databasen.
+ */
+vi.mock('@/services/aktivitetApi', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/services/aktivitetApi')>()
+  return {
+    ...original,
+    aktivitetsplanApi: {
+      ...original.aktivitetsplanApi,
+      listAll: vi.fn(async () => [
+        { id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: 'org1', start_date: '2026-01-01', end_date: null,
+          forsorjningshinder: 'arbetslos', nedsattning_underlag_lamnat_at: null },
+      ]),
+      listSessionsBetween: vi.fn(async (from: string) => [
+        { id: 's1', plan_id: 'plan1', participant_id: 'p1', date: from, attendance: 'present', absence_reported_at: null },
+        { id: 's2', plan_id: 'plan1', participant_id: 'p1', date: from, attendance: 'absent_invalid', absence_reported_at: null },
+      ]),
+    },
+  }
+})
+vi.mock('@/services/orgApi', async (importOriginal) => {
+  const original = await importOriginal<typeof import('@/services/orgApi')>()
+  return {
+    ...original,
+    orgApi: { ...original.orgApi, myMemberships: vi.fn(async () => [{ organization: { name: 'Demokommun (påhittade personer)' } }]) },
+  }
+})
+
+describe('ReportGeneratorDialog — Nämndrapport (kvartal), F17', () => {
+  it('byter innehåll till nämndens tabell och gömmer konsultrapportens sektioner', async () => {
+    render(<ReportGeneratorDialog isOpen onClose={() => {}} analyticsData={analyticsData} periodLabel="Senaste månaden" />)
+
+    // Konsultrapportens sektioner syns i utgångsläget
+    expect(screen.getByText('Kohortanalys')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /Nämndrapport \(kvartal\)/i }))
+    expect(screen.getByRole('button', { name: /Nämndrapport \(kvartal\)/i })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.queryByText('Kohortanalys')).not.toBeInTheDocument()
+    // Fast kvartalsval — inte vyns period
+    const val = screen.getByLabelText('Kvartal') as HTMLSelectElement
+    expect(val.options[0].textContent).toMatch(/Innevarande — Kvartal \d 20\d\d/)
+    expect(screen.queryByText('Senaste månaden')).not.toBeInTheDocument()
+
+    const pdf = await forhandsgranskadPdfText()
+    expect(pdf).toContain('Nämndrapport')
+    expect(pdf).toContain('Demokommun (påhittade personer)')
+    expect(pdf).toContain('Arbetslös')
+    expect(pdf).toContain('50 %') // 1 närvarande av 2 bedömda
+    expect(pdf).toContain('Källa: ur Jobin')
+    expect(pdf).not.toContain('Kohortanalys')
+  }, 30000)
+})

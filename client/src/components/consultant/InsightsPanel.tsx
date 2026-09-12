@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { felklass } from './felklass'
 import {
   consultantInsights,
   type ParticipantInsight,
@@ -37,6 +38,7 @@ interface InsightsPanelProps {
   compact?: boolean
 }
 
+
 export function InsightsPanel({
   maxInsights = 5,
   showTrends = true,
@@ -48,7 +50,8 @@ export function InsightsPanel({
   const [risks, setRisks] = useState<ParticipantRisk[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [loadError, setLoadError] = useState(false)
+  // PG2-rest (2026-09-12): skilj fast fel (PostgREST/schema, 4xx) från tillfälligt (nät).
+  const [loadError, setLoadError] = useState<false | 'tillfalligt' | 'fast'>(false)
   // KV2: mål-baserade insikter (goal_at_risk/milestone_overdue) kan misslyckas
   // separat — de deltagar-baserade insikterna ska ändå visas, inte försvinna
   // bakom en helpanels-felskärm.
@@ -80,7 +83,7 @@ export function InsightsPanel({
     } catch (error) {
       // Visa fel ärligt — en tom lista efter ett DB-fel skulle se ut som "allt är bra"
       console.error('Failed to load insights:', error)
-      setLoadError(true)
+      setLoadError(felklass(error))
     } finally {
       setIsLoading(false)
     }
@@ -167,12 +170,16 @@ export function InsightsPanel({
           </div>
           <p className="font-medium text-stone-800 dark:text-stone-200">Kunde inte hämta insikterna</p>
           <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-sm">
-            Något gick fel vid hämtningen — listan kan vara ofullständig. Försök igen om en stund.
+            {loadError === 'fast'
+              ? 'Insikterna kan inte hämtas just nu. Felet är loggat och behöver en kodändring — att försöka igen hjälper inte.'
+              : 'Något gick fel vid hämtningen — troligen nätet. Försök igen om en stund.'}
           </p>
-          <Button variant="outline" size="sm" className="mt-4" onClick={refresh}>
-            <RefreshCw className="w-4 h-4 mr-1" />
-            Försök igen
-          </Button>
+          {loadError !== 'fast' && (
+            <Button variant="outline" size="sm" className="mt-4" onClick={refresh}>
+              <RefreshCw className="w-4 h-4 mr-1" />
+              Försök igen
+            </Button>
+          )}
         </div>
       </Card>
     )
@@ -296,7 +303,7 @@ export function InsightsPanel({
                   </div>
                   <p className="text-stone-600 dark:text-stone-400 font-medium">Insikterna kunde inte hämtas</p>
                   <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
-                    Försök igen om en stund.
+                    Mål-källan svarade med ett fel som är loggat. Övriga källor gav inga insikter just nu.
                   </p>
                 </div>
               ) : (

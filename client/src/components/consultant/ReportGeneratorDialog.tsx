@@ -27,6 +27,18 @@ import {
   type ReportData,
   type ReportOptions,
 } from '@/services/pdfReportGenerator'
+import { aktivitetsplanApi } from '@/services/aktivitetApi'
+import { orgApi } from '@/services/orgApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import { kvartalGranser } from '@/services/ivoKvartal'
+import {
+  downloadNamndrapport,
+  generateNamndrapportDataUrl,
+  kvartalEtikett,
+  kvartalsval,
+  namndrapportUnderlag,
+  type Namndrapport,
+} from '@/services/namndrapportPdf'
 
 interface ReportGeneratorDialogProps {
   isOpen: boolean
@@ -51,6 +63,15 @@ interface ReportGeneratorDialogProps {
 }
 
 type ReportSection = 'overview' | 'cohort' | 'participants'
+/**
+ * F17 (2026-09-13): två rapporttyper. "Konsultrapport" är den gamla (nyckeltal,
+ * kohort, deltagardetaljer, sv/en). "Nämndrapport (kvartal)" är det nämnden
+ * faktiskt frågar efter — per försörjningshinder: deltagare med plan,
+ * närvarograd, anmäld/oanmäld frånvaro, underlag lämnat — med FAST kvartalsval,
+ * så perioden i huvudet och siffrorna aldrig kan säga olika (KS6-fällan).
+ */
+type ReportType = 'konsult' | 'namnd'
+type KvartalValNyckel = 'innevarande' | 'foregaende'
 
 export function ReportGeneratorDialog({
   isOpen,
@@ -72,6 +93,12 @@ export function ReportGeneratorDialog({
   const [language, setLanguage] = useState<'sv' | 'en'>(
     i18n.language === 'en' ? 'en' : 'sv'
   )
+  const [reportType, setReportType] = useState<ReportType>('konsult')
+  const [kvartalNyckel, setKvartalNyckel] = useState<KvartalValNyckel>('innevarande')
+  const [namnd, setNamnd] = useState<{ underlag: Namndrapport; organisation: string | null } | null>(null)
+  const [namndFel, setNamndFel] = useState<string | null>(null)
+  const kvartalen = kvartalsval(formatLocalDate(new Date()))
+  const valtKvartal = kvartalen[kvartalNyckel]
 
   // Perioden är inte ett val i dialogen (se periodLabel-kommentaren ovan).
   // Saknas den (Översikt har ingen periodavgränsning) visar vi ett
@@ -88,8 +115,25 @@ export function ReportGeneratorDialog({
       setStep('options')
       setPreviewUrl(null)
       setGenerating(false)
+      setNamnd(null)
+      setNamndFel(null)
     }
   }, [isOpen])
+
+  /** Nämndrapportens underlag hämtas ur planer och pass (RLS avgör vilka). */
+  const hamtaNamnd = async (): Promise<{ underlag: Namndrapport; organisation: string | null }> => {
+    const { from, to } = kvartalGranser(valtKvartal.ar, valtKvartal.kvartal)
+    const [plans, sessions, medlemskap] = await Promise.all([
+      aktivitetsplanApi.listAll(),
+      aktivitetsplanApi.listSessionsBetween(from, to),
+      orgApi.myMemberships().catch(() => []),
+    ])
+    const organisation = medlemskap[0]?.organization?.name ?? null
+    const underlag = namndrapportUnderlag(plans, sessions, valtKvartal)
+    const resultat = { underlag, organisation }
+    setNamnd(resultat)
+    return resultat
+  }
 
   const toggleSection = (section: ReportSection) => {
     const newSections = new Set(selectedSections)
@@ -106,7 +150,14 @@ export function ReportGeneratorDialog({
 
   const handleGeneratePreview = async () => {
     setGenerating(true)
+    setNamndFel(null)
     try {
+      if (reportType === 'namnd') {
+        const { underlag, organisation } = await hamtaNamnd()
+        setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) }))
+        setStep('preview')
+        return
+      }
       const options: ReportOptions = {
         title: reportTitle || undefined,
         consultantName,
@@ -123,12 +174,20 @@ export function ReportGeneratorDialog({
       setStep('preview')
     } catch (error) {
       console.error('Error generating preview:', error)
+      if (reportType === 'namnd') {
+        setNamndFel(t('consultant.report.namnd.error', 'Underlaget kunde inte hämtas. Kontrollera anslutningen och försök igen.'))
+      }
     } finally {
       setGenerating(false)
     }
   }
 
   const handleDownload = () => {
+    if (reportType === 'namnd') {
+      if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) })
+      onClose()
+      return
+    }
     const options: ReportOptions = {
       title: reportTitle || undefined,
       consultantName,
@@ -215,6 +274,61 @@ export function ReportGeneratorDialog({
         <div className="flex-1 overflow-y-auto p-5">
           {step === 'options' ? (
             <div className="space-y-6">
+              {/* Rapporttyp (F17) */}
+              <div>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  {t('consultant.report.namnd.typeLabel', 'Rapporttyp')}
+                </label>
+                <div className="flex gap-2" role="group" aria-label={t('consultant.report.namnd.typeLabel', 'Rapporttyp')}>
+                  {([
+                    ['konsult', t('consultant.report.namnd.typeKonsult', 'Konsultrapport')],
+                    ['namnd', t('consultant.report.namnd.typeNamnd', 'Nämndrapport (kvartal)')],
+                  ] as const).map(([typ, etikett]) => (
+                    <button
+                      key={typ}
+                      type="button"
+                      aria-pressed={reportType === typ}
+                      onClick={() => setReportType(typ)}
+                      className={cn(
+                        'flex-1 py-2.5 px-4 rounded-xl font-medium transition-all',
+                        reportType === typ
+                          ? 'bg-[var(--c-solid)] text-white'
+                          : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
+                      )}
+                    >
+                      {etikett}
+                    </button>
+                  ))}
+                </div>
+                {reportType === 'namnd' && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5">
+                    {t('consultant.report.namnd.description', 'Per försörjningshinder: deltagare med plan, närvarograd, anmäld och oanmäld frånvaro, underlag lämnat. Räkning ur planer och pass — beslut om nedsättning registreras i kommunens verksamhetssystem.')}
+                  </p>
+                )}
+              </div>
+
+              {reportType === 'namnd' && (
+                <div>
+                  <label htmlFor="namnd-kvartal" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                    {t('consultant.report.namnd.quarterLabel', 'Kvartal')}
+                  </label>
+                  <select
+                    id="namnd-kvartal"
+                    value={kvartalNyckel}
+                    onChange={(e) => setKvartalNyckel(e.target.value as KvartalValNyckel)}
+                    className={cn('w-full px-4 py-3 rounded-xl', 'bg-stone-100 dark:bg-stone-800', 'text-stone-900 dark:text-stone-100')}
+                  >
+                    <option value="innevarande">{t('consultant.report.namnd.quarterCurrent', 'Innevarande')} — {kvartalEtikett(kvartalen.innevarande)}</option>
+                    <option value="foregaende">{t('consultant.report.namnd.quarterPrevious', 'Föregående')} — {kvartalEtikett(kvartalen.foregaende)}</option>
+                  </select>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5">
+                    {t('consultant.report.namnd.quarterHint', 'Kvartalet styr både rubriken och siffrorna. Rapporten är på svenska.')}
+                  </p>
+                  {namndFel && <p role="alert" className="text-sm text-red-700 dark:text-red-300 mt-2">{namndFel}</p>}
+                </div>
+              )}
+
+              {reportType === 'konsult' && (<>
               {/* Report Title */}
               <div>
                 <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
@@ -356,6 +470,7 @@ export function ReportGeneratorDialog({
                   ))}
                 </div>
               </div>
+              </>)}
             </div>
           ) : (
             // Preview Step

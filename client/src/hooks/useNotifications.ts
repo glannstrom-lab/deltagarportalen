@@ -55,6 +55,8 @@ export type NotificationType =
   | 'aktivitet_plan'
   | 'aktivitet_pass'
   | 'aktivitet_franvaro'
+  // F3 (2026-09-13): skrivs av databasen (definer-funktion + pg_cron) kvällen innan ett pass
+  | 'aktivitet_paminnelse'
 
 export interface Notification {
   id: string
@@ -463,6 +465,12 @@ export const notificationConfig: Record<NotificationType, {
     color: 'text-stone-700',
     bgColor: 'bg-stone-200',
     label: 'Frånvaro',
+  },
+  aktivitet_paminnelse: {
+    icon: 'Info',
+    color: 'text-stone-700',
+    bgColor: 'bg-stone-200',
+    label: 'Påminnelse',
   },
 }
 

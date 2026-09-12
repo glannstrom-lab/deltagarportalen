@@ -109,14 +109,17 @@ describe('SettingsTab — KS7: felläge skilt från "inställningarna laddade to
   })
 })
 
-describe('SettingsTab — KV7: notisinställningarna levereras inte än', () => {
-  it('märker notisinställningarna som "kommande" — de sparas men skickas inte', async () => {
+describe('SettingsTab — PG25: notisval utan leveransväg visas inte', () => {
+  // KV7 (2026-09-02) märkte kortet "kommande — sparas men levereras inte".
+  // PG25 (2026-09-12): ingen cron/edge-funktion/klientkod läser
+  // consultant_settings.notifications, så kortet är borttaget tills en
+  // leveransväg finns. En inställning som inte gör något är ett löfte.
+  it('visar varken notiskortet eller "kommande"-texten', async () => {
     renderTab()
 
-    await screen.findByText('Notiser')
-    expect(
-      screen.getByText(/de här aviseringarna skickas inte ännu/i)
-    ).toBeInTheDocument()
+    await screen.findByText('Inställningar', { exact: false }).catch(() => null)
+    expect(screen.queryByText(/de här aviseringarna skickas inte ännu/i)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Notiser/)).not.toBeInTheDocument()
   })
 })
 

@@ -44,6 +44,9 @@ import {
   type MyDayDeadline,
   type MyDayContact,
 } from '@/components/consultant/MinDagSection'
+import { kontaktText, dagarSedanKontakt } from '@/lib/kontaktText'
+import { DagensPass } from '@/components/consultant/DagensPass'
+import { consultantService } from '@/services/consultantService'
 
 interface DashboardStats {
   totalParticipants: number
@@ -171,11 +174,13 @@ function AttentionAlert({
   type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement'
   t: (key: string) => string
 }) {
+  // PG24 (2026-09-12): samma regel och samma ord som deltagarkortet —
+  // "Aldrig kontaktad" när last_contact_at saknas, annars dagar sedan.
   const alerts = {
     no_contact: {
       icon: Clock,
       color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
-      message: t('consultant.alerts.noContact'),
+      message: kontaktText(t as (k: string, o?: Record<string, unknown>) => string, dagarSedanKontakt(participant.last_contact_at)),
     },
     inactive: {
       icon: AlertTriangle,
@@ -267,7 +272,7 @@ export function OverviewTab() {
     goalsCompleted: 0,
     goalsOverdue: 0,
   })
-  const [, setParticipants] = useState<Participant[]>([])
+  const [participants, setParticipants] = useState<Participant[]>([])
   const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
   const [attentionCounts, setAttentionCounts] = useState({ noContact: 0, inactive: 0, noCv: 0 })
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
@@ -295,6 +300,13 @@ export function OverviewTab() {
   useEffect(() => {
     fetchDashboardData()
   }, [])
+
+  // F9: namn per deltagar-id ur den redan hämtade listan (samma källa som Min dag)
+  const namnForDeltagare = (pid: string) => {
+    const p = participants.find((x) => x.participant_id === pid)
+    const namn = p ? [p.first_name, p.last_name].filter(Boolean).join(' ') : ''
+    return namn || p?.email || t('common.unknown')
+  }
 
   const fetchDashboardData = async () => {
     try {
@@ -491,6 +503,7 @@ export function OverviewTab() {
               participantId: a.participant.participant_id,
               participantName: nameOf(a.participant.participant_id),
               reason: a.type as 'no_contact' | 'inactive',
+              daysSinceContact: dagarSedanKontakt(a.participant.last_contact_at),
             }))
         )
 
@@ -633,6 +646,20 @@ export function OverviewTab() {
           setMessagePreselected([participantId])
           setShowMessageDialog(true)
         }}
+        // F12 (2026-09-12): samtal utanför portalen loggas med ett klick — samma
+        // logContact som massåtgärden (KA4); listan räknas om ur färsk data.
+        onLogContact={async (participantId) => {
+          try {
+            await consultantService.logContact(participantId)
+            notifications.success(t('consultant.overview.myDay.contactLogged'))
+            invalidateParticipants()
+            await fetchDashboardData()
+          } catch (err) {
+            notifications.error(err instanceof Error ? err.message : t('common.genericError'))
+          }
+        }}
+        // F9 (2026-09-12): dagens pass överst i Min dag
+        pass={<DagensPass namnFor={namnForDeltagare} />}
       />
 
       {/* KPI Cards Grid */}
