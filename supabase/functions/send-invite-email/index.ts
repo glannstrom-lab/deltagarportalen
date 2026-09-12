@@ -16,6 +16,12 @@ import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject }
 // =============================================================================
 // E-MAIL-TEMPLATES
 // =============================================================================
+// DE1 (2026-09-12): knappen och huvudet bär sina färger INLINE, inte bara via
+// <style>-blocket. Första riktiga mejlet via Resend kom fram till Gmail med en
+// knapp vars text knappt syntes — klienten hade kastat/ignorerat klassreglerna
+// och länken föll tillbaka på länkfärg mot pastellen. Inline-stil är det enda
+// som alla mejlklienter respekterar; klasserna står kvar som förstärkning.
+//
 // Två separata template-funktioner: STA-specifik och generell. STA-mailet
 // nämner arbetskonsulentens namn, Steg till arbete och samtycke direkt — så
 // det inte ser ut som ett generiskt onboarding-mail.
@@ -63,7 +69,7 @@ const getStaInviteEmailTemplate = (data: TemplateData) => `
   </style>
 </head>
 <body>
-  <div class="header">
+  <div class="header" style="padding:32px 30px;border-radius:12px 12px 0 0;background:#d8efe5;color:#14532d;">
     <div class="eyebrow">Steg till arbete</div>
     <h1>Hej ${data.firstName || 'du'} — välkommen till Jobin</h1>
   </div>
@@ -80,7 +86,7 @@ const getStaInviteEmailTemplate = (data: TemplateData) => `
     </p>
 
     <center>
-      <a href="${data.inviteUrl}" class="button">Skapa konto &amp; koppla ihop</a>
+      <a href="${data.inviteUrl}" class="button" style="display:inline-block;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:600;margin:16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#16a34a;color:#ffffff;"><span style="color:#ffffff;">Skapa konto &amp; koppla ihop</span></a>
     </center>
 
     ${data.message ? `
@@ -137,7 +143,7 @@ const getGenericInviteEmailTemplate = (data: TemplateData) => `
   </style>
 </head>
 <body>
-  <div class="header">
+  <div class="header" style="padding:32px 30px;border-radius:12px 12px 0 0;background:#e0e7ff;color:#312e81;">
     <div class="eyebrow">Inbjudan</div>
     <h1>Hej ${data.firstName || 'du'} — välkommen till Jobin</h1>
   </div>
@@ -164,7 +170,7 @@ const getGenericInviteEmailTemplate = (data: TemplateData) => `
     </div>
 
     <center>
-      <a href="${data.inviteUrl}" class="button">Skapa ditt konto</a>
+      <a href="${data.inviteUrl}" class="button" style="display:inline-block;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:600;margin:16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#4f46e5;color:#ffffff;"><span style="color:#ffffff;">Skapa ditt konto</span></a>
     </center>
 
     <p class="expiry">Inbjudan är giltig till: ${data.expiresAt}</p>
