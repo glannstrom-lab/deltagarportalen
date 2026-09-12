@@ -9,7 +9,8 @@
  *
  *   antal_anvisade            planer som var aktiva någon dag i kvartalet
  *   antal_med_ogiltig_franvaro planer med minst ett pass `absent_invalid` i kvartalet
- *   antal_underlag_lamnat     planer där `nedsattning_underlag_lamnat_at` ligger i kvartalet
+ *   antal_underlag_lamnat     planer med ett lämnat underlag i kvartalet (F10: ur
+ *                             activity_plan_handovers om listan ges, annars planens synkade datum)
  *
  * Regeln för "aktiv i kvartalet": start_date ≤ kvartalets sista dag OCH
  * (end_date saknas ELLER end_date ≥ kvartalets första dag). Status `ended`
@@ -75,6 +76,8 @@ export function kvartalForDatum(datum: string): KvartalVal {
 
 type PlanFalt = Pick<ActivityPlan, 'id' | 'start_date' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at'>
 type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'attendance'>
+/** F10: ett lämnat underlag ur activity_plan_handovers. Ångrade (withdrawn_at) räknas inte. */
+export type UnderlagFalt = { plan_id: string; handed_over_at: string; withdrawn_at: string | null }
 
 /** Var planen anvisad någon dag i intervallet? */
 export function planAktivIPeriod(plan: Pick<ActivityPlan, 'start_date' | 'end_date'>, { from, to }: KvartalGranser): boolean {
@@ -87,9 +90,24 @@ export function ivoKvartalsunderlag(
   plans: readonly PlanFalt[],
   sessions: readonly SessionFalt[],
   { ar, kvartal }: KvartalVal,
+  /**
+   * F10 (2026-09-13): ges listan räknas "underlag lämnat" ur de faktiska
+   * överlämningarna (en plan räknas en gång per kvartal, ångrade ignoreras).
+   * Utan listan används planens synkade kolumn som förut — samma tal, för
+   * triggern håller kolumnen lika med senaste ej ångrade underlaget.
+   */
+  handovers?: readonly UnderlagFalt[],
 ): Kvartalsunderlag {
   const granser = kvartalGranser(ar, kvartal)
   const aktiva = plans.filter((p) => planAktivIPeriod(p, granser))
+  const planerMedUnderlag = new Set<string>()
+  if (handovers) {
+    for (const h of handovers) {
+      if (h.withdrawn_at) continue
+      const dag = h.handed_over_at.slice(0, 10)
+      if (dag >= granser.from && dag <= granser.to) planerMedUnderlag.add(h.plan_id)
+    }
+  }
 
   const planerMedOgiltig = new Set<string>()
   for (const s of sessions) {
@@ -106,11 +124,13 @@ export function ivoKvartalsunderlag(
       etikett: nyckel === 'ej_angivet' ? EJ_ANGIVET_ETIKETT : FORSORJNINGSHINDER_ETIKETT[nyckel],
       antal_anvisade: iKategori.length,
       antal_med_ogiltig_franvaro: iKategori.filter((p) => planerMedOgiltig.has(p.id)).length,
-      antal_underlag_lamnat: iKategori.filter(
-        (p) => p.nedsattning_underlag_lamnat_at !== null
-          && p.nedsattning_underlag_lamnat_at >= granser.from
-          && p.nedsattning_underlag_lamnat_at <= granser.to,
-      ).length,
+      antal_underlag_lamnat: handovers
+        ? iKategori.filter((p) => planerMedUnderlag.has(p.id)).length
+        : iKategori.filter(
+          (p) => p.nedsattning_underlag_lamnat_at !== null
+            && p.nedsattning_underlag_lamnat_at >= granser.from
+            && p.nedsattning_underlag_lamnat_at <= granser.to,
+        ).length,
     }
   })
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T20:22:05.639Z",
+  "generatedAt": "2026-09-12T21:26:29.106Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -43,6 +43,24 @@
       "title",
       "updated_at",
       "weekday"
+    ],
+    "activity_plan_handovers": [
+      "consultant_id",
+      "created_at",
+      "handed_over_at",
+      "handed_over_by",
+      "id",
+      "note",
+      "org_id",
+      "participant_id",
+      "period_from",
+      "period_to",
+      "plan_id",
+      "recipient",
+      "summary",
+      "updated_at",
+      "withdrawn_at",
+      "withdrawn_reason"
     ],
     "activity_plans": [
       "af_registered_at",
@@ -1321,7 +1339,6 @@
       "last_viewed_at",
       "max_views",
       "name",
-      "password_hash",
       "share_code",
       "show_contact",
       "show_documents",
@@ -2002,6 +2019,9 @@
   },
   "routines": [
     "accept_consultant_request",
+    "activity_plan_handovers_guard",
+    "activity_plan_handovers_no_delete",
+    "activity_plan_handovers_sync_plan",
     "activity_sessions_absence_notify",
     "activity_sessions_participant_guard",
     "audit_data_sharing_change",
@@ -2071,6 +2091,7 @@
     "reset_demo_org",
     "revoke_consultant_link",
     "seed_demo_org",
+    "skicka_passpaminnelser",
     "sta_bulk_invite",
     "sta_bulk_smart_add",
     "sta_get_consultant_for_participant",

@@ -74,6 +74,22 @@ describe('ivoKvartalsunderlag', () => {
     expect(u.summa).toEqual({ antal_anvisade: 3, antal_med_ogiltig_franvaro: 1, antal_underlag_lamnat: 0 })
   })
 
+  it('F10: med underlagslistan räknas lämnade underlag per plan ur raderna, ångrade ignoreras', () => {
+    const u = ivoKvartalsunderlag(
+      [plan({ id: 'a', forsorjningshinder: 'arbetslos' }), plan({ id: 'b', forsorjningshinder: 'arbetslos' }), plan({ id: 'c', forsorjningshinder: 'arbetslos' })],
+      [],
+      { ar: 2026, kvartal: 4 },
+      [
+        { plan_id: 'a', handed_over_at: '2026-10-06T07:00:00Z', withdrawn_at: null },
+        { plan_id: 'a', handed_over_at: '2026-11-06T07:00:00Z', withdrawn_at: null }, // samma plan två gånger = räknas en gång
+        { plan_id: 'b', handed_over_at: '2026-10-06T07:00:00Z', withdrawn_at: '2026-10-06T09:00:00Z' }, // ångrat
+        { plan_id: 'c', handed_over_at: '2027-01-06T07:00:00Z', withdrawn_at: null }, // nästa kvartal
+      ],
+    )
+    expect(u.rader.find((r) => r.nyckel === 'arbetslos')!.antal_underlag_lamnat).toBe(1)
+    expect(u.summa.antal_underlag_lamnat).toBe(1)
+  })
+
   it('räknar bara ogiltig frånvaro och underlag som ligger inom kvartalet', () => {
     const u = ivoKvartalsunderlag(
       [plan({ id: 'a', forsorjningshinder: 'arbetslos', nedsattning_underlag_lamnat_at: '2027-01-05' }), plan({ id: 'b', forsorjningshinder: 'arbetslos', nedsattning_underlag_lamnat_at: '2026-12-20' })],

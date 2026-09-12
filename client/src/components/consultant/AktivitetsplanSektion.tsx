@@ -10,6 +10,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Loader2, MapPin, CheckCircle2, FileText } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { downloadAktivitetsplanPDF } from '@/services/aktivitetsplanPdf'
@@ -25,6 +26,9 @@ import { notifications } from '@/lib/toast'
 import { cn } from '@/lib/utils'
 import {
   aktivitetsplanApi,
+  kanAngraUnderlag,
+  underlagApi,
+  type PlanHandover,
   FORSORJNINGSHINDER,
   FORSORJNINGSHINDER_ETIKETT,
   type ActivityPlan,
@@ -45,6 +49,7 @@ import {
   type Attendance,
 } from '@/services/aktivitetSchema'
 import { TillampaMallDialog } from './TillampaMallDialog'
+import { UnderlagDialog } from './UnderlagDialog'
 import { JobbsokTidKort } from './JobbsokTidKort'
 import { franvaroAv, type FranvaroOrsak } from '@/services/franvaroApi'
 import {
@@ -69,7 +74,7 @@ interface AktivitetsplanSektionProps {
 type PlanLage =
   | { status: 'laddar' }
   | { status: 'fel'; fel: string }
-  | { status: 'klart'; plan: ActivityPlan | null; sessions: ActivitySession[] }
+  | { status: 'klart'; plan: ActivityPlan | null; sessions: ActivitySession[]; underlag: PlanHandover[]; underlagFel: string | null }
 
 const AMPEL_TEXT: Record<Ampel, { text: string; klass: string }> = {
   inga_pass: { text: 'Inga pass den här veckan', klass: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300' },
@@ -81,12 +86,15 @@ const AMPEL_TEXT: Record<Ampel, { text: string; klass: string }> = {
 const STATUS_TEXT: Record<ActivityPlan['status'], string> = { active: 'Aktiv', paused: 'Pausad', ended: 'Avslutad' }
 
 export function AktivitetsplanSektion({ participantId, participantName }: AktivitetsplanSektionProps) {
+  const { t } = useTranslation()
   const { confirm } = useConfirmDialog()
   const [lage, setLage] = useState<PlanLage>({ status: 'laddar' })
+  // F10: lämnade underlag till handläggaren (spårbara rader, inte planens datum)
+  const [underlagDialog, setUnderlagDialog] = useState<null | { lage: 'lamna' } | { lage: 'angra'; underlag: PlanHandover }>(null)
   const [vecka, setVecka] = useState(() => veckansMandag(formatLocalDate(new Date())))
   const [visaTillampa, setVisaTillampa] = useState(false)
   const [visaNyttPass, setVisaNyttPass] = useState(false)
-  const [sparaPlan, setSparaPlan] = useState<'hinder' | 'underlag' | 'pdf' | null>(null)
+  const [sparaPlan, setSparaPlan] = useState<'hinder' | 'pdf' | null>(null)
   const profile = useAuthStore((s) => s.profile)
 
   // Hämtningen bor i effekten och skriver tillstånd först efter await —
@@ -98,7 +106,18 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
       try {
         const plan = await aktivitetsplanApi.getForParticipant(participantId)
         const sessions = plan ? await aktivitetsplanApi.listAllSessions(plan.id) : []
-        if (aktiv) setLage({ status: 'klart', plan, sessions })
+        // F10: underlagen är en egen tabell (migration 20260913020000). Går den
+        // inte att läsa visas planen ändå, men med felraden synlig — aldrig tyst.
+        let underlag: PlanHandover[] = []
+        let underlagFel: string | null = null
+        if (plan) {
+          try {
+            underlag = await underlagApi.list(plan.id)
+          } catch (err) {
+            underlagFel = err instanceof Error ? err.message : 'Underlagen kunde inte hämtas'
+          }
+        }
+        if (aktiv) setLage({ status: 'klart', plan, sessions, underlag, underlagFel })
       } catch (err) {
         if (aktiv) setLage({ status: 'fel', fel: err instanceof Error ? err.message : 'Planen kunde inte hämtas.' })
       }
@@ -115,6 +134,20 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
     setLage((prev) => (prev.status === 'klart' ? { ...prev, plan: p } : prev))
   }
 
+  // F10: nytt eller ångrat underlag in i listan, och planens synkade datum
+  // (triggern i databasen) speglas lokalt så PDF:en visar samma sak.
+  const taEmotUnderlag = (h: PlanHandover) => {
+    setUnderlagDialog(null)
+    setLage((prev) => {
+      if (prev.status !== 'klart' || !prev.plan) return prev
+      const utanDenna = prev.underlag.filter((u) => u.id !== h.id)
+      const underlag = [h, ...utanDenna].sort((a, b) => (a.handed_over_at < b.handed_over_at ? 1 : -1))
+      const senaste = underlag.find((u) => !u.withdrawn_at)
+      const datum = senaste ? new Date(senaste.handed_over_at).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }) : null
+      return { ...prev, underlag, plan: { ...prev.plan, nedsattning_underlag_lamnat_at: datum } }
+    })
+  }
+
   // KM7: kategori för IVO-underlaget. Ändras direkt på planen.
   const sattHinder = async (plan: ActivityPlan, varde: '' | Forsorjningshinder) => {
     setSparaPlan('hinder')
@@ -127,29 +160,9 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
     }
   }
 
-  // KM7: "underlag lämnat" är konsulentens notering om att avvikelserna gått
-  // vidare till biståndshandläggaren — inte ett beslut. Beslutet fattas av nämnden.
-  const sattUnderlag = async (plan: ActivityPlan, datum: string | null) => {
-    if (datum) {
-      const ok = await confirm({
-        title: 'Underlag lämnat till handläggaren?',
-        message: 'Markerar att avvikelseunderlaget för den här planen har lämnats till biståndshandläggaren i dag. Räknas i IVO-underlaget för kvartalet.',
-        confirmText: 'Ja, underlag lämnat',
-        cancelText: 'Avbryt',
-      })
-      if (!ok) return
-    }
-    setSparaPlan('underlag')
-    try {
-      ersattPlan(await aktivitetsplanApi.update(plan.id, { nedsattning_underlag_lamnat_at: datum }))
-    } catch (err) {
-      notifications.error(err instanceof Error ? err.message : 'Kunde inte spara')
-    } finally {
-      setSparaPlan(null)
-    }
-  }
+  // KM7 → F10: "underlag lämnat" var en tidsstämpel på planen med Ångra utan spår.
+  // Nu en rad per överlämning (UnderlagDialog + underlagApi); planens datum synkas av databasen.
 
-  // KM5: planen som PDF till akten. Allt ur planen och passen, ingen AI.
   const laddaNerPdf = async (plan: ActivityPlan, sessions: ActivitySession[]) => {
     setSparaPlan('pdf')
     try {
@@ -262,19 +275,40 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                   </select>
                 </dd>
               </div>
-              <div className="flex gap-2 items-center">
-                <dt className="text-stone-500">Underlag till handläggaren</dt>
-                <dd>
-                  {plan.nedsattning_underlag_lamnat_at ? (
-                    <span>
-                      Lämnat {langtDatum(plan.nedsattning_underlag_lamnat_at)}
-                      <button type="button" className="ml-2 text-xs underline text-stone-500" disabled={sparaPlan === 'underlag'} onClick={() => void sattUnderlag(plan, null)}>Ångra</button>
-                    </span>
-                  ) : (
-                    <button type="button" className="text-xs underline text-stone-600 dark:text-stone-300" disabled={sparaPlan === 'underlag'} onClick={() => void sattUnderlag(plan, formatLocalDate(new Date()))}>
-                      Underlag lämnat till handläggaren
-                    </button>
+              <div className="flex gap-2 items-start">
+                <dt className="text-stone-500 pt-0.5">{t('consultant.underlag.rubrik')}</dt>
+                <dd className="min-w-0">
+                  {lage.underlagFel && (
+                    <p className="text-xs text-rose-700 dark:text-rose-300" role="status">{lage.underlagFel}</p>
                   )}
+                  {lage.underlag.length === 0 && !lage.underlagFel && (
+                    <span className="text-stone-500">{t('consultant.underlag.tomt')}</span>
+                  )}
+                  {lage.underlag.length > 0 && (
+                    <ul className="space-y-1" aria-label={t('consultant.underlag.rubrik')}>
+                      {lage.underlag.map((h) => {
+                        const datum = langtDatum(new Date(h.handed_over_at).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))
+                        return (
+                          <li key={h.id} className={cn(h.withdrawn_at && 'line-through text-stone-400')}>
+                            {t('consultant.underlag.lamnat', { datum, mottagare: h.recipient })}
+                            {h.handed_over_by === profile?.id && <span className="text-stone-500"> · {t('consultant.underlag.avVem', { namn: 'dig' })}</span>}
+                            <span className="text-stone-500"> · {t('consultant.underlag.period', { from: kortDatum(h.period_from), to: kortDatum(h.period_to) })}</span>
+                            {h.withdrawn_at && (
+                              <span className="block text-xs no-underline">{t('consultant.underlag.angrat', { datum: kortDatum(h.withdrawn_at.slice(0, 10)), skal: h.withdrawn_reason ?? '' })}</span>
+                            )}
+                            {kanAngraUnderlag(h) && (
+                              <button type="button" className="ml-2 text-xs underline text-stone-500" onClick={() => setUnderlagDialog({ lage: 'angra', underlag: h })}>
+                                {t('consultant.underlag.angra')}
+                              </button>
+                            )}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                  <button type="button" className="mt-1 text-xs underline text-stone-600 dark:text-stone-300" onClick={() => setUnderlagDialog({ lage: 'lamna' })}>
+                    {t('consultant.underlag.lamna')}
+                  </button>
                 </dd>
               </div>
             </dl>
@@ -366,6 +400,12 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         defaultDate={vecka}
         onCreated={() => { setVisaNyttPass(false); notifications.success('Passet är tillagt'); void ladda() }}
       />
+      {/* F10: underlag till handläggaren — bara med en plan att lämna underlag om */}
+      {underlagDialog && (
+        underlagDialog.lage === 'lamna'
+          ? <UnderlagDialog lage="lamna" plan={plan} sessions={sessions} onClose={() => setUnderlagDialog(null)} onSparat={taEmotUnderlag} />
+          : <UnderlagDialog lage="angra" underlag={underlagDialog.underlag} onClose={() => setUnderlagDialog(null)} onSparat={taEmotUnderlag} />
+      )}
     </div>
   )
 }

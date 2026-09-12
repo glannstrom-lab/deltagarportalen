@@ -1,9 +1,30 @@
 {
-  "generatedAt": "2026-09-12T20:22:11.290Z",
+  "generatedAt": "2026-09-12T21:26:34.774Z",
   "functions": [
     {
       "name": "accept_consultant_request",
       "signature": "accept_consultant_request(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "activity_plan_handovers_guard",
+      "signature": "activity_plan_handovers_guard()",
+      "definer": false,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "activity_plan_handovers_no_delete",
+      "signature": "activity_plan_handovers_no_delete()",
+      "definer": false,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "activity_plan_handovers_sync_plan",
+      "signature": "activity_plan_handovers_sync_plan()",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -492,6 +513,13 @@
       "authenticated": false
     },
     {
+      "name": "skicka_passpaminnelser",
+      "signature": "skicka_passpaminnelser()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "sta_bulk_invite",
       "signature": "sta_bulk_invite(jsonb,date,text,jsonb)",
       "definer": true,
@@ -699,6 +727,10 @@
     },
     {
       "name": "activity_catalog_items",
+      "rls": true
+    },
+    {
+      "name": "activity_plan_handovers",
       "rls": true
     },
     {

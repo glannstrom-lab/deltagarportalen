@@ -615,6 +615,132 @@ export const minVeckaApi = {
   },
 }
 
+// ---------------------------------------------------------------------------
+// F10 (2026-09-13): spårbart underlag till handläggaren. En rad per lämnat
+// underlag i activity_plan_handovers (migration 20260913020000 — körs efter
+// Mikaels ja; tills dess ger anropen ett tydligt fel). Ångra = withdrawn_at
+// samma dag, aldrig radering. Planens gamla kolumn synkas av en trigger.
+// ---------------------------------------------------------------------------
+export interface NarvaroSammanfattning {
+  pass: number
+  present: number
+  absent_valid: number
+  absent_invalid: number
+  sick_certified: number
+  external: number
+  omarkerade: number
+  anmald_franvaro: number
+}
+
+export interface PlanHandover {
+  id: string
+  plan_id: string
+  participant_id: string
+  consultant_id: string | null
+  org_id: string | null
+  handed_over_at: string
+  handed_over_by: string | null
+  recipient: string
+  period_from: string
+  period_to: string
+  summary: Partial<NarvaroSammanfattning>
+  note: string | null
+  withdrawn_at: string | null
+  withdrawn_reason: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface LamnaUnderlagInput {
+  plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'org_id'>
+  recipient: string
+  period_from: string
+  period_to: string
+  summary: NarvaroSammanfattning
+  note?: string | null
+}
+
+/** Räknar närvaron i perioden ur passen — det som faktiskt lämnas till handläggaren. */
+export function sammanfattaNarvaro(
+  sessions: readonly (Pick<ActivitySession, 'date' | 'attendance'> & { absence_reported_at?: string | null })[],
+  from: string,
+  to: string,
+): NarvaroSammanfattning {
+  const s: NarvaroSammanfattning = { pass: 0, present: 0, absent_valid: 0, absent_invalid: 0, sick_certified: 0, external: 0, omarkerade: 0, anmald_franvaro: 0 }
+  for (const pass of sessions) {
+    if (pass.date < from || pass.date > to) continue
+    s.pass += 1
+    if (pass.absence_reported_at) s.anmald_franvaro += 1
+    switch (pass.attendance) {
+      case 'present': s.present += 1; break
+      case 'absent_valid': s.absent_valid += 1; break
+      case 'absent_invalid': s.absent_invalid += 1; break
+      case 'sick_certified': s.sick_certified += 1; break
+      case 'external': s.external += 1; break
+      default: s.omarkerade += 1
+    }
+  }
+  return s
+}
+
+/** Kan underlaget fortfarande ångras? Samma dag (svensk tid) som det lämnades, och inte redan ångrat. */
+export function kanAngraUnderlag(h: Pick<PlanHandover, 'handed_over_at' | 'withdrawn_at'>, nu: Date = new Date()): boolean {
+  if (h.withdrawn_at) return false
+  const dag = (d: Date) => d.toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' })
+  return dag(new Date(h.handed_over_at)) === dag(nu)
+}
+
+export const underlagApi = {
+  async list(planId: string): Promise<PlanHandover[]> {
+    const { data, error } = await supabase
+      .from('activity_plan_handovers')
+      .select('*')
+      .eq('plan_id', planId)
+      .order('handed_over_at', { ascending: false })
+    if (error) throw error
+    return (data ?? []) as PlanHandover[]
+  },
+
+  async lamna(input: LamnaUnderlagInput): Promise<PlanHandover> {
+    const user = await requireUser()
+    const recipient = input.recipient.trim()
+    if (!recipient) throw new Error('Ange vem som tog emot underlaget')
+    const { data, error } = await supabase
+      .from('activity_plan_handovers')
+      .insert({
+        plan_id: input.plan.id,
+        participant_id: input.plan.participant_id,
+        consultant_id: user.id,
+        org_id: input.plan.org_id,
+        handed_over_by: user.id,
+        recipient,
+        period_from: input.period_from,
+        period_to: input.period_to,
+        summary: input.summary,
+        note: input.note?.trim() || null,
+      })
+      .select('*')
+      .single()
+    if (error) throw error
+    return data as PlanHandover
+  },
+
+  /** Ångra samma dag. Triggern i databasen vaktar dag, ägare och att inget annat ändras. */
+  async angra(id: string, reason: string): Promise<PlanHandover> {
+    await requireUser()
+    const skal = reason.trim()
+    if (!skal) throw new Error('Ange varför underlaget ångras')
+    const { data, error } = await supabase
+      .from('activity_plan_handovers')
+      .update({ withdrawn_at: new Date().toISOString(), withdrawn_reason: skal })
+      .eq('id', id)
+      .select('*')
+      .single()
+    if (error) throw error
+    return data as PlanHandover
+  },
+}
+
 function addDaysStr(s: string, n: number): string {
   const [y, m, d] = s.split('-').map(Number)
   const dt = new Date(y, m - 1, d)

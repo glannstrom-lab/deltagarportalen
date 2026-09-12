@@ -28,6 +28,10 @@ vi.mock('@/services/aktivitetApi', () => ({
     removeSession: vi.fn(),
     update: vi.fn(),
   },
+  // F10: underlagen är en egen tabell; kanAngraUnderlag/sammanfattaNarvaro är rena funktioner — originalen.
+  underlagApi: { list: vi.fn(async () => []), lamna: vi.fn(), angra: vi.fn() },
+  kanAngraUnderlag: (h: { handed_over_at: string; withdrawn_at: string | null }) => !h.withdrawn_at && h.handed_over_at.startsWith('2026-10-07'),
+  sammanfattaNarvaro: () => ({ pass: 1, present: 1, absent_valid: 0, absent_invalid: 0, sick_certified: 0, external: 0, omarkerade: 0, anmald_franvaro: 0 }),
   schemamallApi: { list: vi.fn(async () => []) },
   FORSORJNINGSHINDER: ['arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal', 'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat'],
   FORSORJNINGSHINDER_ETIKETT: { arbetslos: 'Arbetslös', sjukskriven_med_intyg: 'Sjukskriven med läkarintyg', sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning', arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl', foraldraledig: 'Föräldraledig', arbetar_deltid: 'Arbetar deltid', sprakhinder: 'Språkhinder', utan_forsorjningshinder: 'Utan försörjningshinder', annat: 'Annat' },
@@ -89,9 +93,31 @@ describe('AktivitetsplanSektion', () => {
     expect(screen.queryByText(/0 h \//)).not.toBeInTheDocument()
   })
 
+  it('visar lämnade underlag som spår: när, till vem, period, och Ångra bara samma dag (F10)', async () => {
+    const { aktivitetsplanApi, underlagApi } = await import('@/services/aktivitetApi')
+    vi.mocked(aktivitetsplanApi.getForParticipant).mockResolvedValue(plan as never)
+    vi.mocked(aktivitetsplanApi.listAllSessions).mockResolvedValue([pass({})] as never)
+    vi.mocked(underlagApi.list).mockResolvedValue([
+      { id: 'h2', plan_id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: null, handed_over_at: '2026-10-07T07:30:00Z', handed_over_by: 'c1', recipient: 'Anna Andersson, Försörjningsstöd', period_from: '2026-10-01', period_to: '2026-10-07', summary: {}, note: null, withdrawn_at: null, withdrawn_reason: null, created_at: '', updated_at: '' },
+      { id: 'h1', plan_id: 'plan1', participant_id: 'p1', consultant_id: 'c1', org_id: null, handed_over_at: '2026-09-30T07:30:00Z', handed_over_by: 'c1', recipient: 'Ej angiven (migrerad från planens datum)', period_from: '2026-09-01', period_to: '2026-09-30', summary: {}, note: null, withdrawn_at: '2026-09-30T09:00:00Z', withdrawn_reason: 'Fel period', created_at: '', updated_at: '' },
+    ] as never)
+
+    render(<AktivitetsplanSektion participantId="p1" participantName="Anna Andersson" />)
+    await screen.findByText('Verkstad 30 h')
+
+    const lista = await screen.findByRole('list', { name: 'Underlag till handläggaren' })
+    expect(lista).toHaveTextContent(/Lämnat 7 oktober 2026 till Anna Andersson, Försörjningsstöd/)
+    expect(lista).toHaveTextContent(/Ångrat 30 sep: Fel period/)
+    // Bara dagens (h2) kan ångras; det ångrade (h1) har ingen knapp
+    expect(screen.getAllByRole('button', { name: 'Ångra' })).toHaveLength(1)
+    expect(screen.queryByText('Inget underlag lämnat än.')).not.toBeInTheDocument()
+  })
+
   it('sparar försörjningshinder, markerar underlag lämnat och laddar ner plan-PDF (KM5/KM7)', async () => {
-    const { aktivitetsplanApi } = await import('@/services/aktivitetApi')
+    const { aktivitetsplanApi, underlagApi } = await import('@/services/aktivitetApi')
     const { downloadAktivitetsplanPDF } = await import('@/services/aktivitetsplanPdf')
+    // mockResolvedValue från förra testet överlever clearAllMocks — nollställ uttryckligen
+    vi.mocked(underlagApi.list).mockResolvedValue([])
     vi.mocked(aktivitetsplanApi.getForParticipant).mockResolvedValue(plan as never)
     vi.mocked(aktivitetsplanApi.listAllSessions).mockResolvedValue([pass({})] as never)
     vi.mocked(aktivitetsplanApi.update).mockImplementation(async (_id, patch) => ({ ...plan, ...patch }) as never)
@@ -102,9 +128,13 @@ describe('AktivitetsplanSektion', () => {
     fireEvent.change(screen.getByLabelText('Försörjningshinder'), { target: { value: 'arbetslos' } })
     await vi.waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenCalledWith('plan1', { forsorjningshinder: 'arbetslos' }))
 
-    fireEvent.click(screen.getByRole('button', { name: 'Underlag lämnat till handläggaren' }))
-    await vi.waitFor(() => expect(aktivitetsplanApi.update).toHaveBeenCalledWith('plan1', { nedsattning_underlag_lamnat_at: '2026-10-07' }))
-    expect(await screen.findByText(/Lämnat 7 oktober 2026/)).toBeInTheDocument()
+    // F10: "Underlag lämnat" är inte längre en tidsstämpel på planen utan en
+    // dialog som skapar en spårbar rad — planen uppdateras aldrig direkt härifrån.
+    expect(screen.getByText('Inget underlag lämnat än.')).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Lämna underlag' }))
+    expect(await screen.findByRole('heading', { name: 'Lämna underlag till handläggaren' })).toBeInTheDocument()
+    expect(aktivitetsplanApi.update).not.toHaveBeenCalledWith('plan1', expect.objectContaining({ nedsattning_underlag_lamnat_at: expect.anything() }))
+    fireEvent.click(screen.getByRole('button', { name: 'Avbryt' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Plan som PDF' }))
     await vi.waitFor(() => expect(downloadAktivitetsplanPDF).toHaveBeenCalledWith(expect.objectContaining({ participantName: 'Anna Andersson', plan: expect.objectContaining({ id: 'plan1' }) })))
