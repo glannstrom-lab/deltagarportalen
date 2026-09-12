@@ -52,6 +52,7 @@ import { buttonVariants } from '@/styles/design-system'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
+import { Delningsforslag } from '@/components/participant/Delningsforslag'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
@@ -1084,6 +1085,14 @@ function MyConsultantInner() {
           </div>
         </Card>
       )}
+
+      {/* AG5/AG8 (2026-09-13): konsulentens förslag att dela uppgifter med ett
+          företag. Notisen "foretag_forslag" länkar hit, så frågan ska ligga högst
+          upp — före meddelandelistan. Renderas oavsett koppling: förslagen är
+          deltagarens egen samtyckeshistorik och rätten att sluta dela försvinner
+          inte med konsulentkopplingen. Utan förslag renderar komponenten null,
+          så marginalen bor på komponenten och inte på en omslutande div. */}
+      <Delningsforslag className="mb-6" />
 
       {/* Main content grid */}
       {consultant && (

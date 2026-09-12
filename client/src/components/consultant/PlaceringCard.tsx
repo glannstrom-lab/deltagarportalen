@@ -13,6 +13,9 @@ import {
   ClipboardList,
   Dumbbell,
   Edit,
+  Link2,
+  Mail,
+  Share2,
   Thermometer,
   Trash2,
   Volume2,
@@ -41,6 +44,17 @@ interface Props {
   readOnly?: boolean
   /** Namn på den som registrerade platsen, när det inte är den inloggade. */
   registreradAv?: string
+  /**
+   * AG6: företagskontots namn när det går att slå upp. Konsulenten har ingen
+   * SELECT på andras `organizations`, så namnet är oftast okänt — då visas
+   * platsens eget företagsnamn (samma företag: kontot hittades eller
+   * skapades på platsens org.nr), aldrig ett påhittat.
+   */
+  foretagskontoNamn?: string | null
+  /** "Bjud in företaget" — bara när platsen saknar företagskonto och konsulenten äger den. */
+  onBjudIn?: () => void
+  /** "Föreslå deltagaren för företaget" — bara när platsen HAR ett företagskonto. */
+  onForesla?: () => void
 }
 
 export function PlaceringCard({
@@ -51,6 +65,9 @@ export function PlaceringCard({
   onDelete,
   readOnly = false,
   registreradAv,
+  foretagskontoNamn,
+  onBjudIn,
+  onForesla,
 }: Props) {
   const { t } = useTranslation()
   const fysiskaKrav: string[] = []
@@ -100,9 +117,20 @@ export function PlaceringCard({
             )}
           </div>
         </div>
-        <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${PLACERING_STATUS_KLASS[p.status]}`}>
-          {PLACERING_STATUS_LABEL[p.status]}
-        </span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {p.company_account_id && (
+            <span
+              className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-medium"
+              title="Företaget har ett konto i portalen och kan svara på förslag."
+            >
+              <Link2 size={11} />
+              Företagskonto: {foretagskontoNamn ?? p.company_name}
+            </span>
+          )}
+          <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${PLACERING_STATUS_KLASS[p.status]}`}>
+            {PLACERING_STATUS_LABEL[p.status]}
+          </span>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-x-4 gap-y-1.5 text-xs text-stone-600">
@@ -158,6 +186,21 @@ export function PlaceringCard({
             >
               Ta bort
             </Button>
+            {/* AG6: inbjudan kräver att konsulenten äger platsen (triggern sätter
+                company_account_id bara då); förslag kräver ett företagskonto att rikta det till. */}
+            {p.company_account_id ? (
+              onForesla && (
+                <Button size="sm" variant="outline" leftIcon={<Share2 size={13} />} onClick={onForesla}>
+                  Föreslå deltagaren för företaget
+                </Button>
+              )
+            ) : (
+              onBjudIn && (
+                <Button size="sm" variant="outline" leftIcon={<Mail size={13} />} onClick={onBjudIn}>
+                  Bjud in företaget
+                </Button>
+              )
+            )}
           </>
         )}
       </div>

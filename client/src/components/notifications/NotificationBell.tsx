@@ -52,8 +52,17 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   AlertTriangle,
 }
 
+/**
+ * AG6 (2026-09-13): `type` kommer ur databasen, och en trigger kan skriva en
+ * typ klienten inte känner ännu (deployordning: migration före frontend).
+ * Utan fallback kastade `config.icon` på undefined och hela klockan föll.
+ */
+function konfigFor(type: NotificationType) {
+  return notificationConfig[type] ?? notificationConfig.info
+}
+
 function getNotificationIcon(type: NotificationType) {
-  const config = notificationConfig[type]
+  const config = konfigFor(type)
   const IconComponent = iconMap[config.icon] || Info
   return <IconComponent className={cn('w-4 h-4', config.color)} />
 }
@@ -79,14 +88,17 @@ function NotificationItem({
 }: NotificationItemProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const config = notificationConfig[notification.type]
+  const config = konfigFor(notification.type)
 
   const handleClick = () => {
     if (!notification.read) {
       onMarkAsRead(notification.id)
     }
     if (notification.action_url) {
-      navigate(notification.action_url)
+      // action_url lagras UTAN brädgård ('/foretag/forslag'); react-routers
+      // navigate lägger själv på '#' under HashRouter. Skulle en rad ändå bära
+      // '#/…' hade navigate tolkat det som ett fragment på nuvarande sida.
+      navigate(notification.action_url.replace(/^#/, ''))
     }
     onClick?.()
   }

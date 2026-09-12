@@ -12730,5 +12730,70 @@
   "demo": {
     "banner": "This is a demo with made-up people. Everything you change is reset every night. No AI and no emails are sent from here.",
     "bannerKort": "Demo — made-up people"
+  },
+  "delningsforslag": {
+    "rubrik": "Requests from your consultant",
+    "beskrivning": "Your consultant can suggest you for a place at a company. Nothing is shared until you say yes, and you see exactly what the company would see.",
+    "dinKonsulent": "your consultant",
+    "foretagUtanNamn": "a company",
+    "laddar": "Loading your requests …",
+    "fel": "We could not load your requests right now. This is a problem on our side, not yours. Please try again in a moment.",
+    "ingaNya": "No new requests right now.",
+    "kort": {
+      "rubrik": "{{konsulent}} wants to suggest you for {{roll}} at {{foretag}}",
+      "rubrikUtanRoll": "{{konsulent}} wants to suggest you for a place at {{foretag}}",
+      "period": "{{fran}} – {{till}}",
+      "periodFran": "From {{fran}}",
+      "omfattning": "{{timmar}} hours per week",
+      "dagar": "Days: {{dagar}}",
+      "visasTill": "You can answer until {{datum}}",
+      "presentationRubrik": "This is how your consultant would present you",
+      "farSeRubrik": "This is what the company would see",
+      "aldrigSer": "The company never sees this: how you feel, your diary, your support needs, AI assessments.",
+      "meddelandeEtikett": "Do you want to write something to {{konsulent}}? This is optional.",
+      "meddelandeHjalp": "The company never sees the message, and is not told if you say no.",
+      "ja": "Yes, share",
+      "nej": "No thanks",
+      "sparar": "Saving …",
+      "svarFel": "Your answer could not be saved. Please try again in a moment."
+    },
+    "falt": {
+      "namn": "Your name (always shown)",
+      "kontakt": "Your contact details",
+      "sammanfattning": "Your summary from your CV",
+      "kompetenser": "Your skills",
+      "erfarenhet": "Your work experience",
+      "utbildning": "Your education"
+    },
+    "insatstyp": {
+      "praktik": "Praktik (work placement)",
+      "arbetstraning": "Arbetsträning (work training)",
+      "arbetsprovning": "Arbetsprövning (work assessment)",
+      "subventionerad_anstallning": "Subventionerad anställning (subsidised job)"
+    },
+    "bekraftelse": {
+      "ja": "Thank you. {{konsulent}} can now show the proposal to {{foretag}}. You can stop sharing whenever you want, here on this page.",
+      "nej": "You said no, and that is completely fine. {{konsulent}} will be told. {{foretag}} will not be told anything.",
+      "slutaDela": "You are no longer sharing with {{foretag}}. The company can no longer see the proposal, and {{konsulent}} will be told."
+    },
+    "delat": {
+      "rubrik": "What you have shared",
+      "sedan": "Shared since {{datum}}",
+      "vantar": "Waiting for the company",
+      "intresserad": "The company wants to go further",
+      "tackadeNej": "The company said no",
+      "tackadeNejTrost": "This says nothing about you. Your consultant will help you find the next step.",
+      "slutaDela": "Stop sharing",
+      "bekraftaRubrik": "Stop sharing with {{foretag}}?",
+      "bekraftaText": "The company will no longer see the proposal. {{konsulent}} will be told that you stopped sharing.",
+      "bekraftaJa": "Yes, stop sharing",
+      "bekraftaAvbryt": "Cancel"
+    },
+    "historik": {
+      "rubrik": "Earlier requests ({{antal}})",
+      "declined": "You said no",
+      "withdrawn": "You stopped sharing",
+      "expired": "Expired without an answer"
+    }
   }
 }

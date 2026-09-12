@@ -12730,5 +12730,70 @@
   "demo": {
     "banner": "Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.",
     "bannerKort": "Demo — påhittade personer"
+  },
+  "delningsforslag": {
+    "rubrik": "Förfrågningar från din konsulent",
+    "beskrivning": "Din konsulent kan föreslå dig för en plats hos ett företag. Inget delas förrän du säger ja, och du ser exakt vad företaget skulle få se.",
+    "dinKonsulent": "din konsulent",
+    "foretagUtanNamn": "ett företag",
+    "laddar": "Hämtar dina förfrågningar …",
+    "fel": "Vi kunde inte hämta dina förfrågningar just nu. Det är ett fel hos oss, inte hos dig. Prova igen om en stund.",
+    "ingaNya": "Inga nya förfrågningar just nu.",
+    "kort": {
+      "rubrik": "{{konsulent}} vill föreslå dig för {{roll}} hos {{foretag}}",
+      "rubrikUtanRoll": "{{konsulent}} vill föreslå dig för en plats hos {{foretag}}",
+      "period": "{{fran}} – {{till}}",
+      "periodFran": "Från {{fran}}",
+      "omfattning": "{{timmar}} timmar i veckan",
+      "dagar": "Dagar: {{dagar}}",
+      "visasTill": "Frågan gäller till {{datum}}",
+      "presentationRubrik": "Så här skulle din konsulent presentera dig",
+      "farSeRubrik": "Det här skulle företaget få se",
+      "aldrigSer": "Det här ser företaget aldrig: ditt mående, din dagbok, dina anpassningsbehov, AI-bedömningar.",
+      "meddelandeEtikett": "Vill du skriva något till {{konsulent}}? Det är frivilligt.",
+      "meddelandeHjalp": "Företaget ser aldrig meddelandet, och får inte veta om du säger nej.",
+      "ja": "Ja, dela",
+      "nej": "Nej tack",
+      "sparar": "Sparar …",
+      "svarFel": "Svaret kunde inte sparas. Prova igen om en stund."
+    },
+    "falt": {
+      "namn": "Ditt namn (visas alltid)",
+      "kontakt": "Dina kontaktuppgifter",
+      "sammanfattning": "Din sammanfattning ur CV:t",
+      "kompetenser": "Dina kompetenser",
+      "erfarenhet": "Din arbetslivserfarenhet",
+      "utbildning": "Din utbildning"
+    },
+    "insatstyp": {
+      "praktik": "Praktik",
+      "arbetstraning": "Arbetsträning",
+      "arbetsprovning": "Arbetsprövning",
+      "subventionerad_anstallning": "Subventionerad anställning"
+    },
+    "bekraftelse": {
+      "ja": "Tack. {{konsulent}} kan nu visa förslaget för {{foretag}}. Du kan sluta dela när du vill, här på sidan.",
+      "nej": "Du sa nej, och det är helt okej. {{konsulent}} får veta det. {{foretag}} får inte veta något.",
+      "slutaDela": "Du delar inte längre med {{foretag}}. Företaget ser inte förslaget längre, och {{konsulent}} får veta det."
+    },
+    "delat": {
+      "rubrik": "Det du delat",
+      "sedan": "Delat sedan {{datum}}",
+      "vantar": "Väntar på företaget",
+      "intresserad": "Företaget vill gå vidare",
+      "tackadeNej": "Företaget tackade nej",
+      "tackadeNejTrost": "Det betyder inte något om dig. Din konsulent hjälper dig vidare.",
+      "slutaDela": "Sluta dela",
+      "bekraftaRubrik": "Sluta dela med {{foretag}}?",
+      "bekraftaText": "Företaget ser då inte längre förslaget. {{konsulent}} får veta att du slutat dela.",
+      "bekraftaJa": "Ja, sluta dela",
+      "bekraftaAvbryt": "Avbryt"
+    },
+    "historik": {
+      "rubrik": "Tidigare förfrågningar ({{antal}})",
+      "declined": "Du sa nej",
+      "withdrawn": "Du slutade dela",
+      "expired": "Gick ut utan svar"
+    }
   }
 }

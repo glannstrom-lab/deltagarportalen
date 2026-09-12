@@ -57,6 +57,13 @@ export type NotificationType =
   | 'aktivitet_franvaro'
   // F3 (2026-09-13): skrivs av databasen (definer-funktion + pg_cron) kvällen innan ett pass
   | 'aktivitet_paminnelse'
+  // AG6 (2026-09-13): företagskontot. Skrivs av databasens triggers med action_url
+  // UTAN brädgård ('/foretag/forslag', '/foretag/meddelanden', '/consultant/platser',
+  // '/my-consultant') — NotificationBell navigerar med react-router, som lägger på #.
+  | 'foretag_forslag'
+  | 'foretag_svar'
+  | 'foretag_meddelande'
+  | 'foretag_avstamning'
 
 export interface Notification {
   id: string
@@ -471,6 +478,31 @@ export const notificationConfig: Record<NotificationType, {
     color: 'text-stone-700',
     bgColor: 'bg-stone-200',
     label: 'Påminnelse',
+  },
+  // AG6 — företagskontot, hub-färg sky (Resurser/info). Ikonerna finns i NotificationBell.tsx:iconMap.
+  foretag_forslag: {
+    icon: 'Briefcase',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    label: 'Förslag',
+  },
+  foretag_svar: {
+    icon: 'MessageCircle',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    label: 'Svar från företag',
+  },
+  foretag_meddelande: {
+    icon: 'MessageSquare',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    label: 'Meddelande',
+  },
+  foretag_avstamning: {
+    icon: 'CheckCircle',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    label: 'Avstämning',
   },
 }
 

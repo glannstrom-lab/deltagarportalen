@@ -10,6 +10,17 @@
  * Tre lägen krävs (CLAUDE.md): laddar / fel / klart. `isLoading === false`
  * räcker inte som klart — båda huvudfrågorna (platser + deltagare) måste
  * ha svarat innan listan renderas som "klar men tom".
+ *
+ * AG6 (2026-09-13) — företagskontot: per plats en chip "Företagskonto" eller
+ * knappen "Bjud in företaget" (BjudInForetagDialog), knappen "Föreslå
+ * deltagaren för företaget" (ForeslaDialog, bara med företagskonto), och
+ * under platsen ForslagPanel med deltagarens och företagets svar, tråden
+ * (ForetagsTrad) och företagets avstämningar. Företagens egna platser
+ * (employer_places) kan väljas i PlaceringFormModal.
+ *
+ * Inget här listar deltagare för ett företag, rangordnar eller låter en
+ * modell välja person — konsulenten föreslår EN deltagare hon redan har
+ * kopplat till EN plats, och deltagaren svarar. Bygg inte in något annat.
  */
 
 import { useMemo, useState } from 'react'
@@ -29,9 +40,14 @@ import {
   type PlaceringTyp,
   type PlaceringUppfoljningInput,
 } from '@/services/placeringarApi'
+import { delningsforslagApi, type Delningsforslag } from '@/services/delningsforslagApi'
 import { PlaceringCard } from '@/components/consultant/PlaceringCard'
 import { PlaceringFormModal } from '@/components/consultant/PlaceringFormModal'
 import { PlaceringUppfoljningModal } from '@/components/consultant/PlaceringUppfoljningModal'
+import { BjudInForetagDialog } from '@/components/consultant/BjudInForetagDialog'
+import { ForeslaDialog } from '@/components/consultant/ForeslaDialog'
+import { ForslagPanel } from '@/components/consultant/ForslagPanel'
+import { ForetagsTrad } from '@/components/consultant/ForetagsTrad'
 import { PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL } from '@/components/consultant/placeringLabels'
 import { StodPanel } from '@/components/consultant/StodPanel'
 import { orgApi } from '@/services/orgApi'
@@ -41,6 +57,9 @@ const QK_PLACERINGAR = ['placeringar'] as const
 const QK_DELTAGARE = ['placeringar-deltagare'] as const
 const QK_KOLLEGOR = ['placeringar-kollegor'] as const
 const QK_UPPFOLJNINGAR = (placementId: string) => ['placeringar-uppfoljningar', placementId] as const
+const QK_FORETAGSPLATSER = ['placeringar-foretagsplatser'] as const
+const QK_FORSLAG = ['placeringar-forslag'] as const
+const QK_AVSTAMNINGAR = (placementId: string) => ['placeringar-foretagsavstamningar', placementId] as const
 
 type TypFilter = 'alla' | PlaceringTyp
 type StatusFilter = 'alla' | PlaceringStatus
@@ -59,6 +78,10 @@ export function PlatserTab() {
   const [uppfoljningFor, setUppfoljningFor] = useState<Placering | null>(null)
   /** AG2 — stödkalkylatorn, expanderad för högst en placering i taget. */
   const [stodOppetFor, setStodOppetFor] = useState<string | null>(null)
+  /** AG6 — företagsdialogerna, en i taget. */
+  const [bjudInFor, setBjudInFor] = useState<Placering | null>(null)
+  const [foreslaFor, setForeslaFor] = useState<Placering | null>(null)
+  const [tradFor, setTradFor] = useState<{ forslag: Delningsforslag; placering: Placering } | null>(null)
 
   const {
     data: placeringar,
@@ -96,6 +119,37 @@ export function PlatserTab() {
     }
     return map
   }, [kollegor])
+
+  // AG6: företagens egna platser (för väljaren i formuläret) och konsulentens
+  // förslag. Inget av det grindar tabbens tre lägen — ett fel här visas
+  // lokalt (i formuläret respektive ovanför listan), inte som "inga platser".
+  const { data: foretagsplatser, error: foretagsplatserError } = useQuery({
+    queryKey: QK_FORETAGSPLATSER,
+    queryFn: () => placeringarApi.getForetagsplatser(),
+    staleTime: 60 * 1000,
+  })
+  const { data: forslag, error: forslagError } = useQuery({
+    queryKey: QK_FORSLAG,
+    queryFn: () => delningsforslagApi.listaMinaSomKonsulent(),
+  })
+  const forslagPerPlats = useMemo(() => {
+    const map = new Map<string, Delningsforslag[]>()
+    for (const f of forslag ?? []) {
+      const lista = map.get(f.placement_id) ?? []
+      lista.push(f)
+      map.set(f.placement_id, lista)
+    }
+    return map
+  }, [forslag])
+  // Företagskontots namn — bara känt när `organizations` bäddats in (RLS
+  // släpper igenom det enbart för organisationer konsulenten är medlem i).
+  const foretagsnamnPerOrg = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const fp of foretagsplatser ?? []) {
+      if (fp.organizations?.name) map.set(fp.org_id, fp.organizations.name)
+    }
+    return map
+  }, [foretagsplatser])
 
   const { data: uppfoljningarForAktiv } = useQuery({
     queryKey: uppfoljningFor ? QK_UPPFOLJNINGAR(uppfoljningFor.id) : ['placeringar-uppfoljningar', 'none'],
@@ -164,6 +218,18 @@ export function PlatserTab() {
     } else {
       await createMutation.mutateAsync(input)
     }
+  }
+
+  const handleTaBortUtkast = async (f: Delningsforslag) => {
+    const ok = await confirm({
+      title: 'Ta bort utkastet?',
+      message: 'Förslaget är inte besvarat än. Deltagaren får ingen fråga och ingenting har delats.',
+      confirmText: 'Ta bort',
+      variant: 'danger',
+    })
+    if (!ok) return
+    await delningsforslagApi.raderaUtkast(f.id)
+    queryClient.invalidateQueries({ queryKey: QK_FORSLAG })
   }
 
   const handleDelete = async (p: Placering) => {
@@ -322,6 +388,11 @@ export function PlatserTab() {
         </Card>
       ) : (
         <Card variant="flat" padding="lg" className="space-y-3">
+          {forslagError && (
+            <p className="text-xs text-amber-700">
+              Förslagen till företag kunde inte hämtas ({forslagError instanceof Error ? forslagError.message : 'okänt fel'}).
+            </p>
+          )}
           {filtrerade.map((p) => (
             <div key={p.id} className="space-y-2">
               <PlaceringCard
@@ -329,12 +400,21 @@ export function PlatserTab() {
                 deltagarNamn={deltagarNamn.get(p.participant_id) ?? '—'}
                 readOnly={!!inloggadId && p.consultant_id !== inloggadId}
                 registreradAv={p.consultant_id ? kollegaNamn.get(p.consultant_id) : undefined}
+                foretagskontoNamn={p.company_account_id ? foretagsnamnPerOrg.get(p.company_account_id) ?? null : null}
                 onEdit={() => {
                   setEditing(p)
                   setFormOpen(true)
                 }}
                 onUppfoljning={() => setUppfoljningFor(p)}
                 onDelete={() => handleDelete(p)}
+                onBjudIn={() => setBjudInFor(p)}
+                onForesla={() => setForeslaFor(p)}
+              />
+              <ForetagsdelForPlats
+                placering={p}
+                forslag={forslagPerPlats.get(p.id) ?? []}
+                onTaBortUtkast={handleTaBortUtkast}
+                onOppnaTrad={(f) => setTradFor({ forslag: f, placering: p })}
               />
               <button
                 type="button"
@@ -360,6 +440,8 @@ export function PlatserTab() {
         open={formOpen}
         existing={editing}
         deltagare={deltagare ?? []}
+        foretagsplatser={foretagsplatser}
+        foretagsplatserFel={foretagsplatserError ? (foretagsplatserError instanceof Error ? foretagsplatserError.message : 'okänt fel') : null}
         onSave={handleSave}
         onClose={() => {
           setFormOpen(false)
@@ -376,6 +458,68 @@ export function PlatserTab() {
           onClose={() => setUppfoljningFor(null)}
         />
       )}
+
+      {bjudInFor && (
+        <BjudInForetagDialog
+          open={!!bjudInFor}
+          placering={bjudInFor}
+          onSuccess={() => queryClient.invalidateQueries({ queryKey: QK_PLACERINGAR })}
+          onClose={() => setBjudInFor(null)}
+        />
+      )}
+
+      {foreslaFor && (
+        <ForeslaDialog
+          open={!!foreslaFor}
+          placering={foreslaFor}
+          deltagarNamn={deltagarNamn.get(foreslaFor.participant_id) ?? 'deltagaren'}
+          onSkapad={() => queryClient.invalidateQueries({ queryKey: QK_FORSLAG })}
+          onClose={() => setForeslaFor(null)}
+        />
+      )}
+
+      {tradFor && (
+        <ForetagsTrad
+          open={!!tradFor}
+          forslag={tradFor.forslag}
+          foretagsnamn={
+            (tradFor.placering.company_account_id && foretagsnamnPerOrg.get(tradFor.placering.company_account_id)) ||
+            tradFor.placering.company_name
+          }
+          onClose={() => setTradFor(null)}
+        />
+      )}
     </div>
+  )
+}
+
+/**
+ * Förslagen och företagets avstämningar under en plats. Egen komponent så att
+ * avstämningsfrågan (employer_checkins) kan ligga i en hook per plats — och
+ * bara ställas när platsen har ett företagskonto; utan konto finns inga rader.
+ */
+function ForetagsdelForPlats({
+  placering: p,
+  forslag,
+  onTaBortUtkast,
+  onOppnaTrad,
+}: {
+  placering: Placering
+  forslag: Delningsforslag[]
+  onTaBortUtkast: (f: Delningsforslag) => void
+  onOppnaTrad: (f: Delningsforslag) => void
+}) {
+  const { data: avstamningar } = useQuery({
+    queryKey: QK_AVSTAMNINGAR(p.id),
+    queryFn: () => placeringarApi.getForetagsavstamningar(p.id),
+    enabled: !!p.company_account_id,
+  })
+  return (
+    <ForslagPanel
+      forslag={forslag}
+      avstamningar={avstamningar ?? []}
+      onTaBortUtkast={onTaBortUtkast}
+      onOppnaTrad={onOppnaTrad}
+    />
   )
 }

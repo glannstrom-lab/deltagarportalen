@@ -24,9 +24,10 @@ import { medFelrapport } from '../_shared/sentry.ts'
 // och länken föll tillbaka på länkfärg mot pastellen. Inline-stil är det enda
 // som alla mejlklienter respekterar; klasserna står kvar som förstärkning.
 //
-// Två separata template-funktioner: STA-specifik och generell. STA-mailet
-// nämner arbetskonsulentens namn, Steg till arbete och samtycke direkt — så
-// det inte ser ut som ett generiskt onboarding-mail.
+// Tre template-funktioner: STA-specifik, generell och företagskonto (AG6,
+// 2026-09-13 — se avsnittet FÖRETAGSKONTO nedan). STA-mailet nämner
+// arbetskonsulentens namn, Steg till arbete och samtycke direkt — så det inte
+// ser ut som ett generiskt onboarding-mail.
 
 interface TemplateData {
   firstName: string
@@ -191,6 +192,120 @@ const getGenericInviteEmailTemplate = (data: TemplateData) => `
 </html>
 `
 
+// =============================================================================
+// FÖRETAGSKONTO (AG6, 2026-09-13)
+// =============================================================================
+// Inbjudan till ett företag skapas av triggern employer_invitations_insert
+// (20260913100000_ag6_foretagskonto.sql) som en rad i `invitations` med
+// role 'USER', consultant_id NULL, invited_by = den som bjöd in och
+// metadata { kind: 'arbetsgivare', employer_org_id, company_name, org_number,
+// contact_name, first_name, existing_account, invited_by_name, invited_by_kind }.
+//
+// Två fall, avgjorda av metadata.existing_account:
+//   · false → personen saknar konto: samma generateLink-flöde som deltagar-
+//     inbjudan, knappen "Skapa ert konto". Medlemskapet i företagskontot
+//     läggs av triggern employer_invitation_membership när profilen skapas.
+//   · true  → personen har redan ett konto (triggern har redan lagt
+//     medlemsraden och markerat inbjudan använd). INGEN generateLink — den
+//     skulle skapa en pending-användare för en adress som redan finns.
+//     Knappen "Logga in" pekar på /#/login.
+//
+// Mejlet säger vad kontot är — och EN mening om vad det inte är. Villkoren
+// (terms.noScreening.*, AG4) säger samma sak med fler ord.
+
+interface EmployerTemplateData {
+  firstName: string
+  companyName: string
+  invitedByName: string
+  invitedByKind: 'konsulent' | 'foretag'
+  existingAccount: boolean
+  actionUrl: string
+  expiresAt: string
+}
+
+// Företagsnamn och inbjudarnamn kommer från fritextfält (org-namn via
+// Bolagsverket eller konsulentens tangentbord). De landar i HTML, så de
+// eskaperas — deltagarmallarna ovan gör det inte, men de får bara
+// konsulentens egen text.
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+const getEmployerInviteEmailTemplate = (data: EmployerTemplateData) => {
+  const firstName = escapeHtml(data.firstName || 'du')
+  const company = escapeHtml(data.companyName || 'Ert företag')
+  const inviter = escapeHtml(data.invitedByName || '')
+  const inviterText = data.invitedByKind === 'konsulent'
+    ? `arbetskonsulent <strong>${inviter || 'på Jobin'}</strong>`
+    : `din kollega <strong>${inviter || 'på företaget'}</strong>`
+  const buttonText = data.existingAccount ? 'Logga in' : 'Skapa ert konto'
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${company} — företagskonto på Jobin</title>
+  <style>
+    ${SHARED_STYLES}
+    .header { background: #fde7d4; color: #7c2d12; }
+    .button { background: #c2410c; color: #ffffff; }
+    .button:hover { background: #9a3412; }
+  </style>
+</head>
+<body>
+  <div class="header" style="padding:32px 30px;border-radius:12px 12px 0 0;background:#fde7d4;color:#7c2d12;">
+    <div class="eyebrow">Företagskonto</div>
+    <h1>Hej ${firstName} — ${company} har fått ett företagskonto på Jobin</h1>
+  </div>
+
+  <div class="content">
+    <p style="font-size: 16px;">
+      Du har blivit inbjuden av ${inviterText} som kontaktperson för
+      <strong>${company}</strong> på <strong>jobin.se</strong>.
+    </p>
+
+    <div class="info-list">
+      <strong>Med företagskontot kan ni:</strong>
+      <ul>
+        <li>Ta emot förslag om praktik eller arbetsträning — en konsulent föreslår en namngiven person, efter att personen själv har godkänt vad som delas med er</li>
+        <li>Registrera platser ni kan erbjuda</li>
+        <li>Hålla kontakt med konsulenten om ett förslag eller en pågående placering</li>
+      </ul>
+    </div>
+
+    <p>Det finns ingen sökfunktion bland personer — det är ett medvetet val.</p>
+
+    ${data.existingAccount ? `
+    <p>
+      Du har redan ett konto på Jobin med den här e-postadressen. Logga in som
+      vanligt, så finns företagskontot där.
+    </p>
+    ` : ''}
+
+    <center>
+      <a href="${data.actionUrl}" class="button" style="display:inline-block;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:600;margin:16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#c2410c;color:#ffffff;"><span style="color:#ffffff;">${buttonText}</span></a>
+    </center>
+
+    ${data.existingAccount ? '' : `
+    <p class="expiry">Inbjudan är giltig till: ${data.expiresAt}</p>
+
+    <p class="small">
+      Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
+      <span class="fallback-link">${data.actionUrl}</span>
+    </p>
+    `}
+  </div>
+
+  <div class="footer">
+    <p>Har du frågor? ${inviter ? `Kontakta ${inviter}.` : 'Svara på detta mejl.'}</p>
+    <p>&copy; ${new Date().getFullYear()} Jobin · jobin.se</p>
+  </div>
+</body>
+</html>
+`
+}
+
 interface ProcessResult {
   invitationId: string
   success: boolean
@@ -222,6 +337,12 @@ async function processInvitation(
   // skapare) eller vara admin. Annars kan vilken inloggad användare som helst
   // trigga inbjudningsmail för godtyckliga invitation-IDs (service-role
   // förbigår RLS här).
+  //
+  // AG6: företagsinbjudningar har consultant_id NULL och bär inbjudaren i
+  // invited_by — konsulent eller företagskollega, triggern sätter caller där.
+  // `null !== callerId` är alltid sant, så villkoret faller på invited_by;
+  // ingen av grenarna kräver att consultant_id är satt. En kollega som INTE
+  // skapade inbjudan kan inte skicka om den — med flit, samma som för deltagare.
   if (
     !callerIsAdmin &&
     invitation.consultant_id !== callerId &&
@@ -245,49 +366,92 @@ async function processInvitation(
   const isStaInvite = invitation.metadata?.program === 'steg_till_arbete'
   const renderTemplate = isStaInvite ? getStaInviteEmailTemplate : getGenericInviteEmailTemplate
 
+  // AG6: företagsinbjudan. existing_account skrivs av triggern som boolean;
+  // jämförs strikt så att ett saknat fält räknas som "nytt konto".
+  const isEmployerInvite = invitation.metadata?.kind === 'arbetsgivare'
+  const employerHasAccount = isEmployerInvite && invitation.metadata?.existing_account === true
+  const companyName: string = invitation.metadata?.company_name || ''
+  const invitedByName: string = invitation.metadata?.invited_by_name || consultantName
+  const invitedByKind: 'konsulent' | 'foretag' =
+    invitation.metadata?.invited_by_kind === 'foretag' ? 'foretag' : 'konsulent'
+
+  // De användarmetadata som följer med generateLink/inviteUserByEmail. För
+  // företag: first_name ur kontaktnamnet, last_name tomt (triggern delar inte
+  // upp namnet), inget program och ingen konsulentkoppling — kontot ska bli
+  // en vanlig USER som triggern employer_invitation_membership gör till medlem.
+  const userMetadata = isEmployerInvite
+    ? {
+        first_name: invitation.metadata?.first_name,
+        last_name: '',
+        invitation_id: invitation.id,
+        kind: 'arbetsgivare',
+        employer_org_id: invitation.metadata?.employer_org_id,
+        company_name: companyName,
+      }
+    : {
+        first_name: invitation.metadata?.first_name,
+        last_name: invitation.metadata?.last_name,
+        consultant_name: consultantName,
+        consultant_id: invitation.consultant_id,
+        invitation_id: invitation.id,
+        message: invitation.metadata?.message,
+        program: invitation.metadata?.program,
+        sta_enrollment_id: invitation.metadata?.sta_enrollment_id,
+      }
+
   let emailErrorMessage: string | null = null
 
   if (resendApiKey) {
     // RESEND-LÄGE
     try {
-      const { data: linkData, error: linkError } = await client.auth.admin.generateLink({
-        type: 'invite',
-        email: invitation.email,
-        options: {
-          data: {
-            first_name: invitation.metadata?.first_name,
-            last_name: invitation.metadata?.last_name,
-            consultant_name: consultantName,
-            consultant_id: invitation.consultant_id,
-            invitation_id: invitation.id,
-            message: invitation.metadata?.message,
-            program: invitation.metadata?.program,
-            sta_enrollment_id: invitation.metadata?.sta_enrollment_id,
+      let actionLink: string
+      if (employerHasAccount) {
+        // Kontot finns: ingen generateLink (den skulle skapa en pending-
+        // användare för en adress som redan har ett konto). Knappen är "Logga in".
+        actionLink = `${siteUrl}/#/login`
+      } else {
+        const { data: linkData, error: linkError } = await client.auth.admin.generateLink({
+          type: 'invite',
+          email: invitation.email,
+          options: {
+            data: userMetadata,
+            redirectTo: inviteUrl,
           },
-          redirectTo: inviteUrl,
-        },
-      })
+        })
 
-      if (linkError || !linkData) {
-        throw new Error(linkError?.message ?? 'generateLink returned no data')
+        if (linkError || !linkData) {
+          throw new Error(linkError?.message ?? 'generateLink returned no data')
+        }
+
+        actionLink =
+          (linkData as { properties?: { action_link?: string } })?.properties?.action_link ||
+          inviteUrl
       }
 
-      const actionLink =
-        (linkData as { properties?: { action_link?: string } })?.properties?.action_link ||
-        inviteUrl
+      const html = isEmployerInvite
+        ? getEmployerInviteEmailTemplate({
+            firstName: invitation.metadata?.first_name,
+            companyName,
+            invitedByName,
+            invitedByKind,
+            existingAccount: employerHasAccount,
+            actionUrl: actionLink,
+            expiresAt: expiresAtFormatted,
+          })
+        : renderTemplate({
+            firstName: invitation.metadata?.first_name,
+            consultantName,
+            consultantEmail: invitation.metadata?.consultant_email,
+            inviteUrl: actionLink,
+            message: invitation.metadata?.message,
+            expiresAt: expiresAtFormatted,
+          })
 
-      const html = renderTemplate({
-        firstName: invitation.metadata?.first_name,
-        consultantName,
-        consultantEmail: invitation.metadata?.consultant_email,
-        inviteUrl: actionLink,
-        message: invitation.metadata?.message,
-        expiresAt: expiresAtFormatted,
-      })
-
-      const subject = isStaInvite
-        ? `Inbjudan till Steg till arbete från ${consultantName} · Jobin`
-        : 'Inbjudan till Jobin'
+      const subject = isEmployerInvite
+        ? `${companyName || 'Ert företag'} — företagskonto på Jobin`
+        : isStaInvite
+          ? `Inbjudan till Steg till arbete från ${consultantName} · Jobin`
+          : 'Inbjudan till Jobin'
 
       const resendResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -310,21 +474,18 @@ async function processInvitation(
     } catch (err) {
       emailErrorMessage = err instanceof Error ? err.message : 'Unknown Resend error'
     }
+  } else if (employerHasAccount) {
+    // FALLBACK-LÄGE utan Resend: Supabase kan bara skicka ett invite-mejl,
+    // och det går inte till en adress som redan har ett konto. Hellre ett
+    // synligt fel än en rad märkt "skickad" utan mejl (DE2-lärdomen).
+    emailErrorMessage =
+      'Företagsinbjudan till ett befintligt konto kräver Resend (RESEND_API_KEY saknas). Personen är redan medlem och kan logga in.'
   } else {
     // FALLBACK-LÄGE: Supabase native invite
     const { error: inviteErr } = await client.auth.admin.inviteUserByEmail(
       invitation.email,
       {
-        data: {
-          first_name: invitation.metadata?.first_name,
-          last_name: invitation.metadata?.last_name,
-          consultant_name: consultantName,
-          consultant_id: invitation.consultant_id,
-          invitation_id: invitation.id,
-          message: invitation.metadata?.message,
-          program: invitation.metadata?.program,
-          sta_enrollment_id: invitation.metadata?.sta_enrollment_id,
-        },
+        data: userMetadata,
         redirectTo: inviteUrl,
       },
     )

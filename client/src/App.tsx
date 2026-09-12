@@ -7,7 +7,10 @@ import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErro
 import { Loader2 } from '@/components/ui/icons'
 
 // Eager-loaded kritiska komponenter
-import Layout from './components/Layout'
+import Layout, { ForetagskontoProvider } from './components/Layout'
+// AG6 (2026-09-13): företagskontot är en organisation (kind='arbetsgivare'),
+// personen är USER. Startsidan och skalet måste därför fråga medlemskapen.
+import { useForetagskonto } from './hooks/useForetagskonto'
 // E10 (2026-07-23): Landing/Login/Register lazy-laddas som alla andra sidor —
 // de var de enda 3 av ~50 som låg kvar i entry (~33 kB gzip), och inloggade
 // återkommande användare (majoriteten) renderar dem aldrig
@@ -49,6 +52,8 @@ const Settings = lazy(() => import('./pages/Settings'))
 const Resources = lazy(() => import('./pages/Resources'))
 const Help = lazy(() => import('./pages/Help'))
 const Consultant = lazy(() => import('./pages/Consultant'))
+// AG6: företagskontots sida — egna <Routes> under /foretag/*, som Consultant.
+const Foretag = lazy(() => import('./pages/foretag/Foretag'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 // New feature pages
@@ -131,6 +136,38 @@ function PrivateRoute({
   return <>{children}</>
 }
 
+/**
+ * AG6 (2026-09-13): index-routen för inloggade. Deltagare → /oversikt som förut;
+ * en kontaktperson i ett företagskonto → /foretag. Medan medlemskapen hämtas
+ * visas samma laddare som PrivateRoute — annars blinkar Översikt förbi för
+ * företaget ("laddning är inte tomhet", CLAUDE.md). K11:s returnTo rörs inte:
+ * den hanteras i PublicRoute/RootRoute före den här komponenten någonsin renderas.
+ */
+function StartRedirect() {
+  const { isLoading, isEmployer } = useForetagskonto()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--c-solid)]">
+        <Loader2 className="animate-spin text-white" size={48} />
+      </div>
+    )
+  }
+
+  return <Navigate to={isEmployer ? '/foretag' : '/oversikt'} replace />
+}
+
+/**
+ * AG6: fokuslägets utgångsknapp hör till deltagarskalet. Företaget har ingen
+ * väg in i fokusläget (varken TopBar-knapp eller Lugnare läge), men en
+ * inställning som råkar vara på ska inte heller kunna rita knappen.
+ */
+function FokusUtgang() {
+  const { isEmployer } = useForetagskonto()
+  if (isEmployer) return null
+  return <FocusExitButton />
+}
+
 // Public route - only show content for unauthenticated users
 function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode, redirectTo?: string }) {
   const { isAuthenticated, isLoading } = useAuthStore()
@@ -195,8 +232,14 @@ function RootRoute() {
     )
   }
 
-  // Authenticated users see the dashboard inside the layout
-  return <Layout />
+  // Authenticated users see the dashboard inside the layout.
+  // AG6: providern är enda stället skalet anropar useForetagskonto — se
+  // kommentaren vid ForetagskontoProvider i Layout.tsx.
+  return (
+    <ForetagskontoProvider>
+      <Layout />
+    </ForetagskontoProvider>
+  )
 }
 
 function App() {
@@ -266,8 +309,9 @@ function App() {
         {/* Root route - shows Landing or Layout based on auth */}
         <Route path="/" element={<RootRoute />}>
           {/* Nested routes for authenticated users */}
-          {/* Hub-nav är permanent sedan 2026-07-10 (C3) — index går alltid till Översikt */}
-          <Route index element={<Navigate to="/oversikt" replace />} />
+          {/* Hub-nav är permanent sedan 2026-07-10 (C3) — index går till Översikt,
+              utom för företagskontot som går till /foretag (AG6, StartRedirect). */}
+          <Route index element={<StartRedirect />} />
           <Route path="cv/*" element={<LazyRoute><RouteErrorBoundary><CVPage /></RouteErrorBoundary></LazyRoute>} />
           <Route path="cover-letter/*" element={<LazyRoute><RouteErrorBoundary><CoverLetterPage /></RouteErrorBoundary></LazyRoute>} />
           <Route path="interest-guide/*" element={<LazyRoute><RouteErrorBoundary><InterestGuide /></RouteErrorBoundary></LazyRoute>} />
@@ -310,6 +354,9 @@ function App() {
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />
+          {/* AG6: ingen PrivateRoute med roller — kontaktpersonen är USER. Sidan
+              själv visar "inte kopplad" när useForetagskonto säger nej. */}
+          <Route path="foretag/*" element={<LazyRoute><RouteErrorBoundary><Foretag /></RouteErrorBoundary></LazyRoute>} />
           <Route path="admin" element={
             <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><SuperAdminPanel /></RouteErrorBoundary></LazyRoute>
@@ -326,7 +373,7 @@ function App() {
       </Routes>
       <EnergySaveMode />
       <FocusModeProvider />
-      <FocusExitButton />
+      <FokusUtgang />
       <CookieConsent />
     </>
   )

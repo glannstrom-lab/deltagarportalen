@@ -1,6 +1,6 @@
 # AI Act Annex III-klassificering — Deltagarportalen
 
-**Datum:** 2026-05-15
+**Datum:** 2026-09-13 (avsnittet "Företagskonto" tillagt, rad 33 i tabellen; föregående 2026-09-11 Annex III 5 a, 2026-05-15)
 **Lag:** Förordning (EU) 2024/1689 (AI Act)
 **Relevanta paragrafer:** Annex III punkt 4 (employment), Art 6 (riskklassificering), Art 50 (transparens)
 **Status:** Utkast. Konsultera AI-jurist för slutgiltig bedömning av gränsfall.
@@ -59,8 +59,9 @@ Detta är ett återkommande tolkningsdiskussion. **Säker tolkning:** funktioner
 | 30 | ai-industry-radar | Edge | LÅGRISK | Trendanalys |
 | 31 | **intresseguide / RIASEC** | Klient + edge | **GRÄNSFALL** | Rangordnar yrken efter personlighet |
 | 32 | **jobbmatchning** | (om implementerad) | **HÖGRISK** | Rangordnar jobb för individ — Art 22 GDPR-relevant |
+| 33 | **förslagsflöde till företag (AG5/AG6)** | DB + klient | **INGEN AI** | Konsulenten väljer person och skriver presentationstexten; företaget ser bara godkända fält via vitlistad vy. Står med för att gränsen ska synas — se avsnittet "Företagskonto" nedan |
 
-**Sammanfattning:** 27 LÅGRISK, 4 GRÄNSFALL, 1 HÖGRISK (om implementerad).
+**Sammanfattning:** 27 LÅGRISK, 4 GRÄNSFALL, 1 HÖGRISK (om implementerad). Rad 33 innehåller ingen AI och räknas inte.
 
 ---
 
@@ -203,6 +204,55 @@ feature.
 **Att säga till en kommun:** "Portalen innehåller ingen AI i kedjan schema, närvaro,
 underlag. AI-funktionerna är deltagarens egna verktyg, kräver eget samtycke per
 funktion och kan stängas av för hela organisationen."
+
+---
+
+## Företagskonto (AG6, 2026-09-13) — ingen AI i förslagsflödet
+
+Portalen har sedan 2026-09-13 ett företagskonto (organisation av slaget `arbetsgivare`,
+migration `supabase/migrations/20260913100000_ag6_foretagskonto.sql`). Ett företag är en
+tredje part som *utvärderar sökande* — exakt den situation Annex III 4(a) beskriver, och
+den B2C-invändning som bär klassningen ovan gäller därför inte här. Frågan blir i stället:
+**finns det något AI-system i kedjan från konsulentens val till företagets beslut?**
+Svaret, kontrollerat mot migrationen och koden 2026-09-13:
+
+| Led i kedjan | Var | AI? | Vem avgör |
+|---|---|---|---|
+| Vilken person som föreslås för vilken plats | `employer_share_proposals` (INSERT av konsulenten) | Nej | Konsulenten, en person i taget. Ingen kandidatsökning, ingen lista, ingen rangordning finns att välja ur |
+| Vilka fält som får delas | `show_*`, alla `DEFAULT false` | Nej | Konsulenten föreslår, deltagaren godkänner per fält |
+| Presentationstexten | `presentation_text` | **Nej i etapp 1** — konsulenten skriver den själv | Konsulenten |
+| Deltagarens ja/nej | `respond_to_share_proposal` | Nej | Deltagaren ensam (guarden släpper bara `participant_id` från `pending`) |
+| Vad företaget ser | vyn `employer_proposals` (vitlistade kolumner) | Nej — `ai_summary` finns inte i vyn; "sammanfattning" är personens egen CV-text. Inga poäng, ingen intresseprofil | — (en visning) |
+| Företagets svar | `employer_response` ∈ {interested, declined} | Nej | Företaget |
+| Beslut om placering eller anställning | Utanför portalen | Utanför portalen | Företaget och konsulenten |
+
+**Villkorad bedömning — inte en juridisk garanti.** Så länge tabellen ovan stämmer finns
+inget AI-system som används för rekrytering eller urval av fysiska personer, för att sålla
+eller filtrera ansökningar eller för att bedöma sökande i 4(a):s mening. Det som lämnas till
+företaget är deltagarens egna uppgifter, valda av en människa och godkända av den
+registrerade. **Annex III 4(a) aktiveras därför inte av företagskontot som det är byggt.**
+Bedömningen faller om något av följande införs:
+
+1. **Urval eller rangordning med AI** — en funktion som föreslår *vem* som ska föreslås,
+   sorterar deltagare mot en plats, eller ger företaget mer än ett förslag i en jämförbar
+   vy. Det är högrisk enligt 4(a), oavsett om konsulenten "godkänner" resultatet. Tabellen
+   `employer_share_proposals` har inget poäng- eller rangordningsfält och ska inte få något.
+2. **AI-resultat om personen i vyn** — `ai_summary`, matchningspoäng, kompetensgap, RIASEC.
+   Villkoren (AG4) förbjuder det; migrationen håller det ur vyn. Lägger någon till en sådan
+   kolumn i `employer_proposals` ska den här punkten, DPIA:ns R13 och B22 i Art 30-registret
+   skrivas om i samma commit.
+3. **AI-formulerad presentationstext** — en planerad möjlighet, inte byggd. Om den införs är
+   det **text, inte urval**: konsulenten har redan valt personen, och funktionen faller i
+   samma LÅGRISK-klass som personligt brev och profile-summary (rad 1 och 16). Villkor för
+   att klassningen ska hålla: texten märks som AI-formulerad för konsulenten (art. 50), den
+   bygger bara på fält deltagaren godkänt, och deltagaren ser texten innan hon svarar ja.
+   Inför ändringen: lägg raden i sammanfattningstabellen och låt grinden
+   `ai-sanningsregel.test.ts` omfatta den nya prompten.
+
+**Att säga till ett företag:** "Ni får ett förslag i taget, om en namngiven person, från en
+konsulent, efter att personen sagt ja. Ingen AI har valt personen, och inga AI-omdömen om
+personen ingår. Det finns ingen sökfunktion bland personer — det är ett medvetet val."
+Samma mening står i inbjudningsmejlet (`send-invite-email`, mallen för företagskonton).
 
 ---
 

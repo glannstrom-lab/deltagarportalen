@@ -59,8 +59,13 @@ const RLS_UNDANTAG = {}
  *            `profiles.consultant_id` — så den kan strukturellt inte användas för
  *            någon annans räkning. Det är villkoret för att en definer-funktion ska
  *            få nå authenticated.
+ *   29 → 30  2026-09-13, AG5: `respond_to_share_proposal`. Deltagarens ENDA väg att
+ *            svara på ett delningsförslag; läser auth.uid() själv, tar inget
+ *            användar-id, skriver svar + consent_history i samma transaktion.
+ *            Företagskontot (AG6, samma dag) tillkom UTAN nya definer-anrop: all
+ *            skrivning går via INSTEAD OF-triggers på vyer (KM2-mönstret).
  */
-const AUTH_TAK = 29
+const AUTH_TAK = 30
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

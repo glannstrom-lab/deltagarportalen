@@ -24,7 +24,9 @@ vi.mock('@/lib/toast', () => ({ notifications: { error: vi.fn(), success: vi.fn(
 
 import { DagensPass } from './DagensPass'
 
-const idag = new Date().toISOString().slice(0, 10)
+// Lokalt datum, inte UTC: toISOString() ger gårdagen mellan 00:00 och 02:00 svensk tid,
+// och då har passet (slut 23:59 'i går') redan passerat → 'Saknar närvaro' i stället för 'Väntar'.
+const idag = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` })()
 const pass = (o: Record<string, unknown>) => ({
   id: 's1', participant_id: 'p1', plan_id: 'pl', date: idag, start_time: '09:00:00', end_time: '23:59:00',
   title: 'Verkstad', attendance: null, self_checkin_at: null, absence_reason: null, absence_note: null, ...o,

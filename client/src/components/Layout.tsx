@@ -1,9 +1,16 @@
+/* eslint-disable react-refresh/only-export-components -- AG6: företagskontots kontext + hook bor bredvid skalets komponenter, samma undantag som EnergySaveMode/FocusModeProvider */
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useState, useCallback, useMemo, useEffect, lazy, Suspense } from 'react'
+import { useState, useCallback, useMemo, useEffect, lazy, Suspense, createContext, useContext } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search
+  Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle, Search,
+  Home, Briefcase, Inbox, UserCheck, MessageSquare, ShieldCheck, Building2, Loader2
 } from '@/components/ui/icons'
+// AG6 (2026-09-13): företagskontot. Personen är USER på profilnivå; det som
+// skiljer henne är medlemsraden i organization_members — därför hooken, inte
+// profile.role. Se ForetagskontoProvider nedan för varför Layout inte anropar
+// hooken själv.
+import { useForetagskonto, type Foretagskonto } from '@/hooks/useForetagskonto'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
 // PG4 (2026-09-12): språkvalet fanns bara i TopBar, som inte renderas på mobil.
@@ -13,6 +20,9 @@ import { DemoBanner } from './consultant/DemoBanner'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
+
+/** Exakt en toastbehållare i hela trädet (grind KA1) — monteras sist i vilket skal som än visas. */
+const TOAST = <ToastContainer />
 import { SkipLinks } from './SkipLinks'
 import CrisisSupport from './CrisisSupport'
 import { cn } from '@/lib/utils'
@@ -57,6 +67,254 @@ import { useSettingsStore } from '@/stores/settingsStore'
 
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
+
+// ============================================================================
+// AG6 (2026-09-13): FÖRETAGSKONTOTS SKAL
+// ============================================================================
+
+/**
+ * Kontext i stället för ett direkt hookanrop i Layout/MobileTopBar/MobileMainMenu.
+ *
+ * `useForetagskonto` bygger på React Query, och de tre komponenterna testas
+ * fristående (Layout.topnav, Layout.mobilmeny, Layout.mobilsprak) utan
+ * QueryClientProvider — ett direkt anrop hade fällt alla tre med "No
+ * QueryClient set". Defaultvärdet är deltagarläget, så varje konsument som
+ * renderas utan provider beter sig exakt som före AG6. App.tsx (RootRoute)
+ * lägger providern runt Layout; det är den enda platsen hooken anropas i skalet.
+ */
+type ForetagsSkal = Pick<Foretagskonto, 'org' | 'isLoading' | 'isEmployer'>
+const FORETAG_DEFAULT: ForetagsSkal = { org: null, isLoading: false, isEmployer: false }
+export const ForetagskontoContext = createContext<ForetagsSkal>(FORETAG_DEFAULT)
+
+export function ForetagskontoProvider({ children }: { children: React.ReactNode }) {
+  const { org, isLoading, isEmployer } = useForetagskonto()
+  const varde = useMemo<ForetagsSkal>(() => ({ org, isLoading, isEmployer }), [org, isLoading, isEmployer])
+  return <ForetagskontoContext.Provider value={varde}>{children}</ForetagskontoContext.Provider>
+}
+
+export function useForetagsskal(): ForetagsSkal {
+  return useContext(ForetagskontoContext)
+}
+
+/**
+ * Företagets meny. Rutterna ägs av pages/foretag/Foretag.tsx (egna <Routes>,
+ * som Consultant.tsx). Inline svenska med flit: bara företag ser detta, och
+ * locale-filerna ägs av ett annat pass — nycklarna får komma när texten satt sig.
+ */
+export const FORETAG_LANKAR = [
+  { path: '/foretag', label: 'Översikt', icon: Home },
+  { path: '/foretag/platser', label: 'Våra platser', icon: Briefcase },
+  { path: '/foretag/forslag', label: 'Förslag', icon: Inbox },
+  { path: '/foretag/pagaende', label: 'Pågående', icon: UserCheck },
+  { path: '/foretag/meddelanden', label: 'Meddelanden', icon: MessageSquare },
+  { path: '/foretag/stod', label: 'Stöd och regler', icon: ShieldCheck },
+  { path: '/foretag/om', label: 'Om företaget', icon: Building2 },
+] as const
+
+function arForetagslankAktiv(pathname: string, path: string): boolean {
+  if (path === '/foretag') return pathname === '/foretag' || pathname === '/foretag/'
+  return pathname === path || pathname.startsWith(path + '/')
+}
+
+/** Länklistan — samma i desktopkolumnen och i mobilmenyn. */
+function ForetagLankar({ pathname, onClick }: { pathname: string; onClick?: () => void }) {
+  return (
+    <nav aria-label="Företagsmeny" data-testid="foretagsmeny" className="space-y-0.5">
+      {FORETAG_LANKAR.map((lank) => {
+        const Icon = lank.icon
+        const aktiv = arForetagslankAktiv(pathname, lank.path)
+        return (
+          <Link
+            key={lank.path}
+            to={lank.path}
+            onClick={onClick}
+            aria-current={aktiv ? 'page' : undefined}
+            className={cn(
+              'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
+              aktiv
+                ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium'
+                : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
+            )}
+          >
+            <Icon className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
+            <span>{lank.label}</span>
+          </Link>
+        )
+      })}
+    </nav>
+  )
+}
+
+/**
+ * Samma laddare som PrivateRoute i App.tsx. Skalet får inte blinka
+ * deltagarmenyn medan medlemskapen hämtas ("laddning är inte tomhet").
+ */
+function SkalLaddar() {
+  const { t } = useTranslation()
+  return (
+    <div
+      className="min-h-screen flex items-center justify-center bg-[var(--c-solid)]"
+      role="status"
+      aria-live="polite"
+      aria-label={t('common.loading', 'Laddar...')}
+      data-testid="skal-laddar"
+    >
+      <Loader2 className="animate-spin text-white" size={48} aria-hidden="true" />
+    </div>
+  )
+}
+
+/** Desktophuvud för företag: logga, företagsnamn, språk, notiser, profil. Inga hubbar, ingen sök i deltagarsidorna, inget krisstöd. */
+function ForetagTopBar({ orgNamn }: { orgNamn: string | null }) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const { user, profile, signOut } = useAuthStore()
+  const [oppen, setOppen] = useState(false)
+
+  const handleLogout = async () => {
+    await signOut()
+    navigate('/login')
+  }
+
+  const initial = profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'
+
+  return (
+    <header
+      className="sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-4 py-2"
+      data-testid="foretag-topbar"
+    >
+      <div className="flex items-center gap-3">
+        <Link to="/foretag" className="flex items-center gap-2">
+          <OptimizedImage src="/logo-icon.svg" alt="Jobin" loading="eager" className="h-7 w-7 object-contain" />
+          <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+            jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
+          </span>
+        </Link>
+        {orgNamn && (
+          <span className="hidden md:flex items-center gap-1.5 text-sm text-stone-600 dark:text-stone-300 pl-3 border-l border-stone-200 dark:border-stone-700/50">
+            <Building2 className="w-4 h-4" aria-hidden="true" />
+            {orgNamn}
+          </span>
+        )}
+        <div className="flex-1" />
+        <LanguageSwitcher />
+        <NotificationBell variant="compact" />
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOppen((o) => !o)}
+            className={cn(
+              'flex items-center gap-1.5 p-0.5 rounded-lg transition-colors hover:bg-stone-100 dark:hover:bg-stone-800',
+              oppen && 'bg-stone-100 dark:bg-stone-800'
+            )}
+            aria-expanded={oppen}
+            aria-haspopup="menu"
+            aria-label={t('topbar.profile')}
+          >
+            <div className="w-7 h-7 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 flex items-center justify-center">
+              <span className="text-[var(--c-text)] text-xs font-semibold">{initial}</span>
+            </div>
+            <ChevronDown size={12} className={cn('text-stone-400 transition-transform', oppen && 'rotate-180')} aria-hidden="true" />
+          </button>
+          {oppen && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setOppen(false)} aria-hidden="true" />
+              <div
+                role="menu"
+                className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 shadow-lg overflow-hidden z-50"
+              >
+                <div className="px-4 py-3 border-b border-stone-100 dark:border-stone-800">
+                  <p className="text-sm font-medium text-stone-800 dark:text-stone-100 truncate">
+                    {profile?.first_name ? `${profile.first_name} ${profile.last_name ?? ''}`.trim() : user?.email}
+                  </p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{user?.email}</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">Företag{orgNamn ? ` · ${orgNamn}` : ''}</p>
+                </div>
+                <div className="p-1.5">
+                  <Link
+                    to="/foretag/om"
+                    role="menuitem"
+                    onClick={() => setOppen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    <Building2 size={16} className="text-stone-400" aria-hidden="true" />
+                    Om företaget
+                  </Link>
+                  <Link
+                    to="/settings"
+                    role="menuitem"
+                    onClick={() => setOppen(false)}
+                    className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800"
+                  >
+                    <Settings size={16} className="text-stone-400" aria-hidden="true" />
+                    {t('nav.settings')}
+                  </Link>
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+                  >
+                    <LogOut size={16} aria-hidden="true" />
+                    {t('nav.logout')}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
+  )
+}
+
+/**
+ * Företagets skal. Inga hubbar, ingen sidomeny med deltagarens verktyg, ingen
+ * rådgivarkolumn, inget Lugnare läge, ingen paus- eller kommandopalett, ingen
+ * onboarding för deltagare. DemoBanner ligger kvar: demoföretaget ska se att
+ * allt är påhittat precis som demokonsulenten.
+ */
+function ForetagSkal({ isMobile, showBars, pathname, org }: {
+  isMobile: boolean
+  showBars: boolean
+  pathname: string
+  org: ForetagsSkal['org']
+}) {
+  return (
+    <>
+      <SkipLinks />
+      <div
+        className={cn('min-h-screen flex flex-col bg-stone-50 dark:bg-stone-900', isMobile ? 'pb-safe' : '')}
+        data-testid="foretagsskal"
+      >
+        {showBars && !isMobile && <ForetagTopBar orgNamn={org?.name ?? null} />}
+        {showBars && <DemoBanner />}
+        {showBars && isMobile && <MobileTopBar />}
+
+        <div className="flex-1 flex">
+          {showBars && !isMobile && (
+            <aside className="hidden lg:block w-56 shrink-0 p-3 border-r border-stone-200 dark:border-stone-700/50 bg-white dark:bg-stone-900">
+              <ForetagLankar pathname={pathname} />
+            </aside>
+          )}
+          <div className="flex-1 flex flex-col min-w-0 min-h-0">
+            <main
+              id="main-content"
+              className={cn('flex-1 overflow-auto min-w-0', isMobile ? 'p-4' : 'p-6')}
+              tabIndex={-1}
+            >
+              <div className={cn('mx-auto min-w-0', isMobile ? 'max-w-full' : 'sidbredd')}>
+                <Outlet />
+              </div>
+            </main>
+          </div>
+        </div>
+
+        {isMobile && showBars && !arForetagslankAktiv(pathname, '/foretag') && <MobileBackButton />}
+      </div>
+    </>
+  )
+}
 
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
@@ -148,6 +406,21 @@ export default function Layout() {
   // Måste vara stabil: den ligger i registreringseffektens beroendelista, och
   // ett objekt som byter identitet gav en oändlig loop som kraschade sidan.
   const tipsApi = useMemo(() => ({ registrera, avregistrera }), [registrera, avregistrera])
+
+  // AG6: efter alla hooks ovan. Medan medlemskapen hämtas får skalet inte
+  // påstå att personen är deltagare — samma laddare som PrivateRoute.
+  const foretag = useForetagsskal()
+  if (foretag.isLoading) return <SkalLaddar />
+  // Toasten monteras EN gång (grind KA1 i lib/toast.grind.test.ts), utanför
+  // båda skalen — ett anrop till showToast ska nå fram oavsett vilket skal som visas.
+  if (foretag.isEmployer) {
+    return (
+      <>
+        <ForetagSkal isMobile={isMobile} showBars={showBars} pathname={location.pathname} org={foretag.org} />
+        {TOAST}
+      </>
+    )
+  }
 
   return (
     <>
@@ -293,7 +566,7 @@ export default function Layout() {
 
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
-        <ToastContainer />
+        {TOAST}
 
         {/* Kommandopaletten. Renderar ingenting förrän Ctrl/⌘ K trycks, så den
             kostar inget för den som aldrig använder den. */}
@@ -324,6 +597,9 @@ export function MobileTopBar() {
   const location = useLocation()
   const navigate = useNavigate()
   const { user, profile, signOut } = useAuthStore()
+  // AG6: företagskontakten får varken sök i deltagarens sidor eller krisstöd,
+  // och profilpanelen ska säga "Företag", inte "Deltagare".
+  const { isEmployer } = useForetagsskal()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   // TG1: fokusfälla + Escape + fokusåterställning för profilpanelen.
@@ -333,7 +609,7 @@ export function MobileTopBar() {
 
   // På sidor som visar MobileBackButton (icke-hub-rot) måste loggan ge plats
   // för den 44px floatande knappen i övre vänstra hörnet.
-  const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
+  const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag', '/foretag']
   const showsBackButton = !HUB_ROOT_PATHS.includes(location.pathname)
 
   const handleLogout = async () => {
@@ -376,15 +652,17 @@ export function MobileTopBar() {
             {/* Sök — mobilens enda väg in i kommandopaletten. Det finns inget
                 tangentbord att trycka Ctrl+K på här, så utan den här knappen
                 är paletten helt onåbar på den enhet målgruppen använder mest. */}
-            <button
-              type="button"
-              onClick={oppnaPalett}
-              aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
-              className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
-            >
-              <Search className="w-[18px] h-[18px]" aria-hidden="true" />
-            </button>
-            <CrisisSupport variant="inline" />
+            {!isEmployer && (
+              <button
+                type="button"
+                onClick={oppnaPalett}
+                aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
+                className="w-8 h-8 flex items-center justify-center rounded-lg text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+              >
+                <Search className="w-[18px] h-[18px]" aria-hidden="true" />
+              </button>
+            )}
+            {!isEmployer && <CrisisSupport variant="inline" />}
             {/* PG4 (2026-09-12): samma LanguageSwitcher som desktop — portalens
                 engelska läsare är nyanländ och på mobil, och här fanns inget språkval. */}
             <div data-focus-chrome="topbar-extras">
@@ -479,11 +757,13 @@ export function MobileTopBar() {
               <p className="text-sm font-semibold text-stone-800 dark:text-stone-100 truncate">{user?.email || t('roles.user')}</p>
               {/* PG20 (2026-09-13): dialogen kallade en konsulent "Deltagare". */}
               <p className="text-xs text-stone-500 dark:text-stone-400">
-                {(profile?.activeRole || profile?.role) === 'CONSULTANT'
-                  ? t('roles.consultant')
-                  : (profile?.activeRole || profile?.role) === 'ADMIN' || (profile?.activeRole || profile?.role) === 'SUPERADMIN'
-                    ? t('roles.admin')
-                    : t('roles.participant')}
+                {isEmployer
+                  ? 'Företag'
+                  : (profile?.activeRole || profile?.role) === 'CONSULTANT'
+                    ? t('roles.consultant')
+                    : (profile?.activeRole || profile?.role) === 'ADMIN' || (profile?.activeRole || profile?.role) === 'SUPERADMIN'
+                      ? t('roles.admin')
+                      : t('roles.participant')}
               </p>
             </div>
           </div>
@@ -557,6 +837,9 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
   // startar hopfällda under "Deltagarvyn" — hon kan behöva se den, men det är
   // inte hennes arbetsyta. Deltagare får som förut alla hubbar utfällda.
   const konsulentForst = activeRole === 'CONSULTANT'
+  // AG6 (2026-09-13): företagskontakten får bara företagslänkarna — inga hubbar,
+  // ingen "Deltagarvyn". Hon är USER på profilnivå, så profile.role räcker inte.
+  const { isEmployer: foretagForst } = useForetagsskal()
   const [expandedGroups, setExpandedGroups] = useState<string[]>(() => (konsulentForst ? [] : navHubs.map((h) => h.id)))
 
   const toggleGroup = (groupId: string) => {
@@ -639,13 +922,14 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
       {/* Scrollable Navigation */}
       <nav className="flex-1 overflow-y-auto p-2">
+        {foretagForst && <ForetagLankar pathname={location.pathname} onClick={onClose} />}
         {konsulentForst && konsulentBlock}
         {konsulentForst && (
           <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             {t('sidebar.participantView')}
           </p>
         )}
-        {navHubs.map((group) => {
+        {!foretagForst && navHubs.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
           const hubAktiv = location.pathname === group.path
           const hubIkon = HUB_ICON_SRC[group.domain]
@@ -775,6 +1059,8 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           <Settings className="w-4 h-4" />
           <span>{t('nav.settings')}</span>
         </Link>
+        {/* AG6: deltagarens hjälpsida gäller inte företag — de har "Stöd och regler" i sin meny. */}
+        {!foretagForst && (
         <Link
           to="/help"
           onClick={onClose}
@@ -788,6 +1074,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           <HelpCircle className="w-4 h-4" />
           <span>{t('nav.help', 'Hjälp')}</span>
         </Link>
+        )}
         <button
           onClick={() => {
             onClose()

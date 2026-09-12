@@ -21,6 +21,7 @@ import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   placeringarApi,
   type EmployerHiringInterest,
+  type Foretagsplats,
   type KopplaBarDeltagare,
   type Placering,
   type PlaceringInput,
@@ -38,6 +39,14 @@ interface Props {
   deltagare: KopplaBarDeltagare[]
   /** Förvald deltagare (t.ex. när modalen öppnas från en deltagares egen kortvy). */
   forcedParticipantId?: string
+  /**
+   * AG6: företagens egna platser (employer_places) att välja bland — förifyller
+   * formuläret och sätter place_id + company_account_id. Valfritt: utan listan
+   * fungerar formuläret som förut (manuell inmatning).
+   */
+  foretagsplatser?: Foretagsplats[]
+  /** Felmeddelande om företagens platser inte kunde hämtas — visas i stället för väljaren. */
+  foretagsplatserFel?: string | null
   onSave: (input: PlaceringInput) => Promise<unknown>
   onClose: () => void
 }
@@ -49,6 +58,8 @@ function tomtFormular(participantId: string): PlaceringInput {
     participant_id: participantId,
     company_name: '',
     placement_type: 'praktik',
+    place_id: null,
+    company_account_id: null,
     org_number: null,
     occupation: null,
     industry: null,
@@ -86,7 +97,56 @@ function tomtFormular(participantId: string): PlaceringInput {
   }
 }
 
-export function PlaceringFormModal({ open, existing, deltagare, forcedParticipantId, onSave, onClose }: Props) {
+/**
+ * Förifyller formuläret från en av företagets platser. Fält som platsen inte
+ * bär (t.ex. deltagarens handledningsbehov, interna anteckningar) rörs inte.
+ * Företagsnamn och org.nr tas ur inbäddade `organizations` bara när RLS
+ * släppt igenom dem — annars lämnas fälten som de är och konsulenten fyller
+ * i själv (ingen gissning).
+ */
+function forifyllFranForetagsplats(prev: PlaceringInput, plats: Foretagsplats): PlaceringInput {
+  return {
+    ...prev,
+    place_id: plats.id,
+    company_account_id: plats.org_id,
+    placement_type: plats.placement_type,
+    company_name: plats.organizations?.name ?? prev.company_name,
+    org_number: plats.organizations?.org_number ?? prev.org_number ?? null,
+    occupation: plats.title,
+    address: plats.address,
+    start_date: plats.start_from ?? prev.start_date ?? null,
+    hours_per_week: plats.hours_per_week,
+    schedule_days: plats.schedule_days,
+    lifting_required: plats.lifting_required,
+    standing_required: plats.standing_required,
+    temperature_demands: plats.temperature_demands,
+    noise_level: plats.noise_level,
+    pace_level: plats.pace_level,
+    shift_work: plats.shift_work,
+    physical_notes: plats.physical_notes,
+    workplace_supervision_capacity: plats.workplace_supervision_capacity,
+    supervision_notes: plats.supervision_notes,
+    language_requirements: plats.language_requirements,
+    drivers_license_required: plats.drivers_license_required,
+    other_requirements: plats.other_requirements,
+    contact_name: plats.contact_name,
+    contact_phone: plats.contact_phone,
+    contact_email: plats.contact_email,
+    sick_call_phone: plats.sick_call_phone,
+    sick_call_instructions: plats.sick_call_instructions,
+  }
+}
+
+export function PlaceringFormModal({
+  open,
+  existing,
+  deltagare,
+  forcedParticipantId,
+  foretagsplatser,
+  foretagsplatserFel,
+  onSave,
+  onClose,
+}: Props) {
   const [draft, setDraft] = useState<PlaceringInput>(tomtFormular(forcedParticipantId ?? ''))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -115,6 +175,19 @@ export function PlaceringFormModal({ open, existing, deltagare, forcedParticipan
   const update = <K extends keyof PlaceringInput>(key: K, value: PlaceringInput[K]) => {
     setDraft((prev) => ({ ...prev, [key]: value }))
   }
+
+  // Öppna platser att välja bland — plus den redan valda, även om den hunnit
+  // pausas/tillsättas, så att en redigering inte tappar kopplingen tyst.
+  const valbaraPlatser = (foretagsplatser ?? []).filter((fp) => fp.status === 'oppen' || fp.id === draft.place_id)
+  const valjForetagsplats = (id: string) => {
+    if (!id) {
+      setDraft((prev) => ({ ...prev, place_id: null, company_account_id: null }))
+      return
+    }
+    const plats = (foretagsplatser ?? []).find((fp) => fp.id === id)
+    if (plats) setDraft((prev) => forifyllFranForetagsplats(prev, plats))
+  }
+  const valdPlats = draft.place_id ? (foretagsplatser ?? []).find((fp) => fp.id === draft.place_id) : undefined
 
   const handleSave = async () => {
     if (!draft.participant_id) {
@@ -161,6 +234,47 @@ export function PlaceringFormModal({ open, existing, deltagare, forcedParticipan
         </div>
 
         <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          {/* ---- AG6: välj bland företagens platser (valfritt) ---- */}
+          {(foretagsplatser !== undefined || foretagsplatserFel) && (
+            <section className="space-y-2">
+              {foretagsplatserFel ? (
+                <p className="text-xs text-amber-700 flex items-center gap-1.5">
+                  <AlertCircle size={12} />
+                  Företagens platser kunde inte hämtas ({foretagsplatserFel}). Fyll i platsen manuellt.
+                </p>
+              ) : (
+                <Field label="Välj bland företagens platser (valfritt)">
+                  <select
+                    value={draft.place_id ?? ''}
+                    onChange={(e) => valjForetagsplats(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm bg-white"
+                  >
+                    <option value="">
+                      {valbaraPlatser.length === 0 ? 'Inga öppna platser från företag just nu' : 'Fyll i manuellt…'}
+                    </option>
+                    {valbaraPlatser.map((fp) => (
+                      <option key={fp.id} value={fp.id}>
+                        {fp.organizations?.name ? `${fp.organizations.name} — ` : ''}
+                        {fp.title} · {PLACERING_TYP_LABEL[fp.placement_type]}
+                        {fp.address ? ` · ${fp.address}` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <p className="mt-1 text-[11px] text-stone-500">
+                    En plats företaget själv lagt upp. Fälten nedan fylls i från den och platsen kopplas till
+                    företagskontot — du kan ändra allt innan du sparar.
+                  </p>
+                </Field>
+              )}
+              {valdPlats && !valdPlats.organizations?.name && (
+                <p className="text-xs text-amber-700 flex items-center gap-1.5">
+                  <AlertCircle size={12} />
+                  Företagets namn och org.nr kunde inte hämtas från kontot — fyll i dem nedan.
+                </p>
+              )}
+            </section>
+          )}
+
           {/* ---- Deltagare + insatstyp ---- */}
           <section className="space-y-3">
             <Field label="Deltagare *">

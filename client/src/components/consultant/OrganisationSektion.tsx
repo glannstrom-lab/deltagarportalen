@@ -498,7 +498,7 @@ function Organisation({
                     disabled={sparar === k.id}
                     onChange={(e) => void bytRoll(k, e.target.value as OrgRole)}
                     fullWidth={false}
-                    options={ORG_ROLLER.filter((r) => jagArAdmin || r !== 'admin').map((r) => ({ value: r, label: ORG_ROLL_ETIKETT[r] }))}
+                    options={ORG_ROLLER.filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin')).map((r) => ({ value: r, label: ORG_ROLL_ETIKETT[r] }))}
                   />
                   <Button
                     size="sm"
@@ -568,7 +568,8 @@ function LaggTillKollega({
   const [fel, setFel] = useState<string | null>(null)
   const [sparar, setSparar] = useState(false)
 
-  const roller = ORG_ROLLER.filter((r) => jagArAdmin || r !== 'admin')
+  // 'arbetsgivare' finns bara i företagskonton (AG6) — triggern nekar den här, så visa den inte.
+  const roller = ORG_ROLLER.filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin'))
 
   const skicka = async (e: FormEvent) => {
     e.preventDefault()

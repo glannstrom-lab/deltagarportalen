@@ -1,7 +1,7 @@
 # Retention Policy — Deltagarportalen
 
 **Lagkrav:** GDPR Art 5.1.e (storage limitation), Art 32 (säkerhet).
-**Datum:** 2026-07-27 (stämd av mot verkligt schema; föregående version 2026-05-15)
+**Datum:** 2026-09-13 (öppen rad för företagskontots `employer_*`-tabeller tillagd — regel saknas; 2026-09-12 gallringsjobb driftsatta; 2026-07-27 stämd av mot verkligt schema; föregående version 2026-05-15)
 
 ## Revisionsnot 2026-07-27 (ROADMAP H7)
 
@@ -59,6 +59,7 @@ särskilt STA, där Arbetsförmedlingens dokumentationskrav kan styra tiden.
 | **Konsulentens journal** (`consultant_journal`, `consultant_notes`) | **5 år efter avslutat uppdrag** *(beslut Mikael 2026-09-12, ändrat från 2 år: överklaganden och tillsyn; AI-jurist får justera nedåt)* | Cron + vid `revoke_consultant_link` | ✅ **Driftsatt 2026-09-12** (`retention-consultant-journal`, 04:45 UTC, `execute_consultant_journal_retention()`): per deltagare utan aktiv koppling vars senaste återkallade samtycke är >5 år, auditrad i `admin_audit_log`. Saknas samtyckesrad raderas inget (fail closed) |
 | **Konsulentmeddelanden** (`consultant_messages`) | ✔ *(bekräftat 2026-09-12)* 2 år | Cron | ✅ **Driftsatt 2026-09-12** (`retention-consultant-messages`, 04:35 UTC, `created_at`) |
 | **Placeringar** (`consultant_placements`, `consultant_work_placements`) | ✔ *(bekräftat 2026-09-12)* 2 år (uppföljning 3/6 mån ingår) | Cron | ✅ **Driftsatt 2026-09-12** (`retention-placements`, 04:40 UTC): `consultant_placements` 2 år från `start_date` (tabellen har inget slutdatum); `consultant_work_placements` 2 år från `end_date`, pågående (NULL) raderas aldrig; followups cascadar |
+| **Företagskonto** (`employer_share_proposals`, `employer_messages`, `employer_checkins`, `employer_profiles`, `employer_places`) — AG6, tillagd 2026-09-13 | ❌ **Ingen regel skriven.** Förslag `[bekräftas]`: förslag, meddelanden och avstämningar följer placeringen (2 år från `end_date`, som `retention-placements`); förslag som aldrig ledde till placering (`declined`/`withdrawn`/utgångna) 12 månader från `decided_at`/`expires_at`; företagsprofil och platser tills organisationen raderas eller 2 år efter sista aktivitet | Cascade i dag: `employer_share_proposals` från placeringen, `employer_messages` från förslaget, `employer_checkins` från placeringen — så `retention-placements` tar dem *indirekt*. Pågående placeringar (`end_date IS NULL`) raderas aldrig, och deras förslag och trådar lever obegränsat | ❌ **Saknas — ska in** som cron-jobb bredvid `retention-placements`. Samtyckesbeviset (`consent_history`, typ `employer_share`, `reference_id`) gallras med audit-loggarna (5 år) och överlever förslaget med flit (ingen FK) |
 | **Jobbansökningar** (`saved_jobs`, `application_*`) | Tills deltagaren raderar | Manuell + cascade vid kontoradering | ✅ Manuell / 🟡 cascade overifierad |
 | **Kontaktpersoner hos arbetsgivare** (`application_contacts`) | Tills deltagaren raderar | Manuell | ✅ |
 | **Nätverkskontakter** (`network_contacts`) | Tills deltagaren raderar | Manuell | ✅ — men se anmärkning nedan |
@@ -140,6 +141,7 @@ SELECT cron.schedule(
 - [ ] Testa med fake-data att gallring funkar
 - [ ] Dokumentera i `docs/HOSTING-REGIONS.md` och Privacy.tsx
 - [ ] Besluta om `network_contacts` (tredje personers uppgifter — se anmärkning ovan)
+- [ ] **Företagskontots tabeller (`employer_*`, AG6 2026-09-13):** besluta gallringstid och lägg ett cron-jobb — se raden i tabellen ovan. Tills dess gallras bara det som cascadar från en avslutad placering; företagsprofil, platser och förslag som aldrig ledde till placering gallras inte alls
 
 ## Användarens kontroll
 

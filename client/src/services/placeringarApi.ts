@@ -48,7 +48,10 @@ export interface Placering {
   id: string
   consultant_id: string
   participant_id: string
+  /** AG6: företagskontot (organizations.kind='arbetsgivare'). Sätts av inbjudan (employer_invitations) eller vid val av företagets plats. */
   company_account_id: string | null
+  /** AG6: företagets egen plats (employer_places) som den här placeringen bygger på. Nullbar — manuellt inmatade platser har ingen. */
+  place_id: string | null
 
   placement_type: PlaceringTyp
   status: PlaceringStatus
@@ -156,6 +159,86 @@ export interface KopplaBarDeltagare {
   email: string
 }
 
+/**
+ * AG6: en rad i `employer_places` — det företaget erbjuder, utan person.
+ * Personal har SELECT på alla (policy "Personal läser företagens platser").
+ * `organizations` bäddas in via FK org_id, men konsulenten har bara SELECT
+ * på organisationer hon själv är medlem i ("Medlem ser sin organisation",
+ * KM2) — för ett företagskonto blir inbäddningen därför normalt `null`.
+ * Visa aldrig ett påhittat företagsnamn i det läget (CLAUDE.md 2026-08-09).
+ */
+export interface Foretagsplats {
+  id: string
+  org_id: string
+  title: string
+  placement_type: PlaceringTyp
+  description: string | null
+  status: 'oppen' | 'pausad' | 'tillsatt' | 'stangd'
+  hours_per_week: number | null
+  schedule_days: string | null
+  start_from: string | null
+  address: string | null
+  lifting_required: boolean | null
+  standing_required: boolean | null
+  temperature_demands: Temperaturkrav | null
+  noise_level: Niva | null
+  pace_level: Niva | null
+  shift_work: boolean
+  physical_notes: string | null
+  workplace_supervision_capacity: Niva | null
+  supervision_notes: string | null
+  language_requirements: string | null
+  drivers_license_required: boolean
+  other_requirements: string | null
+  contact_name: string | null
+  contact_phone: string | null
+  contact_email: string | null
+  sick_call_phone: string | null
+  sick_call_instructions: string | null
+  created_by: string | null
+  created_at: string
+  updated_at: string
+  organizations: { name: string; org_number: string | null } | null
+}
+
+/** AG6: företagets avstämning (employer_checkins) — konsulenten läser raderna på egna placeringar. */
+export interface Foretagsavstamning {
+  id: string
+  placement_id: string
+  org_id: string
+  author_id: string | null
+  milestone_week: number
+  going_well: string | null
+  concerns: string | null
+  continue_interest: 'ja' | 'kanske' | 'nej' | null
+  created_at: string
+}
+
+export interface ForetagsInbjudanInput {
+  org_number: string
+  company_name: string
+  email: string
+  contact_name: string
+  /** Placeringen vars company_account_id ska sättas — bara om konsulenten äger den (triggern kontrollerar). */
+  placement_id?: string | null
+}
+
+/** Raden vyn `employer_invitations` returnerar efter INSTEAD OF INSERT. */
+export interface ForetagsInbjudan {
+  id: string
+  org_id: string
+  company_name: string | null
+  org_number: string | null
+  email: string
+  contact_name: string | null
+  /** true = e-posten hade redan ett konto; personen blev medlem direkt och mejlet säger "logga in". */
+  existing_account: boolean
+  email_sent: boolean | null
+  used_at: string | null
+  expires_at: string | null
+  created_at: string
+}
+
 async function kravInloggadAnvandare(): Promise<string> {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
@@ -174,7 +257,7 @@ async function kravInloggadAnvandare(): Promise<string> {
  * läggas till här FÖR HAND innan det kan nå ett arbetsgivarunderlag.
  *
  * Medvetet UTESLUTNA (konsulentens interna underlag, aldrig delningsbart):
- * id, consultant_id, participant_id, company_account_id, status,
+ * id, consultant_id, participant_id, company_account_id, place_id, status,
  * contact_name/phone/email/address (arbetsgivarens EGNA kontaktuppgifter —
  * inget de behöver få tillbaka), participant_supervision_need,
  * workplace_supervision_capacity, supervision_notes (bedömningen av
@@ -473,6 +556,111 @@ async function deleteUppfoljning(id: string): Promise<void> {
   if (error) throw error
 }
 
+// ============================================================================
+// FÖRETAGSKONTOT (AG6) — företagets platser, inbjudan, avstämningar
+// ============================================================================
+
+/**
+ * Alla företags platser (RLS: personal läser alla). Anroparen filtrerar på
+ * status — PlaceringFormModal visar bara `oppen`. Inbäddningen av
+ * `organizations` är best effort (se Foretagsplats): null när RLS nekar.
+ */
+async function getForetagsplatser(): Promise<Foretagsplats[]> {
+  await kravInloggadAnvandare()
+
+  const { data, error } = await supabase
+    .from('employer_places')
+    .select('*, organizations(name, org_number)')
+    .order('created_at', { ascending: false })
+
+  if (error) throw error
+  return (data || []) as Foretagsplats[]
+}
+
+/**
+ * Bjuder in företagets kontaktperson: INSERT i vyn `employer_invitations`
+ * (INSTEAD OF-trigger, definer) som hittar eller skapar företagskontot på
+ * org.nr, sätter placeringens company_account_id om konsulenten äger den,
+ * och skapar inbjudan. Därefter mejlet via edge-funktionen send-invite-email
+ * — samma anrop som InviteParticipantDialog, men ett misslyckat mejl KASTAS
+ * här i stället för console.warn + tyst succé: raden finns, mejlet nådde
+ * inte fram, och det ska konsulenten få veta.
+ *
+ * Databasens fel är på svenska och ska visas rakt av ("Demokontot kan inte
+ * bjuda in …", "Organisationsnumret ska ha tio siffror", "E-posten tillhör
+ * ett personalkonto …").
+ */
+async function bjudInForetag(input: ForetagsInbjudanInput): Promise<ForetagsInbjudan> {
+  await kravInloggadAnvandare()
+
+  const { data, error } = await supabase
+    .from('employer_invitations')
+    .insert({
+      org_number: input.org_number.trim(),
+      company_name: input.company_name.trim(),
+      email: input.email.trim(),
+      contact_name: input.contact_name.trim(),
+      placement_id: input.placement_id ?? null,
+    })
+    .select('*')
+    .single()
+
+  if (error) throw new Error(felText(error))
+  const inbjudan = data as ForetagsInbjudan
+
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Inbjudan är registrerad men mejlet kunde inte skickas: ingen inloggad session.')
+
+  let svar: Response
+  try {
+    svar = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-invite-email`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ invitationId: inbjudan.id }),
+    })
+  } catch (e) {
+    throw new Error(`Inbjudan är registrerad men mejlet kunde inte skickas: ${e instanceof Error ? e.message : 'nätverksfel'}`)
+  }
+  if (!svar.ok) {
+    let detalj = `HTTP ${svar.status}`
+    try {
+      const body = (await svar.json()) as { error?: string; details?: string }
+      detalj = [body.error, body.details].filter(Boolean).join(' — ') || detalj
+    } catch {
+      // svaret var inte JSON — HTTP-koden får räcka
+    }
+    throw new Error(`Inbjudan är registrerad men mejlet kunde inte skickas: ${detalj}`)
+  }
+
+  return inbjudan
+}
+
+/** Företagets avstämningar på en placering (RLS: bara på egna placeringar). Tom lista = inga rader, inte fel. */
+async function getForetagsavstamningar(placementId: string): Promise<Foretagsavstamning[]> {
+  await kravInloggadAnvandare()
+
+  const { data, error } = await supabase
+    .from('employer_checkins')
+    .select('*')
+    .eq('placement_id', placementId)
+    .order('milestone_week', { ascending: true })
+
+  if (error) throw error
+  return (data || []) as Foretagsavstamning[]
+}
+
+/** Databasens (svenska) meddelande föredras — triggrarna skriver dem för att visas rakt av. */
+function felText(e: unknown): string {
+  if (e && typeof e === 'object' && 'message' in e && typeof (e as { message: unknown }).message === 'string') {
+    const m = (e as { message: string }).message.trim()
+    if (m) return m
+  }
+  return 'Kunde inte spara'
+}
+
 export const placeringarApi = {
   getKopplingsbaraDeltagare,
   getPlaceringar,
@@ -484,6 +672,9 @@ export const placeringarApi = {
   createUppfoljning,
   updateUppfoljning,
   deleteUppfoljning,
+  getForetagsplatser,
+  bjudInForetag,
+  getForetagsavstamningar,
   // Ren logik, ingen nätverksåtkomst — se sektionen ovan kravInloggadAnvandare.
   byggArbetsgivarUnderlag,
   harHandledningsobalans,

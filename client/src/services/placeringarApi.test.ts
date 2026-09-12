@@ -14,12 +14,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { placeringarApi, type Placering } from './placeringarApi'
 
 const mockGetUser = vi.fn()
+const mockGetSession = vi.fn()
 const mockFrom = vi.fn()
 const mockFromBuilder: any = {}
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
-    auth: { getUser: () => mockGetUser() },
+    auth: { getUser: () => mockGetUser(), getSession: () => mockGetSession() },
     from: (...args: unknown[]) => {
       mockFrom(...args)
       return mockFromBuilder
@@ -291,6 +292,7 @@ function fullPlacering(overrides: Partial<Placering> = {}): Placering {
     consultant_id: 'SENTINEL_consultant_id',
     participant_id: 'SENTINEL_participant_id',
     company_account_id: 'SENTINEL_company_account_id',
+    place_id: 'SENTINEL_place_id',
 
     placement_type: 'praktik',
     status: 'pagaende',
@@ -501,5 +503,121 @@ describe('placeringarApi.berakPeriodForslag', () => {
     const forslag = placeringarApi.berakPeriodForslag('subventionerad_anstallning', '2026-08-01', '2030-01-01')
     expect(forslag.foreslagetSlutdatum).toBeNull()
     expect(forslag.avvikerTydligt).toBe(false)
+  })
+})
+
+// ==================== FÖRETAGSKONTOT (AG6) ====================
+
+describe('placeringarApi.getForetagsplatser', () => {
+  it('kastar om ingen user är inloggad', async () => {
+    loggedOut()
+    await expect(placeringarApi.getForetagsplatser()).rejects.toThrow('Not authenticated')
+  })
+
+  it('hämtar employer_places med organizations inbäddat, utan statusfilter (formuläret filtrerar)', async () => {
+    loggedIn()
+    queueResult({ data: [{ id: 'ep1', title: 'Lagermedarbetare', organizations: null }], error: null })
+    const result = await placeringarApi.getForetagsplatser()
+    expect(mockFrom).toHaveBeenCalledWith('employer_places')
+    expect(mockFromBuilder.select).toHaveBeenCalledWith('*, organizations(name, org_number)')
+    expect(mockFromBuilder.eq).not.toHaveBeenCalled()
+    expect(result).toEqual([{ id: 'ep1', title: 'Lagermedarbetare', organizations: null }])
+  })
+
+  it('kastar vidare supabase-fel — sväljer aldrig till []', async () => {
+    loggedIn()
+    queueResult({ data: null, error: new Error('rls') })
+    await expect(placeringarApi.getForetagsplatser()).rejects.toThrow('rls')
+  })
+})
+
+describe('placeringarApi.getForetagsavstamningar', () => {
+  it('filtrerar på placement_id och sorterar på milstolpevecka', async () => {
+    loggedIn()
+    queueResult({ data: [{ id: 'a1', milestone_week: 12 }], error: null })
+    const result = await placeringarApi.getForetagsavstamningar('w1')
+    expect(mockFrom).toHaveBeenCalledWith('employer_checkins')
+    expect(mockFromBuilder.eq).toHaveBeenCalledWith('placement_id', 'w1')
+    expect(mockFromBuilder.order).toHaveBeenCalledWith('milestone_week', { ascending: true })
+    expect(result).toEqual([{ id: 'a1', milestone_week: 12 }])
+  })
+
+  it('kastar vidare supabase-fel', async () => {
+    loggedIn()
+    queueResult({ data: null, error: new Error('fel') })
+    await expect(placeringarApi.getForetagsavstamningar('w1')).rejects.toThrow('fel')
+  })
+})
+
+describe('placeringarApi.bjudInForetag', () => {
+  const input = { org_number: ' 5566778899 ', company_name: 'Provbolaget ', email: ' kim@x.se', contact_name: 'Kim', placement_id: 'w1' }
+  const rad = { id: 'inv-1', org_id: 'org-1', email: 'kim@x.se', existing_account: false }
+
+  it('kastar om ingen user är inloggad', async () => {
+    loggedOut()
+    await expect(placeringarApi.bjudInForetag(input)).rejects.toThrow('Not authenticated')
+  })
+
+  it('skriver trimmat i vyn employer_invitations och skickar mejlet med invitationId och Bearer-token', async () => {
+    loggedIn()
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+    const fetchMock = vi.fn().mockResolvedValue({ ok: true, status: 200, json: async () => ({ success: true }) })
+    vi.stubGlobal('fetch', fetchMock)
+    mockFromBuilder.single.mockResolvedValueOnce({ data: rad, error: null })
+
+    const result = await placeringarApi.bjudInForetag(input)
+
+    expect(mockFrom).toHaveBeenCalledWith('employer_invitations')
+    expect(mockFromBuilder.insert).toHaveBeenCalledWith({
+      org_number: '5566778899',
+      company_name: 'Provbolaget',
+      email: 'kim@x.se',
+      contact_name: 'Kim',
+      placement_id: 'w1',
+    })
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    const [url, init] = fetchMock.mock.calls[0]
+    expect(String(url)).toMatch(/\/functions\/v1\/send-invite-email$/)
+    expect(JSON.parse(init.body)).toEqual({ invitationId: 'inv-1' })
+    expect(init.headers.Authorization).toBe('Bearer tok')
+    expect(result).toEqual(rad)
+    vi.unstubAllGlobals()
+  })
+
+  it('kastar databasens svenska fel rakt av (demokontot, 42501) — och skickar inget mejl', async () => {
+    loggedIn()
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: null,
+      error: { message: 'Demokontot kan inte bjuda in. Personerna i demot är påhittade.', code: '42501' },
+    })
+    await expect(placeringarApi.bjudInForetag(input)).rejects.toThrow('Demokontot kan inte bjuda in. Personerna i demot är påhittade.')
+    expect(fetchMock).not.toHaveBeenCalled()
+    vi.unstubAllGlobals()
+  })
+
+  it('KASTAR när mejlet misslyckas efter att raden skapats — aldrig tyst succé', async () => {
+    loggedIn()
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 500,
+      json: async () => ({ error: 'Could not send email automatically', details: 'Resend 422' }),
+    }))
+    mockFromBuilder.single.mockResolvedValueOnce({ data: rad, error: null })
+    await expect(placeringarApi.bjudInForetag(input)).rejects.toThrow(
+      'Inbjudan är registrerad men mejlet kunde inte skickas: Could not send email automatically — Resend 422'
+    )
+    vi.unstubAllGlobals()
+  })
+
+  it('KASTAR när nätverket faller vid mejlet', async () => {
+    loggedIn()
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Failed to fetch')))
+    mockFromBuilder.single.mockResolvedValueOnce({ data: rad, error: null })
+    await expect(placeringarApi.bjudInForetag(input)).rejects.toThrow('mejlet kunde inte skickas: Failed to fetch')
+    vi.unstubAllGlobals()
   })
 })

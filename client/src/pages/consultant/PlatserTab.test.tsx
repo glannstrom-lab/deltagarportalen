@@ -30,6 +30,30 @@ const mockUpdatePlacering = vi.fn()
 const mockDeletePlacering = vi.fn()
 const mockGetUppfoljningar = vi.fn()
 const mockCreateUppfoljning = vi.fn()
+const mockGetForetagsplatser = vi.fn()
+const mockGetForetagsavstamningar = vi.fn()
+const mockBjudInForetag = vi.fn()
+const mockListaMinaSomKonsulent = vi.fn()
+const mockRaderaUtkast = vi.fn()
+const mockSkapaForslag = vi.fn()
+
+vi.mock('@/services/delningsforslagApi', async () => {
+  const actual = await vi.importActual<typeof import('@/services/delningsforslagApi')>('@/services/delningsforslagApi')
+  return {
+    ...actual,
+    delningsforslagApi: {
+      listaMinaSomKonsulent: (...a: unknown[]) => mockListaMinaSomKonsulent(...a),
+      raderaUtkast: (...a: unknown[]) => mockRaderaUtkast(...a),
+      skapa: (...a: unknown[]) => mockSkapaForslag(...a),
+    },
+    foretagsTradApi: {
+      lista: async () => [],
+      skicka: async () => { throw new Error('inte mockad') },
+      markeraLasta: async () => {},
+      antalOlasta: async () => 0,
+    },
+  }
+})
 
 vi.mock('@/services/placeringarApi', async () => {
   const actual = await vi.importActual<typeof import('@/services/placeringarApi')>('@/services/placeringarApi')
@@ -43,6 +67,9 @@ vi.mock('@/services/placeringarApi', async () => {
       deletePlacering: (...a: unknown[]) => mockDeletePlacering(...a),
       getUppfoljningar: (...a: unknown[]) => mockGetUppfoljningar(...a),
       createUppfoljning: (...a: unknown[]) => mockCreateUppfoljning(...a),
+      getForetagsplatser: (...a: unknown[]) => mockGetForetagsplatser(...a),
+      getForetagsavstamningar: (...a: unknown[]) => mockGetForetagsavstamningar(...a),
+      bjudInForetag: (...a: unknown[]) => mockBjudInForetag(...a),
       // Ren logik (ingen nätverksåtkomst) — riktiga implementationer, inte
       // mockade. PlatserTab (milstolpeuppföljningar) och PlaceringCard
       // (handledningsobalans) anropar dessa direkt.
@@ -64,6 +91,7 @@ function placering(overrides: Partial<Record<string, unknown>> = {}) {
     consultant_id: 'c1',
     participant_id: 'p1',
     company_account_id: null,
+    place_id: null,
     placement_type: 'praktik',
     status: 'pagaende',
     company_name: 'ICA Maxi',
@@ -125,7 +153,40 @@ function renderTab() {
 beforeEach(() => {
   vi.clearAllMocks()
   mockGetUppfoljningar.mockResolvedValue([])
+  mockGetForetagsplatser.mockResolvedValue([])
+  mockGetForetagsavstamningar.mockResolvedValue([])
+  mockListaMinaSomKonsulent.mockResolvedValue([])
 })
+
+function forslag(overrides: Partial<Record<string, unknown>> = {}) {
+  return {
+    id: 'f1',
+    placement_id: 'w1',
+    participant_id: 'p1',
+    consultant_id: 'c1',
+    company_account_id: 'org-1',
+    show_contact: false,
+    show_summary: false,
+    show_skills: true,
+    show_experience: false,
+    show_education: false,
+    show_documents: false,
+    presentation_text: 'Passar bra',
+    status: 'pending',
+    participant_message: null,
+    decided_at: null,
+    expires_at: '2026-09-27T21:59:59Z',
+    max_views: null,
+    view_count: 0,
+    last_viewed_at: null,
+    employer_response: 'pending',
+    employer_message: null,
+    employer_responded_at: null,
+    created_at: '2026-09-13T10:00:00Z',
+    updated_at: '2026-09-13T10:00:00Z',
+    ...overrides,
+  }
+}
 
 describe('PlatserTab — tre lägen', () => {
   it('visar laddningsläge medan frågorna är ute (pending resolvers)', async () => {
@@ -312,6 +373,81 @@ describe('PlatserTab — milstolpeuppföljningar skapas automatiskt (vecka 1/5/1
 
     await waitFor(() => expect(mockCreatePlacering).toHaveBeenCalledTimes(1))
     expect(mockCreateUppfoljning).not.toHaveBeenCalled()
+  })
+})
+
+describe('PlatserTab — företagskontot (AG6)', () => {
+  it('utan företagskonto: "Bjud in företaget" finns, "Föreslå" och chippen saknas', async () => {
+    mockGetPlaceringar.mockResolvedValue([placering({ company_account_id: null })])
+    mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
+    renderTab()
+    await screen.findByText('ICA Maxi')
+    expect(screen.getByRole('button', { name: /Bjud in företaget/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Föreslå deltagaren/ })).not.toBeInTheDocument()
+    expect(screen.queryByText(/Företagskonto:/)).not.toBeInTheDocument()
+  })
+
+  it('med företagskonto: chippen och "Föreslå deltagaren för företaget" finns, "Bjud in" saknas', async () => {
+    mockGetPlaceringar.mockResolvedValue([placering({ company_account_id: 'org-1' })])
+    mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
+    renderTab()
+    await screen.findByText('ICA Maxi')
+    expect(screen.getByText(/Företagskonto:/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Föreslå deltagaren för företaget/ })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /Bjud in företaget/ })).not.toBeInTheDocument()
+  })
+
+  it('"Bjud in företaget" öppnar dialogen förifylld från platsen och med databasens fel synligt', async () => {
+    mockGetPlaceringar.mockResolvedValue([
+      placering({ org_number: '556677-8899', contact_email: 'kim@bolaget.se', contact_name: 'Kim Chef' }),
+    ])
+    mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
+    mockBjudInForetag.mockRejectedValue(new Error('Demokontot kan inte bjuda in. Personerna i demot är påhittade.'))
+    renderTab()
+    await screen.findByText('ICA Maxi')
+
+    fireEvent.click(screen.getByRole('button', { name: /Bjud in företaget/ }))
+    const dialog = await screen.findByRole('dialog', { name: 'Bjud in företaget' })
+    expect(within(dialog).getByLabelText('Organisationsnummer *')).toHaveValue('556677-8899')
+    expect(within(dialog).getByLabelText('Företagsnamn *')).toHaveValue('ICA Maxi')
+    expect(within(dialog).getByLabelText('Kontaktpersonens e-post *')).toHaveValue('kim@bolaget.se')
+    expect(within(dialog).getByLabelText('Kontaktpersonens namn')).toHaveValue('Kim Chef')
+
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Skicka inbjudan' }))
+    expect(await within(dialog).findByRole('alert')).toHaveTextContent('Demokontot kan inte bjuda in')
+    expect(mockBjudInForetag).toHaveBeenCalledWith(
+      expect.objectContaining({ org_number: '556677-8899', email: 'kim@bolaget.se', placement_id: 'w1' })
+    )
+  })
+
+  it('förslagen under platsen visas, och "Ta bort utkast" går genom bekräftelsen innan raderaUtkast', async () => {
+    mockGetPlaceringar.mockResolvedValue([placering({ company_account_id: 'org-1' })])
+    mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
+    mockListaMinaSomKonsulent.mockResolvedValue([forslag()])
+    mockRaderaUtkast.mockResolvedValue(undefined)
+    renderTab()
+    expect(await screen.findByText('Väntar på deltagaren')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /Ta bort utkast/ }))
+    const confirmDialog = await screen.findByRole('dialog')
+    expect(mockRaderaUtkast).not.toHaveBeenCalled()
+    fireEvent.click(within(confirmDialog).getByRole('button', { name: 'Ta bort' }))
+    await waitFor(() => expect(mockRaderaUtkast).toHaveBeenCalledWith('f1'))
+  })
+
+  it('företagets avstämningar hämtas bara för platser MED företagskonto', async () => {
+    mockGetPlaceringar.mockResolvedValue([
+      placering({ id: 'w1', company_account_id: 'org-1' }),
+      placering({ id: 'w2', company_name: 'Postnord', company_account_id: null }),
+    ])
+    mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
+    mockGetForetagsavstamningar.mockResolvedValue([
+      { id: 'a1', placement_id: 'w1', org_id: 'org-1', author_id: null, milestone_week: 12, going_well: 'Kommer i tid', concerns: null, continue_interest: 'ja', created_at: '2026-09-13T10:00:00Z' },
+    ])
+    renderTab()
+    expect(await screen.findByText('Kommer i tid')).toBeInTheDocument()
+    expect(mockGetForetagsavstamningar).toHaveBeenCalledTimes(1)
+    expect(mockGetForetagsavstamningar).toHaveBeenCalledWith('w1')
   })
 })
 

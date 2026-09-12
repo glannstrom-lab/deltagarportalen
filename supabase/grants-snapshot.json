@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T21:26:34.774Z",
+  "generatedAt": "2026-09-12T23:17:41.037Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -42,6 +42,20 @@
       "definer": false,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "ar_foretagsmedlem",
+      "signature": "ar_foretagsmedlem(uuid)",
+      "definer": false,
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "ar_personal",
+      "signature": "ar_personal()",
+      "definer": false,
+      "anon": false,
+      "authenticated": true
     },
     {
       "name": "audit_data_sharing_change",
@@ -158,6 +172,48 @@
     {
       "name": "decline_consultant_request",
       "signature": "decline_consultant_request(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "employer_checkins_notify",
+      "signature": "employer_checkins_notify()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "employer_invitation_membership",
+      "signature": "employer_invitation_membership()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "employer_invitations_insert",
+      "signature": "employer_invitations_insert()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "employer_messages_guard",
+      "signature": "employer_messages_guard()",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
+    },
+    {
+      "name": "employer_messages_notify",
+      "signature": "employer_messages_notify()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "employer_proposals_update",
+      "signature": "employer_proposals_update()",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -324,6 +380,13 @@
       "authenticated": true
     },
     {
+      "name": "guard_share_proposal_after_decision",
+      "signature": "guard_share_proposal_after_decision()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "handle_first_signin",
       "signature": "handle_first_signin()",
       "definer": true,
@@ -443,6 +506,13 @@
       "authenticated": false
     },
     {
+      "name": "organization_members_kind_guard",
+      "signature": "organization_members_kind_guard()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "organizations_chef_guard",
       "signature": "organizations_chef_guard()",
       "definer": false,
@@ -499,6 +569,13 @@
       "authenticated": false
     },
     {
+      "name": "respond_to_share_proposal",
+      "signature": "respond_to_share_proposal(uuid,text,text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
+    },
+    {
       "name": "revoke_consultant_link",
       "signature": "revoke_consultant_link(uuid,text)",
       "definer": true,
@@ -506,8 +583,22 @@
       "authenticated": true
     },
     {
+      "name": "seed_demo_foretag",
+      "signature": "seed_demo_foretag(text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "seed_demo_org",
       "signature": "seed_demo_org(text,text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "share_proposal_notify",
+      "signature": "share_proposal_notify()",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -955,6 +1046,26 @@
     },
     {
       "name": "email_queue",
+      "rls": true
+    },
+    {
+      "name": "employer_checkins",
+      "rls": true
+    },
+    {
+      "name": "employer_messages",
+      "rls": true
+    },
+    {
+      "name": "employer_places",
+      "rls": true
+    },
+    {
+      "name": "employer_profiles",
+      "rls": true
+    },
+    {
+      "name": "employer_share_proposals",
       "rls": true
     },
     {

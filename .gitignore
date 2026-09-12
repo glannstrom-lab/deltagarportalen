@@ -70,6 +70,8 @@ demo*.html
 *DEMO*.sql
 *demo*.sql
 SIMPLE_*.sql
+# Migrationer som rör demot ÄR körda i prod och ska versioneras (fyra filer låg oversionerade till 2026-09-13)
+!supabase/migrations/*demo*.sql
 
 # Allow design demos (historical reference for design decisions)
 !design-demos/**

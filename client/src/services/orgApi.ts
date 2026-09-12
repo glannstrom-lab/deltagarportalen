@@ -27,8 +27,8 @@
 
 import { supabase } from '@/lib/supabase'
 
-export type OrgKind = 'kommun' | 'leverantor' | 'annan'
-export type OrgRole = 'handlaggare' | 'konsulent' | 'chef' | 'admin'
+export type OrgKind = 'kommun' | 'leverantor' | 'annan' | 'arbetsgivare'
+export type OrgRole = 'handlaggare' | 'konsulent' | 'chef' | 'admin' | 'arbetsgivare'
 
 export interface Organization {
   id: string
@@ -37,6 +37,8 @@ export interface Organization {
   org_number: string | null
   /** false = AI-funktionerna nekas alla deltagare kopplade till organisationens konsulenter (båda AI-grindarna). */
   ai_enabled: boolean
+  /** Demoorganisation (migration 20260912190000) — allt återställs varje natt, mejl skickas aldrig. */
+  is_demo?: boolean
   created_at: string
   updated_at: string
 }
@@ -74,17 +76,25 @@ export interface CaseloadRow {
   ogiltig_franvaro_30d: number
 }
 
-export const ORG_ROLLER: readonly OrgRole[] = ['handlaggare', 'konsulent', 'chef', 'admin'] as const
+/**
+ * AG6 (2026-09-13): `arbetsgivare` är företagskontots enda roll, och den finns
+ * bara i organisationer av slaget `arbetsgivare` — triggern
+ * organization_members_kind_guard nekar allt annat (23514). Företagets personer
+ * är USER på profilnivå; rollen ger dem bara de nya employer_*-vyerna.
+ */
+export const ORG_ROLLER: readonly OrgRole[] = ['handlaggare', 'konsulent', 'chef', 'admin', 'arbetsgivare'] as const
 export const ORG_ROLL_ETIKETT: Record<OrgRole, string> = {
   handlaggare: 'Handläggare (ekonomiskt bistånd)',
   konsulent: 'Arbetskonsulent',
   chef: 'Chef',
   admin: 'Administratör',
+  arbetsgivare: 'Kontaktperson (företag)',
 }
 export const ORG_KIND_ETIKETT: Record<OrgKind, string> = {
   kommun: 'Kommun',
   leverantor: 'Leverantör',
   annan: 'Annan',
+  arbetsgivare: 'Företag',
 }
 
 async function requireUser() {

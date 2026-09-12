@@ -1,11 +1,30 @@
 # GDPR Art 30 — Register över behandlingar
 
 **Lagkrav:** GDPR Art 30 (registerförteckning över behandlingar).
-**Datum:** 2026-09-02 (B15/Säkerhetsåtgärder rättad, DOK1 — migrationen som raden hänvisade till är
-nu körd och verifierad; se raden). Föregående: 2026-08-21 (B4 och B16 rättade efter granskningen av
+**Datum:** 2026-09-13 (B22 företagskonto tillagd, B20 och bilaga A.1 utökade — se revisionsnoten).
+Föregående: 2026-09-02 (B15/Säkerhetsåtgärder rättad, DOK1 — migrationen som raden hänvisade till är
+nu körd och verifierad; se raden), 2026-08-21 (B4 och B16 rättade efter granskningen av
 Intresseguiden; dessförinnan 2026-07-27, 2026-05-15)
 **Personuppgiftsansvarig:** Glänne & Söner, enskild firma (innehavare Mikael Glännström) — beslut 2026-09-12. Organisationsnumret är innehavarens personnummer och skrivs inte i detta register; det anges i avtal vid signering.
 **Kontakt DPO:** dpo@jobin.se
+
+---
+
+## Revisionsnot 2026-09-13 (Företagskonto — B22)
+
+Portalen har fått ett företagskonto (migration `supabase/migrations/20260913100000_ag6_foretagskonto.sql`,
+körd i prod 2026-09-13; AG5-migrationen med förslagen kördes samma dag). Det tillför en **ny mottagare**
+— det namngivna företaget — och en **ny kategori registrerade**: företagskontakter (namn, e-post,
+telefon, företagets org.nr). Ny behandling **B22**. B20 (inbjudningar) omfattar nu även inbjudningar
+till företagskontakter. Bilaga A.1 utökad med sju tabeller och tre vyer.
+
+Kärnan, för den som bara läser noten: konsulenten föreslår **en namngiven person** för en plats hos
+**ett namngivet företag**; deltagaren godkänner **per delning och per fält**; först då ser företaget de
+godkända fälten, genom en vitlistad vy. Ingen kandidatsökning, ingen AI som väljer, inga AI-resultat om
+personen, inget mående, ingen meddelandeväg företag → deltagare.
+
+**Två saker kräver beslut, inte dokumentation:** rättslig grund för företagskontaktens egna uppgifter
+(AG9 avtal) och gallringsregel för `employer_*`-tabellerna (`RETENTION-POLICY.md`, öppen rad tillagd).
 
 ---
 
@@ -391,6 +410,15 @@ för `RETENTION-POLICY.md`.
 | Säkerhetsåtgärder | Skärpt 2026-07-23 (A10): öppen `USING(true)`-policy borttagen, tokenmatchad SECURITY DEFINER-RPC `get_invitation_by_token` returnerar bara id/email/roll/metadata, `REVOKE ALL FROM anon` |
 | Tabeller | `invitations` |
 
+> **Tillägg 2026-09-13 (AG6):** `invitations` bär nu även inbjudningar till **företagskontakter**
+> (`metadata.kind = 'arbetsgivare'`, `consultant_id` NULL, `invited_by` = konsulent eller
+> företagskollega, `role = 'USER'`), skapade via vyn `employer_invitations` (INSTEAD OF-trigger,
+> demokonton nekas). Kategorier registrerade utökas därmed med företagskontakter; metadatan bär
+> företagsnamn, org.nr, kontaktnamn och inbjudarens namn. Mottagare av mejlet är kontaktpersonen.
+> Utskicket går via **Resend** (`send-invite-email`, egen mall för företag) sedan DE1 2026-09-12 —
+> raden "utskick via Supabase Auth-email" ovan gäller bara reservläget utan `RESEND_API_KEY`.
+> Gallring: `retention-invitations` (90 dagar efter utgång). Se B22.
+
 ### B21: Drift-, säkerhets- och leveransloggar
 
 | Aspekt | Värde |
@@ -404,6 +432,21 @@ för `RETENTION-POLICY.md`.
 | Gallring | `[bekräftas]` Förslag: `login_attempts` och `rate_limits` 30 dagar, `email_notifications`/`email_queue` 90 dagar, revisionsloggar 5 år (jfr B9) |
 | Säkerhetsåtgärder | `email_notifications`, `email_queue`, `rate_limits` är service-role-only (RLS på, noll policyer, `REVOKE` från anon och authenticated) — de saknar `user_id` och kan inte scopas per användare |
 | Tabeller | `audit_logs`, `admin_audit_log`, `login_attempts`, `rate_limits`, `data_export_logs`, `data_sharing_audit`, `email_notifications`, `email_queue`, `user_sessions`, `notifications`, `user_notifications` |
+
+### B22: Företagskonto — delning av deltagaruppgifter till ett namngivet företag (AG6, 2026-09-13)
+
+| Aspekt | Värde |
+|---|---|
+| Ändamål | (1) Låta en konsulent föreslå en namngiven deltagare för en praktik-/arbetsträningsplats hos ett namngivet företag, med deltagarens godkännande per delning; (2) låta företaget registrera platser, svara på förslag, hålla kontakt med konsulenten och lämna avstämningar om en pågående placering |
+| Rättslig grund | **Deltagarens uppgifter:** uttryckligt samtycke per delning (Art 6.1.a), dokumenterat i `consent_history` (`consent_type = 'employer_share'`, `reference_id` = förslaget). Återkallbart (`withdrawn`); ett nej loggas inte. Ingen generell brytare "dela med arbetsgivare" finns, med flit. **Företagskontaktens egna uppgifter:** avtal (Art 6.1.b) eller berättigat intresse (Art 6.1.f) — **bedömning krävs, se AG9 avtal** `[bekräftas]` |
+| Kategorier registrerade | Deltagare som föreslås; konsulenter; **företagskontakter (ny kategori)** |
+| Kategorier personuppgifter | **Om deltagaren, bara godkända fält:** namn (när förslaget accepterats), e-post/telefon/ort (`show_contact`), egen CV-sammanfattning (`show_summary` — personens text, aldrig `ai_summary`), kompetenser (`show_skills`), arbetslivserfarenhet (`show_experience`), utbildning (`show_education`); konsulentens presentationstext. **Om företagskontakten:** namn, e-post, telefon, roll som kontaktperson; företagets namn och org.nr. **Företagets svar** (intresserad/tackade nej + meddelande), meddelanden företag ↔ konsulent, avstämningar (vad som går bra, farhågor, intresse att fortsätta) |
+| Mottagare | **Det namngivna företaget** — bara det företag förslaget riktas till, bara godkända fält, via vyn `employer_proposals` (postgres-ägd, vitlistade kolumner, `status = 'accepted'`, giltighetstid, visningstak). Konsulenten ser företagets svar, meddelanden och avstämningar. **Resend** för inbjudningsmejlet till företagskontakten (`send-invite-email`, mall för `metadata.kind = 'arbetsgivare'`, B20) |
+| Vad som strukturellt aldrig lämnas ut | Saknas i vyerna — inte bara dolt i UI: `ai_summary`, matchnings-/ATS-poäng, intresseprofil, mående, dagbok, `internal_adaptation_notes`, `participant_supervision_need`, `supervision_notes`, `notes`, `employer_future_needs`, `employer_hiring_interest`, ett nej (`declined`), andra deltagare än den föreslagna. Ingen lista, ingen sökfunktion, ingen AI som väljer eller rangordnar. Ingen meddelandeväg företag → deltagare |
+| Tredjelandsöverföring | Nej. Ingen AI-komponent i flödet — presentationstexten skriver konsulenten själv (se `AI-ACT-CLASSIFICATION.md`, avsnittet "Företagskonto") |
+| Gallring | **Ingen regel skriven för `employer_*`.** I praktiken cascadar förslag (från placeringen), meddelanden (från förslaget) och avstämningar (från placeringen) med `retention-placements` (2 år från `end_date`); pågående placeringar raderas aldrig, och `employer_profiles`/`employer_places` har ingen gallring. **Ska in i `RETENTION-POLICY.md`** — öppen rad tillagd 2026-09-13. Samtyckesbeviset i `consent_history` följer B9 (5 år) och överlever förslaget (ingen FK, med flit) |
+| Säkerhetsåtgärder | RLS på alla fyra nya tabeller (12 policyer, verifierat enligt migrationens verifieringsblock); företaget läser bara två vyer med `auth.uid()`-filter på medlemskap i mottagarföretaget; alla `show_*` `DEFAULT false` (opt-in); `guard_share_proposal_after_decision` låser fälten efter beslut och släpper bara deltagaren själv från `pending` (fail closed även för service role); INSTEAD OF-triggers i stället för anropbara SECURITY DEFINER-funktioner (`lint:grants`-taket står); demokonton kan inte bjuda in; ToS-förbud `terms.noScreening.*` (AG4) vaktat av `juridiska-sidor-i18n.test.ts` |
+| Tabeller | `organizations` (kind `arbetsgivare`), `organization_members` (role `arbetsgivare`), `employer_share_proposals` (AG5, + `employer_response`/`employer_message`/`employer_responded_at`), `employer_profiles`, `employer_places`, `employer_checkins`, `employer_messages`; vyer `employer_proposals`, `employer_placements`, `employer_invitations`; `invitations.metadata.kind = 'arbetsgivare'` (B20); `consent_history.reference_id` (B9); `consultant_work_placements.place_id`/`company_account_id` (B15); `spontaneous_companies.company_account_id` (B14, krok — används inte än) |
 
 ---
 
@@ -436,6 +479,7 @@ för `RETENTION-POLICY.md`.
 | **B19 Nätverk** | `network_contacts`, `networking_events`, `profile_shares`, `shared_resources` | 4 |
 | **B20 Inbjudningar** | `invitations` | 1 |
 | **B21 Driftloggar** | `audit_logs`, `login_attempts`, `rate_limits`, `data_export_logs`, `user_sessions`, `notifications`, `user_notifications`, `email_queue` | 8 |
+| **B22 Företagskonto** (2026-09-13) | `organizations`, `organization_members`, `employer_share_proposals`, `employer_profiles`, `employer_places`, `employer_checkins`, `employer_messages` (+ vyerna `employer_proposals`, `employer_placements`, `employer_invitations`) | 7 |
 
 ### A.2 Innehållstabeller — inga personuppgifter
 
@@ -504,7 +548,7 @@ innehåller data utom där annat anges.
 | Functional Software (Sentry) | Error tracking | DPA på sentry.io | Multi-region | EU-instans rekommenderad |
 | ~~LinkedIn Inc.~~ | ~~OAuth + profilimport~~ | — | — | **Utgår 2026-07-27:** ingen LinkedIn-import är implementerad. Ska in igen först när en faktiskt byggs |
 | Google LLC | OAuth + Calendar | DPA via Google | USA | Opt-in, SCC krävs |
-| **Resend** | Utskick av jobbaviseringar | **Verifieras** | **Verifieras** | Används på riktigt i `client/api/job-alerts.js` via `RESEND_API_KEY`. Efter H2 (2026-07-27) finns kedjan i databasen; utskick sker när A6:s cron aktiveras. **DPA + region måste vara klara innan cron slås på** |
+| **Resend** | Utskick av jobbaviseringar och inbjudningsmejl (B20, B22) | **Verifieras** | EU enligt DE1-uppsättningen 2026-09-12 — **bekräftas i kontot** | Används på riktigt i `client/api/job-alerts.js` via `RESEND_API_KEY`. Efter H2 (2026-07-27) finns kedjan i databasen; utskick sker när A6:s cron aktiveras. **DPA + region måste vara klara innan cron slås på.** Sedan DE1 (2026-09-12) skickar även `send-invite-email` via Resend — deltagarinbjudningar och, från 2026-09-13, inbjudningar till företagskontakter (B22) |
 
 ---
 
