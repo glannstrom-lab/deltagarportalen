@@ -6,13 +6,17 @@
  * kortet visar de senaste 20 raderna för den inloggade deltagaren. Tre lägen:
  * laddar / fel / klart — och "klart utan rader" är en invit, inte en nolla.
  * Ingen AI.
+ *
+ * PG15 (2026-09-12): raden sa "dina uppgifter". Nu säger den VAD som öppnades:
+ * hela sidan (`participant`) eller ett avsnitt (`participant.journal` osv.) —
+ * se resourceTypeFor() i laslogg.ts. Äldre rader utan avsnitt visas som sidan.
  */
 
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Eye } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
-import { laslogg, type Visning } from '@/services/laslogg'
+import { laslogg, type Visning, RESOURCE_TYPE_HELA_SIDAN } from '@/services/laslogg'
 
 type Lage =
   | { status: 'laddar' }
@@ -35,6 +39,12 @@ export function VemHarOppnatKort() {
   const locale = i18n.language === 'en' ? 'en-GB' : 'sv-SE'
   const datum = (iso: string) => new Date(iso).toLocaleDateString(locale, { day: 'numeric', month: 'short' })
   const tid = (iso: string) => new Date(iso).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
+  const vad = (resourceType: string | null) => {
+    const prefix = RESOURCE_TYPE_HELA_SIDAN + '.'
+    const avsnitt = resourceType && resourceType.startsWith(prefix) ? resourceType.slice(prefix.length) : null
+    const sida = t('myConsultant.laslogg.vad.sida')
+    return avsnitt ? t(`myConsultant.laslogg.vad.${avsnitt}`, { defaultValue: sida }) : sida
+  }
 
   return (
     <Card>
@@ -67,7 +77,7 @@ export function VemHarOppnatKort() {
           <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
             {lage.rader.map((r) => (
               <li key={r.id}>
-                {t('myConsultant.laslogg.rad', { defaultValue: 'Din konsulent öppnade dina uppgifter {{datum}} kl {{tid}}', datum: datum(r.created_at), tid: tid(r.created_at) })}
+                {t('myConsultant.laslogg.rad', { defaultValue: 'Din konsulent öppnade {{vad}} {{datum}} kl {{tid}}', vad: vad(r.resource_type), datum: datum(r.created_at), tid: tid(r.created_at) })}
               </li>
             ))}
           </ul>

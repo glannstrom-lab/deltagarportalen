@@ -64,6 +64,16 @@ function GoogleIcon({ className }: { className?: string }) {
   )
 }
 
+/**
+ * F18 (2026-09-12): B2B-sidornas "Prova demokontot" länkar till /#/login?email=demo@jobin.se
+ * så e-posten är förifylld. Bara e-post, aldrig lösenord — och bara om värdet ser ut som
+ * en enkel adress, så parametern inte kan användas för att stoppa in text i fältet.
+ */
+function forifylldEpost(v: string | null): string {
+  if (!v || v.length > 120) return ''
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? v : ''
+}
+
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -82,7 +92,7 @@ export default function Login() {
   } = useZodForm({
     schema: loginSchema,
     initialValues: {
-      email: '',
+      email: forifylldEpost(searchParams.get('email')),
       password: '',
     },
     onSubmit: async (data) => {

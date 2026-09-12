@@ -46,6 +46,7 @@ import {
 } from '@/services/aktivitetSchema'
 import { TillampaMallDialog } from './TillampaMallDialog'
 import { JobbsokTidKort } from './JobbsokTidKort'
+import { franvaroAv, type FranvaroOrsak } from '@/services/franvaroApi'
 import {
   AKTIVITETSTYP_CHIP,
   AKTIVITETSTYP_ETIKETT,
@@ -382,6 +383,13 @@ function Saldotal({ etikett, varde, varning }: { etikett: string; varde: string;
 // Ett pass med närvaroknappar
 // ---------------------------------------------------------------------------
 
+const FRANVARO_ORSAK_ETIKETT: Record<FranvaroOrsak, string> = {
+  sick: 'sjuk',
+  child_care: 'vård av barn',
+  authority_meeting: 'möte hos myndighet',
+  other: 'annat skäl',
+}
+
 function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; onChanged: (s: ActivitySession) => void; onRemoved: () => void }) {
   const { confirm } = useConfirmDialog()
   const [oppen, setOppen] = useState(false)
@@ -435,6 +443,16 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
                 <CheckCircle2 className="w-3 h-3" aria-hidden="true" />Checkade in {klockslag(session.self_checkin_at)}
               </span>
             )}
+            {/* F1 (2026-09-12): deltagarens egen anmälan — konsulenten bekräftar via närvaron som förut */}
+            {(() => {
+              const a = franvaroAv(session)
+              if (!a || session.attendance) return null
+              return (
+                <span className="inline-flex items-center gap-1 text-amber-800 dark:text-amber-200">
+                  Anmäld frånvaro: {FRANVARO_ORSAK_ETIKETT[a.reason]}{a.note ? ` — „${a.note}”` : ''}
+                </span>
+              )
+            })()}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">

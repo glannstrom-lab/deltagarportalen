@@ -24,13 +24,14 @@ vi.mock('@/services/orgApi', async () => {
       setColleagueRole: vi.fn(),
       removeColleague: vi.fn(),
       handover: vi.fn(),
+      setOrgAiEnabled: vi.fn(),
     },
   }
 })
 
 vi.mock('@/components/ui/ConfirmDialog', () => ({ useConfirmDialog: () => ({ confirm: vi.fn(async () => true) }) }))
 
-const org = { id: 'o1', name: 'Hällefors kommun', kind: 'kommun', org_number: '212000-1942', created_at: '', updated_at: '' }
+const org = { id: 'o1', name: 'Hällefors kommun', kind: 'kommun', org_number: '212000-1942', ai_enabled: true, created_at: '', updated_at: '' }
 
 const kollegor = [
   { id: 'm1', org_id: 'o1', org_name: org.name, org_kind: 'kommun', user_id: 'u1', role: 'chef', created_at: '', first_name: 'Fanny', last_name: 'Forsell', email: 'fanny@example.se' },
@@ -246,5 +247,34 @@ describe('OrganisationSektion', () => {
     fireEvent.click(within(tabell).getByRole('button', { name: 'Överlämna 12 deltagare' }))
     expect(await screen.findByRole('alert')).toHaveTextContent('Mottagaren måste vara arbetskonsulent')
     expect(orgApi.caseload).toHaveBeenCalledTimes(1)
+  })
+})
+
+// PG19 / F13 (2026-09-13): chefens AI-brytare för organisationen.
+describe('AI-brytaren (PG19)', () => {
+  it('chefen ser brytaren och kan stänga av AI efter bekräftelse', async () => {
+    const orgApi = await somRoll('chef')
+    vi.mocked(orgApi.setOrgAiEnabled).mockResolvedValue({ ...org, ai_enabled: false } as never)
+    render(<OrganisationSektion />)
+    const knapp = await screen.findByRole('button', { name: /stäng av ai för hällefors kommun/i })
+    expect(knapp).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByText(/på — deltagare kopplade/i)).toBeInTheDocument()
+    fireEvent.click(knapp)
+    await waitFor(() => expect(orgApi.setOrgAiEnabled).toHaveBeenCalledWith('o1', false))
+  })
+
+  it('konsulenten ser ingen brytare', async () => {
+    await somRoll('konsulent')
+    render(<OrganisationSektion />)
+    await screen.findByText(/kollegor/i)
+    expect(screen.queryByRole('button', { name: /ai för hällefors kommun/i })).toBeNull()
+  })
+
+  it('ett misslyckat byte visas som fel, inte som sparat', async () => {
+    const orgApi = await somRoll('chef')
+    vi.mocked(orgApi.setOrgAiEnabled).mockRejectedValue(new Error('Ändringen sparades inte — du behöver vara chef eller administratör i organisationen.'))
+    render(<OrganisationSektion />)
+    fireEvent.click(await screen.findByRole('button', { name: /stäng av ai för hällefors kommun/i }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(/sparades inte/i)
   })
 })

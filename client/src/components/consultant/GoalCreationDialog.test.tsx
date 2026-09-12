@@ -59,3 +59,28 @@ describe('GoalCreationDialog — tillgänglighet (WCAG 2.1.2)', () => {
     expect(screen.getByRole('button', { name: 'Stäng' })).toBeInTheDocument()
   })
 })
+
+describe('GoalCreationDialog — PG17 (2026-09-12): titel + datum räcker, SMART är valfritt', () => {
+  const initialGoal = {
+    title: 'Ringa två arbetsgivare', description: '', specific: '', measurable: '',
+    achievable: '', relevant: '', timeBound: '', category: 'other', priority: 'MEDIUM' as const,
+  }
+
+  it('Skapa mål är avstängd utan deadline och slår på när ett datum fyllts i', async () => {
+    renderDialog({ preselectedParticipant: deltagare[0] as never, initialGoal: initialGoal as never })
+    const knapp = await screen.findByRole('button', { name: /skapa mål/i })
+    const datum = screen.getByLabelText(/deadline/i) as HTMLInputElement
+    fireEvent.change(datum, { target: { value: '' } })
+    expect(knapp).toBeDisabled()
+    fireEvent.change(datum, { target: { value: '2026-10-15' } })
+    expect(knapp).not.toBeDisabled()
+  })
+
+  it('SMART-fälten ligger i en utfällning som är stängd när mallen inte fyllt dem', async () => {
+    renderDialog({ preselectedParticipant: deltagare[0] as never, initialGoal: initialGoal as never })
+    await screen.findByRole('button', { name: /skapa mål/i })
+    const utfallning = screen.getByText(/göra målet mer konkret/i).closest('details') as HTMLDetailsElement
+    expect(utfallning).not.toBeNull()
+    expect(utfallning.open).toBe(false)
+  })
+})

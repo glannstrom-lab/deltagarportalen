@@ -109,6 +109,27 @@ export const orgApi = {
     })
   },
 
+  /**
+   * PG19 (2026-09-13): chef/admin i organisationen slår av eller på AI för alla
+   * deltagare kopplade till organisationens konsulenter. Går mot `organizations`
+   * direkt — policyn "Chef ändrar sin organisations AI-brytare" + triggern
+   * `organizations_chef_guard` (migration 20260913001000) släpper igenom exakt
+   * den kolumnen. Innan migrationen körts svarar prod med 0 rader → fel här,
+   * aldrig ett tyst "sparat".
+   */
+  async setOrgAiEnabled(orgId: string, enabled: boolean): Promise<Organization> {
+    await requireUser()
+    const { data, error } = await supabase
+      .from('organizations')
+      .update({ ai_enabled: enabled })
+      .eq('id', orgId)
+      .select('*')
+      .maybeSingle()
+    if (error) throw error
+    if (!data) throw new Error('Ändringen sparades inte — du behöver vara chef eller administratör i organisationen.')
+    return data as Organization
+  },
+
   /** Kollegor i mina organisationer (inklusive jag själv). */
   async colleagues(): Promise<Colleague[]> {
     await requireUser()

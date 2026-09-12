@@ -27,6 +27,12 @@ vi.mock('@/services/jobbsokAktivitet', async () => {
   return { ...riktig, jobbsokAktivitetApi: { minaJobbsok: (...a: unknown[]) => minaJobbsok(...a) } }
 })
 
+// F1: frånvaroanmälan mockas bort — komponenten testas i FranvaroAnmalan.test.tsx
+vi.mock('@/services/franvaroApi', async () => {
+  const riktig = await vi.importActual<typeof import('@/services/franvaroApi')>('@/services/franvaroApi')
+  return { ...riktig, franvaroApi: { anmal: vi.fn(), angra: vi.fn() } }
+})
+
 vi.mock('@/services/aktivitetApi', () => ({
   minVeckaApi: {
     getMyPlan: (...a: unknown[]) => getMyPlan(...a),
@@ -131,6 +137,38 @@ describe('Min vecka', () => {
     render(<MinVecka />)
     expect(await screen.findByText(/Inget registrerat än den här veckan/)).toBeInTheDocument()
     expect(screen.queryByText(/0 jobb/)).not.toBeInTheDocument()
+  })
+
+  it('PG7: saldoraden förklarar målet och vad som återstår, med länk till guiden', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Din konsulent har satt 30 timmar i veckan som mål/)).toBeInTheDocument()
+    // 3 timmar planerade av 30 → 27 kvar, och det är konsulentens uppgift att planera dem
+    expect(screen.getByText(/3 timmar är inplanerade\. 27 timmar återstår att planera/)).toBeInTheDocument()
+    expect(screen.getByText(/5 timmarna för eget jobbsökande kommer utöver/)).toBeInTheDocument()
+    const guide = screen.getByRole('link', { name: /Läs om aktivitetskravet/ })
+    expect(guide).toHaveAttribute('href', '/guider/aktivitetskrav-forsorjningsstod/')
+  })
+
+  it('F1: ett kommande pass visar "Jag kan inte komma", dagens pass med incheckning gör det inte', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    const omTvaDagar = addDays(idag, 2)
+    listMySessions.mockResolvedValue([
+      pass({ id: 's-framtid', date: omTvaDagar, title: 'Framtidspass' }),
+      pass({ id: 's-checkad', title: 'Dagens', self_checkin_at: new Date().toISOString() }),
+    ])
+    render(<MinVecka />)
+    await screen.findByText('Framtidspass')
+    // Passet om två dagar ligger i veckan om det inte är fredag/helg — då finns ingen knapp att hitta,
+    // och testet ska ändå inte tro att något är fel. Räkna därför bara när passet syns.
+    if (screen.queryByText('Framtidspass')) {
+      const sondag = addDays(mandag, 6)
+      if (omTvaDagar <= sondag) expect(screen.getAllByRole('button', { name: 'Jag kan inte komma' })).toHaveLength(1)
+    }
+    // Det incheckade passet får ingen knapp
+    const kort = screen.getByText('Dagens').closest('div')!
+    expect(kort.querySelector('button')?.textContent ?? '').not.toContain('Jag kan inte komma')
   })
 
   it('"Jag är här" checkar in dagens pass med rätt id, och bara dagens', async () => {

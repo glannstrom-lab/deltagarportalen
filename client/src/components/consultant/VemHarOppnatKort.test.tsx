@@ -4,6 +4,7 @@ import { VemHarOppnatKort } from './VemHarOppnatKort'
 
 vi.mock('@/services/laslogg', () => ({
   laslogg: { minaVisningar: vi.fn() },
+  RESOURCE_TYPE_HELA_SIDAN: 'participant',
 }))
 
 describe('VemHarOppnatKort', () => {
@@ -17,9 +18,22 @@ describe('VemHarOppnatKort', () => {
       { id: 'b', user_id: 'k', action: 'VIEWED_PARTICIPANT_DATA', resource_type: 'participant', resource_id: 'd', participant_id: 'd', created_at: '2026-09-10T07:05:00Z' },
     ])
     render(<VemHarOppnatKort />)
-    const rader = await screen.findAllByText(/Din konsulent öppnade dina uppgifter/)
+    const rader = await screen.findAllByText(/Din konsulent öppnade din sida/)
     expect(rader).toHaveLength(2)
     expect(rader[0].textContent).toMatch(/11 sep/)
+  })
+
+  it('PG15: en rad med avsnitt säger vad som öppnades — "din journal", inte "dina uppgifter"', async () => {
+    const { laslogg } = await import('@/services/laslogg')
+    vi.mocked(laslogg.minaVisningar).mockResolvedValue([
+      { id: 'a', user_id: 'k', action: 'VIEWED_PARTICIPANT_DATA', resource_type: 'participant.journal', resource_id: 'd', participant_id: 'd', created_at: '2026-09-12T10:00:00Z' },
+      { id: 'b', user_id: 'k', action: 'VIEWED_PARTICIPANT_DATA', resource_type: 'participant', resource_id: 'd', participant_id: 'd', created_at: '2026-09-11T10:00:00Z' },
+    ])
+    render(<VemHarOppnatKort />)
+    expect(await screen.findByText(/öppnade din journal/)).toBeInTheDocument()
+    // äldre rader utan avsnitt: hela sidan, aldrig det svepande "dina uppgifter"
+    expect(screen.getByText(/öppnade din sida/)).toBeInTheDocument()
+    expect(screen.queryByText(/dina uppgifter \d/)).not.toBeInTheDocument()
   })
 
   it('visar inviten när loggen är tom — aldrig en nolla', async () => {

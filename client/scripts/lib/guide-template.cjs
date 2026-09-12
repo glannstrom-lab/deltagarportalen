@@ -1077,6 +1077,57 @@ function renderB2B(b, guider) {
 
   const factsHtml = (b.facts || []).map((f) => `<span class="chip">${escapeHtml(f)}</span>`).join('')
 
+  // PG27/F16 (2026-09-12): "Så kommer ni igång" — fem steg med ungefärlig tid, före FAQ.
+  const igangHtml = b.saKommerNiIgang
+    ? `<h2 id="igang">${escapeHtml(b.saKommerNiIgang.rubrik)}</h2>
+    <p>${escapeHtml(b.saKommerNiIgang.intro)}</p>
+    <ol class="steg">${b.saKommerNiIgang.steg
+      .map((st) => `<li><h3>${escapeHtml(st.rubrik)} <span class="steg-tid">${escapeHtml(st.tid)}</span></h3><p>${escapeHtml(st.text)}</p></li>`)
+      .join('')}</ol>`
+    : ''
+
+  // F18 (2026-09-12): demouppgifterna som kopieringsbara fält. Knappen är progressive
+  // enhancement — utan JavaScript står texten kvar markerbar i ett <code>-element.
+  const demoKontonHtml = b.demoKonton
+    ? `<section class="cta demokonton" id="demokonton">
+      <h2>${escapeHtml(b.demoKonton.rubrik)}</h2>
+      <p>${escapeHtml(b.demoKonton.text)}</p>
+      ${b.demoKonton.konton
+        .map(
+          (k) => `<div class="demokonto">
+        <h3>${escapeHtml(k.roll)}</h3>
+        <p><span class="etikett">E-post</span> <code>${escapeHtml(k.epost)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.epost)}">Kopiera</button></p>
+        <p><span class="etikett">Lösenord</span> <code>${escapeHtml(k.losenord)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.losenord)}">Kopiera</button></p>
+        <p><a class="btn btn-sm" href="${escapeHtml(k.lank)}">${escapeHtml(k.lankText)}</a></p>
+      </div>`,
+        )
+        .join('')}
+      <p class="sr-only" aria-live="polite" id="kopiera-status"></p>
+    </section>`
+    : ''
+  const demoKontonScript = b.demoKonton
+    ? `<script>
+(function () {
+  var status = document.getElementById('kopiera-status');
+  document.querySelectorAll('button.kopiera').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = b.getAttribute('data-kopiera');
+      var klar = function () { b.textContent = 'Kopierat'; if (status) status.textContent = 'Kopierat till urklipp'; setTimeout(function () { b.textContent = 'Kopiera'; }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(klar, function () { valj(b); }); } else { valj(b); }
+    });
+  });
+  function valj(b) { var kod = b.previousElementSibling; if (kod && window.getSelection) { var r = document.createRange(); r.selectNodeContents(kod); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } }
+})();
+</script>`
+    : ''
+  const demoKontonCss = b.demoKonton || b.saKommerNiIgang
+    ? `<style>
+.steg{padding-left:1.25rem}.steg li{margin:0 0 1rem}.steg h3{margin:0 0 .25rem}.steg-tid{font-weight:400;font-size:.9em;opacity:.8}
+.demokonto{margin:1rem 0 0;padding:.75rem 0 0;border-top:1px solid rgba(0,0,0,.12)}.demokonto h3{margin:0 0 .35rem;font-size:1rem}.demokonto p{margin:.25rem 0}
+.demokonto code{font-size:1rem;padding:.15rem .4rem;border-radius:.3rem;background:rgba(0,0,0,.06);user-select:all}.demokonto .etikett{display:inline-block;min-width:5.5rem;opacity:.75}
+</style>`
+    : ''
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -1118,7 +1169,7 @@ function renderB2B(b, guider) {
 <meta property="og:image" content="${ogBildFor({ typ: 'b2b' })}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/png" href="/favicon-64.png">
-<style>${CSS}</style>
+<style>${CSS}</style>${demoKontonCss}
 <script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
 </head>
 <body>
@@ -1169,6 +1220,10 @@ function renderB2B(b, guider) {
     <p>${escapeHtml(b.tillganglighet.text)}</p>
     <p><a href="${b.tillganglighet.lankHref}">${escapeHtml(b.tillganglighet.lankText)}</a></p>
 
+    ${demoKontonHtml}
+
+    ${igangHtml}
+
     <h2>Vanliga frågor</h2>
     ${faqHtml}
 
@@ -1189,6 +1244,7 @@ function renderB2B(b, guider) {
     </section>
   </div>
 </main>
+${demoKontonScript}
 
 ${krisstod()}
 

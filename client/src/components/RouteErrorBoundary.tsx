@@ -69,7 +69,7 @@ function isNetworkError(error: Error): boolean {
   )
 }
 
-export class RouteErrorBoundary extends Component<Props, State> {
+class RouteErrorBoundaryInner extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -252,6 +252,17 @@ export class RouteErrorBoundary extends Component<Props, State> {
 /**
  * Loading fallback for lazy routes
  */
+/**
+ * Persona-fynd 2026-09-12 (agent F): felgränsen nollställdes inte vid klientnavigering —
+ * en krasch på Min konsulent färgade nästa sida "Något gick fel" utan nytt fel, eftersom
+ * samma instans satt kvar på samma plats i trädet. `key` på sökvägen ger en ny instans
+ * per rutt; klassens egen "försök igen" fungerar som förut.
+ */
+export function RouteErrorBoundary(props: Props) {
+  const location = useLocation()
+  return <RouteErrorBoundaryInner key={location.pathname} {...props} />
+}
+
 export function RouteLoadingFallback() {
   return (
     <div

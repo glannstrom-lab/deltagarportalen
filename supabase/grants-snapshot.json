@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T18:17:32.707Z",
+  "generatedAt": "2026-09-12T20:02:04.544Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -472,7 +472,7 @@
     },
     {
       "name": "seed_demo_org",
-      "signature": "seed_demo_org(text)",
+      "signature": "seed_demo_org(text,text)",
       "definer": true,
       "anon": false,
       "authenticated": false

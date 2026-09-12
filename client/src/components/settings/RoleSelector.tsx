@@ -18,6 +18,13 @@ const roleConfig: Record<UserRole, {
   color: string
   bgColor: string
 }> = {
+  ARBETSTERAPEUT: {
+    label: 'Arbetsterapeut',
+    description: 'Arbetsterapeutens vy',
+    icon: User,
+    color: 'text-stone-700 dark:text-stone-300',
+    bgColor: 'bg-stone-100 dark:bg-stone-800',
+  },
   USER: {
     label: 'Deltagare',
     description: 'Standardvy för arbetssökande',
@@ -57,6 +64,11 @@ export function RoleSelector() {
 
   const userRoles = profile?.roles || [profile?.role || 'USER']
   const activeRole = profile?.activeRole || profile?.role || 'USER'
+
+  // PG10 (2026-09-12): rollväxlaren är bara meningsfull för den som har flera
+  // roller. En deltagare med en roll fick läsa om "behörigheter" och "rättigheter"
+  // utan att kunna göra något — administrationsspråk i en deltagarvy.
+  if (userRoles.length <= 1) return null
 
   const handleRoleChange = async (role: UserRole) => {
     setActiveRole(role)

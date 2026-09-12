@@ -519,6 +519,7 @@
     "menu": "Menu",
     "minimize": "Minimize sidebar",
     "expand": "Expand sidebar",
+    "participantView": "Participant view",
     "consultantSection": "Consultant",
     "adminSection": "Admin",
     "collapse": "Collapse",
@@ -4104,7 +4105,16 @@
     "laslogg": {
       "title": "Who has opened your information",
       "desc": "Every time your consultant opens your page, it is logged here. You can see it yourself.",
-      "rad": "Your consultant opened your information on {{datum}} at {{tid}}",
+      "rad": "Your consultant opened {{vad}} on {{datum}} at {{tid}}",
+      "vad": {
+        "sida": "your page (contact details, CV status, goals and journal)",
+        "oversikt": "your overview",
+        "aktivitet": "your activity plan and attendance",
+        "mal": "your goals",
+        "journal": "your journal",
+        "tidslinje": "your timeline",
+        "platser": "your work placements"
+      },
       "tomt": "No one has opened your information yet. It will show here when your consultant does.",
       "fel": "We could not load the log right now."
     },
@@ -5182,7 +5192,8 @@
       "totalExercises": "Total exercises",
       "started": "Started",
       "active": "Active",
-      "notStarted": "Not started"
+      "notStarted": "Not started",
+      "invit": "{{antal}} exercises to choose from. You have not started any yet — pick one below that suits you."
     },
     "filters": {
       "all": "All exercises",
@@ -6369,6 +6380,9 @@
       "highContrastDesc": "Increases contrast for better readability",
       "largeText": "Larger text",
       "largeTextDesc": "Increases text size throughout the app",
+      "language": "Language",
+      "languageDesc": "Choose the language you read best. Lätt svenska (easy Swedish) makes the most important texts simpler.",
+      "languageOptions": { "sv": "Svenska", "lattSvenska": "Lätt svenska", "en": "English" },
       "calmMode": "Calm mode",
       "calmModeDesc": "Reduces animations and distractions"
     },
@@ -6515,14 +6529,23 @@
       "twoFactorDesc": "Add extra security"
     },
     "programSelector": {
-      "pageNowAt": "This page is now at"
+      "pageNowAt": "This page is now at",
+      "title": "Programme",
+      "description": "If you take part in a labour market programme, you can state it here. It is saved on your profile so your consultant can see it.",
+      "none": "No programme",
+      "noneDesc": "You are not in a programme right now.",
+      "viaOrganisation": "You take part through {{org}}. Your programme follows the organisation, so there is nothing to choose here.",
+      "selected": "Selected",
+      "saving": "Saving…",
+      "saved": "Saved.",
+      "sparasDirekt": "Your choice is saved right away."
     },
     "roles": {
-      "title": "Role and permissions",
-      "description": "Choose which role you want to use right now. Your available roles decide which features you can use.",
-      "selectRolesForAccount": "Choose roles for this account",
-      "tipActiveRole": "Choose \"Active role\" to switch view in the side menu",
-      "tipCombinedPermissions": "Your permissions are a combination of all your roles"
+      "title": "Your role",
+      "description": "You have more than one role in Jobin. Choose which view you want to see right now — you can switch at any time.",
+      "selectRolesForAccount": "Roles on this account",
+      "tipActiveRole": "Switch role here when you want to see another view",
+      "tipCombinedPermissions": "Everything you can do in each role is still there when you switch back"
     },
     "coachTipsTitle": "Coach tips on every page"
   },
@@ -7706,12 +7729,12 @@
         "features": [
           "Personal consultant view",
           "Manage your participants",
-          "Chat function",
-          "Notes & follow-up",
-          "Shared calendar",
-          "Progress reports",
-          "CV review",
-          "Job matching"
+          "Messages to participants",
+          "Journal, goals and follow-up",
+          "Meetings with participants",
+          "Reports and quarterly data for IVO (the health and care inspectorate)",
+          "CV status and ATS score per participant",
+          "Work placements with follow-up"
         ]
       },
       "participant": {
@@ -8594,6 +8617,7 @@
       "stepsCompleted": "{{filled}} of {{total}} steps",
       "progressLabel": "Profile completion: {{percent}}%",
       "nextStep": "Next step",
+      "nextInvit": "Next: {{label}}",
       "consultantOverview": "Guidance overview",
       "cvStatus": "CV status",
       "cvComplete": "Complete",
@@ -10481,8 +10505,16 @@
       "markInProgress": "Mark as in progress",
       "markNotStarted": "Reset to not started",
       "goalActions": "Goal actions",
-      "timelineComingTitle": "Activity history is coming",
-      "timelineComingDesc": "We track the participant's activities (CV updates, saved jobs, goals) but need to grant consultants read access first — coming in a later version.",
+      "journalPrivateNote": "The consultant's journal. The participant's own diary is private and is not shown here.",
+      "deleteGoal": "Delete goal",
+      "deleteGoalTitle": "Delete this goal?",
+      "deleteGoalBody": "The goal disappears for both you and the participant. This cannot be undone.",
+      "reportDraftAiOff": "AI drafts are turned off for this account or organisation.",
+      "timelineLoading": "Loading events …",
+      "timelineError": "The timeline could not be loaded. Try reloading the page.",
+      "timelinePartial": "Could not read {{kallor}} — what is shown is the rest.",
+      "timelineEmptyTitle": "No events yet",
+      "timelineEmptyDesc": "Journal notes, goals, meetings, placements and sessions are collected here in order when they exist.",
       "notePlaceholder": "Write a note about the participant...",
       "activeGoalsCount": "{{count}} active goals",
       "writeNote": "Write note",
@@ -12223,6 +12255,33 @@
       "tomt": "Nothing recorded yet this week. It shows here when you save a job or send an application.",
       "fel": "Your job search could not be loaded right now.",
       "egenRedovisning": "This is your own overview. Your consultant only sees saved jobs and applications."
+    },
+    "franvaro": {
+      "knapp": "I cannot come",
+      "rubrik": "What stops you from coming? Your konsulent (job coach) gets a message right away.",
+      "orsak": {
+        "sick": "I am sick",
+        "child_care": "Caring for a child",
+        "authority_meeting": "A meeting with an authority",
+        "other": "Something else"
+      },
+      "noteringEtikett": "Do you want to add something? (optional)",
+      "bedomning": "Your konsulent decides if the reason is valid. It is better to report one time too many than one time too few.",
+      "skicka": "Send to my konsulent",
+      "avbryt": "Cancel",
+      "valjOrsak": "Choose what stops you from coming.",
+      "fel": "It could not be saved. Try again, or write to your konsulent.",
+      "anmalt": "Reported: {{orsak}}. Your konsulent has been told ({{nar}}).",
+      "angra": "Undo the report",
+      "status": "Your konsulent has been told."
+    },
+    "forklaring": {
+      "mal": "Your konsulent has set {{mal}} hours per week as the goal for assigned activities — this is the kommun's (municipality's) requirement under socialtjänstlagen (the Social Services Act).",
+      "skal": "Reason: {{skal}}.",
+      "full": "This week is fully planned.",
+      "kvar": "{{planerade}} hours are planned. {{kvar}} hours are still to be planned — your konsulent does that together with you, it is not something you need to arrange yourself.",
+      "jobbsok": "The {{h}} hours for your own job search come on top of that and do not count as an assigned activity.",
+      "guide": "Read about the aktivitetskrav (activity requirement) and what applies to you"
     },
     "incheckad": "Checked in at {{tid}}",
     "incheckadStatus": "Thank you, you are checked in.",

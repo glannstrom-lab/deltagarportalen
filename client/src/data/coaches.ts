@@ -423,7 +423,7 @@ export const PAGE_COACH_CONTENT: Record<string, PageCoachContent> = {
           // andra halvan är att kontrollera vad som FAKTISKT finns, annars
           // byter man en överdrift mot en underdrift.
           'Har du byggt ditt CV här kan du fylla profilen från det med knappen "Importera CV". Den hämtar från ditt Jobin-CV — en fil du laddar upp under Dokument läses inte automatiskt.',
-          'Profilstatus-mätaren visar vad som saknas — klicka på "Nästa steg" för att gå direkt dit.',
+          'Under ditt namn står nästa steg att fylla i — klicka på det så hamnar du rätt.',
         ],
         faqs: [
           {

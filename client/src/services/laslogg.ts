@@ -19,6 +19,17 @@ import { supabase } from '@/lib/supabase'
 
 export const VIEWED_ACTION = 'VIEWED_PARTICIPANT_DATA'
 
+/**
+ * Vad konsulenten öppnade (PG15, 2026-09-12). Loggas i resource_type som
+ * `participant.<avsnitt>`; utan avsnitt = hela deltagarsidan (`participant`).
+ * Deltagarens läslogg visar det i klartext ("din journal", inte "dina uppgifter").
+ */
+export type Avsnitt = 'oversikt' | 'aktivitet' | 'mal' | 'journal' | 'tidslinje' | 'platser'
+export const RESOURCE_TYPE_HELA_SIDAN = 'participant'
+export function resourceTypeFor(avsnitt?: Avsnitt): string {
+  return avsnitt ? `${RESOURCE_TYPE_HELA_SIDAN}.${avsnitt}` : RESOURCE_TYPE_HELA_SIDAN
+}
+
 export interface Visning {
   id: string
   user_id: string
@@ -43,19 +54,20 @@ async function requireUser() {
 }
 
 /** Nyckeln som gör att en deltagare loggas en gång per webbläsarsession. */
-export const sessionNyckel = (participantId: string) => `laslogg:visad:${participantId}`
+export const sessionNyckel = (participantId: string, avsnitt?: Avsnitt) =>
+  avsnitt ? `laslogg:visad:${participantId}:${avsnitt}` : `laslogg:visad:${participantId}`
 
 export const laslogg = {
   /**
    * Konsulenten loggar att hen öppnat deltagarens sida. Kastar vid fel —
    * anroparen ska fånga och console.warn:a, aldrig låta sidan falla.
    */
-  async loggaVisning(participantId: string): Promise<void> {
+  async loggaVisning(participantId: string, avsnitt?: Avsnitt): Promise<void> {
     const user = await requireUser()
     const { error } = await supabase.from('audit_logs').insert({
       user_id: user.id,
       action: VIEWED_ACTION,
-      resource_type: 'participant',
+      resource_type: resourceTypeFor(avsnitt),
       resource_id: participantId,
       participant_id: participantId,
     })
@@ -67,15 +79,15 @@ export const laslogg = {
    * utan att kasta: fel loggas med console.warn. Det här är det som sidan
    * anropar.
    */
-  async loggaVisningEnGang(participantId: string): Promise<boolean> {
-    const nyckel = sessionNyckel(participantId)
+  async loggaVisningEnGang(participantId: string, avsnitt?: Avsnitt): Promise<boolean> {
+    const nyckel = sessionNyckel(participantId, avsnitt)
     try {
       if (sessionStorage.getItem(nyckel) === '1') return false
     } catch {
       // sessionStorage blockerad — logga ändå, hellre en rad för mycket
     }
     try {
-      await laslogg.loggaVisning(participantId)
+      await laslogg.loggaVisning(participantId, avsnitt)
       try { sessionStorage.setItem(nyckel, '1') } catch { /* se ovan */ }
       return true
     } catch (err) {

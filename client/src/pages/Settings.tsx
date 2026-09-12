@@ -16,6 +16,7 @@ import {
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
+import { SprakVal } from '@/components/settings/SprakVal'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
 import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
 import {
@@ -401,6 +402,9 @@ function SettingsInner() {
             />
 
             <div className="space-y-4">
+              {/* PG4 (2026-09-12): språk som deltagarens eget val — fanns bara i desktop-toppnaven */}
+              <SprakVal />
+
               {/* Focus Mode - NPF-anpassat */}
               <Card variant="flat" padding="sm" className="border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20">
                 <Toggle

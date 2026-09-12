@@ -578,7 +578,9 @@ function ResourcesInner() {
       domain="info"
       className="sidbredd"
       actions={resourceActions}
-      stats={resourceStats}
+      // PG9 (2026-09-12): ett nyckeltal utan underlag är ingen nolla. Bara räkningar > 0
+      // når skenan; tomma listor har sina inviter i flikarna nedanför.
+      stats={resourceStats.filter((s) => Number(s.value) > 0)}
       sidoflikar={{
         poster: tabs.map((tab) => ({
           id: tab.id,

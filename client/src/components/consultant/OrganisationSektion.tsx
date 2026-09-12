@@ -200,6 +200,74 @@ function arMottagarroll(role: OrgRole): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// PG19 / F13 (2026-09-13): organisationens AI-brytare, för chef/admin.
+//
+// Vad brytaren faktiskt gör (läst ur _shared/aiGate.ts checkOrgAiEnabled och
+// client/api/ai.js checkOrgAiEnabled): en deltagare som är kopplad till en
+// konsulent i den här organisationen nekas ALLA AI-funktioner i portalen —
+// CV-hjälp, personligt brev, intervjuträning, AI-teamet, lönekompassen,
+// företagssök m.fl. — med beskedet "AI-funktionerna är avstängda av <org>".
+// Deltagarens egna AI-val påverkas inte i övrigt; brytaren ligger ovanpå.
+// Konsulentens egna verktyg (rapportutkast) går genom samma grind.
+// ---------------------------------------------------------------------------
+function AiBrytare({ organisation, onAndrad }: { organisation: Organization; onAndrad: () => void }) {
+  const { confirm } = useConfirmDialog()
+  const [sparar, setSparar] = useState(false)
+  const [fel, setFel] = useState<string | null>(null)
+  const pa = organisation.ai_enabled
+
+  const vaxla = async () => {
+    setFel(null)
+    const ok = await confirm({
+      title: pa ? `Stäng av AI för ${organisation.name}?` : `Slå på AI för ${organisation.name}?`,
+      message: pa
+        ? 'Alla deltagare som är kopplade till organisationens konsulenter nekas AI-funktionerna (CV-hjälp, personligt brev, intervjuträning, AI-teamet, lönekompassen med flera). De ser beskedet "AI-funktionerna är avstängda av din organisation". Deras egna texter skickas inte längre till någon modell. Du kan slå på igen när som helst.'
+        : 'Deltagarna får använda AI-funktionerna igen, enligt sina egna inställningar. Text de skriver i AI-verktygen behandlas hos OpenRouter i USA — se integritetspolicyn.',
+      confirmText: pa ? 'Stäng av AI' : 'Slå på AI',
+      cancelText: 'Avbryt',
+    })
+    if (!ok) return
+    setSparar(true)
+    try {
+      await orgApi.setOrgAiEnabled(organisation.id, !pa)
+      onAndrad()
+    } catch (e) {
+      setFel(felText(e))
+    } finally {
+      setSparar(false)
+    }
+  }
+
+  return (
+    <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="font-medium text-stone-900 dark:text-stone-100">AI-funktioner för era deltagare</p>
+          <p className="text-sm text-stone-600 dark:text-stone-400">
+            {pa
+              ? 'På — deltagare kopplade till era konsulenter kan använda AI-verktygen enligt sina egna val.'
+              : 'Av — deltagare kopplade till era konsulenter nekas alla AI-funktioner och ser att organisationen stängt av dem.'}
+          </p>
+        </div>
+        <Button
+          size="sm"
+          variant={pa ? 'ghost' : 'primary'}
+          disabled={sparar}
+          onClick={() => void vaxla()}
+          aria-pressed={pa}
+          aria-label={pa ? `Stäng av AI för ${organisation.name}` : `Slå på AI för ${organisation.name}`}
+        >
+          {sparar ? 'Sparar…' : pa ? 'Stäng av AI' : 'Slå på AI'}
+        </Button>
+      </div>
+      {fel && (
+        <p role="alert" className="mt-2 text-sm text-red-700 dark:text-red-300">{fel}</p>
+      )}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // En rad i caseload-tabellen, med överlämning för rader som har deltagare
 // ---------------------------------------------------------------------------
 
@@ -397,6 +465,10 @@ function Organisation({
           Din roll: {ORG_ROLL_ETIKETT[m.role]}
         </span>
       </div>
+
+      {jagArLedning && (
+        <AiBrytare organisation={m.organization} onAndrad={onAndrad} />
+      )}
 
       <ul className="space-y-2" aria-label={`Kollegor i ${m.organization.name}`}>
         {kollegor.map((k) => {

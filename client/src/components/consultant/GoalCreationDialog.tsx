@@ -271,7 +271,7 @@ export function GoalCreationDialog({
   }
 
   const handleSubmit = async () => {
-    if (!selectedParticipant || !customGoal.title) return
+    if (!selectedParticipant || !customGoal.title || !customGoal.deadline) return
 
     try {
       setLoading(true)
@@ -579,12 +579,16 @@ export function GoalCreationDialog({
                 />
               </div>
 
-              {/* SMART Fields */}
-              <div className="space-y-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-[var(--c-text)]" />
-                  SMART-definition
-                </h4>
+              {/* PG17 (2026-09-12): ett mål sätts i samtal på tre minuter — titel + datum
+                  räcker. SMART-fälten är en utfällning, öppen när en mall fyllt dem. */}
+              <details
+                className="space-y-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl"
+                open={Boolean(customGoal.specific || customGoal.measurable || customGoal.achievable || customGoal.relevant || customGoal.timeBound)}
+              >
+                <summary className="cursor-pointer font-medium text-stone-900 dark:text-stone-100 flex items-center gap-2">
+                  <Target className="w-4 h-4 text-[var(--c-text)]" aria-hidden="true" />
+                  Vill du göra målet mer konkret? (SMART, valfritt)
+                </summary>
 
                 <div>
                   <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
@@ -675,7 +679,7 @@ export function GoalCreationDialog({
                     )}
                   />
                 </div>
-              </div>
+              </details>
 
               {/* Priority and Deadline */}
               <div className="grid grid-cols-2 gap-4">
@@ -702,13 +706,15 @@ export function GoalCreationDialog({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                    Deadline
+                  <label htmlFor="goal-deadline" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                    Deadline *
                   </label>
                   <div className="relative">
                     <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                     <input
+                      id="goal-deadline"
                       type="date"
+                      required
                       value={customGoal.deadline}
                       onChange={e => setCustomGoal(prev => ({ ...prev, deadline: e.target.value }))}
                       min={new Date().toISOString().split('T')[0]}
@@ -744,7 +750,7 @@ export function GoalCreationDialog({
               Avbryt
             </Button>
             {step === 'customize' && (
-              <Button onClick={handleSubmit} disabled={loading || !customGoal.title}>
+              <Button onClick={handleSubmit} disabled={loading || !customGoal.title || !customGoal.deadline}>
                 {loading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

@@ -5,12 +5,17 @@ import { userApi } from '@/services/supabaseApi'
 import { PROGRAMS, type ProgramSlug } from '@/lib/programs'
 import { cn } from '@/lib/utils'
 import { Briefcase, CheckCircle2, AlertCircle, Loader2 } from '@/components/ui/icons'
+import { laslogg, type AiPolicyRad } from '@/services/laslogg'
 
 /**
- * Låter konsulent/deltagare välja vilket arbetsmarknadsprojekt de tillhör.
+ * Låter en fri deltagare ange vilket arbetsmarknadsprojekt hen deltar i.
  * Single-select med "Inget projekt" som default. Skriver till profiles.program.
  *
- * Projekt-specifika sidor monteras separat när de byggs.
+ * PG10 (2026-09-12): en deltagare som är kopplad till en organisation (kommun
+ * eller leverantör, via my_ai_policy) får INTE valet — hens projekt följer
+ * organisationen, och att erbjuda "Rusta och Matcha" åt en kommundeltagare var
+ * brus. Löftet "sidor för projektet kommer i en kommande uppdatering" är borta:
+ * valet sparas på profilen, mer lovar vi inte.
  */
 export function ProgramSelector() {
   const { t } = useTranslation()
@@ -18,6 +23,16 @@ export function ProgramSelector() {
   const [selected, setSelected] = useState<ProgramSlug | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [feedback, setFeedback] = useState<'saved' | 'error' | null>(null)
+  const [organisationer, setOrganisationer] = useState<AiPolicyRad[] | null>(null)
+
+  useEffect(() => {
+    let aktiv = true
+    laslogg
+      .minAiPolicy()
+      .then((rader) => { if (aktiv) setOrganisationer(rader) })
+      .catch(() => { if (aktiv) setOrganisationer([]) })
+    return () => { aktiv = false }
+  }, [])
 
   useEffect(() => {
     const current = (profile?.program as ProgramSlug | null) ?? null
@@ -44,16 +59,28 @@ export function ProgramSelector() {
   }
 
   const options: Array<{ slug: ProgramSlug | null; label: string; description: string }> = [
-    { slug: null, label: 'Inget projekt', description: 'Inga projekt-specifika sidor visas.' },
+    { slug: null, label: t('settings.programSelector.none'), description: t('settings.programSelector.noneDesc') },
     ...PROGRAMS.map((p) => ({ slug: p.slug, label: p.label, description: p.shortDescription })),
   ]
+
+  if (organisationer && organisationer.length > 0) {
+    const namn = organisationer.map((o) => o.org_name).join(', ')
+    return (
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 px-6 py-4">
+        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('settings.programSelector.title')}</h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
+          {t('settings.programSelector.viaOrganisation', { org: namn })}
+        </p>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
       <div className="px-6 py-4 border-b border-stone-100 dark:border-stone-700">
-        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">Projekt</h3>
+        <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('settings.programSelector.title')}</h3>
         <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
-          Välj vilket arbetsmarknadsprojekt du tillhör just nu. Valet styr vilka sidor och verktyg som visas för dig.
+          {t('settings.programSelector.description')}
         </p>
       </div>
 
@@ -93,7 +120,7 @@ export function ProgramSelector() {
                   {isActive && (
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[var(--c-accent)]/40 text-[var(--c-text)] text-xs font-medium">
                       <CheckCircle2 className="w-3 h-3" />
-                      Valt
+                      {t('settings.programSelector.selected')}
                     </span>
                   )}
                 </div>
@@ -117,13 +144,13 @@ export function ProgramSelector() {
         {isSaving && (
           <div className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
             <Loader2 className="w-4 h-4 animate-spin" />
-            <span>Sparar…</span>
+            <span>{t('settings.programSelector.saving')}</span>
           </div>
         )}
         {!isSaving && feedback === 'saved' && (
           <div className="flex items-center gap-2 text-sm text-emerald-700 dark:text-emerald-300">
             <CheckCircle2 className="w-4 h-4" />
-            <span>Sparat.</span>
+            <span>{t('settings.programSelector.saved')}</span>
           </div>
         )}
         {!isSaving && feedback === 'error' && (
@@ -134,7 +161,7 @@ export function ProgramSelector() {
         )}
         {!isSaving && !feedback && (
           <p className="text-xs text-stone-500 dark:text-stone-400">
-            Sidor för projektet kommer i en kommande uppdatering.
+            {t('settings.programSelector.sparasDirekt')}
           </p>
         )}
       </div>

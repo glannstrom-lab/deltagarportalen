@@ -21,6 +21,8 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { minVeckaApi, type ActivitySession } from '@/services/aktivitetApi'
 import { MIN_VECKA_PLAN_KEY, minVeckaSessionsKey } from '@/services/minVeckaKeys'
 import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
+// F1 (2026-09-12): deltagaren anmäler frånvaro på kommande pass
+import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import {
   addDays,
   formatLocalDate,
@@ -159,6 +161,37 @@ export default function MinVecka() {
               <> {t('minVecka.saldo.jobbsok', { defaultValue: 'Och {{h}} timmar för eget jobbsökande.', h: plan.jobsearch_hours_per_week })}</>
             )}
           </p>
+          {ampel !== 'inga_pass' && (
+            // PG7 (2026-09-12): "15 av 30" utan förklaring. Talen är planens
+            // eget mål (satt av konsulenten, lagens tak 40 h) och passens timmar —
+            // aldrig något framräknat som inte står i datan.
+            <div className="mt-3 text-sm text-stone-600 dark:text-stone-400 space-y-1">
+              <p>
+                {t('minVecka.forklaring.mal', {
+                  defaultValue: 'Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.',
+                  mal: plan.weekly_hours_target,
+                })}
+                {plan.target_reason ? ` ${t('minVecka.forklaring.skal', { defaultValue: 'Skäl: {{skal}}.', skal: plan.target_reason })}` : ''}
+              </p>
+              <p>
+                {saldo.planeradeTimmar + 0.05 >= plan.weekly_hours_target
+                  ? t('minVecka.forklaring.full', 'Den här veckan är fullplanerad.')
+                  : t('minVecka.forklaring.kvar', {
+                      defaultValue: '{{planerade}} timmar är inplanerade. {{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.',
+                      planerade: saldo.planeradeTimmar,
+                      kvar: Math.round((plan.weekly_hours_target - saldo.planeradeTimmar) * 10) / 10,
+                    })}
+                {plan.jobsearch_hours_per_week > 0
+                  ? ` ${t('minVecka.forklaring.jobbsok', { defaultValue: 'De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.', h: plan.jobsearch_hours_per_week })}`
+                  : ''}
+              </p>
+              <p>
+                <a href="/guider/aktivitetskrav-forsorjningsstod/" className="underline underline-offset-2 text-[var(--c-text)]">
+                  {t('minVecka.forklaring.guide', 'Läs om aktivitetskravet och vad som gäller för dig')}
+                </a>
+              </p>
+            </div>
+          )}
           {nastaPass && (
             <p className="mt-2 text-sm text-stone-600 dark:text-stone-400">
               {t('minVecka.nastaPass', {
@@ -257,6 +290,18 @@ export default function MinVecka() {
                         {t('minVecka.jagArHar', 'Jag är här')}
                       </Button>
                     ) : null}
+                    {/* F1: kommande, omarkerat pass → "Jag kan inte komma"; anmält → status + ångra */}
+                    {!s.self_checkin_at && (
+                      <FranvaroAnmalan
+                        session={s}
+                        onSaved={(uppd) => {
+                          queryClient.setQueryData<ActivitySession[]>(minVeckaSessionsKey(mandag), (gamla) =>
+                            (gamla ?? []).map((x) => (x.id === uppd.id ? uppd : x)),
+                          )
+                          setStatus(t('minVecka.franvaro.status', 'Din konsulent har fått besked.'))
+                        }}
+                      />
+                    )}
                   </div>
                 </Card>
               ))}

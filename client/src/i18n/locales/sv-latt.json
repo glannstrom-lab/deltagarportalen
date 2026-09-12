@@ -36,6 +36,33 @@
       "fel": "Vi kunde inte hämta det här just nu.",
       "egenRedovisning": "Det här är din egen lista. Din konsulent ser bara sparade jobb och ansökningar."
     },
+    "franvaro": {
+      "knapp": "Jag kan inte komma",
+      "rubrik": "Varför kan du inte komma? Din konsulent får veta det direkt.",
+      "orsak": {
+        "sick": "Jag är sjuk",
+        "child_care": "Jag måste ta hand om mitt barn",
+        "authority_meeting": "Jag har ett möte hos en myndighet",
+        "other": "Något annat"
+      },
+      "noteringEtikett": "Vill du skriva något mer? Du måste inte.",
+      "bedomning": "Din konsulent bestämmer om skälet är okej. Det är bättre att säga till en gång för mycket.",
+      "skicka": "Skicka till min konsulent",
+      "avbryt": "Avbryt",
+      "valjOrsak": "Välj varför du inte kan komma.",
+      "fel": "Det gick inte att spara. Försök igen, eller skriv till din konsulent.",
+      "anmalt": "Du har sagt till: {{orsak}}. Din konsulent vet det ({{nar}}).",
+      "angra": "Ta tillbaka",
+      "status": "Din konsulent vet det nu."
+    },
+    "forklaring": {
+      "mal": "Din konsulent har bestämt {{mal}} timmar i veckan. Det är kommunens krav.",
+      "skal": "Varför: {{skal}}.",
+      "full": "Den här veckan är full.",
+      "kvar": "{{planerade}} timmar är planerade. {{kvar}} timmar är kvar. Din konsulent planerar dem med dig. Du behöver inte göra det själv.",
+      "jobbsok": "De {{h}} timmarna för att söka jobb själv är extra. De räknas inte som aktivitet.",
+      "guide": "Läs mer om aktivitetskravet"
+    },
     "incheckad": "Du checkade in kl {{tid}}",
     "incheckadStatus": "Tack. Nu är du incheckad.",
     "incheckningMisslyckades": "Det gick inte att checka in. Försök igen, eller säg till din konsulent.",

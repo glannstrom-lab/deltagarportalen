@@ -6,6 +6,8 @@ import {
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
+// PG4 (2026-09-12): språkvalet fanns bara i TopBar, som inte renderas på mobil.
+import { LanguageSwitcher } from './layout/LanguageSwitcher'
 // KM12 (8), 2026-09-12: icke-stängbar banner när användaren tillhör en demoorganisation
 import { DemoBanner } from './consultant/DemoBanner'
 import { MobileBackButton } from './MobileBackButton'
@@ -256,6 +258,19 @@ export default function Layout() {
                         </Suspense>
                       </div>
                     )}
+                    {/* PG12 (2026-09-12): Lugnare läge låg bara i rådgivarkolumnen,
+                        så sidor utan rådgivarinnehåll (Min vecka, CV, Hjälp, Nätverk,
+                        Integritet, Tillgänglighet) saknade det helt på mobil — där
+                        fokusläget i TopBar inte heller finns. Ritas sist i flödet på
+                        mobil; på desktop återinförs ingen tom kolumn (putsrundan
+                        2026-08-18). */}
+                    {showBars && isMobile && !visaRadgivare && (
+                      <div className="mt-6" data-focus-chrome="radgivare">
+                        <Suspense fallback={null}>
+                          <LugnarePanel />
+                        </Suspense>
+                      </div>
+                    )}
                   </div>
                 </VisadeTipsContext.Provider>
                 </RadgivarTipsApiContext.Provider>
@@ -304,11 +319,11 @@ export default function Layout() {
 }
 
 // Mobil topbar med meny-knapp och profil
-function MobileTopBar() {
+export function MobileTopBar() {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
-  const { user, signOut } = useAuthStore()
+  const { user, profile, signOut } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   // TG1: fokusfälla + Escape + fokusåterställning för profilpanelen.
@@ -370,6 +385,11 @@ function MobileTopBar() {
               <Search className="w-[18px] h-[18px]" aria-hidden="true" />
             </button>
             <CrisisSupport variant="inline" />
+            {/* PG4 (2026-09-12): samma LanguageSwitcher som desktop — portalens
+                engelska läsare är nyanländ och på mobil, och här fanns inget språkval. */}
+            <div data-focus-chrome="topbar-extras">
+              <LanguageSwitcher />
+            </div>
             <div data-focus-chrome="topbar-extras">
               <NotificationBell variant="compact" />
             </div>
@@ -457,7 +477,14 @@ function MobileTopBar() {
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold text-stone-800 dark:text-stone-100 truncate">{user?.email || t('roles.user')}</p>
-              <p className="text-xs text-stone-500 dark:text-stone-400">{t('roles.participant')}</p>
+              {/* PG20 (2026-09-13): dialogen kallade en konsulent "Deltagare". */}
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                {(profile?.activeRole || profile?.role) === 'CONSULTANT'
+                  ? t('roles.consultant')
+                  : (profile?.activeRole || profile?.role) === 'ADMIN' || (profile?.activeRole || profile?.role) === 'SUPERADMIN'
+                    ? t('roles.admin')
+                    : t('roles.participant')}
+              </p>
             </div>
           </div>
 
@@ -521,12 +548,16 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
   // Alla hubbar utfällda som default. (Före N3 låg här tre gamla grupp-id:n;
   // en tidigare default matchade inga id:n alls så menyn startade hopfälld —
   // upptäckt av spar-c-verify 2026-07-10. Därför härleds listan ur navHubs.)
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(() => navHubs.map((h) => h.id))
-
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
   const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
   const isConsultant = activeRole === 'CONSULTANT' || isAdmin
+  // PG20 (2026-09-13): en konsulent fick deltagarens hela hubbmeny med
+  // "Konsultportal" sist. Nu ligger hennes egna avsnitt först och hubbarna
+  // startar hopfällda under "Deltagarvyn" — hon kan behöva se den, men det är
+  // inte hennes arbetsyta. Deltagare får som förut alla hubbar utfällda.
+  const konsulentForst = activeRole === 'CONSULTANT'
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(() => (konsulentForst ? [] : navHubs.map((h) => h.id)))
 
   const toggleGroup = (groupId: string) => {
     setExpandedGroups(prev =>
@@ -539,6 +570,36 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
   // TG1: fokusfälla + Escape + fokusåterställning. Hooken är projektets
   // etablerade mönster (13 modaler använder den) — ingen ny mekanik införs här.
   const menyPanelRef = useFocusTrap<HTMLDivElement>(isOpen, { onEscape: onClose })
+
+  const konsulentBlock = (
+          <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
+            <p className="px-3 py-1.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
+              {t('sidebar.consultantSection')}
+            </p>
+            <div className="space-y-0.5">
+              {consultantNavItems.map((item) => {
+                const Icon = item.icon
+                const isActive = location.pathname.startsWith(item.path)
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={onClose}
+                    className={cn(
+                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
+                      isActive
+                        ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-medium'
+                        : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-stone-800'
+                    )}
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <span>{t(item.labelKey)}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+  )
 
   return (
     <div
@@ -578,6 +639,12 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
       {/* Scrollable Navigation */}
       <nav className="flex-1 overflow-y-auto p-2">
+        {konsulentForst && konsulentBlock}
+        {konsulentForst && (
+          <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+            {t('sidebar.participantView')}
+          </p>
+        )}
         {navHubs.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
           const hubAktiv = location.pathname === group.path
@@ -658,36 +725,8 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
           )
         })}
 
-        {/* Consultant Section */}
-        {isConsultant && (
-          <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="px-3 py-1.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
-              {t('sidebar.consultantSection')}
-            </p>
-            <div className="space-y-0.5">
-              {consultantNavItems.map((item) => {
-                const Icon = item.icon
-                const isActive = location.pathname.startsWith(item.path)
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={onClose}
-                    className={cn(
-                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
-                      isActive
-                        ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-medium'
-                        : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-stone-800'
-                    )}
-                  >
-                    <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span>{t(item.labelKey)}</span>
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        )}
+        {/* Consultant Section — efter hubbarna för admin/deltagare; för konsulenten ligger den FÖRST (PG20, se konsulentBlock) */}
+        {isConsultant && !konsulentForst && konsulentBlock}
 
         {/* Admin Section */}
         {isAdmin && (

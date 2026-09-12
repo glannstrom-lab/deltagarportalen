@@ -85,7 +85,7 @@
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
-          "Ja, direkt och utan att boka något. Logga in på demokontot på jobin.se/#/login med e-post demo@jobin.se och lösenord visa-jobin-2026. Kontot är en chef i en påhittad kommun med fem fiktiva deltagare, en aktivitetsplan med närvaro, mål, journal och möten. Allt du ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss, boka en så går vi igenom det tillsammans."
+          "Ja, direkt och utan att boka något. Logga in på jobin.se/#/login med demo@jobin.se och lösenordet visa-jobin-2026 — ett chefskonto i en påhittad kommun med fem fiktiva deltagare, en aktivitetsplan med närvaro, mål, journal och möten. Vill ni se deltagarens sida loggar ni in som Anna Exempel: anna.exempel@example.com med lösenordet prova-anna-2026 — hon har alltid ett pass i dag och i morgon, så Min vecka och \"Jag är här\" går att prova vilken dag som helst. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan."
         ],
         [
           "Behöver deltagaren installera något?",
@@ -105,11 +105,62 @@
       ],
       "slutCta": {
         "rubrik": "Vill ni se det här på riktigt?",
-        "text": "Prova demokontot själv: logga in på jobin.se/#/login med demo@jobin.se och lösenordet visa-jobin-2026 — en påhittad kommun med fem fiktiva deltagare, återställd varje natt. Eller boka en visning så går vi igenom det tillsammans.",
+        "text": "Prova demokontot själv — som konsulent (demo@jobin.se) eller som deltagare (anna.exempel@example.com); uppgifterna står i rutan Demokonton ovan. En påhittad kommun med fem fiktiva deltagare, återställd varje natt. Eller boka en visning så går vi igenom det tillsammans.",
         "ctaLabel": "Boka en visning",
         "ctaAmne": "Demo%20-%20arbetsmarknadsenhet",
-        "demoLank": "/#/login",
+        "demoLank": "/#/login?email=demo@jobin.se",
         "demoLabel": "Prova demokontot"
+      },
+      "demoKonton": {
+        "rubrik": "Demokonton — påhittad kommun, återställs varje natt",
+        "text": "Logga in med uppgifterna nedan. Allt ni ändrar försvinner vid 01:00 varje natt, AI-funktionerna är avstängda och inga mejl kan skickas från demot.",
+        "konton": [
+          {
+            "roll": "Konsulent (chef i Demokommun)",
+            "epost": "demo@jobin.se",
+            "losenord": "visa-jobin-2026",
+            "lank": "/#/login?email=demo@jobin.se",
+            "lankText": "Prova som konsulent"
+          },
+          {
+            "roll": "Deltagare (Anna Exempel, aktivitetskrav)",
+            "epost": "anna.exempel@example.com",
+            "losenord": "prova-anna-2026",
+            "lank": "/#/login?email=anna.exempel@example.com",
+            "lankText": "Prova som deltagare"
+          }
+        ]
+      },
+      "saKommerNiIgang": {
+        "rubrik": "Så kommer ni igång",
+        "intro": "Fem steg från beslut till första planen. Tiderna är ungefärliga och bygger på pilotuppsättningen hösten 2026.",
+        "steg": [
+          {
+            "rubrik": "Biträdesavtal",
+            "tid": "1–2 veckor, mest kommunens handläggning",
+            "text": "Vi skickar ett personuppgiftsbiträdesavtal med kommunen som ansvarig, i SKR:s struktur, med bilagor för behandling, underbiträden och åtgärder. Inga deltagare läggs in innan det är påskrivet."
+          },
+          {
+            "rubrik": "Organisation och chefskonto",
+            "tid": "samma dag",
+            "text": "Vi lägger upp er organisation i Jobin och ett chefskonto till den som ska äga uppsättningen. Chefen ser sin organisation, sina konsulenter och deras deltagare under Inställningar."
+          },
+          {
+            "rubrik": "Kollegor",
+            "tid": "10 minuter",
+            "text": "Varje konsulent skapar ett konto på jobin.se. Chefen lägger sedan till dem på e-post under Inställningar → Din organisation, och kan när som helst ta bort någon eller lämna över deltagare mellan kollegor."
+          },
+          {
+            "rubrik": "Aktivitetskatalog och schemamall",
+            "tid": "30 minuter",
+            "text": "Under Resurser bygger ni kommunens utbud som en katalog (lagens fyra aktivitetstyper plus eget jobbsökande) och en veckomall som kan tillämpas på många deltagare."
+          },
+          {
+            "rubrik": "Första deltagaren och planen",
+            "tid": "10 minuter per deltagare",
+            "text": "Konsulenten bjuder in deltagaren via e-post, deltagaren skapar sitt konto och samtycker till kopplingen, och konsulenten lägger en individuell plan från mallen med veckomål i timmar och försörjningshinder. Närvaron markeras i veckovyn, planen exporteras som PDF till akten."
+          }
+        ]
       }
     },
     {
@@ -216,6 +267,19 @@
         "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",
         "ctaLabel": "Boka en visning",
         "ctaAmne": "Demo%20-%20Rusta%20och%20matcha"
+      },
+      "demoKonton": {
+        "rubrik": "Demokonton — påhittad kommun, återställs varje natt",
+        "text": "Logga in med uppgifterna nedan. Allt ni ändrar försvinner vid 01:00 varje natt, AI-funktionerna är avstängda och inga mejl kan skickas från demot.",
+        "konton": [
+          {
+            "roll": "Konsulent (chef i Demokommun)",
+            "epost": "demo@jobin.se",
+            "losenord": "visa-jobin-2026",
+            "lank": "/#/login?email=demo@jobin.se",
+            "lankText": "Prova som konsulent"
+          }
+        ]
       }
     }
   ]

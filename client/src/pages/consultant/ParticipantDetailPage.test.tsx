@@ -311,7 +311,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
     fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
     fireEvent.click(screen.getByRole('radio', { name: /^Oro$/i }))
     fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
@@ -350,7 +350,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
     fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
     fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
       target: { value: 'Ett kritiskt observandum.' },
@@ -389,7 +389,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
     await screen.findByText('En anteckning som redan fanns.')
 
     fireEvent.click(screen.getByRole('button', { name: /Ta bort anteckningen/i }))
@@ -413,9 +413,61 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Dagbok$/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/kunde inte hämtas/i)
     expect(screen.queryByText(/Här samlas anteckningarna/i)).not.toBeInTheDocument()
+  })
+})
+
+describe('ParticipantDetailPage — PG17/PG22 (persona-genomgången 2026-09-12)', () => {
+  const anna = makeParticipant('p1', 'Anna', 'Andersson')
+  const mal = {
+    id: 'g1', participant_id: 'p1', consultant_id: 'consultant-1', title: 'Skicka tre ansökningar',
+    description: '', specific: '', measurable: '', achievable: '', relevant: '', time_bound: '',
+    priority: 'MEDIUM', status: 'IN_PROGRESS', progress: 20, deadline: '2026-10-01',
+    created_at: '2026-09-01T08:00:00Z', updated_at: '2026-09-01T08:00:00Z',
+  }
+
+  it('"Ta bort mål" finns i målets meny och raderar efter bekräftelse via portalens dialog', async () => {
+    let raderat = false
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: (_filters, info) => {
+        if (info.delete) { raderat = true; return Promise.resolve({ data: null, error: null }) }
+        return Promise.resolve({ data: [mal], error: null })
+      },
+      consultant_journal: emptyJournal,
+    })
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Skicka tre ansökningar')
+
+    fireEvent.click(screen.getAllByRole('button', { name: /åtgärder för mål/i })[0])
+    fireEvent.click(screen.getByRole('menuitem', { name: /ta bort mål/i }))
+
+    // Bekräftelsen är portalens ConfirmDialog, inte window.confirm
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveTextContent(/ta bort målet\?/i)
+    fireEvent.click(within(dialog).getByRole('button', { name: /ta bort mål/i }))
+
+    await waitFor(() => expect(raderat).toBe(true))
+    await waitFor(() => expect(screen.queryByText('Skicka tre ansökningar')).not.toBeInTheDocument())
+  })
+
+  it('journalfliken heter Journal, säger att dagboken är privat, och gömmer AI-utkastet när organisationen stängt av AI', async () => {
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: emptyJournal,
+      // my_ai_policy: en rad där organisationen har ai_enabled = false → spärr
+      my_ai_policy: () => Promise.resolve({ data: [{ org_id: 'o1', org_name: 'Demokommun', ai_enabled: false }], error: null }),
+    })
+    renderAt('/consultant/participants/p1')
+    await screen.findByText(/Anna Andersson/)
+
+    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    expect(screen.getByText(/dagbok är privat/i)).toBeInTheDocument()
+    await waitFor(() => expect(screen.queryByRole('button', { name: /rapportutkast/i })).not.toBeInTheDocument())
+    expect(screen.getByRole('status')).toHaveTextContent(/AI-utkast är avstängt/i)
   })
 })

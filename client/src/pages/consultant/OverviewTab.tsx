@@ -269,6 +269,7 @@ export function OverviewTab() {
   })
   const [, setParticipants] = useState<Participant[]>([])
   const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
+  const [attentionCounts, setAttentionCounts] = useState({ noContact: 0, inactive: 0, noCv: 0 })
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
 
   // Dialog states
@@ -354,9 +355,30 @@ export function OverviewTab() {
         const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
 
         const active = participantsData.filter(p => p.status === 'ACTIVE')
-        const needsAttention = participantsData.filter(p =>
-          !p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo
-        )
+
+        // PG3 (persona-genomgång 2026-09-12): kortet "Kräver uppmärksamhet" räknade
+        // bara "ej kontaktad 7 dagar" medan listan under det också tog med
+        // inaktivitet och "CV saknas" — demot visade 0 i kortet ovanför fem
+        // rader. Nu räknas kortet ur SAMMA mängd som listan: unika deltagare
+        // med minst ett skäl, och undertexten säger vilka skäl.
+        const attention: Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }> = []
+        participantsData.forEach(p => {
+          if (!p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo) {
+            attention.push({ participant: p, type: 'no_contact' })
+          }
+          if (p.last_login && new Date(p.last_login) < fourteenDaysAgo) {
+            attention.push({ participant: p, type: 'inactive' })
+          }
+          if (!p.has_cv) {
+            attention.push({ participant: p, type: 'no_cv' })
+          }
+        })
+        const attentionUnique = new Set(attention.map(a => a.participant.participant_id))
+        const attentionCounts = {
+          noContact: attention.filter(a => a.type === 'no_contact').length,
+          inactive: attention.filter(a => a.type === 'inactive').length,
+          noCv: attention.filter(a => a.type === 'no_cv').length,
+        }
         const completedCV = participantsData.filter(p =>
           p.has_cv && (p.ats_score || 0) >= 70
         )
@@ -383,7 +405,7 @@ export function OverviewTab() {
         setStats({
           totalParticipants: participantsData.length,
           activeParticipants: active.length,
-          needsAttention: needsAttention.length,
+          needsAttention: attentionUnique.size,
           completedCV: completedCV.length,
           averageProgress: averageAtsScore,
           meetingsThisWeek: meetingsData?.length || 0,
@@ -392,22 +414,8 @@ export function OverviewTab() {
           goalsOverdue: overdueGoals,
         })
 
-        // Build attention list
-        const attention: Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }> = []
-
-        participantsData.forEach(p => {
-          if (!p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo) {
-            attention.push({ participant: p, type: 'no_contact' })
-          }
-          if (p.last_login && new Date(p.last_login) < fourteenDaysAgo) {
-            attention.push({ participant: p, type: 'inactive' })
-          }
-          if (!p.has_cv) {
-            attention.push({ participant: p, type: 'no_cv' })
-          }
-        })
-
         setAttentionList(attention.slice(0, 5))
+        setAttentionCounts(attentionCounts)
 
         // ==================== Min dag ====================
         const nameOf = (pid: string) => {
@@ -640,7 +648,11 @@ export function OverviewTab() {
         <KPICard
           title={t('consultant.overview.needsAttention')}
           value={stats.needsAttention}
-          subtitle={t('consultant.overview.notContactedDays', { count: 7 })}
+          subtitle={[
+            attentionCounts.noContact > 0 ? `${attentionCounts.noContact} ${t('consultant.alerts.noContact').toLowerCase()}` : null,
+            attentionCounts.inactive > 0 ? `${attentionCounts.inactive} ${t('consultant.alerts.inactive').toLowerCase()}` : null,
+            attentionCounts.noCv > 0 ? `${attentionCounts.noCv} ${t('consultant.alerts.noCv')}` : null,
+          ].filter(Boolean).join(' · ') || t('consultant.overview.noAttentionNeeded')}
           icon={AlertTriangle}
           status={stats.needsAttention === 0 ? 'green' : stats.needsAttention <= 3 ? 'yellow' : 'red'}
           onClick={() => navigate('/consultant/participants?filter=attention')}

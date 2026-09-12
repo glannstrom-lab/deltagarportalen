@@ -183,14 +183,45 @@ export async function generateParticipantInsights(
   // `insights` som redan räknats fram returneras ändå.
   let goalInsightsFailed = false
   try {
-    const { data: goals, error: goalsError } = await supabase
+    // PG2 (2026-09-12): embed:et `participant:consultant_dashboard_participants!inner(...)`
+    // gav PGRST201 i prod VARJE gång — vyn har två kolumner mot profiles.id
+    // (participant_id och user_id) och consultant_goals två FK:er (consultant_id,
+    // participant_id), så PostgREST ser fyra möjliga relationer och kan inte
+    // välja, inte ens med `!fk-namn`-hint (prövat: fortfarande 300/PGRST201).
+    // Därför två steg: målen rakt av, sedan namnen ur vyn på user_id.
+    const { data: goalRows, error: goalsError } = await supabase
       .from('consultant_goals')
-      // KV2: vyn har first_name/last_name, inte name — se formatParticipantName.
-      .select('*, participant:consultant_dashboard_participants!inner(first_name, last_name, user_id)')
+      .select('*')
       .eq('consultant_id', consultantId)
       .eq('status', 'IN_PROGRESS')
 
     if (goalsError) throw goalsError
+
+    type GoalRow = {
+      id?: string
+      participant_id?: string | null
+      title?: string | null
+      deadline?: string | null
+      progress?: number | null
+      [k: string]: unknown
+    }
+    const goalList = (goalRows ?? []) as GoalRow[]
+    const participantIds = Array.from(
+      new Set(goalList.map((g) => g.participant_id).filter((id): id is string => typeof id === 'string'))
+    )
+    const namesById = new Map<string, { first_name?: string | null; last_name?: string | null; user_id?: string | null }>()
+    if (participantIds.length > 0) {
+      // KV2: vyn har first_name/last_name, inte name — se formatParticipantName.
+      const { data: nameRows, error: namesError } = await supabase
+        .from('consultant_dashboard_participants')
+        .select('user_id, first_name, last_name')
+        .in('user_id', participantIds)
+      if (namesError) throw namesError
+      for (const row of (nameRows ?? []) as Array<{ user_id?: string | null; first_name?: string | null; last_name?: string | null }>) {
+        if (row.user_id) namesById.set(row.user_id, row)
+      }
+    }
+    const goals = goalList.map((g) => ({ ...g, participant: g.participant_id ? namesById.get(g.participant_id) ?? null : null }))
 
     if (goals) {
       for (const goal of goals) {
@@ -202,7 +233,7 @@ export async function generateParticipantInsights(
 
           if (daysUntil < 0) {
             insights.push({
-              participantId: goal.participant?.user_id || goal.participant_id,
+              participantId: goal.participant?.user_id || goal.participant_id || '',
               participantName: goalParticipantName,
               type: 'milestone_overdue',
               priority: 'high',
@@ -213,9 +244,9 @@ export async function generateParticipantInsights(
               metric: `${Math.abs(daysUntil)} dagar försenad`,
               trend: 'down'
             })
-          } else if (daysUntil <= 7 && goal.progress < 50) {
+          } else if (daysUntil <= 7 && (goal.progress ?? 0) < 50) {
             insights.push({
-              participantId: goal.participant?.user_id || goal.participant_id,
+              participantId: goal.participant?.user_id || goal.participant_id || '',
               participantName: goalParticipantName,
               type: 'goal_at_risk',
               priority: 'high',

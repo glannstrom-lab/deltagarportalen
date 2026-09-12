@@ -8,7 +8,6 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
-  User,
   Mail,
   Phone,
   Calendar,
@@ -35,8 +34,14 @@ import { orgApi } from '@/services/orgApi'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
+import type { Avsnitt } from '@/services/laslogg'
 import { laslogg } from '@/services/laslogg'
 import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSektion'
+import { Tidslinje } from '@/components/consultant/Tidslinje'
+import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
+import { useAuthStore } from '@/stores/authStore'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
+import { consultantService } from '@/services/consultantService'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -73,12 +78,6 @@ interface Goal {
   authorName?: string
 }
 
-interface TimelineEvent {
-  id: string
-  type: 'cv_updated' | 'goal_completed' | 'login' | 'job_saved' | 'note_added' | 'meeting'
-  description: string
-  timestamp: string
-}
 
 // Status Badge Component
 function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
@@ -132,12 +131,15 @@ function GoalCard({
   goal,
   onEdit,
   onComplete,
+  onDelete,
   readOnly = false,
   t,
 }: {
   goal: Goal
   onEdit: (goal: Goal) => void
   onComplete: (id: string) => void
+  /** PG17 (2026-09-12): ett mål gick inte att ta bort i UI:t — konsulenten fick radera via SQL. */
+  onDelete?: (id: string) => void
   /** KS2 b: målet är skapat av en företrädare — läsbart, inte ändringsbart. */
   readOnly?: boolean
   t: (key: string) => string
@@ -228,6 +230,15 @@ function GoalCard({
                     {t('consultant.participantDetail.markComplete')}
                   </button>
                 )}
+                {onDelete && (
+                  <button
+                    role="menuitem"
+                    onClick={() => { setShowMenu(false); onDelete(goal.id) }}
+                    className="w-full px-4 py-2 text-left text-sm text-rose-700 dark:text-rose-300 hover:bg-stone-50 dark:hover:bg-stone-700"
+                  >
+                    {t('consultant.participantDetail.deleteGoal')}
+                  </button>
+                )}
               </div>
             </>
           )}
@@ -299,11 +310,17 @@ export function ParticipantDetailPage() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null)
   const kollegaNamnRef = useRef<Record<string, string>>({})
   const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
-  const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>('overview')
   const [newNote, setNewNote] = useState('')
   const [showReportDraft, setShowReportDraft] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
+  // PG22 (2026-09-12): "Rapportutkast (AI)" visades fast organisationens AI var av
+  // (demot) — bannern sa "ingen AI", knappen sa motsatsen. Båda brytarna läses:
+  // organisationens (my_ai_policy) och konsulentens egen (profiles.ai_enabled).
+  const orgAiSparr = useOrgAiSparr()
+  const egenAiAv = useAuthStore((st) => st.profile?.ai_enabled === false)
+  const aiAv = orgAiSparr != null || egenAiAv
+  const { confirm } = useConfirmDialog()
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [showPlacementDialog, setShowPlacementDialog] = useState(false)
 
@@ -323,7 +340,6 @@ export function ParticipantDetailPage() {
     setGoals([])
     setJournal([])
     setJournalLoadError(null)
-    setTimeline([])
     setError(null)
     fetchParticipantData(participantId)
     // ÖV1: deltagaren ska kunna se vem som öppnat hens uppgifter. En rad per
@@ -332,6 +348,17 @@ export function ParticipantDetailPage() {
     if (participantId) void laslogg.loggaVisningEnGang(participantId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [participantId])
+
+  // PG15 (2026-09-12): läsloggen ska säga VAD som öppnades, inte bara att sidan
+  // öppnades. En rad per deltagare, avsnitt och webbläsarsession (laslogg håller
+  // sessionsnyckeln). Flikarnas id → loggens avsnittsnamn.
+  useEffect(() => {
+    if (!participantId) return
+    const avsnitt: Record<typeof activeTab, Avsnitt> = {
+      overview: 'oversikt', aktivitet: 'aktivitet', goals: 'mal', journal: 'journal', timeline: 'tidslinje',
+    }
+    void laslogg.loggaVisningEnGang(participantId, avsnitt[activeTab])
+  }, [participantId, activeTab])
 
   const fetchParticipantData = async (requestedId: string | undefined) => {
     const isStale = () => activeParticipantIdRef.current !== requestedId
@@ -431,8 +458,7 @@ export function ParticipantDetailPage() {
       // user_activities-tabellen finns men RLS:en tillåter bara user_id =
       // auth.uid() — konsulenter behöver en separat policy för att läsa
       // sina deltagare. Spårad i docs/teknisk-skuld-2026-05/.
-      setTimeline([])
-    } catch (err) {
+      } catch (err) {
       if (!isStale()) {
         console.error('Error fetching participant:', err)
         setError(t('consultant.participantDetail.loadError', 'Det gick inte att hämta deltagarens uppgifter.'))
@@ -696,6 +722,23 @@ export function ParticipantDetailPage() {
     }
   }
 
+  // PG17: "Ta bort" med bekräftelse via portalens dialog (aldrig window.confirm).
+  const handleDeleteGoal = async (goalId: string) => {
+    const ok = await confirm({
+      title: t('consultant.participantDetail.deleteGoalTitle'),
+      message: t('consultant.participantDetail.deleteGoalBody'),
+      confirmText: t('consultant.participantDetail.deleteGoal'),
+      variant: 'danger',
+    })
+    if (!ok) return
+    try {
+      await consultantService.deleteGoal(goalId)
+      setGoals(prev => prev.filter(g => g.id !== goalId))
+    } catch (error) {
+      console.error('Error deleting goal:', error)
+    }
+  }
+
   const handleEditGoal = async (goal: Goal) => {
     // For now, just toggle status between IN_PROGRESS and NOT_STARTED
     const newStatus = goal.status === 'NOT_STARTED' ? 'IN_PROGRESS' : 'NOT_STARTED'
@@ -894,6 +937,7 @@ export function ParticipantDetailPage() {
                   goal={goal}
                   onEdit={handleEditGoal}
                   onComplete={handleCompleteGoal}
+                  onDelete={handleDeleteGoal}
                   readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
                   t={t}
                 />
@@ -952,6 +996,7 @@ export function ParticipantDetailPage() {
                 goal={goal}
                 onEdit={handleEditGoal}
                 onComplete={handleCompleteGoal}
+                onDelete={handleDeleteGoal}
                 readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
                 t={t}
               />
@@ -962,11 +1007,21 @@ export function ParticipantDetailPage() {
 
       {activeTab === 'journal' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-end">
-            <Button variant="outline" onClick={() => setShowReportDraft(true)}>
-              <Sparkles className="w-4 h-4 mr-2" />
-              {t('consultant.participantDetail.reportDraft')}
-            </Button>
+          <div className="flex items-center justify-between gap-4">
+            {/* PG21: fliken hette "Dagbok" men är konsulentens journal — deltagarens dagbok är privat. */}
+            <p className="text-sm text-stone-500 dark:text-stone-400">
+              {t('consultant.participantDetail.journalPrivateNote')}
+            </p>
+            {aiAv ? (
+              <p className="text-sm text-stone-500 dark:text-stone-400 shrink-0" role="status">
+                {t('consultant.participantDetail.reportDraftAiOff')}
+              </p>
+            ) : (
+              <Button variant="outline" onClick={() => setShowReportDraft(true)}>
+                <Sparkles className="w-4 h-4 mr-2" />
+                {t('consultant.participantDetail.reportDraft')}
+              </Button>
+            )}
           </div>
 
           <ParticipantJournal
@@ -982,59 +1037,8 @@ export function ParticipantDetailPage() {
         </div>
       )}
 
-      {activeTab === 'timeline' && (
-        <Card className="p-5">
-          {timeline.length === 0 && (
-            <div className="py-10 text-center">
-              <Clock className="w-10 h-10 mx-auto text-stone-400 dark:text-stone-500 mb-3" />
-              <p className="font-medium text-stone-700 dark:text-stone-200">
-                {t('consultant.participantDetail.timelineComingTitle')}
-              </p>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-md mx-auto">
-                {t('consultant.participantDetail.timelineComingDesc')}
-              </p>
-            </div>
-          )}
-          <div className="space-y-6">
-            {timeline.map((event, index) => {
-              const icons = {
-                cv_updated: FileText,
-                goal_completed: CheckCircle,
-                login: User,
-                job_saved: Briefcase,
-                note_added: MessageSquare,
-                meeting: Calendar,
-              }
-              const Icon = icons[event.type]
-
-              return (
-                <div key={event.id} className="flex gap-4">
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-                    </div>
-                    {index < timeline.length - 1 && (
-                      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-stone-200 dark:bg-stone-700" />
-                    )}
-                  </div>
-                  <div className="flex-1 pb-6">
-                    <p className="font-medium text-stone-900 dark:text-stone-100">
-                      {event.description}
-                    </p>
-                    <p className="text-sm text-stone-500 dark:text-stone-400">
-                      {new Date(event.timestamp).toLocaleDateString('sv-SE', {
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </Card>
+      {activeTab === 'timeline' && participantId && (
+        <Tidslinje participantId={participantId} onGaTill={(sektion) => setActiveTab(sektion)} />
       )}
 
       {participantId && (

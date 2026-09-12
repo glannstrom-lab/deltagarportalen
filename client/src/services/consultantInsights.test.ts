@@ -26,6 +26,7 @@ function makeBuilder(data: unknown, error: unknown = null) {
   const builder: Record<string, unknown> = {}
   builder.select = vi.fn(() => builder)
   builder.eq = vi.fn(() => builder)
+  builder.in = vi.fn(() => builder)
   ;(builder as Record<string, unknown>).then = (
     onResolve: (v: { data: unknown; error: unknown }) => unknown
   ) => Promise.resolve({ data, error }).then(onResolve)
@@ -108,22 +109,27 @@ describe('generateParticipantInsights — namn läses ur first_name/last_name', 
     expect(engagementInsight!.participantName).toBe('Deltagare')
   })
 
-  it('mål-baserade insikter läser namnet ur first_name/last_name-embedden, inte "name"', async () => {
+  it('mål-baserade insikter läser namnet ur vyn i ett EGET anrop (PG2) — aldrig via embed', async () => {
+    // PG2 (2026-09-12): embed:et `participant:consultant_dashboard_participants!inner(...)`
+    // gav PGRST201 i prod varje gång (fyra möjliga relationer, hint hjälper inte).
+    // Namnen ska hämtas i ett andra anrop mot vyn med .in('user_id', …).
+    const goalsBuilder = makeBuilder([
+      {
+        id: 'g1',
+        title: 'Öva intervju',
+        participant_id: 'p2',
+        deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        progress: 20,
+      },
+    ])
+    const namesBuilder = makeBuilder([{ user_id: 'p2', first_name: 'Bo', last_name: 'Berg' }])
+    let viewCalls = 0
     fromMock.mockImplementation((table: string) => {
-      if (table === 'consultant_dashboard_participants') return makeBuilder([])
-      if (table === 'consultant_goals') {
-        return makeBuilder([
-          {
-            id: 'g1',
-            title: 'Öva intervju',
-            participant_id: 'p2',
-            deadline: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-            progress: 20,
-            // Embedden PostgREST faktiskt returnerar efter KV2-rättelsen:
-            participant: { first_name: 'Bo', last_name: 'Berg', user_id: 'p2' },
-          },
-        ])
+      if (table === 'consultant_dashboard_participants') {
+        viewCalls += 1
+        return viewCalls === 1 ? makeBuilder([]) : namesBuilder
       }
+      if (table === 'consultant_goals') return goalsBuilder
       throw new Error(`oväntad tabell: ${table}`)
     })
 
@@ -131,6 +137,26 @@ describe('generateParticipantInsights — namn läses ur first_name/last_name', 
     const overdue = result.insights.find(i => i.type === 'milestone_overdue')
     expect(overdue).toBeDefined()
     expect(overdue!.participantName).toBe('Bo Berg')
+
+    // Grinden som faktiskt kan falla: en embed-sträng mot vyn i goals-anropet
+    // är exakt det som gav PGRST201.
+    const goalsSelect = (goalsBuilder.select as ReturnType<typeof vi.fn>).mock.calls[0][0] as string
+    expect(goalsSelect).not.toMatch(/consultant_dashboard_participants/)
+    expect(namesBuilder.in).toHaveBeenCalledWith('user_id', ['p2'])
+  })
+
+  it('mål utan matchande vyrad faller tillbaka på "Deltagare", inte på ett tomt namn', async () => {
+    fromMock.mockImplementation((table: string) => {
+      if (table === 'consultant_dashboard_participants') return makeBuilder([])
+      if (table === 'consultant_goals') {
+        return makeBuilder([{ id: 'g1', title: 'Skriv CV', participant_id: 'p9', deadline: new Date(Date.now() - 86400000).toISOString(), progress: 0 }])
+      }
+      throw new Error(`oväntad tabell: ${table}`)
+    })
+    const result = await generateParticipantInsights('consultant-1')
+    const overdue = result.insights.find(i => i.type === 'milestone_overdue')
+    expect(overdue).toBeDefined()
+    expect(overdue!.participantName.trim().length).toBeGreaterThan(0)
   })
 })
 

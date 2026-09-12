@@ -177,6 +177,18 @@ beforeEach(() => {
 
 // ---------------------------------------------------------------------------
 
+describe('PG9: ett nyckeltal utan underlag är ingen nolla', () => {
+  it('med noll sparade jobb, dokument och bokmärken renderas inget stat-kort med "0"', async () => {
+    getAllMock.mockResolvedValue([])
+    renderPage()
+    // vänta in laddningen via ett element som alltid finns
+    await screen.findByTestId('sidoflikar')
+    expect(screen.queryByTestId('stat-Sparade jobb')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('stat-Dokument')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('stat-Bokmärken')).not.toBeInTheDocument()
+  })
+})
+
 describe('B32: /resources räknar bara faktiskt sparade jobb som "Sparade jobb"', () => {
   it('KPI-kortet visar 2 (SAVED+INTERESTED), inte 4 (hela pipelinen)', async () => {
     renderPage()

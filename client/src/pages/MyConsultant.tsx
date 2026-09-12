@@ -197,13 +197,13 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
             <div className="flex items-start gap-3">
               <div className="p-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-solid)] rounded-lg">
                 {(() => {
-                  const Icon = meetingTypeIcons[nextMeeting.type]
+                  const Icon = meetingTypeIcons[nextMeeting.type] ?? meetingTypeIcons.video
                   return <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                 })()}
               </div>
               <div className="flex-1">
                 <p className="font-medium text-stone-900 dark:text-stone-100">
-                  {meetingTypeLabels[nextMeeting.type]}
+                  {meetingTypeLabels[nextMeeting.type] ?? meetingTypeLabels.video}
                 </p>
                 <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
                   {new Date(nextMeeting.scheduled_at).toLocaleDateString('sv-SE', {
@@ -765,7 +765,14 @@ function MyConsultantInner() {
         .single()
 
       if (meetingData) {
-        setNextMeeting(meetingData)
+        // Persona-fynd 2026-09-12 (agent F): kolumnen heter `meeting_type`, inte `type`,
+        // och MeetingSchedulerDialog skriver 'physical' där den här sidan väntade
+        // 'in_person'. `meetingTypeIcons[undefined]` gav React #130 för varje deltagare
+        // med ett kommande möte — km-deltagare klarade sig bara för att hon saknade ett.
+        const rad = meetingData as Record<string, unknown>
+        const typRaw = (rad.meeting_type ?? rad.type) as string | undefined
+        const typ: NextMeeting['type'] = typRaw === 'physical' || typRaw === 'in_person' ? 'in_person' : typRaw === 'phone' ? 'phone' : 'video'
+        setNextMeeting({ ...(meetingData as NextMeeting), type: typ })
       }
 
       // Fetch messages

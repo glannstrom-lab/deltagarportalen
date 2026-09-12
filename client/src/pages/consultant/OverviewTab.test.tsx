@@ -13,7 +13,7 @@
  * verkligheten är `profiles.updated_at` (vyns alias) — inte en inloggning.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -137,6 +137,27 @@ describe('OverviewTab — KS7: felläge skilt från "inga deltagare"', () => {
 })
 
 describe('OverviewTab — KV5: snitt ATS-poäng räknar inte null som 0', () => {
+  it('PG3: kortet "Kräver uppmärksamhet" räknar samma mängd som listan under — CV saknas räknas', async () => {
+    // Persona-genomgång 2026-09-12: demot visade "Kräver uppmärksamhet 0" ovanför
+    // fem rader "CV saknas". Kortet räknade bara ej-kontaktade; listan tre skäl.
+    const idag = new Date().toISOString()
+    tableResponses.consultant_dashboard_participants = {
+      data: [
+        makeParticipant({ participant_id: 'p1', has_cv: true, last_contact_at: idag, last_login: idag }),
+        makeParticipant({ participant_id: 'p2', has_cv: false, last_contact_at: idag, last_login: idag }),
+        makeParticipant({ participant_id: 'p3', has_cv: false, last_contact_at: null, last_login: idag }),
+      ],
+      error: null,
+    }
+    renderTab()
+
+    const kort = await screen.findByRole('button', { name: /Kräver uppmärksamhet/ })
+    // p2 (CV saknas) + p3 (CV saknas OCH ej kontaktad) = 2 unika, inte 1 och inte 3
+    expect(within(kort).getByText('2')).toBeInTheDocument()
+    expect(within(kort).getByText(/2 CV saknas/)).toBeInTheDocument()
+    expect(within(kort).getByText(/1 ej kontaktad/i)).toBeInTheDocument()
+  })
+
   it('räknar snittet över dem som HAR en poäng, och namnger kortet efter vad det mäter', async () => {
     tableResponses.consultant_dashboard_participants = {
       data: [

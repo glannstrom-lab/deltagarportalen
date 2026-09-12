@@ -52,6 +52,17 @@ function renderLogin(initialPath = '/login') {
   )
 }
 
+describe('Login — förifylld e-post ur ?email= (F18)', () => {
+  it('fyller i e-postfältet från query-strängen', () => {
+    renderLogin('/login?email=demo%40jobin.se')
+    expect((screen.getByLabelText(/e-post/i) as HTMLInputElement).value).toBe('demo@jobin.se')
+  })
+  it('ignorerar ett värde som inte är en enkel e-postadress', () => {
+    renderLogin('/login?email=%3Cscript%3Ealert(1)%3C%2Fscript%3E')
+    expect((screen.getByLabelText(/e-post/i) as HTMLInputElement).value).toBe('')
+  })
+})
+
 describe('Login', () => {
   beforeEach(() => {
     mockSignIn.mockReset()

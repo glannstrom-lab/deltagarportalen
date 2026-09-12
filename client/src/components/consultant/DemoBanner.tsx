@@ -1,3 +1,4 @@
+import { supabase } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FlaskConical } from 'lucide-react'
@@ -31,11 +32,18 @@ export function DemoBanner() {
       setArDemo(false)
       return
     }
-    orgApi
-      .myMemberships()
-      .then((rader) => {
+    // Personal: organization_members. Deltagare: vyn my_ai_policy (kedjan
+    // consultant_participants → organization_members → organizations, is_demo sedan
+    // 20260913003000). Persona-fynd PG26: bannern syntes inte för demodeltagaren.
+    Promise.all([
+      orgApi.myMemberships().catch(() => [] as unknown[]),
+      supabase.from('my_ai_policy').select('is_demo').then((r) => (r.data ?? []) as { is_demo?: boolean | null }[]),
+    ])
+      .then(([rader, policy]) => {
         if (avbruten) return
-        setArDemo((rader as MedlemskapMedDemo[]).some((r) => r.organization?.is_demo === true))
+        const personal = (rader as MedlemskapMedDemo[]).some((r) => r.organization?.is_demo === true)
+        const deltagare = policy.some((p) => p.is_demo === true)
+        setArDemo(personal || deltagare)
       })
       .catch(() => {
         if (!avbruten) setArDemo(false)

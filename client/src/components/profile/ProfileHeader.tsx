@@ -1,6 +1,6 @@
 /**
  * ProfileHeader - Enhanced clean design
- * Avatar, name, progress with actionable next step, quick actions
+ * Avatar, name, next step as an invitation (no percentage — PG14), quick actions
  */
 
 import { useState } from 'react'
@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Cloud, CloudOff, Loader2, Download, Upload, ChevronRight
 } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
 import { ProfileImageUpload } from './ProfileImageUpload'
 import { cvIntegrationApi, profileExportApi } from '@/services/profileEnhancementsApi'
@@ -128,69 +127,36 @@ export function ProfileHeader() {
             </div>
           </div>
 
-          {/* Progress section */}
-          <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl p-3 sm:p-4">
-            <div className="flex items-center justify-between mb-2">
-              <span id="profilstatus-etikett" className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                Profilstatus
-              </span>
-              <span className={cn(
-                'text-sm font-bold',
-                completion.percent >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
-                completion.percent >= 50 ? 'text-amber-600 dark:text-amber-400' :
-                'text-[var(--c-text)] dark:text-[var(--c-solid)]'
-              )}>
-                {completion.percent}%
-              </span>
-            </div>
-
-            {/* Progress bar */}
-            <div className="h-2.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-3">
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500',
-                  completion.percent >= 75 ? 'bg-emerald-500' :
-                  completion.percent >= 50 ? 'bg-amber-500' :
-                  'bg-[var(--c-solid)]'
-                )}
-                style={{ width: `${completion.percent}%` }}
-                role="progressbar"
-                aria-labelledby="profilstatus-etikett"
-                aria-valuenow={completion.percent}
-                aria-valuemin={0}
-                aria-valuemax={100}
-              />
-            </div>
-
-            {/* Next step button */}
-            {completion.nextStep && completion.percent < 100 && (
-              <button
-                onClick={handleNextStep}
-                className="w-full flex items-center justify-between p-2 -mx-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors group"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
-                    <span className="w-2 h-2 rounded-full bg-[var(--c-solid)]" />
-                  </span>
-                  <span className="text-sm text-stone-600 dark:text-stone-400">
-                    Nästa steg: <span className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">{completion.nextStep.label}</span>
-                  </span>
-                </div>
-                <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-[var(--c-solid)] group-hover:translate-x-0.5 transition-all" />
-              </button>
-            )}
-
-            {completion.percent === 100 && (
-              <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
-                <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
-                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
+          {/* PG14 (2026-09-12): här stod "Profilstatus 17 %" med mätare i hjälteposition —
+              en prestationsmätning på en person som just börjat (DESIGN.md §1–2). Kvar är
+              bara nästa steg som en invit; procenten finns i profilens egen översikt. */}
+          {completion.nextStep && completion.percent < 100 && (
+            <button
+              onClick={handleNextStep}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors group text-left"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-5 h-5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center" aria-hidden="true">
+                  <span className="w-2 h-2 rounded-full bg-[var(--c-solid)]" />
                 </span>
-                <span className="font-medium">{t('profile.header.profileCompleteExclaim')}</span>
+                <span className="text-sm text-stone-700 dark:text-stone-300">
+                  {t('profile.header.nextInvit', { defaultValue: 'Nästa: {{label}}', label: completion.nextStep.label })}
+                </span>
               </div>
-            )}
-          </div>
+              <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-[var(--c-solid)] group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
+            </button>
+          )}
+
+          {completion.percent === 100 && (
+            <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50">
+              <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center" aria-hidden="true">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+              </span>
+              <span className="font-medium">{t('profile.header.profileCompleteExclaim')}</span>
+            </div>
+          )}
 
           {/* Quick actions row */}
           <div className="flex items-center gap-2 mt-3">

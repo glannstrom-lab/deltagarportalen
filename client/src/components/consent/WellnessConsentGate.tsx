@@ -112,7 +112,7 @@ export function WellnessConsentGate({
               </button>
               <Link
                 to="/settings"
-                className="text-xs text-pink-600 dark:text-pink-400 hover:underline flex items-center gap-1"
+                className="text-xs text-[var(--c-text)] hover:underline flex items-center gap-1"
               >
                 <Settings className="w-3 h-3" />
                 {t('wellness.consent.manageInSettings') || 'Hantera'}
@@ -255,9 +255,11 @@ export function WellnessConsentGate({
           <p className="text-sm text-red-600 dark:text-red-400 mt-3">{grantError}</p>
         )}
 
-        <p className="text-xs text-pink-600 dark:text-pink-400 mt-4">
+        {/* PG13 (2026-09-12): text-pink-400 gav 4,13:1 mot rutan i mörkt läge. `--c-text`
+            vänder med temat och håller AA i båda (se fallor-i-mork-tema-tokens). */}
+        <p className="text-xs text-[var(--c-text)] mt-4">
           {t('wellness.consent.privacyLink') || 'Läs mer i vår'} {' '}
-          <Link to="/privacy" className="underline hover:text-pink-700 dark:hover:text-pink-300">
+          <Link to="/privacy" className="underline hover:opacity-80">
             {t('wellness.consent.privacyPolicy') || 'integritetspolicy'}
           </Link>
         </p>

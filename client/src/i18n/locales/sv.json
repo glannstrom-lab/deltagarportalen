@@ -519,6 +519,7 @@
     "menu": "Meny",
     "minimize": "Minimera sidomenyn",
     "expand": "Expandera sidomenyn",
+    "participantView": "Deltagarvyn",
     "consultantSection": "Konsulent",
     "adminSection": "Admin",
     "collapse": "Minimera",
@@ -4104,7 +4105,16 @@
     "laslogg": {
       "title": "Vem har öppnat dina uppgifter",
       "desc": "Varje gång din konsulent öppnar din sida loggas det här. Du ser det, ingen annan behöver berätta det.",
-      "rad": "Din konsulent öppnade dina uppgifter {{datum}} kl {{tid}}",
+      "rad": "Din konsulent öppnade {{vad}} {{datum}} kl {{tid}}",
+      "vad": {
+        "sida": "din sida (kontaktuppgifter, CV-status, mål och journal)",
+        "oversikt": "din översikt",
+        "aktivitet": "din aktivitetsplan och närvaro",
+        "mal": "dina mål",
+        "journal": "din journal",
+        "tidslinje": "din tidslinje",
+        "platser": "dina praktikplatser"
+      },
       "tomt": "Ingen har öppnat dina uppgifter än — det syns här när din konsulent gör det.",
       "fel": "Vi kunde inte hämta loggen just nu."
     },
@@ -5182,7 +5192,8 @@
       "totalExercises": "Övningar totalt",
       "started": "Påbörjade",
       "active": "Aktiva",
-      "notStarted": "Ej påbörjade"
+      "notStarted": "Ej påbörjade",
+      "invit": "{{antal}} övningar att välja bland. Du har inte börjat någon än — välj en nedan som passar dig."
     },
     "filters": {
       "all": "Alla övningar",
@@ -5850,10 +5861,10 @@
       "whyWeCollect": "Varför vi samlar in detta",
       "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
       "whoHasAccess": "Vem har tillgång",
-      "whoAccessDesc": "Bara du ser det du skriver här. Din konsulent ser det först om du själv slår på delning under Inställningar > Sekretess — den är avstängd tills du gör det. Datan delas aldrig med arbetsgivare eller tredje parter.",
+      "whoAccessDesc": "Bara du ser det du skriver här. Din konsulent ser det först om du själv slår på delning under Inställningar > Integritet — den är avstängd tills du gör det. Datan delas aldrig med arbetsgivare eller tredje parter.",
       "dataProtection": "Din data skyddas enligt GDPR och lagras säkert i EU. Du kan när som helst exportera eller radera all din data.",
       "canWithdraw": "Du kan när som helst återkalla ditt samtycke",
-      "withdrawDetail1": "Gå till Inställningar > Sekretess",
+      "withdrawDetail1": "Gå till Inställningar > Integritet",
       "withdrawDetail2": "All din hälsodata kan raderas på begäran",
       "withdrawDetail3": "Återkallat samtycke påverkar inte tidigare lagrad data",
       "grantConsent": "Jag samtycker",
@@ -6369,6 +6380,9 @@
       "highContrastDesc": "Ökar kontrasten för bättre läsbarhet",
       "largeText": "Större text",
       "largeTextDesc": "Ökar textstorleken i hela appen",
+      "language": "Språk",
+      "languageDesc": "Välj det språk du läser bäst. Lätt svenska gör de viktigaste texterna enklare.",
+      "languageOptions": { "sv": "Svenska", "lattSvenska": "Lätt svenska", "en": "English" },
       "calmMode": "Lugnt läge",
       "calmModeDesc": "Reducerar animationer och distraktioner"
     },
@@ -6515,14 +6529,23 @@
       "twoFactorDesc": "Lägg till extra säkerhet"
     },
     "programSelector": {
-      "pageNowAt": "Sidan finns nu på"
+      "pageNowAt": "Sidan finns nu på",
+      "title": "Projekt",
+      "description": "Deltar du i ett arbetsmarknadsprojekt kan du ange det här. Det sparas på din profil så att din konsulent ser det.",
+      "none": "Inget projekt",
+      "noneDesc": "Du deltar inte i något projekt just nu.",
+      "viaOrganisation": "Du deltar genom {{org}}. Ditt projekt följer organisationen, så du behöver inte välja något här.",
+      "selected": "Valt",
+      "saving": "Sparar…",
+      "saved": "Sparat.",
+      "sparasDirekt": "Valet sparas direkt."
     },
     "roles": {
-      "title": "Roll och behörigheter",
-      "description": "Välj vilken roll du vill använda just nu. Dina tillgängliga roller bestämmer vilka funktioner du har tillgång till.",
-      "selectRolesForAccount": "Välj roller för detta konto",
-      "tipActiveRole": "Välj \"Aktiv roll\" för att byta vy i sidomenyn",
-      "tipCombinedPermissions": "Dina rättigheter är en kombination av alla dina roller"
+      "title": "Din roll",
+      "description": "Du har flera roller i Jobin. Välj vilken vy du vill se just nu — du kan byta när som helst.",
+      "selectRolesForAccount": "Roller på det här kontot",
+      "tipActiveRole": "Byt roll här när du vill se en annan vy",
+      "tipCombinedPermissions": "Allt du kan göra i varje roll finns kvar när du byter tillbaka"
     },
     "coachTipsTitle": "Coach-tips på varje sida"
   },
@@ -7706,12 +7729,12 @@
         "features": [
           "Egen konsultvy",
           "Hantera egna deltagare",
-          "Chattfunktion",
-          "Anteckningar & uppföljning",
-          "Delad kalender",
-          "Progressrapporter",
-          "CV-granskning",
-          "Jobbmatchning"
+          "Meddelanden till deltagare",
+          "Journal, mål och uppföljning",
+          "Möten med deltagare",
+          "Rapporter och IVO-kvartalsunderlag",
+          "CV-status och ATS-poäng per deltagare",
+          "Praktikplatser med uppföljning"
         ]
       },
       "participant": {
@@ -8594,6 +8617,7 @@
       "stepsCompleted": "{{filled}} av {{total}} steg",
       "progressLabel": "Profilkomplettering: {{percent}}%",
       "nextStep": "Nästa steg",
+      "nextInvit": "Nästa: {{label}}",
       "consultantOverview": "Handledningsöversikt",
       "cvStatus": "CV-status",
       "cvComplete": "Komplett",
@@ -10151,7 +10175,7 @@
       "tabs": {
         "overview": "Översikt",
         "goals": "Mål",
-        "journal": "Dagbok",
+        "journal": "Journal",
         "timeline": "Tidslinje"
       },
       "goalStatus": {
@@ -10168,8 +10192,16 @@
       "markInProgress": "Markera som pågående",
       "markNotStarted": "Återställ till ej påbörjad",
       "goalActions": "Åtgärder för mål",
-      "timelineComingTitle": "Aktivitetshistorik kommer",
-      "timelineComingDesc": "Vi spårar deltagarens aktiviteter (CV-uppdateringar, sparade jobb, mål) men måste först ge konsulenter läsrättighet — kommer i en senare version.",
+      "journalPrivateNote": "Konsulentens journal. Deltagarens egen dagbok är privat och syns inte här.",
+      "deleteGoal": "Ta bort mål",
+      "deleteGoalTitle": "Ta bort målet?",
+      "deleteGoalBody": "Målet försvinner för både dig och deltagaren. Det går inte att ångra.",
+      "reportDraftAiOff": "AI-utkast är avstängt för det här kontot eller organisationen.",
+      "timelineLoading": "Hämtar händelser …",
+      "timelineError": "Tidslinjen kunde inte läsas. Prova att ladda om sidan.",
+      "timelinePartial": "Kunde inte läsa {{kallor}} — det som visas är resten.",
+      "timelineEmptyTitle": "Inga händelser än",
+      "timelineEmptyDesc": "Här samlas journalanteckningar, mål, möten, platser och pass i tidsordning när de finns.",
       "notePlaceholder": "Skriv en anteckning om deltagaren...",
       "activeGoalsCount": "{{count}} aktiva mål",
       "writeNote": "Skriv anteckning",
@@ -12223,6 +12255,33 @@
       "tomt": "Inget registrerat än den här veckan. Det syns här när du sparar ett jobb eller skickar en ansökan.",
       "fel": "Ditt jobbsökande kunde inte hämtas just nu.",
       "egenRedovisning": "Det här är din egen översikt. Din konsulent ser bara sparade jobb och ansökningar."
+    },
+    "franvaro": {
+      "knapp": "Jag kan inte komma",
+      "rubrik": "Vad hindrar dig? Din konsulent får besked direkt.",
+      "orsak": {
+        "sick": "Jag är sjuk",
+        "child_care": "Vård av barn",
+        "authority_meeting": "Möte hos en myndighet",
+        "other": "Annat"
+      },
+      "noteringEtikett": "Vill du säga något mer? (frivilligt)",
+      "bedomning": "Det är din konsulent som avgör om skälet är giltigt. Anmäl hellre en gång för mycket än en gång för lite.",
+      "skicka": "Skicka till min konsulent",
+      "avbryt": "Avbryt",
+      "valjOrsak": "Välj vad som hindrar dig.",
+      "fel": "Det gick inte att spara. Försök igen, eller skriv till din konsulent.",
+      "anmalt": "Anmält: {{orsak}}. Din konsulent har fått besked ({{nar}}).",
+      "angra": "Ångra anmälan",
+      "status": "Din konsulent har fått besked."
+    },
+    "forklaring": {
+      "mal": "Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.",
+      "skal": "Skäl: {{skal}}.",
+      "full": "Den här veckan är fullplanerad.",
+      "kvar": "{{planerade}} timmar är inplanerade. {{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.",
+      "jobbsok": "De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.",
+      "guide": "Läs om aktivitetskravet och vad som gäller för dig"
     },
     "incheckad": "Incheckad kl {{tid}}",
     "incheckadStatus": "Tack, du är incheckad.",

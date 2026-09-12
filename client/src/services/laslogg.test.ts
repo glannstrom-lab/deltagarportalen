@@ -40,6 +40,12 @@ describe('loggaVisning', () => {
     insert.mockResolvedValueOnce({ error: { message: 'permission denied' } } as never)
     await expect(laslogg.loggaVisning('delt-9')).rejects.toBeTruthy()
   })
+
+  it('PG15: ett avsnitt hamnar i resource_type som participant.<avsnitt>', async () => {
+    await laslogg.loggaVisning('delt-9', 'journal')
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({ resource_type: 'participant.journal', participant_id: 'delt-9' }))
+    expect(sessionNyckel('delt-9', 'journal')).not.toBe(sessionNyckel('delt-9'))
+  })
 })
 
 describe('loggaVisningEnGang', () => {

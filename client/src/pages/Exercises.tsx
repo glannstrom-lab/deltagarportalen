@@ -28,6 +28,7 @@ import { PageLayout } from '@/components/layout/index'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Dumbbell } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
+import { ovningsLage } from '@/lib/ovningsLage'
 import { FocusExercisesWizard } from '@/components/focus/pages/FocusExercisesWizard'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
 
@@ -408,33 +409,38 @@ function ExercisesInner() {
           </div>
         )}
 
-        {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{exercises.length}</p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.totalExercises')}</p>
-          </Card>
-          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-              {Object.keys(answers).length}
-            </p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.started')}</p>
-          </Card>
-          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-              {Object.entries(answers).filter(([_, ans]) =>
-                Object.values(ans).filter(v => v && v.trim()).length > 0
-              ).length}
-            </p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.active')}</p>
-          </Card>
-          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
-            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-              {exercises.length - Object.keys(answers).length}
-            </p>
-            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.notStarted')}</p>
-          </Card>
-        </div>
+        {/* PG9 (2026-09-12): fyra nollor som nyckeltal ("0 Påbörjade / 119 Ej påbörjade")
+            var det första en ny användare såg. Inget påbörjat = en invit; annars talen > 0. */}
+        {(() => {
+          const lage = ovningsLage(exercises.length, answers)
+          if (lage.lage === 'invit') {
+            return (
+              <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">
+                  {t('exercises.stats.invit', { antal: lage.totalt })}
+                </p>
+              </Card>
+            )
+          }
+          return (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+                <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.paborjade}</p>
+                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.started')}</p>
+              </Card>
+              {lage.aktiva > 0 && (
+                <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+                  <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.aktiva}</p>
+                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.active')}</p>
+                </Card>
+              )}
+              <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+                <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{lage.totalt}</p>
+                <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.totalExercises')}</p>
+              </Card>
+            </div>
+          )
+        })()}
 
         <RadgivarTips pathname="/exercises" index={0} />
 

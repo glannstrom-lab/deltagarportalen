@@ -30,6 +30,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { MobileMainMenu } from './Layout'
+import { useAuthStore } from '@/stores/authStore'
 
 afterEach(cleanup)
 
@@ -132,5 +133,34 @@ describe('TG1: dialogmärkningen stämmer med beteendet', () => {
     const { panel } = rendera(true)
     expect(panel.getAttribute('aria-modal')).toBe('true')
     expect(panel.getAttribute('aria-label')).toBeTruthy()
+  })
+})
+
+// PG20 (2026-09-13): konsulenten fick deltagarens hela hubbmeny med "Konsultportal" sist.
+describe('PG20: konsulentens mobilmeny', () => {
+  afterEach(() => {
+    useAuthStore.setState({ profile: null } as never)
+  })
+
+  it('konsulent: egna avsnitt först, hubbarna hopfällda under "Deltagarvyn"', () => {
+    useAuthStore.setState({ profile: { id: 'k1', role: 'CONSULTANT', activeRole: 'CONSULTANT' } } as never)
+    rendera(true)
+    const meny = screen.getByRole('dialog', { name: /meny/i })
+    const lankar = Array.from(meny.querySelectorAll('a')).map((a) => a.textContent?.trim())
+    const konsult = lankar.findIndex((t) => /konsultportal/i.test(t ?? ''))
+    const oversikt = lankar.findIndex((t) => /^översikt$/i.test(t ?? ''))
+    expect(konsult).toBeGreaterThanOrEqual(0)
+    expect(konsult).toBeLessThan(oversikt)
+    expect(screen.getByText('Deltagarvyn')).toBeInTheDocument()
+    // Hubbarnas undersidor är hopfällda: ingen CV-länk synlig förrän hubben fälls ut
+    expect(meny.querySelectorAll('[data-testid="mobilmeny-hubb"] a').length).toBe(5)
+    expect(screen.getAllByRole('button', { name: /visa eller dölj/i })[0]).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  it('deltagare: hubbarna utfällda som förut och ingen "Deltagarvyn"-rubrik', () => {
+    useAuthStore.setState({ profile: { id: 'd1', role: 'USER', activeRole: 'USER' } } as never)
+    rendera(true)
+    expect(screen.queryByText('Deltagarvyn')).toBeNull()
+    expect(screen.getAllByRole('button', { name: /visa eller dölj/i })[0]).toHaveAttribute('aria-expanded', 'true')
   })
 })
