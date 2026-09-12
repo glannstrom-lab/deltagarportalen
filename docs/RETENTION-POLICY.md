@@ -54,20 +54,20 @@ särskilt STA, där Arbetsförmedlingens dokumentationskrav kan styra tiden.
 
 | Datakategori | Retention | Trigger för borttagning | Implementation |
 |---|---|---|---|
-| **STA — arbetsprövning** (10 `sta_*`) | `[bekräftas]` 2 år efter avslutad inskrivning | Cron på `sta_enrollments` slutdatum | ❌ Kräver A6 |
-| **STA — självskattningar** (`sta_assessments`) | `[bekräftas]` Samma som ovan. Signerade bedömningar kan behöva längre tid | Cron | ❌ Kräver A6 |
-| **Konsulentens journal** (`consultant_journal`, `consultant_notes`) | `[bekräftas]` 2 år efter avslutat uppdrag | Cron + vid `revoke_consultant_link` | ❌ Kräver A6 |
-| **Konsulentmeddelanden** (`consultant_messages`) | `[bekräftas]` 2 år | Cron | ❌ Kräver A6 |
-| **Placeringar** (`consultant_placements`) | `[bekräftas]` 2 år (uppföljning 3/6 mån ingår) | Cron | ❌ Kräver A6 |
+| **STA — arbetsprövning** (10 `sta_*`) | ✔ *(bekräftat 2026-09-12)* 2 år efter avslutad inskrivning | Cron på `sta_enrollments` slutdatum | ❌ Kräver A6 |
+| **STA — självskattningar** (`sta_assessments`) | ✔ *(bekräftat 2026-09-12)* Samma som ovan. Signerade bedömningar kan behöva längre tid | Cron | ❌ Kräver A6 |
+| **Konsulentens journal** (`consultant_journal`, `consultant_notes`) | **5 år efter avslutat uppdrag** *(beslut Mikael 2026-09-12, ändrat från 2 år: överklaganden och tillsyn; AI-jurist får justera nedåt)* | Cron + vid `revoke_consultant_link` | ❌ Kräver A6 |
+| **Konsulentmeddelanden** (`consultant_messages`) | ✔ *(bekräftat 2026-09-12)* 2 år | Cron | ❌ Kräver A6 |
+| **Placeringar** (`consultant_placements`) | ✔ *(bekräftat 2026-09-12)* 2 år (uppföljning 3/6 mån ingår) | Cron | ❌ Kräver A6 |
 | **Jobbansökningar** (`saved_jobs`, `application_*`) | Tills deltagaren raderar | Manuell + cascade vid kontoradering | ✅ Manuell / 🟡 cascade overifierad |
 | **Kontaktpersoner hos arbetsgivare** (`application_contacts`) | Tills deltagaren raderar | Manuell | ✅ |
 | **Nätverkskontakter** (`network_contacts`) | Tills deltagaren raderar | Manuell | ✅ — men se anmärkning nedan |
-| **Jobbaviseringar** (`job_notifications`) | `[bekräftas]` 90 dagar | Cron | ❌ Kräver A6 |
-| **E-postleveranslogg** (`email_notifications`) | `[bekräftas]` 90 dagar | Cron | ❌ Kräver A6 |
+| **Jobbaviseringar** (`job_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ❌ Kräver A6 |
+| **E-postleveranslogg** (`email_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ❌ Kräver A6 |
 | **E-postkö** (`email_queue`) | 30 dagar efter `sent_at` | Cron | ❌ Kräver A6 (tabellen finns sedan 2026-07-27) |
-| **Inloggningsförsök** (`login_attempts`) | `[bekräftas]` 30 dagar | Cron | ❌ Kräver A6 |
-| **Aktivitetslogg** (`user_activity_log`, `user_activities`) | `[bekräftas]` 12 månader | Cron | ❌ Kräver A6 |
-| **Inbjudningar** (`invitations`) | `[bekräftas]` 90 dagar efter utgång | Cron | ❌ Kräver A6 |
+| **Inloggningsförsök** (`login_attempts`) | ✔ *(bekräftat 2026-09-12)* 30 dagar | Cron | ❌ Kräver A6 |
+| **Aktivitetslogg** (`user_activity_log`, `user_activities`) | ✔ *(bekräftat 2026-09-12)* 12 månader | Cron | ❌ Kräver A6 |
+| **Inbjudningar** (`invitations`) | ✔ *(bekräftat 2026-09-12)* 90 dagar efter utgång | Cron | ❌ Kräver A6 |
 | **Delningslänkar** (`profile_shares`) | Tills deltagaren återkallar | Manuell via UI | ✅ |
 | **Intervjusessioner** (`interview_sessions`) | Tills deltagaren raderar | Manuell | ✅ |
 | **Ljudinspelningar från intervjuövning** | **Lagras inte** | — | ✅ Molnlagringen borttagen 2026-07-27 (H6); filen laddas ner lokalt |
