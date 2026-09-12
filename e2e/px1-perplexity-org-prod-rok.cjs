@@ -2,7 +2,10 @@
 // Kör:  NODE_PATH=node_modules node e2e/px1-perplexity-org-prod-rok.cjs
 // Anropar ai-career-assistant (salary-compass) som TVÅ konton och läser ai_usage_logs.model:
 //   TEST_USER_*        (km-deltagare, kopplad till org "Testkommun") → openai/gpt-oss-120b
-//   TEST_LEGACY_USER_* (claude-playwright-test, ingen org, AI på)   → perplexity/sonar
+//   TEST_LEGACY_USER_* (claude-playwright-test, ingen org)          → perplexity/sonar
+// OBS: claude-playwright-test har AI AV med flit (inga modellanrop från CI). Slå på ai_enabled
+// för kontot i profiles under körningen och stäng av efteråt — annars 403 opted_out och en
+// gammal loggrad läses. Skriptet gör det inte självt.
 // Skillnaden mellan raderna är beviset. Kräver supabase CLI länkad (loggen läses med db query).
 const fs = require('fs'); const path = require('path'); const { execSync } = require('child_process')
 const ROOT = path.join(__dirname, '..'); const env = {}
