@@ -42,7 +42,7 @@ Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma v
 - ✅ `client/api/test.js` raderad (R3, main 2026-06-22) — del av LOW-2605-06 stängd; `health`-funktionens fel-strängar kvarstår.
 
 **Fortsatt öppet (se ROADMAP spår A):**
-- 🔴 **CRIT-2605-01: OpenRouter-nyckeln är fortfarande INTE roterad** (dashboardåtgärd, Mikael — A1).
+- ✅ **CRIT-2605-01: OpenRouter-nyckeln roterad 2026-09-12** (A1). Ny nyckel satt i Vercel (`OPENROUTER_API_KEY`, omdeployad) och i Supabase edge-secrets; `OPENAI_API_KEY` (samma värde som den läckta, ingen läsare) borttagen. Verifierad med riktiga anrop mot prod: `/api/ai` → 200 med genererat brev, `ai-career-assistant` → 200 med lönedata. Den läckta nyckeln ligger kvar i git-historiken men är död så snart Mikael raderat den hos OpenRouter.
 - 🟡 **LOW-2605-03 uppgraderad till prioriterad:** `profile_shares` `USING(true)` + `GRANT anon` = enumeration av alla delade profiler (A7 i ROADMAP).
 - ⚪ Retention-gallring kräver pg_cron-aktivering i dashboarden (A6) — annars körs ingen Art 5.1.e-gallring.
 - ⚪ LOW-2605-01/02/04/05/07 + dashboard-verifieringarna (OAuth-allowlist, pg_policies, FK-cascades) kvarstår.
@@ -53,7 +53,7 @@ Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma v
 
 | Severity | Antal | Fynd | Status |
 |----------|-------|------|--------|
-| 🔴 CRITICAL | 1 | Läckt OpenRouter-nyckel i git-historik | ⚠️ **Kräver nyckelrotation** (out-of-band) |
+| 🔴 CRITICAL | 1 | Läckt OpenRouter-nyckel i git-historik | ✅ **Roterad 2026-09-12** (A1) |
 | 🟠 HIGH | 1 | `send-invite-email` saknar ägar-/rollkontroll (IDOR) | ✅ Åtgärdad i kod 2026-05-28 |
 | 🟡 MEDIUM | 4 | Rate-limiters fail-open; edge-AI saknar rate limit; Sentry Session Replay PII; Google Translate skickar PII utan samtycke | ✅ Åtgärdade i kod 2026-05-28 |
 | ⚪ LOW | 7 | Se nedan | Öppna |
@@ -75,7 +75,7 @@ Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma v
 ### [CRIT-2605-01] Läckt OpenRouter-API-nyckel i git-historik
 - **Fil (historisk):** `client/src/components/cv/AIWritingAssistant.tsx`
 - **Commits:** introducerad i `95093b2`, borttagen i `dc12d31`, dokumentation städad i `3094737`
-- **Status:** Borta ur arbetsträdet, men **permanent återställbar** via `git log -S 'sk-or-v1-...' --all`.
+- **Status:** Borta ur arbetsträdet, men **permanent återställbar** via `git log -S 'sk-or-v1-...' --all`. **Roterad 2026-09-12** — den nyckel som går att hämta ur historiken är inte längre den som prod använder.
 - **Verifierad:** Ja (git-historik bekräftad 2026-05-28).
 - **Risk:** Vem som helst med repo-åtkomst (eller om repot någonsin blir publikt) kan extrahera nyckeln och belasta OpenRouter-kontot.
 - **Åtgärd (out-of-band — kodborttagning räcker INTE):**

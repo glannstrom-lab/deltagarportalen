@@ -229,7 +229,7 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal — utkast finns i
    `juridik/`, juridisk granskning + org.nr kvar,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
-   oss, (10) rotera OpenRouter-nyckeln (A1). Guidens engelska (`content_en`) saknas.
+   oss, ~~(10) rotera OpenRouter-nyckeln (A1)~~ (klar 2026-09-12). Guidens engelska (`content_en`) saknas.
 4. ~~Browserverifiering mot prod~~ — gjord i pass 3, se ovan. Kör `e2e/km-aktivitetskrav-prod.cjs`
    efter varje ändring i spåret.
 5. `activity_sessions_participant_guard` har PUBLIC execute (harmlös som trigger, inte
@@ -4700,7 +4700,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 |---|------|--------|---------|
 | **A16** | **Vilken inloggad deltagare som helst kan göra sig till SUPERADMIN** | ✅ **Körd mot prod och verifierad** (eskalering ger nu `42501`, legitim uppdatering fungerar) | S |
 | **A17** | 18 anon-anropbara `SECURITY DEFINER`-funktioner tar `p_user_id` utan `auth.uid()`-kontroll | ✅ **Körd mot prod och verifierad** (anon nekas, egen data OK, annans data `Forbidden`) | M |
-| **A1** | OpenRouter-nyckeln fortfarande inte roterad (öppen sedan 28 maj) | ⬜ **Mikael** — 5 min i dashboarden | S |
+| **A1** | OpenRouter-nyckeln fortfarande inte roterad (öppen sedan 28 maj) | ✅ **Roterad 2026-09-12** — ny nyckel i Vercel + Supabase, verifierad med riktiga anrop mot prod via båda vägarna (`/api/ai` 200 med brev, `ai-career-assistant` 200 med lönedata). Gammal nyckel raderas hos OpenRouter av Mikael | S |
 | **A19** | Art. 9-grinden (UX13) är trasig i drift — 403 för alla, även de med samtycke | 🟡 **Kod klar + mutationstestad vakt** — gäller efter deploy | S |
 | **D13** | CI är rött: coverage fäller `test`, och `build` väntar på det → build/lighthouse/e2e har inte kört | ⬜ **Beslut i §7** (sänk tröskeln eller skriv ikapp) | S |
 | **B10** | Konsulentvyn visar fyra påhittade deltagare som AI-insikter | ⬜ **Beslut i §7** (radera eller bygg på riktigt) | M |
@@ -4795,7 +4795,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 
 | # | Uppgift | Detaljer | Ansvar |
 |---|---------|----------|--------|
-| A1 (J1) | Rotera läckt OpenRouter-nyckel | CRIT-2605-01 sedan 28 maj; 5 min i dashboarden | **Mikael, idag** |
+| A1 (J1) | Rotera läckt OpenRouter-nyckel | ✅ **Klar 2026-09-12** (CRIT-2605-01 öppen 107 dagar). Verifierad i prod via båda AI-vägarna | Mikael |
 | A2 (J4) | Boka AI-jurist för Annex III-gränsfall | Längst ledtid; ~4 v efter egen plan. Gränsfall: cv-analysis, kompetensgap, RIASEC | **Mikael, denna vecka** |
 | A3 (J5) | Art 50-märkning på alla AI-ytor | ✅ **Klar 2026-07-10** — ~12 ytor märkta (AIResultCard-panelerna ×5, branschradar, CV-assistent, intervjufeedback, LinkedIn, kompetensgap, rapportutkast, STA). Fejk-AI-ytorna (B1/B2) märks när de görs ärliga | Claude |
 | A4 (J2/J3) | Färdigställ + signera DPIA & Art 30 | Org-uppgifter/signatur = Mikael; textkomplettering = Claude | Båda |
@@ -5594,7 +5594,7 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | **Notifikationsklockan — bygg eller ta bort?** Monterad på varje sida, läser en tom tabell, `createNotification` har noll anropare | H12 | med C16 |
 | **i18n etapp 5: innehållsdatan (5 355 rader)** — översätta allt, kuratera ett urval, eller märka ut vad som bara finns på svenska? Kostnaden skiljer en storleksordning | UX17 | när etapp 1–4 är klara |
 | **`/profile`: mint eller lavendel?** DESIGN.md §3 och koden säger olika, och båda är "sanning" i dag | F16 | när F-spåret tas |
-| Rotera OpenRouter-nyckeln | A1 | omedelbart |
+| ~~Rotera OpenRouter-nyckeln~~ | A1 | ✅ 2026-09-12 |
 | Boka AI-jurist | A2 | denna vecka |
 | **GitHub Secrets för E2E — men ta D28 först.** Verifierat 2026-08-09: jobbet är grönt bara för att testerna självskippar utan secreten (81 s seriellt kan inte rymma 94 tester med 24 timeouts). Lägger du in den innan specarna är omskrivna blir CI röd samma minut | D1, D28, D30 | 10 min, men **efter** D28 |
 | pg_cron i Supabase-dashboarden | A6 | snarast |
