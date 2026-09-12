@@ -858,7 +858,7 @@ nedan) och **MV2b** (väntar på beslut).
 
 ### Nu — riktiga fel
 
-- [ ] **DE1** **Inget mejl från jobin.se kan nå fram.** Mätt i DNS: `jobin.se TXT` =
+- [x] **DE1** *(✅ 2026-09-12 — Mikael la in Resend-domänen (EU), DKIM `resend._domainkey` + CNAME `send.jobin.se` hos Simply, och `RESEND_API_KEY`/`EMAIL_FROM` i Vercel (omdeployad) och Supabase. Bevisat: `send-invite-email` skickade två riktiga inbjudningar till Gmail, Gmails "Visa original" gav SPF/DKIM/DMARC = PASS på alla tre. Bifynd i första mejlet: knappens text syntes knappt — klienten ignorerade `<style>`-blocket; färgerna ligger nu inline i båda mallarna (691e15e6). Testraderna (2 inbjudningar, 2 pending-användare) raderade. Jobbevakningen har cron `0 6 * * *` i `vercel.json` och kan skicka från 13 sep.)* **Inget mejl från jobin.se kan nå fram.** Mätt i DNS: `jobin.se TXT` =
   `v=spf1 include:spf.simply.com -all` (hård avvisning, inget Resend), `_dmarc.jobin.se`
   → Simplys `p=reject`, `resend._domainkey.jobin.se` = NXDOMAIN. Ett mejl via Resend från
   @jobin.se misslyckas både SPF och DKIM och ska kastas av mottagaren. Ligger **före** de
