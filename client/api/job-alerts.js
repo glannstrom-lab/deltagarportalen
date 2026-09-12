@@ -8,6 +8,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { medFelrapport } = require('./_utils/sentry.js');
 
 // Service-klient: används för cron-jobb och för operationer som kräver
 // service-role (skriva till email_notifications, läsa profiles utan RLS).
@@ -753,7 +754,7 @@ function saknarAvsandare(env) {
 }
 
 // Main handler
-module.exports = async (req, res) => {
+const hanterare = async (req, res) => {
   const requestOrigin = req.headers.origin;
   const corsHeaders = getCorsHeaders(requestOrigin);
 
@@ -897,6 +898,9 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+// BL6: felrapportering till Sentry (sanerad) — se _utils/sentry.js
+module.exports = medFelrapport('job-alerts', hanterare);
 
 // Exponerad för test (O1, 2026-08-25). Vercel bryr sig bara om att
 // `module.exports` är en funktion; extra egenskaper på den är osynliga i drift.

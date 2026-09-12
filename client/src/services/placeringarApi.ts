@@ -342,13 +342,18 @@ async function getKopplingsbaraDeltagare(): Promise<KopplaBarDeltagare[]> {
 // PLACERINGAR
 // ============================================================================
 
+/**
+ * KS2 b (2026-09-12): inget filter på consultant_id här. RLS ("KS2b: konsulent
+ * läser aktiva deltagares platser") avgör vad som syns — även företrädarens
+ * platser för en överlämnad deltagare. Skriv-/raderingsfunktionerna nedan
+ * filtrerar fortfarande på egen consultant_id, som RLS också kräver.
+ */
 async function getPlaceringar(): Promise<Placering[]> {
-  const consultantId = await kravInloggadAnvandare()
+  await kravInloggadAnvandare()
 
   const { data, error } = await supabase
     .from('consultant_work_placements')
     .select('*')
-    .eq('consultant_id', consultantId)
     .order('created_at', { ascending: false })
 
   if (error) throw error
@@ -356,12 +361,11 @@ async function getPlaceringar(): Promise<Placering[]> {
 }
 
 async function getPlaceringarForDeltagare(participantId: string): Promise<Placering[]> {
-  const consultantId = await kravInloggadAnvandare()
+  await kravInloggadAnvandare()
 
   const { data, error } = await supabase
     .from('consultant_work_placements')
     .select('*')
-    .eq('consultant_id', consultantId)
     .eq('participant_id', participantId)
     .order('created_at', { ascending: false })
 

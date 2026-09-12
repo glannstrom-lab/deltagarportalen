@@ -10428,6 +10428,7 @@
     "handover": {
       "writtenBy": "Written by",
       "createdBy": "Created by",
+      "registeredBy": "Registered by",
       "formerConsultant": "a previous consultant",
       "readOnlyHint": "Written before the handover — can be read but not changed"
     },
@@ -11361,19 +11362,7 @@
     }
   },
   "focus": {
-    "showWholePage": "Show the whole page instead",
-    "sta": {
-      "exerciseTitle": "Today's exercise",
-      "dayOf": "Day {{day}} of {{total}}",
-      "duration": "About {{min}} minutes",
-      "reflectionLabel": "Would you like to write something about today?",
-      "reflectionPlaceholder": "It's completely fine to leave this empty.",
-      "alreadyDone": "You've already done this day. Nice.",
-      "pulseTitle": "How does today feel?",
-      "pulseHint": "Only you and your consultant can see this.",
-      "finish": "Done for today",
-      "noEnrollment": "You're not enrolled in a work trial right now. Your day will show up here when you are."
-    },
+    "showWholePage": "Show the whole page instead",
     "ai": {
       "agentTitle": "Who would you like to talk to?",
       "doneText": "Great! Open AI team in normal mode to continue the conversation.",
@@ -12299,17 +12288,7 @@
         "fillIn": "Fill in when you have the energy"
       }
     }
-  },
-  "sta": {
-    "aria": {
-      "removeAbsence": "Remove report",
-      "close": "Close",
-      "closeIntro": "Close introduction",
-      "editActivityScope": "Change activity scope",
-      "adjustStartDate": "Adjust start date"
-    },
-    "title": "Steps to work"
-  },
+  },
   "coachWidget": {
     "aria": {
       "closeTips": "Close coach tips"
@@ -12446,7 +12425,7 @@
   "accessibility": {
     "backToHome": "Back to home",
     "title": "Accessibility statement",
-    "lastEdited": "This page was last edited: 2026-08-17",
+    "lastEdited": "This page was last edited: 2026-09-12",
     "assessmentDate": "This assessment is based on a review carried out on: 2026-08-17",
     "ambition": {
       "title": "Our ambition",
@@ -12467,7 +12446,7 @@
       "title": "What works",
       "publicPages": {
         "label": "Public pages:",
-        "desc": "The homepage, the tool pages, and all 133 guide pages had zero axe violations at the last check."
+        "desc": "The homepage, the tool pages, and the 133 guide pages that existed at the check on 2026-08-17 had zero axe violations. There are 239 guides today; the newer ones have not yet been checked in a full round."
       },
       "focusIndicator": {
         "label": "Focus indicator:",
@@ -12590,7 +12569,7 @@
       "emailLabel": "Email:"
     },
     "footer": {
-      "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. On 2026-09-11 we added the reference to DOS-lagen (2018:1937) and EN 301 549, because the portal is offered to municipalities. The web requirements in EN 301 549 chapter 9 match WCAG 2.1 AA, which is already our benchmark. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
+      "text": "This statement was first published on 2026-05-15 under the EU accessibility directive (2019/882) and Swedish law (2023:254). It was rewritten on 2026-08-12 after the internal review on 2026-08-09, and updated on 2026-08-17 when three of the listed issues were fixed: the skip link is now visible when it gets focus, the mobile menu's elements no longer stay in the tab order when the menu is closed, and the sign-up form's error messages are now linked to their fields. On 2026-09-11 we added the reference to DOS-lagen (2018:1937) and EN 301 549, because the portal is offered to municipalities. The web requirements in EN 301 549 chapter 9 match WCAG 2.1 AA, which is already our benchmark. On 2026-09-12 the automatic check (axe, logged-in pages) found two problems that were not listed here: the progress bars in the CV builder and on the profile page had no name for screen readers, and the interests list on the profile had text inside a list without being a list item. Both were fixed the same day. See \"How this assessment was made\" above. We update this statement after every major review, at least once a year."
     }
   },
   "onboarding": {
@@ -12620,5 +12599,9 @@
   },
   "sidRail": {
     "sidoflikAnnonsering": "Now showing {{section}}"
+  },
+  "demo": {
+    "banner": "This is a demo with made-up people. Everything you change is reset every night. No AI and no emails are sent from here.",
+    "bannerKort": "Demo — made-up people"
   }
 }

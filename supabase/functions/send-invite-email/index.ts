@@ -12,6 +12,8 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts'
+// BL6 (2026-09-12): sanerad felrapport till Sentry — se _shared/sentry.ts
+import { medFelrapport } from '../_shared/sentry.ts'
 
 // =============================================================================
 // E-MAIL-TEMPLATES
@@ -353,7 +355,7 @@ async function processInvitation(
   return { invitationId, success: true, to: invitation.email }
 }
 
-serve(async (req) => {
+serve(medFelrapport('send-invite-email', async (req) => {
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
 
@@ -394,6 +396,29 @@ serve(async (req) => {
       .single()
     const callerIsAdmin =
       callerProfile?.role === 'ADMIN' || callerProfile?.role === 'SUPERADMIN'
+
+    // KM12 (8), 2026-09-12: medlemmar i en demoorganisation (organizations.is_demo)
+    // får inte skicka mejl — demokontot delas öppet på B2B-sidan och ska aldrig
+    // kunna nå en riktig inkorg. Kontrolleras med service role (RLS förbigås),
+    // fail closed: går uppslaget fel skickas inget.
+    const { data: demoMedlemskap, error: demoError } = await supabaseClient
+      .from('organization_members')
+      .select('org_id, organizations!inner(is_demo)')
+      .eq('user_id', user.id)
+    const arDemo =
+      demoError != null ||
+      (demoMedlemskap ?? []).some((m) => {
+        const o = (m as { organizations?: { is_demo?: boolean } | { is_demo?: boolean }[] }).organizations
+        const rader = Array.isArray(o) ? o : o ? [o] : []
+        return rader.some((r) => r.is_demo === true)
+      })
+    if (arDemo) {
+      return createCorsResponse(
+        { error: 'Demokontot kan inte skicka inbjudningar. Personerna i demot är påhittade.' },
+        403,
+        origin,
+      )
+    }
 
     const body = await req.json()
     const invitationIds: string[] = Array.isArray(body.invitationIds)
@@ -472,4 +497,4 @@ serve(async (req) => {
     console.error('Error:', error)
     return createCorsResponse({ error: 'Internal server error' }, 500, origin)
   }
-})
+}))

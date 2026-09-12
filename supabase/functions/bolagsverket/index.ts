@@ -12,6 +12,7 @@
 
 import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, getCorsHeaders, validateOriginOrReject } from '../_shared/cors.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 // Per-user rate-limit: 30 anrop / 15 min. Bolagsverket-quota delas
 // projekt-globalt — utan per-user-limit kan en användare bränna alla
@@ -276,7 +277,7 @@ async function fetchDocument(dokumentId: string): Promise<{ data: ArrayBuffer; c
   return { data, contentType };
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('bolagsverket', async (req) => {
   // Handle CORS preflight
   const preflightResponse = handleCorsPreflightOrNull(req);
   if (preflightResponse) {
@@ -468,4 +469,4 @@ Deno.serve(async (req) => {
     // MEDIUM-007). Nu samma sanerade svar som övriga funktioner.
     return createErrorResponse(error, origin, 'Något gick fel vid hämtningen från Bolagsverket.');
   }
-});
+}));

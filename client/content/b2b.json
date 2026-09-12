@@ -84,7 +84,7 @@
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
-          "Ja. Boka en visning så går vi igenom både deltagarens verktyg och konsulentvyn live."
+          "Ja, direkt och utan att boka något. Logga in på demokontot på jobin.se/#/login med e-post demo@jobin.se och lösenord visa-jobin-2026. Kontot är en chef i en påhittad kommun med fem fiktiva deltagare, en aktivitetsplan med närvaro, mål, journal och möten. Allt du ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss, boka en så går vi igenom det tillsammans."
         ],
         [
           "Behöver deltagaren installera något?",
@@ -104,9 +104,11 @@
       ],
       "slutCta": {
         "rubrik": "Vill ni se det här på riktigt?",
-        "text": "Ett samtal räcker för att visa vad som finns i dag och svara på det vi inte hunnit skriva här.",
+        "text": "Prova demokontot själv: logga in på jobin.se/#/login med demo@jobin.se och lösenordet visa-jobin-2026 — en påhittad kommun med fem fiktiva deltagare, återställd varje natt. Eller boka en visning så går vi igenom det tillsammans.",
         "ctaLabel": "Boka en visning",
-        "ctaAmne": "Demo%20-%20arbetsmarknadsenhet"
+        "ctaAmne": "Demo%20-%20arbetsmarknadsenhet",
+        "demoLank": "/#/login",
+        "demoLabel": "Prova demokontot"
       }
     },
     {
@@ -194,7 +196,7 @@
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
-          "Ja. Boka en visning så går vi igenom både deltagarens verktyg och konsulentvyn live."
+          "Ja. Prova demokontot direkt: logga in på jobin.se/#/login med demo@jobin.se och lösenordet visa-jobin-2026 — konsulentvyn är samma yta oavsett insats, med fem fiktiva deltagare som återställs varje natt. Eller boka en visning så går vi igenom det tillsammans."
         ],
         [
           "Fungerar det för flera handledare samtidigt?",

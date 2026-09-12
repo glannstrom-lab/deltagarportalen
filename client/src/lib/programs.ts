@@ -16,12 +16,10 @@ export interface ProgramDef {
   shortDescription: string
 }
 
+// 'steg_till_arbete' är kvar i typen och i profiles CHECK-constraint som HISTORISKT
+// värde (STA upphörde som projekt 2026-09-12, archive/2026-09-sta/), men är inte
+// längre valbart — en profil som bär värdet visar "Inget projekt" i väljaren.
 export const PROGRAMS: readonly ProgramDef[] = [
-  {
-    slug: 'steg_till_arbete',
-    label: 'Steg till arbete',
-    shortDescription: 'Förberedande insats för personer som behöver mer tid och stöd innan reguljär jobbsökning.',
-  },
   {
     slug: 'rusta_och_matcha',
     label: 'Rusta och Matcha',

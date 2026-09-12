@@ -14,7 +14,6 @@ import {
   sanitizeAiPayload,
   generateCoverLetter,
   generateProfileSummary,
-  generateDoaSummary,
   AiConsentRequiredError,
 } from './aiApi'
 
@@ -249,7 +248,7 @@ describe('callAI — allmän AI-av-grind (B28)', () => {
     expect(mockFetch).toHaveBeenCalledTimes(1)
   })
 
-  it.each(['konsulent-rapportutkast', 'sta-document-draft', 'sta-week-summary', 'sta-doa-sammanfattning'])(
+  it.each(['konsulent-rapportutkast'])(
     'grindar INTE %s — den bär en ANNAN persons (deltagarens) data, inte den inloggades',
     async (fn) => {
       mockProfile = { ai_consent_at: '2026-08-01T10:00:00Z', ai_enabled: false }
@@ -481,7 +480,7 @@ describe('sanitizeAiPayload', () => {
  * Två wrappers castade AI-svaret rakt av. Konsekvensen var inte en krasch utan
  * något tystare: `profile-summary` kunde skriva **tomma strängen** till
  * `profiles.ai_summary` (anroparens `|| ''`-kedja), och
- * `sta-doa-sammanfattning` kunde lägga fel typ i en ruta i AF:s blankett.
+ * (`sta-doa-sammanfattning`, borttagen 2026-09-12, kunde lägga fel typ i en ruta i AF:s blankett.)
  */
 describe('generateProfileSummary — B17', () => {
   beforeEach(() => {
@@ -519,49 +518,6 @@ describe('generateProfileSummary — B17', () => {
     await expect(generateProfileSummary({ name: 'Anna' })).rejects.toThrow(
       'AI-tjänsten gav ingen sammanfattning'
     )
-  })
-})
-
-describe('generateDoaSummary — B17', () => {
-  const giltig = {
-    malPlanering: 'Deltagaren fortsätter mot arbetsprövning.',
-    kategorier: [{ title: 'Fysisk förmåga', resurserBegransningar: 'God rörlighet.' }],
-  }
-
-  beforeEach(() => {
-    mockGetSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
-  })
-
-  it('returnerar den validerade sammanfattningen', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ success: true, sammanfattning: giltig }),
-    })
-
-    const result = await generateDoaSummary({ categories: [] })
-
-    expect(result.sammanfattning).toEqual(giltig)
-  })
-
-  it('kastar när kategorierna saknar text — tom ruta i AF-blanketten är inget svar', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({
-        success: true,
-        sammanfattning: { malPlanering: 'x', kategorier: [{ title: 'Fysisk förmåga' }] },
-      }),
-    })
-
-    await expect(generateDoaSummary({ categories: [] })).rejects.toThrow('oväntat format')
-  })
-
-  it('kastar när svaret är en sträng i stället för ett objekt', async () => {
-    mockFetch.mockResolvedValue({
-      ok: true,
-      json: async () => ({ success: true, sammanfattning: 'Deltagaren har god rörlighet.' }),
-    })
-
-    await expect(generateDoaSummary({ categories: [] })).rejects.toThrow('oväntat format')
   })
 })
 

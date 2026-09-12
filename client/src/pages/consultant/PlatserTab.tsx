@@ -34,9 +34,12 @@ import { PlaceringFormModal } from '@/components/consultant/PlaceringFormModal'
 import { PlaceringUppfoljningModal } from '@/components/consultant/PlaceringUppfoljningModal'
 import { PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL } from '@/components/consultant/placeringLabels'
 import { StodPanel } from '@/components/consultant/StodPanel'
+import { orgApi } from '@/services/orgApi'
+import { useAuthStore } from '@/stores/authStore'
 
 const QK_PLACERINGAR = ['placeringar'] as const
 const QK_DELTAGARE = ['placeringar-deltagare'] as const
+const QK_KOLLEGOR = ['placeringar-kollegor'] as const
 const QK_UPPFOLJNINGAR = (placementId: string) => ['placeringar-uppfoljningar', placementId] as const
 
 type TypFilter = 'alla' | PlaceringTyp
@@ -76,6 +79,23 @@ export function PlatserTab() {
     queryKey: QK_DELTAGARE,
     queryFn: () => placeringarApi.getKopplingsbaraDeltagare(),
   })
+
+  // KS2 b: RLS visar även företrädarens platser för en överlämnad deltagare.
+  // Namnet på den som registrerade hämtas ur organisationens kollegor (best
+  // effort — utan organisation visas "en tidigare konsulent").
+  const inloggadId = useAuthStore((s) => s.user?.id)
+  const { data: kollegor } = useQuery({
+    queryKey: QK_KOLLEGOR,
+    queryFn: () => orgApi.colleagues().catch(() => []),
+    staleTime: 5 * 60 * 1000,
+  })
+  const kollegaNamn = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const k of kollegor ?? []) {
+      map.set(k.user_id, `${k.first_name ?? ''} ${k.last_name ?? ''}`.trim() || (k.email ?? ''))
+    }
+    return map
+  }, [kollegor])
 
   const { data: uppfoljningarForAktiv } = useQuery({
     queryKey: uppfoljningFor ? QK_UPPFOLJNINGAR(uppfoljningFor.id) : ['placeringar-uppfoljningar', 'none'],
@@ -307,6 +327,8 @@ export function PlatserTab() {
               <PlaceringCard
                 placering={p}
                 deltagarNamn={deltagarNamn.get(p.participant_id) ?? '—'}
+                readOnly={!!inloggadId && p.consultant_id !== inloggadId}
+                registreradAv={p.consultant_id ? kollegaNamn.get(p.consultant_id) : undefined}
                 onEdit={() => {
                   setEditing(p)
                   setFormOpen(true)

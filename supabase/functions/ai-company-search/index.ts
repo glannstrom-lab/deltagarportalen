@@ -19,6 +19,7 @@ import {
   createTokenCapResponse,
   sanitizeForPrompt,
 } from '../_shared/aiGate.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 // Indatagränser. `MAX_RESULTS_*` klampar `maxResults` innan det interpoleras
 // in i systemprompten och innan det styr `slice()` + antalet
@@ -247,7 +248,7 @@ function parseCompaniesFromResponse(content: string): CompanySearchResult[] {
   return companies
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('ai-company-search', async (req) => {
   // Handle CORS preflight
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
@@ -599,4 +600,4 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
     console.error('[ai-company-search] Error:', err)
     return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
   }
-})
+}))

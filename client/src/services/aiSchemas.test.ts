@@ -12,7 +12,6 @@ import {
   KarriarPlanSchema,
   KompetensgapSchema,
   IntervjuSimulatorResultSchema,
-  StaDocumentDraftSchema,
   VeckoReflektionSchema,
   safeParseAiResponse,
 } from './aiSchemas'
@@ -83,25 +82,6 @@ describe('safeParseAiResponse', () => {
     expect(r.success).toBe(true)
   })
 
-  it('parsar STA-document-draft (wrappat format från prompten)', () => {
-    const input = {
-      sections: {
-        sammanfattning: { title: 'Sammanfattning', content: 'Texten...' },
-        progression_aktivitetsomfattning: { title: 'Progression', content: 'Mer text.' },
-      },
-    }
-    const r = safeParseAiResponse(StaDocumentDraftSchema, input)
-    expect(r.success).toBe(true)
-    expect(r.data?.sammanfattning.title).toBe('Sammanfattning')
-  })
-
-  it('parsar STA-document-draft som rå JSON-sträng (utan parseJson server-side)', () => {
-    const input = '{"sections":{"sammanfattning":{"title":"Sammanfattning","content":"Text"}}}'
-    const r = safeParseAiResponse(StaDocumentDraftSchema, input)
-    expect(r.success).toBe(true)
-    expect(r.data?.sammanfattning.content).toBe('Text')
-  })
-
   // G12 — veckoreflektion
   it('parsar en veckoreflektion med alla fält', () => {
     const input = {
@@ -122,12 +102,6 @@ describe('safeParseAiResponse', () => {
 
   it('avvisar en veckoreflektion med tom summary — en reflektion utan text är inget att visa', () => {
     const r = safeParseAiResponse(VeckoReflektionSchema, { summary: '', noticed: ['x'] })
-    expect(r.success).toBe(false)
-  })
-
-  it('failar STA-document-draft vid trasig sektionsform', () => {
-    const input = { sections: { sammanfattning: { rubrik: 'fel nycklar' } } }
-    const r = safeParseAiResponse(StaDocumentDraftSchema, input)
     expect(r.success).toBe(false)
   })
 })

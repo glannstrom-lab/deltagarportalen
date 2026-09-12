@@ -2,12 +2,15 @@
 // tidigare 2 402 rader varav 1 041 var det här objektet. Nyckelordningen är den
 // gamla (Object.keys(PROMPTS) används i test och loggar).
 //
+// STA-promptarna (sta-document-draft, sta-week-summary, sta-doa-sammanfattning) togs
+// bort 2026-09-12 när STA upphörde som projekt — biblioteket har 17 promptar.
+//
 // Vercel deployar inte filer i api/ som börjar med understreck som egna funktioner
 // (samma skäl som api/_utils/).
-const domaner = [require('./konsulent'), require('./ansokan'), require('./karriar'), require('./cv'), require('./intervju'), require('./chatt'), require('./sta'), require('./reflektion')];
+const domaner = [require('./konsulent'), require('./ansokan'), require('./karriar'), require('./cv'), require('./intervju'), require('./chatt'), require('./reflektion')];
 const { SANNINGSREGEL } = require('./_delat');
 
-const ORDNING = ['konsulent-rapportutkast', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'sta-document-draft', 'sta-week-summary', 'vecko-reflektion', 'sta-doa-sammanfattning'];
+const ORDNING = ['konsulent-rapportutkast', 'personligt-brev', 'karriarplan', 'kompetensgap', 'cv-jobbmatchning', 'cv-import', 'cv-import-erfarenhet', 'adaptation-recommendations', 'adaptation-conversation', 'linkedin-optimering', 'intervju-simulator', 'intervju-sammanfattning', 'profile-summary', 'cv-writing', 'chatbot', 'ai-team-chat', 'vecko-reflektion'];
 
 /** @type {Record<string, (data: any) => any>} */
 const PROMPTS = {};

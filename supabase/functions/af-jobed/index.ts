@@ -3,10 +3,11 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const JOBED_API_BASE = 'https://jobed-connect-api.jobtechdev.se';
 
-serve(async (req) => {
+serve(medFelrapport('af-jobed', async (req) => {
   // A13 (2026-07-23): allowlistad CORS + per-IP-rate-limit i stället för öppen proxy
   const corsHeaders = buildProxyCorsHeaders(req.headers.get('origin'));
 
@@ -67,4 +68,4 @@ serve(async (req) => {
       }
     );
   }
-});
+}));

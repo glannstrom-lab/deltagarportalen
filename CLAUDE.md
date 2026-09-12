@@ -31,7 +31,7 @@
 
 ### Avaktiverade moduler (koden är kvar — bygg inte vidare på dem utan beslut)
 
-**STA / Steg till arbete — ARKIVERAD 2026-09-12** (beslut Mikael: "STA som projekt ska upphöra"). All kod ligger i `archive/2026-09-sta/` (git mv, ~24 000 rader) med en återbrukskarta mot de två kundgrupperna Mikael ser: Rusta och matcha-leverantörer och kommunkonsulenter. `MODULES.STA`/`VITE_STA_ENABLED` finns inte längre; `e2e/sta.spec.ts` är bara en regressionsvakt för att rutterna inte ska gå att nå. Samtycke/uppsägning av konsulentkopplingen bor i `services/konsulentKopplingApi.ts`. De tio `sta_*`-tabellerna är orörda i prod (gallring 2 år efter avslutad inskrivning, jobb `retention-sta`). Kvar: STA-promptarna i `api/_prompts/sta.js` och 16 oanvända `sta.*`-nycklar i locale-filerna. Bygg aldrig något "för STA" igen.
+**STA / Steg till arbete — ARKIVERAD 2026-09-12** (beslut Mikael: "STA som projekt ska upphöra"). All kod ligger i `archive/2026-09-sta/` (git mv, ~24 000 rader) med en återbrukskarta mot de två kundgrupperna Mikael ser: Rusta och matcha-leverantörer och kommunkonsulenter. `MODULES.STA`/`VITE_STA_ENABLED` finns inte längre; `e2e/sta.spec.ts` är bara en regressionsvakt för att rutterna inte ska gå att nå. Samtycke/uppsägning av konsulentkopplingen bor i `services/konsulentKopplingApi.ts`. De tio `sta_*`-tabellerna är orörda i prod (gallring 2 år efter avslutad inskrivning, jobb `retention-sta`). STA-promptarna, scheman, locale-nycklar och projektväljarens alternativ är borttagna samma dag; värdet `steg_till_arbete` finns kvar i `profiles.program` (20 rader) som data. Bygg aldrig något "för STA" igen.
 
 **EU-utlysningsspåret (26-001 / 26-002 / 26-010) — AVSLUTAT 2026-09-12.** Specarna och de tre `learning-*`-funktionerna (inte sex, som här stod) ligger i `archive/2026-09-eu-utlysning/`; funktionerna är raderade i prod (404). ROADMAP C4 är löst upp.
 
@@ -55,7 +55,7 @@ Monitoring:   Sentry
 deltagarportal/
 ├── client/                  # React frontend (Vercel rootDirectory)
 │   ├── api/                 # Vercel serverless functions
-│   │   ├── ai.js            # Huvud-AI-endpoint (20 funktioner, räknat 2026-08-31, samlad)
+│   │   ├── ai.js            # Huvud-AI-endpoint (17 funktioner, räknat 2026-09-12, samlad)
 │   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
 │   │   ├── upload-image.js  # Profilbild → Vercel Blob
@@ -266,7 +266,7 @@ När något inte fungerar, följ denna ordning:
 
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
-- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **20 funktioner** samlade (räknat i `PROMPTS`-objektet 2026-08-31; **sedan KA3 2026-09-12 bor promptarna i `client/api/_prompts/` per domän** och `ai.js` (1 254 rader) behåller säkerhetsdel, grindar, parser och handler; talen 24, 18 och 16 har alla stått här och i tre andra dokument, alla föråldrade — räkna om i stället för att tro på siffran). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.**
+- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — **17 funktioner** samlade (räknat i `PROMPTS`-objektet 2026-09-12 efter att de tre STA-promptarna togs bort; 20 stod här från 2026-08-31; **sedan KA3 2026-09-12 bor promptarna i `client/api/_prompts/` per domän** och `ai.js` (1 254 rader) behåller säkerhetsdel, grindar, parser och handler; talen 24, 18 och 16 har alla stått här och i tre andra dokument, alla föråldrade — räkna om i stället för att tro på siffran). Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.**
 
   > **Rättat 2026-08-31: det finns en streaming-väg, och den används.** Den här raden sa tidigare rakt ut "det finns ingen streaming-väg … skriv inte kod som antar dem", vilket kunde få nästa läsare att bygga ett duplicerat lager. Sant är att den **gamla** vägen är borta: `client/api/ai-stream.js` och `useAIStream`-hooken finns inte. Men `ai.js` (rad ~976 efter KA3) har en egen SSE-gren — `if (stream && fn === 'ai-team-chat')` sätter `Content-Type: text/event-stream` och strömmar OpenRouters svar vidare — och klientsidan går genom **`callAIStream()`** i `services/aiApi.ts:319`, som `components/ai-team/AgentChat.tsx` anropar i drift. Streaming finns alltså för **en** funktion, `ai-team-chat`, genom `/api/ai` och ingen annanstans. Gå aldrig förbi `callAI`/`callAIStream` med ett eget `fetch` — då körs varken PII-saneringen eller art. 9-grinden, vilket `AgentChat.pii.test.tsx` vaktar.
 - **`supabase/functions/`** (Deno edge) — **18 funktioner** (räknat 2026-09-12 med `ls supabase/functions` efter att de tre `learning-*` arkiverades — `af-*` är sju, inte sex som här stod; talet 20 gällde 2026-09-06 och 24 dessförinnan; talet 24 stod här sedan A27 avpublicerade fyra, och `cv-analysis` fanns med i listan trots att den inte finns — räkna om i stället för att tro på siffran): `af-*` ×7, `ai-*` ×5, `bolagsverket`, `education-search`, `health`, `delete-account`, `send-inactivity-warning`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.

@@ -741,7 +741,7 @@ export default function Landing() {
                 demoknapp, med ett ämne som säger vad det gäller.
               */}
               <a
-                href="mailto:demo@jobin.se?subject=Visning%20av%20konsulentvyn"
+                href="/for-arbetsmarknadsenheter/#demo"
                 className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
               >
                 {t('landing.audience.consultant.cta', 'Boka en visning av konsulentvyn')}
@@ -1008,6 +1008,8 @@ export default function Landing() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.aboutTitle')}</h4>
               <ul className="space-y-3 text-sm">
+                {/* KM12 (9): prerenderad sida, därför <a href>, inte <Link> */}
+                <li><a href="/om-oss/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.aboutUs')}</a></li>
                 <li><a href="mailto:support@jobin.se" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.contact')}</a></li>
                 <li><Link to="/privacy" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.privacyPolicy')}</Link></li>
                 <li><Link to="/terms" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.termsOfUse')}</Link></li>

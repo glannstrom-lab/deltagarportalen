@@ -203,6 +203,12 @@ function byggPrerenderade() {
       const { sidor: b2bSidor } = JSON.parse(fs.readFileSync(b2bFil, 'utf8'))
       for (const b of b2bSidor || []) sidor.add(`/${b.slug}/`)
     }
+    // KM12 (9): om oss-sidan, ur content/om-oss.json av samma skäl.
+    const omOssFil = path.join(CLIENT, 'content', 'om-oss.json')
+    if (fs.existsSync(omOssFil)) {
+      const o = JSON.parse(fs.readFileSync(omOssFil, 'utf8'))
+      if (o?.slug) sidor.add(`/${o.slug}/`)
+    }
   } catch (err) {
     // Saknas snapshoten går linten vidare utan de här sidorna hellre än att
     // krascha — men säg det, annars ser tystnaden ut som att allt är grönt.

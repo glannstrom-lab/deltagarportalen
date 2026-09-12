@@ -1180,10 +1180,121 @@ function renderB2B(b, guider) {
         : ''
     }
 
-    <section class="cta">
+    <section class="cta" id="demo">
       <h2>${escapeHtml(b.slutCta.rubrik)}</h2>
       <p>${escapeHtml(b.slutCta.text)}</p>
-      <a class="btn" href="${demoHref(b.slutCta.ctaAmne)}">${escapeHtml(b.slutCta.ctaLabel)}</a>
+      ${b.slutCta.demoLank
+        ? `<a class="btn" href="${escapeHtml(b.slutCta.demoLank)}">${escapeHtml(b.slutCta.demoLabel || 'Prova demokontot')}</a> `
+        : ''}<a class="btn${b.slutCta.demoLank ? ' btn-sm' : ''}" href="${demoHref(b.slutCta.ctaAmne)}">${escapeHtml(b.slutCta.ctaLabel)}</a>
+    </section>
+  </div>
+</main>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+
+/**
+ * Om oss-sidan (/om-oss/), KM12 (9) 2026-09-12. Data ur content/om-oss.json.
+ * Ingen demo-CTA i toppen — det här är sidan som säger vem som står bakom,
+ * inte en säljsida. Krisstödsblocket följer med som på alla publika sidtyper.
+ */
+function renderOmOss(o) {
+  const url = `${SITE}/${o.slug}/`
+  const stycken = (arr) => arr.map((p) => `<p>${escapeHtml(p)}</p>`).join('')
+  const forVem = o.forVem.punkter
+    .map(
+      (p) => `<h3>${escapeHtml(p.rubrik)}</h3><p>${escapeHtml(p.text)} <a href="${p.lankHref}">${escapeHtml(p.lankText)}</a></p>`
+    )
+    .join('')
+  const saArbetarVi = `<ul class="checklist">${o.saArbetarVi.punkter.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>
+    <p>${o.saArbetarVi.lankar.map((l) => `<a href="${l.href}">${escapeHtml(l.text)}</a>`).join(' · ')}</p>`
+  const kontakt = `<ul>${o.kontakt.rader
+    .map((r) => `<li>${escapeHtml(r.etikett)}: <a href="mailto:${r.epost}">${r.epost}</a></li>`)
+    .join('')}</ul>`
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'AboutPage',
+    url,
+    name: o.title,
+    description: o.description,
+    mainEntity: {
+      '@type': 'Organization',
+      name: 'Jobin',
+      legalName: 'Glänne & Söner',
+      url: SITE,
+      founder: { '@type': 'Person', name: 'Mikael Glännström', jobTitle: 'Arbetskonsulent' },
+      email: 'support@jobin.se',
+      areaServed: 'SE',
+    },
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel(o.title))}</title>
+<meta name="description" content="${escapeHtml(o.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(o.title)}">
+<meta property="og:description" content="${escapeHtml(o.description)}">
+<meta property="og:image" content="${ogBildFor({ typ: 'b2b' })}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="/#/login">Logga in</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor"><a href="/">Jobin</a></nav>
+    <h1>${escapeHtml(o.h1)}</h1>
+    <p class="lead">${escapeHtml(o.lead)}</p>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    <h2>${escapeHtml(o.vem.rubrik)}</h2>
+    ${stycken(o.vem.stycken)}
+
+    <h2>${escapeHtml(o.forVem.rubrik)}</h2>
+    ${forVem}
+
+    <h2>${escapeHtml(o.saArbetarVi.rubrik)}</h2>
+    ${saArbetarVi}
+
+    <section class="cta">
+      <h2>${escapeHtml(o.kontakt.rubrik)}</h2>
+      <p>${escapeHtml(o.kontakt.text)}</p>
+      ${kontakt}
     </section>
   </div>
 </main>
@@ -1203,6 +1314,7 @@ ${krisstod()}
 }
 
 module.exports = {
+  renderOmOss,
   renderGuide,
   renderIndex,
   renderKategori,

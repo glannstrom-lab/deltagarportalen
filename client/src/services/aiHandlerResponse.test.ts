@@ -153,16 +153,6 @@ describe('handlern kör formkontrollen på JSON-svar (B17)', () => {
     expect(captured.body).toMatchObject({ code: 'AI_INVALID_RESPONSE' })
   })
 
-  it('svarar 502 när DOA-sammanfattningen saknar malPlanering', async () => {
-    stubNetwork('{"kategorier":[]}')
-    const { res, captured } = makeRes()
-
-    await handler(makeReq('sta-doa-sammanfattning', { categories: [] }), res)
-
-    expect(captured.status).toBe(502)
-    expect(captured.body).toMatchObject({ code: 'AI_INVALID_RESPONSE' })
-  })
-
   it('släpper igenom ett giltigt intervjusvar och normaliserar bort skräpfält', async () => {
     stubNetwork('{"rating":4,"feedback":"  Konkret exempel  ","nastaFraga":"Vad hände sen?","extra":"skräp"}')
     const { res, captured } = makeRes()
@@ -310,14 +300,14 @@ describe('handlerns allmänna AI-av-grind (B28)', () => {
     expect(openRouterCalls).toHaveLength(1)
   })
 
-  it('släpper igenom de undantagna konsulentfunktionerna trots ai_enabled=false — annan persons data', async () => {
-    const { openRouterCalls } = stubNetwork('{"summary":"Sammanfattning"}', {
+  it('släpper igenom den undantagna konsulentfunktionen trots ai_enabled=false — annan persons data', async () => {
+    const { openRouterCalls } = stubNetwork('Sammanfattning: deltagaren har deltagit i två aktiviteter.', {
       ai_consent_at: null,
       ai_enabled: false,
     })
     const { res, captured } = makeRes()
 
-    await handler(makeReq('sta-week-summary', { bundle: {} }), res)
+    await handler(makeReq('konsulent-rapportutkast', { periodLabel: 'v.36', entries: [], goals: [] }), res)
 
     expect(captured.status).toBe(200)
     expect(openRouterCalls).toHaveLength(1)

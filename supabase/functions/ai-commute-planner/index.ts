@@ -15,6 +15,7 @@ import {
   createTokenCapResponse,
   sanitizeForPrompt,
 } from '../_shared/aiGate.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -118,7 +119,7 @@ function parseResponse(content: string): CommutePlannerResult | null {
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('ai-commute-planner', async (req) => {
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
 
@@ -262,4 +263,4 @@ Deno.serve(async (req) => {
     console.error('[ai-commute-planner] Error:', err)
     return createCorsResponse({ error: 'Ett fel uppstod' }, 500, origin)
   }
-})
+}))

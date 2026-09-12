@@ -3,6 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
@@ -28,7 +29,7 @@ function getCorsHeaders(origin: string | null): Record<string, string> {
   };
 }
 
-serve(async (req) => {
+serve(medFelrapport('af-trends', async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
 
@@ -69,7 +70,7 @@ serve(async (req) => {
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-});
+}));
 
 // Minuter bakåt som `published-after` räknar med i JobSearch-API:t.
 const MINUTES_PER_DAY = 60 * 24;

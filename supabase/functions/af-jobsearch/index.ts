@@ -9,6 +9,7 @@
  */
 
 import { enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 // Tillåtna origins — matchar Vercel-lagrets allowlist. Wildcard '*' var en
 // öppen-proxy-risk (kvotutbrytning). 2026-05-09: stängt.
@@ -54,7 +55,7 @@ function jsonResponse(data: unknown, status: number, corsHeaders: Record<string,
   });
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('af-jobsearch', async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = buildCorsHeaders(origin);
 
@@ -137,4 +138,4 @@ Deno.serve(async (req) => {
       message: error instanceof Error ? error.message : 'Unknown error'
     }, 500, corsHeaders);
   }
-});
+}));

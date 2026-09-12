@@ -20,6 +20,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const KALLA_URL = 'https://data.arbetsformedlingen.se/prognoser/yrkesbarometer.json';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -86,7 +87,7 @@ function normalisera(s: string): string {
   return s.toLowerCase().trim();
 }
 
-serve(async (req) => {
+serve(medFelrapport('af-prognos', async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
   const json = (body: unknown, status = 200) =>
@@ -148,4 +149,4 @@ serve(async (req) => {
     console.error('[af-prognos] Error:', error);
     return json({ error: error instanceof Error ? error.message : 'Okänt fel' }, 502);
   }
-});
+}));

@@ -4,6 +4,7 @@
  * matchningsdimensionerna i stället för AF-status.
  */
 
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import {
   AlertTriangle,
@@ -31,9 +32,27 @@ interface Props {
   onEdit: () => void
   onUppfoljning: () => void
   onDelete: () => void
+  /**
+   * KS2 b (2026-09-12): en plats som en företrädare registrerade (eller vars
+   * konsulent raderats — consultant_id NULL efter BL4) går att läsa och följa
+   * upp, men inte redigera eller ta bort. RLS nekar ändå; det här är så att
+   * knapparna inte lovar något som sedan ger 42501.
+   */
+  readOnly?: boolean
+  /** Namn på den som registrerade platsen, när det inte är den inloggade. */
+  registreradAv?: string
 }
 
-export function PlaceringCard({ placering: p, deltagarNamn, onEdit, onUppfoljning, onDelete }: Props) {
+export function PlaceringCard({
+  placering: p,
+  deltagarNamn,
+  onEdit,
+  onUppfoljning,
+  onDelete,
+  readOnly = false,
+  registreradAv,
+}: Props) {
+  const { t } = useTranslation()
   const fysiskaKrav: string[] = []
   if (p.lifting_required) fysiskaKrav.push('Tunga lyft')
   if (p.standing_required) fysiskaKrav.push('Stå upp')
@@ -73,6 +92,12 @@ export function PlaceringCard({ placering: p, deltagarNamn, onEdit, onUppfoljnin
               {deltagarNamn} · {PLACERING_TYP_LABEL[p.placement_type]}
               {p.occupation && <> · {p.occupation}</>}
             </p>
+            {readOnly && (
+              <p className="text-xs text-stone-500 mt-0.5" title={t('consultant.handover.readOnlyHint')}>
+                {t('consultant.handover.registeredBy')}{' '}
+                {registreradAv ?? t('consultant.handover.formerConsultant')}
+              </p>
+            )}
           </div>
         </div>
         <span className={`px-2 py-1 rounded-full text-[11px] font-medium ${PLACERING_STATUS_KLASS[p.status]}`}>
@@ -119,18 +144,22 @@ export function PlaceringCard({ placering: p, deltagarNamn, onEdit, onUppfoljnin
         <Button size="sm" variant="outline" leftIcon={<ClipboardList size={13} />} onClick={onUppfoljning}>
           Uppföljning
         </Button>
-        <Button size="sm" variant="ghost" leftIcon={<Edit size={13} />} onClick={onEdit}>
-          Redigera
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          leftIcon={<Trash2 size={13} />}
-          onClick={onDelete}
-          className="text-rose-700 hover:bg-rose-50"
-        >
-          Ta bort
-        </Button>
+        {!readOnly && (
+          <>
+            <Button size="sm" variant="ghost" leftIcon={<Edit size={13} />} onClick={onEdit}>
+              Redigera
+            </Button>
+            <Button
+              size="sm"
+              variant="ghost"
+              leftIcon={<Trash2 size={13} />}
+              onClick={onDelete}
+              className="text-rose-700 hover:bg-rose-50"
+            >
+              Ta bort
+            </Button>
+          </>
+        )}
       </div>
     </div>
   )

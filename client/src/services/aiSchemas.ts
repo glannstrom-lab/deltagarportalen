@@ -106,54 +106,6 @@ export const VeckoReflektionSchema = z.object({
 export type VeckoReflektion = z.infer<typeof VeckoReflektionSchema>
 
 // --------------------------------------------------------------
-// sta-document-draft (rapportautomatisering Steg-till-arbete)
-// Verklig svarsform (B8, 2026-07-23): sections är ett OBJEKT keyat på
-// sektionsnyckel — { sections: { section_key: { title, content } } }.
-// Det gamla schemat (array + metadata) motsvarade inget verkligt svar
-// och hade alltid failat om det kopplats in.
-// --------------------------------------------------------------
-export const StaDocumentSectionSchema = z.object({
-  title: z.string(),
-  content: z.string(),
-})
-
-export const StaDocumentSectionsSchema = z.record(z.string(), StaDocumentSectionSchema)
-
-/** Accepterar både wrappern { sections: {...} } (promptens format) och en
- *  bar sektions-record; normaliserar alltid till Record<key, {title,content}>. */
-export const StaDocumentDraftSchema = z.union([
-  z
-    .object({ sections: StaDocumentSectionsSchema })
-    .transform((d) => d.sections),
-  StaDocumentSectionsSchema,
-])
-
-export type StaDocumentDraft = z.infer<typeof StaDocumentDraftSchema>
-
-// --------------------------------------------------------------
-// sta-doa-sammanfattning (B17, 2026-08-05)
-// Texten landar i Arbetsförmedlingens DOA-blankett sida 4: `malPlanering`
-// i den stora rutan (Text230), en `kategorier`-post per mindre ruta
-// (Text231-235). Svaret castades tidigare rakt av — `callAI<DoaSummaryResult>`
-// utan kontroll — och ett fält med fel typ hade blivit `[object Object]` i
-// ett myndighetsdokument, eller en tom ruta.
-//
-// `min(1)` på strängarna är avsiktligt: en tom text är inte ett giltigt svar
-// här, den är ett tyst misslyckande som arbetsterapeuten får upptäcka i PDF:en.
-// --------------------------------------------------------------
-export const DoaSummaryCategorySchema = z.object({
-  title: z.string().min(1),
-  resurserBegransningar: z.string().min(1),
-})
-
-export const DoaSummarySchema = z.object({
-  malPlanering: z.string().min(1),
-  kategorier: z.array(DoaSummaryCategorySchema).min(1),
-})
-
-export type DoaSummary = z.infer<typeof DoaSummarySchema>
-
-// --------------------------------------------------------------
 // Helper: säker parse
 // --------------------------------------------------------------
 export interface AiParseResult<T> {

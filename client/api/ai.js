@@ -1,5 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const { logAiUsage } = require('./_utils/ai-usage-log');
+// BL6 (2026-09-12): felrapport till Sentry, sanerad — se _utils/sentry.js
+const { medFelrapport } = require('./_utils/sentry.js');
 
 // ============================================
 // Modell-låsning (B18, 2026-08-05)
@@ -181,10 +183,7 @@ const RATE_LIMITS = {
   'profile-summary': { limit: 10, windowMinutes: 15 },
   'chatbot': { limit: 30, windowMinutes: 15 },
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
-  'sta-document-draft': { limit: 10, windowMinutes: 15 },
-  'sta-week-summary': { limit: 20, windowMinutes: 15 },
   'vecko-reflektion': { limit: 5, windowMinutes: 60 },
-  'sta-doa-sammanfattning': { limit: 15, windowMinutes: 15 },
   'konsulent-rapportutkast': { limit: 10, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
@@ -296,7 +295,7 @@ async function checkDailyTokenCap(serviceClient, userId) {
 // den går att kringgå med ett direkt POST mot /api/ai.
 //
 // Medvetet UTANFÖR listan:
-//  - Konsulentfunktionerna (`konsulent-rapportutkast`, `sta-*`) behandlar en
+//  - Konsulentfunktionen (`konsulent-rapportutkast`) behandlar en
 //    ANNAN persons uppgifter än den inloggade. Att grinda dem på konsulentens
 //    eget `ai_consent_at` vore fel person och falsk trygghet — deras rättsliga
 //    grund är en egen fråga för AI-juristen (ROADMAP A2).
@@ -379,7 +378,7 @@ async function checkArt9Consent(supabase, userId) {
 // samma beteende — se CLAUDE.md, lärdomen "Fail closed vs. fail open".
 //
 // Medvetet UNDANTAGNA — namngivna, inte tyst utelämnade (samma resonemang
-// som ART9_FUNCTIONS ovan): de fyra konsulentfunktionerna behandlar en ANNAN
+// som ART9_FUNCTIONS ovan): konsulentfunktionen behandlar en ANNAN
 // persons uppgifter (deltagarens) på uppdrag av den inloggade konsulenten.
 // Konsulentens EGEN "Pausa AI"-brytare är fel kontroll för deltagarens data
 // — deltagarens rätt att invända mot att konsulenten kör AI på deras
@@ -388,9 +387,6 @@ async function checkArt9Consent(supabase, userId) {
 // är INTE undantagna — de är precis den läcka B28 hittade.
 const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
-  'sta-document-draft',
-  'sta-week-summary',
-  'sta-doa-sammanfattning',
 ]);
 
 /**
@@ -587,14 +583,14 @@ function getCorsHeaders(requestOrigin) {
 //     "Svara ENDAST med JSON". `JSON.parse` fäller det, svaret blev `{ raw }`
 //     och funktioner utan Zod på klienten renderade `undefined`.
 //  2. **Ingen formkontroll.** Ett objekt som parsade men saknade fälten UI:t
-//     läser gick rakt in i vyn. `intervju-simulator` och
-//     `sta-doa-sammanfattning` har ingen Zod-validering hos anroparen.
+//     läser gick rakt in i vyn. `intervju-simulator` har ingen Zod-validering
+//     hos anroparen (`sta-doa-sammanfattning` hade det inte heller — borta 2026-09-12).
 //
 // `extractJsonContent` löser (1) för ALLA parseJson-funktioner — de som redan
 // Zod-validerar (`karriarplan`, `kompetensgap`, `intervju-sammanfattning`,
-// `vecko-reflektion`, `sta-document-draft`) blir bara mer robusta, deras
-// `{ raw }`-fallback finns kvar orörd. `RESPONSE_VALIDATORS` löser (2) för de
-// två funktioner som saknar skydd hos anroparen.
+// `vecko-reflektion`) blir bara mer robusta, deras
+// `{ raw }`-fallback finns kvar orörd. `RESPONSE_VALIDATORS` löser (2) för
+// funktionen som saknar skydd hos anroparen.
 //
 // Designval: en validator får **normalisera bort** enskilda trasiga fält, men
 // fälla hela svaret bara när det inte går att använda. Ett hårt fel på
@@ -681,33 +677,6 @@ const RESPONSE_VALIDATORS = {
     if (feedback) out.feedback = feedback;
     if (nastaFraga) out.nastaFraga = nastaFraga;
     return { ok: true, value: out };
-  },
-
-  // { malPlanering: string, kategorier: [{ title, resurserBegransningar }] }
-  // Texten hamnar i AF:s DOA-blankett sida 4. Ett tomt eller felformat fält
-  // blir en tom ruta i ett myndighetsdokument — fäll hellre anropet.
-  'sta-doa-sammanfattning': (value) => {
-    if (!isPlainObject(value)) {
-      return { ok: false, error: 'DOA-sammanfattningen var inte ett JSON-objekt' };
-    }
-    const malPlanering = nonEmptyString(value.malPlanering);
-    if (!malPlanering) {
-      return { ok: false, error: 'DOA-sammanfattningen saknade malPlanering' };
-    }
-    if (!Array.isArray(value.kategorier)) {
-      return { ok: false, error: 'DOA-sammanfattningen saknade kategorier' };
-    }
-    const kategorier = value.kategorier
-      .filter(isPlainObject)
-      .map((k) => ({
-        title: nonEmptyString(k.title),
-        resurserBegransningar: nonEmptyString(k.resurserBegransningar),
-      }))
-      .filter((k) => k.title && k.resurserBegransningar);
-    if (kategorier.length === 0) {
-      return { ok: false, error: 'DOA-sammanfattningen hade inga användbara kategorier' };
-    }
-    return { ok: true, value: { malPlanering, kategorier } };
   },
 
   // Ett uppladdat CV som tolkas fel blir ett TOMT CV i "Dina CV" — och den
@@ -840,7 +809,7 @@ const RESPONSE_VALIDATORS = {
 
 };
 
-module.exports = async (req, res) => {
+const hanterare = async (req, res) => {
   const requestOrigin = req.headers.origin;
   const corsHeaders = getCorsHeaders(requestOrigin);
 
@@ -1217,6 +1186,8 @@ module.exports = async (req, res) => {
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+module.exports = medFelrapport('ai', hanterare);
 
 // Exponerat enbart för test — Vercel anropar bara default-exporten ovan.
 // Art. 9-grinden är den enda kontroll som inte går att kringgå från klienten,

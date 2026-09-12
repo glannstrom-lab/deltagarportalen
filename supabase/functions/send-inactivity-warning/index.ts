@@ -14,6 +14,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { verifyCronSecret } from '../_shared/cronAuth.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const getInactivityWarningTemplate = (data: {
   firstName: string
@@ -77,7 +78,7 @@ const getInactivityWarningTemplate = (data: {
 </html>
 `
 
-serve(async (req) => {
+serve(medFelrapport('send-inactivity-warning', async (req) => {
   const preflight = handleCorsPreflightOrNull(req)
   if (preflight) return preflight
 
@@ -209,4 +210,4 @@ serve(async (req) => {
       error: err instanceof Error ? err.message : 'Unknown error',
     }, 500, origin)
   }
-})
+}))

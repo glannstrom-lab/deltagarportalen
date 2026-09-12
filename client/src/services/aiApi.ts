@@ -18,7 +18,6 @@ import { supabase } from '@/lib/supabase'
 import { sanitizeForAi } from '@/lib/piiSanitizer'
 import { apiLogger } from '@/lib/logger'
 import { useAuthStore } from '@/stores/authStore'
-import { DoaSummarySchema, safeParseAiResponse } from './aiSchemas'
 
 /**
  * Art. 9-funktioner: tar emot särskilda kategorier av personuppgifter (hälsa,
@@ -54,9 +53,6 @@ const ART9_FUNCTIONS = new Set([
  */
 const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
   'konsulent-rapportutkast',
-  'sta-document-draft',
-  'sta-week-summary',
-  'sta-doa-sammanfattning',
 ])
 
 /**
@@ -477,49 +473,6 @@ export async function generateProfileSummary(data: {
     throw new Error('AI-tjänsten gav ingen sammanfattning. Försök igen om en stund.')
   }
   return { ...result, summary: summary.trim() }
-}
-
-/**
- * STA — DOA-sammanfattning för AF-blankett sida 4.
- * Returnerar strukturerad summering med 1 mål-och-planering + en text per kategori.
- * AT redigerar utkastet innan PDF-export.
- */
-export interface DoaSummaryResult {
-  malPlanering: string
-  kategorier: Array<{ title: string; resurserBegransningar: string }>
-}
-
-export async function generateDoaSummary(data: {
-  firstName?: string
-  categories: Array<{
-    title: string
-    items: Array<{
-      text: string
-      person: number | null
-      bedomare: number | string | null
-      comment: string | null
-    }>
-  }>
-}) {
-  const result = await callAI<DoaSummaryResult>('sta-doa-sammanfattning', data as unknown as Record<string, unknown>)
-
-  // B17 (2026-08-05): tidigare returnerades `result` orört och anroparen
-  // (`pages/sta/components/AssessmentEditor.tsx:326`) läste `.malPlanering`
-  // och `.kategorier[i].resurserBegransningar` direkt ur det castade svaret.
-  // Texten skrivs till `scores._ai_summary` och exporteras till AF:s blankett
-  // — ett fält med fel typ blir "[object Object]" i ett myndighetsdokument.
-  // Servern formkontrollerar numera också (RESPONSE_VALIDATORS i ai.js); den
-  // här grinden finns för att en klient aldrig ska lita på att servern gjorde
-  // det, och för att ge ett begripligt fel i stället för en 502.
-  const parsed = safeParseAiResponse(
-    DoaSummarySchema,
-    (result as { sammanfattning?: unknown }).sammanfattning
-  )
-  if (!parsed.success) {
-    throw new Error('AI-sammanfattningen hade oväntat format. Försök igen om en stund.')
-  }
-
-  return { ...result, sammanfattning: parsed.data as DoaSummaryResult }
 }
 
 export default {

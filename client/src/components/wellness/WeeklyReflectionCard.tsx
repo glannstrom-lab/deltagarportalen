@@ -1,7 +1,8 @@
 /**
  * WeeklyReflectionCard — veckoreflektion för deltagare utanför STA (G12)
  *
- * STA-deltagare får en veckosammanställning via `sta-week-summary` (skriven
+ * (STA-deltagare fick tidigare en veckosammanställning via `sta-week-summary` —
+ * borttagen 2026-09-12 när STA upphörde; kommentaren nedan är historik.) Skriven
  * till konsulenten). Den här ytan ger samma sorts återblick till alla andra —
  * men skriven TILL deltagaren, av deltagarens egna dagboksanteckningar och
  * måendeloggar från de senaste 7 dagarna.

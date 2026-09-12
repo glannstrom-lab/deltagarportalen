@@ -111,12 +111,12 @@ describe('placeringarApi.getPlaceringar', () => {
     await expect(placeringarApi.getPlaceringar()).rejects.toThrow('Not authenticated')
   })
 
-  it('hämtar från consultant_work_placements, filtrerat och sorterat nyast först', async () => {
+  it('hämtar från consultant_work_placements sorterat nyast först — UTAN consultant_id-filter (KS2 b: RLS avgör, företrädarens platser ska synas)', async () => {
     loggedIn()
     queueResult({ data: [{ id: 'w1' }], error: null })
     const result = await placeringarApi.getPlaceringar()
     expect(mockFrom).toHaveBeenCalledWith('consultant_work_placements')
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('consultant_id', 'consultant-1')
+    expect(mockFromBuilder.eq).not.toHaveBeenCalledWith('consultant_id', expect.anything())
     expect(mockFromBuilder.order).toHaveBeenCalledWith('created_at', { ascending: false })
     expect(result).toEqual([{ id: 'w1' }])
   })
@@ -129,12 +129,12 @@ describe('placeringarApi.getPlaceringar', () => {
 })
 
 describe('placeringarApi.getPlaceringarForDeltagare', () => {
-  it('filtrerar på både consultant_id och participant_id', async () => {
+  it('filtrerar bara på participant_id — inte consultant_id (KS2 b)', async () => {
     loggedIn()
     queueResult({ data: [], error: null })
     await placeringarApi.getPlaceringarForDeltagare('p1')
-    expect(mockFromBuilder.eq).toHaveBeenNthCalledWith(1, 'consultant_id', 'consultant-1')
-    expect(mockFromBuilder.eq).toHaveBeenNthCalledWith(2, 'participant_id', 'p1')
+    expect(mockFromBuilder.eq).toHaveBeenCalledTimes(1)
+    expect(mockFromBuilder.eq).toHaveBeenCalledWith('participant_id', 'p1')
   })
 })
 
@@ -391,7 +391,7 @@ describe('placeringarApi.byggArbetsgivarUnderlag — vakten mot läckage till ar
     // INGET annat än de tillåtna nycklarnas egna värden får finnas kvar.
     const p = fullPlacering()
     const underlag = placeringarApi.byggArbetsgivarUnderlag(p)
-    const tillåtnaVärden = new Set(Object.values(underlag as Record<string, unknown>))
+    const tillåtnaVärden = new Set(Object.values(underlag as unknown as Record<string, unknown>))
 
     for (const [key, value] of Object.entries(p)) {
       if (ALLOWED_KEYS.includes(key)) continue

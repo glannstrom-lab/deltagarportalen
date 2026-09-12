@@ -98,6 +98,8 @@ export default function Privacy() {
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('privacy.controller.intro')}</p>
             <div className="bg-stone-50 dark:bg-stone-900/50 rounded-xl p-4 space-y-2 text-gray-700 dark:text-gray-200">
               <p className="font-semibold">{t('privacy.controller.name')}</p>
+              {/* KM12 (9), 2026-09-12: /om-oss/ är en prerenderad sida — <a href>, inte <Link> (HashRouter). */}
+              <p><a href="/om-oss/" className="underline text-[var(--c-text)]">{t('landing.footer.aboutUs')}</a></p>
               <p>{t('privacy.controller.orgNr')}</p>
               <p>{t('privacy.controller.address')}</p>
               <p>{t('privacy.controller.email')}</p>

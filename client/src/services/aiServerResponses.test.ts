@@ -6,7 +6,7 @@
  *
  *  - **Svarsvalidering (B17).** Modellen svarar ibland med markdown-fence
  *    eller med ett objekt som saknar de fält UI:t läser. Två funktioner —
- *    `intervju-simulator` och `sta-doa-sammanfattning` — har ingen
+ *    `intervju-simulator` (och tidigare `sta-doa-sammanfattning`) — har ingen
  *    Zod-validering hos anroparen och fick tidigare svaret orört.
  *  - **Modell-låsning (B18).** `openai/gpt-oss-120b` är låst av kostnadsskäl.
  *    Källvakten längst ned läser filerna på disk i stället för att lita på
@@ -108,68 +108,11 @@ describe('RESPONSE_VALIDATORS["intervju-simulator"]', () => {
 })
 
 // --------------------------------------------------------------------------
-// sta-doa-sammanfattning
+// JSON-krav utan parseJson — buggen bakom B8 och B17 (den STA-specifika
+// varianten, sta-week-summary, är borta sedan 2026-09-12; den generella vakten
+// är det som ska bestå)
 // --------------------------------------------------------------------------
-describe('RESPONSE_VALIDATORS["sta-doa-sammanfattning"]', () => {
-  const validate = () => aiHandler.RESPONSE_VALIDATORS['sta-doa-sammanfattning']
-
-  const giltig = {
-    malPlanering: 'Deltagaren fortsätter mot arbetsprövning.',
-    kategorier: [{ title: 'Fysisk förmåga', resurserBegransningar: 'God rörlighet.' }],
-  }
-
-  it('släpper igenom ett komplett svar', () => {
-    const out = validate()(giltig)
-    expect(out.ok).toBe(true)
-    expect(out.value).toEqual(giltig)
-  })
-
-  it('fäller svar utan malPlanering', () => {
-    expect(validate()({ ...giltig, malPlanering: '' }).ok).toBe(false)
-    expect(validate()({ kategorier: giltig.kategorier }).ok).toBe(false)
-  })
-
-  it('fäller svar där kategorier inte är en lista', () => {
-    expect(validate()({ ...giltig, kategorier: 'Fysisk förmåga: god' }).ok).toBe(false)
-  })
-
-  it('fäller svar där ingen kategori är användbar', () => {
-    // Texten går till AF:s blankett. En kategori utan text blir en tom ruta i
-    // ett myndighetsdokument — hellre ett fel som syns.
-    expect(validate()({ ...giltig, kategorier: [{ title: 'Fysisk förmåga' }] }).ok).toBe(false)
-    expect(validate()({ ...giltig, kategorier: [] }).ok).toBe(false)
-  })
-
-  it('rensar bort enstaka trasiga kategorier men behåller de hela', () => {
-    const out = validate()({
-      ...giltig,
-      kategorier: [
-        { title: 'Fysisk förmåga', resurserBegransningar: 'God rörlighet.' },
-        { title: 'Kognition' },
-        'inte ett objekt',
-      ],
-    })
-    expect(out.ok).toBe(true)
-    expect(out.value).toEqual({
-      malPlanering: giltig.malPlanering,
-      kategorier: [{ title: 'Fysisk förmåga', resurserBegransningar: 'God rörlighet.' }],
-    })
-  })
-})
-
-// --------------------------------------------------------------------------
-// sta-week-summary — prompten får inte be om JSON utan parseJson
-// --------------------------------------------------------------------------
-describe('sta-week-summary', () => {
-  it('ber inte om JSON, eftersom mallen inte parsar JSON', () => {
-    // B17/B8: prompten sa "Returnera JSON: { summary }" men mallen saknade
-    // `parseJson` — konsulenten hade fått se klamrar och citattecken.
-    // Kombinationen "prompten kräver JSON" + "handlern parsar inte" är
-    // buggen; det här testet fäller båda halvorna av den.
-    const prompt = aiHandler.PROMPTS['sta-week-summary']({ bundle: {} })
-    expect(prompt.parseJson).toBeFalsy()
-    expect(prompt.user).not.toMatch(/returnera\s+json/i)
-  })
+describe('prompter som kräver JSON', () => {
 
   it('varje prompt som kräver JSON har parseJson', () => {
     // Generell vakt: samma bugg har nu uppstått två gånger (B8, B17).

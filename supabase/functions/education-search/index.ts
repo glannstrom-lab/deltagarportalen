@@ -33,6 +33,7 @@ import {
   type SearchResult,
   type Val,
 } from './normalisera.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 // JobEd Connect API - Real Swedish Education Database
 const JOBED_API_BASE = 'https://jobed-connect-api.jobtechdev.se/v1';
@@ -236,7 +237,7 @@ async function getRegions(): Promise<Val[]> {
 
 // ── Router ───────────────────────────────────────────────────────────────
 
-serve(async (req) => {
+serve(medFelrapport('education-search', async (req) => {
   // A13 (2026-07-23): allowlistad CORS + per-IP-rate-limit i stället för öppen proxy
   const corsHeaders = buildProxyCorsHeaders(req.headers.get('origin'));
 
@@ -327,4 +328,4 @@ serve(async (req) => {
       }
     );
   }
-});
+}));

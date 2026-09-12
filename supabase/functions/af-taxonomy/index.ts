@@ -3,6 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const TAXONOMY_API_BASE = 'https://taxonomy.api.jobtechdev.se/v1/taxonomy';
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
@@ -163,7 +164,7 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
   return { concepts: [], source: 'none' };
 }
 
-serve(async (req) => {
+serve(medFelrapport('af-taxonomy', async (req) => {
   // A13 (2026-07-23): allowlistad CORS + per-IP-rate-limit i stället för öppen proxy
   const corsHeaders = buildProxyCorsHeaders(req.headers.get('origin'));
 
@@ -214,4 +215,4 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
-});
+}));

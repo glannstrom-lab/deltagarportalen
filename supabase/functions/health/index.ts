@@ -26,6 +26,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 type CheckStatus = 'ok' | 'error'
 
@@ -50,7 +51,7 @@ function svara(body: unknown, status: number, method: string): Response {
   return new Response(method === 'HEAD' ? null : JSON.stringify(body), { status, headers: HEADERS })
 }
 
-serve(async (req) => {
+serve(medFelrapport('health', async (req) => {
   if (req.method !== 'GET' && req.method !== 'HEAD') {
     return svara({ error: 'Method not allowed' }, 405, req.method)
   }
@@ -103,4 +104,4 @@ serve(async (req) => {
 
   const body: HealthResponse = { status, timestamp, checks }
   return svara(body, status === 'unhealthy' ? 503 : 200, req.method)
-})
+}))

@@ -72,8 +72,6 @@ describe('ART9_FUNCTIONS', () => {
     // Att grinda dem på konsulentens eget samtycke vore fel person och falsk
     // trygghet. Rättslig grund för de vägarna är en fråga för AI-juristen (A2).
     expect(aiHandler.ART9_FUNCTIONS.has('konsulent-rapportutkast')).toBe(false)
-    expect(aiHandler.ART9_FUNCTIONS.has('sta-week-summary')).toBe(false)
-    expect(aiHandler.ART9_FUNCTIONS.has('sta-doa-sammanfattning')).toBe(false)
   })
 
   it('grindar INTE art. 6-funktionerna (CV/brev ska fortsätta fungera)', () => {
@@ -147,18 +145,15 @@ describe('checkArt9Consent', () => {
  * B28 (2026-08-12) — den allmänna AI-av-grinden i `client/api/ai.js`.
  *
  * `checkArt9Consent` ovan kollar `ai_enabled` bara för de fyra ART9-
- * funktionerna. `checkAiEnabled` är den motsvarande grinden för de andra 14
+ * funktionerna. `checkAiEnabled` är den motsvarande grinden för de övriga
  * — samma profil-uppslag, samma fail-closed-policy, men bara `ai_enabled`
  * (art. 9-funktionerna kräver DESSUTOM `ai_consent_at`, vilket hör hemma i
  * `checkArt9Consent`, inte här).
  */
 describe('AI_ENABLED_EXEMPT_FUNCTIONS', () => {
-  it('undantar exakt de fyra konsulentfunktionerna — inte fler, inte färre', () => {
+  it('undantar exakt konsulentfunktionen — inte fler, inte färre (sta-* borta 2026-09-12)', () => {
     expect([...aiHandler.AI_ENABLED_EXEMPT_FUNCTIONS].sort()).toEqual([
       'konsulent-rapportutkast',
-      'sta-doa-sammanfattning',
-      'sta-document-draft',
-      'sta-week-summary',
     ])
   })
 

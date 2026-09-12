@@ -54,16 +54,8 @@ const SANNINGSMARKORER = [
  * Att lägga till en rad här ska kosta en motivering — det är hela poängen.
  */
 const UTAN_KRAV: Record<string, string> = {
-  'sta-week-summary':
-    'STA upphörde som projekt 2026-09-12 (archive/2026-09-sta/); klientanroparen ' +
-    'staAiApi.ts är arkiverad, prompten når ingen användare. Promptarna i ' +
-    'api/_prompts/sta.js är kvar tills de tas bort i ett eget pass.',
-  'sta-doa-sammanfattning':
-    'Samma skäl som sta-week-summary — avaktiverad modul, prompten når ingen.',
-  'sta-document-draft':
-    'Samma skäl som sta-week-summary — avaktiverad modul. Den här hittade testet ' +
-    'självt vid första körningen, vilket är precis vad den är byggd för: jag hade ' +
-    'missat den i min egen genomgång av prompterna.',
+  // Tom sedan 2026-09-12: de tre sta-*-promptarna som stod här är borttagna
+  // (STA upphörde som projekt). Nästa rad här ska kosta en motivering.
 }
 
 const funktioner = Object.keys(PROMPTS).filter((n) => n !== 'default')

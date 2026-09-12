@@ -10115,6 +10115,7 @@
     "handover": {
       "writtenBy": "Skriven av",
       "createdBy": "Skapat av",
+      "registeredBy": "Registrerad av",
       "formerConsultant": "en tidigare konsulent",
       "readOnlyHint": "Skrivet före överlämningen — går att läsa men inte ändra"
     },
@@ -11361,19 +11362,7 @@
     }
   },
   "focus": {
-    "showWholePage": "Visa hela sidan i stället",
-    "sta": {
-      "exerciseTitle": "Dagens övning",
-      "dayOf": "Dag {{day}} av {{total}}",
-      "duration": "Cirka {{min}} minuter",
-      "reflectionLabel": "Vill du skriva något om dagen?",
-      "reflectionPlaceholder": "Det är helt okej att lämna tomt.",
-      "alreadyDone": "Den här dagen har du redan gjort. Fint.",
-      "pulseTitle": "Hur känns dagen?",
-      "pulseHint": "Bara du och din konsulent ser det här.",
-      "finish": "Klar för idag",
-      "noEnrollment": "Du är inte inskriven i någon arbetsprövning just nu. Här dyker din dag upp när du är det."
-    },
+    "showWholePage": "Visa hela sidan i stället",
     "ai": {
       "agentTitle": "Vem vill du prata med?",
       "doneText": "Bra! Öppna AI-team i normalläge för att fortsätta samtalet.",
@@ -12299,17 +12288,7 @@
         "fillIn": "Fyll i när du orkar"
       }
     }
-  },
-  "sta": {
-    "aria": {
-      "removeAbsence": "Ta bort anmälan",
-      "close": "Stäng",
-      "closeIntro": "Stäng introduktionen",
-      "editActivityScope": "Ändra aktivitetsomfattning",
-      "adjustStartDate": "Justera startdatum"
-    },
-    "title": "Steg till arbete"
-  },
+  },
   "coachWidget": {
     "aria": {
       "closeTips": "Stäng coachtips"
@@ -12446,7 +12425,7 @@
   "accessibility": {
     "backToHome": "Tillbaka till startsidan",
     "title": "Tillgänglighetsredogörelse",
-    "lastEdited": "Sidan senast redigerad: 2026-08-17",
+    "lastEdited": "Sidan senast redigerad: 2026-09-12",
     "assessmentDate": "Bedömningen bygger på en granskning genomförd: 2026-08-17",
     "ambition": {
       "title": "Vår ambition",
@@ -12467,7 +12446,7 @@
       "title": "Vad som fungerar",
       "publicPages": {
         "label": "Publika sidor:",
-        "desc": "Startsidan, verktygssidorna och samtliga 133 guidesidor hade noll axe-överträdelser vid senaste mätningen."
+        "desc": "Startsidan, verktygssidorna och de 133 guidesidor som fanns vid mätningen 2026-08-17 hade noll axe-överträdelser. Guiderna är i dag 239; de som tillkommit sedan dess är inte mätta i en full omgång ännu."
       },
       "focusIndicator": {
         "label": "Fokusindikator:",
@@ -12590,7 +12569,7 @@
       "emailLabel": "Email:"
     },
     "footer": {
-      "text": "Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Den 2026-09-11 lades hänvisningen till DOS-lagen (2018:1937) och EN 301 549 till, eftersom portalen erbjuds kommuner; kraven i EN 301 549 kapitel 9 (webb) motsvarar WCAG 2.1 AA, som redan är vår måttstock. Se \"Hur bedömningen är gjord\" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen."
+      "text": "Denna redogörelse upprättades ursprungligen 2026-05-15 enligt EU:s tillgänglighetsdirektiv (2019/882) och svensk lag (2023:254), skrevs om 2026-08-12 efter den interna granskningen 2026-08-09, och uppdaterades 2026-08-17 när tre av de listade bristerna hade åtgärdats: skip-länken blir numera synlig när den får fokus, mobilmenyns element ligger inte längre kvar i tabbordningen när menyn är stängd, och registreringsformulärets felmeddelanden är kopplade till sina fält. Den 2026-09-11 lades hänvisningen till DOS-lagen (2018:1937) och EN 301 549 till, eftersom portalen erbjuds kommuner; kraven i EN 301 549 kapitel 9 (webb) motsvarar WCAG 2.1 AA, som redan är vår måttstock. Den 2026-09-12 hittade den automatiska kontrollen (axe, inloggade sidor) två brister som inte stod här: förloppsmätarna i CV-byggaren och på profilsidan saknade namn för skärmläsare, och intresselistan på profilen hade text inuti en lista utan att vara ett listobjekt — båda rättade samma dag. Se \"Hur bedömningen är gjord\" ovan. Vi uppdaterar redogörelsen vid varje större granskning, minst årligen."
     }
   },
   "onboarding": {
@@ -12620,5 +12599,9 @@
   },
   "sidRail": {
     "sidoflikAnnonsering": "Visar nu {{section}}"
+  },
+  "demo": {
+    "banner": "Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.",
+    "bannerKort": "Demo — påhittade personer"
   }
 }

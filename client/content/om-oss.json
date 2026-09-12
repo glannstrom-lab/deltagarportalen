@@ -1,0 +1,62 @@
+{
+  "_kommentar": "Om oss-sidan (/om-oss/), KM12 (9) 2026-09-12. Renderas av renderOmOss i scripts/lib/guide-template.cjs, prerenderas av prerender-guides.cjs, finns i sitemap och lint:links. Varje påstående här ska gå att belägga: juridisk person enligt beslut 2026-09-12 (Glänne & Söner, enskild firma — inget org.nr, ingen adress), lagring enligt docs/HOSTING-REGIONS.md, e-postadresser bara sådana som redan används publikt (sv.json, Accessibility.tsx, b2b.json). Inga användarsiffror, inga citat.",
+  "slug": "om-oss",
+  "title": "Om Jobin: vem som står bakom portalen",
+  "description": "Jobin drivs av Glänne & Söner, en enskild firma, av arbetskonsulenten Mikael Glännström. Här står vem vi är, för vem portalen finns och hur du når oss.",
+  "h1": "Om Jobin",
+  "lead": "Jobin är en portal för dig som söker jobb, och för de arbetskonsulenter som stöttar dig. Den är byggd av en arbetskonsulent, inte av ett rekryteringsbolag, och den lovar bara sådant som går att visa.",
+  "vem": {
+    "rubrik": "Vem står bakom",
+    "stycken": [
+      "Jobin drivs av Glänne & Söner, en enskild firma i Sverige. Innehavare är Mikael Glännström, arbetskonsulent. Han skriver guiderna, bygger verktygen och svarar på mejlen.",
+      "Glänne & Söner är personuppgiftsansvarig för dig som använder Jobin med ett eget, kostnadsfritt konto. När du använder Jobin genom din kommun eller din Rusta och matcha-leverantör är det de som är personuppgiftsansvariga, och Jobin är deras personuppgiftsbiträde.",
+      "Dina uppgifter lagras inom EU: databasen och inloggningen i Irland, portalens serverfunktioner i Frankfurt. Vilka tjänster som får se vad står i integritetspolicyn."
+    ]
+  },
+  "forVem": {
+    "rubrik": "För vem",
+    "punkter": [
+      {
+        "rubrik": "Du som söker jobb",
+        "text": "CV, personligt brev, intervjuträning, jobbsökning och över 200 guider. Kontot är gratis, och du bestämmer själv om AI får hjälpa dig.",
+        "lankHref": "/#/register",
+        "lankText": "Skapa ett konto"
+      },
+      {
+        "rubrik": "Rusta och matcha-leverantörer",
+        "text": "En konsulentvy för dig som handleder deltagare i Rusta och matcha: deltagarlista, journal, mål, möten och praktikplatser.",
+        "lankHref": "/for-rusta-och-matcha/",
+        "lankText": "Jobin för Rusta och matcha"
+      },
+      {
+        "rubrik": "Kommunernas arbetsmarknadsenheter",
+        "text": "Aktivitetsplaner, närvaro och rapporter för aktivitetskravet i försörjningsstödet, med kommunen som personuppgiftsansvarig.",
+        "lankHref": "/for-arbetsmarknadsenheter/",
+        "lankText": "Jobin för arbetsmarknadsenheter"
+      }
+    ]
+  },
+  "saArbetarVi": {
+    "rubrik": "Så arbetar vi",
+    "punkter": [
+      "Vi skriver inga siffror vi inte kan visa. Startsidan påstår inte hur många som använder Jobin, och verktygen märker tydligt ut vad som är AI-genererat.",
+      "AI är ett val, inte ett villkor. Du kan stänga av AI-funktionerna i dina inställningar och ändå använda hela portalen.",
+      "Tillgänglighet är ett krav på oss, inte en fråga om ambition. Vi publicerar en tillgänglighetsredogörelse med de brister vi känner till, med datum.",
+      "Guiderna nämner svenska myndigheter vid deras riktiga namn, också på engelska, så att det går att hitta rätt blankett och rätt kontor."
+    ],
+    "lankar": [
+      { "href": "/#/privacy", "text": "Integritetspolicy" },
+      { "href": "/#/ai-policy", "text": "AI-policy" },
+      { "href": "/#/tillganglighet", "text": "Tillgänglighetsredogörelse" }
+    ]
+  },
+  "kontakt": {
+    "rubrik": "Kontakt",
+    "text": "Vi svarar på mejl. Skriv gärna vad det gäller i ämnesraden, så hamnar det rätt.",
+    "rader": [
+      { "etikett": "Frågor och support", "epost": "support@jobin.se" },
+      { "etikett": "Personuppgifter och dina rättigheter", "epost": "privacy@jobin.se" },
+      { "etikett": "Visning för en organisation", "epost": "demo@jobin.se" }
+    ]
+  }
+}

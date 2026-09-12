@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T17:01:11.170Z",
+  "generatedAt": "2026-09-12T18:17:32.707Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -12,8 +12,8 @@
       "name": "activity_sessions_participant_guard",
       "signature": "activity_sessions_participant_guard()",
       "definer": false,
-      "anon": true,
-      "authenticated": true
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "audit_data_sharing_change",
@@ -457,11 +457,25 @@
       "authenticated": true
     },
     {
+      "name": "reset_demo_org",
+      "signature": "reset_demo_org()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "revoke_consultant_link",
       "signature": "revoke_consultant_link(uuid,text)",
       "definer": true,
       "anon": false,
       "authenticated": true
+    },
+    {
+      "name": "seed_demo_org",
+      "signature": "seed_demo_org(text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "sta_bulk_invite",

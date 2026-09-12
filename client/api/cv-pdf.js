@@ -23,6 +23,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { medFelrapport } = require('./_utils/sentry.js');
 const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 // DYNAMISK import, inte `require`. RÖR INTE.
 //
@@ -276,7 +277,7 @@ function encodeBase64Url(json) {
     .replace(/=+$/, '');
 }
 
-module.exports = async (req, res) => {
+const hanterare = async (req, res) => {
   const corsHeaders = getCorsHeaders(req.headers.origin);
   Object.entries(corsHeaders).forEach(([k, v]) => res.setHeader(k, v));
 
@@ -402,3 +403,6 @@ module.exports = async (req, res) => {
     }
   }
 };
+
+// BL6: felrapportering till Sentry (sanerad) — se _utils/sentry.js
+module.exports = medFelrapport('cv-pdf', hanterare);

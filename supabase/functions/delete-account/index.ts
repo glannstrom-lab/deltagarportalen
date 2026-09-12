@@ -10,8 +10,9 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse, validateOriginOrReject } from '../_shared/cors.ts'
 import { cleanupUserStorage, describeCleanup } from './storageCleanup.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
-serve(async (req) => {
+serve(medFelrapport('delete-account', async (req) => {
   // Handle CORS preflight
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
@@ -157,4 +158,4 @@ serve(async (req) => {
     console.error('[delete-account] Unexpected error:', error)
     return createErrorResponse(error, origin, 'Failed to delete account')
   }
-})
+}))

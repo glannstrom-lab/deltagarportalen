@@ -20,6 +20,7 @@ import {
   checkDailyTokenCap,
   createTokenCapResponse,
 } from '../_shared/aiGate.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -302,7 +303,7 @@ function parseAIResponse<T>(content: string): T | null {
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
   // Handle CORS preflight
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
@@ -482,4 +483,4 @@ Deno.serve(async (req) => {
     console.error('[ai-career-assistant] Error:', err)
     return createCorsResponse({ error: 'Ett fel uppstod' }, 500, origin)
   }
-})
+}))

@@ -30,6 +30,7 @@ const {
   renderTool,
   renderToolIndex,
   renderB2B,
+  renderOmOss,
   titelForLang,
   TITEL_MAX,
 } = require('./lib/guide-template.cjs')
@@ -223,6 +224,18 @@ if (fs.existsSync(B2B_FILE)) {
   }
 }
 
+// KM12 (9), 2026-09-12: om oss-sidan. En sida, ingen guide-gating (den länkar
+// bara till B2B-sidorna, /#/-rutter och mailto).
+const OM_OSS_FILE = path.join(CLIENT, 'content', 'om-oss.json')
+let antalOmOss = 0
+if (fs.existsSync(OM_OSS_FILE)) {
+  const o = JSON.parse(fs.readFileSync(OM_OSS_FILE, 'utf8'))
+  const dir = path.join(DIST, o.slug)
+  fs.mkdirSync(dir, { recursive: true })
+  fs.writeFileSync(path.join(dir, 'index.html'), renderOmOss(o), 'utf8')
+  antalOmOss = 1
+}
+
 const totalKb = Math.round(
   publicerade.reduce(
     (n, a) => n + fs.statSync(path.join(DIST, 'guider', a.slug, 'index.html')).size,
@@ -280,7 +293,7 @@ if (fs.existsSync(LANDING)) {
 
 console.log(
   `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalKategorier} ämnessidor + ` +
-    `${antalVerktyg} verktygssidor + ${antalB2B} B2B-sidor skrivna ` +
+    `${antalVerktyg} verktygssidor + ${antalB2B} B2B-sidor + ${antalOmOss} om oss-sida skrivna ` +
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )

@@ -17,6 +17,7 @@ import {
   createTokenCapResponse,
   sanitizeForPrompt,
 } from '../_shared/aiGate.ts'
+import { medFelrapport } from '../_shared/sentry.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -131,7 +132,7 @@ function parseResponse(content: string): CompanyAnalysisResult | null {
   }
 }
 
-Deno.serve(async (req) => {
+Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
   const preflightResponse = handleCorsPreflightOrNull(req)
   if (preflightResponse) return preflightResponse
 
@@ -319,4 +320,4 @@ Deno.serve(async (req) => {
     console.error('[ai-company-analysis] Error:', err)
     return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
   }
-})
+}))

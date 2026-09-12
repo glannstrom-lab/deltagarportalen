@@ -6,6 +6,8 @@ import {
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
+// KM12 (8), 2026-09-12: icke-stängbar banner när användaren tillhör en demoorganisation
+import { DemoBanner } from './consultant/DemoBanner'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
@@ -156,6 +158,7 @@ export default function Layout() {
       >
         {/* TopBar - full width at top (desktop only) */}
         {showBars && !isMobile && <TopBar />}
+        {showBars && <DemoBanner />}
 
         {/* Mobil TopBar med meny och profil */}
         {showBars && isMobile && <MobileTopBar />}

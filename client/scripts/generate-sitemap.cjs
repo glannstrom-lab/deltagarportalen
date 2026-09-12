@@ -83,6 +83,14 @@ if (fs.existsSync(B2B)) {
   }
 }
 
+// KM12 (9): om oss-sidan. Läser content/om-oss.json, samma källa som
+// prerender-guides.cjs, så sitemap och genererad sida inte kan gå isär.
+const OM_OSS = path.join(__dirname, '..', 'content', 'om-oss.json')
+if (fs.existsSync(OM_OSS)) {
+  const o = JSON.parse(fs.readFileSync(OM_OSS, 'utf8'))
+  if (o?.slug) urls.push({ loc: `/${o.slug}/`, changefreq: 'monthly', priority: '0.5' })
+}
+
 const today = new Date().toISOString().slice(0, 10)
 
 const body = urls

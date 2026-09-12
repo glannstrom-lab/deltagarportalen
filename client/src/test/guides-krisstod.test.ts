@@ -40,6 +40,7 @@ const mall = require('../../scripts/lib/guide-template.cjs') as {
   renderTool: (t: unknown, g: unknown[]) => string
   renderToolIndex: (v: unknown[]) => string
   renderB2B: (b: unknown, g: unknown[]) => string
+  renderOmOss: (o: unknown) => string
 }
 const { KATEGORIER } = require('../../scripts/lib/guides.cjs') as {
   KATEGORIER: { key: string; rubrik: string }[]
@@ -51,6 +52,8 @@ const VERKTYG = (require('../../content/tools.json') as { verktyg: Record<string
 // Samma princip för B2B-sidorna (K7/K16): läs den riktiga datan, inte en
 // handskriven fixture som kan glida isär från content/b2b.json.
 const B2B = (require('../../content/b2b.json') as { sidor: Record<string, unknown>[] }).sidor
+// KM12 (9): om oss-sidan, samma princip.
+const OM_OSS = require('../../content/om-oss.json') as Record<string, unknown>
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 /** Formen är hämtad ur `articles.snapshot.json`, inte ur en bekvämare fantasiform. */
@@ -85,6 +88,7 @@ const sidtyper: [string, () => string][] = [
   // tyst undantag. Se prerender-guides.cjs-uppdragets slutrapport för
   // motiveringen och Mikaels beslut om den ska stå kvar.
   ['B2B-sida', () => mall.renderB2B(B2B[0], [])],
+  ['om oss-sida', () => mall.renderOmOss(OM_OSS)],
 ]
 
 describe('krisstöd finns på varje publik sidtyp', () => {

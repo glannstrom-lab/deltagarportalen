@@ -23,6 +23,7 @@
  */
 
 const { put } = require('@vercel/blob');
+const { medFelrapport } = require('./_utils/sentry.js');
 const { createClient } = require('@supabase/supabase-js');
 const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
 
@@ -120,7 +121,7 @@ async function checkRateLimit(supabase, userId) {
   }
 }
 
-module.exports = async function handler(req, res) {
+const hanterare = async function handler(req, res) {
   const origin = req.headers.origin || '';
   Object.entries(getCorsHeaders(origin)).forEach(([key, value]) => {
     res.setHeader(key, value);
@@ -216,6 +217,9 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'Upload failed' });
   }
 };
+
+// BL6: felrapportering till Sentry (sanerad) — se _utils/sentry.js
+module.exports = medFelrapport('upload-image', hanterare);
 
 module.exports.config = {
   api: {
