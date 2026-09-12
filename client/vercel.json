@@ -4,6 +4,7 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "regions": ["fra1"],
+  "git": { "deploymentEnabled": { "main": false } },
   "functions": {
     "api/cv-pdf.js": {
       "memory": 1024,

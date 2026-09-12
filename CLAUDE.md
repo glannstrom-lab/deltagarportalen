@@ -131,6 +131,13 @@ När Mikael säger **"commit"**, **"push"** eller **"deploy"** gäller det här.
 - Allt går direkt på `main`. Inga feature-grenar.
 - **`push` till `main` ÄR deployen.** `.github/workflows/deploy.yml` triggar på push → `vercel build` → `vercel deploy --prod` → Supabase edge functions → smoke-test. Det finns inget separat deploy-kommando, och inget att klicka i Vercel.
 - Det betyder att en push är en produktionsändring. Behandla den därefter.
+- **Workflowen är den enda deployvägen.** Vercels git-koppling är avstängd för `main`
+  (`"git": { "deploymentEnabled": { "main": false } }` i `client/vercel.json`, 2026-09-12).
+  Fram till dess byggde Vercel varje push en gång till parallellt med workflowen: 197
+  deployer på 30 dagar, hälften dubbletter, och `cv-pdf.js` bär 66 MB Chromium i varje —
+  Functions Storage stod på 14 GB mot Hobby-gränsen 10 GB. Gallringspolicyn är satt till
+  1 vecka prod / 1 dag övrigt (via `PATCH /v1/projects/{id}/deployment-expiration`, inte
+  via projekt-PATCH:en). Ser du två deployer per commit i `npx vercel ls` är kopplingen på igen.
 
 **Proceduren:**
 
