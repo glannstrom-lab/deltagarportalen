@@ -13,8 +13,8 @@ löptexten.
 
 | | Personuppgiftsansvarig | Personuppgiftsbiträde |
 |---|---|---|
-| Part | `[Kommunens namn]`, genom `[nämnd, t.ex. socialnämnden / gymnasie- och arbetsmarknadsnämnden]` | `[Jobins juridiska person — fyll i]` |
-| Org.nr | `[212000-XXXX]` | `[fyll i]` |
+| Part | `[Kommunens namn]`, genom `[nämnd, t.ex. socialnämnden / gymnasie- och arbetsmarknadsnämnden]` | Glänne & Söner, enskild firma (innehavare Mikael Glännström), som driver Jobin |
+| Org.nr | `[212000-XXXX]` | `[innehavarens personnummer — fylls i vid signering, står inte i utkastet]` |
 | Adress | `[…]` | `[…]` |
 | Kontaktperson | `[namn, roll]` | Mikael Glännström |
 | Dataskyddsombud | `[kommunens DSO]` | `[utse, eller dokumentera varför inte krävs]` — i dag dpo@jobin.se |
@@ -185,8 +185,7 @@ har bekräftats.
 
 ## Avvikelser att förhandla (läs innan mötet)
 
-1. **Organisationsnummer och juridisk person för Jobin** saknas i alla dokument. Utan det finns
-   ingen motpart. `[Mikael]`
+1. ~~Organisationsnummer och juridisk person för Jobin~~ — beslut 2026-09-12: Glänne & Söner, enskild firma. Numret (personnummer) fylls i vid signering. Kommunens upphandlare kan invända mot enskild firma som motpart — ha svaret klart (bolagisering är planerad steg b om det krävs).
 2. **Perplexity** är inte redovisat i integritetspolicyn. Antingen in i policyn eller av för
    kommunens deltagare.
 3. ~~Automatisk gallring~~ — driftsatt 2026-09-12 (fyra pg_cron-jobb enligt RETENTION-POLICY; perioder märkta "bekräftas" väntar fortfarande på beslut).

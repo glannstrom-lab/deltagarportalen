@@ -15,7 +15,7 @@ flyttade till `archive/` — det som ligger i roten är kanoniskt.
 | `dashboard.spec.ts` | Översikt |
 | `axe-a11y.spec.ts` | Automatisk a11y-svep (axe-core) |
 | `regression-fas-a.spec.ts` | Regressionsskydd tech-debt fas A |
-| `sta.spec.ts` | STA/Arbetsprövning — deltagarflödet skippas tills `E2E_STA_ENABLED=true` (modulen avaktiverad 2026-08-03); konsulentdelen är en regressionsvakt som kräver att `/konsulent/steg-till-arbete` **inte** går att nå (rutten är raderad) |
+| `sta.spec.ts` | STA är arkiverad (2026-09-12, `archive/2026-09-sta/`). Kvar är bara regressionsvakten: `/steg-till-arbete` och `/konsulent/steg-till-arbete` får inte gå att nå. Flödestesterna ligger i arkivet |
 
 **CI-status för authenticated-testerna:** väntar på GitHub Secrets
 (`TEST_USER_EMAIL`/`TEST_USER_PASSWORD`) — ROADMAP D1. Testkontot finns

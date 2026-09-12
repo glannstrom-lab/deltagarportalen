@@ -43,9 +43,9 @@ vi.mock('@/stores/authStore', () => ({
   ),
 }))
 
-vi.mock('@/services/staApi', () => ({
+vi.mock('@/services/konsulentKopplingApi', () => ({
   consultantConsentsApi: { getActive: (id: string) => getActiveMock(id) },
-  staEnrollmentsApi: { revokeConsultantLink: (id: string, skal?: string) => revokeMock(id, skal) },
+  konsulentKopplingApi: { revokeConsultantLink: (id: string, skal?: string) => revokeMock(id, skal) },
 }))
 
 import { KonsulentSamtyckeFraga } from './KonsulentSamtyckeFraga'

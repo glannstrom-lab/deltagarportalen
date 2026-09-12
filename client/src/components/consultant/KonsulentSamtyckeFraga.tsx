@@ -48,7 +48,7 @@ import { Button } from '@/components/ui/Button'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
-import { consultantConsentsApi, staEnrollmentsApi } from '@/services/staApi'
+import { consultantConsentsApi, konsulentKopplingApi } from '@/services/konsulentKopplingApi'
 
 /**
  * Frågan läggs åt sidan per session, inte per webbläsare. `localStorage` hade
@@ -188,7 +188,7 @@ export function KonsulentSamtyckeFraga() {
     setLage('sparar')
     setFelText(null)
     try {
-      await staEnrollmentsApi.revokeConsultantLink(
+      await konsulentKopplingApi.revokeConsultantLink(
         konsulentId,
         'Deltagaren svarade nej i efterhandsfrågan (KS3)'
       )

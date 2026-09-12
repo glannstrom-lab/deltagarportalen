@@ -58,7 +58,6 @@ const KVAR: Record<string, string> = {
   'Profile.tsx': 'monolitisk; renderar ProfileHeader och formulär som håller inmatning',
   'Spontaneous.tsx': 'monolitisk; SearchTab håller sökfält och urval',
   'Wellness.tsx': 'monolitisk, guiden ligger inuti en samtyckesgrind',
-  'sta/StaParticipant.tsx': 'STA-modulen är avaktiverad och monteras inte (MODULES.STA)',
 }
 
 const TAK = Object.keys(KVAR).length

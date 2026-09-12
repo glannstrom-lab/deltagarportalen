@@ -10,6 +10,8 @@ import { checkRateLimit } from '../_shared/rateLimit.ts'
 import {
   AI_GATE_CODES,
   checkAiEnabled,
+  valjModell,
+  UTAN_SOKNING_TILLAGG,
   checkDailyTokenCap,
   clampInt,
   createAiErrorResponse,
@@ -404,7 +406,10 @@ REGLER:
 
 För varje företag du hittar, gå till allabolag.se och hämta organisationsnumret. Hittar du inte numret — hoppa över företaget och ta ett annat i stället.`
 
-    // Call Perplexity via OpenRouter
+    // Modellval (PUB-avvikelse 2, beslut 2026-09-12): Perplexity bara för fria konton.
+    const modell = await valjModell(supabase, user.id)
+
+    // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
     const aiResponse = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
@@ -414,10 +419,10 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
         'X-Title': 'Jobin Company Search',
       },
       body: JSON.stringify({
-        model: 'perplexity/sonar',
+        model: modell.model,
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
+          { role: 'user', content: modell.webbsokning ? userPrompt : userPrompt + UTAN_SOKNING_TILLAGG },
         ],
         max_tokens: 2000,
         temperature: 0.3,
@@ -451,7 +456,9 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
 
     // Secondary search for companies missing org numbers
     const companiesWithoutOrgNr = companies.filter(c => !c.orgNumber && c.name)
-    if (companiesWithoutOrgNr.length > 0 && companiesWithoutOrgNr.length <= 5) {
+    // Utan webbsökning kan modellen inte slå upp allabolag.se — hoppa över steget
+    // i stället för att låta den gissa ett organisationsnummer.
+    if (modell.webbsokning && companiesWithoutOrgNr.length > 0 && companiesWithoutOrgNr.length <= 5) {
       console.log(`[ai-company-search] Searching for org numbers for ${companiesWithoutOrgNr.length} companies...`)
 
       const orgNrSearchPrompt = `Hitta organisationsnummer för dessa svenska företag. Sök på allabolag.se för varje företag.
@@ -476,7 +483,7 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
             'X-Title': 'Jobin OrgNr Lookup',
           },
           body: JSON.stringify({
-            model: 'perplexity/sonar',
+            model: modell.model,
             messages: [
               { role: 'user', content: orgNrSearchPrompt },
             ],
@@ -570,7 +577,7 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
       await supabase.from('ai_usage_logs').insert({
         user_id: user.id,
         function_name: 'company-search',
-        model: 'perplexity/sonar',
+        model: modell.model,
         tokens_used: aiData.usage?.total_tokens || 0,
         created_at: new Date().toISOString(),
       })

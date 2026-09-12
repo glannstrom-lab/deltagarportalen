@@ -161,7 +161,7 @@ veta om prissättningen ska ändras med R&M-marknaden i åtanke.
 ## 5. Öppna frågor — kräver Mikaels beslut
 
 1. **Moms.** Ingen av siffrorna (2 990 / 290) anger om moms ingår eller tillkommer. Ingen
-   momsstatus för Jobin AB har hittats i `docs/` (se även öppen fråga om org.nr i BF2-relaterade
+   momsstatus för Glänne & Söner (enskild firma, momsregistrerad — det finns inget "Jobin AB") har hittats i `docs/` (se även öppen fråga om org.nr i BF2-relaterade
    dokument — `client/src/i18n/locales/sv.json:7839` säger uttryckligen "Org.nr: uppgift lämnas
    på begäran").
 2. **Bindningstid.** Prissidan lovar "Ingen bindningstid" (rad 7788), men det finns ingen

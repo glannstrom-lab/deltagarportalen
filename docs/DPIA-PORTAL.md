@@ -25,7 +25,7 @@ föregående version 2026-05-15)
 
 | Aspekt | Bedömning |
 |---|---|
-| Personuppgiftsansvarig | jobin.se / [företagsnamn — fyll i] |
+| Personuppgiftsansvarig | Glänne & Söner, enskild firma (innehavare Mikael Glännström), som driver jobin.se — beslut 2026-09-12 |
 | Personuppgiftsbiträden | Supabase Inc., Vercel Inc., OpenRouter Inc., Functional Software Inc. (Sentry) |
 | Behandlingens namn | Deltagarportalen — AI-driven jobbsökarportal för långtidsarbetslösa |
 | Geografisk omfattning | Sverige (primärt) |

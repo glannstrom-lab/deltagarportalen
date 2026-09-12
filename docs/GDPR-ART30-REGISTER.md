@@ -4,7 +4,7 @@
 **Datum:** 2026-09-02 (B15/Säkerhetsåtgärder rättad, DOK1 — migrationen som raden hänvisade till är
 nu körd och verifierad; se raden). Föregående: 2026-08-21 (B4 och B16 rättade efter granskningen av
 Intresseguiden; dessförinnan 2026-07-27, 2026-05-15)
-**Personuppgiftsansvarig:** [Företagsnamn — fyll i]
+**Personuppgiftsansvarig:** Glänne & Söner, enskild firma (innehavare Mikael Glännström) — beslut 2026-09-12. Organisationsnumret är innehavarens personnummer och skrivs inte i detta register; det anges i avtal vid signering.
 **Kontakt DPO:** dpo@jobin.se
 
 ---
@@ -486,7 +486,7 @@ innehåller data utom där annat anges.
 
 | Roll | Person/funktion | Email |
 |---|---|---|
-| Personuppgiftsansvarig | [Företagsnamn / juridisk person — fyll i] | [contact-email] |
+| Personuppgiftsansvarig | Glänne & Söner, enskild firma (innehavare Mikael Glännström) | privacy@jobin.se |
 | Dataskyddsombud (DPO) | [Namn — utse formellt eller dokumentera varför inte krävs] | dpo@jobin.se |
 | Tillsynsmyndighet | Integritetsskyddsmyndigheten (IMY) | imy.se |
 

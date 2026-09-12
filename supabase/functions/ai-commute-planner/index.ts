@@ -8,6 +8,8 @@ import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.t
 import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
 import {
   checkAiEnabled,
+  valjModell,
+  UTAN_SOKNING_TILLAGG,
   createGateDenialResponse,
   checkDailyTokenCap,
   createTokenCapResponse,
@@ -194,7 +196,10 @@ Deno.serve(async (req) => {
     // Build prompt
     const prompt = buildCommutePlannerPrompt(body)
 
-    // Call Perplexity Sonar
+    // Modellval (PUB-avvikelse 2, beslut 2026-09-12): Perplexity bara för fria konton.
+    const modell = await valjModell(supabase, user.id)
+
+    // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
     const aiResponse = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
@@ -204,8 +209,8 @@ Deno.serve(async (req) => {
         'X-Title': 'Jobin Commute Planner',
       },
       body: JSON.stringify({
-        model: 'perplexity/sonar',
-        messages: [{ role: 'user', content: prompt }],
+        model: modell.model,
+        messages: [{ role: 'user', content: modell.webbsokning ? prompt : prompt + UTAN_SOKNING_TILLAGG }],
         max_tokens: 1500,
         temperature: 0.3,
       }),
@@ -236,7 +241,7 @@ Deno.serve(async (req) => {
       await supabase.from('ai_usage_logs').insert({
         user_id: user.id,
         function_name: 'commute-planner',
-        model: 'perplexity/sonar',
+        model: modell.model,
         tokens_used: aiData.usage?.total_tokens || 0,
         created_at: new Date().toISOString(),
       })

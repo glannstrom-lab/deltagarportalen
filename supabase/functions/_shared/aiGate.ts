@@ -233,6 +233,94 @@ export async function checkOrgAiEnabled(client: SupabaseClient, userId: string):
   }
 }
 
+
+// ---------------------------------------------------------------------------
+// MODELLVAL: Perplexity bara för fria konton (beslut Mikael 2026-09-12, PUB-avvikelse 2)
+// ---------------------------------------------------------------------------
+// De fem sökfunktionerna (career-assistant, company-search, company-analysis,
+// commute-planner, industry-radar) körde `perplexity/sonar` för alla — en
+// webbsökning på användarens fritext (och i pendlingsplaneraren hemadressen)
+// hos ett amerikanskt bolag utan biträdesavtal. För deltagare och personal i en
+// organisation (kommun, R&M-leverantör) går anropet i stället till basmodellen
+// UTAN sökning; fria konton behåller Perplexity. Detta är den ENDA platsen där
+// strängen `perplexity/sonar` får finnas i supabase/functions — grinden i
+// client/src/test/ai-sanningsregel.test.ts fäller varje annan förekomst.
+//
+// POLICY: FAIL CLOSED åt basmodellen. Går uppslaget fel vet vi inte om personen
+// hör till en organisation, och då ska inget skickas till Perplexity.
+
+export const BASMODELL = 'openai/gpt-oss-120b'
+export const SOKMODELL = 'perplexity/sonar'
+
+export interface ModellVal {
+  /** Modellsträngen som ska skickas till OpenRouter och loggas i ai_usage_logs. */
+  model: string
+  /** true = modellen har webbsökning (Perplexity). false = svara ur allmän kunskap. */
+  webbsokning: boolean
+  /** true = användaren hör till en organisation (medlem eller kopplad deltagare). */
+  orgKonto: boolean
+}
+
+/**
+ * Tillägg till prompten när modellen saknar sökning. Prompterna är skrivna för
+ * en sökmodell ("aktuell lönestatistik", "gå till allabolag.se") — utan det här
+ * hade basmodellen hittat på färska siffror och adresser.
+ */
+export const UTAN_SOKNING_TILLAGG = `
+
+VIKTIGT: Du har INGEN webbsökning i det här anropet. Uppge inga aktuella siffror,
+adresser, organisationsnummer, restider eller nyheter som du inte kan belägga ur din
+allmänna kunskap. Skriv i stället tydligt att uppgiften bygger på allmän kunskap utan
+färsk sökning, och föreslå var personen kan kontrollera den (t.ex. Arbetsförmedlingen,
+SCB, allabolag.se, Trafiklab). Hitta aldrig på ett värde för att fylla ett fält.`
+
+export async function valjModell(client: SupabaseClient, userId: string): Promise<ModellVal> {
+  const bas: ModellVal = { model: BASMODELL, webbsokning: false, orgKonto: true }
+  if (!client || !userId) return bas
+  try {
+    // 1. Personal: egen rad i organization_members.
+    const { data: egen, error: e1 } = await client
+      .from('organization_members')
+      .select('org_id')
+      .eq('user_id', userId)
+      .limit(1)
+    if (e1) {
+      console.warn('[AiGate] modellval: medlemsuppslag misslyckades (basmodell):', e1.message)
+      return bas
+    }
+    if ((egen ?? []).length > 0) return bas
+
+    // 2. Deltagare: kopplad till en konsulent som är medlem i en organisation
+    //    (samma kedja som checkOrgAiEnabled).
+    const { data: kopplingar, error: e2 } = await client
+      .from('consultant_participants')
+      .select('consultant_id')
+      .eq('participant_id', userId)
+    if (e2) {
+      console.warn('[AiGate] modellval: kopplingsuppslag misslyckades (basmodell):', e2.message)
+      return bas
+    }
+    const konsulenter = (kopplingar ?? []).map((r) => (r as { consultant_id: string }).consultant_id)
+    if (konsulenter.length > 0) {
+      const { data: medlemskap, error: e3 } = await client
+        .from('organization_members')
+        .select('org_id')
+        .in('user_id', konsulenter)
+        .limit(1)
+      if (e3) {
+        console.warn('[AiGate] modellval: organisationsuppslag misslyckades (basmodell):', e3.message)
+        return bas
+      }
+      if ((medlemskap ?? []).length > 0) return bas
+    }
+
+    return { model: SOKMODELL, webbsokning: true, orgKonto: false }
+  } catch (err) {
+    console.warn('[AiGate] modellval kastade (basmodell):', err instanceof Error ? err.message : err)
+    return bas
+  }
+}
+
 /** Bygger 403/503-svaret för en nekad grind. */
 export function createGateDenialResponse(
   reason: AiGateReason,

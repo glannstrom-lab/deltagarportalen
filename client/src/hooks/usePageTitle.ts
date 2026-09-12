@@ -106,8 +106,6 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   { path: '/consultant', key: 'nav.consultantPortal', sv: 'Konsultportal' },
   { path: '/admin', key: 'nav.adminPanel', sv: 'Administration' },
 
-  // Avaktiverad modul (monteras bara med VITE_STA_ENABLED=true)
-  { path: '/steg-till-arbete', sv: 'Steg till arbete' },
 ]
 
 // Längst path först — annars skulle '/profile' äta '/profile/shared/:code'.

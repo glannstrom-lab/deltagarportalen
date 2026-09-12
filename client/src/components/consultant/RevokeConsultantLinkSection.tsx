@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react'
 import { AlertTriangle, ShieldCheck, X, Loader2 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { staEnrollmentsApi, consultantConsentsApi, type ConsultantConsent } from '@/services/staApi'
+import { konsulentKopplingApi, consultantConsentsApi, type ConsultantConsent } from '@/services/konsulentKopplingApi'
 
 interface RevokeConsultantLinkSectionProps {
   consultantId: string
@@ -111,7 +111,7 @@ function RevokeConfirmDialog({
     setSubmitting(true)
     setError(null)
     try {
-      await staEnrollmentsApi.revokeConsultantLink(consultantId, reason.trim() || undefined)
+      await konsulentKopplingApi.revokeConsultantLink(consultantId, reason.trim() || undefined)
       onRevoked()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Kunde inte säga upp kopplingen. Försök igen.')

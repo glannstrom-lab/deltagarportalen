@@ -3,6 +3,16 @@
 **Senast uppdaterad:** 2026-08-05 (B18)
 **Princip:** All AI-generering ska gå till **`openai/gpt-oss-120b`** av kostnadsskäl. Modellbyten kräver explicit beslut.
 
+**Regel sedan 2026-09-12 (PX1, beslut Mikael):** `perplexity/sonar` används bara för
+**fria konton**. Användare som hör till en organisation (rad i `organization_members`,
+eller deltagare kopplad till en konsulent som är medlem) får `openai/gpt-oss-120b`
+utan webbsökning i alla fem sökfunktionerna, med tillägget `UTAN_SOKNING_TILLAGG`
+i prompten. Valet görs i EN funktion, `valjModell()` i `supabase/functions/_shared/aiGate.ts`,
+fail closed åt basmodellen. Grind: `client/src/test/ai-sanningsregel.test.ts` (PX1)
+fäller varje `perplexity/sonar`-literal utanför aiGate.ts och varje `model:` i de
+fem som inte är `modell.model`. Bakgrund: PUB-avvikelse 2 — Perplexity saknar
+biträdesavtal och sökningen skickar fritext (pendlingsplaneraren: hemadressen) till USA.
+
 **Grind sedan 2026-08-05:** `client/src/services/aiServerResponses.test.ts` läser
 `client/api/**` och `supabase/functions/**` på disk och fäller bygget om en
 modellsträng utanför allowlisten (`openai/gpt-oss-120b`, `perplexity/sonar`)

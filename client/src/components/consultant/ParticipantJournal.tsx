@@ -77,6 +77,10 @@ export interface JournalEntry {
   content: string
   category: NoteCategory
   createdAt: string
+  /** Vem som skrev raden. Saknas → behandlas som egen (bakåtkompatibelt). */
+  consultantId?: string
+  /** Visningsnamn för författaren när det inte är den inloggade (KS2 b). */
+  authorName?: string
 }
 
 export type JournalMutationResult = { ok: true } | { ok: false; error: string }
@@ -90,6 +94,14 @@ interface ParticipantJournalProps {
   onAddEntry: (content: string, category: NoteCategory) => Promise<JournalMutationResult>
   onUpdateEntry: (id: string, content: string, category: NoteCategory) => Promise<JournalMutationResult>
   onDeleteEntry: (id: string) => Promise<JournalMutationResult>
+  /**
+   * KS2 = b (2026-09-12): efter en överlämning läser den nya konsulenten
+   * företrädarens rader men kan inte ändra dem. En rad vars consultantId
+   * skiljer sig från den inloggade visas med "Skriven av …" och utan
+   * redigera/ta bort. RLS nekar ändå (UPDATE/DELETE ger 0 rader) — det här
+   * gör att gränssnittet inte lovar något som databasen nekar.
+   */
+  currentConsultantId?: string
   className?: string
 }
 
@@ -128,6 +140,7 @@ export function ParticipantJournal({
   onAddEntry,
   onUpdateEntry,
   onDeleteEntry,
+  currentConsultantId,
   className,
 }: ParticipantJournalProps) {
   const { confirm } = useConfirmDialog()
@@ -352,6 +365,8 @@ export function ParticipantJournal({
                       const Icon = config.icon
                       const isExpanded = expandedId === entry.id
                       const isEditingThis = editingId === entry.id
+                      const arEgen =
+                        !entry.consultantId || !currentConsultantId || entry.consultantId === currentConsultantId
 
                       if (isEditingThis) return null // formuläret ovan ersätter kortet under redigering
 
@@ -369,6 +384,14 @@ export function ParticipantJournal({
                               <span className={cn('inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1', config.badge)}>
                                 {config.label}
                               </span>
+                              {!arEgen && (
+                                <span
+                                  className="inline-block text-xs text-stone-500 dark:text-stone-400 ml-2 mb-1"
+                                  title="Skrivet före överlämningen — går att läsa men inte ändra"
+                                >
+                                  Skriven av {entry.authorName ?? 'en tidigare konsulent'}
+                                </span>
+                              )}
 
                               <p className={cn('text-stone-700 dark:text-stone-200 whitespace-pre-wrap', !isExpanded && 'line-clamp-2')}>
                                 {entry.content}
@@ -395,6 +418,7 @@ export function ParticipantJournal({
                               )}
                             </div>
 
+                            {arEgen && (
                             <div className="flex items-center gap-1 flex-shrink-0">
                               <button
                                 type="button"
@@ -420,6 +444,7 @@ export function ParticipantJournal({
                                 )}
                               </button>
                             </div>
+                            )}
                           </div>
                         </div>
                       )

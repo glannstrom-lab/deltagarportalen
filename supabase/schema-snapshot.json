@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T20:15:58.596Z",
+  "generatedAt": "2026-09-12T17:01:22.107Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2016,6 +2016,9 @@
     "create_learning_path_from_gap",
     "decline_consultant_request",
     "execute_account_deletion_immediate",
+    "execute_consultant_journal_retention",
+    "execute_inactive_account_retention",
+    "execute_scheduled_account_deletions",
     "export_user_data",
     "find_buddy_matches",
     "generate_course_recommendations",
@@ -2038,6 +2041,7 @@
     "handle_first_signin",
     "handle_invitation_acceptance",
     "handle_new_user",
+    "har_aktiv_relation",
     "increment_template_usage",
     "increment_user_points",
     "initialize_user_milestones",

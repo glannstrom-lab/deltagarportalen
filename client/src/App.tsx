@@ -5,7 +5,6 @@ import { useAuthInit } from './hooks/useAuthInit'
 import { medReturnTo, safeReturnTo } from './lib/returnTo'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { Loader2 } from '@/components/ui/icons'
-import { MODULES } from '@/config/features'
 
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
@@ -77,12 +76,7 @@ const KarriarHub = lazy(() => import('./pages/hubs/KarriarHub'))
 const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
 const MinVardagHub = lazy(() => import('./pages/hubs/MinVardagHub'))
 
-// STA (Steg till arbete) — modulen är avaktiverad 2026-08-03 (MODULES.STA).
-// Deltagarvyn monteras bara när VITE_STA_ENABLED=true. Konsulentvyn
-// (StaConsultant + StaDocumentWorkspace) har ingen route längre — portalen har
-// EN konsulentvy, /consultant. Filerna finns kvar men importeras inte, så de
-// hamnar inte i bundlen (jfr lärdomen "lazy-import utan route = dödkod").
-const StaParticipant = lazy(() => import('./pages/sta/StaParticipant'))
+// STA (Steg till arbete) arkiverades 2026-09-12 — archive/2026-09-sta/. Ingen route.
 
 /**
  * Lazy route wrapper with error boundary
@@ -316,12 +310,6 @@ function App() {
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />
-          {/* STA — Steg till arbete. Avaktiverad modul: deltagarvyn monteras bara
-              med VITE_STA_ENABLED=true, konsulentvyn är borttagen helt. Utan
-              route faller /steg-till-arbete på catch-all → tillbaka till start. */}
-          {MODULES.STA && (
-            <Route path="steg-till-arbete" element={<LazyRoute><RouteErrorBoundary><StaParticipant /></RouteErrorBoundary></LazyRoute>} />
-          )}
           <Route path="admin" element={
             <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><SuperAdminPanel /></RouteErrorBoundary></LazyRoute>

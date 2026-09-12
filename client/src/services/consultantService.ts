@@ -330,10 +330,11 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // KS2 = b (2026-09-12): inget filter på consultant_id — RLS ger läsrätt via
+    // aktiv relation, så företrädarens mål syns efter en överlämning.
     const { data, error } = await supabase
       .from('consultant_goals')
       .select('*')
-      .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
       .order('created_at', { ascending: false })
 
@@ -425,10 +426,10 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // KS2 = b (2026-09-12): inget filter på consultant_id — se getGoalsForParticipant.
     const { data, error } = await supabase
       .from('consultant_journal')
       .select('*')
-      .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
       .order('created_at', { ascending: false })
 

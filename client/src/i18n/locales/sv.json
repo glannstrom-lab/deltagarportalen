@@ -7896,8 +7896,8 @@
     "controller": {
       "title": "Personuppgiftsansvarig",
       "intro": "Ansvarig för behandlingen av dina personuppgifter är:",
-      "name": "Jobin AB",
-      "orgNr": "Org.nr: uppgift lämnas på begäran — kontakta privacy@jobin.se",
+      "name": "Glänne & Söner (enskild firma), som driver Jobin",
+      "orgNr": "Enskild firma: organisationsnumret är innehavarens personnummer och lämnas på begäran — kontakta privacy@jobin.se",
       "address": "Adress: uppgift lämnas på begäran — kontakta privacy@jobin.se",
       "email": "E-post: privacy@jobin.se",
       "dpo": "Dataskyddsombud",
@@ -10111,6 +10111,12 @@
         "grid": "Rutnätsvy",
         "list": "Listvy"
       }
+    },
+    "handover": {
+      "writtenBy": "Skriven av",
+      "createdBy": "Skapat av",
+      "formerConsultant": "en tidigare konsulent",
+      "readOnlyHint": "Skrivet före överlämningen — går att läsa men inte ändra"
     },
     "participantDetail": {
       "backToParticipants": "Tillbaka till deltagare",

@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/supabaseApi'
 import { PROGRAMS, type ProgramSlug } from '@/lib/programs'
-import { MODULES } from '@/config/features'
 import { cn } from '@/lib/utils'
-import { Briefcase, CheckCircle2, AlertCircle, Loader2, ExternalLink } from '@/components/ui/icons'
+import { Briefcase, CheckCircle2, AlertCircle, Loader2 } from '@/components/ui/icons'
 
 /**
  * Låter konsulent/deltagare välja vilket arbetsmarknadsprojekt de tillhör.
@@ -134,19 +132,7 @@ export function ProgramSelector() {
             <span>{t('career.credentials.saveFailed')}</span>
           </div>
         )}
-        {!isSaving && !feedback && selected === 'steg_till_arbete' && MODULES.STA && (
-          <div className="flex items-center gap-2 flex-wrap text-xs">
-            <span className="text-stone-500 dark:text-stone-400">{t('settings.programSelector.pageNowAt')}</span>
-            <Link
-              to="/steg-till-arbete"
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-200 hover:border-stone-300 transition-colors"
-            >
-              /steg-till-arbete
-              <ExternalLink className="w-3 h-3" />
-            </Link>
-          </div>
-        )}
-        {!isSaving && !feedback && (selected !== 'steg_till_arbete' || !MODULES.STA) && (
+        {!isSaving && !feedback && (
           <p className="text-xs text-stone-500 dark:text-stone-400">
             Sidor för projektet kommer i en kommande uppdatering.
           </p>

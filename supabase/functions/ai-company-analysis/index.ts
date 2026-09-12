@@ -9,6 +9,8 @@ import { checkRateLimit } from '../_shared/rateLimit.ts'
 import {
   AI_GATE_CODES,
   checkAiEnabled,
+  valjModell,
+  UTAN_SOKNING_TILLAGG,
   checkDailyTokenCap,
   createAiErrorResponse,
   createGateDenialResponse,
@@ -241,7 +243,10 @@ Deno.serve(async (req) => {
       industry: bransch || undefined,
     })
 
-    // Call Perplexity Sonar
+    // Modellval (PUB-avvikelse 2, beslut 2026-09-12): Perplexity bara för fria konton.
+    const modell = await valjModell(supabase, user.id)
+
+    // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
     const aiResponse = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
@@ -251,8 +256,8 @@ Deno.serve(async (req) => {
         'X-Title': 'Jobin Company Analysis',
       },
       body: JSON.stringify({
-        model: 'perplexity/sonar',
-        messages: [{ role: 'user', content: prompt }],
+        model: modell.model,
+        messages: [{ role: 'user', content: modell.webbsokning ? prompt : prompt + UTAN_SOKNING_TILLAGG }],
         max_tokens: 3000,
         temperature: 0.3,
       }),
@@ -293,7 +298,7 @@ Deno.serve(async (req) => {
       await supabase.from('ai_usage_logs').insert({
         user_id: user.id,
         function_name: 'company-analysis',
-        model: 'perplexity/sonar',
+        model: modell.model,
         tokens_used: aiData.usage?.total_tokens || 0,
         created_at: new Date().toISOString(),
       })

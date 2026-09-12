@@ -7896,8 +7896,8 @@
     "controller": {
       "title": "Data Controller",
       "intro": "Responsible for processing your personal data is:",
-      "name": "Jobin AB",
-      "orgNr": "Org. no: available on request — contact privacy@jobin.se",
+      "name": "Glänne & Söner (sole trader), which runs Jobin",
+      "orgNr": "Sole trader: the registration number is the owner's personnummer (Swedish personal identity number) and is available on request — contact privacy@jobin.se",
       "address": "Address: available on request — contact privacy@jobin.se",
       "email": "Email: privacy@jobin.se",
       "dpo": "Data Protection Officer",
@@ -10424,6 +10424,12 @@
           "timeBound": "Within 1 week"
         }
       }
+    },
+    "handover": {
+      "writtenBy": "Written by",
+      "createdBy": "Created by",
+      "formerConsultant": "a previous consultant",
+      "readOnlyHint": "Written before the handover — can be read but not changed"
     },
     "participantDetail": {
       "backToParticipants": "Back to participants",

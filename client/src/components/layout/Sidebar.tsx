@@ -21,9 +21,7 @@ import {
 } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { getProgram } from '@/lib/programs'
-import { MODULES } from '@/config/features'
-import { ChevronLeft, ChevronRight, LogOut, Settings, Briefcase } from '@/components/ui/icons'
+import { ChevronLeft, ChevronRight, LogOut, Settings } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -188,55 +186,6 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
               )
             })}
         </div>
-
-        {/* Project Section — Steg till arbete (STA)
-         *
-         * Modulen är avaktiverad 2026-08-03 (MODULES.STA) — hela sektionen
-         * uteblir tills VITE_STA_ENABLED=true. Deltagare ser Min resa-länken
-         * först när de dessutom valt programmet i settings
-         * (profile.program === 'steg_till_arbete').
-         *
-         * Konsulent-vy-länken är BORTTAGEN, inte flaggad: portalen har en
-         * konsulentvy (/consultant). Se MODULES.STA i config/features.ts. */}
-        {MODULES.STA && (() => {
-          const programSelected = profile?.program === 'steg_till_arbete'
-          const program = getProgram(profile?.program ?? null) ?? getProgram('steg_till_arbete')
-          if (!program) return null
-          // STA-paths är hårdkodade för nu eftersom det är enda projektet med sidor.
-          // När fler projekt får sidor flyttas detta till programs.ts.
-          const participantPath = programSelected ? '/steg-till-arbete' : null
-          if (!participantPath) return null
-
-          return (
-            <div
-              data-domain="action"
-              className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800"
-            >
-              {!isCollapsed && (
-                <div className="px-2 mb-1 flex items-center gap-1.5">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
-                    aria-hidden="true"
-                  />
-                  <span className="text-xs font-semibold text-[var(--c-text)] uppercase tracking-wide">
-                    {program.label}
-                  </span>
-                </div>
-              )}
-              {isCollapsed && (
-                <div className="mx-2 mb-2 border-t border-stone-100 dark:border-stone-800" />
-              )}
-              <div className="space-y-0.5">
-                <NavLink
-                  to={participantPath}
-                  icon={Briefcase}
-                  label="Min resa"
-                  isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
-                />
-              </div>
-            </div>
-          )
-        })()}
 
         {/* Consultant Section — använder Reflection-domän (lila) */}
         {isConsultant && !isUser && (

@@ -369,13 +369,17 @@ describe('consultantService.getGoalsForParticipant', () => {
     )
   })
 
-  it('filtrerar på både consultant_id och participant_id', async () => {
+  // KS2 = b (2026-09-12): efter en överlämning ska företrädarens mål synas.
+  // Läsrätten avgörs av RLS (aktiv relation i consultant_participants), så
+  // klienten får INTE filtrera på consultant_id — det testet som stod här
+  // förut asserterade just det filtret, alltså läge c (låst för båda).
+  it('filtrerar på participant_id men INTE på consultant_id (KS2 b: företrädarens mål ska synas)', async () => {
     loggedIn()
     queueResult({ data: [], error: null })
     await consultantService.getGoalsForParticipant('p1')
     expect(mockFrom).toHaveBeenCalledWith('consultant_goals')
-    expect(mockFromBuilder.eq).toHaveBeenCalledWith('consultant_id', 'consultant-1')
     expect(mockFromBuilder.eq).toHaveBeenCalledWith('participant_id', 'p1')
+    expect(mockFromBuilder.eq).not.toHaveBeenCalledWith('consultant_id', expect.anything())
   })
 })
 

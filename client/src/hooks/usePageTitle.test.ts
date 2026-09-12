@@ -60,7 +60,6 @@ describe('resolvePageTitleRule', () => {
       '/spontanansökan', '/nätverk', '/personal-brand', '/linkedin-optimizer',
       '/skills-gap-analysis', '/interview-simulator', '/ai-team', '/exercises',
       '/international', '/externa-resurser', '/consultant', '/admin',
-      '/steg-till-arbete',
     ]
     const utan = routes.filter((r) => !resolvePageTitleRule(r))
     expect(utan).toEqual([])

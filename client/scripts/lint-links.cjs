@@ -21,9 +21,9 @@
  * VAD SKRIPTET INTE GÖR
  * ----------------------
  * - Kontrollerar inte om en nåbar fil faktiskt RENDERAS för en riktig
- *   användare (t.ex. STA-modulen är kod-nåbar men avstängd via
- *   VITE_STA_ENABLED; en tabb-array kan vara skuggad av en lokal
- *   omdefiniering i konsumenten). Läs träffen innan du fixar den.
+ *   användare (en tabb-array kan vara skuggad av en lokal omdefiniering
+ *   i konsumenten; en modul kan sitta bakom en flagga). Läs träffen innan
+ *   du fixar den.
  * - Rör inga filer. Ren rapport.
  *
  * KÖR

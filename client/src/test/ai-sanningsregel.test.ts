@@ -55,9 +55,9 @@ const SANNINGSMARKORER = [
  */
 const UTAN_KRAV: Record<string, string> = {
   'sta-week-summary':
-    'STA-modulen är avaktiverad sedan 2026-08-03 (MODULES.STA, av som default). ' +
-    'Prompten når ingen användare. Slås modulen på ska den här raden bort och ' +
-    'regeln skrivas — inte tvärtom.',
+    'STA upphörde som projekt 2026-09-12 (archive/2026-09-sta/); klientanroparen ' +
+    'staAiApi.ts är arkiverad, prompten når ingen användare. Promptarna i ' +
+    'api/_prompts/sta.js är kvar tills de tas bort i ett eget pass.',
   'sta-doa-sammanfattning':
     'Samma skäl som sta-week-summary — avaktiverad modul, prompten når ingen.',
   'sta-document-draft':
@@ -295,23 +295,29 @@ describe('JD1: varje modellanropande edge-funktion bär AI-brytaren och tokentak
     .filter((f) => existsSync(f.sokvag))
     .filter((f) => /openrouter\.ai\/api|chat\/completions/.test(readFileSync(f.sokvag, 'utf8')))
 
+  /**
+   * PX1 (2026-09-12): sökfunktionerna bär inte längre strängen `perplexity/sonar`
+   * själva — de går genom `valjModell()` i `_shared/aiGate.ts`, som väljer sonar
+   * bara för fria konton. Kriteriet är därför anropet, inte literalen.
+   */
   const perplexityFunktioner = modellFunktioner.filter((f) =>
-    /perplexity\/sonar/.test(readFileSync(f.sokvag, 'utf8'))
+    /await\s+valjModell\s*\(/.test(readFileSync(f.sokvag, 'utf8'))
   )
 
   /**
-   * Golv, inte facit: sex modellanropare mätta 2026-09-06 (fem `ai-*` plus
-   * `learning-analyze-gap`), varav fem kör Perplexity. Lägger någon till en
-   * sjunde ska `it.each` nedan täcka den utan att de här raderna rörs.
+   * Golv, inte facit: fem modellanropare (de fem `ai-*`) sedan 2026-09-12, då
+   * `learning-analyze-gap` arkiverades med EU-spåret (archive/2026-09-eu-utlysning/).
+   * Mätt 2026-09-06 var golvet sex. Lägger någon till en sjätte ska `it.each`
+   * nedan täcka den utan att de här raderna rörs.
    */
-  const MINSTA_MODELLANROPARE = 6
+  const MINSTA_MODELLANROPARE = 5
   const MINSTA_PERPLEXITY = 5
 
   it(`hittar minst ${MINSTA_MODELLANROPARE} funktioner som anropar en modell`, () => {
     expect(modellFunktioner.length).toBeGreaterThanOrEqual(MINSTA_MODELLANROPARE)
   })
 
-  it(`varav minst ${MINSTA_PERPLEXITY} kör perplexity/sonar`, () => {
+  it(`varav minst ${MINSTA_PERPLEXITY} väljer sökmodell via valjModell()`, () => {
     expect(perplexityFunktioner.length).toBeGreaterThanOrEqual(MINSTA_PERPLEXITY)
   })
 
@@ -419,4 +425,101 @@ describe('SA2: engelska grenen av adaptation-* har samma styrka som den svenska'
       expect(en).toMatch(/sanningsregel/i)
     }
   )
+})
+
+/**
+ * PX1 (beslut Mikael 2026-09-12, PUB-avvikelse 2): Perplexity bara för fria konton.
+ *
+ * Fem edge-funktioner skickade användarens fritext — och i pendlingsplaneraren
+ * hemadressen — till `perplexity/sonar` (Perplexity AI Inc., USA, inget
+ * biträdesavtal) för ALLA användare. För deltagare och personal i en organisation
+ * (kommun, R&M-leverantör) ska anropet gå till basmodellen utan sökning, och
+ * prompten ska säga det till modellen så den inte hittar på färska siffror.
+ *
+ * Grinden fäller tre sätt att komma runt beslutet tyst:
+ *   1. en hårdkodad `perplexity/sonar` någon annanstans än i aiGate.ts,
+ *   2. en sökfunktion som skickar en fast modellsträng i stället för `modell.model`,
+ *   3. en prompt som skickas utan `UTAN_SOKNING_TILLAGG` när sökningen är av.
+ *
+ * Mutationsbevisat 2026-09-12: en återinsatt literal i ai-commute-planner fällde
+ * testet; borttagen igen.
+ */
+describe('PX1: Perplexity bara för fria konton — modellvalet är centraliserat', () => {
+  const FUNKTIONSKATALOG = resolve(__dirname, '../../../supabase/functions')
+  const AIGATE = resolve(FUNKTIONSKATALOG, '_shared/aiGate.ts')
+
+  function allaTsFiler(dir: string): string[] {
+    return readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
+      const p = resolve(dir, d.name)
+      if (d.isDirectory()) return allaTsFiler(p)
+      return d.isFile() && /\.ts$/.test(d.name) ? [p] : []
+    })
+  }
+
+  /** Kodrader utan blockkommentarer och radkommentarer — literaler i förklaringar räknas inte. */
+  function utanKommentarer(kalla: string): string {
+    return kalla.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')
+  }
+
+  it('aiGate.ts är den enda filen i supabase/functions som bär strängen perplexity/sonar', () => {
+    const traffar = allaTsFiler(FUNKTIONSKATALOG)
+      .filter((f) => /perplexity\/sonar/.test(utanKommentarer(readFileSync(f, 'utf8'))))
+      .map((f) => f.replace(/\\/g, '/').split('/supabase/functions/')[1])
+    expect(traffar).toEqual(['_shared/aiGate.ts'])
+  })
+
+  it('aiGate.ts exporterar valjModell med fail closed åt basmodellen', () => {
+    const kalla = readFileSync(AIGATE, 'utf8')
+    expect(kalla).toMatch(/export async function valjModell\s*\(/)
+    expect(kalla).toMatch(/export const BASMODELL = 'openai\/gpt-oss-120b'/)
+    expect(kalla).toMatch(/export const SOKMODELL = 'perplexity\/sonar'/)
+    expect(kalla).toMatch(/export const UTAN_SOKNING_TILLAGG/)
+    // organisationstillhörighet läses ur organization_members, aldrig ur en kolumn
+    // på profiles (den finns inte — mätt mot prod 2026-09-12)
+    expect(kalla).toMatch(/from\('organization_members'\)/)
+    expect(kalla).not.toMatch(/organization_id/)
+  })
+
+  const sokfunktioner = readdirSync(FUNKTIONSKATALOG, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
+    .map((d) => ({ namn: d.name, sokvag: resolve(FUNKTIONSKATALOG, d.name, 'index.ts') }))
+    .filter((f) => existsSync(f.sokvag))
+    .filter((f) => /await\s+valjModell\s*\(/.test(readFileSync(f.sokvag, 'utf8')))
+
+  it('minst fem funktioner väljer modell via valjModell()', () => {
+    expect(sokfunktioner.map((f) => f.namn).sort()).toEqual(
+      expect.arrayContaining([
+        'ai-career-assistant',
+        'ai-commute-planner',
+        'ai-company-analysis',
+        'ai-company-search',
+        'ai-industry-radar',
+      ])
+    )
+  })
+
+  it.each(sokfunktioner.map((f) => [f.namn, f.sokvag]))(
+    '%s skickar modell.model till OpenRouter och loggen, och lägger tillägget på prompten när sökningen är av',
+    (_namn, sokvag) => {
+      const kod = utanKommentarer(readFileSync(sokvag, 'utf8'))
+      // Varje `model:` i en request eller logg ska vara den valda modellen.
+      const modellRader = kod.match(/^\s*model:\s*[^,\n]+/gm) ?? []
+      expect(modellRader.length).toBeGreaterThan(0)
+      for (const rad of modellRader) expect(rad).toMatch(/model:\s*modell\.model/)
+      // Tillägget ska villkoras på webbsokning, inte skickas alltid eller aldrig.
+      expect(kod).toMatch(/modell\.webbsokning\s*\?\s*\w+\s*:\s*\w+\s*\+\s*UTAN_SOKNING_TILLAGG/)
+      // Valet görs efter AI-grinden (samma ordning som tokentaket) och före anropet.
+      const grind = kod.indexOf('await checkAiEnabled')
+      const val = kod.indexOf('await valjModell')
+      const anrop = kod.indexOf('OPENROUTER_API_URL,')
+      expect(grind).toBeGreaterThan(-1)
+      expect(val).toBeGreaterThan(grind)
+      expect(anrop).toBeGreaterThan(val)
+    }
+  )
+
+  it('ai-company-search hoppar över allabolag-uppslaget när sökningen är av', () => {
+    const kod = utanKommentarer(readFileSync(resolve(FUNKTIONSKATALOG, 'ai-company-search/index.ts'), 'utf8'))
+    expect(kod).toMatch(/if\s*\(\s*modell\.webbsokning\s*&&\s*companiesWithoutOrgNr\.length/)
+  })
 })

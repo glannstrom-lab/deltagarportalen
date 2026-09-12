@@ -188,3 +188,44 @@ describe('ParticipantJournal — fel vid hämtning', () => {
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 })
+
+/**
+ * KS2 = b (2026-09-12): efter en överlämning ser den nya konsulenten
+ * företrädarens rader men kan inte ändra dem. Gränssnittet ska säga det
+ * ("Skriven av …") och inte visa knappar som RLS ändå skulle neka.
+ */
+describe('ParticipantJournal — läsrätt efter överlämning (KS2 b)', () => {
+  it('en rad skriven av någon annan visar "Skriven av" och saknar redigera/ta bort', () => {
+    renderJournal({
+      currentConsultantId: 'kons-ny',
+      entries: [makeEntry({ id: 'gammal', content: 'Från företrädaren', consultantId: 'kons-gammal', authorName: 'Karin Konsulent' })],
+    })
+    expect(screen.getByText(/skriven av karin konsulent/i)).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /redigera anteckningen/i })).toBeNull()
+    expect(screen.queryByRole('button', { name: /ta bort anteckningen/i })).toBeNull()
+  })
+
+  it('utan namn på författaren står det "en tidigare konsulent"', () => {
+    renderJournal({
+      currentConsultantId: 'kons-ny',
+      entries: [makeEntry({ id: 'gammal', consultantId: 'kons-gammal' })],
+    })
+    expect(screen.getByText(/skriven av en tidigare konsulent/i)).toBeTruthy()
+  })
+
+  it('egen rad har kvar redigera och ta bort, och ingen författarrad', () => {
+    renderJournal({
+      currentConsultantId: 'kons-ny',
+      entries: [makeEntry({ id: 'egen', consultantId: 'kons-ny' })],
+    })
+    expect(screen.getByRole('button', { name: /redigera anteckningen/i })).toBeTruthy()
+    expect(screen.getByRole('button', { name: /ta bort anteckningen/i })).toBeTruthy()
+    expect(screen.queryByText(/skriven av/i)).toBeNull()
+  })
+
+  it('en rad utan consultantId behandlas som egen (bakåtkompatibelt)', () => {
+    renderJournal({ currentConsultantId: 'kons-ny', entries: [makeEntry({ id: 'okand' })] })
+    expect(screen.getByRole('button', { name: /redigera anteckningen/i })).toBeTruthy()
+  })
+})
+

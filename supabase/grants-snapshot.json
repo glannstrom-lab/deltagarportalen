@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T14:11:10.923Z",
+  "generatedAt": "2026-09-12T17:01:11.170Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -140,6 +140,13 @@
       "definer": true,
       "anon": false,
       "authenticated": true
+    },
+    {
+      "name": "execute_consultant_journal_retention",
+      "signature": "execute_consultant_journal_retention()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "execute_inactive_account_retention",
@@ -308,6 +315,13 @@
       "definer": true,
       "anon": false,
       "authenticated": false
+    },
+    {
+      "name": "har_aktiv_relation",
+      "signature": "har_aktiv_relation(uuid)",
+      "definer": false,
+      "anon": true,
+      "authenticated": true
     },
     {
       "name": "increment_template_usage",

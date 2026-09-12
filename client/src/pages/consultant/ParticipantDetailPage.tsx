@@ -31,6 +31,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
+import { orgApi } from '@/services/orgApi'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
@@ -67,6 +68,9 @@ interface Goal {
   priority: 'HIGH' | 'MEDIUM' | 'LOW'
   deadline: string
   progress: number
+  /** KS2 b: vem som skapade målet; skiljer sig från den inloggade efter en överlämning. */
+  consultantId?: string
+  authorName?: string
 }
 
 interface TimelineEvent {
@@ -128,11 +132,14 @@ function GoalCard({
   goal,
   onEdit,
   onComplete,
+  readOnly = false,
   t,
 }: {
   goal: Goal
   onEdit: (goal: Goal) => void
   onComplete: (id: string) => void
+  /** KS2 b: målet är skapat av en företrädare — läsbart, inte ändringsbart. */
+  readOnly?: boolean
   t: (key: string) => string
 }) {
   // Åtgärdsmenyn var tidigare en död knapp utan onClick — nu kopplad.
@@ -170,7 +177,16 @@ function GoalCard({
           <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
             {goal.description}
           </p>
+          {readOnly && (
+            <p
+              className="text-xs text-stone-500 dark:text-stone-400 mt-1"
+              title={t('consultant.handover.readOnlyHint')}
+            >
+              {t('consultant.handover.createdBy')} {goal.authorName ?? t('consultant.handover.formerConsultant')}
+            </p>
+          )}
         </div>
+        {!readOnly && (
         <div className="relative">
           <button
             onClick={() => setShowMenu(v => !v)}
@@ -216,6 +232,7 @@ function GoalCard({
             </>
           )}
         </div>
+        )}
       </div>
 
       <div className="flex items-center gap-3 mb-3">
@@ -275,6 +292,12 @@ export function ParticipantDetailPage() {
   const [participant, setParticipant] = useState<Participant | null>(null)
   const [goals, setGoals] = useState<Goal[]>([])
   const [journal, setJournal] = useState<JournalEntry[]>([])
+  // KS2 b: den inloggade konsulentens id avgör vilka rader som går att ändra;
+  // kollegornas namn (organization_colleagues, redan läsbar för konsulenten)
+  // ger "Skriven av …" på företrädarens rader. Namnen är best effort — utan
+  // organisation blir det "en tidigare konsulent".
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  const kollegaNamnRef = useRef<Record<string, string>>({})
   const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>('overview')
@@ -323,6 +346,16 @@ export function ParticipantDetailPage() {
         setError(t('consultant.participantDetail.loadError', 'Det gick inte att hämta deltagarens uppgifter.'))
         return
       }
+      setCurrentUserId(user.id)
+      try {
+        const kollegor = await orgApi.colleagues()
+        kollegaNamnRef.current = Object.fromEntries(
+          kollegor.map((k) => [k.user_id, `${k.first_name ?? ''} ${k.last_name ?? ''}`.trim() || (k.email ?? '')])
+        )
+      } catch {
+        // Ingen organisation eller fel vid uppslag — raderna visas ändå, utan namn.
+      }
+      if (isStale()) return
 
       // Fetch participant
       const { data: participantData, error: participantError } = await supabase
@@ -346,7 +379,6 @@ export function ParticipantDetailPage() {
       const { data: goalsData, error: goalsError } = await supabase
         .from('consultant_goals')
         .select('*')
-        .eq('consultant_id', user.id)
         .eq('participant_id', requestedId)
         .order('created_at', { ascending: false })
 
@@ -363,6 +395,8 @@ export function ParticipantDetailPage() {
           priority: g.priority,
           deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
           progress: g.progress || 0,
+          consultantId: g.consultant_id,
+          authorName: kollegaNamnRef.current[g.consultant_id],
         })))
       }
 
@@ -370,7 +404,6 @@ export function ParticipantDetailPage() {
       const { data: journalData, error: journalFetchError } = await supabase
         .from('consultant_journal')
         .select('*')
-        .eq('consultant_id', user.id)
         .eq('participant_id', requestedId)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -386,6 +419,8 @@ export function ParticipantDetailPage() {
           content: j.content,
           category: j.category,
           createdAt: j.created_at,
+          consultantId: j.consultant_id,
+          authorName: kollegaNamnRef.current[j.consultant_id],
         })))
         setJournalLoadError(null)
       }
@@ -422,7 +457,6 @@ export function ParticipantDetailPage() {
       const { data: goalsData, error: goalsError } = await supabase
         .from('consultant_goals')
         .select('*')
-        .eq('consultant_id', user.id)
         .eq('participant_id', requestedId)
         .order('created_at', { ascending: false })
 
@@ -441,6 +475,8 @@ export function ParticipantDetailPage() {
         priority: g.priority,
         deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
         progress: g.progress || 0,
+        consultantId: g.consultant_id,
+        authorName: kollegaNamnRef.current[g.consultant_id],
       })))
     } catch (err) {
       console.error('Error refetching goals:', err)
@@ -460,7 +496,6 @@ export function ParticipantDetailPage() {
       const { data: journalData, error: journalFetchError } = await supabase
         .from('consultant_journal')
         .select('*')
-        .eq('consultant_id', user.id)
         .eq('participant_id', requestedId)
         .order('created_at', { ascending: false })
         .limit(20)
@@ -478,6 +513,8 @@ export function ParticipantDetailPage() {
         content: j.content,
         category: j.category,
         createdAt: j.created_at,
+        consultantId: j.consultant_id,
+        authorName: kollegaNamnRef.current[j.consultant_id],
       })))
       setJournalLoadError(null)
     } catch (err) {
@@ -625,6 +662,7 @@ export function ParticipantDetailPage() {
           content: data.content,
           category: data.category,
           createdAt: data.created_at,
+          consultantId: user.id,
         }
         setJournal(prev => [newEntry, ...prev])
       }
@@ -856,6 +894,7 @@ export function ParticipantDetailPage() {
                   goal={goal}
                   onEdit={handleEditGoal}
                   onComplete={handleCompleteGoal}
+                  readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
                   t={t}
                 />
               ))}
@@ -913,6 +952,7 @@ export function ParticipantDetailPage() {
                 goal={goal}
                 onEdit={handleEditGoal}
                 onComplete={handleCompleteGoal}
+                readOnly={!!goal.consultantId && !!currentUserId && goal.consultantId !== currentUserId}
                 t={t}
               />
             ))}
@@ -937,6 +977,7 @@ export function ParticipantDetailPage() {
             onAddEntry={addJournalEntry}
             onUpdateEntry={updateJournalEntry}
             onDeleteEntry={deleteJournalEntry}
+            currentConsultantId={currentUserId ?? undefined}
           />
         </div>
       )}

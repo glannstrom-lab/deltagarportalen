@@ -13,20 +13,8 @@
  * ska inte finnas i navigationen, inte ha routes och inte hämta data.
  */
 export const MODULES = {
-  /**
-   * STA / Steg till arbete — deltagarens arbetsprövningsresa (`pages/sta/`).
-   *
-   * Avaktiverad 2026-08-03 (beslut Mikael). Koden är kvar men modulen monteras
-   * inte: sätt `VITE_STA_ENABLED=true` för att slå på deltagarvyn igen.
-   *
-   * Observera: **konsulentvyn för STA är borttagen ur appen**, inte flaggad.
-   * Portalen har en konsulentvy — `/consultant`. Filerna under
-   * `pages/sta/StaConsultant.tsx`, `pages/sta/consultant/` och
-   * `pages/sta/StaDocumentWorkspace.tsx` ligger kvar orörda för framtida bruk
-   * men har varken route eller navlänk.
-   */
-  STA: import.meta.env.VITE_STA_ENABLED === 'true',
-
+  // STA-flaggan (MODULES.STA / VITE_STA_ENABLED) togs bort 2026-09-12: modulen
+  // upphörde som projekt och ligger i archive/2026-09-sta/ (beslut Mikael).
   /**
    * Tvåradig toppnav — huvudkategorier överst, undersidor på raden under.
    * (Steg 2 i navigationsomläggningen, beslut Mikael 2026-08-17.)
@@ -47,9 +35,6 @@ export const MODULES = {
    */
   TOPNAV: import.meta.env.VITE_TOPNAV_ENABLED !== 'false',
 } as const
-
-/** Är STA-modulen påslagen? */
-export const isStaEnabled = (): boolean => MODULES.STA
 
 /** Är den tvåradiga toppnaven påslagen? */
 export const isTopNavEnabled = (): boolean => MODULES.TOPNAV

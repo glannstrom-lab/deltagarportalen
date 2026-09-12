@@ -54,20 +54,20 @@ särskilt STA, där Arbetsförmedlingens dokumentationskrav kan styra tiden.
 
 | Datakategori | Retention | Trigger för borttagning | Implementation |
 |---|---|---|---|
-| **STA — arbetsprövning** (10 `sta_*`) | ✔ *(bekräftat 2026-09-12)* 2 år efter avslutad inskrivning | Cron på `sta_enrollments` slutdatum | ❌ Kräver A6 |
-| **STA — självskattningar** (`sta_assessments`) | ✔ *(bekräftat 2026-09-12)* Samma som ovan. Signerade bedömningar kan behöva längre tid | Cron | ❌ Kräver A6 |
-| **Konsulentens journal** (`consultant_journal`, `consultant_notes`) | **5 år efter avslutat uppdrag** *(beslut Mikael 2026-09-12, ändrat från 2 år: överklaganden och tillsyn; AI-jurist får justera nedåt)* | Cron + vid `revoke_consultant_link` | ❌ Kräver A6 |
-| **Konsulentmeddelanden** (`consultant_messages`) | ✔ *(bekräftat 2026-09-12)* 2 år | Cron | ❌ Kräver A6 |
-| **Placeringar** (`consultant_placements`) | ✔ *(bekräftat 2026-09-12)* 2 år (uppföljning 3/6 mån ingår) | Cron | ❌ Kräver A6 |
+| **STA — arbetsprövning** (10 `sta_*`) | ✔ *(bekräftat 2026-09-12)* 2 år efter avslutad inskrivning | Cron på `sta_enrollments` slutdatum | ✅ **Driftsatt 2026-09-12** (`retention-sta`, 05:10 UTC): raderar `sta_enrollments` med status completed/cancelled där `updated_at` (sätts vid statusbytet — tabellen har inget eget slutdatum) är äldre än 2 år; nio av tio `sta_*` cascadar. Aktiva/pausade raderas aldrig |
+| **STA — självskattningar** (`sta_assessments`) | ✔ *(bekräftat 2026-09-12)* Samma som ovan. Signerade bedömningar kan behöva längre tid | Cron | ✅ **Driftsatt 2026-09-12** — ingår i `retention-sta` (cascade från `sta_enrollments`) |
+| **Konsulentens journal** (`consultant_journal`, `consultant_notes`) | **5 år efter avslutat uppdrag** *(beslut Mikael 2026-09-12, ändrat från 2 år: överklaganden och tillsyn; AI-jurist får justera nedåt)* | Cron + vid `revoke_consultant_link` | ✅ **Driftsatt 2026-09-12** (`retention-consultant-journal`, 04:45 UTC, `execute_consultant_journal_retention()`): per deltagare utan aktiv koppling vars senaste återkallade samtycke är >5 år, auditrad i `admin_audit_log`. Saknas samtyckesrad raderas inget (fail closed) |
+| **Konsulentmeddelanden** (`consultant_messages`) | ✔ *(bekräftat 2026-09-12)* 2 år | Cron | ✅ **Driftsatt 2026-09-12** (`retention-consultant-messages`, 04:35 UTC, `created_at`) |
+| **Placeringar** (`consultant_placements`, `consultant_work_placements`) | ✔ *(bekräftat 2026-09-12)* 2 år (uppföljning 3/6 mån ingår) | Cron | ✅ **Driftsatt 2026-09-12** (`retention-placements`, 04:40 UTC): `consultant_placements` 2 år från `start_date` (tabellen har inget slutdatum); `consultant_work_placements` 2 år från `end_date`, pågående (NULL) raderas aldrig; followups cascadar |
 | **Jobbansökningar** (`saved_jobs`, `application_*`) | Tills deltagaren raderar | Manuell + cascade vid kontoradering | ✅ Manuell / 🟡 cascade overifierad |
 | **Kontaktpersoner hos arbetsgivare** (`application_contacts`) | Tills deltagaren raderar | Manuell | ✅ |
 | **Nätverkskontakter** (`network_contacts`) | Tills deltagaren raderar | Manuell | ✅ — men se anmärkning nedan |
-| **Jobbaviseringar** (`job_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ❌ Kräver A6 |
-| **E-postleveranslogg** (`email_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ❌ Kräver A6 |
-| **E-postkö** (`email_queue`) | 30 dagar efter `sent_at` | Cron | ❌ Kräver A6 (tabellen finns sedan 2026-07-27) |
-| **Inloggningsförsök** (`login_attempts`) | ✔ *(bekräftat 2026-09-12)* 30 dagar | Cron | ❌ Kräver A6 |
-| **Aktivitetslogg** (`user_activity_log`, `user_activities`) | ✔ *(bekräftat 2026-09-12)* 12 månader | Cron | ❌ Kräver A6 |
-| **Inbjudningar** (`invitations`) | ✔ *(bekräftat 2026-09-12)* 90 dagar efter utgång | Cron | ❌ Kräver A6 |
+| **Jobbaviseringar** (`job_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ✅ **Driftsatt 2026-09-12** (`retention-job-notifications`, 04:10 UTC) |
+| **E-postleveranslogg** (`email_notifications`) | ✔ *(bekräftat 2026-09-12)* 90 dagar | Cron | ✅ **Driftsatt 2026-09-12** (`retention-email-notifications`, 04:15 UTC) |
+| **E-postkö** (`email_queue`) | 90 dagar efter `sent_at` *(var 30 i dokumentet; jobbet `retention-audit-logs` raderar efter 90 — dokumentet följer jobbet, 2026-09-12)* | Cron veckovis (`retention-audit-logs`) | ✅ **Driftsatt 2026-09-12** |
+| **Inloggningsförsök** (`login_attempts`) | ✔ *(bekräftat 2026-09-12)* 30 dagar | Cron | ✅ **Driftsatt 2026-09-12** (`retention-login-attempts`, 04:20 UTC, `attempted_at`) |
+| **Aktivitetslogg** (`user_activity_log`, `user_activities`) | ✔ *(bekräftat 2026-09-12)* 12 månader | Cron | ✅ **Driftsatt 2026-09-12** (`retention-activity-logs`, 04:25 UTC) |
+| **Inbjudningar** (`invitations`) | ✔ *(bekräftat 2026-09-12)* 90 dagar efter utgång | Cron | ✅ **Driftsatt 2026-09-12** (`retention-invitations`, 04:30 UTC, `expires_at`, oavsett använd — första natten raderas 20 pilot-/testinbjudningar) |
 | **Delningslänkar** (`profile_shares`) | Tills deltagaren återkallar | Manuell via UI | ✅ |
 | **Intervjusessioner** (`interview_sessions`) | Tills deltagaren raderar | Manuell | ✅ |
 | **Ljudinspelningar från intervjuövning** | **Lagras inte** | — | ✅ Molnlagringen borttagen 2026-07-27 (H6); filen laddas ner lokalt |

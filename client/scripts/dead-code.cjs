@@ -231,12 +231,7 @@ try {
 }
 
 const REGLER = [
-  // ---- Färskhetsgrinden går FÖRE allt annat utom STA.
-  {
-    grupp: 'BEHÅLL',
-    test: (p) => p.startsWith('pages/sta/') || /(^|\/)sta[A-Z]|useSta|FocusStaWizard/.test(p),
-    skal: 'STA-modulen — pausad, inte död (beslut Mikael 2026-08-03, MODULES.STA)',
-  },
+  // ---- (STA-regeln borttagen 2026-09-12: modulen ligger i archive/2026-09-sta/.)
   // ---- BEHÅLL: medvetet onåbart. Går före färskhetsgrinden — en fil som är
   //      medvetet onåbar blir inte oklar bara för att någon rörde den.
   {
