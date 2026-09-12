@@ -9998,6 +9998,7 @@
       "goalsOverview": "Målöversikt",
       "completedGoals": "Avklarade mål",
       "overdueGoals": "Försenade mål",
+      "noGoalCategoriesYet": "Inga mål registrerade än — skapa det första från en deltagares sida.",
       "topGoalCategories": "Vanligaste målkategorierna",
       "vsLastWeek": "vs förra veckan",
       "activeCount": "{{count}} aktiva",

@@ -9998,6 +9998,7 @@
       "goalsOverview": "Goals overview",
       "completedGoals": "Completed goals",
       "overdueGoals": "Overdue goals",
+      "noGoalCategoriesYet": "No goals registered yet — create the first one from a participant's page.",
       "topGoalCategories": "Top goal categories",
       "vsLastWeek": "vs last week",
       "activeCount": "{{count}} active",

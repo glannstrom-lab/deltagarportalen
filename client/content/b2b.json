@@ -56,9 +56,10 @@
           "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
         ],
         "pagar": [
-          "Fem AI-funktioner (bland annat karriärassistenten och företagssökningen) skickar frågan vidare till Perplexitys sökmodell via OpenRouter, som gör en riktig webbsökning på det som skrivits in. Det är i dagsläget inte utskrivet i integritetspolicyn eller i registret över personuppgiftsbiträden (Art. 30) — vi flaggar det ändå här.",
+          "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
           "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.",
-          "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar."
+          "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar.",
+          "Inloggning med kommunens Microsoft-konto (Entra ID) för konsulenter och chefer är beslutad och byggs härnäst; deltagare loggar in med e-post och lösenord. BankID erbjuds inte i dag."
         ],
         "lankHref": "/#/privacy",
         "lankText": "Läs hela integritetspolicyn"
@@ -172,7 +173,7 @@
           "Använder en deltagare en AI-funktion behandlas den texten hos OpenRouter i USA."
         ],
         "pagar": [
-          "Fem AI-funktioner (bland annat karriärassistenten och företagssökningen) skickar frågan vidare till Perplexitys sökmodell via OpenRouter, som gör en riktig webbsökning på det som skrivits in. Det är i dagsläget inte utskrivet i integritetspolicyn eller i registret över personuppgiftsbiträden (Art. 30) — vi flaggar det ändå här.",
+          "För organisationskonton (kommuner och leverantörer) är webbsökningen via Perplexity avstängd sedan 2026-09-12 — era deltagares frågor går bara till OpenRouters basmodell utan sökning. Fria konton kan fortfarande använda sökmodellen, vilket står i integritetspolicyn.",
           "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.",
           "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar."
         ],

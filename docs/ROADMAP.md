@@ -245,6 +245,70 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 - **EU-utlysningsspåret avslutas (2026-09-12).** Specarna 26-001/26-002/26-010 flyttas till `archive/2026-09-eu-utlysning/`; de callerlösa `learning-*`-edge-funktionerna flyttas ur `supabase/functions/` (samma mönster som A27: katalogen är deploy-mängden) och avpubliceras med `functions delete`; tabellerna de skrev till gallras enligt policyn, schemat lämnas. Detta löser upp ROADMAP C4. ✅ **Klart 2026-09-12 (EU-ARK):** specarna och funktionerna i `archive/2026-09-eu-utlysning/`, `supabase functions delete` × 3, curl mot alla tre → 404 (kontroll `ai-career-assistant` → 401). **Rättelse:** `learning-*` var tre (`analyze-gap`, `progress`, `recommend`), inte sex; JD1-golvet i `ai-sanningsregel.test.ts` sänkt 6 → 5.
 - **Ordning = a (2026-09-12): verkställ dagens beslut i ett pass** — KS2 b, Perplexity av för org-konton, de nio gallringsjobben, STA-ARK + EU-ARK, Glänne & Söner i policy/Art 30/DPIA — före KM12-rest och SSO1.
 
+### Persona-genomgång 2026-09-12 (kväll) — tre agenter i prod: kommunkonsulent, deltagare, kommunköpare
+
+Mikaels beställning: "agera konsulent från kommunen och deltagare, samt hur alla funktioner fungerar och syns och upplevs, ge förslag på nya funktioner som kan behövas". Tre Playwright-drivna rundor mot prod (km-konsulent, km-deltagare, demo@jobin.se + publika sidor), rapporter i `e2e/screenshots/persona-{konsulent,deltagare,prospekt}/RAPPORT.md` (skärmdumpar gitignorerade, ARIA-snapshots och loggar i mapparna), skript `e2e/persona-*-2026-09-12*.cjs`. Publicerad sammanställning: artefakten "Persona-genomgång 2026-09-12". Räkning: 6 kritiska, 23 viktiga, 19 skav, 18 funktionsförslag. Inget påstående utan skärmdump.
+
+**Kritiskt**
+- [x] **PG1** ✅ *(rättad samma kväll)* Konsulentens Översikt → "Vanligaste målkategorierna" ritade tre staplar 75/60/45 % med 0 mål (`OverviewTab.tsx` placeholder-gren). Nu en invit. Samma familj som 2026-08-09 ("ett påhittat värde har alltid föredragits framför ett tomt fält").
+- [ ] **PG2** Rapporter → AI-insikter felar varje gång: `PGRST201` (tvetydig relation) i embed:et `participant:consultant_dashboard_participants!inner(...)` i `consultantInsights.ts:189`; texten säger "försök igen om en stund" om ett fast fel. Fix: välj relation explicit eller läs namnen separat · S
+- [ ] **PG3** Demots Översikt: "Kräver uppmärksamhet **0**" bredvid en lista med fem "CV saknas" trots tre seedade CV:n och CV-poäng i deltagarlistan — nyckeltalen motsäger sig i det första en köpare ser. Undersök `has_cv`-källan i `consultant_dashboard_participants` vs korten · S
+- [ ] **PG4** Ingen språkväxling på mobil — "Välj språk" finns bara i desktop-toppnaven; mobilhuvud, Min profil-dialog och Inställningar saknar den. Portalens engelska läsare är nyanländ och på mobil · S
+- [ ] **PG5** Aktivitetskravet utan väg för deltagaren att anmäla frånvaro: "Frånvaro" på passet utan orsak, utan knapp; sjukanmälan bara via Min konsulent. Oanmäld frånvaro kan påverka försörjningsstödet. Se förslag F1 · M
+- [x] **PG6** ✅ *(samma kväll)* SSO nämndes ingenstans publikt trots beslutet SSO1 — rad under "Pågår" på B2B-sidan för kommuner; samtidigt rättades Perplexity-raden (av för organisationskonton sedan 2026-09-12).
+
+**Viktigt — deltagaren (Dana)**
+- [ ] **PG7** "Du har 15 av 30 timmar" i Min vecka är oförklarat (vad räknas, vad är kravet, vad händer) — länka guiden och räkna jobbsökartimmar ur sparade jobb/ansökningar (`pages/MinVecka.tsx`) · S
+- [ ] **PG8** Snabb-CV: namnfältet tomt med platshållaren "Anna Andersson" fast användaren är inloggad (`#quick-fullName`), plus fem kontrastfel i mörkt läge (3,79:1 / 3,43:1 på det bruna kortet) · S
+- [ ] **PG9** Nollor som KPI i deltagarvyer: Resurser "0/0/0", Övningar "0 påbörjade / 119 ej påbörjade" — Översikt gör rätt, dessa inte (`Resources.tsx`, `Exercises.tsx`) · S
+- [ ] **PG10** Inställningar talar administrationsspråk ("Roll och behörigheter", "Dina rättigheter är en kombination av alla dina roller") och erbjuder projektet "Rusta och Matcha" med "kommer i en kommande uppdatering" åt en kommundeltagare · S
+- [ ] **PG11** Samtyckesrutan för dagbok/hälsa pekar på "Inställningar > Sekretess" (fliken heter Integritet), och en vanlig dagboksrad kräver samtycke till humör/energi/sömn i ett svep — se F6 · S
+- [ ] **PG12** Lugnare läge saknas på 7 mobilsidor, bl.a. Min vecka och CV; fokuslägesknappen finns bara på desktop · S
+- [ ] **PG13** Mörkt läge: rosa policylänk (`text-pink-400`) 4,13:1 i samtyckesrutan på Dagbok/Hälsa · XS
+- [ ] **PG14** "Profilstatus 17 %" i profilens hjälteposition på en person som just börjat (`ProfileHeader.tsx`) · XS
+- [ ] **PG15** Läsloggen säger "dina uppgifter" — inte vad som öppnades (journal, CV, sparade jobb) · S
+
+**Viktigt — konsulenten (Karin)**
+- [ ] **PG16** Tidslinje-sektionen säger bara "Aktivitetshistorik kommer" — bygg av läslogg + närvaro + journal i tidsordning (F14) eller ta bort ur sektionsraden · S
+- [ ] **PG17** Nytt mål kräver sju fält; ett skapat mål gick inte att ta bort i UI:t (raderades via SQL) · S
+- [ ] **PG18** Aktivitetskatalogen i Resurser är tom för Testkommun trots att planen "Jobbsökarverkstad 15 h" finns som schemamall — katalog per org saknar de aktiviteter planen använder · S
+- [ ] **PG19** Chefen har ingen UI för organisationens AI-brytare (kräver SQL) — bekräftar uppdragets "självservice för AI-brytaren" · S
+- [ ] **PG20** Mobil: konsulenten får deltagarens hela hubbmeny med "Konsultportal" sist, och profil-dialogen kallar henne "Deltagare" trots `active_role = CONSULTANT` · S
+- [ ] **PG21** Fliken "Dagbok" på deltagardetaljen är konsulentjournalen, medan B2B lovar en dagbok bara deltagaren ser — döp om till "Journal" med en rad om att dagboken är privat · XS
+- [ ] **PG22** "Rapportutkast (AI)" visas och öppnar dialog fast organisationens AI är av (bannern säger motsatsen) — läs `my_ai_policy`, göm med förklaring · XS
+- [ ] **PG23** "PDF-rapport" och "Exportera rapport" gav ingen nedladdning i Playwright (Excel gjorde det) — verifiera manuellt: ny flik eller inget? · XS
+- [ ] **PG24** "Aldrig kontaktad" (listan) vs "Ej kontaktad på 7+ dagar" (Översikt) om samma person · XS
+- [ ] **PG25** Två "kommande"-löften i Inställningar (R&M-sidor; sex notisval som inte skickar) · XS
+
+**Viktigt — köparen (Per)**
+- [ ] **PG26** Demot kan inte visa deltagarens sida — konsulentens egen deltagarvy är tom. Förslag F15: demodeltagarkonto med samma reset · M
+- [ ] **PG27** B2B saknar "så kommer ni igång" (avtal → chefskonto → kollegor → katalog/mall → första planen, med tid) · S
+- [ ] **PG28** Startsidans per-konsulent-kort räknar upp "Delad kalender" och "Jobbmatchning" som inte kunde beläggas i demot — kontrollera varje punkt mot koden (ärlighetsregeln) · XS
+
+**Skav (19)** — se rapporterna: "0 0" utan etikett på Platser; sektionsknappar utan aria-current; lösa mallknappar i Kommunikation; tidszon London/New York; språkval i oöversatt vy; "Underlag till handläggaren" med bara Ångra; flytande Gå tillbaka-knapp över logotypen på mobil; verktygsnamn som rubriker; "Skriv ett nytt utkast" ger samma mall; tom "Nästa vecka" utan förklaring; oprioriterade notiser; projektväljaren erbjuder R&M åt en kommun; B2B utan leverantörsnamn; rapportmodalens "ingen tidsavgränsning" bredvid periodknappar; demouppgifter utan kopiera-knapp.
+
+**Förslag på nya funktioner (ur flödena, inte önskelistor)**
+- **F1** "Jag kan inte komma" per pass (orsak + fritext → konsulent + anmäld frånvaro i närvaron). *STA-arkivets `AbsenceForm` är förlagan.*
+- **F2** Kravet förklarat på plats i Min vecka + automatisk räkning av jobbsökartimmar.
+- **F3** Påminnelse kvällen innan ett pass (notis, valfritt mejl nu när DE1 fungerar) med kartlänk.
+- **F4** Språk + lätt svenska + större text som deltagarens eget val, mobil först.
+- **F5** Närvarointyg för månaden som PDF från Min vecka — deltagarens kvitto till handläggaren.
+- **F6** Jobbsökardagbok utan hälsosamtycke, skild från mående/sömn.
+- **F7** Offline-köad incheckning (PWA:n finns).
+- **F8** "Fråga konsulenten om det här passet" inbäddat i Min vecka.
+- **F9** Dagens pass som konsulentens startvy i Min dag (vilka har pass, vilka checkat in, vilka saknar närvaro).
+- **F10** Spårbart underlagsflöde till handläggaren (skickat, datum, mottagare, kvitto) — annars är "Underlag lämnat 1" i IVO-tabellen ospårbart.
+- **F11** Enkelt mål: titel + datum, SMART som utfällning.
+- **F12** "Logga kontakt" med ett klick i Hör av dig-listan.
+- **F13** Chefsläge: AI-brytare i Din organisation + konsulentmeny på mobil.
+- **F14** Tidslinje = läslogg + närvaro + journal i tidsordning (datan finns).
+- **F15** Demodeltagarkonto (svarar på "vad ser deltagaren").
+- **F16** "Så kommer ni igång" i fem steg på B2B-sidan.
+- **F17** Nämndrapport som mall (kvartal + IVO-underlag + närvarograd per försörjningshinder).
+- **F18** Kopiera-knapp/förfylld inloggning för demouppgifterna.
+
+**Inte prövat:** incheckning (inget pass lördag — KM-röktestet behöver ett seedat pass "i dag"), skicka mejl/inbjudningar/gruppmeddelanden (förbjudet), AI-rapportutkast (kostar), dagbok/hälsa (samtycke ej givet), nattens demo-reset, skärmläsare och tangentbord i mobilmenyn.
+
 ### Rättelser mot förra versionen
 
 - **Bifynd 2026-09-12 (kvällspasset): en edge-funktion i prod som inte finns i repot.** `supabase functions list` visar `af-jobad-links` (version 5, `verify_jwt: false`, entrypoint under `/tmp/…`, uppdaterad 2026-04-17) — ingen katalog i `supabase/functions/`, ingen anropare i `client/src` (grep → 0), ingen rad i något dokument. Deployad från en annan maskin i april. Öppen för anrop utan JWT. **Beslut Mikael:** radera (`npx supabase functions delete af-jobad-links`) eller hämta hem koden och lägga den i repot. Rekommendation: radera — okänd kod utan anropare ska inte stå öppen.

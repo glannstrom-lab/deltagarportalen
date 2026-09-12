@@ -878,26 +878,12 @@ export function OverviewTab() {
                     </div>
                   ))
                 ) : (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.cvImprovement')}</span>
-                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '75%' }} />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.jobApplications')}</span>
-                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '60%' }} />
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.interviewTraining')}</span>
-                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '45%' }} />
-                      </div>
-                    </div>
-                  </>
+                  // Persona-genomgång 2026-09-12 (K1): här låg tre staplar med fasta
+                  // bredder 75/60/45 % som "exempel" när inga mål fanns — en påhittad
+                  // siffra i konsulentens första vy. Ett tomt underlag visar en invit.
+                  <p className="text-sm text-stone-500 dark:text-stone-400">
+                    {t('consultant.overview.noGoalCategoriesYet')}
+                  </p>
                 )}
               </div>
             </div>
