@@ -1,11 +1,11 @@
 // Röktest: ett RIKTIGT inbjudningsmejl via send-invite-email + Resend (DE1, 2026-09-12).
 // Kör:  NODE_PATH=node_modules node e2e/mejl-inbjudan-prod-rok.cjs <mottagare, t.ex. din+tagg@gmail.com>
-// Loggar in som TEST_LEGACY_CONSULTANT (claude-playwright-consultant), lägger en rad i
+// Loggar in som TEST_LEGACY_CONSULTANT (claude-playwright-consultant; sätt TEST_LEGACY_CONSULTANT_EMAIL/PASSWORD i miljön för ett annat konto, t.ex. DEMO_*), lägger en rad i
 // invitations och anropar funktionen. Läs sedan "Visa original" i Gmail: SPF/DKIM/DMARC = PASS.
 // OBS: generateLink({type:'invite'}) skapar en pending-användare i auth.users + profiles för
 // adressen. RADERA testraderna efteråt (invitations, profiles, auth.users på adressen) —
 // annars gallras inbjudan efter 90 dagar men kontot blir kvar.
-const fs=require('fs'); const env={}
+const fs=require('fs'); const env={ ...process.env } // miljövariabler vinner över filerna (så DEMO_* kan skickas in)
 for (const f of ['.env.test.local','client/.env']) for (const l of fs.readFileSync(f,'utf8').split(/\r?\n/)) { const m=l.match(/^([A-Z_]+)=(.*)$/); if(m&&!env[m[1]]) env[m[1]]=m[2].replace(/^["']|["']$/g,'') }
 const SB=env.VITE_SUPABASE_URL, ANON=env.VITE_SUPABASE_ANON_KEY
 const TO=process.argv[2]
