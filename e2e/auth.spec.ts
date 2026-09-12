@@ -181,9 +181,9 @@ test.describe('Authentication', () => {
       // Logout
       await auth.logout()
 
-      // Utloggad: landningssidan eller inloggningen, aldrig kvar på Översikt
-      await expect(page).not.toHaveURL(/\/#\/oversikt/)
-      await expect(page.getByRole('link', { name: /logga in/i }).first()).toBeVisible()
+      // Utloggad: inloggningssidan (signOut navigerar dit), aldrig kvar på Översikt
+      await expect(page).toHaveURL(/\/#\/login/)
+      await expect(page.getByRole('button', { name: /^logga in$/i })).toBeVisible()
     })
   })
 })
