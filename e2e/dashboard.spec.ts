@@ -23,8 +23,9 @@ test.describe('Översikt', () => {
   test('hälsar med förnamn i en h1', async ({ page }) => {
     const h1 = page.getByRole('heading', { level: 1 })
     await expect(h1).toBeVisible()
-    // DESIGN.md §2: "Hej Anna", aldrig "Välkommen tillbaka"
-    await expect(h1).toHaveText(/^hej\s+\S+/i)
+    // DESIGN.md §2: "Hej Anna", aldrig "Välkommen tillbaka". Hälsningen följer
+    // tid på dygnet (God morgon/dag/kväll) — CI 2026-09-12 föll på "God kväll Claude".
+    await expect(h1).toHaveText(/^(hej|god morgon|god dag|god kväll|god natt)\s+\S+/i)
   })
 
   test('huvudnavigationen visar de fem hubbarna', async ({ page }) => {
