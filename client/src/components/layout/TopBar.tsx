@@ -227,6 +227,9 @@ export function TopBar() {
               )}
               aria-expanded={showUserMenu}
               aria-haspopup="menu"
+              // D28 (2026-09-12): utan namn hette knappen bara förnamnets initial
+              // ("C") för skärmläsare. Mobilens motsvarighet heter redan "Min profil".
+              aria-label={t('topbar.profile')}
             >
               {/* Avatar */}
               <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 flex items-center justify-center overflow-hidden">

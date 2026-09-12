@@ -237,6 +237,17 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 
 ### Rättelser mot förra versionen
 
+- **D28-raden sa "24 av 94 föråldrade" — uppmätt 2026-09-12 med riktiga konton mot prod: 14 av 96,**
+  och det var inte främst navigationen. Elva berodde på två saker specarna inte kunde veta: testkontot
+  hade en obesvarad efterhandsfråga om konsulentsamtycke (KS3-dialogen, 2026-09-01) som låg som modal
+  över varje sida, och specarna gick till `/cv`, `/job-search`, `/cover-letter` utan `#/` och landade
+  på Översikt. Två var **riktiga fel i appen** som axe hittade först när testet fick köra:
+  CV-byggarens och profilhuvudets mätare saknade tillgängligt namn (`aria-progressbar-name`, serious),
+  och `TagInput` renderade "Inga tillagda ännu" inuti `role="list"` (`aria-required-children`, critical).
+  Samtycket gavs via dialogens riktiga knapp en gång (art. 7-texten sparad som för en riktig användare);
+  guiden "Välkommen till CV-byggaren!" stängs i specens förberedelse. Det tredje fyndet: de 80 "gröna"
+  var till stor del tomma — `if (await x.isVisible())` runt varje assertion gjorde att en sida som
+  saknade allt passerade. Omskrivna specar har inga vakter alls.
 - **KA3-raden sa 22 promptar och 2 356 rader (roadmap-pass 3, 2026-09-12).** `Object.keys(PROMPTS).length`
   var 20 och `wc -l` 2 402 innan delningen. CLAUDE.md:s `ai.js:1999` för SSE-grenen är nu rad ~976.
 - **KO4-raden beskrev en startsida som redan ändrats av ON2** — hjälten talade till den arbetssökande;
@@ -5081,7 +5092,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | **D24** | När D17–D19 är gröna: gör CI *required* på main. Så länge push = deploy och CI är permanent röd finns ingen mekanism mellan trasig commit och prod | S |
 | **D25** | **Tautologi-lint med fryst tak** — samma ratchet-mekanik som warnings/typfel/gradienter, applicerad på testsignal. Sviten växte 933 → 1 304 (+40 %) utan att fyra av sex mutationer fångades | M |
 | **D26** | **Process:** gör mutationsstickprov till standardsteg vid granskning. Sex mutationer tog under tio minuter och gav hårdare bevis än all läsning tillsammans. Fråga aldrig "finns det ett test?", fråga "vad händer om jag går sönder koden?" | — |
-| **D28** | **24 av 94 autentiserade e2e-tester är föråldrade** — skrivna mot den platta navigationen som ersattes 2026-04-29. Se arbetspass 3. Skriv om mot dagens UI; sänk inte assertionerna för att bli grön | M |
+| **D28** | **24 av 94 autentiserade e2e-tester är föråldrade** — skrivna mot den platta navigationen som ersattes 2026-04-29. Se arbetspass 3. Skriv om mot dagens UI; sänk inte assertionerna för att bli grön | ✅ **Klar 2026-09-12.** Uppmätt först: 14 av 96 föll (inte 24 av 94), varav 2 var riktiga WCAG-fel i appen. Fyra specar (`cv`, `job-search`, `cover-letter`, `dashboard`, 957 rader) omskrivna till 277 rader utan en enda `if (isVisible())`-vakt; `auth`, `golden-path`, `sta` och `fixtures` rättade. Appfixar: två mätare utan namn, tomtext inuti `role=list`, användarmenyn hette "C". 96/96 gröna mot prod efter deploy |
 | **D29** 🟡 *(rotorsak funnen 2026-08-12, kvarstår rött)* | **Lighthouse CI failar** — dog troligen i collect-steget (`.lighthouseci` saknades). Reproducera lokalt med samma flaggor mot `client/dist` | S |
 | **D27** | Skriv kända defekter som `it.fails` (`profileStore.test.ts:476` visar formen) i stället för att cementera dem i vanliga tester. `Image.test.tsx:98` asserterar motsatsen till sitt namn och låser fast en LCP-bugg | S |
 | **D31** | **Två tester timeoutar under `test:coverage` men inte under `test:run`.** `auth-flow.test.tsx` ("should show error on invalid credentials", 5 s) och `nav-smoke.test.tsx` ("mounts /cv", 20 s) föll i en körning 2026-08-12 och passerade i nästa — isolerat tar de 0,85 s respektive 2,7 s. Coverage-instrumenteringen dubblar sviten (23 s → 50 s) och pressar dem över gränsen under parallell belastning. Ett flakigt test i CI:s coverage-jobb ser ut som en regression och lär folk att köra om i stället för att läsa. Åtgärd: höj timeouten på just dessa två, eller ta bort den underliggande långsamheten — men mät först vilket | S |

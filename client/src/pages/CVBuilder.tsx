@@ -1628,7 +1628,7 @@ export default function CVBuilder() {
             <div className="bg-[var(--surface)] dark:bg-stone-800 border border-[var(--c-accent)] dark:border-stone-700 rounded-lg px-3.5 py-3 mb-3">
               {completedSteps.length > 0 ? (
                 <>
-                  <p className="m-0 text-[12.5px] font-semibold text-stone-900 dark:text-stone-100">
+                  <p id="cv-progress-etikett" className="m-0 text-[12.5px] font-semibold text-stone-900 dark:text-stone-100">
                     {t('cvBuilder.progress.done', {
                       defaultValue: '{{klara}} av {{totalt}} delar klara',
                       klara: completedSteps.length,
@@ -1638,6 +1638,7 @@ export default function CVBuilder() {
                   <div
                     className="h-1 rounded-full bg-stone-200 dark:bg-stone-700 mt-2 mb-2 overflow-hidden"
                     role="progressbar"
+                    aria-labelledby="cv-progress-etikett"
                     aria-valuenow={completedSteps.length}
                     aria-valuemin={0}
                     aria-valuemax={STEPS.length}

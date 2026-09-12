@@ -241,12 +241,14 @@ export function TagInput({
             </button>
           </span>
         ))}
-        {tags.length === 0 && (
-          <span className="text-xs text-stone-400 dark:text-stone-500 italic py-1">
-            Inga tillagda ännu
-          </span>
-        )}
       </div>
+      {/* D28 (2026-09-12): tomtexten låg inuti role="list" utan att vara ett listitem —
+          axe klassar det som kritiskt (aria-required-children). Nu utanför listan. */}
+      {tags.length === 0 && (
+        <p className="-mt-3 mb-3 text-xs text-stone-400 dark:text-stone-500 italic py-1">
+          Inga tillagda ännu
+        </p>
+      )}
 
       {/* Input */}
       {canAddMore && !disabled && (

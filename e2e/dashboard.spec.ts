@@ -1,271 +1,110 @@
-import { test, expect, TEST_USER, waitForSkeleton } from './fixtures'
+import { test, expect, TEST_USER, waitForAppReady } from './fixtures'
 
 /**
- * E2E tests for Dashboard and Onboarding flow
- * Tests the main entry point and user journey
+ * Översikt (/#/oversikt) — deltagarens startsida.
+ *
+ * Omskriven 2026-09-12 (D28). Den förra versionen var en generisk mall från
+ * april: `page.goto('/')`, "snabbåtgärder", `[class*="kpi"]`, och
+ * `if (await x.isVisible())` runt varje assertion — så den passerade tomt
+ * mot en sida som inte fanns längre. Den här versionen asserterar på det
+ * Översikt faktiskt är sedan 2026-09-10: hälsning med förnamn, ETT nästa
+ * steg med länk, det som är igång, och de fyra kategorierna. Inga vakter:
+ * saknas något ska testet falla.
  */
 
-test.describe('Dashboard', () => {
+test.describe('Översikt', () => {
   test.beforeEach(async ({ page, auth }) => {
     test.skip(!process.env.TEST_USER_EMAIL, 'Test credentials not configured')
     await auth.login(TEST_USER.email, TEST_USER.password)
+    await page.goto('/#/oversikt')
+    await waitForAppReady(page)
   })
 
-  test.describe('Initial Load', () => {
-    test('should load dashboard after login', async ({ page }) => {
-      await page.goto('/')
-
-      // Wait for skeleton to finish loading
-      await waitForSkeleton(page)
-
-      // Dashboard should be visible
-      await expect(page.locator('main, [class*="dashboard"]').first()).toBeVisible()
-    })
-
-    test('should display welcome greeting', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Should show personalized greeting or welcome message
-      const greeting = page.getByText(/välkommen|hej|god morgon|god dag|god kväll/i)
-      await expect(greeting.first()).toBeVisible()
-    })
-
-    test('should display KPI cards', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Should show progress/stats cards
-      const kpiSection = page.locator('[class*="kpi"], [class*="stat"], [class*="progress"]').first()
-        .or(page.getByText(/cv|ansökningar|jobb|sparade/i).first())
-
-      await expect(kpiSection).toBeVisible()
-    })
+  test('hälsar med förnamn i en h1', async ({ page }) => {
+    const h1 = page.getByRole('heading', { level: 1 })
+    await expect(h1).toBeVisible()
+    // DESIGN.md §2: "Hej Anna", aldrig "Välkommen tillbaka"
+    await expect(h1).toHaveText(/^hej\s+\S+/i)
   })
 
-  test.describe('Onboarding Section', () => {
-    test('should show "Kom igång" section', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Should have onboarding/getting started section
-      const onboardingSection = page.getByText(/kom igång|getting started|steg/i).first()
-      await expect(onboardingSection).toBeVisible()
-    })
-
-    test('should display onboarding steps', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Should show step items
-      const steps = page.locator('[class*="step"], [class*="onboarding"]')
-        .or(page.getByText(/steg \d|profil|cv|jobb/i))
-
-      await expect(steps.first()).toBeVisible()
-    })
-
-    test('should navigate to profile from onboarding', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Find profile link in onboarding
-      const profileLink = page.getByRole('link', { name: /profil|fyll i/i }).first()
-
-      if (await profileLink.isVisible()) {
-        await profileLink.click()
-        await expect(page).toHaveURL(/\/profile/)
-      }
-    })
-
-    test('should navigate to CV from onboarding', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Find CV link
-      const cvLink = page.getByRole('link', { name: /cv|skapa.*cv/i }).first()
-
-      if (await cvLink.isVisible()) {
-        await cvLink.click()
-        await expect(page).toHaveURL(/\/cv/)
-      }
-    })
+  test('huvudnavigationen visar de fem hubbarna', async ({ page }) => {
+    const hubnav = page.getByRole('navigation', { name: /huvudkategorier/i })
+    await expect(hubnav).toBeVisible()
+    for (const hub of [/^översikt$/i, /^söka jobb$/i, /^karriär$/i, /^resurser$/i, /^din vardag$/i]) {
+      await expect(hubnav.getByRole('link', { name: hub })).toBeVisible()
+    }
   })
 
-  test.describe('Quick Actions', () => {
-    test('should display quick action buttons', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
+  test('nästa steg är en rubrik med en länk som leder någonstans', async ({ page }) => {
+    const main = page.getByRole('main')
+    // Tre lägen: laddar / fel / klart. Statusraden säger när svaret är inne.
+    await expect(main.getByRole('status').filter({ hasText: /uppdaterad/i })).toBeVisible({ timeout: 15000 })
 
-      // Should have quick action section
-      const quickActions = page.getByText(/snabbåtgärder|quick actions/i)
-        .or(page.locator('[class*="quick-action"]'))
+    const rubrik = main.getByRole('heading', { level: 2 }).first()
+    await expect(rubrik).toBeVisible()
+    await expect(rubrik).not.toHaveText(/^\s*$/)
 
-      await expect(quickActions.first()).toBeVisible()
-    })
-
-    test('should navigate to job search via quick action', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Find job search quick action
-      const jobSearchButton = page.getByRole('link', { name: /sök jobb|hitta jobb/i }).first()
-
-      if (await jobSearchButton.isVisible()) {
-        await jobSearchButton.click()
-        await expect(page).toHaveURL(/\/job-search/)
-      }
-    })
+    // Nästa-steget är alltid en handling, aldrig en siffra
+    const handling = main.getByRole('link').first()
+    await expect(handling).toBeVisible()
+    await handling.click()
+    await expect(page).not.toHaveURL(/\/#\/oversikt$/)
   })
 
-  test.describe('Navigation', () => {
-    test('should have working navigation menu', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Find navigation (sidebar or top nav)
-      const nav = page.getByRole('navigation').first()
-        .or(page.locator('nav, [class*="sidebar"], [class*="nav"]').first())
-
-      await expect(nav).toBeVisible()
-    })
-
-    test('should navigate between main sections', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Test navigation to key pages
-      const pages = [
-        { link: /cv/i, url: /\/cv/ },
-        { link: /jobb|job/i, url: /\/job-search/ },
-        { link: /brev|cover/i, url: /\/cover-letter/ },
-      ]
-
-      for (const pageInfo of pages) {
-        await page.goto('/')
-        const link = page.getByRole('link', { name: pageInfo.link }).first()
-
-        if (await link.isVisible()) {
-          await link.click()
-          await expect(page).toHaveURL(pageInfo.url)
-        }
-      }
-    })
+  test('siffror utan underlag visas aldrig som 0', async ({ page }) => {
+    const main = page.getByRole('main')
+    await expect(main.getByRole('status').filter({ hasText: /uppdaterad/i })).toBeVisible({ timeout: 15000 })
+    // CLAUDE.md: "Ett tomt fält är inte en nolla" — en ensam "0" som värde
+    // i en länk/kort är regeln bruten. Räknas som text-noder som är exakt "0".
+    const nollor = await main.locator('a, button').evaluateAll((els) =>
+      els.filter((el) => Array.from(el.querySelectorAll('*')).some((n) => n.childElementCount === 0 && n.textContent?.trim() === '0')).length
+    )
+    expect(nollor).toBe(0)
   })
 
-  test.describe('Expandable Sections', () => {
-    test('should toggle section expansion', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Find expandable section button
-      const expandButton = page.getByRole('button', { name: /kom igång|utveckling|snabbåtgärder/i }).first()
-
-      if (await expandButton.isVisible()) {
-        const initialState = await expandButton.getAttribute('aria-expanded')
-
-        await expandButton.click()
-
-        // State should toggle
-        const newState = await expandButton.getAttribute('aria-expanded')
-        expect(newState).not.toBe(initialState)
-      }
-    })
+  test('undersidorna för hubben nås från undernavigationen', async ({ page }) => {
+    const subnav = page.getByRole('navigation', { name: /undersidor/i })
+    await expect(subnav).toBeVisible()
+    await subnav.getByRole('link', { name: /^cv$/i }).click()
+    await expect(page).toHaveURL(/\/#\/cv/)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/^cv$/i)
   })
 
-  test.describe('Responsiveness', () => {
-    test('should display correctly on mobile', async ({ page }) => {
-      await page.setViewportSize({ width: 375, height: 667 })
-      await page.goto('/')
-      await waitForSkeleton(page)
+  test('mobil: bottennavigeringen och menyn visar hubbarna', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 667 })
+    await page.goto('/#/oversikt')
+    await waitForAppReady(page)
 
-      // Main content should be visible
-      await expect(page.locator('main').first()).toBeVisible()
+    await expect(page.getByRole('main')).toBeVisible()
+    const botten = page.getByRole('navigation', { name: /hubnavigering/i })
+    await expect(botten).toBeVisible()
+    await expect(botten.getByRole('link', { name: /söka jobb/i })).toBeVisible()
 
-      // Mobile menu should be accessible
-      const menuButton = page.getByRole('button', { name: /meny|menu/i })
-      if (await menuButton.isVisible()) {
-        await menuButton.click()
-        const nav = page.getByRole('navigation')
-        await expect(nav.first()).toBeVisible()
-      }
-    })
-
-    test('should display correctly on tablet', async ({ page }) => {
-      await page.setViewportSize({ width: 768, height: 1024 })
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Dashboard should adapt to tablet
-      await expect(page.locator('main').first()).toBeVisible()
-    })
+    await page.getByRole('button', { name: /^meny$/i }).click()
+    const meny = page.getByRole('dialog', { name: /^meny$/i })
+    await expect(meny).toBeVisible()
+    await expect(meny.getByRole('link', { name: /^cv$/i })).toBeVisible()
   })
 
-  test.describe('Accessibility', () => {
-    test('should have proper heading hierarchy', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Should have h1
-      const h1 = page.getByRole('heading', { level: 1 })
-      await expect(h1.first()).toBeVisible()
-    })
-
-    test('should have accessible buttons', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Buttons should have accessible names
-      const buttons = page.getByRole('button')
-      const buttonCount = await buttons.count()
-
-      for (let i = 0; i < Math.min(buttonCount, 5); i++) {
-        const button = buttons.nth(i)
-        if (await button.isVisible()) {
-          const name = await button.getAttribute('aria-label') ||
-            await button.textContent()
-          expect(name?.trim()).toBeTruthy()
-        }
-      }
-    })
-
-    test('should support keyboard navigation', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
-
-      // Tab through interactive elements
-      await page.keyboard.press('Tab')
-
-      // First focusable element should be focused
-      const focusedElement = page.locator(':focus')
-      await expect(focusedElement).toBeVisible()
-
-      // Continue tabbing - should not get stuck
-      await page.keyboard.press('Tab')
-      await page.keyboard.press('Tab')
-
-      // Focus should have moved
-      await expect(page.locator(':focus')).toBeVisible()
-    })
+  test('tangentbord: första Tab landar på hopplänken', async ({ page }) => {
+    await page.keyboard.press('Tab')
+    await expect(page.getByRole('link', { name: /hoppa till huvudinnehåll/i })).toBeFocused()
   })
 
-  test.describe('Error Handling', () => {
-    test('should not show error boundary', async ({ page }) => {
-      await page.goto('/')
-      await waitForSkeleton(page)
+  test('varje synlig knapp har ett namn', async ({ page }) => {
+    const knappar = page.getByRole('button')
+    const antal = await knappar.count()
+    expect(antal).toBeGreaterThan(0)
+    for (let i = 0; i < antal; i++) {
+      const knapp = knappar.nth(i)
+      if (!(await knapp.isVisible())) continue
+      await expect(knapp, `knapp ${i} saknar tillgängligt namn`).toHaveAccessibleName(/\S/)
+    }
+  })
 
-      // Should not have error boundary visible
-      const errorBoundary = page.locator('[class*="error-boundary"], [class*="error-fallback"]')
-      await expect(errorBoundary).not.toBeVisible()
-    })
-
-    test('should handle network errors gracefully', async ({ page }) => {
-      // Simulate offline
-      await page.route('**/api/**', route => route.abort())
-
-      await page.goto('/')
-
-      // Should still render something (fallback/cached data)
-      await expect(page.locator('main, body').first()).toBeVisible()
-    })
+  test('ingen felgräns och ingen evig laddning', async ({ page }) => {
+    await expect(page.locator('[data-testid="route-error-fallback"]')).toHaveCount(0)
+    await expect(page.getByText('Laddar Jobin...')).toHaveCount(0)
+    await expect(page.getByText(/något gick fel/i)).toHaveCount(0)
   })
 })

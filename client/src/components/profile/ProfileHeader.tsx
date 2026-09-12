@@ -131,7 +131,7 @@ export function ProfileHeader() {
           {/* Progress section */}
           <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              <span id="profilstatus-etikett" className="text-sm font-medium text-stone-700 dark:text-stone-300">
                 Profilstatus
               </span>
               <span className={cn(
@@ -155,6 +155,7 @@ export function ProfileHeader() {
                 )}
                 style={{ width: `${completion.percent}%` }}
                 role="progressbar"
+                aria-labelledby="profilstatus-etikett"
                 aria-valuenow={completion.percent}
                 aria-valuemin={0}
                 aria-valuemax={100}

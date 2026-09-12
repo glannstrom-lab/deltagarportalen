@@ -61,9 +61,11 @@ test.describe('Golden path — deltagare', () => {
     await page.goto('/#/oversikt')
     await waitForAppReady(page)
 
-    const aside = page.locator('aside')
-    for (const hub of [/översikt/i, /söka jobb/i, /karriär/i, /resurser/i, /din vardag/i]) {
-      await expect(aside.getByRole('link', { name: hub }).first()).toBeVisible({ timeout: 10000 })
+    // Omläggningen 2026-08-17: hubbarna ligger i toppnavens <nav aria-label="Huvudkategorier">,
+    // inte i en <aside>. Etiketterna kommer ur nav.hubs.* i sv.json.
+    const hubnav = page.getByRole('navigation', { name: /huvudkategorier/i })
+    for (const hub of [/^översikt$/i, /^söka jobb$/i, /^karriär$/i, /^resurser$/i, /^din vardag$/i]) {
+      await expect(hubnav.getByRole('link', { name: hub }).first()).toBeVisible({ timeout: 10000 })
     }
   })
 })

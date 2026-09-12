@@ -33,10 +33,11 @@ export class AuthHelper {
   }
 
   async logout() {
-    // Open user menu and click logout
-    await this.page.getByRole('button', { name: /profil|meny/i }).click()
-    await this.page.getByRole('menuitem', { name: /logga ut/i }).click()
-    await this.page.waitForURL(/\/#\/login/)
+    // D28 (2026-09-12): användarmenyn sitter i TopBar och heter "Min profil"
+    // (topbar.profile); "Logga ut" är en vanlig knapp i menyn, inte ett menuitem.
+    await this.page.getByRole('button', { name: /^min profil$/i }).first().click()
+    await this.page.getByRole('button', { name: /logga ut/i }).click()
+    await this.page.waitForURL((u) => !u.hash.startsWith('#/oversikt'), { timeout: 15000 })
   }
 
   async isLoggedIn(): Promise<boolean> {

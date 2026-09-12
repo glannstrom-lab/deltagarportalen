@@ -97,6 +97,9 @@ test.describe('STA/Arbetsprövning — konsulentvyn är borttagen', () => {
     await page.goto('/#/consultant')
     await waitForAppReady(page)
     await expectPageAlive(page)
-    await expect(page.getByRole('tablist').first()).toBeVisible({ timeout: 10000 })
+    // Konsulentvyns flikar är länkar i sidoskenan (SidRail, 2026-08-17), inte en tablist
+    await expect(
+      page.getByRole('navigation', { name: /konsultportal — avsnitt/i }).getByRole('link', { name: /^deltagare$/i })
+    ).toBeVisible({ timeout: 10000 })
   })
 })

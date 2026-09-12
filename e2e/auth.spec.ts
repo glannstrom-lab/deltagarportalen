@@ -86,11 +86,12 @@ test.describe('Authentication', () => {
       await auth.login(TEST_USER.email, TEST_USER.password)
 
       // Should be on dashboard
-      await expect(page).toHaveURL('/')
+      // Inloggade landar på Översikt (C3, 2026-07-10), inte på '/'
+      await expect(page).toHaveURL(/\/#\/oversikt/)
 
-      // Visit login page should redirect back
+      // Visit login page should redirect back — till Översikt, inte '/'
       await page.goto('/#/login')
-      await expect(page).toHaveURL('/')
+      await expect(page).toHaveURL(/\/#\/oversikt/)
     })
 
     test('should be accessible', async ({ page }) => {
@@ -174,13 +175,15 @@ test.describe('Authentication', () => {
     test('should logout successfully', async ({ page, auth }) => {
       // Login first
       await auth.login(TEST_USER.email, TEST_USER.password)
-      await expect(page).toHaveURL('/')
+      // Index redirectar inloggade till /#/oversikt (C3, 2026-07-10)
+      await expect(page).toHaveURL(/\/#\/oversikt/)
 
       // Logout
       await auth.logout()
 
-      // Should be on login page or landing
-      await expect(page).toHaveURL(/(\/#\/login|^\/$)/)
+      // Utloggad: landningssidan eller inloggningen, aldrig kvar på Översikt
+      await expect(page).not.toHaveURL(/\/#\/oversikt/)
+      await expect(page.getByRole('link', { name: /logga in/i }).first()).toBeVisible()
     })
   })
 })
