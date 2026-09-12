@@ -741,7 +741,7 @@ export default function Landing() {
                 demoknapp, med ett ämne som säger vad det gäller.
               */}
               <a
-                href="/for-arbetsmarknadsenheter/#demo"
+                href="/for-arbetsmarknadsenheter/"
                 className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
               >
                 {t('landing.audience.consultant.cta', 'Boka en visning av konsulentvyn')}
