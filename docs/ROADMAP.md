@@ -720,6 +720,8 @@ inte kompletteras med en. Det är nästa steg i AG1/RM2, och det är inte gjort.
   visningstak. **AI får skriva presentationstexten men aldrig välja personen** — det är precis den
   gränsen som håller portalen i lågrisk · ~2 veckor
 
+- [ ] **AG10** 📝 **Designförslag för företagskontot, 2026-09-13** (Mikael: "nu vill jag få in företagen, på ett företagskonto, ge förslag på hur den vyn ska se ut och vilka funktioner den ska innehålla"). Publicerat som artefakt "Företagskontot i Jobin": en **mottagarvy** — Översikt, Våra platser, Förslag, Pågående, Meddelanden (via konsulenten), Stöd och regler, Om företaget — där företaget äger sin plats (samma fält som `consultant_work_placements`), ser ett förslag först när deltagaren godkänt (AG5), fyller i 3/6-månadersavstämningen, och aldrig ser en lista, en poäng eller ett nej. **Rekommendation:** bygg företaget som organisationstyp `arbetsgivare` i `organizations` (ärver inbjudan, medlemskap, AI-brytare, demobanner) i stället för rollen `EMPLOYER` i AG6; inbjudan går från platsens kontaktperson (mejl fungerar sedan DE1). **Tre beslut väntar:** organisation vs roll, direktkontakt företag→deltagare (rek. nej i etapp 1), och tre företagssamtal före AG6 (rek. ja). Mätt 2026-09-13: 0 placeringar, 1 företag i `spontaneous_companies`, 2 organisationer (kommun), 43 policyer att läsa.
+
 ### Etapp 2 — betalning, när någon sagt ja
 
 - [ ] **AG9** 🔴 **beslut — prismodell och avtal för företagskunder.** Mätt: portalen tar i dag
