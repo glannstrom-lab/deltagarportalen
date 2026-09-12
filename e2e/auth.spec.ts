@@ -221,6 +221,8 @@ test.describe('Protected Routes', () => {
   test('startsidan visar fortfarande landningssidan för en gäst', async ({ page }) => {
     await page.goto('/')
     await waitForAppReady(page)
-    await expect(page.getByText(/stärk dina deltagare/i)).toBeVisible()
+    // KO4 (2026-09-12): startsidan börjar hos den arbetssökande, inte hos konsulenten.
+    // Rubriken bor i landing.hero.title* i sv.json — ändras den, ändra här.
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/sök jobb i din egen takt/i)
   })
 })
