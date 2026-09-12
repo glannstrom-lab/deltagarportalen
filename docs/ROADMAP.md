@@ -223,10 +223,10 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 ### Kvar i spåret (ordning)
 
 1. ~~Självbetjäning~~ ~~överlämning~~ (pass 6–7) · inbjudan via mejl (blockerad av DE1),
-   otilldelade (BL1) · **beslut:** journal/mål/möten vid byte av konsulent (KS2 a/b/c).
+   otilldelade (BL1) · **beslut taget 2026-09-12 (Mikael): KS2 = b.** Vid överlämning inom samma organisation får den nya konsulenten **läsrätt** till deltagarens journal, mål, möten och placeringar; ny text skrivs i egen journal; den gamla konsulenten tappar åtkomsten; det gamla står kvar orört med ursprunglig författare. Att bygga: SELECT-policyer via `consultant_participants` (aktiv relation) på de fyra tabellerna, UPDATE/DELETE bara för `author_id`/`consultant_id` = auth.uid(), UI-markering "skriven av <namn>, före överlämningen".
 2. ~~KM8~~ ~~KM9~~ ~~KM10~~ · KM11: fler språk kräver översättare (mekanismen finns) ·
    mejlnotiser när DE1 är löst.
-3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy, (4) PUB-avtal — utkast finns i
+3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy — **beslut 2026-09-12 (Mikael): juridisk person = Glänne & Söner, enskild firma.** Skrivs så i policy, Art 30 och DPIA (innehavare Mikael Glännström); organisationsnumret är personnumret och sätts bara i PUB-avtalet vid signering, aldrig i publika dokument. Kvar att bygga: byt platshållarna. (4) PUB-avtal — utkast finns i
    `juridik/`, juridisk granskning + org.nr kvar,
    (5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen, (8) demokonto, (9) kontakt/om
    oss, ~~(10) rotera OpenRouter-nyckeln (A1)~~ (klar 2026-09-12). Guidens engelska (`content_en`) saknas.
@@ -234,6 +234,13 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
    efter varje ändring i spåret.
 5. `activity_sessions_participant_guard` har PUBLIC execute (harmlös som trigger, inte
    definer) — revokera för ordningens skull vid nästa migration.
+
+### Beslut 2026-09-12 (Mikael, en fråga i taget)
+
+- **KS2 = b.** Vid överlämning inom samma organisation får ny konsulent läsrätt till journal, mål, möten och placeringar; ny text i egen journal; gamla konsulenten tappar åtkomsten; historiken orörd med ursprunglig författare.
+- **Juridisk person = Glänne & Söner, enskild firma.** Namn och form in i policy/Art 30/DPIA; organisationsnumret (personnummer) bara i PUB-avtalet vid signering.
+- **Perplexity = a, av för organisationskonton.** De fem anroparna går på gpt-oss-120b utan webbsökning för användare med organisation; fria konton oförändrade.
+- **Gallring = a, slå på nu.** Mikael aktiverar pg_cron i Supabase; migrationen `20260515_retention_cron.sql` körs för de beslutade perioderna (inaktiva konton 24 mån, AI-loggar 90 dagar, auditloggar 5 år) efter en torrkörning som listar vad som skulle raderas. Jobb märkta "bekräftas" i RETENTION-POLICY väntar på perioder.
 
 ### Rättelser mot förra versionen
 
@@ -962,7 +969,7 @@ nedan) och **MV2b** (väntar på beslut).
   client/api/*.js` → 0. Bara `console.error` i koden som bär PII-sanering, art. 9-grinden
   och tokentaket. Fix: delat felfångst-wrap i `_shared/` och `_utils/`, sanerat
   meddelande, samma DSN · mätt · ~3–4 h
-- [x] **BL7** ✅ **Klar 2026-09-12 (dokumentationsdelen)** — `privacy.sharing.aiDesc` (sv + en) namnger Perplexity, de fyra funktionerna och att pendlingsplaneraren skickar adressen; Art 30-registret har en Perplexity-rad märkt DPA saknas; `Privacy.tsx` daterad 2026-09-12. **Beslutet kvarstår:** behålla Perplexity med DPA/SCC eller stänga av för organisationskonton (PUB-avvikelse 2). *(Var:)* **Integritetspolicyns mottagarlista saknar Perplexity.** `privacy.sharing.*`
+- [x] **BL7** ✅ **Klar 2026-09-12 (dokumentationsdelen)** — `privacy.sharing.aiDesc` (sv + en) namnger Perplexity, de fyra funktionerna och att pendlingsplaneraren skickar adressen; Art 30-registret har en Perplexity-rad märkt DPA saknas; `Privacy.tsx` daterad 2026-09-12. **Beslut taget 2026-09-12 (Mikael): a — Perplexity AV för organisationskonton.** De fem Perplexity-anroparna (`ai-career-assistant`, `ai-company-search`, `ai-company-analysis`, `ai-commute-planner`, `ai-industry-radar`) ska för användare med `organization_id` gå på `openai/gpt-oss-120b` utan webbsökning; fria konton behåller `perplexity/sonar`. PUB-avvikelse 2 stryks när det är byggt. Att bygga: gemensam modellväljare i `_shared/aiGate.ts` som läser org-tillhörighet, grind som fäller om någon av de fem anropar sonar för en org-användare. *(Var:)* **Integritetspolicyns mottagarlista saknar Perplexity.** `privacy.sharing.*`
   listar Supabase, OpenRouter, Sentry; Perplexity förekommer 0 gånger i `sv.json`,
   `en.json`, DPIA:n och Art. 30-registret (AI-policysidan nämner den sedan JD2 — portalen
   säger olika saker). Fix: lägg till med vad som skickas och webbsökningen, eller stäng de
