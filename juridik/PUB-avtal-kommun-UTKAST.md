@@ -189,7 +189,7 @@ har bekräftats.
    ingen motpart. `[Mikael]`
 2. **Perplexity** är inte redovisat i integritetspolicyn. Antingen in i policyn eller av för
    kommunens deltagare.
-3. **Automatisk gallring** är inte driftsatt. Manuell gallring på begäran tills vidare.
+3. ~~Automatisk gallring~~ — driftsatt 2026-09-12 (fyra pg_cron-jobb enligt RETENTION-POLICY; perioder märkta "bekräftas" väntar fortfarande på beslut).
 4. **BankID/SSO** finns inte. Kommunens IT kommer fråga.
 5. ~~Brytare för AI per organisation~~ — finns sedan 2026-09-12.
 6. ~~Läslogg för deltagaren~~ — finns sedan 2026-09-12.

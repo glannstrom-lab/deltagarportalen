@@ -33,11 +33,11 @@ Vi sparar bara persondata så länge det behövs för det ändamål de samlats i
 | Datakategori | Retention | Trigger för borttagning | Implementation |
 |---|---|---|---|
 | **Aktivt konto** | Tills användaren raderar | Användaren begär radering via Settings | `delete-account` edge function (✅ finns) |
-| **Inaktivt konto** | 24 månader efter senaste login | Cron-job + email-varning vid 18 mån | ❌ Att implementera |
-| **AI-promptar** (`ai_usage_logs`) | 90 dagar | Cron daglig | ❌ Att implementera |
+| **Inaktivt konto** | 24 månader efter senaste login | Cron-job + email-varning vid 18 mån | ✅ **Driftsatt 2026-09-12** (`retention-inactive-accounts`, 03:00 UTC, via `execute_inactive_account_retention()`; varningsmejlet kräver att `send-inactivity-warning` triggas — öppet) |
+| **AI-promptar** (`ai_usage_logs`) | 90 dagar | Cron daglig | ✅ **Driftsatt 2026-09-12** (`retention-ai-usage-logs`, 04:00 UTC; första körningen raderar 25 av 159 rader) |
 | **Sentry events** | 90 dagar | Sentry vendor default | ✅ Auto |
-| **Audit-loggar** (`consent_history`, `data_sharing_audit`, `admin_audit_log`) | 5 år | Cron daglig (efter 5 år) | ❌ Att implementera |
-| **Account deletion grace** (`account_deletion_requests`) | 14 dagar (eller direkt vid bekräftelse) | Cron daglig + edge function | ✅ Finns |
+| **Audit-loggar** (`consent_history`, `data_sharing_audit`, `admin_audit_log`) | 5 år | Cron veckovis (söndag 05:00 UTC) | ✅ **Driftsatt 2026-09-12** (`retention-audit-logs`) |
+| **Account deletion grace** (`account_deletion_requests`) | 14 dagar (eller direkt vid bekräftelse) | Cron daglig (`process-deletion-requests`, 02:00 UTC) | ✅ **Körs sedan 2026-09-12** — stod som ✅ tidigare men jobbet fanns inte (pg_cron av) och anropade dessutom en funktion med fel signatur; en begäran låg förfallen i fem veckor. Nu `execute_scheduled_account_deletions()`, verifierad |
 | **Email-notiser i kö** | 30 dagar | Vendor default (Supabase Auth-email) | ✅ Auto |
 | **Uppladdade bilder** (Vercel Blob) | Tills användaren tar bort eller raderar konto | Manuell + cascade vid kontoradering | 🟡 Manuell (cascade saknas i delete-account?) |
 | **CV-PDF:er** | Tills användaren raderar versionen | Manuell | ✅ |

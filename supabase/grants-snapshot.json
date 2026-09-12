@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T20:16:04.719Z",
+  "generatedAt": "2026-09-12T14:11:10.923Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -140,6 +140,20 @@
       "definer": true,
       "anon": false,
       "authenticated": true
+    },
+    {
+      "name": "execute_inactive_account_retention",
+      "signature": "execute_inactive_account_retention()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "execute_scheduled_account_deletions",
+      "signature": "execute_scheduled_account_deletions()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "export_user_data",
