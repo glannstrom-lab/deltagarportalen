@@ -190,7 +190,7 @@ har bekräftats.
 2. **Perplexity** är inte redovisat i integritetspolicyn. Antingen in i policyn eller av för
    kommunens deltagare.
 3. ~~Automatisk gallring~~ — driftsatt 2026-09-12 (fyra pg_cron-jobb enligt RETENTION-POLICY; perioder märkta "bekräftas" väntar fortfarande på beslut).
-4. **BankID/SSO** finns inte. Kommunens IT kommer fråga.
+4. **SSO för kommunens personal** (Microsoft Entra ID) — beslutad 2026-09-12, byggs som SSO1. BankID för deltagare erbjuds inte; tas upp när en kommun kräver det.
 5. ~~Brytare för AI per organisation~~ — finns sedan 2026-09-12.
 6. ~~Läslogg för deltagaren~~ — finns sedan 2026-09-12.
 7. **Certifieringar** finns inte; granskning enligt punkt 10 i stället.
