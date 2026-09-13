@@ -4392,6 +4392,26 @@ jobb som inte fanns — varje `bg-[var(--c-bg)]/30` blev falskt röd.
   jobbevakningen, nu `interview_sessions`). Grinden läser 742 filer och fångar
   tabell- och kolumnREFERENSER — men en insert med påhittade fältnamn går rakt
   igenom.
+- **D33 — `e2e-authenticated`s CI-jobb fällde `cv.spec.ts` + en Profile-a11y-rad
+  2026-09-13, INTE en regression.** Push `c48e7727` (roadmap-passets tredje
+  omgång) fick "E2E Authenticated (golden path)" att gå från grönt (föregående
+  körning, `db56242b`, 12 timmar tidigare, samma sviter) till rött. Spårat till
+  botten innan något stängdes: `TEST_USER_EMAIL` pekar i dag på
+  `km-deltagare@jobin.test` (KM-spårets testkonto) — mätt direkt mot prod:
+  `onboarding_completed=true`, **`cv_count=0`**. `cv.spec.ts` förutsätter ett
+  konto med ett befintligt CV (mätare, mallval, spara-knapp) och får i stället
+  CV-byggarens tomma välkomstskärm, som är korrekt beteende för ett konto utan
+  CV — testet är fel, inte koden. Den andra fällningen (Profile-sidans a11y)
+  är en äkta men obesläktad kontrastbrist: `text-stone-400`/`dark:text-stone-500`
+  på en rad i en modal ("Du kan alltid komma tillbaka och ändra…") ger 4,4:1
+  där AA kräver 4,5:1 — samma familj som `fallor-i-mork-tema-tokens`-fyndet,
+  marginellt under gränsen, ingen av de 31 filerna i passet rör Profile eller
+  den token. Ingen av de här två är byggd i det här passet — **väntar på ett
+  beslut**: seeda `km-deltagare` med ett CV (enklast, men blandar KM- och
+  golden-path-testdata), byt `TEST_USER_EMAIL`-secreten till ett konto med CV,
+  eller låt `cv.spec.ts` skapa sitt eget CV om det saknas. Kontrastraden är en
+  fristående, redan känd klass av fynd och kan tas separat · `e2e/cv.spec.ts`,
+  `e2e/axe-a11y.spec.ts` · beslut + S
 
 **Form**
 
