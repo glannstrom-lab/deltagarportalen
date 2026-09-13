@@ -140,6 +140,21 @@ describe('CommunicationTab — KS7: felläge skilt från "inga meddelanden ännu
   })
 })
 
+describe('CommunicationTab — PG-skav 8 (persona-genomgången 2026-09-12): mallknapparna har en rubrik', () => {
+  it('grupperar snabbmeddelande-knapparna under en synlig, kopplad rubrik', async () => {
+    renderTab()
+    await screen.findByText('Inga meddelanden')
+
+    const rubrik = screen.getByText('Snabbmeddelanden')
+    const grupp = screen.getByRole('group', { name: 'Snabbmeddelanden' })
+    expect(grupp).toHaveAttribute('aria-labelledby', rubrik.id)
+
+    expect(screen.getByRole('button', { name: /Påminnelse om möte/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Check-in meddelande/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Grattis till framsteg/i })).toBeInTheDocument()
+  })
+})
+
 describe('CommunicationTab — KK3: skrivvägarna går genom consultantService', () => {
   const participant = {
     participant_id: 'p1', first_name: 'Dana', last_name: 'Deltagare', email: 'dana@example.com',

@@ -18,6 +18,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { apiLogger } from '@/lib/logger'
+import { formatLocalDate, addDays } from '@/services/aktivitetSchema'
 
 // Supabase-fetch som avbryts vid unmount/navigation rejectar inte alltid som
 // AbortError — vid sid-navigation ger Chrome "TypeError: Failed to fetch" och
@@ -117,6 +118,49 @@ const NOTIFICATION_COLUMNS =
   'id, user_id, type, title, message, read, read_at, action_url, data, created_at'
 
 // ============================================
+// PRIORITERAD SORTERING (persona-skav 2026-09-12)
+// ============================================
+//
+// Notiserna sorterades bara på `created_at` — ett pass i morgon (skapat i
+// går kväll av `skicka_passpaminnelser()`) hamnade under gårdagens
+// jobbmatchning bara för att den var yngre. De fyra `aktivitet_*`-typerna
+// (KM10 + F3) bär alla ett `data.date` (se `aktivitetNotiser.ts` och
+// migrationen `20260913010000_f3_pass_paminnelse.sql`) — det datumet, inte
+// `created_at`, avgör hur bråttom notisen är.
+//
+// `foretag_*` och de äldre typerna (message/job_match/…) bär inget `date` i
+// `data` och rör sig därför aldrig i sorteringen — samma ordning som förut.
+const AKTIVITET_TYPER_MED_DATUM: ReadonlySet<NotificationType> = new Set([
+  'aktivitet_plan',
+  'aktivitet_pass',
+  'aktivitet_franvaro',
+  'aktivitet_paminnelse',
+])
+
+/** Sant om notisen handlar om ett pass/en plan vars datum är i dag eller i morgon. */
+function arTidskansligOchNara(n: Notification, idagStr: string, imorgonStr: string): boolean {
+  if (!AKTIVITET_TYPER_MED_DATUM.has(n.type)) return false
+  const datum = n.data?.['date']
+  return typeof datum === 'string' && (datum === idagStr || datum === imorgonStr)
+}
+
+/**
+ * Tidskänsliga notiser (dagens/morgondagens pass) före allt annat;
+ * `created_at` avgör ordningen inom varje grupp. Ren funktion, testbar utan
+ * React Query — se `useNotifications.test.ts`.
+ */
+export function sorteraNotiser(rader: readonly Notification[]): Notification[] {
+  const idagStr = formatLocalDate(new Date())
+  const imorgonStr = addDays(idagStr, 1)
+  return [...rader].sort((a, b) => {
+    const brA = arTidskansligOchNara(a, idagStr, imorgonStr)
+    const brB = arTidskansligOchNara(b, idagStr, imorgonStr)
+    if (brA !== brB) return brA ? -1 : 1
+    return b.created_at.localeCompare(a.created_at)
+  })
+}
+
+// ============================================
 // HOOK
 // ============================================
 
@@ -152,7 +196,7 @@ export function useNotifications(): UseNotificationsReturn {
     },
   })
 
-  const notifications = useMemo(() => query.data ?? [], [query.data])
+  const notifications = useMemo(() => sorteraNotiser(query.data ?? []), [query.data])
 
   // Transienta avbrott (navigation/unmount) ska varken loggas eller visas
   const error = useMemo(() => {

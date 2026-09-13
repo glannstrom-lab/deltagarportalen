@@ -15,6 +15,7 @@
  */
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 
 vi.mock('@/components/layout/index', () => ({
@@ -51,7 +52,9 @@ vi.mock('@/components/layout/index', () => ({
 }))
 
 vi.mock('@/components/consent/WellnessConsentGate', () => ({
-  WellnessConsentGate: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+  WellnessConsentGate: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="wellness-gate">{children}</div>
+  ),
 }))
 
 vi.mock('@/components/FocusModeProvider', () => ({
@@ -110,5 +113,33 @@ describe('F21: dagbokens fyra flikar har alltid ett tillgängligt namn', () => {
 
     const moodTab = screen.getByRole('button', { name: 'Humör' })
     expect(moodTab).not.toHaveAttribute('aria-current')
+  })
+})
+
+describe('F6: bara Mood kräver hälsosamtycke', () => {
+  it('Dagbok, Mål och Tacksamhet renderas utan WellnessConsentGate', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    expect(screen.getByText('journal-tab-content')).toBeInTheDocument()
+    expect(screen.queryByTestId('wellness-gate')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Mål' }))
+    expect(screen.getByText('goals-tab-content')).toBeInTheDocument()
+    expect(screen.queryByTestId('wellness-gate')).not.toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Tacksamhet' }))
+    expect(screen.getByText('gratitude-tab-content')).toBeInTheDocument()
+    expect(screen.queryByTestId('wellness-gate')).not.toBeInTheDocument()
+  })
+
+  it('Humör ligger bakom WellnessConsentGate', async () => {
+    const user = userEvent.setup()
+    renderPage()
+
+    await user.click(screen.getByRole('button', { name: 'Humör' }))
+    const gate = screen.getByTestId('wellness-gate')
+    expect(gate).toBeInTheDocument()
+    expect(gate).toHaveTextContent('mood-tab-content')
   })
 })

@@ -987,7 +987,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
   if (isFocusMode) {
     return (
       <PageFocusShell
-        title={t('interviewSimulator.title', 'Intervjusimulator')}
+        title={t('interviewSimulator.title', 'Din intervjuträning')}
         icon={Mic}
         domain="activity"
       >

@@ -40,7 +40,7 @@ interface WriteModalProps {
   onSave: (entry: {
     title: string
     content: string
-    mood: number
+    mood: number | null
     tags: string[]
     entry_type: 'diary' | 'reflection'
   }) => void
@@ -51,7 +51,11 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState(initialPrompt ? `${initialPrompt}\n\n` : '')
-  const [mood, setMood] = useState(3)
+  // F6: ingen förvald mood — en ren jobbsökaranteckning kräver inte
+  // hälsosamtycke, och ett förvalt värde hade skickat ett mood-fält även
+  // när användaren aldrig rört reglaget (se check_wellness_consent-policyn
+  // på diary_entries).
+  const [mood, setMood] = useState<number | null>(null)
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [isSaving, setIsSaving] = useState(false)
@@ -90,7 +94,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
       // Reset form
       setTitle('')
       setContent('')
-      setMood(3)
+      setMood(null)
       setTags([])
       onClose()
     } finally {
@@ -140,7 +144,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
                 <button
                   key={m}
                   type="button"
-                  onClick={() => setMood(m)}
+                  aria-pressed={mood === m}
+                  onClick={() => setMood(mood === m ? null : m)}
                   className={cn(
                     "flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1",
                     mood === m
@@ -261,7 +266,7 @@ export function JournalTab() {
   const handleSaveEntry = async (entryData: {
     title: string
     content: string
-    mood: number
+    mood: number | null
     tags: string[]
     entry_type: 'diary' | 'reflection'
   }) => {

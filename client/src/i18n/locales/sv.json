@@ -2159,6 +2159,8 @@
       "replaceBody": "Texten du har nu ersätts av det nya utkastet, och går inte att få tillbaka. Du kan lika gärna behålla den du har och ändra i den.",
       "replaceConfirm": "Skriv ett nytt utkast",
       "replaceCancel": "Behåll det jag har",
+      "mallVarierarInte": "Mallen är alltid likadan",
+      "mallVarierarInteBody": "Den bygger bara på jobbtiteln och företaget, så ett nytt försök ger samma text. Fyll i luckorna själv, eller lägg till ditt CV eller några egna rader så kan AI:n skriva ett riktigt brev.",
       "nothingToSave": "Det finns inget att spara ännu — skriv några rader först.",
       "untitled": "Personligt brev",
       "savedShort": "Sparat",
@@ -4707,7 +4709,7 @@
   },
   "personalBrand": {
     "editorialSpot": "Bygg en tydlig bild av vad du kan.",
-    "pageTitle": "Ditt personliga varumärke",
+    "pageTitle": "Ditt intryck utåt",
     "pageDescription": "Hur du syns för en arbetsgivare — och vad du kan göra åt det",
     "tabs": {
       "audit": {
@@ -5471,7 +5473,7 @@
         "title": "Ny dagboksanteckning",
         "titleLabel": "Titel på inlägget (valfritt)",
         "titlePlaceholder": "Titel (valfritt)",
-        "howAreYou": "Hur mår du?",
+        "howAreYou": "Hur mår du? (valfritt — klicka igen för att ta bort valet)",
         "contentLabel": "Dina tankar",
         "contentPlaceholder": "Skriv dina tankar...",
         "addTagLabel": "Lägg till tagg",
@@ -8263,7 +8265,7 @@
     "ratingStarAria": "Betyg {{star}} av 5",
     "readingTime_one": "{{count}} min",
     "readingTime_other": "{{count}} min",
-    "title": "Intervju-simulator",
+    "title": "Din intervjuträning",
     "description": "Öva på intervjuer med AI. Få feedback på dina svar och bli bättre förberedd.",
     "roleLabel": "Vilken roll ska du intervjua för?",
     "rolePlaceholder": "t.ex. Projektledare, Säljare, Utvecklare...",
@@ -9323,7 +9325,7 @@
     }
   },
   "linkedInOptimizer": {
-    "title": "LinkedIn",
+    "title": "Din LinkedIn-profil",
     "description": "Skriv texterna till din LinkedIn-profil — och se vad som är kvar att fylla i.",
     "tabs": {
       "headline": {
@@ -9587,7 +9589,7 @@
     }
   },
   "skillsGapAnalysis": {
-    "title": "Kompetensanalys",
+    "title": "Vad saknas för drömjobbet?",
     "description": "Jämför ditt CV med ett yrke du siktar på, och se vad nästa steg är.",
     "regionAria": "Kompetensanalys",
     "loadingProfile": "Hämtar ditt underlag …",
@@ -10900,7 +10902,7 @@
     }
   },
   "aiTeam": {
-    "title": "Ditt AI-team",
+    "title": "Vem vill du prata med?",
     "description": "Ditt personliga supportteam för jobbsökning. Välj en agent och börja chatta!",
     "selectAgent": "Välj din agent",
     "skipToChat": "Hoppa till chatten",
@@ -12282,7 +12284,10 @@
     "forraVeckan": "Förra veckan",
     "nastaVeckan": "Nästa vecka",
     "veckaRubrik": "Vecka {{fran}} – {{till}}",
-    "tomVecka": "Inga pass den här veckan. Du kan bläddra till en annan vecka.",
+    "tomVecka": {
+      "framtid": "Inga pass inplanerade än den här veckan — din konsulent lägger till fler pass efter hand.",
+      "ledig": "Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker."
+    },
     "idag": "i dag",
     "jagArHar": "Jag är här",
     "jobbsok": {

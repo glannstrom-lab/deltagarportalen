@@ -891,8 +891,15 @@ export function ParticipantDetailPage() {
         </div>
       </Card>
 
-      {/* Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto">
+      {/* Tab Navigation — ARIA-flikmönster (PG-skav 7, persona-genomgången
+          2026-09-12): tidigare vanliga <button> utan tab-semantik, så en
+          skärmläsare varken hörde vilken sektion som var aktiv eller att
+          knapparna hörde ihop som en flikrad. */}
+      <div
+        role="tablist"
+        aria-label="Deltagarens avsnitt"
+        className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto"
+      >
         {[
           { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
           // Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit, ingen sv.json-nyckel.
@@ -903,6 +910,12 @@ export function ParticipantDetailPage() {
         ].map(tab => (
           <button
             key={tab.id}
+            id={`participant-tab-${tab.id}`}
+            type="button"
+            role="tab"
+            aria-selected={activeTab === tab.id}
+            aria-controls={`participant-tabpanel-${tab.id}`}
+            tabIndex={activeTab === tab.id ? 0 : -1}
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
             className={cn(
               'flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap',
@@ -911,13 +924,19 @@ export function ParticipantDetailPage() {
                 : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
             )}
           >
-            <tab.icon className="w-5 h-5" />
+            <tab.icon className="w-5 h-5" aria-hidden="true" />
             {tab.label}
           </button>
         ))}
       </div>
 
       {/* Tab Content */}
+      <div
+        id={`participant-tabpanel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`participant-tab-${activeTab}`}
+        tabIndex={0}
+      >
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Recent Goals */}
@@ -1040,6 +1059,7 @@ export function ParticipantDetailPage() {
       {activeTab === 'timeline' && participantId && (
         <Tidslinje participantId={participantId} onGaTill={(sektion) => setActiveTab(sektion)} />
       )}
+      </div>
 
       {participantId && (
         <ReportDraftDialog

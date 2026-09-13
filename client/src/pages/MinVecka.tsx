@@ -259,7 +259,19 @@ export default function MinVecka() {
         {checkinFel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{checkinFel}</p>}
 
         {perDag.length === 0 ? (
-          <p className="text-stone-600 dark:text-stone-400">{t('minVecka.tomVecka', 'Inga pass den här veckan. Du kan bläddra till en annan vecka.')}</p>
+          <p className="text-stone-600 dark:text-stone-400">
+            {/* PG-skav (persona 2026-09-12): en tom vecka sa samma sak oavsett
+                orsak — "ingen plan lagd än" (konsulenten har inte hunnit
+                schemalägga så här långt fram) och "planen finns, veckan råkar
+                vara ledig" ser likadana ut för deltagaren men betyder olika
+                saker. `plan` existerar alltid här (annat gren ovan hanterar
+                "ingen plan alls"), så den enda skillnad vi ÄRLIGT kan läsa ur
+                datan är om veckan ligger FÖRE dagens vecka eller efter — pass
+                genereras framåt i tiden, aldrig bakåt. */}
+            {mandag > veckansMandag(dagens)
+              ? t('minVecka.tomVecka.framtid', 'Inga pass inplanerade än den här veckan — din konsulent lägger till fler pass efter hand.')
+              : t('minVecka.tomVecka.ledig', 'Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker.')}
+          </p>
         ) : (
           perDag.map(([dag, pass]) => (
             <section key={dag} aria-labelledby={`dag-${dag}`} className="space-y-3">

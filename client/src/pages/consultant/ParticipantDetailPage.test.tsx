@@ -231,7 +231,7 @@ describe('ParticipantDetailPage — KA5: möte och mål kan skapas från deltaga
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Mål$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Mål$/i }))
     fireEvent.click(screen.getByRole('button', { name: /Nytt mål/i }))
 
     // Dialogen hoppar direkt till mallsteget för en förvald deltagare (ingen
@@ -311,7 +311,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Journal$/i }))
     fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
     fireEvent.click(screen.getByRole('radio', { name: /^Oro$/i }))
     fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
@@ -350,7 +350,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Journal$/i }))
     fireEvent.click(screen.getByRole('button', { name: /Ny anteckning/i }))
     fireEvent.change(screen.getByPlaceholderText('Skriv din anteckning här...'), {
       target: { value: 'Ett kritiskt observandum.' },
@@ -389,7 +389,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Journal$/i }))
     await screen.findByText('En anteckning som redan fanns.')
 
     fireEvent.click(screen.getByRole('button', { name: /Ta bort anteckningen/i }))
@@ -413,7 +413,7 @@ describe('ParticipantDetailPage — journal (KJ1, 2026-08-31): ParticipantJourna
     renderAt('/consultant/participants/p1')
     await screen.findByText('Anna Andersson')
 
-    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Journal$/i }))
 
     expect(await screen.findByRole('alert')).toHaveTextContent(/kunde inte hämtas/i)
     expect(screen.queryByText(/Här samlas anteckningarna/i)).not.toBeInTheDocument()
@@ -465,9 +465,43 @@ describe('ParticipantDetailPage — PG17/PG22 (persona-genomgången 2026-09-12)'
     renderAt('/consultant/participants/p1')
     await screen.findByText(/Anna Andersson/)
 
-    fireEvent.click(screen.getByRole('button', { name: /^Journal$/i }))
+    fireEvent.click(screen.getByRole('tab', { name: /^Journal$/i }))
     expect(screen.getByText(/dagbok är privat/i)).toBeInTheDocument()
     await waitFor(() => expect(screen.queryByRole('button', { name: /rapportutkast/i })).not.toBeInTheDocument())
     expect(screen.getByRole('status')).toHaveTextContent(/AI-utkast är avstängt/i)
+  })
+})
+
+describe('ParticipantDetailPage — PG-skav 7 (persona-genomgången 2026-09-12): flikraden har ARIA-tab-semantik', () => {
+  it('exponerar en tablist med aria-selected-flikar och en kopplad tabpanel, och byter aria-selected vid klick', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: emptyJournal,
+    })
+
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    const tablist = screen.getByRole('tablist', { name: /avsnitt/i })
+    const overviewTab = within(tablist).getByRole('tab', { name: /^Översikt$/i })
+    const goalsTab = within(tablist).getByRole('tab', { name: /^Mål$/i })
+
+    // Förvalt läge: översikt är aktiv, resten inte.
+    expect(overviewTab).toHaveAttribute('aria-selected', 'true')
+    expect(goalsTab).toHaveAttribute('aria-selected', 'false')
+
+    const panel = screen.getByRole('tabpanel')
+    expect(panel).toHaveAttribute('aria-labelledby', overviewTab.id)
+    expect(overviewTab).toHaveAttribute('aria-controls', panel.id)
+
+    fireEvent.click(goalsTab)
+
+    expect(goalsTab).toHaveAttribute('aria-selected', 'true')
+    expect(overviewTab).toHaveAttribute('aria-selected', 'false')
+
+    const panelEfterByte = screen.getByRole('tabpanel')
+    expect(panelEfterByte).toHaveAttribute('aria-labelledby', goalsTab.id)
   })
 })

@@ -478,7 +478,7 @@ ${krisstod({ lattlast: arLattlastSida })}
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="${appUrl('/oversikt')}">Öppna portalen</a> · <a href="/guider/">Alla guider</a></p>
-    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
   </div>
 </footer>
 </body>
@@ -964,7 +964,7 @@ ${krisstod()}
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
-    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
   </div>
 </footer>
 </body>
@@ -1252,7 +1252,7 @@ ${krisstod()}
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
-    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
   </div>
 </footer>
 </body>
@@ -1361,7 +1361,7 @@ ${krisstod()}
   <div class="wrap">
     <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
     <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
-    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
   </div>
 </footer>
 </body>

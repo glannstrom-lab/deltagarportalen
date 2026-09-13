@@ -1018,8 +1018,24 @@ export function CommunicationTab() {
                   )}
                 </p>
 
-                {/* Quick templates — fungerar nu på riktigt */}
-                <div className="flex flex-wrap gap-2 justify-center">
+                {/* Quick templates — fungerar nu på riktigt.
+                    PG-skav 8 (persona-genomgången 2026-09-12): knapparna stod
+                    tidigare lösa utan rubrik ovanför den tomma listan — en
+                    besökare kunde inte se VAD de var. Återanvänder den redan
+                    befintliga, tidigare oanvända nyckeln `quickMessages`
+                    ("Snabbmeddelanden") i stället för en ny — ingen
+                    JSON-ändring behövdes. */}
+                <p
+                  id="communication-quick-templates-heading"
+                  className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2"
+                >
+                  {t('consultant.communication.quickMessages')}
+                </p>
+                <div
+                  role="group"
+                  aria-labelledby="communication-quick-templates-heading"
+                  className="flex flex-wrap gap-2 justify-center"
+                >
                   <Button variant="outline" size="sm" onClick={() => openCompose(t('consultant.communication.meetingReminderBody'))}>
                     <Mail className="w-4 h-4 mr-2" />
                     {t('consultant.communication.meetingReminder', 'Mötespåminnelse')}

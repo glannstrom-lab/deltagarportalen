@@ -202,6 +202,28 @@ describe('Min vecka', () => {
     expect(checkin).not.toHaveBeenCalledWith('s-tomorrow')
   })
 
+  it('Skav 15 (persona 2026-09-12): en tom INNEVARANDE vecka säger "ledig", inte "ingen plan" och inte "än"', async () => {
+    // Mutation: byt villkoret `mandag > veckansMandag(dagens)` mot `true`
+    // (eller ta bort grenen helt) → RÖD, "framtid"-texten visas i stället.
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([])
+    render(<MinVecka />)
+    expect(await screen.findByText(/En ledig vecka enligt planen/)).toBeInTheDocument()
+    expect(screen.queryByText(/Inga pass inplanerade än/)).not.toBeInTheDocument()
+  })
+
+  it('Skav 15: en tom FRAMTIDA vecka säger att inget är inplanerat ÄN, inte "ledig"', async () => {
+    // Mutation: byt villkoret mot `false` → RÖD, "ledig"-texten visas i stället
+    // för veckan konsulenten helt enkelt inte hunnit lägga upp.
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([])
+    render(<MinVecka />)
+    await screen.findByText(/En ledig vecka enligt planen/)
+    await userEvent.click(screen.getByRole('button', { name: 'Nästa vecka' }))
+    expect(await screen.findByText(/Inga pass inplanerade än den här veckan/)).toBeInTheDocument()
+    expect(screen.queryByText(/En ledig vecka enligt planen/)).not.toBeInTheDocument()
+  })
+
   it('F5/F8: närvarointyget kan laddas ner för en vald månad, och varje anvisat pass har "Fråga om passet"', async () => {
     getMyPlan.mockResolvedValue(plan)
     listMySessions.mockResolvedValue([

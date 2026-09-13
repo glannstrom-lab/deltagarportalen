@@ -2159,6 +2159,8 @@
       "replaceBody": "The text you have now will be replaced by the new draft, and cannot be recovered. You could just as well keep the one you have and edit it.",
       "replaceConfirm": "Write a new draft",
       "replaceCancel": "Keep what I have",
+      "mallVarierarInte": "The template is always the same",
+      "mallVarierarInteBody": "It only uses the job title and company, so trying again gives the same text. Fill in the blanks yourself, or add your CV or a few lines about yourself so the AI can write a real letter.",
       "nothingToSave": "There is nothing to save yet — write a few lines first.",
       "untitled": "Cover letter",
       "savedShort": "Saved",
@@ -4707,7 +4709,7 @@
   },
   "personalBrand": {
     "editorialSpot": "Build a clear picture of what you can do.",
-    "pageTitle": "Your personal brand",
+    "pageTitle": "How you come across",
     "pageDescription": "How you appear to an employer — and what you can do about it",
     "tabs": {
       "audit": {
@@ -5471,7 +5473,7 @@
         "title": "New diary entry",
         "titleLabel": "Entry title (optional)",
         "titlePlaceholder": "Title (optional)",
-        "howAreYou": "How are you feeling?",
+        "howAreYou": "How are you feeling? (optional — click again to clear)",
         "contentLabel": "Your thoughts",
         "contentPlaceholder": "Write your thoughts...",
         "addTagLabel": "Add a tag",
@@ -8263,7 +8265,7 @@
     "ratingStarAria": "Rating {{star}} of 5",
     "readingTime_one": "{{count}} min",
     "readingTime_other": "{{count}} min",
-    "title": "Interview Simulator",
+    "title": "Your interview practice",
     "description": "Practice interviews with AI. Get feedback on your answers and become better prepared.",
     "roleLabel": "What role are you interviewing for?",
     "rolePlaceholder": "e.g. Project Manager, Sales Rep, Developer...",
@@ -9323,7 +9325,7 @@
     }
   },
   "linkedInOptimizer": {
-    "title": "LinkedIn",
+    "title": "Your LinkedIn profile",
     "description": "Write the texts for your LinkedIn profile — and see what is left to fill in.",
     "tabs": {
       "headline": {
@@ -9587,7 +9589,7 @@
     }
   },
   "skillsGapAnalysis": {
-    "title": "Skills overview",
+    "title": "What is missing for your dream job?",
     "description": "Compare your CV with a role you are aiming for, and see what the next step is.",
     "regionAria": "Skills overview",
     "loadingProfile": "Fetching your details …",
@@ -10900,7 +10902,7 @@
     }
   },
   "aiTeam": {
-    "title": "My AI Team",
+    "title": "Who do you want to talk to?",
     "description": "Your personal support team for job searching. Choose an agent and start chatting!",
     "selectAgent": "Choose your agent",
     "skipToChat": "Skip to chat",
@@ -12282,7 +12284,10 @@
     "forraVeckan": "Last week",
     "nastaVeckan": "Next week",
     "veckaRubrik": "Week {{fran}} – {{till}}",
-    "tomVecka": "No sessions this week. You can go to another week.",
+    "tomVecka": {
+      "framtid": "No sessions scheduled yet this week — your consultant will add more over time.",
+      "ledig": "No sessions this week. A free week according to the plan — contact your consultant if you are unsure."
+    },
     "idag": "today",
     "jagArHar": "I am here",
     "jobbsok": {

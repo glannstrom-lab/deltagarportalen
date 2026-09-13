@@ -225,10 +225,16 @@ Postlistan KM2–KM12 står under "Framåt — vad marknaden kräver" i konsulen
 1. ~~Självbetjäning~~ ~~överlämning~~ (pass 6–7) · inbjudan via mejl (blockerad av DE1),
    otilldelade (BL1) · **beslut taget 2026-09-12 (Mikael): KS2 = b.** Vid överlämning inom samma organisation får den nya konsulenten **läsrätt** till deltagarens journal, mål, möten och placeringar; ny text skrivs i egen journal; den gamla konsulenten tappar åtkomsten; det gamla står kvar orört med ursprunglig författare. ✅ **Byggt 2026-09-12.** Migration `20260912160000_ks2_lasratt_overlamning.sql` körd: SELECT via `har_aktiv_relation()`, INSERT/UPDATE/DELETE bara egen rad + aktiv relation, på journal, mål, möten, platser och uppföljningar. **Bifynd:** `consultant_meetings` saknade relationskontroll helt — en uppsagd konsulent behöll sina möten; rättat i samma migration. Bevisat i transaktion (`e2e/ks2-lasratt-prov.sql`): mottagaren läser (1/1/1), ändrar/raderar 0, skriver eget, nekas 42501 i annans namn; gamla konsulenten ser 0 och nekas. UI: "Skriven av …"/"Skapat av …" utan redigera på företrädarens rader. Klientfiltret på `consultant_id` borttaget i fyra läsningar — testet som asserterade det var läge c i förklädnad. **Premissrättelse:** `consultant_participants` har ingen historik, så läsrätt = aktiv relation. ✅ **KS2 b, resten (2026-09-12):** `PlatserTab` visar företrädarens platser (RLS avgör, inget klientfilter), "Registrerad av …" utan Redigera/Ta bort men med Uppföljning kvar; `PlaceringCard.test.tsx`.
 2. ~~KM8~~ ~~KM9~~ ~~KM10~~ · KM11: fler språk kräver översättare (mekanismen finns) ·
-   mejlnotiser när DE1 är löst.
+   ~~mejlnotiser när DE1 är löst~~ 📝 **byggt 2026-09-13:** `client/api/aktivitet-mejl.js` läser
+   de tre KM10-notistyperna (`aktivitet_plan`/`aktivitet_pass`/`aktivitet_franvaro`) med
+   `data.mail_sent` saknas inom ett 3-dygnsfönster, skickar via Resend, respekterar
+   `email_notifications` — exakt samma mönster som F3:s `pass-paminnelse.js`. 5 tester gröna
+   (mall, e-postreglage, cron-grind), `typecheck:api` 0 fel. **UTLÖSARE SAKNAS MED FLIT** —
+   cron-raden i `client/vercel.json` kräver Mikaels ja, precis som pass-paminnelse gjorde:
+   `{ "path": "/api/aktivitet-mejl", "schedule": "0 17 * * *" }`.
 3. **KM12 rest:** (2) org.nr/PuA-platshållare i Art 30/DPIA/policy — **beslut 2026-09-12 (Mikael): juridisk person = Glänne & Söner, enskild firma.** Skrivs så i policy, Art 30 och DPIA (innehavare Mikael Glännström); organisationsnumret är personnumret och sätts bara i PUB-avtalet vid signering, aldrig i publika dokument. Kvar att bygga: byt platshållarna. (4) PUB-avtal — utkast finns i
    `juridik/`, juridisk granskning + org.nr kvar,
-   ~~(5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen~~ (var redan gjord 2026-09-11; 2026-09-12 rättades "samtliga 133 guidesidor" till 133 av dagens 239 mätta, och två axe-fynd/rättelser från 2026-09-12 fördes in med datum), ~~(8) demokonto~~ ✅ 2026-09-12 — demoorganisation i prod (`20260912190000_demo_org.sql`): `demo@jobin.se` som chef i "Demokommun (påhittade personer)" med fem fiktiva deltagare (@example.com), CV, sparade jobb, journal, mål, möten och en aktivitetsplan med närvaro; `organizations.is_demo` stänger mejl (guard i `send-invite-email`, fail closed — **bevisat efter deploy:** inbjudan från demokontot → 403 "Demokontot kan inte skicka inbjudningar", `email_sent=false`; testraderna raderade), `ai_enabled=false` stänger AI (bevisat 403 mot /api/ai), `reset_demo_org()` återställer 01:00 UTC (cron `demo-reset`, manuellt körd två gånger med identiskt resultat). Uppgifterna står i klartext på båda B2B-sidorna (avsett att delas). `DemoBanner` (role=status, ej stängbar) monterad i Layout. Premissrättelser: konsulentvyn vaktas på `active_role`/`roles` (inte `profiles.role`), välkomstguiden på `profiles.onboarding_completed`. Bifynd: OnboardingFlow visas även för konsulenter och "Hoppa över" leder till deltagarens Översikt, ~~(9) kontakt/om oss~~ ✅ 2026-09-12 — `/om-oss/` som prerenderad sida ur `content/om-oss.json` (`renderOmOss` i guide-template), i sitemap (274), lint:links och krisstödsgrinden; länkad från startsidans sidfot; säger Glänne & Söner (enskild firma), Mikael Glännström, ansvarsrollen per kundtyp, EU-lagring, tre målgrupper och tre befintliga mejladresser — inga siffror, inget org.nr; kvar: länk från Privacy.tsx (en rad under `privacy.controller.name`) och från guidesidornas sidfot, ~~(10) rotera OpenRouter-nyckeln (A1)~~ (klar 2026-09-12). ~~Guidens engelska (`content_en`) saknas~~ ✅ 2026-09-12 — `aktivitetskrav-forsorjningsstod` har `title_en`/`summary_en`/`content_en` i prod (7 401 tecken, CRLF), B1-engelska med myndighetsnamnen kvar, strukturidentisk med svenskan; källa och procedur i `client/content/oversattningar/` (inget skript fanns för `content_en` på befintlig slug — README beskriver handgreppet, `apply-oversattning.cjs --bara=<slug>` är nästa steg om fler ska göras). Syns i portalens artikelvy på engelska; guidesidan är svensk med flit.
+   ~~(5) DOS-lagen/EN 301 549 i tillgänglighetsredogörelsen~~ (var redan gjord 2026-09-11; 2026-09-12 rättades "samtliga 133 guidesidor" till 133 av dagens 239 mätta, och två axe-fynd/rättelser från 2026-09-12 fördes in med datum), ~~(8) demokonto~~ ✅ 2026-09-12 — demoorganisation i prod (`20260912190000_demo_org.sql`): `demo@jobin.se` som chef i "Demokommun (påhittade personer)" med fem fiktiva deltagare (@example.com), CV, sparade jobb, journal, mål, möten och en aktivitetsplan med närvaro; `organizations.is_demo` stänger mejl (guard i `send-invite-email`, fail closed — **bevisat efter deploy:** inbjudan från demokontot → 403 "Demokontot kan inte skicka inbjudningar", `email_sent=false`; testraderna raderade), `ai_enabled=false` stänger AI (bevisat 403 mot /api/ai), `reset_demo_org()` återställer 01:00 UTC (cron `demo-reset`, manuellt körd två gånger med identiskt resultat). Uppgifterna står i klartext på båda B2B-sidorna (avsett att delas). `DemoBanner` (role=status, ej stängbar) monterad i Layout. Premissrättelser: konsulentvyn vaktas på `active_role`/`roles` (inte `profiles.role`), välkomstguiden på `profiles.onboarding_completed`. Bifynd: OnboardingFlow visas även för konsulenter och "Hoppa över" leder till deltagarens Översikt, ~~(9) kontakt/om oss~~ ✅ 2026-09-12 — `/om-oss/` som prerenderad sida ur `content/om-oss.json` (`renderOmOss` i guide-template), i sitemap (274), lint:links och krisstödsgrinden; länkad från startsidans sidfot; säger Glänne & Söner (enskild firma), Mikael Glännström, ansvarsrollen per kundtyp, EU-lagring, tre målgrupper och tre befintliga mejladresser — inga siffror, inget org.nr; ~~kvar: länk från Privacy.tsx (en rad under `privacy.controller.name`) och från guidesidornas sidfot~~ ✅ **rättat 2026-09-13:** länken i Privacy.tsx fanns redan (samma kommentarsdatum 2026-09-12, raden här hade inte hunnit uppdateras); guidesidornas fyra sidfotsvarianter (`renderGuide`/`renderTool`/`renderB2B`/`renderOmOss` i `guide-template.cjs`) fick en "Om oss"-länk bredvid Integritet/Tillgänglighet, verifierat med `npm run guides` (274 URL:er) och `npm run lint:links` (inga döda länkmål), ~~(10) rotera OpenRouter-nyckeln (A1)~~ (klar 2026-09-12). ~~Guidens engelska (`content_en`) saknas~~ ✅ 2026-09-12 — `aktivitetskrav-forsorjningsstod` har `title_en`/`summary_en`/`content_en` i prod (7 401 tecken, CRLF), B1-engelska med myndighetsnamnen kvar, strukturidentisk med svenskan; källa och procedur i `client/content/oversattningar/` (inget skript fanns för `content_en` på befintlig slug — README beskriver handgreppet, `apply-oversattning.cjs --bara=<slug>` är nästa steg om fler ska göras). Syns i portalens artikelvy på engelska; guidesidan är svensk med flit.
 4. ~~Browserverifiering mot prod~~ — gjord i pass 3, se ovan. Kör `e2e/km-aktivitetskrav-prod.cjs`
    efter varje ändring i spåret.
 5. ~~`activity_sessions_participant_guard` har PUBLIC execute~~ — revokerad 2026-09-12 (`20260912175000_revoke_guard_public.sql`).
@@ -262,7 +268,7 @@ Mikaels beställning: "agera konsulent från kommunen och deltagare, samt hur al
 - [x] **PG8** ✅ 2026-09-13 — Snabb-CV (`QuickCVMode.tsx`) förifylls ur profilen (namn/e-post/telefon), platshållaren är "Ditt namn"; inga halvgenomskinliga textklasser, inputs solida vita med mörk text (≈17:1). Vakt `QuickCVMode.test.tsx`. *(Var:)* Snabb-CV: namnfältet tomt med platshållaren "Anna Andersson" fast användaren är inloggad (`#quick-fullName`), plus fem kontrastfel i mörkt läge (3,79:1 / 3,43:1 på det bruna kortet) · S
 - [x] **PG9** ✅ 2026-09-12 — Resurser skickar bara räkningar > 0 till skenan; Övningar visar en invit när inget är påbörjat (`lib/ovningsLage.ts`, testad). *(Var:)* Nollor som KPI i deltagarvyer: Resurser "0/0/0", Övningar "0 påbörjade / 119 ej påbörjade" — Översikt gör rätt, dessa inte (`Resources.tsx`, `Exercises.tsx`) · S
 - [x] **PG10** ✅ 2026-09-12 — rollväxlaren visas bara vid flera roller; projektvalet försvinner för organisationsdeltagare ("Du deltar genom …"), i18n, löftet "kommer" borta; premissrättelse: `profiles.program` styr inga sidor. *(Var:)* Inställningar talar administrationsspråk ("Roll och behörigheter", "Dina rättigheter är en kombination av alla dina roller") och erbjuder projektet "Rusta och Matcha" med "kommer i en kommande uppdatering" åt en kommundeltagare · S
-- [x] **PG11** ✅ 2026-09-12 (första halvan) — "Inställningar > Sekretess" → "Integritet" i samtyckesrutan (sv). Kvar: dagboksrad utan hälsosamtycke (F6). *(Var:)* Samtyckesrutan för dagbok/hälsa pekar på "Inställningar > Sekretess" (fliken heter Integritet), och en vanlig dagboksrad kräver samtycke till humör/energi/sömn i ett svep — se F6 · S
+- [x] **PG11** ✅ 2026-09-12 (första halvan) — "Inställningar > Sekretess" → "Integritet" i samtyckesrutan (sv). ~~Kvar: dagboksrad utan hälsosamtycke (F6)~~ ✅ byggt 2026-09-13, väntar på ditt ja till migrationen (se F6). *(Var:)* Samtyckesrutan för dagbok/hälsa pekar på "Inställningar > Sekretess" (fliken heter Integritet), och en vanlig dagboksrad kräver samtycke till humör/energi/sömn i ett svep — se F6 · S
 - [x] **PG12** ✅ 2026-09-12 — `LugnarePanel` ritas nu även på mobil för sidor utan rådgivarinnehåll (`Layout.tsx`, eget block villkorat på `isMobile && !visaRadgivare`); desktop oförändrad, ingen tom kolumn. Löser också "fokusläge bara på desktop". Vakt `Layout.lugnare.test.ts`. *(Var:)* Lugnare läge saknas på 7 mobilsidor, bl.a. Min vecka och CV; fokuslägesknappen finns bara på desktop · S
 - [x] **PG13** ✅ 2026-09-12 — samtyckesrutans länk och rad bär `--c-text` i stället för `text-pink-400` (4,13:1). Vakt `WellnessConsentGate.kontrast.test.tsx`, mutationsbevisad. *(Var:)* Mörkt läge: rosa policylänk (`text-pink-400`) 4,13:1 i samtyckesrutan på Dagbok/Hälsa · XS
 - [x] **PG14** ✅ 2026-09-12 — procent och mätare borta ur profilhuvudet; kvar "Nästa: <fält>" som invit. Rådgivartexten i `coaches.ts` som nämnde mätaren omskriven. *(Var:)* "Profilstatus 17 %" i profilens hjälteposition på en person som just börjat (`ProfileHeader.tsx`) · XS
@@ -287,7 +293,57 @@ Mikaels beställning: "agera konsulent från kommunen och deltagare, samt hur al
 - [x] **PG29** ✅ *(nytt kritiskt, hittat av agent F, rättat samma kväll)* **Min konsulent kraschade (React #130) för varje deltagare med ett kommande möte:** `MyConsultant.tsx` läste `nextMeeting.type` men kolumnen heter `meeting_type`, och konsulentens `MeetingSchedulerDialog` skriver `'physical'` där sidan kände `in_person` — `meetingTypeIcons[undefined]`. km-deltagare klarade sig bara för att hon saknade framtida möte. Nu mappas `meeting_type` (`physical → in_person`) vid inläsning och ikon/etikett faller tillbaka. Verifiera i prod: boka ett möte som km-konsulent med km-deltagare, öppna Min konsulent som deltagaren.
 - [x] **PG30** ✅ *(nytt, agent F, rättat)* **`RouteErrorBoundary` nollställdes inte vid klientnavigering** — en krasch på en sida färgade nästa "Något gick fel" utan nytt fel. Nu en funktionskomponent som ger klassen `key={location.pathname}`, ny instans per rutt.
 
-**Skav (19)** — se rapporterna: "0 0" utan etikett på Platser; sektionsknappar utan aria-current; lösa mallknappar i Kommunikation; tidszon London/New York; språkval i oöversatt vy; "Underlag till handläggaren" med bara Ångra; flytande Gå tillbaka-knapp över logotypen på mobil; verktygsnamn som rubriker; "Skriv ett nytt utkast" ger samma mall; tom "Nästa vecka" utan förklaring; oprioriterade notiser; projektväljaren erbjuder R&M åt en kommun; B2B utan leverantörsnamn; rapportmodalens "ingen tidsavgränsning" bredvid periodknappar; demouppgifter utan kopiera-knapp.
+**Skav (19)** — se rapporterna: ~~"0 0" utan etikett på Platser~~; ~~sektionsknappar utan aria-current~~; ~~lösa mallknappar i Kommunikation~~; ~~tidszon London/New York~~; språkval i oöversatt vy; ~~"Underlag till handläggaren" med bara Ångra~~; ~~flytande Gå tillbaka-knapp över logotypen på mobil~~; ~~verktygsnamn som rubriker~~; ~~"Skriv ett nytt utkast" ger samma mall~~; ~~tom "Nästa vecka" utan förklaring~~; ~~oprioriterade notiser~~; ~~projektväljaren erbjuder R&M åt en kommun~~; ~~B2B utan leverantörsnamn~~; ~~rapportmodalens "ingen tidsavgränsning" bredvid periodknappar~~; ~~demouppgifter utan kopiera-knapp~~.
+
+**Avbetalning 2026-09-13 (två parallella agenter, en scout innan).** Scouten lokaliserade filerna
+för alla 15 punkter ovan och flaggade fyra som redan lösta av tidigare arbete utan att raden
+uppdaterats: "0 0" på Platser hade redan etiketter ("totalt"/"pågående", `PlatserTab.tsx`),
+"Underlag till handläggaren" hade redan datum/mottagare/status sedan F10, projektväljaren
+uteslöt redan organisationskopplade deltagare sedan PG10, och rapportmodalens text motsäger
+inte periodknapparna i det anropsställe som faktiskt renderar dem (KS6). Ingen kodändring
+behövdes för de fyra — bara den här raden.
+
+Byggt och verifierat (283 testfiler / 3396 tester gröna, `typecheck:ceiling` oförändrat på
+taket, `build` grön, inga döda länkar):
+- **Deltagarvyn:** `MobileBackButton.tsx` (skugga kortare + 8px in från kanten — knappens box
+  tog exakt de 60px headern reserverade åt loggan, noll marginal kvar) och `SamlingarFab.tsx`
+  (döljs nu vid `focusin` på ett fält, inte bara vid scroll — låg annars över Snabb-CV:ts
+  namnfält). `CoverLetterWrite.tsx`: "Skriv ett nytt utkast" mot en mall (inget CV/egna rader)
+  visade förut en tom bekräftelsedialog och gav sedan bokstavligen samma text igen — mallen är
+  deterministisk med flit; knappen säger nu sanningen i stället (`mallVarierarInte`), och en
+  riktig AI-omgenerering får en `variera`-instruktion så den faktiskt skiljer sig. `MinVecka.tsx`:
+  "Nästa vecka" skiljer nu på "ingen plan lagd än" (framtida vecka) och "ledig vecka enligt
+  planen" (nutid/dåtid). `useNotifications.ts`: ny `sorteraNotiser()` lyfter dagens/morgondagens
+  `aktivitet_*`-notiser överst, `created_at` som sekundärsortering för resten.
+- **Konsulentvyn:** `ParticipantDetailPage.tsx` fick riktig `role="tablist"`/`role="tab"`/
+  `aria-selected`/`aria-controls`-semantik på sektionsknapparna. `CommunicationTab.tsx` fick en
+  synlig, kopplad rubrik ovanför mallknapparna — återanvänder den redan befintliga men oanvända
+  nyckeln `consultant.communication.quickMessages` ("Snabbmeddelanden"), ingen ny i18n-nyckel
+  behövdes. `SettingsTab.tsx`: London/New York borttagna ur tidszonsväljaren (`preferences
+  .timezone` har noll läsare någon annanstans i kodbasen — mötestider visas ändå i webbläsarens
+  lokala tid). **Språkvalet i konsulentinställningarna rördes INTE** — agenten verifierade att
+  det faktiskt byter UI-språk på riktigt (ett regressionstest bevisar det), så premissen
+  "gör ingenting" höll inte. Kvarstående, separat problem: nyare konsulentyta-strängar (t.ex.
+  "Aktivitet"-fliken) är medvetet hårdkodad svenska per DESIGN.md §2, så engelskt läge blandar
+  språk i praktiken — det är ett produktbeslut (fortsätt översätta konsulentvyn helt, eller ta
+  bort språkvalet), inte något att gissa bort.
+- **Nya i18n-nycklar** (tillagda med en byte-exakt, radslutsbevarande metod — se lärdomen
+  `edit-tool-kan-normalisera-radslut-i-crlf-filer`, global): `coverLetter.write.mallVarierarInte`
+  + `.mallVarierarInteBody`, och `minVecka.tomVecka` omvandlad från en platt sträng till
+  `{ framtid, ledig }` (den gamla nyckeln hade noll kvarvarande anropare).
+- **"Verktygsnamn som rubriker" klart 2026-09-13.** Fem sidrubriker skrivna om enligt DESIGN.md §2
+  (läst i sin helhet av agenten före skrivning), bara `PageLayout`s `title`-prop — nav-etiketter
+  och hub-kort orörda med flit: **Intervjusimulatorn** "Intervju-simulator" → "Din
+  intervjuträning"; **LinkedIn** (den faktiska nyckeln bar bara "LinkedIn", inte
+  "LinkedIn-optimering" som antogs) → "Din LinkedIn-profil"; **Kompetensanalysen**
+  "Kompetensanalys" → "Vad saknas för drömjobbet?" (återanvänder en fras som redan fanns i
+  Resurser-hubbens länk, för en konsekvent röst); **Personligt varumärke** "Ditt personliga
+  varumärke" → "Ditt intryck utåt"; **AI-teamet** "Ditt AI-team" → "Vem vill du prata med?".
+  Nya sv/en-texter tillagda med den byte-exakta metoden (se `edit-tool-kan-normalisera
+  -radslut-i-crlf-filer`). Inga testfiler behövde ändras (ingen asserterade den gamla
+  rubriktexten). Verifierat: `typecheck:ceiling` oförändrat (337), `test:run` 3396/3396 (en
+  flaktig `nav-smoke.test.tsx`-körning i den samlade svepen visade sig grön i isolering och vid
+  omkörning — inte en regression), `build`/`lint:links`/`lint:ci` gröna.
 
 **Förslag på nya funktioner (ur flödena, inte önskelistor)**
 - **F1** "Jag kan inte komma" per pass (orsak + fritext → konsulent + anmäld frånvaro i närvaron). *STA-arkivets `AbsenceForm` är förlagan.*
@@ -295,15 +351,40 @@ Mikaels beställning: "agera konsulent från kommunen och deltagare, samt hur al
 - **F3** 📝 byggt 2026-09-13: `skicka_passpaminnelser()` + cron 17:00 UTC lägger notisen (typ `aktivitet_paminnelse`, kartlänk i klockan, `/min-vecka`), idempotent per pass, hoppar över markerade och anmälda pass; bevisad i rollback (`e2e/f3-paminnelse-prov.sql`) — **migrationen `20260913010000` körd 2026-09-13 (ja 1–4)**, cron `pass-paminnelse` aktiv, manuell körning verifierad i prod. Mejlet: `client/api/pass-paminnelse.js` (CRON_SECRET, Resend inline, respekterar `email_notifications`) — **cron-raden i `vercel.json` inlagd 2026-09-13 (ja 1–4)**; första mejlkörningen 17:30 UTC. Bifynd rättat: `job-alerts.js` föll tillbaka på anon-nyckeln (Vercel har `SUPABASE_SERVICE_ROLE_KEY`, koden sökte `SUPABASE_SERVICE_KEY`). *(Förslaget:)* Påminnelse kvällen innan ett pass (notis, valfritt mejl nu när DE1 fungerar) med kartlänk.
 - **F4** Språk + lätt svenska + större text som deltagarens eget val, mobil först.
 - **F5** ✅ 2026-09-13 — deltagarens närvarointyg per månad som PDF från Min vecka (`narvaroIntygPdf.ts`, `NarvaroIntyg.tsx`): bara konsulentmarkerad närvaro räknas, omarkerat = "Ej markerat", anmäld frånvaro med orsak; test på byteströmmen. *(Förslaget:)* Närvarointyg för månaden som PDF från Min vecka — deltagarens kvitto till handläggaren.
-- **F6** Jobbsökardagbok utan hälsosamtycke, skild från mående/sömn.
+- **F6** 📝 **byggt 2026-09-13, migration ej körd — väntar på ditt ja.** Premissen höll:
+  `diary_entries` (mood/energy_level nullbara på samma rad som `content`) hade sedan MV2
+  (2026-08-21) hela INSERT/UPDATE grindat bakom `check_wellness_consent`, oavsett om raden
+  bar hälsodata eller inte — en ren textrad krävde exakt samma art. 9-samtycke som en rad med
+  humör ifyllt. `mood_logs` (MoodTab) är en helt annan tabell och rörs inte.
+  `supabase/migrations/20260913150000_f6_dagbok_utan_halsosamtycke.sql`: DROP + CREATE på de
+  två policyerna, samtycke krävs bara när `mood`/`energy_level` faktiskt är satta på raden —
+  bevisad i en transaktion som alltid rullas tillbaka (`e2e/f6-dagbok-prov.sql`, inkl. den
+  nödvändiga positiva kontrollen: samma prov MED samtycke går igenom). SELECT/DELETE orörda
+  (art. 15/17). **Klientfynd som annars hade gjort RLS-fixen verkningslös**, rättat samma
+  kväll: `JournalTab.tsx`s skrivmodal satte `mood` till 3 som default och skickade alltid ett
+  mood-värde — så varje ny rad hade krävt samtycke i praktiken oavsett policy. Nu
+  `useState<number | null>(null)`, mood-knapparna går att avmarkera (klicka igen), och
+  `Diary.tsx` omsluter numera bara `MoodTab` med `WellnessConsentGate` — Dagbok/Mål/Tacksamhet
+  kräver inte längre samtycke. 4 nya tester (`JournalTab.test.tsx`, `Diary.test.tsx`), hela
+  sviten 3379/3379 grön, `typecheck:ceiling` oförändrat på taket, `build` grön. **Väntar på
+  ditt ja** innan migrationen körs mot prod (samma mönster som övriga RLS-ändringar i den här
+  planen). *(Förslaget:)* Jobbsökardagbok utan hälsosamtycke, skild från mående/sömn.
 - **F7** Offline-köad incheckning (PWA:n finns).
 - **F8** ✅ 2026-09-13 — "Fråga om passet" per anvisat pass, förifyllt med titel/datum/tid, via ny `konsulentMeddelandeApi` (samma insert och RLS som Min konsulent — som nu också använder API:t: en sändväg); kvittens "Skickat till <namn>". *(Förslaget:)* "Fråga konsulenten om det här passet" inbäddat i Min vecka.
 - **F9** ✅ 2026-09-13 — "Dagens pass" överst i Min dag (`DagensPass.tsx`, `lib/dagensPass.ts`): status per pass (incheckad/anmäld frånvaro med orsak/väntar/saknar närvaro), närvaro sätts på raden via `aktivitetsplanApi.markAttendance`; RLS-läsning bevisad i prod. Tomt = invit. *(Förslaget:)* Dagens pass som konsulentens startvy i Min dag (vilka har pass, vilka checkat in, vilka saknar närvaro).
 - **F10** 📝 byggt 2026-09-13 som egen tabell `activity_plan_handovers` (RLS speglar planen, ändringsvakt: bara ångra, samma dag, av den som lämnade; raderingsstopp; synk av planens gamla `nedsattning_underlag_lamnat_at`); UI med dialog (mottagare, period, närvarosammanfattning ur passen, anteckning), lista och ångra med spår; IVO räknar per underlag. Migration `20260913020000` bevisad i rollback (`e2e/f10-underlag-prov.sql`) och **körd 2026-09-13 (ja 1–4)**; klientfilerna committade i samma push. Kvar: deltagarens rad i Min vecka. *(Förslaget:)* Spårbart underlagsflöde till handläggaren (skickat, datum, mottagare, kvitto) — annars är "Underlag lämnat 1" i IVO-tabellen ospårbart.
 - **F11** Enkelt mål: titel + datum, SMART som utfällning.
 - **F12** ✅ 2026-09-13 — "Logga kontakt" i Hör av dig (`MinDagSection` + `OverviewTab`) anropar `logContact()` (KA4) och räknar om listan; bara på ej-kontaktade rader. *(Förslaget:)* "Logga kontakt" med ett klick i Hör av dig-listan.
-- **F13** Chefsläge: AI-brytare i Din organisation + konsulentmeny på mobil.
-- **F14** Tidslinje = läslogg + närvaro + journal i tidsordning (datan finns).
+- **F13** ✅ **redan klart, rättat 2026-09-13** — båda halvorna byggda i persona-passet men aldrig
+  bockade av här: AI-brytaren är `AiBrytare` i `OrganisationSektion.tsx` (PG19, chef/admin,
+  `orgApi.setOrgAiEnabled`), och mobilmenyn visar konsulentens avsnitt först med hubbarna
+  hopfällda under "Deltagarvyn" (PG20, `Layout.tsx`). *(Förslaget:)* Chefsläge: AI-brytare i
+  Din organisation + konsulentmeny på mobil.
+- **F14** ✅ **redan klart, rättat 2026-09-13** — byggd i persona-passet (PG16) som `Tidslinje.tsx`
+  + `tidslinjeApi.ts`: journal, mål, möten, platser och pass med utfall i tidsordning, RLS avgör,
+  tomt = invit. **Skillnad mot förslaget:** läsloggen ingår med flit inte — den är deltagarens
+  egen vy över vad hen själv öppnat, inte konsulentens tidslinje över deltagaren. *(Förslaget:)*
+  Tidslinje = läslogg + närvaro + journal i tidsordning (datan finns).
 - **F15** Demodeltagarkonto (svarar på "vad ser deltagaren").
 - **F16** "Så kommer ni igång" i fem steg på B2B-sidan.
 - **F17** ✅ 2026-09-13 — "Nämndrapport (kvartal)" i PDF-modalen: per försörjningshinder deltagare med plan, närvarograd, anmäld/oanmäld frånvaro, underlag lämnat; fast kvartalsval, källrad, "—" när inget pass bedömts (`namndrapportPdf.ts`, testad mot riktig PDF). Rapporter skickar nu vyns period till modalen (skav 10). Byt `underlagLamnatIKvartal()` när F10:s tabell finns. Premissrättelse: Rapporter-fliken heter `AnalyticsTab.tsx`, modalen `ReportGeneratorDialog.tsx`. *(Förslaget:)* Nämndrapport som mall (kvartal + IVO-underlag + närvarograd per försörjningshinder).
@@ -1536,17 +1617,17 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
   kommunerna faktiskt använder mot gruppen, en dag + en rad i Art 30 · ~3 d
 - [ ] **KM11** 🟡 Lätt svenska klar 2026-09-11; övriga språk väntar på översättare **Lätt svenska + arabiska/somaliska/tigrinja/dari för just "Min vecka" och
   närvaron** (fyra vyer, inte hela portalen) · löpande
-- [ ] **KM12** 🟡 (1)(3)(5)(6)(7) gjorda 2026-09-11 **Sajten före första kommunmejlet:** (1) priset säger 2 990 + 290 på startsidan och
-  "ingen offentlig prislista" på `/for-arbetsmarknadsenheter/`, välj ett; (2) org.nr, adress och
-  personuppgiftsansvarig är platshållare i policy/Art 30/DPIA; (3) stryk SSO/API/branding ur
-  prislistan (DOK9); (4) PUB-avtal ifyllt med kommunen som ansvarig (`juridik/PUB_Avtalsmall.docx`
-  är tom mall); (5) tillgänglighetsredogörelsen åberopar EAA, inte DOS-lagen/EN 301 549; (6)
-  "Senast uppdaterad" visar alltid dagens datum (`Terms.tsx:8–11`, `Privacy.tsx:52`,
-  `AiPolicy.tsx:51`); (7) guide `/guider/aktivitetskrav-forsorjningsstod/` + kommunvinkel på
-  B2B-sidan (0 publikt innehåll om kravet i dag); (8) demokonto i stället för mailto;
-  (9) kontakt/om oss-sida; (10) rotera OpenRouter-nyckeln (A1). Skriv in bilaga III-resonemanget
-  i `AI-ACT-CLASSIFICATION.md`; stäng Perplexity-funktionerna för organisationskonton tills
-  underbiträdet är redovisat · S–M per punkt
+- [ ] **KM12** 🟡 **Rättelse (2026-09-13): 9 av 10 punkter klara, bara (4) kvar.** Den här raden
+  släpade efter — status per punkt, verifierat mot koden i dag: ~~(1)~~ priset är samma på
+  startsidan och B2B-sidan + FAQ, ~~(2)~~ "Glänne & Söner, enskild firma (innehavare Mikael
+  Glännström)" står i `Privacy.tsx` (via `privacy.controller.name`), `GDPR-ART30-REGISTER.md` och
+  `DPIA-PORTAL.md` (beslut + commit `a64e54dc`, 2026-09-12 — org.nr skrivs med flit INTE i dessa,
+  bara i PUB-avtalet vid signering), ~~(3)~~ SSO/API/branding strukna ur prislistan, ~~(5)~~
+  tillgänglighetsredogörelsen åberopar DOS-lagen/EN 301 549, ~~(6)~~ `Terms.tsx` har fast datum,
+  ~~(7)~~ guiden skriven och länkad, ~~(8)~~ demokonto byggt, ~~(9)~~ om oss-sida klar, ~~(10)~~
+  OpenRouter-nyckeln roterad. **Kvar, och det är juridiskt arbete, inte kod:** (4) PUB-avtalet —
+  utkast finns i `juridik/`, men kräver juridisk granskning och kommunens org.nr vid signering.
+  Ingen agent kan slutföra den punkten · S–M per punkt, (4) kräver dig
 
 - [x] **ÖV1** ✅ 2026-09-12 (VIEWED_PARTICIPANT_DATA + participant_id + deltagarens policy; kortet i Min konsulent) **En läslogg deltagaren själv kan se.** Enda loggade konsulenthändelsen är
   `BULK_MESSAGE_SENT` (`consultantService.ts:182-194`). Att öppna någons journal, mål, mående eller
@@ -3355,7 +3436,14 @@ som står här är **nytt eller nyare än de raderna**.
 - [x] **TI1** ✅ **Klar 2026-09-02.** Egen mätning mot Cards **faktiska** mörka botten (`dark:bg-stone-800`, som tar över `bg-amber-50` via cascaden): `text-amber-900` gav **1,32:1**, inte 1,93 som raden skattade. Efter `dark:`-par på alla sex klasser: rubrik 12–13:1, brödtext 10,5–11,6:1, ikon 9–10:1, knapptext 8,3:1. Inga nya färger (samma amber-par som 15+ komponenter redan använder). Källkodsvakt `ApplicationsPipeline.morkt-lage.test.tsx`, mutationstestad. *(Var:)* **Mörkt läge saknar `dark:`-varianter där varningen behöver synas mest.** `ApplicationsPipeline.tsx:502-526` har sex `amber`-klasser utan `dark:`-motsvarighet, medan `Card`-primitiven sätter sin egen mörka botten. Egen beräkning: `text-amber-900` på `bg-stone-900` ger **1,93:1** där AA kräver 4,5:1; `text-amber-700` ger 3,48:1. Just det kortet är "N ansökningar behöver uppföljning". Mörkt läge är inte kosmetik för den här målgruppen — bländningskänslighet är en av de fysiska utmaningar portalen finns till för · ~2–3 h
 - [x] **TI2** ✅ **Klar 2026-09-02.** `<MotionConfig reducedMotion="user">` runt hela trädet i `main.tsx`. Premissrättelse: **5** filer (inte 3) hade redan lokal MotionConfig av 25 med framer-motion. Verifierat i framer-motions källa att det är `useReducedMotionConfig()` (OS-läge + kontext) som stänger av transformanimationer — utan MotionConfig är defaulten `"never"`. Test `main.motion-reduced.test.tsx`, mutationstestat. *(Var:)* **22 av 25 framer-motion-filer respekterar inte `prefers-reduced-motion`.** **Premissrättelse:** granskaren rapporterade "0 av 25" — fel. Tre filer (`OccupationsTab.tsx:169`, `ResultsTab.tsx:179`, `CognitiveTab.tsx:243`) använder redan `<MotionConfig reducedMotion="user">`. Mönstret finns alltså i kodbasen och behöver inte uppfinnas — det behöver lyftas till roten. CSS-regeln i `accessibility.css:100-116` neutraliserar bara CSS-animationer, inte Framer Motions JS-drivna transforms · en `MotionConfig` högst upp i trädet · ~1 h
 - [x] **TI3** ✅ **Klar 2026-09-02.** `DropdownMenu` har `aria-haspopup`/`aria-expanded`/`aria-controls`, `role="menu"`/`"menuitem"`, Escape med fokusåterföring och piltangenter. Premissrättelse: `NotificationBell` använder `role="dialog"`, inte menu — WAI-ARIA:s menu-button-mönster valdes i stället; **5** (inte 6) användningsställen. Fokusåterföring via `event.currentTarget` eftersom `Button.tsx` inte är `forwardRef`. 9 tester, två mutationer. *(Var:)* **`DropdownMenu` har noll aria-attribut.** Mätt: `grep "aria-"` i `ui/DropdownMenu.tsx` ger inga träffar. Sex användningsställen ärver bristen. En skärmläsaranvändare hör "knapp" — inget om att en meny finns eller om den är öppen. `NotificationBell.tsx:277-289` har mönstret rätt, så fixen är att flytta det till primitiven · ~1 h
-- [ ] **BL1** **Självregistrering skapar konton utan väg till en konsulent.** Startsidans huvud-CTA leder till öppen registrering som alltid sätter `role: 'USER'` utan koppling. `/my-consultant` visar då ett kort med rubriken "Du har ingen konsulent tilldelad ännu" och texten "Tills dess hjälper vi dig gärna direkt" — **utan knapp och utan länk** (`MyConsultant.tsx:1057-1069`), och utan att använda `<EmptyState>`, som DESIGN.md §7 kräver ska ha EN tydlig CTA. Konsulentvyn har ingen lista över otilldelade. UX12 mätte 31 deltagare med konsulent 3 augusti; resten har ingen väg vidare. Det är sannolikt en stor del av svaret på varför 7 av 92 konton är aktiva — och personuppgifter lagras för konton portalen aldrig gett någon anledning att stanna i · beslut + S–M
+- [ ] **BL1** ~~Självregistrering skapar konton utan väg till en konsulent.~~ **Rättelse (2026-09-13):**
+  den här raden är historiken — se den levande statusen under "Kvar i spåret" (KM-avsnittet, punkt 1):
+  🟡 2026-09-08 byggdes `EmptyState` + mailto `support@jobin.se` på `/my-consultant`, så kortet nu har
+  EN tydlig CTA (DESIGN.md §7 uppfyllt). **Kvar, orört sedan 21 augusti:** produktbeslutet om kö eller
+  stängd självregistrering för konton utan konsulentkoppling — det är fortfarande "beslut", inte kod.
+  *(Ursprunget:)* Startsidans huvud-CTA leder till öppen registrering som alltid sätter `role: 'USER'`
+  utan koppling. Konsulentvyn har ingen lista över otilldelade. UX12 mätte 31 deltagare med konsulent
+  3 augusti; resten hade ingen väg vidare · beslut + S–M
 
 ### Framåt — det som gör nästa fel billigare
 
@@ -5702,8 +5790,10 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | ~~EU-utlysning: 26-001/26-002/båda~~ | G6, C4 | ⏸ **Avaktiverat 2026-08-03** — spåret pausat på Mikaels beslut. Tas upp igen när du säger till |
 | **Premium (spår P): fyra frågor före P1.** (1) Är 99 kr/mån **inklusive** moms? (2) Bara månadspris, eller också årspris? (3) Får konsulentkopplade deltagare (Rusta och matcha / AME) premium via organisationslicensen? (4) Ska de 17 användare som redan gett AI-samtycke få en övergångsperiod, eller låses de samma dag? Plus det praktiska: Stripe-konto med produkt + pris, `STRIPE_SECRET_KEY` (live), `STRIPE_WEBHOOK_SECRET` och `STRIPE_PRICE_ID` i Vercel | P1–P5 | **nu — inget i spår P kan börja utan (1)–(3)** |
 | **P1-migrationen (`subscriptions` + `har_premium()`)** mot prod | P1 | **väntar på ditt ja** när den är skriven |
+| **F6-migrationen** (`20260913150000_f6_dagbok_utan_halsosamtycke.sql`) — dagboksrader utan mood/energi kräver inte längre hälsosamtycke. Skriven och rollback-bevisad (`e2e/f6-dagbok-prov.sql`), klientfixen redan i koden. Rör RLS | F6 | **väntar på ditt ja** |
+| **Cron-raden för `/api/aktivitet-mejl`** i `client/vercel.json` — mejl för KM10:s notiser (plan/pass/frånvaro), samma mönster som pass-paminnelse (F3). Koden är klar och testad; bara vercel.json-raden saknas | KM10-rest | **väntar på ditt ja** |
 | ~~**Grafikstil i molnet.**~~ `user_preferences.graphics_style` ('mjuk' \| 'action', default mjuk) | Grafik | ✅ **Godkänt och kört 2026-09-10** — 12 rader fick 'mjuk', snapshot uppdaterad, `settingsStore` sparar och läser kolumnen |
-| **Deploy-workflowens röktest är rött sedan 2026-09-08 — välj en rad.** Steget "API health check" i `.github/workflows/deploy.yml` kräver **401** utan auth från edge-funktionen `health`, men `1ca09eea` (8 sep) satte `verify_jwt = false` för den i `supabase/config.toml`, så den svarar **200** utan auth och steget fäller varje deploy ("oväntad status 200 utan auth"). Frontend- och Supabase-jobben är gröna; prod uppdateras. Antingen godta 200 för `health` i steget (den är öppen med flit och läcker inget), eller sätt `verify_jwt = true` igen. Båda rör filer som kräver ditt ja. Sista gröna deployen: `ddd403fb` 2 september | D-spåret | **nu — varje deploy är röd tills dess** |
+| ~~**Deploy-workflowens röktest är rött sedan 2026-09-08.**~~ ✅ **Löst 2026-09-12** (se `smoke-test-health-401`-lärdomen): steget skriver nu **200** som förväntat svar i stället för 401. Verifierat 2026-09-13 mot GitHub-API:t: `Deploy` och `CI` gröna på de fem senaste körningarna på `main` (senast `34726290755`, 2026-09-12 23:46) | D-spåret | ✅ klart |
 | **STA-återstart — hur ska konsulenten administrera insatsen?** Flaggan `VITE_STA_ENABLED` ger tillbaka deltagarvyn men inte konsulentvyn (den är borttagen med flit). Val: flikar i ordinarie `/consultant` eller återinföra separat vy | G1, G2, F11 | när STA slås på igen |
 | DPIA/Art 30: org-uppgifter + signatur | A4 | v. 29 |
 

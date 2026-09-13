@@ -6,10 +6,12 @@
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 const mockToggleFavorite = vi.fn()
 const mockDeleteEntry = vi.fn()
 const mockGetNewPrompt = vi.fn()
+const mockCreateEntry = vi.fn()
 
 const entries = [
   { id: 'e1', title: 'Min dag', content: 'Innehåll', tags: [], entry_date: '2026-08-10', word_count: 2, is_favorite: false },
@@ -19,7 +21,7 @@ vi.mock('@/hooks/useDiary', () => ({
   useDiaryEntries: () => ({
     entries,
     isLoading: false,
-    createEntry: vi.fn(),
+    createEntry: mockCreateEntry,
     deleteEntry: mockDeleteEntry,
     toggleFavorite: mockToggleFavorite,
   }),
@@ -37,6 +39,7 @@ describe('F21: JournalTab ikonknappar har tillgängliga namn', () => {
     mockToggleFavorite.mockReset()
     mockDeleteEntry.mockReset()
     mockGetNewPrompt.mockReset()
+    mockCreateEntry.mockReset()
     vi.spyOn(window, 'confirm').mockReturnValue(true)
   })
 
@@ -62,5 +65,45 @@ describe('F21: JournalTab ikonknappar har tillgängliga namn', () => {
   it('skrivtips-knappen har ett tillgängligt namn', () => {
     render(<JournalTab />)
     expect(screen.getByRole('button', { name: /nytt skrivtips/i })).toBeInTheDocument()
+  })
+})
+
+describe('F6: mood är valfritt, inte förvalt', () => {
+  const oppnaSkrivläge = async (user: ReturnType<typeof userEvent.setup>) => {
+    render(<JournalTab />)
+    await user.click(screen.getByRole('button', { name: /^ny anteckning$/i }))
+  }
+
+  it('en sparad rad bär mood: null om användaren aldrig rört reglaget', async () => {
+    const user = userEvent.setup()
+    await oppnaSkrivläge(user)
+
+    const content = screen.getByLabelText(/dina tankar|innehåll/i)
+    await user.type(content, 'En vanlig jobbsökaranteckning.')
+    await user.click(screen.getByRole('button', { name: /^spara$/i }))
+
+    expect(mockCreateEntry).toHaveBeenCalledWith(
+      expect.objectContaining({ mood: null })
+    )
+  })
+
+  it('klick på samma mood-knapp igen rensar valet', async () => {
+    const user = userEvent.setup()
+    await oppnaSkrivläge(user)
+
+    const moodButtons = ['😢', '😔', '😐', '🙂', '😄'].map((emoji) =>
+      screen.getByRole('button', { name: emoji })
+    )
+
+    await user.click(moodButtons[2]) // välj mood 3
+    expect(moodButtons[2]).toHaveAttribute('aria-pressed', 'true')
+
+    await user.click(moodButtons[2]) // klicka igen — rensar
+    expect(moodButtons[2]).toHaveAttribute('aria-pressed', 'false')
+
+    const content = screen.getByLabelText(/dina tankar|innehåll/i)
+    await user.type(content, 'Text.')
+    await user.click(screen.getByRole('button', { name: /^spara$/i }))
+    expect(mockCreateEntry).toHaveBeenCalledWith(expect.objectContaining({ mood: null }))
   })
 })

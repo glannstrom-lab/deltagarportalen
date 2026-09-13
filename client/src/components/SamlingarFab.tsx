@@ -91,6 +91,30 @@ export function SamlingarFab() {
   const navigate = useNavigate()
   const hiddenOnScroll = useHideOnScrollDown()
 
+  // Skav (persona 2026-09-12): FAB:en låg fixed i hörnet ovanpå Snabb-CV:ts
+  // "Ditt namn"-fält (`components/cv/QuickCVMode.tsx`) — den sidan har inte
+  // rådgivarkolumnens tomma-sidor-koll och kan inte äga en fix i den här
+  // filens exklusiva scope, så lösningen sitter här: dölj knappen medan ett
+  // formulärfält har fokus (mobil tangentbord öppet, eller bara ett fält
+  // under redigering) — samma mönster som `hiddenOnScroll` nedan, men för
+  // "användaren skriver" i stället för "användaren scrollar". Ett fält man
+  // just skrivit i är den situation där en FAB som täcker innehåll gör som
+  // mest skada.
+  const [faltHarFokus, setFaltHarFokus] = useState(false)
+  useEffect(() => {
+    const arFalt = (mal: EventTarget | null) =>
+      mal instanceof HTMLElement &&
+      (mal.tagName === 'INPUT' || mal.tagName === 'TEXTAREA' || mal.isContentEditable)
+    const onFocusIn = (e: FocusEvent) => { if (arFalt(e.target)) setFaltHarFokus(true) }
+    const onFocusOut = (e: FocusEvent) => { if (arFalt(e.target)) setFaltHarFokus(false) }
+    document.addEventListener('focusin', onFocusIn)
+    document.addEventListener('focusout', onFocusOut)
+    return () => {
+      document.removeEventListener('focusin', onFocusIn)
+      document.removeEventListener('focusout', onFocusOut)
+    }
+  }, [])
+
   // ESC stänger
   useEffect(() => {
     if (!isOpen) return
@@ -178,8 +202,9 @@ export function SamlingarFab() {
             'rounded-full bg-white dark:bg-stone-800 shadow-lg hover:shadow-xl',
             'border border-stone-200 dark:border-stone-700',
             'transition-all duration-200 hover:scale-105 active:scale-95',
-            // Dölj vid scroll nedåt (endast mobil) så fältet inte täcker innehåll
-            hiddenOnScroll ? 'translate-y-[220%] opacity-0 pointer-events-none' : 'translate-y-0 opacity-100',
+            // Dölj vid scroll nedåt, ELLER medan ett formulärfält har fokus
+            // (endast mobil) så knappen inte täcker det man just skriver i.
+            (hiddenOnScroll || faltHarFokus) ? 'translate-y-[220%] opacity-0 pointer-events-none' : 'translate-y-0 opacity-100',
             'sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto',
           )}
         >

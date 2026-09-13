@@ -27,7 +27,7 @@ export default function AITeam() {
 
   return (
     <FokusVaxel
-      title={t('aiTeam.title', 'AI-team')}
+      title={t('aiTeam.title', 'Vem vill du prata med?')}
       icon={Bot}
       /* "action" är Översiktens mint. Sidan hör till hubben Resurser, och
          normalvyn nedan säger redan "info" — så fokusläget färgade om hela

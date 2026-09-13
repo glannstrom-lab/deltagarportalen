@@ -14,7 +14,10 @@
  *
  * Varje funktion KASTAR vid fel. Anroparen i aktivitetApi loggar och låter
  * huvudoperationen lyckas: notisen är en bonus ovanpå det som redan sparats.
- * Inget mejl — DE1 blockerar all utgående e-post från jobin.se.
+ *
+ * Mejl: `client/api/aktivitet-mejl.js` (byggd 2026-09-13, sedan DE1 löstes)
+ * läser dessa tre typer och skickar via Resend — se den filen för cron-raden
+ * som saknas med flit i vercel.json tills Mikael sagt ja.
  */
 
 import { supabase } from '@/lib/supabase'

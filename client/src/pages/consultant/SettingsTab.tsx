@@ -413,6 +413,12 @@ export function SettingsTab() {
             label={t('consultant.settings.timezone')}
             description={t('consultant.settings.usedForMeetings')}
           >
+            {/* PG-skav 9 (persona-genomgången 2026-09-12): London/New York
+                borttagna — en svensk kommunkonsulentportal har ingen
+                användning för dem, och `preferences.timezone` läses inte av
+                någon annan kod (grep i hela client/src och supabase/functions,
+                2026-09-13) — mötestider visas i webbläsarens lokala tid
+                oavsett detta värde. */}
             <select
               value={preferences.timezone}
               onChange={e => updatePreference('timezone', e.target.value)}
@@ -424,8 +430,6 @@ export function SettingsTab() {
               )}
             >
               <option value="Europe/Stockholm">Stockholm (CET)</option>
-              <option value="Europe/London">London (GMT)</option>
-              <option value="America/New_York">New York (EST)</option>
             </select>
           </SettingRow>
 

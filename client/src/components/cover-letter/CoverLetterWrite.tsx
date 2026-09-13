@@ -143,6 +143,14 @@ async function generateCoverLetterWithAI(data: {
   }
   tone: 'professional' | 'enthusiastic' | 'formal'
   extraMotivation?: string
+  /**
+   * Skav 14 (persona 2026-09-12): "Skriv ett nytt utkast" bad om exakt samma
+   * underlag som första genereringen, så modellen — särskilt vid låg
+   * temperatur — kom tillbaka med i praktiken samma brev. Sant bara vid en
+   * OMgenerering (aldrig den första), instruerar den här flaggan modellen att
+   * medvetet variera öppning och styckesindelning, utan att röra sanningsreglerna.
+   */
+  variera?: boolean
 }) {
   const profileContext: string[] = []
 
@@ -205,6 +213,14 @@ async function generateCoverLetterWithAI(data: {
     fullContext = fullContext
       ? `${fullContext}\n\nYtterligare information om kandidaten: ${profileInfo}`
       : `Information om kandidaten: ${profileInfo}`
+  }
+  // Se `variera` i typen ovan. Instruktionen läggs sist, som en anvisning till
+  // modellen — inte som ett påstående om kandidaten — och rör bara form, inte
+  // sanningsreglerna i systemprompten.
+  if (data.variera) {
+    const varieraInstruktion =
+      'Det här är en OMGENERERING av samma brev, inte den första. Skriv en tydligt annorlunda version denna gång: annan inledning, annan styckesindelning och andra formuleringar än ett förväntat standardbrev — men samma fakta och samma sanningsregler som innan.'
+    fullContext = fullContext ? `${fullContext}\n\n${varieraInstruktion}` : varieraInstruktion
   }
 
   // Get user's real name from profile or CV
@@ -507,7 +523,7 @@ export function CoverLetterWrite() {
   // Tillägg: ett fel får inte heller RADERA. Catchen nollade tidigare både
   // `generatedLetter` och `editedLetter` — så ett nätverksglapp åt upp texten
   // personen just skrivit, och autosaven cementerade förlusten en sekund senare.
-  const generateLetter = async () => {
+  const generateLetter = async (opts?: { variera?: boolean }) => {
     // Utan CV och utan egna rader anropas ingen AI alls.
     //
     // Mätt mot prod tre gånger: modellen skriver påståenden om personen även
@@ -543,6 +559,7 @@ export function CoverLetterWrite() {
         },
         tone: formData.tone,
         extraMotivation: formData.motivation,
+        variera: opts?.variera === true,
       })
 
       // `callAI` är löst typad, så svaret smalnas av här i stället för att
@@ -572,6 +589,26 @@ export function CoverLetterWrite() {
    * först — annars är knappen en radergummiknapp som ser ut som en hjälpknapp.
    */
   const begarNyttUtkast = async () => {
+    // Skav 14 (persona 2026-09-12): mallen (`byggBrevmall`, `data/brevmall.ts`)
+    // är handskriven och deterministisk med FLIT — samma företag/titel ger
+    // alltid samma text, för ingen modell ska kunna hitta på något om
+    // personen. "Skriv ett nytt utkast" visade ändå bekräftelsedialogen (som
+    // varnade för en förlust som aldrig skedde, eftersom `generatedLetter`
+    // nollställs för mallen — se generateLetter) och levererade sedan
+    // bokstavligen samma text igen. Knappen lovade en ny variant den aldrig
+    // kunde ge. Säg sanningen i stället för att låtsas leverera — samma
+    // princip som B21 (hellre ärligt än falskt).
+    if (arMall) {
+      showToast.info(
+        t('coverLetter.write.mallVarierarInte', 'Mallen är alltid likadan'),
+        t(
+          'coverLetter.write.mallVarierarInteBody',
+          'Den bygger bara på jobbtiteln och företaget, så ett nytt försök ger samma text. Fyll i luckorna själv, eller lägg till ditt CV eller några egna rader så kan AI:n skriva ett riktigt brev.'
+        )
+      )
+      return
+    }
+
     const harEgenText =
       editedLetter.trim().length > 0 && editedLetter.trim() !== generatedLetter.trim()
 
@@ -587,7 +624,9 @@ export function CoverLetterWrite() {
       })
       if (!ok) return
     }
-    await generateLetter()
+    // `variera: true` ber modellen om en tydligt annorlunda variant i stället
+    // för att skicka exakt samma anrop igen — se `generateCoverLetterWithAI`.
+    await generateLetter({ variera: true })
   }
 
   /**

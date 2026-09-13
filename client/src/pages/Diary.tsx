@@ -138,12 +138,19 @@ function DiaryInner() {
     }
   }, [location.search])
 
+  // F6: bara Mood rör hälsodata (mood/energi) och kräver samtycke.
+  // Journal (en ren textrad utan mood ifyllt), Goals och Gratitude skriver
+  // till andra tabeller/RLS-vägar och ska inte behöva blockeras av grinden.
   const renderTabContent = () => {
     switch (activeTab) {
       case 'journal':
         return <JournalTab />
       case 'mood':
-        return <MoodTab />
+        return (
+          <WellnessConsentGate>
+            <MoodTab />
+          </WellnessConsentGate>
+        )
       case 'goals':
         return <GoalsTab />
       case 'gratitude':
@@ -166,7 +173,6 @@ function DiaryInner() {
         vidVal: (id) => handleTabChange(id as TabId),
       }}
 >
-      <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
         {/* Achievement Banner (only for significant milestones) */}
         <AchievementBanner />
@@ -188,7 +194,6 @@ function DiaryInner() {
           {renderTabContent()}
         </div>
       </div>
-      </WellnessConsentGate>
     </PageLayout>
   )
 }

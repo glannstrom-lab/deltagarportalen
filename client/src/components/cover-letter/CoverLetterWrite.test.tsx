@@ -77,8 +77,9 @@ vi.mock('@/stores/profileStore', () => ({
 }))
 
 const toastError = vi.fn()
+const toastInfo = vi.fn()
 vi.mock('@/components/Toast', () => ({
-  showToast: { success: vi.fn(), error: (...a: unknown[]) => toastError(...a) },
+  showToast: { success: vi.fn(), error: (...a: unknown[]) => toastError(...a), info: (...a: unknown[]) => toastInfo(...a) },
 }))
 
 // Tunga barn utan betydelse för det här: mallväljaren och förhandsvisningen.
@@ -222,6 +223,21 @@ describe('CoverLetterWrite — användarens text', () => {
     await waitFor(() => expect(createMock).toHaveBeenCalled())
     expect(createMock.mock.calls[0][0].ai_generated).toBe(false)
   })
+
+  it('Skav 14 (persona 2026-09-12): en omgenerering ber uttryckligen om en annorlunda variant, i stället för att skicka exakt samma anrop igen', async () => {
+    // Mutation: ta bort `variera: opts?.variera === true` i generateLetter,
+    // eller ta bort `if (data.variera) {...}` i generateCoverLetterWithAI →
+    // RÖD (extraContext bär ingen varieringsinstruktion vid omgenerering).
+    callAIMock.mockResolvedValue({ brev: 'Ett annorlunda utkast denna gång.' })
+    saUtkastet({ currentStep: 2, editedLetter: 'AI-utkastet, ordagrant.', generatedLetter: 'AI-utkastet, ordagrant.' })
+    rita()
+
+    fireEvent.click(await screen.findByRole('button', { name: /Skriv ett nytt utkast/ }))
+
+    await waitFor(() => expect(callAIMock).toHaveBeenCalled())
+    const [, anrop] = callAIMock.mock.calls[0]
+    expect(String((anrop as { extraContext?: string }).extraContext)).toMatch(/OMGENERERING/)
+  })
 })
 
 describe('CoverLetterWrite — utan underlag anropas ingen AI', () => {
@@ -256,5 +272,27 @@ describe('CoverLetterWrite — utan underlag anropas ingen AI', () => {
     // Ingen av fraserna modellen hittade på i drift.
     expect(textarea.value).not.toMatch(/goda kunskaper i svenska/i)
     expect(textarea.value).not.toMatch(/är van vid/i)
+  })
+
+  it('Skav 14 (persona 2026-09-12): "Skriv ett nytt utkast" säger sanningen om mallen i stället för att tyst leverera samma text igen', async () => {
+    // Mutation: ta bort `if (arMall) { showToast.info(...); return }` i
+    // begarNyttUtkast → RÖD (ingen toast, och den villseledande
+    // bekräftelsedialogen dyker upp trots att inget skulle förloras).
+    saUtkastet({ currentStep: 2, editedLetter: '', generatedLetter: '', motivation: '' })
+    rita()
+
+    fireEvent.click(await screen.findByRole('button', { name: /utkast/i }))
+    const textarea = await screen.findByRole('textbox', { name: /brev/i }) as HTMLTextAreaElement
+    await waitFor(() => expect(textarea.value).toContain('___'))
+    const mallText = textarea.value
+
+    fireEvent.click(screen.getByRole('button', { name: /Skriv ett nytt utkast/ }))
+
+    await waitFor(() => expect(toastInfo).toHaveBeenCalled())
+    // Ingen bekräftelsedialog — den hade varnat för en förlust som aldrig sker.
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    // Och ingen AI anropades — mallen är inte AI:ns väg.
+    expect(callAIMock).not.toHaveBeenCalled()
+    expect(textarea.value).toBe(mallText)
   })
 })
