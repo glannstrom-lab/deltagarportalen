@@ -20,10 +20,13 @@ import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import type { Foretagskonto } from '@/hooks/useForetagskonto'
 
 const konto = vi.hoisted(() => ({
-  varde: { org: null, isLoading: false, isEmployer: false, error: null } as {
+  varde: { org: null, isLoading: false, isEmployer: false, arForetagskonto: false, error: null } as {
     org: { id: string; name: string } | null
     isLoading: boolean
+    /** Medlem i ett företagskonto — sant även för personal. */
     isEmployer: boolean
+    /** Personens KONTO är ett företagskonto. Bara den här byter skal. */
+    arForetagskonto: boolean
     error: unknown
   },
 }))
@@ -60,7 +63,7 @@ import Layout, { ForetagskontoProvider, MobileMainMenu, MobileTopBar } from './L
 afterEach(cleanup)
 beforeEach(() => {
   mobil.pa = false
-  konto.varde = { org: null, isLoading: false, isEmployer: false, error: null }
+  konto.varde = { org: null, isLoading: false, isEmployer: false, arForetagskonto: false, error: null }
 })
 
 function somForetag() {
@@ -68,6 +71,23 @@ function somForetag() {
     org: { id: 'o1', name: 'Glänne & Söner' },
     isLoading: false,
     isEmployer: true,
+    arForetagskonto: true,
+    error: null,
+  }
+}
+
+/**
+ * Personal som ÄR medlem i ett företagskonto (2026-09-15). En SUPERADMIN kan
+ * numera nå /foretag utan att byta roll — men skalet ska förbli det vanliga.
+ * Blandas de två märks hela kontot som företag, vilket är precis det som gick
+ * fel när kontot först lades i demoföretaget.
+ */
+function somPersonalMedForetag() {
+  konto.varde = {
+    org: { id: 'o1', name: 'Glänne & Söner' },
+    isLoading: false,
+    isEmployer: true,
+    arForetagskonto: false,
     error: null,
   }
 }
@@ -151,7 +171,7 @@ describe('företagskontot får sitt eget skal (AG6)', () => {
   })
 
   it('isLoading: laddaren, och INGEN av menyerna blinkar förbi', () => {
-    konto.varde = { org: null, isLoading: true, isEmployer: false, error: null }
+    konto.varde = { org: null, isLoading: true, isEmployer: false, arForetagskonto: false, error: null }
     rendera('/cv')
     expect(screen.getByTestId('skal-laddar')).toBeTruthy()
     expect(screen.queryByTestId('topbar')).toBeNull()
@@ -232,5 +252,27 @@ describe('mobilen: samma regel i huvudmenyn och profilpanelen', () => {
     expect(screen.queryByTestId('bottennav')).toBeNull()
     expect(screen.queryByTestId('foretag-topbar')).toBeNull()
     expect(screen.getByRole('button', { name: /meny/i })).toBeTruthy()
+  })
+})
+
+describe('personal med företagskonto behåller sitt vanliga skal (2026-09-15)', () => {
+  it('isEmployer men inte arForetagskonto: hubbmenyn finns kvar, företagsmenyn tar inte över', () => {
+    somPersonalMedForetag()
+    rendera('/cv')
+    // Samma assertion som deltagartestet ovan: det vanliga skalet känns igen
+    // på TopBar + undersidesrad, och företagsskalet på sin egen meny.
+    expect(screen.getByTestId('topbar')).toBeTruthy()
+    expect(screen.getByTestId('undersidesrad')).toBeTruthy()
+    expect(screen.queryByTestId('foretagsskal')).toBeNull()
+    expect(screen.queryByRole('navigation', { name: /företagsmeny/i })).toBeNull()
+  })
+
+  it('negativ kontroll: samma data med arForetagskonto=true ger företagsskalet', () => {
+    // Utan den här kontrollen bevisar testet ovan ingenting — det hade kunnat
+    // passera för att renderingen misslyckats av något annat skäl.
+    somForetag()
+    rendera()
+    expect(screen.getByTestId('foretagsmeny')).toBeInTheDocument()
+    expect(screen.queryByTestId('sidomeny')).not.toBeInTheDocument()
   })
 })

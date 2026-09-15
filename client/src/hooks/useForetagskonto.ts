@@ -25,9 +25,17 @@ export const FORETAGSKONTO_QUERY_KEY = ['foretagskonto'] as const
 export interface Foretagskonto {
   /** Företagsorganisationen, eller null när personen inte är företagskontakt. */
   org: Organization | null
-  /** true tills första svaret är inne (bara för USER-konton). */
+  /** true tills första svaret är inne. */
   isLoading: boolean
+  /** Personen är medlem i ett företagskonto — sant även för personal. */
   isEmployer: boolean
+  /**
+   * Personens KONTO är ett företagskonto (USER + medlem). Skilt från
+   * `isEmployer` sedan personal fick egen ingång till företagsvyn: bara det
+   * här flaggan får byta skal och startsida, annars äter företagsskalet
+   * konsulentens och adminens vanliga portal.
+   */
+  arForetagskonto: boolean
   error: unknown
 }
 
@@ -42,7 +50,11 @@ export async function hamtaForetagskonto(): Promise<Organization | null> {
 export function useForetagskonto(): Foretagskonto {
   const userId = useAuthStore((s) => s.user?.id ?? null)
   const roll = useAuthStore((s) => s.profile?.activeRole || s.profile?.role || 'USER')
-  const kanVaraForetag = !!userId && roll === 'USER'
+  // Personal frågar också: en SUPERADMIN kan vara medlem i ett företagskonto
+  // och ska då nå /foretag utan att byta aktiv roll. Invitationstriggern
+  // nekar fortfarande personalkonton — medlemskapet sätts för hand.
+  const arPersonal = roll === 'CONSULTANT' || roll === 'ADMIN' || roll === 'SUPERADMIN'
+  const kanVaraForetag = !!userId
 
   const q = useQuery({
     queryKey: [...FORETAGSKONTO_QUERY_KEY, userId],
@@ -57,6 +69,7 @@ export function useForetagskonto(): Foretagskonto {
     org,
     isLoading: kanVaraForetag && q.data === undefined && !q.error,
     isEmployer: org !== null,
+    arForetagskonto: org !== null && !arPersonal,
     error: q.error,
   }
 }

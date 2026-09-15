@@ -144,7 +144,10 @@ function PrivateRoute({
  * den hanteras i PublicRoute/RootRoute före den här komponenten någonsin renderas.
  */
 function StartRedirect() {
-  const { isLoading, isEmployer } = useForetagskonto()
+  // arForetagskonto, inte isEmployer: personal som är medlem i ett
+  // företagskonto ska landa på Översikt som vanligt och nå företagsvyn via
+  // menyn, precis som konsulentvyn.
+  const { isLoading, arForetagskonto } = useForetagskonto()
 
   if (isLoading) {
     return (
@@ -154,7 +157,7 @@ function StartRedirect() {
     )
   }
 
-  return <Navigate to={isEmployer ? '/foretag' : '/oversikt'} replace />
+  return <Navigate to={arForetagskonto ? '/foretag' : '/oversikt'} replace />
 }
 
 /**

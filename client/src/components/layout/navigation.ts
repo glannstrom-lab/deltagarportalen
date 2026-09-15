@@ -128,6 +128,17 @@ export const adminNavItems = [
   { path: '/admin', labelKey: 'nav.adminPanel', icon: Shield },
 ]
 
+/**
+ * Företagsvyn för PERSONAL (AG6/2026-09-15).
+ *
+ * Egen export och inte en rad i consultantNavItems: den listan är
+ * rollbaserad och renderas rakt av för varje konsulent, medan den här länken
+ * bara gäller den som faktiskt är medlem i ett företagskonto. Lagd i listan
+ * hade den blivit en död ingång för alla andra. Villkoret sitter i Layout,
+ * som har medlemskapet via useForetagsskal().
+ */
+export const employerNavItem = { path: '/foretag', labelKey: 'nav.employerPortal', icon: Building2 }
+
 // Konsulent navigation (visas för CONSULTANT)
 export const consultantNavItems = [
   { path: '/consultant', labelKey: 'nav.consultantPortal', icon: Users },

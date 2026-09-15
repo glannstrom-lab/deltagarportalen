@@ -32,7 +32,7 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-import { navHubs, adminNavItems, consultantNavItems, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
+import { navHubs, adminNavItems, consultantNavItems, employerNavItem, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
 import { HUB_ICON_SRC } from './layout/hubIcons'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
@@ -82,13 +82,16 @@ const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
  * renderas utan provider beter sig exakt som före AG6. App.tsx (RootRoute)
  * lägger providern runt Layout; det är den enda platsen hooken anropas i skalet.
  */
-type ForetagsSkal = Pick<Foretagskonto, 'org' | 'isLoading' | 'isEmployer'>
-const FORETAG_DEFAULT: ForetagsSkal = { org: null, isLoading: false, isEmployer: false }
+type ForetagsSkal = Pick<Foretagskonto, 'org' | 'isLoading' | 'isEmployer' | 'arForetagskonto'>
+const FORETAG_DEFAULT: ForetagsSkal = { org: null, isLoading: false, isEmployer: false, arForetagskonto: false }
 export const ForetagskontoContext = createContext<ForetagsSkal>(FORETAG_DEFAULT)
 
 export function ForetagskontoProvider({ children }: { children: React.ReactNode }) {
-  const { org, isLoading, isEmployer } = useForetagskonto()
-  const varde = useMemo<ForetagsSkal>(() => ({ org, isLoading, isEmployer }), [org, isLoading, isEmployer])
+  const { org, isLoading, isEmployer, arForetagskonto } = useForetagskonto()
+  const varde = useMemo<ForetagsSkal>(
+    () => ({ org, isLoading, isEmployer, arForetagskonto }),
+    [org, isLoading, isEmployer, arForetagskonto],
+  )
   return <ForetagskontoContext.Provider value={varde}>{children}</ForetagskontoContext.Provider>
 }
 
@@ -413,7 +416,7 @@ export default function Layout() {
   if (foretag.isLoading) return <SkalLaddar />
   // Toasten monteras EN gång (grind KA1 i lib/toast.grind.test.ts), utanför
   // båda skalen — ett anrop till showToast ska nå fram oavsett vilket skal som visas.
-  if (foretag.isEmployer) {
+  if (foretag.arForetagskonto) {
     return (
       <>
         <ForetagSkal isMobile={isMobile} showBars={showBars} pathname={location.pathname} org={foretag.org} />
@@ -860,7 +863,12 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
               {t('sidebar.consultantSection')}
             </p>
             <div className="space-y-0.5">
-              {consultantNavItems.map((item) => {
+              {/* AG6/2026-09-15: företagsvyn läggs till för den personal som
+                  FAKTISKT är medlem i ett företagskonto. Villkoret sitter här
+                  och inte i consultantNavItems, som är rollbaserad och renderas
+                  rakt av — där hade länken blivit en död ingång för alla
+                  konsulenter utan företagskonto. */}
+              {(foretagForst ? [...consultantNavItems, employerNavItem] : consultantNavItems).map((item) => {
                 const Icon = item.icon
                 const isActive = location.pathname.startsWith(item.path)
                 return (
