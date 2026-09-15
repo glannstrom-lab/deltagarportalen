@@ -203,6 +203,17 @@ function byggPrerenderade() {
       const { sidor: b2bSidor } = JSON.parse(fs.readFileSync(b2bFil, 'utf8'))
       for (const b of b2bSidor || []) sidor.add(`/${b.slug}/`)
     }
+    // Spår K, omgång 7: situationssidorna, ur content/situationer.json av
+    // samma skäl. Samlingssidan läggs till bara när det finns minst en sida —
+    // annars hade grinden godkänt en länk till en katalog bygget aldrig skriver.
+    const situationerFil = path.join(CLIENT, 'content', 'situationer.json')
+    if (fs.existsSync(situationerFil)) {
+      const { sidor: situationer } = JSON.parse(fs.readFileSync(situationerFil, 'utf8'))
+      if (situationer?.length) {
+        sidor.add('/for-dig-som/')
+        for (const sit of situationer) sidor.add(`/for-dig-som/${sit.slug}/`)
+      }
+    }
     // KM12 (9): om oss-sidan, ur content/om-oss.json av samma skäl.
     const omOssFil = path.join(CLIENT, 'content', 'om-oss.json')
     if (fs.existsSync(omOssFil)) {

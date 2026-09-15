@@ -1,6 +1,11 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-09-10** (Översikt byggd om i tre nivåer efter designförslag, och beslutet om **spår P — premium 99 kr/mån via Stripe**; se avsnitten direkt nedan), byggd på **2026-09-08** (passering: 20 poster ur genomgången 7 september avbetalda av åtta agenter — tre premisser föll, tre migrationer väntar på ja; se avsnittet "Passering 2026-09-08"), byggd på **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
+> **Detta är projektets enda gällande plan.** Version **2026-09-13** (tredje helhetsgenomgången —
+> sex roterade linser eftersom 560 filer ändrats sedan 7 september: KM-spårets domänlogik,
+> AG-spårets RLS/isolering, drift/observability för nya cronjobb, GDPR för företagsdatan,
+> informationsarkitektur mellan de tre kontotyperna, och en blindfläck. 17 poster; två redan
+> rättade på plats (en farligt föråldrad beslutsrad, se H12). Se avsnittet "Projektgenomgång
+> 2026-09-13" direkt nedan), byggd på version **2026-09-10** (Översikt byggd om i tre nivåer efter designförslag, och beslutet om **spår P — premium 99 kr/mån via Stripe**; se avsnitten direkt nedan), byggd på **2026-09-08** (passering: 20 poster ur genomgången 7 september avbetalda av åtta agenter — tre premisser föll, tre migrationer väntar på ja; se avsnittet "Passering 2026-09-08"), byggd på **2026-09-07** (andra helhetsgenomgången, åtta linser, 31 nya poster — nio riktiga fel, bl.a. att inget mejl kan nå fram från jobin.se, en rå platshållare i samtyckesrutan och ett hål i AG5-migrationen; se avsnittet "Projektgenomgång 2026-09-07"), byggd på **2026-09-02** (AG-restposter: placeringsknappen flyttad, AG5 omscopad — förslagsraden är samtycket, inte en profilkolumn — och raderingen av `aiCompanySearchApi` avskriven, för den var levande kod som dödkodsskriptet inte såg; se avsnittet "Passering 2026-09-02"), byggd på **2026-08-26** (våg 2 i spår O premissgranskad — ingen av de fem punkterna höll; O6 avskriven, O23/O9 kraftigt krympta, plus notisstacken lagad och profilsidans två attrapper borttagna; se avsnittet direkt nedan), byggd på **2026-08-23** (tre arbeten samma dygn: sidgenomgång av AI-teamet — sanningsregeln fanns bara på en av fem agenter — plus sidgenomgång av Externa resurser — 87 av 323 länkar var trasiga — och utskriftssidan borttagen till förmån för knappar per artikel; se avsnitten direkt nedan), byggd på **2026-08-22** (två sidgenomgångar samma dygn: Kunskapsbanken och Utbildningar), byggd på **2026-08-21** (fem sidgenomgångar samma dygn: Karriär, Intresseguiden, Kompetensanalysen, Personligt varumärke — plus projektgenomgången med sju linser över det som aldrig sidgranskats; se avsnitten direkt nedan), byggd på **2026-08-19** (fyra sidgenomgångar: Intervjusimulatorn, Personligt brev, Spontanansökan, Ansökningar), byggd på **2026-08-09** (andra tioagentersgranskningen — se avsnittet direkt nedan), byggd på version 2026-08-04, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljning; A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13) + `docs/portal-review-2026-07-27.md` (schemagranskning mot prod-databasen; nytt **spår H**).
 >
 > **Nytt 2026-07-27 — spår H väger tyngst av allt öppet.** Granskningen jämförde koden mot prod-schemat i stället för mot migrationsfilerna och hittade 11 tabeller som koden skriver till men som inte finns, plus 37 tabeller som finns men inte används. Konsekvensen är bl.a. att **jobbevakningen har varit ur funktion sedan 12 april**. H1 (driftgrind) före allt annat i H — annars återkommer fyndet en fjärde gång.
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
@@ -15,6 +20,190 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Projektgenomgång 2026-09-13 — tredje helhetsgenomgången, sex roterade linser
+
+**Mätvärden (fas 1, mätta idag):** 66 commits / 560 filer ändrade sedan förra genomgången
+(2026-09-07, commit `66896110`) — +71 442/−33 316 rader. Git-trädet var rent (0 ocheckade
+filer) innan genomgången, så rättelserna nedan är gjorda direkt i filen. `npm run verify`
+grönt (283 testfiler / 3396 tester, `typecheck:ceiling` 337/337, `lint:ci` 111/117 varningar,
+`lint:schema`/`lint:grants`/`lint:links` gröna). Två push:ar till prod samma dag, båda gröna i
+Deploy.
+
+**Varför linserna roterades helt:** förra genomgångens åtta linser (KG/AS/ON/DE/SD/MB/KA/BL)
+byggde på projektet som det såg ut 7 september. Sedan dess har hela **KM-spåret** (kommunernas
+aktivitetskrav — lagstadgat sedan 1 juli 2026) byggts från grunden och **AG-spåret**
+(företagskonton) tillkommit i sin helhet igår, 12 september. Ingen av de två har någonsin
+granskats av någon annan än den som byggde dem.
+
+**Linser körda:** KM-spårets domänlogik (är aktivitetskravsberäkningarna juridiskt korrekta,
+inte bara byggda) · AG-spårets RLS/datamodell (företagskontots isolering, en dag gammal kod) ·
+drift/observability för de nya cronjobben · GDPR för den nya företagsdatan · informationsarkitektur
+mellan de tre kontotyperna (deltagare/konsulent/företag) · en fri blindfläck. Bortvalt denna
+gång: SEO/innehåll (K-spåret är redan tätt granskat), ren visuell design (täckt av dagens
+SKAV-omgång, se Skav-listan i KM-avsnittet).
+
+**Metod:** sex Sonnet-agenter i ett meddelande, varsin lins, förbjudna att skriva filer. Alla
+fynd nedan är verifierade av mig efter rapporten — öppnat fil:rad, körts om det gick (särskilt
+Sentry-fyndet: `npx vercel env ls production` kört oberoende och bekräftar samma sak agenten
+såg). Två spekulativa fynd (en stale kommentar, en teoretisk race) föll bort i verifieringen
+och är inte med.
+
+### Nu — riktiga fel
+
+- [ ] **GG1** **Nämndrapporten och IVO-kvartalsunderlaget använder inte F10:s spårbara
+  underlagsflöde — byggt samma dag för att lösa exakt det här.** `namndrapportPdf.ts` har
+  ingen `handovers`-parameter, och `ivoKvartalsunderlag()` (som HAR fått en valfri
+  `handovers`-parameter, `ivoKvartal.ts:99`) anropas utan den på båda ställena
+  (`IvoUnderlagSektion.tsx:77`, `ReportGeneratorDialog.tsx:132`) — den faller tillbaka på
+  planens gamla synkade kolumn. **Den kolumnen skrivs om retroaktivt:** triggern
+  `activity_plan_handovers_sync_plan()` sätter `nedsattning_underlag_lamnat_at` till
+  `max(handed_over_at)` över ALL tid för planen (verifierat,
+  `20260913020000_f10_underlag_handlaggare.sql:158-163`) — ett underlag lämnat i Q1 och
+  sedan igen i Q2 gör att Q1 tyst tappar sin räkning i både IVO-underlaget och
+  nämndrapporten, eftersom kolumnen nu bara visar Q2:s datum. Det är en siffra en nämnd
+  eller IVO litar på som ändras bakåt i tiden utan att någon syns ha rört den. **Åtgärd:**
+  hämta `activity_plan_handovers` och skicka in som fjärde argument på båda anropsställena.
+  `client/src/components/consultant/IvoUnderlagSektion.tsx:77`,
+  `client/src/services/namndrapportPdf.ts:61`,
+  `client/src/components/consultant/ReportGeneratorDialog.tsx:132` · **verifierat** (läst
+  alla tre ställena + triggerfunktionen) · M
+- [ ] **BL1** **Demokontots riktiga inloggningsuppgifter står i klartext på en sida märkt
+  `index, follow`.** `demo@jobin.se`/`visa-jobin-2026` och `anna.exempel@example.com`/
+  `prova-anna-2026` — riktiga lösenord mot portalens verkliga auth-system — ligger i
+  `client/content/b2b.json:88,120-129,251` och renderas av `renderB2B` i
+  `guide-template.cjs`, som sätter `<meta name="robots" content="index, follow">`. Datan
+  är sandboxad och återställs varje natt, men lösenordet byts aldrig och sidan är avsiktligt
+  sökbar — Google, Wayback Machine och automatiska secret-scanners kommer permanent hitta
+  ett fungerande lösenord mot en riktig inloggning, hos precis den GDPR-medvetna kommunkund
+  målgruppen är. **Åtgärd:** `noindex` på just den sektionen (egen `/demo`-undersida), eller
+  kräv mejlkontakt för lösenordet i stället för att publicera det öppet. `client/content
+  /b2b.json:120-129`, `client/scripts/lib/guide-template.cjs` (renderB2B, robots-taggen
+  ~rad 1162) · **verifierat** (grep bekräftar båda strängarna och robots-taggen) · S
+- [ ] **DR1** **`SENTRY_DSN`/`VITE_SENTRY_DSN` är inte satta i Vercel — hela
+  felrapporteringskedjan (BL6, byggd 2026-09-12) är en tyst no-op i prod.**
+  `npx vercel env ls production` kört oberoende av mig: tio variabler listade, ingen av dem
+  Sentry. `skickaHandelse()` i `client/api/_utils/sentry.js:71` returnerar `false` utan DSN
+  — bekräftat i koden. Varje fel i `ai.js`, `cv-pdf.js`, `pass-paminnelse.js`,
+  `aktivitet-mejl.js` som kastar eller svarar 5xx försvinner i en Vercel-logg ingen tittar
+  på klockan 03. De 13 mutationstestade testerna bevisar att saneringen fungerar — inte att
+  något når fram. **Åtgärd:** lägg `SENTRY_DSN` + `VITE_SENTRY_DSN` i Vercel → Production.
+  `client/api/_utils/sentry.js:71` · **verifierat, mätt oberoende** (`vercel env ls`) · 15 min
+- [ ] **IA1** **Konsulent och admin loggar in på deltagarens Översikt, inte `/consultant` —
+  varje gång.** `StartRedirect` (`App.tsx:146-158`) grenar bara på `isEmployer` (`'/foretag'
+  : '/oversikt'`); ingen gren för `CONSULTANT`/`ADMIN`. Den som faktiskt ska arbeta möts av
+  jobbsökarens dashboard och måste själv hitta ner till "Konsultportal" i sidomenyn, varje
+  inloggning utan `returnTo`. **Åtgärd:** lägg en gren `activeRole === 'CONSULTANT' ||
+  'ADMIN' → '/consultant'`. `client/src/App.tsx:146-158` · **verifierat** (läst hela
+  funktionen) · 30 min
+- [ ] **DP1** **Företagskontaktens personuppgifter samlas in innan den lagliga grunden är
+  vald.** `docs/DPIA-PORTAL.md:86` och `docs/GDPR-ART30-REGISTER.md:441` skriver ordagrant
+  "Bedömning krävs, se AG9 avtal" som rättslig grund för namn/e-post/telefon/org.nr — samtidigt
+  som `20260913100000_ag6_foretagskonto.sql` redan körts i prod och accepterar riktiga
+  inbjudningar. AG9 (prismodell/avtal) är ett öppet beslut i roadmapen; insamlingen väntar
+  inte på det. **Åtgärd:** fatta AG9-beslutet, eller dokumentera en uttrycklig interimistisk
+  grund (t.ex. berättigat intresse för själva inbjudan) i väntan på det. `docs/DPIA-PORTAL
+  .md:86`, `docs/GDPR-ART30-REGISTER.md:441` · läst i koden/dokumenten av granskningsagenten,
+  **stickprovsverifierat av mig** (dokumentens ordalydelse bekräftad) · beslut + S (dok),
+  dagar (juridiskt)
+
+### Sedan — skav som märks
+
+- [ ] **GG2** Deltagarens eget närvarointyg (`narvaroIntygPdf.ts:135-140`) räknar bara
+  `attendance === 'present'`, medan veckosaldot och nämndrapporten räknar `present`+
+  `external` som närvaro — samma period kan visa olika närvarotal i deltagarens kvitto och i
+  nämndens rapport. `client/src/services/narvaroIntygPdf.ts:135-140` vs
+  `aktivitetSchema.ts:227` · läst i koden · S
+- [ ] **GG3** Veckoampeln blir grön ("På veckomålet") på SCHEMALAGDA timmar, inte bekräftad
+  närvaro — en vecka fylld av omarkerade pass visar grönt som om kravet vore uppfyllt.
+  `client/src/services/aktivitetSchema.ts:252-256` · läst i koden · S
+- [ ] **AG9-rest** ~~AG-fynd~~/~~GDPR-fynd~~ (två oberoende linser, samma slutsats): fem
+  `employer_*`-tabeller (`employer_profiles`, `employer_places`, `employer_checkins`,
+  `employer_messages`, `employer_share_proposals`) har fortfarande **ingen** gallringsregel
+  — bekräftat: inget av de nio-tretton cron-jobben rör dem, `RETENTION-POLICY.md:144` har en
+  öppen rad. Löftet "sluta dela när du vill" håller inte om datan aldrig städas. **Åtgärd:**
+  besluta tidsgräns (roadmapens eget förslag: 2 år från `end_date` för placeringar, 12 mån
+  för aldrig tillsatta förslag) och lägg ett tionde cron-jobb. `docs/RETENTION-POLICY.md:144`
+  · **verifierat av två oberoende linser** · S (när tidsgränsen är beslutad)
+- [ ] **DR2** Mejl-cronen (`pass-paminnelse.js`, `aktivitet-mejl.js`) fångar varje enskilt
+  Resend-fel i sin loop men svarar ändå **HTTP 200** även när ALLA mejl i batchen
+  misslyckats — Vercel Cron läser inte svarskroppen, så en hel natt utan fungerande Resend
+  ger ingen påminnelse till någon deltagare och inget larmar. `client/api
+  /pass-paminnelse.js:118-141`, `client/api/aktivitet-mejl.js:123-146` · läst i koden
+  (bekräftar mitt eget mönster i `aktivitet-mejl.js`, byggt tidigare i dag) · 1 h
+- [ ] **DR3** Nio-tio rena SQL-gallringsjobb (`retention-ai-usage-logs`,
+  `retention-job-notifications` m.fl.) har ingen felhantering — ett fel gör att pg_cron
+  markerar körningen `failed` i `cron.job_run_details`, en tabell **ingen aktiv kod frågar**.
+  Ett gallringsjobb som failar tyst kan lämna personuppgifter kvar längre än GDPR art 5.1.e
+  tillåter. `supabase/migrations/20260912170000_retention_bekraftade.sql`,
+  `20260912150000_retention_cron_rattad.sql` · läst i koden · 2–3 h
+- [ ] **IA2** `ProgramSelector` (byggd för fria deltagare, PG10 2026-09-12) döljs bara via en
+  kedja som förutsätter en deltagare-koppling — en konsulent eller företagskontakt som öppnar
+  `/settings` möter alltså "Vilket arbetsmarknadsprojekt deltar du i? Rusta och Matcha …",
+  fel tonläge och fel fråga för en chef eller företagskontakt. `client/src/pages
+  /Settings.tsx:378`, `client/src/components/settings/ProgramSelector.tsx:20-76` · **läst i
+  koden, delvis verifierat** (villkoret i komponenten bekräftat, källan till
+  `organisationer`-listan inte spårad ända ner) · 1–2 h
+- [ ] **IA3** `OnboardingFlow` visas fortfarande för konsulenter — redan noterat som bifynd
+  2026-09-12 (`docs/ROADMAP.md` dåvarande rad 237) men aldrig åtgärdat. Bekräftat: ingen
+  rollkontroll i `OnboardingFlow.tsx`, monteras i deltagargrenen i `Layout.tsx:588` som körs
+  för alla icke-företagskonton. Företagsskalet är inte drabbat (monterar den inte alls).
+  `client/src/components/Layout.tsx:588` · läst i koden · 30 min
+- [ ] **IA4** Mobilmenyn fick PG20:s omordning (konsulentavsnittet först), men skrivbordets
+  `Sidebar.tsx` gjorde det aldrig — en konsulent på desktop ser fortfarande alla fem
+  deltagarhubbar överst och sin egen arbetsyta sist. `client/src/components
+  /layout/Sidebar.tsx:152-222` · läst i koden · 1 h
+- [ ] **BL2** B2B-sidans text ("AI-funktionerna kan stängas av för **hela organisationen**",
+  `client/content/b2b.json:100`) stämmer inte med koden: `checkOrgAiEnabled`
+  (`_shared/aiGate.ts:204-234`) stänger bara av AI för **deltagare** kopplade till
+  organisationens konsulenter — konsulentens eget rapportverktyg
+  (`konsulent-rapportutkast`) är uttryckligen undantaget både org-brytaren och personens
+  egen "Pausa AI" (`client/api/ai.js:388-389`, öppen fråga sedan ROADMAP A2). En kommun som
+  stängt av AI kan alltså ändå få deltagardata skickat till OpenRouter via det verktyget.
+  **Åtgärd:** kvalificera B2B-texten, eller stäng A2 och koppla in verktyget i grinden.
+  `client/content/b2b.json:100`, `supabase/functions/_shared/aiGate.ts:204-234` · läst i
+  koden · 15 min (text) / 1–2 h (kod, kräver juridiskt beslut)
+
+### Framåt — det som gör nästa fel billigare
+
+- [ ] **GG4** **FFU §5.1.1:s betalningsvillkor (grundersättning betalas inte ut utan godkänd
+  periodisk rapport i avtalets format) är helt obyggt** — noll kodträffar för
+  "grundersättning"/"5.1.1". En konsulent som litar på IVO-kortet eller nämndrapporten som
+  komplett dokumentation har inget som varnar att formatet inte matchar avtalskravet
+  (RM6, redan känt som obyggt). Minst en disclaimer tills RM6 byggs · `docs/ROADMAP.md`
+  (RM6-raden) · läst i koden (negativ grep) · S (disclaimer) / L (RM6 självt)
+- [ ] **AG3** Ett företagskonto kan bränna sin egen `max_views`-budget genom upprepade
+  `PATCH employer_proposals`-anrop och låsa ute sina egna kollegor från ett förslag — ingen
+  cross-company-risk, bara självskada. `client/src/services/foretagApi.ts:329-336` · läst i
+  koden · 1 h
+- [ ] **DP2** Org.nr för enskild firma **är** innehavarens personnummer (DPIA:n konstaterar
+  det själv), men triggerfunktionen `handle_employer_invitation` normaliserar varje org.nr
+  identiskt oavsett bolagsform — ingen gren flaggar eller hanterar personnummer-fallet
+  annorlunda. `supabase/migrations/20260913100000_ag6_foretagskonto.sql:899-910` · läst i
+  koden · ~1 dag
+
+### Redan rättat i denna genomgång (dokumentationsfel, ingen kod)
+
+- [x] **BL3** ~~§7: "Notifikationsklockan — bygg eller ta bort?"~~ — farligt föråldrad rad;
+  tabellen är i dag laddad med KM10/F1/F3/AG6-notiser. Se H12 ovan i huvudtabellen. Rättad på
+  plats 2026-09-13.
+
+**Prövat och avfärdat:** AG-spårets RLS/dataisolering (policyer på `employer_profiles` m.fl.
+verifierade direkt mot `pg_policies` i prod — höll, ingen läcka mellan företagskonton) ·
+`spontaneous_companies.company_account_id`-kopplingen som en väg för ett företag att se en
+deltagares privata anteckning (noll konsumenter av kolumnen, strukturellt oåtkomlig) · de två
+`INSTEAD OF`-triggrarna på `employer_proposals`/`employer_invitations` som en väg att skriva
+förbi statuskontrollen (läst rad för rad, ingen lucka) · kvarvarande STA/EU-arkivreferenser i
+AG/KM-koden (allt som hittades var avsiktliga, dokumenterade historiska spår) ·
+samtyckesspåret för delade förslag som en femte oberoende väg med samma "aldrig
+skrivet"-risk som `grant_consent`/`withdraw_consent` en gång hade (har verkliga anropare,
+skriver `consent_history` korrekt).
+
+**Vad som återstår:** AG9 (prismodell/avtal för företagskunder) blockerar både DP1 och en
+riktig produktionssättning av företagsspåret bortom pilot. Ingen av linserna denna gång rörde
+visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast granskat i K-spåret).
 
 ---
 
@@ -5476,7 +5665,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | # | Uppgift | Detaljer |
 |---|---------|----------|
 | H11 | **pg_cron är inte installerat i prod** | ⬜ **HÖG.** `pg_extension` → 0 träffar; `cron.job` finns inte. Ingen gallring sker (5 AI-loggar är 118 dagar gamla mot 90-dagarspolicyn), inga inaktivitetsmejl, inga jobbaviseringar. **Slås ihop med A6** — och `RETENTION-POLICY.md` + Art 30-registret beskriver i dag automatik som inte äger rum, vilket är ett dokument som säger fel sak till en tillsynsmyndighet. **Fixa A18 först** (`send-inactivity-warning` saknar auth) |
-| H12 | **Notifikationsklockan kan strukturellt aldrig visa något** | ⬜ **MEDEL.** Monterad i TopBar + Layout (alltså varje sida), läser `notifications` (0 rader), och `createNotification` har **noll anropare**. Enda skrivaren i repot är den callerlösa edge-funktionen `learning-progress`. Fyra parallella aviseringslager, alla tomma, ett helt omonterat. **Beslut: bygg eller ta bort klockan** |
+| H12 | ~~Notifikationsklockan kan strukturellt aldrig visa något~~ | ✅ **Föråldrad, rättad 2026-09-13 (projektgenomgång).** Stämde när den skrevs (juli); sedan dess skriver KM10, F1, F3 och AG6 alla till `notifications` (`aktivitetNotiser.ts`, `f1_franvaroanmalan.sql`, `f3_pass_paminnelse.sql`, `ag6_foretagskonto.sql`), och `useNotifications.ts` har egen prioritetssortering byggd specifikt för dessa typer. Klockan är nu en levande, laddad funktion för tre kontotyper. Den identiska raden i §7 ("bygg eller ta bort klockan") är struken av samma skäl — att agera på den hade tagit bort aktivitetskravets påminnelser och företagskontots hela notisflöde |
 | H13 | **Intervjusimulatorn skriver localStorage medan hubben läser DB** | ⬜ **MEDEL.** `InterviewSimulator.tsx:459` → `saveSimulatorSession` (localStorage); `useJobsokHubSummary.ts:62` läser `interview_sessions` (0 rader). Deltagarens övningar syns aldrig i hubben och försvinner vid enhetsbyte |
 | H14 | **`user_activities` har noll skrivare men tre läsare** | ⬜ **MEDEL.** `activityApi.logActivity` anropas av ingen; `useDashboardData:269,306` bygger ansökningsstatistik på tabellen → alltid 0. Det är rotorsaken till B11 |
 | H15 | **`useAITeamContext.ts:134` läser en nyckel som inte finns** | ⬜ **LÅG.** `career_goals.skills` — prod har `longTerm`/`preferredRoles`/`shortTerm`/`targetIndustries`/`updatedAt`. Dessutom är `career_goals` ett tomt `{}` i 91 av 92 profiler, och `if (profile.career_goals)` är truthy för alla |
@@ -5560,7 +5749,7 @@ CI aldrig grön (687 körningar) · pre-push kör **fem av åtta** grindar och i
 | K7 | **Landningssidor B2B (fas 3b)** | "Jobin för arbetsmarknadsenheter", "för Rusta och matcha-leverantörer". Låg volym, men det är köparen. **Egen ton** — konsulentspråk, inte deltagarspråk (DESIGN.md §2 tillåter uttryckligen switchen). Görs efter K6, när det finns siffror att visa upp |
 | K9 | **Utbyggnad av de korta guiderna** | ✅ **Klar 2026-08-05.** Nio av de artiklar K3 sorterade bort som för tunna är utbyggda och publicerade: `intervju-fragor` (189 → 869 ord), `cv-utan-erfarenhet` (144 → 643), `praktik-som-vag-in` (281 → 678), `rattigheter-stod` (179 → 662), `motivation-langsiktig` (141 → 652), `stresshantering` (156 → 632), `arbetsmiljo-guide` (266 → 620), `kompetensportfolj` (260 → 618), `checklista-innan-ansokan` (100 → 480). Texterna ligger som granskningsbara `.md`-filer i `client/content/expansions/` och skrivs till **prod-tabellen `articles`** med `scripts/apply-expansions.cjs` — inte bara till snapshoten, eftersom appen läser databasen och två versioner av samma artikel annars glider isär. Skriptet tar backup före skrivning, dollar-citerar SQL:en, går i torrläge som default och har `--rollback`. **119 → 128 publicerade sidor.** **Fem är kvar ute med avsikt:** `nystartsjobb-guide`, `branscher-brist` och `arbetsmarknadstrender-2024` kräver aktuella AF-regler respektive arbetsmarknadssiffror — att bygga ut dem hade betytt att hitta på uppgifter som människor fattar beslut om sin försörjning utifrån. De två sista är onboarding. |
 | K10 | **Lästiderna var fel på 128 av 133 artiklar** | ✅ **Klar 2026-08-05 — hittades under K9.** Medianen var **3,7× för hög**, värsta fallet 22× (`intervju-fragor`: 22 min angivet för 189 ord). **Det här är inte kosmetika i den här portalen.** Lästiden visas som beslutsunderlag — "orkar jag det här nu?" — för användare som ofta har begränsad ork. En uppblåst siffra får någon att hoppa över en text som tagit en minut, alltså precis motsatsen till vad energianpassningen ska göra. Rättat med `scripts/fix-reading-time.cjs` (200 ord/min, checklistor inräknade, markdown och tabeller exkluderade): **125 artiklar uppdaterade i prod**, 124 sänkta och 1 höjd, med backup och `--rollback`. Gäller både appen och guidesidorna eftersom båda läser samma kolumn. |
-| K8 | **Mätning** | Search Console + egen enkel loggning. **Ingen Google Analytics utan samtyckeshantering** — varken CSP:n eller GDPR-läget (spår A) tål det som det ser ut nu. Fail closed, jfr lärdomen 2026-08-03 |
+| K8 | **Mätning** | ✅ **Löst 2026-09-15.** Search Console-åtkomst på plats: `sc-domain:jobin.se` ligger på glannstrom@gmail.com som siteOwner (domänegendom, täcker www + apex). **Första mätningen: 17 211 exponeringar, 75 klick, CTR 0,44 %, snittposition 24,4** över 4 aug – 13 sep (41 dagar). Historiken börjar 4 augusti, dagen före prerenderingen gick live — det finns alltså ingen före-bild och kommer inte att finnas. Data, hämtskript och de fyra fällorna: `docs/gsc/`. **K4:s regel går att följa från och med nu.** Tre fynd som styr nästa omgång: (1) `/guider/rusta-och-matcha` har 815 exponeringar på pos 17,9 medan `/for-rusta-och-matcha` har 5 — men på pos 4,6, alltså visas nästan aldrig snarare än rankar dåligt; (2) 1 088 frågor ligger bakom plats 20 och bär 6 619 exponeringar med två klick — placeringsproblem, inte innehållsproblem; (3) mobilen rankar 17,3 mot desktops 30,0 och står för 50 av 75 klick. Artefakt: "Jobin i sökresultatet". **Ingen Google Analytics utan samtyckeshantering** — varken CSP:n eller GDPR-läget (spår A) tål det som det ser ut nu. Fail closed, jfr lärdomen 2026-08-03 |
 
 ### Nya i spår K från granskningen 2026-08-09
 
@@ -5742,6 +5931,89 @@ Källor: [Changes to HowTo and FAQ rich results](https://developers.google.com/s
 
 ---
 
+### K21 — Landningssidor, omgång 7: ny sidtyp + arbetsgivarsidan + sex verktygssidor (2026-09-15)
+
+| ID | Punkt | Status |
+|----|-------|--------|
+| **K21** | **14 nya publika sidor: 6 situationssidor under `/for-dig-som/`, `/for-arbetsgivare/`, 6 verktygssidor. Sitemap 274 → 288 URL:er.** | ✅ **Klar 2026-09-15** |
+
+**Vad som byggdes.** Tre sorters landningssidor, alla prerenderade och läsbara utan JS:
+
+- **Ny sidtyp: situationssidor** (`/for-dig-som/<slug>/` + samlingssida) — `langtidsarbetslos`,
+  `ny-i-sverige`, `over-50`, `efter-sjukskrivning`, `forsta-jobbet`, `funktionsnedsattning`.
+  Skälet till en egen sidtyp: verktygssidan svarar på "vad gör den här funktionen", och den
+  frågan ställer bara den som redan vet att funktionen finns. Situationssidan svarar på det
+  folk faktiskt söker på. Strukturen är `igenkanning` → `steg` → verktyg → FAQ → guider, och
+  ordningen är inte kosmetisk: ett råd före igenkänningen läses som en tillrättavisning.
+  Varje sida korslänkar åt två håll — till `/verktyg/` och till `/guider/` — så ingen blir en
+  återvändsgränd.
+- **`/for-arbetsgivare/`** (K7-familjen, tredje B2B-sidan). Företagskontot (AG6–AG8) har
+  funnits i prod sedan 13 september utan någon publik yta alls. Sidan säger rakt ut det som
+  är produktbeslutet: **ingen kandidatsökning, ingen lista, ingen rankning**; företaget ser
+  personen först när hen själv sagt ja, per fält; och man **skapar inget konto själv** —
+  det kommer via konsulentens inbjudan. CTA:n är därför "boka ett samtal", inte "kom igång".
+  Inget pris, eftersom AG9 är ett öppet beslut.
+- **Sex verktygssidor**: `dagbok`, `kalender`, `karriarvagar`, `kunskapsbank`,
+  `mina-dokument`, `externa-resurser`. `/verktyg/` går därmed 17 → 23 sidor.
+
+**En ny prerenderad sidtyp rör fyra ställen, och alla fyra är gjorda:**
+`prerender-guides.cjs` (rendering + grindar), `generate-sitemap.cjs`, `lint-links.cjs`
+(annars blir `verify` röd) och `src/test/guides-krisstod.test.ts` (6 → 10 sidtyper, 27 → 35
+tester). Plus en femte: en delningsbild, `public/og/for-dig-som.png`, genererad ur registret
+i `og-bild.cjs`.
+
+**Tre påståenden föll i den oberoende granskningen.** Agenterna rapporterade sitt arbete som
+rent; det var det inte, sjätte omgången i rad:
+
+1. **"Hela kunskapsbanken finns på svenska och engelska."** Prod säger **164 av 241** aktiva
+   artiklar har `content_en`. Påståendet kom ur projektminnet *engelska-oversattningen*
+   ("portalen är helöversatt"), som var sant om gränssnittet och aldrig om artikelkorpusen.
+   Rättat till att en stor del är översatt, och att svensk text visas när översättning saknas.
+2. **"Betaltjänster är märkta som det, så du vet innan du klickar."** Det finns **inget fält**
+   för det — posterna i `externaResurser.ts` har `id, name, description, url, icon, category,
+   tags`, och 8 av 264 nämner betalning i löptext. Löftet kunde datan inte hålla. Borttaget.
+3. **"Länkarna kontrolleras löpande" / "samlingen går igenom regelbundet."** Det finns ingen
+   sådan process. `lint:links` vaktar *interna* länkmål; **externa adresser rörs av ingen
+   grind alls** (lärdomen 2026-08-23, då 87 av 323 länkar var döda). Svepet var en
+   engångsinsats. Omskrivet till vad som faktiskt gjorts.
+
+Dessutom rättades en halvsanning på `/for-dig-som/forsta-jobbet/`: CV-byggaren har **ingen**
+egen rubrik för praktik, skolprojekt eller föreningsliv — sektionerna är erfarenhet,
+utbildning, kompetenser, språk, certifikat, länkar, referenser (`src/types/cv.ts:85`).
+
+**En ny grind, mutationstestad: artikelantalet.** `/verktyg/kunskapsbank/` säger "239
+artiklar" på fyra ställen. Talet är sant i dag och fel efter nästa innehållsomgång — exakt
+K10:s lästidsmönster, fast möjligt att vakta mekaniskt. `prerender-guides.cjs` fäller nu
+bygget om ett utskrivet artikelantal inte motsvarar `publicerade.length`, och läser sidornas
+data, inte filernas `_kommentar` (en kommentar om en historisk siffra ska inte fälla bygget).
+
+**Fyra grindar mutationstestade, alla föll:** antalsgrinden (239 → 238), guide-grinden
+(opublicerad slug), verktygs-grinden (okänt verktygsnamn) och startsidans länkgrind.
+Prefixlistan i den sista gjordes **ovillkorlig** — villkorad på `antalSituationer` hade den
+tystnat exakt när den behövdes, nämligen när `situationer.json` saknas och länken blir en
+mjuk 404.
+
+> **Fällan som den mätningen avslöjade:** startsidans länkgrind läser `dist/`, som ackumulerar
+> mellan bygganden. Första mutationsförsöket gick igenom — inte för att grinden var trasig,
+> utan för att `dist/for-dig-som/` låg kvar från förra bygget. Den fäller korrekt mot en ren
+> `dist/`, alltså i CI, men **lokalt kan den ge falskt grönt**. Samma familj som "lokalt gröna
+> grindar ≠ grön CI".
+
+**Mätt efteråt, inte påstått:** `npm run build` grön — 239 guidesidor + 11 ämnessidor + 23
+verktygssidor + 6 situationssidor + 3 B2B-sidor + om oss, 52 routes validerade, 1 177 interna
+länkar, 0 guider utan inlänkar. `npm run verify` **exit 0, alla tio grindar**: 337 typfel
+exakt på taket, 111 warnings under taket 117, 283 testfiler / 3 402 tester gröna. De 14 nya
+sidorna kontrollerade i **byggd HTML**: en `h1`, unik `<title>`, rätt canonical, meta
+description, krisstödsblocket med ringbara nummer, giltig JSON-LD, en `og:image` som finns i
+`dist/`, plats i sitemapen, ingen rå markdown.
+
+**Öppet, för Mikael:**
+- **K8 står fortfarande öppen** — ingen Search Console-mätning från omgång 6. Femte gången
+  K4:s regel "ingen omgång utan mätning från den föregående" frångås.
+- **Demoföretaget på `/for-arbetsgivare/`.** De andra två B2B-sidorna har ett `demoKonton`-
+  block. Det utelämnades här med flit: AG6 listar "publicera demoföretaget på B2B-sidan
+  eller inte" som ditt öppna beslut, och lösenordet bor i `.env.test.local`.
+
 ## C27 — länkgrinden är inkopplad (2026-08-12)
 
 **(a) `client/public/404.html`** raderad — gjordes i K19-passet samma dag.
@@ -5798,7 +6070,7 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 | **`AICoachAssistant` — radera eller bygga på riktigt?** Konsulentvyns "AI-insikter" är fyra påhittade deltagare med prioritetsfärger. Radera är S; bygga är M–L och kräver att man bestämmer vilka insikter som är försvarbara att ge om en människa | B10 | denna vecka |
 | ~~**Coverage-tröskeln: sänk eller skriv ikapp?**~~ | D13 | ❌ **Beslutet utgår 2026-08-09 — premissen är död.** Coverage passerar lokalt på alla fyra mått och `exclude`-fällan är lagad. CI failar på saknad Supabase-env i `test`-jobbet. Ingen avvägning behövs; se **D17** (fyra rader i `ci.yml`) |
 | **Jobbdelning (792 rader) och energifunktionen (1 351 rader) — montera eller radera?** Färdigbyggda, helt onåbara. Produktbeslut, inte städning | C19 | före C16:s raderingspass |
-| **Notifikationsklockan — bygg eller ta bort?** Monterad på varje sida, läser en tom tabell, `createNotification` har noll anropare | H12 | med C16 |
+| ~~**Notifikationsklockan — bygg eller ta bort?**~~ | H12 | ✅ **Utgår 2026-09-13** — se H12 i tabellen ovan. Tabellen är i dag full av KM10/F1/F3/AG6-notiser; ingenting att besluta |
 | **i18n etapp 5: innehållsdatan (5 355 rader)** — översätta allt, kuratera ett urval, eller märka ut vad som bara finns på svenska? Kostnaden skiljer en storleksordning | UX17 | när etapp 1–4 är klara |
 | **`/profile`: mint eller lavendel?** DESIGN.md §3 och koden säger olika, och båda är "sanning" i dag | F16 | när F-spåret tas |
 | ~~Rotera OpenRouter-nyckeln~~ | A1 | ✅ 2026-09-12 |

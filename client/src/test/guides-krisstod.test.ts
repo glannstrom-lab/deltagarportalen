@@ -14,7 +14,7 @@
  *
  * Det asserterar tre saker, och skälet till var och en:
  *
- *  1. **Alla sex sidtyper**, inte bara guidesidan. Det var precis den sortens
+ *  1. **Alla tio sidtyper**, inte bara guidesidan. Det var precis den sortens
  *     glapp som gjorde att blocket saknades från början: en sidtyp till som
  *     ingen tänkte på. Lägger någon till en sjunde `render*`-funktion ska den
  *     här listan tvinga fram ett aktivt val.
@@ -40,6 +40,8 @@ const mall = require('../../scripts/lib/guide-template.cjs') as {
   renderTool: (t: unknown, g: unknown[]) => string
   renderToolIndex: (v: unknown[]) => string
   renderB2B: (b: unknown, g: unknown[]) => string
+  renderSituation: (s: unknown, v: unknown[], g: unknown[]) => string
+  renderSituationIndex: (s: unknown[]) => string
   renderOmOss: (o: unknown) => string
 }
 const { KATEGORIER } = require('../../scripts/lib/guides.cjs') as {
@@ -52,6 +54,9 @@ const VERKTYG = (require('../../content/tools.json') as { verktyg: Record<string
 // Samma princip för B2B-sidorna (K7/K16): läs den riktiga datan, inte en
 // handskriven fixture som kan glida isär från content/b2b.json.
 const B2B = (require('../../content/b2b.json') as { sidor: Record<string, unknown>[] }).sidor
+// Spår K, omgång 7: situationssidorna, samma princip — den riktiga
+// content/situationer.json, inte en handskriven fixtur.
+const SITUATIONER = (require('../../content/situationer.json') as { sidor: Record<string, unknown>[] }).sidor
 // KM12 (9): om oss-sidan, samma princip.
 const OM_OSS = require('../../content/om-oss.json') as Record<string, unknown>
 /* eslint-enable @typescript-eslint/no-require-imports */
@@ -88,6 +93,11 @@ const sidtyper: [string, () => string][] = [
   // tyst undantag. Se prerender-guides.cjs-uppdragets slutrapport för
   // motiveringen och Mikaels beslut om den ska stå kvar.
   ['B2B-sida', () => mall.renderB2B(B2B[0], [])],
+  // Spår K, omgång 7: situationssidorna vänder sig till en deltagare som kan
+  // vara i ett mycket utsatt läge — här är blocket inte en formalitet utan
+  // sidtypens tyngsta skäl att finnas.
+  ['situationssida', () => mall.renderSituation(SITUATIONER[0], [VERKTYG[0]], [artikel()])],
+  ['situationsindex', () => mall.renderSituationIndex(SITUATIONER)],
   ['om oss-sida', () => mall.renderOmOss(OM_OSS)],
 ]
 

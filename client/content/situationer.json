@@ -1,0 +1,192 @@
+{
+  "_kommentar": "Innehåll för de publika situationssidorna under /for-dig-som/ (spår K, omgång 7, 2026-09-15). Läsaren är INTE inloggad och kom hit via en sökning om sin egen livssituation, inte om portalen. VARJE PÅSTÅENDE ÄR VERIFIERAT: verktygsslugs mot de 17 befintliga posterna i content/tools.json (kommandot i BRIEF.md), guidesslugs mot getPublishedArticles() i scripts/lib/guides.cjs (239 publicerade artiklar vid skrivtillfället). Inga belopp, procentsatser, dagantal eller åldersgränser om regler och ersättningar — mekanismen beskrivs, myndigheten länkas för det exakta. Igenkänningspunkterna beskriver läget utan att döma och utan att påstå hur vanligt det är. Myndighetslänkar går bara till startsidan eller en stabil avdelningssida (arbetsformedlingen.se, forsakringskassan.se, av.se, do.se, uhr.se) och länkas bara vid FÖRSTA förekomsten per sida — senare omnämnanden av samma myndighet är ren text. Ingen social bevisning, inga användarsiffror, inga generaliseringar om vad arbetsgivare eller rekryterare tycker.",
+  "sidor": [
+    {
+      "slug": "langtidsarbetslos",
+      "title": "Långtidsarbetslös och ska söka jobb igen",
+      "description": "Gått lång tid sedan du hade ett jobb? Här är konkreta nästa steg för CV:t, ansökningarna och orken att ta med dig vidare — inga pekpinnar.",
+      "h1": "Söker jobb efter en lång tid utan arbete",
+      "lead": "Det är svårt att veta var man ska börja när det gått lång tid sedan senaste jobbet. Den här sidan samlar konkreta nästa steg — inte pepp, utan sådant du faktiskt kan göra idag.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "CV:t har en lucka som känns svår att förklara.",
+          "Du har skickat ansökningar utan att höra något tillbaka.",
+          "Orken att sätta igång kommer och går.",
+          "Du vet inte längre vad som räknas som en merit.",
+          "Det känns tungt att börja om varje gång."
+        ]
+      },
+      "steg": [
+        ["Börja med luckan, inte trots den", "En lucka i CV:t behöver inte förklaras med ursäkter. Beskriv kort vad tiden faktiskt innehöll — vård av anhörig, jobbsökande på heltid, eller något annat — och gå sedan vidare till det du kan idag. Att formulera det kort och sakligt räcker oftast längre än att förklara i detalj."],
+        ["Ta ansökningarna en i taget", "Det är lättare att hålla i en enda välskriven ansökan än flera halvfärdiga samtidigt. Välj ett jobb, läs annonsen ordentligt, och anpassa CV och brev efter just den rollen. Ansökningar-verktyget håller reda på var du står i varje process, så du slipper hålla det i huvudet."],
+        ["Ta hjälp med det som är tungt just nu", "Känns ansökningarna övermäktiga en dag är det ett tecken värt att lyssna på, inte ett misslyckande. AI-coachen finns för att bolla en fråga i din egen takt, och sidan om mående är till för att hålla koll på orken vid sidan av sökandet."]
+      ],
+      "verktyg": ["cv", "kompetensanalys", "ai-coach", "maende"],
+      "guider": ["efter-manga-ar-utan-jobb", "motivation-langsiktig", "luckor-i-cv", "arbetstraning-vad-innebar-det", "hantera-avslag-motivation", "motivation-jobbsokning"],
+      "faq": [
+        ["Måste jag förklara hela luckan i en ansökan?", "Nej. En kort, saklig mening räcker oftast — vad tiden innehöll och att du nu är redo att jobba igen. Du väljer själv hur mycket du vill berätta."],
+        ["Vad räknas som merit om jag inte jobbat på länge?", "Vård av anhörig, föreningsengagemang, kurser och jobbsökande på heltid är sådant som säger något om dig. Kompetensanalysen hjälper dig sätta ord på vad du faktiskt kan, oavsett var det kommer ifrån."],
+        ["Kan Arbetsförmedlingen hjälpa mig i det här läget?", "Ja, det är dit du vänder dig för insatser och stöd anpassat efter din situation. Vad som erbjuds och när beror på ditt ärende — [Arbetsförmedlingen](https://arbetsformedlingen.se) har den aktuella informationen."],
+        ["Hur hanterar jag avslag efter avslag utan att tappa orken helt?", "Ett avslag säger sällan allt om varför — en annan kandidat kan ha passat annonsen bättre just den gången. Att ta en paus mellan ansökningarna är inte samma sak som att ge upp."],
+        ["Är det för sent att byta bana helt?", "Det vet bara du. Kompetensanalysen och yrkestestet är två sätt att börja utforska vad ett byte skulle kräva, utan att du behöver bestämma dig innan du vet mer."]
+      ],
+      "ctaLabel": "Kom igång, gratis"
+    },
+    {
+      "slug": "ny-i-sverige",
+      "title": "Ny i Sverige och söker jobb",
+      "description": "Du kan söka jobb i Sverige samtidigt som du läser SFI. Se om din utbildning räknas här, och få hjälp att bygga ett CV som visar det du kan.",
+      "h1": "Söka jobb som ny i Sverige",
+      "lead": "Att söka jobb i ett nytt land är en egen sak att lära sig, vid sidan av språket. Den här sidan samlar var du får din utbildning bedömd, hur du bygger ett CV som visar det du kan, och hur du kan söka jobb redan medan du läser SFI.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "Du vet inte om din utbildning från ett annat land räknas här.",
+          "CV:t ser annorlunda ut än vad du är van vid från tidigare.",
+          "Det är svårt att veta vad som ska komma först — SFI, jobb, eller båda samtidigt.",
+          "Du kan yrket men inte alltid orden för det på svenska."
+        ]
+      },
+      "steg": [
+        ["Ta reda på om din utbildning räknas", "[UHR](https://www.uhr.se) bedömer utländska utbildningar, och Socialstyrelsen eller Skolverket bedömer yrkeslegitimationer om ditt yrke kräver det. Ett besked därifrån är något du kan visa upp för en arbetsgivare, i stället för att själv behöva förklara vad utbildningen motsvarar."],
+        ["Bygg ett CV som visar det du kan", "Ett CV med utländsk erfarenhet ser ofta annorlunda ut än ett svenskt, eftersom arbetsgivare här är vana vid en viss struktur. CV-byggaren hjälper dig lägga upp det på det sättet, med plats för utbildning och erfarenhet från ett annat land."],
+        ["Sök jobb parallellt med SFI", "Du behöver inte vänta med att söka jobb tills SFI är klart. Praktik, timanställningar och en del yrken går att söka redan under studietiden, särskilt om du redan kan grunderna i svenska."]
+      ],
+      "verktyg": ["ny-i-sverige", "cv", "personligt-brev", "intervjutraning"],
+      "guider": ["validera-utlandsk-utbildning", "utlandsk-erfarenhet-i-cv", "sfi-och-jobbsokande-samtidigt", "etableringsprogrammet", "lattsvenska-forsta-jobbet"],
+      "faq": [
+        ["Var får jag min utländska utbildning bedömd?", "Hos UHR, eller hos Socialstyrelsen eller Skolverket om ditt yrke kräver legitimation. Sidan Ny i Sverige i portalen visar vem som gäller för dig och länkar direkt dit."],
+        ["Kan jag söka jobb innan jag är klar med SFI?", "Ja. Praktik och en del anställningar går att söka parallellt med SFI, särskilt om du redan kan grunderna i svenska. Du behöver inte vänta tills studierna är helt klara."],
+        ["Måste jag skriva om hela mitt CV på svenska?", "Ja, ett CV på svenska är lättast för en svensk arbetsgivare att läsa. CV-byggaren hjälper dig strukturera det, och du kan ta hjälp av en ordbok eller en van vän för formuleringarna."],
+        ["Vad händer om mitt yrke inte finns i Sverige?", "Vissa yrken har ingen exakt motsvarighet, men erfarenheten är sällan värdelös. Kompetensanalysen jämför det du kan mot ett konkret svenskt yrke och visar vad som skiljer."],
+        ["Var vänder jag mig med frågor om uppehållstillstånd?", "Till Migrationsverket. Den här sidan handlar om att söka jobb, inte om tillstånd att vistas i landet, och vi gissar aldrig på sådana regler."]
+      ],
+      "ctaLabel": "Kom igång, gratis"
+    },
+    {
+      "slug": "over-50",
+      "title": "Söka jobb efter 50",
+      "description": "Söker du jobb efter 50? Se hur du lyfter fram lång erfarenhet i CV:t, vad lagen säger om åldersdiskriminering, och konkreta nästa steg.",
+      "h1": "Jobbsökning efter 50 — erfarenheten är en tillgång",
+      "lead": "Lång erfarenhet är svår att sammanfatta på en sida, och tveksamheten om åldern spelar roll är svår att skaka av sig. Den här sidan går igenom hur du gör erfarenheten läsbar, och vad lagen faktiskt säger om ålder.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "Du undrar om åldern syns i CV:t på ett sätt som stänger dörrar innan de ens öppnats.",
+          "Lång erfarenhet känns svår att sammanfatta utan att CV:t blir för långt.",
+          "Du har skickat ansökningar utan att höra något tillbaka.",
+          "Du misstänker att åldern spelar in, utan att kunna veta säkert."
+        ]
+      },
+      "steg": [
+        ["Gör erfarenheten läsbar, inte bara lång", "Ett CV med många år i arbetslivet blir lättare att läsa om du lyfter fram det senaste och mest relevanta, i stället för att lista allt i kronologisk ordning från början. Kompetensanalysen hjälper dig se vilka delar av erfarenheten som faktiskt är relevanta för jobbet du siktar på."],
+        ["Känn till vad lagen säger om ålder", "Diskrimineringslagen omfattar ålder som grund, precis som kön eller etnicitet. Misstänker du att en rekrytering inte gått rätt till av det skälet är det [DO](https://www.do.se) som utreder anmälningar om diskriminering, och de har information om vad som gäller."],
+        ["Använd nätverket du redan har", "Efter många år i arbetslivet känner du sannolikt fler än du tänker på — tidigare kollegor, kunder, branschkontakter. Nätverksverktyget hjälper dig hålla ordning på dem och formulera det första meddelandet när du vill återuppta kontakten."]
+      ],
+      "verktyg": ["cv", "kompetensanalys", "linkedin", "natverk"],
+      "guider": ["jobbsokning-50-plus", "diskriminering-jobbsokning", "upptack-dina-styrkor", "kompetensinventering-guide", "luckor-i-cv"],
+      "faq": [
+        ["Är det olagligt att välja bort en kandidat på grund av ålder?", "Diskrimineringslagen förbjuder att ålder används som skäl vid anställning, men det är inte alltid enkelt att bevisa varför en rekrytering gick som den gjorde. DO är myndigheten som utreder anmälningar och kan svara på vad som gäller i just din situation."],
+        ["Ska jag ta bort mitt födelseår från CV:t?", "Det är ditt val. Vissa väljer att fokusera CV:t på de senaste rollerna i stället för hela karriären, vilket gör det kortare utan att dölja något."],
+        ["Hur lyfter jag fram lång erfarenhet utan att CV:t blir för långt?", "Välj de senaste och mest relevanta rollerna, och sammanfatta resten kortare. Kompetensanalysen kan hjälpa dig se vilka delar av bakgrunden som faktiskt är relevanta för jobbet du siktar på."],
+        ["Är jag för gammal för att byta bana?", "Det vet bara du. Yrkestestet och kompetensanalysen är två sätt att utforska vad ett byte skulle kräva, utan att du behöver bestämma dig innan du vet mer."],
+        ["Kostar det något att anmäla diskriminering?", "Nej. Det kostar ingenting att göra en anmälan till DO. De bedömer sedan om ärendet ska utredas vidare."]
+      ],
+      "ctaLabel": "Se dina verktyg, gratis"
+    },
+    {
+      "slug": "efter-sjukskrivning",
+      "title": "Tillbaka till jobb efter sjukskrivning",
+      "description": "På väg tillbaka efter en lång sjukskrivning? Här är hur arbetsförmåga bedöms, vilka anpassningar du kan be om, och hur du pratar om frånvaron.",
+      "h1": "På väg tillbaka efter en lång sjukskrivning",
+      "lead": "Steget tillbaka kan kännas större än steget du tog när du blev sjukskriven. Den här sidan går igenom hur arbetsförmåga bedöms, vilka anpassningar som finns att be om, och hur du kan välja att prata om frånvaron.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "Du vet inte hur mycket du orkar jobba just nu.",
+          "Det känns svårt att veta vad du ska säga om frånvaron i en intervju.",
+          "Du undrar vilka anpassningar som är rimliga att be om.",
+          "Steget tillbaka känns större än steget du tog när du blev sjukskriven."
+        ]
+      },
+      "steg": [
+        ["Ta reda på var din arbetsförmåga bedöms befinna sig", "Bedömningen av arbetsförmåga görs i samråd med din läkare och [Försäkringskassan](https://www.forsakringskassan.se), som avgör vad som gäller för din ersättning under återgången. Din handläggare där kan svara på vad nästa steg innebär för dig."],
+        ["Fundera på vilka anpassningar som skulle hjälpa", "Det kan handla om arbetstider, arbetsuppgifter eller en stegvis upptrappning. [Arbetsmiljöverket](https://www.av.se) beskriver arbetsgivarens ansvar för arbetsanpassning, men den konkreta lösningen tar du fram tillsammans med arbetsgivaren."],
+        ["Öva på hur du vill prata om frånvaron", "Du bestämmer själv hur mycket du berättar om skälet till frånvaron i en anställningsintervju. Intervjuträningen i portalen låter dig öva på svaret tills det känns naturligt, utan att någon lyssnar på riktigt."]
+      ],
+      "verktyg": ["maende", "intervjutraning", "cv", "ai-coach"],
+      "guider": ["tillbaka-till-jobb-efter-sjukskrivning", "arbetsformagebedomning-vad-hander", "luckor-i-cv", "varfor-slutade-du-pa-forra-jobbet", "mental-halsa-jobbsokning"],
+      "faq": [
+        ["Vem bedömer om jag kan börja jobba igen?", "Bedömningen av din arbetsförmåga görs i samråd mellan dig, din läkare och Försäkringskassan, som fattar beslut om din ersättning under vägen tillbaka."],
+        ["Måste jag berätta varför jag varit borta?", "Nej, inte i detalj. Du väljer själv hur mycket du vill dela med dig av i en intervju — en kort, saklig mening om att du nu är redo att jobba igen räcker ofta."],
+        ["Vilka anpassningar kan jag be om på en ny arbetsplats?", "Det beror helt på situationen och yrket. Arbetsmiljöverket har information om arbetsgivarens ansvar för arbetsanpassning, som är en bra utgångspunkt inför ett samtal med en arbetsgivare."],
+        ["Kan jag söka jobb medan jag fortfarande är sjukskriven på deltid?", "Det är en fråga för dig och din handläggare på Försäkringskassan, eftersom det påverkar din ersättning. De har svaret för din specifika situation."],
+        ["Hjälper Jobin mig med kontakten med Försäkringskassan?", "Nej, portalen är inte kopplad till Försäkringskassan eller någon annan myndighet. Verktygen här hjälper dig med CV, ansökningar och att öva på samtal — kontakten med myndigheten sköter du själv."]
+      ],
+      "ctaLabel": "Öva på ditt svar, gratis"
+    },
+    {
+      "slug": "forsta-jobbet",
+      "title": "Söker ditt första jobb",
+      "description": "Söker du ditt första jobb utan tidigare erfarenhet? Se vad som faktiskt räknas som merit, och konkreta nästa steg för CV och ansökan.",
+      "h1": "Söka sitt första jobb utan tidigare erfarenhet",
+      "lead": "Ett tomt CV känns svårare att skriva än det behöver vara. Den här sidan går igenom vad som faktiskt räknas som merit när du inte har jobbat förut, och var du kan börja söka.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "CV:t känns tomt jämfört med vad du tror att andra har.",
+          "Du vet inte vad som räknas som erfarenhet när du aldrig haft ett jobb.",
+          "Annonser ber om erfarenhet du inte har haft chansen att skaffa.",
+          "Du är inte säker på hur ett personligt brev ens ska se ut."
+        ]
+      },
+      "steg": [
+        ["Räkna det som faktiskt räknas", "Praktik, skolprojekt, föreningsengagemang, idrott och att ha hjälpt till i familjens företag är sådant som säger något om dig, även om det inte stått i en anställningsannons. I CV-byggaren skriver du in det under erfarenhet och kompetenser — det finns ingen egen rubrik för den sortens merit, och den behövs inte heller."],
+        ["Börja med jobb som är byggda för att vara första jobbet", "Sommarjobb, extrajobb och en del bemanningsuppdrag kräver sällan tidigare erfarenhet och är ofta till för just den som ska in på arbetsmarknaden första gången. De ger också något att skriva i nästa ansökan."],
+        ["Öva på att prata om dig själv utan en lång meritlista", "Ett personligt brev och en intervju handlar lika mycket om vad du kan bidra med som om vad du redan gjort. Intervjuträningen låter dig öva på svaren tills de känns naturliga."]
+      ],
+      "verktyg": ["cv", "personligt-brev", "intervjutraning", "yrkestest"],
+      "guider": ["cv-utan-erfarenhet", "sommarjobb-och-extrajobb", "bemanningsforetag-guide", "forsta-jobbet-efter-studier", "jobbgaranti-for-ungdomar"],
+      "faq": [
+        ["Vad räknas som erfarenhet om jag aldrig haft ett jobb?", "Praktik, skolprojekt, föreningsliv, idrott och att ha hjälpt till hemma eller i ett familjeföretag räknas allt som något du gjort och lärt dig av. CV-byggaren hjälper dig sätta ord på det."],
+        ["Hur långt ska ett CV vara utan arbetslivserfarenhet?", "Kort är helt okej — hellre en halv sida som stämmer än en hel sida som är utfylld. Utbildning, praktik och det du faktiskt gjort räcker."],
+        ["Var hittar jag jobb som inte kräver erfarenhet?", "Sommarjobb, extrajobb och en del bemanningsuppdrag är byggda för att kunna vara någons första jobb. Jobbsök i portalen filtrerar på den typen av annonser."],
+        ["Kan Arbetsförmedlingen hjälpa unga som söker sitt första jobb?", "Ja, [Arbetsförmedlingen](https://arbetsformedlingen.se) har insatser riktade särskilt till den som är ny på arbetsmarknaden. Vad som gäller för dig beror på din situation — de har den aktuella informationen."],
+        ["Måste jag ha referenser om jag aldrig haft ett jobb?", "Nej, inte i traditionell mening. En lärare, tränare eller någon du hjälpt till hos kan ofta fungera precis lika bra."]
+      ],
+      "ctaLabel": "Bygg ditt första CV, gratis"
+    },
+    {
+      "slug": "funktionsnedsattning",
+      "title": "Söka jobb med en funktionsnedsättning",
+      "description": "Söker du jobb med en funktionsnedsättning eller diagnos? Se vilka anpassningar du kan be om, vad lagen säger, och om och när du vill berätta.",
+      "h1": "Jobbsökning med en funktionsnedsättning eller diagnos",
+      "lead": "Om, när och hur mycket du vill berätta är ditt eget beslut. Den här sidan går igenom vilka anpassningar du kan be om, vad lagen säger om det, och hur du kan öva på frågorna som känns svårast.",
+      "igenkanning": {
+        "rubrik": "Känns något av det här igen?",
+        "punkter": [
+          "Du vet inte om du ska nämna diagnosen i en ansökan eller vänta.",
+          "Du undrar vilka anpassningar du faktiskt har rätt att be om.",
+          "Det känns svårt att veta hur mycket som är rimligt att berätta i en intervju.",
+          "Du har fått frågor som känts fel att behöva svara på."
+        ]
+      },
+      "steg": [
+        ["Bestäm själv om och när du berättar", "Det finns inget rätt svar på om du ska nämna en diagnos i ansökan, i intervjun eller inte alls — det är ditt beslut, och det kan se olika ut beroende på jobbet och situationen. Fundera på vad som känns rätt för just den här ansökan, snarare än på vad som är rätt en gång för alla."],
+        ["Ta reda på vad du har rätt att be om", "Diskrimineringslagen kräver att en arbetsgivare utreder och genomför skäliga anpassningar för att du ska kunna göra jobbet, och [DO](https://www.do.se) är myndigheten som utreder om det inte sker. Vilka anpassningar som är aktuella beror helt på jobbet och din situation."],
+        ["Öva på frågorna som känns svårast", "En del frågor i en intervju kan kännas gränsöverskridande eller helt enkelt olagliga att ställa. Intervjuträningen låter dig öva på hur du vill svara, i lugn och ro, innan det gäller på riktigt."]
+      ],
+      "verktyg": ["cv", "intervjutraning", "ai-coach", "maende"],
+      "guider": ["anpassningar-arbetsplats", "funktionsnedsattning-jobbsokning", "beratta-om-diagnos-eller-inte", "adhd-i-arbetslivet", "autism-och-arbete", "dyslexi-i-ansokan-och-pa-jobbet"],
+      "faq": [
+        ["Måste jag berätta om min diagnos för en arbetsgivare?", "Nej, det finns ingen generell skyldighet att berätta. Är du osäker på vad som gäller för just ditt yrke kan [Arbetsförmedlingen](https://arbetsformedlingen.se) eller en facklig rådgivare svara."],
+        ["Vilka anpassningar kan jag be om på jobbet?", "Det beror helt på jobbet och din situation — allt från arbetstider och ljudmiljö till tekniska hjälpmedel. Diskrimineringslagen kräver att arbetsgivaren utreder skäliga anpassningar, och DO är myndigheten som utreder om det inte sker."],
+        ["Kan en arbetsgivare fråga om min diagnos i en intervju?", "Frågor ska vara relevanta för jobbet. Känns en fråga fel eller gränsöverskridande har du rätt att fråga varför den ställs, eller att själv välja hur mycket du vill svara."],
+        ["Finns det stöd särskilt riktat till mig som har en funktionsnedsättning?", "Ja, Arbetsförmedlingen har insatser och stöd anpassade efter olika behov. Vad som passar dig beror på din situation — de har den aktuella informationen."],
+        ["Vad gör jag om jag känner mig diskriminerad i en rekrytering?", "Du kan vända dig till DO med en anmälan. De bedömer om ärendet ska utredas vidare, och det kostar ingenting att anmäla."]
+      ],
+      "ctaLabel": "Öva i din egen takt, gratis"
+    }
+  ]
+}

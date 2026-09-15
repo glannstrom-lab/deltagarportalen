@@ -3,6 +3,8 @@
   "sidor": [
     {
       "slug": "for-arbetsmarknadsenheter",
+      "guideInvit": "Arbetar du på en kommunal arbetsmarknadsenhet?",
+      "guideInvitLank": "Se hur Jobin fungerar för er",
       "malgrupp": "Kommunal arbetsmarknadsenhet",
       "title": "Digital plattform för arbetsmarknadsenheter",
       "description": "Jobin ger deltagare CV, jobbsökning och intervjuträning, och din arbetsmarknadsenhet en samlad konsulentvy. Ärligt om GDPR och AI — boka en visning.",
@@ -165,6 +167,8 @@
     },
     {
       "slug": "for-rusta-och-matcha",
+      "guideInvit": "Arbetar du hos en leverantör inom Rusta och matcha?",
+      "guideInvitLank": "Se hur Jobin fungerar för er",
       "malgrupp": "Rusta och matcha-leverantör",
       "title": "Jobin för Rusta och matcha-leverantörer",
       "description": "Ett verktyg för dig som är leverantör inom Rusta och matcha: deltagaren får CV och jobbsökning, ni får en konsulentvy och samlad dokumentation.",
@@ -278,6 +282,151 @@
             "losenord": "visa-jobin-2026",
             "lank": "/#/login?email=demo@jobin.se",
             "lankText": "Prova som konsulent"
+          }
+        ]
+      }
+    },
+    {
+      "slug": "for-arbetsgivare",
+      "guideInvit": "Är du arbetsgivare och funderar på att ta emot någon?",
+      "guideInvitLank": "Så går det till hos er",
+      "malgrupp": "Arbetsgivare som tar emot praktik eller anställer via en arbetsmarknadsenhet",
+      "title": "Jobin för arbetsgivare: praktik och anställning",
+      "description": "Jobin är verktyget bakom praktikplatser och anställningar som arbetsmarknadsenheter och Rusta och matcha-leverantörer förmedlar till er som arbetsgivare.",
+      "h1": "Ni ser personen först när hen själv sagt ja",
+      "lead": "Jobin är portalen som arbetsmarknadsenheter och Rusta och matcha-leverantörer använder för att hitta praktikplatser och anställningar åt sina deltagare. Som arbetsgivare får ni ett konto genom en inbjudan från konsulenten, inte genom att skapa ett själva. Ni ser aldrig en lista att välja bland — en person föreslås åt gången, och namnet syns först sedan hen själv tackat ja.",
+      "facts": [
+        "Drift i EU",
+        "WCAG 2.1 AA — vår ambition",
+        "Inget konto utan inbjudan"
+      ],
+      "ctaLabel": "Boka ett samtal",
+      "ctaAmne": "Demo%20-%20arbetsgivare",
+      "forDeltagaren": {
+        "rubrik": "Vad personen ni tar emot har med sig",
+        "text": "Innan någon kommer till er har hen kunnat förbereda sig i Jobin. Portalen är kostnadsfri för deltagaren och kräver bara ett konto med e-post.",
+        "punkter": [
+          "CV-byggare med flera mallar och export till PDF",
+          "Personligt brev anpassat efter en specifik annons",
+          "Intervjuträning där man svarar med rösten och får skriftlig återkoppling",
+          "Kompetensanalys mot ett konkret jobb eller yrke",
+          "Jobbsökning mot Arbetsförmedlingens platsbank"
+        ],
+        "lankHref": "/verktyg/",
+        "lankText": "Se alla verktyg deltagaren har tillgång till"
+      },
+      "forKonsulenten": {
+        "rubrik": "Vad konsulenten sköter åt er",
+        "text": "En arbetskonsulent på en arbetsmarknadsenhet eller hos en Rusta och matcha-leverantör lägger upp era platser i Jobin och föreslår personer till dem — inte ni själva.",
+        "punkter": [
+          "Föreslår en person till en av era platser, en i taget, aldrig en lista att välja bland",
+          "Personen godkänner förslaget och väljer själv vilka uppgifter som visas för er — kontaktuppgifter, sammanfattning, kompetenser, erfarenhet och utbildning väljs var för sig",
+          "Håller i journal och avstämningar på sin sida, så ni slipper föra dubbel dokumentation",
+          "Är den ni når i Meddelanden-fliken om en placering"
+        ],
+        "obs": "Kontakten med den föreslagna personen går i dagsläget via konsulenten. Det är ett medvetet första steg i hur företagskontot är byggt, inte en teknisk begränsning."
+      },
+      "leverantorsvardag": {
+        "rubrik": "Er sida i Jobin: sju flikar",
+        "text": "När kontot är skapat loggar ni in på jobin.se och möts av en yta byggd för er roll, inte konsulentens.",
+        "punkter": [
+          "Översikt — det som väntar på ert svar",
+          "Våra platser — praktikplatser och tjänster ni har lagt upp",
+          "Förslag — personer konsulenten föreslagit, synliga för er först sedan de tackat ja",
+          "Pågående — placeringar som är igång, med avstämningar vid vecka 12 och vecka 24",
+          "Meddelanden — kontakten med konsulenten om en placering",
+          "Stöd och regler — de vanligaste anställningsstöden, utan belopp, med länk vidare till Arbetsförmedlingen",
+          "Om företaget — er profil och vilka kollegor som har tillgång"
+        ],
+        "guideHref": "/guider/praktik-som-vag-in/",
+        "guideText": "Läs vår guide om praktik som väg in, skriven ur deltagarens perspektiv"
+      },
+      "gdprAi": {
+        "rubrik": "Personuppgifter och AI — så är läget",
+        "intro": "Det här är statusen i skrivande stund, inte ett säljlöfte. Vi vill hellre säga för mycket här än för lite.",
+        "klart": [
+          "Databas, inloggning och lagrade filer ligger hos Supabase i Irland (EU).",
+          "Serverfunktionerna körs hos Vercel i Frankfurt (EU).",
+          "Ert företagskonto har ingen AI-funktion i sig — inga förslag, sammanfattningar eller texter i /foretag skapas av en modell.",
+          "Använder personen ni tar emot en AI-funktion i sin egen del av Jobin sker det efter eget samtycke, mellan hen och Jobin — inte något ni behöver hantera."
+        ],
+        "pagar": [
+          "Konsekvensbedömningen (DPIA) och AI Act-klassificeringen är interna utkast som ännu inte formellt godkänts av en personuppgiftsansvarig.",
+          "Registret över personuppgiftsbehandling (Art. 30) finns och uppdateras löpande i takt med granskningar."
+        ],
+        "lankHref": "/#/privacy",
+        "lankText": "Läs hela integritetspolicyn"
+      },
+      "tillganglighet": {
+        "rubrik": "Tillgänglighet",
+        "text": "WCAG 2.1 nivå AA är vårt uttalade mål, inte en uppnådd certifiering. Bedömningen hittills är en intern granskning — automatiserad testning kombinerad med manuell tangentbordstestning — inte en oberoende expertgranskning, och ingen test med riktig skärmläsare är ännu gjord.",
+        "lankHref": "/#/tillganglighet",
+        "lankText": "Läs hela tillgänglighetsredogörelsen"
+      },
+      "faq": [
+        [
+          "Kan vi söka eller bläddra bland deltagarna?",
+          "Nej. Det finns ingen sökfunktion, ingen lista och ingen rankning av personer i Jobin. Er konsulent föreslår en person till en av era platser, och ni ser förslaget bara om personen själv har godkänt det."
+        ],
+        [
+          "Vad ser vi om en person, och när?",
+          "Innan personen har godkänt förslaget ser ni ingenting. Efteråt ser ni bara de delar personen valt att dela — kontaktuppgifter, en sammanfattning, kompetenser, erfarenhet och utbildning väljs var för sig, inte som ett paket."
+        ],
+        [
+          "Hur skapar vi ett konto?",
+          "Ni skapar inget konto själva. Det kommer via en inbjudan från konsulenten på den arbetsmarknadsenhet eller Rusta och matcha-leverantör ni redan har kontakt med, oftast när ni har en plats de vill föreslå någon till. Har ni redan fått en inbjudan loggar ni in som vanligt på jobin.se med uppgifterna i mejlet."
+        ],
+        [
+          "Vad kostar det?",
+          "Vi har inget fastställt pris för företagskonton ännu. Boka ett samtal så pratar vi om er verksamhet och vad som är rimligt."
+        ],
+        [
+          "Vilka anställningsstöd kan bli aktuella om vi anställer?",
+          "De vanligaste är nystartsjobb, introduktionsjobb, lönebidrag, OSA och SIUS. Vilket som passar, och beslutet om det, ligger hos Arbetsförmedlingen — det beskriver vi inte i belopp här."
+        ],
+        [
+          "Kan vi kontakta personen direkt, utan konsulenten?",
+          "I dagsläget går kontakten om en föreslagen eller pågående placering via konsulenten, i Meddelanden-fliken. Det är ett medvetet första steg i hur företagskontot är byggt."
+        ]
+      ],
+      "guider": [
+        "praktik-som-vag-in",
+        "sius-stod-vid-introduktion"
+      ],
+      "slutCta": {
+        "rubrik": "Vill ni prata om en plats ni har?",
+        "text": "Ett samtal räcker för att se om det passar. Inget konto att skapa själva, inget krångel.",
+        "ctaLabel": "Boka ett samtal",
+        "ctaAmne": "Demo%20-%20arbetsgivare"
+      },
+      "saKommerNiIgang": {
+        "rubrik": "Så går det till",
+        "intro": "Ett konto skapas inte i förväg — det börjar med ett samtal och en plats.",
+        "steg": [
+          {
+            "rubrik": "Ett samtal",
+            "tid": "cirka 30 minuter",
+            "text": "Vi pratar om vilka platser eller tjänster ni har, vilket stöd som kan vara aktuellt, och vad ni behöver av den som kommer."
+          },
+          {
+            "rubrik": "Konsulenten lägger upp era platser",
+            "tid": "tillsammans med er",
+            "text": "En arbetskonsulent hos en arbetsmarknadsenhet eller Rusta och matcha-leverantör registrerar era platser i Jobin och bjuder in er kontaktperson."
+          },
+          {
+            "rubrik": "Ni loggar in",
+            "tid": "från mejlet",
+            "text": "Kontot är klart direkt. Ni fyller i er profil under Om företaget och ser era platser under Våra platser."
+          },
+          {
+            "rubrik": "Konsulenten föreslår en person",
+            "tid": "när det finns en match",
+            "text": "Förslaget går först till personen. Ni ser det bara om hen tackat ja, och bara de uppgifter hen valt att dela."
+          },
+          {
+            "rubrik": "Ni svarar, och placeringen börjar",
+            "tid": "i Förslag-fliken",
+            "text": "Tackar ni ja flyttas placeringen till Pågående, med avstämningar vid vecka 12 och vecka 24 och kontakt med konsulenten i Meddelanden."
           }
         ]
       }

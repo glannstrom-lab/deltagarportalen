@@ -48,6 +48,7 @@ const OG_BILDER = {
   lattlast:             { fil: 'latt-svenska',        hub: 'action',    rubrik: 'Lätt svenska',         underrad: 'Korta texter med enkla ord' },
   tool:                 { fil: 'verktyg',             hub: 'info',      rubrik: 'Verktyg',              underrad: 'CV, brev, intervjuträning och mer' },
   'tool-index':         { fil: 'verktyg',             hub: 'info',      rubrik: 'Verktyg',              underrad: 'CV, brev, intervjuträning och mer' },
+  situation:            { fil: 'for-dig-som',        hub: 'coaching',  rubrik: 'För dig som',          underrad: 'Ingångar utifrån var du står just nu' },
   b2b:                  { fil: 'organisationer',      hub: 'action',    rubrik: 'För organisationer',   underrad: 'Konsulentvy, uppföljning, aktivitetskravet' },
 }
 
@@ -61,7 +62,7 @@ function allaBildfiler() {
 /**
  * @param {{ typ?: string, category_key?: string }} sida
  *   typ: 'guide' (default, använder category_key) | 'kategori' (category_key = kat.key)
- *        | 'index' | 'lattlast' | 'tool' | 'tool-index' | 'b2b'
+ *        | 'index' | 'lattlast' | 'tool' | 'tool-index' | 'b2b' | 'situation'
  * @returns {string} sökväg utan domän, t.ex. '/og/soka-jobb.png'
  */
 function ogBildSokvag(sida = {}) {

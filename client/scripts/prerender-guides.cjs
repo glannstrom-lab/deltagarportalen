@@ -30,6 +30,8 @@ const {
   renderTool,
   renderToolIndex,
   renderB2B,
+  renderSituation,
+  renderSituationIndex,
   renderOmOss,
   titelForLang,
   TITEL_MAX,
@@ -71,6 +73,43 @@ const snapshot = loadSnapshot()
 const publiceradeSlugs = new Set(publicerade.map((a) => a.slug))
 const bySlug = new Map(snapshot.articles.map((a) => [a.slug, a]))
 
+// Grind: ett artikelantal utskrivet på en landningssida måste stämma.
+//
+// /verktyg/kunskapsbank/ säger "239 artiklar" i lead, punktlista och FAQ.
+// Talet är sant när det skrivs och fel efter nästa innehållsomgång — samma
+// mönster som K10:s lästider, som var fel på 128 av 133 artiklar innan någon
+// mätte. Skillnaden mot lästiderna är att det här går att vakta mekaniskt.
+//
+// Grinden läser SIDORNAS data, inte filernas `_kommentar` — en kommentar som
+// beskriver en historisk siffra ska inte fälla bygget. Samma skäl som att
+// Landing-grinden nedan strippar kommentarer innan den matchar.
+{
+  const antalsfel = []
+  for (const [fil, nyckel] of [
+    ['tools.json', 'verktyg'],
+    ['situationer.json', 'sidor'],
+    ['b2b.json', 'sidor'],
+  ]) {
+    const sokvag = path.join(CLIENT, 'content', fil)
+    if (!fs.existsSync(sokvag)) continue
+    for (const post of JSON.parse(fs.readFileSync(sokvag, 'utf8'))[nyckel] || []) {
+      for (const [, tal] of JSON.stringify(post).matchAll(/(\d+)\s*(?:st\s*)?artiklar/g)) {
+        if (Number(tal) !== publicerade.length) {
+          antalsfel.push(
+            `  - ${fil} → ${post.slug}: säger "${tal} artiklar", verkligheten är ${publicerade.length}`
+          )
+        }
+      }
+    }
+  }
+  if (antalsfel.length) {
+    console.error('prerender-guides: ett artikelantal på en landningssida stämmer inte:')
+    antalsfel.forEach((f) => console.error(f))
+    console.error('  Rätta talet i content-filen — höj inte grinden.')
+    process.exit(1)
+  }
+}
+
 // Den interna länkningen. Rangordnas på relevans och lagas så att ingen guide
 // blir en återvändsgränd — se lib/related.cjs för hur poängen sätts.
 const { karta: relaterade, statistik: lankstat } = byggRelaterade(publicerade)
@@ -86,13 +125,39 @@ if (lankfel.length) {
   process.exit(1)
 }
 
+// Den omvända B2B-kopplingen (2026-09-15, mätt i Search Console).
+//
+// content/b2b.json säger vilka guider varje B2B-sida pekar PÅ. Kopplingen åt
+// andra hållet fanns inte — och mätningen visade vad det kostade: de fyra
+// guiderna bär 1 424 exponeringar, B2B-sidorna 6. /guider/sius-stod-vid-
+// introduktion ligger på position 9,4 med 600 visningar, och en arbetsgivare
+// som landar där har ingen väg till /for-arbetsgivare.
+//
+// Kartan HÄRLEDS ur samma fil som sidorna byggs av, så en ny B2B-sida får sin
+// invit utan att någon rör mallen. En hårdkodad lista här hade blivit den
+// drift grindarna i övrigt finns för att fånga.
+const b2bInviter = new Map()
+{
+  // Egen sökväg: B2B_FILE deklareras längre ned i filen och ligger i sin
+  // temporala dödzon här. Att flytta upp den hade spridit ut B2B-blocket.
+  const b2bFil = path.join(CLIENT, 'content', 'b2b.json')
+  const sidor = fs.existsSync(b2bFil) ? JSON.parse(fs.readFileSync(b2bFil, 'utf8')).sidor || [] : []
+  for (const b of sidor) {
+    if (!b.guideInvit || !b.guideInvitLank) continue
+    for (const g of b.guider || []) {
+      if (!b2bInviter.has(g)) b2bInviter.set(g, [])
+      b2bInviter.get(g).push(b)
+    }
+  }
+}
+
 let skrivna = 0
 for (const artikel of publicerade) {
   const dir = path.join(DIST, 'guider', artikel.slug)
   fs.mkdirSync(dir, { recursive: true })
   fs.writeFileSync(
     path.join(dir, 'index.html'),
-    renderGuide(artikel, relaterade.get(artikel.slug) || []),
+    renderGuide(artikel, relaterade.get(artikel.slug) || [], b2bInviter.get(artikel.slug) || []),
     'utf8'
   )
   skrivna++
@@ -224,6 +289,78 @@ if (fs.existsSync(B2B_FILE)) {
   }
 }
 
+// Spår K, omgång 7 (2026-09-15): situationssidorna under /for-dig-som/.
+//
+// Samma gating som verktygssidorna (K6) och B2B-sidorna (K7/K16), av samma
+// skäl: en länk vi själva sätter dit och som pekar på ingenting är värre än
+// ingen länk alls — den ser ut att fungera. Två kontroller till här, eftersom
+// sidtypen korslänkar åt två håll:
+//   · varje slug i `guider` måste vara publicerad
+//   · varje slug i `verktyg` måste finnas i content/tools.json
+const SITUATIONER_FILE = path.join(CLIENT, 'content', 'situationer.json')
+let antalSituationer = 0
+const situationSlugs = []
+if (fs.existsSync(SITUATIONER_FILE)) {
+  const { sidor } = JSON.parse(fs.readFileSync(SITUATIONER_FILE, 'utf8'))
+
+  // Verktygsregistret läses om här i stället för att återanvända variabeln
+  // ovan: verktygsblocket är villkorat av att tools.json finns, och en tyst
+  // `undefined` hade gjort kontrollen nedan till en no-op i stället för en
+  // grind. En vakt som inte kan falla är ingen vakt.
+  const verktygRegister = new Map(
+    fs.existsSync(TOOLS_FILE)
+      ? JSON.parse(fs.readFileSync(TOOLS_FILE, 'utf8')).verktyg.map((t) => [t.slug, t])
+      : []
+  )
+
+  // `index` skulle skriva över samlingssidan tyst — samma fälla som RESERVERADE
+  // vaktar för guiderna.
+  const reserverade = sidor.filter((s) => s.slug === 'index')
+  if (reserverade.length) {
+    console.error('prerender-guides: situationssida med reserverad slug "index".')
+    process.exit(1)
+  }
+
+  for (const s of sidor) {
+    const saknadeGuider = (s.guider || []).filter((g) => !publiceradeSlugs.has(g))
+    if (saknadeGuider.length) {
+      console.error(
+        `prerender-guides: situationssidan "${s.slug}" länkar till opublicerade guider: ${saknadeGuider.join(', ')}`
+      )
+      process.exit(1)
+    }
+    const saknadeVerktyg = (s.verktyg || []).filter((v) => !verktygRegister.has(v))
+    if (saknadeVerktyg.length) {
+      console.error(
+        `prerender-guides: situationssidan "${s.slug}" pekar på verktyg som inte finns i content/tools.json: ${saknadeVerktyg.join(', ')}`
+      )
+      process.exit(1)
+    }
+
+    const dir = path.join(DIST, 'for-dig-som', s.slug)
+    fs.mkdirSync(dir, { recursive: true })
+    fs.writeFileSync(
+      path.join(dir, 'index.html'),
+      renderSituation(
+        s,
+        (s.verktyg || []).map((v) => verktygRegister.get(v)),
+        (s.guider || []).map((g) => bySlug.get(g))
+      ),
+      'utf8'
+    )
+    situationSlugs.push(s.slug)
+    antalSituationer++
+  }
+
+  if (antalSituationer) {
+    fs.writeFileSync(
+      path.join(DIST, 'for-dig-som', 'index.html'),
+      renderSituationIndex(sidor),
+      'utf8'
+    )
+  }
+}
+
 // KM12 (9), 2026-09-12: om oss-sidan. En sida, ingen guide-gating (den länkar
 // bara till B2B-sidorna, /#/-rutter och mailto).
 const OM_OSS_FILE = path.join(CLIENT, 'content', 'om-oss.json')
@@ -254,7 +391,12 @@ const totalKb = Math.round(
 // B2B-sida läggs till.
 const LANDING = path.join(CLIENT, 'src', 'pages', 'Landing.tsx')
 if (fs.existsSync(LANDING)) {
-  const prefix = ['guider', 'verktyg', ...b2bSlugs].join('|')
+  // 'for-dig-som' står ovillkorligt i listan, inte bakom `antalSituationer`.
+    // Villkorat hade grinden tystnat exakt när den behövdes: saknas
+    // content/situationer.json genereras ingen sida, och då är startsidans länk
+    // dit en mjuk 404 — men prefixet hade utelämnats och länken aldrig prövats.
+    // En vakt som slutar titta när målet försvinner är ingen vakt.
+    const prefix = ['guider', 'verktyg', 'for-dig-som', ...b2bSlugs].join('|')
   const hrefRe = new RegExp(`href="(\\/(?:${prefix})[^"]*)"`, 'g')
   const linkRe = new RegExp(`<Link\\s+to="(\\/(?:${prefix})[^"]*)"`, 'g')
 
@@ -293,7 +435,8 @@ if (fs.existsSync(LANDING)) {
 
 console.log(
   `prerender-guides: ${skrivna} guidesidor + /guider/ + ${antalKategorier} ämnessidor + ` +
-    `${antalVerktyg} verktygssidor + ${antalB2B} B2B-sidor + ${antalOmOss} om oss-sida skrivna ` +
+    `${antalVerktyg} verktygssidor + ${antalSituationer} situationssidor + ` +
+    `${antalB2B} B2B-sidor + ${antalOmOss} om oss-sida skrivna ` +
     `(${totalKb} kB guider), ${antalRoutes} routes validerade, ` +
     `${snapshot.count - skrivna} artiklar ännu opublicerade.`
 )

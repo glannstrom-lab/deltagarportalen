@@ -18,7 +18,7 @@
  * hämtade ur src/styles/tokens.css (info/sky = Resurser-hubben).
  */
 
-const { markdownToHtml, markdownToPlain, escapeHtml } = require('./markdown.cjs')
+const { markdownToHtml, markdownToPlain, renderInline, escapeHtml } = require('./markdown.cjs')
 // KG3: en delningsbild per kategori/sidtyp i stället för samma på alla sidor.
 const { ogBildFor } = require('./og-bild.cjs')
 const { SITE, TOOLS, KATEGORI_NAMN, KATEGORIER, kategoriUrl, appUrl, verktygFor, guideUrl } =
@@ -117,6 +117,15 @@ tr:last-child td{border-bottom:none}
 .checklist li{padding-left:1.9rem;position:relative}
 .checklist li::before{content:"";position:absolute;left:0;top:.45rem;width:1.05rem;height:1.05rem;
   border:2px solid var(--c-solid);border-radius:.25rem}
+
+/* B2B-invit på en guidesida. Dämpad, aldrig en knapp: raden står i en text
+   som någon läser för att hon är arbetslös, och den är riktad till någon
+   annan. Den ska gå att hoppa över utan ansträngning och vara omöjlig att
+   missa för den som den faktiskt gäller. */
+.b2binvit{margin:2rem 0 0;padding:.85rem 1.05rem;background:var(--soft);
+  border-left:3px solid var(--c-accent);border-radius:0 .5rem .5rem 0;
+  font-size:.95rem;line-height:1.55;color:var(--muted)}
+.b2binvit a{font-weight:600}
 
 .related{border-top:1px solid var(--line);margin-top:2.5rem;padding-top:1.75rem}
 .related ul{list-style:none;padding:0;margin:0}
@@ -334,19 +343,44 @@ function relateradPost(r) {
 /**
  * @param {object} a artikel ur snapshoten
  * @param {object[]} relaterade artiklar som också är publicerade
+ * @param {{slug:string,guideInvit:string,guideInvitLank:string}[]} [b2b]
+ *   B2B-sidor som pekar på just den här guiden. Se b2bInviter() i
+ *   prerender-guides.cjs — listan HÄRLEDS ur content/b2b.json, så en ny
+ *   B2B-sida får sin invit utan att någon rör den här filen.
  */
-function renderGuide(a, relaterade) {
+function renderGuide(a, relaterade, b2b = []) {
   const url = `${SITE}${guideUrl(a.slug)}`
   const kategori = KATEGORI_NAMN[a.category_key] || 'Guide'
   const verktyg = verktygFor(a)
   const primart = verktyg[0]
   const body = markdownToHtml(a.content)
-
   // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
   const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
   // Används av både vadArDetHar och krisstod — samma sida ska inte kunna få
   // lättläst banderoll och krånglig krisrad, eller tvärtom.
   const arLattlastSida = a.difficulty === 'easy-swedish' || a.category_key === 'easy-swedish'
+
+  /**
+   * B2B-inviten. Tre val värda att motivera:
+   *
+   * 1. **Aldrig på en lättläst sida.** Den läsaren är nyanländ eller läser med
+   *    möda; en mening riktad till en upphandlare är brus i just den texten.
+   * 2. **Texten kommer ur content/b2b.json**, inte härledd ur `malgrupp`.
+   *    "För dig som är Kommunal arbetsmarknadsenhet" hade låtit som en annons.
+   * 3. **En länk, inte en knapp.** Knappar i en guidetext är deltagarens
+   *    handling — CTA:n ovanför. Den här raden vänder sig till någon annan
+   *    och ska se ut som en hänvisning, inte som nästa steg.
+   */
+  const b2bInvitHtml = arLattlastSida
+    ? ''
+    : b2b
+        .filter((b) => b.guideInvit && b.guideInvitLank)
+        .map(
+          (b) =>
+            `<p class="b2binvit">${escapeHtml(b.guideInvit)} ` +
+            `<a href="/${b.slug}/">${escapeHtml(b.guideInvitLank)}</a></p>`
+        )
+        .join('')
 
   const checklista =
     Array.isArray(a.checklist) && a.checklist.length
@@ -467,6 +501,8 @@ ${body}
       <p>Verktygen nedan hör ihop med den här guiden. De är gratis och du kommer igång direkt.</p>
       <div class="tools">${verktygskort(verktyg.length > 1 ? verktyg : [primart, '/knowledge-base'].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 2))}</div>
     </section>
+
+    ${b2bInvitHtml}
 
     ${relateradeHtml}
   </div>
@@ -1262,6 +1298,287 @@ ${krisstod()}
 
 
 /**
+ * Situationssidorna under /for-dig-som/<slug>/.  (spår K, omgång 7, 2026-09-15)
+ *
+ * Varför en egen sidtyp och inte ännu en verktygssida: verktygssidan svarar på
+ * "vad gör den här funktionen", och den frågan ställer bara den som redan vet
+ * att funktionen finns. Situationssidan svarar på det folk faktiskt söker på —
+ * "jobb efter lång sjukskrivning", "söka jobb när man är över 50" — och leder
+ * därifrån in i både guiderna och verktygen.
+ *
+ * Tre val värda att motivera:
+ *
+ * 1. **`igenkanning` står före `steg`.** Läsaren ska känna igen sitt eget läge
+ *    innan hon får råd. Ordningen är inte kosmetisk: ett råd som kommer före
+ *    igenkänningen läses som en tillrättavisning, vilket är precis den ton
+ *    DESIGN.md §2 förbjuder mot deltagare.
+ * 2. **Korslänkar åt två håll** — till `/verktyg/<slug>/` och `/guider/<slug>/`.
+ *    Sidorna är inga återvändsgränder, och den interna länkningen är det enda
+ *    som gör en ny sida hittbar innan den rankar.
+ * 3. **Inga påståenden om hur vanligt något är.** Sidorna handlar om människor
+ *    i utsatta lägen; "många arbetsgivare tvekar inför ett uppehåll" hade varit
+ *    en obelagd generalisering om en läsares livssituation. Se BRIEF.md.
+ */
+const SITUATION_BAS = '/for-dig-som'
+
+/** Kort ur content/tools.json → länk till den prerenderade verktygssidan. */
+function situationVerktygskort(verktyg) {
+  return verktyg
+    .map(
+      (t) =>
+        `<a class="tool" href="/verktyg/${t.slug}/"><strong>${escapeHtml(t.h1)}</strong>` +
+        `<span>${escapeHtml(korta(t.lead, 105))}</span></a>`
+    )
+    .join('')
+}
+
+/**
+ * @param {object} s posten ur content/situationer.json
+ * @param {object[]} verktyg matchande poster ur content/tools.json
+ * @param {object[]} guider publicerade artiklar ur snapshoten
+ */
+function renderSituation(s, verktyg, guider) {
+  const url = `${SITE}${SITUATION_BAS}/${s.slug}/`
+
+  const igenkanning = s.igenkanning
+    ? `<h2>${escapeHtml(s.igenkanning.rubrik)}</h2>
+    <ul class="checklist">${s.igenkanning.punkter.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ul>`
+    : ''
+
+  const steg = `<ol class="steg">${s.steg
+    .map(([rubrik, text]) => `<li><h3>${escapeHtml(rubrik)}</h3><p>${renderInline(text)}</p></li>`)
+    .join('')}</ol>`
+
+  const verktygsblock = verktyg.length
+    ? `<section class="cta">
+      <h2>Verktyg som hjälper dig med just det här</h2>
+      <p>Allt är kostnadsfritt. Du kan läsa om varje verktyg innan du skapar konto.</p>
+      <div class="tools">${situationVerktygskort(verktyg)}</div>
+    </section>`
+    : ''
+
+  const relaterade = guider.length
+    ? `<nav class="related" aria-labelledby="rel"><h2 id="rel">Läs vidare</h2>
+      <p class="intro">Guider som hör ihop med det här. De går att läsa utan konto.</p>
+      <ul>${guider.map(relateradPost).join('')}</ul></nav>`
+    : ''
+
+  const faq = s.faq
+    .map(([f, sv]) => `<h3>${escapeHtml(f)}</h3><p>${renderInline(sv)}</p>`)
+    .join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        name: s.title,
+        description: s.description,
+        inLanguage: 'sv-SE',
+        url,
+        isPartOf: { '@type': 'WebSite', name: 'Jobin', url: SITE },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Jobin', item: `${SITE}/` },
+          { '@type': 'ListItem', position: 2, name: 'För dig som', item: `${SITE}${SITUATION_BAS}/` },
+          { '@type': 'ListItem', position: 3, name: s.h1, item: url },
+        ],
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: s.faq.map(([f, sv]) => ({
+          '@type': 'Question',
+          name: f,
+          acceptedAnswer: { '@type': 'Answer', text: markdownToPlain(sv) },
+        })),
+      },
+    ],
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel(s.title))}</title>
+<meta name="description" content="${escapeHtml(s.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="${escapeHtml(s.title)}">
+<meta property="og:description" content="${escapeHtml(s.description)}">
+<meta property="og:image" content="${ogBildFor({ typ: 'situation' })}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<style>.steg{padding-left:1.25rem}.steg li{margin:0 0 1.15rem}.steg h3{margin:0 0 .25rem}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+${vadArDetHar()}
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor">
+      <a href="/">Jobin</a> › <a href="${SITUATION_BAS}/">För dig som</a>
+    </nav>
+    <h1>${escapeHtml(s.h1)}</h1>
+    <p class="lead">${escapeHtml(s.lead)}</p>
+    <div class="facts">
+      <span class="chip">Kostnadsfritt</span>
+      <span class="chip">På svenska</span>
+      <span class="chip">Inget att installera</span>
+    </div>
+    <a class="btn" href="${appUrl('/oversikt')}">${escapeHtml(s.ctaLabel)}</a>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    ${igenkanning}
+
+    <h2>Tre steg som brukar hjälpa</h2>
+    ${steg}
+
+    ${verktygsblock}
+
+    <h2>Vanliga frågor</h2>
+    ${faq}
+
+    ${relaterade}
+
+    <section class="cta">
+      <h2>Redo att börja?</h2>
+      <p>Jobin är kostnadsfritt för dig som söker jobb. Du skapar ett konto med din e-post, och allt du gör sparas så att du kan fortsätta när du orkar.</p>
+      <a class="btn" href="${appUrl('/oversikt')}">${escapeHtml(s.ctaLabel)}</a>
+      <a class="btn btn-ghost" href="/verktyg/">Se alla verktyg</a>
+    </section>
+  </div>
+</main>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="${SITUATION_BAS}/">Alla situationer</a> · <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+/** /for-dig-som/ — samlingssidan. */
+function renderSituationIndex(sidor) {
+  const url = `${SITE}${SITUATION_BAS}/`
+
+  const kort = sidor
+    .map(
+      (s) =>
+        `<a class="tool" href="${SITUATION_BAS}/${s.slug}/"><strong>${escapeHtml(s.h1)}</strong>` +
+        `<span>${escapeHtml(korta(s.lead, 130))}</span></a>`
+    )
+    .join('')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'För dig som — Jobin',
+    description: 'Ingångar till Jobin utifrån din situation.',
+    inLanguage: 'sv-SE',
+    url,
+    hasPart: sidor.map((s) => ({
+      '@type': 'WebPage',
+      name: s.h1,
+      url: `${SITE}${SITUATION_BAS}/${s.slug}/`,
+    })),
+  }
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel('För dig som söker jobb i en särskild situation'))}</title>
+<meta name="description" content="Ingångar till Jobin utifrån var du står just nu: lång tid utan jobb, ny i Sverige, tillbaka efter sjukskrivning, första jobbet och mer.">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jobin">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:url" content="${url}">
+<meta property="og:title" content="För dig som söker jobb i en särskild situation">
+<meta property="og:description" content="Ingångar till Jobin utifrån var du står just nu.">
+<meta property="og:image" content="${ogBildFor({ typ: 'situation' })}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<script type="application/ld+json">${JSON.stringify(jsonLd)}</script>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="${appUrl('/oversikt')}">Öppna Jobin</a>
+  </div>
+</header>
+
+${vadArDetHar()}
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor"><a href="/">Jobin</a></nav>
+    <h1>För dig som</h1>
+    <p class="lead">Var du står just nu avgör vad som är nästa steg. Välj det som liknar ditt läge — varje sida leder vidare till guider och verktyg som hör dit.</p>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    <div class="tools">${kort}</div>
+
+    <section class="cta">
+      <h2>Hittar du inte ditt läge?</h2>
+      <p>Guiderna täcker mer än de här sidorna gör. De går att läsa utan konto.</p>
+      <a class="btn" href="/guider/">Alla guider</a>
+      <a class="btn btn-ghost" href="/verktyg/">Alla verktyg</a>
+    </section>
+  </div>
+</main>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
+/**
  * Om oss-sidan (/om-oss/), KM12 (9) 2026-09-12. Data ur content/om-oss.json.
  * Ingen demo-CTA i toppen — det här är sidan som säger vem som står bakom,
  * inte en säljsida. Krisstödsblocket följer med som på alla publika sidtyper.
@@ -1378,6 +1695,8 @@ module.exports = {
   renderTool,
   renderToolIndex,
   renderB2B,
+  renderSituation,
+  renderSituationIndex,
   // SE3: exporteras för byggrapporten och testerna.
   sidtitel,
   titelForLang,

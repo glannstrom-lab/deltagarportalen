@@ -83,6 +83,21 @@ if (fs.existsSync(B2B)) {
   }
 }
 
+// Spår K, omgång 7: situationssidorna. Läser samma content/situationer.json
+// som prerender-guides.cjs, så sitemap och genererade sidor inte kan gå isär —
+// samma skäl som för B2B ovan. Samlingssidan får guidernas index-priority
+// eftersom den är en ingång, sidorna själva verktygssidornas.
+const SITUATIONER = path.join(__dirname, '..', 'content', 'situationer.json')
+if (fs.existsSync(SITUATIONER)) {
+  const { sidor } = JSON.parse(fs.readFileSync(SITUATIONER, 'utf8'))
+  if (sidor?.length) {
+    urls.push({ loc: '/for-dig-som/', changefreq: 'monthly', priority: '0.9' })
+    urls.push(
+      ...sidor.map((s) => ({ loc: `/for-dig-som/${s.slug}/`, changefreq: 'monthly', priority: '0.8' }))
+    )
+  }
+}
+
 // KM12 (9): om oss-sidan. Läser content/om-oss.json, samma källa som
 // prerender-guides.cjs, så sitemap och genererad sida inte kan gå isär.
 const OM_OSS = path.join(__dirname, '..', 'content', 'om-oss.json')

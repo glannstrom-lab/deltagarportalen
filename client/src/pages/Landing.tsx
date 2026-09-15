@@ -1001,6 +1001,7 @@ export default function Landing() {
                 <li><a href="/guider/kategori/intervju/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.interview', 'Intervju')}</a></li>
                 <li><a href="/guider/kategori/dina-rattigheter/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.rights', 'Dina rättigheter')}</a></li>
                 <li><a href="/guider/lattlast/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.easySwedish', 'Lätt svenska')}</a></li>
+                <li><a href="/for-dig-som/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.situations', 'För dig som')}</a></li>
                 <li><a href="/guider/" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.guides.all', 'Alla guider')}</a></li>
               </ul>
             </div>
