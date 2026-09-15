@@ -30,7 +30,18 @@ export interface Profile {
   last_name: string | null
   role: UserRole  // Huvudroll (bakåtkompatibel)
   roles: UserRole[]  // Alla roller användaren har
-  activeRole: UserRole  // Vilken roll som är aktiv just nu
+  /**
+   * Den riktiga kolumnen i `profiles`. Läses in och skrivs som snake_case,
+   * precis som alla andra kolumner här.
+   */
+  active_role?: UserRole | null
+  /**
+   * HÄRLETT fält, finns inte i databasen. Sätts vid inläsning ur
+   * `active_role` och används av hela UI:t. Skicka det ALDRIG till
+   * `.update()` — PostgREST svarar 400 PGRST204 (bevisat mot prod
+   * 2026-09-15). `updateProfile` rensar bort det åt anroparen.
+   */
+  activeRole: UserRole
   phone: string | null
   avatar_url: string | null
   consultant_id: string | null
@@ -203,7 +214,7 @@ export const useAuthStore = create<AuthState>()(
             const enrichedProfile = profile ? {
               ...profile,
               roles: profile.roles || [profile.role || 'USER'],
-              activeRole: profile.activeRole || profile.role || 'USER',
+              activeRole: profile.active_role || profile.role || 'USER',
             } : null
 
             set({
@@ -271,7 +282,7 @@ export const useAuthStore = create<AuthState>()(
           const enrichedProfile = profile ? {
             ...profile,
             roles: profile.roles || [profile.role || 'USER'],
-            activeRole: profile.activeRole || profile.role || 'USER',
+            activeRole: profile.active_role || profile.role || 'USER',
           } : null
 
           set({
@@ -381,7 +392,7 @@ export const useAuthStore = create<AuthState>()(
           const enrichedProfile = profile ? {
             ...profile,
             roles: profile.roles || [profile.role || 'USER'],
-            activeRole: profile.activeRole || profile.role || 'USER',
+            activeRole: profile.active_role || profile.role || 'USER',
           } : null
 
           set({
@@ -458,9 +469,16 @@ export const useAuthStore = create<AuthState>()(
             return { error: 'Inte inloggad' }
           }
 
+          // `activeRole` är härlett och finns inte som kolumn — skickas det
+          // med svarar PostgREST 400 och HELA uppdateringen faller, inte bara
+          // det fältet. Mappas till den riktiga kolumnen i stället för att
+          // tyst kastas bort.
+          const { activeRole, ...kolumner } = updates
+          const nyttVarde = activeRole ? { ...kolumner, active_role: activeRole } : kolumner
+
           const { error } = await supabase
             .from('profiles')
-            .update(updates)
+            .update(nyttVarde)
             .eq('id', user.id)
 
           if (error) {
@@ -499,15 +517,15 @@ export const useAuthStore = create<AuthState>()(
         // Persist to database
         supabase
           .from('profiles')
-          .update({ activeRole: role })
+          .update({ active_role: role })
           .eq('id', profile.id)
           .then(({ error }) => {
             if (error) {
-              console.error('Failed to update activeRole:', error)
+              console.error('Kunde inte spara aktiv roll:', error)
             }
           })
           .catch((err) => {
-            console.error('Failed to update activeRole:', err)
+            console.error('Kunde inte spara aktiv roll:', err)
           })
       },
 

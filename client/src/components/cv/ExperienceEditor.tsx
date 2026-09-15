@@ -256,16 +256,22 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                       </p>
                     </div>
                     
-                    {/* Expand/collapse */}
-                    <button className="p-1 hover:bg-stone-200 rounded">
+                    {/*
+                      Expand/collapse — indikator, inte kontroll. Låg tidigare
+                      som <button> utan onClick inuti raden, som redan är
+                      role="button" (rad 206) med onClick och aria-expanded.
+                      Nästlad interaktivitet och en tabbstopp utan verkan.
+                      Samma fel fanns i EducationEditor.
+                    */}
+                    <span className="p-1 rounded" aria-hidden="true">
                       {isExpanded ? (
                         <ChevronUp className="w-5 h-5 text-stone-600" />
                       ) : (
                         <ChevronDown className="w-5 h-5 text-stone-600" />
                       )}
-                    </button>
+                    </span>
                   </div>
-                  
+
                   {/* Expanded content */}
                   {isExpanded && (
                     <div className="px-4 pb-4 border-t border-stone-100">

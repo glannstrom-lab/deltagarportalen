@@ -840,9 +840,19 @@ function SettingsInner() {
                 <Card variant="flat">
                   <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
                   <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
-                  <button className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium text-sm hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]">
+                  {/*
+                    "Läs mer" var en <button> utan onClick — mitt i
+                    integritetsavsnittet. Den som undrade vad delning av
+                    aktivitet innebär klickade och fick ingenting, på just den
+                    yta där ett obesvarat klick väger tyngst. Pekar nu på
+                    integritetspolicyn, som redan finns som rutt.
+                  */}
+                  <Link
+                    to="/privacy"
+                    className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium text-sm hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] underline underline-offset-2"
+                  >
                     {t('settings.privacy.learnMore')}
-                  </button>
+                  </Link>
                 </Card>
 
                 <Card variant="flat">

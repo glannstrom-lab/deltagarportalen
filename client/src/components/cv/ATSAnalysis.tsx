@@ -381,7 +381,27 @@ export function ATSAnalysis() {
               </button>
 
               {percentage < 80 && (
-                <button className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl font-medium hover:bg-amber-200 transition-colors">
+                <button
+                  type="button"
+                  /**
+                   * Knappen hade inget onClick alls. Den visas bara när poängen
+                   * är under 80 — alltså för den vars CV behöver mest hjälp, och
+                   * hon klickade på ingenting. Tipsen fanns hela tiden i
+                   * `check.tips`; det som saknades var vägen dit.
+                   */
+                  onClick={() => {
+                    const forsta = checks.find(c => c.status === 'fail') || checks.find(c => c.status === 'warning')
+                    if (!forsta) return
+                    setShowDetails(forsta.id)
+                    // Efter render, annars finns elementet inte att rulla till än.
+                    requestAnimationFrame(() => {
+                      document
+                        .getElementById(`ats-check-${forsta.id}`)
+                        ?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                    })
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl font-medium hover:bg-amber-200 transition-colors"
+                >
                   <Lightbulb className="w-4 h-4" />
                   {t('cv.ats.seeImprovements')}
                 </button>
@@ -422,7 +442,7 @@ export function ATSAnalysis() {
 
               <div className="divide-y divide-stone-100 dark:divide-stone-700">
                 {categoryChecks.map(check => (
-                  <div key={check.id} className="p-6">
+                  <div key={check.id} id={`ats-check-${check.id}`} className="p-6">
                     <div className="flex items-start gap-4">
                       {/* Status Icon */}
                       <div className={cn(

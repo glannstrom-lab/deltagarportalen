@@ -5,6 +5,18 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 import { medFelrapport } from '../_shared/sentry.ts'
 
+/**
+ * Meddelandet ur ett okänt kastat värde.
+ *
+ * `catch (error)` ger `unknown`. Att läsa `.message` rakt av kastar när
+ * något annat än ett Error kastas — mitt i det catch-block som skulle ha
+ * returnerat felsvaret med CORS-headrarna. Utan headrarna ser anroparen ett
+ * CORS-fel i stället för orsaken.
+ */
+function felText(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
 const TAXONOMY_API_BASE = 'https://taxonomy.api.jobtechdev.se/v1/taxonomy';
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
@@ -138,7 +150,7 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
       return { concepts, source: 'jobsearch-search' };
     }
   } catch (error) {
-    console.log(`[af-taxonomy] JobSearch /search failed: ${error.message}`);
+    console.log(`[af-taxonomy] JobSearch /search failed: ${felText(error)}`);
   }
 
   // Sekundär: taxonomy.api (när den fungerar)
@@ -148,7 +160,7 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
       return { concepts, source: 'taxonomy-api' };
     }
   } catch (error) {
-    console.log(`[af-taxonomy] Taxonomy failed: ${error.message}`);
+    console.log(`[af-taxonomy] Taxonomy failed: ${felText(error)}`);
   }
 
   // Sista fallback: /complete (utan concept_ids — fritext-matchning)
@@ -158,7 +170,7 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
       return { concepts, source: 'jobsearch-complete' };
     }
   } catch (error) {
-    console.log(`[af-taxonomy] JobSearch /complete failed: ${error.message}`);
+    console.log(`[af-taxonomy] JobSearch /complete failed: ${felText(error)}`);
   }
 
   return { concepts: [], source: 'none' };
@@ -211,7 +223,7 @@ serve(medFelrapport('af-taxonomy', async (req) => {
   } catch (error) {
     console.error('[af-taxonomy] Error:', error);
     return new Response(
-      JSON.stringify({ error: error.message, concepts: [], total: 0 }),
+      JSON.stringify({ error: felText(error), concepts: [], total: 0 }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

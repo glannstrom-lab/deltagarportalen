@@ -5,6 +5,18 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 import { medFelrapport } from '../_shared/sentry.ts'
 
+/**
+ * Meddelandet ur ett okänt kastat värde.
+ *
+ * `catch (error)` ger `unknown`. Att läsa `.message` rakt av kastar när
+ * något annat än ett Error kastas — mitt i det catch-block som skulle ha
+ * returnerat felsvaret med CORS-headrarna. Utan headrarna ser anroparen ett
+ * CORS-fel i stället för orsaken.
+ */
+function felText(error: unknown): string {
+  return error instanceof Error ? error.message : String(error)
+}
+
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
 function extractSalary(text: string): number | null {
@@ -154,7 +166,7 @@ serve(medFelrapport('af-historical', async (req) => {
   } catch (error) {
     console.error('[af-historical] Error:', error);
     return new Response(
-      JSON.stringify({ error: error.message, note: 'No salary data available' }),
+      JSON.stringify({ error: felText(error), note: 'No salary data available' }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

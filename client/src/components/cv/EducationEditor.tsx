@@ -208,15 +208,23 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                       </p>
                     </div>
                     
-                    <button className="p-1 hover:bg-stone-200 rounded">
+                    {/*
+                      Chevronen är en indikator, inte en kontroll.
+                      Den låg tidigare som <button> utan onClick INUTI raden,
+                      som redan är role="button" med onClick och onKeyDown.
+                      Det gav nästlad interaktivitet och en extra tabbstopp som
+                      inte gjorde något på egen hand — raden ovanför äger både
+                      klicket och aria-expanded.
+                    */}
+                    <span className="p-1 rounded" aria-hidden="true">
                       {isExpanded ? (
                         <ChevronUp className="w-5 h-5 text-stone-600" />
                       ) : (
                         <ChevronDown className="w-5 h-5 text-stone-600" />
                       )}
-                    </button>
+                    </span>
                   </div>
-                  
+
                   {/* Expanded content */}
                   {isExpanded && (
                     <div className="px-4 pb-4 border-t border-stone-100">

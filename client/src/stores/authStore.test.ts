@@ -516,3 +516,102 @@ describe('authStore', () => {
     })
   })
 })
+
+describe('aktiv roll skrivs och läses mot rätt kolumn (2026-09-15)', () => {
+  /**
+   * Bevisat mot prod innan fixen:
+   *   PATCH /rest/v1/profiles { "activeRole": "USER" }
+   *     → 400 PGRST204 "Could not find the 'activeRole' column"
+   *   { "active_role": "USER" } → 200
+   *
+   * Felet maskerade sig självt: setActiveRole uppdaterar det lokala
+   * tillståndet optimistiskt FÖRE skrivningen, och 400:an hamnade i ett
+   * console.error. Växlingen såg ut att lyckas och var borta vid omladdning.
+   */
+  const profil = (over: Partial<Profile> = {}): Profile =>
+    ({
+      id: 'user1',
+      email: 'test@example.com',
+      first_name: 'Test',
+      last_name: 'Person',
+      role: 'SUPERADMIN',
+      roles: ['USER', 'SUPERADMIN'],
+      activeRole: 'SUPERADMIN',
+      ...over,
+    }) as Profile
+
+  it('läser activeRole ur kolumnen active_role, inte ur ett fält som inte finns', async () => {
+    // Raden är formad som PROD ger den: snake_case, inget activeRole-fält.
+    // Den befintliga fixturen ovan har activeRole i raden, vilket databasen
+    // aldrig returnerar — och det var precis därför läsfelet kunde leva:
+    // fixturen var snällare än verkligheten.
+    const rad = {
+      id: 'user1',
+      email: 'test@example.com',
+      first_name: 'Test',
+      last_name: 'Person',
+      role: 'SUPERADMIN',
+      roles: ['USER', 'SUPERADMIN'],
+      active_role: 'USER',
+    }
+    mockGetSession.mockResolvedValue({ data: { session: { access_token: 't', user: { id: 'user1' } } }, error: null })
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'user1' } }, error: null })
+    mockFrom.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({ single: vi.fn().mockResolvedValue({ data: rad, error: null }) }),
+      }),
+    })
+
+    await useAuthStore.getState().initialize()
+
+    // Faller läsningen tillbaka på role blir det SUPERADMIN — och en
+    // superadmin som växlat till Deltagare hamnar i fel vy.
+    expect(useAuthStore.getState().profile?.activeRole).toBe('USER')
+  })
+
+  it('setActiveRole skickar active_role, aldrig activeRole', async () => {
+    const update = vi.fn().mockReturnValue({
+      eq: vi.fn().mockReturnValue({
+        then: (lös: (r: { error: null }) => void) => { lös({ error: null }); return { catch: vi.fn() } },
+      }),
+    })
+    mockFrom.mockReturnValue({ update })
+    useAuthStore.setState({ profile: profil() })
+
+    useAuthStore.getState().setActiveRole('USER')
+
+    expect(update).toHaveBeenCalledTimes(1)
+    const skickat = update.mock.calls[0][0]
+    expect(skickat).toEqual({ active_role: 'USER' })
+    expect(skickat).not.toHaveProperty('activeRole')
+  })
+
+  it('updateProfile mappar activeRole till kolumnen i stället för att skicka den rå', async () => {
+    // Dörren buggen kan komma tillbaka genom: updateProfile skickade tidigare
+    // hela objektet vidare, och EN felaktig nyckel fäller hela uppdateringen.
+    const update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
+    mockFrom.mockReturnValue({ update })
+    useAuthStore.setState({
+      user: { id: 'user1' } as never,
+      profile: profil(),
+    })
+
+    await useAuthStore.getState().updateProfile({ activeRole: 'USER', first_name: 'Ny' })
+
+    const skickat = update.mock.calls[0][0]
+    expect(skickat).not.toHaveProperty('activeRole')
+    expect(skickat).toMatchObject({ active_role: 'USER', first_name: 'Ny' })
+  })
+
+  it('negativ kontroll — testet kan falla', () => {
+    // Utan den här skulle de två ovan kunna passera av fel skäl, t.ex. om
+    // update aldrig anropades alls.
+    const update = vi.fn().mockReturnValue({ eq: vi.fn().mockResolvedValue({ error: null }) })
+    mockFrom.mockReturnValue({ update })
+    useAuthStore.setState({ profile: profil({ roles: ['SUPERADMIN'] }) })
+
+    // 'USER' finns inte i roles → setActiveRole ska vägra och inte skriva alls.
+    useAuthStore.getState().setActiveRole('USER')
+    expect(update).not.toHaveBeenCalled()
+  })
+})

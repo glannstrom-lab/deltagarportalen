@@ -697,18 +697,41 @@ function SearchTab() {
                       </button>
                     </span>
                   )}
-                  {filters.publishedWithin !== 'all' && (
+                  {filters.publishedWithin !== 'all' && (() => {
+                    /**
+                     * Etiketten räknas ut EN gång och används både synligt och i
+                     * aria-label.
+                     *
+                     * Tidigare byggde aria-labeln sin egen nyckel av råvärdet:
+                     * `t('jobSearch.' + filters.publishedWithin)`. Bara
+                     * `jobSearch.today` finns — för 'week' och 'month' fanns
+                     * ingen nyckel, och i18next returnerar då själva nyckeln.
+                     * En skärmläsare läste alltså upp "Ta bort filter:
+                     * jobSearch.week". Den synliga texten var hela tiden rätt,
+                     * så felet syntes bara för den som inte kunde se det.
+                     *
+                     * `|| 'Ta bort datumfilter'` som stod här föll aldrig
+                     * tillbaka: t() returnerar nyckelsträngen, som är sann.
+                     */
+                    const datumEtikett =
+                      filters.publishedWithin === 'today'
+                        ? t('jobSearch.today')
+                        : filters.publishedWithin === 'week'
+                          ? t('jobSearch.lastWeek')
+                          : t('jobSearch.lastMonth')
+                    return (
                     <span className="inline-flex items-center gap-1 px-3 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm min-h-[44px]">
-                      📅 {filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth')}
+                      📅 {datumEtikett}
                       <button
                         onClick={() => setFilters({ ...filters, publishedWithin: 'all' })}
-                        aria-label={t('jobSearch.removeFilter', { filter: t('jobSearch.' + filters.publishedWithin) }) || `Ta bort datumfilter`}
+                        aria-label={t('jobSearch.removeFilter', { filter: datumEtikett })}
                         className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
-                  )}
+                    )
+                  })()}
                 </div>
                 <button
                   onClick={() => setFilters(defaultFilters)}

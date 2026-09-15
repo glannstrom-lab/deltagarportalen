@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { showToast } from '@/components/Toast'
 import { useTranslation } from 'react-i18next'
 import {
   ArrowLeft,
@@ -281,10 +282,16 @@ function ExercisesInner() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       setIsCompleted(true)
-      
-      // Mark as completed in cloud
+
+      // Markera som klar i molnet.
+      //
+      // Felet kontrollerades inte tidigare, och setIsCompleted(true) körs före
+      // skrivningen: deltagaren fick en bekräftelse på något som kanske aldrig
+      // sparades, och vid nästa inloggning var övningen ogjord. Hon har gjort
+      // övningen — det tas inte ifrån henne — men hon ska få veta att den inte
+      // kom fram, i stället för att upptäcka det själv senare.
       if (user) {
-        await supabase
+        const { error } = await supabase
           .from('exercise_answers')
           .upsert({
             user_id: user.id,
@@ -295,6 +302,14 @@ function ExercisesInner() {
           }, {
             onConflict: 'user_id,exercise_id'
           })
+
+        if (error) {
+          console.error('Kunde inte spara övningen:', error)
+          showToast.warning(
+            'Övningen sparades inte',
+            'Du är klar med den, men vi kunde inte spara det just nu. Prova igen när du har uppkoppling.'
+          )
+        }
       }
     }
   }

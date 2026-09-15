@@ -110,7 +110,10 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
       const saveSessionMemory = async () => {
         try {
-          await supabase
+          // supabase-js KASTAR inte vid databasfel — det returnerar
+          // { data, error }. Catch-blocket nedan fångar bara nätverksavbrott,
+          // så ett RLS- eller kolumnfel passerade tidigare helt osynligt.
+          const { error } = await supabase
             .from('ai_team_sessions')
             .upsert({
               user_id: user.id,
@@ -120,6 +123,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             }, {
               onConflict: 'user_id,agent_id'
             })
+          if (error) console.error('Kunde inte spara sessionsminnet:', error)
         } catch (err) {
           console.error('Failed to save session:', err)
         }
