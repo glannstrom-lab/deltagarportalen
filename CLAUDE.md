@@ -129,10 +129,30 @@ När Mikael säger **"commit"**, **"push"** eller **"deploy"** gäller det här.
 - **Workflowen är den enda deployvägen.** Vercels git-koppling är avstängd för `main`
   (`"git": { "deploymentEnabled": { "main": false } }` i `client/vercel.json`, 2026-09-12).
   Fram till dess byggde Vercel varje push en gång till parallellt med workflowen: 197
-  deployer på 30 dagar, hälften dubbletter, och `cv-pdf.js` bär 66 MB Chromium i varje —
+  deployer på 30 dagar, hälften dubbletter, och `cv-pdf.js` bar 66 MB Chromium i varje —
   Functions Storage stod på 14 GB mot Hobby-gränsen 10 GB. Gallringspolicyn är satt till
   1 vecka prod / 1 dag övrigt (via `PATCH /v1/projects/{id}/deployment-expiration`, inte
   via projekt-PATCH:en). Ser du två deployer per commit i `npx vercel ls` är kopplingen på igen.
+
+> **Functions Storage — vad siffran faktiskt är, mätt 2026-09-17.** Den sjunker **inte**
+> när du raderar deployer. Vercel mäter i GB-månader: *"records the maximum stored amount
+> for each project on each billing day. It adds those daily project amounts across the
+> billing period"* (`docs/deployment-storage`). Mätaren är alltså kumulativ inom perioden
+> och kan bara växa; den nollas vid periodbytet (Hobby = kontots skapandedag, den 6:e).
+> Att den stod kvar på 14 GB fem dagar efter gallringen var alltså väntat, inte ett tecken
+> på att åtgärden inte tagit. Det som ska kontrolleras är **dagskurvan**, inte totalen.
+>
+> Två saker gick inte att mäta härifrån: `/v1/usage` svarar `plan_upgrade_required` på
+> Hobby, och `npx vercel usage` ger `Costs not found (404)`. Dagskurvan finns bara i
+> instrumentpanelen.
+>
+> **Chromium ligger inte längre i bundlen (2026-09-17).** `@sparticuz/chromium` är utbytt
+> mot `@sparticuz/chromium-min`, och binären hämtas vid kallstart från `CHROMIUM_PACK_URL`
+> (en tar i Vercel Blob, fra1 — samma region som funktionen). Per deploy: 120 → 54 MB,
+> varav `cv-pdf.func` 90 → 24 MB. Grinden
+> `src/test/api-chromium-utanfor-bundlen.test.ts` fäller om paketet med binären kommer
+> tillbaka. **Byter du version av paketet måste du lägga upp en ny tar och peka om
+> variabeln** — paket och binär versioneras ihop.
 
 **Proceduren:**
 

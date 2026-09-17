@@ -17,11 +17,14 @@
  *   7. Returnerar PDF-bytes till klienten
  *
  * Lokal dev: använder lokal Chrome (PUPPETEER_EXECUTABLE_PATH eller
- * automatisk detektion). Produktion (Vercel): använder @sparticuz/chromium
- * — en optimerad Chromium-binär som ryms i Vercel:s 50MB-funktionslimit
- * (compressed) / 250MB (uncompressed).
+ * automatisk detektion). Produktion (Vercel): använder
+ * @sparticuz/chromium-min plus en Chromium-binär som hämtas från
+ * CHROMIUM_PACK_URL vid kallstart — se `getChromium()` nedan för varför.
  */
 
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { medFelrapport } = require('./_utils/sentry.js');
 const { rateLimitFallback } = require('./_utils/rate-limit-fallback');
@@ -95,17 +98,51 @@ async function checkRateLimit(supabase, userId) {
   }
 }
 
-// Lazy-importera @sparticuz/chromium endast i prod — den drar in en stor
-// binär som inte behövs lokalt (där dev har riktig Chrome installerad).
+// Dit paketet packar upp Chromium-paketet. Namnet är bibliotekets, inte vårt:
+// `downloadAndExtract()` skriver alltid till `<tmpdir>/chromium-pack`.
+const CHROMIUM_PACK_DIR = path.join(os.tmpdir(), 'chromium-pack');
+
+// Binären ligger INTE i funktionsbundlen. RÖR INTE utan att läsa det här.
+//
+// `@sparticuz/chromium` bär `bin/chromium.br` — 64 MB — och den följde med i
+// VARJE deploy. Uppmätt 2026-09-17: cv-pdf-bundlen var 90 MB av ~120 MB per
+// deploy, och Functions Storage (en GB-månadsmätare som summerar varje
+// faktureringsdygns maxvärde, se docs/deployment-storage) låg över Hobby-taket.
+// Paketet är därför utbytt mot `@sparticuz/chromium-min` (52 kB, samma kod
+// utan binär), och binären hämtas från CHROMIUM_PACK_URL — en tar i Vercel
+// Blob med exakt samma fyra .br-filer som 148.0.0 levererade.
+//
+// Byter du version av @sparticuz/chromium-min MÅSTE du lägga upp en ny tar
+// och peka om CHROMIUM_PACK_URL. Paket och binär versioneras ihop.
+//
+// Mätt 2026-09-17 genom bibliotekets egen kodväg mot blobben: kallstart 3,4 s
+// (varav 2,6 s nedladdning över en vanlig hemuppkoppling — funktionen ligger i
+// fra1, samma region som blobben), varm start 0,00 s. /tmp-förbrukningen går
+// från ~190 MB till ~256 MB, eftersom paketet nu ligger kvar där bredvid den
+// uppackade binären. Taket är 512 MB.
 async function getChromium() {
   if (process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME) {
-    const chromium = (await import('@sparticuz/chromium')).default;
+    const chromium = (await import('@sparticuz/chromium-min')).default;
+    // `executablePath(url)` laddar ner OVILLKORLIGT vid varje anrop —
+    // biblioteket har ingen nedladdningscache (build/cjs/index.cjs,
+    // `downloadAndExtract`). Cachen som README:n beskriver sitter en nivå
+    // senare, i `inflate()`, och nås bara om man skickar in en katalog.
+    // Vid varm start finns paketet redan i /tmp; peka då på katalogen, så
+    // hoppas 66 MB nedladdning över och den redan uppackade binären används.
+    const redanHamtad = fs.existsSync(path.join(CHROMIUM_PACK_DIR, 'chromium.br'));
+    const kalla = redanHamtad ? CHROMIUM_PACK_DIR : process.env.CHROMIUM_PACK_URL;
+    if (!kalla) {
+      throw new Error(
+        'CHROMIUM_PACK_URL saknas. @sparticuz/chromium-min bär ingen binär, ' +
+        'så PDF-rendering kan inte starta utan den.'
+      );
+    }
     return {
       args: chromium.args,
-      executablePath: await chromium.executablePath(),
+      executablePath: await chromium.executablePath(kalla),
       // DR5 (2026-08-17): raden löd tidigare `headless: chromium.headless`.
-      // Den egenskapen finns inte i @sparticuz/chromium 148 — uppmätt:
-      // `import('@sparticuz/chromium')).default.headless` → `undefined`.
+      // Egenskapen `headless` finns inte i paketets 148-API — uppmätt: att
+      // läsa den på default-exporten ger `undefined`.
       // Puppeteer tolkade alltså "ej angivet" och körde headless ändå, så
       // inget var trasigt; men raden läste som konfiguration utan att vara
       // det. Hittad av typkontrollen första gången den kördes mot api/.
@@ -131,7 +168,6 @@ function detectLocalChrome() {
     darwin: ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'],
     linux: ['/usr/bin/google-chrome', '/usr/bin/chromium-browser', '/usr/bin/chromium'],
   };
-  const fs = require('fs');
   const candidates = paths[process.platform] || [];
   for (const p of candidates) {
     if (fs.existsSync(p)) return p;
