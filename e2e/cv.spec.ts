@@ -20,11 +20,23 @@ test.describe('CV-byggaren', () => {
     // Första besöket i en ny webbläsare visar guiden "Välkommen till CV-byggaren!"
     // (7 steg, modal). Den ligger över knappraden och har en egen "Nästa"-knapp,
     // så den stängs här — guiden är en riktig funktion, inte brus.
+    //
+    // 2026-09-17: det här steget hade aldrig gjort någonting. `CVOnboarding`
+    // startar `isVisible = false` och visas först när cookiebannern är besvarad
+    // och `onboardingCoordinator` släppt fram den — alltså EFTER
+    // `waitForAppReady`. Den gamla `isVisible({ timeout: 2000 })` hann före,
+    // föll tyst tillbaka på `false`, och guiden låg sedan kvar över sidan. Dess
+    // "Nästa" gjorde stegtestet nedan till ett strict mode-fel med två träffar.
+    //
+    // `toBeHidden()` ligger UTANFÖR if-satsen med flit: den är grinden. Slutar
+    // guiden visas säger testet det rakt ut, i stället för att felet dyker upp
+    // som en obegriplig dubbelträff i ett annat test.
     const guide = page.getByRole('dialog', { name: /välkommen till cv-byggaren/i })
-    if (await guide.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await guide.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {})
+    if (await guide.isVisible().catch(() => false)) {
       await guide.getByRole('button', { name: /stäng guiden/i }).click()
-      await expect(guide).toBeHidden()
     }
+    await expect(guide).toBeHidden()
   })
 
   test('sidan har rubrik och verktygslänkarna i sidoskenan', async ({ page }) => {
