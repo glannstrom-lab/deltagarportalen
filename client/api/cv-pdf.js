@@ -112,8 +112,19 @@ const CHROMIUM_PACK_DIR = path.join(os.tmpdir(), 'chromium-pack');
 // utan binär), och binären hämtas från CHROMIUM_PACK_URL — en tar i Vercel
 // Blob med exakt samma fyra .br-filer som 148.0.0 levererade.
 //
+// TARREN SKA VARA DEN OFFICIELLA från Sparticuz-releasen
+// (`chromium-v<version>-pack.x64.tar`), inte en egenbyggd. Första försöket
+// packade `node_modules/@sparticuz/chromium/bin/` med `tar-fs` på Windows.
+// Innehållet blev bit för bit rätt — men Windows har ingen exekveringsbit, så
+// `fs.stat` gav 0666 även för katalogen, och tar-fs skrev in det troget. På
+// Linux går en katalog utan x-bit inte att traversera: prod svarade
+// `EACCES: permission denied, open '/tmp/chromium-pack/al2023.tar.br'`.
+// Den officiella tarren har 0644 på filerna och ingen katalogpost alls.
+//
 // Byter du version av @sparticuz/chromium-min MÅSTE du lägga upp en ny tar
-// och peka om CHROMIUM_PACK_URL. Paket och binär versioneras ihop.
+// och peka om CHROMIUM_PACK_URL. Paket och binär versioneras ihop. Lägg den
+// på en NY sökväg i blobben — den gamla ligger med `max-age=31536000` och
+// serveras ur CDN-cachen även om du skriver över den.
 //
 // Mätt 2026-09-17 genom bibliotekets egen kodväg mot blobben: kallstart 3,4 s
 // (varav 2,6 s nedladdning över en vanlig hemuppkoppling — funktionen ligger i

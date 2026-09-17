@@ -18,11 +18,24 @@ const path = require('path')
 const ROOT = path.join(__dirname, '..')
 const BAS = process.env.BASE_URL || 'https://www.jobin.se'
 
+/**
+ * Läser `.env.test.local`, men låter riktiga miljövariabler gå före.
+ *
+ * 2026-09-17: `TEST_USER_EMAIL` pekade om till `km-deltagare@jobin.test`, som
+ * inte har något CV. Testet svarade då 500 "Inget CV hittades" och nådde
+ * aldrig Chromium — alltså det enda det finns för att pröva. Överstyrningen
+ * gör att man kan peka på ett konto som har ett CV utan att röra filen:
+ *
+ *   TEST_USER_EMAIL=… TEST_USER_PASSWORD=… node e2e/cv-pdf-prod-rok.cjs
+ */
 function laddaEnv() {
   const env = {}
   for (const rad of fs.readFileSync(path.join(ROOT, '.env.test.local'), 'utf-8').split(/\r?\n/)) {
     const m = rad.match(/^([A-Z_][A-Z0-9_]*)=(.*)$/)
     if (m) env[m[1]] = m[2].trim()
+  }
+  for (const nyckel of ['TEST_USER_EMAIL', 'TEST_USER_PASSWORD']) {
+    if (process.env[nyckel]) env[nyckel] = process.env[nyckel]
   }
   return env
 }
@@ -108,6 +121,17 @@ function laddaEnv() {
   }
 
   const a = await anrop({ template: 'sidebar' }, 'nuvarande CV')
+  // Ett konto utan CV ser ut som vilket fel som helst i utskriften, men
+  // betyder något helt annat: testet nådde aldrig Chromium och har alltså
+  // inte prövat det enda det finns för. Säg det rakt ut.
+  if (typeof a.text === 'string' && a.text.includes('Inget CV hittades')) {
+    console.error('')
+    console.error('TESTET PRÖVADE INGENTING. Kontot har inget CV, så anropet')
+    console.error('föll långt före Chromium. Peka på ett konto som har ett:')
+    console.error('  TEST_USER_EMAIL=… TEST_USER_PASSWORD=… node e2e/cv-pdf-prod-rok.cjs')
+    await browser.close()
+    process.exit(2)
+  }
   const ok1 = a.status === 200 && a.huvud === '%PDF-' && a.bytes > 10000
 
   let ok2 = true
