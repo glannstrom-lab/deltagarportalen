@@ -44,6 +44,7 @@ import {
   sanitizeForTemplate,
 } from './templates'
 import type { TemplateCVData } from './templates'
+import { normaliseraMallId } from '@/data/cvMallar'
 
 interface PrintLayoutProps {
   data: CVData
@@ -95,7 +96,7 @@ function buildBgImage(cfg: NonNullable<SidebarConfig>): string {
 }
 
 function renderTemplate(data: TemplateCVData, fullName: string) {
-  switch (data.template) {
+  switch (normaliseraMallId(data.template)) {
     case 'minimal': return <MinimalTemplate data={data} fullName={fullName} />
     case 'executive': return <ExecutiveTemplate data={data} fullName={fullName} />
     case 'creative': return <CreativeTemplate data={data} fullName={fullName} />
@@ -115,7 +116,17 @@ function renderTemplate(data: TemplateCVData, fullName: string) {
 export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
   const data = sanitizeForTemplate(rawData)
   const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'CV'
-  const cfg = SIDEBAR_CONFIG[data.template || 'sidebar']
+  // Normalisera FÖRST. Registret nedan skiljer med flit på `null` ("känd mall,
+  // ingen sidopanel" — centered, minimal) och en konfiguration. Ett okänt id gav
+  // `undefined`, som koden behandlade som `null` — fast `renderTemplate` samtidigt
+  // föll tillbaka på ModernTemplate, som HAR en sidopanel. Resultatet blev en
+  // panel utan bakgrundsfält: den slutade där innehållet tog slut i stället för
+  // att gå ned till papperskanten, och på flersidiga CV:n saknade sida 2 och
+  // framåt panel helt. Verifierat i prod 2026-09-18 — `template=sidebar` gav
+  // `html{background:linear-gradient(...)}`, `template=modern` gav `none`.
+  // Efter normaliseringen kan uppslaget aldrig ge `undefined`.
+  const mall = normaliseraMallId(data.template)
+  const cfg = SIDEBAR_CONFIG[mall]
   const hasSidebar = cfg !== null && cfg !== undefined
   const bgImage = hasSidebar && cfg ? buildBgImage(cfg) : 'none'
 

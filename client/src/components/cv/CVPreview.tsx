@@ -13,6 +13,7 @@
 import { useLayoutEffect } from 'react'
 import { Sparkles } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
+import { normaliseraMallId } from '@/data/cvMallar'
 import {
   MinimalTemplate,
   ExecutiveTemplate,
@@ -143,7 +144,7 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
 
   // Route to correct template
   let template: React.ReactElement
-  switch (data.template) {
+  switch (normaliseraMallId(data.template)) {
     case 'minimal':
       template = <MinimalTemplate data={data} fullName={fullName} />
       break
@@ -314,10 +315,13 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           template här så template-koden själv inte behöver synka mot
           print-CSS. För mallar utan sidobar har det ingen effekt. */}
       <div
-        data-template-wrapper={data.template || 'sidebar'}
+        data-template-wrapper={normaliseraMallId(data.template)}
         style={{
           display: 'contents',
-          ['--sidebar-width' as string]: SIDEBAR_WIDTHS[data.template || 'sidebar'] || '280px',
+          // Normaliserat id: ett okänt id gav tidigare `undefined` här och föll
+          // på 280px, medan ModernTemplate ritar 240px — preview och print
+          // divergerade. Efter normaliseringen finns nyckeln alltid.
+          ['--sidebar-width' as string]: SIDEBAR_WIDTHS[normaliseraMallId(data.template)] || '280px',
         } as React.CSSProperties}
       >
         {template}

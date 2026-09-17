@@ -40,6 +40,7 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { CVFileUploadModal } from './CVFileUploadModal'
 import { CVJobMatchPanel } from './CVJobMatchPanel'
 import { cvFilerApi, type UppladdatCv } from '@/services/cvApi'
+import { normaliseraMallId } from '@/data/cvMallar'
 
 interface CVVersion {
   id: string
@@ -279,7 +280,12 @@ export function MyCVs() {
   }
 
   const filteredCVs = cvs
-    .filter(cv => selectedTemplate === 'all' || cv.data?.template === selectedTemplate)
+    // Jämför på normaliserat id. Ett CV med ett arvt id ('modern', 'sidokolumn')
+    // matchade tidigare inget filter alls utom "alla" och såg ut att ha försvunnit.
+    // De sex mallarna utan egen filterknapp (budapest, rotterdam, chicago,
+    // atelier, manhattan, berlin) syns fortfarande bara under "alla" — en egen,
+    // mindre lucka som kräver sex nya i18n-nycklar i båda språkfilerna.
+    .filter(cv => selectedTemplate === 'all' || normaliseraMallId(cv.data?.template) === selectedTemplate)
     .filter(cv =>
       searchQuery === '' ||
       cv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||

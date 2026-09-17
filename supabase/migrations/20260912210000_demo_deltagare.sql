@@ -114,7 +114,7 @@ BEGIN
     work_experience, education, skills, languages, certificates, links, "references")
   VALUES
    (v_p1, 'Anna', 'Exempel', 'Lagermedarbetare', 'anna.exempel@example.com', 'Demostad',
-    'Noggrann och van vid truck och plocksystem. Söker heltid inom lager och logistik.', 'sidokolumn', 72,
+    'Noggrann och van vid truck och plocksystem. Söker heltid inom lager och logistik.', 'sidebar', 72,
     '[{"id":"e1","title":"Lagermedarbetare","company":"Fiktiva Logistik AB","startDate":"2022-03","endDate":"2025-06","description":"Plock, pack och truckkörning."}]',
     '[{"id":"u1","school":"Demostads gymnasium","degree":"Fordonsprogrammet","startDate":"2016","endDate":"2019"}]',
     '[{"id":"s1","name":"Truckkort A+B","level":"expert","category":"technical"},{"id":"s2","name":"Plocksystem","level":"advanced","category":"technical"}]',

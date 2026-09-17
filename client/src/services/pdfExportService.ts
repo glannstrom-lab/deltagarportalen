@@ -11,6 +11,7 @@ import { skillNamn } from '@/utils/skillText'
 import { parseArticleMarkdown, parseInline } from '@/components/knowledge-base/articleMarkdown'
 import type jsPDF from 'jspdf'
 import i18n from '@/i18n/config'
+import { normaliseraMallId } from '@/data/cvMallar'
 
 /**
  * Rubrik i ett genererat dokument, på användarens språk.
@@ -158,35 +159,6 @@ const TEMPLATES: Record<string, TemplateConfig> = {
     },
     features: { roundedPhoto: true, skillTags: true },
   },
-  // Legacy Swedish IDs for backwards compatibility
-  sidokolumn: {
-    layout: 'sidebar',
-    fonts: { heading: 'helvetica', body: 'helvetica' },
-    colors: {
-      sidebar: [15, 23, 42],
-      sidebarText: [248, 250, 252],
-      accent: [59, 130, 246],
-      accentLight: [219, 234, 254],
-      text: [30, 41, 59],
-      muted: [100, 116, 139],
-      border: [226, 232, 240],
-    },
-    features: { roundedPhoto: true, skillTags: true },
-  },
-  nordisk: {
-    layout: 'sidebar',
-    fonts: { heading: 'helvetica', body: 'helvetica' },
-    colors: {
-      sidebar: [240, 249, 255],
-      sidebarText: [12, 74, 110],
-      accent: [2, 132, 199],
-      accentLight: [224, 242, 254],
-      text: [12, 74, 110],
-      muted: [3, 105, 161],
-      border: [186, 230, 253],
-    },
-    features: { roundedPhoto: true, skillTags: true },
-  },
 }
 
 // Helper för att hantera svenska tecken i PDF
@@ -303,9 +275,18 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
   // Ladda PDF-bibliotek dynamiskt (första gången)
   const jsPDFClass = await loadPDFLibraries()
 
-  const template = TEMPLATES[data.template] || TEMPLATES.sidebar
-  const isNordic = data.template === 'nordic' || data.template === 'nordisk'
-  const isExecutive = data.template === 'executive'
+  // Profilexportens mallpalett har SEX visuella varianter, inte tolv. Fram till
+  // 2026-09-18 slog den upp `data.template` rått: de sex mallar som saknas här
+  // (budapest, rotterdam, chicago, atelier, manhattan, berlin) föll tyst på
+  // `sidebar`, och samma sak hände för arvda id som `modern`. Uppslaget går nu
+  // via `normaliseraMallId`, så arvda id landar på RÄTT variant i stället för
+  // på fallbacken. De sex som saknar egen variant faller fortfarande på
+  // `sidebar` — medvetet, och vaktat av `cvMallar.test.ts`: att rita sex nya
+  // jsPDF-varianter är ett designarbete, inte en bugglagning.
+  const mallId = normaliseraMallId(data.template)
+  const template = TEMPLATES[mallId] || TEMPLATES.sidebar
+  const isNordic = mallId === 'nordic'
+  const isExecutive = mallId === 'executive'
 
   const doc = new jsPDFClass({
     unit: 'mm',
@@ -541,7 +522,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
 
   // ==================== TOP LAYOUT ====================
   else if (template.layout === 'top') {
-    const isGradient = data.template === 'centered'
+    const isGradient = mallId === 'centered'
     
     // Header bakgrund
     if (isGradient) {

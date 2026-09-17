@@ -20,7 +20,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { MALLFORMER, spaltformFor } from './cvMallar'
+import { MALLFORMER, spaltformFor, normaliseraMallId, arKantMallId, STANDARDMALL } from './cvMallar'
 
 function las(relativ: string): string {
   return readFileSync(resolve(__dirname, '..', relativ), 'utf-8')
@@ -38,7 +38,9 @@ function idnIByggaren(): string[] {
 
 /** `case '<id>':` ur CVPreviews switch. */
 function idnIPreview(): string[] {
-  const start = cvPreview.indexOf('switch (data.template)')
+  // Mönstret följde `switch (data.template)`. Sedan 2026-09-18 normaliseras
+  // id:t i uttrycket, och vakten hittade då noll grenar — den slutade mäta.
+  const start = cvPreview.indexOf('switch (normaliseraMallId(data.template))')
   const block = cvPreview.slice(start, start + 2500)
   return [...block.matchAll(/case '([a-z-]+)':/g)].map((m) => m[1])
 }
@@ -104,5 +106,103 @@ describe('spaltformFor', () => {
     expect(spaltformFor('')).toBeNull()
     expect(spaltformFor(null)).toBeNull()
     expect(spaltformFor(undefined)).toBeNull()
+  })
+})
+
+/**
+ * Mall-id:na hade glidit isär på SEX ställen (mätt 2026-09-18).
+ *
+ * Testet ovan vaktade `CVBuilder` och `CVPreview`. Under tiden bar
+ * `CVPrintLayout`, `pdfExportService`, `TemplateSnapshot` och `MyCVs` var sin
+ * egen lista — och tre generationer av id hade hunnit skrivas till
+ * `cvs.template` i prod. Följden i drift: 7 av 33 CV:n renderades av
+ * default-grenen (ModernTemplate, som har en sidopanel) medan panelens
+ * bakgrund aldrig målades, eftersom uppslaget gav `undefined`.
+ *
+ * Grinden nedan kräver att varje lista täcker registret. En ny mall som läggs
+ * till på ett ställe men inte de andra fäller bygget.
+ */
+describe('mall-id:na är samma lista överallt', () => {
+  const kanoniska = MALLFORMER.map((m) => m.id)
+  const printLayout = las('components/cv/CVPrintLayout.tsx')
+  const pdfExport = las('services/pdfExportService.ts')
+  const snapshot = las('pages/TemplateSnapshot.tsx')
+  const myCvs = las('components/cv/MyCVs.tsx')
+
+  it('CVPrintLayout kan rendera varje mall', () => {
+    const start = printLayout.indexOf('function renderTemplate')
+    const grenar = [...printLayout.slice(start, start + 2000).matchAll(/case '([a-z-]+)':/g)].map((m) => m[1])
+    expect([...grenar].sort()).toEqual([...kanoniska].sort())
+  })
+
+  it('CVPrintLayout slår upp på normaliserat id, inte på det råa', () => {
+    // Det var precis det här uppslaget som gav `undefined` och släckte
+    // sidopanelens bakgrund för 7 av 33 CV:n i prod.
+    expect(printLayout).toContain('const mall = normaliseraMallId(data.template)')
+    expect(printLayout).toContain('SIDEBAR_CONFIG[mall]')
+    expect(printLayout).not.toContain("SIDEBAR_CONFIG[data.template")
+  })
+
+  it('SIDEBAR_CONFIG har en post för varje mall — annars blir uppslaget undefined', () => {
+    const start = printLayout.indexOf('const SIDEBAR_CONFIG')
+    const block = printLayout.slice(start, printLayout.indexOf('\n}', start))
+    const nycklar = [...block.matchAll(/^\s{2}([a-z-]+):\s/gm)].map((m) => m[1])
+    expect([...nycklar].sort()).toEqual([...kanoniska].sort())
+  })
+
+  it('TemplateSnapshot härleder sin lista ur registret i stället för att skriva av den', () => {
+    // Den handskrivna `VALID` saknade `berlin`. Listan ska inte finnas alls.
+    expect(snapshot).not.toContain('const VALID =')
+    expect(snapshot).toContain('arKantMallId(templateId)')
+  })
+
+  it('MyCVs filtrerar på normaliserat id', () => {
+    expect(myCvs).toContain('normaliseraMallId(cv.data?.template) === selectedTemplate')
+  })
+
+  it('pdfExportService slår upp normaliserat id, och dess varianter är kanoniska', () => {
+    expect(pdfExport).toContain('const mallId = normaliseraMallId(data.template)')
+    expect(pdfExport).toContain('TEMPLATES[mallId]')
+    // Varje nyckel i TEMPLATES ska vara ett kanoniskt id. De gamla svenska
+    // (`sidokolumn`, `nordisk`) hör hemma i ARVDA_MALL_ID, inte här.
+    const start = pdfExport.indexOf('const TEMPLATES')
+    const block = pdfExport.slice(start, pdfExport.indexOf('\n}\n', start))
+    const nycklar = [...block.matchAll(/^\s{2}([a-z-]+):\s*\{/gm)].map((m) => m[1])
+    const okanda = nycklar.filter((n) => !kanoniska.includes(n))
+    expect(okanda, `${okanda.join(', ')} är inte kanoniska mall-id`).toEqual([])
+  })
+})
+
+describe('normaliseraMallId', () => {
+  it('lämnar kanoniska id orörda', () => {
+    for (const id of MALLFORMER.map((m) => m.id)) {
+      expect(normaliseraMallId(id)).toBe(id)
+    }
+  })
+
+  it('översätter de arvda id som finns i prod', () => {
+    expect(normaliseraMallId('modern')).toBe('sidebar')
+    expect(normaliseraMallId('sidokolumn')).toBe('sidebar')
+    expect(normaliseraMallId('centrerad')).toBe('centered')
+    expect(normaliseraMallId('classic')).toBe('centered')
+    expect(normaliseraMallId('nordisk')).toBe('nordic')
+  })
+
+  it('faller på standardmallen för tomt och okänt', () => {
+    expect(normaliseraMallId(null)).toBe(STANDARDMALL)
+    expect(normaliseraMallId(undefined)).toBe(STANDARDMALL)
+    expect(normaliseraMallId('')).toBe(STANDARDMALL)
+    expect(normaliseraMallId('finns-inte')).toBe(STANDARDMALL)
+  })
+
+  it('ger alltid ett id registret känner igen', () => {
+    for (const id of ['modern', 'classic', 'centrerad', 'sidokolumn', 'nordisk', 'skräp', '', null]) {
+      expect(arKantMallId(normaliseraMallId(id)), `${id}`).toBe(true)
+    }
+  })
+
+  it('CV-byggaren startar på standardmallen, inte på ett id som inte finns', () => {
+    expect(cvBuilder).toContain('template: STANDARDMALL')
+    expect(cvBuilder).not.toContain("template: 'modern'")
   })
 })

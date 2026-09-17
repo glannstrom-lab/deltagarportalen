@@ -10,6 +10,7 @@
 import { useParams } from 'react-router-dom'
 import { CVPreview } from '@/components/cv/CVPreview'
 import type { CVData } from '@/services/supabaseApi'
+import { arKantMallId, STANDARDMALL } from '@/data/cvMallar'
 
 const SAMPLE: CVData = {
   firstName: 'Anna',
@@ -100,11 +101,14 @@ const SAMPLE: CVData = {
   profileImage: null,
 }
 
-const VALID = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago', 'atelier', 'manhattan'] as const
+// Listan härleds ur registret i stället för att skrivas av. Den handskrivna
+// versionen saknade `berlin`, så /template-snapshot/berlin renderade sidebar
+// — vilket är varför berlin är den enda mallen med .svg och inte .png i
+// public/templates/: thumbnailen kan aldrig ha genererats härifrån.
 
 export default function TemplateSnapshot() {
   const { templateId } = useParams<{ templateId: string }>()
-  const tpl = (VALID as readonly string[]).includes(templateId || '') ? templateId! : 'sidebar'
+  const tpl = arKantMallId(templateId) ? templateId! : STANDARDMALL
 
   return (
     <div style={{ background: '#FFFFFF', minHeight: '100vh' }}>

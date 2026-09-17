@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T22:55:53.735Z",
+  "generatedAt": "2026-09-17T22:17:03.386Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [

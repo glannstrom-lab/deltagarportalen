@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils'
 // kontextuellt råd inne i formuläret — inte en ring i hörnet.
 import RadgivarPanel, { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
-import { spaltformFor, spaltformNyckel } from '@/data/cvMallar'
+import { spaltformFor, spaltformNyckel, STANDARDMALL } from '@/data/cvMallar'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
@@ -371,7 +371,12 @@ export default function CVBuilder() {
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
     summary: '', skills: [], workExperience: [], education: [],
     languages: [], certificates: [], links: [], references: [],
-    template: 'modern', colorScheme: 'indigo', font: 'inter', profileImage: null,
+    // STANDARDMALL, inte 'modern'. Raden sa 'modern' — ett id som inte finns
+    // bland de tolv i `data/cvMallar.ts`. Eftersom byggaren auto-sparar
+    // persisterades det till `cvs.template` så fort användaren rörde något
+    // innan hen valt mall, och renderingen föll då på default-grenen utan
+    // sidopanelsbakgrund. Fyra CV:n i prod bar det 2026-09-18.
+    template: STANDARDMALL, colorScheme: 'indigo', font: 'inter', profileImage: null,
   })
   
   const { upload: uploadImage, isUploading: isImageUploading } = useVercelImageUpload()

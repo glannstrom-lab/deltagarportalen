@@ -65,6 +65,69 @@ export const MALLFORMER: readonly Mallform[] = [
 
 const EFTER_ID = new Map(MALLFORMER.map((m) => [m.id, m]))
 
+/** Det id som används när inget annat är valt — och när ett id inte går att tyda. */
+export const STANDARDMALL = 'sidebar'
+
+/**
+ * Mall-id som finns i `cvs.template` i prod men inte i `MALLFORMER`.
+ *
+ * Tre generationer har skrivit till den kolumnen. Mätt 2026-09-18 bar 7 av
+ * 33 CV:n ett id som mallregistret inte känner igen:
+ *
+ * | id           | antal | varifrån |
+ * |--------------|-------|----------|
+ * | `modern`     | 4     | kolumnens DEFAULT och `CVBuilder`s starttillstånd |
+ * | `centrerad`  | 1     | svenskt visningsnamn sparat som id |
+ * | `sidokolumn` | 1     | svenskt visningsnamn sparat som id |
+ * | `classic`    | 1     | den gamla väljaren (`CVTemplateSelector`, numera dödkod) |
+ *
+ * `modern` och `sidokolumn` pekar båda på dagens `sidebar` — komponenten bakom
+ * `sidebar` heter fortfarande `ModernTemplate`, och `Sidokolumn` är dess
+ * svenska namn i väljaren. `centrerad` är `centered`. `classic` hette
+ * "Klassisk" i den gamla väljaren; närmast idag är `centered`, som beskrivs
+ * som "Klassisk navy-header … Tidlös". Den sista är ett omdöme, inte en
+ * mätning — de tre andra är entydiga.
+ */
+const ARVDA_MALL_ID: Readonly<Record<string, string>> = {
+  modern: 'sidebar',
+  sidokolumn: 'sidebar',
+  centrerad: 'centered',
+  classic: 'centered',
+  // Finns inte i prod, men `pdfExportService` bar en egen `nordisk`-nyckel.
+  // Utan raden hade normaliseringen skickat den till `sidebar` och tagit bort
+  // ett stöd som faktiskt fanns.
+  nordisk: 'nordic',
+}
+
+/**
+ * Kanoniskt mall-id. Arvda id översätts, okända faller på `STANDARDMALL`.
+ *
+ * VARFÖR DEN FINNS. `CVPrintLayout` slog upp `SIDEBAR_CONFIG[template]` direkt.
+ * Registret har `centered: null` och `minimal: null` med betydelsen "känd mall,
+ * ingen sidopanel" — men ett OKÄNT id ger `undefined`, och koden behandlade de
+ * två lika. Följden: mallen renderades av `default`-grenen, alltså
+ * `ModernTemplate` som HAR en sidopanel, medan panelens bakgrund aldrig målades.
+ *
+ * Verifierat i prod 2026-09-18 på print-vägen: med `sidebar` sätts
+ * `html { background: linear-gradient(...) }`, med `modern` blir den `none`.
+ * Panelen slutar då där `<aside>`-innehållet tar slut i stället för att gå ned
+ * till papperskanten, och på ett flersidigt CV saknar sida 2 och framåt panel
+ * helt. Det är samma kant-till-kant-mekanik som lärdomen 2026-07-03 beskriver.
+ *
+ * Normalisera vid varje gräns där ett id kommer utifrån — databasen, en URL
+ * eller en sparad version — så kan `undefined` aldrig uppstå längre in.
+ */
+export function normaliseraMallId(id: string | null | undefined): string {
+  if (!id) return STANDARDMALL
+  if (EFTER_ID.has(id)) return id
+  return ARVDA_MALL_ID[id] ?? STANDARDMALL
+}
+
+/** Är id:t ett av de tolv som registret känner till? */
+export function arKantMallId(id: string | null | undefined): boolean {
+  return !!id && EFTER_ID.has(id)
+}
+
 /** Spaltform för ett mall-id. Okänt id ger `null` — aldrig en gissning. */
 export function spaltformFor(id: string | null | undefined): Spaltform | null {
   if (!id) return null
