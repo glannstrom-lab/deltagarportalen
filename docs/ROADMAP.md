@@ -82,7 +82,21 @@ och är inte med.
   kräv mejlkontakt för lösenordet i stället för att publicera det öppet. `client/content
   /b2b.json:120-129`, `client/scripts/lib/guide-template.cjs` (renderB2B, robots-taggen
   ~rad 1162) · **verifierat** (grep bekräftar båda strängarna och robots-taggen) · S
-- [ ] **DR1** **`SENTRY_DSN`/`VITE_SENTRY_DSN` är inte satta i Vercel — hela
+- [x] **DR1** ✅ **Klar 2026-09-20 — verifierad i drift, inte bara deployad.** Sentry-projekt skapat i **EU-regionen** (`de.sentry.io`, valt i *Data Storage Location* vid organisationens skapande — det går inte att ändra efteråt) enligt `HOSTING-REGIONS.md:63` och Art. 30-registret. `SENTRY_DSN` satt i Vercel → Production. `VITE_SENTRY_DSN` är **med flit inte satt**: klientsidan kräver samtycke till analyscookies (`sentry.ts:57`) och de flesta deltagare ger det aldrig — det är DR6, ett eget beslut.
+
+  Bindningen krävde en ny deploy (`9531f09f`, tom med flit — Vercel binder miljövariabler vid deploy). Och för att den inte ska kunna bli tyst igen bar den nästa commit (`4e1cfa0d`) en grind: varje svar från de sju wrappade funktionerna sätter **`X-Felrapport: pa|av`**, satt före hanteraren och läsbar utan konto — även på en 401, vilket alla rutter svarar utan token. Headern bär ett booleskt läge, aldrig DSN:en, leverantören eller regionen.
+
+  **Verifieringsrad med förväntat svar** (regeln från A18, CLAUDE.md):
+
+  ```bash
+  curl -sS -o /dev/null -D - -X POST https://www.jobin.se/api/ai \
+    -H 'Content-Type: application/json' -d '{}' | grep -i x-felrapport
+  # → X-Felrapport: pa      (av = DSN saknas eller går inte att tolka — DR1 är då inte klar)
+  ```
+
+  Mätt 2026-09-20 mot `/api/ai`, `/api/cv-pdf` och `/api/upload-image`: **`pa` på alla tre.**
+
+  **Kvarstår, litet men ärligt:** att Sentry *tar emot* kuvertet är inte bevisat härifrån — alla API-rutter auth-grindar före allt annat, så ett 5xx går inte att framkalla utifrån. Det bevisas av första riktiga händelsen, eller av en lokal körning av `skickaHandelse()` med DSN:en. *(Var:)* **`SENTRY_DSN`/`VITE_SENTRY_DSN` är inte satta i Vercel — hela
   felrapporteringskedjan (BL6, byggd 2026-09-12) är en tyst no-op i prod.**
   `npx vercel env ls production` kört oberoende av mig: tio variabler listade, ingen av dem
   Sentry. `skickaHandelse()` i `client/api/_utils/sentry.js:71` returnerar `false` utan DSN
@@ -108,6 +122,8 @@ och är inte med.
   .md:86`, `docs/GDPR-ART30-REGISTER.md:441` · läst i koden/dokumenten av granskningsagenten,
   **stickprovsverifierat av mig** (dokumentens ordalydelse bekräftad) · beslut + S (dok),
   dagar (juridiskt)
+
+- [ ] **DR1b** **Gör `X-Felrapport` till en grind i röktestet.** Headern gör läget läsbart, men ingenting fäller än om den slår om till `av`. Ett steg i `Smoke Test` som kräver `pa` skulle göra nästa tysta avstängning omedelbart synlig — exakt det A18 och DR1 själva saknade. **Rör `.github/workflows/` och kräver därför Mikaels ja** (CLAUDE.md, undantagslistan) · ~15 min
 
 ### Sedan — skav som märks
 
