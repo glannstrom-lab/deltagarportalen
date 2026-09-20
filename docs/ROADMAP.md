@@ -96,7 +96,18 @@ och är inte med.
 
   Mätt 2026-09-20 mot `/api/ai`, `/api/cv-pdf` och `/api/upload-image`: **`pa` på alla tre.**
 
-  **Kvarstår, litet men ärligt:** att Sentry *tar emot* kuvertet är inte bevisat härifrån — alla API-rutter auth-grindar före allt annat, så ett 5xx går inte att framkalla utifrån. Det bevisas av första riktiga händelsen, eller av en lokal körning av `skickaHandelse()` med DSN:en. *(Var:)* **`SENTRY_DSN`/`VITE_SENTRY_DSN` är inte satta i Vercel — hela
+  **Hela kedjan bevisad 2026-09-20.** Sista ledet — att Sentry tar emot kuvertet — gick inte att pröva utifrån (varje API-rutt auth-grindar först, så ett 5xx går inte att framkalla) och inte heller lokalt: `SENTRY_DSN` är markerad **Sensitive** i Vercel, och `vercel env pull` ger tomt värde för den — liksom för `OPENROUTER_API_KEY` och `RESEND_API_KEY`, medan `CRON_SECRET` och service-nyckeln kommer med. Skrivbar men inte läsbar är rätt inställning; den ska inte ändras för att göra ett test bekvämare.
+
+  Lösningen blev ett **permanent självtest bakom `CRON_SECRET`** (`71efadd7`), i den befintliga cronfunktionen — inte i en ny, eftersom varje Vercel-funktion väger ~150 kB i varje deploy och Functions Storage är en levande begränsning på Hobby. Det svarar **200 även när kedjan är trasig**: svaret ÄR mätvärdet, och ett 5xx där hade triggat en riktig felrapport om precis det som mäts.
+
+  ```bash
+  curl -sS "https://www.jobin.se/api/pass-paminnelse?sjalvtest=felrapport" \
+    -H "Authorization: Bearer $CRON_SECRET"
+  # → {"dsn":"pa","skickat":true}     ← mätt 2026-09-20, Sentry svarade 2xx
+  # utan eller med fel hemlighet → HTTP 401 (motprovet kört, grinden kan falla)
+  ```
+
+  Skickar inga mejl och läser inga notiser. Händelsen syns i Sentry som `DR1Sjalvtest` från funktionen `pass-paminnelse`. *(Var:)* **`SENTRY_DSN`/`VITE_SENTRY_DSN` är inte satta i Vercel — hela
   felrapporteringskedjan (BL6, byggd 2026-09-12) är en tyst no-op i prod.**
   `npx vercel env ls production` kört oberoende av mig: tio variabler listade, ingen av dem
   Sentry. `skickaHandelse()` i `client/api/_utils/sentry.js:71` returnerar `false` utan DSN
