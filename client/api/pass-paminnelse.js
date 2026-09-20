@@ -20,7 +20,7 @@
  * user_preferences = reglaget aldrig rört = skicka; `false` = skicka inte.
  */
 const { createClient } = require('@supabase/supabase-js');
-const { medFelrapport, skickaHandelse } = require('./_utils/sentry.js');
+const { medFelrapport, skickaHandelse, tolkaDsn } = require('./_utils/sentry.js');
 const { avgorSvar } = require('./_utils/mejlutfall.js');
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -93,6 +93,33 @@ const hanterare = async (req, res) => {
   if (!verifyCronSecret(req)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
+
+  // DR1 (2026-09-20): självtest av felrapporteringskedjan, hela vägen till
+  // Sentry. Ligger bakom CRON_SECRET och skickar INGA mejl.
+  //
+  // Varför den behövs: `X-Felrapport`-headern bevisar att SENTRY_DSN är bunden
+  // och går att tolka — inte att Sentry tar emot kuvertet. Och det går inte att
+  // framkalla ett 5xx utifrån: varje API-rutt auth-grindar först. Utan den här
+  // vägen är sista ledet i kedjan obevisat tills någon riktigt kraschar.
+  //
+  // Varför här och inte i en egen funktion: varje Vercel-funktion väger ~150 kB
+  // i VARJE deploy, och Functions Storage är en levande begränsning på Hobby
+  // (se CLAUDE.md om chromium-min). Det här är en driftfunktion — självtestet
+  // hör hemma bredvid cronen, inte i en nionde bundle.
+  if (String(req.query?.sjalvtest || '') === 'felrapport') {
+    const dsnFinns = !!tolkaDsn(process.env.SENTRY_DSN || '');
+    const skickat = dsnFinns
+      ? await skickaHandelse({
+        funktion: 'pass-paminnelse',
+        typ: 'DR1Sjalvtest',
+        meddelande: 'Självtest av felrapporteringen — ingen riktig krasch.',
+      })
+      : false;
+    // 200 även när det misslyckas: svaret ÄR mätvärdet, och ett 5xx här hade
+    // triggat en riktig felrapport om just det vi försöker mäta.
+    return res.status(200).json({ dsn: dsnFinns ? 'pa' : 'av', skickat });
+  }
+
   if (!SUPABASE_URL || !SERVICE_KEY) {
     return res.status(500).json({ error: 'SUPABASE_SERVICE_ROLE_KEY saknas — kan inte läsa påminnelser.' });
   }
