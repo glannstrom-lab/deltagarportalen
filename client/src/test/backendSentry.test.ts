@@ -17,11 +17,15 @@ const sentry = require('../../api/_utils/sentry.js') as {
 
 const DSN = 'https://abc123publik@o4500.ingest.de.sentry.io/4500123'
 
-type FejkRes = { statusCode: number; headersSent: boolean; body?: unknown; status(code: number): FejkRes; json(b: unknown): FejkRes }
+type FejkRes = { statusCode: number; headersSent: boolean; body?: unknown; headers: Record<string, string>; setHeader(k: string, v: string): void; status(code: number): FejkRes; json(b: unknown): FejkRes }
 function fejkRes(): FejkRes {
   const res: FejkRes = {
     statusCode: 200,
     headersSent: false,
+    // DR1: Vercels res har alltid setHeader. En fixtur utan den prövar en form
+    // som inte finns i drift (samma familj som skills-fixturen 2026-08-03).
+    headers: {},
+    setHeader(k: string, v: string) { res.headers[k] = v },
     status(code: number) { res.statusCode = code; return res },
     json(b: unknown) { res.body = b; res.headersSent = true; return res },
   }
@@ -139,5 +143,64 @@ describe('medFelrapport — Vercel-wrappen', () => {
     const w = sentry.medFelrapport('cv-pdf', async (_req: unknown, r: unknown) => { (r as ReturnType<typeof fejkRes>).status(200).json({ ok: true }); throw new Error('efteråt') })
     await w({ method: 'POST', url: '/api/cv-pdf' }, res)
     expect(res.statusCode).toBe(200)
+  })
+})
+
+/**
+ * DR1 (2026-09-20): felrapporteringen var en tyst no-op i drift från den byggdes
+ * 12 september tills SENTRY_DSN sattes i Vercel den 20:e. Läget ska gå att läsa
+ * utifrån, med ett curl-anrop mot vilken API-rutt som helst — annars upptäcks
+ * nästa avstängning lika sent.
+ */
+describe('DR1: X-Felrapport gör läget läsbart utifrån', () => {
+  const medEnv = async (dsn: string | undefined, kor: () => Promise<void>) => {
+    const fore = process.env.SENTRY_DSN
+    if (dsn === undefined) delete process.env.SENTRY_DSN
+    else process.env.SENTRY_DSN = dsn
+    try { await kor() } finally {
+      if (fore === undefined) delete process.env.SENTRY_DSN
+      else process.env.SENTRY_DSN = fore
+    }
+  }
+
+  /** Kör wrappern med ett svar av given status och lämnar tillbaka headern. */
+  const headerVid = async (dsn: string | undefined, status: number): Promise<string | undefined> => {
+    let header: string | undefined
+    await medEnv(dsn, async () => {
+      const res = fejkRes()
+      const w = sentry.medFelrapport('prov', async (_req: unknown, r: unknown) => {
+        (r as ReturnType<typeof fejkRes>).status(status).json({})
+      })
+      await w({ method: 'GET', url: '/api/prov' }, res)
+      header = res.headers['X-Felrapport']
+    })
+    return header
+  }
+
+  it('säger "pa" när en giltig DSN är bunden', async () => {
+    expect(await headerVid(DSN, 200)).toBe('pa')
+  })
+
+  it('säger "av" när DSN saknas — det tysta läget blir synligt', async () => {
+    expect(await headerVid(undefined, 200)).toBe('av')
+  })
+
+  it('säger "av" på en DSN som inte går att tolka — inte "pa" i god tro', async () => {
+    expect(await headerVid('inte-en-dsn', 200)).toBe('av')
+  })
+
+  it('sätts även när hanteraren svarar 401 — därför går den att läsa utan konto', async () => {
+    expect(await headerVid(DSN, 401)).toBe('pa')
+  })
+
+  it('fäller inte en hanterare vars res saknar setHeader', async () => {
+    await medEnv(DSN, async () => {
+      const utanSetHeader = { statusCode: 200, headersSent: false, status(k: number) { this.statusCode = k; return this }, json() { return this } }
+      const w = sentry.medFelrapport('prov', async (_req: unknown, r: unknown) => {
+        (r as { status: (n: number) => { json: (b: unknown) => unknown } }).status(200).json({})
+      })
+      await expect(w({ method: 'GET', url: '/api/prov' }, utanSetHeader)).resolves.toBeUndefined()
+      expect(utanSetHeader.statusCode).toBe(200)
+    })
   })
 })

@@ -108,6 +108,18 @@ async function skickaHandelse(h, dsn = process.env.SENTRY_DSN || '') {
  * Wrappar en Vercel-hanterare `(req, res) => …`. Rapporterar fel som slinker
  * ut ur hanteraren, och svar med status ≥ 500 (funktionernas egna catch-block
  * svarar så). Request-body läses aldrig här.
+ *
+ * DR1 (2026-09-20): varje svar bär `X-Felrapport: pa|av`, satt INNAN hanteraren
+ * körs (headers går inte att sätta efter att svaret skickats).
+ *
+ * Varför en header och inte en ny endpoint: felrapporteringen var en tyst no-op
+ * i drift från den byggdes 2026-09-12 till i dag, eftersom SENTRY_DSN aldrig
+ * sattes i Vercel. Samma klass som A18, vars vakt svarade 503 för alla i veckor
+ * för att CRON_SECRET saknades. Ett läge som bara syns när någon letar efter det
+ * kommer att vara fel igen — det här gör det läsbart med ett curl-anrop mot
+ * vilken API-rutt som helst, även en som svarar 401.
+ *
+ * Headern bär ett booleskt läge, aldrig DSN:en, leverantören eller regionen.
  * @template {(req: any, res: any) => any} H
  * @param {string} funktion
  * @param {H} hanterare
@@ -116,6 +128,13 @@ async function skickaHandelse(h, dsn = process.env.SENTRY_DSN || '') {
 function medFelrapport(funktion, hanterare) {
   return async (req, res) => {
     try {
+      // Före hanteraren: den äger svaret och kan skicka det när som helst.
+      // typeof-kontrollen är inte paranoia — en diagnostikheader får aldrig
+      // vara det som fäller en funktion. Vercels res har alltid setHeader;
+      // en strömmande eller inslagen res kanske inte har det.
+      if (typeof res.setHeader === 'function' && !res.headersSent) {
+        res.setHeader('X-Felrapport', tolkaDsn(process.env.SENTRY_DSN || '') ? 'pa' : 'av');
+      }
       await hanterare(req, res);
       if (res.statusCode >= 500) {
         await skickaHandelse({
