@@ -234,6 +234,59 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Premissgranskning 2026-09-20 (kväll) — de 32 kvarvarande raderna
+
+Efter dagens byggpass gjordes det som inte kräver ett beslut: **premissgranska
+resten**. Historiken säger att det lönar sig — tio av tjugofem premisser föll
+i passet 2 september, sex av tio den 27 juli. Den här gången: **fyra rader
+avförda eller omscopade, två låsningar lösta.** 32 → 30 öppna.
+
+### Rader som inte höll
+
+| Rad | Vad som visade sig |
+|---|---|
+| **BL6** | Stod som öppen fast texten började med "✅ Byggt 2026-09-12". Mönster 1: redan löst, raden stod kvar. Den var dessutom **sann bara på pappret** — kedjan gick i drift först i dag, med DR1 |
+| **KM2** | Sa "inbjudan via mejl (DE1) kvar". DE1 löstes 12 september. Verifierat: `InviteParticipantDialog` är monterad på två ställen och anropar `send-invite-email`; `foretagApi.bjudInKollega` går samma väg |
+| **BF3** | Exemplet (A1) är löst, men mönstret upprepades direkt: DR1 stod i sju dygn medan tretton andra rader byggdes, och under tiden var felrapporteringen en tyst no-op. Omscopad, inte stängd |
+| **MK2** | Premissen föll på sista ledet — se raden |
+
+### Två låsningar lösta med data i stället för beslut
+
+**SE1/SE2 och SE5 stod som "väntar på Search Console".** Den datan gick att
+hämta (`sc-domain:jobin.se`, dimensionen *page* — frageuttaget täcker bara
+~58 % av klicken). Se `client/content/kannibalisering.md` för hela mätningen.
+Båda paren är nu avgjorda, och båda hänger därefter **bara på SE4**.
+
+Det mäst intressanta fyndet var att SE5 pekade åt fel håll: sidan
+`kompetensutvardering` **vinner** kompetensinventerings-frågan (2 klick / 191
+visningar mot 0 / 48). Titeln är alltså rätt och sluggen fel — och ett
+titelbyte, som hade varit gratis och kringgått SE4, hade varit **fel åtgärd**.
+
+### Vad mätningen säger om K-spåret
+
+**98 klick och 20 942 visningar på 90 dygn**, 146 sidor med data. Innehållet
+syns men klickas inte. De tre sidor som bär nästan en tredjedel av klicken
+ligger alla på position 8–11; resten ligger på sida två och nedåt.
+**Förslag för nästa innehållsomgång: lyft det som redan ligger på position
+11–20 i stället för att skriva nytt.** Det är där visningarna redan finns.
+
+### Rader vars premiss höll vid mätning
+
+**DE5** (inget anropar `send-inactivity-warning` — noll träffar i klientkoden,
+bara funktionen själv, migrationer och dokument) · **MV2b** (`exercise_answers`
+har verkligen ingen kategorikolumn: `id, user_id, exercise_id, answers,
+is_completed, completed_at, created_at, updated_at, exercise_uuid`) · **DR3**
+branch protection (`"protected": false`, mätt mot GitHub-API:t).
+
+### Inte granskade den här gången
+
+MK4 och MK5 står kvar som "utred" — de kräver omvärldsundersökning snarare än
+en mätning mot koden, och de togs inte i det här passet. Besluts- och
+juridikraderna (AG9, KM1, RM5, KO3b, SK5, DE7, DP1, DP2, BL1, KM11, KM12) är
+oförändrade — de väntar på dig, inte på en mätning.
+
+---
+
 ## Passering 2026-09-20 — allt som gick att bygga utan ett beslut
 
 **Uppdraget:** "fixa allt som kan byggas nu". Avgränsningen blev: varje post som inte
@@ -1397,7 +1450,7 @@ nedan) och **MV2b** (väntar på beslut).
   `useSupabase.ts:32` lyssnar på `onAuthStateChange` men tömmer inget vid `SIGNED_OUT`.
   Spontanansökan-läckan (19 aug) lagades på ett ställe av 41. Fix: töm centralt på
   `SIGNED_OUT`; `userId` i cv/dashboard/mood/cover-letters · mätt (grep) · ~2 h
-- [ ] **BL6** 🟡 ✅ **Byggt 2026-09-12:** `_shared/sentry.ts` + `api/_utils/sentry.js` (Sentrys envelope-API via fetch, ingen SDK — `@sentry/deno` via esm.sh i varje kallstart och `require('@sentry/node')` från CJS är samma fälla som puppeteer-core 25) wrappar alla edge-funktioner och Vercel-funktionerna: oväntade fel → 500 JSON + sanerad händelse, svar ≥ 500 rapporteras. Maskerar e-post, personnummer, Bearer/JWT/API-nycklar; aldrig body/headers/user-id; mutationstestad (`backendSentry.test.ts`, 13 tester). **Premissen var större:** `VITE_SENTRY_DSN` saknas i Vercel — Sentry ser 0 % av klienten också, inte bara backend. **Kräver Mikael:** `SENTRY_DSN` i Vercel (production) + Supabase-secrets, `VITE_SENTRY_DSN` i Vercel; utan dem är wrappen no-op (fångar fel, svarar 500 JSON, skickar inget). Verifiera efter att DSN satts: `curl -sS -X POST https://<ref>.supabase.co/functions/v1/health -H 'content-type: application/json' -d '{'` → JSON-fel och en händelse taggad `funktion=health` utan `@` i meddelandet. *(Var:)* **Sentry ser 0 % av backend.** `grep -rl sentry supabase/functions/*/index.ts
+- [x] **BL6** ✅ **Klar — och i drift först 2026-09-20.** Koden var byggd 12 september men `SENTRY_DSN` var aldrig satt, så hela kedjan var en tyst no-op i åtta dygn. Se DR1: DSN i EU-regionen, `X-Felrapport`-headern och självtestet bakom `CRON_SECRET`. Mätt i prod: `{"dsn":"pa","skickat":true}`. *(Var:)* ✅ **Byggt 2026-09-12:** `_shared/sentry.ts` + `api/_utils/sentry.js` (Sentrys envelope-API via fetch, ingen SDK — `@sentry/deno` via esm.sh i varje kallstart och `require('@sentry/node')` från CJS är samma fälla som puppeteer-core 25) wrappar alla edge-funktioner och Vercel-funktionerna: oväntade fel → 500 JSON + sanerad händelse, svar ≥ 500 rapporteras. Maskerar e-post, personnummer, Bearer/JWT/API-nycklar; aldrig body/headers/user-id; mutationstestad (`backendSentry.test.ts`, 13 tester). **Premissen var större:** `VITE_SENTRY_DSN` saknas i Vercel — Sentry ser 0 % av klienten också, inte bara backend. **Kräver Mikael:** `SENTRY_DSN` i Vercel (production) + Supabase-secrets, `VITE_SENTRY_DSN` i Vercel; utan dem är wrappen no-op (fångar fel, svarar 500 JSON, skickar inget). Verifiera efter att DSN satts: `curl -sS -X POST https://<ref>.supabase.co/functions/v1/health -H 'content-type: application/json' -d '{'` → JSON-fel och en händelse taggad `funktion=health` utan `@` i meddelandet. *(Var:)* **Sentry ser 0 % av backend.** `grep -rl sentry supabase/functions/*/index.ts
   client/api/*.js` → 0. Bara `console.error` i koden som bär PII-sanering, art. 9-grinden
   och tokentaket. Fix: delat felfångst-wrap i `_shared/` och `_utils/`, sanerat
   meddelande, samma DSN · mätt · ~3–4 h
@@ -1851,7 +1904,7 @@ tillgänglighetsfix**, samma regel som för WCAG-svepet 2026-08-09.
 > **Ordning:** KM2 (beslut) → KM3+KM4+KM6 före 1 okt → KM5+KM7+KM8 före jan 2027 → resten.
 > **Ingen AI i kedjan schema → närvaro → beslutsunderlag** (AI-förordningen bilaga III p. 5 a).
 
-- [ ] **KM2** 🟡 datamodell, superadmin, kollegor, caseload, självbetjäning och överlämning klara 2026-09-11/12; inbjudan via mejl (DE1) kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
+- [x] **KM2** ✅ **Klar. Rättelse 2026-09-20:** raden sa "inbjudan via mejl (DE1) kvar" — den premissen dög när DE1 löstes 12 september. Verifierat i dag: `InviteParticipantDialog` är monterad på två ställen (`OverviewTab.tsx:934`, `ParticipantsTab.tsx:846`) och anropar `send-invite-email` (rad 134); funktionen finns i `supabase/functions/`. `foretagApi.bjudInKollega` går samma väg för företagskontakter. *(Var:)* 🟡 datamodell, superadmin, kollegor, caseload, självbetjäning och överlämning klara 2026-09-11/12; inbjudan via mejl (DE1) kvar **Organisation och roller, minimum** (= RM5 + KM1 i ett). Tabell `organizations`
   (`id, name, kind: kommun|leverantor, org_number`) + `organization_members` (`user_id, org_id,
   role: handlaggare|konsulent|chef|admin`). Alla KM-tabeller bär `org_id`. RLS: handläggare ser
   närvaro/avvikelser men inte journal, mående, dagbok (inre sekretess, OSL 26 kap.). Chefsvy:
@@ -2104,7 +2157,21 @@ linje med hela marknaden.
   2 000 jobbsajter; Manpower och Randstad kör Rusta och matcha med personlig konsulent. Det är den
   tydligaste luckan i deltagarledet — och samtidigt en påminnelse om att Jobin är ett verktyg, inte
   en förmedling. **Beslut innan bygge: ska portalen förmedla, eller uttryckligen inte?** · beslut
-- [ ] **MK2** **Lönestatistiken är tunn jämfört med konkurrenternas.** Vision har en egen databas
+- [ ] **MK2** **Omscopad 2026-09-20 — premissen faller på sista ledet: det är inte "data vi inte har", det är data ingen hämtat.** SCB:s lönestrukturstatistik ligger öppen och gratis, utan nyckel:
+
+  | | |
+  |---|---|
+  | Tabell | `AM0110A / LoneSpridSektYrk4AN` |
+  | Innehåll | medianlön, 10:e/25:e/75:e/90:e percentilen **plus 95 %-konfidensintervall** |
+  | Upplösning | 4-siffrig SSYK 2012 (356 yrken), 8 sektorer, kön, år |
+  | Period | **2023–2025** |
+  | Gränser | 30 anrop / 10 s per IP, 150 000 celler per anrop |
+
+  Provkört 2026-09-20 mot skarp API: 2025 ger medianlön 38 300 kr, 10:e percentilen 28 000, 90:e 61 700 för samtliga yrken. Det är hela arbetsmarknaden (~5 milj. anställda) mot Visions 100 000 löner — alltså inte jämbra, utan **mer auktoritativt än konkurrentens**. SSYK 2012 är dessutom samma klassificering portalen redan använder mot AF, så kopplingen till ett yrke finns.
+
+  ⚠️ **Fällan, som kostade mig ett prov att hitta:** tabellen finns i **tre generationer** och den som ser mest självklar ut är död. `LoneSpridSektorYrk4` = 2005–2013, `LoneSpridSektorYrk4A` = 2014–2022, `LoneSpridSektYrk4AN` = 2023–2025. Alla tre svarar 200 med data. Hade jag byggt på den första hade lönekompassen visat **tolv år gamla löner som aktuella** — exakt portalens definierande felklass. Kontrollera `Tid`-variabelns sista värde innan du använder en SCB-tabell, varje gång.
+
+  **Förslag: bygg.** Proxy med dygnscache som `af-prognos` (MK3), strikt tolkning (okänt värde → null, aldrig påhittat), och visa **medianen plus spridningen** — inte ett medelvärde. Kvar att klära ut före bygge: licensvillkoren för vidareanvändning (SCB är öppna data, men villkoret ska stå på sidan) · M *(Var:)* **Lönestatistiken är tunn jämfört med konkurrenternas.** Vision har en egen databas
   med **över 100 000 löner**; TRR:s *Rikta* bygger på AF-, SCB- och Saco-data. Jobins lönekompass
   vilar på `data/lonedata.ts`, och portalens egen granskning 20 augusti konstaterade att AF:s
   lönestatistik ger 0–1 annonser per yrke och inte duger. Det är en av få ytor där en konkurrent
@@ -4740,13 +4807,13 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 ### Sedan — skav som märks
 
 - [x] **TG1** ✅ *(klar 2026-08-17)* F19, omscopad: båda off-canvas-panelerna renderas alltid, bara flyttade med `translate-x-full`. Ingen `inert`, ingen `aria-hidden`, ingen fokusfälla, **noll Escape-hantering i hela filen**. 25 navlänkar startar utfällda → ~36 osynliga tabbstopp före sidans innehåll, på varje sida · `Layout.tsx:224-308, 317-525` · ~3 h · **Gjort:** `inert={!isOpen}` på båda panelerna (React 19) + `useFocusTrap` (fälla, Escape, fokusåterställning) — hooken är projektets etablerade mönster, 13 modaler använder den. Profilpanelen fick `role="dialog"`/`aria-modal`/`aria-label` som den saknade. `MobileMainMenu` exporterad enbart för test. Vakt: `Layout.mobilmeny.test.tsx`, 8 tester, mutationstestad. **Utskrivet i testfilen:** jsdom kan inte verifiera fokuscyklingen (`offsetParent` är alltid null) — det som testas är `inert` och Escape.
-- [ ] **SE1 + SE2** 🟡 **Beslutsunderlaget klart 2026-09-06 — `client/content/kannibalisering.md`. Kartan är tio gånger större än de två raderna.** Mätt över alla 240 artiklar (ordantal, rubriker, kategori, inlänkar räknade ur `related_article_slugs`, likhetsskanning över 537 kandidatpar inom samma kategori, varje träff läst för hand): **23 kluster**, inte 2. Roadmapens egna tal var föråldrade på fem ställen — `varderingar-*` är tre sidor inte två, `stresshantering*` tre inte två, `styrkor-svagheter` tre inte två. **Fyra kluster var okända sedan tidigare**, varav det starkaste är LinkedIn: `linkedin-optimering` (1 350 ord, **11** inlänkar) mot `linkedin-profil-optimering` (669 ord, **1**) — verifierat oberoende. **Tio kluster går att avgöra i dag**, där ordantal och inlänkar pekar åt samma håll. **Nio kräver Search Console**, och det tydligaste exemplet visar varför: `motivation-jobbsokning` har 1 350 ord men **noll** inlänkar, `motivation-langsiktig` 678 ord och **åtta** — signalerna pekar åt varsitt håll, och utan indexeringsdata är valet en gissning. Falska positiva som uttryckligen avfärdats: de 21 `jobba-som-*`-yrkesguiderna, ADHD/autism/dyslexi (olika diagnoser, delad mall) och `intervju-forberedelser`/`intervju-fragor` (korrekt pelare-och-kluster, inte dubblett). **Blockerad av K8 för de nio; de tio kan göras när som helst — men först efter SE4.**
+- [ ] **SE1 + SE2** 🟡 **Search Console-datan hämtad 2026-09-20 — de två väntande paren är avgjorda, se `kannibalisering.md`.** Par 13: `kompetensutvardering` vinner (2 klick / 191 visningar mot 0 / 48) och `kompetensinventering-guide` slås in i den. Par 24: ingen efterfrågesignal alls (position 74 respektive ingen data), så inlänkarna avgör — behåll `kompetensutveckling-guide`, flytta in innehållet från `-plan`. **Båda kräver redirects och hänger alltså bara på SE4.** *(Var:)* **Beslutsunderlaget klart 2026-09-06 — `client/content/kannibalisering.md`. Kartan är tio gånger större än de två raderna.** Mätt över alla 240 artiklar (ordantal, rubriker, kategori, inlänkar räknade ur `related_article_slugs`, likhetsskanning över 537 kandidatpar inom samma kategori, varje träff läst för hand): **23 kluster**, inte 2. Roadmapens egna tal var föråldrade på fem ställen — `varderingar-*` är tre sidor inte två, `stresshantering*` tre inte två, `styrkor-svagheter` tre inte två. **Fyra kluster var okända sedan tidigare**, varav det starkaste är LinkedIn: `linkedin-optimering` (1 350 ord, **11** inlänkar) mot `linkedin-profil-optimering` (669 ord, **1**) — verifierat oberoende. **Tio kluster går att avgöra i dag**, där ordantal och inlänkar pekar åt samma håll. **Nio kräver Search Console**, och det tydligaste exemplet visar varför: `motivation-jobbsokning` har 1 350 ord men **noll** inlänkar, `motivation-langsiktig` 678 ord och **åtta** — signalerna pekar åt varsitt håll, och utan indexeringsdata är valet en gissning. Falska positiva som uttryckligen avfärdats: de 21 `jobba-som-*`-yrkesguiderna, ADHD/autism/dyslexi (olika diagnoser, delad mall) och `intervju-forberedelser`/`intervju-fragor` (korrekt pelare-och-kluster, inte dubblett). **Blockerad av K8 för de nio; de tio kan göras när som helst — men först efter SE4.**
 
 
 - [x] **SE3** ✅ *(klar 2026-08-17)* 48 av 162 guidetitlar över 60 tecken (längst 80). `guide-template.cjs:292` lägger på " — Jobin" utan längdkontroll — samma mall som redan har en fungerande länkgrind · ~1 h + redaktionellt · **Gjort:** `sidtitel()` släpper varumärkessuffixet när det inte får plats i stället för att trunkera — en titel som slutar på "…" ser trasig ut i sökresultatet, och "Jobin" är den minst informativa delen för någon som söker på "a-kassa villkor". **48 → 2 för långa titlar**; de två kvarvarande är för långa även utan suffix och kan bara lösas redaktionellt, så bygget **rapporterar dem med slug och teckenantal** i stället för att tysta dem. Grinden fäller inte — en redaktionell omskrivning ska inte blockera en deploy. 7 tester i `guides-titel.test.ts`.
 - [ ] **SE4** 🔴 **Blockerar varje sammanslagning: det finns ingen redirect-mekanism.** `client/vercel.json` har `headers`, `rewrites` och `crons` — men **inget `redirects`-block** (verifierat 2026-09-06). En pensionerad guide faller därför genom filsystemslagret rakt ner i SPA-rewriten och svarar **200 med indexerbar shell**, alltså en mjuk 404 på exakt den URL Google redan känner. Att slå ihop utan detta är värre än att låta paren stå. Den färdiga JSON-formen står i `client/content/kannibalisering.md`. **Notera:** `vercel.json` kräver ditt ja innan push (CLAUDE.md), och `lint:vercel` måste köras — filen har historiskt tystnat när `routes` och `redirects` blandats · S
 
-- [ ] **SE5** **`kompetensutvardering` har en slug som inte matchar sin egen titel.** Sluggen säger `kompetensutvardering`, titeln säger *"Kompetensinventering: Kartlägg dina färdigheter"* (1 176 ord, 3 inlänkar). Det är en fristående SEO-bugg, oberoende av om artikeln slås ihop med `kompetensinventering-guide` eller inte — sökordet i URL:en är ett annat än sökordet i titeln. Åtgärdas i samma pass som SE1/SE2, med redirect enligt SE4 · XS
+- [ ] **SE5** **Omscopad 2026-09-20 efter Search Console-mätningen: det är SLUGGEN som ska byta, inte titeln — och därmed krävs en redirect.** Sidan vinner faktiskt *kompetensinventerings*-frågan (2 klick / 191 visningar mot 0 / 48 för `kompetensinventering-guide`), så titeln är rätt och sluggen fel. Ett titelbyte hade varit gratis och hade varit **fel åtgärd** — det hade flyttat sidan bort från den fråga den redan vinner. **Blockerad av SE4.** *(Var:)* **`kompetensutvardering` har en slug som inte matchar sin egen titel.** Sluggen säger `kompetensutvardering`, titeln säger *"Kompetensinventering: Kartlägg dina färdigheter"* (1 176 ord, 3 inlänkar). Det är en fristående SEO-bugg, oberoende av om artikeln slås ihop med `kompetensinventering-guide` eller inte — sökordet i URL:en är ett annat än sökordet i titeln. Åtgärdas i samma pass som SE1/SE2, med redirect enligt SE4 · XS
 
 - [x] **TG2** ✅ *(klar 2026-08-17)* 190 oskyddade `❌` på 37 av 162 guidesidor (värsta: 9 på en sida), noll inslagna i `aria-hidden`. Skärmläsare annonserar "kryssmarkering" åtta gånger i rad; K17:s uppläsningsfunktion läser samma brus · `client/content/articles.snapshot.json` · ~1 h · **Fyndet var större:** även `✅` har problemet, 64 till — **254 totalt**. **Emojin bär betydelsen**, så den kunde inte strykas: utan markören blir "❌ Låta AI ljuga om din bakgrund" ett råd att göra det. **Gjort:** renderaren slår in tecknet i `aria-hidden` och lägger till ett ord som säger samma sak ("Undvik:" / "Gör så här:"), så seende ser vad de sett förut och uppläsning får innebörden. Fixen ligger i `markdown.cjs`, inte i innehållet — 254 förekomster i prod behöver inte skrivas om. **Andra halvan:** `lyssna.client.js` läste `innerText`, som varken bryr sig om `aria-hidden` eller `.sr-only` — den hade läst "kryssmarkering Undvik:", alltså sämre än förut. Ny `upplasningstext()` följer samma regel som skärmläsaren. **Mätt efter bygge: 254 av 254 inslagna, 0 oskyddade.** 13 nya tester i två filer.
 - [ ] **DR3** `main` saknar branch protection (`"protected": false`). Push = deploy, så det finns mekaniskt ingenting mellan trasig commit och prod. Blockerar D24 · ~10 min *(kräver Mikaels ja — rör deployinfrastruktur)*
@@ -4798,7 +4865,7 @@ Sju linser valda efter vad som *rört sig* sedan 9 augusti, inte efter förra g�
 - [ ] **KO3b** 🔴 **beslut — teckenklasskravet i lösenordet.** Nuläge mätt i `lib/validations/index.ts:22-40`: minst 12 tecken, **samtliga fyra** teckenklasser, inga 3+ upprepade tecken, plus en hårdkodad lista på fem svaga substrängar. NIST SP 800-63B (gäller sedan 2017) rekommenderar **mot** obligatoriska teckenklasser: de driver användare mot förutsägbara mönster (`Lösenord1!`) utan att öka säkerheten, och ökar avhoppen. Vägledningen förordar i stället längd — 12 är redan i linje — plus screening mot **kända läckta** lösenord via k-anonymitets-API, i stället för en egen lista på fem ord. Förslag: behåll 12 tecken, mjuka upp klasskravet (t.ex. två av fyra, eller helt bort), och byt den hårdkodade listan mot en läckagekontroll. **Ingen ändring gjord — säkerhetsavvägningen är din** · S
 - [x] **KO4** ✅ **Klar 2026-09-12 (roadmap-pass 3) — premissen höll delvis.** Sedan ON2 (2026-09-08) talade hjälten redan till den arbetssökande, men "Vem är du?" låg som sektion 2 med VD/Inköp som likvärdigt kort, prissektionen bar "Populärast" utan en betalande kund (B31-klass), och slut-CTA:n frågade inköparen ovanför knappen "Skapa konto gratis". Ny ordning: hjälte → funktioner → **guider** → FAQ → "Arbetar du med arbetssökande?" (`#for-organisationer`, två kort: konsulent + AME/leverantör, VD-kortet omskrivet till kommun/R&M-tilltal) → priser (gratis först, "Populärast" borta) → slut-CTA till den arbetssökande. Nav: "Guider" först, "För organisationer" i stället för "Priser". `Landing.test.tsx` (7) vaktar DOM-ordningen och att B2B-länkarna är `<a href>`. *(Var:)* Startsidan öppnar med "Vem är du?" och tre likvärdiga kort — Arbetssökande, Arbetskonsulent, **VD/Inköp** — och en prissektion i B2B-ton. En guideläsare som klickar loggan landar mitt i ett säljbudskap till inköpare · `Landing.tsx:393-530, 700-802` · S
 - [ ] **DR6** Sentry initieras bara när användaren tackat ja till analytics-cookies (`sentry.ts:57`). Korrekt GDPR — men svaret på "hur upptäcks ett fel kl 03" blir "för de flesta deltagare: inte alls". Överväg en samtyckesfri aggregerad felräknare · beslut
-- [ ] **BF3** **Process:** planens prioritetsordning styr inte vad som byggs. A1 (rotera OpenRouter-nyckeln, **5 minuter i en dashboard**) är öppen sedan 28 maj — 82 dagar — medan hela K-spåret byggdes och publicerades. Det görbara går före det blockerade, varje gång. Konkret: rotera A1 nu, och skriv in ett villkor att inget nytt spår startas medan A1/A6 är öppna · S
+- [ ] **BF3** **Process:** planens prioritetsordning styr inte vad som byggs. **Omscopad 2026-09-20 — exemplet är löst, mönstret är inte det.** A1 roterades 12 september, men samma sak upprepades direkt: **DR1** (en miljövariabel, 15 minuter) stod från 13 till 20 september medan tretton andra rader byggdes — och under de dygnen var hela felrapporteringen en tyst no-op. Tredje instansen av samma klass, efter A1 och A18:s `CRON_SECRET`. **Förslag:** varje rad vars åtgärd är en dashboard-inställning får en egen markering i planen och tas först i nästa pass, oavsett spår. *(Var:)* A1 (rotera OpenRouter-nyckeln, **5 minuter i en dashboard**) är öppen sedan 28 maj — 82 dagar — medan hela K-spåret byggdes och publicerades. Det görbara går före det blockerade, varje gång. Konkret: rotera A1 nu, och skriv in ett villkor att inget nytt spår startas medan A1/A6 är öppna · S
 - [x] **BF4** ✅ *(klar 2026-08-17)* `.planning/PROJECT.md` hade "Current Milestone: v1.0 Hub-Navigation" som aktiv — klar sedan 2026-04-29. GSD-skillsen är avstängda så risken är teoretisk i dag · ~10 min · **Gjort:** "Current Milestone" är nu "inga aktiva GSD-milstolpar", med den gamla beskrivningen kvar som arkiv. Två sakfel i den arkiverade texten utskrivna för den som läser den som karta: widget-systemet monteras aldrig i prod (hubbarna byggs med `HubPage`-kort), och navigationens sanning är `navHubs[]`.
 
 ### Efter deployen 2026-08-17 — verifierat utfall och ett nytt fynd

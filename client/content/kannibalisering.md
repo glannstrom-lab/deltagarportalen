@@ -218,3 +218,53 @@ Baserat på antalet kluster och vad var och en kräver:
   som vinner sammanslagningen, eftersom det är ett fristående SEO-fel.
 - `styrkor-svagheter` levererar aldrig på ordet "svagheter" i sin egen titel
   eller rubriker — värt att notera för redaktören oavsett sammanslagning.
+
+---
+
+## Search Console-mätningen 2026-09-20 — de två väntande paren är avgjorda
+
+Hämtat med `sc-domain:jobin.se`, dimensionen **page** (inte query: frageuttaget
+täcker bara ~58 % av klicken eftersom anonymiserade frågor utelämnas, så bara
+sidtotaler går att jämföra rakt). Period 2026-06-20 – 2026-09-19, 146 sidor med
+data, **98 klick / 20 942 visningar** totalt.
+
+### Par 13 — avgjort: `kompetensutvardering` vinner
+
+| slug | klick | visningar | CTR | snittposition |
+|---|---|---|---|---|
+| `kompetensinventering-guide` | **0** | 48 | 0,0 % | 23,3 |
+| `kompetensutvardering` | **2** | 191 | 1,0 % | 30,6 |
+
+Fyra gånger visningarna och samtliga klick — trots sämre snittposition. Det
+pekar åt samma håll som ordantalet (1 176 mot 764), och inlänkarna är
+oavgjorda (3=3). **`kompetensinventering-guide` slås ihop in i
+`kompetensutvardering`.**
+
+**Och därmed är frågan om sluggen avgjord åt andra hållet än man kunde tro:**
+eftersom `kompetensutvardering` vinner *kompetensinventerings*-frågan är dess
+titel rätt — det är **sluggen** som ska byta namn, inte titeln. Ett titelbyte
+hade varit gratis; ett sluggbyte kräver en redirect. **SE5 hänger alltså på SE4
+och går inte att kringgå.**
+
+### Par 24 — avgjort på inlänkar, eftersom efterfrågan inte säger något
+
+| slug | klick | visningar | snittposition |
+|---|---|---|---|
+| `kompetensutveckling-guide` | 0 | 46 | **74,0** |
+| `kompetensutveckling-plan` | — | — | ingen data alls |
+
+Position 74 är sida åtta; den andra syns inte överhuvudtaget. Efterfrågesignalen
+är alltså tom, och då får inlänkarna avgöra: **behåll sluggen
+`kompetensutveckling-guide`** (7 inlänkar mot 2) och **flytta in innehållet från
+`kompetensutveckling-plan`**, som är det djupare (1 237 ord mot 557, elva
+rubriker). Kräver redirect för `plan` — alltså också SE4.
+
+### Vad mätningen säger om K-spåret i stort
+
+98 klick på 90 dygn är lite, men 20 942 visningar är det inte: innehållet
+**syns** och **klickas inte**. De tre sidor som bär nästan en tredjedel av
+klicken — `lonebidrag-sa-fungerar-det` (14), `styrkor-svagheter-intervju` (9),
+`grupperintervju-guide` (5) — ligger alla på position 8–11. Sidor på sida ett
+klickas; sidor på sida två och nedåt gör det inte, oavsett hur bra de är.
+Slutsatsen för nästa innehållsomgång: **lyft det som redan ligger på position
+11–20 i stället för att skriva nytt** — det är där visningarna redan finns.
