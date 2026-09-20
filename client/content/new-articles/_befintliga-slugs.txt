@@ -1,10 +1,9 @@
-# Alla 215 slugs som redan finns i prod-tabellen articles.
-# Genererad 2026-09-06 (efter omgång 5).
-# Din slug FÅR INTE krocka. related_article_slugs MÅSTE stå här eller i din egen omgång.
+# Alla 241 slugs som redan finns i prod-tabellen articles.
 
 a-kassa-sa-fungerar-det                       employment-law      Så fungerar a-kassan – medlemskap och villkor
 adhd-i-arbetslivet                            accessibility       ADHD i arbetslivet – det här brukar bli svårt, och lättare
 ai-jobbsokning-guide                          digital-presence    AI i jobbsökningen – så använder du det smart
+aktivitetskrav-forsorjningsstod               employment-law      Aktivitetskravet för försörjningsstöd – vad gäller för dig
 aktivitetsrapport-guide                       job-search          Aktivitetsrapport till Arbetsförmedlingen – så gör du
 anpassningar-arbetsplats                      accessibility       Anpassningar på arbetsplatsen – vad du kan be om
 anpassningar-arbetsplatsen                    accessibility       Anpassningar på arbetsplatsen - dina möjligheter
@@ -12,6 +11,7 @@ ansokningsstrategi                            job-search          Effektiv ansö
 anstallningsformer-guide                      employment-law      Anställningsformer – vad är skillnaden?
 arbetsformagebedomning-vad-hander             accessibility       Arbetsförmågebedömning – vad som händer, steg för steg
 arbetsgivarintyg-och-betyg                    employment-law      Arbetsgivarintyg och tjänstgöringsbetyg – så får du dem
+arbetsintegrerande-sociala-foretag            job-market          Arbetsintegrerande sociala företag – vad är ASF?
 arbetsmarknadstrender-nu                      job-market          Arbetsmarknadstrender - vad händer just nu?
 arbetsmarknadsutbildning                      career-development  Arbetsmarknadsutbildning – så får du en plats
 arbetsmiljo-guide                             job-market          Förstå din framtida arbetsmiljö
@@ -30,8 +30,10 @@ behorigheter-som-oppnar-jobb                  job-market          Behörigheter 
 bemanningsforetag-guide                       job-search          Bemanningsföretag – din genväg till arbetsmarknaden
 beratta-om-diagnos-eller-inte                 accessibility       Berätta om diagnos eller inte – vad som faktiskt gäller
 beratta-om-dig-sjalv                          interview           Berätta om dig själv – hur du bygger svaret på intervjun
+betalningsanmarkning-och-jobb                 employment-law      Betalningsanmärkning och jobb – vad som gäller
 bild-pa-cv-eller-inte                         job-search          Bild på CV eller inte? Så tänker du om fotot
 bli-uppsagd-pa-grund-av-arbetsbrist           employment-law      Uppsagd på grund av arbetsbrist – vad du gör nu
+bostadsbidrag-och-boendekostnad               employment-law      Bostadsbidrag och boendekostnad – så funkar det
 branscher-brist                               job-market          Var finns jobben — och för vem?
 branschguide-it-tech                          job-market          Branschguide: IT och tech
 branschguide-vard-omsorg                      job-market          Branschguide: Vård och omsorg
@@ -46,11 +48,14 @@ cv-utan-erfarenhet                            job-search          Skriva CV utan
 cv-utan-gymnasieexamen                        job-search          CV utan gymnasieexamen – så skriver du det sant
 digital-intervju                              interview           Digital intervju – så lyckas du på Zoom/Teams
 digital-narvaro-rensning                      digital-presence    Rensa och förbättra din digitala närvaro
+digitala-tjanster-du-behover                  tools               Digitala tjänster du behöver för att söka jobb
 diskriminering-jobbsokning                    employment-law      Diskriminering vid jobbsökning – dina rättigheter
 distansarbete-guide                           career-development  Så lyckas du med distansarbete
 dolda-jobbmarknaden                           job-market          Den dolda jobbmarknaden – så hittar du jobb som aldrig annonseras
 dromjobbsanalys                               career-development  Drömjobbsanalys – från vision till handling
 dyslexi-i-ansokan-och-pa-jobbet               accessibility       Dyslexi i ansökan och på jobbet – rätt hjälpmedel
+efter-manga-ar-utan-jobb                      accessibility       Efter många år utan jobb – så går du vidare
+ersattning-nar-du-borjar-jobba                employment-law      Ersättning när du börjar jobba – så avslutar du den rätt
 ersattning-under-program                      employment-law      Aktivitetsstöd – vem betalar under ett program?
 etableringsprogrammet                         job-search          Etableringsprogrammet – vad som ingår
 extratjanst-vad-ar-det                        employment-law      Extratjänst – vad det var, och vad som gäller idag
@@ -66,6 +71,7 @@ forsta-veckan-checklista                      getting-started     Komma igång �
 fragor-att-stalla-till-arbetsgivaren          interview           Frågor att ställa till arbetsgivaren på en intervju
 framtidens-jobb                               job-market          Framtidens jobb – vilka yrken växer och krymper?
 funktionsnedsattning-jobbsokning              accessibility       Jobbsökning med funktionsnedsättning – rättigheter och strategier
+fylla-i-en-digital-ansokan                    job-search          Fylla i en digital jobbansökan – steg för steg
 gig-ekonomin                                  job-market          Gig-ekonomin – frihet eller fälla?
 googla-dig-sjalv                              digital-presence    Googla dig själv – vad ser arbetsgivare?
 grupperintervju-guide                         interview           Gruppintervju – så sticker du ut positivt
@@ -81,19 +87,24 @@ intervju-fragor                               interview           Vanliga interv
 introduktionsjobb                             employment-law      Introduktionsjobb – vad stödet innebär för dig
 jobb-och-utvecklingsgarantin                  job-search          Jobb- och utvecklingsgarantin – så fungerar den
 jobba-i-restaurang-och-kok                    job-market          Jobba i restaurang och kök – tempo, tider och vägen in
+jobba-inom-atervinning-och-avfall             job-market          Jobba inom återvinning och avfall – ÅVC, sophämtning
 jobba-inom-butik-och-kundtjanst               job-market          Jobba i butik, kassa och kundtjänst – vad krävs
 jobba-inom-bygg                               job-market          Jobba inom bygg – yrken, vägen in och vad kroppen möter
 jobba-inom-hemtjansten                        job-market          Jobba inom hemtjänsten – så ser vardagen ut
 jobba-inom-industri-och-produktion            job-market          Jobba inom industri och produktion – skift och vägen in
 jobba-inom-lager-och-logistik                 job-market          Jobba inom lager och logistik – så ser jobbet ut
 jobba-inom-lss                                job-market          Jobba inom LSS – gruppbostad och daglig verksamhet
+jobba-med-post-och-paket                      job-market          Jobba med post och paket – brevbärare, terminal, budbil
+jobba-med-tradgard-och-parkskotsel            job-market          Jobba med trädgård och parkskötsel – säsongen styr
 jobba-som-barnskotare                         job-market          Jobba som barnskötare – förskolans vardag
 jobba-som-elevassistent                       job-market          Jobba som elevassistent – vad rollen innebär
 jobba-som-lastbilschauffor                    job-market          Jobba som lastbilschaufför – körkort, YKB och ensamarbete
 jobba-som-lokalvardare                        job-market          Jobba som lokalvårdare – vad yrket innebär
 jobba-som-personlig-assistent                 job-market          Jobba som personlig assistent – så fungerar arbetet
+jobba-som-taxiforare-eller-budbil             job-market          Jobba som taxiförare eller med budbil – vad skiljer dem
 jobba-som-underskoterska                      job-market          Jobba som undersköterska – vad jobbet innebär
 jobba-som-vaktare                             job-market          Jobba som väktare – skillnaden mot ordningsvakt
+jobba-som-vaktmastare                         job-market          Jobba som vaktmästare – bredden i uppdraget
 jobbgaranti-for-ungdomar                      job-search          Jobbgarantin för ungdomar – så fungerar den
 jobbsokar-ordlista                            tools               Jobbsökarens ordlista - viktiga begrepp
 jobbsokning-50-plus                           job-search          Jobbsökning efter 50 – erfarenhet som styrka
@@ -124,8 +135,10 @@ lattsvenska-arbetsformedlingen                easy-swedish        Arbetsförmedl
 lattsvenska-arbetsmiljo                       easy-swedish        Vad är arbetsmiljö?
 lattsvenska-avslag                            easy-swedish        När du får nej på en jobbansökan
 lattsvenska-bli-uppsagd                       easy-swedish        Vad betyder det att bli uppsagd?
+lattsvenska-bostadsbidrag                     easy-swedish        Vad är bostadsbidrag och hur ansöker jag?
 lattsvenska-cv                                easy-swedish        Så skriver du ett CV
 lattsvenska-diskriminering                    easy-swedish        Vad är diskriminering?
+lattsvenska-e-legitimation                    easy-swedish        Vad är e-legitimation och hur skaffar jag BankID?
 lattsvenska-facket                            easy-swedish        Vad är facket?
 lattsvenska-forsorjningsstod                  easy-swedish        Vad är försörjningsstöd?
 lattsvenska-forsta-dagen-pa-jobbet            easy-swedish        Vad händer din första dag på jobbet?
@@ -135,12 +148,15 @@ lattsvenska-intervju                          easy-swedish        Så klarar du 
 lattsvenska-lasa-jobbannons                   easy-swedish        Hur läser jag en jobbannons?
 lattsvenska-lon-och-skatt                     easy-swedish        Lön och skatt – vad är brutto och netto?
 lattsvenska-nar-du-blir-sjuk                  easy-swedish        När du blir sjuk på jobbet
+lattsvenska-overklaga                         easy-swedish        Vad betyder det att överklaga ett beslut?
 lattsvenska-praktik                           easy-swedish        Vad är praktik?
 lattsvenska-provanstallning                   easy-swedish        Vad är en provanställning?
 lattsvenska-rapportera-till-arbetsformedlingeneasy-swedish        Rapportera till Arbetsförmedlingen varje månad
 lattsvenska-referenser                        easy-swedish        Vad är en referens?
 lattsvenska-semester                          easy-swedish        Vad är semester?
+lattsvenska-sjukanmalan                       easy-swedish        Vad gör jag första dagen jag är sjuk?
 lattsvenska-skriva-mail                       easy-swedish        Skriva bra jobbmail
+lattsvenska-skulder                           easy-swedish        Vad gör jag om jag har skulder?
 lattsvenska-tips-bra-cv                       easy-swedish        10 tips för ett bra CV
 lattsvenska-vad-ar-cv                         easy-swedish        Vad är ett CV?
 linkedin-optimering                           digital-presence    Komplett guide till LinkedIn-optimering
@@ -162,6 +178,8 @@ natverka-for-jobb                             networking          Nätverkande �
 natverksbyggande-guide                        networking          Bygg ditt professionella nätverk från grunden
 nystartsjobb-guide                            accessibility       Nystartsjobb – ditt extra stöd in i arbetslivet
 ordlista-jobbsokning                          tools               Ordlista: Vanliga termer i jobbsökning
+ordna-din-jobbmejl                            tools               Ordna din jobbmejl – så missar du inget svar
+overklaga-ett-beslut                          employment-law      Överklaga ett beslut – så gör du, och till vem
 personlig-ekonomi-jobbsokning                 employment-law      Personlig ekonomi under jobbsökning
 personlighetstyper-arbete                     self-awareness      Personlighetstyper och arbetsstilar
 personlighetstyper-i-arbetslivet              self-awareness      Personlighetstyper i arbetslivet – hitta din profil
@@ -183,11 +201,15 @@ sasongsjobb-guide                             job-search          Hitta och lyck
 sfi-och-jobbsokande-samtidigt                 job-search          Söka jobb medan du läser SFI – varför du inte behöver vänta
 sius-stod-vid-introduktion                    accessibility       SIUS – stöd när du ska introduceras i ett nytt jobb
 sjuklon-karens-och-vab                        employment-law      Sjuklön, karensavdrag och vab – när du är ny på jobbet
+skanna-och-skicka-dokument                    tools               Skanna och skicka dokument till en jobbansökan
 skatt-pa-lon-forsta-jobbet                    employment-law      Skatt på lönen – så läser du ditt första lönebesked
 skriva-in-dig-arbetsformedlingen              job-search          Skriva in dig på Arbetsförmedlingen – så går det till
+skulder-och-kronofogden                       employment-law      Skulder och Kronofogden – vad som faktiskt händer
 skyddat-arbete-och-samhall                    accessibility       Skyddat arbete och Samhall – vad det innebär
 sociala-medier-jobbsokning                    digital-presence    Sociala medier i jobbsökningen - mer än bara LinkedIn
 sociala-medier-jobsokning                     digital-presence    Sociala medier i jobbsökningen – mer än LinkedIn
+soka-jobb-efter-avtjanat-straff               job-search          Söka jobb efter avtjänat straff – vad som gäller
+soka-jobb-fran-mobilen                        job-search          Söka jobb från mobilen – så löser du det som är svårt
 sommarjobb-och-extrajobb                      job-search          Sommarjobb och extrajobb – vägen in när du saknar erfarenhet
 sta-fem-faktorer                              wellness            Fem faktorer för hållbar aktivitet
 sta-hard-talk                                 wellness            Hard Talk — så för du svåra samtal
@@ -204,11 +226,13 @@ styrkor-svagheter-intervju                    self-awareness      Så pratar du 
 svenska-pa-jobbet                             career-development  Svenska på jobbet – vad som faktiskt krävs
 tackbrev-intervju                             interview           Skriv ett tackbrev efter intervjun
 telefonintervju-tips                          interview           Telefonintervju – så lyckas du
+tillbaka-till-arbete-efter-beroende           accessibility       Tillbaka till arbete efter ett beroende – så gör du
 tillbaka-till-jobb-efter-sjukskrivning        accessibility       Tillbaka till jobb efter lång sjukskrivning
 under-intervjun-tips                          interview           Under intervjun: Tekniker som gör skillnad
 underhall-kontakter                           networking          Underhåll ditt nätverk – långsiktiga relationer
 uppsagningstid-och-uppsagningsbesked          employment-law      Uppsägningstid och uppsägningsbesked – vad som gäller
 upptack-dina-styrkor                          self-awareness      Upptäck och använd dina styrkor
+utan-fast-adress-och-soka-jobb                job-search          Utan fast adress och söker jobb – så löser du posten
 utlandsk-erfarenhet-i-cv                      job-search          CV med utländsk arbetslivserfarenhet – så skriver du
 validera-utlandsk-utbildning                  career-development  Bedömning av utländsk utbildning – så går det till
 varderingar-i-arbetslivet                     self-awareness      Vanliga arbetsvärderingar – och vad de betyder

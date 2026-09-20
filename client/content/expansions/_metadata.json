@@ -1,14 +1,13 @@
 {
-  "_kommentar": "Ändringar av titel, sammanfattning och slug som följer med utbyggnaden. Nyckeln är artikelns NUVARANDE slug i prod. Läses av scripts/apply-expansions.cjs. Utelämna fält som inte ska ändras.",
-  "branscher-brist": {
-    "title": "Var finns jobben — och för vem?",
-    "summary": "Skillnaden mellan bristyrken, paradoxyrken och överskottsyrken — och varför den avgör var det är värt att söka.",
-    "_varfor": "Gamla titeln lovade en branschöversikt. Artikeln handlar nu om att rätt nivå att tänka på är yrket, inte branschen. Sluggen saknar årtal och behålls."
+  "_kommentar": "Innehållsomgång 7 (2026-09-20). Grundad i Search Console-mätning 2026-06-20 – 2026-09-19, inte i magkänsla — första omgången som uppfyller K4:s regel. Titel och summary skrivs om där mätningen visar att läsarens ord inte finns i titeln.",
+
+  "arbetsgivarintyg-och-betyg": {
+    "title": "Arbetsgivarintyg, arbetsintyg eller anställningsbevis?",
+    "summary": "Fem ord för två olika papper. Vad skillnaden är mellan intyg och betyg, vilket a-kassan vill ha, och hur du begär rätt sak."
   },
-  "arbetsmarknadstrender-2024": {
-    "nySlug": "lasa-arbetsmarknaden",
-    "title": "Att läsa arbetsmarknaden",
-    "summary": "Vad siffrorna om arbetsmarknaden betyder — och vad de inte betyder för dig som söker jobb.",
-    "_varfor": "Både titel och slug bar årtalet 2024, vilket gjorde artikeln daterad från dag ett och fick triageregeln att utesluta den. Innehållet är omskrivet till ett tåligt lager om HUR man läser läget plus ett tunt daterat lager. Ingen artikel refererar till den gamla sluggen (kontrollerat mot related_article_slugs), den var opublicerad, och `lasa-arbetsmarknaden` är ledig — så bytet bryter ingen länk. OBS: förväxla den inte med den redan publicerade `arbetsmarknadstrender-nu`, som handlar om AI, distansarbete och gigekonomi. Olika ämnen."
+
+  "forsta-90-dagarna": {
+    "title": "30-60-90-dagarsplan – dina första 90 dagar på nya jobbet",
+    "summary": "Vad du gör de första 30, 60 och 90 dagarna på ett nytt jobb – och hur du gör en egen plan för dem."
   }
 }

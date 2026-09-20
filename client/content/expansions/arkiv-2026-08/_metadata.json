@@ -1,0 +1,14 @@
+{
+  "_kommentar": "Ändringar av titel, sammanfattning och slug som följer med utbyggnaden. Nyckeln är artikelns NUVARANDE slug i prod. Läses av scripts/apply-expansions.cjs. Utelämna fält som inte ska ändras.",
+  "branscher-brist": {
+    "title": "Var finns jobben — och för vem?",
+    "summary": "Skillnaden mellan bristyrken, paradoxyrken och överskottsyrken — och varför den avgör var det är värt att söka.",
+    "_varfor": "Gamla titeln lovade en branschöversikt. Artikeln handlar nu om att rätt nivå att tänka på är yrket, inte branschen. Sluggen saknar årtal och behålls."
+  },
+  "arbetsmarknadstrender-2024": {
+    "nySlug": "lasa-arbetsmarknaden",
+    "title": "Att läsa arbetsmarknaden",
+    "summary": "Vad siffrorna om arbetsmarknaden betyder — och vad de inte betyder för dig som söker jobb.",
+    "_varfor": "Både titel och slug bar årtalet 2024, vilket gjorde artikeln daterad från dag ett och fick triageregeln att utesluta den. Innehållet är omskrivet till ett tåligt lager om HUR man läser läget plus ett tunt daterat lager. Ingen artikel refererar till den gamla sluggen (kontrollerat mot related_article_slugs), den var opublicerad, och `lasa-arbetsmarknaden` är ledig — så bytet bryter ingen länk. OBS: förväxla den inte med den redan publicerade `arbetsmarknadstrender-nu`, som handlar om AI, distansarbete och gigekonomi. Olika ämnen."
+  }
+}

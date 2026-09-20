@@ -234,6 +234,63 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Innehållsomgång 7 (2026-09-20) — den första som uppfyller K4
+
+**K4:s regel:** ingen omgång utan mätning från den föregående. Regeln har frangåtts fyra
+gånger sedan 5 augusti. Den här omgången har mätningen — och mätningen ändrade både
+omfattningen och riktningen.
+
+### Utfallet: 98 klick / 20 942 visningar på 90 dygn
+
+146 sidor med data. Innehållet **syns** och **klickas inte**: CTR är 0,47 % totalt, 0,75 %
+även på sida ett.
+
+### Tre förslag som föll vid mätning — mina egna
+
+| Förslag | Vad mätningen visade |
+|---|---|
+| "Lyft sidorna på position 11–20" | Zonen är 23 sidor / 6 231 visningar / 34 klick. Med sida ett-CTR skulle den ge **~47 klick i stället för 34**. Hela lyftet är värt +13 klick på 90 dygn. Positionen är inte flaskhalsen |
+| Ny sida: "byta leverantör Rusta och matcha" | Artikeln finns och heter redan *"Rusta och matcha – så väljer du leverantör, och så byter du"*. Ingen lucka — en rankningsfråga |
+| Ny sida: "gå med i facket" | Finns: `facket-ska-jag-ga-med`, vars titel dessutom säger *"Facket och a-kassan är olika"*. Samma sak för "a-kassa utan facket" — täckt i **två** artiklars titel och ingress |
+
+**Slutsatsen är obekväm men tydlig: täckningen är inte flaskhalsen.** 241 artiklar täcker
+i praktiken hela den uppmätta efterfrågan. Att skriva fler artiklar lägger till sidor som
+också hamnar på position 10–20 med 0,5 % CTR — och riskerar kannibalisering, vilket redan
+kostat oss SE1/SE2 och kompetensparet.
+
+### Det som faktiskt gjordes: två uppdateringar, noll nya
+
+Ett **intygskluster** var det enda som höll: fem ord för samma pappersfamilj, ~140 visningar,
+**alla på position 58–78** — alltså osynliga. Läsarens ord fanns inte i någon titel.
+
+| Artikel | Åtgärd | Belägg |
+|---|---|---|
+| `arbetsgivarintyg-och-betyg` | Ny titel *"Arbetsgivarintyg, arbetsintyg eller anställningsbevis?"* + nytt avsnitt som reder ut alla fem orden med tabell. 772 → 1 007 ord | arbetsintyg 44 visn (pos 72,2), tjänstgöringsintyg 51 (78,6), anställningsintyg 18 (72,8), anställningsbevis 15 (77,5), arbetsbetyg 12 (58,5) |
+| `forsta-90-dagarna` | Ny titel *"30-60-90-dagarsplan – dina första 90 dagar på nya jobbet"*; söktermen fanns i brödtexten men inte i titeln | 30-60-90-dagarsplan 47 visn, **pos 10,2** — närmast sida ett av allt i mätningen |
+
+Intygsartikeln hade dessutom **noll externa källankär** — exakt det fel skillen varnar för
+(14 av 25 artiklar i omgång 6). Den har nu tre, alla kontrollerade med HTTP 200 innan de
+skrevs in: Sveriges a-kassor, IAF och Arbetsförmedlingen.
+
+Verifierat i **byggd HTML**, inte i källkoden: en `<h1>` per sida, korrekt canonical, JSON-LD
+parsar, krisstödsblocket närvarande, ingen rå markdown, båda i sitemapen. `npm run verify`
+grönt (287 testfiler / 3 474 tester).
+
+### Nästa omgång: bygg MK2 först, skriv sedan
+
+Det största obesvarade klustret i datan är **IT och lön** — "it-branschen" (111+78),
+"jobba inom it" (88), "bäst betalda it jobben" (63), "produktägare it lön" (60), "yrken
+inom it" (58). **~450 visningar, alla på position 37–69.** Vi har `branschguide-it-tech`
+och rankar ingenstans.
+
+Två av frågorna är **lönefrågor**, och det är där MK2 blir avgörande: med SCB:s officiella
+percentiler per SSYK kan vi publicera något ingen konkurrent har. **Att skriva IT-innehåll
+innan MK2 finns är att tävla med hela internet på generella karriärråd** — vilket är precis
+det portalen rankar sämst på ("karriärbyte" pos 45, "byta karriär" 55, "arbetskultur" 55,
+"vad motiverar dig" 51, alla med noll klick).
+
+---
+
 ## Premissgranskning 2026-09-20 (kväll) — de 32 kvarvarande raderna
 
 Efter dagens byggpass gjordes det som inte kräver ett beslut: **premissgranska
