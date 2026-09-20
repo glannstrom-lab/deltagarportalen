@@ -1,0 +1,63 @@
+{
+  "validering-av-yrkeskunskaper": {
+    "title": "Validering av yrkeskunskaper – få det du kan bedömt",
+    "summary": "Hur validering av yrkeskunskaper går till, vem som bedömer dig, vad intyget är värt, och hur det skiljer sig från att bedöma en utländsk examen.",
+    "category_key": "career-development",
+    "subcategory": "validering",
+    "tags": ["validering", "yrkeskunskaper", "kompetensbedömning", "Arbetsförmedlingen"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["validera-utlandsk-utbildning", "arbetsmarknadsutbildning", "utlandsk-erfarenhet-i-cv", "folkhogskola-studiemotiverande-kurs"],
+    "related_tools": ["/skills-gap-analysis", "/education"],
+    "checklist": [],
+    "actions": [
+      { "href": "/skills-gap-analysis", "label": "Se vad som saknas mot ditt drömjobb", "type": "primary" },
+      { "href": "/education", "label": "Hitta en kompletterande utbildning", "type": "secondary" }
+    ]
+  },
+  "folkhogskola-studiemotiverande-kurs": {
+    "title": "Studiemotiverande kurs på folkhögskola – vad du får ut",
+    "summary": "Vad en studiemotiverande kurs på folkhögskola innehåller, vem som anvisas dit, hur den skiljer sig från komvux, och vad som händer efteråt.",
+    "category_key": "career-development",
+    "subcategory": "utbildning",
+    "tags": ["folkhögskola", "studiemotiverande kurs", "gymnasieutbildning", "Arbetsförmedlingen"],
+    "difficulty": "easy",
+    "energy_level": "medium",
+    "related_article_slugs": ["arbetsmarknadsutbildning", "sfi-och-jobbsokande-samtidigt", "validering-av-yrkeskunskaper", "yrkessvenska"],
+    "related_tools": ["/education"],
+    "checklist": [],
+    "actions": [
+      { "href": "/education", "label": "Utforska vägar vidare i utbildning", "type": "primary" }
+    ]
+  },
+  "yrkessvenska": {
+    "title": "Yrkessvenska – språket för ditt yrke, inte bara vardagen",
+    "summary": "Vad yrkessvenska är, hur den skiljer sig från sfi, när den blir aktuell, och hur du kommer in på en kurs via Arbetsförmedlingen.",
+    "category_key": "career-development",
+    "subcategory": "sprak",
+    "tags": ["yrkessvenska", "sfi", "språkutbildning", "Arbetsförmedlingen"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["sfi-och-jobbsokande-samtidigt", "arbetsmarknadsutbildning", "praktik-som-vag-in", "folkhogskola-studiemotiverande-kurs"],
+    "related_tools": ["/education"],
+    "checklist": [],
+    "actions": [
+      { "href": "/education", "label": "Se utbildningar som kan passa", "type": "primary" }
+    ]
+  },
+  "etableringsjobb": {
+    "title": "Etableringsjobb – en riktig anställning, inte ett program",
+    "summary": "Skillnaden mot etableringsprogrammet, vem som kan anställas, vilka arbetsgivare som kan erbjuda det, och vad som gör det till en riktig anställning.",
+    "category_key": "employment-law",
+    "subcategory": "anstallningsstod",
+    "tags": ["etableringsjobb", "etableringsprogrammet", "anställningsstöd", "kollektivavtal"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["etableringsprogrammet", "introduktionsjobb", "nystartsjobb-guide", "praktik-som-vag-in"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Sök jobb hos arbetsgivare i din bransch", "type": "primary" }
+    ]
+  }
+}

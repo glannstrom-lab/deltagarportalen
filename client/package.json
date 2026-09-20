@@ -12,6 +12,7 @@
     "content:refresh": "node scripts/content-snapshot.cjs",
     "content:triage": "node scripts/triage-articles.cjs",
     "content:new": "node scripts/apply-new-articles.cjs",
+    "content:granska": "node scripts/granska-nya-artiklar.cjs",
     "guides": "node scripts/prerender-guides.cjs && node scripts/generate-sitemap.cjs",
     "build:only": "vite build",
     "sitemap": "node scripts/generate-sitemap.cjs",

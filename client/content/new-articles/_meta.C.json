@@ -1,0 +1,79 @@
+{
+  "lattsvenska-personligt-bitrade": {
+    "title": "Vad är ett personligt biträde på jobbet?",
+    "summary": "Ett personligt biträde hjälper dig som har en funktionsnedsättning att klara jobbet. Här får du veta vem som betalar och hur du frågar.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["personligt biträde", "funktionsnedsättning", "Arbetsförmedlingen"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-arbetshjalpmedel", "funktionsnedsattning-jobbsokning", "lattsvenska-anstallningsavtal"],
+    "related_tools": [],
+    "checklist": [
+      "Skriv ner vad som är svårt i ditt jobb",
+      "Kontakta Arbetsförmedlingen",
+      "Berätta vilken hjälp du behöver",
+      "Fråga din arbetsgivare om ni kan ansöka tillsammans"
+    ],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
+    ]
+  },
+  "lattsvenska-validering": {
+    "title": "Vad är validering av det du redan kan?",
+    "summary": "Validering ger dig papper på kunskap du redan har, även från ett annat land eller ett jobb. Så fungerar det.",
+    "category_key": "easy-swedish",
+    "subcategory": "utbildning",
+    "tags": ["validering", "kompetens", "utländsk utbildning"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["validera-utlandsk-utbildning", "lattsvenska-vad-ar-cv", "arbetsmarknadsutbildning"],
+    "related_tools": ["/skills-gap-analysis", "/cv"],
+    "checklist": [
+      "Skriv ner vad du kan och var du lärt dig det",
+      "Kontakta Arbetsförmedlingen eller vuxenutbildningen",
+      "Fråga om validering för ditt yrke",
+      "Boka tid för bedömning"
+    ],
+    "actions": [
+      { "href": "/skills-gap-analysis", "label": "Se vad som kan saknas för ett jobb", "type": "primary" },
+      { "href": "/cv", "label": "Lägg till din kompetens i CV:t", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-etableringsjobb": {
+    "title": "Vad är ett etableringsjobb?",
+    "summary": "Ett etableringsjobb är ett riktigt jobb där staten hjälper till med lönen. Det är inte samma sak som etableringsprogrammet.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["etableringsjobb", "anställning", "Arbetsförmedlingen"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["etableringsprogrammet", "lattsvenska-anstallningsavtal", "lattsvenska-provanstallning"],
+    "related_tools": ["/job-search", "/applications"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" },
+      { "href": "/applications", "label": "Håll koll på dina ansökningar", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-arbetshjalpmedel": {
+    "title": "Vad är arbetshjälpmedel?",
+    "summary": "Arbetshjälpmedel gör att du kan jobba trots en funktionsnedsättning. Här ser du vem som betalar och vem du frågar.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["arbetshjälpmedel", "funktionsnedsättning", "Försäkringskassan"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-personligt-bitrade", "funktionsnedsattning-jobbsokning", "lattsvenska-arbetsmiljo"],
+    "related_tools": [],
+    "checklist": [
+      "Skriv ner vad som är svårt i jobbet",
+      "Prata med din arbetsgivare om möjliga hjälpmedel",
+      "Ta reda på om du frågar Arbetsförmedlingen eller Försäkringskassan",
+      "Skicka in ansökan"
+    ],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
+    ]
+  }
+}

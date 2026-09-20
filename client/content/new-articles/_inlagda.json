@@ -1,0 +1,19 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-09-20",
+  "slugs": [
+    "arbetshjalpmedel-pa-jobbet",
+    "etableringsjobb",
+    "folkhogskola-studiemotiverande-kurs",
+    "forstarkt-arbetstraning",
+    "individuellt-pedagogiskt-stod",
+    "lattsvenska-arbetshjalpmedel",
+    "lattsvenska-etableringsjobb",
+    "lattsvenska-personligt-bitrade",
+    "lattsvenska-validering",
+    "personligt-bitrade",
+    "tolk-och-litteratur-stod",
+    "validering-av-yrkeskunskaper",
+    "yrkessvenska"
+  ]
+}

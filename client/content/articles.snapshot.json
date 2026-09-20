@@ -2,7 +2,7 @@
   "_generated": "npm run content:refresh — redigera inte för hand",
   "_source": "public.articles where is_active (prod)",
   "generatedAt": "2026-09-20",
-  "count": 241,
+  "count": 254,
   "articles": [
     {
       "actions": [
@@ -541,6 +541,64 @@
       ],
       "title": "Arbetsgivarintyg, arbetsintyg eller anställningsbevis?",
       "updated_at": "2026-09-20 21:36:03.838726+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva på hur du berättar om vilket hjälpmedel du behöver",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner exakt vilken arbetsuppgift som är svår utan hjälpmedlet"
+        },
+        {
+          "id": "2",
+          "text": "Ta reda på om Arbetsförmedlingen eller Försäkringskassan gäller för dig"
+        },
+        {
+          "id": "3",
+          "text": "Skicka in ansökan innan du köper eller beställer något"
+        },
+        {
+          "id": "4",
+          "text": "Vänta på beslut innan inköp görs"
+        },
+        {
+          "id": "5",
+          "text": "Fråga vad som gäller för hjälpmedlet om du byter jobb"
+        }
+      ],
+      "content": "Behöver du en särskild stol, ett anpassat tangentbord, hörselteknik eller ett annat hjälpmedel för att klara ditt arbete? Då finns bidrag till arbetshjälpmedel, antingen via Arbetsförmedlingen eller Försäkringskassan beroende på hur länge du varit anställd. Här är vilka hjälpmedel det gäller, vem som äger dem, och vad som händer om du byter jobb.\n\n## Vilka hjälpmedel det gäller\n\nEtt arbetshjälpmedel är en sak, ofta teknisk, som du personligen behöver för att kunna utföra dina arbetsuppgifter på grund av en funktionsnedsättning. Det kan vara programvara som läser upp text, en ergonomisk arbetsstol anpassad efter en specifik diagnos, förstorande skärmar, hörselteknik eller andra individuella lösningar.\n\nDet här är inte samma sak som en generell anpassning av arbetsplatsen, till exempel en ombyggd entré eller ändrade rutiner som gäller oavsett vem som sitter på platsen. Handlar det om sådant, läs i stället [Anpassningar på arbetsplatsen – vad du kan be om](/knowledge-base/article/anpassningar-arbetsplats).\n\n## Vem betalar: Arbetsförmedlingen eller Försäkringskassan\n\nVem du vänder dig till avgörs av hur länge du varit anställd hos din nuvarande arbetsgivare, inte av vilken typ av hjälpmedel det gäller.\n\n| Din situation | Vem du vänder dig till |\n|---|---|\n| Du söker jobb, eller har varit anställd en kortare tid hos din nuvarande arbetsgivare | [Arbetsförmedlingen](https://arbetsformedlingen.se) |\n| Du har varit anställd en längre tid hos samma arbetsgivare | [Försäkringskassan](https://www.forsakringskassan.se) |\n| Du har en anställning med lönebidrag, eller skyddat arbete hos en offentlig arbetsgivare | Arbetsförmedlingen, oavsett hur länge anställningen pågått |\n\nÄr du osäker på vilken av de två som gäller dig just nu, fråga din handläggare på Arbetsförmedlingen. De kan hänvisa dig vidare om ansvaret ligger hos Försäkringskassan.\n\n## Vem ansöker\n\nBåde du som anställd och din arbetsgivare kan ansöka, och i praktiken är det ofta ett samarbete: du beskriver vad du behöver och varför, arbetsgivaren bekräftar arbetsuppgifterna och kan lägga till sin egen bild av behovet. En huvudregel är att bidrag bara beviljas om ingen annan redan betalar för samma sak, du kan alltså inte få bidrag för ett hjälpmedel arbetsgivaren redan bekostat på annat sätt.\n\n## Vem äger hjälpmedlet\n\nDet är den som beviljats bidraget som äger hjälpmedlet. Har din arbetsgivare sökt och fått bidraget är det arbetsgivarens egendom, kopplat till din arbetsplats. Har du sökt och fått bidraget själv, till exempel som arbetssökande innan du fått jobbet, är det ditt eget.\n\nDen här skillnaden spelar roll den dagen du slutar eller byter jobb.\n\n## Vad händer om du byter jobb\n\nReglerna är utformade för att göra det lättare att ta med sig ett hjälpmedel som är personligt, det vill säga kopplat till din funktionsnedsättning snarare än till en specifik arbetsplats. Är hjälpmedlet av det slaget, och du äger det själv, är utgångspunkten att du kan ta det med dig till nästa jobb.\n\nÄr hjälpmedlet i stället knutet till en viss arbetsstation eller inköpt av arbetsgivaren för just den platsen, kan det bli kvar när du slutar. Prata med din handläggare innan du säger upp dig om du är osäker på vad som gäller för just ditt hjälpmedel, det är enklare att reda ut i förväg än efteråt.\n\n## Hur ansökan går till\n\n1. Beskriv vilken arbetsuppgift som är svår att klara utan hjälpmedel, och varför.\n2. Ta reda på om det är Arbetsförmedlingen eller Försäkringskassan som ansvarar utifrån din anställningstid.\n3. Skicka in ansökan, gärna innan du köper eller beställer något själv.\n4. Vänta på beslut innan inköp görs, annars riskerar du att stå för kostnaden själv.\n5. Följ upp om behovet ändras, till exempel om arbetsuppgifterna förändras eller hjälpmedlet behöver bytas ut.\n\n## Vad gör jag nu\n\nSkriv ner exakt vilken arbetsuppgift som är svår och varför, det är den beskrivningen som avgör om ansökan går igenom. Ta sedan reda på om det är Arbetsförmedlingen eller Försäkringskassan som gäller för dig utifrån hur länge du varit anställd, och vänta på beslut innan du köper något själv.\n\n## Vanliga frågor\n\n### Kan jag få bidrag för ett hjälpmedel jag redan köpt?\nHuvudregeln är att ansökan ska göras innan du köper eller beställer hjälpmedlet. Har du redan betalat själv, kontakta Arbetsförmedlingen eller Försäkringskassan för att se vad som gäller i din situation.\n\n### Måste jag ha en diagnos för att få bidrag?\nDet som avgörs är hur funktionsnedsättningen eller sjukdomen påverkar din förmåga att klara specifika arbetsuppgifter, inte diagnosen i sig. Underlag från vården kan behövas som stöd för bedömningen.\n\n### Gäller samma regler om jag arbetar hemifrån?\nJa, ett arbetshjälpmedel kan beviljas oavsett var du utför ditt arbete, så länge behovet är kopplat till dina faktiska arbetsuppgifter.\n\n### Vad händer om jag blir av med jobbet innan hjälpmedlet är utbetalt?\nBlir du arbetslös medan en ansökan är under handläggning, hör av dig till den myndighet som handlägger ärendet för att se hur det påverkar beslutet.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "anpassningar-arbetsplats",
+        "personligt-bitrade",
+        "rattigheter-stod"
+      ],
+      "related_tools": [
+        "/interview-simulator"
+      ],
+      "slug": "arbetshjalpmedel-pa-jobbet",
+      "sort_order": 0,
+      "subcategory": "stod-pa-arbetsplatsen",
+      "summary": "Vilka hjälpmedel bidraget gäller, om det är Arbetsförmedlingen eller Försäkringskassan som betalar, och vad som händer om du byter jobb.",
+      "tags": [
+        "arbetshjälpmedel",
+        "Arbetsförmedlingen",
+        "Försäkringskassan",
+        "funktionsnedsättning"
+      ],
+      "title": "Bidrag till arbetshjälpmedel – vem betalar och vem äger det",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [
@@ -2775,6 +2833,44 @@
     {
       "actions": [
         {
+          "href": "/job-search",
+          "label": "Sök jobb hos arbetsgivare i din bransch",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "employment-law",
+      "checklist": [],
+      "content": "Etableringsjobb och etableringsprogrammet låter nästan likadant, men de är olika saker: det ena är en riktig anställning, det andra är stöd och aktiviteter medan du ännu inte har ett jobb. Här är skillnaden, vem som kan bli anställd, och vad som gör etableringsjobb till en anställning på riktigt.\n\n## Etableringsjobb är inte samma sak som etableringsprogrammet\n\nNamnen förväxlas ofta, så börja här. Etableringsprogrammet är stöd i form av aktiviteter och utbildning för dig som är nyanländ, med målet att du ska lära dig svenska och komma i arbete. Du har ännu ingen anställning under programmet. Etableringsjobb är raka motsatsen i den bemärkelsen: det är en anställning, med en arbetsgivare, en lön och ett schema, där staten går in och fyller på lönen så att den når upp till kollektivavtalets nivå.\n\nHar du gått etableringsprogrammet kan etableringsjobb vara ett naturligt nästa steg när programmet är slut, men de är två skilda insatser med olika syften. Läs mer om själva programmet i [Etableringsprogrammet – vad som ingår](/knowledge-base/article/etableringsprogrammet).\n\n## Vem kan bli anställd med etableringsjobb\n\nEtableringsjobb riktar sig till två grupper: dig som är nyanländ och inom en viss tid sedan du först folkbokfördes i Sverige, och dig som varit arbetslös under en längre sammanhängande period. Det är alltså inte begränsat till nyanlända, även om namnet kan ge det intrycket.\n\nDet är [Arbetsförmedlingen](https://arbetsformedlingen.se) som bedömer om du tillhör någon av grupperna och som fattar det beslut som krävs innan en anställning i etableringsjobb kan börja. Är du osäker på om du kvalificerar, är din handläggare rätt person att fråga.\n\n## Vilka arbetsgivare kan erbjuda etableringsjobb\n\nInte vilken arbetsgivare som helst kan anställa med etableringsjobb. Anställningsformen bygger på kollektivavtal mellan arbetsmarknadens parter, så arbetsgivaren måste dels ha ett ordinarie kollektivavtal för yrket det gäller, dels ha kommit överens med den lokala fackliga organisationen om att använda etableringsjobb på arbetsplatsen. Saknas kollektivavtal eller den lokala överenskommelsen går det inte att erbjuda etableringsjobb, hur gärna arbetsgivaren än vill.\n\nInnan anställningen börjar måste Arbetsförmedlingen också ha fattat beslut om den statliga ersättningen. Anställningen får inte starta innan det beslutet finns, så ordningen spelar roll: beslut först, sedan första arbetsdagen.\n\n## Vad som gör det till en riktig anställning\n\nDet här är kärnan i etableringsjobb, och det som skiljer det från flera andra stöd: du är anställd på samma villkor som andra på arbetsplatsen, med samma kollektivavtal, samma rättigheter och samma skyldigheter. Skillnaden mot en vanlig anställning är hur lönen finansieras – du får en lön från arbetsgivaren, och staten fyller på mellanskillnaden genom [Försäkringskassan](https://www.forsakringskassan.se) så att din totala inkomst når upp till den lönenivå som kollektivavtalet för etableringsjobb anger.\n\nFör dig som anställd innebär det en anställning som ger dig erfarenhet, referenser och en fot in på en arbetsplats på riktiga villkor, snarare än en praktikplats eller en åtgärd vid sidan om. Anställningen är tidsbegränsad, men tanken är att den ska kunna övergå i en vanlig, permanent anställning när tiden är slut.\n\n## Vad arbetsgivaren får ut av det\n\nFör arbetsgivaren är etableringsjobb ett sätt att anställa och pröva någon till en lägre lönekostnad under en period, samtidigt som personen omfattas av samma kollektivavtal och trygghet som övriga anställda. Det gör att arbetsgivaren tar en mindre ekonomisk risk med en nyanställning, samtidigt som den anställda får en riktig plats i arbetslaget från dag ett.\n\n## Etableringsjobb jämfört med andra anställningsstöd\n\nEtableringsjobb är ett av flera stöd som gör det billigare för en arbetsgivare att anställa dig om du stått utanför arbetsmarknaden en tid. De skiljer sig i vem som kan omfattas och hur stödet är konstruerat.\n\n| | Etableringsjobb | Nystartsjobb | Introduktionsjobb |\n|---|---|---|---|\n| Kräver kollektivavtal på arbetsplatsen | Ja | Nej | Nej |\n| Formen på stödet | Statlig ersättning som fyller ut lönen till kollektivavtalsnivå | Skattereduktion till arbetsgivaren | Ekonomiskt stöd till arbetsgivaren |\n| Vem det riktar sig till | Nyanlända inom en viss tid, och långtidsarbetslösa | Den som varit borta från arbete en längre tid | Den som är ny i Sverige eller varit arbetslös länge |\n\nLäs mer om de andra två i [Nystartsjobb – ditt extra stöd in i arbetslivet](/knowledge-base/article/nystartsjobb-guide) och [Introduktionsjobb – vad stödet innebär för dig](/knowledge-base/article/introduktionsjobb).\n\n## Vad gör jag nu\n\nTa upp etableringsjobb med din handläggare på Arbetsförmedlingen och fråga om du tillhör någon av de grupper som kan omfattas. Hittar du själv en arbetsgivare som är intresserad, kontrollera att de har kollektivavtal för yrket och är beredda att gå igenom processen med Arbetsförmedlingen innan du tackar ja – anställningen kan inte börja förrän beslutet om ersättning är på plats.\n\n## Vanliga frågor\n\n### Är etableringsjobb bara för nyanlända?\nNej. Det riktar sig både till nyanlända inom en viss tid och till dig som varit arbetslös under en längre sammanhängande period, oavsett bakgrund.\n\n### Kan jag tacka nej och söka ett vanligt jobb i stället?\nJa. Etableringsjobb är en anställningsform bland flera, inte ett krav. Hittar du ett vanligt jobb utan stöd är det förstås lika giltigt.\n\n### Vad händer när tiden för etableringsjobbet är slut?\nMålet är att anställningen ska övergå i en vanlig, permanent anställning hos samma arbetsgivare. Blir det inte så, fortsätter du att vara inskriven hos Arbetsförmedlingen som vanligt och planerar nästa steg tillsammans med din handläggare.\n\n### Behöver jag ha gått etableringsprogrammet för att få etableringsjobb?\nNej, de är fristående från varandra. Etableringsprogrammet kan leda naturligt vidare till etableringsjobb, men du kan bli aktuell för etableringsjobb även utan att ha gått programmet, om du uppfyller villkoren på annat sätt.",
+      "difficulty": "medium",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "etableringsprogrammet",
+        "introduktionsjobb",
+        "nystartsjobb-guide",
+        "praktik-som-vag-in"
+      ],
+      "related_tools": [
+        "/job-search"
+      ],
+      "slug": "etableringsjobb",
+      "sort_order": 0,
+      "subcategory": "anstallningsstod",
+      "summary": "Skillnaden mot etableringsprogrammet, vem som kan anställas, vilka arbetsgivare som kan erbjuda det, och vad som gör det till en riktig anställning.",
+      "tags": [
+        "etableringsjobb",
+        "etableringsprogrammet",
+        "anställningsstöd",
+        "kollektivavtal"
+      ],
+      "title": "Etableringsjobb – en riktig anställning, inte ett program",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
+    },
+    {
+      "actions": [
+        {
           "href": "/calendar",
           "label": "Håll koll på insatser och möten",
           "type": "primary"
@@ -3060,6 +3156,44 @@
     {
       "actions": [
         {
+          "href": "/education",
+          "label": "Utforska vägar vidare i utbildning",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "career-development",
+      "checklist": [],
+      "content": "Saknar du en fullständig gymnasieutbildning och känner att steget tillbaka till skolbänken är för stort just nu? En studiemotiverande kurs på folkhögskola är byggd för precis den situationen. Här är vad kursen faktiskt innehåller, vem som kan gå den, och vad som händer när den är slut.\r\n\r\n## Vad kursen är till för\r\n\r\nKursen finns för dig som är arbetssökande och saknar en fullständig gymnasieutbildning, oavsett om det beror på att du hoppade av, att skolgången avbröts av något annat i livet, eller att du kom till Sverige efter skolåldern. Syftet är inte att ge dig gymnasiebetyg direkt, utan att bygga upp tron på att studier är möjliga igen, och ge dig studieteknik och grundfärdigheter i sådant som svenska, engelska, matematik och samhällskunskap.\r\n\r\nKursen är till för dig som är osäker på att studera igen, och folkhögskolans arbetssätt är byggt för just det: mindre grupper, mer samtal, och undervisning som utgår från var du faktiskt befinner dig snarare än ett facit alla ska nå samtidigt.\r\n\r\n## Vem som anvisas dit\r\n\r\nDet är [Arbetsförmedlingen](https://arbetsformedlingen.se) som bedömer om kursen passar dig och anvisar dig till den. Du behöver alltså vara inskriven som arbetssökande och prata med din handläggare om att du är intresserad, snarare än att söka in på egen hand som till en vanlig utbildning. Handläggaren tittar på din situation: vad du har för utbildningsbakgrund, vad du behöver för att komma vidare, och om en folkhögskola i närheten har en kursstart som passar.\r\n\r\nUnder tiden du går kursen räknas den som ett program hos Arbetsförmedlingen, vilket påverkar din ersättning på ett sätt din handläggare kan förklara utifrån just din situation.\r\n\r\n## Så skiljer sig folkhögskola från komvux\r\n\r\nBåde folkhögskola och komvux vänder sig till vuxna, men de är byggda olika.\r\n\r\n| | Folkhögskola | Komvux |\r\n|---|---|---|\r\n| Styrs av | Skolans egen pedagogiska linje, inom ramarna från [Skolverket](https://www.skolverket.se) och Folkbildningsrådet | Nationell kursplan, samma för hela landet |\r\n| Betyg | Sällan i den studiemotiverande kursen, ofta omdömen i stället | Betyg per kurs, jämförbara i hela Sverige |\r\n| Gruppstorlek och tempo | Ofta mindre grupper, mer utrymme att gå i egen takt | Kursupplägg mer likt traditionell skola |\r\n| Passar särskilt | Dig som behöver bygga studievana och självförtroende igen | Dig som redan vet vilka gymnasiekurser du behöver och vill läsa dem strukturerat |\r\n\r\nIngen av vägarna är \"bättre\" i sig. Den studiemotiverande kursen på folkhögskola är tänkt som ett steg innan, för den som ännu inte är redo att gå rakt in i komvux eller en yrkesutbildning.\r\n\r\n## Vad kursen innehåller\r\n\r\nUndervisningen är upplagd kring ett fåtal kärnämnen och studieteknik, snarare än ett brett schema med många ämnen samtidigt. Du övar på sådant som att strukturera studietid, ta anteckningar, läsa längre texter och räkna igenom problem steg för steg – färdigheter som behövs oavsett vilken utbildning du fortsätter till efteråt.\r\n\r\nUndervisningen sker på plats på folkhögskolan, i grupp med andra deltagare i en liknande situation. Du är alltså inte ensam om att bygga upp studievanan igen – gruppen går igenom samma sak samtidigt som du.\r\n\r\n## Vad som händer efteråt\r\n\r\nKursen är ett steg på vägen, inte ett mål i sig. Efter kursen är den vanligaste vägen vidare in i en ordinarie utbildning: en allmän kurs på folkhögskola som kan ge grundläggande eller särskild behörighet, komvux, eller en yrkesutbildning om du redan då vet vilket håll du vill gå. En del går vidare direkt till en arbetsmarknadsutbildning om det blivit tydligt under kursen vilket yrkesspår som passar. Läs mer i [Arbetsmarknadsutbildning – så får du en plats](/knowledge-base/article/arbetsmarknadsutbildning).\r\n\r\nDin handläggare på Arbetsförmedlingen och studie- och yrkesvägledaren på folkhögskolan pratar igenom nästa steg tillsammans med dig innan kursen är slut, så att du inte står utan en plan dagen efter avslutning.\r\n\r\n## Om du redan läser sfi\r\n\r\nGår du samtidigt sfi kan det kännas som att den studiemotiverande kursen konkurrerar om tiden. Prata med din handläggare om hur de två kan kombineras eller följa på varandra utifrån var du är i din svenska – att fortsätta söka jobb och bygga studievana behöver inte vänta tills sfi är helt klar. Läs mer i [Söka jobb medan du läser sfi – varför du inte behöver vänta](/knowledge-base/article/sfi-och-jobbsokande-samtidigt).\r\n\r\n## Vad gör jag nu\r\n\r\nTa upp med din handläggare på Arbetsförmedlingen att du saknar fullständig gymnasieutbildning och är nyfiken på en studiemotiverande kurs. Fråga vilka folkhögskolor i närheten som har kurser och när nästa kursstart är. Fundera själv på vad du hoppas komma vidare till efteråt, så blir samtalet med handläggaren och folkhögskolans vägledare mer konkret från början.\r\n\r\n## Vanliga frågor\r\n\r\n### Får jag betyg efter kursen?\r\nDen studiemotiverande kursen ger normalt inte gymnasiebetyg. Den är ett förberedande steg som ska göra det lättare att klara en utbildning som ger betyg eller behörighet efteråt.\r\n\r\n### Kan jag söka kursen själv utan att gå via Arbetsförmedlingen?\r\nVägen in går via en anvisning från Arbetsförmedlingen. Är du inskriven som arbetssökande, ta upp intresset med din handläggare i stället för att söka direkt till folkhögskolan.\r\n\r\n### Vad är skillnaden mot en allmän kurs på folkhögskola?\r\nDen studiemotiverande kursen är kortare och inriktad på att bygga studievana. En allmän kurs är en längre utbildning som kan ge dig grundläggande eller särskild behörighet till högre studier.\r\n\r\n### Passar kursen mig om jag redan har fullständig gymnasieutbildning?\r\nNej, kursen riktar sig till dig som saknar den. Har du redan gymnasiekompetens finns andra vägar vidare som passar bättre, till exempel en yrkesutbildning eller arbetsmarknadsutbildning direkt.",
+      "difficulty": "easy",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "arbetsmarknadsutbildning",
+        "sfi-och-jobbsokande-samtidigt",
+        "validering-av-yrkeskunskaper",
+        "yrkessvenska"
+      ],
+      "related_tools": [
+        "/education"
+      ],
+      "slug": "folkhogskola-studiemotiverande-kurs",
+      "sort_order": 0,
+      "subcategory": "utbildning",
+      "summary": "Vad en studiemotiverande kurs på folkhögskola innehåller, vem som anvisas dit, hur den skiljer sig från komvux, och vad som händer efteråt.",
+      "tags": [
+        "folkhögskola",
+        "studiemotiverande kurs",
+        "gymnasieutbildning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Studiemotiverande kurs på folkhögskola – vad du får ut",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
+    },
+    {
+      "actions": [
+        {
           "href": "/calendar",
           "label": "Sätt en påminnelse att följa upp",
           "type": "primary"
@@ -3304,6 +3438,60 @@
       ],
       "title": "Komma igång – checklista i sju steg",
       "updated_at": "2026-08-24 10:27:59.014032+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Se vad som skiljer dig från målet med träningen",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Fråga din handläggare varför förstärkt arbetsträning föreslås för dig"
+        },
+        {
+          "id": "2",
+          "text": "Ta reda på hur ofta ni stäms av under träningen"
+        },
+        {
+          "id": "3",
+          "text": "Fråga vem som handleder dig på plats"
+        },
+        {
+          "id": "4",
+          "text": "Ta upp om något inte fungerar som tänkt"
+        }
+      ],
+      "content": "Har du fått höra att du ska få \"förstärkt arbetsträning\" och undrar vad det betyder utöver vanlig arbetsträning? Skillnaden ligger i hur mycket stöd och handledning som finns runt dig, och vem som avgör vilken form som passar. Här är vad som skiljer dem åt och vad du kan vänta dig.\n\n## Skillnaden mot vanlig arbetsträning\n\nVanlig arbetsträning handlar om att du befinner dig på en arbetsplats och övar konkreta arbetsuppgifter, ofta för att du saknar arbetslivserfarenhet eller varit borta från arbetsmarknaden länge och behöver komma igång igen med löpande handledning.\n\nFörstärkt arbetsträning är riktad mot dig som behöver arbetslivsinriktad rehabilitering, det vill säga där hälsoproblem eller en funktionsnedsättning, konstaterad eller misstänkt, gör att den vanliga formen inte räcker till. Det extra i förstärkt arbetsträning är tätare handledning och en process som är mer inriktad på att pröva och bygga upp arbetsförmåga, snarare än att bara öva specifika uppgifter.\n\n## Vad som testas\n\nI förstärkt arbetsträning ligger fokus på sådant som är svårare att se i en vanlig arbetsprövning: din motivation, hur mycket handledning du behöver för att klara olika moment, och din förmåga att samarbeta med andra på arbetsplatsen. Det handlar alltså inte bara om att kunna utföra en uppgift rent tekniskt, utan om hur hela arbetssituationen fungerar för dig.\n\n## Vem det passar för\n\nFörstärkt arbetsträning är tänkt för dig där ett hälsoproblem eller en funktionsnedsättning gör att vägen till arbete behöver gå via en mer stöttande och stegvis process. Det kan handla om psykisk ohälsa, en fysisk begränsning, eller en kombination där det är oklart exakt vad som krävs för att du ska klara ett vanligt arbete på sikt.\n\n## Vem avgör vilken form du får\n\nDet är [Arbetsförmedlingen](https://arbetsformedlingen.se) som beslutar om du ska få vanlig arbetsträning eller förstärkt arbetsträning, oftast efter ett samtal med din handläggare och ibland i samband med en arbetsförmågebedömning. Beslutet ska bygga på vad som är känt om din situation, inte på en standardmall som gäller alla.\n\nHar du redan varit igenom en arbetsförmågebedömning väger den in i beslutet. Läs mer om vad en sådan bedömning innebär i [Arbetsförmågebedömning – vad som händer, steg för steg](/knowledge-base/article/arbetsformagebedomning-vad-hander).\n\n## Vad det extra stödet består i\n\nKonkret kan det extra stödet i förstärkt arbetsträning innebära\n\n- tätare avstämningar med din handledare eller handläggare\n- mindre steg mellan varje ny arbetsuppgift, i stället för att du förväntas klara flera saker samtidigt\n- samordning med vården eller annan rehabilitering om det behövs\n- större tolerans för att träningen justeras under resans gång om något inte fungerar\n\n## Var träningen sker\n\nPrecis som vanlig arbetsträning genomförs förstärkt arbetsträning ofta på en riktig arbetsplats, hos en arbetsgivare, en förening eller en annan verksamhet som Arbetsförmedlingen samarbetar med. Skillnaden är att det finns mer stöd runt omkring, inte att platsen i sig är annorlunda.\n\n## Hur länge det pågår\n\nLängden sätts individuellt utifrån vad som är rimligt i just din situation, och följs upp löpande av din handläggare. Det finns ingen given tidsplan som gäller alla, det som avgör är hur träningen går och vad nästa steg bör vara. Fråga din handläggare vad som gäller för din period, och när nästa avstämning är inplanerad.\n\n## Vad gör jag nu\n\nHar du blivit erbjuden förstärkt arbetsträning, fråga din handläggare konkret vad det extra stödet kommer att innebära för dig: hur ofta ni stäms av, vem som handleder dig på plats, och vad som händer om något inte fungerar som tänkt. Ju tydligare du får de svaren från början, desto lättare blir det att veta om träningen är på rätt väg.\n\n## Vanliga frågor\n\n### Kan jag tacka nej till förstärkt arbetsträning?\nPrata med din handläggare om din oro. Insatsen ska utgå från vad som passar din situation, och du har rätt att förstå varför just den här formen föreslås för dig.\n\n### Är förstärkt arbetsträning detsamma som praktik?\nNej. Praktik handlar oftast om att pröva ett specifikt yrke eller en bransch. Förstärkt arbetsträning handlar om att bygga upp arbetsförmåga med tätare stöd, och kan ske inom vilken typ av arbetsuppgifter som helst.\n\n### Vem betalar min ersättning under tiden?\nDet beror på din situation och vilken ersättning du har sedan tidigare. Fråga din handläggare vad som gäller för just dig innan träningen börjar.\n\n### Kan jag gå från förstärkt till vanlig arbetsträning senare?\nJa. Insatsen kan justeras om din situation förändras, i endera riktningen. Det är en pågående bedömning, inte ett låst beslut för hela perioden.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "arbetstraning-vad-innebar-det",
+        "arbetsformagebedomning-vad-hander",
+        "sius-stod-vid-introduktion"
+      ],
+      "related_tools": [
+        "/skills-gap-analysis"
+      ],
+      "slug": "forstarkt-arbetstraning",
+      "sort_order": 0,
+      "subcategory": "arbetstraning",
+      "summary": "Skillnaden mellan vanlig och förstärkt arbetsträning, vad det extra stödet består i, och vem som avgör vilken form du får.",
+      "tags": [
+        "förstärkt arbetsträning",
+        "arbetsträning",
+        "Arbetsförmedlingen",
+        "rehabilitering"
+      ],
+      "title": "Förstärkt arbetsträning – så skiljer den sig från vanlig",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [
@@ -3808,6 +3996,61 @@
       ],
       "title": "Imposter syndrome – när du känner dig som en bluff",
       "updated_at": "2026-09-08 13:01:56.94109+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/education",
+          "label": "Utforska utbildningar som kan passa dig",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Ta upp behovet med din handläggare innan utbildningen börjar"
+        },
+        {
+          "id": "2",
+          "text": "Beskriv konkret vad som brukar vara svårt i studier"
+        },
+        {
+          "id": "3",
+          "text": "Låt kartläggningen göras innan utbildningen startar"
+        },
+        {
+          "id": "4",
+          "text": "Följ upp om stödet inte räcker till under utbildningen"
+        }
+      ],
+      "content": "Ska du gå en utbildning genom Arbetsförmedlingen och har en funktionsnedsättning som gör att studier brukar vara extra tungt? Individuellt pedagogiskt stöd, ofta kallat IPSU, finns för att öka dina chanser att klara utbildningen. Här är vad stödet faktiskt är, vilka utbildningar det gäller, och hur du begär det.\n\n## Vad stödet är\n\nIndividuellt pedagogiskt stöd är inte en enda insats utan två delar som hänger ihop. Först en kartläggning som tar reda på vilket pedagogiskt stöd just du behöver för att klara en specifik utbildning. Sedan själva stödet under utbildningens gång, i den omfattning som kartläggningen kommit fram till.\n\nSyftet är att funktionsnedsättningen inte ska avgöra om du klarar utbildningen eller inte, genom att rätt stöd finns på plats från början i stället för att upptäckas efter att du redan halkat efter.\n\n## Vilka utbildningar det gäller\n\nStödet är kopplat till utbildningar som [Arbetsförmedlingen](https://arbetsformedlingen.se) ordnar eller finansierar, framför allt arbetsmarknadsutbildningar, samt vissa andra insatser inom ramen för det Arbetsförmedlingen erbjuder. Det gäller alltså inte automatiskt om du på egen hand söker dig till komvux eller högskola, även om liknande typer av pedagogiskt stöd kan finnas att söka på andra vägar där. Är du osäker på om din utbildning omfattas, fråga din handläggare innan utbildningen börjar.\n\n## Vem stödet är till för\n\nMålgruppen är bred. Det gemensamma för alla som får stödet är inte en viss diagnos, utan att man behöver pedagogiskt stöd för att klara just den utbildning man är på väg in i. Det kan handla om koncentrationssvårigheter, inlärningssvårigheter, en neuropsykiatrisk funktionsnedsättning, en syn- eller hörselnedsättning, eller andra saker som påverkar hur du tar till dig och håller reda på studierna.\n\n## Vad kartläggningen tar reda på\n\nInnan utbildningen börjar görs en kartläggning av vilket stöd du behöver i just den utbildningen du ska gå. Kartläggningen tittar på sådant som hur du bäst tar till dig information, vilka moment som brukar vara svårast, och om det finns tekniska hjälpmedel som skulle underlätta. Resultatet av kartläggningen styr sedan hur mycket och vilken typ av stöd du får under utbildningen.\n\n## Vad det praktiska stödet kan bestå av\n\nUtifrån kartläggningen kan stödet under utbildningen till exempel innehålla\n\n- hjälp att bygga rutiner och struktur i studierna\n- stöd med studieplanering, till exempel att dela upp uppgifter i mindre steg\n- tekniska hjälpmedel anpassade efter utbildningens innehåll\n- specialiststöd, till exempel från en specialpedagog, under delar av utbildningen\n\nFöre utbildningen kan du också få öva studieteknik och testa hjälpmedel, så att du är bättre förberedd redan när kursen startar.\n\n## Hur du begär stödet\n\n1. Ta upp ditt behov med din handläggare så tidigt som möjligt, gärna redan när ni pratar om vilken utbildning som kan passa dig.\n2. Berätta konkret vad som brukar vara svårt i studiesammanhang, inte bara att du har en diagnos eller nedsättning.\n3. Låt kartläggningen genomföras innan utbildningen börjar, så att stödet finns på plats från start.\n4. Följ upp under utbildningens gång om stödet inte räcker till eller behöver justeras.\n\n## Vem bestämmer omfattningen\n\nDet är kartläggningen som styr hur mycket stöd du får, inte en fast nivå som gäller alla. Ändras dina behov under utbildningens gång, till exempel för att ett visst moment visar sig svårare än väntat, går det att ta upp med den som ansvarar för stödet och justera insatsen.\n\n## Vad gör jag nu\n\nSka du snart börja en utbildning genom Arbetsförmedlingen och tror att du kan behöva extra stöd, säg det till din handläggare innan utbildningen startar, inte efter. Beskriv konkret vad som brukar vara svårt i studiesituationer, det är den informationen kartläggningen bygger vidare på.\n\n## Vanliga frågor\n\n### Behöver jag ha en diagnos för att få stödet?\nNej, det avgörande är att kartläggningen visar att du behöver pedagogiskt stöd för att klara utbildningen, inte att du har en specifik diagnos.\n\n### Kan jag få stödet mitt i en pågående utbildning?\nJa, uppstår behovet under utbildningens gång går det att ta upp det då. Ju tidigare desto bättre, men det är inte för sent bara för att utbildningen redan börjat.\n\n### Gäller stödet högskolestudier?\nNej, det här stödet är kopplat till utbildningar som Arbetsförmedlingen ordnar eller finansierar. Studerar du på högskola finns andra vägar för pedagogiskt stöd, fråga lärosätet vad som gäller där.\n\n### Vad händer om stödet inte räcker till?\nSäg till din handläggare eller den som ansvarar för stödet under utbildningen. Omfattningen kan justeras om det visar sig att behovet var större än vad kartläggningen först visade.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "arbetsformagebedomning-vad-hander",
+        "forstarkt-arbetstraning",
+        "arbetstraning-vad-innebar-det"
+      ],
+      "related_tools": [
+        "/education"
+      ],
+      "slug": "individuellt-pedagogiskt-stod",
+      "sort_order": 0,
+      "subcategory": "utbildning",
+      "summary": "Vad individuellt pedagogiskt stöd är, vilka utbildningar det gäller, och hur du begär det innan en utbildning börjar.",
+      "tags": [
+        "IPSU",
+        "pedagogiskt stöd",
+        "Arbetsförmedlingen",
+        "utbildning",
+        "funktionsnedsättning"
+      ],
+      "title": "Individuellt pedagogiskt stöd vid utbildning – IPSU",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [],
@@ -6314,6 +6557,57 @@
     {
       "actions": [
         {
+          "href": "/externa-resurser",
+          "label": "Hitta fler stöd och kontakter",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner vad som är svårt i jobbet"
+        },
+        {
+          "id": "2",
+          "text": "Prata med din arbetsgivare om möjliga hjälpmedel"
+        },
+        {
+          "id": "3",
+          "text": "Ta reda på om du frågar Arbetsförmedlingen eller Försäkringskassan"
+        },
+        {
+          "id": "4",
+          "text": "Skicka in ansökan"
+        }
+      ],
+      "content": "Har du en funktionsnedsättning som gör vissa saker svåra på jobbet? Arbetshjälpmedel är saker som gör att du klarar jobbet ändå. Här förklarar vi vem som betalar.\n\n## Vad är arbetshjälpmedel?\n\nArbetshjälpmedel är saker som hjälper dig att klara ditt jobb.\n\nDet kan vara en särskild stol eller ett anpassat tangentbord. Det kan också vara ett program i datorn, till exempel ett som läser text högt.\n\n## Vem kan få arbetshjälpmedel?\n\nDu kan få det om du har en funktionsnedsättning.\n\nHjälpmedlet ska göra att du klarar jobbuppgifterna bättre.\n\nDu kan få det som anställd. Du kan också få det som arbetssökande.\n\n## Vem betalar för arbetshjälpmedel?\n\nDet beror på din situation.\n\nHar du precis fått jobbet betalar [Arbetsförmedlingen](https://arbetsformedlingen.se) för hjälpmedlet.\n\nHar du jobbat länge på samma ställe betalar [Försäkringskassan](https://www.forsakringskassan.se) i stället.\n\nÄr du osäker på vem som gäller för dig? Fråga någon av dem. De kan slussa dig rätt.\n\n## Vem ansöker om hjälpmedlet?\n\nDin arbetsgivare kan ansöka. Du kan också ansöka själv.\n\nDet är bra om du och arbetsgivaren pratar ihop er innan ni ansöker.\n\n## Hur vet jag vilket hjälpmedel jag behöver?\n\nPrata med din arbetsgivare om vad som är svårt.\n\nIbland behövs ett läkarutlåtande. Det är ett papper från en läkare som beskriver ditt behov.\n\nArbetsförmedlingen eller Försäkringskassan kan berätta vad som behövs i din ansökan.\n\n## Vad gör jag nu?\n\nSkriv ner vad som är svårt i ditt jobb just nu.\n\nPrata med din arbetsgivare om vilket hjälpmedel som kan lösa det.\n\nKontakta Arbetsförmedlingen eller Försäkringskassan för att ansöka.\n\n## Vanliga frågor\n\n### Kostar arbetshjälpmedel något för mig?\n\nNej. Är ansökan godkänd betalar Arbetsförmedlingen eller Försäkringskassan.\n\n### Kan jag få hjälpmedel om jag inte har någon diagnos än?\n\nFråga Arbetsförmedlingen eller Försäkringskassan. De berättar vad som krävs i just ditt fall.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "lattsvenska-personligt-bitrade",
+        "funktionsnedsattning-jobbsokning",
+        "lattsvenska-arbetsmiljo"
+      ],
+      "related_tools": [],
+      "slug": "lattsvenska-arbetshjalpmedel",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Arbetshjälpmedel gör att du kan jobba trots en funktionsnedsättning. Här ser du vem som betalar och vem du frågar.",
+      "tags": [
+        "arbetshjälpmedel",
+        "funktionsnedsättning",
+        "Försäkringskassan"
+      ],
+      "title": "Vad är arbetshjälpmedel?",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
+    },
+    {
+      "actions": [
+        {
           "href": "/wellness",
           "label": "Håll koll på hur du mår",
           "type": "primary"
@@ -6653,6 +6947,48 @@
       ],
       "title": "Vad är e-legitimation och hur skaffar jag BankID?",
       "updated_at": "2026-09-06 11:45:50.369882+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/job-search",
+          "label": "Hitta lediga jobb",
+          "type": "primary"
+        },
+        {
+          "href": "/applications",
+          "label": "Håll koll på dina ansökningar",
+          "type": "secondary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "easy-swedish",
+      "checklist": [],
+      "content": "Ett etableringsjobb är ett riktigt jobb. Staten hjälper till att betala lönen. Det är inte samma sak som etableringsprogrammet.\n\n## Vad är ett etableringsjobb?\n\nEtt etableringsjobb är ett riktigt jobb hos ett företag.\n\nDu får ett anställningsavtal precis som andra anställda. Skillnaden är att staten betalar en del av din lön.\n\n## Är etableringsjobb samma sak som etableringsprogrammet?\n\nNej. [Etableringsprogrammet](/knowledge-base/article/etableringsprogrammet) är ett program för dig som är ny i Sverige.\n\nEtableringsjobb är i stället en typ av anställning. Du kan ha etableringsjobb utan att vara med i etableringsprogrammet.\n\nDe två orden låter lika. Men de betyder olika saker.\n\n## Vem kan få ett etableringsjobb?\n\nEtableringsjobb är för dig som stått utanför jobb länge. Det är också för dig som är ny i Sverige.\n\nArbetsgivaren måste ha kollektivavtal. Det är en överenskommelse mellan facket och arbetsgivaren om löner och villkor.\n\n## Vem bestämmer lönen?\n\nArbetsgivaren betalar en del av lönen. Staten fyller på resten.\n\nTillsammans blir det en lön som följer kollektivavtalet i branschen.\n\nPengarna från staten går direkt till dig. De går inte via arbetsgivaren.\n\n## Hur länge varar ett etableringsjobb?\n\nEtableringsjobb är tidsbegränsat. Det betyder att det pågår en bestämd tid.\n\nTanken är att du sen ska få ett vanligt jobb, utan stöd.\n\nFråga arbetsgivaren eller Arbetsförmedlingen hur länge just ditt jobb varar.\n\n## Hur hittar jag ett etableringsjobb?\n\nFråga [Arbetsförmedlingen](https://arbetsformedlingen.se) om lediga etableringsjobb.\n\nDu kan också fråga fackförbund i branschen du vill jobba i.\n\n## Vad gör jag nu?\n\nKontakta Arbetsförmedlingen. Fråga om etableringsjobb passar dig.\n\nBerätta vad du kan och vilket jobb du vill ha.\n\nFråga också facket i branschen vad som gäller för dig.\n\n## Vanliga frågor\n\n### Är etableringsjobb en fast anställning?\n\nNej. Det är tidsbegränsat. Målet är att du sen får ett jobb utan stöd.\n\n### Måste jag vara ny i Sverige för att få etableringsjobb?\n\nNej. Du kan också få det om du stått utanför jobb länge. Det spelar ingen roll var du kommer ifrån.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "etableringsprogrammet",
+        "lattsvenska-anstallningsavtal",
+        "lattsvenska-provanstallning"
+      ],
+      "related_tools": [
+        "/job-search",
+        "/applications"
+      ],
+      "slug": "lattsvenska-etableringsjobb",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Ett etableringsjobb är ett riktigt jobb där staten hjälper till med lönen. Det är inte samma sak som etableringsprogrammet.",
+      "tags": [
+        "etableringsjobb",
+        "anställning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Vad är ett etableringsjobb?",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [
@@ -7111,6 +7447,57 @@
       ],
       "title": "Vad betyder det att överklaga ett beslut?",
       "updated_at": "2026-09-06 11:45:50.369882+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/externa-resurser",
+          "label": "Hitta fler stöd och kontakter",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner vad som är svårt i ditt jobb"
+        },
+        {
+          "id": "2",
+          "text": "Kontakta Arbetsförmedlingen"
+        },
+        {
+          "id": "3",
+          "text": "Berätta vilken hjälp du behöver"
+        },
+        {
+          "id": "4",
+          "text": "Fråga din arbetsgivare om ni kan ansöka tillsammans"
+        }
+      ],
+      "content": "Har du en funktionsnedsättning och behöver hjälp på jobbet? Ett personligt biträde är en person som hjälper dig. Här förklarar vi vad det är och vem du frågar.\n\n## Vad är ett personligt biträde?\n\nEtt personligt biträde är en person som hjälper dig på jobbet.\n\nHjälpen kan vara att läsa eller skriva åt dig. Den kan också vara att följa med och visa vägen.\n\n## Vem kan få ett personligt biträde?\n\nDu kan få det om du har en funktionsnedsättning. Det betyder att kroppen eller hjärnan fungerar på ett eget sätt.\n\nDet kan göra vissa jobbuppgifter svårare för dig.\n\nDu kan få stödet om du redan har ett jobb. Du kan också få det om du snart ska börja ett jobb.\n\nGår du i gymnasiet och gör praktik kan du också få hjälpen. [Praktik](/knowledge-base/article/lattsvenska-praktik) är när du provar på ett jobb utan att vara fast anställd.\n\n## Vem betalar för det personliga biträdet?\n\n[Arbetsförmedlingen](https://arbetsformedlingen.se) betalar. Arbetsförmedlingen är myndigheten som hjälper dig att hitta jobb.\n\nDin arbetsgivare ansöker om pengarna. Ibland kan du ansöka själv.\n\n## Vem bestämmer vem som får hjälpen?\n\nArbetsförmedlingen bestämmer. De tittar på vad just du behöver i ditt jobb.\n\nDe pratar med dig och din arbetsgivare innan de bestämmer.\n\n## Hur frågar jag om personligt biträde?\n\nPrata med Arbetsförmedlingen. Berätta vilket jobb du har eller söker.\n\nBerätta vilken hjälp du behöver för att klara jobbet. Du kan också be din arbetsgivare fråga åt dig.\n\n## Vad gör jag nu?\n\nKontakta Arbetsförmedlingen och berätta om ditt behov.\n\nTa med exempel på vad som är svårt i jobbet.\n\nFråga din arbetsgivare om ni kan ansöka tillsammans.\n\n## Vanliga frågor\n\n### Måste jag berätta om min funktionsnedsättning för alla på jobbet?\n\nNej. Du bestämmer själv vem du berättar för. Din arbetsgivare får dock veta att du behöver stödet.\n\n### Kan jag få ett personligt biträde om jag driver eget företag?\n\nJa, det går. Fråga Arbetsförmedlingen vad som gäller för dig.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "lattsvenska-arbetshjalpmedel",
+        "funktionsnedsattning-jobbsokning",
+        "lattsvenska-anstallningsavtal"
+      ],
+      "related_tools": [],
+      "slug": "lattsvenska-personligt-bitrade",
+      "sort_order": 0,
+      "subcategory": "arbetsformedlingen",
+      "summary": "Ett personligt biträde hjälper dig som har en funktionsnedsättning att klara jobbet. Här får du veta vem som betalar och hur du frågar.",
+      "tags": [
+        "personligt biträde",
+        "funktionsnedsättning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Vad är ett personligt biträde på jobbet?",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [
@@ -7615,6 +8002,65 @@
       ],
       "title": "Vad är ett CV?",
       "updated_at": "2026-08-24 10:27:39.936304+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Se vad som kan saknas för ett jobb",
+          "type": "primary"
+        },
+        {
+          "href": "/cv",
+          "label": "Lägg till din kompetens i CV:t",
+          "type": "secondary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "easy-swedish",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Skriv ner vad du kan och var du lärt dig det"
+        },
+        {
+          "id": "2",
+          "text": "Kontakta Arbetsförmedlingen eller vuxenutbildningen"
+        },
+        {
+          "id": "3",
+          "text": "Fråga om validering för ditt yrke"
+        },
+        {
+          "id": "4",
+          "text": "Boka tid för bedömning"
+        }
+      ],
+      "content": "Kan du redan mycket, men saknar papper på det? Validering betyder att någon bedömer vad du kan. Här förklarar vi hur det går till.\n\n## Vad är validering?\n\nValidering betyder att någon tittar på det du redan kan göra.\n\nDu kanske lärt dig det på ett jobb. Du kanske lärt dig det i ett annat land.\n\nEfter valideringen får du papper på din kompetens. Kompetens betyder det du kan och kan göra.\n\n## Varför är validering bra?\n\nMed papper på din kompetens är det lättare att söka jobb.\n\nArbetsgivare ser vad du kan, inte bara var du lärt dig det.\n\nIbland kan validering också ge dig en kortare utbildning i stället för en lång.\n\n## Vem bedömer vad jag kan?\n\nDet beror på vad du vill visa.\n\nEn utbildare bedömer om det gäller en kurs eller ett yrke. Facket eller en bransch kan också ha egna bedömare.\n\nHar du en utbildning från ett annat land finns särskild hjälp för det.\n\n## Hur går det till?\n\nDu berättar vad du kan och vad du vill visa.\n\nBedömaren kollar dina kunskaper. Det kan vara ett samtal, ett prov eller att du visar hur du jobbar.\n\nSen får du ett papper som visar vad du klarar.\n\n## Var frågar jag om validering?\n\nFråga [Arbetsförmedlingen](https://arbetsformedlingen.se) om du är inskriven där.\n\nDu kan också fråga vuxenutbildningen i din kommun.\n\nHar du en utländsk utbildning kan [Universitets- och högskolerådet](https://www.uhr.se) hjälpa dig. De bedömer utländska utbildningar.\n\n## Kostar validering något?\n\nFråga den som gör bedömningen. Det kan skilja mellan olika ställen.\n\n## Vad gör jag nu?\n\nSkriv ner vad du kan och var du lärt dig det.\n\nKontakta Arbetsförmedlingen eller vuxenutbildningen. Fråga om validering.\n\nBerätta vad du vill jobba med. Då kan de hjälpa dig rätt.\n\n## Vanliga frågor\n\n### Måste jag kunna bra svenska för att validera mig?\n\nNej, inte alltid. Vissa yrken går att validera med lite svenska. Fråga den som bedömer.\n\n### Fungerar validering för alla yrken?\n\nNej. Vissa yrken går att validera, andra inte. Fråga vuxenutbildningen vad som gäller ditt yrke.",
+      "difficulty": "easy-swedish",
+      "energy_level": "low",
+      "reading_time": 2,
+      "related_article_slugs": [
+        "validera-utlandsk-utbildning",
+        "lattsvenska-vad-ar-cv",
+        "arbetsmarknadsutbildning"
+      ],
+      "related_tools": [
+        "/skills-gap-analysis",
+        "/cv"
+      ],
+      "slug": "lattsvenska-validering",
+      "sort_order": 0,
+      "subcategory": "utbildning",
+      "summary": "Validering ger dig papper på kunskap du redan har, även från ett annat land eller ett jobb. Så fungerar det.",
+      "tags": [
+        "validering",
+        "kompetens",
+        "utländsk utbildning"
+      ],
+      "title": "Vad är validering av det du redan kan?",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [
@@ -8843,6 +9289,64 @@
       ],
       "title": "Personlighetstyper och karriärval",
       "updated_at": "2026-08-24 10:27:44.560066+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/interview-simulator",
+          "label": "Öva på hur du berättar om ditt stödbehov",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Beskriv vilka arbetsuppgifter som är svåra och hur ofta"
+        },
+        {
+          "id": "2",
+          "text": "Ta upp behovet med din chef eller HR"
+        },
+        {
+          "id": "3",
+          "text": "Kontrollera att du är inskriven hos Arbetsförmedlingen"
+        },
+        {
+          "id": "4",
+          "text": "Låt arbetsgivaren räkna fram en kostnad och skicka ansökan"
+        },
+        {
+          "id": "5",
+          "text": "Säg till om behovet förändras senare"
+        }
+      ],
+      "content": "Har du ett jobb men behöver återkommande hjälp av en kollega för att klara vissa uppgifter på grund av en funktionsnedsättning? Då finns bidraget för personligt biträde. Här är vad ett personligt biträde faktiskt gör, vem som kan få stödet, och varför det oftast är arbetsgivaren som ansöker, inte du.\n\n## Vad ett personligt biträde gör\n\nEtt personligt biträde är inte en ny tjänst som anställs utifrån. Det är en kollega på din befintliga arbetsplats som får avsatt tid, eller extra ersättning för sin tid, för att hjälpa dig med sådant du behöver stöd med i vardagen på jobbet. Det kan handla om att läsa eller skriva åt dig, följa med till möten, hjälpa dig förflytta dig i lokalerna, eller andra uppgifter som återkommer i ditt arbete.\n\nSkillnaden mot mycket annat stöd är att biträdet redan känner jobbet och arbetsplatsen. Det gör att hjälpen ofta blir en naturlig del av arbetsdagen i stället för något som syns utifrån.\n\n## Vem kan få det\n\nBidraget riktar sig till dig vars arbetsförmåga är nedsatt på grund av en funktionsnedsättning eller sjukdom, och där behovet av hjälp är återkommande snarare än ett enstaka tillfälle. [Arbetsförmedlingen](https://arbetsformedlingen.se) bedömer behovet tillsammans med dig och din arbetsgivare, utifrån vilka arbetsuppgifter det handlar om och hur ofta hjälpen behövs.\n\nÄr du egen företagare och har ett eget stödbehov kan du ansöka om bidraget själv, i stället för via en arbetsgivare.\n\n## Vem ansöker, och varför\n\nDet är arbetsgivaren som skickar in ansökan, inte du. Anledningen är att bidraget är en ekonomisk ersättning till arbetsgivaren för den arbetstid kollegan lägger på att hjälpa dig, snarare än en ersättning som betalas ut till dig personligen.\n\nDet betyder inte att du är passiv i processen. Du är den som bäst kan beskriva vilka moment som är svåra och hur ofta de återkommer, och den beskrivningen är det arbetsgivaren bygger ansökan på. Är du inte redan inskriven hos Arbetsförmedlingen behöver du skriva in dig för att bidraget ska kunna beviljas.\n\n## Skillnaden mot en arbetsassistent eller SIUS\n\nPersonligt biträde blandas ofta ihop med annat stöd som också handlar om att ha någon vid sin sida. Så skiljer de sig åt:\n\n| Stöd | Vem hjälper | Hur länge |\n|---|---|---|\n| Personligt biträde | En kollega på din befintliga arbetsplats | Så länge behovet finns kvar, ingen bortre gräns |\n| SIUS (särskild stödperson) | En specialist från Arbetsförmedlingen som introducerar dig i ett nytt jobb | En avgränsad period i samband med att en ny anställning börjar |\n\nHar du redan ett jobb och behovet är återkommande, är personligt biträde oftast rätt väg. Ska du börja ett nytt jobb och behöver hjälp med att komma in i det, är SIUS byggt för just den situationen. Läs mer i [SIUS – stöd när du ska introduceras i ett nytt jobb](/knowledge-base/article/sius-stod-vid-introduktion).\n\n## Hur ansökan går till\n\n1. Beskriv tillsammans med din arbetsgivare vilka arbetsuppgifter eller situationer du behöver hjälp med, och hur ofta det händer.\n2. Arbetsgivaren räknar fram en ungefärlig kostnad utifrån hur mycket tid kollegan lägger på att hjälpa dig.\n3. Arbetsgivaren skickar in ansökan till Arbetsförmedlingen.\n4. Arbetsförmedlingen bedömer behovet, vid behov efter att ha pratat med dig direkt.\n5. Beviljas bidraget betalas det ut till arbetsgivaren löpande, så länge behovet finns kvar.\n\n## Om dina arbetsuppgifter ändras\n\nByter du arbetsuppgifter hos samma arbetsgivare, eller förändras behovet över tid, kan bidraget omprövas. Det är inget engångsbeslut som gäller oavsett vad som händer på jobbet efteråt, utan något som ska spegla det stöd du faktiskt behöver just nu. Märker du att ditt behov förändras, säg till din arbetsgivare så att en ny bedömning kan göras hos Arbetsförmedlingen.\n\n## Vad gör jag nu\n\nKänner du igen dig i beskrivningen, ta upp det med din chef eller HR. Beskriv konkret vilka moment som är svåra och hur ofta de återkommer, det är den informationen som avgör om och hur mycket bidrag som kan beviljas. Är du osäker på om din arbetsplats redan sökt liknande stöd tidigare, fråga innan ni börjar om.\n\n## Vanliga frågor\n\n### Kan jag ansöka själv om jag är anställd?\nNej, är du anställd är det din arbetsgivare som ansöker. Är du egen företagare kan du söka bidraget själv.\n\n### Måste jag vara inskriven hos Arbetsförmedlingen?\nJa, för att bidraget ska kunna beviljas behöver du vara inskriven, eller skriva in dig i samband med att ansökan görs.\n\n### Kan biträdet vara vem som helst på jobbet?\nDet ska vara en kollega som faktiskt utför uppgifterna åt dig, men det finns inget krav på en viss titel eller roll. Det viktiga är att hjälpen är återkommande och kopplad till din arbetsförmåga.\n\n### Försvinner bidraget om mitt behov minskar?\nBidraget följer behovet. Minskar behovet kan bidraget minska eller upphöra, precis som det kan öka om behovet växer.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "lonebidrag-sa-fungerar-det",
+        "sius-stod-vid-introduktion",
+        "arbetshjalpmedel-pa-jobbet"
+      ],
+      "related_tools": [
+        "/interview-simulator"
+      ],
+      "slug": "personligt-bitrade",
+      "sort_order": 0,
+      "subcategory": "stod-pa-arbetsplatsen",
+      "summary": "Vad ett personligt biträde gör, vem som kan få det, och varför det oftast är arbetsgivaren som ansöker om bidraget, inte du.",
+      "tags": [
+        "personligt biträde",
+        "Arbetsförmedlingen",
+        "funktionsnedsättning",
+        "arbetsgivare"
+      ],
+      "title": "Personligt biträde på jobbet – vem kan få det och hur",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     },
     {
       "actions": [],
@@ -10907,6 +11411,61 @@
     {
       "actions": [
         {
+          "href": "/interview-simulator",
+          "label": "Öva på hur du begär tolk inför en intervju",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "accessibility",
+      "checklist": [
+        {
+          "id": "1",
+          "text": "Berätta om ditt behov så tidigt som möjligt"
+        },
+        {
+          "id": "2",
+          "text": "Beskriv vilken typ av tolkning eller anpassning som fungerar för dig"
+        },
+        {
+          "id": "3",
+          "text": "Låt arbetsgivaren eller utbildningsanordnaren sköta bokning och ansökan"
+        },
+        {
+          "id": "4",
+          "text": "Följ upp om tolkningen inte fungerar som väntat"
+        }
+      ],
+      "content": "Har du en syn- eller hörselnedsättning som gör att du behöver tolk eller anpassad litteratur för att klara en utbildning eller ett arbete? Det finns ett särskilt bidrag för just det. Här är vad det täcker, skillnaden mellan utbildning och arbete, och hur du i praktiken begär tolk när du behöver en.\r\n\r\n## Vad bidraget täcker\r\n\r\nBidraget är till för dig med en dokumenterad syn- eller hörselnedsättning som påverkar din förmåga att klara arbetsuppgifter eller en utbildning. Det täcker två typer av stöd:\r\n\r\n| Typ av stöd | Exempel |\r\n|---|---|\r\n| Tolkning | Teckenspråkstolkning, skrivtolkning, teckenstödd tolkning eller dövblindtolkning vid återkommande arbetsuppgifter eller under en utbildning |\r\n| Litteratur | Uppläsning av facklitteratur på ljudmedia, eller översättning till punktskrift, i samband med utbildning |\r\n\r\nDet handlar alltså inte om tolk i vardagslivet i allmänhet, utan specifikt om det du behöver för att klara jobbet eller studierna.\r\n\r\n## När det gäller utbildning, och när det gäller arbete\r\n\r\nDe två situationerna hanteras på liknande sätt men med olika avsändare för ansökan.\r\n\r\nGäller det en utbildning, till exempel en arbetsmarknadsutbildning som [Arbetsförmedlingen](https://arbetsformedlingen.se) ordnat, är det oftast utbildningsanordnaren eller Arbetsförmedlingen själv som är inblandad i att ordna tolk eller anpassad litteratur inför kursstart.\r\n\r\nGäller det återkommande arbetsuppgifter i en pågående anställning är det din arbetsgivare som ansöker om det ekonomiska bidraget, på liknande sätt som vid andra arbetsplatsanpassningar. Är du egen företagare med eget stödbehov kan du ansöka själv.\r\n\r\n## Vem kan få stödet\r\n\r\nDu behöver ha en dokumenterad syn- eller hörselnedsättning som påverkar din arbetsförmåga, och vara inskriven hos Arbetsförmedlingen, eller skriva in dig i samband med att ansökan görs. Det är alltså inte tillräckligt att ha nedsättningen i sig, den ska ha en tydlig koppling till vad du behöver kunna göra på jobbet eller under utbildningen.\r\n\r\n## Hur du begär tolk i praktiken\r\n\r\nDet vanligaste misstaget är att vänta för länge med att säga till. Tolkar och anpassad litteratur behöver bokas i förväg, ofta med god marginal innan mötet, kursstarten eller uppgiften.\r\n\r\n1. Berätta för din handläggare, lärare eller chef om ditt behov så tidigt som möjligt, helst redan när en utbildning eller ett nytt arbetsmoment planeras.\r\n2. Beskriv vilken typ av tolkning eller litteraturanpassning som fungerar bäst för dig.\r\n3. Låt den ansvariga, arbetsgivaren vid arbete, utbildningsanordnaren eller Arbetsförmedlingen vid utbildning, sköta bokning och ansökan om bidrag.\r\n4. Följ upp om något inte fungerar, till exempel om tolken bokats fel typ av tolkning eller för kort tid.\r\n\r\n## Om du redan är mitt i en utbildning eller ett jobb\r\n\r\nHar du inte tidigare behövt tolk eller anpassad litteratur, men märker att behovet uppstår, till exempel för att arbetsuppgifterna förändras eller en ny kurs börjar, går det att begära stödet då också. Det finns ingen regel som säger att du bara kan ansöka innan något börjar. Ju tidigare du säger till, desto större chans att tolken eller materialet finns på plats när du behöver det.\r\n\r\n## Vad gör jag nu\r\n\r\nBehöver du tolk eller anpassad litteratur för en utbildning eller ett arbetsmoment, säg till redan i planeringsstadiet, inte dagen innan. Beskriv konkret vilken typ av stöd som fungerar för dig, teckenspråk, skrivtolkning eller uppläsning, och låt den ansvariga parten sköta själva ansökan. Har du redan en pågående dialog med Arbetsförmedlingen om annat stöd, ta upp behovet där också så att det finns med i helhetsbilden av vad du behöver.\r\n\r\n### Om tolken inte dyker upp\r\n\r\nDet händer att en bokad tolk uteblir. Säg det till den som bokade – din\r\nhandläggare eller utbildningsanordnaren – samma dag, och be att det antecknas.\r\nEtt uteblivet tolktillfälle är inte din frånvaro, och det ska inte registreras\r\nsom om du inte kom. Behöver du ta igen momentet är det den som bokade som ska\r\nordna ett nytt tillfälle.\r\n\r\n## Vanliga frågor\r\n\r\n### Kan jag boka tolk själv utan att gå via arbetsgivaren?\r\nVid arbete är det normalt arbetsgivaren som ansöker om det ekonomiska bidraget och därmed också bokar tolken. Är du egen företagare kan du göra det själv.\r\n\r\n### Gäller bidraget bara teckenspråkstolkning?\r\nNej, det täcker flera typer av tolkning beroende på behov, till exempel skrivtolkning och dövblindtolkning, samt uppläsning eller punktskriftsöversättning av facklitteratur vid utbildning.\r\n\r\n### Måste jag ha ett läkarintyg?\r\nDu behöver kunna visa att din syn- eller hörselnedsättning påverkar din förmåga att klara arbetet eller utbildningen. Vilket underlag som krävs kan variera, fråga din handläggare vad som behövs i ditt fall.\r\n\r\n### Vad gör jag om tolken inte fungerade bra?\r\nSäg till direkt, till din handläggare, arbetsgivare eller utbildningsanordnare. Det går att byta typ av tolkning eller leverantör om det som bokats inte möter ditt behov.",
+      "difficulty": "medium",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "funktionsnedsattning-jobbsokning",
+        "arbetshjalpmedel-pa-jobbet",
+        "rattigheter-stod"
+      ],
+      "related_tools": [
+        "/interview-simulator"
+      ],
+      "slug": "tolk-och-litteratur-stod",
+      "sort_order": 0,
+      "subcategory": "stod-pa-arbetsplatsen",
+      "summary": "Vad bidraget till tolk och litteratur täcker, skillnaden mellan utbildning och arbete, och hur du begär tolk i praktiken.",
+      "tags": [
+        "tolk",
+        "litteratur",
+        "hörselnedsättning",
+        "synnedsättning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Bidrag till tolk och litteratur – syn och hörsel",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
+    },
+    {
+      "actions": [
+        {
           "href": "/knowledge-base/article/intervju-forberedelser",
           "label": "Läs om intervjuförberedelse",
           "type": "primary"
@@ -11290,6 +11849,50 @@
       "updated_at": "2026-08-24 10:27:54.382205+00"
     },
     {
+      "actions": [
+        {
+          "href": "/skills-gap-analysis",
+          "label": "Se vad som saknas mot ditt drömjobb",
+          "type": "primary"
+        },
+        {
+          "href": "/education",
+          "label": "Hitta en kompletterande utbildning",
+          "type": "secondary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "career-development",
+      "checklist": [],
+      "content": "Har du jobbat inom ett yrke i andra länder, eller lärt dig det på egen hand utan att ha papper på det? Validering innebär att någon bedömer vad du faktiskt kan och skriver ner det, oavsett var eller hur du lärde dig det. Här är hur det går till, vem som gör bedömningen, och vad du får i handen efteråt.\n\n## Vad validering faktiskt är\n\nValidering är en strukturerad bedömning av dina kunskaper och färdigheter inom ett yrke. Den utgår från vad du kan göra, inte från vilka utbildningar eller anställningar du kan visa upp papper på. Har du jobbat som svetsare i ett annat land i många år men saknar svenska betyg, eller har du lärt dig ett hantverk av en förälder, är validering vägen att få det dokumenterat.\n\nResultatet blir ett intyg som beskriver vilka delar av yrket du behärskar och på vilken nivå. Det intyget kan du visa för en arbetsgivare, eller använda som underlag för att söka en kortare kompletterande utbildning i stället för en hel.\n\n## Vem gör bedömningen\n\nDet är inte Arbetsförmedlingen själv som bedömer dina kunskaper. En yrkesbedömare, ofta en erfaren yrkesperson inom samma bransch, testar dig genom en blandning av samtal, teoretiska frågor och praktiska moment som liknar det verkliga arbetet. Bedömningen görs hos en leverantör som har avtal om validering, och det är ofta du själv som får välja leverantör bland dem som finns tillgängliga där du bor.\n\nÄr du inskriven som arbetssökande hos [Arbetsförmedlingen](https://arbetsformedlingen.se) kan du få hjälp att komma igång med en validering genom dem. Många branscher har egna, standardiserade valideringsmodeller som tagits fram tillsammans med [Myndigheten för yrkeshögskolan](https://www.myh.se), så att en bedömning inom till exempel vård och omsorg ser likadan ut oavsett var i landet du gör den.\n\n## Så går en validering till\n\nEn validering brukar följa samma grundstruktur, även om detaljerna skiljer sig mellan yrken:\n\n1. Ett inledande samtal om din bakgrund och vad du har jobbat med.\n2. En kartläggning av vilka delar av yrket som ska bedömas.\n3. Teoretiska och praktiska moment hos yrkesbedömaren.\n4. En sammanställning av resultatet i ett intyg eller kompetensbevis.\n\nGår bedömningen inte hela vägen till godkänt inom alla delar är det inte ett nederlag. Intyget visar exakt vilka moment du redan klarar och vilka som återstår, vilket gör det lättare att veta precis vilken kompletterande utbildning som behövs, i stället för att läsa om allt från början.\n\n## Vad ett valideringsintyg är värt för en arbetsgivare\n\nEtt valideringsintyg är inte samma sak som en yrkeslegitimation, men det är ett konkret underlag en arbetsgivare kan luta sig mot. För en del reglerade yrken, där en legitimation krävs enligt lag, räcker validering inte hela vägen till behörighet i sig, men den kan vara ett steg på väg dit i kombination med de prov och den praktik som myndigheten för yrket kräver.\n\nFör yrken utan legitimationskrav fungerar intyget ofta rakt av som ett bevis på kompetens vid en anställning, precis som ett betyg eller ett arbetsgivarintyg skulle göra. Berätta för arbetsgivaren vad valideringen faktiskt testade, så vet de vad intyget täcker.\n\n## Skillnaden mot att bedöma en utländsk examen\n\nValidering av yrkeskunskaper blandas ofta ihop med bedömning av utländsk utbildning, men de svarar på olika frågor.\n\n| | Validering av yrkeskunskaper | Bedömning av utländsk examen |\n|---|---|---|\n| Utgår från | Vad du kan göra i praktiken | Vilka utbildningsdokument du har |\n| Kräver papper från utbildningen | Nej | Ja |\n| Görs av | En yrkesbedömare hos en leverantör | [Universitets- och högskolerådet](https://www.uhr.se) |\n| Passar dig som | Saknar dokumentation men har erfarenheten | Har examensbevis men vill veta vad de motsvarar i Sverige |\n\nHar du både yrkeserfarenhet och en utländsk examen kan båda vägarna vara relevanta samtidigt: bedömningen visar vad examen motsvarar, valideringen visar vad du faktiskt kan i dag. Läs mer om det i [Bedömning av utländsk utbildning – så går det till](/knowledge-base/article/validera-utlandsk-utbildning).\n\n## När validering inte är rätt väg\n\nValidering passar dig som redan har praktisk erfarenhet inom yrket. Saknar du erfarenheten helt är en arbetsmarknadsutbildning eller en yrkesutbildning oftast en bättre startpunkt, eftersom validering bedömer kunskap som redan finns snarare än bygger upp ny. Läs mer i [Arbetsmarknadsutbildning – så får du en plats](/knowledge-base/article/arbetsmarknadsutbildning).\n\n## Vad gör jag nu\n\nPrata med din handläggare på Arbetsförmedlingen om att du vill undersöka validering, och nämn vilket yrke det gäller. Fråga vilken leverantör som gör bedömningar inom just det området där du bor. Medan du väntar på en tid, samla det du redan har: intyg, referenser, bilder på arbete du utfört, allt som beskriver vad du gjort. Det gör det lättare för yrkesbedömaren att förstå var du står innan bedömningen ens börjar.\n\n## Vanliga frågor\n\n### Kostar det något att validera sina kunskaper?\nÄr du inskriven som arbetssökande hos Arbetsförmedlingen och de bedömer att validering är rätt insats för dig, betalar de valideringen. Fråga din handläggare om vad som gäller i ditt fall.\n\n### Måste jag kunna svenska för att göra en validering?\nDet beror på yrket och på hur bedömningen är upplagd. En del moment är praktiska och kräver mindre språk, andra bygger på samtal och teori på svenska. Fråga leverantören innan du börjar vilket språkstöd som finns.\n\n### Vad händer om jag inte blir godkänd på alla delar?\nDu får ett intyg som visar exakt vilka delar du klarade. Det är underlag för nästa steg, inte ett facit över vad du inte kan. Många fortsätter med en kortare kompletterande utbildning för just de delarna.\n\n### Gäller valideringen i hela Sverige?\nEtt valideringsintyg gäller där det visas upp, precis som andra intyg. För yrken med en gemensam, branschtagen modell är bedömningen upplagd på samma sätt oavsett var i landet du gör den, vilket gör intyget lättare att känna igen för arbetsgivare i hela landet.",
+      "difficulty": "medium",
+      "energy_level": "medium",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "validera-utlandsk-utbildning",
+        "arbetsmarknadsutbildning",
+        "utlandsk-erfarenhet-i-cv",
+        "folkhogskola-studiemotiverande-kurs"
+      ],
+      "related_tools": [
+        "/skills-gap-analysis",
+        "/education"
+      ],
+      "slug": "validering-av-yrkeskunskaper",
+      "sort_order": 0,
+      "subcategory": "validering",
+      "summary": "Hur validering av yrkeskunskaper går till, vem som bedömer dig, vad intyget är värt, och hur det skiljer sig från att bedöma en utländsk examen.",
+      "tags": [
+        "validering",
+        "yrkeskunskaper",
+        "kompetensbedömning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Validering av yrkeskunskaper – få det du kan bedömt",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
+    },
+    {
       "actions": [],
       "author": "Mikael Glännström",
       "author_title": "Arbetskonsulent",
@@ -11584,6 +12187,44 @@
       ],
       "title": "Skapa balans mellan arbete och privatliv",
       "updated_at": "2026-08-24 10:27:35.545639+00"
+    },
+    {
+      "actions": [
+        {
+          "href": "/education",
+          "label": "Se utbildningar som kan passa",
+          "type": "primary"
+        }
+      ],
+      "author": "Mikael Glännström",
+      "author_title": "Arbetskonsulent",
+      "category_key": "career-development",
+      "checklist": [],
+      "content": "Klarar du vardagssvenska men fastnar på orden som används på just din arbetsplats? Yrkessvenska är en språkutbildning byggd kring ett specifikt yrkesområde i stället för svenska i allmänhet. Här är vad den innehåller, hur den skiljer sig från sfi, och hur du kommer in på den.\n\n## Vad yrkessvenska är\n\nYrkessvenska riktar in sig på ordförrådet och kommunikationen inom ett visst arbetsområde, till exempel vård och omsorg, bygg, transport, restaurang eller lokalvård. I stället för att gå igenom svenska språket brett – väder, myndigheter, vardagsärenden – tränar du på de ord, uttryck och samtalssituationer som faktiskt förekommer på just den typen av arbetsplats.\n\nTanken är att du ska kunna gå in i en praktik, en arbetsmarknadsutbildning eller ett jobb utan att språket blir det som stoppar dig, trots att du redan klarar dig i vardagen.\n\n## Hur den skiljer sig från sfi\n\nSfi, svenska för invandrare, är en bred grundutbildning i svenska som språk. Yrkessvenska bygger vidare på en grund du redan har och smalnar av den mot ett yrke.\n\n| | Sfi | Yrkessvenska |\n|---|---|---|\n| Fokus | Svenska språket i stort: vardag, samhälle, grammatik | Ordförråd och samtal inom ett specifikt yrkesområde |\n| Vem den passar | Dig som fortfarande bygger upp grunderna i svenska | Dig som redan har en språklig grund och vet vilket yrkesområde du siktar på |\n| Anordnas av | Kommunen | Leverantörer med avtal om yrkessvenska |\n| Vägen in | Anmälan via kommunens vuxenutbildning | Beslut av Arbetsförmedlingen |\n\nDu behöver alltså normalt ha kommit en bit i din svenska innan yrkessvenska blir aktuellt – den bygger vidare på grunden, den ersätter den inte. Har du precis börjat lära dig svenska är sfi den rätta vägen just nu.\n\n## När yrkessvenska är aktuellt\n\nYrkessvenska passar när du redan vet, eller har en stark aning om, vilket yrkesområde du är på väg mot, och behöver just det ordförrådet innan nästa steg. Det kan handla om att förbereda dig inför en arbetsmarknadsutbildning inom ett område med mycket fackspråk, inför en praktikplats, eller inför en anställning där arbetsgivaren efterfrågar bättre yrkesspråk än du har i dag.\n\nDet är [Arbetsförmedlingen](https://arbetsformedlingen.se) som avgör om yrkessvenska är rätt insats för dig och fattar beslutet om att du får gå den. Bedömningen utgår från var du står språkligt och vad nästa steg i din plan är.\n\n## Hur du kommer in på den\n\nVägen in går via din handläggare på Arbetsförmedlingen, inte via en egen anmälan till en skola. Ta upp med handläggaren vilket yrkesområde du siktar på och att du känner att språket inom just det området är det som saknas. Handläggaren bedömer om yrkessvenska är rätt insats just nu, eller om något annat steg behöver komma före.\n\nUtbildningen genomförs hos en leverantör som Arbetsförmedlingen har avtal med, och innehållet är upplagt efter vilket yrkesområde kursen gäller – ordförrådet i en yrkessvenska mot vård och omsorg ser annorlunda ut än en mot bygg eller transport.\n\n## Vad undervisningen brukar innehålla\n\nInnehållet varierar mellan leverantörer och yrkesområden, men brukar röra sig kring:\n\n- Fackord och uttryck som används dagligen inom yrket\n- Muntlig kommunikation i typiska arbetssituationer, till exempel att ta emot instruktioner eller rapportera vidare\n- Att läsa texter som förekommer i yrket, som skyltar, säkerhetsinstruktioner eller enklare rutindokument\n- Övning i situationer som liknar en anställningsintervju inom området\n\nMålet är att du ska känna dig trygg med att förstå och göra dig förstådd i de situationer som faktiskt uppstår på den typen av arbetsplats, inte att klara ett skriftligt prov.\n\n## Vad gör jag nu\n\nFundera på vilket yrkesområde du siktar mot, om du inte redan vet det. Ta sedan upp med din handläggare på Arbetsförmedlingen att du vill förbereda dig språkligt inför det området, och fråga om yrkessvenska är rätt insats utifrån var du står i dag. Har du redan en praktikplats eller arbetsmarknadsutbildning inbokad, nämn det – det hjälper handläggaren att bedöma vilken yrkessvenska som passar och när den bör läggas in i din plan.\n\n## Vanliga frågor\n\n### Måste jag ha klarat hela sfi innan jag kan gå yrkessvenska?\nDet finns inget krav på att hela sfi ska vara avslutat, men du behöver ha kommit en bit i din svenska. Din handläggare bedömer om du är redo utifrån var du står språkligt i dag.\n\n### Kan jag välja vilket yrkesområde utbildningen ska handla om?\nJa, i den bemärkelsen att utbildningen ska matcha det yrkesspår du är på väg mot. Prata med din handläggare om vilket område som är aktuellt för dig, så avgör de vilken yrkessvenska som passar.\n\n### Ger yrkessvenska mig ett intyg jag kan visa en arbetsgivare?\nDu får ofta ett kursintyg eller motsvarande som visar att du genomfört utbildningen. Det är inget formellt språktest, men det kan visa en arbetsgivare att du förberett dig specifikt för yrkesområdet.\n\n### Kan jag gå yrkessvenska samtidigt som jag praktiserar?\nJa, det förekommer att yrkessvenska läggs parallellt med eller strax före en praktikplats, så att du får med dig ordförrådet in i praktiken. Din handläggare planerar ordningen utifrån din situation.",
+      "difficulty": "easy",
+      "energy_level": "low",
+      "reading_time": 4,
+      "related_article_slugs": [
+        "sfi-och-jobbsokande-samtidigt",
+        "arbetsmarknadsutbildning",
+        "praktik-som-vag-in",
+        "folkhogskola-studiemotiverande-kurs"
+      ],
+      "related_tools": [
+        "/education"
+      ],
+      "slug": "yrkessvenska",
+      "sort_order": 0,
+      "subcategory": "sprak",
+      "summary": "Vad yrkessvenska är, hur den skiljer sig från sfi, när den blir aktuell, och hur du kommer in på en kurs via Arbetsförmedlingen.",
+      "tags": [
+        "yrkessvenska",
+        "sfi",
+        "språkutbildning",
+        "Arbetsförmedlingen"
+      ],
+      "title": "Yrkessvenska – språket för ditt yrke, inte bara vardagen",
+      "updated_at": "2026-09-20 22:06:22.869674+00"
     }
   ]
 }

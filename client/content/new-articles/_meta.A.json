@@ -1,0 +1,181 @@
+{
+  "personligt-bitrade": {
+    "title": "Personligt biträde på jobbet – vem kan få det och hur",
+    "summary": "Vad ett personligt biträde gör, vem som kan få det, och varför det oftast är arbetsgivaren som ansöker om bidraget, inte du.",
+    "category_key": "accessibility",
+    "subcategory": "stod-pa-arbetsplatsen",
+    "tags": [
+      "personligt biträde",
+      "Arbetsförmedlingen",
+      "funktionsnedsättning",
+      "arbetsgivare"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "lonebidrag-sa-fungerar-det",
+      "sius-stod-vid-introduktion",
+      "arbetshjalpmedel-pa-jobbet"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Beskriv vilka arbetsuppgifter som är svåra och hur ofta",
+      "Ta upp behovet med din chef eller HR",
+      "Kontrollera att du är inskriven hos Arbetsförmedlingen",
+      "Låt arbetsgivaren räkna fram en kostnad och skicka ansökan",
+      "Säg till om behovet förändras senare"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på hur du berättar om ditt stödbehov",
+        "type": "primary"
+      }
+    ]
+  },
+  "arbetshjalpmedel-pa-jobbet": {
+    "title": "Bidrag till arbetshjälpmedel – vem betalar och vem äger det",
+    "summary": "Vilka hjälpmedel bidraget gäller, om det är Arbetsförmedlingen eller Försäkringskassan som betalar, och vad som händer om du byter jobb.",
+    "category_key": "accessibility",
+    "subcategory": "stod-pa-arbetsplatsen",
+    "tags": [
+      "arbetshjälpmedel",
+      "Arbetsförmedlingen",
+      "Försäkringskassan",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "anpassningar-arbetsplats",
+      "personligt-bitrade",
+      "rattigheter-stod"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Skriv ner exakt vilken arbetsuppgift som är svår utan hjälpmedlet",
+      "Ta reda på om Arbetsförmedlingen eller Försäkringskassan gäller för dig",
+      "Skicka in ansökan innan du köper eller beställer något",
+      "Vänta på beslut innan inköp görs",
+      "Fråga vad som gäller för hjälpmedlet om du byter jobb"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på hur du berättar om vilket hjälpmedel du behöver",
+        "type": "primary"
+      }
+    ]
+  },
+  "tolk-och-litteratur-stod": {
+    "title": "Bidrag till tolk och litteratur – syn och hörsel",
+    "summary": "Vad bidraget till tolk och litteratur täcker, skillnaden mellan utbildning och arbete, och hur du begär tolk i praktiken.",
+    "category_key": "accessibility",
+    "subcategory": "stod-pa-arbetsplatsen",
+    "tags": [
+      "tolk",
+      "litteratur",
+      "hörselnedsättning",
+      "synnedsättning",
+      "Arbetsförmedlingen"
+    ],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "funktionsnedsattning-jobbsokning",
+      "arbetshjalpmedel-pa-jobbet",
+      "rattigheter-stod"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Berätta om ditt behov så tidigt som möjligt",
+      "Beskriv vilken typ av tolkning eller anpassning som fungerar för dig",
+      "Låt arbetsgivaren eller utbildningsanordnaren sköta bokning och ansökan",
+      "Följ upp om tolkningen inte fungerar som väntat"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på hur du begär tolk inför en intervju",
+        "type": "primary"
+      }
+    ]
+  },
+  "forstarkt-arbetstraning": {
+    "title": "Förstärkt arbetsträning – så skiljer den sig från vanlig",
+    "summary": "Skillnaden mellan vanlig och förstärkt arbetsträning, vad det extra stödet består i, och vem som avgör vilken form du får.",
+    "category_key": "accessibility",
+    "subcategory": "arbetstraning",
+    "tags": [
+      "förstärkt arbetsträning",
+      "arbetsträning",
+      "Arbetsförmedlingen",
+      "rehabilitering"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "arbetstraning-vad-innebar-det",
+      "arbetsformagebedomning-vad-hander",
+      "sius-stod-vid-introduktion"
+    ],
+    "related_tools": [
+      "/skills-gap-analysis"
+    ],
+    "checklist": [
+      "Fråga din handläggare varför förstärkt arbetsträning föreslås för dig",
+      "Ta reda på hur ofta ni stäms av under träningen",
+      "Fråga vem som handleder dig på plats",
+      "Ta upp om något inte fungerar som tänkt"
+    ],
+    "actions": [
+      {
+        "href": "/skills-gap-analysis",
+        "label": "Se vad som skiljer dig från målet med träningen",
+        "type": "primary"
+      }
+    ]
+  },
+  "individuellt-pedagogiskt-stod": {
+    "title": "Individuellt pedagogiskt stöd vid utbildning – IPSU",
+    "summary": "Vad individuellt pedagogiskt stöd är, vilka utbildningar det gäller, och hur du begär det innan en utbildning börjar.",
+    "category_key": "accessibility",
+    "subcategory": "utbildning",
+    "tags": [
+      "IPSU",
+      "pedagogiskt stöd",
+      "Arbetsförmedlingen",
+      "utbildning",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "arbetsformagebedomning-vad-hander",
+      "forstarkt-arbetstraning",
+      "arbetstraning-vad-innebar-det"
+    ],
+    "related_tools": [
+      "/education"
+    ],
+    "checklist": [
+      "Ta upp behovet med din handläggare innan utbildningen börjar",
+      "Beskriv konkret vad som brukar vara svårt i studier",
+      "Låt kartläggningen göras innan utbildningen startar",
+      "Följ upp om stödet inte räcker till under utbildningen"
+    ],
+    "actions": [
+      {
+        "href": "/education",
+        "label": "Utforska utbildningar som kan passa dig",
+        "type": "primary"
+      }
+    ]
+  }
+}

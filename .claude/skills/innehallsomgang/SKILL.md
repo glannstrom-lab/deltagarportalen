@@ -93,11 +93,22 @@ Fem omgångar i rad har agenterna rapporterat sitt arbete som rent, och fem
 gånger har egen mätning hittat fel de missat. Kör alltid:
 
 ```bash
-node <granskningsskript>   # ordantal, titel-/summarylängd, slugkrock,
-                           # länkmål, sifferregel, förbjudna fraser
+npm run content:granska    # scripts/granska-nya-artiklar.cjs (2026-09-20)
 grep -nE "de flesta|många som|forskning visar|studier visar" *.md
 grep -nE "[0-9]" *.md | grep -vE ":[0-9]+:[0-9]+\. "
 ```
+
+Grinden finns nu på riktigt och är mutationstestad åt båda håll: den fäller på
+fjorton olika fel (för få eller för många ord, titel > 60, summary > 155,
+slugkrock mot prod, `category_key` utanför mängden, noll externa länkar, rå
+`# H1`, obelagd generalisering, `.md` utan meta, meta utan `.md`, dubblett
+mellan två `_meta`-filer) och släpper igenom en ren omgång. Den tar en katalog
+som argument, så den går att pröva mot en provkatalog utan att röra den skarpa
+omgången.
+
+Den **varnar** dessutom — utan att fälla — för siffror som ser ut som regler och
+för "Läs mer om …" utan markdown-länk. Varningarna ska läsas, inte hoppas över:
+det är där ett belopp eller en död hänvisning slinker igenom.
 
 ```bash
 # Källänkar: vilka filer saknar dem helt?

@@ -1,4 +1,4 @@
-# Brief: nya guider för Jobin (spår K, innehållsomgång 6)
+# Brief: nya guider för Jobin (spår K, innehållsomgång 8)
 
 Du skriver **publika guidesidor** som ska ranka på Google och leda arbetssökande till jobin.se.
 Sidorna prerenderas till statisk HTML under `https://www.jobin.se/guider/<slug>/` och visas
