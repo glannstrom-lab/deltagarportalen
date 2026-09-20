@@ -27,7 +27,8 @@
 
 import type { ActivityPlan, ActivitySession, Forsorjningshinder } from './aktivitetApi'
 import { FORSORJNINGSHINDER, FORSORJNINGSHINDER_ETIKETT } from './aktivitetApi'
-import { EJ_ANGIVET_ETIKETT, kvartalForDatum, kvartalGranser, planAktivIPeriod, type Kvartal, type KvartalGranser, type KvartalVal } from './ivoKvartal'
+import { arNarvaro } from './aktivitetSchema'
+import { EJ_ANGIVET_ETIKETT, kvartalForDatum, kvartalGranser, planAktivIPeriod, type Kvartal, type KvartalGranser, type KvartalVal, type UnderlagFalt } from './ivoKvartal'
 
 type PlanFalt = Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at'>
 /** `absence_reported_at` kom med F1 (migration 20260913002000) — typen i aktivitetApi bär den inte än, raden gör det. */
@@ -54,13 +55,41 @@ export interface Namndrapport {
   summa: Omit<NamndRad, 'nyckel' | 'etikett'>
 }
 
-const NARVARANDE = new Set(['present', 'external'])
 const GILTIG = new Set(['absent_valid', 'sick_certified'])
 
-/** Enda stället som avgör "underlag lämnat" — byts när F10:s spårbara flöde finns. */
-export function underlagLamnatIKvartal(plan: Pick<ActivityPlan, 'nedsattning_underlag_lamnat_at'>, { from, to }: KvartalGranser): boolean {
+/**
+ * Avgör "underlag lämnat" i kvartalet.
+ *
+ * GG1 (2026-09-20): ges `handovers` räknas det ur de faktiska
+ * överlämningsraderna. Planens kolumn `nedsattning_underlag_lamnat_at` duger
+ * INTE som källa — triggern `activity_plan_handovers_sync_plan()` sätter den
+ * till `max(handed_over_at)` över all tid, utan kvartalsfilter, så ett underlag
+ * lämnat i Q2 gör att Q1 tyst tappar sin räkning i en rapport nämnden redan
+ * fått. Kolumnen är kvar som reserv för anrop utan listan (och för planer vars
+ * enda underlag är det migrerade datumet från före F10).
+ */
+export function underlagLamnatIKvartal(
+  plan: Pick<ActivityPlan, 'nedsattning_underlag_lamnat_at'> & { id?: string },
+  { from, to }: KvartalGranser,
+  planerMedUnderlag?: ReadonlySet<string>,
+): boolean {
+  if (planerMedUnderlag) return plan.id !== undefined && planerMedUnderlag.has(plan.id)
   const d = plan.nedsattning_underlag_lamnat_at
   return d !== null && d !== undefined && d >= from && d <= to
+}
+
+/** Planer med minst ett ej ångrat underlag inom gränserna. */
+export function planerMedUnderlagIKvartal(
+  handovers: readonly UnderlagFalt[],
+  { from, to }: KvartalGranser,
+): Set<string> {
+  const traffar = new Set<string>()
+  for (const h of handovers) {
+    if (h.withdrawn_at) continue
+    const dag = h.handed_over_at.slice(0, 10)
+    if (dag >= from && dag <= to) traffar.add(h.plan_id)
+  }
+  return traffar
 }
 
 /** Innevarande och föregående kvartal relativt ett datum (`YYYY-MM-DD`). */
@@ -75,8 +104,15 @@ export function kvartalEtikett({ ar, kvartal }: KvartalVal): string {
   return `Kvartal ${kvartal} ${ar} (${g.from} – ${g.to})`
 }
 
-export function namndrapportUnderlag(plans: readonly PlanFalt[], sessions: readonly PassFalt[], val: KvartalVal): Namndrapport {
+export function namndrapportUnderlag(
+  plans: readonly PlanFalt[],
+  sessions: readonly PassFalt[],
+  val: KvartalVal,
+  /** GG1: ges listan räknas "underlag lämnat" ur den, inte ur planens kolumn. */
+  handovers?: readonly UnderlagFalt[],
+): Namndrapport {
   const granser = kvartalGranser(val.ar, val.kvartal)
+  const planerMedUnderlag = handovers ? planerMedUnderlagIKvartal(handovers, granser) : undefined
   const aktiva = plans.filter((p) => planAktivIPeriod(p, granser))
   const planKategori = new Map<string, Forsorjningshinder | 'ej_angivet'>()
   for (const p of aktiva) planKategori.set(p.id, p.forsorjningshinder ?? 'ej_angivet')
@@ -88,7 +124,7 @@ export function namndrapportUnderlag(plans: readonly PlanFalt[], sessions: reado
     const planer = aktiva.filter((p) => (p.forsorjningshinder ?? 'ej_angivet') === nyckel)
     const pass = iKvartalet.filter((s) => planKategori.get(s.plan_id) === nyckel)
     const bedomda = pass.filter((s) => s.attendance !== null && s.attendance !== undefined)
-    const narvarande = bedomda.filter((s) => NARVARANDE.has(s.attendance as string)).length
+    const narvarande = bedomda.filter((s) => arNarvaro(s.attendance)).length
     const anmald = pass.filter((s) => (s.absence_reported_at ?? null) !== null || GILTIG.has(s.attendance as string)).length
     const oanmald = pass.filter((s) => s.attendance === 'absent_invalid' && (s.absence_reported_at ?? null) === null).length
     return {
@@ -99,7 +135,7 @@ export function namndrapportUnderlag(plans: readonly PlanFalt[], sessions: reado
       narvarograd: bedomda.length === 0 ? null : Math.round((narvarande / bedomda.length) * 100),
       franvaro_anmald: anmald,
       franvaro_oanmald: oanmald,
-      underlag_lamnat: planer.filter((p) => underlagLamnatIKvartal(p, granser)).length,
+      underlag_lamnat: planer.filter((p) => underlagLamnatIKvartal(p, granser, planerMedUnderlag)).length,
     }
   })
 

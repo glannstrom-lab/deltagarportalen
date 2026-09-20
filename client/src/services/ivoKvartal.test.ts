@@ -127,3 +127,46 @@ describe('tillTsv', () => {
     expect(rader.filter((r) => r.startsWith('Ej angivet'))).toHaveLength(1)
   })
 })
+
+/**
+ * GG1 (2026-09-20): det som gjorde den här buggen dyr var att reservvägen
+ * SÅG rätt ut. Triggern `activity_plan_handovers_sync_plan()` sätter
+ * `nedsattning_underlag_lamnat_at` till `max(handed_over_at)` över all tid,
+ * utan kvartalsfilter — så ett andra underlag i Q2 skriver om Q1 bakåt.
+ */
+describe('GG1: underlag räknas per kvartal, inte ur planens omskrivna kolumn', () => {
+  const underlag = (plan_id: string, handed_over_at: string, withdrawn_at: string | null = null) =>
+    ({ plan_id, handed_over_at, withdrawn_at })
+
+  // Planen fick underlag både i Q1 och i Q2. Kolumnen bär bara Q2-datumet,
+  // eftersom triggern skrev över det tidigare.
+  const planenMedTvaUnderlag = plan({
+    id: 'p1',
+    start_date: '2027-01-05',
+    forsorjningshinder: 'arbetslos',
+    nedsattning_underlag_lamnat_at: '2027-05-04',
+  })
+  const raderna = [underlag('p1', '2027-02-10T09:00:00Z'), underlag('p1', '2027-05-04T09:00:00Z')]
+
+  it('Q1 räknas rätt med raderna — och fel utan dem', () => {
+    const medRader = ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 1 }, raderna)
+    expect(medRader.summa.antal_underlag_lamnat).toBe(1)
+
+    // Reservvägen: kolumnen säger 2027-05-04, som inte ligger i Q1.
+    const utanRader = ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 1 })
+    expect(utanRader.summa.antal_underlag_lamnat).toBe(0)
+  })
+
+  it('Q2 räknas rätt på båda vägarna — därför syntes felet aldrig i det senaste kvartalet', () => {
+    expect(ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 2 }, raderna).summa.antal_underlag_lamnat).toBe(1)
+    expect(ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 2 }).summa.antal_underlag_lamnat).toBe(1)
+  })
+
+  it('ångrade underlag räknas inte, och en plan räknas en gång per kvartal', () => {
+    const angrat = [underlag('p1', '2027-02-10T09:00:00Z', '2027-02-10T15:00:00Z')]
+    expect(ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 1 }, angrat).summa.antal_underlag_lamnat).toBe(0)
+
+    const tvaSammaKvartal = [underlag('p1', '2027-02-10T09:00:00Z'), underlag('p1', '2027-03-01T09:00:00Z')]
+    expect(ivoKvartalsunderlag([planenMedTvaUnderlag], [], { ar: 2027, kvartal: 1 }, tvaSammaKvartal).summa.antal_underlag_lamnat).toBe(1)
+  })
+})

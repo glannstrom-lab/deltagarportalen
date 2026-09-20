@@ -20,7 +20,8 @@
  * user_preferences = reglaget aldrig rört = skicka; `false` = skicka inte.
  */
 const { createClient } = require('@supabase/supabase-js');
-const { medFelrapport } = require('./_utils/sentry.js');
+const { medFelrapport, skickaHandelse } = require('./_utils/sentry.js');
+const { avgorSvar } = require('./_utils/mejlutfall.js');
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 // Service role krävs: notifications och profiles läses för andra användare.
@@ -139,7 +140,18 @@ const hanterare = async (req, res) => {
       console.error('[pass-paminnelse] mejl misslyckades för notis', n.id, e instanceof Error ? e.message : e);
     }
   }
-  return res.status(200).json(utfall);
+  // DR2: statuskoden är det enda Vercel Cron läser. Föll varenda
+  // utskick är det vägen ut som är trasig, inte mottagarna — då ska
+  // körningen synas som misslyckad, inte som en tyst grön natt.
+  const svar = avgorSvar(utfall);
+  if (svar.larm) {
+    console.error('[pass-paminnelse]', svar.larm);
+    if (svar.status < 500) {
+      // 5xx rapporteras redan av medFelrapport(); delvisa fel gör det inte.
+      await skickaHandelse({ funktion: 'pass-paminnelse', typ: 'MejlutskickDelvisFel', meddelande: svar.larm });
+    }
+  }
+  return res.status(svar.status).json(utfall);
 };
 
 module.exports = medFelrapport('pass-paminnelse', hanterare);

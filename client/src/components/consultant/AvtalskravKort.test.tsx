@@ -126,3 +126,24 @@ describe('AvtalskravKort', () => {
     expect(await screen.findByText(/Ingen plan var aktiv/)).toBeInTheDocument()
   })
 })
+
+/**
+ * GG4 (2026-09-20): kortet räknar mot FFU §4.1.1 men är inte den periodiska
+ * rapporten §5.1.1 kräver för utbetalning — och den rapporten är obyggd (RM6).
+ * Utan förbehållet kan kortet läsas som komplett dokumentation.
+ */
+describe('GG4: förbehållet om den periodiska rapporten', () => {
+  it('säger rakt ut att kortet är ett underlag och inte rapporten', async () => {
+    await mocka([plan()], [])
+    renderMedQuery()
+    expect(await screen.findByText(/Detta är ett underlag, inte den periodiska rapporten/i)).toBeInTheDocument()
+  })
+
+  it('namnger paragrafen och att portalen inte kan skicka rapporten', async () => {
+    await mocka([plan()], [])
+    renderMedQuery()
+    const text = (await screen.findByText(/FFU §5\.1\.1/i)).textContent ?? ''
+    expect(text).toMatch(/inte ut utan godkänd periodisk rapport/i)
+    expect(text).toMatch(/inget öppet leverantörs-API/i)
+  })
+})

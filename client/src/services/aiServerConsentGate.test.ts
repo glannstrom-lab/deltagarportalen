@@ -10,6 +10,8 @@
  * (Testfilen ligger under src/ eftersom vitest bara inkluderar src/**.)
  */
 import { describe, it, expect, vi } from 'vitest'
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const aiHandler = require('../../api/ai.js') as {
@@ -267,5 +269,99 @@ describe('A19: art. 9-uppslaget måste göras med användarens token', () => {
       `const ${klientnamn} = createClient\\([\\s\\S]{0,400}?Authorization`
     )
     expect(source).toMatch(deklaration)
+  })
+})
+
+/**
+ * BL2 (2026-09-20): organisationens brytare gäller också personalens egna
+ * anrop. `konsulent-rapportutkast` är undantaget deltagarens brytare (fel
+ * kontroll för en annan persons data) men fick därmed ingen org-spärr alls —
+ * en kommun som stängt av AI kunde ändå få deltagardata skickad till
+ * OpenRouter genom konsulentens rapportverktyg.
+ */
+describe('checkPersonalOrgAiEnabled', () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { checkPersonalOrgAiEnabled } = require('../../api/ai.js') as {
+    checkPersonalOrgAiEnabled: (
+      klient: unknown,
+      userId: string,
+    ) => Promise<{ allowed: boolean; reason?: string; orgName?: string | null }>
+  }
+
+  const stub = (result: { data?: unknown; error?: unknown } | Error) => ({
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({
+        eq: vi.fn(async () => {
+          if (result instanceof Error) throw result
+          return result
+        }),
+      })),
+    })),
+  })
+
+  it('släpper igenom när organisationen har AI på', async () => {
+    const r = await checkPersonalOrgAiEnabled(
+      stub({ data: [{ org_id: 'o1', organizations: { name: 'Demokommun', ai_enabled: true } }], error: null }),
+      'u1',
+    )
+    expect(r.allowed).toBe(true)
+  })
+
+  it('blockerar när organisationen stängt av AI, och namnger den', async () => {
+    const r = await checkPersonalOrgAiEnabled(
+      stub({ data: [{ org_id: 'o1', organizations: { name: 'Demokommun', ai_enabled: false } }], error: null }),
+      'u1',
+    )
+    expect(r.allowed).toBe(false)
+    expect(r.reason).toBe('org_disabled')
+    expect(r.orgName).toBe('Demokommun')
+  })
+
+  it('en enda avstängd organisation räcker när personen är medlem i flera', async () => {
+    const r = await checkPersonalOrgAiEnabled(
+      stub({
+        data: [
+          { org_id: 'o1', organizations: { name: 'På', ai_enabled: true } },
+          { org_id: 'o2', organizations: { name: 'Av', ai_enabled: false } },
+        ],
+        error: null,
+      }),
+      'u1',
+    )
+    expect(r.allowed).toBe(false)
+    expect(r.orgName).toBe('Av')
+  })
+
+  it('ingen organisation = ingen spärr', async () => {
+    const r = await checkPersonalOrgAiEnabled(stub({ data: [], error: null }), 'u1')
+    expect(r.allowed).toBe(true)
+  })
+
+  // Fail closed: kostnaden för att gissa fel är en behandling kommunen förbjudit.
+  it('fail closed vid uppslagsfel', async () => {
+    const r = await checkPersonalOrgAiEnabled(stub({ data: null, error: { message: 'nät' } }), 'u1')
+    expect(r.allowed).toBe(false)
+    expect(r.reason).toBe('lookup_failed')
+  })
+
+  it('fail closed när klienten kastar', async () => {
+    const r = await checkPersonalOrgAiEnabled(stub(new Error('bom')), 'u1')
+    expect(r.allowed).toBe(false)
+  })
+
+  it('fail closed utan klient — en saknad service-nyckel öppnar inte grinden', async () => {
+    const r = await checkPersonalOrgAiEnabled(null, 'u1')
+    expect(r.allowed).toBe(false)
+    expect(r.reason).toBe('lookup_failed')
+  })
+
+  it('varje undantagen funktion går genom org-grinden i handlern', () => {
+    const kalla = readFileSync(resolve(__dirname, '../../api/ai.js'), 'utf-8')
+    // Grenen ska ligga som `else` till deltagargrinden, så en ny undantagen
+    // funktion inte kan smyga förbi bara genom att läggas i mängden.
+    expect(kalla).toContain('checkPersonalOrgAiEnabled(')
+    const elseGren = kalla.indexOf('} else {', kalla.indexOf('const orgGate = await checkOrgAiEnabled('))
+    expect(elseGren).toBeGreaterThan(-1)
+    expect(kalla.slice(elseGren, elseGren + 2000)).toContain('checkPersonalOrgAiEnabled')
   })
 })

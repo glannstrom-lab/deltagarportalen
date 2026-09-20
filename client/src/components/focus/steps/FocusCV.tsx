@@ -14,6 +14,7 @@ import {
   ArrowRight, Check, Loader2, SkipForward, Plus, Trash2
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 interface FocusCVProps {
   onComplete: () => void
@@ -48,6 +49,8 @@ const CV_STEPS = [
 ] as const
 
 export function FocusCV({ onComplete, onSkip }: FocusCVProps) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   const { t } = useTranslation()
   const { profile } = useAuthStore()
   const queryClient = useQueryClient()
@@ -62,7 +65,7 @@ export function FocusCV({ onComplete, onSkip }: FocusCVProps) {
 
   // Load existing CV data
   const { data: cvData, isLoading } = useQuery({
-    queryKey: ['cv'],
+    queryKey: nyckel(['cv']),
     queryFn: cvApi.getCV
   })
 

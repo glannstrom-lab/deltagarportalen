@@ -12,6 +12,7 @@ import { userApi } from '@/services/userApi'
 import { matchJobsToInterests, type JobInterestMatch, type RiasecScores } from '@/services/interestJobMatching'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import type { DesiredOccupation } from '@/services/supabaseApi'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 // ============================================
 // TYPES
@@ -377,23 +378,25 @@ export function matchJobsWithCV(
 // ============================================
 
 export function useJobMatching(jobs: PlatsbankenJob[]) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   // Fetch CV data
   const { data: cv } = useQuery({
-    queryKey: ['cvForMatching'],
+    queryKey: nyckel(['cvForMatching']),
     queryFn: () => cvApi.getCV(),
     staleTime: 5 * 60 * 1000,
   })
 
   // Fetch RIASEC data
   const { data: riasecResult } = useQuery({
-    queryKey: ['riasecForMatching'],
+    queryKey: nyckel(['riasecForMatching']),
     queryFn: () => interestApi.getResult(),
     staleTime: 10 * 60 * 1000,
   })
 
   // Fetch profile preferences för desired_jobs
   const { data: preferences } = useQuery({
-    queryKey: ['preferencesForMatching'],
+    queryKey: nyckel(['preferencesForMatching']),
     queryFn: () => userApi.getPreferences(),
     staleTime: 5 * 60 * 1000,
   })

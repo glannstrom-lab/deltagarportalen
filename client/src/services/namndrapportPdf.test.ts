@@ -113,3 +113,30 @@ describe('PDF:en', () => {
     expect(text).not.toContain('Kohortanalys')
   })
 })
+
+/** GG1: samma regel som i IVO-underlaget — se ivoKvartal.test.ts. */
+describe('GG1: nämndrapportens "underlag lämnat" räknas per kvartal', () => {
+  const planen = {
+    id: 'p1',
+    participant_id: 'd1',
+    start_date: '2027-01-05',
+    end_date: null,
+    forsorjningshinder: 'arbetslos',
+    nedsattning_underlag_lamnat_at: '2027-05-04',
+  } as never
+
+  const raderna = [
+    { plan_id: 'p1', handed_over_at: '2027-02-10T09:00:00Z', withdrawn_at: null },
+    { plan_id: 'p1', handed_over_at: '2027-05-04T09:00:00Z', withdrawn_at: null },
+  ]
+
+  it('Q1 räknas rätt med överlämningsraderna, fel utan dem', () => {
+    expect(namndrapportUnderlag([planen], [], { ar: 2027, kvartal: 1 }, raderna).summa.underlag_lamnat).toBe(1)
+    expect(namndrapportUnderlag([planen], [], { ar: 2027, kvartal: 1 }).summa.underlag_lamnat).toBe(0)
+  })
+
+  it('ångrade rader räknas inte', () => {
+    const angrat = [{ plan_id: 'p1', handed_over_at: '2027-02-10T09:00:00Z', withdrawn_at: '2027-02-10T15:00:00Z' }]
+    expect(namndrapportUnderlag([planen], [], { ar: 2027, kvartal: 1 }, angrat).summa.underlag_lamnat).toBe(0)
+  })
+})

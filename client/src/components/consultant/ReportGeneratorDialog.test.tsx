@@ -190,6 +190,8 @@ vi.mock('@/services/aktivitetApi', async (importOriginal) => {
   const original = await importOriginal<typeof import('@/services/aktivitetApi')>()
   return {
     ...original,
+    // GG1: nämndrapporten hämtar överlämningsraderna.
+    underlagApi: { ...original.underlagApi, listIPeriod: vi.fn(async () => []) },
     aktivitetsplanApi: {
       ...original.aktivitetsplanApi,
       listAll: vi.fn(async () => [

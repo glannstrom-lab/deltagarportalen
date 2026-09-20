@@ -20,6 +20,7 @@ import { cvApi } from '@/services/supabaseApi'
 import { useProfileStore } from '@/stores/profileStore'
 import { logger } from '@/lib/logger'
 import { cn } from '@/lib/utils'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 /**
  * LinkedIn — skriv texterna, och se vad som är kvar att fylla i.
@@ -161,6 +162,8 @@ interface InnerProps {
 }
 
 function LinkedInOptimizerInner({ aktivTab, setAktivTab, formData, setFormData }: InnerProps) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   const { t } = useTranslation()
   const profil = useProfileStore((s) => s.profile)
 
@@ -183,7 +186,7 @@ function LinkedInOptimizerInner({ aktivTab, setAktivTab, formData, setFormData }
   const kalla = kallaPerFlik[aktivTab] ?? null
 
   // Portalen vet redan yrkestiteln — den står i CV:t användaren byggt här.
-  const { data: cv } = useQuery({ queryKey: ['cv'], queryFn: () => cvApi.getCV(), staleTime: 300_000 })
+  const { data: cv } = useQuery({ queryKey: nyckel(['cv']), queryFn: () => cvApi.getCV(), staleTime: 300_000 })
   useEffect(() => {
     if (forifyllt || formData.headline.yrke || !cv?.title) return
     setFormData((f) => ({ ...f, headline: { ...f.headline, yrke: cv.title as string } }))

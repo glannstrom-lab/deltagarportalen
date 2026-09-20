@@ -9,6 +9,7 @@ import { savedJobsApi } from '@/services/jobsApi'
 import { moodApi } from '@/services/cloudStorage'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { supabase } from '@/lib/supabase'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 // ============================================
 // INTERFACES (replacing all `any` types)
@@ -532,8 +533,10 @@ async function fetchArticleProgress(userId?: string): Promise<ArticleProgressDat
 // React Query hook (rekommenderad)
 // PRESTANDA: Optimerade cache-tider baserat på hur ofta data ändras
 export function useDashboardDataQuery() {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   return useQuery({
-    queryKey: [DASHBOARD_QUERY_KEY],
+    queryKey: nyckel([DASHBOARD_QUERY_KEY]),
     queryFn: fetchDashboardData,
     staleTime: 2 * 60 * 1000, // 2 minuter - dashboard uppdateras relativt ofta
     gcTime: 15 * 60 * 1000, // 15 minuter - behåll i cache längre

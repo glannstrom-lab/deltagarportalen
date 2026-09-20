@@ -6,6 +6,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 export interface CVVersion {
   id: string
@@ -24,13 +25,15 @@ export interface CoverLetter {
 }
 
 export function useDocuments() {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   // Fetch CV versions
   const {
     data: cvVersions = [],
     isLoading: isLoadingCVs,
     error: cvError
   } = useQuery({
-    queryKey: ['cv-versions'],
+    queryKey: nyckel(['cv-versions']),
     queryFn: async () => {
       const versions = await cvApi.getVersions()
       return versions as CVVersion[]
@@ -44,7 +47,7 @@ export function useDocuments() {
     isLoading: isLoadingLetters,
     error: letterError
   } = useQuery({
-    queryKey: ['cover-letters'],
+    queryKey: nyckel(['cover-letters']),
     queryFn: async () => {
       const letters = await coverLetterApi.getAll()
       return letters as CoverLetter[]
@@ -61,8 +64,10 @@ export function useDocuments() {
 }
 
 export function useCVVersion(id: string | null | undefined) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   return useQuery({
-    queryKey: ['cv-version', id],
+    queryKey: nyckel(['cv-version', id]),
     queryFn: async () => {
       if (!id) return null
       const data = await cvApi.restoreVersion(id)
@@ -74,8 +79,10 @@ export function useCVVersion(id: string | null | undefined) {
 }
 
 export function useCoverLetter(id: string | null | undefined) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   return useQuery({
-    queryKey: ['cover-letter', id],
+    queryKey: nyckel(['cover-letter', id]),
     queryFn: async () => {
       if (!id) return null
       const data = await coverLetterApi.getById(id)

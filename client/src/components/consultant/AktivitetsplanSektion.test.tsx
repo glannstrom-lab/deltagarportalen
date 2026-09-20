@@ -29,7 +29,7 @@ vi.mock('@/services/aktivitetApi', () => ({
     update: vi.fn(),
   },
   // F10: underlagen är en egen tabell; kanAngraUnderlag/sammanfattaNarvaro är rena funktioner — originalen.
-  underlagApi: { list: vi.fn(async () => []), lamna: vi.fn(), angra: vi.fn() },
+  underlagApi: { list: vi.fn(async () => []), listIPeriod: vi.fn(async () => []), lamna: vi.fn(), angra: vi.fn() },
   kanAngraUnderlag: (h: { handed_over_at: string; withdrawn_at: string | null }) => !h.withdrawn_at && h.handed_over_at.startsWith('2026-10-07'),
   sammanfattaNarvaro: () => ({ pass: 1, present: 1, absent_valid: 0, absent_invalid: 0, sick_certified: 0, external: 0, omarkerade: 0, anmald_franvaro: 0 }),
   schemamallApi: { list: vi.fn(async () => []) },
@@ -71,7 +71,11 @@ describe('AktivitetsplanSektion', () => {
     expect(await screen.findByText('Verkstad 30 h')).toBeInTheDocument()
     // Saldo: 6 h planerat av 30, 3 h närvaro
     expect(screen.getByText('6 h / 30 h')).toBeInTheDocument()
-    expect(screen.getByText('Under veckomålet')).toBeInTheDocument()
+    // GG3 (2026-09-20): språkcaféet är omarkerat, så veckan har inget utfall än
+    // — varken "på målet" eller "under målet". Testet krävde tidigare
+    // 'Under veckomålet' här, vilket bara stämde så länge ampeln räknade
+    // SCHEMALAGDA timmar.
+    expect(screen.getByText('Närvaron inte markerad än')).toBeInTheDocument()
     expect(screen.getByText(/Beslut om nedsättning fattas av socialnämnden/)).toBeInTheDocument()
 
     // Öppna närvaro på språkcaféet och markera ogiltig frånvaro

@@ -93,8 +93,16 @@ export function ivoKvartalsunderlag(
   /**
    * F10 (2026-09-13): ges listan räknas "underlag lämnat" ur de faktiska
    * överlämningarna (en plan räknas en gång per kvartal, ångrade ignoreras).
-   * Utan listan används planens synkade kolumn som förut — samma tal, för
-   * triggern håller kolumnen lika med senaste ej ångrade underlaget.
+   *
+   * GG1 (2026-09-20): raden här sa tidigare att reservvägen ger "samma tal,
+   * för triggern håller kolumnen lika med senaste ej ångrade underlaget". Det
+   * är fel, och felet är riktningen: `activity_plan_handovers_sync_plan()`
+   * sätter kolumnen till `max(handed_over_at)` över ALL tid utan
+   * kvartalsfilter, så ett andra underlag i Q2 gör att Q1 tyst tappar sin
+   * räkning — en siffra IVO och nämnden redan fått ändras bakåt i tiden.
+   *
+   * **Skicka alltid listan.** Reservvägen finns kvar bara för planer vars enda
+   * underlag är det datum som migrerades in från före F10.
    */
   handovers?: readonly UnderlagFalt[],
 ): Kvartalsunderlag {

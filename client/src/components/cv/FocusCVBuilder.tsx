@@ -21,6 +21,7 @@ import {
   ChevronLeft, ChevronRight, Save, Eye, Loader2, Plus, X
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 // Step definitions
 const FOCUS_STEPS = [
@@ -37,6 +38,8 @@ interface FocusCVBuilderProps {
 }
 
 export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const { celebrate } = useCelebration()
@@ -56,7 +59,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
 
   // Load existing CV data
   const { data: existingCV, isLoading } = useQuery({
-    queryKey: ['cv'],
+    queryKey: nyckel(['cv']),
     queryFn: cvApi.getCV,
   })
 

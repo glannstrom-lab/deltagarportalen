@@ -28,6 +28,19 @@ import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardi
 
 const ONBOARDING_OWNER_ID = 'global-flow' as const
 
+/**
+ * IA3 (2026-09-20): rollerna som arbetar i portalen ska inte mötas av
+ * deltagarens välkomstmodal. Alla fyra steg leder till deltagarverktyg
+ * (CV-byggaren, intresseguiden, jobbsökningen) och texten tilltalar en
+ * arbetssökande — "få stöd från din konsulent" till en konsulent.
+ *
+ * Företagsskalet monterar aldrig komponenten, så det behöver inte stå här.
+ * SUPERADMIN är med flit INTE med: det kontot används för att pröva
+ * deltagarvyn i prod och ska bete sig som en deltagare (samma val som i
+ * `StartRedirect`, App.tsx).
+ */
+const ROLLER_UTAN_DELTAGARONBOARDING = ['CONSULTANT', 'ADMIN', 'ARBETSTERAPEUT'] as const
+
 interface Step {
   id: number
   titleKey: string
@@ -114,20 +127,34 @@ export function OnboardingFlow() {
   const [saving, setSaving] = useState(false)
   const [hasSessionClaim, setHasSessionClaim] = useState(false)
 
-  // Visa endast när: inloggad + profil laddad + ej klar tidigare + ej lokalt avskedad
-  // + ingen annan onboarding har redan claim:at sessionen (DESIGN.md §12)
+  // IA3: den som arbetar i portalen får aldrig deltagarens välkomstmodal —
+  // varken renderad eller claim:ad, så en sido-specifik onboarding inte blockeras
+  // av ett claim som ändå inte ritar något.
+  const arDeltagarroll = !profile
+    ? false
+    : !(ROLLER_UTAN_DELTAGARONBOARDING as readonly string[]).includes(profile.activeRole)
+
+  // Visa endast när: inloggad + profil laddad + deltagarroll + ej klar tidigare
+  // + ej lokalt avskedad + ingen annan onboarding har redan claim:at sessionen
+  // (DESIGN.md §12)
   const shouldShow =
-    !!user && !!profile && profile.onboarding_completed === false && !dismissed && hasSessionClaim
+    !!user &&
+    !!profile &&
+    arDeltagarroll &&
+    profile.onboarding_completed === false &&
+    !dismissed &&
+    hasSessionClaim
 
   // Frequency-cap — denna globala flow ska visas FÖRST (har prioritet över
   // sido-specifika onboardings) men bara om ingen annan claim:at sessionen
   useEffect(() => {
-    if (!user || !profile || profile.onboarding_completed !== false || dismissed) return
+    if (!user || !profile || !arDeltagarroll) return
+    if (profile.onboarding_completed !== false || dismissed) return
     if (claimOnboardingSession(ONBOARDING_OWNER_ID)) {
       setHasSessionClaim(true)
       return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
     }
-  }, [user, profile, dismissed])
+  }, [user, profile, dismissed, arDeltagarroll])
 
   // Reset step när modalen visas (t.ex. om användaren stänger och öppnar igen)
   useEffect(() => {

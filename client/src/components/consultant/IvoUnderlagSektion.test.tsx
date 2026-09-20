@@ -15,6 +15,8 @@ const plan = (o: Record<string, unknown>) => ({
 
 vi.mock('@/services/aktivitetApi', () => ({
   aktivitetsplanApi: { listAll: vi.fn(), listSessionsBetween: vi.fn(), update: vi.fn() },
+  // GG1: underlagen räknas ur överlämningsraderna, inte ur planens kolumn.
+  underlagApi: { listIPeriod: vi.fn(async () => []) },
   FORSORJNINGSHINDER: ['arbetslos', 'sjukskriven_med_intyg', 'sjuk_eller_aktivitetsersattning', 'arbetshinder_sociala_skal', 'foraldraledig', 'arbetar_deltid', 'sprakhinder', 'utan_forsorjningshinder', 'annat'],
   FORSORJNINGSHINDER_ETIKETT: { arbetslos: 'Arbetslös', sjukskriven_med_intyg: 'Sjukskriven med läkarintyg', sjuk_eller_aktivitetsersattning: 'Sjuk- eller aktivitetsersättning', arbetshinder_sociala_skal: 'Arbetshinder, sociala skäl', foraldraledig: 'Föräldraledig', arbetar_deltid: 'Arbetar deltid', sprakhinder: 'Språkhinder', utan_forsorjningshinder: 'Utan försörjningshinder', annat: 'Annat' },
 }))

@@ -15,7 +15,7 @@
 
 import type { jsPDF } from 'jspdf'
 import type { ActivitySession } from './aktivitetApi'
-import { timmar, type ActivityType, type Attendance } from './aktivitetSchema'
+import { arNarvaro, timmar, type ActivityType, type Attendance } from './aktivitetSchema'
 import { franvaroAv, type FranvaroOrsak } from './franvaroApi'
 
 let jsPDFModule: typeof import('jspdf') | null = null
@@ -131,10 +131,18 @@ export function intygRader(sessions: readonly ActivitySession[], manad: string, 
   ])
 }
 
-/** Timmar med konsulentens markering Närvarande. Bara det — inget annat räknas. */
+/**
+ * Timmar som konsulenten markerat som närvaro — `present` eller `external`.
+ *
+ * GG2 (2026-09-20): funktionen räknade bara `present`, medan veckosaldot,
+ * nämndrapporten och aktivitetsloggen räknade båda. Deltagarens eget intyg
+ * kunde därför visa färre timmar för samma period än det underlag kommunen
+ * fick, utan att något förklarade skillnaden. Definitionen är nu delad —
+ * `NARVARANDE_UTFALL` i aktivitetSchema.ts.
+ */
 export function narvaroTimmar(sessions: readonly ActivitySession[], manad: string): number {
   const sum = manadensPass(sessions, manad)
-    .filter((s) => s.attendance === 'present')
+    .filter((s) => arNarvaro(s.attendance))
     .reduce((acc, s) => acc + timmar(s.start_time, s.end_time), 0)
   return Math.round(sum * 10) / 10
 }

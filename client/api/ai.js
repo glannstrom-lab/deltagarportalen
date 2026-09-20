@@ -453,6 +453,51 @@ async function checkOrgAiEnabled(supabase, userId) {
   }
 }
 
+/**
+ * BL2 (2026-09-20): organisationens AI-brytare för PERSONALENS egna anrop.
+ *
+ * `checkOrgAiEnabled` ovan läser vyn `my_ai_policy`, som filtrerar på
+ * `consultant_participants.participant_id = auth.uid()` — den svarar alltså
+ * bara för DELTAGARE. En konsulent som kör `konsulent-rapportutkast` fick
+ * därför aldrig någon org-spärr, och funktionen är dessutom undantagen från
+ * den personliga brytaren (AI_ENABLED_EXEMPT_FUNCTIONS). Nettot: en kommun som
+ * stängt av AI för hela organisationen kunde ändå få deltagardata skickad till
+ * OpenRouter genom konsulentens rapportverktyg — medan B2B-sidan lovade
+ * motsatsen ("AI-funktionerna kan stängas av för hela organisationen").
+ *
+ * Det här är INTE den öppna frågan i ROADMAP A2. A2 gäller deltagarens rätt
+ * att invända mot att konsulenten kör AI på hens journaldata — en fråga för
+ * AI-juristen. Det här är den personuppgiftsANSVARIGES egen instruktion till
+ * biträdet: säger kommunen nej till AI, gäller det kommunens egen personal.
+ *
+ * Kräver service role: `organizations` är inte läsbar för medlemmen själv.
+ * **Fail closed**, samma policy som de tre andra grindarna — kostnaden för att
+ * gissa fel är en behandling kommunen uttryckligen förbjudit.
+ */
+async function checkPersonalOrgAiEnabled(serviceClient, userId) {
+  if (!serviceClient || !userId) return { allowed: false, reason: 'lookup_failed' };
+  try {
+    const { data, error } = await serviceClient
+      .from('organization_members')
+      .select('org_id, organizations!inner(name, ai_enabled)')
+      .eq('user_id', userId);
+    if (error) {
+      console.warn('[PersonalOrgAiGate] uppslag misslyckades (blockerar):', error.message);
+      return { allowed: false, reason: 'lookup_failed' };
+    }
+    for (const rad of data || []) {
+      const o = rad && rad.organizations;
+      const orgs = Array.isArray(o) ? o : o ? [o] : [];
+      const sparr = orgs.find((r) => r && r.ai_enabled === false);
+      if (sparr) return { allowed: false, reason: 'org_disabled', orgName: sparr.name || null };
+    }
+    return { allowed: true };
+  } catch (err) {
+    console.warn('[PersonalOrgAiGate] kastade (blockerar):', err.message);
+    return { allowed: false, reason: 'lookup_failed' };
+  }
+}
+
 // ============================================
 // Retry-helper för OpenRouter (C6)
 // ============================================
@@ -885,6 +930,34 @@ const hanterare = async (req, res) => {
           reason: orgGate.reason,
         });
       }
+    } else {
+      // BL2: de undantagna funktionerna är personalens egna. De slipper
+      // deltagarens brytare (fel kontroll för en annan persons data), men
+      // INTE organisationens — kommunen är personuppgiftsansvarig, och dess
+      // nej gäller dess egen personal. Utan den här grenen var B2B-sidans
+      // löfte om att kunna stänga av AI "för hela organisationen" osant.
+      const SERVICE_KEY_ORG =
+        process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+      const SUPABASE_URL_ORG = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+      const personalOrgGate =
+        SUPABASE_URL_ORG && SERVICE_KEY_ORG
+          ? await checkPersonalOrgAiEnabled(
+              createClient(SUPABASE_URL_ORG, SERVICE_KEY_ORG, {
+                auth: { persistSession: false, autoRefreshToken: false },
+              }),
+              user.id,
+            )
+          : { allowed: false, reason: 'lookup_failed' };
+      if (!personalOrgGate.allowed) {
+        return res.status(403).json({
+          error:
+            personalOrgGate.reason === 'org_disabled'
+              ? `AI-funktionerna är avstängda för ${personalOrgGate.orgName || 'din organisation'}.`
+              : 'Vi kunde inte kontrollera organisationens AI-inställning just nu, och skickar därför inga uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_CONSENT_REQUIRED',
+          reason: personalOrgGate.reason,
+        });
+      }
     }
 
     if (ART9_FUNCTIONS.has(fn)) {
@@ -1223,3 +1296,7 @@ module.exports.extractJsonContent = extractJsonContent;
 module.exports.RESPONSE_VALIDATORS = RESPONSE_VALIDATORS;
 module.exports.resolveModel = resolveModel;
 module.exports.LOCKED_MODEL = LOCKED_MODEL;
+// BL2: organisationens AI-brytare för personalens egna anrop. Exponeras för
+// test av samma skäl som grindarna ovan — det är den som gör B2B-sidans löfte
+// ("AI-funktionerna kan stängas av för hela organisationen") sant.
+module.exports.checkPersonalOrgAiEnabled = checkPersonalOrgAiEnabled;

@@ -200,8 +200,10 @@ function byggPrerenderade() {
     // hade blivit den drift grinden finns för att fånga.
     const b2bFil = path.join(CLIENT, 'content', 'b2b.json')
     if (fs.existsSync(b2bFil)) {
-      const { sidor: b2bSidor } = JSON.parse(fs.readFileSync(b2bFil, 'utf8'))
+      const { sidor: b2bSidor, demoSida } = JSON.parse(fs.readFileSync(b2bFil, 'utf8'))
       for (const b of b2bSidor || []) sidor.add(`/${b.slug}/`)
+      // BL1: /demo/ byggs också, men är noindex och står inte i sitemapen.
+      if (demoSida?.slug) sidor.add(`/${demoSida.slug}/`)
     }
     // Spår K, omgång 7: situationssidorna, ur content/situationer.json av
     // samma skäl. Samlingssidan läggs till bara när det finns minst en sida —

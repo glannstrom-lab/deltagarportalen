@@ -187,6 +187,19 @@ export function AvtalskravKort() {
             portalen har ingen egen flagga för fysiskt/digitalt. Kravet gäller Rusta och matcha-avtalet; kommunens
             aktivitetskrav mäts mot planens veckomål.
           </p>
+
+          {/* GG4 (2026-09-20): sammanställningen ovan är ett underlag, inte den
+              periodiska rapporten. FFU §5.1.1 kopplar utbetalningen av
+              grundersättningen till en godkänd rapport i avtalets format via
+              AF:s systemstöd — och det formatet finns inte i portalen (RM6).
+              Utan raden kan kortet läsas som "det här räcker", och den
+              felläsningen kostar pengar, inte bara tid. */}
+          <p className="mt-2 text-xs text-amber-800 dark:text-amber-300 max-w-prose">
+            <strong>Detta är ett underlag, inte den periodiska rapporten.</strong> Grundersättningen betalas enligt
+            FFU §5.1.1 inte ut utan godkänd periodisk rapport i avtalets format, registrerad i Mina sidor för
+            fristående aktörer. Det finns inget öppet leverantörs-API mot Arbetsförmedlingen, så portalen kan
+            varken skapa eller skicka den rapporten — siffrorna här för du över för hand.
+          </p>
         </>
       )}
     </Card>

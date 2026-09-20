@@ -691,6 +691,37 @@ export function kanAngraUnderlag(h: Pick<PlanHandover, 'handed_over_at' | 'withd
 }
 
 export const underlagApi = {
+  /**
+   * GG1 (2026-09-20): alla underlag som lämnats i en period, över alla planer
+   * konsulenten ser (RLS avgränsar). Nämndrapporten och IVO-kvartalsunderlaget
+   * måste räkna ur de här raderna, inte ur planens synkade kolumn: triggern
+   * sätter kolumnen till `max(handed_over_at)` över ALL tid, så ett underlag
+   * lämnat i Q2 raderar tyst Q1:s räkning i en rapport som redan är avlämnad.
+   *
+   * Ångrade rader tas inte bort här — `ivoKvartalsunderlag` filtrerar på
+   * `withdrawn_at`, och den som vill visa historiken behöver dem.
+   *
+   * Hämtningen är avsiktligt ett dygn vidare åt båda håll: `handed_over_at` är
+   * en timestamptz och gränserna är lokala datum, så en exakt jämförelse i SQL
+   * skulle tappa rader kring kvartalsskiftet. Den exakta avgränsningen görs av
+   * `ivoKvartalsunderlag`, som äger definitionen av vad som hör till kvartalet.
+   */
+  async listIPeriod(from: string, to: string): Promise<PlanHandover[]> {
+    const dag = (datum: string, steg: number) => {
+      const d = new Date(`${datum}T12:00:00Z`)
+      d.setUTCDate(d.getUTCDate() + steg)
+      return d.toISOString().slice(0, 10)
+    }
+    const { data, error } = await supabase
+      .from('activity_plan_handovers')
+      .select('*')
+      .gte('handed_over_at', `${dag(from, -1)}T00:00:00Z`)
+      .lte('handed_over_at', `${dag(to, 1)}T23:59:59.999Z`)
+      .order('handed_over_at', { ascending: false })
+    if (error) throw error
+    return (data ?? []) as PlanHandover[]
+  },
+
   async list(planId: string): Promise<PlanHandover[]> {
     const { data, error } = await supabase
       .from('activity_plan_handovers')

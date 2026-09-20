@@ -19,7 +19,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Select } from '@/components/ui/Input'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
-import { aktivitetsplanApi, type ActivityPlan, type ActivitySession } from '@/services/aktivitetApi'
+import { aktivitetsplanApi, underlagApi, type ActivityPlan, type ActivitySession, type PlanHandover } from '@/services/aktivitetApi'
 import { ivoKvartalsunderlag, kvartalForDatum, kvartalGranser, tillTsv, type Kvartal } from '@/services/ivoKvartal'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
@@ -28,7 +28,7 @@ import { langtDatum } from './aktivitetEtiketter'
 type Lage =
   | { status: 'laddar' }
   | { status: 'fel'; fel: string }
-  | { status: 'klart'; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string> }
+  | { status: 'klart'; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string>; underlag: PlanHandover[] }
 
 /**
  * AF-checklistan följer planen: `activity_plans.af_registered_at` (migration
@@ -55,17 +55,21 @@ export function IvoUnderlagSektion() {
     let aktiv = true
     ;(async () => {
       try {
-        const [plans, sessions, deltagare] = await Promise.all([
+        // GG1: underlagen hämtas som egna rader. Utan dem faller räkningen
+        // tillbaka på planens synkade kolumn, som triggern skriver om bakåt i
+        // tiden — se underlagApi.listIPeriod.
+        const [plans, sessions, deltagare, underlag] = await Promise.all([
           aktivitetsplanApi.listAll(),
           aktivitetsplanApi.listSessionsBetween(from, to),
           fetchCachedConsultantParticipants(queryClient).catch(() => []),
+          underlagApi.listIPeriod(from, to),
         ])
         if (!aktiv) return
         const namn = new Map<string, string>()
         for (const d of deltagare) {
           namn.set(d.participant_id, `${d.first_name ?? ''} ${d.last_name ?? ''}`.trim())
         }
-        setLage({ status: 'klart', plans, sessions, namn })
+        setLage({ status: 'klart', plans, sessions, namn, underlag })
       } catch (err) {
         if (aktiv) setLage({ status: 'fel', fel: err instanceof Error ? err.message : 'Underlaget kunde inte hämtas.' })
       }
@@ -74,7 +78,7 @@ export function IvoUnderlagSektion() {
   }, [from, to, omgang, queryClient])
 
   const underlag = useMemo(
-    () => (lage.status === 'klart' ? ivoKvartalsunderlag(lage.plans, lage.sessions, val) : null),
+    () => (lage.status === 'klart' ? ivoKvartalsunderlag(lage.plans, lage.sessions, val, lage.underlag) : null),
     [lage, val],
   )
 

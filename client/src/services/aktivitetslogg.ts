@@ -27,7 +27,7 @@
  */
 
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
-import { addDays, isoWeekday, parseLocalDate, timmar, veckansMandag } from './aktivitetSchema'
+import { addDays, arNarvaro, isoWeekday, parseLocalDate, timmar, veckansMandag } from './aktivitetSchema'
 
 export interface Period {
   from: string
@@ -59,7 +59,6 @@ export interface Avtalskrav {
 type PlanFalt = Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date'>
 type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'start_time' | 'end_time' | 'attendance' | 'activity_type' | 'location'>
 
-const NARVARO: ReadonlySet<ActivitySession['attendance']> = new Set(['present', 'external'])
 
 /** Planmånad (1 = startmånaden) för ett datum. Datum före start ger 1. */
 export function planManad(startDate: string, datum: string): number {
@@ -108,7 +107,7 @@ export function avtalskravPerDeltagare(
   const start = period.from > plan.start_date ? period.from : plan.start_date
   const slut = plan.end_date !== null && plan.end_date < period.to ? plan.end_date : period.to
 
-  const egna = sessions.filter((s) => s.plan_id === plan.id && NARVARO.has(s.attendance))
+  const egna = sessions.filter((s) => s.plan_id === plan.id && arNarvaro(s.attendance))
   const veckor: Veckobedomning[] = []
 
   if (start <= slut) {

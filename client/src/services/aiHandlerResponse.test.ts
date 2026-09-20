@@ -53,9 +53,9 @@ function makeReq(fn: string, data: Record<string, unknown> = {}) {
   }
 }
 
-function jsonResponse(body: unknown) {
+function jsonResponse(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
-    status: 200,
+    status,
     headers: { 'Content-Type': 'application/json' },
   })
 }
@@ -73,7 +73,10 @@ function stubNetwork(
     ai_enabled: true,
   },
   // Organisationens AI-brytare (vyn my_ai_policy). Tom = ingen koppling = ingen spärr.
-  orgPolicy: Array<{ org_name: string; ai_enabled: boolean }> = []
+  orgPolicy: Array<{ org_name: string; ai_enabled: boolean }> = [],
+  // BL2: personalens EGET medlemskap (organization_members + organizations),
+  // som gäller de funktioner deltagarbrytaren är undantagen från.
+  personalOrg: Array<{ org_id: string; organizations: { name: string; ai_enabled: boolean } }> = []
 ) {
   const openRouterCalls: string[] = []
   const fetchStub = vi.fn(async (input: unknown, init?: { body?: string }) => {
@@ -100,6 +103,13 @@ function stubNetwork(
     }
     if (url.includes('/rest/v1/my_ai_policy')) {
       return jsonResponse(orgPolicy)
+    }
+    if (url.includes('/rest/v1/organization_members')) {
+      return jsonResponse(personalOrg)
+    }
+    if (url.includes('/rest/v1/ai_usage_logs')) {
+      // Token-taket: tom logg = inom kvoten.
+      return jsonResponse([])
     }
     throw new Error(`Oväntat nätverksanrop i test: ${url}`)
   })
@@ -301,16 +311,72 @@ describe('handlerns allmänna AI-av-grind (B28)', () => {
   })
 
   it('släpper igenom den undantagna konsulentfunktionen trots ai_enabled=false — annan persons data', async () => {
-    const { openRouterCalls } = stubNetwork('Sammanfattning: deltagaren har deltagit i två aktiviteter.', {
-      ai_consent_at: null,
-      ai_enabled: false,
-    })
+    // BL2-grinden läser organisationen med service role — utan nyckel är den
+    // fail closed, vilket är rätt i drift men gör testet till en env-kontroll.
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-stub'
+    const { openRouterCalls } = stubNetwork(
+      'Sammanfattning: deltagaren har deltagit i två aktiviteter.',
+      { ai_consent_at: null, ai_enabled: false },
+      [],
+      // BL2: konsulentens egen organisation har AI på. Deltagarens brytare
+      // gäller fortfarande inte här — det är en annan persons data.
+      [{ org_id: 'org1', organizations: { name: 'Demokommun', ai_enabled: true } }],
+    )
     const { res, captured } = makeRes()
 
     await handler(makeReq('konsulent-rapportutkast', { periodLabel: 'v.36', entries: [], goals: [] }), res)
 
     expect(captured.status).toBe(200)
     expect(openRouterCalls).toHaveLength(1)
+  })
+
+  /**
+   * BL2 (2026-09-20): B2B-sidan lovar att AI kan stängas av "för hela
+   * organisationen". Fram till nu var `konsulent-rapportutkast` undantagen
+   * både deltagarens OCH organisationens brytare, så en kommun som stängt av
+   * AI kunde ändå få deltagardata skickad till OpenRouter via konsulentens
+   * rapportverktyg.
+   */
+  it('BL2: organisationens brytare gäller ÄVEN den undantagna konsulentfunktionen', async () => {
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-stub'
+    const { openRouterCalls } = stubNetwork(
+      'irrelevant',
+      { ai_consent_at: null, ai_enabled: true },
+      [],
+      [{ org_id: 'org1', organizations: { name: 'Demokommun', ai_enabled: false } }],
+    )
+    const { res, captured } = makeRes()
+
+    await handler(makeReq('konsulent-rapportutkast', { periodLabel: 'v.36', entries: [], goals: [] }), res)
+
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ code: 'AI_CONSENT_REQUIRED', reason: 'org_disabled' })
+    expect(String((captured.body as { error: string }).error)).toContain('Demokommun')
+    expect(openRouterCalls).toHaveLength(0)
+  })
+
+  it('BL2 fail closed: blockerar när organisationsuppslaget inte kan göras', async () => {
+    // Inget svar på organization_members → uppslaget failar → blockera.
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-stub'
+    const openRouterCalls: string[] = []
+    const fetchStub = vi.fn(async (input: unknown) => {
+      const url = String(typeof input === 'string' ? input : (input as { url: string }).url)
+      if (url.includes('openrouter.ai')) { openRouterCalls.push(url); return jsonResponse({ choices: [{ message: { content: 'x' } }], usage: { total_tokens: 1 } }) }
+      if (url.includes('/auth/v1/user')) return jsonResponse({ id: 'u1', user: { id: 'u1' }, aud: 'authenticated' })
+      if (url.includes('/rest/v1/rpc/check_rate_limit')) return jsonResponse([])
+      if (url.includes('/rest/v1/profiles')) return jsonResponse({ ai_consent_at: null, ai_enabled: true })
+      if (url.includes('/rest/v1/ai_usage_logs')) return jsonResponse([])
+      if (url.includes('/rest/v1/organization_members')) return jsonResponse({ message: 'nät' }, 500)
+      throw new Error(`Oväntat nätverksanrop i test: ${url}`)
+    })
+    global.fetch = fetchStub as unknown as typeof fetch
+
+    const { res, captured } = makeRes()
+    await handler(makeReq('konsulent-rapportutkast', { periodLabel: 'v.36', entries: [], goals: [] }), res)
+
+    expect(captured.status).toBe(403)
+    expect(captured.body).toMatchObject({ reason: 'lookup_failed' })
+    expect(openRouterCalls).toHaveLength(0)
   })
 })
 
@@ -408,10 +474,15 @@ describe('handlerns PII-maskering (B29) — servern måste sanera oberoende av k
   })
 
   it('maskerar PII i nästlade fält (samma väg som konsulentens journalanteckningar)', async () => {
-    const { fetchStub } = stubNetwork('{"utkast":"ok"}', {
-      ai_consent_at: null,
-      ai_enabled: true,
-    })
+    // BL2: konsulentfunktionen passerar numera organisationens AI-brytare,
+    // som läses med service role och är fail closed utan nyckel.
+    process.env.SUPABASE_SERVICE_ROLE_KEY = 'service-stub'
+    const { fetchStub } = stubNetwork(
+      '{"utkast":"ok"}',
+      { ai_consent_at: null, ai_enabled: true },
+      [],
+      [{ org_id: 'org1', organizations: { name: 'Demokommun', ai_enabled: true } }],
+    )
     const { res } = makeRes()
 
     await handler(

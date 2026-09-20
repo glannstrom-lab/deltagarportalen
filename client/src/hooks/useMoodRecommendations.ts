@@ -8,6 +8,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import type { EnhancedArticle } from '@/services/articleData'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 // ============================================
 // TYPES
@@ -345,8 +346,10 @@ function generateRecommendations(
 // ============================================
 
 export function useMoodRecommendations(articles: EnhancedArticle[] = []) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   const { data: moodData, isLoading } = useQuery({
-    queryKey: ['todaysMood'],
+    queryKey: nyckel(['todaysMood']),
     queryFn: fetchTodaysMood,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000,

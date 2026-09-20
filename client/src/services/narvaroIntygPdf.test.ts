@@ -54,8 +54,21 @@ describe('månadens pass och summeringar', () => {
   it('tar bara månadens anvisade pass, i tidsordning', () => {
     expect(manadensPass(sessions, '2026-10').map((s) => s.id)).toEqual(['b', 'a', 'c', 'd'])
   })
-  it('räknar bara timmar som konsulenten markerat Närvarande — incheckning räcker inte', () => {
+  it('räknar bara timmar som konsulenten markerat — incheckning räcker inte', () => {
     expect(narvaroTimmar(sessions, '2026-10')).toBe(5.5)
+  })
+
+  // GG2 (2026-09-20): intyget räknade bara `present` medan veckosaldot,
+  // nämndrapporten och aktivitetsloggen räknade `present` + `external`. Samma
+  // period gav alltså olika tal i deltagarens kvitto och i nämndens underlag.
+  it('räknar external som närvaro — samma definition som nämndrapporten', () => {
+    const medExternal = [...sessions, pass({ id: 'g', date: '2026-10-16', attendance: 'external', start_time: '09:00', end_time: '11:00' })]
+    expect(narvaroTimmar(medExternal, '2026-10')).toBe(7.5)
+  })
+
+  it('delar definitionen med veckosaldot i stället för att kopiera den', async () => {
+    const { NARVARANDE_UTFALL } = await import('./aktivitetSchema')
+    expect([...NARVARANDE_UTFALL].sort()).toEqual(['external', 'present'])
   })
   it('summerar pass per utfall', () => {
     expect(antalPerUtfall(sessions, '2026-10', IDAG)).toEqual({ Närvarande: 2, Sjuk: 1, 'Incheckad, ej bekräftad av konsulent': 1 })

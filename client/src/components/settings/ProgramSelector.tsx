@@ -6,6 +6,7 @@ import { PROGRAMS, type ProgramSlug } from '@/lib/programs'
 import { cn } from '@/lib/utils'
 import { Briefcase, CheckCircle2, AlertCircle, Loader2 } from '@/components/ui/icons'
 import { laslogg, type AiPolicyRad } from '@/services/laslogg'
+import { useForetagsskal } from '@/components/Layout'
 
 /**
  * Låter en fri deltagare ange vilket arbetsmarknadsprojekt hen deltar i.
@@ -16,10 +17,24 @@ import { laslogg, type AiPolicyRad } from '@/services/laslogg'
  * organisationen, och att erbjuda "Rusta och Matcha" åt en kommundeltagare var
  * brus. Löftet "sidor för projektet kommer i en kommande uppdatering" är borta:
  * valet sparas på profilen, mer lovar vi inte.
+ *
+ * IA2 (2026-09-20): PG10:s villkor räckte inte. Det förutsätter en
+ * deltagarkoppling, så en konsulent eller en företagskontakt som öppnade
+ * /settings möttes ändå av "Vilket arbetsmarknadsprojekt deltar du i? Rusta
+ * och Matcha …" — fel fråga och fel tonläge för en chef. Två grindar till:
+ * personalroll, och företagskonto (som är en organisationstyp, inte en roll,
+ * och därför inte syns i `activeRole`).
  */
+const ROLLER_UTAN_PROGRAMVAL = ['CONSULTANT', 'ADMIN', 'ARBETSTERAPEUT'] as const
+
 export function ProgramSelector() {
   const { t } = useTranslation()
   const { profile } = useAuthStore()
+  // Kontexten från Layout, inte hooken: hooken öppnar en egen React
+  // Query-fråga och kräver därmed en QueryClientProvider runt varje ställe
+  // komponenten renderas. Kontexten har ett säkert standardvärde och är
+  // dessutom redan hämtad en gång av skalet.
+  const { isEmployer, isLoading: foretagLaddar } = useForetagsskal()
   const [selected, setSelected] = useState<ProgramSlug | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [feedback, setFeedback] = useState<'saved' | 'error' | null>(null)
@@ -58,12 +73,25 @@ export function ProgramSelector() {
     }
   }
 
+  // IA2: frågan ställs bara till den som kan svara på den. Personal och
+  // företagskontakter deltar inte i ett arbetsmarknadsprojekt.
+  const arPersonal =
+    !!profile &&
+    (ROLLER_UTAN_PROGRAMVAL as readonly string[]).includes(profile.activeRole)
+  if (arPersonal || isEmployer) return null
+
+  // "Laddning är inte tomhet" (CLAUDE.md): innan vi vet om personen tillhör en
+  // organisation eller ett företagskonto ska ingenting påstås. Förut ritades
+  // hela valet direkt och byttes sedan ut mot organisationsraden — en blinkande
+  // fråga som inte gällde läsaren.
+  if (organisationer === null || foretagLaddar) return null
+
   const options: Array<{ slug: ProgramSlug | null; label: string; description: string }> = [
     { slug: null, label: t('settings.programSelector.none'), description: t('settings.programSelector.noneDesc') },
     ...PROGRAMS.map((p) => ({ slug: p.slug, label: p.label, description: p.shortDescription })),
   ]
 
-  if (organisationer && organisationer.length > 0) {
+  if (organisationer.length > 0) {
     const namn = organisationer.map((o) => o.org_name).join(', ')
     return (
       <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 px-6 py-4">

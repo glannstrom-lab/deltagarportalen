@@ -15,6 +15,7 @@ import {
   ArrowRight, Check, Loader2, SkipForward, Copy, CheckCircle2
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
 
 interface FocusCoverLetterProps {
   onComplete: () => void
@@ -46,6 +47,8 @@ const SIMPLE_TEMPLATES = [
 ]
 
 export function FocusCoverLetter({ onComplete, onSkip, onBack: _onBack }: FocusCoverLetterProps) {
+  // KA2: cachen bär vems data det är.
+  const nyckel = useAnvandarnyckel()
   const { t } = useTranslation()
   const { profile } = useAuthStore()
   const queryClient = useQueryClient()
@@ -53,7 +56,7 @@ export function FocusCoverLetter({ onComplete, onSkip, onBack: _onBack }: FocusC
 
   // Fetch profile preferences for enriched letter content
   const { data: profilePrefs } = useQuery({
-    queryKey: ['profile-preferences'],
+    queryKey: nyckel(['profile-preferences']),
     queryFn: () => userApi.getPreferences(),
     staleTime: 1000 * 60 * 5 // 5 minutes
   })

@@ -81,6 +81,10 @@ const AMPEL_TEXT: Record<Ampel, { text: string; klass: string }> = {
   under_mal: { text: 'Under veckomålet', klass: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200' },
   pa_mal: { text: 'På veckomålet', klass: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200' },
   ogiltig_franvaro: { text: 'Ogiltig frånvaro i veckan', klass: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' },
+  // GG3: veckan kan fortfarande nå målet — men inget pass är markerat än, så
+  // ingenting är bekräftat. Neutral ton, inte amber: det är inte ett avvikande
+  // utfall, det är ett utfall som inte finns än.
+  ej_markerad: { text: 'Närvaron inte markerad än', klass: 'bg-sky-50 text-sky-900 dark:bg-sky-900/30 dark:text-sky-100' },
 }
 
 const STATUS_TEXT: Record<ActivityPlan['status'], string> = { active: 'Aktiv', paused: 'Pausad', ended: 'Avslutad' }

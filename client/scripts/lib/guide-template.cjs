@@ -1122,41 +1122,21 @@ function renderB2B(b, guider) {
       .join('')}</ol>`
     : ''
 
-  // F18 (2026-09-12): demouppgifterna som kopieringsbara fält. Knappen är progressive
-  // enhancement — utan JavaScript står texten kvar markerbar i ett <code>-element.
-  const demoKontonHtml = b.demoKonton
+  // BL1 (2026-09-20): demouppgifterna ligger INTE här längre. Sidan är märkt
+  // `index, follow` med flit — den ska hittas — och ett fungerande lösenord mot
+  // portalens riktiga auth stod därför i klartext på en yta Google, Wayback och
+  // automatiska secret-scanners läser permanent. Uppgifterna bor numera på
+  // /demo/, som är noindex. Säljflödet är oförändrat: fortfarande ingen bokning,
+  // bara ett klick till.
+  const demoKontonHtml = b.demoHanvisning
     ? `<section class="cta demokonton" id="demokonton">
-      <h2>${escapeHtml(b.demoKonton.rubrik)}</h2>
-      <p>${escapeHtml(b.demoKonton.text)}</p>
-      ${b.demoKonton.konton
-        .map(
-          (k) => `<div class="demokonto">
-        <h3>${escapeHtml(k.roll)}</h3>
-        <p><span class="etikett">E-post</span> <code>${escapeHtml(k.epost)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.epost)}">Kopiera</button></p>
-        <p><span class="etikett">Lösenord</span> <code>${escapeHtml(k.losenord)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.losenord)}">Kopiera</button></p>
-        <p><a class="btn btn-sm" href="${escapeHtml(k.lank)}">${escapeHtml(k.lankText)}</a></p>
-      </div>`,
-        )
-        .join('')}
-      <p class="sr-only" aria-live="polite" id="kopiera-status"></p>
+      <h2>${escapeHtml(b.demoHanvisning.rubrik)}</h2>
+      <p>${escapeHtml(b.demoHanvisning.text)}</p>
+      <p><a class="btn" href="${escapeHtml(b.demoHanvisning.lankHref)}">${escapeHtml(b.demoHanvisning.lankText)}</a></p>
     </section>`
     : ''
-  const demoKontonScript = b.demoKonton
-    ? `<script>
-(function () {
-  var status = document.getElementById('kopiera-status');
-  document.querySelectorAll('button.kopiera').forEach(function (b) {
-    b.addEventListener('click', function () {
-      var text = b.getAttribute('data-kopiera');
-      var klar = function () { b.textContent = 'Kopierat'; if (status) status.textContent = 'Kopierat till urklipp'; setTimeout(function () { b.textContent = 'Kopiera'; }, 2000); };
-      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(klar, function () { valj(b); }); } else { valj(b); }
-    });
-  });
-  function valj(b) { var kod = b.previousElementSibling; if (kod && window.getSelection) { var r = document.createRange(); r.selectNodeContents(kod); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } }
-})();
-</script>`
-    : ''
-  const demoKontonCss = b.demoKonton || b.saKommerNiIgang
+  const demoKontonScript = ''
+  const demoKontonCss = b.demoHanvisning || b.saKommerNiIgang
     ? `<style>
 .steg{padding-left:1.25rem}.steg li{margin:0 0 1rem}.steg h3{margin:0 0 .25rem}.steg-tid{font-weight:400;font-size:.9em;opacity:.8}
 .demokonto{margin:1rem 0 0;padding:.75rem 0 0;border-top:1px solid rgba(0,0,0,.12)}.demokonto h3{margin:0 0 .35rem;font-size:1rem}.demokonto p{margin:.25rem 0}
@@ -1686,6 +1666,104 @@ ${krisstod()}
 `
 }
 
+/**
+ * BL1 (2026-09-20) — /demo/: inloggningsuppgifterna till demokontona.
+ *
+ * Egen sida just för att den ska kunna vara `noindex, nofollow`. B2B-sidorna
+ * är avsiktligt sökbara, och ett fungerande lösenord mot portalens riktiga
+ * auth-system hörde inte hemma på en yta som Google, Wayback Machine och
+ * automatiska secret-scanners läser och behåller. Datan är sandboxad och
+ * återställs varje natt, men lösenordet byts aldrig — och målgruppen är
+ * GDPR-medvetna kommuner.
+ *
+ * Sidan ligger utanför sitemap.xml (generate-sitemap.cjs läser `sidor`, inte
+ * `demoSida`) och länkas bara från B2B-sidorna. Det är ingen säkerhetsgräns —
+ * det är att sluta publicera uppgifterna till indexen.
+ */
+function renderDemo(d) {
+  const url = `${SITE}/${d.slug}/`
+  const kontonHtml = (d.konton || [])
+    .map(
+      (k) => `<div class="demokonto">
+        <h3>${escapeHtml(k.roll)}</h3>
+        <p><span class="etikett">E-post</span> <code>${escapeHtml(k.epost)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.epost)}">Kopiera</button></p>
+        <p><span class="etikett">Lösenord</span> <code>${escapeHtml(k.losenord)}</code> <button type="button" class="btn btn-sm btn-ghost kopiera" data-kopiera="${escapeHtml(k.losenord)}">Kopiera</button></p>
+        <p><a class="btn btn-sm" href="${escapeHtml(k.lank)}">${escapeHtml(k.lankText)}</a></p>
+      </div>`,
+    )
+    .join('')
+
+  return `<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${escapeHtml(sidtitel(d.title))}</title>
+<meta name="description" content="${escapeHtml(d.description)}">
+<link rel="canonical" href="${url}">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-64.png">
+<style>${CSS}</style>
+<style>
+.demokonto{margin:1rem 0 0;padding:.75rem 0 0;border-top:1px solid rgba(0,0,0,.12)}.demokonto h3{margin:0 0 .35rem;font-size:1rem}.demokonto p{margin:.25rem 0}
+.demokonto code{font-size:1rem;padding:.15rem .4rem;border-radius:.3rem;background:rgba(0,0,0,.06);user-select:all}.demokonto .etikett{display:inline-block;min-width:5.5rem;opacity:.75}
+</style>
+</head>
+<body>
+<a class="sr-only" href="#innehall">Hoppa till innehållet</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="/">Jobin</a>
+    <a class="btn btn-sm" href="mailto:demo@jobin.se?subject=Visning av Jobin">Boka en visning</a>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <nav class="crumb" aria-label="Brödsmulor"><a href="/">Jobin</a></nav>
+    <h1>${escapeHtml(d.h1)}</h1>
+    <p class="lead">${escapeHtml(d.lead)}</p>
+  </div>
+</div>
+
+<main id="innehall">
+  <div class="wrap">
+    <p>${escapeHtml(d.noindexNot)}</p>
+    <section class="cta" id="demokonton">
+      ${kontonHtml}
+      <p class="sr-only" aria-live="polite" id="kopiera-status"></p>
+    </section>
+  </div>
+</main>
+<script>
+(function () {
+  var status = document.getElementById('kopiera-status');
+  document.querySelectorAll('button.kopiera').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = b.getAttribute('data-kopiera');
+      var klar = function () { b.textContent = 'Kopierat'; if (status) status.textContent = 'Kopierat till urklipp'; setTimeout(function () { b.textContent = 'Kopiera'; }, 2000); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(klar, function () { valj(b); }); } else { valj(b); }
+    });
+  });
+  function valj(b) { var kod = b.previousElementSibling; if (kod && window.getSelection) { var r = document.createRange(); r.selectNodeContents(kod); var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r); } }
+})();
+</script>
+
+${krisstod()}
+
+<footer>
+  <div class="wrap">
+    <p><strong>Jobin</strong> — stöd och verktyg för dig som söker jobb.
+    <a href="/guider/">Alla guider</a> · <a href="/verktyg/">Alla verktyg</a></p>
+    <p><a href="/#/privacy">Integritet</a> · <a href="/#/tillganglighet">Tillgänglighet</a> · <a href="/om-oss/">Om oss</a></p>
+  </div>
+</footer>
+</body>
+</html>
+`
+}
+
 module.exports = {
   renderOmOss,
   renderGuide,
@@ -1695,6 +1773,7 @@ module.exports = {
   renderTool,
   renderToolIndex,
   renderB2B,
+  renderDemo,
   renderSituation,
   renderSituationIndex,
   // SE3: exporteras för byggrapporten och testerna.

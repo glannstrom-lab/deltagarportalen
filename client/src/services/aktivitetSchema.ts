@@ -26,6 +26,25 @@ export const AKTIVITETSTYPER: readonly ActivityType[] = ['motivation', 'language
 /** Typer som räknas som anvisad aktivitet enligt lagen. */
 export const ANVISADE_TYPER: ReadonlySet<ActivityType> = new Set<ActivityType>(['motivation', 'language', 'jobsearch', 'workplace'])
 
+/**
+ * Markeringar som räknas som närvaro. `external` — "Annan aktivitet" — är en
+ * markering konsulenten gjort och räknas därför med: deltagaren var någon
+ * annanstans i enlighet med planen, inte frånvarande.
+ *
+ * GG2 (2026-09-20): definitionen bodde i fyra filer, och en av dem sa något
+ * annat. `narvaroIntygPdf.ts` räknade bara `present`, medan veckosaldot,
+ * nämndrapporten och aktivitetsloggen räknade `present` + `external` — samma
+ * period kunde alltså visa ett tal i deltagarens eget kvitto och ett annat i
+ * nämndens rapport. En definition som tre filer delar och en fjärde härmar är
+ * inte en definition. Läs den härifrån; skriv aldrig ett eget set.
+ */
+export const NARVARANDE_UTFALL: ReadonlySet<Attendance> = new Set<Attendance>(['present', 'external'])
+
+/** Räknas passets markering som närvaro? `null` (omarkerat) gör det inte. */
+export function arNarvaro(attendance: Attendance | null | undefined): boolean {
+  return !!attendance && NARVARANDE_UTFALL.has(attendance)
+}
+
 export interface TemplateItem {
   /** ISO-veckodag: 1 = måndag … 7 = söndag */
   weekday: number
@@ -224,7 +243,7 @@ export function veckosaldo(sessions: readonly SessionLike[], datum: string): Vec
     }
     planerade += min
     if (s.attendance === null) omark += 1
-    else if (s.attendance === 'present' || s.attendance === 'external') narvaro += min
+    else if (arNarvaro(s.attendance)) narvaro += min
     else if (s.attendance === 'absent_invalid') ogiltig += 1
     else if (s.attendance === 'absent_valid') giltig += 1
     else if (s.attendance === 'sick_certified') sjuk += 1
@@ -243,15 +262,32 @@ export function veckosaldo(sessions: readonly SessionLike[], datum: string): Vec
   }
 }
 
-export type Ampel = 'inga_pass' | 'under_mal' | 'pa_mal' | 'ogiltig_franvaro'
+export type Ampel =
+  | 'inga_pass'
+  | 'under_mal'
+  | 'pa_mal'
+  | 'ogiltig_franvaro'
+  | 'ej_markerad'
 
 /**
  * Ampel för veckan mot veckomålet. `inga_pass` när inget är planerat —
  * visas som `—`, aldrig som 0 %. Ogiltig frånvaro vinner över allt annat.
+ *
+ * GG3 (2026-09-20): grönt kräver **bekräftad närvaro**, inte schemalagda
+ * timmar. Fram till nu jämfördes `planeradeTimmar` mot målet, så en vecka fylld
+ * av omarkerade pass visade "På veckomålet" som om kravet vore uppfyllt —
+ * konsulenten läser chippet som ett kvitto, och kravet är ett underlag för
+ * ekonomiskt bistånd. Ett schema är en avsikt, inte ett utfall.
+ *
+ * `ej_markerad` är det ärliga mellanläget: målet är inte nått ÄN, och det finns
+ * omarkerade pass kvar som kan ta veckan dit. Att kalla den "under målet" vore
+ * lika osant som att kalla den grön — jämför regeln i CLAUDE.md om att ett
+ * värde utan underlag visar `—` och en rad om varför.
  */
 export function veckoampel(saldo: Veckosaldo, veckomal: number): Ampel {
   if (saldo.antalPass === 0) return 'inga_pass'
   if (saldo.antalOgiltigFranvaro > 0) return 'ogiltig_franvaro'
-  if (saldo.planeradeTimmar + 0.05 >= veckomal) return 'pa_mal'
+  if (saldo.narvaroTimmar + 0.05 >= veckomal) return 'pa_mal'
+  if (saldo.antalOmarkerade > 0) return 'ej_markerad'
   return 'under_mal'
 }

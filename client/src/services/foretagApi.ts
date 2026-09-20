@@ -235,6 +235,56 @@ function tomTillNull(v: string | null | undefined): string | null {
   return t ? t : null
 }
 
+// --------------------------------------------------------------- AG3
+// Visningar som redan räknats i den här fliken. Modulminnet bär det över
+// komponentens av- och påmontering; sessionStorage bär det över en omladdning.
+// Båda är per flik och per webbläsare med flit — det här ersätter inte
+// max_views i databasen, det hindrar bara att samma öppning betalas två gånger.
+const VISNINGSNYCKEL = 'jobin.foretag.raknade-visningar'
+const raknadeVisningar = new Set<string>()
+
+function lasSessionsminne(): Set<string> {
+  try {
+    const rått = sessionStorage.getItem(VISNINGSNYCKEL)
+    if (!rått) return new Set()
+    const tolkat: unknown = JSON.parse(rått)
+    return Array.isArray(tolkat) ? new Set(tolkat.filter((v): v is string => typeof v === 'string')) : new Set()
+  } catch {
+    // Privat läge, blockerad lagring, jsdom utan store: minnet är en bekvämlighet.
+    return new Set()
+  }
+}
+
+function redanRaknadVisning(id: string): boolean {
+  if (raknadeVisningar.has(id)) return true
+  if (lasSessionsminne().has(id)) {
+    raknadeVisningar.add(id)
+    return true
+  }
+  return false
+}
+
+function minnsRaknadVisning(id: string): void {
+  raknadeVisningar.add(id)
+  try {
+    const alla = lasSessionsminne()
+    alla.add(id)
+    sessionStorage.setItem(VISNINGSNYCKEL, JSON.stringify([...alla]))
+  } catch {
+    // Modulminnet räcker för resten av sessionen.
+  }
+}
+
+/** Bara för tester — varje test ska börja utan minne av tidigare visningar. */
+export function nollstallVisningsminne(): void {
+  raknadeVisningar.clear()
+  try {
+    sessionStorage.removeItem(VISNINGSNYCKEL)
+  } catch {
+    /* tom */
+  }
+}
+
 export const foretagApi = {
   // ============================================================== profil
 
@@ -325,14 +375,30 @@ export const foretagApi = {
    * view_count`, så vi skickar en kolumn triggern ändå skriver över själv
    * (last_viewed_at). Kastar databasens "Förslaget kan inte visas fler gånger"
    * när taket är nått — visa det, sväljer inte.
+   *
+   * AG3 (2026-09-20): räkningen skyddades bara av en `useRef` i ForslagFlik,
+   * alltså av komponentens livstid. Att klicka sig till Pågående och tillbaka,
+   * eller ladda om sidan, monterade om komponenten och brände en visning till
+   * — så ett företag kunde tömma sin egen budget på ett förslag genom vanlig
+   * navigering och därmed låsa ute sina egna kollegor. Ingen risk mot andra
+   * företag; ren självskada, men en självskada användaren inte kan se.
+   *
+   * Minnet ligger här och inte i komponenten, så en framtida andra anropare
+   * inte tappar skyddet. Det är per flik och per webbläsare — taket i
+   * databasen är fortfarande den riktiga gränsen, det här är bara till för att
+   * samma person inte ska betala för samma öppning två gånger.
    */
   async markeraOppnad(id: string): Promise<void> {
+    if (redanRaknadVisning(id)) return
     await requireUserId()
     const { error } = await supabase
       .from('employer_proposals')
       .update({ last_viewed_at: new Date().toISOString() })
       .eq('id', id)
+    // Bara en lyckad visning får minnas: nekas den av taket ska felet kunna
+    // visas igen nästa gång någon försöker öppna förslaget.
     if (error) throw new Error(foretagFelText(error))
+    minnsRaknadVisning(id)
   },
 
   /**

@@ -30,6 +30,7 @@ const {
   renderTool,
   renderToolIndex,
   renderB2B,
+  renderDemo,
   renderSituation,
   renderSituationIndex,
   renderOmOss,
@@ -269,7 +270,16 @@ const B2B_FILE = path.join(CLIENT, 'content', 'b2b.json')
 let antalB2B = 0
 const b2bSlugs = []
 if (fs.existsSync(B2B_FILE)) {
-  const { sidor } = JSON.parse(fs.readFileSync(B2B_FILE, 'utf8'))
+  const { sidor, demoSida } = JSON.parse(fs.readFileSync(B2B_FILE, 'utf8'))
+
+  // BL1 (2026-09-20): demokontonas inloggningsuppgifter på egen noindex-sida.
+  // Den ligger MED FLIT utanför sitemap.xml och b2bSlugs — sitemapen listar
+  // det vi vill ska hittas, och det här är det enda vi inte vill.
+  if (demoSida) {
+    const demoDir = path.join(DIST, demoSida.slug)
+    fs.mkdirSync(demoDir, { recursive: true })
+    fs.writeFileSync(path.join(demoDir, 'index.html'), renderDemo(demoSida), 'utf8')
+  }
 
   for (const b of sidor) {
     const saknade = (b.guider || []).filter((s) => !publiceradeSlugs.has(s))

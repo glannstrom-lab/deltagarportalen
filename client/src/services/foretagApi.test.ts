@@ -49,7 +49,7 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
-import { foretagApi, veckaAvTotal, dagarSedan, foretagFelText } from './foretagApi'
+import { foretagApi, veckaAvTotal, dagarSedan, foretagFelText, nollstallVisningsminne } from './foretagApi'
 
 function steg(namn: string) {
   const k = kedjor[kedjor.length - 1]
@@ -66,6 +66,9 @@ describe('foretagApi', () => {
     getSession.mockResolvedValue({ data: { session: { access_token: 'tok' } } })
     vi.stubEnv('VITE_SUPABASE_URL', 'https://x.supabase.co')
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true, status: 200 }))
+    // AG3: visningsminnet lever i modulen och i sessionStorage — varje test
+    // ska börja utan minne av föregående, annars hoppas UPDATE:n över.
+    nollstallVisningsminne()
   })
 
   describe('markeraOppnad', () => {
@@ -82,6 +85,29 @@ describe('foretagApi', () => {
     it('kastar databasens text när visningstaket är nått — sväljer inte', async () => {
       nastaSvar = { data: null, error: { code: '23514', message: 'Förslaget kan inte visas fler gånger' } }
       await expect(foretagApi.markeraOppnad('f1')).rejects.toThrow('Förslaget kan inte visas fler gånger')
+    })
+
+    // AG3 (2026-09-20): budgeten brändes av vanlig navigering — komponentens
+    // useRef nollställdes vid varje av- och påmontering.
+    it('räknar samma förslag en gång per flik, hur många gånger det än öppnas', async () => {
+      await foretagApi.markeraOppnad('f1')
+      const efterForsta = kedjor.length
+      await foretagApi.markeraOppnad('f1')
+      await foretagApi.markeraOppnad('f1')
+      expect(kedjor.length).toBe(efterForsta)
+    })
+
+    it('ett nekat försök minns inte — felet ska kunna visas igen', async () => {
+      nastaSvar = { data: null, error: { code: '23514', message: 'Förslaget kan inte visas fler gånger' } }
+      await expect(foretagApi.markeraOppnad('f1')).rejects.toThrow()
+      await expect(foretagApi.markeraOppnad('f1')).rejects.toThrow()
+    })
+
+    it('olika förslag räknas var för sig', async () => {
+      await foretagApi.markeraOppnad('f1')
+      const efterForsta = kedjor.length
+      await foretagApi.markeraOppnad('f2')
+      expect(kedjor.length).toBeGreaterThan(efterForsta)
     })
   })
 

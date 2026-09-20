@@ -45,6 +45,12 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
   // Konsulent-vyn ska även vara nåbar för arbetsterapeut (för signering av skattningar)
   const isConsultant = activeRole === 'CONSULTANT' || isAdmin || isArbetsterapeut
   const isUser = activeRole === 'USER'
+  // IA4 (2026-09-20): mobilmenyn fick den här omordningen i PG20 (2026-09-13),
+  // skrivbordets sidomeny gjorde det aldrig — en konsulent såg fortfarande alla
+  // fem deltagarhubbar överst och sin egen arbetsyta sist. Samma villkor som i
+  // Layout.tsx: bara ren CONSULTANT, inte admin (som behöver överblick över
+  // hela portalen) och inte arbetsterapeut (som bara signerar skattningar).
+  const konsulentForst = activeRole === 'CONSULTANT'
 
   const activeHub = getActiveHub(location.pathname)
 
@@ -131,6 +137,43 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
 
   const user = profile
 
+  // IA4: samma block oavsett placering. Toppmarginalen och avdelaren hör till
+  // läget "under hubbarna" — ligger blocket först finns inget att avdela från.
+  const konsulentBlock = (
+    <div
+      data-domain="reflection"
+      className={cn(
+        !konsulentForst && 'mt-4 pt-3 border-t border-stone-100 dark:border-stone-800',
+      )}
+    >
+      {!isCollapsed && (
+        <div className="px-2 mb-1 flex items-center gap-1.5">
+          <span
+            className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
+            aria-hidden="true"
+          />
+          <span className="text-xs font-semibold text-[var(--c-text)] uppercase tracking-wide">
+            {t('sidebar.consultantSection')}
+          </span>
+        </div>
+      )}
+      <div className="space-y-0.5">
+        {consultantNavItems.map((item) => {
+          const isActive = location.pathname.startsWith(item.path)
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              icon={item.icon}
+              label={t(item.labelKey)}
+              isActive={isActive}
+            />
+          )
+        })}
+      </div>
+    </div>
+  )
+
   return (
     <aside className={cn(
       'h-full flex flex-col bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 transition-all duration-200',
@@ -149,6 +192,16 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           isCollapsed ? 'px-1.5' : 'px-2'
         )}
       >
+        {/* IA4: konsulentens egen arbetsyta först, sedan deltagarvyn under en
+            rubrik som säger vad den är. Admin och deltagare får som förut
+            hubbarna överst. */}
+        {konsulentForst && konsulentBlock}
+        {konsulentForst && !isCollapsed && (
+          <p className="px-2 pt-3 pb-1 text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
+            {t('sidebar.participantView')}
+          </p>
+        )}
+
         {/* 5 hub links with active sub-item expansion */}
         <div className="space-y-0.5">
             {navHubs.map((hub) => {
@@ -187,39 +240,9 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
             })}
         </div>
 
-        {/* Consultant Section — använder Reflection-domän (lila) */}
-        {isConsultant && !isUser && (
-          <div
-            data-domain="reflection"
-            className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800"
-          >
-            {!isCollapsed && (
-              <div className="px-2 mb-1 flex items-center gap-1.5">
-                <span
-                  className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
-                  aria-hidden="true"
-                />
-                <span className="text-xs font-semibold text-[var(--c-text)] uppercase tracking-wide">
-                  {t('sidebar.consultantSection')}
-                </span>
-              </div>
-            )}
-            <div className="space-y-0.5">
-              {consultantNavItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.path)
-                return (
-                  <NavLink
-                    key={item.path}
-                    to={item.path}
-                    icon={item.icon}
-                    label={t(item.labelKey)}
-                    isActive={isActive}
-                  />
-                )
-              })}
-            </div>
-          </div>
-        )}
+        {/* Consultant Section — efter hubbarna för admin/arbetsterapeut; för
+            konsulenten ligger den FÖRST (IA4, se konsulentBlock ovan) */}
+        {isConsultant && !isUser && !konsulentForst && konsulentBlock}
 
         {/* Admin Section */}
         {isAdmin && (

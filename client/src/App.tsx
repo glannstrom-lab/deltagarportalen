@@ -142,12 +142,26 @@ function PrivateRoute({
  * visas samma laddare som PrivateRoute — annars blinkar Översikt förbi för
  * företaget ("laddning är inte tomhet", CLAUDE.md). K11:s returnTo rörs inte:
  * den hanteras i PublicRoute/RootRoute före den här komponenten någonsin renderas.
+ *
+ * IA1 (2026-09-20): konsulent och admin landar i sin arbetsyta, inte i
+ * jobbsökarens dashboard. Fram till nu grenade funktionen bara på
+ * företagskontot, så den som faktiskt ska arbeta i portalen möttes av
+ * Översikt och fick leta upp Konsultportal i sidomenyn vid varje inloggning
+ * utan `returnTo`.
+ *
+ * SUPERADMIN är med flit INTE med i grenen: det är kontot som används för att
+ * pröva deltagarvyn i prod (kopplat som testdeltagare), och det ska fortsätta
+ * landa på Översikt. Mätt i prod 2026-09-20: 109 USER, 2 CONSULTANT,
+ * 1 SUPERADMIN, 0 ADMIN.
  */
 function StartRedirect() {
   // arForetagskonto, inte isEmployer: personal som är medlem i ett
   // företagskonto ska landa på Översikt som vanligt och nå företagsvyn via
   // menyn, precis som konsulentvyn.
   const { isLoading, arForetagskonto } = useForetagskonto()
+  // Den aktiva rollen, inte `roles[]`: en användare som växlat till deltagarläge
+  // ska landa där hon växlat till.
+  const aktivRoll = useAuthStore((state) => state.profile?.activeRole)
 
   if (isLoading) {
     return (
@@ -157,7 +171,11 @@ function StartRedirect() {
     )
   }
 
-  return <Navigate to={arForetagskonto ? '/foretag' : '/oversikt'} replace />
+  if (arForetagskonto) return <Navigate to="/foretag" replace />
+  if (aktivRoll === 'CONSULTANT' || aktivRoll === 'ADMIN') {
+    return <Navigate to="/consultant" replace />
+  }
+  return <Navigate to="/oversikt" replace />
 }
 
 /**

@@ -53,7 +53,7 @@ och är inte med.
 
 ### Nu — riktiga fel
 
-- [ ] **GG1** **Nämndrapporten och IVO-kvartalsunderlaget använder inte F10:s spårbara
+- [x] **GG1** ✅ **Klar 2026-09-20.** Båda anropsställena skickar nu in överlämningsraderna: `underlagApi.listIPeriod(from, to)` (ny; hämtar ett dygn vidare åt båda håll eftersom `handed_over_at` är timestamptz och gränserna lokala datum — den exakta avgränsningen äger `ivoKvartalsunderlag`). `namndrapportUnderlag()` har fått samma fjärde parameter och `underlagLamnatIKvartal()` en uppslagsmängd. Den vilseledande kommentaren i `ivoKvartal.ts` — "samma tal, för triggern håller kolumnen lika med senaste ej ångrade underlaget" — är struken; det var påståendet som gjorde att ingen skickade in listan. Grind: `src/test/gg1-underlag-per-kvartal.test.ts` läser anropsställena och fäller på tre argument i stället för fyra (mutationstestad), plus regressionstester i `ivoKvartal.test.ts` och `namndrapportPdf.test.ts` som visar att Q1 räknas rätt med raderna och fel utan dem. *(Var:)* **Nämndrapporten och IVO-kvartalsunderlaget använder inte F10:s spårbara
   underlagsflöde — byggt samma dag för att lösa exakt det här.** `namndrapportPdf.ts` har
   ingen `handovers`-parameter, och `ivoKvartalsunderlag()` (som HAR fått en valfri
   `handovers`-parameter, `ivoKvartal.ts:99`) anropas utan den på båda ställena
@@ -70,7 +70,7 @@ och är inte med.
   `client/src/services/namndrapportPdf.ts:61`,
   `client/src/components/consultant/ReportGeneratorDialog.tsx:132` · **verifierat** (läst
   alla tre ställena + triggerfunktionen) · M
-- [ ] **BL1** **Demokontots riktiga inloggningsuppgifter står i klartext på en sida märkt
+- [x] **BL1** ✅ **Klar 2026-09-20.** Uppgifterna är flyttade till `/demo/`, en egen sida med `<meta name="robots" content="noindex, nofollow">`, utanför `sitemap.xml`. B2B-sidorna är kvar `index, follow` (de ska hittas) och länkar dit i stället; säljflödet är oförändrat — fortfarande ingen bokning, bara ett klick till. Lösenorden är också borta ur FAQ-texterna, där de stod i klartext utanför kontoblocket. Verifierat i byggd utdata: 0 träffar på båda lösenorden i `dist/for-arbetsmarknadsenheter/` och `dist/for-rusta-och-matcha/`, 0 i sitemapen. Grind: `src/test/bl1-demolosenord-ej-indexerat.test.ts` renderar ur mallen (inte ur `dist/`, som kan ge falskt grönt på förra byggets filer) och fäller på varje lösenord som dyker upp på en indexerad sida — mutationstestad. *(Var:)* **Demokontots riktiga inloggningsuppgifter står i klartext på en sida märkt
   `index, follow`.** `demo@jobin.se`/`visa-jobin-2026` och `anna.exempel@example.com`/
   `prova-anna-2026` — riktiga lösenord mot portalens verkliga auth-system — ligger i
   `client/content/b2b.json:88,120-129,251` och renderas av `renderB2B` i
@@ -91,7 +91,7 @@ och är inte med.
   på klockan 03. De 13 mutationstestade testerna bevisar att saneringen fungerar — inte att
   något når fram. **Åtgärd:** lägg `SENTRY_DSN` + `VITE_SENTRY_DSN` i Vercel → Production.
   `client/api/_utils/sentry.js:71` · **verifierat, mätt oberoende** (`vercel env ls`) · 15 min
-- [ ] **IA1** **Konsulent och admin loggar in på deltagarens Översikt, inte `/consultant` —
+- [x] **IA1** ✅ **Klar 2026-09-20.** `StartRedirect` grenar nu på `activeRole`: CONSULTANT och ADMIN → `/consultant`. SUPERADMIN är med flit kvar på `/oversikt` — det kontot används för att pröva deltagarvyn i prod. Mätt i prod samma dag: 109 USER, 2 CONSULTANT, 1 SUPERADMIN, 0 ADMIN. *(Var:)* **Konsulent och admin loggar in på deltagarens Översikt, inte `/consultant` —
   varje gång.** `StartRedirect` (`App.tsx:146-158`) grenar bara på `isEmployer` (`'/foretag'
   : '/oversikt'`); ingen gren för `CONSULTANT`/`ADMIN`. Den som faktiskt ska arbeta möts av
   jobbsökarens dashboard och måste själv hitta ner till "Konsultportal" i sidomenyn, varje
@@ -111,12 +111,12 @@ och är inte med.
 
 ### Sedan — skav som märks
 
-- [ ] **GG2** Deltagarens eget närvarointyg (`narvaroIntygPdf.ts:135-140`) räknar bara
+- [x] **GG2** ✅ **Klar 2026-09-20.** Definitionen bor nu på ETT ställe: `NARVARANDE_UTFALL` + `arNarvaro()` i `aktivitetSchema.ts`. Intyget, veckosaldot, nämndrapporten och aktivitetsloggen läser samma mängd — de tre senare hade redan rätt, intyget räknade bara `present`. Test i `narvaroIntygPdf.test.ts` som låser att `external` räknas med, och att definitionen delas i stället för kopieras. *(Var:)* Deltagarens eget närvarointyg (`narvaroIntygPdf.ts:135-140`) räknar bara
   `attendance === 'present'`, medan veckosaldot och nämndrapporten räknar `present`+
   `external` som närvaro — samma period kan visa olika närvarotal i deltagarens kvitto och i
   nämndens rapport. `client/src/services/narvaroIntygPdf.ts:135-140` vs
   `aktivitetSchema.ts:227` · läst i koden · S
-- [ ] **GG3** Veckoampeln blir grön ("På veckomålet") på SCHEMALAGDA timmar, inte bekräftad
+- [x] **GG3** ✅ **Klar 2026-09-20.** `veckoampel()` jämför `narvaroTimmar` mot målet, inte `planeradeTimmar`. Nytt läge `ej_markerad` ("Närvaron inte markerad än", neutral ton) när målet inte är nått ÄN men omarkerade pass finns — att kalla den veckan "under målet" vore lika osant som att kalla den grön. Testet som asserterade buggen (det hette "på mål när PLANERADE timmar når veckomålet") är omskrivet; tre nya fall täcker omarkerat, allt-markerat och `external`. *(Var:)* Veckoampeln blir grön ("På veckomålet") på SCHEMALAGDA timmar, inte bekräftad
   närvaro — en vecka fylld av omarkerade pass visar grönt som om kravet vore uppfyllt.
   `client/src/services/aktivitetSchema.ts:252-256` · läst i koden · S
 - [ ] **AG9-rest** ~~AG-fynd~~/~~GDPR-fynd~~ (två oberoende linser, samma slutsats): fem
@@ -127,7 +127,7 @@ och är inte med.
   besluta tidsgräns (roadmapens eget förslag: 2 år från `end_date` för placeringar, 12 mån
   för aldrig tillsatta förslag) och lägg ett tionde cron-jobb. `docs/RETENTION-POLICY.md:144`
   · **verifierat av två oberoende linser** · S (när tidsgränsen är beslutad)
-- [ ] **DR2** Mejl-cronen (`pass-paminnelse.js`, `aktivitet-mejl.js`) fångar varje enskilt
+- [x] **DR2** ✅ **Klar 2026-09-20.** Ny delad regel i `api/_utils/mejlutfall.js`: inget att göra → 200; delvis fel → 200 + Sentry-händelse; **allt föll → 500**, så Vercel Cron markerar körningen misslyckad och `medFelrapport()` rapporterar den. Delad modul med flit — samma regel bodde i två filer som råkade vara lika, och det är så en av dem driver iväg (jämför GG2). Test: `src/test/dr2-mejlcron-status.test.ts`, som också fäller om någon av cronerna går tillbaka till hårdkodat 200. *(Var:)* Mejl-cronen (`pass-paminnelse.js`, `aktivitet-mejl.js`) fångar varje enskilt
   Resend-fel i sin loop men svarar ändå **HTTP 200** även när ALLA mejl i batchen
   misslyckats — Vercel Cron läser inte svarskroppen, så en hel natt utan fungerande Resend
   ger ingen påminnelse till någon deltagare och inget larmar. `client/api
@@ -139,23 +139,23 @@ och är inte med.
   Ett gallringsjobb som failar tyst kan lämna personuppgifter kvar längre än GDPR art 5.1.e
   tillåter. `supabase/migrations/20260912170000_retention_bekraftade.sql`,
   `20260912150000_retention_cron_rattad.sql` · läst i koden · 2–3 h
-- [ ] **IA2** `ProgramSelector` (byggd för fria deltagare, PG10 2026-09-12) döljs bara via en
+- [x] **IA2** ✅ **Klar 2026-09-20.** Två grindar till i `ProgramSelector`: personalroll (CONSULTANT/ADMIN/ARBETSTERAPEUT) och företagskonto (via `useForetagsskal()`-kontexten, inte hooken — hooken öppnar en egen React Query-fråga och hade krävt en provider runt varje testrendering). Dessutom: komponenten ritar ingenting förrän den vet om personen tillhör en organisation, i stället för att visa hela valet och sedan byta ut det ("laddning är inte tomhet"). *(Var:)* `ProgramSelector` (byggd för fria deltagare, PG10 2026-09-12) döljs bara via en
   kedja som förutsätter en deltagare-koppling — en konsulent eller företagskontakt som öppnar
   `/settings` möter alltså "Vilket arbetsmarknadsprojekt deltar du i? Rusta och Matcha …",
   fel tonläge och fel fråga för en chef eller företagskontakt. `client/src/pages
   /Settings.tsx:378`, `client/src/components/settings/ProgramSelector.tsx:20-76` · **läst i
   koden, delvis verifierat** (villkoret i komponenten bekräftat, källan till
   `organisationer`-listan inte spårad ända ner) · 1–2 h
-- [ ] **IA3** `OnboardingFlow` visas fortfarande för konsulenter — redan noterat som bifynd
+- [x] **IA3** ✅ **Klar 2026-09-20.** `ROLLER_UTAN_DELTAGARONBOARDING` i `OnboardingFlow.tsx`; modalen varken renderas eller claim:ar sessionen för personal, så en sido-specifik onboarding inte blockeras av ett claim som ändå inte ritar något. *(Var:)* `OnboardingFlow` visas fortfarande för konsulenter — redan noterat som bifynd
   2026-09-12 (`docs/ROADMAP.md` dåvarande rad 237) men aldrig åtgärdat. Bekräftat: ingen
   rollkontroll i `OnboardingFlow.tsx`, monteras i deltagargrenen i `Layout.tsx:588` som körs
   för alla icke-företagskonton. Företagsskalet är inte drabbat (monterar den inte alls).
   `client/src/components/Layout.tsx:588` · läst i koden · 30 min
-- [ ] **IA4** Mobilmenyn fick PG20:s omordning (konsulentavsnittet först), men skrivbordets
+- [x] **IA4** ✅ **Klar 2026-09-20.** `Sidebar.tsx` har fått PG20:s omordning: konsulentblocket först, sedan rubriken "Deltagarvyn" och hubbarna. Samma villkor som mobilen (`konsulentForst = activeRole === 'CONSULTANT'`) — admin och arbetsterapeut får hubbarna överst som förut. *(Var:)* Mobilmenyn fick PG20:s omordning (konsulentavsnittet först), men skrivbordets
   `Sidebar.tsx` gjorde det aldrig — en konsulent på desktop ser fortfarande alla fem
   deltagarhubbar överst och sin egen arbetsyta sist. `client/src/components
   /layout/Sidebar.tsx:152-222` · läst i koden · 1 h
-- [ ] **BL2** B2B-sidans text ("AI-funktionerna kan stängas av för **hela organisationen**",
+- [x] **BL2** ✅ **Klar 2026-09-20 — och åt rätt håll: koden gör nu det texten lovar, i stället för att texten tunnas ut.** Ny grind `checkPersonalOrgAiEnabled()` i `ai.js` läser personalens EGET medlemskap (`organization_members` + `organizations`, service role — `my_ai_policy` filtrerar på deltagar-id och svarar aldrig för en konsulent) och gäller precis de funktioner deltagarbrytaren är undantagen från. Fail closed. **Avgränsning:** det här är inte A2. A2 gäller deltagarens rätt att invända mot att konsulenten kör AI på hens journaldata — en fråga för AI-juristen. Det här är den personuppgiftsansvariges egen instruktion: säger kommunen nej till AI gäller det kommunens personal. Åtta tester, inklusive fail closed utan service-nyckel och en källtextkontroll av att grenen sitter som `else` till deltagargrinden, så en ny undantagen funktion inte kan smyga förbi. *(Var:)* B2B-sidans text ("AI-funktionerna kan stängas av för **hela organisationen**",
   `client/content/b2b.json:100`) stämmer inte med koden: `checkOrgAiEnabled`
   (`_shared/aiGate.ts:204-234`) stänger bara av AI för **deltagare** kopplade till
   organisationens konsulenter — konsulentens eget rapportverktyg
@@ -168,13 +168,13 @@ och är inte med.
 
 ### Framåt — det som gör nästa fel billigare
 
-- [ ] **GG4** **FFU §5.1.1:s betalningsvillkor (grundersättning betalas inte ut utan godkänd
+- [x] **GG4** ✅ **Klar 2026-09-20 (disclaimern).** `AvtalskravKort` säger nu rakt ut: "Detta är ett underlag, inte den periodiska rapporten" — med FFU §5.1.1, att grundersättningen inte betalas utan godkänd rapport i avtalets format, och att det inte finns något öppet leverantörs-API mot AF så siffrorna förs över för hand. RM6 självt kvarstår. *(Var:)* **FFU §5.1.1:s betalningsvillkor (grundersättning betalas inte ut utan godkänd
   periodisk rapport i avtalets format) är helt obyggt** — noll kodträffar för
   "grundersättning"/"5.1.1". En konsulent som litar på IVO-kortet eller nämndrapporten som
   komplett dokumentation har inget som varnar att formatet inte matchar avtalskravet
   (RM6, redan känt som obyggt). Minst en disclaimer tills RM6 byggs · `docs/ROADMAP.md`
   (RM6-raden) · läst i koden (negativ grep) · S (disclaimer) / L (RM6 självt)
-- [ ] **AG3** Ett företagskonto kan bränna sin egen `max_views`-budget genom upprepade
+- [x] **AG3** ✅ **Klar 2026-09-20.** Visningsminnet flyttat från komponentens `useRef` (som nollställdes vid varje av- och påmontering) till `foretagApi.markeraOppnad` — modulminne + `sessionStorage`, båda i try/catch. Bara en LYCKAD visning minns, så ett nekat försök kan visa felet igen. Taket i databasen är fortfarande den riktiga gränsen; det här hindrar bara att samma öppning betalas två gånger vid vanlig navigering. Fyra tester. *(Var:)* Ett företagskonto kan bränna sin egen `max_views`-budget genom upprepade
   `PATCH employer_proposals`-anrop och låsa ute sina egna kollegor från ett förslag — ingen
   cross-company-risk, bara självskada. `client/src/services/foretagApi.ts:329-336` · läst i
   koden · 1 h
@@ -204,6 +204,60 @@ skriver `consent_history` korrekt).
 **Vad som återstår:** AG9 (prismodell/avtal för företagskunder) blockerar både DP1 och en
 riktig produktionssättning av företagsspåret bortom pilot. Ingen av linserna denna gång rörde
 visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast granskat i K-spåret).
+
+---
+
+## Passering 2026-09-20 — allt som gick att bygga utan ett beslut
+
+**Uppdraget:** "fixa allt som kan byggas nu". Avgränsningen blev: varje post som inte
+väntar på ett beslut från Mikael, en dashboard-åtgärd eller en migration mot prod.
+**13 poster stängda** (45 → 32 öppna). `npm run verify` grönt: 287 testfiler / 3 465 tester,
+`typecheck:ceiling` 337/337 (taket orört), `lint:ci` 0 fel / 111 varningar mot taket 117.
+
+**Stängda:** GG1, BL1 (demolösenorden), IA1, IA2, IA3, IA4, GG2, GG3, DR2, BL2, GG4, AG3, KA2.
+Var och en har sin motivering på sin egen rad ovan.
+
+**Fyra grindar tillkom, alla mutationstestade** — de fäller när mutationen appliceras och
+är gröna när den tas bort:
+
+| Grind | Vad den vaktar |
+|---|---|
+| `src/test/gg1-underlag-per-kvartal.test.ts` | Att båda rapportytorna hämtar överlämningsraderna och skickar in dem som fjärde argument. Fälld på mutationen "ta bort fjärde argumentet i IvoUnderlagSektion" |
+| `src/test/bl1-demolosenord-ej-indexerat.test.ts` | Att inget demolösenord renderas på en `index, follow`-sida. Renderar ur mallen, **inte ur `dist/`** — en grind som läser byggkatalogen blir falskt grön på förra byggets filer. Fälld på mutationen "lägg tillbaka lösenordet i ett FAQ-svar" |
+| `src/test/dr2-mejlcron-status.test.ts` | Att ingen av mejl-cronerna går tillbaka till hårdkodat 200 |
+| Åtta nya fall i `aiServerConsentGate.test.ts` / `aiHandlerResponse.test.ts` | BL2-grinden, inklusive fail closed utan service-nyckel och att grenen sitter som `else` till deltagargrinden |
+
+### Tre mönster som var samma fel i olika kläder
+
+1. **En definition som fyra filer delade och en femte härmade.** GG2: `present` + `external`
+   i veckosaldot, nämndrapporten och aktivitetsloggen — men bara `present` i deltagarens eget
+   intyg. Definitionen bor nu i `NARVARANDE_UTFALL`/`arNarvaro()`. Samma sak i DR2, där
+   svarsregeln låg i två filer som råkade vara lika.
+2. **Ett schema behandlat som ett utfall.** GG3: veckoampeln blev grön på schemalagda timmar.
+   Ett schema är en avsikt; närvaro är ett utfall. Nya läget `ej_markerad` är det ärliga
+   mellanläget — jämför regeln om att ett värde utan underlag visar `—` och en rad om varför.
+3. **En kommentar som gjorde felet osynligt.** GG1: `ivoKvartal.ts` påstod att reservvägen gav
+   "samma tal". Det var påståendet, inte koden, som gjorde att ingen skickade in listan —
+   triggern skriver om kolumnen bakåt i tiden. Kommentaren är struken och grinden läser
+   anropsstället.
+
+### Lämnat med flit, och varför
+
+| Post | Varför den inte gick att ta |
+|---|---|
+| **DR1** (Sentry i Vercel) | Dashboard-åtgärd. Bekräftad öppen: `npx vercel env ls production` listar elva variabler, ingen av dem `SENTRY_DSN` eller `VITE_SENTRY_DSN` |
+| **DP1**, **AG9**, **AG9-rest** | Väntar på AG9-beslutet (prismodell/avtal) respektive på en beslutad gallringstid |
+| **DR3** (felhantering i gallringsjobben) | Kräver en migration mot prod — Mikaels ja enligt CLAUDE.md |
+| **DP2** (org.nr = personnummer för enskild firma) | Migration + designval om hur fallet ska hanteras |
+| **SE4/SE1/SE2/SE5** | `redirects`-blocket i `client/vercel.json` kräver ditt ja; SE1/SE2/SE5 är blockerade av SE4 |
+| **RM1/RM2/RM6**, **MK1/MK2/MK4/MK5** | Veckolånga funktionsbyggen respektive utredningar, inte "fixar" |
+| **Spår P** | Fyra obesvarade frågor (moms, årspris, organisationslicens, övergångsperiod) |
+
+**En avgränsning värd att notera:** BL2 gick att bygga utan att röra ROADMAP A2. A2 är frågan
+om deltagarens rätt att invända mot att konsulenten kör AI på hens journaldata — juridik.
+BL2 är den personuppgiftsansvariges egen instruktion till biträdet: säger kommunen nej till AI
+gäller det kommunens personal. Därför blev åtgärden att göra koden sann i stället för att tunna
+ut B2B-texten, vilket rutan ovan föreslog som alternativ.
 
 ---
 
@@ -1311,7 +1365,7 @@ nedan) och **MV2b** (väntar på beslut).
   alltid "nere", och en riktig databasstörning ser likadan ut. Fix: `--no-verify-jwt`
   eller dokumentera nyckeln; koppla en gratis övervakare ·
   `supabase/functions/health/index.ts:34` · mätt (curl → 401) · ~30 min
-- [ ] **KA2** *(🟡 2026-09-08 — töms centralt vid `SIGNED_OUT` och kontobyte (`authStore`); per-nyckel-`userId` kvar (35 filer))* **40 av 40 React Query-nycklar saknar användar-id; cachen töms bara via
+- [x] **KA2** ✅ **Klar 2026-09-20.** Andra halvan betald: `hooks/useAnvandarnyckel.ts` och användar-id sist i nycklarna för cv, cv-versions, cover-letters, cv-version/:id, cover-letter/:id, dashboard, todaysMood, cvForMatching, riasecForMatching, preferencesForMatching och profile-preferences. **Id:t ligger SIST med flit:** React Query matchar `invalidateQueries` på prefix, så varje befintlig invalidering fortsatte träffa utan att skrivas om — med id:t först hade den som glömdes blivit en tyst icke-uppdatering. *(Var:)* *(🟡 2026-09-08 — töms centralt vid `SIGNED_OUT` och kontobyte (`authStore`); per-nyckel-`userId` kvar (35 filer))* **40 av 40 React Query-nycklar saknar användar-id; cachen töms bara via
   utloggningsknappen.** `rensaAllCache()` har en anropare (`authStore.ts:412`);
   `useSupabase.ts:32` lyssnar på `onAuthStateChange` men tömmer inget vid `SIGNED_OUT`.
   Spontanansökan-läckan (19 aug) lagades på ett ställe av 41. Fix: töm centralt på

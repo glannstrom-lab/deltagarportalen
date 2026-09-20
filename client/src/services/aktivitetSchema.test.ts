@@ -159,9 +159,38 @@ describe('veckosaldo och ampel', () => {
     expect(veckoampel(saldo, 18)).toBe('ogiltig_franvaro')
   })
 
-  it('på mål när planerade timmar når veckomålet', () => {
-    const saldo = veckosaldo([s({ start_time: '08:00', end_time: '16:00' })], '2026-10-05')
+  // GG3 (2026-09-20): testet hette förut "på mål när PLANERADE timmar når
+  // veckomålet" och asserterade precis buggen — ett schema räknades som ett
+  // utfall. Samma familj som `useJobsokHubSummary.test.ts`, som asserterade
+  // den trasiga cacheformen.
+  it('på mål kräver bekräftad närvaro, inte schemalagda timmar', () => {
+    const bekraftad = veckosaldo([s({ start_time: '08:00', end_time: '16:00', attendance: 'present' })], '2026-10-05')
+    expect(veckoampel(bekraftad, 8)).toBe('pa_mal')
+    expect(veckoampel(bekraftad, 10)).toBe('under_mal')
+  })
+
+  it('en vecka full av omarkerade pass är aldrig grön', () => {
+    const omarkerad = veckosaldo([s({ start_time: '08:00', end_time: '16:00', attendance: null })], '2026-10-05')
+    expect(omarkerad.planeradeTimmar).toBe(8)
+    expect(omarkerad.narvaroTimmar).toBe(0)
+    expect(veckoampel(omarkerad, 8)).toBe('ej_markerad')
+  })
+
+  it('under_mal först när allt är markerat och målet ändå inte nåtts', () => {
+    const allt = veckosaldo(
+      [
+        s({ start_time: '08:00', end_time: '12:00', attendance: 'present' }),
+        s({ date: '2026-10-06', start_time: '08:00', end_time: '12:00', attendance: 'absent_valid' }),
+      ],
+      '2026-10-05',
+    )
+    expect(allt.antalOmarkerade).toBe(0)
+    expect(veckoampel(allt, 8)).toBe('under_mal')
+  })
+
+  it('external räknas som närvaro, precis som i nämndrapporten (GG2)', () => {
+    const saldo = veckosaldo([s({ start_time: '08:00', end_time: '16:00', attendance: 'external' })], '2026-10-05')
+    expect(saldo.narvaroTimmar).toBe(8)
     expect(veckoampel(saldo, 8)).toBe('pa_mal')
-    expect(veckoampel(saldo, 10)).toBe('under_mal')
   })
 })

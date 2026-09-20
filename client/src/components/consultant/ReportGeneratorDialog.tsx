@@ -27,7 +27,7 @@ import {
   type ReportData,
   type ReportOptions,
 } from '@/services/pdfReportGenerator'
-import { aktivitetsplanApi } from '@/services/aktivitetApi'
+import { aktivitetsplanApi, underlagApi } from '@/services/aktivitetApi'
 import { orgApi } from '@/services/orgApi'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { kvartalGranser } from '@/services/ivoKvartal'
@@ -120,16 +120,25 @@ export function ReportGeneratorDialog({
     }
   }, [isOpen])
 
-  /** Nämndrapportens underlag hämtas ur planer och pass (RLS avgör vilka). */
+  /**
+   * Nämndrapportens underlag hämtas ur planer, pass och lämnade underlag
+   * (RLS avgör vilka).
+   *
+   * GG1 (2026-09-20): överlämningsraderna måste med. Utan dem räknas
+   * "underlag lämnat" ur planens synkade kolumn, som triggern skriver om
+   * bakåt i tiden — ett underlag lämnat i Q2 nollar Q1:s räkning i en rapport
+   * nämnden redan fått.
+   */
   const hamtaNamnd = async (): Promise<{ underlag: Namndrapport; organisation: string | null }> => {
     const { from, to } = kvartalGranser(valtKvartal.ar, valtKvartal.kvartal)
-    const [plans, sessions, medlemskap] = await Promise.all([
+    const [plans, sessions, medlemskap, handovers] = await Promise.all([
       aktivitetsplanApi.listAll(),
       aktivitetsplanApi.listSessionsBetween(from, to),
       orgApi.myMemberships().catch(() => []),
+      underlagApi.listIPeriod(from, to),
     ])
     const organisation = medlemskap[0]?.organization?.name ?? null
-    const underlag = namndrapportUnderlag(plans, sessions, valtKvartal)
+    const underlag = namndrapportUnderlag(plans, sessions, valtKvartal, handovers)
     const resultat = { underlag, organisation }
     setNamnd(resultat)
     return resultat
