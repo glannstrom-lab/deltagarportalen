@@ -234,6 +234,66 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Innehållsomgång 8 (2026-09-21) — 13 nya guider ur Arbetsförmedlingens egen A–Ö
+
+Omgång 7 landade i **noll** nya artiklar: mätningen visade att täckningen inte var
+flaskhalsen. Mikael bad om mer content ändå. Hans kallelse går före slutsatsen — men
+ämnena valdes där datan visar att portalen **vinner**, inte där den drunknar.
+
+### Valet av ämnen, belagt i två led
+
+1. **Var rankar vi?** GSC 2026-09-20: position 8–11 på administrativa stödformer
+   (lönebidrag 14 klick pos 8,6 · skriva-in-dig-AF pos 9,5 · arbetsträning · SIUS).
+   Position 40–70 på generella karriärråd (karriärbyte 45 · arbetskultur 55 · vad
+   motiverar dig 51 — **alla med noll klick**).
+2. **Vad saknas där vi vinner?** Arbetsförmedlingens officiella A–Ö-lista över stöd och
+   program (hämtad 2026-09-20) matchad mot artiklarnas **titel och ingress** — inte
+   brödtext, som ger falskt FINNS. **Nio äkta luckor**, alla i styrkeområdet.
+
+### De tretton
+
+| Kluster | Artiklar |
+|---|---|
+| Stöd på arbetsplatsen | `personligt-bitrade`, `arbetshjalpmedel-pa-jobbet`, `tolk-och-litteratur-stod`, `forstarkt-arbetstraning`, `individuellt-pedagogiskt-stod` |
+| Utbildning och validering | `validering-av-yrkeskunskaper`, `folkhogskola-studiemotiverande-kurs`, `yrkessvenska`, `etableringsjobb` |
+| Lätt svenska (295–338 ord) | `lattsvenska-personligt-bitrade`, `lattsvenska-validering`, `lattsvenska-etableringsjobb`, `lattsvenska-arbetshjalpmedel` |
+
+`etableringsjobb` är **inte** etableringsprogrammet — namnen förväxlas, och artikeln säger
+det tidigt. Prod: 241 → 254 artiklar, sitemapen 288 → 301 URL:er.
+
+### Ny grind: `npm run content:granska`
+
+Skillen föreskrev "node <granskningsskript>" utan att ett fanns. Nu finns
+`client/scripts/granska-nya-artiklar.cjs`, mutationstestad **åt båda håll**: den fäller på
+fjorton olika fel och släpper igenom en ren omgång. Den tar en katalog som argument, så
+den går att pröva utan att röra den skarpa omgången.
+
+**Den bevisade sitt värde direkt** — sjätte omgången i rad där agenternas egenrapport sa
+"rent" och egen mätning hittade fel:
+
+| Fynd | Vad agenten rapporterade |
+|---|---|
+| `folkhogskola`: "Många som" — obelagd generalisering | Nämnde den inte |
+| `tolk-och-litteratur-stod`: titel **64 tecken** (max 60) och **699 ord** (golv 700) | "48 tecken, 764 ord" — den läste sin text **efter** mina rättelser och tog dem för sina egna |
+
+Den andra raden är värd att minnas: en agent som läser om filen efter att någon annan
+rättat den rapporterar rättelsen som sitt eget resultat. **Egenrapporten är inte en
+mätning även när den stämmer.**
+
+### Bygget fällde också, och det var rätt
+
+Landningssidan påstod **"239 artiklar"** när det nu är 252. Grinden
+`prerender-guides` jämför påståendet mot verkligheten och stoppade bygget. Talet rättat på
+fem publika rader **plus i filens egen mätkommentar** — annars ärver nästa läsare ett dött
+tal. Grinden orörd.
+
+Verifierat i **byggd HTML** för alla 13: en `<h1>`, rätt canonical, i sitemapen, JSON-LD
+parsar, krisstödsblocket närvarande, ingen rå markdown, minst en myndighetslänk. Och i
+**drift**: 13 av 13 svarar 200, kunskapsbanken säger 252. `npm run verify` grönt
+(287 testfiler / 3 474 tester).
+
+---
+
 ## Innehållsomgång 7 (2026-09-20) — den första som uppfyller K4
 
 **K4:s regel:** ingen omgång utan mätning från den föregående. Regeln har frangåtts fyra
