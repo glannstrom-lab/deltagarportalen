@@ -5,7 +5,7 @@ description: Kör en komplett innehållsomgång i spår K — mät luckorna i ar
 
 # Innehållsomgång — spår K
 
-Proceduren är körd fyra gånger (omgång 3–6). Följ den. Uppfinn inte en ny.
+Proceduren är körd sju gånger (omgång 3–6, 8, 9, 10). Följ den. Uppfinn inte en ny.
 
 **Push är deployen.** Den här skillen stannar före `git push` och lämnar
 beslutet till Mikael. Artiklarna skrivs däremot till prod-databasen som en del
@@ -116,6 +116,23 @@ for f in *.md; do [ "$f" = "BRIEF.md" ] && continue;   [ "$(grep -c 'https://' "
 ```
 
 Kontrollera dessutom **för hand**:
+- **läslistan "ATT LÄSA FÖR HAND" som grinden skriver ut.** Sedan omgång 10 listar den varje
+  rakt Ja/Nej-svar på en villkorad fråga och varje "normalt"-konsekvens. I omgång 10 pekade
+  den ut tre sakfel. Läs varje rad mot källa — tysta den inte.
+- **varje regelartikel mot myndighetens egen sida, inte mot agentens källor.** Omgång 10: en
+  klickväg på Mina sidor kom från leverantörers webbplatser, inte från Arbetsförmedlingen; en
+  sjukanmälan pekade på fel myndighet. Och briefen är ingen källa — en agent rättade min.
+- **begrepp ur reformerade regelverk.** A-kassan gjordes om 2025-10-01 (inkomstvillkor i
+  stället för arbetsvillkor, ingen grundersättning, månadsansökan i stället för kassakort),
+  sanktionerna för programdeltagare 2026-06-01, lönegarantin 2025-02-01,
+  etableringsersättningens tillägg 2026-09-01. Hittar du ett gammalt begrepp i en ny text:
+  sök den BEFINTLIGA korpusen också, på båda språken (`content_en` finns bara i prod), och
+  lägg en rad i `src/test/guides-avskaffade-regler.test.ts`
+- **varje fråga av typen "måste jag", "kan jag tacka nej", "förlorar jag".** Omgång 9:
+  agenterna lydde sifferförbudet och ersatte regeln med ett lugnande "Nej", "oftast, ja"
+  och "normalt en varning" — alla tre fel på ett sätt som kan kosta läsaren ersättningen,
+  och ingen grind ser dem. Hittar agenten en regeländring ska den stå i texten, inte bli
+  "fråga din handläggare"
 - att juridiska begrepp inte är föråldrade (omgång 4 skrev "saklig grund" fyra
   år efter att LAS bytt till "sakliga skäl")
 - att programmet/stödet fortfarande finns (omgång 5: extratjänsten och
@@ -141,7 +158,10 @@ npm run verify         # alla tio grindar, inkl. coverage
 
 Kontrollera i **byggd HTML**, inte i källkoden: en `<h1>` per sida, `<title>`
 och canonical rätt och unika, JSON-LD som parsar, krisstödsblocket närvarande,
-ingen rå markdown, sidan i sitemapen.
+ingen rå markdown, sidan i sitemapen, och att varje `/guider/<slug>/`-länk har
+en sida i `dist/`. (Portallänkar, `href="/knowledge-base/…"`, fäller bygget
+självt sedan omgång 9 — 73 sidor ledde till startsidan i sju veckor innan
+någon läste den byggda sidan i stället för källan.)
 
 **Rör aldrig ett tak för att bli grön.** 122 warnings, 356 typfel, 52
 gradienter — sänk dem när du betalar av, höj dem aldrig.

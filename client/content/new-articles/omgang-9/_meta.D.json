@@ -1,0 +1,77 @@
+{
+  "lattsvenska-kollektivavtal": {
+    "title": "Vad är ett kollektivavtal?",
+    "summary": "Ett kollektivavtal är ett avtal mellan facket och arbetsgivaren om lön, arbetstid och försäkringar. Det gäller dig även utan medlemskap.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["kollektivavtal", "facket", "anställning"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-facket", "facket-ska-jag-ga-med", "lattsvenska-anstallningsavtal"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/knowledge-base/article/facket-ska-jag-ga-med", "label": "Läs om facket och a-kassan", "type": "primary" }
+    ]
+  },
+  "lattsvenska-vikariat": {
+    "title": "Vad är ett vikariat?",
+    "summary": "Ett vikariat är ett jobb i stället för någon som är borta. Här ser du vad som ska stå i avtalet.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["vikariat", "anställningsformer", "anställningsavtal"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-anstallningsavtal", "lattsvenska-provanstallning"],
+    "related_tools": ["/cv"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+    ]
+  },
+  "lattsvenska-timanstallning": {
+    "title": "Vad betyder det att vara timanställd?",
+    "summary": "Timanställd betyder att du jobbar och får betalt per pass. Här får du veta vad du kan fråga om och vem du ska berätta för.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["timanställning", "anställningsformer", "Arbetsförmedlingen"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-anstallningsavtal", "lattsvenska-provanstallning"],
+    "related_tools": ["/applications"],
+    "checklist": [],
+    "actions": [
+      { "href": "/applications", "label": "Håll koll på dina ansökningar", "type": "primary" }
+    ]
+  },
+  "lattsvenska-arbetstraning": {
+    "title": "Vad är arbetsträning?",
+    "summary": "Arbetsträning är att träna på en arbetsplats utan att prestera som anställd. Se vem som beslutar och vem som betalar.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["arbetsträning", "Arbetsförmedlingen", "Försäkringskassan"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["arbetstraning-vad-innebar-det", "lattsvenska-praktik", "funktionsnedsattning-jobbsokning"],
+    "related_tools": [],
+    "checklist": [],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
+    ]
+  },
+  "lattsvenska-nystartsjobb": {
+    "title": "Vad är ett nystartsjobb?",
+    "summary": "Ett nystartsjobb är ett vanligt jobb där staten hjälper arbetsgivaren med kostnaden. Arbetsförmedlingen bestämmer om du kan få det.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["nystartsjobb", "Arbetsförmedlingen", "anställning"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["nystartsjobb-guide", "lattsvenska-etableringsjobb", "lattsvenska-anstallningsavtal"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+    ]
+  }
+}

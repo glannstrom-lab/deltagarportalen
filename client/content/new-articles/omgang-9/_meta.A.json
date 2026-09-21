@@ -1,0 +1,111 @@
+{
+  "andra-intervjun": {
+    "title": "Andra intervjun – vad som är annorlunda den här gången",
+    "summary": "Vad arbetsgivaren vill veta i omgång två, vilka som brukar sitta med, och hur du förbereder dig annorlunda än första gången.",
+    "category_key": "interview",
+    "subcategory": "intervjuformer",
+    "tags": ["andra intervjun", "intervju", "rekrytering"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["intervju-forberedelser", "referenssamtal-guide", "fragor-att-stalla-till-arbetsgivaren", "panelintervju"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Skriv ner vad du minns från första intervjun",
+      "Läs annonsen igen och gissa kommande arbetsuppgifter",
+      "Förbered en fråga som visar att du tänkt vidare",
+      "Ta reda på vilka som sitter med om du kan",
+      "Öva situationsfrågor muntligt i intervjusimulatorn"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva de nya frågorna muntligt", "type": "primary" },
+      { "href": "/knowledge-base/article/intervju-forberedelser", "label": "Förbered hela intervjun", "type": "secondary" }
+    ]
+  },
+  "kompetensbaserad-intervju-star-metoden": {
+    "title": "Kompetensbaserad intervju – svara med STAR-metoden",
+    "summary": "Så känner du igen en kompetensbaserad fråga och svarar med STAR-metoden, med ett genomarbetat exempel du kan använda som mall.",
+    "category_key": "interview",
+    "subcategory": "intervjumetod",
+    "tags": ["STAR-metoden", "kompetensbaserad intervju", "intervjufrågor"],
+    "difficulty": "detailed",
+    "energy_level": "medium",
+    "related_article_slugs": ["beratta-om-dig-sjalv", "arbetsprov-och-case", "styrkor-svagheter-intervju", "intervju-fragor"],
+    "related_tools": ["/interview-simulator", "/skills-gap-analysis"],
+    "checklist": [
+      "Lista två eller tre färdigheter annonsen nämner",
+      "Hitta ett konkret exempel för varje färdighet",
+      "Skriv exemplet i STAR-form: situation, uppgift, handling, resultat",
+      "Kontrollera att handlingen och resultatet är tydliga",
+      "Öva att säga svaret högt i intervjusimulatorn"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva STAR-svaret muntligt", "type": "primary" },
+      { "href": "/knowledge-base/article/beratta-om-dig-sjalv", "label": "Förbered grundpresentationen", "type": "secondary" }
+    ]
+  },
+  "panelintervju": {
+    "title": "Panelintervju – när flera personer intervjuar dig",
+    "summary": "Varför arbetsgivare intervjuar med flera personer samtidigt, vem som lyssnar efter vad, och hur du håller blicken och lugnet.",
+    "category_key": "interview",
+    "subcategory": "intervjuformer",
+    "tags": ["panelintervju", "intervju", "nervositet"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["grupperintervju-guide", "intervju-forberedelser", "tackbrev-intervju", "checklista-fore-intervju"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Ta reda på vilka roller som sitter med om du kan",
+      "Förbered ett svar som fungerar oavsett vem som frågar",
+      "Öva att rikta blicken mellan flera lyssnare",
+      "Förbered en kort paus innan svåra svar",
+      "Skicka ett kort tackmejl efteråt"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva inför flera lyssnare", "type": "primary" },
+      { "href": "/knowledge-base/article/grupperintervju-guide", "label": "Läs om gruppintervju i stället", "type": "secondary" }
+    ]
+  },
+  "varfor-vill-du-jobba-hos-oss": {
+    "title": "Varför vill du jobba hos oss? Så bygger du svaret",
+    "summary": "Vad frågan egentligen prövar, hur du hittar något sant om arbetsplatsen, och hur du svarar ärligt även när du behöver jobbet.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "motivation", "anställningsintervju"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["varfor-ska-vi-anstalla-dig", "intervju-forberedelser", "fragor-att-stalla-till-arbetsgivaren", "beratta-om-dig-sjalv"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Läs annonsen igen och notera det som sticker ut",
+      "Titta på webbplatsen och sociala kanaler",
+      "Välj en detalj som stämmer med varför du sökte",
+      "Bygg svaret på den detaljen, inte på allmänt smicker",
+      "Öva svaret högt i intervjusimulatorn"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva svaret muntligt", "type": "primary" },
+      { "href": "/knowledge-base/article/varfor-ska-vi-anstalla-dig", "label": "Förbered den omvända frågan", "type": "secondary" }
+    ]
+  },
+  "var-ser-du-dig-om-fem-ar": {
+    "title": "Var ser du dig själv om fem år? Så svarar du ärligt",
+    "summary": "Vad arbetsgivaren vill höra, hur du svarar utan en färdig plan, och vad du säger om du är äldre eller nyss tillbaka i arbete.",
+    "category_key": "interview",
+    "subcategory": "intervjufragor",
+    "tags": ["intervjufrågor", "karriärutveckling", "återkomst till arbete"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["efter-manga-ar-utan-jobb", "jobbsokning-50-plus", "karriarplanering-guide", "varfor-ska-vi-anstalla-dig"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Fundera på en riktning i stället för en exakt titel",
+      "Koppla riktningen till rollen du söker",
+      "Förbered ett svar för om du är osäker på detaljerna",
+      "Öva svaret högt i intervjusimulatorn"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva svaret muntligt", "type": "primary" },
+      { "href": "/knowledge-base/article/efter-manga-ar-utan-jobb", "label": "Läs om att komma tillbaka efter länge", "type": "secondary" }
+    ]
+  }
+}

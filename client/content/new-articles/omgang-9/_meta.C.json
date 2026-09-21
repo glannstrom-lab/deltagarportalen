@@ -1,0 +1,81 @@
+{
+  "kollektivavtal-vad-det-betyder": {
+    "title": "Kollektivavtal – vad det betyder när du söker jobb",
+    "summary": "Vad kollektivavtal reglerar som lagen inte gör, hur du tar reda på om arbetsgivaren har avtal, och vad som gäller om avtal saknas.",
+    "category_key": "employment-law",
+    "subcategory": "kollektivavtal",
+    "tags": ["kollektivavtal", "lön", "facket", "anställningsvillkor"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["facket-ska-jag-ga-med", "las-anstallningsavtal", "lon-och-formaner-guide", "uppsagningstid-och-uppsagningsbesked"],
+    "related_tools": ["/interview-simulator", "/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva på att fråga om avtal och villkor", "type": "primary" },
+      { "href": "/job-search", "label": "Sök jobb hos arbetsgivare i din bransch", "type": "secondary" }
+    ]
+  },
+  "omstallningsstod-nar-du-blivit-uppsagd": {
+    "title": "Omställningsstöd när du blivit uppsagd – vem hjälper dig",
+    "summary": "Vilken omställningsorganisation som gäller dig, vad stödet brukar innehålla, och vad som gäller om din arbetsgivare saknar kollektivavtal.",
+    "category_key": "employment-law",
+    "subcategory": "omstallning",
+    "tags": ["omställningsstöd", "TRR", "TSL", "uppsägning", "kollektivavtal"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["bli-uppsagd-pa-grund-av-arbetsbrist", "avsked-eller-uppsagning", "a-kassa-sa-fungerar-det", "skriva-in-dig-arbetsformedlingen"],
+    "related_tools": ["/job-search", "/cv"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Börja söka nästa jobb", "type": "primary" },
+      { "href": "/cv", "label": "Uppdatera ditt CV", "type": "secondary" }
+    ]
+  },
+  "omstallningsstudiestod": {
+    "title": "Omställningsstudiestöd – plugga mitt i arbetslivet",
+    "summary": "Hur CSN beslutar om omställningsstudiestöd, vilken roll din omställningsorganisations yttrande spelar, och skillnaden mot vanligt studiemedel.",
+    "category_key": "career-development",
+    "subcategory": "omstallning",
+    "tags": ["omställningsstudiestöd", "CSN", "studier", "karriärväxling"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["studier-med-ersattning", "arbetsmarknadsutbildning", "karriarvaxling-guide", "omstallningsstod-nar-du-blivit-uppsagd"],
+    "related_tools": ["/education", "/skills-gap-analysis"],
+    "checklist": [],
+    "actions": [
+      { "href": "/education", "label": "Utforska utbildningar som kan stärka dig", "type": "primary" },
+      { "href": "/skills-gap-analysis", "label": "Se vad som saknas mot ditt drömjobb", "type": "secondary" }
+    ]
+  },
+  "varning-fran-arbetsformedlingen": {
+    "title": "Varning från Arbetsförmedlingen – vad händer nu",
+    "summary": "Vad som kan leda till en varning, vem som beslutar, vad godtagbara skäl innebär, och hur du begär omprövning och överklagar.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["varning", "Arbetsförmedlingen", "a-kassa", "omprövning", "aktivitetsrapport"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["aktivitetsrapport-guide", "ersattning-under-program", "a-kassa-sa-fungerar-det", "lattsvenska-overklaga"],
+    "related_tools": ["/applications"],
+    "checklist": [],
+    "actions": [
+      { "href": "/applications", "label": "Håll koll på dina sökta jobb", "type": "primary" }
+    ]
+  },
+  "kommunala-aktivitetsansvaret": {
+    "title": "Kommunala aktivitetsansvaret – stöd när du inte går i skolan",
+    "summary": "Kommunens skyldighet att kontakta unga som lämnat grundskolan men inte går i eller fullföljt gymnasiet, och vad som erbjuds.",
+    "category_key": "job-search",
+    "subcategory": "unga",
+    "tags": ["kommunala aktivitetsansvaret", "KAA", "unga", "gymnasiet", "folkhögskola"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["jobbgaranti-for-ungdomar", "folkhogskola-studiemotiverande-kurs", "skriva-in-dig-arbetsformedlingen"],
+    "related_tools": ["/interest-guide", "/education"],
+    "checklist": [],
+    "actions": [
+      { "href": "/interest-guide", "label": "Hitta en riktning som passar dig", "type": "primary" },
+      { "href": "/education", "label": "Se utbildningsvägar", "type": "secondary" }
+    ]
+  }
+}

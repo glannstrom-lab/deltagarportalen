@@ -1,0 +1,78 @@
+{
+  "lattsvenska-tillsvidareanstallning": {
+    "title": "Vad betyder tillsvidareanställning?",
+    "summary": "Tillsvidareanställning är fast jobb utan slutdatum. Se skillnaden mot vikariat och provanställning, och vad som krävs för uppsägning.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["tillsvidareanställning", "anställningsformer", "LAS"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["anstallningsformer-guide", "lattsvenska-vikariat", "lattsvenska-provanstallning"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" },
+      { "href": "/knowledge-base/article/anstallningsformer-guide", "label": "Läs mer om anställningsformer", "type": "secondary" }
+    ]
+  },
+  "lattsvenska-arbetsgivarintyg": {
+    "title": "Vad är ett arbetsgivarintyg?",
+    "summary": "Ett arbetsgivarintyg visar hur mycket du har arbetat. A-kassan behöver det, och det ska alltid vara gratis att få.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["arbetsgivarintyg", "a-kassa", "ersättning"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["arbetsgivarintyg-och-betyg", "lattsvenska-a-kassa"],
+    "related_tools": ["/externa-resurser"],
+    "checklist": [],
+    "actions": [
+      { "href": "/externa-resurser", "label": "Hitta fler stöd och kontakter", "type": "primary" }
+    ]
+  },
+  "lattsvenska-uppsagningstid": {
+    "title": "Vad är uppsägningstid?",
+    "summary": "Uppsägningstid är tiden du jobbar och får lön mellan uppsägningen och sista dagen. Se vad som styr längden och vem du ska fråga.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["uppsägningstid", "anställningsavtal", "a-kassa"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["uppsagningstid-och-uppsagningsbesked", "lattsvenska-bli-uppsagd"],
+    "related_tools": ["/applications"],
+    "checklist": [],
+    "actions": [
+      { "href": "/applications", "label": "Håll koll på dina ansökningar", "type": "primary" }
+    ]
+  },
+  "lattsvenska-heltid-och-deltid": {
+    "title": "Vad betyder heltid och deltid?",
+    "summary": "Heltid är hela arbetstiden, deltid är mindre. Se hur jobbannonser skriver procent, och vad du ska berätta för a-kassan.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["heltid", "deltid", "jobbannons"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["lattsvenska-lasa-jobbannons", "lattsvenska-timanstallning"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+    ]
+  },
+  "lattsvenska-bemanningsforetag": {
+    "title": "Vad är ett bemanningsföretag?",
+    "summary": "Ett bemanningsföretag anställer dig och hyr ut dig till andra företag. Se vem som betalar och vad du bör fråga om.",
+    "category_key": "easy-swedish",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["bemanningsföretag", "kollektivavtal", "anställning"],
+    "difficulty": "easy-swedish",
+    "energy_level": "low",
+    "related_article_slugs": ["bemanningsforetag-guide", "lattsvenska-kollektivavtal"],
+    "related_tools": ["/job-search"],
+    "checklist": [],
+    "actions": [
+      { "href": "/job-search", "label": "Hitta lediga jobb", "type": "primary" }
+    ]
+  }
+}

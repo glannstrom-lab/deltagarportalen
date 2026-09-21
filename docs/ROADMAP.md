@@ -234,6 +234,197 @@ visuell design (täckt av dagens SKAV-omgång) eller SEO/innehåll (senast grans
 
 ---
 
+## Innehållsomgång 10 (2026-09-21) — 20 guider, och tre gamla artiklar som beskrev en avskaffad a-kassa
+
+Tredje omgången på två dygn. **K4 är uppfylld för ämnesvalet men inte för utfallet:** varken
+omgång 8 eller 9 syns i Search Console än. 46 nya sidor har nu gått ut utan en enda
+utfallsmätning. **Nästa omgång bör vänta på mätningen i början av oktober** — mot
+`docs/gsc/jobin-2026-09-21.json`.
+
+### Valet av ämnen: enskilda sökfrågor, inte kluster
+
+Den här gången valdes ämnena ur frågenivån: 127 sökfrågor på position ≤ 22 med minst sex
+exponeringar, lästa mot vilken sida de landar på. En fråga som landar på en BRED sida på
+position 12–21 är en fråga Google redan tycker att vi hör hemma i, utan att ha hittat rätt sida.
+
+| Sökfråga | Exp. | Pos. | Landade på | Ny sida |
+|---|---|---|---|---|
+| byta leverantör rusta och matcha (+7 varianter) | ≈ 350 | 12–18 | `rusta-och-matcha` | `byta-leverantor-rusta-och-matcha` |
+| a kassa utan fack / utan medlemskap | 25 | 19–21 | `a-kassa-sa-fungerar-det` | `a-kassa-utan-facket` |
+| hur kan man se om arbetsgivaren betalat in skatt | 12 | 14 | `skatt-pa-lon-forsta-jobbet` | `har-arbetsgivaren-betalat-in-skatten` |
+
+Omgång 7 avskrev en egen sida om leverantörsbytet med motiveringen att artikeln redan fanns.
+Positionsdatan säger något annat: den kombinerade artikeln vinner inte bytesfrågorna. Den nya
+sidan handlar ENBART om bytet och länkar till den breda för allt annat. Om det var rätt avgörs
+av oktobermätningen — sjunker `rusta-och-matcha` utan att den nya sidan tar över är det
+kannibalisering, och då slås de ihop igen.
+
+| Kluster | Artiklar |
+|---|---|
+| A · A-kassa i vardagen | `a-kassa-utan-facket`, `sjuk-nar-du-ar-arbetslos`, `saga-upp-sig-och-a-kassa`, `lampligt-arbete-maste-jag-ta-jobbet`, `resa-bort-som-arbetslos` |
+| B · När jobbet krånglar | `har-arbetsgivaren-betalat-in-skatten`, `lonegaranti-vid-konkurs`, `lonen-uteblir-vad-gor-jag`, `provjobba-utan-lon`, `varsel-vad-betyder-det` |
+| C · AF-processen och intervjun | `byta-leverantor-rusta-och-matcha`, `din-planering-hos-arbetsformedlingen`, `etableringsersattning`, `kladsel-pa-intervju`, `fragor-arbetsgivaren-inte-far-stalla` |
+| D · Lätt svenska, "Vad betyder …?" | `lattsvenska-tillsvidareanstallning`, `lattsvenska-arbetsgivarintyg`, `lattsvenska-uppsagningstid`, `lattsvenska-heltid-och-deltid`, `lattsvenska-bemanningsforetag` |
+
+Prod: 274 → 294 artiklar (292 publicerade), sitemapen 321 → 341 URL:er.
+
+### Det stora fyndet låg inte i de nya artiklarna
+
+Vid handläsningen av `lampligt-arbete-maste-jag-ta-jobbet` stod "ett helt nytt arbetsvillkor".
+Arbetsvillkoret **avskaffades 1 oktober 2025**, när den inkomstbaserade
+arbetslöshetsförsäkringen trädde i kraft: rätten till ersättning bygger på inkomst, inte på
+arbetade timmar; den fasta grundersättningen för icke-medlemmar är borta; kassakorten är
+ersatta av en månadsansökan. Agenten hade just läst om reformen och skrev det gamla begreppet
+ändå. En sökning i den BEFINTLIGA korpusen gav tre artiklar som beskrev det avskaffade
+systemet som gällande — alla uppdaterade 2026-08-24, elva månader efter reformen:
+
+| Artikel | Vad som stod |
+|---|---|
+| `a-kassa-sa-fungerar-det` | "Två saker prövas: arbetsvillkoret och medlemsvillkoret", "en grundersättning som hanteras av Alfa-kassan … bygger inte på din tidigare inkomst" |
+| `personlig-ekonomi-jobbsokning` | "Arbetat minst 6 av de senaste 12 månaderna", "Grundersättning … ca 510 kr/dag", "Max 80% av lönen" |
+| `sommarjobb-och-extrajobb` | "kraven för medlemskap och arbetsvillkor" |
+
+Alla tre är rättade i prod **på båda språken** och tillbakalästa. Den engelska versionen bar
+samma fel i alla tre, och den läses av nyanlända — de som har svårast att upptäcka det.
+Originalen ligger i `client/content/expansions/arkiv-2026-09/`. Källa: iaf.se, "Ny
+arbetslöshetsförsäkring från 1 oktober 2025".
+
+**Ny grind: `src/test/guides-avskaffade-regler.test.ts`.** Ett avskaffat begrepp får bara stå
+i en mening som själv säger att det är avskaffat ("finns inte längre", "gällde tidigare"). Den
+hittade den andra artikeln själv på sin första körning — mitt eget ordsök hade missat den — och
+den tredje hittades via engelskan, varpå mönstret skärptes. Listan `AVSKAFFAT` bär datum och
+källa per rad. Den håller ett fynd rättat; den hittar inga nya. Det som hittar nya är en
+människa som läser en regelartikel mot källa, och K22 ("Ändrade regler") vore rutinen för det.
+
+### Övriga sakfel, alla i texter agenterna rapporterat som rena
+
+| Fynd | Varför det spelar roll |
+|---|---|
+| `sjuk-nar-du-ar-arbetslos`: programdeltagare skulle sjukanmäla sig till Försäkringskassan | Fel håll. Den som har aktivitetsstöd, utvecklings- eller etableringsersättning sjukanmäler sig till **Arbetsförmedlingen** första dagen — annars kan ersättningen utebli för hela sjuktiden (forsakringskassan.se) |
+| `byta-leverantor-rusta-och-matcha`: en fyrstegs klickväg på Mina sidor | Hämtad från leverantörers webbplatser. Arbetsförmedlingen själv säger bara "du kan byta, kontakta Arbetsförmedlingen". Omskriven till det belagda, plus: sluta inte gå till den gamla leverantören förrän bytet är bekräftat |
+| `provjobba-utan-lon` nämnde inte a-kassan | Obetalt provjobb kan räknas som arbete. Nytt avsnitt: fråga a-kassan eller handläggaren före |
+| `lattsvenska-arbetsgivarintyg`: "visar hur mycket du har arbetat … räkna ut din ersättning" | Efter reformen hämtas inkomsten från Skatteverket; intyget visar anställningen och varför den tog slut |
+| `lattsvenska-tillsvidareanstallning`: "Kan jag bli uppsagd utan förvarning? Nej, det får inte ske utan varning" | Blandade ihop uppsägningstid med varning och utelämnade avsked |
+| `etableringsersattning`: barntillägget beskrevs som sökbart | Ansökan öppnar först en tid efter att de gamla tilläggen stängdes 1 september 2026 |
+
+**En agent rättade min brief.** Jag skrev att länsstyrelsen betalar ut lönegarantin; agent B
+fann att Skatteverket tog över 1 februari 2025 och skrev det. Verifierat. Briefen är inte en källa.
+
+### Ny kontroll i `content:granska`
+
+Omgång 9:s lärdom är nu maskinell: grinden listar varje rakt Ja/Nej/Oftast-svar på en fråga av
+typen "måste jag / kan jag / får jag / förlorar jag", och varje konsekvens beskriven med
+"normalt", "i regel" eller "vanligen". Prövad mot omgång 9:s ursprungstexter: fångar både
+"Måste jag arbetsträna om jag inte vill? Nej." och "leder normalt till en varning". Varning och
+inte fel — "Kan jag läsa avtalet först? Ja." är ett riktigt svar. Listan är en LÄSLISTA: den
+pekade ut tre av den här omgångens sakfel.
+
+`npm run verify` grönt (288 testfiler / 3 477 tester). Artikeltalet i `tools.json` 272 → 292.
+
+---
+
+## Innehållsomgång 9 (2026-09-21) — 20 guider, och 73 sidor vars länkar ledde till startsidan
+
+Mikael bad om mer content dagen efter omgång 8. **K4 är uppfylld för ämnesvalet men inte
+för utfallet:** omgång 8 publicerades 2026-09-20 och Search Console ligger två till tre dygn
+efter, så den syns inte i mätningen. Frågan "hur gick omgång 8" går att ställa tidigast i
+början av oktober — mot mätpunkten `docs/gsc/jobin-2026-09-21.json` (20 564 exponeringar,
+100 klick, CTR 0,49 %, snittposition 23,7 på 47 dagar).
+
+### Valet av ämnen
+
+Mätningen bekräftade omgång 8:s mönster med färsk data, fråga × sida (1 691 rader):
+
+- **Vi vinner** (position 3–11): `referenssamtal` 3 · `vad är etableringsprogrammet` 7 ·
+  `gruppintervju` 9 · `sius handläggare` 9 · `vad betyder cv på svenska` 9 · `svagheter
+  intervju` 11 · `byta leverantör rusta och matcha` 12.
+- **Vi drunknar** (40–70): `it-branschen`, `karriärbyte`, `nettolön`, `arbetsintyg`.
+
+62 kandidatämnen luckprövades mot titel och ingress, och de valda dessutom mot brödtext.
+Det starkaste fyndet: portalens bästa sida, `lonebidrag-sa-fungerar-det` (1 222
+exponeringar, position 8,5), nämnde varken utvecklingsanställning, trygghetsanställning
+eller OSA. Uppsägningsartikeln nämnde ingen omställningsorganisation. Inga nya
+landningssidor — alla 23 verktyg har redan en.
+
+| Kluster | Artiklar |
+|---|---|
+| A · Intervjufrågor och format | `andra-intervjun`, `kompetensbaserad-intervju-star-metoden`, `panelintervju`, `varfor-vill-du-jobba-hos-oss`, `var-ser-du-dig-om-fem-ar` |
+| B · Anställningar med stöd | `utvecklingsanstallning`, `trygghetsanstallning`, `offentligt-skyddat-arbete`, `prova-jobb-med-sjukersattning-aktivitetsersattning`, `samordningsforbund-stod-fran-flera-hall` |
+| C · Omställning, avtal, regler | `kollektivavtal-vad-det-betyder`, `omstallningsstod-nar-du-blivit-uppsagd`, `omstallningsstudiestod`, `varning-fran-arbetsformedlingen`, `kommunala-aktivitetsansvaret` |
+| D · Lätt svenska, "Vad är …?" | `lattsvenska-kollektivavtal`, `lattsvenska-vikariat`, `lattsvenska-timanstallning`, `lattsvenska-arbetstraning`, `lattsvenska-nystartsjobb` |
+
+Kluster D undvek med flit lättlästa dubbletter av sidor som redan vinner (lönebidrag, SIUS).
+Prod: 254 → 274 artiklar (272 publicerade), sitemapen 301 → 321 URL:er.
+
+### Sjunde omgången där egenrapporten sa "rent"
+
+Grinden fällde tre artiklar på "de flesta"/"många som". Kluster C rapporterade uttryckligen
+"no banned generalizations" och hade två. Men de fel som kunde ha kostat en läsare något
+såg **ingen grind** — de hittades vid handläsning:
+
+| Fynd | Varför det spelar roll |
+|---|---|
+| `varning-fran-arbetsformedlingen` lovade att första missen "normalt" ger en varning | Sedan **1 juni 2026** får programdeltagare ingen varning först vid frånvaro eller ej sökt anvisad utbildning — ersättningen dras direkt. Agenten hade hittat ändringen och skrev "ordningen har ändrats på senare tid, fråga din handläggare". Rättat mot arbetsformedlingen.se och IAF:s regelsamling |
+| `lattsvenska-arbetstraning`: "Måste jag arbetsträna om jag inte vill? **Nej.**" | Ett nej till en anvisning kan påverka ersättningen. Nu: prata med Arbetsförmedlingen först |
+| `lattsvenska-timanstallning`: "Kan jag tacka nej till ett pass? Oftast, ja" | Sant mot arbetsgivaren, farligt mot a-kassan. Tillagt. Texten sa också "ersättning från Arbetsförmedlingen" — den kommer från a-kassan eller Försäkringskassan |
+| `offentligt-skyddat-arbete` beskrev målgruppen som alla med nedsatt arbetsförmåga | OSA har tre avgränsade grupper (socialmedicinsk funktionsnedsättning, LSS, långvarig svår psykisk sjukdom) |
+| `lattsvenska-nystartsjobb`: "båda ger arbetsgivaren stöd" om etableringsjobb | I etableringsjobb går statens del direkt till den anställde — vår egen artikel från omgång 8 säger det |
+
+**Lärdomen:** att förbjuda siffror räcker inte. En agent som lyder förbudet kan ersätta en
+regel med en lugnande formulering ("normalt", "oftast, ja", "nej") som är lika fel som en
+gammal siffra, och som ingen grind kan se. Frågor av typen "måste jag", "kan jag tacka nej",
+"förlorar jag" ska handläsas i varje omgång.
+
+### Fyndet som inte handlade om omgången: 73 sidor med länkar till startsidan
+
+Kontrollen av byggd HTML visade att brödtextens interna länkar (`/knowledge-base/article/<slug>`)
+gick orörda ut på de publika sidorna. Där finns ingen HashRouter; adressen svarar 200 och
+visar **startsidan** (verifierat i prod). 73 av 272 guider tappade sin läsare så, och Google
+såg ingen länk mellan guiderna — sedan prerenderingen gick live 5 augusti. `lint:links`
+var grön hela tiden: den läser `client/src`, varken artiklarnas brödtext eller den byggda
+HTML:en. Och målet ÄR en giltig rutt — bara inte på den yta där länken står.
+
+- **Fix:** `publikaArtikellankar()` i `scripts/lib/guide-template.cjs` pekar om en publicerad
+  slug till `/guider/<slug>/`; en opublicerad förlorar länken men behåller texten.
+- **Grind:** `prerender-guides.cjs` läser varje **renderad** sida och fäller bygget på
+  `href="/knowledge-base/…`. Mutationstestad: med omskrivningen avstängd fäller den med rätt
+  meddelande (första körningen "fällde" på ett syntaxfel jag själv infört — exitkoden var 1
+  båda gångerna, bara felmeddelandet skilde dem åt).
+- **Utfall:** 73 → 0 sidor. 163 guidelänkar i de tjugo nya sidorna kontrollerade mot `dist/`.
+
+`npm run verify` grönt (287 testfiler / 3 474 tester). Artikeltalet i `tools.json` 252 → 272.
+
+### Bifynd: 110 av 274 artiklar saknar engelsk text
+
+Mätt i prod 2026-09-21 (`content_en is null or ''`): **110 av 274**. Dagens tjugo och
+omgång 8:s tretton ingår, men 77 är äldre. `content:new` skriver inga `_en`-kolumner, så
+varje omgång vidgar luckan. CLAUDE.md kallar portalen helöversatt — för gränssnittet och
+innehållsdatan vaktas det av paritetsgrindar, för artiklarna vaktas det av ingenting.
+Inte åtgärdat i den här omgången.
+
+### K22 (förslag, Mikael 2026-09-21) — "Nyheter": regeländringar som egen kategori
+
+Mikael föreslog en flik och kategori med senaste nytt inom arbetsmarknad. **Inte premissgranskad
+än.** Utgångsläge för granskningen:
+
+- **För:** dagens fynd i `varning-fran-arbetsformedlingen` är precis fallet — en regel ändrades
+  1 juni och ingen rutin märkte att en guide blev fel. En nyhetspost blir en tvingande
+  anledning att rätta den tidlösa guiden samma dag. Regeländringar är också det folk googlar,
+  och de ligger i området där portalen redan rankar.
+- **Emot:** allmänna arbetsmarknadsnyheter kräver daglig takt. En nyhetsflik vars senaste
+  inlägg är sex veckor gammalt är ett sämre påstående om portalen än ingen flik — samma
+  familj som de 87 döda länkarna (2026-08-23).
+- **Förslag till omfång:** "Ändrade regler", inte "nyheter". Varje post: datum, källa, "vad
+  betyder det för dig", länk till guiden. Ett fåtal per månad går att hålla.
+- **Bryter mot briefen med flit:** guider får inte bära datum och siffror; nyheter måste.
+  Därför egen `category_key`, eget format, synligt publiceringsdatum, och en egen rad i
+  `content:granska` — inte ett undantag i den befintliga.
+- **Rör:** kategoriregistret (`data/artikelkategorier.ts`), prerender + sitemap, båda
+  locale-filerna, "13 ämnen" på `/verktyg/kunskapsbank/`, och kunskapsbanken har **inga
+  flikar** i dag — fliken är ett eget designbeslut (DESIGN.md §3).
+
+---
+
 ## Innehållsomgång 8 (2026-09-21) — 13 nya guider ur Arbetsförmedlingens egen A–Ö
 
 Omgång 7 landade i **noll** nya artiklar: mätningen visade att täckningen inte var

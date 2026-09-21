@@ -113,7 +113,14 @@ npm run content:new            # Lägger in NYA artiklar ur content/new-articles
 npm run content:granska        # Oberoende granskning av en innehållsomgång innan den skrivs (2026-09-21). Fäller på ordantal, titel/summary-längd, slugkrock, saknad källank, rå H1, obelagd generalisering. **Kör den — agenternas egenrapport har sagt "rent" sex omgångar i rad medan grinden hittat fel**
 # ⚠️ Artikeltalet står på SEX ställen i content/tools.json (kunskapsbanken) och
 # fräts av varje omgång. Bygget fäller om det inte stämmer — rätta talet, inte grinden.
-# 254 artiklar i prod / 252 publicerade (2026-09-21, omgång 8).
+# 294 artiklar i prod / 292 publicerade (2026-09-21, omgång 10).
+# En artikel om regler har en hållbarhetstid. Tre artiklar beskrev 2026-09-21 en a-kassa som
+# avskaffades 2025-10-01 (arbetsvillkor, grundersättning, kassakort) — på båda språken.
+# src/test/guides-avskaffade-regler.test.ts håller dem rättade; lägg till en rad i AVSKAFFAT
+# (med datum och källa) varje gång en regeländring upptäcks. content_en ser grinden INTE.
+# Brödtextens länkar skrivs som /knowledge-base/article/<slug>. Prerenderingen pekar om dem
+# till /guider/<slug>/ (publikaArtikellankar i scripts/lib/guide-template.cjs) och bygget
+# fäller om en portallänk blir kvar — på en publik sida landar den på startsidan.
 npm run guides                 # Genererar de publika guidesidorna (dist/guider/) + sitemap.xml, körs efter build (K1/K2)
 npm run icons                  # Genererar app-ikonerna (favicon, apple-touch-icon, pwa-*) ur public/logo-icon.svg
 npm run analyze                # vite build --mode analyze — bundlestorlek/chunk-inspektion

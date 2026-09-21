@@ -51,6 +51,12 @@ sidor summeras — analysskriptet gör det.
 | Fil | Period | Exponeringar | Klick | CTR | Snittposition |
 |---|---|---|---|---|---|
 | `jobin-2026-09-15.json` | 2026-08-04 → 2026-09-13 (41 dagar) | 17 211 | 75 | 0,44 % | 24,4 |
+| `jobin-2026-09-21.json` | 2026-08-04 → 2026-09-19 (47 dagar) | 20 564 | 100 | 0,49 % | 23,7 |
+
+Mätpunkten 2026-09-21 togs inför innehållsomgång 9. Omgång 8 publicerades
+2026-09-20 och syns alltså **inte** i den — den säger var portalen vinner
+(specifika intervjufrågor och administrativa stödformer, position 3–11), inte
+hur omgång 8 gick. Den frågan går att ställa tidigast i början av oktober.
 
 Historiken börjar 4 augusti 2026 — inte för att sajten var osynlig dessförinnan,
 utan för att egendomen verifierades då. Prerenderingen (K1–K6) gick live 5

@@ -1,0 +1,26 @@
+{
+  "_kommentar": "Slugs som apply-new-articles.cjs lagt in i prod. Radera dem igen med `node scripts/apply-new-articles.cjs --rollback --skriv`.",
+  "skrivet": "2026-09-21",
+  "slugs": [
+    "andra-intervjun",
+    "kollektivavtal-vad-det-betyder",
+    "kommunala-aktivitetsansvaret",
+    "kompetensbaserad-intervju-star-metoden",
+    "lattsvenska-arbetstraning",
+    "lattsvenska-kollektivavtal",
+    "lattsvenska-nystartsjobb",
+    "lattsvenska-timanstallning",
+    "lattsvenska-vikariat",
+    "offentligt-skyddat-arbete",
+    "omstallningsstod-nar-du-blivit-uppsagd",
+    "omstallningsstudiestod",
+    "panelintervju",
+    "prova-jobb-med-sjukersattning-aktivitetsersattning",
+    "samordningsforbund-stod-fran-flera-hall",
+    "trygghetsanstallning",
+    "utvecklingsanstallning",
+    "var-ser-du-dig-om-fem-ar",
+    "varfor-vill-du-jobba-hos-oss",
+    "varning-fran-arbetsformedlingen"
+  ]
+}

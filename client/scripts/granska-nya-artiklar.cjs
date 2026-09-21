@@ -133,6 +133,24 @@ for (const f of mdFiler) {
     if (t) varning.push(`${slug}: möjlig regelsiffra (${vad}) — ${[...new Set(t)].slice(0, 4).join(', ')}`)
   }
 
+  // Lugnande svar på en villkorad fråga (omgång 9, 2026-09-21). Agenterna lydde
+  // sifferförbudet och ersatte regeln med "Nej.", "Oftast, ja" och "normalt en
+  // varning" — tre svar som kunde kosta läsaren ersättningen, osynliga för
+  // varje annan kontroll här. Varning och inte fel: "Kan jag läsa avtalet
+  // först? Ja." är ett riktigt svar. Raden ska LÄSAS, inte tystas.
+  for (const m of text.matchAll(
+    /^#{2,3} ((?:Måste|Kan|Får|Förlorar|Behöver|Har) (?:jag|du|man)\b[^\n]*\?)\s*\n+([^\n]+)/gm
+  )) {
+    const svar = m[2].replace(/\*\*/g, '').trim()
+    if (/^(Nej|Ja|Oftast|Normalt|I regel|Vanligen|Troligen)\b[^.]{0,12}[.,]/i.test(svar)) {
+      varning.push(`${slug}: rakt svar på villkorad fråga — "${m[1]}" → "${svar.slice(0, 50)}…"`)
+    }
+  }
+  // Konsekvenser beskrivna med ett ord som ingen har belagt.
+  for (const m of text.matchAll(/[^.\n]*\b(normalt|i regel|vanligen)\b[^.\n]*\b(varning|ersättning|avstäng|uppsagd|rätt till)[^.\n]*/gi)) {
+    varning.push(`${slug}: obelagd konsekvens ("${m[1]}") — "${m[0].trim().slice(0, 70)}…"`)
+  }
+
   // "Läs mer om …" utan länk är en död hänvisning.
   for (const m of text.matchAll(/Läs mer om ([^\n.]{0,60})/g)) {
     const efter = text.slice(m.index, m.index + 160)

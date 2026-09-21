@@ -1,0 +1,109 @@
+{
+  "byta-leverantor-rusta-och-matcha": {
+    "title": "Byta leverantör i Rusta och matcha – steg för steg",
+    "summary": "Så byter du leverantör inom Rusta och matcha: när det är läge, hur du gör det på Mina sidor, och vad du kan göra i stället.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["Rusta och matcha", "Arbetsförmedlingen", "leverantör"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["rusta-och-matcha", "aktivitetsrapport-guide", "overklaga-ett-beslut"],
+    "related_tools": ["/calendar"],
+    "checklist": [
+      "Skriv ner konkret vad som inte fungerat hos den nuvarande leverantören",
+      "Jämför minst ett annat alternativ i ditt område innan du väljer",
+      "Logga in på Mina sidor och välj att byta leverantör under Rusta och matcha",
+      "Sök fram och bekräfta din nya leverantör",
+      "Vänta på att den nya leverantören hör av sig för ett första möte",
+      "Fortsätt lämna din aktivitetsrapport som vanligt under bytet"
+    ],
+    "actions": [
+      { "href": "/calendar", "label": "Håll koll på mötet med din nya leverantör", "type": "primary" },
+      { "href": "/job-search", "label": "Fortsätt söka jobb medan bytet går igenom", "type": "secondary" }
+    ]
+  },
+  "din-planering-hos-arbetsformedlingen": {
+    "title": "Din planering hos Arbetsförmedlingen – så påverkar du den",
+    "summary": "Vad den individuella handlingsplanen innehåller, hur den blir till, och hur du får den att stämma med din verklighet.",
+    "category_key": "job-search",
+    "subcategory": "arbetsformedlingen",
+    "tags": ["handlingsplan", "planeringssamtal", "Arbetsförmedlingen"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["skriva-in-dig-arbetsformedlingen", "aktivitetsrapport-guide", "varning-fran-arbetsformedlingen"],
+    "related_tools": ["/interest-guide", "/career"],
+    "checklist": [
+      "Förbered dig inför planeringssamtalet med vad som är realistiskt för dig just nu",
+      "Läs igenom planen på Mina sidor efter mötet",
+      "Säg till direkt när något i din situation ändras",
+      "Jämför vad som står i planen med det du rapporterar i aktivitetsrapporten",
+      "Fråga din handläggare om något i planen är oklart"
+    ],
+    "actions": [
+      { "href": "/career", "label": "Fundera igenom din inriktning inför nästa möte", "type": "primary" },
+      { "href": "/interest-guide", "label": "Hitta yrken som faktiskt passar dig", "type": "secondary" }
+    ]
+  },
+  "etableringsersattning": {
+    "title": "Etableringsersättning – pengarna under etableringsprogrammet",
+    "summary": "Vem beslutar, vem betalar ut, vad tilläggen innebär, och vad som gäller vid sjukdom, arbete och programslut.",
+    "category_key": "job-search",
+    "subcategory": "etablering",
+    "tags": ["etableringsersättning", "Försäkringskassan", "etableringsprogrammet"],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": ["etableringsprogrammet", "ersattning-nar-du-borjar-jobba", "sfi-och-jobbsokande-samtidigt", "skriva-in-dig-arbetsformedlingen"],
+    "related_tools": ["/job-search"],
+    "checklist": [
+      "Kontrollera med Försäkringskassan vilken ersättning du har rätt till",
+      "Ansök om barntillägg hos Försäkringskassan om du har hemmavarande barn",
+      "Sjukanmäl dig till Försäkringskassan samma dag du blir sjuk",
+      "Berätta för din handläggare innan du börjar jobba",
+      "Hör av dig till din handläggare innan du uteblir från en aktivitet, inte efteråt"
+    ],
+    "actions": [
+      { "href": "/job-search", "label": "Fortsätt söka jobb parallellt med programmet", "type": "primary" },
+      { "href": "/wellness", "label": "Håll koll på din energi om något känns tungt", "type": "secondary" }
+    ]
+  },
+  "kladsel-pa-intervju": {
+    "title": "Vad ska jag ha på mig på intervjun? Så tänker du",
+    "summary": "Principen för intervjukläder, hur du tar reda på vardagen på arbetsplatsen, och vad som spelar mindre roll än du tror.",
+    "category_key": "interview",
+    "subcategory": "forberedelser",
+    "tags": ["intervjuklädsel", "intervjuförberedelser", "klädkod"],
+    "difficulty": "easy",
+    "energy_level": "low",
+    "related_article_slugs": ["checklista-fore-intervju", "videointervju-tips", "digital-intervju"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Ta reda på hur medarbetarna klär sig till vardags, till exempel via LinkedIn",
+      "Lägg fram kläderna kvällen innan",
+      "Testa videointervjun i den belysning du faktiskt kommer sitta i",
+      "Se till att kläderna är rena och hela, snarare än dyra"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva inför intervjun", "type": "primary" }
+    ]
+  },
+  "fragor-arbetsgivaren-inte-far-stalla": {
+    "title": "Frågor arbetsgivaren inte borde ställa på intervjun",
+    "summary": "Vad diskrimineringslagen faktiskt säger, hur du kan svara i stunden, och vad du gör efteråt om svaret verkar ha avgjort.",
+    "category_key": "interview",
+    "subcategory": "rattigheter",
+    "tags": ["diskriminering", "intervjufrågor", "diskrimineringslagen"],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": ["diskriminering-jobbsokning", "facket-ska-jag-ga-med", "beratta-om-diagnos-eller-inte"],
+    "related_tools": ["/interview-simulator"],
+    "checklist": [
+      "Anteckna frågan, datumet och sammanhanget direkt efteråt",
+      "Svara kort och styr tillbaka till din kompetens",
+      "Kontakta facket om du är fackligt ansluten",
+      "Anmäl till DO om du tror att svaret avgjorde utfallet"
+    ],
+    "actions": [
+      { "href": "/interview-simulator", "label": "Öva på att svara utan att avslöja mer än du vill", "type": "primary" }
+    ]
+  }
+}

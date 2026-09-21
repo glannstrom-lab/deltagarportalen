@@ -1,0 +1,185 @@
+{
+  "utvecklingsanstallning": {
+    "title": "Utvecklingsanställning – jobb där du får växa i din takt",
+    "summary": "Vad lönebidrag för utveckling i anställning innebär, vem som beslutar, och vad som händer när anställningen tar slut.",
+    "category_key": "accessibility",
+    "subcategory": "lonebidrag-varianter",
+    "tags": [
+      "utvecklingsanställning",
+      "lönebidrag",
+      "Arbetsförmedlingen",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "lonebidrag-sa-fungerar-det",
+      "trygghetsanstallning",
+      "sius-stod-vid-introduktion",
+      "arbetsformagebedomning-vad-hander"
+    ],
+    "related_tools": [
+      "/skills-gap-analysis"
+    ],
+    "checklist": [
+      "Ta upp din arbetsförmåga med din handläggare på Arbetsförmedlingen",
+      "Skriv in dig hos Arbetsförmedlingen om du inte redan är det",
+      "Beskriv vilka anpassningar som skulle underlätta arbetet",
+      "Prata med en tänkt arbetsgivare om vilka anpassningar som är rimliga",
+      "Hör av dig i god tid innan beslutet löper ut om behovet kvarstår"
+    ],
+    "actions": [
+      {
+        "href": "/skills-gap-analysis",
+        "label": "Se vilka färdigheter du kan bygga vidare på",
+        "type": "primary"
+      }
+    ]
+  },
+  "trygghetsanstallning": {
+    "title": "Trygghetsanställning – när behovet av stöd är långvarigt",
+    "summary": "Vad lönebidrag för trygghet i anställning är, hur det omprövas, och hur det skiljer sig från utvecklingsanställning.",
+    "category_key": "accessibility",
+    "subcategory": "lonebidrag-varianter",
+    "tags": [
+      "trygghetsanställning",
+      "lönebidrag",
+      "Arbetsförmedlingen",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "utvecklingsanstallning",
+      "lonebidrag-sa-fungerar-det",
+      "skyddat-arbete-och-samhall",
+      "arbetsformagebedomning-vad-hander"
+    ],
+    "related_tools": [
+      "/interview-simulator"
+    ],
+    "checklist": [
+      "Beskriv konkret vad som är svårt i arbetet du har eller söker",
+      "Berätta varför behovet av anpassning väntas bestå",
+      "Ta upp din situation med din handläggare på Arbetsförmedlingen",
+      "Skriv in dig hos Arbetsförmedlingen om du inte redan är det",
+      "Säg till om behovet förändras, både om det minskar och ökar"
+    ],
+    "actions": [
+      {
+        "href": "/interview-simulator",
+        "label": "Öva på hur du berättar om ditt stödbehov",
+        "type": "primary"
+      }
+    ]
+  },
+  "offentligt-skyddat-arbete": {
+    "title": "Offentligt skyddat arbete (OSA) – så fungerar det",
+    "summary": "Vad OSA är, varför arbetsgivaren är en kommun, vem som anvisar dig, och hur OSA skiljer sig från Samhall.",
+    "category_key": "accessibility",
+    "subcategory": "skyddat-arbete",
+    "tags": [
+      "OSA",
+      "offentligt skyddat arbete",
+      "kommun",
+      "Arbetsförmedlingen",
+      "funktionsnedsättning"
+    ],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "skyddat-arbete-och-samhall",
+      "lonebidrag-sa-fungerar-det",
+      "trygghetsanstallning",
+      "arbetsformagebedomning-vad-hander"
+    ],
+    "related_tools": [
+      "/career"
+    ],
+    "checklist": [
+      "Ta upp din arbetsförmåga med din handläggare på Arbetsförmedlingen",
+      "Skriv in dig hos Arbetsförmedlingen om du inte redan är det",
+      "Beskriv vilka arbetsuppgifter du klarar och vad som brukar bli svårt",
+      "Fråga vad som finns tillgängligt hos kommunen där du bor"
+    ],
+    "actions": [
+      {
+        "href": "/career",
+        "label": "Se hur en anpassad anställning kan passa i din karriär",
+        "type": "primary"
+      }
+    ]
+  },
+  "prova-jobb-med-sjukersattning-aktivitetsersattning": {
+    "title": "Pröva att jobba med sjuk- eller aktivitetsersättning",
+    "summary": "Så fungerar vilande ersättning hos Försäkringskassan när du vill prova arbete, och varför du ska ansöka innan du börjar.",
+    "category_key": "accessibility",
+    "subcategory": "forsakringskassan-stod",
+    "tags": [
+      "vilande ersättning",
+      "sjukersättning",
+      "aktivitetsersättning",
+      "Försäkringskassan"
+    ],
+    "difficulty": "detailed",
+    "energy_level": "medium",
+    "related_article_slugs": [
+      "ersattning-nar-du-borjar-jobba",
+      "tillbaka-till-jobb-efter-sjukskrivning",
+      "arbetsformagebedomning-vad-hander"
+    ],
+    "related_tools": [
+      "/wellness"
+    ],
+    "checklist": [
+      "Kontakta Försäkringskassan innan du planerar att börja",
+      "Ansök om vilande ersättning innan arbetet eller studierna startar",
+      "Rapportera enligt de villkor som gäller för din ersättning",
+      "Hör av dig direkt om arbetet eller studierna inte fungerar som tänkt"
+    ],
+    "actions": [
+      {
+        "href": "/wellness",
+        "label": "Håll koll på din energi när du provar att jobba",
+        "type": "primary"
+      }
+    ]
+  },
+  "samordningsforbund-stod-fran-flera-hall": {
+    "title": "Samordningsförbund – stöd från flera håll",
+    "summary": "Vad ett samordningsförbund är, vilka myndigheter som samverkar, och hur du kommer in i en insats via din handläggare.",
+    "category_key": "accessibility",
+    "subcategory": "samverkan",
+    "tags": [
+      "samordningsförbund",
+      "Finsam",
+      "Arbetsförmedlingen",
+      "Försäkringskassan",
+      "kommun"
+    ],
+    "difficulty": "medium",
+    "energy_level": "low",
+    "related_article_slugs": [
+      "arbetsformagebedomning-vad-hander",
+      "forsorjningsstod-nar-pengarna-tar-slut",
+      "tillbaka-till-jobb-efter-sjukskrivning",
+      "lonebidrag-sa-fungerar-det"
+    ],
+    "related_tools": [
+      "/calendar"
+    ],
+    "checklist": [
+      "Fråga din handläggare om det finns ett samordningsförbund där du bor",
+      "Beskriv om ditt behov spänner över flera myndigheter",
+      "Fråga vilka insatser som finns tillgängliga lokalt",
+      "Håll koll på möten och kontakter hos de olika parterna"
+    ],
+    "actions": [
+      {
+        "href": "/calendar",
+        "label": "Håll koll på nästa möte med din handläggare",
+        "type": "primary"
+      }
+    ]
+  }
+}
