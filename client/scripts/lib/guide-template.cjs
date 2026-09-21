@@ -341,19 +341,38 @@ function relateradPost(r) {
 }
 
 /**
+ * Brödtextens interna länkar skrivs som `/knowledge-base/article/<slug>` — det
+ * är portalens rutt, och den fungerar bara bakom HashRouter. På en publik sida
+ * landade samma länk på startsidan (rewrite → index.html utan hash): 73 av 272
+ * guider tappade sin läsare så, och Google såg ingen länk mellan guiderna
+ * (mätt 2026-09-21). En publicerad slug pekas om till sin guidesida; en
+ * opublicerad förlorar länken men behåller texten — en länk till ingenstans är
+ * värre än ingen länk.
+ */
+function publikaArtikellankar(html, publiceradeSlugs) {
+  return html.replace(
+    /<a href="\/knowledge-base\/article\/([a-z0-9-]+)\/?"[^>]*>([\s\S]*?)<\/a>/g,
+    (_, slug, text) =>
+      publiceradeSlugs.has(slug) ? `<a href="${guideUrl(slug)}">${text}</a>` : text
+  )
+}
+
+/**
  * @param {object} a artikel ur snapshoten
  * @param {object[]} relaterade artiklar som också är publicerade
  * @param {{slug:string,guideInvit:string,guideInvitLank:string}[]} [b2b]
  *   B2B-sidor som pekar på just den här guiden. Se b2bInviter() i
  *   prerender-guides.cjs — listan HÄRLEDS ur content/b2b.json, så en ny
  *   B2B-sida får sin invit utan att någon rör den här filen.
+ * @param {Set<string>} [publiceradeSlugs] alla publicerade slugs — styr vilka
+ *   artikellänkar i brödtexten som får en publik adress.
  */
-function renderGuide(a, relaterade, b2b = []) {
+function renderGuide(a, relaterade, b2b = [], publiceradeSlugs = new Set()) {
   const url = `${SITE}${guideUrl(a.slug)}`
   const kategori = KATEGORI_NAMN[a.category_key] || 'Guide'
   const verktyg = verktygFor(a)
   const primart = verktyg[0]
-  const body = markdownToHtml(a.content)
+  const body = publikaArtikellankar(markdownToHtml(a.content), publiceradeSlugs)
   // Beskrivningen tas ur summary; faller tillbaka på inledningen om den saknas.
   const beskrivning = (a.summary || markdownToPlain(a.content).slice(0, 160)).trim().slice(0, 160)
   // Används av både vadArDetHar och krisstod — samma sida ska inte kunna få

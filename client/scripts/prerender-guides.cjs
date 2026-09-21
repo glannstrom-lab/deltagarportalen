@@ -152,16 +152,36 @@ const b2bInviter = new Map()
   }
 }
 
+// Grind (2026-09-21): ingen publik guide får bära en länk som bara fungerar
+// inne i portalen. Den mäter den RENDERADE sidan, inte att omskrivningen
+// anropades — 73 sidor stod så i sju veckor medan varje annan grind var grön.
+const portallankar = []
+
 let skrivna = 0
 for (const artikel of publicerade) {
   const dir = path.join(DIST, 'guider', artikel.slug)
   fs.mkdirSync(dir, { recursive: true })
-  fs.writeFileSync(
-    path.join(dir, 'index.html'),
-    renderGuide(artikel, relaterade.get(artikel.slug) || [], b2bInviter.get(artikel.slug) || []),
-    'utf8'
+  const html = renderGuide(
+    artikel,
+    relaterade.get(artikel.slug) || [],
+    b2bInviter.get(artikel.slug) || [],
+    publiceradeSlugs
   )
+  for (const m of html.matchAll(/href="(\/knowledge-base\/[^"]*)"/g)) {
+    portallankar.push(`/guider/${artikel.slug}/ → ${m[1]}`)
+  }
+  fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8')
   skrivna++
+}
+
+if (portallankar.length) {
+  console.error(
+    `\nprerender-guides: ${portallankar.length} portallänk(ar) i publika guider. På en publik sida ` +
+      `landar /knowledge-base/… på startsidan. Peka om i publikaArtikellankar() ` +
+      `(scripts/lib/guide-template.cjs), inte här:\n  ` +
+      portallankar.slice(0, 15).join('\n  ')
+  )
+  process.exit(1)
 }
 
 fs.writeFileSync(path.join(DIST, 'guider', 'index.html'), renderIndex(publicerade), 'utf8')
