@@ -258,10 +258,16 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setError,
     ])
 
-    // Save message to diary
-    const handleSaveToDiary = useCallback(async (content: string) => {
+    // Save message to diary.
+    //
+    // 2026-09-22: två fel samtidigt. (1) Ett nekat insert (diary_entries kräver
+    // hälsosamtycke på varje rad, se diaryApi.skapa) gav ingen reaktion alls —
+    // knappen såg ut att inte göra något. (2) Även när det GICK markerades
+    // aldrig bubblan som sparad: `diarySuccess` sattes till dagboksradens id
+    // men jämfördes mot meddelandets id. Nu bär anropet meddelandets id.
+    const handleSaveToDiary = useCallback(async (messageId: string, content: string) => {
       try {
-        const entry = await diaryEntriesApi.create({
+        const utfall = await diaryEntriesApi.skapa({
           title: `${t(agent.nameKey)} - AI Team`,
           content: content,
           mood: null,
@@ -272,12 +278,20 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           entry_type: 'reflection',
           is_favorite: false,
         })
-        if (entry) {
-          setDiarySuccess(entry.id)
+        if (utfall.ok) {
+          setDiarySuccess(messageId)
           setTimeout(() => setDiarySuccess(null), 3000)
+          return
         }
+        showToast.error(
+          t('aiTeam.chat.diarySaveErrorTitle'),
+          utfall.orsak === 'samtycke'
+            ? t('aiTeam.chat.diarySaveConsentMessage')
+            : t('aiTeam.chat.diarySaveErrorMessage')
+        )
       } catch (err) {
         console.error('Failed to save to diary:', err)
+        showToast.error(t('aiTeam.chat.diarySaveErrorTitle'), t('aiTeam.chat.diarySaveErrorMessage'))
       }
     }, [t, agent.nameKey, selectedAgent])
 
@@ -519,7 +533,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                 key={message.id}
                 message={message}
                 agentColor={agent.color}
-                onSaveToDiary={handleSaveToDiary}
+                onSaveToDiary={(content) => { void handleSaveToDiary(message.id, content) }}
                 diarySaved={diarySuccess === message.id}
                 onSpeak={speakMessage}
                 isSpeaking={isSpeaking}

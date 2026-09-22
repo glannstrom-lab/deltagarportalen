@@ -4,51 +4,26 @@
 // direkt (utanför modellåsningen). Kvar: useAuth + useCV (används av
 // hub-summary-hooksen respektive useAITeamContext).
 import { useEffect, useState } from 'react'
-import { supabase, getCurrentUser, getProfile } from '../lib/supabase'
-import type { Profile, CV } from '../lib/supabase'
-import type { User } from '@supabase/supabase-js'
+import { supabase } from '../lib/supabase'
+import type { CV } from '../lib/supabase'
+import { useAuthStore } from '@/stores/authStore'
 
-// Hook for auth state
+/**
+ * Inloggad användare för hubbsidornas summary-hooks.
+ *
+ * 2026-09-22: läser ur `authStore` i stället för att fråga Supabase själv.
+ * Tidigare gjorde VARJE monterad instans `getUser()` + `getProfile()` och
+ * registrerade en egen `onAuthStateChange` — en hubbsida med summary-hook +
+ * onboarding-spårning gav dubbla nätverksanrop per sidvisning. Lyssnaren var
+ * dessutom `async` och väntade på ett Supabase-anrop INNE i callbacken, vilket
+ * supabase-js varnar för: callbacken körs under auth-låset, och ett anrop som
+ * behöver samma lås kan hänga sig (känd deadlock). authStore är portalens enda
+ * källa för auth-tillståndet och initieras en gång i useAuthInit.
+ */
 export function useAuth() {
-  const [user, setUser] = useState<User | null>(null)
-  const [profile, setProfile] = useState<Profile | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Get initial session
-    getCurrentUser().then(user => {
-      setUser(user)
-      if (user) {
-        getProfile(user.id).then(({ data }) => {
-          setProfile(data)
-          setLoading(false)
-        })
-      } else {
-        setLoading(false)
-      }
-    })
-
-    // Listen for auth changes.
-    // KA2: den här lyssnaren tömmer INTE React Query-cachen vid SIGNED_OUT,
-    // och ska inte göra det — hooken monteras bara på hubbsidorna. Det
-    // centrala skyddet ligger på modulnivå i stores/authStore.ts
-    // (`hanteraAuthByte`), som är laddad i alla lägen.
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        setUser(session?.user ?? null)
-        if (session?.user) {
-          const { data } = await getProfile(session.user.id)
-          setProfile(data)
-        } else {
-          setProfile(null)
-        }
-        setLoading(false)
-      }
-    )
-
-    return () => subscription.unsubscribe()
-  }, [])
-
+  const user = useAuthStore((s) => s.user)
+  const profile = useAuthStore((s) => s.profile)
+  const loading = useAuthStore((s) => s.isLoading)
   return { user, profile, loading, isAuthenticated: !!user }
 }
 

@@ -38,6 +38,22 @@ input[type="button"],
   }
 }
 
+/* Mobilens sidhuvud (Layout.tsx, MobileTopBar): sex ikonknappar i rad.
+   Med 48px-regeln ovan blev raden 288px bred plus logga och marginal, och
+   varje inloggad undersida blev 406px bred på en 375px-telefon — sidan
+   ritades utzoomad eller fick sidledsscroll (driftgenomgången 2026-09-22,
+   65 av 76 deltagarrutter, 8 av 8 konsulentrutter).
+
+   44px är WCAG 2.5.5 (AAA) och Apples riktmärke — fortfarande långt över
+   2.5.8 (AA, 24px). Lägre än 44 får det inte bli: målgruppen har ofta
+   motoriska svårigheter, det är därför 48px-regeln finns. Specificiteten
+   (attribut + element) slår den globala regeln utan !important. */
+[data-mobil-sidhuvud] button,
+[data-mobil-sidhuvud] a {
+  min-height: 44px;
+  min-width: 44px;
+}
+
 /* CV-mallarna är dokument, inte UI — touch-target-regeln ovan får inte
    blåsa upp länkar i CV-renderingen (48px min-height gör t.ex. e-post-
    raden i Nordic 3 rader hög, i både preview och PDF-export). */
@@ -399,6 +415,12 @@ input[type="button"],
   display: block;
   overflow-x: auto;
   white-space: nowrap;
+  /* Tabellen måste vara innehållande block för absolut positionerade barn.
+     Annars rymmer `sr-only` (position: absolute) i en rubrikcell ur
+     skrollrutan och räknas mot SIDANS bredd: /consultant/settings blev 478 px
+     på en 375 px-telefon av en osynlig "Åtgärd" i caseload-tabellen
+     (uppmätt 2026-09-22). */
+  position: relative;
 }
 
 .mobile-device .table-card-view {

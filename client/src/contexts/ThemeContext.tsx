@@ -19,13 +19,23 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
-// Hämta initialt tema från localStorage eller system
+// Hämta initialt tema från localStorage eller system.
+//
+// localStorage kan KASTA (Safari i privat läge med full kvot, blockerade
+// webbplatsdata, vissa inbäddade vyer). Providern ligger ovanför allt annat,
+// så ett kast här gav en vit sida för hela portalen (2026-09-22). Temat är en
+// bekvämlighet — utan lagring faller vi tillbaka på 'system'.
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'system'
-  
-  const saved = localStorage.getItem('theme') as Theme | null
+
+  let saved: string | null = null
+  try {
+    saved = localStorage.getItem('theme')
+  } catch {
+    return 'system'
+  }
   if (saved && ['light', 'dark', 'system'].includes(saved)) {
-    return saved
+    return saved as Theme
   }
   return 'system'
 }
@@ -73,7 +83,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme)
-    localStorage.setItem('theme', newTheme)
+    try {
+      localStorage.setItem('theme', newTheme)
+    } catch {
+      // Valet gäller sessionen ut även om det inte kan sparas.
+    }
   }, [])
 
   const toggleDarkMode = useCallback(() => {

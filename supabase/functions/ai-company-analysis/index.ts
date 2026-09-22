@@ -21,6 +21,7 @@ import {
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_AI_MS } from '../_shared/fetchMedTimeout.ts'
+import { felstatus } from '../_shared/felstatus.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -318,6 +319,9 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
 
   } catch (err) {
     console.error('[ai-company-analysis] Error:', err)
-    return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
+    // Timeout mot OpenRouter = 504, inte 500. Se _shared/felstatus.ts.
+    const fel = felstatus(err)
+    const kod = fel.status === 504 ? AI_GATE_CODES.AI_UPSTREAM_ERROR : AI_GATE_CODES.INTERNAL_ERROR
+    return createAiErrorResponse(kod, fel.error, fel.status, origin)
   }
 }))

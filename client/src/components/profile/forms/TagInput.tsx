@@ -245,8 +245,8 @@ export function TagInput({
       {/* D28 (2026-09-12): tomtexten låg inuti role="list" utan att vara ett listitem —
           axe klassar det som kritiskt (aria-required-children). Nu utanför listan. */}
       {tags.length === 0 && (
-        <p className="-mt-3 mb-3 text-xs text-stone-400 dark:text-stone-500 italic py-1">
-          Inga tillagda ännu
+        <p className="-mt-3 mb-3 text-xs text-stone-600 dark:text-stone-400 italic py-1">
+          {t('common.noTagsYet')}
         </p>
       )}
 

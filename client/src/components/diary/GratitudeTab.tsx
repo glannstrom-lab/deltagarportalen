@@ -9,7 +9,7 @@ import {
   ChevronLeft, ChevronRight, Sun, Star
 } from '@/components/ui/icons'
 import { useGratitude } from '@/hooks/useDiary'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, ErrorState } from '@/components/ui'
 
 function TodayGratitude() {
   const { t } = useTranslation()
@@ -20,18 +20,26 @@ function TodayGratitude() {
   const [reflection, setReflection] = useState(todayEntry?.reflection || '')
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [sparfel, setSparfel] = useState(false)
 
   const handleSave = async () => {
     if (!item1.trim()) return
 
     setIsSaving(true)
+    setSparfel(false)
     try {
-      await createEntry({
+      // createEntry returnerar null när sparningen nekades — "Sparat!"
+      // visades ändå.
+      const rad = await createEntry({
         item1: item1.trim(),
         item2: item2.trim() || undefined,
         item3: item3.trim() || undefined,
         reflection: reflection.trim() || undefined
       })
+      if (!rad) {
+        setSparfel(true)
+        return
+      }
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } finally {
@@ -140,6 +148,12 @@ function TodayGratitude() {
             className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none bg-white"
           />
         </div>
+
+        {sparfel && (
+          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+            {t('diary.saveFailed')}
+          </p>
+        )}
 
         <Button
           onClick={handleSave}
@@ -324,13 +338,27 @@ function GratitudeStats() {
 
 export function GratitudeTab() {
   const { t } = useTranslation()
-  const { isLoading } = useGratitude()
+  const { isLoading, isError, retry } = useGratitude()
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600" />
       </div>
+    )
+  }
+
+  // Läsfel ≠ ingen tacksamhet i dag. Utan grenen startade formuläret tomt
+  // och "Spara" lade en andra rad för samma dag.
+  if (isError) {
+    return (
+      <Card>
+        <ErrorState
+          title={t('diary.loadErrorTitle')}
+          message={t('diary.loadErrorBody')}
+          onRetry={() => { void retry() }}
+        />
+      </Card>
     )
   }
 

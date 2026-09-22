@@ -623,13 +623,34 @@ export function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className={cn(
-        'sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 py-2 safe-top',
-        showsBackButton ? 'pl-[60px] pr-3' : 'px-3'
-      )}>
-        <div className="flex items-center justify-between">
-          {/* Vänster: Logo */}
-          <Link to="/" className="flex items-center gap-2">
+      {/*
+        Bredden (drift 2026-09-22): på 375 px var varje undersida 406 px bred.
+        Den globala regeln i styles/mobile.css ger varje knapp och länk minst
+        48 px, så de sex ikonerna (sök, krisstöd, språk, notiser, profil, meny)
+        tog 288 px i stället för de 6 × 32 som klasserna här säger. Nu:
+        `data-mobil-sidhuvud` sätter 44 px (WCAG 2.5.5) i sidhuvudet,
+        mellanrummen är borta, och på undersidor under 400 px döljs loggan —
+        tillbakaknappen och bottennavet finns där. Budget på undersida:
+        56 + 6 × 44 + 8 = 328 px, som ryms på 360 och 375.
+      */}
+      <header
+        data-mobil-sidhuvud=""
+        className={cn(
+          'sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 py-2 safe-top',
+          showsBackButton ? 'pl-[56px] pr-2' : 'px-2'
+        )}
+      >
+        <div className="flex items-center justify-between gap-1">
+          {/* Vänster: Logo. aria-label: bildens alt nådde inte fram som
+              länknamn i drift (uppmätt tomt namn när tillbakaknappen syns). */}
+          <Link
+            to="/"
+            aria-label="Jobin"
+            className={cn(
+              'flex min-w-0 items-center gap-2 overflow-hidden',
+              showsBackButton && 'max-[399px]:hidden'
+            )}
+          >
             <OptimizedImage
               src="/logo-icon.svg"
               alt="Jobin"
@@ -637,12 +658,12 @@ export function MobileTopBar() {
               className="h-7 w-7 object-contain"
             />
             {/* Ordbilden får inte plats bredvid tillbakaknappen. Headern gör
-                redan plats med `pl-[60px]`, men de fem ikonerna till höger
+                redan plats med `pl-[56px]`, men de sex ikonerna till höger
                 tar sitt — kvar blev 34 px till "jobin.se", som därför
                 klipptes mitt i ordet på varje undersida. Symbolen räcker som
                 identitet; länken har namn via bildens alt. */}
             {!showsBackButton && (
-              <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+              <span className="truncate text-sm font-semibold text-stone-800 dark:text-stone-100">
                 jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
               </span>
             )}
@@ -651,7 +672,7 @@ export function MobileTopBar() {
           {/* Höger: Krishjälp + Notifikationer + Profil + Meny.
               Notifikationer + Meny döljs i fokusläge (en sak i taget);
               CrisisSupport och Profil behålls för tillgänglighet. */}
-          <div className="flex items-center gap-0.5">
+          <div className="flex flex-shrink-0 items-center">
             {/* Sök — mobilens enda väg in i kommandopaletten. Det finns inget
                 tangentbord att trycka Ctrl+K på här, så utan den här knappen
                 är paletten helt onåbar på den enhet målgruppen använder mest. */}

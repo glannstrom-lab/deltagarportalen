@@ -70,3 +70,24 @@ describe('MinDagSection — F12 Logga kontakt och PG24 kontaktstatus', () => {
     expect(screen.getByText('consultant.overview.myDay.allClear')).toBeTruthy()
   })
 })
+
+describe('MinDagSection — datumet', () => {
+  // `capitalize` versaliserade varje ord: "Tisdag 22 September". Svenska har
+  // liten bokstav på månaden. Mutation: lägg tillbaka `capitalize` och ta bort
+  // versaliseringen i koden → testet faller.
+  it('har stor bokstav bara först, inte på månaden', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2026, 8, 22, 10, 0))
+    try {
+      render(
+        <MemoryRouter>
+          <MinDagSection meetings={[]} deadlines={[]} contacts={[]} onMessage={vi.fn()} />
+        </MemoryRouter>
+      )
+      const rad = screen.getByText(/— Tisdag 22 september/)
+      expect(rad.className).not.toMatch(/\bcapitalize\b/)
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

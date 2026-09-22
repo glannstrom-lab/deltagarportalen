@@ -109,3 +109,23 @@ describe('focusSkipTarget', () => {
     expect(document.activeElement).toBe(link)
   })
 })
+
+/**
+ * Drift 2026-09-22: länkarna stod på svenska i engelskt läge på varje sida.
+ * Mutation: sätt tillbaka `label: 'Hoppa till huvudinnehåll'` → testet faller.
+ */
+describe('SkipLinks — språk', () => {
+  it('följer valt språk', async () => {
+    const { default: i18n } = await import('@/i18n/config')
+    const { default: en } = await import('@/i18n/locales/en.json')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    try {
+      render(<SkipLinks />)
+      expect(screen.getByText('Skip to main content')).toBeInTheDocument()
+      expect(screen.getByText('Skip to navigation')).toBeInTheDocument()
+    } finally {
+      await i18n.changeLanguage('sv')
+    }
+  })
+})

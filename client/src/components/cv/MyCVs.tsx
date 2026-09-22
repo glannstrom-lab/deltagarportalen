@@ -743,7 +743,7 @@ export function MyCVs() {
                   size="sm"
                   showPreview={false}
                 />
-                <button
+                <button aria-label={t('common.close')}
                   onClick={() => setPreviewCV(null)}
                   className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg"
                 >

@@ -29,6 +29,7 @@ const groundingTechniqueDefs = [
 
 // Breathing Exercise with Circle Animation
 function BreathingExercise({ onStop }: { onStop: () => void }) {
+  const { t } = useTranslation()
   const [phase, setPhase] = useState<'breathe-in' | 'hold' | 'breathe-out' | 'rest'>('breathe-in')
   const [, setScale] = useState(1)
   const [cycleCount, setCycleCount] = useState(0)
@@ -64,15 +65,15 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
   }, [])
 
   const phaseText: Record<string, string> = {
-    'breathe-in': 'Andas in...',
-    'hold': 'Håll anden...',
-    'breathe-out': 'Andas ut...',
-    'rest': 'Vila...'
+    'breathe-in': t('wellness.crisis.phase.in'),
+    'hold': t('wellness.crisis.phase.hold'),
+    'breathe-out': t('wellness.crisis.phase.out'),
+    'rest': t('wellness.crisis.phase.rest'),
   }
 
   return (
     <div className="text-center py-8">
-      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Omgång {cycleCount + 1}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">{t('wellness.crisis.round', { count: cycleCount + 1 })}</p>
       <motion.div
         animate={{
           scale: phase === 'breathe-in' ? [1, 1.4] : phase === 'breathe-out' ? [1.4, 1] : [1, 1],
@@ -89,7 +90,9 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
 
       <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">{phaseText[phase]}</h3>
       <p className="text-gray-600 dark:text-gray-300 mb-8">
-        Du mår bra. Du är säker. Du är här. Nu.
+        {/* Stod: "Du mår bra. Du är säker." — till någon i kris kan sidan inte
+            veta något av det. Nu bara det som är sant i stunden. */}
+        {t('wellness.crisis.breathingAffirmation')}
       </p>
 
       <Button
@@ -97,19 +100,25 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
         className="w-full"
         onClick={onStop}
       >
-        Stoppa övning
+        {t('wellness.crisis.stopExercise')}
       </Button>
     </div>
   )
 }
 
 // Grounding Technique Guide
+// Stegen per teknik — nycklar under wellness.crisis.steps. Ordningen följer
+// groundingTechniqueDefs (0 = 5-4-3-2-1, 1 = kallt vatten, 2 = lyssna).
+const GRUNDNINGSSTEG: Record<number, { grupp: string; antal: number }> = {
+  0: { grupp: 's54321', antal: 5 },
+  1: { grupp: 'coldWater', antal: 4 },
+  2: { grupp: 'listening', antal: 4 },
+}
+
 function GroundingGuide({ technique, onClose }: { technique: { id: number; title: string; description: string }; onClose: () => void }) {
-  const steps = technique.id === 0
-    ? ['Identifiera 5 saker du ser', 'Identifiera 4 saker du kan röra vid', 'Identifiera 3 saker du hör', 'Identifiera 2 saker du luktar', 'Identifiera 1 sak du smäcker']
-    : technique.id === 1
-    ? ['Hitta kall vatten', 'Doppa ansiktet eller händerna', 'Andas långsamt', 'Märk skiftningen i din kropp']
-    : ['Hitta en lugn röst eller musik', 'Lyssna aktivt i 5 minuter', 'Fokusera på tonerna och orden', 'Märk hur det påverkar dig']
+  const { t } = useTranslation()
+  const { grupp, antal } = GRUNDNINGSSTEG[technique.id] ?? GRUNDNINGSSTEG[2]
+  const steps = Array.from({ length: antal }, (_, i) => t(`wellness.crisis.steps.${grupp}.${i + 1}`))
 
   const [currentStep, setCurrentStep] = useState(0)
 
@@ -122,33 +131,37 @@ function GroundingGuide({ technique, onClose }: { technique: { id: number; title
 
       <div className="space-y-4">
         {steps.map((step, idx) => (
-          <motion.div
+          // En knapp, inte en klickbar div: stegen gick inte att nå med
+          // tangentbordet — på krissidan, av alla ställen.
+          <motion.button
+            type="button"
             key={idx}
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
+            aria-current={idx === currentStep ? 'step' : undefined}
             className={cn(
-              'p-4 rounded-xl border-2 transition-all cursor-pointer',
+              'block w-full text-left p-4 rounded-xl border-2 transition-all',
               idx <= currentStep
                 ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-solid)]'
                 : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600'
             )}
             onClick={() => setCurrentStep(idx)}
           >
-            <div className="flex items-start gap-3">
-              <div className={cn(
+            <span className="flex items-start gap-3">
+              <span className={cn(
                 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0',
                 idx <= currentStep ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white' : 'bg-stone-300 dark:bg-stone-600 text-gray-700 dark:text-gray-300'
               )}>
                 {idx + 1}
-              </div>
-              <p className={idx <= currentStep ? 'text-gray-800 dark:text-gray-100 font-medium' : 'text-gray-600 dark:text-gray-300'}>{step}</p>
-            </div>
-          </motion.div>
+              </span>
+              <span className={idx <= currentStep ? 'text-gray-800 dark:text-gray-100 font-medium' : 'text-gray-600 dark:text-gray-300'}>{step}</span>
+            </span>
+          </motion.button>
         ))}
       </div>
 
       <Button onClick={onClose} variant="outline" className="w-full">
-        Jag är beredd att fortsätta
+        {t('wellness.crisis.readyToContinue')}
       </Button>
     </div>
   )
@@ -219,14 +232,14 @@ export default function CrisisTab() {
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors shadow-lg"
               >
                 <Phone className="w-5 h-5" />
-                Ring 112
+                {t('wellness.crisis.call', { number: '112' })}
               </a>
               <a
                 href="tel:1177"
                 className="inline-flex items-center gap-2 px-6 py-3 bg-white/20 text-white font-bold rounded-xl hover:bg-white/30 transition-colors border border-white/40"
               >
                 <Phone className="w-5 h-5" />
-                Ring 1177
+                {t('wellness.crisis.call', { number: '1177' })}
               </a>
             </div>
           </div>
@@ -265,7 +278,7 @@ export default function CrisisTab() {
         ) : (
           <div>
             <p className="text-gray-600 dark:text-gray-300 mb-6">
-              En enkel andningsövning kan lugna din nervösa system. Det tar bara några minuter.
+              {t('wellness.crisis.breathingIntro')}
             </p>
             <Button onClick={() => setActiveExercise('breathing')} className="w-full" size="lg">
               <Wind className="w-5 h-5 mr-2" />
@@ -359,17 +372,16 @@ export default function CrisisTab() {
         <div className="flex items-start gap-4">
           <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
           <div className="flex-1">
-            <h4 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Dela med din arbetskonsulent</h4>
+            <h4 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">{t('wellness.crisis.shareHeading')}</h4>
             <p className="text-amber-800 dark:text-amber-300 mb-4">
-              Om du mår dåligt kan det vara värdefullt att berätta för din arbetskonsulent.
-              De kan anpassa ditt program eller ge extra stöd under denna tid.
+              {t('wellness.crisis.shareText')}
             </p>
             {/* Var en <Button> utan onClick. Meddelandena bor på Min konsulent. */}
             <Link
               to="/my-consultant"
               className="inline-flex items-center px-4 py-2 rounded-lg border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 font-medium text-sm"
             >
-              Skicka meddelande till konsulent
+              {t('wellness.crisis.sendMessage')}
               <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
             </Link>
           </div>
@@ -389,7 +401,7 @@ export default function CrisisTab() {
           <Heart className="w-8 h-8 text-[var(--c-solid)] dark:text-[var(--c-text)] mx-auto mb-3" />
         </motion.div>
         <p className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
-          Kom ihåg: Det är helt okej att inte må bra. Du är inte ensam i det här. Hjälpen finns här när du behöver den.
+          {t('wellness.crisis.reminder')}
         </p>
       </motion.div>
     </div>

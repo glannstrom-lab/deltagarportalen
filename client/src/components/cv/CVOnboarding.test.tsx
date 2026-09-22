@@ -136,3 +136,25 @@ describe('CVOnboarding — visas bara när den ska', () => {
     expect(screen.queryByRole('dialog')).toBeNull()
   })
 })
+
+/**
+ * Drift 2026-09-22: guiden var hårdkodad svenska i engelskt läge.
+ * Mutation: sätt tillbaka en hårdkodad rubrik → testet faller.
+ */
+describe('CVOnboarding — engelska', () => {
+  it('visar guiden på engelska', async () => {
+    const { default: i18n } = await import('@/i18n/config')
+    const { default: en } = await import('@/i18n/locales/en.json')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    localStorage.setItem('jobin_cookie_consent', 'true')
+    try {
+      render(<CVOnboarding onComplete={vi.fn()} onSkip={vi.fn()} />)
+      expect(await screen.findByRole('dialog')).toHaveAccessibleName('Welcome to the CV builder!')
+      expect(screen.getByRole('button', { name: 'Skip' })).toBeInTheDocument()
+      expect(document.body.textContent).not.toMatch(/[åäöÅÄÖ]/)
+    } finally {
+      await i18n.changeLanguage('sv')
+    }
+  })
+})

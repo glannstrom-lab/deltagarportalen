@@ -435,7 +435,7 @@ export function ParticipantsTab() {
         <Card className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <button
+              <button aria-label="Avmarkera alla"
                 onClick={() => setSelectedParticipants([])}
                 className="p-1.5 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
               >

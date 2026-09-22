@@ -19,6 +19,7 @@ import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { AiConsentGate } from '@/components/ai/AiConsentGate'
 import { showToast } from '@/components/Toast'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 // ===== CATEGORY DEFINITIONS =====
 
@@ -503,8 +504,8 @@ export default function AdaptationTab() {
         ...prev[detailKey],
         key: optionKey,
         status,
-        requestedDate: status === 'requested' ? new Date().toISOString().split('T')[0] : prev[detailKey]?.requestedDate,
-        grantedDate: status === 'granted' || status === 'active' ? new Date().toISOString().split('T')[0] : prev[detailKey]?.grantedDate,
+        requestedDate: status === 'requested' ? formatLocalDate(new Date()) : prev[detailKey]?.requestedDate,
+        grantedDate: status === 'granted' || status === 'active' ? formatLocalDate(new Date()) : prev[detailKey]?.grantedDate,
       }
     }))
     setHasUnsavedChanges(true)
@@ -1052,7 +1053,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                                 {(detail.status === 'active' || detail.status === 'granted') && (
                                   <div className="flex items-center gap-1">
                                     {[1, 2, 3, 4, 5].map((star) => (
-                                      <button
+                                      <button aria-label={isEn ? `Rating ${star} of 5` : `Betyg ${star} av 5`} aria-pressed={detail.rating === star}
                                         key={star}
                                         onClick={() => updateAdaptationRating(category.id, optKey, star)}
                                         className={cn(

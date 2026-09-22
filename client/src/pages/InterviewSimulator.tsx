@@ -25,6 +25,8 @@ import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Link } from 'react-router-dom'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { datumSprak } from '@/lib/datumsprak'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import { artikelOmIntervju } from './intervjuArtiklar'
 
 interface FragaSvar {
   fraga: string
@@ -957,7 +959,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `intervju-session-${new Date().toISOString().split('T')[0]}.txt`
+    a.download = `intervju-session-${formatLocalDate(new Date())}.txt`
     a.click()
     window.URL.revokeObjectURL(url) // Clean up blob URL
   }, [roll, foretag, antalFragor, historik, aiSammanfattning, t])
@@ -979,7 +981,9 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
   const { data: allaArtiklar } = useArticles()
   const intervjuArtiklar = useMemo(() => {
     const lista = (allaArtiklar ?? []) as Array<{ id: string; title: string; readingTime?: number }>
-    return lista.filter((a) => /intervju/i.test(a.title ?? '')).slice(0, 4)
+    // Slugen (id) är svensk på båda språken — titeln är det inte. Filtret på
+    // bara titeln gav en tom lista i engelskt läge (drift 2026-09-22).
+    return lista.filter((a) => artikelOmIntervju(a)).slice(0, 4)
   }, [allaArtiklar])
 
   // Efter alla hooks — se kommentaren vid InterviewSimulator ovan. Grenen
@@ -1749,7 +1753,7 @@ ${t('interviewSimulator.download.tipsForImprovement')}:
                 variant="outline"
                 onClick={async () => {
                   await stopAudioRecording()
-                  downloadAudioRecording(`intervju-${roll.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().split('T')[0]}.webm`)
+                  downloadAudioRecording(`intervju-${roll.replace(/\s+/g, '-').toLowerCase()}-${formatLocalDate(new Date())}.webm`)
                 }}
                 size="sm"
                 className="px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400"

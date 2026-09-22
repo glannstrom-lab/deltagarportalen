@@ -24,6 +24,7 @@ import {
 import { medFelrapport } from '../_shared/sentry.ts'
 import { parseCompaniesFromResponse, fyllIOrgnummer, type CompanySearchResult } from './tolka.ts'
 import { fetchMedTimeout, TIDSGRANS_AI_MS, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts'
+import { felstatus } from '../_shared/felstatus.ts'
 
 // Indatagränser. `MAX_RESULTS_*` klampar `maxResults` innan det interpoleras
 // in i systemprompten och innan det styr `slice()` + antalet
@@ -475,6 +476,9 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
 
   } catch (err) {
     console.error('[ai-company-search] Error:', err)
-    return createAiErrorResponse(AI_GATE_CODES.INTERNAL_ERROR, 'Ett fel uppstod', 500, origin)
+    // Timeout mot OpenRouter = 504, inte 500. Se _shared/felstatus.ts.
+    const fel = felstatus(err)
+    const kod = fel.status === 504 ? AI_GATE_CODES.AI_UPSTREAM_ERROR : AI_GATE_CODES.INTERNAL_ERROR
+    return createAiErrorResponse(kod, fel.error, fel.status, origin)
   }
 }))

@@ -28,69 +28,47 @@ function hasAnsweredCookieBanner(): boolean {
 
 interface OnboardingStep {
   id: string
-  title: string
-  description: string
   target: string
   icon: React.ElementType
-  tip: string
 }
+// Texterna bor i cv.onboarding.steps.<id> (sv/en) — guiden var hårdkodad
+// svenska i engelskt läge (driftgenomgången 2026-09-22).
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'welcome',
-    title: 'Välkommen till CV-byggaren!',
-    description: 'Här skapar du ett professionellt CV på nolltid. Jag guidar dig genom processen.',
     target: '',
     icon: Sparkles,
-    tip: 'Allt sparas automatiskt, så du kan alltid fortsätta senare.'
   },
   {
     id: 'design',
-    title: 'Välj design',
-    description: 'Börja med att välja en mall och färg som passar din personlighet och bransch.',
     target: 'step-1',
     icon: FileText,
-    tip: 'Moderna mallar passar bra för kreativa yrken, medan klassiska fungerar överallt.'
   },
   {
     id: 'personal',
-    title: 'Fyll i dina uppgifter',
-    description: 'Lägg till ditt namn, kontaktuppgifter och en profilbild.',
     target: 'step-2',
     icon: User,
-    tip: 'En professionell profilbild ökar chanserna att bli uppmärksammad.'
   },
   {
     id: 'profile',
-    title: 'Skriv en sammanfattning',
-    description: 'Berätta kort vem du är och vad du söker. Detta är det första rekryterare läser.',
     target: 'step-3',
     icon: FileText,
-    tip: 'Använd aktiva verb och nämn dina starkaste sidor. 3-5 meningar räcker.'
   },
   {
     id: 'experience',
-    title: 'Lägg till erfarenhet',
-    description: 'Beskriv dina tidigare jobb och utbildningar. Var specifik!',
     target: 'step-4',
     icon: Briefcase,
-    tip: 'Kvantifiera resultat när du kan: "Ökade försäljningen med 25%".'
   },
   {
     id: 'skills',
-    title: 'Lista dina kompetenser',
-    description: 'Lägg till både tekniska och mjuka färdigheter. Betygsätta dig själv ärligt.',
     target: 'step-5',
     icon: Award,
-    tip: 'Titta på jobbannonser för att se vilka kompetenser som efterfrågas.'
   },
   {
     id: 'preview',
-    title: 'Förhandsgranska och exportera',
-    description: 'Se hur ditt CV ser ut och ladda ner det som PDF när du är nöjd.',
     target: '',
     icon: Eye,
-    tip: 'Be någon du litar på att läsa igenom innan du skickar det.'
   }
 ]
 
@@ -195,7 +173,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
                 <Icon className="w-6 h-6" />
               </div>
               <span className="text-sm font-medium text-white/80">
-                Steg {currentStep + 1} av {ONBOARDING_STEPS.length}
+                {t('cv.onboarding.stepOf', { current: currentStep + 1, total: ONBOARDING_STEPS.length })}
               </span>
             </div>
             <button
@@ -219,10 +197,10 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
         {/* Content */}
         <div className="p-6">
           <h2 id="cv-onboarding-title" className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
-            {step.title}
+            {t(`cv.onboarding.steps.${step.id}.title`)}
           </h2>
           <p className="text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
-            {step.description}
+            {t(`cv.onboarding.steps.${step.id}.description`)}
           </p>
 
           {/* Tip box */}
@@ -230,8 +208,8 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
             <div className="flex gap-3">
               <Sparkles className="w-5 h-5 text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-[var(--c-text)] mb-1">Tips!</p>
-                <p className="text-sm text-[var(--c-text)]">{step.tip}</p>
+                <p className="text-sm font-medium text-[var(--c-text)] mb-1">{t('cv.onboarding.tipLabel')}</p>
+                <p className="text-sm text-[var(--c-text)]">{t(`cv.onboarding.steps.${step.id}.tip`)}</p>
               </div>
             </div>
           </div>
@@ -249,8 +227,8 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
                 }
               `}
             >
-              <ChevronLeft className="w-4 h-4" />
-              Tillbaka
+              <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+              {t('cv.onboarding.back')}
             </button>
 
             <div className="flex gap-2">
@@ -258,7 +236,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
                 onClick={handleSkip}
                 className="px-4 py-2 text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-100 font-medium transition-colors"
               >
-                Hoppa över
+                {t('cv.onboarding.skip')}
               </button>
               <button
                 onClick={handleNext}
@@ -267,11 +245,11 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
                 {isLastStep ? (
                   <>
                     <CheckCircle className="w-4 h-4" />
-                    Kom igång!
+                    {t('cv.onboarding.start')}
                   </>
                 ) : (
                   <>
-                    Nästa
+                    {t('cv.onboarding.next')}
                     <ChevronRight className="w-4 h-4" />
                   </>
                 )}
@@ -286,7 +264,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
             <button
               key={idx}
               onClick={() => setCurrentStep(idx)}
-              aria-label={`Gå till steg ${idx + 1} av ${ONBOARDING_STEPS.length}: ${s.title}`}
+              aria-label={t('cv.onboarding.goToStep', { current: idx + 1, total: ONBOARDING_STEPS.length, title: t(`cv.onboarding.steps.${s.id}.title`) })}
               aria-current={idx === currentStep ? 'step' : undefined}
               className={`
                 w-2 h-2 rounded-full transition-colors

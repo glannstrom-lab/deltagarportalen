@@ -67,7 +67,8 @@ export default function HealthTab() {
   const [showNoteInput, setShowNoteInput] = useState(false)
   const [isSavingMood, setIsSavingMood] = useState(false)
   const [moodSaved, setMoodSaved] = useState(false)
-  const [moodStreak, setMoodStreak] = useState(0)
+  // null = okänt (hämtningen föll). Visas inte — hellre ingen svit än en påhittad.
+  const [moodStreak, setMoodStreak] = useState<number | null>(null)
 
   // Build translated options
   const moodOptions = useMemo(() => moodOptionDefs.map(m => ({
@@ -109,7 +110,9 @@ export default function HealthTab() {
       // Load mood data
       const [todaysMood, streak, wellnessData] = await Promise.all([
         moodApi.getTodaysMood(),
-        moodApi.getStreak(),
+        // getStreak kastar vid fel sedan 2026-09-22. Ett fel i sviten får inte
+        // fälla hela Promise.all — dagens humör och aktiviteterna ska ändå visas.
+        moodApi.getStreak().catch(() => null),
         wellnessDataApi.get()
       ])
 
@@ -151,7 +154,7 @@ export default function HealthTab() {
       if (success) {
         setMoodSaved(true)
         // Refresh streak
-        const newStreak = await moodApi.getStreak()
+        const newStreak = await moodApi.getStreak().catch(() => null)
         setMoodStreak(newStreak)
       }
     } catch (error) {
@@ -237,7 +240,7 @@ export default function HealthTab() {
               </p>
             </div>
           </div>
-          {moodStreak > 0 && (
+          {(moodStreak ?? 0) > 0 && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-full w-fit">
               <span className="text-base sm:text-lg">🔥</span>
               <span className="text-xs sm:text-sm font-bold text-orange-700 dark:text-orange-400">{moodStreak} {t('wellness.health.days')}</span>

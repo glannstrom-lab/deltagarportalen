@@ -9,7 +9,8 @@
  * Det här är en krisstödssida: att visa fel instruktioner till någon i
  * affekt är ett allvarligt fel, inte bara en kosmetisk bugg.
  */
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
+import en from '@/i18n/locales/en.json'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
 import { MemoryRouter } from 'react-router-dom'
@@ -39,24 +40,24 @@ describe('CrisisTab — grundningsövningarna visar rätt steg för respektive t
     const { container } = renderTab()
     klickaGrundningskort(0)
 
-    expect(container.textContent).toContain('Identifiera 5 saker du ser')
-    expect(container.textContent).not.toContain('Hitta en lugn röst eller musik')
+    expect(container.textContent).toContain('Hitta 5 saker du kan se')
+    expect(container.textContent).not.toContain('Sätt på en lugn röst eller lugn musik')
   })
 
   it('kallt-vatten-tekniken (andra kortet) visar sina egna steg, inte 5-4-3-2-1 eller lyssnande', () => {
     const { container } = renderTab()
     klickaGrundningskort(1)
 
-    expect(container.textContent).toContain('Hitta kall vatten')
-    expect(container.textContent).not.toContain('Identifiera 5 saker du ser')
-    expect(container.textContent).not.toContain('Hitta en lugn röst eller musik')
+    expect(container.textContent).toContain('Gå till en kran med kallt vatten')
+    expect(container.textContent).not.toContain('Hitta 5 saker du kan se')
+    expect(container.textContent).not.toContain('Sätt på en lugn röst eller lugn musik')
   })
 
   it('aktivt lyssnande (tredje kortet) visar sina egna steg', () => {
     const { container } = renderTab()
     klickaGrundningskort(2)
 
-    expect(container.textContent).toContain('Hitta en lugn röst eller musik')
+    expect(container.textContent).toContain('Sätt på en lugn röst eller lugn musik')
   })
 })
 
@@ -81,5 +82,39 @@ describe('CrisisTab — inga löften utan verkan', () => {
     renderTab()
     const lank = screen.getByRole('link', { name: /konsulent/i })
     expect(lank).toHaveAttribute('href', '/my-consultant')
+  })
+})
+
+/**
+ * Krissidan på engelska (driftgenomgången 2026-09-22): andningsövningen,
+ * grundningsstegen, konsulentkortet och påminnelsen var hårdkodad svenska —
+ * på den sida där en nyanländ i kris minst av allt ska behöva gissa. Stegen var
+ * dessutom klickbara div:ar som inte gick att nå med tangentbordet.
+ * Mutation: sätt tillbaka en hårdkodad svensk sträng → första testet faller;
+ * gör stegen till div igen → andra testet faller.
+ */
+describe('CrisisTab — engelska och tangentbord', () => {
+  afterEach(async () => {
+    await i18n.changeLanguage('sv')
+  })
+
+  it('visar ingen svensk text i engelskt läge', async () => {
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    const { container } = renderTab()
+    klickaGrundningskort(0)
+    const text = container.textContent ?? ''
+    expect(text).toContain('Find 5 things you can see')
+    expect(text).toContain('Call 112')
+    expect(text).not.toMatch(/[åäöÅÄÖ]/)
+  })
+
+  it('grundningsstegen är knappar som går att nå med tangentbordet', () => {
+    renderTab()
+    klickaGrundningskort(1)
+    const steg = screen.getByRole('button', { name: /Andas långsamt/ })
+    expect(steg.tagName).toBe('BUTTON')
+    fireEvent.click(steg)
+    expect(steg).toHaveAttribute('aria-current', 'step')
   })
 })

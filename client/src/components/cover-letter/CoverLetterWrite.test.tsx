@@ -331,3 +331,17 @@ describe('CoverLetterWrite — utan underlag anropas ingen AI', () => {
     expect(textarea.value).toBe(mallText)
   })
 })
+
+describe('CoverLetterWrite — steg 1, mallvalet (driftgenomgången 2026-09-22)', () => {
+  // Under "Välj hur brevet ska se ut" stod mallnotens text: "…en stomme med
+  // {{count}} luckor…" med rå platshållare (inget count skickades), och
+  // "Vi vet inget om dig ännu" till en användare vars CV är med.
+  // Mutation: byt tillbaka till nyckeln blankTemplateBody → testet faller.
+  it('visar ingen rå platshållare och påstår inget om användaren', async () => {
+    rita()
+    expect(await screen.findByText(/Välj hur brevet ska se ut/)).toBeInTheDocument()
+    expect(document.body.textContent).not.toContain('{{')
+    expect(document.body.textContent).not.toMatch(/Vi vet inget om dig/)
+    expect(screen.getByText(/syns i förhandsvisningen och i PDF:en/)).toBeInTheDocument()
+  })
+})

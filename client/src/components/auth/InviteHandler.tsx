@@ -1,7 +1,7 @@
 /**
  * InviteHandler
  * Hanterar inbjudningslänkar för nya användare
- * URL: /invite/:token
+ * URL: /invite/:code (parametern bär inbjudans token)
  *
  * När inbjudan har metadata.program === 'steg_till_arbete' visas ett samtyckes-
  * block med två kryssrutor som krävs innan kontot kan skapas. Samtycket sparas
@@ -46,7 +46,11 @@ interface InviteData {
 
 export const InviteHandler: React.FC = () => {
   const { t } = useTranslation();
-  const { token } = useParams<{ token: string }>();
+  // Rutten i App.tsx heter `/invite/:code`. Här stod `useParams().token` —
+  // alltid undefined — så RPC:n fick `{ p_token: undefined }` → `{}` →
+  // PGRST202, och varje inbjudan var "ogiltig" från 2026-05-22 till 2026-09-22.
+  // Vaktas av InviteHandler.test.tsx, som läser ruttmönstret ur App.tsx.
+  const { code: token } = useParams<{ code: string }>();
   const navigate = useNavigate();
 
   const [, setLoading] = useState(true);
@@ -73,6 +77,10 @@ export const InviteHandler: React.FC = () => {
   const validateInvite = async () => {
     try {
       setValidating(true);
+
+      if (!token) {
+        throw new Error(t('auth.invite.invalidOrExpired'));
+      }
 
       // A10 (2026-07-23): tokenmatchad SECURITY DEFINER-RPC i stället för
       // direktläsning — tabellens öppna SELECT-policy är borttagen eftersom

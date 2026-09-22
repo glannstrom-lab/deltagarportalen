@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/icons'
 import { useMoodLogs } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, ErrorState } from '@/components/ui'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const MOOD_CONFIG = [
@@ -132,6 +132,7 @@ function TodayLogger() {
   const [note, setNote] = useState(todayMood?.note || '')
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [sparfel, setSparfel] = useState(false)
 
   const toggleActivity = (id: string) => {
     setActivities(prev =>
@@ -143,8 +144,11 @@ function TodayLogger() {
 
   const handleSave = async () => {
     setIsSaving(true)
+    setSparfel(false)
     try {
-      await logMood({
+      // logMood returnerar null när databasen nekade — "Sparat!" visades
+      // ändå, och humöret fanns inte nästa gång.
+      const rad = await logMood({
         log_date: formatLocalDate(new Date()),
         mood_level: mood,
         energy_level: energy,
@@ -153,6 +157,10 @@ function TodayLogger() {
         activities,
         note: note.trim() || null
       })
+      if (!rad) {
+        setSparfel(true)
+        return
+      }
       setSaved(true)
       setTimeout(() => setSaved(false), 2000)
     } finally {
@@ -256,6 +264,12 @@ function TodayLogger() {
             className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none"
           />
         </div>
+
+        {sparfel && (
+          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+            {t('diary.saveFailed')}
+          </p>
+        )}
 
         <Button
           onClick={handleSave}
@@ -394,7 +408,7 @@ function MoodStats() {
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
           <span className="text-lg sm:text-2xl font-bold text-stone-900">
-            {stats.averageMood.toFixed(1)}
+            {stats.averageMood === null ? '—' : stats.averageMood.toFixed(1)}
           </span>
           <span className="text-xs sm:text-sm text-stone-700">/5</span>
         </div>
@@ -434,7 +448,7 @@ function MoodStats() {
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
           <span className="text-lg sm:text-2xl font-bold text-stone-900">
-            {stats.averageEnergy.toFixed(1)}
+            {stats.averageEnergy === null ? '—' : stats.averageEnergy.toFixed(1)}
           </span>
           <span className="text-xs sm:text-sm text-stone-700">/5</span>
         </div>
@@ -476,13 +490,28 @@ function MoodStats() {
 }
 
 export function MoodTab() {
-  const { isLoading } = useMoodLogs()
+  const { t } = useTranslation()
+  const { isLoading, isError, retry } = useMoodLogs()
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)]" />
       </div>
+    )
+  }
+
+  // Läsfel ≠ ingen logg. Utan den här grenen startade TodayLogger på
+  // standardvärdena (3/3/3/3) och "Spara" skrev över dagens riktiga rad.
+  if (isError) {
+    return (
+      <Card>
+        <ErrorState
+          title={t('diary.loadErrorTitle')}
+          message={t('diary.loadErrorBody')}
+          onRetry={() => { void retry() }}
+        />
+      </Card>
     )
   }
 

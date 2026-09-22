@@ -53,7 +53,7 @@ export function WellnessConsentGate({
       window.location.reload()
     } catch (error) {
       console.error('Error granting wellness consent:', error)
-      setGrantError(t('wellness.consent.grantError') || 'Kunde inte spara samtycke')
+      setGrantError(t('wellness.consent.grantError'))
     } finally {
       setIsGranting(false)
     }
@@ -87,10 +87,10 @@ export function WellnessConsentGate({
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-pink-900 dark:text-pink-100 text-sm">
-              {t('wellness.consent.requiredTitle') || 'Samtycke krävs'}
+              {t('wellness.consent.requiredTitle')}
             </h4>
             <p className="text-xs text-pink-700 dark:text-pink-300 mt-1">
-              {t('wellness.consent.requiredDesc') || 'Du måste ge samtycke för att kunna använda denna funktion'}
+              {t('wellness.consent.requiredDesc')}
             </p>
             <div className="flex items-center gap-2 mt-3">
               <button
@@ -108,14 +108,14 @@ export function WellnessConsentGate({
                 ) : (
                   <Shield className="w-3 h-3" />
                 )}
-                {t('wellness.consent.grantNow') || 'Ge samtycke'}
+                {t('wellness.consent.grantNow')}
               </button>
               <Link
                 to="/settings"
                 className="text-xs text-[var(--c-text)] hover:underline flex items-center gap-1"
               >
                 <Settings className="w-3 h-3" />
-                {t('wellness.consent.manageInSettings') || 'Hantera'}
+                {t('wellness.consent.manageInSettings')}
               </Link>
             </div>
             {grantError && (
@@ -140,57 +140,57 @@ export function WellnessConsentGate({
         </div>
 
         <h3 className="text-lg font-semibold text-pink-900 dark:text-pink-100 mb-2">
-          {t('wellness.consent.fullTitle') || 'Samtycke för välmåndedata'}
+          {t('wellness.consent.fullTitle')}
         </h3>
 
         <p className="text-sm text-pink-700 dark:text-pink-300 mb-4">
-          {t('wellness.consent.fullDesc') || 'För att kunna stödja ditt personliga utveckling och välmående behöver vi ditt samtycke att samla in data om ditt humör och energi.'}
+          {t('wellness.consent.fullDesc')}
         </p>
 
         <div className="p-4 bg-white/60 dark:bg-stone-800/60 rounded-xl text-left mb-4 space-y-3">
           <div>
             <h4 className="text-sm font-medium text-pink-900 dark:text-pink-100 mb-2">
-              {t('wellness.consent.whatWeCollect') || 'Vilken data samlar vi in?'}
+              {t('wellness.consent.whatWeCollect')}
             </h4>
             <ul className="space-y-1.5 text-xs text-pink-700 dark:text-pink-300">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.mood') || 'Dagligt humör och emotionellt tillstånd'}</span>
+                <span>{t('wellness.consent.item.mood')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.energy') || 'Energi- och stressnivåer'}</span>
+                <span>{t('wellness.consent.item.energy')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.sleep') || 'Sömnkvalitet och mönster'}</span>
+                <span>{t('wellness.consent.item.sleep')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.diary') || 'Dagboksanteckningar och reflektioner'}</span>
+                <span>{t('wellness.consent.item.diary')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.gratitude') || 'Tacksamhetsanteckningar och positiva reflektioner'}</span>
+                <span>{t('wellness.consent.item.gratitude')}</span>
               </li>
             </ul>
           </div>
 
           <div className="pt-3 border-t border-current/10">
             <h4 className="text-sm font-medium text-pink-900 dark:text-pink-100 mb-2">
-              {t('wellness.consent.whyWeCollect') || 'Varför samlar vi in denna data?'}
+              {t('wellness.consent.whyWeCollect')}
             </h4>
             <p className="text-xs text-pink-700 dark:text-pink-300">
-              {t('wellness.consent.whyDesc') || 'För att stödja din personliga utveckling, självkänsla och för att ge dig insikter om ditt välmående över tid.'}
+              {t('wellness.consent.whyDesc')}
             </p>
           </div>
 
           <div className="pt-3 border-t border-current/10">
             <h4 className="text-sm font-medium text-pink-900 dark:text-pink-100 mb-2">
-              {t('wellness.consent.whoHasAccess') || 'Vem har åtkomst?'}
+              {t('wellness.consent.whoHasAccess')}
             </h4>
             <p className="text-xs text-pink-700 dark:text-pink-300">
-              {t('wellness.consent.whoAccessDesc') || 'Du är den enda som kan se denna data, om du inte aktiverar delning med din tilldelad konsulent.'}
+              {t('wellness.consent.whoAccessDesc')}
             </p>
           </div>
         </div>
@@ -199,17 +199,17 @@ export function WellnessConsentGate({
         <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg flex gap-2">
           <AlertCircle className="w-4 h-4 text-blue-700 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-blue-700 dark:text-blue-300">
-            {t('wellness.consent.dataProtection') || 'Din väl mål data är helt privat och behandlas enligt GDPR.'}
+            {t('wellness.consent.dataProtection')}
           </p>
         </div>
 
         <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg text-left">
           <div className="text-xs text-green-700 dark:text-green-300">
-            <strong>{t('wellness.consent.canWithdraw') || 'Du kan när som helst:'}</strong>
+            <strong>{t('wellness.consent.canWithdraw')}</strong>
             <ul className="mt-2 space-y-1">
-              <li>• {t('wellness.consent.withdrawDetail1') || 'Dra tillbaka ditt samtycke i Inställningar'}</li>
-              <li>• {t('wellness.consent.withdrawDetail2') || 'Få all din välmål data raderad'}</li>
-              <li>• {t('wellness.consent.withdrawDetail3') || 'Kontakta oss för mer information'}</li>
+              <li>• {t('wellness.consent.withdrawDetail1')}</li>
+              <li>• {t('wellness.consent.withdrawDetail2')}</li>
+              <li>• {t('wellness.consent.withdrawDetail3')}</li>
             </ul>
           </div>
         </div>
@@ -230,7 +230,7 @@ export function WellnessConsentGate({
             ) : (
               <Shield className="w-4 h-4" />
             )}
-            {t('wellness.consent.grantConsent') || 'Jag samtycker'}
+            {t('wellness.consent.grantConsent')}
           </button>
 
           {/* UX18: grinden hade bara "Jag samtycker" och en länk till
@@ -258,9 +258,9 @@ export function WellnessConsentGate({
         {/* PG13 (2026-09-12): text-pink-400 gav 4,13:1 mot rutan i mörkt läge. `--c-text`
             vänder med temat och håller AA i båda (se fallor-i-mork-tema-tokens). */}
         <p className="text-xs text-[var(--c-text)] mt-4">
-          {t('wellness.consent.privacyLink') || 'Läs mer i vår'} {' '}
+          {t('wellness.consent.privacyLink')} {' '}
           <Link to="/privacy" className="underline hover:opacity-80">
-            {t('wellness.consent.privacyPolicy') || 'integritetspolicy'}
+            {t('wellness.consent.privacyPolicy')}
           </Link>
         </p>
       </div>

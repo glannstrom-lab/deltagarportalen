@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { showToast } from '@/components/Toast'
 import { useTranslation } from 'react-i18next'
 import {
@@ -55,6 +55,9 @@ const difficultyColors = {
   'Medel': 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800',
   'Utmanande': 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800'
 }
+
+// Hur länge efter sista tangenttryckningen svaren skrivs till molnet.
+const SPARA_EFTER_MS = 800
 
 interface ExerciseProgress {
   [exerciseId: string]: {
@@ -201,6 +204,46 @@ function ExercisesInner() {
     }
   }, [user])
 
+  /*
+    Skrivningarna till molnet (2026-09-22, kvalitetsgenomgången).
+
+    Förr sparades VARJE tangenttryckning — 11 765 skrivningar för 20 rader i
+    prod — med kommentaren "debounced in real implementation", men ingen
+    debounce fanns. Värre: anropen gick parallellt, så en äldre skrivning kunde
+    komma fram efter en nyare, och då vann den gamla texten i databasen.
+
+    Nu:
+     · bara det SENASTE svaret per övning väntar (en karta, inte en kö),
+     · skrivningarna körs i tur och ordning genom en promise-kedja, så en
+       äldre skrivning kan aldrig landa efter en nyare,
+     · det som väntar skrivs direkt när man lämnar övningen, klarmarkerar,
+       rensar eller när sidan avmonteras.
+  */
+  const vantandeRef = useRef(new Map<string, { [questionId: string]: string }>())
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const kedjaRef = useRef<Promise<void>>(Promise.resolve())
+  const sparaRef = useRef(saveToCloud)
+  useEffect(() => {
+    sparaRef.current = saveToCloud
+  }, [saveToCloud])
+
+  const skrivVantande = useCallback((): Promise<void> => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
+    }
+    const poster = [...vantandeRef.current.entries()]
+    vantandeRef.current.clear()
+    for (const [id, svar] of poster) {
+      // saveToCloud fångar sina egna fel, så kedjan bryts aldrig.
+      kedjaRef.current = kedjaRef.current.then(() => sparaRef.current(id, svar))
+    }
+    return kedjaRef.current
+  }, [])
+
+  // Osparat skrivs när sidan lämnas (avmontering).
+  useEffect(() => () => { void skrivVantande() }, [skrivVantande])
+
   const getFilteredExercises = () => {
     if (filter === 'alla') return exercises
     if (filter === 'påbörjade') {
@@ -251,27 +294,26 @@ function ExercisesInner() {
   }
 
   const handleBackToList = () => {
+    void skrivVantande()
     setSelectedExercise(null)
     setCurrentStep(0)
     setIsCompleted(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleAnswerChange = async (questionId: string, value: string) => {
+  const handleAnswerChange = (questionId: string, value: string) => {
     if (!selectedExercise) return
-    
-    const newAnswers = {
-      ...answers,
-      [selectedExercise.id]: {
-        ...answers[selectedExercise.id],
-        [questionId]: value
-      }
-    }
-    
-    setAnswers(newAnswers)
-    
-    // Save to cloud (debounced in real implementation)
-    await saveToCloud(selectedExercise.id, newAnswers[selectedExercise.id])
+    const id = selectedExercise.id
+
+    // Basen är det som redan väntar på att skrivas, annars det som visas.
+    const bas = vantandeRef.current.get(id) ?? answers[id] ?? {}
+    const nyaSvar = { ...bas, [questionId]: value }
+
+    setAnswers(prev => ({ ...prev, [id]: { ...prev[id], [questionId]: value } }))
+
+    vantandeRef.current.set(id, nyaSvar)
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(() => { void skrivVantande() }, SPARA_EFTER_MS)
   }
 
   const handleNext = async () => {
@@ -282,6 +324,10 @@ function ExercisesInner() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       setIsCompleted(true)
+
+      // Det som väntar skrivs först — annars kunde en fördröjd skrivning av
+      // svaren landa EFTER klarmarkeringen nedan och skriva över den.
+      await skrivVantande()
 
       // Markera som klar i molnet.
       //
@@ -330,6 +376,10 @@ function ExercisesInner() {
   const handleClearProgress = async () => {
     if (!selectedExercise || !user) return
     if (!confirm(t('exercises.clearProgressConfirm'))) return
+
+    // En väntande skrivning får inte återuppliva svaren efter raderingen.
+    vantandeRef.current.delete(selectedExercise.id)
+    await skrivVantande()
 
     // Delete from cloud
     const { error } = await supabase
@@ -495,13 +545,16 @@ function ExercisesInner() {
             <button
               key={cat}
               onClick={() => setFilter(cat)}
+              aria-pressed={filter === cat}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 filter === cat
                   ? 'bg-[var(--c-solid)] text-white'
                   : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
               }`}
             >
-              {cat}
+              {/* `cat` är den svenska nyckeln (den filtrerar) — texten går genom
+                  samma översättning som kortens kategori längre ned. */}
+              {t(`exercises.categories.${cat}`, cat)}
             </button>
           ))}
         </div>

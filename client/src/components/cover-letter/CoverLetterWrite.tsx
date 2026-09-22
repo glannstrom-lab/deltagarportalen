@@ -1179,7 +1179,10 @@ function Step1JobAndTemplate({
               {t('coverLetter.write.templateHeading', 'Välj hur brevet ska se ut')}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              {t('coverLetter.write.blankTemplateBody', 'Utseendet syns i förhandsvisningen och i PDF:en. Du kan byta när som helst.')}
+              {/* Egen nyckel. Här stod mallnotens `blankTemplateBody` — utan count
+                  (rå "{{count}}" på skärmen) och med "Vi vet inget om dig ännu"
+                  till användare vars CV är med. (drift 2026-09-22) */}
+              {t('coverLetter.write.templateHint')}
             </p>
           </div>
         </div>

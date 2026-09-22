@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
 import type { WorkExperience } from '@/services/supabaseApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface ExperienceEditorProps {
   experiences: WorkExperience[]
@@ -389,7 +390,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                     }))
                                   }
                                 }}
-                                max={new Date().toISOString().slice(0, 7)}
+                                max={formatLocalDate(new Date()).slice(0, 7)}
                                 className={`
                                   w-full pl-10 pr-4 py-2.5 border rounded-lg
                                   focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]
@@ -417,7 +418,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
                                 disabled={exp.current}
                                 min={exp.startDate || undefined}
-                                max={new Date().toISOString().slice(0, 7)}
+                                max={formatLocalDate(new Date()).slice(0, 7)}
                                 className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] disabled:bg-stone-100 disabled:text-stone-600"
                               />
                             </div>

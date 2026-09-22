@@ -6,11 +6,15 @@
  * att URL-kodade svenska paths (`/spontanans%C3%B6kan`) matchar.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach } from 'vitest'
+import { renderHook } from '@testing-library/react'
+import i18n from '@/i18n/config'
+import en from '@/i18n/locales/en.json'
 import {
   PAGE_TITLE_RULES,
   resolvePageTitleRule,
   formatDocumentTitle,
+  usePageTitle,
   DEFAULT_TITLE,
 } from './usePageTitle'
 
@@ -82,5 +86,45 @@ describe('formatDocumentTitle', () => {
   it('dubblerar inte varumärket på landningen', () => {
     expect(formatDocumentTitle(DEFAULT_TITLE)).toBe(DEFAULT_TITLE)
     expect(formatDocumentTitle('')).toBe(DEFAULT_TITLE)
+  })
+})
+
+/**
+ * 2026-09-22 (drift-genomgången): standardtiteln och de publika sidornas
+ * titlar var hårdkodad svenska — en engelsk användare fick svensk flik- och
+ * skärmläsartitel. Mutation (kontrollerad): återställ `: DEFAULT_TITLE` som
+ * pageName utan t() → test 1 faller; ta bort `key` på /login → test 2 faller.
+ */
+describe('usePageTitle följer språkvalet', () => {
+  const tillEngelska = async () => {
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+  }
+  afterEach(async () => {
+    await i18n.changeLanguage('sv')
+  })
+
+  it('landningens titel är engelsk på engelska — och bär varumärket en gång', async () => {
+    await tillEngelska()
+    const { result } = renderHook(() => usePageTitle('/'))
+    expect(result.current.documentTitle).toBe(en.pageTitles.default)
+    expect(result.current.documentTitle.match(/Jobin/g)).toHaveLength(1)
+  })
+
+  it('en publik sida får engelsk titel', async () => {
+    await tillEngelska()
+    const { result } = renderHook(() => usePageTitle('/login'))
+    expect(result.current.documentTitle).toBe(`${en.auth.login} — Jobin`)
+  })
+
+  it('okänd rutt faller på den översatta standardtiteln', async () => {
+    await tillEngelska()
+    const { result } = renderHook(() => usePageTitle('/finns-inte'))
+    expect(result.current.documentTitle).toBe(en.pageTitles.default)
+  })
+
+  it('svenska är oförändrat', () => {
+    const { result } = renderHook(() => usePageTitle('/'))
+    expect(result.current.documentTitle).toBe(DEFAULT_TITLE)
   })
 })

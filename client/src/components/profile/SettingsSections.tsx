@@ -79,7 +79,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
           {t('profile.notiser.tillBevakningar')}
           <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
         </Link>
-        <span className="hidden sm:inline text-stone-300 dark:text-stone-600" aria-hidden="true">
+        <span className="hidden sm:inline text-stone-300 dark:text-stone-500" aria-hidden="true">
           ·
         </span>
         <Link

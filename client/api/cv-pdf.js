@@ -265,6 +265,27 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 // endpointen till en renderare av godtyckligt klientinnehåll. Ett `versionId`
 // är ett ogenomskinligt id, och `cv_versions` har en enda SELECT-policy
 // (`auth.uid() = user_id`) — ägarskapet avgörs alltså i databasen, inte här.
+/**
+ * Ett fel vars text är skriven FÖR användaren. Bara sådana fel visas i
+ * 500-svaret; allt annat — PostgREST, puppeteer, Chromium-nedladdningen —
+ * bär interna detaljer (tabellnamn, sökvägar, miljövariabler, blob-URL:er)
+ * och ersätts med ett allmänt meddelande. PDFExportButton visar texten rakt
+ * av. Vaktat av src/test/api-cv-pdf-felsvar.test.ts.
+ */
+class AnvandarFel extends Error {
+  /**
+   * @param {string} meddelande
+   * @param {number} [status] HTTP-status. Ett saknat CV är inget serverfel —
+   *   som 500 larmade det dessutom i Sentry (medFelrapport rapporterar ≥ 500).
+   */
+  constructor(meddelande, status = 500) {
+    super(meddelande);
+    this.status = status;
+  }
+}
+
+const ALLMANT_FEL = 'PDF-generering misslyckades. Försök igen om en stund.';
+
 async function fetchUserCV(token, versionId) {
   const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
   const anonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
@@ -275,7 +296,7 @@ async function fetchUserCV(token, versionId) {
   });
 
   const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-  if (authError || !user) throw new Error('Ogiltig token');
+  if (authError || !user) throw new AnvandarFel('Ogiltig token', 401);
 
   if (versionId) {
     const { data: version, error: versionError } = await supabase
@@ -286,7 +307,7 @@ async function fetchUserCV(token, versionId) {
       .maybeSingle();
 
     if (versionError) throw versionError;
-    if (!version || !version.data) throw new Error('Versionen hittades inte');
+    if (!version || !version.data) throw new AnvandarFel('Versionen hittades inte', 404);
     // `cv_versions.data` lagras redan i camelCase (cvApi.saveVersion sparar
     // klientformen rakt av) — ingen omskrivning behövs här.
     return version.data;
@@ -299,7 +320,7 @@ async function fetchUserCV(token, versionId) {
     .maybeSingle();
 
   if (error) throw error;
-  if (!data) throw new Error('Inget CV hittades — fyll i ditt CV först');
+  if (!data) throw new AnvandarFel('Inget CV hittades — fyll i ditt CV först', 404);
 
   // Transform snake_case → camelCase (matchar cvApi.getCV-format som
   // PrintCV-routen förväntar sig).
@@ -413,7 +434,7 @@ const hanterare = async (req, res) => {
     if (cvDataParam.length > 32 * 1024) {
       // URL-längd över 32 kB är inte praktiskt. Användarens CV är då
       // ovanligt stort — sannolikt felaktig data.
-      throw new Error('CV-data för stort för URL (>32 kB)');
+      throw new AnvandarFel('Ditt CV är för stort för att göras om till PDF. Korta ner det och försök igen.', 413);
     }
 
     // 3. Bygg print-URL
@@ -464,9 +485,11 @@ const hanterare = async (req, res) => {
     return res.end(pdfBuffer);
   } catch (error) {
     console.error('[cv-pdf] error:', error);
-    return res.status(500).json({
-      error: error instanceof Error ? error.message : 'PDF-generering misslyckades',
-    });
+    // Detaljen stannar i loggen ovan; användaren får bara text vi själva skrivit.
+    if (error instanceof AnvandarFel) {
+      return res.status(error.status).json({ error: error.message });
+    }
+    return res.status(500).json({ error: ALLMANT_FEL });
   } finally {
     if (browser) {
       try { await browser.close(); } catch { /* ignore */ }

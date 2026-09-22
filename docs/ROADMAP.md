@@ -23,6 +23,70 @@
 
 ---
 
+## Driftpasset 2026-09-23 (natt) — portalen i drift, loggarna och testernas fällbarhet
+
+Två kodpass samma dag hade läst koden. Det här tittade där ingen tittat: **portalen körd i
+webbläsare mot prod** (113 rutter, 373 sidbesök, mobil/engelska/mörkt), **produktionsloggarna**
+(Supabase 14 dygn, Vercel 7 dygn, advisors) och **om testerna kan falla** (17 mutationer).
+Tre rapportörer, fyra fixare med exklusiva fillistor. Material: `docs/review-2026-09-22/`
+(`drift/`, `loggar/`, `kvalitet/`) och `e2e/drift-genomgang-2026-09-22.cjs`.
+`verify` + `build` gröna: 369 testfiler, 58 deno-tester; taken oförändrade (28/31/7).
+
+**Kritiska driftfel, alla rättade:**
+- **Mobil:** 65/76 deltagarrutter och 8/8 konsulentrutter var 406 px på 375 px — global
+  `button, a { min-width: 48px }` i `mobile.css` (olagrad CSS vinner över `w-8`) mot sex
+  sidhuvudikoner, plus en `sr-only`-cell som rymde ur sin skrollruta. Nu 44 px där, vakt
+  `components/mobil-sidhuvud.test.ts`; uppmätt 375/360/320 px utan overflow (dev).
+- **Engelska gick inte att behålla** — uppstarten skrev över valet med `user_preferences.language`
+  ('sv' i alla 22 rader) och ingen sparade språket. Nu sparas varje byte.
+- **Inbjudningslänken har inte fungerat sedan 22 maj** (`/invite/:code` vs `useParams().token`).
+- Intervjusimulatorns första fråga gav 502 för riktiga användare (budget 200 tokens mot
+  resonemang 225+); ny grind `api-prompt-budget.test.ts` (≥ 400 i alla grenar).
+- `ai_usage_logs`: alla rader `success=true`, loggningen awaitades inte (3 av 8 anrop i kväll
+  loggades) → tokentaket underskattade. Nu awaitad, fel och avbrott loggas.
+
+**Övrigt rättat (urval):** dagboken tre lägen genom hela kedjan (ett läsfel lät Spara skriva över
+dagens humör); konsulentens "Min dag" visade pass för andras deltagare; övningar och intresseguiden
+sparade vid varje tangenttryckning (11 765 resp. 4 516 skrivningar) med risk att äldre text vann;
+SSE-strömmen avbryts vid nedkoppling (45 s tak); mejlmallar eskaperade; cv-pdf läcker inte
+Chromium-fel och svarar 404 utan CV; `{{count}}` rått i personligt brev; påhittade artiklar i
+CV-byggarens kunskapsruta; ~400 rader svenska i engelskt läge (krissidan, CV-mallarna, skiplänken
+m.fl.); 36 `dark:text-stone-600` → grind över hela `components/`+`pages/`; 74 döda
+`t() || fallback` i `consent/` (flera påstod att dagboken delas) → grind.
+
+**Tester som inte kunde falla — nu kan de:** 7 av 17 mutationer överlevde: `lint:schema`,
+`lint:kolumner`, `lint:grants` regel 1 och 3, AI-brytaren i edge, `single-krav`-allowlisten
+(nyckeln `fil::tabell` godkände varje nytt anrop — nu räknande), formelskyddet (bara `=` provat)
+och `consentApi` (ingen testfil). Alla har nu tester som fäller av rätt skäl.
+
+**Beroenden:** `xlsx`, `papaparse`, `@types/papaparse`, `pdf-lib` borttagna (bara i `archive/`
+efter STA). 0 sårbarheter.
+
+### Kräver Mikael (DP = driftpasset)
+
+- [ ] **DP1** 🔴 **Google-registrering sparar varken villkor, integritetspolicy eller AI-samtycke**
+  — 17/17 Google-konton sedan april saknar `terms_accepted_at` och samtyckesrader (13 saknar
+  förnamn). `Register.tsx:239-245` startar OAuth utan kryssrutorna och ingen vy ber om det i
+  efterhand. Samma utfall för alla inbjudna konton före BP4-följdfixen. Totalt 81 av 113 profiler
+  utan godkända villkor. Beslut: en samtyckesvy vid inloggning för konton utan `terms_accepted_at`
+  (art. 7.1 — kunna visa samtycket).
+- [ ] **DP2** Index `notifications(user_id)` (8 369 seq_scan, frågan körs 6 793 gånger) —
+  migration, kräver ja. 46 FK utan index, 24 dubblerade och 98 aldrig använda index — städpass.
+- [ ] **DP3** 389 av 430 RLS-policyer anropar `auth.uid()` utan `(select auth.uid())` —
+  omskrivning per tabell när datamängden växer (Supabase-advisorns klassiker). Skyddet mot
+  läckta lösenord är avslaget i Supabase Auth.
+- [ ] **DP4** Deno-testerna (58 st) körs fortfarande inte i CI (= BP9).
+
+### Kvar (ingen blockering)
+`fetchWithRetry` i `ai.js` utan timeout; följdfrågorna i strömmen räknas inte mot tokentaket;
+intervjusimulatorns feedbackgren 500 tokens utan `reasoningEffort`; `job-alerts.js` hoppar inte
+över reserverade domäner; `Exercises` `confirm()` + hårdkodad svenska; oöversatt i `JobSearch`
+("Lägg till yrke", sparade-fliken), brevmallarna, `CredentialsTab`, `flyttdata.ts`;
+`interestGuideApi.getHistory` returnerar `[]` vid fel; tidszonsvalet i konsulentinställningarna
+läses av ingen kod; `@supabase/supabase-js` i två versioner (client 2.97, rot 2.103).
+
+---
+
 ## Buggpasset 2026-09-22 (kväll) — nya linser, nio agenter
 
 Förra passet samma dag letade med tsc/eslint och dödkodsanalys. Det här letade där ingen tittat:

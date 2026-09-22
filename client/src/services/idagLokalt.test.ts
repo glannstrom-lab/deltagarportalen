@@ -138,36 +138,48 @@ describe('Platsbanken — "Publicerade idag"', () => {
   })
 })
 
-describe('grind — inget UTC-datum som "idag" i services/', () => {
+describe('grind — inget UTC-datum som "idag" i client/src', () => {
+  // Breddad 2026-09-22 (kväll) från services/ till hela client/src (.ts/.tsx,
+  // utom testfiler). Samma fel fanns i hooks/ (dagens uppdrag, uppföljnings-
+  // horisonten) och i sidornas filnamn och datumfält.
+  //
   // Kvarvarande träffar är genomgångna och korrekta: de räknar på ett datum
   // som redan är UTC-midnatt (`new Date('YYYY-MM-DD')` eller `T00:00:00Z`)
   // och skriver tillbaka samma dag. Lägg bara till en rad här om samma sak
-  // gäller — annars: använd formatLocalDate() ur aktivitetSchema.ts.
+  // gäller — annars: använd formatLocalDate() ur services/aktivitetSchema.ts.
+  // Listan jämförs EXAKT: rättas en fil ska dess rad bort.
   const TILLATNA: Record<string, number> = {
-    'aktivitetApi.ts': 1, // listIPeriod: `${datum}T12:00:00Z` ± dygn i UTC
-    'placeringarApi.ts': 2, // `${startDate}T00:00:00Z` + veckor/månader i UTC
-    'calendarIntegration.ts': 1, // handelseDatum: new Date('YYYY-MM-DD') tur och retur
+    'services/aktivitetApi.ts': 1, // listIPeriod: `${datum}T12:00:00Z` ± dygn i UTC
+    'services/placeringarApi.ts': 2, // `${startDate}T00:00:00Z` + veckor/månader i UTC
+    'services/calendarIntegration.ts': 1, // handelseDatum: new Date('YYYY-MM-DD') tur och retur
+    'utils/streakDays.ts': 2, // hela räkningen i UTC från new Date('YYYY-MM-DD'), setUTCDate
+    // UTRED-dödkod (dead-code.cjs, noll importörer) — rättas inte, se CLAUDE.md
+    // "ett svep över hela src/ kan låsa raderingspasset". Monteras filen igen:
+    // byt till `.eq('log_date', formatLocalDate(new Date()))`.
+    'hooks/useMoodRecommendations.ts': 1,
   }
 
   it('toISOString().split/slice som datum förekommer bara på granskade ställen', async () => {
     const fs = await import('node:fs')
     const path = await import('node:path')
-    const rot = path.resolve(__dirname)
+    const rot = path.resolve(__dirname, '..')
     const traffar: Record<string, number> = {}
     const ga = (dir: string) => {
       for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         const p = path.join(dir, e.name)
         if (e.isDirectory()) { ga(p); continue }
-        if (!/\.ts$/.test(e.name) || /\.test\.ts$/.test(e.name)) continue
+        if (!/\.tsx?$/.test(e.name) || /\.test\.tsx?$/.test(e.name)) continue
         const kod = fs.readFileSync(p, 'utf8')
           .split('\n')
           .filter(rad => !/^\s*(\*|\/\/|\/\*)/.test(rad))
           .join('\n')
-        const n = (kod.match(/toISOString\(\)\.(split\(['"]T['"]\)\[0\]|slice\(0,\s*10\)|substring\(0,\s*10\))/g) || []).length
+        const n = (kod.match(/toISOString\(\)\.(split\(['"]T['"]\)\[0\]|slice\(0,\s*10\)|substring\(0,\s*10\)|substr\(0,\s*10\))/g) || []).length
         if (n > 0) traffar[path.relative(rot, p).replace(/\\/g, '/')] = n
       }
     }
     ga(rot)
+    // Förutsättning: grinden läser verkligen hela src, inte bara services/.
+    expect(fs.existsSync(path.join(rot, 'main.tsx'))).toBe(true)
     expect(traffar).toEqual(TILLATNA)
   })
 })

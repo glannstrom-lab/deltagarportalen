@@ -29,6 +29,7 @@ import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { OrganisationSektion } from '@/components/consultant/OrganisationSektion'
 import { cn } from '@/lib/utils'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 // Setting Row Component
 function SettingRow({
@@ -43,8 +44,10 @@ function SettingRow({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-4 border-b border-stone-100 dark:border-stone-800 last:border-0">
-      <div className="flex items-start gap-3">
+    // Staplad på mobil: sida vid sida sköt tidszonsväljaren ut ur kortet och
+    // gjorde /consultant/settings 478 px bred på en 375 px-telefon (drift 2026-09-22).
+    <div className="flex flex-col gap-3 py-4 border-b border-stone-100 dark:border-stone-800 last:border-0 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+      <div className="flex min-w-0 items-start gap-3">
         <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg mt-0.5">
           <Icon className="w-5 h-5 text-stone-500 dark:text-stone-400" />
         </div>
@@ -57,7 +60,7 @@ function SettingRow({
           )}
         </div>
       </div>
-      <div className="flex-shrink-0">{children}</div>
+      <div className="min-w-0 pl-12 sm:pl-0 sm:flex-shrink-0">{children}</div>
     </div>
   )
 }
@@ -253,7 +256,7 @@ export function SettingsTab() {
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = `jobin-konsulentdata-${new Date().toISOString().split('T')[0]}.json`
+      a.download = `jobin-konsulentdata-${formatLocalDate(new Date())}.json`
       document.body.appendChild(a)
       a.click()
       a.remove()

@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Lightbulb, X, ChevronRight, CheckCircle,
   AlertCircle, Info, Sparkles
@@ -107,6 +108,8 @@ const helpDatabase: Record<string, HelpTip[]> = {
 }
 
 export function ContextualHelp({ context, data }: ContextualHelpProps) {
+  // `oversatt`, inte `t`: filtret nedan använder redan `t` som variabelnamn för ett tips.
+  const { t: oversatt } = useTranslation()
   const [dismissedTips, setDismissedTips] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('dismissed-help-tips')
     return saved ? new Set(JSON.parse(saved)) : new Set()
@@ -173,7 +176,7 @@ export function ContextualHelp({ context, data }: ContextualHelpProps) {
           `}
         >
           {tip.dismissible !== false && (
-            <button
+            <button aria-label={oversatt('common.close')}
               onClick={() => dismissTip(tip.id)}
               className="absolute top-2 right-2 p-1 rounded-full hover:bg-black/5 transition-colors"
             >

@@ -114,7 +114,7 @@ function TemplateCard({
           {category.label}
         </span>
         <div className="flex items-center gap-1">
-          <button
+          <button aria-label={template.isStarred ? 'Ta bort från favoriter' : 'Markera som favorit'} aria-pressed={!!template.isStarred}
             onClick={() => onStar(template.id)}
             className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
             disabled={isDefault}
@@ -368,7 +368,7 @@ function TemplateFormDialog({
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {template ? t('consultant.resources.form.editTemplate') : t('consultant.resources.form.createTemplate')}
           </h3>
-          <button
+          <button aria-label="Stäng"
             onClick={onClose}
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
           >
@@ -519,7 +519,7 @@ function TemplateDetailDialog({
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {template.title}
           </h3>
-          <button
+          <button aria-label="Stäng"
             onClick={onClose}
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
           >
@@ -592,7 +592,7 @@ function BestPracticeDetailDialog({
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {practice.title}
           </h3>
-          <button
+          <button aria-label="Stäng"
             onClick={onClose}
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
           >

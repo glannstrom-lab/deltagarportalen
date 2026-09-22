@@ -171,3 +171,12 @@ export async function getOccupations(query: string, limit: number, alt: Alternat
 
   return { concepts: [], source: 'none', allaFel: !nagonSvarade }
 }
+
+/**
+ * Uppslaget ovan kan bara yrken. `type` saknas eller är en yrkestyp → true.
+ * Allt annat (t.ex. `skill`) ska få 400, inte yrken märkta som något annat.
+ * Vaktat av typ.test.ts.
+ */
+export function arYrkestyp(typ: string | null): boolean {
+  return !typ || typ === 'occupation' || typ === 'occupation-name'
+}

@@ -16,6 +16,7 @@ import { moodTypeToLevel } from '@/services/cloud/maende'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { supabase } from '@/lib/supabase'
 import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 // ============================================
 // INTERFACES (replacing all `any` types)
@@ -192,7 +193,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     fetchQuests(user?.id),
     fetchUserStreaks(user?.id),
     moodApi.getTodaysMood().catch(() => null),
-    moodApi.getStreak().catch(() => 0),
+    // getStreak kastar vid läsfel (2026-09-22) — null = okänt, inte 0.
+    moodApi.getStreak().catch(() => null),
     fetchArticleProgress(user?.id),
   ])
 
@@ -473,7 +475,8 @@ async function fetchQuests(userId?: string): Promise<Quest[]> {
       .from('quests')
       .select('*')
       .eq('user_id', userId)
-      .eq('assigned_date', new Date().toISOString().split('T')[0])
+      // Lokal dag, inte UTC — 00–02 svensk tid gav gårdagens uppdrag.
+      .eq('assigned_date', formatLocalDate(new Date()))
 
     if (error) {
       // Table might not exist yet, return empty array

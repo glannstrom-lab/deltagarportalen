@@ -119,7 +119,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
         </button>
         {displayImage && !uploading && (
           <>
-            <span className="text-stone-300 dark:text-stone-600">|</span>
+            <span className="text-stone-300 dark:text-stone-500">|</span>
             <button
               type="button"
               onClick={handleRemove}

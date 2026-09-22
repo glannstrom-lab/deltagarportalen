@@ -7,6 +7,27 @@
     "empty": "A look back at your week will appear here once you've written in your diary or logged how you feel.",
     "failed": "We couldn't create a reflection right now. Your notes are untouched."
   },
+  "breakReminder": {
+    "breakIn_one": "Break in {{count}} min",
+    "breakIn_other": "Break in {{count}} min",
+    "heading": "Time for a break?",
+    "body_one": "You have been active for {{count}} minute. It is okay to take a break.",
+    "body_other": "You have been active for {{count}} minutes. It is okay to take a break.",
+    "tip": "Idea: stretch, drink some water or look out of the window.",
+    "takeBreak": "Yes, take a break",
+    "keepWorking": "Keep working",
+    "note": "You can take a break whenever you want. Your health is more important than any job.",
+    "pauseHeading": "Take the time you need",
+    "back": "I am back",
+    "suggestions": {
+      "stretch": "Stretch and move your neck.",
+      "walk": "Take a short walk.",
+      "water": "Drink a glass of water.",
+      "window": "Look out of the window for 30 seconds.",
+      "breathe": "Take a few deep breaths.",
+      "rest": "Close your eyes and rest for a minute."
+    }
+  },
   "celebration": {
     "applicationSent": {
       "title": "Your application is sent",
@@ -93,6 +114,7 @@
     "removeTag": "Remove {{tag}}",
     "suggestions": "Suggestions",
     "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions.",
+    "noTagsYet": "None added yet",
     "select": "Select...",
     "copied": "Copied!",
     "saving": "Saving...",
@@ -1171,7 +1193,51 @@
       "fullBuilder": "Or use the full CV builder"
     },
     "onboarding": {
-      "closeGuide": "Close the guide"
+      "closeGuide": "Close the guide",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to the CV builder!",
+          "description": "Here you build a CV step by step. The guide shows you the way.",
+          "tip": "What you write is saved while you work, so you can continue later."
+        },
+        "design": {
+          "title": "Choose a design",
+          "description": "Start by choosing a template and a colour that suit you and your field of work.",
+          "tip": "Modern templates suit creative jobs. Classic templates work everywhere."
+        },
+        "personal": {
+          "title": "Fill in your details",
+          "description": "Add your name and your contact details. A profile photo is optional.",
+          "tip": "If you use a photo, choose a clear photo where you look friendly."
+        },
+        "profile": {
+          "title": "Write a summary",
+          "description": "Say in a few words who you are and what you are looking for. This is often the first thing a recruiter reads.",
+          "tip": "Use active verbs and name your strongest sides. 3–5 sentences is enough."
+        },
+        "experience": {
+          "title": "Add experience",
+          "description": "Describe your earlier jobs and education. Be concrete!",
+          "tip": "Show results with numbers when you can, for example \"Increased sales by 25%\"."
+        },
+        "skills": {
+          "title": "List your skills",
+          "description": "Add both technical and social skills. Rate yourself honestly.",
+          "tip": "Look at job ads to see which skills employers ask for."
+        },
+        "preview": {
+          "title": "Preview and export",
+          "description": "See how your CV looks and download it as a PDF when you are happy with it.",
+          "tip": "Ask someone you trust to read it before you send it."
+        }
+      },
+      "stepOf": "Step {{current}} of {{total}}",
+      "tipLabel": "Tip!",
+      "back": "Back",
+      "skip": "Skip",
+      "start": "Get started!",
+      "next": "Next",
+      "goToStep": "Go to step {{current}} of {{total}}: {{title}}"
     },
     "educationEditor": {
       "emptyTitle": "You haven't added any education yet",
@@ -1370,6 +1436,7 @@
       "writing": "Writing …",
       "writeMyself": "I will write it myself",
       "templateHeading": "Choose how the letter should look",
+      "templateHint": "The design shows in the preview and in the PDF. You can change it at any time.",
       "jobHeading": "Which job is the letter for?",
       "jobBody": "Pick one you have saved, or fill it in yourself.",
       "savedJobsHeading": "Your saved jobs",
@@ -2997,7 +3064,42 @@
       }
     },
     "intro": {
-      "questionsLayout": "How the questions are set up"
+      "questionsLayout": "How the questions are set up",
+      "whatYouGet": "What you get",
+      "get1": "A picture of the kinds of work that attract you",
+      "get2": "How you describe yourself on five personality traits",
+      "get3": "Your own answers about what works well and less well for you at work",
+      "get4": "Ideas from {{count}} jobs, with adjustments you can talk about",
+      "sections": {
+        "work": {
+          "name": "Work interests",
+          "description": "What kinds of work do you like?"
+        },
+        "personality": {
+          "name": "Personality",
+          "description": "How would you describe yourself?"
+        },
+        "interests": {
+          "name": "Areas of interest",
+          "description": "What do you find interesting?"
+        },
+        "conditions": {
+          "name": "Your situation",
+          "description": "How do you feel about what you can manage at work?"
+        }
+      },
+      "questionsCount_one": "{{count}} question",
+      "questionsCount_other": "{{count}} questions",
+      "whatItIs": "What this is, and what it is not",
+      "whatItIsBody1": "We wrote the questions. They are inspired by three well-known frameworks: Holland’s theory of career choice (RIASEC), the five-factor model of personality, and the WHO way of describing function at work.",
+      "whatItIsStrong": "It is not a psychological test and it is not an assessment of you.",
+      "whatItIsBody2": "It is your own answers, put together so you have something to start from — in a talk with your job coach, or for yourself. A different answer on a different day gives a different result, and that is normal.",
+      "duration": "~10 minutes",
+      "totalQuestions": "{{count}} questions in total",
+      "continue": "Continue where you stopped",
+      "restart": "Start again from the beginning",
+      "start": "Start the interest guide",
+      "footer": "Your answers are saved while you answer, so you can pause and continue when you want."
     },
     "jobCard": {
       "careerPath": "Career path:"
@@ -3012,7 +3114,42 @@
       "yellowRedAreasDesc": "Areas where adjustments can help. Under the Work Environment Act, you have the right to reasonable workplace adjustments.",
       "rememberHeading": "Remember",
       "compareOccupations": "Compare occupations",
-      "comparisonWithPreviousTest": "Comparison with your previous test"
+      "comparisonWithPreviousTest": "Comparison with your previous test",
+      "calcFailed": "We could not calculate your profile. Please take the test again.",
+      "fileHeading": "INTEREST GUIDE – RESULTS",
+      "fileRiasec": "Your three strongest interest areas (RIASEC): {{types}}",
+      "fileBigFive": "Your personality profile is based on five dimensions from the Big Five model.",
+      "fileCreated": "Created: {{date}}",
+      "fileName": "interest-guide-results",
+      "shareTitle": "My interest guide result",
+      "shareText": "I took the interest test on Jobin and found jobs that may suit me!",
+      "unchanged": "No change",
+      "doneHeading": "You have found your direction",
+      "doneLead": "Here is what your answers say about jobs that may suit you.",
+      "riasecType": "Your RIASEC type",
+      "goodMatches": "Good matches",
+      "goodMatchesUnit": "jobs (70%+)",
+      "totalOccupations": "Jobs in total",
+      "toExplore": "to explore",
+      "fromDate": "From {{date}}",
+      "testsTotal_one": "{{count}} test in total",
+      "testsTotal_other": "{{count}} tests in total",
+      "earlierResults_one": "Earlier results ({{count}} test)",
+      "earlierResults_other": "Earlier results ({{count}} tests)",
+      "current": "Current",
+      "topOccupation": "Top: {{name}}",
+      "top5Heading": "Top 5 job matches:",
+      "top3Heading": "Your top 3 job matches",
+      "seeAll": "See all",
+      "matchLabel": "match",
+      "tipLabel": "Tip:",
+      "tipText": "Take the test again later if your interests change. Then you can compare your results over time and see how you develop.",
+      "nextStep": "Next step",
+      "createCvHeading": "Create your CV",
+      "createCvText": "Use what you learned in the interest guide to build a professional CV",
+      "download": "Download results",
+      "share": "Share results",
+      "restart": "Take the test again"
     },
     "occupations": {
       "growingShare": "of these are growing, based on our editorial assessment",
@@ -3839,6 +3976,9 @@
       "sun": "Sun"
     },
     "noTitle": "No title",
+    "loadErrorTitle": "We could not load your diary right now",
+    "loadErrorBody": "This does not mean anything is lost. Please try again in a moment.",
+    "saveFailed": "It could not be saved right now. What you wrote is still here. Please try again in a moment.",
     "tabs": {
       "journal": "Journal",
       "mood": "Mood",
@@ -4003,6 +4143,7 @@
       }
     },
     "journal": {
+      "saveNeedsConsent": "Your note was not saved. The diary is only saved if you have said yes to us storing information about how you feel. You do this under the Mood tab. Your text is still here.",
       "writeModal": {
         "title": "New diary entry",
         "titleLabel": "Entry title (optional)",
@@ -4221,6 +4362,43 @@
       "emergencyContacts": "Emergency contacts",
       "breathingExercise": "Breathing exercise",
       "startBreathing": "Start breathing exercise",
+      "phase": {
+        "in": "Breathe in...",
+        "hold": "Hold your breath...",
+        "out": "Breathe out...",
+        "rest": "Rest..."
+      },
+      "round": "Round {{count}}",
+      "breathingAffirmation": "You are here. You are breathing. Right now, that is enough.",
+      "stopExercise": "Stop the exercise",
+      "readyToContinue": "I am ready to go on",
+      "call": "Call {{number}}",
+      "breathingIntro": "A simple breathing exercise can calm your nervous system. It only takes a few minutes.",
+      "shareHeading": "Tell your job coach",
+      "shareText": "If you are not feeling well, it can help to tell your job coach. They can change your programme or give you extra support during this time.",
+      "sendMessage": "Send a message to your coach",
+      "reminder": "Remember: It is okay not to feel okay. You are not alone. Help is here when you need it.",
+      "steps": {
+        "s54321": {
+          "1": "Find 5 things you can see",
+          "2": "Find 4 things you can touch",
+          "3": "Find 3 things you can hear",
+          "4": "Find 2 things you can smell",
+          "5": "Find 1 thing you can taste"
+        },
+        "coldWater": {
+          "1": "Go to a tap with cold water",
+          "2": "Hold your hands under the water or rinse your face",
+          "3": "Breathe slowly",
+          "4": "Notice how your body changes"
+        },
+        "listening": {
+          "1": "Put on a calm voice or calm music",
+          "2": "Listen carefully for 5 minutes",
+          "3": "Focus on the sounds and the words",
+          "4": "Notice how it makes you feel"
+        }
+      },
       "groundingTechniques": "Grounding techniques",
       "technique54321": {
         "title": "5-4-3-2-1 technique",
@@ -5734,6 +5912,12 @@
       "situations": "Your situation"
     }
   },
+  "pageTitles": {
+    "default": "Jobin — tools and support for you who are looking for work",
+    "invite": "Invitation",
+    "sharedProfile": "Shared profile",
+    "history": "Your history"
+  },
   "privacy": {
     "backToHome": "Back to home page",
     "title": "Privacy Policy",
@@ -7067,7 +7251,106 @@
       "selected": "Selected",
       "isSelected": "is selected",
       "selectedInfo": "The template includes preset colors and fonts. Continue to fill in your CV, or click Preview to see the result.",
-      "atsNote": "The PDF holds real text that you can select and search — this is true for every template. If you know the employer uses a recruitment system, a one-column template is the safest choice, because then the text is read in a single order. We have not tested the templates against any specific system."
+      "atsNote": "The PDF holds real text that you can select and search — this is true for every template. If you know the employer uses a recruitment system, a one-column template is the safest choice, because then the text is read in a single order. We have not tested the templates against any specific system.",
+      "meta": {
+        "sidebar": {
+          "name": "Side column",
+          "desc": "Modern layout with a dark side panel for contact details and skills",
+          "f1": "Side column",
+          "f2": "Round photo",
+          "f3": "Skills in the side panel"
+        },
+        "centered": {
+          "name": "Centred",
+          "desc": "Classic navy header with a gold accent and a centred layout",
+          "f1": "Navy and gold",
+          "f2": "Centred name",
+          "f3": "Timeless"
+        },
+        "minimal": {
+          "name": "Minimal",
+          "desc": "Swiss-inspired design with large text and lots of space",
+          "f1": "Large text",
+          "f2": "Spacious",
+          "f3": "Focus on content"
+        },
+        "creative": {
+          "name": "Creative",
+          "desc": "Magenta accent with a card layout in two columns",
+          "f1": "Magenta accent",
+          "f2": "Card layout",
+          "f3": "Bold text"
+        },
+        "executive": {
+          "name": "Executive",
+          "desc": "Elegant serif font with gold accents and a large first letter",
+          "f1": "Serif font",
+          "f2": "Gold accents",
+          "f3": "Classic"
+        },
+        "nordic": {
+          "name": "Nordic",
+          "desc": "Scandinavian minimalism with a light side panel",
+          "f1": "Light side panel",
+          "f2": "Sky-blue accent",
+          "f3": "Clean"
+        },
+        "budapest": {
+          "name": "Budapest",
+          "desc": "Dark side panel with a round photo and a timeline with dots",
+          "f1": "Dark side panel",
+          "f2": "Timeline",
+          "f3": "Round photo"
+        },
+        "rotterdam": {
+          "name": "Rotterdam",
+          "desc": "Spacious design with a large last name and two text columns",
+          "f1": "Large last name",
+          "f2": "Spacious",
+          "f3": "Two columns"
+        },
+        "chicago": {
+          "name": "Chicago",
+          "desc": "Classic centred header with a thin vertical line",
+          "f1": "Centred header",
+          "f2": "Classic",
+          "f3": "Monogram"
+        },
+        "atelier": {
+          "name": "Atelier",
+          "desc": "Magazine style on a cream background with a serif heading and a teal accent",
+          "f1": "Cream background",
+          "f2": "Serif heading",
+          "f3": "Magazine style"
+        },
+        "manhattan": {
+          "name": "Manhattan",
+          "desc": "Formal template with a dark navy side panel and a copper accent",
+          "f1": "Navy side panel",
+          "f2": "Copper accent",
+          "f3": "Formal"
+        },
+        "berlin": {
+          "name": "Berlin",
+          "desc": "Bauhaus-inspired magazine style — cream and black with a red-orange accent and Roman numerals",
+          "f1": "Bauhaus",
+          "f2": "Magazine style",
+          "f3": "Strong text"
+        }
+      },
+      "previewAlt": "Preview of the {{name}} template",
+      "demoFields": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "title": "Title/role",
+        "email": "Email",
+        "phone": "Phone",
+        "location": "City",
+        "summary": "Summary",
+        "skills": "Skills",
+        "workExperience": "Work experience",
+        "education": "Education"
+      }
     },
     "profileImage": {
       "title": "Profile picture",
@@ -7769,7 +8052,10 @@
     "aiBadge": "AI coach",
     "chat": {
       "taskCreateErrorTitle": "Could not create the task",
-      "taskCreateErrorMessage": "The task could not be saved to your calendar. Please try again."
+      "taskCreateErrorMessage": "The task could not be saved to your calendar. Please try again.",
+      "diarySaveErrorTitle": "Could not save to your diary",
+      "diarySaveErrorMessage": "The answer could not be saved to your diary right now. Please try again in a moment.",
+      "diarySaveConsentMessage": "The diary is only saved if you have said yes to us storing information about how you feel. You do this in the diary, under the Mood tab."
     },
     "thinking": "Thinking...",
     "send": "Send",
@@ -9136,7 +9422,9 @@
       "markAsRead": "Mark as read",
       "deleteNotification": "Delete notification",
       "notifications": "Notifications",
-      "close": "Close"
+      "close": "Close",
+      "unreadCount_one": "Notifications ({{count}} unread)",
+      "unreadCount_other": "Notifications ({{count}} unread)"
     }
   },
   "occupation": {
@@ -9147,7 +9435,20 @@
     },
     "desiredJobsList": {
       "linkedToAf": "Linked to the Swedish Public Employment Service's list — matched exactly in search",
-      "freeTextNotLinked": "Free text — not linked to the Swedish Public Employment Service. Remove it and pick from the list for an exact match."
+      "freeTextNotLinked": "Free text — not linked to the Swedish Public Employment Service. Remove it and pick from the list for an exact match.",
+      "moveUp": "Move {{label}} up",
+      "moveDown": "Move {{label}} down",
+      "remove": "Remove {{label}}",
+      "priority": "Priority {{priority}}",
+      "empty": "No wanted jobs added yet.",
+      "emptyHint": "Add up to {{max}} jobs, in order of priority.",
+      "pickerLabel": "Job number {{n}} in your priority list",
+      "pickerPlaceholder": "For example warehouse, cook…",
+      "cancel": "Cancel",
+      "add": "Add a job ({{count}}/{{max}})",
+      "maxReached": "You have added the maximum ({{max}}). Remove a job to add a new one.",
+      "orderHint": "Jobs at the top get priority in job matching.",
+      "freeTextHint": "Jobs with ⚠ are free text and are not matched exactly."
     }
   },
   "samlingar": {
@@ -9160,7 +9461,9 @@
   "skipLinks": {
     "nav": "Skip links",
     "mainContent": "Main content",
-    "mainNavigation": "Main navigation"
+    "mainNavigation": "Main navigation",
+    "toMain": "Skip to main content",
+    "toNavigation": "Skip to navigation"
   },
   "toast": {
     "aria": {
@@ -9187,11 +9490,6 @@
         "default": "Picked for you"
       },
       "readTime": "{{count}} min read",
-      "difficulty": {
-        "beginner": "Beginner",
-        "intermediate": "Medium",
-        "advanced": "Advanced"
-      },
       "seeAllArticles": "See all articles",
       "selectedForYou": "Articles picked for where you are now"
     }

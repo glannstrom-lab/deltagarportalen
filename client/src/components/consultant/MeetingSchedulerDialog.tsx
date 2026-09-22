@@ -231,7 +231,7 @@ export function MeetingSchedulerDialog({
             <h2 id="meeting-dialog-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Boka möte
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
               {step === 'participant' && 'Välj deltagare'}
               {step === 'datetime' && 'Välj datum och tid'}
               {step === 'details' && 'Mötesdetaljer'}
@@ -288,7 +288,7 @@ export function MeetingSchedulerDialog({
                       <p className="font-medium text-stone-900 dark:text-stone-100">
                         {p.first_name} {p.last_name}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-600">
+                      <p className="text-sm text-stone-500 dark:text-stone-400">
                         {p.email}
                       </p>
                     </div>

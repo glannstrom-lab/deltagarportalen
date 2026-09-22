@@ -212,7 +212,7 @@ export function CommutePlannerPanel({
               {result.car && (
                 <div className="p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
                   <div className="flex items-center gap-2 mb-3">
-                    <Car className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+                    <Car className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                     <span className="font-medium text-stone-800 dark:text-stone-200">
                       {t('ai.commute.car')}
                     </span>

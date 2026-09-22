@@ -1,0 +1,5652 @@
+{
+  "kord": "2026-09-22T21:33:37.483Z",
+  "sekunder": 188,
+  "resultat": [
+    {
+      "korning": "inloggning",
+      "rutt": "deltagare-mobil",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hej Dana",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/oversikt",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hej Dana",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/oversikt/historik",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/oversikt/historik",
+      "pathname": "/",
+      "h1": "Historik",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/jobb",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1528,
+      "hash": "#/jobb",
+      "pathname": "/",
+      "h1": "Hej Dana · Hitta och söka jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/karriar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/karriar",
+      "pathname": "/",
+      "h1": "Hej Dana · Planera min karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/resurser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/resurser",
+      "pathname": "/",
+      "h1": "Hej Dana · Dina sparade resurser",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/min-vardag",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/min-vardag",
+      "pathname": "/",
+      "h1": "Hej Dana · Din vardag",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cv",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1510,
+      "hash": "#/cv",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Meny",
+        "Min profil",
+        "Steg 1 av 7Välkommen till CV-byggaren!Här skapar du ett professionellt CV på nolltid. Jag guidar dig"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cv/my-cvs",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1511,
+      "hash": "#/cv/my-cvs",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cv/adapt",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/cv/adapt",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cv/ats",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1510,
+      "hash": "#/cv/ats",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cv/tips",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/cv/tips",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cover-letter",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1512,
+      "hash": "#/cover-letter",
+      "pathname": "/",
+      "h1": "Personligt brev",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [
+        {
+          "text": "Vi vet inget om dig ännu, så vi lät inte AI:n skriva — den hade behövt gissa. I stället får du en stomme med {{count}} luckor att fylla i med dina egna ord. Fyll i ditt CV, så skriver vi ett riktigt u",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400 in main"
+        }
+      ],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/cover-letter/my-letters",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/cover-letter/my-letters",
+      "pathname": "/",
+      "h1": "Personligt brev",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interest-guide",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/interest-guide",
+      "pathname": "/",
+      "h1": "Intresseguide",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interest-guide/results",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1510,
+      "hash": "#/interest-guide/results",
+      "pathname": "/",
+      "h1": "Intresseguide",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interest-guide/occupations",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/interest-guide/occupations",
+      "pathname": "/",
+      "h1": "Intresseguide",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interest-guide/explore",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/interest-guide/explore",
+      "pathname": "/",
+      "h1": "Intresseguide",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interest-guide/history",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1512,
+      "hash": "#/interest-guide/history",
+      "pathname": "/",
+      "h1": "Intresseguide",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/knowledge-base",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1512,
+      "hash": "#/knowledge-base",
+      "pathname": "/",
+      "h1": "Kunskapsbank",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/profile",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/profile",
+      "pathname": "/",
+      "h1": "Dana Deltagare",
+      "dialog": [
+        "Meny",
+        "Min profil",
+        "Välkommen!Det här är din profil - ett verktyg som hjälper dig framåt i din jobbsökning. Ta det i din"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/my-consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/my-consultant",
+      "pathname": "/",
+      "h1": "Min konsulent",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/job-search",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/daily",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1507,
+      "hash": "#/job-search/daily",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/slumpjobbet",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/job-search/slumpjobbet",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/saved",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1510,
+      "hash": "#/job-search/saved",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/alerts",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/job-search/alerts",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/matches",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/job-search/matches",
+      "pathname": "/",
+      "h1": "Sök jobb",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/applications",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/crm",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/applications/contacts",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/job-search/culture",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1509,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications/timeline",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/applications/timeline",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications/calendar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/applications/calendar",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications/contacts",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1505,
+      "hash": "#/applications/contacts",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications/analytics",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/applications/analytics",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/applications/aktivitetsrapport",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/applications/aktivitetsrapport",
+      "pathname": "/",
+      "h1": "Dina jobbansökningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/career",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/career",
+      "pathname": "/",
+      "h1": "Karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/career/adaptation",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1511,
+      "hash": "#/career/adaptation",
+      "pathname": "/",
+      "h1": "Karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/career/credentials",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/career/credentials",
+      "pathname": "/",
+      "h1": "Karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/career/relocation",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1549,
+      "hash": "#/career/relocation",
+      "pathname": "/",
+      "h1": "Karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/career/plan",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1509,
+      "hash": "#/career/plan",
+      "pathname": "/",
+      "h1": "Karriär",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/diary",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1525,
+      "hash": "#/diary",
+      "pathname": "/",
+      "h1": "Dagbok",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/wellness",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/wellness",
+      "pathname": "/",
+      "h1": "Hälsa",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/wellness/routines",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/wellness/routines",
+      "pathname": "/",
+      "h1": "Hälsa",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/wellness/cognitive",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1527,
+      "hash": "#/wellness/cognitive",
+      "pathname": "/",
+      "h1": "Hälsa",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/wellness/crisis",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/wellness/crisis",
+      "pathname": "/",
+      "h1": "Hälsa",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/wellness/energy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/wellness",
+      "pathname": "/",
+      "h1": "Hälsa",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/settings",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/settings",
+      "pathname": "/",
+      "h1": "Inställningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/resources",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/resources",
+      "pathname": "/",
+      "h1": "Dina sparade resurser",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/help",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/help",
+      "pathname": "/",
+      "h1": "Hjälp & Support",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/salary",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/salary",
+      "pathname": "/",
+      "h1": "Lön & Förhandling",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/education",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1521,
+      "hash": "#/education",
+      "pathname": "/",
+      "h1": "Utbildningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/calendar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/calendar",
+      "pathname": "/",
+      "h1": "Kalender",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/min-vecka",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1538,
+      "hash": "#/min-vecka",
+      "pathname": "/",
+      "h1": "Min vecka",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/spontanans%C3%B6kan",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/spontanans%C3%B6kan",
+      "pathname": "/",
+      "h1": "Spontanansökan",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/spontanans%C3%B6kan/mina-foretag",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/spontanans%C3%B6kan/mina-foretag",
+      "pathname": "/",
+      "h1": "Spontanansökan",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/spontanans%C3%B6kan/statistik",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1536,
+      "hash": "#/spontanans%C3%B6kan/statistik",
+      "pathname": "/",
+      "h1": "Spontanansökan",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/n%C3%A4tverk",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1531,
+      "hash": "#/n%C3%A4tverk",
+      "pathname": "/",
+      "h1": "Nätverk",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/personal-brand",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1523,
+      "hash": "#/personal-brand",
+      "pathname": "/",
+      "h1": "Ditt intryck utåt",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/personal-brand/pitch",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/personal-brand/pitch",
+      "pathname": "/",
+      "h1": "Ditt intryck utåt",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/personal-brand/portfolio",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/personal-brand/portfolio",
+      "pathname": "/",
+      "h1": "Ditt intryck utåt",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/personal-brand/visibility",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1527,
+      "hash": "#/personal-brand/visibility",
+      "pathname": "/",
+      "h1": "Ditt intryck utåt",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/linkedin-optimizer",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1507,
+      "hash": "#/linkedin-optimizer",
+      "pathname": "/",
+      "h1": "Din LinkedIn-profil",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/skills-gap-analysis",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/skills-gap-analysis",
+      "pathname": "/",
+      "h1": "Vad saknas för drömjobbet?",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/interview-simulator",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/interview-simulator",
+      "pathname": "/",
+      "h1": "Din intervjuträning",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/ai-team",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/ai-team",
+      "pathname": "/",
+      "h1": "Vem vill du prata med?",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/exercises",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/exercises",
+      "pathname": "/",
+      "h1": "Övningar",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/international",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/international",
+      "pathname": "/",
+      "h1": "Ny i Sverige",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/externa-resurser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/externa-resurser",
+      "pathname": "/",
+      "h1": "Externa resurser",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": "9+"
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\nÖversikt\nSöka jobb\nSök jobb\nDina jobbansökningar\nSpontanansökan\nCV\nPersonli"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-deltagare@jobin.test\n\nDeltagare\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          },
+          {
+            "el": "button.group.fixed.z-40.bottom-[calc(var(--bottom-nav-h)+8px)].right-4.sm:bottom-6",
+            "left": 336,
+            "right": 390,
+            "width": 54,
+            "text": ""
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/print/cv",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1522,
+      "hash": "#/print/cv",
+      "pathname": "/",
+      "h1": "Kim Testsson",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 794,
+        "innerWidth": 794,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.cv-print-root",
+            "left": 0,
+            "right": 794,
+            "width": 794,
+            "text": "KT\nKONTAKT\nkm-deltagare@jobin.test\nGöteborg\nKOMPETENSER\nTruckkort A+B\nLagerhante"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/admin",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1521,
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hej Dana",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1529,
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hej Dana",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/privacy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1521,
+      "hash": "#/privacy",
+      "pathname": "/",
+      "h1": "Integritetspolicy",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/terms",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/terms",
+      "pathname": "/",
+      "h1": "Användarvillkor",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/ai-policy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1522,
+      "hash": "#/ai-policy",
+      "pathname": "/",
+      "h1": "AI-transparens",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "mobil",
+      "rutt": "/#/tillganglighet",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/tillganglighet",
+      "pathname": "/",
+      "h1": "Tillgänglighetsredogörelse",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "inloggning",
+      "rutt": "konsulent",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/consultant/participants",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/platser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1536,
+      "hash": "#/consultant/platser",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/analytics",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1504,
+      "hash": "#/consultant/analytics",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/communication",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1539,
+      "hash": "#/consultant/communication",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/resources",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/consultant/resources",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/settings",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/consultant/settings",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1509,
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d [flik: Översikt]",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d [flik: Aktivitet]",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d [flik: Mål]",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d [flik: Journal]",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d [flik: Tidslinje]",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "inloggning",
+      "rutt": "konsulent-mobil",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1512,
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/participants",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1506,
+      "hash": "#/consultant/participants",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/platser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1522,
+      "hash": "#/consultant/platser",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/analytics",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/consultant/analytics",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/communication",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/consultant/communication",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/resources",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1523,
+      "hash": "#/consultant/resources",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/settings",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/consultant/settings",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 478,
+        "innerWidth": 478,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 478,
+            "right": 758,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 478,
+            "width": 478,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "konsulent-mobil",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1532,
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [
+        "Meny",
+        "Min profil"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": {
+        "scrollWidth": 406,
+        "innerWidth": 406,
+        "nominell": 375,
+        "element": [
+          {
+            "el": "div.flex.items-center.gap-0.5 in header",
+            "left": 108,
+            "right": 406,
+            "width": 298,
+            "text": ""
+          },
+          {
+            "el": "div.fixed.top-0.right-0.bottom-0.bg-white.dark:bg-stone-900 in div[Meny]{dialog}",
+            "left": 406,
+            "right": 686,
+            "width": 280,
+            "text": "Meny\n\nKONSULENT\n\nKonsultportal\n\nDELTAGARVYN\n\nÖversikt\nSöka jobb\nKarriär\nResurser"
+          },
+          {
+            "el": "div.fixed.top-0.left-0.bottom-0.bg-white.dark:bg-stone-900 in div[Min profil]{dialog}",
+            "left": -260,
+            "right": 0,
+            "width": 260,
+            "text": "Min profil\n\nkm-konsulent@jobin.test\n\nKonsulent\n\nMin profil\nInställningar\nLogga u"
+          },
+          {
+            "el": "nav.fixed.bottom-0.left-0.right-0.z-30.lg:hidden in nav[Hubnavigering]{navigation}",
+            "left": 0,
+            "right": 406,
+            "width": 406,
+            "text": "Översikt\nSöka jobb\nKarriär\nResurser\nDin vardag"
+          }
+        ]
+      }
+    },
+    {
+      "korning": "inloggning",
+      "rutt": "konsulent-mork",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent-mork",
+      "rutt": "/#/consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1507,
+      "hash": "#/consultant",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent-mork",
+      "rutt": "/#/consultant/participants",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1505,
+      "hash": "#/consultant/participants",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "konsulent-mork",
+      "rutt": "/#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d",
+      "pathname": "/",
+      "h1": "Konsultportal",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    }
+  ]
+}

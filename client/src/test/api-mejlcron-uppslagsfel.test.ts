@@ -71,7 +71,7 @@ function stubNetwork(val: Stubval) {
     if (url.includes('/rest/v1/notifications')) {
       return json([{ id: 'n1', user_id: 'u1', title: 'I morgon: pass', message: 'm', data: {}, created_at: new Date().toISOString() }])
     }
-    if (url.includes('/rest/v1/profiles')) return val.profilFel ? pgFel() : json({ email: 'a@example.com', first_name: 'A' })
+    if (url.includes('/rest/v1/profiles')) return val.profilFel ? pgFel() : json({ email: 'a@jobin-test.se', first_name: 'A' }) // inte example.com: RFC 2606-domäner hoppas över (api-mejlcron-reserverade-domaner.test.ts)
     if (url.includes('/rest/v1/user_preferences')) return val.prefFel ? pgFel() : json(null)
     throw new Error(`Oväntat nätverksanrop i test: ${method} ${url}`)
   }) as unknown as typeof fetch

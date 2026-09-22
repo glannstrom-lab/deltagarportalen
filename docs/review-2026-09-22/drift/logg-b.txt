@@ -1,0 +1,166 @@
+[inloggning deltagare-mobil] landade på #/oversikt; dialoger: ["Meny","Min profil"]
+[mobil] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/oversikt/historik 0pe 0ce 0http 0key 0bad -> #/oversikt/historik
+[mobil] /#/jobb 0pe 0ce 0http 0key 0bad -> #/jobb
+[mobil] /#/karriar 0pe 0ce 0http 0key 0bad -> #/karriar
+[mobil] /#/resurser 0pe 0ce 0http 0key 0bad -> #/resurser
+[mobil] /#/min-vardag 0pe 0ce 0http 0key 0bad -> #/min-vardag
+[mobil] /#/cv 0pe 0ce 0http 0key 0bad -> #/cv
+[mobil] /#/cv/my-cvs 0pe 0ce 0http 0key 0bad -> #/cv/my-cvs
+[mobil] /#/cv/adapt 0pe 0ce 0http 0key 0bad -> #/cv/adapt
+[mobil] /#/cv/ats 0pe 0ce 0http 0key 0bad -> #/cv/ats
+[mobil] /#/cv/tips 0pe 0ce 0http 0key 0bad -> #/cv/tips
+[mobil] /#/cover-letter 0pe 0ce 0http 0key 0bad -> #/cover-letter
+[mobil] /#/cover-letter/my-letters 0pe 0ce 0http 0key 0bad -> #/cover-letter/my-letters
+[mobil] /#/interest-guide 0pe 0ce 0http 0key 0bad -> #/interest-guide
+[mobil] /#/interest-guide/results 0pe 0ce 0http 0key 0bad -> #/interest-guide/results
+[mobil] /#/interest-guide/occupations 0pe 0ce 0http 0key 0bad -> #/interest-guide/occupations
+[mobil] /#/interest-guide/explore 0pe 0ce 0http 0key 0bad -> #/interest-guide/explore
+[mobil] /#/interest-guide/history 0pe 0ce 0http 0key 0bad -> #/interest-guide/history
+[mobil] /#/knowledge-base 0pe 0ce 0http 0key 0bad -> #/knowledge-base
+[mobil] /#/profile 0pe 0ce 0http 0key 0bad -> #/profile
+[mobil] /#/my-consultant 0pe 0ce 0http 0key 0bad -> #/my-consultant
+[mobil] /#/job-search 0pe 0ce 0http 0key 0bad -> #/job-search
+[mobil] /#/job-search/daily 0pe 0ce 0http 0key 0bad -> #/job-search/daily
+[mobil] /#/job-search/slumpjobbet 0pe 0ce 0http 0key 0bad -> #/job-search/slumpjobbet
+[mobil] /#/job-search/saved 0pe 0ce 0http 0key 0bad -> #/job-search/saved
+[mobil] /#/job-search/alerts 0pe 0ce 0http 0key 0bad -> #/job-search/alerts
+[mobil] /#/job-search/matches 0pe 0ce 0http 0key 0bad -> #/job-search/matches
+[mobil] /#/job-search/applications 0pe 0ce 0http 0key 0bad -> #/applications
+[mobil] /#/job-search/crm 0pe 0ce 0http 0key 0bad -> #/applications/contacts
+[mobil] /#/job-search/culture 0pe 0ce 0http 0key 0bad -> #/applications
+[mobil] /#/applications 0pe 0ce 0http 0key 0bad -> #/applications
+[mobil] /#/applications/timeline 0pe 0ce 0http 0key 0bad -> #/applications/timeline
+[mobil] /#/applications/calendar 0pe 0ce 0http 0key 0bad -> #/applications/calendar
+[mobil] /#/applications/contacts 0pe 0ce 0http 0key 0bad -> #/applications/contacts
+[mobil] /#/applications/analytics 0pe 0ce 0http 0key 0bad -> #/applications/analytics
+[mobil] /#/applications/aktivitetsrapport 0pe 0ce 0http 0key 0bad -> #/applications/aktivitetsrapport
+[mobil] /#/career 0pe 0ce 0http 0key 0bad -> #/career
+[mobil] /#/career/adaptation 0pe 0ce 0http 0key 0bad -> #/career/adaptation
+[mobil] /#/career/credentials 0pe 0ce 0http 0key 0bad -> #/career/credentials
+[mobil] /#/career/relocation 0pe 0ce 0http 0key 0bad -> #/career/relocation
+[mobil] /#/career/plan 0pe 0ce 0http 0key 0bad -> #/career/plan
+[mobil] /#/diary 0pe 0ce 0http 0key 0bad -> #/diary
+[mobil] /#/wellness 0pe 0ce 0http 0key 0bad -> #/wellness
+[mobil] /#/wellness/routines 0pe 0ce 0http 0key 0bad -> #/wellness/routines
+[mobil] /#/wellness/cognitive 0pe 0ce 0http 0key 0bad -> #/wellness/cognitive
+[mobil] /#/wellness/crisis 0pe 0ce 0http 0key 0bad -> #/wellness/crisis
+[mobil] /#/wellness/energy 0pe 0ce 0http 0key 0bad -> #/wellness
+[mobil] /#/settings 0pe 0ce 0http 0key 0bad -> #/settings
+[mobil] /#/resources 0pe 0ce 0http 0key 0bad -> #/resources
+[mobil] /#/help 0pe 0ce 0http 0key 0bad -> #/help
+[mobil] /#/salary 0pe 0ce 0http 0key 0bad -> #/salary
+[mobil] /#/education 0pe 0ce 0http 0key 0bad -> #/education
+[mobil] /#/calendar 0pe 0ce 0http 0key 0bad -> #/calendar
+[mobil] /#/min-vecka 0pe 0ce 0http 0key 0bad -> #/min-vecka
+[mobil] /#/spontanans%C3%B6kan 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan
+[mobil] /#/spontanans%C3%B6kan/mina-foretag 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan/mina-foretag
+[mobil] /#/spontanans%C3%B6kan/statistik 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan/statistik
+[mobil] /#/n%C3%A4tverk 0pe 0ce 0http 0key 0bad -> #/n%C3%A4tverk
+[mobil] /#/personal-brand 0pe 0ce 0http 0key 0bad -> #/personal-brand
+[mobil] /#/personal-brand/pitch 0pe 0ce 0http 0key 0bad -> #/personal-brand/pitch
+[mobil] /#/personal-brand/portfolio 0pe 0ce 0http 0key 0bad -> #/personal-brand/portfolio
+[mobil] /#/personal-brand/visibility 0pe 0ce 0http 0key 0bad -> #/personal-brand/visibility
+[mobil] /#/linkedin-optimizer 0pe 0ce 0http 0key 0bad -> #/linkedin-optimizer
+[mobil] /#/skills-gap-analysis 0pe 0ce 0http 0key 0bad -> #/skills-gap-analysis
+[mobil] /#/interview-simulator 0pe 0ce 0http 0key 0bad -> #/interview-simulator
+[mobil] /#/ai-team 0pe 0ce 0http 0key 0bad -> #/ai-team
+[mobil] /#/exercises 0pe 0ce 0http 0key 0bad -> #/exercises
+[mobil] /#/international 0pe 0ce 0http 0key 0bad -> #/international
+[mobil] /#/externa-resurser 0pe 0ce 0http 0key 0bad -> #/externa-resurser
+[mobil] /#/print/cv 0pe 0ce 0http 0key 0bad -> #/print/cv
+[mobil] /#/admin 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/consultant 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/privacy 0pe 0ce 0http 0key 0bad -> #/privacy
+[mobil] /#/terms 0pe 0ce 0http 0key 0bad -> #/terms
+[mobil] /#/ai-policy 0pe 0ce 0http 0key 0bad -> #/ai-policy
+[mobil] /#/tillganglighet 0pe 0ce 0http 0key 0bad -> #/tillganglighet
+[inloggning deltagare-en] landade på #/oversikt; dialoger: []
+[engelska] /#/oversikt 0pe 0ce 0http 0key 0bad sv=61 -> #/oversikt
+[engelska] /#/oversikt/historik 0pe 0ce 0http 0key 0bad sv=38 -> #/oversikt/historik
+[engelska] /#/jobb 0pe 0ce 0http 0key 0bad sv=50 -> #/jobb
+[engelska] /#/karriar 0pe 0ce 0http 0key 0bad sv=41 -> #/karriar
+[engelska] /#/resurser 0pe 0ce 0http 0key 0bad sv=38 -> #/resurser
+[engelska] /#/min-vardag 0pe 0ce 0http 0key 0bad sv=39 -> #/min-vardag
+[engelska] /#/cv 0pe 0ce 0http 0key 0bad sv=95 -> #/cv
+[engelska] /#/cv/my-cvs 0pe 0ce 0http 0key 0bad sv=33 -> #/cv/my-cvs
+[engelska] /#/cv/adapt 0pe 0ce 0http 0key 0bad sv=30 -> #/cv/adapt
+[engelska] /#/cv/ats 0pe 0ce 0http 0key 0bad sv=68 -> #/cv/ats
+[engelska] /#/cv/tips 0pe 0ce 0http 0key 0bad sv=59 -> #/cv/tips
+[engelska] /#/cover-letter 0pe 0ce 0http 0key 0bad sv=55 -> #/cover-letter
+[engelska] /#/cover-letter/my-letters 0pe 0ce 0http 0key 0bad sv=36 -> #/cover-letter/my-letters
+[engelska] /#/interest-guide 0pe 0ce 0http 0key 0bad sv=53 -> #/interest-guide
+[engelska] /#/interest-guide/results 0pe 0ce 0http 0key 0bad sv=36 -> #/interest-guide/results
+[engelska] /#/interest-guide/occupations 0pe 0ce 0http 0key 0bad sv=36 -> #/interest-guide/occupations
+[engelska] /#/interest-guide/explore 0pe 0ce 0http 0key 0bad sv=66 -> #/interest-guide/explore
+[engelska] /#/interest-guide/history 0pe 0ce 0http 0key 0bad sv=32 -> #/interest-guide/history
+[engelska] /#/knowledge-base 0pe 0ce 0http 0key 0bad sv=71 -> #/knowledge-base
+[engelska] /#/profile 0pe 0ce 0http 0key 0bad sv=56 -> #/profile
+[engelska] /#/my-consultant 0pe 0ce 0http 0key 0bad sv=54 -> #/my-consultant
+[engelska] /#/job-search 0pe 0ce 0http 0key 0bad sv=132 -> #/job-search
+[engelska] /#/job-search/daily 0pe 0ce 0http 0key 0bad sv=42 -> #/job-search/daily
+[engelska] /#/job-search/slumpjobbet 0pe 0ce 0http 0key 0bad sv=56 -> #/job-search/slumpjobbet
+[engelska] /#/job-search/saved 0pe 0ce 0http 0key 0bad sv=38 -> #/job-search/saved
+[engelska] /#/job-search/alerts 0pe 0ce 0http 0key 0bad sv=40 -> #/job-search/alerts
+[engelska] /#/job-search/matches 0pe 0ce 0http 0key 0bad sv=181 -> #/job-search/matches
+[engelska] /#/job-search/applications 0pe 0ce 0http 0key 0bad sv=39 -> #/applications
+[engelska] /#/job-search/crm 0pe 0ce 0http 0key 0bad sv=39 -> #/applications/contacts
+[engelska] /#/job-search/culture 0pe 0ce 0http 0key 0bad sv=43 -> #/applications
+[engelska] /#/applications 0pe 0ce 0http 0key 0bad sv=43 -> #/applications
+[engelska] /#/applications/timeline 0pe 0ce 0http 0key 0bad sv=39 -> #/applications/timeline
+[engelska] /#/applications/calendar 0pe 0ce 0http 0key 0bad sv=57 -> #/applications/calendar
+[engelska] /#/applications/contacts 0pe 0ce 0http 0key 0bad sv=39 -> #/applications/contacts
+[engelska] /#/applications/analytics 0pe 0ce 0http 0key 0bad sv=39 -> #/applications/analytics
+[engelska] /#/applications/aktivitetsrapport 0pe 0ce 0http 0key 0bad sv=43 -> #/applications/aktivitetsrapport
+[engelska] /#/career 0pe 0ce 0http 0key 0bad sv=58 -> #/career
+[engelska] /#/career/adaptation 0pe 0ce 0http 0key 0bad sv=47 -> #/career/adaptation
+[engelska] /#/career/credentials 0pe 0ce 0http 0key 0bad sv=51 -> #/career/credentials
+[engelska] /#/career/relocation 0pe 0ce 0http 0key 0bad sv=100 -> #/career/relocation
+[engelska] /#/career/plan 0pe 0ce 0http 0key 0bad sv=47 -> #/career/plan
+[engelska] /#/diary 0pe 0ce 0http 0key 0bad sv=41 -> #/diary
+[engelska] /#/wellness 0pe 0ce 0http 0key 0bad sv=50 -> #/wellness
+[engelska] /#/wellness/routines 0pe 0ce 0http 0key 0bad sv=52 -> #/wellness/routines
+[engelska] /#/wellness/cognitive 0pe 0ce 0http 0key 0bad sv=58 -> #/wellness/cognitive
+[engelska] /#/wellness/crisis 0pe 0ce 0http 0key 0bad sv=50 -> #/wellness/crisis
+[engelska] /#/wellness/energy 0pe 0ce 0http 0key 0bad sv=50 -> #/wellness
+[engelska] /#/settings 0pe 0ce 0http 0key 0bad sv=43 -> #/settings
+[engelska] /#/resources 0pe 0ce 0http 0key 0bad sv=31 -> #/resources
+[engelska] /#/help 0pe 0ce 0http 0key 0bad sv=61 -> #/help
+[engelska] /#/salary 0pe 0ce 0http 0key 0bad sv=64 -> #/salary
+[engelska] /#/education 0pe 0ce 0http 0key 0bad sv=49 -> #/education
+[engelska] /#/calendar 0pe 0ce 0http 0key 0bad sv=41 -> #/calendar
+[engelska] /#/min-vecka 0pe 0ce 0http 0key 0bad sv=60 -> #/min-vecka
+[engelska] /#/spontanans%C3%B6kan 0pe 0ce 0http 0key 0bad sv=50 -> #/spontanans%C3%B6kan
+[engelska] /#/spontanans%C3%B6kan/mina-foretag 0pe 0ce 0http 0key 0bad sv=40 -> #/spontanans%C3%B6kan/mina-foretag
+[engelska] /#/spontanans%C3%B6kan/statistik 0pe 0ce 0http 0key 0bad sv=40 -> #/spontanans%C3%B6kan/statistik
+[engelska] /#/n%C3%A4tverk 0pe 0ce 0http 0key 0bad sv=35 -> #/n%C3%A4tverk
+[engelska] /#/personal-brand 0pe 0ce 0http 0key 0bad sv=55 -> #/personal-brand
+[engelska] /#/personal-brand/pitch 0pe 0ce 0http 0key 0bad sv=44 -> #/personal-brand/pitch
+[engelska] /#/personal-brand/portfolio 0pe 0ce 0http 0key 0bad sv=43 -> #/personal-brand/portfolio
+[engelska] /#/personal-brand/visibility 0pe 0ce 0http 0key 0bad sv=95 -> #/personal-brand/visibility
+[engelska] /#/linkedin-optimizer 0pe 0ce 0http 0key 0bad sv=46 -> #/linkedin-optimizer
+[engelska] /#/skills-gap-analysis 0pe 0ce 0http 0key 0bad sv=42 -> #/skills-gap-analysis
+[engelska] /#/interview-simulator 0pe 0ce 0http 0key 0bad sv=49 -> #/interview-simulator
+[engelska] /#/ai-team 0pe 0ce 0http 0key 0bad sv=56 -> #/ai-team
+[engelska] /#/exercises 0pe 0ce 0http 0key 0bad sv=381 -> #/exercises
+[engelska] /#/international 0pe 0ce 0http 0key 0bad sv=64 -> #/international
+[engelska] /#/externa-resurser 0pe 0ce 0http 0key 0bad sv=70 -> #/externa-resurser
+[engelska] /#/print/cv 0pe 0ce 0http 0key 0bad sv=3 -> #/print/cv
+[engelska] /#/privacy 0pe 0ce 0http 0key 0bad sv=100 -> #/privacy
+[engelska] /#/terms 0pe 0ce 0http 0key 0bad sv=39 -> #/terms
+[engelska] /#/ai-policy 0pe 0ce 0http 0key 0bad sv=43 -> #/ai-policy
+[engelska] /#/tillganglighet 0pe 0ce 0http 0key 0bad sv=60 -> #/tillganglighet
+[inloggning deltagare-mork] landade på #/oversikt; dialoger: []
+[mork] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mork] /#/cv 0pe 0ce 0http 0key 0bad -> #/cv
+[mork] /#/jobb 0pe 0ce 0http 0key 0bad -> #/jobb
+[mork] /#/min-vardag 0pe 0ce 0http 0key 0bad -> #/min-vardag
+[mork] /#/job-search 0pe 0ce 0http 0key 0bad -> #/job-search
+[mork] /#/diary 0pe 0ce 0http 0key 0bad -> #/diary
+[mork] /#/settings 0pe 0ce 0http 0key 0bad -> #/settings
+[inloggning deltagare-mork-mobil] landade på #/oversikt; dialoger: ["Meny","Min profil"]
+[mork-mobil] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mork-mobil] /#/cv 0pe 0ce 0http 0key 0bad -> #/cv
+[mork-mobil] /#/min-vecka 0pe 0ce 0http 0key 0bad -> #/min-vecka
+
+KLART — 164 besök, 294 s → C:\Users\Mikael\Desktop\AI PROJEKT\deltagarportal\docs\review-2026-09-22\drift\resultat-mobil-engelska-mork.json

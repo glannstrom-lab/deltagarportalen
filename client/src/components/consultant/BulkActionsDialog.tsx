@@ -21,6 +21,7 @@ import {
   Phone,
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
+import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { consultantService } from '@/services/consultantService'
@@ -418,16 +419,21 @@ export function BulkActionsDialog({
 
   const Icon = getIcon()
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+  // Dialog ger role="dialog", aria-modal, Escape, fokusfälla och `inert` på
+  // bakgrunden. Före 2026-09-22 var rutan en vanlig div utan något av det.
+  // Medan en åtgärd körs går den inte att stänga (Avbryt är då också av).
+  const stang = () => {
+    if (!loading) onClose()
+  }
 
-      {/* Dialog */}
-      <div className="relative z-10 w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-xl">
+  return (
+    <Dialog
+      isOpen={isOpen}
+      onClose={stang}
+      labelledBy="bulk-actions-title"
+      overlayClassName="backdrop-blur-sm"
+      className="relative w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-xl"
+    >
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-3">
@@ -435,19 +441,21 @@ export function BulkActionsDialog({
               <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+              <h2 id="bulk-actions-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                 {getTitle()}
               </h2>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {selectedParticipants.length} {t('consultant.bulk.participantsSelected', 'deltagare valda')}
               </p>
             </div>
           </div>
           <button
-            onClick={onClose}
+            type="button"
+            onClick={stang}
+            aria-label={t('common.closeDialog')}
             className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
           >
-            <X className="w-5 h-5 text-stone-500" />
+            <X className="w-5 h-5 text-stone-500" aria-hidden="true" />
           </button>
         </div>
 
@@ -477,7 +485,7 @@ export function BulkActionsDialog({
                         ? 'kunde inte loggas'
                         : 'kunde inte uppdateras'}
                   </p>
-                  <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                     Resten gick igenom. Du kan försöka igen för de som är kvar.
                   </p>
                 </div>
@@ -629,7 +637,7 @@ export function BulkActionsDialog({
                             : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                         )}
                       >
-                        <format.icon className="w-6 h-6 mx-auto mb-2 text-stone-600 dark:text-stone-600" />
+                        <format.icon className="w-6 h-6 mx-auto mb-2 text-stone-600 dark:text-stone-400" />
                         <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
                           {format.label}
                         </p>
@@ -752,7 +760,6 @@ export function BulkActionsDialog({
             </Button>
           </div>
         )}
-      </div>
-    </div>
+    </Dialog>
   )
 }

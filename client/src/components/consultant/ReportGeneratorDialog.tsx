@@ -263,7 +263,7 @@ export function ReportGeneratorDialog({
               <h2 id="report-generator-dialog-title" className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.report.title', 'Generera PDF-rapport')}
               </h2>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {step === 'options'
                   ? t('consultant.report.configureOptions', 'Anpassa rapportinnehåll')
                   : t('consultant.report.previewReport', 'Förhandsgranska rapporten')}
@@ -377,7 +377,7 @@ export function ReportGeneratorDialog({
                 >
                   {effectivePeriodLabel}
                 </div>
-                <p className="text-xs text-stone-500 dark:text-stone-600 mt-1.5">
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5">
                   {periodLabel
                     ? t(
                         'consultant.report.dateRangeFromView',
@@ -462,12 +462,12 @@ export function ReportGeneratorDialog({
                               {section.title}
                             </p>
                             {section.required && (
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-600">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
                                 {t('common.required', 'Obligatorisk')}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-stone-500 dark:text-stone-600">
+                          <p className="text-sm text-stone-500 dark:text-stone-400">
                             {section.description}
                           </p>
                         </div>

@@ -4,7 +4,6 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import { savedJobsApi } from './jobsApi'
 import { applicationsApi } from './applicationsApi'
 import type { ApplicationStatus, ManualJobData } from '@/types/application.types'
 
@@ -54,37 +53,17 @@ export interface CreateApplicationResponse {
   }
 }
 
-export interface NextStep {
-  type: 'CREATE_CV' | 'SEARCH_JOBS' | 'CREATE_APPLICATION' | 'CONTINUE_SEARCH' | 'COMPLETE_PROFILE'
-  message: string
-  submessage?: string
-  action: { label: string; link: string }
-  secondaryAction?: { label: string; link: string }
-  icon: string
-  priority: 'high' | 'medium' | 'low'
-}
-
-export interface UserProgress {
-  hasCV: boolean
-  cvScore: number
-  savedJobsCount: number
-  savedJobsWithoutApplication: number
-  applicationsCount: number
-  recentApplications: number
-  coverLettersCount: number
-  lastActivity: string | null
-}
-
 interface CVWorkExperience {
   title: string
   description?: string
 }
 
 interface CVRecord {
-  title?: string
-  summary?: string
-  skills?: string[]
-  work_experience?: CVWorkExperience[]
+  title?: string | null
+  summary?: string | null
+  /** I prod objekt `{id,name,level,category}` — inte strängar (se CLAUDE.md 2026-08-03). */
+  skills?: Array<string | { name?: string | null }> | null
+  work_experience?: CVWorkExperience[] | null
 }
 
 // ============================================
@@ -149,27 +128,12 @@ export const workflowApi = {
       results.savedJobId = application.id
       results.trackerEntryId = application.id
 
-      // Step 2: Skapa personligt brev (om valt)
-      if (workflow.step2_letter.generateAI) {
-        const { data: coverLetter } = await supabase
-          .from('cover_letters')
-          .insert({
-            title: `Ansökan - ${jobData.headline}`,
-            job_ad: jobData.jobId,
-            company: jobData.employer,
-            job_title: jobData.headline,
-            content: workflow.step2_letter.content || this.generateDefaultCoverLetter(jobData),
-            ai_generated: true
-          })
-          .select()
-          .single()
-
-        if (coverLetter) {
-          results.coverLetterId = coverLetter.id
-          // Länka brevet till ansökan (best-effort — får inte stoppa flödet)
-          await applicationsApi.update(application.id, { coverLetterId: coverLetter.id }).catch(() => {})
-        }
-      }
+      // Steg 2 (brevet) raderat 2026-09-22. Grenen kördes bara när
+      // `step2_letter.generateAI` var sant, och modalen sätter den aldrig —
+      // "Skriv med AI" navigerar till /cover-letter i stället. Dessutom saknade
+      // insertet det NOT NULL:a `user_id` (kunde aldrig lyckas), och innehållet
+      // var en fast mall märkt `ai_generated: true` — en mall får aldrig
+      // märkas som AI.
 
       return {
         success: true,
@@ -179,22 +143,6 @@ export const workflowApi = {
       console.error('Fel vid skapande av ansökan:', error)
       throw new Error('Kunde inte skapa ansökan. Försök igen.')
     }
-  },
-
-  /**
-   * Generera ett standard personligt brev
-   */
-  generateDefaultCoverLetter(jobData: JobData): string {
-    return `Hej!
-
-Jag skriver med stort intresse angående tjänsten som ${jobData.headline} på ${jobData.employer}.
-
-Efter att ha läst om er verksamhet och tjänstbeskrivningen känner jag att mina kunskaper och erfarenheter skulle passa väl in i ert team. Jag är särskilt intresserad av möjligheten att bidra med mitt engagemang och mina kompetenser.
-
-Jag ser fram emot möjligheten att diskutera hur jag kan bidra till ${jobData.employer}s fortsatta framgång.
-
-Med vänliga hälsningar,
-[Mitt namn]`
   },
 
   /**
@@ -209,19 +157,33 @@ Med vänliga hälsningar,
    */
   async getCVMatchScore(jobData: JobData): Promise<number | null> {
     try {
-      const { data: cv } = await supabase
+      // 2026-09-22: frågan saknade user-filter. RLS på `cvs` släpper igenom
+      // aktiva deltagares CV för en konsulent, så `.maybeSingle()` fick flera
+      // rader (fel → null) eller EN DELTAGARES CV, som då visades som
+      // konsulentens egen "Din matchning". Samma fel som CreateApplicationModal.
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return null
+
+      const { data: cv, error } = await supabase
         .from('cvs')
-        .select('*')
-        .maybeSingle() as { data: CVRecord | null }
+        .select('title, summary, skills, work_experience')
+        .eq('user_id', user.id)
+        .maybeSingle() as { data: CVRecord | null; error: unknown }
 
-      if (!cv) return 0
+      if (error) throw error
+      // Inget CV = ingen matchning att räkna ut. `0` visades som "0 % match".
+      if (!cv) return null
 
-      // Enkel matchningsalgoritm baserat på nyckelord
+      // Enkel matchningsalgoritm baserat på nyckelord. Kompetenserna är objekt
+      // i prod — utan `.name` blev de "[object Object]" i texten.
+      const kompetenser = (cv.skills || []).map((k) => (typeof k === 'string' ? k : k?.name || ''))
       const cvText = [
         cv.title || '',
         cv.summary || '',
-        ...(cv.skills || []),
-        ...(cv.work_experience || []).map((e) => `${e.title} ${e.description || ''}`).join(' ')
+        ...kompetenser,
+        // Var `...(…).join(' ')` — spridningen av en STRÄNG gav enskilda tecken
+        // ("l a g e r"), så arbetslivserfarenheten matchade aldrig ett ord.
+        ...(cv.work_experience || []).map((e) => `${e.title} ${e.description || ''}`)
       ].join(' ').toLowerCase()
 
       const jobText = `${jobData.headline} ${jobData.description}`.toLowerCase()
@@ -229,6 +191,8 @@ Med vänliga hälsningar,
       // Extrahera viktiga ord (enkel implementation)
       const jobWords = jobText.split(/\s+/).filter(w => w.length > 4)
       const uniqueJobWords = [...new Set(jobWords)]
+      // Inga ord att jämföra = ingen siffra (annars 0/0 = NaN %).
+      if (uniqueJobWords.length === 0) return null
 
       const matchedWords = uniqueJobWords.filter(word => cvText.includes(word))
       const score = Math.min(95, Math.round((matchedWords.length / Math.min(uniqueJobWords.length, 20)) * 100))
@@ -241,210 +205,6 @@ Med vänliga hälsningar,
   }
 }
 
-// ============================================
-// NEXT STEP API
-// ============================================
-
-export const nextStepApi = {
-  /**
-   * Hämta användarens progress för nästa-steg analys
-   */
-  async getUserProgress(): Promise<UserProgress> {
-    try {
-      // Hämta CV
-      const { data: cv } = await supabase
-        .from('cvs')
-        .select('ats_score, updated_at')
-        .maybeSingle()
-
-      // E12 (2026-07-23): allt hämtas nu från applicationsApi (saved_jobs) —
-      // tidigare räknades ansökningar från den tomma/döda job_applications-
-      // tabellen (jobApplicationsApi), så applicationsCount/recentApplications
-      // var alltid 0 efter UX2-fixen. saved_jobs håller både sparade (status
-      // 'saved') och ansökta (status !== 'saved') rader.
-      const allApps = await applicationsApi.getAll()
-      const applications = allApps.filter(a => a.status !== 'saved')
-      const recentApps = applications.filter(a => {
-        const appDate = new Date(a.applicationDate || a.createdAt)
-        const weekAgo = new Date()
-        weekAgo.setDate(weekAgo.getDate() - 7)
-        return appDate >= weekAgo
-      })
-
-      // Hämta personliga brev
-      const { data: coverLetters } = await supabase
-        .from('cover_letters')
-        .select('id')
-
-      // Räkna sparade jobb utan ansökan
-      const jobsWithoutApplication = allApps.filter(a => a.status === 'saved').length
-
-      // Hämta senaste aktivitet
-      const lastActivity = cv?.updated_at ||
-        (allApps[0]?.createdAt) ||
-        null
-
-      return {
-        hasCV: !!cv,
-        cvScore: cv?.ats_score || 0,
-        savedJobsCount: allApps.length,
-        savedJobsWithoutApplication: jobsWithoutApplication,
-        applicationsCount: applications.length,
-        recentApplications: recentApps.length,
-        coverLettersCount: coverLetters?.length || 0,
-        lastActivity
-      }
-    } catch (error) {
-      console.error('Fel vid hämtning av progress:', error)
-      return {
-        hasCV: false,
-        cvScore: 0,
-        savedJobsCount: 0,
-        savedJobsWithoutApplication: 0,
-        applicationsCount: 0,
-        recentApplications: 0,
-        coverLettersCount: 0,
-        lastActivity: null
-      }
-    }
-  },
-
-  /**
-   * Beräkna nästa steg baserat på användarens progress
-   */
-  async getNextStep(): Promise<NextStep> {
-    const progress = await this.getUserProgress()
-
-    // Prioriteringsordning enligt spec
-    
-    // 1. Inget CV - högsta prioritet
-    if (!progress.hasCV) {
-      return {
-        type: 'CREATE_CV',
-        message: 'Varmt välkommen! Låt oss komma igång',
-        submessage: 'Ett bra CV är grunden för en framgångsrik jobbsökning',
-        action: { 
-          label: 'Skapa ditt första CV', 
-          link: '/cv' 
-        },
-        icon: '📝',
-        priority: 'high'
-      }
-    }
-
-    // 2. Låg CV-score - förbättra CV
-    if (progress.cvScore < 50) {
-      return {
-        type: 'COMPLETE_PROFILE',
-        message: 'Ditt CV kan bli ännu bättre!',
-        submessage: `Nuvarande poäng: ${progress.cvScore}/100. Lägg till mer information för att öka dina chanser.`,
-        action: { 
-          label: 'Förbättra CV:t', 
-          link: '/cv' 
-        },
-        icon: '✨',
-        priority: 'high'
-      }
-    }
-
-    // 3. Inga sparade jobb
-    if (progress.savedJobsCount === 0) {
-      return {
-        type: 'SEARCH_JOBS',
-        message: 'Bra jobbat med CV:t! Nu är det dags att hitta jobb',
-        submessage: 'Vi har tusentals jobb från Arbetsförmedlingen att välja mellan',
-        action: { 
-          label: 'Sök jobb', 
-          link: '/job-search' 
-        },
-        secondaryAction: {
-          label: 'Se matchade jobb för dig',
-          link: '/job-search?matched=true'
-        },
-        icon: '🔍',
-        priority: 'high'
-      }
-    }
-
-    // 4. Sparade jobb utan ansökan
-    if (progress.savedJobsWithoutApplication > 0) {
-      // Hämta första jobbet utan ansökan
-      const savedJobs = await savedJobsApi.getAll()
-      const firstUnapplied = savedJobs.find(j => j.status === 'SAVED')
-      // job_data är en lös post i radformen — läs rubriken defensivt (E12)
-      const firstHeadline = (firstUnapplied?.job_data?.headline as string | undefined) ?? ''
-      
-      return {
-        type: 'CREATE_APPLICATION',
-        message: `Du har ${progress.savedJobsWithoutApplication} sparade jobb utan ansökan`,
-        submessage: firstUnapplied 
-          ? `Börja med "${firstHeadline.substring(0, 40)}..."`
-          : 'Skicka din första ansökan idag!',
-        action: { 
-          label: firstUnapplied 
-            ? `Skapa ansökan för ${firstHeadline.substring(0, 30)}...`
-            : 'Skapa ansökan',
-          link: firstUnapplied 
-            ? `/dashboard/job-search?createApplication=${firstUnapplied.job_id}`
-            : '/applications'
-        },
-        secondaryAction: {
-          label: 'Se alla sparade jobb',
-          link: '/applications'
-        },
-        icon: '📨',
-        priority: 'high'
-      }
-    }
-
-    // 5. Aktiv sökare med nyligen skickade ansökningar
-    if (progress.recentApplications > 0) {
-      return {
-        type: 'CONTINUE_SEARCH',
-        message: `Du är på rätt väg! ${progress.recentApplications} ansökningar denna vecka.`,
-        submessage: 'Fortsätt momentumet och hitta fler intressanta jobb',
-        action: { 
-          label: 'Sök fler jobb', 
-          link: '/job-search' 
-        },
-        secondaryAction: {
-          label: 'Skriv i dagboken',
-          link: '/diary'
-        },
-        icon: '🎯',
-        priority: 'medium'
-      }
-    }
-
-    // 6. Har ansökningar men inga nyligen
-    if (progress.applicationsCount > 0) {
-      return {
-        type: 'CONTINUE_SEARCH',
-        message: 'Dags att skicka fler ansökningar!',
-        submessage: `Du har skickat ${progress.applicationsCount} ansökningar totalt.`,
-        action: { 
-          label: 'Fortsätt söka jobb', 
-          link: '/job-search' 
-        },
-        secondaryAction: {
-          label: 'Se dina ansökningar',
-          link: '/applications'
-        },
-        icon: '📊',
-        priority: 'medium'
-      }
-    }
-
-    // Default
-    return {
-      type: 'SEARCH_JOBS',
-      message: 'Redo för nästa steg i karriären?',
-      action: { 
-        label: 'Sök jobb', 
-        link: '/job-search' 
-      },
-      icon: '🚀',
-      priority: 'low'
-    }
-  }
-}
+// nextStepApi raderad 2026-09-22: noll anropare. Den läste `cvs` och
+// `cover_letters` utan user-filter (RLS släpper igenom deltagares rader för
+// en konsulent) och räknade `interested` som en skickad ansökan.

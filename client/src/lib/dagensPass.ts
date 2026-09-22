@@ -52,11 +52,36 @@ function idagISO(): string {
   return `${d.getFullYear()}-${m}-${dag}`
 }
 
+/**
+ * Dagens pass för den INLOGGADE KONSULENTENS egna planer.
+ *
+ * 2026-09-22 (drift-genomgången): frågan förlitade sig på RLS för urvalet.
+ * Men `activity_sessions` har också policyn "Organisationens chef läser pass"
+ * — en chef eller admin fick hela organisationens pass i sin "Min dag", med
+ * deltagare som inte finns i hennes lista (namnet blev "okänd") och
+ * närvaroknappar som UPDATE-policyn sedan nekar (bara planens egen konsulent
+ * får skriva, se ST2). Nu begränsas urvalet till planer där
+ * `activity_plans.consultant_id` är den inloggade — samma villkor som
+ * skrivpolicyn, så varje knapp som visas också fungerar.
+ */
 export async function hamtaDagensPass(): Promise<PassIdag[]> {
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+  if (userError) throw userError
+  if (!user) throw new Error('Inte inloggad')
+
+  const { data: planer, error: planFel } = await supabase
+    .from('activity_plans')
+    .select('id')
+    .eq('consultant_id', user.id)
+  if (planFel) throw planFel
+  const planIds = (planer ?? []).map((p: { id: string }) => p.id)
+  if (planIds.length === 0) return []
+
   const { data, error } = await supabase
     .from('activity_sessions')
     .select('id, participant_id, plan_id, date, start_time, end_time, title, attendance, self_checkin_at, absence_reason, absence_note')
     .eq('date', idagISO())
+    .in('plan_id', planIds)
     .order('start_time', { ascending: true })
   if (error) throw error
   return (data ?? []) as PassIdag[]

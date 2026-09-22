@@ -6,12 +6,16 @@ const markAttendance = vi.fn()
 let sessions: Array<Record<string, unknown>> = []
 let fel: { message: string } | null = null
 
+// lib/dagensPass.ts hämtar sedan 2026-09-22 bara pass ur den inloggade
+// konsulentens egna planer: auth.getUser → activity_plans → activity_sessions.
 vi.mock('@/lib/supabase', () => ({
   supabase: {
-    from: vi.fn(() => {
+    auth: { getUser: async () => ({ data: { user: { id: 'k1' } }, error: null }) },
+    from: vi.fn((tabell: string) => {
       const b: Record<string, unknown> = {}
       b.select = vi.fn(() => b)
-      b.eq = vi.fn(() => b)
+      b.eq = vi.fn(() => (tabell === 'activity_plans' ? Promise.resolve({ data: [{ id: 'pl' }], error: null }) : b))
+      b.in = vi.fn(() => b)
       b.order = vi.fn(() => Promise.resolve({ data: sessions, error: fel }))
       return b
     }),

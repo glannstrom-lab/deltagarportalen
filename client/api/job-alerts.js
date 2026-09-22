@@ -221,6 +221,16 @@ async function checkRateLimit(identifier, action) {
 // Arbetsförmedlingen API
 const AF_API_URL = 'https://jobsearch.api.jobtechdev.se/search';
 
+/**
+ * HTML-eskapering för allt i mejlmallarna som inte är vår egen text:
+ * bevakningsnamnet skriver användaren, annonsfälten kommer från AF.
+ * Samma funktion som aktivitet-mejl.js och pass-paminnelse.js (DE1).
+ * Vaktat av src/test/api-job-alerts-eskapering.test.ts.
+ */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 // Email templates
 const templates = {
   newJobsAlert: (alertName, jobs, _userEmail) => ({
@@ -237,19 +247,19 @@ const templates = {
   <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
     <div style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); padding: 30px; border-radius: 16px 16px 0 0;">
       <h1 style="color: white; margin: 0; font-size: 24px;">🔔 Nya jobbmatchningar</h1>
-      <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Din bevakning "${alertName}" har ${jobs.length} nya träffar</p>
+      <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">Din bevakning "${esc(alertName)}" har ${jobs.length} nya träffar</p>
     </div>
 
     <div style="background: white; padding: 20px; border-radius: 0 0 16px 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
       ${jobs.slice(0, 5).map(job => `
         <div style="border-bottom: 1px solid #e5e5e5; padding: 15px 0;">
-          <h3 style="margin: 0 0 5px 0; color: #1f2937;">${job.headline || job.title}</h3>
-          <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">${job.employer?.name || job.company}</p>
+          <h3 style="margin: 0 0 5px 0; color: #1f2937;">${esc(job.headline || job.title)}</h3>
+          <p style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">${esc(job.employer?.name || job.company)}</p>
           <p style="margin: 0; color: #9ca3af; font-size: 12px;">
-            📍 ${job.workplace_address?.municipality || job.location || 'Plats ej angiven'}
+            📍 ${esc(job.workplace_address?.municipality || job.location || 'Plats ej angiven')}
             ${job.publication_date ? ` • 📅 ${new Date(job.publication_date).toLocaleDateString('sv-SE')}` : ''}
           </p>
-          <a href="https://arbetsformedlingen.se/platsbanken/annonser/${job.id}"
+          <a href="https://arbetsformedlingen.se/platsbanken/annonser/${encodeURIComponent(String(job.id ?? ''))}"
              style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: #14b8a6; color: white; text-decoration: none; border-radius: 8px; font-size: 14px;">
             Läs mer →
           </a>
@@ -314,7 +324,7 @@ const templates = {
       ${alerts.map(alert => `
         <div style="border: 1px solid #e5e5e5; border-radius: 12px; padding: 15px; margin-bottom: 15px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h3 style="margin: 0; color: #1f2937; font-size: 16px;">🔔 ${alert.name}</h3>
+            <h3 style="margin: 0; color: #1f2937; font-size: 16px;">🔔 ${esc(alert.name)}</h3>
             <span style="background: ${alert.newJobs.length > 0 ? '#dcfce7' : '#f3f4f6'}; color: ${alert.newJobs.length > 0 ? '#166534' : '#6b7280'}; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">
               ${alert.newJobs.length} nya
             </span>
@@ -323,7 +333,7 @@ const templates = {
             <div style="margin-top: 10px;">
               ${alert.newJobs.slice(0, 2).map(job => `
                 <p style="margin: 5px 0; font-size: 14px; color: #4b5563;">
-                  • ${job.headline || job.title} - ${job.employer?.name || job.company}
+                  • ${esc(job.headline || job.title)} - ${esc(job.employer?.name || job.company)}
                 </p>
               `).join('')}
               ${alert.newJobs.length > 2 ? `<p style="margin: 5px 0; font-size: 12px; color: #9ca3af;">... och ${alert.newJobs.length - 2} fler</p>` : ''}
@@ -936,3 +946,5 @@ module.exports.shouldEmailToday = shouldEmailToday;
 module.exports.byggPortalnotis = byggPortalnotis;
 module.exports.tolkaMejlbrytare = tolkaMejlbrytare;
 module.exports.saknarAvsandare = saknarAvsandare;
+// Mejlmallarna — exponerade för src/test/api-job-alerts-eskapering.test.ts.
+module.exports.templates = templates;

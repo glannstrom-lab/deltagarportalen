@@ -16,6 +16,7 @@ import type { TFunction } from 'i18next'
 import type { SkillsAnalysis } from '@/services/careerApi'
 import type { Education } from '@/services/educationApi'
 import { antalKlara, kortDromjobb } from './dromjobb'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 export function laddaNerAnalys(
   analysis: SkillsAnalysis,
@@ -76,7 +77,7 @@ export function laddaNerAnalys(
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `${t('skillsGapAnalysis.download.filename')}-${new Date(analysis.created_at).toISOString().split('T')[0]}.txt`
+  a.download = `${t('skillsGapAnalysis.download.filename')}-${formatLocalDate(new Date(analysis.created_at))}.txt`
   a.click()
   // URL:en revokades aldrig — varje nedladdning läckte en blob tills fliken
   // stängdes.

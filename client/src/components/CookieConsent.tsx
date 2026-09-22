@@ -144,7 +144,7 @@ export function CookieConsent() {
                         {t('cookieConsent.analyticsDesc')}
                       </p>
                     </div>
-                    <button
+                    <button type="button" role="switch" aria-checked={preferences.analytics} aria-label={t('cookieConsent.analytics')}
                       onClick={() => setPreferences(p => ({ ...p, analytics: !p.analytics }))}
                       className={`w-10 h-6 rounded-full flex items-center px-1 transition-colors ${
                         preferences.analytics

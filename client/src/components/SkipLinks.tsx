@@ -23,12 +23,16 @@ import { useTranslation } from 'react-i18next';
 
 interface SkipLink {
   id: string;
-  label: string;
+  /** Färdig text — eller en i18n-nyckel i `labelKey`. */
+  label?: string;
+  labelKey?: string;
 }
 
+// Nycklar, inte text: länkarna stod på svenska i engelskt läge på varje sida
+// (driftgenomgången 2026-09-22, första tabbstoppet för en tangentbordsanvändare).
 const defaultLinks: SkipLink[] = [
-  { id: 'main-content', label: 'Hoppa till huvudinnehåll' },
-  { id: 'main-navigation', label: 'Hoppa till navigation' },
+  { id: 'main-content', labelKey: 'skipLinks.toMain' },
+  { id: 'main-navigation', labelKey: 'skipLinks.toNavigation' },
 ];
 
 /** Element som redan tar emot fokus utan tabindex. */
@@ -110,7 +114,7 @@ export function SkipLinks({ links = defaultLinks, className = '' }: SkipLinksPro
                 if (element) focusSkipTarget(element);
               }}
             >
-              {link.label}
+              {link.labelKey ? t(link.labelKey) : link.label}
             </a>
           </li>
         ))}

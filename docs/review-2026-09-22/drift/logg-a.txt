@@ -1,0 +1,144 @@
+[inloggning deltagare-desktop] landade på #/oversikt; dialoger: []
+[deltagare] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+[deltagare] /#/oversikt/historik 0pe 0ce 0http 0key 0bad -> #/oversikt/historik
+[deltagare] /#/jobb 0pe 0ce 0http 0key 0bad -> #/jobb
+[deltagare] /#/karriar 0pe 0ce 0http 0key 0bad -> #/karriar
+[deltagare] /#/resurser 0pe 0ce 0http 0key 0bad -> #/resurser
+[deltagare] /#/min-vardag 0pe 0ce 0http 0key 0bad -> #/min-vardag
+[deltagare] /#/cv 0pe 0ce 0http 0key 0bad -> #/cv
+[deltagare] /#/cv/my-cvs 0pe 0ce 0http 0key 0bad -> #/cv/my-cvs
+[deltagare] /#/cv/adapt 0pe 0ce 0http 0key 0bad -> #/cv/adapt
+[deltagare] /#/cv/ats 0pe 0ce 0http 0key 0bad -> #/cv/ats
+[deltagare] /#/cv/tips 0pe 0ce 0http 0key 0bad -> #/cv/tips
+[deltagare] /#/cover-letter 0pe 0ce 0http 0key 0bad -> #/cover-letter
+[deltagare] /#/cover-letter/my-letters 0pe 0ce 0http 0key 0bad -> #/cover-letter/my-letters
+[deltagare] /#/interest-guide 0pe 0ce 0http 0key 0bad -> #/interest-guide
+[deltagare] /#/interest-guide/results 0pe 0ce 0http 0key 0bad -> #/interest-guide/results
+[deltagare] /#/interest-guide/occupations 0pe 0ce 0http 0key 0bad -> #/interest-guide/occupations
+[deltagare] /#/interest-guide/explore 0pe 0ce 0http 0key 0bad -> #/interest-guide/explore
+[deltagare] /#/interest-guide/history 0pe 0ce 0http 0key 0bad -> #/interest-guide/history
+[deltagare] /#/knowledge-base 0pe 0ce 0http 0key 0bad -> #/knowledge-base
+[deltagare] /#/profile 0pe 0ce 0http 0key 0bad -> #/profile
+  [flik] ÖversiktAtt fylla i: 0pe 0ce 0http 0key 0bad
+  [flik] Jobbsökning: 0pe 0ce 0http 0key 0bad
+  [flik] Kompetenser: 0pe 0ce 0http 0key 0bad
+  [flik] Stöd & Mål: 0pe 0ce 0http 0key 0bad
+  [flik] Inställningar: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/my-consultant 0pe 0ce 0http 0key 0bad -> #/my-consultant
+[deltagare] /#/job-search 0pe 0ce 0http 0key 0bad -> #/job-search
+[deltagare] /#/job-search/daily 0pe 0ce 0http 0key 0bad -> #/job-search/daily
+[deltagare] /#/job-search/slumpjobbet 0pe 0ce 0http 0key 0bad -> #/job-search/slumpjobbet
+[deltagare] /#/job-search/saved 0pe 0ce 0http 0key 0bad -> #/job-search/saved
+[deltagare] /#/job-search/alerts 0pe 0ce 0http 0key 0bad -> #/job-search/alerts
+[deltagare] /#/job-search/matches 0pe 0ce 0http 0key 0bad -> #/job-search/matches
+[deltagare] /#/job-search/applications 0pe 0ce 0http 0key 0bad -> #/applications
+[deltagare] /#/job-search/crm 0pe 0ce 0http 0key 0bad -> #/applications/contacts
+[deltagare] /#/job-search/culture 0pe 0ce 0http 0key 0bad -> #/applications
+[deltagare] /#/applications 0pe 0ce 0http 0key 0bad -> #/applications
+[deltagare] /#/applications/timeline 0pe 0ce 0http 0key 0bad -> #/applications/timeline
+[deltagare] /#/applications/calendar 0pe 0ce 0http 0key 0bad -> #/applications/calendar
+[deltagare] /#/applications/contacts 0pe 0ce 0http 0key 0bad -> #/applications/contacts
+[deltagare] /#/applications/analytics 0pe 0ce 0http 0key 0bad -> #/applications/analytics
+[deltagare] /#/applications/aktivitetsrapport 0pe 0ce 0http 0key 0bad -> #/applications/aktivitetsrapport
+[deltagare] /#/career 0pe 0ce 0http 0key 0bad -> #/career
+[deltagare] /#/career/adaptation 0pe 0ce 0http 0key 0bad -> #/career/adaptation
+[deltagare] /#/career/credentials 0pe 0ce 0http 0key 0bad -> #/career/credentials
+[deltagare] /#/career/relocation 0pe 0ce 0http 0key 0bad -> #/career/relocation
+[deltagare] /#/career/plan 0pe 0ce 0http 0key 0bad -> #/career/plan
+[deltagare] /#/diary 0pe 0ce 0http 0key 0bad -> #/diary
+  [flik] Dagbok: 0pe 0ce 0http 0key 0bad
+  [flik] Humör: 0pe 0ce 0http 0key 0bad
+  [flik] Mål: 0pe 0ce 0http 0key 0bad
+  [flik] Tacksamhet: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/wellness 0pe 0ce 0http 0key 0bad -> #/wellness
+[deltagare] /#/wellness/routines 0pe 0ce 0http 0key 0bad -> #/wellness/routines
+[deltagare] /#/wellness/cognitive 0pe 0ce 0http 0key 0bad -> #/wellness/cognitive
+[deltagare] /#/wellness/crisis 0pe 0ce 0http 0key 0bad -> #/wellness/crisis
+[deltagare] /#/wellness/energy 0pe 0ce 0http 0key 0bad -> #/wellness
+[deltagare] /#/settings 0pe 0ce 0http 0key 0bad -> #/settings
+[deltagare] /#/resources 0pe 0ce 0http 0key 0bad -> #/resources
+  [flik] Allt (1): 0pe 0ce 0http 0key 0bad
+  [flik] Dokument (1): 0pe 0ce 0http 0key 0bad
+  [flik] Jobb: 0pe 0ce 0http 0key 0bad
+  [flik] Artiklar: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/help 0pe 0ce 0http 0key 0bad -> #/help
+[deltagare] /#/salary 0pe 0ce 0http 0key 0bad -> #/salary
+[deltagare] /#/education 0pe 0ce 0http 0key 0bad -> #/education
+  [flik] Alla utbildningsformer: 0pe 0ce 0http 0key 0bad
+  [flik] Arbetsmarknadsutbildning: 0pe 0ce 0http 0key 0bad
+  [flik] Folkhögskola: 0pe 0ce 0http 0key 0bad
+  [flik] Högskola/universitet: 0pe 0ce 0http 0key 0bad
+  [flik] Konst- och kulturutbildning: 0pe 0ce 0http 0key 0bad
+  [flik] Komvux: 0pe 0ce 0http 0key 0bad
+  [flik] Yrkeshögskola: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/calendar 0pe 0ce 0http 0key 0bad -> #/calendar
+  [flik] Månad: 0pe 0ce 0http 0key 0bad
+  [flik] Vecka: 0pe 0ce 0http 0key 0bad
+  [flik] Dag: 0pe 0ce 0http 0key 0bad
+  [flik] Agenda: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/min-vecka 0pe 0ce 0http 0key 0bad -> #/min-vecka
+[deltagare] /#/spontanans%C3%B6kan 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan
+[deltagare] /#/spontanans%C3%B6kan/mina-foretag 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan/mina-foretag
+[deltagare] /#/spontanans%C3%B6kan/statistik 0pe 0ce 0http 0key 0bad -> #/spontanans%C3%B6kan/statistik
+[deltagare] /#/n%C3%A4tverk 0pe 0ce 0http 0key 0bad -> #/n%C3%A4tverk
+[deltagare] /#/personal-brand 0pe 0ce 0http 0key 0bad -> #/personal-brand
+[deltagare] /#/personal-brand/pitch 0pe 0ce 0http 0key 0bad -> #/personal-brand/pitch
+[deltagare] /#/personal-brand/portfolio 0pe 0ce 0http 0key 0bad -> #/personal-brand/portfolio
+[deltagare] /#/personal-brand/visibility 0pe 0ce 0http 0key 0bad -> #/personal-brand/visibility
+[deltagare] /#/linkedin-optimizer 0pe 0ce 0http 0key 0bad -> #/linkedin-optimizer
+  [flik] Rubrik: 0pe 0ce 0http 0key 0bad
+  [flik] Om dig: 0pe 0ce 0http 0key 0bad
+  [flik] Inlägg: 0pe 0ce 0http 0key 0bad
+  [flik] Kontakt: 0pe 0ce 0http 0key 0bad
+  [flik] Checklista: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/skills-gap-analysis 0pe 0ce 0http 0key 0bad -> #/skills-gap-analysis
+[deltagare] /#/interview-simulator 0pe 0ce 0http 0key 0bad -> #/interview-simulator
+[deltagare] /#/ai-team 0pe 0ce 0http 0key 0bad -> #/ai-team
+[deltagare] /#/exercises 0pe 0ce 0http 0key 0bad -> #/exercises
+[deltagare] /#/international 0pe 0ce 0http 0key 0bad -> #/international
+[deltagare] /#/externa-resurser 0pe 0ce 0http 0key 0bad -> #/externa-resurser
+  [flik] Alla: 0pe 0ce 0http 0key 0bad
+  [flik] Hitta jobb: 0pe 0ce 0http 0key 0bad
+  [flik] Lärande: 0pe 0ce 0http 0key 0bad
+  [flik] Karriär: 0pe 0ce 0http 0key 0bad
+  [flik] Stöd: 0pe 0ce 0http 0key 0bad
+  [flik] Starta eget: 0pe 0ce 0http 0key 0bad
+[deltagare] /#/print/cv 0pe 0ce 0http 0key 0bad -> #/print/cv
+[deltagare] /#/admin 0pe 0ce 0http 0key 0bad -> #/oversikt
+[deltagare] /#/consultant 0pe 0ce 0http 0key 0bad -> #/oversikt
+[deltagare] /#/privacy 0pe 0ce 0http 0key 0bad -> #/privacy
+[deltagare] /#/terms 0pe 0ce 0http 0key 0bad -> #/terms
+[deltagare] /#/ai-policy 0pe 0ce 0http 0key 0bad -> #/ai-policy
+[deltagare] /#/tillganglighet 0pe 0ce 0http 0key 0bad -> #/tillganglighet
+[inloggning konsulent] landade på #/consultant; dialoger: []
+[konsulent] /#/consultant 0pe 0ce 0http 0key 0bad -> #/consultant
+[konsulent] /#/consultant/participants 0pe 0ce 0http 0key 0bad -> #/consultant/participants
+[konsulent] /#/consultant/platser 0pe 0ce 0http 0key 0bad -> #/consultant/platser
+[konsulent] /#/consultant/analytics 0pe 0ce 0http 0key 0bad -> #/consultant/analytics
+[konsulent] /#/consultant/communication 0pe 0ce 0http 0key 0bad -> #/consultant/communication
+[konsulent] /#/consultant/resources 0pe 0ce 0http 0key 0bad -> #/consultant/resources
+[konsulent] /#/consultant/settings 0pe 0ce 0http 0key 0bad -> #/consultant/settings
+[konsulent] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+  [flik] Översikt: 0pe 0ce 0http 0key 0bad
+  [flik] Aktivitet: 0pe 0ce 0http 0key 0bad
+  [flik] Mål: 0pe 0ce 0http 0key 0bad
+  [flik] Journal: 0pe 0ce 0http 0key 0bad
+  [flik] Tidslinje: 0pe 0ce 0http 0key 0bad
+[inloggning konsulent-mobil] landade på #/consultant; dialoger: ["Meny","Min profil"]
+[konsulent-mobil] /#/consultant 0pe 0ce 0http 0key 0bad -> #/consultant
+[konsulent-mobil] /#/consultant/participants 0pe 0ce 0http 0key 0bad -> #/consultant/participants
+[konsulent-mobil] /#/consultant/platser 0pe 0ce 0http 0key 0bad -> #/consultant/platser
+[konsulent-mobil] /#/consultant/analytics 0pe 0ce 0http 0key 0bad -> #/consultant/analytics
+[konsulent-mobil] /#/consultant/communication 0pe 0ce 0http 0key 0bad -> #/consultant/communication
+[konsulent-mobil] /#/consultant/resources 0pe 0ce 0http 0key 0bad -> #/consultant/resources
+[konsulent-mobil] /#/consultant/settings 0pe 0ce 0http 0key 0bad -> #/consultant/settings
+[konsulent-mobil] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+[inloggning konsulent-mork] landade på #/consultant; dialoger: []
+[konsulent-mork] /#/consultant 0pe 0ce 0http 0key 0bad -> #/consultant
+[konsulent-mork] /#/consultant/participants 0pe 0ce 0http 0key 0bad -> #/consultant/participants
+[konsulent-mork] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+[inloggning foretag] landade på #/foretag; dialoger: []
+[foretag] /#/foretag 0pe 0ce 0http 0key 0bad -> #/foretag
+[foretag] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+
+KLART — 142 besök, 304 s → C:\Users\Mikael\Desktop\AI PROJEKT\deltagarportal\docs\review-2026-09-22\drift\resultat-deltagare-konsulent-foretag.json

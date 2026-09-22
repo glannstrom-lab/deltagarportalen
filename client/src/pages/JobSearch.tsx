@@ -30,6 +30,7 @@ import {
   EmptyState,
   Card,
 } from '@/components/ui';
+import { arSparat } from '@/data/ansokningsstatus';
 import { MotionList } from '@/components/ui/MotionList';
 import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
@@ -1127,13 +1128,14 @@ function SearchTab() {
 function SavedJobsTab() {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
-  const { savedJobs, removeJob, updateJobStatus, isLoaded } = useSavedJobs();
+  const { savedJobs, removeJob, updateJobStatus, isLoaded, error: hamtfel, refresh } = useSavedJobs();
   const [filter] = useState<'all' | SavedJob['status']>('all');
   const [sortBy, setSortBy] = useState<'date' | 'company' | 'status'>('date');
 
-  // Filter to only show saved jobs (not applications)
+  // Bara sparade (inte sökta). `arSparat` tar med INTERESTED — med
+  // `=== 'saved'` syntes fyra rader i prod inte under Sparade (2026-09-22).
   const onlySaved = useMemo(() =>
-    savedJobs.filter(j => j.status === 'saved'),
+    savedJobs.filter(j => arSparat(j.status)),
     [savedJobs]
   );
 
@@ -1163,6 +1165,15 @@ function SavedJobsTab() {
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)] dark:border-[var(--c-solid)]" />
       </div>
+    );
+  }
+
+  // Ett hämtfel är inte "inga sparade jobb" — tre lägen: laddar / fel / klart.
+  if (hamtfel && savedJobs.length === 0) {
+    return (
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <ErrorState title={t('jobSearch.somethingWentWrong')} message={hamtfel} onRetry={() => { void refresh() }} />
+      </Card>
     );
   }
 
@@ -1317,7 +1328,7 @@ export default function JobSearch() {
   const headerStats = [
     {
       label: 'sparade',
-      value: savedJobs.filter(j => j.status === 'saved').length,
+      value: savedJobs.filter(j => arSparat(j.status)).length,
       icon: Bookmark,
       to: '/job-search/saved',
     },

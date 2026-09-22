@@ -58,4 +58,24 @@ function avgorSvar(utfall) {
   return { status: 200, larm: null };
 }
 
-module.exports = { avgorSvar };
+/**
+ * RFC 2606 / RFC 6761: domäner som per definition aldrig kan ta emot post.
+ * Demokonton och testkonton ligger på dem med flit. Resend svarar 422, och
+ * utan den här kontrollen räknades det som ett fel — varje kväll ett
+ * Sentry-larm från pass-paminnelse, och en kväll där demot var ensamt om ett
+ * pass blev det HTTP 500 ("samtliga utskick misslyckades"). Mejl-cronerna
+ * räknar dem som `reserverade`: överhoppade, inte fel.
+ * Vaktat av src/test/api-mejlcron-reserverade-domaner.test.ts.
+ *
+ * @param {unknown} epost
+ * @returns {boolean}
+ */
+function arReserveradAdress(epost) {
+  const m = /@([^@\s]+)$/.exec(String(epost || '').trim().toLowerCase());
+  if (!m) return false;
+  const doman = m[1].replace(/\.$/, '');
+  if (/(^|\.)example\.(com|org|net)$/.test(doman)) return true;
+  return /\.(test|example|invalid|localhost)$/.test(doman) || doman === 'localhost';
+}
+
+module.exports = { avgorSvar, arReserveradAdress };

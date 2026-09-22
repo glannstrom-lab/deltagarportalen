@@ -46,6 +46,7 @@ import { computePlacementMetric, followupStatus } from './placeringsmatt'
 // KK6: computeMonthlyProgress/calculateTrends/calculateGoalCategories utbrutna
 // ur den här filen 2026-09-02, samma grepp som gav cohorts.ts sina tester.
 import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, type TrendData } from './analytics'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface PlacementRow {
   id: string
@@ -546,7 +547,7 @@ export function AnalyticsTab() {
       setShowReportDialog(true)
     } else {
       // Export as Excel (CSV with tab separator)
-      const dateStr = new Date().toISOString().split('T')[0]
+      const dateStr = formatLocalDate(new Date())
       const dateRangeLabels = {
         week: t('consultant.analytics.export.week'),
         month: t('consultant.analytics.export.month'),
@@ -646,7 +647,7 @@ export function AnalyticsTab() {
             <option value="quarter">{t('consultant.analytics.dateRange.quarter')}</option>
             <option value="year">{t('consultant.analytics.dateRange.year')}</option>
           </select>
-          <button
+          <button aria-label="Uppdatera statistiken"
             onClick={() => fetchAnalytics()}
             className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
           >
@@ -715,7 +716,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.progressOverTime.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.progressOverTime.subtitle')}
               </p>
             </div>
@@ -737,7 +738,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.keyMetrics.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.keyMetrics.subtitle')}
               </p>
             </div>
@@ -783,7 +784,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.statusDistribution.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.statusDistribution.subtitle')}
               </p>
             </div>
@@ -818,7 +819,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.goalCategories.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.goalCategories.subtitle')}
               </p>
             </div>
@@ -865,7 +866,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.stuck.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.stuck.subtitle')}
               </p>
             </div>
@@ -906,7 +907,7 @@ export function AnalyticsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.analytics.effect.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('consultant.analytics.effect.subtitle')}
               </p>
             </div>
@@ -967,7 +968,7 @@ export function AnalyticsTab() {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               {t('consultant.analytics.cohortAnalysis.title')}
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               {t('consultant.analytics.cohortAnalysis.subtitle')}
             </p>
           </div>
@@ -1046,7 +1047,7 @@ export function AnalyticsTab() {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               Placeringar
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               Registrerade placeringar och deras uppföljning (3/6 månader)
             </p>
           </div>

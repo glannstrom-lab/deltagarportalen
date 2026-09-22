@@ -14,6 +14,7 @@ import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, get
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts'
+import { arGiltigtDokumentId, dokumentUrl } from './dokument.ts'
 
 // Per-user rate-limit: 30 anrop / 15 min. Bolagsverket-quota delas
 // projekt-globalt — utan per-user-limit kan en användare bränna alla
@@ -260,7 +261,8 @@ async function fetchDocumentList(orgNumber: string): Promise<object[]> {
 async function fetchDocument(dokumentId: string): Promise<{ data: ArrayBuffer; contentType: string }> {
   const token = await getAccessToken();
 
-  const url = `${BOLAGSVERKET_API_BASE}/dokument/${dokumentId}`;
+  // Kodat och validerat — se dokument.ts / dokument.test.ts.
+  const url = dokumentUrl(BOLAGSVERKET_API_BASE, dokumentId);
   console.log('[bolagsverket] Fetching document:', dokumentId);
 
   const response = await fetchMedTimeout(url, {
@@ -381,6 +383,15 @@ Deno.serve(medFelrapport('bolagsverket', async (req) => {
       if (!dokumentId) {
         return createCorsResponse(
           { error: 'Document ID is required' },
+          400,
+          origin
+        );
+      }
+      // 2026-09-22: id:t gick tidigare ovaliderat in i uppströms-URL:en och
+      // Content-Disposition. Se dokument.test.ts.
+      if (!arGiltigtDokumentId(dokumentId)) {
+        return createCorsResponse(
+          { error: 'Invalid document ID' },
           400,
           origin
         );

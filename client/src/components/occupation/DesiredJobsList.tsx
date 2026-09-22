@@ -105,7 +105,7 @@ export function DesiredJobsList({
                     ? 'bg-[var(--c-solid)] text-white'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300',
                 )}
-                aria-label={`Prioritet ${job.priority}`}
+                aria-label={t('occupation.desiredJobsList.priority', { priority: job.priority })}
               >
                 {job.priority}
               </span>
@@ -137,7 +137,7 @@ export function DesiredJobsList({
                 type="button"
                 onClick={() => handleMove(idx, -1)}
                 disabled={idx === 0}
-                aria-label={`Flytta ${job.label} uppåt`}
+                aria-label={t('occupation.desiredJobsList.moveUp', { label: job.label })}
                 className={cn(
                   'p-1 rounded transition-colors',
                   idx === 0
@@ -152,7 +152,7 @@ export function DesiredJobsList({
                 type="button"
                 onClick={() => handleMove(idx, 1)}
                 disabled={idx === ordered.length - 1}
-                aria-label={`Flytta ${job.label} nedåt`}
+                aria-label={t('occupation.desiredJobsList.moveDown', { label: job.label })}
                 className={cn(
                   'p-1 rounded transition-colors',
                   idx === ordered.length - 1
@@ -166,7 +166,7 @@ export function DesiredJobsList({
               <button
                 type="button"
                 onClick={() => handleRemove(idx)}
-                aria-label={`Ta bort ${job.label}`}
+                aria-label={t('occupation.desiredJobsList.remove', { label: job.label })}
                 className="p-1 rounded text-stone-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-600 dark:hover:text-rose-400 transition-colors"
               >
                 <X size={14} />
@@ -178,10 +178,10 @@ export function DesiredJobsList({
         <div className="mb-3 p-4 rounded-lg border border-dashed border-stone-200 dark:border-stone-700 text-center">
           <Briefcase size={20} className="mx-auto text-stone-400 mb-1" aria-hidden="true" />
           <p className="text-sm text-stone-600 dark:text-stone-400">
-            Inga önskade yrken tillagda än.
+            {t('occupation.desiredJobsList.empty')}
           </p>
           <p className="text-xs text-stone-500 dark:text-stone-500 mt-0.5">
-            Lägg till upp till {maxJobs} yrken i prioriteringsordning.
+            {t('occupation.desiredJobsList.emptyHint', { max: maxJobs })}
           </p>
         </div>
       )}
@@ -199,8 +199,8 @@ export function DesiredJobsList({
                 excludeConceptIds={ordered
                   .map((j) => j.conceptId)
                   .filter((id): id is string => Boolean(id))}
-                label={`Yrke nr ${ordered.length + 1} i din prioritering`}
-                placeholder="T.ex. lager, kock…"
+                label={t('occupation.desiredJobsList.pickerLabel', { n: ordered.length + 1 })}
+                placeholder={t('occupation.desiredJobsList.pickerPlaceholder')}
               />
               <div className="flex justify-end mt-2">
                 <button
@@ -208,7 +208,7 @@ export function DesiredJobsList({
                   onClick={() => setAdding(false)}
                   className="text-xs text-stone-500 hover:text-stone-700 dark:hover:text-stone-300 px-2 py-1"
                 >
-                  Avbryt
+                  {t('occupation.desiredJobsList.cancel')}
                 </button>
               </div>
             </div>
@@ -225,7 +225,7 @@ export function DesiredJobsList({
               )}
             >
               <Plus size={14} />
-              Lägg till yrke ({ordered.length}/{maxJobs})
+              {t('occupation.desiredJobsList.add', { count: ordered.length, max: maxJobs })}
             </button>
           )}
         </div>
@@ -233,15 +233,15 @@ export function DesiredJobsList({
 
       {!canAdd && (
         <p className="text-xs text-stone-500 dark:text-stone-400">
-          Du har lagt till maxantalet ({maxJobs}). Ta bort ett yrke för att lägga till ett nytt.
+          {t('occupation.desiredJobsList.maxReached', { max: maxJobs })}
         </p>
       )}
 
       {/* Footer hint */}
       {ordered.length > 0 && (
         <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-          Yrken högst upp prioriteras i jobbmatchningen.
-          {ordered.some((j) => !j.conceptId) && ' Yrken med ⚠ är fritext och matchas inte exakt.'}
+          {t('occupation.desiredJobsList.orderHint')}
+          {ordered.some((j) => !j.conceptId) && ` ${t('occupation.desiredJobsList.freeTextHint')}`}
         </p>
       )}
     </div>

@@ -21,7 +21,7 @@
  */
 const { createClient } = require('@supabase/supabase-js');
 const { medFelrapport, skickaHandelse, tolkaDsn } = require('./_utils/sentry.js');
-const { avgorSvar } = require('./_utils/mejlutfall.js');
+const { avgorSvar, arReserveradAdress } = require('./_utils/mejlutfall.js');
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
 // Service role krävs: notifications och profiles läses för andra användare.
@@ -141,7 +141,7 @@ const hanterare = async (req, res) => {
   if (error) return res.status(500).json({ error: `Kunde inte läsa påminnelser: ${error.message}` });
 
   const kandidater = (notiser || []).filter((n) => !(n.data && n.data.mail_sent));
-  const utfall = { lästa: (notiser || []).length, kandidater: kandidater.length, skickade: 0, avstängda: 0, utanEpost: 0, fel: 0, ejMarkerade: 0 };
+  const utfall = { lästa: (notiser || []).length, kandidater: kandidater.length, skickade: 0, avstängda: 0, utanEpost: 0, reserverade: 0, fel: 0, ejMarkerade: 0 };
 
   for (const n of kandidater) {
     const [profilSvar, prefSvar] = await Promise.all([
@@ -161,6 +161,9 @@ const hanterare = async (req, res) => {
     if (!skaMejla(prefSvar.data)) { utfall.avstängda++; continue; }
     const till = profil && profil.email;
     if (!till) { utfall.utanEpost++; continue; }
+    // Demo-/testkonton på RFC 2606-domäner: Resend svarar 422, och det är
+    // inte ett driftfel. Se arReserveradAdress() i _utils/mejlutfall.js.
+    if (arReserveradAdress(till)) { utfall.reserverade++; continue; }
 
     const { html, text } = byggMejl(n, siteUrl);
     try {

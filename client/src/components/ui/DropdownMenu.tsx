@@ -81,6 +81,13 @@ export function DropdownMenuTrigger({
   // Piltangent nedåt öppnar menyn och flyttar fokus in i den (samma mönster
   // som DropdownMenuContent nedan använder för att flytta fokus vid öppning).
   const handleKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key === 'Escape' && isOpen) {
+      // Samma skäl som i DropdownMenuContent: nå inte en omgivande dialog.
+      e.preventDefault()
+      e.stopPropagation()
+      setIsOpen(false)
+      return
+    }
     if (e.key === 'ArrowDown' && !isOpen) {
       e.preventDefault()
       setTriggerEl(e.currentTarget)
@@ -163,6 +170,21 @@ export function DropdownMenuContent({
 
   // Piltangenter flyttar fokus mellan menyalternativen (roving focus).
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    // Escape stoppas HÄR. Lyssnaren på document nedan är bara reserv för när
+    // fokus inte ligger i menyn. En dialog runt menyn lyssnar också på
+    // document — utan stoppet stängde ett Esc både menyn och dialogen.
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
+      closeAndFocusTrigger()
+      return
+    }
+    // Tab lämnar menyn (APG: menyn stängs, fokus går vidare som vanligt).
+    // Utan detta blev menyn hängande öppen bakom fokus.
+    if (e.key === 'Tab') {
+      close()
+      return
+    }
     if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
     const items = Array.from(
       ref.current?.querySelectorAll<HTMLElement>('[role="menuitem"]:not(:disabled)') ?? []

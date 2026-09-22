@@ -5,6 +5,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { createLogger } from '@/lib/logger'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 // supabase-importen borttagen 2026-07-27 (H5): hooken rör inte längre
 // databasen — inspelningen laddas ner lokalt, inget lagras i molnet.
 
@@ -217,7 +218,7 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = filename || `intervju-inspelning-${new Date().toISOString().split('T')[0]}.webm`
+    a.download = filename || `intervju-inspelning-${formatLocalDate(new Date())}.webm`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)

@@ -22,8 +22,14 @@ import { useTranslation } from 'react-i18next'
 
 export const BRAND = 'Jobin'
 
-/** Titeln i index.html — används för landningen och som sista utväg. */
+/**
+ * Titeln i index.html — används för landningen och som sista utväg.
+ * Svensk reservtext; visas översatt via `pageTitles.default` (2026-09-22 —
+ * var hårdkodad, så en engelsk användare fick svensk flik- och
+ * skärmläsartitel på landningen och på varje okänd rutt).
+ */
 export const DEFAULT_TITLE = 'Jobin — verktyg och stöd för dig som söker jobb'
+const DEFAULT_TITLE_KEY = 'pageTitles.default'
 
 export interface PageTitleRule {
   /** Path som regeln äger. Matchar exakt eller som förälder till en underrutt. */
@@ -43,23 +49,24 @@ export interface PageTitleRule {
  */
 export const PAGE_TITLE_RULES: PageTitleRule[] = [
   // Roten: inloggad omdirigeras direkt till /oversikt, utloggad ser landningen.
-  { path: '/', sv: DEFAULT_TITLE, exact: true },
+  { path: '/', key: DEFAULT_TITLE_KEY, sv: DEFAULT_TITLE, exact: true },
 
   // Publika sidor
-  { path: '/login', sv: 'Logga in' },
-  { path: '/register', sv: 'Skapa konto' },
-  { path: '/invite', sv: 'Inbjudan' },
-  { path: '/privacy', sv: 'Integritetspolicy' },
-  { path: '/terms', sv: 'Användarvillkor' },
-  { path: '/ai-policy', sv: 'AI-policy' },
-  { path: '/tillganglighet', sv: 'Tillgänglighet' },
-  { path: '/accessibility', sv: 'Tillgänglighet' },
+  // Nycklarna nedan fanns redan (inloggning, sidfot, policysidor) — återanvända.
+  { path: '/login', key: 'auth.login', sv: 'Logga in' },
+  { path: '/register', key: 'landing.footer.createAccount', sv: 'Skapa konto' },
+  { path: '/invite', key: 'pageTitles.invite', sv: 'Inbjudan' },
+  { path: '/privacy', key: 'privacy.title', sv: 'Integritetspolicy' },
+  { path: '/terms', key: 'terms.title', sv: 'Användarvillkor' },
+  { path: '/ai-policy', key: 'landing.footer.aiPolicy', sv: 'AI-policy' },
+  { path: '/tillganglighet', key: 'settings.accessibility.title', sv: 'Tillgänglighet' },
+  { path: '/accessibility', key: 'settings.accessibility.title', sv: 'Tillgänglighet' },
   { path: '/template-snapshot', sv: 'CV-mall' },
   { path: '/print/cv', sv: 'Utskrift av CV' },
-  { path: '/profile/shared', sv: 'Delad profil' },
+  { path: '/profile/shared', key: 'pageTitles.sharedProfile', sv: 'Delad profil' },
 
   // Hubbar
-  { path: '/oversikt/historik', sv: 'Din historik' },
+  { path: '/oversikt/historik', key: 'pageTitles.history', sv: 'Din historik' },
   { path: '/oversikt', key: 'nav.hubs.oversikt', sv: 'Översikt' },
   { path: '/jobb', key: 'nav.hubs.jobb', sv: 'Söka jobb' },
   { path: '/karriar', key: 'nav.hubs.karriar', sv: 'Karriär' },
@@ -85,7 +92,7 @@ export const PAGE_TITLE_RULES: PageTitleRule[] = [
   { path: '/education', key: 'nav.education', sv: 'Utbildningar' },
 
   // Resurser
-  { path: '/knowledge-base/article', sv: 'Artikel' },
+  { path: '/knowledge-base/article', key: 'article.title', sv: 'Artikel' },
   { path: '/knowledge-base', key: 'nav.knowledgeBase', sv: 'Kunskapsbank' },
   { path: '/resources', key: 'nav.myDocuments', sv: 'Dina dokument' },
   { path: '/externa-resurser', key: 'nav.externalResources', sv: 'Externa resurser' },
@@ -150,12 +157,12 @@ interface PageTitle {
 export function usePageTitle(pathname: string): PageTitle {
   const { t } = useTranslation()
   const rule = resolvePageTitleRule(pathname)
-  const pageName = rule
-    ? rule.key
-      ? t(rule.key, { defaultValue: rule.sv })
-      : rule.sv
-    : DEFAULT_TITLE
-  return { pageName, documentTitle: formatDocumentTitle(pageName) }
+  const key = rule ? rule.key : DEFAULT_TITLE_KEY
+  const sv = rule ? rule.sv : DEFAULT_TITLE
+  const pageName = key ? t(key, { defaultValue: sv }) : sv
+  // Standardtiteln bär redan varumärket — på vilket språk den än står.
+  const arStandard = key === DEFAULT_TITLE_KEY
+  return { pageName, documentTitle: arStandard ? pageName : formatDocumentTitle(pageName) }
 }
 
 /** Sätter `document.title` och returnerar samma värden som `usePageTitle`. */

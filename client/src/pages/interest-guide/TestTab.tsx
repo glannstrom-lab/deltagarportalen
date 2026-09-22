@@ -562,7 +562,7 @@ export default function TestTab() {
       <div className="mt-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-800 rounded-full border border-stone-200 dark:border-stone-700 text-xs text-gray-500 dark:text-gray-400">
           <span>{t('interestGuide.test.questionInSection', { current: questionInSectionIndex + 1, total: currentSectionQuestions.length })}</span>
-          <span className="text-stone-300 dark:text-stone-600">|</span>
+          <span className="text-stone-300 dark:text-stone-500">|</span>
           <span>{oversattSektion?.name}</span>
         </div>
       </div>

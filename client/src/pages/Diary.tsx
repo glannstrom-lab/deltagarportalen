@@ -126,9 +126,11 @@ function DiaryInner() {
     navigate(`/diary?tab=${tab}`, { replace: true })
   }
 
-  // F6: bara Mood rör hälsodata (mood/energi) och kräver samtycke.
-  // Journal (en ren textrad utan mood ifyllt), Goals och Gratitude skriver
-  // till andra tabeller/RLS-vägar och ska inte behöva blockeras av grinden.
+  // F6: bara Mood-fliken har grinden i UI:t. OBS (rättat 2026-09-22): det
+  // stod här att Journal inte kräver samtycke. Det stämmer inte mot prod —
+  // varje INSERT i `diary_entries` kräver wellness-samtycke i RLS (MV2), så
+  // en dagboksanteckning utan samtycke nekas av databasen. JournalTab måste
+  // alltså visa det felet begripligt; grinden här är inte hela sanningen.
   const renderTabContent = () => {
     switch (activeTab) {
       case 'journal':

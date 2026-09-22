@@ -83,11 +83,14 @@ export function MinDagSection({ meetings, deadlines, contacts, onMessage, onLogC
 
   const isEmpty = meetings.length === 0 && deadlines.length === 0 && contacts.length === 0
 
-  const today = new Date().toLocaleDateString('sv-SE', {
+  // Stor bokstav bara först ("Tisdag 22 september"). CSS-klassen `capitalize`
+  // versaliserade varje ord, även månaden — "Tisdag 22 September" (drift 2026-09-22).
+  const datum = new Date().toLocaleDateString('sv-SE', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
   })
+  const today = datum.charAt(0).toUpperCase() + datum.slice(1)
 
   return (
     <Card>
@@ -97,7 +100,7 @@ export function MinDagSection({ meetings, deadlines, contacts, onMessage, onLogC
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('consultant.overview.myDay.title')}
           </h3>
-          <span className="text-sm text-stone-500 dark:text-stone-400 capitalize">— {today}</span>
+          <span className="text-sm text-stone-500 dark:text-stone-400">— {today}</span>
         </div>
       </div>
 

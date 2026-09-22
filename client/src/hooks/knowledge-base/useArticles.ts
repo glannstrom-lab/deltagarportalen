@@ -29,6 +29,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { articleApi } from '@/services/supabaseApi'
 import type { Article } from '@/types/knowledge'
 
@@ -43,8 +44,13 @@ const ARTICLES_KEY = 'articles'
  * och visa ett felläge; `data` blir `undefined`, inte en påhittad lista.
  */
 export function useArticles() {
+  // Språket MÅSTE ingå i nyckeln: `dbArticleToEnhanced` väljer title/title_en
+  // när raden hämtas. Utan det låg de svenska titlarna kvar i fem minuter
+  // (staleTime) efter ett byte till engelska (drift-genomgången 2026-09-22).
+  const { i18n } = useTranslation()
+  const sprak = i18n.language?.startsWith('en') ? 'en' : 'sv'
   return useQuery<Article[]>({
-    queryKey: [ARTICLES_KEY],
+    queryKey: [ARTICLES_KEY, sprak],
     queryFn: () => articleApi.getAll(),
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,

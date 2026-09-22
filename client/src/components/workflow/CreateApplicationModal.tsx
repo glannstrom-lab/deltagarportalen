@@ -217,7 +217,7 @@ export function CreateApplicationModal({
               {job.headline}
             </p>
           </div>
-          <button
+          <button aria-label={t('common.close')}
             onClick={onClose}
             className="p-2 hover:bg-stone-100 rounded-full transition-colors"
           >

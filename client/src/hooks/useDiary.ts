@@ -32,6 +32,14 @@ export const WRITING_PROMPTS_KEY = ['writing-prompts'] as const
 
 const STALE_TIME = 60_000
 
+/*
+ * 2026-09-22: queryFn:erna nedan fångade tidigare varje fel och returnerade
+ * `[]`/`null` ("tabellerna kanske inte finns än" — de har funnits sedan
+ * mars). Ett läsfel såg därmed ut som en tom dagbok. Nu når felet React
+ * Query, och varje hook exponerar `isError` + `retry` så flikarna kan visa
+ * tre lägen: laddar / fel / klart. Tomt är bara tomt när svaret är inne.
+ */
+
 // ============================================
 // DIARY ENTRIES HOOK
 // ============================================
@@ -41,16 +49,7 @@ export function useDiaryEntries() {
 
   const query = useQuery({
     queryKey: DIARY_ENTRIES_KEY,
-    // Fel sväljs precis som tidigare — tabellerna kanske inte finns än
-    queryFn: async (): Promise<DiaryEntry[]> => {
-      try {
-        const data = await diaryEntriesApi.getAll()
-        return data || []
-      } catch (err) {
-        console.warn('Could not load diary entries:', err)
-        return []
-      }
-    },
+    queryFn: (): Promise<DiaryEntry[]> => diaryEntriesApi.getAll(),
     staleTime: STALE_TIME,
   })
 
@@ -64,12 +63,14 @@ export function useDiaryEntries() {
     await queryClient.invalidateQueries({ queryKey: DIARY_ENTRIES_KEY })
   }, [queryClient])
 
+  /** Returnerar utfallet — `ok: false` betyder att inget sparades. */
   const createEntry = async (entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
-    const newEntry = await diaryEntriesApi.create(entry)
-    if (newEntry) {
+    const utfall = await diaryEntriesApi.skapa(entry)
+    if (utfall.ok) {
+      const newEntry = utfall.entry
       setEntries(prev => [newEntry, ...prev])
     }
-    return newEntry
+    return utfall
   }
 
   const updateEntry = async (id: string, updates: Partial<DiaryEntry>) => {
@@ -103,13 +104,11 @@ export function useDiaryEntries() {
     return results
   }
 
-  // error sattes aldrig i gamla hooken ("tables might not exist yet")
-  const error: string | null = null
-
   return {
     entries,
     isLoading: query.isLoading,
-    error,
+    isError: query.isError,
+    retry: refresh,
     createEntry,
     updateEntry,
     deleteEntry,
@@ -134,16 +133,14 @@ export function useMoodLogs() {
   const query = useQuery({
     queryKey: MOOD_LOGS_KEY,
     queryFn: async (): Promise<MoodLogsData> => {
-      try {
-        const [allLogs, today] = await Promise.all([
-          moodLogsApi.getAll(30).catch(() => []),
-          moodLogsApi.getToday().catch(() => null)
-        ])
-        return { logs: allLogs || [], todayMood: today }
-      } catch (err) {
-        console.warn('Could not load mood logs:', err)
-        return { logs: [], todayMood: null }
-      }
+      // `.catch(() => null)` på dagens humör var det farligaste: TodayLogger
+      // startade då på standardvärdena och "Spara" skrev över dagens riktiga
+      // rad (upsert på user_id,log_date) med dem.
+      const [allLogs, today] = await Promise.all([
+        moodLogsApi.getAll(30),
+        moodLogsApi.getToday()
+      ])
+      return { logs: allLogs, todayMood: today }
     },
     staleTime: STALE_TIME,
   })
@@ -174,17 +171,14 @@ export function useMoodLogs() {
     return await moodLogsApi.getByDateRange(startDate, endDate)
   }
 
-  // Calculate statistics
+  // Snitt utan underlag är `null`, inte 0 — "0.0/5" påstod att man mått så
+  // dåligt det går att må, för någon som aldrig loggat.
+  const snitt = (varden: number[]): number | null =>
+    varden.length > 0 ? varden.reduce((a, b) => a + b, 0) / varden.length : null
   const stats = {
-    averageMood: logs.length > 0
-      ? logs.reduce((sum, l) => sum + l.mood_level, 0) / logs.length
-      : 0,
-    averageEnergy: logs.filter(l => l.energy_level).length > 0
-      ? logs.filter(l => l.energy_level).reduce((sum, l) => sum + (l.energy_level || 0), 0) / logs.filter(l => l.energy_level).length
-      : 0,
-    averageStress: logs.filter(l => l.stress_level).length > 0
-      ? logs.filter(l => l.stress_level).reduce((sum, l) => sum + (l.stress_level || 0), 0) / logs.filter(l => l.stress_level).length
-      : 0,
+    averageMood: snitt(logs.map(l => l.mood_level)),
+    averageEnergy: snitt(logs.map(l => l.energy_level).filter((v): v is number => !!v)),
+    averageStress: snitt(logs.map(l => l.stress_level).filter((v): v is number => !!v)),
     totalLogs: logs.length
   }
 
@@ -192,6 +186,8 @@ export function useMoodLogs() {
     logs,
     todayMood,
     isLoading: query.isLoading,
+    isError: query.isError,
+    retry: refresh,
     logMood,
     getByDateRange,
     stats,
@@ -208,15 +204,7 @@ export function useWeeklyGoals() {
 
   const query = useQuery({
     queryKey: WEEKLY_GOALS_KEY,
-    queryFn: async (): Promise<WeeklyGoal[]> => {
-      try {
-        const data = await weeklyGoalsApi.getCurrentWeek()
-        return data || []
-      } catch (err) {
-        console.warn('Could not load weekly goals:', err)
-        return []
-      }
-    },
+    queryFn: (): Promise<WeeklyGoal[]> => weeklyGoalsApi.getCurrentWeek(),
     staleTime: STALE_TIME,
   })
 
@@ -274,6 +262,8 @@ export function useWeeklyGoals() {
   return {
     goals,
     isLoading: query.isLoading,
+    isError: query.isError,
+    retry: refresh,
     createGoal,
     toggleComplete,
     addReflection,
@@ -300,16 +290,11 @@ export function useGratitude() {
   const query = useQuery({
     queryKey: GRATITUDE_ENTRIES_KEY,
     queryFn: async (): Promise<GratitudeData> => {
-      try {
-        const [allEntries, today] = await Promise.all([
-          gratitudeApi.getAll(30).catch(() => []),
-          gratitudeApi.getToday().catch(() => null)
-        ])
-        return { entries: allEntries || [], todayEntry: today }
-      } catch (err) {
-        console.warn('Could not load gratitude entries:', err)
-        return { entries: [], todayEntry: null }
-      }
+      const [allEntries, today] = await Promise.all([
+        gratitudeApi.getAll(30),
+        gratitudeApi.getToday()
+      ])
+      return { entries: allEntries, todayEntry: today }
     },
     staleTime: STALE_TIME,
   })
@@ -352,6 +337,8 @@ export function useGratitude() {
     entries,
     todayEntry,
     isLoading: query.isLoading,
+    isError: query.isError,
+    retry: refresh,
     createEntry,
     updateEntry,
     hasLoggedToday: !!todayEntry,
@@ -368,15 +355,7 @@ export function useDiaryStreaks() {
 
   const query = useQuery({
     queryKey: DIARY_STREAKS_KEY,
-    queryFn: async (): Promise<DiaryStreaks | null> => {
-      try {
-        return await diaryStreaksApi.get()
-      } catch (err) {
-        // Silently handle - tables might not exist yet
-        console.warn('Could not load diary streaks:', err)
-        return null
-      }
-    },
+    queryFn: (): Promise<DiaryStreaks | null> => diaryStreaksApi.get(),
     staleTime: STALE_TIME,
   })
 
@@ -386,9 +365,12 @@ export function useDiaryStreaks() {
     await queryClient.invalidateQueries({ queryKey: DIARY_STREAKS_KEY })
   }, [queryClient])
 
+  // `?? 0` nedan är ärligt bara när svaret är inne: ingen rad = inget skrivet.
+  // Vid läsfel är talen okända — anroparen ska läsa `isError` först.
   return {
     streaks,
     isLoading: query.isLoading,
+    isError: query.isError,
     currentStreak: streaks?.current_streak ?? 0,
     longestStreak: streaks?.longest_streak ?? 0,
     totalEntries: streaks?.total_entries ?? 0,

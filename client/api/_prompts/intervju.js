@@ -55,7 +55,18 @@ Ge kort feedback på svaret, betygsätt det 1-5 om det går att bedöma, och st�
       return {
         system: 'Du är rekryterare som intervjuar kandidater på svenska i en övningsintervju. SANNINGSREGEL: du vet ingenting om personen. Ställ en öppen fråga — hitta aldrig på att hon har en viss erfarenhet, utbildning eller egenskap, och formulera aldrig frågan så att den förutsätter något om henne.',
         user: `Starta en övningsintervju för rollen ${data?.roll}${data?.foretag ? ' på ' + data.foretag : ''}.${kategoriRad} Ställ en bra öppningsfråga. Svara ENDAST med frågan, inget annat.`,
-        maxTokens: 200,
+        // 2026-09-22: var 200, och första frågan gav 502 "No response from AI"
+        // för riktiga användare. Den låsta modellen RESONERAR först, och
+        // tänkandet ryms i samma budget som svaret — loggarna visade 225+
+        // resonemangstokens före en enda synlig token. Samma fälla som
+        // CV-importen (se _prompts/cv.js, `cv-import-erfarenhet`). Frågan
+        // själv är ~40 tokens; 900 ger tänkandet gott om plats och
+        // `reasoningEffort: 'low'` håller det kort — det finns inget att
+        // resonera om i att ställa en öppningsfråga. Sänk inte: svaret blir
+        // inte kortare, det försvinner. Vaktat av
+        // src/test/api-prompt-budget.test.ts.
+        maxTokens: 900,
+        reasoningEffort: 'low',
         responseKey: 'resultat'
       }
     }

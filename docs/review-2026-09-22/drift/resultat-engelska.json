@@ -1,0 +1,3462 @@
+{
+  "kord": "2026-09-22T21:24:13.806Z",
+  "sekunder": 192,
+  "resultat": [
+    {
+      "korning": "inloggning",
+      "rutt": "deltagare-en",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hej Dana",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/oversikt",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1533,
+      "hash": "#/oversikt",
+      "pathname": "/",
+      "h1": "Hi Dana",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Du är nu på Översikt",
+          "el": "div.sr-only"
+        },
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/oversikt/historik",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1525,
+      "hash": "#/oversikt/historik",
+      "pathname": "/",
+      "h1": "History",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/jobb",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1530,
+      "hash": "#/jobb",
+      "pathname": "/",
+      "h1": "Hi Dana · Find and apply for jobs",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/karriar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/karriar",
+      "pathname": "/",
+      "h1": "Hi Dana · Plan my career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/resurser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1539,
+      "hash": "#/resurser",
+      "pathname": "/",
+      "h1": "Hi Dana · Your saved resources",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/min-vardag",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/min-vardag",
+      "pathname": "/",
+      "h1": "Hi Dana · Your everyday life",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cv",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1509,
+      "hash": "#/cv",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [
+        "Steg 1 av 7Välkommen till CV-byggaren!Här skapar du ett professionellt CV på nolltid. Jag guidar dig"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Modern layout med mörk sidopanel för kontakt och kompetenser",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Tidlös",
+          "el": "span.text-xs.px-2.py-1.bg-stone-100.dark:bg-stone-800.text-stone-600 in main"
+        },
+        {
+          "text": "Fokus på innehåll",
+          "el": "span.text-xs.px-2.py-1.bg-stone-100.dark:bg-stone-800.text-stone-600 in main"
+        },
+        {
+          "text": "Magenta-accent med kort-baserad två-kolumns layout",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Mörk sidopanel med cirkulärt foto och timeline-prickar",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Mörk sidopanel",
+          "el": "span.text-xs.px-2.py-1.bg-stone-100.dark:bg-stone-800.text-stone-600 in main"
+        },
+        {
+          "text": "Cirkulärt foto",
+          "el": "span.text-xs.px-2.py-1.bg-stone-100.dark:bg-stone-800.text-stone-600 in main"
+        },
+        {
+          "text": "Editorial premium på cream-bakgrund med Crimson Pro serif och teal-accent",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Executive med mörk navy-sidebar, copper-accent och Playfair Display",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Bauhaus-inspirerad editorial — cream/svart med rödorange accent och romersk numrering",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.mb-3 in main"
+        },
+        {
+          "text": "Så skriver du en sammanfattning som fångar intresse",
+          "el": "h4.font-medium.text-stone-900.text-[13px].leading-snug.group-hover:text-[var(--c-text)].transition-colors in main"
+        },
+        {
+          "text": "Lär dig hur du skapar en stark öppning som gör rekryterare nyfikna på att läsa mer.",
+          "el": "p.text-xs.text-stone-700.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "Få ditt CV att passera automatiska screening-system och nå fram till rekryteraren.",
+          "el": "p.text-xs.text-stone-700.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "De vanligaste fällorna som får CV:n att hamna i papperskorgen - och hur du slipper undan.",
+          "el": "p.text-xs.text-stone-700.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "Välkommen till CV-byggaren!",
+          "el": "h2#cv-onboarding-title.text-2xl.font-bold.text-stone-800.dark:text-stone-100.mb-3 in div{dialog}"
+        },
+        {
+          "text": "Här skapar du ett professionellt CV på nolltid. Jag guidar dig genom processen.",
+          "el": "p.text-stone-600.dark:text-stone-400.mb-6.leading-relaxed in div{dialog}"
+        },
+        {
+          "text": "Allt sparas automatiskt, så du kan alltid fortsätta senare.",
+          "el": "p.text-sm.text-[var(--c-text)] in div{dialog}"
+        },
+        {
+          "text": "Hoppa över",
+          "el": "button.px-4.py-2.text-stone-700.dark:text-stone-300.hover:text-stone-700.dark:hover:text-stone-100 in div{dialog}"
+        },
+        {
+          "text": "Nästa",
+          "el": "button.flex.items-center.gap-1.px-6.py-2.bg-[var(--c-solid)] in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Sidokolumn\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Centrerad\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Minimal\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Kreativ\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Executive\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Nordisk\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Budapest\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Rotterdam\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Chicago\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Atelier\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Manhattan\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "alt=\"Förhandsvisning av mallen Berlin\"",
+          "el": "img.block.w-full.h-64.object-cover.object-top in main"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 1 av 7: Välkommen till CV-byggaren!\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-[var(--c-solid)] in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 2 av 7: Välj design\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 3 av 7: Fyll i dina uppgifter\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 4 av 7: Skriv en sammanfattning\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 5 av 7: Lägg till erfarenhet\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 6 av 7: Lista dina kompetenser\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        },
+        {
+          "text": "aria-label=\"Gå till steg 7 av 7: Förhandsgranska och exportera\"",
+          "el": "button.w-2.h-2.rounded-full.transition-colors.bg-stone-200.dark:bg-stone-700 in div{dialog}"
+        }
+      ],
+      "svenskaAntal": 40,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cv/my-cvs",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1527,
+      "hash": "#/cv/my-cvs",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cv/adapt",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/cv/adapt",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cv/ats",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/cv/ats",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cv/tips",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/cv/tips",
+      "pathname": "/",
+      "h1": "CV",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cover-letter",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1509,
+      "hash": "#/cover-letter",
+      "pathname": "/",
+      "h1": "Cover letter",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [
+        {
+          "text": "We don't know anything about you yet, so we didn't let the AI write — it would have had to guess. Instead you get a skeleton with {{count}} blanks to fill in with your own words. Fill in your CV and w",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400 in main"
+        }
+      ],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Klassisk och tidlös design för de flesta branscher",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "Ren och luftig med färgaccent",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "Enkel och fokuserad utan överflöd",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "Formell med serif-typsnitt för ledningspositioner",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.mt-1.line-clamp-2 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 6,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/cover-letter/my-letters",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1525,
+      "hash": "#/cover-letter/my-letters",
+      "pathname": "/",
+      "h1": "Cover letter",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interest-guide",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/interest-guide",
+      "pathname": "/",
+      "h1": "Interest Guide",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Detta får du",
+          "el": "h2.font-semibold.text-gray-900.mb-4.flex.items-center.gap-2 in main"
+        },
+        {
+          "text": "Hur du beskriver dig själv på fem personlighetsdrag",
+          "el": "span.text-sm.text-gray-700 in main"
+        },
+        {
+          "text": "Dina egna svar om vad som fungerar bra och mindre bra för dig i arbete",
+          "el": "span.text-sm.text-gray-700 in main"
+        },
+        {
+          "text": "Förslag bland 165 yrken, med anpassningar att prata vidare om",
+          "el": "span.text-sm.text-gray-700 in main"
+        },
+        {
+          "text": "frågor",
+          "el": "span.text-xs.text-gray-400 in main"
+        },
+        {
+          "text": "Hur skulle du beskriva dig själv?",
+          "el": "p.text-xs.text-gray-500 in main"
+        },
+        {
+          "text": "frågor",
+          "el": "span.text-xs.text-gray-400 in main"
+        },
+        {
+          "text": "Intresseområden",
+          "el": "h3.font-medium.text-gray-900.text-sm in main"
+        },
+        {
+          "text": "Vad tycker du är intressant?",
+          "el": "p.text-xs.text-gray-500 in main"
+        },
+        {
+          "text": "frågor",
+          "el": "span.text-xs.text-gray-400 in main"
+        },
+        {
+          "text": "Dina förutsättningar",
+          "el": "h3.font-medium.text-gray-900.text-sm in main"
+        },
+        {
+          "text": "frågor",
+          "el": "span.text-xs.text-gray-400 in main"
+        },
+        {
+          "text": "Vad det här är, och inte är",
+          "el": "h2.font-semibold.text-stone-900.dark:text-stone-100.mb-2.flex.items-center in main"
+        },
+        {
+          "text": "Frågorna är skrivna av oss och inspirerade av tre etablerade ramverk: Hollands yrkesvalsteori (RIASEC), femfaktormodellen och WHO:s sätt att beskriva funktion i",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "Det är ingen psykologisk testning och ingen bedömning av dig.",
+          "el": "strong in main"
+        },
+        {
+          "text": "Det är dina egna svar, sammanställda så att du får något att utgå från — i ett samtal med din konsulent, eller för egen del. Ett annat svar en annan dag ger ett",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "frågor totalt",
+          "el": "span in main"
+        },
+        {
+          "text": "Dina svar sparas automatiskt så du kan pausa och fortsätta när du vill.",
+          "el": "p.text-xs.text-center.text-gray-400.mt-6 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 20,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interest-guide/results",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/interest-guide/results",
+      "pathname": "/",
+      "h1": "Interest Guide",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interest-guide/occupations",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/interest-guide/occupations",
+      "pathname": "/",
+      "h1": "Interest Guide",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interest-guide/explore",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/interest-guide/explore",
+      "pathname": "/",
+      "h1": "Interest Guide",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interest-guide/history",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/interest-guide/history",
+      "pathname": "/",
+      "h1": "Interest Guide",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/knowledge-base",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/knowledge-base",
+      "pathname": "/",
+      "h1": "Knowledge Base",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "lön",
+          "el": "a.inline-flex.items-center.min-h-[44px].px-3.rounded-full.border in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/profile",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1527,
+      "hash": "#/profile",
+      "pathname": "/",
+      "h1": "Dana Deltagare",
+      "dialog": [
+        "Welcome!This is your profile - a tool that helps you move forward in your job search. Take it at you"
+      ],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Inga önskade yrken tillagda än.",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Lägg till upp till",
+          "el": "p.text-xs.text-stone-500.dark:text-stone-500.mt-0.5 in main"
+        },
+        {
+          "text": "Lägg till yrke (",
+          "el": "button.w-full.flex.items-center.justify-center.gap-1.5.px-3 in main"
+        },
+        {
+          "text": "Inga tillagda ännu",
+          "el": "p.-mt-3.mb-3.text-xs.text-stone-400.dark:text-stone-500.italic in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 6,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/my-consultant",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1555,
+      "hash": "#/my-consultant",
+      "pathname": "/",
+      "h1": "My Consultant",
+      "dialog": [],
+      "laddarKvar": true,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1537,
+      "hash": "#/job-search",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Lägg till yrke",
+          "el": "label.block.text-sm.font-medium.text-stone-700.dark:text-stone-300.mb-1.5 in main"
+        },
+        {
+          "text": "Strukturerad matchning mot Arbetsförmedlingens taxonomi — bredare än fritext.",
+          "el": "p.text-xs.text-stone-500.dark:text-stone-400.mt-1 in main"
+        },
+        {
+          "text": "Erfaren barnskötare vikariat Björnbodaskolan",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Stockholm – vår huvudstad med miljoner drömmar, förväntningar och ambitioner. Vi jobbar för alla som lever här idag och i framtiden. Nu söker vi dig som vill tä",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Gruppchef - led ett team i en samhällsviktig och komplex fastighetsmiljö",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Är du en trygg och engagerande ledare? Vill du kombinera teknik, ledarskap, kunddialog och verksamhetsutveckling i en miljö där ditt arbete gör verklig skillnad",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Sjuksköterska till centralort",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Västerviks kommun",
+          "el": "span.truncate in main"
+        },
+        {
+          "text": "Västervik",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Kommunal primärvård\r\n\r\n\nVi söker nu en sjuksköterska till vår arbetsgrupp i Centralort/Västervik.\nDina arbetsuppgifter\nSom sjuksköterska hos oss träffar du dina",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Tillsvidareanställning (inkl. eventuell provanställning)",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Tycker du om att ha många bollar i luften? Trivs du med att ha en tät kundkontakt och göra scheman? Har du lätt att se mönster och hålla koll på siffror? Då är ",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Hemstädare i Västerås",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Städhem i Västerås AB",
+          "el": "span.truncate in main"
+        },
+        {
+          "text": "Tillsvidareanställning (inkl. eventuell provanställning)",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Städhem växer och vi söker nu dig som vill vara med och skapa rena, trivsamma hem för våra kunder.\nHos oss arbetar du självständigt i våra kunders hem, där du h",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Nässjö",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Tillsvidareanställning (inkl. eventuell provanställning)",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "DET HÄR ÄR VI\nEtt tyg kan ge en gammal fåtölj nytt liv, sätta tonen för en hel hotellobby eller behöva klara specifika krav i en sjukhusmiljö. På Nevotex har vi",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Hagvidson Kil söker Barnskötare timvikariat",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Behovsanställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "HAGVIDSON Kil söker glada & kreativa timvikarier\nOmfattning: Deltid\nVaraktighet: 12 månader - upp till 2 år\nAnställningsform: Behovsanställning\nAntal jobb: 3\nSå",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Vi söker medarbetare inom lager !",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Vill du arbeta i en varierande lagerroll tillsammans med ett engagerat team? Då kan du vara den vi söker!\nNu börjar hösten närma sig och vi letar efter dig som ",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Lagerarbetare sökes till kund i Malmö!",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Om tjänsten\nVi söker nu flertalet medarbetare till vår kund i Malmö. Vi söker dig som har någon form av lagervana innan - eller som är ny till branschen som vil",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Behovsanställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Kan du få en helt vanlig morgon att bli lite magisk? Frukostdoft, nybryggt kaffe och gäster som börjar sin dag hos oss – det är din scen. Vi söker en frukostkoc",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Brandman, sommarvikariat hos Uppsala brandförsvar",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Välkommen till Uppsala brandförsvar. Vi ansvarar för räddningstjänst, brandtillsyn, tillstånd och tillsyn gällande brandfarliga och explosiva varor samt informa",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Ledsagare sökes till tjej i nedre tonåren",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Sjöbo kommun",
+          "el": "span.truncate in main"
+        },
+        {
+          "text": "Sjöbo",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Våra 1300 medarbetare spelar en viktig roll för Sjöbos utveckling och välfärd. Vi strävar kontinuerligt efter att bli en mer attraktiv och jämlik arbetsgivare, ",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Järfälla",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Tillsvidareanställning (inkl. eventuell provanställning)",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Har du erfarenhet inom förvaltning, leverantörskontakter och ekonomisk uppföljning? Låter en blandning mellan operativt och strategiskt arbete som det bästa av ",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Ekonomi- och löneadministratör",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Dina arbetsuppgifter\n\r\nSom ekonomi- och löneadministratör får du en bred och varierad roll där du arbetar med företagets löpande ekonomi- och personaladministra",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Lärare i Matematik och NO till Korsbackaskolan i Kävlinge kommun",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Kävlinge kommun",
+          "el": "span.truncate in main"
+        },
+        {
+          "text": "Kävlinge",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Vill du arbeta på en skola där relationellt ledarskap, tillgänglig undervisning och kollegialt lärande är en del av vardagen – inte bara ord?\nKorsbackaskolan sö",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Svetsare sökes till vår kund i Höör",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Höör",
+          "el": "span.truncate.max-w-[150px].sm:max-w-none in main"
+        },
+        {
+          "text": "Vanlig anställning",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "Vi söker en erfaren och noggrann svetsare för kunds räkning i Höör. Du kommer att arbeta med svetsning av olika typer av detaljer i en praktisk och varierad ver",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        },
+        {
+          "text": "Taxichaufför",
+          "el": "button.text-left.line-clamp-2.hover:underline.focus:outline-none.rounded in main"
+        },
+        {
+          "text": "Tillsvidareanställning (inkl. eventuell provanställning)",
+          "el": "span.px-2.py-0.5.bg-stone-100.dark:bg-stone-700.rounded.text-stone-600 in main"
+        },
+        {
+          "text": "SES AB är ett av de företag som länge har varit anslutna till weride, Uber, Bolt och egna beställning central i Stockholm. Företaget har många bilar i trafik oc",
+          "el": "p.text-stone-600.dark:text-stone-400.mt-3.line-clamp-2.text-sm.hidden in main"
+        }
+      ],
+      "svenskaAntal": 70,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/daily",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1534,
+      "hash": "#/job-search/daily",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/slumpjobbet",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/job-search/slumpjobbet",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Student sökes till lager oc…",
+          "el": "text in main"
+        },
+        {
+          "text": "Jobba på lager i Gävle",
+          "el": "text in main"
+        },
+        {
+          "text": "Vi söker truckförare till u…",
+          "el": "text in main"
+        },
+        {
+          "text": "Terminalarbetare på deltid",
+          "el": "text in main"
+        },
+        {
+          "text": "Lagerarbetare / Truckförare…",
+          "el": "text in main"
+        },
+        {
+          "text": "Lagerarbetare till läkemede…",
+          "el": "text in main"
+        },
+        {
+          "text": "Studenter sökes för lagerjo…",
+          "el": "text in main"
+        },
+        {
+          "text": "Truckförare - Norr om Ängel…",
+          "el": "text in main"
+        },
+        {
+          "text": "Student sökes till lager, t…",
+          "el": "text in main"
+        },
+        {
+          "text": "Lagerpersonal i Lund sökes",
+          "el": "text in main"
+        },
+        {
+          "text": "Lagerarbetare sökes till ku…",
+          "el": "text in main"
+        },
+        {
+          "text": "Truckförare till kund i Bål…",
+          "el": "text in main"
+        },
+        {
+          "text": "Vi söker medarbetare inom l…",
+          "el": "text in main"
+        },
+        {
+          "text": "Leveransmottagare/Lokalvård…",
+          "el": "text in main"
+        },
+        {
+          "text": "Vi söker lagerabetare till…",
+          "el": "text in main"
+        },
+        {
+          "text": "Orderplockare/Truckförare",
+          "el": "text in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 18,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/saved",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/job-search/saved",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/alerts",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1522,
+      "hash": "#/job-search/alerts",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/matches",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1539,
+      "hash": "#/job-search/matches",
+      "pathname": "/",
+      "h1": "Job search",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Truckförare | Läkemedelsindustri | Extrajobb | Helsingborg",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Studerande lagermedarbetare till lager i Staffanstorp sökes!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Håbo",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Produktionsplanerare till högteknologisk tillverkningsmiljö",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Ekonomiadministratör till vår kund i Umeå",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Uthyrare  bostäder i Storstockholm",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Kundsupport till Sollentuna Energi & Miljö!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Executive Assistant till långsiktigt uppdrag",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Pensionsspecialist med fokus på kundservice och handläggning",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "OIO Väst AB",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Extrajobb i kundservice: Bli en del av Bokus inför Black Week och Jul!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Ekonomiassistenter på deltid sökes inför kommande uppdrag!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Kommun/nämndsekreterare till Värmland sökes för kort uppdrag",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "REGION JÖNKÖPINGS LÄN",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Processoperatör till kund inom läkemedelsindustrin",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Sida söker avdelningsadministratör",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Polsktalande trafikledare till nordvästra Skåne",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Vikariera i praktiska ämnen, idrott, slöjd och musik",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "OnePartnerGroup Väst AB",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Lagerarbete hos kund i Falkenberg  - Behovsanställning",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Omgående extrajobb varannan lördag Merchandiser/godisplock Täby, Cloetta",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Däcktekniker till Euromaster i Hisings backa!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Fonus söker Kundrådgivare till Stockholm syd",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Fonus, ekonomisk förening",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Drift-och underhållstekniker",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Mjölby- Svartådalen Energi AB",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Mjölby",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Leveransmottagare/Lokalvårdare 6h/vecka | Lernia | Norrköping",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Lagerarbetare till läkemedelslager",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "VÄSTRA GÖTALANDSREGIONEN",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Järfälla",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Student sökes till lager, truckkort kan erbjudas!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Sjönära Restauranger XX AB",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Teamledare till lagerverksamhet - Upplands Väsby",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Upplands Väsby",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Teamledare till lagerverksamhet - Märsta",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Packexpert sökes till vår kund i Tyresö",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Tyresö",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Arbetsledare till lagerverksamhet - Upplands Väsby",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Upplands Väsby",
+          "el": "p.text-sm.text-stone-700.dark:text-stone-300.flex.items-center.gap-1 in main"
+        },
+        {
+          "text": "Vi söker medarbetare inom lager !",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Lagerarbetare sökes till kund i Malmö!",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "Vi söker lagerabetare till vår kund i Brunna",
+          "el": "h3.font-semibold.text-stone-900.dark:text-stone-100.line-clamp-2.mb-1 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 45,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/applications",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1526,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/crm",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1513,
+      "hash": "#/applications/contacts",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/job-search/culture",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1528,
+      "hash": "#/applications",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications/timeline",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1532,
+      "hash": "#/applications/timeline",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications/calendar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1531,
+      "hash": "#/applications/calendar",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications/contacts",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1529,
+      "hash": "#/applications/contacts",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications/analytics",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1528,
+      "hash": "#/applications/analytics",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/applications/aktivitetsrapport",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/applications/aktivitetsrapport",
+      "pathname": "/",
+      "h1": "Your job applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/career",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/career",
+      "pathname": "/",
+      "h1": "Career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Patientvård",
+          "el": "span in main"
+        },
+        {
+          "text": "Hälso- och sjukvård — 6 284 open positions",
+          "el": "span.text-xs.font-normal.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Hälso- och sjukvård — 6 284 open positions",
+          "el": "span.text-xs.font-normal.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Omvårdnad",
+          "el": "span in main"
+        },
+        {
+          "text": "Hälso- och sjukvård — 6 284 open positions",
+          "el": "span.text-xs.font-normal.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Försäljning",
+          "el": "span in main"
+        },
+        {
+          "text": "Försäljning, inköp, marknadsföring — 4 320 open positions",
+          "el": "span.text-xs.font-normal.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Försäljning, inköp, marknadsföring — 4 320 open positions",
+          "el": "span.text-xs.font-normal.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Grundutbildade sjuksköterskor",
+          "el": "span in main"
+        },
+        {
+          "text": "Företagssäljare",
+          "el": "span in main"
+        },
+        {
+          "text": "Städare",
+          "el": "span in main"
+        },
+        {
+          "text": "Stockholms län",
+          "el": "div.text-sm.text-stone-700.dark:text-stone-300.mt-0.5 in main"
+        },
+        {
+          "text": "Västra Götalands län",
+          "el": "div.text-sm.text-stone-700.dark:text-stone-300.mt-0.5 in main"
+        },
+        {
+          "text": "Skåne län",
+          "el": "div.text-sm.text-stone-700.dark:text-stone-300.mt-0.5 in main"
+        },
+        {
+          "text": "County (län)",
+          "el": "label.text-sm.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 17,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/career/adaptation",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1525,
+      "hash": "#/career/adaptation",
+      "pathname": "/",
+      "h1": "Career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/career/credentials",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1540,
+      "hash": "#/career/credentials",
+      "pathname": "/",
+      "h1": "Career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "YKB — yrkesförarkompetens",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "HLR och första hjälpen",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "HLR-rådet",
+          "el": "p.text-xs.text-gray-600.dark:text-gray-400 in main"
+        },
+        {
+          "text": "Brandskyddsföreningen",
+          "el": "p.text-xs.text-gray-600.dark:text-gray-400 in main"
+        },
+        {
+          "text": "Delegering läkemedel",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "Arbetsgivare i vården",
+          "el": "p.text-xs.text-gray-600.dark:text-gray-400 in main"
+        },
+        {
+          "text": "Väktarutbildning (VU1)",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "Auktoriserat bevakningsföretag",
+          "el": "p.text-xs.text-gray-600.dark:text-gray-400 in main"
+        },
+        {
+          "text": "B-körkort",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "SFI — svenska för invandrare",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "Grundläggande datorkunskap",
+          "el": "p.font-medium.text-gray-800.dark:text-gray-100.text-sm.truncate in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 13,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/career/relocation",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1516,
+      "hash": "#/career/relocation",
+      "pathname": "/",
+      "h1": "Career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "5–15 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "3–8 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "2–5 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "4–10 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–3 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–3 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–2 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–3 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–2 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "1–2 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "0–1 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "0–1 år",
+          "el": "td.py-2.px-2.text-stone-700.dark:text-stone-300 in main"
+        },
+        {
+          "text": "The rents and queue times here are rough estimates entered by hand on 2026-08-21. They do not come from Hyresgästföreningen, SCB or any housing queue — use them",
+          "el": "p in main"
+        },
+        {
+          "text": "Hyresgästföreningen",
+          "el": "a.text-[var(--c-text)].underline in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 16,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/career/plan",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1602,
+      "hash": "#/career/plan",
+      "pathname": "/",
+      "h1": "Career",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/diary",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1528,
+      "hash": "#/diary",
+      "pathname": "/",
+      "h1": "Diary",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Vem inspirerar dig och varför?",
+          "el": "p.text-stone-700.dark:text-stone-200.leading-relaxed in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/wellness",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/wellness",
+      "pathname": "/",
+      "h1": "Wellness",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/wellness/routines",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/wellness/routines",
+      "pathname": "/",
+      "h1": "Wellness",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/wellness/cognitive",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1536,
+      "hash": "#/wellness/cognitive",
+      "pathname": "/",
+      "h1": "Wellness",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/wellness/crisis",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1532,
+      "hash": "#/wellness/crisis",
+      "pathname": "/",
+      "h1": "Wellness",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "En enkel andningsövning kan lugna din nervösa system. Det tar bara några minuter.",
+          "el": "p.text-gray-600.dark:text-gray-300.mb-6 in main"
+        },
+        {
+          "text": "Om du mår dåligt kan det vara värdefullt att berätta för din arbetskonsulent. De kan anpassa ditt program eller ge extra stöd under denna tid.",
+          "el": "p.text-amber-800.dark:text-amber-300.mb-4 in main"
+        },
+        {
+          "text": "Kom ihåg: Det är helt okej att inte må bra. Du är inte ensam i det här. Hjälpen finns här när du behöver den.",
+          "el": "p.text-[var(--c-text)].dark:text-[var(--c-text)].font-medium in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 5,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/wellness/energy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1541,
+      "hash": "#/wellness",
+      "pathname": "/",
+      "h1": "Wellness",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/settings",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/settings",
+      "pathname": "/",
+      "h1": "Settings",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/resources",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1508,
+      "hash": "#/resources",
+      "pathname": "/",
+      "h1": "Your saved resources",
+      "dialog": [],
+      "laddarKvar": true,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/help",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1538,
+      "hash": "#/help",
+      "pathname": "/",
+      "h1": "Help & Support",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/salary",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/salary",
+      "pathname": "/",
+      "h1": "Salary & Negotiation",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "SCB Lönesök",
+          "el": "a.text-sm.font-medium.text-[var(--c-text)].dark:text-[var(--c-text)].underline.inline-flex in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/education",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1532,
+      "hash": "#/education",
+      "pathname": "/",
+      "h1": "Education",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Högskola/universitet",
+          "el": "span.min-w-0.truncate in nav[Education — avsnitt]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/calendar",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1535,
+      "hash": "#/calendar",
+      "pathname": "/",
+      "h1": "Calendar",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/min-vecka",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/min-vecka",
+      "pathname": "/",
+      "h1": "My week",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "You are now on Jobin — verktyg och stöd för dig som söker jobb",
+          "el": "div.sr-only"
+        },
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Next: Jobbsökarverkstad, Wednesday 23 September at 09:00",
+          "el": "p.mt-2.text-sm.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to your handläggare (case officer) for försörjnin",
+          "el": "p.text-sm.text-stone-600.dark:text-stone-400 in main"
+        },
+        {
+          "text": "Jobbsökarverkstad",
+          "el": "h3.font-medium.text-stone-900.dark:text-stone-100 in main"
+        },
+        {
+          "text": "Jobbsökarverkstad",
+          "el": "h3.font-medium.text-stone-900.dark:text-stone-100 in main"
+        },
+        {
+          "text": "Jobbsökarverkstad",
+          "el": "h3.font-medium.text-stone-900.dark:text-stone-100 in main"
+        },
+        {
+          "text": "Jobbsökarverkstad",
+          "el": "h3.font-medium.text-stone-900.dark:text-stone-100 in main"
+        },
+        {
+          "text": "Jobbsökarverkstad",
+          "el": "h3.font-medium.text-stone-900.dark:text-stone-100 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 10,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/spontanans%C3%B6kan",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/spontanans%C3%B6kan",
+      "pathname": "/",
+      "h1": "Speculative applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/spontanans%C3%B6kan/mina-foretag",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/spontanans%C3%B6kan/mina-foretag",
+      "pathname": "/",
+      "h1": "Speculative applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/spontanans%C3%B6kan/statistik",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1523,
+      "hash": "#/spontanans%C3%B6kan/statistik",
+      "pathname": "/",
+      "h1": "Speculative applications",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/n%C3%A4tverk",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1522,
+      "hash": "#/n%C3%A4tverk",
+      "pathname": "/",
+      "h1": "Network",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/personal-brand",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1580,
+      "hash": "#/personal-brand",
+      "pathname": "/",
+      "h1": "How you come across",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/personal-brand/pitch",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/personal-brand/pitch",
+      "pathname": "/",
+      "h1": "How you come across",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/personal-brand/portfolio",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1527,
+      "hash": "#/personal-brand/portfolio",
+      "pathname": "/",
+      "h1": "How you come across",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/personal-brand/visibility",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1517,
+      "hash": "#/personal-brand/visibility",
+      "pathname": "/",
+      "h1": "How you come across",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/linkedin-optimizer",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1531,
+      "hash": "#/linkedin-optimizer",
+      "pathname": "/",
+      "h1": "Your LinkedIn profile",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/skills-gap-analysis",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1526,
+      "hash": "#/skills-gap-analysis",
+      "pathname": "/",
+      "h1": "What is missing for your dream job?",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Nuvarande yrkesroll: Lagerarbetare\n\nProfil: Testkonto för e2e. Innehållet är påhittat och beskriver ingen verklig person.\n\nArbetserfarenhet:\n- Lagermedarbetare ",
+          "el": "pre.text-sm.text-stone-700.dark:text-stone-200.whitespace-pre-wrap.font-sans in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 3,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/interview-simulator",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1544,
+      "hash": "#/interview-simulator",
+      "pathname": "/",
+      "h1": "Your interview practice",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Berätta om dig själv – hur du bygger svaret på intervjun",
+          "el": "span.font-medium.text-stone-800.dark:text-stone-100.group-hover:text-[var(--c-text)].dark:group-hover:text-[var(--c-solid)].transition-colors in main"
+        },
+        {
+          "text": "Vad ska jag ha på mig på intervjun? Så tänker du",
+          "el": "span.font-medium.text-stone-800.dark:text-stone-100.group-hover:text-[var(--c-text)].dark:group-hover:text-[var(--c-solid)].transition-colors in main"
+        },
+        {
+          "text": "Frågor arbetsgivaren inte borde ställa på intervjun",
+          "el": "span.font-medium.text-stone-800.dark:text-stone-100.group-hover:text-[var(--c-text)].dark:group-hover:text-[var(--c-solid)].transition-colors in main"
+        },
+        {
+          "text": "Frågor att ställa till arbetsgivaren på en intervju",
+          "el": "span.font-medium.text-stone-800.dark:text-stone-100.group-hover:text-[var(--c-text)].dark:group-hover:text-[var(--c-solid)].transition-colors in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 6,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/ai-team",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1518,
+      "hash": "#/ai-team",
+      "pathname": "/",
+      "h1": "Who do you want to talk to?",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/exercises",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/exercises",
+      "pathname": "/",
+      "h1": "Exercises",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "Självkännedom",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Jobbsökning",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Nätverkande",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Digital närvaro",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Arbetsrätt",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Karriärutveckling",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Välmående",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Arbetssökande",
+          "el": "button.px-4.py-2.rounded-full.text-sm.font-medium.transition-colors in main"
+        },
+        {
+          "text": "Aktivitetsersättning and sjukersättning",
+          "el": "h3.font-semibold.text-gray-800.dark:text-gray-100.mb-2.line-clamp-2 in main"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 11,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/international",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1521,
+      "hash": "#/international",
+      "pathname": "/",
+      "h1": "New in Sweden",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/externa-resurser",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1536,
+      "hash": "#/externa-resurser",
+      "pathname": "/",
+      "h1": "External resources",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Hoppa till huvudinnehåll",
+          "el": "a in nav[Skip links]"
+        },
+        {
+          "text": "aria-label=\"Notifikationer (15 olästa)\"",
+          "el": "button.relative.flex.items-center.justify-center.transition-colors.focus:outline-none in header"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/print/cv",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1514,
+      "hash": "#/print/cv",
+      "pathname": "/",
+      "h1": "Kim Testsson",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "Testkonto för e2e. Innehållet är påhittat och beskriver ingen verklig person.",
+          "el": "p in main"
+        },
+        {
+          "text": "Plock och pack, truckkörning, inventering.",
+          "el": "p in main"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/privacy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1515,
+      "hash": "#/privacy",
+      "pathname": "/",
+      "h1": "Privacy Policy",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/terms",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1520,
+      "hash": "#/terms",
+      "pathname": "/",
+      "h1": "Terms of Use",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "You are now on Användarvillkor",
+          "el": "div.sr-only"
+        },
+        {
+          "text": "The portal's wellness and health features — mood logging, energy tracking, diary, breathing exercises, crisis support — are tools for reflection and self-help. ",
+          "el": "p.text-gray-600.dark:text-gray-300.leading-relaxed in main"
+        }
+      ],
+      "svenskaAntal": 2,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/ai-policy",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1519,
+      "hash": "#/ai-policy",
+      "pathname": "/",
+      "h1": "AI Transparency",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [],
+      "svenskaAntal": 0,
+      "overflow": null
+    },
+    {
+      "korning": "engelska",
+      "rutt": "/#/tillganglighet",
+      "konsolfel": [],
+      "konsolvarningar": [],
+      "sidfel": [],
+      "httpfel": [],
+      "natfel": [],
+      "ms": 1532,
+      "hash": "#/tillganglighet",
+      "pathname": "/",
+      "h1": "Accessibility statement",
+      "dialog": [],
+      "laddarKvar": false,
+      "felgrans": false,
+      "nycklar": [],
+      "nycklarInbakade": [],
+      "attrNycklar": [],
+      "daliga": [],
+      "mallrester": [],
+      "svenska": [
+        {
+          "text": "You are now on Tillgänglighet",
+          "el": "div.sr-only"
+        }
+      ],
+      "svenskaAntal": 1,
+      "overflow": null
+    }
+  ]
+}

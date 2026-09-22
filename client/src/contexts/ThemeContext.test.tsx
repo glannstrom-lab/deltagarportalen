@@ -179,6 +179,46 @@ describe('ThemeContext', () => {
     tyst.mockRestore()
   })
 
+  // 2026-09-22: localStorage kan kasta (privat läge, blockerade data).
+  // Providern ligger ovanför hela appen — ett kast gav en vit sida.
+  // Mutation: ta bort try/catch i getInitialTheme resp. setTheme → faller.
+  // mockImplementation (inte …Once): React gör om en render som kastade en
+  // gång — ett engångskast hade gått igenom på andra försöket.
+  it('överlever att localStorage kastar vid läsning', () => {
+    const las = vi.mocked(localStorage.getItem)
+    const orig = las.getMockImplementation()
+    las.mockImplementation(() => {
+      throw new DOMException('blockerat', 'SecurityError')
+    })
+    try {
+      rendera()
+      expect(screen.getByTestId('theme')).toHaveTextContent('system')
+    } finally {
+      las.mockImplementation(orig!)
+    }
+  })
+
+  it('byter tema även när localStorage kastar vid skrivning — utan ett ofångat fel', () => {
+    rendera()
+    // Ett kast i en händelsehanterare fångas inte av React; jsdom rapporterar
+    // det som ett 'error'-event på window (i webbläsaren: ett ofångat fel).
+    const ofangat = vi.fn((e: Event) => e.preventDefault())
+    window.addEventListener('error', ofangat)
+    const skriv = vi.mocked(localStorage.setItem)
+    const orig = skriv.getMockImplementation()
+    skriv.mockImplementation(() => {
+      throw new DOMException('kvot', 'QuotaExceededError')
+    })
+    try {
+      klicka('mörkt')
+      expect(screen.getByTestId('theme')).toHaveTextContent('dark')
+      expect(ofangat).not.toHaveBeenCalled()
+    } finally {
+      skriv.mockImplementation(orig!)
+      window.removeEventListener('error', ofangat)
+    }
+  })
+
   it('avregistrerar OS-lyssnaren vid unmount', () => {
     const { unmount } = rendera()
     expect(lyssnare.length).toBeGreaterThan(0)

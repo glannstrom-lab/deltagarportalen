@@ -61,6 +61,8 @@ interface DashboardStats {
   pendingMessages: number
   goalsCompleted: number
   goalsOverdue: number
+  /** Antal mål totalt — 0 betyder "inga mål än", inte "0 klara, 0 försenade". */
+  goalsTotal: number
 }
 
 interface Participant {
@@ -272,6 +274,7 @@ export function OverviewTab() {
     pendingMessages: 0,
     goalsCompleted: 0,
     goalsOverdue: 0,
+    goalsTotal: 0,
   })
   const [participants, setParticipants] = useState<Participant[]>([])
   const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
@@ -330,34 +333,42 @@ export function OverviewTab() {
       endOfWeek.setDate(endOfWeek.getDate() + 6)
       endOfWeek.setHours(23, 59, 59, 999)
 
-      const { data: meetingsData } = await supabase
+      // Varje fråga nedan kontrolleras. Förr lästes bara `data`: ett fel gav
+      // null → [] → Min dag sa "Inga brådskande punkter idag" och korten
+      // "0 möten"/"0 försenade mål" till en konsulent som kanske hade tre
+      // möten. Ett fel går nu till samma felläge som deltagarlistan (KS7).
+      const { data: meetingsData, error: meetingsError } = await supabase
         .from('consultant_meetings')
         .select('*')
         .eq('consultant_id', user.id)
         .gte('scheduled_at', startOfWeek.toISOString())
         .lte('scheduled_at', endOfWeek.toISOString())
         .eq('status', 'scheduled')
+      if (meetingsError) throw meetingsError
 
       // Fetch unread messages
-      const { data: messagesData } = await supabase
+      const { data: messagesData, error: messagesError } = await supabase
         .from('consultant_messages')
         .select('*')
         .eq('receiver_id', user.id)
         .eq('is_read', false)
+      if (messagesError) throw messagesError
 
       // Fetch goals
-      const { data: goalsData } = await supabase
+      const { data: goalsData, error: goalsError } = await supabase
         .from('consultant_goals')
         .select('*')
         .eq('consultant_id', user.id)
+      if (goalsError) throw goalsError
 
       // Fetch recent journal entries for activity feed
-      const { data: journalData } = await supabase
+      const { data: journalData, error: journalError } = await supabase
         .from('consultant_journal')
         .select('*, profiles!consultant_journal_participant_id_fkey(first_name, last_name)')
         .eq('consultant_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10)
+      if (journalError) throw journalError
 
       if (participantsData) {
         setParticipants(participantsData)
@@ -425,6 +436,7 @@ export function OverviewTab() {
           pendingMessages: messagesData?.length || 0,
           goalsCompleted: completedGoals,
           goalsOverdue: overdueGoals,
+          goalsTotal: goalsData?.length ?? 0,
         })
 
         setAttentionList(attention.slice(0, 5))
@@ -450,13 +462,15 @@ export function OverviewTab() {
         const meetingPids = [...new Set(todaysMeetings.map(m => m.participant_id))]
         let prepNotes: Array<{ participant_id: string; content: string; category: string; created_at: string }> = []
         if (meetingPids.length > 0) {
-          const { data: prepData } = await supabase
+          const { data: prepData, error: prepError } = await supabase
             .from('consultant_journal')
             .select('participant_id, content, category, created_at')
             .eq('consultant_id', user.id)
             .in('participant_id', meetingPids)
             .order('created_at', { ascending: false })
             .limit(30)
+          // Utan kontrollen stod det "Inga anteckningar" vid mötet — fel.
+          if (prepError) throw prepError
           prepNotes = prepData || []
         }
         const latestNoteFor = (pid: string) => {
@@ -814,7 +828,7 @@ export function OverviewTab() {
                   {t('consultant.overview.recentActivity')}
                 </h3>
               </div>
-              <button
+              <button aria-label="Uppdatera översikten"
                 onClick={fetchDashboardData}
                 className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
               >
@@ -885,6 +899,22 @@ export function OverviewTab() {
             </div>
           </div>
           <div className="p-4 sm:p-5">
+            {/* Inga mål alls: en invit, inte "0 avklarade / 0 försenade" i stor
+                grön och röd siffra (drift 2026-09-22 — ett tomt fält är inte en nolla). */}
+            {stats.goalsTotal === 0 ? (
+              <div className="text-center py-2">
+                <p className="text-sm text-stone-600 dark:text-stone-400">
+                  Inga mål satta än. Mål som du och deltagarna sätter visas här.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowGoalDialog(true)}
+                  className="mt-3 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline"
+                >
+                  Sätt ett mål
+                </button>
+              </div>
+            ) : (
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
                 <p className="text-3xl font-bold text-emerald-600">{stats.goalsCompleted}</p>
@@ -899,6 +929,7 @@ export function OverviewTab() {
                 </p>
               </div>
             </div>
+            )}
 
             <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
               <h4 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">

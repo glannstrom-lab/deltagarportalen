@@ -180,9 +180,16 @@ describe('Testet — sparning och dataförlust', () => {
 
 describe('Påståenden om användaren', () => {
   it('lovar ingen ICF-bedömning eller Big Five-analys på introskärmen', () => {
+    // Texten flyttade till locale-filerna 2026-09-22 (engelskt läge var svenskt).
+    // Reservationen ska stå på båda språken och skärmen ska använda den.
     const i = kod('components/interest-guide/IntroScreen.tsx')
     expect(i).not.toMatch(/ICF-bedömning|Big Five-analys/)
-    expect(i).toContain('ingen psykologisk testning')
+    expect(i).toContain("t('interestGuide.intro.whatItIsStrong')")
+    const sv = kod('i18n/locales/sv.json')
+    const en = kod('i18n/locales/en.json')
+    expect(sv).toContain('ingen psykologisk testning')
+    expect(en).toContain('not a psychological test')
+    expect(sv).not.toMatch(/ICF-bedömning av dina|Big Five-analys av din/)
   })
 
   it('anger yrkesantalet ur datan, inte som "80+"', () => {

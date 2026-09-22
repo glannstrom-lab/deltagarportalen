@@ -16,6 +16,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, cleanup, fireEvent, waitFor } from '@/test/utils'
 import ResultsTab from '../ResultsTab'
+import { calculateUserProfile } from '@/services/interestGuideData'
 
 vi.mock('@/components/interest-guide/ResultsView', () => ({ ResultsView: () => null }))
 vi.mock('@/components/interest-guide/CareerRecommendationsPanel', () => ({ CareerRecommendationsPanel: () => null }))
@@ -84,6 +85,30 @@ describe('ResultsTab', () => {
     expect(rader.length).toBe(2)
     fireEvent.keyDown(rader[1], { key: 'Enter' })
     expect(rader[1]).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  it('jämförelsen visar en förändring på två steg (skalan är 1–5, inte 0–100)', async () => {
+    // Förr räknades |diff| < 3 som "Oförändrad" — på 1–5 är det nästan allt.
+    const nu = calculateUserProfile({}).riasec
+    const fore = { ...nu, S: nu.S - 2, R: nu.R + 1 }
+    getHistory.mockResolvedValue([
+      { ...historik[0], riasec_profile: nu },
+      { ...historik[1], riasec_profile: fore },
+    ])
+    render(<ResultsTab />)
+    expect(await screen.findByText('+2')).toBeInTheDocument()
+    expect(screen.getByText('-1')).toBeInTheDocument()
+  })
+
+  it('delningstexten säger Jobin, inte deltagarportalen', async () => {
+    const share = vi.fn(() => Promise.resolve())
+    Object.defineProperty(navigator, 'share', { value: share, configurable: true })
+    render(<ResultsTab />)
+    fireEvent.click(await screen.findByRole('button', { name: /dela resultat/i }))
+    await waitFor(() => expect(share).toHaveBeenCalled())
+    const arg = (share.mock.calls[0] as unknown as [{ text: string }])[0]
+    expect(arg.text).toMatch(/Jobin/)
+    expect(arg.text).not.toMatch(/deltagarportal/i)
   })
 
   it('stängknappen på tipset har ett namn', async () => {

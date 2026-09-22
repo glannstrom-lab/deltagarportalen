@@ -315,7 +315,7 @@ export default function CognitiveTab() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {exercises.find(e => e.id === activeExercise)?.title}
             </h3>
-            <button
+            <button aria-label={t('common.close')}
               onClick={() => {
                 setActiveExercise(null)
                 setCurrentGameType(null)

@@ -5,7 +5,7 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts'
-import { getOccupations, TAXONOMY_API_BASE } from './kallor.ts'
+import { arYrkestyp, getOccupations, TAXONOMY_API_BASE } from './kallor.ts'
 
 /**
  * Meddelandet ur ett okänt kastat värde.
@@ -43,6 +43,13 @@ serve(medFelrapport('af-taxonomy', async (req) => {
     const params = new URLSearchParams(url.search);
 
     if (path === '/concepts' || path === '') {
+      // 2026-09-22: `type` ignorerades — type=skill gav yrken med 200.
+      if (!arYrkestyp(params.get('type'))) {
+        return new Response(
+          JSON.stringify({ error: 'Bara yrken (type=occupation) stöds av /concepts', concepts: [], total: 0 }),
+          { status: 400, headers: json }
+        );
+      }
       const query = params.get('q') || '';
       const limit = tolkaLimit(params.get('limit'));
 

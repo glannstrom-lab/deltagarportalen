@@ -120,13 +120,16 @@ const offline = {
 }
 
 export const savedJobsApi = {
+  /**
+   * KASTAR vid läsfel (2026-09-22). Föll tidigare tillbaka på offline-kopian
+   * i localStorage — för en inloggad användare nästan alltid `[]`. Ett
+   * nätverks- eller RLS-fel såg alltså ut som "du har inga sparade jobb", och
+   * felvyerna som Resources (`Promise.allSettled`) och CoverLetterWrite
+   * (`setJobbFel`) redan har byggt kunde aldrig visas. Offline-kopian är
+   * kvar för `add`/`isSaved`, där den är en medveten reserv vid skrivning.
+   */
   async getAll(): Promise<SavedJob[]> {
-    try {
-      return await jobsApi.getSavedJobs()
-    } catch (err) {
-      console.error('Kunde inte hämta sparade jobb:', err)
-      return offline.read()
-    }
+    return jobsApi.getSavedJobs()
   },
 
   async save(jobId: string, jobData: Record<string, unknown>) {

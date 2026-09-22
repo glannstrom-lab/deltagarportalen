@@ -10,6 +10,7 @@
  */
 
 import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { getCorsHeaders } from './cors.ts'
 
 interface RateLimitEntry {
   count: number
@@ -136,12 +137,22 @@ function checkRateLimitFallback(
 }
 
 /**
- * Create rate limit response with proper headers
+ * Create rate limit response with proper headers.
+ *
+ * CORS-headers kommer från getCorsHeaders() i cors.ts, som alla andra svar.
+ * Fram till 2026-09-22 speglades `origin` rakt av — anroparna skickar in rå
+ * `req.headers.get('origin')`, och i proxyGuard sker rate-limit-kontrollen
+ * FÖRE origin-valideringen, så en främmande sajt fick läsa 429-svaret (och
+ * utan `Vary: Origin` kunde en cache servera en främlings ACAO vidare).
+ * Vaktat av _shared/rateLimit.test.ts.
  */
 export function createRateLimitResponse(
   retryAfter: number,
   origin: string | null
 ): Response {
+  // null = okänd origin → inga CORS-headers (webbläsaren får inte läsa svaret);
+  // {} = maskinanrop utan Origin.
+  const cors = getCorsHeaders(origin) ?? {}
   return new Response(
     JSON.stringify({
       error: 'Rate limit exceeded',
@@ -154,10 +165,7 @@ export function createRateLimitResponse(
         'Content-Type': 'application/json',
         'Retry-After': String(retryAfter),
         'X-RateLimit-Remaining': '0',
-        ...(origin && {
-          'Access-Control-Allow-Origin': origin,
-          'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-        }),
+        ...cors,
       },
     }
   )

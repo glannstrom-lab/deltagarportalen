@@ -68,7 +68,31 @@ interface SettingsState {
 
   // Sync actions
   syncWithServer: () => Promise<void>
-  _saveToServer: (updates: Partial<ServerSettings>) => Promise<void>
+  /** `true` = skrivet i molnet. Kastar aldrig. */
+  _saveToServer: (updates: Partial<ServerSettings>) => Promise<boolean>
+}
+
+/**
+ * Ett språkval som ännu inte nått molnet (nätverksfel, utloggad). Uppstartens
+ * synk får då inte skriva över det med serverns äldre värde. Egen nyckel i
+ * localStorage — språk är en enhetsinställning (se registreraRensning nedan).
+ */
+const OSPARAT_SPRAK = 'language-osparat'
+function lasOsparatSprak(): Language | null {
+  try {
+    const v = localStorage.getItem(OSPARAT_SPRAK)
+    return v === 'sv' || v === 'en' ? v : null
+  } catch {
+    return null
+  }
+}
+function satOsparatSprak(v: Language | null) {
+  try {
+    if (v) localStorage.setItem(OSPARAT_SPRAK, v)
+    else localStorage.removeItem(OSPARAT_SPRAK)
+  } catch {
+    // Utan lagring: valet gäller sessionen ut.
+  }
 }
 
 // Server-side settings type
@@ -180,7 +204,7 @@ export const useSettingsStore = create<SettingsState>()(
       _saveToServer: async (updates: Partial<ServerSettings>) => {
         try {
           const { data: { user } } = await supabase.auth.getUser()
-          if (!user) return
+          if (!user) return false
 
           const { error } = await supabase
             .from('user_preferences')
@@ -197,17 +221,22 @@ export const useSettingsStore = create<SettingsState>()(
             // index-signatur-krav som PostgrestError (en konkret,
             // egenskapsspecifik typ) inte uppfyller på egen hand (TS2345).
             storageLogger.error('Kunde inte spara inställningar:', { error })
-          } else {
-            set({ lastSynced: new Date().toISOString() })
+            return false
           }
+          set({ lastSynced: new Date().toISOString() })
+          return true
         } catch (err) {
           storageLogger.error('Fel vid sparning av inställningar:', { error: err })
+          return false
         }
       },
 
       // Sync with server
       syncWithServer: async () => {
         set({ isLoading: true })
+        // Språket som gällde när synken började — byter användaren språk
+        // medan frågan är ute får serverns (äldre) värde inte vinna.
+        const sprakVidStart = get().language
 
         try {
           const { data: { user } } = await supabase.auth.getUser()
@@ -247,9 +276,25 @@ export const useSettingsStore = create<SettingsState>()(
               updates.grafikstil = data.graphics_style
             }
 
-            if (data.language && (data.language === 'sv' || data.language === 'en')) {
+            // 2026-09-22: här skrevs varje appstart över med serverns språk —
+            // i praktiken alltid 'sv', eftersom inget språkval någonsin
+            // sparades (språkväljarna anropar i18n direkt, setLanguage hade
+            // noll anropare). Engelska gick därför inte att behålla. Nu
+            // sparas valet via lyssnaren längst ned, och serverns värde
+            // tillämpas bara när inget nyare lokalt val finns.
+            const osparat = lasOsparatSprak()
+            if (osparat) {
+              if (await get()._saveToServer({ language: osparat })) satOsparatSprak(null)
+            } else if (
+              (data.language === 'sv' || data.language === 'en') &&
+              get().language === sprakVidStart
+            ) {
               updates.language = data.language as Language
-              i18n.changeLanguage(data.language)
+              if (i18n.language !== data.language) {
+                // Storen först: lyssnaren ser då ingen ändring att spara.
+                set({ language: data.language as Language })
+                i18n.changeLanguage(data.language)
+              }
             }
 
             set({
@@ -324,7 +369,36 @@ export const useSettingsStore = create<SettingsState>()(
  * första inloggning i en delad flik kunnat spara föregående deltagares
  * kvarlämnade notisinställningar till HENNES konto.
  */
+/**
+ * Sparar varje språkbyte, varifrån det än kommer.
+ *
+ * De tre språkväljarna (TopBar, LanguageSwitcher, SprakVal) anropar
+ * `i18n.changeLanguage` direkt och gick aldrig via storen — valet nådde
+ * därför aldrig `user_preferences.language`, och uppstartens synk satte
+ * tillbaka 'sv' vid nästa appstart (drift-genomgången 2026-09-22). Lyssnaren
+ * gör väljarna rätt utan att de behöver känna till storen.
+ *
+ * Ingen ändring (samma språk som storen redan har) = inget att spara. Det
+ * täcker både i18next:s eget init-event och synkens tillämpning av serverns
+ * värde, som sätter storen före `changeLanguage`.
+ */
+if (typeof i18n.on === 'function') {
+  i18n.on('languageChanged', (lng: string) => {
+    if (lng !== 'sv' && lng !== 'en') return
+    if (useSettingsStore.getState().language === lng) return
+    useSettingsStore.setState({ language: lng })
+    satOsparatSprak(lng)
+    void useSettingsStore.getState()._saveToServer({ language: lng }).then((ok) => {
+      // Rensa bara om inget nyare val hunnit göras under tiden.
+      if (ok && lasOsparatSprak() === lng) satOsparatSprak(null)
+    })
+  })
+}
+
 registreraRensning(() => {
+  // Ett osparat språkval hör till den som gjorde det — nästa person på samma
+  // dator ska få sitt eget språk ur molnet, inte få det här uppskickat.
+  satOsparatSprak(null)
   useSettingsStore.setState({
     emailNotifications: true,
     pushNotifications: true,

@@ -141,7 +141,7 @@ export function OrganisationSektion() {
               {lage.caseload.length === 0 ? (
                 <p className="text-sm text-stone-500 dark:text-stone-400">Inga konsulenter i organisationen än.</p>
               ) : (
-                <div className="overflow-x-auto">
+                <div className="relative overflow-x-auto">
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400">

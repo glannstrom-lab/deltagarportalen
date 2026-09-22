@@ -17,10 +17,15 @@ const entries = [
   { id: 'e1', title: 'Min dag', content: 'Innehåll', tags: [], entry_date: '2026-08-10', word_count: 2, is_favorite: false },
 ]
 
+const lage = { isError: false, entries: entries as unknown[] }
+const mockRetry = vi.fn()
+
 vi.mock('@/hooks/useDiary', () => ({
   useDiaryEntries: () => ({
-    entries,
+    entries: lage.entries,
     isLoading: false,
+    isError: lage.isError,
+    retry: mockRetry,
     createEntry: mockCreateEntry,
     deleteEntry: mockDeleteEntry,
     toggleFavorite: mockToggleFavorite,
@@ -40,6 +45,9 @@ describe('F21: JournalTab ikonknappar har tillgängliga namn', () => {
     mockDeleteEntry.mockReset()
     mockGetNewPrompt.mockReset()
     mockCreateEntry.mockReset()
+    mockCreateEntry.mockResolvedValue({ ok: true, entry: { id: 'ny' } })
+    lage.isError = false
+    lage.entries = entries
     vi.spyOn(window, 'confirm').mockReturnValue(true)
   })
 
@@ -69,6 +77,13 @@ describe('F21: JournalTab ikonknappar har tillgängliga namn', () => {
 })
 
 describe('F6: mood är valfritt, inte förvalt', () => {
+  beforeEach(() => {
+    mockCreateEntry.mockReset()
+    mockCreateEntry.mockResolvedValue({ ok: true, entry: { id: 'ny' } })
+    lage.isError = false
+    lage.entries = entries
+  })
+
   const oppnaSkrivläge = async (user: ReturnType<typeof userEvent.setup>) => {
     render(<JournalTab />)
     await user.click(screen.getByRole('button', { name: /^ny anteckning$/i }))
@@ -105,5 +120,66 @@ describe('F6: mood är valfritt, inte förvalt', () => {
     await user.type(content, 'Text.')
     await user.click(screen.getByRole('button', { name: /^spara$/i }))
     expect(mockCreateEntry).toHaveBeenCalledWith(expect.objectContaining({ mood: null }))
+  })
+})
+
+/**
+ * 2026-09-22 — dagboken svalde fel i två lager (diaryApi → [], useDiary
+ * fångade igen), så JournalTab visade "Skriv ditt första inlägg" vid ett
+ * läsfel. Och skrivrutan stängdes och tömdes även när databasen nekade
+ * sparningen — varje inlägg utan hälsosamtycke (diary_entries kräver det på
+ * INSERT) försvann utan ett ord.
+ *
+ * Mutationer (kontrollerade): ta bort `if (isError)`-grenen → test 1 faller;
+ * ta bort `if (fel) { setSparfel… return }` i WriteModal → test 2 och 3 faller.
+ */
+describe('JournalTab — laddar / fel / klart', () => {
+  beforeEach(() => {
+    mockCreateEntry.mockReset()
+    mockRetry.mockReset()
+    lage.isError = false
+    lage.entries = []
+  })
+
+  it('ett läsfel visar ett fel med "Försök igen", inte den tomma dagboken', () => {
+    lage.isError = true
+    render(<JournalTab />)
+    expect(screen.getByRole('alert')).toHaveTextContent(/kunde inte hämta din dagbok/i)
+    expect(screen.queryByText(/skriv ditt första inlägg/i)).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /försök igen/i }))
+    expect(mockRetry).toHaveBeenCalled()
+  })
+
+  const skrivOchSpara = async (user: ReturnType<typeof userEvent.setup>) => {
+    render(<JournalTab />)
+    await user.click(screen.getByRole('button', { name: /^ny anteckning$/i }))
+    await user.type(screen.getByLabelText(/dina tankar|innehåll/i), 'Viktig text.')
+    await user.click(screen.getByRole('button', { name: /^spara$/i }))
+  }
+
+  it('nekad sparning utan samtycke: rutan stannar, texten finns kvar, orsaken sägs', async () => {
+    mockCreateEntry.mockResolvedValue({ ok: false, orsak: 'samtycke' })
+    const user = userEvent.setup()
+    await skrivOchSpara(user)
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/mående/i)
+    expect(screen.getByLabelText(/dina tankar|innehåll/i)).toHaveValue('Skriv om din dag\n\nViktig text.')
+  })
+
+  it('övrigt fel: rutan stannar med ett fel', async () => {
+    mockCreateEntry.mockResolvedValue({ ok: false, orsak: 'fel' })
+    const user = userEvent.setup()
+    await skrivOchSpara(user)
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(/gick inte att spara/i)
+    expect(screen.getByLabelText(/dina tankar|innehåll/i)).toBeInTheDocument()
+  })
+
+  it('lyckad sparning stänger rutan', async () => {
+    mockCreateEntry.mockResolvedValue({ ok: true, entry: { id: 'ny' } })
+    const user = userEvent.setup()
+    await skrivOchSpara(user)
+
+    expect(screen.queryByLabelText(/dina tankar|innehåll/i)).not.toBeInTheDocument()
   })
 })

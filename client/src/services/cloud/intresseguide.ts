@@ -3,6 +3,7 @@
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
 import { getCurrentUser, handleStorageError } from './_shared'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 // Typerna för intresseguidens profiler. `Record<string, number>` stod här och
 // gav fyra TS2322 i TestTab: ett interface är inte tilldelningsbart till
 // Record<string, number> eftersom det saknar indexsignatur. interestGuideData
@@ -34,6 +35,94 @@ export interface InterestGuideHistoryEntry {
   completed_at: string
   created_at: string
 }
+
+type SparadProgress = {
+  current_step?: number
+  answers?: InterestGuideAnswers
+  energy_level?: string
+  is_completed?: boolean
+}
+
+/** Hur länge autosparningen väntar på nästa ändring innan den skriver. */
+export const SPAR_FORDROJNING_MS = 800
+
+/**
+ * Kö för `saveProgress` på modulnivå — inte i komponenten, så en väntande
+ * sparning överlever att TestTab avmonteras (sidbyte i appen).
+ */
+const spar: {
+  vantande: SparadProgress | null
+  lyssnare: Array<(ok: boolean) => void>
+  timer: ReturnType<typeof setTimeout> | null
+  pagaende: Promise<boolean> | null
+} = { vantande: null, lyssnare: [], timer: null, pagaende: null }
+
+async function skrivProgress(progress: SparadProgress): Promise<boolean> {
+  try {
+    const user = await getCurrentUser()
+    if (!user) {
+      storageLogger.debug('Ingen användare inloggad - intresseguide sparas inte')
+      return false
+    }
+
+    const { error } = await supabase
+      .from('interest_guide_progress')
+      .upsert({
+        user_id: user.id,
+        ...progress,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+
+    if (error) {
+      handleStorageError(error, 'spara intresseguide')
+      return false
+    }
+    return true
+  } catch (err) {
+    handleStorageError(err, 'spara intresseguide')
+    return false
+  }
+}
+
+/** Skriver det senaste väntande värdet — aldrig parallellt med en pågående skrivning. */
+async function tomKon(): Promise<boolean> {
+  // Vänta ut en pågående skrivning; den som kom in under tiden skrivs efter.
+  while (spar.pagaende) {
+    await spar.pagaende
+  }
+  const progress = spar.vantande
+  const lyssnare = spar.lyssnare
+  if (!progress) return true
+  spar.vantande = null
+  spar.lyssnare = []
+  const skrivning = skrivProgress(progress)
+  spar.pagaende = skrivning
+  const ok = await skrivning
+  spar.pagaende = null
+  lyssnare.forEach((l) => l(ok))
+  return ok
+}
+
+function avbrytVantande() {
+  if (spar.timer) clearTimeout(spar.timer)
+  spar.timer = null
+  const lyssnare = spar.lyssnare
+  spar.vantande = null
+  spar.lyssnare = []
+  lyssnare.forEach((l) => l(false))
+}
+
+// Stängd flik / sidbyte utanför appen: skriv det som väntar (bästa försök).
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => {
+    void interestGuideApi.flushProgress()
+  })
+}
+
+// Utloggning: en väntande sparning hör till den som gjorde den.
+registreraRensning(avbrytVantande)
 
 export const interestGuideApi = {
   async getProgress() {
@@ -78,37 +167,43 @@ export const interestGuideApi = {
    * bocken **"Sparat"** visades även när ingenting sparats. För en målgrupp
    * vars ork räcker till ett försök var det den dyraste buggen på sidan.
    * Mönstret följer `integrationChecklistApi.saveProgress`.
+   *
+   * 2026-09-22 (kvalitetsgenomgången): TestTab sparar vid VARJE ändring —
+   * 4 516 skrivningar i prod — och upsert:arna gick parallellt. Kom en äldre
+   * fram sist skrev den över nyare svar; värst när en autosparning med
+   * `is_completed: false` landade efter "Visa resultat" och gjorde ett klart
+   * test oklart igen. Nu: vänta {@link SPAR_FORDROJNING_MS} på fler ändringar,
+   * skriv bara den senaste, aldrig två samtidigt, och `is_completed: true`
+   * skrivs direkt (efter en pågående skrivning). Alla väntande anrop får
+   * utfallet av skrivningen som ersatte dem.
    */
-  async saveProgress(progress: {
-    current_step?: number
-    answers?: InterestGuideAnswers
-    energy_level?: string
-    is_completed?: boolean
-  }): Promise<boolean> {
-    const user = await getCurrentUser()
-    if (!user) {
-      storageLogger.debug('Ingen användare inloggad - intresseguide sparas inte')
-      return false
-    }
+  saveProgress(progress: SparadProgress): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      spar.vantande = progress
+      spar.lyssnare.push(resolve)
+      if (spar.timer) clearTimeout(spar.timer)
+      spar.timer = null
+      if (progress.is_completed) {
+        void tomKon()
+      } else {
+        spar.timer = setTimeout(() => {
+          spar.timer = null
+          void tomKon()
+        }, SPAR_FORDROJNING_MS)
+      }
+    })
+  },
 
-    const { error } = await supabase
-      .from('interest_guide_progress')
-      .upsert({
-        user_id: user.id,
-        ...progress,
-        updated_at: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      })
-
-    if (error) {
-      handleStorageError(error, 'spara intresseguide')
-      return false
-    }
-    return true
+  /** Skriv det som väntar nu (sidbyte, stängd flik). Kastar aldrig. */
+  flushProgress(): Promise<boolean> {
+    if (spar.timer) clearTimeout(spar.timer)
+    spar.timer = null
+    return spar.vantande ? tomKon() : Promise.resolve(true)
   },
 
   async reset() {
+    // En väntande autosparning får inte återskapa raden efter "Börja om".
+    avbrytVantande()
     const user = await getCurrentUser()
     if (!user) return
 
@@ -195,20 +290,6 @@ export const interestGuideApi = {
     }
     return data
   },
-
-  async getHistoryCount(): Promise<number> {
-    const user = await getCurrentUser()
-    if (!user) return 0
-
-    const { count, error } = await supabase
-      .from('interest_guide_history')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-
-    if (error) {
-      handleStorageError(error, 'räkna historikposter')
-      return 0
-    }
-    return count || 0
-  }
+  // getHistoryCount raderad 2026-09-22: noll anropare, och den gjorde ett
+  // läsfel till 0 (samma klass som D11). Behövs ett antal igen — kasta vid fel.
 }

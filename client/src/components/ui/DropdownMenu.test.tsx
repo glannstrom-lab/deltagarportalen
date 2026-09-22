@@ -169,3 +169,41 @@ describe('DropdownMenu — tangentbord', () => {
     expect(trigger).toHaveFocus()
   })
 })
+
+/**
+ * Esc och Tab (2026-09-22 kväll). Menyn lyssnade på Escape bara på `document`,
+ * utan att stoppa den. En dialog runt menyn (useFocusTrap lyssnar också på
+ * `document`) fick då samma Escape och stängde sig — ett Esc för att stänga
+ * menyn stängde hela dialogen. Tab stängde inte menyn alls: fokus lämnade den
+ * och den blev hängande öppen bakom.
+ *
+ * Mutationer: ta bort `e.stopPropagation()` i Escape-grenen → första testet
+ * faller; ta bort Tab-grenen → andra testet faller.
+ */
+describe('DropdownMenu — Esc stannar i menyn, Tab stänger den', () => {
+  it('Escape i menyn når inte en yttre lyssnare på document', async () => {
+    const user = userEvent.setup()
+    let yttre = 0
+    const lyssnare = (e: KeyboardEvent) => { if (e.key === 'Escape') yttre++ }
+    document.addEventListener('keydown', lyssnare)
+    try {
+      renderPlainMenu()
+      await user.click(screen.getByRole('button', { name: 'Öppna meny' }))
+      expect(screen.getByRole('menu')).toBeInTheDocument()
+      await user.keyboard('{Escape}')
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+      expect(yttre).toBe(0)
+    } finally {
+      document.removeEventListener('keydown', lyssnare)
+    }
+  })
+
+  it('Tab stänger menyn', async () => {
+    const user = userEvent.setup()
+    renderPlainMenu()
+    await user.click(screen.getByRole('button', { name: 'Öppna meny' }))
+    expect(screen.getByRole('menu')).toBeInTheDocument()
+    await user.tab()
+    expect(screen.queryByRole('menu')).not.toBeInTheDocument()
+  })
+})

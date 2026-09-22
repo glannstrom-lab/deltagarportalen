@@ -12,6 +12,7 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any -- supabase-builder-mock kräver any-typad chainable */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { formatLocalDate } from './aktivitetSchema'
 import {
   interestGuideApi,
   moodApi,
@@ -178,14 +179,6 @@ describe('interestGuideApi historik', () => {
     await expect(interestGuideApi.getHistory()).resolves.toEqual([])
   })
 
-  it('getHistoryCount returnerar count från head-query', async () => {
-    loggedIn()
-    setResult({ count: 7, error: null })
-    const result = await interestGuideApi.getHistoryCount()
-    expect(mockFrom).toHaveBeenCalledWith('interest_guide_history')
-    expect(mockFromBuilder.select).toHaveBeenCalledWith('*', { count: 'exact', head: true })
-    expect(result).toBe(7)
-  })
 
 /**
  * Verkliga former, inte tomma objekt. Fixturerna var "riasec_profile: { R: 1 }"
@@ -256,7 +249,8 @@ describe('moodApi.getTodaysMood', () => {
     loggedIn('user-42')
     setResult({ data: { mood_level: 5, note: 'Bra dag' }, error: null })
     const result = await moodApi.getTodaysMood()
-    const today = new Date().toISOString().split('T')[0]
+    // Lokal dag — UTC-datumet är gårdagen 00–02 svensk tid, och då föll testet.
+    const today = formatLocalDate(new Date())
     expect(mockFrom).toHaveBeenCalledWith('mood_logs')
     expect(mockFromBuilder.eq).toHaveBeenCalledWith('user_id', 'user-42')
     expect(mockFromBuilder.eq).toHaveBeenCalledWith('log_date', today)
@@ -275,7 +269,8 @@ describe('moodApi.logMood', () => {
     loggedIn('user-42')
     setResult({ error: null })
     const ok = await moodApi.logMood('good', 'En anteckning')
-    const today = new Date().toISOString().split('T')[0]
+    // Lokal dag — UTC-datumet är gårdagen 00–02 svensk tid, och då föll testet.
+    const today = formatLocalDate(new Date())
     expect(mockFrom).toHaveBeenCalledWith('mood_logs')
     expect(mockFromBuilder.upsert).toHaveBeenCalledWith(
       { user_id: 'user-42', mood_level: 4, note: 'En anteckning', log_date: today },
@@ -350,6 +345,34 @@ describe('moodApi.getStreak', () => {
     const old = new Date(Date.now() - 5 * 86400000)
     setResult({ data: [{ log_date: localDateStr(old) }], error: null })
     await expect(moodApi.getStreak()).resolves.toBe(0)
+  })
+
+  // 2026-09-22: ett läsfel gav 0 ("ingen svit") — samma klass som D11.
+  // Mutation: `if (error) return 0` i stället för kastaLagringsFel → faller.
+  it('kastar vid databasfel — ett fel är ingen nolla', async () => {
+    loggedIn()
+    setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
+    await expect(moodApi.getStreak()).rejects.toThrow()
+  })
+
+  // 2026-09-22: räkningen stegade 86 400 000 ms bakåt från lokal midnatt.
+  // Natten mot sommartidens slut är dygnet 25 timmar — sviten bröts varje
+  // år sista söndagen i oktober. CI kör i UTC och ser aldrig felet utan TZ.
+  it('räknar rätt över sommartidens slut (Europe/Stockholm)', async () => {
+    const tz = process.env.TZ
+    process.env.TZ = 'Europe/Stockholm'
+    vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-10-26T10:00:00Z') })
+    try {
+      loggedIn()
+      setResult({
+        data: [{ log_date: '2026-10-26' }, { log_date: '2026-10-25' }, { log_date: '2026-10-24' }],
+        error: null,
+      })
+      await expect(moodApi.getStreak()).resolves.toBe(3)
+    } finally {
+      vi.useRealTimers()
+      process.env.TZ = tz
+    }
   })
 })
 
@@ -667,7 +690,7 @@ describe('cloudStorage — API-ytan efter uppdelningen', () => {
     userPreferencesApi: ['get', 'update', 'updateLastLogin'],
     moodHistoryApi: ['add', 'getAll', 'getStats'],
     journalApi: ['add', 'delete', 'getAll', 'getWellnessData', 'saveWellnessData', 'update'],
-    interestGuideApi: ['getHistory', 'getHistoryCount', 'getHistoryEntry', 'getProgress', 'reset', 'saveProgress', 'saveToHistory'],
+    interestGuideApi: ['flushProgress', 'getHistory', 'getHistoryEntry', 'getProgress', 'reset', 'saveProgress', 'saveToHistory'],
     notificationsApi: ['delete', 'getAll', 'getPreferences', 'getUnread', 'markAllAsRead', 'markAsRead', 'updatePreferences'],
     draftsApi: ['delete', 'get', 'save'],
     interviewSessionsApi: ['create', 'getAll', 'update'],

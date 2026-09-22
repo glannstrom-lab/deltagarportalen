@@ -136,7 +136,11 @@ export async function markAllNotificationsRead(): Promise<boolean> {
 }
 
 /**
- * Get notification count for badge display
+ * Antal olästa jobbnotiser, för brickan på bevakningsfliken.
+ *
+ * KASTAR vid läsfel (2026-09-22). Tidigare blev ett fel `0`, alltså "inga nya
+ * jobb" — samma besked som när det verkligen inte finns några. Anroparen
+ * ska fånga och då visa ingen bricka, inte en påhittad nolla.
  */
 export async function getUnreadCount(): Promise<number> {
   const { data: { user } } = await supabase.auth.getUser()
@@ -150,10 +154,10 @@ export async function getUnreadCount(): Promise<number> {
 
   if (error) {
     console.error('Error counting notifications:', error)
-    return 0
+    throw new Error('Kunde inte räkna olästa jobbnotiser')
   }
 
-  return count || 0
+  return count ?? 0
 }
 
 /**

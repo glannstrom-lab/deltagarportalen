@@ -174,11 +174,8 @@ export type Article = Tables['articles']
 export type ConsultantNote = Tables['consultant_notes']
 export type SavedJob = Tables['saved_jobs']
 
-// Auth helpers
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
-}
+// getCurrentUser raderad 2026-09-22 — enda anroparen var useAuth, som nu
+// läser authStore. services/cloud har en egen i _shared.ts.
 
 // Profile helpers
 export async function getProfile(userId: string) {

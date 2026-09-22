@@ -466,7 +466,10 @@ export function AlertsTab() {
 
   // Fetch unread notification count
   useEffect(() => {
-    getUnreadCount().then(setUnreadCount)
+    // getUnreadCount kastar vid fel sedan 2026-09-22 (en nolla ljög om
+    // att allt var läst). Ingen badge vid fel är rätt — men avvisningen
+    // måste fångas, annars blir den ohanterad.
+    getUnreadCount().then(setUnreadCount).catch(() => {})
   }, [])
 
   const handleCreateAlert = async (alertData: {

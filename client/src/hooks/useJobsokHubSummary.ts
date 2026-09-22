@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { applicationsApi } from '@/services/applicationsApi'
 import type { JobsokSummary } from './hubSummaryTypes'
 import type { ApplicationStatus } from '@/types/application.types'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
@@ -17,7 +18,8 @@ const SPON_FOLLOWUP_DONE = ['archived', 'response_positive', 'response_negative'
 function buildSpontaneousFollowups(rows: SponRow[]) {
   const horizon = new Date()
   horizon.setDate(horizon.getDate() + 30)
-  const horizonStr = horizon.toISOString().split('T')[0]
+  // Lokal dag: followup_date är ett `date`, och UTC-datumet låg ett dygn fel 00–02.
+  const horizonStr = formatLocalDate(horizon)
   const upcoming = rows
     .filter(r => r.followup_date && r.followup_date <= horizonStr && !SPON_FOLLOWUP_DONE.includes(r.status))
     .sort((a, b) => (a.followup_date! < b.followup_date! ? -1 : 1))

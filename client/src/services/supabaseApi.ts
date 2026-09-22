@@ -41,6 +41,7 @@ export type {
   CVData,
 } from '@/types/cv'
 import type { CVData } from '@/types/cv'
+import type { ApplicationStatus } from '@/types/application.types'
 
 // CVVersion för versionshantering
 export interface CVVersion {
@@ -75,7 +76,8 @@ export interface SavedJob {
   user_id: string
   job_id: string
   job_data: Record<string, unknown>
-  status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED'
+  /** VERSAL — alla elva värden i prods check constraint, inte fem (2026-09-22). */
+  status: Uppercase<ApplicationStatus>
   notes?: string | null
   applied_at?: string | null
   created_at: string

@@ -63,4 +63,33 @@ describe('BreakReminder', () => {
     })
     expect(dialog).not.toBeInTheDocument()
   })
+
+  /*
+    "Ja, ta en paus" öppnade en `alert()` — en modal från webbläsaren som
+    blockerar sidan, inte går att styla och som sa "Allt sparas automatiskt".
+    Det stämmer inte: flera formulär (personligt brev, ansökningar) sparar
+    först när man trycker på Spara. Förslaget visas nu i samma dialog.
+    Mutation: lägg tillbaka `alert(...)` → första testet faller.
+  */
+  it('"Ja, ta en paus" visar förslaget i dialogen, inte i alert()', () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    render(<BreakReminder workDuration={1} />)
+    arbeta(65)
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: /ta en paus/i }))
+    })
+    expect(alertSpy).not.toHaveBeenCalled()
+    const dialog = screen.getByRole('dialog')
+    act(() => {
+      fireEvent.click(screen.getByRole('button', { name: /tillbaka/i }))
+    })
+    expect(dialog).not.toBeInTheDocument()
+    alertSpy.mockRestore()
+  })
+
+  it('lovar inte att allt sparas automatiskt', () => {
+    render(<BreakReminder workDuration={1} />)
+    arbeta(65)
+    expect(screen.getByRole('dialog')).not.toHaveTextContent(/sparas automatiskt/i)
+  })
 })

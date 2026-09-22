@@ -11,7 +11,7 @@ import {
 import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
 import type { DiaryEntry } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, ErrorState } from '@/components/ui'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const getMoodEmoji = (mood: number) => {
@@ -45,7 +45,7 @@ interface WriteModalProps {
     mood: number | null
     tags: string[]
     entry_type: 'diary' | 'reflection'
-  }) => void
+  }) => Promise<string | null>
   initialPrompt?: string
 }
 
@@ -61,6 +61,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   const [tagInput, setTagInput] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [isSaving, setIsSaving] = useState(false)
+  const [sparfel, setSparfel] = useState<string | null>(null)
   const contentRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -85,14 +86,22 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   const handleSave = async () => {
     if (!content.trim()) return
     setIsSaving(true)
+    setSparfel(null)
     try {
-      await onSave({
+      // 2026-09-22: rutan stängdes och tömdes oavsett utfall. Nekade
+      // databasen sparningen (t.ex. utan hälsosamtycke, se diaryApi.skapa)
+      // försvann texten utan ett ord. Nu stannar den kvar med felet synligt.
+      const fel = await onSave({
         title: title.trim() || new Date().toLocaleDateString('sv-SE'),
         content: content.trim(),
         mood,
         tags,
         entry_type: 'diary'
       })
+      if (fel) {
+        setSparfel(fel)
+        return
+      }
       // Reset form
       setTitle('')
       setContent('')
@@ -209,6 +218,12 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           </div>
         </div>
 
+        {sparfel && (
+          <p role="alert" className="mx-6 mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+            {sparfel}
+          </p>
+        )}
+
         <div className="sticky bottom-0 bg-white border-t border-stone-100 p-4 flex gap-3">
           <Button variant="outline" className="flex-1" onClick={onClose}>
             {t('common.cancel')}
@@ -228,7 +243,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
 
 export function JournalTab() {
   const { t } = useTranslation()
-  const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
+  const { entries, isLoading, isError, retry, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null)
@@ -260,19 +275,23 @@ export function JournalTab() {
     mood: number | null
     tags: string[]
     entry_type: 'diary' | 'reflection'
-  }) => {
+  }): Promise<string | null> => {
     // `energy_level`/`is_favorite`/`word_count` är nullable/har DB-default i
     // prod (verifierat mot information_schema 2026-09-22) — anropet gick
     // redan igenom utan dem, men skickar dem nu explicit i stället för att
     // luta sig på att defaulten alltid finns kvar. `word_count` skrivs ändå
     // om av diaryEntriesApi.create() utifrån innehållets ordräkning.
-    await createEntry({
+    const utfall = await createEntry({
       ...entryData,
       entry_date: formatLocalDate(new Date()),
       energy_level: null,
       is_favorite: false,
       word_count: 0
     })
+    if (utfall.ok) return null
+    return utfall.orsak === 'samtycke'
+      ? t('diary.journal.saveNeedsConsent')
+      : t('diary.saveFailed')
   }
 
   const handleUsePrompt = () => {
@@ -284,6 +303,20 @@ export function JournalTab() {
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)]" />
       </div>
+    )
+  }
+
+  // Ett läsfel är inte en tom dagbok — "Skriv din första anteckning" till
+  // någon som skrivit i månader är exakt det felet som fanns här.
+  if (isError) {
+    return (
+      <Card>
+        <ErrorState
+          title={t('diary.loadErrorTitle')}
+          message={t('diary.loadErrorBody')}
+          onRetry={() => { void retry() }}
+        />
+      </Card>
     )
   }
 

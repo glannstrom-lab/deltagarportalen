@@ -91,7 +91,7 @@ export function DataSharingSettings() {
       } catch (error) {
         console.error('Error loading data sharing settings:', error)
         setLoadFailed(true)
-        setSaveError(t('datasharing.loadError') || 'Kunde inte hämta dina inställningar')
+        setSaveError(t('datasharing.loadError'))
       } finally {
         setIsLoading(false)
       }
@@ -124,7 +124,7 @@ export function DataSharingSettings() {
       if (!profile.consultant_id) {
         // Tabellen kräver consultant_id (NOT NULL) — inget att spara mot förrän
         // en konsulent är tilldelad.
-        throw new Error(t('datasharing.noConsultantDesc') || 'Du har ingen tilldelad konsulent än.')
+        throw new Error(t('datasharing.noConsultantDesc'))
       }
 
       // Upsert (insert or update) the sharing preferences. Konfliktnyckeln
@@ -153,7 +153,7 @@ export function DataSharingSettings() {
     } catch (error) {
       console.error('Error saving data sharing preferences:', error)
       setSaveError(
-        error instanceof Error ? error.message : (t('datasharing.saveError') || 'Kunde inte spara inställningar')
+        error instanceof Error ? error.message : (t('datasharing.saveError'))
       )
     } finally {
       setIsSaving(false)
@@ -164,7 +164,7 @@ export function DataSharingSettings() {
     return (
       <div className="flex items-center justify-center py-8">
         <Loader2 className="w-5 h-5 animate-spin text-indigo-500" />
-        <span className="ml-2 text-sm text-stone-600">{t('common.loading') || 'Laddar...'}</span>
+        <span className="ml-2 text-sm text-stone-600">{t('common.loading')}</span>
       </div>
     )
   }
@@ -185,10 +185,10 @@ export function DataSharingSettings() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
-          {t('datasharing.title') || 'Datadelning'}
+          {t('datasharing.title')}
         </h2>
         <p className="text-sm text-stone-600 dark:text-stone-400">
-          {t('datasharing.description') || 'Styr vad din konsulent kan se'}
+          {t('datasharing.description')}
         </p>
       </div>
 
@@ -198,10 +198,10 @@ export function DataSharingSettings() {
           <AlertCircle className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
             <h3 className="font-medium text-blue-900 dark:text-blue-100 text-sm">
-              {t('datasharing.noConsultant') || 'Ingen konsulent tilldelad'}
+              {t('datasharing.noConsultant')}
             </h3>
             <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-              {t('datasharing.noConsultantDesc') || 'Du har ingen tilldelad konsulent än. Dessa inställningar gäller när en konsulent tilldelades dig.'}
+              {t('datasharing.noConsultantDesc')}
             </p>
           </div>
         </div>
@@ -211,7 +211,7 @@ export function DataSharingSettings() {
       {consultantName && (
         <div className="p-4 bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800/50 rounded-lg">
           <p className="text-sm text-indigo-900 dark:text-indigo-100">
-            <strong>{t('datasharing.consultantLabel') || 'Din konsulent:'}</strong> {consultantName}
+            <strong>{t('datasharing.consultantLabel')}</strong> {consultantName}
           </p>
         </div>
       )}
@@ -224,16 +224,16 @@ export function DataSharingSettings() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h3 id="delning-halsa" className="font-medium text-stone-900 dark:text-stone-100">
-                  {t('datasharing.health.title') || 'Dela hälsodata'}
+                  {t('datasharing.health.title')}
                 </h3>
               </div>
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-                {t('datasharing.health.description') || 'Tillåt din konsulent att se din ICF-data (kognitiv, motor, sensorisk, etc.)'}
+                {t('datasharing.health.description')}
               </p>
               {sparade.share_health_data && (
                 <div className="text-xs text-amber-700 dark:text-amber-300 p-2 bg-amber-50 dark:bg-amber-900/20 rounded flex gap-2 items-start">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  <span>{t('datasharing.warningShared') || 'Din konsulent kan nu se denna data'}</span>
+                  <span>{t('datasharing.warningShared')}</span>
                 </div>
               )}
             </div>
@@ -261,16 +261,16 @@ export function DataSharingSettings() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <h3 id="delning-valmaende" className="font-medium text-stone-900 dark:text-stone-100">
-                  {t('datasharing.wellness.title') || 'Dela väl mål data'}
+                  {t('datasharing.wellness.title')}
                 </h3>
               </div>
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-                {t('datasharing.wellness.description') || 'Tillåt din konsulent att se din dagbok, humör och väl mål information'}
+                {t('datasharing.wellness.description')}
               </p>
               {sparade.share_wellness_data && (
                 <div className="text-xs text-amber-700 dark:text-amber-300 p-2 bg-amber-50 dark:bg-amber-900/20 rounded flex gap-2 items-start">
                   <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                  <span>{t('datasharing.warningShared') || 'Din konsulent kan nu se denna data'}</span>
+                  <span>{t('datasharing.warningShared')}</span>
                 </div>
               )}
             </div>
@@ -299,10 +299,10 @@ export function DataSharingSettings() {
           <Lock className="w-5 h-5 text-stone-600 dark:text-stone-400 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm mb-1">
-              {t('datasharing.privacy') || 'Dina data är säkra'}
+              {t('datasharing.privacy')}
             </h4>
             <p className="text-xs text-stone-600 dark:text-stone-400">
-              {t('datasharing.privacyDesc') || 'All datadelning är helt valfri och kan dras tillbaka när som helst. Din data krypteras och överförs säkert.'}
+              {t('datasharing.privacyDesc')}
             </p>
           </div>
         </div>
@@ -322,7 +322,7 @@ export function DataSharingSettings() {
       {saveSuccess && (
         <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg">
           <p className="text-sm text-green-700 dark:text-green-300">
-            {t('datasharing.savedSuccess') || 'Dina inställningar sparades!'}
+            {t('datasharing.savedSuccess')}
           </p>
         </div>
       )}
@@ -344,17 +344,17 @@ export function DataSharingSettings() {
           ) : (
             <Share2 className="w-4 h-4" />
           )}
-          {isSaving ? (t('common.loading') || 'Sparar...') : (t('common.save') || 'Spara inställningar')}
+          {isSaving ? t('common.saving') : t('common.save')}
         </button>
       </div>
 
       {/* Privacy Policy Link */}
       <p className="text-xs text-stone-600 dark:text-stone-400">
-        {t('datasharing.privacyPolicy') || 'Läs vår'} {' '}
+        {t('datasharing.privacyPolicy')} {' '}
         <Link to="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">
-          {t('datasharing.privacyPolicyLink') || 'integritetspolicy'}
+          {t('datasharing.privacyPolicyLink')}
         </Link>
-        {t('datasharing.privacyPolicyEnd') || ' för mer information om hur vi behandlar dina data.'}
+        {t('datasharing.privacyPolicyEnd')}
       </p>
     </div>
   )

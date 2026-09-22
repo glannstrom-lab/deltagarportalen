@@ -7,12 +7,15 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
-import { useYrken } from '@/services/useIntresseguideInnehall'
+import { useYrken, useRiasecNamn } from '@/services/useIntresseguideInnehall'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import { datumSprak } from '@/lib/datumsprak'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
 import { showToast } from '@/components/Toast'
+import { riasecForandring } from './riasecForandring'
 import {
   Sparkles,
   Download,
@@ -31,19 +34,11 @@ import {
   ChevronUp
 } from '@/components/ui/icons'
 
-// RIASEC type names in Swedish
-const RIASEC_NAMES: Record<string, string> = {
-  R: 'Realistisk',
-  I: 'Undersökande',
-  A: 'Konstnärlig',
-  S: 'Social',
-  E: 'Företagsam',
-  C: 'Konventionell'
-}
-
 export default function ResultsTab() {
   const navigate = useNavigate()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const sprak = datumSprak(i18n.language)
+  const riasecNamn = useRiasecNamn()
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -98,7 +93,7 @@ export default function ResultsTab() {
             setProfile(calculatedProfile)
           } catch (calcErr) {
             console.error('Failed to calculate profile:', calcErr)
-            setError('Kunde inte beräkna din profil. Försök göra om testet.')
+            setError(t('interestGuide.results.calcFailed'))
           }
         }
 
@@ -127,26 +122,26 @@ export default function ResultsTab() {
   const handleDownloadResults = () => {
     if (!profile) return
 
-    const resultsText = `
-INTRESSEGUIDE RESULTAT
-=====================
-
-Din RIASEC-profil: ${Object.entries(profile.riasec)
+    const topp3 = Object.entries(profile.riasec)
       .sort(([, a], [, b]) => b - a)
       .slice(0, 3)
-      .map(([key]) => key)
-      .join(', ')}
-
-Din personlighetsprofil är baserad på 5 dimensioner av Big Five-modellen.
-
-Genererad: ${new Date().toLocaleDateString('sv-SE')}
-    `.trim()
+      .map(([key]) => `${key} (${riasecNamn[key] ?? key})`)
+      .join(', ')
+    const resultsText = [
+      t('interestGuide.results.fileHeading'),
+      '',
+      t('interestGuide.results.fileRiasec', { types: topp3 }),
+      '',
+      t('interestGuide.results.fileBigFive'),
+      '',
+      t('interestGuide.results.fileCreated', { date: new Date().toLocaleDateString(sprak) }),
+    ].join('\n')
 
     const blob = new Blob([resultsText], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `intresseguide-resultat-${new Date().toISOString().split('T')[0]}.txt`
+    a.download = `${t('interestGuide.results.fileName')}-${formatLocalDate(new Date())}.txt`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -158,10 +153,10 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   // behörighet. Ofångade blev de ohanterade avvisningar — och "Kopierat!"
   // visades även när ingenting kopierats.
   const handleShareResults = async () => {
-    const text = `Jag har genomfört intressetestet i deltagarportalen och hittat yrken som passar mig!`
+    const text = t('interestGuide.results.shareText')
     if (navigator.share) {
       try {
-        await navigator.share({ title: 'Intresseguide Resultat', text })
+        await navigator.share({ title: t('interestGuide.results.shareTitle'), text })
       } catch {
         // Avbruten delning är användarens val, inget fel att visa
       }
@@ -178,12 +173,12 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   // Get the previous result for comparison (skip the most recent which is current)
   const previousResult = history.length > 1 ? history[1] : null
 
-  // Calculate change between current and previous
+  // Förändring mot förra testet. Skalan är 1–5 i hela steg — se riasecForandring.ts.
   const getChangeIndicator = (current: number, previous: number) => {
-    const diff = current - previous
-    if (Math.abs(diff) < 3) return { icon: Minus, color: 'text-gray-400 dark:text-gray-500', text: 'Oförändrad' }
-    if (diff > 0) return { icon: TrendingUp, color: 'text-green-500 dark:text-green-400', text: `+${diff}` }
-    return { icon: TrendingDown, color: 'text-red-500 dark:text-red-400', text: `${diff}` }
+    const { riktning, diff } = riasecForandring(current, previous)
+    if (riktning === 'oforandrad') return { icon: Minus, color: 'text-stone-600 dark:text-stone-400', text: t('interestGuide.results.unchanged') }
+    if (riktning === 'upp') return { icon: TrendingUp, color: 'text-green-700 dark:text-green-400', text: `+${diff}` }
+    return { icon: TrendingDown, color: 'text-red-700 dark:text-red-400', text: `${diff}` }
   }
 
   if (isLoading) {
@@ -235,9 +230,9 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           className="w-24 h-24 flex-shrink-0 select-none"
         />
         <div>
-          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">Du har hittat din riktning</h2>
+          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">{t('interestGuide.results.doneHeading')}</h2>
           <p className="text-stone-600 dark:text-stone-300 mt-1">
-            Här är vad dina svar säger om vilka yrken som kan passa dig.
+            {t('interestGuide.results.doneLead')}
           </p>
         </div>
       </motion.div>
@@ -251,7 +246,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mb-2">Din RIASEC-typ</p>
+              <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mb-2">{t('interestGuide.results.riasecType')}</p>
               <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                 {Object.entries(profile.riasec)
                   .sort(([, a], [, b]) => b - a)
@@ -267,9 +262,9 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         <Card className="p-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">Bra matchningar</p>
+              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">{t('interestGuide.results.goodMatches')}</p>
               <p className="text-2xl font-bold text-green-900 dark:text-green-100">{goodMatches}</p>
-              <p className="text-xs text-green-700 dark:text-green-300 mt-1">yrken (70%+)</p>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-1">{t('interestGuide.results.goodMatchesUnit')}</p>
             </div>
             <Trophy className="w-6 h-6 text-green-600 dark:text-green-400 opacity-50" />
           </div>
@@ -278,9 +273,9 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         <Card className="p-6 bg-purple-50 dark:bg-purple-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] font-medium mb-2">Totalt yrken</p>
+              <p className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] font-medium mb-2">{t('interestGuide.results.totalOccupations')}</p>
               <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{jobMatches.length}</p>
-              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">att utforska</p>
+              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{t('interestGuide.results.toExplore')}</p>
             </div>
             <CheckCircle className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)] opacity-50" />
           </div>
@@ -303,12 +298,12 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                 <div>
                   <h3 className="font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.comparisonWithPreviousTest')}</h3>
                   <p className="text-xs text-gray-700 dark:text-gray-300">
-                    Från {new Date(previousResult.completed_at).toLocaleDateString('sv-SE')}
+                    {t('interestGuide.results.fromDate', { date: new Date(previousResult.completed_at).toLocaleDateString(sprak) })}
                   </p>
                 </div>
               </div>
               <span className="text-xs bg-blue-100 dark:bg-blue-800/50 text-[var(--c-text)] dark:text-blue-300 px-2 py-1 rounded-full">
-                {history.length} tester totalt
+                {t('interestGuide.results.testsTotal', { count: history.length })}
               </span>
             </div>
 
@@ -320,7 +315,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
                 return (
                   <div key={key} className="bg-white dark:bg-stone-800 rounded-lg p-3 text-center">
-                    <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">{RIASEC_NAMES[key]}</p>
+                    <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">{riasecNamn[key] ?? key}</p>
                     <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{value}</p>
                     <div className={`flex items-center justify-center gap-1 text-xs ${change.color}`}>
                       <ChangeIcon className="w-3 h-3" />
@@ -350,7 +345,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
               <div className="flex items-center gap-3">
                 <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 <span className="font-medium text-gray-700 dark:text-gray-300">
-                  Tidigare resultat ({history.length} {history.length === 1 ? 'test' : 'tester'})
+                  {t('interestGuide.results.earlierResults', { count: history.length })}
                 </span>
               </div>
               {showHistory ? (
@@ -389,14 +384,14 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                           </div>
                           <div>
                             <p className="font-medium text-gray-900 dark:text-gray-100">
-                              {new Date(entry.completed_at).toLocaleDateString('sv-SE', {
+                              {new Date(entry.completed_at).toLocaleDateString(sprak, {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
                               })}
                               {index === 0 && (
                                 <span className="ml-2 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
-                                  Aktuellt
+                                  {t('interestGuide.results.current')}
                                 </span>
                               )}
                             </p>
@@ -412,7 +407,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                         <div className="text-right">
                           {entry.top_occupations && entry.top_occupations.length > 0 && (
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Topp: {entry.top_occupations[0].name}
+                              {t('interestGuide.results.topOccupation', { name: entry.top_occupations[0].name })}
                             </p>
                           )}
                         </div>
@@ -435,7 +430,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                           </div>
                           {entry.top_occupations && entry.top_occupations.length > 0 && (
                             <div className="space-y-1">
-                              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Topp 5 yrkesmatchningar:</p>
+                              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">{t('interestGuide.results.top5Heading')}</p>
                               {entry.top_occupations.slice(0, 5).map((occ, i) => (
                                 <div key={i} className="flex justify-between text-sm">
                                   <span className="text-gray-700 dark:text-gray-300">{i + 1}. {occ.name}</span>
@@ -463,19 +458,19 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
       >
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Dina topp 3 yrkesmatchningar</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.results.top3Heading')}</h3>
             <Button
               variant="ghost"
               onClick={() => navigate('/interest-guide/occupations')}
               className="gap-2 text-amber-600 dark:text-amber-400"
             >
-              Se alla
+              {t('interestGuide.results.seeAll')}
               <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
           <div className="space-y-3">
             {oversattaTopMatches.map((match, index) => (
-              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors cursor-pointer">
+              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg">
                 <div className="flex-shrink-0 w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
@@ -485,7 +480,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{match.matchPercentage}%</p>
-                  <p className="text-xs text-gray-700 dark:text-gray-300">match</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-300">{t('interestGuide.results.matchLabel')}</p>
                 </div>
               </div>
             ))}
@@ -531,7 +526,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
               x
             </button>
             <p className="text-sm text-gray-700 dark:text-gray-300">
-              <span className="font-semibold">Tips:</span> Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.
+              <span className="font-semibold">{t('interestGuide.results.tipLabel')}</span> {t('interestGuide.results.tipText')}
             </p>
           </Card>
         </motion.div>
@@ -554,11 +549,11 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
             <div className="flex-1">
               <div className="flex items-center gap-2 text-amber-100 text-sm font-medium mb-1">
                 <Sparkles className="w-4 h-4" />
-                Nästa steg
+                {t('interestGuide.results.nextStep')}
               </div>
-              <h2 className="text-xl font-bold">Skapa ditt CV</h2>
+              <h2 className="text-xl font-bold">{t('interestGuide.results.createCvHeading')}</h2>
               <p className="text-amber-100 text-sm mt-1">
-                Använd dina insikter från intresseguiden för att bygga ett professionellt CV
+                {t('interestGuide.results.createCvText')}
               </p>
             </div>
             <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform flex-shrink-0" />
@@ -579,7 +574,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           className="gap-2"
         >
           <Download className="w-4 h-4" />
-          Ladda ner resultat
+          {t('interestGuide.results.download')}
         </Button>
         <Button
           onClick={handleShareResults}
@@ -587,7 +582,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           className="gap-2"
         >
           <Share2 className="w-4 h-4" />
-          Dela resultat
+          {t('interestGuide.results.share')}
         </Button>
         <Button
           onClick={handleRestart}
@@ -595,7 +590,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           className="gap-2"
         >
           <Sparkles className="w-4 h-4" />
-          Gör om testet
+          {t('interestGuide.results.restart')}
         </Button>
       </motion.div>
     </div>

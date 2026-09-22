@@ -30,9 +30,20 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 const changeLanguage = vi.fn()
+const i18nLyssnare: Array<(lng: string) => void> = []
+const i18nMock = { language: 'sv' }
 vi.mock('@/i18n/config', () => ({
-  default: { changeLanguage: (l: string) => changeLanguage(l) },
+  default: {
+    changeLanguage: (l: string) => changeLanguage(l),
+    on: (_ev: string, cb: (lng: string) => void) => { i18nLyssnare.push(cb) },
+    get language() { return i18nMock.language },
+  },
 }))
+/** Som när TopBar/LanguageSwitcher/SprakVal anropar i18n.changeLanguage direkt. */
+const valjSprakIVaxlaren = (lng: string) => {
+  i18nMock.language = lng
+  i18nLyssnare.forEach(cb => cb(lng))
+}
 
 const { useSettingsStore } = await import('./settingsStore')
 
@@ -59,6 +70,8 @@ describe('settingsStore', () => {
     maybeSingle.mockResolvedValue({ data: null, error: null })
     getUser.mockResolvedValue({ data: { user: { id: 'user-1' } } })
     useSettingsStore.setState(utgångsläge)
+    i18nMock.language = 'sv'
+    localStorage.removeItem('language-osparat')
   })
 
   describe('växlingar', () => {
@@ -160,7 +173,7 @@ describe('settingsStore', () => {
 
       await expect(
         useSettingsStore.getState()._saveToServer({ calm_mode: true })
-      ).resolves.toBeUndefined()
+      ).resolves.toBe(false)
     })
   })
 
@@ -254,6 +267,70 @@ describe('settingsStore', () => {
       await useSettingsStore.getState().syncWithServer()
 
       expect(useSettingsStore.getState().isLoading).toBe(false)
+    })
+  })
+  /**
+   * Drift-genomgången 2026-09-22 (KRITISKT): engelska gick inte att behålla.
+   * Väljarna anropar i18n.changeLanguage direkt, inget sparades, och synken
+   * vid varje appstart satte tillbaka serverns 'sv'.
+   *
+   * Mutationer (kontrollerade): ta bort lyssnaren → alla fyra faller;
+   * ta bort grenen för osparat val → test 3 faller; ta bort
+   * `get().language === sprakVidStart` → test 4 faller.
+   */
+  describe('språkvalet överlever en omladdning', () => {
+    it('ett byte i språkväljaren sparas i user_preferences.language', async () => {
+      valjSprakIVaxlaren('en')
+      await vi.waitFor(() => expect(upsert).toHaveBeenCalled())
+
+      expect(useSettingsStore.getState().language).toBe('en')
+      expect(upsert.mock.calls[0][0]).toMatchObject({ user_id: 'user-1', language: 'en' })
+    })
+
+    it('byt till engelska → omladdning (synk mot molnet) → fortfarande engelska', async () => {
+      // "Molnet" svarar med det som senast skrevs dit, annars kolumnens default 'sv'.
+      maybeSingle.mockImplementation(async () => {
+        const sista = [...upsert.mock.calls].reverse().find(c => c[0].language)?.[0].language
+        return { data: { language: sista ?? 'sv', updated_at: null }, error: null }
+      })
+      valjSprakIVaxlaren('en')
+      await vi.waitFor(() => expect(upsert).toHaveBeenCalled())
+
+      // Omladdning: storen byggs upp igen från lokal lagring, sedan körs synken.
+      await useSettingsStore.getState().syncWithServer()
+
+      expect(useSettingsStore.getState().language).toBe('en')
+      expect(changeLanguage).not.toHaveBeenCalledWith('sv')
+    })
+
+    it('ett val som inte hann sparas skrivs inte över av serverns äldre värde', async () => {
+      upsert.mockResolvedValueOnce({ error: { message: 'offline' } })
+      valjSprakIVaxlaren('en')
+      await vi.waitFor(() => expect(upsert).toHaveBeenCalledTimes(1))
+      await new Promise(r => setTimeout(r, 0))
+
+      maybeSingle.mockResolvedValue({ data: { language: 'sv', updated_at: null }, error: null })
+      await useSettingsStore.getState().syncWithServer()
+
+      expect(useSettingsStore.getState().language).toBe('en')
+      expect(changeLanguage).not.toHaveBeenCalledWith('sv')
+      // …och synken skickar upp det osparade valet.
+      expect(upsert.mock.calls.at(-1)?.[0]).toMatchObject({ language: 'en' })
+    })
+
+    it('ett byte medan synken väntar på svar vinner över serverns värde', async () => {
+      let svara: (v: Svar<Payload | null>) => void = () => {}
+      maybeSingle.mockImplementation(() => new Promise(r => { svara = r }))
+      const synk = useSettingsStore.getState().syncWithServer()
+      await vi.waitFor(() => expect(maybeSingle).toHaveBeenCalled())
+
+      valjSprakIVaxlaren('en')
+      await vi.waitFor(() => expect(upsert).toHaveBeenCalled())
+      await new Promise(r => setTimeout(r, 0))
+      svara({ data: { language: 'sv', updated_at: null }, error: null })
+      await synk
+
+      expect(useSettingsStore.getState().language).toBe('en')
     })
   })
 })

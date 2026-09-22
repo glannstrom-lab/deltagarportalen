@@ -76,16 +76,17 @@ describe('savedJobsApi — radform och skiftläge', () => {
   })
 })
 
-describe('savedJobsApi — offline-fallback (bevarad från cloudStorage-varianten)', () => {
-  it('getAll faller tillbaka på localStorage när molnet inte svarar', async () => {
+describe('savedJobsApi — offline-reserven (bara vid skrivning sedan 2026-09-22)', () => {
+  // 2026-09-22: getAll föll tillbaka på den lokala kopian (för en inloggad
+  // användare nästan alltid []) — ett läsfel såg ut som "inga sparade jobb",
+  // och Resources/CoverLetterWrite:s felvyer kunde aldrig visas.
+  // Mutation: återställ try/catch → offline.read() → testet faller.
+  it('getAll KASTAR när molnet inte svarar — ett fel är ingen tom lista', async () => {
     vi.spyOn(applicationsApi, 'getAll').mockRejectedValue(new Error('nätverk'))
     vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.mocked(window.localStorage.getItem).mockReturnValue('[{"id":"local-1"}]')
 
-    const rows = await savedJobsApi.getAll()
-
-    expect(window.localStorage.getItem).toHaveBeenCalledWith('savedJobs')
-    expect(rows).toEqual([{ id: 'local-1' }])
+    await expect(savedJobsApi.getAll()).rejects.toThrow('nätverk')
   })
 
   it('add sparar lokalt när användaren inte är inloggad', async () => {

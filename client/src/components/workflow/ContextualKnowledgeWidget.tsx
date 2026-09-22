@@ -1,23 +1,34 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
- * Contextual Knowledge Widget - Fas 2
- * 
- * Visar relevanta artiklar baserat på kontext (vilken sida användaren är på)
+ * Contextual Knowledge Widget
+ *
+ * Visar relevanta artiklar ur kunskapsbanken baserat på kontext (vilken sida
+ * användaren är på).
+ *
+ * 2026-09-22: här låg 21 hårdkodade "artiklar" med påhittade id:n (`cv-1`,
+ * `interview-2` …), påhittade lästider och svensk text även i engelskt läge.
+ * Ingen av dem fanns i kunskapsbanken — i CV-byggaren ledde alla tre korten
+ * till "artikeln finns inte" (0 av 4 `cv-*` i prod). Samma fel som
+ * intervjusimulatorns "Läs vidare" hade. Nu visas riktiga artiklar, valda
+ * ur `useArticles()` med en matchning per kontext, på användarens språk.
+ * Hittas inga visas ingenting — hellre det än en länk som inte leder någonstans.
  */
 
 import { useMemo } from 'react'
-import { 
-  BookOpen, ChevronRight, Lightbulb, 
-  FileText, Search, MessageSquare, Target, Award
+import {
+  BookOpen, ChevronRight, Lightbulb,
+  FileText, Search, MessageSquare,
 } from '@/components/ui/icons'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
+import { useArticles } from '@/hooks/knowledge-base/useArticles'
 
 // ============================================
 // TYPES
 // ============================================
 
-export type KnowledgeContext = 
+export type KnowledgeContext =
   | 'cv-building'
   | 'cover-letter-writing'
   | 'job-searching'
@@ -27,14 +38,12 @@ export type KnowledgeContext =
   | 'career-planning'
   | 'general'
 
-interface ContextualArticle {
+interface ArtikelUrval {
   id: string
   title: string
-  excerpt: string
-  context: KnowledgeContext
-  readTime: number
-  difficulty: 'beginner' | 'intermediate' | 'advanced'
-  icon: React.ComponentType<{ size: number; className?: string }>
+  summary?: string
+  category?: string
+  readingTime?: number
 }
 
 // ============================================
@@ -54,218 +63,23 @@ function getContextFromPath(path: string): KnowledgeContext {
 }
 
 /**
- * Hämta kontextuella artiklar baserat på nuvarande sida
+ * Vilka artiklar som hör till en kontext. Slugen (`id`) är svensk på båda
+ * språken, så matchningen fungerar oavsett språk. Kategorinycklarna är de som
+ * finns i `articles.category_key` i prod (mätt 2026-09-22).
  */
-function getContextualArticles(context: KnowledgeContext): ContextualArticle[] {
-  const articles: Record<KnowledgeContext, ContextualArticle[]> = {
-    'cv-building': [
-      {
-        id: 'cv-1',
-        title: 'Så skriver du en sammanfattning som fångar intresse',
-        excerpt: 'Lär dig hur du skapar en stark öppning som gör rekryterare nyfikna på att läsa mer.',
-        context: 'cv-building',
-        readTime: 5,
-        difficulty: 'beginner',
-        icon: FileText
-      },
-      {
-        id: 'cv-2',
-        title: 'ATS-optimering: 10 saker rekryterare letar efter',
-        excerpt: 'Få ditt CV att passera automatiska screening-system och nå fram till rekryteraren.',
-        context: 'cv-building',
-        readTime: 8,
-        difficulty: 'intermediate',
-        icon: Target
-      },
-      {
-        id: 'cv-3',
-        title: 'Vanliga CV-misstag och hur du undviker dem',
-        excerpt: 'De vanligaste fällorna som får CV:n att hamna i papperskorgen - och hur du slipper undan.',
-        context: 'cv-building',
-        readTime: 6,
-        difficulty: 'beginner',
-        icon: Lightbulb
-      },
-      {
-        id: 'cv-4',
-        title: 'Från plikter till prestationer: Skriv resultatorienterat',
-        excerpt: 'Så formulerar du dina erfarenheter för att visa vad du faktiskt åstadkommit.',
-        context: 'cv-building',
-        readTime: 7,
-        difficulty: 'intermediate',
-        icon: Award
-      }
-    ],
-    'cover-letter-writing': [
-      {
-        id: 'pb-1',
-        title: 'Personligt brev - struktur som fungerar',
-        excerpt: 'En beprövad uppbyggnad som hjälper dig komma igång och hålla fokus.',
-        context: 'cover-letter-writing',
-        readTime: 5,
-        difficulty: 'beginner',
-        icon: FileText
-      },
-      {
-        id: 'pb-2',
-        title: 'Så anpassar du brevet till varje jobb',
-        excerpt: 'Varför personlig anpassning är värt tiden och hur du gör det effektivt.',
-        context: 'cover-letter-writing',
-        readTime: 6,
-        difficulty: 'intermediate',
-        icon: Target
-      },
-      {
-        id: 'pb-3',
-        title: 'Öppningar som fångar intresse (och att undvika)',
-        excerpt: 'Exempel på starka öppningar och klichéer som dödar intresset direkt.',
-        context: 'cover-letter-writing',
-        readTime: 5,
-        difficulty: 'beginner',
-        icon: Lightbulb
-      }
-    ],
-    'job-searching': [
-      {
-        id: 'search-1',
-        title: 'Effektiv jobbsökning: Kvalitet framför kvantitet',
-        excerpt: 'Varför 5 välgenomtänkta ansökningar slår 50 generiska varje gång.',
-        context: 'job-searching',
-        readTime: 6,
-        difficulty: 'beginner',
-        icon: Search
-      },
-      {
-        id: 'search-2',
-        title: 'Dolda jobbmarknaden: Nätverka dig till drömjobbet',
-        excerpt: 'Så hittar du jobb som aldrig annonseras och bygger relationer som ger resultat.',
-        context: 'job-searching',
-        readTime: 10,
-        difficulty: 'advanced',
-        icon: Lightbulb
-      },
-      {
-        id: 'search-3',
-        title: 'Så tolkar du jobbannonser mellan raderna',
-        excerpt: 'Lär dig identifiera vad arbetsgivaren egentligen letar efter.',
-        context: 'job-searching',
-        readTime: 7,
-        difficulty: 'intermediate',
-        icon: Target
-      }
-    ],
-    'interview-prep': [
-      {
-        id: 'interview-1',
-        title: '15 vanliga intervjufrågor och hur du svarar',
-        excerpt: 'Förbered dig på klassikerna som "Beskriv dig själv" och "Varför ska vi anställa dig?"',
-        context: 'interview-prep',
-        readTime: 12,
-        difficulty: 'beginner',
-        icon: MessageSquare
-      },
-      {
-        id: 'interview-2',
-        title: 'Så förbereder du dig på en video-intervju',
-        excerpt: 'Tekniska tips och vanliga misstag att undvika vid digitala intervjuer.',
-        context: 'interview-prep',
-        readTime: 6,
-        difficulty: 'beginner',
-        icon: Target
-      },
-      {
-        id: 'interview-3',
-        title: 'Att klä sig för framgång: Guide till intervju-outfits',
-        excerpt: 'Vad du ska ha på dig för att göra ett professionellt intryck.',
-        context: 'interview-prep',
-        readTime: 5,
-        difficulty: 'beginner',
-        icon: Award
-      },
-      {
-        id: 'interview-4',
-        title: 'Frågor DU bör ställa i intervjun',
-        excerpt: 'Visa engagemang och få insikter som hjälper dig fatta rätt beslut.',
-        context: 'interview-prep',
-        readTime: 6,
-        difficulty: 'intermediate',
-        icon: Lightbulb
-      }
-    ],
-    'rejection-handling': [
-      {
-        id: 'reject-1',
-        title: 'Hantera avslag konstruktivt',
-        excerpt: 'Så bearbetar du besvikelsen och använder avslaget som drivkraft.',
-        context: 'rejection-handling',
-        readTime: 5,
-        difficulty: 'beginner',
-        icon: Lightbulb
-      },
-      {
-        id: 'reject-2',
-        title: 'Begär feedback på din ansökan',
-        excerpt: 'Konkreta tips på hur du ber om återkoppling - och vad du ska göra med den.',
-        context: 'rejection-handling',
-        readTime: 4,
-        difficulty: 'intermediate',
-        icon: MessageSquare
-      }
-    ],
-    'salary-negotiation': [
-      {
-        id: 'salary-1',
-        title: 'Lönesamtalet: Så förbereder och genomför du det',
-        excerpt: 'Strategier för att känna dig säker och få det du är värd.',
-        context: 'salary-negotiation',
-        readTime: 8,
-        difficulty: 'advanced',
-        icon: Award
-      }
-    ],
-    'career-planning': [
-      {
-        id: 'career-1',
-        title: 'Sätta karriärmål som fungerar',
-        excerpt: 'SMARTA mål som ger riktning och motivation i din karriär.',
-        context: 'career-planning',
-        readTime: 7,
-        difficulty: 'beginner',
-        icon: Target
-      },
-      {
-        id: 'career-2',
-        title: 'Från intresse till yrke: Nästa steg',
-        excerpt: 'Så använder du dina intressen för att hitta rätt utbildning och jobb.',
-        context: 'career-planning',
-        readTime: 6,
-        difficulty: 'beginner',
-        icon: Lightbulb
-      }
-    ],
-    'general': [
-      {
-        id: 'general-1',
-        title: 'Jobbsökningens psykologi: Håll motivationen uppe',
-        excerpt: 'Strategier för att orka fortsätta när det känns tufft.',
-        context: 'general',
-        readTime: 6,
-        difficulty: 'beginner',
-        icon: Lightbulb
-      },
-      {
-        id: 'general-2',
-        title: 'Ditt personliga varumärke i jobbsökningen',
-        excerpt: 'Så förmedlar du vem du är och vad du står för.',
-        context: 'general',
-        readTime: 8,
-        difficulty: 'intermediate',
-        icon: Award
-      }
-    ]
-  }
-  
-  return articles[context] || articles.general
+const MATCHNING: Record<KnowledgeContext, (a: ArtikelUrval) => boolean> = {
+  'cv-building': (a) => /(^|-)cv(-|$)/.test(a.id) && a.category !== 'easy-swedish',
+  'cover-letter-writing': (a) => /personligt-brev/.test(a.id),
+  'job-searching': (a) => a.category === 'job-search',
+  'interview-prep': (a) => a.category === 'interview',
+  'rejection-handling': (a) => /avslag|motgang/.test(a.id),
+  'salary-negotiation': (a) => /(^|-)lon/.test(a.id),
+  'career-planning': (a) => a.category === 'career-development',
+  'general': (a) => a.category === 'getting-started',
+}
+
+export function valjArtiklar(lista: ArtikelUrval[], kontext: KnowledgeContext, max: number): ArtikelUrval[] {
+  return lista.filter(MATCHNING[kontext]).slice(0, max)
 }
 
 // Egen komponent (modulnivå, stabil identitet) i stället för en variabel som
@@ -305,17 +119,15 @@ export function ContextualKnowledgeWidget({
 }: ContextualKnowledgeWidgetProps) {
   const { t } = useTranslation()
   const location = useLocation()
+  const { data: allaArtiklar } = useArticles()
 
-  // Helt härlett av context/pathname/maxArticles — ingen egen state behövs.
-  // Låg tidigare i en effekt som bara kopierade beräkningen till två
-  // state-variabler, vilket gav en extra rendering vid varje ruttbyte.
   const currentContext = useMemo(
     () => context || getContextFromPath(location.pathname),
     [context, location.pathname]
   )
   const articles = useMemo(
-    () => getContextualArticles(currentContext).slice(0, maxArticles),
-    [currentContext, maxArticles]
+    () => valjArtiklar((allaArtiklar ?? []) as ArtikelUrval[], currentContext, maxArticles),
+    [allaArtiklar, currentContext, maxArticles]
   )
 
   const getContextTitle = (ctx: KnowledgeContext): string => {
@@ -331,59 +143,55 @@ export function ContextualKnowledgeWidget({
     }
   }
 
+  // Laddar, fel eller inget som matchar: ingenting. Ingen reservlista.
+  if (articles.length === 0) return null
+
   if (variant === 'compact') {
     return (
       <div className={cn(
-        "bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 p-4",
+        "bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 p-4",
         className
       )}>
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-            <ContextIcon context={currentContext} size={18} className="text-amber-600" />
+          <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
+            <ContextIcon context={currentContext} size={18} className="text-amber-700 dark:text-amber-300" />
           </div>
-          <h3 className="font-semibold text-stone-900">{getContextTitle(currentContext)}</h3>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100">{getContextTitle(currentContext)}</h3>
         </div>
-        
+
         <div className="space-y-2">
           {articles.map((article) => (
             <Link
               key={article.id}
               to={`/knowledge-base/article/${article.id}`}
-              className="block bg-white/70 hover:bg-white rounded-lg p-3 transition-colors group"
+              className="block bg-white/70 dark:bg-stone-900/40 hover:bg-white dark:hover:bg-stone-900/70 rounded-lg p-3 transition-colors group"
             >
               <div className="flex items-start gap-3">
-                <article.icon size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
+                <BookOpen size={16} className="text-amber-600 dark:text-amber-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-stone-900 text-sm line-clamp-1 group-hover:text-amber-700">
+                  <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm line-clamp-1 group-hover:text-amber-700 dark:group-hover:text-amber-300">
                     {article.title}
                   </h4>
-                  <p className="text-xs text-stone-700 mt-0.5 line-clamp-1">
-                    {article.excerpt}
-                  </p>
-                  <div className="flex items-center gap-2 mt-1.5 text-xs text-stone-600">
-                    <span>{t('workflow.knowledgeWidget.readTime', { count: article.readTime })}</span>
-                    <span>•</span>
-                    <span className={cn(
-                      article.difficulty === 'beginner' ? "text-green-700" :
-                      article.difficulty === 'intermediate' ? "text-amber-700" :
-                      "text-rose-700"
-                    )}>
-                      {article.difficulty === 'beginner' ? t('workflow.knowledgeWidget.difficulty.beginner') :
-                       article.difficulty === 'intermediate' ? t('workflow.knowledgeWidget.difficulty.intermediate') : t('workflow.knowledgeWidget.difficulty.advanced')}
-                    </span>
-                  </div>
+                  {article.summary && (
+                    <p className="text-xs text-stone-700 dark:text-stone-300 mt-0.5 line-clamp-1">{article.summary}</p>
+                  )}
+                  {typeof article.readingTime === 'number' && article.readingTime > 0 && (
+                    <p className="mt-1.5 text-xs text-stone-600 dark:text-stone-400">
+                      {t('workflow.knowledgeWidget.readTime', { count: article.readingTime })}
+                    </p>
+                  )}
                 </div>
-                <ChevronRight size={16} className="text-stone-300 group-hover:text-amber-400 flex-shrink-0" />
+                <ChevronRight size={16} className="text-stone-400 group-hover:text-amber-500 flex-shrink-0" aria-hidden="true" />
               </div>
             </Link>
           ))}
         </div>
-        
+
         <Link
           to="/knowledge-base"
-          className="flex items-center justify-center gap-1 mt-3 text-sm text-amber-700 hover:text-amber-800 font-medium"
+          className="flex items-center justify-center gap-1 mt-3 text-sm text-amber-800 dark:text-amber-300 hover:text-amber-900 font-medium"
         >
-          <BookOpen size={14} />
+          <BookOpen size={14} aria-hidden="true" />
           {t('workflow.knowledgeWidget.seeAllArticles')}
         </Link>
       </div>
@@ -393,7 +201,7 @@ export function ContextualKnowledgeWidget({
   // Full variant
   return (
     <div className={cn(
-      "bg-white rounded-xl shadow-sm border border-stone-200 p-4",
+      "bg-white dark:bg-stone-800/50 rounded-xl shadow-sm border border-stone-200 dark:border-stone-700/50 p-4",
       className
     )}>
       <div className="flex items-center gap-2.5 mb-3">
@@ -401,8 +209,8 @@ export function ContextualKnowledgeWidget({
           <ContextIcon context={currentContext} size={18} className="text-[var(--c-text)]" />
         </div>
         <div className="min-w-0">
-          <h3 className="font-semibold text-stone-900 text-sm">{getContextTitle(currentContext)}</h3>
-          <p className="text-xs text-stone-600">{t('workflow.knowledgeWidget.selectedForYou')}</p>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-sm">{getContextTitle(currentContext)}</h3>
+          <p className="text-xs text-stone-600 dark:text-stone-400">{t('workflow.knowledgeWidget.selectedForYou')}</p>
         </div>
       </div>
 
@@ -411,31 +219,25 @@ export function ContextualKnowledgeWidget({
           <Link
             key={article.id}
             to={`/knowledge-base/article/${article.id}`}
-            className="flex items-start gap-3 p-3 rounded-xl hover:bg-stone-50 transition-colors group"
+            className="flex items-start gap-3 p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors group"
           >
-            <div className="w-9 h-9 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--c-bg)] transition-colors">
-              <article.icon size={16} className="text-stone-600 group-hover:text-[var(--c-text)]" />
+            <div className="w-9 h-9 bg-stone-100 dark:bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--c-bg)] transition-colors">
+              <BookOpen size={16} className="text-stone-600 dark:text-stone-300 group-hover:text-[var(--c-text)]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-stone-900 text-[13px] leading-snug group-hover:text-[var(--c-text)] transition-colors">
+              <h4 className="font-medium text-stone-900 dark:text-stone-100 text-[13px] leading-snug group-hover:text-[var(--c-text)] transition-colors">
                 {article.title}
               </h4>
-              <p className="text-xs text-stone-700 mt-1 line-clamp-2">
-                {article.excerpt}
-              </p>
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1.5 text-[11px] text-stone-600">
-                <span>{t('workflow.knowledgeWidget.readTime', { count: article.readTime })}</span>
-                <span className={cn(
-                  article.difficulty === 'beginner' ? "text-green-700" :
-                  article.difficulty === 'intermediate' ? "text-amber-700" :
-                  "text-rose-700"
-                )}>
-                  {article.difficulty === 'beginner' ? t('workflow.knowledgeWidget.difficulty.beginner') :
-                   article.difficulty === 'intermediate' ? t('workflow.knowledgeWidget.difficulty.intermediate') : t('workflow.knowledgeWidget.difficulty.advanced')}
-                </span>
-              </div>
+              {article.summary && (
+                <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 line-clamp-2">{article.summary}</p>
+              )}
+              {typeof article.readingTime === 'number' && article.readingTime > 0 && (
+                <p className="mt-1.5 text-[11px] text-stone-600 dark:text-stone-400">
+                  {t('workflow.knowledgeWidget.readTime', { count: article.readingTime })}
+                </p>
+              )}
             </div>
-            <ChevronRight size={16} className="text-stone-300 group-hover:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
+            <ChevronRight size={16} className="text-stone-400 group-hover:text-[var(--c-solid)] flex-shrink-0 mt-0.5" aria-hidden="true" />
           </Link>
         ))}
       </div>

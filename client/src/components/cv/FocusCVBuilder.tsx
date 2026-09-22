@@ -461,7 +461,7 @@ function WorkStep({ cvData, setCvData }: StepProps) {
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t('focusCV.work.editing', 'Redigera arbetslivserfarenhet')}
           </h3>
-          <button
+          <button aria-label={t('common.close')}
             onClick={() => setEditingIndex(null)}
             className="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
           >
@@ -619,7 +619,7 @@ function EducationStep({ cvData, setCvData }: StepProps) {
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t('focusCV.education.editing', 'Redigera utbildning')}
           </h3>
-          <button
+          <button aria-label={t('common.close')}
             onClick={() => setEditingIndex(null)}
             className="text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200"
           >
@@ -792,7 +792,7 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
               className="inline-flex items-center gap-1 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full"
             >
               {skill.name}
-              <button
+              <button aria-label={`${t('common.remove')}: ${skill.name}`}
                 onClick={() => removeSkill(skill.id)}
                 className="ml-1 text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]"
               >

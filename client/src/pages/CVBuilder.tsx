@@ -880,7 +880,7 @@ export default function CVBuilder() {
                 )}
                 <img
                   src={tpl.image}
-                  alt={`Förhandsvisning av mallen ${tpl.name}`}
+                  alt={t('cvBuilder.templates.previewAlt', { name: t(`cvBuilder.templates.meta.${tpl.id}.name`, tpl.name) })}
                   loading="lazy"
                   className="block w-full h-64 object-cover object-top"
                 />
@@ -889,10 +889,10 @@ export default function CVBuilder() {
               {/* Info */}
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <h4 className="font-bold text-lg text-stone-800 dark:text-stone-200">{tpl.name}</h4>
+                  <h4 className="font-bold text-lg text-stone-800 dark:text-stone-200">{t(`cvBuilder.templates.meta.${tpl.id}.name`, tpl.name)}</h4>
                   {selected && <span className="text-xs bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
-                <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">{tpl.desc}</p>
+                <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">{t(`cvBuilder.templates.meta.${tpl.id}.desc`, tpl.desc)}</p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
@@ -910,7 +910,7 @@ export default function CVBuilder() {
                       key={i}
                       className="text-xs px-2 py-1 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-md"
                     >
-                      {feature}
+                      {t(`cvBuilder.templates.meta.${tpl.id}.f${i + 1}`, feature)}
                     </span>
                   ))}
                 </div>
@@ -928,7 +928,7 @@ export default function CVBuilder() {
             </div>
             <div>
               <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
-                {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
+                {(() => { const vald = TEMPLATES.find(tpl => tpl.id === data.template); return vald ? t(`cvBuilder.templates.meta.${vald.id}.name`, vald.name) : '' })()} {t('cvBuilder.templates.isSelected')}
               </p>
               <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
@@ -1131,7 +1131,7 @@ export default function CVBuilder() {
             {data.certificates!.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
                 <input type="text" id={`cv-cert-${cert.id}`} aria-label={t('cvBuilder.sections.certificates')} value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
-                <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                <button aria-label={`${t('common.remove')}: ${cert.name}`} onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -1149,7 +1149,7 @@ export default function CVBuilder() {
               <div key={link.id} className="flex items-center gap-3">
                 <input type="text" id={`cv-link-label-${link.id}`} aria-label={t('cvBuilder.sections.links')} value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <input type="url" id={`cv-link-url-${link.id}`} aria-label="Webbadress" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
-                <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                <button aria-label={`${t('common.remove')}: ${link.label || link.url}`} onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -1406,7 +1406,7 @@ export default function CVBuilder() {
               {t(
                 'cvBuilder.messages.demoDataBannerBody',
                 'Det här är fortfarande exempeltext, inte dina egna uppgifter: {{fields}}. Ersätt det innan du sparar eller skickar CV:t vidare.',
-                { fields: Array.from(demoFields).map(k => DEMO_FIELD_LABELS[k] || k).join(', ') }
+                { fields: Array.from(demoFields).map(k => t(`cvBuilder.templates.demoFields.${k}`, DEMO_FIELD_LABELS[k] || k)).join(', ') }
               )}
             </p>
           </div>
@@ -1434,7 +1434,7 @@ export default function CVBuilder() {
           <div className="absolute inset-x-0 bottom-0 top-16 bg-stone-100 dark:bg-stone-900 rounded-t-3xl overflow-hidden flex flex-col">
             <div className="flex items-center justify-between p-4 bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700">
               <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('cvBuilder.actions.preview')}</h2>
-              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-full"><X className="w-6 h-6 text-stone-700 dark:text-stone-300" /></button>
+              <button aria-label={t('common.close')} onClick={() => setShowPreview(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-full"><X className="w-6 h-6 text-stone-700 dark:text-stone-300" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-2 sm:p-4">
               <CVPreview data={data} />
@@ -1802,7 +1802,7 @@ export default function CVBuilder() {
           <ChevronLeft className="w-5 h-5" />
           {t('cvBuilder.actions.previous')}
         </button>
-        <button
+        <button aria-label={t('common.preview')}
           onClick={() => setShowPreview(true)}
           className="flex items-center justify-center w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-xl"
         >

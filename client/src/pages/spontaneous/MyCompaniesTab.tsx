@@ -30,6 +30,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/DropdownMenu'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 type SortKey = 'newest' | 'name' | 'followup'
 
@@ -82,7 +83,7 @@ function exportToCSV(companies: SpontaneousCompany[], t: Translate) {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `spontanansokningar_${new Date().toISOString().split('T')[0]}.csv`
+  a.download = `spontanansokningar_${formatLocalDate(new Date())}.csv`
   document.body.appendChild(a)
   a.click()
   URL.revokeObjectURL(url)

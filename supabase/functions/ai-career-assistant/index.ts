@@ -25,6 +25,8 @@ import {
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_AI_MS } from '../_shared/fetchMedTimeout.ts'
+import { felstatus } from '../_shared/felstatus.ts'
+import { tolkaBegaran } from './begaran.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -52,13 +54,7 @@ function sanitizeLista(v: unknown, maxAntal: number, maxLangd: number): string[]
     .filter(Boolean)
 }
 
-// Assistant types
-type AssistantType = 'interview-prep' | 'salary-compass' | 'networking-help' | 'education-guide'
-
-interface CareerAssistantRequest {
-  type: AssistantType
-  params: Record<string, unknown>
-}
+// Assistant types och begärans form: se ./begaran.ts (tolkaBegaran).
 
 // Response structures
 interface InterviewPrepResponse {
@@ -362,13 +358,21 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
   }
 
   try {
-    // Parse request
-    const body = await req.json() as CareerAssistantRequest
-    const { type, params } = body
-
-    if (!type || !['interview-prep', 'salary-compass', 'networking-help', 'education-guide'].includes(type)) {
-      return createCorsResponse({ error: 'Invalid assistant type' }, 400, origin)
+    // Parse request. 2026-09-22: trasig JSON och saknade `params` blev 500
+    // (kast i req.json() respektive i promptbyggaren) — och det efter auth,
+    // AI-grind, tokentak och rate limit. Nu 400, före allt uppslag.
+    // Vaktat av begaran.test.ts.
+    let body: unknown
+    try {
+      body = await req.json()
+    } catch {
+      return createCorsResponse({ error: 'Ogiltig JSON' }, 400, origin)
     }
+    const begaran = tolkaBegaran(body)
+    if (!begaran.ok) {
+      return createCorsResponse({ error: begaran.error }, 400, origin)
+    }
+    const { type, params } = begaran
 
     // Auth check
     const authHeader = req.headers.get('Authorization')
@@ -526,6 +530,8 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
 
   } catch (err) {
     console.error('[ai-career-assistant] Error:', err)
-    return createCorsResponse({ error: 'Ett fel uppstod' }, 500, origin)
+    // Timeout mot OpenRouter = 504, inte 500. Se _shared/felstatus.ts.
+    const fel = felstatus(err)
+    return createCorsResponse({ error: fel.error }, fel.status, origin)
   }
 }))

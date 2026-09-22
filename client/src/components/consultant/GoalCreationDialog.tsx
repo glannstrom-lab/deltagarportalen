@@ -350,7 +350,7 @@ export function GoalCreationDialog({
             <h2 id="goal-dialog-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Skapa mål
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
               {step === 'participant' && 'Välj deltagare'}
               {step === 'template' && 'Välj mall eller skapa eget'}
               {step === 'customize' && 'Anpassa målet'}
@@ -410,7 +410,7 @@ export function GoalCreationDialog({
                       <p className="font-medium text-stone-900 dark:text-stone-100">
                         {p.first_name} {p.last_name}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-600">
+                      <p className="text-sm text-stone-500 dark:text-stone-400">
                         {p.email}
                       </p>
                     </div>
@@ -490,7 +490,7 @@ export function GoalCreationDialog({
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-stone-500 dark:text-stone-600">
+                  <p className="text-sm text-stone-500 dark:text-stone-400">
                     Förslag utifrån deltagarens CV och sparade jobb. Välj ett för att fylla i målet.
                   </p>
                 )}
@@ -516,7 +516,7 @@ export function GoalCreationDialog({
                       >
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg">
-                            <Icon className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+                            <Icon className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center gap-2 mb-1">
@@ -527,7 +527,7 @@ export function GoalCreationDialog({
                             <h4 className="font-medium text-stone-900 dark:text-stone-100">
                               {template.title}
                             </h4>
-                            <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
+                            <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                               {template.description}
                             </p>
                           </div>
@@ -550,7 +550,7 @@ export function GoalCreationDialog({
                 <p className="font-medium text-stone-700 dark:text-stone-300">
                   Skapa eget mål
                 </p>
-                <p className="text-sm text-stone-500 dark:text-stone-600">
+                <p className="text-sm text-stone-500 dark:text-stone-400">
                   Skapa ett anpassat SMART-mål från grunden
                 </p>
               </button>
@@ -591,7 +591,7 @@ export function GoalCreationDialog({
                 </summary>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
+                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                     S - Specifikt
                   </label>
                   <textarea
@@ -609,7 +609,7 @@ export function GoalCreationDialog({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
+                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                     M - Mätbart
                   </label>
                   <textarea
@@ -627,7 +627,7 @@ export function GoalCreationDialog({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
+                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                     A - Accepterat/Uppnåeligt
                   </label>
                   <textarea
@@ -645,7 +645,7 @@ export function GoalCreationDialog({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
+                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                     R - Relevant
                   </label>
                   <textarea
@@ -663,7 +663,7 @@ export function GoalCreationDialog({
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-600 mb-1">
+                  <label className="block text-sm font-medium text-stone-600 dark:text-stone-400 mb-1">
                     T - Tidsbundet
                   </label>
                   <textarea

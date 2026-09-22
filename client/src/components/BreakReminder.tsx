@@ -1,16 +1,23 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Coffee, X, Clock, CheckCircle } from '@/components/ui/icons'
 import { useSettingsStore } from '../stores/settingsStore'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 const PAUSE_TIMEOUT = 60 * 1000 // 1 minut inaktivitet = paus
 
+// Pausförslagen — nycklar under breakReminder.suggestions.
+const FORSLAG = ['stretch', 'walk', 'water', 'window', 'breathe', 'rest'] as const
+
 interface BreakReminderProps {
   workDuration?: number // minuter, default 15
 }
 
 export default function BreakReminder({ workDuration = 15 }: BreakReminderProps) {
+  const { t } = useTranslation()
   const { calmMode } = useSettingsStore()
+  // Satt = användaren har valt "Ja, ta en paus" och dialogen visar ett förslag.
+  const [pausForslag, setPausForslag] = useState<(typeof FORSLAG)[number] | null>(null)
   const [showReminder, setShowReminder] = useState(false)
   const [secondsActive, setSecondsActive] = useState(0)
   // En ref, inte state. Som state startade varje musrörelse om räkneintervallet
@@ -86,6 +93,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
 
   const dismissReminder = useCallback(() => {
     setShowReminder(false)
+    setPausForslag(null)
     setSecondsActive(0)
     setDismissed(true)
 
@@ -100,28 +108,24 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     }, 5 * 60 * 1000)
   }, [])
 
+  // Förr: `alert()` med "Allt sparas automatiskt" — en blockerande
+  // webbläsarruta, och ett löfte som inte stämmer (flera formulär sparar först
+  // på Spara). Nu visas förslaget i samma dialog, och ingenting lovas om sparning.
   const takeBreak = useCallback(() => {
+    setSecondsActive(0)
+    setPausForslag(FORSLAG[Math.floor(Math.random() * FORSLAG.length)])
+  }, [])
+
+  const tillbakaFranPaus = useCallback(() => {
+    setPausForslag(null)
     setShowReminder(false)
     setSecondsActive(0)
-    
-    // Förslag på pausaktiviteter
-    const suggestions = [
-      'Sträck på dig och rör på nacken',
-      'Gå en kort promenad',
-      'Drick ett glas vatten',
-      'Titta ut genom fönstret i 30 sekunder',
-      'Gör några djupa andetag',
-      'Stäng ögonen och vila i en minut',
-    ]
-    
-    const randomSuggestion = suggestions[Math.floor(Math.random() * suggestions.length)]
-    alert(`🌿 Pausförslag: ${randomSuggestion}\n\nTa den tid du behöver. Allt sparas automatiskt.`)
   }, [])
 
   // Påminnelsen är en modal: fokus in, Tab stannar kvar, Esc = "Fortsätt jobba",
   // och fokus tillbaka dit användaren var. Den saknade alla fyra.
   const dialogRef = useFocusTrap<HTMLDivElement>(calmMode && showReminder, {
-    onEscape: dismissReminder,
+    onEscape: pausForslag ? tillbakaFranPaus : dismissReminder,
   })
 
   // Visa inte om lugn läge inte är aktivt
@@ -134,8 +138,8 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
       const minutesLeft = Math.ceil((REMINDER_INTERVAL - secondsActive) / 60)
       return (
         <div className="fixed bottom-24 right-6 z-30 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-stone-200 dark:border-stone-700 text-sm text-stone-600 dark:text-stone-300 flex items-center gap-2">
-          <Clock size={14} />
-          Paus om {minutesLeft} min
+          <Clock size={14} aria-hidden="true" />
+          {t('breakReminder.breakIn', { count: minutesLeft })}
         </div>
       )
     }
@@ -153,48 +157,68 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
       >
         {/* Icon */}
         <div className="w-16 h-16 bg-[var(--c-accent)]/40 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Coffee className="w-8 h-8 text-[var(--c-text)]" />
+          <Coffee className="w-8 h-8 text-[var(--c-text)]" aria-hidden="true" />
         </div>
 
-        {/* Content */}
-        <h2 id="pauspaminnelse-rubrik" className="text-xl font-bold text-stone-900 dark:text-stone-100 text-center mb-2">
-          Dags för en paus?
-        </h2>
-        <p className="text-stone-600 dark:text-stone-300 text-center mb-6">
-          Du har varit aktiv i {workDuration} minuter. Det är okej att ta en paus - 
-          allt sparas automatiskt.
-        </p>
+        {pausForslag ? (
+          <>
+            <h2 id="pauspaminnelse-rubrik" className="text-xl font-bold text-stone-900 dark:text-stone-100 text-center mb-2">
+              {t('breakReminder.pauseHeading')}
+            </h2>
+            <div className="p-4 bg-[var(--c-bg)] rounded-xl mb-6">
+              <p className="text-sm text-[var(--c-text)] font-medium text-center">
+                {t(`breakReminder.suggestions.${pausForslag}`)}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={tillbakaFranPaus}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-semibold hover:bg-[var(--c-text)] transition-colors"
+            >
+              <CheckCircle size={18} aria-hidden="true" />
+              {t('breakReminder.back')}
+            </button>
+          </>
+        ) : (
+          <>
+            <h2 id="pauspaminnelse-rubrik" className="text-xl font-bold text-stone-900 dark:text-stone-100 text-center mb-2">
+              {t('breakReminder.heading')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-center mb-6">
+              {t('breakReminder.body', { count: workDuration })}
+            </p>
 
-        {/* Suggestion */}
-        <div className="p-4 bg-[var(--c-bg)] rounded-xl mb-6">
-          <p className="text-sm text-[var(--c-text)] font-medium">
-            💡 Förslag: Sträck på dig, drick vatten, eller titta ut genom fönstret.
-          </p>
-        </div>
+            <div className="p-4 bg-[var(--c-bg)] rounded-xl mb-6">
+              <p className="text-sm text-[var(--c-text)] font-medium">
+                {t('breakReminder.tip')}
+              </p>
+            </div>
 
-        {/* Actions */}
-        <div className="space-y-3">
-          <button
-            onClick={takeBreak}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-semibold hover:bg-[var(--c-text)] transition-colors"
-          >
-            <CheckCircle size={18} />
-            Ja, ta en paus
-          </button>
-          
-          <button
-            onClick={dismissReminder}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-xl font-medium hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
-          >
-            <X size={18} />
-            Fortsätt jobba
-          </button>
-        </div>
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={takeBreak}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-semibold hover:bg-[var(--c-text)] transition-colors"
+              >
+                <CheckCircle size={18} aria-hidden="true" />
+                {t('breakReminder.takeBreak')}
+              </button>
 
-        {/* Gentle note */}
-        <p className="text-xs text-stone-600 dark:text-stone-400 text-center mt-4">
-          Du kan alltid pausa när du vill. Din hälsa är viktigare än något jobb.
-        </p>
+              <button
+                type="button"
+                onClick={dismissReminder}
+                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-xl font-medium hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
+              >
+                <X size={18} aria-hidden="true" />
+                {t('breakReminder.keepWorking')}
+              </button>
+            </div>
+
+            <p className="text-xs text-stone-600 dark:text-stone-400 text-center mt-4">
+              {t('breakReminder.note')}
+            </p>
+          </>
+        )}
       </div>
     </div>
   )

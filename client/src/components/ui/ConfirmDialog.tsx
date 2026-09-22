@@ -5,7 +5,8 @@
  */
 
 import { useState, useCallback, createContext, useContext } from 'react'
-import type { ReactNode } from 'react'
+import type { ReactNode, KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -124,14 +125,50 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
     autoFocus: true,
   })
 
+  /*
+    Tangenter och musnedtryck hanteras HÄR och stoppas, i stället för att nå
+    `document`. En `Dialog` under bekräftelsen har en fokusfälla som lyssnar på
+    `document`: den stänger sig vid `mousedown` utanför sin egen ruta och vid
+    Escape — och bekräftelsen ligger alltid utanför dess ruta. Utan stoppet
+    stängdes dialogen under medan man svarade på frågan. Tab hanteras här av
+    samma skäl: den undre fällan flyttade annars fokus tillbaka in i sig.
+  */
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    e.stopPropagation()
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      handleCancel()
+      return
+    }
+    if (e.key === 'Tab' && dialogRef.current) {
+      const knappar = Array.from(dialogRef.current.querySelectorAll<HTMLElement>('button:not([disabled])'))
+      if (knappar.length === 0) return
+      const forsta = knappar[0]
+      const sista = knappar[knappar.length - 1]
+      if (e.shiftKey && document.activeElement === forsta) {
+        e.preventDefault()
+        sista.focus()
+      } else if (!e.shiftKey && document.activeElement === sista) {
+        e.preventDefault()
+        forsta.focus()
+      }
+    }
+  }
+
   return (
     <ConfirmDialogContext.Provider value={{ confirm }}>
       {children}
 
-      {/* Dialog Overlay */}
-      {state.isOpen && (
+      {/*
+        Portal till document.body: `Dialog` sätter `inert` på #root medan den
+        är öppen. Låg bekräftelsen kvar i #root blev den okklickbar och onåbar
+        för tangentbordet så fort den öppnades ovanpå en dialog.
+      */}
+      {state.isOpen && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50 dark:bg-stone-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+          onKeyDown={handleKeyDown}
+          onMouseDown={(e) => e.stopPropagation()}
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-stone-900/50 dark:bg-stone-950/70 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={handleCancel}
           role="dialog"
           aria-modal="true"
@@ -193,7 +230,8 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </ConfirmDialogContext.Provider>
   )

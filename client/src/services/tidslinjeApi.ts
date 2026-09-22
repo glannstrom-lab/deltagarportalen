@@ -129,10 +129,16 @@ function passTillHandelse(s: ActivitySession): TidslinjeHandelse | null {
   // Bara pass som fått ett utfall är historia; kommande pass hör hemma i planen.
   const utfall = s.attendance ? NARVARO[s.attendance as string] ?? s.attendance : s.self_checkin_at ? 'Incheckad' : null
   if (!utfall) return null
+  // `date` + `start_time` är lokal (svensk) tid utan tidszon; övriga källor är
+  // timestamptz i UTC ("…+00:00"). Tidigare jämfördes de som strängar, så ett
+  // pass kl. 09:00 sorterades före en journalanteckning kl. 10:30 samma dag
+  // (08:30Z). Nu görs passets tid om till en riktig tidpunkt (ISO/UTC).
+  // `start_time` är NOT NULL i prod (0 av 88 saknar den, 2026-09-22).
+  const lokal = new Date(`${s.date}T${s.start_time}`)
   return {
     id: `pass-${s.id}`,
     typ: 'pass',
-    tidpunkt: `${s.date}T${s.start_time ?? '00:00'}`,
+    tidpunkt: Number.isNaN(lokal.getTime()) ? `${s.date}T${s.start_time}` : lokal.toISOString(),
     titel: `Pass: ${s.title}`,
     detalj: utfall,
     sektion: 'aktivitet',
@@ -164,7 +170,13 @@ export async function hamtaTidslinje(participantId: string): Promise<TidslinjeRe
       console.warn(`[tidslinje] ${KALLOR[i][0]} kunde inte läsas`, u.reason instanceof Error ? u.reason.message : u.reason)
     }
   })
-  handelser.sort((a, b) => (a.tidpunkt < b.tidpunkt ? 1 : a.tidpunkt > b.tidpunkt ? -1 : 0))
+  // Sortera på tidpunkten, inte på strängen — "…+00:00", "…Z" och olika
+  // decimaler i sekunderna jämförs annars fel.
+  const tid = (h: TidslinjeHandelse) => {
+    const t = Date.parse(h.tidpunkt)
+    return Number.isNaN(t) ? 0 : t
+  }
+  handelser.sort((a, b) => tid(b) - tid(a))
   return { handelser, misslyckadeKallor }
 }
 

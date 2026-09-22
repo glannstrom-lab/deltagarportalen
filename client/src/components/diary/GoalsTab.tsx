@@ -11,7 +11,7 @@ import {
 import { useWeeklyGoals } from '@/hooks/useDiary'
 import type { WeeklyGoal } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, ErrorState } from '@/components/ui'
 
 const CATEGORIES = [
   { id: 'career', labelKey: 'diary.goals.categories.career', emoji: '💼', color: 'bg-blue-100 text-blue-700 border-blue-200' },
@@ -31,10 +31,12 @@ function AddGoalForm({
   onAdd,
   onCancel
 }: {
-  onAdd: (goal: { goal_text: string; category: string; priority: number }) => void
+  /** `false` = sparades inte; formuläret ligger då kvar med texten. */
+  onAdd: (goal: { goal_text: string; category: string; priority: number }) => Promise<boolean>
   onCancel: () => void
 }) {
   const { t } = useTranslation()
+  const [sparfel, setSparfel] = useState(false)
   const [text, setText] = useState('')
   const [category, setCategory] = useState('general')
   const [priority, setPriority] = useState(2)
@@ -45,8 +47,12 @@ function AddGoalForm({
     if (!text.trim()) return
 
     setIsSubmitting(true)
+    setSparfel(false)
     try {
-      await onAdd({ goal_text: text.trim(), category, priority })
+      if (!(await onAdd({ goal_text: text.trim(), category, priority }))) {
+        setSparfel(true)
+        return
+      }
       setText('')
       setCategory('general')
       setPriority(2)
@@ -120,6 +126,12 @@ function AddGoalForm({
             </div>
           </div>
         </div>
+
+        {sparfel && (
+          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
+            {t('diary.saveFailed')}
+          </p>
+        )}
 
         <div className="flex gap-3">
           <Button type="button" variant="outline" onClick={onCancel} className="flex-1">
@@ -304,7 +316,7 @@ function WeekProgress({
 
 export function GoalsTab() {
   const { t } = useTranslation()
-  const { goals, isLoading, createGoal, toggleComplete, addReflection, deleteGoal, completedCount, totalCount } = useWeeklyGoals()
+  const { goals, isLoading, isError, retry, createGoal, toggleComplete, addReflection, deleteGoal, completedCount, totalCount } = useWeeklyGoals()
   const [showAddForm, setShowAddForm] = useState(false)
 
   // Get current week range
@@ -324,9 +336,23 @@ export function GoalsTab() {
     )
   }
 
+  if (isError) {
+    return (
+      <Card>
+        <ErrorState
+          title={t('diary.loadErrorTitle')}
+          message={t('diary.loadErrorBody')}
+          onRetry={() => { void retry() }}
+        />
+      </Card>
+    )
+  }
+
   const handleAddGoal = async (goalData: { goal_text: string; category: string; priority: number }) => {
-    await createGoal(goalData)
+    const nytt = await createGoal(goalData)
+    if (!nytt) return false
     setShowAddForm(false)
+    return true
   }
 
   const pendingGoals = goals.filter(g => !g.is_completed)

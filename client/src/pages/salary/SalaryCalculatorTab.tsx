@@ -35,6 +35,7 @@ import { salaryApi, type SavedSalarySearch } from '@/services/careerApi'
 import { useProfileStore } from '@/stores/profileStore'
 import { logger } from '@/lib/logger'
 import type { Loneval } from '../Salary'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Props {
   val: Loneval
@@ -150,7 +151,7 @@ export default function SalaryCalculatorTab({ val, onValChange }: Props) {
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${t('salary.calculator.exportFilename')}-${new Date().toISOString().split('T')[0]}.txt`
+    a.download = `${t('salary.calculator.exportFilename')}-${formatLocalDate(new Date())}.txt`
     a.click()
     window.URL.revokeObjectURL(url)
   }

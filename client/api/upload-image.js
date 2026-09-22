@@ -176,16 +176,26 @@ const hanterare = async function handler(req, res) {
       return res.status(400).json({ error: 'Invalid file type. Allowed: JPEG, PNG, GIF, WebP' });
     }
 
-    // Läs buffer
+    // 2026-09-22: kroppen lästes tidigare HELT till minnet och storleken
+    // kontrollerades efteråt. Nu avvisas en för stor Content-Length innan en
+    // byte läses, och läsningen avbryts vid gränsen oavsett vad headern sa
+    // (den kan saknas vid chunked överföring, och den kan ljuga).
+    // Vaktat av src/test/api-upload-image-storlek.test.ts.
+    const angiven = Number(req.headers['content-length']);
+    if (Number.isFinite(angiven) && angiven > MAX_FILE_SIZE) {
+      return res.status(400).json({ error: 'File too large. Max 5MB' });
+    }
+
     const chunks = [];
+    let last = 0;
     for await (const chunk of req) {
+      last += chunk.length;
+      if (last > MAX_FILE_SIZE) {
+        return res.status(400).json({ error: 'File too large. Max 5MB' });
+      }
       chunks.push(chunk);
     }
     const buffer = Buffer.concat(chunks);
-
-    if (buffer.length > MAX_FILE_SIZE) {
-      return res.status(400).json({ error: 'File too large. Max 5MB' });
-    }
 
     // Magic-byte-validering — stark (klienten kan inte spoofa byte-mönster)
     const detectedType = detectImageType(buffer);

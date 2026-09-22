@@ -8,8 +8,8 @@
 
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
-import { getCurrentUser, handleStorageError } from './_shared'
-import { formatLocalDate } from '../aktivitetSchema'
+import { getCurrentUser, handleStorageError, kastaLagringsFel } from './_shared'
+import { addDays, formatLocalDate } from '../aktivitetSchema'
 
 interface MoodLogData {
   mood_level: number
@@ -228,11 +228,21 @@ export const moodApi = {
     }))
   },
 
+  /**
+   * Antal dagar i följd med en humörlogg, räknat bakåt från idag eller igår.
+   *
+   * 2026-09-22, två fel:
+   *  · Läsfel gav 0 — "ingen svit" till någon som loggat varje dag. Nu
+   *    kastas `LagringsFel`; anroparen avgör vad som visas.
+   *  · Räkningen stegade bakåt med 86 400 000 ms från lokal midnatt. Över
+   *    sommartidens slut (sista söndagen i oktober) är dygnet 25 timmar, så
+   *    markören hamnade 01:00 i stället för 00:00 och sviten bröts. Nu
+   *    jämförs datumsträngar och stegas med kalenderdagar (`addDays`).
+   */
   async getStreak(): Promise<number> {
     const user = await getCurrentUser()
     if (!user) return 0
 
-    // Beräkna streak manuellt istället för RPC
     const { data, error } = await supabase
       .from('mood_logs')
       .select('log_date')
@@ -240,43 +250,19 @@ export const moodApi = {
       .order('log_date', { ascending: false })
       .limit(365)
 
-    if (error) {
-      handleStorageError(error, 'hämta humör-streak')
-      return 0
-    }
-
+    if (error) kastaLagringsFel(error, 'hämta humör-streak')
     if (!data || data.length === 0) return 0
 
-    // Räkna streak från idag eller igår bakåt
+    const datum = new Set(data.map((d: { log_date: string }) => d.log_date.slice(0, 10)))
+    const idag = formatLocalDate(new Date())
+
+    // Sviten lever om man loggat idag eller igår.
+    let dag = datum.has(idag) ? idag : addDays(idag, -1)
     let streak = 0
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-
-    const dates = data.map((d: { log_date: string }) => {
-      const date = new Date(d.log_date)
-      date.setHours(0, 0, 0, 0)
-      return date.getTime()
-    })
-
-    // Kolla om vi har en loggning idag eller igår
-    const todayTime = today.getTime()
-    const yesterdayTime = todayTime - 86400000
-
-    let checkDate = todayTime
-    if (!dates.includes(todayTime)) {
-      if (dates.includes(yesterdayTime)) {
-        checkDate = yesterdayTime
-      } else {
-        return 0 // Ingen streak om vi inte loggat idag eller igår
-      }
-    }
-
-    // Räkna streak bakåt
-    while (dates.includes(checkDate)) {
+    while (datum.has(dag)) {
       streak++
-      checkDate -= 86400000
+      dag = addDays(dag, -1)
     }
-
     return streak
   }
 }

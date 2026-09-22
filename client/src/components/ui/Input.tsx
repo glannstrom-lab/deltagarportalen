@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { inputBase, labelBase, touch } from '@/styles/design-system'
 import { AlertCircle, Eye, EyeOff, ChevronDown } from '@/components/ui/icons'
 import { useState, forwardRef, useId } from 'react'
+import { useTranslation } from 'react-i18next'
 
 // ============================================
 // TEXT INPUT
@@ -110,6 +111,7 @@ interface PasswordInputProps extends Omit<InputProps, 'type' | 'rightIcon'> {
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false)
+    const { t } = useTranslation()
 
     return (
       <Input
@@ -120,7 +122,7 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
-            aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+            aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
             aria-pressed={showPassword}
           >
             {showPassword ? (

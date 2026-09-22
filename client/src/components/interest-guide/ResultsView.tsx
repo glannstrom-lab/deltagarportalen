@@ -659,7 +659,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           >
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-2xl font-bold">{t('interestGuide.results.compareOccupations')}</h2>
-              <button onClick={() => setShowComparison(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+              <button aria-label={t('common.close')} onClick={() => setShowComparison(false)} className="p-2 hover:bg-gray-100 rounded-lg">
                 <X className="w-6 h-6" />
               </button>
             </div>

@@ -7,6 +7,27 @@
     "empty": "Här samlas en tillbakablick på din vecka när du har skrivit i dagboken eller loggat ditt mående.",
     "failed": "Vi kunde inte skapa en reflektion just nu. Dina anteckningar är orörda."
   },
+  "breakReminder": {
+    "breakIn_one": "Paus om {{count}} min",
+    "breakIn_other": "Paus om {{count}} min",
+    "heading": "Dags för en paus?",
+    "body_one": "Du har varit aktiv i {{count}} minut. Det är okej att ta en paus.",
+    "body_other": "Du har varit aktiv i {{count}} minuter. Det är okej att ta en paus.",
+    "tip": "Förslag: sträck på dig, drick vatten eller titta ut genom fönstret.",
+    "takeBreak": "Ja, ta en paus",
+    "keepWorking": "Fortsätt jobba",
+    "note": "Du kan alltid pausa när du vill. Din hälsa är viktigare än något jobb.",
+    "pauseHeading": "Ta den tid du behöver",
+    "back": "Jag är tillbaka",
+    "suggestions": {
+      "stretch": "Sträck på dig och rör på nacken.",
+      "walk": "Gå en kort promenad.",
+      "water": "Drick ett glas vatten.",
+      "window": "Titta ut genom fönstret i 30 sekunder.",
+      "breathe": "Andas djupt några gånger.",
+      "rest": "Stäng ögonen och vila i en minut."
+    }
+  },
   "celebration": {
     "applicationSent": {
       "title": "Ansökan är skickad",
@@ -93,6 +114,7 @@
     "removeTag": "Ta bort {{tag}}",
     "suggestions": "Förslag",
     "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag.",
+    "noTagsYet": "Inga tillagda ännu",
     "select": "Välj...",
     "copied": "Kopierat!",
     "saving": "Sparar...",
@@ -1171,7 +1193,51 @@
       "fullBuilder": "Eller använd den fullständiga CV-byggaren"
     },
     "onboarding": {
-      "closeGuide": "Stäng guiden"
+      "closeGuide": "Stäng guiden",
+      "steps": {
+        "welcome": {
+          "title": "Välkommen till CV-byggaren!",
+          "description": "Här skapar du ett CV steg för steg. Guiden visar dig vägen.",
+          "tip": "Det du skriver sparas medan du arbetar, så du kan fortsätta senare."
+        },
+        "design": {
+          "title": "Välj design",
+          "description": "Börja med att välja en mall och färg som passar dig och din bransch.",
+          "tip": "Moderna mallar passar bra för kreativa yrken, medan klassiska fungerar överallt."
+        },
+        "personal": {
+          "title": "Fyll i dina uppgifter",
+          "description": "Lägg till ditt namn och dina kontaktuppgifter. En profilbild är valfri.",
+          "tip": "Använder du en bild — välj en tydlig bild där du ser vänlig ut."
+        },
+        "profile": {
+          "title": "Skriv en sammanfattning",
+          "description": "Berätta kort vem du är och vad du söker. Det är ofta det första en rekryterare läser.",
+          "tip": "Använd aktiva verb och nämn dina starkaste sidor. 3–5 meningar räcker."
+        },
+        "experience": {
+          "title": "Lägg till erfarenhet",
+          "description": "Beskriv dina tidigare jobb och utbildningar. Var konkret!",
+          "tip": "Visa resultat med siffror när du kan, till exempel \"Ökade försäljningen med 25 %\"."
+        },
+        "skills": {
+          "title": "Lista dina kompetenser",
+          "description": "Lägg till både tekniska och sociala färdigheter. Bedöm dig själv ärligt.",
+          "tip": "Titta på jobbannonser för att se vilka kompetenser som efterfrågas."
+        },
+        "preview": {
+          "title": "Förhandsgranska och exportera",
+          "description": "Se hur ditt CV ser ut och ladda ner det som PDF när du är nöjd.",
+          "tip": "Be någon du litar på att läsa igenom innan du skickar det."
+        }
+      },
+      "stepOf": "Steg {{current}} av {{total}}",
+      "tipLabel": "Tips!",
+      "back": "Tillbaka",
+      "skip": "Hoppa över",
+      "start": "Kom igång!",
+      "next": "Nästa",
+      "goToStep": "Gå till steg {{current}} av {{total}}: {{title}}"
     },
     "educationEditor": {
       "emptyTitle": "Inga utbildningar tillagda ännu",
@@ -1370,6 +1436,7 @@
       "writing": "Skriver …",
       "writeMyself": "Jag skriver själv",
       "templateHeading": "Välj hur brevet ska se ut",
+      "templateHint": "Utseendet syns i förhandsvisningen och i PDF:en. Du kan byta när som helst.",
       "jobHeading": "Vilket jobb gäller brevet?",
       "jobBody": "Välj ett du sparat, eller fyll i själv.",
       "savedJobsHeading": "Dina sparade jobb",
@@ -2997,7 +3064,42 @@
       }
     },
     "intro": {
-      "questionsLayout": "Så här är frågorna upplagda"
+      "questionsLayout": "Så här är frågorna upplagda",
+      "whatYouGet": "Detta får du",
+      "get1": "En bild av vilka typer av arbete som lockar dig",
+      "get2": "Hur du beskriver dig själv på fem personlighetsdrag",
+      "get3": "Dina egna svar om vad som fungerar bra och mindre bra för dig i arbete",
+      "get4": "Förslag bland {{count}} yrken, med anpassningar att prata vidare om",
+      "sections": {
+        "work": {
+          "name": "Arbetsintressen",
+          "description": "Vilka typer av arbete tilltalar dig?"
+        },
+        "personality": {
+          "name": "Personlighet",
+          "description": "Hur skulle du beskriva dig själv?"
+        },
+        "interests": {
+          "name": "Intresseområden",
+          "description": "Vad tycker du är intressant?"
+        },
+        "conditions": {
+          "name": "Dina förutsättningar",
+          "description": "Hur upplever du det du orkar och klarar i arbete?"
+        }
+      },
+      "questionsCount_one": "{{count}} fråga",
+      "questionsCount_other": "{{count}} frågor",
+      "whatItIs": "Vad det här är, och inte är",
+      "whatItIsBody1": "Frågorna är skrivna av oss och inspirerade av tre etablerade ramverk: Hollands yrkesvalsteori (RIASEC), femfaktormodellen och WHO:s sätt att beskriva funktion i arbete.",
+      "whatItIsStrong": "Det är ingen psykologisk testning och ingen bedömning av dig.",
+      "whatItIsBody2": "Det är dina egna svar, sammanställda så att du får något att utgå från — i ett samtal med din konsulent, eller för egen del. Ett annat svar en annan dag ger ett annat resultat, och det är inte konstigt.",
+      "duration": "~10 minuter",
+      "totalQuestions": "{{count}} frågor totalt",
+      "continue": "Fortsätt där du slutade",
+      "restart": "Börja om från början",
+      "start": "Starta intresseguiden",
+      "footer": "Dina svar sparas medan du svarar, så du kan pausa och fortsätta när du vill."
     },
     "jobCard": {
       "careerPath": "Karriärväg:"
@@ -3012,7 +3114,42 @@
       "yellowRedAreasDesc": "Där anpassningar kan hjälpa. Enligt Arbetsmiljölagen har du rätt till rimliga arbetsanpassningar.",
       "rememberHeading": "Kom ihåg",
       "compareOccupations": "Jämför yrken",
-      "comparisonWithPreviousTest": "Jämförelse med tidigare test"
+      "comparisonWithPreviousTest": "Jämförelse med tidigare test",
+      "calcFailed": "Kunde inte beräkna din profil. Försök göra om testet.",
+      "fileHeading": "INTRESSEGUIDEN – RESULTAT",
+      "fileRiasec": "Dina tre starkaste intresseområden (RIASEC): {{types}}",
+      "fileBigFive": "Din personlighetsprofil bygger på fem dimensioner ur Big Five-modellen.",
+      "fileCreated": "Skapad: {{date}}",
+      "fileName": "intresseguide-resultat",
+      "shareTitle": "Mitt resultat i intresseguiden",
+      "shareText": "Jag har gjort intressetestet på Jobin och hittat yrken som kan passa mig!",
+      "unchanged": "Oförändrad",
+      "doneHeading": "Du har hittat din riktning",
+      "doneLead": "Här är vad dina svar säger om vilka yrken som kan passa dig.",
+      "riasecType": "Din RIASEC-typ",
+      "goodMatches": "Bra matchningar",
+      "goodMatchesUnit": "yrken (70%+)",
+      "totalOccupations": "Totalt yrken",
+      "toExplore": "att utforska",
+      "fromDate": "Från {{date}}",
+      "testsTotal_one": "{{count}} test totalt",
+      "testsTotal_other": "{{count}} tester totalt",
+      "earlierResults_one": "Tidigare resultat ({{count}} test)",
+      "earlierResults_other": "Tidigare resultat ({{count}} tester)",
+      "current": "Aktuellt",
+      "topOccupation": "Topp: {{name}}",
+      "top5Heading": "Topp 5 yrkesmatchningar:",
+      "top3Heading": "Dina topp 3 yrkesmatchningar",
+      "seeAll": "Se alla",
+      "matchLabel": "match",
+      "tipLabel": "Tips:",
+      "tipText": "Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.",
+      "nextStep": "Nästa steg",
+      "createCvHeading": "Skapa ditt CV",
+      "createCvText": "Använd dina insikter från intresseguiden för att bygga ett professionellt CV",
+      "download": "Ladda ner resultat",
+      "share": "Dela resultat",
+      "restart": "Gör om testet"
     },
     "occupations": {
       "growingShare": "av dem växer, enligt vår redaktionella bedömning",
@@ -3839,6 +3976,9 @@
       "sun": "Sön"
     },
     "noTitle": "Utan titel",
+    "loadErrorTitle": "Vi kunde inte hämta din dagbok just nu",
+    "loadErrorBody": "Det betyder inte att något är borta. Försök igen om en stund.",
+    "saveFailed": "Det gick inte att spara just nu. Det du skrev ligger kvar — försök igen om en stund.",
     "tabs": {
       "journal": "Dagbok",
       "mood": "Humör",
@@ -4003,6 +4143,7 @@
       }
     },
     "journal": {
+      "saveNeedsConsent": "Anteckningen sparades inte. Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Det gör du under fliken Humör. Texten ligger kvar här.",
       "writeModal": {
         "title": "Ny dagboksanteckning",
         "titleLabel": "Titel på inlägget (valfritt)",
@@ -4221,6 +4362,43 @@
       "emergencyContacts": "Akutkontakter",
       "breathingExercise": "Andningsövning",
       "startBreathing": "Starta andningsövning",
+      "phase": {
+        "in": "Andas in...",
+        "hold": "Håll andan...",
+        "out": "Andas ut...",
+        "rest": "Vila..."
+      },
+      "round": "Omgång {{count}}",
+      "breathingAffirmation": "Du är här. Du andas. Just nu räcker det.",
+      "stopExercise": "Avsluta övningen",
+      "readyToContinue": "Jag är redo att gå vidare",
+      "call": "Ring {{number}}",
+      "breathingIntro": "En enkel andningsövning kan lugna ditt nervsystem. Det tar bara några minuter.",
+      "shareHeading": "Berätta för din arbetskonsulent",
+      "shareText": "Om du mår dåligt kan det vara bra att berätta för din arbetskonsulent. Hen kan anpassa ditt program eller ge dig extra stöd under den här tiden.",
+      "sendMessage": "Skicka meddelande till konsulent",
+      "reminder": "Kom ihåg: Det är helt okej att inte må bra. Du är inte ensam i det här. Hjälpen finns här när du behöver den.",
+      "steps": {
+        "s54321": {
+          "1": "Hitta 5 saker du kan se",
+          "2": "Hitta 4 saker du kan röra vid",
+          "3": "Hitta 3 saker du kan höra",
+          "4": "Hitta 2 saker du kan känna lukten av",
+          "5": "Hitta 1 sak du kan känna smaken av"
+        },
+        "coldWater": {
+          "1": "Gå till en kran med kallt vatten",
+          "2": "Håll händerna under vattnet eller skölj ansiktet",
+          "3": "Andas långsamt",
+          "4": "Känn efter hur kroppen förändras"
+        },
+        "listening": {
+          "1": "Sätt på en lugn röst eller lugn musik",
+          "2": "Lyssna noga i 5 minuter",
+          "3": "Fokusera på tonerna och orden",
+          "4": "Känn efter hur det påverkar dig"
+        }
+      },
       "groundingTechniques": "Jordningstekniker",
       "technique54321": {
         "title": "5-4-3-2-1-tekniken",
@@ -5734,6 +5912,12 @@
       "situations": "För dig som"
     }
   },
+  "pageTitles": {
+    "default": "Jobin — verktyg och stöd för dig som söker jobb",
+    "invite": "Inbjudan",
+    "sharedProfile": "Delad profil",
+    "history": "Din historik"
+  },
   "privacy": {
     "backToHome": "Tillbaka till startsidan",
     "title": "Integritetspolicy",
@@ -7067,7 +7251,106 @@
       "selected": "Vald",
       "isSelected": "är vald",
       "selectedInfo": "Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, eller klicka på Förhandsgranska för att se resultatet.",
-      "atsNote": "PDF:en innehåller riktig text som går att markera och söka i — det gäller alla mallar. Vet du att arbetsgivaren använder ett rekryteringssystem är en mall i en spalt det säkraste valet, eftersom texten då läses i en enda ordning. Vi har inte testat mallarna mot något enskilt system."
+      "atsNote": "PDF:en innehåller riktig text som går att markera och söka i — det gäller alla mallar. Vet du att arbetsgivaren använder ett rekryteringssystem är en mall i en spalt det säkraste valet, eftersom texten då läses i en enda ordning. Vi har inte testat mallarna mot något enskilt system.",
+      "meta": {
+        "sidebar": {
+          "name": "Sidokolumn",
+          "desc": "Modern layout med mörk sidopanel för kontakt och kompetenser",
+          "f1": "Sidokolumn",
+          "f2": "Rundat foto",
+          "f3": "Kompetenser i sidopanel"
+        },
+        "centered": {
+          "name": "Centrerad",
+          "desc": "Klassisk marinblå rubrik med guldaccent och centrerad layout",
+          "f1": "Marinblått och guld",
+          "f2": "Centrerat namn",
+          "f3": "Tidlös"
+        },
+        "minimal": {
+          "name": "Minimal",
+          "desc": "Schweiziskt inspirerad design med stor typografi och mycket luft",
+          "f1": "Stor typografi",
+          "f2": "Luftig",
+          "f3": "Fokus på innehåll"
+        },
+        "creative": {
+          "name": "Kreativ",
+          "desc": "Magentaaccent med kortbaserad layout i två kolumner",
+          "f1": "Magentaaccent",
+          "f2": "Kortlayout",
+          "f3": "Fet typografi"
+        },
+        "executive": {
+          "name": "Executive",
+          "desc": "Elegant serif med guldaccenter och anfang",
+          "f1": "Serif-typografi",
+          "f2": "Guldaccenter",
+          "f3": "Klassisk"
+        },
+        "nordic": {
+          "name": "Nordisk",
+          "desc": "Skandinavisk minimalism med ljus sidopanel",
+          "f1": "Ljus sidopanel",
+          "f2": "Himmelsblå accent",
+          "f3": "Ren"
+        },
+        "budapest": {
+          "name": "Budapest",
+          "desc": "Mörk sidopanel med runt foto och tidslinje med prickar",
+          "f1": "Mörk sidopanel",
+          "f2": "Tidslinje",
+          "f3": "Runt foto"
+        },
+        "rotterdam": {
+          "name": "Rotterdam",
+          "desc": "Luftig design med stort efternamn och brödtext i två kolumner",
+          "f1": "Stort efternamn",
+          "f2": "Luftig",
+          "f3": "Två kolumner"
+        },
+        "chicago": {
+          "name": "Chicago",
+          "desc": "Klassisk centrerad rubrik med tunn lodrät avdelare",
+          "f1": "Centrerad rubrik",
+          "f2": "Klassisk",
+          "f3": "Monogram"
+        },
+        "atelier": {
+          "name": "Atelier",
+          "desc": "Redaktionell stil på krämvit bakgrund med serif-rubrik och blågrön accent",
+          "f1": "Krämvit bakgrund",
+          "f2": "Serif-rubrik",
+          "f3": "Redaktionell"
+        },
+        "manhattan": {
+          "name": "Manhattan",
+          "desc": "Stram mall med mörk marinblå sidopanel och kopparaccent",
+          "f1": "Marinblå sidopanel",
+          "f2": "Kopparaccent",
+          "f3": "Stram"
+        },
+        "berlin": {
+          "name": "Berlin",
+          "desc": "Bauhausinspirerad redaktionell stil — krämvitt och svart med rödorange accent och romerska siffror",
+          "f1": "Bauhaus",
+          "f2": "Redaktionell",
+          "f3": "Kraftfull typografi"
+        }
+      },
+      "previewAlt": "Förhandsvisning av mallen {{name}}",
+      "demoFields": {
+        "firstName": "Förnamn",
+        "lastName": "Efternamn",
+        "title": "Titel/yrkesroll",
+        "email": "E-post",
+        "phone": "Telefon",
+        "location": "Ort",
+        "summary": "Sammanfattning",
+        "skills": "Kompetenser",
+        "workExperience": "Arbetslivserfarenhet",
+        "education": "Utbildning"
+      }
     },
     "profileImage": {
       "title": "Profilbild",
@@ -7769,7 +8052,10 @@
     "aiBadge": "AI-coach",
     "chat": {
       "taskCreateErrorTitle": "Kunde inte skapa uppgiften",
-      "taskCreateErrorMessage": "Uppgiften kunde inte sparas i kalendern. Försök igen."
+      "taskCreateErrorMessage": "Uppgiften kunde inte sparas i kalendern. Försök igen.",
+      "diarySaveErrorTitle": "Kunde inte spara i dagboken",
+      "diarySaveErrorMessage": "Svaret kunde inte sparas i dagboken just nu. Försök igen om en stund.",
+      "diarySaveConsentMessage": "Dagboken sparas bara om du har sagt ja till att vi lagrar uppgifter om ditt mående. Det gör du i dagboken under fliken Humör."
     },
     "thinking": "Tänker...",
     "send": "Skicka",
@@ -9136,7 +9422,9 @@
       "markAsRead": "Markera som läst",
       "deleteNotification": "Ta bort notifikation",
       "notifications": "Notifikationer",
-      "close": "Stäng"
+      "close": "Stäng",
+      "unreadCount_one": "Notifikationer ({{count}} oläst)",
+      "unreadCount_other": "Notifikationer ({{count}} olästa)"
     }
   },
   "occupation": {
@@ -9147,7 +9435,20 @@
     },
     "desiredJobsList": {
       "linkedToAf": "Kopplad till AF-taxonomi — matchas exakt i sökning",
-      "freeTextNotLinked": "Fritext — ej kopplad till AF. Ta bort och välj från listan för exakt matchning."
+      "freeTextNotLinked": "Fritext — ej kopplad till AF. Ta bort och välj från listan för exakt matchning.",
+      "moveUp": "Flytta {{label}} uppåt",
+      "moveDown": "Flytta {{label}} nedåt",
+      "remove": "Ta bort {{label}}",
+      "priority": "Prioritet {{priority}}",
+      "empty": "Inga önskade yrken tillagda än.",
+      "emptyHint": "Lägg till upp till {{max}} yrken i prioriteringsordning.",
+      "pickerLabel": "Yrke nr {{n}} i din prioritering",
+      "pickerPlaceholder": "T.ex. lager, kock…",
+      "cancel": "Avbryt",
+      "add": "Lägg till yrke ({{count}}/{{max}})",
+      "maxReached": "Du har lagt till maxantalet ({{max}}). Ta bort ett yrke för att lägga till ett nytt.",
+      "orderHint": "Yrken högst upp prioriteras i jobbmatchningen.",
+      "freeTextHint": "Yrken med ⚠ är fritext och matchas inte exakt."
     }
   },
   "samlingar": {
@@ -9160,7 +9461,9 @@
   "skipLinks": {
     "nav": "Snabblänkar",
     "mainContent": "Huvudinnehåll",
-    "mainNavigation": "Huvudnavigation"
+    "mainNavigation": "Huvudnavigation",
+    "toMain": "Hoppa till huvudinnehåll",
+    "toNavigation": "Hoppa till navigation"
   },
   "toast": {
     "aria": {
@@ -9187,11 +9490,6 @@
         "default": "Rekommenderat för dig"
       },
       "readTime": "{{count}} min läsning",
-      "difficulty": {
-        "beginner": "Nybörjare",
-        "intermediate": "Medel",
-        "advanced": "Avancerad"
-      },
       "seeAllArticles": "Se alla artiklar",
       "selectedForYou": "Artiklar valda för där du är nu"
     }

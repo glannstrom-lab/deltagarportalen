@@ -53,7 +53,7 @@ export function HealthConsentGate({
       window.location.reload()
     } catch (error) {
       console.error('Error granting health consent:', error)
-      setGrantError(t('health.consent.grantError') || 'Kunde inte spara samtycke')
+      setGrantError(t('health.consent.grantError'))
     } finally {
       setIsGranting(false)
     }
@@ -87,10 +87,10 @@ export function HealthConsentGate({
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-indigo-900 dark:text-indigo-100 text-sm">
-              {t('health.consent.requiredTitle') || 'Samtycke krävs'}
+              {t('health.consent.requiredTitle')}
             </h4>
             <p className="text-xs text-indigo-700 dark:text-indigo-300 mt-1">
-              {t('health.consent.requiredDesc') || 'Du måste ge samtycke för att kunna använda denna funktion'}
+              {t('health.consent.requiredDesc')}
             </p>
             <div className="flex items-center gap-2 mt-3">
               <button
@@ -108,14 +108,14 @@ export function HealthConsentGate({
                 ) : (
                   <Shield className="w-3 h-3" />
                 )}
-                {t('health.consent.grantNow') || 'Ge samtycke'}
+                {t('health.consent.grantNow')}
               </button>
               <Link
                 to="/settings"
                 className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1"
               >
                 <Settings className="w-3 h-3" />
-                {t('health.consent.manageInSettings') || 'Hantera'}
+                {t('health.consent.manageInSettings')}
               </Link>
             </div>
             {grantError && (
@@ -140,61 +140,61 @@ export function HealthConsentGate({
         </div>
 
         <h3 className="text-lg font-semibold text-indigo-900 dark:text-indigo-100 mb-2">
-          {t('health.consent.fullTitle') || 'Samtycke för hälsodata'}
+          {t('health.consent.fullTitle')}
         </h3>
 
         <p className="text-sm text-indigo-700 dark:text-indigo-300 mb-4">
-          {t('health.consent.fullDesc') || 'För att kunna ge dig personliga jobbrekomendera tioner behöver vi ditt samtycke att samla in och analysera data om dina funktionsförutsättningar.'}
+          {t('health.consent.fullDesc')}
         </p>
 
         <div className="p-4 bg-white/60 dark:bg-stone-800/60 rounded-xl text-left mb-4 space-y-3">
           <div>
             <h4 className="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-2">
-              {t('health.consent.whatWeCollect') || 'Vilken data samlar vi in?'}
+              {t('health.consent.whatWeCollect')}
             </h4>
             <ul className="space-y-1.5 text-xs text-indigo-700 dark:text-indigo-300">
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.cognitive') || 'Kognitiv funktion (tänkande, planering, minne)'}</span>
+                <span>{t('health.consent.dimension.cognitive')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.communication') || 'Kommunikation (tal, lyssnande, samarbete)'}</span>
+                <span>{t('health.consent.dimension.communication')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.concentration') || 'Koncentration (fokusering, uppmärksamhet)'}</span>
+                <span>{t('health.consent.dimension.concentration')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.motor') || 'Motorik (rörelse, stadiga händer, fysik)'}</span>
+                <span>{t('health.consent.dimension.motor')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.sensory') || 'Sensorisk (ljud, ljus, sinnesintryck)'}</span>
+                <span>{t('health.consent.dimension.sensory')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 mt-1.5 flex-shrink-0" />
-                <span>{t('health.consent.dimension.energy') || 'Energi (uthållighet, ork, återhämtning)'}</span>
+                <span>{t('health.consent.dimension.energy')}</span>
               </li>
             </ul>
           </div>
 
           <div className="pt-3 border-t border-current/10">
             <h4 className="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-2">
-              {t('health.consent.whyWeCollect') || 'Varför samlar vi in denna data?'}
+              {t('health.consent.whyWeCollect')}
             </h4>
             <p className="text-xs text-indigo-700 dark:text-indigo-300">
-              {t('health.consent.whyDesc') || 'För att kunna ge dig personliga jobbrekomendera tioner som är anpassade till dina behov och förutsättningar.'}
+              {t('health.consent.whyDesc')}
             </p>
           </div>
 
           <div className="pt-3 border-t border-current/10">
             <h4 className="text-sm font-medium text-indigo-900 dark:text-indigo-100 mb-2">
-              {t('health.consent.whoHasAccess') || 'Vem har åtkomst?'}
+              {t('health.consent.whoHasAccess')}
             </h4>
             <p className="text-xs text-indigo-700 dark:text-indigo-300">
-              {t('health.consent.whoAccessDesc') || 'Du och din tilldelad konsulent (endast om du aktiverar delning) kan se denna data.'}
+              {t('health.consent.whoAccessDesc')}
             </p>
           </div>
         </div>
@@ -203,17 +203,17 @@ export function HealthConsentGate({
         <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-lg flex gap-2">
           <AlertCircle className="w-4 h-4 text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <p className="text-xs text-amber-700 dark:text-amber-300">
-            {t('health.consent.gdprWarning') || 'Denna data klassificeras som "känsliga personuppgifter" enligt GDPR artikel 9.'}
+            {t('health.consent.gdprWarning')}
           </p>
         </div>
 
         <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg text-left">
           <div className="text-xs text-blue-700 dark:text-blue-300">
-            <strong>{t('health.consent.canWithdraw') || 'Du kan när som helst:'}</strong>
+            <strong>{t('health.consent.canWithdraw')}</strong>
             <ul className="mt-2 space-y-1">
-              <li>• {t('health.consent.withdrawDetail1') || 'Dra tillbaka ditt samtycke i Inställningar'}</li>
-              <li>• {t('health.consent.withdrawDetail2') || 'Få all din hälsodata raderad'}</li>
-              <li>• {t('health.consent.withdrawDetail3') || 'Kontakta oss för mer information'}</li>
+              <li>• {t('health.consent.withdrawDetail1')}</li>
+              <li>• {t('health.consent.withdrawDetail2')}</li>
+              <li>• {t('health.consent.withdrawDetail3')}</li>
             </ul>
           </div>
         </div>
@@ -234,7 +234,7 @@ export function HealthConsentGate({
             ) : (
               <Shield className="w-4 h-4" />
             )}
-            {t('health.consent.grantConsent') || 'Jag samtycker'}
+            {t('health.consent.grantConsent')}
           </button>
 
           {/* UX18: grinden hade bara "Jag samtycker" och en länk till
@@ -260,9 +260,9 @@ export function HealthConsentGate({
         )}
 
         <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-4">
-          {t('health.consent.privacyLink') || 'Läs mer i vår'} {' '}
+          {t('health.consent.privacyLink')} {' '}
           <Link to="/privacy" className="underline hover:text-indigo-700 dark:hover:text-indigo-300">
-            {t('health.consent.privacyPolicy') || 'integritetspolicy'}
+            {t('health.consent.privacyPolicy')}
           </Link>
         </p>
       </div>

@@ -214,3 +214,41 @@ describe('OverviewTab — KV6-S: "Loggade in" påstod något portalen inte mäte
     expect(screen.queryByText('Loggade in')).not.toBeInTheDocument()
   })
 })
+
+describe('OverviewTab — Min dag: ett hämtfel är inte "Allt klart"', () => {
+  // Före 2026-09-22 kväll kontrollerades bara deltagarvyns `error`. Föll
+  // mötes-, mål-, meddelande- eller journalfrågan blev `data` null → [] →
+  // Min dag sa "Inga brådskande punkter idag" och KPI-korten "0 möten", "0 försenade
+  // mål" — till en konsulent som kanske hade tre möten den dagen.
+  // Mutation: ta bort `if (meetingsError) throw meetingsError` → testet faller.
+  for (const tabell of ['consultant_meetings', 'consultant_goals', 'consultant_messages', 'consultant_journal']) {
+    it(`fel i ${tabell} ger felläget, inte en tom dag`, async () => {
+      tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+      tableResponses[tabell] = { data: null, error: { message: 'timeout' } }
+      renderTab()
+
+      const alert = await screen.findByRole('alert')
+      expect(alert).toHaveTextContent(/kunde inte hämtas/i)
+      expect(screen.queryByText(/Inga brådskande punkter/i)).not.toBeInTheDocument()
+    })
+  }
+})
+
+describe('OverviewTab — målöversikten utan mål', () => {
+  // Drift 2026-09-22: "0 avklarade / 0 försenade" i stor grön och röd siffra
+  // när inga mål fanns. Mutation: ta bort `stats.goalsTotal === 0`-grenen → testet faller.
+  it('visar en invit, inte två nollor', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+    renderTab()
+    expect(await screen.findByText(/Inga mål satta än/)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sätt ett mål' })).toBeInTheDocument()
+  })
+
+  it('visar siffrorna när det finns mål', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+    tableResponses.consultant_goals = { data: [{ id: 'g1', status: 'COMPLETED', title: 'CV klart', participant_id: 'p1', deadline: null }], error: null }
+    renderTab()
+    await screen.findByText('Snitt ATS-poäng')
+    expect(screen.queryByText(/Inga mål satta än/)).not.toBeInTheDocument()
+  })
+})

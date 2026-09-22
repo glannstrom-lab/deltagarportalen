@@ -189,7 +189,7 @@ export function PlacementDialog({
             <h2 id="placement-dialog-title" className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Registrera placering
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
               {step === 'participant' ? 'Välj deltagare' : 'Vem, var och när'}
             </p>
           </div>
@@ -252,7 +252,7 @@ export function PlacementDialog({
                       <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
                         {p.first_name} {p.last_name}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-600 truncate">
+                      <p className="text-sm text-stone-500 dark:text-stone-400 truncate">
                         {p.email}
                       </p>
                     </div>

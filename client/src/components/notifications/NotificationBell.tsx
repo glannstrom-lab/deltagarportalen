@@ -310,7 +310,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
           'hover:bg-stone-100 dark:hover:bg-stone-800',
           isOpen && 'bg-stone-100 dark:bg-stone-800'
         )}
-        aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} olästa)` : ''}`}
+        aria-label={unreadCount > 0 ? t('notificationBell.aria.unreadCount', { count: unreadCount }) : t('notificationBell.aria.notifications')}
         aria-expanded={isOpen}
         aria-haspopup="dialog"
         aria-controls={isOpen ? labelId : undefined}

@@ -25,7 +25,10 @@
  * 3. **Allt annat** — ett rent läsfilter (oftast `id`/`user_id`) som ÄNDÅ
  *    kan ge 0 rader (borttagen rad, återkallad koppling, race). Kräver en
  *    post i ALLOWLIST nedan, nyckel `fil::tabell`, med en motivering som
- *    går att verifiera — annars fäller testet.
+ *    går att verifiera — annars fäller testet. Sedan 2026-09-22 räknas
+ *    anropen dessutom per nyckel mot ALLOWLIST_ANTAL: en post godkänner de
+ *    granskade anropen, inte varje framtida `.single()` mot samma tabell i
+ *    samma fil (mutationsstickprovet M9 visade att den gjorde just det).
  *
  * Mutationstest (körs manuellt, inte i CI): byt tillfälligt ett granskat
  * `.maybeSingle()` (t.ex. `careerApi.ts` `toggleAttending`) till `.single()`
@@ -222,7 +225,11 @@ function lineOf(code: string, idx: number): number {
 }
 
 function analyzeFile(absPath: string): SingleCall[] {
-  const raw = readFileSync(absPath, 'utf8')
+  return analyzeSource(readFileSync(absPath, 'utf8'), relative(REPO_ROOT, absPath).split('\\').join('/'))
+}
+
+/** Samma analys på en källtext i minnet — så testet kan pröva en mutation utan att röra filen. */
+function analyzeSource(raw: string, relPath: string): SingleCall[] {
   const clean = stripComments(raw)
   const depths = depthArray(clean)
   const results: SingleCall[] = []
@@ -253,7 +260,7 @@ function analyzeFile(absPath: string): SingleCall[] {
     const hardFail = HARD_FAIL_MARKERS.some((marker) => chain.includes(marker))
     const autoApproved = AUTO_APPROVE_MARKERS.some((marker) => chain.includes(marker))
     results.push({
-      relPath: relative(REPO_ROOT, absPath).split('\\').join('/'),
+      relPath,
       line: lineOf(clean, pos),
       table,
       chain: chain.replace(/\s+/g, ' ').trim().slice(-200),
@@ -382,6 +389,72 @@ const ALLOWLIST: Record<string, string> = {
     'uppdragets B-lista denna omgång.',
 }
 
+/**
+ * Antal granskade `.single()` per ALLOWLIST-nyckel (2026-09-22).
+ *
+ * VARFÖR: nyckeln `fil::tabell` är ett grovt nät. Mutationsstickprovet
+ * 2026-09-22 (M9) bytte ett `.maybeSingle()` i `applicationsApi.getByJobId` mot
+ * `.single()` — och grinden var grön, eftersom posten
+ * `applicationsApi.ts::saved_jobs` godkände VARJE `.single()` mot `saved_jobs`
+ * i den filen, även de som inte fanns när motiveringen skrevs. Motiveringen
+ * gäller de anrop som granskades, inte framtida.
+ *
+ * Talet ska vara EXAKT: blir det fler har ett ogranskat anrop tillkommit
+ * (granska det, och höj bara med en motivering som täcker det nya anropet);
+ * blir det färre — sänk talet, annars står en lucka öppen för nästa anrop.
+ * Talen mättes med grindens egen analys 2026-09-22 (kategori 3: varken
+ * insert/upsert/update eller hårdregel i kedjan).
+ */
+const ALLOWLIST_ANTAL: Record<string, number> = {
+  'client/src/services/consultantService.ts::profiles': 0, // alla dess .single() har .update() i kedjan (auto-godkända)
+  'client/src/stores/authStore.ts::profiles': 1,
+  'client/src/services/userApi.ts::profiles': 4,
+  'client/src/services/profileEnhancementsApi.ts::profiles': 4,
+  'client/src/services/unifiedProfileApi.ts::profiles': 2,
+  'client/src/lib/supabase.ts::profiles': 1,
+  'client/api/ai.js::profiles': 2,
+  'supabase/functions/send-invite-email/index.ts::profiles': 1,
+  'client/src/lib/supabase.ts::cvs': 1,
+  'client/src/services/applicationsApi.ts::saved_jobs': 1,
+  'client/src/services/coverLetterApi.ts::cover_letters': 1,
+  'client/src/services/supabaseApi.ts::spontaneous_companies': 1,
+  'client/src/services/unifiedProfileApi.ts::unified_profiles': 1,
+  'client/src/pages/consultant/ParticipantDetailPage.tsx::consultant_dashboard_participants': 1,
+  'client/src/components/consent/DataSharingSettings.tsx::participant_data_sharing': 1,
+  'supabase/functions/send-invite-email/index.ts::invitations': 1,
+  'client/src/services/cvApi.ts::cv_versions': 1,
+  'client/src/services/diaryApi.ts::diary_entries': 1,
+  'client/src/services/diaryApi.ts::weekly_goals': 1,
+  'client/api/job-alerts.js::profiles': 2,
+}
+
+/** Felrader för varje nyckel vars faktiska antal inte är det granskade. */
+function raknaMotAllowlist(anrop: SingleCall[]): string[] {
+  const faktiskt = new Map<string, SingleCall[]>()
+  for (const c of anrop.filter((c) => !c.autoApproved && !c.hardFail)) {
+    const nyckel = `${c.relPath}::${c.table}`
+    if (!(nyckel in ALLOWLIST)) continue // fångas av testet för saknade nycklar
+    faktiskt.set(nyckel, [...(faktiskt.get(nyckel) ?? []), c])
+  }
+  const fel: string[] = []
+  for (const nyckel of Object.keys(ALLOWLIST)) {
+    const traffar = faktiskt.get(nyckel) ?? []
+    const granskat = ALLOWLIST_ANTAL[nyckel]
+    if (traffar.length === granskat) continue
+    const rader = traffar.map((c) => `${c.line}`).join(', ')
+    fel.push(
+      traffar.length > (granskat ?? 0)
+        ? `${nyckel}: ${traffar.length} .single() mot granskade ${granskat} (rader ${rader}). ` +
+            `Ett nytt anrop täcks INTE av den befintliga motiveringen — byt till .maybeSingle() + ` +
+            `explicit felkontroll, eller granska det och höj ALLOWLIST_ANTAL med en motivering som gäller det.`
+        : `${nyckel}: ${traffar.length} .single() mot granskade ${granskat} (rader ${rader || '–'}). ` +
+            `Sänk ALLOWLIST_ANTAL till ${traffar.length}${traffar.length === 0 ? ' (och ta bort posten)' : ''} — ` +
+            `annars godkänns nästa nya anrop på förhand.`
+    )
+  }
+  return fel
+}
+
 describe('single-krav-en-rad: .single() kan bara användas där 0 rader strukturellt inte kan hända', () => {
   const alla = collectAll()
 
@@ -410,10 +483,52 @@ describe('single-krav-en-rad: .single() kan bara användas där 0 rader struktur
         (c) =>
           `${c.relPath}:${c.line} — nyckel "${c.relPath}::${c.table}" saknas i ALLOWLIST. ` +
           `Antingen: (a) byt till .maybeSingle() + explicit felkontroll, eller (b) lägg till en ` +
-          `verifierbar motivering i ALLOWLIST.\n    …${c.chain}`
+          `verifierbar motivering i ALLOWLIST och ett antal i ALLOWLIST_ANTAL.\n    …${c.chain}`
       )
       .join('\n\n')
     expect(saknas, meddelande).toEqual([])
+  })
+
+  it('varje ALLOWLIST-nyckel har exakt det antal .single() som granskades — ett tillkommande fäller', () => {
+    const fel = raknaMotAllowlist(alla)
+    expect(fel, fel.join('\n\n')).toEqual([])
+  })
+
+  it('ALLOWLIST och ALLOWLIST_ANTAL har samma nycklar', () => {
+    const utanAntal = Object.keys(ALLOWLIST).filter((k) => !(k in ALLOWLIST_ANTAL))
+    const utanSkal = Object.keys(ALLOWLIST_ANTAL).filter((k) => !(k in ALLOWLIST))
+    expect({ utanAntal, utanSkal }).toEqual({ utanAntal: [], utanSkal: [] })
+  })
+
+  it('MUTATION M9: ett nytt .single() mot en allowlistad fil::tabell fäller (prövat i minnet, filen rörs inte)', () => {
+    // Stickprovet 2026-09-22 bytte getByJobId:s .maybeSingle() mot .single() i
+    // applicationsApi.ts — och posten `applicationsApi.ts::saved_jobs` godkände
+    // det på förhand. Här läggs samma sorts anrop till i en KOPIA av källtexten
+    // för den första allowlistade filen som finns, och grinden ska fälla på just
+    // den nyckeln.
+    const nyckel = Object.keys(ALLOWLIST).find((k) => {
+      const [fil] = k.split('::')
+      try {
+        statSync(resolve(REPO_ROOT, fil))
+        return true
+      } catch {
+        return false
+      }
+    })
+    expect(nyckel, 'ingen allowlistad fil finns — testet prövar ingenting').toBeDefined()
+    const [fil, tabell] = (nyckel as string).split('::')
+    const kalla = readFileSync(resolve(REPO_ROOT, fil), 'utf8')
+    const muterad =
+      // Det inledande `;` avgränsar kedjan även om filens parentesdjup inte går jämnt ut.
+      kalla + `\n;export const nyttAnrop = () => supabase.from('${tabell}').select('id').eq('id', 'x').single()\n`
+    const utanFil = alla.filter((c) => c.relPath !== fil)
+    const fore = raknaMotAllowlist(alla).filter((f) => f.includes(nyckel as string))
+    const efter = raknaMotAllowlist([...utanFil, ...analyzeSource(muterad, fil)]).filter((f) =>
+      f.includes(nyckel as string)
+    )
+    expect(fore).toEqual([])
+    expect(efter).toHaveLength(1)
+    expect(efter[0]).toContain(`${nyckel}: ${ALLOWLIST_ANTAL[nyckel as string] + 1} .single() mot granskade ${ALLOWLIST_ANTAL[nyckel as string]}`)
   })
 
   it('ALLOWLIST har inga döda poster (nyckel som inte längre matchar någon fil::tabell)', () => {

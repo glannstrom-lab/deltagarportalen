@@ -18,6 +18,44 @@ const idag = (): string => formatLocalDate(new Date())
 const veckansStart = (): string => veckansMandag(idag())
 
 // ============================================
+// FEL
+// ============================================
+
+/**
+ * Läsfel KASTAS (2026-09-22). Tidigare returnerade varje läsning `[]`/`null`
+ * vid fel, och `useDiary` fångade dessutom en gång till — så ett nätverks-
+ * eller RLS-fel såg ut exakt som en tom dagbok ("Skriv din första
+ * anteckning") för någon som skrivit i månader. Nu når felet React Query,
+ * och flikarna kan skilja laddar / fel / tomt.
+ */
+export class DagboksFel extends Error {
+  readonly kod?: string
+  constructor(meddelande: string, kod?: string) {
+    super(meddelande)
+    this.name = 'DagboksFel'
+    this.kod = kod
+  }
+}
+
+function lasfel(error: { message?: string; code?: string }, vad: string): never {
+  console.error(`Kunde inte hämta ${vad}:`, error)
+  throw new DagboksFel(`Kunde inte hämta ${vad}`, error.code)
+}
+
+/**
+ * Utfallet av ett försök att spara ett dagboksinlägg.
+ *
+ * `samtycke` = databasen nekade (42501). `diary_entries` har sedan MV2
+ * (2026-08-21) `check_wellness_consent` i WITH CHECK på INSERT — ALLA inlägg,
+ * inte bara de med humör. Utan hälsosamtycke misslyckas alltså varje
+ * sparning, och anroparen måste säga det i stället för att låtsas att det
+ * gick (AgentChat) eller stänga skrivrutan och tappa texten (JournalTab).
+ */
+export type SparaInlaggUtfall =
+  | { ok: true; entry: DiaryEntry }
+  | { ok: false; orsak: 'samtycke' | 'fel' | 'utloggad' }
+
+// ============================================
 // TYPES
 // ============================================
 
@@ -110,10 +148,7 @@ export const diaryEntriesApi = {
       .order('entry_date', { ascending: false })
       .range(offset, offset + limit - 1)
 
-    if (error) {
-      console.error('Error fetching diary entries:', error)
-      return []
-    }
+    if (error) lasfel(error, 'dagboksinläggen')
     return data || []
   },
 
@@ -129,10 +164,7 @@ export const diaryEntriesApi = {
       .lte('entry_date', endDate)
       .order('entry_date', { ascending: false })
 
-    if (error) {
-      console.error('Error fetching diary entries by date range:', error)
-      return []
-    }
+    if (error) lasfel(error, 'dagboksinläggen för perioden')
     return data || []
   },
 
@@ -147,16 +179,18 @@ export const diaryEntriesApi = {
       .overlaps('tags', tags)
       .order('entry_date', { ascending: false })
 
-    if (error) {
-      console.error('Error searching diary entries:', error)
-      return []
-    }
+    if (error) lasfel(error, 'dagboksinläggen med taggen')
     return data || []
   },
 
-  async create(entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<DiaryEntry | null> {
+  /**
+   * Som `create`, men säger VARFÖR det inte gick. Använd den här när
+   * användaren ska få veta — `create` finns kvar för anropare som bara
+   * behöver ja/nej (fokuslägets guider).
+   */
+  async skapa(entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SparaInlaggUtfall> {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return null
+    if (!user) return { ok: false, orsak: 'utloggad' }
 
     const { data, error } = await supabase
       .from('diary_entries')
@@ -170,13 +204,23 @@ export const diaryEntriesApi = {
 
     if (error) {
       console.error('Error creating diary entry:', error)
-      return null
+      return { ok: false, orsak: error.code === '42501' ? 'samtycke' : 'fel' }
     }
 
-    // Update streaks
-    await diaryStreaksApi.updateAfterEntry(entry.word_count || entry.content.split(/\s+/).filter(w => w).length)
+    // Skrivsviten är bokföring vid sidan av — ett fel där får inte göra ett
+    // sparat inlägg till ett "misslyckat".
+    try {
+      await diaryStreaksApi.updateAfterEntry(entry.word_count || entry.content.split(/\s+/).filter(w => w).length)
+    } catch (err) {
+      console.warn('Kunde inte uppdatera skrivsviten:', err)
+    }
 
-    return data
+    return { ok: true, entry: data }
+  },
+
+  async create(entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<DiaryEntry | null> {
+    const utfall = await this.skapa(entry)
+    return utfall.ok ? utfall.entry : null
   },
 
   async update(id: string, updates: Partial<DiaryEntry>): Promise<DiaryEntry | null> {
@@ -260,10 +304,7 @@ export const moodLogsApi = {
       .order('log_date', { ascending: false })
       .limit(limit)
 
-    if (error) {
-      console.error('Error fetching mood logs:', error)
-      return []
-    }
+    if (error) lasfel(error, 'humörloggen')
     return data || []
   },
 
@@ -279,10 +320,7 @@ export const moodLogsApi = {
       .lte('log_date', endDate)
       .order('log_date', { ascending: true })
 
-    if (error) {
-      console.error('Error fetching mood logs by date:', error)
-      return []
-    }
+    if (error) lasfel(error, 'humörloggen för perioden')
     return data || []
   },
 
@@ -299,10 +337,7 @@ export const moodLogsApi = {
       .eq('log_date', today)
       .maybeSingle()
 
-    if (error) {
-      console.warn('Could not fetch today mood:', error.message)
-      return null
-    }
+    if (error) lasfel(error, 'dagens humör')
     return data
   },
 
@@ -360,10 +395,7 @@ export const weeklyGoalsApi = {
       .eq('week_start', weekStart)
       .order('priority', { ascending: true })
 
-    if (error) {
-      console.error('Error fetching weekly goals:', error)
-      return []
-    }
+    if (error) lasfel(error, 'veckans mål')
     return data || []
   },
 
@@ -459,10 +491,7 @@ export const gratitudeApi = {
       .order('entry_date', { ascending: false })
       .limit(limit)
 
-    if (error) {
-      console.error('Error fetching gratitude entries:', error)
-      return []
-    }
+    if (error) lasfel(error, 'tacksamhetsinläggen')
     return data || []
   },
 
@@ -479,10 +508,7 @@ export const gratitudeApi = {
       .eq('entry_date', today)
       .maybeSingle()
 
-    if (error) {
-      console.warn('Could not fetch today gratitude:', error.message)
-      return null
-    }
+    if (error) lasfel(error, 'dagens tacksamhet')
     return data
   },
 
@@ -538,11 +564,7 @@ export const diaryStreaksApi = {
       .eq('user_id', user.id)
       .maybeSingle()
 
-    if (error) {
-      // Table might not exist yet - return default values
-      console.warn('Could not fetch diary streaks:', error.message)
-      return null
-    }
+    if (error) lasfel(error, 'skrivsviten')
     return data
   },
 

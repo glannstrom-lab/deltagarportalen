@@ -515,6 +515,14 @@ async function checkPersonalOrgAiEnabled(serviceClient, userId) {
 // ============================================
 // Retrierar 5xx + 429 från OpenRouter med exponential backoff.
 // 2 retries totalt → räddar ~80% av tillfälliga 502/503/529-fel.
+//
+// Tidsgräns för SSE-grenen (ai-team-chat + stream), räknad för hela strömmen
+// inklusive följdfrågorna. maxDuration för api/ai.js är 60 s (vercel.json);
+// auth, rate limit och grindarna tar några sekunder före strömmen, så 45 s
+// lämnar marginal att skriva ett ärligt felmeddelande och [DONE] i stället
+// för att Vercel dödar funktionen mitt i en rad.
+const STROM_TIDSGRANS_MS = 45_000;
+
 async function fetchWithRetry(url, options, maxRetries = 2) {
   let lastError;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -1027,6 +1035,16 @@ const hanterare = async (req, res) => {
       res.setHeader('X-Daily-Tokens-Remaining', String(tokenCap.remaining));
     }
     const stream = body.stream === true;
+    const startTid = Date.now();
+    // Varje utgång efter att OpenRouter anropats loggas och AWAITAS — se
+    // _utils/ai-usage-log.js för varför `void` tappade rader.
+    /** @param {number} tokens @param {string | null} [fel] */
+    const logga = (tokens, fel = null) =>
+      logAiUsage(user.id, fn, resolveModel(), tokens, {
+        success: !fel,
+        errorMessage: fel,
+        durationMs: Date.now() - startTid,
+      });
 
     const prompt = PROMPTS[fn](data);
 
@@ -1036,28 +1054,73 @@ const hanterare = async (req, res) => {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
 
-      const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://jobin.se',
-          'X-Title': 'Jobin'
-        },
-        body: JSON.stringify({
-          // Låst modell — se resolveModel() i toppen av filen.
-          model: resolveModel(),
-          messages: [
-            { role: 'system', content: prompt.system },
-            { role: 'user', content: prompt.user }
-          ],
-          max_tokens: prompt.maxTokens,
-          temperature: 0.7,
-          stream: true
-        })
-      });
+      // 2026-09-22: strömmen avbröts aldrig. Kopplade klienten ner läste vi
+      // ändå OpenRouter-svaret till slut (och betalade för det), körde sedan ett
+      // andra anrop för följdfrågor till en klient som inte fanns, och en ström
+      // som hängde höll funktionen till maxDuration (60 s) — då dog den utan
+      // [DONE] och utan rad i ai_usage_logs.
+      //
+      // Signalen är `res` 'close' + `!res.writableEnded`, INTE `req` 'close':
+      // sedan Node 16 avfyras IncomingMessage 'close' när request-kroppen är
+      // färdigläst, inte när anslutningen bryts — på Vercel är kroppen redan
+      // tolkad, så en req-lyssnare avbryter antingen aldrig eller alltid.
+      // Vaktat av src/test/api-ai-sse-avbrott.test.ts.
+      const avbryt = new AbortController();
+      let klientenBorta = false;
+      let tidenSlut = false;
+      const vidStangning = () => {
+        if (!res.writableEnded) {
+          klientenBorta = true;
+          avbryt.abort();
+        }
+      };
+      if (typeof res.on === 'function') res.on('close', vidStangning);
+      const tidsgrans = setTimeout(() => {
+        tidenSlut = true;
+        avbryt.abort();
+      }, STROM_TIDSGRANS_MS);
+      const stadaUpp = () => {
+        clearTimeout(tidsgrans);
+        if (typeof res.off === 'function') res.off('close', vidStangning);
+      };
+
+      let aiResponse;
+      try {
+        aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://jobin.se',
+            'X-Title': 'Jobin'
+          },
+          body: JSON.stringify({
+            // Låst modell — se resolveModel() i toppen av filen.
+            model: resolveModel(),
+            messages: [
+              { role: 'system', content: prompt.system },
+              { role: 'user', content: prompt.user }
+            ],
+            max_tokens: prompt.maxTokens,
+            temperature: 0.7,
+            stream: true
+          }),
+          signal: avbryt.signal,
+        });
+      } catch (fetchError) {
+        stadaUpp();
+        await logga(0, klientenBorta ? 'stream: klienten kopplade ner före svar' : tidenSlut ? 'stream: tidsgräns före svar' : `stream: ${fetchError?.message || fetchError}`);
+        if (klientenBorta) return;
+        console.error('[AI] ai-team-chat: strömanropet föll', fetchError?.message || fetchError);
+        res.write(`data: ${JSON.stringify({ error: tidenSlut ? 'AI-svaret tog för lång tid' : 'AI request failed' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      }
 
       if (!aiResponse.ok) {
+        stadaUpp();
+        console.error(`[AI] ai-team-chat: OpenRouter svarade ${aiResponse.status} på strömanropet`);
+        await logga(0, `stream: OpenRouter ${aiResponse.status}`);
         res.write(`data: ${JSON.stringify({ error: 'AI request failed' })}\n\n`);
         return res.end();
       }
@@ -1067,6 +1130,8 @@ const hanterare = async (req, res) => {
       const decoder = new TextDecoder();
       let buffer = '';
       let fullResponse = '';
+      /** @type {string | null} */
+      let stromFel = null;
 
       try {
         while (true) {
@@ -1088,9 +1153,7 @@ const hanterare = async (req, res) => {
                 const token = parsed.choices?.[0]?.delta?.content;
                 if (token) {
                   fullResponse += token;
-                  // Skickar BÅDE { token } och { content }. ai-stream.js,
-                  // aiStreamService och useAIStream som kommentaren här
-                  // tidigare hänvisade till finns inte längre; läsaren är
+                  // Skickar BÅDE { token } och { content }. Läsaren är
                   // callAIStream() i services/aiApi.ts. Ta bort ett av fälten
                   // först när du kontrollerat vilket den läser.
                   res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
@@ -1102,10 +1165,35 @@ const hanterare = async (req, res) => {
           }
         }
       } catch (streamError) {
-        console.error('Stream error:', streamError);
+        if (!avbryt.signal.aborted) {
+          console.error('Stream error:', streamError);
+          stromFel = String(streamError?.message || streamError);
+        }
+        try { await reader.cancel(); } catch { /* redan avbruten */ }
       }
 
-      // Generate follow-up suggestions
+      // Tokens approximeras från svarslängd eftersom OpenRouters SSE-ström
+      // inte alltid bär usage-fältet. ~4 tecken per token.
+      const approxTokens = Math.ceil((fullResponse?.length || 0) / 4);
+
+      if (klientenBorta) {
+        // Ingen att svara. Det som strömmats hittills är ändå betalt — logga
+        // det så tokentaket ser det — och hoppa över följdfrågorna.
+        stadaUpp();
+        await logga(approxTokens, 'stream: klienten kopplade ner');
+        return;
+      }
+
+      if (tidenSlut) {
+        stadaUpp();
+        await logga(approxTokens, 'stream: tidsgräns');
+        res.write(`data: ${JSON.stringify({ error: 'AI-svaret tog för lång tid och avbröts. Försök igen.' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      }
+
+      // Generate follow-up suggestions — samma avbrottssignal: kopplar
+      // klienten ner eller tar tiden slut under det här anropet avbryts det.
       try {
         const suggestionsResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
           method: 'POST',
@@ -1126,10 +1214,11 @@ const hanterare = async (req, res) => {
             ],
             max_tokens: 150,
             temperature: 0.8
-          })
+          }),
+          signal: avbryt.signal,
         });
 
-        if (suggestionsResponse.ok) {
+        if (suggestionsResponse.ok && !klientenBorta) {
           const suggestionsData = /** @type {OpenRouterSvar} */ (await suggestionsResponse.json());
           const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
           try {
@@ -1142,16 +1231,13 @@ const hanterare = async (req, res) => {
           }
         }
       } catch {
-        // Suggestions failed, continue without them
+        // Suggestions failed or aborted, continue without them
       }
+      stadaUpp();
 
-      // Logga AI-usage (fire-and-forget). Tokens approximeras från svarslängd
-      // eftersom OpenRouter:s SSE-stream inte alltid inkluderar usage-fältet.
-      // ~4 chars per token är en rimlig avg för svenska/engelska.
-      const streamModel = resolveModel();
-      const approxTokens = Math.ceil((fullResponse?.length || 0) / 4);
-      void logAiUsage(user.id, fn, streamModel, approxTokens);
+      await logga(approxTokens, stromFel ? `stream: ${stromFel}` : klientenBorta ? 'stream: klienten kopplade ner under följdfrågorna' : null);
 
+      if (klientenBorta) return;
       res.write('data: [DONE]\n\n');
       return res.end();
     }
@@ -1197,6 +1283,7 @@ const hanterare = async (req, res) => {
       let detalj = '';
       try { detalj = (await aiResponse.text()).slice(0, 300); } catch { /* strunt samma */ }
       console.error(`[AI] ${fn}: OpenRouter svarade ${aiResponse.status} — ${detalj}`);
+      await logga(0, `OpenRouter ${aiResponse.status}`);
       return res.status(502).json({ error: 'AI request failed' });
     }
 
@@ -1227,6 +1314,8 @@ const hanterare = async (req, res) => {
         `[AI] ${fn}: tomt content trots 200. finish_reason=${val.finish_reason ?? '?'} ` +
         `usage=${JSON.stringify(aiData.usage ?? {})} maxTokens=${prompt.maxTokens}`
       );
+      // Tomt svar efter resonemang har ÄNDÅ bränt tokens — räkna dem mot taket.
+      await logga(aiData.usage?.total_tokens || 0, `tomt content (finish_reason=${val.finish_reason ?? '?'})`);
       return res.status(502).json({
         error: 'No response from AI',
         code: 'AI_EMPTY_RESPONSE',
@@ -1244,6 +1333,7 @@ const hanterare = async (req, res) => {
 
       if (!extracted.ok) {
         if (validator) {
+          await logga(aiData.usage?.total_tokens || 0, 'svaret gick inte att tolka som JSON');
           return res.status(502).json({
             error: 'AI-svaret gick inte att tolka. Försök igen om en stund.',
             code: 'AI_INVALID_RESPONSE',
@@ -1254,6 +1344,7 @@ const hanterare = async (req, res) => {
         const checked = validator(extracted.value);
         if (!checked.ok) {
           console.warn(`[AI] ${fn}: ogiltig svarsform — ${checked.error}`);
+          await logga(aiData.usage?.total_tokens || 0, `ogiltig svarsform: ${checked.error}`);
           return res.status(502).json({
             error: 'AI-svaret hade inte det format som behövdes. Försök igen om en stund.',
             code: 'AI_INVALID_RESPONSE',
@@ -1265,10 +1356,9 @@ const hanterare = async (req, res) => {
       }
     }
 
-    // Logga AI-usage (fire-and-forget). OpenRouter returnerar usage-objekt
-    // i icke-streaming-svar — använd det för exakt tokensiffra.
-    const nonStreamModel = resolveModel();
-    void logAiUsage(user.id, fn, nonStreamModel, aiData.usage?.total_tokens || 0);
+    // OpenRouter returnerar usage i icke-strömmande svar — exakt tokensiffra.
+    // Awaitas: se _utils/ai-usage-log.js.
+    await logga(aiData.usage?.total_tokens || 0);
 
     return res.status(200).json({ success: true, [prompt.responseKey]: content });
   } catch (error) {

@@ -1,0 +1,106 @@
+[inloggning deltagare-mobil] landade på #/oversikt; dialoger: ["Meny","Min profil"]
+[mobil] /#/oversikt 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/oversikt/historik 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/oversikt/historik
+[mobil] /#/jobb 0pe 0ce 0http 0key 0bad -> #/jobb
+[mobil] /#/karriar 0pe 0ce 0http 0key 0bad -> #/karriar
+[mobil] /#/resurser 0pe 0ce 0http 0key 0bad -> #/resurser
+[mobil] /#/min-vardag 0pe 0ce 0http 0key 0bad -> #/min-vardag
+[mobil] /#/cv 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cv
+[mobil] /#/cv/my-cvs 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cv/my-cvs
+[mobil] /#/cv/adapt 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cv/adapt
+[mobil] /#/cv/ats 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cv/ats
+[mobil] /#/cv/tips 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cv/tips
+[mobil] /#/cover-letter 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cover-letter
+[mobil] /#/cover-letter/my-letters 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/cover-letter/my-letters
+[mobil] /#/interest-guide 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interest-guide
+[mobil] /#/interest-guide/results 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interest-guide/results
+[mobil] /#/interest-guide/occupations 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interest-guide/occupations
+[mobil] /#/interest-guide/explore 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interest-guide/explore
+[mobil] /#/interest-guide/history 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interest-guide/history
+[mobil] /#/knowledge-base 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/knowledge-base
+[mobil] /#/profile 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/profile
+[mobil] /#/my-consultant 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/my-consultant
+[mobil] /#/job-search 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search
+[mobil] /#/job-search/daily 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search/daily
+[mobil] /#/job-search/slumpjobbet 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search/slumpjobbet
+[mobil] /#/job-search/saved 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search/saved
+[mobil] /#/job-search/alerts 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search/alerts
+[mobil] /#/job-search/matches 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/job-search/matches
+[mobil] /#/job-search/applications 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications
+[mobil] /#/job-search/crm 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/contacts
+[mobil] /#/job-search/culture 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications
+[mobil] /#/applications 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications
+[mobil] /#/applications/timeline 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/timeline
+[mobil] /#/applications/calendar 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/calendar
+[mobil] /#/applications/contacts 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/contacts
+[mobil] /#/applications/analytics 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/analytics
+[mobil] /#/applications/aktivitetsrapport 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/applications/aktivitetsrapport
+[mobil] /#/career 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/career
+[mobil] /#/career/adaptation 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/career/adaptation
+[mobil] /#/career/credentials 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/career/credentials
+[mobil] /#/career/relocation 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/career/relocation
+[mobil] /#/career/plan 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/career/plan
+[mobil] /#/diary 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/diary
+[mobil] /#/wellness 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/wellness
+[mobil] /#/wellness/routines 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/wellness/routines
+[mobil] /#/wellness/cognitive 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/wellness/cognitive
+[mobil] /#/wellness/crisis 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/wellness/crisis
+[mobil] /#/wellness/energy 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/wellness
+[mobil] /#/settings 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/settings
+[mobil] /#/resources 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/resources
+[mobil] /#/help 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/help
+[mobil] /#/salary 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/salary
+[mobil] /#/education 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/education
+[mobil] /#/calendar 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/calendar
+[mobil] /#/min-vecka 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/min-vecka
+[mobil] /#/spontanans%C3%B6kan 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/spontanans%C3%B6kan
+[mobil] /#/spontanans%C3%B6kan/mina-foretag 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/spontanans%C3%B6kan/mina-foretag
+[mobil] /#/spontanans%C3%B6kan/statistik 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/spontanans%C3%B6kan/statistik
+[mobil] /#/n%C3%A4tverk 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/n%C3%A4tverk
+[mobil] /#/personal-brand 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/personal-brand
+[mobil] /#/personal-brand/pitch 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/personal-brand/pitch
+[mobil] /#/personal-brand/portfolio 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/personal-brand/portfolio
+[mobil] /#/personal-brand/visibility 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/personal-brand/visibility
+[mobil] /#/linkedin-optimizer 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/linkedin-optimizer
+[mobil] /#/skills-gap-analysis 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/skills-gap-analysis
+[mobil] /#/interview-simulator 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/interview-simulator
+[mobil] /#/ai-team 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/ai-team
+[mobil] /#/exercises 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/exercises
+[mobil] /#/international 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/international
+[mobil] /#/externa-resurser 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/externa-resurser
+[mobil] /#/print/cv 0pe 0ce 0http 0key 0bad OVERFLOW 794 -> #/print/cv
+[mobil] /#/admin 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/consultant 0pe 0ce 0http 0key 0bad -> #/oversikt
+[mobil] /#/privacy 0pe 0ce 0http 0key 0bad -> #/privacy
+[mobil] /#/terms 0pe 0ce 0http 0key 0bad -> #/terms
+[mobil] /#/ai-policy 0pe 0ce 0http 0key 0bad -> #/ai-policy
+[mobil] /#/tillganglighet 0pe 0ce 0http 0key 0bad -> #/tillganglighet
+[inloggning konsulent] landade på #/consultant; dialoger: []
+[konsulent] /#/consultant 0pe 0ce 0http 0key 0bad -> #/consultant
+[konsulent] /#/consultant/participants 0pe 0ce 0http 0key 0bad -> #/consultant/participants
+[konsulent] /#/consultant/platser 0pe 0ce 0http 0key 0bad -> #/consultant/platser
+[konsulent] /#/consultant/analytics 0pe 0ce 0http 0key 0bad -> #/consultant/analytics
+[konsulent] /#/consultant/communication 0pe 0ce 0http 0key 0bad -> #/consultant/communication
+[konsulent] /#/consultant/resources 0pe 0ce 0http 0key 0bad -> #/consultant/resources
+[konsulent] /#/consultant/settings 0pe 0ce 0http 0key 0bad -> #/consultant/settings
+[konsulent] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+  [flik] Översikt: 0pe 0ce 0http 0key 0bad
+  [flik] Aktivitet: 0pe 0ce 0http 0key 0bad
+  [flik] Mål: 0pe 0ce 0http 0key 0bad
+  [flik] Journal: 0pe 0ce 0http 0key 0bad
+  [flik] Tidslinje: 0pe 0ce 0http 0key 0bad
+[inloggning konsulent-mobil] landade på #/consultant; dialoger: ["Meny","Min profil"]
+[konsulent-mobil] /#/consultant 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant
+[konsulent-mobil] /#/consultant/participants 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/participants
+[konsulent-mobil] /#/consultant/platser 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/platser
+[konsulent-mobil] /#/consultant/analytics 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/analytics
+[konsulent-mobil] /#/consultant/communication 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/communication
+[konsulent-mobil] /#/consultant/resources 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/resources
+[konsulent-mobil] /#/consultant/settings 0pe 0ce 0http 0key 0bad OVERFLOW 478 -> #/consultant/settings
+[konsulent-mobil] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad OVERFLOW 406 -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+[inloggning konsulent-mork] landade på #/consultant; dialoger: []
+[konsulent-mork] /#/consultant 0pe 0ce 0http 0key 0bad -> #/consultant
+[konsulent-mork] /#/consultant/participants 0pe 0ce 0http 0key 0bad -> #/consultant/participants
+[konsulent-mork] /#/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d 0pe 0ce 0http 0key 0bad -> #/consultant/participants/b1dc7374-7219-4f97-bb45-2d21f22ccf4d
+
+KLART — 104 besök, 188 s → C:\Users\Mikael\Desktop\AI PROJEKT\deltagarportal\docs\review-2026-09-22\drift\resultat-mobil-konsulent.json

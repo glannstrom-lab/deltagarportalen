@@ -367,7 +367,7 @@ function MeetingCard({
         </div>
         {isUpcoming && (
           <div className="flex items-center gap-1">
-            <button
+            <button aria-label={`Ändra mötet med ${meeting.participantName}`}
               onClick={() => onEdit(meeting)}
               className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
             >
@@ -447,7 +447,7 @@ function NewMessageDialog({
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('consultant.communication.newMessage', 'Nytt meddelande')}
           </h3>
-          <button
+          <button aria-label="Stäng"
             onClick={onClose}
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
           >
@@ -485,7 +485,7 @@ function NewMessageDialog({
                       className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] rounded-full text-sm"
                     >
                       {p.first_name} {p.last_name}
-                      <button
+                      <button type="button" aria-label={`Ta bort ${p.first_name} ${p.last_name} ur mottagarna`}
                         onClick={() => setSelectedParticipants(prev => prev.filter(p => p !== id))}
                       >
                         <X className="w-3 h-3" />

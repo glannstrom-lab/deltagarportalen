@@ -126,7 +126,7 @@ describe('BulkActionsDialog — delvis-utfall vid batch-taggning (KS5)', () => {
     expect(onComplete).not.toHaveBeenCalled()
 
     // Stängningen kräver ett aktivt klick.
-    fireEvent.click(screen.getByRole('button', { name: /Stäng/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Stäng$/ }))
     expect(onComplete).toHaveBeenCalledTimes(1)
     expect(onClose).toHaveBeenCalledTimes(1)
   })
@@ -199,7 +199,7 @@ describe('BulkActionsDialog — massåtgärden "logga kontakt" (KA4/KV3)', () =>
     expect(onClose).not.toHaveBeenCalled()
     expect(onComplete).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole('button', { name: /Stäng/i }))
+    fireEvent.click(screen.getByRole('button', { name: /^Stäng$/ }))
     expect(onComplete).toHaveBeenCalledTimes(1)
     expect(onClose).toHaveBeenCalledTimes(1)
   })

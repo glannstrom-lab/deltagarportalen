@@ -12,13 +12,22 @@ import { savedJobsApi } from '@/services/jobsApi'
 import { userApi } from '@/services/userApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAchievementTracker } from './useAchievementTracker'
+import type { ApplicationStatus } from '@/types/application.types'
+import { statusnyckel } from '@/data/ansokningsstatus'
 
 export interface SavedJob {
   id: string
   jobData: PlatsbankenJob
   savedAt: string
   notes?: string
-  status: 'saved' | 'applied' | 'interview' | 'rejected' | 'offer'
+  /**
+   * Alla elva statusar i prods check constraint, inte fem. Typen påstod
+   * tidigare `'saved' | 'applied' | 'interview' | 'rejected' | 'offer'` medan
+   * `interested` (4 rader i prod 2026-09-22) kom igenom ändå, osynligt för
+   * typen — och föll ur "Sparade" som bara filtrerar på `'saved'`. Använd
+   * `arSparat()` ur data/ansokningsstatus för "inte sökt än".
+   */
+  status: ApplicationStatus
 }
 
 export const SAVED_JOBS_KEY = ['saved-jobs'] as const
@@ -31,7 +40,9 @@ async function fetchSavedJobs(): Promise<SavedJob[]> {
     jobData: job.job_data as unknown as PlatsbankenJob,
     savedAt: job.created_at,
     notes: job.notes || undefined,
-    status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
+    // Check constrainten släpper bara in kända värden; `?? 'saved'` är för
+    // en rad utan status, som tabellens default också gör till SAVED.
+    status: statusnyckel(job.status) ?? 'saved'
   }))
 }
 
