@@ -1,4 +1,4 @@
--- PENDING — KÖRS INTE UTAN MIKAELS JA (RLS/trigger mot prod).
+-- KÖRD mot prod 2026-09-22 kväll (Mikaels ja). Verifierad — se commit och 20260922_handle_new_user_inbjudan_fk.sql.
 -- Förslag från databaspasset 2026-09-22.
 --
 -- PROBLEM 1 — profiles.email går att skriva om av användaren själv.

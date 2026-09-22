@@ -79,15 +79,15 @@ sparade, 36 döda service-metoder, 11 validerare, två workflow-widgetar) + 32 i
   aktivitetsplan — och en återkallad konsulent kan lägga tillbaka sig själv. Klienten gör aldrig
   INSERT, så stängningen bryter inget. Stänger också `sta_bulk_smart_add` + sju döda STA-funktioner.
   → `supabase/migrations/20260922_konsulentkoppling_utan_samtycke.sql`.
-- [ ] **BP2** 🔴 Användaren kan skriva sin egen `profiles.email`/`consultant_id` (WITH CHECK rör bara
+- [x] **BP2** ✅ 2026-09-22 kväll — körd; röktest i prod: byta egen e-post → 42501, sätta `consultant_id` → 42501, vanlig profiländring (även med oförändrad e-post i objektet) → ok. *(Var:)* 🔴 Användaren kan skriva sin egen `profiles.email`/`consultant_id` (WITH CHECK rör bara
   rollfälten). Falsk e-post → medlemskap i ett företagskonto som bjuds in till den adressen.
-  Inte utnyttjat (0 av 112 avviker från `auth.users`). → `PENDING_20260922_profiles_skyddade_kolumner.sql`.
-- [ ] **BP3** Inbjudna deltagare kopplas inte till konsulenten (`handle_new_user` sätter `used_at` före
+  Inte utnyttjat (0 av 112 avviker från `auth.users`). → `20260922_profiles_skyddade_kolumner.sql`.
+- [x] **BP3** ✅ 2026-09-22 kväll — körd; cron `retention-rate-limits` varje timme, FK `ON DELETE SET NULL`, inbjudningskopplingen bevisad i en återrullad registrering (cp-rad skapad). *(Var:)* Inbjudna deltagare kopplas inte till konsulenten (`handle_new_user` sätter `used_at` före
   profilen; triggern letar `used_at IS NULL`). `rate_limits` gallras aldrig (1 380 rader, 959 IP-adresser
   sedan april). "Radera kontot nu" faller för konsulenter (`audit_logs.user_id` utan ON DELETE).
-  → `PENDING_20260922_inbjudan_ratelimit_radering.sql`.
-- [ ] **BP4** Samtycken loggas dubbelt vid registrering (9 av 20 septemberkonton).
-  → `PENDING_20260922_samtycke_loggas_dubbelt_vid_registrering.sql`.
+  → `20260922_inbjudan_ratelimit_radering.sql`.
+- [x] **BP4** ✅ 2026-09-22 kväll — körd; återrullad registrering ger exakt en rad per samtycke. **Följdfynd, rättat samma kväll** (`20260922_handle_new_user_inbjudan_fk.sql`): `handle_new_user` satte `invitations.used_by` innan profilen fanns → FK 23503 → **varje registrering via inbjudan har tagit reservvägen**: inga namn, inga samtycken på profilen eller i registret, och inbjudans roll ignorerad (alltid USER). Nu läser funktionen bara inbjudan; `handle_invitation_acceptance` markerar den. Bevisat i återrullad transaktion före och efter driftsättning: namn, konsulent, cp-rad, 1× terms/privacy/ai_processing, inbjudan markerad. Äldre inbjudna konton saknar alltså samtyckesdata — beslut om hur de ska be om samtycke igen kvarstår. *(Var:)* Samtycken loggas dubbelt vid registrering (9 av 20 septemberkonton).
+  → `20260922_samtycke_loggas_dubbelt_vid_registrering.sql`.
 - [ ] **BP5** `BLOB_READ_WRITE_TOKEN` saknas i edge-secrets → `delete-account` raderar aldrig
   profilbilder i Vercel Blob (art. 17). `SENTRY_DSN` saknas också i edge.
 - [ ] **BP6** Beslut: säkerhetsfliken i Inställningar är attrapp (lösenordsbyte, 2FA, "Byt foto" utan

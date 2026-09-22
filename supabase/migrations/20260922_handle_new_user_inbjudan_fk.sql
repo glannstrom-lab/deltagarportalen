@@ -1,27 +1,16 @@
--- PENDING — KÖRS INTE UTAN MIKAELS JA (trigger på auth.users mot prod).
--- Förslag från databaspasset 2026-09-22.
+-- KÖRD mot prod 2026-09-22 kväll (Mikaels ja till BP3/BP4 — detta är rättelsen som fick dem att fungera).
 --
--- PROBLEM: varje samtycke som ges vid registrering loggas TVÅ gånger i consent_history.
---   handle_new_user() (auth.users AFTER INSERT) gör INSERT INTO profiles med
---   terms_accepted_at/privacy_accepted_at/ai_consent_at satta, och skriver
---   SEDAN själv 'granted'-rader i consent_history. Men AFTER INSERT-triggern
---   log_consent_changes (log_consent_column_change) på profiles skriver redan
---   en rad per satt kolumn — "Ett konto som skapas med terms_accepted_at satt
---   har gett samtycket i det ögonblicket och ska få sin rad" (A30).
---   grant_consent har kommentaren "Lägg inte tillbaka ett INSERT här — då
---   loggas varje samtycke två gånger"; handle_new_user fick aldrig samma rättelse.
--- BELÄGG (prod 2026-09-22, aggregat): 9 av 20 konton skapade i september
---   (inga demokonton) har ≥ 2 'terms granted'-rader inom ±5 s från
---   profilens created_at; totalt 50 'granted'-rader för de nio (≈ 3 samtycken × 2).
---   Registret (art. 7.1 — kunna visa att samtycke gavs) påstår alltså två
---   samtyckeshandlingar där det fanns en.
+-- PROBLEM (hittat vid röktestet av BP3/BP4 i en återrullad transaktion):
+--   handle_new_user() gjorde UPDATE invitations SET used_by = NEW.id INNAN profilen
+--   skapats. invitations_used_by_fkey pekar på profiles(id) → 23503, huvudblocket
+--   rullades tillbaka och EXCEPTION WHEN OTHERS skapade en minimal profil.
+--   Följd för VARJE registrering via inbjudan: för-/efternamn saknas, samtyckena
+--   (terms/privacy/ai) loggas inte och sätts inte på profilen, och inbjudans roll
+--   ignoreras (alltid USER). Konsulentkopplingen fungerade bara för att
+--   handle_invitation_acceptance råkade hitta den omarkerade inbjudan.
 --
--- ÄNDRING: enda skillnaden mot prod-versionen är att consent_history-blocket
--- tas bort (triggern på profiles äger loggningen), och att inbjudan slås upp
--- skiftlägesokänsligt (invitations sparas lower(trim()) av
--- employer_invitations_insert och sta_bulk_*) med den nyaste först.
--- Befintliga dubbletter rörs INTE här — det är bevisdata; beslut om ev.
--- märkning tas separat.
+-- ÄNDRING: handle_new_user läser inbjudan men markerar den inte. Allt annat är
+-- identiskt med 20260922_samtycke_loggas_dubbelt_vid_registrering.sql.
 
 BEGIN;
 
@@ -49,10 +38,11 @@ BEGIN
     IF invite_record.id IS NOT NULL THEN
       user_role := invite_record.role;
       user_consultant_id := invite_record.consultant_id;
-
-      UPDATE invitations
-      SET used_at = NOW(), used_by = NEW.id
-      WHERE id = invite_record.id;
+      -- Inbjudan markeras INTE här. invitations.used_by har FK mot profiles, och
+      -- profilen finns inte än: UPDATE:n gav 23503, hela huvudblocket rullades
+      -- tillbaka och varje inbjuden registrering tog reservvägen (inga namn,
+      -- inga samtycken, alltid rollen USER). handle_invitation_acceptance
+      -- (AFTER INSERT på profiles) markerar den och skapar konsulentkopplingen.
     END IF;
   EXCEPTION WHEN undefined_table THEN
     NULL;
@@ -106,8 +96,3 @@ $$;
 REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
 
 COMMIT;
-
--- VERIFIERING: registrera ett testkonto med terms+privacy, sedan
---   select consent_type, count(*) from consent_history where user_id=<id> group by 1; → 1 per typ
--- Kör tillsammans med PENDING_20260922_inbjudan_ratelimit_radering.sql DEL 1
--- (handle_invitation_acceptance hittar inbjudan via used_by = NEW.id).

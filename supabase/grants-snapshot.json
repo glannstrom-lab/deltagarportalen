@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T20:27:38.791Z",
+  "generatedAt": "2026-09-22T20:51:31.576Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -539,6 +539,13 @@
       "definer": true,
       "anon": false,
       "authenticated": true
+    },
+    {
+      "name": "profiles_skyddade_kolumner",
+      "signature": "profiles_skyddade_kolumner()",
+      "definer": false,
+      "anon": false,
+      "authenticated": false
     },
     {
       "name": "react_to_feed_item",
