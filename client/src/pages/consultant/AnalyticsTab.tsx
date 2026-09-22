@@ -606,7 +606,7 @@ export function AnalyticsTab() {
   const placementMetric = computePlacementMetric(analytics.totalPlacements, analytics.totalParticipants)
 
   if (loading) {
-    return <LoadingState type="dashboard" />
+    return <LoadingState fullHeight />
   }
 
   // KS7: eget läge, skilt från laddning och skilt från "inga deltagare" —

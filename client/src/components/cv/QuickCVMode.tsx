@@ -166,7 +166,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
         template: 'minimal', // Enkel mall för quick CV
         workExperience: [],
         education: [],
-        languages: [{ id: '1', language: 'Svenska', level: 'native' }],
+        languages: [{ id: '1', language: 'Svenska', level: 'Modersmål' }],
         certificates: [],
         links: [],
         references: []

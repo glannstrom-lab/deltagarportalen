@@ -51,12 +51,17 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Kolla om email redan finns
-      const { data: existingUser } = await supabase
+      // Kolla om email redan finns. maybeSingle(): 0 rader är det vanliga
+      // (mejlet är inte registrerat än) — men ett äkta läsfel ska inte tystas
+      // ner till samma sak, för då skapas en inbjudan för ett mejl som
+      // kanske redan har ett konto.
+      const { data: existingUser, error: existingUserError } = await supabase
         .from('profiles')
         .select('id, first_name, last_name, consultant_id')
         .eq('email', formData.email)
-        .single();
+        .maybeSingle();
+
+      if (existingUserError) throw existingUserError;
 
       if (existingUser) {
         // Användaren finns redan - skicka kopplingsförfrågan
@@ -66,13 +71,17 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
           throw new Error('Denna deltagare är redan kopplad till dig');
         }
 
-        // Kolla om det redan finns en pending förfrågan
-        const { data: existingRequest } = await supabase
+        // Kolla om det redan finns en pending förfrågan. maybeSingle(): 0
+        // rader är det vanliga (ingen tidigare förfrågan) — ett äkta läsfel
+        // ska inte tolkas som "ingen förfrågan finns" och glida vidare.
+        const { data: existingRequest, error: existingRequestError } = await supabase
           .from('consultant_requests')
           .select('id, status')
           .eq('consultant_id', user.id)
           .eq('participant_id', existingUser.id)
-          .single();
+          .maybeSingle();
+
+        if (existingRequestError) throw existingRequestError;
 
         if (existingRequest) {
           if (existingRequest.status === 'PENDING') {

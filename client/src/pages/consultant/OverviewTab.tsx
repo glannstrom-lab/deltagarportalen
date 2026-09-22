@@ -37,6 +37,7 @@ import { InviteParticipantDialog } from '@/components/consultant/InviteParticipa
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
+import type { ReportData } from '@/services/pdfReportGenerator'
 import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
 import {
   MinDagSection,
@@ -295,7 +296,7 @@ export function OverviewTab() {
   const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
 
   // Report data for PDF export
-  const [reportData, setReportData] = useState<Record<string, unknown> | null>(null)
+  const [reportData, setReportData] = useState<ReportData | null>(null)
 
   useEffect(() => {
     fetchDashboardData()
@@ -618,7 +619,7 @@ export function OverviewTab() {
   }
 
   if (loading) {
-    return <LoadingState type="dashboard" />
+    return <LoadingState fullHeight />
   }
 
   // Fel är ett eget läge, skilt från laddning och från en verkligt tom

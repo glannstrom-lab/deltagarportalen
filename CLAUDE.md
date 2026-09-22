@@ -349,16 +349,16 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 
 ```bash
 cd client
-npm run lint:ci            # eslint: 0 errors, max 117 warnings (fryst tak, sänkt 2026-09-12 — räknaren gav 114–117 i olika körningar samma kväll; taket är den högsta mätningen)
+npm run lint:ci            # eslint: 0 errors, max 31 warnings (fryst tak, sänkt 2026-09-22 från 117; coverage/ ignoreras numera så talet är stabilt)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (352, sänkt 2026-09-12)
-npm run lint:design        # gradient-baseline (52)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (28, sänkt 2026-09-22 från 337 — alla 28 i UTRED-dödkod, noll i levande kod)
+npm run lint:design        # gradient-baseline (7, sänkt 2026-09-22 — CVTemplates.tsx arkiverad)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:grants        # anon-öppna SECURITY DEFINER-funktioner + RLS per tabell (A36)
 npm run lint:vercel        # vercel.json-konfigurationen
 npm run lint:links         # döda länkmål i levande kod (C27)
-npm run test:run           # ~2 956 tester i ~209 filer (mätt 2026-09-08 — talet
+npm run test:run           # 3 450 tester i 298 filer (mätt 2026-09-22 — talet
                            # driver snabbt, mät om i stället för att tro på det här)
 npm run build
 ```
@@ -387,7 +387,7 @@ npm run build
 > och **från 21 augusti kunde ingen användare ge eller återkalla ett samtycke** (42501).
 > Lärdomen: en REVOKE är aldrig klar, för koden runt omkring rör sig.
 
-De tre **frysta taken** (117 warnings, 352 typfel, 52 gradienter) finns för att skulden ska kunna
+De tre **frysta taken** (31 warnings, 28 typfel, 7 gradienter — sänkta 2026-09-22) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

@@ -491,13 +491,13 @@ export default function CVBuilder() {
   // Räkna bara entries som ifyllda om de har minst titel/företag (jobb)
   // eller examen/skola (utbildning) — annars markerar vi steg 4 som klart
   // även för halvtomma kort som ger "• -" i PDF.
-  const hasValidExperience = data.workExperience.some(
+  const hasValidExperience = (data.workExperience ?? []).some(
     e => (e?.title?.trim() || e?.company?.trim()),
   )
-  const hasValidEducation = data.education.some(
+  const hasValidEducation = (data.education ?? []).some(
     e => (e?.degree?.trim() || e?.school?.trim()),
   )
-  const hasValidSkills = data.skills.some(s => {
+  const hasValidSkills = (data.skills ?? []).some(s => {
     const name = typeof s === 'string' ? s : s?.name
     return !!name?.trim()
   })
@@ -510,7 +510,7 @@ export default function CVBuilder() {
     hasValidSkills && 5,
   ].filter(Boolean) as number[]
 
-  // eslint-disable-next-line react-hooks/immutability, react-hooks/exhaustive-deps -- mount-bara, loadCV/loadVersions deklareras direkt under
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-bara, loadCV/loadVersions deklareras direkt under
   useEffect(() => { loadCV(); loadVersions() }, [])
 
   const loadCV = async () => {
@@ -559,7 +559,7 @@ export default function CVBuilder() {
 
         setData(prev => {
           const newData = { ...prev, ...cv, ...(utkast ?? {}) }
-          cvLogger.debug('CVBuilder: Setting data with workExperience:', newData.workExperience)
+          cvLogger.debug('CVBuilder: Setting data with workExperience:', { workExperience: newData.workExperience })
           return newData
         })
 
@@ -819,14 +819,20 @@ export default function CVBuilder() {
 
   // Funktionella set-anrop — undviker stale-closure när användaren skriver
   // snabbt eller flera onChange triggas samma render.
-  const add = <T extends { id: string }>(_arr: T[], item: T, key: keyof CVData) => {
-    setData(prev => ({ ...prev, [key]: [ ...((prev[key] as T[]) || []), item ] } as CVData))
+  // `_arr` används bara för att låta TypeScript härleda `T` vid anropsstället
+  // (t.ex. `add(data.certificates, ...)`) — själva läsningen sker alltid via
+  // `prev[key]`. Fälten på CVData är optionella (kan vara `undefined` när ett
+  // CV laddas in med ett fält som saknas i DB-raden), så parametertypen måste
+  // tillåta det — annars vägrar TS varje anrop trots att `|| []` redan
+  // skyddar mot krasch i runtime.
+  const add = <T extends { id: string }>(_arr: T[] | undefined, item: T, key: keyof CVData) => {
+    setData(prev => ({ ...prev, [key]: [ ...((prev[key] as unknown as T[]) || []), item ] } as CVData))
   }
-  const remove = <T extends { id: string }>(_arr: T[], id: string, key: keyof CVData) => {
-    setData(prev => ({ ...prev, [key]: ((prev[key] as T[]) || []).filter(x => x.id !== id) } as CVData))
+  const remove = <T extends { id: string }>(_arr: T[] | undefined, id: string, key: keyof CVData) => {
+    setData(prev => ({ ...prev, [key]: ((prev[key] as unknown as T[]) || []).filter(x => x.id !== id) } as CVData))
   }
-  const update = <T extends { id: string }>(_arr: T[], id: string, key: keyof CVData, field: keyof T, val: T[keyof T]) => {
-    setData(prev => ({ ...prev, [key]: ((prev[key] as T[]) || []).map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData))
+  const update = <T extends { id: string }>(_arr: T[] | undefined, id: string, key: keyof CVData, field: keyof T, val: T[keyof T]) => {
+    setData(prev => ({ ...prev, [key]: ((prev[key] as unknown as T[]) || []).map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData))
   }
 
   // STEG 1: DESIGN - Moderna mallar 2025
@@ -978,21 +984,21 @@ export default function CVBuilder() {
 
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('cvBuilder.fields.firstName')} value={data.firstName} onChange={(v) => setData(prev => ({ ...prev, firstName: v }))} placeholder={t('cvBuilder.placeholders.firstName')} />
-          <Input label={t('cvBuilder.fields.lastName')} value={data.lastName} onChange={(v) => setData(prev => ({ ...prev, lastName: v }))} placeholder={t('cvBuilder.placeholders.lastName')} />
+          <Input label={t('cvBuilder.fields.firstName')} value={data.firstName || ''} onChange={(v) => setData(prev => ({ ...prev, firstName: v }))} placeholder={t('cvBuilder.placeholders.firstName')} />
+          <Input label={t('cvBuilder.fields.lastName')} value={data.lastName || ''} onChange={(v) => setData(prev => ({ ...prev, lastName: v }))} placeholder={t('cvBuilder.placeholders.lastName')} />
         </div>
       </Card>
       <Card>
-        <Input label={t('cvBuilder.fields.jobTitle')} value={data.title} onChange={(v) => setData(prev => ({ ...prev, title: v }))} placeholder={t('cvBuilder.placeholders.jobTitle')} />
+        <Input label={t('cvBuilder.fields.jobTitle')} value={data.title || ''} onChange={(v) => setData(prev => ({ ...prev, title: v }))} placeholder={t('cvBuilder.placeholders.jobTitle')} />
       </Card>
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('cvBuilder.fields.email')} type="email" value={data.email} onChange={(v) => setData(prev => ({ ...prev, email: v }))} placeholder={t('cvBuilder.placeholders.email')} />
-          <Input label={t('cvBuilder.fields.phone')} type="tel" value={data.phone} onChange={(v) => setData(prev => ({ ...prev, phone: v }))} placeholder={t('cvBuilder.placeholders.phone')} />
+          <Input label={t('cvBuilder.fields.email')} type="email" value={data.email || ''} onChange={(v) => setData(prev => ({ ...prev, email: v }))} placeholder={t('cvBuilder.placeholders.email')} />
+          <Input label={t('cvBuilder.fields.phone')} type="tel" value={data.phone || ''} onChange={(v) => setData(prev => ({ ...prev, phone: v }))} placeholder={t('cvBuilder.placeholders.phone')} />
         </div>
       </Card>
       <Card>
-        <Input label={t('cvBuilder.fields.location')} value={data.location} onChange={(v) => setData(prev => ({ ...prev, location: v }))} placeholder={t('cvBuilder.placeholders.location')} />
+        <Input label={t('cvBuilder.fields.location')} value={data.location || ''} onChange={(v) => setData(prev => ({ ...prev, location: v }))} placeholder={t('cvBuilder.placeholders.location')} />
       </Card>
     </div>
   )
@@ -1012,7 +1018,7 @@ export default function CVBuilder() {
           helpText={t('cvBuilder.summary.helpText')}
         />
         <div className="mt-4">
-          <AIWritingAssistant content={data.summary} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
+          <AIWritingAssistant content={data.summary || ''} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
         </div>
       </Card>
 
@@ -1072,9 +1078,9 @@ export default function CVBuilder() {
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.languages')}</h3>
           <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
-        {data.languages.length > 0 && (
+        {(data.languages && data.languages.length > 0) && (
           <div className="space-y-2">
-            {data.languages.map((lang) => {
+            {data.languages!.map((lang) => {
               const langInputId = `lang-name-${lang.id}`
               const langName = lang.language || t('cvBuilder.sections.languages')
               return (
@@ -1120,9 +1126,9 @@ export default function CVBuilder() {
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.certificates')}</h3>
           <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
-        {data.certificates.length > 0 && (
+        {(data.certificates && data.certificates.length > 0) && (
           <div className="space-y-2">
-            {data.certificates.map((cert) => (
+            {data.certificates!.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
                 <input type="text" id={`cv-cert-${cert.id}`} aria-label={t('cvBuilder.sections.certificates')} value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
@@ -1137,9 +1143,9 @@ export default function CVBuilder() {
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.links')}</h3>
           <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
-        {data.links.length > 0 && (
+        {(data.links && data.links.length > 0) && (
           <div className="space-y-2">
-            {data.links.map((link) => (
+            {data.links!.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
                 <input type="text" id={`cv-link-label-${link.id}`} aria-label={t('cvBuilder.sections.links')} value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
                 <input type="url" id={`cv-link-url-${link.id}`} aria-label="Webbadress" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
@@ -1704,7 +1710,7 @@ export default function CVBuilder() {
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
-              <AIWritingAssistant content={data.summary} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
+              <AIWritingAssistant content={data.summary || ''} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
             </div>
           )}
 

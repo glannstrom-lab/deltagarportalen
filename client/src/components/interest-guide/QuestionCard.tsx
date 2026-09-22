@@ -344,7 +344,10 @@ export function ResumeModal({
   savedDate: Date
 }) {
   const { t } = useTranslation()
-  const hoursSince = Math.round((Date.now() - savedDate.getTime()) / (1000 * 60 * 60))
+  // "Nu" hämtas en gång per montering via useState-initieraren i stället för
+  // Date.now() direkt i render — useMemo räcker INTE för purity-regeln.
+  const [nu] = useState(() => Date.now())
+  const hoursSince = Math.round((nu - savedDate.getTime()) / (1000 * 60 * 60))
 
   // Focus-trap. ResumeModal renders alltid när komponenten är mountad.
   const modalRef = useFocusTrap<HTMLDivElement>(true, {

@@ -9,6 +9,7 @@ import {
   Award, Calendar, Sparkles
 } from '@/components/ui/icons'
 import { useWeeklyGoals } from '@/hooks/useDiary'
+import type { WeeklyGoal } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
@@ -133,23 +134,13 @@ function AddGoalForm({
   )
 }
 
-interface Goal {
-  id: string
-  goal_text: string
-  category: string
-  priority: number
-  is_completed: boolean
-  completed_at?: string
-  reflection?: string
-}
-
 function GoalCard({
   goal,
   onToggle,
   onDelete,
   onReflect
 }: {
-  goal: Goal
+  goal: WeeklyGoal
   onToggle: () => void
   onDelete: () => void
   onReflect: (reflection: string) => void

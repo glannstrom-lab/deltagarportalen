@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import {
   MessageSquare,
   Mail,
@@ -196,7 +197,7 @@ function ConversationThread({
   conversation: Conversation
   onSendReply: (content: string) => Promise<void>
   isSending: boolean
-  t: (key: string, fallback?: string) => string
+  t: TFunction
   locale: string
 }) {
   const [reply, setReply] = useState('')
@@ -413,7 +414,7 @@ function NewMessageDialog({
   participants: Participant[]
   onSend: (participantIds: string[], message: string) => void
   initialContent?: string
-  t: (key: string, fallback?: string) => string
+  t: TFunction
 }) {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
   const [message, setMessage] = useState(initialContent)
@@ -868,26 +869,23 @@ export function CommunicationTab() {
     }
   }
 
-  const handleScheduleMeeting = async (meetingData: { participantId: string; dateTime: string; duration: number; type: string; meetingLink?: string; location?: string; notes?: string }) => {
-    try {
-      await consultantService.createMeeting({
-        participant_id: meetingData.participantId,
-        scheduled_at: meetingData.dateTime,
-        duration_minutes: meetingData.duration,
-        meeting_type: meetingData.type as 'video' | 'phone' | 'physical',
-        meeting_link: meetingData.meetingLink,
-        location: meetingData.location,
-        notes: meetingData.notes,
-        status: 'scheduled',
-      })
-
-      setShowMeetingDialog(false)
-      invalidateParticipants()
-      fetchData()
-    } catch (error) {
-      console.error('Error scheduling meeting:', error)
-      notifications.error('Mötet kunde inte bokas. Försök igen.')
-    }
+  /**
+   * 2026-09-22: `MeetingSchedulerDialog` skriver mötet direkt mot
+   * `consultant_meetings` själv (egen `supabase`-anrop, egen
+   * deltagarhämtning) och ropar sedan `onSuccess()` — den tar varken
+   * `participants` eller `onSchedule` som props. Den gamla
+   * `handleScheduleMeeting` skickades hit som `onSchedule`, vilket
+   * TypeScript aldrig accepterade (props som inte finns på
+   * `MeetingSchedulerDialogProps`) och som därför aldrig anropades i
+   * runtime heller — dialogens egen `onSuccess()` gick i stället mot en
+   * `undefined`-prop och kraschade rakt efter att mötet redan skapats i
+   * databasen. Det här är bara refresh-steget efter att dialogen själv
+   * lyckats.
+   */
+  const handleMeetingScheduled = () => {
+    setShowMeetingDialog(false)
+    invalidateParticipants()
+    fetchData()
   }
 
   const upcomingMeetings = meetings
@@ -899,7 +897,7 @@ export function CommunicationTab() {
     setShowNewMessage(true)
   }
 
-  if (loading) return <LoadingState type="list" />
+  if (loading) return <LoadingState />
 
   // KS7: eget felläge, skilt från den tomma inkorgen och den tomma
   // möteslistan längre ned.
@@ -1142,12 +1140,7 @@ export function CommunicationTab() {
       <MeetingSchedulerDialog
         isOpen={showMeetingDialog}
         onClose={() => setShowMeetingDialog(false)}
-        participants={participants.map(p => ({
-          id: p.participant_id,
-          name: `${p.first_name} ${p.last_name}`,
-          email: p.email,
-        }))}
-        onSchedule={handleScheduleMeeting}
+        onSuccess={handleMeetingScheduled}
       />
     </div>
   )

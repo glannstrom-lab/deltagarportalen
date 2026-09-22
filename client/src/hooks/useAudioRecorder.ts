@@ -40,7 +40,9 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   const [isPaused, setIsPaused] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
   const [segments, setSegments] = useState<RecordingSegment[]>([])
-  const [audioSupported, setAudioSupported] = useState(false)
+  // Engångskontroll av webbläsarstöd — härlett direkt i initieraren (körs en
+  // gång) i stället för en effekt som satte samma sak strax efter mount.
+  const [audioSupported] = useState(() => !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia))
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -48,12 +50,6 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const segmentStartTimeRef = useRef<number>(0)
   const currentQuestionRef = useRef<string>('')
-
-  // Check for audio support
-  useEffect(() => {
-    const supported = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
-    setAudioSupported(supported)
-  }, [])
 
   // Timer for recording duration
   useEffect(() => {

@@ -25,8 +25,13 @@ const SYSTEM_FONTS = [
   'sans-serif',
 ].join(', ')
 
+function supportsFontLoadingApi(): boolean {
+  return typeof document !== 'undefined' && !!document.fonts && !!document.fonts.ready
+}
+
 export function FontProvider({ children }: FontProviderProps) {
-  const [fontLoaded, setFontLoaded] = useState(false)
+  // Äldre webbläsare utan Font Loading API räknas som klara direkt (fallback)
+  const [fontLoaded, setFontLoaded] = useState(() => !supportsFontLoadingApi())
 
   useEffect(() => {
     // Check if fonts are already loaded
@@ -35,9 +40,6 @@ export function FontProvider({ children }: FontProviderProps) {
         setFontLoaded(true)
         document.documentElement.classList.add('fonts-loaded')
       })
-    } else {
-      // Fallback for older browsers
-      setFontLoaded(true)
     }
 
     // Add font-display: swap to all font faces
@@ -122,13 +124,11 @@ export async function loadFont(
  * Hook to detect if fonts are loaded
  */
 export function useFontsLoaded(): boolean {
-  const [loaded, setLoaded] = useState(false)
+  const [loaded, setLoaded] = useState(() => !supportsFontLoadingApi())
 
   useEffect(() => {
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(() => setLoaded(true))
-    } else {
-      setLoaded(true)
     }
   }, [])
 

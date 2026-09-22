@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { articleApi } from '../services/supabaseApi'
@@ -92,19 +92,7 @@ function ArticleInner() {
   const { trackArticleRead, trackArticleSaved } = useAchievementTracker()
   const hasTrackedRead = useRef(false)
 
-  useEffect(() => {
-    logger.debug('Article - ID from params:', { id })
-    logger.debug('Article - Current URL:', { url: window.location.href })
-    if (id) {
-      loadArticle()
-      checkBookmark()
-      // Load saved font size preference (UI-preference, kan vara kvar i localStorage)
-      const savedFontSize = localStorage.getItem('article-font-size') as 'normal' | 'large' | 'xlarge'
-      if (savedFontSize) setFontSize(savedFontSize)
-    }
-  }, [id])
-
-  const loadArticle = async () => {
+  const loadArticle = useCallback(async () => {
     try {
       const data = await articleApi.getById(id!)
       setArticle(data)
@@ -137,9 +125,9 @@ function ArticleInner() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [id, trackArticleRead])
 
-  const checkBookmark = async () => {
+  const checkBookmark = useCallback(async () => {
     try {
       const isSaved = await articleBookmarksApi.isBookmarked(id!)
       setIsBookmarked(isSaved)
@@ -151,7 +139,19 @@ function ArticleInner() {
       const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
       setIsBookmarked(bookmarks.includes(id))
     }
-  }
+  }, [id])
+
+  useEffect(() => {
+    logger.debug('Article - ID from params:', { id })
+    logger.debug('Article - Current URL:', { url: window.location.href })
+    if (id) {
+      loadArticle()
+      checkBookmark()
+      // Load saved font size preference (UI-preference, kan vara kvar i localStorage)
+      const savedFontSize = localStorage.getItem('article-font-size') as 'normal' | 'large' | 'xlarge'
+      if (savedFontSize) setFontSize(savedFontSize)
+    }
+  }, [id, loadArticle, checkBookmark])
 
   const toggleBookmark = async () => {
     try {

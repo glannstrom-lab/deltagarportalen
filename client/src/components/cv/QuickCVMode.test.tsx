@@ -10,9 +10,10 @@
  * solida vita med mörk text.
  */
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent, act } from '@testing-library/react'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import type { CVData } from '@/types/cv'
 
 const profile = {
   first_name: 'Dana',
@@ -49,5 +50,37 @@ describe('QuickCVMode — PG8', () => {
     expect(kalla).not.toMatch(/placeholder:text-white\/\d+/)
     // Inputs är solida vita med mörk text — inte vit text på bg-white/20
     expect(kalla).not.toMatch(/bg-white\/\d+[^"]*text-white/)
+  })
+})
+
+describe('QuickCVMode — regression (2026-09-22): giltig språknivå', () => {
+  it('sätter en riktig svensk nivå ("Modersmål"), inte det engelska "native" som Language.level inte känner till', async () => {
+    vi.useFakeTimers()
+    let result: Partial<CVData> | null = null
+    render(
+      <QuickCVMode
+        onComplete={(data) => { result = data }}
+        onSwitchToFull={() => {}}
+      />
+    )
+
+    // Steg 1: namnet är redan förifyllt ur profilen — gå vidare.
+    fireEvent.click(screen.getByRole('button', { name: /Nästa|Skapa/i }))
+
+    // Steg 2: yrkestitel krävs för att kunna gå vidare.
+    const jobbfält = screen.getByRole('textbox')
+    fireEvent.change(jobbfält, { target: { value: 'Snickare' } })
+    fireEvent.click(screen.getByRole('button', { name: /Nästa|Skapa/i }))
+
+    // Steg 3: e-post är redan förifylld ur profilen — sista steget genererar CV:t.
+    fireEvent.click(screen.getByRole('button', { name: /Nästa|Skapa/i }))
+
+    await act(async () => {
+      vi.advanceTimersByTime(1500)
+    })
+    vi.useRealTimers()
+
+    expect(result).not.toBeNull()
+    expect(result!.languages).toEqual([{ id: '1', language: 'Svenska', level: 'Modersmål' }])
   })
 })

@@ -4,9 +4,15 @@ import { cvApi } from '@/services/cvApi'
 import type { CVData as CanonicalCVData } from '@/types/cv'
 import { interestApi } from '@/services/interestApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
+import type { CoverLetter as ApiCoverLetter } from '@/services/supabaseApi'
 import { activityApi } from '@/services/activityApi'
 import { savedJobsApi } from '@/services/jobsApi'
 import { moodApi } from '@/services/cloudStorage'
+// moodTypeToLevel importeras direkt från undermodulen, inte via
+// cloudStorage-barreln — den barrelns publika yta är grindad (17 api-objekt
+// + LagringsFel, se cloudStorage.test.ts) och en fristående funktion hör
+// inte hemma där.
+import { moodTypeToLevel } from '@/services/cloud/maende'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { supabase } from '@/lib/supabase'
 import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
@@ -37,15 +43,21 @@ interface SavedJob {
   job_data: JobData
 }
 
-/** Cover letter from database */
-interface CoverLetter {
-  id: string
-  title: string
-  company: string | null
-  created_at: string
-  job_title: string | null
-  is_completed?: boolean
-}
+/**
+ * Cover letter from database.
+ *
+ * 2026-09-22: bytt mot en type-alias för den RIKTIGA `CoverLetter` i
+ * `services/supabaseApi.ts`, som är vad `coverLetterApi.getAll()` faktiskt
+ * returnerar. Den lokala kopian hade drivit isär: den krävde `company`
+ * (verkligheten har den optional) och hade ett påhittat `is_completed`-fält
+ * som `cover_letters` aldrig haft i prod (verifierat mot
+ * schema-snapshot.json) — `!l.is_completed` var därför alltid `true`, så
+ * `coverLetters.drafts` visade ALLA brev som utkast. Ingen konsument läser
+ * `coverLetters.drafts` i dag (grep gav noll träffar utanför den här
+ * filen), men fältet lämnas ändå ärligt (0) i stället för en gissning,
+ * se nedan.
+ */
+type CoverLetter = ApiCoverLetter
 
 /** Exercise answer from database */
 interface ExerciseAnswer {
@@ -140,9 +152,6 @@ export interface UseDashboardDataReturn {
   isRefetching: boolean
 }
 
-// Forward declaration
-function getDefaultDashboardData(): DashboardWidgetData
-
 // Funktion för att hämta all dashboard-data
 // PRESTANDA: Alla anrop körs parallellt i ett enda Promise.all för snabbast möjliga laddning
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
@@ -209,7 +218,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     title: letter.title || 'Nytt brev',
     company: letter.company || 'Okänt företag',
     createdAt: letter.created_at,
-    jobTitle: letter.job_title,
+    jobTitle: letter.job_title ?? undefined,
   }))
 
   // Räkna streak
@@ -246,7 +255,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       hasResult: !!interestResult,
       topRecommendations: (interestResult as InterestResult | null)?.recommended_occupations?.slice(0, 3).map((o: OccupationRecommendation) => ({
         name: o.name,
-        matchPercentage: o.match_percentage || o.match,
+        matchPercentage: o.match_percentage || o.match || 0,
       })) || [],
       completedAt: (interestResult as InterestResult | null)?.created_at || null,
       // RIASEC-data
@@ -273,7 +282,9 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     coverLetters: {
       count: coverLetters.length,
       recentLetters,
-      drafts: coverLetters.filter((l: CoverLetter) => !l.is_completed).length,
+      // `cover_letters` har ingen "klar/utkast"-kolumn i prod — 0 är den
+      // ärliga siffran, inte en gissning (se kommentaren på CoverLetter ovan).
+      drafts: 0,
     },
     exercises: {
       totalExercises: 38, // Totalt antal övningar
@@ -313,7 +324,12 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       })) || [],
     },
     wellness: {
-      moodToday: todaysMood?.mood || null,
+      // 2026-09-22: moodApi ger MoodType (strängen 'great'/'good'/…), men
+      // widget-datan vill ha 1-5 (samma skala som mood_logs.mood_level).
+      // `|| null` skickade tidigare igenom strängen rakt av, vilket TS
+      // korrekt vägrade — ingen konsument läser fältet i dag, men det ska
+      // ändå bära rätt typ, inte en sträng där ett tal förväntas.
+      moodToday: todaysMood?.mood ? (moodTypeToLevel(todaysMood.mood) as 1 | 2 | 3 | 4 | 5) : null,
       streakDays: moodStreak || streakDays,
       completedActivities: activities.filter((a: Activity) =>
         a.activity_type === 'wellness' || a.activity_type === 'mood_logged'

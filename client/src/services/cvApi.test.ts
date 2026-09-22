@@ -310,7 +310,7 @@ describe('cvApi.shareCV', () => {
 
 describe('cvApi.getSharedCV', () => {
   it('hämtar cv_shares join:ad med cvs, filtrerat på icke-utgången kod', async () => {
-    mockFromBuilder.single.mockResolvedValue({
+    mockFromBuilder.maybeSingle.mockResolvedValue({
       data: { share_code: 'abc123', cvs: { title: 'Delat CV' } },
       error: null,
     })
@@ -321,14 +321,25 @@ describe('cvApi.getSharedCV', () => {
     expect(result).toMatchObject({ share_code: 'abc123' })
   })
 
-  it('kastar APIError(NOT_FOUND) vid PGRST116 (utgången/ogiltig kod)', async () => {
-    mockFromBuilder.single.mockResolvedValue({
+  it('kastar APIError(NOT_FOUND, "länken har gått ut") vid 0 rader (utgången/ogiltig kod)', async () => {
+    mockFromBuilder.maybeSingle.mockResolvedValue({
       data: null,
-      error: { code: 'PGRST116', message: 'No rows' },
+      error: null,
     })
     await expect(cvApi.getSharedCV('utgangen')).rejects.toMatchObject({
       code: 'NOT_FOUND',
       status: 404,
+      message: expect.stringContaining('gått ut'),
+    })
+  })
+
+  it('kastar vidare ett äkta läsfel via handleError, inte NOT_FOUND', async () => {
+    mockFromBuilder.maybeSingle.mockResolvedValue({
+      data: null,
+      error: { code: '500', message: 'nätverksfel' },
+    })
+    await expect(cvApi.getSharedCV('vilken-som')).rejects.toMatchObject({
+      message: 'nätverksfel',
     })
   })
 })

@@ -74,12 +74,12 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
   const handleConfirm = useCallback(() => {
     state.resolve?.(true)
     setState(initialState)
-  }, [state.resolve])
+  }, [state])
 
   const handleCancel = useCallback(() => {
     state.resolve?.(false)
     setState(initialState)
-  }, [state.resolve])
+  }, [state])
 
   const variantStyles = {
     default: {

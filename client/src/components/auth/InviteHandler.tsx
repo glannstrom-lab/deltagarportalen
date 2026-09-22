@@ -85,13 +85,14 @@ export const InviteHandler: React.FC = () => {
         throw new Error(t('auth.invite.invalidOrExpired'));
       }
 
-      setInviteData(data as InviteData);
+      const invite = data as InviteData;
+      setInviteData(invite);
 
-      if (data.metadata) {
+      if (invite.metadata) {
         setFormData((prev) => ({
           ...prev,
-          firstName: data.metadata.first_name || '',
-          lastName: data.metadata.last_name || '',
+          firstName: invite.metadata?.first_name || '',
+          lastName: invite.metadata?.last_name || '',
         }));
       }
     } catch (err) {
@@ -117,7 +118,7 @@ export const InviteHandler: React.FC = () => {
     try {
       const validationResult = inviteRegisterSchema.safeParse(formData);
       if (!validationResult.success) {
-        const firstError = validationResult.error.errors[0];
+        const firstError = validationResult.error.issues[0];
         throw new Error(firstError.message);
       }
 

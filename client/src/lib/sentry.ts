@@ -40,9 +40,11 @@ function hasAnalyticsCookieConsent(): boolean {
 // Only initialize in production or if explicitly enabled AND user has given consent
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
 const IS_PRODUCTION = import.meta.env.PROD;
-const HAS_COOKIE_CONSENT = hasAnalyticsCookieConsent();
- 
-const _ENABLE_SENTRY = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true') && HAS_COOKIE_CONSENT;
+// `initSentry()` nedan räknar om `hasAnalyticsCookieConsent()` själv vid
+// varje anrop (samtycket kan ha ändrats sedan modulen laddades) — det fanns
+// tidigare en modulnivå-konstant `_ENABLE_SENTRY` som gjorde samma
+// uträkning en gång vid import och sedan aldrig lästes (TS6133). Borttagen;
+// `shouldEnable` i `initSentry()` är den enda sanningen.
 
 let sentryInitialized = false;
 
@@ -88,15 +90,19 @@ function doInitSentry(): void {
     // page-load- och navigation-transaktioner sedan Sentry SDK v8+.
     // Synas i Sentry under Performance → Web Vitals.
     // Aktiverat 2026-05-09 (P2-skuld: roadmapens KPI:er var omätbara).
+    // Spåra fetch/XHR-traceparent på samma origin + Supabase. Flyttad hit
+    // från browserTracingIntegration-optionerna 2026-09-22: SDK v10 lyfte
+    // `tracePropagationTargets` till toppnivåns CoreOptions — integration-
+    // varianten fanns inte längre i typerna (TS2353) och skrevs alltså inte
+    // ens ut i drift, den kompilerade bara för att den låg bredvid en giltig
+    // integration.
+    tracePropagationTargets: [
+      /^https:\/\/jobin\.se/,
+      /^https:\/\/.*\.supabase\.co/,
+      /^\//,  // Relativa URL:er (egna API-anrop)
+    ],
     integrations: [
-      Sentry.browserTracingIntegration({
-        // Spåra fetch/XHR-traceparent på samma origin + Supabase
-        tracePropagationTargets: [
-          /^https:\/\/jobin\.se/,
-          /^https:\/\/.*\.supabase\.co/,
-          /^\//,  // Relativa URL:er (egna API-anrop)
-        ],
-      }),
+      Sentry.browserTracingIntegration(),
       // Session Replay — PII-maskning är OBLIGATORISK för denna app:
       // skärmen kan visa CV, namn, dagbok och hälsodata. maskAllText +
       // blockAllMedia gör att replays bara visar layout/struktur, aldrig

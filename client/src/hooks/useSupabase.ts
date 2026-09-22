@@ -34,7 +34,7 @@ export function useAuth() {
     // centrala skyddet ligger på modulnivå i stores/authStore.ts
     // (`hanteraAuthByte`), som är laddad i alla lägen.
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (_event, session) => {
         setUser(session?.user ?? null)
         if (session?.user) {
           const { data } = await getProfile(session.user.id)
@@ -67,12 +67,18 @@ export function useCV(userId: string | undefined) {
     // Fetch initial data
     const fetchCV = async () => {
       try {
+        // 2026-09-22: .single() kräver EXAKT en rad — varje deltagare som
+        // inte skapat ett CV än (ingen rad i `cvs`) fick PostgREST att svara
+        // 406 PGRST116 här. Den här hooken är i drift via useAITeamContext →
+        // useCV, så det slog igenom varje gång AI-teamet byggde kontext för
+        // någon utan CV. Samma buggklass som redan fixats i MyConsultant.tsx
+        // (nästa-möte-frågan) och UX12 (get_my_consultant).
         const { data, error } = await supabase
           .from('cvs')
           .select('*')
           .eq('user_id', userId)
-          .single()
-        
+          .maybeSingle()
+
         if (error) throw error
         setCV(data)
       } catch (err) {
@@ -103,7 +109,10 @@ export function useCV(userId: string | undefined) {
       )
       .subscribe()
 
-    return () => subscription.unsubscribe()
+    // `subscription.unsubscribe()` (Realtime-kanal) returnerar en Promise —
+    // useEffects städfunktion måste returnera void, inte en Promise, annars
+    // vägrar TS (och React varnar i praktiken om en async destructor).
+    return () => { void subscription.unsubscribe() }
   }, [userId])
 
   const updateCV = async (updates: Partial<CV>) => {

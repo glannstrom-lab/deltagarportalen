@@ -26,7 +26,9 @@ const path = require('path');
 //   2026-06-22 (lås fast vinsten efter granskning): 65
 //   2026-07-10 (F6: ResultsView 13 träffar solid-ersatta; kvar = whitelistade
 //               CV-mallar, Landing-hero, WellnessQuickCard, design-system.ts): 52
-const BASELINE_TOTAL = 52;
+//   2026-09-22 (städpasset: CVTemplates.tsx 43 st + WellnessQuickCard arkiverade
+//               ut ur src/ som dödkod; kvar = Landing-hero m.fl.): 7
+const BASELINE_TOTAL = 7;
 
 const CHECK_DIR = path.join(__dirname, '..', 'src');
 const PATTERN = /bg-gradient-(to-[trbl]+|radial)/g;

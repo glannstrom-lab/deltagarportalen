@@ -335,29 +335,32 @@ export const personalBrandApi = {
       .select('practice_count')
       .eq('id', id)
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     // D7 (2026-07-23): kasta vid läsfel — annars skrivs practice_count=1 och
     // NOLLSTÄLLER räknaren vid ett transient läsfel. (Kvarvarande race vid
     // samtidiga ökningar kräver en atomisk RPC — noterat i ROADMAP D7.)
-    if (readError) {
-      handleStorageError(readError, 'läsa övningsräknare')
-      return
-    }
+    //
+    // Rättat: `handleStorageError` är void och kastar aldrig, så kommentaren
+    // ovan stämde inte — ett läsfel loggades tyst (felaktigt märkt "Användare
+    // inte inloggad") och funktionen avslutade utan att räkna upp eller visa
+    // något fel. `maybeSingle()` skiljer nu på de två legitima fallen: pitchen
+    // är redan borttagen (0 rader, ingen anropare att skylla på — no-op) och
+    // ett äkta fel (kastas, så anroparen faktiskt får veta).
+    if (readError) kastaLagringsFel(readError, 'läsa övningsräknare')
+    if (!current) return
 
     const { error } = await supabase
       .from('elevator_pitches')
       .update({
-        practice_count: (current?.practice_count || 0) + 1,
+        practice_count: (current.practice_count || 0) + 1,
         last_practiced_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
       .eq('user_id', user.id)
 
-    if (error) {
-      handleStorageError(error, 'registrera övning')
-    }
+    if (error) kastaLagringsFel(error, 'registrera övning')
   },
 
   // ===== VISIBILITY PROGRESS =====
@@ -377,7 +380,7 @@ export const personalBrandApi = {
     if (error) {
       kastaLagringsFel(error, 'hämta dina strategier')
       const saved = localStorage.getItem('visibility-progress')
-      return saved ? JSON.parse(saved) : []
+      return JSON.parse(saved || '[]')
     }
     return data || []
   },
@@ -438,7 +441,7 @@ export const personalBrandApi = {
     if (error) {
       kastaLagringsFel(error, 'hämta din innehållskalender')
       const saved = localStorage.getItem('content-calendar')
-      return saved ? JSON.parse(saved) : []
+      return JSON.parse(saved || '[]')
     }
     return data || []
   },

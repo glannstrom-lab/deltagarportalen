@@ -36,16 +36,27 @@ serve(medFelrapport('af-enrichments', async (req) => {
     const queryString = url.search;
     
     const targetUrl = `${ENRICHMENTS_API_BASE}${path}${queryString}`;
-    
+
     console.log(`Proxying request to: ${targetUrl}`);
 
-    const response = await fetch(targetUrl, {
-      method: req.method,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+    // Timeout — samma mönster som af-jobsearch (A15, 2026-07-23): en
+    // hängande Enrichments-anslutning fick tidigare hålla instansen till
+    // plattformens maxtid utan att abortera. Den här filen saknade den fixen.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    let response: Response;
+    try {
+      response = await fetch(targetUrl, {
+        method: req.method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
       throw new Error(`Enrichments API error: ${response.status}`);

@@ -307,7 +307,10 @@ export function getInterviewTips(occupation?: string): string[] {
  * Skapa en personlig intervjuplan
  */
 export function createInterviewPlan(
-  jobTitle: string,
+  // Ingen anropare i src/ (dödkod) — och planen är inte jobbtitel-anpassad
+  // trots namnet "personlig intervjuplan". Prefixad i stället för borttagen
+  // så signaturen är redo den dag någon faktiskt bygger den anpassningen.
+  _jobTitle: string,
   weaknesses: string[],
   daysUntilInterview: number
 ): {

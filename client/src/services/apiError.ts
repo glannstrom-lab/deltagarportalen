@@ -5,13 +5,18 @@
  */
 
 export class APIError extends Error {
-  constructor(
-    message: string,
-    public code?: string,
-    public status?: number
-  ) {
+  // Parameter properties (`public code?: string` i konstruktorn) genererar
+  // JS-tilldelningar och är inte "erasable" — `erasableSyntaxOnly` (TS 5.9,
+  // tsconfig.app.json) fäller dem. Explicita fält + tilldelning i konstruktorn
+  // ger samma runtime-beteende utan att kräva TS-specifik kodgenerering.
+  code?: string
+  status?: number
+
+  constructor(message: string, code?: string, status?: number) {
     super(message)
     this.name = 'APIError'
+    this.code = code
+    this.status = status
   }
 }
 

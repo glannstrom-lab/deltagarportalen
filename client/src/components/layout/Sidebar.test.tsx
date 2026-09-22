@@ -116,4 +116,31 @@ describe('Footer and sections', () => {
     // Sub-items should not render when collapsed
     expect(screen.queryByText('CV')).not.toBeInTheDocument()
   })
+
+  // react-hooks/static-components (2026-09-22): NavLink var tidigare
+  // definierad INUTI Sidebar-renderingen, så varje omrendering av Sidebar
+  // skapade en NY komponenttyp — React avmonterade och monterade om varje
+  // länk, vilket tappade tangentbordsfokus. Det här testet hade fallit före
+  // fixen: fokus hade flyttats till <body> efter omrenderingen.
+  it('Test 12: A focused nav link keeps focus across a Sidebar re-render', () => {
+    const { rerender } = render(
+      <MemoryRouter initialEntries={['/oversikt']}>
+        <Sidebar onToggleCollapse={() => {}} />
+      </MemoryRouter>
+    )
+    const nav = document.querySelector('nav')!
+    const link = within(nav).getByRole('link', { name: /översikt/i })
+    link.focus()
+    expect(document.activeElement).toBe(link)
+
+    // Tvingar Sidebar att köra sin render-funktion igen (RTL:s rerender
+    // anropar komponenten på nytt oavsett om props är referensmässigt lika).
+    rerender(
+      <MemoryRouter initialEntries={['/oversikt']}>
+        <Sidebar onToggleCollapse={() => {}} />
+      </MemoryRouter>
+    )
+
+    expect(document.activeElement).toBe(link)
+  })
 })

@@ -48,7 +48,7 @@ const DESIGN_RULES = {
 }
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', 'coverage']),
   {
     // DR5 (2026-08-17): `client/api/*.js` lintades ALDRIG.
     //
@@ -135,16 +135,15 @@ export default defineConfig([
   },
   {
     // Whitelistade filer där gradient är legitim dekoration:
-    // - CVTemplates: CV-mall-thumbnails (DESIGN.md §6 — dekorativa)
     // - Landing: dekorativa hero-bakgrunder (Manifestet-godkända)
     // - design-system.ts: designtoken-definitioner, ej UI-output
-    // - WellnessQuickCard: dekorativ glow-blur längst ner
     // (ResultsView borttagen 2026-07-10 — gradient-fri efter F6-städning)
+    // (CVTemplates.tsx och WellnessQuickCard.tsx arkiverade 2026-09-22 till
+    // archive/2026-08-doedkod/ — onåbara från main.tsx, dödkodspasset C16.
+    // Deras gradienter räknas inte längre i src/, se check-design-debt.cjs.)
     files: [
-      'src/components/cv/templates/CVTemplates.tsx',
       'src/pages/Landing.tsx',
       'src/styles/design-system.ts',
-      'src/components/dashboard/WellnessQuickCard.tsx',
     ],
     rules: {
       'no-restricted-syntax': 'off',

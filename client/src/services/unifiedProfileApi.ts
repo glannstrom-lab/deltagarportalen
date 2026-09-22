@@ -314,7 +314,14 @@ export const unifiedProfileApi = {
       // Update employment status if provided and valid
       if (data.employmentStatus !== undefined) {
         // Convert empty string or invalid values to null
-        if (data.employmentStatus === null || data.employmentStatus === '') {
+        //
+        // 2026-09-22: `EmploymentStatus` (typen) har ingen `''`-medlem, så TS
+        // flaggade jämförelsen som omöjlig — men anropare (t.ex. en <select>
+        // vars ifyllda tillstånd är en tom sträng) skickar runtime-värden
+        // som INTE följer typen. Det är precis vad det här skyddet finns
+        // för. Kastad till `string` bara för den här jämförelsen, inte
+        // typen — försvaret ska stå kvar, inte tas bort för att bli grön.
+        if (data.employmentStatus === null || (data.employmentStatus as string) === '') {
           updateData.employment_status = null
         } else if (validStatuses.includes(data.employmentStatus)) {
           updateData.employment_status = data.employmentStatus

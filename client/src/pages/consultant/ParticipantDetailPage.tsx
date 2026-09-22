@@ -760,7 +760,7 @@ export function ParticipantDetailPage() {
   }
 
   if (loading) {
-    return <LoadingState type="profile" />
+    return <LoadingState fullHeight />
   }
 
   // Fel är ett eget läge, skilt från "hittades inte" och skilt från laddning

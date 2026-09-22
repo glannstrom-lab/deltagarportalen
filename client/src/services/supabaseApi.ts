@@ -221,9 +221,15 @@ export const articleApi = {
 
   /**
    * Search articles
+   *
+   * 2026-09-22: anropade `contentArticleApi.search(query)`, som aldrig
+   * funnits — TypeError vid varje anrop. Ingen anropare hittades (grep
+   * över src/), så det har troligen aldrig körts i drift, men var ändå en
+   * krasch som väntade på sin första användare. Rätt metod är
+   * `searchSlugs`.
    */
   async search(query: string) {
-    return contentArticleApi.search(query)
+    return contentArticleApi.searchSlugs(query)
   }
 }
 

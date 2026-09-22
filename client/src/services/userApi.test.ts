@@ -90,9 +90,9 @@ describe('userApi.getPreferences', () => {
       error: null,
     })
     const prefs = await userApi.getPreferences()
-    expect(prefs.desired_jobs).toHaveLength(2)
-    expect(prefs.desired_jobs[0]).toMatchObject({ label: 'Utvecklare', priority: 1 })
-    expect(prefs.desired_jobs[1]).toMatchObject({ label: 'Designer', priority: 2 })
+    expect(prefs.desired_jobs!).toHaveLength(2)
+    expect(prefs.desired_jobs![0]).toMatchObject({ label: 'Utvecklare', priority: 1 })
+    expect(prefs.desired_jobs![1]).toMatchObject({ label: 'Designer', priority: 2 })
   })
 
   it('bevarar nytt strukturerat format för desired_jobs', async () => {
@@ -107,10 +107,10 @@ describe('userApi.getPreferences', () => {
       error: null,
     })
     const prefs = await userApi.getPreferences()
-    expect(prefs.desired_jobs).toHaveLength(2)
+    expect(prefs.desired_jobs!).toHaveLength(2)
     // Sorterat på priority → Frontend (1) före UX-designer (2)
-    expect(prefs.desired_jobs[0]).toMatchObject({ label: 'Frontend', priority: 1, ssyk: '2521' })
-    expect(prefs.desired_jobs[1]).toMatchObject({ label: 'UX-designer', priority: 2, conceptId: 'abc' })
+    expect(prefs.desired_jobs![0]).toMatchObject({ label: 'Frontend', priority: 1, ssyk: '2521' })
+    expect(prefs.desired_jobs![1]).toMatchObject({ label: 'UX-designer', priority: 2, conceptId: 'abc' })
   })
 
   it('hoppar över items med tom label', async () => {
@@ -120,8 +120,8 @@ describe('userApi.getPreferences', () => {
       error: null,
     })
     const prefs = await userApi.getPreferences()
-    expect(prefs.desired_jobs).toHaveLength(1)
-    expect(prefs.desired_jobs[0].label).toBe('Giltig')
+    expect(prefs.desired_jobs!).toHaveLength(1)
+    expect(prefs.desired_jobs![0].label).toBe('Giltig')
   })
 
   it('omindexerar priority till 1..n', async () => {
@@ -137,6 +137,6 @@ describe('userApi.getPreferences', () => {
       error: null,
     })
     const prefs = await userApi.getPreferences()
-    expect(prefs.desired_jobs.map(j => j.priority)).toEqual([1, 2, 3])
+    expect(prefs.desired_jobs!.map(j => j.priority)).toEqual([1, 2, 3])
   })
 })

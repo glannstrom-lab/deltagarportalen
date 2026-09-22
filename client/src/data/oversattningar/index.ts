@@ -99,10 +99,10 @@ export function useInnehall<T>(modul: Innehallsmodulnamn, data: T, prefix: strin
   const [overlay, setOverlay] = useState<Overlay>(() => cache.get(modul) ?? {})
 
   useEffect(() => {
-    if (sprak === 'sv') {
-      setOverlay({})
-      return
-    }
+    // Ingen overlay behöver hämtas för svenska — useMemo nedan ignorerar
+    // ändå `overlay` när sprak==='sv', så inget setState krävs här.
+    if (sprak === 'sv') return
+
     let avbruten = false
     void hamtaOverlay(modul).then((o) => {
       if (!avbruten) setOverlay(o)

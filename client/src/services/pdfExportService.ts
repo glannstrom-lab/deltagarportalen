@@ -40,7 +40,7 @@ async function loadPDFLibraries(): Promise<typeof jsPDF> {
     jsPDFModule = jspdfLib
     autoTableModule = autoTableLib
     // Attach autoTable to jsPDF prototype
-    ;(jsPDFModule.default as { autoTable: unknown }).autoTable = autoTableModule.default
+    ;(jsPDFModule.default as unknown as { autoTable: unknown }).autoTable = autoTableModule.default
   }
   return jsPDFModule.default
 }
@@ -48,16 +48,21 @@ async function loadPDFLibraries(): Promise<typeof jsPDF> {
 interface TemplateConfig {
   layout: 'sidebar' | 'top' | 'split'
   colors: {
-    sidebar: number[]
-    sidebarText: number[]
     accent: number[]
     accentLight: number[]
     text: number[]
     muted: number[]
     border: number[]
+    // Vilka av dessa som är satta beror på `layout`: 'sidebar' sätter
+    // sidebar/sidebarText, 'top' sätter header/headerText, 'split' sätter
+    // leftColumn/rightBg/leftText. Ingen enskild mall sätter alla — de var
+    // tidigare (felaktigt) obligatoriska.
+    sidebar?: number[]
+    sidebarText?: number[]
     header?: number[]
     headerText?: number[]
     leftColumn?: number[]
+    leftText?: number[]
     rightBg?: number[]
   }
   fonts: {
@@ -306,7 +311,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     const mainWidth = pageWidth - sidebarWidth
 
     // Sidokolumn bakgrund
-    doc.setFillColor(...(isNordic ? [240, 249, 255] : template.colors.sidebar as [number, number, number]))
+    doc.setFillColor(...(isNordic ? [240, 249, 255] : template.colors.sidebar) as [number, number, number])
     doc.rect(0, 0, sidebarWidth, pageHeight, 'F')
 
     // Profilbild (cirkelformad)
@@ -337,7 +342,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     }
 
     // Kontakt i sidokolumn
-    doc.setTextColor(...(isNordic ? template.colors.sidebarText as [number, number, number] : [255, 255, 255]))
+    doc.setTextColor(...(isNordic ? template.colors.sidebarText : [255, 255, 255]) as [number, number, number])
     doc.setFontSize(9)
     doc.setFont(template.fonts.heading, 'bold')
     doc.text(pdfRubrik('contact'), margin, yPos)
@@ -386,7 +391,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(8)
       
       data.languages.forEach(lang => {
-        const langName = sanitizeText(lang.language || lang.name || '')
+        const langName = sanitizeText(lang.language || '')
         const langLevel = sanitizeText(lang.level || '')
         doc.text(`${langName} - ${langLevel}`, margin + 2, yPos)
         yPos += 4
@@ -566,7 +571,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     }
 
     // Namn och titel
-    doc.setTextColor(...(isGradient || isExecutive ? [255, 255, 255] : template.colors.headerText as [number, number, number]))
+    doc.setTextColor(...(isGradient || isExecutive ? [255, 255, 255] : template.colors.headerText) as [number, number, number])
     
     if (isExecutive) {
       doc.setFont(template.fonts.heading, 'bold')
@@ -799,7 +804,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       leftY += 8
 
       data.languages.forEach(lang => {
-        const langName = sanitizeText(lang.language || lang.name || '')
+        const langName = sanitizeText(lang.language || '')
         const langLevel = sanitizeText(lang.level || '')
         
         doc.setFont(template.fonts.body, 'normal')
@@ -923,23 +928,36 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
 export async function generateJobPDF(job: JobData): Promise<Blob> {
   const jsPDFClass = await loadPDFLibraries()
   const doc = new jsPDFClass()
-  
+
+  // 2026-09-22: JobData följer Platsbanken-formen (headline/employer/
+  // workplace_address/employment_type/description.text) — koden läste
+  // tidigare title/company/location/type/description som platta fält, som
+  // aldrig funnits på typen. `sanitizeText(job.description)` fick dessutom
+  // ett OBJEKT ({text, text_formatted}), inte en sträng, vilket hade kastat
+  // `str.replace is not a function` så fort description fanns. Funktionen
+  // är för närvarande onåbar från UI:t (ingen renderar
+  // `<PDFExportButton type="job" />`), men rättas ändå så den inte är en
+  // krasch som väntar på sin första anropare.
   doc.setFontSize(20)
-  doc.text(sanitizeText(job.title), 20, 30)
-  
+  doc.text(sanitizeText(job.headline || ''), 20, 30)
+
   doc.setFontSize(12)
-  doc.text(sanitizeText(job.company), 20, 45)
-  doc.text(sanitizeText(`${job.location || ''} • ${job.type || ''}`), 20, 55)
-  
+  doc.text(sanitizeText(job.employer?.name || ''), 20, 45)
+  doc.text(
+    sanitizeText(`${job.workplace_address?.municipality || ''} • ${job.employment_type?.label || ''}`),
+    20,
+    55
+  )
+
   doc.setFontSize(10)
-  const description = job.description || ''
+  const description = job.description?.text || ''
   const splitDescription = doc.splitTextToSize(sanitizeText(description), 170)
   doc.text(splitDescription, 20, 70)
-  
+
   return doc.output('blob')
 }
 
-interface ApplicationHistoryItem {
+export interface ApplicationHistoryItem {
   jobTitle?: string;
   job_title?: string;
   company?: string;
@@ -1293,7 +1311,13 @@ export async function generateCoverLetterPDFViaReactPdf(data: {
     import('@react-pdf/renderer'),
     import('@/components/cover-letter/CoverLetterPDF'),
   ])
-  return await pdf(React.createElement(CoverLetterPDF, { data })).toBlob()
+  // @react-pdf/renderer:s pdf() vill ha exakt ReactElement<DocumentProps> —
+  // CoverLetterPDF är en wrapper-komponent runt <Document>, så elementtypen
+  // matchar aldrig strukturellt trots att den renderar rätt sak i runtime
+  // (samma mönster som testet i CoverLetterPDF.test.tsx redan använder).
+  return await pdf(
+    React.createElement(CoverLetterPDF, { data }) as unknown as React.ReactElement<import('@react-pdf/renderer').DocumentProps>
+  ).toBlob()
 }
 
 export default generateCVPDF

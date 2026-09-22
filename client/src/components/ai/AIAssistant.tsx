@@ -153,7 +153,7 @@ export function AIAssistant() {
   // Övningar-sidan och legacy-hooken körde då hela 15-anrops-hämtningen
   // dubbelt utan cache
   const { data } = useDashboardDataQuery()
-  const { user } = useAuthStore()
+  const { profile } = useAuthStore()
 
   // Simulated activity data - in production from API
   const mockActivities = useMemo(() => [
@@ -219,7 +219,7 @@ export function AIAssistant() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold">
-                        {getGreeting()}, {user?.firstName || 'där'}!
+                        {getGreeting()}, {profile?.first_name || 'där'}!
                       </h2>
                       <p className="text-white/90 text-sm">
                         {t('ai.assistant.analyzedActivity')}

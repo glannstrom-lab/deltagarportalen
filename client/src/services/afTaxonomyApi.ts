@@ -20,7 +20,7 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
   // Kolla cache först
   const cached = taxonomyCache.get(cacheKey);
   if (cached) {
-    jobLogger.debug('Taxonomy cache hit:', endpoint);
+    jobLogger.debug('Taxonomy cache hit:', { endpoint });
     return cached;
   }
 
@@ -28,7 +28,7 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
   const functionUrl = `${SUPABASE_URL}/functions/v1/af-taxonomy${endpoint}${queryParams}`;
 
-  jobLogger.debug('Taxonomy fetching:', functionUrl);
+  jobLogger.debug('Taxonomy fetching:', { functionUrl });
   
   // Kör med retry-logik
   const data = await withRetry(async () => {
@@ -43,7 +43,7 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
     
     if (!response.ok) {
       const errorText = await response.text();
-      jobLogger.error('Taxonomy API error:', response.status, errorText);
+      jobLogger.error('Taxonomy API error:', { status: response.status, errorText });
       throw new Error(`Taxonomy API error: ${response.status}`);
     }
     

@@ -158,7 +158,11 @@ export interface AIAssistantResponse<T> {
 
 async function callAssistant<T>(
   type: AssistantType,
-  params: Record<string, unknown>
+  // `object` (inte `Record<string, unknown>`) — params serialiseras bara med
+  // JSON.stringify, och de fyra param-interfacen (InterviewPrepParams m.fl.)
+  // saknar en indexsignatur, så de är inte strukturellt kompatibla med
+  // Record<string, unknown> trots att varje fält är `unknown`-läsbart.
+  params: object
 ): Promise<AIAssistantResponse<T>> {
   const { data: { session } } = await supabase.auth.getSession()
   const token = session?.access_token

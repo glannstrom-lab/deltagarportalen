@@ -103,7 +103,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
 }
 
 // Grounding Technique Guide
-function GroundingGuide({ technique, onClose }: { technique: { id: number; title: string }; onClose: () => void }) {
+function GroundingGuide({ technique, onClose }: { technique: { id: number; title: string; description: string }; onClose: () => void }) {
   const steps = technique.id === 0
     ? ['Identifiera 5 saker du ser', 'Identifiera 4 saker du kan röra vid', 'Identifiera 3 saker du hör', 'Identifiera 2 saker du luktar', 'Identifiera 1 sak du smäcker']
     : technique.id === 1
@@ -171,7 +171,15 @@ export default function CrisisTab() {
   // breathingSteps borttagen 2026-05-15 — 0 callers. Återinför när
   // andningsövning rendrar steg-för-steg.
 
-  const groundingTechniques = useMemo(() => groundingTechniqueDefs.map(g => ({
+  // 2026-09-22: `id` saknades här, men GroundingGuide (nedan) grenar sina
+  // instruktionssteg på `technique.id === 0 | 1 | else`. Utan id var
+  // `technique.id` alltid `undefined`, så ALLA tre grundningsövningar (5-4-
+  // 3-2-1, kallt vatten, aktivt lyssnande) visade exakt samma steg — den
+  // sista teknikens ("aktivt lyssnande"), oavsett vilken användaren klickade
+  // på. En krissida som visar fel instruktioner till någon i affekt är
+  // allvarligt — index matchar ordningen i groundingTechniqueDefs ovan.
+  const groundingTechniques = useMemo(() => groundingTechniqueDefs.map((g, index) => ({
+    id: index,
     title: t(g.titleKey),
     description: t(g.descKey),
     icon: g.icon,

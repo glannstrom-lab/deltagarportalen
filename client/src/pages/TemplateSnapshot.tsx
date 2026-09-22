@@ -86,9 +86,9 @@ const SAMPLE: CVData = {
     },
   ],
   languages: [
-    { id: '1', language: 'Svenska', level: 'native' },
-    { id: '2', language: 'Engelska', level: 'fluent' },
-    { id: '3', language: 'Tyska', level: 'good' },
+    { id: '1', language: 'Svenska', level: 'Modersmål' },
+    { id: '2', language: 'Engelska', level: 'Flytande' },
+    { id: '3', language: 'Tyska', level: 'God' },
   ],
   certificates: [
     { id: '1', name: 'PMP - Project Management Professional', issuer: 'PMI', date: '2019-06' },

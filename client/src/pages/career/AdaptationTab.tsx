@@ -144,6 +144,18 @@ const categoryDefs = [
   },
 ]
 
+// Category titles (hardcoded for simplicity since translations may not exist yet)
+// Modulkonstant (inte omskapad varje rendering) — refererad av generateSummaryText.
+const CATEGORY_TITLES: Record<string, { sv: string; en: string; desc: { sv: string; en: string } }> = {
+  physical: { sv: 'Fysiska anpassningar', en: 'Physical Adaptations', desc: { sv: 'Hjälpmedel och ergonomi för kroppen', en: 'Aids and ergonomics for the body' } },
+  cognitive: { sv: 'Kognitiva anpassningar', en: 'Cognitive Adaptations', desc: { sv: 'Stöd för koncentration, minne och struktur', en: 'Support for concentration, memory and structure' } },
+  organizational: { sv: 'Organisatoriska anpassningar', en: 'Organizational Adaptations', desc: { sv: 'Flexibilitet i arbetstid och upplägg', en: 'Flexibility in work hours and setup' } },
+  social: { sv: 'Sociala anpassningar', en: 'Social Adaptations', desc: { sv: 'Stöd i samarbete och kommunikation', en: 'Support in collaboration and communication' } },
+  technical: { sv: 'Tekniska anpassningar', en: 'Technical Adaptations', desc: { sv: 'Programvara och digitala hjälpmedel', en: 'Software and digital aids' } },
+  communication: { sv: 'Kommunikationsanpassningar', en: 'Communication Adaptations', desc: { sv: 'Hur du föredrar att kommunicera', en: 'How you prefer to communicate' } },
+  environmental: { sv: 'Miljöanpassningar', en: 'Environmental Adaptations', desc: { sv: 'Fysisk arbetsmiljö och omgivning', en: 'Physical work environment and surroundings' } },
+}
+
 // ===== STATUS OPTIONS =====
 
 const statusOptions = [
@@ -375,17 +387,6 @@ export default function AdaptationTab() {
   /** Sätts när ett spar begärdes medan ett annat pågick, så inget tappas. */
   const pendingSave = useRef(false)
 
-  // Category titles (hardcoded for simplicity since translations may not exist yet)
-  const categoryTitles: Record<string, { sv: string; en: string; desc: { sv: string; en: string } }> = {
-    physical: { sv: 'Fysiska anpassningar', en: 'Physical Adaptations', desc: { sv: 'Hjälpmedel och ergonomi för kroppen', en: 'Aids and ergonomics for the body' } },
-    cognitive: { sv: 'Kognitiva anpassningar', en: 'Cognitive Adaptations', desc: { sv: 'Stöd för koncentration, minne och struktur', en: 'Support for concentration, memory and structure' } },
-    organizational: { sv: 'Organisatoriska anpassningar', en: 'Organizational Adaptations', desc: { sv: 'Flexibilitet i arbetstid och upplägg', en: 'Flexibility in work hours and setup' } },
-    social: { sv: 'Sociala anpassningar', en: 'Social Adaptations', desc: { sv: 'Stöd i samarbete och kommunikation', en: 'Support in collaboration and communication' } },
-    technical: { sv: 'Tekniska anpassningar', en: 'Technical Adaptations', desc: { sv: 'Programvara och digitala hjälpmedel', en: 'Software and digital aids' } },
-    communication: { sv: 'Kommunikationsanpassningar', en: 'Communication Adaptations', desc: { sv: 'Hur du föredrar att kommunicera', en: 'How you prefer to communicate' } },
-    environmental: { sv: 'Miljöanpassningar', en: 'Environmental Adaptations', desc: { sv: 'Fysisk arbetsmiljö och omgivning', en: 'Physical work environment and surroundings' } },
-  }
-
   // Load adaptations from cloud on mount
   useEffect(() => {
     const loadAdaptations = async () => {
@@ -414,16 +415,21 @@ export default function AdaptationTab() {
     loadAdaptations()
   }, [])
 
-  // Auto-save when changes are made (debounced)
-  useEffect(() => {
-    if (!hasUnsavedChanges || isLoading || loadError) return
-
-    const saveTimeout = setTimeout(async () => {
-      await saveToCloud()
-    }, 2000)
-
-    return () => clearTimeout(saveTimeout)
-  }, [selectedNeeds, adaptationDetails, hasUnsavedChanges, isLoading, loadError])
+  const generateSummaryText = useCallback(() => {
+    const parts: string[] = []
+    Object.entries(selectedNeeds).forEach(([catId, options]) => {
+      const catTitle = CATEGORY_TITLES[catId]
+      if (catTitle && options.length > 0) {
+        const cat = categoryDefs.find(c => c.id === catId)
+        const optionLabels = options.map(o => {
+          const opt = cat?.options.find(op => op.key === o)
+          return isEn ? opt?.labelEn : opt?.labelSv
+        }).filter(Boolean)
+        parts.push(`${isEn ? catTitle.en : catTitle.sv}: ${optionLabels.join(', ')}`)
+      }
+    })
+    return parts.join('\n')
+  }, [selectedNeeds, isEn])
 
   const saveToCloud = useCallback(async () => {
     if (loadError) return // skriv aldrig över molnet med ett tillstånd vi inte läst
@@ -458,23 +464,18 @@ export default function AdaptationTab() {
         setHasUnsavedChanges(true) // bokar om debouncen ovan
       }
     }
-  }, [selectedNeeds, adaptationDetails, isSaving, isEn, loadError])
+  }, [selectedNeeds, adaptationDetails, isSaving, isEn, loadError, generateSummaryText])
 
-  const generateSummaryText = useCallback(() => {
-    const parts: string[] = []
-    Object.entries(selectedNeeds).forEach(([catId, options]) => {
-      const catTitle = categoryTitles[catId]
-      if (catTitle && options.length > 0) {
-        const cat = categoryDefs.find(c => c.id === catId)
-        const optionLabels = options.map(o => {
-          const opt = cat?.options.find(op => op.key === o)
-          return isEn ? opt?.labelEn : opt?.labelSv
-        }).filter(Boolean)
-        parts.push(`${isEn ? catTitle.en : catTitle.sv}: ${optionLabels.join(', ')}`)
-      }
-    })
-    return parts.join('\n')
-  }, [selectedNeeds, isEn])
+  // Auto-save when changes are made (debounced)
+  useEffect(() => {
+    if (!hasUnsavedChanges || isLoading || loadError) return
+
+    const saveTimeout = setTimeout(async () => {
+      await saveToCloud()
+    }, 2000)
+
+    return () => clearTimeout(saveTimeout)
+  }, [selectedNeeds, adaptationDetails, hasUnsavedChanges, isLoading, loadError, saveToCloud])
 
   const toggleOption = (categoryId: string, optionKey: string) => {
     setSelectedNeeds(prev => {
@@ -912,7 +913,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
             <div className="space-y-3">
               {categoryDefs.map((category) => {
                 const Icon = category.icon
-                const catInfo = categoryTitles[category.id]
+                const catInfo = CATEGORY_TITLES[category.id]
                 const selectedCount = selectedNeeds[category.id]?.length || 0
 
                 return (
@@ -1012,7 +1013,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   const selectedOptions = selectedNeeds[category.id] || []
                   if (selectedOptions.length === 0) return null
 
-                  const catInfo = categoryTitles[category.id]
+                  const catInfo = CATEGORY_TITLES[category.id]
                   const Icon = category.icon
 
                   return (

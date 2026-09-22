@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useJobAlerts } from '@/hooks/useJobAlerts'
+import type { JobAlert } from '@/services/jobsApi'
 import { AF_REGIONS, getAfRegionName } from '@/data/afRegions'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
@@ -184,17 +185,6 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
       </div>
     </div>
   )
-}
-
-interface JobAlert {
-  id: string
-  name: string
-  query?: string
-  region?: string
-  remote?: boolean
-  is_active: boolean
-  new_jobs_count: number
-  last_checked_at?: string
 }
 
 // Email notification settings panel

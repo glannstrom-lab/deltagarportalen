@@ -199,9 +199,18 @@ export const profileDocumentsApi = {
     if (uploadError) throw uploadError
 
     // Get signed URL (private bucket)
-    const { data: { signedUrl } } = await supabase.storage
+    //
+    // 2026-09-22: destrukturerade tidigare `data: { signedUrl }` direkt —
+    // `createSignedUrl` ger `{ data: null, error }` när signeringen
+    // misslyckas, vilket hade kastat "Cannot destructure property
+    // 'signedUrl' of 'data' as it is null" och tappat felet från
+    // `signError` helt.
+    const { data: signedUrlData, error: signError } = await supabase.storage
       .from('profile-documents')
       .createSignedUrl(fileName, 60 * 60 * 24 * 365) // 1 year
+
+    if (signError || !signedUrlData) throw signError || new Error('Kunde inte skapa signerad länk för dokumentet')
+    const { signedUrl } = signedUrlData
 
     // Create record
     const { data, error } = await supabase
@@ -319,12 +328,16 @@ export const profileSkillsApi = {
     if (!user) throw new Error('Not authenticated')
 
     // Get CV skills
-    const { data: cv } = await supabase
+    const { data: cv, error: cvError } = await supabase
       .from('cvs')
       .select('skills')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
+    // maybeSingle() ger `null` utan fel när användaren inte har något CV —
+    // det ska ge tom lista. Ett äkta läsfel (nät/RLS) ska däremot inte
+    // tystas ner till samma "inget CV att importera".
+    if (cvError) throw cvError
     if (!cv?.skills?.length) return []
 
     // Import each skill
@@ -525,12 +538,16 @@ export const aiSummaryApi = {
       .eq('id', user.id)
       .single()
 
-    // Get CV data
-    const { data: cv } = await supabase
+    // Get CV data. maybeSingle() eftersom en användare utan sparat CV är
+    // normalt (sammandraget byggs då bara på profil+kompetenser); ett äkta
+    // läsfel ska ändå synas i loggen i stället för att smälta ihop med
+    // "inget CV" — tidigare lästes `error` inte ut alls här.
+    const { data: cv, error: cvError } = await supabase
       .from('cvs')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
+    if (cvError) console.error('aiSummaryApi.generate: kunde inte läsa CV', cvError)
 
     // Get skills
     const { data: skills } = await supabase
@@ -628,13 +645,15 @@ export const cvIntegrationApi = {
     const imported: string[] = []
     const skipped: string[] = []
 
-    // Get CV
-    const { data: cv } = await supabase
+    // Get CV. maybeSingle() eftersom "inget CV sparat" (0 rader) är en
+    // normal, tyst retur här — men ett äkta läsfel ska inte tystas likadant.
+    const { data: cv, error: cvError } = await supabase
       .from('cvs')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
+    if (cvError) throw cvError
     if (!cv) return { imported, skipped }
 
     // Import basic info to profile
@@ -705,13 +724,18 @@ export const profileExportApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // cvs: maybeSingle() — en export ska kunna slutföras för en användare
+    // utan CV. Ett äkta läsfel loggas i stället för att ge en export-fil som
+    // ser identisk ut oavsett om CV:t saknas eller frågan gick fel.
     const [profile, cv, skills, documents, prefs] = await Promise.all([
       supabase.from('profiles').select('*').eq('id', user.id).single(),
-      supabase.from('cvs').select('*').eq('user_id', user.id).single(),
+      supabase.from('cvs').select('*').eq('user_id', user.id).maybeSingle(),
       supabase.from('profile_skills').select('*').eq('user_id', user.id),
       supabase.from('profile_documents').select('*').eq('user_id', user.id),
       supabase.from('user_preferences').select('*').eq('user_id', user.id).maybeSingle()
     ])
+
+    if (cv.error) console.error('profileExportApi.toJSON: kunde inte läsa CV', cv.error)
 
     return {
       profile: profile.data,
@@ -730,11 +754,16 @@ export const profileExportApi = {
     if (!user) throw new Error('Not authenticated')
 
     // Get CV data
+    //
+    // 2026-09-22: .single() kräver EXAKT en rad — en deltagare utan CV får
+    // PostgREST att svara 406 PGRST116 innan koden ens hinner till sin egna
+    // "No CV data found"-kontroll. .maybeSingle() ger samma slutresultat
+    // (cv === null → samma felmeddelande) utan det onödiga 406-svaret.
     const { data: cv } = await supabase
       .from('cvs')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (!cv) throw new Error('No CV data found')
 
@@ -753,7 +782,11 @@ export const profileExportApi = {
       skills: cv.skills || [],
       languages: cv.languages || [],
       certificates: cv.certificates || [],
-      template: cv.template || 'sidebar'
+      links: cv.links || [],
+      references: cv.references || [],
+      template: cv.template || 'sidebar',
+      colorScheme: cv.color_scheme || 'navy',
+      font: cv.font || 'inter',
     }
 
     return generateCVPDF(cvData)

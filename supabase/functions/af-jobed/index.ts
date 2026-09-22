@@ -36,16 +36,27 @@ serve(medFelrapport('af-jobed', async (req) => {
     const queryString = url.search;
     
     const targetUrl = `${JOBED_API_BASE}${path}${queryString}`;
-    
+
     console.log(`[af-jobed] Proxying: ${targetUrl}`);
 
-    const response = await fetch(targetUrl, {
-      method: req.method,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+    // Timeout — samma mönster som af-jobsearch (A15, 2026-07-23): en
+    // hängande JobEd-anslutning fick tidigare hålla instansen till
+    // plattformens maxtid utan att abortera. Den här filen saknade den fixen.
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    let response: Response;
+    try {
+      response = await fetch(targetUrl, {
+        method: req.method,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

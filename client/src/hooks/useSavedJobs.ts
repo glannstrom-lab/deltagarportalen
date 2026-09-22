@@ -28,7 +28,7 @@ async function fetchSavedJobs(): Promise<SavedJob[]> {
   // Konvertera från Supabase-format till vårt format
   return jobs.map((job) => ({
     id: job.job_id,
-    jobData: job.job_data as PlatsbankenJob,
+    jobData: job.job_data as unknown as PlatsbankenJob,
     savedAt: job.created_at,
     notes: job.notes || undefined,
     status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
@@ -62,7 +62,7 @@ export function useSavedJobs() {
   const saveJob = useCallback(async (job: PlatsbankenJob) => {
     try {
       // Spara till Supabase
-      await savedJobsApi.save(job.id, job)
+      await savedJobsApi.save(job.id, job as unknown as Record<string, unknown>)
 
       // Uppdatera cachen
       setSavedJobs(prev => {

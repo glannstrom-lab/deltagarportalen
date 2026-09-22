@@ -214,7 +214,7 @@ export function ImageUpload({
               </Button>
               <Button
                 type="button"
-                variant="destructive"
+                variant="danger"
                 size="sm"
                 onClick={(e) => {
                   e.stopPropagation()

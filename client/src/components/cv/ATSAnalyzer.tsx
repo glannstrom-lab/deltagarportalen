@@ -193,8 +193,8 @@ export function ATSAnalyzer({
   const scanabilityScore = useMemo(() => {
     let score = 100
 
-    const avgDescLength = cvData.workExperience?.reduce((acc, w) =>
-      acc + (w.description?.length || 0), 0) / (cvData.workExperience?.length || 1) || 0
+    const avgDescLength = (cvData.workExperience?.reduce((acc, w) =>
+      acc + (w.description?.length || 0), 0) ?? 0) / (cvData.workExperience?.length || 1) || 0
     if (avgDescLength > 500) score -= 15
     if (avgDescLength > 800) score -= 15
 
@@ -230,7 +230,7 @@ export function ATSAnalyzer({
 
   const summaryReadability = calculateReadability(cvData.summary || '')
   const totalWordCount = (cvData.summary || '').split(/\s+/).length +
-    cvData.workExperience?.reduce((acc, w) => acc + (w.description?.split(/\s+/).length || 0), 0) || 0
+    (cvData.workExperience?.reduce((acc, w) => acc + (w.description?.split(/\s+/).length || 0), 0) ?? 0) || 0
 
   // ATS-kontroller med CV-builder step links (M1)
   const basicChecks: ATSCheck[] = useMemo(() => [

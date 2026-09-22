@@ -144,7 +144,7 @@ function moodLevelToType(level: number): MoodType {
 }
 
 // Konvertera MoodType till mood_level (1-5)
-function moodTypeToLevel(mood: MoodType): number {
+export function moodTypeToLevel(mood: MoodType): number {
   switch (mood) {
     case 'great': return 5
     case 'good': return 4
@@ -251,7 +251,7 @@ export const moodApi = {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const dates = data.map((d: MoodLogData) => {
+    const dates = data.map((d: { log_date: string }) => {
       const date = new Date(d.log_date)
       date.setHours(0, 0, 0, 0)
       return date.getTime()

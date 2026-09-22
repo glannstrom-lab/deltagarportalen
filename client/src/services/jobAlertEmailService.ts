@@ -220,11 +220,13 @@ export async function getNotificationPreferences(): Promise<{
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { emailEnabled: true, frequency: 'daily' }
 
+  // maybeSingle(): user_preferences skapas lazy — 0 rader är det vanliga för
+  // en användare som aldrig ändrat sina aviseringsinställningar.
   const { data, error } = await supabase
     .from('user_preferences')
     .select('job_alert_email_enabled, job_alert_frequency')
     .eq('user_id', user.id)
-    .single()
+    .maybeSingle()
 
   if (error || !data) {
     return { emailEnabled: true, frequency: 'daily' }

@@ -92,7 +92,7 @@ export const notificationsApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      storageLogger.error('Error getting notification preferences:', error)
+      storageLogger.error('Error getting notification preferences:', { error })
     }
     return data?.[0] || null
   },

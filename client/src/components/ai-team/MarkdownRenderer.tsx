@@ -3,6 +3,7 @@
  * Beautiful rendering of AI responses with modern styling
  */
 
+import type { ReactElement } from 'react'
 import { cn } from '@/lib/utils'
 import { CheckCircle, Lightbulb, ArrowRight, Star, Sparkles } from '@/components/ui/icons'
 import { sanitizeHref } from '@/utils/sanitize'
@@ -413,7 +414,7 @@ function Tabell({ head, rows }: { head: string[]; rows: string[][] }) {
 
 // Inline markdown: **bold**, *italic*, `code`, [link](url)
 function InlineMarkdown({ text }: { text: string }) {
-  const parts: (string | JSX.Element)[] = []
+  const parts: (string | ReactElement)[] = []
   let remaining = text
   let keyIndex = 0
 
@@ -521,8 +522,8 @@ function InlineMarkdown({ text }: { text: string }) {
 }
 
 // Process just inline code in text
-function processInlineCode(text: string, startKey: number): (string | JSX.Element)[] {
-  const parts: (string | JSX.Element)[] = []
+function processInlineCode(text: string, startKey: number): (string | ReactElement)[] {
+  const parts: (string | ReactElement)[] = []
   let remaining = text
   let keyIndex = startKey
 

@@ -175,14 +175,6 @@ function SearchTab() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtersLoaded]);
 
-  // Sök när filter ändras (med debounce)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      performSearch();
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [filters]);
-
   // Hämta autocomplete-förslag (med debounce för att minska API-anrop)
   useEffect(() => {
     if (filters.query.length < 2) {
@@ -203,7 +195,7 @@ function SearchTab() {
     return () => clearTimeout(timer);
   }, [filters.query]);
 
-  const performSearch = async () => {
+  const performSearch = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -231,7 +223,15 @@ function SearchTab() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, t]);
+
+  // Sök när filter ändras (med debounce)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      performSearch();
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [filters, performSearch]);
 
   // Hämtar nästa 20 jobb och lägger till i listan. Triggas av sentinel-
   // IntersectionObservern när slutet av listan kommer in i viewporten.

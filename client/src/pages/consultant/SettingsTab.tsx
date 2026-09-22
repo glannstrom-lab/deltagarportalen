@@ -138,7 +138,7 @@ export function SettingsTab() {
     setSaved(false)
 
     // Apply language change immediately
-    if (key === 'language') {
+    if (key === 'language' && typeof value === 'string') {
       i18n.changeLanguage(value)
     }
   }
@@ -280,7 +280,7 @@ export function SettingsTab() {
   }
 
   if (loading) {
-    return <LoadingState type="form" />
+    return <LoadingState fullHeight />
   }
 
   // KS7: eget felläge — annars visas defaultinställningarna som om de vore

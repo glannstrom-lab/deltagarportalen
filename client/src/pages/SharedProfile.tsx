@@ -123,19 +123,19 @@ export default function SharedProfile() {
               {t('sharedProfile.contactInfo')}
             </h2>
             <div className="grid gap-3 sm:grid-cols-3">
-              {profile.email && (
+              {Boolean(profile.email) && (
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.email as string}</span>
                 </div>
               )}
-              {profile.phone && (
+              {Boolean(profile.phone) && (
                 <div className="flex items-center gap-3">
                   <Phone className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.phone as string}</span>
                 </div>
               )}
-              {profile.location && (
+              {Boolean(profile.location) && (
                 <div className="flex items-center gap-3">
                   <MapPin className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.location as string}</span>
@@ -146,7 +146,7 @@ export default function SharedProfile() {
         )}
 
         {/* AI Summary */}
-        {share?.show_summary && profile.ai_summary && (
+        {share?.show_summary && Boolean(profile.ai_summary) && (
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
               {t('sharedProfile.aboutMe')}

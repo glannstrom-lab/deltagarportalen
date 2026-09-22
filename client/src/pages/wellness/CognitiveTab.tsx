@@ -36,16 +36,17 @@ const categoryDefs = {
 // Memory Card Game component
 function MemoryCardGame({ onComplete }: { onComplete: () => void }) {
   const { t } = useTranslation()
-  const [cards, setCards] = useState<{ id: number; number: number; flipped: boolean; matched: boolean }[]>([])
+  // Blandningen slumpas en gång vid montering — härlett direkt i
+  // useState-initieraren i stället för en effekt, så Math.random() aldrig
+  // körs under själva renderingen.
+  const [cards, setCards] = useState<{ id: number; number: number; flipped: boolean; matched: boolean }[]>(() => {
+    const numbers = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
+    const shuffled = numbers.sort(() => Math.random() - 0.5)
+    return shuffled.map((num, idx) => ({ id: idx, number: num, flipped: false, matched: false }))
+  })
   const [moves, setMoves] = useState(0)
   const [matched, setMatched] = useState(0)
   const [firstCard, setFirstCard] = useState<number | null>(null)
-
-  useEffect(() => {
-    const numbers = [1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 6]
-    const shuffled = numbers.sort(() => Math.random() - 0.5)
-    setCards(shuffled.map((num, idx) => ({ id: idx, number: num, flipped: false, matched: false })))
-  }, [])
 
   const toggleCard = (id: number) => {
     if (cards[id].flipped || cards[id].matched || firstCard === id) return

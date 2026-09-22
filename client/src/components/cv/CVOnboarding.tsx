@@ -144,6 +144,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
     // Frequency-cap: släpp endast EN onboarding per session
     if (!claimOnboardingSession(ONBOARDING_OWNER_ID)) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- äkta engångsprenumeration: claimOnboardingSession() muterar ett globalt sessionslås och får bara anropas en gång vid montering (StrictMode skulle claima/släppa fel antal gånger om det flyttades till render)
     setIsVisible(true)
     return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
   }, [])

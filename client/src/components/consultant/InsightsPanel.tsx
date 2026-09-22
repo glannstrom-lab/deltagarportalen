@@ -3,7 +3,7 @@
  * Displays AI-driven insights about participants for consultants
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Sparkles,
@@ -58,11 +58,7 @@ export function InsightsPanel({
   const [goalInsightsFailed, setGoalInsightsFailed] = useState(false)
   const [activeTab, setActiveTab] = useState<'insights' | 'trends' | 'risks'>('insights')
 
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true)
     setLoadError(false)
     setGoalInsightsFailed(false)
@@ -87,7 +83,11 @@ export function InsightsPanel({
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [maxInsights, showTrends, showRisks])
+
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   const refresh = async () => {
     setIsRefreshing(true)

@@ -347,9 +347,10 @@ export const jobAlertsApi = {
       .eq('id', id)
       .eq('user_id', user.id)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) handleError(error)
+    if (!data) throw new APIError('Resursen hittades inte', 'NOT_FOUND', 404)
     return data
   },
 

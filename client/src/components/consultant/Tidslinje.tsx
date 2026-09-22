@@ -36,9 +36,17 @@ export function Tidslinje({ participantId, onGaTill }: Props) {
   const { t } = useTranslation()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
 
+  // Flippa till "laddar" så fort deltagaren byts — härlett under render (inte
+  // i effekten) så det inte blir ett extra setState-anrop innan hämtningen
+  // ens startat.
+  const [foregaendeParticipantId, setForegaendeParticipantId] = useState(participantId)
+  if (participantId !== foregaendeParticipantId) {
+    setForegaendeParticipantId(participantId)
+    setLage({ status: 'laddar' })
+  }
+
   useEffect(() => {
     let aktiv = true
-    setLage({ status: 'laddar' })
     tidslinjeApi
       .hamtaTidslinje(participantId)
       .then((r) => { if (aktiv) setLage({ status: 'klart', ...r }) })

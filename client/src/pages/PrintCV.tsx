@@ -65,8 +65,8 @@ const MIKAEL_DEMO: CVData = {
     { id: '2', school: 'Tingvallaskolan', degree: 'Samhällsvetenskapligt program', field: '', location: 'Karlstad', startDate: '1994-08', endDate: '1996-06', description: '' },
   ],
   languages: [
-    { id: '1', language: 'Svenska', level: 'native' },
-    { id: '2', language: 'Engelska', level: 'fluent' },
+    { id: '1', language: 'Svenska', level: 'Modersmål' },
+    { id: '2', language: 'Engelska', level: 'Flytande' },
   ],
   certificates: [],
   links: [],

@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-09-13** (tredje helhetsgenomgången —
+> **Detta är projektets enda gällande plan.** Version **2026-09-22** (städpasset: nio agenter, dödkod/buggar/skuld — se avsnittet direkt nedan; ST1–ST4 kräver Mikael), byggd på version **2026-09-13** (tredje helhetsgenomgången —
 > sex roterade linser eftersom 560 filer ändrats sedan 7 september: KM-spårets domänlogik,
 > AG-spårets RLS/isolering, drift/observability för nya cronjobb, GDPR för företagsdatan,
 > informationsarkitektur mellan de tre kontotyperna, och en blindfläck. 17 poster; två redan
@@ -20,6 +20,111 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Städpasset 2026-09-22 — dödkod, buggar och teknisk skuld, nio agenter
+
+**Mätvärden före/efter** (alla mätta, inte uppskattade): strict-typfel **337 → 28** (tak
+sänkt till 28; alla 28 ligger i UTRED-dödkod, noll i levande kod) · eslint-varningar
+**111 → 31** (tak 31) · gradienter **52 → 7** (baseline 7) · onåbara filer **131 → 0
+RADERA/ARKIVERA** (17 UTRED kvar för produktbeslut) · i18n-nycklar **9 670 → 7 073** per fil ·
+tester **3 396 → 3 450** i 298 filer · `npm run verify` grönt, `npm run build` grönt.
+Nettodiff: 284 filer, +20 933 / −40 800 rader. **Inget committat** — trädet väntar på Mikaels
+"commit".
+
+**Mätaren var trasig innan något annat gjordes.** `dead-code.cjs` rapporterade 292 filer /
+71 545 rader. Kommentarstripparen körde två regex i följd (block före rad), så `/*` inuti en
+radkommentar (App.tsx:55) eller en sträng (`path="cv/*"`) åt 60 % av App.tsx — AI-teamet,
+CV-byggaren och fokusläget stod som RADERA med texten "dubbelkollad med namnsökning". Ett
+`--skriv` hade tömt portalen. Stripparen är nu en enkelpass-scanner i `scripts/lib/importspec.cjs`,
+vaktad av `src/test/dead-code-kommentarer.test.ts`. Skriptet klassar dessutom testhjälpare (nås av
+levande tester) och beroenden till UTRED-filer strukturellt rätt — förra raderingspasset fick
+hitta båda för hand.
+
+### Skarpa buggar rättade (alla med test som föll före fixen)
+
+- **Krisstöd:** `CrisisTab.tsx` — jordningsteknikerna saknade `id`, så alla tre visade samma
+  (sista) teknikens steg oavsett val. Fel instruktioner till någon i kris.
+- **Formulär kraschade vid första valideringsfelet:** zod 4 har `.issues`, inte `.errors`;
+  `useZodForm.ts` och `InviteHandler.tsx` (inbjudningsregistreringen) kastade TypeError.
+- **Prompt-injektion:** `ai-career-assistant` var den enda av fem Perplexity-funktioner som
+  aldrig saniterade `params` innan de gick in i systemprompten. Nu `sanitizeForPrompt` + längdtak.
+- **Fokuslägets ansökningsöversikt** läste `position`/`company`/`employer`, fält som inte finns
+  på `Application` — varje ansökan visades som "Okänd roll" utan företag.
+- **Mötesbokning i konsulentvyn:** `CommunicationTab.tsx` skickade props `MeetingSchedulerDialog`
+  inte tar och saknade `onSuccess` — raden skapades, sedan `TypeError`.
+- **AI-teamet såg aldrig intresseguidens yrkesförslag** (`suggestedCareers` finns inte; heter
+  `recommendedOccupations`).
+- **Kalendersynk** från karriärplan/nätverk skrev camelCase mot snake_case-kolumner — sluttid och
+  "med vem" försvann tyst.
+- **Sidomenyn:** `NavLink` definierad inuti render → varje länk monterades om vid varje
+  state-ändring, tappade fokus och startade om transitions. Sju sådana `react-hooks`-fynd var
+  driftbuggar, inte stil.
+- **`.single()` som kan ge noll rader:** 163 anrop klassade; 37 gav 406 PGRST116 i drift, tre
+  kritiska — `signIn`/`signUp` läste `profiles` utan att läsa `error`, och `delete-account`
+  raderade auth-kontot även när profilkontrollen misslyckats (nu fail closed). Ny grind
+  `single-krav-en-rad.test.ts` med allowlist och hård regel för `.limit/.order/.gt` i kedjan.
+- **Utloggning på delad dator:** Zustand-stores i minnet överlevde utloggning och tyst kontobyte
+  (AI-teamets chatt, profilpreferenser, en offline-kö som kunde skrivas till nästa persons konto).
+  Nytt register `lib/rensaVidUtloggning.ts`; nio localStorage-nycklar tillagda i
+  `USER_SCOPED_STORAGE_KEYS`.
+- **Fem AF-proxyer utan timeout** (`af-trends/-historical/-jobed/-enrichments/-prognos`) — A13:s
+  8 s-tak gällde bara `af-jobsearch`.
+- `MyConsultant.tsx`: `.single()` på nästa möte → 406 för alla utan bokat möte, och
+  `profile.last_login` fanns inte, så "senast inloggad" var alltid i dag.
+
+### Kräver Mikael
+
+- [ ] **ST1** 🔴 **`CRON_SECRET` saknas i Supabase edge-secrets** (`npx supabase secrets list`:
+  14 secrets, ingen `CRON_SECRET`; finns bara i Vercel). `send-inactivity-warning` är fail closed
+  via `_shared/cronAuth.ts` och svarar 503 för alla — och ingenting anropar den (pg_net av, ingen
+  Vercel-cron, ingen workflow). `execute_inactive_account_retention()` lägger rader i
+  `email_queue` vid 18 månader, men **varningen före radering vid 24 månader skickas aldrig**
+  (art. 5.1.e). Samma klass som A18/DR1. Åtgärd: sätt secreten OCH koppla ett anrop (pg_net
+  eller extern cron). Verifieringsrad: `curl -sS -o /dev/null -w '%{http_code}'
+  https://<proj>.supabase.co/functions/v1/send-inactivity-warning -H "Authorization: Bearer
+  $CRON_SECRET"` → **200**, inte 503.
+- [ ] **ST2** **RLS-obalans för chef/admin i aktivitetskravet.** `activity_plans`,
+  `activity_sessions`, `activity_plan_handovers` har org-bred SELECT för chef men UPDATE låst till
+  egen `consultant_id`; `IvoUnderlagSektion.tsx` visar skrivkontroller för hela organisationen. En
+  chef som markerar närvaro eller ångrar ett underlag på en kollegas deltagare får 0 rader → rått
+  PostgREST-fel i toast. Samma för `consultant_work_placements` efter överlämning
+  (`PlatserTab.tsx` har nu `onError` så felet syns). Beslut: bredda UPDATE-policyn för chef/admin
+  (migration, kräver ja) eller dölj kontrollerna för rader man inte äger. Rör inte
+  `consultantService.ts:693` (KS10, medvetet `.single()`).
+- [ ] **ST3** `deltagarportal-settings` i localStorage blandar innehåll (aviseringar,
+  energinivå) med tillgänglighetsval som ska överleva utloggning. `settingsStore` nollställer
+  innehållsdelen — men bara om modulen laddats i sessionen. Beslut: dela nyckeln i två.
+- [ ] **ST4** `af-taxonomy` (tre sekventiella anrop) och `bolagsverket` (OAuth, fyra fetch)
+  saknar fortfarande timeout — mer invasiv ändring, lägre risk. Samma mönster som AF-fixen ovan.
+
+### Kvar för nästa pass (ingen blockering)
+
+- 17 UTRED-filer / 5 665 rader väntar på produktbeslut: energifunktionen (C19), notiscentret
+  (H12), learning/afEnrichments (C4), `FocusCV.tsx`, `useJobMatching.ts`, `ShareJobDialog.tsx`.
+  De bär de 28 kvarvarande typfelen och de 52 i18n-nycklar (`wellness.energy.*`,
+  `focusGuide.cv.*`) som lämnades med flit. `cv.titlePlaceholder` m.fl. som bara FocusCV läste är
+  däremot borta — monteras filen igen måste de tillbaka.
+- `Exercises.tsx` skickar `mode`/`context`/`buttonText`/`compact` till `AIAssistant`, som tar
+  noll props — kontextuell övningshjälp finns inte, bara en generisk knapp. Produktfråga.
+- `unifiedProfileApi.ts:334` och `userApi.ts:174` läser utan felkontroll före merge-och-skriv:
+  ett transient läsfel skriver över `career_goals` med tomt. Dataförlustrisk, inte 0-radsrisk.
+- `getSharedCV`/`shareCV` i `cvApi.ts` har noll anropare sedan `/cv/shared/:code` togs bort
+  2026-05-11 — radera vid nästa pass.
+- `schema-snapshot.json` saknar index/constraints; `single-krav-en-rad`-grinden kan inte verifiera
+  unikhet utan att fråga prod. Utöka `schema:refresh` med `pg_indexes`.
+
+### Tre fällor i själva passet, för nästa gång
+
+1. **Två regex i följd är ingen tokenizer** — se mätarfelet ovan, och samma sak i i18n-detektorn.
+2. **"0 saknade" från samma detektor som gjorde borttagningen är ingen kontroll.** Den omvända
+   kontrollen (borttagna nycklar × alla mallsträngprefix i koden) hittade sju levande nycklar
+   bland de 2 604: Översiktens "nästa steg"-texter (ternär inuti `t(`, plural under mallmönster)
+   och `cvBuilder.templates.spaltform.*` (en funktion returnerar nyckeln). Återställda; detektorn
+   i `doda-nycklar.test.ts` bas-expanderar nu alla mallsträngar.
+3. **Exklusiva fillistor per agent fungerade** (nio agenter, noll konflikter) — men bara för
+   att listorna räknades fram ur mätdata (tsc/eslint per fil) i stället för att gissas.
 
 ---
 

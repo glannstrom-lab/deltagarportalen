@@ -58,7 +58,7 @@ async function migratePlatsbankenLocalToCloud(userId: string): Promise<void> {
       .upsert(rows, { onConflict: 'user_id,job_id', ignoreDuplicates: true })
 
     if (error) {
-      storageLogger.warn('Migration av platsbanken-jobb misslyckades, behåller localStorage:', error)
+      storageLogger.warn('Migration av platsbanken-jobb misslyckades, behåller localStorage:', { error })
       return
     }
   }

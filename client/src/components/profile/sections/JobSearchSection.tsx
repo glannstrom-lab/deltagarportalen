@@ -68,20 +68,20 @@ export function JobSearchSection() {
             label={t('profile.jobSearch.currentStatus')}
             options={[...EMPLOYMENT_STATUSES]}
             selected={preferences.availability?.status || ''}
-            onChange={(v) => updateAvailability({ status: v as string })}
+            onChange={(v) => updateAvailability({ status: v as NonNullable<typeof preferences.availability>['status'] })}
           />
           <ChipSelect
             label={t('profile.jobSearch.desiredEmployment')}
             options={[...EMPLOYMENT_TYPES]}
             selected={preferences.availability?.employmentTypes || []}
-            onChange={(v) => updateAvailability({ employmentTypes: v as string[] })}
+            onChange={(v) => updateAvailability({ employmentTypes: v as NonNullable<typeof preferences.availability>['employmentTypes'] })}
             multiple
           />
           <ChipSelect
             label={t('profile.jobSearch.remoteWork')}
             options={[...REMOTE_WORK_OPTIONS]}
             selected={preferences.availability?.remoteWork || ''}
-            onChange={(v) => updateAvailability({ remoteWork: v as string })}
+            onChange={(v) => updateAvailability({ remoteWork: v as NonNullable<typeof preferences.availability>['remoteWork'] })}
           />
         </div>
       </SectionCard>
@@ -93,7 +93,7 @@ export function JobSearchSection() {
             label={t('profile.jobSearch.cvStatus')}
             options={[...CV_STATUSES]}
             selected={preferences.consultant_data?.cvStatus || ''}
-            onChange={(v) => updateConsultantData({ cvStatus: v as string })}
+            onChange={(v) => updateConsultantData({ cvStatus: v as NonNullable<typeof preferences.consultant_data>['cvStatus'] })}
           />
           <div className="grid grid-cols-3 gap-2">
             <CompactInput
@@ -137,7 +137,7 @@ export function JobSearchSection() {
             label={t('profile.jobSearch.references')}
             options={[...REFERENCE_STATUSES]}
             selected={preferences.consultant_data?.references || ''}
-            onChange={(v) => updateConsultantData({ references: v as string })}
+            onChange={(v) => updateConsultantData({ references: v as NonNullable<typeof preferences.consultant_data>['references'] })}
           />
         </div>
       </SectionCard>
@@ -304,7 +304,7 @@ export function JobSearchSection() {
             label={t('profile.jobSearch.sector')}
             options={[...SECTORS]}
             selected={preferences.work_preferences?.sectors || []}
-            onChange={(v) => updateWorkPreferences({ sectors: v as string[] })}
+            onChange={(v) => updateWorkPreferences({ sectors: v as NonNullable<typeof preferences.work_preferences>['sectors'] })}
             multiple
           />
           <ChipSelect

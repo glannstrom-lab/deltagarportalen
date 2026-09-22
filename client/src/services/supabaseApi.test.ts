@@ -212,7 +212,7 @@ describe('supabaseApi', () => {
       it('should update CV successfully', async () => {
         const cvData = {
           title: 'Senior Developer',
-          workExperience: [{ title: 'Senior Dev', company: 'New Company' }],
+          workExperience: [{ id: 'w1', title: 'Senior Dev', company: 'New Company', startDate: '2024-01' }],
         }
         const mockUpdatedCV = {
           id: 'cv1',

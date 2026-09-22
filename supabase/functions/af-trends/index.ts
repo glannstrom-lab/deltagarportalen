@@ -89,7 +89,19 @@ const MINUTES_PER_DAY = 60 * 24;
 const MINUTES_PER_WEEK = MINUTES_PER_DAY * 7;
 
 async function fetchJobSearch(url: string): Promise<any> {
-  const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  // Timeout — samma mönster som af-jobsearch (A15, 2026-07-23): en hängande
+  // JobSearch-anslutning fick tidigare hålla instansen till plattformens
+  // maxtid utan att abortera. Den här filen saknade den fixen, och
+  // `handleMarketStats`/`handleTrendingSkills`/`handlePopularSearches`
+  // kör flera sådana anrop i sekvens per request.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  let response: Response;
+  try {
+    response = await fetch(url, { headers: { 'Accept': 'application/json' }, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!response.ok) {
     throw new Error(`JobSearch API error: ${response.status}`);
   }

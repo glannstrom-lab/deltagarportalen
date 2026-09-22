@@ -63,16 +63,19 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
     }
   }, [isOpen, handleKeyDown])
 
-  useEffect(() => {
+  // Formuläret ska återställas när EVENTET bytts (öppnar ett annat event,
+  // eller växlar mellan "nytt" och "redigera") — inte vid varje omrendering.
+  // Härlett under render (React-dokumentens mönster för "adjusting state when
+  // a prop changes") i stället för ett effektbaserat setState, som gav en
+  // extra rendering varje gång modalen öppnades.
+  const [prevEvent, setPrevEvent] = useState(event)
+  if (event !== prevEvent) {
+    setPrevEvent(event)
     setValidationError(null)
     if (event) {
       setFormData({ ...event })
       // Sätt aktiv tab baserat på event-typ
-      if (event.type === 'interview') {
-        setActiveTab('prep')
-      } else {
-        setActiveTab('details')
-      }
+      setActiveTab(event.type === 'interview' ? 'prep' : 'details')
     } else {
       setFormData({
         type: 'meeting',
@@ -82,7 +85,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         tasks: [],
       })
     }
-  }, [event])
+  }
 
   if (!isOpen) return null
 

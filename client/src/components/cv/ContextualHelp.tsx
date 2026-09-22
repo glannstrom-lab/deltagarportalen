@@ -3,7 +3,7 @@
  * Shows helpful tips based on user context and input
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import {
   Lightbulb, X, ChevronRight, CheckCircle,
   AlertCircle, Info, Sparkles
@@ -107,13 +107,15 @@ const helpDatabase: Record<string, HelpTip[]> = {
 }
 
 export function ContextualHelp({ context, data }: ContextualHelpProps) {
-  const [visibleTips, setVisibleTips] = useState<Set<string>>(new Set())
   const [dismissedTips, setDismissedTips] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('dismissed-help-tips')
     return saved ? new Set(JSON.parse(saved)) : new Set()
   })
 
-  useEffect(() => {
+  // Helt härlett av context/data/dismissedTips — ingen egen state behövs.
+  // Låg tidigare i en useEffect som bara kopierade beräkningen till en andra
+  // state-variabel (och dismissTip uppdaterade båda separat, i onödan).
+  const visibleTips = useMemo(() => {
     const tips = helpDatabase[context] || []
     const relevantTips = tips.filter(tip => {
       if (dismissedTips.has(tip.id)) return false
@@ -128,7 +130,7 @@ export function ContextualHelp({ context, data }: ContextualHelpProps) {
       return true
     })
 
-    setVisibleTips(new Set(relevantTips.map(t => t.id)))
+    return new Set(relevantTips.map(t => t.id))
   }, [context, data, dismissedTips])
 
   const dismissTip = (id: string) => {
@@ -136,10 +138,6 @@ export function ContextualHelp({ context, data }: ContextualHelpProps) {
     newDismissed.add(id)
     setDismissedTips(newDismissed)
     localStorage.setItem('dismissed-help-tips', JSON.stringify([...newDismissed]))
-    
-    const newVisible = new Set(visibleTips)
-    newVisible.delete(id)
-    setVisibleTips(newVisible)
   }
 
   const getIcon = (type: HelpTip['type']) => {

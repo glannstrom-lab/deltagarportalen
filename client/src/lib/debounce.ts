@@ -6,15 +6,24 @@
  * Creates a debounced function that delays invoking func until after wait milliseconds
  * have elapsed since the last time the debounced function was invoked.
  */
-export function debounce<T extends (...args: unknown[]) => unknown>(
-  func: T,
+/**
+ * `Args`/`R` i stället för `T extends (...args: unknown[]) => unknown`:
+ * den gamla signaturen krävde att ANROPARENS funktion tog `unknown[]` —
+ * kontravarians gör att en funktion med en konkret parametertyp (t.ex.
+ * `(prefs: Partial<ProfilePreferences>) => Promise<void>`) inte är
+ * tilldelningsbar dit (TS2345, hittad i `profileStore.ts` 2026-09-22). Den
+ * här formen (samma mönster som `@types/lodash.debounce`) låter TS sluta
+ * sig till de riktiga parameter- och returtyperna i stället.
+ */
+export function debounce<Args extends unknown[], R>(
+  func: (...args: Args) => R,
   wait: number,
   options: { leading?: boolean; trailing?: boolean } = {}
-): T & { cancel: () => void; flush: () => void } {
+): ((...args: Args) => R | undefined) & { cancel: () => void; flush: () => void } {
   let timeout: NodeJS.Timeout | null = null
-  let lastArgs: unknown[] | null = null
+  let lastArgs: Args | null = null
   let lastThis: unknown = null
-  let result: unknown
+  let result: R | undefined
   let lastCallTime: number | undefined
   // `lastInvokeTime` fanns här och skrevs på tre ställen, men lästes bara av
   // maxWait-klausulen i shouldInvoke — den som visade sig vara fel och togs
@@ -30,7 +39,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     const thisArg = lastThis
 
     lastArgs = lastThis = null
-    result = func.apply(thisArg, args as Parameters<T>)
+    result = func.apply(thisArg, args)
     return result
   }
 
@@ -91,7 +100,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     startTimer(timerExpired, timeWaiting)
   }
 
-  const debounced = function (this: unknown, ...args: Parameters<T>) {
+  const debounced = function (this: unknown, ...args: Args) {
     const time = Date.now()
     const isInvoking = shouldInvoke(time)
 
@@ -111,11 +120,16 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     }
 
     return result
-  } as T & { cancel: () => void; flush: () => void }
+  } as ((...args: Args) => R | undefined) & { cancel: () => void; flush: () => void }
 
   debounced.cancel = () => {
     cancelTimer()
-    timeout = lastArgs = lastCallTime = lastThis = null
+    // `lastCallTime` är `number | undefined`, inte `| null` — en kedjad
+    // `= null`-tilldelning över alla fyra fällde TS2322 här.
+    timeout = null
+    lastArgs = null
+    lastThis = null
+    lastCallTime = undefined
   }
 
   debounced.flush = () => {

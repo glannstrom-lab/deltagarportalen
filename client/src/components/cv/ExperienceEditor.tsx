@@ -131,7 +131,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
     onChange(newExperiences)
   }
 
-  const getDuration = (startDate: string, endDate: string, current: boolean) => {
+  const getDuration = (startDate: string, endDate: string | undefined, current: boolean | undefined) => {
     if (!startDate) return ''
 
     const start = new Date(startDate)

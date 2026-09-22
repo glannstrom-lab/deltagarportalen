@@ -3,7 +3,7 @@
  * Lista och hantera alla sparade CV-versioner
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import {
@@ -85,11 +85,6 @@ export function MyCVs() {
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null)
 
-  useEffect(() => {
-    loadCVs()
-    void laddaUppladdade()
-  }, [])
-
   const laddaUppladdade = async () => {
     setLaddarUppladdade(true)
     setFelUppladdade(false)
@@ -138,7 +133,7 @@ export function MyCVs() {
     window.open(url, '_blank', 'noopener,noreferrer')
   }
 
-  const loadCVs = async () => {
+  const loadCVs = useCallback(async () => {
     try {
       setLoading(true)
       // Hämta från databasen
@@ -169,7 +164,12 @@ export function MyCVs() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
+
+  useEffect(() => {
+    loadCVs()
+    void laddaUppladdade()
+  }, [loadCVs])
 
   // Beräkna ATS-score baserat på CV-innehåll
   const calculateATSScore = (cvData: CVData): number => {

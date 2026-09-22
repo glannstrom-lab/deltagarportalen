@@ -290,7 +290,7 @@ export function ParticipantsTab() {
   }
 
   if (loading) {
-    return <LoadingState type="list" />
+    return <LoadingState fullHeight />
   }
 
   // KS7: eget felläge — skiljer sig i UTSEENDE, inte bara i text, från de

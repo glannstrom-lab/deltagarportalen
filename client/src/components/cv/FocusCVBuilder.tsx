@@ -826,7 +826,14 @@ function PreviewStep({ cvData, onSave, isSaving }: PreviewStepProps) {
 
       <div className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
         <div className="bg-stone-100 dark:bg-stone-800 p-4 max-h-[500px] overflow-y-auto">
-          <CVPreview data={cvData} template={cvData.template || 'minimal'} scale={0.6} />
+          {/* CVPreview tar bara `data` — `template`/`scale` fanns aldrig som
+              props (TS2322) och ignorerades tyst, så förhandsvisningen
+              renderades alltid i fullstorlek. Skalningen görs nu här med CSS
+              i stället, så avsikten (60% storlek i den smala fokusrutan)
+              faktiskt gäller. */}
+          <div style={{ transform: 'scale(0.6)', transformOrigin: 'top left', width: '166.67%' }}>
+            <CVPreview data={cvData} />
+          </div>
         </div>
       </div>
 

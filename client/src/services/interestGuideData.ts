@@ -113,6 +113,7 @@ export interface JobRequirements {
   administration_kontor?: number
   konst_kultur?: number
   affarer_forsaljning?: number
+  utomhusarbete?: number
 }
 
 export interface JobChallenges {
@@ -134,6 +135,10 @@ export interface JobChallenges {
   social_isolering?: number
   social_isolation?: number
   utomhusarbete?: number
+  vaderberoende?: number
+  oregelbundna_tider?: number
+  varme?: number
+  resande?: number
 }
 
 export interface JobEducation {

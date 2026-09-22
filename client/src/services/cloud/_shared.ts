@@ -54,7 +54,7 @@ export function kastaLagringsFel(error: unknown, context: string): never {
 // Hjälpfunktion för att hantera fel
 export function handleStorageError(error: unknown, context: string): void {
   if (!isSupabaseError(error)) {
-    storageLogger.error(`Fel vid ${context}:`, error)
+    storageLogger.error(`Fel vid ${context}:`, { error })
     return
   }
 
@@ -69,5 +69,5 @@ export function handleStorageError(error: unknown, context: string): void {
     return
   }
   // Andra fel - logga för debugging
-  storageLogger.error(`Fel vid ${context}:`, error)
+  storageLogger.error(`Fel vid ${context}:`, { error })
 }

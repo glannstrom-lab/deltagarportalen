@@ -52,6 +52,7 @@ import { PLACERING_STATUS_LABEL, PLACERING_TYP_LABEL } from '@/components/consul
 import { StodPanel } from '@/components/consultant/StodPanel'
 import { orgApi } from '@/services/orgApi'
 import { useAuthStore } from '@/stores/authStore'
+import { notifications } from '@/lib/toast'
 
 const QK_PLACERINGAR = ['placeringar'] as const
 const QK_DELTAGARE = ['placeringar-deltagare'] as const
@@ -175,6 +176,13 @@ export function PlatserTab() {
     mutationFn: ({ id, updates }: { id: string; updates: Partial<PlaceringInput> }) =>
       placeringarApi.updatePlacering(id, updates),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QK_PLACERINGAR }),
+    // `placeringarApi.updatePlacering` (placeringarApi.ts:481) har en känd
+    // RLS-obalans (rapporterad separat, inte åtgärdad här) som kan ge ett
+    // PGRST116 för en plats en chef/admin ser men inte äger. Utan onError
+    // försvann sparfel tyst — inget syntes för användaren när ett klick
+    // "inte gjorde något".
+    onError: (err) =>
+      notifications.error(err instanceof Error ? err.message : 'Platsen kunde inte sparas'),
   })
   const deleteMutation = useMutation({
     mutationFn: (id: string) => placeringarApi.deletePlacering(id),

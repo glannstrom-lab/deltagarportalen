@@ -4,7 +4,7 @@
  * Visar relevanta artiklar baserat på kontext (vilken sida användaren är på)
  */
 
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { 
   BookOpen, ChevronRight, Lightbulb, 
   FileText, Search, MessageSquare, Target, Award
@@ -268,6 +268,24 @@ function getContextualArticles(context: KnowledgeContext): ContextualArticle[] {
   return articles[context] || articles.general
 }
 
+// Egen komponent (modulnivå, stabil identitet) i stället för en variabel som
+// väljer bland ikonerna i render — annars ser React en NY komponenttyp vid
+// varje rendering (react-hooks/static-components), även om ikonen faktiskt
+// är samma stabila import.
+function ContextIcon({ context, size, className }: { context: KnowledgeContext; size?: number; className?: string }) {
+  switch (context) {
+    case 'cv-building':
+    case 'cover-letter-writing':
+      return <FileText size={size} className={className} />
+    case 'job-searching':
+      return <Search size={size} className={className} />
+    case 'interview-prep':
+      return <MessageSquare size={size} className={className} />
+    default:
+      return <Lightbulb size={size} className={className} />
+  }
+}
+
 // ============================================
 // COMPONENT
 // ============================================
@@ -287,14 +305,18 @@ export function ContextualKnowledgeWidget({
 }: ContextualKnowledgeWidgetProps) {
   const { t } = useTranslation()
   const location = useLocation()
-  const [articles, setArticles] = useState<ContextualArticle[]>([])
-  const [currentContext, setCurrentContext] = useState<KnowledgeContext>('general')
 
-  useEffect(() => {
-    const detectedContext = context || getContextFromPath(location.pathname)
-    setCurrentContext(detectedContext)
-    setArticles(getContextualArticles(detectedContext).slice(0, maxArticles))
-  }, [location.pathname, context, maxArticles])
+  // Helt härlett av context/pathname/maxArticles — ingen egen state behövs.
+  // Låg tidigare i en effekt som bara kopierade beräkningen till två
+  // state-variabler, vilket gav en extra rendering vid varje ruttbyte.
+  const currentContext = useMemo(
+    () => context || getContextFromPath(location.pathname),
+    [context, location.pathname]
+  )
+  const articles = useMemo(
+    () => getContextualArticles(currentContext).slice(0, maxArticles),
+    [currentContext, maxArticles]
+  )
 
   const getContextTitle = (ctx: KnowledgeContext): string => {
     switch (ctx) {
@@ -309,18 +331,6 @@ export function ContextualKnowledgeWidget({
     }
   }
 
-  const getContextIcon = (ctx: KnowledgeContext) => {
-    switch (ctx) {
-      case 'cv-building': return FileText
-      case 'cover-letter-writing': return FileText
-      case 'job-searching': return Search
-      case 'interview-prep': return MessageSquare
-      default: return Lightbulb
-    }
-  }
-
-  const Icon = getContextIcon(currentContext)
-
   if (variant === 'compact') {
     return (
       <div className={cn(
@@ -329,7 +339,7 @@ export function ContextualKnowledgeWidget({
       )}>
         <div className="flex items-center gap-2 mb-3">
           <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
-            <Icon size={18} className="text-amber-600" />
+            <ContextIcon context={currentContext} size={18} className="text-amber-600" />
           </div>
           <h3 className="font-semibold text-stone-900">{getContextTitle(currentContext)}</h3>
         </div>
@@ -388,7 +398,7 @@ export function ContextualKnowledgeWidget({
     )}>
       <div className="flex items-center gap-2.5 mb-3">
         <div className="w-9 h-9 shrink-0 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
-          <Icon size={18} className="text-[var(--c-text)]" />
+          <ContextIcon context={currentContext} size={18} className="text-[var(--c-text)]" />
         </div>
         <div className="min-w-0">
           <h3 className="font-semibold text-stone-900 text-sm">{getContextTitle(currentContext)}</h3>

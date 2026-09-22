@@ -10,6 +10,7 @@ import { userApi, cvApi, type ProfilePreferences, type CVData } from '../service
 import { profileSkillsApi, profileDocumentsApi } from '../services/profileEnhancementsApi'
 import { debounce } from '../lib/debounce'
 import { notifications, TOAST_MESSAGES } from '../lib/toast'
+import { registreraRensning } from '../lib/rensaVidUtloggning'
 import type { TabId } from '../components/profile/constants'
 
 // Propagera profil-uppdateringar till useAuthStore. useAuthStore.profile är
@@ -476,6 +477,37 @@ export const useProfileStore = create<ProfileState>()(
     }
   )
 )
+
+// ============== UTLOGGNING ==============
+
+/**
+ * `profile`, `preferences` och `cvData` persisteras INTE (se `partialize`
+ * nedan) men lever i minnet mellan navigeringar — och mellan användare i
+ * samma flik om ingen omladdning sker. `preferences` bär lön, önskade
+ * yrken och stödmål/utmaningar; `pendingUpdates` är en offline-kö som
+ * SKICKAS till servern vid nästa lyckade `updatePreferences`-anrop och
+ * skulle annars kunna skriva förra deltagarens ändringar till nästa persons
+ * konto. Se `lib/rensaVidUtloggning.ts` för sammanhanget.
+ */
+registreraRensning(() => {
+  // `setState` FÖRE `clearStorage()` — persist skriver på varje `setState`,
+  // så en rensning i omvänd ordning skulle skrivas över direkt.
+  useProfileStore.setState({
+    profile: null,
+    preferences: initialPreferences,
+    cvData: null,
+    enhancements: initialEnhancements,
+    activeTab: 'overview',
+    initialLoading: true,
+    cloudSyncing: false,
+    cloudSynced: true,
+    lastSyncError: null,
+    showOnboarding: false,
+    onboardingStep: 0,
+    pendingUpdates: [],
+  })
+  useProfileStore.persist.clearStorage()
+})
 
 // ============== HOOKS ==============
 

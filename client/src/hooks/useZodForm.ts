@@ -47,8 +47,7 @@ export function useZodForm<T extends Record<string, unknown>>({
 
     if (!result.success) {
       const formattedErrors: FormErrors<T> = {}
-      // Handle both Zod formats: .issues (standard) or .errors (legacy)
-      const issues = result.error.issues || result.error.errors || []
+      const issues = result.error.issues
       issues.forEach((err) => {
         const path = err.path[0] as keyof T
         formattedErrors[path] = err.message
@@ -77,7 +76,7 @@ export function useZodForm<T extends Record<string, unknown>>({
           // Fallback: validera hela schemat och filtrera på fältet
           const result = schema.safeParse({ ...values, [field]: value })
           if (!result.success) {
-            const error = result.error.errors.find((e) => e.path[0] === field)
+            const error = result.error.issues.find((e) => e.path[0] === field)
             return error?.message
           }
           return undefined
@@ -86,7 +85,7 @@ export function useZodForm<T extends Record<string, unknown>>({
         // Fallback om pick/shape inte fungerar
         const result = schema.safeParse({ ...values, [field]: value })
         if (!result.success) {
-          const error = result.error.errors.find((e) => e.path[0] === field)
+          const error = result.error.issues.find((e) => e.path[0] === field)
           return error?.message
         }
         return undefined
@@ -99,9 +98,8 @@ export function useZodForm<T extends Record<string, unknown>>({
     const result = fieldSchema.safeParse(value)
 
     if (!result.success) {
-      // Handle both ZodError format and issues array
-      const issues = result.error.errors || result.error.issues
-      if (issues && issues.length > 0) {
+      const issues = result.error.issues
+      if (issues.length > 0) {
         return issues[0].message
       }
     }
@@ -238,8 +236,7 @@ export function useZodForm<T extends Record<string, unknown>>({
 export function formatZodError(error: z.ZodError): Record<string, string> {
   const formatted: Record<string, string> = {}
 
-  // Handle both Zod formats: .issues (standard) or .errors (legacy)
-  const issues = error.issues || error.errors || []
+  const issues = error.issues
   issues.forEach((err) => {
     const path = err.path.join('.')
     formatted[path] = err.message

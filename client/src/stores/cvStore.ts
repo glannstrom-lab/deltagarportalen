@@ -5,6 +5,7 @@
 
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
 interface CVUIState {
   // UI State
@@ -85,3 +86,24 @@ export const useCVStore = create<CVUIState>()(
     { name: 'CVStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
+
+/**
+ * `hasDraft` (persisterad) styr "fortsätt där du slutade"-ytan
+ * (`ContinueWhereYouLeft`) — lämnas den kvar tror nästa deltagare i samma
+ * flik att HON har ett CV-utkast. Se `lib/rensaVidUtloggning.ts`.
+ */
+registreraRensning(() => {
+  // `setState` FÖRE `clearStorage()` — persist skriver på varje `setState`,
+  // så en rensning i omvänd ordning skulle skrivas över direkt.
+  useCVStore.setState({
+    currentStep: 1,
+    isPreviewOpen: false,
+    lastSavedAt: null,
+    hasUnsavedChanges: false,
+    saveStatus: 'idle',
+    cvScore: 0,
+    pendingCount: 0,
+    hasDraft: false,
+  })
+  useCVStore.persist.clearStorage()
+})

@@ -3,7 +3,7 @@
  * Simplified, clean interface focused on writing
  */
 
-import { useState, useEffect } from 'react'
+import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
 import {
@@ -111,32 +111,20 @@ function DiaryInner() {
   const navigate = useNavigate()
   const { currentStreak } = useDiaryStreaks()
 
-  // Get initial tab from URL or default to 'journal'
-  const getInitialTab = (): TabId => {
+  // Fliken är helt härledd av URL:en — ingen egen state behövs. Läg tidigare
+  // i state + en synk-effekt, vilket gav en extra rendering vid varje
+  // bakåtknapp-tryck och tillät state och URL att glida isär.
+  const activeTab: TabId = useMemo(() => {
     const params = new URLSearchParams(location.search)
     const tab = params.get('tab') as TabId
-    if (tab && TAB_DEFS.some(t => t.id === tab)) {
-      return tab
-    }
-    return 'journal'
-  }
+    return tab && TAB_DEFS.some(t => t.id === tab) ? tab : 'journal'
+  }, [location.search])
 
-  const [activeTab, setActiveTab] = useState<TabId>(getInitialTab())
-
-  // Update URL when tab changes
+  // Update URL when tab changes — activeTab räknas om automatiskt när
+  // location.search ändras.
   const handleTabChange = (tab: TabId) => {
-    setActiveTab(tab)
     navigate(`/diary?tab=${tab}`, { replace: true })
   }
-
-  // Sync with URL changes
-  useEffect(() => {
-    const params = new URLSearchParams(location.search)
-    const tab = params.get('tab') as TabId
-    if (tab && TAB_DEFS.some(t => t.id === tab) && tab !== activeTab) {
-      setActiveTab(tab)
-    }
-  }, [location.search])
 
   // F6: bara Mood rör hälsodata (mood/energi) och kräver samtycke.
   // Journal (en ren textrad utan mood ifyllt), Goals och Gratitude skriver

@@ -16,6 +16,7 @@
  */
 
 import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
@@ -67,10 +68,12 @@ export function ApplicationCard({
   const jobTitle = application.jobTitle || jobData?.headline || t('applications.common.unknownTitle', 'Okänd tjänst')
   const location = application.location || jobData?.workplace_address?.municipality
 
-  // Calculate days since last update
-  const daysSinceUpdate = Math.floor(
-    (Date.now() - new Date(application.updatedAt).getTime()) / (1000 * 60 * 60 * 24)
-  )
+  // Calculate days since last update. "Nu" hämtas en gång per montering via
+  // useState-initieraren (körs en gång) i stället för Date.now() direkt i
+  // render — useMemo räcker INTE för purity-regeln, dess callback räknas
+  // fortfarande som körd under render.
+  const [nu] = useState(() => Date.now())
+  const daysSinceUpdate = Math.floor((nu - new Date(application.updatedAt).getTime()) / (1000 * 60 * 60 * 24))
   const isStale = daysSinceUpdate >= 7 && !['accepted', 'rejected', 'withdrawn'].includes(application.status)
 
   const priorityColors = {

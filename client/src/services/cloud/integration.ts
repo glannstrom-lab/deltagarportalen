@@ -33,11 +33,14 @@ export const integrationChecklistApi = {
       return null
     }
 
+    // maybeSingle(): user_preferences skapas lazy — en användare utan rad än
+    // är normalt, inte ett fel. .single() gav ett onödigt 406 i nätverksloggen
+    // och en felmärkt "storage error" för det vanliga fallet.
     const { data, error } = await supabase
       .from('user_preferences')
       .select('integration_checklist')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
     if (error) {
       handleStorageError(error, 'hämta integrationschecklista')

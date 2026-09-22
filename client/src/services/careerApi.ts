@@ -408,7 +408,7 @@ export const networkApi = {
     // Check if offline
     if (!offlineStorage.isOnline()) {
       const cached = await careerOfflineCache.getCachedNetworkContacts();
-      if (cached.length > 0) return cached;
+      if (cached.length > 0) return cached as NetworkContact[];
     }
 
     try {
@@ -430,7 +430,7 @@ export const networkApi = {
     } catch (error) {
       // If network error, try offline cache
       const cached = await careerOfflineCache.getCachedNetworkContacts();
-      if (cached.length > 0) return cached;
+      if (cached.length > 0) return cached as NetworkContact[];
       throw error;
     }
   },
@@ -547,7 +547,7 @@ export const careerPlanApi = {
     // Check if offline
     if (!offlineStorage.isOnline()) {
       const cached = await careerOfflineCache.getCachedCareerPlan();
-      if (cached) return cached;
+      if (cached) return cached as CareerPlan;
     }
 
     try {
@@ -575,7 +575,7 @@ export const careerPlanApi = {
     } catch (error) {
       // If network error, try offline cache
       const cached = await careerOfflineCache.getCachedCareerPlan();
-      if (cached) return cached;
+      if (cached) return cached as CareerPlan;
       throw error;
     }
   },
@@ -729,11 +729,14 @@ export const milestonesApi = {
       .select('is_completed')
       .eq('id', id)
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     // D7 (2026-07-23): kasta vid läsfel — annars blir newCompleted alltid true
-    // (tolkar felet som "inte klar") oavsett milstolpens faktiska tillstånd
+    // (tolkar felet som "inte klar") oavsett milstolpens faktiska tillstånd.
+    // maybeSingle() ger inte PGRST116 vid 0 rader — kontrollera explicit att
+    // milstolpen faktiskt hittades (borttagen/fel id/annan användare).
     if (readError) handleError(readError, 'Failed to read milestone state');
+    if (!current) throw new APIError('Milstolpen hittades inte', 'NOT_FOUND', 404);
 
     const newCompleted = !current?.is_completed;
 
@@ -893,17 +896,23 @@ export const networkingEventsApi = {
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Get current state
-    const { data: current } = await supabase
+    const { data: current, error: readError } = await supabase
       .from('networking_events')
       .select('is_attending')
       .eq('id', id)
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
+
+    // Samma fälla som toggleComplete (D7): ett läsfel fick tidigare tyst
+    // tolkas som "inte anmäld" (!current?.is_attending blir alltid true),
+    // vilket kunde tvinga is_attending till true oavsett verkligt tillstånd.
+    if (readError) handleError(readError, 'Failed to read attending state');
+    if (!current) throw new APIError('Eventet hittades inte', 'NOT_FOUND', 404);
 
     const { data, error } = await supabase
       .from('networking_events')
       .update({
-        is_attending: !current?.is_attending,
+        is_attending: !current.is_attending,
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
@@ -977,7 +986,7 @@ export const skillsAnalysisApi = {
     // Check if offline
     if (!offlineStorage.isOnline()) {
       const cached = await careerOfflineCache.getCachedSkillsAnalysis();
-      if (cached) return cached;
+      if (cached) return cached as SkillsAnalysis;
     }
 
     try {
@@ -1001,7 +1010,7 @@ export const skillsAnalysisApi = {
     } catch (error) {
       // If network error, try offline cache
       const cached = await careerOfflineCache.getCachedSkillsAnalysis();
-      if (cached) return cached;
+      if (cached) return cached as SkillsAnalysis;
       throw error;
     }
   },

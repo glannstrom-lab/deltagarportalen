@@ -152,7 +152,7 @@ import CVPage from './CVPage'
 import CVBuilder from './CVBuilder'
 import { cvApi } from '@/services/supabaseApi'
 
-const mockCvApi = cvApi as {
+const mockCvApi = cvApi as unknown as {
   getCV: ReturnType<typeof vi.fn>
   updateCV: ReturnType<typeof vi.fn>
   getVersions: ReturnType<typeof vi.fn>

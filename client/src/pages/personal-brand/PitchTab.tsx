@@ -2,7 +2,7 @@
  * Pitch Tab - Create and practice your elevator pitch
  * Features: Pitch builder, practice mode with timer, AI feedback
  */
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Mic,
@@ -103,19 +103,18 @@ export default function PitchTab() {
     [t]
   )
 
-  // Load pitches
-  useEffect(() => {
-    loadPitches()
-  }, [])
-
-  const loadPitches = async () => {
+  const loadPitches = useCallback(async () => {
     setIsLoading(true)
     setLaddningsfel(false)
     try {
       const data = await personalBrandApi.getPitches()
       setPitches(data)
-      if (data.length > 0 && !selectedPitch) {
-        setSelectedPitch(data[0])
+      // Funktionell form: läser föregående värde ur React i stället för att
+      // fånga `selectedPitch` i closure — annars hade loadPitches behövt
+      // ändra identitet varje gång en pitch väljs, vilket hade triggat en
+      // ny hämtning från servern (effekten nedan beror på loadPitches).
+      if (data.length > 0) {
+        setSelectedPitch(prev => prev ?? data[0])
       }
     } catch (err) {
       // `try/finally` utan `catch` gjorde ett läsfel identiskt med "du har
@@ -126,7 +125,12 @@ export default function PitchTab() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
+
+  // Load pitches
+  useEffect(() => {
+    loadPitches()
+  }, [loadPitches])
 
   // Timer logic
   useEffect(() => {

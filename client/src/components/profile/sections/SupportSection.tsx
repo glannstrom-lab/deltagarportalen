@@ -75,7 +75,7 @@ export function SupportSection() {
             options={[...BEST_TIME_OPTIONS]}
             selected={preferences.therapist_data?.energyLevel?.bestTimeOfDay || ''}
             onChange={(v) => updateTherapistData({
-              energyLevel: { ...preferences.therapist_data?.energyLevel, bestTimeOfDay: v as string }
+              energyLevel: { ...preferences.therapist_data?.energyLevel, bestTimeOfDay: v as NonNullable<NonNullable<typeof preferences.therapist_data>['energyLevel']>['bestTimeOfDay'] }
             })}
           />
         </div>
@@ -89,7 +89,7 @@ export function SupportSection() {
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.physical || ''}
             onChange={(v) => updateTherapistData({
-              functionalLevel: { ...preferences.therapist_data?.functionalLevel, physical: v as string }
+              functionalLevel: { ...preferences.therapist_data?.functionalLevel, physical: v as NonNullable<NonNullable<typeof preferences.therapist_data>['functionalLevel']>['physical'] }
             })}
           />
           <ChipSelect
@@ -97,7 +97,7 @@ export function SupportSection() {
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.cognitive || ''}
             onChange={(v) => updateTherapistData({
-              functionalLevel: { ...preferences.therapist_data?.functionalLevel, cognitive: v as string }
+              functionalLevel: { ...preferences.therapist_data?.functionalLevel, cognitive: v as NonNullable<NonNullable<typeof preferences.therapist_data>['functionalLevel']>['cognitive'] }
             })}
           />
           <ChipSelect
@@ -105,7 +105,7 @@ export function SupportSection() {
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.social || ''}
             onChange={(v) => updateTherapistData({
-              functionalLevel: { ...preferences.therapist_data?.functionalLevel, social: v as string }
+              functionalLevel: { ...preferences.therapist_data?.functionalLevel, social: v as NonNullable<NonNullable<typeof preferences.therapist_data>['functionalLevel']>['social'] }
             })}
           />
         </div>
@@ -142,7 +142,7 @@ export function SupportSection() {
             label={t('profile.support.rehabilitationPhase')}
             options={[...REHABILITATION_PHASES]}
             selected={preferences.therapist_data?.rehabilitationPhase || ''}
-            onChange={(v) => updateTherapistData({ rehabilitationPhase: v as string })}
+            onChange={(v) => updateTherapistData({ rehabilitationPhase: v as NonNullable<typeof preferences.therapist_data>['rehabilitationPhase'] })}
           />
           <CompactInput
             label={t('profile.support.nextFollowUp')}

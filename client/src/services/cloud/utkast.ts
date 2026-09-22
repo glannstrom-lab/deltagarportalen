@@ -24,7 +24,7 @@ export const draftsApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      storageLogger.error('Error getting draft:', error)
+      storageLogger.error('Error getting draft:', { error })
     }
     return data?.[0]?.data || null
   },

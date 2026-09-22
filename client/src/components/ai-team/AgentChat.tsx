@@ -419,7 +419,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       } finally {
         setIsExporting(false)
       }
-    }, [messages, t, agent.nameKey, selectedAgent])
+    }, [messages, t, agent.nameKey, selectedAgent, setError])
 
     /**
      * Fråga som fokuslägets guide lämnat.

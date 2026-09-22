@@ -457,7 +457,7 @@ function MessagesSection({
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <LoadingState type="spinner" />
+            <LoadingState />
           </div>
         ) : messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -756,7 +756,12 @@ function MyConsultantInner() {
       }
 
       // Fetch next meeting
-      const { data: meetingData } = await supabase
+      // 2026-09-22: .single() kräver EXAKT en rad — PostgREST svarar 406
+      // PGRST116 för varje deltagare utan ett bokat kommande möte (samma
+      // buggklass som redan slog ut get_my_consultant, se UX12-kommentaren
+      // ovan). .maybeSingle() ger 0 eller 1 rad utan fel, och felet loggas nu
+      // i stället för att svaljas tyst.
+      const { data: meetingData, error: meetingError } = await supabase
         .from('consultant_meetings')
         .select('*')
         .eq('participant_id', user?.id)
@@ -764,7 +769,11 @@ function MyConsultantInner() {
         .gte('scheduled_at', new Date().toISOString())
         .order('scheduled_at', { ascending: true })
         .limit(1)
-        .single()
+        .maybeSingle()
+
+      if (meetingError) {
+        console.error('Could not fetch next meeting:', meetingError)
+      }
 
       if (meetingData) {
         // Persona-fynd 2026-09-12 (agent F): kolumnen heter `meeting_type`, inte `type`,
@@ -899,11 +908,16 @@ function MyConsultantInner() {
         category: 'progress',
         items: [
           {
+            // 2026-09-22: `profile.last_login` finns varken i typen eller i
+            // prod-schemat (profiles har ingen inloggningskolumn) — fältet var
+            // alltid `undefined` och visade därför "Idag" för ALLA deltagare
+            // oavsett verklig aktivitet. `user.last_sign_in_at` kommer från
+            // Supabase Auth och är den faktiska källan.
             label: t('myConsultant.sharedInfo.lastLogin'),
-            value: profile?.last_login
-              ? new Date(profile.last_login).toLocaleDateString(dateLocale)
-              : t('myConsultant.sharedInfo.today'),
-            status: 'good',
+            value: user?.last_sign_in_at
+              ? new Date(user.last_sign_in_at).toLocaleDateString(dateLocale)
+              : UNKNOWN,
+            status: user?.last_sign_in_at ? 'good' : 'neutral',
             isShared: true,
           },
           {
@@ -1023,7 +1037,7 @@ function MyConsultantInner() {
         showTabs={false}
         className="sidbredd"
       >
-        <LoadingState type="dashboard" />
+        <LoadingState fullHeight />
       </PageLayout>
     )
   }

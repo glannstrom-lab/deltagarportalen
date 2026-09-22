@@ -7,7 +7,7 @@
  * 3. Lägg till i jobbtracker
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { 
   X, FileText, Briefcase, CheckCircle2, 
@@ -62,14 +62,7 @@ export function CreateApplicationModal({
     }
   })
 
-  // Hämta CV-matchning när modal öppnas
-  useEffect(() => {
-    if (isOpen && job) {
-      checkCVMatch()
-    }
-  }, [isOpen, job])
-
-  const checkCVMatch = async () => {
+  const checkCVMatch = useCallback(async () => {
     setMatchFailed(false)
     try {
       const jobData: JobData = {
@@ -125,7 +118,14 @@ export function CreateApplicationModal({
       setCvMatchScore(null)
       setMatchFailed(true)
     }
-  }
+  }, [job, t])
+
+  // Hämta CV-matchning när modal öppnas
+  useEffect(() => {
+    if (isOpen && job) {
+      checkCVMatch()
+    }
+  }, [isOpen, job, checkCVMatch])
 
   const handleSave = async () => {
     setLoading(true)

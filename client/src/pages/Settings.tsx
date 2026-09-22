@@ -110,7 +110,7 @@ function SettingsInner() {
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
   const [isTogglingAi, setIsTogglingAi] = useState(false)
 
-  const { user } = useAuthStore()
+  const { user, profile: authProfile } = useAuthStore()
 
   const {
     calmMode, toggleCalmMode,
@@ -136,16 +136,20 @@ function SettingsInner() {
         if (user) {
           setProfileData(prev => ({
             ...prev,
-            firstName: user.firstName || '',
-            lastName: user.lastName || '',
+            // `user` (Supabase Auth) har inget för- eller efternamn — de
+            // bor på `profile` (2026-09-22, samma bugg som Header.tsx hade).
+            // Utan authProfile-fallbacket stod fälten tomma i den korta
+            // stund innan userApi.getProfile() hann svara.
+            firstName: authProfile?.first_name || '',
+            lastName: authProfile?.last_name || '',
             email: user.email || '',
           }))
         }
         const profileData = await userApi.getProfile()
         if (profileData) {
           setProfileData({
-            firstName: profileData.first_name || user?.firstName || '',
-            lastName: profileData.last_name || user?.lastName || '',
+            firstName: profileData.first_name || authProfile?.first_name || '',
+            lastName: profileData.last_name || authProfile?.last_name || '',
             email: profileData.email || user?.email || '',
             phone: profileData.phone || '',
             bio: profileData.bio || '',
@@ -173,12 +177,15 @@ function SettingsInner() {
   const handleSaveProfile = async () => {
     try {
       setIsSaving(true)
+      // `Tables['profiles']` i lib/supabase.ts saknar `bio` (och ~30 andra
+      // riktiga kolumner, se `ai_enabled` nedan) — den typen ägs inte här,
+      // så vi kan bara casta runt den lokalt. `bio` finns i prod-schemat.
       await userApi.updateProfile({
         first_name: profileData.firstName,
         last_name: profileData.lastName,
         phone: profileData.phone,
         bio: profileData.bio,
-      })
+      } as Parameters<typeof userApi.updateProfile>[0] & { bio: string })
     } catch (error) {
       console.error(t('settings.profile.errorSaving'), error)
     } finally {
@@ -272,7 +279,8 @@ function SettingsInner() {
     try {
       setIsTogglingAi(true)
       const newValue = !consentData.aiEnabled
-      await userApi.updateProfile({ ai_enabled: newValue })
+      // Samma stale-typ-fälla som bio ovan — `ai_enabled` finns i prod.
+      await userApi.updateProfile({ ai_enabled: newValue } as Parameters<typeof userApi.updateProfile>[0] & { ai_enabled: boolean })
       setConsentData(prev => ({ ...prev, aiEnabled: newValue }))
     } catch (error) {
       console.error('Error toggling AI:', error)

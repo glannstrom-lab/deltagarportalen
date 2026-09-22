@@ -7,6 +7,7 @@ import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import i18n from '@/i18n/config'
 import { storageLogger } from '@/lib/logger'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
 export type EnergyLevel = 'low' | 'medium' | 'high'
 export type Language = 'sv' | 'en'
@@ -192,12 +193,15 @@ export const useSettingsStore = create<SettingsState>()(
             })
 
           if (error) {
-            storageLogger.error('Kunde inte spara inställningar:', error)
+            // `{ error }`, inte `error` direkt: `ErrorContext` har ett
+            // index-signatur-krav som PostgrestError (en konkret,
+            // egenskapsspecifik typ) inte uppfyller på egen hand (TS2345).
+            storageLogger.error('Kunde inte spara inställningar:', { error })
           } else {
             set({ lastSynced: new Date().toISOString() })
           }
         } catch (err) {
-          storageLogger.error('Fel vid sparning av inställningar:', err)
+          storageLogger.error('Fel vid sparning av inställningar:', { error: err })
         }
       },
 
@@ -219,7 +223,7 @@ export const useSettingsStore = create<SettingsState>()(
             .maybeSingle()
 
           if (error) {
-            storageLogger.error('Kunde inte hämta inställningar:', error)
+            storageLogger.error('Kunde inte hämta inställningar:', { error })
             set({ isLoading: false })
             return
           }
@@ -272,7 +276,7 @@ export const useSettingsStore = create<SettingsState>()(
             set({ isLoading: false })
           }
         } catch (err) {
-          storageLogger.error('Fel vid synkronisering av inställningar:', err)
+          storageLogger.error('Fel vid synkronisering av inställningar:', { error: err })
           set({ isLoading: false })
         }
       }
@@ -300,6 +304,36 @@ export const useSettingsStore = create<SettingsState>()(
     { name: 'SettingsStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
+
+/**
+ * Nollställer notiser, energinivå och onboarding-flaggan vid utloggning.
+ *
+ * `calmMode`, `focusMode`, `highContrast`, `largeText`, `language` och
+ * `grafikstil` rörs INTE — de är tema/tillgänglighet, inte personuppgift
+ * (samma undantag som `USER_SCOPED_STORAGE_KEYS` i `utils/safeStorage.ts`
+ * gör för språk/tema). En delad dator ska inte tvinga nästa deltagare att
+ * slå på hög kontrast eller byta tillbaka språk bara för att hon loggar in.
+ *
+ * `energyLevel` nollställs DÄREMOT: det är inte ett temaval utan en signal
+ * om hur mycket ork just den här deltagaren har idag — närmare
+ * funktionsförmåga än tillgänglighet.
+ *
+ * Fixar också en sekundär bugg: `syncWithServer()` SKRIVER lokalt state
+ * till servern (`_saveToServer`) om kontot saknar en `user_preferences`-rad
+ * (ny person, ingen rad än). Utan den här rensningen hade en ny deltagares
+ * första inloggning i en delad flik kunnat spara föregående deltagares
+ * kvarlämnade notisinställningar till HENNES konto.
+ */
+registreraRensning(() => {
+  useSettingsStore.setState({
+    emailNotifications: true,
+    pushNotifications: true,
+    weeklySummary: false,
+    hasCompletedOnboarding: false,
+    energyLevel: 'medium',
+    lastSynced: null,
+  })
+})
 
 // Hook för att synkronisera vid inloggning
 export function useSettingsSync() {

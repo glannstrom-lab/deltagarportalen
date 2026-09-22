@@ -19,10 +19,35 @@ import {
   createGateDenialResponse,
   checkDailyTokenCap,
   createTokenCapResponse,
+  sanitizeForPrompt,
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
+
+// Indatagränser — SÄK1 (2026-09-22): den här filen interpolerade alla fyra
+// param-uppsättningarna rakt in i prompten utan `sanitizeForPrompt`, till
+// skillnad från de andra fyra Perplexity-funktionerna (commute-planner,
+// industry-radar, company-analysis, company-search), som alla saniterar
+// innan prompten byggs. En `jobDescription` eller `userBackground` med
+// radbrytningar och egna instruktioner gick alltså rakt in som om den vore
+// en del av systemprompten — samma injektionsklass som `aiGate.ts`
+// dokumenterar för `maxResults` i company-search. Längdtaken matchar de
+// andra funktionernas (företagsnamn/yrke ~120, fritext/beskrivning längre).
+const MAX_KORT = 120
+const MAX_MEDEL = 300
+const MAX_LANG = 2000
+const MAX_ANTAL_KOMPETENSER = 20
+const MAX_KOMPETENS_LANGD = 60
+
+/** Saniterar varje sträng i en lista (kompetenser, färdigheter) och kapar antalet. */
+function sanitizeLista(v: unknown, maxAntal: number, maxLangd: number): string[] {
+  if (!Array.isArray(v)) return []
+  return v
+    .slice(0, maxAntal)
+    .map((item) => sanitizeForPrompt(item, maxLangd))
+    .filter(Boolean)
+}
 
 // Assistant types
 type AssistantType = 'interview-prep' | 'salary-compass' | 'networking-help' | 'education-guide'
@@ -128,7 +153,12 @@ interface EducationGuideResponse {
 
 // Prompt templates
 function buildInterviewPrepPrompt(params: Record<string, unknown>): string {
-  const { companyName, orgNumber, jobTitle, jobDescription } = params
+  const companyName = sanitizeForPrompt(params.companyName, MAX_KORT)
+  // Org.nr normaliseras, saneras inte som fritext — samma regel som
+  // ai-company-analysis: bara siffror/bindestreck är meningsfulla här.
+  const orgNumber = sanitizeForPrompt(params.orgNumber, 20)
+  const jobTitle = sanitizeForPrompt(params.jobTitle, MAX_KORT)
+  const jobDescription = sanitizeForPrompt(params.jobDescription, MAX_LANG)
 
   return `Du är en expert på intervjuförberedelse för den svenska arbetsmarknaden.
 
@@ -166,7 +196,12 @@ Svara ENDAST med giltig JSON.`
 }
 
 function buildSalaryCompassPrompt(params: Record<string, unknown>): string {
-  const { occupation, region, experienceYears, skills } = params
+  const occupation = sanitizeForPrompt(params.occupation, MAX_KORT)
+  const region = sanitizeForPrompt(params.region, MAX_KORT)
+  // experienceYears ska vara ett litet heltal ("X år") — fritext här hade
+  // gått rakt in i prompten precis som de andra fälten.
+  const experienceYears = sanitizeForPrompt(params.experienceYears, 10)
+  const skills = sanitizeLista(params.skills, MAX_ANTAL_KOMPETENSER, MAX_KOMPETENS_LANGD)
 
   return `Du är en expert på lönedata för den svenska arbetsmarknaden.
 
@@ -175,7 +210,7 @@ UPPGIFT: Ge aktuell lönestatistik och insikter.
 YRKE: ${occupation}
 REGION: ${region || 'Sverige'}
 ERFARENHET: ${experienceYears || 'Ej specificerad'} år
-${skills ? `KOMPETENSER: ${(skills as string[]).join(', ')}` : ''}
+${skills.length > 0 ? `KOMPETENSER: ${skills.join(', ')}` : ''}
 
 SANNINGSREGEL — läs den innan du skriver något:
 - Hitta ALDRIG på lönesiffror. Hittar du inte underlag för ett fält, skriv
@@ -220,7 +255,12 @@ Svara ENDAST med giltig JSON.`
 }
 
 function buildNetworkingHelpPrompt(params: Record<string, unknown>): string {
-  const { contactName, contactTitle, contactCompany, userGoal, userBackground, platform } = params
+  const contactName = sanitizeForPrompt(params.contactName, MAX_KORT)
+  const contactTitle = sanitizeForPrompt(params.contactTitle, MAX_KORT)
+  const contactCompany = sanitizeForPrompt(params.contactCompany, MAX_KORT)
+  const userGoal = sanitizeForPrompt(params.userGoal, MAX_MEDEL)
+  const userBackground = sanitizeForPrompt(params.userBackground, MAX_LANG)
+  const platform = sanitizeForPrompt(params.platform, MAX_KORT)
 
   return `Du är en expert på professionellt nätverkande i Sverige.
 
@@ -249,14 +289,18 @@ Svara ENDAST med giltig JSON.`
 }
 
 function buildEducationGuidePrompt(params: Record<string, unknown>): string {
-  const { targetOccupation, currentSkills, budget, timeAvailable, location } = params
+  const targetOccupation = sanitizeForPrompt(params.targetOccupation, MAX_KORT)
+  const currentSkills = sanitizeLista(params.currentSkills, MAX_ANTAL_KOMPETENSER, MAX_KOMPETENS_LANGD)
+  const budget = sanitizeForPrompt(params.budget, MAX_KORT)
+  const timeAvailable = sanitizeForPrompt(params.timeAvailable, MAX_KORT)
+  const location = sanitizeForPrompt(params.location, MAX_KORT)
 
   return `Du är en expert på utbildning och kompetensutveckling för den svenska arbetsmarknaden.
 
 UPPGIFT: Rekommendera utbildningsvägar.
 
 MÅLYRKE: ${targetOccupation}
-${currentSkills ? `NUVARANDE KOMPETENSER: ${(currentSkills as string[]).join(', ')}` : ''}
+${currentSkills.length > 0 ? `NUVARANDE KOMPETENSER: ${currentSkills.join(', ')}` : ''}
 BUDGET: ${budget || 'Ej specificerad'}
 TID TILLGÄNGLIG: ${timeAvailable || 'Ej specificerad'}
 PLATS: ${location || 'Sverige'}

@@ -21,14 +21,14 @@ async function fetchFromFunction(functionName: string, endpoint: string, params?
   // Kolla cache först
   const cached = trendsCache.get(cacheKey);
   if (cached) {
-    jobLogger.debug(`${functionName} Cache hit:`, endpoint);
+    jobLogger.debug(`${functionName} Cache hit:`, { endpoint });
     return cached;
   }
 
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
   const functionUrl = `${SUPABASE_URL}/functions/v1/${functionName}${endpoint}${queryParams}`;
 
-  jobLogger.debug('Trends fetching:', functionUrl);
+  jobLogger.debug('Trends fetching:', { functionUrl });
   
   // Hämta aktuell session (kan vara anon eller user)
   const { data: { session } } = await supabase.auth.getSession();
@@ -47,7 +47,7 @@ async function fetchFromFunction(functionName: string, endpoint: string, params?
     
     if (!response.ok) {
       const errorText = await response.text();
-      jobLogger.error(`${functionName} API error:`, response.status, errorText);
+      jobLogger.error(`${functionName} API error:`, { status: response.status, errorText });
       throw new Error(`${functionName} API error: ${response.status}`);
     }
     
@@ -176,7 +176,7 @@ export interface SalaryStats {
 }
 
 export async function getSalaryStats(occupation: string): Promise<SalaryStats | null> {
-  jobLogger.debug('Getting salary stats for:', occupation);
+  jobLogger.debug('Getting salary stats for:', { occupation });
 
   try {
     // Använd af-historical för lönestatistik
@@ -195,7 +195,7 @@ export async function getSalaryStats(occupation: string): Promise<SalaryStats | 
       };
     }
   } catch (error) {
-    jobLogger.debug('Historical API error:', error);
+    jobLogger.debug('Historical API error:', { error });
   }
   
   // Ingen fallback - returnera null om ingen data finns
@@ -266,7 +266,5 @@ export const trendsApi = {
   getMarketStatsWithFallback,
   getSalaryStatsWithFallback,
 };
-
-export type { DataWithSource };
 
 export default trendsApi;

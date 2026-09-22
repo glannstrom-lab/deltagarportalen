@@ -36,6 +36,11 @@ export interface Education {
   startDate: string
   endDate?: string
   description?: string
+  // Skrivs av EducationEditor.tsx och finns i prod-data (verifierat mot
+  // cvs.education 2026-09-22) — typen saknade dem tidigare trots att
+  // komponenten redan läste/skrev båda.
+  level?: string
+  current?: boolean
 }
 
 // Skill som används i UI-komponenter
@@ -118,6 +123,9 @@ export interface CVData {
   // ATS-analys
   ats_score?: number | null
   atsScore?: number | null
-  ats_feedback?: unknown
-  atsFeedback?: unknown
+  // Ingen rad i prod har någonsin satt ats_feedback (0 rader,
+  // verifierat 2026-09-22) — typad som string[] eftersom det är formen
+  // `cvApi.getATSAnalysis()` och dashboard-widgeten redan antar.
+  ats_feedback?: string[]
+  atsFeedback?: string[]
 }

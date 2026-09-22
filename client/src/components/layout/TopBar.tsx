@@ -14,7 +14,7 @@ import {
   Globe,
   Focus,
 } from '@/components/ui/icons'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { arLattSvenska, sattLattSvenska } from '@/i18n/lattSvenska'
 import { useAuthStore } from '@/stores/authStore'
@@ -55,19 +55,25 @@ export function TopBar() {
   // (och sidor utanför hubbarna) får mint, hubbens egen.
   const aktivHubDomain = getActiveHub(location.pathname)?.domain ?? 'action'
 
-  const loadProfile = useCallback(async () => {
+  useEffect(() => {
     if (!user) return
-    const { data } = await supabase
+    let aktiv = true
+    supabase
       .from('profiles')
       .select('first_name, last_name, profile_image_url')
       .eq('id', user.id)
-      .single()
-    if (data) setProfile(data)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!aktiv) return
+        // Felet lästes tidigare inte ut alls — ett äkta läsfel gav samma
+        // tysta "inget namn/avatar" som en momentant saknad profilrad, utan
+        // spår i loggen. maybeSingle() + explicit loggning ger diagnostik
+        // utan att ändra den vänliga degraderingen i UI:t.
+        if (error) { console.error('TopBar: kunde inte läsa profilen', error); return }
+        if (data) setProfile(data)
+      })
+    return () => { aktiv = false }
   }, [user])
-
-  useEffect(() => {
-    loadProfile()
-  }, [loadProfile])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

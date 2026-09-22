@@ -4,7 +4,7 @@
  * Jobben anges som titel + valfri länk och lagras i job_ids TEXT[].
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { X, Plus, Trash2, Save, Loader2, Briefcase } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
@@ -55,19 +55,25 @@ export function JobCollectionDialog({
 }: JobCollectionDialogProps) {
   const [form, setForm] = useState<JobCollectionFormData>(EMPTY_FORM)
 
-  useEffect(() => {
-    if (!isOpen) return
-    if (collection) {
-      setForm({
-        name: collection.name,
-        description: collection.description,
-        industry: collection.industry,
-        jobs: collection.jobs.map(j => ({ ...j })),
-      })
-    } else {
-      setForm({ ...EMPTY_FORM, jobs: [{ title: '', url: '' }] })
+  // Formuläret återställs när dialogen öppnas eller bytt samling — härlett
+  // under render i stället för ett effektbaserat setState (samma mönster som
+  // EventModal), så dialogen inte gör en extra rendering varje gång den öppnas.
+  const [prevOpenState, setPrevOpenState] = useState<{ isOpen: boolean; collection: typeof collection }>({ isOpen, collection })
+  if (isOpen !== prevOpenState.isOpen || collection !== prevOpenState.collection) {
+    setPrevOpenState({ isOpen, collection })
+    if (isOpen) {
+      if (collection) {
+        setForm({
+          name: collection.name,
+          description: collection.description,
+          industry: collection.industry,
+          jobs: collection.jobs.map(j => ({ ...j })),
+        })
+      } else {
+        setForm({ ...EMPTY_FORM, jobs: [{ title: '', url: '' }] })
+      }
     }
-  }, [collection, isOpen])
+  }
 
   const updateJob = (index: number, field: keyof CollectionJob, value: string) => {
     setForm(prev => ({

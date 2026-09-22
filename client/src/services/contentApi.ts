@@ -30,6 +30,7 @@ import type { EnhancedArticle, ArticleChecklistItem, ArticleAction } from '@/dat
 import { exercises as mockExercises, type Exercise, type ExerciseStep } from '@/data/exercises'
 import { oversattInnehall } from '@/data/oversattningar'
 import { getIcon } from '@/lib/dynamicIconMap'
+import type { LucideIcon } from 'lucide-react'
 
 // ============================================
 // TYPES
@@ -192,8 +193,8 @@ function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
 /**
  * Get Lucide icon component by name
  */
-function getIconComponent(iconName: string): React.ComponentType<{ className?: string }> {
-  return getIcon(iconName) as React.ComponentType<{ className?: string }>
+function getIconComponent(iconName: string): LucideIcon {
+  return getIcon(iconName)
 }
 
 /**

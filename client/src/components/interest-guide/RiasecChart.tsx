@@ -1,3 +1,4 @@
+import { useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { riasecColors, type RiasecScores } from '@/services/interestGuideData'
 import { useRiasecNamn } from '@/services/useIntresseguideInnehall'
@@ -10,6 +11,9 @@ interface RiasecChartProps {
 export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
   const { t } = useTranslation()
   const riasecNames = useRiasecNamn()
+  // Stabilt, React-genererat unikt id (inte Math.random(), som gav ett nytt
+  // gradient-id vid varje rendering — orent under render, och SSR-osäkert).
+  const reactId = useId()
   const center = size / 2
   const radius = (size / 2) - 40
   const keys: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
@@ -104,7 +108,7 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
   })
 
   // Gradient för polygonen
-  const gradientId = `riasecGradient-${Math.random().toString(36).substr(2, 9)}`
+  const gradientId = `riasecGradient-${reactId.replace(/:/g, '')}`
 
   // Generate accessible description
   const sortedScores = keys

@@ -84,7 +84,7 @@ export function OccupationPicker({
   const [error, setError] = useState<string | null>(null)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const blurTimeoutRef = useRef<number | undefined>()
+  const blurTimeoutRef = useRef<number | undefined>(undefined)
 
   const debouncedQuery = useDebounce(input, 250)
 

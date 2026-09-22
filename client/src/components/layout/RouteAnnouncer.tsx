@@ -15,7 +15,7 @@
  * dokumenttiteln vid sidladdning, och en dubbel uppläsning är brus.
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDocumentTitle } from '@/hooks/usePageTitle'
@@ -25,23 +25,23 @@ export function RouteAnnouncer() {
   const { t } = useTranslation()
   const { pageName } = useDocumentTitle(location.pathname)
   const [message, setMessage] = useState('')
-  const senastePath = useRef<string | null>(null)
+  const [senastePath, setSenastePath] = useState<string | null>(null)
 
-  useEffect(() => {
-    // Första renderingen = sidladdning; titeln läses upp av webbläsaren redan.
-    // Vi jämför mot förra pathnamnet i stället för att bara titta på "har
-    // renderat en gång", så ett språkbyte (som ändrar pageName men inte rutten)
-    // inte utlöser en falsk annonsering.
-    if (senastePath.current === location.pathname) return
-    const ärFörstaRenderingen = senastePath.current === null
-    senastePath.current = location.pathname
-    if (ärFörstaRenderingen) return
-
-    setMessage(t('routeAnnouncer.navigated', {
-      defaultValue: 'Du är nu på {{page}}',
-      page: pageName,
-    }))
-  }, [location.pathname, pageName, t])
+  // Första renderingen = sidladdning; titeln läses upp av webbläsaren redan.
+  // Vi jämför mot förra pathnamnet i stället för att bara titta på "har
+  // renderat en gång", så ett språkbyte (som ändrar pageName men inte rutten)
+  // inte utlöser en falsk annonsering. Härlett under render (inte i en
+  // effekt) — samma mönster som EventModal.
+  if (senastePath !== location.pathname) {
+    const ärFörstaRenderingen = senastePath === null
+    setSenastePath(location.pathname)
+    if (!ärFörstaRenderingen) {
+      setMessage(t('routeAnnouncer.navigated', {
+        defaultValue: 'Du är nu på {{page}}',
+        page: pageName,
+      }))
+    }
+  }
 
   return (
     <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">

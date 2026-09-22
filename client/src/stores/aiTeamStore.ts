@@ -5,6 +5,7 @@
 
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 import type { AITeamState, AgentId, PersonalityId, ResponseMode, ChatMessage } from '@/components/ai-team/types'
 
 export const useAITeamStore = create<AITeamState>()(
@@ -111,3 +112,27 @@ export const useAITeamStore = create<AITeamState>()(
     { name: 'AITeamStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
+
+/**
+ * `messages` persisteras medvetet INTE (se `partialize` ovan) — men lever i
+ * minnet, och kan innehålla samtal med AI-coachen om mående. Utan detta ser
+ * nästa person i samma flik föregående deltagares konversation ända tills
+ * `AgentChat` hinner ladda om historiken. `selectedAgent` m.fl. nollställs
+ * också: det är den agent SENASTE deltagaren pratade med, inte ett
+ * tillgänglighetsval som ska överleva. Se `lib/rensaVidUtloggning.ts`.
+ */
+registreraRensning(() => {
+  // Ordningen spelar roll: persist-middleware skriver till localStorage vid
+  // VARJE `setState`. `clearStorage()` FÖRE `setState()` skulle alltså bli
+  // omedelbart överskriven av nästa skrivning — nyckeln ska rensas SIST.
+  useAITeamStore.setState({
+    selectedAgent: 'arbetskonsulent',
+    selectedPersonality: 'professional',
+    responseMode: 'medium',
+    messages: [],
+    isLoading: false,
+    error: null,
+    pendingQuestion: null,
+  })
+  useAITeamStore.persist.clearStorage()
+})

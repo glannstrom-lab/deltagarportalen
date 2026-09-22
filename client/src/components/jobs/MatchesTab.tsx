@@ -100,22 +100,22 @@ export function MatchesTab() {
     // === CV DATA ===
     const skills = cv?.skills?.map((s: string | { name: string }) =>
       typeof s === 'string' ? s : s.name
-    ).filter(Boolean) || []
-    const certificates = cv?.certificates?.map((c: { name?: string }) => c.name).filter(Boolean) || []
+    ).filter((x): x is string => Boolean(x)) || []
+    const certificates = cv?.certificates?.map((c: { name?: string }) => c.name).filter((x): x is string => Boolean(x)) || []
     const languages = cv?.languages?.map((l: string | { name?: string; language?: string }) =>
       typeof l === 'string' ? l : (l.name || l.language)
-    ).filter(Boolean) || []
+    ).filter((x): x is string => Boolean(x)) || []
     const allSkills = [...new Set([...skills, ...certificates, ...languages])]
 
     // Extract work titles - check both camelCase and snake_case (API returns camelCase)
     const workExperiences = cv?.workExperience || cv?.work_experience || []
     const workTitles = workExperiences.map((e: { title?: string; position?: string; role?: string; job_title?: string }) =>
       e.title || e.position || e.role || e.job_title
-    ).filter(Boolean) || []
+    ).filter((x): x is string => Boolean(x)) || []
 
     const education = cv?.education?.map((e: { degree?: string; field?: string }) =>
       `${e.degree || ''} ${e.field || ''}`.trim()
-    ).filter(Boolean) || []
+    ).filter((x): x is string => Boolean(x)) || []
 
     // === INTEREST GUIDE DATA ===
     // MEDVETET inte kopplad till den översatta yrkeslistan: `occ.name` blir

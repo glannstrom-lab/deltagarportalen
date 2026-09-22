@@ -63,7 +63,7 @@ export const interestGuideApi = {
       (Granskning 2026-08-21.)
     */
     if (error && error.code !== 'PGRST116') {
-      storageLogger.error('Error getting interest guide progress:', error)
+      storageLogger.error('Error getting interest guide progress:', { error })
       throw error
     }
     return data || null

@@ -16,6 +16,34 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { CommunicationTab } from './CommunicationTab'
 
+/**
+ * Regression (2026-09-22): CommunicationTab renderade
+ * `<MeetingSchedulerDialog participants={...} onSchedule={handleScheduleMeeting} />`
+ * — men den komponenten tar varken `participants` eller `onSchedule`. Den
+ * bokar mötet HELT SJÄLV (eget supabase-anrop) och ropar sedan `onSuccess()`,
+ * som aldrig skickades in. En konsulent som bokade ett möte fick alltså
+ * mötet skapat i databasen — och en krasch (`onSuccess is not a function`)
+ * i samma stund, eftersom rätt prop saknades.
+ *
+ * Dialogens egen inre logik (deltagarval, kalender, tidsval) har sin egen
+ * svit i MeetingSchedulerDialog.test.tsx. Det här testet mockar dialogen
+ * till en enda knapp och kontrollerar bara KONTRAKTET: att CommunicationTab
+ * skickar en fungerande `onSuccess` som inte kraschar och som faktiskt
+ * stänger dialogen och laddar om data.
+ */
+const mockedOnSuccess = vi.hoisted(() => ({ current: null as (() => void) | null }))
+vi.mock('@/components/consultant/MeetingSchedulerDialog', () => ({
+  MeetingSchedulerDialog: (props: { isOpen: boolean; onSuccess: () => void }) => {
+    mockedOnSuccess.current = props.onSuccess
+    if (!props.isOpen) return null
+    return (
+      <button onClick={() => props.onSuccess()}>
+        Simulera lyckad mötesbokning
+      </button>
+    )
+  },
+}))
+
 type TableResponse = { data: unknown; error: unknown }
 
 function makeBuilder(response: TableResponse) {
@@ -240,5 +268,37 @@ describe('CommunicationTab — avbokning går genom portalens bekräftelsedialog
     await waitFor(() => expect(confirmMock).toHaveBeenCalled())
     expect(serviceMock.cancelMeeting).not.toHaveBeenCalled()
     expect(screen.getByRole('button', { name: /Avboka mötet med Dana Deltagare/ })).toBeInTheDocument()
+  })
+})
+
+describe('CommunicationTab — MeetingSchedulerDialog får en riktig onSuccess (2026-09-22)', () => {
+  beforeEach(() => {
+    mockedOnSuccess.current = null
+  })
+
+  it('en lyckad bokning i dialogen kraschar inte och laddar om deltagare/möten', async () => {
+    renderTab()
+    fireEvent.click(await screen.findByRole('button', { name: /Möten/ }))
+    fireEvent.click((await screen.findAllByRole('button', { name: /Boka nytt möte|Boka möte/ }))[0])
+
+    const bokaKnapp = await screen.findByRole('button', { name: /Simulera lyckad mötesbokning/ })
+    const callsFore = fromCallCount.consultant_meetings ?? 0
+
+    // Om onSuccess saknades (den gamla buggen) skulle dialogens callback
+    // sakna en fungerande funktion — mocken ovan ropar den direkt, så en
+    // krasch här hade fällt testet med ett ofångat TypeError.
+    expect(() => fireEvent.click(bokaKnapp)).not.toThrow()
+
+    await waitFor(() => {
+      expect(fromCallCount.consultant_meetings ?? 0).toBeGreaterThan(callsFore)
+    })
+  })
+
+  it('skickar onSuccess som en anropbar funktion till dialogen (inte undefined)', async () => {
+    renderTab()
+    fireEvent.click(await screen.findByRole('button', { name: /Möten/ }))
+    fireEvent.click((await screen.findAllByRole('button', { name: /Boka nytt möte|Boka möte/ }))[0])
+    await screen.findByRole('button', { name: /Simulera lyckad mötesbokning/ })
+    expect(typeof mockedOnSuccess.current).toBe('function')
   })
 })

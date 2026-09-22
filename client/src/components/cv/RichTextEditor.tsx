@@ -181,7 +181,7 @@ export function RichTextEditor({
                   ${btn.disabled ? 'opacity-30 cursor-not-allowed' : 'text-stone-600 hover:text-stone-800'}
                 `}
               >
-                <btn.icon className="w-4 h-4" aria-hidden="true" />
+                {btn.icon && <btn.icon className="w-4 h-4" aria-hidden="true" />}
               </button>
             )
           )}

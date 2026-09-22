@@ -43,6 +43,16 @@ import {
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+
+// `Button` (ui/Button.tsx) tar redan emot `ref` i runtime — det spreadas
+// vidare till <button> och React 19:s funktionskomponenter accepterar ref
+// som en vanlig prop utan forwardRef. Typen `ButtonProps` (utökar bara
+// `ButtonHTMLAttributes`) deklarerar den bara inte, så TS vägrar
+// `ref={...}` nedan trots att det redan fungerar. En lokal, typad alias
+// undviker att röra Button.tsx (ägs inte av den här filen) eller ta till `any`.
+const ButtonMedRef = Button as unknown as React.ForwardRefExoticComponent<
+  React.ComponentProps<typeof Button> & React.RefAttributes<HTMLButtonElement>
+>
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { showToast } from '@/components/Toast'
@@ -512,7 +522,7 @@ export function CoverLetterMyLetters() {
                   </Button>
 
                   <div className="relative sm:ml-auto" ref={showActions === letter.id ? dropdownRef : undefined}>
-                    <Button
+                    <ButtonMedRef
                       ref={(el) => {
                         if (el) menuButtonRefs.current.set(letter.id, el)
                       }}
@@ -529,7 +539,7 @@ export function CoverLetterMyLetters() {
                       <span className="sr-only">
                         {t('coverLetter.myLetters.moreFor', 'Fler alternativ för {{title}}', { title: letter.title })}
                       </span>
-                    </Button>
+                    </ButtonMedRef>
 
                     {showActions === letter.id && (
                       <div

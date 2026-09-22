@@ -71,7 +71,21 @@ let cache: { rader: YbRad[]; lastModified: string | null; hamtadAt: number } | n
 
 async function hamtaBarometer(): Promise<{ rader: YbRad[]; lastModified: string | null }> {
   if (cache && Date.now() - cache.hamtadAt < CACHE_TTL_MS) return cache;
-  const res = await fetch(KALLA_URL, { headers: { Accept: 'application/json' } });
+  // Timeout — samma mönster som af-jobsearch (A15, 2026-07-23): en hängande
+  // källa fick tidigare hålla instansen till plattformens maxtid utan att
+  // abortera. Den här filen saknade den fixen.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  let res: Response;
+  try {
+    res = await fetch(KALLA_URL, { headers: { Accept: 'application/json' }, signal: controller.signal });
+  } catch (err) {
+    // Samma "gammal cache är bättre än inget"-policy som ett 4xx/5xx-svar.
+    if (cache) return cache;
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!res.ok) {
     // Gammal cache är bättre än inget om källan hickar — men bara om den finns.
     if (cache) return cache;

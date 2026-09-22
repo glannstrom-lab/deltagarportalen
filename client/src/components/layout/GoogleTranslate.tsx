@@ -125,19 +125,21 @@ function loadGoogleTranslateScript(targetLang: string): Promise<void> {
 export function GoogleTranslate() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const [activeLanguage, setActiveLanguage] = useState<string | null>(null)
+  // Sätts aldrig om av klienten — ett språkbyte laddar om sidan
+  // (window.location.reload), och nästa mount läser cookien/localStorage på
+  // nytt via initieraren.
+  const [activeLanguage] = useState<string | null>(() => getSelectedLanguage())
   const [isLoading, setIsLoading] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // Kolla sparad översättning vid mount och ladda scriptet om det behövs
+  // Ladda Google Translate-scriptet vid mount om det redan fanns en aktiv
+  // översättning sparad (activeLanguage härleds från cookien/localStorage
+  // direkt i useState-initieraren ovan, inte i en effekt).
   useEffect(() => {
-    const savedLang = getSelectedLanguage()
-    setActiveLanguage(savedLang)
-
-    if (savedLang) {
-      // Användaren hade en översättning aktiv - ladda scriptet
-      loadGoogleTranslateScript(savedLang)
+    if (activeLanguage) {
+      loadGoogleTranslateScript(activeLanguage)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ska bara köras vid montering; ett språkbyte laddar om hela sidan (window.location.reload) i stället för att uppdatera activeLanguage i klienten
   }, [])
 
   // Stäng menyn vid klick utanför

@@ -123,8 +123,9 @@ export const POPULAR_QUERIES = [
 
 // Kommun till län mapping (för att veta vilket län en kommun tillhör)
 // Behålls trots 0 callers — kan användas av framtida region-aggregering.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const MUNICIPALITY_TO_REGION: Record<string, string> = {
+// Exporterad (i stället för eslint-disable) så noUnusedLocals inte fäller
+// bygget — en modulexport räknas som använd även utan intern anropare.
+export const MUNICIPALITY_TO_REGION: Record<string, string> = {
   'stockholm': 'Stockholms län',
   'göteborg': 'Västra Götalands län',
   'goteborg': 'Västra Götalands län',
@@ -194,7 +195,7 @@ async function fetchFromAF<T = unknown>(url: string): Promise<T> {
     return cached.data as T;
   }
 
-  jobLogger.debug('Fetching:', url);
+  jobLogger.debug('Fetching:', { url });
 
   const response = await fetch(url, {
     headers: {
@@ -291,7 +292,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     }
 
     const url = `${AF_JOBSEARCH_BASE}/search?${searchParams.toString()}`;
-    jobLogger.debug('Search URL:', url);
+    jobLogger.debug('Search URL:', { url });
 
     const data = await fetchFromAF<JobSearchResponse>(url);
     
@@ -369,7 +370,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
      * redan finns ett feltillstånd att visa (JobSearch `couldNotSearch`,
      * Slumpjobbet, Dagens jobb).
      */
-    jobLogger.error('Search error:', error);
+    jobLogger.error('Search error:', { error });
     throw error instanceof Error ? error : new Error(String(error));
   }
 }
@@ -429,7 +430,7 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
     const url = `${AF_JOBSEARCH_BASE}/ad/${id}`;
     return await fetchFromAF(url);
   } catch (error) {
-    jobLogger.error('Get job details error:', error);
+    jobLogger.error('Get job details error:', { error });
     return null;
   }
 }
@@ -906,7 +907,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
       isMockData: false,
     };
   } catch (error) {
-    jobLogger.error('Safe search error:', error);
+    jobLogger.error('Safe search error:', { error });
     return {
       success: false,
       data: { total: { value: 0 }, hits: [] },

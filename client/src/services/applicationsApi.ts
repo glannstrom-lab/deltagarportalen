@@ -21,6 +21,7 @@ import type {
 } from '@/types/application.types'
 import { APPLICATION_STATUS_CONFIG } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+import { handleError } from './apiError'
 
 /**
  * Dagens datum som `YYYY-MM-DD` i användarens tidszon.
@@ -39,11 +40,6 @@ function idagLokalt(): string {
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
-
-function handleError(error: unknown): never {
-  console.error('Applications API Error:', error)
-  throw error
-}
 
 function transformApplication(row: Record<string, unknown>): Application {
   const jobData = row.job_data as PlatsbankenJob | null

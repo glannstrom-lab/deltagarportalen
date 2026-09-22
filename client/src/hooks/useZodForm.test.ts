@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
-import { useZodForm } from './useZodForm'
+import { useZodForm, formatZodError, validateWithZod } from './useZodForm'
 import { z } from 'zod'
 
 describe('useZodForm', () => {
@@ -255,5 +255,50 @@ describe('useZodForm', () => {
     })
 
     expect(result.current.isValid).toBe(false)
+  })
+
+  // Regression (2026-09-22): zod 4 renamed ZodError.errors -> ZodError.issues.
+  // Code that reads `.errors` directly throws `TypeError: Cannot read
+  // properties of undefined (reading 'find')` / `(reading '0')` at runtime
+  // against the real zod package — a mocked client would never catch this.
+  it('formatZodError reads real zod 4 issues without throwing', () => {
+    const result = testSchema.safeParse({ email: 'invalid', password: '1' })
+    expect(result.success).toBe(false)
+    if (result.success) throw new Error('expected failure')
+
+    expect(() => formatZodError(result.error)).not.toThrow()
+    const formatted = formatZodError(result.error)
+    expect(formatted.email).toBe('Ogiltig e-post')
+    expect(formatted.password).toBe('Minst 6 tecken')
+  })
+
+  it('validateWithZod surfaces real zod 4 issues without throwing', () => {
+    const outcome = validateWithZod(testSchema, { email: 'invalid', password: '1' })
+    expect(outcome.success).toBe(false)
+    if (!outcome.success) {
+      expect(outcome.errors.email).toBe('Ogiltig e-post')
+    }
+  })
+
+  it('validateField falls back to full-schema parsing without throwing when a field is not part of the shape', () => {
+    // Reproduces the fallback branch in validateField (field not found on
+    // schema.shape), which used to call the non-existent `.errors` property
+    // on a zod 4 ZodError and crash with a TypeError.
+    type FormValues = { email: string; password: string; confirmPassword: string }
+    const { result } = renderHook(() =>
+      useZodForm<FormValues>({
+        schema: testSchema as unknown as z.ZodType<FormValues>,
+        initialValues: { email: '', password: '', confirmPassword: '' },
+        onSubmit: vi.fn(),
+      })
+    )
+
+    let error: string | undefined
+    expect(() => {
+      error = result.current.validateField('confirmPassword', 'x')
+    }).not.toThrow()
+    // The underlying schema doesn't know about confirmPassword; it still
+    // fails because email/password are invalid — the point is it doesn't throw.
+    expect(typeof error === 'string' || error === undefined).toBe(true)
   })
 })

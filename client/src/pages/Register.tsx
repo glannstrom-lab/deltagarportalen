@@ -182,7 +182,7 @@ export default function Register() {
       total: passwordRules.length,
       isValid: passed.length === passwordRules.length,
     }
-  }, [values.password])
+  }, [values.password, passwordRules])
 
   // Kombinera Zod-validering med UI-regler
   const isPasswordValid = passwordStrength.isValid && !errors.password

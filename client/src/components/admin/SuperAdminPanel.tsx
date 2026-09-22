@@ -87,7 +87,7 @@ export const SuperAdminPanel: React.FC = () => {
   const antalTestkonton = users.length - riktigaAnvandare.length;
 
   if (loading) {
-    return <LoadingState type="dashboard" />;
+    return <LoadingState fullHeight />;
   }
 
   return (

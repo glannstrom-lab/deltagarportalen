@@ -292,7 +292,8 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
 
   // Mobile dropdown (shared across all variants) — kvar för bakåtkompabilitet
   // men används inte längre som default. Användbar om antalet flikar > 6.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // `void MobileDropdown` nedan (rad ~367) håller den "använd" för eslint,
+  // så den här filens no-unused-vars-varning aldrig triggar längre.
   const MobileDropdown = () => (
     <div className={cn('md:hidden', className)}>
       <button
@@ -364,6 +365,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
   // Mobile-tabs visas alltid när tabs finns — som horisontell snap-scroll
   // (DESIGN.md §9). Föregående dropdown finns kvar i koden men används inte.
   void collapsible // referera prop för bakåtkompabilitet
+  void MobileDropdown // samma sak — komponenten kvar för bakåtkompabilitet
 
   return (
     <>

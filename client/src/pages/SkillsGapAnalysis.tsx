@@ -27,7 +27,7 @@
  *   avmonterad `aria-live` annonserar ingenting, och fokus föll till
  *   `<body>`. Regionen är nu beständig och lever över alla tre lägena.
  */
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TrendingUp, Loader2 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
@@ -50,18 +50,23 @@ export default function SkillsGapAnalysis() {
    * skärmläsaren hör faktiskt att analysen är klar.
    */
   const [annonsering, setAnnonsering] = useState('')
-  const forraAnalysId = useRef<string | null>(null)
+  // Härlett under render (React-dokumentens mönster för "adjusting state
+  // when a prop changes") i stället för en effekt — två spårare i state
+  // ersätter den gamla `forraAnalysId`-refen, som bara mutation-styrdes
+  // inifrån effekten.
+  const [foregaendeIsAnalyzing, setForegaendeIsAnalyzing] = useState(sg.isAnalyzing)
+  const [annonseradAnalysId, setAnnonseradAnalysId] = useState<string | null>(null)
 
-  useEffect(() => {
+  if (sg.isAnalyzing !== foregaendeIsAnalyzing) {
+    setForegaendeIsAnalyzing(sg.isAnalyzing)
     if (sg.isAnalyzing) {
       setAnnonsering(t('skillsGapAnalysis.analyzing'))
-      return
     }
-    if (sg.currentAnalysis && sg.currentAnalysis.id !== forraAnalysId.current) {
-      forraAnalysId.current = sg.currentAnalysis.id
-      setAnnonsering(t('skillsGapAnalysis.result.heading'))
-    }
-  }, [sg.isAnalyzing, sg.currentAnalysis, t])
+  }
+  if (!sg.isAnalyzing && sg.currentAnalysis && sg.currentAnalysis.id !== annonseradAnalysId) {
+    setAnnonseradAnalysId(sg.currentAnalysis.id)
+    setAnnonsering(t('skillsGapAnalysis.result.heading'))
+  }
 
   const laddaNer = () => {
     if (!sg.currentAnalysis) return

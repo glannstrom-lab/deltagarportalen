@@ -2,6 +2,65 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useAuthStore, skapaAuthByteHanterare, type Profile } from './authStore'
 import { queryClient } from '@/lib/queryClient'
+import type { User } from '@supabase/supabase-js'
+
+/**
+ * Fullständiga fixtures för `Profile`/`User`. `Profile` fick 13 nya
+ * obligatoriska fält (bio, location, önskade yrken, stödmål m.fl.) efter
+ * att de här testerna skrevs — tre ofullständiga objektliteraler (TS2740)
+ * och en ofullständig `User` (TS2739) låg kvar och fällde
+ * `typecheck:ceiling`. `overrides` låter varje test bara skriva det den
+ * bryr sig om, som `profil()`-hjälparen längre ned i filen redan gjorde
+ * lokalt för ett annat describe-block.
+ */
+function makeMockProfile(overrides: Partial<Profile> = {}): Profile {
+  return {
+    id: 'user1',
+    email: 'test@example.com',
+    first_name: 'Test',
+    last_name: 'User',
+    role: 'USER',
+    roles: ['USER'],
+    activeRole: 'USER',
+    phone: null,
+    avatar_url: null,
+    consultant_id: null,
+    created_at: '2024-01-01',
+    updated_at: '2024-01-01',
+    bio: null,
+    location: null,
+    employment_status: null,
+    desired_jobs: null,
+    career_goals: null,
+    work_preferences: null,
+    availability: null,
+    mobility: null,
+    salary: null,
+    support_goals: null,
+    interests: null,
+    onboarding_completed: false,
+    terms_accepted_at: null,
+    privacy_accepted_at: null,
+    ai_consent_at: null,
+    marketing_consent_at: null,
+    health_consent_at: null,
+    wellness_consent_at: null,
+    program: null,
+    ...overrides,
+  }
+}
+
+function makeMockUser(overrides: Partial<User> = {}): User {
+  return {
+    id: 'user1',
+    email: 'test@example.com',
+    app_metadata: {},
+    user_metadata: {},
+    aud: 'authenticated',
+    created_at: '2024-01-01',
+    ...overrides,
+  }
+}
 
 // KA2: authStore registrerar sin auth-lyssnare NÄR MODULEN LADDAS, alltså
 // innan någon `let` i den här filen hunnit initieras. `vi.hoisted` är enda
@@ -70,26 +129,7 @@ describe('authStore', () => {
         access_token: 'token123',
         user: { id: 'user1', email: 'test@example.com' },
       }
-      const mockProfile: Profile = {
-        id: 'user1',
-        email: 'test@example.com',
-        first_name: 'Test',
-        last_name: 'User',
-        role: 'USER',
-        roles: ['USER'],
-        activeRole: 'USER',
-        phone: null,
-        avatar_url: null,
-        consultant_id: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01',
-        terms_accepted_at: null,
-        privacy_accepted_at: null,
-        ai_consent_at: null,
-        marketing_consent_at: null,
-        health_consent_at: null,
-        wellness_consent_at: null,
-      }
+      const mockProfile: Profile = makeMockProfile()
 
       mockGetSession.mockResolvedValue({ data: { session: mockSession }, error: null })
       mockGetUser.mockResolvedValue({ data: { user: mockSession.user }, error: null })
@@ -146,26 +186,7 @@ describe('authStore', () => {
       const credentials = { email: 'test@example.com', password: 'password123' }
       const mockUser = { id: 'user1', email: credentials.email }
       const mockSession = { access_token: 'token123', user: mockUser }
-      const mockProfile: Profile = {
-        id: 'user1',
-        email: credentials.email,
-        first_name: 'Test',
-        last_name: 'User',
-        role: 'USER',
-        roles: ['USER'],
-        activeRole: 'USER',
-        phone: null,
-        avatar_url: null,
-        consultant_id: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01',
-        terms_accepted_at: null,
-        privacy_accepted_at: null,
-        ai_consent_at: null,
-        marketing_consent_at: null,
-        health_consent_at: null,
-        wellness_consent_at: null,
-      }
+      const mockProfile: Profile = makeMockProfile({ email: credentials.email })
 
       mockSignInWithPassword.mockResolvedValue({
         data: { user: mockUser, session: mockSession },
@@ -175,7 +196,9 @@ describe('authStore', () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: mockProfile, error: null })
+            // maybeSingle() sedan 2026-09-22 (uppdrag A) — signIn läser inte
+            // längre error-lös med .single(), se authStore.ts.
+            maybeSingle: vi.fn().mockResolvedValue({ data: mockProfile, error: null })
           })
         })
       })
@@ -232,7 +255,8 @@ describe('authStore', () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({
+            // maybeSingle() sedan 2026-09-22 (uppdrag A), se authStore.ts signUp.
+            maybeSingle: vi.fn().mockResolvedValue({
               data: { ...mockUser, first_name: userData.firstName, last_name: userData.lastName },
               error: null
             })
@@ -293,7 +317,8 @@ describe('authStore', () => {
       mockFrom.mockReturnValue({
         select: vi.fn().mockReturnValue({
           eq: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: null, error: null }),
+            // maybeSingle() sedan 2026-09-22 (uppdrag A), se authStore.ts signUp.
+            maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
           }),
         }),
       })
@@ -453,27 +478,8 @@ describe('authStore', () => {
 
   describe('updateProfile', () => {
     it('should update profile successfully', async () => {
-      const mockUser = { id: 'user1', email: 'test@example.com' }
-      const initialProfile: Profile = {
-        id: 'user1',
-        email: 'test@example.com',
-        first_name: 'Old',
-        last_name: 'Name',
-        role: 'USER',
-        roles: ['USER'],
-        activeRole: 'USER',
-        phone: null,
-        avatar_url: null,
-        consultant_id: null,
-        created_at: '2024-01-01',
-        updated_at: '2024-01-01',
-        terms_accepted_at: null,
-        privacy_accepted_at: null,
-        ai_consent_at: null,
-        marketing_consent_at: null,
-        health_consent_at: null,
-        wellness_consent_at: null,
-      }
+      const mockUser = makeMockUser()
+      const initialProfile: Profile = makeMockProfile({ first_name: 'Old', last_name: 'Name' })
 
       // Set initial state
       useAuthStore.setState({
@@ -529,16 +535,14 @@ describe('aktiv roll skrivs och läses mot rätt kolumn (2026-09-15)', () => {
    * console.error. Växlingen såg ut att lyckas och var borta vid omladdning.
    */
   const profil = (over: Partial<Profile> = {}): Profile =>
-    ({
-      id: 'user1',
-      email: 'test@example.com',
+    makeMockProfile({
       first_name: 'Test',
       last_name: 'Person',
       role: 'SUPERADMIN',
       roles: ['USER', 'SUPERADMIN'],
       activeRole: 'SUPERADMIN',
       ...over,
-    }) as Profile
+    })
 
   it('läser activeRole ur kolumnen active_role, inte ur ett fält som inte finns', async () => {
     // Raden är formad som PROD ger den: snake_case, inget activeRole-fält.

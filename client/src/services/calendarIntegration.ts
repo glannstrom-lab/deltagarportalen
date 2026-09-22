@@ -9,6 +9,42 @@ import { careerPlanApi, networkApi, type CareerMilestone as Milestone, type Netw
 import { calendarApi } from './cloudStorage'
 import type { CalendarEvent, SmartReminder } from './calendarData'
 
+/**
+ * 2026-09-22: `calendarApi.createEvent` (services/cloud/kalender.ts) tar
+ * `CalendarEventData` — SNAKE_CASE (`end_time`, `with_person`, ...) — men
+ * de här funktionerna byggde ett `Partial<CalendarEvent>` (calendarData.ts),
+ * som är CAMELCASE (`endTime`, `with`, ...), och skickade det rakt in.
+ * `endTime`/`with` hade alltså aldrig nått databasen (fel nyckelnamn — inte
+ * ens en kolumn som blev NULL, bara osparade), och `createdAt`/`updatedAt`
+ * finns inte som kolumner alls (DB:n sätter `created_at`/`updated_at`
+ * själv). Reachable via career-planens "synka till kalender" (PlanTab.tsx →
+ * CalendarSync.tsx). Den här mappern är den enda ändring som krävs — själva
+ * `CalendarEvent`/`CalendarEventData`-typerna ägs inte här.
+ */
+function tillCalendarEventData(event: Partial<CalendarEvent>): {
+  id?: string
+  title: string
+  date: string
+  time: string
+  end_time?: string
+  type: string
+  description?: string
+  with_person?: string
+  reminders?: unknown[]
+} {
+  return {
+    id: event.id,
+    title: event.title ?? '',
+    date: event.date ?? '',
+    time: event.time ?? '',
+    end_time: event.endTime,
+    type: event.type ?? 'other',
+    description: event.description,
+    with_person: event.with,
+    reminders: event.reminders,
+  }
+}
+
 // Types
 export interface CalendarIntegrationOptions {
   createReminders?: boolean
@@ -76,7 +112,7 @@ export async function createEventFromMilestone(
   }
 
   try {
-    const created = await calendarApi.createEvent(event)
+    const created = await calendarApi.createEvent(tillCalendarEventData(event))
     return created as unknown as CalendarEvent
   } catch (error) {
     console.error('Failed to create calendar event from milestone:', error)
@@ -126,7 +162,7 @@ export async function createEventFromNetworkFollowup(
   }
 
   try {
-    const created = await calendarApi.createEvent(event)
+    const created = await calendarApi.createEvent(tillCalendarEventData(event))
     return created as unknown as CalendarEvent
   } catch (error) {
     console.error('Failed to create calendar event from network contact:', error)

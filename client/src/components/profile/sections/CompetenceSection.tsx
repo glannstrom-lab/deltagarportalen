@@ -66,7 +66,11 @@ export function CompetenceSection() {
       >
         <CompletionGuide
           profile={profile}
-          cv={cvData}
+          // `CompletionGuide.cv.summary` tillåter inte `null` (bara
+          // `string | undefined`), men `CVData.summary` är `string | null`.
+          // Normaliserar här i stället för att luckra upp den kanoniska
+          // CVData-typen bara för det här stället.
+          cv={cvData ? { ...cvData, summary: cvData.summary ?? undefined } : null}
           skillsCount={enhancements.skillsCount}
           documentsCount={enhancements.documentsCount}
           hasSummary={enhancements.hasSummary}

@@ -10,6 +10,7 @@ import {
   generateApplicationHistoryPDF,
   downloadPDF,
   previewPDF,
+  type ApplicationHistoryItem,
 } from '@/services/pdfExportService';
 import { showToast } from '@/components/Toast';
 import { supabase } from '@/lib/supabase';
@@ -150,7 +151,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
           blob = await generateJobPDF(data as JobData);
           break;
         case 'applications':
-          blob = await generateApplicationHistoryPDF(data);
+          blob = await generateApplicationHistoryPDF(data as ApplicationHistoryItem[]);
           break;
         default:
           throw new Error('Unknown PDF type');

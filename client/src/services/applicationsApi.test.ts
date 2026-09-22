@@ -153,14 +153,17 @@ describe('applicationsApi.getById', () => {
     expect(mockFromBuilder.eq).toHaveBeenCalledWith('user_id', 'user-1')
   })
 
-  it('kastar vidare andra supabase-fel', async () => {
+  it('kastar vidare andra supabase-fel via den delade handleError (2026-09-22: bytt från filens egen)', async () => {
     inloggad()
-    vi.spyOn(console, 'error').mockImplementation(() => {})
     mockFromBuilder.single.mockResolvedValue({
       data: null,
       error: Object.assign(new Error('rls-fel'), { code: '42501' }),
     })
-    await expect(applicationsApi.getById('app-1')).rejects.toThrow('rls-fel')
+    // Den delade handleError (services/apiError.ts) mappar 42501 till ett
+    // tydligt "Åtkomst nekad" i stället för att läcka det råa Postgrest-
+    // meddelandet — samma mönster jobsApi.ts redan använde. Filens EGEN
+    // handleError (console.error + throw error) är borttagen.
+    await expect(applicationsApi.getById('app-1')).rejects.toThrow('Åtkomst nekad')
   })
 })
 

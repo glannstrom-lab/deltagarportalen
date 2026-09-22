@@ -67,56 +67,12 @@ const ALLA_FILER = gaIgenom(SRC)
 const FIL_SET = new Set(ALLA_FILER)
 
 // ---------------------------------------------------------------- parsning
-
 /**
- * Ta bort kommentarer och strängliteraler som INTE är importspecifikationer.
- *
- * Varför: en `// import { X } from './X'`-rad i en kommentar gör en död fil
- * levande i grafen. Vi vill inte ha falska "levande" — men vi vill absolut
- * inte ha falska "döda" heller, och därför finns namnsökningsgrinden nedan
- * som andra kontroll före varje radering.
+ * Kommentarstripparen och importmönstren bor i scripts/lib/importspec.cjs
+ * sedan 2026-09-22, så de går att testa (src/test/dead-code-kommentarer
+ * .test.ts). Skriptet självt kör vid laddning och kan inte importeras.
  */
-function utanKommentarer(kod) {
-  return kod
-    .replace(/\/\*[\s\S]*?\*\//g, ' ')
-    .replace(/(^|[^:])\/\/[^\n]*/g, '$1 ')
-}
-
-const MONSTER = [
-  // import x from '…' / import '…' / import type … from '…'
-  //
-  // \p{L} i stället för \w, med flaggan u: \w är ASCII-only, så en importrad
-  // med ett svenskt tecken i en identifierare (`AiFöretagsfel` i
-  // SearchTab.tsx) matchade aldrig, filen den importerade klassades RADERA,
-  // och den felklassningen blev en premiss i ROADMAP (spår AG, 2026-09-02).
-  /\bimport\s+(?:type\s+)?(?:[\p{L}\p{N}_*{}\n\r\t ,$]+from\s*)?['"]([^'"]+)['"]/gu,
-  // export … from '…'  (inkl. export * from)
-  /\bexport\s+(?:type\s+)?(?:\*|\{[^}]*\})\s*(?:as\s+\w+\s*)?from\s*['"]([^'"]+)['"]/g,
-  // dynamisk import('…')
-  /\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-  // require('…')
-  /\brequire\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-  // vi.mock('…') / vi.doMock('…') — testmockar räknas som kanter
-  /\bvi\.(?:mock|doMock|unmock)\s*\(\s*['"]([^'"]+)['"]/g,
-  // CSS: @import "./styles/x.css" och @import url("./styles/x.css")
-  //
-  // FÄLLA (funnen 2026-08-05): utan den här raden såg
-  // `styles/accessibility.css` död ut trots att `index.css:19` importerar
-  // den. Ett raderingspass hade tagit bort fokusringar och skip-links.
-  // CSS-grafen är inte JS-grafen.
-  /@import\s+(?:url\s*\(\s*)?['"]([^'"]+)['"]/g,
-]
-
-function specifikationer(kod) {
-  const ren = utanKommentarer(kod)
-  const ut = new Set()
-  for (const re of MONSTER) {
-    re.lastIndex = 0
-    let m
-    while ((m = re.exec(ren)) !== null) ut.add(m[1])
-  }
-  return [...ut]
-}
+const { specifikationer } = require('./lib/importspec.cjs')
 
 function losUpp(spec, franFil) {
   let bas
@@ -406,10 +362,63 @@ const DODA_TESTER = TESTFILER.filter((t) => {
   return traffar.every((f) => !NABAR.has(f))
 })
 
+/**
+ * Två felklassningar som raderingspasset 2026-09-22 hittade för hand, och
+ * som nu är strukturella i stället för att bero på att någon läser listan:
+ *
+ * 1. TESTHJÄLPARE. En fil som inte är ett test men nås av ett LEVANDE test
+ *    (`pages/foretag/__tests__/fixturer.ts`, `data/oversattningar/register.ts`)
+ *    står inte i importgrafen från main.tsx och klassades RADERA — men att
+ *    radera den hade fällt sju levande tester. Testfiler är inte ingångar
+ *    för nåbarhet, men det de importerar måste behållas så länge testet
+ *    självt inte är dött.
+ *
+ * 2. BEROENDEN TILL UTRED/ARKIVERA/BEHÅLL. `services/interestJobMatching.ts`
+ *    importeras bara av `hooks/useJobMatching.ts` (UTRED). Att radera
+ *    beroendet ger TS2307 i en fil som ska ligga kvar. En fil som nås från en
+ *    fil i en mildare grupp ärver den gruppen — BEHÅLL före UTRED före
+ *    ARKIVERA — så att det som flyttas flyttas ihop och det som behålls
+ *    kompilerar.
+ */
+const LEVANDE_TESTER = TESTFILER.filter((t) => !DODA_TESTER.includes(t))
+const TESTNABAR = bfs(LEVANDE_TESTER)
+const TESTHJALPARE = new Set(
+  ONABARA.filter((f) => TESTNABAR.has(f) && !NABAR.has(f))
+)
+
+const ARV = new Map() // fil -> { grupp, skal } ärvt från en mildare grupp
+for (const grupp of ['BEHÅLL', 'UTRED', 'ARKIVERA']) {
+  const start = ONABARA.filter((f) => !TESTHJALPARE.has(f) && klassa(f).grupp === grupp)
+  for (const f of bfs(start)) {
+    if (NABAR.has(f) || arTest(f) || TESTHJALPARE.has(f) || ARV.has(f)) continue
+    if (start.includes(f)) continue
+    const egen = klassa(f).grupp
+    const ordning = ['BEHÅLL', 'UTRED', 'ARKIVERA', 'RADERA']
+    if (ordning.indexOf(egen) <= ordning.indexOf(grupp)) continue
+    const via = start.find((s) => bfs([s]).has(f))
+    ARV.set(f, {
+      grupp,
+      skal: `Nås från ${rel(via)} (${grupp}) — följer den, annars TS2307 där`,
+    })
+  }
+}
+
+function klassaMedArv(f) {
+  if (TESTHJALPARE.has(f)) {
+    const t = LEVANDE_TESTER.find((x) => bfs([x]).has(f))
+    return { grupp: 'BEHÅLL', skal: `testhjälpare — nås av det levande testet ${rel(t)}` }
+  }
+  return ARV.get(f) || klassa(f)
+}
+
 const poster = [
-  ...ONABARA.map((f) => ({ fil: f, ...klassa(f), test: false })),
+  ...ONABARA.map((f) => ({ fil: f, ...klassaMedArv(f), test: false })),
   ...DODA_TESTER.map((f) => {
-    const k = klassa(f)
+    // Testet följer sitt subjekt: vaktar det en UTRED-fil är testet UTRED,
+    // inte RADERA (raderingspasset 2026-09-22 tog `interestJobMatching.test.ts`
+    // av misstag på just det viset och fick återställa den).
+    const subj = subjektFor(f)
+    const k = subj ? klassaMedArv(subj) : klassa(f)
     return {
       fil: f,
       grupp: k === STANDARD ? 'RADERA' : k.grupp,

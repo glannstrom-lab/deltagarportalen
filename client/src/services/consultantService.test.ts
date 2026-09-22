@@ -54,6 +54,9 @@ beforeEach(() => {
   mockFromBuilder.gte = vi.fn(() => mockFromBuilder)
   mockFromBuilder.order = vi.fn(() => mockFromBuilder)
   mockFromBuilder.single = vi.fn()
+  // 2026-09-22 (uppdrag A): updateMeeting/updateGoal/addParticipantTags gick
+  // över till .maybeSingle() — samma resonemang som careerApi.test.ts.
+  mockFromBuilder.maybeSingle = vi.fn()
   mockFromBuilder.then = (resolve: (v: unknown) => unknown, reject?: (e: unknown) => unknown) => {
     const next = thenQueue.shift() ?? { data: null, error: null }
     if (next && '__reject' in next) {
@@ -332,11 +335,19 @@ describe('consultantService.updateMeeting / cancelMeeting', () => {
 
   it('updateMeeting uppdaterar mötet när inloggad', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: { id: 'meet-1' }, error: null })
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: { id: 'meet-1' }, error: null })
     const result = await consultantService.updateMeeting('meet-1', { notes: 'uppdaterad' })
     expect(mockFrom).toHaveBeenCalledWith('consultant_meetings')
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ notes: 'uppdaterad' })
     expect(result).toEqual({ id: 'meet-1' })
+  })
+
+  it('updateMeeting kastar ett begripligt fel vid 0 träffade rader (fel id eller RLS nekar)', async () => {
+    loggedIn()
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
+    await expect(
+      consultantService.updateMeeting('finns-inte', { notes: 'x' })
+    ).rejects.toThrow('hittades inte')
   })
 
   it('D11: cancelMeeting kastar om ingen user är inloggad (auth-guard tillagd)', async () => {
@@ -417,10 +428,18 @@ describe('consultantService.updateGoal', () => {
 
   it('uppdaterar målet när inloggad', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: { id: 'goal-1', progress: 50 }, error: null })
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: { id: 'goal-1', progress: 50 }, error: null })
     const result = await consultantService.updateGoal('goal-1', { progress: 50 })
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ progress: 50 })
     expect(result).toEqual({ id: 'goal-1', progress: 50 })
+  })
+
+  it('kastar ett begripligt fel vid 0 träffade rader (fel id eller RLS nekar)', async () => {
+    loggedIn()
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
+    await expect(
+      consultantService.updateGoal('finns-inte', { progress: 50 })
+    ).rejects.toThrow('hittades inte')
   })
 })
 
@@ -763,7 +782,7 @@ describe('consultantService — participant-relation skriver mot consultant_part
 
   it('addParticipantTags läser befintliga taggar, mergar unikt och skriver till consultant_participants', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: { tags: ['aktiv'] }, error: null })
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: { tags: ['aktiv'] }, error: null })
     queueResult({ data: null, error: null }) // update-kedjan
     await consultantService.addParticipantTags('p1', ['aktiv', 'ny-tagg'])
     expect(mockFrom).toHaveBeenCalledWith('consultant_participants')
@@ -772,7 +791,7 @@ describe('consultantService — participant-relation skriver mot consultant_part
 
   it('addParticipantTags hanterar null/saknade befintliga taggar', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: { tags: null }, error: null })
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: { tags: null }, error: null })
     queueResult({ data: null, error: null })
     await consultantService.addParticipantTags('p1', ['första-taggen'])
     expect(mockFromBuilder.update).toHaveBeenCalledWith({ tags: ['första-taggen'] })
@@ -780,8 +799,17 @@ describe('consultantService — participant-relation skriver mot consultant_part
 
   it('addParticipantTags kastar vidare läsfel utan att försöka skriva', async () => {
     loggedIn()
-    mockFromBuilder.single.mockResolvedValue({ data: null, error: new Error('read-fel') })
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: new Error('read-fel') })
     await expect(consultantService.addParticipantTags('p1', ['x'])).rejects.toThrow('read-fel')
+    expect(mockFromBuilder.update).not.toHaveBeenCalled()
+  })
+
+  it('addParticipantTags kastar ett begripligt fel när relationen inte finns (0 rader, ingen error)', async () => {
+    loggedIn()
+    mockFromBuilder.maybeSingle.mockResolvedValue({ data: null, error: null })
+    await expect(consultantService.addParticipantTags('p1', ['x'])).rejects.toThrow(
+      'Ingen aktiv koppling'
+    )
     expect(mockFromBuilder.update).not.toHaveBeenCalled()
   })
 

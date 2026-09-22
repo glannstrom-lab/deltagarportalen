@@ -623,7 +623,7 @@ function InterviewSimulatorInner() {
     } finally {
       setIsLoadingSupportPhrase(false)
     }
-  }, [nuvarandeFraga, isLoadingSupportPhrase])
+  }, [nuvarandeFraga, isLoadingSupportPhrase, t])
 
   const startaIntervju = useCallback(async () => {
     if (!roll.trim()) return

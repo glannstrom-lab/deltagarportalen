@@ -63,6 +63,7 @@ export function OnboardingModal() {
   useEffect(() => {
     if (!showOnboarding) return
     if (claimOnboardingSession(ONBOARDING_OWNER_ID)) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- äkta engångsprenumeration: claimOnboardingSession() muterar ett globalt sessionslås och får bara anropas en gång vid montering (StrictMode skulle claima/släppa fel antal gånger om det flyttades till render)
       setHasSessionClaim(true)
       return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
     }

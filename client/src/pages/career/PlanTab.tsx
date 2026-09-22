@@ -141,7 +141,7 @@ export default function PlanTab() {
   useEffect(() => {
     loadData()
     loadProfileData()
-  }, [])
+  }, [loadProfileData])
 
   /**
    * Tre lägen krävs här, inte två. Tidigare loggades ett läsfel bara, och

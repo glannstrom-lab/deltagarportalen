@@ -244,7 +244,7 @@ export function useEducationSearch(
         clearTimeout(debounceRef.current)
       }
     }
-  }, [searchKey, autoSearch, debounceDelay, performSearch, clearSearch])
+  }, [searchKey, autoSearch, debounceDelay, performSearch, clearSearch, query, educationType, region, distanceOnly])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -253,7 +253,11 @@ export function useEducationSearch(
         clearTimeout(debounceRef.current)
       }
       // Höjer löpnumret så att ett svar som kommer in efter avmontering
-      // inte försöker sätta state.
+      // inte försöker sätta state. Måste läsa/skriva LIVE-värdet av
+      // korningRef.current vid själva avmonteringen — att kopiera det till en
+      // variabel (varningens förslag) skulle frysa en gammal kopia och göra
+      // löpnumret meningslöst. Det här är en vanlig räknare, inte en DOM-ref.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       korningRef.current++
     }
   }, [])

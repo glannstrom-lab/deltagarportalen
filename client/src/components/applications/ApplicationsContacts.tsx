@@ -263,10 +263,14 @@ function ContactCard({
 }) {
   const { t } = useTranslation()
 
+  // "Nu" hämtas en gång per montering via useState-initieraren i stället för
+  // Date.now() direkt i render — useMemo räcker INTE för purity-regeln.
+  const [nu] = useState(() => Date.now())
+
   // `Math.max(0, …)`: en klocka som gått fel, eller ett `last_contacted_at`
   // några sekunder in i framtiden, gav tidigare "-1 dagar sedan".
   const daysSinceContact = contact.lastContactedAt
-    ? Math.max(0, Math.floor((Date.now() - new Date(contact.lastContactedAt).getTime()) / (1000 * 60 * 60 * 24)))
+    ? Math.max(0, Math.floor((nu - new Date(contact.lastContactedAt).getTime()) / (1000 * 60 * 60 * 24)))
     : null
 
   return (

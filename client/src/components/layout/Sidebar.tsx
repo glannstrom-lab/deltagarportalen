@@ -29,51 +29,35 @@ interface SidebarProps {
   onToggleCollapse?: () => void
 }
 
-export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: SidebarProps) {
-  const location = useLocation()
-  const { t } = useTranslation()
-  const { profile, signOut } = useAuthStore()
+// Flyttad ut ur Sidebar (react-hooks/static-components): definierad inuti
+// rendern skapades den om vid varje omrendering av Sidebar, så React såg en
+// NY komponenttyp varje gång — varje länk avmonterades och monterades om,
+// vilket tappade fokus och startade om CSS-transitions. `onClose` och
+// `isCollapsed` skickas nu in som props i stället för att fångas via closure.
+function SidebarNavLink({
+  to,
+  icon: Icon,
+  label,
+  item,
+  isActive,
+  variant = 'default',
+  isSubItem = false,
+  onClose,
+  isCollapsed,
+}: {
+  to: string
+  icon: React.ComponentType<{ className?: string }>
+  label: string
+  item?: NavItem
+  isActive?: boolean
+  variant?: 'default' | 'admin'
+  isSubItem?: boolean
+  onClose?: () => void
+  isCollapsed: boolean
+}) {
+  const showBadge = item && shouldShowBadge(item)
 
-  useEffect(() => {
-    markFeatureVisited(location.pathname)
-  }, [location.pathname])
-
-  const activeRole = profile?.activeRole || profile?.role || 'USER'
-  const isSuperAdmin = activeRole === 'SUPERADMIN'
-  const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
-  const isArbetsterapeut = activeRole === 'ARBETSTERAPEUT'
-  // Konsulent-vyn ska även vara nåbar för arbetsterapeut (för signering av skattningar)
-  const isConsultant = activeRole === 'CONSULTANT' || isAdmin || isArbetsterapeut
-  const isUser = activeRole === 'USER'
-  // IA4 (2026-09-20): mobilmenyn fick den här omordningen i PG20 (2026-09-13),
-  // skrivbordets sidomeny gjorde det aldrig — en konsulent såg fortfarande alla
-  // fem deltagarhubbar överst och sin egen arbetsyta sist. Samma villkor som i
-  // Layout.tsx: bara ren CONSULTANT, inte admin (som behöver överblick över
-  // hela portalen) och inte arbetsterapeut (som bara signerar skattningar).
-  const konsulentForst = activeRole === 'CONSULTANT'
-
-  const activeHub = getActiveHub(location.pathname)
-
-  const NavLink = ({
-    to,
-    icon: Icon,
-    label,
-    item,
-    isActive,
-    variant = 'default',
-    isSubItem = false,
-  }: {
-    to: string
-    icon: React.ComponentType<{ className?: string }>
-    label: string
-    item?: NavItem
-    isActive?: boolean
-    variant?: 'default' | 'admin'
-    isSubItem?: boolean
-  }) => {
-    const showBadge = item && shouldShowBadge(item)
-
-    return (
+  return (
       <Link
         to={to}
         onClick={onClose}
@@ -133,7 +117,32 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         )}
       </Link>
     )
-  }
+}
+
+export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: SidebarProps) {
+  const location = useLocation()
+  const { t } = useTranslation()
+  const { profile, signOut } = useAuthStore()
+
+  useEffect(() => {
+    markFeatureVisited(location.pathname)
+  }, [location.pathname])
+
+  const activeRole = profile?.activeRole || profile?.role || 'USER'
+  const isSuperAdmin = activeRole === 'SUPERADMIN'
+  const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
+  const isArbetsterapeut = activeRole === 'ARBETSTERAPEUT'
+  // Konsulent-vyn ska även vara nåbar för arbetsterapeut (för signering av skattningar)
+  const isConsultant = activeRole === 'CONSULTANT' || isAdmin || isArbetsterapeut
+  const isUser = activeRole === 'USER'
+  // IA4 (2026-09-20): mobilmenyn fick den här omordningen i PG20 (2026-09-13),
+  // skrivbordets sidomeny gjorde det aldrig — en konsulent såg fortfarande alla
+  // fem deltagarhubbar överst och sin egen arbetsyta sist. Samma villkor som i
+  // Layout.tsx: bara ren CONSULTANT, inte admin (som behöver överblick över
+  // hela portalen) och inte arbetsterapeut (som bara signerar skattningar).
+  const konsulentForst = activeRole === 'CONSULTANT'
+
+  const activeHub = getActiveHub(location.pathname)
 
   const user = profile
 
@@ -161,12 +170,14 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         {consultantNavItems.map((item) => {
           const isActive = location.pathname.startsWith(item.path)
           return (
-            <NavLink
+            <SidebarNavLink
               key={item.path}
               to={item.path}
               icon={item.icon}
               label={t(item.labelKey)}
               isActive={isActive}
+              onClose={onClose}
+              isCollapsed={isCollapsed}
             />
           )
         })}
@@ -208,11 +219,13 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
               const isHubActive = activeHub?.id === hub.id
               return (
                 <div key={hub.id} data-domain={hub.domain}>
-                  <NavLink
+                  <SidebarNavLink
                     to={hub.path}
                     icon={hub.icon}
                     label={t(hub.labelKey, hub.fallbackLabel)}
                     isActive={isHubActive}
+                    onClose={onClose}
+                    isCollapsed={isCollapsed}
                   />
                   {/* Render sub-items only when hub is active AND sidebar is expanded AND hub has items */}
                   {isHubActive && !isCollapsed && hub.items.length > 0 && (
@@ -222,7 +235,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                           location.pathname === item.path ||
                           (item.path !== '/' && location.pathname.startsWith(`${item.path}/`))
                         return (
-                          <NavLink
+                          <SidebarNavLink
                             key={item.path}
                             to={item.path}
                             icon={item.icon}
@@ -230,6 +243,8 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                             item={item}
                             isActive={itemActive}
                             isSubItem
+                            onClose={onClose}
+                            isCollapsed={isCollapsed}
                           />
                         )
                       })}
@@ -258,13 +273,15 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
               {adminNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
                 return (
-                  <NavLink
+                  <SidebarNavLink
                     key={item.path}
                     to={item.path}
                     icon={item.icon}
                     label={t(item.labelKey)}
                     isActive={isActive}
                     variant="admin"
+                    onClose={onClose}
+                    isCollapsed={isCollapsed}
                   />
                 )
               })}
@@ -313,11 +330,13 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
 
         {/* Actions */}
         <div className="space-y-0.5">
-          <NavLink
+          <SidebarNavLink
             to="/settings"
             icon={Settings}
             label={t('nav.settings')}
             isActive={location.pathname === '/settings'}
+            onClose={onClose}
+            isCollapsed={isCollapsed}
           />
 
           <button

@@ -55,10 +55,20 @@ function calculatePercentile(values: number[], percentile: number): number {
 async function fetchJobs(occupation: string, limit: number = 100): Promise<any[]> {
   const url = `${JOBSEARCH_API_BASE}/search?q=${encodeURIComponent(occupation)}&limit=${limit}`;
   console.log(`[af-historical] Fetching: ${url}`);
-  
-  const response = await fetch(url, { headers: { 'Accept': 'application/json' }});
+
+  // Timeout — samma mönster som af-jobsearch (A15, 2026-07-23): en hängande
+  // JobSearch-anslutning fick tidigare hålla instansen till plattformens
+  // maxtid utan att abortera. Den här filen saknade den fixen.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  let response: Response;
+  try {
+    response = await fetch(url, { headers: { 'Accept': 'application/json' }, signal: controller.signal });
+  } finally {
+    clearTimeout(timeout);
+  }
   if (!response.ok) throw new Error(`JobSearch API error: ${response.status}`);
-  
+
   const data = await response.json();
   return data.hits || [];
 }

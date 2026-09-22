@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Play, Pause, Volume2, VolumeX } from '@/components/ui/icons'
 
 interface TextToSpeechProps {
@@ -8,14 +8,14 @@ interface TextToSpeechProps {
 export default function TextToSpeech({ text }: TextToSpeechProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null)
-  const [isSupported, setIsSupported] = useState(true)
+  // Ett handtag till en extern webbläsar-API-instans — påverkar aldrig vad
+  // som renderas, så en ref (inte state) är rätt lager. En useState hade satt
+  // objektet i en effekt utan att komponenten någonsin läser värdet i JSX.
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const [isSupported] = useState(() => 'speechSynthesis' in window)
 
   useEffect(() => {
-    if (!('speechSynthesis' in window)) {
-      setIsSupported(false)
-      return
-    }
+    if (!isSupported) return
 
     const u = new SpeechSynthesisUtterance(text)
     u.lang = 'sv-SE'
@@ -30,14 +30,15 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
     u.onpause = () => setIsPaused(true)
     u.onresume = () => setIsPaused(false)
 
-    setUtterance(u)
+    utteranceRef.current = u
 
     return () => {
       window.speechSynthesis.cancel()
     }
-  }, [text])
+  }, [text, isSupported])
 
   const togglePlay = useCallback(() => {
+    const utterance = utteranceRef.current
     if (!utterance) return
 
     if (isPlaying && !isPaused) {
@@ -53,7 +54,7 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
       setIsPlaying(true)
       setIsPaused(false)
     }
-  }, [isPlaying, isPaused, utterance])
+  }, [isPlaying, isPaused])
 
   const stop = useCallback(() => {
     window.speechSynthesis.cancel()

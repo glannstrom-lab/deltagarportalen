@@ -94,6 +94,11 @@ export default function LaborMarketTab() {
   }, [])
 
   useEffect(() => {
+    // fetchData återanvänds även av "Uppdatera"-knappen (se render nedan),
+    // så den kan inte inlinas i effekten utan att dubblera hämtningslogiken.
+    // Den sätter bara state efter sina egna await:ade anrop — ingen synkron
+    // setState här.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData({ forsta: true })
   }, [fetchData])
 

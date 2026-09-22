@@ -66,7 +66,14 @@ const path = require('node:path')
 // (oanvänd @ts-expect-error i DropdownMenu, otypad CJS-import i i18n-grinden,
 // mockad returtyp i ReportDraftDialog.test) lagades samma kväll, och
 // unifiedProfileApi.ts fick rätt typ på skills (CB5).
-const CEILING = 337
+// 337 → 28 (2026-09-22, städpasset): 85 dödkodsfiler raderade och 28 arkiverade
+// (65 fel), 252 fel betalda i levande kod av en typskuldsagent — elva av dem
+// var skarpa buggar (zod 4 har `.issues`, inte `.errors`; krisstödets
+// jordningstekniker saknade `id` och visade fel steg; fokuslägets
+// ansökningsöversikt läste fält som inte finns). De 28 kvar ligger ALLA i
+// UTRED-dödkod som väntar på produktbeslut (energi C19, notiscenter H12,
+// learning C4, FocusCV, useJobMatching, ShareJobDialog) — noll i levande kod.
+const CEILING = 28
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 

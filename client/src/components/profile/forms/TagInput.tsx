@@ -61,7 +61,7 @@ export function TagInput({
   const [activeIndex, setActiveIndex] = useState(-1)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const suggestionTimeoutRef = useRef<NodeJS.Timeout>()
+  const suggestionTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const error = externalError || internalError
 

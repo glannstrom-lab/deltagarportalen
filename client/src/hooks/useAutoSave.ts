@@ -71,6 +71,7 @@ export function useAutoSave<T>(options: AutoSaveOptions<T>) {
       // Återställ om data är yngre än 24 timmar
       if (hoursSince < 24) {
         onRestore(restored.data)
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- äkta engångsåterställning vid montering (hasRestoredRef-vakten ovan säkerställer det), utlöser dessutom en callback-prop (onRestore) som är en riktig sidoeffekt, inte härledbar under render
         setLastSaved(new Date(restored.timestamp))
         setHasRestoredData(true)
       } else {
@@ -102,6 +103,7 @@ export function useAutoSave<T>(options: AutoSaveOptions<T>) {
       clearTimeout(timeoutRef.current)
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- speglar en riktig timer (timeoutRef), inte härledbar under render: "sparar" är sant medan debounce-timeouten är schemalagd och blir falskt när den kör klart
     setIsSaving(true)
 
     timeoutRef.current = setTimeout(() => {

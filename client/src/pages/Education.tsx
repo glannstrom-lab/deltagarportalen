@@ -409,6 +409,9 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
   }, [searchQuery, selectedType, selectedRegion, distanceOnly, hasSearched, setSearchParams]);
 
   // Initialize from URL params on mount
+  // Ska bara köras vid montering — setters är stabila, och searchParams
+  // uppdateras avsiktligt av synk-effekten ovan (skulle den stå i deps hade
+  // vi fått en loop mellan de två effekterna).
   useEffect(() => {
     const q = searchParams.get('q');
     const type = searchParams.get('type') as EducationType;
@@ -419,6 +422,7 @@ function EducationInner({ guideFraga }: { guideFraga?: { text: string; nonce: nu
     if (type) setSelectedType(type);
     if (region) setSelectedRegion(region);
     if (distance) setDistanceOnly(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run on mount
 
   // Överlämning från fokuslägets guide. Normalvyn ligger kvar monterad bakom

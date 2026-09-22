@@ -90,10 +90,15 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
     setSokParametrar(params, { replace: true })
   }
 
-  // Sidan börjar om på tolv när filtret ändras. Låg tidigare i en `useMemo`.
-  useEffect(() => {
+  // Sidan börjar om på tolv när filtret ändras. Låg tidigare i en `useMemo`,
+  // sedan en effekt — härledd under render (React-dokumentens mönster för
+  // "adjusting state when a prop changes") ger samma resultat utan en extra
+  // rendering varje gång filtret byts.
+  const [foregaendeFilter, setForegaendeFilter] = useState({ searchQuery, selectedCategory })
+  if (foregaendeFilter.searchQuery !== searchQuery || foregaendeFilter.selectedCategory !== selectedCategory) {
+    setForegaendeFilter({ searchQuery, selectedCategory })
     setVisibleCount(VISIBLE_BATCH)
-  }, [searchQuery, selectedCategory])
+  }
 
   // Flytta fokus till resultatrubriken när filtret ändras — men inte vid
   // första renderingen. Efter en sökning hamnade fokus på `<body>`, så

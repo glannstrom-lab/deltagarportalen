@@ -50,6 +50,11 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     loading: 'border-l-4 border-[var(--c-solid)] bg-white'
   }
 
+  const handleRemove = useCallback(() => {
+    setIsExiting(true)
+    setTimeout(() => onRemove(toast.id), 300)
+  }, [onRemove, toast.id])
+
   useEffect(() => {
     if (toast.type === 'loading' || toast.duration === Infinity) return
 
@@ -68,12 +73,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     }, interval)
 
     return () => clearInterval(timer)
-  }, [toast.duration, toast.type])
-
-  const handleRemove = () => {
-    setIsExiting(true)
-    setTimeout(() => onRemove(toast.id), 300)
-  }
+  }, [toast.duration, toast.type, handleRemove])
 
   // Determine aria-live based on toast type (errors are assertive, others polite)
   const ariaLive = toast.type === 'error' ? 'assertive' : 'polite'

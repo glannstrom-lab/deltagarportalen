@@ -2,6 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Coffee, X, Clock, CheckCircle } from '@/components/ui/icons'
 import { useSettingsStore } from '../stores/settingsStore'
 
+const PAUSE_TIMEOUT = 60 * 1000 // 1 minut inaktivitet = paus
+
 interface BreakReminderProps {
   workDuration?: number // minuter, default 15
 }
@@ -10,13 +12,12 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
   const { calmMode } = useSettingsStore()
   const [showReminder, setShowReminder] = useState(false)
   const [secondsActive, setSecondsActive] = useState(0)
-  const [lastActiveTime, setLastActiveTime] = useState(Date.now())
+  const [lastActiveTime, setLastActiveTime] = useState(() => Date.now())
   const [isPaused, setIsPaused] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const dismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const REMINDER_INTERVAL = workDuration * 60 // sekunder
-  const PAUSE_TIMEOUT = 60 * 1000 // 1 minut inaktivitet = paus
 
   // Spåra användaraktivitet
   useEffect(() => {

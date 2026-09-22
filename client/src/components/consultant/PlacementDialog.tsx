@@ -93,7 +93,6 @@ export function PlacementDialog({
       setStep('participant')
       fetchParticipants()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, preselectedParticipant])
 
   const fetchParticipants = async () => {

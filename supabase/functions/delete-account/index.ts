@@ -59,13 +59,29 @@ serve(medFelrapport('delete-account', async (req) => {
 
     // Verify the profile is already deleted (safety check)
     // If profile exists, reject - must call RPC first
+    //
+    // Fail closed (rättat): `.single()` + `if (profile && !profileError)`
+    // kunde inte skilja "profilen är redan borttagen" (0 rader → PGRST116,
+    // önskat läge, fortsätt) från "kunde inte kontrollera" (ett transient
+    // läsfel — RLS-hicka, nät, DB-överbelastning). I BÅDA fallen är `profile`
+    // `null` och villkoret `false`, så funktionen fortsatte och raderade
+    // auth-kontot ändå. Den här säkerhetskontrollen ska hellre avbryta en
+    // äkta radering än att tyst släppa igenom vid osäkerhet.
     const { data: profile, error: profileError } = await supabaseAdmin
       .from('profiles')
       .select('id')
       .eq('id', userId)
-      .single()
+      .maybeSingle()
 
-    if (profile && !profileError) {
+    if (profileError) {
+      console.error(`[delete-account] Kunde inte kontrollera om profilen är raderad för ${userId}:`, profileError)
+      return createCorsResponse({
+        error: 'Kunde inte verifiera att profildata är raderad. Försök igen.',
+        code: 'PROFILE_CHECK_FAILED'
+      }, 500, origin)
+    }
+
+    if (profile) {
       console.warn(`[delete-account] Profile still exists for user ${userId}`)
       return createCorsResponse({
         error: 'Profile data must be deleted first. Call execute_account_deletion_immediate RPC before this function.',

@@ -393,7 +393,7 @@ describe('unifiedProfileApi.calculateCompleteness', () => {
         summary: 'Sammanfattning',
       },
       professional: {
-        skills: [{ id: '1', name: 'React', level: 4, category: 'technical' }],
+        skills: [{ id: '1', name: 'React', level: 4, category: 'technical' as const }],
         languages: [],
         workExperience: [{ title: 'X', company: 'Y' }],
         education: [{ degree: 'X', school: 'Y' }],

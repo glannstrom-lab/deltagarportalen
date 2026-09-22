@@ -166,9 +166,16 @@ export function DailyTask() {
     }
 
     try {
+      // 2026-09-22: `daily_task_state` finns inte i `user_preferences` i prod
+      // (verifierat mot schema-snapshot.json) och `userPreferencesApi.update`
+      // vägrar därför typa anropet. DailyTask.tsx har ingen importör någonstans
+      // i appen just nu (dödkod), så det här skrivförsöket har troligen alltid
+      // fallit igenom till PostgREST och landat i catch-grenen nedan — vilket
+      // redan har en localStorage-fallback. Castad, inte tyst omskriven, så
+      // nästa läsare ser att kolumnen saknas i stället för att tro att den finns.
       await userPreferencesApi.update({
         daily_task_state: state
-      })
+      } as Parameters<typeof userPreferencesApi.update>[0] & { daily_task_state: DailyTaskState })
     } catch (error) {
       console.error('Fel vid sparande av daglig uppgift:', error)
       // Fallback till localStorage

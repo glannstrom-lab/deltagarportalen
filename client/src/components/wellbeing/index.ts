@@ -1,1 +1,0 @@
-export { MoodCheck } from './MoodCheck'

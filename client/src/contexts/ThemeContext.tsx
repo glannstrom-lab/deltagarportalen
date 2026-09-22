@@ -39,15 +39,14 @@ function getSystemPreference(): 'light' | 'dark' {
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setThemeState] = useState<Theme>(getInitialTheme)
   const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(getSystemPreference)
-  const [isDark, setIsDark] = useState(false)
 
-  // Beräkna faktiskt dark mode baserat på tema och systempreferens
-  useEffect(() => {
-    const actualDark = theme === 'system' 
-      ? systemPreference === 'dark'
-      : theme === 'dark'
-    setIsDark(actualDark)
-  }, [theme, systemPreference])
+  // Helt härlett av tema och systempreferens — ingen egen state behövs (låg
+  // tidigare i en effekt som bara kopierade beräkningen, vilket gav en extra
+  // rendering varje gång temat ändrades).
+  const isDark = useMemo(
+    () => (theme === 'system' ? systemPreference === 'dark' : theme === 'dark'),
+    [theme, systemPreference]
+  )
 
   // Applicera dark mode class på html-elementet
   useEffect(() => {

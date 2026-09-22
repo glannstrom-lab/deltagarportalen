@@ -298,7 +298,7 @@ export function SlumpjobbetTab() {
         const desired = profilePrefs?.desired_jobs?.[0]?.label
         if (desired) return desired
         const workExp = cv?.workExperience || cv?.work_experience
-        const firstTitle = workExp?.[0]?.title || workExp?.[0]?.position
+        const firstTitle = workExp?.[0]?.title
         if (firstTitle) return firstTitle
         const firstSkill = cv?.skills?.[0]
         if (firstSkill) return typeof firstSkill === 'string' ? firstSkill : firstSkill.name

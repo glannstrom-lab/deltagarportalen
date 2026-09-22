@@ -186,7 +186,7 @@ export const articleProgressApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      storageLogger.error('Error getting progress:', error)
+      storageLogger.error('Error getting progress:', { error })
     }
     return data?.[0] || null
   },
@@ -214,7 +214,7 @@ export const articleProgressApi = {
       })
 
     if (error && error.code !== '42501') {
-      storageLogger.error('Error updating progress:', error)
+      storageLogger.error('Error updating progress:', { error })
     }
   },
 
@@ -234,7 +234,7 @@ export const articleProgressApi = {
       })
     
     if (error && error.code !== '42501') {
-      storageLogger.error('Error pausing progress:', error)
+      storageLogger.error('Error pausing progress:', { error })
     }
   }
 }

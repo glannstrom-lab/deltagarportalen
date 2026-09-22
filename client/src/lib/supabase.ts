@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type RealtimePostgresChangesPayload } from '@supabase/supabase-js'
 
 // Environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
@@ -22,7 +22,7 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
     storageKey: 'supabase.auth.token',
     // Disable Navigator LockManager to prevent timeout issues
     // This can cause issues with multiple tabs but prevents white screen crashes
-    lock: async (name: string, acquireTimeout: number, fn: () => Promise<unknown>) => {
+    lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
       // No-op lock - just execute the function directly without locking
       return await fn()
     },
@@ -285,10 +285,10 @@ export async function createCoverLetter(letter: Partial<Tables['cover_letters']>
 // levande brevflödet går via callAI('personligt-brev') i CoverLetterWrite.
 
 // Realtime subscriptions
-export function subscribeToCVUpdates(userId: string, callback: (payload: RealtimePayload<CV>) => void) {
+export function subscribeToCVUpdates(userId: string, callback: (payload: RealtimePostgresChangesPayload<CV>) => void) {
   return supabase
     .channel('cv-updates')
-    .on(
+    .on<CV>(
       'postgres_changes',
       {
         event: '*',
@@ -301,10 +301,10 @@ export function subscribeToCVUpdates(userId: string, callback: (payload: Realtim
     .subscribe()
 }
 
-export function subscribeToConsultantNotes(participantId: string, callback: (payload: RealtimePayload<ConsultantNote>) => void) {
+export function subscribeToConsultantNotes(participantId: string, callback: (payload: RealtimePostgresChangesPayload<ConsultantNote>) => void) {
   return supabase
     .channel('consultant-notes')
-    .on(
+    .on<ConsultantNote>(
       'postgres_changes',
       {
         event: '*',

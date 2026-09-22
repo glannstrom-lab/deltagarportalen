@@ -1,1 +1,0 @@
-export { VideoCall } from './VideoCall'

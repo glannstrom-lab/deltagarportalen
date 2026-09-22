@@ -4,9 +4,18 @@
  */
 
 import DOMPurify from 'dompurify';
+import type { Config } from 'dompurify';
 
+// DOMPurify 3.x droppade namnrymden `DOMPurify.Config` till förmån för en
+// namngiven export (`export type { Config, ... }`). `DOMPurify.Config`
+// (namnrymdsformen som stod här) gav TS2503 "Cannot find namespace" — och
+// eftersom SAFE_CONFIGs typ då blev ett feltillstånd matchade
+// `sanitize()`-anropen nedan fel overload (den som kräver
+// `RETURN_TRUSTED_TYPE: true` och returnerar `TrustedHTML`), vilket i sin
+// tur fällde `.replace()`-anropet och strängtilldelningen längre ner.
+//
 // Configure DOMPurify with safe defaults
-const SAFE_CONFIG: DOMPurify.Config = {
+const SAFE_CONFIG: Config = {
   ALLOWED_TAGS: [
     'p', 'br', 'strong', 'b', 'em', 'i', 'u',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',

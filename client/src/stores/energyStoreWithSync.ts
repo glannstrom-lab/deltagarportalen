@@ -5,6 +5,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
 export type EnergyLevel = 'low' | 'medium' | 'high'
 
@@ -208,6 +209,27 @@ export const useEnergyStore = create<EnergyState>()(
     { name: 'EnergyStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
+
+/**
+ * `level` speglar hur mycket ork deltagaren har just nu — ett signal om
+ * funktionsförmåga hos en grupp som ofta har fysiska/psykologiska
+ * utmaningar, inte en neutral tema-inställning. `loginStreak`/
+ * `lastLoginDate` avslöjar dessutom föregående persons inloggningsmönster.
+ * Allt nollställs. Se `lib/rensaVidUtloggning.ts`.
+ */
+registreraRensning(() => {
+  // `setState` FÖRE `clearStorage()` — persist skriver på varje `setState`,
+  // så en rensning i omvänd ordning skulle skrivas över direkt.
+  useEnergyStore.setState({
+    level: 'medium',
+    lastUpdated: null,
+    loginStreak: 0,
+    lastLoginDate: null,
+    isLoading: false,
+    error: null,
+  })
+  useEnergyStore.persist.clearStorage()
+})
 
 // Hook för att synkronisera vid inloggning
 export function useEnergySync() {

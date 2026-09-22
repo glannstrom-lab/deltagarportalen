@@ -92,6 +92,10 @@ export {
 } from './ConfirmDialog'
 
 // Re-export types
-export type { ButtonProps } from './Button'
-export type { CardProps } from './Card'
-export type { InputProps } from './Input'
+//
+// 2026-09-22: `ButtonProps`/`CardProps`/`InputProps` togs bort härifrån —
+// interfacen i Button.tsx/Card.tsx/Input.tsx är inte `export`erade (de är
+// lokala till varje fil), så de här raderna kunde aldrig typcheckats grönt.
+// En sökning gav noll importörer av dem via den här barreln, så de var
+// dessutom dödkod: ingen förlitade sig på att kunna importera typerna
+// härifrån.

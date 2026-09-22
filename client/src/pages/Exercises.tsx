@@ -99,7 +99,7 @@ function ExercisesInner() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
-  const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; readingTime?: number }>>([])
+  const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; summary?: string; readingTime?: number }>>([])
 
   // Check authentication and load user + exercises
   useEffect(() => {
@@ -808,19 +808,21 @@ function ExercisesInner() {
                 rows={4}
                 className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-colors resize-y text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
-              {/* AI Help Button */}
+              {/* AI Help Button
+                  2026-09-22: `AIAssistant` (components/ai/AIAssistant.tsx)
+                  tar INGA props — den är en global flytande knapp som öppnar
+                  en generisk instrumentpanel-liknande modal, inte ett
+                  kontextuellt hjälp-widget för en specifik övningsfråga.
+                  `mode`/`context`/`buttonText`/`compact` skickades hit men
+                  har aldrig lästs av komponenten; TS fällde det nu (tidigare
+                  osynligt typfel). Detta är en produktlucka, inte ett rent
+                  typfel: knappen påstod "Få hjälp från AI" för just den här
+                  frågan men öppnade i praktiken samma generella AI-panel som
+                  resten av appen. Tar bort de döda propsen här utan att
+                  bygga om funktionen — kontextuell AI-hjälp per övningsfråga
+                  finns inte och kräver ett produktbeslut om den ska byggas. */}
               <div className="flex justify-end">
-                <AIAssistant
-                  mode="exercise-help"
-                  context={{
-                    ovningId: selectedExercise.id,
-                    steg: currentStep + 1,
-                    fraga: question.text,
-                    anvandarSvar: currentAnswers[question.id]
-                  }}
-                  buttonText="Få hjälp från AI"
-                  compact={true}
-                />
+                <AIAssistant />
               </div>
             </div>
           ))}
@@ -861,17 +863,10 @@ function ExercisesInner() {
             <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1 mb-3">
               Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.
             </p>
-            <AIAssistant
-              mode="exercise-help"
-              context={{
-                ovningId: selectedExercise.id,
-                steg: currentStep + 1,
-                fraga: `Generell hjälp med ${selectedExercise.title} - ${currentStepData.title}`,
-                anvandarSvar: ''
-              }}
-              buttonText="Be AI:n om hjälp"
-              compact={true}
-            />
+            {/* Samma fynd som "AI Help Button" ovan — AIAssistant tar inga
+                props och är en generell flytande knapp/modal, inte
+                kontextuell hjälp för den här övningen. */}
+            <AIAssistant />
           </div>
         </div>
       </Card>

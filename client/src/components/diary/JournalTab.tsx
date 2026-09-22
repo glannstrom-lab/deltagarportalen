@@ -9,6 +9,7 @@ import {
   Sparkles, RefreshCw, Calendar, Filter, Star
 } from '@/components/ui/icons'
 import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
+import type { DiaryEntry } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
@@ -224,17 +225,6 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   )
 }
 
-interface DiaryEntry {
-  id: string
-  title: string
-  content: string
-  mood?: number
-  tags: string[]
-  entry_date: string
-  word_count: number
-  is_favorite: boolean
-}
-
 export function JournalTab() {
   const { t } = useTranslation()
   const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
@@ -270,9 +260,17 @@ export function JournalTab() {
     tags: string[]
     entry_type: 'diary' | 'reflection'
   }) => {
+    // `energy_level`/`is_favorite`/`word_count` är nullable/har DB-default i
+    // prod (verifierat mot information_schema 2026-09-22) — anropet gick
+    // redan igenom utan dem, men skickar dem nu explicit i stället för att
+    // luta sig på att defaulten alltid finns kvar. `word_count` skrivs ändå
+    // om av diaryEntriesApi.create() utifrån innehållets ordräkning.
     await createEntry({
       ...entryData,
-      entry_date: new Date().toISOString().split('T')[0]
+      entry_date: new Date().toISOString().split('T')[0],
+      energy_level: null,
+      is_favorite: false,
+      word_count: 0
     })
   }
 

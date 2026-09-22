@@ -39,13 +39,16 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
 };
 
 export class RetryableError extends Error {
-  constructor(
-    message: string,
-    public readonly attempt: number,
-    public readonly lastError?: Error
-  ) {
+  // Samma erasableSyntaxOnly-fälla som APIError i apiError.ts — parameter
+  // properties är inte erasable, byt till explicita fält.
+  readonly attempt: number;
+  readonly lastError?: Error;
+
+  constructor(message: string, attempt: number, lastError?: Error) {
     super(message);
     this.name = 'RetryableError';
+    this.attempt = attempt;
+    this.lastError = lastError;
   }
 }
 

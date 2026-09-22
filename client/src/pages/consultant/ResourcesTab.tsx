@@ -337,7 +337,12 @@ function TemplateFormDialog({
     timeBound: '',
   })
 
-  useEffect(() => {
+  // Formuläret återställs när dialogen öppnas eller mallen bytt — härlett
+  // under render (samma mönster som EventModal/JobCollectionDialog) i
+  // stället för ett effektbaserat setState.
+  const [foregaende, setForegaende] = useState<{ isOpen: boolean; template: GoalTemplate | null }>({ isOpen, template })
+  if (isOpen !== foregaende.isOpen || template !== foregaende.template) {
+    setForegaende({ isOpen, template })
     if (template) {
       setFormData(template)
     } else {
@@ -352,7 +357,7 @@ function TemplateFormDialog({
         timeBound: '',
       })
     }
-  }, [template, isOpen])
+  }
 
   if (!isOpen) return null
 
@@ -658,9 +663,14 @@ export function ResourcesTab() {
   const [shareCollection, setShareCollection] = useState<JobCollection | null>(null)
 
   // Load templates from database
+  // Ska bara köras vid montering — loadTemplates/loadCollections är
+  // definierade långt nedanför (för anropare som återanvänder dem efter
+  // spara/dela) och skulle skapa en referens-före-deklaration om de las i
+  // deps här.
   useEffect(() => {
     loadTemplates()
     loadCollections()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const loadTemplates = async () => {

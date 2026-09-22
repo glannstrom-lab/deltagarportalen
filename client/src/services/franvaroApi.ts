@@ -70,8 +70,9 @@ export const franvaroApi = {
       .eq('id', sessionId)
       .eq('participant_id', userId)
       .select('*')
-      .single()
+      .maybeSingle()
     if (error) throw error
+    if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
     return data as ActivitySession
   },
 
@@ -84,8 +85,9 @@ export const franvaroApi = {
       .eq('id', sessionId)
       .eq('participant_id', userId)
       .select('*')
-      .single()
+      .maybeSingle()
     if (error) throw error
+    if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
     return data as ActivitySession
   },
 }

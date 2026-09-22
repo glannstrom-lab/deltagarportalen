@@ -5,11 +5,12 @@ import { supabase } from '@/lib/supabase'
 import { clearUserScopedStorage } from '@/utils/safeStorage'
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { rensaAllCache } from '@/lib/queryClient'
+import { rensaVidUtloggning } from '@/lib/rensaVidUtloggning'
 import { careerOfflineCache } from '@/services/offlineStorage'
 
 // E9: lazy-import Sentry istället för statisk — håller @sentry/react SDK
 // (~80KB) ute ur entry-bundlen tills cookie-consent finns.
-async function setSentryUser(user: { id: string; email?: string } | null) {
+async function setSentryUser(user: { id: string; email?: string; role?: string } | null) {
   try {
     const { setUser } = await import('@/lib/sentry')
     setUser(user)
@@ -272,11 +273,21 @@ export const useAuthStore = create<AuthState>()(
             throw new Error(message)
           }
 
-          const { data: profile } = await supabase
+          // maybeSingle() + explicit felkontroll — samma mönster som
+          // initializeAuth ovan (rad 199/208-212). `.single()` här läste
+          // aldrig ut `error`: en momentant saknad profilrad (dokumenterad
+          // race, se unifiedProfileApi.ts) eller ett annat transient fel gav
+          // `profile: null` för en användare appen just sagt "du är
+          // inloggad" till — utan felmeddelande, utan loggning.
+          const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', data.user.id)
-            .single()
+            .maybeSingle()
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.warn('Could not fetch profile after sign in:', profileError)
+          }
 
           // Se till att nya fält finns
           const enrichedProfile = profile ? {
@@ -382,11 +393,20 @@ export const useAuthStore = create<AuthState>()(
             return { error: null, needsConfirmation: true }
           }
 
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', data.user?.id)
-            .single()
+          // maybeSingle() + explicit felkontroll, samma rättning som signIn
+          // ovan. Detta är dessutom fönstret direkt efter `handle_new_user`-
+          // triggern på auth.users — den mest sannolika platsen för en
+          // race mellan triggerns commit och den här uppföljande SELECT:en.
+          // `data.user?.id` kan i teorin vara undefined; skydda mot att
+          // skicka ett odefinierat filter till Postgrest.
+          const userId = data.user?.id
+          const { data: profile, error: profileError } = userId
+            ? await supabase.from('profiles').select('*').eq('id', userId).maybeSingle()
+            : { data: null, error: null }
+
+          if (profileError && profileError.code !== 'PGRST116') {
+            console.warn('Could not fetch profile after sign up:', profileError)
+          }
 
           // Se till att nya fält finns
           const enrichedProfile = profile ? {
@@ -424,6 +444,12 @@ export const useAuthStore = create<AuthState>()(
           // Målgruppen sitter ofta på delade datorer; innehållet ska inte
           // överleva utloggningen bara för att API-anropet failar.
           clearUserScopedStorage()
+
+          // ...och samma sak för de andra Zustand-storesens EGNA in-memory
+          // state (aiTeamStore.messages, profileStore.preferences m.fl.) —
+          // de ligger kvar tills fliken laddas om, precis som cachen nedan
+          // gjorde innan KA2. Se `lib/rensaVidUtloggning.ts`.
+          rensaVidUtloggning()
 
           // ...och samma sak för React Query-cachen. A31 rensade localStorage
           // men lämnade cachen orörd, och utloggningen navigerar bara
@@ -515,18 +541,26 @@ export const useAuthStore = create<AuthState>()(
         })
 
         // Persist to database
+        //
+        // `.then(onFulfilled, onRejected)` i stället för `.then().catch()`:
+        // PostgREST-byggaren implementerar bara `PromiseLike`, inte hela
+        // `Promise` — `.catch()` finns inte på den (TS2339). Tvåparameters-
+        // formen av `.then()` är del av `PromiseLike` och fångar avvisningen
+        // utan att gå via ett riktigt Promise-objekt.
         supabase
           .from('profiles')
           .update({ active_role: role })
           .eq('id', profile.id)
-          .then(({ error }) => {
-            if (error) {
-              console.error('Kunde inte spara aktiv roll:', error)
+          .then(
+            ({ error }) => {
+              if (error) {
+                console.error('Kunde inte spara aktiv roll:', error)
+              }
+            },
+            (err: unknown) => {
+              console.error('Kunde inte spara aktiv roll:', err)
             }
-          })
-          .catch((err) => {
-            console.error('Kunde inte spara aktiv roll:', err)
-          })
+          )
       },
 
       // Clear error
@@ -560,7 +594,9 @@ export const useAuthStore = create<AuthState>()(
  * ut: en utgången session, ett `signOut` från en annan flik (Supabase
  * synkar via storage-event) eller ett kontobyte i samma flik går aldrig
  * genom knappen. 40 av 40 cachenycklar saknar användar-id (mätt 2026-09-07),
- * så allt som ligger kvar matchar nästa inloggade person.
+ * så allt som ligger kvar matchar nästa inloggade person. Sedan uppdraget
+ * 2026-09-22 gäller samma sak för Zustand-storesens in-memory state —
+ * `rensaVidUtloggning()` körs här av precis samma skäl som `rensaAllCache()`.
  *
  * Därför lyssnar store-modulen själv på `onAuthStateChange` — på modulnivå,
  * inte i en hook, för `useAuth` i `hooks/useSupabase.ts` monteras bara på
@@ -584,6 +620,8 @@ export function skapaAuthByteHanterare() {
     if (event === 'SIGNED_OUT') {
       senastKandaAnvandarId = null
       await rensaAllCache()
+      rensaVidUtloggning()
+      await careerOfflineCache.rensaAllt()
       return
     }
 
@@ -593,6 +631,14 @@ export function skapaAuthByteHanterare() {
     }
     if (kontobyte) {
       await rensaAllCache()
+      rensaVidUtloggning()
+      // IndexedDB (careerOfflineCache — karriärplan, milstolpar, nätverks-
+      // kontakter, kompetensanalysens CV-text) rensades tidigare BARA i den
+      // explicita `signOut()`. Ett kontobyte utan tryck på "logga ut" —
+      // utgången session, `onAuthStateChange` med nytt user.id — gick
+      // förbi det helt, samma väg förbi knappen som KA2 beskriver för
+      // React Query-cachen.
+      await careerOfflineCache.rensaAllt()
     }
   }
 }

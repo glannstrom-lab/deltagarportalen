@@ -29,7 +29,8 @@ export function DemoBanner() {
   useEffect(() => {
     let avbruten = false
     if (!user?.id) {
-      setArDemo(false)
+      // Ingen inloggad användare — rendern nedan döljer bannern redan via
+      // `!user?.id`-kontrollen, så inget setState-anrop behövs här.
       return
     }
     // Personal: organization_members. Deltagare: vyn my_ai_policy (kedjan
@@ -53,7 +54,7 @@ export function DemoBanner() {
     }
   }, [user?.id])
 
-  if (!arDemo) return null
+  if (!user?.id || !arDemo) return null
 
   return (
     <div

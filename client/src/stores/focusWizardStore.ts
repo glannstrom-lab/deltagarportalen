@@ -17,6 +17,7 @@
  */
 
 import { create } from 'zustand'
+import { registreraRensning } from '@/lib/rensaVidUtloggning'
 
 interface FocusWizardState {
   /** Sökvägar där användaren valt att se hela sidan i stället för guiden. */
@@ -41,3 +42,13 @@ export const useFocusWizardStore = create<FocusWizardState>((set) => ({
     set((state) => ({ dismissedPaths: state.dismissedPaths.filter((p) => p !== path) })),
   resetDismissed: () => set({ dismissedPaths: [] }),
 }))
+
+/**
+ * Inte persisterad (se filkommentaren ovan) men lever i minnet mellan
+ * användare i samma flik. Sökvägarna avslöjar inget känsligt i sig, men
+ * hör hemma i "nollläge efter utloggning" av samma princip som övriga
+ * stores. Se `lib/rensaVidUtloggning.ts`.
+ */
+registreraRensning(() => {
+  useFocusWizardStore.getState().resetDismissed()
+})

@@ -23,7 +23,7 @@
  *   </InlineTip>
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X } from '@/components/ui/icons'
 import type { LucideIcon } from '@/components/ui/icons'
@@ -61,17 +61,27 @@ export function InlineTip({
   className,
 }: InlineTipProps) {
   const { t } = useTranslation()
-  const [isDismissed, setIsDismissed] = useState(true) // default true så vi inte flashar
 
-  // Kolla localStorage on mount för att avgöra om vi redan dismissades
-  useEffect(() => {
+  function lasDismissed(key: string): boolean {
     try {
-      const dismissed = localStorage.getItem(STORAGE_PREFIX + storageKey) === 'true'
-      setIsDismissed(dismissed)
+      return localStorage.getItem(STORAGE_PREFIX + key) === 'true'
     } catch {
-      setIsDismissed(false)
+      return false
     }
-  }, [storageKey])
+  }
+
+  // Läser localStorage direkt i initieraren (körs en gång vid montering) i
+  // stället för i en effekt, så komponenten inte flashar det odismissade
+  // läget innan effekten hunnit köra.
+  const [isDismissed, setIsDismissed] = useState(() => lasDismissed(storageKey))
+
+  // Om storageKey byts efter montering (samma komponentinstans återanvänd för
+  // ett annat tips) läses det nya lagrade läget in — härlett under render.
+  const [foregaendeKey, setForegaendeKey] = useState(storageKey)
+  if (storageKey !== foregaendeKey) {
+    setForegaendeKey(storageKey)
+    setIsDismissed(lasDismissed(storageKey))
+  }
 
   const handleDismiss = () => {
     try {

@@ -106,10 +106,14 @@ export function FocusApplicationsWizard({ onExit }: Props) {
         return (
           <div className="space-y-3">
             <p className="text-lg font-medium text-stone-800 dark:text-stone-100">
-              {app?.position ?? app?.job_title ?? t('focus.applications.unknownRole', 'Okänd roll')}
+              {app?.jobTitle
+                ?? (app?.jobData as { headline?: string } | undefined)?.headline
+                ?? t('focus.applications.unknownRole', 'Okänd roll')}
             </p>
             <p className="text-stone-600 dark:text-stone-300">
-              {app?.company ?? app?.employer ?? ''}
+              {app?.companyName
+                ?? (app?.jobData as { employer?: { name?: string } } | undefined)?.employer?.name
+                ?? ''}
             </p>
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--c-accent)]/40 text-[var(--c-text)] text-sm">
               <ArrowRight className="w-4 h-4" />

@@ -4,7 +4,7 @@
  * Visar kontextuella rekommendationer baserat på användarens progress
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   ArrowRight, Sparkles, Loader2, RefreshCw,
   FileText, Search, Send, TrendingUp
@@ -25,7 +25,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchNextStep = async () => {
+  const fetchNextStep = useCallback(async () => {
     setLoading(true)
     setError(null)
     try {
@@ -41,11 +41,11 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
 
   useEffect(() => {
     fetchNextStep()
-  }, [])
+  }, [fetchNextStep])
 
   if (loading) {
     return (

@@ -105,16 +105,16 @@ export function DailyJobTab() {
         const skills = cv.skills?.map((s: string | { name: string }) =>
           typeof s === 'string' ? s : s.name
         ).filter(Boolean) || [];
-        const certificates = cv.certificates?.map((c: { name?: string }) => c.name).filter(Boolean) || [];
+        const certificates = cv.certificates?.map((c: { name?: string }) => c.name).filter((x): x is string => Boolean(x)) || [];
         const languages = cv.languages?.map((l: string | { name?: string; language?: string }) =>
           typeof l === 'string' ? l : (l.name || l.language)
-        ).filter(Boolean) || [];
+        ).filter((x): x is string => Boolean(x)) || [];
         profile.skills = [...new Set([...skills, ...certificates, ...languages])];
         // `cvApi.getCV()` plockar ut `work_experience` ur raden och returnerar
         // den som `workExperience` (cvApi.ts:34-37). Den gamla raden läste
         // därför alltid undefined — yrkestitlarna ur CV:t har aldrig påverkat
         // dagens jobb. Fältet är otypat, så varken tsc eller lint såg det.
-        profile.workTitles = cv.workExperience?.map((e: { title?: string }) => e.title).filter(Boolean) || [];
+        profile.workTitles = cv.workExperience?.map((e: { title?: string }) => e.title).filter((x): x is string => Boolean(x)) || [];
       }
 
       // Load interest guide results

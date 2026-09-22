@@ -252,13 +252,15 @@ describe('milestonesApi.create', () => {
 describe('milestonesApi.toggleComplete', () => {
   it('togglar från ej klar till klar med progress 100', async () => {
     loggedIn()
-    // Första .single() hämtar nuvarande state, andra returnerar uppdaterad rad
-    mockFromBuilder.single
-      .mockResolvedValueOnce({ data: { is_completed: false }, error: null })
-      .mockResolvedValueOnce({
-        data: { id: 'ms-1', is_completed: true, progress: 100 },
-        error: null,
-      })
+    // 2026-09-22 (uppdrag A): läsningen av nuvarande state gick över till
+    // .maybeSingle() (D7-fällan — ett svalt läsfel fick annars newCompleted
+    // att alltid bli true). Uppdateringen (insert/update-returning) är kvar
+    // på .single().
+    mockFromBuilder.maybeSingle.mockResolvedValueOnce({ data: { is_completed: false }, error: null })
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: { id: 'ms-1', is_completed: true, progress: 100 },
+      error: null,
+    })
 
     const result = await milestonesApi.toggleComplete('ms-1')
 

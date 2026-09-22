@@ -136,11 +136,18 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
           continue
         }
 
-        const { data: profile } = await supabaseAdmin
+        // maybeSingle(): profilraden garanteras normalt av triggern på
+        // auth.users, men den här jobben-loopen ska inte krascha hela
+        // körningen för en enskild rads lässtrul — logga och gå vidare med
+        // ett fallback-namn i stället för att tyst anta att felet inte finns.
+        const { data: profile, error: profileError } = await supabaseAdmin
           .from('profiles')
           .select('first_name')
           .eq('id', job.user_id)
-          .single()
+          .maybeSingle()
+        if (profileError) {
+          console.error(`send-inactivity-warning: kunde inte läsa profil för ${job.user_id}`, profileError)
+        }
 
         const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at) : new Date()
         const lastSignInStr = lastSignIn.toLocaleDateString('sv-SE', { year: 'numeric', month: 'long' })

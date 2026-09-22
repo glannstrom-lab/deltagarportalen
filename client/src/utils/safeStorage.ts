@@ -226,6 +226,47 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
   'culture-preferences',
   'dashboard_preferences',
   'user_preferences',
+  // Sparade jobb (services/jobsApi.ts localStorage-fallback, rad ~187/190)
+  // och useSavedJobs.ts:88s egen flagg-nyckel (skild från dess React
+  // Query-nyckel ['saved-jobs'], som är samma STRÄNG av misstag men en
+  // annan sorts data — bara den här raden är localStorage).
+  'savedJobs',
+  'saved-jobs',
+  // Intervjusimulatorn (services/interviewService.ts) — tre nycklar:
+  // huvudsessionerna, simulatorns egna sessioner, och ett utkast under pågående övning.
+  'interview_sessions',
+  'interview_simulator_sessions',
+  'interview_simulator_utkast',
+  // Uppdrag "persistens och utloggning" (2026-09-22): försvar på djupet för
+  // fyra Zustand-persisterade stores. `lib/rensaVidUtloggning.ts`s register
+  // nollställer redan dessa stores i MINNET vid utloggning (se resp. stores
+  // egen `registreraRensning(...)`) — men bara om store-modulen redan
+  // laddats i sessionen (t.ex. AI-teamet aldrig besökt). Utan den här raden
+  // överlever den råa localStorage-blobben ändå, orörd, om modulen aldrig
+  // hann importeras innan utloggning. Alla fyra är verifierat rena
+  // innehållsnycklar (ingen tillgänglighets-/temainställning i `partialize`)
+  // — till skillnad från `deltagarportal-settings`, se kommentaren nedanför.
+  'ai-team-storage',
+  'cv-ui-storage',
+  'energy-storage',
+  'profile-storage',
+  // OBS, MEDVETET INTE MED: 'deltagarportal-settings' (settingsStore.ts).
+  // Den nyckelns `partialize` blandar innehåll (emailNotifications,
+  // pushNotifications, weeklySummary, energyLevel, hasCompletedOnboarding,
+  // lastSynced — nollställs redan via en egen `registreraRensning` i
+  // settingsStore.ts) med tillgänglighetsval som SKA överleva utloggning på
+  // en delad dator (calmMode, focusMode, highContrast, largeText, language,
+  // grafikstil). `clearUserScopedStorage()` gör bara `removeItem(key)` —
+  // ett rått "hela nyckeln bort" — och skulle därför nolla språk och hög
+  // kontrast tillsammans med notisinställningarna. Kvarstående risk (liten):
+  // om settingsStore-modulen ALDRIG laddats i sessionen innan utloggning
+  // (den importeras av Layout.tsx/useAuthInit.ts, så det kräver en
+  // utloggning innan layouten hunnit montera) hinner dess egen
+  // registreraRensning inte köras, och den gamla blobben ligger kvar orörd
+  // tills nästa inloggning skriver över den. En delnyckel-rensning (JSON.
+  // parse + ta bort bara innehållsfälten) vore rätt fix men är ett större
+  // ingrepp än den här listan gör för de andra nycklarna — rapporterat, inte
+  // byggt, i uppdrag B (2026-09-22).
 ] as const
 
 /**

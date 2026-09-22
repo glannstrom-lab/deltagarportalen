@@ -6,7 +6,7 @@
  * - Responsive images
  */
 
-import { useState, useEffect, useRef, forwardRef } from 'react'
+import { useState, useEffect, useMemo, useRef, forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
@@ -94,25 +94,22 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
   }, ref) => {
     const [isLoaded, setIsLoaded] = useState(false)
     const [hasError, setHasError] = useState(false)
-    const [imageSrc, setImageSrc] = useState(src)
-    const [supportsModernFormat, setSupportsModernFormat] = useState<'avif' | 'webp' | 'original'>('original')
+    // Engångskontroll av webbläsarens bildformatstöd — härlett direkt i
+    // useState-initieraren (körs en gång) i stället för en effekt som satte
+    // samma sak strax efter första renderingen.
+    const [supportsModernFormat, setSupportsModernFormat] = useState<'avif' | 'webp' | 'original'>(() => {
+      if (supportsAVIF()) return 'avif'
+      if (supportsWebP()) return 'webp'
+      return 'original'
+    })
+    // imageSrc är helt härlett av src + supportsModernFormat — ingen egen
+    // state behövs (låg tidigare i en andra effekt som bara kopierade denna
+    // beräkning).
+    const imageSrc = useMemo(
+      () => getOptimizedImageUrl(src, supportsModernFormat),
+      [src, supportsModernFormat]
+    )
     const imgRef = useRef<HTMLImageElement>(null)
-
-    // Detect browser support for modern formats
-    useEffect(() => {
-      if (supportsAVIF()) {
-        setSupportsModernFormat('avif')
-      } else if (supportsWebP()) {
-        setSupportsModernFormat('webp')
-      }
-    }, [])
-
-    // Update image source when format support is detected
-    useEffect(() => {
-      if (supportsModernFormat !== 'original') {
-        setImageSrc(getOptimizedImageUrl(src, supportsModernFormat))
-      }
-    }, [src, supportsModernFormat])
 
     // Handle image load
     const handleLoad = () => {
@@ -123,11 +120,9 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     // Handle image error
     const handleError = () => {
       setHasError(true)
-      // Fallback to original format
-      if (supportsModernFormat !== 'original') {
-        setImageSrc(src)
-        setSupportsModernFormat('original')
-      }
+      // Fallback till originalformatet — imageSrc räknas om automatiskt
+      // eftersom den är härledd av supportsModernFormat ovan.
+      setSupportsModernFormat('original')
       onError?.()
     }
 
@@ -135,11 +130,15 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     const [isInView, setIsInView] = useState(priority || loading === 'eager')
     const containerRef = useRef<HTMLDivElement>(null)
 
+    // Om priority/loading blir "eager" EFTER montering (prop-byte) ska bilden
+    // visas direkt — härlett under render, inte i effekten nedan, som bara
+    // ansvarar för IntersectionObserver-prenumerationen.
+    if ((priority || loading === 'eager') && !isInView) {
+      setIsInView(true)
+    }
+
     useEffect(() => {
-      if (priority || loading === 'eager') {
-        setIsInView(true)
-        return
-      }
+      if (priority || loading === 'eager') return
 
       const observer = new IntersectionObserver(
         ([entry]) => {

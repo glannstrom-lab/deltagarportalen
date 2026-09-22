@@ -217,6 +217,10 @@ export const cvApi = {
   },
 
   async getSharedCV(shareCode: string) {
+    // maybeSingle(): `.gt('expires_at', ...)` gör att en utgången eller
+    // ogiltig delningskod strukturellt ger 0 rader, inte ett databasfel.
+    // .single() lät det se ut som ett generiskt fel; ge i stället ett
+    // begripligt "länken har gått ut" som sidan kan visa direkt.
     const { data, error } = await supabase
       .from('cv_shares')
       .select(`
@@ -225,9 +229,10 @@ export const cvApi = {
       `)
       .eq('share_code', shareCode)
       .gt('expires_at', new Date().toISOString())
-      .single()
+      .maybeSingle()
 
     if (error) handleError(error)
+    if (!data) throw new APIError('Länken har gått ut eller är ogiltig', 'NOT_FOUND', 404)
     return data
   }
 }

@@ -294,14 +294,18 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // maybeSingle(): UPDATE saknar ägarfilter (RLS är enda skyddet) — ett
+    // meetingId som inte finns, eller som RLS nekar, ger 0 uppdaterade rader.
+    // .single() gjorde det till ett rått PGRST116-kast; ge ett begripligt fel.
     const { data, error } = await supabase
       .from('consultant_meetings')
       .update(updates)
       .eq('id', meetingId)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) throw error
+    if (!data) throw new Error('Mötet hittades inte, eller så saknas behörighet')
     return data
   }
 
@@ -370,14 +374,17 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // maybeSingle(): samma resonemang som updateMeeting ovan — inget
+    // ägarfilter i queryn, RLS är enda skyddet mot ett fel/otillåtet goalId.
     const { data, error } = await supabase
       .from('consultant_goals')
       .update(updates)
       .eq('id', goalId)
       .select()
-      .single()
+      .maybeSingle()
 
     if (error) throw error
+    if (!data) throw new Error('Målet hittades inte, eller så saknas behörighet')
     return data
   }
 
@@ -726,16 +733,20 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
+    // maybeSingle(): relationen kan ha återkallats (konsulentkoppling) eller
+    // aldrig ha funnits — det ska ge ett begripligt "ingen koppling", inte
+    // ett rått PGRST116-fel.
     const { data, error: readError } = await supabase
       .from('consultant_participants')
       .select('tags')
       .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
-      .single()
+      .maybeSingle()
 
     if (readError) throw readError
+    if (!data) throw new Error('Ingen aktiv koppling till den här deltagaren')
 
-    const merged = Array.from(new Set([...((data?.tags as string[] | null) || []), ...newTags]))
+    const merged = Array.from(new Set([...((data.tags as string[] | null) || []), ...newTags]))
 
     const { error } = await supabase
       .from('consultant_participants')

@@ -240,8 +240,8 @@ export function useAITeamContext() {
       if (interestProfile.dominantTypes && interestProfile.dominantTypes.length > 0) {
         ctx.riasecTypes = interestProfile.dominantTypes.slice(0, 3).map(t => t.code)
       }
-      if (interestProfile.suggestedCareers && interestProfile.suggestedCareers.length > 0) {
-        ctx.suggestedCareers = interestProfile.suggestedCareers.slice(0, 5)
+      if (interestProfile.recommendedOccupations && interestProfile.recommendedOccupations.length > 0) {
+        ctx.suggestedCareers = interestProfile.recommendedOccupations.slice(0, 5).map(o => o.name)
       }
     }
 
