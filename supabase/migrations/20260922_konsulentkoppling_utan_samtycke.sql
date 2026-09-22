@@ -1,4 +1,4 @@
--- PENDING — KÖRS INTE UTAN MIKAELS JA (RLS + GRANT/REVOKE mot prod).
+-- KÖRD mot prod 2026-09-22 kväll (Mikaels ja). Röktest: deltagare-INSERT 42501, konsulent UPDATE tags ok, UPDATE participant_id 42501.
 -- Förslag från databaspasset 2026-09-22 (agent: "det som körs inne i Postgres").
 --
 -- PROBLEM (verifierat mot pg_policies/has_table_privilege 2026-09-22):

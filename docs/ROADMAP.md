@@ -73,12 +73,12 @@ sparade, 36 döda service-metoder, 11 validerare, två workflow-widgetar) + 32 i
 
 ### Kräver Mikael (BP = buggpasset)
 
-- [ ] **BP1** 🔴 **Säkerhet: vem som helst kan koppla sig som konsulent till vem som helst.**
+- [x] **BP1** ✅ 2026-09-22 kväll (Mikaels ja) — körd som `20260922_konsulentkoppling_utan_samtycke.sql`; röktest i prod: deltagar-INSERT → 42501, konsulentens UPDATE av tags → ok, UPDATE av participant_id → 42501; `lint:grants`-taket 30 → 22. *(Var:)* **Säkerhet: vem som helst kan koppla sig som konsulent till vem som helst.**
   `consultant_participants` har `FOR ALL USING (consultant_id = auth.uid() …)` utan WITH CHECK och
   utan rollkontroll; `authenticated` har INSERT. En rad öppnar journal, CV, placeringar och
   aktivitetsplan — och en återkallad konsulent kan lägga tillbaka sig själv. Klienten gör aldrig
   INSERT, så stängningen bryter inget. Stänger också `sta_bulk_smart_add` + sju döda STA-funktioner.
-  → `supabase/migrations/PENDING_20260922_konsulentkoppling_utan_samtycke.sql` (RLS — kräver ja).
+  → `supabase/migrations/20260922_konsulentkoppling_utan_samtycke.sql`.
 - [ ] **BP2** 🔴 Användaren kan skriva sin egen `profiles.email`/`consultant_id` (WITH CHECK rör bara
   rollfälten). Falsk e-post → medlemskap i ett företagskonto som bjuds in till den adressen.
   Inte utnyttjat (0 av 112 avviker från `auth.users`). → `PENDING_20260922_profiles_skyddade_kolumner.sql`.

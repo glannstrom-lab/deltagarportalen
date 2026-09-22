@@ -69,8 +69,11 @@ const RLS_UNDANTAG = {}
  *            användar-id, skriver svar + consent_history i samma transaktion.
  *            Företagskontot (AG6, samma dag) tillkom UTAN nya definer-anrop: all
  *            skrivning går via INSTEAD OF-triggers på vyer (KM2-mönstret).
+ *   30 → 22  2026-09-22, BP1: åtta STA-funktioner (arkiverad modul, noll anropare)
+ *            revokade — bland dem sta_bulk_smart_add, som kopplade valfritt konto
+ *            till en konsulent via e-post utan samtycke.
  */
-const AUTH_TAK = 30
+const AUTH_TAK = 22
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

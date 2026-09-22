@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T23:17:41.037Z",
+  "generatedAt": "2026-09-22T20:27:38.791Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -615,56 +615,56 @@
       "signature": "sta_bulk_invite(jsonb,date,text,jsonb)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_bulk_smart_add",
       "signature": "sta_bulk_smart_add(jsonb,date,integer,text,jsonb,boolean)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_get_consultant_for_participant",
       "signature": "sta_get_consultant_for_participant(uuid)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_participant_mark_doa_done",
       "signature": "sta_participant_mark_doa_done(uuid)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_participant_save_doa_score",
       "signature": "sta_participant_save_doa_score(uuid,integer,integer,integer,text)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_participant_update_self",
       "signature": "sta_participant_update_self(uuid,date,smallint,boolean)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_participant_update_start_date",
       "signature": "sta_participant_update_start_date(uuid,date)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sta_sign_assessment",
       "signature": "sta_sign_assessment(uuid)",
       "definer": true,
       "anon": false,
-      "authenticated": true
+      "authenticated": false
     },
     {
       "name": "sync_ai_enabled_on_consent_withdrawal",
