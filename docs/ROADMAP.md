@@ -70,7 +70,7 @@ efter STA). 0 sårbarheter.
   efterhand. Samma utfall för alla inbjudna konton före BP4-följdfixen. Totalt 81 av 113 profiler
   utan godkända villkor. Beslut: en samtyckesvy vid inloggning för konton utan `terms_accepted_at`
   (art. 7.1 — kunna visa samtycket).
-- [ ] **DP2** Index `notifications(user_id)` (8 369 seq_scan, frågan körs 6 793 gånger) —
+- [x] **DP2** ✅ 2026-09-23 — `idx_notifications_user_created (user_id, created_at DESC)` körd (`20260923_notifications_user_id_index.sql`), matchar klockans fråga i `useNotifications.ts:186`. *(Var:)* Index `notifications(user_id)` (8 369 seq_scan, frågan körs 6 793 gånger) —
   migration, kräver ja. 46 FK utan index, 24 dubblerade och 98 aldrig använda index — städpass.
 - [ ] **DP3** 389 av 430 RLS-policyer anropar `auth.uid()` utan `(select auth.uid())` —
   omskrivning per tabell när datamängden växer (Supabase-advisorns klassiker). Skyddet mot
