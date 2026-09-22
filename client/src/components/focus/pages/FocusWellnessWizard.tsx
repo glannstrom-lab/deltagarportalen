@@ -11,6 +11,7 @@ import { useMutation } from '@tanstack/react-query'
 import { Smile, BatteryMedium, MessageSquare, ArrowRight, CheckCircle2, AlertCircle } from '@/components/ui/icons'
 import { moodLogsApi } from '@/services/diaryApi'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Props {
   onExit: () => void
@@ -29,8 +30,10 @@ export function FocusWellnessWizard({ onExit }: Props) {
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (energy == null) return
-      return moodLogsApi.upsert({
-        log_date: new Date().toISOString().slice(0, 10),
+      // Lokalt dygn, inte UTC — se formatLocalDate. Upserten sker på
+      // user_id,log_date, så fel dygn skrev över gårdagens incheckning.
+      const rad = await moodLogsApi.upsert({
+        log_date: formatLocalDate(new Date()),
         mood_level: energy,
         energy_level: energy,
         stress_level: null,
@@ -38,6 +41,11 @@ export function FocusWellnessWizard({ onExit }: Props) {
         activities: [],
         note: `${reason ? `Varför: ${reason}\n` : ''}${nextStep ? `Nästa steg: ${nextStep}` : ''}`.trim() || null,
       })
+      // moodLogsApi.upsert KASTAR INTE vid fel — den returnerar null. Utan
+      // den här raden var MV3:s felgren nedan oåtkomlig: ett nekat sparande
+      // blev "sparat" och guiden stängdes.
+      if (!rad) throw new Error('Incheckningen sparades inte')
+      return rad
     },
     onSuccess: () => setSaved(true),
   })
@@ -106,6 +114,7 @@ export function FocusWellnessWizard({ onExit }: Props) {
               key={n}
               type="button"
               onClick={() => setEnergy(n)}
+              aria-pressed={energy === n}
               className={`flex-1 py-4 rounded-xl text-xl font-semibold border-2 ${
                 energy === n
                   ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 text-[var(--c-text)]'

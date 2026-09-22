@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Coffee, X, Clock, CheckCircle } from '@/components/ui/icons'
 import { useSettingsStore } from '../stores/settingsStore'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 const PAUSE_TIMEOUT = 60 * 1000 // 1 minut inaktivitet = paus
 
@@ -12,7 +13,13 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
   const { calmMode } = useSettingsStore()
   const [showReminder, setShowReminder] = useState(false)
   const [secondsActive, setSecondsActive] = useState(0)
-  const [lastActiveTime, setLastActiveTime] = useState(() => Date.now())
+  // En ref, inte state. Som state startade varje musrörelse om räkneintervallet
+  // nedan (det låg i dess beroenden) — och ett intervall som startas om oftare
+  // än en gång i sekunden tickar aldrig. Den som faktiskt arbetade, med musen
+  // eller tangentbordet, fick alltså aldrig någon pauspåminnelse; räknaren gick
+  // bara under stilla stunder. (2026-09-22)
+  // Sätts när spårningen startar (nedan) — Date.now() får inte anropas under render.
+  const lastActiveRef = useRef(0)
   const [isPaused, setIsPaused] = useState(false)
   const [dismissed, setDismissed] = useState(false)
   const dismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -23,9 +30,9 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
   useEffect(() => {
     if (!calmMode || dismissed) return
 
+    lastActiveRef.current = Date.now()
     const handleActivity = () => {
-      setLastActiveTime(Date.now())
-      setIsPaused(false)
+      lastActiveRef.current = Date.now()
     }
 
     window.addEventListener('mousemove', handleActivity)
@@ -47,7 +54,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
 
     const interval = setInterval(() => {
       const now = Date.now()
-      const inactive = now - lastActiveTime
+      const inactive = now - lastActiveRef.current
 
       // Om inaktiv i mer än 1 minut, pausa räknaren
       if (inactive > PAUSE_TIMEOUT) {
@@ -57,7 +64,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
         setSecondsActive(prev => {
           const newValue = prev + 1
           // Visa påminnelse när det är dags för paus
-          if (newValue >= REMINDER_INTERVAL && !showReminder) {
+          if (newValue >= REMINDER_INTERVAL) {
             setShowReminder(true)
           }
           return newValue
@@ -66,7 +73,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     }, 1000)
 
     return () => clearInterval(interval)
-  }, [calmMode, dismissed, lastActiveTime, REMINDER_INTERVAL, showReminder])
+  }, [calmMode, dismissed, REMINDER_INTERVAL])
 
   // Rensa dismiss timeout vid unmount
   useEffect(() => {
@@ -111,6 +118,12 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     alert(`🌿 Pausförslag: ${randomSuggestion}\n\nTa den tid du behöver. Allt sparas automatiskt.`)
   }, [])
 
+  // Påminnelsen är en modal: fokus in, Tab stannar kvar, Esc = "Fortsätt jobba",
+  // och fokus tillbaka dit användaren var. Den saknade alla fyra.
+  const dialogRef = useFocusTrap<HTMLDivElement>(calmMode && showReminder, {
+    onEscape: dismissReminder,
+  })
+
   // Visa inte om lugn läge inte är aktivt
   if (!calmMode) return null
 
@@ -120,7 +133,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     if (secondsActive > REMINDER_INTERVAL * 0.5 && !isPaused) {
       const minutesLeft = Math.ceil((REMINDER_INTERVAL - secondsActive) / 60)
       return (
-        <div className="fixed bottom-24 right-6 z-30 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-stone-200 text-sm text-stone-600 flex items-center gap-2">
+        <div className="fixed bottom-24 right-6 z-30 bg-white/90 dark:bg-stone-900/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-stone-200 dark:border-stone-700 text-sm text-stone-600 dark:text-stone-300 flex items-center gap-2">
           <Clock size={14} />
           Paus om {minutesLeft} min
         </div>
@@ -131,17 +144,23 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+      <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pauspaminnelse-rubrik"
+        className="bg-white dark:bg-stone-900 rounded-2xl shadow-2xl max-w-md w-full p-6"
+      >
         {/* Icon */}
         <div className="w-16 h-16 bg-[var(--c-accent)]/40 rounded-full flex items-center justify-center mx-auto mb-4">
           <Coffee className="w-8 h-8 text-[var(--c-text)]" />
         </div>
 
         {/* Content */}
-        <h2 className="text-xl font-bold text-stone-900 text-center mb-2">
+        <h2 id="pauspaminnelse-rubrik" className="text-xl font-bold text-stone-900 dark:text-stone-100 text-center mb-2">
           Dags för en paus?
         </h2>
-        <p className="text-stone-600 text-center mb-6">
+        <p className="text-stone-600 dark:text-stone-300 text-center mb-6">
           Du har varit aktiv i {workDuration} minuter. Det är okej att ta en paus - 
           allt sparas automatiskt.
         </p>
@@ -165,7 +184,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
           
           <button
             onClick={dismissReminder}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 text-stone-700 rounded-xl font-medium hover:bg-stone-200 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-200 rounded-xl font-medium hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
           >
             <X size={18} />
             Fortsätt jobba
@@ -173,7 +192,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
         </div>
 
         {/* Gentle note */}
-        <p className="text-xs text-stone-600 text-center mt-4">
+        <p className="text-xs text-stone-600 dark:text-stone-400 text-center mt-4">
           Du kan alltid pausa när du vill. Din hälsa är viktigare än något jobb.
         </p>
       </div>

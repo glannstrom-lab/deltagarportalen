@@ -76,37 +76,48 @@ export function MeetingSchedulerDialog({
   const [meetingLink, setMeetingLink] = useState('')
   const [notes, setNotes] = useState('')
   const [currentMonth, setCurrentMonth] = useState(new Date())
+  /** Bokningen misslyckades — visas i dialogen, som inte stängs. */
+  const [fel, setFel] = useState<string | null>(null)
+  /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
+  const [hamtFel, setHamtFel] = useState(false)
 
   useEffect(() => {
-    if (isOpen && !preselectedParticipant) {
-      fetchParticipants()
-    }
+    if (!isOpen) return
+    setFel(null)
     if (preselectedParticipant) {
+      // Deltagaren sätts om vid VARJE öppning: resetForm() nollar den, och på
+      // deltagarsidan är dialogen monterad hela tiden. Utan raden här blev
+      // andra bokningen en tyst no-op (handleSubmit: !selectedParticipant).
+      setSelectedParticipant(preselectedParticipant)
       setStep('datetime')
+    } else {
+      fetchParticipants()
     }
   }, [isOpen, preselectedParticipant])
 
   const fetchParticipants = async () => {
+    setHamtFel(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('consultant_dashboard_participants')
         .select('participant_id, first_name, last_name, email')
         .eq('consultant_id', user.id)
 
-      if (data) {
-        setParticipants(data)
-      }
+      if (error) throw error
+      setParticipants(data ?? [])
     } catch (error) {
       console.error('Error fetching participants:', error)
+      setHamtFel(true)
     }
   }
 
   const handleSubmit = async () => {
     if (!selectedParticipant || !selectedTime) return
 
+    setFel(null)
     try {
       setLoading(true)
       const { data: { user } } = await supabase.auth.getUser()
@@ -138,14 +149,16 @@ export function MeetingSchedulerDialog({
       resetForm()
     } catch (error) {
       console.error('Error creating meeting:', error)
+      setFel('Mötet kunde inte bokas. Försök igen om en stund.')
     } finally {
       setLoading(false)
     }
   }
 
   const resetForm = () => {
-    setStep('participant')
-    setSelectedParticipant(null)
+    setStep(preselectedParticipant ? 'datetime' : 'participant')
+    setSelectedParticipant(preselectedParticipant ?? null)
+    setFel(null)
     setSelectedDate(new Date())
     setSelectedTime('')
     setDuration(30)
@@ -281,7 +294,11 @@ export function MeetingSchedulerDialog({
                     </div>
                   </button>
                 ))}
-                {filteredParticipants.length === 0 && (
+                {hamtFel ? (
+                  <p role="alert" className="text-center text-rose-700 dark:text-rose-300 py-8">
+                    Deltagarlistan kunde inte hämtas. Stäng och försök igen.
+                  </p>
+                ) : filteredParticipants.length === 0 && (
                   <p className="text-center text-stone-500 py-8">
                     Inga deltagare hittades
                   </p>
@@ -319,16 +336,20 @@ export function MeetingSchedulerDialog({
                   </h3>
                   <div className="flex items-center gap-1">
                     <button
+                      type="button"
+                      aria-label="Föregående månad"
                       onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))}
                       className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
                     >
-                      <ChevronLeft className="w-5 h-5" />
+                      <ChevronLeft className="w-5 h-5" aria-hidden="true" />
                     </button>
                     <button
+                      type="button"
+                      aria-label="Nästa månad"
                       onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))}
                       className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
                     >
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-5 h-5" aria-hidden="true" />
                     </button>
                   </div>
                 </div>
@@ -530,10 +551,17 @@ export function MeetingSchedulerDialog({
           )}
         </div>
 
+        {fel && (
+          <p role="alert" className="mx-5 mb-0 mt-2 p-3 rounded-lg text-sm bg-rose-50 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200">
+            {fel}
+          </p>
+        )}
+
         {/* Footer */}
         <div className="flex items-center justify-between p-5 border-t border-stone-200 dark:border-stone-700">
           <div>
-            {step !== 'participant' && (
+            {/* Med förvald deltagare finns inget deltagarsteg att gå tillbaka till. */}
+            {step !== 'participant' && !(step === 'datetime' && preselectedParticipant) && (
               <Button
                 variant="ghost"
                 onClick={() => setStep(step === 'details' ? 'datetime' : 'participant')}

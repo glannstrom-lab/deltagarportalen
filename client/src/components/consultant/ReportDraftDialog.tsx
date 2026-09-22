@@ -220,7 +220,10 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
 
   const handleGenerate = async () => {
     setGenerating(true)
-    setDraft('')
+    // Utkastet nollställs INTE här (städpasset 2026-09-22): det ersätts först
+    // när ett nytt svar kommit in. Tidigare tömdes rutan innan anropet — gick
+    // det fel var konsulentens handredigerade text borta, och debouncen skrev
+    // tomheten till sessionStorage.
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return

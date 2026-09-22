@@ -18,8 +18,12 @@ import {
   createGateDenialResponse,
   createTokenCapResponse,
   sanitizeForPrompt,
+  loggaAiAnvandning,
+  tokensIUsage,
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { parseCompaniesFromResponse, fyllIOrgnummer, type CompanySearchResult } from './tolka.ts'
+import { fetchMedTimeout, TIDSGRANS_AI_MS, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts'
 
 // Indatagränser. `MAX_RESULTS_*` klampar `maxResults` innan det interpoleras
 // in i systemprompten och innan det styr `slice()` + antalet
@@ -37,15 +41,6 @@ const BOLAGSVERKET_TOKEN_URL = 'https://portal.api.bolagsverket.se/oauth2/token'
 // Token cache for Bolagsverket
 let cachedToken: { token: string; expiresAt: number } | null = null
 
-interface CompanySearchResult {
-  name: string
-  orgNumber: string | null
-  description: string
-  city: string | null
-  industry: string | null
-  verified: boolean
-  verifiedData?: Record<string, unknown>
-}
 
 /**
  * Get Bolagsverket access token
@@ -64,14 +59,14 @@ async function getBolagsverketToken(): Promise<string> {
 
   const credentials = btoa(`${clientId}:${clientSecret}`)
 
-  const response = await fetch(BOLAGSVERKET_TOKEN_URL, {
+  const response = await fetchMedTimeout(BOLAGSVERKET_TOKEN_URL, {
     method: 'POST',
     headers: {
       'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials&scope=vardefulla-datamangder:read vardefulla-datamangder:ping',
-  })
+  }, TIDSGRANS_EXTERN_MS)
 
   if (!response.ok) {
     throw new Error(`Failed to get Bolagsverket token: ${response.status}`)
@@ -101,7 +96,7 @@ async function verifyCompany(orgNumber: string): Promise<Record<string, unknown>
 
     const token = await getBolagsverketToken()
 
-    const response = await fetch(`${BOLAGSVERKET_API_BASE}/organisationer`, {
+    const response = await fetchMedTimeout(`${BOLAGSVERKET_API_BASE}/organisationer`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -109,7 +104,7 @@ async function verifyCompany(orgNumber: string): Promise<Record<string, unknown>
         'Accept': 'application/json',
       },
       body: JSON.stringify({ identitetsbeteckning: normalized }),
-    })
+    }, TIDSGRANS_EXTERN_MS)
 
     if (!response.ok) {
       return null
@@ -143,109 +138,6 @@ async function verifyCompany(orgNumber: string): Promise<Record<string, unknown>
     console.error('Verification error:', err)
     return null
   }
-}
-
-/**
- * Normalize org number to 10 digits
- */
-function normalizeOrgNumber(orgNr: string | null | undefined): string | null {
-  if (!orgNr) return null
-  const cleaned = String(orgNr).replace(/[-\s]/g, '').trim()
-  // Must be exactly 10 digits
-  if (/^\d{10}$/.test(cleaned)) {
-    return cleaned
-  }
-  // Try to extract 10 digits from longer strings
-  const match = cleaned.match(/\d{10}/)
-  return match ? match[0] : null
-}
-
-/**
- * Parse AI response to extract companies
- */
-function parseCompaniesFromResponse(content: string): CompanySearchResult[] {
-  const companies: CompanySearchResult[] = []
-  const seenOrgNumbers = new Set<string>()
-
-  // Try to find JSON in the response
-  const jsonMatch = content.match(/\[[\s\S]*?\]/)
-  if (jsonMatch) {
-    try {
-      const parsed = JSON.parse(jsonMatch[0])
-      if (Array.isArray(parsed)) {
-        for (const c of parsed) {
-          const name = c.name || c.namn || c.företag || c.company || ''
-          if (!name) continue
-
-          const orgNumber = normalizeOrgNumber(c.orgNumber || c.organisationsnummer || c.org_number || c.orgnr)
-
-          // Skip duplicates
-          if (orgNumber && seenOrgNumbers.has(orgNumber)) continue
-          if (orgNumber) seenOrgNumbers.add(orgNumber)
-
-          companies.push({
-            name: name.trim(),
-            orgNumber,
-            description: c.description || c.beskrivning || c.info || '',
-            city: c.city || c.stad || c.ort || c.location || null,
-            industry: c.industry || c.bransch || c.sector || null,
-            verified: false,
-          })
-        }
-        if (companies.length > 0) {
-          return companies
-        }
-      }
-    } catch (e) {
-      console.log('[ai-company-search] JSON parse error, trying regex fallback')
-    }
-  }
-
-  // Fallback: Try to extract org numbers with regex patterns
-  // Pattern 1: 10 digits together or with dash
-  const orgNumberRegex = /(\d{6}[-\s]?\d{4})/g
-  let match
-
-  while ((match = orgNumberRegex.exec(content)) !== null) {
-    const orgNumber = normalizeOrgNumber(match[1])
-    if (!orgNumber || seenOrgNumbers.has(orgNumber)) continue
-    seenOrgNumbers.add(orgNumber)
-
-    // Try to find company name near the org number (look backwards)
-    const contextStart = Math.max(0, match.index - 150)
-    const contextEnd = Math.min(content.length, match.index + 50)
-    const context = content.substring(contextStart, contextEnd)
-
-    // Look for company name patterns
-    const namePatterns = [
-      /([A-ZÅÄÖ][A-Za-zåäöÅÄÖ\s&\-]+(?:\s+AB|\s+HB|\s+KB))/i,
-      /([A-ZÅÄÖ][A-Za-zåäöÅÄÖ\s&\-]+(?:Aktiebolag|Handelsbolag))/i,
-      /\*\*([^*]+)\*\*/,  // Markdown bold
-      /"([^"]+)"/,  // Quoted names
-    ]
-
-    let companyName = null
-    for (const pattern of namePatterns) {
-      const nameMatch = context.match(pattern)
-      if (nameMatch && nameMatch[1].trim().length > 2) {
-        companyName = nameMatch[1].trim()
-        break
-      }
-    }
-
-    if (companyName) {
-      companies.push({
-        name: companyName,
-        orgNumber,
-        description: '',
-        city: null,
-        industry: null,
-        verified: false,
-      })
-    }
-  }
-
-  return companies
 }
 
 Deno.serve(medFelrapport('ai-company-search', async (req) => {
@@ -411,7 +303,7 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
     const modell = await valjModell(supabase, user.id)
 
     // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
-    const aiResponse = await fetch(OPENROUTER_API_URL, {
+    const aiResponse = await fetchMedTimeout(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
@@ -428,7 +320,7 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
         max_tokens: 2000,
         temperature: 0.3,
       }),
-    })
+    }, TIDSGRANS_AI_MS)
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
@@ -442,6 +334,16 @@ För varje företag du hittar, gå till allabolag.se och hämta organisationsnum
     }
 
     const aiData = await aiResponse.json()
+
+    // Förbrukningen loggas FÖRE tolkningen: tokens är betalda även om svaret
+    // sedan inte går att tolka. Se loggaAiAnvandning i aiGate.ts.
+    await loggaAiAnvandning(supabase, {
+      userId: user.id,
+      funktion: 'company-search',
+      model: modell.model,
+      tokens: tokensIUsage(aiData),
+    })
+
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
@@ -475,7 +377,7 @@ RETURNERA exakt detta format (endast JSON):
 Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
 
       try {
-        const orgNrResponse = await fetch(OPENROUTER_API_URL, {
+        const orgNrResponse = await fetchMedTimeout(OPENROUTER_API_URL, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${openRouterKey}`,
@@ -491,35 +393,23 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
             max_tokens: 1000,
             temperature: 0.1,
           }),
-        })
+        }, TIDSGRANS_AI_MS)
 
         if (orgNrResponse.ok) {
           const orgNrData = await orgNrResponse.json()
+          // Andra modellanropet — loggades aldrig tidigare, så dess tokens
+          // räknades inte mot dygnstaket.
+          await loggaAiAnvandning(supabase, {
+            userId: user.id,
+            funktion: 'company-search-orgnr',
+            model: modell.model,
+            tokens: tokensIUsage(orgNrData),
+          })
           const orgNrContent = orgNrData.choices?.[0]?.message?.content
 
           if (orgNrContent) {
-            const jsonMatch = orgNrContent.match(/\[[\s\S]*\]/)
-            if (jsonMatch) {
-              try {
-                const orgNrResults = JSON.parse(jsonMatch[0])
-
-                // Update companies with found org numbers
-                for (const result of orgNrResults) {
-                  if (result.orgNumber && /^\d{10}$/.test(result.orgNumber.replace(/[-\s]/g, ''))) {
-                    const company = companies.find(c =>
-                      c.name.toLowerCase().includes(result.name.toLowerCase()) ||
-                      result.name.toLowerCase().includes(c.name.toLowerCase())
-                    )
-                    if (company && !company.orgNumber) {
-                      company.orgNumber = result.orgNumber.replace(/[-\s]/g, '')
-                      console.log(`[ai-company-search] Found org number for ${company.name}: ${company.orgNumber}`)
-                    }
-                  }
-                }
-              } catch (e) {
-                console.log('[ai-company-search] Failed to parse org number results')
-              }
-            }
+            const antal = fyllIOrgnummer(companies, orgNrContent)
+            console.log(`[ai-company-search] Org.nr ifyllda i andra sökningen: ${antal}`)
           }
         }
       } catch (e) {
@@ -572,19 +462,6 @@ Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
       if (!a.verified && b.verified) return 1
       return 0
     })
-
-    // Log usage
-    try {
-      await supabase.from('ai_usage_logs').insert({
-        user_id: user.id,
-        function_name: 'company-search',
-        model: modell.model,
-        tokens_used: aiData.usage?.total_tokens || 0,
-        created_at: new Date().toISOString(),
-      })
-    } catch (e) {
-      console.log('[ai-company-search] Log error:', e)
-    }
 
     console.log(`[ai-company-search] Found ${companies.length} companies, ${companies.filter(c => c.verified).length} verified`)
 

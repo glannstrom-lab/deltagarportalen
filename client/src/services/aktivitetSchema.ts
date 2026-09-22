@@ -5,8 +5,9 @@
  * Inga anrop hit rör databasen; allt går att testa utan mockar. Datum är
  * alltid `YYYY-MM-DD`-strängar i lokal tid — ALDRIG `toISOString()`, som
  * flyttar ett kvällsdatum till nästa dag i UTC (samma fälla som
- * `generateRecurringEvents()` i calendarData.ts, som dessutom bara kan ge
- * EN veckodag per vecka: efter första träffen hoppar den sju dagar).
+ * `generateRecurringEvents()` i calendarData.ts, som dessutom bara kunde ge
+ * EN veckodag per vecka: efter första träffen hoppade den sju dagar. Den hade
+ * noll anropare och togs bort 2026-09-22).
  *
  * Aktivitetstyperna är lagens fyra (12 kap. 6 a §) plus `jobsearch_own`,
  * eget jobbsökande, som ska ha tid i planen men INTE räknas som anvisad

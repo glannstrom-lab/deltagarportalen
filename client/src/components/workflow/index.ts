@@ -1,26 +1,14 @@
 /**
- * Workflow Components - Fas 1 & 2 Integration
- * 
- * Komponenter för smidigare deltagarresa:
- * 
- * FAS 1:
- * - CreateApplicationModal: "Skapa Ansökan"-flöde
- * - NextStepWidget: Dashboard widget för nästa steg
- * - QuickActionBanner: Kontextuella snabbåtgärder
- * 
- * FAS 2:
- * - ContextualKnowledgeWidget: Kontextuella artiklar
- * - SmartContextWidget: Smarta rekommendationer baserat på status
+ * Workflow-komponenter.
+ *
+ * - CreateApplicationModal: "Skapa ansökan"-flödet (JobSearch, SlumpjobbetTab)
+ * - ContextualKnowledgeWidget: kontextuella artiklar (CVBuilder)
+ *
+ * NextStepWidget, QuickActionBanner (med JobTrackerActions, FloatingBackButton)
+ * och SmartContextWidget raderade 2026-09-22 — noll anropare i src/. Barreln
+ * höll dem "nåbara" för dödkodsskriptet, som följer re-exporter men inte
+ * vilka namn som faktiskt importeras.
  */
 
 export { CreateApplicationModal } from './CreateApplicationModal'
-export { NextStepWidget } from './NextStepWidget'
-export { 
-  QuickActionBanner, 
-  JobTrackerActions,
-  FloatingBackButton 
-} from './QuickActionBanner'
-export { 
-  ContextualKnowledgeWidget,
-  SmartContextWidget 
-} from './ContextualKnowledgeWidget'
+export { ContextualKnowledgeWidget } from './ContextualKnowledgeWidget'

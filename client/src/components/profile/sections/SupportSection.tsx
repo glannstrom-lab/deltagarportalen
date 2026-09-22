@@ -9,6 +9,7 @@ import {
   Calendar, Users, FileText, X, Plus
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import { useProfileStore } from '@/stores/profileStore'
 import { SectionCard, CompactInput, CompactTextarea, ChipSelect, ProgressSlider } from '../forms'
 import { CareerTimeline, ProfileHistory } from '../index'
@@ -334,7 +335,7 @@ export function SupportSection() {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   const steps = [...(preferences.consultant_data?.nextSteps || []), {
                     activity: e.currentTarget.value.trim(),
-                    date: new Date().toISOString().split('T')[0],
+                    date: formatLocalDate(new Date()),
                     completed: false
                   }]
                   updateConsultantData({ nextSteps: steps })
@@ -348,16 +349,17 @@ export function SupportSection() {
                 if (input?.value.trim()) {
                   const steps = [...(preferences.consultant_data?.nextSteps || []), {
                     activity: input.value.trim(),
-                    date: new Date().toISOString().split('T')[0],
+                    date: formatLocalDate(new Date()),
                     completed: false
                   }]
                   updateConsultantData({ nextSteps: steps })
                   input.value = ''
                 }
               }}
+              aria-label={t('profile.support.newActivity')}
               className="px-3 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </div>

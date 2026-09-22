@@ -216,8 +216,20 @@ function rateLimitFallback(userId, functionName, config) {
  * @param {string} functionName - AI function name
  * @returns {Promise<{allowed: boolean, remaining: number, resetIn: number}>}
  */
+/**
+ * Är `fn` en funktion i promptbiblioteket? Egen nyckel, inte ärvd — se
+ * valideringen i handlern.
+ * @param {unknown} fn
+ * @returns {fn is string}
+ */
+function arKandFunktion(fn) {
+  return typeof fn === 'string' && Object.prototype.hasOwnProperty.call(PROMPTS, fn);
+}
+
 async function checkRateLimit(supabase, userId, functionName) {
-  const config = RATE_LIMITS[functionName] || RATE_LIMITS.default;
+  const config = Object.prototype.hasOwnProperty.call(RATE_LIMITS, functionName)
+    ? RATE_LIMITS[functionName]
+    : RATE_LIMITS.default;
 
   try {
     const { data, error } = await supabase.rpc('check_rate_limit', {
@@ -724,11 +736,6 @@ const RESPONSE_VALIDATORS = {
     return { ok: true, value: out };
   },
 
-  // Ett uppladdat CV som tolkas fel blir ett TOMT CV i "Dina CV" — och den
-  // som laddat upp sin fil tror då att portalen sparat det. Fäll hellre
-  // anropet: klienten visar "vi kunde inte läsa filen" och erbjuder att
-  // fylla i för hand. Fälten passeras oförändrade; validatorn skalar bort
-  // former som inte går att rendera, den skriver aldrig om innehåll.
   // Ett uppladdat CV som tolkas fel blir ett TOMT CV i byggaren — och den som
   // laddat upp sin fil tror då att portalen läst den. Fäll hellre anropet:
   // klienten visar "vi kunde inte läsa filen" och erbjuder att fylla i för
@@ -891,10 +898,21 @@ const hanterare = async (req, res) => {
       { global: { headers: { Authorization: `Bearer ${token}` } } }
     );
 
-    const fn = req.body.function;
+    const body = req.body || {};
+    const fn = body.function;
+    // SECURITY (2026-09-22): validera funktionsnamnet som EGEN nyckel i PROMPTS,
+    // och gör det före allt annat. Tidigare stod kontrollen `!PROMPTS[fn]` längre
+    // ned, och den släppte igenom allt som ärvs från Object.prototype.
+    // `function: 'constructor'` gav `Object(data)` === data som prompt — alltså
+    // anroparens egen systemprompt och eget `maxTokens` rakt till OpenRouter,
+    // utan sanningsregel och med ett rate limit-uppslag utan gräns. Vaktat av
+    // src/test/api-ai-prototypnycklar.test.ts.
+    if (!arKandFunktion(fn)) {
+      return res.status(400).json({ error: 'Invalid function: ' + String(fn).slice(0, 60) });
+    }
     // SECURITY: sanera all användardata innan den når PROMPTS-templates.
     // Förhindrar prompt-injection via t.ex. companyName: "Acme\n\nIgnorera alla instruktioner..."
-    const data = sanitizeAll(req.body.data || req.body);
+    const data = sanitizeAll(body.data || body);
 
     // Check rate limit before processing
     const rateLimit = await checkRateLimit(supabase, user.id, fn);
@@ -1008,9 +1026,7 @@ const hanterare = async (req, res) => {
       }
       res.setHeader('X-Daily-Tokens-Remaining', String(tokenCap.remaining));
     }
-    const stream = req.body.stream === true;
-
-    if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });
+    const stream = body.stream === true;
 
     const prompt = PROMPTS[fn](data);
 
@@ -1072,10 +1088,11 @@ const hanterare = async (req, res) => {
                 const token = parsed.choices?.[0]?.delta?.content;
                 if (token) {
                   fullResponse += token;
-                  // Skickar BÅDE { token } (legacy-fält för AgentChat) och
-                  // { content } (matchar ai-stream.js + aiStreamService).
-                  // Ny kod ska läsa { content }; { token } är deprecated och
-                  // tas bort när AgentChat är migrerad till useAIStream.
+                  // Skickar BÅDE { token } och { content }. ai-stream.js,
+                  // aiStreamService och useAIStream som kommentaren här
+                  // tidigare hänvisade till finns inte längre; läsaren är
+                  // callAIStream() i services/aiApi.ts. Ta bort ett av fälten
+                  // först när du kontrollerat vilket den läser.
                   res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
                 }
               } catch {
@@ -1283,11 +1300,10 @@ module.exports.stripPii = stripPii;
 // prompter, samma lucka, upptäckt en i taget. Testet gör luckan omöjlig att
 // införa tyst i en femte.
 module.exports.PROMPTS = PROMPTS;
+// (B14: samma export bär också sanningskraven i CV-prompten till test — en
+// prompt som ber modellen "föreslå rimliga siffror" syns annars bara i
+// användarens färdiga CV.)
 module.exports.sanitizeInput = sanitizeInput;
-// B14: prompt-mallarna exponeras så att sanningskraven i CV-prompten kan
-// testas. En prompt som ber modellen "föreslå rimliga siffror" syns inte i
-// något annat test — den syns bara i användarens färdiga CV.
-module.exports.PROMPTS = PROMPTS;
 // B17/B18: svarsvalideringen och modell-låsningen är de två grindar som
 // bestämmer vad som lämnar respektive når portalen. Båda exponeras för test —
 // ett fel i dem syns annars först som en tom ruta i ett AF-dokument eller som

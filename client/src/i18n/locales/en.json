@@ -283,7 +283,7 @@
     },
     "wellness": {
       "title": "Share wellbeing data",
-      "description": "Allow your consultant to see your diary, mood and wellbeing information"
+      "description": "Allow your consultant to see your mood log: mood, energy, stress, sleep and the note you add to it. Your diary is never shared."
     },
     "warningShared": "Your consultant can now see this data",
     "privacy": "Your data is safe",
@@ -458,15 +458,6 @@
       "overviewDesc": "Your personal overview",
       "quests": "My Quests",
       "questsDesc": "Daily challenges and rewards"
-    },
-    "kpi": {
-      "savedJobs": "Saved jobs",
-      "applications": "Applications"
-    },
-    "widgets": {
-      "coverLetters": {
-        "title": "Cover Letters"
-      }
     }
   },
   "cv": {
@@ -2413,9 +2404,6 @@
       "sendEmail": "Send email to",
       "markContacted": "Mark as contacted",
       "messageTemplates": "Message templates",
-      "syncWithLinkedIn": "Sync with LinkedIn",
-      "importContacts": "Import your contacts automatically",
-      "connect": "Connect",
       "templates": {
         "reconnect": "Reconnect",
         "reconnectText": "Hi! It's been a while since we last talked. How are you? I'm currently looking for new challenges and wanted to hear how things are going for you.",
@@ -2932,6 +2920,7 @@
     "completeTestToSeeResults": "You need to complete the interest test to see your results.",
     "couldNotLoadResults": "Could not load results",
     "couldNotRestartTest": "Could not restart the test",
+    "shareFailed": "Could not copy right now. Please try again later.",
     "charts": {
       "bigFiveAria": "Big Five personality traits",
       "riasecTableAria": "RIASEC results in table form",
@@ -4392,7 +4381,7 @@
       "whyWeCollect": "Why we collect this",
       "whyDesc": "The data is used to give you personal insights about your wellbeing and to customise recommendations during your job search. We analyse trends to help you understand what affects your mood.",
       "whoHasAccess": "Who has access",
-      "whoAccessDesc": "Only you can see what you write here. Your consultant sees it only if you turn on sharing yourself under Settings > Privacy — it is off until you do. Data is never shared with employers or third parties.",
+      "whoAccessDesc": "Only you can see your diary — it is never shared. Your consultant sees your mood log only if you turn on sharing yourself under Settings > Privacy — it is off until you do. Data is never shared with employers or third parties.",
       "dataProtection": "Your data is protected under GDPR and stored securely in the EU. You can export or delete all your data at any time.",
       "canWithdraw": "You can withdraw your consent at any time",
       "withdrawDetail1": "Go to Settings > Privacy",
@@ -8575,7 +8564,8 @@
     "next": "Next",
     "back": "Back",
     "finish": "Done",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "saveFailed": "It could not be saved right now. What you wrote is still there — please try again in a little while."
   },
   "focusGuide": {
     "skipStep": "Skip this step",
@@ -9186,39 +9176,6 @@
     "common": {
       "optimizeCvForJob": "Make your CV better for this job"
     },
-    "quickAction": {
-      "cvSaved": {
-        "title": "Your CV is saved!",
-        "message": "Now it's time to find jobs that match your skills.",
-        "primary": "Search jobs with this CV",
-        "secondary": "Improve your CV further"
-      },
-      "jobSaved": {
-        "title": "Job \"{{title}}...\" saved!",
-        "message": "Do you want to write a cover letter while the job is fresh in your mind?",
-        "primary": "Write a cover letter",
-        "secondary": "See saved jobs"
-      },
-      "letterSaved": {
-        "title": "Cover letter saved!",
-        "message": "Well done! You can use this as a template when you find more jobs you like.",
-        "primary": "Search for more jobs",
-        "secondary": "See all letters"
-      },
-      "profileComplete": {
-        "title": "Your profile is complete!",
-        "message": "You have everything you need to start searching for jobs.",
-        "primary": "Start searching for jobs",
-        "secondary": "See the interest guide"
-      },
-      "applicationReminder": {
-        "title": "Reminder: search for jobs today",
-        "message": "Searching often improves your chances. Take 30 minutes now!",
-        "primary": "Find jobs now"
-      },
-      "markApplied": "Mark as applied",
-      "backToJobSearch": "Back to job search"
-    },
     "knowledgeWidget": {
       "context": {
         "cvBuilding": "Tips for your CV",
@@ -9236,25 +9193,7 @@
         "advanced": "Advanced"
       },
       "seeAllArticles": "See all articles",
-      "selectedForYou": "Articles picked for where you are now",
-      "smart": {
-        "interview": {
-          "title": "🎯 You have an interview coming up!",
-          "subtitle": "Get ready to make your best impression"
-        },
-        "rejected": {
-          "title": "💪 It's just a rejection, not a failure",
-          "subtitle": "Tips for coming back stronger"
-        },
-        "default": {
-          "title": "💡 Tips for your job search"
-        }
-      }
-    },
-    "nextStep": {
-      "fetchError": "We could not get your next step",
-      "noStepAvailable": "No next step right now",
-      "or": "Or:"
+      "selectedForYou": "Articles picked for where you are now"
     }
   },
   "accessibility": {

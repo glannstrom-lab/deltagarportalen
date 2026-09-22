@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../lib/supabase'
-import { contentArticleApi, contentExerciseApi } from './contentApi'
+import { contentArticleApi } from './contentApi'
 import { APIError, handleError } from './apiError'
 
 // Re-export shared error helpers så callers fortsätter importera från
@@ -230,47 +230,6 @@ export const articleApi = {
    */
   async search(query: string) {
     return contentArticleApi.searchSlugs(query)
-  }
-}
-
-// ============================================
-// EXERCISES API
-// Uses contentApi.ts for database access with mock data fallback
-// ============================================
-export const exerciseApi = {
-  /**
-   * Get all active exercises
-   */
-  async getAll() {
-    return contentExerciseApi.getAll()
-  },
-
-  /**
-   * Get exercise by slug or ID
-   */
-  async getById(id: string) {
-    return contentExerciseApi.getById(id)
-  },
-
-  /**
-   * Get exercises by category
-   */
-  async getByCategory(category: string) {
-    return contentExerciseApi.getByCategory(category)
-  },
-
-  /**
-   * Get all exercise categories
-   */
-  async getCategories() {
-    return contentExerciseApi.getCategories()
-  },
-
-  /**
-   * Get exercise steps with questions
-   */
-  async getSteps(exerciseSlug: string) {
-    return contentExerciseApi.getSteps(exerciseSlug)
   }
 }
 

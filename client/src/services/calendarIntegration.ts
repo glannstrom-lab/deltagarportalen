@@ -63,6 +63,34 @@ export interface AggregatedReminder {
   type: string
 }
 
+/**
+ * Synkens dubblettskydd.
+ *
+ * Händelserna skapades med `id: 'milestone-<id>'` / `'network-<id>'`, och
+ * synken letade efter befintliga händelser med just de id:na. Men
+ * `calendar_events.id` är en uuid som databasen sätter — `createEvent`
+ * skickar aldrig med id:t. Inget id började därför någonsin med
+ * 'milestone-', och VARJE klick på "Synka till kalender" skapade alla
+ * milstolpar och uppföljningar en gång till. Samma miss gjorde att
+ * getAggregatedReminders visade varje synkad milstolpe två gånger (en gång
+ * från karriärplanen, en gång från kalendern).
+ *
+ * Nyckeln bygger i stället på det som faktiskt sparas: typ, datum och rubrik.
+ */
+export function synkNyckel(e: { type?: string | null; date?: string | null; title?: string | null }): string {
+  return `${e.type ?? ''}|${(e.date ?? '').slice(0, 10)}|${e.title ?? ''}`
+}
+
+/** `YYYY-MM-DD` ur ett datum från karriärplanen (date-kolumn eller ISO-sträng). */
+function handelseDatum(v: string): string {
+  return new Date(v).toISOString().split('T')[0]
+}
+
+const milstolpeNyckel = (m: Milestone) =>
+  synkNyckel({ type: 'deadline', date: handelseDatum(m.target_date as string), title: m.title })
+const uppfoljningsNyckel = (c: NetworkContact) =>
+  synkNyckel({ type: 'followup', date: handelseDatum(c.next_contact_date as string), title: `Följ upp: ${c.name}` })
+
 // Generate unique ID using crypto.randomUUID or fallback
 const generateId = (): string => {
   if (typeof crypto !== 'undefined' && crypto.randomUUID) {
@@ -83,7 +111,7 @@ export async function createEventFromMilestone(
   const { createReminders = true, reminderMinutesBefore = 1440 } = options // Default 24 hours
 
   const eventDate = new Date(milestone.target_date)
-  const dateStr = eventDate.toISOString().split('T')[0]
+  const dateStr = handelseDatum(milestone.target_date)
 
   const reminders: SmartReminder[] = []
   if (createReminders) {
@@ -132,7 +160,7 @@ export async function createEventFromNetworkFollowup(
   const { createReminders = true, reminderMinutesBefore = 1440 } = options
 
   const eventDate = new Date(contact.next_contact_date)
-  const dateStr = eventDate.toISOString().split('T')[0]
+  const dateStr = handelseDatum(contact.next_contact_date)
 
   const reminders: SmartReminder[] = []
   if (createReminders) {
@@ -183,15 +211,11 @@ export async function syncMilestonesToCalendar(): Promise<{ synced: number; erro
 
     // Get existing calendar events
     const existingEvents = await calendarApi.getEvents()
-    const existingMilestoneIds = new Set(
-      (existingEvents as unknown as CalendarEvent[])
-        .filter(e => e.id.startsWith('milestone-'))
-        .map(e => e.id)
-    )
+    const befintliga = new Set((existingEvents as unknown as CalendarEvent[]).map(synkNyckel))
 
     // Only sync incomplete milestones with target dates
     const milestonesToSync = plan.milestones.filter(
-      m => !m.is_completed && m.target_date && !existingMilestoneIds.has(`milestone-${m.id}`)
+      m => !m.is_completed && m.target_date && !befintliga.has(milstolpeNyckel(m))
     )
 
     for (const milestone of milestonesToSync) {
@@ -222,18 +246,14 @@ export async function syncNetworkFollowupsToCalendar(): Promise<{ synced: number
 
     // Get existing calendar events
     const existingEvents = await calendarApi.getEvents()
-    const existingNetworkIds = new Set(
-      (existingEvents as unknown as CalendarEvent[])
-        .filter(e => e.id.startsWith('network-'))
-        .map(e => e.id)
-    )
+    const befintliga = new Set((existingEvents as unknown as CalendarEvent[]).map(synkNyckel))
 
     // Only sync contacts with upcoming follow-up dates
     const now = new Date()
     const contactsToSync = contacts.filter(c => {
       if (!c.next_contact_date) return false
       const followupDate = new Date(c.next_contact_date)
-      return followupDate >= now && !existingNetworkIds.has(`network-${c.id}`)
+      return followupDate >= now && !befintliga.has(uppfoljningsNyckel(c))
     })
 
     for (const contact of contactsToSync) {
@@ -257,6 +277,9 @@ export async function syncNetworkFollowupsToCalendar(): Promise<{ synced: number
  */
 export async function getAggregatedReminders(daysAhead: number = 7): Promise<AggregatedReminder[]> {
   const reminders: AggregatedReminder[] = []
+  // Nycklar för det som redan kommit med från karriärplanen/nätverket — en
+  // synkad kopia i kalendern ska inte visas en gång till.
+  const redanMed = new Set<string>()
   const now = new Date()
   const futureDate = new Date(now.getTime() + daysAhead * 24 * 60 * 60 * 1000)
 
@@ -271,6 +294,7 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
         if (targetDate >= now && targetDate <= futureDate) {
           const daysUntil = Math.floor((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
+          redanMed.add(milstolpeNyckel(milestone))
           reminders.push({
             id: `milestone-${milestone.id}`,
             source: 'milestone',
@@ -295,6 +319,7 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
       if (followupDate >= now && followupDate <= futureDate) {
         const daysUntil = Math.floor((followupDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
 
+        redanMed.add(uppfoljningsNyckel(contact))
         reminders.push({
           id: `network-${contact.id}`,
           source: 'network',
@@ -312,8 +337,8 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
     // Get calendar events
     const events = await calendarApi.getEvents()
     for (const event of events as unknown as CalendarEvent[]) {
-      // Skip events that we created from milestones/network
-      if (event.id.startsWith('milestone-') || event.id.startsWith('network-')) continue
+      // Hoppa över kalenderns kopia av en milstolpe/uppföljning som redan är med
+      if (redanMed.has(synkNyckel(event))) continue
 
       const eventDate = new Date(event.date)
       if (eventDate >= now && eventDate <= futureDate) {

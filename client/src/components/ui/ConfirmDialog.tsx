@@ -59,14 +59,20 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
 
   const confirm = useCallback((options: ConfirmDialogOptions): Promise<boolean> => {
     return new Promise((resolve) => {
-      setState({
-        isOpen: true,
-        title: options.title,
-        message: options.message,
-        confirmText: options.confirmText || t('common.confirm'),
-        cancelText: options.cancelText || t('common.cancel'),
-        variant: options.variant || 'default',
-        resolve,
+      // En ny fråga medan en annan står öppen ersätter den. Den gamla måste
+      // då få ett svar (nej) — annars väntar anroparens `await confirm()` för
+      // alltid, och det som låstes medan frågan stod öppen låses aldrig upp.
+      setState((prev) => {
+        prev.resolve?.(false)
+        return {
+          isOpen: true,
+          title: options.title,
+          message: options.message,
+          confirmText: options.confirmText || t('common.confirm'),
+          cancelText: options.cancelText || t('common.cancel'),
+          variant: options.variant || 'default',
+          resolve,
+        }
       })
     })
   }, [t])

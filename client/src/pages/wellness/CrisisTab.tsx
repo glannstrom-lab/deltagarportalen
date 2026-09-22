@@ -4,8 +4,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
+import { Link } from 'react-router-dom'
 import {
-  Siren, Phone, MessageCircle, Heart, Wind, Eye, Ear, Hand,
+  Siren, Phone, Heart, Wind, Eye, Ear, Hand,
   ExternalLink, AlertTriangle, ChevronRight
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
@@ -157,7 +158,6 @@ export default function CrisisTab() {
   const { t } = useTranslation()
   const [activeExercise, setActiveExercise] = useState<'breathing' | 'grounding' | null>(null)
   const [selectedGroundingTechnique, setSelectedGroundingTechnique] = useState<number | null>(null)
-  const [, setShowChat] = useState(false)
 
   // Build translated arrays
   const emergencyContacts = useMemo(() => emergencyContactDefs.map(c => ({
@@ -345,21 +345,14 @@ export default function CrisisTab() {
         </div>
       </Card>
 
-      {/* Chat Support */}
-      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-          Chatt-stöd
-        </h3>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          Behöver du prata med någon? Våra tränade volontärer finns här dygnet runt för att lyssna.
-          Du kan chatta helt anonymt.
-        </p>
-        <Button onClick={() => setShowChat(true)} className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]" size="lg">
-          <MessageCircle className="w-5 h-5 mr-2" />
-          Starta chatt nu
-        </Button>
-      </Card>
+      {/*
+        Här låg ett "Chatt-stöd"-kort: "Våra tränade volontärer finns här
+        dygnet runt … Du kan chatta helt anonymt", med en knapp som satte ett
+        tillstånd ingenting läste. Portalen har varken volontärer eller chatt.
+        På en krissida är ett löfte utan verkan värre än inget löfte — borttaget
+        2026-09-22. Ska en riktig chattjänst länkas hit krävs ett beslut om
+        vilken, och en kontrollerad adress.
+      */}
 
       {/* Share with consultant */}
       <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
@@ -371,10 +364,14 @@ export default function CrisisTab() {
               Om du mår dåligt kan det vara värdefullt att berätta för din arbetskonsulent.
               De kan anpassa ditt program eller ge extra stöd under denna tid.
             </p>
-            <Button variant="outline" className="border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30">
+            {/* Var en <Button> utan onClick. Meddelandena bor på Min konsulent. */}
+            <Link
+              to="/my-consultant"
+              className="inline-flex items-center px-4 py-2 rounded-lg border border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 font-medium text-sm"
+            >
               Skicka meddelande till konsulent
-              <ChevronRight className="w-4 h-4 ml-1" />
-            </Button>
+              <ChevronRight className="w-4 h-4 ml-1" aria-hidden="true" />
+            </Link>
           </div>
         </div>
       </Card>

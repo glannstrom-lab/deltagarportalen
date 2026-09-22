@@ -6,6 +6,7 @@
  */
 
 import { jobLogger } from '@/lib/logger';
+import { formatLocalDate } from './aktivitetSchema';
 
 const AF_JOBSEARCH_BASE = 'https://jobsearch.api.jobtechdev.se';
 
@@ -121,74 +122,14 @@ export const POPULAR_QUERIES = [
   { label: 'Chaufför', query: 'chaufför', icon: '🚛' },
 ];
 
-// Kommun till län mapping (för att veta vilket län en kommun tillhör)
-// Behålls trots 0 callers — kan användas av framtida region-aggregering.
-// Exporterad (i stället för eslint-disable) så noUnusedLocals inte fäller
-// bygget — en modulexport räknas som använd även utan intern anropare.
-export const MUNICIPALITY_TO_REGION: Record<string, string> = {
-  'stockholm': 'Stockholms län',
-  'göteborg': 'Västra Götalands län',
-  'goteborg': 'Västra Götalands län',
-  'malmö': 'Skåne län',
-  'malmo': 'Skåne län',
-  'uppsala': 'Uppsala län',
-  'linköping': 'Östergötlands län',
-  'linkoping': 'Östergötlands län',
-  'västerås': 'Västmanlands län',
-  'vasteras': 'Västmanlands län',
-  'örebro': 'Örebro län',
-  'orebro': 'Örebro län',
-  'helsingborg': 'Skåne län',
-  'norrköping': 'Östergötlands län',
-  'norrkoping': 'Östergötlands län',
-  'jönköping': 'Jönköpings län',
-  'jonkoping': 'Jönköpings län',
-  'umeå': 'Västerbottens län',
-  'umea': 'Västerbottens län',
-  'lund': 'Skåne län',
-  'borås': 'Västra Götalands län',
-  'boras': 'Västra Götalands län',
-  'sundsvall': 'Västernorrlands län',
-  'gävle': 'Gävleborgs län',
-  'gavle': 'Gävleborgs län',
-  'eskilstuna': 'Södermanlands län',
-  'karlstad': 'Värmlands län',
-  'växjö': 'Kronobergs län',
-  'vaxjo': 'Kronobergs län',
-  'halmstad': 'Hallands län',
-  'östersund': 'Jämtlands län',
-  'ostersund': 'Jämtlands län',
-  'trollhättan': 'Västra Götalands län',
-  'trollhattan': 'Västra Götalands län',
-  'luleå': 'Norrbottens län',
-  'lulea': 'Norrbottens län',
-  'kalmar': 'Kalmar län',
-  'falun': 'Dalarnas län',
-  'karlskrona': 'Blekinge län',
-  'kristianstad': 'Skåne län',
-  'skellefteå': 'Västerbottens län',
-  'skelleftea': 'Västerbottens län',
-  'uddevalla': 'Västra Götalands län',
-  'nyköping': 'Södermanlands län',
-  'nykoping': 'Södermanlands län',
-  'mölndal': 'Västra Götalands län',
-  'molndal': 'Västra Götalands län',
-  'södertälje': 'Stockholms län',
-  'sodertalje': 'Stockholms län',
-  'täby': 'Stockholms län',
-  'taby': 'Stockholms län',
-  'solna': 'Stockholms län',
-  'nacka': 'Stockholms län',
-  'sollentuna': 'Stockholms län',
-  'sundbyberg': 'Stockholms län',
-  'botkyrka': 'Stockholms län',
-  'huddinge': 'Stockholms län',
-  'haninge': 'Stockholms län',
-  'tyresö': 'Stockholms län',
-  'tyreso': 'Stockholms län',
-};
+/**
+ * Hur länge ett anrop mot JobTech får hänga innan det avbryts. Utan gräns
+ * blev ett AF-API som slutat svara (men inte stängt anslutningen) en spinner
+ * utan slut — searchJobs kastar redan vid fel, så en timeout blir samma
+ * felväg som ett HTTP 500 och får sitt felmeddelande i UI:t.
+ */
+export const AF_TIMEOUT_MS = 15_000
 
-// Hjälpfunktion för fetch
 async function fetchFromAF<T = unknown>(url: string): Promise<T> {
   const cached = cache.get(url);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
@@ -201,6 +142,7 @@ async function fetchFromAF<T = unknown>(url: string): Promise<T> {
     headers: {
       'Accept': 'application/json',
     },
+    signal: AbortSignal.timeout(AF_TIMEOUT_MS),
   });
 
   if (!response.ok) {
@@ -288,7 +230,9 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       } else if (params.publishedWithin === 'month') {
         date.setDate(date.getDate() - 30);
       }
-      searchParams.set('published-after', date.toISOString().split('T')[0]);
+      // Lokalt datum: UTC-strängen gav gårdagen mellan midnatt och kl. 01/02,
+      // så 'Publicerade idag' visade även gårdagens annonser.
+      searchParams.set('published-after', formatLocalDate(date));
     }
 
     const url = `${AF_JOBSEARCH_BASE}/search?${searchParams.toString()}`;

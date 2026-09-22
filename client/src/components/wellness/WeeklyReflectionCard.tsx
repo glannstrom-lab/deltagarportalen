@@ -31,12 +31,13 @@ import { AiConsentGate } from '@/components/ai/AiConsentGate'
 import { callAI, AiConsentRequiredError } from '@/services/aiApi'
 import { safeParseAiResponse, VeckoReflektionSchema, type VeckoReflektion } from '@/services/aiSchemas'
 import { diaryEntriesApi, moodLogsApi } from '@/services/diaryApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 /** ISO-datum (YYYY-MM-DD) för dagens datum minus n dagar. */
 function isoDaysAgo(days: number): string {
   const d = new Date()
   d.setDate(d.getDate() - days)
-  return d.toISOString().split('T')[0]
+  return formatLocalDate(d)
 }
 
 export function WeeklyReflectionCard() {

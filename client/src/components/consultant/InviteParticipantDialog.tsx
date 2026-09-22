@@ -14,7 +14,9 @@ interface InviteParticipantDialogProps {
   onSuccess: () => void;
 }
 
-type SuccessType = 'invite' | 'request';
+// 'invite-utan-mejl': inbjudan sparad men send-invite-email gick inte igenom.
+// Kvittot får då inte säga att deltagaren fått ett mejl (städpasset 2026-09-22).
+type SuccessType = 'invite' | 'invite-utan-mejl' | 'request';
 
 export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = ({
   isOpen,
@@ -134,7 +136,10 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
       if (inviteError) throw inviteError;
 
-      // Skicka email via Edge Function
+      // Skicka email via Edge Function. `mejlSkickat` är bara sant när funktionen
+      // svarat 2xx — allt annat (ingen session, icke-2xx, nätverksfel) betyder
+      // att deltagaren INTE fått något mejl.
+      let mejlSkickat = false
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (session && data) {
@@ -152,10 +157,19 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
           )
           if (!emailResponse.ok) {
             console.warn('Email sending failed:', emailResponse.status, emailResponse.statusText)
+          } else {
+            mejlSkickat = true
           }
         }
       } catch (emailErr) {
         console.warn('Could not send email automatically:', emailErr instanceof Error ? emailErr.message : 'Unknown error')
+      }
+
+      if (!mejlSkickat) {
+        // Ingen autostängning: konsulenten ska hinna läsa att mejlet uteblev.
+        // onSuccess körs när hon stänger (se kvittots onClose nedan).
+        setSuccess('invite-utan-mejl');
+        return;
       }
 
       setSuccess('invite');
@@ -174,12 +188,29 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
     return (
       <Dialog
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={success === 'invite-utan-mejl' ? () => { onSuccess(); onClose(); } : onClose}
         labelledBy="invite-success-title"
         className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-8 text-center"
       >
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-          {success === 'invite' ? (
+          {success === 'invite-utan-mejl' ? (
+            <>
+              <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+                Inbjudan sparad
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                Men mejlet kunde inte skickas. Hör av dig till {formData.firstName || formData.email} på
+                annat sätt och be hen registrera sig med den här e-postadressen.
+              </p>
+              <button
+                type="button"
+                onClick={() => { onSuccess(); onClose(); }}
+                className="px-4 py-2 rounded-lg bg-gray-900 text-white dark:bg-gray-100 dark:text-gray-900"
+              >
+                Stäng
+              </button>
+            </>
+          ) : success === 'invite' ? (
             <>
               <h2 id="invite-success-title" className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
                 Inbjudan skickad!

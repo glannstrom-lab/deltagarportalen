@@ -656,29 +656,31 @@ describe('calendarApi.saveMoodEntry', () => {
 // båda går tyst igenom hos de 31 importörerna tills någon klickar.
 // journalApi bär getWellnessData/saveWellnessData via Object.assign i
 // maende.ts; det är med flit och står i listan.
+// 2026-09-22: 17 metoder utan en enda anropare utanför testerna togs bort
+// (städpasset i services/) — listan är uppdaterad med flit.
 describe('cloudStorage — API-ytan efter uppdelningen', () => {
   const YTA: Record<string, string[]> = {
     articleBookmarksApi: ['add', 'getAll', 'getBookmarks', 'isBookmarked', 'remove'],
     articleProgressApi: ['get', 'pause', 'update'],
     articleChecklistApi: ['get', 'update'],
     dashboardPreferencesApi: ['get', 'update'],
-    userPreferencesApi: ['get', 'getLastLoginDate', 'isChecklistDismissed', 'setChecklistDismissed', 'update', 'updateLastLogin'],
+    userPreferencesApi: ['get', 'update', 'updateLastLogin'],
     moodHistoryApi: ['add', 'getAll', 'getStats'],
     journalApi: ['add', 'delete', 'getAll', 'getWellnessData', 'saveWellnessData', 'update'],
     interestGuideApi: ['getHistory', 'getHistoryCount', 'getHistoryEntry', 'getProgress', 'reset', 'saveProgress', 'saveToHistory'],
     notificationsApi: ['delete', 'getAll', 'getPreferences', 'getUnread', 'markAllAsRead', 'markAsRead', 'updatePreferences'],
-    draftsApi: ['delete', 'get', 'getAllByType', 'save'],
+    draftsApi: ['delete', 'get', 'save'],
     interviewSessionsApi: ['create', 'getAll', 'update'],
-    platsbankenApi: ['getSavedJobs', 'getSavedSearches', 'isSaved', 'removeSavedJob', 'removeSavedSearch', 'saveJob', 'saveSearch'],
+    platsbankenApi: ['getSavedJobs', 'isSaved', 'removeSavedJob', 'saveJob'],
     moodApi: ['getHistory', 'getStreak', 'getTodaysMood', 'logMood'],
     wellnessDataApi: ['get', 'save'],
     personalBrandApi: [
       'addContentItem', 'addPitch', 'addPortfolioItem', 'deleteContentItem', 'deletePitch', 'deletePortfolioItem',
       'getAuditAnswers', 'getAuditHistory', 'getContentCalendar', 'getPitches', 'getPortfolioItems', 'getVisibilityProgress',
-      'recordPractice', 'saveAuditAnswers', 'updateContentItem', 'updatePitch', 'updatePortfolioItem', 'updateVisibilityProgress',
+      'recordPractice', 'saveAuditAnswers', 'updatePitch', 'updatePortfolioItem', 'updateVisibilityProgress',
     ],
-    calendarApi: ['createEvent', 'deleteEvent', 'getEvents', 'getGoals', 'getMoodEntries', 'saveGoal', 'saveMoodEntry', 'updateEvent'],
-    integrationChecklistApi: ['exportProgress', 'getProgress', 'saveProgress', 'setTargetDate', 'toggleItem', 'updateItemNotes'],
+    calendarApi: ['createEvent', 'deleteEvent', 'getEvents', 'getGoals', 'saveMoodEntry', 'updateEvent'],
+    integrationChecklistApi: ['getProgress', 'saveProgress'],
   }
 
   it('exporterar exakt de 17 api-objekten och LagringsFel — inget mer, inget mindre', async () => {

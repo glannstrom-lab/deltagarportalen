@@ -15,6 +15,7 @@ import {
 import { showToast } from '@/components/Toast';
 import { supabase } from '@/lib/supabase';
 import type { CVData, JobData } from '@/types/pdf.types';
+import { formatLocalDate } from '@/services/aktivitetSchema';
 
 /**
  * Server-side CV PDF: POSTar mot /api/cv-pdf som lanserar headless Chromium
@@ -130,7 +131,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
           return `Jobb_${headline}.pdf`;
         }
         case 'applications':
-          return `Ansökningshistorik_${new Date().toISOString().split('T')[0]}.pdf`;
+          return `Ansökningshistorik_${formatLocalDate(new Date())}.pdf`;
         default:
           return 'dokument.pdf';
       }

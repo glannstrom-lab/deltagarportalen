@@ -18,6 +18,12 @@
 // Allt mätt mot prod och mot jobed-connect-api.jobtechdev.se 2026-08-22.
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { fetchMedTimeout, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts';
+
+// ST4 (2026-09-22): fyra av fem JobEd-anrop saknade tidsgräns (bara sökningen
+// hade en). Sökning och matchning får samma 15 s som sökningen redan hade;
+// uppslag av en utbildning och parameterlistorna 8 s.
+const TIDSGRANS_SOK_MS = 15_000;
 import { buildProxyCorsHeaders, enforceIpRateLimit } from '../_shared/proxyGuard.ts';
 import {
   TYP_TILL_FORM,
@@ -129,7 +135,7 @@ async function searchEducations(params: SearchParams): Promise<SearchResult> {
 async function getEducationById(id: string): Promise<Education | null> {
   try {
     const url = `${JOBED_API_BASE}/educations/${encodeURIComponent(id)}`;
-    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const response = await fetchMedTimeout(url, { headers: { 'Accept': 'application/json' } }, TIDSGRANS_EXTERN_MS);
     if (!response.ok) {
       console.error(`[education-search] Failed to get education ${id}: ${response.status}`);
       return null;
@@ -156,7 +162,7 @@ async function matchByJobTitle(jobTitle: string, params: SearchParams = {}): Pro
     queryParams.set('limit', String(params.limit || 10));
 
     const url = `${JOBED_API_BASE}/educations/match-by-jobtitle?${queryParams.toString()}`;
-    const response = await fetch(url, { method: 'POST', headers: { 'Accept': 'application/json' } });
+    const response = await fetchMedTimeout(url, { method: 'POST', headers: { 'Accept': 'application/json' } }, TIDSGRANS_SOK_MS);
 
     if (!response.ok) {
       throw new Error(`Match API error: ${response.status}`);
@@ -207,9 +213,9 @@ async function matchByJobTitle(jobTitle: string, params: SearchParams = {}): Pro
 
 async function getEducationTypes(): Promise<Val[]> {
   try {
-    const response = await fetch(`${JOBED_API_BASE}/searchparameters/education_forms`, {
+    const response = await fetchMedTimeout(`${JOBED_API_BASE}/searchparameters/education_forms`, {
       headers: { 'Accept': 'application/json' },
-    });
+    }, TIDSGRANS_EXTERN_MS);
     if (response.ok) {
       const typer = typerFranApi(await response.json());
       if (typer) return typer;
@@ -222,9 +228,9 @@ async function getEducationTypes(): Promise<Val[]> {
 
 async function getRegions(): Promise<Val[]> {
   try {
-    const response = await fetch(`${JOBED_API_BASE}/searchparameters/regions`, {
+    const response = await fetchMedTimeout(`${JOBED_API_BASE}/searchparameters/regions`, {
       headers: { 'Accept': 'application/json' },
-    });
+    }, TIDSGRANS_EXTERN_MS);
     if (response.ok) {
       const regioner = regionerFranApi(await response.json());
       if (regioner) return regioner;

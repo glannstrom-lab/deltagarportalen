@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/icons'
 import { cvApi } from '@/services/cvApi'
 import { cn } from '@/lib/utils'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface TimelineItem {
   id: string
@@ -29,7 +30,7 @@ interface Props {
 }
 
 export function CareerTimeline({ className }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [items, setItems] = useState<TimelineItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -113,7 +114,7 @@ export function CareerTimeline({ className }: Props) {
 
   const formatDate = (date: string) => {
     const d = new Date(date)
-    return d.toLocaleDateString('sv-SE', { month: 'short', year: 'numeric' })
+    return d.toLocaleDateString(datumSprak(i18n.language), { month: 'short', year: 'numeric' })
   }
 
   const formatDateRange = (item: TimelineItem) => {

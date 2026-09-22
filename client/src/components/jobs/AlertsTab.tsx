@@ -17,6 +17,7 @@ import type { JobAlert } from '@/services/jobsApi'
 import { AF_REGIONS, getAfRegionName } from '@/data/afRegions'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
+import { datumSprak } from '@/lib/datumsprak'
 import {
   getNotificationPreferences,
   updateNotificationPreferences,
@@ -246,9 +247,10 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
         </div>
         <button
           onClick={onClose}
+          aria-label={t('common.close', 'Stäng')}
           className="p-1 hover:bg-white/50 rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-stone-500 dark:text-stone-400" />
+          <X className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
         </button>
       </div>
 
@@ -341,7 +343,7 @@ function AlertCard({
   onDelete: (id: string) => void
   onRunSearch: (alert: JobAlert) => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isChecking, setIsChecking] = useState(false)
 
   const handleRunSearch = async () => {
@@ -394,7 +396,7 @@ function AlertCard({
           {alert.last_checked_at && (
             <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {t('jobSearch.alertsTab.lastChecked', { date: new Date(alert.last_checked_at).toLocaleDateString('sv-SE') })}
+              {t('jobSearch.alertsTab.lastChecked', { date: new Date(alert.last_checked_at).toLocaleDateString(datumSprak(i18n.language)) })}
             </p>
           )}
         </div>

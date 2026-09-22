@@ -6,14 +6,15 @@
 import { useTranslation } from 'react-i18next'
 import { Check, Loader2, CloudOff } from '@/components/ui/icons'
 import { useCVStore } from '@/stores/cvStore'
+import { datumSprak } from '@/lib/datumsprak'
 
 export function SaveIndicator() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { saveStatus, lastSavedAt, hasUnsavedChanges, pendingCount } = useCVStore()
   
   const formatTime = (date: Date | null) => {
     if (!date) return ''
-    return date.toLocaleTimeString('sv-SE', { 
+    return date.toLocaleTimeString(datumSprak(i18n.language), { 
       hour: '2-digit', 
       minute: '2-digit' 
     })

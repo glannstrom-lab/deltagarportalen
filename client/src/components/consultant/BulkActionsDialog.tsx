@@ -26,6 +26,8 @@ import { supabase } from '@/lib/supabase'
 import { consultantService } from '@/services/consultantService'
 import { loadJsPDFWithAutoTable } from '@/services/pdfLazyLoad'
 import { AVAILABLE_TAGS, TAG_COLOR_CLASSES } from './participantTags'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import { exportRader, csvText, EXPORT_RUBRIKER, STATUS_ETIKETT } from './deltagarExport'
 
 interface Participant {
   participant_id: string
@@ -74,11 +76,12 @@ const MESSAGE_TEMPLATES = [
 ]
 
 // Status options
+// Etiketterna delas med exporten (deltagarExport.ts) — en plats, samma ord.
 const STATUS_OPTIONS = [
-  { value: 'ACTIVE', label: 'Aktiv', color: 'emerald' },
-  { value: 'INACTIVE', label: 'Inaktiv', color: 'stone' },
-  { value: 'ON_HOLD', label: 'Pausad', color: 'amber' },
-  { value: 'COMPLETED', label: 'Avslutad', color: 'blue' },
+  { value: 'ACTIVE', label: STATUS_ETIKETT.ACTIVE, color: 'emerald' },
+  { value: 'INACTIVE', label: STATUS_ETIKETT.INACTIVE, color: 'stone' },
+  { value: 'ON_HOLD', label: STATUS_ETIKETT.ON_HOLD, color: 'amber' },
+  { value: 'COMPLETED', label: STATUS_ETIKETT.COMPLETED, color: 'blue' },
 ]
 
 export function BulkActionsDialog({
@@ -233,41 +236,28 @@ export function BulkActionsDialog({
     setError(null)
 
     try {
-      // Generate export data
-      const exportData = selectedParticipants.map(p => ({
-        Namn: `${p.first_name} ${p.last_name}`,
-        Email: p.email,
-        Status: p.status,
-      }))
+      // Namn, e-post och svensk statusetikett — se deltagarExport.ts för varför
+      // formen är som den är (citering, BOM, formelskydd).
+      const rader = exportRader(selectedParticipants)
+      // Lokal dag i filnamnet — `toISOString()` gav gårdagen mellan 00 och 02.
+      const datum = formatLocalDate(new Date())
+
+      const laddaNerCsv = (text: string) => {
+        const blob = new Blob([text], { type: 'text/csv;charset=utf-8' })
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        link.href = url
+        link.download = `deltagare-export-${datum}.csv`
+        link.click()
+        URL.revokeObjectURL(url)
+      }
 
       if (exportFormat === 'csv') {
-        // Create CSV
-        const headers = Object.keys(exportData[0]).join(',')
-        const rows = exportData.map(row => Object.values(row).join(','))
-        const csv = [headers, ...rows].join('\n')
-
-        // Download
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `deltagare-export-${new Date().toISOString().split('T')[0]}.csv`
-        link.click()
-        URL.revokeObjectURL(url)
+        laddaNerCsv(csvText(rader, ','))
       } else if (exportFormat === 'excel') {
-        // For Excel, we'd typically use a library like xlsx
-        // For now, export as CSV with .xlsx extension
-        const headers = Object.keys(exportData[0]).join('\t')
-        const rows = exportData.map(row => Object.values(row).join('\t'))
-        const tsv = [headers, ...rows].join('\n')
-
-        const blob = new Blob([tsv], { type: 'application/vnd.ms-excel' })
-        const url = URL.createObjectURL(blob)
-        const link = document.createElement('a')
-        link.href = url
-        link.download = `deltagare-export-${new Date().toISOString().split('T')[0]}.xlsx`
-        link.click()
-        URL.revokeObjectURL(url)
+        // Semikolonseparerad CSV — öppnas direkt i svensk Excel. Tidigare
+        // tabbseparerad text med ändelsen .xlsx, som Excel vägrar öppna.
+        laddaNerCsv(csvText(rader, ';'))
       } else if (exportFormat === 'pdf') {
         const { jsPDF, autoTable } = await loadJsPDFWithAutoTable()
         const doc = new jsPDF()
@@ -279,12 +269,12 @@ export function BulkActionsDialog({
         doc.text(`Exporterad ${dateStr} från jobin.se`, 14, 24)
         autoTable(doc, {
           startY: 30,
-          head: [['Namn', 'E-post', 'Status']],
-          body: exportData.map(row => [row.Namn, row.Email, row.Status]),
+          head: [[...EXPORT_RUBRIKER]],
+          body: rader,
           styles: { fontSize: 9 },
           headStyles: { fillColor: [120, 113, 108] },
         })
-        doc.save(`deltagare-export-${new Date().toISOString().split('T')[0]}.pdf`)
+        doc.save(`deltagare-export-${datum}.pdf`)
       }
 
       setSuccess(true)
@@ -626,7 +616,7 @@ export function BulkActionsDialog({
                   <div className="grid grid-cols-3 gap-3">
                     {[
                       { id: 'csv', label: 'CSV', icon: FileText },
-                      { id: 'excel', label: 'Excel', icon: FileSpreadsheet },
+                      { id: 'excel', label: 'Excel (CSV)', icon: FileSpreadsheet },
                       { id: 'pdf', label: 'PDF', icon: FileText },
                     ].map(format => (
                       <button

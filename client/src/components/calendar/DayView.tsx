@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { type CalendarEvent, eventTypeConfig, formatDuration, formatTime } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell, MapPin, Video, Phone } from '@/components/ui/icons'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface DayViewProps {
   date: Date
@@ -22,7 +23,7 @@ const hours = Array.from({ length: 16 }, (_, i) => i + 6) // 06:00 - 21:00
 
 export function DayView({ date, events, onEventClick }: DayViewProps) {
   const { t, i18n } = useTranslation()
-  const dateStr = date.toISOString().split('T')[0]
+  const dateStr = formatLocalDate(date)
   const dayEvents = events.filter(e => e.date === dateStr).sort((a, b) => 
     a.time.localeCompare(b.time)
   )

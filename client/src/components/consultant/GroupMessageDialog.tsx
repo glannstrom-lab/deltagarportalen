@@ -42,6 +42,8 @@ export function GroupMessageDialog({
   const [searchQuery, setSearchQuery] = useState('')
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
+  const [hamtFel, setHamtFel] = useState(false)
   const [sending, setSending] = useState(false)
 
   useEffect(() => {
@@ -55,6 +57,7 @@ export function GroupMessageDialog({
 
   const fetchParticipants = async () => {
     setLoading(true)
+    setHamtFel(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
@@ -68,6 +71,7 @@ export function GroupMessageDialog({
       setParticipants(data || [])
     } catch (err) {
       console.error('Error fetching participants:', err)
+      setHamtFel(true)
     } finally {
       setLoading(false)
     }
@@ -197,7 +201,12 @@ export function GroupMessageDialog({
                   <Loader2 className="w-4 h-4 animate-spin" /> Hämtar deltagare...
                 </p>
               )}
-              {!loading && filtered.length === 0 && (
+              {!loading && hamtFel && (
+                <p role="alert" className="p-4 text-sm text-rose-700 dark:text-rose-300">
+                  Deltagarlistan kunde inte hämtas. Stäng och försök igen.
+                </p>
+              )}
+              {!loading && !hamtFel && filtered.length === 0 && (
                 <p className="p-4 text-sm text-stone-500">Inga deltagare hittades.</p>
               )}
               {!loading && filtered.map(p => {

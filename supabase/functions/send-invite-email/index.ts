@@ -14,6 +14,8 @@ import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-
 import { handleCorsPreflightOrNull, createCorsResponse, validateOriginOrReject } from '../_shared/cors.ts'
 // BL6 (2026-09-12): sanerad felrapport till Sentry — se _shared/sentry.ts
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
+import { svensktDatum } from '../_shared/datum.ts'
 
 // =============================================================================
 // E-MAIL-TEMPLATES
@@ -352,12 +354,9 @@ async function processInvitation(
   }
 
   const inviteUrl = `${siteUrl}/#/invite/${invitation.token}`
-  const expiresAt = new Date(invitation.expires_at)
-  const expiresAtFormatted = expiresAt.toLocaleDateString('sv-SE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  // Svenskt dygn, inte runtimens UTC: `expires_at = now() + 7 days`, så en
+  // inbjudan skapad 00–02 svensk tid fick tidigare ett datum en dag för tidigt.
+  const expiresAtFormatted = svensktDatum(new Date(invitation.expires_at))
 
   const consultantName = invitation.inviter
     ? `${invitation.inviter.first_name || ''} ${invitation.inviter.last_name || ''}`.trim()
@@ -453,7 +452,7 @@ async function processInvitation(
           ? `Inbjudan till Steg till arbete från ${consultantName} · Jobin`
           : 'Inbjudan till Jobin'
 
-      const resendResponse = await fetch('https://api.resend.com/emails', {
+      const resendResponse = await fetchMedTimeout('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${resendApiKey}`,
@@ -465,7 +464,7 @@ async function processInvitation(
           subject,
           html,
         }),
-      })
+      }, TIDSGRANS_TJANST_MS)
 
       if (!resendResponse.ok) {
         const errBody = await resendResponse.text().catch(() => 'unknown')
@@ -493,7 +492,7 @@ async function processInvitation(
   }
 
   if (emailErrorMessage) {
-    await client
+    const { error: markeraFel } = await client
       .from('invitations')
       .update({
         email_sent: false,
@@ -501,10 +500,16 @@ async function processInvitation(
         updated_at: new Date().toISOString(),
       })
       .eq('id', invitationId)
+    if (markeraFel) {
+      console.error(`[send-invite-email] kunde inte spara mejlfelet på inbjudan ${invitationId}:`, markeraFel.message)
+    }
     return { invitationId, success: false, to: invitation.email, error: emailErrorMessage }
   }
 
-  await client
+  // Mejlet ÄR skickat här. Går markeringen fel visar konsulentvyn "inte
+  // skickad" och inbjudan riskerar att skickas igen — felet ska synas i loggen,
+  // inte sväljas (supabase-js kastar inte, det returnerar `error`).
+  const { error: markeraSkickad } = await client
     .from('invitations')
     .update({
       email_sent: true,
@@ -512,6 +517,9 @@ async function processInvitation(
       updated_at: new Date().toISOString(),
     })
     .eq('id', invitationId)
+  if (markeraSkickad) {
+    console.error(`[send-invite-email] mejlet skickades men inbjudan ${invitationId} kunde inte markeras som skickad:`, markeraSkickad.message)
+  }
 
   return { invitationId, success: true, to: invitation.email }
 }

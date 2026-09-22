@@ -43,13 +43,4 @@ export function useAiConsent(): AiConsentStatus {
   }
 }
 
-/**
- * Hook to check if AI features should be available.
- * Returns true only if user is authenticated, has given AI consent,
- * and has NOT invoked their Art 21 right to object to AI/profiling.
- */
-export function useCanUseAi(): boolean {
-  const { profile, isAuthenticated } = useAuthStore()
-  if (!isAuthenticated || !profile?.ai_consent_at) return false
-  return profile.ai_enabled !== false
-}
+// useCanUseAi RADERAD 2026-09-22 — noll anropare; använd useAiConsent().isEnabled.

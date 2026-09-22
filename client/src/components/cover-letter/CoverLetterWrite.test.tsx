@@ -224,6 +224,41 @@ describe('CoverLetterWrite — användarens text', () => {
     expect(createMock.mock.calls[0][0].ai_generated).toBe(false)
   })
 
+  it('text som skrivs MEDAN utkastet genereras skrivs inte över när svaret kommer', async () => {
+    // Sidan lovar: "Du kan börja skriva själv nedan under tiden — utkastet
+    // ersätter inte det du redan skrivit." Före fixen gjorde generateLetter
+    // setEditedLetter(brev) villkorslöst, så allt som skrivits under väntan
+    // (upp till en minut) försvann när svaret kom.
+    // Mutation: återställ `setEditedLetter(brev)` utan jämförelse → RÖD.
+    let svara: (v: unknown) => void = () => {}
+    callAIMock.mockReturnValue(new Promise((r) => { svara = r }))
+    saUtkastet({ currentStep: 2, editedLetter: '', generatedLetter: '' })
+    rita()
+
+    fireEvent.click(await screen.findByRole('button', { name: /Skriv ett utkast åt mig/ }))
+    await waitFor(() => expect(callAIMock).toHaveBeenCalled())
+
+    fireEvent.change(screen.getByLabelText('Ditt brev'), { target: { value: 'Mina egna rader under tiden.' } })
+    svara({ brev: 'AI:ns utkast.' })
+
+    await waitFor(() => expect(screen.queryByText(/Det kan ta upp till en minut/)).not.toBeInTheDocument())
+    expect(screen.getByLabelText('Ditt brev')).toHaveValue('Mina egna rader under tiden.')
+    expect(document.querySelector('[data-ai-generated="true"]')).toBeNull()
+  })
+
+  it('utkastet fyller rutan när ingenting skrivits under tiden', async () => {
+    let svara: (v: unknown) => void = () => {}
+    callAIMock.mockReturnValue(new Promise((r) => { svara = r }))
+    saUtkastet({ currentStep: 2, editedLetter: '', generatedLetter: '' })
+    rita()
+
+    fireEvent.click(await screen.findByRole('button', { name: /Skriv ett utkast åt mig/ }))
+    await waitFor(() => expect(callAIMock).toHaveBeenCalled())
+    svara({ brev: 'AI:ns utkast.' })
+
+    await waitFor(() => expect(screen.getByLabelText('Ditt brev')).toHaveValue('AI:ns utkast.'))
+  })
+
   it('Skav 14 (persona 2026-09-12): en omgenerering ber uttryckligen om en annorlunda variant, i stället för att skicka exakt samma anrop igen', async () => {
     // Mutation: ta bort `variera: opts?.variera === true` i generateLetter,
     // eller ta bort `if (data.variera) {...}` i generateCoverLetterWithAI →

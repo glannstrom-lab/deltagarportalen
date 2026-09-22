@@ -133,3 +133,37 @@ describe('FocusCVBuilder — väntar in sparningen innan steget byts (CB3)', () 
     expect(screen.queryByRole('alert')).toBeNull()
   })
 })
+
+describe('FocusCVBuilder — omhämtningen efter en sparning skriver inte över det som skrivs', () => {
+  // Efter varje autosparning invaliderar `onSuccess` ['cv'], och effekten som
+  // fyller formuläret från `existingCV` körde igen när svaret kom. Allt som
+  // skrivits på nästa steg under omhämtningen ersattes med serverns version.
+  // Mutation: ta bort `harFyllts`-spärren i effekten → RÖD.
+  it('text som skrivs medan omhämtningen pågår står kvar', async () => {
+    const sparat = {
+      firstName: 'Anna', lastName: 'Ek', email: '', phone: '', title: '', summary: '',
+      workExperience: [], education: [], skills: [], template: 'minimal',
+    }
+    let svaraOmhamtning: (v: unknown) => void = () => {}
+    mockGetCV
+      .mockResolvedValueOnce(sparat)
+      .mockImplementationOnce(() => new Promise((r) => { svaraOmhamtning = r }))
+    mockUpdateCV.mockResolvedValue({})
+    renderBuilder()
+
+    fireEvent.click(await screen.findByRole('button', { name: /nästa/i }))
+    await waitFor(() => expect(document.getElementById('focuscv-summary')).not.toBeNull())
+    const sammanfattning = document.getElementById('focuscv-summary') as HTMLTextAreaElement
+    await waitFor(() => expect(mockGetCV).toHaveBeenCalledTimes(2))
+
+    fireEvent.change(sammanfattning, { target: { value: 'Noggrann lagerarbetare med truckkort.' } })
+    // Servern svarar med den sparade raden — ny referens (updated_at har ändrats).
+    svaraOmhamtning({ ...sparat, updated_at: '2026-09-22T19:00:00Z' })
+
+    await waitFor(() => expect(mockGetCV).toHaveBeenCalledTimes(2))
+    await new Promise((r) => setTimeout(r, 20))
+    expect(document.getElementById('focuscv-summary')).toHaveValue(
+      'Noggrann lagerarbetare med truckkort.'
+    )
+  })
+})

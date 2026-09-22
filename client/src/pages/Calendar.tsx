@@ -15,6 +15,20 @@ import { Calendar as CalendarIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { FocusCalendarWizard } from '@/components/focus/pages/FocusCalendarWizard'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
+import { formatLocalDate, parseLocalDate } from '@/services/aktivitetSchema'
+import { datumSprak } from '@/lib/datumsprak'
+
+/**
+ * Kalenderns datum hålls på LOKAL MIDDAG.
+ *
+ * Vecko- och dagvyn slår upp händelser med `date.toISOString()`, alltså
+ * UTC-datumet. Mellan 00 och 02 svensk tid är det gårdagen — dagvyn visade
+ * då gårdagens händelser under dagens rubrik. Kl. 12 lokal tid ligger UTC
+ * på samma datum året runt, så varje uppslag nedströms hamnar rätt.
+ */
+function lokalMiddag(d: Date = new Date()): Date {
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12)
+}
 
 export default function Calendar() {
   const { t } = useTranslation()
@@ -34,7 +48,7 @@ export default function Calendar() {
 
 function CalendarInner() {
   const { t, i18n } = useTranslation()
-  const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentDate, setCurrentDate] = useState(() => lokalMiddag())
   const [view, setView] = useState<CalendarView>('month')
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
@@ -73,7 +87,7 @@ function CalendarInner() {
 
   const navigate = (direction: 'prev' | 'next' | 'today') => {
     if (direction === 'today') {
-      setCurrentDate(new Date())
+      setCurrentDate(lokalMiddag())
     } else {
       const newDate = new Date(currentDate)
       if (view === 'month') {
@@ -93,7 +107,7 @@ function CalendarInner() {
   }
 
   const handleDateClick = (date: Date) => {
-    setCurrentDate(date)
+    setCurrentDate(lokalMiddag(date))
     setView('day')
   }
 
@@ -131,7 +145,7 @@ function CalendarInner() {
         // Update existing event
         const success = await calendarApi.updateEvent(event.id, apiEvent)
         if (success) {
-          setEvents(events.map(e => e.id === event.id ? event : e))
+          setEvents(prev => prev.map(e => e.id === event.id ? event : e))
           setStatusMessage(t('calendar.eventUpdated'))
         } else {
           throw new Error('Update failed')
@@ -141,7 +155,7 @@ function CalendarInner() {
         const created = await calendarApi.createEvent(apiEvent)
         if (created) {
           const newEvent = { ...event, id: created.id || event.id }
-          setEvents([...events, newEvent])
+          setEvents(prev => [...prev, newEvent])
           setStatusMessage(t('calendar.eventCreated'))
         } else {
           throw new Error('Create failed')
@@ -164,7 +178,7 @@ function CalendarInner() {
     try {
       const success = await calendarApi.deleteEvent(eventId)
       if (success) {
-        setEvents(events.filter(e => e.id !== eventId))
+        setEvents(prev => prev.filter(e => e.id !== eventId))
         setStatusMessage(t('calendar.eventDeleted'))
         setSelectedEvent(null)
         setIsModalOpen(false)
@@ -203,6 +217,8 @@ function CalendarInner() {
       t('calendar.days.sun')
     ]
 
+    const idagStr = formatLocalDate(new Date())
+
     const getEventsForDate = (dateStr: string) => {
       return events.filter(event => event.date === dateStr)
     }
@@ -227,12 +243,13 @@ function CalendarInner() {
             const day = index + 1
             const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
             const dayEvents = getEventsForDate(dateStr)
-            const isToday = new Date().toISOString().split('T')[0] === dateStr
+            const isToday = idagStr === dateStr
 
             return (
               <button
                 key={day}
-                onClick={() => handleDateClick(new Date(dateStr))}
+                onClick={() => handleDateClick(new Date(year, month, day))}
+                aria-current={isToday ? 'date' : undefined}
                 className="h-28 border-b border-r border-stone-100 dark:border-stone-700/50 p-2 text-left transition-colors relative overflow-hidden hover:bg-stone-50 dark:hover:bg-stone-700/50"
               >
                 <span className={`
@@ -283,8 +300,8 @@ function CalendarInner() {
         <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
           {sortedEvents.map((event) => {
             const config = eventTypeConfig[event.type]
-            const date = new Date(event.date)
-            const isPast = date < new Date() && date.toDateString() !== new Date().toDateString()
+            const date = parseLocalDate(event.date)
+            const isPast = event.date < formatLocalDate(new Date())
 
             return (
               <button
@@ -305,7 +322,7 @@ function CalendarInner() {
                     </span>
                   </div>
                   <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
-                    {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    {date.toLocaleDateString(datumSprak(i18n.language), { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
                     {formatTime(event.time)}
                   </p>
@@ -339,9 +356,10 @@ function CalendarInner() {
         actions={
           <button
             onClick={handleCreateEvent}
+            aria-label={t('calendar.newEvent')}
             className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-[1.08] transition-all font-medium text-sm"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" aria-hidden="true" />
             <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
           </button>
         }

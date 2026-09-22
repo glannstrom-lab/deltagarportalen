@@ -30,6 +30,7 @@ import { useFocusMode as useFocusModeProvider } from '@/components/FocusModeProv
 import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSettingsWizard } from '@/components/focus/pages/FocusSettingsWizard'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface SettingSection {
   id: string
@@ -67,7 +68,7 @@ export default function Settings() {
 }
 
 function SettingsInner() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   // Djuplänkning via `?section=` (2026-07-27, G13): transparensvyn i
   // "Min konsulent" pekar hit med `?section=privacy` så deltagaren kan gå
   // direkt från "det här ser din konsulent" till att ändra vad som delas.
@@ -292,7 +293,7 @@ function SettingsInner() {
   // Format date for display
   const formatConsentDate = (dateString: string | null) => {
     if (!dateString) return null
-    return new Date(dateString).toLocaleDateString('sv-SE', {
+    return new Date(dateString).toLocaleDateString(datumSprak(i18n.language), {
       year: 'numeric',
       month: 'long',
       day: 'numeric',

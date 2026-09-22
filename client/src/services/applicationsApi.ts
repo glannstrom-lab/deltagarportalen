@@ -22,6 +22,7 @@ import type {
 import { APPLICATION_STATUS_CONFIG } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { handleError } from './apiError'
+import { formatLocalDate } from './aktivitetSchema'
 
 /**
  * Dagens datum som `YYYY-MM-DD` i användarens tidszon.
@@ -31,10 +32,7 @@ import { handleError } from './apiError'
  * hamnar i en aktivitetsrapport är det fel datum, inte en avrundning.
  */
 function idagLokalt(): string {
-  const nu = new Date()
-  const månad = String(nu.getMonth() + 1).padStart(2, '0')
-  const dag = String(nu.getDate()).padStart(2, '0')
-  return `${nu.getFullYear()}-${månad}-${dag}`
+  return formatLocalDate(new Date())
 }
 
 // ============================================
@@ -768,7 +766,11 @@ export const applicationRemindersApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const futureDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    // Lokalt datum — `reminder_date` är en date-kolumn och "idag" är
+    // användarens dag, inte UTC:s (se idagLokalt ovan).
+    const framtid = new Date()
+    framtid.setDate(framtid.getDate() + days)
+    const futureDate = formatLocalDate(framtid)
 
     const { data, error } = await supabase
       .from('application_reminders')
@@ -790,7 +792,7 @@ export const applicationRemindersApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = idagLokalt()
 
     const { data, error } = await supabase
       .from('application_reminders')

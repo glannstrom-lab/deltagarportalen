@@ -79,23 +79,4 @@ export const draftsApi = {
     }
   },
 
-  async getAllByType(draftType: string) {
-    const user = await getCurrentUser()
-    if (!user) {
-      return []
-    }
-
-    const { data, error } = await supabase
-      .from('user_drafts')
-      .select('*')
-      .eq('draft_type', draftType)
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-    
-    if (error) {
-      handleStorageError(error, 'hämta utkast')
-      return []
-    }
-    return data || []
-  }
 }

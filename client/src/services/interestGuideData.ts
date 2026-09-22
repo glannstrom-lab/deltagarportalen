@@ -4028,16 +4028,6 @@ function calculateTopRiasecBonus(user: RiasecScores, job: RiasecScores): number 
 
 // ===== HJÄLPFUNKTIONER =====
 
-export function getSectionByQuestionId(questionId: string): Section | undefined {
-  const question = allQuestions.find(q => q.id === questionId)
-  if (!question) return undefined
-  return sections.find(s => s.id === question.section)
-}
-
-export function getQuestionsBySection(sectionId: SectionId): Question[] {
-  return allQuestions.filter(q => q.section === sectionId)
-}
-
 export function calculateUserProfile(answers: Record<string, number>): UserProfile {
   // Beräkna RIASEC
   const riasec: RiasecScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 }

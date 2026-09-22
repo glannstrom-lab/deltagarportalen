@@ -42,6 +42,8 @@ import type {
 import { applicationsApi } from '@/services/applicationsApi'
 import { showToast } from '@/components/Toast'
 import { buildSpontaneousCoverLetterUrl } from '@/utils/jobLinks'
+import { formatLocalDate, parseLocalDate } from '@/services/aktivitetSchema'
+import { datumSprak } from '@/lib/datumsprak'
 import { StatusBadge } from './spontaneousStatus'
 import {
   DropdownMenu,
@@ -53,10 +55,12 @@ import {
 
 const OUTREACH_METHODS: OutreachMethod[] = ['email', 'linkedin', 'phone', 'visit', 'other']
 
+// Lokal dag, inte UTC-dag: `toISOString()` gav gårdagen mellan 00 och 02
+// svensk tid, så "om 1 vecka" blev sex dagar. Kolumnerna är `date`.
 function addDaysIso(days: number): string {
   const date = new Date()
   date.setDate(date.getDate() + days)
-  return date.toISOString().split('T')[0]
+  return formatLocalDate(date)
 }
 
 export function CompanyCard({
@@ -76,7 +80,7 @@ export function CompanyCard({
   selected?: boolean
   onToggleSelect?: () => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [isEditingNotes, setIsEditingNotes] = useState(false)
   const [notesValue, setNotesValue] = useState(company.notes || '')
@@ -230,7 +234,7 @@ export function CompanyCard({
           {company.outreach_date && (
             <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
               <Calendar className="w-3 h-3" aria-hidden="true" />
-              {t('spontaneous.contacted')}: {new Date(company.outreach_date).toLocaleDateString('sv-SE')}
+              {t('spontaneous.contacted')}: {parseLocalDate(company.outreach_date).toLocaleDateString(datumSprak(i18n.language))}
             </p>
           )}
 
@@ -244,7 +248,7 @@ export function CompanyCard({
                 id={`followup-${company.id}`}
                 type="date"
                 value={followupValue}
-                min={new Date().toISOString().split('T')[0]}
+                min={formatLocalDate(new Date())}
                 onChange={(e) => setFollowupValue(e.target.value)}
                 className="text-sm px-2 py-1 rounded-md border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-stone-900 dark:text-stone-100"
               />
@@ -264,7 +268,7 @@ export function CompanyCard({
             /* amber-600 gav 3,19:1 mot vitt kort — under AA. amber-700 = 5,02:1. */
             <p className="text-xs text-amber-700 dark:text-amber-400 mt-1 flex items-center gap-1">
               <Clock className="w-3 h-3" aria-hidden="true" />
-              {t('spontaneous.followUp')}: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
+              {t('spontaneous.followUp')}: {parseLocalDate(company.followup_date).toLocaleDateString(datumSprak(i18n.language))}
               <button
                 type="button"
                 onClick={() => { setFollowupValue(company.followup_date || ''); setIsEditingFollowup(true) }}

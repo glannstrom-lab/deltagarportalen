@@ -137,6 +137,29 @@ describe('useEducationSearch', () => {
     expect(result.current.results[0].id).toBe('edu-0')
   })
 
+  it('ett svar som landar efter att sökfältet tömts fyller inte listan igen', async () => {
+    // Regression 2026-09-22: att tömma alla filter anropade clearSearch, men
+    // höjde inte löpnumret. En sökning som redan var i luften ägde därför
+    // fortfarande tillståndet och fyllde listan med träffar för en fråga som
+    // inte längre stod i fältet — och med `hasSearched: true`.
+    sok.mockImplementation(async () => {
+      await new Promise((r) => setTimeout(r, 150))
+      return { educations: traffar(0, 3), total: 3, hasMore: false, source: 'jobed-connect' }
+    })
+
+    const { result } = renderHook(() => useEducationSearch({ debounceDelay: 20 }))
+    act(() => result.current.setQuery('lager'))
+    await waitFor(() => expect(result.current.isSearching).toBe(true))
+
+    act(() => result.current.setQuery(''))
+    await new Promise((r) => setTimeout(r, 250))
+
+    expect(result.current.results).toEqual([])
+    expect(result.current.hasSearched).toBe(false)
+    expect(result.current.isSearching).toBe(false)
+    expect(result.current.isLoading).toBe(false)
+  })
+
   it('söker inte alls när inget filter är satt', async () => {
     renderHook(() => useEducationSearch({ debounceDelay: 20 }))
     await new Promise((r) => setTimeout(r, 120))

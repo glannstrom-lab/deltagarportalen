@@ -64,6 +64,10 @@ function ResurserHubInner() {
   const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
+    // Tre lägen: innan svaret är inne (eller om det fallerat) finns inget
+    // underlag. Då visas ingen status alls — inte "Inga än", som är ett
+    // påstående om användaren. `data` är undefined både vid laddning och fel.
+    const klar = data !== undefined
     const articles = data?.recentArticles ?? []
     const articlesCompleted = data?.articleCompletedCount ?? 0
     const aiSession = data?.aiTeamSessions?.[0]
@@ -77,7 +81,7 @@ function ResurserHubInner() {
         icon: BookOpen,
         title: t('resurserHub.features.knowledgeBase.title', 'Kunskapsbank'),
         description: t('resurserHub.features.knowledgeBase.description', 'Guider, tips och artiklar för en bättre jobbsökning.'),
-        status: articlesCompleted > 0
+        status: !klar ? undefined : articlesCompleted > 0
           ? t('resurserHub.features.knowledgeBase.read', { defaultValue: '{{count}} lästa', count: articlesCompleted })
           : articles.length > 0
             ? t('hubs.inProgress', 'Pågående')
@@ -90,7 +94,7 @@ function ResurserHubInner() {
         icon: Bookmark,
         title: t('resurserHub.features.myDocuments.title', 'Mina dokument'),
         description: t('resurserHub.features.myDocuments.description', 'Sparade CV, brev och andra dokument.'),
-        status: docsCount > 0
+        status: !klar ? undefined : docsCount > 0
           ? t('hubs.saved', { defaultValue: '{{count}} sparade', count: docsCount })
           : t('resurserHub.features.myDocuments.none', 'Inga ännu'),
         isActive: docsCount > 0,
@@ -108,7 +112,7 @@ function ResurserHubInner() {
         icon: Bot,
         title: t('resurserHub.features.aiTeam.title', 'AI-team'),
         description: t('resurserHub.features.aiTeam.description', 'Chatta med karriärcoach, studievägledare och fler.'),
-        status: aiSession
+        status: !klar ? undefined : aiSession
           ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: relativeShort(aiSession.updated_at, t) })
           : t('resurserHub.features.aiTeam.meet', 'Möt ditt AI-team'),
         isActive: !!aiSession,

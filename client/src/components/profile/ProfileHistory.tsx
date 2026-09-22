@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { History, Loader2, ChevronDown, ChevronUp, Clock } from '@/components/ui/icons'
 import { profileHistoryApi, type ProfileHistoryEntry } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface Props {
   className?: string
@@ -28,7 +29,7 @@ const FIELD_LABELS: Record<string, string> = {
 }
 
 export function ProfileHistory({ className }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [history, setHistory] = useState<ProfileHistoryEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -61,7 +62,7 @@ export function ProfileHistory({ className }: Props) {
     if (diffHours < 24) return `${diffHours} tim sedan`
     if (diffDays < 7) return `${diffDays} dagar sedan`
 
-    return d.toLocaleDateString('sv-SE', {
+    return d.toLocaleDateString(datumSprak(i18n.language), {
       month: 'short',
       day: 'numeric',
       hour: '2-digit',

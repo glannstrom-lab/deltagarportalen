@@ -1,5 +1,5 @@
 /**
- * Debounce and throttle utilities
+ * Debounce utility
  */
 
 /**
@@ -140,70 +140,8 @@ export function debounce<Args extends unknown[], R>(
   return debounced
 }
 
-/**
- * Creates a throttled function that only invokes func at most once per every wait milliseconds.
- */
-export function throttle<T extends (...args: unknown[]) => unknown>(
-  func: T,
-  wait: number
-): T & { cancel: () => void } {
-  let lastCallTime: number | undefined
-  let timeout: NodeJS.Timeout | null = null
-  let lastArgs: unknown[] | null = null
-  let lastThis: unknown = null
-
-  const invoke = () => {
-    const args = lastArgs!
-    const thisArg = lastThis
-    lastArgs = lastThis = null
-    lastCallTime = Date.now()
-    func.apply(thisArg, args as Parameters<T>)
-  }
-
-  const throttled = function (this: unknown, ...args: Parameters<T>) {
-    const now = Date.now()
-    const remaining = lastCallTime ? wait - (now - lastCallTime) : 0
-
-    lastArgs = args
-    // eslint-disable-next-line @typescript-eslint/no-this-alias -- behövs för korrekt this-binding i throttled funktion
-    lastThis = this
-
-    if (remaining <= 0 || remaining > wait) {
-      if (timeout) {
-        clearTimeout(timeout)
-        timeout = null
-      }
-      invoke()
-    } else if (!timeout) {
-      timeout = setTimeout(invoke, remaining)
-    }
-  } as T & { cancel: () => void }
-
-  throttled.cancel = () => {
-    if (timeout) {
-      clearTimeout(timeout)
-      timeout = null
-    }
-    lastCallTime = undefined
-    lastArgs = lastThis = null
-  }
-
-  return throttled
-}
-
-/**
- * React hook for debounced value
- */
-export function useDebouncedValue<T>(value: T, delay: number): T {
-  const [debouncedValue, setDebouncedValue] = useState(value)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setDebouncedValue(value), delay)
-    return () => clearTimeout(timer)
-  }, [value, delay])
-
-  return debouncedValue
-}
-
-// Import useState and useEffect for the hook
-import { useState, useEffect } from 'react'
+// `throttle` och `useDebouncedValue` borttagna 2026-09-22: noll anropare i
+// src (bara sina egna tester). `throttle` hade dessutom en bugg — den
+// schemalagda körningen nollade aldrig `timeout`, så ett anrop inom fönstret
+// EFTER en fördröjd körning schemalades aldrig och tappades tyst. Behövs en
+// throttle igen: skriv den med ett test för just det fallet.

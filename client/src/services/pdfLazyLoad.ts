@@ -51,10 +51,3 @@ export async function loadJsPDFWithAutoTable() {
   return { jsPDF, autoTable }
 }
 
-/**
- * Preload PDF-bibliotek (t.ex. vid hover på export-knapp)
- */
-export function preloadPDFLibraries() {
-  // Starta laddning i bakgrunden
-  void loadPDFLibraries()
-}

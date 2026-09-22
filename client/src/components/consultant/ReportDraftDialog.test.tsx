@@ -199,3 +199,21 @@ describe('ReportDraftDialog — utkastlager (KA3)', () => {
     // det faktiska överlevnadsbeviset.
   })
 })
+
+describe('ReportDraftDialog — "Skapa nytt utkast" som misslyckas (städpasset 2026-09-22)', () => {
+  // handleGenerate började med setDraft('') — innan AI-anropet ens gjorts.
+  // Gick anropet fel stod konsulenten med en tom ruta: hennes handredigerade
+  // utkast var borta, och debouncen skrev tomheten till sessionStorage.
+  it('ett handredigerat utkast finns kvar när nästa generering misslyckas', async () => {
+    renderDialog()
+    const textarea = await genereraUtkast()
+    fireEvent.change(textarea, { target: { value: 'Mitt redigerade utkast.' } })
+
+    vi.mocked(callAI).mockRejectedValueOnce(new Error('503'))
+    fireEvent.click(screen.getByRole('button', { name: /skapa nytt utkast/i }))
+
+    await waitFor(() => expect(callAI).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(screen.getByRole('button', { name: /skapa nytt utkast/i })).not.toBeDisabled())
+    expect(screen.getByLabelText('Rapportutkast')).toHaveValue('Mitt redigerade utkast.')
+  })
+})

@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
-import { Target, Footprints, Smile, CheckCircle2 } from '@/components/ui/icons'
+import { Target, Footprints, Smile, CheckCircle2, AlertCircle } from '@/components/ui/icons'
 import { careerPlanApi } from '@/services/careerApi'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
@@ -21,6 +21,8 @@ export function FocusCareerWizard({ onExit }: Props) {
   const [vision, setVision] = useState('')
   const [firstStep, setFirstStep] = useState('')
   const [saved, setSaved] = useState(false)
+  /** Sant när sparningen misslyckats. Guiden stängs då inte — texten finns kvar. */
+  const [sparfel, setSparfel] = useState(false)
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -61,7 +63,16 @@ export function FocusCareerWizard({ onExit }: Props) {
       current={step}
       onNext={async () => {
         if (current.id === 'done') {
-          try { await saveMutation.mutateAsync() } catch (err) { console.error('Career save failed', err) }
+          // Samma regel som mående-guiden (MV3): ett misslyckat sparande får
+          // inte stänga guiden — då försvann planen personen just skrivit.
+          setSparfel(false)
+          try {
+            await saveMutation.mutateAsync()
+          } catch (err) {
+            console.error('[FocusCareerWizard] kunde inte spara planen:', err)
+            setSparfel(true)
+            return
+          }
           onExit()
           return
         }
@@ -105,6 +116,14 @@ export function FocusCareerWizard({ onExit }: Props) {
             <div className="flex items-center gap-2 text-stone-700 dark:text-stone-200">
               <CheckCircle2 className="w-5 h-5 text-[var(--c-solid)]" />
               {t('focus.career.savedText', 'Sparat!')}
+            </div>
+          ) : sparfel ? (
+            <div
+              role="alert"
+              className="flex items-start gap-2 p-3 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)] text-stone-700 dark:text-stone-200"
+            >
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--c-solid)]" aria-hidden="true" />
+              <span>{t('focus.saveFailed')}</span>
             </div>
           ) : (
             <p className="text-stone-600 dark:text-stone-300">

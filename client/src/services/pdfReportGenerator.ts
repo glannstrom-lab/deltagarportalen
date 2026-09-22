@@ -520,17 +520,6 @@ export async function downloadConsultantReport(
 }
 
 /**
- * Generate PDF as blob for preview or other operations
- */
-export async function generateReportBlob(
-  data: ReportData,
-  options: ReportOptions = {}
-): Promise<Blob> {
-  const doc = await generateConsultantReport(data, options)
-  return doc.output('blob')
-}
-
-/**
  * Generate PDF as data URL for preview
  */
 export async function generateReportDataUrl(

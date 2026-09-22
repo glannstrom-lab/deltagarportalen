@@ -221,15 +221,6 @@ export const careerOfflineCache = {
     await offlineStorage.set(STORES.milestones, 'all', milestones, 7 * 24 * 60 * 60 * 1000)
   },
 
-  async getCachedMilestones(): Promise<unknown[]> {
-    return (await offlineStorage.get<unknown[]>(STORES.milestones, 'all')) || []
-  },
-
-  // Set last sync timestamp
-  async setLastSync(): Promise<void> {
-    await offlineStorage.set(STORES.metadata, 'lastSync', Date.now(), 365 * 24 * 60 * 60 * 1000)
-  },
-
   /**
    * Tömmer hela offline-lagret. Anropas vid utloggning.
    *
@@ -244,9 +235,6 @@ export const careerOfflineCache = {
     )
   },
 
-  async getLastSync(): Promise<number | null> {
-    return offlineStorage.get(STORES.metadata, 'lastSync')
-  }
 }
 
 export default offlineStorage

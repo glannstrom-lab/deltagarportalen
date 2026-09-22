@@ -7,6 +7,7 @@ import { InterviewPrepPanel } from './InterviewPrep'
 import { TravelPlanner } from './TravelPlanner'
 import { Button } from '@/components/ui/Button'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface EventModalProps {
   event: CalendarEvent | null
@@ -68,9 +69,20 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   // Härlett under render (React-dokumentens mönster för "adjusting state when
   // a prop changes") i stället för ett effektbaserat setState, som gav en
   // extra rendering varje gång modalen öppnades.
-  const [prevEvent, setPrevEvent] = useState(event)
-  if (event !== prevEvent) {
-    setPrevEvent(event)
+  //
+  // 2026-09-22 (andra passet): första versionen jämförde bara `event` mot ett
+  // startvärde som ÄR `event`. Kalendern monterar modalen stängd med
+  // `event = null`, och "Ny händelse" öppnar den med `event` fortfarande
+  // `null` — ingen ändring, ingen återställning. Första nya händelsen efter
+  // sidladdning fick därför ett tomt formulär: ingen typ, inget datum, ingen
+  // tid, och Spara låst. Återställningen sker nu också när modalen ÖPPNAS.
+  const [senast, setSenast] = useState<{ event: CalendarEvent | null; isOpen: boolean } | null>(null)
+  const oppnas = isOpen && (senast === null || !senast.isOpen)
+  const bytt = senast !== null && senast.event !== event
+  if (senast === null || senast.event !== event || senast.isOpen !== isOpen) {
+    setSenast({ event, isOpen })
+  }
+  if (oppnas || (isOpen && bytt)) {
     setValidationError(null)
     if (event) {
       setFormData({ ...event })
@@ -79,7 +91,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
     } else {
       setFormData({
         type: 'meeting',
-        date: new Date().toISOString().split('T')[0],
+        date: formatLocalDate(new Date()),
         time: '09:00',
         endTime: '10:00',
         tasks: [],

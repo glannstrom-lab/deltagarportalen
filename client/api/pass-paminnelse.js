@@ -141,14 +141,24 @@ const hanterare = async (req, res) => {
   if (error) return res.status(500).json({ error: `Kunde inte läsa påminnelser: ${error.message}` });
 
   const kandidater = (notiser || []).filter((n) => !(n.data && n.data.mail_sent));
-  const utfall = { lästa: (notiser || []).length, kandidater: kandidater.length, skickade: 0, avstängda: 0, utanEpost: 0, fel: 0 };
+  const utfall = { lästa: (notiser || []).length, kandidater: kandidater.length, skickade: 0, avstängda: 0, utanEpost: 0, fel: 0, ejMarkerade: 0 };
 
   for (const n of kandidater) {
-    const [{ data: profil }, { data: pref }] = await Promise.all([
+    const [profilSvar, prefSvar] = await Promise.all([
       supabase.from('profiles').select('email, first_name').eq('id', n.user_id).maybeSingle(),
       supabase.from('user_preferences').select('email_notifications').eq('user_id', n.user_id).maybeSingle(),
     ]);
-    if (!skaMejla(pref)) { utfall.avstängda++; continue; }
+    // 2026-09-22: ett uppslagsfel är ett FEL, inte ett svar. Tidigare kastades
+    // `error` bort — ett fel på reglaget blev `pref = null`, vilket skaMejla()
+    // läser som "aldrig rört = skicka", och den som stängt av mejl fick mejl
+    // just när databasen strulade. Vaktat av src/test/api-mejlcron-uppslagsfel.test.ts.
+    if (profilSvar.error || prefSvar.error) {
+      utfall.fel++;
+      console.error('[pass-paminnelse] uppslag misslyckades för notis', n.id, (profilSvar.error || prefSvar.error).message);
+      continue;
+    }
+    const profil = profilSvar.data;
+    if (!skaMejla(prefSvar.data)) { utfall.avstängda++; continue; }
     const till = profil && profil.email;
     if (!till) { utfall.utanEpost++; continue; }
 
@@ -160,8 +170,14 @@ const hanterare = async (req, res) => {
         body: JSON.stringify({ from: emailFrom, to: [till], subject: n.title, html, text }),
       });
       if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text().catch(() => 'unknown')).slice(0, 200)}`);
-      await supabase.from('notifications').update({ data: { ...(n.data || {}), mail_sent: new Date().toISOString() } }).eq('id', n.id);
       utfall.skickade++;
+      // Mejlet ÄR skickat. Går markeringen inte att skriva skickar nästa
+      // körning samma mejl igen — det ska synas, inte sväljas.
+      const { error: markeringsfel } = await supabase.from('notifications').update({ data: { ...(n.data || {}), mail_sent: new Date().toISOString() } }).eq('id', n.id);
+      if (markeringsfel) {
+        utfall.ejMarkerade++;
+        console.error('[pass-paminnelse] mail_sent kunde inte sättas för notis', n.id, markeringsfel.message);
+      }
     } catch (e) {
       utfall.fel++;
       console.error('[pass-paminnelse] mejl misslyckades för notis', n.id, e instanceof Error ? e.message : e);

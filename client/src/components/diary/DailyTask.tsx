@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CheckCircle2, Circle, Sparkles, ChevronRight, RefreshCw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { userPreferencesApi } from '@/services/cloudStorage'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Task {
   id: string
@@ -108,7 +109,7 @@ export function DailyTask() {
     const loadTaskState = async () => {
       try {
         setLoading(true)
-        const today = new Date().toISOString().split('T')[0]
+        const today = formatLocalDate(new Date())
         
         // Försök ladda från molnet
         const prefs = await userPreferencesApi.get()
@@ -142,7 +143,7 @@ export function DailyTask() {
     const savedDate = localStorage.getItem('dailyTaskDate')
     const savedIndex = localStorage.getItem('dailyTaskIndex')
     const savedCompleted = localStorage.getItem('dailyTaskCompleted')
-    const today = new Date().toISOString().split('T')[0]
+    const today = formatLocalDate(new Date())
 
     if (savedDate === today && savedIndex) {
       setCurrentTaskIndex(parseInt(savedIndex))
@@ -158,7 +159,7 @@ export function DailyTask() {
   }
 
   const saveTaskState = async (taskIndex: number, isCompleted: boolean) => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = formatLocalDate(new Date())
     const state: DailyTaskState = {
       date: today,
       taskIndex,

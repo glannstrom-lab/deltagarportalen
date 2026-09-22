@@ -26,23 +26,6 @@ export interface SalaryData {
   sector?: 'private' | 'public' | 'all'
 }
 
-export interface RegionalSalaryData {
-  region: string
-  regionCode: string
-  medianSalary: number
-  salaryIndex: number // 100 = national average
-  costOfLivingIndex: number
-}
-
-export interface IndustryTrend {
-  industry: string
-  currentMedian: number
-  previousMedian: number
-  changePercent: number
-  yearOverYear: number
-  forecast: 'increasing' | 'stable' | 'decreasing'
-}
-
 // Latest curated salary data (updated 2026-Q1)
 const SALARY_DATA_2026: SalaryData[] = [
   { occupation: 'Systemutvecklare', occupationCode: '2512', median: 52000, p10: 38000, p90: 72000, mean: 54000, year: 2026, sector: 'all' },
@@ -65,19 +48,6 @@ const SALARY_DATA_2026: SalaryData[] = [
   { occupation: 'Undersköterska', occupationCode: '5321', median: 30500, p10: 27000, p90: 35000, mean: 30800, year: 2026, sector: 'public' },
   { occupation: 'Civilingenjör', occupationCode: '2141', median: 50000, p10: 38000, p90: 68000, mean: 52000, year: 2026, sector: 'all' },
   { occupation: 'Controller', occupationCode: '2411', median: 52000, p10: 40000, p90: 68000, mean: 54000, year: 2026, sector: 'private' },
-]
-
-const REGIONAL_SALARY_DATA: RegionalSalaryData[] = [
-  { region: 'Stockholm', regionCode: '01', medianSalary: 48000, salaryIndex: 115, costOfLivingIndex: 125 },
-  { region: 'Göteborg', regionCode: '14', medianSalary: 44000, salaryIndex: 106, costOfLivingIndex: 110 },
-  { region: 'Malmö', regionCode: '12', medianSalary: 42500, salaryIndex: 102, costOfLivingIndex: 105 },
-  { region: 'Uppsala', regionCode: '03', medianSalary: 43000, salaryIndex: 103, costOfLivingIndex: 108 },
-  { region: 'Linköping', regionCode: '05', medianSalary: 41500, salaryIndex: 100, costOfLivingIndex: 98 },
-  { region: 'Västerås', regionCode: '19', medianSalary: 41000, salaryIndex: 99, costOfLivingIndex: 95 },
-  { region: 'Örebro', regionCode: '18', medianSalary: 40000, salaryIndex: 96, costOfLivingIndex: 92 },
-  { region: 'Umeå', regionCode: '24', medianSalary: 40500, salaryIndex: 97, costOfLivingIndex: 95 },
-  { region: 'Luleå', regionCode: '25', medianSalary: 41000, salaryIndex: 99, costOfLivingIndex: 90 },
-  { region: 'Jönköping', regionCode: '06', medianSalary: 39500, salaryIndex: 95, costOfLivingIndex: 90 },
 ]
 
 class SCBSalaryService {
@@ -125,146 +95,6 @@ class SCBSalaryService {
       utan underlag. (Granskning 2026-08-21.)
     */
     return null
-  }
-
-  /**
-   * Get all salary data
-   */
-  async getAllSalaries(options?: {
-    sector?: 'private' | 'public' | 'all'
-    sortBy?: 'median' | 'occupation' | 'growth'
-    order?: 'asc' | 'desc'
-  }): Promise<SalaryData[]> {
-    let data = [...SALARY_DATA_2026]
-
-    // Filter by sector
-    if (options?.sector && options.sector !== 'all') {
-      data = data.filter(s => s.sector === options.sector || s.sector === 'all')
-    }
-
-    // Sort
-    const sortBy = options?.sortBy || 'median'
-    const order = options?.order || 'desc'
-
-    data.sort((a, b) => {
-      const aVal = sortBy === 'occupation' ? a.occupation : a.median
-      const bVal = sortBy === 'occupation' ? b.occupation : b.median
-
-      if (typeof aVal === 'string' && typeof bVal === 'string') {
-        return order === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
-      }
-      return order === 'asc' ? (aVal as number) - (bVal as number) : (bVal as number) - (aVal as number)
-    })
-
-    return data
-  }
-
-  /**
-   * Get regional salary data
-   */
-  async getRegionalSalaries(): Promise<RegionalSalaryData[]> {
-    return REGIONAL_SALARY_DATA
-  }
-
-  /**
-   * Calculate salary adjustment for a specific region
-   */
-  getRegionalAdjustment(region: string, baseSalary: number): {
-    adjustedSalary: number
-    adjustment: number
-    realPurchasingPower: number
-  } {
-    const regionalData = REGIONAL_SALARY_DATA.find(
-      r => r.region.toLowerCase() === region.toLowerCase()
-    )
-
-    if (!regionalData) {
-      return {
-        adjustedSalary: baseSalary,
-        adjustment: 0,
-        realPurchasingPower: baseSalary,
-      }
-    }
-
-    const adjustment = (regionalData.salaryIndex - 100) / 100
-    const adjustedSalary = Math.round(baseSalary * (1 + adjustment))
-    const realPurchasingPower = Math.round(adjustedSalary / (regionalData.costOfLivingIndex / 100))
-
-    return {
-      adjustedSalary,
-      adjustment: adjustment * 100,
-      realPurchasingPower,
-    }
-  }
-
-  /**
-   * Search salaries by keyword
-   */
-  async searchSalaries(query: string): Promise<SalaryData[]> {
-    const searchTerm = query.toLowerCase()
-    return SALARY_DATA_2026.filter(
-      s => s.occupation.toLowerCase().includes(searchTerm)
-    )
-  }
-
-  /**
-   * Get industry trends
-   */
-  async getIndustryTrends(): Promise<IndustryTrend[]> {
-    // Calculate trends based on historical data
-    return [
-      { industry: 'IT & Tech', currentMedian: 52000, previousMedian: 49500, changePercent: 5.1, yearOverYear: 4.2, forecast: 'increasing' },
-      { industry: 'Finans', currentMedian: 55000, previousMedian: 53500, changePercent: 2.8, yearOverYear: 3.1, forecast: 'stable' },
-      { industry: 'Sjukvård', currentMedian: 40000, previousMedian: 38500, changePercent: 3.9, yearOverYear: 2.9, forecast: 'increasing' },
-      { industry: 'Utbildning', currentMedian: 38000, previousMedian: 37200, changePercent: 2.2, yearOverYear: 2.0, forecast: 'stable' },
-      { industry: 'Bygg', currentMedian: 39000, previousMedian: 38200, changePercent: 2.1, yearOverYear: 2.3, forecast: 'stable' },
-      { industry: 'Handel', currentMedian: 32000, previousMedian: 31500, changePercent: 1.6, yearOverYear: 1.8, forecast: 'stable' },
-    ]
-  }
-
-  /**
-   * Get salary comparison for experience levels
-   */
-  getSalaryByExperience(
-    occupation: string,
-    yearsExperience: number
-  ): { salary: number; percentile: string } {
-    const baseData = SALARY_DATA_2026.find(
-      s => s.occupation.toLowerCase().includes(occupation.toLowerCase())
-    )
-
-    if (!baseData) {
-      return { salary: 35000, percentile: 'Medel' }
-    }
-
-    // Experience adjustment curve
-    let multiplier = 1.0
-    let percentile = 'Medel'
-
-    if (yearsExperience <= 1) {
-      multiplier = 0.85
-      percentile = 'Entry level'
-    } else if (yearsExperience <= 3) {
-      multiplier = 0.95
-      percentile = 'Junior'
-    } else if (yearsExperience <= 5) {
-      multiplier = 1.0
-      percentile = 'Medel'
-    } else if (yearsExperience <= 8) {
-      multiplier = 1.15
-      percentile = 'Senior'
-    } else if (yearsExperience <= 12) {
-      multiplier = 1.30
-      percentile = 'Lead/Principal'
-    } else {
-      multiplier = 1.45
-      percentile = 'Expert/Executive'
-    }
-
-    return {
-      salary: Math.round(baseData.median * multiplier),
-      percentile,
-    }
   }
 
   // estimateSalary RADERAD 2026-08-21. Den returnerade medelvärdet av de

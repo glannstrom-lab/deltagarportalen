@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { debounce, throttle } from './debounce'
+import { debounce } from './debounce'
 
 /**
  * debounce.ts är inte dekoration — `profileStore._debouncedSavePreferences`
@@ -149,82 +149,5 @@ describe('debounce', () => {
 
     expect(seen).toHaveLength(1)
     expect((seen[0] as { namn?: string })?.namn).toBe('profilen')
-  })
-})
-
-describe('throttle', () => {
-  beforeEach(() => {
-    vi.useFakeTimers()
-    vi.setSystemTime(new Date('2026-08-05T10:00:00Z'))
-  })
-
-  afterEach(() => {
-    vi.useRealTimers()
-  })
-
-  it('kör första anropet direkt', () => {
-    const fn = vi.fn()
-    const throttled = throttle(fn, 100)
-
-    throttled('a')
-
-    expect(fn).toHaveBeenCalledTimes(1)
-    expect(fn).toHaveBeenCalledWith('a')
-  })
-
-  it('släpper igenom max ett anrop per fönster och kör sedan det sista', () => {
-    const fn = vi.fn()
-    const throttled = throttle(fn, 100)
-
-    throttled('a')
-    vi.advanceTimersByTime(10)
-    throttled('b')
-    vi.advanceTimersByTime(10)
-    throttled('c')
-
-    expect(fn).toHaveBeenCalledTimes(1)
-
-    vi.advanceTimersByTime(100)
-    expect(fn).toHaveBeenCalledTimes(2)
-    expect(fn).toHaveBeenLastCalledWith('c')
-  })
-
-  it('kör direkt igen när fönstret hunnit löpa ut', () => {
-    const fn = vi.fn()
-    const throttled = throttle(fn, 100)
-
-    throttled('a')
-    vi.advanceTimersByTime(150)
-    throttled('b')
-
-    expect(fn).toHaveBeenCalledTimes(2)
-    expect(fn).toHaveBeenLastCalledWith('b')
-  })
-
-  it('cancel() stoppar det schemalagda efterföljande anropet', () => {
-    const fn = vi.fn()
-    const throttled = throttle(fn, 100)
-
-    throttled('a')
-    throttled('b')
-    throttled.cancel()
-    vi.advanceTimersByTime(500)
-
-    expect(fn).toHaveBeenCalledTimes(1)
-    expect(fn).toHaveBeenCalledWith('a')
-  })
-
-  it('behåller `this` från anropsplatsen', () => {
-    const seen: unknown[] = []
-    const obj = {
-      id: 'scroll',
-      rapportera: throttle(function (this: unknown) {
-        seen.push(this)
-      }, 100),
-    }
-
-    obj.rapportera()
-
-    expect((seen[0] as { id?: string })?.id).toBe('scroll')
   })
 })

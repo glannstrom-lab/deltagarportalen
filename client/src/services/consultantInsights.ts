@@ -299,16 +299,27 @@ export async function getKeyMetrics(consultantId: string): Promise<KeyMetric[]> 
   }).length
   const engagement = Math.round((recentlyActive / participants.length) * 100)
 
-  const avgScore = Math.round(
-    participants.reduce((sum, p) => sum + (p.ats_score || 0), 0) / participants.length
-  )
+  // Snittet räknas BARA över deltagare som har en poäng. `ats_score` är null
+  // för 31 av 34 CV:n i prod (mätt 2026-09-22) och för varje deltagare utan
+  // CV — med `|| 0` räknades de som noll, så en konsulent med fem deltagare
+  // där en har 80 såg "16 %". Finns ingen poäng alls visas ingen siffra.
+  const poang = participants
+    .map(p => p.ats_score)
+    .filter((s): s is number => typeof s === 'number')
 
-  return [
+  const metrics: KeyMetric[] = [
     { label: 'Aktiva deltagare', current: activeCount, isPercent: false },
     { label: 'CV-komplettering', current: cvRate, isPercent: true },
     { label: 'Aktiva senaste veckan', current: engagement, isPercent: true },
-    { label: 'Genomsnittlig CV-poäng', current: avgScore, isPercent: true }
   ]
+  if (poang.length > 0) {
+    metrics.push({
+      label: 'Genomsnittlig CV-poäng',
+      current: Math.round(poang.reduce((sum, s) => sum + s, 0) / poang.length),
+      isPercent: true,
+    })
+  }
+  return metrics
 }
 
 /**

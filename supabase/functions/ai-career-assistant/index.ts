@@ -20,8 +20,11 @@ import {
   checkDailyTokenCap,
   createTokenCapResponse,
   sanitizeForPrompt,
+  loggaAiAnvandning,
+  tokensIUsage,
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_AI_MS } from '../_shared/fetchMedTimeout.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -448,7 +451,7 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
     const modell = await valjModell(supabase, user.id)
 
     // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
-    const aiResponse = await fetch(OPENROUTER_API_URL, {
+    const aiResponse = await fetchMedTimeout(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
@@ -464,7 +467,7 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
         max_tokens: 2500,
         temperature: 0.3,
       }),
-    })
+    }, TIDSGRANS_AI_MS)
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
@@ -473,6 +476,16 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
     }
 
     const aiData = await aiResponse.json()
+
+    // Förbrukningen loggas FÖRE tolkningen: tokens är betalda även om svaret
+    // sedan inte går att tolka. Se loggaAiAnvandning i aiGate.ts.
+    await loggaAiAnvandning(supabase, {
+      userId: user.id,
+      funktion: `career-assistant-${type}`,
+      model: modell.model,
+      tokens: tokensIUsage(aiData),
+    })
+
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
@@ -497,21 +510,9 @@ Deno.serve(medFelrapport('ai-career-assistant', async (req) => {
     }
 
     if (!result) {
-      console.error('[ai-career-assistant] Failed to parse response:', content.substring(0, 500))
+      // Bara längden: svaret kan återge användarens bakgrund och kontaktens namn.
+      console.error(`[ai-career-assistant] Failed to parse AI response (${content.length} tecken)`)
       return createCorsResponse({ error: 'Kunde inte tolka AI-svaret' }, 500, origin)
-    }
-
-    // Log usage
-    try {
-      await supabase.from('ai_usage_logs').insert({
-        user_id: user.id,
-        function_name: `career-assistant-${type}`,
-        model: modell.model,
-        tokens_used: aiData.usage?.total_tokens || 0,
-        created_at: new Date().toISOString(),
-      })
-    } catch (e) {
-      console.log('[ai-career-assistant] Log error:', e)
     }
 
     console.log(`[ai-career-assistant] Success for ${type}`)

@@ -17,6 +17,7 @@ import { Button, CloseButton } from '@/components/ui/Button'
 import { ClipboardList, AlertCircle } from '@/components/ui/icons'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import type { PlaceringUppfoljningInput } from '@/services/placeringarApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Props {
   open: boolean
@@ -31,7 +32,8 @@ function tomtFormular(placementId: string, weekNumber: number): PlaceringUppfolj
   return {
     placement_id: placementId,
     week_number: weekNumber,
-    followup_date: new Date().toISOString().slice(0, 10),
+    // Lokal kalenderdag — `toISOString()` gav gårdagen mellan 00 och 02 svensk tid.
+    followup_date: formatLocalDate(new Date()),
     // Den här dialogen registrerar en uppföljning som HAR ägt rum — därför
     // alltid genomförd med en status, aldrig en planerad rad utan underlag
     // (CHECK-constraint cwpf_status_kraver_genomford i migrationen). De

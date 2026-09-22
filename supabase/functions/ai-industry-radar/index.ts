@@ -14,8 +14,12 @@ import {
   checkDailyTokenCap,
   createTokenCapResponse,
   sanitizeForPrompt,
+  loggaAiAnvandning,
+  tokensIUsage,
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_AI_MS } from '../_shared/fetchMedTimeout.ts'
+import { datumISverige } from '../_shared/datum.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -209,7 +213,7 @@ Deno.serve(medFelrapport('ai-industry-radar', async (req) => {
     const modell = await valjModell(supabase, user.id)
 
     // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
-    const aiResponse = await fetch(OPENROUTER_API_URL, {
+    const aiResponse = await fetchMedTimeout(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
@@ -223,7 +227,7 @@ Deno.serve(medFelrapport('ai-industry-radar', async (req) => {
         max_tokens: 2500,
         temperature: 0.3,
       }),
-    })
+    }, TIDSGRANS_AI_MS)
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
@@ -232,6 +236,16 @@ Deno.serve(medFelrapport('ai-industry-radar', async (req) => {
     }
 
     const aiData = await aiResponse.json()
+
+    // Förbrukningen loggas FÖRE tolkningen: tokens är betalda även om svaret
+    // sedan inte går att tolka. Se loggaAiAnvandning i aiGate.ts.
+    await loggaAiAnvandning(supabase, {
+      userId: user.id,
+      funktion: 'industry-radar',
+      model: modell.model,
+      tokens: tokensIUsage(aiData),
+    })
+
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
@@ -247,20 +261,8 @@ Deno.serve(medFelrapport('ai-industry-radar', async (req) => {
 
     // Ensure lastUpdated is set
     if (!result.lastUpdated) {
-      result.lastUpdated = new Date().toISOString().split('T')[0]
-    }
-
-    // Log usage
-    try {
-      await supabase.from('ai_usage_logs').insert({
-        user_id: user.id,
-        function_name: 'industry-radar',
-        model: modell.model,
-        tokens_used: aiData.usage?.total_tokens || 0,
-        created_at: new Date().toISOString(),
-      })
-    } catch (e) {
-      console.log('[ai-industry-radar] Log error:', e)
+      // Svenskt dygn — toISOString gav gårdagens datum 00–02 svensk tid.
+      result.lastUpdated = datumISverige()
     }
 
     console.log(`[ai-industry-radar] Success`)

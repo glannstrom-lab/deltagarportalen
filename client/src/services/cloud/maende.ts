@@ -9,6 +9,7 @@
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
 import { getCurrentUser, handleStorageError } from './_shared'
+import { formatLocalDate } from '../aktivitetSchema'
 
 interface MoodLogData {
   mood_level: number
@@ -160,7 +161,7 @@ export const moodApi = {
     const user = await getCurrentUser()
     if (!user) return null
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = formatLocalDate(new Date())
     const { data, error } = await supabase
       .from('mood_logs')
       .select('mood_level, note')
@@ -186,7 +187,7 @@ export const moodApi = {
       return false
     }
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = formatLocalDate(new Date())
     const { error } = await supabase
       .from('mood_logs')
       .upsert({

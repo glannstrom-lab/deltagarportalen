@@ -16,8 +16,11 @@ import {
   createGateDenialResponse,
   createTokenCapResponse,
   sanitizeForPrompt,
+  loggaAiAnvandning,
+  tokensIUsage,
 } from '../_shared/aiGate.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_AI_MS } from '../_shared/fetchMedTimeout.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -248,7 +251,7 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
     const modell = await valjModell(supabase, user.id)
 
     // Anropa modellen via OpenRouter (sonar för fria konton, basmodell för organisationer)
-    const aiResponse = await fetch(OPENROUTER_API_URL, {
+    const aiResponse = await fetchMedTimeout(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
@@ -262,7 +265,7 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
         max_tokens: 3000,
         temperature: 0.3,
       }),
-    })
+    }, TIDSGRANS_AI_MS)
 
     if (!aiResponse.ok) {
       const errorText = await aiResponse.text()
@@ -276,6 +279,16 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
     }
 
     const aiData = await aiResponse.json()
+
+    // Förbrukningen loggas FÖRE tolkningen: tokens är betalda även om svaret
+    // sedan inte går att tolka. Se loggaAiAnvandning i aiGate.ts.
+    await loggaAiAnvandning(supabase, {
+      userId: user.id,
+      funktion: 'company-analysis',
+      model: modell.model,
+      tokens: tokensIUsage(aiData),
+    })
+
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
@@ -292,19 +305,6 @@ Deno.serve(medFelrapport('ai-company-analysis', async (req) => {
         502,
         origin,
       )
-    }
-
-    // Log usage
-    try {
-      await supabase.from('ai_usage_logs').insert({
-        user_id: user.id,
-        function_name: 'company-analysis',
-        model: modell.model,
-        tokens_used: aiData.usage?.total_tokens || 0,
-        created_at: new Date().toISOString(),
-      })
-    } catch (e) {
-      console.log('[ai-company-analysis] Log error:', e)
     }
 
     console.log(`[ai-company-analysis] Success for ${companyName}`)

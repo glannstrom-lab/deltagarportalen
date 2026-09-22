@@ -12,6 +12,7 @@ import {
 import { useMoodLogs } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const MOOD_CONFIG = [
   { value: 1, emoji: '😢', labelKey: 'diary.moodTab.scale.veryBad', color: 'bg-rose-500', bgColor: 'bg-rose-100', textColor: 'text-rose-700' },
@@ -144,7 +145,7 @@ function TodayLogger() {
     setIsSaving(true)
     try {
       await logMood({
-        log_date: new Date().toISOString().split('T')[0],
+        log_date: formatLocalDate(new Date()),
         mood_level: mood,
         energy_level: energy,
         stress_level: stress,
@@ -331,7 +332,7 @@ function MoodCalendar() {
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
           const moodLog = getMoodForDate(dateStr)
           const moodConfig = moodLog ? MOOD_CONFIG.find(m => m.value === moodLog.mood_level) : null
-          const isToday = new Date().toISOString().split('T')[0] === dateStr
+          const isToday = formatLocalDate(new Date()) === dateStr
 
           return (
             <div

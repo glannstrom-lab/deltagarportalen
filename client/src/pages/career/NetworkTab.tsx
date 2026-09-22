@@ -13,6 +13,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { NetworkingAssistant } from '@/components/ai'
 import { cn } from '@/lib/utils'
 import { networkApi, networkingEventsApi, type NetworkContact, type NetworkingEvent } from '@/services/careerApi'
+import { datumSprak } from '@/lib/datumsprak'
 
 // Message template definitions with i18n keys
 const messageTemplateDefs = [
@@ -45,7 +46,7 @@ const linkedinTipKeys = [
 const networkingScriptKeys = ['conference', 'afterMeeting', 'informational']
 
 export default function NetworkTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [contacts, setContacts] = useState<NetworkContact[]>([])
   const [events, setEvents] = useState<NetworkingEvent[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -654,7 +655,7 @@ export default function NetworkTab() {
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100">{event.title}</h4>
                   <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mt-1">
                     <Calendar className="w-3 h-3" />
-                    {new Date(event.event_date).toLocaleDateString('sv-SE')}
+                    {new Date(event.event_date).toLocaleDateString(datumSprak(i18n.language))}
                     {event.location && (
                       <>
                         <span>•</span>
@@ -801,19 +802,12 @@ export default function NetworkTab() {
         )}
       </Card>
 
-      {/* LinkedIn Integration */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
-            <Linkedin className="w-6 h-6 text-[var(--c-text)] dark:text-blue-400" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100">{t('career.network.syncWithLinkedIn')}</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.network.importContacts')}</p>
-          </div>
-          <Button variant="outline">{t('career.network.connect')}</Button>
-        </div>
-      </Card>
+      {/*
+        Här låg "Synkronisera med LinkedIn — Importera dina kontakter
+        automatiskt" med en Anslut-knapp utan onClick. Ingen sådan
+        integration finns (LinkedIn ger inte ut kontaktlistor via API).
+        Borttaget 2026-09-22, nycklarna likaså.
+      */}
     </div>
   )
 }

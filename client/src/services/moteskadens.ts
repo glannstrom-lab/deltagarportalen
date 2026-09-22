@@ -9,7 +9,7 @@
  * hållits, och ett avbokat räknas inte alls.
  *
  * Datum räknas i lokal tid utan `toISOString()` — samma fälla som
- * `generateRecurringEvents()` gick i (aktivitetSchema.ts).
+ * den borttagna `generateRecurringEvents()` gick i (aktivitetSchema.ts).
  */
 
 import { supabase } from '@/lib/supabase'

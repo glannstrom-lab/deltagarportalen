@@ -283,7 +283,7 @@
     },
     "wellness": {
       "title": "Dela välmåendedata",
-      "description": "Tillåt din konsulent att se din dagbok, ditt humör och din välmåendeinformation"
+      "description": "Tillåt din konsulent att se din humörlogg: humör, energi, stress, sömn och anteckningen du skriver till den. Din dagbok delas aldrig."
     },
     "warningShared": "Din konsulent kan nu se denna data",
     "privacy": "Dina data är säkra",
@@ -458,15 +458,6 @@
       "overviewDesc": "Din personliga översikt",
       "quests": "Dina utmaningar",
       "questsDesc": "Dagliga utmaningar och belöningar"
-    },
-    "kpi": {
-      "savedJobs": "Sparade jobb",
-      "applications": "Ansökningar"
-    },
-    "widgets": {
-      "coverLetters": {
-        "title": "Personliga brev"
-      }
     }
   },
   "cv": {
@@ -2413,9 +2404,6 @@
       "sendEmail": "Skicka e-post till",
       "markContacted": "Markera som kontaktad",
       "messageTemplates": "Färdiga meddelanden",
-      "syncWithLinkedIn": "Synkronisera med LinkedIn",
-      "importContacts": "Importera dina kontakter automatiskt",
-      "connect": "Anslut",
       "templates": {
         "reconnect": "Återuppta kontakt",
         "reconnectText": "Hej! Det var länge sedan vi pratades sist. Hur mår du? Jag söker för närvarande nya utmaningar och tänkte höra hur det går för dig.",
@@ -2877,6 +2865,7 @@
     "completeTestToSeeResults": "Du behöver genomföra intressetestet för att se dina resultat.",
     "couldNotLoadResults": "Kunde inte ladda resultaten",
     "couldNotRestartTest": "Kunde inte starta om testet",
+    "shareFailed": "Det gick inte att kopiera just nu. Försök igen om en stund.",
     "charts": {
       "bigFiveAria": "Big Five personlighetsdrag",
       "riasecTableAria": "RIASEC resultat i tabellform",
@@ -4392,7 +4381,7 @@
       "whyWeCollect": "Varför vi samlar in detta",
       "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
       "whoHasAccess": "Vem har tillgång",
-      "whoAccessDesc": "Bara du ser det du skriver här. Din konsulent ser det först om du själv slår på delning under Inställningar > Integritet — den är avstängd tills du gör det. Datan delas aldrig med arbetsgivare eller tredje parter.",
+      "whoAccessDesc": "Bara du ser din dagbok — den delas aldrig. Din humörlogg ser konsulenten bara om du själv slår på delning under Inställningar > Integritet — den är avstängd tills du gör det. Datan delas aldrig med arbetsgivare eller tredje parter.",
       "dataProtection": "Din data skyddas enligt GDPR och lagras säkert i EU. Du kan när som helst exportera eller radera all din data.",
       "canWithdraw": "Du kan när som helst återkalla ditt samtycke",
       "withdrawDetail1": "Gå till Inställningar > Integritet",
@@ -8575,7 +8564,8 @@
     "next": "Nästa",
     "back": "Tillbaka",
     "finish": "Klar",
-    "saving": "Sparar..."
+    "saving": "Sparar...",
+    "saveFailed": "Det gick inte att spara just nu. Det du skrivit finns kvar — prova igen om en liten stund."
   },
   "focusGuide": {
     "skipStep": "Hoppa över detta steg",
@@ -9186,39 +9176,6 @@
     "common": {
       "optimizeCvForJob": "Optimera CV för detta jobb"
     },
-    "quickAction": {
-      "cvSaved": {
-        "title": "CV:t är sparat!",
-        "message": "Nu är det dags att hitta jobb som matchar dina kompetenser.",
-        "primary": "Sök jobb med detta CV",
-        "secondary": "Optimera CV:t ytterligare"
-      },
-      "jobSaved": {
-        "title": "Jobbet \"{{title}}...\" sparat!",
-        "message": "Vill du skriva ett personligt brev medan du har jobbet i minnet?",
-        "primary": "Skriv personligt brev",
-        "secondary": "Se sparade jobb"
-      },
-      "letterSaved": {
-        "title": "Personligt brev sparat!",
-        "message": "Bra jobbat! När du hittar fler intressanta jobb kan du använda detta som mall.",
-        "primary": "Sök fler jobb",
-        "secondary": "Se alla brev"
-      },
-      "profileComplete": {
-        "title": "Profilen är komplett!",
-        "message": "Du har allt du behöver för att börja söka jobb på allvar.",
-        "primary": "Börja söka jobb",
-        "secondary": "Se intresseguiden"
-      },
-      "applicationReminder": {
-        "title": "Påminnelse: Sök jobb idag",
-        "message": "Regelbunden jobbsökning ökar dina chanser. Sätt av 30 minuter nu!",
-        "primary": "Hitta jobb nu"
-      },
-      "markApplied": "Markera som ansökt",
-      "backToJobSearch": "Tillbaka till jobbsökning"
-    },
     "knowledgeWidget": {
       "context": {
         "cvBuilding": "Tips för ditt CV",
@@ -9236,25 +9193,7 @@
         "advanced": "Avancerad"
       },
       "seeAllArticles": "Se alla artiklar",
-      "selectedForYou": "Artiklar valda för där du är nu",
-      "smart": {
-        "interview": {
-          "title": "🎯 Intervju på gång!",
-          "subtitle": "Förbered dig för att göra ditt bästa intryck"
-        },
-        "rejected": {
-          "title": "💪 Bara ett avslag, inte ett misslyckande",
-          "subtitle": "Tips för att komma tillbaka starkare"
-        },
-        "default": {
-          "title": "💡 Tips för din jobbsökning"
-        }
-      }
-    },
-    "nextStep": {
-      "fetchError": "Kunde inte hämta nästa steg",
-      "noStepAvailable": "Inget steg tillgängligt",
-      "or": "Eller:"
+      "selectedForYou": "Artiklar valda för där du är nu"
     }
   },
   "accessibility": {

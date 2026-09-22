@@ -8,7 +8,7 @@
  * - Enkla knappar för att navigera
  */
 
-import { useState, useEffect, useCallback, useId } from 'react'
+import { useState, useEffect, useCallback, useId, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
@@ -63,9 +63,16 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
     queryFn: cvApi.getCV,
   })
 
-  // Populate form with existing data
+  // Populate form with existing data — EN gång.
+  //
+  // Efter varje autosparning invaliderar `onSuccess` ['cv'] och frågan hämtas
+  // om. Utan spärren körde effekten igen när svaret kom och ersatte hela
+  // formuläret med serverns rad — allt som hunnit skrivas på nästa steg under
+  // omhämtningen försvann. Efter första fyllningen är formuläret sanningen.
+  const harFyllts = useRef(false)
   useEffect(() => {
-    if (existingCV) {
+    if (existingCV && !harFyllts.current) {
+      harFyllts.current = true
       setCvData({
         ...existingCV,
         firstName: existingCV.firstName || existingCV.first_name || '',
@@ -765,13 +772,14 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
           <button
             onClick={addSkill}
             disabled={!newSkill.trim()}
+            aria-label={t('common.add', 'Lägg till')}
             className={cn(
               'px-6 py-4 rounded-xl font-medium transition-colors',
               'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
       </div>

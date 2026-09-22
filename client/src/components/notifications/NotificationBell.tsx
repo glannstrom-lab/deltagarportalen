@@ -143,7 +143,7 @@ function NotificationItem({
             <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-label={t('notificationBell.aria.unread', 'Oläst')} />
           )}
         </div>
-        <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5 line-clamp-2">
+        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2">
           {notification.message}
         </p>
         {/* F3 (2026-09-13): påminnelsen bär platsen i data.location — en kartlänk är
@@ -212,7 +212,7 @@ function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
         'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
         active
           ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)]'
-          : 'text-stone-600 dark:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700'
+          : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700'
       )}
       aria-pressed={active}
     >
@@ -250,6 +250,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
     unreadCount,
     unreadByCategory,
     isLoading,
+    error,
     markAsRead,
     markAllAsRead,
     deleteNotification,
@@ -414,10 +415,17 @@ export function NotificationBell({ className }: NotificationBellProps) {
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-6 w-6 border-2 border-[var(--c-solid)] border-t-transparent" />
                 </div>
+              ) : error && notifications.length === 0 ? (
+                // Ett hämtfel är inte "inga notiser". Utan den här grenen sa
+                // listan "Inga notifikationer" när frågan föll — samma fel som
+                // Översikt hade med "du har inte börjat söka jobb än".
+                <p role="alert" className="text-center py-8 px-4 text-sm text-red-700 dark:text-red-300">
+                  {t('errors.loadFailed')}
+                </p>
               ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-8 px-4">
                   <Bell className="w-10 h-10 mx-auto text-stone-300 dark:text-stone-600 mb-3" />
-                  <p className="text-stone-500 dark:text-stone-600 text-sm">
+                  <p className="text-stone-500 dark:text-stone-400 text-sm">
                     {activeFilter === 'all'
                       ? 'Inga notifikationer'
                       : `Inga ${notificationConfig[activeFilter as NotificationType]?.label?.toLowerCase() || 'notifikationer'}`}
@@ -442,7 +450,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
               <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700">
                 <Link
                   to="/settings"
-                  className="block text-center text-xs text-stone-500 dark:text-stone-600 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)]"
+                  className="block text-center text-xs text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)]"
                   onClick={handleClose}
                 >
                   Hantera notifikationsinställningar

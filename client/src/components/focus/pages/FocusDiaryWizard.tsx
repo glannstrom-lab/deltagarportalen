@@ -7,9 +7,10 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation } from '@tanstack/react-query'
-import { NotebookPen, Heart, Sun, CheckCircle2 } from '@/components/ui/icons'
+import { NotebookPen, Heart, Sun, CheckCircle2, AlertCircle } from '@/components/ui/icons'
 import { diaryEntriesApi } from '@/services/diaryApi'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Props {
   onExit: () => void
@@ -22,6 +23,8 @@ export function FocusDiaryWizard({ onExit }: Props) {
   const [feeling, setFeeling] = useState('')
   const [tomorrow, setTomorrow] = useState('')
   const [saved, setSaved] = useState(false)
+  /** Sant när sparningen nekats. Guiden stängs då inte — texten finns kvar. */
+  const [sparfel, setSparfel] = useState(false)
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -30,17 +33,21 @@ export function FocusDiaryWizard({ onExit }: Props) {
         feeling.trim() ? `Kändes: ${feeling.trim()}` : '',
         tomorrow.trim() ? `Imorgon: ${tomorrow.trim()}` : '',
       ].filter(Boolean).join('\n\n')
-      return diaryEntriesApi.create({
+      const rad = await diaryEntriesApi.create({
         title: t('focus.diary.entryTitle', 'Fokusläge-incheckning'),
         content,
         mood: null,
         energy_level: null,
         tags: [],
         word_count: content.split(/\s+/).filter(Boolean).length,
-        entry_date: new Date().toISOString().slice(0, 10),
+        entry_date: formatLocalDate(new Date()),
         entry_type: 'diary',
         is_favorite: false,
       })
+      // diaryEntriesApi.create KASTAR INTE vid fel — den returnerar null
+      // (t.ex. när samtyckesgrinden MV2 nekar INSERT). Då ska det synas.
+      if (!rad) throw new Error('Anteckningen sparades inte')
+      return rad
     },
     onSuccess: () => setSaved(true),
   })
@@ -78,7 +85,17 @@ export function FocusDiaryWizard({ onExit }: Props) {
       current={step}
       onNext={async () => {
         if (current.id === 'done') {
-          try { await saveMutation.mutateAsync() } catch (err) { console.error(err) }
+          // Samma regel som mående-guiden (MV3): ett misslyckat sparande får
+          // inte stänga guiden. Tidigare anropades onExit() ändå, och det
+          // personen skrivit försvann med guiden.
+          setSparfel(false)
+          try {
+            await saveMutation.mutateAsync()
+          } catch (err) {
+            console.error('[FocusDiaryWizard] kunde inte spara anteckningen:', err)
+            setSparfel(true)
+            return
+          }
           onExit()
           return
         }
@@ -128,6 +145,14 @@ export function FocusDiaryWizard({ onExit }: Props) {
             <div className="flex items-center gap-2 text-stone-700 dark:text-stone-200">
               <CheckCircle2 className="w-5 h-5 text-[var(--c-solid)]" />
               {t('focus.diary.savedText', 'Sparat i din dagbok.')}
+            </div>
+          ) : sparfel ? (
+            <div
+              role="alert"
+              className="flex items-start gap-2 p-3 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)] text-stone-700 dark:text-stone-200"
+            >
+              <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5 text-[var(--c-solid)]" aria-hidden="true" />
+              <span>{t('focus.saveFailed')}</span>
             </div>
           ) : (
             <p className="text-stone-600 dark:text-stone-300">

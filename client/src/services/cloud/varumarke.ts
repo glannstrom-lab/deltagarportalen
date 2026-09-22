@@ -469,29 +469,6 @@ export const personalBrandApi = {
     return data
   },
 
-  async updateContentItem(id: string, updates: Partial<ContentCalendarItem>): Promise<void> {
-    const user = await getCurrentUser()
-    if (!user) {
-      const items = JSON.parse(localStorage.getItem('content-calendar') || '[]')
-      const index = items.findIndex((i: ContentCalendarItem) => i.id === id)
-      if (index >= 0) {
-        items[index] = { ...items[index], ...updates }
-        localStorage.setItem('content-calendar', JSON.stringify(items))
-      }
-      return
-    }
-
-    const { error } = await supabase
-      .from('content_calendar')
-      .update({ ...updates, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .eq('user_id', user.id)
-
-    if (error) {
-      kastaLagringsFel(error, 'uppdatera det planerade inlägget')
-    }
-  },
-
   async deleteContentItem(id: string): Promise<void> {
     const user = await getCurrentUser()
     if (!user) {

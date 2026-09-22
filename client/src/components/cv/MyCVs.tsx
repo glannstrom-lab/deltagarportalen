@@ -41,6 +41,7 @@ import { CVFileUploadModal } from './CVFileUploadModal'
 import { CVJobMatchPanel } from './CVJobMatchPanel'
 import { cvFilerApi, type UppladdatCv } from '@/services/cvApi'
 import { normaliseraMallId } from '@/data/cvMallar'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface CVVersion {
   id: string
@@ -65,7 +66,7 @@ const templateFilters = [
 ]
 
 export function MyCVs() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const [cvs, setCvs] = useState<CVVersion[]>([])
@@ -300,7 +301,7 @@ export function MyCVs() {
     })
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('sv-SE', {
+    return new Date(dateString).toLocaleDateString(datumSprak(i18n.language), {
       year: 'numeric',
       month: 'short',
       day: 'numeric'

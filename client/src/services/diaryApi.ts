@@ -3,6 +3,19 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { formatLocalDate, veckansMandag } from './aktivitetSchema'
+
+/**
+ * Dagens datum och veckans måndag som `YYYY-MM-DD` i användarens tidszon.
+ *
+ * `new Date().toISOString().split('T')[0]` är UTC: mellan midnatt och
+ * kl. 01/02 svensk tid gav den GÅRDAGENS datum. Dagens humör skrevs då över
+ * gårdagens (upsert på user_id,log_date), tacksamheten hamnade på fel dag och
+ * ett veckomål som skrevs måndag natt sparades på söndagen — och syntes inte
+ * i "den här veckan" när användaren vaknade.
+ */
+const idag = (): string => formatLocalDate(new Date())
+const veckansStart = (): string => veckansMandag(idag())
 
 // ============================================
 // TYPES
@@ -99,25 +112,6 @@ export const diaryEntriesApi = {
 
     if (error) {
       console.error('Error fetching diary entries:', error)
-      return []
-    }
-    return data || []
-  },
-
-  async getByType(entryType: string, limit = 50): Promise<DiaryEntry[]> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return []
-
-    const { data, error } = await supabase
-      .from('diary_entries')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('entry_type', entryType)
-      .order('entry_date', { ascending: false })
-      .limit(limit)
-
-    if (error) {
-      console.error('Error fetching diary entries by type:', error)
       return []
     }
     return data || []
@@ -296,7 +290,7 @@ export const moodLogsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = idag()
 
     const { data, error } = await supabase
       .from('mood_logs')
@@ -357,29 +351,7 @@ export const weeklyGoalsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
 
-    // Get Monday of current week
-    const now = new Date()
-    const monday = new Date(now)
-    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7))
-    const weekStart = monday.toISOString().split('T')[0]
-
-    const { data, error } = await supabase
-      .from('weekly_goals')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('week_start', weekStart)
-      .order('priority', { ascending: true })
-
-    if (error) {
-      console.error('Error fetching weekly goals:', error)
-      return []
-    }
-    return data || []
-  },
-
-  async getByWeek(weekStart: string): Promise<WeeklyGoal[]> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return []
+    const weekStart = veckansStart()
 
     const { data, error } = await supabase
       .from('weekly_goals')
@@ -399,11 +371,7 @@ export const weeklyGoalsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null
 
-    // Get Monday of current week
-    const now = new Date()
-    const monday = new Date(now)
-    monday.setDate(now.getDate() - ((now.getDay() + 6) % 7))
-    const weekStart = monday.toISOString().split('T')[0]
+    const weekStart = veckansStart()
 
     const { data, error } = await supabase
       .from('weekly_goals')
@@ -502,7 +470,7 @@ export const gratitudeApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = idag()
 
     const { data, error } = await supabase
       .from('gratitude_entries')
@@ -522,7 +490,7 @@ export const gratitudeApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = idag()
 
     const { data, error } = await supabase
       .from('gratitude_entries')
@@ -582,7 +550,7 @@ export const diaryStreaksApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return
 
-    const today = new Date().toISOString().split('T')[0]
+    const today = idag()
 
     // Get current streaks
     const streaks = await this.get()

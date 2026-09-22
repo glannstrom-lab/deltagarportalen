@@ -547,6 +547,11 @@ export function CoverLetterWrite() {
     setArMall(false)
     setIsGenerating(true)
     setGenerationError(null)
+    // Texten som stod i rutan när anropet gick iväg. Sidan lovar "du kan börja
+    // skriva själv under tiden — utkastet ersätter inte det du redan skrivit",
+    // och svaret kan dröja en minut. Har texten ändrats när svaret kommer står
+    // personens egna ord kvar; utkastet nås via "Gå tillbaka till utkastet".
+    const textVidStart = editedLetter.trim()
     try {
       const result = await generateCoverLetterWithAI({
         cvData,
@@ -573,7 +578,7 @@ export function CoverLetterWrite() {
         throw new Error('Tomt eller oväntat svar från AI-tjänsten')
       }
       setGeneratedLetter(brev)
-      setEditedLetter(brev)
+      setEditedLetter((nu) => (nu.trim() === textVidStart ? brev : nu))
       setGenereratPaTunntUnderlag(!cvData && !formData.motivation.trim())
     } catch (error) {
       console.error('Fel vid generering:', error)

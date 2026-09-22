@@ -32,7 +32,7 @@
  */
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   Eye, TrendingUp, CheckCircle, Lightbulb, Calendar, Plus, Play, Pause,
   SkipForward, Clock, Loader2, RefreshCw, Edit2, Save, Trash2, ChevronRight,
@@ -62,6 +62,7 @@ const STATUS_IKON: Record<Status, typeof Circle> = {
 
 export default function VisibilityTab() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const locale = i18n.language === 'sv' ? sv : enGB
 
@@ -246,12 +247,11 @@ export default function VisibilityTab() {
                 <RefreshCw className="w-4 h-4 mr-1" aria-hidden="true" />
                 {t('personalBrand.visibility.newIdea')}
               </Button>
-              <Link to="/linkedin-optimizer">
-                <Button variant="ghost">
-                  <Edit2 className="w-4 h-4 mr-1" aria-hidden="true" />
-                  {t('personalBrand.visibility.writePost')}
-                </Button>
-              </Link>
+              {/* Var en <Button> inuti en <Link> — två fokusstopp och ogiltig HTML */}
+              <Button variant="ghost" onClick={() => navigate('/linkedin-optimizer')}>
+                <Edit2 className="w-4 h-4 mr-1" aria-hidden="true" />
+                {t('personalBrand.visibility.writePost')}
+              </Button>
             </div>
           </div>
         </div>

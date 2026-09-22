@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useApplication, useApplications } from '@/hooks/useApplications'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { DocumentSelector } from './DocumentSelector'
+import { showToast } from '@/components/Toast'
 import {
   APPLICATION_STATUS_CONFIG,
   getStatusLabel,
@@ -44,7 +45,7 @@ const REMINDER_TYPE_OPTIONS: { value: ReminderType; label: string }[] = [
   { value: 'custom', label: 'Annat' },
 ]
 
-const formInputClass = 'w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white'
+const formInputClass = 'w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white dark:border-stone-700 dark:bg-stone-900 dark:text-stone-100'
 
 function ContactForm({
   onSubmit,
@@ -82,12 +83,12 @@ function ContactForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
-      <h4 className="text-sm font-medium text-stone-900">{t('applications.detail.newContact', 'Ny kontakt')}</h4>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3 dark:bg-stone-800">
+      <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('applications.detail.newContact', 'Ny kontakt')}</h4>
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label htmlFor="contact-name" className="block text-xs font-medium text-stone-700 mb-1">
+          <label htmlFor="contact-name" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
             {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
           </label>
           <input
@@ -101,7 +102,7 @@ function ContactForm({
           />
         </div>
         <div>
-          <label htmlFor="contact-title" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.roleTitle', 'Titel')}</label>
+          <label htmlFor="contact-title" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">{t('applications.contacts.roleTitle', 'Titel')}</label>
           <input
             id="contact-title"
             type="text"
@@ -112,7 +113,7 @@ function ContactForm({
           />
         </div>
         <div>
-          <label htmlFor="contact-email" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.email', 'E-post')}</label>
+          <label htmlFor="contact-email" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">{t('applications.contacts.email', 'E-post')}</label>
           <input
             id="contact-email"
             type="email"
@@ -123,7 +124,7 @@ function ContactForm({
           />
         </div>
         <div>
-          <label htmlFor="contact-phone" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.phone', 'Telefon')}</label>
+          <label htmlFor="contact-phone" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">{t('applications.contacts.phone', 'Telefon')}</label>
           <input
             id="contact-phone"
             type="tel"
@@ -182,12 +183,12 @@ function ReminderForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
-      <h4 className="text-sm font-medium text-stone-900">{t('applications.detail.newReminder', 'Ny påminnelse')}</h4>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3 dark:bg-stone-800">
+      <h4 className="text-sm font-medium text-stone-900 dark:text-stone-100">{t('applications.detail.newReminder', 'Ny påminnelse')}</h4>
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label htmlFor="reminder-title" className="block text-xs font-medium text-stone-700 mb-1">
+          <label htmlFor="reminder-title" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
             {t('applications.detail.reminderTitle', 'Titel')} <span className="text-red-500">*</span>
           </label>
           <input
@@ -201,7 +202,7 @@ function ReminderForm({
           />
         </div>
         <div>
-          <label htmlFor="reminder-type" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.detail.reminderType', 'Typ')}</label>
+          <label htmlFor="reminder-type" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">{t('applications.detail.reminderType', 'Typ')}</label>
           <select
             id="reminder-type"
             value={reminderType}
@@ -218,7 +219,7 @@ function ReminderForm({
           </select>
         </div>
         <div>
-          <label htmlFor="reminder-date" className="block text-xs font-medium text-stone-700 mb-1">
+          <label htmlFor="reminder-date" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">
             {t('applications.detail.reminderDate', 'Datum')} <span className="text-red-500">*</span>
           </label>
           <input
@@ -231,7 +232,7 @@ function ReminderForm({
           />
         </div>
         <div>
-          <label htmlFor="reminder-time" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.detail.reminderTime', 'Tid')}</label>
+          <label htmlFor="reminder-time" className="block text-xs font-medium text-stone-700 mb-1 dark:text-stone-300">{t('applications.detail.reminderTime', 'Tid')}</label>
           <input
             id="reminder-time"
             type="time"
@@ -309,6 +310,7 @@ export function ApplicationDetailModal({
       await completeReminder(reminderId)
     } catch (error) {
       console.error('Failed to complete reminder:', error)
+      showToast.error(t('applications.calendar.completeErrorTitle', 'Påminnelsen kunde inte bockas av'))
     }
   }
 
@@ -340,7 +342,10 @@ export function ApplicationDetailModal({
       })
       setDocumentsChanged(false)
     } catch (error) {
+      // Knappen och "Osparade ändringar" står kvar — valet är inte förlorat,
+      // men personen måste få veta att det inte sparades.
       console.error('Failed to save documents:', error)
+      showToast.error(t('applications.form.saveError', 'Kunde inte spara ansökan. Försök igen.'))
     } finally {
       setIsSavingDocuments(false)
     }
@@ -362,6 +367,7 @@ export function ApplicationDetailModal({
       setShowStatusMenu(false)
     } catch (error) {
       console.error('Failed to update status:', error)
+      showToast.error(t('applications.form.saveError', 'Kunde inte spara ansökan. Försök igen.'))
     }
   }
 
@@ -371,6 +377,7 @@ export function ApplicationDetailModal({
       onClose()
     } catch (error) {
       console.error('Failed to archive:', error)
+      showToast.error(t('applications.form.saveError', 'Kunde inte spara ansökan. Försök igen.'))
     }
   }
 
@@ -390,6 +397,7 @@ export function ApplicationDetailModal({
         onClose()
       } catch (error) {
         console.error('Failed to delete:', error)
+        showToast.error(t('common.error', 'Något gick fel'))
       }
     }
   }
@@ -410,9 +418,9 @@ export function ApplicationDetailModal({
       // lager ska vara.
       inert={suspended || undefined}
     >
-      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col dark:bg-stone-900">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-stone-100 p-4">
+        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 dark:bg-stone-900 dark:border-stone-700">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className={cn(
@@ -422,21 +430,21 @@ export function ApplicationDetailModal({
                 <Building2 className={cn("w-6 h-6", statusConfig.color)} />
               </div>
               <div className="min-w-0">
-                <h2 id="application-detail-title" className="text-lg font-semibold text-stone-900 line-clamp-1">{jobTitle}</h2>
-                <p className="text-stone-600">{companyName}</p>
+                <h2 id="application-detail-title" className="text-lg font-semibold text-stone-900 line-clamp-1 dark:text-stone-100">{jobTitle}</h2>
+                <p className="text-stone-600 dark:text-stone-400">{companyName}</p>
               </div>
             </div>
             <button
               onClick={onClose}
               aria-label={t('applications.common.close', 'Stäng')}
-              className="p-2 hover:bg-stone-100 rounded-full transition-colors flex-shrink-0"
+              className="p-2 hover:bg-stone-100 rounded-full transition-colors flex-shrink-0 dark:hover:bg-stone-800"
             >
-              <X className="w-5 h-5 text-stone-700" aria-hidden="true" />
+              <X className="w-5 h-5 text-stone-700 dark:text-stone-300" aria-hidden="true" />
             </button>
           </div>
 
           {/* Quick info */}
-          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-stone-700">
+          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-stone-700 dark:text-stone-300">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -477,7 +485,7 @@ export function ApplicationDetailModal({
               {showStatusMenu && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowStatusMenu(false)} />
-                  <div className="absolute left-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[160px]">
+                  <div className="absolute left-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[160px] dark:bg-stone-900 dark:border-stone-700">
                     {getNextStatuses(application.status).map((status) => {
                       const config = APPLICATION_STATUS_CONFIG[status]
                       return (
@@ -485,7 +493,7 @@ export function ApplicationDetailModal({
                           key={status}
                           onClick={() => handleStatusChange(status)}
                           className={cn(
-                            "w-full text-left px-3 py-2 text-sm hover:bg-stone-50 flex items-center gap-2",
+                            "w-full text-left px-3 py-2 text-sm hover:bg-stone-50 flex items-center gap-2 dark:hover:bg-stone-800",
                             config.color
                           )}
                         >
@@ -504,8 +512,8 @@ export function ApplicationDetailModal({
               <span className={cn(
                 "px-2 py-1 rounded text-xs font-medium border",
                 application.priority === 'high'
-                  ? "bg-red-100 text-red-700 border-red-200"
-                  : "bg-stone-100 text-stone-600 border-stone-200"
+                  ? "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800"
+                  : "bg-stone-100 text-stone-600 border-stone-200 dark:bg-stone-800 dark:text-stone-400 dark:border-stone-700"
               )}>
                 {application.priority === 'high'
                   ? t('applications.pipeline.priorityHigh', 'Hög prioritet')
@@ -518,7 +526,7 @@ export function ApplicationDetailModal({
             {/* Actions */}
             <button
               onClick={() => onEdit(application)}
-              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
+              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600 dark:hover:bg-stone-800 dark:text-stone-400 dark:hover:text-stone-200"
               title={t('applications.common.edit', 'Redigera')}
               aria-label={t('applications.common.edit', 'Redigera')}
             >
@@ -526,7 +534,7 @@ export function ApplicationDetailModal({
             </button>
             <button
               onClick={handleArchive}
-              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
+              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600 dark:hover:bg-stone-800 dark:text-stone-400 dark:hover:text-stone-200"
               title={t('applications.common.archive', 'Arkivera')}
               aria-label={t('applications.common.archive', 'Arkivera')}
             >
@@ -534,7 +542,7 @@ export function ApplicationDetailModal({
             </button>
             <button
               onClick={handleDelete}
-              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
+              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600 dark:hover:bg-red-900/20 dark:text-stone-400"
               title={t('applications.common.delete', 'Ta bort')}
               aria-label={t('applications.common.delete', 'Ta bort')}
             >
@@ -544,7 +552,7 @@ export function ApplicationDetailModal({
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-stone-100 px-4">
+        <div className="border-b border-stone-100 px-4 dark:border-stone-700">
           <div className="flex gap-4" role="tablist">
             {[
               { id: 'overview' as const, label: t('applications.detail.tabs.overview', 'Översikt') },
@@ -562,17 +570,17 @@ export function ApplicationDetailModal({
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
                     ? "border-[var(--c-solid)] text-[var(--c-text)]"
-                    : "border-transparent text-stone-700 hover:text-stone-700"
+                    : "border-transparent text-stone-700 hover:text-stone-700 dark:text-stone-300 dark:hover:text-stone-200"
                 )}
               >
                 {tab.label}
                 {tab.count !== undefined && tab.count > 0 && (
-                  <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded text-xs">
+                  <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded text-xs dark:bg-stone-800 dark:text-stone-400">
                     {tab.count}
                   </span>
                 )}
                 {tab.badge && (
-                  <span className="ml-1.5 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-xs">
+                  <span className="ml-1.5 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-xs dark:bg-amber-900/30 dark:text-amber-300">
                     {tab.badge}
                   </span>
                 )}
@@ -588,15 +596,15 @@ export function ApplicationDetailModal({
               {/* Notes */}
               {application.notes && (
                 <Card className="p-4">
-                  <h4 className="text-sm font-medium text-stone-700 mb-2">{t('applications.detail.notes', 'Anteckningar')}</h4>
-                  <p className="text-stone-600">{application.notes}</p>
+                  <h4 className="text-sm font-medium text-stone-700 mb-2 dark:text-stone-300">{t('applications.detail.notes', 'Anteckningar')}</h4>
+                  <p className="text-stone-600 dark:text-stone-400">{application.notes}</p>
                 </Card>
               )}
 
               {/* Documents summary */}
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-medium text-stone-700">{t('applications.detail.documents', 'Dokument')}</h4>
+                  <h4 className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('applications.detail.documents', 'Dokument')}</h4>
                   <button
                     onClick={() => setActiveTab('documents')}
                     className="text-xs text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
@@ -611,7 +619,7 @@ export function ApplicationDetailModal({
                       {t('applications.detail.cvLinked', 'CV kopplat')}
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs dark:bg-stone-800 dark:text-stone-300">
                       <FileText className="w-3 h-3" />
                       {t('applications.detail.noCv', 'Inget CV')}
                     </span>
@@ -622,7 +630,7 @@ export function ApplicationDetailModal({
                       {t('applications.detail.letterLinked', 'Brev kopplat')}
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs dark:bg-stone-800 dark:text-stone-300">
                       <FileText className="w-3 h-3" />
                       {t('applications.detail.noLetter', 'Inget brev')}
                     </span>
@@ -636,7 +644,7 @@ export function ApplicationDetailModal({
                   href={application.jobUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-3 bg-stone-100 rounded-lg text-stone-700 hover:bg-stone-200 transition-colors"
+                  className="flex items-center justify-center gap-2 p-3 bg-stone-100 rounded-lg text-stone-700 hover:bg-stone-200 transition-colors dark:bg-stone-800 dark:text-stone-300 dark:hover:bg-stone-700"
                 >
                   <ExternalLink className="w-4 h-4" />
                   {t('applications.detail.viewAd', 'Visa jobbannons')}
@@ -649,8 +657,8 @@ export function ApplicationDetailModal({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-stone-900">{t('applications.detail.linkDocuments', 'Koppla dokument')}</h3>
-                  <p className="text-sm text-stone-700">{t('applications.detail.linkDocumentsHint', 'Välj CV och personligt brev för denna ansökan')}</p>
+                  <h3 className="font-medium text-stone-900 dark:text-stone-100">{t('applications.detail.linkDocuments', 'Koppla dokument')}</h3>
+                  <p className="text-sm text-stone-700 dark:text-stone-300">{t('applications.detail.linkDocumentsHint', 'Välj CV och personligt brev för denna ansökan')}</p>
                 </div>
                 {documentsChanged && (
                   <Button
@@ -674,7 +682,7 @@ export function ApplicationDetailModal({
               />
 
               {documentsChanged && (
-                <p className="text-xs text-amber-600 flex items-center gap-1">
+                <p className="text-xs text-amber-600 flex items-center gap-1 dark:text-amber-400">
                   <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
                   {t('applications.detail.unsavedChanges', 'Osparade ändringar')}
                 </p>
@@ -689,8 +697,8 @@ export function ApplicationDetailModal({
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label={t('common.loadingStatus', 'Laddar')} />
                 </div>
               ) : history.length === 0 ? (
-                <div className="text-center py-8 text-stone-700">
-                  <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300" />
+                <div className="text-center py-8 text-stone-700 dark:text-stone-300">
+                  <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
                   <p>{t('applications.detail.noHistory', 'Ingen historik än')}</p>
                 </div>
               ) : (
@@ -700,20 +708,20 @@ export function ApplicationDetailModal({
                     return t(`applications.status.${status}`, getStatusLabel(status))
                   }
                   return (
-                    <div key={entry.id} className="flex gap-3 p-3 bg-stone-50 rounded-lg">
-                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-4 h-4 text-stone-600" />
+                    <div key={entry.id} className="flex gap-3 p-3 bg-stone-50 rounded-lg dark:bg-stone-800">
+                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0 dark:bg-stone-900">
+                        <Clock className="w-4 h-4 text-stone-600 dark:text-stone-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-stone-700">
+                        <p className="text-sm text-stone-700 dark:text-stone-300">
                           {entry.eventType === 'status_change'
                             ? `${t('applications.detail.statusChanged', 'Status ändrad:')} ${entry.oldValue ? historyStatusLabel(entry.oldValue) : '?'} → ${entry.newValue ? historyStatusLabel(entry.newValue) : '?'}`
                             : t(`applications.timeline.events.${entry.eventType}`, entry.eventType.replace(/_/g, ' '))}
                         </p>
                         {entry.note && (
-                          <p className="text-sm text-stone-700 mt-1">{entry.note}</p>
+                          <p className="text-sm text-stone-700 mt-1 dark:text-stone-300">{entry.note}</p>
                         )}
-                        <p className="text-xs text-stone-600 mt-1">
+                        <p className="text-xs text-stone-600 mt-1 dark:text-stone-400">
                           {new Date(entry.createdAt).toLocaleString(i18n.language)}
                         </p>
                       </div>
@@ -739,8 +747,8 @@ export function ApplicationDetailModal({
                 </div>
               ) : contacts.length === 0 ? (
                 !showContactForm && (
-                  <div className="text-center py-8 text-stone-700">
-                    <User className="w-8 h-8 mx-auto mb-2 text-stone-300" />
+                  <div className="text-center py-8 text-stone-700 dark:text-stone-300">
+                    <User className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
                     <p>{t('applications.detail.noContacts', 'Inga kontakter tillagda')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowContactForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
@@ -761,16 +769,16 @@ export function ApplicationDetailModal({
                 {contacts.map((contact) => (
                   <Card key={contact.id} className="p-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
-                        <User className="w-5 h-5 text-stone-600" />
+                      <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center dark:bg-stone-800">
+                        <User className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-stone-900">{contact.name}</p>
+                        <p className="font-medium text-stone-900 dark:text-stone-100">{contact.name}</p>
                         {contact.title && (
-                          <p className="text-sm text-stone-700">{contact.title}</p>
+                          <p className="text-sm text-stone-700 dark:text-stone-300">{contact.title}</p>
                         )}
                         {contact.email && (
-                          <a href={`mailto:${contact.email}`} className="text-sm text-sky-600 hover:underline">
+                          <a href={`mailto:${contact.email}`} className="text-sm text-sky-600 hover:underline dark:text-sky-400">
                             {contact.email}
                           </a>
                         )}
@@ -798,8 +806,8 @@ export function ApplicationDetailModal({
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 !showReminderForm && (
-                  <div className="text-center py-8 text-stone-700">
-                    <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300" />
+                  <div className="text-center py-8 text-stone-700 dark:text-stone-300">
+                    <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300 dark:text-stone-600" />
                     <p>{t('applications.detail.noReminders', 'Inga aktiva påminnelser')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowReminderForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
@@ -820,12 +828,12 @@ export function ApplicationDetailModal({
                 {reminders.filter(r => !r.isCompleted).map((reminder) => (
                   <Card key={reminder.id} className="p-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                        <Bell className="w-5 h-5 text-amber-600" />
+                      <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center dark:bg-amber-900/30">
+                        <Bell className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-stone-900">{reminder.title}</p>
-                        <p className="text-sm text-stone-700">
+                        <p className="font-medium text-stone-900 dark:text-stone-100">{reminder.title}</p>
+                        <p className="text-sm text-stone-700 dark:text-stone-300">
                           {new Date(reminder.reminderDate).toLocaleDateString(i18n.language)}
                           {reminder.reminderTime && ` ${t('applications.detail.atTime', 'kl')} ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
@@ -834,7 +842,7 @@ export function ApplicationDetailModal({
                         onClick={() => handleCompleteReminder(reminder.id)}
                         aria-label={t('applications.detail.markDoneAria', { title: reminder.title })}
                         title={t('applications.common.markDone', 'Markera som klar')}
-                        className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600"
+                        className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600 dark:hover:bg-green-900/20 dark:text-stone-400"
                       >
                         <CheckCircle className="w-5 h-5" aria-hidden="true" />
                       </button>

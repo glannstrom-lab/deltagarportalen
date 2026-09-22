@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
@@ -667,51 +666,7 @@ export function registreraAuthLyssnare(): boolean {
 
 registreraAuthLyssnare()
 
-// Helper hooks for role checking
-export const useActiveRole = () => {
-  return useAuthStore((state) => state.profile?.activeRole || state.profile?.role || 'USER')
-}
-
-export const useUserRoles = (): UserRole[] => {
-  // Selektorer returnerar primitiver respektive original-array — bara förändringar
-  // i de underliggande värdena triggar re-render. useMemo bygger den mergade
-  // arrayen utanför selektorn så vi inte skapar en ny array per render
-  // (det skulle ge oändlig loop med Zustand).
-  //
-  // Mergea profile.role (single) in i profile.roles (array). Konsulenter i
-  // prod har historiskt roles=['USER'] även när role='CONSULTANT' — utan
-  // mergen skulle de tappa sin tillgång till konsulent-funktioner.
-  const single = useAuthStore((s) => s.profile?.role)
-  const arr = useAuthStore((s) => s.profile?.roles)
-  return useMemo(() => {
-    const base = arr ?? []
-    if (single && !base.includes(single)) return [...base, single]
-    return base.length > 0 ? base : ['USER']
-  }, [single, arr])
-}
-
-export const useHasRole = (role: UserRole) => {
-  const roles = useUserRoles()
-  return roles.includes(role)
-}
-
-export const useIsSuperAdmin = () => useHasRole('SUPERADMIN')
-export const useIsAdmin = () => {
-  const isAdmin = useHasRole('ADMIN')
-  const isSuperAdmin = useHasRole('SUPERADMIN')
-  return isAdmin || isSuperAdmin
-}
-export const useIsConsultant = () => {
-  const isConsultant = useHasRole('CONSULTANT')
-  const isAdmin = useHasRole('ADMIN')
-  const isSuperAdmin = useHasRole('SUPERADMIN')
-  return isConsultant || isAdmin || isSuperAdmin
-}
-
-/** Får signera DOA/WRI/MOHOST/AWP/AWC enligt AF-uppdraget. */
-export const useIsArbetsterapeut = () => {
-  const isAt = useHasRole('ARBETSTERAPEUT')
-  const isAdmin = useHasRole('ADMIN')
-  const isSuperAdmin = useHasRole('SUPERADMIN')
-  return isAt || isAdmin || isSuperAdmin
-}
+// useActiveRole, useUserRoles, useHasRole, useIsSuperAdmin, useIsAdmin,
+// useIsConsultant och useIsArbetsterapeut RADERADE 2026-09-22 — noll
+// anropare. Rollstyrningen i UI:t läser `profile.role`/`roles` direkt
+// (`PrivateRoute allowedRoles` i App.tsx m.fl.); den verkliga grinden är RLS.

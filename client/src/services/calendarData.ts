@@ -134,66 +134,6 @@ export interface WeekStats {
 // HJÄLPFUNKTIONER
 // ==========================================
 
-export function generateRecurringEvents(
-  baseEvent: CalendarEvent,
-  startDate: Date,
-  endDate: Date
-): CalendarEvent[] {
-  if (!baseEvent.recurringConfig) return [baseEvent]
-  
-  const events: CalendarEvent[] = []
-  const config = baseEvent.recurringConfig
-  const currentDate = new Date(startDate)
-  let occurrenceCount = 0
-  
-  while (currentDate <= endDate) {
-    if (config.occurrences && occurrenceCount >= config.occurrences) break
-    if (config.endDate && currentDate > new Date(config.endDate)) break
-    
-    // Kolla om dagen matchar (för veckovisa)
-    if (config.frequency === 'weekly' && config.daysOfWeek) {
-      if (!config.daysOfWeek.includes(currentDate.getDay())) {
-        currentDate.setDate(currentDate.getDate() + 1)
-        continue
-      }
-    }
-    
-    const eventDate = currentDate.toISOString().split('T')[0]
-    events.push({
-      ...baseEvent,
-      id: `${baseEvent.id}-${eventDate}`,
-      date: eventDate,
-      parentEventId: baseEvent.id,
-    })
-    
-    occurrenceCount++
-    
-    // Öka datum
-    switch (config.frequency) {
-      case 'daily':
-        currentDate.setDate(currentDate.getDate() + config.interval)
-        break
-      case 'weekly':
-        currentDate.setDate(currentDate.getDate() + (config.interval * 7))
-        break
-      case 'monthly':
-        currentDate.setMonth(currentDate.getMonth() + config.interval)
-        break
-    }
-  }
-  
-  return events
-}
-
-export function getEventDuration(event: CalendarEvent): number {
-  if (!event.endTime) return 60 // Default 1 timme
-  
-  const [startHour, startMin] = event.time.split(':').map(Number)
-  const [endHour, endMin] = event.endTime.split(':').map(Number)
-  
-  return (endHour * 60 + endMin) - (startHour * 60 + startMin)
-}
-
 export function formatDuration(minutes: number): string {
   const hours = Math.floor(minutes / 60)
   const mins = minutes % 60
@@ -243,14 +183,6 @@ export function isSameDay(date1: Date, date2: Date): boolean {
   return date1.toDateString() === date2.toDateString()
 }
 
-export function addMinutes(time: string, minutes: number): string {
-  const [hour, min] = time.split(':').map(Number)
-  const totalMinutes = hour * 60 + min + minutes
-  const newHour = Math.floor(totalMinutes / 60) % 24
-  const newMin = totalMinutes % 60
-  return `${String(newHour).padStart(2, '0')}:${String(newMin).padStart(2, '0')}`
-}
-
 // ==========================================
 // MOOD TRACKING
 // ==========================================
@@ -262,16 +194,6 @@ export function getMoodEmoji(level: MoodLevel): string {
     case 3: return '😐'
     case 4: return '🙂'
     case 5: return '😄'
-  }
-}
-
-export function getMoodLabel(level: MoodLevel): string {
-  switch (level) {
-    case 1: return 'Mycket dåligt'
-    case 2: return 'Dåligt'
-    case 3: return 'Okej'
-    case 4: return 'Bra'
-    case 5: return 'Mycket bra'
   }
 }
 

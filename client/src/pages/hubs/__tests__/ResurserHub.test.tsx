@@ -70,3 +70,11 @@ describe('ResurserHub — feature-page', () => {
     expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
   })
 })
+
+describe('ResurserHub — tre lägen', () => {
+  it('påstår inget om användaren innan svaret är inne', () => {
+    renderHub()
+    expect(screen.queryByText('Inga ännu')).not.toBeInTheDocument()
+    expect(screen.queryByText('Möt ditt AI-team')).not.toBeInTheDocument()
+  })
+})

@@ -12,13 +12,16 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { I18nextProvider } from 'react-i18next'
+import { MemoryRouter } from 'react-router-dom'
 import i18n from '@/i18n/config'
 import CrisisTab from './CrisisTab'
 
 function renderTab() {
   return render(
     <I18nextProvider i18n={i18n}>
-      <CrisisTab />
+      <MemoryRouter>
+        <CrisisTab />
+      </MemoryRouter>
     </I18nextProvider>
   )
 }
@@ -54,5 +57,29 @@ describe('CrisisTab — grundningsövningarna visar rätt steg för respektive t
     klickaGrundningskort(2)
 
     expect(container.textContent).toContain('Hitta en lugn röst eller musik')
+  })
+})
+
+/**
+ * Två döda knappar på krissidan (2026-09-22):
+ *  - "Starta chatt nu" satte ett tillstånd som ingenting läste, under en
+ *    text som lovade "våra tränade volontärer … dygnet runt". Portalen har
+ *    inga volontärer och ingen chatt. Kortet är borttaget.
+ *  - "Skicka meddelande till konsulent" saknade onClick. Nu en länk till
+ *    Min konsulent, där meddelandena finns.
+ * Mutation: lägg tillbaka chattkortet → första testet faller; gör länken
+ * till en <Button> utan onClick igen → andra testet faller.
+ */
+describe('CrisisTab — inga löften utan verkan', () => {
+  it('lovar ingen chatt med volontärer som inte finns', () => {
+    const { container } = renderTab()
+    expect(container.textContent).not.toMatch(/volontär/i)
+    expect(screen.queryByRole('button', { name: /starta chatt/i })).not.toBeInTheDocument()
+  })
+
+  it('knappen till konsulenten leder någonstans', () => {
+    renderTab()
+    const lank = screen.getByRole('link', { name: /konsulent/i })
+    expect(lank).toHaveAttribute('href', '/my-consultant')
   })
 })

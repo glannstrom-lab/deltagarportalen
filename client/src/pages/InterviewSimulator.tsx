@@ -24,6 +24,7 @@ import { IntervjuSimulatorResultSchema, safeParseAiResponse, type IntervjuResult
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { Link } from 'react-router-dom'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface FragaSvar {
   fraga: string
@@ -251,7 +252,7 @@ export default function InterviewSimulator() {
  * — inte en nolla.
  */
 function TidigareOvningar({ sessioner }: { sessioner: SimulatorSession[] }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [oppen, setOppen] = useState<string | null>(null)
 
   return (
@@ -285,7 +286,7 @@ function TidigareOvningar({ sessioner }: { sessioner: SimulatorSession[] }) {
                   {session.foretag ? ` — ${session.foretag}` : ''}
                 </span>
                 <span className="block text-sm text-stone-600 dark:text-stone-400">
-                  {new Date(session.endedAt).toLocaleDateString('sv-SE')}
+                  {new Date(session.endedAt).toLocaleDateString(datumSprak(i18n.language))}
                   {' · '}
                   {t('interviewSimulator.history.answers', {
                     defaultValue: '{{count}} besvarade frågor',

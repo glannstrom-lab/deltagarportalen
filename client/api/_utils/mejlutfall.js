@@ -23,7 +23,11 @@
  */
 
 /**
- * @typedef {{ skickade: number, fel: number }} Utfall
+ * `ejMarkerade` (2026-09-22): utskick som gick iväg men vars `data.mail_sent`
+ * inte gick att skriva. De skickas igen nästa körning — ett dubbelmejl, inte
+ * ett förlorat — så det är ett larm, aldrig ett 500.
+ *
+ * @typedef {{ skickade: number, fel: number, ejMarkerade?: number }} Utfall
  */
 
 /**
@@ -34,7 +38,11 @@
 function avgorSvar(utfall) {
   const skickade = Number(utfall && utfall.skickade) || 0;
   const fel = Number(utfall && utfall.fel) || 0;
+  const ejMarkerade = Number(utfall && utfall.ejMarkerade) || 0;
   const forsok = skickade + fel;
+  const dubbelrisk = ejMarkerade > 0
+    ? ` ${ejMarkerade} skickade mejl kunde inte markeras och skickas igen nästa körning.`
+    : '';
 
   if (forsok === 0) return { status: 200, larm: null };
   if (skickade === 0) {
@@ -44,8 +52,9 @@ function avgorSvar(utfall) {
     };
   }
   if (fel > 0) {
-    return { status: 200, larm: `${fel} av ${forsok} mejlutskick misslyckades.` };
+    return { status: 200, larm: `${fel} av ${forsok} mejlutskick misslyckades.${dubbelrisk}` };
   }
+  if (dubbelrisk) return { status: 200, larm: dubbelrisk.trim() };
   return { status: 200, larm: null };
 }
 

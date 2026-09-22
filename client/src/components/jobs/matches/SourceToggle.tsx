@@ -37,6 +37,7 @@ export function SourceToggle({
     <button
       onClick={onToggle}
       disabled={!available}
+      aria-pressed={active && available}
       className={cn(
         "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all",
         active && available ? colors[source] : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300",
@@ -44,7 +45,7 @@ export function SourceToggle({
         available && !active && "hover:border-stone-300 dark:hover:border-stone-600"
       )}
     >
-      <Icon className="w-4 h-4" />
+      <Icon className="w-4 h-4" aria-hidden="true" />
       <span className="font-medium text-sm">{label}</span>
       {available && count > 0 && (
         <span className={cn(

@@ -75,11 +75,17 @@ export function CreateApplicationModal({
         employmentType: job.employment_type?.label
       }
       
-      // Hämta CV-data för avancerad analys
-      const { data: cv } = await supabase
-        .from('cvs')
-        .select('*')
-        .maybeSingle()
+      // Hämta CV-data för avancerad analys — användarens EGET CV. Utan filtret
+      // släppte RLS även igenom aktiva deltagares CV för ett konsulentkonto
+      // (policyn KS2b), och frågan gav då fel CV eller flera rader.
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: cv } = user
+        ? await supabase
+            .from('cvs')
+            .select('*')
+            .eq('user_id', user.id)
+            .maybeSingle()
+        : { data: null }
       
       if (cv && job.description?.text) {
         // Använd avancerad analys

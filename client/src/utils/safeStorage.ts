@@ -1,168 +1,18 @@
 /**
- * Safe LocalStorage wrapper with XSS protection and error handling
- * Sanitizes all data going in and out of localStorage
+ * Rensning av deltagarinnehåll i localStorage vid utloggning.
+ *
+ * Filen heter `safeStorage` efter en `SafeStorage`-klass (localStorage med
+ * `dp_`-prefix och "sanering" av strängar) som hade noll anropare och togs
+ * bort 2026-09-22 tillsammans med `utils/security.ts`, dess enda beroende.
+ * Klassen var dessutom trasig på ett sätt som hade gjort den farlig att börja
+ * använda: `setItem` HTML-eskaperade varje sträng (`/` → `&#x2F;`) men
+ * `getItem` avkodade aldrig tillbaka, så en sparad URL kom ut förstörd.
  */
-
-import { sanitizeInput, safeJsonStringify } from './security'
-
-class SafeStorage {
-  private prefix = 'dp_'
-
-  /**
-   * Set an item in localStorage with sanitization
-   */
-  setItem(key: string, value: unknown): boolean {
-    try {
-      const sanitizedKey = this.sanitizeKey(key)
-      let sanitizedValue: string
-
-      if (typeof value === 'string') {
-        // Sanitize string values
-        sanitizedValue = sanitizeInput(value)
-      } else {
-        // For objects, use safe JSON stringify
-        sanitizedValue = safeJsonStringify(value)
-      }
-
-      localStorage.setItem(this.prefix + sanitizedKey, sanitizedValue)
-      return true
-    } catch (error) {
-      console.error('SafeStorage setItem error:', error)
-      return false
-    }
-  }
-
-  /**
-   * Get an item from localStorage
-   */
-  getItem<T = string>(key: string, defaultValue?: T): T | null {
-    try {
-      const sanitizedKey = this.sanitizeKey(key)
-      const item = localStorage.getItem(this.prefix + sanitizedKey)
-
-      if (item === null) {
-        return defaultValue ?? null
-      }
-
-      // Try to parse as JSON first
-      try {
-        return JSON.parse(item) as T
-      } catch {
-        // Return as string if not valid JSON
-        return item as unknown as T
-      }
-    } catch (error) {
-      console.error('SafeStorage getItem error:', error)
-      return defaultValue ?? null
-    }
-  }
-
-  /**
-   * Remove an item from localStorage
-   */
-  removeItem(key: string): boolean {
-    try {
-      const sanitizedKey = this.sanitizeKey(key)
-      localStorage.removeItem(this.prefix + sanitizedKey)
-      return true
-    } catch (error) {
-      console.error('SafeStorage removeItem error:', error)
-      return false
-    }
-  }
-
-  /**
-   * Clear all items with our prefix
-   */
-  clear(): boolean {
-    try {
-      const keysToRemove: string[] = []
-      
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key?.startsWith(this.prefix)) {
-          keysToRemove.push(key)
-        }
-      }
-
-      keysToRemove.forEach(key => localStorage.removeItem(key))
-      return true
-    } catch (error) {
-      console.error('SafeStorage clear error:', error)
-      return false
-    }
-  }
-
-  /**
-   * Clear all items except those matching the given keys
-   */
-  clearExcept(keepKeys: string[]): boolean {
-    try {
-      const keysToRemove: string[] = []
-      const prefixedKeepKeys = keepKeys.map(k => this.prefix + this.sanitizeKey(k))
-      
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key?.startsWith(this.prefix) && !prefixedKeepKeys.includes(key)) {
-          keysToRemove.push(key)
-        }
-      }
-
-      keysToRemove.forEach(key => localStorage.removeItem(key))
-      return true
-    } catch (error) {
-      console.error('SafeStorage clearExcept error:', error)
-      return false
-    }
-  }
-
-  /**
-   * Check if a key exists
-   */
-  has(key: string): boolean {
-    return this.getItem(key) !== null
-  }
-
-  /**
-   * Get all keys with our prefix
-   */
-  keys(): string[] {
-    const keys: string[] = []
-    
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key?.startsWith(this.prefix)) {
-        keys.push(key.slice(this.prefix.length))
-      }
-    }
-
-    return keys
-  }
-
-  /**
-   * Sanitize storage key
-   */
-  private sanitizeKey(key: string): string {
-    // Remove any characters that could be used for injection
-    return key.replace(/[^a-zA-Z0-9_-]/g, '_')
-  }
-}
-
-// Export singleton instance
-export const safeStorage = new SafeStorage()
-
-// Convenience exports
-export const safeLocalStorage = {
-  getItem: safeStorage.getItem.bind(safeStorage),
-  setItem: safeStorage.setItem.bind(safeStorage),
-  removeItem: safeStorage.removeItem.bind(safeStorage),
-  clear: safeStorage.clear.bind(safeStorage),
-}
 
 /**
  * A31 (docs/review-2026-08-09/sakerhet-gdpr.md #10): deltagarens CV, personliga
  * brev och annat verktygsinnehåll skrivs på flera ställen direkt till
- * `localStorage` (utanför `safeStorage`s `dp_`-prefix) — som molnsync-fallback
+ * `localStorage` — som molnsync-fallback
  * eller som utkast. `signOut()` nollade tidigare bara zustand-state; de här
  * nycklarna blev kvar på disk. Målgruppen sitter ofta på delade datorer
  * (bibliotek, jobbcentrum), så det är ett normalfall, inte ett kantfall.
@@ -272,8 +122,8 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
 /**
  * Rensar allt deltagarinnehåll ur localStorage vid utloggning. Anropas från
  * `authStore.signOut()` — portalens enda logout-väg (Sidebar + TopBar går
- * båda via `useAuthStore().signOut()`). Rör INTE `dp_`-prefixade nycklar
- * (redan hanterade av `safeStorage`), språkval, temaval eller cookie-samtycke.
+ * båda via `useAuthStore().signOut()`). Rör INTE språkval, temaval eller
+ * cookie-samtycke.
  */
 export function clearUserScopedStorage(): void {
   for (const key of USER_SCOPED_STORAGE_KEYS) {

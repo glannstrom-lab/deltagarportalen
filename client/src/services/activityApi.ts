@@ -8,23 +8,6 @@ import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 
 export const activityApi = {
-  async logActivity(activityType: string, activityData?: Record<string, unknown>) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const { data, error } = await supabase
-      .from('user_activities')
-      .insert({
-        user_id: user.id,
-        activity_type: activityType,
-        activity_data: activityData || {}
-      })
-      .select()
-      .single()
-
-    if (error) handleError(error)
-    return data
-  },
 
   async getActivities(activityType?: string, limit: number = 30) {
     const { data: { user } } = await supabase.auth.getUser()
@@ -45,34 +28,6 @@ export const activityApi = {
 
     if (error) handleError(error)
     return data || []
-  },
-
-  async getActivityCounts(days: number = 10) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const startDate = new Date()
-    startDate.setDate(startDate.getDate() - days)
-
-    const { data, error } = await supabase
-      .from('user_activities')
-      .select('created_at')
-      .eq('user_id', user.id)
-      .gte('created_at', startDate.toISOString())
-      .order('created_at', { ascending: true })
-
-    if (error) handleError(error)
-
-    const counts = new Array(days).fill(0)
-    data?.forEach(activity => {
-      const date = new Date(activity.created_at)
-      const dayDiff = Math.floor((Date.now() - date.getTime()) / (1000 * 60 * 60 * 24))
-      if (dayDiff < days) {
-        counts[days - 1 - dayDiff]++
-      }
-    })
-
-    return counts
   },
 
   async getCount(activityType: string) {

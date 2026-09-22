@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version **2026-09-22** (städpasset: nio agenter, dödkod/buggar/skuld — se avsnittet direkt nedan; ST1–ST4 kräver Mikael), byggd på version **2026-09-13** (tredje helhetsgenomgången —
+> **Detta är projektets enda gällande plan.** Version **2026-09-22 kväll** (buggpasset: nio agenter med nya linser — UTC-datum, tysta fel, DB-lagret i prod; BP1–BP9 kräver Mikael, BP1 är en säkerhetslucka) ovanpå **2026-09-22** (städpasset: nio agenter, dödkod/buggar/skuld; ST1–ST4 kräver Mikael), byggd på version **2026-09-13** (tredje helhetsgenomgången —
 > sex roterade linser eftersom 560 filer ändrats sedan 7 september: KM-spårets domänlogik,
 > AG-spårets RLS/isolering, drift/observability för nya cronjobb, GDPR för företagsdatan,
 > informationsarkitektur mellan de tre kontotyperna, och en blindfläck. 17 poster; två redan
@@ -20,6 +20,98 @@
 **Så underhålls dokumentet:** Ett plandokument. Avklarat flyttas till §9. Nya idéer förs in under rätt spår — aldrig i nya plandokument. Detaljspecar (STA, AF-API, EU) är bilagor enligt §8.
 
 **Så tas en punkt:** Premissgranska först — se `CLAUDE.md § Premissgranskning`. Läs koden, spåra konsumenter, kolla schemat mot `information_schema`, mät i stället för att lita på siffrorna här. Rapportera "premissen håller / håller inte" och föreslå bygg / omscopa / avskriv **innan** du bygger. Raderna nedan beskriver vad någon trodde när de skrevs — sex av dem visade sig ha fel premiss 2026-07-27.
+
+---
+
+## Buggpasset 2026-09-22 (kväll) — nya linser, nio agenter
+
+Förra passet samma dag letade med tsc/eslint och dödkodsanalys. Det här letade där ingen tittat:
+fel som blir "tomt"/"0", **"idag" räknat i UTC** (fel dygn 00–02 svensk tid), async-race,
+React Query-invalidering, insert-kolumner mot schemat, behörighet — och databasens egen logik
+(triggers, definer-funktioner, RLS, cron) read-only i prod. Exklusiva fillistor, noll git i
+agenterna. Varje fix har ett test som föll före fixen. `verify` + `build` gröna: 332 testfiler,
+3 617 tester, 32 deno-tester; taken oförändrade (28/31/7).
+
+**Klassen som dominerade: UTC-datum som "idag".** ~40 ställen i fem lager. Skarpast: humör
+loggat efter midnatt **skrev över gårdagens rad** (upsert på `user_id,log_date`), kalendern
+visade gårdagens händelser under dagens rubrik, veckomål skrivna måndag 00:30 syntes aldrig.
+Ny grind `services/idagLokalt.test.ts` (tre granskade undantag); CI kör i UTC och kan aldrig
+se felet utan uttrycklig TZ i testet.
+
+**Skarpa buggar rättade (urval):**
+- `/api/ai` godtog `constructor`/`toString` som funktionsnamn (`PROMPTS` ärver `Object.prototype`)
+  → fri systemprompt till OpenRouter, 100 000 tokens, ingen rate limit. Nu egen-nyckel-validering först.
+- Edge: **25** fetch utan timeout (ST4 täckte två) — nu `_shared/fetchMedTimeout.ts` + grind som läser
+  varje anrop. Tokentaket räknade fel i alla fem AI-funktioner (`try/catch` kring supabase-insert fångar
+  inget). `ai-company-search`: `[1]`-källhänvisningar knäckte tolkningen och ett företag kunde få ett
+  annat företags org.nr. `af-taxonomy` svarade 200 tomt vid avbrott (cachades en timme).
+- Jobbevakningen (`api/job-alerts.js`) flyttade fram `last_checked_at` vid AF-avbrott → annonser
+  tappades för alltid. Mejl-cronerna mejlade den som stängt av mejl när uppslaget föll.
+- Båda typecheck-grindarna gick gröna på ett konfigurationsfel (TS18003) utan att kontrollera en fil.
+  `lint:design` såg inte Tailwind 4:s `bg-linear-*`. `lint:grants` har ny regel 5 (anon-anropare i `client/api`).
+- Kalendern: formuläret för ny händelse öppnades tomt (regression från förmiddagens pass).
+- CV-byggaren sparade aldrig deltagarens **första** ändring; offlinekön tömdes aldrig.
+  Personligt brev: det man skrev under AI-väntan skrevs över. Fokusläget: fyra guider stängdes
+  och tappade texten när sparningen misslyckades (MV3 var bara lagad på papperet — tjänsten
+  returnerar `null`, kastar inte).
+- Adminpanelen: en konsulent sänkt till deltagare behöll konsulentvyn (bara `role` skrevs, inte
+  `roles`/`active_role`). `CreateApplicationModal` hämtade CV utan user-filter — en konsulent
+  kunde få en deltagares CV som "Din matchning".
+- Konsulentexporten (CSV/"Excel"): ingen BOM, ingen citering, formelinjektion, `.xlsx` som inte var xlsx.
+  "AI-förslag" för mål var fyra hårdkodade regler bakom en påhittad väntan — omdöpt.
+- "Snitt CV-poäng" räknade saknad poäng som 0 (null i 31 av 34 CV:n). Kalendersynken dubblerade
+  vid varje klick (dubblettskyddet jämförde mot en uuid).
+- Datadelningen visade vid läsfel båda delningarna som "av" — Spara stängde då av en aktiv delning.
+  Delningstexten lovade att dagboken delas; RLS delar bara humörloggen (texten rättad).
+- Krissidan: "Chatt-stöd" lovade volontärer dygnet runt bakom en knapp utan verkan (kortet borttaget);
+  "Skicka meddelande till konsulent" var en knapp utan onClick.
+- Pauspåminnelsen kom aldrig (varje tangent startade om intervallet). `ConfirmDialog` kunde lämna ett
+  `await` hängande för evigt.
+
+**Skuld:** ~2 400 rader död kod bort (bl.a. `utils/security.ts`, en `SafeStorage` som förstörde det den
+sparade, 36 döda service-metoder, 11 validerare, två workflow-widgetar) + 32 i18n-nycklar som blev döda.
+
+### Kräver Mikael (BP = buggpasset)
+
+- [ ] **BP1** 🔴 **Säkerhet: vem som helst kan koppla sig som konsulent till vem som helst.**
+  `consultant_participants` har `FOR ALL USING (consultant_id = auth.uid() …)` utan WITH CHECK och
+  utan rollkontroll; `authenticated` har INSERT. En rad öppnar journal, CV, placeringar och
+  aktivitetsplan — och en återkallad konsulent kan lägga tillbaka sig själv. Klienten gör aldrig
+  INSERT, så stängningen bryter inget. Stänger också `sta_bulk_smart_add` + sju döda STA-funktioner.
+  → `supabase/migrations/PENDING_20260922_konsulentkoppling_utan_samtycke.sql` (RLS — kräver ja).
+- [ ] **BP2** 🔴 Användaren kan skriva sin egen `profiles.email`/`consultant_id` (WITH CHECK rör bara
+  rollfälten). Falsk e-post → medlemskap i ett företagskonto som bjuds in till den adressen.
+  Inte utnyttjat (0 av 112 avviker från `auth.users`). → `PENDING_20260922_profiles_skyddade_kolumner.sql`.
+- [ ] **BP3** Inbjudna deltagare kopplas inte till konsulenten (`handle_new_user` sätter `used_at` före
+  profilen; triggern letar `used_at IS NULL`). `rate_limits` gallras aldrig (1 380 rader, 959 IP-adresser
+  sedan april). "Radera kontot nu" faller för konsulenter (`audit_logs.user_id` utan ON DELETE).
+  → `PENDING_20260922_inbjudan_ratelimit_radering.sql`.
+- [ ] **BP4** Samtycken loggas dubbelt vid registrering (9 av 20 septemberkonton).
+  → `PENDING_20260922_samtycke_loggas_dubbelt_vid_registrering.sql`.
+- [ ] **BP5** `BLOB_READ_WRITE_TOKEN` saknas i edge-secrets → `delete-account` raderar aldrig
+  profilbilder i Vercel Blob (art. 17). `SENTRY_DSN` saknas också i edge.
+- [ ] **BP6** Beslut: säkerhetsfliken i Inställningar är attrapp (lösenordsbyte, 2FA, "Byt foto" utan
+  verkan; ingen lösenordsbytesväg finns i klienten). Ta bort eller bygg `updateUser`.
+- [ ] **BP7** Beslut: "Dela med konsulent" i AI-teamet skriver hela chatten osanerad till
+  `shared_resources`, som ingen kod läser och vars RLS ger läsrätt till inbjudande (inte nuvarande)
+  konsulent, även efter uppsägning. Ta bort knappen eller bygg klart.
+- [ ] **BP8** Beslut: "Standard-CV" sparas bara i localStorage — `user_preferences.default_cv_id` finns
+  inte i prod. Fokuslägets brevmall skriver påståenden om personen (B21-klassen). Telefonnumren på
+  krissidan bör granskas av en människa (Sjukvårdsupplysningen 08-320 100 ser föråldrat ut).
+- [ ] **BP9** CI: de 32 nya deno-testerna körs inte i CI. Förslag: steg
+  `npx -y deno@2.9.6 test --allow-read --allow-env supabase/functions/` i `ci.yml` (kräver ja).
+
+### Kvar för nästa pass (ingen blockering)
+
+- Dagboken sväljer fel i två lager (`diaryApi` → `[]`, `useDiary` fångar igen) — ändra hook + service + `JournalTab` ihop.
+  Samma för `jobAlertEmailService.getUnreadCount`, `moodApi.getStreak`, `interestGuideApi.getHistoryCount`, `savedJobsApi.getAll`.
+- AF-proxyerna `af-jobsearch/-jobed/-historical/education-search` svarar 200 tomt vid avbrott — ändras ihop med konsumenterna.
+- SSE-grenen i `ai.js` avbryter inte uppströms vid klientnedkoppling. `job-alerts.js` mejlmallar oeskaperade.
+- `workflowApi.ts:213/256` samma ofiltrerade `from('cvs')` som `CreateApplicationModal`. `tidslinjeApi` sorterar lokal tid mot UTC.
+- `check_role_change_allowed` kontrollerar `role` men inte `roles`. `consultant_requests` kan aldrig besvaras (policyn).
+- `ResultsTab` (intresseguiden) till stora delar oöversatt och visar procent trots beslutet om plats.
+- 44 `dark:text-stone-600` kvar i 18 filer (grinden `morkt-lage-textkontrast.test.ts` täcker bara delar).
+- `scbSalaryApi` heter SCB men bygger på en egen okällad tabell — pröva mot regeln om påhittade värden.
 
 ---
 
@@ -96,7 +188,7 @@ hitta båda för hand.
 - [ ] **ST3** `deltagarportal-settings` i localStorage blandar innehåll (aviseringar,
   energinivå) med tillgänglighetsval som ska överleva utloggning. `settingsStore` nollställer
   innehållsdelen — men bara om modulen laddats i sessionen. Beslut: dela nyckeln i två.
-- [ ] **ST4** `af-taxonomy` (tre sekventiella anrop) och `bolagsverket` (OAuth, fyra fetch)
+- [x] **ST4** ✅ 2026-09-22 kväll (buggpasset: 25 anrop via `_shared/fetchMedTimeout.ts`, grind i `fetchMedTimeout.test.ts`) — `af-taxonomy` (tre sekventiella anrop) och `bolagsverket` (OAuth, fyra fetch)
   saknar fortfarande timeout — mer invasiv ändring, lägre risk. Samma mönster som AF-fixen ovan.
 
 ### Kvar för nästa pass (ingen blockering)

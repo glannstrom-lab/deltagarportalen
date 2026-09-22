@@ -62,14 +62,4 @@ export const AI_FEATURES = {
   COMMUTE_PLANNER: import.meta.env.VITE_AI_COMMUTE_PLANNER !== 'false',
 } as const
 
-/** Check if any AI features are enabled */
-export function hasAnyAIFeature(): boolean {
-  return Object.values(AI_FEATURES).some(Boolean)
-}
-
-/** Check if a specific feature is enabled */
-export function isFeatureEnabled(feature: keyof typeof AI_FEATURES): boolean {
-  return AI_FEATURES[feature]
-}
-
 export default AI_FEATURES

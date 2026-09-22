@@ -26,6 +26,7 @@
 
 const { execSync } = require('node:child_process')
 const path = require('node:path')
+const { klassaTscUtdata } = require('./lib/tsc-utdata.cjs')
 
 /**
  * Frozen 2026-07-27 (ROADMAP I2), sänkt 687 → 471 samma dag (I5, tre
@@ -76,13 +77,16 @@ const path = require('node:path')
 const CEILING = 28
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
+// Överstyrs bara av testet som bevisar att grinden fäller på en trasig
+// tsconfig (src/test/skript-typecheck-falskt-gront.test.ts).
+const PROJEKT = process.env.TYPECHECK_PROJEKT || 'tsconfig.app.json'
 
 function countErrors() {
   let output = ''
   try {
     // tsc returnerar exit != 0 när det finns fel — det är förväntat här,
     // så vi läser stdout ur felet i stället för att låta det kasta vidare.
-    output = execSync('npx tsc --noEmit -p tsconfig.app.json', {
+    output = execSync(`npx tsc --noEmit -p "${PROJEKT}"`, {
       cwd: CLIENT_DIR,
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
@@ -92,11 +96,22 @@ function countErrors() {
     output = `${err.stdout || ''}${err.stderr || ''}`
   }
 
-  const matches = output.match(/error TS\d+:/g)
-  return { count: matches ? matches.length : 0, output }
+  const { filfel, globala } = klassaTscUtdata(output)
+  return { count: filfel.length, globala, output }
 }
 
-const { count, output } = countErrors()
+const { count, globala, output } = countErrors()
+
+// Ett globalt fel (utan fil) är en trasig konfiguration: tsc har då inte
+// kontrollerat någonting. Räknades tidigare som "1 fel, under taket" och gav
+// OK — se scripts/lib/tsc-utdata.cjs.
+if (globala.length > 0) {
+  console.error(
+    'typecheck-ceiling: tsc rapporterade konfigurationsfel — ingen fil typkontrollerades:\n' +
+    globala.map((g) => `  ${g.rad.trim()}`).join('\n')
+  )
+  process.exit(2)
+}
 
 // Skydd mot att grinden tystnar av fel skäl: rapporterar tsc noll fel OCH
 // ingen utdata alls har den sannolikt inte körts. E7 visade att en

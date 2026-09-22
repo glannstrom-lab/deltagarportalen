@@ -12,6 +12,7 @@ import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
 import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
+import { showToast } from '@/components/Toast'
 import {
   Sparkles,
   Download,
@@ -104,7 +105,7 @@ export default function ResultsTab() {
         setHistory(historyData)
       } catch (err) {
         console.error('Failed to load results:', err)
-        setError(t('interestGuide.couldNotLoadResults') || 'Kunde inte ladda resultaten')
+        setError(t('interestGuide.couldNotLoadResults'))
       } finally {
         setIsLoading(false)
       }
@@ -119,7 +120,7 @@ export default function ResultsTab() {
       navigate('/interest-guide')
     } catch (err) {
       console.error('Failed to restart:', err)
-      setError(t('interestGuide.couldNotRestartTest') || 'Kunde inte starta om testet')
+      setError(t('interestGuide.couldNotRestartTest'))
     }
   }
 
@@ -152,16 +153,25 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
     URL.revokeObjectURL(url)
   }
 
-  const handleShareResults = () => {
+  // Båda löftena avvisas i normal drift: `share` när användaren stänger
+  // delningsrutan (AbortError), `writeText` när sidan saknar fokus eller
+  // behörighet. Ofångade blev de ohanterade avvisningar — och "Kopierat!"
+  // visades även när ingenting kopierats.
+  const handleShareResults = async () => {
     const text = `Jag har genomfört intressetestet i deltagarportalen och hittat yrken som passar mig!`
     if (navigator.share) {
-      navigator.share({
-        title: 'Intresseguide Resultat',
-        text: text,
-      })
-    } else {
-      navigator.clipboard.writeText(text)
-      alert(t('common.copied') || 'Kopierad!')
+      try {
+        await navigator.share({ title: 'Intresseguide Resultat', text })
+      } catch {
+        // Avbruten delning är användarens val, inget fel att visa
+      }
+      return
+    }
+    try {
+      await navigator.clipboard.writeText(text)
+      showToast.success(t('common.copied'))
+    } catch {
+      showToast.error(t('interestGuide.shareFailed'))
     }
   }
 
@@ -179,7 +189,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12 ">
-        <LoadingState title={t('common.loading') || 'Laddar resultat...'} size="lg" />
+        <LoadingState title={t('common.loading')} size="lg" />
       </div>
     )
   }
@@ -334,18 +344,19 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           <Card className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <button
               onClick={() => setShowHistory(!showHistory)}
+              aria-expanded={showHistory}
               className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 <span className="font-medium text-gray-700 dark:text-gray-300">
                   Tidigare resultat ({history.length} {history.length === 1 ? 'test' : 'tester'})
                 </span>
               </div>
               {showHistory ? (
-                <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" aria-hidden="true" />
               )}
             </button>
 
@@ -357,8 +368,17 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                       key={entry.id}
                       className={`p-4 border-b border-stone-100 dark:border-stone-700 last:border-0 ${
                         index === 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
-                      } transition-colors cursor-pointer`}
+                      } transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--c-solid)]`}
+                      role="button"
+                      tabIndex={0}
+                      aria-expanded={selectedHistoryId === entry.id}
                       onClick={() => setSelectedHistoryId(selectedHistoryId === entry.id ? null : entry.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault()
+                          setSelectedHistoryId(selectedHistoryId === entry.id ? null : entry.id)
+                        }
+                      }}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
@@ -503,7 +523,9 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         >
           <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] relative">
             <button
+              type="button"
               onClick={() => setShowComparisonHint(false)}
+              aria-label={t('common.close')}
               className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
             >
               x

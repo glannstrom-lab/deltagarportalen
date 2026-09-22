@@ -16,6 +16,7 @@ import { Button, CloseButton } from '@/components/ui/Button'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { AlertCircle, MessageSquare, Send } from '@/components/ui/icons'
 import { foretagsTradApi, type Delningsforslag } from '@/services/delningsforslagApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Props {
   open: boolean
@@ -36,9 +37,12 @@ function felText(e: unknown): string {
   return 'Kunde inte skicka'
 }
 
+/** `YYYY-MM-DD HH:MM` i lokal tid. Datumet togs tidigare ur UTC och klockslaget
+ *  ur lokal tid — 00:30 den 22:a visades som "2026-09-21 00:30". */
 function tid(iso: string): string {
   const d = new Date(iso)
-  return `${d.toISOString().slice(0, 10)} ${d.toTimeString().slice(0, 5)}`
+  if (Number.isNaN(d.getTime())) return ''
+  return `${formatLocalDate(d)} ${d.toTimeString().slice(0, 5)}`
 }
 
 export function ForetagsTrad({ open, forslag, foretagsnamn, onClose }: Props) {

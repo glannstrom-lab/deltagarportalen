@@ -50,6 +50,11 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const segmentStartTimeRef = useRef<number>(0)
   const currentQuestionRef = useRef<string>('')
+  // Mikrofonen får aldrig bli stående på. `getUserMedia` väntar på
+  // behörighetsfrågan — hinner sidan lämnas, eller "Spela in" klickas igen,
+  // innan svaret kommer, äger ingen den ström som till slut levereras.
+  const monteradRef = useRef(true)
+  const startarRef = useRef(false)
 
   // Timer for recording duration
   useEffect(() => {
@@ -77,6 +82,12 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
       return false
     }
 
+    // Ett andra klick medan den första starten väntar på behörighet, eller
+    // medan en inspelning redan pågår, öppnar ingen ny ström.
+    if (startarRef.current) return false
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') return false
+    startarRef.current = true
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -85,6 +96,12 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
           sampleRate: 44100,
         }
       })
+
+      if (!monteradRef.current) {
+        // Sidan lämnades medan frågan var öppen — släpp mikrofonen direkt.
+        stream.getTracks().forEach(track => track.stop())
+        return false
+      }
 
       streamRef.current = stream
       chunksRef.current = []
@@ -116,6 +133,8 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     } catch (error) {
       audioLogger.error('Failed to start recording', { error })
       return false
+    } finally {
+      startarRef.current = false
     }
   }, [audioSupported])
 
@@ -237,7 +256,9 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
 
   // Cleanup on unmount
   useEffect(() => {
+    monteradRef.current = true
     return () => {
+      monteradRef.current = false
       if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
         mediaRecorderRef.current.stop()
       }

@@ -511,15 +511,10 @@ registreraRensning(() => {
 
 // ============== HOOKS ==============
 
-// Selector hooks for better performance
-export const useProfileData = () => useProfileStore(s => s.profile)
-export const useProfilePreferences = () => useProfileStore(s => s.preferences)
-export const useProfileCompletion = () => useProfileStore(s => s.completion)
-// C13 (2026-07-23): useProfileLoading/useProfileSyncStatus raderade — noll
-// anropare, och de returnerade nya objektliteraler utan useShallow (Zustand
-// v5-fälla som hade gett re-render vid varje store-ändring om de tagits i bruk)
-export const useActiveTab = () => useProfileStore(s => s.activeTab)
-export const useSetActiveTab = () => useProfileStore(s => s.setActiveTab)
+// Selektorhookarna useProfileData, useProfilePreferences, useProfileCompletion,
+// useActiveTab och useSetActiveTab RADERADE 2026-09-22 — noll anropare
+// (C13 raderade useProfileLoading/useProfileSyncStatus av samma skäl).
+// Läs med `useProfileStore(s => s.x)` direkt.
 
 // ============== ONLINE/OFFLINE LISTENER ==============
 

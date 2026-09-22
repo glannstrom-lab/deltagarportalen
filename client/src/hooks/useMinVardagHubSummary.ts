@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import type { MinVardagSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
@@ -17,7 +18,8 @@ export function useMinVardagHubSummary() {
     queryFn: async () => {
       // Source of truth for column names: .planning/phases/05-full-hub-coverage-oversikt/05-DB-DISCOVERY.md
       // Note: consultant_participants uses `participant_id` (NOT user_id) per discovery.
-      const today = new Date().toISOString().split('T')[0]
+      // Lokalt datum: UTC-datumet är gårdagens mellan midnatt och kl. 02.
+      const today = formatLocalDate(new Date())
 
       // Promise.all of 6 supabase calls (mood/diary-count/diary-latest/calendar/network-count/consultant-join):
       const [moodR, diaryCountR, diaryLatestR, calR, contactsR, consultantR] = await Promise.all([

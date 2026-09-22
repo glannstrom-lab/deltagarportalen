@@ -12,6 +12,7 @@ import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
 import type { DiaryEntry } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const getMoodEmoji = (mood: number) => {
   switch (mood) {
@@ -267,7 +268,7 @@ export function JournalTab() {
     // om av diaryEntriesApi.create() utifrån innehållets ordräkning.
     await createEntry({
       ...entryData,
-      entry_date: new Date().toISOString().split('T')[0],
+      entry_date: formatLocalDate(new Date()),
       energy_level: null,
       is_favorite: false,
       word_count: 0

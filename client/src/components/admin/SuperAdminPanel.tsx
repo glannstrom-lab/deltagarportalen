@@ -8,16 +8,14 @@ import {
   Shield,
   Users,
   BarChart3,
-  Plus,
   Search,
   CheckCircle,
   XCircle,
-  MoreVertical,
   Building2
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { arTestkonto } from '@/lib/testkonton';
-import { LoadingState } from '@/components/ui/LoadingState';
+import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { OrganisationerTab } from './OrganisationerTab';
 
 interface User {
@@ -30,9 +28,26 @@ interface User {
   created_at: string;
 }
 
+/**
+ * Rollerna en roll för med sig — samma form som superadmin-kontot i prod
+ * ({USER,CONSULTANT,ADMIN,SUPERADMIN}). Behörigheten läses ur `roles ∪ {role}`
+ * (useUserRoles) och den aktiva rollen ur `active_role || role`, så ett byte
+ * som bara skriver `role` sänker ingen: en konsulent med roles={CONSULTANT}
+ * behöll konsulentvyn efter att ha satts till Deltagare (städpasset 2026-09-22).
+ */
+const ROLLER_FOR: Record<User['role'], User['role'][]> = {
+  USER: ['USER'],
+  CONSULTANT: ['USER', 'CONSULTANT'],
+  ADMIN: ['USER', 'CONSULTANT', 'ADMIN'],
+  SUPERADMIN: ['USER', 'CONSULTANT', 'ADMIN', 'SUPERADMIN'],
+};
+
 export const SuperAdminPanel: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  // Hämtfel skiljs från en tom lista — annars sa statistiken "0 användare".
+  const [hamtFel, setHamtFel] = useState<string | null>(null);
+  const [rollFel, setRollFel] = useState<string | null>(null);
   // 'settings'-fliken borttagen 2026-07-10 (B4): var en tom "Kommer snart..."-yta
   const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'organisationer'>('users');
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,6 +60,8 @@ export const SuperAdminPanel: React.FC = () => {
   }, []);
 
   const fetchUsers = async () => {
+    setLoading(true);
+    setHamtFel(null);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -55,23 +72,29 @@ export const SuperAdminPanel: React.FC = () => {
       setUsers(data || []);
     } catch (error) {
       console.error('Error fetching users:', error);
+      const text = error && typeof error === 'object' && 'message' in error ? String((error as { message: unknown }).message) : '';
+      setHamtFel(text || 'Okänt fel');
     } finally {
       setLoading(false);
     }
   };
 
   const handleRoleChange = async (userId: string, newRole: User['role']) => {
+    setRollFel(null);
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
-        .update({ role: newRole })
-        .eq('id', userId);
+        .update({ role: newRole, roles: ROLLER_FOR[newRole], active_role: null })
+        .eq('id', userId)
+        .select('id');
 
       if (error) throw error;
+      // RLS kan släppa igenom en UPDATE som träffar noll rader utan fel.
+      if (!data || data.length === 0) throw new Error('Ingen rad uppdaterades');
       setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
     } catch (error) {
       console.error('Error changing role:', error);
-      alert('Kunde inte ändra roll');
+      setRollFel('Kunde inte ändra roll. Rollen är oförändrad.');
     }
   };
 
@@ -88,6 +111,16 @@ export const SuperAdminPanel: React.FC = () => {
 
   if (loading) {
     return <LoadingState fullHeight />;
+  }
+
+  if (hamtFel) {
+    return (
+      <ErrorState
+        title="Användarna kunde inte hämtas"
+        message={hamtFel}
+        onRetry={() => { void fetchUsers(); }}
+      />
+    );
   }
 
   return (
@@ -156,12 +189,15 @@ export const SuperAdminPanel: React.FC = () => {
                   />
                   Dölj testkonton
                 </label>
-                <button className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700">
-                  <Plus className="w-5 h-5" />
-                  Bjud in konsulent
-                </button>
+                {/* "Bjud in konsulent" borttagen 2026-09-22: knappen saknade onClick. */}
               </div>
             </div>
+
+            {rollFel && (
+              <p role="alert" className="p-3 rounded-lg bg-red-50 text-red-800 text-sm border border-red-200">
+                {rollFel}
+              </p>
+            )}
 
             {/* Users Table */}
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -176,9 +212,6 @@ export const SuperAdminPanel: React.FC = () => {
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                       Status
-                    </th>
-                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                      Åtgärder
                     </th>
                   </tr>
                 </thead>
@@ -230,11 +263,6 @@ export const SuperAdminPanel: React.FC = () => {
                           )}
                           {user.status}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <button aria-label="Åtgärder för användare" className="text-gray-400 hover:text-gray-600">
-                          <MoreVertical className="w-5 h-5" aria-hidden="true" />
-                        </button>
                       </td>
                     </tr>
                   ))}

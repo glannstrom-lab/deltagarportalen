@@ -22,6 +22,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface DeletionStatus {
   has_pending_request: boolean
@@ -105,7 +106,7 @@ export function DeleteAccountSection() {
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `jobin-data-export-${new Date().toISOString().split('T')[0]}.json`
+        a.download = `jobin-data-export-${formatLocalDate(new Date())}.json`
         document.body.appendChild(a)
         a.click()
         document.body.removeChild(a)
@@ -328,7 +329,7 @@ export function DeleteAccountSection() {
             <h3 className="font-medium text-stone-900 dark:text-stone-100">
               {t('settings.deleteAccount.exportTitle')}
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
               {t('settings.deleteAccount.exportDesc')}
             </p>
             <Button
@@ -363,10 +364,10 @@ export function DeleteAccountSection() {
               <h3 className="font-medium text-stone-900 dark:text-stone-100">
                 {t('settings.deleteAccount.title')}
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                 {t('settings.deleteAccount.description')}
               </p>
-              <ul className="mt-3 space-y-1 text-sm text-stone-600 dark:text-stone-600">
+              <ul className="mt-3 space-y-1 text-sm text-stone-600 dark:text-stone-400">
                 <li className="flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
                   {t('settings.deleteAccount.willDelete.profile')}
@@ -419,7 +420,7 @@ export function DeleteAccountSection() {
                 </h2>
               </div>
 
-              <p className="text-stone-600 dark:text-stone-600 mb-4">
+              <p className="text-stone-600 dark:text-stone-400 mb-4">
                 {t('settings.deleteAccount.confirmDesc')}
               </p>
 
@@ -486,7 +487,7 @@ export function DeleteAccountSection() {
                 </h2>
               </div>
 
-              <p className="text-stone-600 dark:text-stone-600 mb-4">
+              <p className="text-stone-600 dark:text-stone-400 mb-4">
                 {t('settings.deleteAccount.immediateDesc')}
               </p>
 

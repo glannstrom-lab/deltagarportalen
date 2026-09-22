@@ -10,6 +10,7 @@ import { profileDocumentsApi, type ProfileDocument } from '@/services/profileEnh
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { datumSprak } from '@/lib/datumsprak'
 
 const DOCUMENT_TYPES = [
   { value: 'certificate', labelKey: 'profile.documents.types.certificate' },
@@ -23,7 +24,7 @@ interface Props {
 }
 
 export function DocumentsSection({ className }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [documents, setDocuments] = useState<ProfileDocument[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -147,7 +148,7 @@ export function DocumentsSection({ className }: Props) {
   }
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('sv-SE')
+    return new Date(date).toLocaleDateString(datumSprak(i18n.language))
   }
 
   const formatFileSize = (bytes?: number) => {

@@ -12,6 +12,7 @@ import { useMutation } from '@tanstack/react-query'
 import { User, Phone, Smile } from '@/components/ui/icons'
 import { userApi } from '@/services/userApi'
 import { useAuthStore } from '@/stores/authStore'
+import { showToast } from '@/components/Toast'
 import { FOCUS_WIZARD_TITLE_ID, FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
@@ -75,7 +76,10 @@ export function FocusProfileWizard({ onExit }: Props) {
       }
       setStep((s) => Math.min(s + 1, STEPS.length - 1))
     } catch (err) {
+      // Steget står kvar och texten finns kvar — men utan besked såg ett
+      // misslyckat sparande ut som en knapp som inte gjorde något.
       console.error('Failed to save profile step', err)
+      showToast.error(t('focus.saveFailed'))
     }
   }
 

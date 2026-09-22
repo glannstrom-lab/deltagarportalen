@@ -199,6 +199,12 @@ export function useEducationSearch(
 
   // Clear search results
   const clearSearch = useCallback(() => {
+    // En sökning som redan är i luften ska inte få fylla listan efter att
+    // användaren tömt fälten — höj löpnumret så att dess svar kastas, och
+    // släck laddningsläget här eftersom dess `finally` inte längre gör det.
+    korningRef.current++
+    setIsLoading(false)
+    setIsSearching(false)
     setResults([])
     setTotal(0)
     setHasMore(false)

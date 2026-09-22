@@ -55,6 +55,7 @@ import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { Delningsforslag } from '@/components/participant/Delningsforslag'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
+import { datumSprak } from '@/lib/datumsprak'
 
 // Types
 interface ConsultantInfo {
@@ -103,7 +104,7 @@ interface Goal {
 
 // Consultant Profile Card
 function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInfo | null; nextMeeting: NextMeeting | null }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   if (!consultant) {
     return (
@@ -208,7 +209,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
                   {meetingTypeLabels[nextMeeting.type] ?? meetingTypeLabels.video}
                 </p>
                 <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                  {new Date(nextMeeting.scheduled_at).toLocaleDateString('sv-SE', {
+                  {new Date(nextMeeting.scheduled_at).toLocaleDateString(datumSprak(i18n.language), {
                     weekday: 'long',
                     day: 'numeric',
                     month: 'long',
@@ -545,7 +546,7 @@ function MessagesSection({
 
 // Goals Section
 function GoalsSection({ goals }: { goals: Goal[] }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   if (goals.length === 0) {
     return null
@@ -608,7 +609,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
                 </p>
                 {goal.deadline && (
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    {t('myConsultant.goals.deadline')}: {new Date(goal.deadline).toLocaleDateString()}
+                    {t('myConsultant.goals.deadline')}: {new Date(goal.deadline).toLocaleDateString(datumSprak(i18n.language))}
                   </p>
                 )}
               </div>

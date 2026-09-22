@@ -15,6 +15,8 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 import { verifyCronSecret } from '../_shared/cronAuth.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
+import { svensktDatum } from '../_shared/datum.ts'
 
 const getInactivityWarningTemplate = (data: {
   firstName: string
@@ -150,7 +152,7 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
         }
 
         const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at) : new Date()
-        const lastSignInStr = lastSignIn.toLocaleDateString('sv-SE', { year: 'numeric', month: 'long' })
+        const lastSignInStr = svensktDatum(lastSignIn, { year: 'numeric', month: 'long' })
         const daysSince = Math.floor((Date.now() - lastSignIn.getTime()) / (1000 * 60 * 60 * 24))
         const daysUntilDeletion = Math.max(0, 730 - daysSince) // 24 mån = 730d
 
@@ -165,7 +167,7 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
         // Skicka via Resend om RESEND_API_KEY finns, annars via Supabase Auth
         const resendKey = Deno.env.get('RESEND_API_KEY')
         if (resendKey) {
-          const res = await fetch('https://api.resend.com/emails', {
+          const res = await fetchMedTimeout('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${resendKey}`,
@@ -177,7 +179,7 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
               subject: 'Ditt Jobin-konto raderas snart',
               html,
             }),
-          })
+          }, TIDSGRANS_TJANST_MS)
           if (!res.ok) {
             const text = await res.text()
             errors.push(`Resend ${user.email}: ${text}`)
@@ -192,11 +194,17 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
           continue
         }
 
-        // Markera som skickad
-        await supabaseAdmin
+        // Markera som skickad. supabase-js kastar inte vid fel — utan
+        // kontrollen blev raden kvar som osänd och personen fick samma
+        // "ditt konto raderas snart" vid nästa körning.
+        const { error: markeraFel } = await supabaseAdmin
           .from('email_queue')
           .update({ sent_at: new Date().toISOString() })
           .eq('id', job.id)
+        if (markeraFel) {
+          console.error(`[inactivity] mejl skickat men jobb ${job.id} kunde inte markeras:`, markeraFel.message)
+          errors.push(`Job ${job.id}: skickat men ej markerat — risk för dubbelutskick`)
+        }
 
         sent++
       } catch (err) {

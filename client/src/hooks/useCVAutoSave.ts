@@ -61,8 +61,6 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingData = useRef<CVData | null>(null)  // senaste data som väntar på server-flush
-  const isFirstRender = useRef(true)
-  const lastSavedData = useRef<CVData | null>(null)
   const lastTrackedTime = useRef<number>(0)
   const ownLastSaveAt = useRef<number>(0)
   const broadcastChannel = useRef<BroadcastChannel | null>(null)
@@ -74,13 +72,13 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
+      pendingQueue.current = []  // hela CV:t är sparat — köade äldre versioner är inaktuella
       // Rensa session-draft eftersom server är synkad. Vi sparar bara en
       // boolean-flagga ("användaren har CV") i localStorage — INGEN PII.
       try { sessionStorage.removeItem('cv-draft') } catch { /* ignore */ }
       const savedAt = Date.now()
       try { localStorage.setItem('cv-last-saved', savedAt.toString()) } catch { /* ignore */ }
       ownLastSaveAt.current = savedAt
-      lastSavedData.current = currentData
       // Broadcast till andra flikar så de vet att deras state är gammalt.
       try {
         broadcastChannel.current?.postMessage({ type: 'saved', savedAt } as CVBroadcastMessage)
@@ -104,12 +102,14 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
         try { localStorage.setItem('cv-data', '1') } catch { /* ignore */ }
       }
     },
-    onError: (error: unknown) => {
+    onError: (error: unknown, failedData: CVData) => {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       console.error('CV auto-save failed:', errorMessage)
       markError()
-      if (currentData) {
-        pendingQueue.current.push(currentData)
+      // Det som FÖLL, inte renderingens `currentData` — de kan skilja sig om
+      // deltagaren hunnit skriva vidare medan anropet var i luften.
+      if (failedData) {
+        pendingQueue.current.push(failedData)
         setPendingCount(pendingQueue.current.length)
       }
     },
@@ -121,9 +121,32 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
   })
   
+  // Töm offlinekön när nätet kommer tillbaka (2026-09-22). Kön fylldes men
+  // tömdes aldrig: en ändring gjord offline nådde servern bara om deltagaren
+  // råkade skriva något mer efteråt. Varje sparning skickar HELA CV:t, så det
+  // räcker att skicka det senaste i kön.
+  const flushOfflineRef = useRef<(() => void) | null>(null)
+  useEffect(() => {
+    flushOfflineRef.current = () => {
+      const senaste = pendingData.current ?? pendingQueue.current[pendingQueue.current.length - 1]
+      if (!senaste) return
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
+        debounceTimer.current = null
+      }
+      pendingData.current = null
+      pendingQueue.current = []
+      markSaving()
+      saveToServer(senaste)
+    }
+  })
+
   // Track online status
   useEffect(() => {
-    const handleOnline = () => setIsOnline(true)
+    const handleOnline = () => {
+      setIsOnline(true)
+      flushOfflineRef.current?.()
+    }
     const handleOffline = () => setIsOnline(false)
 
     window.addEventListener('online', handleOnline)
@@ -249,13 +272,10 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   
   // Debounced save function that takes data as parameter
   const triggerSave = (dataToSave: CVData) => {
-    // Skip first render (initial load)
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      lastSavedData.current = dataToSave
-      return
-    }
-
+    // INGEN "hoppa över första anropet" här (borttaget 2026-09-22). Den enda
+    // anroparen, CVBuilder, hoppar redan själv över sin första snapshot — den
+    // laddade datan — så det första anrop som når hooken är deltagarens första
+    // ÄNDRING. Att hoppa över det här också kastade den ändringen tyst.
     markUnsaved()
     pendingData.current = dataToSave  // Spara referens så visibilitychange kan flusha
 

@@ -95,7 +95,7 @@ export function CommutePlannerPanel({
               <h4 className="font-medium text-stone-800 dark:text-stone-200">
                 {t('ai.commute.heading')}
               </h4>
-              <p className="text-sm text-stone-600 dark:text-stone-600">
+              <p className="text-sm text-stone-600 dark:text-stone-400">
                 {t('ai.commute.subheading')}
               </p>
             </div>

@@ -9,13 +9,14 @@ import { Link2, Copy, QrCode, Trash2, Loader2, Plus, Eye, Calendar, Check, Exter
 import { profileShareApi, type ProfileShare } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface Props {
   className?: string
 }
 
 export function ProfileSharing({ className }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [shares, setShares] = useState<ProfileShare[]>([])
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)
@@ -118,7 +119,7 @@ export function ProfileSharing({ className }: Props) {
   }
 
   const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('sv-SE')
+    return new Date(date).toLocaleDateString(datumSprak(i18n.language))
   }
 
   const isExpired = (share: ProfileShare) => {

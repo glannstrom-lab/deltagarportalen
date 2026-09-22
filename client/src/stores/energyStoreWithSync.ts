@@ -52,19 +52,6 @@ export const getEnergyEmoji = (level: EnergyLevel): string => {
   }
 }
 
-export const getWidgetsForEnergyLevel = (
-  level: EnergyLevel,
-  allWidgets: string[]
-): string[] => {
-  const priorityByEnergy: Record<EnergyLevel, string[]> = {
-    low: ['cv', 'wellness', 'quests'],
-    medium: ['cv', 'jobSearch', 'coverLetter', 'wellness', 'exercises', 'quests'],
-    high: allWidgets
-  }
-  
-  return priorityByEnergy[level] || allWidgets
-}
-
 export const useEnergyStore = create<EnergyState>()(
   devtools(
     persist(
@@ -230,18 +217,5 @@ registreraRensning(() => {
   })
   useEnergyStore.persist.clearStorage()
 })
-
-// Hook för att synkronisera vid inloggning
-export function useEnergySync() {
-  const syncWithServer = useEnergyStore(state => state.syncWithServer)
-  const incrementStreak = useEnergyStore(state => state.incrementStreak)
-  
-  return {
-    sync: async () => {
-      await syncWithServer()
-      incrementStreak()
-    }
-  }
-}
 
 export default useEnergyStore

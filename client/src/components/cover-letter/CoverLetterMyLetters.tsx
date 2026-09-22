@@ -60,6 +60,7 @@ import { coverLetterApi } from '@/services/coverLetterApi'
 import type { CoverLetter } from '@/services/supabaseApi'
 import { useProfileStore } from '@/stores/profileStore'
 import { generateCoverLetterPDF, downloadPDF } from '@/services/pdfExportService'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface Letter {
   id: string
@@ -101,7 +102,7 @@ function transformLetter(apiLetter: CoverLetter, namnlost: string): Letter {
 }
 
 export function CoverLetterMyLetters() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const { profile, loadProfile } = useProfileStore()
@@ -327,7 +328,7 @@ export function CoverLetterMyLetters() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
-    return date.toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })
+    return date.toLocaleDateString(datumSprak(i18n.language), { month: 'short', day: 'numeric' })
   }
 
   // Loading state

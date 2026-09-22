@@ -23,6 +23,7 @@ import { Dialog } from '@/components/ui/Dialog'
 import { Button, CloseButton } from '@/components/ui/Button'
 import { AlertCircle, Share2 } from '@/components/ui/icons'
 import type { Placering } from '@/services/placeringarApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import {
   delningsforslagApi,
   DELNINGSFALT,
@@ -65,7 +66,8 @@ function tommaFalt(): DelningsFalt {
 function datumOmDagar(dagar: number): string {
   const d = new Date()
   d.setDate(d.getDate() + dagar)
-  return d.toISOString().slice(0, 10)
+  // Lokal kalenderdag — `toISOString()` gav en dag för lite mellan 00 och 02 svensk tid.
+  return formatLocalDate(d)
 }
 
 export function ForeslaDialog({ open, placering, deltagarNamn, onClose, onSkapad }: Props) {

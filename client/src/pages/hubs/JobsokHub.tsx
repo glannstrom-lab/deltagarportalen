@@ -67,6 +67,10 @@ function JobsokHubInner() {
   const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
+    // Tre lägen: innan svaret är inne (eller om det fallerat) finns inget
+    // underlag. Då visas ingen status alls — inte "Inga än", som är ett
+    // påstående om användaren. `data` är undefined både vid laddning och fel.
+    const klar = data !== undefined
     const cv = data?.cv
     const apps = data?.applicationStats?.total ?? 0
     const sponCount = data?.spontaneousCount ?? 0
@@ -96,7 +100,7 @@ function JobsokHubInner() {
         icon: ClipboardList,
         title: t('jobsokHub.features.applications.title', 'Mina ansökningar'),
         description: t('jobsokHub.features.applications.description', 'Spåra och följ upp dina jobbansökningar.'),
-        status: apps > 0
+        status: !klar ? undefined : apps > 0
           ? t('jobsokHub.features.applications.active', { defaultValue: '{{count}} aktiva', count: apps })
           : t('jobsokHub.features.applications.none', 'Inga än'),
         isActive: apps > 0,
@@ -107,7 +111,7 @@ function JobsokHubInner() {
         icon: Building2,
         title: t('jobsokHub.features.spontaneous.title', 'Spontanansökan'),
         description: t('jobsokHub.features.spontaneous.description', 'Skicka ansökningar till företag du tror på.'),
-        status: sponStatus,
+        status: klar ? sponStatus : undefined,
         isActive: sponCount > 0,
         href: '/spontanansökan',
       },
@@ -116,7 +120,7 @@ function JobsokHubInner() {
         icon: FileUser,
         title: t('jobsokHub.features.cv.title', 'CV'),
         description: t('jobsokHub.features.cv.description', 'Skapa, redigera och exportera ditt CV.'),
-        status: cv
+        status: !klar ? undefined : cv
           ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: shortDate(cv.updated_at, t) ?? t('jobsokHub.features.cv.updatedFallback', 'uppdaterat') })
           : t('jobsokHub.features.cv.create', 'Skapa CV'),
         isActive: !!cv,
@@ -127,7 +131,7 @@ function JobsokHubInner() {
         icon: Mail,
         title: t('jobsokHub.features.coverLetter.title', 'Personligt brev'),
         description: t('jobsokHub.features.coverLetter.description', 'Generera anpassade brev med AI-stöd.'),
-        status: coverLetterCount > 0
+        status: !klar ? undefined : coverLetterCount > 0
           ? t('hubs.saved', { defaultValue: '{{count}} sparade', count: coverLetterCount })
           : t('jobsokHub.features.coverLetter.create', 'Skapa brev'),
         isActive: coverLetterCount > 0,
@@ -138,7 +142,7 @@ function JobsokHubInner() {
         icon: Mic,
         title: t('jobsokHub.features.interview.title', 'Intervjuträning'),
         description: t('jobsokHub.features.interview.description', 'Öva intervjuer med AI och bygg självförtroende.'),
-        status: interviewCount > 0
+        status: !klar ? undefined : interviewCount > 0
           ? t('jobsokHub.features.interview.sessions', { defaultValue: '{{count}} sessioner', count: interviewCount })
           : t('jobsokHub.features.interview.practice', 'Tid för övning'),
         isActive: interviewCount > 0,

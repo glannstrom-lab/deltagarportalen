@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useAnvandarnyckel } from '@/hooks/useAnvandarnyckel'
+import { showToast } from '@/components/Toast'
 
 interface FocusCoverLetterProps {
   onComplete: () => void
@@ -223,7 +224,10 @@ ${name} ${lastName}`.trim()
     try {
       await saveMutation.mutateAsync()
     } catch (error) {
+      // Knappen står kvar och texten finns kvar — men utan besked såg ett
+      // misslyckat sparande ut som ett klick som inte gjorde något.
       console.error('Failed to save letter:', error)
+      showToast.error(t('focus.saveFailed'))
     }
   }
 
@@ -561,7 +565,7 @@ ${name} ${lastName}`.trim()
                     id="letter-title"
                     type="text"
                     value={letterTitle}
-                    onChange={(e) => setLetterTitle(e.target.value)}
+                    onChange={(e) => { setLetterTitle(e.target.value); setIsSaved(false) }}
                     placeholder={t('focusGuide.letter.letterTitlePlaceholder', 't.ex. Ansökan Säljare - IKEA')}
                     className="w-full px-4 py-2 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
@@ -572,12 +576,16 @@ ${name} ${lastName}`.trim()
                   <textarea
                     aria-label={t('focusGuide.letter.letterContentLabel', 'Ditt personliga brev')}
                     value={generatedLetter}
-                    onChange={(e) => setGeneratedLetter(e.target.value)}
+                    // "Sparat!" gäller texten som sparades. Ändras den efteråt är
+                    // ändringen INTE sparad — knappen ska komma tillbaka, annars
+                    // går personen därifrån i tron att allt finns kvar.
+                    onChange={(e) => { setGeneratedLetter(e.target.value); setIsSaved(false) }}
                     rows={10}
                     className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50 resize-none text-sm"
                   />
                   <button
                     onClick={handleCopy}
+                    aria-label={t('common.copy', 'Kopiera')}
                     className="absolute top-3 right-3 p-2 bg-white dark:bg-stone-800 rounded-lg shadow-sm hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
                     title={t('common.copy', 'Kopiera')}
                   >

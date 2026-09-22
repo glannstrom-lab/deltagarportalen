@@ -11,6 +11,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse, validateOriginOrReject } from '../_shared/cors.ts'
 import { cleanupUserStorage, describeCleanup } from './storageCleanup.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
 
 serve(medFelrapport('delete-account', async (req) => {
   // Handle CORS preflight
@@ -96,23 +97,24 @@ serve(medFelrapport('delete-account', async (req) => {
     if (blobToken) {
       try {
         // Lista alla blobs med användarens prefix
-        const listResponse = await fetch(
+        const listResponse = await fetchMedTimeout(
           `https://blob.vercel-storage.com?prefix=user-${userId}/`,
-          { headers: { 'Authorization': `Bearer ${blobToken}` } }
+          { headers: { 'Authorization': `Bearer ${blobToken}` } },
+          TIDSGRANS_TJANST_MS,
         )
         if (listResponse.ok) {
           const { blobs } = await listResponse.json()
           if (Array.isArray(blobs) && blobs.length > 0) {
             // Radera varje blob
             const urls = blobs.map((b: { url: string }) => b.url)
-            const deleteResponse = await fetch('https://blob.vercel-storage.com/delete', {
+            const deleteResponse = await fetchMedTimeout('https://blob.vercel-storage.com/delete', {
               method: 'POST',
               headers: {
                 'Authorization': `Bearer ${blobToken}`,
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({ urls })
-            })
+            }, TIDSGRANS_TJANST_MS)
             blobCleanupStatus = deleteResponse.ok ? `deleted ${urls.length}` : `failed (${deleteResponse.status})`
           } else {
             blobCleanupStatus = 'no blobs found'

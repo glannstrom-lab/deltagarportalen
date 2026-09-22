@@ -1,18 +1,8 @@
-/** Platsbanken: sparade jobb och sparade sökningar, med engångsmigrering från localStorage. */
+/** Platsbanken: sparade jobb, med engångsmigrering från localStorage. */
 
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
 import { getCurrentUser, handleStorageError } from './_shared'
-
-interface SavedSearch {
-  id?: string
-  name: string
-  query?: string
-  municipality?: string
-  employment_type?: string
-  remote?: boolean
-  [key: string]: unknown
-}
 
 interface PlatsbankenJob {
   id: string
@@ -30,7 +20,6 @@ interface PlatsbankenSavedJobData {
 // ============================================
 
 const PLATSBANKEN_JOBS_KEY = 'platsbanken_saved_jobs'
-const PLATSBANKEN_SEARCHES_KEY = 'platsbanken_saved_searches'
 const PLATSBANKEN_MIGRATED_KEY = 'platsbanken_migrated_to_cloud'
 
 /**
@@ -178,85 +167,4 @@ export const platsbankenApi = {
     return !!(data && data.length > 0)
   },
 
-  // Sparade sökningar
-  async getSavedSearches() {
-    const user = await getCurrentUser()
-    if (!user) {
-      return JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-    }
-
-    const { data, error } = await supabase
-      .from('platsbanken_saved_searches')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('updated_at', { ascending: false })
-
-    if (error) {
-      handleStorageError(error, 'hämta sparade sökningar')
-      storageLogger.warn('Faller tillbaka på localStorage för platsbanken-sökningar')
-      return JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-    }
-    return data || []
-  },
-
-  async saveSearch(search: SavedSearch) {
-    const user = await getCurrentUser()
-    if (!user) {
-      const searches = JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-      searches.push(search)
-      localStorage.setItem(PLATSBANKEN_SEARCHES_KEY, JSON.stringify(searches))
-      return search
-    }
-
-    const { data, error } = await supabase
-      .from('platsbanken_saved_searches')
-      .insert({
-        user_id: user.id,
-        name: search.name,
-        query: search.query,
-        municipality: search.municipality,
-        employment_type: search.employment_type,
-        remote: search.remote
-      })
-      .select()
-      .single()
-
-    if (error) {
-      handleStorageError(error, 'spara sökning')
-      storageLogger.warn(`Sparar platsbanken-sökning lokalt — molnsparning misslyckades`)
-      const searches = JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-      searches.push(search)
-      localStorage.setItem(PLATSBANKEN_SEARCHES_KEY, JSON.stringify(searches))
-      return search
-    }
-    return data
-  },
-
-  async removeSavedSearch(searchId: string) {
-    const user = await getCurrentUser()
-    if (!user) {
-      const searches = JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-      const filtered = searches.filter((s: SavedSearch) => s.id !== searchId)
-      localStorage.setItem(PLATSBANKEN_SEARCHES_KEY, JSON.stringify(filtered))
-      return
-    }
-
-    const { error } = await supabase
-      .from('platsbanken_saved_searches')
-      .delete()
-      .eq('id', searchId)
-      .eq('user_id', user.id)
-
-    if (error) {
-      handleStorageError(error, 'ta bort sparad sökning')
-      storageLogger.warn(`Tar bort platsbanken-sökning ${searchId} lokalt — molnradering misslyckades`)
-      const searches = JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-      const filtered = searches.filter((s: SavedSearch) => s.id !== searchId)
-      localStorage.setItem(PLATSBANKEN_SEARCHES_KEY, JSON.stringify(filtered))
-    } else {
-      const searches = JSON.parse(localStorage.getItem(PLATSBANKEN_SEARCHES_KEY) || '[]')
-      const filtered = searches.filter((s: SavedSearch) => s.id !== searchId)
-      localStorage.setItem(PLATSBANKEN_SEARCHES_KEY, JSON.stringify(filtered))
-    }
-  }
 }

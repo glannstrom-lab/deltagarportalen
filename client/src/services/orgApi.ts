@@ -164,12 +164,6 @@ export const orgApi = {
     return (data ?? []) as CaseloadRow[]
   },
 
-  /** Är jag chef eller admin i någon organisation? */
-  async isChef(): Promise<boolean> {
-    const m = await orgApi.myMemberships()
-    return m.some((x) => x.role === 'chef' || x.role === 'admin')
-  },
-
   // --- Självbetjäning för chef/admin (INSTEAD OF-trigger på vyn) ---
 
   /** Lägger till en kollega som redan har ett konto. Databasens svenska felmeddelande skickas vidare. */

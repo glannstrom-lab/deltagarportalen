@@ -130,41 +130,8 @@ export function useSavedJobs() {
     }
   }, [savedJobs, setSavedJobs, trackJobApplied])
 
-  const addNotes = useCallback(async (jobId: string, notes: string) => {
-    // Optimistisk uppdatering + persistens — utan updateNotes-anropet
-    // försvann anteckningarna vid omladdning.
-    setSavedJobs(prev =>
-      prev.map(job =>
-        job.id === jobId ? { ...job, notes } : job
-      )
-    )
-    try {
-      await savedJobsApi.updateNotes(jobId, notes)
-      return true
-    } catch (err) {
-      console.error('Error saving notes:', err)
-      setActionError('Kunde inte spara anteckningen')
-      return false
-    }
-  }, [setSavedJobs])
-
   const isSaved = useCallback((jobId: string) => {
     return savedJobs.some(job => job.id === jobId)
-  }, [savedJobs])
-
-  const getSavedJob = useCallback((jobId: string) => {
-    return savedJobs.find(job => job.id === jobId)
-  }, [savedJobs])
-
-  const getStats = useCallback(() => {
-    return {
-      total: savedJobs.length,
-      saved: savedJobs.filter(j => j.status === 'saved').length,
-      applied: savedJobs.filter(j => j.status === 'applied').length,
-      interview: savedJobs.filter(j => j.status === 'interview').length,
-      rejected: savedJobs.filter(j => j.status === 'rejected').length,
-      offer: savedJobs.filter(j => j.status === 'offer').length,
-    }
   }, [savedJobs])
 
   return {
@@ -174,14 +141,12 @@ export function useSavedJobs() {
     saveJob,
     removeJob,
     updateJobStatus,
-    addNotes,
     isSaved,
-    getSavedJob,
-    getStats,
     /**
      * Hämta om listan från servern.
      *
-     * `getStats()` är en ren selektor över cachen — den hämtar ingenting. Den
+     * Hookens gamla `getStats()` (borttagen 2026-09-22 med `getSavedJob` och
+     * `addNotes` — noll anropare) var en ren selektor över cachen. Den
      * anropades ändå som `onSuccess={() => getStats()}` när en ansökan skapats,
      * alltså ett anrop vars returvärde kastades bort och vars enda syfte var en
      * uppdatering den inte utför. Sparade jobb låg kvar oförändrade tills något

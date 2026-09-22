@@ -442,6 +442,58 @@ export async function checkDailyTokenCap(
   }
 }
 
+// ============================================================
+// Förbrukningsloggen — det tokentaket ovan räknar på
+// ============================================================
+// Fram till 2026-09-22 skrev de fem funktionerna raden själva, i ett
+// `try { await supabase.from('ai_usage_logs').insert(…) } catch {}`. Två fel:
+//   1. supabase-js KASTAR INTE vid ett databasfel — det returnerar `{ error }`.
+//      catch-grenen kunde alltså aldrig nås av ett misslyckat insert, och
+//      felet försvann spårlöst. En rad som inte skrivs är tokens som taket
+//      aldrig ser.
+//   2. Raden skrevs sist, efter att svaret tolkats. Gick tolkningen fel
+//      svarade funktionen 500/502 — men tokens var redan förbrukade hos
+//      OpenRouter och räknades aldrig. `ai-company-search` loggade dessutom
+//      bara det FÖRSTA av sina två modellanrop.
+// Anropa den här direkt efter att modellsvaret lästs, före all tolkning,
+// en gång per modellanrop.
+
+/** `usage.total_tokens` ur ett OpenRouter-svar, 0 när fältet saknas. */
+export function tokensIUsage(aiData: unknown): number {
+  const n = (aiData as { usage?: { total_tokens?: unknown } } | null)?.usage?.total_tokens
+  return typeof n === 'number' && Number.isFinite(n) && n > 0 ? n : 0
+}
+
+/**
+ * Skriver en rad i `ai_usage_logs`. Kastar aldrig (loggningen får inte fälla
+ * ett svar användaren redan betalat för), men returnerar false och loggar
+ * högt när raden inte skrevs — ett tyst fel här är ett tokentak som räknar fel.
+ *
+ * @param client service-role-klienten (samma skäl som i `checkDailyTokenCap`).
+ */
+export async function loggaAiAnvandning(
+  client: SupabaseClient,
+  rad: { userId: string; funktion: string; model: string; tokens: number },
+): Promise<boolean> {
+  try {
+    const { error } = await client.from('ai_usage_logs').insert({
+      user_id: rad.userId,
+      function_name: rad.funktion,
+      model: rad.model,
+      tokens_used: rad.tokens,
+      created_at: new Date().toISOString(),
+    })
+    if (error) {
+      console.error(`[AiGate] ai_usage_logs: raden för ${rad.funktion} skrevs INTE (${rad.tokens} tokens räknas inte mot taket):`, error.message)
+      return false
+    }
+    return true
+  } catch (err) {
+    console.error(`[AiGate] ai_usage_logs: insert kastade för ${rad.funktion}:`, err instanceof Error ? err.message : err)
+    return false
+  }
+}
+
 /** Bygger 429/503-svaret för ett nekat tokentak. */
 export function createTokenCapResponse(cap: TokenCapResult, origin: string | null): Response {
   if (cap.reason === 'lookup_failed') {

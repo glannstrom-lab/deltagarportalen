@@ -72,9 +72,22 @@ describe('JobsokHub — feature-page', () => {
     expect(screen.getByText('5 aktiva')).toBeInTheDocument()
   })
 
-  it('shows empty state status when no application data', () => {
+  it('shows empty state status when the answer says there are no applications', () => {
+    mockSummary.mockReturnValue({
+      data: { applicationStats: { total: 0 }, cv: null, coverLetters: [], interviewSessions: [], spontaneousCount: 0 },
+      isLoading: false,
+    })
     renderHub()
     expect(screen.getByText('Inga än')).toBeInTheDocument()
+  })
+
+  // Testet ovan asserterade tidigare "Inga än" med `data: undefined` — alltså
+  // cementerade det påståendet under laddning. Utan svar: ingen status alls.
+  it('claims nothing about the user before the answer is in', () => {
+    renderHub()
+    expect(screen.queryByText('Inga än')).not.toBeInTheDocument()
+    expect(screen.queryByText('Skapa CV')).not.toBeInTheDocument()
+    expect(screen.queryByText('Tid för övning')).not.toBeInTheDocument()
   })
 
   it('shows next follow-up on the spontaneous card when one is upcoming', () => {

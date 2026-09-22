@@ -88,7 +88,7 @@ export function InterviewPrepPanel({
               <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
                 {t('ai.interviewPrep.heading')}
               </h4>
-              <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('ai.interviewPrep.desc')}
               </p>
               <Button
@@ -132,7 +132,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.recentNews.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2 flex items-center gap-1">
                     <Newspaper className="w-3 h-3" />
                     {t('ai.common.recentNews')}
                   </p>
@@ -142,7 +142,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.culture && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2 flex items-center gap-1">
                     <Users className="w-3 h-3" />
                     {t('ai.common.companyCulture')}
                   </p>
@@ -154,7 +154,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.challenges.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2 flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
                     {t('ai.interviewPrep.challenges')}
                   </p>
@@ -176,7 +176,7 @@ export function InterviewPrepPanel({
             >
               {result.interviewQuestions.common.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.interviewPrep.commonQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.common} />
@@ -185,7 +185,7 @@ export function InterviewPrepPanel({
 
               {result.interviewQuestions.roleSpecific.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.interviewPrep.roleSpecificQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.roleSpecific} />
@@ -194,7 +194,7 @@ export function InterviewPrepPanel({
 
               {result.interviewQuestions.behavioral.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.interviewPrep.behavioralQuestions')}
                   </p>
                   <AIList items={result.interviewQuestions.behavioral} />
@@ -244,7 +244,7 @@ export function InterviewPrepPanel({
               </div>
               {result.salaryExpectations.negotiationTips.length > 0 && (
                 <>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.interviewPrep.negotiationTips')}
                   </p>
                   <AIList items={result.salaryExpectations.negotiationTips} />

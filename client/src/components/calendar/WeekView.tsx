@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { getWeekDates, type CalendarEvent, eventTypeConfig, formatTime } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell } from '@/components/ui/icons'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface WeekViewProps {
   currentDate: Date
@@ -36,7 +37,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
   ], [t])
 
   const getEventsForDateAndHour = (date: Date, hour: number) => {
-    const dateStr = date.toISOString().split('T')[0]
+    const dateStr = formatLocalDate(date)
     const hourStr = String(hour).padStart(2, '0')
     return events.filter(event => {
       if (event.date !== dateStr) return false

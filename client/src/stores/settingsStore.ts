@@ -335,13 +335,4 @@ registreraRensning(() => {
   })
 })
 
-// Hook för att synkronisera vid inloggning
-export function useSettingsSync() {
-  const syncWithServer = useSettingsStore(state => state.syncWithServer)
-
-  return {
-    sync: syncWithServer
-  }
-}
-
 export default useSettingsStore

@@ -10,6 +10,7 @@ import { credentialsApi, type UserCredential } from '@/services/careerApi'
 import { showToast } from '@/components/Toast'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { EmptyState } from '@/components/ui'
+import { datumSprak } from '@/lib/datumsprak'
 
 /**
  * Förslag att lägga till med ett klick.
@@ -46,7 +47,7 @@ const POPULAR_CREDENTIALS = [
 type CredentialType = 'certification' | 'degree' | 'course' | 'license'
 
 export default function CredentialsTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { confirm } = useConfirmDialog()
   const [credentials, setCredentials] = useState<UserCredential[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -170,7 +171,7 @@ export default function CredentialsTab() {
   const visaDatum = (iso?: string | null) => {
     if (!iso) return null
     const d = new Date(iso)
-    return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString('sv-SE')
+    return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString(datumSprak(i18n.language))
   }
 
   if (isLoading) {

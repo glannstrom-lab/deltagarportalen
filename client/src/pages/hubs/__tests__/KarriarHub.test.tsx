@@ -75,3 +75,11 @@ describe('KarriarHub — feature-page', () => {
     expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
   })
 })
+
+describe('KarriarHub — tre lägen', () => {
+  it('påstår inget om användaren innan svaret är inne', () => {
+    renderHub()
+    expect(screen.queryByText('Inte börjat')).not.toBeInTheDocument()
+    expect(screen.queryByText('Sätt en riktning')).not.toBeInTheDocument()
+  })
+})

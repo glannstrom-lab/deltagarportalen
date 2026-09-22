@@ -73,6 +73,9 @@ function MinVardagHubInner() {
   // inviten, inte "ingen plan": `isLoading || !data`-regeln.
   const planQuery = useQuery({ queryKey: MIN_VECKA_PLAN_KEY, queryFn: () => minVeckaApi.getMyPlan() })
   const plan = planQuery.data ?? null
+  // Kommentaren ovan lovade inviten under laddning, men `?? null` gjorde
+  // laddning och fel till "Ingen vecka planerad än". Nu krävs ett svar.
+  const planKlar = planQuery.isSuccess
   const profile = useAuthStore(s => s.profile)
   const firstName = profile?.first_name
 
@@ -86,6 +89,10 @@ function MinVardagHubInner() {
   )
 
   const features = useMemo<HubFeature[]>(() => {
+    // Tre lägen: innan svaret är inne (eller om det fallerat) finns inget
+    // underlag. Då visas ingen status alls — inte "Inga än", som är ett
+    // påstående om användaren. `data` är undefined både vid laddning och fel.
+    const klar = data !== undefined
     const moodLogs = data?.recentMoodLogs ?? []
     const streak = streakDays(moodLogs)
     const diaryCount = data?.diaryEntryCount ?? 0
@@ -99,7 +106,7 @@ function MinVardagHubInner() {
         icon: Smile,
         title: t('minVardagHub.features.wellness.title', 'Mående'),
         description: t('minVardagHub.features.wellness.description', 'Logga ditt mående och se hur det varierar över tid.'),
-        status: streak > 0
+        status: !klar ? undefined : streak > 0
           ? t('minVardagHub.features.wellness.streak', { defaultValue: '{{count}} dagar i rad', count: streak })
           : moodLogs.length > 0
             ? t('hubs.inProgress', 'Pågående')
@@ -112,7 +119,7 @@ function MinVardagHubInner() {
         icon: NotebookPen,
         title: t('minVardagHub.features.diary.title', 'Dagbok'),
         description: t('minVardagHub.features.diary.description', 'Reflektera fritt om din vecka och dina framsteg.'),
-        status: diaryCount > 0
+        status: !klar ? undefined : diaryCount > 0
           ? `${t('minVardagHub.features.diary.entries', { defaultValue: '{{count}} inlägg', count: diaryCount })}${latestDiary ? ` · ${relativeShort(latestDiary.created_at, t)}` : ''}`
           : t('minVardagHub.features.diary.writeToday', 'Skriv idag'),
         isActive: diaryCount > 0,
@@ -123,7 +130,7 @@ function MinVardagHubInner() {
         icon: Calendar,
         title: t('minVardagHub.features.calendar.title', 'Kalender'),
         description: t('minVardagHub.features.calendar.description', 'Möten, påminnelser och planerade aktiviteter.'),
-        status: upcoming
+        status: !klar ? undefined : upcoming
           ? t('minVardagHub.features.calendar.next', { defaultValue: 'Nästa: {{title}}', title: upcoming.title })
           : t('minVardagHub.features.calendar.nothingPlanned', 'Inget inplanerat'),
         isActive: !!upcoming,
@@ -141,7 +148,7 @@ function MinVardagHubInner() {
         icon: ClipboardCheck,
         title: t('minVardagHub.features.minVecka.title', 'Min vecka'),
         description: t('minVardagHub.features.minVecka.description', 'Dina planerade aktiviteter och när du är på plats.'),
-        status: plan
+        status: !planKlar ? undefined : plan
           ? t('minVardagHub.features.minVecka.planerad', 'Planerad')
           : t('minVardagHub.features.minVecka.ingenPlan', 'Ingen vecka planerad än'),
         isActive: !!plan,
@@ -154,7 +161,7 @@ function MinVardagHubInner() {
         description: t('minVardagHub.features.myConsultant.description', 'Kontakta din arbetskonsulent och se anteckningar.'),
         // "Inte tilldelad" är myndighetsspråk om något användaren inte råder
         // över. Samma formulering som Översikt använder sedan 2026-08-18.
-        status: consultant?.full_name
+        status: !klar ? undefined : consultant?.full_name
           ? consultant.full_name
           : t('minVardagHub.features.myConsultant.notAssigned', 'Ingen kopplad än'),
         isActive: !!consultant?.full_name,
@@ -174,7 +181,7 @@ function MinVardagHubInner() {
       // Nätverk hör till Resurser-hubben (DESIGN.md §3 — en sida = en hub).
       // Tidigare dubblerad här; fixat 2026-05-10 i Fas 3.4.
     ]
-  }, [data, t, profileFilled, plan])
+  }, [data, t, profileFilled, plan, planKlar])
 
   return (
     <HubPage

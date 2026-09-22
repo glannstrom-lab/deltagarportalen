@@ -324,6 +324,33 @@ function encodeBase64Url(json) {
     .replace(/=+$/, '');
 }
 
+/**
+ * Content-Disposition för den färdiga PDF:en (2026-09-22).
+ *
+ * Namnet stoppades tidigare rått in i `filename="…"`. Node vägrar
+ * headervärden med tecken utanför Latin-1 (`ERR_INVALID_CHAR`), så en
+ * deltagare som heter Łukasz, Nguyễn eller محمد fick "Invalid character in
+ * header content" som felmeddelande — EFTER att Chromium renderat hela PDF:en.
+ * Ett `"` i namnet bröt dessutom parametern.
+ *
+ * Nu: en ASCII-reserv i `filename` och det riktiga namnet i `filename*`
+ * (RFC 6266/5987), som alla moderna webbläsare läser. Vaktat av
+ * src/test/api-cv-pdf-filnamn.test.ts.
+ *
+ * @param {unknown} firstName
+ * @param {unknown} lastName
+ * @returns {string}
+ */
+function byggContentDisposition(firstName, lastName) {
+  const namn = `CV_${firstName || 'cv'}_${lastName || ''}`.replace(/\s+/g, '_').slice(0, 120) + '.pdf';
+  const ascii = namn
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/[^A-Za-z0-9._-]/g, '_');
+  const utf8 = encodeURIComponent(namn).replace(/['()*!]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+  return `attachment; filename="${ascii}"; filename*=UTF-8''${utf8}`;
+}
+
 const hanterare = async (req, res) => {
   const corsHeaders = getCorsHeaders(req.headers.origin);
   Object.entries(corsHeaders).forEach(([k, v]) => res.setHeader(k, v));
@@ -430,12 +457,8 @@ const hanterare = async (req, res) => {
     const pdfBuffer = Buffer.isBuffer(pdfData) ? pdfData : Buffer.from(pdfData);
 
     // 7. Returnera PDF
-    const firstName = cv.firstName || 'cv';
-    const lastName = cv.lastName || '';
-    const filename = `CV_${firstName}_${lastName}.pdf`.replace(/\s+/g, '_');
-
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.setHeader('Content-Disposition', byggContentDisposition(cv.firstName, cv.lastName));
     res.setHeader('Content-Length', pdfBuffer.length);
     res.status(200);
     return res.end(pdfBuffer);
@@ -453,3 +476,5 @@ const hanterare = async (req, res) => {
 
 // BL6: felrapportering till Sentry (sanerad) — se _utils/sentry.js
 module.exports = medFelrapport('cv-pdf', hanterare);
+// Exponerat för test — Vercel anropar bara default-exporten.
+module.exports.byggContentDisposition = byggContentDisposition;

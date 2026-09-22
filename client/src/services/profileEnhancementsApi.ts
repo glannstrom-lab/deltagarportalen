@@ -136,18 +136,6 @@ export const profileImageApi = {
       .eq('id', user.id)
   },
 
-  async getUrl(): Promise<string | null> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return null
-
-    const { data } = await supabase
-      .from('profiles')
-      .select('profile_image_url')
-      .eq('id', user.id)
-      .single()
-
-    return data?.profile_image_url || null
-  }
 }
 
 // ============================================
@@ -498,28 +486,6 @@ export const profileHistoryApi = {
     }
   },
 
-  async logChange(
-    fieldName: string,
-    oldValue: unknown,
-    newValue: unknown,
-    changeType: 'create' | 'update' | 'delete' = 'update'
-  ): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return
-
-    // Don't log if values are the same
-    if (JSON.stringify(oldValue) === JSON.stringify(newValue)) return
-
-    await supabase
-      .from('profile_history')
-      .insert({
-        user_id: user.id,
-        field_name: fieldName,
-        old_value: oldValue,
-        new_value: newValue,
-        change_type: changeType
-      })
-  }
 }
 
 // ============================================

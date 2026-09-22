@@ -33,6 +33,7 @@ import {
 import { MotionList } from '@/components/ui/MotionList';
 import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
+import { datumSprak } from '@/lib/datumsprak';
 import { CreateApplicationModal } from '@/components/workflow';
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
@@ -666,7 +667,7 @@ function SearchTab() {
                       📍 {filters.municipality}
                       <button
                         onClick={() => setFilters({ ...filters, municipality: '' })}
-                        aria-label={t('jobSearch.removeFilter', { filter: filters.municipality }) || `Ta bort filter: ${filters.municipality}`}
+                        aria-label={t('jobSearch.removeFilter', { filter: filters.municipality })}
                         className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
@@ -678,7 +679,7 @@ function SearchTab() {
                       🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
                       <button
                         onClick={() => setFilters({ ...filters, region: '' })}
-                        aria-label={t('jobSearch.removeFilter', { filter: REGIONS.find(r => r.code === filters.region)?.name }) || `Ta bort filter: ${REGIONS.find(r => r.code === filters.region)?.name}`}
+                        aria-label={t('jobSearch.removeFilter', { filter: REGIONS.find(r => r.code === filters.region)?.name })}
                         className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
@@ -690,7 +691,7 @@ function SearchTab() {
                       💼 {filters.employmentType}
                       <button
                         onClick={() => setFilters({ ...filters, employmentType: '' })}
-                        aria-label={t('jobSearch.removeFilter', { filter: filters.employmentType }) || `Ta bort filter: ${filters.employmentType}`}
+                        aria-label={t('jobSearch.removeFilter', { filter: filters.employmentType })}
                         className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
@@ -1124,7 +1125,7 @@ function SearchTab() {
 
 // Enhanced Saved Jobs Tab
 function SavedJobsTab() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { savedJobs, removeJob, updateJobStatus, isLoaded } = useSavedJobs();
   const [filter] = useState<'all' | SavedJob['status']>('all');
@@ -1231,8 +1232,8 @@ function SavedJobsTab() {
 
                   {/* Saved date */}
                   <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    Sparad {new Date(job.savedAt).toLocaleDateString('sv-SE')}
+                    <Clock className="w-3 h-3" aria-hidden="true" />
+                    {t('jobSearch.saved')} {new Date(job.savedAt).toLocaleDateString(datumSprak(i18n.language))}
                   </p>
                 </div>
 

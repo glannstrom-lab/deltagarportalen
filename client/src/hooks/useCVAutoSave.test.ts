@@ -85,21 +85,73 @@ describe('useCVAutoSave', () => {
     vi.useRealTimers()
   })
 
-  it('skippar första render (initial load triggar inget save)', () => {
+  it('sparar redan FÖRSTA anropet — CVBuilder hoppar själv över laddningen', async () => {
+    // Regression 2026-09-22: hooken hoppade över sitt första triggerSave som
+    // "initial load" — men CVBuilder hoppar redan över sin första snapshot
+    // (den laddade datan) och anropar aldrig triggerSave för den. Det första
+    // anrop hooken fick var alltså deltagarens FÖRSTA ÄNDRING, och den
+    // kastades: inget server-anrop, inget sessionStorage-utkast, inget att
+    // flusha vid avmontering. Byt mall med ett klick och gå vidare → mallen
+    // var aldrig sparad. (Det återställda utkastet vid laddning gick samma väg.)
     const { result } = renderHook(() => useCVAutoSave(sampleCV), {
       wrapper: makeWrapper(),
     })
 
     act(() => {
-      result.current.triggerSave(sampleCV)
+      result.current.triggerSave({ ...sampleCV, template: 'nordisk' } as typeof sampleCV)
     })
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith('cv-draft', expect.stringContaining('"template":"nordisk"'))
 
-    // Advancera långt förbi debounce — inget server-anrop ska ha skett på första rendern
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(801)
+    })
+    expect(mockUpdateCV).toHaveBeenCalledTimes(1)
+    expect(mockUpdateCV.mock.calls[0][0]).toMatchObject({ template: 'nordisk' })
+  })
+
+  it('första ändringen flushas vid avmontering (SPA-navigering inom debouncen)', async () => {
+    const { result, unmount } = renderHook(() => useCVAutoSave(sampleCV), {
+      wrapper: makeWrapper(),
+    })
     act(() => {
-      vi.advanceTimersByTime(2000)
+      result.current.triggerSave({ ...sampleCV, firstName: 'Enda' })
     })
+    unmount()
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10)
+    })
+    expect(mockUpdateCV).toHaveBeenCalledTimes(1)
+    expect(mockUpdateCV.mock.calls[0][0]).toMatchObject({ firstName: 'Enda' })
+  })
 
-    expect(mockUpdateCV).not.toHaveBeenCalled()
+  it('skickar ändringar gjorda offline när nätet kommer tillbaka', async () => {
+    // Regression 2026-09-22: offline lades ändringen i `pendingQueue` — en kö
+    // som ingenting någonsin tömde. Kom nätet tillbaka utan att deltagaren
+    // skrev något mer, nådde ändringen aldrig servern; stängdes fliken var
+    // den borta (utkastet ligger i sessionStorage).
+    Object.defineProperty(navigator, 'onLine', { value: false, configurable: true })
+    try {
+      const { result } = renderHook(() => useCVAutoSave(sampleCV), {
+        wrapper: makeWrapper(),
+      })
+      act(() => {
+        result.current.triggerSave({ ...sampleCV, firstName: 'Offline' })
+      })
+      await act(async () => {
+        await vi.advanceTimersByTimeAsync(1000)
+      })
+      expect(mockUpdateCV).not.toHaveBeenCalled()
+
+      Object.defineProperty(navigator, 'onLine', { value: true, configurable: true })
+      await act(async () => {
+        window.dispatchEvent(new Event('online'))
+        await vi.advanceTimersByTimeAsync(10)
+      })
+      expect(mockUpdateCV).toHaveBeenCalledTimes(1)
+      expect(mockUpdateCV.mock.calls[0][0]).toMatchObject({ firstName: 'Offline' })
+    } finally {
+      Object.defineProperty(navigator, 'onLine', { value: true, configurable: true })
+    }
   })
 
   it('sparar draft till sessionStorage omedelbart vid triggerSave (INTE localStorage — GDPR)', () => {

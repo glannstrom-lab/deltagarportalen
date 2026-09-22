@@ -348,7 +348,17 @@ const templates = {
   }
 };
 
-// Search jobs from Arbetsförmedlingen
+/**
+ * Search jobs from Arbetsförmedlingen.
+ *
+ * Returnerar `null` när AF inte gav något svar att lita på (timeout, 5xx,
+ * nätverksfel). Tidigare blev det `{ hits: [] }`, och då kunde anroparen inte
+ * skilja ett avbrott från "inga nya jobb": bevakningens `last_checked_at`
+ * flyttades fram och varje annons från avbrottet föll bort för gott
+ * (2026-09-22, vaktat av src/test/api-job-alerts-af-avbrott.test.ts).
+ *
+ * @returns {Promise<unknown | null>}
+ */
 async function searchJobs(params) {
   const searchParams = new URLSearchParams();
   if (params.query) searchParams.append('q', params.query);
@@ -371,7 +381,7 @@ async function searchJobs(params) {
     return await response.json();
   } catch (error) {
     console.error('Error searching jobs:', error);
-    return { hits: [] };
+    return null;
   } finally {
     clearTimeout(timeout);
   }
@@ -583,7 +593,7 @@ async function checkUserAlerts(userId) {
     .eq('is_active', true);
 
   if (alertsError || !alerts?.length) {
-    return { checked: 0, newJobs: 0 };
+    return { checked: 0, newJobs: 0, afFel: 0 };
   }
 
   // Get user email
@@ -602,6 +612,7 @@ async function checkUserAlerts(userId) {
   // gränssnittet men inte gäller.
   const skickaMejl = await mejlArPaslaget(userId);
   let totalNewJobs = 0;
+  let afFel = 0;
 
   for (const alert of alerts) {
     // Search for new jobs since last check
@@ -615,6 +626,13 @@ async function checkUserAlerts(userId) {
       publishedAfter: lastChecked,
       limit: 50
     });
+
+    // AF svarade inte: rör INTE last_checked_at. Nästa körning frågar då
+    // efter samma fönster igen i stället för att hoppa över avbrottet.
+    if (result === null) {
+      afFel++;
+      continue;
+    }
 
     // DR5 (2026-08-17): `result` kommer ur ett otypat JSON-svar från AF:s
     // platsbanks-API. Formen nedan är de fält koden faktiskt läser — inte en
@@ -673,7 +691,7 @@ async function checkUserAlerts(userId) {
     }
   }
 
-  return { checked: alerts.length, newJobs: totalNewJobs };
+  return { checked: alerts.length, newJobs: totalNewJobs, afFel };
 }
 
 // Check all active alerts (for cron job)
@@ -685,20 +703,22 @@ async function checkAllAlerts() {
     .eq('is_active', true);
 
   if (error || !userIds?.length) {
-    return { users: 0, alerts: 0, newJobs: 0 };
+    return { users: 0, alerts: 0, newJobs: 0, afFel: 0 };
   }
 
   const uniqueUsers = [...new Set(userIds.map(u => u.user_id))];
   let totalAlerts = 0;
   let totalNewJobs = 0;
+  let totalAfFel = 0;
 
   for (const userId of uniqueUsers) {
     const result = await checkUserAlerts(userId);
     totalAlerts += result.checked;
     totalNewJobs += result.newJobs;
+    totalAfFel += result.afFel;
   }
 
-  return { users: uniqueUsers.length, alerts: totalAlerts, newJobs: totalNewJobs };
+  return { users: uniqueUsers.length, alerts: totalAlerts, newJobs: totalNewJobs, afFel: totalAfFel };
 }
 
 // Send daily digest to a user
@@ -852,7 +872,12 @@ const hanterare = async (req, res) => {
       case 'check': {
         // Cron: kontrollera alla aktiva bevakningar
         const result = await checkAllAlerts();
-        return res.json({
+        // Föll VARJE AF-sökning är det vägen dit som är trasig, inte att
+        // marknaden var tom — då ska cron-körningen synas som misslyckad
+        // (samma regel som mejl-cronerna, _utils/mejlutfall.js). Delvisa fel
+        // står i svaret; de bevakningarna prövas igen nästa körning.
+        const allaAfFoll = result.afFel > 0 && result.afFel === result.alerts;
+        return res.status(allaAfFoll ? 502 : 200).json({
           success: true,
           message: `Checked ${result.alerts} alerts for ${result.users} users, found ${result.newJobs} new jobs`,
           ...result,

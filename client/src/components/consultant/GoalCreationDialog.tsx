@@ -1,6 +1,9 @@
 /**
  * GoalCreationDialog
- * Dialog för att skapa SMARTA-mål för deltagare med mallar och AI-förslag
+ * Dialog för att skapa SMARTA-mål för deltagare med mallar och regelbaserade
+ * förslag utifrån profilen. Förslagen är INTE AI — rutan hette "AI-förslag"
+ * fram till 2026-09-22 trots att den var fyra hårdkodade regler bakom en
+ * påhittad väntan på en sekund. Märk den aldrig som AI utan ett modellanrop.
  */
 
 import { useState, useEffect } from 'react'
@@ -9,7 +12,6 @@ import {
   Target,
   User,
   Search,
-  Sparkles,
   ChevronLeft,
   Check,
   Loader2,
@@ -22,6 +24,7 @@ import {
   GraduationCap,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
@@ -158,7 +161,10 @@ export function GoalCreationDialog({
 }: GoalCreationDialogProps) {
   const [step, setStep] = useState<'participant' | 'template' | 'customize'>('participant')
   const [loading, setLoading] = useState(false)
-  const [aiLoading, setAiLoading] = useState(false)
+  /** Sparningen misslyckades — visas i dialogen, som inte stängs. */
+  const [fel, setFel] = useState<string | null>(null)
+  /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
+  const [hamtFel, setHamtFel] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [participants, setParticipants] = useState<Participant[]>([])
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(
@@ -176,7 +182,7 @@ export function GoalCreationDialog({
     priority: 'MEDIUM' as 'HIGH' | 'MEDIUM' | 'LOW',
     deadline: '',
   })
-  const [aiSuggestions, setAiSuggestions] = useState<string[]>([])
+  const [forslag, setForslag] = useState<string[]>([])
 
   useEffect(() => {
     if (isOpen && !preselectedParticipant) {
@@ -196,7 +202,7 @@ export function GoalCreationDialog({
       setCustomGoal({
         ...initialGoal,
         priority: 'MEDIUM',
-        deadline: deadline.toISOString().split('T')[0],
+        deadline: formatLocalDate(deadline),
       })
     }
   }, [isOpen, initialGoal])
@@ -215,64 +221,56 @@ export function GoalCreationDialog({
         relevant: selectedTemplate.relevant,
         timeBound: selectedTemplate.timeBound,
         priority: 'MEDIUM',
-        deadline: deadline.toISOString().split('T')[0],
+        deadline: formatLocalDate(deadline),
       })
     }
   }, [selectedTemplate])
 
   const fetchParticipants = async () => {
+    setHamtFel(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('consultant_dashboard_participants')
         .select('participant_id, first_name, last_name, email, ats_score, has_cv, saved_jobs_count')
         .eq('consultant_id', user.id)
 
-      if (data) {
-        setParticipants(data)
-      }
+      if (error) throw error
+      setParticipants(data ?? [])
     } catch (error) {
       console.error('Error fetching participants:', error)
+      setHamtFel(true)
     }
   }
 
-  const generateAISuggestions = async () => {
+  // Regelbaserade förslag ur deltagarens profil — ingen modell, ingen väntan.
+  const visaForslag = () => {
     if (!selectedParticipant) return
+    const ut: string[] = []
 
-    setAiLoading(true)
-    try {
-      // Simulate AI suggestions based on participant data
-      const suggestions: string[] = []
-
-      if (!selectedParticipant.has_cv) {
-        suggestions.push('Skapa ett första utkast av CV inom 1 vecka')
-      } else if ((selectedParticipant.ats_score || 0) < 70) {
-        suggestions.push('Förbättra CV-poängen till minst 70% genom att lägga till nyckelord')
-      }
-
-      if ((selectedParticipant.saved_jobs_count || 0) < 5) {
-        suggestions.push('Spara minst 10 relevanta jobbannonser att analysera')
-      }
-
-      suggestions.push('Genomför en mock-intervju via simulatorn')
-      suggestions.push('Uppdatera LinkedIn-profilen med ny sammanfattning')
-
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      setAiSuggestions(suggestions)
-    } catch (error) {
-      console.error('Error generating AI suggestions:', error)
-    } finally {
-      setAiLoading(false)
+    if (!selectedParticipant.has_cv) {
+      ut.push('Skapa ett första utkast av CV inom 1 vecka')
+    } else if (typeof selectedParticipant.ats_score === 'number' && selectedParticipant.ats_score < 70) {
+      // Bara när en poäng FINNS — utan poäng är "höj till 70 %" ett påhittat underlag.
+      ut.push('Förbättra CV-poängen till minst 70% genom att lägga till nyckelord')
     }
+
+    if (typeof selectedParticipant.saved_jobs_count === 'number' && selectedParticipant.saved_jobs_count < 5) {
+      ut.push('Spara minst 10 relevanta jobbannonser att analysera')
+    }
+
+    ut.push('Genomför en mock-intervju via simulatorn')
+    ut.push('Uppdatera LinkedIn-profilen med ny sammanfattning')
+
+    setForslag(ut)
   }
 
   const handleSubmit = async () => {
     if (!selectedParticipant || !customGoal.title || !customGoal.deadline) return
 
+    setFel(null)
     try {
       setLoading(true)
       const { data: { user } } = await supabase.auth.getUser()
@@ -303,6 +301,7 @@ export function GoalCreationDialog({
       resetForm()
     } catch (error) {
       console.error('Error creating goal:', error)
+      setFel('Målet kunde inte sparas. Försök igen om en stund.')
     } finally {
       setLoading(false)
     }
@@ -323,8 +322,9 @@ export function GoalCreationDialog({
       priority: 'MEDIUM',
       deadline: '',
     })
-    setAiSuggestions([])
+    setForslag([])
     setSearchQuery('')
+    setFel(null)
   }
 
   const handleClose = () => {
@@ -386,6 +386,11 @@ export function GoalCreationDialog({
                 />
               </div>
               <div className="space-y-2 max-h-80 overflow-y-auto">
+                {hamtFel && (
+                  <p role="alert" className="text-center text-rose-700 dark:text-rose-300 py-8">
+                    Deltagarlistan kunde inte hämtas. Stäng och försök igen.
+                  </p>
+                )}
                 {filteredParticipants.map(p => (
                   <button
                     key={p.participant_id}
@@ -410,8 +415,8 @@ export function GoalCreationDialog({
                       </p>
                     </div>
                     <div className="text-right text-sm">
-                      <p className="text-stone-500">CV: {p.ats_score || '—'}%</p>
-                      <p className="text-stone-600">{p.saved_jobs_count || 0} sparade jobb</p>
+                      <p className="text-stone-500">CV: {typeof p.ats_score === 'number' ? `${p.ats_score}%` : '—'}</p>
+                      <p className="text-stone-600">{p.saved_jobs_count ?? 0} sparade jobb</p>
                     </div>
                   </button>
                 ))}
@@ -440,31 +445,26 @@ export function GoalCreationDialog({
                 </div>
               )}
 
-              {/* AI Suggestions */}
+              {/* Förslag utifrån profilen — regler, inte AI */}
               <div className="p-4 bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-[var(--c-text)]" />
+                    <Lightbulb className="w-5 h-5 text-[var(--c-text)]" aria-hidden="true" />
                     <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                      AI-förslag
+                      Förslag utifrån profilen
                     </h3>
                   </div>
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={generateAISuggestions}
-                    disabled={aiLoading}
+                    onClick={visaForslag}
                   >
-                    {aiLoading ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      'Generera förslag'
-                    )}
+                    Visa förslag
                   </Button>
                 </div>
-                {aiSuggestions.length > 0 ? (
+                {forslag.length > 0 ? (
                   <div className="space-y-2">
-                    {aiSuggestions.map((suggestion, i) => (
+                    {forslag.map((suggestion, i) => (
                       <button
                         key={i}
                         onClick={() => {
@@ -491,7 +491,7 @@ export function GoalCreationDialog({
                   </div>
                 ) : (
                   <p className="text-sm text-stone-500 dark:text-stone-600">
-                    Klicka på "Generera förslag" för att få AI-baserade målförslag baserat på deltagarens profil.
+                    Förslag utifrån deltagarens CV och sparade jobb. Välj ett för att fylla i målet.
                   </p>
                 )}
               </div>
@@ -717,7 +717,7 @@ export function GoalCreationDialog({
                       required
                       value={customGoal.deadline}
                       onChange={e => setCustomGoal(prev => ({ ...prev, deadline: e.target.value }))}
-                      min={new Date().toISOString().split('T')[0]}
+                      min={formatLocalDate(new Date())}
                       className={cn(
                         'w-full pl-10 pr-4 py-2.5 rounded-xl',
                         'bg-stone-100 dark:bg-stone-800',
@@ -732,10 +732,18 @@ export function GoalCreationDialog({
           )}
         </div>
 
+        {fel && (
+          <p role="alert" className="mx-5 mt-2 p-3 rounded-lg text-sm bg-rose-50 text-rose-800 dark:bg-rose-900/30 dark:text-rose-200">
+            {fel}
+          </p>
+        )}
+
         {/* Footer */}
         <div className="flex items-center justify-between p-5 border-t border-stone-200 dark:border-stone-700">
           <div>
-            {step !== 'participant' && (
+            {/* Med förvald deltagare hämtas ingen lista — "Tillbaka" till deltagarsteget
+                visade då ett tomt steg. */}
+            {step !== 'participant' && !(preselectedParticipant && (step === 'template' || initialGoal)) && (
               <Button
                 variant="ghost"
                 onClick={() => setStep(step === 'customize' && !initialGoal ? 'template' : 'participant')}

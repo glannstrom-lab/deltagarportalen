@@ -587,14 +587,17 @@ export function MatchesTab() {
       const data = await loadSourceData()
       setSourceData(data)
 
-      // Set default active source to first available
-      if (data.cv.available) {
-        setActiveSource('cv')
-      } else if (data.interest.available) {
-        setActiveSource('interest')
-      } else if (data.career.available) {
-        setActiveSource('career')
-      }
+      // Förvald källa = den första som finns — men bara om den valda inte
+      // finns. loadData körs om vid varje ortbyte, och tidigare hoppade
+      // fliken då tillbaka till "Mitt CV" för den som stod på intresseguiden
+      // eller karriärmålen.
+      setActiveSource(prev => {
+        if (data[prev].available) return prev
+        if (data.cv.available) return 'cv'
+        if (data.interest.available) return 'interest'
+        if (data.career.available) return 'career'
+        return prev
+      })
 
       // Load jobs for each available source in parallel (pass preferences to each)
       // Also pass CV education/workTitles for license filtering in all sources

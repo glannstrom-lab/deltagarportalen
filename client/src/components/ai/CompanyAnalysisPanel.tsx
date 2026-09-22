@@ -113,7 +113,7 @@ export function CompanyAnalysisPanel({
               <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
                 {t('ai.companyAnalysis.analyzeHeading', { company: companyName })}
               </h4>
-              <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('ai.companyAnalysis.analyzeDesc')}
               </p>
               <Button
@@ -183,7 +183,7 @@ export function CompanyAnalysisPanel({
                           {news.date}
                         </span>
                       </div>
-                      <p className="text-xs text-stone-600 dark:text-stone-600">
+                      <p className="text-xs text-stone-600 dark:text-stone-400">
                         {news.summary}
                       </p>
                     </div>
@@ -240,7 +240,7 @@ export function CompanyAnalysisPanel({
                     'px-2 py-0.5 rounded-full text-xs font-medium',
                     result.recruitmentNeeds.hiring
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-600'
+                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400'
                   )}
                 >
                   {result.recruitmentNeeds.hiring ? t('ai.companyAnalysis.hiringActive') : t('ai.companyAnalysis.hiringInactive')}
@@ -249,7 +249,7 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.roles.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.companyAnalysis.rolesWanted')}
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -267,7 +267,7 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.signals.length > 0 && (
                 <>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.companyAnalysis.signals')}
                   </p>
                   <AIList items={result.recruitmentNeeds.signals} />
@@ -286,7 +286,7 @@ export function CompanyAnalysisPanel({
 
               {result.companyCulture.values.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.companyAnalysis.values')}
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -302,7 +302,7 @@ export function CompanyAnalysisPanel({
                 </div>
               )}
 
-              <p className="text-xs text-stone-600 dark:text-stone-600">
+              <p className="text-xs text-stone-600 dark:text-stone-400">
                 {result.companyCulture.workEnvironment}
               </p>
 
@@ -311,7 +311,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.glassdoor && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-stone-600 dark:text-stone-600">
+                      <span className="text-xs text-stone-600 dark:text-stone-400">
                         Glassdoor: {result.companyCulture.ratings.glassdoor}
                       </span>
                     </div>
@@ -319,7 +319,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.indeed && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-stone-600 dark:text-stone-600">
+                      <span className="text-xs text-stone-600 dark:text-stone-400">
                         Indeed: {result.companyCulture.ratings.indeed}
                       </span>
                     </div>
@@ -345,7 +345,7 @@ export function CompanyAnalysisPanel({
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
                     {t('ai.companyAnalysis.talkingPoints')}
                   </p>
                   <div className="space-y-1">

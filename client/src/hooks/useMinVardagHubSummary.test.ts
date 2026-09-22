@@ -128,6 +128,26 @@ describe('useMinVardagHubSummary', () => {
     expect(rpcMock).toHaveBeenCalledWith('get_my_consultant')
   })
 
+  it('kalendern räknar "kommande" från dagens SVENSKA datum, inte UTC:s', async () => {
+    // Regression 2026-09-22: `toISOString().split('T')[0]` gav gårdagens datum
+    // mellan midnatt och kl. 02 — hubben visade då gårdagens möte som "Nästa".
+    const tidigareTz = process.env.TZ
+    process.env.TZ = 'Europe/Stockholm'
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date('2026-09-22T23:30:00Z')) // 01:30 den 23:e i Stockholm
+    try {
+      const { useMinVardagHubSummary } = await import('./useMinVardagHubSummary')
+      const { result } = renderHook(() => useMinVardagHubSummary(), { wrapper })
+      await waitFor(() => expect(result.current.isSuccess).toBe(true))
+      const kal = builders.calendar_events[0] as unknown as { gte: ReturnType<typeof vi.fn> }
+      expect(kal.gte).toHaveBeenCalledWith('date', '2026-09-23')
+    } finally {
+      vi.useRealTimers()
+      if (tidigareTz === undefined) delete process.env.TZ
+      else process.env.TZ = tidigareTz
+    }
+  })
+
   it('UX25-vakt: rör ALDRIG consultant_participants och läser aldrig profiles direkt', async () => {
     // Embedden `consultant_participants → profiles:consultant_id(...)` går alltid
     // igenom mot en mock men returnerar alltid null i drift (RLS). Ett test som

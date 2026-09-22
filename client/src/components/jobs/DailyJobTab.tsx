@@ -30,6 +30,7 @@ import { cvApi } from '@/services/cvApi';
 import { interestGuideApi } from '@/services/cloudStorage';
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData';
 import { unifiedProfileApi } from '@/services/unifiedProfileApi';
+import { formatLocalDate } from '@/services/aktivitetSchema';
 import {
   useJobSearchFilters,
   DEFAULT_JOB_SEARCH_FILTERS,
@@ -86,7 +87,8 @@ export function DailyJobTab() {
   const [hasActioned, setHasActioned] = useState(false);
 
   // Get today's date string
-  const getTodayKey = () => new Date().toISOString().split('T')[0];
+  // Lokalt dygn — UTC-dygnet bytte "dagens jobb" först kl. 01/02 svensk tid.
+  const getTodayKey = () => formatLocalDate(new Date());
 
   // Load user profile data
   const loadUserProfile = async (): Promise<UserProfileData> => {

@@ -1,4 +1,4 @@
-import { createClient, type RealtimePostgresChangesPayload } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js'
 
 // Environment variables
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
@@ -42,14 +42,6 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
 
 // JSON type for database columns storing JSON data
 type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue }
-
-// Realtime subscription payload type
-export type RealtimePayload<T = Record<string, unknown>> = {
-  eventType: 'INSERT' | 'UPDATE' | 'DELETE'
-  new: T | Record<string, never>
-  old: T | Record<string, never>
-  errors: unknown
-}
 
 // Type definitions for database tables
 export type Tables = {
@@ -183,46 +175,9 @@ export type ConsultantNote = Tables['consultant_notes']
 export type SavedJob = Tables['saved_jobs']
 
 // Auth helpers
-export async function signUp(email: string, password: string, userData: {
-  first_name: string
-  last_name: string
-  role?: 'USER' | 'CONSULTANT' | 'ADMIN'
-}) {
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      data: {
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        role: userData.role || 'USER'
-      }
-    }
-  })
-  return { data, error }
-}
-
-export async function signIn(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  })
-  return { data, error }
-}
-
-export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-  return { error }
-}
-
 export async function getCurrentUser() {
   const { data: { user } } = await supabase.auth.getUser()
   return user
-}
-
-export async function getCurrentSession() {
-  const { data: { session } } = await supabase.auth.getSession()
-  return session
 }
 
 // Profile helpers
@@ -235,16 +190,12 @@ export async function getProfile(userId: string) {
   return { data, error }
 }
 
-export async function updateProfile(userId: string, updates: Partial<Tables['profiles']>) {
-  const { data, error } = await supabase
-    .from('profiles')
-    .update(updates)
-    .eq('id', userId)
-    .select()
-  return { data, error }
-}
-
 // CV helpers
+// getCV har NOLL anropare sedan länge men står kvar ENBART för att
+// `src/test/single-krav-en-rad.test.ts` har en ALLOWLIST-post
+// ('client/src/lib/supabase.ts::cvs') som fäller grinden om kedjan försvinner.
+// Radera funktionen och posten i samma ändring (utanför uppdrag 2026-09-22:s
+// ägarskap, därför kvar).
 export async function getCV(userId: string) {
   const { data, error } = await supabase
     .from('cvs')
@@ -254,68 +205,15 @@ export async function getCV(userId: string) {
   return { data, error }
 }
 
-export async function upsertCV(cvData: Partial<Tables['cvs']>) {
-  const { data, error } = await supabase
-    .from('cvs')
-    .upsert(cvData)
-    .select()
-  return { data, error }
-}
-
-// Cover letter helpers
-export async function getCoverLetters(userId: string) {
-  const { data, error } = await supabase
-    .from('cover_letters')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false })
-  return { data, error }
-}
-
-export async function createCoverLetter(letter: Partial<Tables['cover_letters']>) {
-  const { data, error } = await supabase
-    .from('cover_letters')
-    .insert(letter)
-    .select()
-  return { data, error }
-}
-
-// C11 (2026-07-23): generateCoverLetterWithAI/analyzeCVWithAI raderade —
-// callerlösa dubbletter mot ai-cover-letter/cv-analysis-edgarna. Det
-// levande brevflödet går via callAI('personligt-brev') i CoverLetterWrite.
-
-// Realtime subscriptions
-export function subscribeToCVUpdates(userId: string, callback: (payload: RealtimePostgresChangesPayload<CV>) => void) {
-  return supabase
-    .channel('cv-updates')
-    .on<CV>(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'cvs',
-        filter: `user_id=eq.${userId}`
-      },
-      callback
-    )
-    .subscribe()
-}
-
-export function subscribeToConsultantNotes(participantId: string, callback: (payload: RealtimePostgresChangesPayload<ConsultantNote>) => void) {
-  return supabase
-    .channel('consultant-notes')
-    .on<ConsultantNote>(
-      'postgres_changes',
-      {
-        event: '*',
-        schema: 'public',
-        table: 'consultant_notes',
-        filter: `participant_id=eq.${participantId}`
-      },
-      callback
-    )
-    .subscribe()
-}
+// updateProfile, upsertCV, getCoverLetters, createCoverLetter,
+// signUp/signIn/signOut, getCurrentSession och de två realtime-
+// prenumerationerna (subscribeToCVUpdates, subscribeToConsultantNotes)
+// RADERADE 2026-09-22 — noll anropare. Inloggning går via authStore,
+// CV via services/cvApi, breven via callAI('personligt-brev'). De två
+// prenumerationerna hade dessutom FASTA kanalnamn ('cv-updates',
+// 'consultant-notes') — supabase-js återanvänder en kanal med samma namn,
+// så två anropare hade delat kanal och den första `removeChannel` hade
+// tystat båda.
 
 // Storage helpers RADERADE 2026-07-27 (H5): uploadProfileImage och
 // uploadCVFile hade noll anropare och pekade dessutom på buckets som inte

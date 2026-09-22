@@ -19,6 +19,7 @@ import { callAI } from '@/services/aiApi'
 import { safeParseAiResponse, KarriarPlanSchema } from '@/services/aiSchemas'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useInterestProfile, formatRiasecForPrompt } from '@/hooks/useInterestProfile'
+import { datumSprak } from '@/lib/datumsprak'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
@@ -792,7 +793,7 @@ export default function PlanTab() {
                         {milestone.target_date && (
                           <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
                             <Calendar className="w-3 h-3" />
-                            {new Date(milestone.target_date).toLocaleDateString('sv-SE')}
+                            {new Date(milestone.target_date).toLocaleDateString(datumSprak(i18n.language))}
                           </span>
                         )}
                       </div>

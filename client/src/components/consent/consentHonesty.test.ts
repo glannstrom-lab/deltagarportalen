@@ -23,6 +23,7 @@ import en from '@/i18n/locales/en.json'
 
 /** Locale-filerna är stora och otypade — den här formen är allt testerna rör. */
 interface ConsentLocale {
+  datasharing: { wellness: Record<string, string> }
   wellness: { consent: Record<string, string> }
   health: { consent: Record<string, string> }
   settings: { privacy: { consent: Record<string, string> } }
@@ -92,5 +93,28 @@ describe('(c) det går att säga nej', () => {
   it.each(LOCALES)('%s: båda grindarna har en decline-text', (_name, locale) => {
     expect(consent(locale, 'wellness').decline).toBeTruthy()
     expect(consent(locale, 'health').decline).toBeTruthy()
+  })
+})
+
+/**
+ * (d) 2026-09-22: `datasharing.wellness.description` sa att konsulenten fick se
+ * "din dagbok, ditt humör…" när delningen slogs på, och grindens whoAccessDesc
+ * sa att konsulenten ser "det du skriver här" (i dagboken). Prod-RLS säger annat:
+ * `share_wellness_data` öppnar BARA `mood_logs` (policyn "Consultants can read
+ * shared mood logs") — `diary_entries` har ingen konsulentpolicy alls. Texten
+ * beskrev alltså en delning som inte finns, i exakt det ögonblick deltagaren
+ * skulle välja.
+ */
+describe('(d) delningstexten nämner inte dagboken som delad', () => {
+  it.each(LOCALES)('%s: delningsomkopplaren lovar humörloggen, inte dagboken', (_name, locale) => {
+    const text = locale.datasharing.wellness.description.toLowerCase()
+    expect(text).not.toMatch(/se din dagbok|see your diary/)
+    expect(text).toMatch(/humörlogg|mood log/)
+    expect(text).toMatch(/dagbok delas aldrig|diary is never shared/)
+  })
+
+  it.each(LOCALES)('%s: grinden säger att dagboken aldrig delas', (_name, locale) => {
+    const text = consent(locale, 'wellness').whoAccessDesc.toLowerCase()
+    expect(text).toMatch(/dagbok — den delas aldrig|diary — it is never shared/)
   })
 })

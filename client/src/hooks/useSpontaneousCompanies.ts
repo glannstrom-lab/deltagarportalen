@@ -17,6 +17,7 @@ import {
 } from '@/services/supabaseApi'
 import { getCompanyInfo, type BolagsverketCompany } from '@/services/bolagsverketApi'
 import { showToast } from '@/components/Toast'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 import { useAuthStore } from '@/stores/authStore'
 
 /**
@@ -78,8 +79,10 @@ interface UseSpontaneousCompaniesResult {
 }
 
 /** Bygg de fältuppdateringar ett statusbyte medför (datumstämplar) */
-function buildStatusUpdates(company: SpontaneousCompany, status: SpontaneousStatus): UpdateSpontaneousCompany {
-  const today = new Date().toISOString().split('T')[0]
+export function buildStatusUpdates(company: SpontaneousCompany, status: SpontaneousStatus): UpdateSpontaneousCompany {
+  // Lokalt datum, inte UTC: `toISOString()` gav gårdagens datum mellan
+  // midnatt och kl. 02 svensk tid (se useSpontaneousCompanies.test.ts).
+  const today = formatLocalDate(new Date())
   const updates: UpdateSpontaneousCompany = { status }
   if (status === 'contacted' && !company.outreach_date) {
     updates.outreach_date = today
@@ -128,7 +131,7 @@ export function useSpontaneousCompanies(): UseSpontaneousCompaniesResult {
   const upcomingFollowups = useMemo(() => {
     const limit = new Date()
     limit.setDate(limit.getDate() + 30)
-    const limitStr = limit.toISOString().split('T')[0]
+    const limitStr = formatLocalDate(limit)
     return companies
       .filter(c =>
         c.followup_date

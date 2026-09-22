@@ -180,15 +180,10 @@ async function handleTrendingSkills(limit: number, corsHeaders: Record<string, s
     const statsUrl = `${JOBSEARCH_API_BASE}/search?limit=0&stats=occupation-field`;
     console.log(`[af-trends] Fetching occupation fields for skills: ${statsUrl}`);
 
-    const response = await fetch(statsUrl, {
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!response.ok) {
-      throw new Error(`JobSearch API error: ${response.status}`);
-    }
-
-    const data = await response.json();
+    // ST4 (2026-09-22): den här vägen gick förbi `fetchJobSearch` och hade
+    // därmed ingen tidsgräns — de andra tre vägarna i filen hade det.
+    // SÄK2-testet krävde bara att filen innehöll *någon* AbortController.
+    const data = await fetchJobSearch(statsUrl);
     const fieldStats = data.stats?.find((s: any) => s.type === 'occupation-field')?.values || [];
 
     // Map occupation fields to key skills (based on Swedish labor market)

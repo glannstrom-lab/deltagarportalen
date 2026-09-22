@@ -63,32 +63,4 @@ export function useDocuments() {
   }
 }
 
-export function useCVVersion(id: string | null | undefined) {
-  // KA2: cachen bär vems data det är.
-  const nyckel = useAnvandarnyckel()
-  return useQuery({
-    queryKey: nyckel(['cv-version', id]),
-    queryFn: async () => {
-      if (!id) return null
-      const data = await cvApi.restoreVersion(id)
-      return data
-    },
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000,
-  })
-}
-
-export function useCoverLetter(id: string | null | undefined) {
-  // KA2: cachen bär vems data det är.
-  const nyckel = useAnvandarnyckel()
-  return useQuery({
-    queryKey: nyckel(['cover-letter', id]),
-    queryFn: async () => {
-      if (!id) return null
-      const data = await coverLetterApi.getById(id)
-      return data as CoverLetter | null
-    },
-    enabled: !!id,
-    staleTime: 5 * 60 * 1000,
-  })
-}
+// useCVVersion och useCoverLetter RADERADE 2026-09-22 — noll anropare.

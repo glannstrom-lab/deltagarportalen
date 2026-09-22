@@ -27,6 +27,7 @@ import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
 import { MarkdownRenderer } from './MarkdownRenderer'
 import { AIBadge } from '@/components/ai/AIBadge'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -267,7 +268,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           energy_level: null,
           tags: ['ai-team', selectedAgent],
           word_count: content.split(/\s+/).filter(w => w).length,
-          entry_date: new Date().toISOString().split('T')[0],
+          entry_date: formatLocalDate(new Date()),
           entry_type: 'reflection',
           is_favorite: false,
         })
@@ -338,7 +339,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             user_id: user?.id,
             title: `AI Team: ${title}`,
             description: content,
-            date: new Date().toISOString().split('T')[0],
+            date: formatLocalDate(new Date()),
             type: 'task',
           })
 

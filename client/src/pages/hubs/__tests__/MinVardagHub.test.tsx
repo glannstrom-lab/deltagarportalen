@@ -83,3 +83,13 @@ describe('MinVardagHub — feature-page', () => {
     expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
   })
 })
+
+describe('MinVardagHub — tre lägen', () => {
+  it('påstår inget om användaren innan svaren är inne', () => {
+    // Planfrågan hänger — den ska inte bli "Ingen vecka planerad än"
+    renderHub()
+    expect(screen.queryByText('Ingen vecka planerad än')).not.toBeInTheDocument()
+    expect(screen.queryByText('Ingen kopplad än')).not.toBeInTheDocument()
+    expect(screen.queryByText('Inget inplanerat')).not.toBeInTheDocument()
+  })
+})

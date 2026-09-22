@@ -13,6 +13,7 @@
 
 const { spawnSync } = require('child_process');
 const path = require('path');
+const { klassaTscUtdata } = require('./lib/tsc-utdata.cjs');
 
 const CRASH_CODES = new Set([
   'TS2304', // Cannot find name 'X'
@@ -20,12 +21,33 @@ const CRASH_CODES = new Set([
 ]);
 
 const tscBin = path.resolve(__dirname, '..', 'node_modules', 'typescript', 'bin', 'tsc');
-const result = spawnSync(process.execPath, [tscBin, '--noEmit', '-p', 'tsconfig.app.json', '--pretty', 'false'], {
+// Överstyrs bara av testet som bevisar att grinden fäller på en trasig
+// tsconfig (src/test/skript-typecheck-falskt-gront.test.ts).
+const PROJEKT = process.env.TYPECHECK_PROJEKT || 'tsconfig.app.json';
+const result = spawnSync(process.execPath, [tscBin, '--noEmit', '-p', PROJEKT, '--pretty', 'false'], {
   encoding: 'utf8',
+  // Relativt `-p` löstes tidigare mot anroparens cwd. Kört från repo-roten
+  // hittades ingen tsconfig — och grinden svarade ändå OK.
+  cwd: path.resolve(__dirname, '..'),
+  maxBuffer: 64 * 1024 * 1024,
 });
 
 const output = (result.stdout || '') + (result.stderr || '');
-const lines = output.split(/\r?\n/);
+const { filfel, globala } = klassaTscUtdata(output);
+
+// Grinden får aldrig vara grön för att tsc inte körde (2026-09-22). Ett
+// globalt fel (TS18003 "No inputs were found", TS5058 "path does not exist")
+// betyder att ingen fil typkontrollerades, och en icke-noll exit utan ett enda
+// filfel betyder att tsc själv föll. Båda gav tidigare "OK".
+if (result.error || globala.length > 0 || (result.status !== 0 && filfel.length === 0)) {
+  console.error('typecheck-critical: tsc typkontrollerade inte koden — grinden kan inte avgöra något.');
+  if (result.error) console.error(`  ${result.error.message}`);
+  globala.forEach((g) => console.error(`  ${g.rad.trim()}`));
+  if (!result.error && globala.length === 0) {
+    console.error(`  tsc avslutades med ${result.status} utan filfel:\n${output.slice(0, 800)}`);
+  }
+  process.exit(2);
+}
 
 const ALLOWED_PATHS = [
   // Service worker types live in a different lib than DOM. Tracked separately.
@@ -38,11 +60,9 @@ const ALLOWED_PATHS = [
   // Filen finns nu; undantaget behövs inte.)
 ];
 
-const critical = lines.filter((line) => {
-  const match = line.match(/error (TS\d+):/);
-  if (!match || !CRASH_CODES.has(match[1])) return false;
-  return !ALLOWED_PATHS.some((p) => line.includes(p));
-});
+const critical = filfel
+  .filter(({ kod, rad }) => CRASH_CODES.has(kod) && !ALLOWED_PATHS.some((p) => rad.includes(p)))
+  .map(({ rad }) => rad);
 
 if (critical.length > 0) {
   console.error('Critical TypeScript errors that cause runtime crashes:\n');

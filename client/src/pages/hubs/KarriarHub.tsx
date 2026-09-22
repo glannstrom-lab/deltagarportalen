@@ -64,6 +64,10 @@ function KarriarHubInner() {
   const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
+    // Tre lägen: innan svaret är inne (eller om det fallerat) finns inget
+    // underlag. Då visas ingen status alls — inte "Inga än", som är ett
+    // påstående om användaren. `data` är undefined både vid laddning och fel.
+    const klar = data !== undefined
     const goalLabel = careerGoalLabel(data?.careerGoals?.shortTerm)
     const skillsAt = data?.latestSkillsAnalysis?.created_at
     const brandAt = data?.latestBrandAudit?.created_at
@@ -74,7 +78,7 @@ function KarriarHubInner() {
         icon: Target,
         title: t('karriarHub.features.careerGoal.title', 'Karriärmål'),
         description: t('karriarHub.features.careerGoal.description', 'Sätt korta och långsiktiga mål, beskriv vad du vill uppnå.'),
-        status: goalLabel
+        status: !klar ? undefined : goalLabel
           ? t('karriarHub.features.careerGoal.active', { defaultValue: 'Aktivt: {{goal}}', goal: goalLabel })
           : t('karriarHub.features.careerGoal.setDirection', 'Sätt en riktning'),
         isActive: !!goalLabel,
@@ -96,7 +100,7 @@ function KarriarHubInner() {
         icon: TrendingUp,
         title: t('karriarHub.features.skillsGap.title', 'Kompetensanalys'),
         description: t('karriarHub.features.skillsGap.description', 'Kartlägg dina kompetenser mot ett drömjobb.'),
-        status: skillsAt
+        status: !klar ? undefined : skillsAt
           ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: relativeShort(skillsAt, t) })
           // "Bygger upp profilen" påstod att systemet höll på med något.
           // Ingenting byggs; analysen görs när användaren startar den.
@@ -109,7 +113,7 @@ function KarriarHubInner() {
         icon: Star,
         title: t('karriarHub.features.personalBrand.title', 'Personligt varumärke'),
         description: t('karriarHub.features.personalBrand.description', 'Bygg en tydlig identitet som arbetsgivare märker.'),
-        status: brandAt
+        status: !klar ? undefined : brandAt
           ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: relativeShort(brandAt, t) })
           : t('karriarHub.features.personalBrand.notStarted', 'Inte börjat'),
         isActive: !!brandAt,

@@ -108,15 +108,4 @@ export function useSuggestedAgent(): SuggestedAgent | null {
   }, [location.pathname])
 }
 
-// Track page visits from other pages
-export function trackPageVisit(path: string) {
-  if (routeToAgent[path]) {
-    try {
-      localStorage.setItem(LAST_ROUTE_KEY, path)
-    } catch {
-      // Ignore storage errors
-    }
-  }
-}
-
 export default useSuggestedAgent

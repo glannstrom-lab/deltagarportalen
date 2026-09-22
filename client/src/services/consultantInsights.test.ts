@@ -45,6 +45,7 @@ import {
   generateParticipantInsights,
   assessParticipantRisks,
   getDashboardSummary,
+  getKeyMetrics,
 } from './consultantInsights'
 
 /** En rad med vyns verkliga kolumner. */
@@ -222,6 +223,33 @@ describe('getDashboardSummary — destrukturerar insights-resultatet korrekt', (
     const summary = await getDashboardSummary('consultant-1')
     expect(summary.topInsight).not.toBeNull()
     expect(summary.topInsight!.participantName).toBe('Anna Andersson')
+  })
+})
+
+describe('getKeyMetrics — CV-poängens snitt räknar inte null som noll', () => {
+  // Prod 2026-09-22: `cvs.ats_score` är null i 31 av 34 CV:n, och vyn ger null
+  // för varje deltagare utan CV. Fixturen har därför nullor, inte bara tal.
+  it('snittet tas bara över deltagare som HAR en poäng', async () => {
+    fromMock.mockImplementation(() =>
+      makeBuilder([
+        deltagare({ user_id: 'p1', ats_score: 80 }),
+        deltagare({ user_id: 'p2', ats_score: null }),
+        deltagare({ user_id: 'p3', has_cv: false, ats_score: null }),
+        deltagare({ user_id: 'p4', ats_score: 60 }),
+      ])
+    )
+    const metrics = await getKeyMetrics('consultant-1')
+    const snitt = metrics.find(m => m.label === 'Genomsnittlig CV-poäng')
+    expect(snitt?.current).toBe(70)
+  })
+
+  it('ingen deltagare har poäng → ingen siffra alls, inte "0 %"', async () => {
+    fromMock.mockImplementation(() =>
+      makeBuilder([deltagare({ ats_score: null }), deltagare({ user_id: 'p2', has_cv: false, ats_score: null })])
+    )
+    const metrics = await getKeyMetrics('consultant-1')
+    expect(metrics.map(m => m.label)).not.toContain('Genomsnittlig CV-poäng')
+    expect(metrics.map(m => m.label)).toContain('Aktiva deltagare')
   })
 })
 

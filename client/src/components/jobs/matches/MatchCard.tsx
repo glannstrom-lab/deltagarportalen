@@ -5,6 +5,8 @@
  */
 
 import { useState, memo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { datumSprak } from '@/lib/datumsprak'
 import {
   Target, CheckCircle, FileText, Briefcase, MapPin,
   Heart, ExternalLink, ChevronDown, Compass, Settings2
@@ -37,6 +39,7 @@ export const MatchCard = memo(function MatchCard({
     apply: string
   }
 }) {
+  const { t, i18n } = useTranslation()
   const { job, score, source, matchDetails } = matchedJob
   const [showDetails, setShowDetails] = useState(false)
 
@@ -105,7 +108,7 @@ export const MatchCard = memo(function MatchCard({
         <button
           onClick={() => onSave(job)}
           aria-pressed={isSaved}
-          aria-label={isSaved ? 'Ta bort från sparade jobb' : 'Spara jobb'}
+          aria-label={isSaved ? t('focus.jobSearch.unsaveJob', 'Ta bort från sparade jobb') : t('jobSearch.saveJob', 'Spara jobb')}
           className={cn(
             "p-2 rounded-lg transition-colors",
             isSaved
@@ -113,7 +116,7 @@ export const MatchCard = memo(function MatchCard({
               : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-red-500"
           )}
         >
-          <Heart className={cn("w-5 h-5", isSaved && "fill-current")} />
+          <Heart className={cn("w-5 h-5", isSaved && "fill-current")} aria-hidden="true" />
         </button>
       </div>
 
@@ -121,6 +124,7 @@ export const MatchCard = memo(function MatchCard({
         <div className="px-5 pb-3">
           <button
             onClick={() => setShowDetails(!showDetails)}
+            aria-expanded={showDetails}
             className="flex items-center gap-2 text-xs text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-200"
           >
             <Settings2 className="w-3 h-3" />
@@ -153,7 +157,7 @@ export const MatchCard = memo(function MatchCard({
 
       <div className="flex items-center justify-between px-5 py-3 border-t border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
         <span className="text-xs text-stone-700 dark:text-stone-300">
-          {new Date(job.publication_date).toLocaleDateString('sv-SE')}
+          {new Date(job.publication_date).toLocaleDateString(datumSprak(i18n.language))}
         </span>
         {job.webpage_url && (
           <a

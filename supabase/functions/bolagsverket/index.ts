@@ -13,6 +13,7 @@
 import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, getCorsHeaders, validateOriginOrReject } from '../_shared/cors.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { medFelrapport } from '../_shared/sentry.ts'
+import { fetchMedTimeout, TIDSGRANS_EXTERN_MS } from '../_shared/fetchMedTimeout.ts'
 
 // Per-user rate-limit: 30 anrop / 15 min. Bolagsverket-quota delas
 // projekt-globalt — utan per-user-limit kan en användare bränna alla
@@ -22,6 +23,11 @@ const RATE_LIMIT_WINDOW_MINUTES = 15;
 
 const BOLAGSVERKET_TOKEN_URL = 'https://portal.api.bolagsverket.se/oauth2/token';
 const BOLAGSVERKET_API_BASE = 'https://gw.api.bolagsverket.se/vardefulla-datamangder/v1';
+
+// ST4 (2026-09-22): alla fyra anropen saknade tidsgräns. Uppslagen är små
+// (8 s räcker); årsredovisningen är en ZIP som ska hinna laddas ned — och
+// tidsgränsen gäller hela kroppsläsningen, inte bara headrarna.
+const TIDSGRANS_DOKUMENT_MS = 20_000;
 
 // Token cache
 let cachedToken: { token: string; expiresAt: number } | null = null;
@@ -47,14 +53,14 @@ async function getAccessToken(): Promise<string> {
   // Use Basic Auth header as recommended by Bolagsverket
   const credentials = btoa(`${clientId}:${clientSecret}`);
 
-  const response = await fetch(BOLAGSVERKET_TOKEN_URL, {
+  const response = await fetchMedTimeout(BOLAGSVERKET_TOKEN_URL, {
     method: 'POST',
     headers: {
       'Authorization': `Basic ${credentials}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: 'grant_type=client_credentials&scope=vardefulla-datamangder:read vardefulla-datamangder:ping',
-  });
+  }, TIDSGRANS_EXTERN_MS);
 
   if (!response.ok) {
     const errorText = await response.text();
@@ -107,7 +113,7 @@ async function fetchCompanyInfo(orgNumber: string): Promise<object | null> {
   const url = `${BOLAGSVERKET_API_BASE}/organisationer`;
   console.log('[bolagsverket] Fetching company:', normalized);
 
-  const response = await fetch(url, {
+  const response = await fetchMedTimeout(url, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -117,7 +123,7 @@ async function fetchCompanyInfo(orgNumber: string): Promise<object | null> {
     body: JSON.stringify({
       identitetsbeteckning: normalized,
     }),
-  });
+  }, TIDSGRANS_EXTERN_MS);
 
   if (response.status === 404) {
     return null;
@@ -214,7 +220,7 @@ async function fetchDocumentList(orgNumber: string): Promise<object[]> {
   const url = `${BOLAGSVERKET_API_BASE}/dokumentlista`;
   console.log('[bolagsverket] Fetching document list for:', normalized);
 
-  const response = await fetch(url, {
+  const response = await fetchMedTimeout(url, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -224,7 +230,7 @@ async function fetchDocumentList(orgNumber: string): Promise<object[]> {
     body: JSON.stringify({
       identitetsbeteckning: normalized,
     }),
-  });
+  }, TIDSGRANS_EXTERN_MS);
 
   if (response.status === 404) {
     return [];
@@ -257,13 +263,13 @@ async function fetchDocument(dokumentId: string): Promise<{ data: ArrayBuffer; c
   const url = `${BOLAGSVERKET_API_BASE}/dokument/${dokumentId}`;
   console.log('[bolagsverket] Fetching document:', dokumentId);
 
-  const response = await fetch(url, {
+  const response = await fetchMedTimeout(url, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Accept': 'application/zip',
     },
-  });
+  }, TIDSGRANS_DOKUMENT_MS);
 
   if (!response.ok) {
     const errorText = await response.text();

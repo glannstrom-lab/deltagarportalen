@@ -46,6 +46,7 @@ export function LocationSelector({
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
         className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-stone-300 dark:hover:border-stone-600 transition-colors"
       >
         <MapPin className="w-4 h-4 text-stone-700 dark:text-stone-300" />
@@ -98,6 +99,7 @@ export function LocationSelector({
                   <button
                     key={m.concept_id}
                     onClick={() => toggleLocation(m.label)}
+                    aria-pressed={selected.includes(m.label)}
                     className={cn(
                       "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
                       selected.includes(m.label)

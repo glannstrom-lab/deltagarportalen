@@ -35,6 +35,7 @@ import {
   type Application,
   type ApplicationStatus
 } from '@/types/application.types'
+import { datumSprak } from '@/lib/datumsprak'
 
 interface ApplicationCardProps {
   application: Application
@@ -59,7 +60,7 @@ export function ApplicationCard({
   isDragging = false,
   showActions = true
 }: ApplicationCardProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { confirm } = useConfirmDialog()
 
   const statusConfig = APPLICATION_STATUS_CONFIG[application.status]
@@ -303,7 +304,7 @@ export function ApplicationCard({
             {application.applicationDate && (
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" aria-hidden="true" />
-                {t('applications.card.appliedOn', { date: new Date(application.applicationDate).toLocaleDateString('sv-SE') })}
+                {t('applications.card.appliedOn', { date: new Date(application.applicationDate).toLocaleDateString(datumSprak(i18n.language)) })}
               </span>
             )}
           </div>

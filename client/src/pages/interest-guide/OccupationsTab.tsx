@@ -150,7 +150,7 @@ export default function OccupationsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12 ">
-        <LoadingState title={t('common.loading') || 'Laddar yrken...'} size="lg" />
+        <LoadingState title={t('common.loading')} size="lg" />
       </div>
     )
   }
@@ -205,13 +205,13 @@ export default function OccupationsTab() {
       >
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
           <Briefcase className="w-4 h-4" />
-          {t('interestGuide.basedOnYourProfile') || 'Baserat på din profil'}
+          {t('interestGuide.basedOnYourProfile')}
         </div>
         <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-          {t('interestGuide.occupationsThatSuitYou') || 'Yrken som passar dig'}
+          {t('interestGuide.occupationsThatSuitYou')}
         </h1>
         <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          {t('interestGuide.occupationsDescription') || 'Vi har analyserat din profil och hittat yrken som matchar dina intressen, personlighet och förutsättningar.'}
+          {t('interestGuide.occupationsDescription')}
         </p>
       </motion.div>
 
@@ -264,8 +264,8 @@ export default function OccupationsTab() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
-                aria-label={t('common.search') || 'Sök yrken...'}
-                placeholder={t('common.search') || 'Sök yrken...'}
+                aria-label={t('common.search')}
+                placeholder={t('common.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
@@ -301,7 +301,7 @@ export default function OccupationsTab() {
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
-                {t('common.all') || 'Alla'}
+                {t('common.all')}
               </button>
               <button
                 onClick={() => setFilterUni(true)}

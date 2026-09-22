@@ -23,17 +23,22 @@ const fs = require('node:fs')
 const path = require('node:path')
 
 const REPO_ROOT = path.resolve(__dirname, '..', '..')
-const SNAPSHOT = path.join(REPO_ROOT, 'supabase', 'grants-snapshot.json')
+// Överstyrs bara av testet som bevisar att regel 5 fäller
+// (src/test/skript-lint-grants-anon-anropare.test.ts).
+const SNAPSHOT = process.env.GRANTS_SNAPSHOT || path.join(REPO_ROOT, 'supabase', 'grants-snapshot.json')
 
 /**
  * De enda definer-funktioner `anon` får köra. Varje rad har ett verifierat anropsställe
  * — står det inget skäl här hör funktionen inte hemma i listan.
  */
 const ANON_TILLATNA = {
+  // (Skälet pekade till 2026-09-22 på `api/_utils/rate-limiter.js:19`, en fil som
+  // inte finns. De verkliga anroparna står nedan, och regel 5 håller dem i synk.)
   check_rate_limit:
-    'api/_utils/rate-limiter.js:19 och supabase/functions/_shared/rateLimit.ts:54 bygger ' +
-    'sin klient med ANON-nyckeln, och båda faller tillbaka på en in-memory-limiter vid ' +
-    'fel utan att larma. Utan anon degraderas rate-limiten tyst till per-instans-minne.',
+    'client/api/ai.js, cv-pdf.js och upload-image.js samt ' +
+    'supabase/functions/_shared/rateLimit.ts bygger sin klient med ANON-nyckeln, och alla ' +
+    'faller tillbaka på en in-memory-limiter vid fel utan att larma. Utan anon degraderas ' +
+    'rate-limiten tyst till per-instans-minne.',
   get_invitation_by_token:
     'Inbjudningslänken öppnas innan kontot finns (A10). Tokenmatchad, returnerar bara ' +
     'id/email/role/metadata.',
@@ -105,13 +110,13 @@ for (const t of snapshot.tables.filter((t) => !t.rls && !(t.name in RLS_UNDANTAG
  * `client/api` och `supabase/functions` använder service role eller anon-nyckeln och
  * lyder andra regler.
  */
-function samlaRpcAnrop(dir, traffar = new Map()) {
+function samlaRpcAnrop(dir, traffar = new Map(), filer = /\.tsx?$/) {
   for (const post of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, post.name)
     if (post.isDirectory()) {
       if (post.name === 'node_modules' || post.name === '__tests__') continue
-      samlaRpcAnrop(full, traffar)
-    } else if (/\.tsx?$/.test(post.name) && !/\.test\.tsx?$/.test(post.name)) {
+      samlaRpcAnrop(full, traffar, filer)
+    } else if (filer.test(post.name) && !/\.test\.[jt]sx?$/.test(post.name)) {
       const kod = fs.readFileSync(full, 'utf8')
       for (const m of kod.matchAll(/\.rpc\(\s*['"`]([a-z0-9_]+)['"`]/gi)) {
         if (!traffar.has(m[1])) traffar.set(m[1], path.relative(REPO_ROOT, full))
@@ -134,6 +139,33 @@ for (const [namn, fil] of rpcAnrop) {
       `${fil} anropar .rpc('${namn}') men authenticated saknar EXECUTE\n` +
         `    Webbläsarens anrop kör som authenticated och får 42501 permission denied.\n` +
         `    Åtgärd: GRANT EXECUTE ON FUNCTION public.${namn}(...) TO authenticated;`
+    )
+  }
+}
+
+/**
+ * ── Regel 5: Vercel-funktionernas anrop kräver anon (2026-09-22) ──────────────
+ * `client/api/ai.js`, `cv-pdf.js` och `upload-image.js` anropar `.rpc(...)` med en
+ * klient byggd på ANON-nyckeln, utan användarens token. Revokeras anon från en sådan
+ * funktion faller anropet med 42501 — och varje anropare har en minnesfallback som
+ * sväljer felet. Rate-limiten degraderas då tyst till per-instans-minne (minnet
+ * "vem anropar med anon-nyckeln"). Regel 1 ser bara åt ena hållet (anon får för
+ * mycket); ingenting såg det här hållet, och ANON_TILLATNA-skälet pekade dessutom på
+ * en fil som inte fanns.
+ */
+const apiRpcAnrop = samlaRpcAnrop(path.join(REPO_ROOT, 'client', 'api'), new Map(), /\.[cm]?js$/)
+for (const [namn, fil] of apiRpcAnrop) {
+  const traffar = snapshot.functions.filter((f) => f.name === namn)
+  if (traffar.length === 0) {
+    fel.push(
+      `${fil} anropar .rpc('${namn}') — funktionen finns inte i schemat\n` +
+        `    (kan också betyda att snapshoten är gammal: npm run grants:refresh)`
+    )
+  } else if (!traffar.some((f) => f.anon)) {
+    fel.push(
+      `${fil} anropar .rpc('${namn}') med anon-nyckeln, men anon saknar EXECUTE\n` +
+        `    Anropet får 42501 och minnesfallbacken tar över utan att larma.\n` +
+        `    Åtgärd: GRANT EXECUTE ON FUNCTION public.${namn}(...) TO anon; (och motivera i ANON_TILLATNA)`
     )
   }
 }
@@ -162,6 +194,7 @@ console.log(
     `(${Object.keys(ANON_TILLATNA).length} öppna för anon, alla motiverade; ` +
     `${authAntal} för authenticated, under taket ${AUTH_TAK}), ` +
     `${snapshot.tables.length} tabeller med RLS, ` +
-    `${rpcAnrop.size} .rpc()-anrop i klientkoden nåbara. ` +
+    `${rpcAnrop.size} .rpc()-anrop i klientkoden nåbara, ` +
+    `${apiRpcAnrop.size} i client/api nåbara för anon. ` +
     `Snapshot ${alder} dygn gammal.`
 )

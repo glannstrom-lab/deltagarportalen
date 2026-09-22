@@ -35,6 +35,7 @@ import { Button } from '@/components/ui/Button'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { cn } from '@/lib/utils'
 import { consultantService } from '@/services/consultantService'
+import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface Participant {
   participant_id: string
@@ -57,7 +58,8 @@ const PLACEMENT_TYPES: { value: 'permanent' | 'temp' | 'trial'; label: string }[
   { value: 'trial', label: 'Provanställning' },
 ]
 
-const today = () => new Date().toISOString().slice(0, 10)
+// Lokal kalenderdag — `toISOString()` gav gårdagen mellan 00 och 02 svensk tid.
+const today = () => formatLocalDate(new Date())
 
 export function PlacementDialog({
   isOpen,
@@ -70,6 +72,8 @@ export function PlacementDialog({
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [participants, setParticipants] = useState<Participant[]>([])
+  /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
+  const [hamtFel, setHamtFel] = useState(false)
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(
     preselectedParticipant || null
   )
@@ -96,18 +100,21 @@ export function PlacementDialog({
   }, [isOpen, preselectedParticipant])
 
   const fetchParticipants = async () => {
+    setHamtFel(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('consultant_dashboard_participants')
         .select('participant_id, first_name, last_name, email')
         .eq('consultant_id', user.id)
 
-      if (data) setParticipants(data)
+      if (error) throw error
+      setParticipants(data ?? [])
     } catch (err) {
       console.error('[PlacementDialog] kunde inte hämta deltagare:', err)
+      setHamtFel(true)
     }
   }
 
@@ -217,7 +224,11 @@ export function PlacementDialog({
                 />
               </div>
               <div className="space-y-2 max-h-80 overflow-y-auto">
-                {filteredParticipants.length === 0 && (
+                {hamtFel ? (
+                  <p role="alert" className="text-sm text-rose-700 dark:text-rose-300 px-1 py-4 text-center">
+                    Deltagarlistan kunde inte hämtas. Stäng och försök igen.
+                  </p>
+                ) : filteredParticipants.length === 0 && (
                   <p className="text-sm text-stone-500 dark:text-stone-400 px-1 py-4 text-center">
                     Inga deltagare hittades.
                   </p>

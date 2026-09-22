@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import { careerOfflineCache, offlineStorage } from './offlineStorage';
+import { formatLocalDate } from './aktivitetSchema';
 
 // ===== API Error Class =====
 
@@ -260,22 +261,6 @@ export const skillsApi = {
     return data || [];
   },
 
-  async getByOccupation(occupation: string): Promise<UserSkill[]> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
-
-    // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
-    const { data, error } = await supabase
-      .from('user_skills')
-      .select('id, user_id, skill_name, category, frequency, target_occupation, status, priority, created_at, updated_at')
-      .eq('user_id', user.id)
-      .eq('target_occupation', occupation)
-      .order('priority', { ascending: true });
-
-    if (error) handleError(error, 'Failed to fetch skills by occupation');
-    return data || [];
-  },
-
   async save(skill: Omit<UserSkill, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<UserSkill> {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
@@ -496,13 +481,15 @@ export const networkApi = {
 
   // Mark contact as contacted today
   async markContacted(id: string): Promise<NetworkContact> {
-    const today = new Date().toISOString().split('T')[0];
+    // Lokala datum: UTC-strängen gav gårdagens datum för allt som gjordes
+    // mellan midnatt och kl. 01/02 svensk tid.
+    const today = formatLocalDate(new Date());
     const nextContactDate = new Date();
     nextContactDate.setMonth(nextContactDate.getMonth() + 3); // Remind in 3 months
 
     return this.update(id, {
       last_contact_date: today,
-      next_contact_date: nextContactDate.toISOString().split('T')[0],
+      next_contact_date: formatLocalDate(nextContactDate),
       status: 'active'
     });
   }
@@ -830,7 +817,7 @@ export const networkingEventsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatLocalDate(new Date());
 
     // E11 (2026-07-23): explicit kolumnlista — se getAll ovan.
     const { data, error } = await supabase
@@ -1326,7 +1313,7 @@ export const credentialsApi = {
     // D7 (2026-07-23): null (inte undefined) så completed_date faktiskt RENSAS
     // när status lämnar 'completed' — undefined droppas vid serialiseringen och
     // ett gammalt datum blev kvar
-    const completedDate = status === 'completed' ? new Date().toISOString().split('T')[0] : null;
+    const completedDate = status === 'completed' ? formatLocalDate(new Date()) : null;
     return this.update(id, {
       status,
       completed_date: completedDate

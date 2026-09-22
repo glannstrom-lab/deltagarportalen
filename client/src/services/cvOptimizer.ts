@@ -455,15 +455,3 @@ export function analyzeCVForJob(
 // QUICK SCORE (för listvisning)
 // ============================================
 
-/**
- * Snabb beräkning av matchningspoäng (för listvisning)
- * Använder förenklad analys för bättre prestanda
- */
-export function calculateQuickMatchScore(
-  cv: CVData,
-  jobTitle: string,
-  jobDescription: string
-): number | null {
-  const analysis = analyzeCVForJob(cv, `${jobTitle} ${jobDescription}`)
-  return analysis.matchScore
-}

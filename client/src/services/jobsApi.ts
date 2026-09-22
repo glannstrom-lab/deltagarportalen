@@ -11,7 +11,7 @@ import { supabase } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
 import { applicationsApi } from './applicationsApi'
 import type { Application, ApplicationStatus } from '@/types/application.types'
-import type { CVData, SavedJob, Skill, WorkExperience } from './supabaseApi'
+import type { SavedJob } from './supabaseApi'
 
 /**
  * Application (domänform, gemen status) -> SavedJob (rå radform, VERSAL status).
@@ -60,16 +60,6 @@ export const jobsApi = {
     return data.hits || []
   },
 
-  async searchJobs(params?: {
-    search?: string
-    location?: string
-    employmentType?: string
-    remote?: boolean
-    limit?: number
-  }) {
-    return this.search(params || {})
-  },
-
   async getById(id: string) {
     const response = await fetch(
       `https://jobsearch.api.jobtechdev.se/ad/${id}`
@@ -96,68 +86,6 @@ export const jobsApi = {
   async getSavedJobs(): Promise<SavedJob[]> {
     return (await applicationsApi.getAll()).map(toSavedJobRow)
   },
-
-  async getApplications(): Promise<SavedJob[]> {
-    return this.getSavedJobs()
-  },
-
-  async updateApplication(id: string, updates: { status?: string, notes?: string }) {
-    const app = await applicationsApi.update(id, {
-      ...(updates.status ? { status: updates.status.toLowerCase() as ApplicationStatus } : {}),
-      ...(updates.notes !== undefined ? { notes: updates.notes } : {}),
-    })
-    return toSavedJobRow(app)
-  },
-
-  async deleteApplication(id: string) {
-    await applicationsApi.delete(id)
-    return true
-  },
-
-  async matchCV(jobId: string, cvData: CVData) {
-    const job = await this.getById(jobId)
-
-    const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
-    const skills = cvData.skills || []
-    const experiences = cvData.work_experience || []
-
-    let matchScore = 0
-    let maxScore = 0
-    const matchingSkills: string[] = []
-    const missingSkills: string[] = []
-
-    skills.forEach((skill: Skill | string) => {
-      maxScore += 3
-      const skillName = typeof skill === 'string' ? skill : skill.name
-      if (jobText.includes(skillName.toLowerCase())) {
-        matchScore += 3
-        matchingSkills.push(skillName)
-      } else {
-        missingSkills.push(skillName)
-      }
-    })
-
-    experiences.forEach((exp: WorkExperience) => {
-      const expTitle = (exp.title || '').toLowerCase()
-      if (jobText.includes(expTitle)) {
-        matchScore += 2
-      }
-      maxScore += 2
-    })
-
-    const score = maxScore > 0 ? Math.round((matchScore / maxScore) * 100) : 50
-
-    return {
-      matchPercentage: score,
-      matchingSkills,
-      missingSkills,
-      suggestions: [
-        'Anpassa ditt CV för att lyfta fram relevanta erfarenheter',
-        'Inkludera nyckelord från annonsen i ditt personliga brev',
-        'Beskriv hur dina tidigare resultat kan överföras till denna roll'
-      ]
-    }
-  }
 }
 
 // ============================================
@@ -220,14 +148,6 @@ export const savedJobsApi = {
     return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { notes }))
   },
 
-  async updateFollowUpDate(jobId: string, date: string | null) {
-    return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { followUpDate: date ?? undefined }))
-  },
-
-  async updatePriority(jobId: string, priority: 'low' | 'medium' | 'high') {
-    return toSavedJobRow(await applicationsApi.updateByJobId(jobId, { priority }))
-  },
-
   /**
    * add/remove/isSaved fanns tidigare bara i cloudStorage-varianten av
    * savedJobsApi. Ytan här är nu en superset av båda, så den konsoliderade
@@ -269,10 +189,6 @@ export const savedJobsApi = {
     )
     return apps.map(toSavedJobRow)
   },
-
-  async getApplications(): Promise<SavedJob[]> {
-    return this.getByStatus(['APPLIED', 'INTERVIEW', 'REJECTED', 'OFFER'])
-  }
 }
 
 // ============================================

@@ -21,13 +21,16 @@ export function streakDays(logs: Array<{ log_date: string }> | null | undefined)
   // Sort descending by date (most recent first) — defensive even if caller already sorted
   const sorted = [...logs].sort((a, b) => b.log_date.localeCompare(a.log_date))
   let streak = 0
+  // Hela räkningen i UTC. `new Date('YYYY-MM-DD')` tolkas som UTC-midnatt;
+  // stegade vi bakåt med lokala `setDate` blev dygnet 25 timmar natten mot
+  // sommartidens slut och markören hamnade på fel datum (se testet).
   const cursor = new Date(sorted[0].log_date)
   for (const log of sorted) {
     const expected = cursor.toISOString().slice(0, 10)
     const actual = new Date(log.log_date).toISOString().slice(0, 10)
     if (expected !== actual) break
     streak += 1
-    cursor.setDate(cursor.getDate() - 1)
+    cursor.setUTCDate(cursor.getUTCDate() - 1)
   }
   return streak
 }

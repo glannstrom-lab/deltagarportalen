@@ -86,7 +86,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && (
-          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1" role="alert">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
@@ -195,7 +195,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {error && (
-          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1" role="alert">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
@@ -281,7 +281,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400 pointer-events-none" aria-hidden="true" />
         </div>
         {error && (
-          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 dark:text-red-400 flex items-center gap-1" role="alert">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
