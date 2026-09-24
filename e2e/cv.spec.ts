@@ -79,6 +79,11 @@ test.describe('CV-byggaren', () => {
 
   test('mallvalet: välj en mall, bekräftelsen följer med, återställ', async ({ page }) => {
     const mallar = page.getByRole('button', { name: /^förhandsvisning av mallen/i })
+    // LS3 (2026-09-24): fem rekommenderade syns först, resten bakom "Visa fler mallar".
+    expect(await mallar.count()).toBeGreaterThanOrEqual(5)
+    const visaFler = page.getByRole('button', { name: /visa fler mallar/i })
+    await expect(visaFler).toHaveAttribute('aria-expanded', 'false')
+    await visaFler.click()
     expect(await mallar.count()).toBeGreaterThanOrEqual(12)
 
     const fore = (await page.getByText(/^\S+ är vald$/).textContent())?.trim()

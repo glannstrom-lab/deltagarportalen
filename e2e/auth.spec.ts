@@ -201,7 +201,10 @@ test.describe('Protected Routes', () => {
    * Rätt beteende: gästen skickas till inloggningen, och sökvägen hon var på
    * väg till följer med som `returnTo` så hon landar rätt efteråt.
    */
-  test('gäst på en skyddad sida skickas till inloggningen med returnTo', async ({ page }) => {
+  // TR2 (2026-09-24): en gäst som aldrig loggat in i webbläsaren skickas till
+  // REGISTRERINGEN; den som loggat in förut (localStorage jobin_har_loggat_in)
+  // till inloggningen. returnTo följer med i båda fallen.
+  test('gäst på en skyddad sida skickas till registreringen, återvändande till inloggningen, med returnTo', async ({ page }) => {
     const fall = [
       ['/#/cv', '%2Fcv'],
       ['/#/job-search', '%2Fjob-search'],
@@ -209,10 +212,18 @@ test.describe('Protected Routes', () => {
     ] as const
 
     for (const [route, kodadSokvag] of fall) {
+      // Ny gäst: registreringen.
+      await page.goto('/')
+      await page.evaluate(() => localStorage.removeItem('jobin_har_loggat_in'))
       await page.goto(route)
       await waitForAppReady(page)
+      await expect(page).toHaveURL(new RegExp(`#/register\\?returnTo=${kodadSokvag}$`))
+      await expect(page.locator('input#firstName')).toBeVisible({ timeout: 10000 })
 
-      // Hamnar på inloggningen …
+      // Har loggat in förut: inloggningen.
+      await page.evaluate(() => localStorage.setItem('jobin_har_loggat_in', '1'))
+      await page.goto(route)
+      await waitForAppReady(page)
       await expect(page).toHaveURL(new RegExp(`#/login\\?returnTo=${kodadSokvag}$`))
       // … och det är faktiskt inloggningsformuläret, inte bara rätt URL.
       await expect(page.locator('input#email')).toBeVisible({ timeout: 10000 })
