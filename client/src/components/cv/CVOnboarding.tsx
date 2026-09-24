@@ -172,7 +172,8 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
               <div className="p-2 bg-white/20 rounded-lg">
                 <Icon className="w-6 h-6" />
               </div>
-              <span className="text-sm font-medium text-white/80">
+              {/* Helvit, inte /80: 80 % vitt på persika (--c-solid) ger 3,79:1 (axe, 2026-09-24) */}
+              <span className="text-sm font-medium text-white">
                 {t('cv.onboarding.stepOf', { current: currentStep + 1, total: ONBOARDING_STEPS.length })}
               </span>
             </div>
