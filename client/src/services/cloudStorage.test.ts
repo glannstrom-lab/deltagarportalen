@@ -173,10 +173,12 @@ describe('interestGuideApi historik', () => {
     expect(result).toEqual(rows)
   })
 
-  it('getHistory returnerar [] vid databasfel — propagerar inte', async () => {
+  it('getHistory KASTAR vid databasfel — ett läsfel är inte "inga tidigare resultat"', async () => {
+    // Före 2026-09-24 blev felet `[]`, och HistoryTab visade tomläget i
+    // stället för sitt felkort.
     loggedIn()
     setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
-    await expect(interestGuideApi.getHistory()).resolves.toEqual([])
+    await expect(interestGuideApi.getHistory()).rejects.toMatchObject({ name: 'LagringsFel' })
   })
 
 
@@ -405,6 +407,18 @@ describe('personalBrandApi audit', () => {
     await expect(personalBrandApi.getAuditAnswers()).resolves.toEqual({})
   })
 
+  it('getAuditAnswers KASTAR vid läsfel — annars skriver autosparningen över svaren med {}', async () => {
+    /*
+      Före 2026-09-24 föll ett läsfel tillbaka på localStorage, som för en
+      inloggad användare är tomt (bara den utloggade vägen skriver dit).
+      BrandAuditTab fick `{}`, dess felläge nåddes aldrig, och autosparningen
+      500 ms senare UPDATE:ade senaste raden med `answers: {}`.
+    */
+    loggedIn()
+    setResult({ data: null, error: { code: '08006', message: 'connection failure' } })
+    await expect(personalBrandApi.getAuditAnswers()).rejects.toMatchObject({ name: 'LagringsFel' })
+  })
+
   it('saveAuditAnswers upsertar INTE mot user_id', async () => {
     /*
       Testet hette tidigare "upsertar answers + poäng med onConflict user_id"
@@ -552,11 +566,16 @@ describe('calendarApi.getEvents', () => {
     )
   })
 
-  it('faller tillbaka på cache vid databasfel', async () => {
+  it('KASTAR vid databasfel — en tom kalender är inget felmeddelande', async () => {
+    /*
+      Före 2026-09-24 föll felet tillbaka på localStorage-kopian (oftast `[]`
+      efter en utloggning). Kalendersidans felläge nåddes aldrig, och
+      synkningen från karriärplanen byggde sitt dubblettskydd på den tomma
+      listan — varje milstolpe skapades en gång till.
+    */
     loggedIn()
     setResult({ data: null, error: { code: 'XX000', message: 'boom' } })
-    vi.mocked(window.localStorage.getItem).mockReturnValue('[{"id":"cached"}]')
-    await expect(calendarApi.getEvents()).resolves.toEqual([{ id: 'cached' }])
+    await expect(calendarApi.getEvents()).rejects.toMatchObject({ name: 'LagringsFel' })
   })
 })
 

@@ -6,15 +6,10 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import i18n from '@/i18n/config'
 import { ConfirmDialogProvider } from '@/components/ui'
 
-// Mock cvApi
-vi.mock('@/services/api', () => ({
-  cvApi: {
-    getCV: vi.fn(() => Promise.resolve(null)),
-    updateCV: vi.fn(() => Promise.resolve({})),
-    getVersions: vi.fn(() => Promise.resolve([])),
-    saveVersion: vi.fn(() => Promise.resolve({})),
-  },
-}))
+// 2026-09-24: mockarna av '@/services/api' och '@/hooks/useCVScore' är
+// borttagna. Ingen av modulerna finns (vi.mock med fabrik skapar en virtuell
+// modul utan att klaga), så mockarna styrde ingenting — cvApi kommer från
+// supabaseApi nedan.
 
 // Mock supabaseApi
 vi.mock('@/services/supabaseApi', () => ({
@@ -120,16 +115,6 @@ vi.mock('@/hooks/useCVAutoSave', () => ({
   })),
 }))
 
-vi.mock('@/hooks/useCVScore', () => ({
-  useCVScore: vi.fn(() => ({
-    score: 0,
-    breakdown: {},
-    tips: [],
-  })),
-  getOverallTips: vi.fn(() => []),
-  getScoreColor: vi.fn(() => 'text-stone-700'),
-}))
-
 vi.mock('@/hooks/useVercelImageUpload', () => ({
   useVercelImageUpload: vi.fn(() => ({
     uploadImage: vi.fn(),
@@ -203,29 +188,40 @@ describe('CVPage', () => {
     mockCvApi.getVersions.mockResolvedValue([])
   })
 
+  // 2026-09-24: de tre testen här asserterade tidigare bara att containern
+  // inte var tom (`firstChild` / `innerHTML.length > 0`). Sidhuvudet och
+  // flikarna ritas oavsett rutt, så de hade gått gröna även om /cv och
+  // /cv/my-cvs visat samma sak — eller ingenting av det de ska visa.
   describe('rendering', () => {
-    it('should render the CV page without errors', async () => {
-      const { container } = renderWithRouter()
+    // Med ett befintligt CV: ett konto utan CV-data får snabbläget (QuickCVMode),
+    // inte byggarens verktygsrad.
+    const befintligtCV = {
+      id: 'cv1', firstName: 'Erik', lastName: 'Svensson', title: '', email: '',
+      phone: '', location: '', summary: '', workExperience: [], education: [],
+      skills: [{ id: 's1', name: 'Excel', level: 3, category: 'technical' }],
+      template: 'sidebar',
+    }
 
-      await waitFor(() => {
-        expect(container.firstChild).toBeInTheDocument()
-      })
+    it('/cv visar CV-byggaren', async () => {
+      mockCvApi.getCV.mockResolvedValue(befintligtCV)
+      renderWithRouter('/cv')
+
+      expect(await screen.findByRole('button', { name: /Exempeldata/i })).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Dina sparade CV' })).not.toBeInTheDocument()
     })
 
-    it('should render content on default route', async () => {
-      const { container } = renderWithRouter('/cv')
+    it('/cv/my-cvs visar de sparade CV:na, inte byggaren', async () => {
+      renderWithRouter('/cv/my-cvs')
 
-      await waitFor(() => {
-        expect(container.innerHTML.length).toBeGreaterThan(0)
-      })
+      expect(await screen.findByRole('heading', { name: 'Dina sparade CV' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /Exempeldata/i })).not.toBeInTheDocument()
     })
 
-    it('should render content on my-cvs route', async () => {
-      const { container } = renderWithRouter('/cv/my-cvs')
+    it('en okänd undersida faller tillbaka på byggaren', async () => {
+      mockCvApi.getCV.mockResolvedValue(befintligtCV)
+      renderWithRouter('/cv/finns-inte')
 
-      await waitFor(() => {
-        expect(container.innerHTML.length).toBeGreaterThan(0)
-      })
+      expect(await screen.findByRole('button', { name: /Exempeldata/i })).toBeInTheDocument()
     })
   })
 })

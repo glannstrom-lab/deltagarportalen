@@ -137,20 +137,40 @@ function sanitizeInput(input, maxLength = 5000) {
  * Anropas i toppen av handler så att efterföljande PROMPTS-templates får
  * redan saniterad data — ingen sanering behövs sedan i prompt-templates.
  */
-function sanitizeAll(obj, depth = 0) {
+function sanitizeAll(obj, depth = 0, maxLength = 5000) {
   if (depth > 10) return obj; // Recursion safety
   if (obj == null) return obj;
-  if (typeof obj === 'string') return sanitizeInput(obj);
+  if (typeof obj === 'string') return sanitizeInput(obj, maxLength);
   if (Array.isArray(obj)) return obj.map((v) => sanitizeAll(v, depth + 1));
   if (typeof obj === 'object') {
     const out = {};
     for (const [k, v] of Object.entries(obj)) {
-      out[k] = sanitizeAll(v, depth + 1);
+      out[k] = sanitizeAll(
+        v,
+        depth + 1,
+        Object.prototype.hasOwnProperty.call(LANGA_FALT, k) ? LANGA_FALT[k] : 5000,
+      );
     }
     return out;
   }
   return obj; // numbers, booleans
 }
+
+/**
+ * Fält som en prompt uttryckligen läser längre än standardtaket på 5 000 tecken.
+ *
+ * 2026-09-24: CV-importen (`cv-import`, `cv-import-erfarenhet`) läser
+ * `cvText.substring(0, 10000)` — men saneringen ovan hade redan kapat texten vid
+ * 5 000. Ett CV på två sidor är 5 000–9 000 tecken, och det som föll bort var
+ * slutet: äldre tjänster och hela utbildningsavsnittet. Modellen fick aldrig se
+ * dem, och prompten förbjuder den (med rätta) att gissa — så importen lämnade
+ * utbildningen tom utan att någon kunde se varför. Klienten kapar inte texten
+ * (`CVImportModal` skickar hela filens text).
+ *
+ * Taket här ska vara detsamma som promptens egen `substring`. Vaktat av
+ * src/test/api-ai-cvtext-langd.test.ts.
+ */
+const LANGA_FALT = { cvText: 10000 };
 
 // KA3 (2026-09-12): promptbiblioteket och dess delade konstanter (REGELVERKSREGEL,
 // SANNINGSREGEL, AGENT_PROMPTS m.fl.) bor i ./_prompts/ — en fil per domän och
@@ -461,6 +481,46 @@ async function checkOrgAiEnabled(supabase, userId) {
     return { allowed: true };
   } catch (err) {
     console.warn('[OrgAiGate] kastade (blockerar):', err.message);
+    return { allowed: false, reason: 'lookup_failed' };
+  }
+}
+
+/**
+ * 2026-09-24: de undantagna funktionerna (AI_ENABLED_EXEMPT_FUNCTIONS) är
+ * PERSONALENS verktyg — och det var bara ett antagande. Servern kontrollerade
+ * aldrig vem som anropade. En vanlig deltagare kunde POSTa
+ * `konsulent-rapportutkast` direkt och fick då:
+ *  - ingen kontroll av sin egen `ai_enabled` (funktionen är undantagen), och
+ *  - ingen organisationsspärr: personalgrinden nedan läser
+ *    `organization_members`, där deltagare inte står — de är kopplade via
+ *    `consultant_participants`, som bara `my_ai_policy`-grinden läser.
+ * En kommun som stängt av AI för sina deltagare kunde alltså ändå få deras
+ * text skickad till OpenRouter, en POST bort. Klientens ruttvakt på
+ * /consultant hjälper inte: den är en artighet, inte en kontroll.
+ *
+ * Fail closed. `role` eller `roles` räcker (flerrollskonton bär rollen i
+ * arrayen). Klienten MÅSTE vara den tokenbärande `supabaseAsUser` (A19).
+ */
+const PERSONALROLLER = ['CONSULTANT', 'ADMIN', 'SUPERADMIN'];
+
+async function checkArPersonal(supabase, userId) {
+  try {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('role, roles')
+      .eq('id', userId)
+      .single();
+    if (error || !data) {
+      console.warn('[PersonalGate] uppslag misslyckades (blockerar):', error?.message);
+      return { allowed: false, reason: 'lookup_failed' };
+    }
+    const roller = [data.role, ...(Array.isArray(data.roles) ? data.roles : [])];
+    if (roller.some((r) => PERSONALROLLER.includes(String(r || '').toUpperCase()))) {
+      return { allowed: true };
+    }
+    return { allowed: false, reason: 'not_staff' };
+  } catch (err) {
+    console.warn('[PersonalGate] kastade (blockerar):', err.message);
     return { allowed: false, reason: 'lookup_failed' };
   }
 }
@@ -962,6 +1022,19 @@ const hanterare = async (req, res) => {
       // INTE organisationens — kommunen är personuppgiftsansvarig, och dess
       // nej gäller dess egen personal. Utan den här grenen var B2B-sidans
       // löfte om att kunna stänga av AI "för hela organisationen" osant.
+      //
+      // Först: är anroparen personal alls? Se checkArPersonal().
+      const personal = await checkArPersonal(supabaseAsUser, user.id);
+      if (!personal.allowed) {
+        return res.status(403).json({
+          error:
+            personal.reason === 'not_staff'
+              ? 'Den här funktionen är bara till för konsulenter.'
+              : 'Vi kunde inte kontrollera din behörighet just nu, och skickar därför inga uppgifter vidare. Försök igen om en stund.',
+          code: 'AI_CONSENT_REQUIRED',
+          reason: personal.reason,
+        });
+      }
       const SERVICE_KEY_ORG =
         process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
       const SUPABASE_URL_ORG = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
@@ -1132,6 +1205,9 @@ const hanterare = async (req, res) => {
       let fullResponse = '';
       /** @type {string | null} */
       let stromFel = null;
+      /** Exakt tokenåtgång om OpenRouter skickar den i strömmen, annars null. */
+      /** @type {number | null} */
+      let stromUsage = null;
 
       try {
         while (true) {
@@ -1148,18 +1224,31 @@ const hanterare = async (req, res) => {
               if (jsonStr === '[DONE]') {
                 continue;
               }
+              /** @type {any} */
+              let parsed;
               try {
-                const parsed = JSON.parse(jsonStr);
-                const token = parsed.choices?.[0]?.delta?.content;
-                if (token) {
-                  fullResponse += token;
-                  // Skickar BÅDE { token } och { content }. Läsaren är
-                  // callAIStream() i services/aiApi.ts. Ta bort ett av fälten
-                  // först när du kontrollerat vilket den läser.
-                  res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
-                }
+                parsed = JSON.parse(jsonStr);
               } catch {
-                // Skip malformed JSON
+                continue; // Skip malformed JSON
+              }
+              // 2026-09-24: OpenRouter rapporterar fel MITT I en ström som en
+              // vanlig SSE-rad med `error` (HTTP-statusen är redan 200). Raden
+              // hoppades över, strömmen tog slut, följdfrågor och [DONE]
+              // skickades — och klienten sparade ett avhugget svar som om det
+              // vore helt. Nu är det ett strömfel. Vaktat av
+              // src/test/api-ai-sse-tokentak.test.ts.
+              if (parsed && parsed.error) {
+                stromFel = String(parsed.error?.message || parsed.error?.code || 'OpenRouter-fel i strömmen');
+              }
+              const total = parsed?.usage?.total_tokens;
+              if (typeof total === 'number' && Number.isFinite(total)) stromUsage = total;
+              const token = parsed?.choices?.[0]?.delta?.content;
+              if (token) {
+                fullResponse += token;
+                // Skickar BÅDE { token } och { content }. Läsaren är
+                // callAIStream() i services/aiApi.ts. Ta bort ett av fälten
+                // först när du kontrollerat vilket den läser.
+                res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
               }
             }
           }
@@ -1172,9 +1261,21 @@ const hanterare = async (req, res) => {
         try { await reader.cancel(); } catch { /* redan avbruten */ }
       }
 
-      // Tokens approximeras från svarslängd eftersom OpenRouters SSE-ström
-      // inte alltid bär usage-fältet. ~4 tecken per token.
-      const approxTokens = Math.ceil((fullResponse?.length || 0) / 4);
+      // Tokenåtgången till taket (checkDailyTokenCap). Exakt när OpenRouter
+      // skickar `usage` i strömmen, annars en uppskattning (~4 tecken/token).
+      //
+      // 2026-09-24: uppskattningen räknade tidigare BARA svaret. Prompten —
+      // systemtext, användarkontext (upp till 4 000 tecken) och historiken —
+      // räknades aldrig, och det är den som är stor. Taket på 50 000 tokens
+      // per dygn var alltså i praktiken ur spel för den enda strömmande
+      // funktionen: den som skickade en lång historik betalade för sin prompt
+      // men den syntes aldrig i ai_usage_logs. Vaktat av
+      // src/test/api-ai-sse-tokentak.test.ts.
+      const promptTecken = String(prompt.system || '').length + String(prompt.user || '').length;
+      const approxTokens = stromUsage != null
+        ? stromUsage
+        : Math.ceil((promptTecken + (fullResponse?.length || 0)) / 4);
+      let foljdfragorTokens = 0;
 
       if (klientenBorta) {
         // Ingen att svara. Det som strömmats hittills är ändå betalt — logga
@@ -1188,6 +1289,17 @@ const hanterare = async (req, res) => {
         stadaUpp();
         await logga(approxTokens, 'stream: tidsgräns');
         res.write(`data: ${JSON.stringify({ error: 'AI-svaret tog för lång tid och avbröts. Försök igen.' })}\n\n`);
+        res.write('data: [DONE]\n\n');
+        return res.end();
+      }
+
+      if (stromFel) {
+        // Strömmen bröts av ett fel. Det som hunnit skrivas är ett avhugget
+        // svar — säg det, i stället för att avsluta som om svaret var helt.
+        // Inga följdfrågor på ett svar som inte blev klart.
+        stadaUpp();
+        await logga(approxTokens, `stream: ${stromFel}`);
+        res.write(`data: ${JSON.stringify({ error: 'AI-svaret avbröts innan det blev klart. Försök igen.' })}\n\n`);
         res.write('data: [DONE]\n\n');
         return res.end();
       }
@@ -1220,6 +1332,8 @@ const hanterare = async (req, res) => {
 
         if (suggestionsResponse.ok && !klientenBorta) {
           const suggestionsData = /** @type {OpenRouterSvar} */ (await suggestionsResponse.json());
+          // Följdfrågorna är ett eget anrop — också det ska taket se.
+          foljdfragorTokens = suggestionsData.usage?.total_tokens || 0;
           const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
           try {
             const suggestions = JSON.parse(suggestionsText);
@@ -1235,7 +1349,7 @@ const hanterare = async (req, res) => {
       }
       stadaUpp();
 
-      await logga(approxTokens, stromFel ? `stream: ${stromFel}` : klientenBorta ? 'stream: klienten kopplade ner under följdfrågorna' : null);
+      await logga(approxTokens + foljdfragorTokens, klientenBorta ? 'stream: klienten kopplade ner under följdfrågorna' : null);
 
       if (klientenBorta) return;
       res.write('data: [DONE]\n\n');
@@ -1406,3 +1520,4 @@ module.exports.LOCKED_MODEL = LOCKED_MODEL;
 // test av samma skäl som grindarna ovan — det är den som gör B2B-sidans löfte
 // ("AI-funktionerna kan stängas av för hela organisationen") sant.
 module.exports.checkPersonalOrgAiEnabled = checkPersonalOrgAiEnabled;
+module.exports.checkArPersonal = checkArPersonal;

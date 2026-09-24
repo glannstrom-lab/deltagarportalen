@@ -42,6 +42,13 @@
       "message": "It's ready to send whenever you find something that fits."
     }
   },
+  "foretagskonto": {
+    "title": "Company account",
+    "loading": "Loading your company account…",
+    "notLinkedTitle": "This account is not connected to a company",
+    "notLinkedBody": "A company account is created from an invitation. The invitation comes from an employment consultant or from a colleague at the company. If you got an invitation, use the email address that the invitation was sent to.",
+    "toOverview": "Go to your overview"
+  },
   "consultantConsent": {
     "heading": "Your job coach can see part of your portal",
     "intro": "{{namn}} is linked to you as your job coach in Jobin. We are asking now, because you were never asked when the link was made. You decide.",
@@ -1698,6 +1705,11 @@
       "reasonDefault": "Good opportunity"
     },
     "occupationPlaceholder": "E.g. warehouse worker, nurse",
+    "occupationsLegend": "Occupations",
+    "importOccupations": "Get from profile ({{count}})",
+    "removeOccupation": "Remove occupation {{yrke}}",
+    "addOccupation": "Add an occupation",
+    "occupationHint": "Matches against the job list of Arbetsförmedlingen (the Swedish Public Employment Service). This finds more jobs than free text.",
     "sortLatestSaved": "Latest saved",
     "sortCompanyAZ": "Company A-Z",
     "markAsApplied": "Mark as applied",
@@ -2841,6 +2853,27 @@
     "noConsultantMailSubject": "I want a career consultant in Jobin",
     "loadErrorTitle": "We couldn't load your consultant right now",
     "loadErrorDesc": "This is a temporary problem on our side — not something you did. Please reload the page in a moment.",
+    "revoke": {
+      "title": "End the connection",
+      "description": "You can end the connection with {{namn}} at any time. Then they will no longer see your new activity in Jobin.",
+      "consentGiven": "Consent given",
+      "dialogIntro": "You are about to end your connection with {{namn}}.",
+      "consequencesTitle": "This happens when you end it:",
+      "consequenceActivity": "{{namn}} will not see your new activity in Jobin",
+      "consequenceSta": "Your active Steg till arbete programme (a work preparation programme) stops",
+      "consequenceDrafts": "Document drafts that you have not sent are deleted",
+      "consequenceSubmitted": "Documents already sent to Arbetsförmedlingen (the Swedish Public Employment Service) are kept (the law says they must be archived)",
+      "consequenceOwnData": "Your own data (CV, jobs, well-being) stays — only the sharing stops",
+      "reasonLabel": "Do you want to tell us why? (optional)",
+      "reasonPlaceholder": "For example: I have a new consultant, or I do not need the support any more",
+      "reasonVisibility": "Only {{namn}} and the Jobin administrators can see this text.",
+      "confirmBefore": "Type",
+      "confirmWord": "end",
+      "confirmAfter": "to confirm",
+      "error": "Could not end the connection. Please try again.",
+      "submitting": "Ending…",
+      "confirmButton": "Yes, end the connection"
+    },
     "contactInfo": "How to reach them",
     "consultant": {
       "yourConsultant": "Your career consultant"
@@ -4180,41 +4213,6 @@
       "viewModal": {
         "mood": "Mood: {{mood}}/5"
       }
-    },
-    "dailyTask": {
-      "title": "Today's task",
-      "estimatedTime": "Takes about {{time}}",
-      "refresh": "Get a different task",
-      "markIncomplete": "Mark as not done",
-      "markComplete": "Mark as done",
-      "goTo": "Go there",
-      "completionMessage": "Nice work. You are one step closer to your goal.",
-      "tasks": {
-        "diary": {
-          "title": "Write in your diary",
-          "description": "Think about your day and how far you have come"
-        },
-        "exercise": {
-          "title": "Do an exercise",
-          "description": "Explore your strengths, or practice for an interview"
-        },
-        "cv": {
-          "title": "Update your CV",
-          "description": "Add a new experience or skill"
-        },
-        "jobsearch": {
-          "title": "Search for jobs",
-          "description": "Look for new opportunities that match your profile"
-        },
-        "networking": {
-          "title": "Build your network",
-          "description": "Reach out to someone in your network, or grow it"
-        },
-        "reflection": {
-          "title": "Think about your goals",
-          "description": "What matters most to you right now?"
-        }
-      }
     }
   },
   "wellness": {
@@ -5358,6 +5356,8 @@
   "ai": {
     "consent": {
       "requiredTitle": "AI consent required",
+      "pausedTitle": "AI features are turned off",
+      "pausedDesc": "You have turned off the AI features. You can turn them on again in settings.",
       "requiredDesc": "To use AI features, you need to consent to AI processing of your data.",
       "requiredForFeature": "To use {{feature}}, you need to consent to AI processing.",
       "grantNow": "Grant consent",
@@ -5443,10 +5443,6 @@
         "updateCVImpact": "+10% ATS score"
       },
       "insights": {
-        "activityTrend": "You are {{trend}} active than last month",
-        "moreActive": "40% more",
-        "lessActive": "20% less",
-        "equalActive": "equally",
         "tuesdayApplications": "Your Tuesday applications get 3x more responses",
         "wellnessBoost": "When you log wellness, your activity increases by 25%",
         "interviewPrediction": "Based on your pace: Interview within {{days}} days (confidence: {{confidence}}%)",
@@ -6604,7 +6600,8 @@
       "notesTitle": "Notes",
       "notesPlaceholder": "Additional notes, observations, or reflections...",
       "careerTimeline": "Career Timeline",
-      "changeHistory": "Change History"
+      "changeHistory": "Change History",
+      "historyLoadError": "We could not load the change history right now."
     },
     "constants": {
       "employment": {
@@ -6797,6 +6794,7 @@
       "importedCount": "Imported {{count}} skills from your CV!",
       "noSkillsToImport": "No new skills to import from CV.",
       "importError": "Could not import from CV",
+      "loadError": "We could not load your skills right now. This does not mean they are gone.",
       "skillLevelFor": "Skill level for {{name}}",
       "setLevel": "Set level {{level}} of {{max}}",
       "removeSkill": "Remove skill: {{name}}",
@@ -6841,6 +6839,7 @@
       "clickToConfirmDelete": "Click again to confirm deletion",
       "remove": "Remove: {{name}}",
       "noDocuments": "No documents uploaded yet.",
+      "loadError": "We could not load your documents right now. This does not mean they are gone.",
       "types": {
         "certificate": "Certificate",
         "degree": "Degree",
@@ -6879,7 +6878,8 @@
       "copyError": "Could not copy link",
       "deleteSuccess": "Share link removed",
       "deleteError": "Could not remove share link",
-      "noShareLinks": "No share links created yet. Create a link to share your profile with employers."
+      "noShareLinks": "No share links created yet. Create a link to share your profile with employers.",
+      "loadError": "We could not load your share links right now. This does not mean they are gone."
     },
     "onboarding": {
       "welcome": {
@@ -8015,10 +8015,6 @@
     }
   },
   "layout": {
-    "pageTabs": {
-      "selectPage": "Select page",
-      "mobileNav": "Pages"
-    },
     "pageHeader": {
       "myInsights": "My insights",
       "insights": "Insights"
@@ -8856,24 +8852,6 @@
   "focusGuide": {
     "skipStep": "Skip this step",
     "stepOf": "Step {{current}} of {{total}}",
-    "cv": {
-      "title": "Create your CV",
-      "subtitle": "We'll take it step by step",
-      "titleStep": "What do you work as?",
-      "experienceStep": "Work experience",
-      "educationStep": "Education",
-      "skillsStep": "Skills",
-      "titleHint": "The role you're looking for or currently work in",
-      "noExperience": "No experience added yet",
-      "job": "Job",
-      "addExperience": "Add experience",
-      "experienceHint": "You can skip if you don't have any experience",
-      "noEducation": "No education added yet",
-      "education": "Education",
-      "addEducation": "Add education",
-      "skillSuggestions": "Common skills:",
-      "save": "Save CV"
-    },
     "letter": {
       "title": "Cover letter",
       "subtitle": "Create a simple cover letter",

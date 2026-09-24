@@ -69,11 +69,16 @@ export const personalBrandApi = {
       .order('updated_at', { ascending: false })
       .limit(1)
 
-    if (error) {
-      handleStorageError(error, 'hämta varumärkesaudit')
-      const saved = localStorage.getItem('brand-audit-answers')
-      return saved ? JSON.parse(saved) : {}
-    }
+    /*
+      KASTAR vid läsfel (2026-09-24). Föll tidigare tillbaka på localStorage —
+      för en inloggad användare nästan alltid tomt, eftersom bara den
+      utloggade vägen skriver dit och `clearUserScopedStorage()` tömmer det
+      vid utloggning. Ett läsfel blev alltså `{}`, och BrandAuditTab:s
+      felläge (`laddningsfel`) kunde aldrig nås. Värre: autosparningen körs
+      500 ms efter laddning och uppdaterar den senaste raden — med `{}`.
+      Ett tillfälligt läsfel raderade alltså användarens sparade svar.
+    */
+    if (error) kastaLagringsFel(error, 'hämta varumärkeskollen')
     return data?.[0]?.answers || {}
   },
 

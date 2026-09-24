@@ -140,3 +140,37 @@ describe('userApi.getPreferences', () => {
     expect(prefs.desired_jobs!.map(j => j.priority)).toEqual([1, 2, 3])
   })
 })
+
+describe('userApi.updateOnboardingStep', () => {
+  it('skriver inte över tidigare steg när läsningen av progressen misslyckas', async () => {
+    /*
+      Före 2026-09-24 ignorerades läsfelet: progressen blev `{}` och
+      uppdateringen skrev `{ jobSearch: true }` — ett konto med
+      `{"cv": true, "spontaneous": true}` (prod-formen) tappade båda stegen.
+    */
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'user-123' } } })
+    mockFromBuilder.single.mockResolvedValueOnce({
+      data: null,
+      error: { code: '08006', message: 'connection failure' },
+    })
+    mockFromBuilder.single.mockResolvedValue({ data: { onboarding_progress: {} }, error: null })
+
+    await expect(userApi.updateOnboardingStep('jobSearch', true)).rejects.toThrow()
+    expect(mockFromBuilder.update).not.toHaveBeenCalled()
+  })
+
+  it('slår ihop det nya steget med de sparade', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: 'user-123' } } })
+    mockFromBuilder.single
+      .mockResolvedValueOnce({ data: { onboarding_progress: { cv: true, spontaneous: true } }, error: null })
+      .mockResolvedValueOnce({
+        data: { onboarding_progress: { cv: true, spontaneous: true, jobSearch: true } },
+        error: null,
+      })
+
+    await userApi.updateOnboardingStep('jobSearch', true)
+    expect(mockFromBuilder.update).toHaveBeenCalledWith({
+      onboarding_progress: { cv: true, spontaneous: true, jobSearch: true },
+    })
+  })
+})

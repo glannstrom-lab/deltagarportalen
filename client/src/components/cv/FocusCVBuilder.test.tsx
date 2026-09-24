@@ -138,7 +138,7 @@ describe('FocusCVBuilder — omhämtningen efter en sparning skriver inte över 
   // Efter varje autosparning invaliderar `onSuccess` ['cv'], och effekten som
   // fyller formuläret från `existingCV` körde igen när svaret kom. Allt som
   // skrivits på nästa steg under omhämtningen ersattes med serverns version.
-  // Mutation: ta bort `harFyllts`-spärren i effekten → RÖD.
+  // Mutation: ta bort `harFyllts`-spärren (fyllningen under renderingen) → RÖD.
   it('text som skrivs medan omhämtningen pågår står kvar', async () => {
     const sparat = {
       firstName: 'Anna', lastName: 'Ek', email: '', phone: '', title: '', summary: '',

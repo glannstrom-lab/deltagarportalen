@@ -50,6 +50,14 @@ describe('resolvePageTitleRule', () => {
     expect(resolvePageTitleRule('/finns-inte')).toBeUndefined()
   })
 
+  it('prefixmatchen kräver ett snedstreck — /cvmall är inte en undersida till /cv', () => {
+    // Tillagt 2026-09-24: `startsWith(rule.path)` utan '/' överlevde sviten.
+    // Då hade varje okänd sökväg som råkar börja som en känd fått dess titel.
+    expect(resolvePageTitleRule('/cvmall')).toBeUndefined()
+    expect(resolvePageTitleRule('/diary-export')).toBeUndefined()
+    expect(resolvePageTitleRule('/jobbannons')).toBeUndefined()
+  })
+
   it('täcker samtliga rutter i App.tsx', () => {
     // Listan speglar <Route path>-tabellen i App.tsx. Faller den här: lägg till
     // raden i PAGE_TITLE_RULES, annars ärver den nya sidan varumärkestiteln.

@@ -206,14 +206,17 @@ describe('JobSearch', () => {
   })
 
   describe('error handling', () => {
-    it('should handle search failure gracefully', async () => {
+    // 2026-09-24: testet asserterade tidigare bara att containern inte var
+    // tom — det gick grönt även om ett AF-avbrott visats som "inga jobb", vilket
+    // är exakt det fel som rättades 2026-08-18 (searchJobs kastar numera).
+    it('visar ett fel med försök-igen när sökningen misslyckas — inte "inga jobb"', async () => {
       mockSearchJobs.mockRejectedValue(new Error('API Error'))
 
-      const { container } = renderWithProviders(<JobSearch />)
+      renderWithProviders(<JobSearch />)
 
-      await waitFor(() => {
-        expect(container.firstChild).toBeInTheDocument()
-      })
+      expect(await screen.findByText('Kunde inte söka jobb. Försök igen.')).toBeInTheDocument()
+      expect(screen.getByText('Något gick fel')).toBeInTheDocument()
+      expect(screen.queryByText(/Inga jobb/i)).not.toBeInTheDocument()
     })
   })
 
@@ -239,6 +242,32 @@ describe('JobSearch', () => {
         expect(screen.getByText('Senior Developer')).toBeInTheDocument()
         expect(screen.getByText('Tech Company')).toBeInTheDocument()
       })
+    })
+  })
+
+  /**
+   * Yrkesfiltret hade hårdkodad svenska ("Yrken", "Lägg till yrke",
+   * "Hämta från profil", "Strukturerad matchning mot Arbetsförmedlingens
+   * taxonomi…") och syntes på svenska i engelskt läge (2026-09-24).
+   */
+  describe('yrkesfiltret på engelska', () => {
+    it('visar yrkesfiltrets texter på engelska, med Arbetsförmedlingen kvar som namn', async () => {
+      const { default: en } = await import('@/i18n/locales/en.json')
+      i18n.addResourceBundle('en', 'translation', en, true, true)
+      await i18n.changeLanguage('en')
+      try {
+        renderWithProviders(<JobSearch />)
+        fireEvent.click(await screen.findByRole('button', { name: new RegExp(en.jobSearch.searchAndFilter, 'i') }))
+
+        expect(await screen.findByText(en.jobSearch.occupationHint)).toBeInTheDocument()
+        expect(en.jobSearch.occupationHint).toContain('Arbetsförmedlingen')
+        expect(screen.getByText(en.jobSearch.occupationsLegend)).toBeInTheDocument()
+        expect(screen.queryByText(/Strukturerad matchning/)).not.toBeInTheDocument()
+        expect(screen.queryByText(/Lägg till yrke/)).not.toBeInTheDocument()
+        expect(screen.queryByText(/^Yrken$/)).not.toBeInTheDocument()
+      } finally {
+        await i18n.changeLanguage('sv')
+      }
     })
   })
 })

@@ -10,7 +10,7 @@
  * - Error handling
  */
 
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useEffectEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Upload, X, User, Loader2, Camera, Clipboard } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -105,15 +105,17 @@ export function ImageUpload({
     setIsDragging(false)
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
+  // Ingen useCallback: useCallback([]) höll handleFile från första renderingen,
+  // så ett släpp gick till den onUpload/onChange som gällde då.
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault()
     setIsDragging(false)
-    
+
     const file = e.dataTransfer.files[0]
     if (file) {
       handleFile(file)
     }
-  }, [])
+  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -135,10 +137,12 @@ export function ImageUpload({
     inputRef.current?.click()
   }
 
-  // Handle paste from clipboard
-  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+  // Handle paste from clipboard. useEffectEvent ger lyssnaren de SENASTE props
+  // (onUpload/onChange/value) utan att lyssnaren byts ut. Den gamla
+  // useCallback([]) band första renderingens handleFile.
+  const handlePaste = useEffectEvent(async (e: ClipboardEvent) => {
     e.preventDefault()
-    
+
     const items = e.clipboardData?.items
     if (!items) return
 
@@ -151,16 +155,17 @@ export function ImageUpload({
         }
       }
     }
-  }, [])
+  })
 
   // Add paste event listener
   useEffect(() => {
     const container = containerRef.current
     if (!container) return
 
-    container.addEventListener('paste', handlePaste)
-    return () => container.removeEventListener('paste', handlePaste)
-  }, [handlePaste])
+    const lyssnare = (e: ClipboardEvent) => { void handlePaste(e) }
+    container.addEventListener('paste', lyssnare)
+    return () => container.removeEventListener('paste', lyssnare)
+  }, [])
 
   return (
     <div ref={containerRef} className={cn('space-y-2', className)}>
@@ -356,8 +361,9 @@ export function CompactImageUpload({
     if (file) handleFile(file)
   }
 
-  // Handle paste from clipboard
-  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+  // Handle paste from clipboard — useEffectEvent, se ImageUpload ovan. CVBuilder
+  // skickar en onUpload som läser `user`; useCallback([]) band den första.
+  const handlePaste = useEffectEvent(async (e: ClipboardEvent) => {
     e.preventDefault()
     
     const items = e.clipboardData?.items
@@ -374,13 +380,14 @@ export function CompactImageUpload({
         }
       }
     }
-  }, [])
+  })
 
   // Add paste event listener
   useEffect(() => {
-    document.addEventListener('paste', handlePaste)
-    return () => document.removeEventListener('paste', handlePaste)
-  }, [handlePaste])
+    const lyssnare = (e: ClipboardEvent) => { void handlePaste(e) }
+    document.addEventListener('paste', lyssnare)
+    return () => document.removeEventListener('paste', lyssnare)
+  }, [])
 
   return (
     <div ref={containerRef} className={cn('flex items-center gap-4', className)}>

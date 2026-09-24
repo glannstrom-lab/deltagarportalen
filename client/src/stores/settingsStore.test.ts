@@ -208,6 +208,34 @@ describe('settingsStore', () => {
       expect(s.isLoading).toBe(false)
     })
 
+    // Tillagt 2026-09-24: att ta bort inläsningen av graphics_style ur
+    // syncWithServer — exakt buggen från 2026-09-10, där 'action' var sparat i
+    // databasen men kom tillbaka som 'mjuk' på en ny enhet — överlevde hela
+    // sviten. Testet ovan skickar ingen graphics_style alls.
+    it('läser in grafikstilen från servern', async () => {
+      useSettingsStore.setState({ grafikstil: 'mjuk' })
+      maybeSingle.mockResolvedValue({
+        data: { graphics_style: 'action', updated_at: null },
+        error: null,
+      })
+
+      await useSettingsStore.getState().syncWithServer()
+
+      expect(useSettingsStore.getState().grafikstil).toBe('action')
+    })
+
+    it('okänd grafikstil från servern ignoreras', async () => {
+      useSettingsStore.setState({ grafikstil: 'action' })
+      maybeSingle.mockResolvedValue({
+        data: { graphics_style: 'tecknad', updated_at: null },
+        error: null,
+      })
+
+      await useSettingsStore.getState().syncWithServer()
+
+      expect(useSettingsStore.getState().grafikstil).toBe('action')
+    })
+
     it('null-kolumner skriver INTE över lokala val', async () => {
       useSettingsStore.setState({ calmMode: true, largeText: true })
       maybeSingle.mockResolvedValue({
@@ -332,5 +360,25 @@ describe('settingsStore', () => {
 
       expect(useSettingsStore.getState().language).toBe('en')
     })
+  })
+})
+
+/**
+ * Vad som överlever en omladdning i samma webbläsare (persist → localStorage).
+ * Tillagt 2026-09-24: grafikstil kunde strykas ur partialize utan att något
+ * test föll — valet hade då försvunnit vid varje omladdning innan synken
+ * hunnit svara, och helt för den som inte är inloggad.
+ */
+describe('settingsStore — persist', () => {
+  it('skriver grafikstil och tillgänglighetsvalen till localStorage', () => {
+    useSettingsStore.setState({ grafikstil: 'action', calmMode: true, largeText: true, highContrast: true })
+    const sparat = JSON.parse(localStorage.getItem('deltagarportal-settings') ?? '{}')
+    expect(sparat.state).toMatchObject({ grafikstil: 'action', calmMode: true, largeText: true, highContrast: true })
+  })
+
+  it('sparar inte laddningsflaggan — den ska börja om vid varje start', () => {
+    useSettingsStore.setState({ isLoading: true })
+    const sparat = JSON.parse(localStorage.getItem('deltagarportal-settings') ?? '{}')
+    expect(sparat.state).not.toHaveProperty('isLoading')
   })
 })

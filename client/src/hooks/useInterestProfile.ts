@@ -247,7 +247,13 @@ export function useInterestProfile() {
         }
 
         // Get the latest history entry with RIASEC scores
-        const history = await interestGuideApi.getHistory(1)
+        // getHistory KASTAR vid läsfel sedan 2026-09-24. Här är historiken
+        // bara en genväg: utan den räknas profilen ur progress.answers nedan.
+        // Ett läsfel ska alltså ge den reserven, inte hasResult: false.
+        const history = await interestGuideApi.getHistory(1).catch((error: unknown) => {
+          console.error('[useInterestProfile] Kunde inte läsa historiken, räknar ur svaren:', error)
+          return []
+        })
         const latestResult = history?.[0]
 
         // Debug-loggarna här (8 st) togs bort 2026-07-27: de skrev ut

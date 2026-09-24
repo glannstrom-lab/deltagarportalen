@@ -1,7 +1,7 @@
 /** Kalendern: calendar_events, calendar_goals och calendar_mood_entries, med localStorage som cache och fallback. */
 
 import { supabase } from '@/lib/supabase'
-import { getCurrentUser, handleStorageError } from './_shared'
+import { getCurrentUser, handleStorageError, kastaLagringsFel } from './_shared'
 
 // ============================================
 // CALENDAR API
@@ -65,11 +65,18 @@ export const calendarApi = {
       .order('date', { ascending: true })
       .order('time', { ascending: true })
 
-    if (error) {
-      handleStorageError(error, 'hämta kalenderhändelser')
-      const cached = localStorage.getItem('calendar_events')
-      return cached ? JSON.parse(cached) : []
-    }
+    /*
+      KASTAR vid läsfel (2026-09-24). Föll tidigare tillbaka på
+      localStorage-kopian, som töms vid utloggning (`clearUserScopedStorage`)
+      och alltså oftast var `[]`. Två följder:
+       · Kalendersidan visade en tom kalender i stället för sitt felläge
+         (`calendar.errors.loadFailed`), som aldrig kunde nås.
+       · `syncMilestonesToCalendar`/`syncNetworkFollowupsToCalendar` bygger
+         sitt dubblettskydd på den här listan. En tom lista vid ett läsfel
+         gjorde att VARJE milstolpe och uppföljning skapades en gång till.
+      Båda anroparna fångar redan kastet.
+    */
+    if (error) kastaLagringsFel(error, 'hämta kalenderhändelser')
 
     // Transform from snake_case to camelCase for frontend
     const events = (data || []).map(e => ({

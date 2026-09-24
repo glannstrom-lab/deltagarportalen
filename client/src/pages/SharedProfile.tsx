@@ -16,39 +16,42 @@ import { cn } from '@/lib/utils'
 export default function SharedProfile() {
   const { t } = useTranslation()
   const { shareCode } = useParams<{ shareCode: string }>()
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [profile, setProfile] = useState<Record<string, unknown> | null>(null)
-  const [share, setShare] = useState<ProfileShare | null>(null)
+  // Resultatet bär vilken kod det gäller. Laddning = inget resultat för DEN
+  // koden ännu, så ett byte av länk (samma rutt, ingen ommontering) visar
+  // laddning i stället för förra profilen eller förra felet. Fel lagras som
+  // i18n-nyckel och översätts vid rendering (react-hooks/exhaustive-deps,
+  // 2026-09-24 — förr las funktionen utanför effekten med t och shareCode
+  // inbundna, och loading/error nollställdes aldrig vid kodbyte).
+  const [resultat, setResultat] = useState<{
+    kod: string
+    felNyckel: string | null
+    profile: Record<string, unknown> | null
+    share: ProfileShare | null
+  } | null>(null)
 
   useEffect(() => {
-    loadSharedProfile()
+    if (!shareCode) return
+    let aktuell = true
+    const kod = shareCode
+    profileShareApi.getSharedProfile(kod)
+      .then((result) => {
+        if (!aktuell) return
+        setResultat(result
+          ? { kod, felNyckel: null, profile: result.profile, share: result.share }
+          : { kod, felNyckel: 'sharedProfile.linkInvalid', profile: null, share: null })
+      })
+      .catch((err) => {
+        console.error('Error loading shared profile:', err)
+        if (aktuell) setResultat({ kod, felNyckel: 'sharedProfile.loadError', profile: null, share: null })
+      })
+    return () => { aktuell = false }
   }, [shareCode])
 
-  const loadSharedProfile = async () => {
-    if (!shareCode) {
-      setError(t('sharedProfile.noShareCode'))
-      setLoading(false)
-      return
-    }
-
-    try {
-      const result = await profileShareApi.getSharedProfile(shareCode)
-      if (!result) {
-        setError(t('sharedProfile.linkInvalid'))
-        setLoading(false)
-        return
-      }
-
-      setProfile(result.profile)
-      setShare(result.share)
-    } catch (err) {
-      console.error('Error loading shared profile:', err)
-      setError(t('sharedProfile.loadError'))
-    } finally {
-      setLoading(false)
-    }
-  }
+  const galler = shareCode && resultat?.kod === shareCode ? resultat : null
+  const loading = Boolean(shareCode) && !galler
+  const error = !shareCode ? t('sharedProfile.noShareCode') : galler?.felNyckel ? t(galler.felNyckel) : null
+  const profile = galler?.profile ?? null
+  const share = galler?.share ?? null
 
   const formatDate = (date: string) => {
     return new Date(date).toLocaleDateString('sv-SE', { month: 'short', year: 'numeric' })

@@ -1,10 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import {
   navHubs,
   pageToHub,
   getActiveHub,
   navGroups,
   navItems,
+  registreraBesok,
+  senasteBesok,
 } from './navigation'
 
 describe('navHubs structure', () => {
@@ -103,5 +105,56 @@ describe('legacy navigation preserved', () => {
     const paths = navItems.map(item => item.path)
     expect(paths).toContain('/cv')
     expect(paths).toContain('/job-search')
+  })
+})
+
+/**
+ * Besökshistoriken bakom TopNavs "Senast besökt".
+ *
+ * Tillagt 2026-09-24 efter ett mutationsstickprov: både dubblettfiltret och
+ * taket på 20 poster kunde tas bort ur registreraBesok() utan att ett enda
+ * test föll. Utan filtret fylls listan med samma sida om och om igen; utan
+ * taket växer nyckeln i localStorage för evigt.
+ */
+describe('registreraBesok / senasteBesok', () => {
+  const NYCKEL = 'jobin_senaste_sidor'
+  let klocka = 1_000
+
+  beforeEach(() => {
+    localStorage.removeItem(NYCKEL)
+    klocka = 1_000
+    vi.spyOn(Date, 'now').mockImplementation(() => ++klocka)
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    localStorage.removeItem(NYCKEL)
+  })
+
+  it('samma sida två gånger ger EN post, flyttad först', () => {
+    registreraBesok('/cv')
+    registreraBesok('/diary')
+    registreraBesok('/cv')
+    expect(senasteBesok().map((p) => p.path)).toEqual(['/cv', '/diary'])
+  })
+
+  it('sparar högst 20 poster, de senaste', () => {
+    const sidor = [...new Set(navItems.map((i) => i.path).concat(navHubs.flatMap((h) => h.items.map((i) => i.path))))]
+    expect(sidor.length, 'behöver fler än 20 kända sidor för att pröva taket').toBeGreaterThan(20)
+    for (const s of sidor) registreraBesok(s)
+    const lista = senasteBesok()
+    expect(lista).toHaveLength(20)
+    expect(lista[0].path).toBe(sidor[sidor.length - 1])
+    expect(JSON.parse(localStorage.getItem(NYCKEL) ?? '[]')).toHaveLength(20)
+  })
+
+  it('sparar inte sökvägar som inte finns i navigationen', () => {
+    registreraBesok('/login')
+    registreraBesok('/oversikt')
+    expect(senasteBesok()).toEqual([])
+  })
+
+  it('procentkodade sökvägar sparas avkodade', () => {
+    registreraBesok('/spontanans%C3%B6kan')
+    expect(senasteBesok().map((p) => p.path)).toEqual(['/spontanansökan'])
   })
 })

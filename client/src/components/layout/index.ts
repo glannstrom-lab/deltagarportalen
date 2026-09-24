@@ -1,7 +1,7 @@
 export { Sidebar } from './Sidebar'
 export { Header } from './Header'
 export { TopBar } from './TopBar'
-export { PageTabs, PageHeader, type Tab } from './PageTabs'
+export { type Tab } from './PageTabs'
 export { PageLayout, PageContainer, PageSection } from './PageLayout'
 export { AnimatedSection } from './AnimatedSection'
 export { PageHeader as PageHeaderComponent } from './PageHeader'

@@ -569,7 +569,7 @@ function SearchTab() {
               <div className="flex items-center justify-between mb-2">
                 <legend className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide flex items-center gap-1">
                   <Briefcase className="w-3 h-3" aria-hidden="true" />
-                  Yrken
+                  {t('jobSearch.occupationsLegend')}
                   {filters.occupations.length > 0 && (
                     <span className="text-stone-500 normal-case font-normal">
                       ({filters.occupations.length}/10)
@@ -583,7 +583,7 @@ function SearchTab() {
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-[var(--c-solid)]/40 bg-[var(--c-bg)] text-[var(--c-text)] hover:bg-[var(--c-accent)]/40"
                   >
                     <Sparkles className="w-3 h-3" aria-hidden="true" />
-                    Hämta från profil ({profileOccupations.length})
+                    {t('jobSearch.importOccupations', { count: profileOccupations.length })}
                   </button>
                 )}
               </div>
@@ -599,7 +599,7 @@ function SearchTab() {
                       <button
                         type="button"
                         onClick={() => removeOccupationFilter(occ.conceptId)}
-                        aria-label={`Ta bort yrke ${occ.label}`}
+                        aria-label={t('jobSearch.removeOccupation', { yrke: occ.label })}
                         className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-[var(--c-accent)]/60"
                       >
                         <X className="w-3 h-3" aria-hidden="true" />
@@ -613,12 +613,12 @@ function SearchTab() {
                 <OccupationPicker
                   onSelect={addOccupationFilter}
                   excludeConceptIds={filters.occupations.map((o) => o.conceptId)}
-                  label="Lägg till yrke"
+                  label={t('jobSearch.addOccupation')}
                   placeholder={t('jobSearch.occupationPlaceholder')}
                 />
               )}
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                Strukturerad matchning mot Arbetsförmedlingens taxonomi — bredare än fritext.
+                {t('jobSearch.occupationHint')}
               </p>
             </fieldset>
 

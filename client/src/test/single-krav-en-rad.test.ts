@@ -335,7 +335,8 @@ const ALLOWLIST: Record<string, string> = {
   'client/api/ai.js::profiles':
     'checkArt9Consent + checkAiEnabled: fail CLOSED redan — `if (error || !data) return { allowed: ' +
     'false, reason: \'lookup_failed\' }`. Ett läsfel nekar AI-anrop, precis den policyn CLAUDE.md ' +
-    'kräver för art. 9-grindar. Två träffar i filen, samma mönster.',
+    'kräver för art. 9-grindar. Tre träffar i filen, samma mönster — den tredje (2026-09-24) är ' +
+    'checkArPersonal, rollkontrollen för konsulentfunktionen: läsfel → `lookup_failed` → 403.',
   'supabase/functions/send-invite-email/index.ts::profiles':
     'callerIsAdmin-uppslaget: `callerProfile?.role === \'ADMIN\'` blir `false` på varje läsfel — ' +
     'fail-safe (färre rättigheter vid fel, aldrig fler). Ett svalt fel kan bara BEGRÄNSA vem som ' +
@@ -412,7 +413,7 @@ const ALLOWLIST_ANTAL: Record<string, number> = {
   'client/src/services/profileEnhancementsApi.ts::profiles': 4,
   'client/src/services/unifiedProfileApi.ts::profiles': 2,
   'client/src/lib/supabase.ts::profiles': 1,
-  'client/api/ai.js::profiles': 2,
+  'client/api/ai.js::profiles': 3,
   'supabase/functions/send-invite-email/index.ts::profiles': 1,
   'client/src/lib/supabase.ts::cvs': 1,
   'client/src/services/applicationsApi.ts::saved_jobs': 1,

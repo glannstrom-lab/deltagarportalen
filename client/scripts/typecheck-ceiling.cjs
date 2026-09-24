@@ -74,7 +74,13 @@ const { klassaTscUtdata } = require('./lib/tsc-utdata.cjs')
 // ansökningsöversikt läste fält som inte finns). De 28 kvar ligger ALLA i
 // UTRED-dödkod som väntar på produktbeslut (energi C19, notiscenter H12,
 // learning C4, FocusCV, useJobMatching, ShareJobDialog) — noll i levande kod.
-const CEILING = 28
+// 28 → 16 (2026-09-24): nio UTRED-filer (3 318 rader) arkiverade till
+// archive/2026-09-24-dodkod/ — EU-spårets klientsida (useLearning,
+// learningService, interestPersonalization, afEnrichmentsApi; spåret avslutat
+// 2026-09-12) och fyra filer som bara "rörts" av KA2-cachenyckelsvepet
+// (FocusCV, useJobMatching + interestJobMatching med test, useMoodRecommendations).
+// De 16 kvar: notiscentret H12 (15) och ShareJobDialog C19 (1) — produktbeslut.
+const CEILING = 16
 
 const CLIENT_DIR = path.resolve(__dirname, '..')
 // Överstyrs bara av testet som bevisar att grinden fäller på en trasig

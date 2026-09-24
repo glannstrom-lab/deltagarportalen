@@ -39,6 +39,25 @@ describe('Foretag', () => {
     expect(screen.getByRole('link', { name: /till din översikt/i })).toHaveAttribute('href', '/oversikt')
   })
 
+  // 2026-09-24: rubriken, texten och länken var hårdkodad svenska och syntes
+  // så i engelskt läge — sidan nås av vem som helst som hamnar på /foretag.
+  it('utan företagskonto på engelska: inget svenskt i meddelandet', async () => {
+    const { default: i18n } = await import('@/i18n/config')
+    const { default: en } = await import('@/i18n/locales/en.json')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    try {
+      mockKonto.mockReturnValue({ org: null, isLoading: false, isEmployer: false, error: null })
+      rendera(sida)
+      expect(screen.getByText(en.foretagskonto.notLinkedTitle)).toBeInTheDocument()
+      expect(screen.getByText(en.foretagskonto.notLinkedBody)).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: en.foretagskonto.toOverview })).toHaveAttribute('href', '/oversikt')
+      expect(screen.queryByText(/inte kopplat|Till din översikt|Företagskonton skapas/)).not.toBeInTheDocument()
+    } finally {
+      await i18n.changeLanguage('sv')
+    }
+  })
+
   it('visar felet om medlemskapen inte gick att hämta — inte "inte kopplat"', () => {
     mockKonto.mockReturnValue({ org: null, isLoading: false, isEmployer: false, error: new Error('nätet borta') })
     rendera(sida)

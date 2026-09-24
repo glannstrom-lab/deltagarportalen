@@ -302,3 +302,23 @@ describe('CommunicationTab — MeetingSchedulerDialog får en riktig onSuccess (
     expect(typeof mockedOnSuccess.current).toBe('function')
   })
 })
+
+describe('CommunicationTab — mallen hamnar i meddelandefältet (2026-09-24)', () => {
+  // NewMessageDialog fyllde fältet i en effekt; nu under renderingen.
+  // Mutation: ta bort setMessage(initialContent) i justeringen → faller på
+  // andra mallen (dialogen är monterad hela tiden, useState-startvärdet räcker
+  // bara första gången).
+  it('första och andra mallen läggs i fältet', async () => {
+    const { default: sv } = await import('@/i18n/locales/sv.json')
+    const c = (sv as unknown as { consultant: { communication: Record<string, string> } }).consultant.communication
+    renderTab()
+    await screen.findByText('Inga meddelanden')
+
+    fireEvent.click(screen.getByRole('button', { name: /Check-in meddelande/i }))
+    expect((await screen.findByDisplayValue(c.checkInBody))).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /avbryt/i }))
+
+    fireEvent.click(screen.getByRole('button', { name: /Grattis till framsteg/i }))
+    expect((await screen.findByDisplayValue(c.congratsBody))).toBeInTheDocument()
+  })
+})

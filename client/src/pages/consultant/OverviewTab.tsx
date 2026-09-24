@@ -3,7 +3,7 @@
  * KPI dashboard with traffic light status, activity feed, and quick actions
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useEffectEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -301,8 +301,12 @@ export function OverviewTab() {
   // Report data for PDF export
   const [reportData, setReportData] = useState<ReportData | null>(null)
 
+  // Hämtas en gång vid montering; useEffectEvent så att beroendelistan är
+  // ärlig utan att fetchDashboardData (som byts varje rendering) utlöser nya
+  // hämtningar (react-hooks/exhaustive-deps, 2026-09-24).
+  const hamtaOversikt = useEffectEvent(() => { void fetchDashboardData() })
   useEffect(() => {
-    fetchDashboardData()
+    hamtaOversikt()
   }, [])
 
   // F9: namn per deltagar-id ur den redan hämtade listan (samma källa som Min dag)

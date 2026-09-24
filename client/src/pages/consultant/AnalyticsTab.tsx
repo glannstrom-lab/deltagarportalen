@@ -3,7 +3,7 @@
  * Charts, trends, cohort analysis, and PDF export
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useEffectEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -247,8 +247,14 @@ export function AnalyticsTab() {
     topGoalCategories: [],
   })
 
+  // Hämtas om när perioden byts. useEffectEvent: fetchAnalytics läser senaste
+  // dateRange/queryClient/t utan att stå i beroendelistan
+  // (react-hooks/exhaustive-deps, 2026-09-24). Ofarligt förr — perioden ÄR
+  // det enda som ska utlösa en omhämtning, och väljaren syns inte under
+  // laddning, så två hämtningar kan inte köra om varandra.
+  const hamtaAnalys = useEffectEvent(() => { void fetchAnalytics() })
   useEffect(() => {
-    fetchAnalytics()
+    hamtaAnalys()
   }, [dateRange])
 
   const fetchAnalytics = async () => {

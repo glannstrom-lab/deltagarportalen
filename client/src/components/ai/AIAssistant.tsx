@@ -30,7 +30,8 @@ interface BehaviorAnalysis {
   optimalEnergyLevel: 'low' | 'medium' | 'high'
   completionRate: number
   streakRisk: boolean
-  trendDirection: 'up' | 'down' | 'stable'
+  // null = inget underlag. Det finns ingen aktivitetskälla, se analyzeBehavior.
+  trendDirection: 'up' | 'down' | 'stable' | null
   predictedInterviewChance: number
   daysToInterview: number | null
   recommendedActions: RecommendedAction[]
@@ -53,33 +54,12 @@ interface UserData {
   wellness?: { streakDays?: number };
 }
 
-interface Activity {
-  created_at: string;
-  type: string;
-}
-
-function analyzeBehavior(userData: UserData | undefined, activities: Activity[], t: (key: string, options?: Record<string, unknown>) => string): BehaviorAnalysis {
-  // Simulated analysis based on data
-  const now = new Date()
-
-  // Calculate trend
-  const recentActivities = activities.filter((a) => {
-    const activityDate = new Date(a.created_at)
-    const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
-    return daysDiff <= 14
-  })
-
-  const olderActivities = activities.filter((a) => {
-    const activityDate = new Date(a.created_at)
-    const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
-    return daysDiff > 14 && daysDiff <= 28
-  })
-
-  const trendDirection = recentActivities.length > olderActivities.length * 1.2
-    ? 'up'
-    : recentActivities.length < olderActivities.length * 0.8
-      ? 'down'
-      : 'stable'
+function analyzeBehavior(userData: UserData | undefined, t: (key: string, options?: Record<string, unknown>) => string): BehaviorAnalysis {
+  // Trenden (2026-09-24): räknades förr ur tre påhittade aktiviteter som
+  // skapades med Date.now() under renderingen. Alla låg inom 14 dagar, så varje
+  // användare fick "Uppåt" och "Du är 40% mer aktiv än förra månaden". Det
+  // finns ingen aktivitetskälla att räkna på — alltså ingen trend.
+  const trendDirection: BehaviorAnalysis['trendDirection'] = null
 
   // Calculate interview chance (mock algorithm)
   const cvScore = userData?.cv?.progress || 0
@@ -133,9 +113,6 @@ function analyzeBehavior(userData: UserData | undefined, activities: Activity[],
       }
     ],
     insights: [
-      t('ai.assistant.insights.activityTrend', {
-        trend: trendDirection === 'up' ? t('ai.assistant.insights.moreActive') : trendDirection === 'down' ? t('ai.assistant.insights.lessActive') : t('ai.assistant.insights.equalActive')
-      }),
       t('ai.assistant.insights.tuesdayApplications'),
       t('ai.assistant.insights.wellnessBoost'),
       applicationsCount > 5
@@ -155,16 +132,9 @@ export function AIAssistant() {
   const { data } = useDashboardDataQuery()
   const { profile } = useAuthStore()
 
-  // Simulated activity data - in production from API
-  const mockActivities = useMemo(() => [
-    { created_at: new Date(Date.now() - 86400000).toISOString(), type: 'login' },
-    { created_at: new Date(Date.now() - 172800000).toISOString(), type: 'cv_update' },
-    { created_at: new Date(Date.now() - 259200000).toISOString(), type: 'job_search' },
-  ], [])
-
   const analysis = useMemo(() =>
-    analyzeBehavior(data, mockActivities, t),
-    [data, mockActivities, t]
+    analyzeBehavior(data, t),
+    [data, t]
   )
 
   // Greeting based on time of day
@@ -327,12 +297,14 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
           value={analysis.optimalEnergyLevel === 'medium' ? t('ai.assistant.patterns.medium') : analysis.optimalEnergyLevel}
           subtext={t('ai.assistant.patterns.forBestResults')}
         />
-        <PatternCard
-          icon={<TrendingUp size={18} />}
-          label={t('ai.assistant.patterns.trend')}
-          value={analysis.trendDirection === 'up' ? t('ai.assistant.patterns.trendUp') : analysis.trendDirection === 'down' ? t('ai.assistant.patterns.trendDown') : t('ai.assistant.patterns.trendStable')}
-          subtext={t('ai.assistant.patterns.last14Days')}
-        />
+        {analysis.trendDirection && (
+          <PatternCard
+            icon={<TrendingUp size={18} />}
+            label={t('ai.assistant.patterns.trend')}
+            value={analysis.trendDirection === 'up' ? t('ai.assistant.patterns.trendUp') : analysis.trendDirection === 'down' ? t('ai.assistant.patterns.trendDown') : t('ai.assistant.patterns.trendStable')}
+            subtext={t('ai.assistant.patterns.last14Days')}
+          />
+        )}
         <PatternCard
           icon={<BarChart3 size={18} />}
           label={t('ai.assistant.patterns.completionRate')}

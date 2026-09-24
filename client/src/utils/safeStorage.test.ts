@@ -66,3 +66,50 @@ describe('USER_SCOPED_STORAGE_KEYS — uppdrag B, 2026-09-22', () => {
     expect(unika.size).toBe(USER_SCOPED_STORAGE_KEYS.length)
   })
 })
+
+/**
+ * Golvet: ingen nyckel får försvinna ur listan tyst.
+ *
+ * Tillagt 2026-09-24 efter ett mutationsstickprov: 'wellness_data' och
+ * 'calendar_mood_entries' — hälsouppgifter, art. 9 — kunde strykas ur
+ * USER_SCOPED_STORAGE_KEYS utan att ett enda test föll. Testet ovan pinnar bara
+ * nycklarna från uppdrag B. Nästa person som loggade in på samma dator hade då
+ * fått föregångarens mående.
+ *
+ * Listan nedan är hela USER_SCOPED_STORAGE_KEYS den 2026-09-24. Nya nycklar får
+ * läggas till i källan utan att röra testet (arrayContaining); att TA BORT en
+ * kräver att den stryks här också, alltså ett medvetet beslut.
+ */
+describe('USER_SCOPED_STORAGE_KEYS — golv', () => {
+  const GOLV = [
+    'auth-storage', 'cv-edit-version', 'cv-draft', 'cv-last-saved', 'cv-data',
+    'default_cv_id', 'cover-letter-write-draft', 'spontaneous-focus-draft',
+    'job-applications-crm', 'platsbanken_saved_jobs', 'platsbanken_saved_searches',
+    'interest-guide-share', 'interest-result', 'wellness_data', 'dailyTaskDate',
+    'dailyTaskIndex', 'dailyTaskCompleted', 'energy-level', 'calendar_events',
+    'calendar_goals', 'calendar_mood_entries', 'content-calendar', 'brand-audit-answers',
+    'portfolio-items', 'elevator-pitches', 'visibility-progress', 'article_bookmarks',
+    'article-bookmarks', 'article_checklists', 'integration-checklist',
+    'negotiationChecklist', 'negotiationPrep', 'culture-preferences',
+    'dashboard_preferences', 'user_preferences', 'savedJobs', 'saved-jobs',
+    'interview_sessions', 'interview_simulator_sessions', 'interview_simulator_utkast',
+    'ai-team-storage', 'cv-ui-storage', 'energy-storage', 'profile-storage',
+    'jobin_senaste_sidor', 'jobin_daily_job', 'jobin_daily_job_date',
+    'jobin_daily_job_filter', 'jobin_daily_job_seen',
+  ]
+
+  it('innehåller varje nyckel som fanns 2026-09-24', () => {
+    const saknas = GOLV.filter((k) => !USER_SCOPED_STORAGE_KEYS.includes(k))
+    expect(saknas, 'nycklar som inte längre rensas vid utloggning').toEqual([])
+  })
+
+  it('hälsouppgifterna rensas på riktigt', () => {
+    for (const k of ['wellness_data', 'calendar_mood_entries', 'energy-level']) {
+      localStorage.setItem(k, '{"x":1}')
+    }
+    clearUserScopedStorage()
+    for (const k of ['wellness_data', 'calendar_mood_entries', 'energy-level']) {
+      expect(localStorage.getItem(k), k).toBeNull()
+    }
+  })
+})

@@ -14,6 +14,7 @@
 
 import { lazy, Suspense } from 'react'
 import { Link, Route, Routes } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { Card } from '@/components/ui/Card'
@@ -31,13 +32,14 @@ const StodFlik = lazy(() => import('./StodFlik').then((m) => ({ default: m.StodF
 const OmFlik = lazy(() => import('./OmFlik').then((m) => ({ default: m.OmFlik })))
 
 export function Foretag() {
+  const { t } = useTranslation()
   const { org, isLoading, isEmployer, error } = useForetagskonto()
 
   if (isLoading) {
     return (
       <div className="bg-stone-50 dark:bg-stone-950">
-        <PageLayout title="Företagskonto" domain="info" showTabs={false}>
-          <LoadingState message="Hämtar ert företagskonto…" />
+        <PageLayout title={t('foretagskonto.title')} domain="info" showTabs={false}>
+          <LoadingState message={t('foretagskonto.loading')} />
         </PageLayout>
       </div>
     )
@@ -46,7 +48,7 @@ export function Foretag() {
   if (error) {
     return (
       <div className="bg-stone-50 dark:bg-stone-950">
-        <PageLayout title="Företagskonto" domain="info" showTabs={false}>
+        <PageLayout title={t('foretagskonto.title')} domain="info" showTabs={false}>
           <FelRuta fel={error} vad="företagskontot" />
         </PageLayout>
       </div>
@@ -56,20 +58,19 @@ export function Foretag() {
   if (!isEmployer || !org) {
     return (
       <div className="bg-stone-50 dark:bg-stone-950">
-        <PageLayout title="Företagskonto" domain="info" showTabs={false}>
+        <PageLayout title={t('foretagskonto.title')} domain="info" showTabs={false}>
           <Card className="max-w-xl">
             <div className="flex items-start gap-3">
               <Building2 className="mt-0.5 h-6 w-6 text-stone-500" aria-hidden="true" />
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-                  Det här kontot är inte kopplat till något företag
+                  {t('foretagskonto.notLinkedTitle')}
                 </h2>
                 <p className="text-sm text-stone-700 dark:text-stone-200">
-                  Företagskonton skapas genom en inbjudan från en arbetskonsulent eller från en kollega på företaget.
-                  Har ni fått en inbjudan är det e-postadressen i mejlet som gäller.
+                  {t('foretagskonto.notLinkedBody')}
                 </p>
                 <Link to="/oversikt" className="inline-block text-sm font-medium text-[var(--c-text)] underline">
-                  Till din översikt
+                  {t('foretagskonto.toOverview')}
                 </Link>
               </div>
             </div>
@@ -81,7 +82,7 @@ export function Foretag() {
 
   return (
     <div className="bg-stone-50 dark:bg-stone-950">
-      <PageLayout title={org.name} subtitle="Företagskonto" tabs={foretagTabs} tabVariant="glass" domain="info">
+      <PageLayout title={org.name} subtitle={t('foretagskonto.title')} tabs={foretagTabs} tabVariant="glass" domain="info">
         <Suspense fallback={<LoadingState />}>
           <Routes>
             <Route index element={<OversiktFlik org={org} />} />

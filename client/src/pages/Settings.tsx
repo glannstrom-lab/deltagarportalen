@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useEffectEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useSettingsStore } from '../stores/settingsStore'
@@ -130,50 +130,55 @@ function SettingsInner() {
     description: t(s.descKey),
   }))
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        setIsLoadingProfile(true)
-        if (user) {
-          setProfileData(prev => ({
-            ...prev,
-            // `user` (Supabase Auth) har inget för- eller efternamn — de
-            // bor på `profile` (2026-09-22, samma bugg som Header.tsx hade).
-            // Utan authProfile-fallbacket stod fälten tomma i den korta
-            // stund innan userApi.getProfile() hann svara.
-            firstName: authProfile?.first_name || '',
-            lastName: authProfile?.last_name || '',
-            email: user.email || '',
-          }))
-        }
-        const profileData = await userApi.getProfile()
-        if (profileData) {
-          setProfileData({
-            firstName: profileData.first_name || authProfile?.first_name || '',
-            lastName: profileData.last_name || authProfile?.last_name || '',
-            email: profileData.email || user?.email || '',
-            phone: profileData.phone || '',
-            bio: profileData.bio || '',
-          })
-          // Load consent data
-          setConsentData({
-            termsAcceptedAt: profileData.terms_accepted_at || null,
-            privacyAcceptedAt: profileData.privacy_accepted_at || null,
-            aiConsentAt: profileData.ai_consent_at || null,
-            marketingConsentAt: profileData.marketing_consent_at || null,
-            wellnessConsentAt: profileData.wellness_consent_at || null,
-            healthConsentAt: profileData.health_consent_at || null,
-            aiEnabled: profileData.ai_enabled !== false,
-          })
-        }
-      } catch (error) {
-        console.error(t('settings.profile.errorLoading'), error)
-      } finally {
-        setIsLoadingProfile(false)
+  // Profilen laddas per inloggad användare. useEffectEvent: laddningen läser
+  // senaste authProfile och t utan att en ändring i dem laddar om formuläret
+  // och skriver över det som håller på att skrivas (react-hooks/
+  // exhaustive-deps, 2026-09-24). Förr [user] med authProfile/t utanför listan.
+  const loadProfile = useEffectEvent(async () => {
+    try {
+      setIsLoadingProfile(true)
+      if (user) {
+        setProfileData(prev => ({
+          ...prev,
+          // `user` (Supabase Auth) har inget för- eller efternamn — de
+          // bor på `profile` (2026-09-22, samma bugg som Header.tsx hade).
+          // Utan authProfile-fallbacket stod fälten tomma i den korta
+          // stund innan userApi.getProfile() hann svara.
+          firstName: authProfile?.first_name || '',
+          lastName: authProfile?.last_name || '',
+          email: user.email || '',
+        }))
       }
+      const profileData = await userApi.getProfile()
+      if (profileData) {
+        setProfileData({
+          firstName: profileData.first_name || authProfile?.first_name || '',
+          lastName: profileData.last_name || authProfile?.last_name || '',
+          email: profileData.email || user?.email || '',
+          phone: profileData.phone || '',
+          bio: profileData.bio || '',
+        })
+        // Load consent data
+        setConsentData({
+          termsAcceptedAt: profileData.terms_accepted_at || null,
+          privacyAcceptedAt: profileData.privacy_accepted_at || null,
+          aiConsentAt: profileData.ai_consent_at || null,
+          marketingConsentAt: profileData.marketing_consent_at || null,
+          wellnessConsentAt: profileData.wellness_consent_at || null,
+          healthConsentAt: profileData.health_consent_at || null,
+          aiEnabled: profileData.ai_enabled !== false,
+        })
+      }
+    } catch (error) {
+      console.error(t('settings.profile.errorLoading'), error)
+    } finally {
+      setIsLoadingProfile(false)
     }
-    loadProfile()
-  }, [user])
+  })
+  const userId = user?.id
+  useEffect(() => {
+    void loadProfile()
+  }, [userId])
 
   const handleSaveProfile = async () => {
     try {

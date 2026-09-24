@@ -2,7 +2,7 @@
 
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
-import { getCurrentUser, handleStorageError } from './_shared'
+import { getCurrentUser, handleStorageError, kastaLagringsFel } from './_shared'
 import { registreraRensning } from '@/lib/rensaVidUtloggning'
 // Typerna för intresseguidens profiler. `Record<string, number>` stod här och
 // gav fyra TS2322 i TestTab: ett interface är inte tilldelningsbart till
@@ -265,10 +265,14 @@ export const interestGuideApi = {
       .order('completed_at', { ascending: false })
       .limit(limit)
 
-    if (error) {
-      handleStorageError(error, 'hämta intresseguide-historik')
-      return []
-    }
+    /*
+      KASTAR vid läsfel (2026-09-24), som getProgress ovan. Ett fel blev
+      tidigare `[]`, och HistoryTab visade då "inga tidigare resultat" — trots
+      att sidan har ett eget felkort (`interestGuide.history.errorLoading`)
+      och en uttrycklig ordning laddar → fel → tomt → data. ResultsTab har
+      samma felväg. Båda fångar kastet.
+    */
+    if (error) kastaLagringsFel(error, 'hämta intresseguide-historik')
     return data || []
   },
 

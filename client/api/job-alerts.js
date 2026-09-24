@@ -359,6 +359,75 @@ const templates = {
 };
 
 /**
+ * NUTS-3-kod → länskod som JobSearch-API:et förstår.
+ *
+ * 2026-09-24: bevakningarna sparar länet som NUTS-3 (`SE224`), eftersom det är
+ * koden `data/afRegions.ts` och jobbsökets länsväljare använder. Men JobSearch
+ * förstår INTE NUTS-koder: `region=SE224` ger noll träffar, utan felkod.
+ * Klienten har aldrig skickat koden till AF — den filtrerar lokalt på
+ * länsnamn (`getRegionNames` i services/arbetsformedlingenApi.ts). Cron-vägen
+ * skickade den rakt av. Uppmätt mot AF samma dag: prodens enda aktiva
+ * bevakning (Skåne, skapad 2026-09-10) hade 3 matchande annonser under sin
+ * livstid och hittade 0 — `region=12` ger de 3. Varje länsbunden bevakning
+ * har alltså varit tyst sedan den skapades.
+ *
+ * Tabellen är en kopia av `lanskod` i client/src/data/afRegions.ts (den filen
+ * är TypeScript för webbläsaren, den här CommonJS). Testet
+ * src/test/api-job-alerts-sokparametrar.test.ts jämför dem, så de kan inte
+ * glida isär tyst. Okänd kod → ingen länsparameter hellre än en gissning som
+ * ger noll träffar.
+ */
+const NUTS_TILL_LANSKOD = {
+  SE110: '01', SE232: '14', SE224: '12', SE121: '03', SE122: '04',
+  SE123: '05', SE211: '06', SE212: '07', SE213: '08', SE214: '09',
+  SE221: '10', SE231: '13', SE311: '17', SE124: '18', SE125: '19',
+  SE312: '20', SE313: '21', SE321: '22', SE322: '23', SE331: '24',
+  SE332: '25',
+};
+
+/**
+ * Länskoden AF ska ha, eller null. Tar emot både NUTS (`SE224`) och en redan
+ * tvåsiffrig länskod (`12`).
+ * @param {unknown} region
+ * @returns {string | null}
+ */
+function afLanskod(region) {
+  if (typeof region !== 'string' || !region.trim()) return null;
+  const r = region.trim().toUpperCase();
+  if (Object.prototype.hasOwnProperty.call(NUTS_TILL_LANSKOD, r)) return NUTS_TILL_LANSKOD[r];
+  if (/^\d{2}$/.test(r) && Object.values(NUTS_TILL_LANSKOD).includes(r)) return r;
+  return null;
+}
+
+/**
+ * Bygger AF-frågan för en bevakning — samma tolkning som jobbsöket i klienten.
+ *
+ * Kommunen är ett NAMN (fritext från formuläret, t.ex. "Malmö"), inte en
+ * kommunkod. `municipality=Malmö` ger noll träffar hos AF; klienten lägger
+ * därför namnet i fritextsökningen (`searchJobs` i arbetsformedlingenApi.ts),
+ * och det gör vi här också.
+ *
+ * @param {{ query?: string | null, region?: string | null, municipality?: string | null,
+ *   remote?: boolean | null, publishedAfter?: string, limit?: number | string }} params
+ * @returns {URLSearchParams}
+ */
+function byggAfSokparametrar(params) {
+  const searchParams = new URLSearchParams();
+  let q = typeof params.query === 'string' ? params.query.trim() : '';
+  const kommun = typeof params.municipality === 'string' ? params.municipality.trim() : '';
+  if (kommun && !q.toLowerCase().includes(kommun.toLowerCase())) {
+    q = q ? `${q} ${kommun}` : kommun;
+  }
+  if (q) searchParams.append('q', q);
+  const lan = afLanskod(params.region);
+  if (lan) searchParams.append('region', lan);
+  if (params.remote) searchParams.append('remote', 'true');
+  if (params.publishedAfter) searchParams.append('published-after', params.publishedAfter);
+  searchParams.append('limit', String(params.limit || '20'));
+  return searchParams;
+}
+
+/**
  * Search jobs from Arbetsförmedlingen.
  *
  * Returnerar `null` när AF inte gav något svar att lita på (timeout, 5xx,
@@ -370,13 +439,7 @@ const templates = {
  * @returns {Promise<unknown | null>}
  */
 async function searchJobs(params) {
-  const searchParams = new URLSearchParams();
-  if (params.query) searchParams.append('q', params.query);
-  if (params.region) searchParams.append('region', params.region);
-  if (params.municipality) searchParams.append('municipality', params.municipality);
-  if (params.remote) searchParams.append('remote', 'true');
-  if (params.publishedAfter) searchParams.append('published-after', params.publishedAfter);
-  searchParams.append('limit', params.limit || '20');
+  const searchParams = byggAfSokparametrar(params);
 
   // A15 (2026-07-23): 8s timeout så en hängande AF-anslutning inte kan
   // hålla serverless-instansen till Vercels maxDuration (jfr af-jobsearch-edgen)
@@ -623,6 +686,7 @@ async function checkUserAlerts(userId) {
   const skickaMejl = await mejlArPaslaget(userId);
   let totalNewJobs = 0;
   let afFel = 0;
+  const nu = new Date();
 
   for (const alert of alerts) {
     // Search for new jobs since last check
@@ -684,20 +748,40 @@ async function checkUserAlerts(userId) {
       // — frekvensen styr mejl, inte vad portalen visar när man är inne i den.
       // `none` betyder "mejla mig inte", inte "dölj att det finns nya jobb".
       await skapaPortalnotis(userId, alert, newJobs.length);
-
-      // Send email notification if enabled — men bara om huvudbrytaren är på
-      // OCH bevakningens frekvens säger att den ska levereras i dag.
-      // Se mejlArPaslaget() och shouldEmailToday().
-      if (userEmail && skickaMejl && shouldEmailToday(alert.notification_frequency)) {
-        const template = templates.newJobsAlert(alert.name, newJobs, userEmail);
-        await sendEmail(userEmail, template.subject, template.html, template.text);
-      }
     } else {
       // Just update last checked time
       await supabase
         .from('job_alerts')
         .update({ last_checked_at: new Date().toISOString() })
         .eq('id', alert.id);
+    }
+
+    // Mejlet — men bara om huvudbrytaren är på OCH bevakningens frekvens säger
+    // att den ska levereras i dag. Se mejlArPaslaget() och shouldEmailToday().
+    if (!userEmail || !skickaMejl || !shouldEmailToday(alert.notification_frequency, nu)) continue;
+
+    // 2026-09-24: en VECKObevakning mejlade bara måndagens nya jobb. Cron kör
+    // dagligen och flyttar fram `last_checked_at` varje dygn, så "nya sedan
+    // förra kontrollen" är på måndagen bara de senaste 24 timmarna — tisdag
+    // till söndag föll aldrig med i något mejl. Veckomejlet frågar därför AF
+    // om hela veckan. Svarar AF inte på den frågan faller vi tillbaka på
+    // dygnets träffar hellre än att tiga. Vaktat av
+    // src/test/api-job-alerts-sokparametrar.test.ts.
+    let mejlJobb = newJobs;
+    if (alert.notification_frequency === 'weekly') {
+      const veckan = await searchJobs({
+        query: alert.query,
+        region: alert.region,
+        municipality: alert.municipality,
+        remote: alert.remote,
+        publishedAfter: new Date(nu.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        limit: 50
+      });
+      if (veckan !== null) mejlJobb = /** @type {{ hits?: AfJobb[] }} */ (veckan).hits || [];
+    }
+    if (mejlJobb.length > 0) {
+      const template = templates.newJobsAlert(alert.name, mejlJobb, userEmail);
+      await sendEmail(userEmail, template.subject, template.html, template.text);
     }
   }
 
@@ -948,3 +1032,6 @@ module.exports.tolkaMejlbrytare = tolkaMejlbrytare;
 module.exports.saknarAvsandare = saknarAvsandare;
 // Mejlmallarna — exponerade för src/test/api-job-alerts-eskapering.test.ts.
 module.exports.templates = templates;
+// 2026-09-24: AF-frågan och länsöversättningen — src/test/api-job-alerts-sokparametrar.test.ts.
+module.exports.byggAfSokparametrar = byggAfSokparametrar;
+module.exports.NUTS_TILL_LANSKOD = NUTS_TILL_LANSKOD;

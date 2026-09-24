@@ -349,10 +349,10 @@ När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissa
 
 ```bash
 cd client
-npm run lint:ci            # eslint: 0 errors, max 31 warnings (fryst tak, sänkt 2026-09-22 från 117; coverage/ ignoreras numera så talet är stabilt)
+npm run lint:ci            # eslint: 0 errors, max 3 warnings (fryst tak, sänkt 2026-09-24 från 31 — de tre ligger i energifunktionen/notiscentret som väntar på produktbeslut)
 npm run typecheck:critical # krasch-klassade typfel
 npm run typecheck:api      # client/api/*.js med checkJs — måste vara 0, inget tak
-npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (28, sänkt 2026-09-22 från 337 — alla 28 i UTRED-dödkod, noll i levande kod)
+npm run typecheck:ceiling  # hela strict-skulden mot fryst tak (16, sänkt 2026-09-24 från 28 — alla 16 i notiscentret/jobbdelningen, UTRED-dödkod som väntar på produktbeslut)
 npm run lint:design        # gradient-baseline (7, sänkt 2026-09-22 — CVTemplates.tsx arkiverad)
 npm run lint:schema        # schemadrift kod vs prod-schema
 npm run lint:grants        # anon-öppna SECURITY DEFINER-funktioner + RLS per tabell (A36)
@@ -387,7 +387,7 @@ npm run build
 > och **från 21 augusti kunde ingen användare ge eller återkalla ett samtycke** (42501).
 > Lärdomen: en REVOKE är aldrig klar, för koden runt omkring rör sig.
 
-De tre **frysta taken** (31 warnings, 28 typfel, 7 gradienter — sänkta 2026-09-22) finns för att skulden ska kunna
+De tre **frysta taken** (3 warnings, 16 typfel, 7 gradienter — sänkta 2026-09-24) finns för att skulden ska kunna
 minska men inte växa. Höj dem aldrig för att bli grön — sänk dem när du betalar av. Varje
 takskript skriver ut det nya talet när skulden minskat.
 

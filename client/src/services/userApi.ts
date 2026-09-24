@@ -171,11 +171,18 @@ export const userApi = {
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     // First get current progress
-    const { data: current } = await supabase
+    // Läsfelet kontrolleras (2026-09-24). Det ignorerades: ett fel gav
+    // `current = null`, progressen blev `{}` och uppdateringen nedan skrev
+    // `{ [step]: completed }` — alla tidigare avklarade steg raderades.
+    // Alla fem anropare (useCVAutoSave, useSavedJobs, Career, TestTab,
+    // Spontaneous) har redan `.catch`.
+    const { data: current, error: lasfel } = await supabase
       .from('profiles')
       .select('onboarding_progress')
       .eq('id', user.id)
       .single()
+
+    if (lasfel) handleError(lasfel)
 
     const currentProgress = (current?.onboarding_progress || {}) as OnboardingProgress
     const newProgress = { ...currentProgress, [step]: completed }

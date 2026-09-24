@@ -42,6 +42,13 @@
       "message": "Nu finns det att skicka med när du hittar något som passar."
     }
   },
+  "foretagskonto": {
+    "title": "Företagskonto",
+    "loading": "Hämtar ert företagskonto…",
+    "notLinkedTitle": "Det här kontot är inte kopplat till något företag",
+    "notLinkedBody": "Företagskonton skapas genom en inbjudan från en arbetskonsulent eller från en kollega på företaget. Har ni fått en inbjudan är det e-postadressen i mejlet som gäller.",
+    "toOverview": "Till din översikt"
+  },
   "consultantConsent": {
     "heading": "Din konsulent ser en del av din portal",
     "intro": "{{namn}} är kopplad som din konsulent i Jobin. Vi frågar i efterhand, eftersom du aldrig fick frågan när kopplingen skapades. Du bestämmer.",
@@ -1698,6 +1705,11 @@
       "reasonDefault": "Bra möjlighet"
     },
     "occupationPlaceholder": "T.ex. lagerarbetare, sjuksköterska",
+    "occupationsLegend": "Yrken",
+    "importOccupations": "Hämta från profil ({{count}})",
+    "removeOccupation": "Ta bort yrke {{yrke}}",
+    "addOccupation": "Lägg till yrke",
+    "occupationHint": "Strukturerad matchning mot Arbetsförmedlingens taxonomi — bredare än fritext.",
     "sortLatestSaved": "Senast sparade",
     "sortCompanyAZ": "Företag A-Ö",
     "markAsApplied": "Markera som ansökt",
@@ -2841,6 +2853,27 @@
     "noConsultantMailSubject": "Jag vill ha en arbetskonsulent i Jobin",
     "loadErrorTitle": "Vi kunde inte hämta din konsulent just nu",
     "loadErrorDesc": "Det är ett tillfälligt fel hos oss — inte något du har gjort. Ladda om sidan om en stund.",
+    "revoke": {
+      "title": "Säg upp kopplingen",
+      "description": "Du kan när som helst säga upp kopplingen till {{namn}}. Då slutar hen se din nya aktivitet i Jobin.",
+      "consentGiven": "Samtycke gavs",
+      "dialogIntro": "Du är på väg att säga upp din koppling till {{namn}}.",
+      "consequencesTitle": "Det här händer när du säger upp:",
+      "consequenceActivity": "{{namn}} ser inte din nya aktivitet i Jobin",
+      "consequenceSta": "Din aktiva Steg till arbete-insats avbryts",
+      "consequenceDrafts": "Dokumentutkast som inte är inskickade raderas",
+      "consequenceSubmitted": "Dokument som redan skickats till Arbetsförmedlingen behålls (arkivkrav)",
+      "consequenceOwnData": "Din egna data (CV, jobb, mående) finns kvar — bara delningen upphör",
+      "reasonLabel": "Vill du berätta varför? (frivilligt)",
+      "reasonPlaceholder": "T.ex. jag har bytt konsulent, eller behöver inte stödet längre",
+      "reasonVisibility": "Endast {{namn}} och Jobins administratörer kan se denna text.",
+      "confirmBefore": "Skriv",
+      "confirmWord": "säg upp",
+      "confirmAfter": "för att bekräfta",
+      "error": "Kunde inte säga upp kopplingen. Försök igen.",
+      "submitting": "Säger upp…",
+      "confirmButton": "Bekräfta uppsägning"
+    },
     "contactInfo": "Så når du hen",
     "consultant": {
       "yourConsultant": "Din arbetskonsulent"
@@ -4180,41 +4213,6 @@
       "viewModal": {
         "mood": "Humör: {{mood}}/5"
       }
-    },
-    "dailyTask": {
-      "title": "Dagens uppgift",
-      "estimatedTime": "Tar cirka {{time}}",
-      "refresh": "Få en annan uppgift",
-      "markIncomplete": "Markera som ej klar",
-      "markComplete": "Markera som klar",
-      "goTo": "Gå till",
-      "completionMessage": "Bra jobbat! Du är ett steg närmare ditt mål.",
-      "tasks": {
-        "diary": {
-          "title": "Skriv i dagboken",
-          "description": "Reflektera över din dag och dina framsteg"
-        },
-        "exercise": {
-          "title": "Gör en övning",
-          "description": "Utforska dina styrkor eller öva på intervjuteknik"
-        },
-        "cv": {
-          "title": "Uppdatera ditt CV",
-          "description": "Lägg till en ny erfarenhet eller färdighet"
-        },
-        "jobsearch": {
-          "title": "Sök efter jobb",
-          "description": "Utforska nya möjligheter som matchar din profil"
-        },
-        "networking": {
-          "title": "Nätverka",
-          "description": "Kontakta någon i ditt nätverk eller utöka det"
-        },
-        "reflection": {
-          "title": "Fundera över dina mål",
-          "description": "Vad är viktigast för dig just nu?"
-        }
-      }
     }
   },
   "wellness": {
@@ -5358,6 +5356,8 @@
   "ai": {
     "consent": {
       "requiredTitle": "AI-samtycke krävs",
+      "pausedTitle": "AI-funktionerna är avstängda",
+      "pausedDesc": "Du har stängt av AI-funktionerna. Du kan slå på dem igen i inställningarna.",
       "requiredDesc": "För att använda AI-funktioner behöver du ge samtycke till AI-behandling av dina uppgifter.",
       "requiredForFeature": "För att använda {{feature}} behöver du ge samtycke till AI-behandling.",
       "grantNow": "Ge samtycke",
@@ -5443,10 +5443,6 @@
         "updateCVImpact": "+10% ATS-score"
       },
       "insights": {
-        "activityTrend": "Du är {{trend}} aktiv än förra månaden",
-        "moreActive": "40% mer",
-        "lessActive": "20% mindre",
-        "equalActive": "lika",
         "tuesdayApplications": "Dina ansökningar på tisdagar får 3x fler svar",
         "wellnessBoost": "När du loggar välmående ökar din aktivitet med 25%",
         "interviewPrediction": "Baserat på din takt: Intervju inom {{days}} dagar (konfidens: {{confidence}}%)",
@@ -6604,7 +6600,8 @@
       "notesTitle": "Anteckningar",
       "notesPlaceholder": "Ytterligare anteckningar, observationer eller reflektioner...",
       "careerTimeline": "Karriärtidslinje",
-      "changeHistory": "Ändringshistorik"
+      "changeHistory": "Ändringshistorik",
+      "historyLoadError": "Vi kunde inte hämta ändringshistoriken just nu."
     },
     "constants": {
       "employment": {
@@ -6797,6 +6794,7 @@
       "importedCount": "Importerade {{count}} kompetenser från ditt CV!",
       "noSkillsToImport": "Inga nya kompetenser att importera från CV.",
       "importError": "Kunde inte importera från CV",
+      "loadError": "Vi kunde inte hämta dina kompetenser just nu. Det betyder inte att de är borta.",
       "skillLevelFor": "Kompetensnivå för {{name}}",
       "setLevel": "Sätt nivå {{level}} av {{max}}",
       "removeSkill": "Ta bort kompetens: {{name}}",
@@ -6841,6 +6839,7 @@
       "clickToConfirmDelete": "Klicka igen för att bekräfta borttagning",
       "remove": "Ta bort: {{name}}",
       "noDocuments": "Inga dokument uppladdade än.",
+      "loadError": "Vi kunde inte hämta dina dokument just nu. Det betyder inte att de är borta.",
       "types": {
         "certificate": "Certifikat",
         "degree": "Examensbevis",
@@ -6879,7 +6878,8 @@
       "copyError": "Kunde inte kopiera länk",
       "deleteSuccess": "Delningslänk borttagen",
       "deleteError": "Kunde inte ta bort delningslänk",
-      "noShareLinks": "Inga delningslänkar skapade än. Skapa en länk för att dela din profil med arbetsgivare."
+      "noShareLinks": "Inga delningslänkar skapade än. Skapa en länk för att dela din profil med arbetsgivare.",
+      "loadError": "Vi kunde inte hämta dina delningslänkar just nu. Det betyder inte att de är borta."
     },
     "onboarding": {
       "welcome": {
@@ -8015,10 +8015,6 @@
     }
   },
   "layout": {
-    "pageTabs": {
-      "selectPage": "Välj sida",
-      "mobileNav": "Sidor"
-    },
     "pageHeader": {
       "myInsights": "Mina insikter",
       "insights": "Insikter"
@@ -8856,24 +8852,6 @@
   "focusGuide": {
     "skipStep": "Hoppa över detta steg",
     "stepOf": "Steg {{current}} av {{total}}",
-    "cv": {
-      "title": "Skapa ditt CV",
-      "subtitle": "Vi tar det steg för steg",
-      "titleStep": "Vad jobbar du som?",
-      "experienceStep": "Arbetslivserfarenhet",
-      "educationStep": "Utbildning",
-      "skillsStep": "Kompetenser",
-      "titleHint": "Den roll du söker eller arbetar som",
-      "noExperience": "Ingen erfarenhet tillagd ännu",
-      "job": "Jobb",
-      "addExperience": "Lägg till erfarenhet",
-      "experienceHint": "Du kan hoppa över om du inte har någon erfarenhet",
-      "noEducation": "Ingen utbildning tillagd ännu",
-      "education": "Utbildning",
-      "addEducation": "Lägg till utbildning",
-      "skillSuggestions": "Vanliga kompetenser:",
-      "save": "Spara CV"
-    },
     "letter": {
       "title": "Personligt brev",
       "subtitle": "Skapa ett enkelt personligt brev",

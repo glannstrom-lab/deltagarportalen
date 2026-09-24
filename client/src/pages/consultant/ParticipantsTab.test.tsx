@@ -227,3 +227,26 @@ describe('ParticipantsTab — RM3: möteskadens per deltagare', () => {
     expect(screen.queryByTestId('kadens-chip')).toBeNull()
   })
 })
+
+describe('ParticipantsTab — senaste kontakt räknas i kalenderdagar (2026-09-24)', () => {
+  // Förr: Math.floor((Date.now() - kontakt) / 24 h) under renderingen
+  // (react-hooks/purity). En kontakt i går kväll 20:00, läst i dag 08:00, är
+  // 12 timmar gammal → 0 → "Idag". Konsulenten fick veta att hon talat med
+  // deltagaren i dag när det var i går.
+  // Mutation: räkna tillbaka i 24-timmarsblock → testet faller.
+  it('en kontakt i går kväll visas som "Igår", inte "Idag", en morgon', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    try {
+      const nu = new Date(); nu.setHours(8, 0, 0, 0)
+      vi.setSystemTime(nu)
+      const igarKvall = new Date(nu); igarKvall.setDate(igarKvall.getDate() - 1); igarKvall.setHours(20, 0, 0, 0)
+      mockEq.mockResolvedValue({ data: [makeParticipant({ last_contact_at: igarKvall.toISOString() })], error: null })
+      renderTab()
+      await screen.findByText('Anna Andersson')
+      expect(screen.getAllByText('Igår').length).toBeGreaterThan(0)
+      expect(screen.queryByText('Idag')).toBeNull()
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})

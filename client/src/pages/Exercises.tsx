@@ -100,9 +100,26 @@ function ExercisesInner() {
   const [filter, setFilter] = useState<string>('alla')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  // i18n-NYCKEL, inte färdig text: översätts vid rendering så att ett fel följer
+  // språkbytet, och så att effekterna inte behöver `t` som beroende.
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
   const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; summary?: string; readingTime?: number }>>([])
+
+  // Djuplänk: ?id=X öppnar en viss övning (Article.tsx länkar hit). Justeras
+  // under renderingen i stället för i en effekt, så att den följer URL:en även
+  // när sidan redan är monterad — /exercises?id=a → ?id=b byter inte rutt.
+  // Förr lästes den bara i monteringseffekten (2026-09-24).
+  const [tillampadLank, setTillampadLank] = useState<string | null>(null)
+  if (deepLinkId && deepLinkId !== tillampadLank && exercises.length > 0) {
+    setTillampadLank(deepLinkId)
+    const match = exercises.find((e) => e.id === deepLinkId)
+    if (match) {
+      setSelectedExercise(match)
+      setCurrentStep(0)
+      setIsCompleted(false)
+    }
+  }
 
   // Check authentication and load user + exercises
   useEffect(() => {
@@ -115,14 +132,9 @@ function ExercisesInner() {
       try {
         const exercisesData = await contentExerciseApi.getAll()
         setExercises(exercisesData)
-        // Deep-link: ?id=X öppnar specifik övning direkt (används av STA-sidan).
-        if (deepLinkId && !selectedExercise) {
-          const match = exercisesData.find((e) => e.id === deepLinkId)
-          if (match) setSelectedExercise(match)
-        }
       } catch (err) {
         console.error('Error loading exercises:', err)
-        setError(t('exercises.errorLoadingExercises'))
+        setError('exercises.errorLoadingExercises')
       }
 
       if (!user) {
@@ -149,7 +161,7 @@ function ExercisesInner() {
 
         if (error) {
           console.error('Error loading answers:', error)
-          setError(t('exercises.couldNotLoadCloud'))
+          setError('exercises.couldNotLoadCloud')
           return
         }
 
@@ -162,7 +174,7 @@ function ExercisesInner() {
         setAnswers(progress)
       } catch (err) {
         console.error('Failed to load answers:', err)
-        setError(t('exercises.errorLoadingAnswers'))
+        setError('exercises.errorLoadingAnswers')
       } finally {
         setLoading(false)
       }
@@ -194,11 +206,11 @@ function ExercisesInner() {
 
       if (error) {
         console.error('Error saving answers:', error)
-        setError(t('exercises.couldNotSaveCloud'))
+        setError('exercises.couldNotSaveCloud')
       }
     } catch (err) {
       console.error('Failed to save answers:', err)
-      setError(t('exercises.errorSaving'))
+      setError('exercises.errorSaving')
     } finally {
       setSaving(false)
     }
@@ -390,7 +402,7 @@ function ExercisesInner() {
 
     if (error) {
       console.error('Error deleting answers:', error)
-      setError(t('exercises.couldNotClear'))
+      setError('exercises.couldNotClear')
       return
     }
     
@@ -460,7 +472,7 @@ function ExercisesInner() {
           {error && (
             <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 rounded-full px-3 py-1.5">
               <AlertCircle className="w-4 h-4" />
-              <span>{error}</span>
+              <span>{t(error)}</span>
             </div>
           )}
         </div>

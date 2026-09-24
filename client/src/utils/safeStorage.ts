@@ -100,6 +100,16 @@ export const USER_SCOPED_STORAGE_KEYS: readonly string[] = [
   'cv-ui-storage',
   'energy-storage',
   'profile-storage',
+  // 2026-09-24 (mutationsstickprovet): besökshistoriken ("Senast besökt" på
+  // Översikt, components/layout/navigation.ts) och dagens jobb
+  // (components/jobs/DailyJobTab.tsx — jobbet, datumet, användarens
+  // sökfilter och redan visade jobb). Överlevde utloggning, så nästa person
+  // på en delad dator såg förra användarens sidor och sökningar.
+  'jobin_senaste_sidor',
+  'jobin_daily_job',
+  'jobin_daily_job_date',
+  'jobin_daily_job_filter',
+  'jobin_daily_job_seen',
   // OBS, MEDVETET INTE MED: 'deltagarportal-settings' (settingsStore.ts).
   // Den nyckelns `partialize` blandar innehåll (emailNotifications,
   // pushNotifications, weeklySummary, energyLevel, hasCompletedOnboarding,

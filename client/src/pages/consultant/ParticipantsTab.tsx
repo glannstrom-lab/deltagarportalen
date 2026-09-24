@@ -61,8 +61,26 @@ interface Participant {
 type SortField = 'name' | 'status' | 'ats_score' | 'last_contact' | 'priority'
 type SortOrder = 'asc' | 'desc'
 
+const DYGN_MS = 24 * 60 * 60 * 1000
+
+/**
+ * Kalenderdagar (lokal tid) mellan ett datum och `nu`. "Igår" betyder
+ * föregående kalenderdag, inte "24–48 timmar sedan": en kontakt i går 20:00
+ * läst i dag 08:00 är 1 dag, inte 0. Math.round tar sommartidens 23/25-
+ * timmarsdygn.
+ */
+function kalenderdagarSedan(iso: string, nu: number): number {
+  const idag = new Date(nu); idag.setHours(0, 0, 0, 0)
+  const dag = new Date(iso); dag.setHours(0, 0, 0, 0)
+  return Math.max(0, Math.round((idag.getTime() - dag.getTime()) / DYGN_MS))
+}
+
 export function ParticipantsTab() {
   const { t } = useTranslation()
+  // "Nu" fångas en gång per montering (react-hooks/purity: Date.now() i
+  // renderingen gav ett nytt svar vid varje omrendering). Listan hämtas också
+  // vid montering, så tid och data är samma ögonblicksbild.
+  const [nu] = useState(() => Date.now())
   const [searchParams, setSearchParams] = useSearchParams()
 
   // KA2 (2026-08-31): sök, sortering, vy och filter lever i URL:en (q/sort/dir/view/filter)
@@ -167,7 +185,7 @@ export function ParticipantsTab() {
 
     // Status filter
     if (filterStatus === 'attention') {
-      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      const sevenDaysAgo = new Date(nu - 7 * DYGN_MS)
       result = result.filter(p =>
         !p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo
       )
@@ -199,7 +217,7 @@ export function ParticipantsTab() {
     })
 
     return result
-  }, [participants, searchQuery, filterStatus, sortField, sortOrder])
+  }, [participants, searchQuery, filterStatus, sortField, sortOrder, nu])
 
   const allSelected = filteredParticipants.length > 0 && selectedParticipants.length === filteredParticipants.length
   const someSelected = selectedParticipants.length > 0 && !allSelected
@@ -254,7 +272,7 @@ export function ParticipantsTab() {
 
   const getLastContactText = (date: string | null) => {
     if (!date) return t('consultant.participants.neverContacted')
-    const days = Math.floor((Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24))
+    const days = kalenderdagarSedan(date, nu)
     if (days === 0) return t('common.today')
     if (days === 1) return t('consultant.participants.yesterday')
     if (days < 7) return t('consultant.participants.daysAgo', { count: days })
@@ -263,7 +281,7 @@ export function ParticipantsTab() {
 
   const isOverdue = (date: string | null) => {
     if (!date) return true
-    return new Date(date) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    return new Date(date) < new Date(nu - 7 * DYGN_MS)
   }
 
   // RM3-chipen. Lugn färgsättning: snart = amber, över = rosa, inget/ok = neutral.

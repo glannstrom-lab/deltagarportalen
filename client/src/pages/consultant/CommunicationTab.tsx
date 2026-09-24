@@ -9,7 +9,7 @@
  * Meetings-läge: oförändrat — schemalagda möten med möteslänk/typ.
  */
 
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import {
@@ -420,9 +420,15 @@ function NewMessageDialog({
   const [message, setMessage] = useState(initialContent)
   const [searchQuery, setSearchQuery] = useState('')
 
-  useEffect(() => {
+  // Mallen läggs i fältet när dialogen öppnas (eller mallen byts medan den är
+  // öppen). Justeras under renderingen i stället för i en effekt — effekten
+  // ritade först dialogen med förra textens innehåll och sedan en gång till
+  // (react-hooks/set-state-in-effect, 2026-09-24).
+  const [forra, setForra] = useState({ isOpen, initialContent })
+  if (forra.isOpen !== isOpen || forra.initialContent !== initialContent) {
+    setForra({ isOpen, initialContent })
     if (isOpen) setMessage(initialContent)
-  }, [isOpen, initialContent])
+  }
 
   if (!isOpen) return null
 
@@ -596,8 +602,14 @@ export function CommunicationTab() {
   const [activeParticipantId, setActiveParticipantId] = useState<string | null>(null)
   const [sendingMessage, setSendingMessage] = useState(false)
 
+  // useEffectEvent: realtidslyssnaren nedan registreras en gång, men ska alltid
+  // anropa den senaste fetchData (react-hooks/exhaustive-deps, 2026-09-24).
+  // fetchData läser i dag bara stabila värden, så den gamla closuren var
+  // ofarlig — det här hindrar att den blir inaktuell när fetchData växer.
+  const hamtaData = useEffectEvent(() => { void fetchData() })
+
   useEffect(() => {
-    fetchData()
+    hamtaData()
   }, [])
 
   // Realtime — när någon skickar/uppdaterar meddelande där jag är inblandad,
@@ -623,7 +635,7 @@ export function CommunicationTab() {
             filter: `receiver_id=eq.${user.id}`,
           },
           () => {
-            if (isMounted) fetchData()
+            if (isMounted) hamtaData()
           }
         )
         .on(
@@ -635,7 +647,7 @@ export function CommunicationTab() {
             filter: `sender_id=eq.${user.id}`,
           },
           () => {
-            if (isMounted) fetchData()
+            if (isMounted) hamtaData()
           }
         )
         .subscribe()

@@ -9,7 +9,7 @@
  * - Accessibility Specialist: WCAG 2.1 AA
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useEffectEvent, useRef } from 'react'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -718,11 +718,17 @@ function MyConsultantInner() {
   /** UX12: skiljer "ingen konsulent tilldelad" från "hämtningen gick fel". */
   const [loadError, setLoadError] = useState(false)
 
+  // Hämtningen körs om när användaren, konsulentkopplingen eller språket byts.
+  // Förr bara på [user]: fetchConsultantData läser profile.consultant_id och
+  // lägger ÖVERSATTA strängar i state (titel, delad info), så ett språkbyte
+  // lämnade dem på det gamla språket och en ny koppling syntes inte förrän
+  // sidan laddades om (react-hooks/exhaustive-deps, 2026-09-24).
+  const userId = user?.id
+  const consultantId = profile?.consultant_id
+  const hamta = useEffectEvent(() => { void fetchConsultantData() })
   useEffect(() => {
-    if (user) {
-      fetchConsultantData()
-    }
-  }, [user])
+    if (userId) hamta()
+  }, [userId, consultantId, t])
 
   const fetchConsultantData = async () => {
     try {

@@ -573,6 +573,35 @@ describe('aktiv roll skrivs och läses mot rätt kolumn (2026-09-15)', () => {
     expect(useAuthStore.getState().profile?.activeRole).toBe('USER')
   })
 
+  it('signIn läser också activeRole ur active_role — inte bara initialize', async () => {
+    // Tillagt 2026-09-24: mutationen `activeRole: profile.role || 'USER'` i
+    // signIn överlevde hela sviten. Testet ovan täcker bara initialize(), och
+    // signIn-testet i describe-blocket ovan använder en fixtur MED ett
+    // activeRole-fält i raden — som databasen aldrig returnerar.
+    const rad = {
+      id: 'user1',
+      email: 'test@example.com',
+      first_name: 'Test',
+      last_name: 'Person',
+      role: 'SUPERADMIN',
+      roles: ['USER', 'SUPERADMIN'],
+      active_role: 'USER',
+    }
+    mockSignInWithPassword.mockResolvedValue({
+      data: { user: { id: 'user1', email: 'test@example.com' }, session: { access_token: 't' } },
+      error: null,
+    })
+    mockFrom.mockReturnValue({
+      select: vi.fn().mockReturnValue({
+        eq: vi.fn().mockReturnValue({ maybeSingle: vi.fn().mockResolvedValue({ data: rad, error: null }) }),
+      }),
+    })
+
+    await useAuthStore.getState().signIn('test@example.com', 'x')
+
+    expect(useAuthStore.getState().profile?.activeRole).toBe('USER')
+  })
+
   it('setActiveRole skickar active_role, aldrig activeRole', async () => {
     const update = vi.fn().mockReturnValue({
       eq: vi.fn().mockReturnValue({

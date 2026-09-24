@@ -615,23 +615,21 @@ export function MatchesTab() {
       setCareerJobs(careerResults)
     } catch (err) {
       console.error('Error loading matches:', err)
-      setError(t('jobs.matches.errorLoading'))
+      // Nyckel, inte text — översätts vid rendering (följer språkbytet, och
+      // loadData behöver inte `t` som beroende, vilket hade hämtat om allt).
+      setError('jobs.matches.errorLoading')
     } finally {
       setIsLoading(false)
     }
   }, [loadSourceData, searchCvJobs, searchInterestJobs, searchCareerJobs, municipalities])
 
-  // Initial load
+  // Laddning vid montering och vid varje ortbyte. loadData byter identitet bara
+  // när `municipalities` ändras (övriga beroenden är stabila useCallback([])).
+  // Förr två effekter, varav ortbyteseffekten tappade bytet om en laddning
+  // pågick — i praktiken onåbart, eftersom väljaren inte syns under laddning.
   useEffect(() => {
     loadData()
-  }, [])
-
-  // Reload when municipalities change
-  useEffect(() => {
-    if (sourceData && !isLoading) {
-      loadData()
-    }
-  }, [municipalities])
+  }, [loadData])
 
   // Get current jobs based on active source
   const currentJobs = useMemo(() => {
@@ -697,7 +695,7 @@ export function MatchesTab() {
       <Card className="p-12 text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-stone-700 dark:text-stone-300 mb-2">{t('common.error')}</h3>
-        <p className="text-stone-700 dark:text-stone-300 mb-4">{error}</p>
+        <p className="text-stone-700 dark:text-stone-300 mb-4">{t(error)}</p>
         <Button onClick={loadData}>
           <RefreshCw className="w-4 h-4 mr-2" />
           {t('common.tryAgain')}

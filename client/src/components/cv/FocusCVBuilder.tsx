@@ -8,7 +8,7 @@
  * - Enkla knappar för att navigera
  */
 
-import { useState, useEffect, useCallback, useId, useRef } from 'react'
+import { useState, useCallback, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
@@ -69,18 +69,20 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
   // om. Utan spärren körde effekten igen när svaret kom och ersatte hela
   // formuläret med serverns rad — allt som hunnit skrivas på nästa steg under
   // omhämtningen försvann. Efter första fyllningen är formuläret sanningen.
-  const harFyllts = useRef(false)
-  useEffect(() => {
-    if (existingCV && !harFyllts.current) {
-      harFyllts.current = true
-      setCvData({
-        ...existingCV,
-        firstName: existingCV.firstName || existingCV.first_name || '',
-        lastName: existingCV.lastName || existingCV.last_name || '',
-        workExperience: existingCV.workExperience || existingCV.work_experience || [],
-      })
-    }
-  }, [existingCV])
+  //
+  // Görs under renderingen (React: "adjusting state when a prop changes"), inte
+  // i en effekt — effekten gav först en rendering med tomt formulär och sedan
+  // en till (react-hooks/set-state-in-effect, 2026-09-24).
+  const [harFyllts, setHarFyllts] = useState(false)
+  if (existingCV && !harFyllts) {
+    setHarFyllts(true)
+    setCvData({
+      ...existingCV,
+      firstName: existingCV.firstName || existingCV.first_name || '',
+      lastName: existingCV.lastName || existingCV.last_name || '',
+      workExperience: existingCV.workExperience || existingCV.work_experience || [],
+    })
+  }
 
   // Save mutation
   //

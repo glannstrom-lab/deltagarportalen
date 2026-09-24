@@ -153,10 +153,8 @@ describe('grind — inget UTC-datum som "idag" i client/src', () => {
     'services/placeringarApi.ts': 2, // `${startDate}T00:00:00Z` + veckor/månader i UTC
     'services/calendarIntegration.ts': 1, // handelseDatum: new Date('YYYY-MM-DD') tur och retur
     'utils/streakDays.ts': 2, // hela räkningen i UTC från new Date('YYYY-MM-DD'), setUTCDate
-    // UTRED-dödkod (dead-code.cjs, noll importörer) — rättas inte, se CLAUDE.md
-    // "ett svep över hela src/ kan låsa raderingspasset". Monteras filen igen:
-    // byt till `.eq('log_date', formatLocalDate(new Date()))`.
-    'hooks/useMoodRecommendations.ts': 1,
+    // hooks/useMoodRecommendations.ts (UTRED-dödkod) stod här med 1 träff —
+    // filen raderades i städpasset 2026-09-24, så raden är borttagen.
   }
 
   it('toISOString().split/slice som datum förekommer bara på granskade ställen', async () => {

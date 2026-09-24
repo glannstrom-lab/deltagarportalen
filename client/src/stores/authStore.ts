@@ -3,7 +3,7 @@ import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import { clearUserScopedStorage } from '@/utils/safeStorage'
 import type { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
-import { rensaAllCache } from '@/lib/queryClient'
+import { rensaAllCache, avbrytAllaFragor } from '@/lib/queryClient'
 import { rensaVidUtloggning } from '@/lib/rensaVidUtloggning'
 import { careerOfflineCache } from '@/services/offlineStorage'
 
@@ -435,6 +435,11 @@ export const useAuthStore = create<AuthState>()(
 
       // Sign out
       signOut: async () => {
+        // Ögonblicksbild av inloggningen, för att kunna återställa den om
+        // Supabase-anropet misslyckas (sessionen finns då kvar på servern).
+        const { user, profile, session, isAuthenticated } = get()
+        let utloggad = false
+
         try {
           set({ isSigningOut: true })
 
@@ -444,19 +449,38 @@ export const useAuthStore = create<AuthState>()(
           // överleva utloggningen bara för att API-anropet failar.
           clearUserScopedStorage()
 
+          /*
+            ORDNINGEN NEDAN ÄR POÄNGEN (2026-09-24). Tidigare tömdes
+            React Query-cachen medan sidan fortfarande var monterad och
+            `user` fanns kvar i den här storen. Varje omrendering efter
+            tömningen byggde om frågorna och hämtade på nytt — och när
+            `supabase.auth.signOut()` sedan tagit bort sessionen gick de
+            hämtningarna som anon: ~20 frågor per utloggning i prod-loggarna,
+            varav 5 med 401. Hubbhookarna (useOversiktHubSummary m.fl.) har
+            `enabled: !!userId`, så det som stoppar dem är att `user` är null
+            INNAN cachen töms och sessionen försvinner:
+
+              1. avbryt det som är i luften
+              2. nollställ inloggningen här → frågorna slås av, skyddade
+                 rutter lämnar sidan
+              3. logga ut hos Supabase
+              4. töm cachen (inga monterade frågor kan längre hämta om)
+          */
+          await avbrytAllaFragor()
+
+          set({
+            user: null,
+            profile: null,
+            session: null,
+            isAuthenticated: false,
+          })
+
           // ...och samma sak för de andra Zustand-storesens EGNA in-memory
           // state (aiTeamStore.messages, profileStore.preferences m.fl.) —
-          // de ligger kvar tills fliken laddas om, precis som cachen nedan
-          // gjorde innan KA2. Se `lib/rensaVidUtloggning.ts`.
+          // de ligger kvar tills fliken laddas om. Se
+          // `lib/rensaVidUtloggning.ts`. Efter steg 2, så att omrenderingen
+          // det utlöser inte har någon inloggad användare att hämta åt.
           rensaVidUtloggning()
-
-          // ...och samma sak för React Query-cachen. A31 rensade localStorage
-          // men lämnade cachen orörd, och utloggningen navigerar bara
-          // (`navigate('/login')`) — ingen omladdning tömmer den åt oss.
-          // Cachenycklar utan användar-id matchar nästa inloggade person i
-          // samma flik, och med `gcTime: 10 min` hinner ingen refetch ske
-          // innan hon ser föregående deltagares uppgifter.
-          await rensaAllCache()
 
           // ...och IndexedDB. Offline-lagret höll karriärplan, milstolpar,
           // nätverkskontakter och kompetensanalysens CV-text i sju dygn —
@@ -468,21 +492,27 @@ export const useAuthStore = create<AuthState>()(
           if (error) {
             throw error
           }
+          utloggad = true
 
           // Clear Sentry user context
           setSentryUser(null)
-
-          set({
-            user: null,
-            profile: null,
-            session: null,
-            isAuthenticated: false,
-            isLoading: false,
-            isSigningOut: false,
-          })
         } catch (error: unknown) {
           console.error('Sign out error:', error)
-          set({ isSigningOut: false })
+        } finally {
+          // React Query-cachen töms ALLTID, även när Supabase-anropet
+          // failar: A31 rensade localStorage men lämnade cachen orörd, och
+          // utloggningen navigerar bara (`navigate('/login')`) — ingen
+          // omladdning tömmer den åt oss. Cachenycklar utan användar-id
+          // matchar nästa inloggade person i samma flik.
+          await rensaAllCache()
+
+          if (utloggad) {
+            set({ isLoading: false, isSigningOut: false })
+          } else {
+            // Sessionen finns kvar hos Supabase — visa inte utloggat läge
+            // för en inloggning som fortfarande gäller.
+            set({ user, profile, session, isAuthenticated, isSigningOut: false })
+          }
         }
       },
 

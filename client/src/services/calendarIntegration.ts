@@ -8,6 +8,7 @@
 import { careerPlanApi, networkApi, type CareerMilestone as Milestone, type NetworkContact } from './careerApi'
 import { calendarApi } from './cloudStorage'
 import type { CalendarEvent, SmartReminder } from './calendarData'
+import { formatLocalDate, parseLocalDate } from './aktivitetSchema'
 
 /**
  * 2026-09-22: `calendarApi.createEvent` (services/cloud/kalender.ts) tar
@@ -84,6 +85,37 @@ export function synkNyckel(e: { type?: string | null; date?: string | null; titl
 /** `YYYY-MM-DD` ur ett datum från karriärplanen (date-kolumn eller ISO-sträng). */
 function handelseDatum(v: string): string {
   return new Date(v).toISOString().split('T')[0]
+}
+
+/**
+ * Antal kalenderdagar från `idag` (lokalt `YYYY-MM-DD`) till ett datum ur en
+ * date-kolumn. `null` om datumet saknas eller inte går att läsa.
+ *
+ * 2026-09-24: jämförelserna nedan gjordes tidigare som `new Date(datum) >= now`.
+ * `new Date('2026-09-24')` är UTC-midnatt — kl. 02:00 svensk sommartid — så
+ * efter 02:00 var dagens milstolpar, uppföljningar och kalenderhändelser
+ * "passerade": de föll ur påminnelselistan och synkades aldrig till kalendern,
+ * just den dag de gällde. Och `floor` på millisekunder gjorde morgondagen till
+ * "0 dagar kvar". Alla tre kolumnerna (career_milestones.target_date,
+ * network_contacts.next_contact_date, calendar_events.date) är `date` i prod.
+ */
+function dagarTill(datum: string | null | undefined, idag: string): number | null {
+  const d = (datum ?? '').slice(0, 10)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(d)) return null
+  // round, inte floor: ett dygn över sommartidens gränser är 23 eller 25 h.
+  return Math.round((parseLocalDate(d).getTime() - parseLocalDate(idag).getTime()) / 86_400_000)
+}
+
+/**
+ * Antal lokala kalenderdagar från `nu` till `datum` — 0 = idag, 1 = imorgon,
+ * negativt = passerat. Samma räkning som `dagarTill`, för ett Date-värde.
+ * CalendarSync räknade tidigare `floor` över millisekunder mot klockslaget
+ * nu, så dagens saker (lokal midnatt) visades som "Försenad" och
+ * morgondagens som "Idag".
+ */
+export function dagarTillDatum(datum: Date, nu: Date = new Date()): number | null {
+  if (Number.isNaN(datum.getTime())) return null
+  return dagarTill(formatLocalDate(datum), formatLocalDate(nu))
 }
 
 const milstolpeNyckel = (m: Milestone) =>
@@ -249,11 +281,10 @@ export async function syncNetworkFollowupsToCalendar(): Promise<{ synced: number
     const befintliga = new Set((existingEvents as unknown as CalendarEvent[]).map(synkNyckel))
 
     // Only sync contacts with upcoming follow-up dates
-    const now = new Date()
+    const idag = formatLocalDate(new Date())
     const contactsToSync = contacts.filter(c => {
-      if (!c.next_contact_date) return false
-      const followupDate = new Date(c.next_contact_date)
-      return followupDate >= now && !befintliga.has(uppfoljningsNyckel(c))
+      const dagar = dagarTill(c.next_contact_date, idag)
+      return dagar !== null && dagar >= 0 && !befintliga.has(uppfoljningsNyckel(c))
     })
 
     for (const contact of contactsToSync) {
@@ -280,8 +311,9 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
   // Nycklar för det som redan kommit med från karriärplanen/nätverket — en
   // synkad kopia i kalendern ska inte visas en gång till.
   const redanMed = new Set<string>()
-  const now = new Date()
-  const futureDate = new Date(now.getTime() + daysAhead * 24 * 60 * 60 * 1000)
+  const idag = formatLocalDate(new Date())
+  const inomFonstret = (dagar: number | null): dagar is number =>
+    dagar !== null && dagar >= 0 && dagar <= daysAhead
 
   try {
     // Get career milestones
@@ -290,9 +322,9 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
       for (const milestone of plan.milestones) {
         if (milestone.is_completed || !milestone.target_date) continue
 
-        const targetDate = new Date(milestone.target_date)
-        if (targetDate >= now && targetDate <= futureDate) {
-          const daysUntil = Math.floor((targetDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+        const daysUntil = dagarTill(milestone.target_date, idag)
+        if (inomFonstret(daysUntil)) {
+          const targetDate = parseLocalDate(milestone.target_date.slice(0, 10))
 
           redanMed.add(milstolpeNyckel(milestone))
           reminders.push({
@@ -315,9 +347,9 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
     for (const contact of contacts) {
       if (!contact.next_contact_date) continue
 
-      const followupDate = new Date(contact.next_contact_date)
-      if (followupDate >= now && followupDate <= futureDate) {
-        const daysUntil = Math.floor((followupDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      const daysUntil = dagarTill(contact.next_contact_date, idag)
+      if (inomFonstret(daysUntil)) {
+        const followupDate = parseLocalDate(contact.next_contact_date.slice(0, 10))
 
         redanMed.add(uppfoljningsNyckel(contact))
         reminders.push({
@@ -340,9 +372,9 @@ export async function getAggregatedReminders(daysAhead: number = 7): Promise<Agg
       // Hoppa över kalenderns kopia av en milstolpe/uppföljning som redan är med
       if (redanMed.has(synkNyckel(event))) continue
 
-      const eventDate = new Date(event.date)
-      if (eventDate >= now && eventDate <= futureDate) {
-        const daysUntil = Math.floor((eventDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+      const daysUntil = dagarTill(event.date, idag)
+      if (inomFonstret(daysUntil)) {
+        const eventDate = parseLocalDate(event.date.slice(0, 10))
 
         reminders.push({
           id: `calendar-${event.id}`,

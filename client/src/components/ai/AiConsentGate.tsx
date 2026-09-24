@@ -34,7 +34,7 @@ export function AiConsentGate({
   className,
 }: AiConsentGateProps) {
   const { t } = useTranslation()
-  const { hasConsent, isLoading } = useAiConsent()
+  const { hasConsent, isEnabled, isOptedOut, isLoading } = useAiConsent()
   useAuthStore()
   const [isGranting, setIsGranting] = useState(false)
   const [grantError, setGrantError] = useState<string | null>(null)
@@ -69,9 +69,34 @@ export function AiConsentGate({
     )
   }
 
-  // User has consent - render children
-  if (hasConsent) {
+  // Samtycke OCH AI påslaget. Grinden släppte tidigare igenom på `hasConsent`
+  // ensamt, så den som gett samtycke men stängt av AI (art. 21) fick ändå
+  // AI-komponenterna — och serverns grind nekade sedan varje anrop.
+  if (isEnabled) {
     return <>{children}</>
+  }
+
+  // Samtycket finns men AI är avstängt: fråga inte om samtycke igen — säg var
+  // brytaren sitter.
+  if (hasConsent && isOptedOut) {
+    return (
+      <div role="status" className={cn(
+        "p-4 rounded-xl border border-[var(--c-accent)]/60 bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20",
+        className
+      )}>
+        <h4 className="font-medium text-[var(--c-text)] dark:text-white text-sm">
+          {t('ai.consent.pausedTitle')}
+        </h4>
+        <p className="text-xs text-[var(--c-text)] mt-1">{t('ai.consent.pausedDesc')}</p>
+        <Link
+          to="/settings?section=privacy"
+          className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-[var(--c-text)] underline"
+        >
+          <Settings className="w-3 h-3" aria-hidden="true" />
+          {t('ai.consent.manageInSettings')}
+        </Link>
+      </div>
+    )
   }
 
   // User hasn't given consent - show prompt

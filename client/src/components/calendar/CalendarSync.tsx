@@ -20,6 +20,7 @@ import { Button, Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import {
   calendarIntegration,
+  dagarTillDatum,
   type AggregatedReminder
 } from '@/services/calendarIntegration'
 
@@ -122,9 +123,10 @@ export function CalendarSync({
   }
 
   const formatDueDate = (date: Date) => {
-    const now = new Date()
-    const daysUntil = Math.floor((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    // Lokala kalenderdagar, inte millisekunder mot klockslaget nu.
+    const daysUntil = dagarTillDatum(date)
 
+    if (daysUntil === null) return ''
     if (daysUntil < 0) return 'Försenad'
     if (daysUntil === 0) return 'Idag'
     if (daysUntil === 1) return 'Imorgon'

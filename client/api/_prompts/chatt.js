@@ -2,9 +2,26 @@
 // Flyttad ordagrant ur api/ai.js. Sanningsregeln läggs på i ./index.js, inte här.
 const { REGELVERKSREGEL, AGENT_PROMPTS, PERSONALITY_MODIFIERS, DEFAULT_AGENT, DEFAULT_PERSONALITY } = require('./_delat');
 
+/**
+ * 2026-09-24: historiken togs emot obegränsad. Varje sträng kapas till 5 000
+ * tecken av saneringen i ai.js, men antalet poster hade inget tak — en direkt
+ * POST kunde skicka hundratals och bygga en prompt på över hundra tusen tokens
+ * i ett enda anrop, långt över dygnstaket. Klienten skickar de 10 senaste
+ * (AgentChat); taket här ger marginal och gör detsamma för alla anropare.
+ * En historik som inte är en array (sträng, objekt) gav dessutom TypeError
+ * på `.map` och ett 500. Vaktat av src/test/api-ai-sse-tokentak.test.ts.
+ */
+const MAX_HISTORIK = 20;
+function begransadHistorik(h) {
+  if (!Array.isArray(h)) return [];
+  return h
+    .filter((r) => r && typeof r === 'object')
+    .slice(-MAX_HISTORIK);
+}
+
 module.exports = {
   'chatbot': (data) => {
-    const historik = data?.historik || [];
+    const historik = begransadHistorik(data?.historik);
     // B22 (2026-08-09): den här prompten var sju ord — "Du är Jobins
     // AI-karriärcoach. Var empatisk och konkret. Svara kortfattat på svenska."
     // — och saknade den sanningsregel som sex andra funktioner här i filen
@@ -53,7 +70,7 @@ module.exports = {
     };
   },
   'ai-team-chat': (data) => {
-    const historik = data?.historik || [];
+    const historik = begransadHistorik(data?.historik);
 
     // SECURITY 2026-05-09: agentTyp och personlighet whitelist:as mot
     // hårdkodade prompts i AGENT_PROMPTS / PERSONALITY_MODIFIERS. Klientens

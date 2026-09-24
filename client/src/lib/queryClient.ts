@@ -49,11 +49,21 @@ export const queryClient = new QueryClient({
  * skriva tillbaka den gamla användarens svar i den tömda cachen.
  */
 export async function rensaAllCache(): Promise<void> {
+  await avbrytAllaFragor()
+  queryClient.clear()
+}
+
+/**
+ * Avbryter alla hämtningar som är i luften, utan att tömma cachen.
+ * `signOut()` behöver de två stegen isär: avbryt först, nollställ
+ * inloggningen (så att frågorna slås av), och töm först när sessionen är
+ * borta — se kommentaren i `authStore.signOut`.
+ */
+export async function avbrytAllaFragor(): Promise<void> {
   try {
     await queryClient.cancelQueries()
   } catch {
     // Avbrott är best effort — en fråga som inte gick att avbryta ska inte
     // hindra själva tömningen, som är det som skyddar nästa användare.
   }
-  queryClient.clear()
 }

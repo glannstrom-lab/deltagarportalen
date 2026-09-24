@@ -44,6 +44,9 @@ export function SkillsSection({ className }: Props) {
   const { t } = useTranslation()
   const [skills, setSkills] = useState<ProfileSkill[]>([])
   const [loading, setLoading] = useState(true)
+  // Läsfel är inte tomhet: profileEnhancementsApi kastar vid läsfel sedan
+  // 2026-09-24, och ett fel ska synas som fel — inte som en tom lista.
+  const [loadFailed, setLoadFailed] = useState(false)
   const [adding, setAdding] = useState(false)
   const [importing, setImporting] = useState(false)
 
@@ -64,11 +67,14 @@ export function SkillsSection({ className }: Props) {
   }, [])
 
   const loadSkills = async () => {
+    setLoading(true)
+    setLoadFailed(false)
     try {
       const data = await profileSkillsApi.getAll()
       setSkills(data)
     } catch (err) {
       console.error('Error loading skills:', err)
+      setLoadFailed(true)
     } finally {
       setLoading(false)
     }
@@ -139,6 +145,28 @@ export function SkillsSection({ className }: Props) {
     return (
       <div className="flex items-center justify-center py-8">
         <Loader2 className="w-6 h-6 text-[var(--c-solid)] animate-spin" />
+      </div>
+    )
+  }
+
+  if (loadFailed) {
+    return (
+      <div
+        role="alert"
+        className={cn('p-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800', className)}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
+            {t('profile.skills.loadError')}
+          </p>
+          <button
+            type="button"
+            onClick={loadSkills}
+            className="self-start sm:self-auto px-3 py-1.5 text-sm font-medium text-stone-800 dark:text-stone-100 border border-stone-300 dark:border-stone-600 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+          >
+            {t('common.tryAgain')}
+          </button>
+        </div>
       </div>
     )
   }

@@ -53,3 +53,17 @@ describe('MatchesTab — källan står kvar vid ortbyte', () => {
     expect(screen.getByRole('button', { name: /CV/ })).toHaveAttribute('aria-pressed', 'false')
   })
 })
+
+describe('MatchesTab — ortbyte laddar om', () => {
+  // 2026-09-24: de två laddningseffekterna slogs ihop till en på [loadData].
+  // Mutation: sätt beroendet till [] → ingen omladdning, testet faller.
+  it('hämtar om underlaget när orten byts', async () => {
+    const { cvApi } = await import('@/services/cvApi')
+    render(<MemoryRouter><MatchesTab /></MemoryRouter>)
+    await screen.findByRole('button', { name: 'byt-ort' })
+    expect(cvApi.getCV).toHaveBeenCalledTimes(1)
+
+    fireEvent.click(screen.getByRole('button', { name: 'byt-ort' }))
+    await waitFor(() => expect(cvApi.getCV).toHaveBeenCalledTimes(2))
+  })
+})

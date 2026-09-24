@@ -229,11 +229,11 @@ const REGLER = [
     test: (p) => /notificationsService|NotificationsCenter/.test(p),
     skal: 'Notiscentret — ROADMAP H12 (bygg eller ta bort), levande vägen är useNotifications',
   },
-  {
-    grupp: 'UTRED',
-    test: (p) => /afEnrichmentsApi|afJobEdApi|learningService|useLearning/.test(p),
-    skal: 'Klientsidan av callerlösa edge-funktioner — ROADMAP C4 är pausad (EU-spåret)',
-  },
+  // (Regeln "Klientsidan av callerlösa edge-funktioner — ROADMAP C4 är pausad"
+  // är borttagen 2026-09-24: EU-spåret avslutades 2026-09-12, och useLearning,
+  // learningService, interestPersonalization och afEnrichmentsApi ligger i
+  // archive/2026-09-24-dodkod/. Dyker en sådan fil upp igen är den inte längre
+  // ett produktbeslut utan vanlig dödkod.)
 
   // ---- ARKIVERA: komplett funktionalitet, kan behövas som referens
   {

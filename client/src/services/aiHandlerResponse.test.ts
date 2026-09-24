@@ -99,7 +99,9 @@ function stubNetwork(
       return jsonResponse([])
     }
     if (url.includes('/rest/v1/profiles')) {
-      return jsonResponse(profile)
+      // 2026-09-24: konsulentfunktionen kräver personalroll (checkArPersonal).
+      // Rollen läses bara av den grinden, så den kan stå på alla profiler här.
+      return jsonResponse({ role: 'CONSULTANT', ...profile })
     }
     if (url.includes('/rest/v1/my_ai_policy')) {
       return jsonResponse(orgPolicy)
@@ -364,7 +366,7 @@ describe('handlerns allmänna AI-av-grind (B28)', () => {
       if (url.includes('openrouter.ai')) { openRouterCalls.push(url); return jsonResponse({ choices: [{ message: { content: 'x' } }], usage: { total_tokens: 1 } }) }
       if (url.includes('/auth/v1/user')) return jsonResponse({ id: 'u1', user: { id: 'u1' }, aud: 'authenticated' })
       if (url.includes('/rest/v1/rpc/check_rate_limit')) return jsonResponse([])
-      if (url.includes('/rest/v1/profiles')) return jsonResponse({ ai_consent_at: null, ai_enabled: true })
+      if (url.includes('/rest/v1/profiles')) return jsonResponse({ role: 'CONSULTANT', ai_consent_at: null, ai_enabled: true })
       if (url.includes('/rest/v1/ai_usage_logs')) return jsonResponse([])
       if (url.includes('/rest/v1/organization_members')) return jsonResponse({ message: 'nät' }, 500)
       throw new Error(`Oväntat nätverksanrop i test: ${url}`)

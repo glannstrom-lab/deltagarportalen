@@ -147,19 +147,18 @@ export const profileDocumentsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    try {
-      const { data, error } = await supabase
-        .from('profile_documents')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+    // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
+    // inuti ett try vars catch returnerade [] — kastet nådde aldrig anroparen,
+    // och ett fel såg ut som "inget sparat". Tabellen finns i prod, så
+    // PGRST205-undantaget (saknad tabell → []) är också borta.
+    const { data, error } = await supabase
+      .from('profile_documents')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
 
-      if (error?.code === 'PGRST205') return []
-      if (error) throw error
-      return data || []
-    } catch {
-      return []
-    }
+    if (error) throw error
+    return data || []
   },
 
   async upload(file: File, metadata: {
@@ -245,19 +244,18 @@ export const profileSkillsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    try {
-      const { data, error } = await supabase
-        .from('profile_skills')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('level', { ascending: false })
+    // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
+    // inuti ett try vars catch returnerade [] — kastet nådde aldrig anroparen,
+    // och ett fel såg ut som "inget sparat". Tabellen finns i prod, så
+    // PGRST205-undantaget (saknad tabell → []) är också borta.
+    const { data, error } = await supabase
+      .from('profile_skills')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('level', { ascending: false })
 
-      if (error?.code === 'PGRST205') return []
-      if (error) throw error
-      return data || []
-    } catch {
-      return []
-    }
+    if (error) throw error
+    return data || []
   },
 
   async add(skill: {
@@ -366,19 +364,18 @@ export const profileShareApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    try {
-      const { data, error } = await supabase
-        .from('profile_shares')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+    // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
+    // inuti ett try vars catch returnerade [] — kastet nådde aldrig anroparen,
+    // och ett fel såg ut som "inget sparat". Tabellen finns i prod, så
+    // PGRST205-undantaget (saknad tabell → []) är också borta.
+    const { data, error } = await supabase
+      .from('profile_shares')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
 
-      if (error?.code === 'PGRST205') return []
-      if (error) throw error
-      return data || []
-    } catch {
-      return []
-    }
+    if (error) throw error
+    return data || []
   },
 
   async create(options: {
@@ -470,20 +467,19 @@ export const profileHistoryApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    try {
-      const { data, error } = await supabase
-        .from('profile_history')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(limit)
+    // Läsfel KASTAS (2026-09-24). `if (error) throw error` låg tidigare
+    // inuti ett try vars catch returnerade [] — kastet nådde aldrig anroparen,
+    // och ett fel såg ut som "inget sparat". Tabellen finns i prod, så
+    // PGRST205-undantaget (saknad tabell → []) är också borta.
+    const { data, error } = await supabase
+      .from('profile_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(limit)
 
-      if (error?.code === 'PGRST205') return []
-      if (error) throw error
-      return data || []
-    } catch {
-      return []
-    }
+    if (error) throw error
+    return data || []
   },
 
 }

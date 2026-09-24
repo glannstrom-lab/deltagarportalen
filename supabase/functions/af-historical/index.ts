@@ -117,20 +117,18 @@ async function getSalaryStatistics(occupation: string) {
     .sort((a, b) => b.median - a.median)
     .slice(0, 5);
   
-  const byExperience = [
-    { experience_years: '0-2', median: p25 },
-    { experience_years: '3-5', median: Math.round(median * 0.95) },
-    { experience_years: '6-10', median: Math.round(median * 1.1) },
-    { experience_years: '10+', median: p75 },
-  ];
-  
+  // 2026-09-24: här stod en fördelning per erfarenhet som var PÅHITTAD —
+  // "0-2 år" = p25, "3-5 år" = median × 0,95, "6-10 år" = median × 1,1,
+  // "10+ år" = p75 — och skickades ut under etiketten "JobSearch API (n
+  // annonser)". Annonserna säger ingenting om erfarenhet. Ett värde utan
+  // underlag skickas inte (CLAUDE.md, lärdomen 2026-08-09). Fältet finns
+  // inte längre; klienten (afTrendsApi.getSalaryStats) faller på [].
   return {
     occupation,
     median,
     p25,
     p75,
     byRegion,
-    byExperience,
     source: `JobSearch API (${salaries.length} annonser)`,
     sampleSize: salaries.length
   };

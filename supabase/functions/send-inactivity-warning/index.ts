@@ -3,12 +3,15 @@
 // GDPR Art 5.1.e (storage limitation). När ett konto varit inaktivt i 18 månader
 // får användaren en varning om att kontot raderas vid 24 månader om de inte loggar in.
 //
-// Anropas av cron-jobbet `retention-inactive-accounts` (se 20260515_retention_cron.sql)
-// som lägger jobb i `email_queue`-tabellen. Den här edge function kan triggas via
-// pg_cron eller manuellt: SELECT process_inactivity_emails();
+// Raderna läggs i `email_queue` av pg_cron-jobbet `retention-inactive-accounts`
+// (funktionen execute_inactive_account_retention). Den här edge-funktionen
+// skickar dem — men OBS (mätt 2026-09-24): INGET cron-jobb anropar den. Det
+// finns inget `net.http_post` i cron.job och ingen `process_inactivity_emails()`
+// i databasen (kommentaren här påstod det tidigare). Kön fylls, raderingen vid
+// 24 månader körs, men varningen vid 18 månader går aldrig ut förrän ett
+// anropande jobb finns. Anropet kräver `x-cron-secret` (se _shared/cronAuth.ts).
 //
-// Mall finns nedan. Sändning sker via Supabase Auth-email (Resend backend) eller
-// extern provider beroende på vad som är konfigurerat.
+// Mallen och beslutet om att skicka bor i mall.ts (testbara från vitest).
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
@@ -17,68 +20,7 @@ import { verifyCronSecret } from '../_shared/cronAuth.ts'
 import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
 import { svensktDatum } from '../_shared/datum.ts'
-
-const getInactivityWarningTemplate = (data: {
-  firstName: string
-  lastSignInAt: string
-  daysUntilDeletion: number
-  loginUrl: string
-  exportUrl: string
-}) => `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ditt Jobin-konto raderas snart</title>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #f59e0b; color: white; padding: 30px; border-radius: 12px 12px 0 0; text-align: center; }
-    .header h1 { margin: 0; font-size: 24px; }
-    .content { background: #fffbeb; padding: 30px; border-radius: 0 0 12px 12px; }
-    .button { display: inline-block; background: #4f46e5; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 8px 20px 0; }
-    .button-secondary { display: inline-block; background: #ffffff; color: #4f46e5; border: 1px solid #4f46e5; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
-    .info-box { background: white; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
-    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; text-align: center; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <h1>Vi saknar dig på Jobin</h1>
-  </div>
-
-  <div class="content">
-    <p>Hej ${data.firstName || 'du'},</p>
-
-    <p>Vi noterar att du inte loggat in på Jobin sedan ${data.lastSignInAt}.</p>
-
-    <div class="info-box">
-      <strong>Varför detta mejl?</strong><br>
-      Enligt GDPR ska vi inte spara personuppgifter längre än nödvändigt. Om du inte loggar in inom <strong>${data.daysUntilDeletion} dagar</strong> kommer ditt konto och all data raderas automatiskt.
-    </div>
-
-    <p><strong>Vill du behålla ditt konto?</strong> Logga in nedan så fortsätter allt som vanligt:</p>
-
-    <a href="${data.loginUrl}" class="button">Logga in på Jobin</a>
-
-    <p style="margin-top: 32px;"><strong>Vill du spara din data först?</strong> Du kan exportera allt (CV, brev, profil) som JSON:</p>
-
-    <a href="${data.exportUrl}" class="button-secondary">Exportera mina data</a>
-
-    <p style="margin-top: 32px;"><strong>Vill du radera kontot direkt?</strong> Logga in och välj "Radera konto" i Inställningar.</p>
-
-    <p>Du kan alltid kontakta oss om du har frågor: <a href="mailto:dpo@jobin.se">dpo@jobin.se</a></p>
-
-    <p style="margin-top: 32px;">Vänliga hälsningar,<br><strong>Jobin-teamet</strong></p>
-
-    <div class="footer">
-      <p>Detta mejl skickas enligt GDPR Art 5.1.e (lagringsbegränsning). Det är inte marknadsföring och kan inte avregistreras.</p>
-      <p>Jobin · <a href="https://jobin.se/privacy">Integritetspolicy</a> · <a href="mailto:dpo@jobin.se">DPO</a></p>
-    </div>
-  </div>
-</body>
-</html>
-`
+import { beslutaVarning, getInactivityWarningTemplate } from './mall.ts'
 
 serve(medFelrapport('send-inactivity-warning', async (req) => {
   const preflight = handleCorsPreflightOrNull(req)
@@ -126,6 +68,7 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
 
     let sent = 0
     let failed = 0
+    let skipped = 0
     const errors: string[] = []
 
     for (const job of pending) {
@@ -151,17 +94,30 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
           console.error(`send-inactivity-warning: kunde inte läsa profil för ${job.user_id}`, profileError)
         }
 
-        const lastSignIn = user.last_sign_in_at ? new Date(user.last_sign_in_at) : new Date()
-        const lastSignInStr = svensktDatum(lastSignIn, { year: 'numeric', month: 'long' })
-        const daysSince = Math.floor((Date.now() - lastSignIn.getTime()) / (1000 * 60 * 60 * 24))
-        const daysUntilDeletion = Math.max(0, 730 - daysSince) // 24 mån = 730d
+        // Beslut + mall bor i mall.ts (testbara). Har personen loggat in sedan
+        // raden köades är varningen inaktuell: raden tas bort, så att
+        // retention-jobbet kan köa en ny om kontot blir inaktivt igen (det
+        // köar bara konton som saknar rad för mallen).
+        const beslut = beslutaVarning(user.last_sign_in_at)
+        if (!beslut.skicka) {
+          const { error: rensaFel } = await supabaseAdmin
+            .from('email_queue')
+            .delete()
+            .eq('id', job.id)
+          if (rensaFel) {
+            console.error(`[inactivity] inaktuell rad ${job.id} (${beslut.skal}) kunde inte tas bort:`, rensaFel.message)
+            errors.push(`Job ${job.id}: inaktuell (${beslut.skal}) men ej borttagen`)
+          }
+          skipped++
+          continue
+        }
+
+        const lastSignInStr = svensktDatum(new Date(user.last_sign_in_at as string), { year: 'numeric', month: 'long' })
 
         const html = getInactivityWarningTemplate({
           firstName: profile?.first_name || 'du',
           lastSignInAt: lastSignInStr,
-          daysUntilDeletion,
-          loginUrl: 'https://jobin.se/login',
-          exportUrl: 'https://jobin.se/settings?tab=privacy',
+          daysUntilDeletion: beslut.daysUntilDeletion,
         })
 
         // Skicka via Resend om RESEND_API_KEY finns, annars via Supabase Auth
@@ -217,6 +173,7 @@ serve(medFelrapport('send-inactivity-warning', async (req) => {
       processed: pending.length,
       sent,
       failed,
+      skipped,
       errors: errors.slice(0, 10),
     }, 200, origin)
   } catch (err) {

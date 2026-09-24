@@ -155,3 +155,53 @@ describe('CompactImageUpload', () => {
     expect(screen.getByText(/JPG, PNG eller WebP, max 2MB/i)).toBeInTheDocument()
   })
 })
+
+/**
+ * Inaktuell closure (react-hooks/exhaustive-deps, 2026-09-24).
+ * Klistra-in-lyssnaren låg i en useCallback med tomma beroenden och band därför
+ * FÖRSTA renderns onUpload/onChange. CVBuilder skickar en onUpload som läser
+ * `user` ur authStore — en inklistring efter att föräldern renderat om gick
+ * alltså till den gamla funktionen. Testet byter onUpload och klistrar in.
+ */
+function klistraInBild(target: EventTarget) {
+  const file = new File(['img'], 'bild.png', { type: 'image/png' })
+  const event = new Event('paste', { bubbles: true, cancelable: true }) as Event & {
+    clipboardData: { items: Array<{ type: string; getAsFile: () => File }> }
+  }
+  Object.defineProperty(event, 'clipboardData', {
+    value: { items: [{ type: 'image/png', getAsFile: () => file }] },
+  })
+  target.dispatchEvent(event)
+}
+
+describe('klistra in använder senaste props', () => {
+  beforeEach(() => {
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+  })
+
+  it('CompactImageUpload anropar den onUpload som gäller NU, inte den från första renderingen', async () => {
+    const gammal = vi.fn().mockResolvedValue('https://example.com/gammal.jpg')
+    const ny = vi.fn().mockResolvedValue('https://example.com/ny.jpg')
+    const onChange = vi.fn()
+    const { rerender } = render(<CompactImageUpload onChange={onChange} onUpload={gammal} />)
+    rerender(<CompactImageUpload onChange={onChange} onUpload={ny} />)
+
+    klistraInBild(document)
+
+    await waitFor(() => expect(ny).toHaveBeenCalledTimes(1))
+    expect(gammal).not.toHaveBeenCalled()
+  })
+
+  it('ImageUpload anropar den onUpload som gäller NU', async () => {
+    const gammal = vi.fn().mockResolvedValue('https://example.com/gammal.jpg')
+    const ny = vi.fn().mockResolvedValue('https://example.com/ny.jpg')
+    const onChange = vi.fn()
+    const { rerender, container } = render(<ImageUpload onChange={onChange} onUpload={gammal} />)
+    rerender(<ImageUpload onChange={onChange} onUpload={ny} />)
+
+    klistraInBild(container.firstElementChild!)
+
+    await waitFor(() => expect(ny).toHaveBeenCalledTimes(1))
+    expect(gammal).not.toHaveBeenCalled()
+  })
+})

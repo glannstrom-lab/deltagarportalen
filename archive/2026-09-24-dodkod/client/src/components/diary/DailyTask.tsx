@@ -89,6 +89,23 @@ interface DailyTaskState {
   completed: boolean
 }
 
+/** Dagens uppgift ur localStorage, eller en ny slumpad (som då sparas). */
+function lasFranLocalStorage(): { taskIndex: number; completed: boolean } {
+  const savedDate = localStorage.getItem('dailyTaskDate')
+  const savedIndex = localStorage.getItem('dailyTaskIndex')
+  const savedCompleted = localStorage.getItem('dailyTaskCompleted')
+  const today = formatLocalDate(new Date())
+
+  if (savedDate === today && savedIndex) {
+    return { taskIndex: parseInt(savedIndex), completed: savedCompleted === 'true' }
+  }
+  const newIndex = Math.floor(Math.random() * dailyTaskDefs.length)
+  localStorage.setItem('dailyTaskDate', today)
+  localStorage.setItem('dailyTaskIndex', newIndex.toString())
+  localStorage.setItem('dailyTaskCompleted', 'false')
+  return { taskIndex: newIndex, completed: false }
+}
+
 export function DailyTask() {
   const { t } = useTranslation()
   const [completed, setCompleted] = useState(false)
@@ -120,7 +137,7 @@ export function DailyTask() {
           setCompleted(dailyTaskState.completed)
         } else {
           // Ny dag - slumpa ny uppgift
-          const newIndex = Math.floor(Math.random() * dailyTasks.length)
+          const newIndex = Math.floor(Math.random() * dailyTaskDefs.length)
           setCurrentTaskIndex(newIndex)
           setCompleted(false)
           
@@ -130,7 +147,9 @@ export function DailyTask() {
       } catch (error) {
         console.error('Fel vid laddning av daglig uppgift:', error)
         // Fallback till localStorage
-        loadFromLocalStorage()
+        const lokalt = lasFranLocalStorage()
+        setCurrentTaskIndex(lokalt.taskIndex)
+        setCompleted(lokalt.completed)
       } finally {
         setLoading(false)
       }
@@ -138,25 +157,6 @@ export function DailyTask() {
 
     loadTaskState()
   }, [])
-
-  const loadFromLocalStorage = () => {
-    const savedDate = localStorage.getItem('dailyTaskDate')
-    const savedIndex = localStorage.getItem('dailyTaskIndex')
-    const savedCompleted = localStorage.getItem('dailyTaskCompleted')
-    const today = formatLocalDate(new Date())
-
-    if (savedDate === today && savedIndex) {
-      setCurrentTaskIndex(parseInt(savedIndex))
-      setCompleted(savedCompleted === 'true')
-    } else {
-      const newIndex = Math.floor(Math.random() * dailyTasks.length)
-      setCurrentTaskIndex(newIndex)
-      setCompleted(false)
-      localStorage.setItem('dailyTaskDate', today)
-      localStorage.setItem('dailyTaskIndex', newIndex.toString())
-      localStorage.setItem('dailyTaskCompleted', 'false')
-    }
-  }
 
   const saveTaskState = async (taskIndex: number, isCompleted: boolean) => {
     const today = formatLocalDate(new Date())

@@ -154,4 +154,12 @@ import { cleanup } from '@testing-library/react'
 afterEach(() => {
   cleanup()
   vi.clearAllMocks()
+  // 2026-09-24: lagringsmockarna ovan fick sina backing stores 2026-05-09
+  // respektive 2026-08-04 — men ingen tömde dem mellan testen. Det ett test
+  // skrev låg kvar i nästa test i samma fil, så ett test kunde passera tack
+  // vare föregångarens skrivning och falla när det kördes ensamt (`-t`) eller
+  // i annan ordning. Nu börjar varje test med tom lagring, precis som en ny
+  // webbläsarprofil. Behöver ett test data i lagringen skriver det den själv.
+  localStorageStore.clear()
+  sessionStorageStore.clear()
 })

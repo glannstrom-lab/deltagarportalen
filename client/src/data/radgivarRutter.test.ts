@@ -27,6 +27,23 @@ describe('radgivarRutter mot coaches', () => {
     expect(onadda).toEqual([])
   })
 
+  /*
+   * Tillagt 2026-09-24: testet nedan räknar ut sitt förväntade värde med SAMMA
+   * prefixregel som koden (`startsWith(p + '/')`). Ett orakel som speglar
+   * implementationen kan inte fälla den — mutationen `startsWith(entry[0])`
+   * (utan snedstreck) överlevde. De här fallen står därför med facit utskrivet.
+   */
+  it('prefixmatchen kräver ett snedstreck — /cvmall ärver inte /cv:s rådgivare', () => {
+    expect(harRadgivarinnehall('/cvmall')).toBe(false)
+    expect(harRadgivarinnehall('/careerx')).toBe(false)
+    expect(harRadgivarinnehall('/cv/my-cvs')).toBe(true)
+  })
+
+  it('procentkodad sökväg ger samma svar som den avkodade (facit utskrivet)', () => {
+    expect(harRadgivarinnehall('/spontanansökan')).toBe(true)
+    expect(harRadgivarinnehall('/spontanans%C3%B6kan')).toBe(true)
+  })
+
   it('harRadgivarinnehall svarar samma sak som ett riktigt uppslag', () => {
     const rutter = [
       '/oversikt',
