@@ -17,12 +17,11 @@ import { medFelrapport } from '../_shared/sentry.ts'
 import { fetchMedTimeout, TIDSGRANS_TJANST_MS } from '../_shared/fetchMedTimeout.ts'
 import { svensktDatum } from '../_shared/datum.ts'
 import {
-  getStaInviteEmailTemplate,
   getGenericInviteEmailTemplate,
   getEmployerInviteEmailTemplate,
 } from './mallar.ts'
 
-// Mallarna (deltagare, STA, företagskonto) bor i mallar.ts — se motiveringen där.
+// Mallarna (deltagare, företagskonto) bor i mallar.ts — se motiveringen där.
 
 
 interface ProcessResult {
@@ -79,9 +78,6 @@ async function processInvitation(
     ? `${invitation.inviter.first_name || ''} ${invitation.inviter.last_name || ''}`.trim()
     : 'Din handledare'
 
-  const isStaInvite = invitation.metadata?.program === 'steg_till_arbete'
-  const renderTemplate = isStaInvite ? getStaInviteEmailTemplate : getGenericInviteEmailTemplate
-
   // AG6: företagsinbjudan. existing_account skrivs av triggern som boolean;
   // jämförs strikt så att ett saknat fält räknas som "nytt konto".
   const isEmployerInvite = invitation.metadata?.kind === 'arbetsgivare'
@@ -111,8 +107,6 @@ async function processInvitation(
         consultant_id: invitation.consultant_id,
         invitation_id: invitation.id,
         message: invitation.metadata?.message,
-        program: invitation.metadata?.program,
-        sta_enrollment_id: invitation.metadata?.sta_enrollment_id,
       }
 
   let emailErrorMessage: string | null = null
@@ -154,7 +148,7 @@ async function processInvitation(
             actionUrl: actionLink,
             expiresAt: expiresAtFormatted,
           })
-        : renderTemplate({
+        : getGenericInviteEmailTemplate({
             firstName: invitation.metadata?.first_name,
             consultantName,
             consultantEmail: invitation.metadata?.consultant_email,
@@ -165,9 +159,7 @@ async function processInvitation(
 
       const subject = isEmployerInvite
         ? `${companyName || 'Ert företag'} — företagskonto på Jobin`
-        : isStaInvite
-          ? `Inbjudan till Steg till arbete från ${consultantName} · Jobin`
-          : 'Inbjudan till Jobin'
+        : 'Inbjudan till Jobin'
 
       const resendResponse = await fetchMedTimeout('https://api.resend.com/emails', {
         method: 'POST',

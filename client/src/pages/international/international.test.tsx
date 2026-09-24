@@ -124,6 +124,42 @@ describe('checklistan går att använda med tangentbord och sparar på riktigt',
     expect(await screen.findByText(/1 av 14/)).toBeInTheDocument()
   })
 
+  it('ett läsfel är inte en tom lista — inget sparas förrän vi vet vad som finns', async () => {
+    // Före 2026-09-24: ett misslyckat läs gav en tom checklista ("du har inte
+    // börjat"), och nästa bock skrev hela mängden — med ett enda kryss — över
+    // det som låg sparat. Mutation: `kanSpara = !laddar` (utan laddningsfel)
+    // → testet faller.
+    hamtaMock.mockRejectedValueOnce(new Error('timeout'))
+    rendera(<IntegrationTab />)
+
+    expect(await screen.findByText(/kunde inte hämta dina kryss/i)).toBeInTheDocument()
+    expect(screen.queryByText(/börja med det första steget/i)).toBeNull()
+    const rutor = screen.getAllByRole('checkbox')
+    fireEvent.click(rutor[0])
+    await new Promise((r) => setTimeout(r, 20))
+    expect(sparaMock).not.toHaveBeenCalled()
+    expect(rutor[0]).toHaveAttribute('aria-checked', 'false')
+  })
+
+  it('"Försök igen" hämtar på nytt och släpper spärren', async () => {
+    hamtaMock.mockRejectedValueOnce(new Error('timeout'))
+    hamtaMock.mockResolvedValueOnce({
+      items: { folkbokforing: { id: 'folkbokforing', completed: true } },
+      lastUpdated: '',
+    } as never)
+    rendera(<IntegrationTab />)
+
+    fireEvent.click(await screen.findByRole('button', { name: /försök igen/i }))
+    expect(await screen.findByText(/1 av 14/)).toBeInTheDocument()
+    expect(screen.queryByText(/kunde inte hämta dina kryss/i)).toBeNull()
+
+    fireEvent.click(screen.getAllByRole('checkbox')[1])
+    await waitFor(() => expect(sparaMock).toHaveBeenCalledTimes(1))
+    const skickat = sparaMock.mock.calls[0][0] as Record<string, { completed: boolean }>
+    // Det sparade krysset följer med — det skrivs inte över.
+    expect(skickat.folkbokforing.completed).toBe(true)
+  })
+
   it('varje punkt kan fällas ut och säger om den är öppen', async () => {
     rendera(<IntegrationTab />)
     const knapp = (await screen.findAllByRole('button', { name: /visa mer om/i }))[0]

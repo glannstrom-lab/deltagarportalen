@@ -32,8 +32,13 @@ export interface Flyttregion {
   namn: string
   /** Uppskattad snitthyra per månad, kr. Handinskriven, se filhuvudet. */
   uppskattadHyra: number
-  /** Uppskattad kötid till förstahandskontrakt. Handinskriven, se filhuvudet. */
-  uppskattadKotid: string
+  /**
+   * Uppskattad kötid till förstahandskontrakt, i hela år. Handinskriven, se
+   * filhuvudet. Språkneutral med flit: stod tidigare som den fria strängen
+   * '5–15 år', som en engelsk användare fick oöversatt. Visas genom
+   * `formateraKotid()`.
+   */
+  uppskattadKotidAr: { min: number; max: number }
 }
 
 /**
@@ -42,18 +47,18 @@ export interface Flyttregion {
  * var och en av dem (kontrollerat mot API:t 2026-08-21).
  */
 export const FLYTTREGIONER: Flyttregion[] = [
-  { id: 'stockholm', namn: 'Stockholm', uppskattadHyra: 14500, uppskattadKotid: '5–15 år' },
-  { id: 'gothenburg', namn: 'Göteborg', uppskattadHyra: 10500, uppskattadKotid: '3–8 år' },
-  { id: 'malmo', namn: 'Malmö', uppskattadHyra: 9500, uppskattadKotid: '2–5 år' },
-  { id: 'uppsala', namn: 'Uppsala', uppskattadHyra: 11000, uppskattadKotid: '4–10 år' },
-  { id: 'linkoping', namn: 'Linköping', uppskattadHyra: 8500, uppskattadKotid: '1–3 år' },
-  { id: 'vasteras', namn: 'Västerås', uppskattadHyra: 8000, uppskattadKotid: '1–3 år' },
-  { id: 'orebro', namn: 'Örebro', uppskattadHyra: 7500, uppskattadKotid: '1–2 år' },
-  { id: 'umea', namn: 'Umeå', uppskattadHyra: 8500, uppskattadKotid: '1–3 år' },
-  { id: 'jonkoping', namn: 'Jönköping', uppskattadHyra: 7000, uppskattadKotid: '1–2 år' },
-  { id: 'norrkoping', namn: 'Norrköping', uppskattadHyra: 7000, uppskattadKotid: '1–2 år' },
-  { id: 'lulea', namn: 'Luleå', uppskattadHyra: 7500, uppskattadKotid: '0–1 år' },
-  { id: 'sundsvall', namn: 'Sundsvall', uppskattadHyra: 6500, uppskattadKotid: '0–1 år' },
+  { id: 'stockholm', namn: 'Stockholm', uppskattadHyra: 14500, uppskattadKotidAr: { min: 5, max: 15 } },
+  { id: 'gothenburg', namn: 'Göteborg', uppskattadHyra: 10500, uppskattadKotidAr: { min: 3, max: 8 } },
+  { id: 'malmo', namn: 'Malmö', uppskattadHyra: 9500, uppskattadKotidAr: { min: 2, max: 5 } },
+  { id: 'uppsala', namn: 'Uppsala', uppskattadHyra: 11000, uppskattadKotidAr: { min: 4, max: 10 } },
+  { id: 'linkoping', namn: 'Linköping', uppskattadHyra: 8500, uppskattadKotidAr: { min: 1, max: 3 } },
+  { id: 'vasteras', namn: 'Västerås', uppskattadHyra: 8000, uppskattadKotidAr: { min: 1, max: 3 } },
+  { id: 'orebro', namn: 'Örebro', uppskattadHyra: 7500, uppskattadKotidAr: { min: 1, max: 2 } },
+  { id: 'umea', namn: 'Umeå', uppskattadHyra: 8500, uppskattadKotidAr: { min: 1, max: 3 } },
+  { id: 'jonkoping', namn: 'Jönköping', uppskattadHyra: 7000, uppskattadKotidAr: { min: 1, max: 2 } },
+  { id: 'norrkoping', namn: 'Norrköping', uppskattadHyra: 7000, uppskattadKotidAr: { min: 1, max: 2 } },
+  { id: 'lulea', namn: 'Luleå', uppskattadHyra: 7500, uppskattadKotidAr: { min: 0, max: 1 } },
+  { id: 'sundsvall', namn: 'Sundsvall', uppskattadHyra: 6500, uppskattadKotidAr: { min: 0, max: 1 } },
 ]
 
 /**
@@ -92,6 +97,16 @@ export const FLYTTCHECKLISTA = [
   { id: 'healthcare', labelKey: 'career.relocation.checklist.healthcare', narKey: 'career.relocation.when.after', prioritet: 3 },
   { id: 'parking', labelKey: 'career.relocation.checklist.parking', narKey: 'career.relocation.when.before', prioritet: 3 },
 ] as const
+
+type Oversattare = (nyckel: string, reserv: string, varden: Record<string, unknown>) => string
+
+/**
+ * Kötiden som text på aktivt språk: '5–15 år' / '5–15 years'. Svenskan är
+ * reserv om nyckeln saknas.
+ */
+export function formateraKotid(kotid: Flyttregion['uppskattadKotidAr'], t: Oversattare): string {
+  return t('career.relocation.queueYears', '{{min}}–{{max}} år', { min: kotid.min, max: kotid.max })
+}
 
 /** Snabbuppslag id → region. */
 export function hittaFlyttregion(id: string): Flyttregion | undefined {

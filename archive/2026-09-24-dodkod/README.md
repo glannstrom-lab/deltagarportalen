@@ -51,8 +51,11 @@ och `components/layout/index.ts` exporterade dem. Men ingen renderade dem
 | `client/src/components/diary/DailyTask.tsx` | 327 | "Dagens uppgift"-kortet i dagboken. Raden i `components/diary/index.ts` togs bort |
 | `client/src/components/layout/PageTabs.tsx` | 464 | Komponenterna `PageTabs` och `PageHeader` (flikraden och sidhuvudet före skenan 2026-08-17). **Typerna `Tab` och `PageStat` ligger kvar** i `client/src/components/layout/PageTabs.tsx`, som nu bara innehåller dem — 15 filer importerar dem. `components/layout/index.ts` exporterar bara `type Tab` därifrån |
 
+| `client/src/components/layout/PageHeader.tsx` | 62 | Ett **andra**, fristående `PageHeader` (rubrik, underrubrik, länk "Mina insikter" till `/`) — inte samma som det i `PageTabs.tsx`. Hölls vid liv enbart av `export { PageHeader as PageHeaderComponent }` i `components/layout/index.ts`; `grep -rn "<PageHeader\|PageHeaderComponent" client/src e2e` gav bara barrel-raden. Raden togs bort (städpasset 2026-09-24, andra omgången). Barreln själv är levande — 18 sidor importerar `PageLayout` genom den |
+
 Samtidigt togs de locale-nycklar bort som bara de här två läste:
-`diary.dailyTask.*` (19 nycklar) och `layout.pageTabs.*` (2). Tar du tillbaka
+`diary.dailyTask.*` (19 nycklar) och `layout.pageTabs.*` (2) — och för det
+fristående `PageHeader.tsx` `layout.pageHeader.*` (2: `myInsights`, `insights`). Tar du tillbaka
 en fil måste nycklarna tillbaka i båda `sv.json` och `en.json` — hämta dem ur
 git-historiken (`git show <commit>~1:client/src/i18n/locales/sv.json`).
 `dailyTaskDate`/`dailyTaskIndex`/`dailyTaskCompleted` i
@@ -75,6 +78,12 @@ rätta UTC-datumet så raden inte behövs.
 
 Montera aldrig en fil härifrån utan att först kontrollera tabellerna den
 läser mot prod-schemat (`npm run lint:schema` efter flytten).
+
+## LS1: dagbokens streak-hook
+
+| Fil | Rader | Vad den var |
+|---|---|---|
+| `client/src/hooks/useDiaryStreaks.ts` | 32 | `useDiaryStreaks` ur `client/src/hooks/useDiary.ts` (utbruten hit, filen själv är levande). Enda konsument var `Diary.tsx`s streak-räknare och troféer, borttagna 2026-09-24 eftersom DESIGN.md §1 förbjuder streak-räknare. Skrivvägen `diaryStreaksApi` i `services/diaryApi.ts` och tabellen `diary_streaks` finns kvar |
 
 ## Kvar i src som UTRED (produktbeslut, inte arkiverat)
 

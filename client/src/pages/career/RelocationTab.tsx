@@ -48,6 +48,7 @@ import {
   FLYTTCHECKLISTA,
   UPPGIFTERNA_ANGAVS,
   hittaFlyttregion,
+  formateraKotid,
 } from '@/data/flyttdata'
 
 /** Tumregeln som fotnoten anger. Hyran bör inte ta mer än så av nettot. */
@@ -65,6 +66,8 @@ interface Overkomlighet {
 
 export default function RelocationTab() {
   const { t } = useTranslation()
+  const kotidText = (kotid: Parameters<typeof formateraKotid>[0]) =>
+    formateraKotid(kotid, (nyckel, reserv, varden) => t(nyckel, { ...varden, defaultValue: reserv }))
 
   const [targetRegions, setTargetRegions] = useState<string[]>([])
   const [currentRegion, setCurrentRegion] = useState<string>('')
@@ -470,7 +473,7 @@ export default function RelocationTab() {
                     <td className="py-2 px-2 text-stone-700 dark:text-stone-300 tabular-nums">
                       {region.uppskattadHyra.toLocaleString('sv-SE')} kr
                     </td>
-                    <td className="py-2 px-2 text-stone-700 dark:text-stone-300">{region.uppskattadKotid}</td>
+                    <td className="py-2 px-2 text-stone-700 dark:text-stone-300">{kotidText(region.uppskattadKotidAr)}</td>
                     <td className="py-2 px-2 text-stone-700 dark:text-stone-300 tabular-nums">
                       {typeof jobb === 'number'
                         ? jobb.toLocaleString('sv-SE')
@@ -534,7 +537,7 @@ export default function RelocationTab() {
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colRent')}</dt>
                     <dd className="text-stone-800 dark:text-stone-100 tabular-nums">{region.uppskattadHyra.toLocaleString('sv-SE')} kr</dd>
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colQueue')}</dt>
-                    <dd className="text-stone-800 dark:text-stone-100">{region.uppskattadKotid}</dd>
+                    <dd className="text-stone-800 dark:text-stone-100">{kotidText(region.uppskattadKotidAr)}</dd>
                     <dt className="text-stone-600 dark:text-stone-400">{t('career.relocation.colJobs')}</dt>
                     <dd className="text-stone-800 dark:text-stone-100 tabular-nums">
                       {typeof jobb === 'number' ? jobb.toLocaleString('sv-SE') : t('career.relocation.jobsUnavailable')}

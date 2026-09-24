@@ -232,7 +232,14 @@ export async function getNotificationPreferences(): Promise<{
     .eq('user_id', user.id)
     .maybeSingle()
 
-  if (error || !data) {
+  // Ett läsfel KASTAR (2026-09-24). Förut gav det standardvärdena — den som
+  // stängt av mejlen såg dem påslagna, och ett "Spara" slog på dem igen.
+  // Att raden saknas är däremot normalt och ger kolumnernas DEFAULT.
+  if (error) {
+    console.error('Error fetching notification preferences:', error)
+    throw new Error('Kunde inte hämta aviseringsinställningarna')
+  }
+  if (!data) {
     return { emailEnabled: true, frequency: 'daily' }
   }
 

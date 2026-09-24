@@ -673,8 +673,8 @@ export default function Landing() {
             />
             <TrustChip
               icon={Zap}
-              title={t('landing.trust.af', 'AF-integration')}
-              description={t('landing.trust.afDesc', 'Direkt koppling till Arbetsförmedlingens API:er')}
+              title={t('landing.trust.af', 'Jobb från Arbetsförmedlingen')}
+              description={t('landing.trust.afDesc', 'Jobbsöket hämtar lediga jobb ur Arbetsförmedlingens öppna data')}
             />
           </div>
         </div>
@@ -771,7 +771,7 @@ export default function Landing() {
                 </li>
                 <li className="flex items-start gap-2">
                   <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
-                  {t('landing.audience.executive.bullet3', 'AF-integration via API')}
+                  {t('landing.audience.executive.bullet3', 'Lediga jobb från Arbetsförmedlingens platsbank')}
                 </li>
               </ul>
               <a

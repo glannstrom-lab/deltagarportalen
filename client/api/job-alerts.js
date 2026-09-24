@@ -29,7 +29,7 @@ const supabaseAnon = SUPABASE_URL && SUPABASE_ANON_KEY
   : null;
 
 // DE2 (2026-09-08): länkarna i mejlen föll tillbaka på
-// `https://deltagarportalen.se` — staging — när VITE_APP_URL saknas, och de
+// den gamla stagingdomanen deltagarportalen.se (avregistrerad 2026-09) — när VITE_APP_URL saknas, och de
 // saknade dessutom brädgården: portalen kör HashRouter, så
 // `https://www.jobin.se/job-search` landar på startsidan. `?tab=alerts` har
 // aldrig varit en rutt; bevakningarna bor på `/#/job-search/alerts`
@@ -97,12 +97,13 @@ function verifyCronSecret(req) {
 
 // Security: Allowed origins for CORS
 const ALLOWED_ORIGINS = [
-  'https://deltagarportalen.se',
-  'https://www.deltagarportalen.se',
+  // www.jobin.se STAR FORST: ALLOWED_ORIGINS[0] ar vad ett okant ursprung far tillbaka.
+  // deltagarportalen.se borttagen 2026-09-24 (BS1): avregistrerad (NXDOMAIN).
+  // Vaktat av cors-avregistrerad-doman.test.ts.
+  'https://www.jobin.se',
+  'https://jobin.se',
   'https://deltagarportalen.vercel.app',
   'https://deltagarportal.vercel.app',
-  'https://jobin.se',
-  'https://www.jobin.se',
   process.env.FRONTEND_URL,
   ...(process.env.NODE_ENV !== 'production' ? [
     'http://localhost:5173',
@@ -128,7 +129,7 @@ const ALLOWED_ORIGINS = [
  *        -H 'Origin: https://deltagarportalen-abc123-evilteam.vercel.app'
  *   -> Access-Control-Allow-Origin reflekterade angriparens origin,
  *      och svaret bar dessutom credentials-rubriken.
- * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se.)
+ * (En helt frammande origin faller tillbaka pa www.jobin.se sedan BS1, 2026-09-24.)
  *
  * ATGARD: monstermatchningen ar borta. I stallet tillater varje deploy SIN EGEN URL,
  * hamtad ur Vercels systemvariabler. De satts av plattformen per deployment och kan inte

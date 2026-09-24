@@ -12,7 +12,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { ChevronLeft, ChevronRight, ClipboardCheck, MapPin, CheckCircle } from '@/components/ui/icons'
+import { ChevronLeft, ChevronRight, ClipboardCheck, MapPin, CheckCircle, CalendarPlus } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -25,6 +25,8 @@ import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
 import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
+// NF1 (2026-09-24): passet till deltagarens egen kalender som .ics
+import { byggIcs, icsFilnamn, laddaNerIcs } from '@/lib/ics'
 import {
   addDays,
   formatLocalDate,
@@ -117,6 +119,30 @@ export default function MinVecka() {
       setCheckinFel(t('minVecka.incheckningMisslyckades', 'Incheckningen gick inte igenom. Försök igen, eller säg till din konsulent.'))
     } finally {
       setPagar(null)
+    }
+  }
+
+  // NF1: ett pass → en .ics-fil. UID:t bygger på passets id, så en ny import
+  // av samma pass uppdaterar posten i kalendern i stället för att dubblera den.
+  const handleKalender = (session: ActivitySession) => {
+    setCheckinFel(null)
+    try {
+      const ics = byggIcs([
+        {
+          uid: `${session.id}@jobin.se`,
+          datum: session.date,
+          start: session.start_time,
+          slut: session.end_time,
+          titel: session.title,
+          plats: session.location,
+          beskrivning: t(TYP_NYCKEL[session.activity_type]),
+        },
+      ])
+      laddaNerIcs(ics, icsFilnamn(`${session.title} ${session.date}`))
+      setStatus(t('minVecka.kalender.status', 'Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.'))
+    } catch {
+      // Synligt, inte bara i den dolda statusraden (samma rad som incheckningsfelet)
+      setCheckinFel(t('minVecka.kalender.fel', 'Kalenderfilen kunde inte skapas. Försök igen om en stund.'))
     }
   }
 
@@ -318,6 +344,19 @@ export default function MinVecka() {
                           setStatus(t('minVecka.franvaro.status', 'Din konsulent har fått besked.'))
                         }}
                       />
+                    )}
+                    {/* NF1: bara pass som inte redan har varit — ett gammalt pass i kalendern hjälper ingen */}
+                    {s.date >= dagens && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full sm:w-auto self-start"
+                        onClick={() => handleKalender(s)}
+                        aria-label={t('minVecka.kalender.knappEtikett', { defaultValue: 'Lägg till {{titel}} i kalendern', titel: s.title })}
+                      >
+                        <CalendarPlus className="w-4 h-4 mr-2" aria-hidden="true" />
+                        {t('minVecka.kalender.knapp', 'Lägg till i kalendern')}
+                      </Button>
                     )}
                     {/* F8: frågan uppstår vid passet — samma sändväg som Min konsulent, förifylld */}
                     {s.activity_type !== 'jobsearch_own' && (

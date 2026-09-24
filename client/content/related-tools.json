@@ -1,0 +1,82 @@
+{
+  "_kommentar": "Indata till scripts/apply-related-tools.cjs (ROADMAP TR3, 2026-09-24). `related_tools` styr hjältens knapp och verktygskorten på /guider/<slug>/ via verktygFor() i scripts/lib/guides.cjs — FÖRSTA posten blir huvudknappen. Bara sökvägar som finns i TOOLS i guides.cjs visas publikt; allt annat filtreras bort tyst (därför visade t.ex. a-kassa-guidens /calendar aldrig något, och föll tillbaka på kategorins verktyg). Urvalet: de 20 mest klickade guiderna i docs/gsc/jobin-2026-09-21.json plus a-kassa-sa-fungerar-det, som ROADMAP TR3 nämner vid namn. Varje val är gjort efter att guiden lästs: vad hjälper den som just läst texten att göra härnäst? Guider där nuvarande värde redan var rätt står inte här. Lägg aldrig /knowledge-base först — en läsknapp är ingen åtgärd.",
+  "kalla": "docs/gsc/jobin-2026-09-21.json (sidor, sorterat på klick, sedan visningar)",
+  "artiklar": {
+    "lonebidrag-sa-fungerar-det": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Guiden säger själv 'öva formuleringen innan du säger den högt' — intervjuträningen är rätt huvudknapp; jobbsök byts mot CV:t, där man beskriver vad man kan i stället för diagnosen."
+    },
+    "styrkor-svagheter-intervju": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Var tom och föll tillbaka på intresseguiden (kategori self-awareness) — men texten handlar om en intervjufråga och slutar med 'öva högt'."
+    },
+    "rusta-och-matcha": {
+      "related_tools": ["/cv", "/skills-gap-analysis", "/job-search"],
+      "varfor": "Leverantörens stöd är 'CV, ansökningar och kontakter'; ett CV att ta med till första mötet är det mest konkreta nästa steget, kartläggningen blir andra kort."
+    },
+    "skriva-in-dig-arbetsformedlingen": {
+      "related_tools": ["/cv", "/interest-guide"],
+      "varfor": "CV-utkastet stod redan rätt; intresseguiden läggs till för punkten 'vad du vill jobba med, om du inte är säker'."
+    },
+    "arbetstraning-vad-innebar-det": {
+      "related_tools": ["/wellness", "/skills-gap-analysis"],
+      "varfor": "Guiden ber läsaren skriva ner hur passen och belastningen känns vecka för vecka; /diary visas inte publikt, så huvudknappen blev kompetensanalysen — nu Må bra-verktygen."
+    },
+    "tillbaka-till-jobb-efter-sjukskrivning": {
+      "related_tools": ["/wellness", "/job-search"],
+      "varfor": "Energi och sömn under upptrappningen står kvar som huvudknapp; kalendern (osynlig publikt) byts mot jobbsök för vägen 'söka nytt' som guiden jämför med."
+    },
+    "hitta-dina-varderingar": {
+      "related_tools": ["/interest-guide", "/career"],
+      "varfor": "Kategorins intresseguide var redan rätt; karriärvägar läggs till som andra kort i stället för kunskapsbanken, för texten slutar i 'använd dina värderingar när du väljer'."
+    },
+    "etableringsprogrammet": {
+      "related_tools": ["/cv", "/interest-guide"],
+      "varfor": "Kalender och utbildning visas inte publikt, så knappen blev jobbsök; guiden ber om en kartläggning av utbildning och erfarenhet och praktik inom rätt yrkesområde — CV och intresseguide."
+    },
+    "nystartsjobb-guide": {
+      "related_tools": ["/job-search", "/interview-simulator"],
+      "varfor": "Stödet söks av arbetsgivaren: steg ett är att hitta en som vill anställa, steg två att kunna säga meningen om stödet utan att tveka. Var tom och föll tillbaka på CV."
+    },
+    "skyddat-arbete-och-samhall": {
+      "related_tools": ["/interest-guide", "/career"],
+      "varfor": "Man söker inte skyddat arbete själv, så jobbsök som huvudknapp var fel; dialogen med Samhall handlar om 'vilken typ av uppgifter som skulle passa'."
+    },
+    "kompetensutvardering": {
+      "related_tools": ["/skills-gap-analysis", "/cv", "/linkedin-optimizer"],
+      "varfor": "Guiden är en kompetensinventering med gap-analys och avsnitt om CV och LinkedIn; var tom och föll tillbaka på intresseguiden."
+    },
+    "digital-intervju": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Intervjuträningen var redan kategorins val; CV läggs till eftersom checklistan säger 'ha anteckningar redo (CV, företagsinfo, frågor)'."
+    },
+    "jobbsokning-funktionsnedsattning": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Kärnan är om och hur man berättar — guiden ger en formulering att förbereda; CV-avsnittet ('du behöver inte nämna funktionsnedsättningen') blir andra kort."
+    },
+    "feedback-efter-avslag": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Feedbacken handlar oftast om intervjun eller om vad som saknades i ansökan — där gör man förbättringen. Var tom och föll tillbaka på jobbsök."
+    },
+    "sius-stod-vid-introduktion": {
+      "related_tools": ["/job-search", "/interview-simulator"],
+      "varfor": "Kalender och dagbok visas inte publikt, så knappen blev CV-byggaren; SIUS blir aktuellt när en arbetsgivare visat intresse, och konsulenten kan följa med på intervjun."
+    },
+    "telefonintervju-tips": {
+      "related_tools": ["/interview-simulator", "/cv"],
+      "varfor": "Intervjuträningen stod redan rätt via kategorin; CV läggs till för 'ha CV och ansökan framför dig'."
+    },
+    "aktivitetsrapport-guide": {
+      "related_tools": ["/job-search"],
+      "varfor": "/applications (ansökningslistan, som vore bäst) visas inte publikt och föll därför tillbaka på jobbsök; jobbsök med sparade jobb står nu uttryckligen, och inget andra verktyg hjälper rapporten på riktigt."
+    },
+    "arbetsgivarintyg-och-betyg": {
+      "related_tools": ["/cv", "/job-search"],
+      "varfor": "Läsaren har just slutat ett jobb; guiden handlar också om referenser och tjänstgöringsbetyg, som hör hemma i CV:t. 'Sök vidare medan du väntar' blir andra kort."
+    },
+    "a-kassa-sa-fungerar-det": {
+      "related_tools": ["/job-search", "/cv"],
+      "varfor": "/calendar visas inte publikt; nästa steg i guiden är att skriva in sig och söka aktivt, vilket är underlaget a-kassan behöver."
+    }
+  }
+}

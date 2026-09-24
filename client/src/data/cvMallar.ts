@@ -69,6 +69,46 @@ const EFTER_ID = new Map(MALLFORMER.map((m) => [m.id, m]))
 export const STANDARDMALL = 'sidebar'
 
 /**
+ * Mallarna som visas direkt i CV-byggarens första steg (LS3, 2026-09-24).
+ * De övriga sju ligger bakom "Visa fler mallar".
+ *
+ * Tolv kort på en gång bröt mot DESIGN.md ("hellre 5 saker väl än 15 saker
+ * tätt"). Urvalet är de fem mest valda i prod, mätt 2026-09-24 på `cvs.template`
+ * (minimal 11, sidebar 8, manhattan 3, executive 2, centered 2 — creative och
+ * budapest hade också 2). Tre av fem är enspaltiga, vilket stämmer med
+ * `atsNote`: en spalt är det säkraste valet mot ett rekryteringssystem.
+ * `STANDARDMALL` måste finnas med — den är förvald och ska synas.
+ */
+export const REKOMMENDERADE_MALLAR: readonly string[] = [
+  'sidebar',
+  'centered',
+  'minimal',
+  'executive',
+  'manhattan',
+]
+
+/**
+ * Vilka mallkort som ska visas, i vilken ordning.
+ *
+ * De rekommenderade först, sedan de övriga — ordningen inom varje grupp följer
+ * `alla`. Ordningen är densamma utfällt och hopfällt, så att fälla ut lägger
+ * till kort efter de som redan syns i stället för att kasta om dem.
+ *
+ * Hopfällt syns de rekommenderade plus den valda mallen om den hör till de
+ * övriga — annars ser användaren inte vad hen redan valt.
+ */
+export function mallarAttVisa<T extends { id: string }>(
+  alla: readonly T[],
+  valtId: string | null | undefined,
+  visaAlla: boolean,
+): T[] {
+  const rekommenderade = alla.filter((m) => REKOMMENDERADE_MALLAR.includes(m.id))
+  const ovriga = alla.filter((m) => !REKOMMENDERADE_MALLAR.includes(m.id))
+  if (visaAlla) return [...rekommenderade, ...ovriga]
+  return [...rekommenderade, ...ovriga.filter((m) => m.id === valtId)]
+}
+
+/**
  * Mall-id som finns i `cvs.template` i prod men inte i `MALLFORMER`.
  *
  * Tre generationer har skrivit till den kolumnen. Mätt 2026-09-18 bar 7 av

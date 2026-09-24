@@ -6,15 +6,9 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation, useNavigate } from 'react-router-dom'
-import {
-  Award, Flame
-} from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab } from '@/components/diary'
-import { useDiaryStreaks } from '@/hooks/useDiary'
-import { cn } from '@/lib/utils'
-import { Card } from '@/components/ui'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 import { NotebookPen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
@@ -31,63 +25,6 @@ const TAB_DEFS = [
 ] as const
 
 type TabId = typeof TAB_DEFS[number]['id']
-
-function AchievementBanner() {
-  const { t } = useTranslation()
-  const { currentStreak, longestStreak, totalEntries, totalWords } = useDiaryStreaks()
-
-  // Only show for significant achievements
-  let achievement = null
-
-  if (currentStreak >= 7) {
-    achievement = {
-      emoji: '🔥',
-      title: t('diary.achievements.weekStreak.title'),
-      description: t('diary.achievements.weekStreak.description', { count: currentStreak }),
-      color: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800'
-    }
-  } else if (totalEntries >= 10 && totalEntries < 11) {
-    achievement = {
-      emoji: '📚',
-      title: t('diary.achievements.tenEntries.title'),
-      description: t('diary.achievements.tenEntries.description'),
-      color: 'bg-sky-50 dark:bg-sky-900/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
-    }
-  } else if (totalWords >= 1000 && totalWords < 1100) {
-    achievement = {
-      emoji: '✍️',
-      title: t('diary.achievements.thousandWords.title'),
-      description: t('diary.achievements.thousandWords.description'),
-      color: 'bg-sky-50 dark:bg-sky-900/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
-    }
-  } else if (longestStreak >= 14) {
-    achievement = {
-      emoji: '🏆',
-      title: t('diary.achievements.twoWeekRecord.title'),
-      description: t('diary.achievements.twoWeekRecord.description', { count: longestStreak }),
-      color: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800'
-    }
-  }
-
-  if (!achievement) return null
-
-  return (
-    <Card className={cn("p-4 border", achievement.color)}>
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-white dark:bg-stone-700 rounded-lg flex items-center justify-center text-xl shadow-sm flex-shrink-0">
-          {achievement.emoji}
-        </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0" />
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">{achievement.title}</h3>
-          </div>
-          <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{achievement.description}</p>
-        </div>
-      </div>
-    </Card>
-  )
-}
 
 export default function Diary() {
   const { t } = useTranslation()
@@ -109,7 +46,6 @@ function DiaryInner() {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
-  const { currentStreak } = useDiaryStreaks()
 
   // Fliken är helt härledd av URL:en — ingen egen state behövs. Läg tidigare
   // i state + en synk-effekt, vilket gav en extra rendering vid varje
@@ -164,19 +100,9 @@ function DiaryInner() {
       }}
 >
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-        {/* Achievement Banner (only for significant milestones) */}
-        <AchievementBanner />
-
-        {/* Streak — flikarna ligger numera i sidoskenan (steg 5), den här
-            badgen är inte en flik och blir kvar i innehållet. */}
-        {currentStreak > 0 && (
-          <div className="flex items-center gap-1.5 px-3 py-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)] w-fit">
-            <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" aria-hidden="true" />
-            <span className="font-bold text-orange-600 dark:text-orange-400">{currentStreak}</span>
-            <span className="text-xs text-orange-500 dark:text-orange-400">{t('diary.streak.days')}</span>
-          </div>
-        )}
-
+        {/* LS1 (2026-09-24): räknaren "N dagar i rad" och troférna är borttagna.
+            DESIGN.md §1 förbjuder streak-räknare — en dagbok ska inte straffa
+            den som hoppar över en dag. Lägg inte tillbaka dem. */}
         <RadgivarTips pathname="/diary" index={0} />
 
         {/* Tab Content */}

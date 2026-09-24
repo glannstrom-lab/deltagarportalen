@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
 import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { safeReturnTo, medReturnTo } from '../lib/returnTo'
+import { PUBLIC_PAGE_BOTTOM_PADDING } from '@/components/CookieConsent'
 
 /**
  * KO2: samma karta som i Login.tsx (medvetet duplicerad — två sidor, ingen
@@ -188,7 +189,11 @@ export default function Register() {
   const isPasswordValid = passwordStrength.isValid && !errors.password
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4">
+    // TR1: bottenpaddingen reserverar kakbannerns höjd (0 när den är stängd).
+    <div
+      className="min-h-screen bg-stone-50 dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4"
+      style={{ paddingBottom: PUBLIC_PAGE_BOTTOM_PADDING }}
+    >
       <div className="w-full max-w-md">
         {/* Logo — samma logo som Login och topbar för enhetlighet */}
         <div className="text-center mb-8">

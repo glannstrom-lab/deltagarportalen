@@ -19,6 +19,14 @@ export interface CoverLetterTemplateConfig {
   fontFamily: 'sans' | 'serif'
 }
 
+/**
+ * `name` och `description` är den SVENSKA texten och fungerar som reservtext.
+ * Gränssnittet läser dem genom `mallText()` nedan, som slår upp
+ * `coverLetter.templates.<id>.name|description` i locale-filerna — annars
+ * fick en engelsk användare "Professionell" och "Klassisk och tidlös design"
+ * mitt i en engelsk mallväljare (prod-svepet 2026-09-24). Lägger du till en
+ * mall: lägg nycklarna i både sv.json och en.json.
+ */
 export const COVER_LETTER_TEMPLATES: CoverLetterTemplateConfig[] = [
   {
     id: 'professional',
@@ -78,6 +86,16 @@ export const COVER_LETTER_TEMPLATES: CoverLetterTemplateConfig[] = [
     }
   }
 ]
+
+type Oversattare = (nyckel: string, reserv: string) => string
+
+/** Mallens namn och beskrivning på aktivt språk; svenskan är reserv. */
+export function mallText(mall: CoverLetterTemplateConfig, t: Oversattare) {
+  return {
+    namn: t(`coverLetter.templates.${mall.id}.name`, mall.name),
+    beskrivning: t(`coverLetter.templates.${mall.id}.description`, mall.description),
+  }
+}
 
 export const getTemplateById = (id: string): CoverLetterTemplateConfig | undefined => {
   return COVER_LETTER_TEMPLATES.find(t => t.id === id)

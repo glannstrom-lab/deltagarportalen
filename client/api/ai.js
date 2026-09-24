@@ -618,14 +618,14 @@ async function fetchWithRetry(url, options, maxRetries = 2) {
 // Security: Allowed origins for CORS
 // ============================================
 const ALLOWED_ORIGINS = [
-  // Production domains
-  'https://deltagarportalen.se',
-  'https://www.deltagarportalen.se',
+  // Produktionsdomanen. www.jobin.se STAR FORST: ALLOWED_ORIGINS[0] ar vad ett okant
+  // ursprung far tillbaka i getCorsHeaders. (jobin.se svarar 307 till www.)
+  // deltagarportalen.se ar borttagen 2026-09-24 (BS1): domanen ar avregistrerad
+  // (NXDOMAIN) och kan tas av vem som helst. Vaktat av cors-avregistrerad-doman.test.ts.
+  'https://www.jobin.se',
+  'https://jobin.se',
   'https://deltagarportalen.vercel.app',
   'https://deltagarportal.vercel.app',
-  // Legacy domains
-  'https://jobin.se',
-  'https://www.jobin.se',
   // Environment-specific frontend URL
   process.env.FRONTEND_URL,
   // Allow localhost in development only
@@ -654,7 +654,8 @@ const ALLOWED_ORIGINS = [
  *        -H 'Origin: https://deltagarportalen-abc123-evilteam.vercel.app'
  *   -> Access-Control-Allow-Origin reflekterade angriparens origin,
  *      och svaret bar dessutom credentials-rubriken.
- * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se.)
+ * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se - numera
+ *  www.jobin.se, eftersom deltagarportalen.se ar avregistrerad, BS1 2026-09-24.)
  *
  * ATGARD: monstermatchningen ar borta. I stallet tillater varje deploy SIN EGEN URL,
  * hamtad ur Vercels systemvariabler. De satts av plattformen per deployment och kan inte

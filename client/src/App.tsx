@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { useAuthInit } from './hooks/useAuthInit'
@@ -31,6 +31,7 @@ import { FocusExitButton } from './components/focus/shell/FocusExitButton'
 // samtliga rutter — även login/register/landning.
 import { RouteAnnouncer } from './components/layout/RouteAnnouncer'
 import { KonsulentSamtyckeFraga } from '@/components/consultant/KonsulentSamtyckeFraga'
+import { saknadeGrundsamtycken } from '@/services/consentApi'
 
 // Lazy-loaded sidor
 const CVPage = lazy(() => import('./pages/CVPage'))
@@ -82,6 +83,51 @@ const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
 const MinVardagHub = lazy(() => import('./pages/hubs/MinVardagHub'))
 
 // STA (Steg till arbete) arkiverades 2026-09-12 — archive/2026-09-sta/. Ingen route.
+
+/**
+ * TR2 (2026-09-24): en gäst som klickar på ett verktyg från en guide skickades
+ * alltid till inloggningen ("Välkommen tillbaka!") — även första gången hon
+ * någonsin var här. Hon ska till registreringen, men den som redan har konto
+ * ska fortfarande till inloggningen.
+ *
+ * Det fanns ingen befintlig signal som överlever utloggning: Supabase-sessionen
+ * (`supabase.auth.token`) tas bort vid signOut, och `auth-storage` m.fl. rensas
+ * av `clearUserScopedStorage()` (utils/safeStorage.ts). Därför en egen flagga,
+ * satt i `App` varje gång `isAuthenticated` blir sann — det täcker lösenord,
+ * Google, inbjudan och återställd session. Den bär ingen identitet, bara "någon
+ * har loggat in i den här webbläsaren", och får därför INTE läggas i
+ * USER_SCOPED_STORAGE_KEYS (vaktat av App.returnTo.test.tsx).
+ *
+ * Den som loggade ut innan flaggan fanns hamnar en gång på registreringen, där
+ * "Har du redan ett konto? Logga in" tar henne vidare med returnTo i behåll.
+ */
+export const HAR_LOGGAT_IN_KEY = 'jobin_har_loggat_in'
+
+// eslint-disable-next-line react-refresh/only-export-components -- hjälpare testas direkt
+export function harLoggatInForut(): boolean {
+  try {
+    return localStorage.getItem(HAR_LOGGAT_IN_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+function markeraInloggning(): void {
+  try {
+    localStorage.setItem(HAR_LOGGAT_IN_KEY, '1')
+  } catch {
+    // privat läge / blockerad lagring — då blir det registreringen, som länkar vidare
+  }
+}
+
+/** TR2: sätter flaggan när någon är inloggad. Anropas en gång, i `App`. */
+// eslint-disable-next-line react-refresh/only-export-components -- hook testas direkt
+export function useMinnsInloggning(): void {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated)
+  useEffect(() => {
+    if (isAuthenticated) markeraInloggning()
+  }, [isAuthenticated])
+}
 
 /**
  * Lazy route wrapper with error boundary
@@ -213,7 +259,8 @@ function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode
 }
 
 // Root route - shows Landing for guests, Layout with Dashboard for authenticated users
-function RootRoute() {
+// Exporteras för App.returnTo.test.tsx (TR2).
+export function RootRoute() {
   const { isAuthenticated, isLoading } = useAuthStore()
   const location = useLocation()
 
@@ -239,7 +286,9 @@ function RootRoute() {
      * Landningssidan är rätt svar för `/` — men bara för `/`.
      */
     if (location.pathname !== '/') {
-      return <Navigate to={medReturnTo('/login', location.pathname + location.search)} replace />
+      // TR2: ny besökare → registreringen, återkommande → inloggningen.
+      const mal = harLoggatInForut() ? '/login' : '/register'
+      return <Navigate to={medReturnTo(mal, location.pathname + location.search)} replace />
     }
 
     return (
@@ -277,6 +326,9 @@ function App() {
    */
   const { isLoading } = useAuthInit()
 
+  useMinnsInloggning()
+  const profilForSamtycke = useAuthStore((state) => state.profile)
+
   // Show loading screen while auth initializes
   if (isLoading) {
     return (
@@ -289,6 +341,8 @@ function App() {
     )
   }
 
+  const saknarGrundsamtycke = saknadeGrundsamtycken(profilForSamtycke).length > 0
+
   // Full routing restored
   return (
     <>
@@ -296,7 +350,9 @@ function App() {
       {/* KS3: efterhandsfrågan om konsulentkopplingen. Ligger utanför <Routes> för
           att de 13 deltagare som kopplades utan samtycke ska mötas av den oavsett
           vilken sida de landar på — den renderar null för alla andra. */}
-      <KonsulentSamtyckeFraga />
+      {/* DP1 (2026-09-24): SamtyckeSteg (villkor/integritet) går först. Utan den här
+          grinden staplades två modaler med var sin aktiv fokusfälla. */}
+      {!saknarGrundsamtycke && <KonsulentSamtyckeFraga />}
       <Routes>
         {/* Auth routes - redirect if already logged in */}
         <Route path="/login" element={

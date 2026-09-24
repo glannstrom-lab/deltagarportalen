@@ -27,6 +27,13 @@ vi.mock('@/hooks/useSavedJobs', () => ({
   })),
 }))
 
+// AT2: bevakningen går genom useJobAlerts — samma väg som Bevakningar-fliken
+const createAlert = vi.fn()
+let befintligaBevakningar: Array<Record<string, unknown>> = []
+vi.mock('@/hooks/useJobAlerts', () => ({
+  useJobAlerts: () => ({ alerts: befintligaBevakningar, createAlert: (...a: unknown[]) => createAlert(...a) }),
+}))
+
 // Mock supabase
 vi.mock('@/lib/supabase', () => ({
   supabase: {
@@ -46,11 +53,12 @@ vi.mock('@/lib/supabase', () => ({
 }))
 
 import JobSearch from './JobSearch'
-import { searchJobs, getAutocomplete } from '@/services/arbetsformedlingenApi'
+import { searchJobs, getAutocomplete, getJobDetails } from '@/services/arbetsformedlingenApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 
 const mockSearchJobs = searchJobs as ReturnType<typeof vi.fn>
 const mockGetAutocomplete = getAutocomplete as ReturnType<typeof vi.fn>
+const mockGetJobDetails = getJobDetails as ReturnType<typeof vi.fn>
 const mockUseSavedJobs = useSavedJobs as ReturnType<typeof vi.fn>
 
 // Test wrapper
@@ -72,6 +80,8 @@ describe('JobSearch', () => {
       total: { value: 0 },
     })
     mockGetAutocomplete.mockResolvedValue([])
+    createAlert.mockReset()
+    befintligaBevakningar = []
   })
 
   describe('rendering', () => {
@@ -268,6 +278,115 @@ describe('JobSearch', () => {
       } finally {
         await i18n.changeLanguage('sv')
       }
+    })
+  })
+  /*
+   * Städpasset 2026-09-24: getJobDetails returnerar null när AF inte svarar,
+   * och klicket gjorde då ingenting alls.
+   * Mutation: ta bort `setDetaljFelId(jobId)` → RÖD.
+   */
+  describe('när annonsen inte går att hämta', () => {
+    it('visar ett vänligt fel vid jobbet, med en väg till Platsbanken', async () => {
+      mockSearchJobs.mockResolvedValue({
+        hits: [{ id: 'job-42', headline: 'Lagerarbetare', employer: { name: 'Lager AB' }, workplace_address: { municipality: 'Malmö' }, publication_date: '2026-09-20' }],
+        total: { value: 1 },
+      })
+      mockGetJobDetails.mockResolvedValue(null)
+      renderWithProviders(<JobSearch />)
+      fireEvent.click(await screen.findByRole('button', { name: 'Lagerarbetare' }))
+
+      const fel = await screen.findByRole('alert')
+      expect(fel).toHaveTextContent('Annonsen kunde inte öppnas just nu. Försök igen om en stund.')
+      const lank = screen.getByRole('link', { name: 'Öppna annonsen på Platsbanken' })
+      expect(lank).toHaveAttribute('href', 'https://arbetsformedlingen.se/platsbanken/annonser/job-42')
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+      fireEvent.click(screen.getByRole('button', { name: 'Stäng meddelandet' }))
+      await waitFor(() => expect(screen.queryByRole('alert')).not.toBeInTheDocument())
+    })
+
+    it('ett kastat fel ger samma meddelande, inte en ohanterad avvisning', async () => {
+      mockSearchJobs.mockResolvedValue({
+        hits: [{ id: 'job-43', headline: 'Kock', employer: { name: 'Krog AB' }, workplace_address: { municipality: 'Lund' }, publication_date: '2026-09-20' }],
+        total: { value: 1 },
+      })
+      mockGetJobDetails.mockRejectedValue(new Error('nät'))
+      renderWithProviders(<JobSearch />)
+      fireEvent.click(await screen.findByRole('button', { name: 'Kock' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent('Annonsen kunde inte öppnas just nu.')
+    })
+  })
+
+  /*
+   * AT2 (2026-09-24): spara sökningen som bevakning.
+   * Mutationer (alla RÖDA): skicka inte med region → RÖD; visa knappen även
+   * utan sökord/län/kommun → RÖD; ta bort "följer inte med"-raden → RÖD;
+   * släpp dubblettkontrollen → RÖD.
+   */
+  describe('spara sökningen som bevakning', () => {
+    const traffar = {
+      hits: [{ id: 'job1', headline: 'Lärare i matematik', employer: { name: 'Skolan' }, workplace_address: { municipality: 'Malmö' }, publication_date: '2026-09-20' }],
+      total: { value: 1 },
+    }
+
+    async function sokPa(ord: string, lan?: string) {
+      renderWithProviders(<JobSearch />)
+      fireEvent.click(await screen.findByRole('button', { name: /sök & filtrera/i }))
+      fireEvent.change(document.getElementById('job-search-input')!, { target: { value: ord } })
+      if (lan) fireEvent.change(document.getElementById('filter-region')!, { target: { value: lan } })
+    }
+
+    it('skapar en bevakning med sökord och län via useJobAlerts', async () => {
+      mockSearchJobs.mockResolvedValue(traffar)
+      createAlert.mockResolvedValue({ id: 'a1' })
+      await sokPa('Lärare', 'SE224')
+
+      fireEvent.click(await screen.findByRole('button', { name: 'Spara den här sökningen som bevakning' }))
+      await waitFor(() => expect(createAlert).toHaveBeenCalledTimes(1))
+      expect(createAlert).toHaveBeenCalledWith({
+        name: 'Lärare · Skåne län',
+        query: 'Lärare',
+        region: 'SE224',
+        municipality: undefined,
+      })
+      expect(await screen.findByText('Sparad som bevakning.')).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Se dina bevakningar' })).toHaveAttribute('href', '/job-search/alerts')
+    })
+
+    it('erbjuds också när sökningen gav noll träffar — då gör bevakningen mest nytta', async () => {
+      await sokPa('Fyrvaktare')
+      expect(await screen.findByRole('button', { name: 'Spara den här sökningen som bevakning' })).toBeInTheDocument()
+    })
+
+    it('säger vad som inte följer med när yrke, anställningsform eller datum är valt', async () => {
+      mockSearchJobs.mockResolvedValue(traffar)
+      await sokPa('Lärare')
+      fireEvent.change(document.getElementById('filter-employment-type')!, { target: { value: 'Heltid' } })
+      expect(await screen.findByText(/Yrken, anställningsform och datumfilter följer inte med/)).toBeInTheDocument()
+    })
+
+    it('visar ett fel om sparningen misslyckas, i stället för att låtsas', async () => {
+      mockSearchJobs.mockResolvedValue(traffar)
+      createAlert.mockRejectedValue(new Error('RLS'))
+      await sokPa('Lärare')
+      fireEvent.click(await screen.findByRole('button', { name: 'Spara den här sökningen som bevakning' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent('Bevakningen kunde inte sparas.')
+      expect(screen.queryByText('Sparad som bevakning.')).not.toBeInTheDocument()
+    })
+
+    it('säger att sökningen redan bevakas i stället för att skapa en dubblett', async () => {
+      mockSearchJobs.mockResolvedValue(traffar)
+      befintligaBevakningar = [{ id: 'a0', name: 'Lärare', query: 'lärare', region: null, municipality: null }]
+      await sokPa('Lärare')
+      expect(await screen.findByText('Du bevakar redan den här sökningen.')).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Spara den här sökningen som bevakning' })).not.toBeInTheDocument()
+    })
+
+    it('erbjuds inte när det inte finns något att bevaka (inget sökord, län eller kommun)', async () => {
+      mockSearchJobs.mockResolvedValue(traffar)
+      renderWithProviders(<JobSearch />)
+      await screen.findByText('Lärare i matematik')
+      expect(screen.queryByRole('button', { name: 'Spara den här sökningen som bevakning' })).not.toBeInTheDocument()
     })
   })
 })

@@ -31,8 +31,8 @@ import {
   beslutaVarning,
   getInactivityWarningTemplate,
 } from '../../../supabase/functions/send-inactivity-warning/mall.ts'
+import * as inbjudningsmallar from '../../../supabase/functions/send-invite-email/mallar.ts'
 import {
-  getStaInviteEmailTemplate,
   getGenericInviteEmailTemplate,
   getEmployerInviteEmailTemplate,
   meddelandeHtml,
@@ -113,11 +113,8 @@ describe('send-invite-email — allt som interpoleras eskaperas', () => {
     expiresAt: '1 oktober 2026',
   }
 
-  it.each([
-    ['STA', getStaInviteEmailTemplate],
-    ['generell', getGenericInviteEmailTemplate],
-  ])('%s-mallen: ingen rå HTML från konsulent eller deltagare', (_n, mall) => {
-    const html = mall(bas)
+  it('den generella mallen: ingen rå HTML från konsulent eller deltagare', () => {
+    const html = getGenericInviteEmailTemplate(bas)
     expect(html).not.toContain('<a href="https://evil.example">')
     expect(html).not.toContain('<b>fet')
     expect(html).not.toContain('<i>Anna</i>')
@@ -157,5 +154,22 @@ describe('af-historical — inga påhittade tal', () => {
     // Kodformen, inte ordet — ordet står kvar i förklaringskommentaren.
     expect(kod).not.toMatch(/byExperience\s*[=,]/)
     expect(kod).not.toMatch(/median\s*\*\s*(0\.95|1\.1)/)
+  })
+})
+
+// STA arkiverades 2026-09-12. Inbjudningsmejlet hade kvar en egen STA-mall som
+// valdes när invitations.metadata.program = 'steg_till_arbete' och lovade att
+// "Steg till arbete är aktiverat direkt". Ingen kod skapar sådana inbjudningar
+// (0 rader i prod 2026-09-24, sta_bulk_invite ej körbar för authenticated).
+describe('send-invite-email — ingen STA-gren kvar', () => {
+  it('mallar.ts exporterar ingen STA-mall', () => {
+    expect(inbjudningsmallar).not.toHaveProperty('getStaInviteEmailTemplate')
+  })
+
+  it('index.ts väljer inte mall eller ämnesrad efter programmet', () => {
+    const kod = las('../../../supabase/functions/send-invite-email/index.ts')
+    expect(kod).not.toContain("'steg_till_arbete'")
+    expect(kod).not.toContain('Steg till arbete')
+    expect(kod).not.toContain('sta_enrollment_id')
   })
 })

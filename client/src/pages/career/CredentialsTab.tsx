@@ -32,17 +32,34 @@ import { datumSprak } from '@/lib/datumsprak'
  * gamla utan att någon märkte det. (2026-08-21)
  */
 const POPULAR_CREDENTIALS = [
-  { name: 'Truckkort A + B', issuer: 'TLP-10', type: 'license' as const },
-  { name: 'YKB — yrkesförarkompetens', issuer: 'Transportstyrelsen', type: 'license' as const },
-  { name: 'HLR och första hjälpen', issuer: 'HLR-rådet', type: 'course' as const },
-  { name: 'Livsmedelshygien', issuer: 'Utbildningsanordnare', type: 'course' as const },
-  { name: 'Heta arbeten', issuer: 'Brandskyddsföreningen', type: 'license' as const },
-  { name: 'Delegering läkemedel', issuer: 'Arbetsgivare i vården', type: 'course' as const },
-  { name: 'Väktarutbildning (VU1)', issuer: 'Auktoriserat bevakningsföretag', type: 'license' as const },
-  { name: 'B-körkort', issuer: 'Transportstyrelsen', type: 'license' as const },
-  { name: 'SFI — svenska för invandrare', issuer: 'Din kommun', type: 'course' as const },
-  { name: 'Grundläggande datorkunskap', issuer: 'Utbildningsanordnare', type: 'course' as const },
+  { id: 'truck', name: 'Truckkort A + B', issuer: 'TLP-10', type: 'license' as const },
+  { id: 'ykb', name: 'YKB — yrkesförarkompetens', issuer: 'Transportstyrelsen', type: 'license' as const },
+  { id: 'hlr', name: 'HLR och första hjälpen', issuer: 'HLR-rådet', type: 'course' as const },
+  { id: 'livsmedel', name: 'Livsmedelshygien', issuer: 'Utbildningsanordnare', type: 'course' as const },
+  { id: 'hetaArbeten', name: 'Heta arbeten', issuer: 'Brandskyddsföreningen', type: 'license' as const },
+  { id: 'delegering', name: 'Delegering läkemedel', issuer: 'Arbetsgivare i vården', type: 'course' as const },
+  { id: 'vaktare', name: 'Väktarutbildning (VU1)', issuer: 'Auktoriserat bevakningsföretag', type: 'license' as const },
+  { id: 'bKorkort', name: 'B-körkort', issuer: 'Transportstyrelsen', type: 'license' as const },
+  { id: 'sfi', name: 'SFI — svenska för invandrare', issuer: 'Din kommun', type: 'course' as const },
+  { id: 'dator', name: 'Grundläggande datorkunskap', issuer: 'Utbildningsanordnare', type: 'course' as const },
 ]
+
+type PopularCredential = typeof POPULAR_CREDENTIALS[number]
+
+/**
+ * Förslagets namn och utfärdare på aktivt språk. Svenskan i listan ovan är
+ * reservtext; engelskan bor i `career.credentials.popular.<id>`. Namn på
+ * myndigheter och organisationer (Transportstyrelsen, HLR-rådet,
+ * Brandskyddsföreningen, TLP-10) står kvar på svenska även i engelskan — det är
+ * det som står på intyget. Bara de beskrivande orden översätts
+ * ("Utbildningsanordnare", "Din kommun"). (2026-09-24)
+ */
+function forslagText(p: PopularCredential, t: (nyckel: string, reserv: string) => string) {
+  return {
+    name: t(`career.credentials.popular.${p.id}.name`, p.name),
+    issuer: t(`career.credentials.popular.${p.id}.issuer`, p.issuer),
+  }
+}
 
 type CredentialType = 'certification' | 'degree' | 'course' | 'license'
 
@@ -110,12 +127,14 @@ export default function CredentialsTab() {
     }
   }
 
-  const handleAddPopular = async (cred: typeof POPULAR_CREDENTIALS[0]) => {
+  const handleAddPopular = async (cred: PopularCredential) => {
     setIsSaving(true)
+    // Sparas på det språk användaren ser — det är användarens egen merit.
+    const text = forslagText(cred, (nyckel, reserv) => t(nyckel, reserv))
     try {
       const saved = await credentialsApi.save({
-        name: cred.name,
-        issuer: cred.issuer,
+        name: text.name,
+        issuer: text.issuer,
         type: cred.type,
         status: 'planned',
       })
@@ -446,9 +465,13 @@ export default function CredentialsTab() {
           {/* `.slice(0, 6)` stod här och dolde de sista posterna helt — SFI låg
               på index 8 och kunde aldrig visas förrän användaren lagt till två
               andra. Listan är kort nog att visas hel. */}
-          {POPULAR_CREDENTIALS.filter(p => !credentials.find(c => c.name === p.name)).map((cred) => (
+          {/* Ett förslag döljs när meriten redan finns — på vilket språk den än
+              sparades, annars dyker det upp igen efter ett språkbyte. */}
+          {POPULAR_CREDENTIALS.map((cred) => ({ cred, text: forslagText(cred, (nyckel, reserv) => t(nyckel, reserv)) }))
+            .filter(({ cred, text }) => !credentials.find(c => c.name === cred.name || c.name === text.name))
+            .map(({ cred, text }) => (
             <button
-              key={cred.name}
+              key={cred.id}
               onClick={() => handleAddPopular(cred)}
               disabled={isSaving}
               className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 transition-all text-left group disabled:opacity-50"
@@ -457,8 +480,8 @@ export default function CredentialsTab() {
                 <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">{cred.name}</p>
-                <p className="text-xs text-gray-600 dark:text-gray-400">{cred.issuer}</p>
+                <p className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">{text.name}</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400">{text.issuer}</p>
               </div>
             </button>
           ))}

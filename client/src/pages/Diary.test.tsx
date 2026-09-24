@@ -69,12 +69,14 @@ vi.mock('@/components/focus/pages/FocusDiaryWizard', () => ({
   FocusDiaryWizard: () => null,
 }))
 
+// LS1: mocken ger en användare som skrivit länge — om sidan någonsin åter
+// läser streak-data ska den ha något att visa, och testet nedan faller.
 vi.mock('@/hooks/useDiary', () => ({
   useDiaryStreaks: () => ({
-    currentStreak: 0,
-    longestStreak: 0,
-    totalEntries: 0,
-    totalWords: 0,
+    currentStreak: 9,
+    longestStreak: 15,
+    totalEntries: 10,
+    totalWords: 1050,
   }),
 }))
 
@@ -141,5 +143,15 @@ describe('F6: bara Mood kräver hälsosamtycke', () => {
     const gate = screen.getByTestId('wellness-gate')
     expect(gate).toBeInTheDocument()
     expect(gate).toHaveTextContent('mood-tab-content')
+  })
+})
+
+describe('LS1: dagboken visar ingen streak-räknare och inga troféer (DESIGN.md §1)', () => {
+  it('ingen "N dagar"-räknare, ingen eld och ingen trofé', () => {
+    const { container } = renderPage()
+    const text = container.textContent ?? ''
+    expect(text).not.toMatch(/🔥|🏆|📚|✍️/)
+    expect(text).not.toMatch(/\b9\b|\b15\b/)
+    expect(text).not.toMatch(/dagar i rad|i rad/i)
   })
 })

@@ -55,8 +55,8 @@
     "seesHeading": "This is what {{namn}} can see:",
     "seesList": [
       "your contact details — name, email and phone number",
-      "whether you have a CV, the ATS score it got, and when you last changed it",
-      "whether you have done the interest test, and which Holland code you got",
+      "whether you have a CV, how complete the portal thinks it is, and when you last changed it",
+      "whether you have done the interest test, and which type of job it suggested for you",
       "how many jobs you have saved",
       "when you last signed in",
       "notes and goals that {{namn}} writes about you — you can read those yourself"
@@ -1509,7 +1509,23 @@
       "copiedAria": "The letter has been copied."
     },
     "templates": {
-      "selectAria": "Choose letter template"
+      "selectAria": "Choose letter template",
+      "professional": {
+        "name": "Professional",
+        "description": "Classic design that works for most jobs"
+      },
+      "modern": {
+        "name": "Modern",
+        "description": "Clean and airy, with a touch of color"
+      },
+      "minimal": {
+        "name": "Minimal",
+        "description": "Simple and focused, nothing extra"
+      },
+      "executive": {
+        "name": "Executive",
+        "description": "Formal, with a serif font, for senior roles"
+      }
     },
     "myLetters": {
       "loading": "Fetching your letters...",
@@ -1542,7 +1558,9 @@
     },
     "closingGreeting": "Best regards,",
     "colorPreview": {
-      "secondary": "Secondary"
+      "secondary": "Secondary",
+      "header": "Heading",
+      "accent": "Accent"
     }
   },
   "jobSearch": {
@@ -1668,7 +1686,8 @@
       "confirmDelete": "Are you sure you want to delete this alert?",
       "delete": "Delete",
       "searching": "Searching...",
-      "searchNow": "Search now"
+      "searchNow": "Search now",
+      "loadFailed": "We could not get your email settings right now. We do not show them until we know what you chose, so nothing changes by mistake."
     },
     "dailyTab": {
       "loading": "Finding your job of the day...",
@@ -1714,7 +1733,21 @@
     "sortCompanyAZ": "Company A-Z",
     "markAsApplied": "Mark as applied",
     "endOfList": "No more jobs to show",
-    "loadingMore": "Loading more jobs…"
+    "loadingMore": "Loading more jobs…",
+    "bevakning": {
+      "spara": "Save this search as a job alert",
+      "sparar": "Saving…",
+      "sparad": "Saved as a job alert.",
+      "visa": "See your job alerts",
+      "finns": "You already have a job alert for this search.",
+      "fel": "The job alert could not be saved. Please try again in a while.",
+      "foljerInteMed": "The job alert saves the search words, county and municipality. Occupations, type of employment and date filter are not saved."
+    },
+    "detaljFel": {
+      "text": "The job ad could not be opened right now. Please try again in a while.",
+      "platsbanken": "Open the job ad on Platsbanken",
+      "stang": "Close the message"
+    }
   },
   "jobs": {
     "card": {
@@ -2613,7 +2646,49 @@
       "deleteLabel": "Delete {{name}}",
       "statusGroupLabel": "Status for {{name}}",
       "emptyTitle": "This is where you collect your credentials",
-      "emptyBody": "Courses, licences, certificates and education — both what you have and what you are aiming for. Then you do not have to go looking when you apply for a job."
+      "emptyBody": "Courses, licences, certificates and education — both what you have and what you are aiming for. Then you do not have to go looking when you apply for a job.",
+      "popular": {
+        "truck": {
+          "name": "Forklift license A + B (truckkort)",
+          "issuer": "TLP-10"
+        },
+        "ykb": {
+          "name": "YKB — professional driver qualification",
+          "issuer": "Transportstyrelsen"
+        },
+        "hlr": {
+          "name": "CPR and first aid (HLR)",
+          "issuer": "HLR-rådet"
+        },
+        "livsmedel": {
+          "name": "Food hygiene",
+          "issuer": "Training provider"
+        },
+        "hetaArbeten": {
+          "name": "Hot work (Heta arbeten)",
+          "issuer": "Brandskyddsföreningen"
+        },
+        "delegering": {
+          "name": "Delegation to give medicine",
+          "issuer": "Employer in health care"
+        },
+        "vaktare": {
+          "name": "Security guard training (VU1)",
+          "issuer": "Authorized security company"
+        },
+        "bKorkort": {
+          "name": "Driving license B (B-körkort)",
+          "issuer": "Transportstyrelsen"
+        },
+        "sfi": {
+          "name": "SFI — Swedish for immigrants",
+          "issuer": "Your municipality (kommun)"
+        },
+        "dator": {
+          "name": "Basic computer skills",
+          "issuer": "Training provider"
+        }
+      }
     },
     "relocation": {
       "checklistProgress": "{{count}} of {{total}} done",
@@ -2701,7 +2776,8 @@
         "sublet": "Subletting first and a first-hand contract later is a common route — you do not need everything solved at once.",
         "jobFirst": "Having the job sorted before you move often makes housing easier to get.",
         "firstMonths": "Expect the first months to cost more than usual: deposit, furniture, overlapping rent."
-      }
+      },
+      "queueYears": "{{min}}–{{max}} years"
     },
     "networkTab": {
       "loading": "Loading network data...",
@@ -3340,7 +3416,8 @@
           "body": "If you have worked in another country you may have earned a pension there. The Swedish Pensions Agency can tell you what applies between Sweden and that country.",
           "linkLabel": "Swedish Pensions Agency"
         }
-      }
+      },
+      "loadFailed": "We could not get your ticks right now. This does not mean they are gone. You can read the list, but nothing is saved until we know what you have already ticked."
     },
     "language": {
       "title": "Swedish",
@@ -4018,27 +4095,6 @@
       "goals": "Goals",
       "gratitude": "Gratitude"
     },
-    "streak": {
-      "days": "days"
-    },
-    "achievements": {
-      "weekStreak": {
-        "title": "One week streak!",
-        "description": "You've written for {{count}} days in a row!"
-      },
-      "tenEntries": {
-        "title": "10 entries!",
-        "description": "You've written 10 journal entries!"
-      },
-      "thousandWords": {
-        "title": "1000 words!",
-        "description": "You've written over 1000 words in total!"
-      },
-      "twoWeekRecord": {
-        "title": "Two week record!",
-        "description": "Your longest streak: {{count}} days!"
-      }
-    },
     "gratitude": {
       "today": {
         "title": "Today's gratitude",
@@ -4287,7 +4343,10 @@
           "text": "Take it at your own pace",
           "author": "Unknown"
         }
-      }
+      },
+      "moodSaveFailed": "Your mood could not be saved right now. Please try again in a little while.",
+      "noteSaveFailed": "Your note could not be saved right now. The text is still here. Please try again in a little while.",
+      "loadFailed": "We could not get your activities and reflections right now. This does not mean they are gone. Nothing is saved until we have them."
     },
     "energy": {
       "howIsYourEnergy": "How is your energy today?",
@@ -5311,24 +5370,12 @@
     },
     "invite": {
       "invalidOrExpired": "This invitation is not valid, or it has expired",
-      "yourConsultant": "Your consultant",
-      "consentRequired": "You need to agree before you continue",
       "invalidTitle": "Invitation not valid",
       "goToLogin": "Go to log in",
       "accountCreatedTitle": "Account created!",
-      "accountCreatedSta": "Your account is ready and Steps to Work is turned on. You will go to the log in page soon…",
       "accountCreated": "Your account is ready. You will go to the log in page soon…",
       "welcome": "Welcome!",
-      "invitedBySta": "{{consultantName}} invited you to Steps to Work",
       "invitedGeneric": "You have been invited to Jobin",
-      "contactConsultantHint": "You can contact your consultant directly, or from the \"My consultant\" page once you are logged in.",
-      "consentHeading": "Consent to share data",
-      "consentTextMissing": "The consent text is missing — please contact your consultant.",
-      "consentDataSharingPrefix": "I agree that",
-      "consentDataSharingSuffix": "can see my Steps to Work data (activities, ratings, CV, mood, documents) and can send reports to Arbetsförmedlingen on my behalf.",
-      "consentRevocationPrefix": "I understand that I",
-      "consentRevocationBold": "can end this connection at any time",
-      "consentRevocationSuffix": "from the \"My consultant\" page. The consultant will then stop seeing new activity. Documents already sent to Arbetsförmedlingen stay saved, as the rules require.",
       "firstNameLabel": "First name *",
       "lastNameLabel": "Last name *",
       "passwordLabel": "Password *",
@@ -5340,10 +5387,8 @@
       "confirmPasswordLabel": "Confirm password *",
       "repeatPasswordPlaceholder": "Type the password again",
       "passwordMismatch": "The passwords do not match",
-      "consentRequiredTitle": "You need to agree first",
       "creatingAccount": "Creating your account…",
       "createAccountButton": "Create account",
-      "checkBothBoxesHint": "Check both boxes above to turn on the button.",
       "termsNotice": "By creating an account, you agree to our terms of use."
     },
     "returnTo": {
@@ -5702,7 +5747,7 @@
         "cta": "Book a 30-min demo",
         "bullet1": "GDPR + EU data + encrypted storage",
         "bullet2": "Schedule templates, individual plan and attendance for the activity requirement",
-        "bullet3": "AF integration via API",
+        "bullet3": "Open jobs from Arbetsförmedlingen (the Swedish Public Employment Service)",
         "forMunicipality": "Jobin for arbetsmarknadsenheter (municipal employment units)",
         "forRustaOchMatcha": "Jobin for Rusta och matcha providers (a job-matching programme run for Arbetsförmedlingen)"
       }
@@ -5738,8 +5783,8 @@
       "gdprDesc": "All data handled per EU's data-protection regulation",
       "eu": "EU data",
       "euDesc": "Your database, account and files are stored in the EU. If you use the AI features, that text is processed in the USA.",
-      "af": "AF integration",
-      "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
+      "af": "Jobs from Arbetsförmedlingen",
+      "afDesc": "Job search shows open jobs from the open data of Arbetsförmedlingen (the Swedish Public Employment Service)"
     },
     "hero": {
       "badge": "Free tools for you who are looking for a job",
@@ -6913,7 +6958,28 @@
     },
     "history": {
       "previousValue": "Previous value",
-      "newValue": "New value"
+      "newValue": "New value",
+      "justNow": "Just now",
+      "emptyValue": "(empty)",
+      "empty": "No change history yet. Changes you make to your profile are saved here.",
+      "changeType": {
+        "create": "Created",
+        "update": "Updated",
+        "delete": "Deleted"
+      },
+      "fields": {
+        "first_name": "First name",
+        "last_name": "Last name",
+        "phone": "Phone",
+        "location": "Location",
+        "bio": "Bio",
+        "ai_summary": "AI summary",
+        "profile_image_url": "Profile picture",
+        "desired_jobs": "Jobs you want",
+        "interests": "Interests",
+        "availability": "Availability",
+        "skills": "Skills"
+      }
     },
     "notiser": {
       "intro": "This is how the portal contacts you today. We will not add more channels without telling you.",
@@ -7251,7 +7317,7 @@
       "selected": "Selected",
       "isSelected": "is selected",
       "selectedInfo": "The template includes preset colors and fonts. Continue to fill in your CV, or click Preview to see the result.",
-      "atsNote": "The PDF holds real text that you can select and search — this is true for every template. If you know the employer uses a recruitment system, a one-column template is the safest choice, because then the text is read in a single order. We have not tested the templates against any specific system.",
+      "atsNote": "The PDF holds real text that you can select and search — this is true for every template. If the employer uses a recruitment system, a one-column template is the safest choice. Then the text is read in a single order. We have not tested the templates against any specific system.",
       "meta": {
         "sidebar": {
           "name": "Side column",
@@ -7350,7 +7416,9 @@
         "skills": "Skills",
         "workExperience": "Work experience",
         "education": "Education"
-      }
+      },
+      "showMoreTemplates": "Show more templates ({{count}} more)",
+      "showFewerTemplates": "Show fewer templates"
     },
     "profileImage": {
       "title": "Profile picture",
@@ -8012,12 +8080,6 @@
       "inactive": "Inactive for 14+ days",
       "noCv": "CV missing",
       "lowEngagement": "Low engagement"
-    }
-  },
-  "layout": {
-    "pageHeader": {
-      "myInsights": "My insights",
-      "insights": "Insights"
     }
   },
   "aiTeam": {
@@ -9341,6 +9403,12 @@
       "absent_invalid": "Absent",
       "sick_certified": "Sick",
       "external": "Other activity"
+    },
+    "kalender": {
+      "knapp": "Add to calendar",
+      "knappEtikett": "Add {{titel}} to calendar",
+      "status": "The calendar file is downloaded. Open it to add the session to your calendar.",
+      "fel": "The calendar file could not be created. Please try again in a while."
     }
   },
   "minVardagHub": {
@@ -9718,5 +9786,28 @@
       "withdrawn": "You stopped sharing",
       "expired": "Expired without an answer"
     }
+  },
+  "routeError": {
+    "chunkTitle": "Could not load the page",
+    "networkTitle": "Network problem",
+    "generalTitle": "Something went wrong",
+    "chunkBody": "The page could not load. This can happen after an update.",
+    "chunkRetryHint": "Click the button below to try again.",
+    "networkBody": "It looks like you have a problem with your network connection. Check your internet connection and try again.",
+    "generalBody": "An unexpected error happened. You can reload the page or go back to the start page.",
+    "retry": "Try again",
+    "reload": "Reload the page",
+    "home": "Go to the start page",
+    "attempt": "Attempt {{n}} of {{max}}",
+    "supportLead": "If the problem continues,",
+    "supportLink": "contact support"
+  },
+  "consentStep": {
+    "heading": "One step before you continue",
+    "intro": "We do not have your acceptance of the terms of service and the privacy policy saved. Tick both boxes to keep using Jobin. The links open in a new tab.",
+    "requiredHint": "You need to tick both boxes with a star.",
+    "continue": "Accept and continue",
+    "saveFailed": "We could not save this right now. Please try again in a moment.",
+    "logout": "Log out instead"
   }
 }

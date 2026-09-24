@@ -3,9 +3,11 @@
  * Hanterar inbjudningslänkar för nya användare
  * URL: /invite/:code (parametern bär inbjudans token)
  *
- * När inbjudan har metadata.program === 'steg_till_arbete' visas ett samtyckes-
- * block med två kryssrutor som krävs innan kontot kan skapas. Samtycket sparas
- * automatiskt i consultant_consents via handle_invitation_acceptance-triggern.
+ * STA-grenen (samtyckesblock med två tvingande kryssrutor när
+ * metadata.program === 'steg_till_arbete') är borttagen 2026-09-24. STA
+ * arkiverades 2026-09-12 och ingen kod skapar sådana inbjudningar längre.
+ * En gammal rad med det metadatat får det vanliga formuläret — vaktat av
+ * InviteHandler.test.tsx.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -18,8 +20,6 @@ import {
   AlertCircle,
   CheckCircle,
   Loader2,
-  Shield,
-  UserCheck,
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { inviteRegisterSchema } from '@/lib/validations';
@@ -34,12 +34,6 @@ interface InviteData {
     first_name?: string
     last_name?: string
     phone?: string
-    program?: string
-    sta_enrollment_id?: string
-    consent_text?: string
-    consultant_first_name?: string
-    consultant_last_name?: string
-    consultant_email?: string
     message?: string
   }
 }
@@ -64,8 +58,6 @@ export const InviteHandler: React.FC = () => {
     password: '',
     confirmPassword: '',
   });
-  const [consentDataSharing, setConsentDataSharing] = useState(false);
-  const [consentRevocation, setConsentRevocation] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -111,13 +103,6 @@ export const InviteHandler: React.FC = () => {
     }
   };
 
-  const isStaInvite = inviteData?.metadata?.program === 'steg_till_arbete';
-  const consultantName = inviteData?.metadata?.consultant_first_name
-    ? `${inviteData.metadata.consultant_first_name} ${inviteData.metadata.consultant_last_name ?? ''}`.trim()
-    : t('auth.invite.yourConsultant');
-
-  const consentOk = !isStaInvite || (consentDataSharing && consentRevocation);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
@@ -130,13 +115,8 @@ export const InviteHandler: React.FC = () => {
         throw new Error(firstError.message);
       }
 
-      if (isStaInvite && !consentOk) {
-        throw new Error(t('auth.invite.consentRequired'));
-      }
-
       // Skapa användare — triggern handle_invitation_acceptance kopplar
-      // automatiskt till konsulenten + aktiverar STA-programmet om inbjudan
-      // har metadata.program satt.
+      // automatiskt till konsulenten.
       const { error: authError } = await supabase.auth.signUp({
         email: inviteData!.email,
         password: formData.password,
@@ -192,9 +172,7 @@ export const InviteHandler: React.FC = () => {
           <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">{t('auth.invite.accountCreatedTitle')}</h2>
           <p className="text-gray-600 mb-6">
-            {isStaInvite
-              ? t('auth.invite.accountCreatedSta')
-              : t('auth.invite.accountCreated')}
+            {t('auth.invite.accountCreated')}
           </p>
         </div>
       </div>
@@ -207,9 +185,7 @@ export const InviteHandler: React.FC = () => {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">{t('auth.invite.welcome')}</h1>
           <p className="text-gray-600 mt-2">
-            {isStaInvite
-              ? t('auth.invite.invitedBySta', { consultantName })
-              : t('auth.invite.invitedGeneric')}
+            {t('auth.invite.invitedGeneric')}
           </p>
           <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-500">
             <Mail className="w-4 h-4" />
@@ -220,67 +196,6 @@ export const InviteHandler: React.FC = () => {
         {error && (
           <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
             {error}
-          </div>
-        )}
-
-        {isStaInvite && (
-          <div className="mb-6 border border-stone-200 rounded-xl overflow-hidden">
-            <div className="px-5 py-3 bg-stone-50 border-b border-stone-200 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-stone-600" />
-              <h3 className="font-semibold text-stone-900">{t('auth.invite.yourConsultant')}</h3>
-            </div>
-            <div className="p-5 space-y-1">
-              <p className="text-stone-900 font-medium">{consultantName}</p>
-              {inviteData?.metadata?.consultant_email && (
-                <p className="text-sm text-stone-600">{inviteData.metadata.consultant_email}</p>
-              )}
-              <p className="text-xs text-stone-500 mt-2">
-                {t('auth.invite.contactConsultantHint')}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {isStaInvite && (
-          <div className="mb-6 border border-stone-200 rounded-xl overflow-hidden">
-            <div className="px-5 py-3 bg-stone-50 border-b border-stone-200 flex items-center gap-2">
-              <Shield className="w-5 h-5 text-stone-600" />
-              <h3 className="font-semibold text-stone-900">{t('auth.invite.consentHeading')}</h3>
-            </div>
-            <div className="p-5 space-y-4">
-              <p className="text-sm text-stone-700 whitespace-pre-line">
-                {inviteData?.metadata?.consent_text ?? t('auth.invite.consentTextMissing')}
-              </p>
-
-              <div className="space-y-3 pt-2 border-t border-stone-100">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={consentDataSharing}
-                    onChange={(e) => setConsentDataSharing(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded border-stone-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="text-sm text-stone-800">
-                    {t('auth.invite.consentDataSharingPrefix')} <strong>{consultantName}</strong>{' '}
-                    {t('auth.invite.consentDataSharingSuffix')}
-                  </span>
-                </label>
-
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={consentRevocation}
-                    onChange={(e) => setConsentRevocation(e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded border-stone-300 text-primary-600 focus:ring-primary-500"
-                  />
-                  <span className="text-sm text-stone-800">
-                    {t('auth.invite.consentRevocationPrefix')}{' '}
-                    <strong>{t('auth.invite.consentRevocationBold')}</strong>{' '}
-                    {t('auth.invite.consentRevocationSuffix')}
-                  </span>
-                </label>
-              </div>
-            </div>
           </div>
         )}
 
@@ -371,9 +286,8 @@ export const InviteHandler: React.FC = () => {
 
           <button
             type="submit"
-            disabled={submitting || !consentOk}
+            disabled={submitting}
             className="w-full py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            title={!consentOk ? t('auth.invite.consentRequiredTitle') : undefined}
           >
             {submitting ? (
               <>
@@ -384,11 +298,6 @@ export const InviteHandler: React.FC = () => {
               t('auth.invite.createAccountButton')
             )}
           </button>
-          {isStaInvite && !consentOk && (
-            <p className="text-xs text-stone-500 text-center">
-              {t('auth.invite.checkBothBoxesHint')}
-            </p>
-          )}
         </form>
 
         <p className="text-center text-sm text-gray-500 mt-6">

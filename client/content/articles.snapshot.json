@@ -1,7 +1,7 @@
 {
   "_generated": "npm run content:refresh — redigera inte för hand",
   "_source": "public.articles where is_active (prod)",
-  "generatedAt": "2026-09-21",
+  "generatedAt": "2026-09-24",
   "count": 294,
   "articles": [
     {
@@ -53,7 +53,8 @@
         "skriva-in-dig-arbetsformedlingen"
       ],
       "related_tools": [
-        "/calendar"
+        "/job-search",
+        "/cv"
       ],
       "slug": "a-kassa-sa-fungerar-det",
       "sort_order": 0,
@@ -66,7 +67,7 @@
         "ersättning"
       ],
       "title": "Så fungerar a-kassan – medlemskap och villkor",
-      "updated_at": "2026-09-21 13:34:31.891081+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -331,7 +332,7 @@
         "skriva-in-dig-arbetsformedlingen"
       ],
       "related_tools": [
-        "/applications"
+        "/job-search"
       ],
       "slug": "aktivitetsrapport-guide",
       "sort_order": 0,
@@ -343,7 +344,7 @@
         "ersättning"
       ],
       "title": "Aktivitetsrapport till Arbetsförmedlingen – så gör du",
-      "updated_at": "2026-08-24 10:27:31.703066+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -647,6 +648,7 @@
         "skatt-pa-lon-forsta-jobbet"
       ],
       "related_tools": [
+        "/cv",
         "/job-search"
       ],
       "slug": "arbetsgivarintyg-och-betyg",
@@ -660,7 +662,7 @@
         "referenser"
       ],
       "title": "Arbetsgivarintyg, arbetsintyg eller anställningsbevis?",
-      "updated_at": "2026-09-21 13:34:31.891081+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -1049,7 +1051,7 @@
         "stresshantering"
       ],
       "related_tools": [
-        "/diary",
+        "/wellness",
         "/skills-gap-analysis"
       ],
       "slug": "arbetstraning-vad-innebar-det",
@@ -1063,7 +1065,7 @@
         "arbetsförmåga"
       ],
       "title": "Arbetsträning – vad det är, och om det leder till jobb",
-      "updated_at": "2026-08-24 10:27:49.397666+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -2466,7 +2468,10 @@
         "intervju-forberedelser",
         "intervju-fragor"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/interview-simulator",
+        "/cv"
+      ],
       "slug": "digital-intervju",
       "sort_order": 80,
       "subcategory": "during-interview",
@@ -2482,7 +2487,7 @@
         "videosamtal"
       ],
       "title": "Digital intervju – så lyckas du på Zoom/Teams",
-      "updated_at": "2026-08-24 10:27:49.397666+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -3229,8 +3234,8 @@
         "struktur-jobbsokning"
       ],
       "related_tools": [
-        "/calendar",
-        "/education"
+        "/cv",
+        "/interest-guide"
       ],
       "slug": "etableringsprogrammet",
       "sort_order": 0,
@@ -3243,7 +3248,7 @@
         "samhällsorientering"
       ],
       "title": "Etableringsprogrammet – vad som ingår",
-      "updated_at": "2026-08-24 10:27:54.382205+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -3396,7 +3401,10 @@
         "hantera-avslag",
         "motivation-langsiktig"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/interview-simulator",
+        "/cv"
+      ],
       "slug": "feedback-efter-avslag",
       "sort_order": 770,
       "subcategory": "application-strategy",
@@ -3409,7 +3417,7 @@
         "professionell utveckling"
       ],
       "title": "Hur du ber om feedback efter ett avslag",
-      "updated_at": "2026-08-24 10:27:49.397666+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -4292,7 +4300,10 @@
       "related_article_slugs": [
         "personlighetstyper-arbete"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/interest-guide",
+        "/career"
+      ],
       "slug": "hitta-dina-varderingar",
       "sort_order": 910,
       "subcategory": "interests",
@@ -4305,7 +4316,7 @@
         "arbetskultur"
       ],
       "title": "Hitta dina värderingar – två övningar som ger svar",
-      "updated_at": "2026-08-24 10:27:44.560066+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -6034,7 +6045,10 @@
         "anstallningsformer-guide",
         "arbetsmiljo-kultur-guide"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/interview-simulator",
+        "/cv"
+      ],
       "slug": "jobbsokning-funktionsnedsattning",
       "sort_order": 490,
       "subcategory": "rights",
@@ -6048,7 +6062,7 @@
         "anpassningar"
       ],
       "title": "Jobbsökning med funktionsnedsättning – rättigheter och stöd",
-      "updated_at": "2026-08-24 10:27:20.169711+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -6572,7 +6586,11 @@
         "cv-grunder",
         "kompetensutveckling-plan"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/skills-gap-analysis",
+        "/cv",
+        "/linkedin-optimizer"
+      ],
       "slug": "kompetensutvardering",
       "sort_order": 680,
       "subcategory": "competencies",
@@ -6586,7 +6604,7 @@
         "inventering"
       ],
       "title": "Kompetensinventering: Kartlägg dina färdigheter",
-      "updated_at": "2026-08-24 10:27:54.382205+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -9315,7 +9333,7 @@
       ],
       "related_tools": [
         "/interview-simulator",
-        "/job-search"
+        "/cv"
       ],
       "slug": "lonebidrag-sa-fungerar-det",
       "sort_order": 0,
@@ -9328,7 +9346,7 @@
         "funktionsnedsättning"
       ],
       "title": "Lönebidrag – så fungerar stödet, och så tar du upp det",
-      "updated_at": "2026-08-24 10:27:39.936304+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -10117,7 +10135,10 @@
         "rattigheter-stod",
         "anpassningar-arbetsplats"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/job-search",
+        "/interview-simulator"
+      ],
       "slug": "nystartsjobb-guide",
       "sort_order": 150,
       "subcategory": "support",
@@ -10129,7 +10150,7 @@
         "Arbetsförmedlingen"
       ],
       "title": "Nystartsjobb – ditt extra stöd in i arbetslivet",
-      "updated_at": "2026-08-24 10:27:39.936304+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -11442,7 +11463,9 @@
         "skriva-in-dig-arbetsformedlingen"
       ],
       "related_tools": [
-        "/skills-gap-analysis"
+        "/cv",
+        "/skills-gap-analysis",
+        "/job-search"
       ],
       "slug": "rusta-och-matcha",
       "sort_order": 0,
@@ -11455,7 +11478,7 @@
         "stöd"
       ],
       "title": "Rusta och matcha – så väljer du leverantör, och så byter du",
-      "updated_at": "2026-08-24 10:27:35.545639+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -11695,8 +11718,8 @@
         "praktik-som-vag-in"
       ],
       "related_tools": [
-        "/calendar",
-        "/diary"
+        "/job-search",
+        "/interview-simulator"
       ],
       "slug": "sius-stod-vid-introduktion",
       "sort_order": 0,
@@ -11709,7 +11732,7 @@
         "funktionsnedsättning"
       ],
       "title": "SIUS – stöd när du ska introduceras i ett nytt jobb",
-      "updated_at": "2026-08-24 10:27:31.703066+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -12007,7 +12030,8 @@
         "rusta-och-matcha"
       ],
       "related_tools": [
-        "/cv"
+        "/cv",
+        "/interest-guide"
       ],
       "slug": "skriva-in-dig-arbetsformedlingen",
       "sort_order": 0,
@@ -12019,7 +12043,7 @@
         "planeringssamtal"
       ],
       "title": "Skriva in dig på Arbetsförmedlingen – så går det till",
-      "updated_at": "2026-08-24 10:27:54.382205+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -12133,7 +12157,7 @@
         "nystartsjobb-guide"
       ],
       "related_tools": [
-        "/job-search",
+        "/interest-guide",
         "/career"
       ],
       "slug": "skyddat-arbete-och-samhall",
@@ -12147,7 +12171,7 @@
         "funktionsnedsättning"
       ],
       "title": "Skyddat arbete och Samhall – vad det innebär",
-      "updated_at": "2026-08-24 10:27:49.397666+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [],
@@ -12827,7 +12851,10 @@
       "related_article_slugs": [
         "cv-grunder"
       ],
-      "related_tools": [],
+      "related_tools": [
+        "/interview-simulator",
+        "/cv"
+      ],
       "slug": "styrkor-svagheter-intervju",
       "sort_order": 920,
       "subcategory": "strengths",
@@ -12840,7 +12867,7 @@
         "förberedelse"
       ],
       "title": "Så pratar du om styrkor och svagheter på intervju",
-      "updated_at": "2026-08-24 10:27:35.545639+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -12951,7 +12978,10 @@
       "energy_level": "medium",
       "reading_time": 3,
       "related_article_slugs": [],
-      "related_tools": [],
+      "related_tools": [
+        "/interview-simulator",
+        "/cv"
+      ],
       "slug": "telefonintervju-tips",
       "sort_order": 1080,
       "subcategory": "preparation",
@@ -12964,7 +12994,7 @@
         "tips"
       ],
       "title": "Telefonintervju – så lyckas du",
-      "updated_at": "2026-08-24 10:27:54.382205+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [
@@ -13082,7 +13112,7 @@
       ],
       "related_tools": [
         "/wellness",
-        "/calendar"
+        "/job-search"
       ],
       "slug": "tillbaka-till-jobb-efter-sjukskrivning",
       "sort_order": 0,
@@ -13095,7 +13125,7 @@
         "återgång i arbete"
       ],
       "title": "Tillbaka till jobb efter lång sjukskrivning",
-      "updated_at": "2026-08-24 10:27:20.169711+00"
+      "updated_at": "2026-09-24 17:48:44.414814+00"
     },
     {
       "actions": [

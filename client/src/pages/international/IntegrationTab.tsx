@@ -27,7 +27,7 @@
  * Skatteverket-länken var en 404 — och den satt på den punkt allt annat hänger
  * på.
  */
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, ChevronDown, ChevronUp, ExternalLink, Info, AlertCircle } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
@@ -108,29 +108,44 @@ export default function IntegrationTab() {
   const [sparat, setSparat] = useState<Record<string, SparadPunkt>>({})
   const [laddar, setLaddar] = useState(true)
   const [sparfel, setSparfel] = useState(false)
+  // Läsfelet är ett eget tillstånd, inte en tom lista. Före 2026-09-24 gav ett
+  // misslyckat läs `{}` — "du har inte börjat" — och nästa bock skrev hela
+  // mängden, med ett enda kryss, över det som låg sparat.
+  const [laddningsfel, setLaddningsfel] = useState(false)
   const [oppen, setOppen] = useState<string | null>(null)
   const [redigerar, setRedigerar] = useState<string | null>(null)
   const [utkast, setUtkast] = useState('')
+  const monterad = useRef(true)
+
+  const laddaChecklista = useCallback(async () => {
+    setLaddar(true)
+    setLaddningsfel(false)
+    try {
+      const data = await integrationChecklistApi.getProgress()
+      if (!monterad.current) return
+      setSparat(data?.items ?? {})
+    } catch (error: unknown) {
+      logger.warn('Kunde inte läsa integrationschecklistan', { error })
+      if (monterad.current) setLaddningsfel(true)
+    } finally {
+      if (monterad.current) setLaddar(false)
+    }
+  }, [])
 
   useEffect(() => {
-    let avbruten = false
-    integrationChecklistApi
-      .getProgress()
-      .then((data) => {
-        if (avbruten) return
-        setSparat(data?.items ?? {})
-      })
-      .catch((error: unknown) => {
-        logger.warn('Kunde inte läsa integrationschecklistan', { error })
-      })
-      .finally(() => {
-        if (!avbruten) setLaddar(false)
-      })
-    return () => { avbruten = true }
-  }, [])
+    monterad.current = true
+    void laddaChecklista()
+    return () => { monterad.current = false }
+  }, [laddaChecklista])
+
+  /** Går det att skriva? Bara när vi vet vad som redan ligger sparat. */
+  const kanSpara = !laddar && !laddningsfel
 
   /** Skriver hela mängden och rullar tillbaka om molnet säger nej. */
   const spara = async (nasta: Record<string, SparadPunkt>) => {
+    // Spärren: `saveProgress` skriver HELA mängden. Utan känt utgångsläge
+    // vore varje skrivning en radering av allt annat.
+    if (!kanSpara) return
     const forra = sparat
     setSparat(nasta)
     setSparfel(false)
@@ -212,7 +227,7 @@ export default function IntegrationTab() {
           <p className="text-sm text-stone-600 dark:text-stone-300">
             {t('international.integration.loading')}
           </p>
-        ) : (
+        ) : laddningsfel ? null : (
           <>
             <p className="text-sm text-stone-700 dark:text-stone-200">
               {antalKlara === 0
@@ -236,7 +251,21 @@ export default function IntegrationTab() {
         )}
       </div>
 
-      {sparfel && (
+      {laddningsfel && !laddar && (
+        <Card className="p-3 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600" role="alert">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="flex items-start gap-2 text-sm text-stone-800 dark:text-stone-100 flex-1">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+              {t('international.integration.loadFailed', 'Vi kunde inte hämta dina kryss just nu. Det betyder inte att de är borta. Du kan läsa listan, men inget sparas förrän vi vet vad du redan har bockat av.')}
+            </p>
+            <Button size="sm" variant="outline" onClick={() => { void laddaChecklista() }}>
+              {t('common.tryAgain')}
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {sparfel && !laddningsfel && (
         <Card className="p-3 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600">
           <p className="flex items-start gap-2 text-sm text-stone-800 dark:text-stone-100">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
@@ -269,6 +298,7 @@ export default function IntegrationTab() {
                       <button
                         role="checkbox"
                         aria-checked={klar}
+                        disabled={!kanSpara}
                         onClick={() => vaxlaKryss(punkt.id)}
                         className="flex items-start gap-3 text-left flex-1 min-h-[44px]"
                       >
@@ -342,6 +372,7 @@ export default function IntegrationTab() {
                           id={`datum-${punkt.id}`}
                           type="date"
                           value={post?.targetDate ?? ''}
+                          disabled={!kanSpara}
                           onChange={(e) => sattDatum(punkt.id, e.target.value)}
                           className="px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg text-stone-800 dark:text-stone-100"
                         />
@@ -388,6 +419,7 @@ export default function IntegrationTab() {
                             <Button
                               size="sm"
                               variant="ghost"
+                              disabled={!kanSpara}
                               onClick={() => { setRedigerar(punkt.id); setUtkast(post?.notes ?? '') }}
                             >
                               {post?.notes

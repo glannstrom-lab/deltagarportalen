@@ -69,4 +69,29 @@ describe('InviteHandler', () => {
     rendera('/invite/finns-inte')
     expect((await screen.findAllByText(/ogiltig|utgången|invalid|expired/i)).length).toBeGreaterThan(0)
   })
+
+  // STA arkiverades 2026-09-12. Inbjudan hade en egen gren med ett samtycke om
+  // "STA-data" och två tvingande kryssrutor. Ingen kod skapar sådana inbjudningar
+  // längre (0 rader i prod 2026-09-24), men en rad med gammalt metadata ska
+  // behandlas som vilken inbjudan som helst — inte be om samtycke till ett
+  // program som inte finns.
+  it('en inbjudan med program=steg_till_arbete får det vanliga formuläret, utan STA-samtycke', async () => {
+    rpc.mockReturnValue({
+      maybeSingle: () =>
+        Promise.resolve({
+          data: {
+            id: 'i1',
+            email: 'anna@example.com',
+            role: 'USER',
+            metadata: { program: 'steg_till_arbete', consent_text: 'Jag samtycker till STA-data' },
+          },
+          error: null,
+        }),
+    })
+    rendera('/invite/abc123')
+    await screen.findByText('anna@example.com')
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    expect(screen.queryByText(/STA-data/)).toBeNull()
+    expect(screen.getByRole('button', { name: /skapa|create/i })).toBeEnabled()
+  })
 })

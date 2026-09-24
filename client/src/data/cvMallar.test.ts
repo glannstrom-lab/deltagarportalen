@@ -20,7 +20,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { MALLFORMER, spaltformFor, normaliseraMallId, arKantMallId, STANDARDMALL } from './cvMallar'
+import { MALLFORMER, spaltformFor, normaliseraMallId, arKantMallId, STANDARDMALL, REKOMMENDERADE_MALLAR, mallarAttVisa } from './cvMallar'
 
 function las(relativ: string): string {
   return readFileSync(resolve(__dirname, '..', relativ), 'utf-8')
@@ -204,5 +204,36 @@ describe('normaliseraMallId', () => {
   it('CV-byggaren startar på standardmallen, inte på ett id som inte finns', () => {
     expect(cvBuilder).toContain('template: STANDARDMALL')
     expect(cvBuilder).not.toContain("template: 'modern'")
+  })
+})
+
+describe('LS3: rekommenderade mallar i mallsteget', () => {
+  const alla = MALLFORMER.map((m) => ({ id: m.id }))
+  const ids = (lista: { id: string }[]) => lista.map((m) => m.id)
+
+  it('urvalet är 4–6 kända mallar och innehåller standardmallen', () => {
+    expect(REKOMMENDERADE_MALLAR.length).toBeGreaterThanOrEqual(4)
+    expect(REKOMMENDERADE_MALLAR.length).toBeLessThanOrEqual(6)
+    for (const id of REKOMMENDERADE_MALLAR) expect(arKantMallId(id)).toBe(true)
+    expect(REKOMMENDERADE_MALLAR).toContain(STANDARDMALL)
+  })
+
+  it('hopfällt: bara de rekommenderade när den valda hör till dem', () => {
+    const synliga = ids(mallarAttVisa(alla, STANDARDMALL, false))
+    expect(synliga.sort()).toEqual([...REKOMMENDERADE_MALLAR].sort())
+  })
+
+  it('hopfällt: en vald mall utanför urvalet syns ändå', () => {
+    const synliga = ids(mallarAttVisa(alla, 'berlin', false))
+    expect(synliga).toContain('berlin')
+    expect(synliga).toHaveLength(REKOMMENDERADE_MALLAR.length + 1)
+  })
+
+  it('utfällt: alla tolv, de rekommenderade först och i samma ordning som hopfällt', () => {
+    const hopfallt = ids(mallarAttVisa(alla, STANDARDMALL, false))
+    const utfallt = ids(mallarAttVisa(alla, STANDARDMALL, true))
+    expect(utfallt).toHaveLength(MALLFORMER.length)
+    expect(new Set(utfallt).size).toBe(MALLFORMER.length)
+    expect(utfallt.slice(0, hopfallt.length)).toEqual(hopfallt)
   })
 })

@@ -187,11 +187,11 @@ function detectLocalChrome() {
 }
 
 // CORS-allowlist (samma som ai.js).
+// www.jobin.se STAR FORST: den ar fallbacken for ett okant ursprung i getCorsHeaders.
+// deltagarportalen.se ar borttagen 2026-09-24 (BS1): avregistrerad, NXDOMAIN.
 const ALLOWED_ORIGINS = [
-  'https://deltagarportalen.se',
-  'https://www.deltagarportalen.se',
-  'https://jobin.se',
   'https://www.jobin.se',
+  'https://jobin.se',
   process.env.FRONTEND_URL,
   ...(process.env.NODE_ENV !== 'production' ? [
     'http://localhost:3000',
@@ -217,7 +217,8 @@ const ALLOWED_ORIGINS = [
  *        -H 'Origin: https://deltagarportalen-abc123-evilteam.vercel.app'
  *   -> Access-Control-Allow-Origin reflekterade angriparens origin,
  *      och svaret bar dessutom credentials-rubriken.
- * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se.)
+ * (En helt frammande origin foll korrekt tillbaka pa deltagarportalen.se - numera
+ *  www.jobin.se, eftersom deltagarportalen.se ar avregistrerad, BS1 2026-09-24.)
  *
  * ATGARD: monstermatchningen ar borta. I stallet tillater varje deploy SIN EGEN URL,
  * hamtad ur Vercels systemvariabler. De satts av plattformen per deployment och kan inte

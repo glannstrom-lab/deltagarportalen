@@ -12,6 +12,8 @@ import {
 import { Link, Routes, Route, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
+// AT2 (2026-09-24): samma väg som Bevakningar-fliken — ingen egen insert
+import { useJobAlerts } from '@/hooks/useJobAlerts';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
 import { useJobSearchFilters } from '@/hooks/useJobSearchFilters';
 import { useProfileStore } from '@/stores/profileStore';
@@ -278,10 +280,66 @@ function SearchTab() {
     return () => observer.disconnect();
   }, [hasMore, loading, loadMoreJobs]);
 
+  /*
+   * getJobDetails returnerar `null` när AF inte svarar. Tidigare hände då
+   * ingenting alls vid klicket — deltagaren kunde inte skilja ett avbrott från
+   * en död knapp. Nu visas ett meddelande vid just det jobbet, med en väg
+   * vidare till annonsen hos Platsbanken. (Städpasset 2026-09-24)
+   */
+  const [detaljFelId, setDetaljFelId] = useState<string | null>(null);
   const handleJobClick = async (jobId: string) => {
-    const job = await getJobDetails(jobId);
+    setDetaljFelId(null);
+    let job: PlatsbankenJob | null = null;
+    try {
+      job = await getJobDetails(jobId);
+    } catch {
+      job = null;
+    }
     if (job) {
       setSelectedJob(job);
+    } else {
+      setDetaljFelId(jobId);
+    }
+  };
+
+  /*
+   * AT2 (2026-09-24): spara sökningen som bevakning. Bevakningen har kolumner
+   * för sökord, län och kommun (job_alerts.query/region/municipality) — inte
+   * för yrken. Det som inte följer med sägs rakt ut i stället för att tyst
+   * försvinna.
+   */
+  const { alerts, createAlert } = useJobAlerts();
+  const [bevakningLage, setBevakningLage] = useState<'idle' | 'sparar' | 'sparad' | 'fel'>('idle');
+  const bevakningQuery = filters.query.trim();
+  const kanSparaBevakning = !!(bevakningQuery || filters.region || filters.municipality);
+  const redanBevakad = alerts.some(
+    (a) =>
+      (a.query ?? '').trim().toLowerCase() === bevakningQuery.toLowerCase() &&
+      (a.region ?? '') === filters.region &&
+      (a.municipality ?? '') === filters.municipality,
+  );
+  const ejMedIBevakning =
+    filters.occupations.length > 0 || !!filters.employmentType || filters.publishedWithin !== 'all';
+
+  useEffect(() => {
+    setBevakningLage('idle');
+  }, [filters.query, filters.region, filters.municipality]);
+
+  const sparaSomBevakning = async () => {
+    if (!kanSparaBevakning || bevakningLage === 'sparar') return;
+    setBevakningLage('sparar');
+    const lanNamn = filters.region ? REGIONS.find((r) => r.code === filters.region)?.name || filters.region : '';
+    const namn = [bevakningQuery, filters.municipality, lanNamn].filter(Boolean).join(' · ').slice(0, 100);
+    try {
+      await createAlert({
+        name: namn,
+        query: bevakningQuery || undefined,
+        region: filters.region || undefined,
+        municipality: filters.municipality || undefined,
+      });
+      setBevakningLage('sparad');
+    } catch {
+      setBevakningLage('fel');
     }
   };
 
@@ -431,6 +489,50 @@ function SearchTab() {
       occupations: [...filters.occupations, ...additions],
     });
   }, [filters, setFilters, profileOccupations]);
+
+  const bevakningsruta = kanSparaBevakning ? (
+    <div className="flex flex-col gap-1 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <Bell className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" aria-hidden="true" />
+        {bevakningLage === 'sparad' ? (
+          <p className="text-sm text-stone-800 dark:text-stone-200" role="status">
+            {t('jobSearch.bevakning.sparad', 'Sparad som bevakning.')}{' '}
+            <Link to="/job-search/alerts" className="font-medium underline underline-offset-2 text-[var(--c-text)]">
+              {t('jobSearch.bevakning.visa', 'Se dina bevakningar')}
+            </Link>
+          </p>
+        ) : redanBevakad ? (
+          <p className="text-sm text-stone-700 dark:text-stone-300">
+            {t('jobSearch.bevakning.finns', 'Du bevakar redan den här sökningen.')}{' '}
+            <Link to="/job-search/alerts" className="font-medium underline underline-offset-2 text-[var(--c-text)]">
+              {t('jobSearch.bevakning.visa', 'Se dina bevakningar')}
+            </Link>
+          </p>
+        ) : (
+          <button
+            type="button"
+            onClick={sparaSomBevakning}
+            disabled={bevakningLage === 'sparar'}
+            className="text-sm font-medium text-[var(--c-text)] underline underline-offset-2 hover:no-underline disabled:opacity-60 min-h-[44px] text-left"
+          >
+            {bevakningLage === 'sparar'
+              ? t('jobSearch.bevakning.sparar', 'Sparar…')
+              : t('jobSearch.bevakning.spara', 'Spara den här sökningen som bevakning')}
+          </button>
+        )}
+      </div>
+      {bevakningLage === 'fel' && (
+        <p role="alert" className="text-sm text-amber-800 dark:text-amber-300">
+          {t('jobSearch.bevakning.fel', 'Bevakningen kunde inte sparas. Försök igen om en stund.')}
+        </p>
+      )}
+      {ejMedIBevakning && bevakningLage !== 'sparad' && !redanBevakad && (
+        <p className="text-xs text-stone-600 dark:text-stone-400">
+          {t('jobSearch.bevakning.foljerInteMed', 'Bevakningen sparar sökord, län och kommun. Yrken, anställningsform och datumfilter följer inte med.')}
+        </p>
+      )}
+    </div>
+  ) : null;
 
   return (
     <div className="space-y-4">
@@ -768,6 +870,11 @@ function SearchTab() {
                 : t('jobSearch.showingXofY', { shown: jobs.length, total: totalJobs })}
             </p>
 
+            {/* AT2: spara sökningen som bevakning. Står direkt ovanför listan i
+                stället för under den — listan laddar fler jobb när man scrollar,
+                så en knapp efter sista jobbet skulle sällan synas. */}
+            {bevakningsruta}
+
             {jobs.map((job) => (
               /*
                * Kortet var `role="button"` med tre knappar inuti (Spara, Skriv
@@ -869,6 +976,34 @@ function SearchTab() {
                         {t('jobSearch.apply')}
                       </button>
                     </div>
+
+                    {detaljFelId === job.id && (
+                      <div
+                        role="alert"
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-3 flex items-start justify-between gap-3 rounded-lg border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 px-3 py-2 text-sm text-amber-900 dark:text-amber-200"
+                      >
+                        <p>
+                          {t('jobSearch.detaljFel.text', 'Annonsen kunde inte öppnas just nu. Försök igen om en stund.')}{' '}
+                          <a
+                            href={`https://arbetsformedlingen.se/platsbanken/annonser/${encodeURIComponent(job.id)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="font-medium underline underline-offset-2"
+                          >
+                            {t('jobSearch.detaljFel.platsbanken', 'Öppna annonsen på Platsbanken')}
+                          </a>
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setDetaljFelId(null)}
+                          aria-label={t('jobSearch.detaljFel.stang', 'Stäng meddelandet')}
+                          className="p-1 rounded hover:bg-amber-100 dark:hover:bg-amber-900/40 min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        >
+                          <X className="w-4 h-4" aria-hidden="true" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </article>
@@ -894,6 +1029,8 @@ function SearchTab() {
           /* Nollresultat med flera filter: det är oftast kombinationen som
              stoppar — visa vilka filter som öppnar upp träffar, i stället för
              att skylla på stavningen. */
+          <div className="space-y-3">
+          {bevakningsruta}
           <Card className="p-8 sm:p-12">
             <div className="text-center max-w-md mx-auto">
               <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center">
@@ -942,7 +1079,10 @@ function SearchTab() {
               </button>
             </div>
           </Card>
+          </div>
         ) : (
+          <div className="space-y-3">
+          {bevakningsruta}
           <Card className="p-8 sm:p-12">
             <EmptySearch
               query={filters.query}
@@ -950,6 +1090,7 @@ function SearchTab() {
               suggestions={!filters.query && !hasActiveFilters ? ['Programmerare', 'Sjuksköterska', 'Lärare', 'Projektledare'] : undefined}
             />
           </Card>
+          </div>
         )}
       </div>
 

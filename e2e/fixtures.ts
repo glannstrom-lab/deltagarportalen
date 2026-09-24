@@ -16,6 +16,35 @@ export const TEST_CONSULTANT = {
 }
 
 /**
+ * DP1 (2026-09-24): ett konto som saknar godkända villkor/integritetspolicy möter
+ * SamtyckeSteg.tsx efter inloggning, och kommer inte vidare förrän båda är
+ * ikryssade. Testkontona skapades innan samtycken registrerades. Godkänn här via
+ * den vanliga vägen (skriver consent_history en gång per konto) i stället för att
+ * sätta kolumnerna direkt i prod. AI-rutan lämnas orörd — testkontona har AI av.
+ */
+export async function godkannSamtyckesstegOmDetVisas(page: Page) {
+  const steg = page.getByRole('dialog', { name: /ett steg kvar|one step before/i })
+  try {
+    await steg.waitFor({ state: 'visible', timeout: 4000 })
+  } catch {
+    return
+  }
+  const rutor = steg.getByRole('checkbox')
+  for (let i = 0; i < (await rutor.count()); i++) {
+    const ruta = rutor.nth(i)
+    // Etiketten är ett syskon (htmlFor), inte en förälder — läs den via el.labels.
+    const { id, etikett } = await ruta.evaluate((el) => ({
+      id: el.id,
+      etikett: (el as HTMLInputElement).labels?.[0]?.textContent ?? '',
+    }))
+    if (id === 'samtycke-ai' || /\bAI\b/i.test(etikett)) continue
+    await ruta.check()
+  }
+  await steg.getByRole('button', { name: /godkänn och fortsätt|accept and continue/i }).click()
+  await steg.waitFor({ state: 'hidden', timeout: 10000 })
+}
+
+/**
  * Page Object Model helpers
  */
 export class AuthHelper {
@@ -30,6 +59,7 @@ export class AuthHelper {
     // Vänta tills vi lämnat login — index redirectar numera till /#/oversikt
     // (C3, 2026-07-10), så matcha inte på trailing slash
     await this.page.waitForURL((u) => !u.toString().includes('/login'), { timeout: 15000 })
+    await godkannSamtyckesstegOmDetVisas(this.page)
   }
 
   async logout() {

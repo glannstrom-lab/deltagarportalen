@@ -1,7 +1,7 @@
 /** Integrationschecklistan (Ny i Sverige) i user_preferences.integration_checklist. */
 
 import { supabase } from '@/lib/supabase'
-import { getCurrentUser, handleStorageError } from './_shared'
+import { getCurrentUser, handleStorageError, kastaLagringsFel } from './_shared'
 
 // ============================================
 // INTEGRATION CHECKLIST API
@@ -42,16 +42,13 @@ export const integrationChecklistApi = {
       .eq('user_id', user.id)
       .maybeSingle()
 
-    if (error) {
-      handleStorageError(error, 'hämta integrationschecklista')
-      const cached = localStorage.getItem(localKey)
-      if (cached) {
-        return { items: JSON.parse(cached), lastUpdated: new Date().toISOString() }
-      }
-      return null
-    }
+    // Ett läsfel KASTAR (2026-09-24). Förut föll det tillbaka på localStorage
+    // eller `null` — alltså "ingenting kryssat" — och IntegrationTab skrev vid
+    // nästa bock hela mängden över det som låg i molnet. Cachen är dessutom
+    // bara den här webbläsarens senaste bild, inte sanningen.
+    if (error) kastaLagringsFel(error, 'hämta integrationschecklista')
 
-    const checklistData = data?.integration_checklist as IntegrationChecklistData | null
+    const checklistData = (data?.integration_checklist ?? null) as IntegrationChecklistData | null
     if (checklistData) {
       localStorage.setItem(localKey, JSON.stringify(checklistData.items))
     }

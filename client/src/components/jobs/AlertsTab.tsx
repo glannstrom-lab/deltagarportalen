@@ -3,7 +3,7 @@
  * Save search criteria to get notified about new jobs
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
@@ -196,14 +196,27 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  // Läsfelet är ett eget läge (2026-09-24). Förut gav `getNotificationPreferences`
+  // standardvärdena vid fel: den som stängt av mejlen såg rutan ikryssad, och
+  // "Spara" slog på utskicken igen. Utan känt utgångsläge visas inget formulär.
+  const [laddningsfel, setLaddningsfel] = useState(false)
 
-  useEffect(() => {
-    getNotificationPreferences().then(prefs => {
+  const laddaInstallningar = useCallback(async () => {
+    setIsLoading(true)
+    setLaddningsfel(false)
+    try {
+      const prefs = await getNotificationPreferences()
       setEmailEnabled(prefs.emailEnabled)
       setFrequency(prefs.frequency)
+    } catch (error) {
+      console.error('Kunde inte hämta e-postinställningarna', error)
+      setLaddningsfel(true)
+    } finally {
       setIsLoading(false)
-    })
+    }
   }, [])
+
+  useEffect(() => { void laddaInstallningar() }, [laddaInstallningar])
 
   // H2 (2026-07-27): returvärdet kastades och modalen stängdes oavsett utfall.
   // Kolumnerna `job_alert_email_enabled`/`job_alert_frequency` fanns inte i
@@ -228,6 +241,26 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
         <div className="animate-pulse flex items-center gap-3">
           <div className="w-10 h-10 bg-stone-200 rounded-lg" />
           <div className="h-4 bg-stone-200 rounded w-32" />
+        </div>
+      </div>
+    )
+  }
+
+  if (laddningsfel) {
+    return (
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-6 mb-6 border border-stone-200 dark:border-stone-700" role="alert">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          <p className="text-sm text-stone-800 dark:text-stone-100 flex-1">
+            {t('jobSearch.alertsTab.loadFailed', 'Vi kunde inte hämta dina e-postinställningar just nu. Vi visar dem inte förrän vi vet vad du har valt, så att inget ändras av misstag.')}
+          </p>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => { void laddaInstallningar() }}>
+              {t('common.tryAgain')}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              {t('common.close', 'Stäng')}
+            </Button>
+          </div>
         </div>
       </div>
     )

@@ -43,22 +43,22 @@ idag), teknisk SEO (K-spåret), GDPR och KM-domänlogik (13 sep), visuell design
 DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara halvklar** — se PF2.
 
 ### Nu — riktiga fel
-- [ ] **DP1** (sedan 23 sep, eskalerad) Google-registrering ger konto utan villkor, integritetspolicy och AI-samtycke · **17 av 17** Google-konton, senast 2026-09-22 — händer fortfarande · `authStore.ts:329-348`, `handle_new_user()` · ~3–4 h
+- [x] **DP1** ✅ **Byggd 2026-09-24 (väntar på deploy):** SamtyckeSteg.tsx spärrar varje konto utan villkor/integritet tills båda är godkända via grant_consent (consent_history får rad). Gäller alla roller. e2e-hjälpen (e2e/fixtures.ts) godkänner steget för testkontona. Kvar: Google-knappen i Register.tsx kunde kräva kryssen före OAuth (authStore.ts). — Ursprunglig post: (sedan 23 sep, eskalerad) Google-registrering ger konto utan villkor, integritetspolicy och AI-samtycke · **17 av 17** Google-konton, senast 2026-09-22 — händer fortfarande · `authStore.ts:329-348`, `handle_new_user()` · ~3–4 h
 - [ ] **PF1** Vercel Hobby förbjuder kommersiellt bruk, och B2B-sidans pris (2 990 kr/mån) räknas redan som "advertising the sale of a product or service" (vercel.com/docs/limits/fair-use-guidelines). Vercel får stänga utan förvarning · uppgradera till Pro, 20 USD/mån · 15 min + beslut
-- [ ] **KP1** Startsidan lovar "AF-integration via API" och "Direkt koppling till Arbetsförmedlingens API:er" — koden och B2B-FAQ:n säger att det inte finns · `sv.json:5705,5741-5742` → `Landing.tsx:676,774` · 15 min
-- [ ] **TR1** Kakbanderollen ligger över "Skapa ett konto" på /login — reproducerat i 1280 och 390 px · `CookieConsent.tsx:90-97`, `Login.tsx:154`, `Register.tsx:191` · 30–60 min
-- [ ] **AT1** Konsulentens meddelanden når aldrig deltagaren — ingen notis, inget mejl (enda triggern sätter `updated_at`). 2 meddelanden i hela historiken · `consultantService.ts:142-160` · 3–4 h
+- [x] **KP1** ✅ **Klar 2026-09-24:** texterna säger nu "Jobb från Arbetsförmedlingen" / "Jobbsöket hämtar lediga jobb ur Arbetsförmedlingens öppna data" (sv+en, samt Landing.tsx-standardtexterna). — Ursprunglig post: Startsidan lovar "AF-integration via API" och "Direkt koppling till Arbetsförmedlingens API:er" — koden och B2B-FAQ:n säger att det inte finns · `sv.json:5705,5741-5742` → `Landing.tsx:676,774` · 15 min
+- [x] **TR1** ✅ **Klar 2026-09-24:** bannern mäter sin höjd till `--cookie-banner-h`; Login och Register reserverar den som bottenpadding. Länken nås i 1280 och 390 px (lokal webbläsare). Kvar: verifiera i prod efter deploy. — Ursprunglig post: Kakbanderollen ligger över "Skapa ett konto" på /login — reproducerat i 1280 och 390 px · `CookieConsent.tsx:90-97`, `Login.tsx:154`, `Register.tsx:191` · 30–60 min
+- [x] **AT1** 🟡 **Migration skriven, ej körd:** `supabase/migrations/PENDING_20260924_at1_meddelande_notis.sql` (trigger → notis av typen message, som klockan redan visar). Kräver Mikaels ja. Mejl ingår inte. — Ursprunglig post: Konsulentens meddelanden når aldrig deltagaren — ingen notis, inget mejl (enda triggern sätter `updated_at`). 2 meddelanden i hela historiken · `consultantService.ts:142-160` · 3–4 h
 - [ ] **PF2** Klientens Sentry är av: bara `SENTRY_DSN` finns i Vercel, `VITE_SENTRY_DSN` saknas (DR1 räknade bara servern) · `src/lib/sentry.ts:41` · 15 min + extern uptime-kontroll
-- [ ] **BS1** deltagarportalen.se är avregistrerad (NXDOMAIN) men står kvar som tillåtet ursprung i CORS · `api/ai.js:622-623`, `api/cv-pdf.js:191-192` · 15 min + beslut om domänen
+- [x] **BS1** ✅ **Klar 2026-09-24:** borttagen ur CORS i ai.js, cv-pdf.js OCH job-alerts.js; ett okänt ursprung får www.jobin.se. Grind: `cors-avregistrerad-doman.test.ts`. Kvar: beslut om domänen ska registreras om. — Ursprunglig post: deltagarportalen.se är avregistrerad (NXDOMAIN) men står kvar som tillåtet ursprung i CORS · `api/ai.js:622-623`, `api/cv-pdf.js:191-192` · 15 min + beslut om domänen
 
 ### Sedan — skav som märks
-- [ ] **TR2** Ny besökare från en guide landar på "Välkommen tillbaka!" (inloggning), aldrig på registrering · `App.tsx:241-243`, `Login.tsx:171` · 1–2 h
-- [ ] **TR3** Mest klickade guiden (lönebidrag) erbjuder intervjusimulatorn och jobbsök; a-kassa-guiden erbjuder kalendern · `related_tools` i `articles` · 1–2 h för topp 20
+- [x] **TR2** ✅ **Klar 2026-09-24:** en gäst utan spår av tidigare inloggning (localStorage `jobin_har_loggat_in`) går till `/register?returnTo=…`; den som loggat in förut till `/login`. Test: `App.returnTo.test.tsx`. — Ursprunglig post: Ny besökare från en guide landar på "Välkommen tillbaka!" (inloggning), aldrig på registrering · `App.tsx:241-243`, `Login.tsx:171` · 1–2 h
+- [x] **TR3** ✅ **Klar 2026-09-24:** related_tools omskrivna för 19 av topp 20 guider i prod (`scripts/apply-related-tools.cjs`, backup i `content/_backup-related-tools.json`, rollback finns), snapshot uppdaterad. Obs: guidesidan visar bara verktyg i TOOLS (`scripts/lib/guides.cjs`), och appens artikelvy läser `actions`, inte `related_tools`. — Ursprunglig post: Mest klickade guiden (lönebidrag) erbjuder intervjusimulatorn och jobbsök; a-kassa-guiden erbjuder kalendern · `related_tools` i `articles` · 1–2 h för topp 20
 - [ ] **AK1** 7 av 13 nya konton lämnar aldrig Översikt, 8 av 13 har varken CV eller sparat jobb; `onboarding_completed` sätts även vid "Hoppa över" · mät nästa-steg-kortet innan texten ändras · `OnboardingFlow.tsx:179-188` · ~2 h
-- [ ] **AT2** Jobbevakning: 1 av 81 konton har en, och den har aldrig levererat (länsbuggen rättad idag). Verifiera morgondagens körning; lägg "spara sökningen som bevakning" i jobbsök · ~2 h
-- [ ] **LS1** Dagbokens streak-räknare och troféer ("7 dagar i rad") bryter mot DESIGN.md §1 · `Diary.tsx:37-70` · 2–4 h
-- [ ] **LS2** Samtycket hos Min konsulent frågar om "ATS-poäng" och "Hollandkod" utan förklaring · `consultantConsent.seesList` · 30 min
-- [ ] **KP2** B2B-sidan säger inget om enskild firma, kontinuitet, SLA eller supporttid — upphandlarens första frågor. R&M-sidans FAQ talar om "en påhittad kommun" · `b2b.json:75-104,241` · 1–2 h
+- [x] **AT2** ✅ **Byggd 2026-09-24:** "Spara den här sökningen som bevakning" ovanför resultaten i jobbsök (sökord, län och kommun följer med; yrken kräver en ny kolumn). Kvar: kontrollera jobbevakningens körning 06:00 UTC 2026-09-25. — Ursprunglig post: Jobbevakning: 1 av 81 konton har en, och den har aldrig levererat (länsbuggen rättad idag). Verifiera morgondagens körning; lägg "spara sökningen som bevakning" i jobbsök · ~2 h
+- [x] **LS1** ✅ **Klar 2026-09-24:** räknaren och troféerna borta ur Diary.tsx, useDiaryStreaks arkiverad, tools.json rättad. Kvar: `diaryStreaksApi.updateAfterEntry` skriver fortfarande diary_streaks, som ingen läser. — Ursprunglig post: Dagbokens streak-räknare och troféer ("7 dagar i rad") bryter mot DESIGN.md §1 · `Diary.tsx:37-70` · 2–4 h
+- [x] **LS2** ✅ **Klar 2026-09-24:** "hur komplett portalen bedömer att det är" och "vilken yrkestyp det gav dig" (sv+en). Konsulentvyn behåller ATS-poäng. — Ursprunglig post: Samtycket hos Min konsulent frågar om "ATS-poäng" och "Hollandkod" utan förklaring · `consultantConsent.seesList` · 30 min
+- [x] **KP2** ✅ **Klar 2026-09-24:** två FAQ-poster på kommunsidan (vem driver Jobin; drift och support — inget SLA, support@jobin.se) och rättad demotext på R&M-sidan. Kvar: R&M-sidan saknar motsvarande två svar. — Ursprunglig post: B2B-sidan säger inget om enskild firma, kontinuitet, SLA eller supporttid — upphandlarens första frågor. R&M-sidans FAQ talar om "en påhittad kommun" · `b2b.json:75-104,241` · 1–2 h
 - [ ] **PF3** Supabase Free pausar efter en veckas inaktivitet; 2 av 4 projekt i organisationen är redan pausade. Pro 25 USD/mån · beslut
 - [ ] **BS2** AI-förordningen: A2 (jurist), A4 (signera DPIA/Art 30), A5 (OpenRouter DPA/SCC) öppna 53 dagar efter deadline, nu med 4 organisationer · beslut + ~1 dag
 - [ ] **BS3** Repot är publikt med ett rullat lösenord i historiken (A33) — beslutet "publikt eller privat" står som "nu" sedan 9 aug · 2–4 h
@@ -66,11 +66,11 @@ DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara
 ### Framåt — utveckling
 - [ ] **AT3** Varsam veckovis check-in (dagbok 1 inlägg, mående 4 loggar i hela historiken — ingen påminnelse finns) · 6–8 h efter beslut om ton
 - [ ] **AT4** Slå på aktivitet-mejl (8 av 8 notiser om plan och frånvaro har aldrig mejlats; cron-raden är skriven, KM11) · 15 min + ja för vercel.json
-- [ ] **NF1** Kalenderexport (.ics) för pass och möten — finns inte alls · `MinVecka.tsx` · 2–3 dagar
+- [x] **NF1** ✅ **MVP klar 2026-09-24:** `lib/ics.ts` (RFC 5545, Europe/Stockholm → UTC, 23 tester) och "Lägg till i kalendern" per pass på Min vecka. Kvar: konsulentmöten och hela veckan. — Ursprunglig post: Kalenderexport (.ics) för pass och möten — finns inte alls · `MinVecka.tsx` · 2–3 dagar
 - [ ] **NF2** Periodrapport i avtalets format (RM6) · ~1 vecka
 - [ ] **NF3** Resultatklockan: nivå A/B/C + betalningsstatus (RM1) · ~1 vecka
 - [ ] **NF4** SMS-påminnelser (KM10-rest) · ~1 dag + Art 30-rad
-- [ ] **LS3** CV-byggaren visar 12 mallar samtidigt; visa 4–6 + "fler" · `CVBuilder.tsx:839-852` · 3–4 h
+- [x] **LS3** ✅ **Klar 2026-09-24:** de fem mest valda mallarna visas, "Visa fler mallar" (aria-expanded) för resten; en vald mall syns alltid. — Ursprunglig post: CV-byggaren visar 12 mallar samtidigt; visa 4–6 + "fler" · `CVBuilder.tsx:839-852` · 3–4 h
 - [ ] **PF4** Bussfaktor 1: nödinstruktion + läsbehörighet för en betrodd person · några timmar
 - [ ] **BS4** ROADMAP.md är 6 878 rader med 288 rubriker; öppna beslut är utspridda. Bryt ut en kort STATUS.md · 2–3 h
 
@@ -102,12 +102,12 @@ DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara
 ### Hittat, inte byggt
 
 - Cron-raderingarna (execute_inactive_account_retention, execute_scheduled_account_deletions) städar inte Storage/Vercel Blob.
-- Felläge saknas och läsfel kan skriva över sparat: IntegrationTab, AlertsTab (e-postvalet), HealthTab, JobSearch getJobDetails.
+- ~~Felläge saknas och läsfel kan skriva över sparat: IntegrationTab, AlertsTab (e-postvalet), HealthTab, JobSearch getJobDetails.~~ ✅ 2026-09-24: alla fyra har felläge + spärr mot sparande, och servicen kastar. Kvar: `wellnessDataApi.get` (cloud/maende.ts) faller fortfarande tillbaka på localStorage.
 - check_rate_limit kan köras av anon med godtycklig identifierare (utelåsning).
-- Hårdkodad svenska: brevmallarna, CredentialsTab, flyttdata-kötider, writing_prompts (ingen engelsk kolumn), RouteErrorBoundary, ProfileHistory.
+- ~~Hårdkodad svenska: brevmallarna, CredentialsTab, flyttdata-kötider, RouteErrorBoundary, ProfileHistory.~~ ✅ 2026-09-24 (61 nycklar). Kvar: writing_prompts saknar engelsk kolumn; RelocationTab formaterar belopp med sv-SE.
 - 271 anrop till auth.getUser() — nätverksrunda var; mest anropade under driftsvepet.
 - job-alerts ignorerar employment_type; job_notifications NOT NULL kan tappa annons tyst.
-- PageHeader.tsx död; consequenceSta-texten inaktuell; leaked password protection av.
+- ~~PageHeader.tsx död~~ ✅ arkiverad 2026-09-24, liksom inbjudans STA-samtycke och STA-mejlmallen. Kvar: consequenceSta-texten inaktuell; leaked password protection av; STA-grenar i handle_invitation_acceptance/handle_first_signin (kräver migration).
 
 ---
 

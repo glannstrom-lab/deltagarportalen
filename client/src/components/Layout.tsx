@@ -36,6 +36,10 @@ import { navHubs, adminNavItems, consultantNavItems, employerNavItem, shouldShow
 import { HUB_ICON_SRC } from './layout/hubIcons'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
+// DP1 (2026-09-24): villkor + integritetspolicy i efterhand för konton som
+// aldrig såg registreringens kryssrutor (Google-inloggning, äldre e-postkonton).
+import { SamtyckeSteg } from './auth/SamtyckeSteg'
+import { saknadeGrundsamtycken } from '@/services/consentApi'
 import { SamlingarFab } from './SamlingarFab'
 // Steg 1 i navigationsomläggningen (2026-08-17): Ctrl/⌘ K når alla 25
 // undersidor utan att man behöver veta vilken hub de ligger i. Fristående —
@@ -315,6 +319,8 @@ function ForetagSkal({ isMobile, showBars, pathname, org }: {
 
         {isMobile && showBars && !arForetagslankAktiv(pathname, '/foretag') && <MobileBackButton />}
       </div>
+      {/* DP1: samma steg som i deltagarskalet, utan AI-rutan — företaget har inga AI-funktioner. */}
+      <SamtyckeSteg visaAiVal={false} />
     </>
   )
 }
@@ -409,6 +415,11 @@ export default function Layout() {
   // Måste vara stabil: den ligger i registreringseffektens beroendelista, och
   // ett objekt som byter identitet gav en oändlig loop som kraschade sidan.
   const tipsApi = useMemo(() => ({ registrera, avregistrera }), [registrera, avregistrera])
+
+  // DP1: saknas villkoren väntar välkomstflödet tills de är godkända — annars
+  // staplas två modaler, och den nya Google-användaren (som har båda) möter
+  // onboardingen ovanpå en spärr hon inte kan se.
+  const saknarGrundsamtycke = saknadeGrundsamtycken(useAuthStore((s) => s.profile)).length > 0
 
   // AG6: efter alla hooks ovan. Medan medlemskapen hämtas får skalet inte
   // påstå att personen är deltagare — samma laddare som PrivateRoute.
@@ -587,8 +598,9 @@ export default function Layout() {
             via Resurser i rad 1 och via Ctrl/⌘ K. */}
         {isMobile && <SamlingarFab />}
 
-        {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false */}
-        <OnboardingFlow />
+        {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false.
+            DP1: först när villkoren är godkända, se `saknarGrundsamtycke`. */}
+        {saknarGrundsamtycke ? <SamtyckeSteg /> : <OnboardingFlow />}
       </div>
     </>
   )

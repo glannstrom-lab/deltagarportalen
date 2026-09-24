@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Heart, Brain, Sun, Moon, Activity, Coffee,
-  Sparkles, CheckCircle, PenLine, Quote, Loader2, Check
+  Sparkles, CheckCircle, PenLine, Quote, Loader2, Check, AlertCircle
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { moodApi, wellnessDataApi, type MoodType } from '@/services/cloudStorage'
@@ -102,27 +102,19 @@ export default function HealthTab() {
   const [savedReflections, setSavedReflections] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  // Ett humör eller en anteckning som inte sparades syntes förut bara i
+  // konsolen — och valet såg sparat ut. (2026-09-24)
+  const [moodfel, setMoodfel] = useState<string | null>(null)
+  // Läsfel av välmåendedatan. `wellnessDataApi.save` skriver HELA objektet
+  // (aktiviteter + reflektioner), så en bock efter ett misslyckat läs skrev
+  // tomma reflektioner över molnets. Då spärras sparandet tills vi vet.
+  const [valmaendeLaddfel, setValmaendeLaddfel] = useState(false)
+  const kanSparaValmaende = !valmaendeLaddfel
 
-  const loadData = useCallback(async () => {
+  const loadWellness = useCallback(async () => {
+    setValmaendeLaddfel(false)
     try {
-      setIsLoading(true)
-
-      // Load mood data
-      const [todaysMood, streak, wellnessData] = await Promise.all([
-        moodApi.getTodaysMood(),
-        // getStreak kastar vid fel sedan 2026-09-22. Ett fel i sviten får inte
-        // fälla hela Promise.all — dagens humör och aktiviteterna ska ändå visas.
-        moodApi.getStreak().catch(() => null),
-        wellnessDataApi.get()
-      ])
-
-      if (todaysMood) {
-        setCurrentMood(todaysMood.mood)
-        setMoodNote(todaysMood.note || '')
-        setMoodSaved(true)
-      }
-      setMoodStreak(streak)
-
+      const wellnessData = await wellnessDataApi.get()
       if (wellnessData) {
         if (wellnessData.activities) {
           setActivities(prev => prev.map(a => ({
@@ -136,18 +128,57 @@ export default function HealthTab() {
       }
     } catch (error) {
       console.error('Failed to load wellness data:', error)
+      setValmaendeLaddfel(true)
+    }
+  }, [])
+
+  const loadMood = useCallback(async () => {
+    try {
+      const [todaysMood, streak] = await Promise.all([
+        // Ett fel i dagens humör får inte fälla sviten. Okänt humör visar
+        // inviten att logga — den påstår inget om användaren.
+        moodApi.getTodaysMood().catch(() => null),
+        // getStreak kastar vid fel sedan 2026-09-22. Ett fel i sviten får inte
+        // fälla hela Promise.all — dagens humör ska ändå visas.
+        moodApi.getStreak().catch(() => null),
+      ])
+
+      if (todaysMood) {
+        setCurrentMood(todaysMood.mood)
+        setMoodNote(todaysMood.note || '')
+        setMoodSaved(true)
+      }
+      setMoodStreak(streak)
+    } catch (error) {
+      console.error('Failed to load mood:', error)
+    }
+  }, [])
+
+  const loadData = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      await Promise.all([loadMood(), loadWellness()])
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [loadMood, loadWellness])
 
   useEffect(() => {
     loadData()
   }, [loadData])
 
   const handleMoodSelect = async (mood: MoodType) => {
+    const forra = currentMood
     setCurrentMood(mood)
     setIsSavingMood(true)
+    setMoodfel(null)
+
+    const misslyckades = () => {
+      // Tillbaka till det som faktiskt ligger sparat — annars stod "Humör
+      // loggat: Bra" kvar för ett val som aldrig nådde databasen.
+      setCurrentMood(forra)
+      setMoodfel(t('wellness.health.moodSaveFailed', 'Ditt humör kunde inte sparas just nu. Prova igen om en liten stund.'))
+    }
 
     try {
       const success = await moodApi.logMood(mood, moodNote || undefined)
@@ -156,9 +187,12 @@ export default function HealthTab() {
         // Refresh streak
         const newStreak = await moodApi.getStreak().catch(() => null)
         setMoodStreak(newStreak)
+      } else {
+        misslyckades()
       }
     } catch (error) {
       console.error('Failed to save mood:', error)
+      misslyckades()
     } finally {
       setIsSavingMood(false)
     }
@@ -167,18 +201,27 @@ export default function HealthTab() {
   const handleSaveMoodNote = async () => {
     if (!currentMood) return
     setIsSavingMood(true)
+    setMoodfel(null)
+    const noteFel = t('wellness.health.noteSaveFailed', 'Anteckningen kunde inte sparas just nu. Texten finns kvar. Prova igen om en liten stund.')
 
     try {
-      await moodApi.logMood(currentMood, moodNote || undefined)
-      setShowNoteInput(false)
+      // Returvärdet kastades förut, så fältet stängdes som om allt gått bra.
+      const success = await moodApi.logMood(currentMood, moodNote || undefined)
+      if (success) {
+        setShowNoteInput(false)
+      } else {
+        setMoodfel(noteFel)
+      }
     } catch (error) {
       console.error('Failed to save mood note:', error)
+      setMoodfel(noteFel)
     } finally {
       setIsSavingMood(false)
     }
   }
 
   const toggleActivity = async (id: string) => {
+    if (!kanSparaValmaende) return
     const newActivities = activities.map(a =>
       a.id === id ? { ...a, completed: !a.completed } : a
     )
@@ -195,7 +238,7 @@ export default function HealthTab() {
   }
 
   const saveReflection = async () => {
-    if (!reflection.trim()) return
+    if (!reflection.trim() || !kanSparaValmaende) return
 
     setIsSaving(true)
     try {
@@ -276,6 +319,13 @@ export default function HealthTab() {
           ))}
         </div>
 
+        {moodfel && (
+          <p role="alert" className="flex items-start gap-2 mb-4 p-3 rounded-lg bg-white dark:bg-stone-800 text-sm text-stone-800 dark:text-stone-100 border border-stone-300 dark:border-stone-600">
+            <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+            {moodfel}
+          </p>
+        )}
+
         {/* Mood saved confirmation */}
         {moodSaved && selectedMoodOption && (
           <div className={cn(
@@ -343,6 +393,20 @@ export default function HealthTab() {
         </div>
       </Card>
 
+      {valmaendeLaddfel && (
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-300 dark:border-stone-600" role="alert">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <p className="flex items-start gap-2 text-sm text-stone-800 dark:text-stone-100 flex-1">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+              {t('wellness.health.loadFailed', 'Vi kunde inte hämta dina aktiviteter och reflektioner just nu. Det betyder inte att de är borta. Inget sparas förrän vi har hämtat dem.')}
+            </p>
+            <Button size="sm" variant="outline" onClick={() => { void loadWellness() }}>
+              {t('common.tryAgain')}
+            </Button>
+          </div>
+        </Card>
+      )}
+
       {/* Daily Activities */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
@@ -364,6 +428,7 @@ export default function HealthTab() {
               <button
                 key={activity.id}
                 onClick={() => toggleActivity(activity.id)}
+                disabled={!kanSparaValmaende}
                 className={cn(
                   "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all",
                   activity.completed
@@ -432,7 +497,7 @@ export default function HealthTab() {
         <div className="flex justify-end mt-3">
           <Button
             onClick={saveReflection}
-            disabled={!reflection.trim() || isSaving}
+            disabled={!reflection.trim() || isSaving || !kanSparaValmaende}
             size="sm"
           >
             {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('wellness.health.saveReflection')}

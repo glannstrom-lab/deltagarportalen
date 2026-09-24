@@ -55,8 +55,8 @@
     "seesHeading": "Det här ser {{namn}}:",
     "seesList": [
       "dina kontaktuppgifter — namn, e-post och telefon",
-      "om du har ett CV, vilken ATS-poäng det fick och när du senast ändrade det",
-      "om du gjort intressetestet och vilken Hollandkod du fick",
+      "om du har ett CV, hur komplett portalen bedömer att det är och när du senast ändrade det",
+      "om du gjort intressetestet och vilken yrkestyp det gav dig",
       "hur många jobb du har sparat",
       "när du senast var inloggad",
       "anteckningar och mål som {{namn}} skriver om dig — dem kan du själv läsa"
@@ -1509,7 +1509,23 @@
       "copiedAria": "Brevet är kopierat."
     },
     "templates": {
-      "selectAria": "Välj brevmall"
+      "selectAria": "Välj brevmall",
+      "professional": {
+        "name": "Professionell",
+        "description": "Klassisk och tidlös design för de flesta branscher"
+      },
+      "modern": {
+        "name": "Modern",
+        "description": "Ren och luftig med färgaccent"
+      },
+      "minimal": {
+        "name": "Minimalistisk",
+        "description": "Enkel och fokuserad utan överflöd"
+      },
+      "executive": {
+        "name": "Executive",
+        "description": "Formell med serif-typsnitt för ledningspositioner"
+      }
     },
     "myLetters": {
       "loading": "Hämtar dina brev...",
@@ -1542,7 +1558,9 @@
     },
     "closingGreeting": "Med vänliga hälsningar,",
     "colorPreview": {
-      "secondary": "Sekundär"
+      "secondary": "Sekundär",
+      "header": "Rubrik",
+      "accent": "Accent"
     }
   },
   "jobSearch": {
@@ -1668,7 +1686,8 @@
       "confirmDelete": "Är du säker på att du vill ta bort denna bevakning?",
       "delete": "Ta bort",
       "searching": "Söker...",
-      "searchNow": "Sök nu"
+      "searchNow": "Sök nu",
+      "loadFailed": "Vi kunde inte hämta dina e-postinställningar just nu. Vi visar dem inte förrän vi vet vad du har valt, så att inget ändras av misstag."
     },
     "dailyTab": {
       "loading": "Hittar dagens jobb åt dig...",
@@ -1714,7 +1733,21 @@
     "sortCompanyAZ": "Företag A-Ö",
     "markAsApplied": "Markera som ansökt",
     "endOfList": "Inga fler jobb att visa",
-    "loadingMore": "Laddar fler jobb…"
+    "loadingMore": "Laddar fler jobb…",
+    "bevakning": {
+      "spara": "Spara den här sökningen som bevakning",
+      "sparar": "Sparar…",
+      "sparad": "Sparad som bevakning.",
+      "visa": "Se dina bevakningar",
+      "finns": "Du bevakar redan den här sökningen.",
+      "fel": "Bevakningen kunde inte sparas. Försök igen om en stund.",
+      "foljerInteMed": "Bevakningen sparar sökord, län och kommun. Yrken, anställningsform och datumfilter följer inte med."
+    },
+    "detaljFel": {
+      "text": "Annonsen kunde inte öppnas just nu. Försök igen om en stund.",
+      "platsbanken": "Öppna annonsen på Platsbanken",
+      "stang": "Stäng meddelandet"
+    }
   },
   "jobs": {
     "card": {
@@ -2613,7 +2646,49 @@
       "deleteLabel": "Ta bort {{name}}",
       "statusGroupLabel": "Status för {{name}}",
       "emptyTitle": "Här samlar du dina meriter",
-      "emptyBody": "Kurser, körkort, yrkesbevis och utbildningar — både sådant du har och sådant du siktar på. Då slipper du leta när du ska söka jobb."
+      "emptyBody": "Kurser, körkort, yrkesbevis och utbildningar — både sådant du har och sådant du siktar på. Då slipper du leta när du ska söka jobb.",
+      "popular": {
+        "truck": {
+          "name": "Truckkort A + B",
+          "issuer": "TLP-10"
+        },
+        "ykb": {
+          "name": "YKB — yrkesförarkompetens",
+          "issuer": "Transportstyrelsen"
+        },
+        "hlr": {
+          "name": "HLR och första hjälpen",
+          "issuer": "HLR-rådet"
+        },
+        "livsmedel": {
+          "name": "Livsmedelshygien",
+          "issuer": "Utbildningsanordnare"
+        },
+        "hetaArbeten": {
+          "name": "Heta arbeten",
+          "issuer": "Brandskyddsföreningen"
+        },
+        "delegering": {
+          "name": "Delegering läkemedel",
+          "issuer": "Arbetsgivare i vården"
+        },
+        "vaktare": {
+          "name": "Väktarutbildning (VU1)",
+          "issuer": "Auktoriserat bevakningsföretag"
+        },
+        "bKorkort": {
+          "name": "B-körkort",
+          "issuer": "Transportstyrelsen"
+        },
+        "sfi": {
+          "name": "SFI — svenska för invandrare",
+          "issuer": "Din kommun"
+        },
+        "dator": {
+          "name": "Grundläggande datorkunskap",
+          "issuer": "Utbildningsanordnare"
+        }
+      }
     },
     "relocation": {
       "checklistProgress": "{{count}} av {{total}} klara",
@@ -2701,7 +2776,8 @@
         "sublet": "Andrahandskontrakt först och förstahandskontrakt sedan är en vanlig väg — du behöver inte ha allt löst på en gång.",
         "jobFirst": "Har du jobbet klart innan flytten blir det ofta lättare att få bostad.",
         "firstMonths": "Räkna med att de första månaderna kostar mer än vanligt: deposition, möbler, dubbla hyror."
-      }
+      },
+      "queueYears": "{{min}}–{{max}} år"
     },
     "networkTab": {
       "loading": "Laddar nätverksdata...",
@@ -3340,7 +3416,8 @@
           "body": "Har du arbetat i ett annat land kan du ha tjänat in pension där. Pensionsmyndigheten kan berätta vad som gäller mellan Sverige och det landet.",
           "linkLabel": "Pensionsmyndigheten"
         }
-      }
+      },
+      "loadFailed": "Vi kunde inte hämta dina kryss just nu. Det betyder inte att de är borta. Du kan läsa listan, men inget sparas förrän vi vet vad du redan har bockat av."
     },
     "language": {
       "title": "Svenska",
@@ -4018,27 +4095,6 @@
       "goals": "Mål",
       "gratitude": "Tacksamhet"
     },
-    "streak": {
-      "days": "dagar"
-    },
-    "achievements": {
-      "weekStreak": {
-        "title": "En veckas streak!",
-        "description": "Du har skrivit {{count}} dagar i rad!"
-      },
-      "tenEntries": {
-        "title": "10 inlägg!",
-        "description": "Du har skrivit 10 dagboksinlägg!"
-      },
-      "thousandWords": {
-        "title": "1000 ord!",
-        "description": "Du har skrivit över 1000 ord totalt!"
-      },
-      "twoWeekRecord": {
-        "title": "Två veckors rekord!",
-        "description": "Ditt längsta streak: {{count}} dagar!"
-      }
-    },
     "gratitude": {
       "today": {
         "title": "Dagens tacksamhet",
@@ -4287,7 +4343,10 @@
           "text": "Ta det i din egen takt",
           "author": "Okänd"
         }
-      }
+      },
+      "moodSaveFailed": "Ditt humör kunde inte sparas just nu. Prova igen om en liten stund.",
+      "noteSaveFailed": "Anteckningen kunde inte sparas just nu. Texten finns kvar. Prova igen om en liten stund.",
+      "loadFailed": "Vi kunde inte hämta dina aktiviteter och reflektioner just nu. Det betyder inte att de är borta. Inget sparas förrän vi har hämtat dem."
     },
     "energy": {
       "howIsYourEnergy": "Hur är din energi idag?",
@@ -5311,24 +5370,12 @@
     },
     "invite": {
       "invalidOrExpired": "Inbjudan är ogiltig eller har gått ut",
-      "yourConsultant": "Din konsulent",
-      "consentRequired": "Du måste godkänna samtycket för att fortsätta",
       "invalidTitle": "Ogiltig inbjudan",
       "goToLogin": "Gå till inloggning",
       "accountCreatedTitle": "Konto skapat!",
-      "accountCreatedSta": "Ditt konto är skapat och Steg till arbete är aktiverat. Du omdirigeras till inloggningen…",
       "accountCreated": "Ditt konto har skapats. Du omdirigeras till inloggningen…",
       "welcome": "Välkommen!",
-      "invitedBySta": "{{consultantName}} har bjudit in dig till Steg till arbete",
       "invitedGeneric": "Du har blivit inbjuden till Jobin",
-      "contactConsultantHint": "Du kan kontakta din konsulent direkt eller från \"Min konsulent\"-sidan när du loggat in.",
-      "consentHeading": "Samtycke till datadelning",
-      "consentTextMissing": "Samtyckes-text saknas — kontakta din konsulent.",
-      "consentDataSharingPrefix": "Jag samtycker till att",
-      "consentDataSharingSuffix": "får tillgång till min STA-data (aktiviteter, skattningar, CV, mående, dokument) och kan skicka rapporter till Arbetsförmedlingen för min räkning.",
-      "consentRevocationPrefix": "Jag förstår att jag",
-      "consentRevocationBold": "när som helst kan säga upp kopplingen",
-      "consentRevocationSuffix": "från \"Min konsulent\"-sidan. Då slutar konsulenten se ny aktivitet, men dokument som redan skickats till Arbetsförmedlingen behålls enligt arkivkraven.",
       "firstNameLabel": "Förnamn *",
       "lastNameLabel": "Efternamn *",
       "passwordLabel": "Lösenord *",
@@ -5340,10 +5387,8 @@
       "confirmPasswordLabel": "Bekräfta lösenord *",
       "repeatPasswordPlaceholder": "Upprepa lösenord",
       "passwordMismatch": "Lösenorden matchar inte",
-      "consentRequiredTitle": "Du måste godkänna samtycket först",
       "creatingAccount": "Skapar konto…",
       "createAccountButton": "Skapa konto",
-      "checkBothBoxesHint": "Bocka i båda samtyckes-rutorna ovan för att aktivera knappen.",
       "termsNotice": "Genom att skapa ett konto godkänner du våra användarvillkor."
     },
     "returnTo": {
@@ -5702,7 +5747,7 @@
         "cta": "Boka 30 min demo",
         "bullet1": "GDPR + EU-data + krypterad lagring",
         "bullet2": "Schemamallar, individuell plan och närvaro för aktivitetskravet",
-        "bullet3": "AF-integration via API",
+        "bullet3": "Lediga jobb från Arbetsförmedlingens platsbank",
         "forMunicipality": "Jobin för arbetsmarknadsenheter",
         "forRustaOchMatcha": "Jobin för Rusta och matcha-leverantörer"
       }
@@ -5738,8 +5783,8 @@
       "gdprDesc": "All data hanteras enligt EU:s dataskyddsförordning",
       "eu": "EU-data",
       "euDesc": "Databas, konto och filer lagras i EU. Använder du AI-funktionerna behandlas den texten i USA.",
-      "af": "AF-integration",
-      "afDesc": "Direkt koppling till Arbetsförmedlingens API:er"
+      "af": "Jobb från Arbetsförmedlingen",
+      "afDesc": "Jobbsöket hämtar lediga jobb ur Arbetsförmedlingens öppna data"
     },
     "hero": {
       "badge": "Gratis verktyg för dig som söker jobb",
@@ -6913,7 +6958,28 @@
     },
     "history": {
       "previousValue": "Tidigare värde",
-      "newValue": "Nytt värde"
+      "newValue": "Nytt värde",
+      "justNow": "Just nu",
+      "emptyValue": "(tomt)",
+      "empty": "Ingen ändringshistorik än. Ändringar du gör i din profil loggas här.",
+      "changeType": {
+        "create": "Skapad",
+        "update": "Uppdaterad",
+        "delete": "Borttagen"
+      },
+      "fields": {
+        "first_name": "Förnamn",
+        "last_name": "Efternamn",
+        "phone": "Telefon",
+        "location": "Ort",
+        "bio": "Bio",
+        "ai_summary": "AI-sammanfattning",
+        "profile_image_url": "Profilbild",
+        "desired_jobs": "Önskade jobb",
+        "interests": "Intressen",
+        "availability": "Tillgänglighet",
+        "skills": "Kompetenser"
+      }
     },
     "notiser": {
       "intro": "Så här hör portalen av sig till dig i dag. Vi lägger inte till fler kanaler utan att säga det.",
@@ -7251,7 +7317,7 @@
       "selected": "Vald",
       "isSelected": "är vald",
       "selectedInfo": "Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, eller klicka på Förhandsgranska för att se resultatet.",
-      "atsNote": "PDF:en innehåller riktig text som går att markera och söka i — det gäller alla mallar. Vet du att arbetsgivaren använder ett rekryteringssystem är en mall i en spalt det säkraste valet, eftersom texten då läses i en enda ordning. Vi har inte testat mallarna mot något enskilt system.",
+      "atsNote": "PDF:en innehåller riktig text som går att markera och söka i — det gäller alla mallar. Använder arbetsgivaren ett rekryteringssystem är en mall i en spalt det säkraste valet. Då läses texten i en enda ordning. Vi har inte testat mallarna mot något enskilt system.",
       "meta": {
         "sidebar": {
           "name": "Sidokolumn",
@@ -7350,7 +7416,9 @@
         "skills": "Kompetenser",
         "workExperience": "Arbetslivserfarenhet",
         "education": "Utbildning"
-      }
+      },
+      "showMoreTemplates": "Visa fler mallar ({{count}} till)",
+      "showFewerTemplates": "Visa färre mallar"
     },
     "profileImage": {
       "title": "Profilbild",
@@ -8012,12 +8080,6 @@
       "logContact": "Logga kontakt",
       "logContactAction": "Logga kontakt",
       "logContactDescription": "Registrerar dagens datum som senaste kontakt för alla valda deltagare. Använd det här efter en workshop eller ett samlat utskick — inte i stället för en anteckning om vad ni pratade om."
-    }
-  },
-  "layout": {
-    "pageHeader": {
-      "myInsights": "Mina insikter",
-      "insights": "Insikter"
     }
   },
   "aiTeam": {
@@ -9341,6 +9403,12 @@
       "absent_invalid": "Frånvaro",
       "sick_certified": "Sjuk",
       "external": "Annan aktivitet"
+    },
+    "kalender": {
+      "knapp": "Lägg till i kalendern",
+      "knappEtikett": "Lägg till {{titel}} i kalendern",
+      "status": "Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.",
+      "fel": "Kalenderfilen kunde inte skapas. Försök igen om en stund."
     }
   },
   "minVardagHub": {
@@ -9718,5 +9786,28 @@
       "withdrawn": "Du slutade dela",
       "expired": "Gick ut utan svar"
     }
+  },
+  "routeError": {
+    "chunkTitle": "Kunde inte ladda sidan",
+    "networkTitle": "Nätverksproblem",
+    "generalTitle": "Något gick fel",
+    "chunkBody": "Sidan kunde inte laddas. Detta kan bero på en uppdatering.",
+    "chunkRetryHint": "Klicka på knappen nedan för att försöka igen.",
+    "networkBody": "Det verkar som att du har problem med nätverksanslutningen. Kontrollera din internetanslutning och försök igen.",
+    "generalBody": "Ett oväntat fel inträffade. Du kan försöka ladda om sidan eller gå tillbaka till startsidan.",
+    "retry": "Försök igen",
+    "reload": "Ladda om sidan",
+    "home": "Till startsidan",
+    "attempt": "Försök {{n}} av {{max}}",
+    "supportLead": "Om problemet kvarstår,",
+    "supportLink": "kontakta support"
+  },
+  "consentStep": {
+    "heading": "Ett steg kvar innan du fortsätter",
+    "intro": "Vi har inte ditt godkännande av användarvillkoren och integritetspolicyn sparat. Kryssa i båda rutorna för att fortsätta använda Jobin. Länkarna öppnas i en ny flik.",
+    "requiredHint": "Båda rutorna med stjärna behöver vara ikryssade.",
+    "continue": "Godkänn och fortsätt",
+    "saveFailed": "Det gick inte att spara just nu. Försök igen om en stund.",
+    "logout": "Logga ut i stället"
   }
 }

@@ -13,6 +13,12 @@ interface Props {
   className?: string
 }
 
+/**
+ * Fältnamnen i historiken. Svenskan är reservtext; engelskan bor i
+ * `profile.history.fields.<fält>`. Ett okänt fält visas med sitt tekniska namn.
+ * Tidigare var hela komponenten svensk i engelskt läge — fältnamn, "Just nu",
+ * "5 min sedan", "Skapad", "(tomt)" (prod-svepet 2026-09-24).
+ */
 const FIELD_LABELS: Record<string, string> = {
   first_name: 'Förnamn',
   last_name: 'Efternamn',
@@ -25,7 +31,43 @@ const FIELD_LABELS: Record<string, string> = {
   interests: 'Intressen',
   availability: 'Tillgänglighet',
   skills: 'Kompetenser',
-  // Add more as needed
+}
+
+const ANDRINGSTYPER: Record<string, string> = {
+  create: 'Skapad',
+  update: 'Uppdaterad',
+  delete: 'Borttagen',
+}
+
+/**
+ * "För 5 minuter sedan" / "5 minutes ago" på aktivt språk, via
+ * Intl.RelativeTimeFormat. Äldre än en vecka: datum och tid. Under en minut:
+ * "Just nu" / "Just now". `nu` är parameter för testbarhetens skull.
+ */
+function formateraRelativTid(
+  datum: string,
+  sprak: string,
+  justNu: string,
+  nu: Date = new Date()
+): string {
+  const d = new Date(datum)
+  const diffMins = Math.floor((nu.getTime() - d.getTime()) / 60000)
+  const diffHours = Math.floor(diffMins / 60)
+  const diffDays = Math.floor(diffHours / 24)
+  const tagg = datumSprak(sprak)
+
+  if (diffMins < 1) return justNu
+  const rtf = new Intl.RelativeTimeFormat(tagg, { numeric: 'always' })
+  if (diffMins < 60) return rtf.format(-diffMins, 'minute')
+  if (diffHours < 24) return rtf.format(-diffHours, 'hour')
+  if (diffDays < 7) return rtf.format(-diffDays, 'day')
+
+  return d.toLocaleDateString(tagg, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
 
 export function ProfileHistory({ className }: Props) {
@@ -55,35 +97,14 @@ export function ProfileHistory({ className }: Props) {
     }
   }
 
-  const formatDate = (date: string) => {
-    const d = new Date(date)
-    const now = new Date()
-    const diffMs = now.getTime() - d.getTime()
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMins / 60)
-    const diffDays = Math.floor(diffHours / 24)
+  const formatDate = (date: string) =>
+    formateraRelativTid(date, i18n.language, t('profile.history.justNow', 'Just nu'))
 
-    if (diffMins < 1) return 'Just nu'
-    if (diffMins < 60) return `${diffMins} min sedan`
-    if (diffHours < 24) return `${diffHours} tim sedan`
-    if (diffDays < 7) return `${diffDays} dagar sedan`
+  const getChangeTypeLabel = (type: string) =>
+    ANDRINGSTYPER[type] ? t(`profile.history.changeType.${type}`, ANDRINGSTYPER[type]) : type
 
-    return d.toLocaleDateString(datumSprak(i18n.language), {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    })
-  }
-
-  const getChangeTypeLabel = (type: string) => {
-    switch (type) {
-      case 'create': return 'Skapad'
-      case 'update': return 'Uppdaterad'
-      case 'delete': return 'Borttagen'
-      default: return type
-    }
-  }
+  const faltNamn = (falt: string) =>
+    FIELD_LABELS[falt] ? t(`profile.history.fields.${falt}`, FIELD_LABELS[falt]) : falt
 
   const getChangeTypeColor = (type: string) => {
     switch (type) {
@@ -95,9 +116,10 @@ export function ProfileHistory({ className }: Props) {
   }
 
   const formatValue = (value: unknown): string => {
-    if (value === null || value === undefined) return '(tomt)'
-    if (typeof value === 'string') return value || '(tomt)'
-    if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : '(tomt)'
+    const tomt = t('profile.history.emptyValue', '(tomt)')
+    if (value === null || value === undefined) return tomt
+    if (typeof value === 'string') return value || tomt
+    if (Array.isArray(value)) return value.length > 0 ? value.join(', ') : tomt
     if (typeof value === 'object') return JSON.stringify(value, null, 2)
     return String(value)
   }
@@ -155,7 +177,7 @@ export function ProfileHistory({ className }: Props) {
                     {getChangeTypeLabel(entry.change_type)}
                   </span>
                   <span className="text-sm font-medium text-stone-800 dark:text-stone-200">
-                    {FIELD_LABELS[entry.field_name] || entry.field_name}
+                    {faltNamn(entry.field_name)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -198,7 +220,7 @@ export function ProfileHistory({ className }: Props) {
         </div>
       ) : (
         <p className="text-sm text-stone-500 dark:text-stone-400 text-center py-8">
-          Ingen ändringshistorik än. Ändringar du gör i din profil loggas här.
+          {t('profile.history.empty', 'Ingen ändringshistorik än. Ändringar du gör i din profil loggas här.')}
         </p>
       )}
     </div>

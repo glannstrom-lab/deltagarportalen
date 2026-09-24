@@ -114,6 +114,10 @@ const CTA_MAL = [
 describe('K11: gäst som klickar en CTA på en publik sida', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // TR2 (2026-09-24): en gäst som ALDRIG loggat in i webbläsaren skickas numera
+    // till /register (vaktat i App.returnTo.test.tsx). Det här testet vaktar
+    // K11-vägen för den som loggat in förut — den ska fortfarande till /login.
+    localStorage.setItem('jobin_har_loggat_in', '1')
   })
 
   it.each(CTA_MAL)(

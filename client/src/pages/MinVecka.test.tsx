@@ -46,6 +46,13 @@ vi.mock('@/lib/supabase', () => ({
   supabase: { from: () => ({ select: () => ({ limit: async () => ({ data: [{ org_name: 'Testkommun' }], error: null }) }) }) },
 }))
 
+// NF1: byggIcs körs på riktigt, bara själva nedladdningen fångas
+const laddaNerIcs = vi.fn()
+vi.mock('@/lib/ics', async () => {
+  const riktig = await vi.importActual<typeof import('@/lib/ics')>('@/lib/ics')
+  return { ...riktig, laddaNerIcs: (...a: unknown[]) => laddaNerIcs(...a) }
+})
+
 vi.mock('@/services/aktivitetApi', () => ({
   minVeckaApi: {
     getMyPlan: (...a: unknown[]) => getMyPlan(...a),
@@ -106,6 +113,7 @@ beforeEach(() => {
   checkin.mockReset()
   minaJobbsok.mockReset()
   minaJobbsok.mockResolvedValue(tomtJobbsok)
+  laddaNerIcs.mockReset()
 })
 afterEach(cleanup)
 
@@ -245,5 +253,34 @@ describe('Min vecka', () => {
     expect(await screen.findByText(/nedladdat/i)).toBeInTheDocument()
     // Eget jobbsökande får ingen fråga-knapp; det anvisade passet får en
     expect(screen.getAllByRole('button', { name: 'Fråga om passet' })).toHaveLength(1)
+  })
+  /*
+   * NF1 (2026-09-24): "Lägg till i kalendern" per pass.
+   * Mutation: skicka första passets data i stället för det klickade → RÖD
+   * (fel UID/titel). Mutation: visa knappen även för passerade pass → RÖD.
+   */
+  it('NF1: "Lägg till i kalendern" laddar ner en .ics för DET passet, och bara för pass som inte har varit', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    // Ett passerat pass finns bara i veckan om i dag inte är måndag
+    const igar = idag === mandag ? null : addDays(idag, -1)
+    listMySessions.mockResolvedValue([
+      ...(igar ? [pass({ id: 's-igar', date: igar, title: 'Gårdagens pass' })] : []),
+      pass({ id: 's-idag', title: 'Språkcafé, nivå 2', location: 'Storgatan 1; plan 3', start_time: '09:00', end_time: '11:30' }),
+    ])
+    render(<MinVecka />)
+    await screen.findByText('Språkcafé, nivå 2')
+    const knappar = screen.getAllByRole('button', { name: /i kalendern/ })
+    expect(knappar).toHaveLength(1)
+    expect(knappar[0]).toHaveAccessibleName('Lägg till Språkcafé, nivå 2 i kalendern')
+    await userEvent.click(knappar[0])
+    expect(laddaNerIcs).toHaveBeenCalledTimes(1)
+    const [ics, filnamn] = laddaNerIcs.mock.calls[0] as [string, string]
+    const utvikt = ics.replace(/\r\n /g, '')
+    expect(utvikt).toContain('UID:s-idag@jobin.se\r\n')
+    expect(utvikt).toContain('SUMMARY:Språkcafé\\, nivå 2\r\n')
+    expect(utvikt).toContain('LOCATION:Storgatan 1\\; plan 3\r\n')
+    expect(utvikt).toMatch(/DTSTART:\d{8}T0[78]0000Z\r\n/)
+    expect(filnamn).toBe(`Språkcafé, nivå 2 ${idag}.ics`)
+    expect(await screen.findByText(/Kalenderfilen är nedladdad/)).toBeInTheDocument()
   })
 })

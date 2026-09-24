@@ -136,7 +136,7 @@ describe('KS3 — svaret', () => {
       const text = (anrop?.[1] as { p_consent_text: string }).p_consent_text
       // Texten ska bära det personen faktiskt läste: vad konsulenten ser,
       // vad hen inte ser, och att kopplingen går att säga upp.
-      expect(text).toMatch(/ATS-poäng/)
+      expect(text).toMatch(/hur komplett portalen bedömer/)
       expect(text).toMatch(/dagbok/i)
       expect(text).toMatch(/säga upp/i)
       expect(text.length).toBeGreaterThan(200)

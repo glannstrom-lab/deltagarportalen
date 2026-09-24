@@ -100,6 +100,14 @@
         [
           "Vem är personuppgiftsansvarig när en kommun använder portalen?",
           "Kommunen. Jobin är personuppgiftsbiträde enligt ett biträdesavtal som tecknas innan första deltagaren läggs in, med underbiträdena listade (Supabase i Irland, Vercel i Frankfurt, OpenRouter i USA för AI-funktionerna, Sentry, Resend). AI-funktionerna kan stängas av för hela organisationen."
+        ],
+        [
+          "Vem driver Jobin?",
+          "Glänne & Söner, en enskild firma i Sverige. Innehavare är arbetskonsulenten Mikael Glännström, och det finns inget större bolag bakom. Därför är frågan om vad som händer med er data rimlig att ställa. Ni ska inte behöva oss för att få ut den. Redan i dag kan varje konsulent under Inställningar ladda ner sina mål, journalanteckningar, möten, meddelanden och placeringar för sina aktiva deltagare som en fil. Deltagarlistan går att ta ut som CSV, aktivitetsplanen som PDF per deltagare och kvartalsunderlaget till IVO som en fil. Deltagaren kan själv ladda ner sina egna uppgifter. Någon samlad export av hela organisationen med en knapp finns inte i dag. I det biträdesavtal vi föreslår står att vi, när avtalet upphör av vilket skäl det än är, raderar kommunens personuppgifter eller lämnar tillbaka dem i ett maskinläsbart format och sedan raderar dem, efter kommunens val. Mer om vem vi är står på jobin.se/om-oss/."
+        ],
+        [
+          "Hur fungerar drift och support?",
+          "Det finns inget formellt SLA i dag, alltså ingen avtalad tillgänglighet och ingen garanterad svarstid, och vi skriver inte in någon här. Support sker via mejl till support@jobin.se och besvaras av samma person som bygger portalen. Driften ligger hos Supabase i Irland och Vercel i Frankfurt. Behöver er upphandling en avtalad svarstid eller tillgänglighetsnivå, säg det före piloten, så svarar vi ärligt på om vi kan åta oss den."
         ]
       ],
       "guider": [
@@ -238,7 +246,7 @@
         ],
         [
           "Kan vi se plattformen innan vi bestämmer oss?",
-          "Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/ — ett chefskonto i en påhittad kommun med fem fiktiva deltagare, en aktivitetsplan med närvaro, mål, journal och möten, plus ett deltagarkonto som alltid har ett pass i dag och i morgon. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan."
+          "Ja, direkt och utan att boka något. Inloggningsuppgifterna till demot ligger på jobin.se/demo/. Demot är uppsatt som en kommun, inte som en leverantör, men konsulentvyn är samma yta för er: ett chefskonto med fem fiktiva deltagare, med mål, journal och möten, plus ett deltagarkonto där ni ser portalen som deltagaren gör. Aktivitetsplanen med närvaro som också finns där hör till kommunernas aktivitetskrav och är inget ni behöver använda. Allt ni ändrar återställs varje natt, AI-funktionerna är avstängda i demot och inga mejl kan skickas därifrån. Vill ni hellre ha en visning med oss så bokar ni den nedan."
         ],
         [
           "Fungerar det för flera handledare samtidigt?",

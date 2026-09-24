@@ -9,7 +9,31 @@
 import { Component, Suspense } from 'react'
 import type { ErrorInfo, ReactNode } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import i18n from 'i18next'
 import { AlertTriangle, RefreshCw, Home, WifiOff, Loader2 } from '@/components/ui/icons'
+
+/**
+ * Översätter utan att kunna krascha. Felgränsen är det som ska visas NÄR
+ * något gått sönder — också om det är i18next som gått sönder eller aldrig
+ * initierats. Därför ingen hook (en klasskomponent kan inte använda en, och
+ * en hook som kastar här skulle ta ner hela rutten), utan ett direkt anrop
+ * mot i18next-instansen i try/catch, med svenskan som reserv. Samma instans
+ * som `i18n/config.ts` initierar.
+ *
+ * Tidigare var hela felvyn hårdkodad svenska, också i engelskt läge
+ * (prod-svepet 2026-09-24).
+ */
+export function tFel(nyckel: string, svenska: string, varden: Record<string, string | number> = {}): string {
+  const interpolera = (text: string) =>
+    text.replace(/\{\{(\w+)\}\}/g, (hel, namn: string) => (namn in varden ? String(varden[namn]) : hel))
+  try {
+    const ut = i18n.isInitialized ? i18n.t(nyckel, { ...varden, defaultValue: svenska }) : undefined
+    if (typeof ut === 'string' && ut && ut !== nyckel) return ut
+  } catch {
+    // Faller igenom till svenskan.
+  }
+  return interpolera(svenska)
+}
 
 interface Props {
   children: ReactNode
@@ -181,24 +205,24 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
 
             {/* Title */}
             <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2">
-              {errorType === 'chunk' && 'Kunde inte ladda sidan'}
-              {errorType === 'network' && 'Nätverksproblem'}
-              {errorType === 'general' && 'Något gick fel'}
+              {errorType === 'chunk' && tFel('routeError.chunkTitle', 'Kunde inte ladda sidan')}
+              {errorType === 'network' && tFel('routeError.networkTitle', 'Nätverksproblem')}
+              {errorType === 'general' && tFel('routeError.generalTitle', 'Något gick fel')}
             </h2>
 
             {/* Message */}
             <p className="text-stone-600 dark:text-stone-300 mb-6">
               {errorType === 'chunk' && (
                 <>
-                  Sidan kunde inte laddas. Detta kan bero på en uppdatering.
-                  {retryCount < MAX_RETRIES && ' Klicka på knappen nedan för att försöka igen.'}
+                  {tFel('routeError.chunkBody', 'Sidan kunde inte laddas. Detta kan bero på en uppdatering.')}
+                  {retryCount < MAX_RETRIES && ' ' + tFel('routeError.chunkRetryHint', 'Klicka på knappen nedan för att försöka igen.')}
                 </>
               )}
               {errorType === 'network' && (
-                'Det verkar som att du har problem med nätverksanslutningen. Kontrollera din internetanslutning och försök igen.'
+                tFel('routeError.networkBody', 'Det verkar som att du har problem med nätverksanslutningen. Kontrollera din internetanslutning och försök igen.')
               )}
               {errorType === 'general' && (
-                'Ett oväntat fel inträffade. Du kan försöka ladda om sidan eller gå tillbaka till startsidan.'
+                tFel('routeError.generalBody', 'Ett oväntat fel inträffade. Du kan försöka ladda om sidan eller gå tillbaka till startsidan.')
               )}
             </p>
 
@@ -210,8 +234,8 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
               >
                 <RefreshCw className="w-4 h-4" aria-hidden="true" />
                 {retryCount < MAX_RETRIES && errorType === 'chunk'
-                  ? 'Försök igen'
-                  : 'Ladda om sidan'
+                  ? tFel('routeError.retry', 'Försök igen')
+                  : tFel('routeError.reload', 'Ladda om sidan')
                 }
               </button>
 
@@ -221,22 +245,22 @@ class RouteErrorBoundaryInner extends Component<Props, State> {
                 className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-600 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
               >
                 <Home className="w-4 h-4" aria-hidden="true" />
-                Till startsidan
+                {tFel('routeError.home', 'Till startsidan')}
               </Link>
             </div>
 
             {/* Retry count info */}
             {retryCount > 0 && retryCount < MAX_RETRIES && (
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-4">
-                Försök {retryCount} av {MAX_RETRIES}
+                {tFel('routeError.attempt', 'Försök {{n}} av {{max}}', { n: retryCount, max: MAX_RETRIES })}
               </p>
             )}
 
             {/* Support link */}
             <p className="text-xs text-stone-500 dark:text-stone-400 mt-4">
-              Om problemet kvarstår,{' '}
+              {tFel('routeError.supportLead', 'Om problemet kvarstår,')}{' '}
               <Link to="/help" className="text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline">
-                kontakta support
+                {tFel('routeError.supportLink', 'kontakta support')}
               </Link>
               .
             </p>
@@ -277,7 +301,7 @@ export function RouteLoadingFallback() {
           size={32}
           aria-hidden="true"
         />
-        <p className="text-sm text-stone-600 dark:text-stone-300">Laddar sida...</p>
+        <p className="text-sm text-stone-600 dark:text-stone-300">{tFel('common.loadingPage', 'Laddar sidan...')}</p>
       </div>
     </div>
   )

@@ -105,3 +105,21 @@ describe('SAMTYCKESKOLUMN speglar CASE-satsen i grant_consent/withdraw_consent (
     })
   })
 })
+
+describe('saknadeGrundsamtycken (DP1)', () => {
+  // Mutation (kontrollerad): returnera [] alltid → de två första faller;
+  // glöm privacy i GRUNDSAMTYCKEN → första och tredje faller.
+  it('listar båda när profilen saknar dem (Google-kontot)', async () => {
+    const { saknadeGrundsamtycken } = await import('./consentApi')
+    expect(saknadeGrundsamtycken({ terms_accepted_at: null, privacy_accepted_at: null })).toEqual(['terms', 'privacy'])
+  })
+  it('listar bara det som saknas', async () => {
+    const { saknadeGrundsamtycken } = await import('./consentApi')
+    expect(saknadeGrundsamtycken({ terms_accepted_at: '2026-01-01', privacy_accepted_at: null })).toEqual(['privacy'])
+  })
+  it('tom lista när båda finns, och när profilen inte är laddad', async () => {
+    const { saknadeGrundsamtycken } = await import('./consentApi')
+    expect(saknadeGrundsamtycken({ terms_accepted_at: '2026-01-01', privacy_accepted_at: '2026-01-01' })).toEqual([])
+    expect(saknadeGrundsamtycken(null)).toEqual([])
+  })
+})

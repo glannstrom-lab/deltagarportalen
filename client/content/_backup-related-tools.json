@@ -1,0 +1,110 @@
+{
+  "_kommentar": "Värdena i prod före apply-related-tools.cjs --skriv. Återställs med --rollback --skriv.",
+  "tagen": "2026-09-24T17:48:40.036Z",
+  "artiklar": [
+    {
+      "slug": "a-kassa-sa-fungerar-det",
+      "related_tools": [
+        "/calendar"
+      ]
+    },
+    {
+      "slug": "aktivitetsrapport-guide",
+      "related_tools": [
+        "/applications"
+      ]
+    },
+    {
+      "slug": "arbetsgivarintyg-och-betyg",
+      "related_tools": [
+        "/job-search"
+      ]
+    },
+    {
+      "slug": "arbetstraning-vad-innebar-det",
+      "related_tools": [
+        "/diary",
+        "/skills-gap-analysis"
+      ]
+    },
+    {
+      "slug": "digital-intervju",
+      "related_tools": []
+    },
+    {
+      "slug": "etableringsprogrammet",
+      "related_tools": [
+        "/calendar",
+        "/education"
+      ]
+    },
+    {
+      "slug": "feedback-efter-avslag",
+      "related_tools": []
+    },
+    {
+      "slug": "hitta-dina-varderingar",
+      "related_tools": []
+    },
+    {
+      "slug": "jobbsokning-funktionsnedsattning",
+      "related_tools": []
+    },
+    {
+      "slug": "kompetensutvardering",
+      "related_tools": []
+    },
+    {
+      "slug": "lonebidrag-sa-fungerar-det",
+      "related_tools": [
+        "/interview-simulator",
+        "/job-search"
+      ]
+    },
+    {
+      "slug": "nystartsjobb-guide",
+      "related_tools": []
+    },
+    {
+      "slug": "rusta-och-matcha",
+      "related_tools": [
+        "/skills-gap-analysis"
+      ]
+    },
+    {
+      "slug": "sius-stod-vid-introduktion",
+      "related_tools": [
+        "/calendar",
+        "/diary"
+      ]
+    },
+    {
+      "slug": "skriva-in-dig-arbetsformedlingen",
+      "related_tools": [
+        "/cv"
+      ]
+    },
+    {
+      "slug": "skyddat-arbete-och-samhall",
+      "related_tools": [
+        "/job-search",
+        "/career"
+      ]
+    },
+    {
+      "slug": "styrkor-svagheter-intervju",
+      "related_tools": []
+    },
+    {
+      "slug": "telefonintervju-tips",
+      "related_tools": []
+    },
+    {
+      "slug": "tillbaka-till-jobb-efter-sjukskrivning",
+      "related_tools": [
+        "/wellness",
+        "/calendar"
+      ]
+    }
+  ]
+}

@@ -9,7 +9,7 @@ import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save, Upload
+  Lightbulb, Loader2, AlertCircle, Folder, FileText, Save, Upload, ChevronDown
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils'
 // kontextuellt råd inne i formuläret — inte en ring i hörnet.
 import RadgivarPanel, { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { cvLogger } from '@/lib/logger'
-import { spaltformFor, spaltformNyckel, STANDARDMALL } from '@/data/cvMallar'
+import { spaltformFor, spaltformNyckel, STANDARDMALL, mallarAttVisa } from '@/data/cvMallar'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
@@ -355,6 +355,8 @@ export default function CVBuilder() {
   // obrukbar, och att stapla dem hade tryckt ner förhandsvisningen ur bild.
   const [hogerFlik, setHogerFlik] = useState<'forhandsvisning' | 'rad'>('forhandsvisning')
   const [showPreview, setShowPreview] = useState(false)
+  // LS3: mallsteget visar de rekommenderade mallarna först, resten bakom en knapp.
+  const [visaAllaMallar, setVisaAllaMallar] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
@@ -836,7 +838,12 @@ export default function CVBuilder() {
   }
 
   // STEG 1: DESIGN - Moderna mallar 2025
-  const renderStep1 = () => (
+  const renderStep1 = () => {
+    // LS3 (2026-09-24): fem rekommenderade mallar direkt, resten bakom en
+    // knapp. En vald mall utanför urvalet syns ändå — se `mallarAttVisa`.
+    const synligaMallar = mallarAttVisa(TEMPLATES, data.template, visaAllaMallar)
+    const doldaMallar = TEMPLATES.length - synligaMallar.length
+    return (
     <div className="space-y-8">
       <div className="text-center">
         <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
@@ -846,8 +853,8 @@ export default function CVBuilder() {
       {/* DESIGN.md §9 — på mobil horisontell snap-scroll-galleri istället
           för vertikal stack (löser 6356 px sidlängd från audit-rapporten).
           På sm+ är det vanlig grid. */}
-      <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-4 px-4 pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:mx-0 sm:gap-6 sm:pb-0 lg:grid-cols-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        {TEMPLATES.map((tpl) => {
+      <div id="cv-mallgalleri" className="flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-4 px-4 pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:mx-0 sm:gap-6 sm:pb-0 lg:grid-cols-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {synligaMallar.map((tpl) => {
           const selected = data.template === tpl.id
           return (
             <button
@@ -920,6 +927,24 @@ export default function CVBuilder() {
         })}
       </div>
 
+      {/* Knappen visas bara när det finns något att fälla ut eller in. */}
+      {(visaAllaMallar || doldaMallar > 0) && (
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => setVisaAllaMallar(v => !v)}
+            aria-expanded={visaAllaMallar}
+            aria-controls="cv-mallgalleri"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors"
+          >
+            <ChevronDown className={cn('w-4 h-4 transition-transform', visaAllaMallar && 'rotate-180')} aria-hidden="true" />
+            {visaAllaMallar
+              ? t('cvBuilder.templates.showFewerTemplates', 'Visa färre mallar')
+              : t('cvBuilder.templates.showMoreTemplates', { count: doldaMallar, defaultValue: 'Visa fler mallar ({{count}} till)' })}
+          </button>
+        </div>
+      )}
+
       {data.template && (
         <div className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start gap-3">
@@ -945,7 +970,8 @@ export default function CVBuilder() {
         </div>
       )}
     </div>
-  )
+    )
+  }
 
   // STEG 2: OM DIG
   const renderStep2 = () => (

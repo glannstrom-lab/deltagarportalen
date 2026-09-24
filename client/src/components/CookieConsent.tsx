@@ -18,6 +18,14 @@ export interface CookiePreferences {
 const COOKIE_CONSENT_KEY = 'jobin_cookie_consent'
 const COOKIE_PREFERENCES_KEY = 'jobin_cookie_preferences'
 
+/**
+ * TR1: CSS-variabel med bannerns höjd medan den syns. Konsumenter: Login och
+ * Register (bottenpadding på den yttersta behållaren). Tom när bannern är stängd.
+ */
+export const COOKIE_BANNER_HEIGHT_VAR = '--cookie-banner-h'
+/** Bottenpadding för publika sidor utan bottennav: p-4 + bannerns höjd. */
+export const PUBLIC_PAGE_BOTTOM_PADDING = `calc(1rem + var(${COOKIE_BANNER_HEIGHT_VAR}, 0px))`
+
 export function getCookieConsent(): boolean {
   return localStorage.getItem(COOKIE_CONSENT_KEY) === 'true'
 }
@@ -78,6 +86,31 @@ export function CookieConsent() {
     saveConsent(preferences)
   }
 
+  /* TR1 (2026-09-24): på /login och /register finns inget bottennav, så
+     bannern låg rakt över "Skapa ett konto" (elementFromPoint gav bannerns
+     div i både 1280×800 och 390×844). Bannern publicerar därför sin höjd i
+     `--cookie-banner-h` medan den syns; de publika auth-sidorna lägger den
+     som bottenpadding så att allt innehåll går att skrolla fram ovanför den.
+     Variabeln tas bort när bannern stängs. Den inloggade appen läser den
+     inte — där gäller fortfarande UX10:s `--bottom-nav-h` ovan. */
+  const [bannerEl, setBannerEl] = useState<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (!bannerEl) return
+    const root = document.documentElement
+    const matt = () => {
+      root.style.setProperty(COOKIE_BANNER_HEIGHT_VAR, `${Math.round(bannerEl.getBoundingClientRect().height)}px`)
+    }
+    matt()
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(matt) : null
+    ro?.observe(bannerEl)
+    window.addEventListener('resize', matt)
+    return () => {
+      ro?.disconnect()
+      window.removeEventListener('resize', matt)
+      root.style.removeProperty(COOKIE_BANNER_HEIGHT_VAR)
+    }
+  }, [bannerEl])
+
   if (!show) return null
 
   return (
@@ -93,6 +126,8 @@ export function CookieConsent() {
             kvar exakt där det låg — annars hade fixen skjutit upp kortet över
             inloggningsknappen på mobil. */
     <div
+      ref={setBannerEl}
+      data-cookie-banner=""
       className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6 pointer-events-none"
       style={{ paddingBottom: 'calc(1rem + var(--bottom-nav-h, 0px))' }}
     >

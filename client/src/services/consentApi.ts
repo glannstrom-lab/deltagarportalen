@@ -136,6 +136,36 @@ export async function aterkallaSamtycke(typ: SamtyckesTyp): Promise<void> {
   }
 }
 
+/**
+ * Grundsamtyckena — de två som krävs för att använda portalen alls (DP1, 2026-09-24).
+ *
+ * Registreringen kräver båda kryssen, men två vägar in har aldrig visat dem:
+ * Google-inloggningen (`signInWithOAuth` hoppar över Register.tsx helt) och de
+ * äldre e-postkontona från före kryssrutorna. Mätt 2026-09-24: 17 av 17
+ * Google-konton och 38 av 63 e-postkonton saknade `terms_accepted_at`.
+ * `components/auth/SamtyckeSteg.tsx` frågar i efterhand; den här funktionen
+ * avgör vem som ska få frågan.
+ */
+export const GRUNDSAMTYCKEN: readonly SamtyckesTyp[] = ['terms', 'privacy'] as const
+
+type ProfilMedGrundsamtycken = {
+  terms_accepted_at?: string | null
+  privacy_accepted_at?: string | null
+}
+
+/**
+ * Vilka grundsamtycken profilen saknar. Tom lista = inget att fråga om.
+ *
+ * `null`-profil ger också tom lista, med flit: utan profil vet vi inte om
+ * samtycket saknas, och att visa en obligatorisk spärr på en gissning vore att
+ * stänga ute någon som redan godkänt. Profilen hämtas om vid varje sidladdning
+ * (`authStore.initialize`), så frågan kommer vid nästa laddning om den behövs.
+ */
+export function saknadeGrundsamtycken(profil: ProfilMedGrundsamtycken | null | undefined): SamtyckesTyp[] {
+  if (!profil) return []
+  return GRUNDSAMTYCKEN.filter((typ) => !profil[SAMTYCKESKOLUMN[typ] as keyof ProfilMedGrundsamtycken])
+}
+
 /** Ger eller återkallar beroende på nuvarande värde. Returnerar det nya värdet. */
 export async function vaxlaSamtycke(
   typ: SamtyckesTyp,
@@ -158,6 +188,8 @@ export const consentApi = {
   vaxlaSamtycke,
   SAMTYCKESKOLUMN,
   ART9_TYPER,
+  GRUNDSAMTYCKEN,
+  saknadeGrundsamtycken,
 }
 
 export default consentApi

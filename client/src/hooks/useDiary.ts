@@ -13,13 +13,11 @@ import {
   moodLogsApi,
   weeklyGoalsApi,
   gratitudeApi,
-  diaryStreaksApi,
   writingPromptsApi,
   type DiaryEntry,
   type MoodLog,
   type WeeklyGoal,
   type GratitudeEntry,
-  type DiaryStreaks,
   type WritingPrompt
 } from '@/services/diaryApi'
 
@@ -27,7 +25,6 @@ export const DIARY_ENTRIES_KEY = ['diary-entries'] as const
 export const MOOD_LOGS_KEY = ['mood-logs'] as const
 export const WEEKLY_GOALS_KEY = ['weekly-goals'] as const
 export const GRATITUDE_ENTRIES_KEY = ['gratitude-entries'] as const
-export const DIARY_STREAKS_KEY = ['diary-streaks'] as const
 export const WRITING_PROMPTS_KEY = ['writing-prompts'] as const
 
 const STALE_TIME = 60_000
@@ -342,39 +339,6 @@ export function useGratitude() {
     createEntry,
     updateEntry,
     hasLoggedToday: !!todayEntry,
-    refresh
-  }
-}
-
-// ============================================
-// DIARY STREAKS HOOK
-// ============================================
-
-export function useDiaryStreaks() {
-  const queryClient = useQueryClient()
-
-  const query = useQuery({
-    queryKey: DIARY_STREAKS_KEY,
-    queryFn: (): Promise<DiaryStreaks | null> => diaryStreaksApi.get(),
-    staleTime: STALE_TIME,
-  })
-
-  const streaks = query.data ?? null
-
-  const refresh = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: DIARY_STREAKS_KEY })
-  }, [queryClient])
-
-  // `?? 0` nedan är ärligt bara när svaret är inne: ingen rad = inget skrivet.
-  // Vid läsfel är talen okända — anroparen ska läsa `isError` först.
-  return {
-    streaks,
-    isLoading: query.isLoading,
-    isError: query.isError,
-    currentStreak: streaks?.current_streak ?? 0,
-    longestStreak: streaks?.longest_streak ?? 0,
-    totalEntries: streaks?.total_entries ?? 0,
-    totalWords: streaks?.total_words ?? 0,
     refresh
   }
 }

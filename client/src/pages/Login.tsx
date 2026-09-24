@@ -7,6 +7,7 @@ import { loginSchema } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from '@/components/ui/icons'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { safeReturnTo, medReturnTo } from '../lib/returnTo'
+import { PUBLIC_PAGE_BOTTOM_PADDING } from '@/components/CookieConsent'
 
 /**
  * KO2: en liten karta sökväg → verktygets namn (samma `nav.*`-nycklar som
@@ -152,7 +153,12 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-4">
+    // TR1: bottenpaddingen reserverar kakbannerns höjd (0 när den är stängd),
+    // annars låg bannern över "Skapa ett konto" utan väg att skrolla fram länken.
+    <div
+      className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-4"
+      style={{ paddingBottom: PUBLIC_PAGE_BOTTOM_PADDING }}
+    >
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">

@@ -6,7 +6,7 @@
 import { useTranslation } from 'react-i18next'
 import { FileText, Sparkles, Minus, Briefcase, Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { COVER_LETTER_TEMPLATES } from './templates'
+import { COVER_LETTER_TEMPLATES, mallText } from './templates'
 
 // Map icon names to components
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
@@ -42,6 +42,7 @@ export function CoverLetterTemplateSelector({
       {COVER_LETTER_TEMPLATES.map((template) => {
         const Icon = ICON_MAP[template.icon] || FileText
         const isSelected = selectedTemplate === template.id
+        const { namn, beskrivning } = mallText(template, (nyckel, reserv) => t(nyckel, reserv))
 
         return (
           <button
@@ -77,7 +78,7 @@ export function CoverLetterTemplateSelector({
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">
                   <h3 className="font-semibold text-stone-800 dark:text-stone-100">
-                    {template.name}
+                    {namn}
                   </h3>
                   {isSelected && (
                     <div className="w-5 h-5 bg-[var(--c-solid)] rounded-full flex items-center justify-center shrink-0">
@@ -87,7 +88,7 @@ export function CoverLetterTemplateSelector({
                 </div>
                 {showDescription && (
                   <p className="text-sm text-stone-600 dark:text-stone-400 mt-1 line-clamp-2">
-                    {template.description}
+                    {beskrivning}
                   </p>
                 )}
                 {/* Color preview dots */}
@@ -95,12 +96,12 @@ export function CoverLetterTemplateSelector({
                   <div
                     className="w-3 h-3 rounded-full border border-white shadow-sm"
                     style={{ backgroundColor: template.colors.header }}
-                    title="Rubrik"
+                    title={t('coverLetter.colorPreview.header', 'Rubrik')}
                   />
                   <div
                     className="w-3 h-3 rounded-full border border-white shadow-sm"
                     style={{ backgroundColor: template.colors.accent }}
-                    title="Accent"
+                    title={t('coverLetter.colorPreview.accent', 'Accent')}
                   />
                   <div
                     className="w-3 h-3 rounded-full border border-white shadow-sm"
