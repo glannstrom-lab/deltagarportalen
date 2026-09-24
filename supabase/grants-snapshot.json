@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-22T20:51:31.576Z",
+  "generatedAt": "2026-09-24T20:48:06.745Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -151,6 +151,13 @@
     {
       "name": "consultant_has_access",
       "signature": "consultant_has_access(uuid,uuid,text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "consultant_messages_notify",
+      "signature": "consultant_messages_notify()",
       "definer": true,
       "anon": false,
       "authenticated": false

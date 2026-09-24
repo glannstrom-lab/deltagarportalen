@@ -16,8 +16,8 @@
 -- Mejl ingår INTE här. Det kräver en rad i client/vercel.json och en utskicks-
 -- väg som pass-paminnelse.js — ett eget beslut.
 --
--- EJ KÖRD. Kräver Mikaels ja (CLAUDE.md: migrationer mot prod). Kör med:
---   npx supabase db query --linked -f supabase/migrations/PENDING_20260924_at1_meddelande_notis.sql
+-- KÖRD 2026-09-24. Kräver Mikaels ja (CLAUDE.md: migrationer mot prod). Kör med:
+--   npx supabase db query --linked -f supabase/migrations/20260924_at1_meddelande_notis.sql
 -- och därefter i client/: npm run schema:refresh && npm run grants:refresh
 
 CREATE OR REPLACE FUNCTION public.consultant_messages_notify()

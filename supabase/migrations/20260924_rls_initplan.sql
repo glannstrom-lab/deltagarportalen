@@ -31,8 +31,8 @@
 --
 -- 31 av de 380 är MED FLIT utelämnade här, eftersom andra PENDING-filer från
 -- samma dag tar bort eller skriver om dem:
---   * 26 i PENDING_20260924_rls_dubblettpolicyer.sql (DROP)
---   *  5 i PENDING_20260924_sak_konsulentlasning_aktiv_relation.sql (DROP/ALTER)
+--   * 26 i 20260924_rls_dubblettpolicyer.sql (DROP)
+--   *  5 i 20260924_sak_konsulentlasning_aktiv_relation.sql (DROP/ALTER)
 -- Filerna kan därför köras i valfri ordning utan att skriva över varandra.
 --
 -- ⚠️ FILEN ÄR GENERERAD UR PROD-TILLSTÅNDET 2026-09-24. Har någon policy på

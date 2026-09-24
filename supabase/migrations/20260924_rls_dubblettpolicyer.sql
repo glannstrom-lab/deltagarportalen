@@ -38,7 +38,7 @@
 -- Bevis: se policylistan i verifieringen nedan; varje borttagen policy har
 -- en kvarvarande tvilling med samma roll-täckning och samma villkor.
 --
--- Ordning: kan köras före eller efter PENDING_20260924_rls_initplan.sql —
+-- Ordning: kan köras före eller efter 20260924_rls_initplan.sql —
 -- initplan-filen rör inte de här 27 policyerna.
 --
 -- Risk: låg. Om en migration någon gång i framtiden ÅTERSKAPAR en av de

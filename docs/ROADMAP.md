@@ -47,7 +47,7 @@ DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara
 - [ ] **PF1** Vercel Hobby förbjuder kommersiellt bruk, och B2B-sidans pris (2 990 kr/mån) räknas redan som "advertising the sale of a product or service" (vercel.com/docs/limits/fair-use-guidelines). Vercel får stänga utan förvarning · uppgradera till Pro, 20 USD/mån · 15 min + beslut
 - [x] **KP1** ✅ **Klar 2026-09-24:** texterna säger nu "Jobb från Arbetsförmedlingen" / "Jobbsöket hämtar lediga jobb ur Arbetsförmedlingens öppna data" (sv+en, samt Landing.tsx-standardtexterna). — Ursprunglig post: Startsidan lovar "AF-integration via API" och "Direkt koppling till Arbetsförmedlingens API:er" — koden och B2B-FAQ:n säger att det inte finns · `sv.json:5705,5741-5742` → `Landing.tsx:676,774` · 15 min
 - [x] **TR1** ✅ **Klar 2026-09-24:** bannern mäter sin höjd till `--cookie-banner-h`; Login och Register reserverar den som bottenpadding. Länken nås i 1280 och 390 px (lokal webbläsare). Kvar: verifiera i prod efter deploy. — Ursprunglig post: Kakbanderollen ligger över "Skapa ett konto" på /login — reproducerat i 1280 och 390 px · `CookieConsent.tsx:90-97`, `Login.tsx:154`, `Register.tsx:191` · 30–60 min
-- [x] **AT1** 🟡 **Migration skriven, ej körd:** `supabase/migrations/PENDING_20260924_at1_meddelande_notis.sql` (trigger → notis av typen message, som klockan redan visar). Kräver Mikaels ja. Mejl ingår inte. — Ursprunglig post: Konsulentens meddelanden når aldrig deltagaren — ingen notis, inget mejl (enda triggern sätter `updated_at`). 2 meddelanden i hela historiken · `consultantService.ts:142-160` · 3–4 h
+- [x] **AT1** ✅ **Körd i prod 2026-09-24:** `supabase/migrations/20260924_at1_meddelande_notis.sql` — trigger på consultant_messages skriver en notis (typ message) till mottagaren; funktionen går inte att anropa direkt (EXECUTE false). Mejl ingår inte. — Ursprunglig post: Konsulentens meddelanden når aldrig deltagaren — ingen notis, inget mejl (enda triggern sätter `updated_at`). 2 meddelanden i hela historiken · `consultantService.ts:142-160` · 3–4 h
 - [ ] **PF2** Klientens Sentry är av: bara `SENTRY_DSN` finns i Vercel, `VITE_SENTRY_DSN` saknas (DR1 räknade bara servern) · `src/lib/sentry.ts:41` · 15 min + extern uptime-kontroll
 - [x] **BS1** ✅ **Klar 2026-09-24:** borttagen ur CORS i ai.js, cv-pdf.js OCH job-alerts.js; ett okänt ursprung får www.jobin.se. Grind: `cors-avregistrerad-doman.test.ts`. Kvar: beslut om domänen ska registreras om. — Ursprunglig post: deltagarportalen.se är avregistrerad (NXDOMAIN) men står kvar som tillåtet ursprung i CORS · `api/ai.js:622-623`, `api/cv-pdf.js:191-192` · 15 min + beslut om domänen
 
@@ -92,12 +92,14 @@ DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara
 
 | # | Punkt | Varför |
 |---|---|---|
-| SP1 | Kör PENDING_20260924_sak_organization_handover_skrivvag.sql + …employer_invitations_skrivvag.sql | Kritiskt: chef kan flytta sig till annan org via vyns UPDATE; använd företagsinbjudan kan återupplivas |
+| ~~SP1~~ ✅ körd 2026-09-24 | Kör PENDING_20260924_sak_organization_handover_skrivvag.sql + …employer_invitations_skrivvag.sql | Kritiskt: chef kan flytta sig till annan org via vyns UPDATE; använd företagsinbjudan kan återupplivas |
 | SP2 | Schemalägg send-inactivity-warning (pg_net+cron eller GH Actions) | Radering vid 24 mån körs, varningen vid 18 mån anropas av ingenting. Första berörda ~slutet 2027 |
 | SP3 | Produktbeslut: energifunktionen, jobbdelningen, notiscentret, AI-coachpanelen (AIAssistant) | Alla visar påhittat eller skriver till obefintliga kolumner; rekommendation arkivera. Bär sista 3 lint-varningarna och 15/16 typfel |
 | SP4 | Översätt 130 artiklar utan title_en/content_en; content:granska ska fälla saknad engelska | Svenska titlar i engelskt läge |
-| SP5 | Övriga sju PENDING_20260924-filer (FK-index, RLS-initplan, dubblettpolicyer, definer-vyer anon, konsulentläsning utan aktiv relation, cv_shares anon, trigger search_path) | Prestanda + försvar på djupet; kör schema:refresh + grants:refresh efteråt |
+| ~~SP5~~ ✅ körd 2026-09-24 | Övriga sju PENDING_20260924-filer (FK-index, RLS-initplan, dubblettpolicyer, definer-vyer anon, konsulentläsning utan aktiv relation, cv_shares anon, trigger search_path) | Prestanda + försvar på djupet; kör schema:refresh + grants:refresh efteråt |
 | SP6 | Arkivera af-jobsearch, af-jobed, af-enrichments (noll anropare, deployas vid varje push) | Flytta ur supabase/functions/ — delete räcker inte |
+
+> **SP1 + SP5 körda 2026-09-24 (Mikaels ja: "kör 1").** Filerna heter nu `20260924_*.sql` (utan PENDING_). Verifierat efter körning: organization_handover och employer_invitations — UPDATE/DELETE false, INSERT true för authenticated; anon når inte employer_placements/proposals; osvepta auth.uid() i policyer 380 → 349 → 0; inloggad e2e 66/66 mot prod-databasen; konsulentens läsning av plan/pass och skrivning av underlag provad under RLS (rullad tillbaka). schema- och grants-snapshot uppdaterade.
 
 ### Hittat, inte byggt
 

@@ -90,7 +90,7 @@ async function hoppaOver(page) {
     await lank.click()
     await k.waitForLoadState('networkidle'); await k.waitForTimeout(800)
     deltagarUrl = k.url()
-    await k.getByRole('button', { name: 'Aktivitet' }).click()
+    await k.getByRole('tab', { name: 'Aktivitet' }).click()
     await k.waitForTimeout(800)
     await shot(k, 'k04-aktivitet-tom')
     if (await k.getByRole('button', { name: 'Avsluta plan' }).first().isVisible().catch(() => false)) { ok('plan fanns redan'); throw new Error('__finns__') }
@@ -224,7 +224,7 @@ async function hoppaOver(page) {
 
   // Konsulenten ser incheckningen
   try {
-    if (deltagarUrl) { await k.goto(deltagarUrl, { waitUntil: 'networkidle' }); await k.waitForTimeout(800); await k.getByRole('button', { name: 'Aktivitet' }).click(); await k.waitForTimeout(1500) }
+    if (deltagarUrl) { await k.goto(deltagarUrl, { waitUntil: 'networkidle' }); await k.waitForTimeout(800); await k.getByRole('tab', { name: 'Aktivitet' }).click(); await k.waitForTimeout(1500) }
     const inch = await k.getByText(/Checkade in/).count()
     await shot(k, 'k11-ser-incheckning')
     inch > 0 ? ok('konsulenten ser deltagarens incheckning') : fel('incheckning hos konsulent', 'ingen "Checkade in"-text')
