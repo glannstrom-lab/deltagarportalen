@@ -1,0 +1,110 @@
+name: Databasbackup
+
+# Supabase-projektet ligger på gratisplanen, och där tar Supabase INGA
+# backuper (docs/guides/platform/backups: "We automatically back up all Pro,
+# Team, and Enterprise Plan projects"). Fram till 2026-09-24 fanns därför
+# ingen kopia alls av databasen. Den här workflowen är den kopian.
+#
+# Varje natt: roller, schema, data och pg_cron-jobben dumpas, krypteras i
+# minnet (scripts/backup/backup-krypto.cjs, AES-256-GCM) och sparas som
+# artefakt i 30 dagar. Klartexten rör aldrig runnerns disk.
+#
+# Repot är PUBLIKT — artefakterna kan laddas ner av vem som helst som är
+# inloggad på GitHub. Det är krypteringen, inte åtkomsten, som skyddar dem.
+# Därför kräver skriptet ett lösenord på minst 32 tecken.
+#
+# Återställning: docs/BACKUP.md.
+
+on:
+  schedule:
+    - cron: '17 2 * * *' # 02:17 UTC, före gallringsjobben (04:xx UTC)
+  workflow_dispatch:
+
+concurrency:
+  group: databasbackup
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: Dumpa och kryptera
+    runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      BACKUP_LOSENORD: ${{ secrets.BACKUP_LOSENORD }}
+      KRYPTO: scripts/backup/backup-krypto.cjs
+
+    steps:
+      - name: Kontrollera hemligheter
+        run: |
+          saknas=0
+          for s in SUPABASE_ACCESS_TOKEN BACKUP_LOSENORD; do
+            if [ -z "${!s}" ]; then echo "::error::Hemligheten $s saknas."; saknas=1; fi
+          done
+          if [ -z "${{ secrets.SUPABASE_PROJECT_REF }}" ]; then
+            echo "::error::Hemligheten SUPABASE_PROJECT_REF saknas."; saknas=1
+          fi
+          exit $saknas
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      # Ingen databaslösenordshemlighet behövs: CLI:n skapar en tillfällig
+      # inloggningsroll via access-token ("Initialising login role...").
+      - name: Länka projektet
+        run: supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
+
+      # pipefail är på i GitHubs bash som standard: faller dumpen, faller steget.
+      - name: Dumpa roller, schema och data
+        run: |
+          mkdir -p backup
+          supabase db dump --linked --role-only             | node "$KRYPTO" kryptera > backup/roller.sql.enc
+          supabase db dump --linked                         | node "$KRYPTO" kryptera > backup/schema.sql.enc
+          supabase db dump --linked --data-only --use-copy  | node "$KRYPTO" kryptera > backup/data.sql.enc
+
+      # cron-schemat utesluts av `db dump` — jobbdefinitionerna tas med en fråga.
+      - name: Dumpa pg_cron-jobben
+        run: |
+          supabase db query --linked \
+            "select jobname, schedule, command, active from cron.job order by jobname;" \
+            --output json | node "$KRYPTO" kryptera > backup/cron-jobb.json.enc
+
+      # Dekrypterar i minnet och räknar rader per tabell. Utdatan är bara
+      # tabellnamn och antal, aldrig innehåll, så den tål en publik logg.
+      # En backup utan användare är ingen backup — då ska körningen bli röd.
+      - name: Inventera och kontrollera
+        run: |
+          node "$KRYPTO" inventera < backup/data.sql.enc | tee inventering.txt
+          for t in auth.users public.profiles; do
+            n=$(awk -v t="$t" '$2==t {print $1}' inventering.txt)
+            if [ -z "$n" ] || [ "$n" -eq 0 ]; then
+              echo "::error::$t saknas eller är tom i dumpen ($n rader)."
+              exit 1
+            fi
+          done
+          ls -l backup
+          {
+            echo "### Databasbackup $(date -u +%F)"
+            echo '```'
+            tail -1 inventering.txt
+            ls -l backup | tail -n +2
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: databasbackup-${{ github.run_id }}
+          path: backup/
+          retention-days: 30
+          if-no-files-found: error

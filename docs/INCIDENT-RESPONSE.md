@@ -241,11 +241,13 @@ Om en personuppgiftsbiträde meddelar en incident hos dem:
 | **Perplexity** | AI-modellen `perplexity/sonar` — används i fem edge-funktioner (`ai-career-assistant`, `ai-commute-planner`, `ai-company-analysis`, `ai-company-search`, `ai-industry-radar`), inklusive en fritextsökning på webben och (i reseplaneraren) användarens hemadress | **Inte dokumenterad** — CLAUDE.md konstaterar uttryckligen att Perplexity **inte** står i `docs/GDPR-ART30-REGISTER.md`, integritetspolicyn eller DPIA:n. **Det betyder att en incident hos Perplexity i dag saknar en förberedd juridisk hantering** — om något händer där, behandla det som en ny, oplanerad leverantörsincident och dokumentera avsaknaden av befintligt avtal i anmälan | Ingen känd kontaktväg för incidenthantering — hittas vid behov |
 | **Resend** | Utskick av jobbaviseringar (`client/api/job-alerts.js`) | **"Verifieras"** enligt `docs/GDPR-ART30-REGISTER.md` — varken DPA-status eller region är fastställd i dag | Ingen känd kontaktväg dokumenterad |
 
-**Automatiska databackuper:** Supabase kan erbjuda point-in-time recovery beroende på
-projektets prenumerationsnivå. **Vilken nivå portalens Supabase-projekt har, och om PITR är
-aktiverat, är inte verifierat i den här genomgången** — kontrollera i Supabase-dashboarden
-(Project → Database → Backups) och skriv svaret här när det är gjort. Fram tills dess: anta
-inte att en automatisk backup finns vid en dataförluständelse.
+**Databackuper (verifierat 2026-09-24):** Supabase-organisationen ligger på **gratisplanen**
+(`plan: "free"` via Supabases API). På gratisplanen tar Supabase **inga** backuper och PITR
+finns inte — det gör de bara från Pro. Portalens enda backup är därför vår egen:
+`.github/workflows/backup.yml` dumpar roller, schema, data och pg_cron-jobben varje natt
+02:17 UTC, krypterar dem (AES-256-GCM) och sparar dem som GitHub-artefakt i **30 dagar**.
+Förlust upp till ett dygn är alltså möjlig. Återställning: `docs/BACKUP.md`.
+Vercel-rollback återställer **koden**, aldrig data.
 
 ---
 
@@ -261,7 +263,8 @@ IR-tabletop halvårsvis, phishing-simulering halvårsvis) hade inga körningar a
 | Schemadrift-kontroll (kod mot prod-databasen) | **Ja**, vid varje push | `npm run lint:schema`, se `CLAUDE.md` |
 | Rättighetsgranskning (anon-öppna funktioner, RLS-täckning) | **Ja**, vid varje push, sedan 2026-09-01 | `npm run lint:grants`, se `CLAUDE.md` (**A36**) |
 | Extern penetrationstest | **Nej.** Ingen kontrakterad | — |
-| Backup-restore-test | **Nej.** Ingen spårbar körning hittad | — |
+| Databasbackup | **Ja**, varje natt sedan 2026-09-24 (egen, Supabase tar ingen på gratisplanen) | `.github/workflows/backup.yml`, `docs/BACKUP.md` |
+| Backup-restore-test | **Nej.** Dumpen inventeras varje natt (radantal per tabell), men en fullständig återställning mot en tom databas är inte gjord | `docs/BACKUP.md` |
 | Incident-tabletop-övning | **Nej.** Aldrig genomförd | — |
 | Phishing-simulering | **Nej.** Ingen att simulera mot — se nästa rad | — |
 
@@ -301,9 +304,9 @@ förväg.
 4. Bedöm omfattning enligt Steg 2 ovan och klassificera enligt eskaleringsmatrisen.
 
 ### Dataförlust (raderad data, trasig migration, misslyckad gallring)
-1. Kontrollera om Supabase PITR är aktiverat och om ett återställningsfönster täcker
-   förlusten (se "Automatiska databackuper" ovan — status okänd, kontrollera i dashboarden
-   **innan** en incident, inte under en).
+1. Hämta senaste nattliga backup som ligger **före** förlusten (Actions → Databasbackup) och
+   följ `docs/BACKUP.md`. Återställ till en ny databas och flytta över de förlorade raderna —
+   skriv inte hela dumpen över prod, då försvinner allt som hänt sedan natten.
 2. Om ingen backup finns: dokumentera exakt vad som gått förlorat (tabell, radantal, tidsfönster)
    mot `supabase/schema-snapshot.json` och senaste kända goda tillstånd (t.ex. tidigare
    `git log -p` på snapshoten, eller loggar).

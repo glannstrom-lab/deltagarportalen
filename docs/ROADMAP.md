@@ -2134,7 +2134,11 @@ nedan) och **MV2b** (väntar på beslut).
 - Om de 30 relationerna på adminkontot är riktiga deltagare, och om de sex konton som
   skapades 2 september utan aktivitet är riktiga personer (BL5).
 - AI-svaren i drift — bara ett konto med AI påslaget kan pröva sanningsregeln mot prod.
-- Backup/PITR — incidentplanen säger själv att bara dashboarden vet.
+- ~~Backup/PITR — incidentplanen säger själv att bara dashboarden vet.~~ **Besvarat
+  2026-09-24:** gratisplanen, alltså **ingen** backup alls hos Supabase. Egen nattlig
+  krypterad dump byggd (`.github/workflows/backup.yml`, `docs/BACKUP.md`), och ett
+  återställningsprov gjordes lokalt (149/149 tabeller i `public` stämde). Kvar hos Mikael:
+  hemligheten `BACKUP_LOSENORD`, och senare Supabase Pro om ett dygns förlust är för mycket.
 - Varför sex av nio nya konton aldrig gjorde något — ON2 och BL1 är hypoteser, inte svar.
 
 ---
