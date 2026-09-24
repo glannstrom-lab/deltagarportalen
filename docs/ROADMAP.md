@@ -23,6 +23,65 @@
 
 ---
 
+## Projektgenomgång 2026-09-24 — fjärde rundan: användningen, inte koden
+
+Översikt: <https://claude.ai/code/artifact/227bae53-753b-4c66-bdcb-f8767a35260e>
+
+**Mätt i fas 1:** 80 riktiga konton (testmönster bortfiltrerade), 15 inloggade senaste 30 dagarna,
+**2 senaste 7 dagarna**, 13 nya på 30 dagar, 18 AI-anrop på 30 dagar. Search Console 47 dagar:
+100 klick / 20 564 visningar / position 23,7. 294 artiklar, 4 organisationer. verify grön
+(388 filer / 3 913 tester), lint 3/3, typfel 16/16. 97 commits / 833 filer sedan 13 september.
+
+**Varför linserna byttes helt:** koden har granskats fyra gånger på tio dagar (buggpass, två
+städpass, driftpass). Det som inte granskats är om någon använder portalen. Linser: tratten
+guide → konto (TR), aktivering (AK), återkomst (AT), kommunköparens väg (KP), nya funktioner
+(NF), läsbarhet och kognitiv belastning (LS), plattformen inför betalande kund (PF),
+blindfläck (BS). Bortvalt: buggar, säkerhet/RLS, tester, datamodell, kodarkitektur (granskat
+idag), teknisk SEO (K-spåret), GDPR och KM-domänlogik (13 sep), visuell design (SKAV).
+
+**Förra rundan (13 sep):** GG1–GG4, BL1, BL2, DR1, DR2, IA1–IA4 stängda 20 sep. Kvar: DR3,
+DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara halvklar** — se PF2.
+
+### Nu — riktiga fel
+- [ ] **DP1** (sedan 23 sep, eskalerad) Google-registrering ger konto utan villkor, integritetspolicy och AI-samtycke · **17 av 17** Google-konton, senast 2026-09-22 — händer fortfarande · `authStore.ts:329-348`, `handle_new_user()` · ~3–4 h
+- [ ] **PF1** Vercel Hobby förbjuder kommersiellt bruk, och B2B-sidans pris (2 990 kr/mån) räknas redan som "advertising the sale of a product or service" (vercel.com/docs/limits/fair-use-guidelines). Vercel får stänga utan förvarning · uppgradera till Pro, 20 USD/mån · 15 min + beslut
+- [ ] **KP1** Startsidan lovar "AF-integration via API" och "Direkt koppling till Arbetsförmedlingens API:er" — koden och B2B-FAQ:n säger att det inte finns · `sv.json:5705,5741-5742` → `Landing.tsx:676,774` · 15 min
+- [ ] **TR1** Kakbanderollen ligger över "Skapa ett konto" på /login — reproducerat i 1280 och 390 px · `CookieConsent.tsx:90-97`, `Login.tsx:154`, `Register.tsx:191` · 30–60 min
+- [ ] **AT1** Konsulentens meddelanden når aldrig deltagaren — ingen notis, inget mejl (enda triggern sätter `updated_at`). 2 meddelanden i hela historiken · `consultantService.ts:142-160` · 3–4 h
+- [ ] **PF2** Klientens Sentry är av: bara `SENTRY_DSN` finns i Vercel, `VITE_SENTRY_DSN` saknas (DR1 räknade bara servern) · `src/lib/sentry.ts:41` · 15 min + extern uptime-kontroll
+- [ ] **BS1** deltagarportalen.se är avregistrerad (NXDOMAIN) men står kvar som tillåtet ursprung i CORS · `api/ai.js:622-623`, `api/cv-pdf.js:191-192` · 15 min + beslut om domänen
+
+### Sedan — skav som märks
+- [ ] **TR2** Ny besökare från en guide landar på "Välkommen tillbaka!" (inloggning), aldrig på registrering · `App.tsx:241-243`, `Login.tsx:171` · 1–2 h
+- [ ] **TR3** Mest klickade guiden (lönebidrag) erbjuder intervjusimulatorn och jobbsök; a-kassa-guiden erbjuder kalendern · `related_tools` i `articles` · 1–2 h för topp 20
+- [ ] **AK1** 7 av 13 nya konton lämnar aldrig Översikt, 8 av 13 har varken CV eller sparat jobb; `onboarding_completed` sätts även vid "Hoppa över" · mät nästa-steg-kortet innan texten ändras · `OnboardingFlow.tsx:179-188` · ~2 h
+- [ ] **AT2** Jobbevakning: 1 av 81 konton har en, och den har aldrig levererat (länsbuggen rättad idag). Verifiera morgondagens körning; lägg "spara sökningen som bevakning" i jobbsök · ~2 h
+- [ ] **LS1** Dagbokens streak-räknare och troféer ("7 dagar i rad") bryter mot DESIGN.md §1 · `Diary.tsx:37-70` · 2–4 h
+- [ ] **LS2** Samtycket hos Min konsulent frågar om "ATS-poäng" och "Hollandkod" utan förklaring · `consultantConsent.seesList` · 30 min
+- [ ] **KP2** B2B-sidan säger inget om enskild firma, kontinuitet, SLA eller supporttid — upphandlarens första frågor. R&M-sidans FAQ talar om "en påhittad kommun" · `b2b.json:75-104,241` · 1–2 h
+- [ ] **PF3** Supabase Free pausar efter en veckas inaktivitet; 2 av 4 projekt i organisationen är redan pausade. Pro 25 USD/mån · beslut
+- [ ] **BS2** AI-förordningen: A2 (jurist), A4 (signera DPIA/Art 30), A5 (OpenRouter DPA/SCC) öppna 53 dagar efter deadline, nu med 4 organisationer · beslut + ~1 dag
+- [ ] **BS3** Repot är publikt med ett rullat lösenord i historiken (A33) — beslutet "publikt eller privat" står som "nu" sedan 9 aug · 2–4 h
+
+### Framåt — utveckling
+- [ ] **AT3** Varsam veckovis check-in (dagbok 1 inlägg, mående 4 loggar i hela historiken — ingen påminnelse finns) · 6–8 h efter beslut om ton
+- [ ] **AT4** Slå på aktivitet-mejl (8 av 8 notiser om plan och frånvaro har aldrig mejlats; cron-raden är skriven, KM11) · 15 min + ja för vercel.json
+- [ ] **NF1** Kalenderexport (.ics) för pass och möten — finns inte alls · `MinVecka.tsx` · 2–3 dagar
+- [ ] **NF2** Periodrapport i avtalets format (RM6) · ~1 vecka
+- [ ] **NF3** Resultatklockan: nivå A/B/C + betalningsstatus (RM1) · ~1 vecka
+- [ ] **NF4** SMS-påminnelser (KM10-rest) · ~1 dag + Art 30-rad
+- [ ] **LS3** CV-byggaren visar 12 mallar samtidigt; visa 4–6 + "fler" · `CVBuilder.tsx:839-852` · 3–4 h
+- [ ] **PF4** Bussfaktor 1: nödinstruktion + läsbehörighet för en betrodd person · några timmar
+- [ ] **BS4** ROADMAP.md är 6 878 rader med 288 rubriker; öppna beslut är utspridda. Bryt ut en kort STATUS.md · 2–3 h
+
+### Prövat och avfärdat
+- Inbjudans STA-samtycke (LIX 61,5) — nås inte: `invitations` är tom och ingen kod skapar program=steg_till_arbete. Städpost, inte läsbarhetsfel.
+- "Registreringen tappar folk" — 13 av 13 nya bekräftade e-post och loggade in.
+- "CV-flödet är flaskhalsen" — 3 av 5 som skapade CV gjorde det inom 1–4 minuter.
+- Supabase-kvoter — 33 MB av 500 MB, 113 av 50 000 MAU.
+
+---
+
 ## Städpasset 2026-09-24 — åtta agenter plus en andra våg
 
 > 27 buggar rättade med fällbara tester (ae9b6a9a), lint 31 → 3, typfel 28 → 16, 11 döda filer

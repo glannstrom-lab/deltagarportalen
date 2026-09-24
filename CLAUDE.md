@@ -4,7 +4,7 @@
 
 **Deltagarportalen** (live på **jobin.se**) är en jobbsökarportal som hjälper arbetssökande att hitta jobb genom AI-drivna verktyg. Portalen används av deltagare (arbetssökande) och arbetskonsulenter (handledare).
 
-> **Hostnames:** Produktion = `jobin.se`. `deltagarportalen.se` används för förhandsdeploys/staging. CI smoke-test ska peka på `jobin.se` (se `74d4b71`).
+> **Hostnames:** Produktion = `jobin.se`. `deltagarportalen.se` är **inte längre registrerad** (NXDOMAIN, mätt 2026-09-24) — men står kvar i CORS-listorna i `api/ai.js` och `api/cv-pdf.js`, se BS1 i ROADMAP. CI smoke-test ska peka på `jobin.se` (se `74d4b71`).
 
 ### Målgrupp
 - Arbetssökande, inklusive långtidsarbetslösa med fysiska/psykologiska utmaningar
