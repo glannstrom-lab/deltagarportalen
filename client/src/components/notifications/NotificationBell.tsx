@@ -325,7 +325,9 @@ export function NotificationBell({ className }: NotificationBellProps) {
       {unreadCount > 0 && (
         <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 pointer-events-none">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] font-bold text-white shadow-sm">
+          {/* emerald-700, inte -500: vit 10 px text på emerald-500 = 2,47:1 (axe, 2026-09-24).
+              Syntes först när testkontot hade olästa notiser. */}
+          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-700 items-center justify-center text-[10px] font-bold text-white shadow-sm">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         </span>
