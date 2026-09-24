@@ -1,0 +1,85 @@
+-- ============================================================================
+-- VÄNTAR PÅ MIKAELS GODKÄNNANDE — KÖRS INTE AUTOMATISKT
+-- ============================================================================
+-- Döp om till 20260924xxxxxx_sak_organization_handover_skrivvag.sql när den
+-- godkänts och körts. Ingen data ändras; bara rättigheter på en vy.
+-- ============================================================================
+--
+-- ALLVAR: KRITISK — korsorganisatorisk rättighetsökning.
+--
+-- Vad: vyn `organization_handover` är AUTOMATISKT UPPDATERBAR. Den läser en
+-- enda tabell (`organization_members m`) med en WHERE, så Postgres låter
+-- UPDATE och DELETE gå rakt igenom till basraden. Vyn har bara en INSTEAD OF
+-- INSERT-trigger (`organization_handover_insert`); UPDATE och DELETE har
+-- ingen trigger och faller därför till den automatiska vägen.
+--
+-- Vyn är dessutom en säkerhetsdefiner-vy (ägare `postgres`, som har
+-- BYPASSRLS, ingen `security_invoker`). Skrivningen mot `organization_members`
+-- körs alltså med ägarens rättigheter — RLS på `organization_members` gäller
+-- inte. Enda spärren är vyns egen WHERE: "anroparen är chef/admin i samma
+-- organisation som raden".
+--
+-- Konsekvens: en chef/admin i organisation A kan köra
+--   PATCH /rest/v1/organization_handover?from_consultant_id=eq.<eget id>
+--   { "org_id": "<organisation B>" }
+-- och flytta sin EGEN medlemsrad (med rollen chef) till organisation B. WHERE
+-- utvärderas mot den gamla raden, och det finns ingen WITH CHECK OPTION.
+-- Triggern `organization_members_kind_guard` stoppar bara rollen
+-- 'arbetsgivare' i fel sorts organisation — en chef som flyttas till en annan
+-- kommun/leverantör släpps igenom. Som chef i B läser hen B:s planer, pass,
+-- underlag och kollegor (policyerna "Organisationens chef läser …").
+-- `user_id` (vyns `from_consultant_id`) går också att skriva om, och DELETE
+-- tar bort medlemsrader i den egna organisationen förbi vyn
+-- `organization_colleagues` och dess trigger.
+-- Organisations-id är inte hemliga: `activity_templates.org_id` syns för alla
+-- inloggade via publika mallar, och deltagare ser sin organisation i
+-- `my_ai_policy`.
+--
+-- Bevis (körda 2026-09-24, bara läsning):
+--   select table_name, is_updatable, is_trigger_updatable, is_trigger_deletable
+--     from information_schema.views where table_name = 'organization_handover';
+--     → is_updatable = YES, is_trigger_updatable = NO, is_trigger_deletable = NO
+--   select has_column_privilege('authenticated','public.organization_handover','org_id','UPDATE'),
+--          has_table_privilege('authenticated','public.organization_handover','DELETE');
+--     → true, true
+--   begin; set local role authenticated;
+--   explain update public.organization_handover set org_id = gen_random_uuid();
+--   rollback;
+--     → "Update on organization_members m" — planen passerar rättighetskontrollen
+--       (EXPLAIN kör inte satsen).
+--   I prod idag: 2 medlemsrader med rollen chef/admin, 4 organisationer.
+--
+-- Koden använder bara INSERT + SELECT på vyn (client/src/services/orgApi.ts:208,
+-- `.insert(...).select('antal_deltagare')`). Ingen UPDATE, ingen DELETE.
+--
+-- Åtgärd: ta bort UPDATE/DELETE (och övriga skrivrättigheter utom INSERT) för
+-- authenticated, och allt för anon. INSERT + SELECT kvar, så överlämningen
+-- fungerar precis som i dag.
+--
+-- Risk med åtgärden: låg. Den enda skrivväg koden använder är INSERT, som
+-- behålls. PostgREST svarar 42501 på en PATCH/DELETE mot vyn efteråt.
+-- ============================================================================
+
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+  ON public.organization_handover FROM authenticated;
+REVOKE ALL ON public.organization_handover FROM anon;
+GRANT SELECT, INSERT ON public.organization_handover TO authenticated;
+
+-- ----------------------------------------------------------------------------
+-- VERIFIERING (förväntat svar på varje rad)
+-- ----------------------------------------------------------------------------
+-- select has_table_privilege('authenticated','public.organization_handover','UPDATE') upd,
+--        has_table_privilege('authenticated','public.organization_handover','DELETE') del,
+--        has_table_privilege('authenticated','public.organization_handover','INSERT') ins,
+--        has_table_privilege('authenticated','public.organization_handover','SELECT') sel,
+--        has_table_privilege('anon','public.organization_handover','SELECT') anon_sel;
+--   → upd = false, del = false, ins = true, sel = true, anon_sel = false
+--
+-- begin; set local role authenticated;
+-- explain update public.organization_handover set org_id = gen_random_uuid();
+-- rollback;
+--   → ERROR: permission denied for view organization_handover
+--
+-- Röktest i UI efteråt: konsulentvyn → Organisation → "Lämna över" som chef
+-- (km-konsulent-kontot, se .env.test.local) ska fortfarande flytta deltagare.
+-- ============================================================================

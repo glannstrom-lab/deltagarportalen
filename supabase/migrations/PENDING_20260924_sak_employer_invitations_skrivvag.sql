@@ -1,0 +1,63 @@
+-- ============================================================================
+-- VÄNTAR PÅ MIKAELS GODKÄNNANDE — KÖRS INTE AUTOMATISKT
+-- ============================================================================
+-- Döp om till 20260924xxxxxx_sak_employer_invitations_skrivvag.sql när den
+-- godkänts och körts. Ingen data ändras; bara rättigheter på en vy.
+-- ============================================================================
+--
+-- ALLVAR: HÖG — samma felklass som organization_handover, mindre följd.
+--
+-- Vad: vyn `employer_invitations` läser en enda tabell (`invitations i`) med en
+-- WHERE och är därför AUTOMATISKT UPPDATERBAR. Bara INSERT har en INSTEAD OF-
+-- trigger (`employer_invitations_insert`). UPDATE och DELETE går rakt igenom
+-- till `invitations` med vy-ägarens (postgres, BYPASSRLS) rättigheter.
+--
+-- Vem når det: den som skapat inbjudan (`invited_by`) och varje medlem i det
+-- företagskonto inbjudan gäller — alltså företagets egna kontaktpersoner.
+-- Skrivbara kolumner: id, email, email_sent, used_at, expires_at, created_at.
+--
+-- Konsekvens: en företagskontakt kan sätta `used_at = null` och flytta
+-- `expires_at` framåt på en redan använd inbjudan. `get_invitation_by_token`
+-- (anon-körbar) returnerar den då igen, och länken går att använda en gång
+-- till — ett nytt konto blir medlem i företagskontot utan att någon bjudit in
+-- det. Hen kan också ta bort inbjudningar som konsulenten skapat, och skriva
+-- om e-postadressen på en obesvarad inbjudan.
+--
+-- Bevis (körda 2026-09-24, bara läsning):
+--   select is_updatable, is_trigger_updatable, is_trigger_deletable
+--     from information_schema.views where table_name = 'employer_invitations';
+--     → YES, NO, NO
+--   select column_name from information_schema.columns
+--     where table_name = 'employer_invitations' and is_updatable = 'YES';
+--     → id, email, email_sent, used_at, expires_at, created_at
+--   begin; set local role authenticated;
+--   explain update public.employer_invitations set used_at = null, expires_at = now() + interval '1 year';
+--   explain delete from public.employer_invitations;
+--   rollback;
+--     → båda planeras som "Update/Delete on invitations i" utan rättighetsfel.
+--   I prod idag: 0 inbjudningar med metadata ? 'employer_org_id'.
+--
+-- Koden använder bara INSERT + SELECT på vyn (services/placeringarApi.ts:597,
+-- services/foretagApi.ts:481). `send-invite-email` skriver `email_sent` direkt
+-- i tabellen `invitations` med service role — inte genom vyn — och påverkas inte.
+--
+-- Risk med åtgärden: låg. INSERT och SELECT behålls.
+-- ============================================================================
+
+REVOKE UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+  ON public.employer_invitations FROM authenticated;
+REVOKE ALL ON public.employer_invitations FROM anon;
+GRANT SELECT, INSERT ON public.employer_invitations TO authenticated;
+
+-- ----------------------------------------------------------------------------
+-- VERIFIERING
+-- ----------------------------------------------------------------------------
+-- select has_table_privilege('authenticated','public.employer_invitations','UPDATE') upd,
+--        has_table_privilege('authenticated','public.employer_invitations','DELETE') del,
+--        has_table_privilege('authenticated','public.employer_invitations','INSERT') ins,
+--        has_table_privilege('anon','public.employer_invitations','INSERT') anon_ins;
+--   → false, false, true, false
+--
+-- Röktest: konsulentvyn → Bjud in företag (BjudInForetagDialog) och
+-- företagskontot → Om oss → bjud in kollega ska fortfarande fungera.
+-- ============================================================================

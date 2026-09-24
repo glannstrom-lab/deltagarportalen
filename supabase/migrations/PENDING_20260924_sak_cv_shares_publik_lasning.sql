@@ -1,0 +1,54 @@
+-- ============================================================================
+-- VÄNTAR PÅ MIKAELS GODKÄNNANDE — KÖRS INTE AUTOMATISKT
+-- ============================================================================
+-- Döp om till 20260924xxxxxx_sak_cv_shares_publik_lasning.sql när den
+-- godkänts och körts. Ingen data raderas; en RLS-policy tas bort.
+-- ============================================================================
+--
+-- ALLVAR: LÅG (i dag 0 giltiga rader) — men fel klass: hemligheten går att lista.
+--
+-- Vad: policyn "Anyone can view shared CVs" på `cv_shares` har rollen PUBLIC
+-- (anon + authenticated) och villkoret `expires_at > now()` — inget annat.
+-- Vem som helst, utloggad, kan alltså köra
+--   GET /rest/v1/cv_shares?select=share_code,user_id
+-- och få VARJE giltig delningskod med ägarens user_id. En delningslänk vars
+-- kod går att lista skyddar ingenting; den är en publik katalog.
+-- (Jämför `profile_shares`, där SD1 stängde samma sak genom att läsning bara
+-- sker via definer-funktionen `get_shared_profile(share_code)`.)
+--
+-- Bevis (2026-09-24):
+--   select policyname, roles::text, cmd, qual from pg_policies where tablename='cv_shares';
+--     → "Anyone can view shared CVs" | {public} | SELECT | (expires_at > now())
+--   select count(*), count(*) filter (where expires_at > now()) from cv_shares;
+--     → 6, 0
+--   has_table_privilege('anon','public.cv_shares','SELECT') → true
+--
+-- Funktionen är död: `cvApi.shareCV` och `cvApi.getSharedCV`
+-- (client/src/services/cvApi.ts:186, :219) har noll anropare utanför testerna,
+-- och CVBuilder.tsx:19 säger att CVShare-routen togs bort 2026-05-11.
+-- `getSharedCV` joinar dessutom `cvs(*)`, som anon inte kan läsa — funktionen
+-- skulle inte fungera ens om den anropades.
+--
+-- Åtgärd: ta bort den publika läspolicyn. Ägarens egen läsning ("Users can
+-- view own CV shares") och INSERT behålls. Inga rader raderas.
+-- Byggs delning av CV igen: gör det som get_shared_profile — en definer-
+-- funktion som tar koden som argument — aldrig en tabellpolicy.
+--
+-- Risk: ingen i dag (ingen levande anropare).
+-- ============================================================================
+
+DROP POLICY IF EXISTS "Anyone can view shared CVs" ON public.cv_shares;
+
+-- ----------------------------------------------------------------------------
+-- VERIFIERING
+-- ----------------------------------------------------------------------------
+-- select policyname, roles::text, cmd, qual from pg_policies where tablename = 'cv_shares' order by 1;
+--   → två rader: "Users can create own CV shares" (INSERT),
+--                "Users can view own CV shares"   (SELECT, auth.uid() = user_id)
+--
+-- Som anon (utloggad), mot prod:
+--   curl -s "https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/cv_shares?select=share_code" \
+--        -H "apikey: <anon-nyckeln>"
+--   → []  (i dag är svaret också [] eftersom alla 6 har gått ut — kontrollera
+--          därför policylistan ovan, inte bara svaret)
+-- ============================================================================
