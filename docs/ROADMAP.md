@@ -23,6 +23,35 @@
 
 ---
 
+## Städpasset 2026-09-24 — åtta agenter plus en andra våg
+
+> 27 buggar rättade med fällbara tester (ae9b6a9a), lint 31 → 3, typfel 28 → 16, 11 döda filer
+> arkiverade (archive/2026-09-24-dodkod/). Utloggningsfixen verifierad i prod: 0 frågor efter
+> klicket mot ~20 före. Nio migrationsförslag skrivna, EJ körda (fb880ab5).
+
+### Väntar på Mikael
+
+| # | Punkt | Varför |
+|---|---|---|
+| SP1 | Kör PENDING_20260924_sak_organization_handover_skrivvag.sql + …employer_invitations_skrivvag.sql | Kritiskt: chef kan flytta sig till annan org via vyns UPDATE; använd företagsinbjudan kan återupplivas |
+| SP2 | Schemalägg send-inactivity-warning (pg_net+cron eller GH Actions) | Radering vid 24 mån körs, varningen vid 18 mån anropas av ingenting. Första berörda ~slutet 2027 |
+| SP3 | Produktbeslut: energifunktionen, jobbdelningen, notiscentret, AI-coachpanelen (AIAssistant) | Alla visar påhittat eller skriver till obefintliga kolumner; rekommendation arkivera. Bär sista 3 lint-varningarna och 15/16 typfel |
+| SP4 | Översätt 130 artiklar utan title_en/content_en; content:granska ska fälla saknad engelska | Svenska titlar i engelskt läge |
+| SP5 | Övriga sju PENDING_20260924-filer (FK-index, RLS-initplan, dubblettpolicyer, definer-vyer anon, konsulentläsning utan aktiv relation, cv_shares anon, trigger search_path) | Prestanda + försvar på djupet; kör schema:refresh + grants:refresh efteråt |
+| SP6 | Arkivera af-jobsearch, af-jobed, af-enrichments (noll anropare, deployas vid varje push) | Flytta ur supabase/functions/ — delete räcker inte |
+
+### Hittat, inte byggt
+
+- Cron-raderingarna (execute_inactive_account_retention, execute_scheduled_account_deletions) städar inte Storage/Vercel Blob.
+- Felläge saknas och läsfel kan skriva över sparat: IntegrationTab, AlertsTab (e-postvalet), HealthTab, JobSearch getJobDetails.
+- check_rate_limit kan köras av anon med godtycklig identifierare (utelåsning).
+- Hårdkodad svenska: brevmallarna, CredentialsTab, flyttdata-kötider, writing_prompts (ingen engelsk kolumn), RouteErrorBoundary, ProfileHistory.
+- 271 anrop till auth.getUser() — nätverksrunda var; mest anropade under driftsvepet.
+- job-alerts ignorerar employment_type; job_notifications NOT NULL kan tappa annons tyst.
+- PageHeader.tsx död; consequenceSta-texten inaktuell; leaked password protection av.
+
+---
+
 ## Driftpasset 2026-09-23 (natt) — portalen i drift, loggarna och testernas fällbarhet
 
 Två kodpass samma dag hade läst koden. Det här tittade där ingen tittat: **portalen körd i
