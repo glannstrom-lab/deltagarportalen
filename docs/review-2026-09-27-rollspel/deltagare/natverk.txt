@@ -1,0 +1,17 @@
+Nätverksbelägg ur skripten e2e/rollspel-2026-09-27-deltagare-s4/s5/s8/s13.cjs, prod 2026-09-27 ca 16:10–16:25.
+
+[s5, Anna, /my-consultant, Skriv ett meddelande + Enter]
+HTTP 403 POST /rest/v1/consultant_messages?select=id,content,created_at,receiver_id
+{"code":"42501","message":"new row violates row-level security policy for table \"consultant_messages\""}
+(Samma 403 i s4 via "Fråga om passet" i Min vecka.)
+REST som Anna: rpc/get_my_consultant -> {"id":"22222222-...-000000000001","first_name":"Demo","last_name":"Konsulent"}
+REST som Anna: consultant_participants?participant_id=eq.<Anna> -> []
+
+[s8, Sara, /oversikt och /min-vardag, varje sidladdning]
+HTTP 500 PATCH /rest/v1/profiles?id=eq.44444444-4444-4444-8444-000000000002
+{"code":"42P17","message":"infinite recursion detected in policy for relation \"profiles\""}
+
+[s13, Anna, /settings Profil, Telefon + Spara ändringar]
+PROF PATCH 500 {"code":"42P17","message":"infinite recursion detected in policy for relation \"profiles\""}
+Konsol: Fel vid sparande av profil: APIError: infinite recursion detected in policy for relation "profiles"
+Ingen synlig felrad i UI (anna-d-52-spara-profil.png). GET på samma rad = 200.

@@ -23,6 +23,21 @@
 
 ---
 
+## Rollspel 2026-09-27 — kommunkonsulent, R&M-coach och deltagare i prod
+
+Översikt: <https://claude.ai/artifact/3SBk71pBtoZTdPHHQeygwh> · rapporter med skärmdump per fynd i
+`docs/review-2026-09-27-rollspel/` (`konsulent.md` RK1–41, `rm.md` RR1–29, `deltagare.md` RD1–32).
+102 fynd: 12 kritiska, 31 viktiga, 36 skav, 23 förslag. Via superadmin → Visa som-flödet med demokontona.
+
+**Rättat samma dag:** RD2 (profiles gick inte att spara sedan SP5 2026-09-24 22:38 — RLS-rekursion) och RD1
+(deltagare nådde inte konsulenten) — `20260927_rls_profiles_rekursion_och_deltagarkoppling.sql`, regressionsprov
+`e2e/rls-deltagare-skriver-prov.sql`. **Byggt, väntar på ja:** RK18 kollegeinbjudan via mejl
+(`20260927_kollega_inbjudan.sql`, torrkörd två gånger, prov i `e2e/kollega-inbjudan-prov.sql`).
+
+**Nu (kritiskt, öppet):** RR1 avtalsloggen räknar eget jobbsökande · RK3 sjuk utan intyg blir "med intyg" ·
+RK1/RK2 veckomålet · RR4 placeringstiden · RD3/RR2/RR9 kommunens regelverk syns för R&M (utvidga orgTypVisning) ·
+RK4 passanteckning försvinner tyst · RK5 flikarna nås inte med tangentbordet · RR3 Översikten tiger om brådskande.
+
 ## Projektgenomgång 2026-09-24 — fjärde rundan: användningen, inte koden
 
 Översikt: <https://claude.ai/code/artifact/227bae53-753b-4c66-bdcb-f8767a35260e>

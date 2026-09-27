@@ -1,0 +1,161 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Söka jobb
+Karriär
+Resurser
+Din vardag
+Sök …
+Ctrl K
+3
+A
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Senast besökt
+Ditt AI-team
+Min vecka
+Dagbok
+Hälsa
+CV
+Din konsulent
+Personligt brev
+Min profil
+Inställningar
+
+Anpassa portalen efter dina behov
+
+Profil
+
+Dina personuppgifter
+
+Tillgänglighet
+
+Anpassa efter dina behov
+
+Notifikationer
+
+Välj hur du vill bli kontaktad
+
+Utseende
+
+Hur portalen ser ut
+
+Integritet
+
+Dina sekretessinställningar
+
+Säkerhet
+
+Ändra lösenord och tvåfaktorsauth
+
+Integritet
+
+Dina sekretessinställningar och samtycken
+
+Dina samtycken
+Användarvillkor
+Krävs
+
+Grundläggande villkor för att använda tjänsten. Krävs för att ha ett konto.
+
+Godkänt 27 september 2026 kl. 16:06
+
+Integritetspolicy
+Krävs
+
+Hur vi samlar in, lagrar och skyddar dina personuppgifter enligt GDPR.
+
+Godkänt 27 september 2026 kl. 16:06
+
+AI-behandling och profilering
+Valfritt
+
+Tillåt att dina uppgifter bearbetas med AI (gpt-oss-120b via OpenRouter, USA) för CV-texter, brev, intervjutips och personliga jobbrekommendationer. Att stänga av detta är din rätt att invända mot profilering enligt GDPR Art 21 — kärnportalen fungerar fortfarande utan AI.
+
+Godkänt 27 september 2026 kl. 16:20
+
+Återkalla
+Aktiv AI-användning
+GDPR Art 21
+
+Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.
+
+Avstängt av din organisation
+
+AI-funktionerna är avstängda av Demokommun (påhittade personer). Det gäller oavsett din egen inställning.
+
+Slå på AI
+Marknadsföring
+Valfritt
+
+Ta emot tips, nyheter och uppdateringar via e-post. Vi skickar aldrig spam.
+
+Ej godkänt
+
+Godkänn
+
+Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare.
+
+Profilsynlighet
+Dela aktivitet
+
+Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.
+
+Läs mer om dataintegritet
+
+Välj vem som kan se din profil.
+
+Endast jag
+Arbetsförmedlare
+Alla
+Datadelning med konsulent
+Datadelning
+
+Styr vad din konsulent kan se
+
+Din konsulent: Demo Konsulent
+
+Dela hälsodata
+
+Tillåt din konsulent att se din ICF-data (kognitiv, motorisk, sensorisk osv.)
+
+Dela välmåendedata
+
+Tillåt din konsulent att se din humörlogg: humör, energi, stress, sömn och anteckningen du skriver till den. Din dagbok delas aldrig.
+
+Dina data är säkra
+
+All datadelning är helt valfri och kan dras tillbaka när som helst. Din data krypteras och överförs säkert.
+
+Spara
+
+Läs vår integritetspolicy för mer information om hur vi behandlar dina data.
+
+Ditt konto
+Exportera din data
+
+Ladda ner en kopia av all din data innan du raderar kontot. Detta är din rätt enligt GDPR.
+
+Ladda ner mina data
+Kritisk zon
+Radera konto
+
+När du raderar ditt konto tas all din data bort permanent. Detta kan inte ångras.
+
+Din profil och personuppgifter
+Alla dina CV:n och CV-versioner
+Alla personliga brev
+Sparade jobb och bevakningar
+All aktivitetshistorik
+Begär radering av konto
+Daniel
+Digital coach
+
+Tema-byte (ljust/mörkt) är personligt — välj det som inte stressar ögonen.
+
+4 råd till
+Fråga djupare i AI-team
+Lugnare läge
+Mindre på skärmen, ett steg i taget

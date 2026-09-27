@@ -1,0 +1,156 @@
+laddtid 3534 ms
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Senaste veckan
+Senaste månaden
+Senaste kvartalet
+Senaste året
+Excel
+PDF-rapport
+
+Totalt deltagare
+
+5
+
+5 aktiva
+
+CV-komplettering
+
+60%
+
+Har komplett CV
+
+Genomsnittlig placeringstid
+
+–
+
+Inga placeringar än
+
+Placeringar
+
+—
+
+Inga placeringar än
+
+AI-insikter
+
+Baserat på deltagardata
+
+Insikter (0)
+Nyckeltal
+Risker (2)
+
+Inga insikter just nu
+
+Alla deltagare ser bra ut!
+
+Framsteg över tid
+
+Genomsnittlig CV-poäng per månad
+
+Jobbsök aktivitet
+Sep
+0
+Nyckeltal
+
+Översikt av viktiga mätvärden
+
+60%
+
+Andel med CV
+
+0%
+
+Måluppfyllelse
+
+100%
+
+Engagemang
+
+Statusfördelning
+
+Fördelning av deltagare per status
+
+Aktiva
+5 (100%)
+Inaktiva
+0 (0%)
+Avslutade
+0 (0%)
+Vanligaste målkategorierna
+
+Mest frekventa måltyper bland deltagare
+
+1
+Jobbansökningar
+1 mål
+2
+CV-förbättring
+1 mål
+3
+Övrigt
+1 mål
+4
+Kompetensutveckling
+1 mål
+Riskerar att fastna
+
+Deltagare med minst två varningssignaler
+
+Inga deltagare visar flera varningssignaler just nu.
+
+Insatseffekt
+
+Aktivitet hos deltagare med respektive utan möte senaste 30 dagarna
+
+För litet underlag för en meningsfull jämförelse — det behövs minst 3 aktiva deltagare i varje grupp (med och utan möte senaste 30 dagarna).
+
+Kohortanalys
+
+Jämförelse mellan deltagargrupper baserat på startdatum
+
+KOHORT	DELTAGARE	CV-KOMPLETT	PLACERADE	SNITT TID (DAGAR)
+Q3 2026	5	60%	0%	-
+Placeringar
+
+Registrerade placeringar och deras uppföljning (3/6 månader)
+
+Inga placeringar registrerade än. Klicka på "Registrera placering" högst upp för att lägga till den första.
+
+Aktivitetskravet — kvartalsunderlag till IVO
+
+Anvisade planer, ogiltig frånvaro och lämnat underlag, per försörjningshinder.
+
+År
+2025
+2026
+2027
+Kvartal
+Q1
+Q2
+Q3
+Q4
+
+1 juli 2026 – 30 september 2026
+
+FÖRSÖRJNINGSHINDER	ANVISADE	MED OGILTIG FRÅNVARO	UNDERLAG LÄMNAT
+Arbetslös	1	1	0
+Summa	1	1	0
+
+Underlaget är en räkning ur portalen. Beslut om nekande/nedsättning registreras i kommunens verksamhetssystem och rapporteras till IVO via deras e-tjänst (öppnar januari 2027). Det finns inget API mot IVO eller Arbetsförmedlingen.
+
+Ladda ner som TSV
+AF-checklista: anvisning registrerad i Mina sidor för kommuner
+
+Kommunen ska registrera varje anvisning hos Arbetsförmedlingen. Bocken sparas på planen med dagens datum — inget API finns, registreringen görs för hand.
+
+Anna Exempel · plan från 14 september 2026

@@ -1,0 +1,103 @@
+laddtid 3519 ms
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Inställningar
+
+Anpassa din konsultvy
+
+Standardvy för deltagare
+
+Välj hur deltagarlistan visas som standard
+
+Rutnät
+Lista
+
+Språk
+
+Välj språk för gränssnittet
+
+Svenska
+English
+
+Tidszon
+
+Används för mötesbokning och påminnelser
+
+Stockholm (CET)
+
+Veckan börjar
+
+Påverkar kalendervisning
+
+Måndag
+Söndag
+
+Inaktivitetsvarning
+
+Dagar innan en deltagare markeras som inaktiv
+
+5 dagar
+7 dagar
+14 dagar
+Din organisation
+
+Kollegor och, om du är chef, caseload per konsulent.
+
+Demokommun (påhittade personer)
+
+Kommun · org.nr 212000-9999
+Din roll: Chef
+
+AI-funktioner för era deltagare
+
+Av — deltagare kopplade till era konsulenter nekas alla AI-funktioner och ser att organisationen stängt av dem.
+
+Slå på AI
+
+Demo Konsulent (du)
+
+demo@jobin.se
+Chef
+Lägg till kollega
+E-post
+Roll
+Handläggare (ekonomiskt bistånd)
+Arbetskonsulent
+Chef
+Lägg till
+
+Personen behöver redan ha ett konto på jobin.se.
+
+Caseload
+KONSULENT	DELTAGARE	AKTIVA PLANER	OGILTIG FRÅNVARO 30 D	
+ÅTGÄRD
+
+Demo Konsulent
+Chef
+	5	1	1	
+Överlämna deltagare…
+
+Bara tal. Namn på deltagare, journal och mående syns inte här.
+
+Data & Integritet
+
+Hantera data och GDPR-relaterade inställningar
+
+Exportera all data
+
+Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.
+
+Ta med orosanteckningar
+
+Anteckningar i kategorin Oro utelämnas som standard.
+
+Integritetspolicy

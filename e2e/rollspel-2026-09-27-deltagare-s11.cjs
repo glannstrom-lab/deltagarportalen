@@ -1,0 +1,22 @@
+module.exports = async (p, h) => {
+  await h.go('/settings');
+  await p.getByRole('button', { name: /^Integritet/ }).first().click();
+  await p.waitForTimeout(1500);
+  const rad = p.locator('div').filter({ hasText: /^AI-behandling och profilering/ }).first();
+  await p.getByRole('button', { name: 'Godkänn' }).first().click();
+  await p.waitForTimeout(2500);
+  await h.shot('46-ai-samtycke');
+  const t0 = await h.text(); console.log('SAMT', t0.slice(t0.indexOf('AI-behandling'), t0.indexOf('AI-behandling') + 600).replace(/\n+/g,' | '));
+  await h.go('/ai-team');
+  const ta = p.locator('textarea').first();
+  await ta.fill('Hur gör jag om jag är sjuk på ett pass?');
+  await ta.press('Enter');
+  await p.waitForTimeout(8000);
+  await h.shot('47-ai-team-efter-samtycke');
+  const t = await h.text(); const i = t.indexOf('Hur gör jag'); console.log('AI', t.slice(i, i + 800).replace(/\n+/g, ' | '));
+  await h.go('/cover-letter');
+  await p.getByText('Jag fyller i själv').click().catch(()=>{});
+  await p.waitForTimeout(1000);
+  await h.shot('48-brev-steg');
+  console.log('BREV', (await h.text()).slice(0, 1500).replace(/\n+/g, ' | '));
+};
