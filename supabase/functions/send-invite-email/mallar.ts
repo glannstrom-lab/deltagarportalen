@@ -239,3 +239,97 @@ export const getEmployerInviteEmailTemplate = (data: EmployerTemplateData) => {
 </html>
 `
 }
+
+// =============================================================================
+// KOLLEGA I ORGANISATIONEN (2026-09-27)
+// =============================================================================
+// Inbjudan skapas av en chef/admin i en kommun eller hos en leverantör
+// (Inställningar → Din organisation → Lägg till kollega) som en rad i
+// `invitations` med role 'CONSULTANT', consultant_id NULL och metadata
+// { kind: 'kollega', kollega_org_id, org_role, org_name, invited_by_name }.
+// Raden skrivs om av triggern invitations_kollega_guard
+// (20260927_kollega_inbjudan.sql) — klienten bestämmer bara e-post,
+// organisation och roll. Medlemskapet läggs av kollega_inbjudan_medlemskap
+// när profilen skapas; profilen blir CONSULTANT via handle_new_user.
+//
+// Personalen är mottagaren, så tonen är saklig. Ingen deltagartext
+// ("vägen tillbaka till arbetsmarknaden") — det var vad den generella mallen
+// hade sagt om kind inte lästs.
+
+export const KOLLEGA_ROLL_ETIKETT: Record<string, string> = {
+  handlaggare: 'handläggare (ekonomiskt bistånd)',
+  konsulent: 'arbetskonsulent',
+  chef: 'chef',
+  admin: 'administratör',
+}
+
+export interface KollegaTemplateData {
+  orgName: string
+  orgRole: string
+  invitedByName: string
+  actionUrl: string
+  expiresAt: string
+}
+
+export const getKollegaInviteEmailTemplate = (data: KollegaTemplateData) => {
+  const org = escapeHtml(data.orgName || 'din organisation')
+  const roll = escapeHtml(KOLLEGA_ROLL_ETIKETT[data.orgRole] ?? 'kollega')
+  const inviter = escapeHtml(data.invitedByName || '')
+  const inviterText = inviter ? `<strong>${inviter}</strong>` : 'En kollega'
+
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbjudan till ${org} på Jobin</title>
+  <style>
+    ${SHARED_STYLES}
+    .header { background: #e0e7ff; color: #312e81; }
+    .button { background: #4f46e5; color: #ffffff; }
+    .button:hover { background: #4338ca; }
+  </style>
+</head>
+<body>
+  <div class="header" style="padding:32px 30px;border-radius:12px 12px 0 0;background:#e0e7ff;color:#312e81;">
+    <div class="eyebrow">Inbjudan för personal</div>
+    <h1>Du är inbjuden till ${org} på Jobin</h1>
+  </div>
+
+  <div class="content">
+    <p style="font-size: 16px;">
+      ${inviterText} har bjudit in dig som <strong>${roll}</strong> i
+      <strong>${org}</strong> på <strong>jobin.se</strong>.
+    </p>
+
+    <div class="info-list">
+      <strong>När du har skapat kontot:</strong>
+      <ul>
+        <li>Du loggar in i konsulentvyn</li>
+        <li>Du ser organisationens kollegor under Inställningar</li>
+      </ul>
+    </div>
+
+    <center>
+      <a href="${escapeHtml(data.actionUrl)}" class="button" style="display:inline-block;padding:14px 28px;text-decoration:none;border-radius:8px;font-weight:600;margin:16px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#4f46e5;color:#ffffff;"><span style="color:#ffffff;">Skapa ditt konto</span></a>
+    </center>
+
+    <p class="expiry">Inbjudan är giltig till: ${escapeHtml(data.expiresAt)}</p>
+
+    <p class="small">
+      Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
+      <span class="fallback-link">${escapeHtml(data.actionUrl)}</span>
+    </p>
+
+    <p class="small">Väntade du dig inte det här mejlet? Kontakta ${inviter || 'den som bjöd in dig'} eller svara på mejlet.</p>
+  </div>
+
+  <div class="footer">
+    <p>Har du frågor? ${inviter ? `Kontakta ${inviter}.` : 'Svara på detta mejl.'}</p>
+    <p>&copy; ${new Date().getFullYear()} Jobin · jobin.se</p>
+  </div>
+</body>
+</html>
+`
+}

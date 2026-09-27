@@ -8,7 +8,13 @@
  * INSTEAD OF-trigger i databasen är den som bestämmer (bara chef/admin i
  * organisationen, bara admin ger admin, sista chef/admin kan inte tas bort,
  * ingen ändrar sitt eget medlemskap). Databasens felmeddelanden är på svenska
- * och visas rakt av. Ingen inbjudan via mejl — DE1 blockerar utskick.
+ * och visas rakt av.
+ *
+ * Kolleginbjudan via mejl (2026-09-27): saknar adressen konto erbjuds "Skicka
+ * inbjudan via mejl" (orgApi.inviteColleagueByEmail; triggern
+ * invitations_kollega_guard bestämmer). Statusen är ärlig: "skickad" bara när
+ * raden lästs tillbaka med email_sent = true, annars sägs att inbjudan är
+ * sparad men mejlet inte bekräftat/skickat. Obesvarade inbjudningar listas.
  *
  * Överlämning (KM2 steg 4): chef/admin flyttar HELA caseloaden från en
  * konsulent till en annan i organisationen — vyn organization_handover,
@@ -22,7 +28,7 @@
  */
 
 import { useEffect, useState, type FormEvent } from 'react'
-import { Users, BarChart3, UserPlus, Trash2, ArrowRight } from '@/components/ui/icons'
+import { Users, BarChart3, UserPlus, Trash2, ArrowRight, Mail } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Input'
@@ -32,11 +38,14 @@ import { cn } from '@/lib/utils'
 import {
   orgApi,
   felText,
+  saknarKonto,
   ORG_KIND_ETIKETT,
   ORG_ROLL_ETIKETT,
   ORG_ROLLER,
   type CaseloadRow,
   type Colleague,
+  type KollegaInbjudan,
+  type KollegaInbjudanUtfall,
   type Organization,
   type OrgMembership,
   type OrgRole,
@@ -567,6 +576,10 @@ function LaggTillKollega({
   const [roll, setRoll] = useState<OrgRole>('konsulent')
   const [fel, setFel] = useState<string | null>(null)
   const [sparar, setSparar] = useState(false)
+  // Adressen saknade konto: erbjud inbjudan via mejl för just den adressen och rollen.
+  const [erbjudan, setErbjudan] = useState<{ adress: string; roll: OrgRole } | null>(null)
+  const [utfall, setUtfall] = useState<KollegaInbjudanUtfall | null>(null)
+  const [inbjudningsomgang, setInbjudningsomgang] = useState(0)
 
   // 'arbetsgivare' finns bara i företagskonton (AG6) — triggern nekar den här, så visa den inte.
   const roller = ORG_ROLLER.filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin'))
@@ -579,12 +592,37 @@ function LaggTillKollega({
       return
     }
     setFel(null)
+    setErbjudan(null)
+    setUtfall(null)
     setSparar(true)
     try {
       await orgApi.addColleagueByEmail(orgId, adress, roll)
       setEpost('')
       onTillagd(`${adress} är tillagd i ${orgNamn}.`)
     } catch (err) {
+      const text = felText(err)
+      if (saknarKonto(text)) {
+        setErbjudan({ adress, roll })
+      } else {
+        setFel(text)
+      }
+    } finally {
+      setSparar(false)
+    }
+  }
+
+  const bjudIn = async () => {
+    if (!erbjudan) return
+    setFel(null)
+    setSparar(true)
+    try {
+      const u = await orgApi.inviteColleagueByEmail(orgId, erbjudan.adress, erbjudan.roll)
+      setUtfall(u)
+      setErbjudan(null)
+      setEpost('')
+      setInbjudningsomgang((n) => n + 1)
+    } catch (err) {
+      // Databasen nekade — då finns ingen inbjudan.
       setFel(felText(err))
     } finally {
       setSparar(false)
@@ -604,7 +642,10 @@ function LaggTillKollega({
           type="email"
           autoComplete="off"
           value={epost}
-          onChange={(e) => setEpost(e.target.value)}
+          onChange={(e) => {
+            setEpost(e.target.value)
+            setErbjudan(null)
+          }}
           placeholder="fornamn.efternamn@kommun.se"
           disabled={sparar}
         />
@@ -612,22 +653,130 @@ function LaggTillKollega({
           id={`kollega-roll-${orgId}`}
           label="Roll"
           value={roll}
-          onChange={(e) => setRoll(e.target.value as OrgRole)}
+          onChange={(e) => {
+            setRoll(e.target.value as OrgRole)
+            setErbjudan(null)
+          }}
           disabled={sparar}
           options={roller.map((r) => ({ value: r, label: ORG_ROLL_ETIKETT[r] }))}
         />
         <Button type="submit" disabled={sparar}>
-          {sparar ? 'Lägger till…' : 'Lägg till'}
+          {sparar && !erbjudan ? 'Lägger till…' : 'Lägg till'}
         </Button>
       </div>
       <p className="text-xs text-stone-500 dark:text-stone-400">
-        Personen behöver redan ha ett konto på jobin.se.
+        Har personen redan ett konto på jobin.se läggs hen till direkt. Annars kan du skicka en inbjudan via mejl.
       </p>
+
+      {erbjudan && (
+        <div className="p-3 rounded-xl bg-stone-50 dark:bg-stone-800 space-y-2" aria-live="polite">
+          <p className="text-sm text-stone-900 dark:text-stone-100">
+            <strong>{erbjudan.adress}</strong> har inget konto på Jobin än. Vill du skicka en inbjudan via mejl? När personen
+            skapat kontot via länken blir hen {ORG_ROLL_ETIKETT[erbjudan.roll].toLowerCase()} i {orgNamn} och får
+            konsulentvyn. Länken gäller i 14 dagar.
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" size="sm" onClick={() => void bjudIn()} disabled={sparar}>
+              <Mail className="w-4 h-4" aria-hidden="true" />
+              {sparar ? 'Skickar…' : 'Skicka inbjudan via mejl'}
+            </Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => setErbjudan(null)} disabled={sparar}>
+              Avbryt
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {utfall && <InbjudanUtfall utfall={utfall} />}
+
       {fel && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-300">
           {fel}
         </p>
       )}
+
+      <VantandeInbjudningar orgId={orgId} omgang={inbjudningsomgang} />
     </form>
+  )
+}
+
+/** Ärlig status efter en inbjudan. "Skickad" bara när email_sent lästs tillbaka som true. */
+function InbjudanUtfall({ utfall: u }: { utfall: KollegaInbjudanUtfall }) {
+  if (u.mejl === 'skickat') {
+    return (
+      <p role="status" className="text-sm text-emerald-700 dark:text-emerald-300">
+        Inbjudan är skickad till {u.email}. Personen blir medlem när kontot skapats.
+      </p>
+    )
+  }
+  const orsak = u.mejl === 'obekraftat'
+    ? 'men vi kan inte bekräfta att mejlet gick iväg'
+    : 'men mejlet kunde inte skickas'
+  return (
+    <p role="alert" className="text-sm text-amber-800 dark:text-amber-300">
+      Inbjudan till {u.email} är sparad, {orsak}{u.detalj ? ` (${u.detalj})` : ''}. Kontakta personen själv, eller hör av
+      dig till Jobin om det upprepas.
+    </p>
+  )
+}
+
+type InbjudningsLage =
+  | { status: 'laddar' }
+  | { status: 'fel'; fel: string }
+  | { status: 'klart'; rader: KollegaInbjudan[]; nu: number }
+
+/** Obesvarade kolleginbjudningar som jag skickat. Tre lägen; tom lista ritar ingenting. */
+function VantandeInbjudningar({ orgId, omgang }: { orgId: string; omgang: number }) {
+  const [lage, setLage] = useState<InbjudningsLage>({ status: 'laddar' })
+
+  useEffect(() => {
+    let aktiv = true
+    orgApi
+      .pendingColleagueInvites(orgId)
+      .then((rader) => {
+        // Klockan läses när svaret kommer, inte under render (react-hooks/purity).
+        if (aktiv) setLage({ status: 'klart', rader, nu: Date.now() })
+      })
+      .catch((e: unknown) => {
+        if (aktiv) setLage({ status: 'fel', fel: felText(e) })
+      })
+    return () => {
+      aktiv = false
+    }
+  }, [orgId, omgang])
+
+  if (lage.status === 'laddar') return null
+  if (lage.status === 'fel') {
+    return (
+      <p className="text-xs text-stone-500 dark:text-stone-400">
+        Obesvarade inbjudningar kunde inte hämtas: {lage.fel}
+      </p>
+    )
+  }
+  if (lage.rader.length === 0) return null
+
+  return (
+    <div className="space-y-2">
+      <h5 className="text-xs font-semibold uppercase tracking-wide text-stone-500 dark:text-stone-400">Obesvarade inbjudningar</h5>
+      <ul className="space-y-1" aria-label="Obesvarade inbjudningar">
+        {lage.rader.map((i) => {
+          const utgangen = i.expires_at !== null && new Date(i.expires_at).getTime() < lage.nu
+          return (
+            <li key={i.id} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-stone-700 dark:text-stone-300">
+              <span className="font-medium text-stone-900 dark:text-stone-100">{i.email}</span>
+              {i.org_role && <span>{ORG_ROLL_ETIKETT[i.org_role]}</span>}
+              <span className={i.email_sent ? 'text-stone-500 dark:text-stone-400' : 'text-amber-800 dark:text-amber-300'}>
+                {i.email_sent ? 'Mejlet skickat' : 'Mejlet inte skickat'}
+              </span>
+              {i.expires_at && (
+                <span className="text-stone-500 dark:text-stone-400">
+                  {utgangen ? 'Länken har gått ut' : `Gäller till ${new Date(i.expires_at).toLocaleDateString('sv-SE')}`}
+                </span>
+              )}
+            </li>
+          )
+        })}
+      </ul>
+    </div>
   )
 }

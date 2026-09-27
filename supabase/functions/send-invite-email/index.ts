@@ -19,9 +19,10 @@ import { svensktDatum } from '../_shared/datum.ts'
 import {
   getGenericInviteEmailTemplate,
   getEmployerInviteEmailTemplate,
+  getKollegaInviteEmailTemplate,
 } from './mallar.ts'
 
-// Mallarna (deltagare, företagskonto) bor i mallar.ts — se motiveringen där.
+// Mallarna (deltagare, företagskonto, kollega) bor i mallar.ts — se motiveringen där.
 
 
 interface ProcessResult {
@@ -87,11 +88,23 @@ async function processInvitation(
   const invitedByKind: 'konsulent' | 'foretag' =
     invitation.metadata?.invited_by_kind === 'foretag' ? 'foretag' : 'konsulent'
 
+  // 2026-09-27: kollega i en kommun/leverantör. Raden är omskriven av triggern
+  // invitations_kollega_guard (role CONSULTANT, consultant_id NULL, metadata byggd
+  // av servern). Ingen konsulentkoppling följer med i användarmetadatat — kollegan
+  // är personal, inte deltagare. Behörigheten ovan (invited_by === anroparen)
+  // gäller oförändrad.
+  const isKollegaInvite = invitation.metadata?.kind === 'kollega'
+
   // De användarmetadata som följer med generateLink/inviteUserByEmail. För
   // företag: first_name ur kontaktnamnet, last_name tomt (triggern delar inte
   // upp namnet), inget program och ingen konsulentkoppling — kontot ska bli
   // en vanlig USER som triggern employer_invitation_membership gör till medlem.
-  const userMetadata = isEmployerInvite
+  const userMetadata = isKollegaInvite
+    ? {
+        invitation_id: invitation.id,
+        kind: 'kollega',
+      }
+    : isEmployerInvite
     ? {
         first_name: invitation.metadata?.first_name,
         last_name: '',
@@ -138,7 +151,15 @@ async function processInvitation(
           inviteUrl
       }
 
-      const html = isEmployerInvite
+      const html = isKollegaInvite
+        ? getKollegaInviteEmailTemplate({
+            orgName: invitation.metadata?.org_name || '',
+            orgRole: invitation.metadata?.org_role || '',
+            invitedByName,
+            actionUrl: actionLink,
+            expiresAt: expiresAtFormatted,
+          })
+        : isEmployerInvite
         ? getEmployerInviteEmailTemplate({
             firstName: invitation.metadata?.first_name,
             companyName,
@@ -157,7 +178,9 @@ async function processInvitation(
             expiresAt: expiresAtFormatted,
           })
 
-      const subject = isEmployerInvite
+      const subject = isKollegaInvite
+        ? `Inbjudan till ${invitation.metadata?.org_name || 'din organisation'} på Jobin`
+        : isEmployerInvite
         ? `${companyName || 'Ert företag'} — företagskonto på Jobin`
         : 'Inbjudan till Jobin'
 

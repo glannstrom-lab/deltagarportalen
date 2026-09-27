@@ -6,6 +6,9 @@
  * Överlämning (KM2 steg 4): knappen bara för chef och bara på rader med
  * deltagare, mottagarlistan utan avsändaren, handover med rätt org/från/till,
  * databasens fel som text.
+ * Kolleginbjudan (2026-09-27): saknar adressen konto erbjuds en inbjudan via
+ * mejl; statusen är ärlig ("skickad" bara vid bekräftat utskick, annars
+ * "sparad men …"); databasens nej visas; obesvarade inbjudningar listas.
  */
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest'
 import { render, screen, cleanup, within, fireEvent, waitFor } from '@testing-library/react'
@@ -21,6 +24,8 @@ vi.mock('@/services/orgApi', async () => {
       caseload: vi.fn(),
       isChef: vi.fn(),
       addColleagueByEmail: vi.fn(),
+      inviteColleagueByEmail: vi.fn(),
+      pendingColleagueInvites: vi.fn(),
       setColleagueRole: vi.fn(),
       removeColleague: vi.fn(),
       handover: vi.fn(),
@@ -49,7 +54,11 @@ async function somRoll(role: 'chef' | 'admin' | 'konsulent', userId = role === '
 }
 
 describe('OrganisationSektion', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(async () => {
+    vi.clearAllMocks()
+    const { orgApi } = await import('@/services/orgApi')
+    vi.mocked(orgApi.pendingColleagueInvites).mockResolvedValue([])
+  })
   afterEach(() => cleanup())
 
   it('säger ärligt att man inte tillhör någon organisation', async () => {
@@ -109,7 +118,7 @@ describe('OrganisationSektion', () => {
     vi.mocked(orgApi.addColleagueByEmail).mockResolvedValue(undefined)
     render(<OrganisationSektion />)
     const form = await screen.findByRole('form', { name: 'Lägg till kollega i Hällefors kommun' })
-    expect(within(form).getByText(/Personen behöver redan ha ett konto på jobin\.se/)).toBeInTheDocument()
+    expect(within(form).getByText(/Annars kan du skicka en inbjudan via mejl/)).toBeInTheDocument()
 
     fireEvent.change(within(form).getByLabelText('E-post'), { target: { value: ' ny.kollega@kommun.se ' } })
     fireEvent.change(within(form).getByLabelText('Roll'), { target: { value: 'handlaggare' } })
@@ -123,15 +132,105 @@ describe('OrganisationSektion', () => {
 
   it('visar databasens felmeddelande som text', async () => {
     const orgApi = await somRoll('chef')
-    vi.mocked(orgApi.addColleagueByEmail).mockRejectedValue(
-      new Error('Ingen användare med e-posten x@y.se. Personen behöver skapa ett konto på jobin.se först.'),
-    )
+    vi.mocked(orgApi.addColleagueByEmail).mockRejectedValue(new Error('Personen är redan medlem i organisationen'))
     render(<OrganisationSektion />)
     const form = await screen.findByRole('form', { name: /Lägg till kollega/ })
     fireEvent.change(within(form).getByLabelText('E-post'), { target: { value: 'x@y.se' } })
     fireEvent.click(within(form).getByRole('button', { name: 'Lägg till' }))
-    expect(await within(form).findByRole('alert')).toHaveTextContent('Ingen användare med e-posten x@y.se')
+    expect(await within(form).findByRole('alert')).toHaveTextContent('Personen är redan medlem i organisationen')
+    expect(within(form).queryByRole('button', { name: 'Skicka inbjudan via mejl' })).toBeNull()
     expect(orgApi.myMemberships).toHaveBeenCalledTimes(1)
+  })
+
+  describe('kolleginbjudan via mejl', () => {
+    const saknas = new Error('Ingen användare med e-posten x@example.com. Personen behöver skapa ett konto på jobin.se först.')
+
+    async function tillErbjudan(roll = 'chef') {
+      const orgApi = await somRoll('chef')
+      vi.mocked(orgApi.addColleagueByEmail).mockRejectedValue(saknas)
+      render(<OrganisationSektion />)
+      const form = await screen.findByRole('form', { name: /Lägg till kollega/ })
+      fireEvent.change(within(form).getByLabelText('E-post'), { target: { value: ' x@example.com ' } })
+      fireEvent.change(within(form).getByLabelText('Roll'), { target: { value: roll } })
+      fireEvent.click(within(form).getByRole('button', { name: 'Lägg till' }))
+      await within(form).findByRole('button', { name: 'Skicka inbjudan via mejl' })
+      return { orgApi, form }
+    }
+
+    it('saknar adressen konto erbjuds en inbjudan — inget felmeddelande, och inget skickas förrän chefen väljer det', async () => {
+      const { orgApi, form } = await tillErbjudan()
+      expect(within(form).queryByRole('alert')).toBeNull()
+      expect(within(form).getByText(/har inget konto på Jobin än/)).toHaveTextContent(
+        'x@example.com har inget konto på Jobin än. Vill du skicka en inbjudan via mejl? När personen skapat kontot via länken blir hen chef i Hällefors kommun och får konsulentvyn.',
+      )
+      expect(orgApi.inviteColleagueByEmail).not.toHaveBeenCalled()
+    })
+
+    it('"Skicka inbjudan via mejl" går till API:t med org, adress och roll — och "skickad" visas bara vid bekräftat utskick', async () => {
+      const { orgApi, form } = await tillErbjudan('handlaggare')
+      vi.mocked(orgApi.inviteColleagueByEmail).mockResolvedValue({ id: 'i1', email: 'x@example.com', mejl: 'skickat' })
+      fireEvent.click(within(form).getByRole('button', { name: 'Skicka inbjudan via mejl' }))
+      await waitFor(() => expect(orgApi.inviteColleagueByEmail).toHaveBeenCalledWith('o1', 'x@example.com', 'handlaggare'))
+      expect(await within(form).findByRole('status')).toHaveTextContent('Inbjudan är skickad till x@example.com.')
+      expect(within(form).queryByRole('button', { name: 'Skicka inbjudan via mejl' })).toBeNull()
+      // listan över obesvarade hämtas om
+      await waitFor(() => expect(orgApi.pendingColleagueInvites).toHaveBeenCalledTimes(2))
+    })
+
+    it('mejlet kunde inte skickas → "sparad men mejlet kunde inte skickas", aldrig "skickad"', async () => {
+      const { orgApi, form } = await tillErbjudan()
+      vi.mocked(orgApi.inviteColleagueByEmail).mockResolvedValue({ id: 'i1', email: 'x@example.com', mejl: 'ej_skickat', detalj: 'HTTP 500' })
+      fireEvent.click(within(form).getByRole('button', { name: 'Skicka inbjudan via mejl' }))
+      const alert = await within(form).findByRole('alert')
+      expect(alert).toHaveTextContent('Inbjudan till x@example.com är sparad, men mejlet kunde inte skickas (HTTP 500).')
+      expect(within(form).queryByText(/är skickad/)).toBeNull()
+    })
+
+    it('obekräftat utskick → säger att det inte kan bekräftas, aldrig "skickad"', async () => {
+      const { orgApi, form } = await tillErbjudan()
+      vi.mocked(orgApi.inviteColleagueByEmail).mockResolvedValue({ id: 'i1', email: 'x@example.com', mejl: 'obekraftat' })
+      fireEvent.click(within(form).getByRole('button', { name: 'Skicka inbjudan via mejl' }))
+      expect(await within(form).findByRole('alert')).toHaveTextContent('men vi kan inte bekräfta att mejlet gick iväg')
+      expect(within(form).queryByText(/är skickad/)).toBeNull()
+    })
+
+    it('databasens nej visas som fel, utan statusrad', async () => {
+      const { orgApi, form } = await tillErbjudan()
+      vi.mocked(orgApi.inviteColleagueByEmail).mockRejectedValue(new Error('Demokontot kan inte bjuda in. Personerna i demot är påhittade.'))
+      fireEvent.click(within(form).getByRole('button', { name: 'Skicka inbjudan via mejl' }))
+      expect(await within(form).findByRole('alert')).toHaveTextContent('Demokontot kan inte bjuda in.')
+      expect(within(form).queryByRole('status')).toBeNull()
+    })
+
+    it('Avbryt stänger erbjudandet utan att något skickas', async () => {
+      const { orgApi, form } = await tillErbjudan()
+      fireEvent.click(within(form).getByRole('button', { name: 'Avbryt' }))
+      expect(within(form).queryByRole('button', { name: 'Skicka inbjudan via mejl' })).toBeNull()
+      expect(orgApi.inviteColleagueByEmail).not.toHaveBeenCalled()
+    })
+
+    it('listar obesvarade inbjudningar med ärlig mejlstatus', async () => {
+      const orgApi = await somRoll('chef')
+      vi.mocked(orgApi.pendingColleagueInvites).mockResolvedValue([
+        { id: 'a', email: 'skickad@example.com', email_sent: true, expires_at: '2999-01-01T00:00:00Z', created_at: '', org_role: 'konsulent' },
+        { id: 'b', email: 'inte@example.com', email_sent: false, expires_at: '2000-01-01T00:00:00Z', created_at: '', org_role: 'chef' },
+      ])
+      render(<OrganisationSektion />)
+      const lista = await screen.findByRole('list', { name: 'Obesvarade inbjudningar' })
+      const rader = within(lista).getAllByRole('listitem')
+      expect(rader[0]).toHaveTextContent('skickad@example.com')
+      expect(rader[0]).toHaveTextContent('Mejlet skickat')
+      expect(rader[1]).toHaveTextContent('Mejlet inte skickat')
+      expect(rader[1]).toHaveTextContent('Länken har gått ut')
+      expect(orgApi.pendingColleagueInvites).toHaveBeenCalledWith('o1')
+    })
+
+    it('en vanlig konsulent ser varken formuläret eller inbjudningarna', async () => {
+      const orgApi = await somRoll('konsulent')
+      render(<OrganisationSektion />)
+      await screen.findByText('Din roll: Arbetskonsulent')
+      expect(orgApi.pendingColleagueInvites).not.toHaveBeenCalled()
+    })
   })
 
   it('erbjuder rollen Administratör bara för en admin', async () => {

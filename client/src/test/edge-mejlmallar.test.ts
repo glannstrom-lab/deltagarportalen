@@ -35,6 +35,7 @@ import * as inbjudningsmallar from '../../../supabase/functions/send-invite-emai
 import {
   getGenericInviteEmailTemplate,
   getEmployerInviteEmailTemplate,
+  getKollegaInviteEmailTemplate,
   meddelandeHtml,
 } from '../../../supabase/functions/send-invite-email/mallar.ts'
 
@@ -171,5 +172,47 @@ describe('send-invite-email — ingen STA-gren kvar', () => {
     expect(kod).not.toContain("'steg_till_arbete'")
     expect(kod).not.toContain('Steg till arbete')
     expect(kod).not.toContain('sta_enrollment_id')
+  })
+})
+
+// 2026-09-27: kolleginbjudan (metadata.kind = 'kollega', raden omskriven av
+// triggern invitations_kollega_guard). Utan en egen gren hade kollegan fått
+// deltagarmallen — "en plattform som hjälper dig att hitta vägen tillbaka till
+// arbetsmarknaden" — och användarmetadatat hade burit en konsulentkoppling.
+describe('send-invite-email — kolleginbjudan', () => {
+  const bas = {
+    orgName: 'Testkommun <script>',
+    orgRole: 'handlaggare',
+    invitedByName: '<b>Chef</b> & co',
+    actionUrl: 'https://x.supabase.co/auth/v1/verify?token=t&type=invite',
+    expiresAt: '11 oktober 2026',
+  }
+
+  it('säger organisation och roll, inte deltagartexten, och eskaperar allt', () => {
+    const html = getKollegaInviteEmailTemplate(bas)
+    expect(html).toContain('Testkommun &lt;script&gt;')
+    expect(html).toContain('handläggare (ekonomiskt bistånd)')
+    expect(html).toContain('&lt;b&gt;Chef&lt;/b&gt; &amp; co')
+    expect(html).not.toContain('<script>')
+    expect(html).not.toContain('<b>Chef</b>')
+    expect(html).toContain('verify?token=t&amp;type=invite')
+    expect(html).not.toMatch(/arbetsmarknaden/)
+    expect(html).toContain('11 oktober 2026')
+  })
+
+  it('okänd roll ger ett neutralt ord, aldrig "undefined"', () => {
+    const html = getKollegaInviteEmailTemplate({ ...bas, orgRole: 'arbetsgivare' })
+    expect(html).not.toContain('undefined')
+    expect(html).toContain('<strong>kollega</strong>')
+  })
+
+  it('index.ts väljer kollegamallen på kind och skickar ingen konsulentkoppling i användarmetadatat', () => {
+    const kod = las('../../../supabase/functions/send-invite-email/index.ts')
+    expect(kod).toContain("invitation.metadata?.kind === 'kollega'")
+    expect(kod).toMatch(/isKollegaInvite\s*\?\s*getKollegaInviteEmailTemplate\(/)
+    const kollegaMeta = kod.match(/const userMetadata = isKollegaInvite\s*\?\s*\{([\s\S]*?)\}/)
+    expect(kollegaMeta).not.toBeNull()
+    expect(kollegaMeta![1]).not.toContain('consultant_id')
+    expect(kollegaMeta![1]).not.toContain('consultant_name')
   })
 })
