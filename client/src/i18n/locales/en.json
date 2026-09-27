@@ -5823,7 +5823,7 @@
         "title": "Organization License",
         "price": "2,990",
         "currency": "SEK",
-        "period": "/month",
+        "period": "/month excl. VAT",
         "description": "Base license for your organization with access to the entire platform.",
         "features": [
           "Unlimited participants",
@@ -5838,7 +5838,7 @@
         "title": "Per Consultant",
         "price": "290",
         "currency": "SEK",
-        "period": "/month",
+        "period": "/month excl. VAT",
         "description": "License per active consultant/job coach using the platform.",
         "features": [
           "Personal consultant view",
@@ -5901,7 +5901,7 @@
       "sectionLabel": "FAQ",
       "title": "Frequently asked questions",
       "q1": "What does Jobin cost?",
-      "a1": "Jobin is always free for participants. Organizations pay a fixed license of 2,990 SEK/month plus 290 SEK per active consultant. No hidden fees – all features included.",
+      "a1": "Jobin is always free for participants. Organizations pay a fixed license of 2,990 SEK/month plus 290 SEK per active consultant, excluding VAT. No hidden fees – all features included.",
       "q2": "I've been job searching for a long time without results. Can Jobin really help me?",
       "a2": "Yes. Searching for a long time without results is hard, and you are not alone in that. Jobin is built for exactly this situation: the tools are structured and take one step at a time — interest guide, CV, cover letter, interview practice and job search, all in one flow, so you don't have to keep track of everything yourself. If your organization has a work consultant connected to Jobin, they can follow along with you. You don't need to have all the answers to start.",
       "q3": "I don't even know what I want to work with. Where should I start?",

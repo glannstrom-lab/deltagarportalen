@@ -5823,7 +5823,7 @@
         "title": "Organisationslicens",
         "price": "2 990",
         "currency": "kr",
-        "period": "/månad",
+        "period": "/månad exkl. moms",
         "description": "Grundlicens för din organisation med tillgång till hela plattformen.",
         "features": [
           "Obegränsat antal deltagare",
@@ -5838,7 +5838,7 @@
         "title": "Per konsulent",
         "price": "290",
         "currency": "kr",
-        "period": "/månad",
+        "period": "/månad exkl. moms",
         "description": "Licens per aktiv konsulent/jobbcoach som använder plattformen.",
         "features": [
           "Egen konsultvy",
@@ -5901,7 +5901,7 @@
       "sectionLabel": "FAQ",
       "title": "Vanliga frågor",
       "q1": "Vad kostar Jobin?",
-      "a1": "Jobin är alltid gratis för deltagare. Organisationer betalar en fast licens på 2 990 kr/månad plus 290 kr per aktiv konsulent. Inga dolda avgifter – alla funktioner ingår.",
+      "a1": "Jobin är alltid gratis för deltagare. Organisationer betalar en fast licens på 2 990 kr/månad plus 290 kr per aktiv konsulent, exklusive moms. Inga dolda avgifter – alla funktioner ingår.",
       "q2": "Jag har sökt jobb länge utan resultat. Kan Jobin verkligen hjälpa mig?",
       "a2": "Ja. Att söka länge utan resultat är tungt, och du är inte ensam om det. Jobin är byggt just för den situationen: verktygen är strukturerade och tar ett steg i taget — intresseguide, CV, personligt brev, intervjuträning och jobbsökning i ett och samma flöde, så du slipper hålla ihop allt själv. Har din organisation en arbetskonsulent kopplad till Jobin kan hen följa med dig längs vägen. Du behöver inte ha alla svar för att börja.",
       "q3": "Jag vet inte ens vad jag vill jobba med. Var ska jag börja?",

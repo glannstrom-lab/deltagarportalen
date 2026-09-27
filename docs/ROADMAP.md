@@ -71,6 +71,7 @@ DP1/DP2 (företagsdata), AG1 (gallring av employer_*). **Rättelse: DR1 är bara
 - [ ] **NF3** Resultatklockan: nivå A/B/C + betalningsstatus (RM1) · ~1 vecka
 - [ ] **NF4** SMS-påminnelser (KM10-rest) · ~1 dag + Art 30-rad
 - [x] **LS3** ✅ **Klar 2026-09-24:** de fem mest valda mallarna visas, "Visa fler mallar" (aria-expanded) för resten; en vald mall syns alltid. — Ursprunglig post: CV-byggaren visar 12 mallar samtidigt; visa 4–6 + "fler" · `CVBuilder.tsx:839-852` · 3–4 h
+- [x] **PF5** ✅ **2026-09-27:** dpo@jobin.se och support@jobin.se studsade ("adressen hittades inte") — policyn och FAQ:n pekade på adresser som inte fanns. Mikael lade upp vidarebefordring till glannstrom@gmail.com i Simplys webbhotell (e-post ingår; DNS redan inställd för Simply-mejl, ingen DNS-ändring). Verifierat med en kalenderinbjudan till båda adresserna — båda landade i Gmails inkorg. **Gör inte:** flytta jobin.se till Cloudflare utan att först stänga DNSSEC hos Simply (DS-post finns; rakt NS-byte = domänen nere).
 - [ ] **PF4** Bussfaktor 1: nödinstruktion + läsbehörighet för en betrodd person · några timmar
 - [ ] **BS4** ROADMAP.md är 6 878 rader med 288 rubriker; öppna beslut är utspridda. Bryt ut en kort STATUS.md · 2–3 h
 
