@@ -5389,7 +5389,12 @@
       "passwordMismatch": "Lösenorden matchar inte",
       "creatingAccount": "Skapar konto…",
       "createAccountButton": "Skapa konto",
-      "termsNotice": "Genom att skapa ett konto godkänner du våra användarvillkor."
+      "termsNotice": "Genom att skapa ett konto godkänner du våra användarvillkor.",
+      "verifying": "Öppnar din inbjudan …",
+      "setPasswordTitle": "Välj ditt lösenord",
+      "setPasswordIntro": "Ditt konto för {{email}} är skapat. Skriv ditt namn och välj ett lösenord, så kommer du in.",
+      "savePasswordButton": "Spara och fortsätt",
+      "linkUsed": "Länken har redan använts eller gått ut. Har du redan valt lösenord kan du logga in. Annars kan du be den som bjöd in dig om en ny inbjudan."
     },
     "returnTo": {
       "loginTool": "Logga in för att fortsätta till {{tool}}",

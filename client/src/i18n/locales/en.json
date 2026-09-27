@@ -5389,7 +5389,12 @@
       "passwordMismatch": "The passwords do not match",
       "creatingAccount": "Creating your account…",
       "createAccountButton": "Create account",
-      "termsNotice": "By creating an account, you agree to our terms of use."
+      "termsNotice": "By creating an account, you agree to our terms of use.",
+      "verifying": "Opening your invitation …",
+      "setPasswordTitle": "Choose your password",
+      "setPasswordIntro": "Your account for {{email}} is ready. Write your name and choose a password to get in.",
+      "savePasswordButton": "Save and continue",
+      "linkUsed": "This link has already been used or has expired. If you already chose a password, you can log in. Otherwise, ask the person who invited you for a new invitation."
     },
     "returnTo": {
       "loginTool": "Log in to continue to {{tool}}",

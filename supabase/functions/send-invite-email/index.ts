@@ -146,9 +146,17 @@ async function processInvitation(
           throw new Error(linkError?.message ?? 'generateLink returned no data')
         }
 
-        actionLink =
-          (linkData as { properties?: { action_link?: string } })?.properties?.action_link ||
-          inviteUrl
+        // Länken går till portalens egen inbjudningssida med en engångskod
+        // (token_hash), inte till Supabase-verifieringens action_link. Uppmätt
+        // i prod 2026-09-27: action_link:ens redirect_to föll tillbaka på
+        // jobin.se (hash-rutten står inte bland tillåtna redirects) och
+        // landade utloggad på startsidan — och generateLink har redan skapat
+        // kontot och markerat inbjudan använd, så get_invitation_by_token
+        // svarar tomt. InviteHandler loggar in med verifyOtp och låter
+        // personen välja lösenord.
+        const hashedToken = (linkData as { properties?: { hashed_token?: string } })?.properties?.hashed_token
+        if (!hashedToken) throw new Error('generateLink returned no hashed_token')
+        actionLink = `${inviteUrl}?th=${encodeURIComponent(hashedToken)}`
       }
 
       const html = isKollegaInvite

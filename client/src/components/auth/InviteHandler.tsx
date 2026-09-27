@@ -8,11 +8,18 @@
  * arkiverades 2026-09-12 och ingen kod skapar sådana inbjudningar längre.
  * En gammal rad med det metadatat får det vanliga formuläret — vaktat av
  * InviteHandler.test.tsx.
+ *
+ * Mejlade inbjudningar (2026-09-27): send-invite-email skapar kontot med
+ * generateLink och lägger engångskoden i länken som `?th=<token_hash>`. Då
+ * finns kontot redan och inbjudan är markerad använd, så RPC:n svarar tomt och
+ * signUp skulle krocka. Med `th` loggar sidan i stället in med verifyOtp och
+ * låter personen välja namn och lösenord (updateUser). Utan `th` gäller det
+ * gamla flödet (inbjudan utan utskick via Resend).
  */
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Mail,
   Lock,
@@ -46,6 +53,10 @@ export const InviteHandler: React.FC = () => {
   // Vaktas av InviteHandler.test.tsx, som läser ruttmönstret ur App.tsx.
   const { code: token } = useParams<{ code: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const tokenHash = searchParams.get('th');
+  // true när kontot redan finns (mejlad inbjudan) och bara lösenordet saknas
+  const [valjLosenord, setValjLosenord] = useState(false);
 
   const [, setLoading] = useState(true);
   const [validating, setValidating] = useState(true);
@@ -62,9 +73,33 @@ export const InviteHandler: React.FC = () => {
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    validateInvite();
+    if (tokenHash) oppnaMejladInbjudan(tokenHash);
+    else validateInvite();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, [token, tokenHash]);
+
+  const oppnaMejladInbjudan = async (th: string) => {
+    try {
+      setValidating(true);
+      const { data, error: otpError } = await supabase.auth.verifyOtp({ token_hash: th, type: 'invite' });
+      let user = data?.user ?? null;
+      if (otpError || !user) {
+        // Koden är engångs: vid en omladdning finns sessionen redan.
+        const { data: sessionData } = await supabase.auth.getUser();
+        user = sessionData?.user ?? null;
+      }
+      if (!user?.email) throw new Error(t('auth.invite.linkUsed'));
+      const meta = (user.user_metadata ?? {}) as { first_name?: string; last_name?: string };
+      setInviteData({ id: '', email: user.email, role: '' });
+      setFormData((prev) => ({ ...prev, firstName: meta.first_name || '', lastName: meta.last_name || '' }));
+      setValjLosenord(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t('common.genericError'));
+    } finally {
+      setValidating(false);
+      setLoading(false);
+    }
+  };
 
   const validateInvite = async () => {
     try {
@@ -115,6 +150,26 @@ export const InviteHandler: React.FC = () => {
         throw new Error(firstError.message);
       }
 
+      if (valjLosenord) {
+        const { data: upd, error: updError } = await supabase.auth.updateUser({
+          password: formData.password,
+          data: { first_name: formData.firstName, last_name: formData.lastName },
+        });
+        if (updError) throw updError;
+        if (upd.user) {
+          const { error: profilFel } = await supabase
+            .from('profiles')
+            .update({ first_name: formData.firstName, last_name: formData.lastName })
+            .eq('id', upd.user.id);
+          if (profilFel) throw profilFel;
+        }
+        // Full omladdning: authStore ska starta med den nya sessionen (samma
+        // skäl som /visa-som). Samtyckessteget tar villkoren vid första vyn.
+        window.location.replace(`${window.location.pathname}#/`);
+        window.location.reload();
+        return;
+      }
+
       // Skapa användare — triggern handle_invitation_acceptance kopplar
       // automatiskt till konsulenten.
       const { error: authError } = await supabase.auth.signUp({
@@ -142,7 +197,8 @@ export const InviteHandler: React.FC = () => {
   if (validating) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-primary-600" aria-hidden="true" />
+        <span role="status" className="sr-only">{t('auth.invite.verifying')}</span>
       </div>
     );
   }
@@ -183,9 +239,13 @@ export const InviteHandler: React.FC = () => {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">{t('auth.invite.welcome')}</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {valjLosenord ? t('auth.invite.setPasswordTitle') : t('auth.invite.welcome')}
+          </h1>
           <p className="text-gray-600 mt-2">
-            {t('auth.invite.invitedGeneric')}
+            {valjLosenord
+              ? t('auth.invite.setPasswordIntro', { email: inviteData?.email })
+              : t('auth.invite.invitedGeneric')}
           </p>
           <div className="flex items-center justify-center gap-2 mt-3 text-sm text-gray-500">
             <Mail className="w-4 h-4" />
@@ -294,6 +354,8 @@ export const InviteHandler: React.FC = () => {
                 <Loader2 className="w-5 h-5 animate-spin" />
                 {t('auth.invite.creatingAccount')}
               </>
+            ) : valjLosenord ? (
+              t('auth.invite.savePasswordButton')
             ) : (
               t('auth.invite.createAccountButton')
             )}

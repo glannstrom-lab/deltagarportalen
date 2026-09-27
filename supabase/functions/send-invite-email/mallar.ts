@@ -322,7 +322,7 @@ export const getKollegaInviteEmailTemplate = (data: KollegaTemplateData) => {
       <span class="fallback-link">${escapeHtml(data.actionUrl)}</span>
     </p>
 
-    <p class="small">Väntade du dig inte det här mejlet? Kontakta ${inviter || 'den som bjöd in dig'} eller svara på mejlet.</p>
+    <p class="small">Väntade du dig inte det här mejlet? Kontakta ${inviter || 'den som bjöd in dig'}. Svar till den här adressen läses inte.</p>
   </div>
 
   <div class="footer">

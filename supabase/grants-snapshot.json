@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T14:32:02.900Z",
+  "generatedAt": "2026-09-27T14:52:34.784Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -443,6 +443,13 @@
       "authenticated": false
     },
     {
+      "name": "invitations_kollega_guard",
+      "signature": "invitations_kollega_guard()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "is_admin_or_superadmin",
       "signature": "is_admin_or_superadmin()",
       "definer": true,
@@ -452,6 +459,13 @@
     {
       "name": "join_community_group",
       "signature": "join_community_group(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "kollega_inbjudan_medlemskap",
+      "signature": "kollega_inbjudan_medlemskap()",
       "definer": true,
       "anon": false,
       "authenticated": false

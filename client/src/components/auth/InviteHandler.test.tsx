@@ -19,10 +19,16 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const rpc = vi.fn()
+const verifyOtp = vi.fn()
+const getUser = vi.fn()
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     rpc: (...a: unknown[]) => rpc(...a),
-    auth: { signUp: vi.fn() },
+    auth: {
+      signUp: vi.fn(),
+      verifyOtp: (...a: unknown[]) => verifyOtp(...a),
+      getUser: (...a: unknown[]) => getUser(...a),
+    },
   },
 }))
 
@@ -35,6 +41,9 @@ const RUTT = appTsx.match(/path="(\/invite\/:[a-zA-Z]+)"/)![1]
 
 beforeEach(() => {
   rpc.mockReset()
+  verifyOtp.mockReset()
+  getUser.mockReset()
+  getUser.mockResolvedValue({ data: { user: null } })
   rpc.mockReturnValue({ maybeSingle: () => Promise.resolve({ data: null, error: { code: 'PGRST116' } }) })
 })
 afterEach(() => cleanup())
@@ -50,6 +59,35 @@ function rendera(sokvag: string) {
 }
 
 describe('InviteHandler', () => {
+  // 2026-09-27: mejlade inbjudningar landade utloggade på startsidan, och
+  // RPC:n svarar tomt eftersom generateLink redan skapat kontot. Med ?th=
+  // loggar sidan in med koden och ber om lösenord — utan RPC och utan signUp.
+  it('en mejlad inbjudan (?th=) loggar in med koden och ber om lösenord', async () => {
+    verifyOtp.mockResolvedValue({
+      data: { user: { email: 'kim@example.com', user_metadata: { first_name: 'Kim', last_name: 'Kollega' } } },
+      error: null,
+    })
+    rendera('/invite/abc123?th=hash456')
+    await waitFor(() => expect(verifyOtp).toHaveBeenCalledWith({ token_hash: 'hash456', type: 'invite' }))
+    expect(await screen.findByDisplayValue('Kim')).toBeTruthy()
+    expect(screen.getAllByText(/kim@example\.com/).length).toBeGreaterThan(0)
+    expect(rpc).not.toHaveBeenCalled()
+  })
+
+  it('en använd kod utan session visar att länken redan använts', async () => {
+    verifyOtp.mockResolvedValue({ data: { user: null }, error: { message: 'expired' } })
+    rendera('/invite/abc123?th=gammal')
+    expect((await screen.findAllByText(/redan använts|already been used/i)).length).toBeGreaterThan(0)
+  })
+
+  it('send-invite-email lägger engångskoden i länken', () => {
+    const edge = readFileSync(
+      join(__dirname, '..', '..', '..', '..', 'supabase', 'functions', 'send-invite-email', 'index.ts'),
+      'utf8'
+    )
+    expect(edge).toMatch(/\$\{inviteUrl\}\?th=\$\{encodeURIComponent\(hashedToken\)\}/)
+  })
+
   it('skickar token ur länken till get_invitation_by_token', async () => {
     rendera('/invite/abc123')
     await waitFor(() => expect(rpc).toHaveBeenCalled())

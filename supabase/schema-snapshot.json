@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T14:31:46.991Z",
+  "generatedAt": "2026-09-27T14:52:27.953Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2260,8 +2260,10 @@
     "increment_template_usage",
     "increment_user_points",
     "initialize_user_milestones",
+    "invitations_kollega_guard",
     "is_admin_or_superadmin",
     "join_community_group",
+    "kollega_inbjudan_medlemskap",
     "leave_community_group",
     "log_application_created",
     "log_application_status_change",
