@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T20:48:06.745Z",
+  "generatedAt": "2026-09-27T13:18:41.721Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -576,6 +576,13 @@
       "authenticated": true
     },
     {
+      "name": "reset_demo_leverantor",
+      "signature": "reset_demo_leverantor()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "reset_demo_org",
       "signature": "reset_demo_org()",
       "definer": true,
@@ -599,6 +606,13 @@
     {
       "name": "seed_demo_foretag",
       "signature": "seed_demo_foretag(text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "seed_demo_leverantor",
+      "signature": "seed_demo_leverantor(text)",
       "definer": true,
       "anon": false,
       "authenticated": false

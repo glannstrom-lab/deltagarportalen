@@ -8,7 +8,9 @@ const fs = require('fs');
   const bas = process.env.BAS || 'https://www.jobin.se';
   const url = `${bas}/#/visa-som?t=${th}&e=${encodeURIComponent(process.env.EPOST || "km-konsulent@jobin.test")}&till=%2Fconsultant%2Fanalytics`;
   await p.goto(url);
-  await p.waitForTimeout(9000);
+  await p.waitForTimeout(4000);
+  // Rapporter laddar länge i prod; vänta tills någon av de två kundtypsdelarna eller en tomvy syns.
+  await p.waitForFunction(() => /IVO|FFU|Aktivitetsloggen/.test(document.body.innerText) && !/Laddar\.\.\./.test(document.querySelector('main')?.innerText || ''), null, { timeout: 45000 }).catch(() => {});
   console.log('URL efter:', p.url());
   const banner = await p.locator('[data-testid="visa-som-banner"]').textContent().catch(() => null);
   console.log('banner:', banner);

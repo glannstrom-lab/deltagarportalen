@@ -621,7 +621,7 @@ function LaggTillKollega({
         </Button>
       </div>
       <p className="text-xs text-stone-500 dark:text-stone-400">
-        Personen behöver redan ha ett konto på jobin.se. Inbjudan via mejl kommer när utskick fungerar.
+        Personen behöver redan ha ett konto på jobin.se.
       </p>
       {fel && (
         <p role="alert" className="text-sm text-red-700 dark:text-red-300">

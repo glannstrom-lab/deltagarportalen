@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-24T20:47:58.865Z",
+  "generatedAt": "2026-09-27T13:18:35.875Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -2279,10 +2279,12 @@
     "react_to_feed_item",
     "remove_reaction",
     "request_account_deletion",
+    "reset_demo_leverantor",
     "reset_demo_org",
     "respond_to_share_proposal",
     "revoke_consultant_link",
     "seed_demo_foretag",
+    "seed_demo_leverantor",
     "seed_demo_org",
     "share_proposal_notify",
     "skicka_passpaminnelser",
