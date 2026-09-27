@@ -84,7 +84,7 @@ function WinnerPanel({ job, saved, onSave, onSpinAgain, onCreateApplication }: W
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-xs uppercase tracking-wider font-semibold text-orange-700 dark:text-orange-300 mb-1">
-            Slumpjobbet
+            {t('jobSearch.tabs.slumpjobbet', 'Slumpjobbet')}
           </p>
           <h3 className="text-xl font-bold text-stone-900 dark:text-stone-100 leading-tight">
             {job.headline}

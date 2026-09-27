@@ -7,6 +7,7 @@
  *      och onSaved får det uppdaterade passet.
  *   4. Ett anmält pass visar status + ångra, och ångra anropar angra().
  */
+import { useState } from 'react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, cleanup, waitFor, userEvent } from '@/test/utils'
 import { FranvaroAnmalan } from './FranvaroAnmalan'
@@ -19,6 +20,11 @@ vi.mock('@/services/franvaroApi', async () => {
   return { ...riktig, franvaroApi: { anmal: (...a: unknown[]) => anmal(...a), angra: (...a: unknown[]) => angra(...a) } }
 })
 
+const skickaTillMinKonsulent = vi.fn()
+vi.mock('@/services/konsulentMeddelandeApi', () => ({
+  konsulentMeddelandeApi: { skickaTillMinKonsulent: (...a: unknown[]) => skickaTillMinKonsulent(...a) },
+}))
+
 const pass = (o: Partial<ActivitySession> & Record<string, unknown>): ActivitySession => ({
   id: 's-1', plan_id: 'p', participant_id: 'u1', date: '2026-09-20', start_time: '09:00', end_time: '12:00',
   title: 'Verkstad', activity_type: 'jobsearch', location: null, notes: null, attendance: null, attendance_note: null,
@@ -27,7 +33,7 @@ const pass = (o: Partial<ActivitySession> & Record<string, unknown>): ActivitySe
 } as ActivitySession)
 const nu = new Date('2026-09-14T10:00:00')
 
-beforeEach(() => { anmal.mockReset(); angra.mockReset() })
+beforeEach(() => { anmal.mockReset(); angra.mockReset(); skickaTillMinKonsulent.mockReset() })
 afterEach(cleanup)
 
 describe('FranvaroAnmalan', () => {
@@ -74,5 +80,67 @@ describe('FranvaroAnmalan', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Ångra anmälan' }))
     await waitFor(() => expect(angra).toHaveBeenCalledWith('s-1'))
     expect(onSaved).toHaveBeenCalled()
+  })
+
+  /*
+   * RD4 (rollspelet 2026-09-27): Anna sjukanmälde sig till morgonpasset, och
+   * ingenting sa något om konsulentmötet kl 12 samma dag.
+   * Mutation: visa inte frågan efter anmälan → första testet faller.
+   */
+  describe('RD4: möte med konsulenten samma dag', () => {
+    const mote = { id: 'm1', tid: '12:00' }
+    const anmaltPass = pass({ absence_reported_at: '2026-09-14T10:05:00Z', absence_reason: 'sick', absence_note: null })
+
+    function Omslag({ onSaved }: { onSaved: (s: ActivitySession) => void }) {
+      // Som i Min vecka: föräldern byter ut passet i cachen efter anmälan.
+      const [s, setS] = useState(pass({}))
+      return <FranvaroAnmalan session={s} motenSammaDag={[mote]} datumText="måndag 21 september" onSaved={(u) => { setS(u); onSaved(u) }} nu={nu} />
+    }
+
+    async function anmalSjuk() {
+      anmal.mockResolvedValue(anmaltPass)
+      render(<Omslag onSaved={vi.fn()} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Jag kan inte komma' }))
+      await userEvent.click(screen.getByRole('radio', { name: 'Jag är sjuk' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Skicka till min konsulent' }))
+      return screen.findByText(/Gäller det också mötet med din konsulent kl 12:00\?/)
+    }
+
+    it('frågar efter anmälan om mötet samma dag', async () => {
+      expect(await anmalSjuk()).toBeInTheDocument()
+    })
+
+    it('"Ja" skickar ett meddelande om mötet till konsulenten', async () => {
+      skickaTillMinKonsulent.mockResolvedValue({ id: 'msg1' })
+      await anmalSjuk()
+      await userEvent.click(screen.getByRole('button', { name: /Ja, meddela om mötet/ }))
+      await waitFor(() => expect(skickaTillMinKonsulent).toHaveBeenCalledTimes(1))
+      expect(skickaTillMinKonsulent.mock.calls[0][0]).toMatch(/möte kl 12:00/)
+      expect(await screen.findByText(/har fått besked om mötet också/)).toBeInTheDocument()
+    })
+
+    it('"Nej" stänger frågan utan att skicka något', async () => {
+      await anmalSjuk()
+      await userEvent.click(screen.getByRole('button', { name: /Nej, jag kommer till mötet/ }))
+      expect(screen.queryByText(/Gäller det också mötet/)).toBeNull()
+      expect(skickaTillMinKonsulent).not.toHaveBeenCalled()
+    })
+
+    it('ett fel säger det lugnt och pekar på Min konsulent', async () => {
+      skickaTillMinKonsulent.mockImplementation(async () => { throw new Error('42501') })
+      await anmalSjuk()
+      await userEvent.click(screen.getByRole('button', { name: /Ja, meddela om mötet/ }))
+      expect(await screen.findByRole('alert')).toHaveTextContent(/Min konsulent/)
+    })
+
+    it('frågar inte när dagen saknar möte', async () => {
+      anmal.mockResolvedValue(anmaltPass)
+      render(<FranvaroAnmalan session={pass({})} onSaved={vi.fn()} nu={nu} />)
+      await userEvent.click(screen.getByRole('button', { name: 'Jag kan inte komma' }))
+      await userEvent.click(screen.getByRole('radio', { name: 'Jag är sjuk' }))
+      await userEvent.click(screen.getByRole('button', { name: 'Skicka till min konsulent' }))
+      await waitFor(() => expect(anmal).toHaveBeenCalled())
+      expect(screen.queryByText(/Gäller det också mötet/)).toBeNull()
+    })
   })
 })

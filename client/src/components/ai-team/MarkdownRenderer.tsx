@@ -304,7 +304,7 @@ function OrderedList({ items }: { items: string[] }) {
                 'flex-shrink-0 w-6 h-6 rounded-lg',
                 'bg-[var(--c-solid)]',
                 'flex items-center justify-center',
-                'text-white text-xs font-bold',
+                'text-[var(--c-on-solid)] text-xs font-bold',
                 'shadow-sm'
               )}>
                 {idx + 1}

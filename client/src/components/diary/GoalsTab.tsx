@@ -18,7 +18,7 @@ const CATEGORIES = [
   { id: 'health', labelKey: 'diary.goals.categories.health', emoji: '🏃', color: 'bg-green-100 text-green-700 border-green-200' },
   { id: 'personal', labelKey: 'diary.goals.categories.personal', emoji: '🌟', color: 'bg-sky-100 text-sky-700 border-sky-200' },
   { id: 'learning', labelKey: 'diary.goals.categories.learning', emoji: '📚', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  { id: 'general', labelKey: 'diary.goals.categories.general', emoji: '✨', color: 'bg-stone-100 text-stone-700 border-stone-200' },
+  { id: 'general', labelKey: 'diary.goals.categories.general', emoji: '✨', color: 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700' },
 ]
 
 const PRIORITIES = [
@@ -65,7 +65,7 @@ function AddGoalForm({
     <Card className="p-5">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="goalstab-f1" className="block text-sm font-medium text-stone-700 mb-2">
+          <label htmlFor="goalstab-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
             {t('diary.goals.form.questionLabel')}
           </label>
           <input
@@ -81,7 +81,7 @@ function AddGoalForm({
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
               {t('diary.goals.form.category')}
             </label>
             <div className="flex flex-wrap gap-2">
@@ -94,7 +94,7 @@ function AddGoalForm({
                     "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors border",
                     category === cat.id
                       ? cat.color
-                      : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
+                      : "bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700"
                   )}
                 >
                   {cat.emoji} {t(cat.labelKey)}
@@ -104,7 +104,7 @@ function AddGoalForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
               {t('diary.goals.form.priority')}
             </label>
             <div className="flex gap-2">
@@ -117,7 +117,7 @@ function AddGoalForm({
                     "flex-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                     priority === p.value
                       ? p.color
-                      : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                      : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
                   )}
                 >
                   {t(p.labelKey)}
@@ -172,7 +172,7 @@ function GoalCard({
   return (
     <Card className={cn(
       "p-4 transition-all",
-      goal.is_completed && "opacity-75 bg-stone-50"
+      goal.is_completed && "opacity-75 bg-stone-50 dark:bg-stone-800"
     )}>
       <div className="flex items-start gap-3">
         <button
@@ -204,8 +204,8 @@ function GoalCard({
           </div>
 
           <p className={cn(
-            "text-stone-800 font-medium",
-            goal.is_completed && "line-through text-stone-700"
+            "text-stone-800 dark:text-stone-200 font-medium",
+            goal.is_completed && "line-through text-stone-700 dark:text-stone-300"
           )}>
             {goal.goal_text}
           </p>
@@ -241,7 +241,7 @@ function GoalCard({
           )}
 
           {goal.is_completed && goal.completed_at && !showReflection && (
-            <p className="text-xs text-stone-600 mt-2">
+            <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">
               {t('diary.goals.card.completedOn', { date: new Date(goal.completed_at).toLocaleDateString('sv-SE') })}
             </p>
           )}
@@ -263,7 +263,7 @@ function GoalCard({
                 onDelete()
               }
             }}
-            className="p-1.5 hover:bg-red-50 rounded text-stone-600 hover:text-red-600"
+            className="p-1.5 hover:bg-red-50 rounded text-stone-600 dark:text-stone-400 hover:text-red-600"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -292,7 +292,7 @@ function WeekProgress({
             {t('diary.goals.progress.completedOfTotal', { completed, total })}
           </p>
         </div>
-        <div className="w-16 h-16 rounded-full bg-white border-4 border-[var(--c-accent)]/60 flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-white dark:bg-stone-900 border-4 border-[var(--c-accent)]/60 flex items-center justify-center">
           <span className="text-xl font-bold text-[var(--c-text)]">{progress}%</span>
         </div>
       </div>
@@ -363,11 +363,11 @@ export function GoalsTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-xl font-bold text-stone-900 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
             <Target className="w-6 h-6 text-[var(--c-text)]" />
             {t('diary.goals.header.title')}
           </h2>
-          <p className="text-sm text-stone-700 flex items-center gap-1">
+          <p className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
             <Calendar className="w-4 h-4" />
             {weekRange}
           </p>
@@ -401,10 +401,10 @@ export function GoalsTab() {
             loading="lazy"
             className="w-28 h-28 mx-auto mb-4 select-none"
           />
-          <h3 className="text-lg font-semibold text-stone-700 mb-2">
+          <h3 className="text-lg font-semibold text-stone-700 dark:text-stone-300 mb-2">
             {t('diary.goals.empty.title')}
           </h3>
-          <p className="text-stone-700 mb-6">
+          <p className="text-stone-700 dark:text-stone-300 mb-6">
             {t('diary.goals.empty.description')}
           </p>
           <Button onClick={() => setShowAddForm(true)}>
@@ -417,7 +417,7 @@ export function GoalsTab() {
           {/* Pending goals */}
           {pendingGoals.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-stone-700 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
                 {t('diary.goals.list.pending', { count: pendingGoals.length })}
               </h3>
               {pendingGoals.map(goal => (
@@ -435,7 +435,7 @@ export function GoalsTab() {
           {/* Completed goals */}
           {completedGoals.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-stone-700 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-500" />
                 {t('diary.goals.list.completed', { count: completedGoals.length })}
               </h3>

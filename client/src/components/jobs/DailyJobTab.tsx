@@ -550,7 +550,7 @@ export function DailyJobTab() {
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" />
-              {new Date().toLocaleDateString(lang === 'en' ? 'en-SE' : 'sv-SE', {
+              {new Date().toLocaleDateString(lang === 'en' ? 'en-GB' : 'sv-SE', {
                 weekday: 'long',
                 day: 'numeric',
                 month: 'long',

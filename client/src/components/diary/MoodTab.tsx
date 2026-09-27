@@ -57,14 +57,14 @@ function MoodSelector({
             size === 'large' ? "flex-1 py-4" : "px-3 py-2",
             value === mood.value
               ? `${mood.bgColor} ring-2 ring-offset-2 ring-${mood.color.replace('bg-', '')}`
-              : "bg-stone-50 hover:bg-stone-100"
+              : "bg-stone-50 dark:bg-stone-800 hover:bg-stone-100"
           )}
         >
           <span className={size === 'large' ? "text-3xl" : "text-xl"}>{mood.emoji}</span>
           {size === 'large' && (
             <span className={cn(
               "text-xs font-medium",
-              value === mood.value ? mood.textColor : "text-stone-700"
+              value === mood.value ? mood.textColor : "text-stone-700 dark:text-stone-300"
             )}>
               {t(mood.labelKey)}
             </span>
@@ -98,10 +98,10 @@ function LevelSlider({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <label htmlFor={sliderId} className="flex items-center gap-2">
-          <Icon className="w-4 h-4 text-stone-700" aria-hidden="true" />
-          <span className="text-sm font-medium text-stone-700">{label}</span>
+          <Icon className="w-4 h-4 text-stone-700 dark:text-stone-300" aria-hidden="true" />
+          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{label}</span>
         </label>
-        <span className="text-sm text-stone-700" aria-hidden="true">{value}/5</span>
+        <span className="text-sm text-stone-700 dark:text-stone-300" aria-hidden="true">{value}/5</span>
       </div>
       <input
         id={sliderId}
@@ -113,7 +113,7 @@ function LevelSlider({
         onChange={(e) => onChange(parseInt(e.target.value))}
         className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-[var(--c-solid)]"
       />
-      <div className="flex justify-between text-xs text-stone-600">
+      <div className="flex justify-between text-xs text-stone-600 dark:text-stone-400">
         <span>{lowLabel}</span>
         <span>{highLabel}</span>
       </div>
@@ -172,8 +172,8 @@ function TodayLogger() {
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-stone-900">{t('diary.moodTab.today.title')}</h3>
-          <p className="text-sm text-stone-700">
+          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{t('diary.moodTab.today.title')}</h3>
+          <p className="text-sm text-stone-700 dark:text-stone-300">
             {new Date().toLocaleDateString('sv-SE', {
               weekday: 'long',
               day: 'numeric',
@@ -192,7 +192,7 @@ function TodayLogger() {
       <div className="space-y-6">
         {/* Mood */}
         <div role="group" aria-labelledby="mood-overall-label">
-          <span id="mood-overall-label" className="block text-sm font-medium text-stone-700 mb-3">
+          <span id="mood-overall-label" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
             {t('diary.moodTab.today.overallMood')}
           </span>
           <MoodSelector value={mood} onChange={setMood} />
@@ -228,7 +228,7 @@ function TodayLogger() {
 
         {/* Activities */}
         <div role="group" aria-labelledby="mood-activities-label">
-          <span id="mood-activities-label" className="block text-sm font-medium text-stone-700 mb-3">
+          <span id="mood-activities-label" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
             {t('diary.moodTab.today.activitiesLabel')}
           </span>
           <div className="flex flex-wrap gap-2">
@@ -240,7 +240,7 @@ function TodayLogger() {
                   "px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5",
                   activities.includes(activity.id)
                     ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] ring-2 ring-[var(--c-accent)]"
-                    : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                    : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
                 )}
               >
                 <span>{activity.emoji}</span>
@@ -252,7 +252,7 @@ function TodayLogger() {
 
         {/* Note */}
         <div>
-          <label htmlFor="mood-note" className="block text-sm font-medium text-stone-700 mb-2">
+          <label htmlFor="mood-note" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
             {t('diary.moodTab.today.noteLabel')}
           </label>
           <textarea
@@ -310,16 +310,16 @@ function MoodCalendar() {
   return (
     <Card className="p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-stone-900">{t('diary.moodTab.calendar.title')}</h3>
+        <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('diary.moodTab.calendar.title')}</h3>
         <div className="flex items-center gap-2">
           <button
             onClick={() => navigate('prev')}
             aria-label={t('diary.moodTab.calendar.prevMonth')}
             className="p-1 hover:bg-stone-100 rounded"
           >
-            <ChevronLeft className="w-5 h-5 text-stone-700" aria-hidden="true" />
+            <ChevronLeft className="w-5 h-5 text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
-          <span className="text-sm font-medium text-stone-700 min-w-[120px] text-center">
+          <span className="text-sm font-medium text-stone-700 dark:text-stone-300 min-w-[120px] text-center">
             {currentMonth.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' })}
           </span>
           <button
@@ -327,14 +327,14 @@ function MoodCalendar() {
             aria-label={t('diary.moodTab.calendar.nextMonth')}
             className="p-1 hover:bg-stone-100 rounded"
           >
-            <ChevronRight className="w-5 h-5 text-stone-700" aria-hidden="true" />
+            <ChevronRight className="w-5 h-5 text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-7 gap-1">
         {days.map(day => (
-          <div key={day} className="text-center text-xs font-medium text-stone-600 py-2">
+          <div key={day} className="text-center text-xs font-medium text-stone-600 dark:text-stone-400 py-2">
             {day}
           </div>
         ))}
@@ -354,14 +354,14 @@ function MoodCalendar() {
               className={cn(
                 "aspect-square flex items-center justify-center rounded-lg text-sm",
                 isToday && "ring-2 ring-[var(--c-solid)] ring-offset-1",
-                moodConfig ? moodConfig.bgColor : "bg-stone-50"
+                moodConfig ? moodConfig.bgColor : "bg-stone-50 dark:bg-stone-800"
               )}
               title={moodLog ? t('diary.moodTab.calendar.moodTitle', { level: moodLog.mood_level }) : ''}
             >
               {moodConfig ? (
                 <span className="text-lg">{moodConfig.emoji}</span>
               ) : (
-                <span className="text-stone-600">{day}</span>
+                <span className="text-stone-600 dark:text-stone-400">{day}</span>
               )}
             </div>
           )
@@ -402,20 +402,20 @@ function MoodStats() {
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 dark:text-stone-300 mb-1">
           <Smile className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.mood')}</span>
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
-          <span className="text-lg sm:text-2xl font-bold text-stone-900">
+          <span className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
             {stats.averageMood === null ? '—' : stats.averageMood.toFixed(1)}
           </span>
-          <span className="text-xs sm:text-sm text-stone-700">/5</span>
+          <span className="text-xs sm:text-sm text-stone-700 dark:text-stone-300">/5</span>
         </div>
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 dark:text-stone-300 mb-1">
           <Activity className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.trend')}</span>
         </div>
@@ -434,39 +434,39 @@ function MoodStats() {
           )}
           {trend === 'same' && (
             <>
-              <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-stone-600" />
-              <span className="text-sm text-stone-600 font-medium">{t('diary.moodTab.stats.trendSame')}</span>
+              <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-stone-600 dark:text-stone-400" />
+              <span className="text-sm text-stone-600 dark:text-stone-400 font-medium">{t('diary.moodTab.stats.trendSame')}</span>
             </>
           )}
         </div>
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 dark:text-stone-300 mb-1">
           <Battery className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.energy')}</span>
         </div>
         <div className="flex items-baseline gap-1 sm:gap-2">
-          <span className="text-lg sm:text-2xl font-bold text-stone-900">
+          <span className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
             {stats.averageEnergy === null ? '—' : stats.averageEnergy.toFixed(1)}
           </span>
-          <span className="text-xs sm:text-sm text-stone-700">/5</span>
+          <span className="text-xs sm:text-sm text-stone-700 dark:text-stone-300">/5</span>
         </div>
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-stone-700 dark:text-stone-300 mb-1">
           <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">{t('diary.moodTab.stats.days')}</span>
         </div>
-        <span className="text-lg sm:text-2xl font-bold text-stone-900">
+        <span className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
           {stats.totalLogs}
         </span>
       </Card>
 
       {topActivities.length > 0 && (
         <Card className="p-4 md:col-span-2 lg:col-span-4">
-          <div className="flex items-center gap-2 text-stone-700 mb-3">
+          <div className="flex items-center gap-2 text-stone-700 dark:text-stone-300 mb-3">
             <Sun className="w-4 h-4" />
             <span className="text-sm font-medium">{t('diary.moodTab.stats.topActivities')}</span>
           </div>
@@ -475,10 +475,10 @@ function MoodStats() {
               const activity = ACTIVITIES.find(a => a.id === id)
               if (!activity) return null
               return (
-                <div key={id} className="flex items-center gap-2 px-3 py-2 bg-stone-50 rounded-lg">
+                <div key={id} className="flex items-center gap-2 px-3 py-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
                   <span className="text-lg">{activity.emoji}</span>
-                  <span className="text-sm font-medium text-stone-700">{t(activity.labelKey)}</span>
-                  <span className="text-xs text-stone-600">({count}x)</span>
+                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t(activity.labelKey)}</span>
+                  <span className="text-xs text-stone-600 dark:text-stone-400">({count}x)</span>
                 </div>
               )
             })}

@@ -102,7 +102,7 @@ function TodayGratitude() {
               value={item1}
               onChange={(e) => setItem1(e.target.value)}
               placeholder={t('diary.gratitude.today.placeholder')}
-              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
+              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white dark:bg-stone-900"
             />
           </div>
 
@@ -116,7 +116,7 @@ function TodayGratitude() {
               value={item2}
               onChange={(e) => setItem2(e.target.value)}
               placeholder={t('diary.gratitude.today.placeholderOptional')}
-              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
+              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white dark:bg-stone-900"
             />
           </div>
 
@@ -130,7 +130,7 @@ function TodayGratitude() {
               value={item3}
               onChange={(e) => setItem3(e.target.value)}
               placeholder={t('diary.gratitude.today.placeholderOptional')}
-              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white"
+              className="flex-1 px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 bg-white dark:bg-stone-900"
             />
           </div>
         </div>
@@ -145,7 +145,7 @@ function TodayGratitude() {
             onChange={(e) => setReflection(e.target.value)}
             placeholder={t('diary.gratitude.today.reflectionPlaceholder')}
             rows={3}
-            className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none bg-white"
+            className="w-full px-4 py-3 border border-rose-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-400 resize-none bg-white dark:bg-stone-900"
           />
         </div>
 
@@ -202,8 +202,8 @@ function GratitudeHistory() {
           loading="lazy"
           className="w-24 h-24 mx-auto mb-4 select-none"
         />
-        <h3 className="font-semibold text-stone-700 mb-2">{t('diary.gratitude.history.emptyTitle')}</h3>
-        <p className="text-sm text-stone-700">
+        <h3 className="font-semibold text-stone-700 dark:text-stone-300 mb-2">{t('diary.gratitude.history.emptyTitle')}</h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300">
           {t('diary.gratitude.history.emptyDescription')}
         </p>
       </Card>
@@ -213,8 +213,8 @@ function GratitudeHistory() {
   return (
     <Card className="p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-stone-900 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-stone-600" />
+        <h3 className="font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-stone-600 dark:text-stone-400" />
           {t('diary.gratitude.history.title')}
         </h3>
         {totalPages > 1 && (
@@ -224,9 +224,9 @@ function GratitudeHistory() {
               disabled={currentPage === 0}
               className="p-1 hover:bg-stone-100 rounded disabled:opacity-50"
             >
-              <ChevronLeft className="w-5 h-5 text-stone-700" />
+              <ChevronLeft className="w-5 h-5 text-stone-700 dark:text-stone-300" />
             </button>
-            <span className="text-sm text-stone-700">
+            <span className="text-sm text-stone-700 dark:text-stone-300">
               {currentPage + 1} / {totalPages}
             </span>
             <button
@@ -234,7 +234,7 @@ function GratitudeHistory() {
               disabled={currentPage === totalPages - 1}
               className="p-1 hover:bg-stone-100 rounded disabled:opacity-50"
             >
-              <ChevronRight className="w-5 h-5 text-stone-700" />
+              <ChevronRight className="w-5 h-5 text-stone-700 dark:text-stone-300" />
             </button>
           </div>
         )}
@@ -244,9 +244,9 @@ function GratitudeHistory() {
         {paginatedEntries.map((entry) => (
           <div
             key={entry.id}
-            className="p-4 bg-stone-50 rounded-xl border border-stone-100"
+            className="p-4 bg-stone-50 dark:bg-stone-800 rounded-xl border border-stone-100"
           >
-            <div className="flex items-center gap-2 text-sm text-stone-700 mb-2">
+            <div className="flex items-center gap-2 text-sm text-stone-700 dark:text-stone-300 mb-2">
               <Calendar className="w-4 h-4" />
               {new Date(entry.entry_date).toLocaleDateString('sv-SE', {
                 weekday: 'long',
@@ -258,25 +258,25 @@ function GratitudeHistory() {
             <ul className="space-y-1.5">
               <li className="flex items-start gap-2">
                 <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                <span className="text-stone-700">{entry.item1}</span>
+                <span className="text-stone-700 dark:text-stone-300">{entry.item1}</span>
               </li>
               {entry.item2 && (
                 <li className="flex items-start gap-2">
                   <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-stone-700">{entry.item2}</span>
+                  <span className="text-stone-700 dark:text-stone-300">{entry.item2}</span>
                 </li>
               )}
               {entry.item3 && (
                 <li className="flex items-start gap-2">
                   <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-stone-700">{entry.item3}</span>
+                  <span className="text-stone-700 dark:text-stone-300">{entry.item3}</span>
                 </li>
               )}
             </ul>
 
             {entry.reflection && (
-              <div className="mt-3 p-3 bg-white rounded-lg border border-stone-100">
-                <p className="text-sm text-stone-600 italic">"{entry.reflection}"</p>
+              <div className="mt-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-stone-100">
+                <p className="text-sm text-stone-600 dark:text-stone-400 italic">"{entry.reflection}"</p>
               </div>
             )}
           </div>
@@ -322,15 +322,15 @@ function GratitudeStats() {
       </Card>
 
       <Card className="p-4 text-center">
-        <Calendar className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-stone-900">{entries.length}</p>
-        <p className="text-sm text-stone-700">{t('diary.gratitude.stats.totalEntries')}</p>
+        <Calendar className="w-6 h-6 text-stone-600 dark:text-stone-400 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-stone-900 dark:text-stone-100">{entries.length}</p>
+        <p className="text-sm text-stone-700 dark:text-stone-300">{t('diary.gratitude.stats.totalEntries')}</p>
       </Card>
 
       <Card className="p-4 text-center">
-        <Star className="w-6 h-6 text-stone-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-stone-900">{totalItems}</p>
-        <p className="text-sm text-stone-700">{t('diary.gratitude.stats.totalItems')}</p>
+        <Star className="w-6 h-6 text-stone-600 dark:text-stone-400 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-stone-900 dark:text-stone-100">{totalItems}</p>
+        <p className="text-sm text-stone-700 dark:text-stone-300">{t('diary.gratitude.stats.totalItems')}</p>
       </Card>
     </div>
   )

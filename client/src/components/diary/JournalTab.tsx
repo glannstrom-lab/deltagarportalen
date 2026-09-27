@@ -32,7 +32,7 @@ const getMoodColor = (mood: number) => {
     case 3: return 'bg-yellow-100 text-yellow-700 border-yellow-200'
     case 2: return 'bg-orange-100 text-orange-700 border-orange-200'
     case 1: return 'bg-rose-100 text-rose-700 border-rose-200'
-    default: return 'bg-stone-100 text-stone-700 border-stone-200'
+    default: return 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 border-stone-200 dark:border-stone-700'
   }
 }
 
@@ -118,19 +118,19 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
+      <div className="relative bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-100 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center">
               <BookHeart className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-stone-900">{t('diary.journal.writeModal.title')}</h2>
-              <p className="text-sm text-stone-700">{wordCount} {t('diary.words')}</p>
+              <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{t('diary.journal.writeModal.title')}</h2>
+              <p className="text-sm text-stone-700 dark:text-stone-300">{wordCount} {t('diary.words')}</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-lg">
-            <X className="w-5 h-5 text-stone-600" />
+            <X className="w-5 h-5 text-stone-600 dark:text-stone-400" />
           </button>
         </div>
 
@@ -147,7 +147,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
 
           {/* Mood selector */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
               {t('diary.journal.writeModal.howAreYou')}
             </label>
             <div className="flex gap-2">
@@ -185,7 +185,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
               {t('diary.tags')}
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
@@ -224,7 +224,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           </p>
         )}
 
-        <div className="sticky bottom-0 bg-white border-t border-stone-100 p-4 flex gap-3">
+        <div className="sticky bottom-0 bg-white dark:bg-stone-900 border-t border-stone-100 p-4 flex gap-3">
           <Button variant="outline" className="flex-1" onClick={onClose}>
             {t('common.cancel')}
           </Button>
@@ -360,7 +360,7 @@ export function JournalTab() {
             {/* UX31: förstoringsglaset är den synliga ledtråden, etiketten
                 finns för skärmläsare och taligenkänning. */}
             <label htmlFor="diary-search" className="sr-only">{t('diary.journal.search.label')}</label>
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" aria-hidden="true" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
             <input
               id="diary-search"
               type="text"
@@ -378,7 +378,7 @@ export function JournalTab() {
               "p-2 rounded-lg border transition-colors",
               showFilters || filterTag
                 ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
-                : "border-stone-200 text-stone-700 hover:bg-stone-50"
+                : "border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
             )}
           >
             <Filter className="w-5 h-5" aria-hidden="true" />
@@ -400,7 +400,7 @@ export function JournalTab() {
               "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
               !filterTag
                 ? "bg-[var(--c-solid)] text-white"
-                : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
             )}
           >
             {t('common.all')}
@@ -413,7 +413,7 @@ export function JournalTab() {
                 "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
                 filterTag === tag
                   ? "bg-[var(--c-solid)] text-white"
-                  : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                  : "bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
               )}
             >
               #{tag}
@@ -437,10 +437,10 @@ export function JournalTab() {
                 className="w-28 h-28 mx-auto mb-4 select-none"
               />
             )}
-            <h3 className="text-lg font-semibold text-stone-700 mb-2">
+            <h3 className="text-lg font-semibold text-stone-700 dark:text-stone-300 mb-2">
               {searchQuery || filterTag ? t('diary.journal.empty.noMatchesTitle') : t('diary.journal.empty.emptyTitle')}
             </h3>
-            <p className="text-stone-700 mb-6">
+            <p className="text-stone-700 dark:text-stone-300 mb-6">
               {searchQuery || filterTag
                 ? t('diary.journal.empty.noMatchesDescription')
                 : t('diary.journal.empty.emptyDescription')}
@@ -462,7 +462,7 @@ export function JournalTab() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-stone-900 truncate">
+                    <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate">
                       {entry.title || t('diary.noTitle')}
                     </h3>
                     {entry.mood && (
@@ -477,10 +477,10 @@ export function JournalTab() {
                       <Star className="w-4 h-4 text-amber-500 fill-current" />
                     )}
                   </div>
-                  <p className="text-sm text-stone-600 line-clamp-2 mb-2">
+                  <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-2 mb-2">
                     {entry.content}
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-stone-600">
+                  <div className="flex items-center gap-3 text-xs text-stone-600 dark:text-stone-400">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {new Date(entry.entry_date).toLocaleDateString('sv-SE', {
@@ -511,7 +511,7 @@ export function JournalTab() {
                       "p-2 rounded-lg transition-colors",
                       entry.is_favorite
                         ? "text-amber-500 hover:bg-amber-50"
-                        : "text-stone-600 hover:bg-stone-100"
+                        : "text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700"
                     )}
                   >
                     <Star className={cn("w-4 h-4", entry.is_favorite && "fill-current")} aria-hidden="true" />
@@ -524,7 +524,7 @@ export function JournalTab() {
                       }
                     }}
                     aria-label={t('diary.journal.card.deleteEntry', { title: entry.title || t('diary.noTitle') })}
-                    className="p-2 rounded-lg text-stone-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    className="p-2 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" aria-hidden="true" />
                   </button>
@@ -551,13 +551,13 @@ export function JournalTab() {
         >
           <div className="fixed inset-0 bg-black/50" />
           <div
-            className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+            className="relative bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-100 p-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-stone-900">{selectedEntry.title}</h2>
-                <p className="text-sm text-stone-700">
+                <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">{selectedEntry.title}</h2>
+                <p className="text-sm text-stone-700 dark:text-stone-300">
                   {new Date(selectedEntry.entry_date).toLocaleDateString('sv-SE', {
                     weekday: 'long',
                     day: 'numeric',
@@ -567,7 +567,7 @@ export function JournalTab() {
                 </p>
               </div>
               <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-stone-100 rounded-lg">
-                <X className="w-5 h-5 text-stone-600" />
+                <X className="w-5 h-5 text-stone-600 dark:text-stone-400" />
               </button>
             </div>
 
@@ -582,7 +582,7 @@ export function JournalTab() {
                 </div>
               )}
 
-              <p className="text-stone-700 leading-relaxed whitespace-pre-wrap">
+              <p className="text-stone-700 dark:text-stone-300 leading-relaxed whitespace-pre-wrap">
                 {selectedEntry.content}
               </p>
 

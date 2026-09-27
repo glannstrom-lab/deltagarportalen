@@ -132,7 +132,9 @@ describe('followupStatus', () => {
 
   it('3m gjord men 6m inte, förbi 6-månadersgränsen → due räknar mot 6m, inte 3m', () => {
     const start = new Date(now)
-    start.setDate(start.getDate() - (FOLLOWUP_6M_DAYS + 3))
+    // RR5: punkten är sex KALENDERMÅNADER (181–184 dagar), inte 180 dagar —
+    // +3 dagar kunde därför hamna före punkten. +10 ligger alltid efter.
+    start.setDate(start.getDate() - (FOLLOWUP_6M_DAYS + 10))
     const status = followupStatus(
       { startDate: start.toISOString().slice(0, 10), followup3m: true, followup6m: false },
       now

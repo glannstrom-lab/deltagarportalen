@@ -12,15 +12,30 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import { FRANVARO_ORSAKER, franvaroApi, franvaroAv, kanAnmalaFranvaro, type FranvaroOrsak } from '@/services/franvaroApi'
+import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
+
+/** Ett konsulentmöte samma dag som passet (RD4). `tid` = HH:MM lokal tid. */
+export interface MoteSammaDag {
+  id: string
+  tid: string
+}
 
 interface Props {
   session: ActivitySession
   onSaved: (session: ActivitySession) => void
+  /**
+   * RD4 (rollspelet 2026-09-27): möten med konsulenten samma dag. Efter en
+   * anmälan frågar komponenten om den gäller mötet också — anmälan på ett pass
+   * sa tidigare ingenting om mötet kl 12.
+   */
+  motenSammaDag?: readonly MoteSammaDag[]
+  /** Datum i läsbar form för meddelandet om mötet (samma som rubriken i Min vecka). */
+  datumText?: string
   /** Testkrok: "nu" för att avgöra om passet är kommande. */
   nu?: Date
 }
 
-export function FranvaroAnmalan({ session, onSaved, nu }: Props) {
+export function FranvaroAnmalan({ session, onSaved, motenSammaDag = [], datumText, nu }: Props) {
   const { t, i18n } = useTranslation()
   const gruppId = useId()
   const [oppen, setOppen] = useState(false)
@@ -28,6 +43,8 @@ export function FranvaroAnmalan({ session, onSaved, nu }: Props) {
   const [notering, setNotering] = useState('')
   const [sparar, setSparar] = useState(false)
   const [fel, setFel] = useState<string | null>(null)
+  // RD4: frågan om mötet visas en gång, direkt efter anmälan.
+  const [moteFraga, setMoteFraga] = useState<'fraga' | 'skickar' | 'skickat' | 'fel' | null>(null)
 
   const anmalan = franvaroAv(session)
   const locale = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
@@ -61,6 +78,29 @@ export function FranvaroAnmalan({ session, onSaved, nu }: Props) {
           </button>
         )}
         {fel && <p role="alert" className="mt-1 text-red-700 dark:text-red-300">{fel}</p>}
+        {moteFraga && motenSammaDag.length > 0 && (
+          <MoteFraga
+            tid={motenSammaDag.map((m) => m.tid).join(` ${t('minVecka.mote.och', 'och')} `)}
+            lage={moteFraga}
+            onJa={async (tid) => {
+              setMoteFraga('skickar')
+              try {
+                await konsulentMeddelandeApi.skickaTillMinKonsulent(
+                  t('minVecka.mote.meddelande', {
+                    defaultValue: 'Hej! Jag har anmält att jag inte kan komma till {{titel}} på {{datum}}. Det gäller också vårt möte kl {{tid}} samma dag.',
+                    titel: session.title,
+                    datum: datumText ?? session.date,
+                    tid,
+                  }),
+                )
+                setMoteFraga('skickat')
+              } catch {
+                setMoteFraga('fel')
+              }
+            }}
+            onNej={() => setMoteFraga(null)}
+          />
+        )}
       </div>
     )
   }
@@ -81,6 +121,7 @@ export function FranvaroAnmalan({ session, onSaved, nu }: Props) {
     try {
       onSaved(await franvaroApi.anmal(session.id, { orsak, notering }))
       setOppen(false)
+      if (motenSammaDag.length > 0) setMoteFraga('fraga')
     } catch {
       setFel(t('minVecka.franvaro.fel', 'Det gick inte att spara. Försök igen, eller skriv till din konsulent.'))
     } finally {
@@ -131,5 +172,44 @@ export function FranvaroAnmalan({ session, onSaved, nu }: Props) {
         </Button>
       </div>
     </form>
+  )
+}
+
+interface MoteFragaProps {
+  tid: string
+  lage: 'fraga' | 'skickar' | 'skickat' | 'fel'
+  onJa: (tid: string) => void
+  onNej: () => void
+}
+
+/** "Gäller det också mötet kl 12?" — två lugna val, inget förvalt. */
+function MoteFraga({ tid, lage, onJa, onNej }: MoteFragaProps) {
+  const { t } = useTranslation()
+  if (lage === 'skickat') {
+    return (
+      <p role="status" className="mt-2 text-emerald-700 dark:text-emerald-300">
+        {t('minVecka.mote.skickat', 'Din konsulent har fått besked om mötet också.')}
+      </p>
+    )
+  }
+  return (
+    <div className="mt-3 border-t border-stone-200 dark:border-stone-700 pt-3 space-y-2">
+      <p className="text-stone-800 dark:text-stone-200">
+        {t('minVecka.mote.fraga', { defaultValue: 'Gäller det också mötet med din konsulent kl {{tid}}?', tid })}
+      </p>
+      {lage === 'fel' && (
+        <p role="alert" className="text-red-700 dark:text-red-300">
+          {t('minVecka.mote.fel', 'Beskedet om mötet gick inte att skicka just nu. Du kan skriva eller ringa till din konsulent från sidan Min konsulent.')}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <Button className="min-h-11" disabled={lage === 'skickar'} onClick={() => onJa(tid)}>
+          {t('minVecka.mote.ja', 'Ja, meddela om mötet också')}
+        </Button>
+        <Button variant="ghost" className="min-h-11" disabled={lage === 'skickar'} onClick={onNej}>
+          {t('minVecka.mote.nej', 'Nej, jag kommer till mötet')}
+        </Button>
+      </div>
+    </div>
   )
 }

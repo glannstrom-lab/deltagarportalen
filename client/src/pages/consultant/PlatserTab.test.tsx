@@ -219,6 +219,8 @@ describe('PlatserTab — tre lägen', () => {
     mockGetKopplingsbaraDeltagare.mockResolvedValue(DELTAGARE)
     renderTab()
     expect(await screen.findByText('Inga platser registrerade än')).toBeInTheDocument()
+    // RR10 (rollspelet 2026-09-27): förklarar varför en praktik i planen inte syns här.
+    expect(screen.getByTestId('platser-forklaring')).toHaveTextContent('blir inte en plats av sig själva')
   })
 
   it('renderar listan när platser finns', async () => {

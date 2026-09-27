@@ -14,7 +14,8 @@ import { Card } from '@/components/ui/Card'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { minVeckaApi, type ActivityPlan } from '@/services/aktivitetApi'
-import { downloadNarvaroIntygPDF, manadsEtikett, valbaraManader } from '@/services/narvaroIntygPdf'
+import { downloadNarvaroIntygPDF, valbaraManader } from '@/services/narvaroIntygPdf'
+import { manadOchAr } from '@/lib/datumsprak'
 import { regelverkNycklar, type PlanensRegelverk } from './planensRegelverk'
 
 interface Props {
@@ -33,7 +34,7 @@ function manadensGranser(manad: string): { from: string; to: string } {
 }
 
 export function NarvaroIntyg({ plan, regelverk = null }: Props) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const profile = useAuthStore((s) => s.profile)
   const manader = useMemo(() => valbaraManader(plan.start_date), [plan.start_date])
   const [manad, setManad] = useState(manader[0])
@@ -54,7 +55,7 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
       const orgName = (policy.data?.[0] as { org_name?: string | null } | undefined)?.org_name ?? null
       const namn = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim()
       await downloadNarvaroIntygPDF({ participantName: namn || profile?.email || 'Deltagare', organizationName: orgName, manad, sessions, regelverk })
-      setKlart(t('minVecka.intyg.klart', { defaultValue: 'Intyget för {{manad}} är nedladdat.', manad: manadsEtikett(manad) }))
+      setKlart(t('minVecka.intyg.klart', { defaultValue: 'Intyget för {{manad}} är nedladdat.', manad: manadOchAr(manad, i18n.language) }))
     } catch {
       setFel(t('minVecka.intyg.fel', 'Intyget kunde inte skapas just nu. Försök igen om en stund.'))
     } finally {
@@ -80,7 +81,7 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
             className="min-h-11 rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-3 text-sm text-stone-900 dark:text-stone-100"
           >
             {manader.map((m) => (
-              <option key={m} value={m}>{manadsEtikett(m)}</option>
+              <option key={m} value={m}>{manadOchAr(m, i18n.language)}</option>
             ))}
           </select>
         </div>

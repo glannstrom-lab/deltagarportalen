@@ -44,6 +44,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { navHubs, getActiveHub, senasteBesok } from './navigation'
+import { arKonsulentvy } from './konsulentNav'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
@@ -139,6 +140,10 @@ export function SubNav() {
   const location = useLocation()
   const aktivHub = getActiveHub(location.pathname)
 
+  // RK17 (rollspelet 2026-09-27): under /consultant ritade raden deltagarens
+  // undersidor (Börja här, Sök jobb, CV …). Konsulentvyn har egen flikrad.
+  const konsulent = arKonsulentvy(location.pathname)
+
   const arOversikt = !aktivHub || aktivHub.id === 'oversikt'
   const oversikt = arOversikt ? oversiktRad2(t) : null
 
@@ -148,7 +153,7 @@ export function SubNav() {
 
   // En kategori utan undersidor och utan besökta sidor ska inte rita en tom
   // rad — då ser navigationen trasig ut just där den möts först.
-  if (poster.length === 0) return null
+  if (konsulent || poster.length === 0) return null
 
   return (
     <nav

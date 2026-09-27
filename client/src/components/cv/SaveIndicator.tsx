@@ -25,7 +25,7 @@ export function SaveIndicator() {
     return (
       <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-stone-600">
         <Check className="w-4 h-4" aria-hidden="true" />
-        <span>Allt sparat</span>
+        <span>{t('cv.saveIndicator.allSaved', 'Allt sparat')}</span>
       </div>
     )
   }
@@ -34,7 +34,7 @@ export function SaveIndicator() {
     return (
       <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-600">
         <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
-        <span>Sparar...</span>
+        <span>{t('cv.saveIndicator.saving', 'Sparar...')}</span>
       </div>
     )
   }
@@ -43,7 +43,7 @@ export function SaveIndicator() {
     return (
       <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-red-600" title={t('cv.saveIndicator.retryTitle')}>
         <CloudOff className="w-4 h-4" aria-hidden="true" />
-        <span>Offline</span>
+        <span>{t('cv.saveIndicator.offline', 'Offline')}</span>
       </div>
     )
   }
@@ -52,7 +52,7 @@ export function SaveIndicator() {
     return (
       <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-green-600">
         <Check className="w-4 h-4" aria-hidden="true" />
-        <span>Sparad {formatTime(lastSavedAt)}</span>
+        <span>{t('cv.saveIndicator.savedAt', { defaultValue: 'Sparad {{time}}', time: formatTime(lastSavedAt) })}</span>
       </div>
     )
   }
@@ -61,7 +61,7 @@ export function SaveIndicator() {
     return (
       <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-amber-600">
         <div className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
-        <span>Osparat</span>
+        <span>{t('cv.saveIndicator.unsaved', 'Osparat')}</span>
       </div>
     )
   }

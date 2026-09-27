@@ -250,3 +250,14 @@ describe('ParticipantsTab — senaste kontakt räknas i kalenderdagar (2026-09-2
     }
   })
 })
+
+describe('ParticipantsTab — RK14: senaste kontakt följer journalen', () => {
+  it('en journalanteckning i dag räknas som kontakt, fast last_contact_at saknas', async () => {
+    mockEq.mockResolvedValue({ data: [makeParticipant({ last_contact_at: null, last_note_date: new Date().toISOString() })], error: null })
+    mockHamtaMoten.mockResolvedValueOnce([])
+    renderTab()
+    await screen.findByText('Anna Andersson')
+    expect(screen.queryByText(i18n.t('consultant.participants.neverContacted'))).toBeNull()
+    expect(screen.getAllByText(i18n.t('common.today')).length).toBeGreaterThan(0)
+  })
+})

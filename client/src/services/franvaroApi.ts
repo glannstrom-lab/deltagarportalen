@@ -24,6 +24,41 @@ export type SessionMedFranvaro = ActivitySession & {
   absence_reported_at?: string | null
   absence_reason?: FranvaroOrsak | null
   absence_note?: string | null
+  /** RD11: deltagarens förklaring i efterhand. Kolumnen kommer ur PENDING_20260927b_franvaro_forklaring.sql. */
+  participant_explanation?: string | null
+  participant_explanation_at?: string | null
+}
+
+/**
+ * RD11 (rollspelet 2026-09-27): en markerad frånvaro gick inte att förklara i
+ * efterhand och stod oförklarad på intyget till handläggaren.
+ *
+ * Förklaringen är en egen kolumn, inte `absence_note`: anmälan kommer FÖRE
+ * passet och hör ihop med en orsak (CHECK-par), förklaringen kommer EFTER
+ * konsulentens markering. Guarden i databasen släpper igenom förklaringen bara
+ * på pass som konsulenten markerat som frånvaro.
+ */
+export const FORKLARING_MAX = 500
+
+export interface Franvaroforklaring {
+  text: string
+  at: string | null
+}
+
+export function forklaringAv(session: ActivitySession): Franvaroforklaring | null {
+  const s = session as SessionMedFranvaro
+  const text = s.participant_explanation?.trim()
+  return text ? { text, at: s.participant_explanation_at ?? null } : null
+}
+
+/**
+ * Kan deltagaren förklara frånvaron på det här passet? Konsulenten har markerat
+ * frånvaro, och raden bär kolumnen — före migrationen finns nyckeln inte i
+ * `select('*')`-svaret, och då visas ingen knapp som bara kan misslyckas.
+ */
+export function kanForklaraFranvaro(session: ActivitySession): boolean {
+  if (session.attendance !== 'absent_invalid' && session.attendance !== 'absent_valid') return false
+  return Object.prototype.hasOwnProperty.call(session, 'participant_explanation')
 }
 
 export interface Franvaroanmalan {
@@ -66,6 +101,30 @@ export const franvaroApi = {
         absence_reported_at: new Date().toISOString(),
         absence_reason: input.orsak,
         absence_note: input.notering?.trim().slice(0, 500) || null,
+      })
+      .eq('id', sessionId)
+      .eq('participant_id', userId)
+      .select('*')
+      .maybeSingle()
+    if (error) throw error
+    if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
+    return data as ActivitySession
+  },
+
+  /**
+   * RD11: förklara en markerad frånvaro i efterhand. Tom text tar bort
+   * förklaringen. En databastrigger lägger en notis hos konsulenten.
+   *
+   * Kolumnerna skapades av `20260927b_franvaro_forklaring.sql` (körd 2026-09-27).
+   */
+  async forklara(sessionId: string, text: string): Promise<ActivitySession> {
+    const userId = await requireUserId()
+    const ren = text.trim().slice(0, FORKLARING_MAX)
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update({
+        participant_explanation: ren || null,
+        participant_explanation_at: ren ? new Date().toISOString() : null,
       })
       .eq('id', sessionId)
       .eq('participant_id', userId)

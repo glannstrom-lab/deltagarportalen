@@ -18,7 +18,7 @@
 import type { jsPDF } from 'jspdf'
 import type { ActivitySession } from './aktivitetApi'
 import { arNarvaro, timmar, type ActivityType, type Attendance } from './aktivitetSchema'
-import { franvaroAv, type FranvaroOrsak } from './franvaroApi'
+import { forklaringAv, franvaroAv, type FranvaroOrsak } from './franvaroApi'
 
 let jsPDFModule: typeof import('jspdf') | null = null
 let autoTableModule: typeof import('jspdf-autotable') | null = null
@@ -132,13 +132,24 @@ export function utfall(session: ActivitySession, idag: string): string {
   return session.date < idag ? 'Ej markerat' : 'Kommande'
 }
 
+/**
+ * Utfallet i tabellen, med deltagarens egen förklaring under när den finns
+ * (RD11). Märkt som hennes — det är inte konsulentens bedömning. Raka
+ * citattecken: Helvetica i jsPDF skriver inte „ och ”.
+ */
+function utfallMedForklaring(s: ActivitySession, idag: string): string {
+  const u = utfall(s, idag)
+  const f = forklaringAv(s)
+  return f ? `${u}\nDeltagarens förklaring: "${f.text}"` : u
+}
+
 export function intygRader(sessions: readonly ActivitySession[], manad: string, idag: string): string[][] {
   return manadensPass(sessions, manad).map((s) => [
     datumSv(s.date),
     `${s.start_time}-${s.end_time}`,
     s.title,
     TYP_ETIKETT[s.activity_type],
-    utfall(s, idag),
+    utfallMedForklaring(s, idag),
   ])
 }
 

@@ -36,6 +36,17 @@ import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { cn } from '@/lib/utils'
 import { consultantService } from '@/services/consultantService'
 import { formatLocalDate } from '@/services/aktivitetSchema'
+import {
+  PLACERINGSTYP_ETIKETT,
+  UTFALL_KOLUMNER_FINNS,
+  anteckningMedExtra,
+  extraKolumner,
+  valbaraTyper,
+  type Niva,
+  type PlaceringExtra,
+  type PlaceringTyp,
+} from '@/services/placeringUtfall'
+import type { Placement } from '@/services/consultantService'
 
 interface Participant {
   participant_id: string
@@ -52,11 +63,10 @@ interface PlacementDialogProps {
   preselectedParticipant?: Participant
 }
 
-const PLACEMENT_TYPES: { value: 'permanent' | 'temp' | 'trial'; label: string }[] = [
-  { value: 'permanent', label: 'Tillsvidareanställning' },
-  { value: 'temp', label: 'Tidsbegränsad anställning' },
-  { value: 'trial', label: 'Provanställning' },
-]
+// RR7 (rollspelet 2026-09-27): studier gav också resultatersättning men fanns
+// inte som val, och omfattning, slutdatum och nivå saknades. Studier kräver
+// PENDING_20260927b (CHECK-villkoret) — se services/placeringUtfall.ts.
+const PLACEMENT_TYPES = valbaraTyper().map((value) => ({ value, label: PLACERINGSTYP_ETIKETT[value] }))
 
 // Lokal kalenderdag — `toISOString()` gav gårdagen mellan 00 och 02 svensk tid.
 const today = () => formatLocalDate(new Date())
@@ -81,9 +91,14 @@ export function PlacementDialog({
   const [employerName, setEmployerName] = useState('')
   const [jobTitle, setJobTitle] = useState('')
   const [startDate, setStartDate] = useState(today())
-  const [placementType, setPlacementType] = useState<'permanent' | 'temp' | 'trial'>('permanent')
+  const [placementType, setPlacementType] = useState<PlaceringTyp>('permanent')
   const [salaryRange, setSalaryRange] = useState('')
   const [notes, setNotes] = useState('')
+  // RR7: omfattning (timmar/vecka eller procent), slutdatum och nivå A/B/C.
+  const [omfattning, setOmfattning] = useState('')
+  const [omfattningEnhet, setOmfattningEnhet] = useState<'h' | '%'>('h')
+  const [endDate, setEndDate] = useState('')
+  const [niva, setNiva] = useState<'' | Niva>('')
 
   // Fokusfälla + Escape/utanförklick stänger (WCAG 2.1.2)
   const modalRef = useFocusTrap<HTMLDivElement>(isOpen, { onEscape: onClose })
@@ -127,6 +142,10 @@ export function PlacementDialog({
     setPlacementType('permanent')
     setSalaryRange('')
     setNotes('')
+    setOmfattning('')
+    setOmfattningEnhet('h')
+    setEndDate('')
+    setNiva('')
     setSearchQuery('')
     setError(null)
   }
@@ -139,8 +158,23 @@ export function PlacementDialog({
   const handleSubmit = async () => {
     if (!selectedParticipant) return
     if (!employerName.trim()) {
-      setError('Ange arbetsgivarens namn.')
+      setError(placementType === 'studies' ? 'Ange skola eller utbildningsanordnare.' : 'Ange arbetsgivarens namn.')
       return
+    }
+    const omfTal = omfattning.trim() ? Number(omfattning.replace(',', '.')) : null
+    if (omfTal !== null && (!Number.isFinite(omfTal) || omfTal <= 0 || (omfattningEnhet === 'h' ? omfTal > 60 : omfTal > 100))) {
+      setError(omfattningEnhet === 'h' ? 'Omfattningen ska vara mellan 1 och 60 timmar per vecka.' : 'Omfattningen ska vara mellan 1 och 100 %.')
+      return
+    }
+    if (endDate && startDate && endDate < startDate) {
+      setError('Slutdatum kan inte vara före startdatum.')
+      return
+    }
+    const extra: PlaceringExtra = {
+      end_date: endDate || null,
+      hours_per_week: omfattningEnhet === 'h' ? omfTal : null,
+      scope_percent: omfattningEnhet === '%' && omfTal !== null ? Math.round(omfTal) : null,
+      outcome_level: niva || null,
     }
 
     setError(null)
@@ -152,10 +186,13 @@ export function PlacementDialog({
         job_title: jobTitle.trim() || undefined,
         start_date: startDate || undefined,
         salary_range: salaryRange.trim() || undefined,
-        notes: notes.trim() || undefined,
+        // Före PENDING_20260927b står omfattning/slutdatum/nivå som en läsbar
+        // rad i anteckningen; efter migrationen i egna kolumner.
+        notes: anteckningMedExtra(notes.trim() || undefined, extra),
         placement_type: placementType,
         followup_3m: false,
         followup_6m: false,
+        ...(extraKolumner(extra) as Partial<Placement>),
       })
       onSuccess()
       handleClose()
@@ -281,7 +318,7 @@ export function PlacementDialog({
 
               <div>
                 <label htmlFor="placement-employer" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                  Arbetsgivare *
+                  {placementType === 'studies' ? 'Skola/utbildningsanordnare *' : 'Arbetsgivare *'}
                 </label>
                 <div className="relative">
                   <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500" aria-hidden="true" />
@@ -348,7 +385,7 @@ export function PlacementDialog({
                 </div>
                 <div>
                   <label htmlFor="placement-type" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-                    Anställningstyp
+                    Utfall
                   </label>
                   <select
                     id="placement-type"
@@ -366,6 +403,90 @@ export function PlacementDialog({
                     ))}
                   </select>
                 </div>
+              </div>
+
+              {startDate > today() && (
+                <p className="text-xs text-stone-600 dark:text-stone-300" role="status">
+                  Startdatum i framtiden — placeringen visas som kommande på deltagarens sida tills den börjar.
+                </p>
+              )}
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="placement-omfattning" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    Omfattning
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      id="placement-omfattning"
+                      type="text"
+                      inputMode="decimal"
+                      value={omfattning}
+                      onChange={e => setOmfattning(e.target.value)}
+                      placeholder={omfattningEnhet === 'h' ? '30' : '75'}
+                      className={cn(
+                        'w-full min-w-0 px-3 py-2.5 rounded-xl',
+                        'bg-stone-100 dark:bg-stone-800',
+                        'border-2 border-transparent focus:border-[var(--c-solid)]',
+                        'text-stone-900 dark:text-stone-100'
+                      )}
+                    />
+                    <select
+                      aria-label="Enhet för omfattning"
+                      value={omfattningEnhet}
+                      onChange={e => setOmfattningEnhet(e.target.value as 'h' | '%')}
+                      className="px-2 py-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-[var(--c-solid)] text-stone-900 dark:text-stone-100"
+                    >
+                      <option value="h">h/vecka</option>
+                      <option value="%">%</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="placement-end" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                    Slutdatum (valfritt)
+                  </label>
+                  <input
+                    id="placement-end"
+                    type="date"
+                    value={endDate}
+                    min={startDate || undefined}
+                    onChange={e => setEndDate(e.target.value)}
+                    className={cn(
+                      'w-full px-3 py-2.5 rounded-xl',
+                      'bg-stone-100 dark:bg-stone-800',
+                      'border-2 border-transparent focus:border-[var(--c-solid)]',
+                      'text-stone-900 dark:text-stone-100'
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="placement-niva" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+                  Nivå enligt avtalet (valfritt)
+                </label>
+                <select
+                  id="placement-niva"
+                  value={niva}
+                  onChange={e => setNiva(e.target.value as '' | Niva)}
+                  className={cn(
+                    'w-full px-3 py-2.5 rounded-xl',
+                    'bg-stone-100 dark:bg-stone-800',
+                    'border-2 border-transparent focus:border-[var(--c-solid)]',
+                    'text-stone-900 dark:text-stone-100'
+                  )}
+                >
+                  <option value="">Inte angiven</option>
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                </select>
+                {!UTFALL_KOLUMNER_FINNS && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                    Omfattning, slutdatum och nivå sparas tills vidare i anteckningen. Studier som utfall går inte att registrera än.
+                  </p>
+                )}
               </div>
 
               <div>

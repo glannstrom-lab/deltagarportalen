@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { uppfoljningJournaltext, utfallKolumner, type UppfoljningInput } from './placeringUtfall'
 
 // Types
 export interface Message {
@@ -71,7 +72,8 @@ export interface Placement {
   job_title?: string
   start_date?: string
   salary_range?: string
-  placement_type: 'permanent' | 'temp' | 'trial'
+  /** 'studies' kräver PENDING_20260927b (se services/placeringUtfall.ts). */
+  placement_type: 'permanent' | 'temp' | 'trial' | 'studies'
   // AG3/KS1 (2026-08-31): kolumnen finns i consultant_placements sedan
   // grundmigrationen (20260323100000) men saknades här, så PlacementDialog
   // hade tyst tappat konsulentens anteckning vid varje registrering.
@@ -79,6 +81,20 @@ export interface Placement {
   followup_3m: boolean
   followup_6m: boolean
   created_at: string
+  // RR5/RR7 — PENDING_20260927b. Finns bara efter migrationen; läses via
+  // select('*'), så de är undefined tills dess. Se services/placeringUtfall.ts.
+  end_date?: string | null
+  hours_per_week?: number | null
+  scope_percent?: number | null
+  outcome_level?: 'A' | 'B' | 'C' | null
+  followup_3m_date?: string | null
+  followup_3m_outcome?: string | null
+  followup_3m_evidence?: string | null
+  followup_3m_note?: string | null
+  followup_6m_date?: string | null
+  followup_6m_outcome?: string | null
+  followup_6m_evidence?: string | null
+  followup_6m_note?: string | null
 }
 
 export interface JournalEntry {
@@ -506,6 +522,83 @@ class ConsultantService {
 
     if (error) throw error
     return data
+  }
+
+  /**
+   * RK14: tidpunkten för senaste meddelandet mellan den inloggade konsulenten
+   * och deltagaren, åt något håll. `null` = inga meddelanden. Kastar vid fel.
+   */
+  async getSenasteMeddelande(participantId: string): Promise<string | null> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('consultant_messages')
+      .select('created_at')
+      .or(`and(sender_id.eq.${user.id},receiver_id.eq.${participantId}),and(sender_id.eq.${participantId},receiver_id.eq.${user.id})`)
+      .order('created_at', { ascending: false })
+      .limit(1)
+
+    if (error) throw error
+    return data && data.length > 0 ? (data[0] as { created_at: string }).created_at : null
+  }
+
+  /**
+   * RR6: en deltagares placeringar (nyast start först). select('*') med flit:
+   * kolumnerna från PENDING_20260927b följer med när de finns, utan att
+   * lint:schema fäller dem innan snapshoten uppdaterats. Kastar vid fel.
+   */
+  async getPlacementsForParticipant(participantId: string): Promise<Placement[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('consultant_placements')
+      .select('*')
+      .eq('participant_id', participantId)
+      .order('start_date', { ascending: false, nullsFirst: false })
+
+    if (error) throw error
+    return (data ?? []) as Placement[]
+  }
+
+  /**
+   * RR5: registrerar en 3- eller 6-månadersuppföljning med datum, utfall,
+   * underlag och anteckning. Journalraden skrivs FÖRST — den är underlaget och
+   * finns även före PENDING_20260927b. Därefter sätts kryssrutan (och, efter
+   * migrationen, uppföljningskolumnerna). Ordning och förtida registrering
+   * kontrolleras i UI:t (kanRegistreraUppfoljning) och, efter migrationen,
+   * av CHECK-villkoret cplac_uppfoljning_ordning.
+   */
+  async registreraUppfoljning(
+    placering: Pick<Placement, 'id' | 'participant_id' | 'employer_name' | 'job_title' | 'start_date'>,
+    input: UppfoljningInput,
+  ): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { error: journalFel } = await supabase
+      .from('consultant_journal')
+      .insert({
+        consultant_id: user.id,
+        participant_id: placering.participant_id,
+        content: uppfoljningJournaltext(placering, input),
+        category: 'PROGRESS',
+      })
+    if (journalFel) throw journalFel
+
+    const falt = input.vilken === '3m' ? 'followup_3m' : 'followup_6m'
+    const uppdatering: Record<string, unknown> = { [falt]: true, ...utfallKolumner(input, user.id) }
+    const { data, error } = await supabase
+      .from('consultant_placements')
+      .update(uppdatering)
+      .eq('id', placering.id)
+      .select('id')
+
+    if (error) throw error
+    if (!data || data.length === 0) {
+      throw new Error('Uppföljningen står i journalen, men placeringen kunde inte markeras — du har troligen inte längre en aktiv koppling till deltagaren.')
+    }
   }
 
   /**

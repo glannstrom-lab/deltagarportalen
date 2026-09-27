@@ -19,6 +19,13 @@ export const FYSISKT_GRANS_DAGAR = 28
 /** "Snart" = så här många dagar före gränsen börjar vi flagga. */
 export const SNART_DAGAR = 3
 
+/**
+ * RR11/RR23 (rollspelet 2026-09-27): regeln i klartext, för chipens tooltip
+ * och mötesrutan på deltagarsidan. Coachen trodde att kravet var "var fjärde
+ * vecka" och förstod inte varför chipet var gult efter 12 dagar.
+ */
+export const KADENS_REGEL = `Individuellt möte minst var ${MOTE_GRANS_DAGAR}:e dag och fysiskt möte minst var ${FYSISKT_GRANS_DAGAR}:e dag (RM3). Bara genomförda möten räknas.`
+
 export type MoteTyp = 'video' | 'phone' | 'physical'
 export type KadensLage = 'ok' | 'snart' | 'over' | 'inget'
 
@@ -37,6 +44,14 @@ export interface Kadens {
   /** Dagar sedan senaste fysiska — för läget och testerna. */
   dagarSedanFysiskt: number | null
   laget: KadensLage
+  /**
+   * RR11: närmaste inbokade möte framåt (status `scheduled`). Påverkar inte
+   * läget — ett möte räknas först när det hållits — men chipet ska visa att
+   * saken är omhändertagen. `null` = inget bokat.
+   */
+  bokat: Pick<MoteRad, 'scheduled_at' | 'meeting_type'> | null
+  /** Närmaste inbokade FYSISKA möte framåt, `null` = inget. */
+  bokatFysiskt: Pick<MoteRad, 'scheduled_at' | 'meeting_type'> | null
 }
 
 function lokalMidnatt(d: Date): number {
@@ -76,12 +91,47 @@ export function kadensForMoten(moten: readonly MoteRad[], idag: Date): Kadens {
   // "inget fysiskt" med ett genomfört möte behandlas som 'snart' (flagga, inte larm).
   const fysisktLage: KadensLage = senaste !== null && senasteFysiskt === null ? 'snart' : lageFysiskt
   const laget: KadensLage = senaste === null ? 'inget' : (RANG[fysisktLage] > RANG[lageMote] ? fysisktLage : lageMote)
+  const framtida = moten
+    .filter((m) => m.status === 'scheduled' && new Date(m.scheduled_at).getTime() > idag.getTime())
+    .sort((a, b) => a.scheduled_at.localeCompare(b.scheduled_at))
+  const forsta = framtida[0]
+  const forstaFysiska = framtida.find((m) => m.meeting_type === 'physical')
   return {
     dagarSedanMote: senaste,
     veckorSedanFysiskt: senasteFysiskt === null ? null : Math.floor(senasteFysiskt / 7),
     dagarSedanFysiskt: senasteFysiskt,
     laget,
+    bokat: forsta ? { scheduled_at: forsta.scheduled_at, meeting_type: forsta.meeting_type } : null,
+    bokatFysiskt: forstaFysiska ? { scheduled_at: forstaFysiska.scheduled_at, meeting_type: forstaFysiska.meeting_type } : null,
   }
+}
+
+/**
+ * RR11: vilken mötestyp bokningsdialogen ska föreslå. Nästa individuella möte
+ * ska hållas inom 14 dagar; har det inte varit ett fysiskt möte på 14 dagar
+ * måste just det mötet vara fysiskt för att 28-dagarsgränsen ska hålla. Är ett
+ * fysiskt möte redan bokat behövs inget nytt. Utan underlag (ingen kadens
+ * hämtad) föreslås fysiskt — det är det kravet som kostar att missa.
+ */
+export function forvaldMotestyp(k: Kadens | undefined): MoteTyp {
+  if (!k) return 'physical'
+  if (k.bokatFysiskt) return 'video'
+  if (k.dagarSedanFysiskt === null) return 'physical'
+  return k.dagarSedanFysiskt > FYSISKT_GRANS_DAGAR - MOTE_GRANS_DAGAR ? 'physical' : 'video'
+}
+
+const MOTESTYP_KORT: Record<MoteTyp, string> = { physical: 'fysiskt möte', video: 'videomöte', phone: 'telefonmöte' }
+
+function kortDag(iso: string): string {
+  const d = new Date(iso)
+  return `${d.getDate()}/${d.getMonth() + 1}`
+}
+
+/** "fysiskt möte bokat 30/9" — eller `null` när inget är bokat. */
+export function bokatText(k: Kadens | undefined): string | null {
+  const b = k?.bokatFysiskt ?? k?.bokat ?? null
+  if (!b) return null
+  return `${MOTESTYP_KORT[b.meeting_type]} bokat ${kortDag(b.scheduled_at)}`
 }
 
 /** Kadens per deltagare ur en platt lista av möten. */
@@ -99,14 +149,18 @@ export function kadens(moten: readonly MoteRad[], idag: Date): Map<string, Kaden
 
 /** Kort text för chipen. `null`-fri: säger "Inget möte än" i stället för 0. */
 export function kadensText(k: Kadens | undefined): string {
-  if (!k || k.dagarSedanMote === null) return 'Inget möte än'
+  if (!k || k.dagarSedanMote === null) {
+    const bokat = bokatText(k)
+    return bokat ? `Inget möte än · ${bokat}` : 'Inget möte än'
+  }
   const mote = k.dagarSedanMote === 0 ? 'möte i dag' : k.dagarSedanMote === 1 ? 'möte i går' : `möte ${k.dagarSedanMote} dagar sedan`
   const fys = k.dagarSedanFysiskt === null
     ? 'inget fysiskt än'
     : k.veckorSedanFysiskt === 0
       ? 'fysiskt denna vecka'
       : `fysiskt ${k.veckorSedanFysiskt} v sedan`
-  return `Senaste ${mote} · ${fys}`
+  const bokat = bokatText(k)
+  return `Senaste ${mote} · ${fys}${bokat ? ` · ${bokat}` : ''}`
 }
 
 /**
@@ -126,6 +180,80 @@ export async function hamtaMotenForKonsulent(idag: Date = new Date()): Promise<M
     .eq('consultant_id', user.id)
     .gte('scheduled_at', fran.toISOString())
     .order('scheduled_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as MoteRad[]
+}
+
+/** En deltagares möte som det visas och bekräftas på deltagarsidan. */
+export interface DeltagarMote extends MoteRad {
+  id: string
+  duration_minutes: number | null
+  location: string | null
+}
+
+/**
+ * RR11: den inloggade konsulentens möten med EN deltagare, senaste 180 dagarna
+ * och alla framåt. Kastar vid fel — anroparen visar felet, aldrig "inga möten".
+ */
+export async function hamtaMotenForDeltagare(participantId: string, idag: Date = new Date()): Promise<DeltagarMote[]> {
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError) throw authError
+  if (!user) throw new Error('Inte inloggad')
+  const fran = new Date(idag)
+  fran.setDate(fran.getDate() - 180)
+  const { data, error } = await supabase
+    .from('consultant_meetings')
+    .select('id, participant_id, scheduled_at, meeting_type, status, duration_minutes, location')
+    .eq('consultant_id', user.id)
+    .eq('participant_id', participantId)
+    .gte('scheduled_at', fran.toISOString())
+    .order('scheduled_at', { ascending: false })
+  if (error) throw error
+  return (data ?? []) as DeltagarMote[]
+}
+
+/**
+ * RR11: ett inbokat möte vars tid passerat och som ingen bekräftat. Utan
+ * bekräftelse räknas det aldrig mot kadensen — det var därför chipet stod
+ * still: portalen hade ingen väg att markera ett möte som hållet.
+ */
+export function vantarPaBekraftelse(m: Pick<MoteRad, 'status' | 'scheduled_at'>, idag: Date = new Date()): boolean {
+  return m.status === 'scheduled' && new Date(m.scheduled_at).getTime() <= idag.getTime()
+}
+
+/** Markerar ett möte som hållet eller inte av. RLS begränsar till egna möten. */
+export async function bekraftaMote(meetingId: string, status: 'completed' | 'cancelled'): Promise<void> {
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError) throw authError
+  if (!user) throw new Error('Inte inloggad')
+  const { data, error } = await supabase
+    .from('consultant_meetings')
+    .update({ status })
+    .eq('id', meetingId)
+    .eq('consultant_id', user.id)
+    .select('id')
+  if (error) throw error
+  if (!data || data.length === 0) throw new Error('Mötet kunde inte uppdateras — det finns inte längre, eller så saknas behörighet.')
+}
+
+/**
+ * RR8: den inloggade konsulentens möten i en period (alla deltagare), för
+ * underlaget till den periodiska rapporten. `to` är inklusive (hela dagen).
+ * Kastar vid fel.
+ */
+export async function hamtaMotenIPeriod(from: string, to: string): Promise<MoteRad[]> {
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError) throw authError
+  if (!user) throw new Error('Inte inloggad')
+  const [fa, fm, fd] = from.split('-').map(Number)
+  const [ta, tm, td] = to.split('-').map(Number)
+  const { data, error } = await supabase
+    .from('consultant_meetings')
+    .select('participant_id, scheduled_at, meeting_type, status')
+    .eq('consultant_id', user.id)
+    .gte('scheduled_at', new Date(fa, fm - 1, fd).toISOString())
+    .lt('scheduled_at', new Date(ta, tm - 1, td + 1).toISOString())
+    .order('scheduled_at', { ascending: true })
   if (error) throw error
   return (data ?? []) as MoteRad[]
 }

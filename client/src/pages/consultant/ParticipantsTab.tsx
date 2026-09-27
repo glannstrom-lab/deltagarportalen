@@ -35,7 +35,8 @@ import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { getTagLabel, getTagColorClasses } from '@/components/consultant/participantTags'
-import { hamtaMotenForKonsulent, kadens as raknaKadens, kadensText, type Kadens, type KadensLage } from '@/services/moteskadens'
+import { senasteKontakt } from '@/services/senasteKontakt'
+import { hamtaMotenForKonsulent, kadens as raknaKadens, kadensText, KADENS_REGEL, type Kadens, type KadensLage } from '@/services/moteskadens'
 
 interface Participant {
   participant_id: string
@@ -53,6 +54,8 @@ interface Participant {
   saved_jobs_count: number
   notes_count: number
   last_contact_at: string | null
+  /** Senaste journalanteckning (vyn consultant_dashboard_participants). */
+  last_note_date?: string | null
   next_meeting_scheduled: string | null
   last_login: string | null
   tags: string[] | null
@@ -100,8 +103,15 @@ export function ParticipantsTab() {
   // useMemo (inte bara `?? []`) så referensen är stabil mellan renders när
   // participantsData inte ändrats — annars ändras `filteredParticipants`s
   // beroende (participants) varje render och useMemo där gör ingen nytta.
+  // RK14 (rollspelet 2026-09-27): "senaste kontakt" räknades bara ur
+  // last_contact_at, som enbart massåtgärden "Logga kontakt" skriver. En
+  // journalanteckning (vyns last_note_date) är också en kontakt — det senaste
+  // av de två används för text, sortering och "Behöver kontakt".
   const participants = useMemo(
-    () => (participantsData ?? []) as unknown as Participant[],
+    () => ((participantsData ?? []) as unknown as Participant[]).map((p) => {
+      const senaste = senasteKontakt({ last_contact_at: p.last_contact_at, last_note_date: p.last_note_date })
+      return senaste && senaste.at !== p.last_contact_at ? { ...p, last_contact_at: senaste.at } : p
+    }),
     [participantsData]
   )
   // KS7: ett misslyckat anrop ska visa ett eget felläge — aldrig samma tomma
@@ -297,12 +307,15 @@ export function ParticipantsTab() {
     const laget: KadensLage = k?.laget ?? 'inget'
     return (
       <span
-        className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-xs whitespace-nowrap', KADENS_KLASS[laget])}
+        // RR12: chipet klipptes på 390 px ("inget fysiskt ä…") — radbryt på mobil.
+        // RR23: regeln i tooltip OCH för skärmläsare (title läses inte alltid upp).
+        className={cn('inline-flex items-center rounded-full px-2 py-0.5 text-xs whitespace-normal sm:whitespace-nowrap', KADENS_KLASS[laget])}
         data-testid="kadens-chip"
         data-lage={laget}
-        title="Möte minst var 14:e dag, fysiskt minst var fjärde vecka"
+        title={KADENS_REGEL}
       >
         {kadensText(k)}
+        <span className="sr-only"> — {KADENS_REGEL}</span>
       </span>
     )
   }

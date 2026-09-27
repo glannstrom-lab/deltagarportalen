@@ -21,6 +21,9 @@ vi.mock('./ProfileImageUpload', () => ({ ProfileImageUpload: () => <div data-tes
 vi.mock('@/services/profileEnhancementsApi', () => ({ cvIntegrationApi: { importToProfile: vi.fn() }, profileExportApi: { toPDF: vi.fn() } }))
 
 import { ProfileHeader } from './ProfileHeader'
+import i18n from '@/i18n/config'
+import en from '@/i18n/locales/en.json'
+import { sattLattSvenska } from '@/i18n/lattSvenska'
 
 describe('ProfileHeader (PG14)', () => {
   afterEach(() => cleanup())
@@ -36,5 +39,32 @@ describe('ProfileHeader (PG14)', () => {
     render(<ProfileHeader />)
     expect(screen.getByRole('button', { name: /Nästa: Telefon/ })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/Dana Deltagare/)
+  })
+})
+
+// RD5/RD6 (rollspelet 2026-09-27): "Next: Telefon · Importera CV · Ladda ner PDF"
+// på engelska — etiketten kom ur profileStore på svenska och knapparna var hårdkodade.
+describe('ProfileHeader följer språket (RD5/RD6)', () => {
+  afterEach(async () => {
+    cleanup()
+    await sattLattSvenska(false)
+    await i18n.changeLanguage('sv')
+  })
+
+  it('engelska: nästa steg och knapparna', async () => {
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    render(<ProfileHeader />)
+    expect(screen.getByRole('button', { name: /Next: Phone/ })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Import CV' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Download PDF' })).toBeInTheDocument()
+    expect(screen.queryByText(/Telefon|Importera|Ladda ner/)).toBeNull()
+  })
+
+  it('Lätt svenska: knapparna säger vad de gör', async () => {
+    await sattLattSvenska(true)
+    render(<ProfileHeader />)
+    expect(screen.getByRole('button', { name: 'Hämta från ditt CV' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Ladda ner som PDF' })).toBeInTheDocument()
   })
 })

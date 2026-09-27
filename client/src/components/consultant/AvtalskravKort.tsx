@@ -18,14 +18,15 @@
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { ClipboardList } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Select } from '@/components/ui/Input'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { aktivitetsplanApi, type ActivityPlan, type ActivitySession } from '@/services/aktivitetApi'
-import { avtalskravPerDeltagare, manadGranser, senasteAvslutadeSondag, veckogranser, type Avtalskrav } from '@/services/aktivitetslogg'
+import { avtalskravPerDeltagare, manadGranser, periodiskaFalt, senasteAvslutadeSondag, veckogranser, type Avtalskrav, type MoteIPeriod, type Period } from '@/services/aktivitetslogg'
+import { hamtaMotenIPeriod } from '@/services/moteskadens'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
 import { langtDatum } from './aktivitetEtiketter'
@@ -33,7 +34,7 @@ import { langtDatum } from './aktivitetEtiketter'
 type Lage =
   | { status: 'laddar' }
   | { status: 'fel'; nyckel: string; fel: string }
-  | { status: 'klart'; nyckel: string; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string> }
+  | { status: 'klart'; nyckel: string; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string>; moten: MoteIPeriod[] | null }
 
 const MANAD_NAMN = ['', 'januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december']
 
@@ -85,17 +86,20 @@ export function AvtalskravKort() {
     let aktiv = true
     ;(async () => {
       try {
-        const [plans, sessions, deltagare] = await Promise.all([
+        const [plans, sessions, deltagare, moten] = await Promise.all([
           aktivitetsplanApi.listAll(),
           aktivitetsplanApi.listSessionsBetween(hamtning.from, hamtning.to),
           fetchCachedConsultantParticipants(queryClient).catch(() => []),
+          // RR8: mötena behövs bara till rapportunderlaget — ett fel här fäller
+          // inte tabellen, underlaget säger i stället att mötena saknas.
+          hamtaMotenIPeriod(hamtning.from, hamtning.to).catch(() => null),
         ])
         if (!aktiv) return
         const namn = new Map<string, string>()
         for (const d of deltagare) {
           namn.set(d.participant_id, `${d.first_name ?? ''} ${d.last_name ?? ''}`.trim())
         }
-        setHamtat({ status: 'klart', nyckel, plans, sessions, namn })
+        setHamtat({ status: 'klart', nyckel, plans, sessions, namn, moten })
       } catch (err) {
         if (aktiv) setHamtat({ status: 'fel', nyckel, fel: err instanceof Error ? err.message : 'Aktivitetsloggen kunde inte hämtas.' })
       }
@@ -112,6 +116,9 @@ export function AvtalskravKort() {
       .sort((a, b) => a.namn.localeCompare(b.namn, 'sv') || a.plan.start_date.localeCompare(b.plan.start_date))
   }, [lage, period, harAvslutadVecka])
 
+  // RR8: en deltagares rapportunderlag åt gången, utfällt under raden.
+  const [oppenPlan, setOppenPlan] = useState<string | null>(null)
+
   const flerPlanerForSamma = useMemo(() => {
     const antal = new Map<string, number>()
     for (const r of rader) antal.set(r.plan.participant_id, (antal.get(r.plan.participant_id) ?? 0) + 1)
@@ -119,7 +126,8 @@ export function AvtalskravKort() {
   }, [rader])
 
   return (
-    <Card className="p-5 space-y-5">
+    // RR12: scroll-mt så att en hopp-länk hit inte hamnar under det klibbiga toppfältet på mobil.
+    <Card className="p-5 space-y-5 scroll-mt-28" id="avtalskrav">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">Aktivitetsloggen mot avtalskravet</h3>
@@ -159,17 +167,21 @@ export function AvtalskravKort() {
                 : <>Bedömningen görs när första veckan i månaden är slut.</>}
             </p>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
+            // RR12 (rollspelet 2026-09-27): tabellen var 602 px bred i 316 px och
+            // scrollade i sidled utan ledtråd — "Andel fysiska" syntes inte. Under
+            // sm staplas varje rad som ett kort med etiketten framför värdet.
+            <div className="sm:overflow-x-auto">
+              <table className="w-full text-sm block sm:table">
+                <thead className="hidden sm:table-header-group">
                   <tr className="text-left text-xs uppercase tracking-wide text-stone-500 dark:text-stone-400 border-b border-stone-200 dark:border-stone-700">
                     <th className="py-2 pr-3 font-medium">Deltagare</th>
                     <th className="py-2 px-3 font-medium text-right">Veckor med uppfyllt timkrav</th>
                     <th className="py-2 px-3 font-medium text-right">Andel fysiska</th>
-                    <th className="py-2 pl-3 font-medium">Krav just nu</th>
+                    <th className="py-2 px-3 font-medium">Krav just nu</th>
+                    <th className="py-2 pl-3 font-medium"><span className="sr-only">Rapportunderlag</span></th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="block sm:table-row-group">
                   {rader.map(({ plan, krav, namn }) => (
                     <AvtalskravRad
                       key={plan.id}
@@ -177,6 +189,18 @@ export function AvtalskravKort() {
                       plan={plan}
                       krav={krav}
                       visaPlanstart={(flerPlanerForSamma.get(plan.participant_id) ?? 0) > 1}
+                      oppen={oppenPlan === plan.id}
+                      onVaxla={() => setOppenPlan((v) => (v === plan.id ? null : plan.id))}
+                      underlag={oppenPlan === plan.id ? (
+                        <RapportUnderlag
+                          namn={namn}
+                          manad={manadEtikett(val)}
+                          krav={krav}
+                          sessions={lage.sessions}
+                          moten={lage.moten}
+                          period={period}
+                        />
+                      ) : null}
                     />
                   ))}
                 </tbody>
@@ -210,22 +234,35 @@ export function AvtalskravKort() {
   )
 }
 
-function AvtalskravRad({ namn, plan, krav, visaPlanstart }: { namn: string; plan: ActivityPlan; krav: Avtalskrav; visaPlanstart: boolean }) {
+/** Mobil: cellen blir en rad med etiketten före värdet (data-label). */
+const CELL_MOBIL = 'flex justify-between gap-3 py-1 sm:table-cell sm:py-2 before:content-[attr(data-label)] before:text-xs before:text-stone-500 before:font-normal sm:before:content-none'
+
+function AvtalskravRad({ namn, plan, krav, visaPlanstart, oppen, onVaxla, underlag }: {
+  namn: string
+  plan: ActivityPlan
+  krav: Avtalskrav
+  visaPlanstart: boolean
+  oppen: boolean
+  onVaxla: () => void
+  underlag: React.ReactNode
+}) {
   const allaVeckor = krav.veckorUppfyllda === krav.veckorTotalt
   const underHalften = krav.andelFysiska !== null && krav.andelFysiska < 0.5
   const senasteKrav = krav.veckor[krav.veckor.length - 1]
   const varning = 'text-amber-800 dark:text-amber-300 font-semibold'
+  const panelId = `rapportunderlag-${plan.id}`
   return (
-    <tr className="border-b border-stone-100 dark:border-stone-800">
-      <td className="py-2 pr-3 text-stone-800 dark:text-stone-100">
+    <Fragment>
+    <tr className="block sm:table-row border-b border-stone-100 dark:border-stone-800 py-2 sm:py-0">
+      <td className="block sm:table-cell py-1 sm:py-2 pr-3 font-medium sm:font-normal text-stone-800 dark:text-stone-100">
         {namn}
         {visaPlanstart && <span className="text-stone-500 dark:text-stone-400"> · plan från {langtDatum(plan.start_date)}</span>}
       </td>
-      <td className={`py-2 px-3 text-right tabular-nums ${allaVeckor ? '' : varning}`}>
+      <td data-label="Veckor med uppfyllt timkrav" className={`${CELL_MOBIL} sm:px-3 text-right tabular-nums ${allaVeckor ? '' : varning}`}>
         {krav.veckorUppfyllda} av {krav.veckorTotalt}
         {!allaVeckor && <span className="sr-only"> — timkravet är inte uppfyllt alla veckor</span>}
       </td>
-      <td className={`py-2 px-3 text-right tabular-nums ${underHalften ? varning : ''}`}>
+      <td data-label="Andel fysiska" className={`${CELL_MOBIL} sm:px-3 text-right tabular-nums ${underHalften ? varning : ''}`}>
         {krav.andelFysiska === null ? (
           <>
             <span aria-hidden="true">—</span>
@@ -239,9 +276,91 @@ function AvtalskravRad({ namn, plan, krav, visaPlanstart }: { namn: string; plan
           </>
         )}
       </td>
-      <td className="py-2 pl-3 text-stone-600 dark:text-stone-300">
+      <td data-label="Krav just nu" className={`${CELL_MOBIL} sm:px-3 text-stone-600 dark:text-stone-300`}>
         {senasteKrav ? `${senasteKrav.kravTimmar} h/vecka (månad ${senasteKrav.planManad})` : '—'}
       </td>
+      <td className="block sm:table-cell py-1 sm:py-2 sm:pl-3 sm:text-right">
+        <button
+          type="button"
+          className="text-sm underline text-stone-700 dark:text-stone-200 whitespace-nowrap"
+          aria-expanded={oppen}
+          aria-controls={panelId}
+          onClick={onVaxla}
+        >
+          {oppen ? 'Dölj underlag' : 'Underlag för rapporten'}
+          <span className="sr-only"> — {namn}</span>
+        </button>
+      </td>
     </tr>
+    {oppen && (
+      <tr className="block sm:table-row">
+        <td colSpan={5} id={panelId} className="block sm:table-cell pb-4">{underlag}</td>
+      </tr>
+    )}
+    </Fragment>
+  )
+}
+
+/**
+ * RR8: fälten till den periodiska rapporten för en deltagare och månad, med en
+ * kopieringsknapp per fält. Portalen skickar ingenting till Arbetsförmedlingen.
+ */
+function RapportUnderlag({ namn, manad, krav, sessions, moten, period }: {
+  namn: string
+  manad: string
+  krav: Avtalskrav
+  sessions: ActivitySession[]
+  moten: MoteIPeriod[] | null
+  period: Period
+}) {
+  const [kopierat, setKopierat] = useState<string | null>(null)
+  const [kopieringsfel, setKopieringsfel] = useState(false)
+  const falt = periodiskaFalt(krav, sessions, moten ?? [], period).map((f) =>
+    f.id === 'moten' && moten === null ? { ...f, text: 'Mötena kunde inte hämtas — fyll i dem för hand eller ladda om sidan.' } : f,
+  )
+  const kopiera = async (id: string, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setKopierat(id)
+      setKopieringsfel(false)
+    } catch {
+      setKopieringsfel(true)
+    }
+  }
+  const allt = falt.map((f) => `${f.etikett}:\n${f.text}`).join('\n\n')
+  return (
+    <div className="rounded-xl bg-stone-50 dark:bg-stone-800/60 p-4 space-y-3" data-testid="rapportunderlag">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <p className="text-sm font-medium text-stone-900 dark:text-stone-100">Underlag för {namn}, {manad}</p>
+        <button type="button" className="text-sm underline text-stone-700 dark:text-stone-200" onClick={() => void kopiera('allt', allt)}>
+          {kopierat === 'allt' ? 'Kopierat' : 'Kopiera allt'}
+        </button>
+      </div>
+      <dl className="space-y-3">
+        {falt.map((f) => (
+          <div key={f.id}>
+            <div className="flex items-center justify-between gap-3">
+              <dt className="text-xs font-medium text-stone-600 dark:text-stone-300">{f.etikett}</dt>
+              <button
+                type="button"
+                className="text-xs underline text-stone-600 dark:text-stone-300"
+                onClick={() => void kopiera(f.id, f.text)}
+                aria-label={`Kopiera ${f.etikett.toLowerCase()}`}
+              >
+                {kopierat === f.id ? 'Kopierat' : 'Kopiera'}
+              </button>
+            </div>
+            <dd className="text-sm text-stone-800 dark:text-stone-100 whitespace-pre-wrap tabular-nums">{f.text}</dd>
+          </div>
+        ))}
+      </dl>
+      {kopieringsfel && (
+        <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">Webbläsaren tillät inte kopiering — markera texten och kopiera den för hand.</p>
+      )}
+      <p className="text-xs text-stone-500 dark:text-stone-400">
+        Portalen kan inte skicka något till Arbetsförmedlingen. Kopiera fälten till den periodiska rapporten i Mina sidor
+        för fristående aktörer. Bara genomförda möten och avslutade veckor räknas.
+      </p>
+    </div>
   )
 }

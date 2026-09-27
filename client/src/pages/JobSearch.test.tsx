@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
@@ -388,5 +388,47 @@ describe('JobSearch', () => {
       await screen.findByText('Lärare i matematik')
       expect(screen.queryByRole('button', { name: 'Spara den här sökningen som bevakning' })).not.toBeInTheDocument()
     })
+  })
+})
+
+// RD6 (rollspelet 2026-09-27): på engelska stod fliken "Slumpjobbet", chippet
+// "intervjuer" och datumen som "9/27/2026" (en-US).
+describe('JobSearch följer språket (RD6)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockGetAutocomplete.mockResolvedValue([])
+    mockSearchJobs.mockResolvedValue({
+      hits: [{ id: 'j1', headline: 'Restaurangbiträde', employer: { name: 'Max' }, workplace_address: { municipality: 'Halmstad' }, publication_date: '2026-09-27T08:00:00' }],
+      total: { value: 1 },
+    })
+    mockUseSavedJobs.mockReturnValue({
+      savedJobs: [{ id: 'j9', status: 'interview', job_data: {}, savedAt: '2026-09-20' }],
+      saveJob: vi.fn(), removeJob: vi.fn(), isSaved: vi.fn(() => false),
+      getStats: vi.fn(() => ({ total: 1, applied: 0, interviews: 1 })),
+    })
+  })
+
+  afterEach(async () => {
+    await i18n.changeLanguage('sv')
+  })
+
+  it('engelska: fliken, chippet och datumet', async () => {
+    const { default: en } = await import('@/i18n/locales/en.json')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    renderWithProviders(<JobSearch />)
+
+    expect(await screen.findByText('27 September 2026')).toBeInTheDocument()
+    expect(screen.getAllByText('Random job').length).toBeGreaterThan(0)
+    expect(screen.queryByText('Slumpjobbet')).toBeNull()
+    expect(screen.queryByText(/intervjuer/)).toBeNull()
+    expect(screen.queryByText(/\d+\/\d+\/2026/)).toBeNull()
+  })
+
+  it('svenska: ett chip i singular när det är en intervju', async () => {
+    renderWithProviders(<JobSearch />)
+    expect(await screen.findByText('2026-09-27')).toBeInTheDocument()
+    expect(screen.getAllByText('intervju').length).toBeGreaterThan(0)
+    expect(screen.queryByText('intervjuer')).toBeNull()
   })
 })

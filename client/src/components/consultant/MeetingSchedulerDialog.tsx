@@ -36,6 +36,14 @@ interface MeetingSchedulerDialogProps {
   onClose: () => void
   onSuccess: () => void
   preselectedParticipant?: Participant
+  /**
+   * RR11 (rollspelet 2026-09-27): mötestypen dialogen föreslår. Var alltid
+   * video, även när mötesregeln krävde att nästa möte var fysiskt — se
+   * `forvaldMotestyp()` i services/moteskadens.ts. Utan värde: video.
+   */
+  forvaldTyp?: MeetingType
+  /** Visas under mötestypen när förslaget är fysiskt — varför. */
+  forvaldSkal?: string
 }
 
 type MeetingType = 'video' | 'phone' | 'physical'
@@ -60,6 +68,8 @@ export function MeetingSchedulerDialog({
   onClose,
   onSuccess,
   preselectedParticipant,
+  forvaldTyp = 'video',
+  forvaldSkal,
 }: MeetingSchedulerDialogProps) {
   const [step, setStep] = useState<'participant' | 'datetime' | 'details'>('participant')
   const [loading, setLoading] = useState(false)
@@ -71,7 +81,7 @@ export function MeetingSchedulerDialog({
   const [selectedDate, setSelectedDate] = useState<Date>(new Date())
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [duration, setDuration] = useState(30)
-  const [meetingType, setMeetingType] = useState<MeetingType>('video')
+  const [meetingType, setMeetingType] = useState<MeetingType>(forvaldTyp)
   const [location, setLocation] = useState('')
   const [meetingLink, setMeetingLink] = useState('')
   const [notes, setNotes] = useState('')
@@ -84,6 +94,7 @@ export function MeetingSchedulerDialog({
   useEffect(() => {
     if (!isOpen) return
     setFel(null)
+    setMeetingType(forvaldTyp)
     if (preselectedParticipant) {
       // Deltagaren sätts om vid VARJE öppning: resetForm() nollar den, och på
       // deltagarsidan är dialogen monterad hela tiden. Utan raden här blev
@@ -93,6 +104,9 @@ export function MeetingSchedulerDialog({
     } else {
       fetchParticipants()
     }
+    // forvaldTyp med flit utanför beroendena: förslaget sätts vid öppning och
+    // ska inte skriva över ett val konsulenten gjort medan dialogen är öppen.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, preselectedParticipant])
 
   const fetchParticipants = async () => {
@@ -162,7 +176,7 @@ export function MeetingSchedulerDialog({
     setSelectedDate(new Date())
     setSelectedTime('')
     setDuration(30)
-    setMeetingType('video')
+    setMeetingType(forvaldTyp)
     setLocation('')
     setMeetingLink('')
     setNotes('')
@@ -466,6 +480,8 @@ export function MeetingSchedulerDialog({
                   ].map(({ type, icon: Icon, label }) => (
                     <button
                       key={type}
+                      type="button"
+                      aria-pressed={meetingType === type}
                       onClick={() => setMeetingType(type)}
                       className={cn(
                         'flex flex-col items-center gap-2 p-4 rounded-xl transition-colors',
@@ -479,6 +495,9 @@ export function MeetingSchedulerDialog({
                     </button>
                   ))}
                 </div>
+                {forvaldSkal && forvaldTyp === 'physical' && (
+                  <p className="mt-2 text-xs text-stone-600 dark:text-stone-300">{forvaldSkal}</p>
+                )}
               </div>
 
               {/* Meeting Link (for video) */}

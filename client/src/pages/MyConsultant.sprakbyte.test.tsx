@@ -27,7 +27,7 @@ vi.mock('@/services/myConsultantApi', () => ({
 vi.mock('@/services/applicationsApi', () => ({ applicationsApi: { getStats: async () => ({ saved: 0, interested: 0, applied: 0 }) } }))
 vi.mock('@/services/konsulentMeddelandeApi', () => ({ konsulentMeddelandeApi: {} }))
 vi.mock('@/stores/authStore', () => {
-  const state = { user: { id: 'u1' }, profile: { consultant_id: 'k1' } }
+  const state = { user: { id: 'u1', last_sign_in_at: '2026-09-27T14:00:00Z' }, profile: { consultant_id: 'k1' } }
   const useAuthStore = Object.assign(() => state, { setState: vi.fn(), getState: () => state })
   return { useAuthStore }
 })
@@ -58,6 +58,35 @@ describe('MyConsultant — språkbyte', () => {
       expect(await screen.findByText(en.myConsultant.consultant.yourConsultant)).toBeInTheDocument()
     } finally {
       await i18n.changeLanguage('sv')
+    }
+  })
+})
+
+// RD5/RD6 (rollspelet 2026-09-27): "Senaste inloggning 9/27/2026" på engelska,
+// och hela sidan på vanlig svenska när Lätt svenska var valt.
+describe('MyConsultant — datum och Lätt svenska (RD5/RD6)', () => {
+  it('engelska: datumet skrivs ut med månadens namn, inte M/D/Y', async () => {
+    const { default: i18n } = await import('@/i18n/config')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    try {
+      render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+      expect(await screen.findByText('27 September 2026')).toBeInTheDocument()
+      expect(screen.queryByText('9/27/2026')).toBeNull()
+    } finally {
+      await i18n.changeLanguage('sv')
+    }
+  })
+
+  it('Lätt svenska: det konsulenten ser beskrivs med vanliga ord', async () => {
+    const { sattLattSvenska } = await import('@/i18n/lattSvenska')
+    const latt = (await import('@/i18n/locales/sv-latt.json')).default as unknown as { myConsultant: { sharedInfo: { lastLogin: string } } }
+    await sattLattSvenska(true)
+    try {
+      render(<MemoryRouter><MyConsultant /></MemoryRouter>)
+      expect(await screen.findByText(latt.myConsultant.sharedInfo.lastLogin)).toBeInTheDocument()
+    } finally {
+      await sattLattSvenska(false)
     }
   })
 })

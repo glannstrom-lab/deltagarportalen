@@ -118,3 +118,33 @@ describe('sidfoten följer planens regelverk', () => {
     expect(text).toContain('Genererat från jobin.se')
   })
 })
+
+/*
+ * RD11 (rollspelet 2026-09-27): en markerad frånvaro stod oförklarad på intyget
+ * till handläggaren. Deltagarens egen förklaring följer nu med — märkt som
+ * hennes, inte som konsulentens bedömning.
+ * Mutation: låt intygRader strunta i participant_explanation → faller.
+ */
+describe('RD11: deltagarens förklaring på intyget', () => {
+  const forklarad = pass({
+    attendance: 'absent_invalid',
+    participant_explanation: 'Bussen ställdes in och nästa gick för sent.',
+    participant_explanation_at: '2026-10-06T08:00:00Z',
+  })
+
+  it('utfallet bär förklaringen, märkt som deltagarens', () => {
+    const [rad] = intygRader([forklarad], '2026-10', IDAG)
+    expect(rad[4]).toBe('Frånvaro\nDeltagarens förklaring: "Bussen ställdes in och nästa gick för sent."')
+  })
+
+  it('utan förklaring är utfallet oförändrat', () => {
+    const [rad] = intygRader([pass({ attendance: 'absent_invalid' })], '2026-10', IDAG)
+    expect(rad[4]).toBe('Frånvaro')
+  })
+
+  it('PDF:en innehåller förklaringen', async () => {
+    const text = await textenIPdf([forklarad])
+    expect(text).toContain('Deltagarens f')
+    expect(text).toContain('Bussen st')
+  })
+})

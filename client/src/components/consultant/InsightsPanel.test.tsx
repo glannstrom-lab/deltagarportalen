@@ -11,7 +11,7 @@
  * ingenting är känt.
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import type { ParticipantInsight, KeyMetric, ParticipantRisk } from '@/services/consultantInsights'
 
@@ -113,7 +113,9 @@ describe('InsightsPanel — tomt läge ljuger aldrig om en trasig källa', () =>
     expect(screen.queryByText('Alla deltagare ser bra ut!')).not.toBeInTheDocument()
   })
 
-  it('tom lista UTAN fel visar den ärliga "allt är bra"-texten', async () => {
+  // RK12 (rollspelet 2026-09-27): "Alla deltagare ser bra ut!" stod bredvid
+  // "Risker (2)". En tom regelträff är inget besked om att alla mår bra.
+  it('tom lista UTAN fel säger vad reglerna tittar på — aldrig "alla ser bra ut"', async () => {
     generateParticipantInsights.mockResolvedValue({
       insights: [],
       goalInsightsFailed: false,
@@ -121,9 +123,30 @@ describe('InsightsPanel — tomt läge ljuger aldrig om en trasig källa', () =>
 
     renderPanel()
 
-    await waitFor(() => {
-      expect(screen.getByText('Alla deltagare ser bra ut!')).toBeInTheDocument()
-    })
+    expect(await screen.findByText('Inga insikter just nu')).toBeInTheDocument()
+    expect(screen.getByText(/det säger inte att alla deltagare mår bra/)).toBeInTheDocument()
+    expect(screen.queryByText(/ser bra ut/)).not.toBeInTheDocument()
+  })
+
+  it('RK12: tom insiktslista men risker finns → pekar på riskerna i stället för att lugna', async () => {
+    generateParticipantInsights.mockResolvedValue({ insights: [], goalInsightsFailed: false })
+    assessParticipantRisks.mockResolvedValue([
+      { participantId: 'p1', participantName: 'Anna Andersson', riskScore: 45, riskFactors: ['Inget CV skapat'], recommendedActions: [] },
+      { participantId: 'p2', participantName: 'Omar Deltagare', riskScore: 20, riskFactors: ['Aldrig loggat in'], recommendedActions: [] },
+    ] as ParticipantRisk[])
+
+    renderPanel()
+
+    const knapp = await screen.findByRole('button', { name: 'Se 2 deltagare med riskfaktorer' })
+    fireEvent.click(knapp)
+    expect(await screen.findByText('Anna Andersson')).toBeInTheDocument()
+  })
+
+  it('RK12: panelen kallar sig inte AI — reglerna är fasta och påverkas inte av AI-brytaren', async () => {
+    generateParticipantInsights.mockResolvedValue({ insights: [], goalInsightsFailed: false })
+    renderPanel()
+    expect(await screen.findByText(/ingen AI/)).toBeInTheDocument()
+    expect(screen.queryByText('AI-insikter')).not.toBeInTheDocument()
   })
 })
 

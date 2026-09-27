@@ -47,7 +47,8 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { CoverLetterTemplateSelector } from './CoverLetterTemplateSelector'
 import { CoverLetterPreview } from './CoverLetterPreview'
 import { cn } from '@/lib/utils'
-import { savedJobsApi } from '@/services/jobsApi'
+import { applicationsApi } from '@/services/applicationsApi'
+import type { Application } from '@/types/application.types'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { useProfileStore } from '@/stores/profileStore'
@@ -81,6 +82,42 @@ interface SavedJob {
     publication_date?: string
   }
   created_at: string
+  /**
+   * RD8 (rollspelet 2026-09-27): kolumnerna `job_title`/`company_name`/`location`.
+   * Manuellt tillagda jobb och demodatan har titeln HÄR och ett tomt `job_data`,
+   * så listan sa "Titel saknas i annonsen" om jobb som har en titel.
+   */
+  job_title?: string | null
+  company_name?: string | null
+  location?: string | null
+}
+
+/** "Unknown" är applicationsApi:s platshållare för en rad utan annonsdata — inget namn. */
+function riktigtVarde(v: string | null | undefined): string {
+  const s = (v ?? '').trim()
+  return s && s !== 'Unknown' ? s : ''
+}
+
+/** Titel, företag och ort: kolumnen först, annonsdatan sedan, annars tomt. */
+function sparatJobbVisning(job: SavedJob): { title: string; company: string; location: string } {
+  return {
+    title: riktigtVarde(job.job_title) || riktigtVarde(job.job_data?.headline),
+    company: riktigtVarde(job.company_name) || riktigtVarde(job.job_data?.employer?.name),
+    location: riktigtVarde(job.location) || riktigtVarde(job.job_data?.workplace_address?.municipality),
+  }
+}
+
+function sparatJobbFranAnsokan(a: Application): SavedJob {
+  return {
+    id: a.id,
+    job_id: a.jobId,
+    user_id: a.userId,
+    job_data: (a.jobData ?? {}) as SavedJob['job_data'],
+    created_at: a.createdAt,
+    job_title: a.jobTitle ?? null,
+    company_name: a.companyName ?? null,
+    location: a.location ?? null,
+  }
 }
 
 // Form data interface
@@ -403,8 +440,9 @@ export function CoverLetterWrite() {
     setLoadingJobs(true)
     setJobbFel(false)
     try {
-      // Via savedJobsApi (E12, 2026-07-28) — applicationsApi äger tabellen.
-      setSavedJobs(await savedJobsApi.getAll())
+      // applicationsApi äger tabellen (E12). Direkt härifrån i stället för via
+      // savedJobsApi, vars radform tappar job_title/company_name (RD8).
+      setSavedJobs((await applicationsApi.getAll()).map(sparatJobbFranAnsokan))
     } catch (err) {
       console.error('Exception vid sparade-jobb-hämtning:', err)
       setJobbFel(true)
@@ -441,8 +479,7 @@ export function CoverLetterWrite() {
   // blev brevets tilltal. Prompten i `client/api/ai.js` hanterar ett tomt fält
   // själv — ett påhittat värde gör den bara sämre.
   const selectSavedJob = (job: SavedJob) => {
-    const title = job.job_data?.headline?.trim() || ''
-    const company = job.job_data?.employer?.name?.trim() || ''
+    const { title, company } = sparatJobbVisning(job)
     const description = job.job_data?.description?.text || ''
 
     setFormData(prev => ({
@@ -1220,9 +1257,7 @@ function Step1JobAndTemplate({
             </h3>
             <div className="grid gap-2">
               {savedJobs.slice(0, 5).map((job) => {
-                const title = job.job_data?.headline?.trim() || ''
-                const company = job.job_data?.employer?.name?.trim() || ''
-                const location = job.job_data?.workplace_address?.municipality
+                const { title, company, location } = sparatJobbVisning(job)
                 const vald = formData.selectedJobId === job.job_id
 
                 return (

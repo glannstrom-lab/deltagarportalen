@@ -57,6 +57,13 @@ vi.mock('@/lib/ics', async () => {
   return { ...riktig, laddaNerIcs: (...a: unknown[]) => laddaNerIcs(...a) }
 })
 
+// RD4: konsulentens möten i veckan. Standard: inga.
+const hamtaMoten = vi.fn()
+vi.mock('@/components/minvecka/konsulentMoten', async () => {
+  const riktig = await vi.importActual<typeof import('@/components/minvecka/konsulentMoten')>('@/components/minvecka/konsulentMoten')
+  return { ...riktig, hamtaMoten: (...a: unknown[]) => hamtaMoten(...a) }
+})
+
 vi.mock('@/services/aktivitetApi', () => ({
   minVeckaApi: {
     getMyPlan: (...a: unknown[]) => getMyPlan(...a),
@@ -118,6 +125,8 @@ beforeEach(() => {
   minaJobbsok.mockReset()
   minaJobbsok.mockResolvedValue(tomtJobbsok)
   laddaNerIcs.mockReset()
+  hamtaMoten.mockReset()
+  hamtaMoten.mockResolvedValue([])
   policyRader = [{ org_id: 'org1', org_name: 'Testkommun', ai_enabled: true, org_kind: 'kommun' }]
 })
 afterEach(cleanup)
@@ -141,10 +150,10 @@ describe('Min vecka', () => {
       pass({ id: 's-2', title: 'Verkstad' }),
     ])
     render(<MinVecka />)
-    expect(await screen.findByText(/Du har 5 av 30 timmar den här veckan\./)).toBeInTheDocument()
+    expect(await screen.findByText(/Du har 5 av 25 timmar i anvisade pass den här veckan\./)).toBeInTheDocument()
     expect(screen.getByText('Språkcafé')).toBeInTheDocument()
     expect(screen.getByText('Verkstad')).toBeInTheDocument()
-    expect(screen.getByText(/5 timmar för eget jobbsökande/)).toBeInTheDocument()
+    expect(screen.getByText(/Eget jobbsökande räknas för sig: 5 timmar i veckan enligt planen/)).toBeInTheDocument()
   })
 
   it('visar veckans jobbsökande som deltagarens egen redovisning', async () => {
@@ -169,10 +178,10 @@ describe('Min vecka', () => {
     getMyPlan.mockResolvedValue(plan)
     listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
     render(<MinVecka />)
-    expect(await screen.findByText(/Din konsulent har satt 30 timmar i veckan som mål/)).toBeInTheDocument()
-    // 3 timmar planerade av 30 → 27 kvar, och det är konsulentens uppgift att planera dem
-    expect(screen.getByText(/3 timmar är inplanerade\. 27 timmar återstår att planera/)).toBeInTheDocument()
-    expect(screen.getByText(/5 timmarna för eget jobbsökande kommer utöver/)).toBeInTheDocument()
+    // RK1/RD12: målet är den anvisade delen, 30 − 5 = 25 — samma tal som konsulentens ampel
+    expect(await screen.findByText(/Din konsulent har satt 25 timmar i veckan som mål/)).toBeInTheDocument()
+    // 3 timmar planerade av 25 → 22 kvar, och det är konsulentens uppgift att planera dem
+    expect(screen.getByText(/^22 timmar återstår att planera/)).toBeInTheDocument()
     const guide = screen.getByRole('link', { name: /Läs om aktivitetskravet/ })
     expect(guide).toHaveAttribute('href', '/guider/aktivitetskrav-forsorjningsstod/')
   })
@@ -312,7 +321,7 @@ describe('Min vecka', () => {
     getMyPlan.mockResolvedValue(plan)
     listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
     render(<MinVecka />)
-    expect(await screen.findByText(/Din konsulent har satt 30 timmar i veckan som mål för aktiviteterna i din plan\./)).toBeInTheDocument()
+    expect(await screen.findByText(/Din konsulent har satt 25 timmar i veckan som mål för aktiviteterna i din plan\./)).toBeInTheDocument()
     expect(screen.queryByText(/kommun|socialtjänstlagen|försörjningsstöd|Arbetsförmedlingen/)).not.toBeInTheDocument()
     expect(screen.queryByRole('link', { name: /aktivitetskravet|Rusta och matcha/ })).not.toBeInTheDocument()
   })
@@ -327,5 +336,124 @@ describe('Min vecka', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Ladda ner närvarointyg' }))
     await waitFor(() => expect(downloadNarvaroIntygPDF).toHaveBeenCalled())
     expect(downloadNarvaroIntygPDF.mock.calls.at(-1)?.[0]).toMatchObject({ regelverk: 'leverantor' })
+  })
+
+  /*
+   * RD12 (rollspelet 2026-09-27): "Du har 8 av 11 timmar" medan veckan visade
+   * 20 timmar pass. Målet 11 inkluderade 3 timmar eget jobbsökande, och
+   * konsulentens ampel mäter mot den anvisade delen (anvisatVeckomal = 8).
+   * Deltagaren och konsulenten ska se SAMMA tal, och det ska stå vid talet vad
+   * som räknas. Mutation: visa plan.weekly_hours_target som mål → faller.
+   */
+  it('RD12: saldot mäter mot samma anvisade mål som konsulentens ampel, och säger vad som räknas', async () => {
+    const annasPlan = { ...plan, weekly_hours_target: 11, jobsearch_hours_per_week: 3, target_reason: 'Heltidsaktivitet enligt aktivitetskravet.' }
+    getMyPlan.mockResolvedValue(annasPlan)
+    const d = (n: number) => addDays(mandag, n)
+    listMySessions.mockResolvedValue([
+      pass({ id: 'a', date: d(0), start_time: '09:00', end_time: '12:00', activity_type: 'jobsearch' }),
+      pass({ id: 'b', date: d(1), start_time: '09:00', end_time: '11:00', activity_type: 'motivation', title: 'Motivationsgrupp' }),
+      pass({ id: 'c', date: d(2), start_time: '09:00', end_time: '12:00', activity_type: 'jobsearch_own', title: 'Eget jobbsökande' }),
+      pass({ id: 'e', date: d(3), start_time: '13:00', end_time: '16:00', activity_type: 'workplace', title: 'Praktikbesök' }),
+      pass({ id: 'f', date: d(6), start_time: '08:00', end_time: '17:00', activity_type: 'jobsearch_own', title: 'Eget jobbsökande' }),
+    ])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Du har 8 av 8 timmar i anvisade pass den här veckan\./)).toBeInTheDocument()
+    expect(screen.getByText(/Här räknas bara pass som din konsulent har planerat\. Eget jobbsökande räknas för sig: 3 timmar i veckan enligt planen\./)).toBeInTheDocument()
+    expect(screen.getByText('Den här veckan är fullplanerad.')).toBeInTheDocument()
+    expect(screen.queryByText(/av 11 timmar/)).toBeNull()
+    expect(screen.queryByText(/återstår att planera/)).toBeNull()
+    // "Skäl: …aktivitetskravet.." — ingen dubbelpunkt
+    expect(document.body.textContent).not.toContain('..')
+  })
+
+  /*
+   * RD4 (rollspelet 2026-09-27): mötet med konsulenten kl 12 syntes bara på
+   * Min konsulent, inte i veckan. Mutation: rendera inte mötena → faller.
+   */
+  it('RD4: veckans möten med konsulenten syns i Min vecka, på rätt dag', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    const dag = addDays(mandag, 0)
+    listMySessions.mockResolvedValue([])
+    hamtaMoten.mockResolvedValue([
+      { id: 'm1', scheduled_at: new Date(`${dag}T12:00:00`).toISOString(), duration_minutes: 45, meeting_type: 'physical', location: 'Rum 2', meeting_link: null, status: 'scheduled' },
+    ])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Möte med din konsulent/)).toBeInTheDocument()
+    expect(screen.getByText(/12:00–12:45/)).toBeInTheDocument()
+    expect(screen.getByText('Rum 2')).toBeInTheDocument()
+    expect(hamtaMoten).toHaveBeenCalledWith(mandag, addDays(mandag, 6))
+    // En vecka med bara ett möte är ingen "ledig vecka"
+    expect(screen.queryByText(/En ledig vecka enligt planen/)).toBeNull()
+  })
+
+  it('RD4: ett fel vid hämtning av möten sägs, i stället för att tyst se ut som inga möten', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    hamtaMoten.mockImplementation(async () => { throw new Error('nät') })
+    render(<MinVecka />)
+    expect(await screen.findByText(/Dina möten med konsulenten kunde inte hämtas just nu/)).toBeInTheDocument()
+  })
+
+  it('RD11: en markerad frånvaro kan förklaras direkt i veckan', async () => {
+    getMyPlan.mockResolvedValue(plan)
+    const igarEllerIdag = idag === mandag ? idag : addDays(idag, -1)
+    listMySessions.mockResolvedValue([
+      pass({ id: 's-fr', date: igarEllerIdag, attendance: 'absent_invalid', participant_explanation: null, participant_explanation_at: null }),
+    ])
+    render(<MinVecka />)
+    expect(await screen.findByRole('button', { name: 'Förklara frånvaron' })).toBeInTheDocument()
+  })
+})
+
+// RD24/RD5/RD6 (rollspelet 2026-09-27): "1 timmar" och "De 1 timmarna" på Lätt
+// svenska, "1 hours" på engelska. Pluralformen ska följa talet på alla tre språken.
+describe('Min vecka — plural och språk (RD24)', () => {
+  const litenPlan = { ...plan, weekly_hours_target: 3, jobsearch_hours_per_week: 1 } // anvisat mål 2
+  const ettPass = () => [pass({ id: 's-1', title: 'Praktik', start_time: '08:00', end_time: '09:00' })]
+
+  afterEach(async () => {
+    const { sattLattSvenska } = await import('@/i18n/lattSvenska')
+    const { default: i18n } = await import('@/i18n/config')
+    await sattLattSvenska(false)
+    await i18n.changeLanguage('sv')
+  })
+
+  it('svenska: "1 timme", inte "1 timmar"', async () => {
+    getMyPlan.mockResolvedValue(litenPlan)
+    listMySessions.mockResolvedValue(ettPass())
+    render(<MinVecka />)
+    expect(await screen.findByText(/Eget jobbsökande räknas för sig: 1 timme i veckan/)).toBeInTheDocument()
+    expect(screen.getByText(/1 timme återstår att planera/)).toBeInTheDocument()
+    expect(screen.queryByText(/\b1 timmar\b/)).toBeNull()
+  })
+
+  it('svenska: målet i singular när det är en timme', async () => {
+    getMyPlan.mockResolvedValue({ ...plan, weekly_hours_target: 2, jobsearch_hours_per_week: 1 })
+    listMySessions.mockResolvedValue(ettPass())
+    render(<MinVecka />)
+    expect(await screen.findByText(/Du har 1 av 1 timme i anvisade pass/)).toBeInTheDocument()
+  })
+
+  it('engelska: "1 hour", inte "1 hours"', async () => {
+    const { default: i18n } = await import('@/i18n/config')
+    const { default: en } = await import('@/i18n/locales/en.json')
+    i18n.addResourceBundle('en', 'translation', en, true, true)
+    await i18n.changeLanguage('en')
+    getMyPlan.mockResolvedValue(litenPlan)
+    listMySessions.mockResolvedValue(ettPass())
+    render(<MinVecka />)
+    expect(await screen.findByText(/1 hour is still to be planned/)).toBeInTheDocument()
+    expect(screen.getByText(/counts separately: 1 hour per week/)).toBeInTheDocument()
+    expect(screen.queryByText(/\b1 hours\b/)).toBeNull()
+  })
+
+  it('Lätt svenska: "1 timme är kvar"', async () => {
+    const { sattLattSvenska } = await import('@/i18n/lattSvenska')
+    await sattLattSvenska(true)
+    getMyPlan.mockResolvedValue(litenPlan)
+    listMySessions.mockResolvedValue(ettPass())
+    render(<MinVecka />)
+    expect(await screen.findByText(/1 timme är kvar att planera\. Din konsulent planerar den med dig/)).toBeInTheDocument()
+    expect(screen.queryByText(/\b1 timmar/)).toBeNull()
   })
 })

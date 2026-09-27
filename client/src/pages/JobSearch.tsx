@@ -36,7 +36,7 @@ import { arSparat } from '@/data/ansokningsstatus';
 import { MotionList } from '@/components/ui/MotionList';
 import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
-import { datumSprak } from '@/lib/datumsprak';
+import { kortDatum } from '@/lib/datumsprak';
 import { CreateApplicationModal } from '@/components/workflow';
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel';
 
@@ -51,7 +51,7 @@ import { SlumpjobbetTab } from '@/components/jobs/SlumpjobbetTab';
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
-  { id: 'slumpjobbet', label: 'Slumpjobbet', path: '/job-search/slumpjobbet', icon: Sparkles },
+  { id: 'slumpjobbet', labelKey: 'jobSearch.tabs.slumpjobbet', path: '/job-search/slumpjobbet', icon: Sparkles },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
   { id: 'alerts', labelKey: 'jobSearch.tabs.alerts', path: '/job-search/alerts', icon: Bell },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
@@ -921,7 +921,7 @@ function SearchTab() {
                         </span>
                       )}
                       <span className="text-stone-600 dark:text-stone-400">
-                        {new Date(job.publication_date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
+                        {kortDatum(job.publication_date, i18n.language)}
                       </span>
                     </div>
 
@@ -1369,11 +1369,11 @@ function SavedJobsTab() {
 
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">
-                    {jobData?.headline || 'Okänd tjänst'}
+                    {jobData?.headline || t('jobSearch.unknownJob', 'Okänd tjänst')}
                   </h3>
                   <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-1 mt-0.5">
                     <Briefcase className="w-3.5 h-3.5" />
-                    {jobData?.employer?.name || 'Okänt företag'}
+                    {jobData?.employer?.name || t('common.employerNotSpecified')}
                   </p>
                   {jobData?.workplace_address?.municipality && (
                     <p className="text-sm text-stone-700 dark:text-stone-400 flex items-center gap-1 mt-0.5">
@@ -1385,7 +1385,7 @@ function SavedJobsTab() {
                   {/* Saved date */}
                   <p className="text-xs text-stone-600 dark:text-stone-400 mt-2 flex items-center gap-1">
                     <Clock className="w-3 h-3" aria-hidden="true" />
-                    {t('jobSearch.saved')} {new Date(job.savedAt).toLocaleDateString(datumSprak(i18n.language))}
+                    {t('jobSearch.saved')} {kortDatum(job.savedAt, i18n.language)}
                   </p>
                 </div>
 
@@ -1454,12 +1454,11 @@ export default function JobSearch() {
     );
   }
 
-  // Build tabs with translated labels (Slumpjobbet har en hårdkodad label
-  // utan i18n-nyckel — namnet är "Slumpjobbet" på svenska, ingen översättning
-  // fastställd för andra språk än).
+  // Build tabs with translated labels. Slumpjobbet hade en hårdkodad label och
+  // stod kvar på svenska i engelskt gränssnitt (RD6, 2026-09-27).
   const jobSearchTabs = jobSearchTabDefs.map((tab) => ({
     ...tab,
-    label: tab.labelKey ? t(tab.labelKey) : tab.label!,
+    label: t(tab.labelKey),
   }));
 
   // Live header stats — derived from saved jobs (no extra fetch).
@@ -1468,19 +1467,19 @@ export default function JobSearch() {
   // på misslyckande för den som inte kommit igång. Tomt läge = inga chips.
   const headerStats = [
     {
-      label: 'sparade',
+      label: t('jobSearch.headerStats.saved', { count: savedJobs.filter(j => arSparat(j.status)).length }),
       value: savedJobs.filter(j => arSparat(j.status)).length,
       icon: Bookmark,
       to: '/job-search/saved',
     },
     {
-      label: 'ansökta',
+      label: t('jobSearch.headerStats.applied', { count: savedJobs.filter(j => j.status === 'applied').length }),
       value: savedJobs.filter(j => j.status === 'applied').length,
       icon: Send,
       to: '/applications',
     },
     {
-      label: 'intervjuer',
+      label: t('jobSearch.headerStats.interviews', { count: savedJobs.filter(j => j.status === 'interview').length }),
       value: savedJobs.filter(j => j.status === 'interview').length,
       icon: MessageSquare,
       to: '/applications',

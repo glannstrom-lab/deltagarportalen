@@ -14,6 +14,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { navHubs, getActiveHub } from './navigation'
 import { HUB_ICON_SRC } from './hubIcons'
+import { arKonsulentvy, aktivKonsulentFlik, konsulentBottenNav } from './konsulentNav'
 import { cn } from '@/lib/utils'
 
 export function HubBottomNav() {
@@ -52,11 +53,17 @@ export function HubBottomNav() {
     }
   }, [])
 
+  // RK17/RR12 (rollspelet 2026-09-27): konsulenten fick deltagarens fem hubbar
+  // (Söka jobb, Karriär, Din vardag) under /consultant. Där visas i stället
+  // konsulentvyns egna flikar. Svenska literaler — konsulentvyn översätts inte.
+  const konsulent = arKonsulentvy(location.pathname)
+  const aktivFlik = konsulent ? aktivKonsulentFlik(location.pathname) : null
+
   return (
     <nav
       ref={navRef}
       role="navigation"
-      aria-label={t('hubBottomNav.label', 'Hubnavigering')}
+      aria-label={konsulent ? 'Konsulentvyns navigering' : t('hubBottomNav.label', 'Hubnavigering')}
       // UX32: mobilens synliga huvudnavigation. Sidebarens <nav> äger id:t
       // "main-navigation" (den är display:none under lg), så vi märker upp
       // den här som alternativt mål i stället för att dubblera id:t.
@@ -73,6 +80,33 @@ export function HubBottomNav() {
         'pb-[env(safe-area-inset-bottom)]'
       )}
     >
+      {konsulent ? (
+        <ul className="flex flex-row items-stretch justify-between">
+          {konsulentBottenNav.map((flik) => {
+            const isActive = aktivFlik === flik.id
+            const Icon = flik.icon
+            return (
+              <li key={flik.id} className="flex-1">
+                <Link
+                  to={flik.path}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={cn(
+                    'flex flex-col items-center justify-center gap-0.5',
+                    'min-h-[44px] min-w-[44px] py-2 px-1',
+                    'text-[10px] font-medium transition-colors',
+                    isActive
+                      ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold'
+                      : 'text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)]'
+                  )}
+                >
+                  {Icon && <Icon className="w-5 h-5" aria-hidden="true" />}
+                  <span className="truncate max-w-full">{flik.label}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      ) : (
       <ul className="flex flex-row items-stretch justify-between">
         {navHubs.map((hub) => {
           const isActive = activeHub?.id === hub.id
@@ -126,6 +160,7 @@ export function HubBottomNav() {
           )
         })}
       </ul>
+      )}
     </nav>
   )
 }

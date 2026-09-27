@@ -25,6 +25,11 @@ import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
 import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
+// RD4 (rollspelet 2026-09-27): konsulentens möten i veckan
+import { MoteKort } from '@/components/minvecka/MoteKort'
+import { hamtaMoten, motenPaDag, motesDatum, motesStart, type KonsulentMote } from '@/components/minvecka/konsulentMoten'
+// RD11: förklara en markerad frånvaro i efterhand
+import { ForklaraFranvaro } from '@/components/minvecka/ForklaraFranvaro'
 // RD3 (rollspelet 2026-09-27): kommunens juridik bara när planen belagt kommer från en kommun
 import { hamtaPlanensRegelverk, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
 // NF1 (2026-09-24): passet till deltagarens egen kalender som .ics
@@ -59,6 +64,13 @@ const NARVARO_NYCKEL: Record<Attendance, string> = {
 function idag(): string {
   return formatLocalDate(new Date())
 }
+
+/** Planens skäl utan avslutande punkt — texten runt om sätter egen ("aktivitetskravet.." i rollspelet). */
+function utanSlutpunkt(s: string): string {
+  return s.trim().replace(/[.\s]+$/, '')
+}
+
+type DagPost = { slag: 'pass'; tid: string; pass: ActivitySession } | { slag: 'mote'; tid: string; mote: KonsulentMote }
 
 function klockslag(iso: string, locale: string): string {
   return new Date(iso).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
@@ -96,6 +108,14 @@ export default function MinVecka() {
   const regelverk = regelverkQuery.data ?? null
   const nycklar = regelverkNycklar(regelverk)
 
+  // RD4: konsulentens möten samma vecka. Kastar vid fel — ett fel är inte "inga möten".
+  const motenQuery = useQuery({
+    queryKey: ['min-vecka', 'moten', mandag],
+    queryFn: () => hamtaMoten(mandag, sondag),
+    enabled: !!planQuery.data,
+  })
+  const moten = useMemo(() => motenQuery.data ?? [], [motenQuery.data])
+
   // KM9: deltagarens eget jobbsökande ur portalens data — egen redovisning, aldrig kontroll.
   const jobbsokQuery = useQuery({
     queryKey: ['min-vecka', 'jobbsok', mandag],
@@ -106,15 +126,19 @@ export default function MinVecka() {
   const dagens = idag()
   const locale = i18n.language?.startsWith('en') ? 'en-GB' : 'sv-SE'
 
+  // Pass och möten per dag, i tidsordning (RD4: mötena låg tidigare bara på Min konsulent).
   const perDag = useMemo(() => {
-    const map = new Map<string, ActivitySession[]>()
-    for (const s of sessionsQuery.data ?? []) {
-      const list = map.get(s.date) ?? []
-      list.push(s)
-      map.set(s.date, list)
+    const map = new Map<string, DagPost[]>()
+    const lagg = (datum: string, post: DagPost) => {
+      const list = map.get(datum) ?? []
+      list.push(post)
+      map.set(datum, list)
     }
+    for (const s of sessionsQuery.data ?? []) lagg(s.date, { slag: 'pass', tid: s.start_time, pass: s })
+    for (const m of moten) lagg(motesDatum(m), { slag: 'mote', tid: motesStart(m), mote: m })
+    for (const list of map.values()) list.sort((a, b) => a.tid.localeCompare(b.tid))
     return [...map.entries()].sort(([a], [b]) => a.localeCompare(b))
-  }, [sessionsQuery.data])
+  }, [sessionsQuery.data, moten])
 
   const nastaPass = useMemo(() => {
     const nu = new Date()
@@ -186,8 +210,12 @@ export default function MinVecka() {
     const plan = planQuery.data
     const sessions = sessionsQuery.data ?? []
     const saldo = veckosaldo(sessions, mandag)
-    // RK1: samma mått som konsulentens ampel — den anvisade delen av veckomålet.
-    const ampel = veckoampel(saldo, anvisatVeckomal(plan))
+    // RK1/RD12: samma mått som konsulentens ampel — den anvisade delen av
+    // veckomålet. Talet deltagaren ser ÄR det talet; planens totala mål
+    // (inklusive eget jobbsökande) visades tidigare, "8 av 11" när ampeln mätte mot 8.
+    const anvisatMal = anvisatVeckomal(plan)
+    const egetJobbsok = Number(plan.jobsearch_hours_per_week) || 0
+    const ampel = veckoampel(saldo, anvisatMal)
 
     innehall = (
       <div className="space-y-6 max-w-2xl">
@@ -195,35 +223,44 @@ export default function MinVecka() {
           <p className="text-lg text-stone-900 dark:text-stone-100">
             {ampel === 'inga_pass'
               ? t('minVecka.saldo.ingaPass', 'Inget inplanerat den här veckan.')
-              : t('minVecka.saldo.rad', {
-                  defaultValue: 'Du har {{planerade}} av {{mal}} timmar den här veckan.',
+              : t('minVecka.saldo.radAnvisat', {
+                  defaultValue: 'Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan.',
                   planerade: saldo.planeradeTimmar,
-                  mal: plan.weekly_hours_target,
+                  mal: anvisatMal,
+                  // RD24: pluralformen följer målet — "1 av 1 timme", inte "1 timmar".
+                  count: anvisatMal,
                 })}
-            {ampel !== 'inga_pass' && plan.jobsearch_hours_per_week > 0 && (
-              <> {t('minVecka.saldo.jobbsok', { defaultValue: 'Och {{h}} timmar för eget jobbsökande.', h: plan.jobsearch_hours_per_week })}</>
-            )}
           </p>
+          {ampel !== 'inga_pass' && (
+            // RD12: vad som räknas står vid talet, inte i en bisats längre ner.
+            <p className="mt-1 text-sm text-stone-700 dark:text-stone-300">
+              {egetJobbsok > 0
+                ? t('minVecka.saldo.vadRaknasJobbsok', {
+                    defaultValue: 'Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.',
+                    count: egetJobbsok,
+                  })
+                : t('minVecka.saldo.vadRaknas', 'Här räknas bara pass som din konsulent har planerat.')}
+            </p>
+          )}
           {ampel !== 'inga_pass' && (
             // PG7 (2026-09-12): "15 av 30" utan förklaring. Talen är planens
             // eget mål (satt av konsulenten, lagens tak 40 h) och passens timmar —
             // aldrig något framräknat som inte står i datan.
             <div className="mt-3 text-sm text-stone-600 dark:text-stone-400 space-y-1">
               <p>
-                {t(nycklar.mal, { mal: plan.weekly_hours_target })}
-                {plan.target_reason ? ` ${t('minVecka.forklaring.skal', { defaultValue: 'Skäl: {{skal}}.', skal: plan.target_reason })}` : ''}
+                {t(nycklar.mal, { mal: anvisatMal })}
+                {plan.target_reason ? ` ${t('minVecka.forklaring.skal', { defaultValue: 'Skäl: {{skal}}.', skal: utanSlutpunkt(plan.target_reason) })}` : ''}
               </p>
               <p>
-                {saldo.planeradeTimmar + 0.05 >= plan.weekly_hours_target
+                {saldo.planeradeTimmar + 0.05 >= anvisatMal
                   ? t('minVecka.forklaring.full', 'Den här veckan är fullplanerad.')
                   : t('minVecka.forklaring.kvar', {
-                      defaultValue: '{{planerade}} timmar är inplanerade. {{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.',
-                      planerade: saldo.planeradeTimmar,
-                      kvar: Math.round((plan.weekly_hours_target - saldo.planeradeTimmar) * 10) / 10,
+                      // RD24: de planerade timmarna står redan i saldoraden ovanför; här
+                      // bara det som är kvar, så att pluralformen följer ett enda tal.
+                      defaultValue: '{{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.',
+                      kvar: Math.round((anvisatMal - saldo.planeradeTimmar) * 10) / 10,
+                      count: Math.round((anvisatMal - saldo.planeradeTimmar) * 10) / 10,
                     })}
-                {plan.jobsearch_hours_per_week > 0
-                  ? ` ${t('minVecka.forklaring.jobbsok', { defaultValue: 'De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.', h: plan.jobsearch_hours_per_week })}`
-                  : ''}
               </p>
               {/* Guiden om aktivitetskravet gäller försörjningsstöd — bara för kommunens plan */}
               {regelverk === 'kommun' && (
@@ -305,6 +342,11 @@ export default function MinVecka() {
 
         <div role="status" aria-live="polite" className="sr-only">{status ?? ''}</div>
         {checkinFel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{checkinFel}</p>}
+        {motenQuery.isError && (
+          <p className="text-sm text-stone-700 dark:text-stone-300">
+            {t('minVecka.mote.hamtFel', 'Dina möten med konsulenten kunde inte hämtas just nu. Du ser dem på sidan Min konsulent.')}
+          </p>
+        )}
 
         {perDag.length === 0 ? (
           <p className="text-stone-600 dark:text-stone-400">
@@ -321,12 +363,20 @@ export default function MinVecka() {
               : t('minVecka.tomVecka.ledig', 'Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker.')}
           </p>
         ) : (
-          perDag.map(([dag, pass]) => (
+          perDag.map(([dag, poster]) => (
             <section key={dag} aria-labelledby={`dag-${dag}`} className="space-y-3">
               <h2 id={`dag-${dag}`} className="text-base font-semibold text-stone-800 dark:text-stone-200 capitalize">
                 {rubrikdatum(dag)}{dag === dagens ? ` · ${t('minVecka.idag', 'i dag')}` : ''}
               </h2>
-              {pass.map((s) => (
+              {poster.map((post) => post.slag === 'mote' ? (
+                <MoteKort
+                  key={`mote-${post.mote.id}`}
+                  mote={post.mote}
+                  datumText={rubrikdatum(dag)}
+                  passerat={new Date(post.mote.scheduled_at).getTime() < Date.now()}
+                  onStatus={setStatus}
+                />
+              ) : ((s: ActivitySession) => (
                 <Card key={s.id} className="p-4">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-baseline justify-between gap-3">
@@ -359,6 +409,8 @@ export default function MinVecka() {
                     {!s.self_checkin_at && (
                       <FranvaroAnmalan
                         session={s}
+                        motenSammaDag={motenPaDag(moten, s.date).map((m) => ({ id: m.id, tid: motesStart(m) }))}
+                        datumText={rubrikdatum(s.date)}
                         onSaved={(uppd) => {
                           queryClient.setQueryData<ActivitySession[]>(minVeckaSessionsKey(mandag), (gamla) =>
                             (gamla ?? []).map((x) => (x.id === uppd.id ? uppd : x)),
@@ -367,6 +419,16 @@ export default function MinVecka() {
                         }}
                       />
                     )}
+                    {/* RD11: en markerad frånvaro kan förklaras i efterhand */}
+                    <ForklaraFranvaro
+                      session={s}
+                      onSaved={(uppd) => {
+                        queryClient.setQueryData<ActivitySession[]>(minVeckaSessionsKey(mandag), (gamla) =>
+                          (gamla ?? []).map((x) => (x.id === uppd.id ? uppd : x)),
+                        )
+                        setStatus(t('minVecka.forklara.status', 'Din förklaring är skickad till din konsulent.'))
+                      }}
+                    />
                     {/* NF1: bara pass som inte redan har varit — ett gammalt pass i kalendern hjälper ingen */}
                     {s.date >= dagens && (
                       <Button
@@ -390,7 +452,7 @@ export default function MinVecka() {
                     )}
                   </div>
                 </Card>
-              ))}
+              ))(post.pass))}
             </section>
           ))
         )}

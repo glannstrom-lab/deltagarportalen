@@ -585,6 +585,10 @@ den visas; den renderas därför genom `t('exercises.categories.<svenska>')`.
 - **Varje svensk innehållssträng har en engelsk motsvarighet.** Grind:
   `data/oversattningar/innehallsparitet.test.ts`, som räknar fram nycklarna ur
   den levande datan vid varje körning.
+- **Lätt svenska täcker deltagarens huvudväg** (Översikt, Min vecka, Min
+  konsulent, CV-byggaren, Profilens första flik, Hjälp, Krisstöd). Ny nyckel där
+  → skriv den i `sv-latt.json` också. Grind med golv: `i18n/lattSvenskaTackning.test.ts`
+  (RD30). Datum: `kortDatum()`/`manadOchAr()` i `lib/datumsprak.ts`, aldrig `'en-US'`.
 
 **Engelskans läsare är oftast nyanländ och har varken svenska eller engelska som
 modersmål.** Skriv enkel, entydig engelska (ungefär B1): korta meningar, vanliga

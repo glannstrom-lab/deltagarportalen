@@ -137,7 +137,8 @@
     "generating": "Generating...",
     "optional": "optional",
     "required": "Required",
-    "copy": "Copy"
+    "copy": "Copy",
+    "tagCounter": "{{count}} of {{max}}"
   },
   "pageTabs": {
     "cv": {
@@ -1268,7 +1269,12 @@
       "emptySubtitle": "Add your skills above"
     },
     "saveIndicator": {
-      "retryTitle": "Trying to save again..."
+      "retryTitle": "Trying to save again...",
+      "allSaved": "All saved",
+      "saving": "Saving...",
+      "offline": "Offline",
+      "savedAt": "Saved {{time}}",
+      "unsaved": "Not saved"
     },
     "pdf": {
       "sections": {
@@ -1602,7 +1608,8 @@
       "daily": "Today's job",
       "saved": "Saved",
       "alerts": "Alerts",
-      "matches": "Matches"
+      "matches": "Matches",
+      "slumpjobbet": "Random job"
     },
     "writeLetter": "Write letter",
     "writePersonalLetter": "Write personal letter",
@@ -1747,6 +1754,15 @@
       "text": "The job ad could not be opened right now. Please try again in a while.",
       "platsbanken": "Open the job ad on Platsbanken",
       "stang": "Close the message"
+    },
+    "unknownJob": "Unknown job",
+    "headerStats": {
+      "saved_one": "saved",
+      "saved_other": "saved",
+      "applied_one": "applied",
+      "applied_other": "applied",
+      "interviews_one": "interview",
+      "interviews_other": "interviews"
     }
   },
   "jobs": {
@@ -2975,7 +2991,7 @@
       "lastLogin": "Last login",
       "savedJobs": "Saved jobs",
       "sentApplications": "Sent applications",
-      "countUnit": "{{count}} pcs",
+      "countUnit": "{{count}}",
       "cvStatus": "CV status",
       "created": "Created",
       "notCreated": "Not created",
@@ -6572,7 +6588,14 @@
       "importedFields": "Imported: {{fields}}",
       "noFieldsToImport": "No new fields to import from CV.",
       "exportError": "Could not export PDF. Make sure you have a CV.",
-      "profileCompleteExclaim": "Your profile is complete!"
+      "profileCompleteExclaim": "Your profile is complete!",
+      "importCv": "Import CV",
+      "importing": "Importing...",
+      "downloadPdf": "Download PDF",
+      "exporting": "Exporting...",
+      "saving": "Saving...",
+      "saved": "Saved",
+      "notSaved": "Not saved"
     },
     "jobSearch": {
       "statusAvailability": "Status & Availability",
@@ -7549,7 +7572,41 @@
       "advice": "Advice",
       "preview": "Preview"
     },
-    "yourCv": "Your CV"
+    "yourCv": "Your CV",
+    "stepper": {
+      "stepOf": "Step {{current}} of {{total}}",
+      "minutesLeft": "About {{min}} min left",
+      "percentDone": "{{percent}}% done",
+      "current": "Step {{number}}: {{title}}",
+      "goTo": "Go to step {{number}}: {{title}}",
+      "minutes": "{{min}} min"
+    },
+    "steps": {
+      "design": {
+        "title": "Design",
+        "description": "Template and colours"
+      },
+      "about": {
+        "title": "About you",
+        "description": "Contact details"
+      },
+      "profile": {
+        "title": "Profile",
+        "description": "Summary"
+      },
+      "experience": {
+        "title": "Experience",
+        "description": "Jobs and education"
+      },
+      "skills": {
+        "title": "Skills",
+        "description": "Skills and more"
+      },
+      "review": {
+        "title": "Review",
+        "description": "Review and save"
+      }
+    }
   },
   "consultant": {
     "underlag": {
@@ -8259,7 +8316,18 @@
     "copyMessage": "Copy",
     "messageCopied": "Copied!",
     "welcomeMessage": "Hi! I am here to help you. There are no silly questions - start when you feel ready!",
-    "tryAsking": "Try asking about:"
+    "tryAsking": "Try asking about:",
+    "orgAv": {
+      "rubrik": "Your organisation has chosen not to use AI",
+      "text": "{{orgName}} has turned off the AI features in Jobin. This is the same for everyone, and you do not need to do anything. Here are three things you can do instead:",
+      "dinOrganisation": "Your organisation",
+      "konsulent": "Write to your konsulent (job coach)",
+      "konsulentText": "Ask a person who knows you.",
+      "kunskapsbank": "Read in the knowledge bank",
+      "kunskapsbankText": "Articles about looking for work, about benefits and about everyday life.",
+      "cv": "Make your CV with the template",
+      "cvText": "The CV builder works without AI."
+    }
   },
   "salary": {
     "pageTitle": "Salary & Negotiation",
@@ -9315,17 +9383,16 @@
     },
     "saldo": {
       "ingaPass": "Nothing planned this week.",
-      "rad": "You have {{planerade}} of {{mal}} hours this week.",
-      "jobbsok": "And {{h}} hours for your own job search."
+      "radAnvisat_one": "You have {{planerade}} of {{mal}} hour of assigned sessions this week.",
+      "vadRaknas": "Only sessions that your konsulent has planned count here.",
+      "vadRaknasJobbsok_one": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hour per week in your plan.",
+      "vadRaknasJobbsok_other": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hours per week in your plan.",
+      "radAnvisat_other": "You have {{planerade}} of {{mal}} hours of assigned sessions this week."
     },
     "nastaPass": "Next: {{titel}}, {{dag}} at {{tid}}",
     "forraVeckan": "Last week",
     "nastaVeckan": "Next week",
     "veckaRubrik": "Week {{fran}} – {{till}}",
-    "tomVecka": {
-      "framtid": "No sessions scheduled yet this week — your consultant will add more over time.",
-      "ledig": "No sessions this week. A free week according to the plan — contact your consultant if you are unsure."
-    },
     "idag": "today",
     "jagArHar": "I am here",
     "jobbsok": {
@@ -9390,12 +9457,12 @@
       "mal": "Your konsulent has set {{mal}} hours per week as the goal for assigned activities — this is the kommun's (municipality's) requirement under socialtjänstlagen (the Social Services Act).",
       "skal": "Reason: {{skal}}.",
       "full": "This week is fully planned.",
-      "kvar": "{{planerade}} hours are planned. {{kvar}} hours are still to be planned — your konsulent does that together with you, it is not something you need to arrange yourself.",
-      "jobbsok": "The {{h}} hours for your own job search come on top of that and do not count as an assigned activity.",
+      "kvar_one": "{{kvar}} hour is still to be planned — your konsulent does that together with you, it is not something you need to arrange yourself.",
       "guide": "Read about the aktivitetskrav (activity requirement) and what applies to you",
       "malLeverantor": "Your konsulent (job coach) has set {{mal}} hours per week as the goal for the activities in your plan. The plan comes from the provider in Rusta och matcha, a service from Arbetsförmedlingen (the Swedish Public Employment Service). Arbetsförmedlingen sent you to this service.",
       "malNeutral": "Your konsulent (job coach) has set {{mal}} hours per week as the goal for the activities in your plan.",
-      "guideLeverantor": "Read about Rusta och matcha and what applies to you"
+      "guideLeverantor": "Read about Rusta och matcha and what applies to you",
+      "kvar_other": "{{kvar}} hours are still to be planned — your konsulent does that together with you, it is not something you need to arrange yourself."
     },
     "incheckad": "Checked in at {{tid}}",
     "incheckadStatus": "Thank you, you are checked in.",
@@ -9419,6 +9486,38 @@
       "knappEtikett": "Add {{titel}} to calendar",
       "status": "The calendar file is downloaded. Open it to add the session to your calendar.",
       "fel": "The calendar file could not be created. Please try again in a while."
+    },
+    "mote": {
+      "rubrik": "Meeting with your konsulent",
+      "och": "and",
+      "fraga": "Is this also about the meeting with your konsulent at {{tid}}?",
+      "ja": "Yes, tell them about the meeting too",
+      "nej": "No, I will come to the meeting",
+      "meddelande": "Hello! I have reported that I cannot come to {{titel}} on {{datum}}. This is also about our meeting at {{tid}} on the same day.",
+      "skickat": "Your konsulent has also been told about the meeting.",
+      "fel": "We could not send the message about the meeting right now. You can write to or call your konsulent from the page My konsulent.",
+      "kanInte": "I cannot come to the meeting",
+      "kanInteRubrik": "Your konsulent gets a message that you cannot come. You will find a new time together.",
+      "kanInteMeddelande": "Hello! I cannot come to our meeting on {{datum}} at {{tid}}.",
+      "skickatKort": "Your konsulent has been told about the meeting.",
+      "felKort": "We could not send it right now. Your text is still here. You can also write to or call your konsulent from the page My konsulent.",
+      "hamtFel": "We could not load your meetings with your konsulent right now. You can see them on the page My konsulent."
+    },
+    "forklara": {
+      "knapp": "Explain the absence",
+      "andra": "Change your explanation",
+      "din": "Your explanation:",
+      "etikett": "What happened? Write in your own words.",
+      "vemSer": "Your konsulent can see the explanation, and it is on your attendance certificate as your own explanation.",
+      "skicka": "Send the explanation",
+      "avbryt": "Cancel",
+      "tom": "Write a few words about what happened.",
+      "fel": "We could not send it right now. Your text is still here, so you can try again in a while.",
+      "status": "Your explanation has been sent to your konsulent."
+    },
+    "tomVecka": {
+      "framtid": "No sessions scheduled yet this week — your consultant will add more over time.",
+      "ledig": "No sessions this week. A free week according to the plan — contact your consultant if you are unsure."
     }
   },
   "minVardagHub": {
@@ -9819,5 +9918,13 @@
     "continue": "Accept and continue",
     "saveFailed": "We could not save this right now. Please try again in a moment.",
     "logout": "Log out instead"
+  },
+  "pdfExport": {
+    "exportPdf": "Export PDF",
+    "generating": "Creating PDF...",
+    "download": "Download",
+    "preview": "Preview",
+    "cvDownloaded": "CV downloaded.",
+    "error": "Could not create the PDF. Please try again."
   }
 }

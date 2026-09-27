@@ -51,7 +51,14 @@ function cell(v: string, avgransare: string): string {
  * `;` är listavgränsaren i svensk Excel — med `,` hamnar allt i kolumn A.
  */
 export function csvText(rader: readonly (readonly string[])[], avgransare: ',' | ';'): string {
-  const rubrik = EXPORT_RUBRIKER.map((r) => cell(r, avgransare)).join(avgransare)
-  const kropp = rader.map((r) => r.map((v) => cell(v, avgransare)).join(avgransare))
-  return '﻿' + [rubrik, ...kropp].join('\r\n') + '\r\n'
+  return csvTabell([EXPORT_RUBRIKER, ...rader], avgransare)
+}
+
+/**
+ * Samma regler för valfri tabell (första raden är rubriken). RK9 (rollspelet
+ * 2026-09-27): Rapporters "Excel" var samma tabbseparerade text med ändelsen
+ * .xlsx som rättades här 2026-09-22 — nu går båda genom samma funktion.
+ */
+export function csvTabell(rader: readonly (readonly (string | number)[])[], avgransare: ',' | ';'): string {
+  return '\ufeff' + rader.map((r) => r.map((v) => cell(String(v), avgransare)).join(avgransare)).join('\r\n') + '\r\n'
 }

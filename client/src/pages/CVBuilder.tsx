@@ -4,6 +4,7 @@ import { StigLista, StigPrick, SkenEtikett } from '@/components/layout/Stig'
 import { stigRadKlasser } from '@/components/layout/stigKlasser'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/supabaseApi'
 import {
@@ -49,14 +50,23 @@ import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 // ============================================
 // STEG - med tidsuppskattningar för bättre UX
 // ============================================
+// Texten bor i `cvBuilder.steps.<key>` (RD6, 2026-09-27): titlarna stod här
+// på svenska och slog igenom på engelska och Lätt svenska. `title` och
+// `description` är kvar som svensk reserv för stegTitel/stegBeskrivning.
 const STEPS = [
-  { id: 1, title: 'Design', description: 'Mall och färger', minutes: 2 },
-  { id: 2, title: 'Om dig', description: 'Kontaktuppgifter', minutes: 3 },
-  { id: 3, title: 'Profil', description: 'Sammanfattning', minutes: 5 },
-  { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning', minutes: 10 },
-  { id: 5, title: 'Kompetenser', description: 'Skills & övrigt', minutes: 5 },
-  { id: 6, title: 'Granska', description: 'Granska och spara', minutes: 2 },
+  { id: 1, key: 'design', title: 'Design', description: 'Mall och färger', minutes: 2 },
+  { id: 2, key: 'about', title: 'Om dig', description: 'Kontaktuppgifter', minutes: 3 },
+  { id: 3, key: 'profile', title: 'Profil', description: 'Sammanfattning', minutes: 5 },
+  { id: 4, key: 'experience', title: 'Erfarenhet', description: 'Jobb & utbildning', minutes: 10 },
+  { id: 5, key: 'skills', title: 'Kompetenser', description: 'Skills & övrigt', minutes: 5 },
+  { id: 6, key: 'review', title: 'Granska', description: 'Granska och spara', minutes: 2 },
 ] as const
+
+type Steg = (typeof STEPS)[number]
+const stegTitel = (t: TFunction, st: Steg | undefined) =>
+  st ? t(`cvBuilder.steps.${st.key}.title`, st.title) : ''
+const stegBeskrivning = (t: TFunction, st: Steg | undefined) =>
+  st ? t(`cvBuilder.steps.${st.key}.description`, st.description) : ''
 
 // Language level constants (stored in DB, display via translation)
 const LANGUAGE_LEVELS = [
@@ -206,6 +216,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
   onStepClick: (step: number) => void
   completedSteps: number[]
 }) {
+  const { t } = useTranslation()
   // Calculate time remaining
   const remainingMinutes = STEPS
     .filter((_, i) => !completedSteps.includes(i + 1) && i + 1 >= currentStep)
@@ -219,15 +230,15 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
-            Steg {currentStep} av {totalSteps}
+            {t('cvBuilder.stepper.stepOf', { defaultValue: 'Steg {{current}} av {{total}}', current: currentStep, total: totalSteps })}
           </span>
           <span className="text-xs text-stone-400 dark:text-stone-500">•</span>
           <span className="text-xs text-stone-500 dark:text-stone-400">
-            ~{remainingMinutes} min kvar
+            {t('cvBuilder.stepper.minutesLeft', { defaultValue: '~{{min}} min kvar', min: remainingMinutes })}
           </span>
         </div>
         <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
-          {Math.round(progress)}% klart
+          {t('cvBuilder.stepper.percentDone', { defaultValue: '{{percent}} % klart', percent: Math.round(progress) })}
         </span>
       </div>
 
@@ -255,7 +266,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                   "flex flex-col items-center gap-1 group min-w-[44px] min-h-[44px] py-1",
                   "focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded-lg"
                 )}
-                aria-label={`Gå till steg ${stepNum}: ${step.title}`}
+                aria-label={t('cvBuilder.stepper.goTo', { defaultValue: 'Gå till steg {{number}}: {{title}}', number: stepNum, title: stegTitel(t, step) })}
                 aria-current={isActive ? 'step' : undefined}
               >
                 <div className={cn(
@@ -272,7 +283,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                   "text-xs font-medium hidden sm:block",
                   isActive ? "text-[var(--c-text)] dark:text-[var(--c-text)]" : isCompleted ? "text-emerald-700 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
                 )}>
-                  {step.title}
+                  {stegTitel(t, step)}
                 </span>
               </button>
 
@@ -297,11 +308,11 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
         <div className="sm:text-center">
           <p className="text-sm sm:text-sm text-stone-600 dark:text-stone-400">
             <span className="font-semibold text-stone-800 dark:text-stone-200">
-              Steg {currentStep}: {STEPS[currentStep - 1]?.title}
+              {t('cvBuilder.stepper.current', { defaultValue: 'Steg {{number}}: {{title}}', number: currentStep, title: stegTitel(t, STEPS[currentStep - 1]) })}
             </span>
             <span className="hidden sm:inline"> – </span>
             <span className="block sm:inline text-stone-600 dark:text-stone-400 mt-0.5 sm:mt-0">
-              {STEPS[currentStep - 1]?.description}
+              {stegBeskrivning(t, STEPS[currentStep - 1])}
             </span>
           </p>
         </div>
@@ -1508,9 +1519,9 @@ export default function CVBuilder() {
                       className={stigRadKlasser(aktiv)}
                     >
                       <StigPrick lage={aktiv ? 'aktiv' : klar ? 'klar' : 'kvar'} />
-                      <span className="min-w-0 flex-1 truncate">{st.title}</span>
+                      <span className="min-w-0 flex-1 truncate">{stegTitel(t, st)}</span>
                       <span className="text-[11px] text-stone-400 dark:text-stone-500 shrink-0">
-                        {klar ? '✓' : `${st.minutes} min`}
+                        {klar ? '✓' : t('cvBuilder.stepper.minutes', { defaultValue: '{{min}} min', min: st.minutes })}
                       </span>
                     </button>
                   </li>

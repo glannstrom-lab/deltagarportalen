@@ -209,7 +209,9 @@ function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
     <button
       onClick={onClick}
       className={cn(
-        'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
+        // RD10: shrink-0 — i den scrollande raden krympte flikarna annars under
+        // sin text och flöt ihop ("MeddelandenJobb") på mobil.
+        'shrink-0 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
         active
           ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)]'
           : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700'
@@ -298,12 +300,22 @@ export function NotificationBell({ className }: NotificationBellProps) {
 
   const handleClose = () => setIsOpen(false)
 
+  // RD10: var klockan faktiskt står (demobannern flyttar ner toppraden).
+  const [panelTopp, setPanelTopp] = useState<number | null>(null)
+  const oppnaEllerStang = () => {
+    if (!isOpen && buttonRef.current) {
+      const r = buttonRef.current.getBoundingClientRect()
+      setPanelTopp(r.bottom > 0 ? Math.round(r.bottom + 8) : null)
+    }
+    setIsOpen(!isOpen)
+  }
+
   return (
     <div className={cn('relative', className)}>
       {/* Bell Button */}
       <button
         ref={buttonRef}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={oppnaEllerStang}
         className={cn(
           'relative flex items-center justify-center transition-colors focus:outline-none',
           'w-9 h-9 rounded-full',
@@ -345,9 +357,14 @@ export function NotificationBell({ className }: NotificationBellProps) {
             id={labelId}
             role="dialog"
             aria-label={t('notificationBell.aria.notifications', 'Notifikationer')}
+            style={panelTopp !== null ? ({ '--notispanel-topp': `${panelTopp}px` } as React.CSSProperties) : undefined}
             className={cn(
-              'absolute right-0 top-full mt-2 z-50',
-              'w-80 sm:w-96 max-h-[80vh]',
+              // RD10: på mobil stack panelen (absolute right-0, w-80 från klockan
+              // mitt i toppraden) ut till vänster om skärmen. Under sm ligger den
+              // fast mellan skärmens kanter, strax under klockan.
+              'fixed inset-x-2 top-[var(--notispanel-topp,4.5rem)] z-50',
+              'sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2',
+              'sm:w-96 max-h-[80vh]',
               'bg-white dark:bg-stone-800 rounded-2xl',
               'shadow-xl border border-stone-100 dark:border-stone-700',
               'flex flex-col overflow-hidden'
@@ -372,7 +389,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
                   className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
                   aria-label={t('notificationBell.aria.close', 'Stäng')}
                 >
-                  <X className="w-4 h-4 text-stone-600" />
+                  <X className="w-4 h-4 text-stone-600 dark:text-stone-400" />
                 </button>
               </div>
             </div>
@@ -397,18 +414,8 @@ export function NotificationBell({ className }: NotificationBellProps) {
                 active={activeFilter === 'job_match'}
                 onClick={() => setActiveFilter('job_match')}
               />
-              <CategoryTab
-                label="Diskussioner"
-                count={unreadByCategory.discussion}
-                active={activeFilter === 'discussion'}
-                onClick={() => setActiveFilter('discussion')}
-              />
-              <CategoryTab
-                label="Vänner"
-                count={unreadByCategory.friend_request}
-                active={activeFilter === 'friend_request'}
-                onClick={() => setActiveFilter('friend_request')}
-              />
+              {/* RD10: "Diskussioner" och "Vänner" togs bort — portalen har ingen
+                  sådan funktion för deltagaren. Notiser av de typerna syns ändå under "Alla". */}
             </div>
 
             {/* Notification List */}

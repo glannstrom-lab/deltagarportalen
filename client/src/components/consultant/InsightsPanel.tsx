@@ -1,6 +1,14 @@
 /**
  * Insights Panel Component
- * Displays AI-driven insights about participants for consultants
+ * Regelbaserade insikter om konsulentens deltagare.
+ *
+ * RK12 (rollspelet 2026-09-27): panelen hette "AI-insikter" och sa "Inga
+ * insikter just nu. Alla deltagare ser bra ut!" — medan AI var avstängt för
+ * organisationen och fliken bredvid visade "Risker (2)". Insikterna är inte AI
+ * (fasta regler i consultantInsights.ts: dagar sedan profiländring, CV-poäng,
+ * sparade jobb, mål), så AI-brytaren påverkar dem inte. Panelen säger nu det,
+ * och en tom lista påstår aldrig att alla mår bra — den säger vad reglerna
+ * tittar på och pekar på riskerna när de finns.
  */
 
 import { useState, useEffect, useCallback } from 'react'
@@ -18,7 +26,8 @@ import {
   Briefcase,
   Award,
   AlertTriangle,
-  Loader2
+  Loader2,
+  Lightbulb
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -213,14 +222,14 @@ export function InsightsPanel({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+              <Lightbulb className="w-5 h-5 text-violet-600 dark:text-violet-400" aria-hidden="true" />
             </div>
             <div>
               <h3 className="font-semibold text-violet-900 dark:text-violet-100">
-                AI-insikter
+                Insikter
               </h3>
               <p className="text-sm text-violet-700 dark:text-violet-400">
-                Baserat på deltagardata
+                Fasta regler på deltagardata &mdash; ingen AI
               </p>
             </div>
           </div>
@@ -308,13 +317,16 @@ export function InsightsPanel({
                 </div>
               ) : (
                 <div className="p-8 text-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
-                    <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                  </div>
                   <p className="text-stone-600 dark:text-stone-400 font-medium">Inga insikter just nu</p>
                   <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
-                    Alla deltagare ser bra ut!
+                    Reglerna tittar på dagar sedan profilen ändrades, CV-poäng, sparade jobb och mål med deadline.
+                    Inget av det sticker ut &mdash; det säger inte att alla deltagare mår bra.
                   </p>
+                  {showRisks && risks.length > 0 && (
+                    <Button variant="outline" size="sm" className="mt-4" onClick={() => setActiveTab('risks')}>
+                      Se {risks.length === 1 ? '1 deltagare' : `${risks.length} deltagare`} med riskfaktorer
+                    </Button>
+                  )}
                 </div>
               )
             ) : (
@@ -392,12 +404,9 @@ export function InsightsPanel({
           <>
             {risks.length === 0 ? (
               <div className="p-8 text-center">
-                <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
-                  <Award className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
-                </div>
-                <p className="text-stone-600 dark:text-stone-400 font-medium">Inga riskdeltagare</p>
+                <p className="text-stone-600 dark:text-stone-400 font-medium">Inga riskfaktorer hittade</p>
                 <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
-                  Alla deltagare är på rätt spår
+                  Reglerna tittar på aktivitet, CV och sparade jobb. Närvaro i aktivitetsplanen ingår inte här.
                 </p>
               </div>
             ) : (

@@ -44,6 +44,16 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { consultantService } from '@/services/consultantService'
 import { cn } from '@/lib/utils'
 import { flikEfterTangent } from './flikTangenter'
+import { notifications } from '@/lib/toast'
+import { MotesKort, type MotenLage } from '@/components/consultant/MotesKort'
+import { PlaceringDeltagareKort, type PlaceringarLage } from '@/components/consultant/PlaceringDeltagareKort'
+import { ResultatUppfoljningDialog } from '@/components/consultant/ResultatUppfoljningDialog'
+import { forvaldMotestyp, hamtaMotenForDeltagare, kadensForMoten } from '@/services/moteskadens'
+import { KONTAKT_KALLA_TEXT, kontaktAlderText, senasteKontakt } from '@/services/senasteKontakt'
+import { placeringRubrik } from '@/services/placeringUtfall'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import type { Placement } from '@/services/consultantService'
+import type { Uppfoljning } from './placeringsmatt'
 
 interface Participant {
   participant_id: string
@@ -61,6 +71,8 @@ interface Participant {
   saved_jobs_count: number
   notes_count: number
   last_contact_at: string | null
+  /** Senaste journalanteckning — vyn consultant_dashboard_participants (RK14). */
+  last_note_date?: string | null
   next_meeting_scheduled: string | null
   last_login: string | null
   created_at?: string
@@ -103,11 +115,14 @@ function QuickStat({
   label,
   value,
   status,
+  detalj,
 }: {
   icon: React.ElementType
   label: string
   value: string | number
   status?: 'good' | 'warning' | 'bad'
+  /** RK14: en rad under talet, t.ex. varifrån "senaste kontakt" kommer. */
+  detalj?: string
 }) {
   const statusColors = {
     good: 'text-emerald-600',
@@ -119,10 +134,11 @@ function QuickStat({
   return (
     <div className="text-center p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
       <Icon className="w-6 h-6 text-stone-500 dark:text-stone-400 mx-auto mb-2" />
-      <p className={cn('text-2xl font-bold', statusColors[status || 'undefined'])}>
+      <p className={cn(typeof value === 'string' && value.length > 4 ? 'text-lg' : 'text-2xl', 'font-bold', statusColors[status || 'undefined'])}>
         {value}
       </p>
       <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{label}</p>
+      {detalj && <p className="text-xs text-stone-500 dark:text-stone-400">{detalj}</p>}
     </div>
   )
 }
@@ -332,6 +348,48 @@ export function ParticipantDetailPage() {
   const { confirm } = useConfirmDialog()
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [showPlacementDialog, setShowPlacementDialog] = useState(false)
+  // RR11: deltagarens möten — för mötesrutan, förvald mötestyp och RK14.
+  const [motenLage, setMotenLage] = useState<MotenLage>({ status: 'laddar' })
+  const [motenOmgang, setMotenOmgang] = useState(0)
+  // RR6: deltagarens placeringar — visas på sidan och påverkar rubriken.
+  const [placeringarLage, setPlaceringarLage] = useState<PlaceringarLage>({ status: 'laddar' })
+  const [placeringOmgang, setPlaceringOmgang] = useState(0)
+  const [uppfoljning, setUppfoljning] = useState<{ placering: Placement; vilken: Uppfoljning } | null>(null)
+  // RK14: senaste meddelandet åt något håll; null = inga eller inte hämtat.
+  const [senasteMeddelande, setSenasteMeddelande] = useState<string | null>(null)
+
+  // Hämtningarna skriver tillstånd först efter await — laddar-läget sätts av
+  // den som begär en ny omgång (samma mönster som AktivitetsplanSektion).
+  useEffect(() => {
+    if (!participantId) return
+    let aktiv = true
+    hamtaMotenForDeltagare(participantId)
+      .then((moten) => { if (aktiv) setMotenLage({ status: 'klart', moten }) })
+      .catch((err) => { if (aktiv) setMotenLage({ status: 'fel', fel: err instanceof Error ? err.message : 'Mötena kunde inte hämtas.' }) })
+    return () => { aktiv = false }
+  }, [participantId, motenOmgang])
+
+  useEffect(() => {
+    if (!participantId) return
+    let aktiv = true
+    consultantService.getPlacementsForParticipant(participantId)
+      .then((placeringar) => { if (aktiv) setPlaceringarLage({ status: 'klart', placeringar }) })
+      .catch((err) => { if (aktiv) setPlaceringarLage({ status: 'fel', fel: err instanceof Error ? err.message : 'Placeringarna kunde inte hämtas.' }) })
+    return () => { aktiv = false }
+  }, [participantId, placeringOmgang])
+
+  useEffect(() => {
+    if (!participantId) return
+    let aktiv = true
+    // Best effort: utan meddelanden räknas kontakten ur journal, möten och loggad kontakt.
+    consultantService.getSenasteMeddelande(participantId)
+      .then((at) => { if (aktiv) setSenasteMeddelande(at) })
+      .catch((err) => console.warn('[ParticipantDetailPage] senaste meddelande:', err))
+    return () => { aktiv = false }
+  }, [participantId])
+
+  const laddaOmMoten = () => { setMotenLage({ status: 'laddar' }); setMotenOmgang((n) => n + 1) }
+  const laddaOmPlaceringar = () => { setPlaceringarLage({ status: 'laddar' }); setPlaceringOmgang((n) => n + 1) }
 
   // KV1/KK1: håller reda på VILKEN deltagare som senast begärdes. Varje
   // asynkron etapp i fetchParticipantData jämför mot den här innan den
@@ -350,6 +408,9 @@ export function ParticipantDetailPage() {
     setJournal([])
     setJournalLoadError(null)
     setError(null)
+    setMotenLage({ status: 'laddar' })
+    setPlaceringarLage({ status: 'laddar' })
+    setSenasteMeddelande(null)
     fetchParticipantData(participantId)
     // ÖV1: deltagaren ska kunna se vem som öppnat hens uppgifter. En rad per
     // deltagare och webbläsarsession; fel sväljs i laslogg (console.warn) och
@@ -602,6 +663,8 @@ export function ParticipantDetailPage() {
           { id: data.id, content: data.content, category: data.category, createdAt: data.created_at },
           ...prev,
         ])
+        // RK14: en anteckning är en kontakt — "Senaste kontakt" följer med direkt.
+        setParticipant(prev => (prev ? { ...prev, last_note_date: data.created_at } : prev))
       }
       return { ok: true }
     } catch (err) {
@@ -700,6 +763,7 @@ export function ParticipantDetailPage() {
           consultantId: user.id,
         }
         setJournal(prev => [newEntry, ...prev])
+        setParticipant(prev => (prev ? { ...prev, last_note_date: data.created_at } : prev))
       }
       setNewNote('')
     } catch (error) {
@@ -803,6 +867,23 @@ export function ParticipantDetailPage() {
     )
   }
 
+  // RK14: senaste kontakt ur loggad kontakt, journal, genomförda möten och meddelanden.
+  const kontakt = senasteKontakt({
+    last_contact_at: participant.last_contact_at,
+    last_note_date: participant.last_note_date,
+    moten: motenLage.status === 'klart' ? motenLage.moten : [],
+    senasteMeddelande,
+  })
+  const kontaktDagar = kontakt ? Math.floor((Date.now() - new Date(kontakt.at).getTime()) / (24 * 60 * 60 * 1000)) : null
+  // RR11: mötestypen dialogen föreslår, ur samma kadens som deltagarlistans chip.
+  const kadens = motenLage.status === 'klart' ? kadensForMoten(motenLage.moten, new Date()) : undefined
+  const forvaldTyp = forvaldMotestyp(kadens)
+  const forvaldSkal = kadens?.dagarSedanFysiskt == null
+    ? 'Föreslås som fysiskt: inget genomfört fysiskt möte finns registrerat.'
+    : `Föreslås som fysiskt: senaste fysiska mötet var för ${kadens.dagarSedanFysiskt} dagar sedan, och ett fysiskt möte krävs minst var 28:e dag.`
+  // RR6: pågående eller kommande placering — i rubriken, bredvid statusen.
+  const placeringsrad = placeringarLage.status === 'klart' ? placeringRubrik(placeringarLage.placeringar, formatLocalDate(new Date())) : null
+
   const getInitials = () => {
     return `${participant.first_name?.[0] || ''}${participant.last_name?.[0] || ''}`.toUpperCase() ||
       participant.email[0].toUpperCase()
@@ -829,13 +910,15 @@ export function ParticipantDetailPage() {
 
           {/* Info */}
           <div className="flex-1">
-            <div className="flex items-start justify-between">
-              <div>
+            {/* RK17 (rollspelet 2026-09-27): på 390 px klipptes "Boka möte"
+                utanför skärmen — raden radbryts nu under namnet på mobil. */}
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+              <div className="min-w-0">
                 <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
                   {participant.first_name} {participant.last_name}
                 </h1>
-                <div className="flex items-center gap-4 mt-2 text-stone-500 dark:text-stone-400">
-                  <span className="flex items-center gap-1">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-stone-500 dark:text-stone-400">
+                  <span className="flex items-center gap-1 min-w-0 break-all">
                     <Mail className="w-4 h-4" />
                     {participant.email}
                   </span>
@@ -847,8 +930,13 @@ export function ParticipantDetailPage() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 sm:justify-end" data-testid="deltagare-atgarder">
                 <StatusBadge status={participant.status} t={t} />
+                {placeringsrad && (
+                  <span className="px-3 py-1 rounded-full text-sm font-medium bg-sky-100 text-sky-900 dark:bg-sky-900/40 dark:text-sky-100" data-testid="placering-status">
+                    {placeringsrad}
+                  </span>
+                )}
                 <Button variant="outline" size="sm" onClick={() => setShowMeetingDialog(true)}>
                   <Calendar className="w-4 h-4 mr-1" />
                   {t('consultant.communication.bookMeeting', 'Boka möte')}
@@ -869,7 +957,9 @@ export function ParticipantDetailPage() {
                 icon={FileText}
                 label={t('consultant.participantDetail.cvScore')}
                 value={participant.ats_score ? `${participant.ats_score}%` : '—'}
+                // RR6: en placerad deltagare flaggas inte rött för att CV saknas.
                 status={
+                  placeringsrad ? undefined :
                   (participant.ats_score || 0) >= 70 ? 'good' :
                   (participant.ats_score || 0) >= 50 ? 'warning' : 'bad'
                 }
@@ -887,12 +977,13 @@ export function ParticipantDetailPage() {
               <QuickStat
                 icon={Clock}
                 label={t('consultant.participantDetail.lastContact')}
-                value={participant.last_contact_at
-                  ? Math.floor((Date.now() - new Date(participant.last_contact_at).getTime()) / (1000 * 60 * 60 * 24))
-                  : '—'}
+                // RK14: "3" utan enhet, räknat bara ur last_contact_at. Nu
+                // "3 dagar sedan" ur verklig senaste kontakt, med källan under.
+                value={kontakt ? kontaktAlderText(kontakt.at) : '—'}
+                detalj={kontakt ? KONTAKT_KALLA_TEXT[kontakt.kalla] : 'Ingen kontakt registrerad'}
                 status={
-                  !participant.last_contact_at ? 'bad' :
-                  new Date(participant.last_contact_at) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) ? 'warning' : 'good'
+                  kontaktDagar === null ? 'bad' :
+                  kontaktDagar > 7 ? 'warning' : 'good'
                 }
               />
             </div>
@@ -954,6 +1045,19 @@ export function ParticipantDetailPage() {
       >
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <PlaceringDeltagareKort
+            lage={placeringarLage}
+            onForsokIgen={laddaOmPlaceringar}
+            onRegistrera={(placering, vilken) => setUppfoljning({ placering, vilken })}
+          />
+          <MotesKort
+            lage={motenLage}
+            onBoka={() => setShowMeetingDialog(true)}
+            onForsokIgen={laddaOmMoten}
+            onAndrat={(id, status) => setMotenLage((prev) => prev.status === 'klart'
+              ? { ...prev, moten: prev.moten.map((m) => (m.id === id ? { ...m, status } : m)) }
+              : prev)}
+          />
           {/* Recent Goals */}
           <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
@@ -1103,8 +1207,16 @@ export function ParticipantDetailPage() {
         <MeetingSchedulerDialog
           isOpen={showMeetingDialog}
           onClose={() => setShowMeetingDialog(false)}
-          onSuccess={() => setShowMeetingDialog(false)}
+          onSuccess={() => {
+            setShowMeetingDialog(false)
+            // RR11: ingen bekräftelse syntes efter bokningen, och mötesrutan
+            // (och kadensen) ska visa det bokade mötet direkt.
+            notifications.success('Mötet är bokat')
+            laddaOmMoten()
+          }}
           preselectedParticipant={participant}
+          forvaldTyp={forvaldTyp}
+          forvaldSkal={forvaldTyp === 'physical' ? forvaldSkal : undefined}
         />
       )}
 
@@ -1114,8 +1226,27 @@ export function ParticipantDetailPage() {
         <PlacementDialog
           isOpen={showPlacementDialog}
           onClose={() => setShowPlacementDialog(false)}
-          onSuccess={() => setShowPlacementDialog(false)}
+          onSuccess={() => {
+            setShowPlacementDialog(false)
+            notifications.success('Placeringen är registrerad')
+            laddaOmPlaceringar()
+          }}
           preselectedParticipant={participant}
+        />
+      )}
+
+      {/* RR5: 3- och 6-månadersuppföljning med datum, utfall, underlag och anteckning. */}
+      {uppfoljning && (
+        <ResultatUppfoljningDialog
+          placering={uppfoljning.placering}
+          vilken={uppfoljning.vilken}
+          onClose={() => setUppfoljning(null)}
+          onSparat={() => {
+            setUppfoljning(null)
+            notifications.success('Uppföljningen är registrerad')
+            laddaOmPlaceringar()
+            void refetchJournal()
+          }}
         />
       )}
     </div>

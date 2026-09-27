@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T16:09:04.224Z",
+  "generatedAt": "2026-09-27T19:07:25.448Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -32,6 +32,13 @@
     {
       "name": "activity_sessions_absence_notify",
       "signature": "activity_sessions_absence_notify()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "activity_sessions_explanation_notify",
+      "signature": "activity_sessions_explanation_notify()",
       "definer": true,
       "anon": false,
       "authenticated": false

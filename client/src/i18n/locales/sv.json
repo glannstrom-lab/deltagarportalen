@@ -137,7 +137,8 @@
     "generating": "Genererar...",
     "optional": "valfritt",
     "required": "Obligatorisk",
-    "copy": "Kopiera"
+    "copy": "Kopiera",
+    "tagCounter": "{{count}} av {{max}}"
   },
   "pageTabs": {
     "cv": {
@@ -1268,7 +1269,12 @@
       "emptySubtitle": "Lägg till dina kompetenser ovan"
     },
     "saveIndicator": {
-      "retryTitle": "Försöker spara igen..."
+      "retryTitle": "Försöker spara igen...",
+      "allSaved": "Allt sparat",
+      "saving": "Sparar...",
+      "offline": "Offline",
+      "savedAt": "Sparad {{time}}",
+      "unsaved": "Osparat"
     },
     "pdf": {
       "sections": {
@@ -1571,7 +1577,8 @@
       "daily": "Dagens jobb",
       "saved": "Sparade",
       "alerts": "Bevakningar",
-      "matches": "Matchningar"
+      "matches": "Matchningar",
+      "slumpjobbet": "Slumpjobbet"
     },
     "apply": "Ansök",
     "save": "Spara",
@@ -1747,6 +1754,15 @@
       "text": "Annonsen kunde inte öppnas just nu. Försök igen om en stund.",
       "platsbanken": "Öppna annonsen på Platsbanken",
       "stang": "Stäng meddelandet"
+    },
+    "unknownJob": "Okänd tjänst",
+    "headerStats": {
+      "saved_one": "sparat",
+      "saved_other": "sparade",
+      "applied_one": "ansökt",
+      "applied_other": "ansökta",
+      "interviews_one": "intervju",
+      "interviews_other": "intervjuer"
     }
   },
   "jobs": {
@@ -6572,7 +6588,14 @@
       "importedFields": "Importerade: {{fields}}",
       "noFieldsToImport": "Inga nya fält att importera från CV.",
       "exportError": "Kunde inte exportera PDF. Kontrollera att du har ett CV.",
-      "profileCompleteExclaim": "Profilen är komplett!"
+      "profileCompleteExclaim": "Profilen är komplett!",
+      "importCv": "Importera CV",
+      "importing": "Importerar...",
+      "downloadPdf": "Ladda ner PDF",
+      "exporting": "Exporterar...",
+      "saving": "Sparar...",
+      "saved": "Sparad",
+      "notSaved": "Ej sparad"
     },
     "jobSearch": {
       "statusAvailability": "Status & Tillgänglighet",
@@ -7549,7 +7572,41 @@
       "advice": "Råd",
       "preview": "Förhandsvisning"
     },
-    "yourCv": "Ditt CV"
+    "yourCv": "Ditt CV",
+    "stepper": {
+      "stepOf": "Steg {{current}} av {{total}}",
+      "minutesLeft": "~{{min}} min kvar",
+      "percentDone": "{{percent}} % klart",
+      "current": "Steg {{number}}: {{title}}",
+      "goTo": "Gå till steg {{number}}: {{title}}",
+      "minutes": "{{min}} min"
+    },
+    "steps": {
+      "design": {
+        "title": "Design",
+        "description": "Mall och färger"
+      },
+      "about": {
+        "title": "Om dig",
+        "description": "Kontaktuppgifter"
+      },
+      "profile": {
+        "title": "Profil",
+        "description": "Sammanfattning"
+      },
+      "experience": {
+        "title": "Erfarenhet",
+        "description": "Jobb & utbildning"
+      },
+      "skills": {
+        "title": "Kompetenser",
+        "description": "Skills & övrigt"
+      },
+      "review": {
+        "title": "Granska",
+        "description": "Granska och spara"
+      }
+    }
   },
   "consultant": {
     "underlag": {
@@ -8259,7 +8316,18 @@
       "noResponse": "Inget svar från AI-tjänsten."
     },
     "copyMessage": "Kopiera",
-    "messageCopied": "Kopierat!"
+    "messageCopied": "Kopierat!",
+    "orgAv": {
+      "rubrik": "Din organisation har valt att inte använda AI",
+      "text": "{{orgName}} har stängt av AI-funktionerna i Jobin. Det gäller alla, och du behöver inte göra något. Här är tre saker du kan göra i stället:",
+      "dinOrganisation": "Din organisation",
+      "konsulent": "Skriv till din konsulent",
+      "konsulentText": "Ställ din fråga till en människa som känner dig.",
+      "kunskapsbank": "Läs i kunskapsbanken",
+      "kunskapsbankText": "Artiklar om att söka jobb, om ersättning och om vardagen.",
+      "cv": "Gör ditt CV med mallen",
+      "cvText": "CV-byggaren fungerar utan AI."
+    }
   },
   "salary": {
     "pageTitle": "Lön & Förhandling",
@@ -9315,17 +9383,16 @@
     },
     "saldo": {
       "ingaPass": "Inget inplanerat den här veckan.",
-      "rad": "Du har {{planerade}} av {{mal}} timmar den här veckan.",
-      "jobbsok": "Och {{h}} timmar för eget jobbsökande."
+      "radAnvisat_one": "Du har {{planerade}} av {{mal}} timme i anvisade pass den här veckan.",
+      "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
+      "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timme i veckan enligt planen.",
+      "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.",
+      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan."
     },
     "nastaPass": "Nästa: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Förra veckan",
     "nastaVeckan": "Nästa vecka",
     "veckaRubrik": "Vecka {{fran}} – {{till}}",
-    "tomVecka": {
-      "framtid": "Inga pass inplanerade än den här veckan — din konsulent lägger till fler pass efter hand.",
-      "ledig": "Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker."
-    },
     "idag": "i dag",
     "jagArHar": "Jag är här",
     "jobbsok": {
@@ -9390,12 +9457,12 @@
       "mal": "Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.",
       "skal": "Skäl: {{skal}}.",
       "full": "Den här veckan är fullplanerad.",
-      "kvar": "{{planerade}} timmar är inplanerade. {{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.",
-      "jobbsok": "De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.",
+      "kvar_one": "{{kvar}} timme återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.",
       "guide": "Läs om aktivitetskravet och vad som gäller för dig",
       "malLeverantor": "Din konsulent har satt {{mal}} timmar i veckan som mål för aktiviteterna i din plan. Planen kommer från leverantören inom Arbetsförmedlingens tjänst Rusta och matcha — det är Arbetsförmedlingen som har anvisat dig dit.",
       "malNeutral": "Din konsulent har satt {{mal}} timmar i veckan som mål för aktiviteterna i din plan.",
-      "guideLeverantor": "Läs om Rusta och matcha och vad som gäller för dig"
+      "guideLeverantor": "Läs om Rusta och matcha och vad som gäller för dig",
+      "kvar_other": "{{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv."
     },
     "incheckad": "Incheckad kl {{tid}}",
     "incheckadStatus": "Tack, du är incheckad.",
@@ -9419,6 +9486,38 @@
       "knappEtikett": "Lägg till {{titel}} i kalendern",
       "status": "Kalenderfilen är nedladdad. Öppna den för att lägga passet i din kalender.",
       "fel": "Kalenderfilen kunde inte skapas. Försök igen om en stund."
+    },
+    "mote": {
+      "rubrik": "Möte med din konsulent",
+      "och": "och",
+      "fraga": "Gäller det också mötet med din konsulent kl {{tid}}?",
+      "ja": "Ja, meddela om mötet också",
+      "nej": "Nej, jag kommer till mötet",
+      "meddelande": "Hej! Jag har anmält att jag inte kan komma till {{titel}} på {{datum}}. Det gäller också vårt möte kl {{tid}} samma dag.",
+      "skickat": "Din konsulent har fått besked om mötet också.",
+      "fel": "Beskedet om mötet gick inte att skicka just nu. Du kan skriva eller ringa till din konsulent från sidan Min konsulent.",
+      "kanInte": "Jag kan inte komma till mötet",
+      "kanInteRubrik": "Din konsulent får ett meddelande om att du inte kan komma. Ni hittar en ny tid tillsammans.",
+      "kanInteMeddelande": "Hej! Jag kan inte komma till vårt möte {{datum}} kl {{tid}}.",
+      "skickatKort": "Din konsulent har fått besked om mötet.",
+      "felKort": "Det gick inte att skicka just nu. Din text är kvar. Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.",
+      "hamtFel": "Dina möten med konsulenten kunde inte hämtas just nu. Du ser dem på sidan Min konsulent."
+    },
+    "forklara": {
+      "knapp": "Förklara frånvaron",
+      "andra": "Ändra din förklaring",
+      "din": "Din förklaring:",
+      "etikett": "Vad hände? Skriv med dina egna ord.",
+      "vemSer": "Din konsulent får se förklaringen, och den står med på ditt närvarointyg som din egen förklaring.",
+      "skicka": "Skicka förklaringen",
+      "avbryt": "Avbryt",
+      "tom": "Skriv några ord om vad som hände.",
+      "fel": "Det gick inte att skicka just nu. Din text är kvar, så du kan försöka igen om en stund.",
+      "status": "Din förklaring är skickad till din konsulent."
+    },
+    "tomVecka": {
+      "framtid": "Inga pass inplanerade än den här veckan — din konsulent lägger till fler pass efter hand.",
+      "ledig": "Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker."
     }
   },
   "minVardagHub": {
@@ -9819,5 +9918,13 @@
     "continue": "Godkänn och fortsätt",
     "saveFailed": "Det gick inte att spara just nu. Försök igen om en stund.",
     "logout": "Logga ut i stället"
+  },
+  "pdfExport": {
+    "exportPdf": "Exportera PDF",
+    "generating": "Genererar PDF...",
+    "download": "Ladda ner",
+    "preview": "Förhandsgranska",
+    "cvDownloaded": "CV nedladdat.",
+    "error": "Kunde inte generera PDF. Försök igen."
   }
 }

@@ -4,6 +4,7 @@
  */
 
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FileDown, Loader2, Eye, Download } from '@/components/ui/icons';
 import {
   generateJobPDF,
@@ -89,6 +90,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   showPreview = true,
   className = '',
 }) => {
+  const { t } = useTranslation();
   const [isGenerating, setIsGenerating] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
@@ -161,7 +163,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       return blob;
     } catch (error) {
       console.error('Error generating PDF:', error);
-      alert('Kunde inte generera PDF. Försök igen.');
+      alert(t('pdfExport.error', 'Kunde inte generera PDF. Försök igen.'));
       return null;
     } finally {
       setIsGenerating(false);
@@ -175,9 +177,9 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
         const template = (data as CVData)?.template || 'sidebar';
         const blob = await generateServerCV(template, versionId);
         downloadPDF(blob, finalFilename);
-        showToast.success('CV nedladdat.');
+        showToast.success(t('pdfExport.cvDownloaded', 'CV nedladdat.'));
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Kunde inte generera PDF.';
+        const msg = err instanceof Error ? err.message : t('pdfExport.error', 'Kunde inte generera PDF. Försök igen.');
         showToast.error(msg);
       } finally {
         setIsGenerating(false);
@@ -200,7 +202,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
         const blob = await generateServerCV(template, versionId);
         previewPDF(blob);
       } catch (err) {
-        const msg = err instanceof Error ? err.message : 'Kunde inte generera PDF.';
+        const msg = err instanceof Error ? err.message : t('pdfExport.error', 'Kunde inte generera PDF. Försök igen.');
         showToast.error(msg);
       } finally {
         setIsGenerating(false);
@@ -224,7 +226,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
         } ${variantClasses[variant]} ${className}`}
       >
         <Loader2 className="w-4 h-4 animate-spin" />
-        Genererar PDF...
+        {t('pdfExport.generating', 'Genererar PDF...')}
       </button>
     );
   }
@@ -238,7 +240,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
         } ${variantClasses[variant]} ${className}`}
       >
         <FileDown className="w-4 h-4" aria-hidden="true" />
-        {label ?? 'Exportera PDF'}
+        {label ?? t('pdfExport.exportPdf', 'Exportera PDF')}
       </button>
     );
   }
@@ -252,7 +254,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
         } ${variantClasses[variant]} ${className}`}
       >
         <FileDown className="w-4 h-4" aria-hidden="true" />
-        {label ?? 'Exportera PDF'}
+        {label ?? t('pdfExport.exportPdf', 'Exportera PDF')}
       </button>
 
       {showMenu && (
@@ -270,14 +272,14 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
             >
               <Download className="w-4 h-4" />
-              Ladda ner
+              {t('pdfExport.download', 'Ladda ner')}
             </button>
             <button
               onClick={handlePreview}
               className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
             >
               <Eye className="w-4 h-4" />
-              Förhandsgranska
+              {t('pdfExport.preview', 'Förhandsgranska')}
             </button>
           </div>
         </>

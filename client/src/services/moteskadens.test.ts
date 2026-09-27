@@ -68,7 +68,7 @@ describe('kadensForMoten — 28-dagarsgränsen för fysiskt', () => {
 describe('kadensForMoten — vad som inte räknas', () => {
   it('inget möte alls = inget', () => {
     const k = kadensForMoten([], IDAG)
-    expect(k).toEqual({ dagarSedanMote: null, veckorSedanFysiskt: null, dagarSedanFysiskt: null, laget: 'inget' })
+    expect(k).toEqual({ dagarSedanMote: null, veckorSedanFysiskt: null, dagarSedanFysiskt: null, laget: 'inget', bokat: null, bokatFysiskt: null })
   })
   it('inbokade och avbokade möten räknas inte, inte heller möten i framtiden', () => {
     const framtid = new Date(IDAG); framtid.setDate(framtid.getDate() + 3)

@@ -56,6 +56,8 @@ import { TillampaMallDialog } from './TillampaMallDialog'
 import { UnderlagDialog } from './UnderlagDialog'
 import { JobbsokTidKort } from './JobbsokTidKort'
 import { franvaroAv, type FranvaroOrsak } from '@/services/franvaroApi'
+import { egetJobbsokSaldo, vantarPaKvittens } from '@/services/egenrapport'
+import { PlatsKoppling } from './PlatsKoppling'
 import {
   AKTIVITETSTYP_CHIP,
   AKTIVITETSTYP_ETIKETT,
@@ -252,6 +254,10 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   }
 
   const saldo = veckosaldo(sessions, vecka)
+  // RK15 (rollspelet 2026-09-27): eget jobbsökande summerades som PLANERADE
+  // timmar — en egen redovisning på 9 h lyfte veckan utan att någon kvitterat
+  // den. Nu räknas bara kvitterade timmar; resten syns som "väntar på kvittens".
+  const egetSaldo = egetJobbsokSaldo(sessions, vecka, formatLocalDate(new Date()))
   // RK1: närvaron i anvisade pass mäts mot den anvisade delen av målet —
   // veckomålet minus planens eget jobbsökande — inte mot hela målet.
   const anvisatMal = anvisatVeckomal(plan)
@@ -361,6 +367,9 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         )}
       </Card>
 
+      {/* RR10: praktik/arbetsträning i planen ↔ Platser. */}
+      <PlatsKoppling participantId={participantId} sessions={sessions} />
+
       <Card className="p-5 space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <div className="flex items-center gap-1">
@@ -383,13 +392,23 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
           <Saldotal etikett="Planerat anvisat" varde={ampel === 'inga_pass' ? '—' : `${formatTimmar(saldo.planeradeTimmar)} / ${formatTimmar(anvisatMal)}`} />
           <Saldotal etikett="Närvaro" varde={ampel === 'inga_pass' ? '—' : formatTimmar(saldo.narvaroTimmar)} />
-          <Saldotal etikett="Eget jobbsökande" varde={ampel === 'inga_pass' && saldo.jobbsokTimmar === 0 ? '—' : formatTimmar(saldo.jobbsokTimmar)} />
+          <Saldotal
+            etikett="Eget jobbsökande, kvitterat"
+            varde={ampel === 'inga_pass' && saldo.jobbsokTimmar === 0 ? '—' : formatTimmar(egetSaldo.kvitteradeTimmar)}
+          />
           <Saldotal
             etikett="Ogiltig frånvaro"
             varde={ampel === 'inga_pass' ? '—' : saldo.antalOgiltigFranvaro === 0 ? 'Ingen' : `${saldo.antalOgiltigFranvaro} pass`}
             varning={saldo.antalOgiltigFranvaro > 0}
           />
         </dl>
+        {egetSaldo.antalVantar > 0 && (
+          <p className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2" role="status" data-testid="vantar-kvittens">
+            {egetSaldo.antalVantar} pass väntar på din kvittens
+            {egetSaldo.vantarTimmar > 0 ? ` (varav ${formatTimmar(egetSaldo.vantarTimmar)} eget jobbsökande)` : ''} — deltagarens egen redovisning eller incheckning.
+            Kvittera passet nedan när du stämt av det; först då räknas det.
+          </p>
+        )}
         {glapp && (
           <p className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2" role="status">
             {glapp}
@@ -397,7 +416,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         )}
         <p className="text-xs text-stone-500 dark:text-stone-400">
           Veckomålet {formatTimmar(Number(plan.weekly_hours_target) || 0)} = {formatTimmar(anvisatMal)} anvisad aktivitet + {formatTimmar(egetJobbsokPlan)} eget jobbsökande.
-          Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in.
+          Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in i ampeln. Eget jobbsökande räknas som utfört först när du kvitterat det.
         </p>
         <p className="text-xs text-stone-500 dark:text-stone-400">
           {arLeverantor
@@ -440,7 +459,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
       {/* F10: underlag till handläggaren — bara med en plan att lämna underlag om */}
       {underlagDialog && (
         underlagDialog.lage === 'lamna'
-          ? <UnderlagDialog lage="lamna" plan={plan} sessions={sessions} onClose={() => setUnderlagDialog(null)} onSparat={taEmotUnderlag} />
+          ? <UnderlagDialog lage="lamna" plan={plan} sessions={sessions} participantName={participantName} onClose={() => setUnderlagDialog(null)} onSparat={taEmotUnderlag} />
           : <UnderlagDialog lage="angra" underlag={underlagDialog.underlag} onClose={() => setUnderlagDialog(null)} onSparat={taEmotUnderlag} />
       )}
     </div>
@@ -475,6 +494,8 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
   const [sparar, setSparar] = useState<Attendance | 'nollstall' | 'anteckning' | null>(null)
   const [anteckningFel, setAnteckningFel] = useState<string | null>(null)
   const egetJobbsok = session.activity_type === 'jobsearch_own'
+  // RK15: egenrapporterat och omarkerat — väntar på konsulentens kvittens.
+  const vantar = vantarPaKvittens(session, formatLocalDate(new Date()))
   // RK4: text i rutan som inte finns i databasen. Syns även när panelen är stängd.
   const osparadAnteckning = anteckning.trim() !== (session.attendance_note ?? '').trim()
 
@@ -563,23 +584,33 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
             <span className={cn('text-xs px-2 py-1 rounded-full', NARVARO_CHIP[session.attendance])}>
               {NARVARO_ETIKETT[session.attendance]}{session.attendance === 'sick_certified' ? (session.sick_certificate_received ? ' · intyg' : ' · intyg saknas') : ''}
             </span>
+          ) : vantar ? (
+            <span className="text-xs px-2 py-1 rounded-full bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100">
+              {egetJobbsok ? 'Egen redovisning' : 'Incheckad'} · väntar på kvittens
+            </span>
           ) : egetJobbsok ? (
             <span className="text-xs text-stone-500">Egen redovisning</span>
           ) : (
             <span className="text-xs text-stone-500">Inte markerad</span>
           )}
-          {!egetJobbsok && (
-            <Button size="sm" variant="outline" onClick={() => void vaxlaPanel()} disabled={sparar === 'anteckning'} aria-expanded={oppen} aria-controls={`narvaro-${session.id}`}>
-              Närvaro
+          {/* RK15: kvittera = markera närvarande, samma skrivväg som Närvaro-panelen. */}
+          {vantar && (
+            <Button size="sm" onClick={() => void markera('present')} disabled={sparar !== null}>
+              {sparar === 'present' ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" aria-hidden="true" /> : null}
+              Kvittera
             </Button>
           )}
+          {/* RK15: eget jobbsökande hade ingen närvaroknapp här men tre i Min dag. Samma val i båda vyerna nu. */}
+          <Button size="sm" variant="outline" onClick={() => void vaxlaPanel()} disabled={sparar === 'anteckning'} aria-expanded={oppen} aria-controls={`narvaro-${session.id}`}>
+            Närvaro
+          </Button>
         </div>
       </div>
       {!oppen && anteckningFel && (
         <p role="alert" className="mt-2 text-sm text-rose-700 dark:text-rose-300">{anteckningFel}</p>
       )}
 
-      {oppen && !egetJobbsok && (
+      {oppen && (
         <div id={`narvaro-${session.id}`} className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-700 space-y-3">
           <div className="flex flex-wrap gap-2" role="group" aria-label={`Närvaro för ${session.title} ${kortDatum(session.date)}`}>
             {NARVARO_ORDNING.map((a) => (

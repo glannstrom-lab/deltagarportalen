@@ -13,6 +13,26 @@ import { ProfileImageUpload } from './ProfileImageUpload'
 import { cvIntegrationApi, profileExportApi } from '@/services/profileEnhancementsApi'
 import { notifications, TOAST_MESSAGES } from '@/lib/toast'
 
+/**
+ * profileStore bär svenska etiketter i `completion.nextStep.label` ("Telefon").
+ * Visningen går via `profile.completion.fields.*` så att "Nästa: Telefon" inte
+ * står kvar på engelska (RD6, 2026-09-27). Nyckeln i storen → nyckeln i locale.
+ */
+const FALTNYCKEL: Record<string, string> = {
+  first_name: 'firstName',
+  last_name: 'lastName',
+  phone: 'phone',
+  location: 'location',
+  desired_jobs: 'desiredJobs',
+  availability: 'availability',
+  cv_status: 'cvStatus',
+  energy: 'energyLevel',
+  short_goal: 'shortTermGoal',
+  long_goal: 'longTermGoal',
+  af: 'registeredAF',
+  sectors: 'sectors',
+}
+
 export function ProfileHeader() {
   const { t } = useTranslation()
   const {
@@ -111,17 +131,17 @@ export function ProfileHeader() {
               {cloudSyncing ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  <span>Sparar...</span>
+                  <span>{t('profile.header.saving', 'Sparar...')}</span>
                 </>
               ) : cloudSynced ? (
                 <>
                   <Cloud className="w-3.5 h-3.5 text-emerald-600" />
-                  <span className="text-emerald-700 dark:text-emerald-400">Sparad</span>
+                  <span className="text-emerald-700 dark:text-emerald-400">{t('profile.header.saved', 'Sparad')}</span>
                 </>
               ) : (
                 <>
                   <CloudOff className="w-3.5 h-3.5 text-amber-600" />
-                  <span className="text-amber-700 dark:text-amber-400">Ej sparad</span>
+                  <span className="text-amber-700 dark:text-amber-400">{t('profile.header.notSaved', 'Ej sparad')}</span>
                 </>
               )}
             </div>
@@ -140,7 +160,7 @@ export function ProfileHeader() {
                   <span className="w-2 h-2 rounded-full bg-[var(--c-solid)]" />
                 </span>
                 <span className="text-sm text-stone-700 dark:text-stone-300">
-                  {t('profile.header.nextInvit', { defaultValue: 'Nästa: {{label}}', label: completion.nextStep.label })}
+                  {t('profile.header.nextInvit', { defaultValue: 'Nästa: {{label}}', label: t(`profile.completion.fields.${FALTNYCKEL[completion.nextStep.key] ?? completion.nextStep.key}`, completion.nextStep.label) })}
                 </span>
               </div>
               <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-[var(--c-solid)] group-hover:translate-x-0.5 transition-all" aria-hidden="true" />
@@ -166,7 +186,7 @@ export function ProfileHeader() {
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors disabled:opacity-50"
             >
               <Upload className="w-3.5 h-3.5" />
-              {importing ? 'Importerar...' : 'Importera CV'}
+              {importing ? t('profile.header.importing', 'Importerar...') : t('profile.header.importCv', 'Importera CV')}
             </button>
             <button
               onClick={handleExportPDF}
@@ -174,7 +194,7 @@ export function ProfileHeader() {
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors disabled:opacity-50"
             >
               <Download className="w-3.5 h-3.5" />
-              {exporting ? 'Exporterar...' : 'Ladda ner PDF'}
+              {exporting ? t('profile.header.exporting', 'Exporterar...') : t('profile.header.downloadPdf', 'Ladda ner PDF')}
             </button>
           </div>
         </div>

@@ -47,11 +47,11 @@ export function RevokeConsultantLinkSection({
       <Card padding="md" className="border border-stone-200">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
-            <h3 className="text-sm font-semibold text-stone-900 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-stone-500" />
               {t('myConsultant.revoke.title')}
             </h3>
-            <p className="text-sm text-stone-600 mt-1">
+            <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
               {t('myConsultant.revoke.description', { namn: consultantName })}
             </p>
             {consent && (

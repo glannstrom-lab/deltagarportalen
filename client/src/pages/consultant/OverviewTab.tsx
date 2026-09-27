@@ -36,8 +36,6 @@ import { cn } from '@/lib/utils'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
-import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
-import type { ReportData } from '@/services/pdfReportGenerator'
 import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
 import {
   MinDagSection,
@@ -307,7 +305,6 @@ export function OverviewTab() {
   const [showInviteDialog, setShowInviteDialog] = useState(false)
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
-  const [showReportDialog, setShowReportDialog] = useState(false)
   // Meddelandedialog (gruppmeddelande + direktmeddelande från Min dag)
   const [showMessageDialog, setShowMessageDialog] = useState(false)
   const [messagePreselected, setMessagePreselected] = useState<string[] | undefined>(undefined)
@@ -319,9 +316,6 @@ export function OverviewTab() {
 
   // Goal categories for overview
   const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
-
-  // Report data for PDF export
-  const [reportData, setReportData] = useState<ReportData | null>(null)
 
   // Hämtas en gång vid montering; useEffectEvent så att beroendelistan är
   // ärlig utan att fetchDashboardData (som byts varje rendering) utlöser nya
@@ -649,31 +643,6 @@ export function OverviewTab() {
 
           setGoalCategories(sortedCategories)
         }
-
-        // Build report data for PDF export.
-        // averageTimeToPlacement och monthlyProgress var hårdkodade mockvärden
-        // (45 dagar + en fast månadsserie). Borttaget 2026-05-09 — riktig
-        // beräkning finns i AnalyticsTab.tsx och bör återanvändas härifrån.
-        // Tills dess: 0 + tom serie så PDF inte ljuger om verksamheten.
-        setReportData({
-          totalParticipants: participantsData.length,
-          activeParticipants: active.length,
-          completedParticipants: participantsData.filter(p => p.status === 'COMPLETED').length,
-          cvCompletionRate: Math.round((completedCV.length / Math.max(participantsData.length, 1)) * 100),
-          goalsCompletionRate: goalsData ? Math.round((completedGoals / Math.max(goalsData.length, 1)) * 100) : 0,
-          engagementRate: Math.round((active.length / Math.max(participantsData.length, 1)) * 100),
-          // RK11: null, inte 0 — PDF:en skriver "—" med en förklaring i stället för "0 dagar".
-          averageTimeToPlacement: null,
-          averageTimeToPlacementNote: 'Placeringstiden räknas under Rapporter. Ta ut rapporten därifrån för att få den med.',
-          monthlyProgress: [],
-          statusDistribution: [
-            { label: 'Aktiva', value: active.length },
-            { label: 'Inaktiva', value: participantsData.filter(p => p.status === 'INACTIVE').length },
-            { label: 'Avslutade', value: participantsData.filter(p => p.status === 'COMPLETED').length },
-          ],
-          topGoalCategories: goalCategories.map(c => ({ category: c.category, count: c.count })),
-          cohortData: [],
-        })
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -868,7 +837,12 @@ export function OverviewTab() {
             <QuickAction
               icon={Download}
               label={t('consultant.overview.exportReport')}
-              onClick={() => setShowReportDialog(true)}
+              // RK19 (rollspelet 2026-09-27): rapporten tas ut på Rapporter, där
+              // placeringstid, månadsserie och kohorter faktiskt räknas. Översikten
+              // byggde en egen, tunnare kopia (placeringstid "—", tom månadsserie)
+              // och renderade dialogen bara när den kopian fanns — annars hände
+              // ingenting alls vid klick.
+              onClick={() => navigate('/consultant/analytics?rapport=1')}
             />
             <QuickAction
               icon={Target}
@@ -1057,14 +1031,6 @@ export function OverviewTab() {
           fetchDashboardData()
         }}
       />
-
-      {reportData && (
-        <ReportGeneratorDialog
-          isOpen={showReportDialog}
-          onClose={() => setShowReportDialog(false)}
-          analyticsData={reportData}
-        />
-      )}
 
       <GroupMessageDialog
         isOpen={showMessageDialog}

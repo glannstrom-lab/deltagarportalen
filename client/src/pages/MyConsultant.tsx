@@ -55,7 +55,7 @@ import { VemHarOppnatKort } from '@/components/consultant/VemHarOppnatKort'
 import { Delningsforslag } from '@/components/participant/Delningsforslag'
 import { RadgivarTips } from '@/components/radgivare/RadgivarPanel'
 import { FokusVaxel } from '@/components/focus/shell/FokusVaxel'
-import { datumSprak } from '@/lib/datumsprak'
+import { datumSprak, kortDatum } from '@/lib/datumsprak'
 
 // Types
 interface ConsultantInfo {
@@ -137,7 +137,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
   return (
     <Card className="overflow-hidden">
       {/* Header with gradient */}
-      <div className="bg-[var(--c-solid)] p-6 text-white">
+      <div className="bg-[var(--c-solid)] p-6 text-[var(--c-on-solid)]">
         <div className="flex items-center gap-4">
           {consultant.avatar_url ? (
             <img
@@ -147,14 +147,14 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
             />
           ) : (
             <div className="w-16 h-16 shrink-0 rounded-full bg-white/20 flex items-center justify-center">
-              <User className="w-8 h-8 text-white" />
+              <User className="w-8 h-8 text-[var(--c-on-solid)]" />
             </div>
           )}
           <div className="min-w-0">
             <h2 className="text-lg font-semibold break-words">
               {consultant.first_name} {consultant.last_name}
             </h2>
-            <p className="text-white text-sm">
+            <p className="text-[var(--c-on-solid)] text-sm">
               {consultant.title || t('myConsultant.consultant.yourConsultant')}
             </p>
           </div>
@@ -403,7 +403,7 @@ function MessagesSection({
   onSendMessage: (content: string) => Promise<void>
   loading: boolean
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user } = useAuthStore()
   const [newMessage, setNewMessage] = useState('')
   const [sending, setSending] = useState(false)
@@ -481,7 +481,7 @@ function MessagesSection({
                     className={cn(
                       'max-w-[80%] rounded-2xl px-4 py-3',
                       isOwn
-                        ? 'bg-[var(--c-solid)] text-white rounded-br-md'
+                        ? 'bg-[var(--c-solid)] text-[var(--c-on-solid)] rounded-br-md'
                         : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-bl-md'
                     )}
                   >
@@ -489,10 +489,10 @@ function MessagesSection({
                     <p
                       className={cn(
                         'text-xs mt-1',
-                        isOwn ? 'text-white' : 'text-stone-500 dark:text-stone-400'
+                        isOwn ? 'text-[var(--c-on-solid)]' : 'text-stone-500 dark:text-stone-400'
                       )}
                     >
-                      {new Date(message.created_at).toLocaleTimeString('sv-SE', {
+                      {new Date(message.created_at).toLocaleTimeString(datumSprak(i18n.language), {
                         hour: '2-digit',
                         minute: '2-digit',
                       })}
@@ -609,7 +609,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
                 </p>
                 {goal.deadline && (
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    {t('myConsultant.goals.deadline')}: {new Date(goal.deadline).toLocaleDateString(datumSprak(i18n.language))}
+                    {t('myConsultant.goals.deadline')}: {kortDatum(goal.deadline, i18n.language)}
                   </p>
                 )}
               </div>
@@ -677,7 +677,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           className={cn(
             'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
             'bg-[var(--c-solid)] hover:bg-[var(--c-text)]',
-            'text-white'
+            'text-[var(--c-on-solid)]'
           )}
         >
           <Calendar className="w-5 h-5" />
@@ -908,7 +908,8 @@ function MyConsultantInner() {
       wellnessIsShared = !!(sharing?.share_wellness_data || sharing?.share_health_data)
     }
 
-    const dateLocale = i18n.language === 'sv' ? 'sv-SE' : 'en-US'
+    // RD6: 'en-US' gav 9/27/2026. kortDatum skriver ut månaden på engelska.
+    const sprak = i18n.language
 
     const info: SharedInfo[] = [
       {
@@ -922,7 +923,7 @@ function MyConsultantInner() {
             // Supabase Auth och är den faktiska källan.
             label: t('myConsultant.sharedInfo.lastLogin'),
             value: user?.last_sign_in_at
-              ? new Date(user.last_sign_in_at).toLocaleDateString(dateLocale)
+              ? kortDatum(user.last_sign_in_at, sprak)
               : UNKNOWN,
             status: user?.last_sign_in_at ? 'good' : 'neutral',
             isShared: true,
@@ -959,7 +960,7 @@ function MyConsultantInner() {
           {
             label: t('myConsultant.sharedInfo.lastUpdated'),
             value: cvData?.updated_at
-              ? new Date(cvData.updated_at).toLocaleDateString(dateLocale)
+              ? kortDatum(cvData.updated_at, sprak)
               : '-',
             status: 'neutral',
             isShared: true,
@@ -989,7 +990,7 @@ function MyConsultantInner() {
           {
             label: t('myConsultant.sharedInfo.lastLogged'),
             value: moodData?.log_date
-              ? new Date(moodData.log_date).toLocaleDateString(dateLocale)
+              ? kortDatum(moodData.log_date, sprak)
               : t('myConsultant.sharedInfo.notLogged'),
             status: 'neutral',
             isShared: wellnessIsShared,

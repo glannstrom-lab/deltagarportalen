@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useEffectEvent } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   BarChart3,
@@ -38,7 +38,6 @@ import { IvoUnderlagSektion } from '@/components/consultant/IvoUnderlagSektion'
 import { AvtalskravKort } from '@/components/consultant/AvtalskravKort'
 import { orgTypVisning } from '@/components/consultant/orgTypVisning'
 import { orgApi, type OrgKind } from '@/services/orgApi'
-import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
 // att testa härifrån, och det var därför `QNaN NaN` kunde nå en skarp PDF.
@@ -49,6 +48,7 @@ import { computePlacementMetric, followupStatus } from './placeringsmatt'
 // ur den här filen 2026-09-02, samma grepp som gav cohorts.ts sina tester.
 import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, placeringstid, type TrendData } from './analytics'
 import { formatLocalDate } from '@/services/aktivitetSchema'
+import { csvTabell } from '@/components/consultant/deltagarExport'
 
 interface PlacementRow {
   id: string
@@ -237,6 +237,10 @@ export function AnalyticsTab() {
   const [error, setError] = useState<string | null>(null)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
+  // RK19 (rollspelet 2026-09-27): Översiktens "Exportera rapport" leder hit med
+  // ?rapport=1 — rapporten tas ut där siffrorna räknas, inte ur en sämre kopia.
+  const [sokParametrar, setSokParametrar] = useSearchParams()
+  const oppnaRapportVidStart = sokParametrar.get('rapport') === '1'
   const [cohortData, setCohortData] = useState<CohortData[]>([])
   const [placementRows, setPlacementRows] = useState<PlacementRow[]>([])
   const [stuckList, setStuckList] = useState<StuckParticipant[]>([])
@@ -534,36 +538,26 @@ export function AnalyticsTab() {
     }
   }
 
-  // AG3/KS1: kopplar in updatePlacementFollowup() (fanns, noll anropare).
-  // Optimistisk lokal uppdatering; ett fel återställer INTE — konsulenten
-  // ser felmeddelandet och kan försöka igen, hellre än att tyst tappa klicket.
-  const handleToggleFollowup = async (
-    placementId: string,
-    field: 'followup_3m' | 'followup_6m',
-    value: boolean
-  ) => {
-    try {
-      await consultantService.updatePlacementFollowup(placementId, field, value)
-      setPlacementRows(prev => prev.map(row => {
-        if (row.id !== placementId) return row
-        return field === 'followup_3m'
-          ? { ...row, followup3m: value }
-          : { ...row, followup6m: value }
-      }))
-    } catch (err) {
-      console.error('[AnalyticsTab] kunde inte uppdatera uppföljningen:', err)
-      notifications.error('Uppföljningen kunde inte sparas just nu.')
-    }
-  }
 
   // KK6 (2026-09-02): computeMonthlyProgress/calculateTrends/calculateGoalCategories
   // flyttade till analytics.ts — se importen ovan. Anropen nedan är oförändrade.
 
-  const handleExport = (format: 'pdf' | 'excel') => {
+  // RK19: öppna rapportdialogen när datan är inne, och ta bort parametern så
+  // att en omladdning eller ett periodbyte inte öppnar den igen.
+  useEffect(() => {
+    if (!oppnaRapportVidStart || loading || error) return
+    setShowReportDialog(true)
+    setSokParametrar((p) => { p.delete('rapport'); return p }, { replace: true })
+  }, [oppnaRapportVidStart, loading, error, setSokParametrar])
+
+  const handleExport = (format: 'pdf' | 'csv') => {
     if (format === 'pdf') {
       setShowReportDialog(true)
     } else {
-      // Export as Excel (CSV with tab separator)
+      // RK9 (rollspelet 2026-09-27): var tabbseparerad text med ändelsen .xlsx,
+      // som Excel varnar för eller vägrar öppna. Nu riktig CSV — BOM, `;` (svensk
+      // Excels listavgränsare), CRLF, formelskydd — samma funktion som
+      // deltagarexporten (deltagarExport.ts). Knappen heter det filen är.
       const dateStr = formatLocalDate(new Date())
       const dateRangeLabels = {
         week: t('consultant.analytics.export.week'),
@@ -591,12 +585,11 @@ export function AnalyticsTab() {
         ...analytics.topGoalCategories.map(c => [c.category, c.count]),
       ]
 
-      const tsvContent = data.map(row => row.join('\t')).join('\n')
-      const blob = new Blob(['\ufeff' + tsvContent], { type: 'application/vnd.ms-excel;charset=utf-8' })
+      const blob = new Blob([csvTabell(data, ';')], { type: 'text/csv;charset=utf-8' })
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `${t('consultant.analytics.export.filename')}-${dateStr}.xlsx`
+      link.download = `${t('consultant.analytics.export.filename')}-${dateStr}.csv`
       link.click()
       URL.revokeObjectURL(url)
     }
@@ -672,9 +665,9 @@ export function AnalyticsTab() {
           </button>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => handleExport('excel')}>
-            <Download className="w-4 h-4 mr-2" />
-            Excel
+          <Button variant="outline" onClick={() => handleExport('csv')} title="Semikolonseparerad CSV - öppnas i Excel">
+            <Download className="w-4 h-4 mr-2" aria-hidden="true" />
+            CSV
           </Button>
           <Button onClick={() => handleExport('pdf')}>
             <Download className="w-4 h-4 mr-2" />
@@ -1073,9 +1066,22 @@ export function AnalyticsTab() {
           <Award className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
         </div>
         {placementRows.length === 0 ? (
-          <p className="text-sm text-stone-500 dark:text-stone-400 py-4">
-            Inga placeringar registrerade än. Klicka på &quot;Registrera placering&quot; högst upp för att lägga till den första.
-          </p>
+          // RK13 (rollspelet 2026-09-27): texten pekade på en knapp "högst upp" som
+          // flyttades till deltagarsidan 2026-09-02 (AG3-rest). Och "placering" här
+          // är en anställning (consultant_placements) — praktik och arbetsträning
+          // under Platser är en annan tabell och räknas inte här.
+          <div className="text-sm text-stone-500 dark:text-stone-400 py-4 space-y-2">
+            <p>
+              Inga placeringar registrerade än. En placering registreras från deltagarens sida:
+              öppna deltagaren under{' '}
+              <Link to="/consultant/participants" className="underline text-[var(--c-text)]">Deltagare</Link>{' '}
+              och välj &quot;Registrera placering&quot; bredvid &quot;Boka möte&quot;.
+            </p>
+            <p>
+              Praktik och arbetsträning räknas inte som placeringar här; de finns under{' '}
+              <Link to="/consultant/platser" className="underline text-[var(--c-text)]">Platser</Link>.
+            </p>
+          </div>
         ) : (
           <ul className="space-y-3">
             {placementRows.map(row => {
@@ -1109,25 +1115,14 @@ export function AnalyticsTab() {
                       {status.text}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-4 mt-3">
-                    <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
-                      <input
-                        type="checkbox"
-                        checked={row.followup3m}
-                        onChange={e => handleToggleFollowup(row.id, 'followup_3m', e.target.checked)}
-                        className="rounded border-stone-300"
-                      />
-                      3-månadersuppföljning gjord
-                    </label>
-                    <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-300">
-                      <input
-                        type="checkbox"
-                        checked={row.followup6m}
-                        onChange={e => handleToggleFollowup(row.id, 'followup_6m', e.target.checked)}
-                        className="rounded border-stone-300"
-                      />
-                      6-månadersuppföljning gjord
-                    </label>
+                  {/* RR5 (2026-09-27): uppföljningen registreras på deltagarsidan med datum,
+                      utfall och underlag, i ordning 3 → 6 mån. Kryssrutorna här gick förbi det. */}
+                  <div className="flex flex-wrap items-center gap-4 mt-3 text-sm text-stone-600 dark:text-stone-300">
+                    <span>3 mån: {row.followup3m ? 'gjord' : 'inte gjord'}</span>
+                    <span>6 mån: {row.followup6m ? 'gjord' : 'inte gjord'}</span>
+                    <Link to={`/consultant/participants/${row.participantId}`} className="underline text-stone-700 dark:text-stone-200">
+                      Registrera uppföljning på deltagarsidan
+                    </Link>
                   </div>
                 </li>
               )

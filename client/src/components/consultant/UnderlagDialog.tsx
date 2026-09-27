@@ -10,6 +10,11 @@
  *
  * Samma dialog används för att ångra (läge 'angra'): ett skäl krävs, och
  * databasens vakt släpper bara igenom samma dag som underlaget lämnades.
+ *
+ * RK8 (rollspelet 2026-09-27): markeringen skapade ingen handling — bara en
+ * rad. Efter att underlaget lämnats stannar dialogen kvar med knappen
+ * "Ladda ner underlaget (PDF)" (underlagspaketPdf.ts). `onSparat` anropas när
+ * dialogen stängs, så föräldern får raden oavsett hur den stängs.
  */
 import { useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -25,10 +30,14 @@ import {
   type PlanHandover,
 } from '@/services/aktivitetApi'
 import { formatLocalDate } from '@/services/aktivitetSchema'
+import { laddaNerUnderlagspaket } from '@/services/underlagspaketPdf'
+import { useAuthStore } from '@/stores/authStore'
 
 interface LamnaProps {
   lage: 'lamna'
   plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'org_id' | 'start_date'>
+  /** Deltagarens namn till PDF:en. Utelämnat läses det ur profilen. */
+  participantName?: string | null
   sessions: readonly (Pick<ActivitySession, 'date' | 'attendance'> & { absence_reported_at?: string | null })[]
   onClose: () => void
   onSparat: (h: PlanHandover) => void
@@ -58,6 +67,10 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
   const [to, setTo] = useState(idag)
   const [anteckning, setAnteckning] = useState('')
   const [skal, setSkal] = useState('')
+  // RK8: det lämnade underlaget, medan dialogen visar nedladdningen.
+  const [lamnat, setLamnat] = useState<PlanHandover | null>(null)
+  const [laddar, setLaddar] = useState(false)
+  const profil = useAuthStore((s) => s.profile)
 
   const sammanfattning = useMemo(
     () => (props.lage === 'lamna' && from && to && from <= to ? sammanfattaNarvaro(props.sessions, from, to) : null),
@@ -77,7 +90,7 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
         note: anteckning,
       })
       notifications.success(t('consultant.underlag.sparat'))
-      props.onSparat(h)
+      setLamnat(h)
     } catch (err) {
       notifications.error(err instanceof Error ? err.message : t('consultant.underlag.fel'))
     } finally {
@@ -116,6 +129,47 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={props.onClose} disabled={sparar}>{t('consultant.underlag.avbryt')}</Button>
             <Button variant="danger" onClick={() => void angra()} disabled={sparar || !skal.trim()}>{t('consultant.underlag.angraBekrafta')}</Button>
+          </div>
+        </div>
+      </Dialog>
+    )
+  }
+
+  if (lamnat) {
+    const stang = () => props.onSparat(lamnat)
+    const laddaNer = async () => {
+      setLaddar(true)
+      try {
+        await laddaNerUnderlagspaket({
+          plan: props.plan,
+          underlag: lamnat,
+          participantName: props.participantName,
+          egetNamn: profil ? { id: profil.id, namn: `${profil.first_name ?? ''} ${profil.last_name ?? ''}` } : null,
+        })
+      } catch (err) {
+        notifications.error(err instanceof Error ? `PDF:en kunde inte skapas: ${err.message}` : 'PDF:en kunde inte skapas')
+      } finally {
+        setLaddar(false)
+      }
+    }
+    return (
+      <Dialog isOpen onClose={stang} labelledBy={rubrikId} className="max-w-lg">
+        <div className="p-6 space-y-4">
+          <h2 id={rubrikId} className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            Underlaget är lämnat
+          </h2>
+          <p className="text-sm text-stone-600 dark:text-stone-300">
+            Markeringen är sparad: {lamnat.period_from} till {lamnat.period_to}, till {lamnat.recipient}.
+            Ladda ner underlaget som PDF och skicka det till handläggaren på det sätt ni brukar &mdash; Jobin skickar det inte själv.
+          </p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">
+            PDF:en visar varje pass dag för dag, frånvaro med anteckning, om sjukintyg kommit in, och vem som markerade och när.
+          </p>
+          <div className="flex justify-end gap-2">
+            <Button variant="outline" onClick={stang} disabled={laddar}>Klar</Button>
+            <Button onClick={() => void laddaNer()} disabled={laddar}>
+              {laddar ? 'Skapar PDF…' : 'Ladda ner underlaget (PDF)'}
+            </Button>
           </div>
         </div>
       </Dialog>

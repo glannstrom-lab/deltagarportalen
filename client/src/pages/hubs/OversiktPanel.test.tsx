@@ -336,3 +336,20 @@ describe('negativ kontroll — testerna kan falla', () => {
     expect(screen.getAllByText('7').length).toBeGreaterThan(0)
   })
 })
+
+// RD5 (rollspelet 2026-09-27): Översikten var vanlig svenska när Lätt svenska var valt.
+describe('Översikt på Lätt svenska (RD5)', () => {
+  afterEach(async () => {
+    const { sattLattSvenska } = await import('@/i18n/lattSvenska')
+    await sattLattSvenska(false)
+  })
+
+  it('inviterna är skrivna med vanliga ord', async () => {
+    const { sattLattSvenska } = await import('@/i18n/lattSvenska')
+    await sattLattSvenska(true)
+    rendera({ jobsok: undefined, karriar: undefined, resurser: undefined, minVardag: undefined })
+    expect(screen.getByText('gör ditt CV')).toBeTruthy()
+    expect(screen.getByText('öva när du vill')).toBeTruthy()
+    expect(screen.queryByText(/öva när du orkar/i)).toBeNull()
+  })
+})

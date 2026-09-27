@@ -11,14 +11,16 @@
     },
     "saldo": {
       "ingaPass": "Du har inget planerat den här veckan.",
-      "rad": "Du har {{planerade}} av {{mal}} timmar den här veckan.",
-      "jobbsok": "Du har också {{h}} timmar för att söka jobb själv."
+      "radAnvisat_one": "Du har {{planerade}} av {{mal}} timme med pass den här veckan.",
+      "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
+      "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timme i veckan.",
+      "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timmar i veckan.",
+      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar med pass den här veckan."
     },
     "nastaPass": "Nästa gång: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Veckan före",
     "nastaVeckan": "Veckan efter",
     "veckaRubrik": "Vecka {{fran}} – {{till}}",
-    "tomVecka": "Du har inget planerat den här veckan. Du kan titta på en annan vecka.",
     "idag": "i dag",
     "jagArHar": "Jag är här",
     "jobbsok": {
@@ -83,12 +85,12 @@
       "mal": "Din konsulent har bestämt {{mal}} timmar i veckan. Det är kommunens krav.",
       "skal": "Varför: {{skal}}.",
       "full": "Den här veckan är full.",
-      "kvar": "{{planerade}} timmar är planerade. {{kvar}} timmar är kvar. Din konsulent planerar dem med dig. Du behöver inte göra det själv.",
-      "jobbsok": "De {{h}} timmarna för att söka jobb själv är extra. De räknas inte som aktivitet.",
+      "kvar_one": "{{kvar}} timme är kvar att planera. Din konsulent planerar den med dig. Du behöver inte göra det själv.",
       "guide": "Läs mer om aktivitetskravet",
       "malLeverantor": "Din konsulent har bestämt {{mal}} timmar i veckan. Planen kommer från Rusta och matcha. Det är en tjänst från Arbetsförmedlingen.",
       "malNeutral": "Din konsulent har bestämt {{mal}} timmar i veckan.",
-      "guideLeverantor": "Läs mer om Rusta och matcha"
+      "guideLeverantor": "Läs mer om Rusta och matcha",
+      "kvar_other": "{{kvar}} timmar är kvar att planera. Din konsulent planerar dem med dig. Du behöver inte göra det själv."
     },
     "incheckad": "Du checkade in kl {{tid}}",
     "incheckadStatus": "Tack. Nu är du incheckad.",
@@ -106,6 +108,44 @@
       "absent_invalid": "Du var borta",
       "sick_certified": "Sjuk",
       "external": "Annan aktivitet"
+    },
+    "mote": {
+      "rubrik": "Möte med din konsulent",
+      "och": "och",
+      "fraga": "Kan du inte komma till mötet kl {{tid}} heller?",
+      "ja": "Ja, säg det om mötet också",
+      "nej": "Nej, jag kommer till mötet",
+      "meddelande": "Hej! Jag har anmält att jag inte kan komma till {{titel}} på {{datum}}. Jag kan inte komma till vårt möte kl {{tid}} heller.",
+      "skickat": "Din konsulent vet nu om mötet också.",
+      "fel": "Det gick inte att skicka nu. Du kan skriva eller ringa till din konsulent. Gå till sidan Min konsulent.",
+      "kanInte": "Jag kan inte komma till mötet",
+      "kanInteRubrik": "Din konsulent får ett meddelande. Ni bestämmer en ny tid tillsammans.",
+      "kanInteMeddelande": "Hej! Jag kan inte komma till vårt möte {{datum}} kl {{tid}}.",
+      "skickatKort": "Din konsulent vet nu om mötet.",
+      "felKort": "Det gick inte att skicka nu. Din text är kvar. Du kan också skriva eller ringa. Gå till sidan Min konsulent.",
+      "hamtFel": "Vi kunde inte visa dina möten nu. Du ser dem på sidan Min konsulent."
+    },
+    "forklara": {
+      "knapp": "Förklara varför du inte kom",
+      "andra": "Ändra det du skrev",
+      "din": "Det här skrev du:",
+      "etikett": "Vad hände? Skriv med dina ord.",
+      "vemSer": "Din konsulent ser det du skriver. Det står också på ditt intyg.",
+      "skicka": "Skicka",
+      "avbryt": "Avbryt",
+      "tom": "Skriv några ord om vad som hände.",
+      "fel": "Det gick inte att skicka nu. Din text är kvar. Försök igen om en stund.",
+      "status": "Din konsulent har fått det du skrev."
+    },
+    "tomVecka": {
+      "framtid": "Det finns inga pass den här veckan än. Din konsulent lägger till fler pass senare.",
+      "ledig": "Du har inga pass den här veckan. Det är en ledig vecka. Fråga din konsulent om du inte är säker."
+    },
+    "kalender": {
+      "knapp": "Lägg till i kalendern",
+      "knappEtikett": "Lägg till {{titel}} i kalendern",
+      "status": "Filen är nedladdad. Öppna filen. Då kommer passet in i din kalender.",
+      "fel": "Det gick inte att göra filen nu. Försök igen om en stund."
     }
   },
   "minVardagHub": {
@@ -139,5 +179,888 @@
     "later": "Jag vill tänka på det",
     "saveFailed": "Det gick inte att spara ditt svar.",
     "yourConsultant": "Din konsulent"
+  },
+  "aiTeam": {
+    "orgAv": {
+      "rubrik": "Din organisation använder inte AI",
+      "text": "{{orgName}} har stängt av AI i Jobin. Du behöver inte göra något. Du kan göra så här i stället:",
+      "dinOrganisation": "Din organisation",
+      "konsulent": "Skriv till din konsulent",
+      "konsulentText": "Fråga en människa som känner dig.",
+      "kunskapsbank": "Läs i kunskapsbanken",
+      "kunskapsbankText": "Läs om jobb, pengar och vardag.",
+      "cv": "Gör ett CV",
+      "cvText": "Det går utan AI."
+    }
+  },
+  "cv": {
+    "saveIndicator": {
+      "allSaved": "Allt är sparat",
+      "saving": "Sparar …",
+      "offline": "Inte sparat. Ingen kontakt med internet.",
+      "savedAt": "Sparat kl {{time}}",
+      "unsaved": "Inte sparat än",
+      "retryTitle": "Vi försöker spara igen …"
+    }
+  },
+  "cvBuilder": {
+    "stepper": {
+      "stepOf": "Del {{current}} av {{total}}",
+      "minutesLeft": "Ungefär {{min}} minuter kvar",
+      "percentDone": "{{percent}} procent klart",
+      "current": "Del {{number}}: {{title}}",
+      "goTo": "Gå till del {{number}}: {{title}}",
+      "minutes": "{{min}} minuter"
+    },
+    "steps": {
+      "design": {
+        "title": "Utseende",
+        "description": "Välj hur ditt CV ser ut"
+      },
+      "about": {
+        "title": "Om dig",
+        "description": "Namn, telefon och e-post"
+      },
+      "profile": {
+        "title": "Kort om dig",
+        "description": "Några meningar om vem du är"
+      },
+      "experience": {
+        "title": "Jobb och skola",
+        "description": "Jobb du har haft och skolor du har gått i"
+      },
+      "skills": {
+        "title": "Vad du kan",
+        "description": "Saker du kan, språk och annat"
+      },
+      "review": {
+        "title": "Titta igenom",
+        "description": "Titta på ditt CV och spara det"
+      }
+    },
+    "templates": {
+      "spaltform": {
+        "en-spalt": "En spalt",
+        "tva-spalter": "Två spalter",
+        "dekorativ-spalt": "En spalt med en fin kant"
+      },
+      "chooseTemplate": "Välj en mall",
+      "templateDescription": "En mall bestämmer hur ditt CV ser ut. Välj den du tycker om.",
+      "selected": "Vald",
+      "isSelected": "är vald",
+      "selectedInfo": "Mallen har färger och text redan. Gå vidare och skriv ditt CV. Vill du se hur det blir? Klicka på Förhandsvisning.",
+      "atsNote": "Alla mallar ger en PDF med riktig text. Många arbetsgivare läser CV med ett datorprogram. Då är en mall med en spalt säkrast. Vi har inte testat mallarna i något sådant program.",
+      "meta": {
+        "sidebar": {
+          "name": "Sidokolumn",
+          "desc": "Mörk kant till vänster. Där står kontakt och vad du kan.",
+          "f1": "Mörk kant till vänster",
+          "f2": "Runt foto",
+          "f3": "Vad du kan står i kanten"
+        },
+        "centered": {
+          "name": "Centrerad",
+          "desc": "Mörkblå rubrik och guld. Texten står i mitten.",
+          "f1": "Mörkblått och guld",
+          "f2": "Namnet står i mitten",
+          "f3": "Enkel och klassisk"
+        },
+        "minimal": {
+          "name": "Minimal",
+          "desc": "Stor text och mycket luft",
+          "f1": "Stor text",
+          "f2": "Mycket luft",
+          "f3": "Det viktiga syns"
+        },
+        "creative": {
+          "name": "Kreativ",
+          "desc": "Rosa färg och rutor i två spalter",
+          "f1": "Rosa färg",
+          "f2": "Rutor",
+          "f3": "Tjock text"
+        },
+        "executive": {
+          "name": "Executive",
+          "desc": "Fin gammaldags text och guld",
+          "f1": "Gammaldags text",
+          "f2": "Guld",
+          "f3": "Klassisk"
+        },
+        "nordic": {
+          "name": "Nordisk",
+          "desc": "Enkel mall med ljus kant till vänster",
+          "f1": "Ljus kant till vänster",
+          "f2": "Ljusblå färg",
+          "f3": "Enkel"
+        },
+        "budapest": {
+          "name": "Budapest",
+          "desc": "Mörk kant till vänster. Runt foto. Prickar visar när du gjorde vad.",
+          "f1": "Mörk kant till vänster",
+          "f2": "Prickar för tid",
+          "f3": "Runt foto"
+        },
+        "rotterdam": {
+          "name": "Rotterdam",
+          "desc": "Mycket luft. Stort efternamn. Texten står i två spalter.",
+          "f1": "Stort efternamn",
+          "f2": "Mycket luft",
+          "f3": "Två spalter"
+        },
+        "chicago": {
+          "name": "Chicago",
+          "desc": "Rubriken står i mitten. Ett tunt streck delar sidan.",
+          "f1": "Rubrik i mitten",
+          "f2": "Klassisk",
+          "f3": "Dina initialer"
+        },
+        "atelier": {
+          "name": "Atelier",
+          "desc": "Ljus gul botten, gammaldags rubrik och blågrön färg",
+          "f1": "Ljus gul botten",
+          "f2": "Gammaldags rubrik",
+          "f3": "Som en tidning"
+        },
+        "manhattan": {
+          "name": "Manhattan",
+          "desc": "Enkel mall med mörkblå kant till vänster och kopparfärg",
+          "f1": "Mörkblå kant till vänster",
+          "f2": "Kopparfärg",
+          "f3": "Enkel"
+        },
+        "berlin": {
+          "name": "Berlin",
+          "desc": "Svart och ljust gult med röd färg. Som en tidning.",
+          "f1": "Raka former",
+          "f2": "Som en tidning",
+          "f3": "Stor tjock text"
+        }
+      },
+      "previewAlt": "Så ser mallen {{name}} ut",
+      "demoFields": {
+        "firstName": "Förnamn",
+        "lastName": "Efternamn",
+        "title": "Yrke",
+        "email": "E-post",
+        "phone": "Telefon",
+        "location": "Ort",
+        "summary": "Om dig",
+        "skills": "Vad du kan",
+        "workExperience": "Jobb du har haft",
+        "education": "Utbildning"
+      },
+      "showMoreTemplates": "Visa fler mallar ({{count}} till)",
+      "showFewerTemplates": "Visa färre mallar"
+    },
+    "profileImage": {
+      "title": "Foto",
+      "description": "Du kan lägga till ett foto av dig. Du måste inte.",
+      "mustBeLoggedIn": "Du måste logga in för att lägga till ett foto.",
+      "uploadFailed": "Det gick inte att lägga till fotot: ",
+      "uploading": "Lägger till …"
+    },
+    "fields": {
+      "firstName": "Förnamn *",
+      "lastName": "Efternamn *",
+      "jobTitle": "Yrke",
+      "email": "E-post",
+      "phone": "Telefon",
+      "location": "Ort",
+      "languageLevel": "Hur bra du kan språket"
+    },
+    "placeholders": {
+      "firstName": "Anna",
+      "lastName": "Andersson",
+      "jobTitle": "Säljare",
+      "email": "anna@email.se",
+      "phone": "070-123 45 67",
+      "location": "Stockholm",
+      "language": "Språk"
+    },
+    "summary": {
+      "title": "Om dig",
+      "description": "Skriv vem du är och vilket jobb du vill ha.",
+      "placeholder": "Jag heter … och jag är bra på …",
+      "helpText": "Tips: Skriv 3 till 5 korta meningar. Skriv vad du har gjort och vad du är bra på.",
+      "aiTemplate": "Jag har jobbat som [yrke] i [X] år. Jag har jobbat med [område]. Jag tycker om [intresse]. Nu vill jag ha ett nytt jobb."
+    },
+    "sections": {
+      "workExperience": "Jobb du har haft",
+      "education": "Utbildning",
+      "skills": "Vad du kan",
+      "languages": "Språk",
+      "certificates": "Intyg och kort",
+      "links": "Länkar"
+    },
+    "languageLevels": {
+      "basic": "Lite",
+      "good": "Bra",
+      "fluent": "Mycket bra",
+      "native": "Mitt första språk"
+    },
+    "actions": {
+      "importCv": "Hämta ett CV du har",
+      "add": "Lägg till",
+      "previous": "Tillbaka",
+      "next": "Nästa",
+      "saving": "Sparar …",
+      "exampleData": "Visa ett exempel",
+      "saveCv": "Spara CV",
+      "preview": "Se hur det blir",
+      "restore": "Ta tillbaka",
+      "cancel": "Avbryt",
+      "clearDemoData": "Ta bort exemplet",
+      "fill": "Fyll i",
+      "remove": "Ta bort"
+    },
+    "versions": {
+      "beforeImport": "Kopia innan du hämtade ett CV",
+      "title": "Sparade CV",
+      "saveCurrentVersion": "+ Spara det här CV:t",
+      "defaultName": "Mitt CV",
+      "versionNamePlaceholder": "Ge CV:t ett namn …",
+      "noVersions": "Du har inga sparade CV än",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "beforeDemoData": "Kopia innan exemplet"
+    },
+    "help": {
+      "title": "Vill du ha hjälp?",
+      "description": "Se guiden igen. Den visar hur du gör ett bra CV.",
+      "showGuide": "Visa guiden igen",
+      "aiWriting": "Hjälp att skriva",
+      "aiWritingDesc": "Få hjälp att skriva texten om dig"
+    },
+    "messages": {
+      "imported": "Nu finns ditt CV här. Gå igenom stegen. Skriv det som saknas.",
+      "importBackupFailed": "Vi kunde inte spara en kopia av ditt CV. Därför hämtade vi inte det nya. Försök igen om en stund.",
+      "versionSaved": "Sparat!",
+      "couldNotSaveVersion": "Det gick inte att spara",
+      "cvSavedToMyCvs": "Sparat i Dina CV med namnet \"{{namn}}\"",
+      "versionRestored": "Nu har du det gamla CV:t igen.",
+      "couldNotRestore": "Det gick inte att ta tillbaka",
+      "replaceConfirm": "Då byts ditt CV ut. Vill du det?",
+      "fillDemoData": "Vill du se ett exempel?",
+      "loadedCVVersion": "Ditt sparade CV visas nu",
+      "restoreTitle": "Ta tillbaka ett sparat CV",
+      "demoDataAlreadyFilled": "Du har redan skrivit i alla rutor. Det finns ingen plats för ett exempel.",
+      "demoDataFilled": "Nu står ett exempel i de tomma rutorna. Byt det mot din egen text innan du sparar eller skickar CV:t.",
+      "demoDataCleared": "Exemplet är borttaget.",
+      "demoDataBannerTitle": "Här står ett exempel",
+      "demoDataBannerBody": "Det här är bara ett exempel. Det är inte din egen text: {{fields}}. Byt det mot din egen text innan du sparar eller skickar CV:t.",
+      "demoDataTitle": "Visa ett exempel",
+      "draftRestored": "Något hann inte sparas. Vi har lagt tillbaka det."
+    },
+    "contentOverview": "Det här står i ditt CV",
+    "loading": "Vänta lite …",
+    "progress": {
+      "done": "{{klara}} av {{totalt}} delar är klara",
+      "left": "Ungefär {{min}} minuter kvar",
+      "notStarted": "Du har inte börjat än. Första delen tar några minuter. Du kan sluta när du vill. Allt sparas."
+    },
+    "review": {
+      "a4Note": "Så ser ditt CV ut på papper",
+      "actionsDesc": "Ditt CV är sparat. Du kan ladda ner det som PDF. Du kan också spara en kopia.",
+      "actionsTitle": "Är du klar?",
+      "checklistTitle": "Det här står i ditt CV",
+      "editHint": "Ser en del konstig ut? Gå tillbaka och ändra. Strecket visar var sida 2 börjar.",
+      "exportWord": "Ladda ner Word",
+      "missingHint": "Du måste inte fylla i allt. Du kan ladda ner ändå.",
+      "pageBreak": "Här börjar sida 2",
+      "subtitle": "Här är ditt CV. Allt sparas av sig självt. Ladda ner när du är nöjd.",
+      "title": "Titta på ditt CV och spara",
+      "wordError": "Det gick inte att göra en Word-fil",
+      "wordSuccess": "Word-filen är nedladdad"
+    },
+    "tabs": {
+      "advice": "Råd",
+      "preview": "Se hur det blir"
+    },
+    "yourCv": "Ditt CV"
+  },
+  "pdfExport": {
+    "exportPdf": "Spara som PDF",
+    "generating": "Gör en PDF …",
+    "download": "Ladda ner",
+    "preview": "Se hur det blir",
+    "cvDownloaded": "Ditt CV är nedladdat.",
+    "error": "Det gick inte att göra en PDF. Försök igen."
+  },
+  "profile": {
+    "header": {
+      "importCv": "Hämta från ditt CV",
+      "importing": "Hämtar …",
+      "downloadPdf": "Ladda ner som PDF",
+      "exporting": "Gör en PDF …",
+      "saving": "Sparar …",
+      "saved": "Sparat",
+      "notSaved": "Inte sparat",
+      "welcome": "Välkommen!",
+      "nextInvit": "Nästa: {{label}}",
+      "importedFields": "Hämtat från ditt CV: {{fields}}",
+      "noFieldsToImport": "Det fanns inget nytt att hämta från ditt CV.",
+      "exportError": "Det gick inte att göra en PDF. Har du ett CV?",
+      "profileCompleteExclaim": "Din profil är klar!"
+    },
+    "title": "Din profil",
+    "loading": "Hämtar din profil …",
+    "errorLoadingSection": "Det gick inte att visa den här delen",
+    "tabs": {
+      "ariaLabel": "Delar av profilen",
+      "overview": "Översikt",
+      "overviewShort": "Översikt",
+      "jobSearch": "Söka jobb",
+      "jobSearchShort": "Jobb",
+      "skills": "Det du kan",
+      "skillsShort": "Kan",
+      "support": "Stöd och mål",
+      "supportShort": "Stöd",
+      "settings": "Inställningar",
+      "settingsShort": "Mer",
+      "nextStep": "Att fylla i"
+    },
+    "overview": {
+      "contactInfo": "Så når man dig",
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "phone": "Telefon",
+      "location": "Ort",
+      "locationPlaceholder": "Stockholm",
+      "email": "E-post",
+      "desiredJobs": "Jobb du vill ha",
+      "interests": "Det du gillar",
+      "interestsInputLabel": "Skriv något du gillar",
+      "interestsPlaceholder": "Till exempel: Datorer",
+      "interestsHint": "Vad tycker du om att göra på jobbet?",
+      "interestProfile": "Det du gillar, från intresseguiden",
+      "redoGuide": "Gör guiden igen",
+      "discoverStrengths": "Se vad du är bra på",
+      "takeInterestGuide": "Gör intresseguiden. Då får du förslag på jobb."
+    },
+    "onboarding": {
+      "welcome": {
+        "title": "Välkommen!",
+        "description": "Det här är din profil. Den hjälper dig att söka jobb. Gör det i din egen takt.",
+        "encouragement": "Allt du gör hjälper!"
+      },
+      "basic": {
+        "title": "Berätta lite om dig",
+        "description": "Börja med ditt namn. Skriv också hur man når dig. Det tar en minut.",
+        "encouragement": "Du bestämmer vad du vill visa."
+      },
+      "jobs": {
+        "title": "Vad vill du jobba med?",
+        "description": "Skriv några jobb du vill ha. Du kan ändra det när du vill.",
+        "encouragement": "Vet du inte? Det är okej!"
+      },
+      "support": {
+        "title": "Vi finns här för dig",
+        "description": "Behöver du stöd eller hjälp? Du kan skriva det här. Du måste inte.",
+        "encouragement": "Det du behöver är viktigt."
+      },
+      "startWithBasics": "Börja med ditt namn",
+      "chooseDesiredJobs": "Välj jobb du vill ha",
+      "stepOf": "Steg {{step}} av {{total}}",
+      "back": "Tillbaka",
+      "skip": "Hoppa över",
+      "next": "Nästa",
+      "getStarted": "Börja",
+      "takeYourTime": "Du kan alltid ändra senare. Ta den tid du behöver."
+    },
+    "completion": {
+      "fields": {
+        "firstName": "Förnamn",
+        "lastName": "Efternamn",
+        "phone": "Telefon",
+        "location": "Ort",
+        "desiredJobs": "Jobb du vill ha",
+        "availability": "När du kan jobba",
+        "cvStatus": "Ditt CV",
+        "energyLevel": "Ork",
+        "shortTermGoal": "Mål snart",
+        "longTermGoal": "Mål längre fram",
+        "registeredAF": "Inskriven på Arbetsförmedlingen",
+        "sectors": "Områden du vill jobba i"
+      }
+    },
+    "completionGuide": {
+      "title": "Fyll i din profil",
+      "stepsComplete": "{{completed}} av {{total}} steg är klara",
+      "importantStepsLeft": "Viktiga steg kvar: {{count}}",
+      "completeToImproveChances": "Gör de här stegen. Då blir det lättare att få jobb.",
+      "profileComplete": "Din profil är klar!",
+      "allInfoFilled": "Du har skrivit allt som är viktigt.",
+      "items": {
+        "name": {
+          "label": "Namn",
+          "description": "Skriv ditt förnamn och efternamn"
+        },
+        "photo": {
+          "label": "Bild",
+          "description": "Lägg in en bild på dig"
+        },
+        "contact": {
+          "label": "Så når man dig",
+          "description": "Skriv ditt telefonnummer och din ort"
+        },
+        "cvSummary": {
+          "label": "Kort text om dig",
+          "description": "Skriv några rader om dig i ditt CV"
+        },
+        "experience": {
+          "label": "Jobb du har haft",
+          "description": "Skriv jobb du har haft i ditt CV"
+        },
+        "education": {
+          "label": "Skola och kurser",
+          "description": "Skriv din skola och dina kurser i ditt CV"
+        },
+        "skills": {
+          "label": "Det du kan",
+          "description": "Skriv minst 3 saker du kan"
+        },
+        "aiSummary": {
+          "label": "Text om dig med AI",
+          "description": "Låt AI hjälpa dig att skriva en kort text om dig"
+        },
+        "documents": {
+          "label": "Papper",
+          "description": "Lägg in intyg och betyg"
+        }
+      }
+    },
+    "messages": {
+      "completion": {
+        "welcome": "Välkommen! Nu börjar vi.",
+        "goodStart": "Bra början!",
+        "halfway": "Du är halvvägs!",
+        "almostThere": "Nästan klart! Bara lite kvar.",
+        "complete": "Bra! Din profil är klar."
+      },
+      "encouragement": {
+        "everyStep": "Allt du gör hjälper!",
+        "takeYourTime": "Ta den tid du behöver.",
+        "doingGreat": "Du gör så gott du kan.",
+        "pauseIsProgress": "Det är okej att vila."
+      }
+    }
+  },
+  "hubOverview": {
+    "panel": {
+      "allIn": "Allt i {{namn}}",
+      "applicationsInvite": "hitta ditt första jobb",
+      "cvInvite": "gör ditt CV",
+      "lettersInvite": "skriv ditt första",
+      "interviewsInvite": "öva när du vill",
+      "skillsGap": "Jämför ditt CV med ett jobb",
+      "skillsInvite": "jämför ditt CV med ett jobb du vill ha",
+      "careerPlan": "Din plan för jobb",
+      "careerPlanSub": "ändrad senast",
+      "careerPlanInvite": "vad vill du jobba med sen?",
+      "brand": "Så visar du vem du är",
+      "brandSub": "senaste gången",
+      "brandInvite": "inte börjat",
+      "education": "Utbildningar",
+      "educationSub": "sök i hela Sverige",
+      "knowledgeBase": "Kunskapsbank",
+      "knowledgeSub": "texter du har läst",
+      "knowledgeInvite": "hitta svar på en fråga",
+      "saved": "Det du har sparat",
+      "savedSub": "papper och CV",
+      "savedInvite": "inget sparat än",
+      "aiTeam": "Ditt AI-team",
+      "aiTeamSub": "samtal du har haft",
+      "aiTeamInvite": "fem att fråga",
+      "network": "Personer du känner",
+      "networkSub": "kontakter",
+      "networkInvite": "lägg till en person",
+      "diaryInvite": "skriv några rader",
+      "moodInvite": "skriv hur du mår i dag",
+      "calendar": "Kalender",
+      "calendarInvite": "inget planerat",
+      "consultantNone": "ingen konsulent än",
+      "today": "i dag",
+      "yesterday": "i går",
+      "daysAgo_one": "{{count}} dag sedan",
+      "daysAgo_other": "{{count}} dagar sedan",
+      "weeksAgo_one": "{{count}} vecka sedan",
+      "weeksAgo_other": "{{count}} veckor sedan",
+      "loading": "hämtar …",
+      "unknown": "gick inte att hämta",
+      "statusLoading": "Vi hämtar din översikt.",
+      "statusError": "Vi kunde inte hämta översikten.",
+      "statusReady": "Nu är översikten klar.",
+      "errorBody": "Vi kunde inte hämta dina uppgifter just nu. Felet är hos oss. Du har inte gjort något fel.",
+      "retry": "Försök igen",
+      "cvSub2": "Öppna och skriv mer",
+      "yourCv": "Ditt CV",
+      "letters": "Personligt brev",
+      "lettersSub": "sparade",
+      "interviews": "Öva på intervju",
+      "interviewsSub": "gjorda",
+      "diary": "Din dagbok",
+      "diarySub": "Det du skrev senast",
+      "pipeline": "Dina ansökningar",
+      "mood": "Hur du mår",
+      "moodSub_one": "Senaste gången",
+      "moodSub_other": "De senaste {{count}} gångerna",
+      "consultant": "Din konsulent",
+      "consultantUnnamed": "Din konsulent",
+      "segment": {
+        "saved": "sparade",
+        "awaiting": "väntar på svar",
+        "interview": "intervju",
+        "offer": "erbjudande",
+        "closed": "klara",
+        "other": "andra"
+      },
+      "inMonth": "i {{manad}}",
+      "inMonthYear": "{{manad}} {{ar}}",
+      "skillsSubFor": "mot {{jobb}}",
+      "allShort": "Allt"
+    },
+    "title": "Översikt",
+    "goodMorning": "God morgon",
+    "goodEvening": "God kväll",
+    "hello": "Hej",
+    "seeHistory": "Se allt du har gjort",
+    "nasta": {
+      "label": "Det här kan du göra nu",
+      "otherwise": "Eller gör så här:",
+      "followUp": {
+        "title": "Du har inte fått svar på en ansökan än",
+        "body_other": "Det har gått {{count}} dagar. Skicka ett kort mejl. Fråga hur det går. Då ser de att du vill ha jobbet.",
+        "body_one": "Det har gått {{count}} dag. Skicka ett kort mejl. Fråga hur det går. Då ser de att du vill ha jobbet.",
+        "cta": "Fråga hur det går",
+        "short": "Fråga om ansökan som väntar på svar"
+      },
+      "spontaneous": {
+        "title": "Hör av dig till ett företag igen",
+        "body": "Du har planerat att höra av dig till ett företag igen. Ett kort meddelande räcker.",
+        "cta": "Öppna",
+        "short": "Hör av dig till ett företag igen"
+      },
+      "event": {
+        "title": "Du har något planerat: {{titel}}",
+        "bodyTomorrow": "Det är i morgon. Titta i kalendern när och var.",
+        "bodyToday": "Det är i dag. Titta i kalendern när och var.",
+        "cta": "Öppna kalendern",
+        "short": "Se vad du har planerat"
+      },
+      "createCv": {
+        "title": "Börja med ditt CV",
+        "body": "Du behöver ett CV när du söker jobb. Du kan ladda upp ett CV du redan har. Eller så gör du ett här, steg för steg.",
+        "cta": "Gör ditt CV",
+        "short": "Gör ditt CV"
+      },
+      "updateCv": {
+        "title": "Skriv mer i ditt CV",
+        "body": "Du ändrade ditt CV senast {{nar}}. Har du gjort något nytt sedan dess? Skriv in det. Det tar tio minuter.",
+        "cta": "Öppna ditt CV",
+        "short": "Skriv mer i ditt CV. Det är från {{nar}}"
+      },
+      "firstJob": {
+        "title": "Hitta ett jobb att söka",
+        "body": "Du har ett CV. Spara nu ett jobb som passar dig. Du behöver inte söka det i dag.",
+        "cta": "Sök jobb",
+        "short": "Hitta ett jobb att söka"
+      },
+      "firstLetter": {
+        "title": "Skriv ditt första personliga brev",
+        "body": "Du har sparat jobb. Du kan skriva ett brev till ett av dem. Vi tar hjälp av ditt CV.",
+        "cta": "Skriv brevet",
+        "short": "Skriv ditt första personliga brev"
+      },
+      "skills": {
+        "title": "Jämför ditt CV med ett jobb du vill ha",
+        "body": "Du ser vad du redan kan. Du ser också vad du behöver lära dig. Det tar några minuter.",
+        "cta": "Jämför ditt CV",
+        "short": "Jämför ditt CV med ett jobb du vill ha"
+      },
+      "mood": {
+        "title": "Hur mår du i dag?",
+        "body": "Det tar en halv minut att skriva hur du mår. Efter några veckor ser du vad som gör dig pigg.",
+        "cta": "Skriv hur du mår",
+        "short": "Skriv hur du mår i dag"
+      }
+    },
+    "pagar": {
+      "heading": "Det du håller på med",
+      "applications": "Dina ansökningar",
+      "savedJobs_one": "sparat jobb",
+      "savedJobs_other": "sparade jobb",
+      "awaiting_one": "{{count}} väntar på svar",
+      "awaiting_other": "{{count}} väntar på svar",
+      "sentOn": "skickad {{datum}}",
+      "skills": "Ditt CV jämfört med ett jobb",
+      "skillsDone": "Gjord {{nar}}",
+      "aiTeam": "Ditt AI-team",
+      "sessions_one": "samtal",
+      "sessions_other": "samtal",
+      "lastWith": "Senast med {{namn}}",
+      "mood": "Hur du mår",
+      "moodLogs_one": "gång",
+      "moodLogs_other": "gånger",
+      "moodLatest": "Senast {{nar}}",
+      "event": "Nästa sak i kalendern"
+    },
+    "hubsHeading": "Allt i portalen",
+    "historyLead": "Det du har gjort i portalen, vecka för vecka."
+  },
+  "helpPage": {
+    "intro": "Här finns svar på vanliga frågor. Du kan också fråga oss.",
+    "goTo": "Gå till {{section}}",
+    "noAnswer": "Hittade du inte svaret?",
+    "contactConsultant": "Fråga din konsulent. Hen hjälper dig.",
+    "bookMeeting": "Boka möte",
+    "emailSupport": "Mejla oss",
+    "version": "Deltagarportalen v2.0",
+    "categories": {
+      "gettingStarted": "Börja här",
+      "cvCoverLetter": "CV och personligt brev",
+      "jobSearch": "Söka jobb",
+      "careerDevelopment": "Jobb och framtid"
+    },
+    "quickLinks": {
+      "articlesGuides": "Texter som hjälper dig",
+      "findCareer": "Hitta ett jobb som passar dig",
+      "buildCV": "Gör ditt CV",
+      "findJobs": "Hitta lediga jobb"
+    },
+    "faq": {
+      "createCV": {
+        "q": "Hur gör jag ett CV?",
+        "a": "Gå till CV. Där visar vi dig steg för steg. Du väljer hur ditt CV ska se ut. AI kan hjälpa dig att skriva."
+      },
+      "interestGuide": {
+        "q": "Vad är Intresseguiden?",
+        "a": "Du svarar på frågor om vad du tycker om. Sedan visar vi jobb som kan passa dig. Det tar ungefär 10 minuter."
+      },
+      "saveJobs": {
+        "q": "Hur sparar jag ett jobb?",
+        "a": "Tryck på hjärtat vid jobbet. Då sparas jobbet i din lista."
+      },
+      "multipleCVs": {
+        "q": "Kan jag ha flera CV?",
+        "a": "Ja. Du kan spara flera CV. Du väljer vilket du skickar till varje jobb."
+      },
+      "aiWriter": {
+        "q": "Hur skriver AI ett brev?",
+        "a": "AI läser jobbannonsen och ditt CV. Sedan skriver AI ett brev som passar just det jobbet. Läs brevet och ändra det du vill."
+      },
+      "atsAnalysis": {
+        "q": "Hur läser datorer mitt CV?",
+        "a": "Många företag låter en dator läsa CV först. Vi visar hur du skriver så att datorn kan läsa ditt CV."
+      },
+      "howToSearch": {
+        "q": "Hur söker jag jobb här?",
+        "a": "Gå till Sök jobb. Där finns lediga jobb. Du kan välja ort, yrke och vilken sorts jobb du vill ha."
+      },
+      "saveVsApply": {
+        "q": "Vad är skillnaden på att spara och söka ett jobb?",
+        "a": "Spara betyder att jobbet hamnar i din lista. Då kan du titta på det senare. Söka betyder att du skickar en ansökan. Det gör du oftast på företagets webbplats."
+      },
+      "jobAlerts": {
+        "q": "Kan jag få veta när det kommer nya jobb?",
+        "a": "Ja. Gå till Inställningar. Där kan du välja att få mejl när det finns nya jobb som passar dig."
+      },
+      "knowledgeBase": {
+        "q": "Vad finns i Kunskapsbanken?",
+        "a": "Där finns texter och tips. De handlar om CV, intervjuer och dina rättigheter på jobbet."
+      },
+      "exercises": {
+        "q": "Vad är Övningarna?",
+        "a": "Där kan du öva. Till exempel på att berätta vem du är, eller på en intervju."
+      },
+      "saveArticles": {
+        "q": "Kan jag spara texter?",
+        "a": "Ja. Tryck på bokmärket vid texten. Då sparas den."
+      }
+    }
+  },
+  "help": {
+    "title": "Hjälp"
+  },
+  "crisis": {
+    "ariaLabel": "Öppna hjälp - för dig som mår dåligt eller vill prata med någon",
+    "needToTalk": "Vill du prata med någon?",
+    "support": "Stöd",
+    "notAlone": "Du är inte ensam",
+    "helpAvailable": "Du kan få hjälp",
+    "introText": "Det är bra att du söker hjälp. Mår du dåligt? Är du rädd eller orolig? Vill du bara prata? Det finns alltid någon som lyssnar. Du behöver inte vara ensam med det.",
+    "emergencyHelp": "Hjälp direkt - hela dygnet",
+    "someoneToTalk": "Någon att prata med",
+    "informationAndSupport": "Läs och få stöd",
+    "youMatter": "Du är viktig.",
+    "alwaysHope": "Det kan bli bättre. Även om det inte känns så nu.",
+    "resources": {
+      "suicideLine": {
+        "name": "Självmordslinjen",
+        "hours": "Hela dygnet",
+        "description": "För dig som tänker på att ta ditt liv"
+      },
+      "companion": {
+        "name": "Jourhavande medmänniska",
+        "hours": "21-06",
+        "description": "Någon att prata med när det är svårt"
+      },
+      "priest": {
+        "name": "Jourhavande präst",
+        "hours": "Hela dygnet",
+        "description": "Ring 112. Säg att du vill prata med jourhavande präst."
+      },
+      "healthcare": {
+        "name": "1177 Vårdguiden",
+        "hours": "Hela dygnet",
+        "description": "Råd och hjälp när du är sjuk"
+      },
+      "youth": {
+        "name": "Barn- och ungdomspsykiatrisk akut",
+        "hours": "Hela dygnet",
+        "description": "För dig som är under 18 år"
+      }
+    },
+    "selfHelp": {
+      "mind": {
+        "name": "Mind.se",
+        "description": "Läs om hur man mår och få stöd"
+      },
+      "umo": {
+        "name": "UMO.se",
+        "description": "Stöd för unga om hur man mår"
+      },
+      "healthcare": {
+        "name": "1177.se",
+        "description": "Läs om vård och sjukdom"
+      }
+    }
+  },
+  "myConsultant": {
+    "title": "Min konsulent",
+    "laslogg": {
+      "title": "Vem har tittat på dina uppgifter",
+      "desc": "Här står det varje gång din konsulent tittar på din sida. Då vet du det själv.",
+      "rad": "Din konsulent tittade på {{vad}} {{datum}} kl {{tid}}",
+      "vad": {
+        "sida": "din sida (hur man når dig, ditt CV, dina mål och anteckningar)",
+        "oversikt": "din översikt",
+        "aktivitet": "din plan och när du var där",
+        "mal": "dina mål",
+        "journal": "anteckningar om dig",
+        "tidslinje": "det du har gjort",
+        "platser": "dina praktikplatser"
+      },
+      "tomt": "Ingen har tittat på dina uppgifter än. Det står här när din konsulent gör det.",
+      "fel": "Vi kunde inte visa listan just nu."
+    },
+    "subtitle": "Skriv och prata med {{name}}",
+    "subtitleNoConsultant": "Du har ingen konsulent än",
+    "noConsultant": "Du har ingen konsulent än",
+    "noConsultantDesc": "Du har ingen konsulent än. Skriv till oss om du behöver hjälp.",
+    "noConsultantFullDesc": "När du har en konsulent kan ni hålla kontakt här. Ni kan boka möten och skicka frågor. Vill du ha en konsulent? Skriv till oss. Vi svarar dig.",
+    "noConsultantCta": "Skriv till oss",
+    "noConsultantMailSubject": "Jag vill ha en konsulent i Jobin",
+    "loadErrorTitle": "Vi kunde inte visa din konsulent just nu",
+    "loadErrorDesc": "Felet är hos oss. Du har inte gjort något fel. Försök igen om en stund.",
+    "revoke": {
+      "title": "Ta bort kopplingen",
+      "description": "Du kan ta bort kopplingen till {{namn}} när du vill. Då ser hen inte det du gör i Jobin efter det.",
+      "consentGiven": "Du sa ja",
+      "dialogIntro": "Du vill ta bort kopplingen till {{namn}}.",
+      "consequencesTitle": "Det här händer då:",
+      "consequenceActivity": "{{namn}} ser inte det du gör i Jobin efter det",
+      "consequenceSta": "Din insats Steg till arbete slutar",
+      "consequenceDrafts": "Papper som du inte har skickat tas bort",
+      "consequenceSubmitted": "Papper som redan har skickats till Arbetsförmedlingen sparas. Det är en regel.",
+      "consequenceOwnData": "Ditt CV, dina jobb och ditt mående finns kvar. Bara delningen slutar.",
+      "reasonLabel": "Vill du säga varför? Du måste inte.",
+      "reasonPlaceholder": "Till exempel: Jag har en ny konsulent. Eller: Jag behöver inte hjälpen längre.",
+      "reasonVisibility": "Bara {{namn}} och de som sköter Jobin kan läsa det här.",
+      "confirmBefore": "Skriv",
+      "confirmWord": "säg upp",
+      "confirmAfter": "för att visa att du menar det",
+      "error": "Det gick inte att ta bort kopplingen. Försök igen.",
+      "submitting": "Tar bort …",
+      "confirmButton": "Ja, ta bort kopplingen"
+    },
+    "contactInfo": "Så når du din konsulent",
+    "consultant": {
+      "yourConsultant": "Din konsulent"
+    },
+    "nextMeeting": {
+      "title": "Nästa möte",
+      "noMeetings": "Du har inga möten planerade",
+      "joinMeeting": "Gå till mötet",
+      "meetingTypes": {
+        "video": "Möte med video",
+        "phone": "Möte i telefon",
+        "inPerson": "Möte på plats"
+      }
+    },
+    "sharedInfoTitle": "Det här ser din konsulent",
+    "sharedInfoDesc": "Här ser du vad din konsulent kan se. Och vad bara du ser.",
+    "legend": {
+      "shared": "Din konsulent kan se det här",
+      "notShared": "Bara du kan se det här",
+      "changeSharing": "Ändra vad du delar"
+    },
+    "sharedInfo": {
+      "lastLogin": "Senast inloggad",
+      "savedJobs": "Sparade jobb",
+      "sentApplications": "Skickade ansökningar",
+      "countUnit": "{{count}} st",
+      "cvStatus": "Ditt CV",
+      "created": "Finns",
+      "notCreated": "Finns inte än",
+      "atsScore": "Poäng för CV:t",
+      "notCalculated": "Inte räknat än",
+      "lastUpdated": "Senast ändrat",
+      "energyLevel": "Ork",
+      "latestMood": "Hur du mådde senast",
+      "notLogged": "Inte skrivet än",
+      "lastLogged": "Senast skrivet",
+      "couldNotRead": "Gick inte att visa",
+      "categories": {
+        "progress": "Det du gör",
+        "cv": "CV och profil",
+        "wellbeing": "Hur du mår"
+      },
+      "shared": "Delas",
+      "notShared": "Delas inte"
+    },
+    "messages": {
+      "title": "Meddelanden",
+      "noMessages": "Du har inga meddelanden än",
+      "startConversation": "Skriv till din konsulent",
+      "placeholder": "Skriv här …",
+      "writeTo": "Skriv till {{name}}",
+      "history": "Tidigare meddelanden",
+      "writeMessage": "Skriv ett meddelande",
+      "sendMessage": "Skicka",
+      "pressEnterToSend": "Tryck på Enter för att skicka"
+    },
+    "goals": {
+      "completed": "Klara",
+      "inProgress": "Du jobbar med det",
+      "notStarted": "Inte börjat",
+      "goalsCompleted": "{{completed}} av {{total}} mål är klara",
+      "agreedGoals": "Era mål",
+      "deadline": "Klart senast",
+      "greatJob": "Bra! Du har klarat {{count}} av era mål."
+    },
+    "quickActions": {
+      "title": "Gör snabbt",
+      "bookMeeting": "Boka ett möte",
+      "sendEmail": "Skicka e-post",
+      "call": "Ring"
+    },
+    "email": {
+      "bookingSubject": "Jag vill boka ett möte",
+      "bookingBody": "Hej {{name}},\n\nJag vill boka ett möte.\n\nHälsningar"
+    }
+  },
+  "common": {
+    "tagInputInstructions": "Tryck på Enter för att lägga till. Använd pilarna för att välja ett förslag.",
+    "tagCounter": "{{count}} av {{max}}"
   }
 }

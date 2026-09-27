@@ -51,6 +51,13 @@ vi.mock('@/services/jobsApi', () => ({
   savedJobsApi: { getAll: vi.fn().mockResolvedValue([]) },
 }))
 
+// RD8: de sparade jobben läses via applicationsApi (domänformen bär
+// job_title/company_name). Standard: inga jobb.
+const ansokningarMock = vi.fn().mockResolvedValue([])
+vi.mock('@/services/applicationsApi', () => ({
+  applicationsApi: { getAll: (...a: unknown[]) => ansokningarMock(...a) },
+}))
+
 vi.mock('@/services/userApi', () => ({
   userApi: { getPreferences: vi.fn().mockResolvedValue(null) },
 }))
@@ -139,6 +146,7 @@ const rita = () =>
 
 beforeEach(() => {
   vi.clearAllMocks()
+  ansokningarMock.mockResolvedValue([])
   window.localStorage.clear()
 })
 
@@ -343,5 +351,39 @@ describe('CoverLetterWrite — steg 1, mallvalet (driftgenomgången 2026-09-22)'
     expect(document.body.textContent).not.toContain('{{')
     expect(document.body.textContent).not.toMatch(/Vi vet inget om dig/)
     expect(screen.getByText(/syns i förhandsvisningen och i PDF:en/)).toBeInTheDocument()
+  })
+})
+
+describe('CoverLetterWrite — sparade jobb visar sin titel (RD8, rollspelet 2026-09-27)', () => {
+  // Annas tre sparade jobb stod som "Titel saknas i annonsen / Företag saknas i
+  // annonsen" fast Ansökningar visade "Lagerarbetare kvällsskift · Demostads
+  // Grossist AB". Manuellt tillagda jobb (och demodatan) har titel och företag i
+  // kolumnerna job_title/company_name — inte i job_data, som är tomt.
+  // Mutation: läs bara job_data.headline i listan → testet faller.
+  it('läser titel, företag och ort ur kolumnerna när annonsdatan saknas', async () => {
+    ansokningarMock.mockResolvedValue([
+      {
+        id: 'a1', userId: 'u1', jobId: 'manual-1', jobData: {}, status: 'saved', source: 'manual', priority: 'medium',
+        jobTitle: 'Lagerarbetare kvällsskift', companyName: 'Demostads Grossist AB', location: 'Demostad',
+        createdAt: '2026-09-20T10:00:00Z', updatedAt: '2026-09-20T10:00:00Z',
+      },
+    ])
+    rita()
+    await waitFor(() => expect(screen.getByText('Lagerarbetare kvällsskift')).toBeInTheDocument())
+    expect(screen.getByText(/Demostads Grossist AB/)).toBeInTheDocument()
+    expect(screen.queryByText(/Titel saknas i annonsen|The ad has no job title/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Företag saknas i annonsen|The ad has no company name/)).not.toBeInTheDocument()
+  })
+
+  it('"Unknown" från en rad utan annonsdata är inget företagsnamn', async () => {
+    ansokningarMock.mockResolvedValue([
+      {
+        id: 'a2', userId: 'u1', jobId: 'manual-2', jobData: { headline: 'Unknown', employer: { name: 'Unknown' } },
+        status: 'saved', source: 'manual', priority: 'medium', createdAt: '2026-09-20T10:00:00Z', updatedAt: '2026-09-20T10:00:00Z',
+      },
+    ])
+    rita()
+    await waitFor(() => expect(screen.getByText(/Titel saknas i annonsen|The ad has no job title/)).toBeInTheDocument())
+    expect(screen.queryByText('Unknown')).not.toBeInTheDocument()
   })
 })

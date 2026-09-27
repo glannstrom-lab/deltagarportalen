@@ -308,6 +308,13 @@ export function PlatserTab() {
               <strong>{(placeringar ?? []).length}</strong> totalt ·{' '}
               <strong>{(placeringar ?? []).filter((p) => p.status === 'pagaende').length}</strong> pågående
             </p>
+            {/* RR10 (rollspelet 2026-09-27): en praktik som bara står som plats
+                i aktivitetsplanens pass syntes inte här, och ingenting sa varför. */}
+            <p className="text-xs text-stone-500 mt-1 max-w-prose" data-testid="platser-forklaring">
+              En plats registreras här, inte i aktivitetsplanen. Pass med en arbetsplats i planen
+              blir inte en plats av sig själva — deltagarens Aktivitet-flik visar vilka platser som
+              saknas här och vilka som saknar pass i planen.
+            </p>
           </div>
           <Button
             variant="primary"

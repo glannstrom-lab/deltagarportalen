@@ -15,6 +15,7 @@ vi.mock('@/services/aktivitetApi', async (importOriginal) => {
   }
 })
 vi.mock('@/lib/toast', () => ({ notifications: { success: vi.fn(), error: vi.fn() } }))
+vi.mock('@/services/underlagspaketPdf', () => ({ laddaNerUnderlagspaket: vi.fn().mockResolvedValue(undefined) }))
 
 const plan = { id: 'plan1', participant_id: 'p1', org_id: 'org1', start_date: '2026-10-01' }
 const pass = (date: string, attendance: string | null, extra: Record<string, unknown> = {}) => ({ date, attendance, ...extra })
@@ -62,7 +63,25 @@ describe('UnderlagDialog — lämna', () => {
     expect(arg.period_from).toBe('2026-10-01')
     expect(arg.period_to).toBe('2026-10-20')
     expect(arg.summary).toMatchObject({ pass: 1, present: 1, absent_invalid: 0 })
-    await vi.waitFor(() => expect(onSparat).toHaveBeenCalledTimes(1))
+    // RK8: dialogen stannar kvar med nedladdningen; raden lämnas till föräldern när den stängs.
+    await screen.findByRole('button', { name: 'Ladda ner underlaget (PDF)' })
+    expect(onSparat).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: 'Klar' }))
+    expect(onSparat).toHaveBeenCalledTimes(1)
+  })
+
+  it('RK8: efter att underlaget lämnats går det att ladda ner som PDF — för det lämnade underlaget', async () => {
+    const { underlagApi } = await import('@/services/aktivitetApi')
+    const { laddaNerUnderlagspaket } = await import('@/services/underlagspaketPdf')
+    const h = { id: 'h1', recipient: 'Anna', period_from: '2026-10-01', period_to: '2026-10-20', handed_over_at: '2026-10-20T08:00:00Z', withdrawn_at: null }
+    vi.mocked(underlagApi.lamna).mockResolvedValue(h as never)
+    render(<UnderlagDialog lage="lamna" plan={plan} participantName="Omar Deltagare" sessions={[pass('2026-10-05', 'present')] as never} onClose={vi.fn()} onSparat={vi.fn()} />)
+    fireEvent.change(screen.getByLabelText(/Mottagare/), { target: { value: 'Anna' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Markera som lämnat' }))
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Ladda ner underlaget (PDF)' }))
+    await vi.waitFor(() => expect(laddaNerUnderlagspaket).toHaveBeenCalledTimes(1))
+    expect(vi.mocked(laddaNerUnderlagspaket).mock.calls[0][0]).toMatchObject({ plan, underlag: h, participantName: 'Omar Deltagare' })
   })
 
   it('går inte att skicka när perioden saknar pass — säger det i stället för att lämna ett tomt underlag', () => {

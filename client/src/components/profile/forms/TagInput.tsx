@@ -352,7 +352,7 @@ export function TagInput({
             ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
             : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400'
         )}>
-          {tags.length} av {maxTags}
+          {t('common.tagCounter', { defaultValue: '{{count}} av {{max}}', count: tags.length, max: maxTags })}
         </span>
       </div>
     </div>

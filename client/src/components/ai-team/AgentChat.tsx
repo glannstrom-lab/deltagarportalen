@@ -28,6 +28,9 @@ import { ChatInput } from './ChatInput'
 import { MarkdownRenderer } from './MarkdownRenderer'
 import { AIBadge } from '@/components/ai/AIBadge'
 import { formatLocalDate } from '@/services/aktivitetSchema'
+// RD7 (rollspelet 2026-09-27): organisationens AI-beslut visas innan hon skriver
+import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
+import { OrgUtanAi } from './OrgUtanAi'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -73,6 +76,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const colors = agentColorClasses[agent.color]
     const { context: userContext } = useAITeamContext()
     const { user } = useAuthStore()
+    // undefined = inte hämtat (chatten visas som vanligt; servern nekar ändå),
+    // null = ingen spärr, annars organisationen som stängt av AI.
+    const orgSparr = useOrgAiSparr()
 
     // Voice input hook
     const { isRecording, toggleRecording } = useVoiceInput({
@@ -164,6 +170,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const sendMessage = useCallback(async (messageText?: string) => {
       const text = messageText || inputValue.trim()
       if (!text || isLoading || isStreaming) return
+      // RD7: snabbfunktioner och fokusguiden anropar via ref — inte heller de
+      // ska skicka något när organisationen sagt nej.
+      if (orgSparr) return
 
       // Set loading state immediately to prevent double-send
       setLoading(true)
@@ -243,6 +252,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         abortControllerRef.current = null
       }
     }, [
+      orgSparr,
       inputValue,
       isLoading,
       isStreaming,
@@ -457,6 +467,16 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         await sendMessage(message)
       }
     }), [sendMessage])
+
+    // RD7: organisationen har sagt nej. Ingen samtyckesfråga (det är inte hennes
+    // samtycke som saknas) och inget skrivfält som aldrig kan lyckas.
+    if (orgSparr) {
+      return (
+        <div className={cn('flex flex-col h-full', className)}>
+          <OrgUtanAi orgName={orgSparr.org_name || t('aiTeam.orgAv.dinOrganisation', 'Din organisation')} />
+        </div>
+      )
+    }
 
     return (
       <div className={cn('flex flex-col h-full', className)}>
