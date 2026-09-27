@@ -317,7 +317,7 @@ function OrderedList({ items }: { items: string[] }) {
                     <div className="font-semibold text-stone-800 dark:text-stone-100 mb-0.5">
                       <InlineMarkdown text={titleMatch[1]} />
                     </div>
-                    <div className="text-stone-600 dark:text-stone-300 text-[13px] leading-relaxed">
+                    <div className="text-stone-600 dark:text-stone-300 text-[0.8125rem] leading-relaxed">
                       <InlineMarkdown text={titleMatch[2]} />
                     </div>
                   </>
@@ -464,7 +464,7 @@ function InlineMarkdown({ text }: { text: string }) {
             'px-1.5 py-0.5 rounded-md',
             'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
             'text-[var(--c-text)]',
-            'text-[13px] font-mono font-medium'
+            'text-[0.8125rem] font-mono font-medium'
           )}
         >
           {codeMatch[2]}
@@ -540,7 +540,7 @@ function processInlineCode(text: string, startKey: number): (string | ReactEleme
             'px-1.5 py-0.5 rounded-md',
             'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
             'text-[var(--c-text)]',
-            'text-[13px] font-mono font-medium'
+            'text-[0.8125rem] font-mono font-medium'
           )}
         >
           {codeMatch[1]}

@@ -346,14 +346,15 @@ export function TagInput({
             </p>
           )}
         </div>
-        <span className={cn(
+        {/* RD16: en tom lista visar ingen "0 av 5" — tomt är en invit, inte en nolla */}
+        {tags.length > 0 && <span className={cn(
           'text-xs font-medium px-2 py-0.5 rounded-full',
           tags.length >= maxTags
             ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
             : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400'
         )}>
           {t('common.tagCounter', { defaultValue: '{{count}} av {{max}}', count: tags.length, max: maxTags })}
-        </span>
+        </span>}
       </div>
     </div>
   )

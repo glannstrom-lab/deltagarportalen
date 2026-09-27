@@ -63,6 +63,20 @@ describe('AktivitetskatalogSektion', () => {
     expect(screen.queryByText(/katalogen är din egen/)).toBeNull()
   })
 
+  // RK22 (rollspelet 2026-09-27): seedens utvecklaranteckning visades för en köpare.
+  // Mutation: rendera post.description rakt igen → faller.
+  it('visar inte seedens utvecklaranteckning som beskrivning — men väl en riktig beskrivning', async () => {
+    const { aktivitetskatalogApi } = await import('@/services/aktivitetskatalogApi')
+    const { orgApi } = await import('@/services/orgApi')
+    const seedad = { ...post, id: 'k2', title: 'Jobbsökarverkstad', description: 'Ur schemamallen "Demomall: jobbsökning + motivation" (seedad 2026-09-13, PG18).' }
+    vi.mocked(aktivitetskatalogApi.list).mockResolvedValue([post, seedad] as never)
+    vi.mocked(orgApi.myMemberships).mockResolvedValue([{ id: 'm1', org_id: 'o1', user_id: 'u1', role: 'chef', created_at: '', organization: org }] as never)
+    render(<AktivitetskatalogSektion />)
+    const lista = await screen.findByRole('list', { name: 'Aktivitetskatalog' })
+    expect(within(lista).getByText('Prata svenska över kaffe')).toBeInTheDocument()
+    expect(within(lista).queryByText(/seedad|PG18|Ur schemamallen/)).toBeNull()
+  })
+
   it('en vanlig konsulent ser organisationens post men får inte redigera den', async () => {
     const { aktivitetskatalogApi } = await import('@/services/aktivitetskatalogApi')
     const { orgApi } = await import('@/services/orgApi')

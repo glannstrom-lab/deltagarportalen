@@ -67,7 +67,7 @@ export function AIBadge({ variant = 'inline', label = 'AI-genererat', className 
     <span
       data-ai-generated="true"
       className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-200 rounded text-[10px] font-medium uppercase tracking-wide',
+        'inline-flex items-center gap-1 px-1.5 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-200 rounded text-[0.625rem] font-medium uppercase tracking-wide',
         className
       )}
       role="note"

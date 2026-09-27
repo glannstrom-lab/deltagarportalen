@@ -381,7 +381,7 @@ function ResourcesInner() {
   const resourceActions = (
     <Link
       to="/cv"
-      className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-solid)] hover:brightness-110 text-[var(--c-on-solid)] rounded-lg text-[13px] font-medium transition-colors"
+      className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-solid)] hover:brightness-110 text-[var(--c-on-solid)] rounded-lg text-[0.8125rem] font-medium transition-colors"
     >
       <Plus size={16} aria-hidden="true" />
       {t('resources.createDocument')}

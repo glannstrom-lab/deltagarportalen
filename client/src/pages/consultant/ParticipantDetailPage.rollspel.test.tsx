@@ -132,3 +132,12 @@ describe('RR11 — möten', () => {
     expect(screen.getByTestId('motes-kadens')).toHaveTextContent('fysiskt möte bokat')
   })
 })
+
+describe('RR20 — Översikt utan aktiva mål', () => {
+  it('visar ett tomläge med en invit i stället för ett tomt kort, och inget "Se alla"', async () => {
+    rendera()
+    expect(await screen.findByText('Amina har inga aktiva mål')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Sätt ett mål' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: i18n.t('common.seeAll') })).toBeNull()
+  })
+})

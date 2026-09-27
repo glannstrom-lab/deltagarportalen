@@ -225,14 +225,14 @@ export function ContextualKnowledgeWidget({
               <BookOpen size={16} className="text-stone-600 dark:text-stone-300 group-hover:text-[var(--c-text)]" aria-hidden="true" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-stone-900 dark:text-stone-100 text-[13px] leading-snug group-hover:text-[var(--c-text)] transition-colors">
+              <h4 className="font-medium text-stone-900 dark:text-stone-100 text-[0.8125rem] leading-snug group-hover:text-[var(--c-text)] transition-colors">
                 {article.title}
               </h4>
               {article.summary && (
                 <p className="text-xs text-stone-700 dark:text-stone-300 mt-1 line-clamp-2">{article.summary}</p>
               )}
               {typeof article.readingTime === 'number' && article.readingTime > 0 && (
-                <p className="mt-1.5 text-[11px] text-stone-600 dark:text-stone-400">
+                <p className="mt-1.5 text-[0.6875rem] text-stone-600 dark:text-stone-400">
                   {t('workflow.knowledgeWidget.readTime', { count: article.readingTime })}
                 </p>
               )}

@@ -218,7 +218,7 @@ export default function CommandPalette() {
             aria-activedescendant={traffar[aktivIndex] ? `palett-${aktivIndex}` : undefined}
             aria-label={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
             placeholder={t('palette.placeholder', 'Sök efter en sida eller ett verktyg')}
-            className="flex-1 bg-transparent text-[15px] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 outline-none"
+            className="flex-1 bg-transparent text-[0.9375rem] text-stone-900 dark:text-stone-100 placeholder:text-stone-400 outline-none"
           />
           <button
             onClick={() => setOpen(false)}
@@ -258,7 +258,7 @@ export default function CommandPalette() {
                 onMouseEnter={() => setAktiv(i)}
                 onClick={() => ga(m.path)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-2 cursor-pointer text-[14px]',
+                  'flex items-center gap-3 px-4 py-2 cursor-pointer text-[0.875rem]',
                   i === aktivIndex ? 'bg-stone-100 dark:bg-stone-800' : ''
                 )}
               >
@@ -276,7 +276,7 @@ export default function CommandPalette() {
           </ul>
         )}
 
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-stone-200 dark:border-stone-700 text-[11px] text-stone-500 dark:text-stone-400">
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-stone-200 dark:border-stone-700 text-[0.6875rem] text-stone-500 dark:text-stone-400">
           <span>↑↓ {t('palette.hintMove', 'bläddra')}</span>
           <span>↵ {t('palette.hintOpen', 'öppna')}</span>
           <span>Esc {t('palette.hintClose', 'stäng')}</span>

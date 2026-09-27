@@ -184,7 +184,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             {/* Description - hidden on mobile */}
             <span
               className={cn(
-                'hidden sm:block mt-1 text-[10px] text-center line-clamp-2 leading-tight',
+                'hidden sm:block mt-1 text-[0.625rem] text-center line-clamp-2 leading-tight',
                 isSelected
                   ? 'text-stone-500 dark:text-stone-400'
                   : 'text-stone-400 dark:text-stone-500'

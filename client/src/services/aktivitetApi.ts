@@ -19,7 +19,9 @@
 import { supabase } from '@/lib/supabase'
 import {
   generateSessions,
+  veckovisaDatum,
   type ActivityType,
+  type PassTyp,
   type Attendance,
   type TemplateItem,
 } from './aktivitetSchema'
@@ -157,7 +159,8 @@ export interface SessionInput {
   start_time: string
   end_time: string
   title: string
-  activity_type: ActivityType
+  /** PassTyp: de utökade typerna (RK28) går bara att välja när brytaren är på. */
+  activity_type: PassTyp
   location?: string | null
   notes?: string | null
 }
@@ -193,7 +196,8 @@ function mapItem(row: Record<string, unknown>): ActivityTemplateItem {
   }
 }
 
-function mapSession(row: Record<string, unknown>): ActivitySession {
+/** Exporterad för franvaroApi (RD13): varje väg som lägger ett pass i Min veckas cache ska ge HH:MM. */
+export function mapSession(row: Record<string, unknown>): ActivitySession {
   return {
     ...(row as unknown as ActivitySession),
     start_time: kortTid(row.start_time as string),
@@ -554,6 +558,54 @@ export const aktivitetsplanApi = {
     const skapat = mapSession(data as Record<string, unknown>)
     await notisBonus('pass tillagt', () => notisPassAndrat(skapat, { typ: 'tillagt' }))
     return skapat
+  },
+
+  /**
+   * RK28: samma pass varje vecka från `input.date` till och med `slutdatum`
+   * (planens slut). Ett insert för alla — antingen kommer alla in eller inget.
+   * Deltagaren får EN notis om första passet, inte en per vecka.
+   */
+  async addWeeklySessions(planId: string, participantId: string, input: SessionInput, slutdatum: string): Promise<ActivitySession[]> {
+    await requireUser()
+    const datum = veckovisaDatum(input.date, slutdatum)
+    if (datum.length === 0) return []
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .insert(datum.map((d) => ({
+        plan_id: planId,
+        participant_id: participantId,
+        date: d,
+        start_time: input.start_time,
+        end_time: input.end_time,
+        title: input.title.trim(),
+        activity_type: input.activity_type,
+        location: input.location?.trim() || null,
+        notes: input.notes?.trim() || null,
+      })))
+      .select('*')
+    if (error) throw error
+    const skapade = (data ?? []).map((r) => mapSession(r as Record<string, unknown>)).sort((a, b) => a.date.localeCompare(b.date))
+    if (skapade[0]) await notisBonus('pass tillagt', () => notisPassAndrat(skapade[0], { typ: 'tillagt' }))
+    return skapade
+  },
+
+  /**
+   * RK31: deltagarens pass en viss dag — för att varna när ett möte krockar.
+   * Bara tider och rubrik; RLS avgör vilka pass konsulenten ser.
+   */
+  async passForDeltagareDag(participantId: string, datum: string): Promise<Array<Pick<ActivitySession, 'date' | 'start_time' | 'end_time' | 'title'>>> {
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .select('date, start_time, end_time, title')
+      .eq('participant_id', participantId)
+      .eq('date', datum)
+    if (error) throw error
+    return (data ?? []).map((r) => ({
+      date: String(r.date),
+      start_time: String(r.start_time).slice(0, 5),
+      end_time: String(r.end_time).slice(0, 5),
+      title: String(r.title ?? ''),
+    }))
   },
 
   async updateSession(sessionId: string, input: Partial<SessionInput>): Promise<ActivitySession> {

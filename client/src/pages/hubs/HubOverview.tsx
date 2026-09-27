@@ -152,16 +152,16 @@ function HubOverviewInner() {
         ) : (
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] grid place-items-center text-[15px] font-semibold shrink-0"
+            className="w-10 h-10 rounded-full bg-[var(--c-bg)] text-[var(--c-text)] grid place-items-center text-[0.9375rem] font-semibold shrink-0"
           >
             {initials ?? '·'}
           </span>
         )}
-        <h1 id="hero-greeting" className="text-[24px] sm:text-[28px] font-semibold tracking-tight m-0">
+        <h1 id="hero-greeting" className="text-[1.5rem] sm:text-[1.75rem] font-semibold tracking-tight m-0">
           {timeOfDayGreeting(today, t)}
           {firstName ? ` ${firstName}` : ''}
         </h1>
-        <span className="basis-full sm:basis-auto sm:ml-auto pl-[52px] sm:pl-0 text-[15px] text-stone-500 dark:text-stone-400">
+        <span className="basis-full sm:basis-auto sm:ml-auto pl-[52px] sm:pl-0 text-[0.9375rem] text-stone-500 dark:text-stone-400">
           {today.toLocaleDateString(datumSprak(i18n.language), { weekday: 'long', day: 'numeric', month: 'long' })}
         </span>
       </motion.section>
@@ -177,7 +177,7 @@ function HubOverviewInner() {
           via direktlänk. Medvetet lågmäld: en textlänk, ingen poängställning
           och inget "0 av N" (DESIGN.md §1 — inga prestationsmätningar).
           Vänsterställd sedan 2026-09-10; centrerad flöt den i tomrummet. */}
-      <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-stone-500 dark:text-stone-400">
+      <p className="m-0 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.875rem] text-stone-500 dark:text-stone-400">
         {/* Stiltest 2026-09-10: kikaren = överblick över det som gjorts. Dekorativ. */}
         <img src={bilder.kikare} alt="" aria-hidden="true" loading="lazy" className="mr-1 h-11 w-11 object-contain" />
         <Link

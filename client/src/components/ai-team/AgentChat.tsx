@@ -36,6 +36,10 @@ export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
 }
 
+/** RD19: de coacher som formatAITeamContext kan ge energi och beskrivna svårigheter. */
+const MAENDE_AGENTER = new Set<string>(['arbetsterapeut', 'motivationscoach'])
+const MED_MAENDE_NYCKEL = 'jobin-aiteam-med-maende'
+
 interface AgentChatProps {
   onSendMessage?: (message: string) => void
   className?: string
@@ -68,6 +72,23 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const [diarySuccess, setDiarySuccess] = useState<string | null>(null)
     const [taskSuccess, setTaskSuccess] = useState<string | null>(null)
     const [isExporting, setIsExporting] = useState(false)
+    // RD19 (rollspelet 2026-09-27): hur deltagaren mår följer bara med om hen
+    // själv väljer det. Nej från början; valet minns per enhet.
+    const [medMaende, setMedMaende] = useState<boolean>(() => {
+      try {
+        return localStorage.getItem(MED_MAENDE_NYCKEL) === 'ja'
+      } catch {
+        return false
+      }
+    })
+    const vaxlaMedMaende = (ja: boolean) => {
+      setMedMaende(ja)
+      try {
+        localStorage.setItem(MED_MAENDE_NYCKEL, ja ? 'ja' : 'nej')
+      } catch {
+        /* privat läge: valet gäller bara den här stunden */
+      }
+    }
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const abortControllerRef = useRef<AbortController | null>(null)
 
@@ -197,7 +218,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       try {
         // Bara DATA om användaren skickas till servern — agent-systemprompt
         // och personlighet är hårdkodade serverside (security 2026-05-09).
-        const userDataContext = formatAITeamContext(userContext, selectedAgent)
+        const userDataContext = formatAITeamContext(userContext, selectedAgent, { medMaende })
 
         // Create abort controller for cancellation
         abortControllerRef.current = new AbortController()
@@ -253,6 +274,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       }
     }, [
       orgSparr,
+      medMaende,
       inputValue,
       isLoading,
       isStreaming,
@@ -649,6 +671,24 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
           <div ref={messagesEndRef} />
         </div>
+
+        {/* RD19: ett eget val för de två coacher som kan använda måendet */}
+        {MAENDE_AGENTER.has(selectedAgent) && (
+          <label className="flex items-start gap-2 px-4 pt-2 text-sm text-stone-700 dark:text-stone-300">
+            <input
+              type="checkbox"
+              checked={medMaende}
+              onChange={(e) => vaxlaMedMaende(e.target.checked)}
+              className="mt-1 h-4 w-4 flex-shrink-0 accent-[var(--c-solid)]"
+            />
+            <span>
+              {t('aiTeam.maende.val', 'Låt coachen veta hur jag mår')}
+              <span className="block text-xs text-stone-600 dark:text-stone-400">
+                {t('aiTeam.maende.forklaring', 'Då får coachen veta din energinivå och det du själv skrivit som svårt i profilen, så att svaren passar dig bättre. Utan kryss får coachen inte veta det.')}
+              </span>
+            </span>
+          </label>
+        )}
 
         {/* Input */}
         <ChatInput

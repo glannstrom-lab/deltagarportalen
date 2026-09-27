@@ -15,7 +15,9 @@
       "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
       "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timme i veckan.",
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Att söka jobb själv räknas för sig. Planen säger {{count}} timmar i veckan.",
-      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar med pass den här veckan."
+      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar med pass den här veckan.",
+      "radOver_one": "Du har {{planerade}} timme med pass den här veckan. Det är mer än målet. Målet är {{mal}}.",
+      "radOver_other": "Du har {{planerade}} timmar med pass den här veckan. Det är mer än målet. Målet är {{mal}}."
     },
     "nastaPass": "Nästa gång: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Veckan före",
@@ -54,13 +56,14 @@
       "knapp": "Fråga om passet",
       "etikett": "Din fråga",
       "inledning": "Hej! Jag har en fråga om passet \"{{titel}}\" den {{datum}} kl {{tid}}: ",
-      "tom": "Skriv din fråga efter första raden.",
+      "tom": "Skriv din fråga först.",
       "skicka": "Skicka",
       "skickar": "Skickar …",
       "avbryt": "Avbryt",
       "skickat": "Skickat till {{namn}}.",
       "dinKonsulent": "din konsulent",
-      "fel": "Det gick inte att skicka. Du kan skriva till din konsulent på sidan Min konsulent."
+      "fel": "Det gick inte att skicka. Du kan skriva till din konsulent på sidan Min konsulent.",
+      "om": "Frågan gäller passet \"{{titel}}\" den {{datum}} kl {{tid}}. Din konsulent ser vilket pass det är."
     },
     "franvaro": {
       "knapp": "Jag kan inte komma",
@@ -100,7 +103,11 @@
       "language": "Svenska",
       "jobsearch": "Söka jobb",
       "workplace": "På en arbetsplats",
-      "jobsearch_own": "Söka jobb själv"
+      "jobsearch_own": "Söka jobb själv",
+      "sfi": "SFI (svenska för invandrare)",
+      "studier": "Studera",
+      "vagledning": "Prata om studier och jobb",
+      "halsa": "Hälsa"
     },
     "narvaro": {
       "present": "Du var där",
@@ -155,6 +162,9 @@
         "description": "Vad du ska göra varje vecka, och när du är på plats.",
         "planerad": "Planerad",
         "ingenPlan": "Ingen vecka planerad än"
+      },
+      "profile": {
+        "filled": "Du har börjat"
       }
     }
   },
@@ -191,6 +201,10 @@
       "kunskapsbankText": "Läs om jobb, pengar och vardag.",
       "cv": "Gör ett CV",
       "cvText": "Det går utan AI."
+    },
+    "maende": {
+      "val": "Coachen får veta hur jag mår",
+      "forklaring": "Om du kryssar i rutan får coachen veta hur mycket ork du har. Coachen får också veta vad du skrivit är svårt i din profil. Då kan svaren passa dig bättre. Utan kryss får coachen inte veta det."
     }
   },
   "cv": {
@@ -206,8 +220,6 @@
   "cvBuilder": {
     "stepper": {
       "stepOf": "Del {{current}} av {{total}}",
-      "minutesLeft": "Ungefär {{min}} minuter kvar",
-      "percentDone": "{{percent}} procent klart",
       "current": "Del {{number}}: {{title}}",
       "goTo": "Gå till del {{number}}: {{title}}",
       "minutes": "{{min}} minuter"
@@ -538,34 +550,7 @@
       "takeInterestGuide": "Gör intresseguiden. Då får du förslag på jobb."
     },
     "onboarding": {
-      "welcome": {
-        "title": "Välkommen!",
-        "description": "Det här är din profil. Den hjälper dig att söka jobb. Gör det i din egen takt.",
-        "encouragement": "Allt du gör hjälper!"
-      },
-      "basic": {
-        "title": "Berätta lite om dig",
-        "description": "Börja med ditt namn. Skriv också hur man når dig. Det tar en minut.",
-        "encouragement": "Du bestämmer vad du vill visa."
-      },
-      "jobs": {
-        "title": "Vad vill du jobba med?",
-        "description": "Skriv några jobb du vill ha. Du kan ändra det när du vill.",
-        "encouragement": "Vet du inte? Det är okej!"
-      },
-      "support": {
-        "title": "Vi finns här för dig",
-        "description": "Behöver du stöd eller hjälp? Du kan skriva det här. Du måste inte.",
-        "encouragement": "Det du behöver är viktigt."
-      },
-      "startWithBasics": "Börja med ditt namn",
-      "chooseDesiredJobs": "Välj jobb du vill ha",
-      "stepOf": "Steg {{step}} av {{total}}",
-      "back": "Tillbaka",
-      "skip": "Hoppa över",
-      "next": "Nästa",
-      "getStarted": "Börja",
-      "takeYourTime": "Du kan alltid ändra senare. Ta den tid du behöver."
+      "inlineTip": "Här skriver du om dig själv. Fyll i det du orkar. Du kan göra det när du vill. Allt sparas."
     },
     "completion": {
       "fields": {
@@ -1043,7 +1028,6 @@
       "completed": "Klara",
       "inProgress": "Du jobbar med det",
       "notStarted": "Inte börjat",
-      "goalsCompleted": "{{completed}} av {{total}} mål är klara",
       "agreedGoals": "Era mål",
       "deadline": "Klart senast",
       "greatJob": "Bra! Du har klarat {{count}} av era mål."
@@ -1062,5 +1046,52 @@
   "common": {
     "tagInputInstructions": "Tryck på Enter för att lägga till. Använd pilarna för att välja ett förslag.",
     "tagCounter": "{{count}} av {{max}}"
+  },
+  "occupation": {
+    "desiredJobsList": {
+      "addForsta": "Lägg till ett yrke"
+    }
+  },
+  "settings": {
+    "navEtikett": "Delar i inställningarna",
+    "sections": {
+      "securityDesc": "Byt lösenord",
+      "privacyDesc": "Vad som sparas och vem som ser det"
+    },
+    "privacy": {
+      "consent": {
+        "aiDesc": "AI kan hjälpa dig att skriva CV och brev. AI kan ge tips inför en intervju och föreslå jobb. Du väljer själv. Du kan använda sidan utan AI. Du kan ändra dig när du vill.",
+        "aiLasMer": "Läs mer om AI",
+        "aiDetaljer": "AI-tjänsten heter gpt-oss-120b. Vi använder den genom företaget OpenRouter. Texterna skickas till datorer i USA. Lagen GDPR säger att du får säga nej till AI. Det står i artikel 21.",
+        "wellnessDesc": "Då kan du skriva hur du mår: humör, energi, sömn och stress. Dagboken behöver inget ja. Om du stänger av det här kan din konsulent inte längre se hur du mår. Det du redan skrivit finns kvar tills du tar bort det."
+      },
+      "aiToggle": {
+        "desc": "Pausa AI en tid. Ditt ja finns kvar. Du kan slå på AI igen när du vill."
+      },
+      "delningRubrik": "Vad din konsulent får se",
+      "learnMore": "Läs mer om hur vi skyddar det du skriver"
+    },
+    "appearance": {
+      "graphicsActionDesc": "Bilder gjorda i dator. Starka färger och skarpt ljus."
+    }
+  },
+  "datasharing": {
+    "health": {
+      "description": "Din konsulent får se det du skrivit om din vardag. Till exempel minne, ork, rörelse, syn och hörsel."
+    }
+  },
+  "wellness": {
+    "consent": {
+      "fullTitle": "Får vi spara hur du mår?",
+      "fullDesc": "Du kan skriva hur du mår varje dag. Då behöver vi ditt ja. Det du skriver räknas som uppgifter om din hälsa.",
+      "item": {
+        "stress": "Stress",
+        "note": "Det du skriver till loggen"
+      },
+      "utanSamtycke": "Dagboken och tacksamheten behöver inget ja."
+    }
+  },
+  "diary": {
+    "description": "Skriv när du vill. Dagboken är bara din."
   }
 }

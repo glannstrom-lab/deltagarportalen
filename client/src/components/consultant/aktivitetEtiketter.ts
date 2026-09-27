@@ -8,30 +8,43 @@
  * biståndshandläggaren och ska sticka ut.
  */
 
-import type { ActivityType, Attendance } from '@/services/aktivitetSchema'
+import { isoVeckonummer, addDays, formatLocalDate, type ActivityType, type Attendance, type PassTyp } from '@/services/aktivitetSchema'
 
-export const AKTIVITETSTYP_ETIKETT: Record<ActivityType, string> = {
+export const AKTIVITETSTYP_ETIKETT: Record<PassTyp, string> = {
   motivation: 'Motivation och förmåga',
   language: 'Språk',
   jobsearch: 'Jobbsökande',
   workplace: 'Arbetsplatsförlagd',
   jobsearch_own: 'Eget jobbsökande',
+  // RK28 — visas först när UTOKADE_AKTIVITETSTYPER_PA är på (aktivitetSchema.ts).
+  sfi: 'SFI',
+  studier: 'Studier',
+  vagledning: 'Studie- och yrkesvägledning',
+  halsa: 'Hälsa',
 }
 
-export const AKTIVITETSTYP_HJALP: Record<ActivityType, string> = {
+export const AKTIVITETSTYP_HJALP: Record<PassTyp, string> = {
   motivation: 'Aktivitet som motiverar eller ökar förmågan att ta arbete eller påbörja utbildning (12 kap. 6 a § p. 1).',
   language: 'Aktivitet som förbättrar de språkliga förutsättningarna (p. 2).',
   jobsearch: 'Aktivitet som förbättrar förutsättningarna att söka arbete, t.ex. jobbsökarverkstad (p. 3).',
   workplace: 'Arbetsplatsförlagd aktivitet hos kommun, civilsamhälle, region eller företag (p. 4).',
   jobsearch_own: 'Eget jobbsökande får tid i planen men räknas inte som anvisad aktivitet.',
+  sfi: 'Svenska för invandrare (p. 2). Hålls av skolan och räknas därför inte i avtalsloggen mot Arbetsförmedlingen.',
+  studier: 'Studier som ökar förmågan att ta arbete (p. 1). Hålls av skolan och räknas därför inte i avtalsloggen mot Arbetsförmedlingen.',
+  vagledning: 'Studie- och yrkesvägledning (p. 1).',
+  halsa: 'Aktivitet som stärker hälsan och förmågan att ta arbete (p. 1).',
 }
 
-export const AKTIVITETSTYP_CHIP: Record<ActivityType, string> = {
+export const AKTIVITETSTYP_CHIP: Record<PassTyp, string> = {
   motivation: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
   language: 'bg-sky-50 text-sky-800 dark:bg-sky-900/30 dark:text-sky-200',
   jobsearch: 'bg-emerald-50 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-200',
   workplace: 'bg-violet-50 text-violet-800 dark:bg-violet-900/30 dark:text-violet-200',
   jobsearch_own: 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300',
+  sfi: 'bg-sky-50 text-sky-800 dark:bg-sky-900/30 dark:text-sky-200',
+  studier: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
+  vagledning: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
+  halsa: 'bg-amber-50 text-amber-800 dark:bg-amber-900/30 dark:text-amber-200',
 }
 
 export const AKTIVITETSTYP_ORDNING: readonly ActivityType[] = ['jobsearch', 'motivation', 'language', 'workplace', 'jobsearch_own']
@@ -75,6 +88,39 @@ export function langtDatum(s: string): string {
 export function klockslag(iso: string): string {
   const d = new Date(iso)
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+/**
+ * RK27: veckans rubrik med ISO-veckonummer, som kommunen planerar i.
+ * `Vecka 39 · 21–27 sep`, över månadsskifte `Vecka 40 · 28 sep – 4 okt`.
+ */
+export function veckoRubrik(mandag: string): string {
+  const sondag = addDays(mandag, 6)
+  const [, m1, d1] = mandag.split('-').map(Number)
+  const [, m2] = sondag.split('-').map(Number)
+  const spann = m1 === m2 ? `${d1}–${kortDatum(sondag)}` : `${kortDatum(mandag)} – ${kortDatum(sondag)}`
+  return `Vecka ${isoVeckonummer(mandag)} · ${spann}`
+}
+
+/** RK26: "1 pass i veckan är inte markerade" — böjning efter antal. */
+export function omarkeradeText(antal: number): string {
+  return `${antal} pass i veckan är inte ${antal === 1 ? 'markerat' : 'markerade'} än.`
+}
+
+/**
+ * RK30: "Lagen kräver intyg vid sjukfrånvaro" hade ingen källa och stämmer
+ * inte generellt — om och från vilken dag intyg krävs är verksamhetens
+ * riktlinje (kommunens eller avtalets), inte en lagregel.
+ */
+export const INTYG_HJALP = 'Om och från vilken dag intyg krävs följer er riktlinje. Kryssa i när intyget har kommit in — det sparas när du markerar Sjuk.'
+
+/**
+ * RK26/RR16: `toLocaleDateString('sv-SE', { month: 'short' })` ger "27 sep."
+ * med punkt, och meningen fick en till: "CV uppdaterat 27 sep..". Samma
+ * kortform som resten av Aktivitet-fliken ("27 sep"), i lokal tid.
+ */
+export function cvRad(harCv: boolean, cvUppdaterad: string | null): string {
+  return harCv && cvUppdaterad ? `CV uppdaterat ${kortDatum(formatLocalDate(new Date(cvUppdaterad)))}.` : 'Inget CV skapat än.'
 }
 
 export function formatTimmar(h: number): string {

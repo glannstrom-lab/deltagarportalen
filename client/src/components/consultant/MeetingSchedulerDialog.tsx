@@ -23,6 +23,9 @@ import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
+import { aktivitetsplanApi } from '@/services/aktivitetApi'
+import { formatLocalDate } from '@/services/aktivitetSchema'
+import { motesVarningar, type PassTid } from '@/services/moteskadens'
 
 interface Participant {
   participant_id: string
@@ -90,6 +93,31 @@ export function MeetingSchedulerDialog({
   const [fel, setFel] = useState<string | null>(null)
   /** Deltagarlistan kunde inte hämtas — skiljs från "inga deltagare". */
   const [hamtFel, setHamtFel] = useState(false)
+  /**
+   * RK31: deltagarens pass den valda dagen, för krockvarningen. `null` = kunde
+   * inte hämtas (då sägs det, i stället för att tiga som om dagen vore fri).
+   */
+  const [dagensPass, setDagensPass] = useState<{ datum: string; pass: PassTid[] | null } | null>(null)
+  const valtDatum = formatLocalDate(selectedDate)
+  const deltagarId = selectedParticipant?.participant_id ?? null
+
+  useEffect(() => {
+    if (!isOpen || !deltagarId || step === 'participant') return
+    let aktiv = true
+    aktivitetsplanApi.passForDeltagareDag(deltagarId, valtDatum)
+      .then((pass) => { if (aktiv) setDagensPass({ datum: valtDatum, pass }) })
+      .catch(() => { if (aktiv) setDagensPass({ datum: valtDatum, pass: null }) })
+    return () => { aktiv = false }
+  }, [isOpen, deltagarId, valtDatum, step])
+
+  const passDenDagen = dagensPass?.datum === valtDatum ? dagensPass.pass : undefined
+  const varningar = motesVarningar({ veckodag: selectedDate.getDay(), tid: selectedTime || null, langdMin: duration, pass: passDenDagen ?? [] })
+  const varningsruta = (varningar.length > 0 || passDenDagen === null) && (
+    <div role="status" data-testid="motes-varningar" className="p-3 rounded-lg text-sm bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 space-y-1">
+      {varningar.map((v) => <p key={v}>{v}</p>)}
+      {passDenDagen === null && <p>Deltagarens pass den dagen kunde inte hämtas — kontrollera schemat innan du bokar.</p>}
+    </div>
+  )
 
   useEffect(() => {
     if (!isOpen) return
@@ -383,6 +411,8 @@ export function MeetingSchedulerDialog({
                         !date && 'invisible',
                         date && isPast(date) && 'text-stone-300 dark:text-stone-600 cursor-not-allowed',
                         date && !isPast(date) && 'hover:bg-stone-100 dark:hover:bg-stone-800',
+                        // RK31: helgen går att välja men ser ut som helg.
+                        date && !isPast(date) && !isSelected(date) && (date.getDay() === 0 || date.getDay() === 6) && 'text-stone-500 dark:text-stone-400',
                         date && isToday(date) && 'ring-2 ring-[var(--c-solid)]',
                         date && isSelected(date) && 'bg-[var(--c-solid)] text-white hover:bg-[var(--c-text)]'
                       )}
@@ -438,6 +468,8 @@ export function MeetingSchedulerDialog({
                   ))}
                 </div>
               </div>
+
+              {varningsruta}
             </div>
           )}
 
@@ -466,6 +498,7 @@ export function MeetingSchedulerDialog({
                   <span>{selectedTime} ({duration} min)</span>
                 </div>
               </div>
+              {varningsruta}
 
               {/* Meeting Type */}
               <div>

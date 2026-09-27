@@ -17,6 +17,7 @@ import { Briefcase } from '@/components/ui/icons'
 import { jobbsokAktivitetApi, type KonsulentVeckojobbsok } from '@/services/jobbsokAktivitet'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
 import type { ActivityPlan } from '@/services/aktivitetApi'
+import { cvRad } from './aktivitetEtiketter'
 
 interface Props {
   participantId: string
@@ -30,9 +31,6 @@ type Lage =
   | { status: 'fel'; fel: string }
   | { status: 'klart'; vecka: KonsulentVeckojobbsok | null; cvUppdaterad: string | null; harCv: boolean }
 
-function kortDatum(iso: string): string {
-  return new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
-}
 
 export function JobbsokTidKort({ participantId, plan, vecka }: Props) {
   const queryClient = useQueryClient()
@@ -93,7 +91,7 @@ export function JobbsokTidKort({ participantId, plan, vecka }: Props) {
             </p>
           )}
           <p className="text-xs text-stone-500 dark:text-stone-400">
-            {lage.harCv && lage.cvUppdaterad ? `CV uppdaterat ${kortDatum(lage.cvUppdaterad)}.` : 'Inget CV skapat än.'}{' '}
+            {cvRad(lage.harCv, lage.cvUppdaterad)}{' '}
             Personligt brev och intervjuträning ser bara deltagaren själv.
           </p>
         </>

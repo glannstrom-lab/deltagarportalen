@@ -6,7 +6,7 @@
 import { Suspense, lazy, useEffect, Component, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n/config'
-import { Loader2, User } from '@/components/ui/icons'
+import { Loader2, User, Lightbulb } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { TABS, type TabId } from '@/components/profile/constants'
 import { useFocusMode } from '@/components/FocusModeProvider'
@@ -16,7 +16,7 @@ import { PageLayout } from '@/components/layout/index'
 
 // Eager load critical components
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
-import { OnboardingModal } from '@/components/profile/OnboardingModal'
+import { InlineTip } from '@/components/ui/InlineTip'
 
 // Lazy load tab sections for better initial load performance
 const OverviewSection = lazy(() =>
@@ -177,8 +177,12 @@ export default function Profile() {
     >
       <div key={i18n.language} className="pb-8">
 
-        {/* Onboarding modal for new users */}
-        <OnboardingModal />
+        {/* RD16 (rollspelet 2026-09-27): här låg en välkomstmodal i fyra steg
+            ("Varje steg räknas!") som visades på nytt på varje ny enhet. DESIGN.md
+            §12: hellre ett inline-tips som går att stänga, som AI-teamet gör. */}
+        <InlineTip storageKey="profil-intro" icon={Lightbulb} className="mb-4">
+          {t('profile.onboarding.inlineTip', 'Här samlar du det som beskriver dig. Fyll i det du orkar, när du vill. Allt sparas.')}
+        </InlineTip>
 
         {/* Profile header with avatar and progress */}
         <ProfileHeader />

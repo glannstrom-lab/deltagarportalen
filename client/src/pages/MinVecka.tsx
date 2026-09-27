@@ -51,6 +51,10 @@ const TYP_NYCKEL: Record<ActivityType, string> = {
   jobsearch: 'minVecka.typ.jobsearch',
   workplace: 'minVecka.typ.workplace',
   jobsearch_own: 'minVecka.typ.jobsearch_own',
+  sfi: 'minVecka.typ.sfi',
+  studier: 'minVecka.typ.studier',
+  vagledning: 'minVecka.typ.vagledning',
+  halsa: 'minVecka.typ.halsa',
 }
 
 const NARVARO_NYCKEL: Record<Attendance, string> = {
@@ -223,7 +227,16 @@ export default function MinVecka() {
           <p className="text-lg text-stone-900 dark:text-stone-100">
             {ampel === 'inga_pass'
               ? t('minVecka.saldo.ingaPass', 'Inget inplanerat den här veckan.')
-              : t('minVecka.saldo.radAnvisat', {
+              : saldo.planeradeTimmar > anvisatMal + 0.05
+                // Skav (rollspelet 2026-09-27): "11 av 8 timmar" läser som en del av
+                // en helhet. Över målet sägs det rakt ut i stället.
+                ? t('minVecka.saldo.radOver', {
+                    defaultValue: 'Du har {{planerade}} timmar i anvisade pass den här veckan, mer än målet på {{mal}}.',
+                    planerade: saldo.planeradeTimmar,
+                    mal: anvisatMal,
+                    count: saldo.planeradeTimmar,
+                  })
+                : t('minVecka.saldo.radAnvisat', {
                   defaultValue: 'Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan.',
                   planerade: saldo.planeradeTimmar,
                   mal: anvisatMal,

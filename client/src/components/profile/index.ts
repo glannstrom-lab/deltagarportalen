@@ -16,7 +16,6 @@ export { NotificationSettingsSection } from './SettingsSections'
 // New consolidated components
 export { ProfileHeader } from './ProfileHeader'
 export { ProfileTabs } from './ProfileTabs'
-export { OnboardingModal } from './OnboardingModal'
 
 // Form components
 export * from './forms'

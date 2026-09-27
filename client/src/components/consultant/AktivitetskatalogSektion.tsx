@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils'
 import { aktivitetskatalogApi, type CatalogItem, type CatalogItemInput } from '@/services/aktivitetskatalogApi'
 import { orgApi, type Organization, type OrgRole } from '@/services/orgApi'
 import { minuterMellan, type ActivityType } from '@/services/aktivitetSchema'
+import { synligBeskrivning } from './katalogBeskrivning'
 import {
   AKTIVITETSTYP_CHIP,
   AKTIVITETSTYP_ETIKETT,
@@ -151,14 +152,15 @@ export function AktivitetskatalogSektion() {
             const tid = post.start_time && post.end_time ? `${post.start_time}–${post.end_time}` : null
             const dag = post.weekday ? VECKODAG_KORT[post.weekday] : null
             const org = orgNamn(post.org_id)
+            const beskrivning = synligBeskrivning(post.description)
             return (
               <li key={post.id}>
                 <Card className={cn('p-5 h-full flex flex-col gap-3', !post.is_active && 'opacity-70')}>
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <h3 className="font-semibold text-stone-900 dark:text-stone-100 truncate">{post.title}</h3>
-                      {post.description && (
-                        <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{post.description}</p>
+                      {beskrivning && (
+                        <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{beskrivning}</p>
                       )}
                     </div>
                     <span

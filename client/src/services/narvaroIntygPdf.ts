@@ -41,6 +41,10 @@ const TYP_ETIKETT: Record<ActivityType, string> = {
   jobsearch: 'Jobbsökande',
   workplace: 'Arbetsplatsförlagd',
   jobsearch_own: 'Eget jobbsökande',
+  sfi: 'SFI',
+  studier: 'Studier',
+  vagledning: 'Studie- och yrkesvägledning',
+  halsa: 'Hälsa',
 }
 
 /** Konsulentens markering — samma ord som i Min vecka. */

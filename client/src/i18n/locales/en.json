@@ -99,7 +99,6 @@
     "upload": "Upload",
     "seeAll": "See all",
     "hide": "Hide",
-    "activate": "Turn on",
     "clearAll": "Clear all",
     "employerNotSpecified": "Employer not specified",
     "locationNotSpecified": "Location not specified",
@@ -309,7 +308,7 @@
     "noConsultantDesc": "You don't have an assigned consultant yet. These settings apply once a consultant is assigned to you.",
     "health": {
       "title": "Share health data",
-      "description": "Allow your consultant to see your ICF data (cognitive, motor, sensory, etc.)"
+      "description": "Let your konsulent see what you have written about how you manage everyday life, for example memory, energy, movement, sight and hearing."
     },
     "wellness": {
       "title": "Share wellbeing data",
@@ -3026,7 +3025,6 @@
       "completed": "Completed",
       "inProgress": "In progress",
       "notStarted": "Not started",
-      "goalsCompleted": "{{completed}} of {{total}} goals completed",
       "agreedGoals": "Goals you agreed on",
       "deadline": "Due by",
       "greatJob": "Nice work — you've completed {{count}} of your goals."
@@ -4088,7 +4086,7 @@
   },
   "diary": {
     "title": "Diary",
-    "description": "Your personal diary and calendar",
+    "description": "Write when you want to. The diary is only yours.",
     "writeFirst": "Write your first entry",
     "words": "words",
     "tags": "Tags",
@@ -4619,15 +4617,15 @@
       "gameTag": "Game"
     },
     "consent": {
-      "fullTitle": "Health Data Consent",
-      "fullDesc": "To use the diary and health features, we need your consent to collect and store sensitive health data.",
+      "fullTitle": "Consent for the mood log",
+      "fullDesc": "To log how you feel, we need your consent. What you log counts as health information.",
       "whatWeCollect": "What we collect",
       "item": {
         "mood": "Mood and emotions",
         "energy": "Energy levels",
         "sleep": "Sleep quality",
-        "diary": "Diary entries",
-        "gratitude": "Gratitude notes"
+        "stress": "Stress",
+        "note": "The note you write in the log"
       },
       "whyWeCollect": "Why we collect this",
       "whyDesc": "The data is used to give you personal insights about your wellbeing and to customise recommendations during your job search. We analyse trends to help you understand what affects your mood.",
@@ -4646,7 +4644,8 @@
       "grantNow": "Give consent",
       "manageInSettings": "Manage",
       "requiredDesc": "You need to give consent to use this feature",
-      "requiredTitle": "Consent required"
+      "requiredTitle": "Consent required",
+      "utanSamtycke": "The diary and the gratitude notes do not need consent."
     }
   },
   "education": {
@@ -5115,9 +5114,9 @@
       "appearance": "Appearance",
       "appearanceDesc": "How the portal looks",
       "privacy": "Privacy",
-      "privacyDesc": "Your privacy settings",
+      "privacyDesc": "What is saved and who sees it",
       "security": "Security",
-      "securityDesc": "Change password and two-factor auth"
+      "securityDesc": "Change your password"
     },
     "profile": {
       "title": "Profile Settings",
@@ -5192,19 +5191,12 @@
       "graphicsSoft": "Soft",
       "graphicsSoftDesc": "Photographs in daylight. Calm and homely.",
       "graphicsAction": "Action",
-      "graphicsActionDesc": "Rendered pictures with dramatic light. Match day."
+      "graphicsActionDesc": "Computer-made pictures with strong colours and sharp light."
     },
     "privacy": {
       "title": "Privacy",
       "description": "Manage your privacy settings and consents",
-      "shareActivity": "Share activity",
-      "shareActivityDesc": "Allow sharing of anonymized usage statistics to improve the service.",
-      "learnMore": "Learn more about data privacy",
-      "profileVisibility": "Profile visibility",
-      "profileVisibilityDesc": "Choose who can see your profile.",
-      "onlyMe": "Only me",
-      "caseworkers": "Consultants",
-      "everyone": "Everyone",
+      "learnMore": "Read more about how we protect your information",
       "consent": {
         "title": "Your consents",
         "terms": "Terms of Service",
@@ -5212,7 +5204,7 @@
         "privacy": "Privacy Policy",
         "privacyDesc": "How we collect, store, and protect your personal data according to GDPR.",
         "ai": "AI Processing and Profiling",
-        "aiDesc": "Allow your data to be processed by AI (gpt-oss-120b via OpenRouter, USA) for CV texts, cover letters, interview tips and personalised job recommendations. Disabling this is your right to object to profiling under GDPR Art 21 — the core portal still works without AI.",
+        "aiDesc": "AI can help you write your CV and letters, give tips before interviews and suggest jobs. You choose. The portal also works without AI, and you can change your mind at any time.",
         "marketing": "Marketing",
         "marketingDesc": "Receive tips, news, and updates via email. We never send spam.",
         "required": "Required",
@@ -5222,26 +5214,28 @@
         "grant": "Grant",
         "withdraw": "Withdraw",
         "wellness": "Diary and wellbeing",
-        "wellnessDesc": "Lets you keep a diary and log how you feel. Turning it off also stops sharing with your consultant — what you have already written stays until you delete it.",
+        "wellnessDesc": "Lets you log how you feel: mood, energy, sleep and stress. The diary does not need a yes. If you turn this off, sharing with your konsulent also stops. What you have already logged stays until you delete it.",
         "health": "Functional capacity",
         "healthDesc": "Used for recommendations adapted to your circumstances. Turning it off also stops sharing with your consultant — what you have already entered stays until you delete it.",
         "sharingStopFailed": "Your consent has been withdrawn, but we could not turn off sharing with your consultant. Try again under \"Data sharing with consultant\" below, or contact us.",
         "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later.",
-        "saveFailed": "We could not save your choice right now, so nothing has changed. Please try again in a moment."
+        "saveFailed": "We could not save your choice right now, so nothing has changed. Please try again in a moment.",
+        "aiLasMer": "Read more about the AI service",
+        "aiDetaljer": "The AI service is the language model gpt-oss-120b. We reach it through the company OpenRouter, and the texts are processed on servers in the USA. Your right to say no to AI comes from GDPR article 21 (the right to object to profiling)."
       },
       "orgAiLock": {
         "text": "AI features are turned off by {{orgName}}. This applies no matter what you choose here.",
         "status": "Turned off by your organisation"
       },
       "aiToggle": {
-        "desc": "Pause AI features without withdrawing your consent. This is your right under GDPR Art. 21 to object to profiling — you can turn it back on at any time.",
-        "gdpr": "GDPR Art. 21",
+        "desc": "Pause AI for a while without taking back your yes. You can turn it on again when you want.",
         "pause": "Pause AI",
         "resume": "Turn AI on",
         "statusOff": "AI features are paused",
         "statusOn": "AI features are active",
         "title": "Active AI use"
-      }
+      },
+      "delningRubrik": "What your konsulent can see"
     },
     "deleteAccount": {
       "sectionTitle": "Your account",
@@ -5296,9 +5290,7 @@
       "newPasswordPlaceholder": "Enter new password (at least 8 characters)",
       "confirmPassword": "Confirm new password",
       "confirmPasswordPlaceholder": "Repeat the new password",
-      "updatePassword": "Update password",
-      "twoFactor": "Two-factor authentication",
-      "twoFactorDesc": "Add extra security"
+      "updatePassword": "Update password"
     },
     "programSelector": {
       "title": "Programme",
@@ -5318,7 +5310,8 @@
       "tipActiveRole": "Switch role here when you want to see another view",
       "tipCombinedPermissions": "Everything you can do in each role is still there when you switch back"
     },
-    "coachTipsTitle": "Coach tips on every page"
+    "coachTipsTitle": "Coach tips on every page",
+    "navEtikett": "Parts of the settings"
   },
   "auth": {
     "confirmEmail": {
@@ -6955,34 +6948,7 @@
       "loadError": "We could not load your share links right now. This does not mean they are gone."
     },
     "onboarding": {
-      "welcome": {
-        "title": "Welcome!",
-        "description": "This is your profile - a tool that helps you move forward in your job search. Take it at your own pace.",
-        "encouragement": "Every step counts!"
-      },
-      "basic": {
-        "title": "Tell us a bit about yourself",
-        "description": "Start with the basics: your name and how to reach you. It only takes a minute.",
-        "encouragement": "You decide what to share."
-      },
-      "jobs": {
-        "title": "What do you want to work with?",
-        "description": "Add some desired jobs. You can change this at any time.",
-        "encouragement": "Unsure? That's perfectly okay!"
-      },
-      "support": {
-        "title": "We're here for you",
-        "description": "If you need support or adaptations, there's room for that. Nothing is mandatory.",
-        "encouragement": "Your needs matter."
-      },
-      "startWithBasics": "Start with basic info",
-      "chooseDesiredJobs": "Choose desired jobs",
-      "stepOf": "Step {{step}} of {{total}}",
-      "back": "Back",
-      "skip": "Skip",
-      "next": "Next",
-      "getStarted": "Get started",
-      "takeYourTime": "You can always come back and change things. Take the time you need."
+      "inlineTip": "This is where you collect what describes you. Fill in what you can, when you want. Everything is saved."
     },
     "history": {
       "previousValue": "Previous value",
@@ -7575,8 +7541,6 @@
     "yourCv": "Your CV",
     "stepper": {
       "stepOf": "Step {{current}} of {{total}}",
-      "minutesLeft": "About {{min}} min left",
-      "percentDone": "{{percent}}% done",
       "current": "Step {{number}}: {{title}}",
       "goTo": "Go to step {{number}}: {{title}}",
       "minutes": "{{min}} min"
@@ -7657,7 +7621,6 @@
     "overview": {
       "totalParticipants": "Total participants",
       "needsAttention": "Needs attention",
-      "completeCvs": "{{count}} complete",
       "meetingsThisWeek": "Meetings this week",
       "scheduled": "Scheduled",
       "attentionAlerts": "Needs attention",
@@ -7677,24 +7640,13 @@
       "noGoalCategoriesYet": "No goals registered yet — create the first one from a participant's page.",
       "topGoalCategories": "Top goal categories",
       "vsLastWeek": "vs last week",
-      "activeCount": "{{count}} active",
-      "unreadMessages": "{{count}} unread messages",
       "noActivity": "No activity yet",
       "seeDetails": "See details",
       "activity": {
         "newNote": "New note",
         "progressNoted": "Progress noted",
-        "concernNoted": "Concern noted",
         "goalRelated": "Goal-related activity",
         "activity": "Activity"
-      },
-      "goalCategories": {
-        "other": "Other",
-        "cvImprovement": "CV improvement",
-        "jobApplications": "Job applications",
-        "interviewTraining": "Interview training",
-        "networking": "Networking",
-        "skillsDevelopment": "Skills development"
       },
       "myDay": {
         "title": "My day",
@@ -7795,10 +7747,6 @@
       "chooseDefaultView": "Choose how the participant list is displayed by default",
       "grid": "Grid",
       "list": "List",
-      "language": "Language",
-      "chooseLanguage": "Choose interface language",
-      "swedish": "Swedish",
-      "english": "English",
       "timezone": "Timezone",
       "usedForMeetings": "Used for meeting booking and reminders",
       "weekStart": "Week starts",
@@ -7925,6 +7873,8 @@
       "timelineEmptyTitle": "No events yet",
       "timelineEmptyDesc": "Journal notes, goals, meetings, placements and sessions are collected here in order when they exist.",
       "notePlaceholder": "Write a note about the participant...",
+      "activeGoalsCount_one": "{{count}} active goal",
+      "activeGoalsCount_other": "{{count}} active goals",
       "activeGoalsCount": "{{count}} active goals",
       "reportDraft": "Report draft (AI)",
       "loadError": "Could not fetch the participant's details."
@@ -7941,11 +7891,9 @@
       "tryAgain": "Try again",
       "metrics": {
         "totalParticipants": "Total participants",
-        "activeCount": "{{count}} active",
         "cvCompletion": "CV completion",
         "hasCompleteCV": "Has complete CV",
         "avgPlacementTime": "Average placement time",
-        "days": "{{count}} days",
         "fromStartToJob": "From start to job",
         "noPlacementsYet": "No placements yet",
         "placementRate": "{{rate}}% placement rate"
@@ -8039,7 +7987,6 @@
       "meetings": "Meetings",
       "newMessage": "New message",
       "noMessages": "No messages",
-      "quickMessages": "Quick messages",
       "meetingReminder": "Meeting reminder",
       "checkInMessage": "Check-in message",
       "congratsProgress": "Congratulations on progress",
@@ -8075,7 +8022,6 @@
       "networking": "Networking",
       "skills": "Skills",
       "createTemplate": "Create template",
-      "used": "Used {{count}} times",
       "use": "Use",
       "createAndShare": "Create and share job collections with your participants",
       "newCollection": "New collection",
@@ -8327,6 +8273,10 @@
       "kunskapsbankText": "Articles about looking for work, about benefits and about everyday life.",
       "cv": "Make your CV with the template",
       "cvText": "The CV builder works without AI."
+    },
+    "maende": {
+      "val": "Let the coach know how I feel",
+      "forklaring": "Then the coach learns your energy level and what you have written as hard in your profile, so the answers fit you better. Without a tick, the coach does not learn this."
     }
   },
   "salary": {
@@ -9387,7 +9337,9 @@
       "vadRaknas": "Only sessions that your konsulent has planned count here.",
       "vadRaknasJobbsok_one": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hour per week in your plan.",
       "vadRaknasJobbsok_other": "Only sessions that your konsulent has planned count here. Your own job search counts separately: {{count}} hours per week in your plan.",
-      "radAnvisat_other": "You have {{planerade}} of {{mal}} hours of assigned sessions this week."
+      "radAnvisat_other": "You have {{planerade}} of {{mal}} hours of assigned sessions this week.",
+      "radOver_one": "You have {{planerade}} hour of assigned sessions this week. That is more than the goal of {{mal}}.",
+      "radOver_other": "You have {{planerade}} hours of assigned sessions this week. That is more than the goal of {{mal}}."
     },
     "nastaPass": "Next: {{titel}}, {{dag}} at {{tid}}",
     "forraVeckan": "Last week",
@@ -9426,13 +9378,14 @@
       "knapp": "Ask about this session",
       "etikett": "Your question to your konsulent",
       "inledning": "Hi! I have a question about the session \"{{titel}}\" on {{datum}} at {{tid}}: ",
-      "tom": "Write your question after the opening line.",
+      "tom": "Write your question first.",
       "skicka": "Send",
       "skickar": "Sending …",
       "avbryt": "Cancel",
       "skickat": "Sent to {{namn}}.",
       "dinKonsulent": "your konsulent",
-      "fel": "The question could not be sent. You can write to your konsulent from the page My konsulent."
+      "fel": "The question could not be sent. You can write to your konsulent from the page My konsulent.",
+      "om": "About the session \"{{titel}}\" on {{datum}} at {{tid}}. Your konsulent will see this."
     },
     "franvaro": {
       "knapp": "I cannot come",
@@ -9472,7 +9425,11 @@
       "language": "Language",
       "jobsearch": "Job search",
       "workplace": "At a workplace",
-      "jobsearch_own": "Your own job search"
+      "jobsearch_own": "Your own job search",
+      "sfi": "SFI (Swedish for immigrants)",
+      "studier": "Studies",
+      "vagledning": "Studie- och yrkesvägledning (study and career guidance)",
+      "halsa": "Health"
     },
     "narvaro": {
       "present": "Present",
@@ -9563,7 +9520,7 @@
       "profile": {
         "title": "Your profile",
         "description": "Your details and what you want to work with.",
-        "filled": "Filled in",
+        "filled": "Started",
         "fillIn": "Fill in when you have the energy"
       }
     }
@@ -9603,7 +9560,8 @@
       "add": "Add a job ({{count}}/{{max}})",
       "maxReached": "You have added the maximum ({{max}}). Remove a job to add a new one.",
       "orderHint": "Jobs at the top get priority in job matching.",
-      "freeTextHint": "Jobs with ⚠ are free text and are not matched exactly."
+      "freeTextHint": "Jobs with ⚠ are free text and are not matched exactly.",
+      "addForsta": "Add a job"
     }
   },
   "samlingar": {

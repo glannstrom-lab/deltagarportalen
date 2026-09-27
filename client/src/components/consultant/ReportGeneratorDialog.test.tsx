@@ -261,3 +261,22 @@ describe('ReportGeneratorDialog — nämndrapporten bara för kommunen (RR9)', (
     expect(await screen.findByRole('button', { name: /Nämndrapport \(kvartal\)/i })).toBeInTheDocument()
   })
 })
+
+// RK32 (rollspelet 2026-09-27): rapporten stod "av Konsulent" — rollen, inte
+// namnet — eftersom ingen anropare skickade namnet. Dialogen tar det nu ur
+// profilen. Kontroll att fixen står kvar; mutation: ta bort profilläsningen
+// (consultantName = prop || 'Konsulent') → faller.
+describe('ReportGeneratorDialog — RK32: konsulentens namn, inte rollen', () => {
+  it('skriver den inloggade konsulentens namn i PDF:en när ingen prop skickas', async () => {
+    const { useAuthStore } = await import('@/stores/authStore')
+    const fore = useAuthStore.getState().profile
+    useAuthStore.setState({ profile: { first_name: 'Karin', last_name: 'Konsulentsson' } as never })
+    try {
+      render(<ReportGeneratorDialog isOpen onClose={() => {}} analyticsData={analyticsData} periodLabel="Q3 2026" />)
+      const pdf = await forhandsgranskadPdfText()
+      expect(pdf).toContain('Karin Konsulentsson')
+    } finally {
+      useAuthStore.setState({ profile: fore })
+    }
+  }, 30000)
+})

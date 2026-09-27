@@ -120,7 +120,7 @@ function UtvaltKort({ resource, nyFlik }: { resource: ExternalResource; nyFlik: 
           <div className="flex items-start gap-2">
             {/* 15 px, inte 16: "Arbetsförmedlingens" är 19 tecken och bröts som
                 "Arbetsförmedlingen / s guider" i den smala kolumnen. */}
-            <h3 className="min-w-0 flex-1 text-[15px] font-semibold leading-snug text-stone-900 dark:text-stone-100 break-words group-hover:text-[var(--c-text)]">
+            <h3 className="min-w-0 flex-1 text-[0.9375rem] font-semibold leading-snug text-stone-900 dark:text-stone-100 break-words group-hover:text-[var(--c-text)]">
               {resource.name}
             </h3>
             <ExternalLink className="w-4 h-4 shrink-0 mt-0.5 text-stone-500" aria-hidden="true" />

@@ -77,3 +77,38 @@ describe('SamlingarFab', () => {
     expect(classes()).toContain('translate-y-[220%]')
   })
 })
+
+/*
+ * RD20 (rollspelet 2026-09-27): bokmärkesknappen täckte pilen på Lugnare läge
+ * och bocken på brevmallen "Professionell" — medan sidan stod still, så varken
+ * scroll- eller fokusregeln ovan slog till. Knappen kliver nu undan när den
+ * ligger över en annan kontroll, och kommer tillbaka när platsen är fri.
+ * Mutation: ta bort `tackerKontroll` ur villkoret → testet faller.
+ */
+describe('SamlingarFab kliver undan för kontroller den täcker (RD20)', () => {
+  it('döljs när en annan knapp ligger under den, syns när platsen är fri', async () => {
+    const { act, waitFor } = await import('@testing-library/react')
+    const underliggande = document.createElement('button')
+    document.body.appendChild(underliggande)
+    const underMig: Element[] = [underliggande]
+    const ursprung = document.elementsFromPoint
+    document.elementsFromPoint = vi.fn(() => underMig) as unknown as typeof document.elementsFromPoint
+    try {
+      render(
+        <MemoryRouter>
+          <SamlingarFab />
+        </MemoryRouter>
+      )
+      const knapp = () => document.querySelector('button[aria-label="Öppna mina samlingar"]') as HTMLButtonElement
+      await waitFor(() => expect(knapp().className).toContain('pointer-events-none'))
+      expect(knapp()).toHaveAttribute('tabindex', '-1')
+
+      underMig.length = 0
+      await act(async () => { window.dispatchEvent(new Event('scroll')) })
+      await waitFor(() => expect(knapp().className).not.toContain('pointer-events-none'))
+    } finally {
+      document.elementsFromPoint = ursprung
+      underliggande.remove()
+    }
+  })
+})

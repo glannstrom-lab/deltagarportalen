@@ -302,14 +302,14 @@ export default function VisibilityTab() {
                 {/* "EEE d" ger "mån 17", som kapas till "m…" i en
                     sjukolumnsgrid på 390 px. Bokstaven och siffran får egna
                     rader i stället — dagen syns hela vägen ner. */}
-                <p className={cn('text-[10px] sm:text-xs font-medium mb-1 text-center',
+                <p className={cn('text-[0.625rem] sm:text-xs font-medium mb-1 text-center',
                   idag ? 'text-[var(--c-text)] dark:text-stone-100' : 'text-stone-700 dark:text-stone-400')}>
                   <span className="block sm:hidden">{format(day, 'EEEEE', { locale })}</span>
                   <span className="hidden sm:inline">{format(day, 'EEE', { locale })} </span>
                   <span className="block sm:inline">{format(day, 'd', { locale })}</span>
                 </p>
                 {dagensPoster.map((post) => (
-                  <div key={post.id} className="text-[10px] sm:text-xs p-1 rounded mb-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100">
+                  <div key={post.id} className="text-[0.625rem] sm:text-xs p-1 rounded mb-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-stone-100">
                     <span className="block truncate" title={post.title}>{post.title}</span>
                     <button
                       type="button"

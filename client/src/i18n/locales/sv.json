@@ -99,7 +99,6 @@
     "upload": "Ladda upp",
     "seeAll": "Se alla",
     "hide": "Dölj",
-    "activate": "Slå på",
     "clearAll": "Rensa alla",
     "employerNotSpecified": "Arbetsgivare ej angiven",
     "locationNotSpecified": "Ort ej angiven",
@@ -309,7 +308,7 @@
     "noConsultantDesc": "Du har ingen tilldelad konsulent än. Dessa inställningar gäller när en konsulent tilldelas dig.",
     "health": {
       "title": "Dela hälsodata",
-      "description": "Tillåt din konsulent att se din ICF-data (kognitiv, motorisk, sensorisk osv.)"
+      "description": "Låt din konsulent se det du skrivit om hur du fungerar i vardagen, till exempel minne, ork, rörelse, syn och hörsel."
     },
     "wellness": {
       "title": "Dela välmåendedata",
@@ -3026,7 +3025,6 @@
       "completed": "Avklarade",
       "inProgress": "Pågående",
       "notStarted": "Ej påbörjat",
-      "goalsCompleted": "{{completed}} av {{total}} mål avklarade",
       "agreedGoals": "Era överenskomna mål",
       "deadline": "Klart senast",
       "greatJob": "Bra jobbat — du har klarat {{count}} av era mål."
@@ -4088,7 +4086,7 @@
   },
   "diary": {
     "title": "Dagbok",
-    "description": "Din personliga dagbok och kalender",
+    "description": "Skriv av dig när du vill. Dagboken är bara din.",
     "writeFirst": "Skriv ditt första inlägg",
     "words": "ord",
     "tags": "Taggar",
@@ -4619,15 +4617,15 @@
       "gameTag": "Spel"
     },
     "consent": {
-      "fullTitle": "Samtycke för hälsodata",
-      "fullDesc": "För att använda dagboken och hälsofunktionerna behöver vi ditt samtycke att samla in och lagra känslig hälsodata.",
+      "fullTitle": "Samtycke för måendeloggen",
+      "fullDesc": "För att logga hur du mår behöver vi ditt samtycke. Det du loggar räknas som hälsouppgifter.",
       "whatWeCollect": "Vad vi samlar in",
       "item": {
         "mood": "Humör och känslor",
         "energy": "Energinivåer",
         "sleep": "Sömnkvalitet",
-        "diary": "Dagboksanteckningar",
-        "gratitude": "Tacksamhetsnoteringar"
+        "stress": "Stress",
+        "note": "Anteckningen du skriver till loggen"
       },
       "whyWeCollect": "Varför vi samlar in detta",
       "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
@@ -4646,7 +4644,8 @@
       "grantNow": "Ge samtycke",
       "manageInSettings": "Hantera",
       "requiredDesc": "Du måste ge samtycke för att kunna använda denna funktion",
-      "requiredTitle": "Samtycke krävs"
+      "requiredTitle": "Samtycke krävs",
+      "utanSamtycke": "Dagboken och tacksamheten behöver inget samtycke."
     }
   },
   "education": {
@@ -5115,9 +5114,9 @@
       "appearance": "Utseende",
       "appearanceDesc": "Hur portalen ser ut",
       "privacy": "Integritet",
-      "privacyDesc": "Dina sekretessinställningar",
+      "privacyDesc": "Vad som sparas och vem som ser det",
       "security": "Säkerhet",
-      "securityDesc": "Ändra lösenord och tvåfaktorsauth"
+      "securityDesc": "Byt lösenord"
     },
     "profile": {
       "title": "Profilinställningar",
@@ -5192,19 +5191,12 @@
       "graphicsSoft": "Mjuk",
       "graphicsSoftDesc": "Fotografier i dagsljus. Lugnt och hemma.",
       "graphicsAction": "Action",
-      "graphicsActionDesc": "Renderade bilder med dramatiskt ljus. Matchdag."
+      "graphicsActionDesc": "Datorgjorda bilder med starka färger och skarpt ljus."
     },
     "privacy": {
       "title": "Integritet",
       "description": "Dina sekretessinställningar och samtycken",
-      "shareActivity": "Dela aktivitet",
-      "shareActivityDesc": "Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.",
-      "learnMore": "Läs mer om dataintegritet",
-      "profileVisibility": "Profilsynlighet",
-      "profileVisibilityDesc": "Välj vem som kan se din profil.",
-      "onlyMe": "Endast jag",
-      "caseworkers": "Arbetsförmedlare",
-      "everyone": "Alla",
+      "learnMore": "Läs mer om hur vi skyddar dina uppgifter",
       "consent": {
         "title": "Dina samtycken",
         "terms": "Användarvillkor",
@@ -5212,7 +5204,7 @@
         "privacy": "Integritetspolicy",
         "privacyDesc": "Hur vi samlar in, lagrar och skyddar dina personuppgifter enligt GDPR.",
         "ai": "AI-behandling och profilering",
-        "aiDesc": "Tillåt att dina uppgifter bearbetas med AI (gpt-oss-120b via OpenRouter, USA) för CV-texter, brev, intervjutips och personliga jobbrekommendationer. Att stänga av detta är din rätt att invända mot profilering enligt GDPR Art 21 — kärnportalen fungerar fortfarande utan AI.",
+        "aiDesc": "AI kan hjälpa dig att skriva CV och brev, ge tips inför intervjuer och föreslå jobb. Du väljer själv. Portalen fungerar också utan AI, och du kan ändra dig när du vill.",
         "marketing": "Marknadsföring",
         "marketingDesc": "Ta emot tips, nyheter och uppdateringar via e-post. Vi skickar aldrig spam.",
         "required": "Krävs",
@@ -5222,26 +5214,28 @@
         "grant": "Godkänn",
         "withdraw": "Återkalla",
         "wellness": "Dagbok och mående",
-        "wellnessDesc": "Låter dig skriva dagbok och logga hur du mår. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan skrivit ligger kvar tills du raderar det.",
+        "wellnessDesc": "Låter dig logga hur du mår: humör, energi, sömn och stress. Dagboken behöver inget ja. Slår du av det här stängs också delningen med din konsulent av. Det du redan loggat ligger kvar tills du tar bort det.",
         "health": "Funktionsförutsättningar",
         "healthDesc": "Används för anpassade rekommendationer utifrån dina förutsättningar. Slår du av det stängs samtidigt delningen med din konsulent av — det du redan fyllt i ligger kvar tills du raderar det.",
         "sharingStopFailed": "Samtycket är återkallat, men vi kunde inte stänga av delningen med din konsulent. Försök igen under \"Datadelning med konsulent\" nedan, eller hör av dig till oss.",
         "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare.",
-        "saveFailed": "Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund."
+        "saveFailed": "Vi kunde inte spara ditt val just nu, så ingenting har ändrats. Försök igen om en stund.",
+        "aiLasMer": "Läs mer om AI-tjänsten",
+        "aiDetaljer": "AI-tjänsten är språkmodellen gpt-oss-120b. Vi når den genom företaget OpenRouter, och texterna behandlas på servrar i USA. Att du kan säga nej till AI är din rätt enligt GDPR artikel 21 (rätten att invända mot profilering)."
       },
       "orgAiLock": {
         "text": "AI-funktionerna är avstängda av {{orgName}}. Det gäller oavsett din egen inställning.",
         "status": "Avstängt av din organisation"
       },
       "aiToggle": {
-        "desc": "Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.",
-        "gdpr": "GDPR Art 21",
+        "desc": "Pausa AI en tid utan att ta tillbaka ditt ja. Du kan slå på den igen när du vill.",
         "pause": "Pausa AI",
         "resume": "Slå på AI",
         "statusOff": "AI-funktioner är pausade",
         "statusOn": "AI-funktioner är aktiva",
         "title": "Aktiv AI-användning"
-      }
+      },
+      "delningRubrik": "Vad din konsulent får se"
     },
     "deleteAccount": {
       "sectionTitle": "Ditt konto",
@@ -5296,9 +5290,7 @@
       "newPasswordPlaceholder": "Ange nytt lösenord (minst 8 tecken)",
       "confirmPassword": "Bekräfta nytt lösenord",
       "confirmPasswordPlaceholder": "Upprepa det nya lösenordet",
-      "updatePassword": "Uppdatera lösenord",
-      "twoFactor": "Tvåfaktorsautentisering",
-      "twoFactorDesc": "Lägg till extra säkerhet"
+      "updatePassword": "Uppdatera lösenord"
     },
     "programSelector": {
       "title": "Projekt",
@@ -5318,7 +5310,8 @@
       "tipActiveRole": "Byt roll här när du vill se en annan vy",
       "tipCombinedPermissions": "Allt du kan göra i varje roll finns kvar när du byter tillbaka"
     },
-    "coachTipsTitle": "Coach-tips på varje sida"
+    "coachTipsTitle": "Coach-tips på varje sida",
+    "navEtikett": "Avsnitt i inställningarna"
   },
   "auth": {
     "confirmEmail": {
@@ -6955,34 +6948,7 @@
       "loadError": "Vi kunde inte hämta dina delningslänkar just nu. Det betyder inte att de är borta."
     },
     "onboarding": {
-      "welcome": {
-        "title": "Välkommen!",
-        "description": "Det här är din profil - ett verktyg som hjälper dig framåt i din jobbsökning. Ta det i din egen takt.",
-        "encouragement": "Varje steg räknas!"
-      },
-      "basic": {
-        "title": "Berätta lite om dig",
-        "description": "Börja med det grundläggande: ditt namn och hur man når dig. Det tar bara en minut.",
-        "encouragement": "Du bestämmer vad du vill dela."
-      },
-      "jobs": {
-        "title": "Vad vill du jobba med?",
-        "description": "Lägg till några önskade jobb. Du kan ändra detta när som helst.",
-        "encouragement": "Osäker? Det är helt okej!"
-      },
-      "support": {
-        "title": "Vi finns här för dig",
-        "description": "Om du behöver stöd eller anpassningar finns det plats för det. Inget är obligatoriskt.",
-        "encouragement": "Dina behov är viktiga."
-      },
-      "startWithBasics": "Börja med grundinfo",
-      "chooseDesiredJobs": "Välj önskade jobb",
-      "stepOf": "Steg {{step}} av {{total}}",
-      "back": "Tillbaka",
-      "skip": "Hoppa över",
-      "next": "Nästa",
-      "getStarted": "Kom igång",
-      "takeYourTime": "Du kan alltid komma tillbaka och ändra. Ta den tid du behöver."
+      "inlineTip": "Här samlar du det som beskriver dig. Fyll i det du orkar, när du vill. Allt sparas."
     },
     "history": {
       "previousValue": "Tidigare värde",
@@ -7575,8 +7541,6 @@
     "yourCv": "Ditt CV",
     "stepper": {
       "stepOf": "Steg {{current}} av {{total}}",
-      "minutesLeft": "~{{min}} min kvar",
-      "percentDone": "{{percent}} % klart",
       "current": "Steg {{number}}: {{title}}",
       "goTo": "Gå till steg {{number}}: {{title}}",
       "minutes": "{{min}} min"
@@ -7657,7 +7621,6 @@
     "overview": {
       "totalParticipants": "Totalt deltagare",
       "needsAttention": "Kräver uppmärksamhet",
-      "completeCvs": "{{count}} kompletta",
       "meetingsThisWeek": "Möten denna vecka",
       "scheduled": "Schemalagda",
       "attentionAlerts": "Kräver uppmärksamhet",
@@ -7677,24 +7640,13 @@
       "noGoalCategoriesYet": "Inga mål registrerade än — skapa det första från en deltagares sida.",
       "topGoalCategories": "Vanligaste målkategorierna",
       "vsLastWeek": "vs förra veckan",
-      "activeCount": "{{count}} aktiva",
-      "unreadMessages": "{{count}} olästa meddelanden",
       "noActivity": "Ingen aktivitet ännu",
       "seeDetails": "Se detaljer",
       "activity": {
         "newNote": "Ny anteckning",
         "progressNoted": "Framsteg noterat",
-        "concernNoted": "Fråga uppmärksammad",
         "goalRelated": "Målrelaterad aktivitet",
         "activity": "Aktivitet"
-      },
-      "goalCategories": {
-        "other": "Övrigt",
-        "cvImprovement": "CV-förbättring",
-        "jobApplications": "Jobbansökningar",
-        "interviewTraining": "Intervjuträning",
-        "networking": "Nätverkande",
-        "skillsDevelopment": "Kompetensutveckling"
       },
       "myDay": {
         "title": "Min dag",
@@ -7834,6 +7786,8 @@
       "timelineEmptyTitle": "Inga händelser än",
       "timelineEmptyDesc": "Här samlas journalanteckningar, mål, möten, platser och pass i tidsordning när de finns.",
       "notePlaceholder": "Skriv en anteckning om deltagaren...",
+      "activeGoalsCount_one": "{{count}} aktivt mål",
+      "activeGoalsCount_other": "{{count}} aktiva mål",
       "activeGoalsCount": "{{count}} aktiva mål",
       "reportDraft": "Rapportutkast (AI)",
       "loadError": "Det gick inte att hämta deltagarens uppgifter."
@@ -7850,11 +7804,9 @@
       "tryAgain": "Försök igen",
       "metrics": {
         "totalParticipants": "Totalt deltagare",
-        "activeCount": "{{count}} aktiva",
         "cvCompletion": "CV-komplettering",
         "hasCompleteCV": "Har komplett CV",
         "avgPlacementTime": "Genomsnittlig placeringstid",
-        "days": "{{count}} dagar",
         "fromStartToJob": "Från start till jobb",
         "noPlacementsYet": "Inga placeringar än",
         "placementRate": "{{rate}}% placeringsgrad"
@@ -7948,7 +7900,6 @@
       "meetings": "Möten",
       "newMessage": "Nytt meddelande",
       "noMessages": "Inga meddelanden",
-      "quickMessages": "Snabbmeddelanden",
       "meetingReminder": "Påminnelse om möte",
       "checkInMessage": "Check-in meddelande",
       "congratsProgress": "Grattis till framsteg",
@@ -7984,7 +7935,6 @@
       "networking": "Nätverk",
       "skills": "Kompetens",
       "createTemplate": "Skapa mall",
-      "used": "Använd {{count}} gånger",
       "use": "Använd",
       "createAndShare": "Skapa och dela jobbsamlingar med dina deltagare",
       "newCollection": "Ny samling",
@@ -8053,10 +8003,6 @@
       "chooseDefaultView": "Välj hur deltagarlistan visas som standard",
       "grid": "Rutnät",
       "list": "Lista",
-      "language": "Språk",
-      "chooseLanguage": "Välj språk för gränssnittet",
-      "swedish": "Svenska",
-      "english": "English",
       "timezone": "Tidszon",
       "usedForMeetings": "Används för mötesbokning och påminnelser",
       "weekStart": "Veckan börjar",
@@ -8327,6 +8273,10 @@
       "kunskapsbankText": "Artiklar om att söka jobb, om ersättning och om vardagen.",
       "cv": "Gör ditt CV med mallen",
       "cvText": "CV-byggaren fungerar utan AI."
+    },
+    "maende": {
+      "val": "Låt coachen veta hur jag mår",
+      "forklaring": "Då får coachen veta din energinivå och det du själv skrivit som svårt i profilen, så att svaren passar dig bättre. Utan kryss får coachen inte veta det."
     }
   },
   "salary": {
@@ -9387,7 +9337,9 @@
       "vadRaknas": "Här räknas bara pass som din konsulent har planerat.",
       "vadRaknasJobbsok_one": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timme i veckan enligt planen.",
       "vadRaknasJobbsok_other": "Här räknas bara pass som din konsulent har planerat. Eget jobbsökande räknas för sig: {{count}} timmar i veckan enligt planen.",
-      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan."
+      "radAnvisat_other": "Du har {{planerade}} av {{mal}} timmar i anvisade pass den här veckan.",
+      "radOver_one": "Du har {{planerade}} timme i anvisade pass den här veckan, mer än målet på {{mal}}.",
+      "radOver_other": "Du har {{planerade}} timmar i anvisade pass den här veckan, mer än målet på {{mal}}."
     },
     "nastaPass": "Nästa: {{titel}}, {{dag}} kl {{tid}}",
     "forraVeckan": "Förra veckan",
@@ -9426,13 +9378,14 @@
       "knapp": "Fråga om passet",
       "etikett": "Din fråga till konsulenten",
       "inledning": "Hej! Jag har en fråga om passet \"{{titel}}\" den {{datum}} kl {{tid}}: ",
-      "tom": "Skriv din fråga efter inledningen.",
+      "tom": "Skriv din fråga först.",
       "skicka": "Skicka",
       "skickar": "Skickar …",
       "avbryt": "Avbryt",
       "skickat": "Skickat till {{namn}}.",
       "dinKonsulent": "din konsulent",
-      "fel": "Frågan gick inte att skicka. Du kan skriva till din konsulent från sidan Min konsulent."
+      "fel": "Frågan gick inte att skicka. Du kan skriva till din konsulent från sidan Min konsulent.",
+      "om": "Om passet \"{{titel}}\" den {{datum}} kl {{tid}}. Det ser din konsulent."
     },
     "franvaro": {
       "knapp": "Jag kan inte komma",
@@ -9472,7 +9425,11 @@
       "language": "Språk",
       "jobsearch": "Jobbsökande",
       "workplace": "På en arbetsplats",
-      "jobsearch_own": "Eget jobbsökande"
+      "jobsearch_own": "Eget jobbsökande",
+      "sfi": "SFI",
+      "studier": "Studier",
+      "vagledning": "Studie- och yrkesvägledning",
+      "halsa": "Hälsa"
     },
     "narvaro": {
       "present": "Närvarande",
@@ -9563,7 +9520,7 @@
       "profile": {
         "title": "Din profil",
         "description": "Dina uppgifter och vad du vill jobba med.",
-        "filled": "Ifylld",
+        "filled": "Påbörjad",
         "fillIn": "Fyll i när du orkar"
       }
     }
@@ -9603,7 +9560,8 @@
       "add": "Lägg till yrke ({{count}}/{{max}})",
       "maxReached": "Du har lagt till maxantalet ({{max}}). Ta bort ett yrke för att lägga till ett nytt.",
       "orderHint": "Yrken högst upp prioriteras i jobbmatchningen.",
-      "freeTextHint": "Yrken med ⚠ är fritext och matchas inte exakt."
+      "freeTextHint": "Yrken med ⚠ är fritext och matchas inte exakt.",
+      "addForsta": "Lägg till yrke"
     }
   },
   "samlingar": {

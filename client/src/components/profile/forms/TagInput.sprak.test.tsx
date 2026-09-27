@@ -22,7 +22,8 @@ describe('TagInput-räknaren följer språket', () => {
   it('engelska', async () => {
     i18n.addResourceBundle('en', 'translation', en, true, true)
     await i18n.changeLanguage('en')
-    render(<TagInput tags={[]} onAdd={() => {}} onRemove={() => {}} maxTags={5} />)
-    expect(screen.getByText('0 of 5')).toBeInTheDocument()
+    // RD16: en tom lista har ingen räknare, så engelskan prövas med en tagg
+    render(<TagInput tags={['Baking']} onAdd={() => {}} onRemove={() => {}} maxTags={5} />)
+    expect(screen.getByText('1 of 5')).toBeInTheDocument()
   })
 })

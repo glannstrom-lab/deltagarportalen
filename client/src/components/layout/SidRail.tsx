@@ -171,11 +171,11 @@ export default function SidRail({
     <div data-skena className="lg:sticky lg:top-0">
       {title && (
         <div className="mb-3">
-          <h1 className="text-[17px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
+          <h1 className="text-[1.0625rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
             {title}
           </h1>
           {description && (
-            <p className="mt-0.5 text-[12px] leading-snug text-stone-500 dark:text-stone-400 m-0">
+            <p className="mt-0.5 text-[0.75rem] leading-snug text-stone-500 dark:text-stone-400 m-0">
               {description}
             </p>
           )}
@@ -229,7 +229,7 @@ export default function SidRail({
                     <StigPrick lage={aktiv ? 'aktiv' : 'kvar'} />
                     <span className="min-w-0 truncate">{p.etikett}</span>
                     {p.markering && (
-                      <span className="ml-auto shrink-0 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                      <span className="ml-auto shrink-0 text-[0.625rem] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                         {p.markering}
                       </span>
                     )}
@@ -269,7 +269,7 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
                 onClick={() => sidoflikar.vidVal(p.id)}
                 aria-current={aktiv ? 'true' : undefined}
                 className={cn(
-                  'block px-3 py-2 rounded-lg text-[13px] whitespace-nowrap',
+                  'block px-3 py-2 rounded-lg text-[0.8125rem] whitespace-nowrap',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                   aktiv
                     /* Vitt kort på vit sida är ingen markering. Skenan på desktop har
@@ -281,7 +281,7 @@ export function SidoflikRad({ sidoflikar }: { sidoflikar?: Sidoflikar }) {
               >
                 {p.etikett}
                 {p.markering && (
-                  <span className="ml-1.5 text-[10px] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+                  <span className="ml-1.5 text-[0.625rem] font-medium px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
                     {p.markering}
                   </span>
                 )}
@@ -333,7 +333,7 @@ export function FlikRad({ tabs }: { tabs?: Tab[] }) {
                 to={tab.path}
                 aria-current={aktiv ? 'page' : undefined}
                 className={cn(
-                  'block px-3 py-2 rounded-lg text-[13px] whitespace-nowrap',
+                  'block px-3 py-2 rounded-lg text-[0.8125rem] whitespace-nowrap',
                   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                   aktiv
                     /* Vitt kort på vit sida är ingen markering. Skenan på desktop har

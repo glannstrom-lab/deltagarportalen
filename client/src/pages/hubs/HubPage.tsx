@@ -157,7 +157,7 @@ export default function HubPage({
           )}
         </span>
         <div className="min-w-0">
-          <h1 className="text-[19px] font-semibold tracking-tight text-[var(--stone-900)] m-0 leading-tight">
+          <h1 className="text-[1.1875rem] font-semibold tracking-tight text-[var(--stone-900)] m-0 leading-tight">
             {trimmedFirstName && (
               <span className="font-normal text-[var(--stone-500)]">
                 {t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName })}
@@ -166,7 +166,7 @@ export default function HubPage({
             )}
             {hubTitle}
           </h1>
-          <p className="m-0 text-[13px] text-[var(--stone-600)] leading-snug">{hubDescription}</p>
+          <p className="m-0 text-[0.8125rem] text-[var(--stone-600)] leading-snug">{hubDescription}</p>
         </div>
       </div>
 
@@ -229,13 +229,13 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
             )}
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block text-[14px] font-semibold text-[var(--stone-900)] tracking-tight leading-tight">
+            <span className="block text-[0.875rem] font-semibold text-[var(--stone-900)] tracking-tight leading-tight">
               {title}
             </span>
             {status && (
               <span
                 className={[
-                  'inline-block mt-1 text-[11px] max-w-full truncate',
+                  'inline-block mt-1 text-[0.6875rem] max-w-full truncate',
                   isActive
                     ? 'font-medium px-1.5 py-0.5 rounded bg-[var(--c-bg)] text-[var(--c-text)]'
                     : 'text-[var(--stone-500)]',
@@ -247,7 +247,7 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
           </span>
         </div>
 
-        <p className="text-[12.5px] text-[var(--stone-600)] leading-snug m-0">
+        <p className="text-[0.78125rem] text-[var(--stone-600)] leading-snug m-0">
           {description}
         </p>
       </motion.div>

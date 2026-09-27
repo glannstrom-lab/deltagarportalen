@@ -34,6 +34,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
 import { navHubs, adminNavItems, consultantNavItems, employerNavItem, shouldShowBadge, registreraBesok, markFeatureVisited } from './layout/navigation'
+import { arKonsulentvy } from './layout/konsulentNav'
 import { HUB_ICON_SRC } from './layout/hubIcons'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
@@ -701,7 +702,9 @@ export function MobileTopBar() {
                 <Search className="w-[18px] h-[18px]" aria-hidden="true" />
               </button>
             )}
-            {!isEmployer && <CrisisSupport variant="inline" />}
+            {/* RR21 (rollspelet 2026-09-27): krisknappen är deltagarens —
+                i konsulentvyn var den brus i toppfältet. */}
+            {!isEmployer && !arKonsulentvy(location.pathname) && <CrisisSupport variant="inline" />}
             {/* PG4 (2026-09-12): samma LanguageSwitcher som desktop — portalens
                 engelska läsare är nyanländ och på mobil, och här fanns inget språkval. */}
             <div data-focus-chrome="topbar-extras">
@@ -895,7 +898,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
 
   const konsulentBlock = (
           <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="px-3 py-1.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[0.625rem] font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
               {t('sidebar.consultantSection')}
             </p>
             <div className="space-y-0.5">
@@ -969,7 +972,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
         {foretagForst && <ForetagLankar pathname={location.pathname} onClick={onClose} />}
         {konsulentForst && konsulentBlock}
         {konsulentForst && (
-          <p className="px-3 pt-3 pb-1.5 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+          <p className="px-3 pt-3 pb-1.5 text-[0.625rem] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
             {t('sidebar.participantView')}
           </p>
         )}
@@ -988,7 +991,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
                   onClick={onClose}
                   aria-current={hubAktiv ? 'page' : undefined}
                   className={cn(
-                    'flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg min-h-[44px] text-[14px] font-semibold transition-colors',
+                    'flex-1 flex items-center gap-2.5 px-3 py-2.5 rounded-lg min-h-[44px] text-[0.875rem] font-semibold transition-colors',
                     hubAktiv
                       ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]'
                       : 'text-stone-800 dark:text-stone-100 hover:bg-stone-50 dark:hover:bg-stone-800'
@@ -1040,7 +1043,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
                         <Icon className="w-4 h-4 flex-shrink-0" />
                         <span className="flex-1">{t(item.labelKey)}</span>
                         {showBadge && (
-                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-400 text-amber-900 rounded-full">
+                          <span className="px-1.5 py-0.5 text-[0.5625rem] font-bold bg-amber-400 text-amber-900 rounded-full">
                             {t('common.new')}
                           </span>
                         )}
@@ -1059,7 +1062,7 @@ export function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: 
         {/* Admin Section */}
         {isAdmin && (
           <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="px-3 py-1.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+            <p className="px-3 py-1.5 text-[0.625rem] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
               {t('sidebar.adminSection')}
             </p>
             <div className="space-y-0.5">

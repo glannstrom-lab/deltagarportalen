@@ -47,6 +47,7 @@ import { computePlacementMetric, followupStatus } from './placeringsmatt'
 // KK6: computeMonthlyProgress/calculateTrends/calculateGoalCategories utbrutna
 // ur den här filen 2026-09-02, samma grepp som gav cohorts.ts sina tester.
 import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, placeringstid, type TrendData } from './analytics'
+import { antal } from './antal'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { csvTabell } from '@/components/consultant/deltagarExport'
 
@@ -576,7 +577,7 @@ export function AnalyticsTab() {
         [t('consultant.analytics.export.cvCompletion'), `${analytics.cvCompletionRate}%`],
         [t('consultant.analytics.export.goalCompletion'), `${analytics.goalsCompletionRate}%`],
         [t('consultant.analytics.export.engagement'), `${analytics.engagementRate}%`],
-        [t('consultant.analytics.export.avgPlacementTime'), analytics.averageTimeToPlacement === null ? `— ${analytics.placementTimeNote ?? ''}`.trim() : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
+        [t('consultant.analytics.export.avgPlacementTime'), analytics.averageTimeToPlacement === null ? `— ${analytics.placementTimeNote ?? ''}`.trim() : antal(analytics.averageTimeToPlacement, 'dag', 'dagar')],
         [''],
         [t('consultant.analytics.export.statusDistribution'), t('consultant.analytics.export.count')],
         ...analytics.statusDistribution.map(s => [s.label, s.value]),
@@ -681,7 +682,7 @@ export function AnalyticsTab() {
         <MetricCard
           title={t('consultant.analytics.metrics.totalParticipants')}
           value={analytics.totalParticipants}
-          subtitle={t('consultant.analytics.metrics.activeCount', { count: analytics.activeParticipants })}
+          subtitle={antal(analytics.activeParticipants, 'aktiv', 'aktiva')}
           icon={Users}
           color="teal"
         />
@@ -696,7 +697,8 @@ export function AnalyticsTab() {
         />
         <MetricCard
           title={t('consultant.analytics.metrics.avgPlacementTime')}
-          value={analytics.averageTimeToPlacement === null ? '—' : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
+          // RR16 (rollspelet 2026-09-27): "1 dagar" — nyckeln saknar _one-form.
+          value={analytics.averageTimeToPlacement === null ? '—' : antal(analytics.averageTimeToPlacement, 'dag', 'dagar')}
           subtitle={analytics.averageTimeToPlacement === null
             ? analytics.placementTimeNote ?? t('consultant.analytics.metrics.noPlacementsYet')
             : `${t('consultant.analytics.metrics.fromStartToJob')} (från kopplingen till jobbets startdatum).${analytics.placementTimeNote ? ` ${analytics.placementTimeNote}` : ''}`}

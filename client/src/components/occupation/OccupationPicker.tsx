@@ -321,7 +321,7 @@ export function OccupationPicker({
               >
                 <span className="text-stone-800 dark:text-stone-200">{sug.label}</span>
                 {isExcluded && (
-                  <span className="text-[11px] text-stone-500 italic">redan tillagd</span>
+                  <span className="text-[0.6875rem] text-stone-500 italic">redan tillagd</span>
                 )}
               </li>
             )

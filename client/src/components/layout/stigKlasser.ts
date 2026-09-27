@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 
 export function stigRadKlasser(aktiv: boolean): string {
   return cn(
-    'w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-left text-[13.5px]',
+    'w-full flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-left text-[0.8438rem]',
     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
     aktiv
       ? 'bg-[var(--c-bg)] font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)]'

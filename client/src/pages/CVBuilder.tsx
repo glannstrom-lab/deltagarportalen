@@ -217,28 +217,16 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
   completedSteps: number[]
 }) {
   const { t } = useTranslation()
-  // Calculate time remaining
-  const remainingMinutes = STEPS
-    .filter((_, i) => !completedSteps.includes(i + 1) && i + 1 >= currentStep)
-    .reduce((sum, step) => sum + step.minutes, 0)
-
   const progress = (completedSteps.length / totalSteps) * 100
 
   return (
     <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 mb-6">
-      {/* Progress header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
-            {t('cvBuilder.stepper.stepOf', { defaultValue: 'Steg {{current}} av {{total}}', current: currentStep, total: totalSteps })}
-          </span>
-          <span className="text-xs text-stone-400 dark:text-stone-500">•</span>
-          <span className="text-xs text-stone-500 dark:text-stone-400">
-            {t('cvBuilder.stepper.minutesLeft', { defaultValue: '~{{min}} min kvar', min: remainingMinutes })}
-          </span>
-        </div>
-        <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
-          {t('cvBuilder.stepper.percentDone', { defaultValue: '{{percent}} % klart', percent: Math.round(progress) })}
+      {/* RD16 (rollspelet 2026-09-27): här stod "~2 min kvar" och "83 % klart" —
+          prestationstal i hjälteposition (DESIGN.md §1). Steget räcker som
+          orientering; tiden per del står vid varje steg i sidoskenan. */}
+      <div className="flex items-center mb-3">
+        <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+          {t('cvBuilder.stepper.stepOf', { defaultValue: 'Steg {{current}} av {{total}}', current: currentStep, total: totalSteps })}
         </span>
       </div>
 
@@ -1275,7 +1263,7 @@ export default function CVBuilder() {
               style={{ top: '297mm' }}
             >
               <div className="flex-1 border-t-2 border-dashed border-amber-400 opacity-60" />
-              <span className="px-3 py-1 mx-2 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-[11px] font-bold rounded-full whitespace-nowrap">
+              <span className="px-3 py-1 mx-2 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-[0.6875rem] font-bold rounded-full whitespace-nowrap">
                 {t('cvBuilder.review.pageBreak', 'Sida 2 börjar här')}
               </span>
               <div className="flex-1 border-t-2 border-dashed border-amber-400 opacity-60" />
@@ -1520,7 +1508,7 @@ export default function CVBuilder() {
                     >
                       <StigPrick lage={aktiv ? 'aktiv' : klar ? 'klar' : 'kvar'} />
                       <span className="min-w-0 flex-1 truncate">{stegTitel(t, st)}</span>
-                      <span className="text-[11px] text-stone-400 dark:text-stone-500 shrink-0">
+                      <span className="text-[0.6875rem] text-stone-400 dark:text-stone-500 shrink-0">
                         {klar ? '✓' : t('cvBuilder.stepper.minutes', { defaultValue: '{{min}} min', min: st.minutes })}
                       </span>
                     </button>
@@ -1653,7 +1641,7 @@ export default function CVBuilder() {
                   onClick={() => setHogerFlik(id)}
                   aria-pressed={hogerFlik === id}
                   className={cn(
-                    'px-2.5 py-1 text-[12px] rounded-md font-semibold',
+                    'px-2.5 py-1 text-[0.75rem] rounded-md font-semibold',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
                     hogerFlik === id
                       ? 'bg-[var(--surface)] dark:bg-stone-800 text-stone-900 dark:text-stone-100 shadow-sm'
@@ -1676,7 +1664,7 @@ export default function CVBuilder() {
             <div className="bg-[var(--surface)] dark:bg-stone-800 border border-[var(--c-accent)] dark:border-stone-700 rounded-lg px-3.5 py-3 mb-3">
               {completedSteps.length > 0 ? (
                 <>
-                  <p id="cv-progress-etikett" className="m-0 text-[12.5px] font-semibold text-stone-900 dark:text-stone-100">
+                  <p id="cv-progress-etikett" className="m-0 text-[0.78125rem] font-semibold text-stone-900 dark:text-stone-100">
                     {t('cvBuilder.progress.done', {
                       defaultValue: '{{klara}} av {{totalt}} delar klara',
                       klara: completedSteps.length,
@@ -1696,7 +1684,7 @@ export default function CVBuilder() {
                       style={{ width: `${(completedSteps.length / STEPS.length) * 100}%` }}
                     />
                   </div>
-                  <p className="m-0 text-[11.5px] text-stone-600 dark:text-stone-400">
+                  <p className="m-0 text-[0.71875rem] text-stone-600 dark:text-stone-400">
                     {t('cvBuilder.progress.left', {
                       defaultValue: 'Ungefär {{min}} minuter kvar',
                       min: STEPS.filter((st) => !completedSteps.includes(st.id))
@@ -1705,7 +1693,7 @@ export default function CVBuilder() {
                   </p>
                 </>
               ) : (
-                <p className="m-0 text-[12px] leading-relaxed text-stone-600 dark:text-stone-400">
+                <p className="m-0 text-[0.75rem] leading-relaxed text-stone-600 dark:text-stone-400">
                   {t('cvBuilder.progress.notStarted', 'Du har inte börjat än. Första delen tar ett par minuter — du kan avbryta när du vill, allt sparas.')}
                 </p>
               )}

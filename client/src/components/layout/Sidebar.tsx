@@ -103,12 +103,12 @@ function SidebarNavLink({
         )} />
 
         {!isCollapsed && (
-          <span className="text-[13px] truncate flex-1">{label}</span>
+          <span className="text-[0.8125rem] truncate flex-1">{label}</span>
         )}
 
         {/* Badge — använder aktiva domänens färg */}
         {showBadge && !isCollapsed && (
-          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[var(--c-bg)] text-[var(--c-text)] rounded">
+          <span className="px-1.5 py-0.5 text-[0.625rem] font-medium bg-[var(--c-bg)] text-[var(--c-text)] rounded">
             Ny
           </span>
         )}
@@ -310,16 +310,16 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         >
           <div className={cn(
             'rounded-full bg-[var(--c-solid)] flex items-center justify-center text-white font-medium',
-            isCollapsed ? 'w-7 h-7 text-xs' : 'w-6 h-6 text-[11px]'
+            isCollapsed ? 'w-7 h-7 text-xs' : 'w-6 h-6 text-[0.6875rem]'
           )}>
             {user?.first_name?.[0] || user?.email?.[0] || '?'}
           </div>
           {!isCollapsed && (
             <div className="flex-1 min-w-0">
-              <p className="text-[13px] font-medium text-stone-700 dark:text-stone-200 truncate">
+              <p className="text-[0.8125rem] font-medium text-stone-700 dark:text-stone-200 truncate">
                 {user?.first_name || user?.email?.split('@')[0]}
               </p>
-              <p className="text-[11px] text-stone-600 dark:text-stone-400 truncate">
+              <p className="text-[0.6875rem] text-stone-600 dark:text-stone-400 truncate">
                 {activeRole === 'SUPERADMIN' ? 'Superadmin' :
                  activeRole === 'ADMIN' ? 'Admin' :
                  activeRole === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}
@@ -349,7 +349,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
             aria-label={t('nav.logout')}
           >
             <LogOut className={cn(isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4')} />
-            {!isCollapsed && <span className="text-[13px]">{t('nav.logout')}</span>}
+            {!isCollapsed && <span className="text-[0.8125rem]">{t('nav.logout')}</span>}
           </button>
 
           {onToggleCollapse && (
@@ -368,7 +368,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                 <ChevronLeft className={cn(isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4')} />
               )}
               {!isCollapsed && (
-                <span className="text-[13px]">{t('sidebar.collapse', 'Minimera')}</span>
+                <span className="text-[0.8125rem]">{t('sidebar.collapse', 'Minimera')}</span>
               )}
             </button>
           )}

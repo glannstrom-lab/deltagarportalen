@@ -55,11 +55,11 @@ function Vaxel({
       <span className="min-w-0 flex-1">
         <label
           htmlFor={id}
-          className="block text-[12.5px] font-medium text-stone-900 dark:text-stone-100"
+          className="block text-[0.78125rem] font-medium text-stone-900 dark:text-stone-100"
         >
           {rubrik}
         </label>
-        <span className="block text-[11.5px] leading-snug text-stone-500 dark:text-stone-400">
+        <span className="block text-[0.71875rem] leading-snug text-stone-500 dark:text-stone-400">
           {beskrivning}
         </span>
       </span>
@@ -108,10 +108,10 @@ export default function LugnarePanel() {
         className="w-full flex items-center gap-2.5 px-3.5 py-3 text-left hover:bg-stone-50 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--c-solid)]"
       >
         <span className="min-w-0 flex-1">
-          <span className="block text-[13.5px] font-semibold text-stone-900 dark:text-stone-100">
+          <span className="block text-[0.84375rem] font-semibold text-stone-900 dark:text-stone-100">
             {t('lugnare.rubrik', 'Lugnare läge')}
           </span>
-          <span className="block text-[11.5px] text-stone-500 dark:text-stone-400 truncate">
+          <span className="block text-[0.71875rem] text-stone-500 dark:text-stone-400 truncate">
             {isFocusModeEnabled
               ? t('lugnare.underPa', 'Fokusläget är på')
               : t('lugnare.underAv', 'Mindre på skärmen, ett steg i taget')}
@@ -147,7 +147,7 @@ export default function LugnarePanel() {
             vidVal={toggleCalmMode}
           />
 
-          <p className="m-0 text-[11.5px] leading-snug text-stone-500 dark:text-stone-400">
+          <p className="m-0 text-[0.71875rem] leading-snug text-stone-500 dark:text-stone-400">
             {t(
               'lugnare.fotnot',
               'Valen sparas på ditt konto och följer med till nästa gång du loggar in.'
@@ -156,7 +156,7 @@ export default function LugnarePanel() {
 
           <Link
             to="/settings"
-            className="inline-block text-[12px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline"
+            className="inline-block text-[0.75rem] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline"
           >
             {t('lugnare.merInstallningar', 'Fler inställningar')} <span aria-hidden="true">→</span>
           </Link>

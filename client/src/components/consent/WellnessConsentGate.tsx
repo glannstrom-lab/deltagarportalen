@@ -167,13 +167,19 @@ export function WellnessConsentGate({
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.diary')}</span>
+                <span>{t('wellness.consent.item.stress', 'Stress')}</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-pink-400 mt-1.5 flex-shrink-0" />
-                <span>{t('wellness.consent.item.gratitude')}</span>
+                <span>{t('wellness.consent.item.note', 'Anteckningen du skriver till loggen')}</span>
               </li>
             </ul>
+            {/* RD21 (rollspelet 2026-09-27): listan tog med dagboken och tacksamheten,
+                som är öppna utan samtycke. Den här grinden omsluter bara måendeloggen
+                (mood_logs: humör, energi, sömn, stress, anteckning). */}
+            <p className="mt-2 text-xs text-pink-700 dark:text-pink-300">
+              {t('wellness.consent.utanSamtycke', 'Dagboken och tacksamheten behöver inget samtycke.')}
+            </p>
           </div>
 
           <div className="pt-3 border-t border-current/10">

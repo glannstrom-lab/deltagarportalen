@@ -14,7 +14,7 @@
  * aktivitet (Kunskapsguiden, FAQ om aktivitetskravet).
  */
 
-export type ActivityType = 'motivation' | 'language' | 'jobsearch' | 'workplace' | 'jobsearch_own'
+export type ActivityType = 'motivation' | 'language' | 'jobsearch' | 'workplace' | 'jobsearch_own' | 'sfi' | 'studier' | 'vagledning' | 'halsa'
 
 export type Attendance = 'present' | 'absent_valid' | 'absent_invalid' | 'sick_certified' | 'external'
 
@@ -22,10 +22,52 @@ export type Attendance = 'present' | 'absent_valid' | 'absent_invalid' | 'sick_c
 export const MAX_VECKOTIMMAR = 40
 export const BARNAVDRAG_TIMMAR = 10
 
+/** De fem ursprungliga typerna, i väljarens ordning — de utökade läggs till av `valbaraPasstyper`. */
 export const AKTIVITETSTYPER: readonly ActivityType[] = ['motivation', 'language', 'jobsearch', 'workplace', 'jobsearch_own'] as const
 
+/**
+ * RK28 (rollspelet 2026-09-27): fler passtyper — SFI, studier, vägledning och
+ * hälsa. PÅSLAGNA 2026-09-27: CHECK-villkoret vidgades av
+ * `supabase/migrations/20260927c_fler_passtyper.sql`, `ActivityType` omfattar
+ * dem, och läsvyerna har etiketter (stegen nedan är gjorda).
+ *
+ * Så slås de på, i ordning:
+ *   1. Kör PENDING-migrationen (döp om den), `npm run schema:refresh`.
+ *   2. Sätt `UTOKADE_AKTIVITETSTYPER_PA = true` — då visas de i "Lägg till pass".
+ *   3. Vidga `ActivityType` till `PassTyp` och ge typerna etiketter i
+ *      läsvyerna som har egna `Record<ActivityType, …>`: MinVecka.tsx,
+ *      narvaroIntygPdf.ts, underlagspaketPdf.ts, aktivitetsplanPdf.ts. Typkollen
+ *      pekar ut dem. (De ägdes av andra spår när det här skrevs.)
+ *
+ * Hur de räknas:
+ *   · Alla fyra är anvisade (`arAnvisad`) — planen kan kräva dem, och
+ *     veckosaldot räknar dem mot den anvisade delen av veckomålet.
+ *     SFI hör till lagens p. 2 (språk); studier, vägledning och hälsa till p. 1
+ *     (motivera eller öka förmågan att ta arbete eller påbörja utbildning).
+ *   · SFI och studier hålls av skolan, inte av verksamheten. De räknas därför
+ *     INTE i avtalsloggen mot Rusta och matcha (FFU räknar aktiviteter
+ *     leverantören håller i) — se `arVerksamhetsledd`. Vägledning och hälsa
+ *     räknas där när verksamheten håller i dem, som övriga anvisade pass.
+ *   · Fysisk-härledningen (`arFysiskt` i aktivitetslogg.ts) är oförändrad:
+ *     ifylld plats = fysiskt. Den tillämpas bara på verksamhetsledda pass.
+ */
+export type UtokadAktivitetstyp = 'sfi' | 'studier' | 'vagledning' | 'halsa'
+/** Alla typer ett pass kan ha när de utökade typerna är påslagna. */
+export type PassTyp = ActivityType | UtokadAktivitetstyp
+export const UTOKADE_AKTIVITETSTYPER: readonly UtokadAktivitetstyp[] = ['sfi', 'studier', 'vagledning', 'halsa'] as const
+/** Brytare — se kommentaren ovan. Slå inte på före migrationen. */
+export const UTOKADE_AKTIVITETSTYPER_PA = true
+
+/** Typerna som får väljas för ett nytt pass. */
+export function valbaraPasstyper(ordning: readonly ActivityType[], pa: boolean = UTOKADE_AKTIVITETSTYPER_PA): readonly PassTyp[] {
+  return pa ? [...ordning, ...UTOKADE_AKTIVITETSTYPER] : ordning
+}
+
 /** Typer som räknas som anvisad aktivitet enligt lagen. */
-export const ANVISADE_TYPER: ReadonlySet<ActivityType> = new Set<ActivityType>(['motivation', 'language', 'jobsearch', 'workplace'])
+export const ANVISADE_TYPER: ReadonlySet<PassTyp> = new Set<PassTyp>(['motivation', 'language', 'jobsearch', 'workplace', 'sfi', 'studier', 'vagledning', 'halsa'])
+
+/** Anvisade pass som någon annan än verksamheten håller i (skolan). */
+export const EXTERNT_HALLNA_TYPER: ReadonlySet<PassTyp> = new Set<PassTyp>(['sfi', 'studier'])
 
 /**
  * Markeringar som räknas som närvaro. `external` — "Annan aktivitet" — är en
@@ -57,8 +99,16 @@ export function arNarvaro(attendance: Attendance | null | undefined): boolean {
  * lagen räknar anvisade — i båda fallen står eget jobbsökande utanför. Läs
  * definitionen härifrån i stället för att skriva ett eget villkor.
  */
-export function arAnvisad(s: { activity_type: ActivityType }): boolean {
+export function arAnvisad(s: { activity_type: PassTyp }): boolean {
   return ANVISADE_TYPER.has(s.activity_type)
+}
+
+/**
+ * Anvisat OCH hållet av verksamheten själv — det avtalet med
+ * Arbetsförmedlingen räknar. SFI och studier hålls av skolan (RK28).
+ */
+export function arVerksamhetsledd(s: { activity_type: PassTyp }): boolean {
+  return arAnvisad(s) && !EXTERNT_HALLNA_TYPER.has(s.activity_type)
 }
 
 export interface TemplateItem {
@@ -122,6 +172,39 @@ export function isoWeekday(s: string): number {
 /** Måndagen i veckan som innehåller datumet. */
 export function veckansMandag(s: string): string {
   return addDays(s, 1 - isoWeekday(s))
+}
+
+/**
+ * ISO 8601-veckonummer (vecka 1 = veckan med årets första torsdag) — det
+ * nummer kommunen planerar i. RK27: veckan hette bara "21 sep – 27 sep".
+ */
+export function isoVeckonummer(s: string): number {
+  const torsdag = parseLocalDate(addDays(s, 4 - isoWeekday(s)))
+  const forstaJan = new Date(torsdag.getFullYear(), 0, 1)
+  const dagar = Math.round((torsdag.getTime() - forstaJan.getTime()) / 86_400_000)
+  return Math.floor(dagar / 7) + 1
+}
+
+/**
+ * Förifyllt datum för ett nytt pass (RK28). Tidigare veckans måndag — som
+ * oftast redan passerat. Nu: en kommande vecka → dess måndag; annars i dag.
+ * Faller dagen på en helg → måndagen efter.
+ */
+export function forslagetPassdatum(vecka: string, idag: string): string {
+  const dag = vecka > idag ? vecka : idag
+  const vd = isoWeekday(dag)
+  return vd >= 6 ? addDays(dag, 8 - vd) : dag
+}
+
+/**
+ * Samma veckodag varje vecka från `start` till och med `slut` (RK28,
+ * "upprepa varje vecka till planens slut"). Tomt om `slut` ligger före.
+ * Taket (105 veckor) skyddar mot ett felskrivet slutdatum.
+ */
+export function veckovisaDatum(start: string, slut: string): string[] {
+  const ut: string[] = []
+  for (let d = start; d <= slut && ut.length < 105; d = addDays(d, 7)) ut.push(d)
+  return ut
 }
 
 /** Minuter mellan två `HH:MM`. Negativt om end < start — anroparen validerar. */

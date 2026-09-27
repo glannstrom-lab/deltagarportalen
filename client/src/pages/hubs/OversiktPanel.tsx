@@ -379,7 +379,7 @@ export default function OversiktPanel({
 
       {fel && (
         <section className="rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 px-4 py-3.5">
-          <p className="m-0 text-[15px] text-stone-700 dark:text-stone-200">
+          <p className="m-0 text-[0.9375rem] text-stone-700 dark:text-stone-200">
             {t(
               'hubOverview.panel.errorBody',
               'Vi kunde inte hämta dina uppgifter just nu. Det är portalen som strular — inget du har gjort.'
@@ -389,7 +389,7 @@ export default function OversiktPanel({
             <button
               type="button"
               onClick={vidForsokIgen}
-              className="mt-2.5 rounded-lg bg-[var(--c-solid)] px-3.5 py-2 text-[14px] font-medium text-[var(--c-on-solid)] transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
+              className="mt-2.5 rounded-lg bg-[var(--c-solid)] px-3.5 py-2 text-[0.875rem] font-medium text-[var(--c-on-solid)] transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
             >
               {t('hubOverview.panel.retry', 'Försök igen')}
             </button>
@@ -408,7 +408,7 @@ export default function OversiktPanel({
       <section aria-labelledby="hubbar-rubrik">
         <h2
           id="hubbar-rubrik"
-          className="m-0 mb-2.5 flex items-center gap-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
+          className="m-0 mb-2.5 flex items-center gap-2.5 text-[0.9375rem] font-semibold text-stone-600 dark:text-stone-400"
         >
           {/* Stiltest 2026-09-10: vägvisaren = allt som finns att gå till. Dekorativ. */}
           <img src={bilder.vagvisare} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
@@ -436,7 +436,7 @@ export default function OversiktPanel({
                 )}
                 <h3
                   id={`kat-${kat.id}`}
-                  className="m-0 min-w-0 flex-1 truncate text-[15px] font-semibold tracking-tight text-stone-900 dark:text-stone-100"
+                  className="m-0 min-w-0 flex-1 truncate text-[0.9375rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100"
                 >
                   {kat.namn}
                 </h3>
@@ -445,7 +445,7 @@ export default function OversiktPanel({
                 <Link
                   to={kat.till}
                   aria-label={t('hubOverview.panel.allIn', { defaultValue: 'Allt i {{namn}}', namn: kat.namn })}
-                  className="shrink-0 text-[13px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
+                  className="shrink-0 text-[0.8125rem] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
                 >
                   {t('hubOverview.panel.allShort', 'Allt')} <span aria-hidden="true">→</span>
                 </Link>
@@ -462,13 +462,13 @@ export default function OversiktPanel({
                         <span
                           className={
                             r.harData
-                              ? 'block truncate text-[14.5px] font-medium text-stone-900 dark:text-stone-100'
-                              : 'block truncate text-[14.5px] font-medium text-stone-600 dark:text-stone-400'
+                              ? 'block truncate text-[0.90625rem] font-medium text-stone-900 dark:text-stone-100'
+                              : 'block truncate text-[0.90625rem] font-medium text-stone-600 dark:text-stone-400'
                           }
                         >
                           {r.titel}
                         </span>
-                        <span className="block truncate text-[13px] leading-snug text-stone-500 dark:text-stone-400">
+                        <span className="block truncate text-[0.8125rem] leading-snug text-stone-500 dark:text-stone-400">
                           {r.under}
                         </span>
                       </span>
@@ -479,8 +479,8 @@ export default function OversiktPanel({
                         <span
                           className={
                             /^\d+$/.test(r.varde)
-                              ? 'shrink-0 text-[15px] font-semibold tabular-nums text-[var(--c-text)] dark:text-[var(--c-solid)]'
-                              : 'shrink-0 text-[13px] text-stone-500 dark:text-stone-400'
+                              ? 'shrink-0 text-[0.9375rem] font-semibold tabular-nums text-[var(--c-text)] dark:text-[var(--c-solid)]'
+                              : 'shrink-0 text-[0.8125rem] text-stone-500 dark:text-stone-400'
                           }
                         >
                           {r.varde}

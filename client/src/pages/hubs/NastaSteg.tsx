@@ -77,27 +77,27 @@ export default function NastaSteg({
         className="block h-40 w-full object-cover object-[70%_40%] sm:absolute sm:inset-y-0 sm:right-0 sm:h-full sm:w-[52%] sm:object-right"
       />
       <div className="relative px-5 py-5 sm:px-6 sm:max-w-[54%] sm:bg-[var(--c-bg)]">
-        <p className="m-0 mb-1.5 text-[12.5px] font-semibold uppercase tracking-[0.06em] text-[var(--c-text)]">
+        <p className="m-0 mb-1.5 text-[0.78125rem] font-semibold uppercase tracking-[0.06em] text-[var(--c-text)]">
           {t('hubOverview.nasta.label', 'Ett bra nästa steg')}
         </p>
         <h2
           id="nasta-steg-rubrik"
-          className="m-0 text-[19px] sm:text-[20px] font-semibold leading-snug text-stone-900 dark:text-stone-100 max-w-[36ch] text-balance"
+          className="m-0 text-[1.1875rem] sm:text-[1.25rem] font-semibold leading-snug text-stone-900 dark:text-stone-100 max-w-[36ch] text-balance"
         >
           {p.rubrik}
         </h2>
-        <p className="m-0 mt-1.5 text-[15px] leading-relaxed text-stone-600 dark:text-stone-300 max-w-[60ch]">
+        <p className="m-0 mt-1.5 text-[0.9375rem] leading-relaxed text-stone-600 dark:text-stone-300 max-w-[60ch]">
           {p.body}
         </p>
         <Link
           to={val.primar.till}
-          className="mt-4 inline-flex items-center justify-center rounded-lg bg-[var(--c-solid)] px-5 py-2.5 text-[15px] font-semibold text-[var(--c-on-solid)] no-underline transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-900"
+          className="mt-4 inline-flex items-center justify-center rounded-lg bg-[var(--c-solid)] px-5 py-2.5 text-[0.9375rem] font-semibold text-[var(--c-on-solid)] no-underline transition-[filter] hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-900"
         >
           {p.knapp}
         </Link>
 
         {val.alternativ.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1.5 border-t border-[var(--c-accent)] pt-3 text-[14px]">
+          <div className="mt-4 flex flex-wrap items-baseline gap-x-5 gap-y-1.5 border-t border-[var(--c-accent)] pt-3 text-[0.875rem]">
             <span className="font-medium text-stone-700 dark:text-stone-300">
               {t('hubOverview.nasta.otherwise', 'Om du hellre vill:')}
             </span>

@@ -256,7 +256,16 @@ export function useAITeamContext() {
 /**
  * Format the context into a readable string for AI prompts
  */
-export function formatAITeamContext(context: AITeamUserContext, agentId: AgentId): string {
+export function formatAITeamContext(
+  context: AITeamUserContext,
+  agentId: AgentId,
+  /**
+   * RD19 (rollspelet 2026-09-27): energinivån och det deltagaren skrivit som
+   * svårt är hälsouppgifter. De följer bara med när deltagaren själv valt det
+   * i chatten — standard är nej.
+   */
+  { medMaende = false }: { medMaende?: boolean } = {},
+): string {
   const sections: string[] = []
 
   // Profile section - always included
@@ -292,7 +301,7 @@ export function formatAITeamContext(context: AITeamUserContext, agentId: AgentId
   }
 
   // Support goals (for arbetsterapeut and motivationscoach)
-  if ((agentId === 'arbetsterapeut' || agentId === 'motivationscoach') && context.supportGoals) {
+  if (medMaende && (agentId === 'arbetsterapeut' || agentId === 'motivationscoach') && context.supportGoals) {
     const supportParts: string[] = []
     if (context.supportGoals.goals?.length) {
       supportParts.push(`Mål: ${context.supportGoals.goals.join(', ')}`)
@@ -418,7 +427,7 @@ export function formatAITeamContext(context: AITeamUserContext, agentId: AgentId
   }
 
   // Energy level (for arbetsterapeut)
-  if (agentId === 'arbetsterapeut') {
+  if (medMaende && agentId === 'arbetsterapeut') {
     const energyText = context.energyLevel === 'low' ? 'Låg energi - ge kortare svar'
       : context.energyLevel === 'high' ? 'Hög energi'
       : 'Normal energinivå'

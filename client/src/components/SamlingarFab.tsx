@@ -18,7 +18,7 @@
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
   Bookmark,
   Briefcase,
@@ -80,6 +80,10 @@ const DESTINATIONS: Destination[] = [
   },
 ]
 
+/** RD20: det knappen inte får ligga ovanpå. */
+const INTERAKTIV =
+  'button, a[href], input, select, textarea, summary, label, [role="button"], [role="checkbox"], [role="radio"], [role="switch"], [role="tab"]'
+
 export function SamlingarFab() {
   const { t } = useTranslation()
   const profile = useAuthStore(s => s.profile)
@@ -89,6 +93,7 @@ export function SamlingarFab() {
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const titleId = useId()
   const navigate = useNavigate()
+  const location = useLocation()
   const hiddenOnScroll = useHideOnScrollDown()
 
   // Skav (persona 2026-09-12): FAB:en låg fixed i hörnet ovanpå Snabb-CV:ts
@@ -114,6 +119,54 @@ export function SamlingarFab() {
       document.removeEventListener('focusout', onFocusOut)
     }
   }, [])
+
+  // RD20 (rollspelet 2026-09-27): knappen täckte pilen på Lugnare läge och
+  // bocken på brevmallen "Professionell" medan sidan stod still — varken
+  // scroll- eller fokusregeln ovan slog till. Här hit-testas knappens yta mot
+  // det som ligger under: ligger en annan kontroll där kliver knappen undan
+  // (genomskinlig, klickbar igenom, utanför tabbordningen) tills platsen är fri.
+  // Knappen flyttas inte när den döljs, så mätpunkterna står still och ingen
+  // fladder uppstår; pointer-events-none gör att elementsFromPoint hoppar över den.
+  const knappRef = useRef<HTMLButtonElement>(null)
+  const [tackerKontroll, setTackerKontroll] = useState(false)
+  useEffect(() => {
+    if (typeof document.elementsFromPoint !== 'function') return
+    let ram = 0
+    const kontrollera = () => {
+      const knapp = knappRef.current
+      if (!knapp) return
+      const r = knapp.getBoundingClientRect()
+      const punkter: Array<[number, number]> = [
+        [r.left + r.width / 2, r.top + r.height / 2],
+        [r.left + 4, r.top + 4],
+        [r.right - 4, r.top + 4],
+        [r.left + 4, r.bottom - 4],
+        [r.right - 4, r.bottom - 4],
+      ]
+      const tacker = punkter.some(([x, y]) =>
+        document.elementsFromPoint(x, y).some((el) => !knapp.contains(el) && el.closest(INTERAKTIV) !== null),
+      )
+      setTackerKontroll(tacker)
+    }
+    const schemalagg = () => {
+      if (typeof requestAnimationFrame === 'function') {
+        cancelAnimationFrame(ram)
+        ram = requestAnimationFrame(kontrollera)
+      } else {
+        kontrollera()
+      }
+    }
+    // Första mätningen när sidan hunnit rita klart
+    const start = window.setTimeout(schemalagg, 300)
+    window.addEventListener('scroll', schemalagg, { passive: true })
+    window.addEventListener('resize', schemalagg)
+    return () => {
+      window.clearTimeout(start)
+      if (typeof cancelAnimationFrame === 'function') cancelAnimationFrame(ram)
+      window.removeEventListener('scroll', schemalagg)
+      window.removeEventListener('resize', schemalagg)
+    }
+  }, [location.pathname])
 
   // ESC stänger
   useEffect(() => {
@@ -169,8 +222,11 @@ export function SamlingarFab() {
     <>
       {!isOpen && (
         <button
+          ref={knappRef}
           type="button"
           onClick={() => setIsOpen(true)}
+          tabIndex={tackerKontroll ? -1 : undefined}
+          aria-hidden={tackerKontroll || undefined}
           aria-label={t('samlingar.aria.open', 'Öppna mina samlingar')}
           aria-expanded={false}
           className={cn(
@@ -204,7 +260,10 @@ export function SamlingarFab() {
             'transition-all duration-200 hover:scale-105 active:scale-95',
             // Dölj vid scroll nedåt, ELLER medan ett formulärfält har fokus
             // (endast mobil) så knappen inte täcker det man just skriver i.
-            (hiddenOnScroll || faltHarFokus) ? 'translate-y-[220%] opacity-0 pointer-events-none' : 'translate-y-0 opacity-100',
+            (hiddenOnScroll || faltHarFokus) ? 'translate-y-[220%] opacity-0 pointer-events-none'
+              // RD20: kliv undan på plats — flyttas inte, så mätningen står still
+              : tackerKontroll ? 'translate-y-0 opacity-0 pointer-events-none'
+              : 'translate-y-0 opacity-100',
             'sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto',
           )}
         >

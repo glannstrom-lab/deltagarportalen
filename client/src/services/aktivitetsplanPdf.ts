@@ -45,7 +45,21 @@ const TYP_ETIKETT: Record<ActivityType, string> = {
   jobsearch: 'Jobbsökande',
   workplace: 'Arbetsplatsförlagd',
   jobsearch_own: 'Eget jobbsökande',
+  sfi: 'SFI',
+  studier: 'Studier',
+  vagledning: 'Studie- och yrkesvägledning',
+  halsa: 'Hälsa',
 }
+/**
+ * RR16 (rollspelet 2026-09-27): "1 timmar per vecka". Böjt efter antal, och
+ * decimaler med komma som i resten av dokumentet: "1 timme", "2,5 timmar".
+ */
+export function timmarPerVecka(h: number): string {
+  const avrundat = Math.round((Number.isFinite(h) ? h : 0) * 10) / 10
+  const tal = String(avrundat).replace('.', ',')
+  return `${tal} ${avrundat === 1 ? 'timme' : 'timmar'} per vecka`
+}
+
 const VECKODAG = ['', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'] as const
 
 export interface PlanPdfInput {
@@ -151,9 +165,9 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
     ['Organisation', tomt(organizationName)],
     ['Schemamall', tomt(plan.template_name)],
     ['Period', `${datumSv(plan.start_date)} - ${plan.end_date ? datumSv(plan.end_date) : 'tills vidare'}`],
-    ['Veckomål', `${Number(plan.weekly_hours_target)} timmar per vecka`],
+    ['Veckomål', timmarPerVecka(Number(plan.weekly_hours_target))],
     ['Motivering till veckomålet', tomt(plan.target_reason)],
-    ['Tid för eget jobbsökande', `${Number(plan.jobsearch_hours_per_week)} timmar per vecka`],
+    ['Tid för eget jobbsökande', timmarPerVecka(Number(plan.jobsearch_hours_per_week))],
     // Försörjningshinder är kommunens kategori (Socialstyrelsens register) — inte leverantörens.
     ...(texter.visaForsorjningshinder
       ? [['Försörjningshinder', plan.forsorjningshinder ? FORSORJNINGSHINDER_ETIKETT[plan.forsorjningshinder] : STRECK] as [string, string]]
@@ -209,7 +223,7 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
       .reduce((sum, s) => sum + timmar(s.start_time, s.end_time), 0)
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(10)
-    doc.text(`Planerad anvisad aktivitet: ${Math.round(veckotimmar * 10) / 10} timmar per vecka.`, marg, y)
+    doc.text(`Planerad anvisad aktivitet: ${timmarPerVecka(veckotimmar)}.`, marg, y)
     y += 8
   }
 

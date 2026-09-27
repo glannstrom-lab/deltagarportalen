@@ -55,12 +55,12 @@ export default function SidRailStats({ stats, layout }: Props) {
             {Ikon && (
               <Ikon className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500 shrink-0" />
             )}
-            <span className="text-[11px] text-stone-500 dark:text-stone-400 min-w-0 truncate">
+            <span className="text-[0.6875rem] text-stone-500 dark:text-stone-400 min-w-0 truncate">
               {st.label}
             </span>
             <span
               className={cn(
-                'text-[13px] font-semibold tabular-nums text-stone-900 dark:text-stone-100',
+                'text-[0.8125rem] font-semibold tabular-nums text-stone-900 dark:text-stone-100',
                 rail && 'ml-auto'
               )}
             >

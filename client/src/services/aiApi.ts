@@ -66,7 +66,9 @@ const AI_ENABLED_EXEMPT_FUNCTIONS = new Set([
  */
 const ART9_CONSENT_MESSAGES: Record<string, string> = {
   'ai-team-chat':
-    'AI-teamet får med sig hur du mår och vad du beskrivit som svårt, så att coacherna kan anpassa sina svar. Godkänn AI-behandling i Inställningar för att använda chatten.',
+    // RD19 (rollspelet 2026-09-27): texten sa att måendet alltid följde med, utan
+    // val. Nu följer det bara med om deltagaren kryssat i det i chatten.
+    'AI-teamet använder AI. Säg ja till AI i Inställningar, under Integritet, för att kunna chatta. Hur du mår följer bara med om du själv väljer det i chatten.',
 }
 
 const ART9_DEFAULT_MESSAGE =

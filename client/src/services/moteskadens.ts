@@ -257,3 +257,43 @@ export async function hamtaMotenIPeriod(from: string, to: string): Promise<MoteR
   if (error) throw error
   return (data ?? []) as MoteRad[]
 }
+
+// ---------------------------------------------------------------------------
+// RK31 (rollspelet 2026-09-27): varningar när ett möte bokas
+// ---------------------------------------------------------------------------
+//
+// Boka möte lät konsulenten välja en lördag utan ett ord, och sa ingenting
+// när mötet låg mitt i deltagarens jobbsökarverkstad. Varningar — inte spärrar:
+// ett möte på en lördag kan vara avtalat, och ett pass kan ha ställts in.
+
+export interface PassTid {
+  start_time: string
+  end_time: string
+  title: string
+}
+
+function minuter(hhmm: string): number {
+  const [h, m] = hhmm.split(':').map(Number)
+  return h * 60 + m
+}
+
+/** Pass som överlappar mötet `tid` + `langdMin` samma dag. Kant i kant är ingen krock. */
+export function krockandePass<T extends PassTid>(pass: readonly T[], tid: string, langdMin: number): T[] {
+  const start = minuter(tid)
+  const slut = start + langdMin
+  return pass.filter((p) => minuter(p.start_time) < slut && start < minuter(p.end_time))
+}
+
+/** Varningstexter för ett möte en viss dag (`datum` i lokal tid, JS-veckodag 0 = söndag). */
+export function motesVarningar(indata: { veckodag: number; tid: string | null; langdMin: number; pass: readonly PassTid[] }): string[] {
+  const ut: string[] = []
+  if (indata.veckodag === 6 || indata.veckodag === 0) {
+    ut.push(`${indata.veckodag === 6 ? 'Lördag' : 'Söndag'} — stämmer dagen? Mötet bokas ändå om du fortsätter.`)
+  }
+  if (indata.tid) {
+    for (const p of krockandePass(indata.pass, indata.tid, indata.langdMin)) {
+      ut.push(`Krockar med deltagarens pass ${p.title} ${p.start_time}–${p.end_time}.`)
+    }
+  }
+  return ut
+}

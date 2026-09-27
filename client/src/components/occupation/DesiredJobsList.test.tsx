@@ -29,7 +29,7 @@ describe('DesiredJobsList — engelska', () => {
     await engelska()
     const { container } = render(<DesiredJobsList jobs={[]} onChange={vi.fn()} maxJobs={5} />)
     expect(screen.getByText('No wanted jobs added yet.')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Add a job (0/5)' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Add a job' })).toBeInTheDocument()
     expect(container.textContent).not.toMatch(/[åäöÅÄÖ]/)
   })
 

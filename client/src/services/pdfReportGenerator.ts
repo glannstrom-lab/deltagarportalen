@@ -120,6 +120,7 @@ const LABELS = {
     engagement: 'Engagemang',
     avgPlacementTime: 'Genomsnittlig placeringstid',
     days: 'dagar',
+    day: 'dag',
     progressOverTime: 'Framsteg över tid',
     month: 'Månad',
     averageScore: 'Slutförda mål och placeringar',
@@ -160,6 +161,7 @@ const LABELS = {
     engagement: 'Engagement',
     avgPlacementTime: 'Average Placement Time',
     days: 'days',
+    day: 'day',
     progressOverTime: 'Progress Over Time',
     month: 'Month',
     averageScore: 'Completed goals and placements',
@@ -194,8 +196,9 @@ type Etiketter = (typeof LABELS)['sv']
  * RK11: placeringstiden som text. `null` → "—", aldrig "0 dagar".
  * Exporterad så testet kan kontrollera den utan PDF.
  */
-export function placeringstidText(varde: number | null, labels: Pick<Etiketter, 'days' | 'dash'> = LABELS.sv): string {
-  return varde === null ? labels.dash : `${varde} ${labels.days}`
+export function placeringstidText(varde: number | null, labels: Pick<Etiketter, 'days' | 'day' | 'dash'> = LABELS.sv): string {
+  // RR16 (rollspelet 2026-09-27): "1 dagar".
+  return varde === null ? labels.dash : `${varde} ${varde === 1 ? labels.day : labels.days}`
 }
 
 /**

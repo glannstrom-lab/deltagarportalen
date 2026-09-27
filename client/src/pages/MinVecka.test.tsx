@@ -367,6 +367,23 @@ describe('Min vecka', () => {
   })
 
   /*
+   * Skav (rollspelet 2026-09-27): "Du har 11 av 8 timmar" när veckan har mer än
+   * målet. "av" läser som en del av en helhet; över målet säger raden i stället
+   * att det är mer än målet. Mutation: ta bort radOver-grenen → faller.
+   */
+  it('över målet: "11 timmar … mer än målet på 8", aldrig "11 av 8"', async () => {
+    getMyPlan.mockResolvedValue({ ...plan, weekly_hours_target: 11, jobsearch_hours_per_week: 3 })
+    const d = (n: number) => addDays(mandag, n)
+    listMySessions.mockResolvedValue([
+      pass({ id: 'a', date: d(0), start_time: '08:00', end_time: '14:00' }),
+      pass({ id: 'b', date: d(1), start_time: '08:00', end_time: '13:00', activity_type: 'motivation' }),
+    ])
+    render(<MinVecka />)
+    expect(await screen.findByText('Du har 11 timmar i anvisade pass den här veckan, mer än målet på 8.')).toBeInTheDocument()
+    expect(screen.queryByText(/11 av 8/)).toBeNull()
+  })
+
+  /*
    * RD4 (rollspelet 2026-09-27): mötet med konsulenten kl 12 syntes bara på
    * Min konsulent, inte i veckan. Mutation: rendera inte mötena → faller.
    */

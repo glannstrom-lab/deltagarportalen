@@ -62,6 +62,10 @@ const TYP_ETIKETT: Record<ActivityType, string> = {
   jobsearch: 'Jobbsökande',
   workplace: 'Arbetsplatsförlagd',
   jobsearch_own: 'Eget jobbsökande (egen redovisning)',
+  sfi: 'SFI (hålls av skolan)',
+  studier: 'Studier (hålls av skolan)',
+  vagledning: 'Studie- och yrkesvägledning',
+  halsa: 'Hälsa',
 }
 
 /** Samma ord som närvaropanelen och närvarointyget. */

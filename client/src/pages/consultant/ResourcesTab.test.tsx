@@ -73,8 +73,8 @@ describe('ResourcesTab — KS7: mallarnas felläge', () => {
     renderTab()
 
     const alert = await screen.findByRole('alert')
-    expect(alert).toHaveTextContent(/mallarna kunde inte hämtas/i)
-    expect(alert).toHaveTextContent(/exempelmallar/i)
+    expect(alert).toHaveTextContent(/mallar kunde inte hämtas/i)
+    expect(alert).toHaveTextContent(/inbyggda mallarna/i)
 
     expect(fromCallCount.consultant_goal_templates).toBe(1)
 
@@ -92,8 +92,35 @@ describe('ResourcesTab — KS7: mallarnas felläge', () => {
   it('visar INGEN felbanner när mallhämtningen lyckas, även med noll egna mallar', async () => {
     renderTab()
 
-    await screen.findByText(/Inga mallar/i)
+    await screen.findByText('Lära sig ny kompetens')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
+// RK21/RR17 (rollspelet 2026-09-27): Resurser → Målmallar sa "Inga mallar
+// matchade din sökning" utan någon sökning, medan måldialogen hade fem mallar.
+// Mutation: ta bort INBYGGDA ur setTemplates → faller; ta bort filtervillkoret
+// på tomtexten → faller på "utan sökning".
+describe('ResourcesTab — RK21: samma mallar som måldialogen', () => {
+  it('visar dialogens fem inbyggda mallar utan egna sparade — och inget "matchade din sökning"', async () => {
+    const { INBYGGDA_MALMALLAR } = await import('@/components/consultant/inbyggdaMalmallar')
+    renderTab()
+    for (const m of INBYGGDA_MALMALLAR) {
+      expect(await screen.findByText(m.title)).toBeInTheDocument()
+    }
+    expect(INBYGGDA_MALMALLAR).toHaveLength(5)
+    expect(screen.queryByText(/matchade/i)).not.toBeInTheDocument()
+    // Inget påhittat användningstal på en inbyggd mall.
+    expect(screen.queryByText(/Använd \d+ gånger/)).not.toBeInTheDocument()
+  })
+
+  it('säger "matchade din sökning" först när en sökning faktiskt inte ger träff', async () => {
+    renderTab()
+    await screen.findByText('Lära sig ny kompetens')
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'finnsinte' } })
+    expect(await screen.findByText(/matchade/i)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: 'Visa alla mallar' }))
+    expect(await screen.findByText('Lära sig ny kompetens')).toBeInTheDocument()
   })
 })
 

@@ -79,7 +79,7 @@ export const MatchCard = memo(function MatchCard({
           <span className="text-xs font-bold leading-tight">
             {score >= 70 ? labels.levelStrong : score >= 50 ? labels.levelGood : labels.levelPossible}
           </span>
-          <span className="text-[10px] font-medium">{labels.match}</span>
+          <span className="text-[0.625rem] font-medium">{labels.match}</span>
         </div>
 
         <div className="flex-1 min-w-0">

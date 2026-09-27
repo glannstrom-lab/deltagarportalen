@@ -191,8 +191,10 @@ export function calculateGoalCategories(goals: Array<Record<string, unknown>>): 
     categories[category] = (categories[category] || 0) + 1
   })
 
+  // RK24: lika antal sorteras på namn, så Översikt, Rapporter och PDF:en
+  // aldrig visar samma data i olika ordning beroende på radernas hämtordning.
   return Object.entries(categories)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'sv'))
     .slice(0, 5)
     .map(([category, count]) => ({ category, count }))
 }

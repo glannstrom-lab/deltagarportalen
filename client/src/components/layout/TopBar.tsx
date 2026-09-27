@@ -29,6 +29,7 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import CrisisSupport from '@/components/CrisisSupport'
 import { oppnaPalett } from '@/lib/palettEvent'
 import { HubNav } from './TopNav'
+import { arKonsulentvy } from './konsulentNav'
 import { getActiveHub } from './navigation'
 import { isTopNavEnabled } from '@/config/features'
 import { Search } from '@/components/ui/icons'
@@ -148,8 +149,8 @@ export function TopBar() {
           className="hidden xl:flex items-center gap-2 mx-3 flex-1 max-w-[220px] px-2.5 py-1.5 rounded-lg border border-stone-200 dark:border-stone-700 text-stone-500 dark:text-stone-400 hover:border-stone-300 dark:hover:border-stone-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
         >
           <Search className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-          <span className="text-[13px] truncate">{t('palette.trigger', 'Sök …')}</span>
-          <kbd className="ml-auto text-[10px] font-mono border border-stone-200 dark:border-stone-700 rounded px-1 py-px shrink-0">
+          <span className="text-[0.8125rem] truncate">{t('palette.trigger', 'Sök …')}</span>
+          <kbd className="ml-auto text-[0.625rem] font-mono border border-stone-200 dark:border-stone-700 rounded px-1 py-px shrink-0">
             Ctrl K
           </kbd>
         </button>
@@ -211,8 +212,10 @@ export function TopBar() {
             <HelpCircle size={18} />
           </Link>
 
-          {/* Behöver du prata? — Crisis Support behålls i fokusläge */}
-          <CrisisSupport variant="inline" />
+          {/* Behöver du prata? — Crisis Support behålls i fokusläge.
+              RR21 (rollspelet 2026-09-27): deltagarens krisknapp hör inte
+              hemma i konsulentens arbetsverktyg — visas inte under /consultant. */}
+          {!arKonsulentvy(location.pathname) && <CrisisSupport variant="inline" />}
 
           {/* Notifications — distraktion, döljs i fokusläge */}
           <div data-focus-chrome="topbar-extras">
@@ -242,7 +245,7 @@ export function TopBar() {
                 {profile?.profile_image_url ? (
                   <img src={profile.profile_image_url} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-[var(--c-text)] text-[10px] sm:text-xs font-semibold">
+                  <span className="text-[var(--c-text)] text-[0.625rem] sm:text-xs font-semibold">
                     {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
                   </span>
                 )}
@@ -277,7 +280,7 @@ export function TopBar() {
                         <p className="text-sm sm:text-base font-medium text-stone-800 dark:text-stone-100 truncate">
                           {profile?.first_name ? `${profile.first_name} ${profile.last_name}` : t('topbar.welcome')}
                         </p>
-                        <p className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 truncate">{user?.email}</p>
+                        <p className="text-[0.625rem] sm:text-xs text-stone-500 dark:text-stone-400 truncate">{user?.email}</p>
                       </div>
                     </div>
                     <Link

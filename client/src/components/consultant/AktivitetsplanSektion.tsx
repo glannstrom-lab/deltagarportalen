@@ -41,6 +41,7 @@ import {
 import {
   addDays,
   anvisatVeckomal,
+  forslagetPassdatum,
   formatLocalDate,
   isoWeekday,
   timmar,
@@ -48,7 +49,9 @@ import {
   veckoampel,
   veckomalMotSchema,
   veckosaldo,
-  type ActivityType,
+  veckovisaDatum,
+  valbaraPasstyper,
+  type PassTyp,
   type Ampel,
   type Attendance,
 } from '@/services/aktivitetSchema'
@@ -70,6 +73,9 @@ import {
   klockslag,
   kortDatum,
   langtDatum,
+  veckoRubrik,
+  omarkeradeText,
+  INTYG_HJALP,
 } from './aktivitetEtiketter'
 
 interface AktivitetsplanSektionProps {
@@ -291,12 +297,16 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               <div className="flex gap-2"><dt className="text-stone-500">Eget jobbsökande</dt><dd>{formatTimmar(Number(plan.jobsearch_hours_per_week))}/vecka i planen</dd></div>
               {plan.decided_at && <div className="flex gap-2"><dt className="text-stone-500">Beslutad</dt><dd>{langtDatum(plan.decided_at)}</dd></div>}
               {!arLeverantor && (<>
-              <div className="flex gap-2 items-center">
+              {/* RK25/RR19 (rollspelet 2026-09-27): väljaren låg i en halv
+                  kolumn och växte ut över grannkolumnen — pilen hamnade över
+                  "handläggaren". Nu egen rad över hela bredden, och väljaren
+                  blir aldrig bredare än raden. */}
+              <div className="flex flex-wrap gap-x-2 gap-y-1 items-center sm:col-span-2" data-testid="rad-forsorjningshinder">
                 <dt className="text-stone-500">Försörjningshinder</dt>
-                <dd>
+                <dd className="min-w-0 max-w-full">
                   <select
                     aria-label="Försörjningshinder"
-                    className="text-sm rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 px-2 py-1"
+                    className="max-w-full text-sm rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 px-2 py-1"
                     value={plan.forsorjningshinder ?? ''}
                     disabled={sparaPlan === 'hinder'}
                     onChange={(e) => void sattHinder(plan, e.target.value as '' | Forsorjningshinder)}
@@ -306,7 +316,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                   </select>
                 </dd>
               </div>
-              <div className="flex gap-2 items-start">
+              <div className="flex flex-wrap gap-x-2 gap-y-1 items-start sm:col-span-2" data-testid="rad-underlag">
                 <dt className="text-stone-500 pt-0.5">{t('consultant.underlag.rubrik')}</dt>
                 <dd className="min-w-0">
                   {lage.underlagFel && (
@@ -358,7 +368,8 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               Lägg till pass
             </Button>
             {plan.status !== 'ended' && (
-              <Button size="sm" variant="ghost" onClick={() => avslutaPlan(plan)}>Avsluta plan</Button>
+              // RR19: ghost-varianten saknar mörk färg — stone-600 på nästan svart.
+              <Button size="sm" variant="ghost" className="dark:text-stone-200 dark:hover:bg-stone-800 dark:hover:text-stone-50" onClick={() => avslutaPlan(plan)}>Avsluta plan</Button>
             )}
           </div>
         </div>
@@ -377,7 +388,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               <ChevronLeft className="w-5 h-5" aria-hidden="true" />
             </Button>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 min-w-[12ch] text-center">
-              Vecka {kortDatum(vecka)} – {kortDatum(addDays(vecka, 6))}
+              {veckoRubrik(vecka)}
             </h3>
             <Button size="sm" variant="ghost" onClick={() => setVecka(addDays(vecka, 7))} aria-label="Nästa vecka">
               <ChevronRight className="w-5 h-5" aria-hidden="true" />
@@ -422,7 +433,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
           {arLeverantor
             ? 'Ogiltig frånvaro är underlag för avvikelserapporteringen till Arbetsförmedlingen enligt avtalet.'
             : 'Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.'}
-          {saldo.antalOmarkerade > 0 && ` ${saldo.antalOmarkerade} pass i veckan är inte markerade än.`}
+          {saldo.antalOmarkerade > 0 && ` ${omarkeradeText(saldo.antalOmarkerade)}`}
         </p>
 
         {/* KM9: eget jobbsökande ur portalens data — deltagarens redovisning, inte kontroll. */}
@@ -453,8 +464,9 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         onClose={() => setVisaNyttPass(false)}
         planId={plan.id}
         participantId={participantId}
-        defaultDate={vecka}
-        onCreated={() => { setVisaNyttPass(false); notifications.success('Passet är tillagt'); void ladda() }}
+        defaultDate={forslagetPassdatum(vecka, idag)}
+        planSlut={plan.end_date}
+        onCreated={(antal) => { setVisaNyttPass(false); notifications.success(antal > 1 ? `${antal} pass är tillagda` : 'Passet är tillagt'); void ladda() }}
       />
       {/* F10: underlag till handläggaren — bara med en plan att lämna underlag om */}
       {underlagDialog && (
@@ -633,7 +645,7 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
           <Checkbox
             id={`intyg-${session.id}`}
             label="Läkarintyg inkommet"
-            description="Lagen kräver intyg vid sjukfrånvaro. Sparas när du markerar Sjuk."
+            description={INTYG_HJALP}
             checked={intyg}
             onChange={(e) => setIntyg(e.target.checked)}
           />
@@ -676,7 +688,10 @@ interface NyttPassDialogProps {
   planId: string
   participantId: string
   defaultDate: string
-  onCreated: () => void
+  /** Planens slutdatum — "upprepa varje vecka" går till och med det. */
+  planSlut: string | null
+  /** Antal pass som lades till (fler än ett vid upprepning). */
+  onCreated: (antal: number) => void
 }
 
 function NyttPassDialog(props: NyttPassDialogProps) {
@@ -685,8 +700,11 @@ function NyttPassDialog(props: NyttPassDialogProps) {
   return <NyttPassForm {...props} />
 }
 
-function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, onCreated }: NyttPassDialogProps) {
+function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, planSlut, onCreated }: NyttPassDialogProps) {
   const [form, setForm] = useState<SessionInput>({ date: defaultDate, start_time: '09:00', end_time: '12:00', title: '', activity_type: 'jobsearch', location: '' })
+  // RK28: upprepa varje vecka till planens slut. Utan slutdatum finns inget slut att gå till.
+  const [upprepa, setUpprepa] = useState(false)
+  const upprepadeDatum = upprepa && planSlut && form.date ? veckovisaDatum(form.date, planSlut) : []
   const [forsokt, setForsokt] = useState(false)
   const [sparar, setSparar] = useState(false)
   const [fel, setFel] = useState<string | null>(null)
@@ -699,8 +717,13 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, onC
     setSparar(true)
     setFel(null)
     try {
-      await aktivitetsplanApi.addSession(planId, participantId, form)
-      onCreated()
+      if (upprepa && planSlut) {
+        const skapade = await aktivitetsplanApi.addWeeklySessions(planId, participantId, form, planSlut)
+        onCreated(skapade.length)
+      } else {
+        await aktivitetsplanApi.addSession(planId, participantId, form)
+        onCreated(1)
+      }
     } catch (err) {
       setFel(err instanceof Error ? err.message : 'Passet kunde inte sparas')
     } finally {
@@ -723,12 +746,24 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, onC
         <Select
           id="pass-typ"
           label="Aktivitetstyp"
-          options={AKTIVITETSTYP_ORDNING.map((t) => ({ value: t, label: AKTIVITETSTYP_ETIKETT[t] }))}
+          options={valbaraPasstyper(AKTIVITETSTYP_ORDNING).map((t) => ({ value: t, label: AKTIVITETSTYP_ETIKETT[t] }))}
           value={form.activity_type}
-          onChange={(e) => setForm({ ...form, activity_type: e.target.value as ActivityType })}
+          onChange={(e) => setForm({ ...form, activity_type: e.target.value as PassTyp })}
           fullWidth
         />
         <Input id="pass-plats" label="Plats" value={form.location ?? ''} onChange={(e) => setForm({ ...form, location: e.target.value })} fullWidth />
+        <Checkbox
+          id="pass-upprepa"
+          label="Upprepa varje vecka till planens slut"
+          description={!planSlut
+            ? 'Planen har inget slutdatum. Lägg passet i en schemamall om det ska gälla tills vidare.'
+            : upprepadeDatum.length > 1
+              ? `${upprepadeDatum.length} pass, det sista ${kortDatum(upprepadeDatum[upprepadeDatum.length - 1])}.`
+              : `Samma veckodag och tid till och med ${kortDatum(planSlut)}.`}
+          checked={upprepa}
+          disabled={!planSlut}
+          onChange={(e) => setUpprepa(e.target.checked)}
+        />
         {forsokt && valideringsfel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{valideringsfel}</p>}
         {fel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{fel}</p>}
       </div>

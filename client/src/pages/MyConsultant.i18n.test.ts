@@ -78,15 +78,13 @@ describe('UX24: /my-consultant får inte rendera råa i18n-nycklar', () => {
     })
   })
 
-  it('använder samma interpolationsvariabler som koden skickar in', () => {
-    // `goalsCompleted` fick {completed, total} från koden men hade {{count}} i
-    // JSON:en — texten hade renderats utan siffror även när nyckeln fanns.
-    expect(lookup(sv, 'myConsultant.goals.goalsCompleted')).toContain('{{completed}}')
-    expect(lookup(sv, 'myConsultant.goals.goalsCompleted')).toContain('{{total}}')
-    expect(lookup(en, 'myConsultant.goals.goalsCompleted')).toContain('{{completed}}')
-    expect(lookup(en, 'myConsultant.goals.goalsCompleted')).toContain('{{total}}')
-
-    expect(source).toContain("t('myConsultant.goals.goalsCompleted', { completed:")
+  it('målräknaren "X av Y mål avklarade" är borta, inte bara oöversatt (RD15)', () => {
+    // Tidigare vaktade testet att `goalsCompleted` fick {completed, total}.
+    // Rollspelet 2026-09-27 (RD15): räknaren stod i rubrikposition, ett
+    // prestationstal (DESIGN.md §1). Varje mål har sin egen status i stället.
+    expect(source).not.toContain('myConsultant.goals.goalsCompleted')
+    expect(lookup(sv, 'myConsultant.goals.goalsCompleted')).toBeUndefined()
+    expect(lookup(en, 'myConsultant.goals.goalsCompleted')).toBeUndefined()
   })
 
   it('sv och en har samma nyckeluppsättning under myConsultant', () => {

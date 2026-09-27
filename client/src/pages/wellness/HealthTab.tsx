@@ -307,7 +307,7 @@ export default function HealthTab() {
             >
               <span className="text-2xl sm:text-3xl">{option.icon}</span>
               <span className={cn(
-                "text-[10px] sm:text-xs font-medium text-center",
+                "text-[0.625rem] sm:text-xs font-medium text-center",
                 currentMood === option.value ? option.color : "text-gray-600 dark:text-gray-300"
               )}>
                 {option.label}

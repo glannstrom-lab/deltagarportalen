@@ -40,6 +40,7 @@ import { JobCollectionDialog, type JobCollectionFormData } from '@/components/co
 import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
 import { SchemamallSektion } from '@/components/consultant/SchemamallSektion'
 import { AktivitetskatalogSektion } from '@/components/consultant/AktivitetskatalogSektion'
+import { INBYGGDA_MALMALLAR } from '@/components/consultant/inbyggdaMalmallar'
 import { CalendarDays, Library } from '@/components/ui/icons'
 
 interface GoalTemplate {
@@ -52,9 +53,26 @@ interface GoalTemplate {
   achievable: string
   relevant: string
   timeBound: string
-  usageCount: number
+  /** null för inbyggda mallar — de räknas inte, och ett påhittat tal visas inte. */
+  usageCount: number | null
   isStarred: boolean
 }
+
+// RK21/RR17: samma fem mallar som måldialogen, alltid synliga bredvid
+// konsulentens egna. id-prefixet `default-` gör dem skrivskyddade nedan.
+const INBYGGDA: GoalTemplate[] = INBYGGDA_MALMALLAR.map((m) => ({
+  id: `default-${m.id}`,
+  title: m.title,
+  category: m.category,
+  description: m.description,
+  specific: m.specific,
+  measurable: m.measurable,
+  achievable: m.achievable,
+  relevant: m.relevant,
+  timeBound: m.timeBound,
+  usageCount: null,
+  isStarred: false,
+}))
 
 export interface CollectionJob {
   title: string
@@ -166,7 +184,9 @@ function TemplateCard({
       <div className="flex items-center justify-between">
         <span className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1">
           <Users className="w-3 h-3" />
-          {t('consultant.resources.used', { count: template.usageCount })}
+          {template.usageCount === null
+            ? 'Inbyggd mall'
+            : template.usageCount === 1 ? 'Använd 1 gång' : `Använd ${template.usageCount} gånger`}
         </span>
         <Button size="sm" onClick={() => onUse(template)}>
           <Copy className="w-3 h-3 mr-1.5" />
@@ -554,7 +574,9 @@ function TemplateDetailDialog({
             </div>
           </div>
           <p className="text-xs text-stone-500 dark:text-stone-400">
-            {t('consultant.resources.used', { count: template.usageCount })}
+            {template.usageCount === null
+              ? 'Inbyggd mall — finns också i dialogen "Skapa mål".'
+              : template.usageCount === 1 ? 'Använd 1 gång' : `Använd ${template.usageCount} gånger`}
           </p>
         </div>
         <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
@@ -702,60 +724,18 @@ export function ResourcesTab() {
         isStarred: t.is_starred || false,
       }))
 
-      setTemplates(formattedTemplates)
+      setTemplates([...formattedTemplates, ...INBYGGDA])
     } catch (err) {
       console.error('Error loading templates:', err)
       // KS7: exempelmallarna visas ändå (hellre en fungerande yta än en tom
       // grid) — men bannern nedanför gör klart att det INTE är konsulentens
       // egna sparade mallar, bara exempel, tills hämtningen lyckas igen.
-      setTemplatesError('Mallarna kunde inte hämtas. Det som visas nedan är exempelmallar, inte dina sparade — försök igen.')
-      setTemplates(getDefaultTemplates())
+      setTemplatesError('Dina sparade mallar kunde inte hämtas. Det som visas nedan är bara de inbyggda mallarna — försök igen.')
+      setTemplates(INBYGGDA)
     } finally {
       setLoading(false)
     }
   }
-
-  const getDefaultTemplates = (): GoalTemplate[] => [
-    {
-      id: 'default-1',
-      title: 'Förbättra CV till 80+ poäng',
-      category: 'cv',
-      description: 'Ett stegvist mål för att förbättra CV-kvaliteten med fokus på ATS-optimering.',
-      specific: 'Förbättra mitt CV så att det får minst 80 poäng i ATS-systemet',
-      measurable: 'CV-poäng ökar från nuvarande till minst 80/100',
-      achievable: 'Genomförbart genom att följa CV-guiden och få feedback',
-      relevant: 'Högre CV-poäng ökar chansen att passera första urvalet',
-      timeBound: '2 veckor',
-      usageCount: 47,
-      isStarred: true,
-    },
-    {
-      id: 'default-2',
-      title: 'Skicka 10 ansökningar per vecka',
-      category: 'job_search',
-      description: 'Systematiskt jobbsökande med fokus på kvalitativa ansökningar.',
-      specific: 'Skicka 10 kvalitativa jobbansökningar varje vecka',
-      measurable: '10 ansökningar loggade i systemet per vecka',
-      achievable: 'Ca 2 ansökningar per dag, 5 dagar i veckan',
-      relevant: 'Fler ansökningar ökar chansen att få intervjuer',
-      timeBound: 'Pågående, utvärdering varje fredag',
-      usageCount: 34,
-      isStarred: false,
-    },
-    {
-      id: 'default-3',
-      title: 'Förbereda för intervju',
-      category: 'interview',
-      description: 'Strukturerad förberedelse inför en kommande intervju.',
-      specific: 'Förbereda svar på vanliga frågor och researcha företaget',
-      measurable: '10 förberedda svar, 5 frågor till arbetsgivaren',
-      achievable: 'Använd intervjusimulatorn och guider',
-      relevant: 'God förberedelse ökar chansen att imponera',
-      timeBound: '3 dagar före intervjun',
-      usageCount: 28,
-      isStarred: true,
-    },
-  ]
 
   const handleSaveTemplate = async (data: Partial<GoalTemplate>) => {
     setSaving(true)
@@ -877,11 +857,11 @@ export function ResourcesTab() {
       try {
         await supabase
           .from('consultant_goal_templates')
-          .update({ usage_count: template.usageCount + 1 })
+          .update({ usage_count: (template.usageCount ?? 0) + 1 })
           .eq('id', template.id)
 
         setTemplates(prev => prev.map(t =>
-          t.id === template.id ? { ...t, usageCount: t.usageCount + 1 } : t
+          t.id === template.id ? { ...t, usageCount: (t.usageCount ?? 0) + 1 } : t
         ))
       } catch (err) {
         console.error('Error updating usage count:', err)
@@ -1237,12 +1217,17 @@ export function ResourcesTab() {
             </div>
           )}
 
-          {!loading && filteredTemplates.length === 0 && (
+          {/* RK21: "matchade din sökning" bara när det faktiskt finns ett filter.
+              Utan filter är listan aldrig tom — de inbyggda mallarna finns alltid. */}
+          {!loading && filteredTemplates.length === 0 && (searchQuery.trim() !== '' || categoryFilter !== 'all') && (
             <Card className="p-12 text-center">
               <Target className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
               <p className="text-stone-500 dark:text-stone-400">
                 {t('consultant.resources.noTemplatesFound')}
               </p>
+              <Button variant="outline" size="sm" className="mt-4" onClick={() => { setSearchQuery(''); setCategoryFilter('all') }}>
+                Visa alla mallar
+              </Button>
             </Card>
           )}
         </>

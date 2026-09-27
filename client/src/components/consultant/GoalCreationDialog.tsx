@@ -28,6 +28,7 @@ import { formatLocalDate } from '@/services/aktivitetSchema'
 import { Button } from '@/components/ui/Button'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
+import { INBYGGDA_MALMALLAR } from './inbyggdaMalmallar'
 
 interface Participant {
   participant_id: string
@@ -70,73 +71,16 @@ interface GoalCreationDialogProps {
   }
 }
 
-const goalTemplates: GoalTemplate[] = [
-  {
-    id: 'cv-improve',
-    title: 'Förbättra CV till 80+ poäng',
-    category: 'cv',
-    description: 'Uppnå ett CV-score på minst 80% genom optimering',
-    specific: 'Förbättra mitt CV så att det får minst 80 poäng i ATS-systemet genom att optimera nyckelord, struktur och innehåll',
-    measurable: 'CV-poängen ökar från nuvarande nivå till minst 80/100',
-    achievable: 'Genomförbart genom att följa CV-guiden steg för steg och få feedback',
-    relevant: 'Högre CV-poäng ökar chansen att passera automatiska urvalssystem',
-    timeBound: '2 veckor',
-    defaultDeadlineDays: 14,
-    icon: FileText,
-  },
-  {
-    id: 'job-applications',
-    title: 'Skicka 10 ansökningar per vecka',
-    category: 'job_search',
-    description: 'Systematiskt jobbsökande med fokus på kvalitet',
-    specific: 'Skicka 10 kvalitativa, anpassade jobbansökningar varje vecka inom mitt yrkesområde',
-    measurable: '10 ansökningar loggade i systemet varje vecka',
-    achievable: 'Ca 2 ansökningar per dag, 5 dagar i veckan är rimligt',
-    relevant: 'Fler kvalitativa ansökningar ökar chansen att få intervjuer',
-    timeBound: 'Pågående, utvärdering varje fredag',
-    defaultDeadlineDays: 7,
-    icon: Briefcase,
-  },
-  {
-    id: 'interview-prep',
-    title: 'Förbereda för intervju',
-    category: 'interview',
-    description: 'Strukturerad förberedelse inför kommande intervju',
-    specific: 'Förbereda svar på de 10 vanligaste intervjufrågorna och researcha företaget grundligt',
-    measurable: '10 förberedda svar nedskrivna, 5 frågor till arbetsgivaren, företagsresearch klar',
-    achievable: 'Använd intervjusimulatorn och läs guider i kunskapsbanken',
-    relevant: 'God förberedelse ökar chansen att imponera och få jobbet',
-    timeBound: 'Klart minst 2 dagar före intervjun',
-    defaultDeadlineDays: 5,
-    icon: MessageSquare,
-  },
-  {
-    id: 'linkedin-network',
-    title: 'Utöka LinkedIn-nätverket',
-    category: 'networking',
-    description: 'Strategiskt nätverkande för att öka synlighet',
-    specific: 'Anslut med 20 nya relevanta kontakter inom min bransch och engagera mig i minst 5 inlägg per vecka',
-    measurable: '20 nya accepterade kontakter, 5 kommentarer/delningar per vecka',
-    achievable: 'Skicka 3-4 personliga inbjudningar dagligen',
-    relevant: 'Större nätverk ökar chansen att hitta dolda jobbmöjligheter',
-    timeBound: '1 månad',
-    defaultDeadlineDays: 30,
-    icon: Users,
-  },
-  {
-    id: 'new-skill',
-    title: 'Lära sig ny kompetens',
-    category: 'skills',
-    description: 'Strukturerat lärande av efterfrågad kompetens',
-    specific: 'Genomföra en online-kurs inom vald kompetens och tillämpa kunskapen i ett eget projekt',
-    measurable: 'Kurs genomförd med certifikat, projekt dokumenterat',
-    achievable: '1-2 timmar studier per dag under kursperioden',
-    relevant: 'Ökar anställningsbarhet och ger konkurrensfördelar',
-    timeBound: '4 veckor',
-    defaultDeadlineDays: 28,
-    icon: GraduationCap,
-  },
-]
+const MALL_IKON: Record<string, React.ElementType> = {
+  'cv-improve': FileText,
+  'job-applications': Briefcase,
+  'interview-prep': MessageSquare,
+  'linkedin-network': Users,
+  'new-skill': GraduationCap,
+}
+
+// Mallarna bor i inbyggdaMalmallar.ts — samma fem som Resurser → Målmallar (RK21).
+const goalTemplates: GoalTemplate[] = INBYGGDA_MALMALLAR.map((m) => ({ ...m, icon: MALL_IKON[m.id] ?? Target }))
 
 const categoryInfo = {
   cv: { label: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },

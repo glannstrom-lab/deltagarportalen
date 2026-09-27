@@ -50,6 +50,9 @@ import { hamtaMotenForKonsulent } from '@/services/moteskadens'
 import { aktivitetsplanApi } from '@/services/aktivitetApi'
 import { bradskandePunkter, franvaroFonster, veckansGranser, type Bradskande } from './oversiktRegler'
 import { BradskandeIdag } from './BradskandeIdag'
+import { calculateGoalCategories } from './analytics'
+import { antal } from './antal'
+import { aktivitetstid } from './aktivitetstid'
 
 interface DashboardStats {
   totalParticipants: number
@@ -580,7 +583,9 @@ export function OverviewTab() {
         const activityDescriptions: Record<string, string> = {
           GENERAL: t('consultant.overview.activity.newNote'),
           PROGRESS: t('consultant.overview.activity.progressNoted'),
-          CONCERN: t('consultant.overview.activity.concernNoted'),
+          // RK23 (rollspelet 2026-09-27): nyckeln sa "Fråga uppmärksammad" om en
+          // Oro-anteckning. Konsulentvyn översätts inte — kategorins eget namn.
+          CONCERN: 'Oro noterad',
           GOAL: t('consultant.overview.activity.goalRelated'),
         }
 
@@ -615,34 +620,18 @@ export function OverviewTab() {
           setRecentActivity(activities)
         }
 
-        // Calculate goal categories
-        if (goalsData && goalsData.length > 0) {
-          const categories: Record<string, number> = {}
-          goalsData.forEach((g: { title?: string }) => {
-            // Extract category from title or use a default categorization
-            let category = t('consultant.overview.goalCategories.other')
-            const title = g.title?.toLowerCase() || ''
-            if (title.includes('cv') || title.includes('resume')) category = t('consultant.overview.goalCategories.cvImprovement')
-            else if (title.includes('jobb') || title.includes('ansök') || title.includes('job') || title.includes('apply')) category = t('consultant.overview.goalCategories.jobApplications')
-            else if (title.includes('intervju') || title.includes('interview')) category = t('consultant.overview.goalCategories.interviewTraining')
-            else if (title.includes('nätverk') || title.includes('linkedin') || title.includes('network')) category = t('consultant.overview.goalCategories.networking')
-            else if (title.includes('kompetens') || title.includes('kurs') || title.includes('skill') || title.includes('course')) category = t('consultant.overview.goalCategories.skillsDevelopment')
-
-            categories[category] = (categories[category] || 0) + 1
-          })
-
-          const totalGoals = goalsData.length
-          const sortedCategories = Object.entries(categories)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 3)
-            .map(([category, count]) => ({
-              category,
-              count,
-              percentage: Math.round((count / totalGoals) * 100),
-            }))
-
-          setGoalCategories(sortedCategories)
-        }
+        // RK24 (rollspelet 2026-09-27): målkategorierna räknas med SAMMA regel
+        // som Rapporter och PDF:en (calculateGoalCategories). Översikten hade
+        // egna nyckelord och visade därför andra kategorier i en annan ordning
+        // ur samma mål.
+        const totalGoals = goalsData?.length ?? 0
+        setGoalCategories(
+          calculateGoalCategories(goalsData || []).map(({ category, count }) => ({
+            category,
+            count,
+            percentage: totalGoals > 0 ? Math.round((count / totalGoals) * 100) : 0,
+          }))
+        )
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -711,7 +700,7 @@ export function OverviewTab() {
         <KPICard
           title={t('consultant.overview.totalParticipants')}
           value={stats.totalParticipants}
-          subtitle={t('consultant.overview.activeCount', { count: stats.activeParticipants })}
+          subtitle={antal(stats.activeParticipants, 'aktiv', 'aktiva')}
           icon={Users}
           status="neutral"
           onClick={() => navigate('/consultant/participants')}
@@ -740,7 +729,7 @@ export function OverviewTab() {
           value={stats.averageProgress !== null ? `${stats.averageProgress}%` : '—'}
           subtitle={
             stats.averageProgress !== null
-              ? t('consultant.overview.completeCvs', { count: stats.completedCV })
+              ? antal(stats.completedCV, 'komplett', 'kompletta')
               : 'Ingen ATS-poäng ännu'
           }
           icon={FileText}
@@ -753,7 +742,7 @@ export function OverviewTab() {
         <KPICard
           title={t('consultant.overview.meetingsThisWeek')}
           value={stats.meetingsThisWeek}
-          subtitle={stats.pendingMessages > 0 ? t('consultant.overview.unreadMessages', { count: stats.pendingMessages }) : t('consultant.overview.scheduled')}
+          subtitle={stats.pendingMessages > 0 ? antal(stats.pendingMessages, 'oläst meddelande', 'olästa meddelanden') : t('consultant.overview.scheduled')}
           icon={Calendar}
           status={stats.meetingsThisWeek > 0 ? 'green' : 'neutral'}
           onClick={() => navigate('/consultant/communication')}
@@ -900,12 +889,10 @@ export function OverviewTab() {
                         {activity.description}
                       </p>
                     </div>
-                    <span className="text-xs text-stone-500 dark:text-stone-400">
-                      {new Date(activity.timestamp).toLocaleTimeString('sv-SE', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
+                    {/* RK26: dag + klockslag — listan spänner över flera dagar. */}
+                    <time dateTime={activity.timestamp} className="text-xs text-stone-500 dark:text-stone-400 whitespace-nowrap">
+                      {aktivitetstid(activity.timestamp)}
+                    </time>
                   </Link>
                 ))}
               </div>
@@ -976,7 +963,9 @@ export function OverviewTab() {
                 {goalCategories.length > 0 ? (
                   goalCategories.map((cat, index) => (
                     <div key={index} className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">{cat.category}</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-400">
+                        {cat.category} <span className="text-stone-500 dark:text-stone-400">({antal(cat.count, 'mål', 'mål')})</span>
+                      </span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-[var(--c-solid)] rounded-full transition-all"

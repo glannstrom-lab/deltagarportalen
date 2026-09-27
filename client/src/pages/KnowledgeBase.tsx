@@ -129,7 +129,7 @@ function KnowledgeBaseInner() {
         actions={
           <Link
             to="/knowledge-base"
-            className="inline-flex items-center gap-1 text-[13px] text-[var(--c-text)] hover:underline"
+            className="inline-flex items-center gap-1 text-[0.8125rem] text-[var(--c-text)] hover:underline"
           >
             ← {t('knowledgeBase.allTopics', 'Alla ämnen')}
           </Link>

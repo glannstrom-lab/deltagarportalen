@@ -63,7 +63,7 @@ export function StigPrick({ lage }: { lage: StigLage }) {
 /** Gruppetikett i skenan — gemener, inte monospace-versaler. */
 export function SkenEtikett({ text }: { text: string }) {
   return (
-    <p className="m-0 mb-1.5 px-3 text-[12px] font-semibold text-stone-500 dark:text-stone-400">
+    <p className="m-0 mb-1.5 px-3 text-[0.75rem] font-semibold text-stone-500 dark:text-stone-400">
       {text}
     </p>
   )

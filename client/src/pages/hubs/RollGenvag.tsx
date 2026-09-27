@@ -70,7 +70,7 @@ export default function RollGenvag() {
     >
       <p
         id="rollgenvag-rubrik"
-        className="m-0 text-[13px] text-violet-900 dark:text-violet-200"
+        className="m-0 text-[0.8125rem] text-violet-900 dark:text-violet-200"
       >
         {t('rollgenvag.text', 'Du är inloggad som {{roll}}. Det här är deltagarvyn.', {
           roll: rollnamn,
@@ -84,7 +84,7 @@ export default function RollGenvag() {
             <Link
               key={post.path}
               to={post.path}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-[13px] font-medium text-white no-underline transition-colors hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-violet-600 px-3 py-1.5 text-[0.8125rem] font-medium text-white no-underline transition-colors hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
             >
               <Ikon className="h-4 w-4" aria-hidden="true" />
               {t(post.labelKey)}

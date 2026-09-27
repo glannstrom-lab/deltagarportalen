@@ -113,7 +113,7 @@ export function WeeklyReflectionCard() {
         <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)] flex-shrink-0" />
         <h2
           id="weekly-reflection-heading"
-          className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--c-text)] m-0"
+          className="text-[0.75rem] font-bold uppercase tracking-[0.1em] text-[var(--c-text)] m-0"
         >
           {t('weeklyReflection.heading', 'Din vecka')}
         </h2>
@@ -129,7 +129,7 @@ export function WeeklyReflectionCard() {
             >
               <NotebookPen className="w-[18px] h-[18px]" />
             </span>
-            <p className="text-[14px] text-[var(--stone-600)] leading-relaxed m-0">
+            <p className="text-[0.875rem] text-[var(--stone-600)] leading-relaxed m-0">
               {t(
                 'weeklyReflection.empty',
                 'Här samlas en tillbakablick på din vecka när du har skrivit i dagboken eller loggat ditt mående.'
@@ -138,18 +138,18 @@ export function WeeklyReflectionCard() {
           </div>
         ) : reflection ? (
           <div data-ai-generated="true">
-            <p className="text-[15px] text-[var(--stone-900)] leading-relaxed m-0">
+            <p className="text-[0.9375rem] text-[var(--stone-900)] leading-relaxed m-0">
               {reflection.summary}
             </p>
 
             {!!reflection.noticed?.length && (
-              <ul className="mt-4 space-y-1.5 list-disc list-inside text-[14px] text-[var(--stone-700)]">
+              <ul className="mt-4 space-y-1.5 list-disc list-inside text-[0.875rem] text-[var(--stone-700)]">
                 {reflection.noticed.map((n, i) => <li key={i}>{n}</li>)}
               </ul>
             )}
 
             {reflection.gentleSuggestion && (
-              <p className="mt-4 text-[14px] text-[var(--c-text)] leading-relaxed m-0">
+              <p className="mt-4 text-[0.875rem] text-[var(--c-text)] leading-relaxed m-0">
                 {reflection.gentleSuggestion}
               </p>
             )}
@@ -158,7 +158,7 @@ export function WeeklyReflectionCard() {
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-[14px] text-[var(--stone-600)] leading-relaxed m-0">
+            <p className="text-[0.875rem] text-[var(--stone-600)] leading-relaxed m-0">
               {t(
                 'weeklyReflection.prompt',
                 'Vill du se en kort tillbakablick på veckan, utifrån det du själv har skrivit?'
@@ -187,7 +187,7 @@ export function WeeklyReflectionCard() {
         )}
 
         {error && (
-          <p role="status" className="mt-4 text-[14px] text-amber-700 dark:text-amber-300 m-0">
+          <p role="status" className="mt-4 text-[0.875rem] text-amber-700 dark:text-amber-300 m-0">
             {error}
           </p>
         )}

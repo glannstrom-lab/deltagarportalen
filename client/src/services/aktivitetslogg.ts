@@ -17,6 +17,8 @@
  * aktiviteter leverantören håller i (RR1, 2026-09-27: loggen gav "3 av 4
  * veckor uppfyllda" för en deltagare vars enda närvaro var egen jobbsökning
  * hemifrån, medan Aktivitet-fliken sa "Närvaro 0 h" för samma vecka).
+ * Av samma skäl räknas inte SFI och studier (RK28, `arVerksamhetsledd`):
+ * de är anvisade i kommunens plan men hålls av skolan, inte leverantören.
  *
  * Vad som räknas som fysiskt: `activity_type === 'workplace'` eller ett
  * ifyllt `location`. Portalen har ingen egen flagga för fysisk/digital, så
@@ -32,7 +34,7 @@
  */
 
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
-import { addDays, arAnvisad, arNarvaro, parseLocalDate, timmar, veckansMandag } from './aktivitetSchema'
+import { addDays, arNarvaro, arVerksamhetsledd, parseLocalDate, timmar, veckansMandag, type PassTyp } from './aktivitetSchema'
 
 export interface Period {
   from: string
@@ -62,7 +64,8 @@ export interface Avtalskrav {
 }
 
 type PlanFalt = Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date'>
-type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'start_time' | 'end_time' | 'attendance' | 'activity_type' | 'location'>
+// activity_type som PassTyp: loggen ska räkna rätt redan när de utökade typerna (RK28) slås på.
+type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'start_time' | 'end_time' | 'attendance' | 'location'> & { activity_type: PassTyp }
 
 
 /** Planmånad (1 = startmånaden) för ett datum. Datum före start ger 1. */
@@ -82,7 +85,7 @@ export function kravTimmarForManad(manad: number): number | null {
   return null
 }
 
-export function arFysiskt(s: Pick<ActivitySession, 'activity_type' | 'location'>): boolean {
+export function arFysiskt(s: Pick<ActivitySession, 'location'> & { activity_type: PassTyp }): boolean {
   return s.activity_type === 'workplace' || (s.location !== null && s.location.trim() !== '')
 }
 
@@ -112,7 +115,7 @@ export function avtalskravPerDeltagare(
   const start = period.from > plan.start_date ? period.from : plan.start_date
   const slut = plan.end_date !== null && plan.end_date < period.to ? plan.end_date : period.to
 
-  const egna = sessions.filter((s) => s.plan_id === plan.id && arAnvisad(s) && arNarvaro(s.attendance))
+  const egna = sessions.filter((s) => s.plan_id === plan.id && arVerksamhetsledd(s) && arNarvaro(s.attendance))
   const veckor: Veckobedomning[] = []
 
   if (start <= slut) {
@@ -245,7 +248,7 @@ export function periodiskaFalt(
     })()
 
   const avvikelser = sessions
-    .filter((s) => s.plan_id === krav.planId && arAnvisad(s) && s.date >= period.from && s.date <= period.to && s.attendance !== null && s.attendance in AVVIKELSE_TEXT)
+    .filter((s) => s.plan_id === krav.planId && arVerksamhetsledd(s) && s.date >= period.from && s.date <= period.to && s.attendance !== null && s.attendance in AVVIKELSE_TEXT)
     .sort((a, b) => a.date.localeCompare(b.date))
     .map((s) => {
       const utfall = s.attendance === 'sick_certified'

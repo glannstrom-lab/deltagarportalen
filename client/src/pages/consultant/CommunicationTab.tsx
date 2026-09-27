@@ -1018,14 +1018,22 @@ export function CommunicationTab() {
             ) : (
               <Card className="p-12 text-center flex flex-col items-center justify-center h-[600px]">
                 <MessageSquare className="w-16 h-16 text-stone-300 dark:text-stone-500 mb-4" />
+                {/* RR18 (rollspelet 2026-09-27): med en tom lista sa panelen "Välj en
+                    konversation … till vänster" — där det inte fanns någon — och
+                    "Snabbmeddelanden" stod som en lös etikett utan förklaring. Nu
+                    säger panelen vad som går att göra, och mallarna förklarar sig. */}
                 <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
-                  {t('consultant.communication.selectConversation', 'Välj en konversation')}
+                  {conversations.length === 0
+                    ? 'Skriv ditt första meddelande'
+                    : t('consultant.communication.selectConversation', 'Välj en konversation')}
                 </h3>
                 <p className="text-sm text-stone-500 dark:text-stone-400 max-w-sm mb-6">
-                  {t(
-                    'consultant.communication.selectConversationDesc',
-                    'Klicka på en konversation till vänster eller starta ett nytt meddelande.'
-                  )}
+                  {conversations.length === 0
+                    ? 'Här samlas dina konversationer med deltagarna. Börja från noll med "Nytt meddelande", eller från en mall nedan.'
+                    : t(
+                        'consultant.communication.selectConversationDesc',
+                        'Klicka på en konversation till vänster eller starta ett nytt meddelande.'
+                      )}
                 </p>
 
                 {/* Quick templates — fungerar nu på riktigt.
@@ -1035,11 +1043,14 @@ export function CommunicationTab() {
                     befintliga, tidigare oanvända nyckeln `quickMessages`
                     ("Snabbmeddelanden") i stället för en ny — ingen
                     JSON-ändring behövdes. */}
-                <p
+                <h4
                   id="communication-quick-templates-heading"
-                  className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2"
+                  className="text-sm font-semibold text-stone-700 dark:text-stone-300"
                 >
-                  {t('consultant.communication.quickMessages')}
+                  Börja från en mall
+                </h4>
+                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 mb-3 max-w-sm">
+                  Mallen öppnar ett nytt meddelande med texten ifylld. Du väljer mottagare och kan ändra allt innan det skickas.
                 </p>
                 <div
                   role="group"

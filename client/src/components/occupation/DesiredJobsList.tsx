@@ -117,14 +117,14 @@ export function DesiredJobsList({
                 </span>
                 {job.conceptId ? (
                   <span
-                    className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-400"
+                    className="inline-flex items-center gap-0.5 text-[0.625rem] font-medium text-emerald-700 dark:text-emerald-400"
                     title={t('occupation.desiredJobsList.linkedToAf')}
                   >
                     <CheckCircle2 size={11} />
                   </span>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-400"
+                    className="inline-flex items-center gap-0.5 text-[0.625rem] font-medium text-amber-700 dark:text-amber-400"
                     title={t('occupation.desiredJobsList.freeTextNotLinked')}
                   >
                     <AlertCircle size={11} />
@@ -225,7 +225,10 @@ export function DesiredJobsList({
               )}
             >
               <Plus size={14} />
-              {t('occupation.desiredJobsList.add', { count: ordered.length, max: maxJobs })}
+              {/* RD16: "(0/10)" på en tom lista läser som ett resultat — talet visas först när något finns */}
+              {ordered.length === 0
+                ? t('occupation.desiredJobsList.addForsta', 'Lägg till yrke')
+                : t('occupation.desiredJobsList.add', { count: ordered.length, max: maxJobs })}
             </button>
           )}
         </div>

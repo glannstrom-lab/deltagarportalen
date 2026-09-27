@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Settings,
   Clock,
-  Globe,
   Shield,
   Palette,
   Calendar,
@@ -66,7 +65,7 @@ function SettingRow({
 }
 
 export function SettingsTab() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   // KS7: en misslyckad hämtning fick tidigare bara ett console.error — sidan
@@ -139,11 +138,6 @@ export function SettingsTab() {
     setPreferences(prev => ({ ...prev, [key]: value }))
     setHasChanges(true)
     setSaved(false)
-
-    // Apply language change immediately
-    if (key === 'language' && typeof value === 'string') {
-      i18n.changeLanguage(value)
-    }
   }
 
   const handleSave = async () => {
@@ -391,25 +385,11 @@ export function SettingsTab() {
             </select>
           </SettingRow>
 
-          <SettingRow
-            icon={Globe}
-            label={t('consultant.settings.language')}
-            description={t('consultant.settings.chooseLanguage')}
-          >
-            <select
-              value={preferences.language}
-              onChange={e => updatePreference('language', e.target.value)}
-              className={cn(
-                'px-4 py-2 rounded-xl',
-                'bg-stone-100 dark:bg-stone-800',
-                'border-0',
-                'text-stone-900 dark:text-stone-100'
-              )}
-            >
-              <option value="sv">{t('consultant.settings.swedish')}</option>
-              <option value="en">{t('consultant.settings.english')}</option>
-            </select>
-          </SettingRow>
+          {/* RK29 (rollspelet 2026-09-27): här fanns ett språkval Svenska/English.
+              Konsulentvyn översätts inte (DESIGN.md §2) — valet bytte bara
+              portalens menyer runt en svensk vy, och deltagarens språk styrs
+              av deltagaren själv. Valet är borttaget; `language` ligger kvar i
+              sparade inställningar men läses inte. */}
 
           <SettingRow
             icon={Clock}

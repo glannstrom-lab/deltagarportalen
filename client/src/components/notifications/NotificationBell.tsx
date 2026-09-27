@@ -160,7 +160,7 @@ function NotificationItem({
             {t('notificationBell.paminnelse.karta', 'Visa {{plats}} på karta', { plats: notification.data.location })}
           </a>
         )}
-        <p className="text-[10px] text-stone-600 dark:text-stone-500 mt-1">
+        <p className="text-[0.625rem] text-stone-600 dark:text-stone-500 mt-1">
           {timeAgo}
         </p>
       </div>
@@ -222,7 +222,7 @@ function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
       {count > 0 && (
         <span
           className={cn(
-            'ml-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full',
+            'ml-1.5 px-1.5 py-0.5 text-[0.625rem] font-bold rounded-full',
             active
               ? 'bg-[var(--c-accent)]/60 dark:bg-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-text)]'
               : 'bg-stone-200 dark:bg-stone-600 text-stone-600 dark:text-stone-300'
@@ -339,7 +339,7 @@ export function NotificationBell({ className }: NotificationBellProps) {
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           {/* emerald-700, inte -500: vit 10 px text på emerald-500 = 2,47:1 (axe, 2026-09-24).
               Syntes först när testkontot hade olästa notiser. */}
-          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-700 items-center justify-center text-[10px] font-bold text-white shadow-sm">
+          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-700 items-center justify-center text-[0.625rem] font-bold text-white shadow-sm">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         </span>

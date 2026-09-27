@@ -257,10 +257,11 @@ export function ParticipantJournal({
           )}
         </div>
 
-        {/* Synlighet — sanning, inte antagande: deltagaren kan läsa ALLT här. */}
+        {/* Synlighet — sanning, inte antagande: deltagaren kan läsa ALLT här.
+            RR15: "att hon läser" stod också på män — könsneutralt nu. */}
         <div className="mt-4 flex items-start gap-2 text-xs text-stone-500 dark:text-stone-400">
           <Eye className="w-4 h-4 flex-shrink-0 mt-0.5" aria-hidden="true" />
-          <p>Deltagaren kan läsa alla anteckningar här, inklusive de märkta &quot;Oro&quot;. Skriv inget du inte kan stå för att hon läser.</p>
+          <p>Deltagaren kan läsa alla anteckningar här, inklusive de märkta &quot;Oro&quot;. Skriv inget du inte kan stå för att deltagaren läser.</p>
         </div>
       </div>
 

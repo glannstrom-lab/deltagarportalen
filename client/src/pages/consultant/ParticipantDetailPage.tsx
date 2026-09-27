@@ -28,6 +28,7 @@ import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { orgApi } from '@/services/orgApi'
@@ -884,6 +885,8 @@ export function ParticipantDetailPage() {
   // RR6: pågående eller kommande placering — i rubriken, bredvid statusen.
   const placeringsrad = placeringarLage.status === 'klart' ? placeringRubrik(placeringarLage.placeringar, formatLocalDate(new Date())) : null
 
+  const aktivaMal = goals.filter(g => g.status !== 'COMPLETED')
+
   const getInitials = () => {
     return `${participant.first_name?.[0] || ''}${participant.last_name?.[0] || ''}`.toUpperCase() ||
       participant.email[0].toUpperCase()
@@ -1064,12 +1067,25 @@ export function ParticipantDetailPage() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.participantDetail.activeGoals')}
               </h3>
-              <Button size="sm" variant="ghost" onClick={() => setActiveTab('goals')}>
-                {t('common.seeAll')}
-              </Button>
+              {aktivaMal.length > 0 && (
+                <Button size="sm" variant="ghost" onClick={() => setActiveTab('goals')}>
+                  {t('common.seeAll')}
+                </Button>
+              )}
             </div>
+            {/* RR20 (rollspelet 2026-09-27): utan aktiva mål stod rubriken och
+                "Se alla" över ett tomt kort. Nu ett tomläge med en invit. */}
+            {aktivaMal.length === 0 && (
+              <EmptyState
+                compact
+                icon={Target}
+                title={`${participant.first_name || 'Deltagaren'} har inga aktiva mål`}
+                description="Ett mål ni sätter tillsammans ger samtalen en riktning."
+                action={{ label: 'Sätt ett mål', onClick: () => setShowGoalDialog(true) }}
+              />
+            )}
             <div className="space-y-3">
-              {goals.filter(g => g.status !== 'COMPLETED').slice(0, 2).map(goal => (
+              {aktivaMal.slice(0, 2).map(goal => (
                 <GoalCard
                   key={goal.id}
                   goal={goal}

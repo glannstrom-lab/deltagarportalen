@@ -160,12 +160,12 @@ export function PageLayout({
           {visaSkena && (title || actions || (stats && stats.length > 0)) && (
             <div className="lg:hidden mb-3">
               {title && (
-                <h1 className="text-[20px] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
+                <h1 className="text-[1.25rem] font-semibold tracking-tight text-stone-900 dark:text-stone-100 m-0">
                   {title}
                 </h1>
               )}
               {title && (subtitle || description) && (
-                <p className="mt-0.5 text-[13px] text-stone-600 dark:text-stone-400 m-0">
+                <p className="mt-0.5 text-[0.8125rem] text-stone-600 dark:text-stone-400 m-0">
                   {subtitle || description}
                 </p>
               )}

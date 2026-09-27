@@ -32,23 +32,49 @@ describe('FragaOmPasset (F8)', () => {
     render(<FragaOmPasset session={session} datumText="7 oktober" onSent={onSent} />)
     await userEvent.click(screen.getByRole('button', { name: /fråga om passet/i }))
     const ruta = screen.getByRole('textbox', { name: /din fråga/i }) as HTMLTextAreaElement
-    expect(ruta.value).toContain('Jobbsökarverkstad')
-    expect(ruta.value).toContain('7 oktober')
-    expect(ruta.value).toContain('09:00')
+    // RD14: passet står bredvid rutan, inte som text i den som man måste sudda runt
+    expect(ruta.value).toBe('')
+    expect(screen.getByText(/Jobbsökarverkstad.*7 oktober.*09:00/)).toBeInTheDocument()
     await userEvent.type(ruta, 'Ska jag ta med datorn?')
     await userEvent.click(screen.getByRole('button', { name: /^skicka$/i }))
     await waitFor(() => expect(skicka).toHaveBeenCalledTimes(1))
-    expect(String(skicka.mock.calls[0][0])).toContain('Ska jag ta med datorn?')
+    const skickat = String(skicka.mock.calls[0][0])
+    expect(skickat).toContain('Ska jag ta med datorn?')
+    // Konsulenten får ändå veta vilket pass frågan gäller
+    expect(skickat).toContain('Jobbsökarverkstad')
+    expect(skickat).toContain('7 oktober')
+    expect(skickat).toContain('09:00')
     expect(await screen.findByRole('status')).toHaveTextContent('Skickat till Kim Konsulent')
     expect(onSent).toHaveBeenCalledWith('Kim Konsulent')
   })
 
-  it('skickar inte en tom fråga — bara inledningen räcker inte', async () => {
+  it('skickar inte en tom fråga', async () => {
     render(<FragaOmPasset session={session} datumText="7 oktober" />)
     await userEvent.click(screen.getByRole('button', { name: /fråga om passet/i }))
+    await userEvent.type(screen.getByRole('textbox'), '   ')
     await userEvent.click(screen.getByRole('button', { name: /^skicka$/i }))
     expect(await screen.findByRole('alert')).toHaveTextContent(/skriv din fråga/i)
+    expect(screen.getByRole('alert')).not.toHaveTextContent(/inledning/i)
     expect(skicka).not.toHaveBeenCalled()
+  })
+
+  /*
+   * RD14 (rollspelet 2026-09-27): rutan var förifylld med en inledning, och
+   * valideringen jämförde längd. Den som suddade inledningen och skrev en kort
+   * fråga fick "Skriv din fråga efter inledningen". En kort fråga är en fråga.
+   * Mutation: jämför längden mot inledningen igen → faller.
+   */
+  it('RD14: en kort fråga går att skicka', async () => {
+    skicka.mockResolvedValue({ id: 'm1', content: 'x', created_at: '', receiver_id: 'k1' })
+    render(<FragaOmPasset session={session} datumText="7 oktober" />)
+    await userEvent.click(screen.getByRole('button', { name: /fråga om passet/i }))
+    const ruta = screen.getByRole('textbox')
+    await userEvent.clear(ruta)
+    await userEvent.type(ruta, 'Tid?')
+    await userEvent.click(screen.getByRole('button', { name: /^skicka$/i }))
+    await waitFor(() => expect(skicka).toHaveBeenCalledTimes(1))
+    expect(String(skicka.mock.calls[0][0])).toMatch(/Tid\?$/)
+    expect(screen.queryByRole('alert')).toBeNull()
   })
 
   it('visar ett fel som pekar på Min konsulent när sändningen nekas', async () => {

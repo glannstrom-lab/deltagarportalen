@@ -802,7 +802,7 @@ export function MatchesTab() {
         Och "Totalt" var inget totaltal: varje källa klipper vid `slice(0, 50)`,
         så siffran är ett tak. Meningen säger därför "vi visar", inte "vi hittade".
       */}
-      <p className="m-0 text-[13.5px] text-stone-700 dark:text-stone-300">
+      <p className="m-0 text-[0.84375rem] text-stone-700 dark:text-stone-300">
         {stats.high > 0
           ? t('jobs.matches.stats.sentence', {
               defaultValue: 'Vi visar {{total}} jobb här. {{high}} av dem ser ut som starka matchningar.',

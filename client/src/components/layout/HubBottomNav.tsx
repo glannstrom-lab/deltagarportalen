@@ -93,7 +93,7 @@ export function HubBottomNav() {
                   className={cn(
                     'flex flex-col items-center justify-center gap-0.5',
                     'min-h-[44px] min-w-[44px] py-2 px-1',
-                    'text-[10px] font-medium transition-colors',
+                    'text-[0.625rem] font-medium transition-colors',
                     isActive
                       ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold'
                       : 'text-stone-500 dark:text-stone-400 hover:text-[var(--c-text)]'
@@ -127,7 +127,7 @@ export function HubBottomNav() {
                 className={cn(
                   'flex flex-col items-center justify-center gap-0.5',
                   'min-h-[44px] min-w-[44px] py-2 px-1',
-                  'text-[10px] font-medium',
+                  'text-[0.625rem] font-medium',
                   'transition-colors',
                   isActive
                     ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold'

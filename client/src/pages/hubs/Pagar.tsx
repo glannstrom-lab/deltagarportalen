@@ -147,7 +147,7 @@ export default function Pagar({
     <section aria-labelledby="pagar-rubrik" data-testid="pagar">
       <h2
         id="pagar-rubrik"
-        className="m-0 mb-2.5 flex items-center gap-2.5 text-[15px] font-semibold text-stone-600 dark:text-stone-400"
+        className="m-0 mb-2.5 flex items-center gap-2.5 text-[0.9375rem] font-semibold text-stone-600 dark:text-stone-400"
       >
         {/* Stiltest 2026-09-10: sneakers = "igång". Dekorativ. */}
         <img src={bilder.sneakers} alt="" aria-hidden="true" loading="lazy" className="h-9 w-9 object-contain" />
@@ -161,22 +161,22 @@ export default function Pagar({
             data-domain={k.domain}
             className="flex min-w-0 flex-col gap-1.5 rounded-xl border border-stone-200 dark:border-stone-700 border-l-[3px] border-l-[var(--c-solid)] bg-white dark:bg-stone-900 px-4 py-4 no-underline hover:border-stone-300 dark:hover:border-stone-600 hover:border-l-[var(--c-solid)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
           >
-            <span className="text-[15px] font-semibold text-stone-900 dark:text-stone-100">{k.rubrik}</span>
+            <span className="text-[0.9375rem] font-semibold text-stone-900 dark:text-stone-100">{k.rubrik}</span>
             <span className="flex items-baseline gap-2 min-w-0">
               <span
                 className={
                   /^\d+$/.test(k.varde)
-                    ? 'text-[30px] font-semibold leading-none tracking-tight tabular-nums text-stone-900 dark:text-stone-100'
-                    : 'text-[20px] font-semibold leading-tight tracking-tight text-stone-900 dark:text-stone-100 truncate'
+                    ? 'text-[1.875rem] font-semibold leading-none tracking-tight tabular-nums text-stone-900 dark:text-stone-100'
+                    : 'text-[1.25rem] font-semibold leading-tight tracking-tight text-stone-900 dark:text-stone-100 truncate'
                 }
               >
                 {k.varde}
               </span>
               {k.enhet && (
-                <span className="text-[15px] font-medium text-stone-500 dark:text-stone-400">{k.enhet}</span>
+                <span className="text-[0.9375rem] font-medium text-stone-500 dark:text-stone-400">{k.enhet}</span>
               )}
             </span>
-            {k.rad && <span className="text-[14px] text-stone-600 dark:text-stone-300">{k.rad}</span>}
+            {k.rad && <span className="text-[0.875rem] text-stone-600 dark:text-stone-300">{k.rad}</span>}
           </Link>
         ))}
       </div>

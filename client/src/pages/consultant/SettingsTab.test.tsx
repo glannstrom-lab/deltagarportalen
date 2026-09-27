@@ -21,7 +21,7 @@
  * (en rad i `consultant_participants`) kommer med, och att "Oro" kräver ett
  * aktivt val.
  */
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
@@ -120,6 +120,19 @@ describe('SettingsTab — PG25: notisval utan leveransväg visas inte', () => {
     await screen.findByText('Inställningar', { exact: false }).catch(() => null)
     expect(screen.queryByText(/de här aviseringarna skickas inte ännu/i)).not.toBeInTheDocument()
     expect(screen.queryByText(/Notiser/)).not.toBeInTheDocument()
+  })
+})
+
+describe('SettingsTab — RK29: inget språkval i en vy som inte översätts', () => {
+  // Rollspelet 2026-09-27: "Svenska/English" fanns i konsulentinställningarna
+  // fast konsulentvyn är svensk med flit (DESIGN.md §2). Mutation: lägg
+  // tillbaka SettingRow med språkvalet → faller.
+  it('visar inget språkval och inga English-alternativ', async () => {
+    renderTab()
+    await screen.findByText('Standardvy', { exact: false }).catch(() => null)
+    await screen.findAllByRole('combobox')
+    expect(screen.queryByRole('option', { name: 'English' })).not.toBeInTheDocument()
+    expect(screen.queryByText(/^Språk$/)).not.toBeInTheDocument()
   })
 })
 
@@ -241,47 +254,5 @@ describe('SettingsTab — PG-skav 9 (persona-genomgången 2026-09-12): tidszonen
     const select = within(settingsRowFor('Tidszon')).getByRole('combobox')
     const optioner = within(select).getAllByRole('option').map(o => o.textContent)
     expect(optioner).toEqual(['Stockholm (CET)'])
-  })
-})
-
-describe('SettingsTab — PG-skav 10 (persona-genomgången 2026-09-12): språkvalet har verklig effekt', () => {
-  // Premissen i persona-fyndet var att språkvalet kanske inte gör något,
-  // eftersom konsulentvyn medvetet inte är översatt (DESIGN.md §2). Det
-  // stämmer INTE för den här sidan: `consultant.settings.*` är fullt
-  // översatt i både sv.json och en.json, och `updatePreference('language', …)`
-  // anropar `i18n.changeLanguage`, som är den DELADE, globala i18n-instansen
-  // (client/src/i18n/config.ts) — samma instans som resten av appen. Valet
-  // ska alltså INTE tas bort. Se rapporten för den kvarstående inkonsekvensen
-  // (nyare konsulentsträngar är hårdkodad svenska och byter inte språk).
-  beforeEach(async () => {
-    // Förladda engelska-bundlen synkront innan rendering — annars laddar
-    // config.ts:s ensureLanguageLoaded den asynkront via en dynamisk import
-    // och kör changeLanguage() en andra gång EFTER testets sista assert,
-    // vilket ger ett "not wrapped in act" i nästa tests stderr.
-    if (!i18n.hasResourceBundle('en', 'translation')) {
-      const en = await import('@/i18n/locales/en.json')
-      i18n.addResourceBundle('en', 'translation', en.default, true, true)
-    }
-  })
-
-  afterEach(async () => {
-    await i18n.changeLanguage('sv')
-  })
-
-  it('byter sidans etiketter till engelska när "English" väljs i språkvalet', async () => {
-    renderTab()
-    await screen.findByText('Tidszon')
-
-    const sprakval = within(settingsRowFor('Språk')).getByRole('combobox')
-
-    expect(screen.getByText('Exportera all data')).toBeInTheDocument()
-
-    fireEvent.change(sprakval, { target: { value: 'en' } })
-
-    await waitFor(() => {
-      expect(screen.getByText('Export all data')).toBeInTheDocument()
-    })
-    // Etiketten för fältet själv byter också språk.
-    expect(screen.getByText('Language')).toBeInTheDocument()
   })
 })

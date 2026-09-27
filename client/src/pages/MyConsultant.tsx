@@ -392,7 +392,7 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
 }
 
 // Messages Section
-function MessagesSection({
+export function MessagesSection({
   messages,
   consultant,
   onSendMessage,
@@ -408,6 +408,13 @@ function MessagesSection({
   const [newMessage, setNewMessage] = useState('')
   const [sending, setSending] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  // RD23 (rollspelet 2026-09-27): "Tryck Enter för att skicka" på mobil, där
+  // Enter på tangentbordet betyder ny rad. På pekskärm skickar bara knappen.
+  const [pekskarm] = useState(() =>
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(pointer: coarse)').matches
+      : false,
+  )
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -425,6 +432,7 @@ function MessagesSection({
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (pekskarm) return
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSend()
@@ -536,16 +544,18 @@ function MessagesSection({
             <Send className="w-5 h-5" />
           </Button>
         </div>
-        <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-          {t('myConsultant.messages.pressEnterToSend')}
-        </p>
+        {!pekskarm && (
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
+            {t('myConsultant.messages.pressEnterToSend')}
+          </p>
+        )}
       </div>
     </Card>
   )
 }
 
 // Goals Section
-function GoalsSection({ goals }: { goals: Goal[] }) {
+export function GoalsSection({ goals }: { goals: Goal[] }) {
   const { t, i18n } = useTranslation()
 
   if (goals.length === 0) {
@@ -575,17 +585,14 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
   return (
     <Card>
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
+        {/* RD15: "0 av 1 mål avklarade" stod i rubrikposition — ett prestationstal
+            (DESIGN.md §1). Varje mål har redan sin egen status nedan. */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             <h2 className="font-semibold text-stone-900 dark:text-stone-100">
               {t('myConsultant.goals.agreedGoals')}
             </h2>
-          </div>
-          <div role="status" aria-live="polite">
-            <span className="text-sm text-stone-500 dark:text-stone-400">
-              {t('myConsultant.goals.goalsCompleted', { completed: completedCount, total: goals.length })}
-            </span>
           </div>
         </div>
       </div>
@@ -598,13 +605,14 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
           return (
             <div
               key={goal.id}
-              className="flex items-center gap-3 p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl"
+              className="flex flex-wrap items-center gap-3 p-3 bg-stone-50 dark:bg-stone-800/50 rounded-xl"
             >
               <div className={cn('p-2 rounded-lg', config.color)}>
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                {/* RD15: "Tre ansökninga…" — målet är det deltagaren ska kunna läsa, hela */}
+                <p className="font-medium text-stone-900 dark:text-stone-100 break-words">
                   {goal.title}
                 </p>
                 {goal.deadline && (

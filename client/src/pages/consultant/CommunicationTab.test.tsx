@@ -173,13 +173,27 @@ describe('CommunicationTab — PG-skav 8 (persona-genomgången 2026-09-12): mall
     renderTab()
     await screen.findByText('Inga meddelanden')
 
-    const rubrik = screen.getByText('Snabbmeddelanden')
-    const grupp = screen.getByRole('group', { name: 'Snabbmeddelanden' })
+    const rubrik = screen.getByRole('heading', { name: 'Börja från en mall' })
+    const grupp = screen.getByRole('group', { name: 'Börja från en mall' })
     expect(grupp).toHaveAttribute('aria-labelledby', rubrik.id)
 
     expect(screen.getByRole('button', { name: /Påminnelse om möte/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Check-in meddelande/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Grattis till framsteg/i })).toBeInTheDocument()
+  })
+})
+
+// RR18 (rollspelet 2026-09-27): med en tom lista stod "Välj en konversation …
+// till vänster" och en lös etikett "Snabbmeddelanden". Mutation: återställ
+// rubriken/etiketten → faller.
+describe('CommunicationTab — RR18: tom inkorg säger vad som går att göra', () => {
+  it('ber inte om att välja en konversation som inte finns, och mallarna förklarar sig', async () => {
+    renderTab()
+    await screen.findByText('Inga meddelanden')
+    expect(screen.queryByText('Välj en konversation')).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Skriv ditt första meddelande' })).toBeInTheDocument()
+    expect(screen.queryByText('Snabbmeddelanden')).not.toBeInTheDocument()
+    expect(screen.getByText(/Mallen öppnar ett nytt meddelande med texten ifylld/)).toBeInTheDocument()
   })
 })
 

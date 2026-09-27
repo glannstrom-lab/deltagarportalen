@@ -44,7 +44,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { navHubs, getActiveHub, senasteBesok } from './navigation'
-import { arKonsulentvy } from './konsulentNav'
+import { aktivKonsulentFlik, arKonsulentvy, konsulentBottenNav } from './konsulentNav'
 import { HUB_ICON_SRC, TOOL_ICON_SRC } from './hubIcons'
 import { cn } from '@/lib/utils'
 import { avkodaSokvag } from '@/lib/sokvag'
@@ -162,7 +162,7 @@ export function SubNav() {
       className="flex items-center gap-1 px-3 sm:px-4 bg-stone-100 dark:bg-stone-800/60 border-b border-stone-200 dark:border-stone-700 overflow-x-auto scrollbar-none"
     >
       {oversikt && (
-        <span className="shrink-0 pr-2 text-[12px] font-semibold text-stone-500 dark:text-stone-400">
+        <span className="shrink-0 pr-2 text-[0.75rem] font-semibold text-stone-500 dark:text-stone-400">
           {oversikt.etikett}
         </span>
       )}
@@ -178,7 +178,7 @@ export function SubNav() {
             data-domain={p.domain}
             aria-current={aktiv ? 'page' : undefined}
             className={cn(
-              'group shrink-0 flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-md text-[13px] leading-5 whitespace-nowrap',
+              'group shrink-0 flex items-center gap-1.5 px-2.5 py-1 my-1 rounded-md text-[0.8125rem] leading-5 whitespace-nowrap',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
                 ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold'
@@ -219,6 +219,47 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
   // för det fristående läget och för testerna.
   const inline = variant === 'inline'
 
+  // RK20 (rollspelet 2026-09-27): på dator visade raden deltagarens hubbar
+  // (Söka jobb, Karriär, CV, Intresseguide) även under /consultant. Samma
+  // rättelse som RK17 gjorde för mobilen: konsulentvyns egna flikar i stället.
+  // Svenska literaler — konsulentvyn översätts inte.
+  if (arKonsulentvy(location.pathname)) {
+    const aktivFlik = aktivKonsulentFlik(location.pathname)
+    return (
+      <nav
+        aria-label="Konsulentvyns navigering"
+        data-skip-target="main-navigation"
+        data-nav-tat=""
+        className={cn(
+          'flex items-center gap-1 overflow-x-auto',
+          inline ? '' : 'px-3 sm:px-4 border-b border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900'
+        )}
+      >
+        {konsulentBottenNav.map((flik) => {
+          const aktiv = aktivFlik === flik.id
+          const Ikon = flik.icon
+          return (
+            <Link
+              key={flik.id}
+              to={flik.path}
+              aria-current={aktiv ? 'page' : undefined}
+              className={cn(
+                'shrink-0 whitespace-nowrap flex items-center gap-1.5 px-2.5 py-1 text-[0.8438rem] leading-5 rounded-lg',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
+                aktiv
+                  ? 'bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold'
+                  : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800/60'
+              )}
+            >
+              {Ikon && <Ikon className="w-4 h-4 shrink-0" aria-hidden="true" />}
+              {flik.label}
+            </Link>
+          )
+        })}
+      </nav>
+    )
+  }
+
   return (
     <nav
       aria-label={t('nav.topnav.categories', 'Huvudkategorier')}
@@ -247,8 +288,8 @@ export function HubNav({ variant = 'bar' }: { variant?: 'bar' | 'inline' } = {})
             className={cn(
               'group shrink-0 whitespace-nowrap flex items-center gap-1.5',
               inline
-                ? 'px-2.5 py-1 text-[13.5px] leading-5 rounded-lg'
-                : 'px-3 py-2.5 text-[14px] border-b-2 -mb-px',
+                ? 'px-2.5 py-1 text-[0.8438rem] leading-5 rounded-lg'
+                : 'px-3 py-2.5 text-[0.875rem] border-b-2 -mb-px',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               aktiv
                 ? inline

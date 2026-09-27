@@ -107,16 +107,16 @@ export function RadgivarTips({ pathname, index = 0 }: { pathname: string; index?
     >
       <div className="flex items-center gap-2 mb-1.5">
         <Avatar id={coachId} />
-        <span className="text-[12.5px] font-semibold text-stone-900 dark:text-stone-100">
+        <span className="text-[0.78125rem] font-semibold text-stone-900 dark:text-stone-100">
           {coach.name}, {coach.role.toLowerCase()}
         </span>
         {tips.length > 1 && (
-          <span className="ml-auto text-[11px] text-stone-500 dark:text-stone-400">
+          <span className="ml-auto text-[0.6875rem] text-stone-500 dark:text-stone-400">
             {t('radgivare.moreTips', { defaultValue: '{{count}} råd till', count: tips.length - 1 })}
           </span>
         )}
       </div>
-      <p className="m-0 text-[12.5px] leading-relaxed text-stone-700 dark:text-stone-300 max-w-[58ch]">
+      <p className="m-0 text-[0.78125rem] leading-relaxed text-stone-700 dark:text-stone-300 max-w-[58ch]">
         {rad}
       </p>
     </aside>
@@ -220,10 +220,10 @@ export default function RadgivarPanel({
             >
               <Avatar id={id} stor />
               <span className="min-w-0 flex-1">
-                <span className="block text-[14.5px] font-semibold text-stone-900 dark:text-stone-100">
+                <span className="block text-[0.90625rem] font-semibold text-stone-900 dark:text-stone-100">
                   {coach.name}
                 </span>
-                <span className="block text-[13px] text-stone-500 dark:text-stone-400 truncate">
+                <span className="block text-[0.8125rem] text-stone-500 dark:text-stone-400 truncate">
                   {coach.role}
                 </span>
               </span>
@@ -241,7 +241,7 @@ export default function RadgivarPanel({
             {utfalld && (
               <div className="px-3.5 pb-3.5 space-y-3">
                 {forstaTips && (
-                  <p className="m-0 text-[14.5px] leading-relaxed text-stone-800 dark:text-stone-200">
+                  <p className="m-0 text-[0.90625rem] leading-relaxed text-stone-800 dark:text-stone-200">
                     {forstaTips}
                   </p>
                 )}
@@ -252,7 +252,7 @@ export default function RadgivarPanel({
                     onClick={() => setMerOppet(merUtfallt ? null : id)}
                     aria-expanded={merUtfallt}
                     aria-controls={`radgivare-mer-${id}`}
-                    className="text-[13px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
+                    className="text-[0.8125rem] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded"
                   >
                     {merUtfallt
                       ? t('radgivare.showLess', 'Visa färre')
@@ -267,7 +267,7 @@ export default function RadgivarPanel({
                         {flerTips.map((tip, i) => (
                           <li
                             key={i}
-                            className="text-[14px] leading-relaxed text-stone-700 dark:text-stone-300"
+                            className="text-[0.875rem] leading-relaxed text-stone-700 dark:text-stone-300"
                           >
                             {tip}
                           </li>
@@ -277,15 +277,15 @@ export default function RadgivarPanel({
 
                     {harFaq && (
                       <div className="pt-2.5 border-t border-stone-200 dark:border-stone-700">
-                        <p className="m-0 mb-1.5 text-[12.5px] font-semibold text-stone-500 dark:text-stone-400">
+                        <p className="m-0 mb-1.5 text-[0.78125rem] font-semibold text-stone-500 dark:text-stone-400">
                           {t('radgivare.faq', 'Vanliga frågor')}
                         </p>
                         {c.faqs!.map((f, i) => (
                           <details key={i} className="group">
-                            <summary className="cursor-pointer list-none text-[14px] font-medium text-stone-800 dark:text-stone-200 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded">
+                            <summary className="cursor-pointer list-none text-[0.875rem] font-medium text-stone-800 dark:text-stone-200 py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] rounded">
                               {f.question}
                             </summary>
-                            <p className="mt-1 mb-2 text-[13.5px] leading-relaxed text-stone-600 dark:text-stone-400">
+                            <p className="mt-1 mb-2 text-[0.84375rem] leading-relaxed text-stone-600 dark:text-stone-400">
                               {f.answer}
                             </p>
                           </details>
@@ -301,7 +301,7 @@ export default function RadgivarPanel({
                       <Link
                         key={l.href}
                         to={l.href}
-                        className="text-[13.5px] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
+                        className="text-[0.84375rem] font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] no-underline hover:underline underline-offset-2"
                       >
                         {l.label}
                       </Link>

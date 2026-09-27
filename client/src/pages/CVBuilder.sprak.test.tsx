@@ -193,4 +193,18 @@ describe('CV-byggaren följer språket (RD5/RD6)', () => {
     expect(screen.getByText('Stor text och mycket luft')).toBeInTheDocument()
     expect(screen.queryByText(/Schweiziskt|typografi/)).toBeNull()
   })
+
+  /*
+   * RD16 (rollspelet 2026-09-27): "Steg 1 av 6 · ~2 min kvar · 83% klart" i
+   * stegraden överst — prestationstal i hjälteposition (DESIGN.md §1).
+   * Steget står kvar; procenten och tidspressen är borta.
+   * Mutation: rendera percentDone igen → faller.
+   */
+  it('RD16: stegraden säger vilket steg, inte hur många procent eller minuter', async () => {
+    mockGetCV.mockResolvedValue(ETT_CV)
+    renderBuilder()
+    expect(await screen.findByText('Steg 1 av 6')).toBeInTheDocument()
+    expect(screen.queryByText(/% klart/)).toBeNull()
+    expect(screen.queryByText(/~\d+ min kvar/)).toBeNull()
+  })
 })

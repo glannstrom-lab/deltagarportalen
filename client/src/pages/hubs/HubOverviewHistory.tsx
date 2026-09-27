@@ -221,7 +221,7 @@ function HubOverviewHistoryInner() {
       actions={
         <Link
           to="/oversikt"
-          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-[13px] text-[var(--stone-600)] hover:bg-[var(--stone-100)] no-underline"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-[0.8125rem] text-[var(--stone-600)] hover:bg-[var(--stone-100)] no-underline"
         >
           <ArrowLeft size={14} />
           {t('hubOverviewHistory.backToOverview', 'Tillbaka till Översikten')}
@@ -231,10 +231,10 @@ function HubOverviewHistoryInner() {
       <div className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-[14px] py-2">
         {items.length === 0 ? (
           <div className="px-5 py-8 text-center">
-            <p className="text-[14px] text-[var(--stone-700)] font-medium m-0 mb-1">
+            <p className="text-[0.875rem] text-[var(--stone-700)] font-medium m-0 mb-1">
               {t('hubOverviewHistory.emptyTitle', 'Här samlas din historik')}
             </p>
-            <p className="text-[12px] text-[var(--stone-500)] m-0">
+            <p className="text-[0.75rem] text-[var(--stone-500)] m-0">
               {t('hubOverviewHistory.emptyBody', 'När du gör något i appen dyker det upp här.')}
             </p>
           </div>
@@ -256,8 +256,8 @@ function HubOverviewHistoryInner() {
                     >
                       <item.icon size={14} />
                     </span>
-                    <span className="flex-1 text-[14px] text-[var(--stone-800)]">{item.label}</span>
-                    <time className="text-[12px] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
+                    <span className="flex-1 text-[0.875rem] text-[var(--stone-800)]">{item.label}</span>
+                    <time className="text-[0.75rem] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
                       {relativeWhen(item.iso, t)}
                     </time>
                   </Link>
@@ -269,8 +269,8 @@ function HubOverviewHistoryInner() {
                     >
                       <item.icon size={14} />
                     </span>
-                    <span className="flex-1 text-[14px] text-[var(--stone-800)]">{item.label}</span>
-                    <time className="text-[12px] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
+                    <span className="flex-1 text-[0.875rem] text-[var(--stone-800)]">{item.label}</span>
+                    <time className="text-[0.75rem] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
                       {relativeWhen(item.iso, t)}
                     </time>
                   </div>
@@ -287,7 +287,7 @@ function HubOverviewHistoryInner() {
         <section aria-labelledby="suggestions-heading" className="mt-6 sm:mt-8">
           <h2
             id="suggestions-heading"
-            className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--stone-600)] mb-3 px-1"
+            className="text-[0.8125rem] font-semibold uppercase tracking-[0.08em] text-[var(--stone-600)] mb-3 px-1"
           >
             {t('hubOverviewHistory.suggestionsHeading', 'Här är 3 saker du kan utforska')}
           </h2>
@@ -299,8 +299,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--activity-bg)] flex items-center justify-center mb-3">
                 <Briefcase size={18} className="text-[var(--activity-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestJobTitle', 'Sök ditt första jobb')}</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestJobDesc', 'Hitta jobb från Platsbanken som matchar dig.')}</p>
+              <h3 className="text-[0.875rem] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestJobTitle', 'Sök ditt första jobb')}</h3>
+              <p className="text-[0.75rem] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestJobDesc', 'Hitta jobb från Platsbanken som matchar dig.')}</p>
             </Link>
             <Link
               to="/karriar"
@@ -309,8 +309,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--coaching-bg)] flex items-center justify-center mb-3">
                 <Target size={18} className="text-[var(--coaching-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestGoalTitle', 'Sätt ett karriärmål')}</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestGoalDesc', 'Beskriv var du vill — vi hjälper dig dit.')}</p>
+              <h3 className="text-[0.875rem] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestGoalTitle', 'Sätt ett karriärmål')}</h3>
+              <p className="text-[0.75rem] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestGoalDesc', 'Beskriv var du vill — vi hjälper dig dit.')}</p>
             </Link>
             <Link
               to="/min-vardag"
@@ -319,8 +319,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--wellbeing-bg)] flex items-center justify-center mb-3">
                 <Heart size={18} className="text-[var(--wellbeing-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestMoodTitle', 'Logga ditt mående')}</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestMoodDesc', 'Liten check-in — bara för dig.')}</p>
+              <h3 className="text-[0.875rem] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestMoodTitle', 'Logga ditt mående')}</h3>
+              <p className="text-[0.75rem] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestMoodDesc', 'Liten check-in — bara för dig.')}</p>
             </Link>
           </div>
         </section>

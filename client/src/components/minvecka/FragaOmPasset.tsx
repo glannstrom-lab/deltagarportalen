@@ -1,8 +1,13 @@
 /**
  * FragaOmPasset — "Fråga om passet" på ett pass i Min vecka (F8, persona-
  * genomgången 2026-09-12). Frågan uppstår vid passet, men meddelandefältet låg
- * bara på Min konsulent. Samma sändväg (konsulentMeddelandeApi), förifyllt med
+ * bara på Min konsulent. Samma sändväg (konsulentMeddelandeApi), med
  * passets titel och tid, och en kvittens med konsulentens namn.
+ *
+ * RD14 (rollspelet 2026-09-27): rutan var förifylld med inledningen och
+ * valideringen jämförde längd, så den som suddade inledningen och skrev en kort
+ * fråga fick "Skriv din fråga efter inledningen". Nu står passet som en rad
+ * ovanför en tom ruta, och inledningen läggs till först när frågan skickas.
  */
 
 import { useState } from 'react'
@@ -35,19 +40,19 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
 
   const oppna = () => {
     setFel(null)
-    setText(inledning)
     setOppen(true)
   }
 
   const skicka = async () => {
-    if (text.trim().length <= inledning.trim().length) {
-      setFel(t('minVecka.fraga.tom', 'Skriv din fråga efter inledningen.'))
+    const fraga = text.trim()
+    if (!fraga) {
+      setFel(t('minVecka.fraga.tom', 'Skriv din fråga först.'))
       return
     }
     setSkickar(true)
     setFel(null)
     try {
-      await konsulentMeddelandeApi.skickaTillMinKonsulent(text)
+      await konsulentMeddelandeApi.skickaTillMinKonsulent(`${inledning}${fraga}`)
       const k = await konsulentMeddelandeApi.minKonsulent().catch(() => null)
       const namn = k?.namn ?? t('minVecka.fraga.dinKonsulent', 'din konsulent')
       setSkickatTill(namn)
@@ -86,8 +91,17 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
       <label htmlFor={id} className="block text-sm font-medium text-stone-800 dark:text-stone-200">
         {t('minVecka.fraga.etikett', 'Din fråga till konsulenten')}
       </label>
+      <p id={`${id}-om`} className="text-sm text-stone-600 dark:text-stone-400">
+        {t('minVecka.fraga.om', {
+          defaultValue: 'Om passet "{{titel}}" den {{datum}} kl {{tid}}. Det ser din konsulent.',
+          titel: session.title,
+          datum: datumText,
+          tid: session.start_time,
+        })}
+      </p>
       <textarea
         id={id}
+        aria-describedby={`${id}-om`}
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={4}

@@ -13,7 +13,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import type { ActivitySession } from './aktivitetApi'
+import { mapSession, type ActivitySession } from './aktivitetApi'
 
 export type FranvaroOrsak = 'sick' | 'child_care' | 'authority_meeting' | 'other'
 
@@ -108,7 +108,8 @@ export const franvaroApi = {
       .maybeSingle()
     if (error) throw error
     if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
-    return data as ActivitySession
+    // RD13: samma form som listMySessions — "09:00", inte "09:00:00"
+    return mapSession(data as Record<string, unknown>)
   },
 
   /**
@@ -132,7 +133,8 @@ export const franvaroApi = {
       .maybeSingle()
     if (error) throw error
     if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
-    return data as ActivitySession
+    // RD13: samma form som listMySessions — "09:00", inte "09:00:00"
+    return mapSession(data as Record<string, unknown>)
   },
 
   /** Ångra en anmälan (innan konsulenten markerat passet). Ger ingen ny notis. */
@@ -147,6 +149,7 @@ export const franvaroApi = {
       .maybeSingle()
     if (error) throw error
     if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
-    return data as ActivitySession
+    // RD13: samma form som listMySessions — "09:00", inte "09:00:00"
+    return mapSession(data as Record<string, unknown>)
   },
 }

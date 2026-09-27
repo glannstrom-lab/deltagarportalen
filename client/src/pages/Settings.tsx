@@ -10,7 +10,7 @@ import { supabase } from '@/lib/supabase'
 import {
   Bell, Lock, User, Palette, Shield,
   ChevronRight, Save,
-  Accessibility, X, Menu,
+  Accessibility,
   Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink, Bot, Heart, Activity
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
@@ -78,7 +78,6 @@ function SettingsInner() {
     const requested = searchParams.get('section')
     return sectionDefs.some(s => s.id === requested) ? (requested as string) : 'profile'
   })
-  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
 
@@ -609,6 +608,16 @@ function SettingsInner() {
                       <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
                         {t('settings.privacy.consent.aiDesc')}
                       </p>
+                      {/* RD18: modell, leverantör, land och lagrum står kvar — men under
+                          "Läs mer", inte i första meningen till någon som är orolig. */}
+                      <details className="mt-2 text-sm text-stone-600 dark:text-stone-400">
+                        <summary className="cursor-pointer font-medium text-[var(--c-text)] underline underline-offset-2">
+                          {t('settings.privacy.consent.aiLasMer', 'Läs mer om AI-tjänsten')}
+                        </summary>
+                        <p className="mt-1">
+                          {t('settings.privacy.consent.aiDetaljer')}
+                        </p>
+                      </details>
                       {consentData.aiConsentAt ? (
                         <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
                           <Check size={14} />
@@ -651,12 +660,9 @@ function SettingsInner() {
                           <h4 className="font-medium text-stone-900 dark:text-stone-100">
                             {t('settings.privacy.aiToggle.title', 'Aktiv AI-användning')}
                           </h4>
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
-                            {t('settings.privacy.aiToggle.gdpr', 'GDPR Art 21')}
-                          </span>
                         </div>
                         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-                          {t('settings.privacy.aiToggle.desc', 'Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.')}
+                          {t('settings.privacy.aiToggle.desc', 'Pausa AI en tid utan att ta tillbaka ditt ja. Du kan slå på den igen när du vill.')}
                         </p>
                         <p className={cn(
                           "text-xs mt-2 flex items-center gap-1",
@@ -848,45 +854,19 @@ function SettingsInner() {
               </p>
             </InfoCard>
 
-            {/* Profile Visibility Section */}
-            <CardSection title={t('settings.privacy.profileVisibility')}>
-              <div className="space-y-4">
-                <Card variant="flat">
-                  <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
-                  <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
-                  {/*
-                    "Läs mer" var en <button> utan onClick — mitt i
-                    integritetsavsnittet. Den som undrade vad delning av
-                    aktivitet innebär klickade och fick ingenting, på just den
-                    yta där ett obesvarat klick väger tyngst. Pekar nu på
-                    integritetspolicyn, som redan finns som rutt.
-                  */}
-                  <Link
-                    to="/privacy"
-                    className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium text-sm hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] underline underline-offset-2"
-                  >
-                    {t('settings.privacy.learnMore')}
-                  </Link>
-                </Card>
-
-                <Card variant="flat">
-                  <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.profileVisibilityDesc')}</p>
-                  <select aria-label={t('settings.privacy.profileVisibility')} className={cn(
-                    "w-full px-4 py-2 border rounded-lg transition-theme",
-                    "bg-white dark:bg-stone-800",
-                    "border-stone-200 dark:border-stone-700",
-                    "text-stone-900 dark:text-stone-100"
-                  )}>
-                    <option>{t('settings.privacy.onlyMe')}</option>
-                    <option>{t('settings.privacy.caseworkers')}</option>
-                    <option>{t('settings.privacy.everyone')}</option>
-                  </select>
-                </Card>
-              </div>
-            </CardSection>
+            {/* RD18 (rollspelet 2026-09-27): här stod "Profilsynlighet" med valen
+                "Endast jag / Arbetsförmedlare / Alla" — en <select> utan state som
+                inte sparade något, och "Alla" skrämde. Och "Dela aktivitet" hade
+                ingen brytare alls. Kvar är vägen till integritetspolicyn. */}
+            <Link
+              to="/privacy"
+              className="inline-block text-[var(--c-text)] dark:text-[var(--c-text)] font-medium text-sm underline underline-offset-2"
+            >
+              {t('settings.privacy.learnMore')}
+            </Link>
 
             {/* Data Sharing with Consultant - GDPR Art. 9 */}
-            <CardSection title="Datadelning med konsulent">
+            <CardSection title={t('settings.privacy.delningRubrik', 'Vad din konsulent får se')}>
               <DataSharingSettings />
             </CardSection>
 
@@ -930,17 +910,8 @@ function SettingsInner() {
                 </div>
               </Card>
 
-              <Card variant="flat" padding="sm">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-medium text-stone-900 dark:text-stone-100">{t('settings.security.twoFactor')}</h3>
-                    <p className="text-sm text-stone-500 dark:text-stone-400">{t('settings.security.twoFactorDesc')}</p>
-                  </div>
-                  <Button variant="secondary" size="sm">
-                    {t('common.activate')}
-                  </Button>
-                </div>
-              </Card>
+              {/* RD18: "Tvåfaktorsautentisering" med en "Aktivera"-knapp utan onClick
+                  är borttagen. Portalen har ingen tvåstegsinloggning att slå på. */}
             </div>
           </div>
         )
@@ -957,123 +928,64 @@ function SettingsInner() {
       domain="action"
       showTabs={false}
     >
-      {/* Mobile: Dropdown menu */}
-      <div className="lg:hidden mb-6">
-        <button
-          onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className={cn(
-            "w-full flex items-center justify-between p-4 rounded-xl transition-theme",
-            "bg-white dark:bg-stone-800",
-            "border border-stone-200 dark:border-stone-700"
-          )}
-        >
-          <div className="flex items-center gap-3">
-            {(() => {
-              const section = sections.find(s => s.id === activeSection)
-              const Icon = section?.icon || User
-              return (
-                <>
-                  <div className="p-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg">
-                    <Icon size={20} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
-                  </div>
-                  <span className="font-medium text-stone-900 dark:text-stone-100">{section?.title}</span>
-                </>
-              )
-            })()}
-          </div>
-          {showMobileMenu ? <X size={20} className="text-stone-600" /> : <Menu size={20} className="text-stone-600" />}
-        </button>
-
-        {showMobileMenu && (
-          <div className={cn(
-            "mt-2 rounded-xl overflow-hidden border transition-theme",
-            "bg-white dark:bg-stone-800",
-            "border-stone-200 dark:border-stone-700"
-          )}>
-            {sections.map((section) => {
-              const Icon = section.icon
-              return (
-                <button
-                  key={section.id}
-                  onClick={() => {
-                    setActiveSection(section.id)
-                    setShowMobileMenu(false)
-                  }}
-                  className={cn(
-                    "w-full flex items-center gap-3 p-4 text-left transition-colors",
-                    activeSection === section.id
-                      ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]'
-                      : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
-                  )}
-                >
-                  <div className={cn(
-                    "p-2 rounded-lg",
-                    activeSection === section.id
-                      ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white'
-                      : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
-                  )}>
-                    <Icon size={18} />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-medium text-sm text-stone-900 dark:text-stone-100">{section.title}</h3>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">{section.description}</p>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        )}
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Desktop Settings Navigation */}
-        <div className="hidden lg:block lg:col-span-1 space-y-2">
+        {/* RD17 (rollspelet 2026-09-27): på mobil nåddes avsnitten bara via en
+            ☰-ikon i "Profil"-kortet, så Tillgänglighet (språk, större text) var
+            svår att hitta. En navigering för alla bredder: två kolumner med
+            korta knappar på mobil, en lista med beskrivning på dator. */}
+        <nav
+          aria-label={t('settings.navEtikett', 'Avsnitt i inställningarna')}
+          className="lg:col-span-1 grid grid-cols-2 gap-2 lg:flex lg:flex-col"
+        >
           {sections.map((section) => {
             const Icon = section.icon
             const isActive = activeSection === section.id
             return (
               <button
                 key={section.id}
+                type="button"
                 onClick={() => setActiveSection(section.id)}
+                aria-current={isActive ? 'page' : undefined}
                 className={cn(
-                  "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left relative",
+                  "w-full flex items-center gap-2 lg:gap-3 p-3 lg:p-4 rounded-xl transition-all text-left relative",
+                  "border border-stone-200 dark:border-stone-700 lg:border-transparent",
                   isActive
-                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-solid)] lg:border-transparent'
                     : 'bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700/50'
                 )}
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-r-full" />
+                  <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-r-full" />
                 )}
 
                 <div className={cn(
-                  "p-2 rounded-lg",
+                  "p-1.5 lg:p-2 rounded-lg flex-shrink-0",
                   isActive
                     ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
                 )}>
-                  <Icon size={20} />
+                  <Icon size={20} aria-hidden="true" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className={cn(
-                    "font-semibold",
+                  <span className={cn(
+                    "block font-semibold text-sm lg:text-base break-words",
                     isActive
                       ? 'text-[var(--c-text)] dark:text-[var(--c-text)]'
                       : 'text-stone-900 dark:text-stone-100'
                   )}>
                     {section.title}
-                  </h3>
-                  <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{section.description}</p>
+                  </span>
+                  <span className="hidden lg:block text-sm text-stone-500 dark:text-stone-400 truncate">{section.description}</span>
                 </div>
-                <ChevronRight size={18} className={cn(
-                  "flex-shrink-0 transition-colors",
+                <ChevronRight size={18} aria-hidden="true" className={cn(
+                  "hidden lg:block flex-shrink-0 transition-colors",
                   isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : 'text-stone-400 dark:text-stone-500'
                 )} />
               </button>
             )
           })}
-        </div>
+        </nav>
 
         {/* Settings Content */}
         <div className="lg:col-span-2">
