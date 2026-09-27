@@ -47,8 +47,15 @@ repo Settings → Pages.
 RR4/RK11 placeringstiden · RD3/RR2/RR9 kundtyp hela vägen (`my_ai_policy.org_kind`, migration
 `20260927_my_ai_policy_org_kind.sql`; Sara ser Rusta och matcha/Arbetsförmedlingen, Anna kommunens text) · RK4
 passanteckning · RK5 flikar med piltangenter · RR3/RK6/RK7 "Brådskande" i Min dag · RK32 namn på nämndrapporten.
-**Nästa:** de 31 viktiga (RK6–RK19, RR5–RR12, RD4–RD12) — RD4 sjukanmälan + möte samma dag, RD5/RD6 språk som hel
-väg, RR5–RR7 uppföljning och placering för R&M, RK8 underlagspaket, RK9 riktig xlsx, RK10 CSP frame-src.
+**Viktiga — alla 31 klara 2026-09-27** (commit `c21b103b`, verify 4 254/4 254, stickprov i prod): RK8 underlagspaket-PDF,
+RK9 CSV, RK10 CSP frame-src, RK12 "Insikter" (fasta regler, ingen AI), RK13, RK19, RK14 senaste kontakt, RK15 kvittens
+av egenrapporter, RK17/RR12 konsulentmeny på mobil, RR5 uppföljning med datum/utfall/underlag, RR6/RR7 placering +
+studier/omfattning/nivå (migration `20260927b_placering_utfall.sql`), RR8 underlag för periodrapporten, RR10, RR11,
+RD4 möten i Min vecka, RD7, RD8, RD9, RD10, RD11 förklara frånvaro (migration `20260927b_franvaro_forklaring.sql`),
+RD12, RD5/RD6/RD24/RD30 språk (Lätt svenska 123 → 744 av 744 på huvudvägen, grind `lattSvenskaTackning.test.ts`).
+RK16 var demodata (mallens praktikplats), inte kod.
+**Kvar:** 36 skav + 23 förslag i rapporterna. Nytt skav: Min vecka säger "11 av 8 timmar" när målet överskrids.
+Lätt svenska saknas i Profilens övriga flikar, CV:ts snabbläge, menyn, Inställningar och Min vardag.
 
 ## Projektgenomgång 2026-09-24 — fjärde rundan: användningen, inte koden
 
