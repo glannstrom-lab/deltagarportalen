@@ -9,13 +9,12 @@
  */
 
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { supabase } from '@/lib/supabase'
 import { sakerLandning, VISA_SOM_NYCKEL } from '@/services/visaSomApi'
 
 export default function VisaSom() {
   const [params] = useSearchParams()
-  const navigate = useNavigate()
   const [verifieringsfel, setVerifieringsfel] = useState<string | null>(null)
   const startad = useRef(false)
   const tokenHash = params.get('t')
@@ -39,9 +38,13 @@ export default function VisaSom() {
         } catch {
           // utan sessionStorage syns ingen banner, men inloggningen fungerar
         }
-        navigate(sakerLandning(params.get('till')), { replace: true })
+        // Full omladdning, inte navigate(): authStore hinner annars inte läsa in
+        // den nya sessionen, och PrivateRoute skickar en "gäst" till /register
+        // (uppmätt i prod 2026-09-27). Efter omladdningen startar appen som kontot.
+        window.location.replace(`${window.location.pathname}#${sakerLandning(params.get('till'))}`)
+        window.location.reload()
       })
-  }, [params, navigate, tokenHash, email])
+  }, [params, tokenHash, email])
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-6">
