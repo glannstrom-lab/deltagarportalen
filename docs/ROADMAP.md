@@ -58,7 +58,17 @@ RK16 var demodata (mallens praktikplats), inte kod.
 målet". Migration `20260927c_fler_passtyper.sql` (SFI, studier, vägledning, hälsa; SFI/studier räknas inte i
 R&M-avtalsloggen). Katalogens seed-text tömd i databasen. Hela skalet i rem, grinden `storreTextRem.test.ts` utan
 layoutundantag.
-**Kvar:** 23 förslag (RK33–41, RR24–29, RD25–32). Beslut: RD21 separata samtycken per hälsokategori kräver nya
+**Förslagen — alla 23 byggda 2026-09-28** (commit `31117be7`, verify 4 508/4 508, stickprov i prod): RK35/RR26
+"Att göra i dag", RK36 gruppnärvaro, RK37 serier + Platser i planen, RK38 journal enligt SoL med ändringslogg
+(`consultant_journal_revisions`, RLS, Mikaels ja), RK39 månadsunderlag, RK40 ärendenummer (personnummerspärr i
+databasen), RK41 demo med Kim Kollega + Hanna Handläggare (prefix `55555555`), RR24 "förd över till MSFA"
+(`msfa_overforingar`, RLS, Mikaels ja), RR25 betalstatus, RR27 passmärkning, RR28 avvikelserapport, RR29
+kapacitet, RD25 Min plan, RD26 inget tyst fel (grind), RD27 hela dagen/flera dagar, RD29 egen redovisning på
+intyget, RD31 Översätt sidan i språkmenyn. RK33/RK34/RD28/RD30/RD32 var redan gjorda.
+**Bifynd rättat:** `activity_plan_handovers_no_delete` stoppade ALLA raderingar i kaskad — konto (art. 17), plan och
+`reset_demo_org` (nattjobbet hade fallerat med rollspelets underlag) — `20260928_underlag_kaskadradering.sql`.
+**Kvar av förslagen:** handläggarens läsvy för underlagspaketet (RK34-rest); flytta en serie till annan veckodag;
+belopp i resultatklockan (prislistan finns inte i portalen); notiser vid flerdagsfrånvaro grupperas hos konsulenten. Beslut: RD21 separata samtycken per hälsokategori kräver nya
 samtyckestyper (migration). Formuläret "Byt lösenord" i Inställningar gör ingenting (= BP6). Lätt svenska saknas
 i Profilens övriga flikar, CV:ts snabbläge, menyn, Inställningar och Min vardag.
 
