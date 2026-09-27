@@ -42,9 +42,13 @@ get_invitation_by_token svarade tomt; nu `?th=<token_hash>` + verifyOtp + update
 **Kvar (Mikael):** GitHub Pages-kopian från 2026-03-24 ligger kvar (tom sida, assets 404) — stäng av under
 repo Settings → Pages.
 
-**Nu (kritiskt, öppet):** RR1 avtalsloggen räknar eget jobbsökande · RK3 sjuk utan intyg blir "med intyg" ·
-RK1/RK2 veckomålet · RR4 placeringstiden · RD3/RR2/RR9 kommunens regelverk syns för R&M (utvidga orgTypVisning) ·
-RK4 passanteckning försvinner tyst · RK5 flikarna nås inte med tangentbordet · RR3 Översikten tiger om brådskande.
+**Kritiska — alla rättade 2026-09-27** (commit `85bccdde`, prodverifierat via Visa som): RR1 + RR22 avtalsloggen
+(Jonas 0 av 3, inte 3 av 4) · RK3 sjuk utan intyg · RK1/RK2 veckomålet (förifylls ur mallen, varning vid glapp) ·
+RR4/RK11 placeringstiden · RD3/RR2/RR9 kundtyp hela vägen (`my_ai_policy.org_kind`, migration
+`20260927_my_ai_policy_org_kind.sql`; Sara ser Rusta och matcha/Arbetsförmedlingen, Anna kommunens text) · RK4
+passanteckning · RK5 flikar med piltangenter · RR3/RK6/RK7 "Brådskande" i Min dag · RK32 namn på nämndrapporten.
+**Nästa:** de 31 viktiga (RK6–RK19, RR5–RR12, RD4–RD12) — RD4 sjukanmälan + möte samma dag, RD5/RD6 språk som hel
+väg, RR5–RR7 uppföljning och placering för R&M, RK8 underlagspaket, RK9 riktig xlsx, RK10 CSP frame-src.
 
 ## Projektgenomgång 2026-09-24 — fjärde rundan: användningen, inte koden
 
