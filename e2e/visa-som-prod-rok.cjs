@@ -6,7 +6,7 @@ const fs = require('fs');
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 1280, height: 900 } });
   const bas = process.env.BAS || 'https://www.jobin.se';
-  const url = `${bas}/#/visa-som?t=${th}&e=km-konsulent%40jobin.test&till=%2Fconsultant%2Fanalytics`;
+  const url = `${bas}/#/visa-som?t=${th}&e=${encodeURIComponent(process.env.EPOST || "km-konsulent@jobin.test")}&till=%2Fconsultant%2Fanalytics`;
   await p.goto(url);
   await p.waitForTimeout(9000);
   console.log('URL efter:', p.url());
