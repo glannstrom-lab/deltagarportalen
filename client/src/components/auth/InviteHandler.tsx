@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { inviteRegisterSchema } from '@/lib/validations';
+import { PUBLIC_PAGE_BOTTOM_PADDING } from '@/components/CookieConsent';
 
 interface InviteData {
   id: string
@@ -236,7 +237,8 @@ export const InviteHandler: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+    // TR1-mönstret: kakrutan ligger annars över "Spara och fortsätt" (uppmätt 2026-09-27).
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4" style={{ paddingBottom: PUBLIC_PAGE_BOTTOM_PADDING }}>
       <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full p-8">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">
