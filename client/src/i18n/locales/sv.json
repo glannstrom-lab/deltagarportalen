@@ -1268,12 +1268,11 @@
       "emptySubtitle": "Lägg till dina kompetenser ovan"
     },
     "saveIndicator": {
-      "retryTitle": "Försöker spara igen...",
       "allSaved": "Allt sparat",
       "saving": "Sparar...",
-      "offline": "Offline",
       "savedAt": "Sparad {{time}}",
-      "unsaved": "Osparat"
+      "unsaved": "Osparat",
+      "utanNat": "Inte sparat — du verkar sakna internet. Det du skrev är kvar och sparas när du är uppkopplad igen."
     },
     "pdf": {
       "sections": {
@@ -5134,9 +5133,9 @@
       "aboutMePlaceholder": "Berätta kort om dig själv...",
       "loadingProfile": "Laddar profil...",
       "errorLoading": "Fel vid laddning av profil:",
-      "errorSaving": "Fel vid sparande av profil:",
       "firstNamePlaceholder": "T.ex. Anna",
-      "lastNamePlaceholder": "T.ex. Andersson"
+      "lastNamePlaceholder": "T.ex. Andersson",
+      "sparat": "Dina ändringar är sparade."
     },
     "accessibility": {
       "title": "Tillgänglighet",
@@ -9372,7 +9371,8 @@
       "klart": "Intyget för {{manad}} är nedladdat.",
       "fel": "Intyget kunde inte skapas just nu. Försök igen om en stund.",
       "textLeverantor": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för din handläggare på Arbetsförmedlingen.",
-      "textNeutral": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för den som behöver se din närvaro."
+      "textNeutral": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för den som behöver se din närvaro.",
+      "egenRedovisning": "Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning."
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -9384,7 +9384,6 @@
       "avbryt": "Avbryt",
       "skickat": "Skickat till {{namn}}.",
       "dinKonsulent": "din konsulent",
-      "fel": "Frågan gick inte att skicka. Du kan skriva till din konsulent från sidan Min konsulent.",
       "om": "Om passet \"{{titel}}\" den {{datum}} kl {{tid}}. Det ser din konsulent."
     },
     "franvaro": {
@@ -9404,7 +9403,19 @@
       "fel": "Det gick inte att spara. Försök igen, eller skriv till din konsulent.",
       "anmalt": "Anmält: {{orsak}}. Din konsulent har fått besked ({{nar}}).",
       "angra": "Ångra anmälan",
-      "status": "Din konsulent har fått besked."
+      "status": "Din konsulent har fått besked.",
+      "statusFlera_one": "Anmält för {{count}} pass. Din konsulent har fått besked.",
+      "statusFlera_other": "Anmält för {{count}} pass. Din konsulent har fått besked.",
+      "valjTill": "Välj ett datum efter {{fran}}, högst två veckor fram.",
+      "omfattning": {
+        "rubrik": "Vad gäller det?",
+        "pass": "Bara det här passet",
+        "dag_one": "Hela dagen ({{count}} pass)",
+        "dag_other": "Hela dagen ({{count}} pass)",
+        "period": "Flera dagar",
+        "till": "Till och med",
+        "periodHjalp": "Alla dina pass de dagarna anmäls, också eget jobbsökande. Du kan ångra varje pass för sig."
+      }
     },
     "forklaring": {
       "mal": "Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.",
@@ -9458,7 +9469,10 @@
       "kanInteMeddelande": "Hej! Jag kan inte komma till vårt möte {{datum}} kl {{tid}}.",
       "skickatKort": "Din konsulent har fått besked om mötet.",
       "felKort": "Det gick inte att skicka just nu. Din text är kvar. Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.",
-      "hamtFel": "Dina möten med konsulenten kunde inte hämtas just nu. Du ser dem på sidan Min konsulent."
+      "hamtFel": "Dina möten med konsulenten kunde inte hämtas just nu. Du ser dem på sidan Min konsulent.",
+      "dagOchTid": "{{dag}} kl {{tid}}",
+      "meddelandePeriod": "Hej! Jag har anmält att jag inte kan komma från {{fran}} till {{till}}. Det gäller också vårt möte {{tid}}.",
+      "fragaPeriod": "Gäller det också mötet med din konsulent {{tid}}?"
     },
     "forklara": {
       "knapp": "Förklara frånvaron",
@@ -9475,6 +9489,42 @@
     "tomVecka": {
       "framtid": "Inga pass inplanerade än den här veckan — din konsulent lägger till fler pass efter hand.",
       "ledig": "Inga pass den här veckan. En ledig vecka enligt planen — hör av dig till din konsulent om du är osäker."
+    },
+    "plan": {
+      "rubrik": "Din plan",
+      "hos": "Du har din plan hos {{org}}.",
+      "leverantor": {
+        "hos": "Du är hos {{org}}. Det är en leverantör i Rusta och matcha.",
+        "hosUtanNamn": "Du är hos en leverantör i Rusta och matcha.",
+        "beslut": "Det är Arbetsförmedlingen som har bestämt att du ska vara med i Rusta och matcha. Frågor om din ersättning ställer du till Arbetsförmedlingen."
+      },
+      "rapport": {
+        "rubrik": "Aktivitetsrapporten",
+        "text": "Du lämnar din aktivitetsrapport till Arbetsförmedlingen som vanligt, i början av varje månad för månaden innan. Din konsulent här kan hjälpa dig, men det är du som skickar in den.",
+        "lank": "Så gör du med aktivitetsrapporten"
+      },
+      "kommun": {
+        "beslut": "Planen hör ihop med ditt försörjningsstöd. Det är socialnämnden i kommunen som beslutar om försörjningsstöd. Frågor om pengar ställer du till din handläggare där."
+      },
+      "raknas": {
+        "leverantor": "Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där. Ditt eget jobbsökande skriver du själv i aktivitetsrapporten.",
+        "vanlig": "Det som räknas här är passen i din plan. Din konsulent markerar när du har varit där."
+      },
+      "praktik": {
+        "fel": "Din arbetsplats kunde inte hämtas just nu. Fråga din konsulent om du undrar något.",
+        "timmar_one": "{{count}} timme i veckan",
+        "timmar_other": "{{count}} timmar i veckan",
+        "kontakt": "Din kontakt på arbetsplatsen: {{namn}}",
+        "sjuk": "Om du blir sjuk: {{text}}",
+        "sjukRing": "Om du blir sjuk: ring {{tel}}.",
+        "raknas": "Tiden på arbetsplatsen räknas när den ligger som pass i din vecka här nedanför.",
+        "rubrik": {
+          "praktik": "Din praktikplats",
+          "arbetstraning": "Din arbetsträning",
+          "arbetsprovning": "Din arbetsprövning",
+          "subventionerad_anstallning": "Ditt jobb med stöd"
+        }
+      }
     }
   },
   "minVardagHub": {
@@ -9884,5 +9934,20 @@
     "preview": "Förhandsgranska",
     "cvDownloaded": "CV nedladdat.",
     "error": "Kunde inte generera PDF. Försök igen."
+  },
+  "skrivfel": {
+    "skicka": "Det gick inte att skicka. Din text är kvar.",
+    "spara": "Det gick inte att spara. Det du skrev är kvar.",
+    "forsokIgen": "Försök igen",
+    "forsoker": "Försöker igen …",
+    "minKonsulent": "Du kan också skriva eller ringa till din konsulent från sidan Min konsulent."
+  },
+  "sidoversattning": {
+    "knapp": "Översätt sidan till fler språk",
+    "valt": "Översatt till {{sprak}}",
+    "kanBliFel": "Google översätter sidan med en maskin. Översättningen kan bli fel.",
+    "myndighetsnamn": "Namn på myndigheter, till exempel Arbetsförmedlingen och Försäkringskassan, ska stå kvar på svenska. Använd det svenska namnet när du söker på nätet eller ringer.",
+    "listEtikett": "Välj språk för översättningen",
+    "original": "Svenska (utan översättning)"
   }
 }

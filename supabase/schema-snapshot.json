@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T20:40:01.307Z",
+  "generatedAt": "2026-09-27T23:03:39.990Z",
   "note": "Genererad av client/scripts/refresh-schema-snapshot.cjs. Kör om efter varje migration och committa i samma commit. Läses av check-schema-drift.cjs.",
   "tables": {
     "account_deletion_requests": [
@@ -64,6 +64,7 @@
     ],
     "activity_plans": [
       "af_registered_at",
+      "case_reference",
       "consultant_id",
       "created_at",
       "decided_at",
@@ -88,12 +89,16 @@
       "absence_reason",
       "absence_reported_at",
       "activity_type",
+      "af_notified_at",
+      "af_notified_by",
       "attendance",
       "attendance_note",
       "created_at",
       "date",
       "end_time",
       "id",
+      "is_physical",
+      "is_provider_led",
       "location",
       "marked_at",
       "marked_by",
@@ -106,7 +111,8 @@
       "sick_certificate_received",
       "start_time",
       "title",
-      "updated_at"
+      "updated_at",
+      "work_placement_id"
     ],
     "activity_template_items": [
       "activity_type",
@@ -488,10 +494,29 @@
     "consultant_journal": [
       "category",
       "consultant_id",
+      "contact_form",
       "content",
       "created_at",
       "id",
-      "participant_id"
+      "occurred_at",
+      "participant_id",
+      "updated_at",
+      "updated_by"
+    ],
+    "consultant_journal_revisions": [
+      "action",
+      "author_id",
+      "category",
+      "changed_at",
+      "changed_by",
+      "contact_form",
+      "content",
+      "id",
+      "journal_id",
+      "occurred_at",
+      "original_created_at",
+      "participant_id",
+      "version_from"
     ],
     "consultant_meetings": [
       "consultant_id",
@@ -549,12 +574,18 @@
       "followup_3m_evidence",
       "followup_3m_note",
       "followup_3m_outcome",
+      "followup_3m_payment_status",
+      "followup_3m_payment_status_at",
+      "followup_3m_payment_status_by",
       "followup_6m",
       "followup_6m_by",
       "followup_6m_date",
       "followup_6m_evidence",
       "followup_6m_note",
       "followup_6m_outcome",
+      "followup_6m_payment_status",
+      "followup_6m_payment_status_at",
+      "followup_6m_payment_status_by",
       "hours_per_week",
       "id",
       "job_title",
@@ -1313,6 +1344,17 @@
       "stress_level",
       "updated_at",
       "user_id"
+    ],
+    "msfa_overforingar": [
+      "consultant_id",
+      "created_at",
+      "id",
+      "org_id",
+      "participant_id",
+      "period_month",
+      "plan_id",
+      "transferred_at",
+      "transferred_by"
     ],
     "my_ai_policy": [
       "ai_enabled",
@@ -2237,6 +2279,7 @@
     "cleanup_old_login_attempts",
     "cleanup_rate_limits",
     "consultant_has_access",
+    "consultant_journal_historik",
     "consultant_messages_notify",
     "create_daily_quests",
     "create_learning_path_from_gap",

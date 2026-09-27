@@ -62,3 +62,36 @@ export function regelverkNycklar(r: PlanensRegelverk | null): { mal: string; int
   if (r === 'leverantor') return { mal: 'minVecka.forklaring.malLeverantor', intyg: 'minVecka.intyg.textLeverantor' }
   return { mal: 'minVecka.forklaring.malNeutral', intyg: 'minVecka.intyg.textNeutral' }
 }
+
+/**
+ * RD25 (rollspelet 2026-09-27): planens organisation med namn. Sara såg bara
+ * "Demo Coach" och ett projektnamn gömt i Inställningar — inte vem hon var hos.
+ * Namnet kommer ur samma vy (`my_ai_policy.org_name`) och samma val som typen.
+ */
+export interface PlanensOrganisation {
+  regelverk: PlanensRegelverk | null
+  orgNamn: string | null
+}
+
+export interface PolicyRadMedNamn extends PolicyRadMedTyp {
+  org_name?: string | null
+}
+
+export function valjOrganisation(rader: readonly PolicyRadMedNamn[], planOrgId: string | null | undefined): PlanensOrganisation {
+  const regelverk = valjRegelverk(rader, planOrgId)
+  const planens = planOrgId ? rader.find((r) => r.org_id === planOrgId) : undefined
+  // Utan planens rad: namnet bara när det finns exakt en organisation att välja.
+  const kandidat = planens ?? (rader.length === 1 ? rader[0] : undefined)
+  const orgNamn = kandidat?.org_name?.trim() || null
+  return { regelverk, orgNamn }
+}
+
+/** Hämtar och väljer. Ett läsfel ger okänt (neutral text), aldrig kommunens. */
+export async function hamtaPlanensOrganisation(planOrgId: string | null | undefined): Promise<PlanensOrganisation> {
+  try {
+    const rader = (await laslogg.minAiPolicy()) as unknown as PolicyRadMedNamn[]
+    return valjOrganisation(rader, planOrgId)
+  } catch {
+    return { regelverk: null, orgNamn: null }
+  }
+}

@@ -1268,12 +1268,11 @@
       "emptySubtitle": "Add your skills above"
     },
     "saveIndicator": {
-      "retryTitle": "Trying to save again...",
       "allSaved": "All saved",
       "saving": "Saving...",
-      "offline": "Offline",
       "savedAt": "Saved {{time}}",
-      "unsaved": "Not saved"
+      "unsaved": "Not saved",
+      "utanNat": "Not saved — you seem to have no internet. What you wrote is still here. It will be saved when you are online again."
     },
     "pdf": {
       "sections": {
@@ -5134,9 +5133,9 @@
       "aboutMePlaceholder": "Tell us briefly about yourself...",
       "loadingProfile": "Loading profile...",
       "errorLoading": "Error loading profile:",
-      "errorSaving": "Error saving profile:",
       "firstNamePlaceholder": "E.g. Anna",
-      "lastNamePlaceholder": "E.g. Andersson"
+      "lastNamePlaceholder": "E.g. Andersson",
+      "sparat": "Your changes are saved."
     },
     "accessibility": {
       "title": "Accessibility",
@@ -9372,7 +9371,8 @@
       "klart": "The certificate for {{manad}} has been downloaded.",
       "fel": "The certificate could not be created right now. Please try again in a moment.",
       "textLeverantor": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to your handläggare (case officer) at Arbetsförmedlingen.",
-      "textNeutral": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to anyone who needs to see your attendance."
+      "textNeutral": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to anyone who needs to see your attendance.",
+      "egenRedovisning": "The certificate also shows your own check-ins and your job search in Jobin, as your own report."
     },
     "fraga": {
       "knapp": "Ask about this session",
@@ -9384,7 +9384,6 @@
       "avbryt": "Cancel",
       "skickat": "Sent to {{namn}}.",
       "dinKonsulent": "your konsulent",
-      "fel": "The question could not be sent. You can write to your konsulent from the page My konsulent.",
       "om": "About the session \"{{titel}}\" on {{datum}} at {{tid}}. Your konsulent will see this."
     },
     "franvaro": {
@@ -9404,7 +9403,19 @@
       "fel": "It could not be saved. Try again, or write to your konsulent.",
       "anmalt": "Reported: {{orsak}}. Your konsulent has been told ({{nar}}).",
       "angra": "Undo the report",
-      "status": "Your konsulent has been told."
+      "status": "Your konsulent has been told.",
+      "statusFlera_one": "Reported for {{count}} session. Your konsulent has been told.",
+      "statusFlera_other": "Reported for {{count}} sessions. Your konsulent has been told.",
+      "valjTill": "Choose a date after {{fran}}, at most two weeks ahead.",
+      "omfattning": {
+        "rubrik": "What is it about?",
+        "pass": "Only this session",
+        "dag_one": "The whole day ({{count}} session)",
+        "dag_other": "The whole day ({{count}} sessions)",
+        "period": "Several days",
+        "till": "Until and including",
+        "periodHjalp": "All your sessions on those days are reported, also your own job search. You can undo each session on its own."
+      }
     },
     "forklaring": {
       "mal": "Your konsulent has set {{mal}} hours per week as the goal for assigned activities — this is the kommun's (municipality's) requirement under socialtjänstlagen (the Social Services Act).",
@@ -9458,7 +9469,10 @@
       "kanInteMeddelande": "Hello! I cannot come to our meeting on {{datum}} at {{tid}}.",
       "skickatKort": "Your konsulent has been told about the meeting.",
       "felKort": "We could not send it right now. Your text is still here. You can also write to or call your konsulent from the page My konsulent.",
-      "hamtFel": "We could not load your meetings with your konsulent right now. You can see them on the page My konsulent."
+      "hamtFel": "We could not load your meetings with your konsulent right now. You can see them on the page My konsulent.",
+      "dagOchTid": "{{dag}} at {{tid}}",
+      "meddelandePeriod": "Hello! I have reported that I cannot come from {{fran}} to {{till}}. This is also about our meeting {{tid}}.",
+      "fragaPeriod": "Is this also about the meeting with your konsulent {{tid}}?"
     },
     "forklara": {
       "knapp": "Explain the absence",
@@ -9475,6 +9489,42 @@
     "tomVecka": {
       "framtid": "No sessions scheduled yet this week — your consultant will add more over time.",
       "ledig": "No sessions this week. A free week according to the plan — contact your consultant if you are unsure."
+    },
+    "plan": {
+      "rubrik": "Your plan",
+      "hos": "Your plan is with {{org}}.",
+      "leverantor": {
+        "hos": "You are with {{org}}. It is a provider in Rusta och matcha.",
+        "hosUtanNamn": "You are with a provider in Rusta och matcha.",
+        "beslut": "Arbetsförmedlingen (the Swedish Public Employment Service) decided that you should take part in Rusta och matcha. Ask Arbetsförmedlingen about your benefit."
+      },
+      "rapport": {
+        "rubrik": "The aktivitetsrapport (activity report)",
+        "text": "You send your aktivitetsrapport to Arbetsförmedlingen as usual, at the start of each month, for the month before. Your konsulent here can help you, but you are the one who sends it.",
+        "lank": "How to do the aktivitetsrapport"
+      },
+      "kommun": {
+        "beslut": "The plan is linked to your försörjningsstöd (financial support from the kommun). The socialnämnd (social welfare committee) in the kommun decides about försörjningsstöd. Ask your handläggare (case officer) there about money."
+      },
+      "raknas": {
+        "leverantor": "What counts here are the sessions in your plan. Your konsulent marks when you have been there. You write your own job search yourself in the aktivitetsrapport.",
+        "vanlig": "What counts here are the sessions in your plan. Your konsulent marks when you have been there."
+      },
+      "praktik": {
+        "fel": "Your workplace could not be loaded right now. Ask your konsulent if you wonder about something.",
+        "timmar_one": "{{count}} hour per week",
+        "timmar_other": "{{count}} hours per week",
+        "kontakt": "Your contact at the workplace: {{namn}}",
+        "sjuk": "If you get sick: {{text}}",
+        "sjukRing": "If you get sick: call {{tel}}.",
+        "raknas": "The time at the workplace counts when it is a session in your week below.",
+        "rubrik": {
+          "praktik": "Your praktik (work placement)",
+          "arbetstraning": "Your arbetsträning (work training)",
+          "arbetsprovning": "Your arbetsprövning (work trial)",
+          "subventionerad_anstallning": "Your job with support"
+        }
+      }
     }
   },
   "minVardagHub": {
@@ -9884,5 +9934,20 @@
     "preview": "Preview",
     "cvDownloaded": "CV downloaded.",
     "error": "Could not create the PDF. Please try again."
+  },
+  "skrivfel": {
+    "skicka": "It could not be sent. Your text is still here.",
+    "spara": "It could not be saved. What you wrote is still here.",
+    "forsokIgen": "Try again",
+    "forsoker": "Trying again …",
+    "minKonsulent": "You can also write to or call your konsulent from the page My konsulent."
+  },
+  "sidoversattning": {
+    "knapp": "Translate the page to more languages",
+    "valt": "Translated to {{sprak}}",
+    "kanBliFel": "Google translates the page with a machine. The translation can be wrong.",
+    "myndighetsnamn": "Names of authorities, for example Arbetsförmedlingen (the Swedish Public Employment Service) and Försäkringskassan (the Swedish Social Insurance Agency), should stay in Swedish. Use the Swedish name when you search online or call.",
+    "listEtikett": "Choose a language for the translation",
+    "original": "Swedish (no translation)"
   }
 }

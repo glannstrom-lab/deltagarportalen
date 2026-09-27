@@ -148,3 +148,26 @@ describe('RD11: deltagarens förklaring på intyget', () => {
     expect(text).toContain('Bussen st')
   })
 })
+
+// RD29 (2026-09-27): deltagarens egen redovisning står på intyget, skild från konsulentens markering.
+// Motprov: ta bort avsnittet i generateNarvaroIntygPDF → testet faller.
+describe('egen redovisning på intyget', () => {
+  it('skriver rubrik, förklaring, incheckningar och jobbsökande', async () => {
+    const blob = await generateNarvaroIntygBlob({
+      participantName: 'Dana Deltagare', organizationName: 'Testkommun', manad: '2026-10', sessions: [], idag: IDAG, regelverk: 'kommun',
+      egenRedovisningAvsnitt: {
+        rubrik: 'Min egen redovisning',
+        forklaring: 'Uppgifterna nedan har jag registrerat själv.',
+        incheckningar: { head: ['Datum', 'Pass'], body: [['7 oktober', 'Verkstad']], tomText: null },
+        jobbsokRubrik: 'Eget jobbsökande',
+        jobbsokRader: ['Skickade ansökningar: 3'],
+      },
+    })
+    const text = await new Promise<string>((resolve, reject) => {
+      const l = new FileReader(); l.onload = () => resolve(String(l.result)); l.onerror = () => reject(l.error); l.readAsBinaryString(blob)
+    }).then(avEskapera)
+    expect(text).toContain('Min egen redovisning')
+    expect(text).toContain('Verkstad')
+    expect(text).toContain('Skickade ans')
+  })
+})

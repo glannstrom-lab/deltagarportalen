@@ -12,6 +12,8 @@ import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
 import type { DiaryEntry } from '@/services/diaryApi'
 import { cn } from '@/lib/utils'
 import { Card, Button, ErrorState } from '@/components/ui'
+// RD26: samma felmönster som övriga skrivvägar — texten kvar, Försök igen
+import { SkrivFel } from '@/components/ui/SkrivFel'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 const getMoodEmoji = (mood: number) => {
@@ -108,6 +110,10 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
       setMood(null)
       setTags([])
       onClose()
+    } catch (e) {
+      // RD26: ett kastat fel (nätet, sessionen) fick tidigare ingen felväg alls.
+      console.warn('[JournalTab] anteckningen kunde inte sparas', e)
+      setSparfel(t('diary.saveFailed'))
     } finally {
       setIsSaving(false)
     }
@@ -219,9 +225,13 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
         </div>
 
         {sparfel && (
-          <p role="alert" className="mx-6 mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/20 dark:text-red-300">
-            {sparfel}
-          </p>
+          <SkrivFel
+            className="mx-6 mb-4"
+            sort="spara"
+            meddelande={sparfel}
+            onForsokIgen={() => { void handleSave() }}
+            forsoker={isSaving}
+          />
         )}
 
         <div className="sticky bottom-0 bg-white dark:bg-stone-900 border-t border-stone-100 p-4 flex gap-3">

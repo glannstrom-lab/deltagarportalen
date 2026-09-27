@@ -31,6 +31,9 @@ import { useOrgAiSparr } from '@/hooks/useOrgAiSparr'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusSettingsWizard } from '@/components/focus/pages/FocusSettingsWizard'
 import { datumSprak } from '@/lib/datumsprak'
+// RD2/RD26 (rollspelet 2026-09-27): "Spara ändringar" gav 500 och ingen felrad
+import { SkrivFel } from '@/components/ui/SkrivFel'
+import { useSkrivning } from '@/components/ui/useSkrivning'
 
 interface SettingSection {
   id: string
@@ -79,7 +82,6 @@ function SettingsInner() {
     return sectionDefs.some(s => s.id === requested) ? (requested as string) : 'profile'
   })
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
-  const [isSaving, setIsSaving] = useState(false)
 
   // Profile data
   const [profileData, setProfileData] = useState({
@@ -108,7 +110,6 @@ function SettingsInner() {
   /** MV1: vilken samtyckesväxlare som misslyckades, om någon. Null = allt gick bra. */
   const [consentSaveFailed, setConsentSaveFailed] = useState<string | null>(null)
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
-  const [isTogglingAi, setIsTogglingAi] = useState(false)
 
   const { user, profile: authProfile } = useAuthStore()
 
@@ -179,9 +180,9 @@ function SettingsInner() {
     void loadProfile()
   }, [userId])
 
-  const handleSaveProfile = async () => {
-    try {
-      setIsSaving(true)
+  // RD2/RD26: felet svaldes med console.error och knappen såg ut att ha sparat.
+  // Nu visas <SkrivFel> med Försök igen, och fälten står kvar som de var.
+  const profilSparning = useSkrivning(async () => {
       // `Tables['profiles']` i lib/supabase.ts saknar `bio` (och ~30 andra
       // riktiga kolumner, se `ai_enabled` nedan) — den typen ägs inte här,
       // så vi kan bara casta runt den lokalt. `bio` finns i prod-schemat.
@@ -191,12 +192,9 @@ function SettingsInner() {
         phone: profileData.phone,
         bio: profileData.bio,
       } as Parameters<typeof userApi.updateProfile>[0] & { bio: string })
-    } catch (error) {
-      console.error(t('settings.profile.errorSaving'), error)
-    } finally {
-      setIsSaving(false)
-    }
-  }
+  })
+  const isSaving = profilSparning.lage === 'skickar'
+  const handleSaveProfile = () => { void profilSparning.kor() }
 
   // Handle consent toggle
   const handleConsentToggle = async (
@@ -280,19 +278,14 @@ function SettingsInner() {
   const orgAiSparr = useOrgAiSparr()
 
   // GDPR Art 21 — växla "AI-funktioner PÅ/AV" utan att återkalla samtycke
-  const handleAiToggle = async () => {
-    try {
-      setIsTogglingAi(true)
-      const newValue = !consentData.aiEnabled
-      // Samma stale-typ-fälla som bio ovan — `ai_enabled` finns i prod.
-      await userApi.updateProfile({ ai_enabled: newValue } as Parameters<typeof userApi.updateProfile>[0] & { ai_enabled: boolean })
-      setConsentData(prev => ({ ...prev, aiEnabled: newValue }))
-    } catch (error) {
-      console.error('Error toggling AI:', error)
-    } finally {
-      setIsTogglingAi(false)
-    }
-  }
+  // RD26: samma mönster — växlaren fick tidigare se ut att ha fungerat.
+  const aiVaxling = useSkrivning(async (newValue: boolean) => {
+    // Samma stale-typ-fälla som bio ovan — `ai_enabled` finns i prod.
+    await userApi.updateProfile({ ai_enabled: newValue } as Parameters<typeof userApi.updateProfile>[0] & { ai_enabled: boolean })
+    setConsentData(prev => ({ ...prev, aiEnabled: newValue }))
+  })
+  const isTogglingAi = aiVaxling.lage === 'skickar'
+  const handleAiToggle = () => { void aiVaxling.kor(!consentData.aiEnabled) }
 
   // Format date for display
   const formatConsentDate = (dateString: string | null) => {
@@ -390,6 +383,14 @@ function SettingsInner() {
 
                 <ProgramSelector />
 
+                {profilSparning.lage === 'fel' && (
+                  <SkrivFel sort="spara" onForsokIgen={() => { void profilSparning.forsokIgen() }} forsoker={isSaving} />
+                )}
+                {profilSparning.lage === 'klart' && (
+                  <p role="status" className="text-sm text-emerald-700 dark:text-emerald-300">
+                    {t('settings.profile.sparat', 'Dina ändringar är sparade.')}
+                  </p>
+                )}
                 <div className="flex justify-end pt-4 border-t border-stone-100 dark:border-stone-800">
                   <Button
                     variant="primary"
@@ -674,6 +675,9 @@ function SettingsInner() {
                               ? t('settings.privacy.aiToggle.statusOn', 'AI-funktioner är aktiva')
                               : t('settings.privacy.aiToggle.statusOff', 'AI-funktioner är pausade')}
                         </p>
+                        {aiVaxling.lage === 'fel' && (
+                          <SkrivFel sort="spara" className="mt-2" onForsokIgen={() => { void aiVaxling.forsokIgen() }} forsoker={isTogglingAi} />
+                        )}
                         {orgAiSparr && (
                           <p className="text-sm text-stone-600 dark:text-stone-400 mt-2" role="status">
                             {t('settings.privacy.orgAiLock.text', { defaultValue: 'AI-funktionerna är avstängda av {{orgName}}. Det gäller oavsett din egen inställning.', orgName: orgAiSparr.org_name })}

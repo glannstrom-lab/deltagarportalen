@@ -19,6 +19,7 @@ import type { jsPDF } from 'jspdf'
 import type { ActivitySession } from './aktivitetApi'
 import { arNarvaro, timmar, type ActivityType, type Attendance } from './aktivitetSchema'
 import { forklaringAv, franvaroAv, type FranvaroOrsak } from './franvaroApi'
+import type { EgenRedovisningAvsnitt } from '@/components/minvecka/egenRedovisning'
 
 let jsPDFModule: typeof import('jspdf') | null = null
 let autoTableModule: typeof import('jspdf-autotable') | null = null
@@ -74,6 +75,18 @@ export interface IntygInput {
   idag?: string
   /** RD3: planens regelverk. Utelämnat/null = okänt → ingen myndighet i sidfoten. */
   regelverk?: 'kommun' | 'leverantor' | null
+  /**
+   * RK40: planens ärende-/dossiernummer (`plan.case_reference`). Raden skrivs
+   * bara när ett nummer finns — deltagaren ska inte se ett tomt fält hen inte
+   * kan fylla i.
+   */
+  caseReference?: string | null
+  /**
+   * RD29 (2026-09-27): deltagarens egen redovisning — incheckningar och eget
+   * jobbsökande, färdigformulerat av `egenRedovisningAvsnitt`. Tydligt skilt
+   * från konsulentens markering; utelämnat = avsnittet skrivs inte.
+   */
+  egenRedovisningAvsnitt?: EgenRedovisningAvsnitt
 }
 
 /** Sidfotens mening om vem som beslutar — aldrig kommunens utan belägg. */
@@ -209,6 +222,7 @@ export async function generateNarvaroIntygPDF(input: IntygInput): Promise<jsPDF>
     body: [
       ['Deltagare', participantName.trim() || STRECK],
       ['Organisation', organizationName?.trim() || STRECK],
+      ...(input.caseReference?.trim() ? [[input.regelverk === 'leverantor' ? 'Ärende-id hos Arbetsförmedlingen' : 'Ärendenummer', input.caseReference.trim()]] : []),
       ['Period', manadsEtikett(manad)],
       ['Genererat', `${datumSv(idag)} ur Jobin, av deltagaren själv`],
     ],
@@ -246,6 +260,43 @@ export async function generateNarvaroIntygPDF(input: IntygInput): Promise<jsPDF>
     const sumRader = doc.splitTextToSize(`Pass per utfall: ${summering}.`, bredd - marg * 2) as string[]
     doc.text(sumRader, marg, y)
     y += sumRader.length * 5 + 3
+  }
+
+  const egen = input.egenRedovisningAvsnitt
+  if (egen) {
+    if (y + 40 > hojd - 25) { doc.addPage(); y = marg }
+    y += 4
+    doc.setFontSize(12)
+    doc.text(egen.rubrik, marg, y)
+    y += 5
+    doc.setFontSize(9)
+    const fork = doc.splitTextToSize(egen.forklaring, bredd - marg * 2) as string[]
+    doc.text(fork, marg, y)
+    y += fork.length * 4 + 2
+    if (egen.incheckningar.body.length > 0) {
+      autoTable(doc, {
+        startY: y,
+        head: [egen.incheckningar.head],
+        body: egen.incheckningar.body,
+        styles: { fontSize: 9, cellPadding: 1.5 },
+        headStyles: { fillColor: [235, 235, 235], textColor: 20 },
+        margin: { left: marg, right: marg },
+      })
+      y = doc.lastAutoTable.finalY + 5
+    } else if (egen.incheckningar.tomText) {
+      doc.setFontSize(10)
+      doc.text(egen.incheckningar.tomText, marg, y + 3)
+      y += 8
+    }
+    if (y + 20 > hojd - 25) { doc.addPage(); y = marg }
+    doc.setFontSize(10)
+    doc.text(egen.jobbsokRubrik, marg, y)
+    y += 5
+    for (const rad of egen.jobbsokRader) {
+      const r = doc.splitTextToSize(`• ${rad}`, bredd - marg * 2) as string[]
+      doc.text(r, marg, y)
+      y += r.length * 5
+    }
   }
 
   if (y + 30 > hojd - 25) {

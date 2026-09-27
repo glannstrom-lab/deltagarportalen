@@ -8,16 +8,21 @@
  * Närvaron sätts genom samma API som Aktivitet-sektionen på deltagarsidan
  * (`aktivitetsplanApi.markAttendance`) — ingen kopia av logiken.
  *
+ * RK36 (rollspelet 2026-09-27): när flera deltagare har samma pass (samma tid
+ * och titel, t.ex. Jobbsökarverkstaden) leder "Markera hela passet" till
+ * gruppvyn, där hela passet markeras på en skärm.
+ *
  * Tre lägen: laddar / fel / klart. Tomt underlag är en invit, inte en nolla.
  * Konsulentvyn är svensk med flit (DESIGN.md §2).
  */
 
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Calendar, CheckCircle, AlertTriangle, Clock, Loader2 } from '@/components/ui/icons'
+import { Calendar, CheckCircle, AlertTriangle, Clock, Loader2, Users } from '@/components/ui/icons'
 import { aktivitetsplanApi } from '@/services/aktivitetApi'
 import type { Attendance } from '@/services/aktivitetSchema'
 import { hamtaDagensPass, passStatus, NARVARO_ETIKETT, type PassIdag } from '@/lib/dagensPass'
+import { gemensammaPass, gruppLank } from '@/lib/gruppnarvaro'
 
 type Lage = 'laddar' | 'fel' | 'klart'
 import { notifications } from '@/lib/toast'
@@ -67,6 +72,9 @@ export function DagensPass({ namnFor }: Props) {
           Dagens pass
         </h4>
         {lage === 'klart' && <span className="text-xs text-stone-500 dark:text-stone-400">({pass.length})</span>}
+        <Link to="/consultant/pass/grupp" className="ml-auto text-xs font-medium text-stone-600 dark:text-stone-300 hover:underline">
+          Närvaro per pass
+        </Link>
       </div>
 
       {lage === 'laddar' && (
@@ -84,6 +92,21 @@ export function DagensPass({ namnFor }: Props) {
       )}
       {lage === 'klart' && pass.length === 0 && (
         <p className="text-sm text-stone-500 dark:text-stone-400">Inga pass i dag. Planerna finns under varje deltagares Aktivitet.</p>
+      )}
+      {lage === 'klart' && gemensammaPass(pass).length > 0 && (
+        <ul className="mb-2 flex flex-wrap gap-2" aria-label="Pass med flera deltagare">
+          {gemensammaPass(pass).map((g) => (
+            <li key={g.nyckel}>
+              <Link
+                to={gruppLank(g)}
+                className="inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-lg border border-stone-300 dark:border-stone-600 text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-700"
+              >
+                <Users className="w-3.5 h-3.5" aria-hidden="true" />
+                Markera hela passet: {g.title} {g.start_time}–{g.end_time} ({g.pass.length} deltagare)
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
       {lage === 'klart' && pass.length > 0 && (
         <ul className="space-y-2">

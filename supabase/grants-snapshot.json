@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T19:07:25.448Z",
+  "generatedAt": "2026-09-27T23:03:47.374Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -158,6 +158,13 @@
     {
       "name": "consultant_has_access",
       "signature": "consultant_has_access(uuid,uuid,text)",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "consultant_journal_historik",
+      "signature": "consultant_journal_historik()",
       "definer": true,
       "anon": false,
       "authenticated": false
@@ -994,6 +1001,10 @@
       "rls": true
     },
     {
+      "name": "consultant_journal_revisions",
+      "rls": true
+    },
+    {
       "name": "consultant_meetings",
       "rls": true
     },
@@ -1203,6 +1214,10 @@
     },
     {
       "name": "mood_logs",
+      "rls": true
+    },
+    {
+      "name": "msfa_overforingar",
       "rls": true
     },
     {

@@ -61,7 +61,7 @@ describe('ParticipantJournal — spara med vald kategori', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Spara$/i }))
 
     await waitFor(() => {
-      expect(props.onAddEntry).toHaveBeenCalledWith('Har bokat in en provintervju på fredag.', 'PROGRESS')
+      expect(props.onAddEntry).toHaveBeenCalledWith('Har bokat in en provintervju på fredag.', 'PROGRESS', expect.objectContaining({ contactForm: null }))
     })
   })
 
@@ -78,7 +78,8 @@ describe('ParticipantJournal — spara med vald kategori', () => {
     await waitFor(() => {
       expect(props.onAddEntry).toHaveBeenCalledWith(
         'Verkar nedstämd, bör följas upp innan nästa möte.',
-        'CONCERN'
+        'CONCERN',
+        expect.objectContaining({ contactForm: null })
       )
     })
   })
@@ -123,7 +124,7 @@ describe('ParticipantJournal — redigering', () => {
     fireEvent.click(screen.getByRole('button', { name: /^Uppdatera$/i }))
 
     await waitFor(() => {
-      expect(props.onUpdateEntry).toHaveBeenCalledWith('entry-1', 'Rättad text efter uppföljning.', 'CONCERN')
+      expect(props.onUpdateEntry).toHaveBeenCalledWith('entry-1', 'Rättad text efter uppföljning.', 'CONCERN', expect.anything())
     })
   })
 })
@@ -213,14 +214,16 @@ describe('ParticipantJournal — läsrätt efter överlämning (KS2 b)', () => {
     expect(screen.getByText(/skriven av en tidigare konsulent/i)).toBeTruthy()
   })
 
-  it('egen rad har kvar redigera och ta bort, och ingen författarrad', () => {
+  // RK38 (2026-09-27): författaren står på VARJE rad (SoL) — för egna rader "skriven av dig".
+  it('egen rad har kvar redigera och ta bort, och säger att du skrev den', () => {
     renderJournal({
       currentConsultantId: 'kons-ny',
       entries: [makeEntry({ id: 'egen', consultantId: 'kons-ny' })],
     })
     expect(screen.getByRole('button', { name: /redigera anteckningen/i })).toBeTruthy()
     expect(screen.getByRole('button', { name: /ta bort anteckningen/i })).toBeTruthy()
-    expect(screen.queryByText(/skriven av/i)).toBeNull()
+    expect(screen.getByText(/skriven av dig/i)).toBeTruthy()
+    expect(screen.queryByText(/skriven av en tidigare konsulent/i)).toBeNull()
   })
 
   it('en rad utan consultantId behandlas som egen (bakåtkompatibelt)', () => {

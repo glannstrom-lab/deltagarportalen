@@ -39,6 +39,7 @@ import type { ActivityType, Attendance } from './aktivitetSchema'
 import { franvaroAv, type FranvaroOrsak } from './franvaroApi'
 import { orgApi } from './orgApi'
 import { regelverkForPlan } from '@/components/consultant/orgTypVisning'
+import { ARENDE_ETIKETT, PLAN_PASS_KOLUMNER_FINNS } from './planMarkning'
 
 let jsPDFModule: typeof import('jspdf') | null = null
 let autoTableModule: typeof import('jspdf-autotable') | null = null
@@ -105,6 +106,10 @@ export interface UnderlagspaketInput {
   regelverk?: 'kommun' | 'leverantor' | null
   /** Tidpunkt för utskriften (injicerbar för test). */
   nu?: Date
+  /** RK40: planens ärende-/dossiernummer; raden skrivs när kolumnen finns (tomt = "-"). */
+  caseReference?: string | null
+  /** Utelämnat = när kolumnen finns (PENDING_20260927d). */
+  visaArende?: boolean
 }
 
 function datumMedVeckodag(iso: string): string {
@@ -262,6 +267,9 @@ export async function generateUnderlagspaketPDF(input: UnderlagspaketInput): Pro
     body: [
       ['Deltagare', input.participantName.trim() || STRECK],
       ['Organisation', input.organizationName?.trim() || STRECK],
+      ...(input.visaArende ?? PLAN_PASS_KOLUMNER_FINNS
+        ? [[input.regelverk === 'leverantor' ? ARENDE_ETIKETT.leverantor : ARENDE_ETIKETT.kommun, input.caseReference?.trim() || STRECK]]
+        : []),
       ['Period', `${datumKort(underlag.period_from)} - ${datumKort(underlag.period_to)}`],
       ['Mottagare', underlag.recipient.trim() || STRECK],
       ['Lämnat', `${tidpunkt(underlag.handed_over_at)} av ${input.lamnatAv.trim() || STRECK}`],
@@ -372,7 +380,8 @@ export function underlagspaketFilnamn(participantName: string, from: string, to:
  * att läsa står det "-" eller "Namn saknas".
  */
 export async function laddaNerUnderlagspaket(args: {
-  plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'org_id'>
+  /** `case_reference` följer med när anroparen har hela planen (RK40). */
+  plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'org_id'> & { case_reference?: string | null }
   underlag: UnderlagspaketInput['underlag'] & Pick<PlanHandover, 'handed_over_by'>
   participantName?: string | null
   /** Namnet på den inloggade konsulenten, om det redan finns i klienten. */
@@ -408,6 +417,7 @@ export async function laddaNerUnderlagspaket(args: {
     sessions,
     namn,
     regelverk: medlemskap ? regelverkForPlan(medlemskap, plan.org_id) : null,
+    caseReference: plan.case_reference ?? null,
   })
   doc.save(underlagspaketFilnamn(participantName, underlag.period_from, underlag.period_to))
 }

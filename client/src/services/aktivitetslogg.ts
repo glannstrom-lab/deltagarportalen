@@ -20,10 +20,11 @@
  * Av samma skäl räknas inte SFI och studier (RK28, `arVerksamhetsledd`):
  * de är anvisade i kommunens plan men hålls av skolan, inte leverantören.
  *
- * Vad som räknas som fysiskt: `activity_type === 'workplace'` eller ett
- * ifyllt `location`. Portalen har ingen egen flagga för fysisk/digital, så
- * det här är en härledning — kortet skriver ut regeln så konsulenten vet
- * vad siffran bygger på.
+ * Vad som räknas som fysiskt: passets märkning `is_physical` (RR27) när den
+ * finns, annars härledningen `activity_type === 'workplace'` eller ett ifyllt
+ * `location`. Samma sak för leverantörsledd: `is_provider_led` när den finns,
+ * annars `arVerksamhetsledd`. Gamla pass saknar märkningen — kortet säger hur
+ * många av passen som bygger på härledningen (`passHarleddFysisk`).
  *
  * Veckor: måndag–söndag, lokal tid. Bedömda veckor är de som överlappar
  * BÅDE perioden och planens giltighetstid. Timmarna i en vecka räknas över
@@ -34,7 +35,8 @@
  */
 
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
-import { addDays, arNarvaro, arVerksamhetsledd, parseLocalDate, timmar, veckansMandag, type PassTyp } from './aktivitetSchema'
+import { addDays, arNarvaro, parseLocalDate, timmar, veckansMandag, type PassTyp } from './aktivitetSchema'
+import { arFysisktPass, arLeverantorsledd, fysiskHarledd, harlettFysiskt, ledningHarledd, type PassFlaggor } from './planMarkning'
 
 export interface Period {
   from: string
@@ -61,11 +63,15 @@ export interface Avtalskrav {
   passFysiska: number
   /** 0–1, eller `null` när inget närvaropass finns — aldrig 0 % utan underlag. */
   andelFysiska: number | null
+  /** RR27: närvaropass (bland `passNarvaro`) vars fysisk/digital bygger på härledningen, inte en märkning. */
+  passHarleddFysisk: number
+  /** RR27: närvaropass i veckorna vars leverantörsledd/egen bygger på härledningen. */
+  passHarleddLedning: number
 }
 
 type PlanFalt = Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date'>
 // activity_type som PassTyp: loggen ska räkna rätt redan när de utökade typerna (RK28) slås på.
-type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'start_time' | 'end_time' | 'attendance' | 'location'> & { activity_type: PassTyp }
+type SessionFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'start_time' | 'end_time' | 'attendance' | 'location'> & { activity_type: PassTyp } & PassFlaggor
 
 
 /** Planmånad (1 = startmånaden) för ett datum. Datum före start ger 1. */
@@ -85,8 +91,9 @@ export function kravTimmarForManad(manad: number): number | null {
   return null
 }
 
+/** Härledningen (utan märkning). Märkta pass går genom `arFysisktPass` i planMarkning.ts. */
 export function arFysiskt(s: Pick<ActivitySession, 'location'> & { activity_type: PassTyp }): boolean {
-  return s.activity_type === 'workplace' || (s.location !== null && s.location.trim() !== '')
+  return harlettFysiskt(s)
 }
 
 /** `YYYY-MM` → månadens första och sista dag. */
@@ -115,7 +122,7 @@ export function avtalskravPerDeltagare(
   const start = period.from > plan.start_date ? period.from : plan.start_date
   const slut = plan.end_date !== null && plan.end_date < period.to ? plan.end_date : period.to
 
-  const egna = sessions.filter((s) => s.plan_id === plan.id && arVerksamhetsledd(s) && arNarvaro(s.attendance))
+  const egna = sessions.filter((s) => s.plan_id === plan.id && arLeverantorsledd(s) && arNarvaro(s.attendance))
   const veckor: Veckobedomning[] = []
 
   if (start <= slut) {
@@ -137,7 +144,7 @@ export function avtalskravPerDeltagare(
   const iBedomda = forsta !== undefined && sista !== undefined
     ? egna.filter((s) => s.date >= forsta && s.date <= sista)
     : []
-  const passFysiska = iBedomda.filter(arFysiskt).length
+  const passFysiska = iBedomda.filter(arFysisktPass).length
 
   return {
     planId: plan.id,
@@ -148,6 +155,12 @@ export function avtalskravPerDeltagare(
     passNarvaro: iBedomda.length,
     passFysiska,
     andelFysiska: iBedomda.length === 0 ? null : passFysiska / iBedomda.length,
+    passHarleddFysisk: iBedomda.filter(fysiskHarledd).length,
+    // Ledningen avgör vilka pass som räknas alls, så räkningen görs över alla
+    // närvaropass i veckorna — även de härledda som föll bort som "egna".
+    passHarleddLedning: forsta !== undefined && sista !== undefined
+      ? sessions.filter((s) => s.plan_id === plan.id && arNarvaro(s.attendance) && s.date >= forsta && s.date <= sista && ledningHarledd(s)).length
+      : 0,
   }
 }
 
@@ -209,7 +222,7 @@ function timText(h: number): string {
   return `${String(Math.round(h * 10) / 10).replace('.', ',')} h`
 }
 
-type AvvikelsePass = Pick<ActivitySession, 'plan_id' | 'date' | 'title' | 'attendance' | 'activity_type' | 'sick_certificate_received'>
+type AvvikelsePass = Pick<ActivitySession, 'plan_id' | 'date' | 'title' | 'attendance' | 'activity_type' | 'sick_certificate_received'> & PassFlaggor
 
 /**
  * Fälten för EN plan i EN period, som text att kopiera. `krav` är samma
@@ -248,7 +261,7 @@ export function periodiskaFalt(
     })()
 
   const avvikelser = sessions
-    .filter((s) => s.plan_id === krav.planId && arVerksamhetsledd(s) && s.date >= period.from && s.date <= period.to && s.attendance !== null && s.attendance in AVVIKELSE_TEXT)
+    .filter((s) => s.plan_id === krav.planId && arLeverantorsledd(s) && s.date >= period.from && s.date <= period.to && s.attendance !== null && s.attendance in AVVIKELSE_TEXT)
     .sort((a, b) => a.date.localeCompare(b.date))
     .map((s) => {
       const utfall = s.attendance === 'sick_certified'

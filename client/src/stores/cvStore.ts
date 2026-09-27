@@ -30,6 +30,14 @@ interface CVUIState {
   // Draft handling
   hasDraft: boolean
   setHasDraft: (hasDraft: boolean) => void
+
+  /**
+   * RD26: "Försök igen" i SaveIndicator. Registreras av useCVAutoSave (som
+   * äger det som inte hann sparas); null när ingen CV-byggare är monterad.
+   * Persisteras inte.
+   */
+  forsokSparaIgen: (() => void) | null
+  setForsokSparaIgen: (fn: (() => void) | null) => void
 }
 
 export const useCVStore = create<CVUIState>()(
@@ -45,6 +53,7 @@ export const useCVStore = create<CVUIState>()(
       cvScore: 0,
       pendingCount: 0,
       hasDraft: false,
+      forsokSparaIgen: null,
       
       // Actions
       setCurrentStep: (step) => set({ currentStep: step }),
@@ -74,6 +83,7 @@ export const useCVStore = create<CVUIState>()(
       setCVScore: (score) => set({ cvScore: score }),
       setPendingCount: (count) => set({ pendingCount: count }),
       setHasDraft: (hasDraft) => set({ hasDraft }),
+      setForsokSparaIgen: (fn) => set({ forsokSparaIgen: fn }),
       }),
       {
         name: 'cv-ui-storage',

@@ -5,7 +5,7 @@
  * "före migrationen" faller.
  */
 import { describe, it, expect } from 'vitest'
-import { valjRegelverk } from './planensRegelverk'
+import { valjRegelverk, valjOrganisation } from './planensRegelverk'
 
 describe('valjRegelverk', () => {
   it('planens organisation avgör', () => {
@@ -27,5 +27,25 @@ describe('valjRegelverk', () => {
   it('före migrationen saknar vyn org_kind — då neutral, inte kommun', () => {
     expect(valjRegelverk([{ org_id: 'k' }], 'k')).toBeNull()
     expect(valjRegelverk([{ org_id: 'k' }], null)).toBeNull()
+  })
+})
+
+/**
+ * RD25: planens organisation med namn. Namnet följer planens rad; utan den bara
+ * när det finns en enda organisation. Mutation: ta första raden alltid → faller.
+ */
+describe('valjOrganisation (RD25)', () => {
+  it('namnet följer planens organisation', () => {
+    const rader = [
+      { org_id: 'k', org_kind: 'kommun', org_name: 'Demokommun' },
+      { org_id: 'l', org_kind: 'leverantor', org_name: 'Demo Coach AB' },
+    ]
+    expect(valjOrganisation(rader, 'l')).toEqual({ regelverk: 'leverantor', orgNamn: 'Demo Coach AB' })
+  })
+
+  it('utan planens rad: namn bara när det finns en enda organisation', () => {
+    expect(valjOrganisation([{ org_id: 'l', org_kind: 'leverantor', org_name: 'Demo Coach AB' }], null).orgNamn).toBe('Demo Coach AB')
+    expect(valjOrganisation([{ org_id: 'k', org_name: 'A' }, { org_id: 'l', org_name: 'B' }], null).orgNamn).toBeNull()
+    expect(valjOrganisation([{ org_id: 'k', org_name: '  ' }], 'k').orgNamn).toBeNull()
   })
 })

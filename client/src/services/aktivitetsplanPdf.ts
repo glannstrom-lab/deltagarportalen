@@ -22,6 +22,7 @@ import type { ActivityPlan, ActivitySession } from './aktivitetApi'
 import { FORSORJNINGSHINDER_ETIKETT } from './aktivitetApi'
 import { addDays, isoWeekday, timmar, veckansMandag, type ActivityType } from './aktivitetSchema'
 import { orgApi } from './orgApi'
+import { ARENDE_ETIKETT, PLAN_PASS_KOLUMNER_FINNS, planensArende } from './planMarkning'
 // Ren modul utan React — samma regel som konsulentvyns kort, så plan-PDF:en och
 // Rapporter aldrig kan välja olika regelverk för samma organisation.
 import { regelverkForPlan, type Regelverk } from '@/components/consultant/orgTypVisning'
@@ -75,6 +76,8 @@ export interface PlanPdfInput {
    * faller tillbaka på kommunens text (som före RR2).
    */
   regelverk?: Regelverk
+  /** RK40: skriv ärendenummerraden. Utelämnat = när kolumnen finns (PENDING_20260927d). */
+  visaArende?: boolean
 }
 
 /** Texterna som skiljer kommunens plan från leverantörens planering. */
@@ -163,6 +166,10 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
     ['Deltagare', tomt(participantName)],
     [texter.konsulent, tomt(consultantName)],
     ['Organisation', tomt(organizationName)],
+    // RK40: ärendenumret matchar planen hos handläggaren utan personnummer.
+    ...(input.visaArende ?? PLAN_PASS_KOLUMNER_FINNS
+      ? [[ARENDE_ETIKETT[input.regelverk ?? 'kommun'], tomt(planensArende(plan))] as [string, string]]
+      : []),
     ['Schemamall', tomt(plan.template_name)],
     ['Period', `${datumSv(plan.start_date)} - ${plan.end_date ? datumSv(plan.end_date) : 'tills vidare'}`],
     ['Veckomål', timmarPerVecka(Number(plan.weekly_hours_target))],

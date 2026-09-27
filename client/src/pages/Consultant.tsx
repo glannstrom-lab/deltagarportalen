@@ -21,6 +21,8 @@ const CommunicationTab = lazy(() => import('./consultant/CommunicationTab').then
 const ResourcesTab = lazy(() => import('./consultant/ResourcesTab').then(m => ({ default: m.ResourcesTab })))
 const SettingsTab = lazy(() => import('./consultant/SettingsTab').then(m => ({ default: m.SettingsTab })))
 const ParticipantDetailPage = lazy(() => import('./consultant/ParticipantDetailPage').then(m => ({ default: m.ParticipantDetailPage })))
+// RK36 (rollspelet 2026-09-27): närvaro för ett helt pass, nås från Dagens pass i Min dag.
+const GruppnarvaroPage = lazy(() => import('./consultant/GruppnarvaroPage').then(m => ({ default: m.GruppnarvaroPage })))
 
 export default function Consultant() {
   const { t } = useTranslation()
@@ -39,6 +41,7 @@ export default function Consultant() {
             <Route index element={<OverviewTab />} />
             <Route path="participants" element={<ParticipantsTab />} />
             <Route path="participants/:participantId" element={<ParticipantDetailPage />} />
+            <Route path="pass/grupp" element={<GruppnarvaroPage />} />
             <Route path="platser" element={<PlatserTab />} />
             <Route path="analytics" element={<AnalyticsTab />} />
             <Route path="communication" element={<CommunicationTab />} />

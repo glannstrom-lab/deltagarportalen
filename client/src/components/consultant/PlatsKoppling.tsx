@@ -6,6 +6,9 @@
  * Ingen plats och inga arbetsplatspass = ingen ruta. Går Platser inte att
  * hämta syns en rad om det — aldrig en tom lista som ser ut som "inga platser".
  *
+ * RK37: en plats utan pass kan läggas in i planen härifrån (PlatsPassDialog),
+ * så att timmarna räknas — tidigare stod bara "lägg till dem med Lägg till pass".
+ *
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
 import { useEffect, useState } from 'react'
@@ -14,13 +17,22 @@ import { Building2 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { placeringarApi, type Placering } from '@/services/placeringarApi'
 import { platsAvstamning, type PassRad } from '@/services/platsKoppling'
+import { PLAN_PASS_KOLUMNER_FINNS } from '@/services/planMarkning'
 import { PLACERING_TYP_LABEL, PLACERING_STATUS_LABEL } from './placeringLabels'
 import { langtDatum } from './aktivitetEtiketter'
+import { PlatsPassDialog, type PlatsPassPlan } from './PlatsPassDialog'
 
 type Lage = { status: 'laddar' } | { status: 'fel' } | { status: 'klart'; platser: Placering[] }
 
-export function PlatsKoppling({ participantId, sessions }: { participantId: string; sessions: readonly PassRad[] }) {
+export function PlatsKoppling({ participantId, sessions, plan, onPassSkapade }: {
+  participantId: string
+  sessions: readonly PassRad[]
+  /** Planen passen läggs in i. Utan plan (eller en avslutad) visas ingen knapp. */
+  plan?: PlatsPassPlan | null
+  onPassSkapade?: (antal: number) => void
+}) {
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
+  const [valdPlats, setValdPlats] = useState<Placering | null>(null)
 
   useEffect(() => {
     let aktiv = true
@@ -60,9 +72,14 @@ export function PlatsKoppling({ participantId, sessions }: { participantId: stri
         </ul>
       )}
       {platserUtanPass.map((p) => (
-        <p key={p.id} className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2" role="status">
-          {p.company_name} finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen. Lägg till dem med "Lägg till pass" (typ Arbetsplats).
-        </p>
+        <div key={p.id} className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2 flex flex-wrap items-center justify-between gap-2" role="status">
+          <span>{p.company_name} finns under Platser men har inga arbetsplatspass i planen — timmarna där räknas inte förrän passen ligger i planen.</span>
+          {plan && onPassSkapade && (
+            <button type="button" className="underline font-medium whitespace-nowrap" onClick={() => setValdPlats(lage.platser.find((x) => x.id === p.id) ?? null)}>
+              Lägg in i planen<span className="sr-only"> — {p.company_name}</span>
+            </button>
+          )}
+        </div>
       ))}
       {fritextUtanPlats.map((loc) => (
         <p key={loc} className="text-sm rounded-xl bg-sky-50 text-sky-900 dark:bg-sky-900/30 dark:text-sky-100 px-3 py-2" role="status">
@@ -70,8 +87,16 @@ export function PlatsKoppling({ participantId, sessions }: { participantId: stri
         </p>
       ))}
       <p className="text-xs text-stone-500 dark:text-stone-400">
-        Avstämningen jämför namnet på platsen med passens platsfält — passen och Platser är inte kopplade i databasen.
+        Avstämningen jämför namnet på platsen med passens platsfält{PLAN_PASS_KOLUMNER_FINNS ? ', och känner igen pass som lagts in härifrån' : ''}.
       </p>
+      {valdPlats && plan && onPassSkapade && (
+        <PlatsPassDialog
+          plats={valdPlats}
+          plan={plan}
+          onClose={() => setValdPlats(null)}
+          onSkapade={(antal) => { setValdPlats(null); onPassSkapade(antal) }}
+        />
+      )}
     </Card>
   )
 }

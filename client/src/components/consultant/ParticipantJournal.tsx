@@ -41,6 +41,13 @@
  * att "Oro" är dold för deltagaren har fel, och gränssnittet ska inte låta
  * det antagandet stå okorrigerat.
  *
+ * RK38 (rollspelet 2026-09-27) — journal enligt SoL: varje rad visar
+ * klockslag och författare. Efter PENDING_20260927d (services/journalSol.ts)
+ * också när kontakten skedde, kontaktform och en ändringslogg där originalet
+ * bevaras — en ändring eller radering sparar den tidigare versionen i
+ * databasen (trigger), inte bara i gränssnittet. Före migrationen döljs de
+ * fälten; ingenting skickas som databasen inte har kolumner för.
+ *
  * Konsulentvyn är medvetet oöversatt (DESIGN.md §2) — samma linje som
  * grannkomponenterna i den här mappen (ReportDraftDialog, GoalCreationDialog
  * m.fl.): svensk text rakt av, ingen `t()`.
@@ -63,16 +70,31 @@ import {
   Eye,
   RefreshCw,
   X,
+  History,
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { cn } from '@/lib/utils'
+import {
+  JOURNAL_SOL_KOLUMNER,
+  KONTAKTFORMER,
+  KONTAKTFORM_ETIKETT,
+  franDatetimeLocal,
+  journalTid,
+  klockslagFel,
+  kontaktTid,
+  tillDatetimeLocal,
+  type JournalMeta,
+  type JournalSolFalt,
+  type Kontaktform,
+} from '@/services/journalSol'
+import { JournalHistorik } from './JournalHistorik'
 
 export type NoteCategory = 'GENERAL' | 'PROGRESS' | 'CONCERN' | 'GOAL'
 
-export interface JournalEntry {
+export interface JournalEntry extends JournalMeta {
   id: string
   content: string
   category: NoteCategory
@@ -91,8 +113,9 @@ interface ParticipantJournalProps {
   /** Fel vid HÄMTNING av listan (skilt från fel på en enskild sparning). */
   loadError: string | null
   onRetryLoad: () => void
-  onAddEntry: (content: string, category: NoteCategory) => Promise<JournalMutationResult>
-  onUpdateEntry: (id: string, content: string, category: NoteCategory) => Promise<JournalMutationResult>
+  /** RK38: `extra` (klockslag, kontaktform) sprids in med journalKolumner() — tomt före migrationen. */
+  onAddEntry: (content: string, category: NoteCategory, extra?: JournalSolFalt) => Promise<JournalMutationResult>
+  onUpdateEntry: (id: string, content: string, category: NoteCategory, extra?: JournalSolFalt) => Promise<JournalMutationResult>
   onDeleteEntry: (id: string) => Promise<JournalMutationResult>
   /**
    * KS2 = b (2026-09-12): efter en överlämning läser den nya konsulenten
@@ -102,6 +125,8 @@ interface ParticipantJournalProps {
    * gör att gränssnittet inte lovar något som databasen nekar.
    */
   currentConsultantId?: string
+  /** RK38: finns SoL-kolumnerna? Standard: JOURNAL_SOL_KOLUMNER. Injicerbar för test. */
+  solKolumner?: boolean
   className?: string
 }
 
@@ -141,6 +166,7 @@ export function ParticipantJournal({
   onUpdateEntry,
   onDeleteEntry,
   currentConsultantId,
+  solKolumner = JOURNAL_SOL_KOLUMNER,
   className,
 }: ParticipantJournalProps) {
   const { confirm } = useConfirmDialog()
@@ -155,20 +181,35 @@ export function ParticipantJournal({
   // är öppen åt gången).
   const [content, setContent] = useState('')
   const [category, setCategory] = useState<NoteCategory>('GENERAL')
+  // RK38: när kontakten skedde (tomt = när anteckningen sparas) och hur.
+  const [klockslag, setKlockslag] = useState('')
+  const [kontaktform, setKontaktform] = useState<Kontaktform | ''>('')
+  const [historikFor, setHistorikFor] = useState<string | null>(null)
 
   const resetForm = () => {
     setIsAdding(false)
     setEditingId(null)
     setContent('')
     setCategory('GENERAL')
+    setKlockslag('')
+    setKontaktform('')
     setFormError(null)
   }
 
+  const extraFalt = (): JournalSolFalt | undefined =>
+    solKolumner ? { occurredAt: franDatetimeLocal(klockslag), contactForm: kontaktform || null } : undefined
+
   const handleSubmit = async () => {
     if (!content.trim() || submitting) return
+    const tidFel = solKolumner ? klockslagFel(klockslag) : null
+    if (tidFel) {
+      setFormError(tidFel)
+      return
+    }
     setSubmitting(true)
     setFormError(null)
-    const result = await onAddEntry(content.trim(), category)
+    const extra = extraFalt()
+    const result = extra ? await onAddEntry(content.trim(), category, extra) : await onAddEntry(content.trim(), category)
     setSubmitting(false)
     if (result.ok) {
       resetForm()
@@ -180,9 +221,17 @@ export function ParticipantJournal({
 
   const handleUpdate = async () => {
     if (!editingId || !content.trim() || submitting) return
+    const tidFel = solKolumner ? klockslagFel(klockslag) : null
+    if (tidFel) {
+      setFormError(tidFel)
+      return
+    }
     setSubmitting(true)
     setFormError(null)
-    const result = await onUpdateEntry(editingId, content.trim(), category)
+    const extra = extraFalt()
+    const result = extra
+      ? await onUpdateEntry(editingId, content.trim(), category, extra)
+      : await onUpdateEntry(editingId, content.trim(), category)
     setSubmitting(false)
     if (result.ok) {
       resetForm()
@@ -196,13 +245,17 @@ export function ParticipantJournal({
     setEditingId(entry.id)
     setContent(entry.content)
     setCategory(entry.category)
+    setKlockslag(entry.occurredAt ? tillDatetimeLocal(entry.occurredAt) : '')
+    setKontaktform(entry.contactForm ?? '')
     setFormError(null)
   }
 
   const handleDelete = async (entry: JournalEntry) => {
     const confirmed = await confirm({
       title: 'Ta bort anteckningen?',
-      message: 'Anteckningen går inte att återställa.',
+      message: solKolumner
+        ? 'Anteckningen tas bort ur journalen. Originalet sparas i ändringsloggen, där du och deltagaren kan läsa det.'
+        : 'Anteckningen går inte att återställa.',
       confirmText: 'Ta bort',
       cancelText: 'Avbryt',
       variant: 'danger',
@@ -220,12 +273,14 @@ export function ParticipantJournal({
     }
   }
 
+  // RK38: ordning och dag efter när kontakten skedde — ett samtal i går som
+  // journalförs i dag hör till i går. Före migrationen = när raden skrevs.
   const sortedEntries = [...entries].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    (a, b) => new Date(kontaktTid(b)).getTime() - new Date(kontaktTid(a)).getTime()
   )
 
   const groupedEntries = sortedEntries.reduce((groups, entry) => {
-    const date = new Date(entry.createdAt).toLocaleDateString('sv-SE', {
+    const date = new Date(kontaktTid(entry)).toLocaleDateString('sv-SE', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -304,7 +359,38 @@ export function ParticipantJournal({
               })}
             </div>
 
+            {solKolumner && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="text-sm text-stone-700 dark:text-stone-300">
+                  <label htmlFor="journal-klockslag" className="block mb-1">När skedde kontakten?</label>
+                  <input
+                    id="journal-klockslag"
+                    type="datetime-local"
+                    value={klockslag}
+                    onChange={(e) => setKlockslag(e.target.value)}
+                    aria-describedby="journal-klockslag-hint"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                  />
+                  <span id="journal-klockslag-hint" className="block mt-1 text-xs text-stone-500 dark:text-stone-400">Tomt = nu, när du sparar.</span>
+                </div>
+                <label className="text-sm text-stone-700 dark:text-stone-300">
+                  <span className="block mb-1">Kontaktform</span>
+                  <select
+                    value={kontaktform}
+                    onChange={(e) => setKontaktform(e.target.value as Kontaktform | '')}
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                  >
+                    <option value="">Ingen kontakt (egen anteckning)</option>
+                    {KONTAKTFORMER.map((k) => (
+                      <option key={k} value={k}>{KONTAKTFORM_ETIKETT[k]}</option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+            )}
+
             <textarea
+              aria-label="Anteckning"
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Skriv din anteckning här..."
@@ -385,18 +471,47 @@ export function ParticipantJournal({
                               <span className={cn('inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1', config.badge)}>
                                 {config.label}
                               </span>
-                              {!arEgen && (
-                                <span
-                                  className="inline-block text-xs text-stone-500 dark:text-stone-400 ml-2 mb-1"
-                                  title="Skrivet före överlämningen — går att läsa men inte ändra"
-                                >
-                                  Skriven av {entry.authorName ?? 'en tidigare konsulent'}
+                              {entry.contactForm && (
+                                <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-1 ml-2 bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-200">
+                                  {KONTAKTFORM_ETIKETT[entry.contactForm]}
                                 </span>
                               )}
+                              {/* RK38: klockslag och författare på varje rad. */}
+                              <span
+                                className="inline-block text-xs text-stone-500 dark:text-stone-400 ml-2 mb-1"
+                                title={!arEgen ? 'Skrivet före överlämningen — går att läsa men inte ändra' : undefined}
+                              >
+                                {entry.occurredAt ? 'Kontakt ' : 'Kl. '}
+                                {new Date(kontaktTid(entry)).toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })}
+                                {' · '}
+                                {arEgen ? 'skriven av dig' : `skriven av ${entry.authorName ?? 'en tidigare konsulent'}`}
+                                {entry.occurredAt && <> · journalförd {journalTid(entry.createdAt)}</>}
+                              </span>
 
                               <p className={cn('text-stone-700 dark:text-stone-200 whitespace-pre-wrap', !isExpanded && 'line-clamp-2')}>
                                 {entry.content}
                               </p>
+
+                              {entry.updatedAt && (
+                                <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                                  Ändrad {journalTid(entry.updatedAt)}
+                                  {solKolumner && (
+                                    <>
+                                      {' · '}
+                                      <button
+                                        type="button"
+                                        onClick={() => setHistorikFor(historikFor === entry.id ? null : entry.id)}
+                                        aria-expanded={historikFor === entry.id}
+                                        className="inline-flex items-center gap-1 underline hover:opacity-80"
+                                      >
+                                        <History className="w-3 h-3" aria-hidden="true" />
+                                        {historikFor === entry.id ? 'Dölj ändringarna' : 'Visa ändringarna'}
+                                      </button>
+                                    </>
+                                  )}
+                                </p>
+                              )}
+                              {historikFor === entry.id && <JournalHistorik journalId={entry.id} finns={solKolumner} />}
 
                               {entry.content.length > 150 && (
                                 <button

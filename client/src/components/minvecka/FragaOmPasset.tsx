@@ -8,11 +8,14 @@
  * valideringen jämförde längd, så den som suddade inledningen och skrev en kort
  * fråga fick "Skriv din fråga efter inledningen". Nu står passet som en rad
  * ovanför en tom ruta, och inledningen läggs till först när frågan skickas.
+ *
+ * RD26: ett fel säger att texten är kvar och erbjuder Försök igen (SkrivFel).
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/Button'
+import { SkrivFel } from '@/components/ui/SkrivFel'
 import type { ActivitySession } from '@/services/aktivitetApi'
 import { konsulentMeddelandeApi } from '@/services/konsulentMeddelandeApi'
 
@@ -29,6 +32,8 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
   const [text, setText] = useState('')
   const [skickar, setSkickar] = useState(false)
   const [fel, setFel] = useState<string | null>(null)
+  // RD26: sändfelet är ett eget läge — rutan är kvar och Försök igen gör om samma sak.
+  const [sandfel, setSandfel] = useState(false)
   const [skickatTill, setSkickatTill] = useState<string | null>(null)
 
   const inledning = t('minVecka.fraga.inledning', {
@@ -51,6 +56,7 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
     }
     setSkickar(true)
     setFel(null)
+    setSandfel(false)
     try {
       await konsulentMeddelandeApi.skickaTillMinKonsulent(`${inledning}${fraga}`)
       const k = await konsulentMeddelandeApi.minKonsulent().catch(() => null)
@@ -58,8 +64,9 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
       setSkickatTill(namn)
       setOppen(false)
       onSent?.(namn)
-    } catch {
-      setFel(t('minVecka.fraga.fel', 'Frågan gick inte att skicka. Du kan skriva till din konsulent från sidan Min konsulent.'))
+    } catch (e) {
+      console.warn('[FragaOmPasset] frågan kunde inte skickas', e)
+      setSandfel(true)
     } finally {
       setSkickar(false)
     }
@@ -109,6 +116,13 @@ export function FragaOmPasset({ session, datumText, onSent }: Props) {
         className="w-full rounded-lg border border-stone-300 dark:border-stone-600 bg-white dark:bg-stone-900 p-3 text-sm text-stone-900 dark:text-stone-100"
       />
       {fel && <p role="alert" className="text-sm text-red-700 dark:text-red-300">{fel}</p>}
+      {sandfel && (
+        <SkrivFel
+          extra={t('skrivfel.minKonsulent', 'Du kan också skriva eller ringa till din konsulent från sidan Min konsulent.')}
+          onForsokIgen={() => { void skicka() }}
+          forsoker={skickar}
+        />
+      )}
       <div className="flex flex-wrap gap-2">
         <Button className="min-h-11" onClick={skicka} disabled={skickar}>
           {skickar ? t('minVecka.fraga.skickar', 'Skickar …') : t('minVecka.fraga.skicka', 'Skicka')}

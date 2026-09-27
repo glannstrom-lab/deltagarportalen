@@ -3,6 +3,7 @@ import { LATT_SVENSKA_KOD, arLattSvenska, sattLattSvenska } from '@/i18n/lattSve
 import { useTranslation } from 'react-i18next'
 import { Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { OversattSidan } from '@/components/sprak/OversattSidan'
 
 // SVG Flag components for consistent rendering
 function SwedishFlag({ className }: { className?: string }) {
@@ -101,9 +102,7 @@ export function LanguageSwitcher() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
-            role="listbox"
-            aria-label={t('language.select', 'Välj språk')}
+            className="absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2rem)] bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
           >
             {/* Header */}
             <div className="px-4 py-2.5 bg-sky-50 dark:bg-sky-900/20 dark:from-sky-900/20 dark:to-blue-900/20 border-b border-stone-100 dark:border-stone-700">
@@ -112,7 +111,7 @@ export function LanguageSwitcher() {
               </h3>
             </div>
 
-            <div className="p-1.5">
+            <div className="p-1.5" role="listbox" aria-label={t('language.select', 'Välj språk')}>
               {languages.map((lang) => {
                 const LangFlag = lang.Flag
                 return (
@@ -147,6 +146,10 @@ export function LanguageSwitcher() {
                   </button>
                 )
               })}
+            </div>
+            {/* RD31 (2026-09-27): maskinöversättning till fler språk — nåbar även på mobil. */}
+            <div className="border-t border-stone-100 dark:border-stone-700 p-2">
+              <OversattSidan onVal={() => setIsOpen(false)} />
             </div>
           </div>
         </>

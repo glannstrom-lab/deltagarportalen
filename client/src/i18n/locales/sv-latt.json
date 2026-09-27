@@ -50,7 +50,8 @@
       "klart": "Intyget för {{manad}} är klart.",
       "fel": "Det gick inte just nu. Försök igen om en stund.",
       "textLeverantor": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit. Du kan visa det för din handläggare på Arbetsförmedlingen.",
-      "textNeutral": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit."
+      "textNeutral": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit.",
+      "egenRedovisning": "På intyget finns också det du själv har gjort. Dina incheckningar och ditt jobbsökande i Jobin."
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -62,7 +63,6 @@
       "avbryt": "Avbryt",
       "skickat": "Skickat till {{namn}}.",
       "dinKonsulent": "din konsulent",
-      "fel": "Det gick inte att skicka. Du kan skriva till din konsulent på sidan Min konsulent.",
       "om": "Frågan gäller passet \"{{titel}}\" den {{datum}} kl {{tid}}. Din konsulent ser vilket pass det är."
     },
     "franvaro": {
@@ -82,7 +82,19 @@
       "fel": "Det gick inte att spara. Försök igen, eller skriv till din konsulent.",
       "anmalt": "Du har sagt till: {{orsak}}. Din konsulent vet det ({{nar}}).",
       "angra": "Ta tillbaka",
-      "status": "Din konsulent vet det nu."
+      "status": "Din konsulent vet det nu.",
+      "statusFlera_one": "Du har sagt till för {{count}} pass. Din konsulent vet det nu.",
+      "statusFlera_other": "Du har sagt till för {{count}} pass. Din konsulent vet det nu.",
+      "valjTill": "Välj en dag efter {{fran}}. Högst två veckor fram.",
+      "omfattning": {
+        "rubrik": "Hur länge?",
+        "pass": "Bara det här passet",
+        "dag_one": "Hela dagen ({{count}} pass)",
+        "dag_other": "Hela dagen ({{count}} pass)",
+        "period": "Flera dagar",
+        "till": "Sista dagen",
+        "periodHjalp": "Alla dina pass de dagarna blir anmälda. Också eget jobbsökande. Du kan ta tillbaka ett pass i taget."
+      }
     },
     "forklaring": {
       "mal": "Din konsulent har bestämt {{mal}} timmar i veckan. Det är kommunens krav.",
@@ -130,7 +142,10 @@
       "kanInteMeddelande": "Hej! Jag kan inte komma till vårt möte {{datum}} kl {{tid}}.",
       "skickatKort": "Din konsulent vet nu om mötet.",
       "felKort": "Det gick inte att skicka nu. Din text är kvar. Du kan också skriva eller ringa. Gå till sidan Min konsulent.",
-      "hamtFel": "Vi kunde inte visa dina möten nu. Du ser dem på sidan Min konsulent."
+      "hamtFel": "Vi kunde inte visa dina möten nu. Du ser dem på sidan Min konsulent.",
+      "dagOchTid": "{{dag}} kl {{tid}}",
+      "meddelandePeriod": "Hej! Jag har anmält att jag inte kan komma från {{fran}} till {{till}}. Jag kan inte komma till vårt möte {{tid}} heller.",
+      "fragaPeriod": "Kan du inte komma till mötet {{tid}} heller?"
     },
     "forklara": {
       "knapp": "Förklara varför du inte kom",
@@ -153,6 +168,42 @@
       "knappEtikett": "Lägg till {{titel}} i kalendern",
       "status": "Filen är nedladdad. Öppna filen. Då kommer passet in i din kalender.",
       "fel": "Det gick inte att göra filen nu. Försök igen om en stund."
+    },
+    "plan": {
+      "rubrik": "Din plan",
+      "hos": "Din plan är hos {{org}}.",
+      "leverantor": {
+        "hos": "Du är hos {{org}}. Det är ett företag i Rusta och matcha.",
+        "hosUtanNamn": "Du är hos ett företag i Rusta och matcha.",
+        "beslut": "Arbetsförmedlingen har bestämt att du ska vara med i Rusta och matcha. Har du frågor om pengar? Fråga Arbetsförmedlingen."
+      },
+      "rapport": {
+        "rubrik": "Aktivitetsrapporten",
+        "text": "Du skickar din aktivitetsrapport till Arbetsförmedlingen som vanligt. Du gör det i början av varje månad. Den gäller månaden innan. Din konsulent kan hjälpa dig. Men det är du som skickar den.",
+        "lank": "Så gör du aktivitetsrapporten"
+      },
+      "kommun": {
+        "beslut": "Planen hör ihop med ditt försörjningsstöd. Kommunen bestämmer om försörjningsstöd. Har du frågor om pengar? Fråga din handläggare på kommunen."
+      },
+      "raknas": {
+        "leverantor": "Det som räknas är passen i din plan. Din konsulent skriver när du har varit där. Ditt eget jobbsökande skriver du själv i aktivitetsrapporten.",
+        "vanlig": "Det som räknas är passen i din plan. Din konsulent skriver när du har varit där."
+      },
+      "praktik": {
+        "fel": "Vi kan inte visa din arbetsplats nu. Fråga din konsulent om du undrar något.",
+        "timmar_one": "{{count}} timme i veckan",
+        "timmar_other": "{{count}} timmar i veckan",
+        "kontakt": "Den du pratar med på arbetsplatsen: {{namn}}",
+        "sjuk": "Om du blir sjuk: {{text}}",
+        "sjukRing": "Om du blir sjuk: ring {{tel}}.",
+        "raknas": "Tiden på arbetsplatsen räknas när den finns som pass i din vecka. Du ser passen längre ner.",
+        "rubrik": {
+          "praktik": "Din praktik",
+          "arbetstraning": "Din arbetsträning",
+          "arbetsprovning": "Din arbetsprövning",
+          "subventionerad_anstallning": "Ditt jobb med stöd"
+        }
+      }
     }
   },
   "minVardagHub": {
@@ -211,10 +262,9 @@
     "saveIndicator": {
       "allSaved": "Allt är sparat",
       "saving": "Sparar …",
-      "offline": "Inte sparat. Ingen kontakt med internet.",
       "savedAt": "Sparat kl {{time}}",
       "unsaved": "Inte sparat än",
-      "retryTitle": "Vi försöker spara igen …"
+      "utanNat": "Inte sparat. Du har inget internet nu. Det du skrev finns kvar. Det sparas när du har internet igen."
     }
   },
   "cvBuilder": {
@@ -1073,6 +1123,9 @@
     },
     "appearance": {
       "graphicsActionDesc": "Bilder gjorda i dator. Starka färger och skarpt ljus."
+    },
+    "profile": {
+      "sparat": "Nu är det sparat."
     }
   },
   "datasharing": {
@@ -1093,5 +1146,20 @@
   },
   "diary": {
     "description": "Skriv när du vill. Dagboken är bara din."
+  },
+  "skrivfel": {
+    "skicka": "Det gick inte att skicka. Din text finns kvar.",
+    "spara": "Det gick inte att spara. Det du skrev finns kvar.",
+    "forsokIgen": "Försök igen",
+    "forsoker": "Försöker igen …",
+    "minKonsulent": "Du kan också skriva eller ringa till din konsulent. Gå till sidan Min konsulent."
+  },
+  "sidoversattning": {
+    "knapp": "Översätt sidan till ett annat språk",
+    "valt": "Översatt till {{sprak}}",
+    "kanBliFel": "Google översätter sidan. Det är en maskin. Den kan göra fel.",
+    "myndighetsnamn": "Namn på myndigheter ska vara på svenska. Till exempel Arbetsförmedlingen och Försäkringskassan. Använd det svenska namnet när du söker på nätet eller ringer.",
+    "listEtikett": "Välj språk",
+    "original": "Svenska (inte översatt)"
   }
 }

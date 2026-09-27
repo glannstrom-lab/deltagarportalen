@@ -26,6 +26,7 @@ import {
   type TemplateItem,
 } from './aktivitetSchema'
 import { notisOgiltigFranvaro, notisPassAndrat, notisPlanSkapad } from './aktivitetNotiser'
+import { arendeKolumn, passKolumner, underrattadKolumner, type PassExtra } from './planMarkning'
 
 // ============================================================================
 // TYPER
@@ -74,6 +75,8 @@ export interface ActivityPlan {
   nedsattning_underlag_lamnat_at: string | null
   /** KM7: datum då anvisningen registrerats i AF:s Mina sidor för kommuner (manuellt). */
   af_registered_at: string | null
+  /** RK40 — PENDING_20260927d_plan_och_pass: ärende-/dossiernummer, aldrig personnummer. */
+  case_reference?: string | null
   created_at: string
   updated_at: string
 }
@@ -125,6 +128,14 @@ export interface ActivitySession {
   self_checkin_at: string | null
   created_at: string
   updated_at: string
+  // RR27/RK37/RR28 — PENDING_20260927d_plan_och_pass. Finns bara efter
+  // migrationen; läses via select('*'), så de är undefined tills dess.
+  // Se services/planMarkning.ts.
+  is_provider_led?: boolean | null
+  is_physical?: boolean | null
+  work_placement_id?: string | null
+  af_notified_at?: string | null
+  af_notified_by?: string | null
 }
 
 export interface TemplateInput {
@@ -163,6 +174,15 @@ export interface SessionInput {
   activity_type: PassTyp
   location?: string | null
   notes?: string | null
+}
+
+/** RK37: det som går att ändra på ett pass eller en serie pass på en gång. */
+export interface PassAndring {
+  start_time?: string
+  end_time?: string
+  title?: string
+  activity_type?: PassTyp
+  location?: string | null
 }
 
 // ============================================================================
@@ -464,6 +484,27 @@ export const aktivitetsplanApi = {
     return data as ActivityPlan
   },
 
+  /**
+   * RK40: ärende-/dossiernummer på planen. Valideras i klienten
+   * (`valideraArendenummer`, nekar personnummer) och i databasen (CHECK).
+   * Före migrationen PENDING_20260927d finns kolumnen inte — då kastar anropet
+   * i stället för att tyst skriva ingenting.
+   */
+  async sattArendenummer(planId: string, varde: string | null): Promise<ActivityPlan> {
+    const user = await requireUser()
+    const kolumn = arendeKolumn(varde)
+    if (Object.keys(kolumn).length === 0) throw new Error('Ärendenummer kan inte sparas ännu.')
+    const { data, error } = await supabase
+      .from('activity_plans')
+      .update({ ...kolumn })
+      .eq('id', planId)
+      .eq('consultant_id', user.id)
+      .select('*')
+      .single()
+    if (error) throw error
+    return data as ActivityPlan
+  },
+
   async end(planId: string): Promise<ActivityPlan> {
     return aktivitetsplanApi.update(planId, { status: 'ended' })
   },
@@ -537,7 +578,8 @@ export const aktivitetsplanApi = {
     return mapSession(data as Record<string, unknown>)
   },
 
-  async addSession(planId: string, participantId: string, input: SessionInput): Promise<ActivitySession> {
+  /** `extra` = RR27-flaggorna och Platser-kopplingen; skrivs bara efter migrationen. */
+  async addSession(planId: string, participantId: string, input: SessionInput, extra: PassExtra = {}): Promise<ActivitySession> {
     await requireUser()
     const { data, error } = await supabase
       .from('activity_sessions')
@@ -551,6 +593,7 @@ export const aktivitetsplanApi = {
         activity_type: input.activity_type,
         location: input.location?.trim() || null,
         notes: input.notes?.trim() || null,
+        ...passKolumner(extra),
       })
       .select('*')
       .single()
@@ -565,9 +608,16 @@ export const aktivitetsplanApi = {
    * (planens slut). Ett insert för alla — antingen kommer alla in eller inget.
    * Deltagaren får EN notis om första passet, inte en per vecka.
    */
-  async addWeeklySessions(planId: string, participantId: string, input: SessionInput, slutdatum: string): Promise<ActivitySession[]> {
+  async addWeeklySessions(planId: string, participantId: string, input: SessionInput, slutdatum: string, extra: PassExtra = {}): Promise<ActivitySession[]> {
+    return aktivitetsplanApi.addSessionsOnDates(planId, participantId, input, veckovisaDatum(input.date, slutdatum), extra)
+  },
+
+  /**
+   * RK37: samma pass på en lista datum — t.ex. praktikens dagar ur Platser.
+   * Ett insert för alla; deltagaren får EN notis om första passet.
+   */
+  async addSessionsOnDates(planId: string, participantId: string, input: SessionInput, datum: readonly string[], extra: PassExtra = {}): Promise<ActivitySession[]> {
     await requireUser()
-    const datum = veckovisaDatum(input.date, slutdatum)
     if (datum.length === 0) return []
     const { data, error } = await supabase
       .from('activity_sessions')
@@ -581,6 +631,7 @@ export const aktivitetsplanApi = {
         activity_type: input.activity_type,
         location: input.location?.trim() || null,
         notes: input.notes?.trim() || null,
+        ...passKolumner(extra),
       })))
       .select('*')
     if (error) throw error
@@ -620,6 +671,50 @@ export const aktivitetsplanApi = {
     const andrat = mapSession(data as Record<string, unknown>)
     await notisBonus('pass ändrat', () => notisPassAndrat(andrat, { typ: 'andrat' }))
     return andrat
+  },
+
+  /**
+   * RK37: ändra ett pass och alla kommande i samma serie på en gång. Samma
+   * ändring skrivs på alla id:n i ett anrop — antingen alla eller inget.
+   * Deltagaren får EN notis (om det första passet), inte en per vecka.
+   */
+  async updateSessions(sessionIds: readonly string[], andring: PassAndring, extra: PassExtra = {}): Promise<ActivitySession[]> {
+    await requireUser()
+    if (sessionIds.length === 0) return []
+    const patch: Record<string, unknown> = { ...andring, ...passKolumner(extra) }
+    if (typeof patch.title === 'string') patch.title = patch.title.trim()
+    if (typeof patch.location === 'string') patch.location = patch.location.trim() || null
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update(patch)
+      .in('id', [...sessionIds])
+      .select('*')
+    if (error) throw error
+    const andrade = (data ?? []).map((r) => mapSession(r as Record<string, unknown>)).sort((a, b) => a.date.localeCompare(b.date))
+    if (andrade.length < sessionIds.length) {
+      throw new Error(`Bara ${andrade.length} av ${sessionIds.length} pass kunde ändras. Ladda om planen och försök igen.`)
+    }
+    if (andrade[0]) await notisBonus('pass ändrat', () => notisPassAndrat(andrade[0], { typ: 'andrat' }))
+    return andrade
+  },
+
+  /**
+   * RR28: AF underrättad om en avvikelse — en tidsstämpel på passet, satt av
+   * konsulenten. Portalen skickar ingenting till Arbetsförmedlingen; det här
+   * är bara anteckningen om att det gjorts. `nar = null` nollställer.
+   */
+  async sattAfUnderrattad(sessionId: string, nar: string | null): Promise<ActivitySession> {
+    const user = await requireUser()
+    const kolumner = underrattadKolumner(nar, user.id)
+    if (Object.keys(kolumner).length === 0) throw new Error('Underrättelsen kan inte sparas ännu.')
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update({ ...kolumner })
+      .eq('id', sessionId)
+      .select('*')
+      .single()
+    if (error) throw error
+    return mapSession(data as Record<string, unknown>)
   },
 
   async removeSession(sessionId: string): Promise<void> {

@@ -15,6 +15,13 @@
  * Kravet gäller leverantörer i Rusta och matcha. För kommunens
  * aktivitetskrav (KM-spåret) är måttet veckomålet i planen, inte det här.
  *
+ * RR24 (rollspelet 2026-09-27): "Underlag för rapporten" (RR8) är MSFA-vyn —
+ * samma ordning som Mina sidor för fristående aktörer, kopiering per fält,
+ * AF:s ärende-id överst (RK40) och markeringen "förd över" per plan och
+ * månad (PENDING_20260927d_resultat_och_msfa).
+ * RR27: fysisk/digital räknas på passets märkning när den finns; raden säger
+ * hur många pass som fortfarande bygger på härledningen.
+ *
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
 
@@ -29,12 +36,15 @@ import { avtalskravPerDeltagare, manadGranser, periodiskaFalt, senasteAvslutadeS
 import { hamtaMotenIPeriod } from '@/services/moteskadens'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
-import { langtDatum } from './aktivitetEtiketter'
+import { langtDatum, kortDatum } from './aktivitetEtiketter'
+import { ARENDE_ETIKETT, PLAN_PASS_KOLUMNER_FINNS, planensArende } from '@/services/planMarkning'
+import { RESULTAT_MSFA_FINNS, msfaApi, type MsfaOverforing } from '@/services/resultatklocka'
+import { useAuthStore } from '@/stores/authStore'
 
 type Lage =
   | { status: 'laddar' }
   | { status: 'fel'; nyckel: string; fel: string }
-  | { status: 'klart'; nyckel: string; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string>; moten: MoteIPeriod[] | null }
+  | { status: 'klart'; nyckel: string; plans: ActivityPlan[]; sessions: ActivitySession[]; namn: Map<string, string>; moten: MoteIPeriod[] | null; overforda: MsfaOverforing[] | null }
 
 const MANAD_NAMN = ['', 'januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december']
 
@@ -76,7 +86,7 @@ export function AvtalskravKort() {
 
   // Ny månad = nytt underlag. Svaret bär sin nyckel, så förra månadens rader
   // visas aldrig medan nästa hämtas — utan att effekten sätter state själv.
-  const nyckel = `${hamtning.from}:${hamtning.to}:${omgang}`
+  const nyckel = `${val}:${hamtning.from}:${hamtning.to}:${omgang}`
   const lage = useMemo<Lage>(
     () => (hamtat.status !== 'laddar' && hamtat.nyckel !== nyckel ? { status: 'laddar' } : hamtat),
     [hamtat, nyckel],
@@ -86,26 +96,31 @@ export function AvtalskravKort() {
     let aktiv = true
     ;(async () => {
       try {
-        const [plans, sessions, deltagare, moten] = await Promise.all([
+        const [plans, sessions, deltagare, moten, overforda] = await Promise.all([
           aktivitetsplanApi.listAll(),
           aktivitetsplanApi.listSessionsBetween(hamtning.from, hamtning.to),
           fetchCachedConsultantParticipants(queryClient).catch(() => []),
           // RR8: mötena behövs bara till rapportunderlaget — ett fel här fäller
           // inte tabellen, underlaget säger i stället att mötena saknas.
           hamtaMotenIPeriod(hamtning.from, hamtning.to).catch(() => null),
+          // RR24: markeringarna "förd över" — ett fel fäller inte tabellen.
+          msfaApi.listForManad(val).catch(() => null),
         ])
         if (!aktiv) return
         const namn = new Map<string, string>()
         for (const d of deltagare) {
           namn.set(d.participant_id, `${d.first_name ?? ''} ${d.last_name ?? ''}`.trim())
         }
-        setHamtat({ status: 'klart', nyckel, plans, sessions, namn, moten })
+        setHamtat({ status: 'klart', nyckel, plans, sessions, namn, moten, overforda })
       } catch (err) {
         if (aktiv) setHamtat({ status: 'fel', nyckel, fel: err instanceof Error ? err.message : 'Aktivitetsloggen kunde inte hämtas.' })
       }
     })()
     return () => { aktiv = false }
-  }, [hamtning.from, hamtning.to, omgang, nyckel, queryClient])
+  }, [val, hamtning.from, hamtning.to, omgang, nyckel, queryClient])
+
+  const sattOverforda = (f: (o: MsfaOverforing[]) => MsfaOverforing[]) =>
+    setHamtat((prev) => (prev.status === 'klart' && prev.overforda ? { ...prev, overforda: f(prev.overforda) } : prev))
 
   const rader = useMemo(() => {
     if (lage.status !== 'klart' || !harAvslutadVecka) return []
@@ -189,6 +204,7 @@ export function AvtalskravKort() {
                       plan={plan}
                       krav={krav}
                       visaPlanstart={(flerPlanerForSamma.get(plan.participant_id) ?? 0) > 1}
+                      overford={lage.overforda?.find((o) => o.plan_id === plan.id) ?? null}
                       oppen={oppenPlan === plan.id}
                       onVaxla={() => setOppenPlan((v) => (v === plan.id ? null : plan.id))}
                       underlag={oppenPlan === plan.id ? (
@@ -199,6 +215,11 @@ export function AvtalskravKort() {
                           sessions={lage.sessions}
                           moten={lage.moten}
                           period={period}
+                          plan={plan}
+                          manadYm={val}
+                          overforda={lage.overforda}
+                          onOverford={(o) => sattOverforda((lista) => [...lista.filter((x) => x.id !== o.id), o])}
+                          onAngrad={(id) => sattOverforda((lista) => lista.filter((x) => x.id !== id))}
                         />
                       ) : null}
                     />
@@ -211,9 +232,11 @@ export function AvtalskravKort() {
           <p className="text-xs text-stone-500 dark:text-stone-400 max-w-prose">
             Närvarotid är pass markerade närvarande eller extern aktivitet. <strong>Eget jobbsökande räknas inte</strong> — varken mot
             timkravet eller i andelen fysiska — eftersom avtalet räknar aktiviteter som leverantören håller i. En vecka bedöms först
-            när den är slut (efter söndagen). Fysiskt = aktivitetstypen arbetsplats eller ett ifyllt platsfält —
-            portalen har ingen egen flagga för fysiskt/digitalt. Kravet gäller Rusta och matcha-avtalet; kommunens
-            aktivitetskrav mäts mot planens veckomål.
+            när den är slut (efter söndagen). {PLAN_PASS_KOLUMNER_FINNS
+              ? <>Fysiskt och leverantörsledd = passets märkning. Pass utan märkning (lagda före märkningen fanns) räknas på
+                härledningen — arbetsplats eller ifyllt platsfält är fysiskt — och antalet står som "härledda" på raden.</>
+              : <>Fysiskt = aktivitetstypen arbetsplats eller ett ifyllt platsfält — passen har ingen egen märkning för
+                fysiskt/digitalt än.</>} Kravet gäller Rusta och matcha-avtalet; kommunens aktivitetskrav mäts mot planens veckomål.
           </p>
 
           {/* GG4 (2026-09-20): sammanställningen ovan är ett underlag, inte den
@@ -237,11 +260,12 @@ export function AvtalskravKort() {
 /** Mobil: cellen blir en rad med etiketten före värdet (data-label). */
 const CELL_MOBIL = 'flex justify-between gap-3 py-1 sm:table-cell sm:py-2 before:content-[attr(data-label)] before:text-xs before:text-stone-500 before:font-normal sm:before:content-none'
 
-function AvtalskravRad({ namn, plan, krav, visaPlanstart, oppen, onVaxla, underlag }: {
+function AvtalskravRad({ namn, plan, krav, visaPlanstart, overford, oppen, onVaxla, underlag }: {
   namn: string
   plan: ActivityPlan
   krav: Avtalskrav
   visaPlanstart: boolean
+  overford: MsfaOverforing | null
   oppen: boolean
   onVaxla: () => void
   underlag: React.ReactNode
@@ -272,6 +296,11 @@ function AvtalskravRad({ namn, plan, krav, visaPlanstart, oppen, onVaxla, underl
           <>
             {procent(krav.andelFysiska)}
             <span className="text-stone-500 dark:text-stone-400 font-normal"> ({krav.passFysiska} av {krav.passNarvaro} pass)</span>
+            {PLAN_PASS_KOLUMNER_FINNS && krav.passHarleddFysisk > 0 && (
+              <span className="block text-xs text-stone-500 dark:text-stone-400 font-normal" data-testid="harledda">
+                varav {krav.passHarleddFysisk} härledda
+              </span>
+            )}
             {underHalften && <span className="sr-only"> — under 50 %</span>}
           </>
         )}
@@ -290,6 +319,11 @@ function AvtalskravRad({ namn, plan, krav, visaPlanstart, oppen, onVaxla, underl
           {oppen ? 'Dölj underlag' : 'Underlag för rapporten'}
           <span className="sr-only"> — {namn}</span>
         </button>
+        {overford && (
+          <span className="block text-xs text-emerald-800 dark:text-emerald-200" data-testid="overford">
+            Förd över {kortDatum(new Date(overford.transferred_at).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))}
+          </span>
+        )}
       </td>
     </tr>
     {oppen && (
@@ -305,19 +339,29 @@ function AvtalskravRad({ namn, plan, krav, visaPlanstart, oppen, onVaxla, underl
  * RR8: fälten till den periodiska rapporten för en deltagare och månad, med en
  * kopieringsknapp per fält. Portalen skickar ingenting till Arbetsförmedlingen.
  */
-function RapportUnderlag({ namn, manad, krav, sessions, moten, period }: {
+function RapportUnderlag({ namn, manad, krav, sessions, moten, period, plan, manadYm, overforda, onOverford, onAngrad }: {
   namn: string
   manad: string
   krav: Avtalskrav
   sessions: ActivitySession[]
   moten: MoteIPeriod[] | null
   period: Period
+  plan: ActivityPlan
+  manadYm: string
+  overforda: MsfaOverforing[] | null
+  onOverford: (o: MsfaOverforing) => void
+  onAngrad: (id: string) => void
 }) {
   const [kopierat, setKopierat] = useState<string | null>(null)
   const [kopieringsfel, setKopieringsfel] = useState(false)
-  const falt = periodiskaFalt(krav, sessions, moten ?? [], period).map((f) =>
+  const arende = planensArende(plan)
+  // RK40: AF:s ärende-id överst, så raden hittas i Mina sidor utan personnummer.
+  const arendeFalt = PLAN_PASS_KOLUMNER_FINNS
+    ? [{ id: 'arende', etikett: ARENDE_ETIKETT.leverantor, text: arende ?? '— (inte angivet på planen)' }]
+    : []
+  const falt = [...arendeFalt, ...periodiskaFalt(krav, sessions, moten ?? [], period).map((f) =>
     f.id === 'moten' && moten === null ? { ...f, text: 'Mötena kunde inte hämtas — fyll i dem för hand eller ladda om sidan.' } : f,
-  )
+  )]
   const kopiera = async (id: string, text: string) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -357,10 +401,59 @@ function RapportUnderlag({ namn, manad, krav, sessions, moten, period }: {
       {kopieringsfel && (
         <p role="alert" className="text-xs text-rose-700 dark:text-rose-300">Webbläsaren tillät inte kopiering — markera texten och kopiera den för hand.</p>
       )}
+      {RESULTAT_MSFA_FINNS && (
+        <OverforingRad plan={plan} manadYm={manadYm} overforda={overforda} onOverford={onOverford} onAngrad={onAngrad} />
+      )}
       <p className="text-xs text-stone-500 dark:text-stone-400">
         Portalen kan inte skicka något till Arbetsförmedlingen. Kopiera fälten till den periodiska rapporten i Mina sidor
         för fristående aktörer. Bara genomförda möten och avslutade veckor räknas.
       </p>
+    </div>
+  )
+}
+
+/** RR24: "förd över till MSFA" — konsulentens egen markering per plan och månad. */
+function OverforingRad({ plan, manadYm, overforda, onOverford, onAngrad }: {
+  plan: ActivityPlan
+  manadYm: string
+  overforda: MsfaOverforing[] | null
+  onOverford: (o: MsfaOverforing) => void
+  onAngrad: (id: string) => void
+}) {
+  const egetId = useAuthStore((s) => s.profile?.id ?? null)
+  const [sparar, setSparar] = useState(false)
+  const [fel, setFel] = useState<string | null>(null)
+  if (overforda === null) {
+    return <p className="text-xs text-rose-700 dark:text-rose-300" role="status">Markeringen "förd över" kunde inte hämtas — ladda om sidan.</p>
+  }
+  const rad = overforda.find((o) => o.plan_id === plan.id)
+  const markera = async () => {
+    setSparar(true)
+    setFel(null)
+    try { onOverford(await msfaApi.markera(plan, manadYm)) } catch (err) { setFel(err instanceof Error ? err.message : 'Markeringen kunde inte sparas') } finally { setSparar(false) }
+  }
+  const angra = async (id: string) => {
+    setSparar(true)
+    setFel(null)
+    try { await msfaApi.angra(id); onAngrad(id) } catch (err) { setFel(err instanceof Error ? err.message : 'Markeringen kunde inte ångras') } finally { setSparar(false) }
+  }
+  return (
+    <div className="flex flex-wrap items-center gap-3 text-sm" data-testid="msfa-overforing">
+      {rad ? (
+        <>
+          <span className="text-emerald-800 dark:text-emerald-200">
+            Förd över till MSFA {langtDatum(new Date(rad.transferred_at).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))} av {rad.transferred_by === egetId ? 'dig' : 'en kollega'}
+          </span>
+          {rad.transferred_by === egetId && (
+            <button type="button" className="text-xs underline text-stone-600 dark:text-stone-300" disabled={sparar} onClick={() => void angra(rad.id)}>Ångra</button>
+          )}
+        </>
+      ) : (
+        <button type="button" className="underline text-stone-800 dark:text-stone-100 font-medium" disabled={sparar} onClick={() => void markera()}>
+          Markera som förd över till MSFA
+        </button>
+      )}
+      {fel && <span role="alert" className="text-xs text-rose-700 dark:text-rose-300">{fel}</span>}
     </div>
   )
 }

@@ -74,14 +74,53 @@ export function franvaroAv(session: ActivitySession): Franvaroanmalan | null {
   return { reportedAt: s.absence_reported_at, reason: s.absence_reason, note: s.absence_note ?? null }
 }
 
-/** Kan deltagaren anmäla frånvaro på det här passet just nu? Kommande, omarkerat, inte redan anmält. */
+/**
+ * Kan deltagaren anmäla frånvaro på det här passet just nu? Kommande, omarkerat, inte redan anmält.
+ *
+ * RD27 (rollspelet 2026-09-27): eget jobbsökande undantogs tidigare. Anna hade
+ * nio timmar eget jobbsökande en söndag och kunde inte sjukanmäla sig på det.
+ * Är hon sjuk söker hon inte jobb heller — det ska gå att säga. Databasens guard
+ * har aldrig skilt på passtyp; det var bara klienten.
+ */
 export function kanAnmalaFranvaro(session: ActivitySession, nu: Date = new Date()): boolean {
   if (session.attendance) return false
-  if (session.activity_type === 'jobsearch_own') return false
   if (franvaroAv(session)) return false
   const idag = `${nu.getFullYear()}-${String(nu.getMonth() + 1).padStart(2, '0')}-${String(nu.getDate()).padStart(2, '0')}`
   const nuTid = `${String(nu.getHours()).padStart(2, '0')}:${String(nu.getMinutes()).padStart(2, '0')}`
   return session.date > idag || (session.date === idag && session.start_time > nuTid)
+}
+
+/**
+ * RD27: hur mycket en anmälan gäller. `pass` = bara det här passet, `dag` = alla
+ * pass samma dag, `period` = alla pass från och med passets dag till ett valt datum.
+ */
+export type Omfattning = 'pass' | 'dag' | 'period'
+
+/** Längsta period en anmälan får gälla. Längre än så är en sak för ett samtal, inte ett formulär. */
+export const PERIOD_MAX_DAGAR = 14
+
+function plusDagar(iso: string, n: number): string {
+  const [y, m, d] = iso.split('-').map(Number)
+  const dt = new Date(y, m - 1, d + n)
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`
+}
+
+/** Sista tillåtna datum för en period som börjar `fran`. */
+export function periodensSistaDag(fran: string): string {
+  return plusDagar(fran, PERIOD_MAX_DAGAR - 1)
+}
+
+/**
+ * Passen en period-anmälan gäller: inom [fran, till], och bara de som går att
+ * anmäla just nu (kommande, omarkerade, inte redan anmälda). Ren funktion.
+ */
+export function passIPerioden(
+  sessions: readonly ActivitySession[],
+  fran: string,
+  till: string,
+  nu: Date = new Date(),
+): ActivitySession[] {
+  return sessions.filter((s) => s.date >= fran && s.date <= till && kanAnmalaFranvaro(s, nu))
 }
 
 async function requireUserId(): Promise<string> {
@@ -135,6 +174,48 @@ export const franvaroApi = {
     if (!data) throw new Error('Passet hittades inte, eller så tillhör det inte dig')
     // RD13: samma form som listMySessions — "09:00", inte "09:00:00"
     return mapSession(data as Record<string, unknown>)
+  },
+
+  /**
+   * RD27: anmäl frånvaro på alla anmälningsbara pass i en period — "hela dagen"
+   * är samma sak med `fran === till`. En enda UPDATE över passens id:n; guarden i
+   * databasen gäller för varje rad som förut, och notistriggern lägger en notis
+   * per pass hos konsulenten. Returnerar de uppdaterade passen (tom lista = inget
+   * att anmäla i perioden).
+   */
+  async anmalPeriod(
+    fran: string,
+    till: string,
+    input: { orsak: FranvaroOrsak; notering?: string },
+    nu: Date = new Date(),
+  ): Promise<ActivitySession[]> {
+    const userId = await requireUserId()
+    if (!FRANVARO_ORSAKER.includes(input.orsak)) throw new Error('Okänd orsak')
+    if (till < fran) throw new Error('Perioden slutar före den börjar')
+    if (till > periodensSistaDag(fran)) throw new Error(`Perioden får vara högst ${PERIOD_MAX_DAGAR} dagar`)
+
+    const { data: rader, error: lasfel } = await supabase
+      .from('activity_sessions')
+      .select('*')
+      .eq('participant_id', userId)
+      .gte('date', fran)
+      .lte('date', till)
+    if (lasfel) throw lasfel
+    const ids = passIPerioden((rader ?? []).map((r) => mapSession(r as Record<string, unknown>)), fran, till, nu).map((s) => s.id)
+    if (ids.length === 0) return []
+
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update({
+        absence_reported_at: new Date().toISOString(),
+        absence_reason: input.orsak,
+        absence_note: input.notering?.trim().slice(0, 500) || null,
+      })
+      .in('id', ids)
+      .eq('participant_id', userId)
+      .select('*')
+    if (error) throw error
+    return (data ?? []).map((r) => mapSession(r as Record<string, unknown>))
   },
 
   /** Ångra en anmälan (innan konsulenten markerat passet). Ger ingen ny notis. */

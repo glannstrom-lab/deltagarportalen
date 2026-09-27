@@ -63,8 +63,10 @@ function idagISO(): string {
  * får skriva, se ST2). Nu begränsas urvalet till planer där
  * `activity_plans.consultant_id` är den inloggade — samma villkor som
  * skrivpolicyn, så varje knapp som visas också fungerar.
+ *
+ * `datum` (RK36, gruppnärvaro): samma urval för en annan dag. Utan = i dag.
  */
-export async function hamtaDagensPass(): Promise<PassIdag[]> {
+export async function hamtaDagensPass(datum: string = idagISO()): Promise<PassIdag[]> {
   const { data: { user }, error: userError } = await supabase.auth.getUser()
   if (userError) throw userError
   if (!user) throw new Error('Inte inloggad')
@@ -80,7 +82,7 @@ export async function hamtaDagensPass(): Promise<PassIdag[]> {
   const { data, error } = await supabase
     .from('activity_sessions')
     .select('id, participant_id, plan_id, date, start_time, end_time, title, attendance, self_checkin_at, absence_reason, absence_note')
-    .eq('date', idagISO())
+    .eq('date', datum)
     .in('plan_id', planIds)
     .order('start_time', { ascending: true })
   if (error) throw error

@@ -7,9 +7,10 @@
  * platsfält. Omvänt fanns Omars praktik (Nordfrakt, från 7 okt, 30 h/v) under
  * Platser men inte i planen. Ingenting kopplade ihop dem.
  *
- * Det här är en avstämning, inte en koppling i databasen: passen har ingen
- * främmande nyckel till `consultant_work_placements`. Matchningen är på namn
- * (skiftlägesokänsligt, det ena innehåller det andra) och säger det öppet.
+ * Det här är i första hand en avstämning på namn (skiftlägesokänsligt, det ena
+ * innehåller det andra), och den säger det öppet. RK37: pass som lagts in från
+ * Platser bär dessutom `work_placement_id` (PENDING_20260927d) — de matchar
+ * platsen på id oavsett vad platsfältet säger.
  * Ren logik.
  */
 
@@ -27,6 +28,8 @@ export interface PassRad {
   activity_type: string
   location: string | null
   date: string
+  /** RK37: satt när passet lades in från Platser (efter migrationen). */
+  work_placement_id?: string | null
 }
 
 const norm = (s: string) => s.toLocaleLowerCase('sv').replace(/\s+/g, ' ').trim()
@@ -46,13 +49,18 @@ export interface PlatsAvstamning {
 
 export function platsAvstamning(platser: readonly PlatsRad[], sessions: readonly PassRad[]): PlatsAvstamning {
   const arbetsplatser = new Map<string, string>()
+  const kopplade = new Set<string>()
   for (const s of sessions) {
+    if (s.work_placement_id) {
+      kopplade.add(s.work_placement_id)
+      continue
+    }
     if (s.activity_type !== 'workplace' || !s.location?.trim()) continue
     const nyckel = norm(s.location)
     if (!arbetsplatser.has(nyckel)) arbetsplatser.set(nyckel, s.location.trim())
   }
   const aktuella = platser.filter((p) => p.status === 'planerad' || p.status === 'pagaende')
-  const platserUtanPass = aktuella.filter((p) => ![...arbetsplatser.values()].some((loc) => matchar(p.company_name, loc)))
+  const platserUtanPass = aktuella.filter((p) => !kopplade.has(p.id) && ![...arbetsplatser.values()].some((loc) => matchar(p.company_name, loc)))
   const fritextUtanPlats = [...arbetsplatser.values()].filter((loc) => !platser.some((p) => matchar(p.company_name, loc)))
   return { platserUtanPass, fritextUtanPlats }
 }

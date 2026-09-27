@@ -22,6 +22,10 @@
  * Journal, mål och möten flyttas inte förrän ett beslut om arkivering finns
  * (KS2) — UI:t säger det rakt ut.
  *
+ * RR29 (rollspelet 2026-09-27): kapacitetsmätare per konsulent mot taket i
+ * Rusta och matcha (50 per heltid, FFU §4.5.2) — bara för leverantörer.
+ * Kommunen har inget tak; där står bara antalet (caseloadKapacitet.ts).
+ *
  * Tre lägen: laddar / fel / klart. Utan medlemskap: ärlig text, ingen knapp
  * som inte gör något — organisationer läggs upp av superadmin i piloten.
  * Konsulentvyn översätts inte (DESIGN.md §2): svenska literaler.
@@ -54,6 +58,7 @@ import {
 // RR9 (rollspelet 2026-09-27): "Handläggare (ekonomiskt bistånd)" och
 // `@kommun.se` erbjöds en Rusta och matcha-leverantör.
 import { epostPlatshallare, rollerForOrg } from '@/components/consultant/orgTypVisning'
+import { kapacitet, KAPACITET_REGEL } from './caseloadKapacitet'
 
 type Medlemskap = OrgMembership & { organization: Organization }
 
@@ -111,6 +116,11 @@ export function OrganisationSektion() {
   // beskedet ("X är tillagd") försvinner i samma ögonblick som det visas.
   const laddaTyst = () => setOmgang((n) => n + 1)
 
+  // RR29: organisationens slag per rad; mätaren visas bara när någon är leverantör.
+  const orgKind = (orgId: string): OrgKind | null =>
+    lage.status === 'klart' ? lage.medlemskap.find((m) => m.org_id === orgId)?.organization?.kind ?? null : null
+  const visaKapacitet = lage.status === 'klart' && !!lage.caseload?.some((r) => orgKind(r.org_id) === 'leverantor')
+
   return (
     <Card className="p-5">
       <div className="flex items-center gap-3 mb-6">
@@ -162,6 +172,7 @@ export function OrganisationSektion() {
                         <th className="py-2 pr-3 font-medium">Deltagare</th>
                         <th className="py-2 pr-3 font-medium">Aktiva planer</th>
                         <th className="py-2 pr-3 font-medium">Ogiltig frånvaro 30 d</th>
+                        {visaKapacitet && <th className="py-2 pr-3 font-medium">Mot taket</th>}
                         <th className="py-2 font-medium"><span className="sr-only">Åtgärd</span></th>
                       </tr>
                     </thead>
@@ -172,6 +183,8 @@ export function OrganisationSektion() {
                           rad={r}
                           mottagare={lage.kollegor.filter((k) => k.org_id === r.org_id && k.user_id !== r.consultant_id && arMottagarroll(k.role))}
                           visaOrg={lage.medlemskap.length > 1}
+                          orgKind={orgKind(r.org_id)}
+                          visaKapacitet={visaKapacitet}
                           onKlar={(besked) => {
                             setCaseloadFel(null)
                             setCaseloadBesked(besked)
@@ -200,6 +213,9 @@ export function OrganisationSektion() {
               <p className="mt-3 text-xs text-stone-500 dark:text-stone-400">
                 Bara tal. Namn på deltagare, journal och mående syns inte här.
               </p>
+              {visaKapacitet && (
+                <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">{KAPACITET_REGEL}</p>
+              )}
             </div>
           )}
         </div>
@@ -288,12 +304,16 @@ function CaseloadRad({
   rad: r,
   mottagare,
   visaOrg,
+  orgKind,
+  visaKapacitet,
   onKlar,
   onFel,
 }: {
   rad: CaseloadRow
   mottagare: Colleague[]
   visaOrg: boolean
+  orgKind: OrgKind | null
+  visaKapacitet: boolean
   onKlar: (besked: string) => void
   onFel: (fel: string) => void
 }) {
@@ -349,6 +369,7 @@ function CaseloadRad({
         >
           {r.ogiltig_franvaro_30d}
         </td>
+        {visaKapacitet && <KapacitetsCell antal={r.antal_deltagare} kind={orgKind} namn={namn(r)} />}
         <td className="py-2">
           {r.antal_deltagare > 0 && (
             <Button
@@ -367,7 +388,7 @@ function CaseloadRad({
       </tr>
       {oppen && r.antal_deltagare > 0 && (
         <tr className="bg-stone-50 dark:bg-stone-800">
-          <td colSpan={5} className="p-3">
+          <td colSpan={visaKapacitet ? 6 : 5} className="p-3">
             <div id={panelId} className="space-y-2">
               {mottagare.length === 0 ? (
                 <p className="text-sm text-stone-600 dark:text-stone-400">
@@ -405,6 +426,43 @@ function CaseloadRad({
         </tr>
       )}
     </>
+  )
+}
+
+function KapacitetsCell({ antal, kind, namn: vem }: { antal: number; kind: OrgKind | null; namn: string }) {
+  const k = kapacitet(antal, kind)
+  if (!k.visas) {
+    return <td className="py-2 pr-3 text-xs text-stone-500 dark:text-stone-400">Inget tak</td>
+  }
+  const procent = Math.min(100, Math.round(k.andel * 100))
+  return (
+    <td className="py-2 pr-3 min-w-[9rem]">
+      <div
+        role="meter"
+        aria-valuemin={0}
+        aria-valuemax={k.tak}
+        aria-valuenow={k.antal}
+        aria-valuetext={k.text}
+        aria-label={`Deltagare hos ${vem} mot taket`}
+        className="h-2 rounded-full bg-stone-200 dark:bg-stone-700 overflow-hidden"
+      >
+        <div
+          className={cn(
+            'h-full rounded-full',
+            k.lage === 'over' ? 'bg-red-600' : k.lage === 'nara' ? 'bg-amber-500' : 'bg-emerald-600',
+          )}
+          style={{ width: `${procent}%` }}
+        />
+      </div>
+      <span
+        className={cn(
+          'block mt-1 text-xs tabular-nums',
+          k.lage === 'over' ? 'text-red-700 dark:text-red-300 font-medium' : 'text-stone-600 dark:text-stone-400',
+        )}
+      >
+        {k.text}
+      </span>
+    </td>
   )
 }
 

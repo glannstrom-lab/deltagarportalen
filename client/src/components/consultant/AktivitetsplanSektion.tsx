@@ -61,6 +61,11 @@ import { JobbsokTidKort } from './JobbsokTidKort'
 import { franvaroAv, type FranvaroOrsak } from '@/services/franvaroApi'
 import { egetJobbsokSaldo, vantarPaKvittens } from '@/services/egenrapport'
 import { PlatsKoppling } from './PlatsKoppling'
+import { ArendenummerFalt } from './ArendenummerFalt'
+import { AndraPassDialog } from './AndraPassDialog'
+import { AvvikelserapportKort } from './AvvikelserapportKort'
+import { PassFlaggorFalt, type Flaggor } from './PassFlaggorFalt'
+import { PLAN_PASS_KOLUMNER_FINNS, arFysisktPass, arLeverantorsledd, fysiskHarledd, forvaldaFlaggor } from '@/services/planMarkning'
 import {
   AKTIVITETSTYP_CHIP,
   AKTIVITETSTYP_ETIKETT,
@@ -296,6 +301,10 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               <div className="flex gap-2"><dt className="text-stone-500">Veckomål</dt><dd>{formatTimmar(Number(plan.weekly_hours_target))}</dd></div>
               <div className="flex gap-2"><dt className="text-stone-500">Eget jobbsökande</dt><dd>{formatTimmar(Number(plan.jobsearch_hours_per_week))}/vecka i planen</dd></div>
               {plan.decided_at && <div className="flex gap-2"><dt className="text-stone-500">Beslutad</dt><dd>{langtDatum(plan.decided_at)}</dd></div>}
+              {/* RK40: ärende-/dossiernummer — matchning utan personnummer. */}
+              {PLAN_PASS_KOLUMNER_FINNS && (
+                <ArendenummerFalt plan={plan} regelverk={arLeverantor ? 'leverantor' : 'kommun'} onSparad={ersattPlan} />
+              )}
               {!arLeverantor && (<>
               {/* RK25/RR19 (rollspelet 2026-09-27): väljaren låg i en halv
                   kolumn och växte ut över grannkolumnen — pilen hamnade över
@@ -378,8 +387,16 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         )}
       </Card>
 
-      {/* RR10: praktik/arbetsträning i planen ↔ Platser. */}
-      <PlatsKoppling participantId={participantId} sessions={sessions} />
+      {/* RR10: praktik/arbetsträning i planen ↔ Platser. RK37: och in i planen härifrån. */}
+      <PlatsKoppling
+        participantId={participantId}
+        sessions={sessions}
+        plan={plan.status === 'ended' ? null : plan}
+        onPassSkapade={(antal) => { notifications.success(`${antal} pass är inlagda i planen`); void ladda() }}
+      />
+
+      {/* RR28: leverantörens avvikelserapport — ersätter kommunens underlag, som är dolt här. */}
+      {arLeverantor && <AvvikelserapportKort planStart={plan.start_date} sessions={sessions} onChanged={ersattSession} />}
 
       <Card className="p-5 space-y-4">
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -450,7 +467,14 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                 </h4>
                 <ul className="space-y-2">
                   {veckansPass.filter((s) => s.date === datum).map((s) => (
-                    <PassRad key={s.id} session={s} onChanged={ersattSession} onRemoved={() => void ladda()} />
+                    <PassRad
+                      key={s.id}
+                      session={s}
+                      allaPass={sessions}
+                      onChanged={ersattSession}
+                      onRemoved={() => void ladda()}
+                      onSerieAndrad={(antal) => { notifications.success(antal > 1 ? `${antal} pass är ändrade` : 'Passet är ändrat'); void ladda() }}
+                    />
                   ))}
                 </ul>
               </section>
@@ -498,9 +522,16 @@ const FRANVARO_ORSAK_ETIKETT: Record<FranvaroOrsak, string> = {
   other: 'annat skäl',
 }
 
-function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; onChanged: (s: ActivitySession) => void; onRemoved: () => void }) {
+function PassRad({ session, allaPass, onChanged, onRemoved, onSerieAndrad }: {
+  session: ActivitySession
+  allaPass: readonly ActivitySession[]
+  onChanged: (s: ActivitySession) => void
+  onRemoved: () => void
+  onSerieAndrad: (antal: number) => void
+}) {
   const { confirm } = useConfirmDialog()
   const [oppen, setOppen] = useState(false)
+  const [andra, setAndra] = useState(false)
   const [anteckning, setAnteckning] = useState(session.attendance_note ?? '')
   const [intyg, setIntyg] = useState(session.sick_certificate_received)
   const [sparar, setSparar] = useState<Attendance | 'nollstall' | 'anteckning' | null>(null)
@@ -574,6 +605,13 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
             <span className={cn('px-2 py-0.5 rounded-full', AKTIVITETSTYP_CHIP[session.activity_type])}>{AKTIVITETSTYP_ETIKETT[session.activity_type]}</span>
             <span>{formatTimmar(timmar(session.start_time, session.end_time))}</span>
             {session.location && <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3" aria-hidden="true" />{session.location}</span>}
+            {/* RR27: märkningen när den finns — härledda pass säger det. */}
+            {PLAN_PASS_KOLUMNER_FINNS && (
+              <span data-testid="pass-markning">
+                {arLeverantorsledd(session) ? 'Verksamheten' : 'Egen aktivitet'} · {arFysisktPass(session) ? 'fysiskt' : 'digitalt'}
+                {fysiskHarledd(session) ? ' (härlett)' : ''}
+              </span>
+            )}
             {session.self_checkin_at && (
               <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-300">
                 <CheckCircle2 className="w-3 h-3" aria-hidden="true" />Checkade in {klockslag(session.self_checkin_at)}
@@ -616,8 +654,20 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
           <Button size="sm" variant="outline" onClick={() => void vaxlaPanel()} disabled={sparar === 'anteckning'} aria-expanded={oppen} aria-controls={`narvaro-${session.id}`}>
             Närvaro
           </Button>
+          {/* RK37: ändra passet — eller det och alla kommande i serien. */}
+          <Button size="sm" variant="ghost" className="dark:text-stone-200 dark:hover:bg-stone-800" onClick={() => setAndra(true)} aria-label={`Ändra ${session.title} ${kortDatum(session.date)}`}>
+            Ändra
+          </Button>
         </div>
       </div>
+      {andra && (
+        <AndraPassDialog
+          session={session}
+          allaPass={allaPass}
+          onClose={() => setAndra(false)}
+          onSparat={(antal) => { setAndra(false); onSerieAndrad(antal) }}
+        />
+      )}
       {!oppen && anteckningFel && (
         <p role="alert" className="mt-2 text-sm text-rose-700 dark:text-rose-300">{anteckningFel}</p>
       )}
@@ -704,6 +754,9 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, pla
   const [form, setForm] = useState<SessionInput>({ date: defaultDate, start_time: '09:00', end_time: '12:00', title: '', activity_type: 'jobsearch', location: '' })
   // RK28: upprepa varje vecka till planens slut. Utan slutdatum finns inget slut att gå till.
   const [upprepa, setUpprepa] = useState(false)
+  // RR27: märkningen förväljs ur typ och plats tills konsulenten själv ändrar den.
+  const [egnaFlaggor, setEgnaFlaggor] = useState<Flaggor | null>(null)
+  const flaggor = egnaFlaggor ?? forvaldaFlaggor({ activity_type: form.activity_type, location: form.location ?? null })
   const upprepadeDatum = upprepa && planSlut && form.date ? veckovisaDatum(form.date, planSlut) : []
   const [forsokt, setForsokt] = useState(false)
   const [sparar, setSparar] = useState(false)
@@ -717,11 +770,13 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, pla
     setSparar(true)
     setFel(null)
     try {
+      // Märkningen skickas bara när kolumnerna finns — före migrationen är anropen oförändrade.
+      const extra = PLAN_PASS_KOLUMNER_FINNS ? [{ ...flaggor }] as const : [] as const
       if (upprepa && planSlut) {
-        const skapade = await aktivitetsplanApi.addWeeklySessions(planId, participantId, form, planSlut)
+        const skapade = await aktivitetsplanApi.addWeeklySessions(planId, participantId, form, planSlut, ...extra)
         onCreated(skapade.length)
       } else {
-        await aktivitetsplanApi.addSession(planId, participantId, form)
+        await aktivitetsplanApi.addSession(planId, participantId, form, ...extra)
         onCreated(1)
       }
     } catch (err) {
@@ -752,6 +807,7 @@ function NyttPassForm({ isOpen, onClose, planId, participantId, defaultDate, pla
           fullWidth
         />
         <Input id="pass-plats" label="Plats" value={form.location ?? ''} onChange={(e) => setForm({ ...form, location: e.target.value })} fullWidth />
+        {PLAN_PASS_KOLUMNER_FINNS && <PassFlaggorFalt idPrefix="pass" varde={flaggor} onChange={setEgnaFlaggor} />}
         <Checkbox
           id="pass-upprepa"
           label="Upprepa varje vecka till planens slut"

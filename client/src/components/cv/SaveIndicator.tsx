@@ -10,7 +10,7 @@ import { datumSprak } from '@/lib/datumsprak'
 
 export function SaveIndicator() {
   const { t, i18n } = useTranslation()
-  const { saveStatus, lastSavedAt, hasUnsavedChanges, pendingCount } = useCVStore()
+  const { saveStatus, lastSavedAt, hasUnsavedChanges, pendingCount, forsokSparaIgen } = useCVStore()
   
   const formatTime = (date: Date | null) => {
     if (!date) return ''
@@ -39,11 +39,28 @@ export function SaveIndicator() {
     )
   }
   
+  // RD26 (rollspelet 2026-09-27): felet stod som "Offline" även när nätet
+  // fungerade och servern sa nej, och det fanns inget att trycka på. Nu säger
+  // raden vad som hänt, att texten är kvar, och erbjuder Försök igen.
   if (saveStatus === 'error' || pendingCount > 0) {
+    const offline = typeof navigator !== 'undefined' && navigator.onLine === false
     return (
-      <div role="status" aria-live="polite" className="flex items-center gap-2 text-sm text-red-600" title={t('cv.saveIndicator.retryTitle')}>
+      <div role="alert" className="flex flex-wrap items-center gap-2 text-sm text-red-700 dark:text-red-300">
         <CloudOff className="w-4 h-4" aria-hidden="true" />
-        <span>{t('cv.saveIndicator.offline', 'Offline')}</span>
+        <span>
+          {offline
+            ? t('cv.saveIndicator.utanNat', 'Inte sparat — du verkar sakna internet. Det du skrev är kvar och sparas när du är uppkopplad igen.')
+            : t('skrivfel.spara', 'Det gick inte att spara. Det du skrev är kvar.')}
+        </span>
+        {!offline && forsokSparaIgen && (
+          <button
+            type="button"
+            onClick={forsokSparaIgen}
+            className="min-h-11 rounded-lg border border-red-300 dark:border-red-700 px-3 text-sm font-medium underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+          >
+            {t('skrivfel.forsokIgen', 'Försök igen')}
+          </button>
+        )}
       </div>
     )
   }

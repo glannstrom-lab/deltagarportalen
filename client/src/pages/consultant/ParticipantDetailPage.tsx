@@ -36,6 +36,7 @@ import { MeetingSchedulerDialog } from '@/components/consultant/MeetingScheduler
 import { PlacementDialog } from '@/components/consultant/PlacementDialog'
 import { ParticipantJournal, type JournalEntry, type NoteCategory, type JournalMutationResult } from '@/components/consultant/ParticipantJournal'
 import type { Avsnitt } from '@/services/laslogg'
+import { journalKolumner, journalMetaFranRad, type JournalSolFalt } from '@/services/journalSol'
 import { laslogg } from '@/services/laslogg'
 import { AktivitetsplanSektion } from '@/components/consultant/AktivitetsplanSektion'
 import { Tidslinje } from '@/components/consultant/Tidslinje'
@@ -519,6 +520,7 @@ export function ParticipantDetailPage() {
           createdAt: j.created_at,
           consultantId: j.consultant_id,
           authorName: kollegaNamnRef.current[j.consultant_id],
+          ...journalMetaFranRad(j as Record<string, unknown>),
         })))
         setJournalLoadError(null)
       }
@@ -612,6 +614,7 @@ export function ParticipantDetailPage() {
         createdAt: j.created_at,
         consultantId: j.consultant_id,
         authorName: kollegaNamnRef.current[j.consultant_id],
+        ...journalMetaFranRad(j as Record<string, unknown>),
       })))
       setJournalLoadError(null)
     } catch (err) {
@@ -629,7 +632,8 @@ export function ParticipantDetailPage() {
   // som "inget att göra", annars ser en nekad ändring ut som en lyckad.
   const addJournalEntry = async (
     content: string,
-    category: NoteCategory
+    category: NoteCategory,
+    extra?: JournalSolFalt
   ): Promise<JournalMutationResult> => {
     if (!participantId) {
       return { ok: false, error: 'Ingen deltagare vald.' }
@@ -647,6 +651,7 @@ export function ParticipantDetailPage() {
           participant_id: participantId,
           content,
           category,
+          ...journalKolumner(extra),
         })
         .select()
         .single()
@@ -661,7 +666,7 @@ export function ParticipantDetailPage() {
 
       if (data) {
         setJournal(prev => [
-          { id: data.id, content: data.content, category: data.category, createdAt: data.created_at },
+          { id: data.id, content: data.content, category: data.category, createdAt: data.created_at, ...journalMetaFranRad(data as Record<string, unknown>) },
           ...prev,
         ])
         // RK14: en anteckning är en kontakt — "Senaste kontakt" följer med direkt.
@@ -677,12 +682,13 @@ export function ParticipantDetailPage() {
   const updateJournalEntry = async (
     id: string,
     content: string,
-    category: NoteCategory
+    category: NoteCategory,
+    extra?: JournalSolFalt
   ): Promise<JournalMutationResult> => {
     try {
       const { data, error } = await supabase
         .from('consultant_journal')
-        .update({ content, category })
+        .update({ content, category, ...journalKolumner(extra) })
         .eq('id', id)
         .select()
 
@@ -699,7 +705,7 @@ export function ParticipantDetailPage() {
       }
 
       const updated = data[0]
-      setJournal(prev => prev.map(e => (e.id === id ? { ...e, content: updated.content, category: updated.category } : e)))
+      setJournal(prev => prev.map(e => (e.id === id ? { ...e, content: updated.content, category: updated.category, ...journalMetaFranRad(updated as Record<string, unknown>) } : e)))
       return { ok: true }
     } catch (err) {
       console.error('Error updating journal entry:', err)
@@ -1052,6 +1058,7 @@ export function ParticipantDetailPage() {
             lage={placeringarLage}
             onForsokIgen={laddaOmPlaceringar}
             onRegistrera={(placering, vilken) => setUppfoljning({ placering, vilken })}
+            onBetalstatusAndrad={laddaOmPlaceringar}
           />
           <MotesKort
             lage={motenLage}

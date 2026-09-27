@@ -113,7 +113,7 @@ describe('RK28 — Lägg till pass', () => {
     fireEvent.click(screen.getByLabelText(/Upprepa varje vecka till planens slut/))
     expect(screen.getByText('4 pass, det sista 15 okt.')).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: 'Lägg till' }))
-    await vi.waitFor(() => expect(api.addWeeklySessions).toHaveBeenCalledWith('plan1', 'p1', expect.objectContaining({ date: '2026-09-24', title: 'Språkcafé' }), '2026-10-18'))
+    await vi.waitFor(() => expect(api.addWeeklySessions).toHaveBeenCalledWith('plan1', 'p1', expect.objectContaining({ date: '2026-09-24', title: 'Språkcafé' }), '2026-10-18', expect.anything()))
     expect(api.addSession).not.toHaveBeenCalled()
   })
   it('utan slutdatum går det inte att upprepa, och det sägs varför', async () => {

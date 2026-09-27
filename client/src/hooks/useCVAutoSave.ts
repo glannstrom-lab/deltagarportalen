@@ -53,7 +53,7 @@ const SAVE_DEBOUNCE_MS = 800
 
 export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const queryClient = useQueryClient()
-  const { markSaving, markSaved, markError, markUnsaved, setPendingCount, lastSavedAt, saveStatus, hasUnsavedChanges, pendingCount } = useCVStore()
+  const { markSaving, markSaved, markError, markUnsaved, setPendingCount, lastSavedAt, saveStatus, hasUnsavedChanges, pendingCount, setForsokSparaIgen } = useCVStore()
   const { trackCVUpdate } = useAchievementTracker()
 
   const [isOnline, setIsOnline] = useState(navigator.onLine)
@@ -140,6 +140,13 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       saveToServer(senaste)
     }
   })
+
+  // RD26: SaveIndicator:s "Försök igen" skickar det senaste som inte gick
+  // igenom — samma väg som när nätet kommer tillbaka.
+  useEffect(() => {
+    setForsokSparaIgen?.(() => flushOfflineRef.current?.())
+    return () => setForsokSparaIgen?.(null)
+  }, [setForsokSparaIgen])
 
   // Track online status
   useEffect(() => {

@@ -47,6 +47,9 @@ import { useAuthStore } from '@/stores/authStore'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+// RD26 (rollspelet 2026-09-27): inget tyst fel när ett meddelande inte går fram
+import { SkrivFel } from '@/components/ui/SkrivFel'
+import { useSkrivning } from '@/components/ui/useSkrivning'
 import { cn } from '@/lib/utils'
 import { buttonVariants } from '@/styles/design-system'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -406,7 +409,10 @@ export function MessagesSection({
   const { t, i18n } = useTranslation()
   const { user } = useAuthStore()
   const [newMessage, setNewMessage] = useState('')
-  const [sending, setSending] = useState(false)
+  // RD1/RD26: fältet töms BARA när meddelandet gått fram. Ett fel visas med
+  // "Din text är kvar" och Försök igen — tidigare tömdes fältet ändå, tyst.
+  const skickning = useSkrivning((text: string) => onSendMessage(text))
+  const sending = skickning.lage === 'skickar'
   const messagesEndRef = useRef<HTMLDivElement>(null)
   // RD23 (rollspelet 2026-09-27): "Tryck Enter för att skicka" på mobil, där
   // Enter på tangentbordet betyder ny rad. På pekskärm skickar bara knappen.
@@ -422,13 +428,11 @@ export function MessagesSection({
 
   const handleSend = async () => {
     if (!newMessage.trim() || sending) return
-    setSending(true)
-    try {
-      await onSendMessage(newMessage.trim())
-      setNewMessage('')
-    } finally {
-      setSending(false)
-    }
+    if (await skickning.kor(newMessage.trim())) setNewMessage('')
+  }
+
+  const handleForsokIgen = async () => {
+    if (await skickning.forsokIgen()) setNewMessage('')
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -544,6 +548,9 @@ export function MessagesSection({
             <Send className="w-5 h-5" />
           </Button>
         </div>
+        {skickning.lage === 'fel' && (
+          <SkrivFel className="mt-2" onForsokIgen={handleForsokIgen} forsoker={sending} />
+        )}
         {!pekskarm && (
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
             {t('myConsultant.messages.pressEnterToSend')}
@@ -1011,16 +1018,14 @@ function MyConsultantInner() {
   }
 
   const handleSendMessage = async (content: string) => {
-    if (!consultant || !user) return
+    if (!consultant || !user) throw new Error('Ingen konsulent att skicka till')
     // F8 (2026-09-13): EN sändväg — samma API som "Fråga om passet" i Min vecka
     // (konsulentMeddelandeApi), i stället för ett eget insert här. Fel sväljs
     // inte längre tyst.
-    try {
-      const skickat = await konsulentMeddelandeApi.skickaTillMinKonsulent(content)
-      setMessages(prev => [...prev, { ...skickat, sender_id: user.id, is_read: false } as unknown as (typeof prev)[number]])
-    } catch (err) {
-      console.warn('[MyConsultant] meddelandet kunde inte skickas', err)
-    }
+    // RD1/RD26: felet kastas vidare till MessagesSection, som behåller texten
+    // och visar <SkrivFel>. Här svaldes det tidigare med en console.warn.
+    const skickat = await konsulentMeddelandeApi.skickaTillMinKonsulent(content)
+    setMessages(prev => [...prev, { ...skickat, sender_id: user.id, is_read: false } as unknown as (typeof prev)[number]])
   }
 
   const handleBookMeeting = () => {

@@ -14,9 +14,28 @@ import { Card } from '@/components/ui/Card'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { minVeckaApi, type ActivityPlan } from '@/services/aktivitetApi'
-import { downloadNarvaroIntygPDF, valbaraManader } from '@/services/narvaroIntygPdf'
+import { downloadNarvaroIntygPDF, valbaraManader, type IntygInput } from '@/services/narvaroIntygPdf'
 import { manadOchAr } from '@/lib/datumsprak'
 import { regelverkNycklar, type PlanensRegelverk } from './planensRegelverk'
+// RD29: hennes egna incheckningar och eget jobbsökande, som egen redovisning
+import {
+  INTYG_HAR_EGEN_REDOVISNING,
+  egenRedovisningAvsnitt,
+  egnaIncheckningar,
+  hamtaManadensJobbsok,
+  type EgenRedovisning,
+  type EgenRedovisningAvsnitt,
+} from './egenRedovisning'
+
+/**
+ * RD29: intyget får deltagarens egen redovisning. Fälten finns inte i
+ * `IntygInput` förrän narvaroIntygPdf.ts ritar avsnittet; de skickas med redan
+ * nu (en subtyp är tilldelningsbar) så att PDF-sidan bara behöver läsa dem.
+ */
+type IntygMedEgenRedovisning = IntygInput & {
+  egenRedovisning?: EgenRedovisning
+  egenRedovisningAvsnitt?: EgenRedovisningAvsnitt
+}
 
 interface Props {
   plan: ActivityPlan
@@ -48,13 +67,30 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
     setKlart(null)
     try {
       const { from, to } = manadensGranser(manad)
-      const [sessions, policy] = await Promise.all([
+      const [sessions, policy, jobbsok] = await Promise.all([
         minVeckaApi.listMySessions(from, to),
         supabase.from('my_ai_policy').select('org_name').limit(1),
+        // Ett läsfel stoppar inte intyget — avsnittet säger då att uppgiften saknas.
+        hamtaManadensJobbsok(manad).catch((e: unknown) => {
+          console.warn('[NarvaroIntyg] eget jobbsökande kunde inte hämtas', e)
+          return null
+        }),
       ])
       const orgName = (policy.data?.[0] as { org_name?: string | null } | undefined)?.org_name ?? null
       const namn = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim()
-      await downloadNarvaroIntygPDF({ participantName: namn || profile?.email || 'Deltagare', organizationName: orgName, manad, sessions, regelverk })
+      const egenRedovisning: EgenRedovisning = { incheckningar: egnaIncheckningar(sessions, manad), jobbsok }
+      const input: IntygMedEgenRedovisning = {
+        participantName: namn || profile?.email || 'Deltagare',
+        organizationName: orgName,
+        manad,
+        sessions,
+        regelverk,
+        egenRedovisning,
+        egenRedovisningAvsnitt: egenRedovisningAvsnitt(egenRedovisning),
+        // RK40: planens ärendenummer på intyget, så handläggaren kan matcha utan personnummer.
+        caseReference: (plan as { case_reference?: string | null }).case_reference ?? null,
+      }
+      await downloadNarvaroIntygPDF(input)
       setKlart(t('minVecka.intyg.klart', { defaultValue: 'Intyget för {{manad}} är nedladdat.', manad: manadOchAr(manad, i18n.language) }))
     } catch {
       setFel(t('minVecka.intyg.fel', 'Intyget kunde inte skapas just nu. Försök igen om en stund.'))
@@ -89,6 +125,11 @@ export function NarvaroIntyg({ plan, regelverk = null }: Props) {
           {laddar ? t('minVecka.intyg.skapar', 'Skapar …') : t('minVecka.intyg.knapp', 'Ladda ner närvarointyg')}
         </Button>
       </div>
+      {INTYG_HAR_EGEN_REDOVISNING && (
+        <p className="text-xs text-stone-600 dark:text-stone-400">
+          {t('minVecka.intyg.egenRedovisning', 'Intyget visar också dina egna incheckningar och ditt jobbsökande i Jobin, som din egen redovisning.')}
+        </p>
+      )}
       <p className="text-xs text-stone-500 dark:text-stone-400">
         {t('minVecka.intyg.forbehall', 'Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som "ej markerat".')}
       </p>

@@ -525,6 +525,24 @@ class ConsultantService {
   }
 
   /**
+   * RR26 (rollspelet 2026-09-27): den inloggade konsulentens placeringar med
+   * det uppföljningspunkterna behöver — "N uppföljningar inom 14 dagar" i
+   * Min dag. Kastar vid fel: ett fel får inte se ut som "inga uppföljningar".
+   */
+  async getMinaPlaceringar(): Promise<Array<Pick<Placement, 'id' | 'participant_id' | 'employer_name' | 'start_date' | 'followup_3m' | 'followup_6m'>>> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error } = await supabase
+      .from('consultant_placements')
+      .select('id, participant_id, employer_name, start_date, followup_3m, followup_6m')
+      .eq('consultant_id', user.id)
+
+    if (error) throw error
+    return (data ?? []) as Array<Pick<Placement, 'id' | 'participant_id' | 'employer_name' | 'start_date' | 'followup_3m' | 'followup_6m'>>
+  }
+
+  /**
    * RK14: tidpunkten för senaste meddelandet mellan den inloggade konsulenten
    * och deltagaren, åt något håll. `null` = inga meddelanden. Kastar vid fel.
    */

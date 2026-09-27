@@ -27,11 +27,13 @@ import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
 import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
 // RD4 (rollspelet 2026-09-27): konsulentens möten i veckan
 import { MoteKort } from '@/components/minvecka/MoteKort'
-import { hamtaMoten, motenPaDag, motesDatum, motesStart, type KonsulentMote } from '@/components/minvecka/konsulentMoten'
+import { hamtaMoten, motesDatum, motesStart, type KonsulentMote } from '@/components/minvecka/konsulentMoten'
 // RD11: förklara en markerad frånvaro i efterhand
 import { ForklaraFranvaro } from '@/components/minvecka/ForklaraFranvaro'
 // RD3 (rollspelet 2026-09-27): kommunens juridik bara när planen belagt kommer från en kommun
-import { hamtaPlanensRegelverk, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
+import { hamtaPlanensOrganisation, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
+// RD25: "Din plan" — vem hon är hos, vem som beslutat, vad som räknas
+import { MinPlan } from '@/components/minvecka/MinPlan'
 // NF1 (2026-09-24): passet till deltagarens egen kalender som .ics
 import { byggIcs, icsFilnamn, laddaNerIcs } from '@/lib/ics'
 import {
@@ -104,12 +106,13 @@ export default function MinVecka() {
   // RD3: vilken sorts organisation planen kommer från. Tills svaret finns — och
   // om det aldrig kommer (vyn saknar kolumnen före migrationen) — neutral text.
   const regelverkQuery = useQuery({
-    queryKey: ['min-vecka', 'regelverk', planQuery.data?.org_id ?? null],
-    queryFn: () => hamtaPlanensRegelverk(planQuery.data?.org_id),
+    queryKey: ['min-vecka', 'organisation', planQuery.data?.org_id ?? null],
+    queryFn: () => hamtaPlanensOrganisation(planQuery.data?.org_id),
     enabled: !!planQuery.data,
     staleTime: 10 * 60_000,
   })
-  const regelverk = regelverkQuery.data ?? null
+  const regelverk = regelverkQuery.data?.regelverk ?? null
+  const orgNamn = regelverkQuery.data?.orgNamn ?? null
   const nycklar = regelverkNycklar(regelverk)
 
   // RD4: konsulentens möten samma vecka. Kastar vid fel — ett fel är inte "inga möten".
@@ -304,6 +307,8 @@ export default function MinVecka() {
           )}
         </Card>
 
+        <MinPlan regelverk={regelverk} orgNamn={orgNamn} />
+
         {/* F5: deltagarens eget närvarointyg — kvitto till handläggaren, utan omväg via konsulenten */}
         <NarvaroIntyg plan={plan} regelverk={regelverk} />
 
@@ -422,13 +427,29 @@ export default function MinVecka() {
                     {!s.self_checkin_at && (
                       <FranvaroAnmalan
                         session={s}
-                        motenSammaDag={motenPaDag(moten, s.date).map((m) => ({ id: m.id, tid: motesStart(m) }))}
+                        // RD27: veckans alla möten med datum — en anmälan av flera dagar frågar om dem också
+                        motenSammaDag={moten.map((m) => ({ id: m.id, tid: motesStart(m), datum: motesDatum(m) }))}
+                        passSammaDag={(sessionsQuery.data ?? []).filter((x) => x.date === s.date)}
                         datumText={rubrikdatum(s.date)}
                         onSaved={(uppd) => {
                           queryClient.setQueryData<ActivitySession[]>(minVeckaSessionsKey(mandag), (gamla) =>
                             (gamla ?? []).map((x) => (x.id === uppd.id ? uppd : x)),
                           )
                           setStatus(t('minVecka.franvaro.status', 'Din konsulent har fått besked.'))
+                        }}
+                        onSavedFlera={(uppdaterade) => {
+                          const perId = new Map(uppdaterade.map((u) => [u.id, u]))
+                          queryClient.setQueryData<ActivitySession[]>(minVeckaSessionsKey(mandag), (gamla) =>
+                            (gamla ?? []).map((x) => perId.get(x.id) ?? x),
+                          )
+                          // En period kan gå in i nästa vecka — de veckorna hämtas om när hon bläddrar dit.
+                          void queryClient.invalidateQueries({
+                            predicate: (q) => q.queryKey[0] === 'min-vecka' && q.queryKey[1] === 'sessions' && q.queryKey[2] !== mandag,
+                          })
+                          setStatus(t('minVecka.franvaro.statusFlera', {
+                            defaultValue: 'Anmält för {{count}} pass. Din konsulent har fått besked.',
+                            count: uppdaterade.length,
+                          }))
                         }}
                       />
                     )}

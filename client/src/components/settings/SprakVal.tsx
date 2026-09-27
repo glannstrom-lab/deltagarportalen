@@ -11,6 +11,8 @@
 import { useTranslation } from 'react-i18next'
 import { LATT_SVENSKA_KOD, arLattSvenska, sattLattSvenska } from '@/i18n/lattSvenska'
 import { Card } from '@/components/ui/Card'
+// RD31: maskinöversättning (t.ex. somaliska) — också på mobil, där toppnavens knapp saknas
+import { OversattSidan } from '@/components/sprak/OversattSidan'
 
 function aktivKod(lng: string): string {
   return lng === 'sv' && arLattSvenska() ? LATT_SVENSKA_KOD : lng
@@ -51,6 +53,7 @@ export function SprakVal() {
           <option value="en">{t('settings.accessibility.languageOptions.en', 'English')}</option>
         </select>
       </div>
+      <OversattSidan className="mt-3 border-t border-stone-100 dark:border-stone-800 pt-3" />
     </Card>
   )
 }

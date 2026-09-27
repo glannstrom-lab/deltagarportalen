@@ -3,7 +3,7 @@
  * KPI dashboard with traffic light status, activity feed, and quick actions
  */
 
-import { useState, useEffect, useEffectEvent } from 'react'
+import { useState, useEffect, useEffectEvent, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -26,7 +26,7 @@ import {
   RefreshCw,
   Download,
 } from '@/components/ui/icons'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { fetchCachedConsultantParticipants, useInvalidateConsultantParticipants } from './consultantParticipantsQuery'
@@ -46,9 +46,22 @@ import {
 import { kontaktText, dagarSedanKontakt } from '@/lib/kontaktText'
 import { DagensPass } from '@/components/consultant/DagensPass'
 import { consultantService } from '@/services/consultantService'
-import { hamtaMotenForKonsulent } from '@/services/moteskadens'
-import { aktivitetsplanApi } from '@/services/aktivitetApi'
-import { bradskandePunkter, franvaroFonster, veckansGranser, type Bradskande } from './oversiktRegler'
+import { FYSISKT_GRANS_DAGAR, hamtaMotenForKonsulent, type MoteRad } from '@/services/moteskadens'
+import { aktivitetsplanApi, type ActivityPlan, type AttendanceInput } from '@/services/aktivitetApi'
+import { orgApi, type OrgKind } from '@/services/orgApi'
+import { regelverk } from '@/components/consultant/orgTypVisning'
+import { senasteKontakt } from '@/services/senasteKontakt'
+import {
+  attGoraFonster,
+  attGoraIdag,
+  bradskandePunkter,
+  bradskandeUtanDubbletter,
+  leverantorsLage,
+  veckansGranser,
+  type AttGoraPass,
+  type Bradskande,
+  type PlaceringRad,
+} from './oversiktRegler'
 import { BradskandeIdag } from './BradskandeIdag'
 import { calculateGoalCategories } from './analytics'
 import { antal } from './antal'
@@ -79,8 +92,20 @@ interface Participant {
   has_cv: boolean
   ats_score: number | null
   last_contact_at: string | null
+  /** Senaste journalanteckning (vyns max) — en anteckning är en kontakt (RK14/RK38). */
+  last_note_date?: string | null
   last_login: string | null
   saved_jobs_count: number
+}
+
+/**
+ * RK38 (rollspelet 2026-09-27): "Ej kontaktad" på Översikt räknades bara ur
+ * `last_contact_at`, som enbart "Logga kontakt" skriver — en journalanteckning
+ * om ett samtal flyttade inte Översikten, fast deltagarsidan och listan redan
+ * räknade den (senasteKontakt, RK14). Samma regel på alla tre ställena nu.
+ */
+function senasteKontaktAt(p: Pick<Participant, 'last_contact_at' | 'last_note_date'>): string | null {
+  return senasteKontakt({ last_contact_at: p.last_contact_at, last_note_date: p.last_note_date ?? null })?.at ?? null
 }
 
 interface RecentActivity {
@@ -193,7 +218,7 @@ function AttentionAlert({
     no_contact: {
       icon: Clock,
       color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
-      message: kontaktText(t as (k: string, o?: Record<string, unknown>) => string, dagarSedanKontakt(participant.last_contact_at)),
+      message: kontaktText(t as (k: string, o?: Record<string, unknown>) => string, dagarSedanKontakt(senasteKontaktAt(participant))),
     },
     inactive: {
       icon: AlertTriangle,
@@ -301,6 +326,15 @@ export function OverviewTab() {
   // RR3/RK7: det brådskande (ogiltig frånvaro, möte över gränsen) — eget fel-läge
   const [bradskande, setBradskande] = useState<Bradskande[]>([])
   const [bradskandeFel, setBradskandeFel] = useState(false)
+  // RK35/RR26: passen bakom "Att göra i dag", och leverantörens underlag.
+  // Punkterna räknas om ur passen efter varje åtgärd i listan — utan att hela
+  // Översikten läggs i laddningsläge.
+  const [attGoraPass, setAttGoraPass] = useState<AttGoraPass[]>([])
+  const [egnaPlanIds, setEgnaPlanIds] = useState<Set<string> | null>(null)
+  const [levUnderlag, setLevUnderlag] = useState<{ plans: ActivityPlan[]; placeringar: PlaceringRad[]; moten: MoteRad[] } | null>(null)
+  const [levFel, setLevFel] = useState(false)
+  const [underlagsDag, setUnderlagsDag] = useState<Date | null>(null)
+  const [motesDeltagare, setMotesDeltagare] = useState<Participant | null>(null)
   const [attentionCounts, setAttentionCounts] = useState({ franvaro: 0, mote: 0, noContact: 0, inactive: 0, noCv: 0 })
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
 
@@ -335,6 +369,47 @@ export function OverviewTab() {
     return namn || p?.email || t('common.unknown')
   }
 
+  // RR26: leverantörens rad bara när alla relevanta organisationer är
+  // leverantörer (regelverk) — samma regel som texterna i planen och underlaget.
+  const medlemskapQ = useQuery({
+    queryKey: ['org-medlemskap'],
+    queryFn: () => orgApi.myMemberships(),
+    staleTime: 5 * 60_000,
+  })
+  const arLeverantor = medlemskapQ.isSuccess
+    && regelverk(medlemskapQ.data.map((m) => m.organization?.kind).filter((k): k is OrgKind => !!k)) === 'leverantor'
+
+  // Bara pass i konsulentens EGNA planer kan markeras (UPDATE-policyn, ST2) —
+  // samma avgränsning som Dagens pass. Utan planlistan visas alla (RLS-urvalet).
+  const attGora = useMemo(() => {
+    if (!underlagsDag) return []
+    const pass = egnaPlanIds ? attGoraPass.filter((p) => !p.plan_id || egnaPlanIds.has(p.plan_id)) : attGoraPass
+    return attGoraIdag({ deltagare: participants, pass, idag: underlagsDag })
+  }, [attGoraPass, egnaPlanIds, participants, underlagsDag])
+
+  const leverantor = useMemo(() => {
+    if (!arLeverantor || !levUnderlag || !underlagsDag) return null
+    return leverantorsLage({
+      deltagare: participants,
+      plans: egnaPlanIds ? levUnderlag.plans.filter((p) => egnaPlanIds.has(p.id)) : levUnderlag.plans,
+      pass: attGoraPass,
+      moten: levUnderlag.moten,
+      placeringar: levUnderlag.placeringar,
+      idag: underlagsDag,
+    })
+  }, [arLeverantor, levUnderlag, underlagsDag, participants, egnaPlanIds, attGoraPass])
+
+  const uppdateraPass = (uppdaterad: AttGoraPass) =>
+    setAttGoraPass((prev) => prev.map((p) => (p.id === uppdaterad.id ? { ...p, ...uppdaterad } : p)))
+
+  const markeraPass = async (pass: AttGoraPass, input: AttendanceInput) => {
+    uppdateraPass(await aktivitetsplanApi.markAttendance(pass.id, input))
+  }
+
+  const sparaPassAnteckning = async (pass: AttGoraPass, anteckning: string) => {
+    uppdateraPass(await aktivitetsplanApi.saveAttendanceNote(pass.id, anteckning))
+  }
+
   const fetchDashboardData = async () => {
     try {
       setLoading(true)
@@ -354,11 +429,17 @@ export function OverviewTab() {
 
       // RR3/RK7: underlaget för det brådskande. Hämtas parallellt; ett fel här
       // fäller inte översikten men syns som en egen rad i Min dag.
+      // RK35: fönstret täcker både frånvaroregeln (7 dagar), "Att göra i dag"
+      // (14 bakåt, 7 framåt) och leverantörens senaste avslutade vecka.
       const idagNu = new Date()
-      const { fran: franvaroFran, till: franvaroTill } = franvaroFonster(idagNu)
+      const { fran: passFran, till: passTill } = attGoraFonster(idagNu)
       const bradskandeUnderlag = Promise.allSettled([
         hamtaMotenForKonsulent(idagNu),
-        aktivitetsplanApi.listSessionsBetween(franvaroFran, franvaroTill),
+        aktivitetsplanApi.listSessionsBetween(passFran, passTill),
+      ])
+      const planUnderlag = Promise.allSettled([
+        aktivitetsplanApi.listAll(),
+        consultantService.getMinaPlaceringar(),
       ])
 
       // Varje fråga nedan kontrolleras. Förr lästes bara `data`: ett fel gav
@@ -430,12 +511,24 @@ export function OverviewTab() {
         }
         setBradskande(punkter)
         setBradskandeFel(underlagFel)
+        setAttGoraPass(passUtfall.status === 'fulfilled' ? (passUtfall.value as AttGoraPass[]) : [])
+        setUnderlagsDag(idagNu)
+        const [planUtfall, placeringUtfall] = await planUnderlag
+        setEgnaPlanIds(planUtfall.status === 'fulfilled'
+          ? new Set(planUtfall.value.filter((p) => p.consultant_id === user.id).map((p) => p.id))
+          : null)
+        const levOk = !underlagFel && planUtfall.status === 'fulfilled' && placeringUtfall.status === 'fulfilled'
+        setLevUnderlag(levOk
+          ? { plans: planUtfall.value, placeringar: placeringUtfall.value, moten: (motenUtfall as PromiseFulfilledResult<MoteRad[]>).value }
+          : null)
+        setLevFel(!levOk)
         for (const b of punkter) {
           const p = participantsData.find(x => x.participant_id === b.participantId)
           if (p) attention.push({ participant: p, type: b.typ, detalj: b.text })
         }
         participantsData.forEach(p => {
-          if (!p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo) {
+          const kontakt = senasteKontaktAt(p)
+          if (!kontakt || new Date(kontakt) < sevenDaysAgo) {
             attention.push({ participant: p, type: 'no_contact' })
           }
           if (p.last_login && new Date(p.last_login) < fourteenDaysAgo) {
@@ -568,7 +661,7 @@ export function OverviewTab() {
               participantId: a.participant.participant_id,
               participantName: nameOf(a.participant.participant_id),
               reason: a.type as 'no_contact' | 'inactive',
-              daysSinceContact: dagarSedanKontakt(a.participant.last_contact_at),
+              daysSinceContact: dagarSedanKontakt(senasteKontaktAt(a.participant)),
             }))
         )
 
@@ -689,7 +782,26 @@ export function OverviewTab() {
         // F9 (2026-09-12): dagens pass överst i Min dag
         pass={
           <>
-            <BradskandeIdag punkter={bradskande} fel={bradskandeFel} namnFor={namnForDeltagare} />
+            <BradskandeIdag
+              punkter={bradskandeUtanDubbletter(bradskande, attGora)}
+              attGora={attGora}
+              leverantor={leverantor}
+              fel={bradskandeFel}
+              namnFor={namnForDeltagare}
+              onMarkera={markeraPass}
+              onSparaAnteckning={sparaPassAnteckning}
+              onBokaFysiskt={(pid) => {
+                const p = participants.find((x) => x.participant_id === pid)
+                if (!p) return
+                setMotesDeltagare(p)
+                setShowMeetingDialog(true)
+              }}
+            />
+            {arLeverantor && levFel && !bradskandeFel && (
+              <p role="alert" className="mb-4 text-sm text-red-700 dark:text-red-300">
+                Planer eller placeringar kunde inte hämtas — veckan mot avtalet visas inte just nu.
+              </p>
+            )}
             <DagensPass namnFor={namnForDeltagare} />
           </>
         }
@@ -1003,9 +1115,18 @@ export function OverviewTab() {
 
       <MeetingSchedulerDialog
         isOpen={showMeetingDialog}
-        onClose={() => setShowMeetingDialog(false)}
+        onClose={() => {
+          setShowMeetingDialog(false)
+          setMotesDeltagare(null)
+        }}
+        // RR26: "Boka fysiskt möte" i Att göra i dag öppnar dialogen på rätt
+        // deltagare och föreslår fysiskt — det är det kravet raden gäller.
+        preselectedParticipant={motesDeltagare ?? undefined}
+        forvaldTyp={motesDeltagare ? 'physical' : undefined}
+        forvaldSkal={motesDeltagare ? `Mötesregeln: ett fysiskt möte minst var ${FYSISKT_GRANS_DAGAR}:e dag.` : undefined}
         onSuccess={() => {
           setShowMeetingDialog(false)
+          setMotesDeltagare(null)
           // KK4: vyn bär next_meeting_scheduled — samma skäl som ovan.
           invalidateParticipants()
           fetchDashboardData()

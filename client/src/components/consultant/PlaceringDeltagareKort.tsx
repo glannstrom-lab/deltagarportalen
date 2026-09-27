@@ -7,9 +7,15 @@
  * placering med utfall, omfattning och uppföljningarna — och det är härifrån
  * 3- och 6-månadersuppföljningen registreras (RR5).
  *
+ * RR25 (resultatklockan): per uppföljningspunkt också status för
+ * resultatersättningen — väntar → verifierad → fakturerad
+ * (PENDING_20260927d_resultat_och_msfa, services/resultatklocka.ts). Belopp
+ * visas inte: portalen har inte avtalets prislista.
+ *
  * Tre lägen: laddar / fel / klart. Ingen placering = ingen ruta (tom yta
  * fyller ingen funktion på översikten; "Registrera placering" finns i rubriken).
  */
+import { useState } from 'react'
 import { Briefcase } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -27,6 +33,7 @@ import {
 import { followupStatus, kanRegistreraUppfoljning, uppfoljningspunkt, type Uppfoljning } from '@/pages/consultant/placeringsmatt'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { langtDatum } from './aktivitetEtiketter'
+import { BETALSTATUS_ETIKETT, RESULTAT_MSFA_FINNS, betalstatus, betalstatusDatum, nastaBetalsteg, resultatApi, type BetalPlacering } from '@/services/resultatklocka'
 
 export type PlaceringarLage =
   | { status: 'laddar' }
@@ -35,7 +42,34 @@ export type PlaceringarLage =
 
 const LAGE_TEXT = { kommande: 'Kommande', pagaende: 'Pågående', avslutad: 'Avslutad' } as const
 
-function UppfoljningRad({ p, vilken, idag, onRegistrera }: { p: Placement; vilken: Uppfoljning; idag: string; onRegistrera: (p: Placement, v: Uppfoljning) => void }) {
+/** RR25: ersättningens status för en gjord uppföljning, med nästa steg. */
+function Betalrad({ p, vilken, onAndrad }: { p: Placement; vilken: Uppfoljning; onAndrad: () => void }) {
+  const [sparar, setSparar] = useState(false)
+  const [fel, setFel] = useState<string | null>(null)
+  const bp = p as unknown as BetalPlacering
+  const status = betalstatus(bp, vilken)
+  if (status === null) return null
+  const datum = betalstatusDatum(bp, vilken)
+  const nasta = nastaBetalsteg(bp, vilken)
+  const ta = async () => {
+    if (nasta.steg === null) return
+    setSparar(true)
+    setFel(null)
+    try { await resultatApi.sattBetalstatus(p.id, vilken, nasta.steg); onAndrad() } catch (err) { setFel(err instanceof Error ? err.message : 'Statusen kunde inte sparas') } finally { setSparar(false) }
+  }
+  return (
+    <span className="block text-xs mt-1" data-testid={`betalstatus-${vilken}`}>
+      <span className="text-stone-600 dark:text-stone-300">Ersättning: {BETALSTATUS_ETIKETT[status]}{datum && status !== 'vantar' ? ` ${langtDatum(new Date(datum).toLocaleDateString('sv-SE', { timeZone: 'Europe/Stockholm' }))}` : ''}</span>
+      {nasta.steg !== null && (
+        <button type="button" className="ml-2 underline text-stone-700 dark:text-stone-200" disabled={sparar} onClick={() => void ta()}>{nasta.knapp}</button>
+      )}
+      {nasta.steg === null && nasta.skal && <span className="block text-stone-500 dark:text-stone-400">{nasta.skal}</span>}
+      {fel && <span role="alert" className="block text-rose-700 dark:text-rose-300">{fel}</span>}
+    </span>
+  )
+}
+
+function UppfoljningRad({ p, vilken, idag, onRegistrera, onBetalstatusAndrad }: { p: Placement; vilken: Uppfoljning; idag: string; onRegistrera: (p: Placement, v: Uppfoljning) => void; onBetalstatusAndrad?: () => void }) {
   const gjord = vilken === '3m' ? p.followup_3m : p.followup_6m
   const rubrik = vilken === '3m' ? '3 månader' : '6 månader'
   const punkt = uppfoljningspunkt(p.start_date ?? null, vilken)
@@ -61,6 +95,7 @@ function UppfoljningRad({ p, vilken, idag, onRegistrera }: { p: Placement; vilke
     <li className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 py-2 border-t border-stone-100 dark:border-stone-800 first:border-t-0">
       <p className="text-sm text-stone-700 dark:text-stone-200">
         <span className="font-medium">{rubrik}:</span> {text}
+        {RESULTAT_MSFA_FINNS && onBetalstatusAndrad && <Betalrad p={p} vilken={vilken} onAndrad={onBetalstatusAndrad} />}
       </p>
       {!gjord && besked.tillaten && (
         <Button size="sm" variant="outline" onClick={() => onRegistrera(p, vilken)}>
@@ -71,10 +106,12 @@ function UppfoljningRad({ p, vilken, idag, onRegistrera }: { p: Placement; vilke
   )
 }
 
-export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera }: {
+export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera, onBetalstatusAndrad }: {
   lage: PlaceringarLage
   onForsokIgen: () => void
   onRegistrera: (p: Placement, vilken: Uppfoljning) => void
+  /** RR25: statusen ändrad — ladda om placeringarna. */
+  onBetalstatusAndrad?: () => void
 }) {
   const idag = formatLocalDate(new Date())
   if (lage.status === 'laddar') return null
@@ -118,8 +155,8 @@ export function PlaceringDeltagareKort({ lage, onForsokIgen, onRegistrera }: {
               </p>
               {p.notes && <p className="text-xs text-stone-500 dark:text-stone-400 mt-1 whitespace-pre-wrap">{p.notes}</p>}
               <ul className="mt-3" aria-label={`Uppföljning av placeringen hos ${p.employer_name}`}>
-                <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} />
-                <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} />
+                <UppfoljningRad p={p} vilken="3m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
+                <UppfoljningRad p={p} vilken="6m" idag={idag} onRegistrera={onRegistrera} onBetalstatusAndrad={onBetalstatusAndrad} />
               </ul>
             </li>
           )

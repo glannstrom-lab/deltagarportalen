@@ -9,6 +9,10 @@
  * IVO:s e-tjänst matas för hand. Inget API finns mot IVO eller
  * Arbetsförmedlingen — därför en checklista i stället för en synk.
  *
+ * RK39 (rollspelet 2026-09-27): månadsunderlag per stödmånad. Kravet
+ * tillämpas på stödet för en kalendermånad, så underlaget tas ut per deltagare
+ * och kalendermånad, med veckonummer (services/manadsunderlagPdf.ts).
+ *
  * Svenska literaler: konsulentvyn översätts inte (DESIGN.md §2).
  */
 
@@ -24,6 +28,8 @@ import { ivoKvartalsunderlag, kvartalForDatum, kvartalGranser, tillTsv, type Kva
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
 import { langtDatum } from './aktivitetEtiketter'
+import { laddaNerManadsunderlag, stodmanadAlternativ } from '@/services/manadsunderlagPdf'
+import { manadGranser } from '@/services/aktivitetslogg'
 
 type Lage =
   | { status: 'laddar' }
@@ -99,6 +105,34 @@ export function IvoUnderlagSektion() {
   }, [])
 
   const aktivaPlaner = lage.status === 'klart' ? lage.plans.filter((p) => p.status === 'active') : []
+
+  // RK39: månadsunderlag. Planer som var giltiga någon dag i den valda månaden.
+  const manader = useMemo(() => stodmanadAlternativ(new Date()), [])
+  const [manad, setManad] = useState(() => manader[0].value)
+  const [manadPlan, setManadPlan] = useState('')
+  const [manadLaddar, setManadLaddar] = useState(false)
+  const [manadFel, setManadFel] = useState<string | null>(null)
+  const manadGrans = manadGranser(manad)
+  const planerIManad = lage.status === 'klart'
+    ? lage.plans
+      .filter((p) => p.start_date <= manadGrans.to && (p.end_date === null || p.end_date >= manadGrans.from))
+      .map((p) => ({ plan: p, namn: lage.namn.get(p.participant_id) || `Deltagare ${p.participant_id.slice(0, 8)}` }))
+      .sort((a, b) => a.namn.localeCompare(b.namn, 'sv') || a.plan.start_date.localeCompare(b.plan.start_date))
+    : []
+  const valdManadPlan = planerIManad.find((x) => x.plan.id === manadPlan) ?? null
+
+  const laddaNerManad = async () => {
+    if (!valdManadPlan) return
+    setManadLaddar(true)
+    setManadFel(null)
+    try {
+      await laddaNerManadsunderlag({ plan: valdManadPlan.plan, ym: manad, participantName: valdManadPlan.namn })
+    } catch (err) {
+      setManadFel(err instanceof Error ? `Månadsunderlaget kunde inte tas fram: ${err.message}` : 'Månadsunderlaget kunde inte tas fram.')
+    } finally {
+      setManadLaddar(false)
+    }
+  }
 
   return (
     <Card className="p-5 space-y-5">
@@ -185,6 +219,42 @@ export function IvoUnderlagSektion() {
               Ladda ner som TSV
             </Button>
           </div>
+
+          <section aria-labelledby="manadsunderlag-rubrik" className="border-t border-stone-200 dark:border-stone-700 pt-4 space-y-3">
+            <h4 id="manadsunderlag-rubrik" className="font-semibold text-stone-900 dark:text-stone-100">
+              Månadsunderlag per stödmånad
+            </h4>
+            <p className="text-xs text-stone-500 dark:text-stone-400 max-w-prose">
+              Stödet prövas per kalendermånad. Underlaget visar den valda månaden för en deltagare: vecka för vecka med
+              veckonummer, och varje pass med utfall, intyg, anteckning och deltagarens förklaring. En PDF att lämna till
+              handläggaren — inget skickas härifrån.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
+              <Select
+                id="manadsunderlag-manad"
+                label="Stödmånad"
+                options={manader}
+                value={manad}
+                onChange={(e) => { setManad(e.target.value); setManadPlan(''); setManadFel(null) }}
+              />
+              <Select
+                id="manadsunderlag-deltagare"
+                label="Deltagare"
+                options={[
+                  { value: '', label: planerIManad.length === 0 ? 'Ingen plan i månaden' : 'Välj deltagare' },
+                  ...planerIManad.map((x) => ({ value: x.plan.id, label: `${x.namn} · plan från ${langtDatum(x.plan.start_date)}` })),
+                ]}
+                value={manadPlan}
+                onChange={(e) => { setManadPlan(e.target.value); setManadFel(null) }}
+                disabled={planerIManad.length === 0}
+              />
+              <Button size="sm" variant="outline" onClick={() => void laddaNerManad()} disabled={!valdManadPlan || manadLaddar}>
+                <Download className="w-4 h-4 mr-1.5" aria-hidden="true" />
+                {manadLaddar ? 'Tar fram…' : 'Ladda ner månadsunderlag (PDF)'}
+              </Button>
+            </div>
+            {manadFel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{manadFel}</p>}
+          </section>
 
           <section aria-labelledby="af-checklista-rubrik" className="border-t border-stone-200 dark:border-stone-700 pt-4 space-y-2">
             <h4 id="af-checklista-rubrik" className="font-semibold text-stone-900 dark:text-stone-100">
