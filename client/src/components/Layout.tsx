@@ -17,6 +17,7 @@ import { TopBar } from './layout/TopBar'
 import { LanguageSwitcher } from './layout/LanguageSwitcher'
 // KM12 (8), 2026-09-12: icke-stängbar banner när användaren tillhör en demoorganisation
 import { DemoBanner } from './consultant/DemoBanner'
+import { VisaSomBanner } from './admin/VisaSomBanner'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
@@ -295,6 +296,7 @@ function ForetagSkal({ isMobile, showBars, pathname, org }: {
         data-testid="foretagsskal"
       >
         {showBars && !isMobile && <ForetagTopBar orgNamn={org?.name ?? null} />}
+        {showBars && <VisaSomBanner />}
         {showBars && <DemoBanner />}
         {showBars && isMobile && <MobileTopBar />}
 
@@ -447,6 +449,7 @@ export default function Layout() {
       >
         {/* TopBar - full width at top (desktop only) */}
         {showBars && !isMobile && <TopBar />}
+        {showBars && <VisaSomBanner />}
         {showBars && <DemoBanner />}
 
         {/* Mobil TopBar med meny och profil */}

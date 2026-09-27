@@ -55,6 +55,7 @@ const Help = lazy(() => import('./pages/Help'))
 const Consultant = lazy(() => import('./pages/Consultant'))
 // AG6: företagskontots sida — egna <Routes> under /foretag/*, som Consultant.
 const Foretag = lazy(() => import('./pages/foretag/Foretag'))
+const VisaSom = lazy(() => import('./pages/VisaSom'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 // New feature pages
@@ -375,6 +376,8 @@ function App() {
         <Route path="/privacy" element={<LazyRoute><Privacy /></LazyRoute>} />
         <Route path="/terms" element={<LazyRoute><Terms /></LazyRoute>} />
         <Route path="/ai-policy" element={<LazyRoute><AiPolicy /></LazyRoute>} />
+        {/* Superadmin "Visa som" (2026-09-27): engångsinloggning som demo-/testkonto. */}
+        <Route path="/visa-som" element={<LazyRoute><VisaSom /></LazyRoute>} />
         <Route path="/tillganglighet" element={<LazyRoute><Accessibility /></LazyRoute>} />
         <Route path="/accessibility" element={<LazyRoute><Accessibility /></LazyRoute>} />
         <Route path="/template-snapshot/:templateId" element={<LazyRoute><TemplateSnapshot /></LazyRoute>} />

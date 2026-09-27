@@ -23,7 +23,7 @@ import {
   Calendar,
   ChevronRight,
 } from '@/components/ui/icons'
-import { useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
 import { fetchCachedConsultantParticipants } from './consultantParticipantsQuery'
@@ -36,6 +36,8 @@ import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDi
 import { InsightsPanel } from '@/components/consultant/InsightsPanel'
 import { IvoUnderlagSektion } from '@/components/consultant/IvoUnderlagSektion'
 import { AvtalskravKort } from '@/components/consultant/AvtalskravKort'
+import { orgTypVisning } from '@/components/consultant/orgTypVisning'
+import { orgApi, type OrgKind } from '@/services/orgApi'
 import { consultantService } from '@/services/consultantService'
 import type { ReportData } from '@/services/pdfReportGenerator'
 // AR1: kohortberäkningen ligger i egen modul sedan 2026-08-17 — den gick inte
@@ -213,6 +215,18 @@ function ProgressRing({
 export function AnalyticsTab() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  // Kundtypsstyrda delar (2026-09-27): kommun ser IVO-underlaget, leverantör
+  // avtalskravet. Inget visas medan medlemskapen laddar; vid läsfel visas båda.
+  const medlemskapQ = useQuery({
+    queryKey: ['org-medlemskap'],
+    queryFn: () => orgApi.myMemberships(),
+    staleTime: 5 * 60_000,
+  })
+  const kundtypsVisning = medlemskapQ.isSuccess
+    ? orgTypVisning(medlemskapQ.data.map((m) => m.organization?.kind).filter((k): k is OrgKind => !!k))
+    : medlemskapQ.isError
+      ? { visaAvtalskrav: true, visaIvoUnderlag: true }
+      : null
   const [loading, setLoading] = useState(true)
   // KS7: ett fel (timeout, RLS, kvot) såg tidigare exakt likadant ut som "inga
   // deltagare" — samma skärm, ingen skillnad. Tre lägen krävs (laddar/fel/
@@ -1124,10 +1138,10 @@ export function AnalyticsTab() {
       </Card>
 
       {/* KM7: kvartalsunderlag till IVO + AF-checklista. Svenska literaler — konsulentvyn översätts inte. */}
-      <IvoUnderlagSektion />
+      {kundtypsVisning?.visaIvoUnderlag && <IvoUnderlagSektion />}
 
       {/* RM4: aktivitetsloggen mot avtalskravet (FFU §4.1.1) — timkrav per vecka och andel fysiska. */}
-      <AvtalskravKort />
+      {kundtypsVisning?.visaAvtalskrav && <AvtalskravKort />}
 
       {/* PDF Report Dialog */}
       <ReportGeneratorDialog
