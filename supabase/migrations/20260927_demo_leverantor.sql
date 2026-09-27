@@ -1,4 +1,4 @@
--- VS2: Demoleverantör — Rusta och matcha-leverantör med påhittade personer (2026-09-27)
+-- VS2 (+ VS4 samma dag: journalens klockslag, aktivitetsmall): Demoleverantör — Rusta och matcha-leverantör med påhittade personer (2026-09-27)
 --
 -- Motsvarigheten till Demokommun (20260912190000_demo_org.sql) för den andra
 -- kundgruppen. Syns i superadmin → "Visa som" (is_demo = true). Egna funktioner
@@ -38,6 +38,7 @@ DECLARE
   v_monday date := date_trunc('week', current_date)::date;
   v_plan1 uuid;
   v_plan2 uuid;
+  v_mall uuid;
   r record;
   d date;
 BEGIN
@@ -122,10 +123,10 @@ BEGIN
   ON CONFLICT DO NOTHING;
 
   INSERT INTO consultant_journal (consultant_id, participant_id, content, category, created_at) VALUES
-   (v_kons, v_p1, 'Praktiken på Demobageriet går bra. Handledaren vill prata om anställning efter praktiken.', 'PROGRESS', now() - interval '4 days'),
-   (v_kons, v_p2, 'Jonas har svårt att komma till gruppträffarna. Vi provar individuella möten i stället och ses på kontoret nästa vecka.', 'CONCERN', now() - interval '9 days'),
-   (v_kons, v_p3, 'Amina började som lokalvårdare på Exempel Städ AB. Följer upp efter tre månader enligt avtalet.', 'PROGRESS', now() - interval '80 days'),
-   (v_kons, v_p4, 'Nyinskriven. Första mötet bokat, kartläggning av mål och förutsättningar.', 'GENERAL', now() - interval '5 days');
+   (v_kons, v_p1, 'Praktiken på Demobageriet går bra. Handledaren vill prata om anställning efter praktiken.', 'PROGRESS', date_trunc('day', now()) - interval '4 days' + interval '8 hours 30 minutes'),
+   (v_kons, v_p2, 'Jonas har svårt att komma till gruppträffarna. Vi provar individuella möten i stället och ses på kontoret nästa vecka.', 'CONCERN', date_trunc('day', now()) - interval '9 days' + interval '8 hours 30 minutes'),
+   (v_kons, v_p3, 'Amina började som lokalvårdare på Exempel Städ AB. Följer upp efter tre månader enligt avtalet.', 'PROGRESS', date_trunc('day', now()) - interval '80 days' + interval '8 hours 30 minutes'),
+   (v_kons, v_p4, 'Nyinskriven. Första mötet bokat, kartläggning av mål och förutsättningar.', 'GENERAL', date_trunc('day', now()) - interval '5 days' + interval '8 hours 30 minutes');
 
   INSERT INTO consultant_goals (consultant_id, participant_id, title, description, priority, status, progress, deadline) VALUES
    (v_kons, v_p1, 'Anställning efter praktiken', 'Förbereda samtal med Demobageriet om anställning.', 'HIGH', 'IN_PROGRESS', 70, now() + interval '3 weeks'),
@@ -141,9 +142,18 @@ BEGIN
   INSERT INTO consultant_placements (consultant_id, participant_id, employer_name, job_title, placement_type, start_date, followup_3m, followup_6m, notes)
   VALUES (v_kons, v_p3, 'Exempel Städ AB', 'Lokalvårdare', 'permanent', (current_date - 80), false, false, 'Tillsvidare, 75 %.');
 
+  -- Mall (VS4): Saras vecka, så Aktivitet → mallar har något att visa
+  INSERT INTO activity_templates (owner_id, org_id, name, description, is_public)
+  VALUES (v_kons, v_org, 'Praktik + jobbsökarträff', 'Två praktikpass i veckan och en jobbsökarträff (demo).', true)
+  RETURNING id INTO v_mall;
+  INSERT INTO activity_template_items (template_id, weekday, start_time, end_time, title, activity_type, location, sort_order) VALUES
+   (v_mall, 2, '08:00', '10:00', 'Praktik', 'workplace', 'Demobageriet', 1),
+   (v_mall, 4, '08:00', '10:00', 'Praktik', 'workplace', 'Demobageriet', 2),
+   (v_mall, 5, '13:00', '14:00', 'Jobbsökarträff', 'jobsearch', 'Leverantörens kontor', 3);
+
   -- Aktivitetsplaner (utan kommunens försörjningshinder — det är R&M)
-  INSERT INTO activity_plans (participant_id, consultant_id, org_id, start_date, weekly_hours_target, jobsearch_hours_per_week, status, plan_text, decided_at)
-  VALUES (v_p1, v_kons, v_org, v_monday - 56, 4, 1, 'active', 'Praktik på Demobageriet tisdag och torsdag, jobbsökarträff på kontoret.', v_monday - 56)
+  INSERT INTO activity_plans (participant_id, consultant_id, org_id, template_id, template_name, start_date, weekly_hours_target, jobsearch_hours_per_week, status, plan_text, decided_at)
+  VALUES (v_p1, v_kons, v_org, v_mall, 'Praktik + jobbsökarträff', v_monday - 56, 4, 1, 'active', 'Praktik på Demobageriet tisdag och torsdag, jobbsökarträff på kontoret.', v_monday - 56)
   RETURNING id INTO v_plan1;
   INSERT INTO activity_plans (participant_id, consultant_id, org_id, start_date, weekly_hours_target, jobsearch_hours_per_week, status, plan_text, decided_at)
   VALUES (v_p2, v_kons, v_org, v_monday - 42, 2, 1, 'active', 'Eget jobbsökande hemifrån och gruppträff på kontoret varannan vecka.', v_monday - 42)
