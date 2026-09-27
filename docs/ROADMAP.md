@@ -54,8 +54,13 @@ studier/omfattning/nivå (migration `20260927b_placering_utfall.sql`), RR8 under
 RD4 möten i Min vecka, RD7, RD8, RD9, RD10, RD11 förklara frånvaro (migration `20260927b_franvaro_forklaring.sql`),
 RD12, RD5/RD6/RD24/RD30 språk (Lätt svenska 123 → 744 av 744 på huvudvägen, grind `lattSvenskaTackning.test.ts`).
 RK16 var demodata (mallens praktikplats), inte kod.
-**Kvar:** 36 skav + 23 förslag i rapporterna. Nytt skav: Min vecka säger "11 av 8 timmar" när målet överskrids.
-Lätt svenska saknas i Profilens övriga flikar, CV:ts snabbläge, menyn, Inställningar och Min vardag.
+**Skav — alla 36 klara 2026-09-27** (commit `48b61d74`, verify 4 325/4 325, stickprov i prod) + "11 av 8" → "mer än
+målet". Migration `20260927c_fler_passtyper.sql` (SFI, studier, vägledning, hälsa; SFI/studier räknas inte i
+R&M-avtalsloggen). Katalogens seed-text tömd i databasen. Hela skalet i rem, grinden `storreTextRem.test.ts` utan
+layoutundantag.
+**Kvar:** 23 förslag (RK33–41, RR24–29, RD25–32). Beslut: RD21 separata samtycken per hälsokategori kräver nya
+samtyckestyper (migration). Formuläret "Byt lösenord" i Inställningar gör ingenting (= BP6). Lätt svenska saknas
+i Profilens övriga flikar, CV:ts snabbläge, menyn, Inställningar och Min vardag.
 
 ## Projektgenomgång 2026-09-24 — fjärde rundan: användningen, inte koden
 
