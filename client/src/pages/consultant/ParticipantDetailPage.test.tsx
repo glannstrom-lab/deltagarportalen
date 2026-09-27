@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { act, useEffect } from 'react'
 import { render, screen, waitFor, fireEvent, within } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MemoryRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/config'
@@ -124,7 +125,11 @@ function NavExposer() {
 }
 
 function renderAt(initialPath: string) {
+  // AktivitetsplanSektion läser medlemskapen med useQuery (RR2, 2026-09-27) —
+  // appen har alltid en QueryClient, testet måste också ha en.
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
+    <QueryClientProvider client={queryClient}>
     <I18nextProvider i18n={i18n}>
       {/* ParticipantJournal (KJ1) bekräftar radering via useConfirmDialog. */}
       <ConfirmDialogProvider>
@@ -136,6 +141,7 @@ function renderAt(initialPath: string) {
         </MemoryRouter>
       </ConfirmDialogProvider>
     </I18nextProvider>
+    </QueryClientProvider>
   )
 }
 
@@ -505,3 +511,50 @@ describe('ParticipantDetailPage — PG-skav 7 (persona-genomgången 2026-09-12):
     expect(panelEfterByte).toHaveAttribute('aria-labelledby', goalsTab.id)
   })
 })
+
+/**
+ * RK5 (rollspelet 2026-09-27): 45 × Tab nådde bara "Översikt"; pil höger
+ * flyttade varken fokus eller val. Motprov: ta bort onKeyDown på flikarna →
+ * testet faller på första pil-höger.
+ */
+describe('ParticipantDetailPage — RK5: flikarna går att nå med tangentbordet', () => {
+  it('pil höger/vänster, Home och End flyttar både fokus och val; bara den valda fliken ligger i tabbordningen', async () => {
+    const anna = makeParticipant('p1', 'Anna', 'Andersson')
+    fromMock = makeFromMock({
+      consultant_dashboard_participants: () => Promise.resolve({ data: anna, error: null }),
+      consultant_goals: emptyGoals,
+      consultant_journal: emptyJournal,
+    })
+    renderAt('/consultant/participants/p1')
+    await screen.findByText('Anna Andersson')
+
+    const tablist = screen.getByRole('tablist', { name: /avsnitt/i })
+    const flik = (namn: RegExp) => within(tablist).getByRole('tab', { name: namn })
+    const oversikt = flik(/^Översikt$/i)
+    oversikt.focus()
+
+    fireEvent.keyDown(oversikt, { key: 'ArrowRight' })
+    expect(flik(/^Aktivitet$/)).toHaveAttribute('aria-selected', 'true')
+    expect(document.activeElement).toBe(flik(/^Aktivitet$/))
+    expect(flik(/^Aktivitet$/)).toHaveAttribute('tabindex', '0')
+    expect(oversikt).toHaveAttribute('tabindex', '-1')
+
+    fireEvent.keyDown(document.activeElement!, { key: 'End' })
+    expect(document.activeElement).toBe(flik(/^Tidslinje$/i))
+    expect(flik(/^Tidslinje$/i)).toHaveAttribute('aria-selected', 'true')
+
+    // Runt: höger från sista → första
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowRight' })
+    expect(document.activeElement).toBe(flik(/^Översikt$/i))
+
+    fireEvent.keyDown(document.activeElement!, { key: 'ArrowLeft' })
+    expect(document.activeElement).toBe(flik(/^Tidslinje$/i))
+
+    fireEvent.keyDown(document.activeElement!, { key: 'Home' })
+    expect(document.activeElement).toBe(flik(/^Översikt$/i))
+
+    // Varje flik är nåbar: exakt en har tabindex 0 åt gången
+    expect(within(tablist).getAllByRole('tab').filter((f) => f.getAttribute('tabindex') === '0')).toHaveLength(1)
+  })
+})
+

@@ -43,7 +43,15 @@ export interface ReportData {
   cvCompletionRate: number
   goalsCompletionRate: number
   engagementRate: number
-  averageTimeToPlacement: number
+  /**
+   * Dagar från kopplingen till jobbets start, eller `null` utan mätbart
+   * underlag. RR4/RK11 (2026-09-27): var `number`, och anroparen skickade
+   * `?? 0` — PDF:en sa "0 dagar" där vyn sa "—". Utan underlag skrivs "—"
+   * och `averageTimeToPlacementNote`.
+   */
+  averageTimeToPlacement: number | null
+  /** En rad om varför snittet saknas eller vilka placeringar som inte räknats. */
+  averageTimeToPlacementNote?: string | null
 
   // Monthly progress
   monthlyProgress: Array<{ month: string; value: number }>
@@ -114,7 +122,7 @@ const LABELS = {
     days: 'dagar',
     progressOverTime: 'Framsteg över tid',
     month: 'Månad',
-    averageScore: 'Genomsnittlig poäng',
+    averageScore: 'Slutförda mål och placeringar',
     statusDistribution: 'Statusfördelning',
     status: 'Status',
     count: 'Antal',
@@ -128,6 +136,8 @@ const LABELS = {
     cvComplete: 'CV-komplett',
     placed: 'Placerade',
     avgTime: 'Snitt tid (dagar)',
+    noCohortData: 'Inga deltagare med kopplingsdatum i underlaget — ingen kohort att visa.',
+    dash: '—',
     participantDetails: 'Deltagardetaljer',
     name: 'Namn',
     progress: 'Framsteg',
@@ -152,7 +162,7 @@ const LABELS = {
     days: 'days',
     progressOverTime: 'Progress Over Time',
     month: 'Month',
-    averageScore: 'Average Score',
+    averageScore: 'Completed goals and placements',
     statusDistribution: 'Status Distribution',
     status: 'Status',
     count: 'Count',
@@ -166,6 +176,8 @@ const LABELS = {
     cvComplete: 'CV Complete',
     placed: 'Placed',
     avgTime: 'Avg Time (days)',
+    noCohortData: 'No participants with a start date in the data — no cohort to show.',
+    dash: '—',
     participantDetails: 'Participant Details',
     name: 'Name',
     progress: 'Progress',
@@ -174,6 +186,39 @@ const LABELS = {
     page: 'Page',
     of: 'of',
   }
+}
+
+type Etiketter = (typeof LABELS)['sv']
+
+/**
+ * RK11: placeringstiden som text. `null` → "—", aldrig "0 dagar".
+ * Exporterad så testet kan kontrollera den utan PDF.
+ */
+export function placeringstidText(varde: number | null, labels: Pick<Etiketter, 'days' | 'dash'> = LABELS.sv): string {
+  return varde === null ? labels.dash : `${varde} ${labels.days}`
+}
+
+/**
+ * RK11: kohortraderna. `avgTime` 0 betyder i `cohorts.ts` "inget mätbart par"
+ * och visas som "—" — en kohort utan placering har ingen snittid, inte 0 dagar.
+ */
+export function kohortRader(rader: ReportData['cohortData'], labels: Pick<Etiketter, 'dash'> = LABELS.sv): string[][] {
+  return rader.map((row) => [
+    row.cohort,
+    row.participants.toString(),
+    `${row.cvComplete}%`,
+    `${row.placed}%`,
+    row.avgTime > 0 ? row.avgTime.toString() : labels.dash,
+  ])
+}
+
+/**
+ * RK11: månadsserien är ett ANTAL (slutförda mål + placeringar per månad, se
+ * `computeMonthlyProgress`), inte en procentsats. PDF:en skrev "Sep 0%" under
+ * rubriken "Genomsnittlig poäng".
+ */
+export function framstegRader(serie: ReportData['monthlyProgress']): string[][] {
+  return serie.map((row) => [row.month, String(row.value)])
 }
 
 /**
@@ -316,7 +361,16 @@ export async function generateConsultantReport(
   doc.setFontSize(10)
   doc.text(`${labels.avgPlacementTime}: `, margin, yPos + 4)
   doc.setFont('helvetica', 'bold')
-  doc.text(`${data.averageTimeToPlacement} ${labels.days}`, margin + 60, yPos + 4)
+  doc.text(placeringstidText(data.averageTimeToPlacement, labels), margin + 60, yPos + 4)
+  if (data.averageTimeToPlacementNote) {
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    doc.setTextColor(...COLORS.textLight)
+    const brutna = doc.splitTextToSize(data.averageTimeToPlacementNote, pageWidth - margin * 2) as string[]
+    doc.text(brutna, margin, yPos + 10)
+    yPos += brutna.length * 3.5
+    doc.setTextColor(...COLORS.text)
+  }
   yPos += 20
 
   // Progress Over Time Table
@@ -331,7 +385,7 @@ export async function generateConsultantReport(
     autoTable(doc, {
       startY: yPos,
       head: [[labels.month, labels.averageScore]],
-      body: data.monthlyProgress.map(row => [row.month, `${row.value}%`]),
+      body: framstegRader(data.monthlyProgress),
       margin: { left: margin, right: margin },
       styles: {
         fontSize: 9,
@@ -413,6 +467,16 @@ export async function generateConsultantReport(
   }
 
   // Cohort Analysis Table
+  if (includeCohortAnalysis && data.cohortData.length === 0) {
+    checkNewPage(30)
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(14)
+    doc.text(labels.cohortAnalysis, margin, yPos)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.text(`${labels.dash} ${labels.noCohortData}`, margin, yPos + 8)
+    yPos += 20
+  }
   if (includeCohortAnalysis && data.cohortData.length > 0) {
     checkNewPage(70)
     doc.setFont('helvetica', 'bold')
@@ -423,13 +487,7 @@ export async function generateConsultantReport(
     autoTable(doc, {
       startY: yPos,
       head: [[labels.cohort, labels.participants, labels.cvComplete, labels.placed, labels.avgTime]],
-      body: data.cohortData.map(row => [
-        row.cohort,
-        row.participants.toString(),
-        `${row.cvComplete}%`,
-        `${row.placed}%`,
-        row.avgTime.toString()
-      ]),
+      body: kohortRader(data.cohortData, labels),
       margin: { left: margin, right: margin },
       styles: {
         fontSize: 9,

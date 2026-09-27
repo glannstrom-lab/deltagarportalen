@@ -17,10 +17,13 @@ import { aktivitetsplanApi, schemamallApi, FORSORJNINGSHINDER, FORSORJNINGSHINDE
 import {
   addDays,
   foreslagetVeckomal,
+  forifylltVeckomalUrMall,
   formatLocalDate,
   generateSessions,
   isoWeekday,
   mallensVeckotimmar,
+  mallensTimmarPerTyp,
+  veckomalMotSchema,
 } from '@/services/aktivitetSchema'
 import { formatTimmar } from './aktivitetEtiketter'
 
@@ -58,6 +61,7 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
   const [malRortManuellt, setMalRortManuellt] = useState(false)
   const [motivering, setMotivering] = useState('')
   const [jobbsok, setJobbsok] = useState('0')
+  const [jobbsokRortManuellt, setJobbsokRortManuellt] = useState(false)
   const [planText, setPlanText] = useState('')
   const [beslutsdatum, setBeslutsdatum] = useState(() => formatLocalDate(new Date()))
   const [forsorjningshinder, setForsorjningshinder] = useState<'' | Forsorjningshinder>('')
@@ -79,10 +83,15 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
     return () => { aktiv = false }
   }, [])
 
-  // Förslaget följer kryssrutan och deltiden tills konsulenten själv rört talet — härlett, ingen effekt.
-  const veckomalVisat = malRortManuellt ? veckomal : String(forslag)
-
   const mall = mallLage.status === 'klart' ? mallLage.mallar.find((m) => m.id === mallId) ?? null : null
+
+  // RK2 (rollspelet 2026-09-27): målet förifylldes med lagens 40 h mot mallens
+  // ~8 h anvisat, utan varning — och så stod det på planen för underskrift.
+  // Nu förifylls målet ur mallen (anvisat + eget jobbsökande, högst lagens
+  // förslag) och eget jobbsökande ur mallen, tills konsulenten själv rört talen.
+  const urMall = useMemo(() => (mall ? forifylltVeckomalUrMall(mall.items, forslag) : null), [mall, forslag])
+  const veckomalVisat = malRortManuellt ? veckomal : String(urMall?.veckomal ?? forslag)
+  const jobbsokVisat = jobbsokRortManuellt ? jobbsok : String(urMall?.egetJobbsok ?? 0)
   const antalPass = useMemo(() => (mall && start && slut ? generateSessions(mall.items, start, slut).length : 0), [mall, start, slut])
   const malTal = Number(veckomalVisat)
   const avviker = Number.isFinite(malTal) && malTal !== forslag
@@ -94,6 +103,16 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
     motivering: avviker && !motivering.trim() ? 'Motivera varför målet avviker från lagens förslag' : null,
   }
   const harFel = Object.values(fel).some((f) => f !== null)
+  const glapp = useMemo(() => {
+    if (!mall || !Number.isFinite(malTal)) return null
+    const schema = mallensTimmarPerTyp(mall.items)
+    return veckomalMotSchema({
+      veckomal: malTal,
+      egetJobbsokPlan: Number(jobbsokVisat) || 0,
+      anvisatSchema: schema.anvisade,
+      egetJobbsokSchema: schema.egetJobbsok,
+    })
+  }, [mall, malTal, jobbsokVisat])
 
   const skapa = async () => {
     setForsokt(true)
@@ -107,7 +126,7 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
         startDate: start,
         endDate: slut,
         weeklyHoursTarget: malTal,
-        jobsearchHoursPerWeek: Number(jobbsok) || 0,
+        jobsearchHoursPerWeek: Number(jobbsokVisat) || 0,
         targetReason: avviker ? motivering : null,
         planText,
         decidedAt: beslutsdatum || null,
@@ -223,8 +242,8 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
                 type="number"
                 min={0}
                 step={0.5}
-                value={jobbsok}
-                onChange={(e) => setJobbsok(e.target.value)}
+                value={jobbsokVisat}
+                onChange={(e) => { setJobbsokRortManuellt(true); setJobbsok(e.target.value) }}
                 hint="Ska framgå av planen. Räknas inte som anvisad aktivitet."
                 fullWidth
               />
@@ -256,6 +275,13 @@ function TillampaMallForm({ isOpen, onClose, participantId, participantName, onC
                 ? `${antalPass} pass genereras ur "${mall.name}" mellan ${start} och ${slut}. Passen går att ändra ett och ett efteråt.`
                 : 'Välj en mall så visas hur många pass som genereras.'}
             </p>
+
+            {(glapp?.anvisat || glapp?.egetJobbsok) && (
+              <div role="status" className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-100 space-y-1">
+                {glapp.anvisat && <p>{glapp.anvisat}</p>}
+                {glapp.egetJobbsok && <p>{glapp.egetJobbsok}</p>}
+              </div>
+            )}
 
             {sparfel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{sparfel}</p>}
           </>

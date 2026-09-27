@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
+import { useAuthStore } from '@/stores/authStore'
 import {
   downloadConsultantReport,
   generateReportDataUrl,
@@ -28,7 +29,8 @@ import {
   type ReportOptions,
 } from '@/services/pdfReportGenerator'
 import { aktivitetsplanApi, underlagApi } from '@/services/aktivitetApi'
-import { orgApi } from '@/services/orgApi'
+import { orgApi, type OrgKind } from '@/services/orgApi'
+import { regelverk } from '@/components/consultant/orgTypVisning'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { kvartalGranser } from '@/services/ivoKvartal'
 import {
@@ -77,10 +79,16 @@ export function ReportGeneratorDialog({
   isOpen,
   onClose,
   analyticsData,
-  consultantName = 'Konsulent',
+  consultantName: consultantNameProp,
   periodLabel,
 }: ReportGeneratorDialogProps) {
   const { t, i18n } = useTranslation()
+  // RK32 (rollspelet 2026-09-27): nämndrapporten stod "Framtagen … av Konsulent" —
+  // rollen, inte namnet. Ingen anropare skickade namnet; ta det ur profilen.
+  const profil = useAuthStore((s) => s.profile)
+  const consultantName = consultantNameProp
+    || `${profil?.first_name ?? ''} ${profil?.last_name ?? ''}`.trim()
+    || 'Konsulent'
   const [step, setStep] = useState<'options' | 'preview'>('options')
   const [generating, setGenerating] = useState(false)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -97,6 +105,24 @@ export function ReportGeneratorDialog({
   const [kvartalNyckel, setKvartalNyckel] = useState<KvartalValNyckel>('innevarande')
   const [namnd, setNamnd] = useState<{ underlag: Namndrapport; organisation: string | null } | null>(null)
   const [namndFel, setNamndFel] = useState<string | null>(null)
+  // RR9 (rollspelet 2026-09-27): "Nämndrapport (kvartal)" är kommunens rapport
+  // till socialnämnden och visades för Rusta och matcha-leverantörer. Samma
+  // regel som Rapporter (orgTypVisning): gömd medan medlemskapen laddar, gömd
+  // för en ren leverantör, synlig vid läsfel och utan organisation — som förut.
+  const [visaNamnd, setVisaNamnd] = useState<boolean | null>(null)
+  useEffect(() => {
+    if (!isOpen) return
+    let aktiv = true
+    orgApi
+      .myMemberships()
+      .then((m) => {
+        if (aktiv) setVisaNamnd(regelverk(m.map((x) => x.organization?.kind).filter((k): k is OrgKind => !!k)) === 'kommun')
+      })
+      .catch(() => { if (aktiv) setVisaNamnd(true) })
+    return () => { aktiv = false }
+  }, [isOpen])
+  // Bytte organisationen under tiden till en leverantör står valet aldrig kvar på nämnden.
+  const valdTyp: ReportType = visaNamnd === true ? reportType : 'konsult'
   const kvartalen = kvartalsval(formatLocalDate(new Date()))
   const valtKvartal = kvartalen[kvartalNyckel]
 
@@ -161,7 +187,7 @@ export function ReportGeneratorDialog({
     setGenerating(true)
     setNamndFel(null)
     try {
-      if (reportType === 'namnd') {
+      if (valdTyp === 'namnd') {
         const { underlag, organisation } = await hamtaNamnd()
         setPreviewUrl(await generateNamndrapportDataUrl(underlag, { organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) }))
         setStep('preview')
@@ -183,7 +209,7 @@ export function ReportGeneratorDialog({
       setStep('preview')
     } catch (error) {
       console.error('Error generating preview:', error)
-      if (reportType === 'namnd') {
+      if (valdTyp === 'namnd') {
         setNamndFel(t('consultant.report.namnd.error', 'Underlaget kunde inte hämtas. Kontrollera anslutningen och försök igen.'))
       }
     } finally {
@@ -192,7 +218,7 @@ export function ReportGeneratorDialog({
   }
 
   const handleDownload = () => {
-    if (reportType === 'namnd') {
+    if (valdTyp === 'namnd') {
       if (namnd) void downloadNamndrapport(namnd.underlag, { organisation: namnd.organisation, konsulentNamn: consultantName, datum: formatLocalDate(new Date()) })
       onClose()
       return
@@ -291,16 +317,16 @@ export function ReportGeneratorDialog({
                 <div className="flex gap-2" role="group" aria-label={t('consultant.report.namnd.typeLabel', 'Rapporttyp')}>
                   {([
                     ['konsult', t('consultant.report.namnd.typeKonsult', 'Konsultrapport')],
-                    ['namnd', t('consultant.report.namnd.typeNamnd', 'Nämndrapport (kvartal)')],
+                    ...(visaNamnd === true ? [['namnd', t('consultant.report.namnd.typeNamnd', 'Nämndrapport (kvartal)')]] as const : []),
                   ] as const).map(([typ, etikett]) => (
                     <button
                       key={typ}
                       type="button"
-                      aria-pressed={reportType === typ}
+                      aria-pressed={valdTyp === typ}
                       onClick={() => setReportType(typ)}
                       className={cn(
                         'flex-1 py-2.5 px-4 rounded-xl font-medium transition-all',
-                        reportType === typ
+                        valdTyp === typ
                           ? 'bg-[var(--c-solid)] text-white'
                           : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
                       )}
@@ -309,14 +335,14 @@ export function ReportGeneratorDialog({
                     </button>
                   ))}
                 </div>
-                {reportType === 'namnd' && (
+                {valdTyp === 'namnd' && (
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-1.5">
                     {t('consultant.report.namnd.description', 'Per försörjningshinder: deltagare med plan, närvarograd, anmäld och oanmäld frånvaro, underlag lämnat. Räkning ur planer och pass — beslut om nedsättning registreras i kommunens verksamhetssystem.')}
                   </p>
                 )}
               </div>
 
-              {reportType === 'namnd' && (
+              {valdTyp === 'namnd' && (
                 <div>
                   <label htmlFor="namnd-kvartal" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                     {t('consultant.report.namnd.quarterLabel', 'Kvartal')}
@@ -337,7 +363,7 @@ export function ReportGeneratorDialog({
                 </div>
               )}
 
-              {reportType === 'konsult' && (<>
+              {valdTyp === 'konsult' && (<>
               {/* Report Title */}
               <div>
                 <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">

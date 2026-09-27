@@ -205,11 +205,12 @@ vi.mock('@/services/aktivitetApi', async (importOriginal) => {
     },
   }
 })
+let medlemskap: () => unknown[] = () => [{ organization: { name: 'Demokommun (påhittade personer)' } }]
 vi.mock('@/services/orgApi', async (importOriginal) => {
   const original = await importOriginal<typeof import('@/services/orgApi')>()
   return {
     ...original,
-    orgApi: { ...original.orgApi, myMemberships: vi.fn(async () => [{ organization: { name: 'Demokommun (påhittade personer)' } }]) },
+    orgApi: { ...original.orgApi, myMemberships: vi.fn(async () => medlemskap()) },
   }
 })
 
@@ -220,7 +221,8 @@ describe('ReportGeneratorDialog — Nämndrapport (kvartal), F17', () => {
     // Konsultrapportens sektioner syns i utgångsläget
     expect(screen.getByText('Kohortanalys')).toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: /Nämndrapport \(kvartal\)/i }))
+    // RR9: knappen visas först när medlemskapen lästs (kommun/ingen typ → synlig)
+    fireEvent.click(await screen.findByRole('button', { name: /Nämndrapport \(kvartal\)/i }))
     expect(screen.getByRole('button', { name: /Nämndrapport \(kvartal\)/i })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.queryByText('Kohortanalys')).not.toBeInTheDocument()
     // Fast kvartalsval — inte vyns period
@@ -236,4 +238,26 @@ describe('ReportGeneratorDialog — Nämndrapport (kvartal), F17', () => {
     expect(pdf).toContain('Källa: ur Jobin')
     expect(pdf).not.toContain('Kohortanalys')
   }, 30000)
+})
+
+/**
+ * RR9 (rollspelet 2026-09-27): "Nämndrapport (kvartal)" visades för en Rusta
+ * och matcha-leverantör. Motprov: sätt `visaNamnd` till true oavsett medlemskap
+ * → leverantörstestet faller.
+ */
+describe('ReportGeneratorDialog — nämndrapporten bara för kommunen (RR9)', () => {
+  it('en ren leverantör ser bara konsultrapporten', async () => {
+    medlemskap = () => [{ org_id: 'lev', organization: { name: 'Demoleverantör', kind: 'leverantor' } }]
+    render(<ReportGeneratorDialog isOpen onClose={() => {}} analyticsData={analyticsData} periodLabel="Senaste månaden" />)
+    await waitFor(() => expect(screen.getByRole('button', { name: /Konsultrapport/i })).toBeInTheDocument())
+    // Ge effekten tid att svara innan frånvaron bedöms
+    await new Promise((r) => setTimeout(r, 20))
+    expect(screen.queryByRole('button', { name: /Nämndrapport/i })).not.toBeInTheDocument()
+  })
+
+  it('en kommun ser nämndrapporten', async () => {
+    medlemskap = () => [{ org_id: 'k', organization: { name: 'Demokommun', kind: 'kommun' } }]
+    render(<ReportGeneratorDialog isOpen onClose={() => {}} analyticsData={analyticsData} periodLabel="Senaste månaden" />)
+    expect(await screen.findByRole('button', { name: /Nämndrapport \(kvartal\)/i })).toBeInTheDocument()
+  })
 })

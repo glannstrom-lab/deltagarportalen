@@ -376,4 +376,25 @@ describe('AI-brytaren (PG19)', () => {
     fireEvent.click(await screen.findByRole('button', { name: /stäng av ai för hällefors kommun/i }))
     expect(await screen.findByRole('alert')).toHaveTextContent(/sparades inte/i)
   })
+
+  // RR9 (rollspelet 2026-09-27): leverantören erbjöds "Handläggare (ekonomiskt
+  // bistånd)" och platshållaren @kommun.se. Motprov: ta bort rollerForOrg i
+  // formuläret → testet faller på rollvalet.
+  it('en Rusta och matcha-leverantör erbjuds inte kommunens handläggarroll eller @kommun.se', async () => {
+    const { orgApi } = await import('@/services/orgApi')
+    const lev = { ...org, id: 'o2', name: 'Demoleverantör', kind: 'leverantor' }
+    vi.mocked(orgApi.myMemberships).mockResolvedValue([
+      { id: 'm1', org_id: 'o2', user_id: 'u1', role: 'chef', created_at: '', organization: lev },
+    ] as never)
+    vi.mocked(orgApi.colleagues).mockResolvedValue(kollegor.map((k) => ({ ...k, org_id: 'o2', org_name: lev.name, org_kind: 'leverantor' })) as never)
+    vi.mocked(orgApi.caseload).mockResolvedValue([] as never)
+    render(<OrganisationSektion />)
+    const form = await screen.findByRole('form', { name: 'Lägg till kollega i Demoleverantör' })
+    const roll = within(form).getByLabelText('Roll') as HTMLSelectElement
+    expect([...roll.options].map((o) => o.textContent)).not.toContain('Handläggare (ekonomiskt bistånd)')
+    expect(within(form).getByLabelText('E-post')).not.toHaveAttribute('placeholder', expect.stringMatching(/kommun/))
+    // Kollegans rollväljare i listan — samma regel
+    const kimsRoll = screen.getByRole('combobox', { name: 'Roll för Kim Karlsson' }) as HTMLSelectElement
+    expect([...kimsRoll.options].map((o) => o.textContent)).not.toContain('Handläggare (ekonomiskt bistånd)')
+  })
 })

@@ -17,8 +17,8 @@ const IDAG = '2026-10-20'
 
 const avEskapera = (rå: string) => rå.replace(/\\([()\\])/g, '$1')
 
-async function textenIPdf(sessions: ActivitySession[]): Promise<string> {
-  const blob = await generateNarvaroIntygBlob({ participantName: 'Dana Deltagare', organizationName: 'Testkommun', manad: '2026-10', sessions, idag: IDAG })
+async function textenIPdf(sessions: ActivitySession[], regelverk: 'kommun' | 'leverantor' | null = 'kommun'): Promise<string> {
+  const blob = await generateNarvaroIntygBlob({ participantName: 'Dana Deltagare', organizationName: 'Testkommun', manad: '2026-10', sessions, idag: IDAG, regelverk })
   return await new Promise<string>((resolve, reject) => {
     const läsare = new FileReader()
     läsare.onload = () => resolve(String(läsare.result))
@@ -97,5 +97,24 @@ describe('PDF:ens innehåll', () => {
     const text = await textenIPdf([])
     expect(text).toContain('Inga anvisade aktiviteter')
     expect(text).not.toContain('timmar.')
+  })
+})
+
+/**
+ * RD3 (rollspelet 2026-09-27): Saras intyg (Rusta och matcha) sa "Beslut om
+ * försörjningsstöd fattas av socialnämnden". Motprov: skriv tillbaka den fasta
+ * sidfoten → båda testerna nedan faller.
+ */
+describe('sidfoten följer planens regelverk', () => {
+  it('Rusta och matcha: Arbetsförmedlingen, inte socialnämnden', async () => {
+    const text = await textenIPdf([pass({ attendance: 'present' })], 'leverantor')
+    expect(text).toContain('Arbetsförmedlingens tjänst Rusta och') // radbryts före "matcha"
+    expect(text).toContain('Arbetsförmedlingen')
+    expect(text).not.toMatch(/socialnämnden|försörjningsstöd/)
+  })
+  it('okänt regelverk: ingen myndighet alls — aldrig kommunens juridik utan belägg', async () => {
+    const text = await textenIPdf([pass({ attendance: 'present' })], null)
+    expect(text).not.toMatch(/socialnämnden|försörjningsstöd|Arbetsförmedlingen/)
+    expect(text).toContain('Genererat från jobin.se')
   })
 })

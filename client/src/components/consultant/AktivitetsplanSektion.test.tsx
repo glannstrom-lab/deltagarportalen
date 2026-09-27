@@ -69,8 +69,8 @@ describe('AktivitetsplanSektion', () => {
 
     render(<AktivitetsplanSektion participantId="p1" participantName="Anna Andersson" />)
     expect(await screen.findByText('Verkstad 30 h')).toBeInTheDocument()
-    // Saldo: 6 h planerat av 30, 3 h närvaro
-    expect(screen.getByText('6 h / 30 h')).toBeInTheDocument()
+    // Saldo: 6 h planerat av den anvisade delen av målet (30 h − 5 h eget jobbsökande, RK1), 3 h närvaro
+    expect(screen.getByText('6 h / 25 h')).toBeInTheDocument()
     // GG3 (2026-09-20): språkcaféet är omarkerat, så veckan har inget utfall än
     // — varken "på målet" eller "under målet". Testet krävde tidigare
     // 'Under veckomålet' här, vilket bara stämde så länge ampeln räknade

@@ -25,6 +25,8 @@ import { jobbsokAktivitetApi, harNagot } from '@/services/jobbsokAktivitet'
 import { FranvaroAnmalan } from '@/components/minvecka/FranvaroAnmalan'
 import { FragaOmPasset } from '@/components/minvecka/FragaOmPasset'
 import { NarvaroIntyg } from '@/components/minvecka/NarvaroIntyg'
+// RD3 (rollspelet 2026-09-27): kommunens juridik bara när planen belagt kommer från en kommun
+import { hamtaPlanensRegelverk, regelverkNycklar } from '@/components/minvecka/planensRegelverk'
 // NF1 (2026-09-24): passet till deltagarens egen kalender som .ics
 import { byggIcs, icsFilnamn, laddaNerIcs } from '@/lib/ics'
 import {
@@ -33,6 +35,7 @@ import {
   veckansMandag,
   veckosaldo,
   veckoampel,
+  anvisatVeckomal,
   type ActivityType,
   type Attendance,
 } from '@/services/aktivitetSchema'
@@ -81,6 +84,17 @@ export default function MinVecka() {
     queryFn: () => minVeckaApi.listMySessions(mandag, sondag),
     enabled: !!planQuery.data,
   })
+
+  // RD3: vilken sorts organisation planen kommer från. Tills svaret finns — och
+  // om det aldrig kommer (vyn saknar kolumnen före migrationen) — neutral text.
+  const regelverkQuery = useQuery({
+    queryKey: ['min-vecka', 'regelverk', planQuery.data?.org_id ?? null],
+    queryFn: () => hamtaPlanensRegelverk(planQuery.data?.org_id),
+    enabled: !!planQuery.data,
+    staleTime: 10 * 60_000,
+  })
+  const regelverk = regelverkQuery.data ?? null
+  const nycklar = regelverkNycklar(regelverk)
 
   // KM9: deltagarens eget jobbsökande ur portalens data — egen redovisning, aldrig kontroll.
   const jobbsokQuery = useQuery({
@@ -172,7 +186,8 @@ export default function MinVecka() {
     const plan = planQuery.data
     const sessions = sessionsQuery.data ?? []
     const saldo = veckosaldo(sessions, mandag)
-    const ampel = veckoampel(saldo, plan.weekly_hours_target)
+    // RK1: samma mått som konsulentens ampel — den anvisade delen av veckomålet.
+    const ampel = veckoampel(saldo, anvisatVeckomal(plan))
 
     innehall = (
       <div className="space-y-6 max-w-2xl">
@@ -195,10 +210,7 @@ export default function MinVecka() {
             // aldrig något framräknat som inte står i datan.
             <div className="mt-3 text-sm text-stone-600 dark:text-stone-400 space-y-1">
               <p>
-                {t('minVecka.forklaring.mal', {
-                  defaultValue: 'Din konsulent har satt {{mal}} timmar i veckan som mål för anvisade aktiviteter — det är kommunens krav enligt socialtjänstlagen.',
-                  mal: plan.weekly_hours_target,
-                })}
+                {t(nycklar.mal, { mal: plan.weekly_hours_target })}
                 {plan.target_reason ? ` ${t('minVecka.forklaring.skal', { defaultValue: 'Skäl: {{skal}}.', skal: plan.target_reason })}` : ''}
               </p>
               <p>
@@ -213,11 +225,21 @@ export default function MinVecka() {
                   ? ` ${t('minVecka.forklaring.jobbsok', { defaultValue: 'De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.', h: plan.jobsearch_hours_per_week })}`
                   : ''}
               </p>
-              <p>
-                <a href="/guider/aktivitetskrav-forsorjningsstod/" className="underline underline-offset-2 text-[var(--c-text)]">
-                  {t('minVecka.forklaring.guide', 'Läs om aktivitetskravet och vad som gäller för dig')}
-                </a>
-              </p>
+              {/* Guiden om aktivitetskravet gäller försörjningsstöd — bara för kommunens plan */}
+              {regelverk === 'kommun' && (
+                <p>
+                  <a href="/guider/aktivitetskrav-forsorjningsstod/" className="underline underline-offset-2 text-[var(--c-text)]">
+                    {t('minVecka.forklaring.guide', 'Läs om aktivitetskravet och vad som gäller för dig')}
+                  </a>
+                </p>
+              )}
+              {regelverk === 'leverantor' && (
+                <p>
+                  <a href="/guider/rusta-och-matcha/" className="underline underline-offset-2 text-[var(--c-text)]">
+                    {t('minVecka.forklaring.guideLeverantor')}
+                  </a>
+                </p>
+              )}
             </div>
           )}
           {nastaPass && (
@@ -233,7 +255,7 @@ export default function MinVecka() {
         </Card>
 
         {/* F5: deltagarens eget närvarointyg — kvitto till handläggaren, utan omväg via konsulenten */}
-        <NarvaroIntyg plan={plan} />
+        <NarvaroIntyg plan={plan} regelverk={regelverk} />
 
         <Card className="p-5" aria-labelledby="jobbsok-rubrik">
           <h2 id="jobbsok-rubrik" className="text-base font-semibold text-stone-800 dark:text-stone-200">

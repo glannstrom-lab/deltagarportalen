@@ -1,6 +1,7 @@
 /**
  * NarvaroIntyg — "Ladda ner närvarointyg" i Min vecka (F5, persona-genomgången
- * 2026-09-12). Deltagarens eget kvitto till handläggaren på försörjningsstöd:
+ * 2026-09-12). Deltagarens eget kvitto — till handläggaren på försörjningsstöd
+ * eller, för Rusta och matcha, till Arbetsförmedlingen (RD3, 2026-09-27):
  * väljer månad, hämtar månadens pass (RLS: bara egna), organisationens namn ur
  * vyn my_ai_policy, och laddar ner via jsPDF `save()` — aldrig window.open efter
  * ett await (popup-spärren, lärdom 2026-08-23).
@@ -14,9 +15,15 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { minVeckaApi, type ActivityPlan } from '@/services/aktivitetApi'
 import { downloadNarvaroIntygPDF, manadsEtikett, valbaraManader } from '@/services/narvaroIntygPdf'
+import { regelverkNycklar, type PlanensRegelverk } from './planensRegelverk'
 
 interface Props {
   plan: ActivityPlan
+  /**
+   * RD3: vem intyget visas för. `kommun` → handläggaren på försörjningsstöd,
+   * `leverantor` → Arbetsförmedlingen, `null` (okänt) → neutral text.
+   */
+  regelverk?: PlanensRegelverk | null
 }
 
 function manadensGranser(manad: string): { from: string; to: string } {
@@ -25,7 +32,7 @@ function manadensGranser(manad: string): { from: string; to: string } {
   return { from: `${manad}-01`, to: `${manad}-${String(sista).padStart(2, '0')}` }
 }
 
-export function NarvaroIntyg({ plan }: Props) {
+export function NarvaroIntyg({ plan, regelverk = null }: Props) {
   const { t } = useTranslation()
   const profile = useAuthStore((s) => s.profile)
   const manader = useMemo(() => valbaraManader(plan.start_date), [plan.start_date])
@@ -46,7 +53,7 @@ export function NarvaroIntyg({ plan }: Props) {
       ])
       const orgName = (policy.data?.[0] as { org_name?: string | null } | undefined)?.org_name ?? null
       const namn = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim()
-      await downloadNarvaroIntygPDF({ participantName: namn || profile?.email || 'Deltagare', organizationName: orgName, manad, sessions })
+      await downloadNarvaroIntygPDF({ participantName: namn || profile?.email || 'Deltagare', organizationName: orgName, manad, sessions, regelverk })
       setKlart(t('minVecka.intyg.klart', { defaultValue: 'Intyget för {{manad}} är nedladdat.', manad: manadsEtikett(manad) }))
     } catch {
       setFel(t('minVecka.intyg.fel', 'Intyget kunde inte skapas just nu. Försök igen om en stund.'))
@@ -59,7 +66,7 @@ export function NarvaroIntyg({ plan }: Props) {
     <Card className="p-5 space-y-3">
       <h2 className="text-base font-semibold text-stone-900 dark:text-stone-100">{t('minVecka.intyg.rubrik', 'Närvarointyg')}</h2>
       <p className="text-sm text-stone-600 dark:text-stone-400">
-        {t('minVecka.intyg.text', 'Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för din handläggare på försörjningsstöd.')}
+        {t(regelverkNycklar(regelverk).intyg)}
       </p>
       <div className="flex flex-wrap items-end gap-3">
         <div>

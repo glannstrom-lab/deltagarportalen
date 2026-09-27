@@ -7571,7 +7571,7 @@
       "periodFrom": "Period från",
       "periodTo": "Period till",
       "sammanfattning": "Det här ingår",
-      "sammanfattningRad": "{{pass}} pass: {{present}} närvarande, {{absent_valid}} giltig frånvaro, {{absent_invalid}} ogiltig frånvaro, {{sick_certified}} sjuk med intyg, {{external}} extern aktivitet, {{omarkerade}} ej markerade, {{anmald_franvaro}} anmälda i förväg",
+      "sammanfattningRad": "{{pass}} pass: {{present}} närvarande, {{absent_valid}} giltig frånvaro, {{absent_invalid}} ogiltig frånvaro, {{sick_certified}} sjuk med intyg, {{sjuk_utan_intyg}} sjuk utan intyg, {{external}} extern aktivitet, {{omarkerade}} ej markerade, {{anmald_franvaro}} anmälda i förväg",
       "ingaPass": "Inga pass i perioden — underlaget blir tomt. Välj en period med pass.",
       "anteckning": "Anteckning till handläggaren (valfritt)",
       "anteckningPlaceholder": "Det som inte syns i siffrorna, t.ex. överenskommelser eller pågående sjukskrivning.",
@@ -7658,7 +7658,7 @@
         "noContactsNeeded": "Alla deltagare har aktuell kontakt.",
         "sendMessage": "Skicka meddelande",
         "joinMeeting": "Möteslänk",
-        "allClear": "Inga brådskande punkter idag",
+        "allClear": "Inga möten, deadlines eller kontakter att ta i dag",
         "allClearDesc": "Bra läge att jobba proaktivt med dina deltagare."
       }
     },
@@ -9351,7 +9351,9 @@
       "skapar": "Skapar …",
       "forbehall": "Bara pass som konsulenten markerat som närvarande räknas som närvaro. Pass utan markering står som \"ej markerat\".",
       "klart": "Intyget för {{manad}} är nedladdat.",
-      "fel": "Intyget kunde inte skapas just nu. Försök igen om en stund."
+      "fel": "Intyget kunde inte skapas just nu. Försök igen om en stund.",
+      "textLeverantor": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för din handläggare på Arbetsförmedlingen.",
+      "textNeutral": "Ett intyg för en månad med dina pass och vad konsulenten markerat. Du kan visa det för den som behöver se din närvaro."
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -9390,7 +9392,10 @@
       "full": "Den här veckan är fullplanerad.",
       "kvar": "{{planerade}} timmar är inplanerade. {{kvar}} timmar återstår att planera — det gör din konsulent tillsammans med dig, det är inget du behöver ordna själv.",
       "jobbsok": "De {{h}} timmarna för eget jobbsökande kommer utöver det och räknas inte som anvisad aktivitet.",
-      "guide": "Läs om aktivitetskravet och vad som gäller för dig"
+      "guide": "Läs om aktivitetskravet och vad som gäller för dig",
+      "malLeverantor": "Din konsulent har satt {{mal}} timmar i veckan som mål för aktiviteterna i din plan. Planen kommer från leverantören inom Arbetsförmedlingens tjänst Rusta och matcha — det är Arbetsförmedlingen som har anvisat dig dit.",
+      "malNeutral": "Din konsulent har satt {{mal}} timmar i veckan som mål för aktiviteterna i din plan.",
+      "guideLeverantor": "Läs om Rusta och matcha och vad som gäller för dig"
     },
     "incheckad": "Incheckad kl {{tid}}",
     "incheckadStatus": "Tack, du är incheckad.",

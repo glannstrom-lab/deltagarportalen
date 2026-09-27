@@ -3,8 +3,12 @@
  * artikelPdf.test.ts — och av-eskaperar parenteser först, annars är ett
  * `toContain('(…)')` mot en PDF-ström alltid falskt (fällan 2026-08-23).
  */
-import { describe, it, expect } from 'vitest'
-import { forstaVeckansPass, generateAktivitetsplanBlob, veckoschemaRader } from './aktivitetsplanPdf'
+import { describe, it, expect, vi } from 'vitest'
+import { regelverkForKonsulentensPlan, forstaVeckansPass, generateAktivitetsplanBlob, veckoschemaRader } from './aktivitetsplanPdf'
+import type { Regelverk } from '@/components/consultant/orgTypVisning'
+
+const myMemberships = vi.fn()
+vi.mock('./orgApi', () => ({ orgApi: { myMemberships: (...a: unknown[]) => myMemberships(...a) } }))
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
 
 const plan = (o: Partial<ActivityPlan> = {}): ActivityPlan => ({
@@ -22,8 +26,8 @@ const pass = (o: Partial<ActivitySession>): ActivitySession => ({
 
 const avEskapera = (rå: string) => rå.replace(/\\([()\\])/g, '$1')
 
-async function textenIPdf(p: ActivityPlan, sessions: ActivitySession[]): Promise<string> {
-  const blob = await generateAktivitetsplanBlob({ plan: p, sessions, participantName: 'Anna Andersson', consultantName: 'Kalle Konsulent', organizationName: 'Hällefors kommun' })
+async function textenIPdf(p: ActivityPlan, sessions: ActivitySession[], regelverk?: Regelverk): Promise<string> {
+  const blob = await generateAktivitetsplanBlob({ plan: p, sessions, participantName: 'Anna Andersson', consultantName: 'Kalle Konsulent', organizationName: 'Hällefors kommun', regelverk })
   return await new Promise<string>((resolve, reject) => {
     const läsare = new FileReader()
     läsare.onload = () => resolve(String(läsare.result))
@@ -72,4 +76,30 @@ describe('generateAktivitetsplanPDF', () => {
     // 'null' förekommer i PDF-syntaxen själv (objektreferenser) — bara 'undefined' är ett JS-läckage.
     expect(pdf).not.toContain('undefined')
   }, 30000)
+})
+
+/**
+ * RR2 (rollspelet 2026-09-27): leverantörens plan-PDF sa "enligt
+ * socialtjänstlagen 12 kap." och "fattas av socialnämnden". Motprov: låt
+ * generateAktivitetsplanPDF ignorera `regelverk` (alltid kommun) → faller.
+ */
+describe('plan-PDF för en Rusta och matcha-leverantör', () => {
+  it('talar om Arbetsförmedlingens tjänst, inte socialtjänstlagen eller socialnämnden', async () => {
+    const pdf = await textenIPdf(plan({ forsorjningshinder: null }), [pass({})], 'leverantor')
+    expect(pdf).toContain('Rusta och matcha')
+    expect(pdf).toContain('Arbetsförmedlingen')
+    expect(pdf).not.toMatch(/socialtjänstlagen|socialnämnden|Försörjningshinder|försörjningsstöd/i)
+    expect(pdf).not.toContain('Handläggare, underskrift')
+    expect(pdf).toContain('Deltagare, underskrift och datum')
+  }, 30000)
+
+  it('regelverket slås upp ur konsulentens medlemskap när anroparen inte anger det', async () => {
+    myMemberships.mockResolvedValueOnce([{ org_id: 'lev', organization: { kind: 'leverantor' } }])
+    expect(await regelverkForKonsulentensPlan('lev')).toBe('leverantor')
+    myMemberships.mockResolvedValueOnce([])
+    expect(await regelverkForKonsulentensPlan(null)).toBe('kommun')
+    // Läsfel → kommunens text, som före ändringen
+    myMemberships.mockRejectedValueOnce(new Error('nät'))
+    expect(await regelverkForKonsulentensPlan('lev')).toBe('kommun')
+  })
 })

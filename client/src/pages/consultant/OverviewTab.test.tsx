@@ -47,6 +47,8 @@ function makeBuilder(response: TableResponse) {
 
 let tableResponses: Record<string, TableResponse>
 let fromCallCount: Record<string, number>
+/** RK6: varje frågebyggare per tabell, så testet kan läsa vilka gränser som skickades. */
+const byggare: Record<string, Array<Record<string, ReturnType<typeof vi.fn>>>> = {}
 
 const mockUser = { id: 'consultant-1', email: 'consultant@example.com' }
 
@@ -57,7 +59,9 @@ vi.mock('@/lib/supabase', () => ({
     },
     from: vi.fn((table: string) => {
       fromCallCount[table] = (fromCallCount[table] || 0) + 1
-      return makeBuilder(tableResponses[table] ?? { data: [], error: null })
+      const b = makeBuilder(tableResponses[table] ?? { data: [], error: null })
+      ;(byggare[table] ??= []).push(b as Record<string, ReturnType<typeof vi.fn>>)
+      return b
     }),
   },
 }))
@@ -229,7 +233,7 @@ describe('OverviewTab — Min dag: ett hämtfel är inte "Allt klart"', () => {
 
       const alert = await screen.findByRole('alert')
       expect(alert).toHaveTextContent(/kunde inte hämtas/i)
-      expect(screen.queryByText(/Inga brådskande punkter/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/Inga möten, deadlines eller kontakter/i)).not.toBeInTheDocument()
     })
   }
 })
@@ -252,3 +256,78 @@ describe('OverviewTab — målöversikten utan mål', () => {
     expect(screen.queryByText(/Inga mål satta än/)).not.toBeInTheDocument()
   })
 })
+
+/**
+ * RR3/RK7 (rollspelet 2026-09-27): Min dag sa "Inga brådskande punkter idag"
+ * om Jonas — inget möte på 33 dagar — och ogiltig frånvaro syntes inte alls.
+ * Motprov: skicka en tom lista till BradskandeIdag (eller hoppa över
+ * bradskandePunkter) → testet faller.
+ */
+describe('OverviewTab — det brådskande syns i Min dag och i "Kräver uppmärksamhet"', () => {
+  const lokal = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+
+  it('möte över gränsen och ogiltig frånvaro i går listas med namn och regel', async () => {
+    const nu = new Date()
+    const for33 = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() - 33, 10)
+    const igar = new Date(nu.getFullYear(), nu.getMonth(), nu.getDate() - 1)
+    tableResponses.consultant_dashboard_participants = {
+      data: [
+        makeParticipant({ participant_id: 'jonas', first_name: 'Jonas', last_name: 'Demo', last_contact_at: nu.toISOString() }),
+        makeParticipant({ participant_id: 'anna', first_name: 'Anna', last_name: 'Exempel', last_contact_at: nu.toISOString() }),
+      ],
+      error: null,
+    }
+    tableResponses.consultant_meetings = {
+      data: [
+        { participant_id: 'jonas', scheduled_at: for33.toISOString(), meeting_type: 'video', status: 'completed' },
+        { participant_id: 'anna', scheduled_at: igar.toISOString(), meeting_type: 'physical', status: 'completed' },
+      ],
+      error: null,
+    }
+    tableResponses.activity_sessions = {
+      data: [{ id: 's1', plan_id: 'pl', participant_id: 'anna', date: lokal(igar), start_time: '09:00', end_time: '12:00', title: 'Verkstad', activity_type: 'jobsearch', attendance: 'absent_invalid' }],
+      error: null,
+    }
+    renderTab()
+
+    const rubrik = await screen.findByRole('heading', { name: 'Brådskande' })
+    const lista = rubrik.closest('section')!
+    expect(within(lista).getByText('Jonas Demo')).toBeInTheDocument()
+    expect(within(lista).getByText('Senaste möte 33 dagar sedan — gränsen är 14')).toBeInTheDocument()
+    expect(within(lista).getByText('Anna Exempel')).toBeInTheDocument()
+    expect(within(lista).getByText(/^Ogiltig frånvaro \d+ \w+$/)).toBeInTheDocument()
+    // Samma punkter i "Kräver uppmärksamhet"-kortets undertext
+    expect(screen.getByText(/1 ogiltig frånvaro · 1 möte över gränsen/)).toBeInTheDocument()
+  })
+
+  it('kan underlaget inte hämtas står det så — aldrig ett tyst "inget brådskande"', async () => {
+    tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+    tableResponses.activity_sessions = { data: null, error: { message: 'timeout' } }
+    renderTab()
+    expect(await screen.findByText(/Möten och frånvaro kunde inte hämtas/)).toBeInTheDocument()
+  })
+})
+
+/**
+ * RK6 (rollspelet 2026-09-27): på en söndag visade "Möten denna vecka" nästa
+ * veckas möten — `idag − getDay() + 1` ger måndagen EFTER när getDay() är 0.
+ * Motprov: skriv tillbaka den gamla räkningen i OverviewTab → testet faller.
+ */
+describe('OverviewTab — RK6: veckan är måndag–söndag även på en söndag', () => {
+  it('frågan om veckans möten går från måndag 21/9 till söndag 27/9 när det är söndag 27/9', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(new Date(2026, 8, 27, 10, 0))
+    try {
+      for (const k of Object.keys(byggare)) delete byggare[k]
+      tableResponses.consultant_dashboard_participants = { data: [makeParticipant()], error: null }
+      renderTab()
+      await screen.findByText('Snitt ATS-poäng')
+      const veckofragan = byggare.consultant_meetings.find((b) => b.lte.mock.calls.length > 0)!
+      expect(veckofragan.gte).toHaveBeenCalledWith('scheduled_at', new Date(2026, 8, 21, 0, 0, 0, 0).toISOString())
+      expect(veckofragan.lte).toHaveBeenCalledWith('scheduled_at', new Date(2026, 8, 27, 23, 59, 59, 999).toISOString())
+    } finally {
+      vi.useRealTimers()
+    }
+  })
+})
+

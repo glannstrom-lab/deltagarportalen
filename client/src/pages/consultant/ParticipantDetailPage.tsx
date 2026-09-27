@@ -43,6 +43,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { consultantService } from '@/services/consultantService'
 import { cn } from '@/lib/utils'
+import { flikEfterTangent } from './flikTangenter'
 
 interface Participant {
   participant_id: string
@@ -311,6 +312,14 @@ export function ParticipantDetailPage() {
   const kollegaNamnRef = useRef<Record<string, string>>({})
   const [journalLoadError, setJournalLoadError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'overview' | 'aktivitet' | 'goals' | 'journal' | 'timeline'>('overview')
+  const deltagarFlikar = [
+    { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
+    // Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit, ingen sv.json-nyckel.
+    { id: 'aktivitet', label: 'Aktivitet', icon: Calendar },
+    { id: 'goals', label: t('consultant.participantDetail.tabs.goals'), icon: Target },
+    { id: 'journal', label: t('consultant.participantDetail.tabs.journal'), icon: MessageSquare },
+    { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline'), icon: Clock },
+  ] as const
   const [newNote, setNewNote] = useState('')
   const [showReportDraft, setShowReportDraft] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
@@ -894,20 +903,19 @@ export function ParticipantDetailPage() {
       {/* Tab Navigation — ARIA-flikmönster (PG-skav 7, persona-genomgången
           2026-09-12): tidigare vanliga <button> utan tab-semantik, så en
           skärmläsare varken hörde vilken sektion som var aktiv eller att
-          knapparna hörde ihop som en flikrad. */}
+          knapparna hörde ihop som en flikrad.
+          RK5 (rollspelet 2026-09-27): rättelsen gav de inaktiva flikarna
+          tabIndex=-1 men ingen tangenthantering — Aktivitet, Mål, Journal och
+          Tidslinje gick då inte att nå utan mus (WCAG 2.1.1). Nu hela
+          WAI-ARIA-mönstret: roving tabindex, pil vänster/höger (runt), Home/End,
+          automatisk aktivering. */}
       <div
         role="tablist"
         aria-label="Deltagarens avsnitt"
+        aria-orientation="horizontal"
         className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto"
       >
-        {[
-          { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
-          // Konsulentvyn översätts inte (DESIGN.md §2) — svenskt literal med flit, ingen sv.json-nyckel.
-          { id: 'aktivitet', label: 'Aktivitet', icon: Calendar },
-          { id: 'goals', label: t('consultant.participantDetail.tabs.goals'), icon: Target },
-          { id: 'journal', label: t('consultant.participantDetail.tabs.journal'), icon: MessageSquare },
-          { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline'), icon: Clock },
-        ].map(tab => (
+        {deltagarFlikar.map(tab => (
           <button
             key={tab.id}
             id={`participant-tab-${tab.id}`}
@@ -917,6 +925,13 @@ export function ParticipantDetailPage() {
             aria-controls={`participant-tabpanel-${tab.id}`}
             tabIndex={activeTab === tab.id ? 0 : -1}
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            onKeyDown={(e) => {
+              const nasta = flikEfterTangent(deltagarFlikar.map((f) => f.id), tab.id, e.key)
+              if (!nasta) return
+              e.preventDefault()
+              setActiveTab(nasta as typeof activeTab)
+              document.getElementById(`participant-tab-${nasta}`)?.focus()
+            }}
             className={cn(
               'flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap',
               activeTab === tab.id

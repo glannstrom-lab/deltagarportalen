@@ -46,6 +46,10 @@ vi.mock('@/lib/supabase', () => ({
   supabase: { from: () => ({ select: () => ({ limit: async () => ({ data: [{ org_name: 'Testkommun' }], error: null }) }) }) },
 }))
 
+// RD3: planens regelverk ur vyn my_ai_policy. Standard = kommunens plan (org1).
+let policyRader: Array<Record<string, unknown>> = []
+vi.mock('@/services/laslogg', () => ({ laslogg: { minAiPolicy: async () => policyRader } }))
+
 // NF1: byggIcs körs på riktigt, bara själva nedladdningen fångas
 const laddaNerIcs = vi.fn()
 vi.mock('@/lib/ics', async () => {
@@ -68,7 +72,7 @@ const plan = {
   id: 'plan-1',
   participant_id: 'u1',
   consultant_id: 'k1',
-  org_id: null,
+  org_id: 'org1',
   template_id: null,
   template_name: 'Jobbsökarverkstad',
   start_date: mandag,
@@ -114,6 +118,7 @@ beforeEach(() => {
   minaJobbsok.mockReset()
   minaJobbsok.mockResolvedValue(tomtJobbsok)
   laddaNerIcs.mockReset()
+  policyRader = [{ org_id: 'org1', org_name: 'Testkommun', ai_enabled: true, org_kind: 'kommun' }]
 })
 afterEach(cleanup)
 
@@ -282,5 +287,45 @@ describe('Min vecka', () => {
     expect(utvikt).toMatch(/DTSTART:\d{8}T0[78]0000Z\r\n/)
     expect(filnamn).toBe(`Språkcafé, nivå 2 ${idag}.ics`)
     expect(await screen.findByText(/Kalenderfilen är nedladdad/)).toBeInTheDocument()
+  })
+
+  /*
+   * RD3 (rollspelet 2026-09-27): Sara (Rusta och matcha) fick "kommunens krav
+   * enligt socialtjänstlagen" och "handläggare på försörjningsstöd".
+   * Motprov: använd alltid nyckeln `mal` (kommunens) → leverantörs- och
+   * neutraltestet faller.
+   */
+  it('RD3: en plan från en Rusta och matcha-leverantör nämner Arbetsförmedlingen, inte kommunen', async () => {
+    policyRader = [{ org_id: 'org1', org_name: 'Demoleverantör', ai_enabled: true, org_kind: 'leverantor' }]
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Arbetsförmedlingens tjänst Rusta och matcha/)).toBeInTheDocument()
+    expect(screen.getByText(/handläggare på Arbetsförmedlingen/)).toBeInTheDocument()
+    expect(screen.queryByText(/kommun|socialtjänstlagen|försörjningsstöd/)).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Rusta och matcha/ })).toHaveAttribute('href', '/guider/rusta-och-matcha/')
+    expect(screen.queryByRole('link', { name: /aktivitetskravet/ })).not.toBeInTheDocument()
+  })
+
+  it('RD3: utan belägg för organisationens typ (vyn saknar kolumnen) blir texten neutral — aldrig kommunens juridik', async () => {
+    policyRader = [{ org_id: 'org1', org_name: 'Någon', ai_enabled: true }]
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([pass({ id: 's-2', title: 'Verkstad' })])
+    render(<MinVecka />)
+    expect(await screen.findByText(/Din konsulent har satt 30 timmar i veckan som mål för aktiviteterna i din plan\./)).toBeInTheDocument()
+    expect(screen.queryByText(/kommun|socialtjänstlagen|försörjningsstöd|Arbetsförmedlingen/)).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /aktivitetskravet|Rusta och matcha/ })).not.toBeInTheDocument()
+  })
+
+  it('RD3: intyget får planens regelverk med sig till PDF:en', async () => {
+    policyRader = [{ org_id: 'org1', org_name: 'Demoleverantör', ai_enabled: true, org_kind: 'leverantor' }]
+    getMyPlan.mockResolvedValue(plan)
+    listMySessions.mockResolvedValue([])
+    downloadNarvaroIntygPDF.mockResolvedValue(undefined)
+    render(<MinVecka />)
+    await screen.findByText(/handläggare på Arbetsförmedlingen/)
+    await userEvent.click(screen.getByRole('button', { name: 'Ladda ner närvarointyg' }))
+    await waitFor(() => expect(downloadNarvaroIntygPDF).toHaveBeenCalled())
+    expect(downloadNarvaroIntygPDF.mock.calls.at(-1)?.[0]).toMatchObject({ regelverk: 'leverantor' })
   })
 })

@@ -44,7 +44,9 @@
       "skapar": "Skapar …",
       "forbehall": "Bara pass där konsulenten har skrivit \"närvarande\" räknas. Andra pass står som \"ej markerat\".",
       "klart": "Intyget för {{manad}} är klart.",
-      "fel": "Det gick inte just nu. Försök igen om en stund."
+      "fel": "Det gick inte just nu. Försök igen om en stund.",
+      "textLeverantor": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit. Du kan visa det för din handläggare på Arbetsförmedlingen.",
+      "textNeutral": "Ett papper som visar dina pass i en månad och vad din konsulent har skrivit."
     },
     "fraga": {
       "knapp": "Fråga om passet",
@@ -83,7 +85,10 @@
       "full": "Den här veckan är full.",
       "kvar": "{{planerade}} timmar är planerade. {{kvar}} timmar är kvar. Din konsulent planerar dem med dig. Du behöver inte göra det själv.",
       "jobbsok": "De {{h}} timmarna för att söka jobb själv är extra. De räknas inte som aktivitet.",
-      "guide": "Läs mer om aktivitetskravet"
+      "guide": "Läs mer om aktivitetskravet",
+      "malLeverantor": "Din konsulent har bestämt {{mal}} timmar i veckan. Planen kommer från Rusta och matcha. Det är en tjänst från Arbetsförmedlingen.",
+      "malNeutral": "Din konsulent har bestämt {{mal}} timmar i veckan.",
+      "guideLeverantor": "Läs mer om Rusta och matcha"
     },
     "incheckad": "Du checkade in kl {{tid}}",
     "incheckadStatus": "Tack. Nu är du incheckad.",

@@ -46,6 +46,21 @@ export function arNarvaro(attendance: Attendance | null | undefined): boolean {
   return !!attendance && NARVARANDE_UTFALL.has(attendance)
 }
 
+/**
+ * Är passet en anvisad aktivitet — alltså något verksamheten håller i?
+ * Eget jobbsökande (`jobsearch_own`) är det inte, oavsett markering.
+ *
+ * RR1 (2026-09-27): aktivitetsloggen mot Rusta och matcha-avtalet räknade
+ * deltagarens eget jobbsökande hemma som aktivitetstid, medan veckosaldot på
+ * Aktivitet-fliken hoppade över det. Samma vecka var "uppfylld" i Rapporter och
+ * "Närvaro 0 h" på deltagaren. Avtalet räknar leverantörsledda aktiviteter,
+ * lagen räknar anvisade — i båda fallen står eget jobbsökande utanför. Läs
+ * definitionen härifrån i stället för att skriva ett eget villkor.
+ */
+export function arAnvisad(s: { activity_type: ActivityType }): boolean {
+  return ANVISADE_TYPER.has(s.activity_type)
+}
+
 export interface TemplateItem {
   /** ISO-veckodag: 1 = måndag … 7 = söndag */
   weekday: number
@@ -149,6 +164,80 @@ export function foreslagetVeckomal({ barnUnder8, deltidTimmar = 0 }: VeckomalInd
 
 export function mallensVeckotimmar(items: readonly TemplateItem[]): number {
   return Math.round(items.reduce((sum, it) => sum + minuterMellan(it.start_time, it.end_time), 0) / 60 * 10) / 10
+}
+
+const tiondelar = (h: number) => Math.round(h * 10) / 10
+
+/** Mallens timmar per vecka, uppdelade på anvisad aktivitet och eget jobbsökande. */
+export function mallensTimmarPerTyp(items: readonly TemplateItem[]): { anvisade: number; egetJobbsok: number } {
+  let anvisade = 0
+  let egetJobbsok = 0
+  for (const it of items) {
+    const min = minuterMellan(it.start_time, it.end_time)
+    if (arAnvisad(it)) anvisade += min
+    else egetJobbsok += min
+  }
+  return { anvisade: tiondelar(anvisade / 60), egetJobbsok: tiondelar(egetJobbsok / 60) }
+}
+
+/**
+ * Veckomålets definition: **anvisad aktivitet + eget jobbsökande** — båda ska
+ * ha tid i planen (Kunskapsguiden, FAQ om aktivitetskravet), och planens
+ * `jobsearch_hours_per_week` är den del av målet som är eget jobbsökande.
+ *
+ * Den del av målet som närvaron ska mätas mot är alltså målet minus planens
+ * eget jobbsökande. RK1 (2026-09-27): `veckoampel` jämförde närvaron i
+ * anvisade pass med HELA målet — en plan på 8 h anvisat + 3 h eget (mål 11 h)
+ * kunde aldrig bli grön, hur väl deltagaren än skötte sig. Eget jobbsökande
+ * räknas inte in i närvaron: det är deltagarens egen redovisning, och grönt
+ * kräver bekräftad närvaro (GG3).
+ */
+export function anvisatVeckomal(plan: { weekly_hours_target: number | string; jobsearch_hours_per_week: number | string | null }): number {
+  const mal = Number(plan.weekly_hours_target) || 0
+  const egen = Number(plan.jobsearch_hours_per_week) || 0
+  return Math.max(0, tiondelar(mal - egen))
+}
+
+/**
+ * RK2: förifyllt veckomål när en plan skapas ur en mall — mallens anvisade
+ * timmar plus dess eget jobbsökande, aldrig över lagens förslag. Tidigare
+ * förifylldes lagens tak (40 h) oavsett mall, så en mall på 8 h gav en plan på
+ * 40 h utan varning, och det stod på dokumentet för underskrift.
+ */
+export function forifylltVeckomalUrMall(items: readonly TemplateItem[], lagensForslag: number): { veckomal: number; egetJobbsok: number } {
+  const { anvisade, egetJobbsok } = mallensTimmarPerTyp(items)
+  return { veckomal: Math.min(lagensForslag, tiondelar(anvisade + egetJobbsok)), egetJobbsok }
+}
+
+export interface VeckomalGlapp {
+  /** Anvisad tid i schemat räcker inte till (eller överstiger) den anvisade delen av målet. */
+  anvisat: string | null
+  /** Planens eget jobbsökande stämmer inte med schemats. */
+  egetJobbsok: string | null
+}
+
+const visaH = (h: number) => `${String(tiondelar(h)).replace('.', ',')} h`
+
+/**
+ * Går veckomålet ihop med schemat? Två frågor, var sin rad — `null` när den
+ * stämmer. Toleransen är en tiondels timme, samma avrundning som saldot.
+ */
+export function veckomalMotSchema(indata: {
+  veckomal: number
+  egetJobbsokPlan: number
+  anvisatSchema: number
+  egetJobbsokSchema: number
+}): VeckomalGlapp {
+  const anvisatMal = Math.max(0, tiondelar(indata.veckomal - indata.egetJobbsokPlan))
+  const anvisat = Math.abs(indata.anvisatSchema - anvisatMal) < 0.05
+    ? null
+    : indata.anvisatSchema < anvisatMal
+      ? `Schemat har ${visaH(indata.anvisatSchema)} anvisad aktivitet, men veckomålet kräver ${visaH(anvisatMal)} (${visaH(indata.veckomal)} mål − ${visaH(indata.egetJobbsokPlan)} eget jobbsökande). Veckan kan inte nå målet.`
+      : `Schemat har ${visaH(indata.anvisatSchema)} anvisad aktivitet, mer än veckomålets ${visaH(anvisatMal)} (${visaH(indata.veckomal)} mål − ${visaH(indata.egetJobbsokPlan)} eget jobbsökande).`
+  const egetJobbsok = Math.abs(indata.egetJobbsokSchema - indata.egetJobbsokPlan) < 0.05
+    ? null
+    : `Planen anger ${visaH(indata.egetJobbsokPlan)} eget jobbsökande i veckan, schemat har ${visaH(indata.egetJobbsokSchema)}.`
+  return { anvisat, egetJobbsok }
 }
 
 export function validateTemplateItem(it: TemplateItem): string | null {
@@ -284,11 +373,17 @@ export type Ampel =
  * omarkerade pass kvar som kan ta veckan dit. Att kalla den "under målet" vore
  * lika osant som att kalla den grön — jämför regeln i CLAUDE.md om att ett
  * värde utan underlag visar `—` och en rad om varför.
+ *
+ * RK1 (2026-09-27): andra argumentet är den **anvisade** delen av målet —
+ * `anvisatVeckomal(plan)`, inte `plan.weekly_hours_target`. Närvaron räknas
+ * bara i anvisade pass, så den ska jämföras med den del av målet som gäller
+ * anvisade pass. Skicka hela målet och en plan med eget jobbsökande kan aldrig
+ * bli grön.
  */
-export function veckoampel(saldo: Veckosaldo, veckomal: number): Ampel {
+export function veckoampel(saldo: Veckosaldo, anvisatMal: number): Ampel {
   if (saldo.antalPass === 0) return 'inga_pass'
   if (saldo.antalOgiltigFranvaro > 0) return 'ogiltig_franvaro'
-  if (saldo.narvaroTimmar + 0.05 >= veckomal) return 'pa_mal'
+  if (saldo.narvaroTimmar + 0.05 >= anvisatMal) return 'pa_mal'
   if (saldo.antalOmarkerade > 0) return 'ej_markerad'
   return 'under_mal'
 }

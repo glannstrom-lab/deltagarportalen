@@ -49,7 +49,11 @@ import {
   type Organization,
   type OrgMembership,
   type OrgRole,
+  type OrgKind,
 } from '@/services/orgApi'
+// RR9 (rollspelet 2026-09-27): "Handläggare (ekonomiskt bistånd)" och
+// `@kommun.se` erbjöds en Rusta och matcha-leverantör.
+import { epostPlatshallare, rollerForOrg } from '@/components/consultant/orgTypVisning'
 
 type Medlemskap = OrgMembership & { organization: Organization }
 
@@ -507,7 +511,7 @@ function Organisation({
                     disabled={sparar === k.id}
                     onChange={(e) => void bytRoll(k, e.target.value as OrgRole)}
                     fullWidth={false}
-                    options={ORG_ROLLER.filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin')).map((r) => ({ value: r, label: ORG_ROLL_ETIKETT[r] }))}
+                    options={rollerForOrg(m.organization.kind, ORG_ROLLER, k.role).filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin')).map((r) => ({ value: r, label: ORG_ROLL_ETIKETT[r] }))}
                   />
                   <Button
                     size="sm"
@@ -534,6 +538,7 @@ function Organisation({
         <LaggTillKollega
           orgId={m.org_id}
           orgNamn={m.organization.name}
+          orgKind={m.organization.kind}
           jagArAdmin={jagArAdmin}
           onTillagd={(text) => {
             setFel(null)
@@ -564,11 +569,13 @@ function Organisation({
 function LaggTillKollega({
   orgId,
   orgNamn,
+  orgKind,
   jagArAdmin,
   onTillagd,
 }: {
   orgId: string
   orgNamn: string
+  orgKind: OrgKind
   jagArAdmin: boolean
   onTillagd: (besked: string) => void
 }) {
@@ -582,7 +589,7 @@ function LaggTillKollega({
   const [inbjudningsomgang, setInbjudningsomgang] = useState(0)
 
   // 'arbetsgivare' finns bara i företagskonton (AG6) — triggern nekar den här, så visa den inte.
-  const roller = ORG_ROLLER.filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin'))
+  const roller = rollerForOrg(orgKind, ORG_ROLLER).filter((r) => r !== 'arbetsgivare' && (jagArAdmin || r !== 'admin'))
 
   const skicka = async (e: FormEvent) => {
     e.preventDefault()
@@ -646,7 +653,7 @@ function LaggTillKollega({
             setEpost(e.target.value)
             setErbjudan(null)
           }}
-          placeholder="fornamn.efternamn@kommun.se"
+          placeholder={epostPlatshallare(orgKind)}
           disabled={sparar}
         />
         <Select

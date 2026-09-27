@@ -8,12 +8,23 @@
  * ett tomt fält skrivs som `-` (se STRECK nedan om varför inte `—`).
  *
  * jsPDF + autotable lazy-laddas som i pdfReportGenerator.ts.
+ *
+ * RR2 (rollspelet 2026-09-27): en Rusta och matcha-leverantör fick samma
+ * dokument — "enligt socialtjänstlagen 12 kap.", försörjningshinder och
+ * "fattas av socialnämnden". Om PDF:en lämnas till en deltagare eller en
+ * handläggare på Arbetsförmedlingen pekar den då på fel lag och fel myndighet.
+ * Regelverket styrs nu av organisationens typ (`regelverkForPlan` i
+ * orgTypVisning.ts). Utan organisation: kommunens text, som före ändringen.
  */
 
 import type { jsPDF } from 'jspdf'
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
 import { FORSORJNINGSHINDER_ETIKETT } from './aktivitetApi'
 import { addDays, isoWeekday, timmar, veckansMandag, type ActivityType } from './aktivitetSchema'
+import { orgApi } from './orgApi'
+// Ren modul utan React — samma regel som konsulentvyns kort, så plan-PDF:en och
+// Rapporter aldrig kan välja olika regelverk för samma organisation.
+import { regelverkForPlan, type Regelverk } from '@/components/consultant/orgTypVisning'
 
 let jsPDFModule: typeof import('jspdf') | null = null
 let autoTableModule: typeof import('jspdf-autotable') | null = null
@@ -44,6 +55,30 @@ export interface PlanPdfInput {
   participantName: string
   consultantName: string
   organizationName?: string | null
+  /**
+   * Vilket regelverk dokumentet talar om. Utelämnat: `downloadAktivitetsplanPDF`
+   * slår upp det ur konsulentens medlemskap, och `generateAktivitetsplanPDF`
+   * faller tillbaka på kommunens text (som före RR2).
+   */
+  regelverk?: Regelverk
+}
+
+/** Texterna som skiljer kommunens plan från leverantörens planering. */
+export const PLAN_TEXTER: Record<Regelverk, { rubrik: string; konsulent: string; motpart: string; sidfot: string; visaForsorjningshinder: boolean }> = {
+  kommun: {
+    rubrik: 'Individuell plan för aktivitet enligt socialtjänstlagen 12 kap.',
+    konsulent: 'Arbetskonsulent',
+    motpart: 'Handläggare, underskrift och datum',
+    sidfot: 'Beslut om försörjningsstöd fattas av socialnämnden.',
+    visaForsorjningshinder: true,
+  },
+  leverantor: {
+    rubrik: 'Planering för deltagare i Rusta och matcha',
+    konsulent: 'Handledare',
+    motpart: 'Handledare, underskrift och datum',
+    sidfot: 'Planen kommer från leverantören inom Arbetsförmedlingens tjänst Rusta och matcha. Beslut om anvisning och ersättning fattas av Arbetsförmedlingen.',
+    visaForsorjningshinder: false,
+  },
 }
 
 // jsPDF med standardfonten Helvetica SKRIVER INTE tankstreck (U+2013/U+2014):
@@ -95,6 +130,7 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
   const jsPDFClass = await loadPDFLibraries()
   const { default: autoTable } = autoTableModule!
   const { plan, sessions, participantName, consultantName, organizationName } = input
+  const texter = PLAN_TEXTER[input.regelverk ?? 'kommun']
 
   const doc = new jsPDFClass('p', 'mm', 'a4')
   const bredd = doc.internal.pageSize.getWidth()
@@ -104,21 +140,24 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
 
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(16)
-  doc.text('Individuell plan för aktivitet enligt socialtjänstlagen 12 kap.', marg, y, { maxWidth: bredd - marg * 2 })
+  doc.text(texter.rubrik, marg, y, { maxWidth: bredd - marg * 2 })
   y += 12
 
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(10)
   const uppgifter: Array<[string, string]> = [
     ['Deltagare', tomt(participantName)],
-    ['Arbetskonsulent', tomt(consultantName)],
+    [texter.konsulent, tomt(consultantName)],
     ['Organisation', tomt(organizationName)],
     ['Schemamall', tomt(plan.template_name)],
     ['Period', `${datumSv(plan.start_date)} - ${plan.end_date ? datumSv(plan.end_date) : 'tills vidare'}`],
     ['Veckomål', `${Number(plan.weekly_hours_target)} timmar per vecka`],
     ['Motivering till veckomålet', tomt(plan.target_reason)],
     ['Tid för eget jobbsökande', `${Number(plan.jobsearch_hours_per_week)} timmar per vecka`],
-    ['Försörjningshinder', plan.forsorjningshinder ? FORSORJNINGSHINDER_ETIKETT[plan.forsorjningshinder] : STRECK],
+    // Försörjningshinder är kommunens kategori (Socialstyrelsens register) — inte leverantörens.
+    ...(texter.visaForsorjningshinder
+      ? [['Försörjningshinder', plan.forsorjningshinder ? FORSORJNINGSHINDER_ETIKETT[plan.forsorjningshinder] : STRECK] as [string, string]]
+      : []),
     ['Beslutsdatum', datumSv(plan.decided_at)],
     ['Status', { active: 'Aktiv', paused: 'Pausad', ended: 'Avslutad' }[plan.status]],
   ]
@@ -186,7 +225,7 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
   doc.line(marg + kolumn + 10, y, bredd - marg, y)
   y += 5
   doc.text('Deltagare, underskrift och datum', marg, y)
-  doc.text('Handläggare, underskrift och datum', marg + kolumn + 10, y)
+  doc.text(texter.motpart, marg + kolumn + 10, y)
 
   // Sidfot på varje sida
   const sidor = doc.getNumberOfPages()
@@ -194,11 +233,8 @@ export async function generateAktivitetsplanPDF(input: PlanPdfInput): Promise<js
     doc.setPage(i)
     doc.setFontSize(8)
     doc.setTextColor(110)
-    doc.text(
-      `Utskriven från jobin.se ${idagIso()}. Beslut om försörjningsstöd fattas av socialnämnden.`,
-      marg,
-      hojd - 12,
-    )
+    const sidfot = doc.splitTextToSize(`Utskriven från jobin.se ${idagIso()}. ${texter.sidfot}`, bredd - marg * 2 - 25) as string[]
+    doc.text(sidfot, marg, hojd - 12 - (sidfot.length - 1) * 3.5)
     doc.text(`Sida ${i} av ${sidor}`, bredd - marg, hojd - 12, { align: 'right' })
     doc.setTextColor(0)
   }
@@ -211,8 +247,21 @@ export async function generateAktivitetsplanBlob(input: PlanPdfInput): Promise<B
   return doc.output('blob')
 }
 
+/**
+ * Regelverket ur konsulentens medlemskap. Ett läsfel ger kommunens text — samma
+ * val som Rapporter gör vid fel (visa båda), och samma som före RR2.
+ */
+export async function regelverkForKonsulentensPlan(planOrgId: string | null | undefined): Promise<Regelverk> {
+  try {
+    return regelverkForPlan(await orgApi.myMemberships(), planOrgId)
+  } catch {
+    return 'kommun'
+  }
+}
+
 export async function downloadAktivitetsplanPDF(input: PlanPdfInput): Promise<void> {
-  const doc = await generateAktivitetsplanPDF(input)
+  const regelverk = input.regelverk ?? (await regelverkForKonsulentensPlan(input.plan.org_id))
+  const doc = await generateAktivitetsplanPDF({ ...input, regelverk })
   const namn = input.participantName.trim().toLowerCase().replace(/[^a-z0-9åäö]+/g, '-').replace(/^-|-$/g, '') || 'deltagare'
   doc.save(`aktivitetsplan-${namn}-${idagIso()}.pdf`)
 }

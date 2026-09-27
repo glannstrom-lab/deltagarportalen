@@ -87,7 +87,8 @@ describe('namndrapportUnderlag', () => {
   it('tabellen döljer försörjningshinder utan deltagare och slutar med Summa', () => {
     const rader = tabellRader(u)
     expect(rader.map((r) => r[0])).toEqual(['Arbetslös', 'Språkhinder', 'Summa'])
-    expect(rader[0]).toEqual(['Arbetslös', '2', '4', '25 %', '2', '1', '0'])
+    // RK3: kolumnen "Sjuk utan intyg" (index 6) kom till 2026-09-27
+    expect(rader[0]).toEqual(['Arbetslös', '2', '4', '25 %', '2', '1', '0', '0'])
   })
 })
 

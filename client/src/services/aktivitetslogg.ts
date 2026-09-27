@@ -10,8 +10,13 @@
  * deltagare. 50 %-kravet gäller AKTIVITETERNA — de individuella mötena
  * (RM3) är ett annat krav med en annan regel.
  *
- * Vad som räknas som närvarotid: pass med `present` eller `external`.
- * Frånvaro räknas aldrig, inte heller giltig eller sjukintygad.
+ * Vad som räknas som närvarotid: ANVISADE pass (`arAnvisad`) med `present`
+ * eller `external`. Frånvaro räknas aldrig, inte heller giltig eller
+ * sjukintygad. Deltagarens eget jobbsökande (`jobsearch_own`) räknas inte —
+ * varken mot timkravet eller i andelen fysiska — eftersom avtalet räknar
+ * aktiviteter leverantören håller i (RR1, 2026-09-27: loggen gav "3 av 4
+ * veckor uppfyllda" för en deltagare vars enda närvaro var egen jobbsökning
+ * hemifrån, medan Aktivitet-fliken sa "Närvaro 0 h" för samma vecka).
  *
  * Vad som räknas som fysiskt: `activity_type === 'workplace'` eller ett
  * ifyllt `location`. Portalen har ingen egen flagga för fysisk/digital, så
@@ -27,7 +32,7 @@
  */
 
 import type { ActivityPlan, ActivitySession } from './aktivitetApi'
-import { addDays, arNarvaro, isoWeekday, parseLocalDate, timmar, veckansMandag } from './aktivitetSchema'
+import { addDays, arAnvisad, arNarvaro, parseLocalDate, timmar, veckansMandag } from './aktivitetSchema'
 
 export interface Period {
   from: string
@@ -107,7 +112,7 @@ export function avtalskravPerDeltagare(
   const start = period.from > plan.start_date ? period.from : plan.start_date
   const slut = plan.end_date !== null && plan.end_date < period.to ? plan.end_date : period.to
 
-  const egna = sessions.filter((s) => s.plan_id === plan.id && arNarvaro(s.attendance))
+  const egna = sessions.filter((s) => s.plan_id === plan.id && arAnvisad(s) && arNarvaro(s.attendance))
   const veckor: Veckobedomning[] = []
 
   if (start <= slut) {
@@ -143,7 +148,15 @@ export function avtalskravPerDeltagare(
   }
 }
 
-/** Senaste avslutade söndag före datumet (datumet självt om det är en söndag). */
-export function senasteSondag(datum: string): string {
-  return isoWeekday(datum) === 7 ? datum : addDays(veckansMandag(datum), -1)
+/**
+ * Senaste söndag vars vecka är ÖVER, sett från `idag` (lokal tid, se
+ * `formatLocalDate`). En vecka är avslutad först när söndagen har passerat —
+ * på söndagen själv pågår den fortfarande.
+ *
+ * RR22 (2026-09-27): funktionen gav tidigare dagens datum när det var söndag,
+ * så "Avslutade veckor" tog med innevarande vecka och kunde underkänna den
+ * medan deltagaren fortfarande hade pass kvar samma dag.
+ */
+export function senasteAvslutadeSondag(idag: string): string {
+  return addDays(veckansMandag(idag), -1)
 }

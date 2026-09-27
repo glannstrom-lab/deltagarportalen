@@ -1,5 +1,10 @@
 /**
- * TillampaMallDialog — veckomålet följer lagen (KM3/KM5).
+ * TillampaMallDialog — veckomålet följer lagen (KM3/KM5) och mallen (RK2).
+ *
+ * RK2 (rollspelet 2026-09-27): målet förifylldes med lagens 40 h mot mallens
+ * 6 h anvisat, utan varning. Nu förifylls det ur mallen (högst lagens förslag);
+ * lagens förslag står kvar som hint, och en avvikelse kräver motivering.
+ * Motprov: förifyll med `forslag` igen → första testet faller på '6'.
  */
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, fireEvent, cleanup } from '@testing-library/react'
@@ -24,13 +29,22 @@ vi.mock('@/services/aktivitetApi', () => ({
 afterEach(() => { cleanup(); vi.clearAllMocks() })
 
 describe('TillampaMallDialog', () => {
-  it('föreslår 40 h, och 30 h när barn under 8 bockas i', async () => {
+  it('förifyller målet ur mallen (6 h), med lagens förslag som hint', async () => {
     render(<TillampaMallDialog isOpen onClose={() => {}} participantId="p1" participantName="Anna Andersson" onCreated={() => {}} />)
     const mal = await screen.findByLabelText('Veckomål, timmar') as HTMLInputElement
-    expect(mal.value).toBe('40')
+    expect(mal.value).toBe('6')
+    expect(screen.getByText('Förslag enligt lagen: 40 h')).toBeInTheDocument()
     fireEvent.click(screen.getByLabelText('Barn under 8 år i hushållet'))
-    expect(mal.value).toBe('30')
     expect(screen.getByText('Förslag enligt lagen: 30 h')).toBeInTheDocument()
+    expect(mal.value).toBe('6')
+  })
+
+  it('varnar när schemat inte räcker till målet', async () => {
+    render(<TillampaMallDialog isOpen onClose={() => {}} participantId="p1" participantName="Anna" onCreated={() => {}} />)
+    const mal = await screen.findByLabelText('Veckomål, timmar')
+    expect(screen.queryByText(/Veckan kan inte nå målet/)).toBeNull()
+    fireEvent.change(mal, { target: { value: '20' } })
+    expect(screen.getByText(/Veckan kan inte nå målet/)).toBeInTheDocument()
   })
 
   it('kräver motivering när målet avviker från förslaget', async () => {
@@ -51,11 +65,12 @@ describe('TillampaMallDialog', () => {
     await screen.findByLabelText('Veckomål, timmar')
     fireEvent.change(screen.getByLabelText('Startdatum'), { target: { value: '2026-10-05' } })
     fireEvent.change(screen.getByLabelText('Slutdatum'), { target: { value: '2026-10-18' } })
-    expect(screen.getByRole('status')).toHaveTextContent('4 pass genereras')
+    expect(screen.getByText(/4 pass genereras/)).toBeInTheDocument()
+    fireEvent.change(screen.getByLabelText('Motivering till avvikelsen'), { target: { value: 'Mallens schema, 6 h anvisat.' } })
     fireEvent.click(screen.getByRole('button', { name: 'Skapa plan' }))
     await vi.waitFor(() => expect(onCreated).toHaveBeenCalled())
     expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalledWith(expect.objectContaining({
-      participantId: 'p1', templateId: 't1', startDate: '2026-10-05', endDate: '2026-10-18', weeklyHoursTarget: 40, targetReason: null,
+      participantId: 'p1', templateId: 't1', startDate: '2026-10-05', endDate: '2026-10-18', weeklyHoursTarget: 6, targetReason: 'Mallens schema, 6 h anvisat.', jobsearchHoursPerWeek: 0,
       forsorjningshinder: null,
     }))
   })
@@ -66,6 +81,7 @@ describe('TillampaMallDialog', () => {
     render(<TillampaMallDialog isOpen onClose={() => {}} participantId="p1" participantName="Anna" onCreated={vi.fn()} />)
     await screen.findByLabelText('Veckomål, timmar')
     fireEvent.change(screen.getByLabelText('Försörjningshinder (för IVO-underlaget)'), { target: { value: 'sprakhinder' } })
+    fireEvent.change(screen.getByLabelText('Motivering till avvikelsen'), { target: { value: 'Mallens schema.' } })
     fireEvent.click(screen.getByRole('button', { name: 'Skapa plan' }))
     await vi.waitFor(() => expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalled())
     expect(aktivitetsplanApi.createFromTemplate).toHaveBeenCalledWith(expect.objectContaining({ forsorjningshinder: 'sprakhinder' }))

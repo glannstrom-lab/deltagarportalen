@@ -48,6 +48,10 @@ import {
 import { kontaktText, dagarSedanKontakt } from '@/lib/kontaktText'
 import { DagensPass } from '@/components/consultant/DagensPass'
 import { consultantService } from '@/services/consultantService'
+import { hamtaMotenForKonsulent } from '@/services/moteskadens'
+import { aktivitetsplanApi } from '@/services/aktivitetApi'
+import { bradskandePunkter, franvaroFonster, veckansGranser, type Bradskande } from './oversiktRegler'
+import { BradskandeIdag } from './BradskandeIdag'
 
 interface DashboardStats {
   totalParticipants: number
@@ -168,14 +172,19 @@ function KPICard({
 }
 
 // Attention Alert Component
+type AttentionTyp = 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' | 'franvaro' | 'mote'
+
 function AttentionAlert({
   participant,
   type,
   t,
+  detalj,
 }: {
   participant: Participant
-  type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement'
+  type: AttentionTyp
   t: (key: string) => string
+  /** RR3/RK7: brådskande punkter bär sin egen text (regel + datum). */
+  detalj?: string
 }) {
   // PG24 (2026-09-12): samma regel och samma ord som deltagarkortet —
   // "Aldrig kontaktad" när last_contact_at saknas, annars dagar sedan.
@@ -199,6 +208,16 @@ function AttentionAlert({
       icon: Activity,
       color: 'text-amber-700 bg-amber-100 dark:text-amber-400 dark:bg-amber-900/40',
       message: t('consultant.alerts.lowEngagement'),
+    },
+    franvaro: {
+      icon: AlertTriangle,
+      color: 'text-rose-700 bg-rose-100 dark:text-rose-300 dark:bg-rose-900/40',
+      message: detalj ?? 'Ogiltig frånvaro',
+    },
+    mote: {
+      icon: Calendar,
+      color: 'text-rose-700 bg-rose-100 dark:text-rose-300 dark:bg-rose-900/40',
+      message: detalj ?? 'Möte över regelns gräns',
     },
   }
 
@@ -277,8 +296,11 @@ export function OverviewTab() {
     goalsTotal: 0,
   })
   const [participants, setParticipants] = useState<Participant[]>([])
-  const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
-  const [attentionCounts, setAttentionCounts] = useState({ noContact: 0, inactive: 0, noCv: 0 })
+  const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: AttentionTyp; detalj?: string }>>([])
+  // RR3/RK7: det brådskande (ogiltig frånvaro, möte över gränsen) — eget fel-läge
+  const [bradskande, setBradskande] = useState<Bradskande[]>([])
+  const [bradskandeFel, setBradskandeFel] = useState(false)
+  const [attentionCounts, setAttentionCounts] = useState({ franvaro: 0, mote: 0, noContact: 0, inactive: 0, noCv: 0 })
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
 
   // Dialog states
@@ -329,13 +351,18 @@ export function OverviewTab() {
       // `any`-form frågan hade innan (klienten är otypad mot Database).
       const participantsData = (await fetchCachedConsultantParticipants(queryClient)) as unknown as Participant[]
 
-      // Fetch meetings this week
-      const startOfWeek = new Date()
-      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1)
-      startOfWeek.setHours(0, 0, 0, 0)
-      const endOfWeek = new Date(startOfWeek)
-      endOfWeek.setDate(endOfWeek.getDate() + 6)
-      endOfWeek.setHours(23, 59, 59, 999)
+      // Veckans möten. RK6: måndag–söndag i lokal tid — den gamla räkningen
+      // (idag − getDay() + 1) gav nästa veckas måndag på en söndag.
+      const { start: startOfWeek, slut: endOfWeek } = veckansGranser(new Date())
+
+      // RR3/RK7: underlaget för det brådskande. Hämtas parallellt; ett fel här
+      // fäller inte översikten men syns som en egen rad i Min dag.
+      const idagNu = new Date()
+      const { fran: franvaroFran, till: franvaroTill } = franvaroFonster(idagNu)
+      const bradskandeUnderlag = Promise.allSettled([
+        hamtaMotenForKonsulent(idagNu),
+        aktivitetsplanApi.listSessionsBetween(franvaroFran, franvaroTill),
+      ])
 
       // Varje fråga nedan kontrolleras. Förr lästes bara `data`: ett fel gav
       // null → [] → Min dag sa "Inga brådskande punkter idag" och korten
@@ -389,7 +416,27 @@ export function OverviewTab() {
         // inaktivitet och "CV saknas" — demot visade 0 i kortet ovanför fem
         // rader. Nu räknas kortet ur SAMMA mängd som listan: unika deltagare
         // med minst ett skäl, och undertexten säger vilka skäl.
-        const attention: Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }> = []
+        const attention: Array<{ participant: Participant; type: AttentionTyp; detalj?: string }> = []
+        // RR3/RK7: det brådskande först — listan visar bara fem rader.
+        const [motenUtfall, passUtfall] = await bradskandeUnderlag
+        const underlagFel = motenUtfall.status === 'rejected' || passUtfall.status === 'rejected'
+        const punkter = underlagFel
+          ? []
+          : bradskandePunkter({
+              deltagare: participantsData,
+              moten: motenUtfall.value,
+              pass: passUtfall.value,
+              idag: idagNu,
+            })
+        if (underlagFel) {
+          console.warn('[OverviewTab] möten eller pass kunde inte hämtas', motenUtfall.status === 'rejected' ? motenUtfall.reason : (passUtfall as PromiseRejectedResult).reason)
+        }
+        setBradskande(punkter)
+        setBradskandeFel(underlagFel)
+        for (const b of punkter) {
+          const p = participantsData.find(x => x.participant_id === b.participantId)
+          if (p) attention.push({ participant: p, type: b.typ, detalj: b.text })
+        }
         participantsData.forEach(p => {
           if (!p.last_contact_at || new Date(p.last_contact_at) < sevenDaysAgo) {
             attention.push({ participant: p, type: 'no_contact' })
@@ -403,6 +450,8 @@ export function OverviewTab() {
         })
         const attentionUnique = new Set(attention.map(a => a.participant.participant_id))
         const attentionCounts = {
+          franvaro: attention.filter(a => a.type === 'franvaro').length,
+          mote: attention.filter(a => a.type === 'mote').length,
           noContact: attention.filter(a => a.type === 'no_contact').length,
           inactive: attention.filter(a => a.type === 'inactive').length,
           noCv: attention.filter(a => a.type === 'no_cv').length,
@@ -613,7 +662,9 @@ export function OverviewTab() {
           cvCompletionRate: Math.round((completedCV.length / Math.max(participantsData.length, 1)) * 100),
           goalsCompletionRate: goalsData ? Math.round((completedGoals / Math.max(goalsData.length, 1)) * 100) : 0,
           engagementRate: Math.round((active.length / Math.max(participantsData.length, 1)) * 100),
-          averageTimeToPlacement: 0,
+          // RK11: null, inte 0 — PDF:en skriver "—" med en förklaring i stället för "0 dagar".
+          averageTimeToPlacement: null,
+          averageTimeToPlacementNote: 'Placeringstiden räknas under Rapporter. Ta ut rapporten därifrån för att få den med.',
           monthlyProgress: [],
           statusDistribution: [
             { label: 'Aktiva', value: active.length },
@@ -678,7 +729,12 @@ export function OverviewTab() {
           }
         }}
         // F9 (2026-09-12): dagens pass överst i Min dag
-        pass={<DagensPass namnFor={namnForDeltagare} />}
+        pass={
+          <>
+            <BradskandeIdag punkter={bradskande} fel={bradskandeFel} namnFor={namnForDeltagare} />
+            <DagensPass namnFor={namnForDeltagare} />
+          </>
+        }
       />
 
       {/* KPI Cards Grid */}
@@ -695,6 +751,8 @@ export function OverviewTab() {
           title={t('consultant.overview.needsAttention')}
           value={stats.needsAttention}
           subtitle={[
+            attentionCounts.franvaro > 0 ? `${attentionCounts.franvaro} ogiltig frånvaro` : null,
+            attentionCounts.mote > 0 ? `${attentionCounts.mote} möte över gränsen` : null,
             attentionCounts.noContact > 0 ? `${attentionCounts.noContact} ${t('consultant.alerts.noContact').toLowerCase()}` : null,
             attentionCounts.inactive > 0 ? `${attentionCounts.inactive} ${t('consultant.alerts.inactive').toLowerCase()}` : null,
             attentionCounts.noCv > 0 ? `${attentionCounts.noCv} ${t('consultant.alerts.noCv')}` : null,
@@ -761,6 +819,7 @@ export function OverviewTab() {
                     key={`${item.participant.participant_id}-${item.type}-${i}`}
                     participant={item.participant}
                     type={item.type}
+                    detalj={item.detalj}
                     t={t}
                   />
                 ))}

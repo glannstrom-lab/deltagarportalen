@@ -47,7 +47,7 @@ import { calculateCohorts, type CohortData } from './cohorts'
 import { computePlacementMetric, followupStatus } from './placeringsmatt'
 // KK6: computeMonthlyProgress/calculateTrends/calculateGoalCategories utbrutna
 // ur den här filen 2026-09-02, samma grepp som gav cohorts.ts sina tester.
-import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, type TrendData } from './analytics'
+import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, placeringstid, type TrendData } from './analytics'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 
 interface PlacementRow {
@@ -72,6 +72,8 @@ interface AnalyticsData {
   cvCompletionRate: number
   jobApplicationRate: number
   averageTimeToPlacement: number | null
+  /** RR4: varför snittet saknas, eller vilka placeringar som inte räknats. */
+  placementTimeNote: string | null
   goalsCompletionRate: number
   engagementRate: number
   monthlyProgress: Array<{ month: string; value: number }>
@@ -254,6 +256,7 @@ export function AnalyticsTab() {
     cvCompletionRate: 0,
     jobApplicationRate: 0,
     averageTimeToPlacement: null,
+    placementTimeNote: null,
     goalsCompletionRate: 0,
     engagementRate: 0,
     monthlyProgress: [],
@@ -411,19 +414,12 @@ export function AnalyticsTab() {
         ).length
         const engagementRate = total > 0 ? Math.round((engagedParticipants / total) * 100) : 0
 
-        // Calculate average placement time from placements
-        // null = inga placeringar än. Visa aldrig ett påhittat default-snitt (tidigare 45).
-        let avgPlacementTime: number | null = null
-        if (placementsData && placementsData.length > 0) {
-          // Simplified calculation - would need participant start dates for accuracy
-          avgPlacementTime = Math.round(
-            placementsData.reduce((sum, p) => {
-              const startDate = new Date(p.start_date || p.created_at)
-              const created = new Date(p.created_at)
-              return sum + Math.max(1, Math.floor((startDate.getTime() - created.getTime()) / (1000 * 60 * 60 * 24)))
-            }, 0) / placementsData.length
-          )
-        }
+        // RR4 (2026-09-27): dagar från kopplingen (assigned_at) till placeringens
+        // start_date. Tidigare start_date − created_at med golvet 1, alltså hur sent
+        // placeringen registrerades — "1 dagar" för ett jobb som tog 70 dagar.
+        // null = inget mätbart underlag; kortet visar — och förklaringen.
+        const tidTillJobb = placeringstid(placementsData || [], participants, formatLocalDate(now))
+        const avgPlacementTime = tidTillJobb.snittDagar
 
         // Verklig månadsserie: slutförda mål + placeringar per månad (riktiga timestamps)
         const monthlyData = computeMonthlyProgress(dateRange, goalsData || [], allPlacementsData || [])
@@ -517,6 +513,7 @@ export function AnalyticsTab() {
           cvCompletionRate: Math.round((withCV / Math.max(total, 1)) * 100),
           jobApplicationRate: Math.round((participants.filter(p => p.saved_jobs_count > 0).length / Math.max(total, 1)) * 100),
           averageTimeToPlacement: avgPlacementTime,
+          placementTimeNote: tidTillJobb.forklaring,
           goalsCompletionRate,
           engagementRate,
           monthlyProgress: monthlyData,
@@ -585,7 +582,7 @@ export function AnalyticsTab() {
         [t('consultant.analytics.export.cvCompletion'), `${analytics.cvCompletionRate}%`],
         [t('consultant.analytics.export.goalCompletion'), `${analytics.goalsCompletionRate}%`],
         [t('consultant.analytics.export.engagement'), `${analytics.engagementRate}%`],
-        [t('consultant.analytics.export.avgPlacementTime'), analytics.averageTimeToPlacement === null ? t('consultant.analytics.metrics.noPlacementsYet') : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
+        [t('consultant.analytics.export.avgPlacementTime'), analytics.averageTimeToPlacement === null ? `— ${analytics.placementTimeNote ?? ''}`.trim() : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
         [''],
         [t('consultant.analytics.export.statusDistribution'), t('consultant.analytics.export.count')],
         ...analytics.statusDistribution.map(s => [s.label, s.value]),
@@ -613,13 +610,13 @@ export function AnalyticsTab() {
     cvCompletionRate: analytics.cvCompletionRate,
     goalsCompletionRate: analytics.goalsCompletionRate,
     engagementRate: analytics.engagementRate,
-    averageTimeToPlacement: analytics.averageTimeToPlacement ?? 0,
+    averageTimeToPlacement: analytics.averageTimeToPlacement,
+    averageTimeToPlacementNote: analytics.placementTimeNote,
     monthlyProgress: analytics.monthlyProgress,
     statusDistribution: analytics.statusDistribution,
     topGoalCategories: analytics.topGoalCategories,
-    cohortData: cohortData.length > 0 ? cohortData : [
-      { cohort: 'Ingen data', participants: 0, cvComplete: 0, placed: 0, avgTime: 0 },
-    ],
+    // RK11: tom lista, inte en påhittad rad med nollor — PDF:en skriver ut att underlag saknas.
+    cohortData,
   }
 
   // AG3/KS1: se computePlacementMetric ovan för varför det här ersätter
@@ -706,8 +703,10 @@ export function AnalyticsTab() {
         />
         <MetricCard
           title={t('consultant.analytics.metrics.avgPlacementTime')}
-          value={analytics.averageTimeToPlacement === null ? '–' : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
-          subtitle={analytics.averageTimeToPlacement === null ? t('consultant.analytics.metrics.noPlacementsYet') : t('consultant.analytics.metrics.fromStartToJob')}
+          value={analytics.averageTimeToPlacement === null ? '—' : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
+          subtitle={analytics.averageTimeToPlacement === null
+            ? analytics.placementTimeNote ?? t('consultant.analytics.metrics.noPlacementsYet')
+            : `${t('consultant.analytics.metrics.fromStartToJob')} (från kopplingen till jobbets startdatum).${analytics.placementTimeNote ? ` ${analytics.placementTimeNote}` : ''}`}
           icon={Clock}
           trend={trends.placementTime.value > 0 ? trends.placementTime : undefined}
           trendLabel={t('consultant.analytics.vsLastMonth')}

@@ -2,9 +2,11 @@
  * narvaroIntygPdf — deltagarens eget närvarointyg för en månad (F5, persona-
  * genomgången 2026-09-12).
  *
- * Konsulentens plan-PDF (aktivitetsplanPdf.ts) går till kommunens akt. Det här
- * är deltagarens kvitto: det hon själv kan visa handläggaren på försörjningsstöd
- * utan att gå via konsulenten. Allt innehåll kommer ur passen hon själv får läsa
+ * Konsulentens plan-PDF (aktivitetsplanPdf.ts) går till akten. Det här är
+ * deltagarens kvitto: det hon själv kan visa handläggaren på försörjningsstöd —
+ * eller, i Rusta och matcha, Arbetsförmedlingen — utan att gå via konsulenten.
+ * Sidfoten nämner socialnämnden BARA när planen belagt kommer från en kommun
+ * (RD3, rollspelet 2026-09-27); utan belägg står ingen myndighet där alls. Allt innehåll kommer ur passen hon själv får läsa
  * (RLS: participant_id = auth.uid()). Inga påhittade summeringar — ett pass som
  * inte markerats av konsulenten räknas aldrig som närvaro, och det står i intyget.
  *
@@ -66,6 +68,15 @@ export interface IntygInput {
   sessions: readonly ActivitySession[]
   /** Dagens datum (ISO), injicerbart för test. */
   idag?: string
+  /** RD3: planens regelverk. Utelämnat/null = okänt → ingen myndighet i sidfoten. */
+  regelverk?: 'kommun' | 'leverantor' | null
+}
+
+/** Sidfotens mening om vem som beslutar — aldrig kommunens utan belägg. */
+export const INTYG_BESLUT: Record<'kommun' | 'leverantor' | 'okand', string> = {
+  kommun: ' Beslut om försörjningsstöd fattas av socialnämnden.',
+  leverantor: ' Planen kommer från leverantören inom Arbetsförmedlingens tjänst Rusta och matcha. Beslut om ersättning fattas av Arbetsförmedlingen.',
+  okand: '',
 }
 
 export function idagIso(d: Date = new Date()): string {
@@ -239,7 +250,9 @@ export async function generateNarvaroIntygPDF(input: IntygInput): Promise<jsPDF>
     doc.setPage(i)
     doc.setFontSize(8)
     doc.setTextColor(110)
-    doc.text(`Genererat från jobin.se ${idag}. Beslut om försörjningsstöd fattas av socialnämnden.`, marg, hojd - 12)
+    const beslut = INTYG_BESLUT[input.regelverk ?? 'okand']
+    const sidfot = doc.splitTextToSize(`Genererat från jobin.se ${idag}.${beslut}`, bredd - marg * 2 - 25) as string[]
+    doc.text(sidfot, marg, hojd - 12 - (sidfot.length - 1) * 3.5)
     doc.text(`Sida ${i} av ${sidor}`, bredd - marg, hojd - 12, { align: 'right' })
     doc.setTextColor(0)
   }

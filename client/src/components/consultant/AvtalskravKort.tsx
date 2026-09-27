@@ -8,7 +8,9 @@
  * planer och pass, och visar en rad per plan som var aktiv i månaden.
  *
  * Bara avslutade veckor bedöms — en påbörjad vecka kan inte ha uppfyllt
- * något. Ett värde utan underlag visar — och en rad om varför, aldrig 0.
+ * något, och en vecka är avslutad först när söndagen passerat (RR22).
+ * Eget jobbsökande räknas inte som aktivitet (RR1) — regeln står på kortet.
+ * Ett värde utan underlag visar — och en rad om varför, aldrig 0.
  *
  * Kravet gäller leverantörer i Rusta och matcha. För kommunens
  * aktivitetskrav (KM-spåret) är måttet veckomålet i planen, inte det här.
@@ -23,7 +25,7 @@ import { Card } from '@/components/ui/Card'
 import { Select } from '@/components/ui/Input'
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState'
 import { aktivitetsplanApi, type ActivityPlan, type ActivitySession } from '@/services/aktivitetApi'
-import { avtalskravPerDeltagare, manadGranser, senasteSondag, veckogranser, type Avtalskrav } from '@/services/aktivitetslogg'
+import { avtalskravPerDeltagare, manadGranser, senasteAvslutadeSondag, veckogranser, type Avtalskrav } from '@/services/aktivitetslogg'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultantParticipantsQuery'
 import { langtDatum } from './aktivitetEtiketter'
@@ -65,8 +67,8 @@ export function AvtalskravKort() {
   const idag = formatLocalDate(new Date())
   const { period, harAvslutadVecka, hamtning } = useMemo(() => {
     const granser = manadGranser(val)
-    // Bara avslutade veckor: klipp vid senaste söndag.
-    const sistaSondag = senasteSondag(idag)
+    // Bara avslutade veckor: klipp vid senaste söndag som redan passerat.
+    const sistaSondag = senasteAvslutadeSondag(idag)
     const p = { from: granser.from, to: granser.to < sistaSondag ? granser.to : sistaSondag }
     return { period: p, harAvslutadVecka: p.from <= p.to, hamtning: veckogranser(granser) }
   }, [val, idag])
@@ -183,7 +185,9 @@ export function AvtalskravKort() {
           )}
 
           <p className="text-xs text-stone-500 dark:text-stone-400 max-w-prose">
-            Närvarotid är pass markerade närvarande eller extern aktivitet. Fysiskt = aktivitetstypen arbetsplats eller ett ifyllt platsfält —
+            Närvarotid är pass markerade närvarande eller extern aktivitet. <strong>Eget jobbsökande räknas inte</strong> — varken mot
+            timkravet eller i andelen fysiska — eftersom avtalet räknar aktiviteter som leverantören håller i. En vecka bedöms först
+            när den är slut (efter söndagen). Fysiskt = aktivitetstypen arbetsplats eller ett ifyllt platsfält —
             portalen har ingen egen flagga för fysiskt/digitalt. Kravet gäller Rusta och matcha-avtalet; kommunens
             aktivitetskrav mäts mot planens veckomål.
           </p>

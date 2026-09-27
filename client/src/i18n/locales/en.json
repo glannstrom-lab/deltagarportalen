@@ -7571,7 +7571,7 @@
       "periodFrom": "Period from",
       "periodTo": "Period to",
       "sammanfattning": "What is included",
-      "sammanfattningRad": "{{pass}} sessions: {{present}} present, {{absent_valid}} valid absence, {{absent_invalid}} invalid absence, {{sick_certified}} sick with certificate, {{external}} external activity, {{omarkerade}} not marked, {{anmald_franvaro}} reported in advance",
+      "sammanfattningRad": "{{pass}} sessions: {{present}} present, {{absent_valid}} valid absence, {{absent_invalid}} invalid absence, {{sick_certified}} sick with certificate, {{sjuk_utan_intyg}} sick without certificate, {{external}} external activity, {{omarkerade}} not marked, {{anmald_franvaro}} reported in advance",
       "ingaPass": "No sessions in the period — the documentation would be empty. Choose a period with sessions.",
       "anteckning": "Note to the caseworker (optional)",
       "anteckningPlaceholder": "What the numbers do not show, e.g. agreements or ongoing sick leave.",
@@ -7658,7 +7658,7 @@
         "noContactsNeeded": "All participants have recent contact.",
         "sendMessage": "Send message",
         "joinMeeting": "Meeting link",
-        "allClear": "Nothing urgent today",
+        "allClear": "No meetings, deadlines or contacts to handle today",
         "allClearDesc": "A good moment to work proactively with your participants."
       }
     },
@@ -9351,7 +9351,9 @@
       "skapar": "Creating …",
       "forbehall": "Only sessions your konsulent marked as present count as attendance. Sessions without a mark are shown as \"not marked\".",
       "klart": "The certificate for {{manad}} has been downloaded.",
-      "fel": "The certificate could not be created right now. Please try again in a moment."
+      "fel": "The certificate could not be created right now. Please try again in a moment.",
+      "textLeverantor": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to your handläggare (case officer) at Arbetsförmedlingen.",
+      "textNeutral": "A certificate for one month with your sessions and what your konsulent (job coach) has marked. You can show it to anyone who needs to see your attendance."
     },
     "fraga": {
       "knapp": "Ask about this session",
@@ -9390,7 +9392,10 @@
       "full": "This week is fully planned.",
       "kvar": "{{planerade}} hours are planned. {{kvar}} hours are still to be planned — your konsulent does that together with you, it is not something you need to arrange yourself.",
       "jobbsok": "The {{h}} hours for your own job search come on top of that and do not count as an assigned activity.",
-      "guide": "Read about the aktivitetskrav (activity requirement) and what applies to you"
+      "guide": "Read about the aktivitetskrav (activity requirement) and what applies to you",
+      "malLeverantor": "Your konsulent (job coach) has set {{mal}} hours per week as the goal for the activities in your plan. The plan comes from the provider in Rusta och matcha, a service from Arbetsförmedlingen (the Swedish Public Employment Service). Arbetsförmedlingen sent you to this service.",
+      "malNeutral": "Your konsulent (job coach) has set {{mal}} hours per week as the goal for the activities in your plan.",
+      "guideLeverantor": "Read about Rusta och matcha and what applies to you"
     },
     "incheckad": "Checked in at {{tid}}",
     "incheckadStatus": "Thank you, you are checked in.",

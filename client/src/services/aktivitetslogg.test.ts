@@ -4,7 +4,7 @@
  */
 import { describe, it, expect } from 'vitest'
 import {
-  arFysiskt, avtalskravPerDeltagare, kravTimmarForManad, manadGranser, planManad, senasteSondag, veckogranser,
+  arFysiskt, avtalskravPerDeltagare, kravTimmarForManad, manadGranser, planManad, senasteAvslutadeSondag, veckogranser,
 } from './aktivitetslogg'
 
 const plan = (o: Partial<{ id: string; participant_id: string; start_date: string; end_date: string | null }> = {}) => ({
@@ -54,10 +54,12 @@ describe('arFysiskt och veckogränser', () => {
   it('veckogranser täcker hela veckorna runt perioden', () => {
     expect(veckogranser({ from: '2026-10-01', to: '2026-10-31' })).toEqual({ from: '2026-09-28', to: '2026-11-01' })
   })
-  it('senasteSondag ger söndagen som senast avslutade en vecka', () => {
-    expect(senasteSondag('2026-10-14')).toBe('2026-10-11') // onsdag
-    expect(senasteSondag('2026-10-12')).toBe('2026-10-11') // måndag
-    expect(senasteSondag('2026-10-11')).toBe('2026-10-11') // söndag räknas som avslutad
+  it('senasteAvslutadeSondag ger söndagen som senast avslutade en vecka', () => {
+    expect(senasteAvslutadeSondag('2026-10-14')).toBe('2026-10-11') // onsdag
+    expect(senasteAvslutadeSondag('2026-10-12')).toBe('2026-10-11') // måndag
+    // RR22: söndagen själv pågår fortfarande — veckan är inte avslutad förrän den är över.
+    // (Här stod tidigare "söndag räknas som avslutad" — testet cementerade felet.)
+    expect(senasteAvslutadeSondag('2026-10-11')).toBe('2026-10-04')
   })
 })
 

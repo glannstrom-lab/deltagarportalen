@@ -196,3 +196,96 @@ export function calculateGoalCategories(goals: Array<Record<string, unknown>>): 
     .slice(0, 5)
     .map(([category, count]) => ({ category, count }))
 }
+
+// ---------------------------------------------------------------------------
+// Genomsnittlig placeringstid (RR4, 2026-09-27)
+// ---------------------------------------------------------------------------
+
+export interface Placeringstid {
+  /** Snitt i hela dagar, eller `null` när ingen placering går att mäta — aldrig 0. */
+  snittDagar: number | null
+  /** Placeringar som ingår i snittet. */
+  matbara: number
+  /** Placeringar med startdatum efter idag — jobbet har inte börjat. */
+  kommande: number
+  /** Placeringar som saknar kopplingsdatum eller startdatum, eller startade före kopplingen. */
+  utanUnderlag: number
+  /** En rad om varför talet saknas eller vad som inte räknats — `null` när allt räknats. */
+  forklaring: string | null
+}
+
+/** `YYYY-MM-DD` i lokal tid ur ett datum eller en tidsstämpel; `null` om oläsbart. */
+function lokaltDatum(raw: unknown): string | null {
+  if (typeof raw !== 'string' || raw.length < 10) return null
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw
+  const d = new Date(raw)
+  if (isNaN(d.getTime())) return null
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function dagarMellan(fran: string, till: string): number {
+  const [a, b, c] = fran.split('-').map(Number)
+  const [x, y, z] = till.split('-').map(Number)
+  return Math.round((Date.UTC(x, y - 1, z) - Date.UTC(a, b - 1, c)) / 86_400_000)
+}
+
+const plural = (n: number, en: string, flera: string) => `${n} ${n === 1 ? en : flera}`
+
+/**
+ * "Från start till jobb": dagar från deltagarens start hos konsulenten
+ * (`assigned_at`, kopplingen) till placeringens `start_date`.
+ *
+ * RR4: den gamla uträkningen tog `start_date − created_at` med golvet 1 — alltså
+ * hur långt efter registreringen jobbet började, och en placering registrerad i
+ * efterhand gav alltid 1 dag. I prod 2026-09-27: 70 och 82 dagar från kopplingen
+ * visades som "11 dagar" (golvat −80 och 22).
+ *
+ * Räknas inte: placeringar utan kopplingsdatum eller startdatum, placeringar som
+ * startade före kopplingen, och placeringar vars jobb inte har börjat än. Varje
+ * sådan grupp nämns i `forklaring`, så talet aldrig ser mer heltäckande ut än
+ * det är.
+ */
+export function placeringstid(
+  placements: ReadonlyArray<Record<string, unknown>>,
+  participants: ReadonlyArray<Record<string, unknown>>,
+  idag: string,
+): Placeringstid {
+  const koppling = new Map<string, string>()
+  for (const p of participants) {
+    const id = p.participant_id ?? p.user_id ?? p.id
+    const datum = lokaltDatum(p.assigned_at)
+    if (typeof id === 'string' && datum) koppling.set(id, datum)
+  }
+
+  let summa = 0
+  let matbara = 0
+  let kommande = 0
+  let utanUnderlag = 0
+  for (const pl of placements) {
+    const start = lokaltDatum(pl.start_date)
+    const fran = typeof pl.participant_id === 'string' ? koppling.get(pl.participant_id) : undefined
+    if (!start || !fran) { utanUnderlag += 1; continue }
+    if (start > idag) { kommande += 1; continue }
+    const dagar = dagarMellan(fran, start)
+    if (dagar < 0) { utanUnderlag += 1; continue }
+    summa += dagar
+    matbara += 1
+  }
+
+  const delar: string[] = []
+  if (kommande > 0) delar.push(`${plural(kommande, 'placering har', 'placeringar har')} startdatum framåt och räknas när jobbet har börjat`)
+  if (utanUnderlag > 0) delar.push(`${plural(utanUnderlag, 'placering saknar', 'placeringar saknar')} kopplingsdatum eller startdatum, eller startade före kopplingen`)
+
+  let forklaring: string | null
+  if (placements.length === 0) forklaring = 'Inga placeringar i perioden.'
+  else if (matbara === 0) forklaring = `Ingen placering går att mäta än: ${delar.join('; ')}.`
+  else forklaring = delar.length > 0 ? `Räknat på ${plural(matbara, 'placering', 'placeringar')}; ${delar.join('; ')}.` : null
+
+  return {
+    snittDagar: matbara > 0 ? Math.round(summa / matbara) : null,
+    matbara,
+    kommande,
+    utanUnderlag,
+    forklaring,
+  }
+}

@@ -11,10 +11,12 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQuery } from '@tanstack/react-query'
 import { CalendarDays, ChevronLeft, ChevronRight, Plus, Loader2, MapPin, CheckCircle2, FileText } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { downloadAktivitetsplanPDF } from '@/services/aktivitetsplanPdf'
 import { orgApi } from '@/services/orgApi'
+import { regelverkForPlan } from './orgTypVisning'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input, Textarea, Select, Checkbox } from '@/components/ui/Input'
@@ -38,11 +40,13 @@ import {
 } from '@/services/aktivitetApi'
 import {
   addDays,
+  anvisatVeckomal,
   formatLocalDate,
   isoWeekday,
   timmar,
   veckansMandag,
   veckoampel,
+  veckomalMotSchema,
   veckosaldo,
   type ActivityType,
   type Ampel,
@@ -93,6 +97,10 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   const { t } = useTranslation()
   const { confirm } = useConfirmDialog()
   const [lage, setLage] = useState<PlanLage>({ status: 'laddar' })
+  // RR2 (rollspelet 2026-09-27): försörjningshinder, underlag till handläggaren
+  // och socialnämnden är kommunens regelverk. En Rusta och matcha-leverantör ska
+  // inte se dem. Samma nyckel och form som AnalyticsTab (en nyckel = en form).
+  const medlemskapQ = useQuery({ queryKey: ['org-medlemskap'], queryFn: () => orgApi.myMemberships(), staleTime: 5 * 60_000 })
   // F10: lämnade underlag till handläggaren (spårbara rader, inte planens datum)
   const [underlagDialog, setUnderlagDialog] = useState<null | { lage: 'lamna' } | { lage: 'angra'; underlag: PlanHandover }>(null)
   const [vecka, setVecka] = useState(() => veckansMandag(formatLocalDate(new Date())))
@@ -176,6 +184,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         ? await orgApi.myMemberships().then((m) => m.find((x) => x.org_id === plan.org_id)?.organization.name ?? null).catch(() => null)
         : null
       await downloadAktivitetsplanPDF({
+        regelverk: medlemskapQ.isSuccess ? regelverkForPlan(medlemskapQ.data, plan.org_id) : undefined,
         plan,
         sessions,
         participantName,
@@ -243,10 +252,21 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
   }
 
   const saldo = veckosaldo(sessions, vecka)
-  const ampel = veckoampel(saldo, plan.weekly_hours_target)
+  // RK1: närvaron i anvisade pass mäts mot den anvisade delen av målet —
+  // veckomålet minus planens eget jobbsökande — inte mot hela målet.
+  const anvisatMal = anvisatVeckomal(plan)
+  const egetJobbsokPlan = Number(plan.jobsearch_hours_per_week) || 0
+  const ampel = veckoampel(saldo, anvisatMal)
+  // RK2: går målet ihop med veckans schema? Bara den anvisade delen varnas här —
+  // eget jobbsökande kan deltagaren själv lägga till, så det glappet är brus i veckovyn.
+  const glapp = ampel === 'inga_pass'
+    ? null
+    : veckomalMotSchema({ veckomal: Number(plan.weekly_hours_target) || 0, egetJobbsokPlan, anvisatSchema: saldo.planeradeTimmar, egetJobbsokSchema: saldo.jobbsokTimmar }).anvisat
   const veckansPass = sessions.filter((s) => s.date >= vecka && s.date <= addDays(vecka, 6))
   const dagar = Array.from(new Set(veckansPass.map((s) => s.date))).sort()
   const idag = formatLocalDate(new Date())
+  // Bara när medlemskapen är lästa — under laddning och vid fel gäller kommunens vy som förut.
+  const arLeverantor = medlemskapQ.isSuccess && regelverkForPlan(medlemskapQ.data, plan.org_id) === 'leverantor'
 
   return (
     <div className="space-y-6">
@@ -264,6 +284,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
               <div className="flex gap-2"><dt className="text-stone-500">Veckomål</dt><dd>{formatTimmar(Number(plan.weekly_hours_target))}</dd></div>
               <div className="flex gap-2"><dt className="text-stone-500">Eget jobbsökande</dt><dd>{formatTimmar(Number(plan.jobsearch_hours_per_week))}/vecka i planen</dd></div>
               {plan.decided_at && <div className="flex gap-2"><dt className="text-stone-500">Beslutad</dt><dd>{langtDatum(plan.decided_at)}</dd></div>}
+              {!arLeverantor && (<>
               <div className="flex gap-2 items-center">
                 <dt className="text-stone-500">Försörjningshinder</dt>
                 <dd>
@@ -315,6 +336,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                   </button>
                 </dd>
               </div>
+              </>)}
             </dl>
             {plan.target_reason && (
               <p className="text-sm text-stone-600 dark:text-stone-300"><span className="text-stone-500">Motivering till veckomålet:</span> {plan.target_reason}</p>
@@ -359,7 +381,7 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
         </div>
 
         <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
-          <Saldotal etikett="Planerat" varde={ampel === 'inga_pass' ? '—' : `${formatTimmar(saldo.planeradeTimmar)} / ${formatTimmar(Number(plan.weekly_hours_target))}`} />
+          <Saldotal etikett="Planerat anvisat" varde={ampel === 'inga_pass' ? '—' : `${formatTimmar(saldo.planeradeTimmar)} / ${formatTimmar(anvisatMal)}`} />
           <Saldotal etikett="Närvaro" varde={ampel === 'inga_pass' ? '—' : formatTimmar(saldo.narvaroTimmar)} />
           <Saldotal etikett="Eget jobbsökande" varde={ampel === 'inga_pass' && saldo.jobbsokTimmar === 0 ? '—' : formatTimmar(saldo.jobbsokTimmar)} />
           <Saldotal
@@ -368,8 +390,19 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
             varning={saldo.antalOgiltigFranvaro > 0}
           />
         </dl>
+        {glapp && (
+          <p className="text-sm rounded-xl bg-amber-50 text-amber-900 dark:bg-amber-900/30 dark:text-amber-100 px-3 py-2" role="status">
+            {glapp}
+          </p>
+        )}
         <p className="text-xs text-stone-500 dark:text-stone-400">
-          Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.
+          Veckomålet {formatTimmar(Number(plan.weekly_hours_target) || 0)} = {formatTimmar(anvisatMal)} anvisad aktivitet + {formatTimmar(egetJobbsokPlan)} eget jobbsökande.
+          Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in.
+        </p>
+        <p className="text-xs text-stone-500 dark:text-stone-400">
+          {arLeverantor
+            ? 'Ogiltig frånvaro är underlag för avvikelserapporteringen till Arbetsförmedlingen enligt avtalet.'
+            : 'Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren.'}
           {saldo.antalOmarkerade > 0 && ` ${saldo.antalOmarkerade} pass i veckan är inte markerade än.`}
         </p>
 
@@ -439,8 +472,33 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
   const [oppen, setOppen] = useState(false)
   const [anteckning, setAnteckning] = useState(session.attendance_note ?? '')
   const [intyg, setIntyg] = useState(session.sick_certificate_received)
-  const [sparar, setSparar] = useState<Attendance | 'nollstall' | null>(null)
+  const [sparar, setSparar] = useState<Attendance | 'nollstall' | 'anteckning' | null>(null)
+  const [anteckningFel, setAnteckningFel] = useState<string | null>(null)
   const egetJobbsok = session.activity_type === 'jobsearch_own'
+  // RK4: text i rutan som inte finns i databasen. Syns även när panelen är stängd.
+  const osparadAnteckning = anteckning.trim() !== (session.attendance_note ?? '').trim()
+
+  const sparaAnteckning = async (): Promise<boolean> => {
+    setSparar('anteckning')
+    setAnteckningFel(null)
+    try {
+      onChanged(await aktivitetsplanApi.saveAttendanceNote(session.id, anteckning))
+      return true
+    } catch (err) {
+      setAnteckningFel(`Anteckningen kunde inte sparas — texten finns kvar här. ${err instanceof Error ? err.message : ''}`.trim())
+      return false
+    } finally {
+      setSparar(null)
+    }
+  }
+
+  // Att stänga panelen med osparad text sparar den. Går det inte stannar panelen
+  // öppen med felet och texten — den försvinner aldrig tyst.
+  const vaxlaPanel = async () => {
+    if (!oppen) { setOppen(true); return }
+    if (osparadAnteckning && !(await sparaAnteckning())) return
+    setOppen(false)
+  }
 
   const markera = async (attendance: Attendance | null) => {
     setSparar(attendance ?? 'nollstall')
@@ -451,6 +509,7 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
         sickCertificateReceived: attendance === 'sick_certified' ? intyg : false,
       })
       onChanged(uppdaterad)
+      setAnteckningFel(null)
       if (attendance !== 'sick_certified') setOppen(false)
     } catch (err) {
       notifications.error(err instanceof Error ? err.message : 'Närvaron kunde inte sparas')
@@ -502,7 +561,7 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
         <div className="flex items-center gap-2 shrink-0">
           {session.attendance ? (
             <span className={cn('text-xs px-2 py-1 rounded-full', NARVARO_CHIP[session.attendance])}>
-              {NARVARO_ETIKETT[session.attendance]}{session.attendance === 'sick_certified' && session.sick_certificate_received ? ' · intyg' : ''}
+              {NARVARO_ETIKETT[session.attendance]}{session.attendance === 'sick_certified' ? (session.sick_certificate_received ? ' · intyg' : ' · intyg saknas') : ''}
             </span>
           ) : egetJobbsok ? (
             <span className="text-xs text-stone-500">Egen redovisning</span>
@@ -510,12 +569,15 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
             <span className="text-xs text-stone-500">Inte markerad</span>
           )}
           {!egetJobbsok && (
-            <Button size="sm" variant="outline" onClick={() => setOppen((o) => !o)} aria-expanded={oppen} aria-controls={`narvaro-${session.id}`}>
+            <Button size="sm" variant="outline" onClick={() => void vaxlaPanel()} disabled={sparar === 'anteckning'} aria-expanded={oppen} aria-controls={`narvaro-${session.id}`}>
               Närvaro
             </Button>
           )}
         </div>
       </div>
+      {!oppen && anteckningFel && (
+        <p role="alert" className="mt-2 text-sm text-rose-700 dark:text-rose-300">{anteckningFel}</p>
+      )}
 
       {oppen && !egetJobbsok && (
         <div id={`narvaro-${session.id}`} className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-700 space-y-3">
@@ -550,10 +612,21 @@ function PassRad({ session, onChanged, onRemoved }: { session: ActivitySession; 
             value={anteckning}
             onChange={(e) => setAnteckning(e.target.value)}
             rows={2}
-            placeholder="Orsak, kontakt, överenskommelse. Sparas med nästa markering."
+            placeholder="Orsak, kontakt, överenskommelse."
+            hint="Sparas med markeringen, med Spara anteckning, eller när du stänger panelen."
             fullWidth
           />
-          <div className="flex justify-end">
+          {anteckningFel && <p role="alert" className="text-sm text-rose-700 dark:text-rose-300">{anteckningFel}</p>}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            {osparadAnteckning ? (
+              <span className="flex items-center gap-2">
+                <Button size="sm" variant="outline" onClick={() => void sparaAnteckning()} disabled={sparar !== null}>
+                  {sparar === 'anteckning' ? <Loader2 className="w-4 h-4 mr-1.5 animate-spin" aria-hidden="true" /> : null}
+                  Spara anteckning
+                </Button>
+                <span className="text-xs text-amber-800 dark:text-amber-200" role="status">Anteckningen är inte sparad</span>
+              </span>
+            ) : <span />}
             <Button size="sm" variant="ghost" onClick={taBort}>Ta bort passet</Button>
           </div>
         </div>

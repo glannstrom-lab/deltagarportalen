@@ -15,8 +15,13 @@
  *   narvarograd          närvarande (present/external) ÷ pass_bedomda — `null` när inget
  *                        pass är bedömt; PDF:en skriver "—" och förklarar varför
  *   franvaro_anmald      pass som deltagaren anmält (F1: `absence_reported_at`) eller som
- *                        konsulenten bedömt giltiga (absent_valid, sick_certified)
+ *                        konsulenten bedömt giltiga (absent_valid, eller sick_certified MED
+ *                        inkommet intyg)
  *   franvaro_oanmald     absent_invalid utan föregående anmälan
+ *   sjuk_utan_intyg      sick_certified där intyget INTE inkommit och deltagaren inte anmält
+ *                        i förväg. RK3 (2026-09-27): räknades tidigare som "giltig frånvaro/
+ *                        sjuk med intyg" oavsett `sick_certificate_received` — i det dokument
+ *                        nämnden fattar beslut på.
  *   underlag_lamnat      planer med `nedsattning_underlag_lamnat_at` i kvartalet — SAMMA
  *                        källa som IVO-underlaget. När det spårbara underlagsflödet
  *                        (F10, egen tabell) finns byts `underlagLamnatIKvartal()` — det
@@ -32,7 +37,7 @@ import { EJ_ANGIVET_ETIKETT, kvartalForDatum, kvartalGranser, planAktivIPeriod, 
 
 type PlanFalt = Pick<ActivityPlan, 'id' | 'participant_id' | 'start_date' | 'end_date' | 'forsorjningshinder' | 'nedsattning_underlag_lamnat_at'>
 /** `absence_reported_at` kom med F1 (migration 20260913002000) — typen i aktivitetApi bär den inte än, raden gör det. */
-type PassFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'attendance'> & { absence_reported_at?: string | null }
+type PassFalt = Pick<ActivitySession, 'plan_id' | 'date' | 'attendance'> & { absence_reported_at?: string | null; sick_certificate_received?: boolean | null }
 
 export interface NamndRad {
   nyckel: Forsorjningshinder | 'ej_angivet'
@@ -43,6 +48,8 @@ export interface NamndRad {
   narvarograd: number | null
   franvaro_anmald: number
   franvaro_oanmald: number
+  /** Sjuk utan inkommet intyg (och utan anmälan i förväg) — varken anmäld eller oanmäld. */
+  sjuk_utan_intyg: number
   underlag_lamnat: number
 }
 
@@ -55,7 +62,12 @@ export interface Namndrapport {
   summa: Omit<NamndRad, 'nyckel' | 'etikett'>
 }
 
-const GILTIG = new Set(['absent_valid', 'sick_certified'])
+/** Bedömd som giltig av konsulenten: giltig frånvaro, eller sjuk med inkommet intyg (RK3). */
+function bedomdGiltig(s: PassFalt): boolean {
+  if (s.attendance === 'absent_valid') return true
+  return s.attendance === 'sick_certified' && s.sick_certificate_received === true
+}
+const anmaldIForvag = (s: PassFalt) => (s.absence_reported_at ?? null) !== null
 
 /**
  * Avgör "underlag lämnat" i kvartalet.
@@ -125,8 +137,9 @@ export function namndrapportUnderlag(
     const pass = iKvartalet.filter((s) => planKategori.get(s.plan_id) === nyckel)
     const bedomda = pass.filter((s) => s.attendance !== null && s.attendance !== undefined)
     const narvarande = bedomda.filter((s) => arNarvaro(s.attendance)).length
-    const anmald = pass.filter((s) => (s.absence_reported_at ?? null) !== null || GILTIG.has(s.attendance as string)).length
-    const oanmald = pass.filter((s) => s.attendance === 'absent_invalid' && (s.absence_reported_at ?? null) === null).length
+    const anmald = pass.filter((s) => anmaldIForvag(s) || bedomdGiltig(s)).length
+    const oanmald = pass.filter((s) => s.attendance === 'absent_invalid' && !anmaldIForvag(s)).length
+    const sjukUtanIntyg = pass.filter((s) => s.attendance === 'sick_certified' && s.sick_certificate_received !== true && !anmaldIForvag(s)).length
     return {
       nyckel,
       etikett: nyckel === 'ej_angivet' ? EJ_ANGIVET_ETIKETT : FORSORJNINGSHINDER_ETIKETT[nyckel],
@@ -135,6 +148,7 @@ export function namndrapportUnderlag(
       narvarograd: bedomda.length === 0 ? null : Math.round((narvarande / bedomda.length) * 100),
       franvaro_anmald: anmald,
       franvaro_oanmald: oanmald,
+      sjuk_utan_intyg: sjukUtanIntyg,
       underlag_lamnat: planer.filter((p) => underlagLamnatIKvartal(p, granser, planerMedUnderlag)).length,
     }
   })
@@ -148,6 +162,7 @@ export function namndrapportUnderlag(
     narvarograd: summaBedomda === 0 ? null : Math.round((summaNarvarande / summaBedomda) * 100),
     franvaro_anmald: rader.reduce((a, r) => a + r.franvaro_anmald, 0),
     franvaro_oanmald: rader.reduce((a, r) => a + r.franvaro_oanmald, 0),
+    sjuk_utan_intyg: rader.reduce((a, r) => a + r.sjuk_utan_intyg, 0),
     underlag_lamnat: rader.reduce((a, r) => a + r.underlag_lamnat, 0),
   }
   return { ar: val.ar, kvartal: val.kvartal, from: granser.from, to: granser.to, rader, summa }
@@ -171,6 +186,7 @@ export function tabellRader(u: Namndrapport, medTomma = false): string[][] {
     r.narvarograd === null ? STRECK : `${r.narvarograd} %`,
     String(r.franvaro_anmald),
     String(r.franvaro_oanmald),
+    String(r.sjuk_utan_intyg),
     String(r.underlag_lamnat),
   ]
   const synliga = u.rader.filter((r) => medTomma || r.deltagare_med_plan > 0)
@@ -208,7 +224,7 @@ export async function generateNamndrapportDoc(u: Namndrapport, meta: Namndrappor
   const harTommaRader = u.rader.some((r) => r.deltagare_med_plan === 0)
   autoTable(doc, {
     startY: 36,
-    head: [['Försörjningshinder', 'Deltagare med plan', 'Bedömda pass', 'Närvarograd', 'Anmäld frånvaro', 'Oanmäld frånvaro', 'Underlag lämnat']],
+    head: [['Försörjningshinder', 'Deltagare med plan', 'Bedömda pass', 'Närvarograd', 'Anmäld frånvaro', 'Oanmäld frånvaro', 'Sjuk utan intyg', 'Underlag lämnat']],
     body: tabellRader(u),
     styles: { fontSize: 9, cellPadding: 2.5 },
     headStyles: { fillColor: [47, 93, 80], textColor: 255, fontStyle: 'bold' },
@@ -224,7 +240,8 @@ export async function generateNamndrapportDoc(u: Namndrapport, meta: Namndrappor
   const rader = [
     'Läsanvisning: "Deltagare med plan" = unika personer med en aktivitetsplan som var aktiv någon dag i kvartalet.',
     '"Bedömda pass" = pass där konsulenten satt närvaro. "Närvarograd" = närvarande (inkl. extern aktivitet) delat med bedömda pass.',
-    '"Anmäld frånvaro" = pass deltagaren själv anmält förhinder för, eller som bedömts som giltig frånvaro/sjuk med intyg.',
+    '"Anmäld frånvaro" = pass deltagaren själv anmält förhinder för, eller som bedömts som giltig frånvaro eller sjuk med inkommet läkarintyg.',
+    '"Sjuk utan intyg" = pass markerade sjuk där läkarintyg inte har inkommit och deltagaren inte anmält i förväg. Räknas varken som anmäld eller oanmäld frånvaro.',
     '"Oanmäld frånvaro" = pass bedömda som ogiltig frånvaro utan föregående anmälan. "Underlag lämnat" = underlag till handläggare daterat i kvartalet.',
     ...(harTommaRader ? ['Försörjningshinder utan deltagare i kvartalet visas inte. "—" = inga bedömda pass, därför ingen närvarograd.'] : [STRECK + ' = inga bedömda pass, därför ingen närvarograd.']),
     `Källa: ur Jobin, ${meta.datum}, ${org}. Räkning ur planer och pass. Beslut om nekande eller nedsättning fattas av socialnämnden och registreras i kommunens verksamhetssystem, inte här.`,

@@ -515,6 +515,24 @@ export const aktivitetsplanApi = {
     return markerad
   },
 
+  /**
+   * RK4 (2026-09-27): sparar BARA passanteckningen — markeringen, intyget och
+   * vem som markerade när lämnas orörda. Tidigare följde anteckningen bara med
+   * `markAttendance`, så text som skrevs efter markeringen försvann tyst vid
+   * omladdning. Kastar vid fel; anroparen behåller texten och visar felet.
+   */
+  async saveAttendanceNote(sessionId: string, note: string): Promise<ActivitySession> {
+    await requireUser()
+    const { data, error } = await supabase
+      .from('activity_sessions')
+      .update({ attendance_note: note.trim() || null })
+      .eq('id', sessionId)
+      .select('*')
+      .single()
+    if (error) throw error
+    return mapSession(data as Record<string, unknown>)
+  },
+
   async addSession(planId: string, participantId: string, input: SessionInput): Promise<ActivitySession> {
     await requireUser()
     const { data, error } = await supabase
@@ -626,7 +644,16 @@ export interface NarvaroSammanfattning {
   present: number
   absent_valid: number
   absent_invalid: number
+  /**
+   * Sjuk MED inkommet läkarintyg (`sick_certificate_received`). RK3
+   * (2026-09-27): räknade tidigare alla pass markerade Sjuk, med eller utan
+   * intyg, och sammanfattningen till handläggaren sa "sjuk med intyg" om båda.
+   * Underlag lämnade före rättelsen bär den gamla, blandade räkningen och
+   * saknar `sjuk_utan_intyg`.
+   */
   sick_certified: number
+  /** Sjuk UTAN inkommet intyg — skilt från `sick_certified` sedan RK3. */
+  sjuk_utan_intyg: number
   external: number
   omarkerade: number
   anmald_franvaro: number
@@ -662,11 +689,11 @@ export interface LamnaUnderlagInput {
 
 /** Räknar närvaron i perioden ur passen — det som faktiskt lämnas till handläggaren. */
 export function sammanfattaNarvaro(
-  sessions: readonly (Pick<ActivitySession, 'date' | 'attendance'> & { absence_reported_at?: string | null })[],
+  sessions: readonly (Pick<ActivitySession, 'date' | 'attendance'> & { absence_reported_at?: string | null; sick_certificate_received?: boolean | null })[],
   from: string,
   to: string,
 ): NarvaroSammanfattning {
-  const s: NarvaroSammanfattning = { pass: 0, present: 0, absent_valid: 0, absent_invalid: 0, sick_certified: 0, external: 0, omarkerade: 0, anmald_franvaro: 0 }
+  const s: NarvaroSammanfattning = { pass: 0, present: 0, absent_valid: 0, absent_invalid: 0, sick_certified: 0, sjuk_utan_intyg: 0, external: 0, omarkerade: 0, anmald_franvaro: 0 }
   for (const pass of sessions) {
     if (pass.date < from || pass.date > to) continue
     s.pass += 1
@@ -675,7 +702,10 @@ export function sammanfattaNarvaro(
       case 'present': s.present += 1; break
       case 'absent_valid': s.absent_valid += 1; break
       case 'absent_invalid': s.absent_invalid += 1; break
-      case 'sick_certified': s.sick_certified += 1; break
+      case 'sick_certified':
+        if (pass.sick_certificate_received === true) s.sick_certified += 1
+        else s.sjuk_utan_intyg += 1
+        break
       case 'external': s.external += 1; break
       default: s.omarkerade += 1
     }
