@@ -31,8 +31,16 @@
 
 **Rättat samma dag:** RD2 (profiles gick inte att spara sedan SP5 2026-09-24 22:38 — RLS-rekursion) och RD1
 (deltagare nådde inte konsulenten) — `20260927_rls_profiles_rekursion_och_deltagarkoppling.sql`, regressionsprov
-`e2e/rls-deltagare-skriver-prov.sql`. **Byggt, väntar på ja:** RK18 kollegeinbjudan via mejl
-(`20260927_kollega_inbjudan.sql`, torrkörd två gånger, prov i `e2e/kollega-inbjudan-prov.sql`).
+`e2e/rls-deltagare-skriver-prov.sql`. **RK18 kollegeinbjudan via mejl — klar och körd** (Mikaels ja): `20260927_kollega_inbjudan.sql`, prov
+`e2e/kollega-inbjudan-prov.sql`, prodröktest `e2e/kollega-inbjudan-prod-rok.cjs` + `e2e/inbjudningslank-rok.cjs`
+(chef bjuder in → mejl → länk → välj lösenord → konsulentvyn → samtyckessteget; testkontona raderade).
+**Tre bifynd på vägen, alla rättade:** (1) varje mejlad inbjudan (deltagare, företag, kollega) landade utloggad
+på startsidan — action_link:ens redirect föll tillbaka på jobin.se, och generateLink hade redan skapat kontot så
+get_invitation_by_token svarade tomt; nu `?th=<token_hash>` + verifyOtp + updateUser i InviteHandler.
+(2) edge-secreten `SITE_URL` pekade sedan 2026-03-01 på `glannstrom-lab.github.io/deltagarportalen` — satt till
+`https://www.jobin.se`. (3) kakrutan täckte "Spara och fortsätt" på inbjudningssidan (TR1-mönstret).
+**Kvar (Mikael):** GitHub Pages-kopian från 2026-03-24 ligger kvar (tom sida, assets 404) — stäng av under
+repo Settings → Pages.
 
 **Nu (kritiskt, öppet):** RR1 avtalsloggen räknar eget jobbsökande · RK3 sjuk utan intyg blir "med intyg" ·
 RK1/RK2 veckomålet · RR4 placeringstiden · RD3/RR2/RR9 kommunens regelverk syns för R&M (utvidga orgTypVisning) ·
