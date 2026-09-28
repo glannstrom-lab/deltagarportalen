@@ -132,6 +132,10 @@ test.describe('Authentication', () => {
       await page.keyboard.press('Tab')
       await expect(page.getByRole('button', { name: /visa lösenord/i })).toBeFocused()
 
+      // PUB-1 (2026-09-29): "Glömt lösenordet?" ligger mellan lösenordet och knappen
+      await page.keyboard.press('Tab')
+      await expect(page.getByRole('link', { name: /glömt lösenordet/i })).toBeFocused()
+
       // Tab to submit button
       await page.keyboard.press('Tab')
       await expect(page.getByRole('button', { name: /^logga in$/i })).toBeFocused()
