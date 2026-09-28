@@ -1,0 +1,24 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+contentinfo
+complementary "Råd för den här sidan"
+
+RUBRIKER:
+H1 "Komma igång – så funkar portalen"
+H2 "Verktygen i korthet"
+H2 "En rimlig ordning att börja i"
+H3 "Din checklista"
+H3 "Nästa steg"
+H2 "Relaterade övningar"
+H3 "Hitta ditt jobb-jag"
+H3 "Bygg ett CV som sticker ut"
+H3 "Jobbsökarstrategier och kanaler"
+H2 "Relaterade artiklar"
+H3 "Så skriver du ett CV som får resultat"
+H3 "Upptäck och använd dina styrkor"
+H3 "När du fått avslag – så hanterar du det"
+H3 "Behöver du mer hjälp?"

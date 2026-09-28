@@ -1,0 +1,27 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+navigation "Innehåll i ditt CV"
+navigation "CV — avsnitt"
+navigation "Avsnitt"
+complementary "Råd från Andreas"
+
+RUBRIKER:
+H1 "CV"
+H1 "CV"
+H3 "Välj en mall"
+H4 "Sidokolumn"
+H4 "Centrerad"
+H4 "Minimal"
+H4 "Executive"
+H4 "Manhattan"
+H3 "Tips för ditt CV"
+H4 "Luckor i CV:t – så redovisar du dem"
+H4 "Vilka personuppgifter ska stå i ditt CV?"
+H4 "CV med utländsk arbetslivserfarenhet – så skriver du"
+H3 "Behöver du hjälp?"
+H3 "Versioner"
+H2 "Välkommen till CV-byggaren!"

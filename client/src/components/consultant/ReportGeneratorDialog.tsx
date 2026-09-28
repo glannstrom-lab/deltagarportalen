@@ -21,6 +21,8 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Dialog } from '@/components/ui/Dialog'
 import { cn } from '@/lib/utils'
+import { useRapportOmfang } from './useRapportOmfang'
+import { OmfangRad } from './OmfangRad'
 import { useAuthStore } from '@/stores/authStore'
 import {
   downloadConsultantReport,
@@ -83,6 +85,7 @@ export function ReportGeneratorDialog({
   periodLabel,
 }: ReportGeneratorDialogProps) {
   const { t, i18n } = useTranslation()
+  const omfang = useRapportOmfang()
   // RK32 (rollspelet 2026-09-27): nämndrapporten stod "Framtagen … av Konsulent" —
   // rollen, inte namnet. Ingen anropare skickade namnet; ta det ur profilen.
   const profil = useAuthStore((s) => s.profile)
@@ -340,6 +343,10 @@ export function ReportGeneratorDialog({
                     {t('consultant.report.namnd.description', 'Per försörjningshinder: deltagare med plan, närvarograd, anmäld och oanmäld frånvaro, underlag lämnat. Räkning ur planer och pass — beslut om nedsättning registreras i kommunens verksamhetssystem.')}
                   </p>
                 )}
+                {/* CH1: säg vilka deltagare rapporten räknar — nämndrapporten följer planerna, konsultrapporten mina deltagare. */}
+                <div className="mt-1.5">
+                  {valdTyp === 'namnd' ? <OmfangRad omfang={omfang.omfang} orgNamn={omfang.orgNamn} /> : <OmfangRad omfang="egna" orgNamn={null} />}
+                </div>
               </div>
 
               {valdTyp === 'namnd' && (

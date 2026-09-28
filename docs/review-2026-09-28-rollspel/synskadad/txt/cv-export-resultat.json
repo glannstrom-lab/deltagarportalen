@@ -1,0 +1,5 @@
+{
+  "namnFore": "Exportera PDF",
+  "nedladdad": false,
+  "fel": "page.waitForEvent: Timeout 25000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================"
+}

@@ -1,0 +1,2 @@
+2026-09-28T16:36:08.830Z GET 406 https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/participant_data_sharing?select=share_health_data%2Cshare_wellness_data&participant_id=eq.44444444-4444-4444-8444-000000000004&consultant_id=eq.4444444
+2026-09-28T16:36:44.822Z GET 406 https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/participant_data_sharing?select=share_health_data%2Cshare_wellness_data&participant_id=eq.44444444-4444-4444-8444-000000000004&consultant_id=eq.4444444

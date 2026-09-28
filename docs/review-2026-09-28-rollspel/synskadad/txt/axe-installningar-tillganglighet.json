@@ -1,0 +1,68 @@
+[
+  {
+    "id": "heading-order",
+    "impact": "moderate",
+    "tags": [
+      "cat.semantics",
+      "best-practice"
+    ],
+    "description": "Ensure the order of headings is semantically correct",
+    "help": "Heading levels should only increase by one",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/heading-order?application=playwright",
+    "nodes": [
+      {
+        "any": [
+          {
+            "id": "heading-order",
+            "data": null,
+            "relatedNodes": [],
+            "impact": "moderate",
+            "message": "Heading order invalid"
+          }
+        ],
+        "all": [],
+        "none": [],
+        "impact": "moderate",
+        "html": "<h3 class=\"text-base sm:text-lg font-semibold text-stone-800 dark:text-stone-100 truncate\">Tillgänglighet</h3>",
+        "target": [
+          "h3"
+        ],
+        "failureSummary": "Fix any of the following:\n  Heading order invalid"
+      }
+    ]
+  },
+  {
+    "id": "skip-link",
+    "impact": "moderate",
+    "tags": [
+      "cat.keyboard",
+      "best-practice",
+      "RGAAv4",
+      "RGAA-12.7.1"
+    ],
+    "description": "Ensure all skip links have a focusable target",
+    "help": "The skip-link target should exist and be focusable",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/skip-link?application=playwright",
+    "nodes": [
+      {
+        "any": [
+          {
+            "id": "skip-link",
+            "data": null,
+            "relatedNodes": [],
+            "impact": "moderate",
+            "message": "No skip link target"
+          }
+        ],
+        "all": [],
+        "none": [],
+        "impact": "moderate",
+        "html": "<a href=\"#main-navigation\">Hoppa till navigation</a>",
+        "target": [
+          "a[href$=\"#main-navigation\"]"
+        ],
+        "failureSummary": "Fix any of the following:\n  No skip link target"
+      }
+    ]
+  }
+]

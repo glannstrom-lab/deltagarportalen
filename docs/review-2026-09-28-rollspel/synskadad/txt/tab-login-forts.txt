@@ -1,0 +1,14 @@
+1. - textbox "E-postadress":   - /placeholder: namn@exempel.se
+2. - textbox "Lösenord":   - /placeholder: Ange ditt lösenord
+3. - button "Visa lösenord"
+4. - button "Logga in"
+5. - button "Fortsätt med Google":   - img   - text: Fortsätt med Google
+6. - link "Skapa ett konto":   - /url: "#/register"
+7. - link "← Tillbaka till Jobin":   - /url: "#/"
+8. (inget fokuserat element — fokus tappat, troligen på <body>)
+9. - textbox "E-postadress":   - /placeholder: namn@exempel.se
+10. - textbox "Lösenord":   - /placeholder: Ange ditt lösenord
+11. - button "Visa lösenord"
+12. - button "Logga in"
+13. - button "Fortsätt med Google":   - img   - text: Fortsätt med Google
+14. - link "Skapa ett konto":   - /url: "#/register"

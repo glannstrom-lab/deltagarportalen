@@ -1,0 +1,18 @@
+1. - button "Sök"
+2. - link "CV":   - /url: "#/knowledge-base?q=CV"
+3. - link "personligt brev":   - /url: "#/knowledge-base?q=personligt%20brev"
+4. - link "avslag":   - /url: "#/knowledge-base?q=avslag"
+5. - link "lön":   - /url: "#/knowledge-base?q=l%C3%B6n"
+6. - link "intervju":   - /url: "#/knowledge-base?q=intervju"
+7. - link "Komma igång — 2 artiklar":   - /url: "#/knowledge-base?category=getting-started"   - heading "Komma igång" [level=3]   - paragraph: Orientering i portalen och första stegen i din jobbsökning.   - text: 2 artiklar
+8. - link "Självkännedom — 12 artiklar":   - /url: "#/knowledge-base?category=self-awareness"   - heading "Självkännedom" [level=3]   - paragraph: Förstå dina styrkor, intressen och personlighet för att hitta rätt yrke.   -
+9. - link "Jobbsökning — 43 artiklar":   - /url: "#/knowledge-base?category=job-search"   - heading "Jobbsökning" [level=3]   - paragraph: Strategier och tekniker för att hitta och söka jobb effektivt.   - text: 43 artiklar
+10. - link "Intervju och anställning — 27 artiklar":   - /url: "#/knowledge-base?category=interview"   - heading "Intervju och anställning" [level=3]   - paragraph: Förberedelser, intervjuteknik och anställningsprocessen.   
+11. - link "Nätverkande — 6 artiklar":   - /url: "#/knowledge-base?category=networking"   - heading "Nätverkande" [level=3]   - paragraph: Bygg och underhåll ett professionellt nätverk som öppnar dörrar.   - text: 6 artiklar
+12. - link "Digital närvaro — 10 artiklar":   - /url: "#/knowledge-base?category=digital-presence"   - heading "Digital närvaro" [level=3]   - paragraph: Optimera din profil och synlighet på nätet.   - text: 10 artiklar
+13. - link "Arbetsrätt och anställning — 39 artiklar":   - /url: "#/knowledge-base?category=employment-law"   - heading "Arbetsrätt och anställning" [level=3]   - paragraph: Dina rättigheter, skyldigheter och vad du behöver 
+14. - link "Karriärutveckling — 22 artiklar":   - /url: "#/knowledge-base?category=career-development"   - heading "Karriärutveckling" [level=3]   - paragraph: Planera och utveckla din karriär på lång sikt.   - text: 22 arti
+15. - link "Välmående och motivation — 19 artiklar":   - /url: "#/knowledge-base?category=wellness"   - heading "Välmående och motivation" [level=3]   - paragraph: Stöd för mental hälsa och motivation i jobbsökningen.   - te
+16. - link "Tillgänglighet och stöd — 28 artiklar":   - /url: "#/knowledge-base?category=accessibility"   - heading "Tillgänglighet och stöd" [level=3]   - paragraph: Rättigheter, stöd och anpassningar.   - text: 28 artiklar
+17. - link "Arbetsmarknaden — 32 artiklar":   - /url: "#/knowledge-base?category=job-market"   - heading "Arbetsmarknaden" [level=3]   - paragraph: Information om arbetsmarknaden och olika branscher.   - text: 32 artiklar
+18. - link "Praktiska verktyg — 9 artiklar":   - /url: "#/knowledge-base?category=tools"   - heading "Praktiska verktyg" [level=3]   - paragraph: Checklistor, mallar och praktiska guider.   - text: 9 artiklar

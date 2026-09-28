@@ -50,6 +50,7 @@ import { computeMonthlyProgress, calculateTrends, calculateGoalCategories, place
 import { antal } from './antal'
 import { formatLocalDate } from '@/services/aktivitetSchema'
 import { csvTabell } from '@/components/consultant/deltagarExport'
+import { useRapportOmfang } from '@/components/consultant/useRapportOmfang'
 
 interface PlacementRow {
   id: string
@@ -238,6 +239,7 @@ export function AnalyticsTab() {
   const [error, setError] = useState<string | null>(null)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const rapportOmfang = useRapportOmfang()
   // RK19 (rollspelet 2026-09-27): Översiktens "Exportera rapport" leder hit med
   // ?rapport=1 — rapporten tas ut där siffrorna räknas, inte ur en sämre kopia.
   const [sokParametrar, setSokParametrar] = useSearchParams()
@@ -639,6 +641,20 @@ export function AnalyticsTab() {
 
   return (
     <div className="space-y-6">
+      {/* CH1 (rollspelet 2026-09-28): sidan blandar två omfång. Säg det överst, i stället för
+          att låta en chef läsa sina egna fem deltagare som enhetens siffror. */}
+      <p className="text-sm text-stone-700 dark:text-stone-300 max-w-prose" data-testid="rapporter-omfang">
+        {rapportOmfang.omfang === 'enheten' ? (
+          <>
+            Nyckeltalen, målen, placeringarna och konsultrapporten gäller <strong>dina egna deltagare</strong>.
+            IVO-underlaget, nämndrapporten, månadsunderlagen och aktivitetsloggen räknar <strong>hela {rapportOmfang.orgNamn ?? 'enheten'}</strong>.
+            {' '}Varje konsulents antal deltagare finns under{' '}
+            <Link to="/consultant/settings" className="underline underline-offset-2">Inställningar → Din organisation</Link>.
+          </>
+        ) : (
+          <>Rapporterna gäller <strong>dina egna deltagare</strong>.</>
+        )}
+      </p>
       {/* Header with Date Range and Export */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-2">

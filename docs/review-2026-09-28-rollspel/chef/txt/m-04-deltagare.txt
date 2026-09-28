@@ -1,0 +1,177 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+
+Demo — påhittade personer
+
+6
+Meny
+
+KONSULENT
+
+Konsultportal
+
+DELTAGARVYN
+
+Översikt
+Söka jobb
+Karriär
+Resurser
+Din vardag
+Inställningar
+Hjälp
+Logga ut
+Min profil
+
+demo@jobin.se
+
+Konsulent
+
+Min profil
+Inställningar
+Logga ut
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Alla statusar
+Aktiva
+Inaktiva
+Pausade
+Avslutade
+Kräver uppmärksamhet
+Prioritet
+Namn
+CV-poäng
+Senast kontakt
+Status
+Bjud in
+
+Visar 5 av 5 deltagare
+
+Markera alla
+FE
+Fatima Exempel
+
+fatima.exempel@example.com
+
+Aktiv
+Hög
+
+—
+
+CV
+
+0
+
+Jobb
+
+1
+
+Anteckningar
+
+3 dagar sedan
+Inget möte än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+AE
+Anna Exempel
+
+anna.exempel@example.com
+
+Aktiv
+
+72%
+
+CV
+
+3
+
+Jobb
+
+1
+
+Anteckningar
+
+3 dagar sedan
+Inget möte än · fysiskt möte bokat 29/9
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+OD
+Omar Demo
+
+omar.demo@example.com
+
+Aktiv
+
+58%
+
+CV
+
+1
+
+Jobb
+
+1
+
+Anteckningar
+
+3 dagar sedan
+Senaste möte 5 dagar sedan · fysiskt denna vecka
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+LF
+Lisa Fiktiv
+
+lisa.fiktiv@example.com
+
+Aktiv
+
+81%
+
+CV
+
+1
+
+Jobb
+
+0
+
+Anteckningar
+
+3 dagar sedan
+Inget möte än · telefonmöte bokat 30/9
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+ET
+Erik Testsson
+
+erik.testsson@example.com
+
+Aktiv
+
+—
+
+CV
+
+1
+
+Jobb
+
+1
+
+Anteckningar
+
+3 dagar sedan
+Inget möte än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+Lugnare läge
+Mindre på skärmen, ett steg i taget
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation

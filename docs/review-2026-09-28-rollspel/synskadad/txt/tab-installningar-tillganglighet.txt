@@ -1,0 +1,20 @@
+1. - button "Notifikationer Välj hur du vill bli kontaktad"
+2. - button "Utseende Hur portalen ser ut"
+3. - button "Integritet Vad som sparas och vem som ser det"
+4. - button "Säkerhet Byt lösenord"
+5. - combobox "Språk":   - option "Svenska" [selected]   - option "Lätt svenska"   - option "English"
+6. - button "Översätt sidan till fler språk"
+7. - checkbox "Fokusläge (NPF-anpassat) Visar ett steg i taget och minskar visuellt brus. Perfekt för ADHD, autism eller om du vill ha en enklare upplevelse."
+8. - checkbox "Hög kontrast Ökar kontrasten för bättre läsbarhet"
+9. - checkbox "Större text Ökar textstorleken i hela appen"
+10. - checkbox "Lugnt läge Reducerar animationer och distraktioner"
+11. - button "Daniel Digital coach" [expanded]
+12. - button "4 råd till"
+13. - link "Fråga djupare i AI-team":   - /url: "#/ai-team?coach=digitalcoach"
+14. - button "Lugnare läge Mindre på skärmen, ett steg i taget"
+15. (inget fokuserat element — fokus tappat, troligen på <body>)
+16. - link "Hoppa till huvudinnehåll":   - /url: "#main-content"
+17. - link "Hoppa till navigation":   - /url: "#main-navigation"
+18. - link "Jobin jobin.se":   - /url: "#/"   - img "Jobin"   - text: jobin.se
+19. - link "Översikt":   - /url: "#/oversikt"
+20. - link "Söka jobb":   - /url: "#/jobb"

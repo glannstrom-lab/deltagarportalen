@@ -347,6 +347,15 @@ export function CoverLetterWrite() {
   // Ett återställt utkast som personen inte blivit tillsagd om kan vara skrivet
   // för ett helt annat jobb. Vi säger till, och erbjuder att börja om.
   const [aterstalltUtkast, setAterstalltUtkast] = useState<{ company: string; jobTitle: string } | null>(null)
+  // EG2 (rollspelet 2026-09-28): ett AI-brev tar 40–50 s. Laddades sidan om under tiden
+  // kom svaret till en sida som inte fanns längre, och bannern nedan sa "Vi tog fram det
+  // åt dig" över ett tomt brev. `genererarSedan` sparas i autosaven så att vi efter en
+  // omladdning vet att utkastet inte hann bli klart och kan säga det.
+  const [genererarSedan, setGenererarSedan] = useState<number | null>(null)
+  const [avbrutenGenerering, setAvbrutenGenerering] = useState(false)
+  // EG2: ett färdigt AI-brev sparas i Mina brev direkt, inte först i steg 3.
+  // Id:t gör att "Spara brevet" i steg 3 uppdaterar samma rad i stället för att dubblera.
+  const [sparatBrevId, setSparatBrevId] = useState<string | null>(null)
 
   // Auto-save. `generatedLetter` ligger med: utan den nollade "Gå tillbaka till
   // utkastet" brevet efter varje sidladdning i stället för att återställa det.
@@ -354,7 +363,9 @@ export function CoverLetterWrite() {
     formData,
     editedLetter,
     generatedLetter,
-    currentStep
+    currentStep,
+    genererarSedan,
+    sparatBrevId,
   }
 
   const { clearSavedData } = useAutoSave({
@@ -365,6 +376,9 @@ export function CoverLetterWrite() {
       if (saved.editedLetter) setEditedLetter(saved.editedLetter)
       if (saved.generatedLetter) setGeneratedLetter(saved.generatedLetter)
       if (saved.currentStep) setCurrentStep(saved.currentStep)
+      if (saved.sparatBrevId) setSparatBrevId(saved.sparatBrevId)
+      // Genereringen pågick när sidan lämnades, och inget brev hann komma.
+      if (saved.genererarSedan && !saved.editedLetter?.trim()) setAvbrutenGenerering(true)
       if (saved.editedLetter || saved.formData?.company || saved.formData?.jobTitle) {
         setAterstalltUtkast({
           company: saved.formData?.company || '',
@@ -583,6 +597,8 @@ export function CoverLetterWrite() {
 
     setArMall(false)
     setIsGenerating(true)
+    setGenererarSedan(Date.now())
+    setAvbrutenGenerering(false)
     setGenerationError(null)
     // Texten som stod i rutan när anropet gick iväg. Sidan lovar "du kan börja
     // skriva själv under tiden — utkastet ersätter inte det du redan skrivit",
@@ -617,14 +633,65 @@ export function CoverLetterWrite() {
       setGeneratedLetter(brev)
       setEditedLetter((nu) => (nu.trim() === textVidStart ? brev : nu))
       setGenereratPaTunntUnderlag(!cvData && !formData.motivation.trim())
+      // EG2: skrev personen inget eget under väntan är brevet AI:ns — spara det direkt.
+      if (!textVidStart) void sparaUtkastIDatabasen(brev)
     } catch (error) {
       console.error('Fel vid generering:', error)
       // Ingen setEditedLetter('') här. Aldrig.
       setGenerationError(tolkaAiFel(error))
     } finally {
       setIsGenerating(false)
+      setGenererarSedan(null)
     }
   }
+
+  /** Titel för ett sparat brev: företag och jobb om de finns. */
+  const brevTitel = () => {
+    const delar = [formData.company.trim(), formData.jobTitle.trim()].filter(Boolean)
+    return delar.length > 0 ? delar.join(' – ') : t('coverLetter.write.untitled', 'Personligt brev')
+  }
+
+  /**
+   * EG2: sparar ett nyss genererat AI-brev i Mina brev. Misslyckas det står brevet
+   * kvar i rutan och i autosaven, och vi säger att det inte är sparat.
+   */
+  const sparaUtkastIDatabasen = async (brev: string) => {
+    try {
+      const falt = {
+        title: brevTitel(),
+        content: brev,
+        company: formData.company.trim() || undefined,
+        job_title: formData.jobTitle.trim() || undefined,
+        job_ad: formData.jobAd || undefined,
+        template: formData.selectedTemplate,
+        ai_generated: true,
+      }
+      if (sparatBrevId) {
+        await coverLetterApi.update(sparatBrevId, falt)
+      } else {
+        const rad = await coverLetterApi.create(falt)
+        if (rad?.id) setSparatBrevId(rad.id)
+      }
+      showToast.success(t('coverLetter.write.utkastSparat', 'Utkastet är sparat i Mina brev'))
+    } catch (err) {
+      console.error('Kunde inte spara utkastet automatiskt:', err)
+      showToast.info(
+        t('coverLetter.write.utkastEjSparat', 'Utkastet kunde inte sparas i Mina brev'),
+        t('coverLetter.write.utkastEjSparatBody', 'Det finns kvar här. Spara det i steg 3.')
+      )
+    }
+  }
+
+  // EG2: varna innan sidan lämnas medan brevet skrivs — svaret går annars förlorat.
+  useEffect(() => {
+    if (!isGenerating) return
+    const varna = (e: BeforeUnloadEvent) => {
+      e.preventDefault()
+      e.returnValue = ''
+    }
+    window.addEventListener('beforeunload', varna)
+    return () => window.removeEventListener('beforeunload', varna)
+  }, [isGenerating])
 
   /**
    * "Skriv ett nytt utkast" ersätter texten. Är texten personens egen frågar vi
@@ -703,12 +770,8 @@ export function CoverLetterWrite() {
 
     setIsSaving(true)
     try {
-      const delar = [formData.company.trim(), formData.jobTitle.trim()].filter(Boolean)
-      const title = delar.length > 0
-        ? delar.join(' – ')
-        : t('coverLetter.write.untitled', 'Personligt brev')
-
-      await coverLetterApi.create({
+      const title = brevTitel()
+      const falt = {
         title,
         content: editedLetter,
         company: formData.company.trim() || undefined,
@@ -719,7 +782,10 @@ export function CoverLetterWrite() {
         // hennes — att spara det som AI-genererat vore samma sorts osanning som
         // den gamla mallen, fast spegelvänd.
         ai_generated: arOrordAiText
-      })
+      }
+      // EG2: ett AI-utkast kan redan vara sparat — uppdatera det i stället för att dubblera.
+      if (sparatBrevId) await coverLetterApi.update(sparatBrevId, falt)
+      else await coverLetterApi.create(falt)
 
       clearSavedData()
       showToast.success(t('coverLetter.write.savedShort', 'Sparat'))
@@ -780,6 +846,8 @@ export function CoverLetterWrite() {
   const borjaOm = () => {
     clearSavedData()
     setAterstalltUtkast(null)
+    setAvbrutenGenerering(false)
+    setSparatBrevId(null)
     setEditedLetter('')
     setGeneratedLetter('')
     setGenerationError(null)
@@ -880,12 +948,28 @@ export function CoverLetterWrite() {
                 {[aterstalltUtkast.jobTitle, aterstalltUtkast.company].filter(Boolean).join(' — ') ||
                   t('coverLetter.write.draftRestoredNoJob', 'Utan jobb ifyllt ännu')}
                 {'. '}
-                {t('coverLetter.write.draftRestoredBody', 'Vi tog fram det åt dig. Gäller det ett annat jobb kan du börja om.')}
+                {avbrutenGenerering
+                  ? t('coverLetter.write.draftAvbrutet', 'Utkastet hann inte bli klart innan sidan laddades om. Det du fyllt i finns kvar.')
+                  : t('coverLetter.write.draftRestoredBody', 'Vi tog fram det åt dig. Gäller det ett annat jobb kan du börja om.')}
               </p>
               <div className="flex flex-wrap gap-2 mt-3">
-                <Button size="sm" onClick={() => setAterstalltUtkast(null)}>
-                  {t('coverLetter.write.draftKeep', 'Fortsätt på det')}
-                </Button>
+                {avbrutenGenerering ? (
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setAterstalltUtkast(null)
+                      setAvbrutenGenerering(false)
+                      setCurrentStep(2)
+                      void generateLetter()
+                    }}
+                  >
+                    {t('coverLetter.write.draftSkrivIgen', 'Skriv utkastet igen')}
+                  </Button>
+                ) : (
+                  <Button size="sm" onClick={() => setAterstalltUtkast(null)}>
+                    {t('coverLetter.write.draftKeep', 'Fortsätt på det')}
+                  </Button>
+                )}
                 <Button variant="outline" size="sm" onClick={borjaOm}>
                   {t('coverLetter.write.draftStartOver', 'Börja om')}
                 </Button>

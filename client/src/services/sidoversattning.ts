@@ -8,8 +8,10 @@
  * sin egen kopia — nycklarna (`googleTranslateLanguage`, cookien `googtrans`)
  * är desamma, så de två vägarna ser samma val.
  *
- * Valet sparas och sidan laddas om; skriptet laddas vid nästa montering av
- * GoogleTranslate (som finns i skalet på alla sidor). Somaliska, arabiska,
+ * Valet sparas och sidan laddas om; skriptet laddas av `startaSparadOversattning()`
+ * vid appstart (main.tsx). NY1 (rollspelet 2026-09-28): tidigare laddades det
+ * bara när GoogleTranslate monterades, och den finns bara i datorns toppmeny —
+ * på mobil sparades valet men sidan förblev svensk. Somaliska, arabiska,
  * tigrinja m.fl. — portalens egna språk är bara svenska och engelska.
  */
 
@@ -91,4 +93,40 @@ export function visaOriginal(): void {
   }
   rensaCookies()
   sidan.laddaOm()
+}
+
+/** Laddar Googles översättningsskript med valt språk. Idempotent. */
+function laddaGoogleSkript(code: string): void {
+  if (document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')) return
+  let container = document.getElementById('google_translate_element')
+  if (!container) {
+    container = document.createElement('div')
+    container.id = 'google_translate_element'
+    container.style.display = 'none'
+    document.body.appendChild(container)
+  }
+  sattCookie(code)
+  const win = window as Window & {
+    googleTranslateElementInit?: () => void
+    google?: { translate?: { TranslateElement: new (config: object, id: string) => void } }
+  }
+  win.googleTranslateElementInit = () => {
+    if (win.google?.translate?.TranslateElement) {
+      new win.google.translate.TranslateElement({ pageLanguage: 'sv', autoDisplay: false }, 'google_translate_element')
+    }
+  }
+  const script = document.createElement('script')
+  script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+  script.async = true
+  document.head.appendChild(script)
+}
+
+/**
+ * Körs en gång vid appstart, oavsett layout (dator, mobil, utloggad).
+ * Finns ett sparat språkval laddas skriptet; annars händer ingenting —
+ * Google får ingen sidtext förrän användaren själv valt ett språk.
+ */
+export function startaSparadOversattning(): void {
+  const valt = valtOversattSprak()
+  if (valt && OVERSATT_SPRAK.some((s) => s.code === valt)) laddaGoogleSkript(valt)
 }

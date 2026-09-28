@@ -1,0 +1,25 @@
+1. - link "Skapa ditt CV":   - /url: "#/cv"
+2. - link "Jämför ditt CV med ett drömjobb":   - /url: "#/skills-gap-analysis"
+3. - link "Logga hur dagen känns":   - /url: "#/wellness"
+4. - link "Allt i Söka jobb":   - /url: "#/jobb"   - text: Allt
+5. - link "Dina ansökningar hitta ditt första jobb":   - /url: "#/applications"
+6. - link "Ditt CV skapa ditt CV":   - /url: "#/cv"
+7. - link "Personligt brev skriv ditt första":   - /url: "#/cover-letter"
+8. - link "Intervjuövning öva när du orkar":   - /url: "#/interview-simulator"
+9. - link "Allt i Karriär":   - /url: "#/karriar"   - text: Allt
+10. - link "Kompetensanalys jämför ditt CV med ett drömjobb":   - /url: "#/skills-gap-analysis"
+11. - link "Din karriärplan vad vill du på sikt?":   - /url: "#/career"
+12. - link "Personligt varumärke inte påbörjat":   - /url: "#/personal-brand"
+13. - link "Utbildningar sök i hela Sverige":   - /url: "#/education"
+14. - link "Allt i Resurser":   - /url: "#/resurser"   - text: Allt
+15. - link "Ditt AI-team fem att fråga":   - /url: "#/ai-team"
+16. - link "Kunskapsbank sök svar på en fråga":   - /url: "#/knowledge-base"
+17. - link "Dina sparade inget sparat än":   - /url: "#/resources"
+18. - link "Nätverk lägg till en kontakt":   - /url: "#/nätverk"
+19. - link "Allt i Din vardag":   - /url: "#/min-vardag"   - text: Allt
+20. - link "Hur du mår logga hur dagen känns":   - /url: "#/wellness"
+21. - link "Din dagbok skriv några rader":   - /url: "#/diary"
+22. - link "Kalender inget inbokat":   - /url: "#/calendar"
+23. - link "Din konsulent Demo Coach":   - /url: "#/my-consultant"
+24. - link "Se allt du har gjort":   - /url: "#/oversikt/historik"
+25. - button "Andreas Jobbcoach" [expanded]

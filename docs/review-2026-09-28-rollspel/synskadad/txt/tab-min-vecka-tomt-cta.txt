@@ -1,0 +1,12 @@
+1. (inget fokuserat element — fokus tappat, troligen på <body>)
+2. - link "Hoppa till huvudinnehåll":   - /url: "#main-content"
+3. - link "Hoppa till navigation":   - /url: "#main-navigation"
+4. - link "Jobin jobin.se":   - /url: "#/"   - img "Jobin"   - text: jobin.se
+5. - link "Översikt":   - /url: "#/oversikt"
+6. - link "Söka jobb":   - /url: "#/jobb"
+7. - link "Karriär":   - /url: "#/karriar"
+8. - link "Resurser":   - /url: "#/resurser"
+9. - link "Din vardag":   - /url: "#/min-vardag"
+10. - button "Sök efter en sida eller ett verktyg": Sök … Ctrl K
+11. - button "Välj språk"
+12. - button "Översätt sidan"

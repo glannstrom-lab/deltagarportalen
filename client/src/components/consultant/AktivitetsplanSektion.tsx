@@ -343,6 +343,10 @@ export function AktivitetsplanSektion({ participantId, participantName }: Aktivi
                             {t('consultant.underlag.lamnat', { datum, mottagare: h.recipient })}
                             {h.handed_over_by === profile?.id && <span className="text-stone-500"> · {t('consultant.underlag.avVem', { namn: 'dig' })}</span>}
                             <span className="text-stone-500"> · {t('consultant.underlag.period', { from: kortDatum(h.period_from), to: kortDatum(h.period_to) })}</span>
+                            {/* KH11: handläggaren i portalen har kvitterat — eller inte än. */}
+                            {h.recipient_user_id && !h.withdrawn_at && (
+                              <span className="text-stone-500"> · {h.received_at ? t('consultant.underlag.kvitterat', { datum: kortDatum(h.received_at.slice(0, 10)) }) : t('consultant.underlag.ejKvitterat')}</span>
+                            )}
                             {h.withdrawn_at && (
                               <span className="block text-xs no-underline">{t('consultant.underlag.angrat', { datum: kortDatum(h.withdrawn_at.slice(0, 10)), skal: h.withdrawn_reason ?? '' })}</span>
                             )}

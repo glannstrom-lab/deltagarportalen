@@ -1,0 +1,93 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+H
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Inställningar
+
+Anpassa din konsultvy
+
+Standardvy för deltagare
+
+Välj hur deltagarlistan visas som standard
+
+Rutnät
+Lista
+
+Tidszon
+
+Används för mötesbokning och påminnelser
+
+Stockholm (CET)
+
+Veckan börjar
+
+Påverkar kalendervisning
+
+Måndag
+Söndag
+
+Inaktivitetsvarning
+
+Dagar innan en deltagare markeras som inaktiv
+
+5 dagar
+7 dagar
+14 dagar
+Din organisation
+
+Kollegor och, om du är chef, caseload per konsulent.
+
+Demokommun (påhittade personer)
+
+Kommun · org.nr 212000-9999
+Din roll: Handläggare (ekonomiskt bistånd)
+
+Hanna Handläggare (du)
+
+hanna.handlaggare.demo@example.com
+Handläggare (ekonomiskt bistånd)
+
+Kim Kollega
+
+kim.kollega.demo@example.com
+Arbetskonsulent
+
+Demo Konsulent
+
+demo@jobin.se
+Chef
+Data & Integritet
+
+Hantera data och GDPR-relaterade inställningar
+
+Exportera all data
+
+Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.
+
+Ta med orosanteckningar
+
+Anteckningar i kategorin Oro utelämnas som standard.
+
+Integritetspolicy

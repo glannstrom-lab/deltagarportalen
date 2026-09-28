@@ -23,6 +23,81 @@
 
 ---
 
+## Rollspel 2026-09-28 — sju nya roller i prod
+
+Översikt: <https://claude.ai/artifact/RUXWYRooZ9dWzzo6wRvgYB> · rapporter med skärmdump per fynd i `docs/review-2026-09-28-rollspel/`
+(`chef.md` CH, `kollega.md` KH — ny konsulent + handläggare, `foretag.md` FT, `nyanland.md` NY, `utmattning.md` UT,
+`egen.md` EG — självregistrerad utan konsulent, `synskadad.md` SV). Gemensam körare `e2e/rollspel-2026-09-28.cjs`
+(Visa som via admin generate_link), stegfiler `e2e/rollspel-2026-09-28-<roll>-*.cjs`.
+88 fynd efter omklassning; 6 kritiska kluster (nedan), 35 förslag. Gårdagens tre roller spelades inte om — alla deras fynd är rättade.
+Bengts konto (`rollspel-bengt-2026-09-28@jobin.test`) skapades via admin-API, gjorde 5 AI-anrop och raderades via
+portalens egen väg; kaskaden verifierad tom i `auth.users`, `profiles`, `cvs`, `cover_letters`, `saved_jobs`, `job_alerts`.
+**Omklassat:** SV1 ("kan inte checka in") är demodata — Peter har ingen plan — inte ett fel; kvar som förslaget SV16.
+CH7 är en öppen fråga, inte ett fynd.
+**Demodata (2026-09-28):** Sara Påhitt (Kims) har en plan, Hanna har två underlag (ett okvitterat, ett kvitterat), Fatima har planen hennes journal lovade (10 h/v, sjukskriven, en anmäld vård av barn) och Erik (ny i Sverige) en SFI-plan — `20260928b_demo_handlaggare_underlag.sql`. Rollspelets "nyanlända" persona borde ha spelats som Erik; Fatima och Amina var redan sjukskriven respektive placerad i sådden. Kvar utan plan med flit: Omar, Johan, Peter (nyinskrivna).
+
+### Kritiska — alla sex rättade 2026-09-28
+- [x] **CH1** ✅ **Premissen höll till hälften.** IVO-underlaget, nämndrapporten, månadsunderlagen och aktivitetsloggen läser planerna utan filter, och RLS ("Organisationens chef läser planer") ger chefen hela enheten — de räknade alltså redan hela enheten (Kims enda plan skapades under rollspelet). Egna-bara är nyckeltalen, målen, placeringarna och konsultrapporten. Felet var att sidan inte sa vilket som gällde var. Nu: omfångsrad överst i Rapporter, i IVO, aktivitetsloggen och rapportdialogen (`components/consultant/rapportOmfang.ts`, `useRapportOmfang.ts`, `OmfangRad.tsx`), och kollegors deltagare heter "Deltagare hos Kim Kollega" i stället för ett id-fragment. CH9 (riktiga enhetsnyckeltal) kvar som förslag. — Ursprunglig post: Rapporter (nämndrapport, IVO-underlag, månadsunderlag) räknar bara den inloggades egna deltagare — även för
+  chefen. Kim Kollegas deltagare saknas i enhetens underlag · `pages/consultant/AnalyticsTab.tsx:319-362`
+  (`.eq('consultant_id', user.id)` ×6) · löses med CH9 (omfångsval "Mina / Hela enheten" för chef)
+- [x] **KH1–KH4** ✅ **KH11 byggd:** `20260928_kh_underlag_till_handlaggare.sql` — `recipient_user_id` + `received_at` på `activity_plan_handovers`, trigger som kräver att mottagaren är handläggare/chef/admin i samma organisation, notis till mottagaren, `mina_mottagna_underlag()` (definer, bara `recipient_user_id = auth.uid()`, ingen ny läsrätt på deltagarens konto) och `kvittera_underlag(id)`. F10-vakten undantar `received_at`. UnderlagDialog väljer handläggare bland organisationens medlemmar (fritext kvar för externa), handläggaren ser "Underlag till dig" överst på Översikt, konsulenten ser "kvitterat {datum}". Grindtaket authenticated 22 → 24 med skäl i `lint-grants.cjs`. **Mejl ingår inte** — aktivitetsnotiser mejlas inte till någon än (AT4). — Ursprunglig post: Handläggarkedjan är bruten: Hanna Handläggare ser "0 deltagare" på varje flik; underlagets mottagare är
+  fritext utan koppling till något konto; ingen notis eller mejl när ett underlag lämnas — leveransen är ett
+  telefonsamtal. Samma sak som RK34-rest, nu belagd ur handläggarens stol · bygg **KH11** (mottagare = org-medlem med
+  rollen handläggare, egen "Mottagna underlag"-vy, notis)
+- [x] **FT1** ✅ `20260928_ft1_plats_tillsatt.sql`: trigger på `employer_share_proposals` — företagets ja sätter platsen `tillsatt`, ett återtaget ja öppnar den igen om inget annat ja finns. Pausade/stängda rörs inte. Engångsrättning av redan accepterade. Prövat i transaktion som företaget (ja → tillsatt, nej → öppen). — Ursprunglig post: Platsen blir aldrig "Tillsatt" när företaget säger ja — en annan coach kunde föreslå Peter till samma plats
+  efter att Ali accepterat Omar (reproducerat live) · trigger på `employer_response` + varning i platsväljaren (FT-F2)
+- [x] **UT1** ✅ `AIHelpButton.tsx` raderad. Mallen finns kvar som "Börja från en mall" med texten "Det här är en mall, inte AI", och bara när sammanfattningen är tom (den gamla knappen skrev över det användaren skrivit). Grind: `test/rollspel-2026-09-28-kritiska.test.ts` (ingen "Simulate AI" i src). — Ursprunglig post: CV-byggarens "Generera sammanfattning" är ingen AI: 800 ms låtsad spinner, sedan en fast mall med
+  hakparenteser, ingen märkning · `components/cv/AIHelpButton.tsx:17` ("Simulate AI processing"),
+  `pages/CVBuilder.tsx:1052` · samma felklass som `mockGenerateLetter` 2026-08-09 · ta bort eller gör ärlig (UT9)
+- [x] **NY1** ✅ Skriptladdningen flyttad till `services/sidoversattning.ts` (`startaSparadOversattning`), anropad från `main.tsx` oavsett layout; GoogleTranslate.tsx har inte längre en egen kopia. Prov i samma testfil. — Ursprunglig post: "Översätt sidan" gör ingenting på mobil: valet sparas i cookien men Googles skript laddas bara av
+  `components/layout/GoogleTranslate.tsx`, som bara renderas i datorns `TopBar` · RD31 gjorde menyvalet nåbart men inte
+  funktionen
+- [x] **EG2** ✅ Ett färdigt AI-brev sparas direkt i Mina brev (steg 3 uppdaterar samma rad), en omladdning under skrivandet säger "Utkastet hann inte bli klart" med knappen "Skriv utkastet igen" i stället för ett tomt "Fortsätt", och webbläsaren varnar innan sidan lämnas medan brevet skrivs. — Ursprunglig post: Ett AI-genererat personligt brev försvinner vid omladdning under genereringen (40–49 s) — bannern säger
+  att brevet finns men visar ett tomt — och ett färdigt brev sparas inte förrän man själv går till steg 3 och trycker Spara
+
+### Viktiga
+- [ ] **CH2** Enda vyn över hela enheten (caseload per konsulent) ligger under Inställningar → **CH8** chefsvy på Översikt
+- [ ] **CH3** Caseload-tabellen på mobil klipper kolumner och "Överlämna deltagare…" utan scrollsignal
+- [ ] **CH6/CH13** Överlämning går bara för hela caseloaden, inte en deltagare
+- [ ] **KH5** "Skapa plan" misslyckas tyst när ett obligatoriskt fält längre ned i dialogen är tomt → **KH12** felsammanfattning + scroll till fel (generellt mönster)
+- [ ] **KH6/KH13** Hjälp-sidan är deltagarens även för konsulenten
+- [ ] **FT2** Ikryssad delning av kompetenser/erfarenhet renderas som ingenting när CV saknas (fallbacken finns men nås inte)
+- [ ] **FT3** Notisklockan hos företaget speglar inte vad som hänt
+- [ ] **NY2** "Ny i Sverige" har 0 nycklar på Lätt svenska (LIX 36)
+- [ ] **NY3** `/min-vecka` saknas i `PAGE_TITLE_RULES` (`usePageTitle.ts`) — fel sidtitel för skärmläsare
+- [ ] **NY4** English-läget: oöversatta artiklar blandar engelsk ram med svensk brödtext utan förklaring; datumformat växlar
+- [ ] **NY6** Min vecka utan plan är en återvändsgränd — länka aktivitetskravsguiden (NY-F3) och säg vad man gör under väntan (SV16)
+- [ ] **SV2** `/api/cv-pdf` svarade 500 vid första exporten, tyst i UI; fungerade vid omförsök (misstänkt kallstart med `CHROMIUM_PACK_URL`)
+- [ ] **SV3/SV19** `/login` saknar skiplänk och landmärken · **SV4** fokus flyttas inte till inloggningsfelet
+- [ ] **SV5/SV17** CV-erfarenhetsradens tillgängliga namn är tre saker ihopslagna · **SV6** månadsfälten läses upp dubbelt · **SV7** PDF heter `CV_okänd_.pdf`
+- [x] **EG1** ✅ `useId()` i CV-byggarens fältkomponent; prov i `rollspel-2026-09-28-kritiska.test.ts`. — Alla fält på CV:ts "Om dig"-steg har samma id `cvbuilder-f1` (hårdkodat i fältkomponenten, `CVBuilder.tsx` ~rad 330) — etiketterna pekar fel (WCAG 1.3.1/4.1.2)
+- [ ] **EG3** CV-byggaren börjar alltid om på mallvalet i stället för senast ofullständiga steg
+- [ ] **EG5** Intervjuträningens pass försvinner vid omladdning
+- [ ] **UT2** "Det finns luckor i din erfarenhet" visas innan något jobb är ifyllt — statisk text (`ContextualHelp.tsx:66-85`)
+- [ ] **UT3** AI-teamets sidopanel är klickbar men gör ingenting när AI är av (`AITeam.tsx:158-172`; skyddet finns bara i `AgentChat.tsx`)
+
+### Skav (i rapporterna)
+CH4, CH5 · KH7 dubbel mobilnav, KH8 `?tab=settings`, KH9 förvalt mål, KH10 Rapporter säger inte att siffrorna bara är
+mina · FT4 hårdkodat "hon", FT5 "vecka 0", FT6 två veckoräknare · NY5 "Internationell Guide" ≠ "Ny i Sverige" ·
+SV8 guideturen återkommer, SV9 kontrast på inloggningsfel, SV10–SV13 statusrad och rubrikhopp · UT4 tom snurra på Hälsa,
+UT5–UT7 · EG4 guidetur ovanpå toasten, EG6 "Exempeldata"-knappen.
+
+### Förslag — utveckling (35, grupperade)
+- **Enheten, inte bara konsulenten:** CH8 chefsvy, CH9 omfångsval i rapporter, CH10 text till tjänsteskrivelse,
+  CH11 jämförelse mot förra kvartalet, CH12 diagram per konsulent, CH13 flytta en deltagare, KH11 handläggarens läsvy
+- **Företaget:** FT-F1 avisering (mejl/SMS) vid nytt förslag och innan svarstiden går ut, FT-F2 auto-tillsatt,
+  FT-F3 fritext från konsulenten i presentationen, FT-F4 "det här har fungerat" (avslutade placeringar, `continue_interest`),
+  FT-F5 en "vad väntar"-lista
+- **Dålig dag:** UT8 periodtyp "Paus i arbetslivet" i CV:t, UT10 "tuff dag"-signal till coachen utan fullt delningssamtycke,
+  UT11, UT12 nästa steg efter dagens mående, UT13 starta alltid i Lugnare läge
+- **Språk:** NY-F1–F6 (mobilöversättning, Lätt svenska för Ny i Sverige, länk från tom Min vecka, sidtitel, navetikett,
+  datum i English)
+- **Tillgänglighet:** SV14 "Lyssna" vs riktig skärmläsare, SV15 ARIA-tabs i Inställningar, SV16, SV18 visa
+  tillgänglighetsarbetet som säljargument mot AF/leverantörer
+- **Ny egen användare (AK1):** EG7 Snabb-CV saknar yrkesgren för lager/truck/chaufför (`QuickCVMode.tsx:40-69`),
+  EG8 "läs igenom innan export" på autogenererad text, EG3 återuppta steg, EG5. Bengts svar på AK1: entrén håller
+  (guide → konto → CV på under en minut); det som tappar honom är förlorat arbete vid omladdning och fel fältkopplingar.
+
 ## Rollspel 2026-09-27 — kommunkonsulent, R&M-coach och deltagare i prod
 
 Översikt: <https://claude.ai/artifact/3SBk71pBtoZTdPHHQeygwh> · rapporter med skärmdump per fynd i

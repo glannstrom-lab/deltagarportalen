@@ -1,0 +1,18 @@
+1. - button "Stoppa"
+2. - button "Skriv ut"
+3. - button "Ladda ner"
+4. - button "Normal textstorlek" [pressed]
+5. - button "Stor textstorlek"
+6. - button "Extra stor textstorlek"
+7. - button "Spara bokmärke"
+8. - button "Dela artikel"
+9. - checkbox "Skapa konto i portalen"
+10. - checkbox "Fyll i din profil"
+11. - checkbox "Gör intresseguiden"
+12. - checkbox "Bygg ditt första CV"
+13. - checkbox "Sök ditt första jobb"
+14. - link "🎯 Gör intresseguiden":   - /url: "#/interest-guide"
+15. - link "📝 Skapa CV":   - /url: "#/cv"
+16. - link "Hitta ditt jobb-jag Upptäck vilken personlighetstyp du är och vilka yrken som passar dig bäst. Baserad på Arbetsförmedlingens modell med fyra profiler. Självkännedom • 20-30 min • Lätt":   - /url: "#/exercises?id
+17. - link "Bygg ett CV som sticker ut Skapa ett professionellt CV som lyfter dina styrkor, anpassas för ATS-system och fångar rekryterarens intresse på 6 sekunder. Jobbsökning • 30-40 min • Medel":   - /url: "#/exercises?id
+18. - link "Jobbsökarstrategier och kanaler Lär dig olika strategier för att hitta jobb. Gå från passivt sökande till proaktivt nätverkande. Arbetssökande • 25-35 min • Medel":   - /url: "#/exercises?id=jobbsokarstrategier" 

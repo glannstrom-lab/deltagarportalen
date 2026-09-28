@@ -1,0 +1,136 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+
+Demo — påhittade personer
+
+Meny
+
+KONSULENT
+
+Konsultportal
+
+DELTAGARVYN
+
+Översikt
+Söka jobb
+Karriär
+Resurser
+Din vardag
+Inställningar
+Hjälp
+Logga ut
+Min profil
+
+kim.kollega.demo@example.com
+
+Konsulent
+
+Min profil
+Inställningar
+Logga ut
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Tillbaka till deltagare
+SP
+Sara Påhitt
+sara.pahitt@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+—
+
+CV-poäng
+
+0
+
+Sparade jobb
+
+0
+
+Aktiva mål
+
+6 dagar sedan
+
+Senaste kontakt
+
+journalanteckning
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+Ingen aktivitetsplan än
+
+Tillämpa en schemamall så får Sara Påhitt ett veckoschema och du kan följa närvaron.
+
+Tillämpa schemamall
+Lugnare läge
+Mindre på skärmen, ett steg i taget
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Tillämpa schemamall
+
+Individuell plan för Sara Påhitt
+
+Schemamall
+Demomall: jobbsökning + motivation · 11 h/vecka
+Praktik + jobbsökarträff · 5 h/vecka
+Startdatum
+Slutdatum
+
+Förslag: 12 veckor
+
+Veckomål
+
+Lagen: högst 40 timmar per vecka, 10 timmar mindre vid barn under 8 år, proportionellt lägre vid deltidsarbete.
+
+Barn under 8 år i hushållet
+Deltidsarbete, timmar per vecka
+Veckomål, timmar
+
+Förslag enligt lagen: 40 h
+
+Motivering till avvikelsen
+
+Motivera varför målet avviker från lagens förslag
+
+Tid för eget jobbsökande, h/vecka
+
+Ska framgå av planen. Räknas inte som anvisad aktivitet.
+
+Beslutsdatum
+Försörjningshinder (för IVO-underlaget)
+Inte angivet
+Arbetslös
+Sjukskriven med läkarintyg
+Sjuk- eller aktivitetsersättning
+Arbetshinder, sociala skäl
+Föräldraledig
+Arbetar deltid
+Språkhinder
+Utan försörjningshinder
+Annat
+
+Kategori enligt Socialstyrelsens register. Valfritt, går att ändra på planen efteråt.
+
+Plan i text
+
+48 pass genereras ur "Demomall: jobbsökning + motivation" mellan 2026-09-28 och 2026-12-20. Passen går att ändra ett och ett efteråt.
+
+Avbryt
+Skapa plan

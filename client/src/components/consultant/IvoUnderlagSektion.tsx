@@ -30,6 +30,9 @@ import { fetchCachedConsultantParticipants } from '@/pages/consultant/consultant
 import { langtDatum } from './aktivitetEtiketter'
 import { laddaNerManadsunderlag, stodmanadAlternativ } from '@/services/manadsunderlagPdf'
 import { manadGranser } from '@/services/aktivitetslogg'
+import { deltagarEtikett } from './rapportOmfang'
+import { useRapportOmfang } from './useRapportOmfang'
+import { OmfangRad } from './OmfangRad'
 
 type Lage =
   | { status: 'laddar' }
@@ -49,6 +52,7 @@ function lokaltIdag(): string {
 
 export function IvoUnderlagSektion() {
   const queryClient = useQueryClient()
+  const { omfang, orgNamn, kollegor } = useRapportOmfang()
   const [lage, setLage] = useState<Lage>({ status: 'laddar' })
   const [omgang, setOmgang] = useState(0)
   const [val, setVal] = useState(() => kvartalForDatum(formatLocalDate(new Date())))
@@ -116,7 +120,7 @@ export function IvoUnderlagSektion() {
   const planerIManad = lage.status === 'klart'
     ? lage.plans
       .filter((p) => p.start_date <= manadGrans.to && (p.end_date === null || p.end_date >= manadGrans.from))
-      .map((p) => ({ plan: p, namn: lage.namn.get(p.participant_id) || `Deltagare ${p.participant_id.slice(0, 8)}` }))
+      .map((p) => ({ plan: p, namn: deltagarEtikett(p, lage.namn, kollegor) }))
       .sort((a, b) => a.namn.localeCompare(b.namn, 'sv') || a.plan.start_date.localeCompare(b.plan.start_date))
     : []
   const valdManadPlan = planerIManad.find((x) => x.plan.id === manadPlan) ?? null
@@ -142,6 +146,7 @@ export function IvoUnderlagSektion() {
           <p className="text-sm text-stone-500 dark:text-stone-400">
             Anvisade planer, ogiltig frånvaro och lämnat underlag, per försörjningshinder.
           </p>
+          <OmfangRad omfang={omfang} orgNamn={orgNamn} />
         </div>
         <FileText className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
       </div>
@@ -269,7 +274,7 @@ export function IvoUnderlagSektion() {
             ) : (
               <ul className="divide-y divide-stone-100 dark:divide-stone-800">
                 {aktivaPlaner.map((p) => {
-                  const namn = lage.namn.get(p.participant_id) || `Deltagare ${p.participant_id.slice(0, 8)}`
+                  const namn = deltagarEtikett(p, lage.namn, kollegor)
                   const bockad = p.af_registered_at != null
                   return (
                     <li key={p.id} className="py-2 flex items-center gap-3">

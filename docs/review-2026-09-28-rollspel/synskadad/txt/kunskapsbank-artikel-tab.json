@@ -1,0 +1,17 @@
+[
+  "1. - link \"Hoppa till huvudinnehåll\":   - /url: \"#main-content\"",
+  "2. - link \"Hoppa till navigation\":   - /url: \"#main-navigation\"",
+  "3. - link \"Jobin jobin.se\":   - /url: \"#/\"   - img \"Jobin\"   - text: jobin.se",
+  "4. - link \"Översikt\":   - /url: \"#/oversikt\"",
+  "5. - link \"Söka jobb\":   - /url: \"#/jobb\"",
+  "6. - link \"Karriär\":   - /url: \"#/karriar\"",
+  "7. - link \"Resurser\":   - /url: \"#/resurser\"",
+  "8. - link \"Din vardag\":   - /url: \"#/min-vardag\"",
+  "9. - button \"Sök efter en sida eller ett verktyg\": Sök … Ctrl K",
+  "10. - button \"Välj språk\"",
+  "11. - button \"Översätt sidan\"",
+  "12. - button \"Slå på fokusläge\"",
+  "13. - button \"Mörkt läge\"",
+  "14. - link \"Vanliga frågor\":   - /url: \"#/help\"",
+  "15. - button \"Öppna stöd och hjälp - för dig som mår dåligt eller behöver någon att prata med\""
+]

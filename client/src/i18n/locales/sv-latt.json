@@ -444,7 +444,9 @@
       "description": "Skriv vem du är och vilket jobb du vill ha.",
       "placeholder": "Jag heter … och jag är bra på …",
       "helpText": "Tips: Skriv 3 till 5 korta meningar. Skriv vad du har gjort och vad du är bra på.",
-      "aiTemplate": "Jag har jobbat som [yrke] i [X] år. Jag har jobbat med [område]. Jag tycker om [intresse]. Nu vill jag ha ett nytt jobb."
+      "aiTemplate": "Jag har jobbat som [yrke] i [X] år. Jag har jobbat med [område]. Jag tycker om [intresse]. Nu vill jag ha ett nytt jobb.",
+      "mallKnapp": "Börja med en mall",
+      "mallHjalp": "Det här är en mall. Det är inte AI. Skriv dina egna ord där det står [ ]."
     },
     "sections": {
       "workExperience": "Jobb du har haft",

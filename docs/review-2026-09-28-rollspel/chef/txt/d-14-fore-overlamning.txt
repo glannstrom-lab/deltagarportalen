@@ -1,0 +1,133 @@
+Hoppa till huvudinnehåll
+Hoppa till navigation
+jobin.se
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Sök …
+Ctrl K
+6
+D
+
+Demo — påhittade personer — Det här är en demo med påhittade personer. Allt du ändrar återställs varje natt. Ingen AI och inga mejl går ut härifrån.
+
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Inställningar
+
+Anpassa din konsultvy
+
+Standardvy för deltagare
+
+Välj hur deltagarlistan visas som standard
+
+Rutnät
+Lista
+
+Tidszon
+
+Används för mötesbokning och påminnelser
+
+Stockholm (CET)
+
+Veckan börjar
+
+Påverkar kalendervisning
+
+Måndag
+Söndag
+
+Inaktivitetsvarning
+
+Dagar innan en deltagare markeras som inaktiv
+
+5 dagar
+7 dagar
+14 dagar
+Din organisation
+
+Kollegor och, om du är chef, caseload per konsulent.
+
+Demokommun (påhittade personer)
+
+Kommun · org.nr 212000-9999
+Din roll: Chef
+
+AI-funktioner för era deltagare
+
+Av — deltagare kopplade till era konsulenter nekas alla AI-funktioner och ser att organisationen stängt av dem.
+
+Slå på AI
+
+Hanna Handläggare
+
+hanna.handlaggare.demo@example.com
+Handläggare (ekonomiskt bistånd)
+Arbetskonsulent
+Chef
+Ta bort
+
+Kim Kollega
+
+kim.kollega.demo@example.com
+Handläggare (ekonomiskt bistånd)
+Arbetskonsulent
+Chef
+Ta bort
+
+Demo Konsulent (du)
+
+demo@jobin.se
+Chef
+Lägg till kollega
+E-post
+Roll
+Handläggare (ekonomiskt bistånd)
+Arbetskonsulent
+Chef
+Lägg till
+
+Har personen redan ett konto på jobin.se läggs hen till direkt. Annars kan du skicka en inbjudan via mejl.
+
+Caseload
+KONSULENT	DELTAGARE	AKTIVA PLANER	OGILTIG FRÅNVARO 30 D	
+ÅTGÄRD
+
+Hanna Handläggare
+Handläggare (ekonomiskt bistånd)
+	Inga deltagare än	0	0	
+Kim Kollega
+Arbetskonsulent
+	2	0	0	
+Överlämna deltagare…
+Demo Konsulent
+Chef
+	5	2	1	
+Överlämna deltagare…
+
+Bara tal. Namn på deltagare, journal och mående syns inte här.
+
+Data & Integritet
+
+Hantera data och GDPR-relaterade inställningar
+
+Exportera all data
+
+Exporten omfattar deltagare du har en aktiv relation till. Avslutade relationer tas inte med.
+
+Ta med orosanteckningar
+
+Anteckningar i kategorin Oro utelämnas som standard.
+
+Integritetspolicy

@@ -186,6 +186,12 @@ describe('ReportGeneratorDialog — periodetiketten ska motsvara datan (KS6)', (
  * konsultrapportens sektioner (kohortanalys) finns inte med. Datan hämtas ur
  * planer och pass; här mockad så testet inte beror på databasen.
  */
+// CH1 (2026-09-28): omfångsraden läser medlemskap via React Query. Dialogens egna tester
+// rör inte omfånget; en konsulent utan chefsroll räknar sina egna deltagare.
+vi.mock('./useRapportOmfang', () => ({
+  useRapportOmfang: () => ({ omfang: 'egna', orgNamn: null, kollegor: [] }),
+}))
+
 vi.mock('@/services/aktivitetApi', async (importOriginal) => {
   const original = await importOriginal<typeof import('@/services/aktivitetApi')>()
   return {

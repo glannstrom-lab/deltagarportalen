@@ -1,0 +1,36 @@
+[
+  {
+    "id": "skip-link",
+    "impact": "moderate",
+    "tags": [
+      "cat.keyboard",
+      "best-practice",
+      "RGAAv4",
+      "RGAA-12.7.1"
+    ],
+    "description": "Ensure all skip links have a focusable target",
+    "help": "The skip-link target should exist and be focusable",
+    "helpUrl": "https://dequeuniversity.com/rules/axe/4.11/skip-link?application=playwright",
+    "nodes": [
+      {
+        "any": [
+          {
+            "id": "skip-link",
+            "data": null,
+            "relatedNodes": [],
+            "impact": "moderate",
+            "message": "No skip link target"
+          }
+        ],
+        "all": [],
+        "none": [],
+        "impact": "moderate",
+        "html": "<a href=\"#main-navigation\">Hoppa till navigation</a>",
+        "target": [
+          "a[href$=\"#main-navigation\"]"
+        ],
+        "failureSummary": "Fix any of the following:\n  No skip link target"
+      }
+    ]
+  }
+]

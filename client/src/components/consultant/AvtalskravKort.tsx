@@ -40,6 +40,9 @@ import { langtDatum, kortDatum } from './aktivitetEtiketter'
 import { ARENDE_ETIKETT, PLAN_PASS_KOLUMNER_FINNS, planensArende } from '@/services/planMarkning'
 import { RESULTAT_MSFA_FINNS, msfaApi, type MsfaOverforing } from '@/services/resultatklocka'
 import { useAuthStore } from '@/stores/authStore'
+import { deltagarEtikett } from './rapportOmfang'
+import { useRapportOmfang } from './useRapportOmfang'
+import { OmfangRad } from './OmfangRad'
 
 type Lage =
   | { status: 'laddar' }
@@ -70,6 +73,7 @@ function procent(andel: number): string {
 
 export function AvtalskravKort() {
   const queryClient = useQueryClient()
+  const { omfang, orgNamn, kollegor } = useRapportOmfang()
   const [hamtat, setHamtat] = useState<Lage>({ status: 'laddar' })
   const [omgang, setOmgang] = useState(0)
   const alternativ = useMemo(() => manadAlternativ(new Date()), [])
@@ -127,9 +131,9 @@ export function AvtalskravKort() {
     return lage.plans
       .map((p) => ({ plan: p, krav: avtalskravPerDeltagare(p, lage.sessions, period) }))
       .filter((r) => r.krav.veckorTotalt > 0)
-      .map((r) => ({ ...r, namn: lage.namn.get(r.plan.participant_id) || `Deltagare ${r.plan.participant_id.slice(0, 8)}` }))
+      .map((r) => ({ ...r, namn: deltagarEtikett(r.plan, lage.namn, kollegor) }))
       .sort((a, b) => a.namn.localeCompare(b.namn, 'sv') || a.plan.start_date.localeCompare(b.plan.start_date))
-  }, [lage, period, harAvslutadVecka])
+  }, [lage, period, harAvslutadVecka, kollegor])
 
   // RR8: en deltagares rapportunderlag åt gången, utfällt under raden.
   const [oppenPlan, setOppenPlan] = useState<string | null>(null)
@@ -149,6 +153,7 @@ export function AvtalskravKort() {
           <p className="text-sm text-stone-500 dark:text-stone-400">
             Rusta och matcha, FFU §4.1.1: timkravet per vecka och andelen fysiska aktiviteter, per deltagare.
           </p>
+          <OmfangRad omfang={omfang} orgNamn={orgNamn} />
         </div>
         <ClipboardList className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
       </div>

@@ -1,0 +1,12 @@
+[
+  {
+    "role": "status",
+    "live": "polite",
+    "text": ""
+  },
+  {
+    "role": "alert",
+    "live": "assertive",
+    "text": "Fel e-post eller lösenord"
+  }
+]

@@ -49,6 +49,7 @@ import { consultantService } from '@/services/consultantService'
 import { FYSISKT_GRANS_DAGAR, hamtaMotenForKonsulent, type MoteRad } from '@/services/moteskadens'
 import { aktivitetsplanApi, type ActivityPlan, type AttendanceInput } from '@/services/aktivitetApi'
 import { orgApi, type OrgKind } from '@/services/orgApi'
+import { MottagnaUnderlag } from '@/components/consultant/MottagnaUnderlag'
 import { regelverk } from '@/components/consultant/orgTypVisning'
 import { senasteKontakt } from '@/services/senasteKontakt'
 import {
@@ -376,6 +377,8 @@ export function OverviewTab() {
     queryFn: () => orgApi.myMemberships(),
     staleTime: 5 * 60_000,
   })
+  // KH11: handläggaren ser underlagen till henne först — det är hennes arbete i portalen.
+  const arHandlaggare = medlemskapQ.isSuccess && medlemskapQ.data.some((m) => m.role === 'handlaggare')
   const arLeverantor = medlemskapQ.isSuccess
     && regelverk(medlemskapQ.data.map((m) => m.organization?.kind).filter((k): k is OrgKind => !!k)) === 'leverantor'
 
@@ -758,6 +761,9 @@ export function OverviewTab() {
 
   return (
     <div className="space-y-6">
+      {/* KH11 (rollspelet 2026-09-28): underlag lämnade till mig. Visas alltid för handläggare
+          (även tomt, med en rad om hur det fungerar), och för andra bara om något lämnats till dem. */}
+      <MottagnaUnderlag visaTomt={arHandlaggare} />
       {/* Min dag — prioriterad dagsvy */}
       <MinDagSection
         meetings={myDayMeetings}

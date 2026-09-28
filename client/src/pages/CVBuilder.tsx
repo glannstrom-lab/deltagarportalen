@@ -2,7 +2,7 @@ import { createPortal } from 'react-dom'
 import { useSkenSlot } from '@/components/layout/skenSlot'
 import { StigLista, StigPrick, SkenEtikett } from '@/components/layout/Stig'
 import { stigRadKlasser } from '@/components/layout/stigKlasser'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -35,7 +35,6 @@ import type { CVData, CVVersion } from '@/services/supabaseApi'
 // NYA IMPORTS för förbättringar
 import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
 // SaveIndicator is now rendered in CVPage header
-import { AIHelpButton } from '@/components/cv/AIHelpButton'
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
 import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
 import { EducationEditor } from '@/components/cv/EducationEditor'
@@ -324,11 +323,14 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
   type?: string
   placeholder?: string
 }) {
+  // EG1 (rollspelet 2026-09-28): id:t var hårdkodat "cvbuilder-f1" för alla sex fälten,
+  // så varje etikett pekade på Förnamn.
+  const id = useId()
   return (
     <div>
-      <label htmlFor="cvbuilder-f1" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{label}</label>
+      <label htmlFor={id} className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">{label}</label>
       <input
-        id="cvbuilder-f1"
+        id={id}
         type={type}
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -1049,7 +1051,22 @@ export default function CVBuilder() {
 
       <ContextualHelp context="summary" data={data.summary} />
 
-      <AIHelpButton field="summary" onFill={() => setData(prev => ({ ...prev, summary: t('cvBuilder.summary.aiTemplate') }))} />
+      {/* UT1 (rollspel 2026-09-28): här låg en knapp märkt som AI som fyllde i en fast mall efter en
+          låtsad väntan — och skrev över det användaren redan skrivit. Den riktiga AI-hjälpen är
+          AIWritingAssistant ovanför. Mallen finns kvar, märkt som mall, och bara när fältet är tomt. */}
+      {!data.summary?.trim() && (
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={() => setData(prev => ({ ...prev, summary: t('cvBuilder.summary.aiTemplate') }))}
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-stone-300 dark:border-stone-600 px-4 py-2 text-sm font-medium text-stone-800 dark:text-stone-100 hover:bg-stone-100 dark:hover:bg-stone-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
+          >
+            <FileText className="w-4 h-4" aria-hidden="true" />
+            {t('cvBuilder.summary.mallKnapp')}
+          </button>
+          <p className="text-sm text-stone-600 dark:text-stone-300">{t('cvBuilder.summary.mallHjalp')}</p>
+        </div>
+      )}
     </div>
   )
 

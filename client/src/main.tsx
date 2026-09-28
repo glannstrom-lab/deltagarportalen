@@ -15,6 +15,10 @@ import './i18n/config'
 import './index.css'
 import './styles/mobile.css'
 import { swLogger } from './lib/logger'
+import { startaSparadOversattning } from './services/sidoversattning'
+
+// NY1 (2026-09-28): översättningen startas här, inte i toppnavens komponent — den finns inte på mobil.
+startaSparadOversattning()
 
 // E9 (2026-05-15): Lazy-load Sentry — den interna consent-gaten räddar
 // runtime, men STATISK import drog ändå in hela @sentry/react SDK (~80KB)

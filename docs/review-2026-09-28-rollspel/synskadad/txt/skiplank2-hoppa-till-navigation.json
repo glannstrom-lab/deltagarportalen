@@ -1,0 +1,13 @@
+{
+  "fokusForeEnter": {
+    "tag": "A",
+    "text": "Hoppa till navigation"
+  },
+  "fokusEfterEnter": {
+    "tag": "NAV",
+    "id": "",
+    "ariaLabel": "Huvudkategorier",
+    "roleAttr": null,
+    "text": "ÖversiktSöka jobbKarriärResurserDin vardag"
+  }
+}

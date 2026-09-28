@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-27T23:03:47.374Z",
+  "generatedAt": "2026-09-28T19:42:39.651Z",
   "functions": [
     {
       "name": "accept_consultant_request",
@@ -233,6 +233,13 @@
       "authenticated": false
     },
     {
+      "name": "employer_place_status_from_proposal",
+      "signature": "employer_place_status_from_proposal()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "employer_proposals_update",
       "signature": "employer_proposals_update()",
       "definer": true,
@@ -429,6 +436,20 @@
       "authenticated": false
     },
     {
+      "name": "handover_recipient_guard",
+      "signature": "handover_recipient_guard()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
+      "name": "handover_recipient_notify",
+      "signature": "handover_recipient_notify()",
+      "definer": true,
+      "anon": false,
+      "authenticated": false
+    },
+    {
       "name": "har_aktiv_relation",
       "signature": "har_aktiv_relation(uuid)",
       "definer": false,
@@ -485,6 +506,13 @@
       "authenticated": false
     },
     {
+      "name": "kvittera_underlag",
+      "signature": "kvittera_underlag(uuid)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
+    },
+    {
       "name": "leave_community_group",
       "signature": "leave_community_group(uuid)",
       "definer": true,
@@ -522,6 +550,13 @@
     {
       "name": "log_user_activity",
       "signature": "log_user_activity(uuid,text,text,text,integer,jsonb)",
+      "definer": true,
+      "anon": false,
+      "authenticated": true
+    },
+    {
+      "name": "mina_mottagna_underlag",
+      "signature": "mina_mottagna_underlag()",
       "definer": true,
       "anon": false,
       "authenticated": true

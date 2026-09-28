@@ -1,0 +1,14 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+navigation "CV — avsnitt"
+navigation "Avsnitt"
+
+RUBRIKER:
+H1 "CV"
+H1 "CV"
+H1 "Välkommen till CV-byggaren"
+H2 "Snabb-CV"

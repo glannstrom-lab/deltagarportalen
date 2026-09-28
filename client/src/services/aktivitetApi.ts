@@ -823,11 +823,38 @@ export interface PlanHandover {
   withdrawn_reason: string | null
   created_at: string
   updated_at: string
+  /** KH11 (2026-09-28): mottagande handläggare som konto. NULL = extern mottagare, bara fritext. */
+  recipient_user_id?: string | null
+  /** KH11: när handläggaren kvitterade underlaget i portalen. */
+  received_at?: string | null
+}
+
+/** KH11: ett underlag som lämnats till mig som handläggare (rpc mina_mottagna_underlag). */
+export interface MottagetUnderlag {
+  id: string
+  handed_over_at: string
+  period_from: string
+  period_to: string
+  summary: Partial<NarvaroSammanfattning>
+  note: string | null
+  withdrawn_at: string | null
+  withdrawn_reason: string | null
+  received_at: string | null
+  participant_first_name: string | null
+  participant_last_name: string | null
+  consultant_first_name: string | null
+  consultant_last_name: string | null
+  consultant_email: string | null
+  forsorjningshinder: string | null
+  ogiltig_franvaro: number
+  ogiltig_franvaro_forklarad: number
 }
 
 export interface LamnaUnderlagInput {
   plan: Pick<ActivityPlan, 'id' | 'participant_id' | 'org_id'>
   recipient: string
+  /** KH11: handläggare i organisationen. Databasen fäller allt annat. */
+  recipient_user_id?: string | null
   period_from: string
   period_to: string
   summary: NarvaroSammanfattning
@@ -922,6 +949,7 @@ export const underlagApi = {
         org_id: input.plan.org_id,
         handed_over_by: user.id,
         recipient,
+        recipient_user_id: input.recipient_user_id ?? null,
         period_from: input.period_from,
         period_to: input.period_to,
         summary: input.summary,
@@ -931,6 +959,22 @@ export const underlagApi = {
       .single()
     if (error) throw error
     return data as PlanHandover
+  },
+
+  /** KH11: underlag lämnade till mig som handläggare. Tom lista för alla andra. */
+  async mottagna(): Promise<MottagetUnderlag[]> {
+    await requireUser()
+    const { data, error } = await supabase.rpc('mina_mottagna_underlag')
+    if (error) throw error
+    return (data ?? []) as MottagetUnderlag[]
+  },
+
+  /** KH11: kvittera att underlaget tagits emot. Bara mottagaren kan. */
+  async kvittera(id: string): Promise<string> {
+    await requireUser()
+    const { data, error } = await supabase.rpc('kvittera_underlag', { p_id: id })
+    if (error) throw error
+    return data as string
   },
 
   /** Ångra samma dag. Triggern i databasen vaktar dag, ägare och att inget annat ändras. */

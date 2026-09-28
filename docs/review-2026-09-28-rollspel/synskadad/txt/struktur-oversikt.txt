@@ -1,0 +1,16 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+complementary "Råd för den här sidan"
+
+RUBRIKER:
+H1 "God kväll Peter"
+H2 "Börja med ditt CV"
+H2 "Allt i portalen"
+H3 "Söka jobb"
+H3 "Karriär"
+H3 "Resurser"
+H3 "Din vardag"

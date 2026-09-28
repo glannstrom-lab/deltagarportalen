@@ -1,0 +1,28 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+search
+complementary "Råd från Sara"
+complementary "Råd för den här sidan"
+
+RUBRIKER:
+H1 "Kunskapsbank"
+H1 "Kunskapsbank"
+H2 "Vad vill du läsa om?"
+H3 "Komma igång"
+H3 "Självkännedom"
+H3 "Jobbsökning"
+H3 "Intervju och anställning"
+H3 "Nätverkande"
+H3 "Digital närvaro"
+H3 "Arbetsrätt och anställning"
+H3 "Karriärutveckling"
+H3 "Välmående och motivation"
+H3 "Tillgänglighet och stöd"
+H3 "Arbetsmarknaden"
+H3 "Praktiska verktyg"
+H3 "Lätt svenska"
+H2 "Hittar du inte svar?"

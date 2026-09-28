@@ -1,0 +1,198 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+
+Demo — påhittade personer
+
+Meny
+
+KONSULENT
+
+Konsultportal
+
+DELTAGARVYN
+
+Översikt
+Söka jobb
+Karriär
+Resurser
+Din vardag
+Inställningar
+Hjälp
+Logga ut
+Min profil
+
+kim.kollega.demo@example.com
+
+Konsulent
+
+Min profil
+Inställningar
+Logga ut
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Tillbaka till deltagare
+SP
+Sara Påhitt
+sara.pahitt@example.com
+Aktiv
+Boka möte
+Registrera placering
+
+—
+
+CV-poäng
+
+0
+
+Sparade jobb
+
+0
+
+Aktiva mål
+
+6 dagar sedan
+
+Senaste kontakt
+
+journalanteckning
+
+Översikt
+Aktivitet
+Mål
+Journal
+Tidslinje
+Demomall: jobbsökning + motivationAktiv
+Period
+28 september 2026 – 20 december 2026
+Veckomål
+11 h
+Eget jobbsökande
+3 h/vecka i planen
+Beslutad
+28 september 2026
+Ärendenummer i verksamhetssystemet
+— inte angivet
+Ange
+
+Står på plan-PDF:en, närvarointyget och underlagspaketet. Inte personnummer.
+
+Försörjningshinder
+Inte angivet
+Arbetslös
+Sjukskriven med läkarintyg
+Sjuk- eller aktivitetsersättning
+Arbetshinder, sociala skäl
+Föräldraledig
+Arbetar deltid
+Språkhinder
+Utan försörjningshinder
+Annat
+Underlag till handläggaren
+Inget underlag lämnat än.Lämna underlag
+
+Motivering till veckomålet: Sara börjar deltid enligt schemamallen (11 h/vecka) — trappas upp efter avstämning om två veckor.
+
+Plan som PDF
+Lägg till pass
+Avsluta plan
+Praktik och arbetsträning
+Öppna Platser
+
+Planen har arbetsplatspass på ”Fiktiva Logistik AB”, men platsen finns inte under Platser. Registrera den där för kontaktuppgifter, handledning och uppföljning.
+
+Avstämningen jämför namnet på platsen med passens platsfält, och känner igen pass som lagts in härifrån.
+
+Vecka 40 · 28 sep – 4 okt
+Idag
+Närvaron inte markerad än
+Planerat anvisat
+8 h / 8 h
+Närvaro
+3 h
+Eget jobbsökande, kvitterat
+0 h
+Ogiltig frånvaro
+Ingen
+
+Veckomålet 11 h = 8 h anvisad aktivitet + 3 h eget jobbsökande. Ampeln jämför bekräftad närvaro i anvisade pass med den anvisade delen; eget jobbsökande är deltagarens egen redovisning och räknas inte in i ampeln. Eget jobbsökande räknas som utfört först när du kvitterat det.
+
+Beslut om nedsättning fattas av socialnämnden, inte här. Ogiltig frånvaro är underlag till handläggaren. 2 pass i veckan är inte markerade än.
+
+Eget jobbsökande
+(deltagarens egen redovisning)
+
+3 h/vecka avsatt i planen.
+
+Inga sparade jobb eller ansökningar går att läsa för den här deltagaren. Veckans siffror ser deltagaren själv under Min vecka.
+
+Inget CV skapat än. Personligt brev och intervjuträning ser bara deltagaren själv.
+
+Måndag 28 sep · idag
+09:00–12:00
+
+Jobbsökarverkstad
+
+Jobbsökande
+3 h
+Arbetsmarknadsenheten
+Verksamheten · fysiskt (härlett)
+
+Närvarande
+Närvaro
+Ändra
+Tisdag 29 sep
+09:00–11:00
+
+Motivationsgrupp
+
+Motivation och förmåga
+2 h
+Rum 3
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra
+Onsdag 30 sep
+09:00–12:00
+
+Eget jobbsökande
+
+Eget jobbsökande
+3 h
+Hemma/bibliotek
+Egen aktivitet · fysiskt (härlett)
+
+Egen redovisning
+Närvaro
+Ändra
+Torsdag 1 okt
+13:00–16:00
+
+Praktikbesök
+
+Arbetsplatsförlagd
+3 h
+Fiktiva Logistik AB
+Verksamheten · fysiskt (härlett)
+
+Inte markerad
+Närvaro
+Ändra
+Lugnare läge
+Mindre på skärmen, ett steg i taget
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation

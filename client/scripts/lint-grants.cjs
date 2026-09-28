@@ -72,8 +72,13 @@ const RLS_UNDANTAG = {}
  *   30 → 22  2026-09-22, BP1: åtta STA-funktioner (arkiverad modul, noll anropare)
  *            revokade — bland dem sta_bulk_smart_add, som kopplade valfritt konto
  *            till en konsulent via e-post utan samtycke.
+ *   22 → 24  2026-09-28, KH11: `mina_mottagna_underlag` och `kvittera_underlag` —
+ *            handläggarens läsvy och kvittering av lämnade underlag (rollspelet
+ *            2026-09-28, KH1–KH4). Ingen tar ett användar-id; båda filtrerar på
+ *            `recipient_user_id = auth.uid()`. Definer i stället för nya RLS-policyer på
+ *            profiles/activity_sessions, så handläggaren inte får läsrätt på deltagarens konto.
  */
-const AUTH_TAK = 22
+const AUTH_TAK = 24
 
 const snapshot = JSON.parse(fs.readFileSync(SNAPSHOT, 'utf8'))
 const definerFunktioner = snapshot.functions.filter((f) => f.definer)

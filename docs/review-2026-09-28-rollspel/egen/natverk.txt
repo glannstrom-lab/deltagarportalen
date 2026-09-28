@@ -1,0 +1,2 @@
+2026-09-28T17:00:45.091Z GET 403 https://odcvrdkvzyrbdzvdrhkz.supabase.co/auth/v1/user
+2026-09-28T17:00:45.781Z GET 406 https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/profiles?select=*&id=eq.d545b171-e02a-4746-ada2-f38d199f2cb9

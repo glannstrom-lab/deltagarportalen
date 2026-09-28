@@ -1,0 +1,17 @@
+LANDMÄRKEN:
+navigation "Snabblänkar"
+banner
+navigation "Huvudkategorier"
+navigation "Undersidor"
+main
+navigation "Avsnitt i inställningarna"
+complementary "Råd för den här sidan"
+
+RUBRIKER:
+H1 "Inställningar"
+H1 "Inställningar"
+H3 "Profilinställningar"
+H4 "Personlig information"
+H4 "Kontaktuppgifter"
+H4 "Om mig"
+H3 "Projekt"

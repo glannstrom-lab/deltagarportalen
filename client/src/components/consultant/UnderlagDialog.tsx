@@ -20,7 +20,9 @@ import { useId, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dialog } from '@/components/ui/Dialog'
 import { Button } from '@/components/ui/Button'
-import { Input, Textarea } from '@/components/ui/Input'
+import { Input, Select, Textarea } from '@/components/ui/Input'
+import { useQuery } from '@tanstack/react-query'
+import { orgApi } from '@/services/orgApi'
 import { notifications } from '@/lib/toast'
 import {
   sammanfattaNarvaro,
@@ -63,6 +65,18 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
   const idag = formatLocalDate(new Date())
 
   const [mottagare, setMottagare] = useState('')
+  // KH11 (rollspelet 2026-09-28): mottagaren var bara fritext, så underlaget nådde aldrig
+  // handläggaren i portalen. Finns handläggare i planens organisation väljs de här; då får
+  // de en notis och underlaget i sin vy. "Någon annan" behåller fritexten (extern mottagare).
+  const [mottagarId, setMottagarId] = useState<string>('')
+  const kollegorQ = useQuery({ queryKey: ['org-kollegor'], queryFn: () => orgApi.colleagues(), staleTime: 5 * 60_000 })
+  const planOrg = props.lage === 'lamna' ? props.plan.org_id : null
+  const handlaggare = (kollegorQ.data ?? []).filter((k) => k.role === 'handlaggare' && k.org_id === planOrg)
+  const valjMottagare = (id: string) => {
+    setMottagarId(id)
+    const k = handlaggare.find((h) => h.user_id === id)
+    setMottagare(k ? [k.first_name, k.last_name].filter(Boolean).join(' ') : '')
+  }
   const [from, setFrom] = useState(props.lage === 'lamna' ? forstaIManaden(idag) : '')
   const [to, setTo] = useState(idag)
   const [anteckning, setAnteckning] = useState('')
@@ -84,6 +98,7 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
       const h = await underlagApi.lamna({
         plan: props.plan,
         recipient: mottagare,
+        recipient_user_id: mottagarId || null,
         period_from: from,
         period_to: to,
         summary: sammanfattning,
@@ -187,14 +202,30 @@ export function UnderlagDialog(props: UnderlagDialogProps) {
         </h2>
         <p className="text-sm text-stone-600 dark:text-stone-300">{t('consultant.underlag.dialogIngress')}</p>
 
-        <Input
-          label={t('consultant.underlag.mottagare')}
-          value={mottagare}
-          onChange={(e) => setMottagare(e.target.value)}
-          placeholder={t('consultant.underlag.mottagarePlaceholder')}
-          maxLength={200}
-          required
-        />
+        {handlaggare.length > 0 && (
+          <Select
+            id="underlag-mottagare-konto"
+            label={t('consultant.underlag.mottagareKonto')}
+            value={mottagarId}
+            onChange={(e) => valjMottagare(e.target.value)}
+            options={[
+              ...handlaggare.map((k) => ({ value: k.user_id, label: [k.first_name, k.last_name].filter(Boolean).join(' ') || (k.email ?? '') })),
+              { value: '', label: t('consultant.underlag.mottagareAnnan') },
+            ]}
+          />
+        )}
+        {mottagarId ? (
+          <p className="text-sm text-stone-600 dark:text-stone-300" role="status">{t('consultant.underlag.mottagareIPortalen')}</p>
+        ) : (
+          <Input
+            label={t('consultant.underlag.mottagare')}
+            value={mottagare}
+            onChange={(e) => setMottagare(e.target.value)}
+            placeholder={t('consultant.underlag.mottagarePlaceholder')}
+            maxLength={200}
+            required
+          />
+        )}
         <div className="grid grid-cols-2 gap-3">
           <Input type="date" label={t('consultant.underlag.periodFrom')} value={from} min={props.plan.start_date} max={to || idag} onChange={(e) => setFrom(e.target.value)} required />
           <Input type="date" label={t('consultant.underlag.periodTo')} value={to} min={from || props.plan.start_date} max={idag} onChange={(e) => setTo(e.target.value)} required />

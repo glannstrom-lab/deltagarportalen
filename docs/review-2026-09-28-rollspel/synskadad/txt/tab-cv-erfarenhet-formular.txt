@@ -1,0 +1,20 @@
+1. - button "Flytta erfarenhet uppåt Flytta erfarenhet nedåt 0/3 Ny position Företagsnamn" [expanded]:   - button "Flytta erfarenhet uppåt" [disabled]   - button "Flytta erfarenhet nedåt" [disabled]   - text: 0/3   - headin
+2. - textbox "Jobbtitel *":   - /placeholder: t.ex. Butikssäljare
+3. - textbox "Företag *":   - /placeholder: t.ex. ICA Maxi
+4. - textbox "Plats":   - /placeholder: t.ex. Stockholm
+5. - textbox "Startdatum *"
+6. - textbox "Startdatum *"
+7. (inget fokuserat element — fokus tappat, troligen på <body>)
+8. - textbox "Slutdatum"
+9. - textbox "Slutdatum"
+10. (inget fokuserat element — fokus tappat, troligen på <body>)
+11. - checkbox "Jag jobbar här fortfarande"
+12. - button "Fetstil (Ctrl+B)"
+13. - button "Kursiv (Ctrl+I)"
+14. - button "Rubrik"
+15. - button "Underrubrik"
+16. - button "Punktlista"
+17. - button "Numrerad lista"
+18. - button "Citat"
+19. - button "Länk"
+20. - textbox "Textredigerare":   - /placeholder: Beskriv dina arbetsuppgifter och prestationer...

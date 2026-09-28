@@ -1,0 +1,109 @@
+Du är nu på Konsultportal
+Hoppa till huvudinnehåll
+Hoppa till navigation
+
+Demo — påhittade personer
+
+Meny
+
+KONSULENT
+
+Konsultportal
+
+DELTAGARVYN
+
+Översikt
+Söka jobb
+Karriär
+Resurser
+Din vardag
+Inställningar
+Hjälp
+Logga ut
+Min profil
+
+kim.kollega.demo@example.com
+
+Konsulent
+
+Min profil
+Inställningar
+Logga ut
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation
+Resurser
+Inställningar
+Konsultportal
+
+Hantera och följ upp dina deltagare
+
+Alla statusar
+Aktiva
+Inaktiva
+Pausade
+Avslutade
+Kräver uppmärksamhet
+Prioritet
+Namn
+CV-poäng
+Senast kontakt
+Status
+Bjud in
+
+Visar 2 av 2 deltagare
+
+Markera alla
+SP
+Sara Påhitt
+
+sara.pahitt@example.com
+
+Aktiv
+
+—
+
+CV
+
+0
+
+Jobb
+
+1
+
+Anteckningar
+
+6 dagar sedan
+Inget möte än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+JE
+Johan Exempelsson
+
+johan.exempelsson@example.com
+
+Aktiv
+
+—
+
+CV
+
+0
+
+Jobb
+
+0
+
+Anteckningar
+
+6 dagar sedan
+Inget möte än
+— Individuellt möte minst var 14:e dag och fysiskt möte minst var 28:e dag (RM3). Bara genomförda möten räknas.
+Lugnare läge
+Mindre på skärmen, ett steg i taget
+Översikt
+Deltagare
+Platser
+Rapporter
+Kommunikation

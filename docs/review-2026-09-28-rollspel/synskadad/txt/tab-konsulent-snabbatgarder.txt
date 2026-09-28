@@ -1,0 +1,20 @@
+1. - button "Aktivitet" [expanded]
+2. - button "CV & Profil"
+3. - button "Mående"
+4. - link "Ändra vad du delar":   - /url: "#/settings?section=privacy"
+5. - link "Skicka e-post":   - /url: mailto:demo-leverantor@jobin.se
+6. - button "Boka möte"
+7. - button "Säg upp kopplingen"
+8. - button "Andreas Jobbcoach" [expanded]
+9. - button "2 råd till"
+10. - link "Fråga djupare i AI-team":   - /url: "#/ai-team?coach=jobbcoach"
+11. - button "Lugnare läge Mindre på skärmen, ett steg i taget"
+12. (inget fokuserat element — fokus tappat, troligen på <body>)
+13. - link "Hoppa till huvudinnehåll":   - /url: "#main-content"
+14. - link "Hoppa till navigation":   - /url: "#main-navigation"
+15. - link "Jobin jobin.se":   - /url: "#/"   - img "Jobin"   - text: jobin.se
+16. - link "Översikt":   - /url: "#/oversikt"
+17. - link "Söka jobb":   - /url: "#/jobb"
+18. - link "Karriär":   - /url: "#/karriar"
+19. - link "Resurser":   - /url: "#/resurser"
+20. - link "Din vardag":   - /url: "#/min-vardag"

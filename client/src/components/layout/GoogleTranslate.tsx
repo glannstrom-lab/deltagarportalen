@@ -68,60 +68,6 @@ function clearGoogleTranslateCookies() {
   document.cookie = `googtrans=; expires=${expiredDate}; path=/; domain=${domain}`
 }
 
-// Ladda Google Translate scriptet
-function loadGoogleTranslateScript(targetLang: string): Promise<void> {
-  return new Promise((resolve) => {
-    // Skapa element för Google Translate
-    let container = document.getElementById('google_translate_element')
-    if (!container) {
-      container = document.createElement('div')
-      container.id = 'google_translate_element'
-      container.style.display = 'none'
-      document.body.appendChild(container)
-    }
-
-    // Sätt cookie innan scriptet laddas
-    setGoogleTranslateCookie(targetLang)
-
-    // Definiera callback
-    const win = window as Window & { googleTranslateElementInit?: () => void }
-    win.googleTranslateElementInit = () => {
-      const google = (window as Window & {
-        google?: {
-          translate?: {
-            TranslateElement: new (config: object, id: string) => void
-          }
-        }
-      }).google
-
-      if (google?.translate?.TranslateElement) {
-        new google.translate.TranslateElement(
-          {
-            pageLanguage: 'sv',
-            autoDisplay: false,
-          },
-          'google_translate_element'
-        )
-      }
-      resolve()
-    }
-
-    // Kolla om scriptet redan finns
-    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
-    if (existingScript) {
-      // Scriptet finns redan - Google Translate borde vara aktiv
-      resolve()
-      return
-    }
-
-    // Ladda scriptet
-    const script = document.createElement('script')
-    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-    script.async = true
-    document.head.appendChild(script)
-  })
-}
-
 export function GoogleTranslate() {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
@@ -132,15 +78,8 @@ export function GoogleTranslate() {
   const [isLoading, setIsLoading] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  // Ladda Google Translate-scriptet vid mount om det redan fanns en aktiv
-  // översättning sparad (activeLanguage härleds från cookien/localStorage
-  // direkt i useState-initieraren ovan, inte i en effekt).
-  useEffect(() => {
-    if (activeLanguage) {
-      loadGoogleTranslateScript(activeLanguage)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- ska bara köras vid montering; ett språkbyte laddar om hela sidan (window.location.reload) i stället för att uppdatera activeLanguage i klienten
-  }, [])
+  // Skriptet laddas vid appstart av startaSparadOversattning() (main.tsx),
+  // så att översättningen fungerar även där den här komponenten inte monteras (mobil).
 
   // Stäng menyn vid klick utanför
   useEffect(() => {
