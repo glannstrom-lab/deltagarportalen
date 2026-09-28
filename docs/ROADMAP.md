@@ -60,15 +60,15 @@ Sex agenter prövade ~190 funktioner hela vägen (skapa → ladda om → ändra 
   vars namn innehåller händelsens titel. UT3 (AI-panelen när AI är av) gick inte att återskapa — spärras i båda ytorna.
 
 ### Förbättra / utveckla (från testet)
-- [ ] **ST1** 283 anrop till `supabase.auth.getUser()` i klienten — varje är en rundresa till auth-servern, och den
+- [ ] **SFT1** 283 anrop till `supabase.auth.getUser()` i klienten — varje är en rundresa till auth-servern, och den
   gav CORS-fel två gånger i passet (SJ3, SKK1). Byt mot `getSession()`/authStore där bara id:t behövs · ~1 dag
-- [ ] **ST2** Mejl för handläggarens underlag och för företagets nya förslag (AT4 + FT-F1) — notis i klockan räcker inte
+- [ ] **SFT2** Mejl för handläggarens underlag och för företagets nya förslag (AT4 + FT-F1) — notis i klockan räcker inte
   för den som sällan loggar in · beslut om `vercel.json`-cron
-- [ ] **ST3** Dagboken saknar redigering (SV4); energifliken är död kod (SV5); notisreglagen saknar `role="switch"` (SV6)
-- [ ] **ST4** FT1:s återöppning går inte att nå i UI — företaget kan inte ändra ett givet ja. Beslut: ska det gå?
-- [ ] **ST5** /login: skiplänk, landmärken, fokus på felet (SV3/SV4 från rollspelet) och LCP ~3,6 s på 3G (PUB-3)
-- [ ] **ST6** `upload-image.js` saknas i CORS-grinden (PUB-2)
-- [ ] **ST7** Flytta en serie/ett pass till annan dag (finns inte; kvar sedan RK37)
+- [ ] **SFT3** Dagboken saknar redigering (SV4); energifliken är död kod (SV5); notisreglagen saknar `role="switch"` (SV6)
+- [ ] **SFT4** FT1:s återöppning går inte att nå i UI — företaget kan inte ändra ett givet ja. Beslut: ska det gå?
+- [ ] **SFT5** /login: skiplänk, landmärken, fokus på felet (SV3/SV4 från rollspelet) och LCP ~3,6 s på 3G (PUB-3)
+- [ ] **SFT6** `upload-image.js` saknas i CORS-grinden (PUB-2)
+- [ ] **SFT7** Flytta en serie/ett pass till annan dag (finns inte; kvar sedan RK37)
 
 ## Rollspel 2026-09-28 — sju nya roller i prod
 
